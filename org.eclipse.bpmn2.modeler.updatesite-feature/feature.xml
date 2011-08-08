@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.bpmn2.modeler.updatesite"
+      label="BPMN2 Editor Updatesite"
+      version="0.0.1.qualifier"
+      provider-name="Eclipse.org">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      Copyright (c) 2011 Red Hat, Inc.
+ All rights reserved.
+This program is made available under the terms of the
+Eclipse Public License v1.0 which accompanies this distribution,
+and is available at http://www.eclipse.org/legal/epl-v10.html
+Contributors:
+Red Hat, Inc. - initial API and implementation
+Author: Ivar Meikas
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <includes
+         id="org.eclipse.bpmn2.modeler"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.bpmn2.feature"
+         version="0.0.0"/>
+
+</feature>
