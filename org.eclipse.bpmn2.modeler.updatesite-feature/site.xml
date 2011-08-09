@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description url="http://eclipse.org/bpmn2-modeler">
+	Eclipse BPMN2 Modeler.
+   </description>
+   <copyright url="http://www.example.com/copyright">
+      Copyright (c) 2011 Red Hat, Inc.
+ All rights reserved.
+This program is made available under the terms of the
+Eclipse Public License v1.0 which accompanies this distribution,
+and is available at http://www.eclipse.org/legal/epl-v10.html
+Contributors:
+Red Hat, Inc. - initial API and implementation
+Author: Ivar Meikas
+   </copyright>
+   <feature url="features/org.eclipse.bpmn2.modeler_0.0.0.qualifier.jar" id="org.eclipse.bpmn2.modeler" version="0.0.0" patch="true">
+      <category name="Eclipse BPMN2 Modeler (Incubation)"/>
+   </feature>
+   <category-def name="Eclipse BPMN2 Modeler (Incubation)" label="Eclipse BPMN2 Modeler (Incubation)">
+      <description>
+         Eclipse BPMN2 Modeler (Incubation)
+      </description>
+   </category-def>
+</site>

@@ -18,8 +18,13 @@ import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.ProxyURIConverterImplExtension;
 import org.eclipse.bpmn2.modeler.core.di.DIImport;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
+import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
+import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
+import org.eclipse.bpmn2.modeler.ui.BPMN2ContentDescriber;
+import org.eclipse.bpmn2.modeler.ui.preferences.Bpmn2PropertyPage;
 import org.eclipse.bpmn2.modeler.ui.util.ErrorUtils;
 import org.eclipse.bpmn2.modeler.ui.wizards.BPMN2DiagramCreator;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
@@ -36,18 +41,31 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.command.BasicCommandStack;
+import org.eclipse.emf.common.util.BasicDiagnostic;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.transaction.ExceptionHandler;
 import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.TransactionalCommandStack;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
+import org.eclipse.emf.transaction.TransactionalEditingDomain.Lifecycle;
+import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
+import org.eclipse.graphiti.tb.IToolBehaviorProvider;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
+import org.eclipse.jface.action.IStatusLineManager;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartSite;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.WorkbenchAdvisor;
@@ -58,7 +76,8 @@ import org.eclipse.ui.application.WorkbenchAdvisor;
 @SuppressWarnings("restriction")
 public class BPMN2Editor extends DiagramEditor {
 
-	public static String EDITOR_ID = "org.eclipse.bpmn2.modeler.ui.bpmn2editor";
+	public static final String EDITOR_ID = "org.eclipse.bpmn2.modeler.ui.bpmn2editor";
+	public static final String CONTRIBUTOR_ID = "org.eclipse.bpmn2.modeler.ui.PropertyContributor";
 
 	private ModelHandler modelHandler;
 	private URI modelUri;
@@ -69,16 +88,25 @@ public class BPMN2Editor extends DiagramEditor {
 	
 	private IWorkbenchListener workbenchListener;
 	private boolean workbenchShutdown = false;
+	
+	private BPMN2EditingDomainListener editingDomainListener;
+	
+	private Bpmn2Preferences preferences;
+	private TargetRuntime targetRuntime;
 
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+		
 		try {
 			if (input instanceof IFileEditorInput) {
 				modelFile = ((IFileEditorInput) input).getFile();
+				loadPreferences(modelFile.getProject());
+
 				input = createNewDiagramEditorInput();
 
 			} else if (input instanceof DiagramEditorInput) {
 				getModelPathFromInput((DiagramEditorInput) input);
+				loadPreferences(modelFile.getProject());
 
 				// This was incorrectly constructed input, we ditch the old one and make a new and clean one instead
 				input = createNewDiagramEditorInput();
@@ -94,6 +122,36 @@ public class BPMN2Editor extends DiagramEditor {
 		super.init(site, input);
 	}
 
+	public Bpmn2Preferences getPreferences() {
+		if (preferences==null) {
+			assert(modelFile!=null);
+			IProject project = modelFile.getProject();
+			loadPreferences(project);
+		}
+		return preferences;
+	}
+	
+	private void loadPreferences(IProject project) {
+		preferences = new Bpmn2Preferences(project);
+		preferences.load();
+	}
+
+	/**
+	 * ID for tabbed property sheets.
+	 * 
+	 * @return the contributor id
+	 */
+	@Override
+	public String getContributorId() {
+		return CONTRIBUTOR_ID;
+	}
+
+	public TargetRuntime getTargetRuntime() {
+		if (targetRuntime==null)
+			targetRuntime = getPreferences().getRuntime(modelFile);
+		return targetRuntime;
+	}
+	
 	private void getModelPathFromInput(DiagramEditorInput input) {
 		URI uri = input.getDiagram().eResource().getURI();
 		String uriString = uri.trimFragment().toPlatformString(true);
@@ -129,12 +187,18 @@ public class BPMN2Editor extends DiagramEditor {
 	@Override
 	protected void setInput(IEditorInput input) {
 		super.setInput(input);
+		
+		// Hook a transaction exception handler so we can get diagnostics about EMF validation errors.
+		getEditingDomainListener();
+		
 		BasicCommandStack basicCommandStack = (BasicCommandStack) getEditingDomain().getCommandStack();
 
 		if (input instanceof DiagramEditorInput) {
 			ResourceSet resourceSet = getEditingDomain().getResourceSet();
+			getTargetRuntime().setResourceSet(resourceSet);
+			
 			Bpmn2ResourceImpl bpmnResource = (Bpmn2ResourceImpl) resourceSet.createResource(modelUri,
-					"org.eclipse.bpmn2.content-type.xml");
+					Bpmn2ModelerResourceImpl.BPMN2_CONTENT_TYPE_ID);
 
 			resourceSet.setURIConverter(new ProxyURIConverterImplExtension());
 
@@ -161,7 +225,7 @@ public class BPMN2Editor extends DiagramEditor {
 		}
 		basicCommandStack.saveIsDone();
 	}
-
+	
 	private void importDiagram() {
 		DIImport di = new DIImport();
 		di.setDiagram(getDiagramTypeProvider().getDiagram());
@@ -197,6 +261,45 @@ public class BPMN2Editor extends DiagramEditor {
 		}
 	}
 	
+	public BPMN2EditingDomainListener getEditingDomainListener() {
+		if (editingDomainListener==null) {
+			TransactionalEditingDomainImpl editingDomain = (TransactionalEditingDomainImpl)getEditingDomain();
+			if (editingDomain==null) {
+				return null;
+			}
+			editingDomainListener = new BPMN2EditingDomainListener(this);
+
+			Lifecycle domainLifeCycle = (Lifecycle) editingDomain.getAdapter(Lifecycle.class);
+			domainLifeCycle.addTransactionalEditingDomainListener(editingDomainListener);
+		}
+		return editingDomainListener;
+	}
+	
+	public BasicDiagnostic getDiagnostics() {
+		return getEditingDomainListener().getDiagnostics();
+	}
+	
+	public void showErrorMessage(String msg) {
+		IWorkbench wb = PlatformUI.getWorkbench();
+		IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
+		IWorkbenchPage page = win.getActivePage();
+		IWorkbenchPart part = page.getActivePart();
+		IWorkbenchPartSite site = part.getSite();
+		IViewSite vSite = ( IViewSite ) site;
+		IActionBars actionBars =  vSite.getActionBars();
+
+		if( actionBars == null )
+			return;
+
+		IStatusLineManager statusLineManager = actionBars.getStatusLineManager();
+		if( statusLineManager == null )
+			return;
+		
+		statusLineManager.setErrorMessage(msg);
+		statusLineManager.markDirty();
+		statusLineManager.update(true);
+	}
+	
 	@Override
 	public void dispose() {
 		// clear ID mapping tables if no more instances of editor are active
@@ -214,6 +317,7 @@ public class BPMN2Editor extends DiagramEditor {
 		if (!workbenchShutdown)
 			BPMN2DiagramCreator.dispose(diagramFile);
 		removeWorkbenchListener();
+		getPreferences().dispose();
 	}
 
 	public IFile getModelFile() {

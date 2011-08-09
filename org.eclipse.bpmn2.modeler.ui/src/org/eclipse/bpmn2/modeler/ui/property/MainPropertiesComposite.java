@@ -21,13 +21,12 @@ import org.eclipse.bpmn2.GatewayDirection;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.di.BpmnDiPackage;
-import org.eclipse.bpmn2.modeler.core.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
+import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablementPreferences;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.Enumerator;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
@@ -71,7 +70,7 @@ public class MainPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 
 	@SuppressWarnings("restriction")
 	@Override
-	public void createBindings() {
+	public void createBindings(EObject be) {
 		try {
 			modelHandler = ModelHandlerLocator.getModelHandler(bpmn2Editor.getDiagramTypeProvider().getDiagram()
 					.eResource());
@@ -84,22 +83,32 @@ public class MainPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 				ItemProviderAdapter.class);
 
 		EList<EAttribute> eAllAttributes = be.eClass().getEAllAttributes();
-		Bpmn2Preferences preferences = Bpmn2Preferences.getPreferences(project);
+		ToolEnablementPreferences preferences = ToolEnablementPreferences.getPreferences(project);
 
 		for (EAttribute a : eAllAttributes) {
 
 			if (preferences.isEnabled(be.eClass(), a)) {
+				String displayName;
+				boolean isMultiLine = false;
 				IItemPropertyDescriptor propertyDescriptor = itemProviderAdapter.getPropertyDescriptor(be, a);
 
+				if (propertyDescriptor!=null) {
+					displayName = propertyDescriptor.getDisplayName(be);
+					isMultiLine = propertyDescriptor.isMultiLine(be);
+				}
+				else {
+					displayName = a.getName();
+				}
+				
 				if (String.class.equals(a.getEType().getInstanceClass())) {
-					bind(a, createTextInput(propertyDescriptor.getDisplayName(be), propertyDescriptor.isMultiLine(be)));
+					bind(a, createTextInput(displayName, isMultiLine));
 				} else if (boolean.class.equals(a.getEType().getInstanceClass())) {
-					bindBoolean(a, createBooleanInput(propertyDescriptor.getDisplayName(be)));
+					bindBoolean(a, createBooleanInput(displayName));
 				} else if (int.class.equals(a.getEType().getInstanceClass())) {
-					bindInt(a, createIntInput(propertyDescriptor.getDisplayName(be)));
+					bindInt(a, createIntInput(displayName));
 				} else if (propertyDescriptor != null) {
 					propertyDescriptor.getChoiceOfValues(be);
-					createLabel(propertyDescriptor.getDisplayName(be));
+					createLabel(displayName);
 					createSingleItemEditor(a, be.eGet(a), propertyDescriptor.getChoiceOfValues(be));
 				}
 			}
@@ -109,7 +118,8 @@ public class MainPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 		for (EReference e : be.eClass().getEAllReferences()) {
 			if (preferences.isEnabled(be.eClass(), e) && !eAllContainments.contains(e)) {
 				IItemPropertyDescriptor propertyDescriptor = itemProviderAdapter.getPropertyDescriptor(be, e);
-				bindReference(e, propertyDescriptor.getDisplayName(e));
+				if (propertyDescriptor!=null)
+					bindReference(e, propertyDescriptor.getDisplayName(e));
 			}
 		}
 

@@ -1,0 +1,23 @@
+target/
+local/
+.git/
+
+# Eclipse, Netbeans and IntelliJ files
+/.*
+!.gitignore
+/nbproject
+/*.ipr
+/*.iws
+/*.iml
+
+# Repository wide ignore mac DS_Store files
+.DS_Store
+
+# additional stuff
+.metadata/
+bin/
+.settings/
+*.swp
+.scala_dependencies
+
+/lib/specs_2.8.1-1.6.6.jar

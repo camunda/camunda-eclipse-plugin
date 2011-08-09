@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5/src"
+    modelPluginID="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model" redirection=""
+    forceOverwrite="true" modelName="JBPM5Extensions" modelPluginClass="" importerID="org.eclipse.emf.importer.ecore"
+    complianceLevel="6.0" copyrightFields="false" usedGenPackages="../../org.eclipse.bpmn2/model/BPMN20.genmodel#//bpmn2 ../../org.eclipse.bpmn2/model/BPMN20.genmodel#//di ../../org.eclipse.bpmn2/model/BPMN20.genmodel#//di.1 ../../org.eclipse.bpmn2/model/BPMN20.genmodel#//dc">
+  <foreignModel>jBPM5Extensions.ecore</foreignModel>
+  <genPackages prefix="Model" basePackage="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5"
+      resource="XML" disposableProviderFactory="true" ecorePackage="jBPM5Extensions.ecore#/">
+    <genClasses ecoreClass="jBPM5Extensions.ecore#//JBPM5CustomTask">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//JBPM5CustomTask/taskName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//JBPM5CustomTask/displayName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//JBPM5CustomTask/icon"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference jBPM5Extensions.ecore#//JBPM5CustomTask/parameters"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference jBPM5Extensions.ecore#//JBPM5CustomTask/results"/>
+    </genClasses>
+    <genClasses ecoreClass="jBPM5Extensions.ecore#//Parameter">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//Parameter/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//Parameter/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//Parameter/value"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

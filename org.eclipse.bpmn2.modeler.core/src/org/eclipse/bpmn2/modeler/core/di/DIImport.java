@@ -39,6 +39,7 @@ import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.core.validation.LiveValidationContentAdapter;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.dd.dc.Point;
@@ -46,6 +47,7 @@ import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.datatypes.ILocation;
@@ -80,6 +82,7 @@ public class DIImport {
 	private final IPeService peService = Graphiti.getPeService();
 	private final IGaService gaService = Graphiti.getGaService();
 
+	private final LiveValidationContentAdapter liveValidationContentAdapter = new LiveValidationContentAdapter();
 	/**
 	 * Look for model diagram interchange information and generate all shapes for the diagrams.
 	 * 
@@ -87,6 +90,7 @@ public class DIImport {
 	 */
 	public void generateFromDI() {
 		final List<BPMNDiagram> diagrams = modelHandler.getAll(BPMNDiagram.class);
+		
 		elements = new HashMap<BaseElement, PictogramElement>();
 		domain.getCommandStack().execute(new RecordingCommand(domain) {
 			@Override
@@ -217,6 +221,12 @@ public class DIImport {
 			elements.put(bpmnElement, newContainer);
 			handleEvents(bpmnElement, newContainer);
 		}
+		
+		ModelUtil.addID(bpmnElement);
+		
+		if (!bpmnElement.eAdapters().contains(liveValidationContentAdapter)) {
+			bpmnElement.eAdapters().add(liveValidationContentAdapter);
+		}
 	}
 
 	private void handleEvents(BaseElement bpmnElement, PictogramElement newContainer) {
@@ -345,6 +355,8 @@ public class DIImport {
 			} while (te == null && target.eContainer() != null);
 		}
 
+		ModelUtil.addID(bpmnElement);
+		
 		if (source != null && target != null) {
 			addSourceAndTargetToEdge(bpmnEdge, source, target);
 		}

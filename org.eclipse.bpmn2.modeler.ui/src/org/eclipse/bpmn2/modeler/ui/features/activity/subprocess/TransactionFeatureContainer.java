@@ -83,7 +83,7 @@ public class TransactionFeatureContainer extends AbstractSubProcessFeatureContai
 
 		public CreateTransactionFeature(IFeatureProvider fp) {
 			super(fp, "Expanded Transaction",
-					"Specialized type of sub-process that will have behavior controlled by transaction protocol");
+					"Specialized description of sub-process that will have behavior controlled by transaction protocol");
 		}
 
 		@Override

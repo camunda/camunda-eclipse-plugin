@@ -34,7 +34,7 @@ import org.eclipse.ui.part.ViewPart;
  * <p>
  * The view uses a label provider to define how model objects should be presented in the view. Each view can present the
  * same model objects using different labels and icons, if needed. Alternatively, a single label provider can be shared
- * between views in order to ensure that objects of the same type are presented in the same way everywhere.
+ * between views in order to ensure that objects of the same description are presented in the same way everywhere.
  * <p>
  */
 

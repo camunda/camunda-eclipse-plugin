@@ -7,6 +7,7 @@ Bundle-Activator: org.eclipse.bpmn2.modeler.core.Activator
 Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.emf.transaction,
  org.eclipse.graphiti,
+ org.eclipse.gef,
  org.eclipse.bpmn2.edit
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
@@ -28,5 +29,12 @@ Export-Package: org.eclipse.bpmn2.modeler.core,
  org.eclipse.bpmn2.modeler.core.features.gateway,
  org.eclipse.bpmn2.modeler.core.features.lane,
  org.eclipse.bpmn2.modeler.core.features.participant,
+ org.eclipse.bpmn2.modeler.core.model,
+ org.eclipse.bpmn2.modeler.core.preferences,
+ org.eclipse.bpmn2.modeler.core.runtime,
  org.eclipse.bpmn2.modeler.core.utils
-Import-Package: org.eclipse.graphiti.ui.features
+Import-Package: org.eclipse.graphiti.ui.features,
+ org.eclipse.jface.viewers,
+ org.eclipse.swt.graphics,
+ org.eclipse.ui,
+ org.eclipse.ui.views.properties.tabbed

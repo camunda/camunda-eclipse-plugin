@@ -13,7 +13,6 @@ Eclipse Public License v1.0 which accompanies this distribution,
 and is available at http://www.eclipse.org/legal/epl-v10.html
 Contributors: 
 Red Hat, Inc. - initial API and implementation
-Author: Ivar Meikas
    </copyright>
 
    <license url="license.html">
@@ -35,7 +34,7 @@ Author: Ivar Meikas
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.bpmn2.modeler.extras"
+         id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5"
          download-size="0"
          install-size="0"
          version="0.0.0"

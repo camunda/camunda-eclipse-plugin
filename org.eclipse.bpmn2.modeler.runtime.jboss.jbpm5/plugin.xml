@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage"
+            genModel="model/jBPM5Extension.genmodel"
+            uri="http://www.drools.com">
+      </package>
+   </extension>
+
+	<extension point="org.eclipse.bpmn2.modeler.runtime">
+		<runtime name="JBoss jBPM5 Business Process Engine" versions="5.1,5.2,5.3"
+			id="org.jboss.runtime.jbpm5"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.JBPM5RuntimeExtension"
+			description="BPMN2 Modeler customizations for the JBoss jBPM5 engine">
+		</runtime>
+
+		<model runtimeId="org.jboss.runtime.jbpm5"
+			uri="http://www.drools.com"
+			resourceFactory="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.util.ModelResourceFactoryImpl">
+		</model>
+
+		<propertyTab afterTab="org.eclipse.bpmn2.modeler.condition.tab"
+			category="BPMN2"
+			id="bpmn2.jbpm.tab"
+			runtimeId="org.jboss.runtime.jbpm5"
+			label="jBPM">
+		</propertyTab>
+
+		<propertySection
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmPropertySection"
+			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+			id="bpmn2.jbpm.tab.section"
+			runtimeId="org.jboss.runtime.jbpm5"
+			tab="bpmn2.jbpm.tab">
+		</propertySection>
+
+		<customTask
+			createFeature="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.LogTaskFeatureContainer"
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.LogTask"
+			runtimeId="org.jboss.runtime.jbpm5"
+			name="Log Task"
+			type="JBPM5CustomTask">
+			<property name="taskName" value="log"/>
+			<property name="displayName" value="Log Task"/>
+			<property name="icon" value="icons/log.png"/>
+			<property name="parameters">
+				<value>
+					<property name="name" value="severity"/>
+					<property name="type" value="Integer"/>
+				</value>
+				<value>
+					<property name="name" value="message"/>
+					<property name="type" value="String"/>
+				</value>
+			</property>
+			<property name="results">
+				<value>
+					<property name="name" value="status"/>
+					<property name="type" value="String"/>
+				</value>
+			</property>
+		</customTask>
+
+		<customTask
+			createFeature="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.EmailTaskFeatureContainer"
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.EmailTask"
+			runtimeId="org.jboss.runtime.jbpm5"
+			name="Email Task"
+			type="JBPM5CustomTask">
+			<property name="parameters">
+				<value>
+					<property name="name" value="from"/>
+					<property name="type" value="String"/>
+				</value>
+				<value>
+					<property name="name" value="to"/>
+					<property name="type" value="String"/>
+				</value>
+				<value>
+					<property name="name" value="subject"/>
+					<property name="type" value="String"/>
+				</value>
+				<value>
+					<property name="name" value="body"/>
+					<property name="type" value="String"/>
+				</value>
+			</property>
+			<property name="taskName" value="send"/>
+			<property name="displayName" value="Email Task"/>
+			<property name="icon" value="icons/email.png"/>
+			<property name="results">
+				<value>
+					<property name="name" value="reply"/>
+					<property name="type" value="String"/>
+				</value>
+			</property>
+		</customTask>
+
+	</extension>
+	
+</plugin>

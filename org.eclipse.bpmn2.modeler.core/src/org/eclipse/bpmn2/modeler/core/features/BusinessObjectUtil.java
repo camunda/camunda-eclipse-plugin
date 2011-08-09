@@ -39,10 +39,19 @@ public class BusinessObjectUtil {
 		return false;
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T extends EObject> T getFirstElementOfType(PictogramElement elem, Class<T> clazz) {
+		return getFirstElementOfType(elem,clazz,false);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends EObject> T getFirstElementOfType(PictogramElement elem, Class<T> clazz, boolean searchParents) {
 		if (elem.getLink() == null) {
-			return null;
+			if (searchParents) {
+				while (elem!=null && elem.getLink()==null && elem.eContainer() instanceof PictogramElement)
+					elem = (PictogramElement)elem.eContainer();
+			}
+			if (elem==null || elem.getLink() == null)
+				return null;
 		}
 		EList<EObject> businessObjs = elem.getLink().getBusinessObjects();
 		for (EObject eObject : businessObjs) {

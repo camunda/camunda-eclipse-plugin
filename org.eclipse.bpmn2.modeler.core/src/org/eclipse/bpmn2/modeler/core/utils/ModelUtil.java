@@ -14,12 +14,17 @@ package org.eclipse.bpmn2.modeler.core.utils;
 
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
+import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 
 public class ModelUtil {
 
@@ -27,11 +32,11 @@ public class ModelUtil {
 	
 	// Map of EMF resource sets to ID mapping tables. The ID mapping tables map a BPMN2 element ID string to the EObject.
 	// The EObject is not used anywhere (yet!) just a placeholder to allow use of a HashMap for fast lookups of the ID string.
-	// The ID strings are composed from the BPMN2 element type name and a sequence number (starting at 1).
+	// The ID strings are composed from the BPMN2 element description name and a sequence number (starting at 1).
 	// When a new ID is requested, generateID() simply increments the sequence number until an ID is found that isn't
 	// already in the table.
 	public static HashMap<Object, Hashtable<String, EObject>> ids = new  HashMap<Object, Hashtable<String, EObject>>();
-	// Map of ID strings and sequential counters for each BPMN2 element type.
+	// Map of ID strings and sequential counters for each BPMN2 element description.
 	public static HashMap<String, Integer> defaultIds = new HashMap<String, Integer>();
 
 	/**
@@ -48,8 +53,8 @@ public class ModelUtil {
 	}
 
 	/**
-	 * Construct the first part of the ID string using the BPMN2 element type name.
-	 * If the object is a DI element, concatenate the BPMN2 element type name.
+	 * Construct the first part of the ID string using the BPMN2 element description name.
+	 * If the object is a DI element, concatenate the BPMN2 element description name.
 	 * 
 	 * @param obj - the BPMN2 object
 	 * @return name string
@@ -57,7 +62,7 @@ public class ModelUtil {
 	public static String getObjectName(EObject obj) {
 		String name;
 		EStructuralFeature feature = ((EObject)obj).eClass().getEStructuralFeature("bpmnElement");
-		if (feature!=null) {
+		if (feature!=null && obj.eGet(feature)!=null) {
 			EObject bpmnElement = (EObject) obj.eGet(feature);
 			name = obj.eClass().getName() + "_" + bpmnElement.eClass().getName();
 		}
@@ -80,7 +85,7 @@ public class ModelUtil {
 	/**
 	 * If an EObject has not yet been added to a Resource (e.g. during construction)
 	 * generate an ID string using a different strategy (basically same ID prefixed with an underscore).
-	 * The "defaultIds" table is used to track the next sequential ID value for a given element type.
+	 * The "defaultIds" table is used to track the next sequential ID value for a given element description.
 	 * 
 	 * @param obj - the BPMN2 object
 	 * @return the ID string
@@ -152,6 +157,8 @@ public class ModelUtil {
 			else {
 				// TODO: what to do here if the BPMN2 element has an "id" attribute which is not set?
 				// should we generate one and set it?
+				// yup
+				setID(obj);
 			}
 		}
 		
@@ -226,5 +233,34 @@ public class ModelUtil {
 	public static boolean hasName(BaseElement element) {
 		EStructuralFeature feature = element.eClass().getEStructuralFeature("name");
 		return feature!=null;
+	}
+	
+	public static String getDisplayName(EObject obj, EAttribute attr) {
+		if (attr!=null) {
+			ItemProviderAdapter itemProviderAdapter = (ItemProviderAdapter) new Bpmn2ItemProviderAdapterFactory()
+					.adapt(obj, ItemProviderAdapter.class);
+			
+			IItemPropertyDescriptor propertyDescriptor = itemProviderAdapter.getPropertyDescriptor(obj,attr);
+			if (propertyDescriptor!=null)
+				return propertyDescriptor.getDisplayName(attr);
+			
+			// There are no property descriptors available for this EObject -
+			// this is probably because the "edit" plugin was not generated for
+			// the EMF model, or is not available.
+			// Use the class name to synthesize a display name
+			obj = attr;
+		}
+		
+		String className = obj.eClass().getName();
+		className = className.replaceAll("Impl$", "");
+		String displayName = "";
+		for (char c : className.toCharArray()) {
+			if ('A'<=c && c<'Z') {
+				if (displayName.length()>0)
+					displayName += " ";
+			}
+			displayName += c;
+		}
+		return displayName;
 	}
 }

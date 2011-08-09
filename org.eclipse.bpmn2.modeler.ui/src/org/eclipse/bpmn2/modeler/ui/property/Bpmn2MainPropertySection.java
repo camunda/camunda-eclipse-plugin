@@ -16,6 +16,7 @@ import java.io.IOException;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.di.impl.BPMNDiagramImpl;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
@@ -47,7 +48,11 @@ public class Bpmn2MainPropertySection extends GFPropertySection implements ITabb
 	public void refresh() {
 		PictogramElement pe = getSelectedPictogramElement();
 		if (pe != null) {
-			final EObject be = BusinessObjectUtil.getFirstElementOfType(pe, BaseElement.class);
+			EObject be = BusinessObjectUtil.getFirstElementOfType(pe, BaseElement.class,true);
+			if (be==null) {
+				// maybe it's the Diagram (editor canvas)?
+				be = BusinessObjectUtil.getFirstElementOfType(pe, BPMNDiagram.class);
+			}
 			final BPMNShape shape = BusinessObjectUtil.getFirstElementOfType(pe, BPMNShape.class);
 			final BPMN2Editor diagramEditor = (BPMN2Editor) getDiagramEditor();
 			updateComposite(be, diagramEditor, shape);

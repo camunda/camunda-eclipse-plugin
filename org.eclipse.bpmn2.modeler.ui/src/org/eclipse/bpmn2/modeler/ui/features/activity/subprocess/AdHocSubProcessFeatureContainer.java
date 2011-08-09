@@ -69,7 +69,7 @@ public class AdHocSubProcessFeatureContainer extends AbstractSubProcessFeatureCo
 
 		public CreateAdHocSubProcessFeature(IFeatureProvider fp) {
 			super(fp, "Expanded Ad-Hoc SubProcess",
-					"A specialized type of Sub-Process that is a group of Activities that have no REQUIRED sequence relationships");
+					"A specialized description of Sub-Process that is a group of Activities that have no REQUIRED sequence relationships");
 		}
 
 		@Override

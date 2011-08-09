@@ -36,7 +36,7 @@ public class BoundaryEventUpdateFeature extends AbstractUpdateFeature {
 		        BOUNDARY_EVENT_CANCEL);
 		BoundaryEvent event = (BoundaryEvent) getBusinessObjectForPictogramElement(context.getPictogramElement());
 		boolean changed = Boolean.parseBoolean(cancelProperty) != event.isCancelActivity();
-		IReason reason = changed ? Reason.createTrueReason("Boundary type changed") : Reason.createFalseReason();
+		IReason reason = changed ? Reason.createTrueReason("Boundary description changed") : Reason.createFalseReason();
 		return reason;
 	}
 
