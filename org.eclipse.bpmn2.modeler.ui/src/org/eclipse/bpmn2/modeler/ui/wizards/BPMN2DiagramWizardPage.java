@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.ui.wizards;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.viewers.ISelection;
@@ -108,12 +109,18 @@ public class BPMN2DiagramWizardPage extends WizardPage {
 	 */
 
 	private void initialize() {
+		String filename = "process.bpmn";
 		if (selection != null && selection.isEmpty() == false && selection instanceof IStructuredSelection) {
 			IStructuredSelection ssel = (IStructuredSelection) selection;
 			if (ssel.size() > 1) {
 				return;
 			}
 			Object obj = ssel.getFirstElement();
+			if (obj instanceof IAdaptable) {
+				Object res = ((IAdaptable)obj).getAdapter(IResource.class);
+				if (res!=null)
+					obj = res;
+			}
 			if (obj instanceof IResource) {
 				IContainer container;
 				if (obj instanceof IContainer) {
@@ -122,9 +129,16 @@ public class BPMN2DiagramWizardPage extends WizardPage {
 					container = ((IResource) obj).getParent();
 				}
 				containerText.setText(container.getFullPath().toString());
+				for (int i=1; ; ++i) {
+					filename = "process_" + i + ".bpmn";
+					IResource file = container.findMember(filename);
+					if (file==null) {
+						break;
+					}
+				}
 			}
 		}
-		fileText.setText("new_file.bpmn");
+		fileText.setText(filename);
 	}
 
 	/**
