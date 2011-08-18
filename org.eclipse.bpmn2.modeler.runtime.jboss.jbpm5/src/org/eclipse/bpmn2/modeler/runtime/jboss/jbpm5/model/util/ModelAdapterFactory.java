@@ -22,6 +22,7 @@ import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowNode;
+import org.eclipse.bpmn2.Import;
 import org.eclipse.bpmn2.InteractionNode;
 import org.eclipse.bpmn2.Task;
 
@@ -91,12 +92,40 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
 	protected ModelSwitch<Adapter> modelSwitch =
 		new ModelSwitch<Adapter>() {
 			@Override
-			public Adapter caseJBPM5CustomTask(JBPM5CustomTask object) {
-				return createJBPM5CustomTaskAdapter();
+			public Adapter caseDocumentRoot(DocumentRoot object) {
+				return createDocumentRootAdapter();
+			}
+			@Override
+			public Adapter caseGlobalType(GlobalType object) {
+				return createGlobalTypeAdapter();
+			}
+			@Override
+			public Adapter caseImportType(ImportType object) {
+				return createImportTypeAdapter();
+			}
+			@Override
+			public Adapter caseOnEntryScriptType(OnEntryScriptType object) {
+				return createOnEntryScriptTypeAdapter();
+			}
+			@Override
+			public Adapter caseOnExitScriptType(OnExitScriptType object) {
+				return createOnExitScriptTypeAdapter();
+			}
+			@Override
+			public Adapter caseTask(Task object) {
+				return createTaskAdapter();
 			}
 			@Override
 			public Adapter caseParameter(Parameter object) {
 				return createParameterAdapter();
+			}
+			@Override
+			public Adapter caseBpmn2_DocumentRoot(org.eclipse.bpmn2.DocumentRoot object) {
+				return createBpmn2_DocumentRootAdapter();
+			}
+			@Override
+			public Adapter caseImport(Import object) {
+				return createImportAdapter();
 			}
 			@Override
 			public Adapter caseBaseElement(BaseElement object) {
@@ -119,8 +148,8 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
 				return createInteractionNodeAdapter();
 			}
 			@Override
-			public Adapter caseTask(Task object) {
-				return createTaskAdapter();
+			public Adapter caseBpmn2_Task(org.eclipse.bpmn2.Task object) {
+				return createBpmn2_TaskAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -143,16 +172,72 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
 
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.JBPM5CustomTask <em>JBPM5 Custom Task</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot <em>Document Root</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.JBPM5CustomTask
+	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot
 	 * @generated
 	 */
-	public Adapter createJBPM5CustomTaskAdapter() {
+	public Adapter createDocumentRootAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.GlobalType <em>Global Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.GlobalType
+	 * @generated
+	 */
+	public Adapter createGlobalTypeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ImportType <em>Import Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ImportType
+	 * @generated
+	 */
+	public Adapter createImportTypeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.OnEntryScriptType <em>On Entry Script Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.OnEntryScriptType
+	 * @generated
+	 */
+	public Adapter createOnEntryScriptTypeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.OnExitScriptType <em>On Exit Script Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.OnExitScriptType
+	 * @generated
+	 */
+	public Adapter createOnExitScriptTypeAdapter() {
 		return null;
 	}
 
@@ -167,6 +252,34 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createParameterAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.DocumentRoot <em>Document Root</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.bpmn2.DocumentRoot
+	 * @generated
+	 */
+	public Adapter createBpmn2_DocumentRootAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.Import <em>Import</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.bpmn2.Import
+	 * @generated
+	 */
+	public Adapter createImportAdapter() {
 		return null;
 	}
 
@@ -248,6 +361,20 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
 	 * @see org.eclipse.bpmn2.Task
+	 * @generated
+	 */
+	public Adapter createBpmn2_TaskAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Task <em>Task</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Task
 	 * @generated
 	 */
 	public Adapter createTaskAdapter() {

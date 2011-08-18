@@ -24,7 +24,7 @@ package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features;
 
 import org.eclipse.bpmn2.modeler.core.features.activity.task.AddTaskFeature;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
-import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.JBPM5CustomTask;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Task;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.modeler.ui.features.activity.task.CustomTaskFeatureContainer;
 import org.eclipse.graphiti.features.IAddFeature;
@@ -42,8 +42,8 @@ public class EmailTaskFeatureContainer extends CustomTaskFeatureContainer {
 	public Object getApplyObject(IContext context) {
 		if (context instanceof IAddContext) {
 			Object obj = ((IAddContext)context).getNewObject();
-			if (obj instanceof JBPM5CustomTask) {
-				JBPM5CustomTask task = (JBPM5CustomTask)obj;
+			if (obj instanceof Task) {
+				Task task = (Task)obj;
 				String taskName = task.getTaskName();
 				String myName = (String)customTaskDescriptor.getProperty("taskName");
 				if (taskName!=null && myName!=null && taskName.equals(myName))

@@ -42,7 +42,7 @@
 			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.LogTask"
 			runtimeId="org.jboss.runtime.jbpm5"
 			name="Log Task"
-			type="JBPM5CustomTask">
+			type="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Task">
 			<property name="taskName" value="log"/>
 			<property name="displayName" value="Log Task"/>
 			<property name="icon" value="icons/log.png"/>
@@ -69,7 +69,7 @@
 			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.EmailTask"
 			runtimeId="org.jboss.runtime.jbpm5"
 			name="Email Task"
-			type="JBPM5CustomTask">
+			type="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Task">
 			<property name="parameters">
 				<value>
 					<property name="name" value="from"/>

@@ -8,12 +8,43 @@
   <foreignModel>jBPM5Extensions.ecore</foreignModel>
   <genPackages prefix="Model" basePackage="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5"
       resource="XML" disposableProviderFactory="true" ecorePackage="jBPM5Extensions.ecore#/">
-    <genClasses ecoreClass="jBPM5Extensions.ecore#//JBPM5CustomTask">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//JBPM5CustomTask/taskName"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//JBPM5CustomTask/displayName"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//JBPM5CustomTask/icon"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference jBPM5Extensions.ecore#//JBPM5CustomTask/parameters"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference jBPM5Extensions.ecore#//JBPM5CustomTask/results"/>
+    <genDataTypes ecoreDataType="jBPM5Extensions.ecore#//PackageNameType"/>
+    <genDataTypes ecoreDataType="jBPM5Extensions.ecore#//PriorityType"/>
+    <genDataTypes ecoreDataType="jBPM5Extensions.ecore#//RuleFlowGroupType"/>
+    <genDataTypes ecoreDataType="jBPM5Extensions.ecore#//TaskNameType"/>
+    <genDataTypes ecoreDataType="jBPM5Extensions.ecore#//VersionType"/>
+    <genClasses ecoreClass="jBPM5Extensions.ecore#//DocumentRoot">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference jBPM5Extensions.ecore#//DocumentRoot/global"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference jBPM5Extensions.ecore#//DocumentRoot/import2"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference jBPM5Extensions.ecore#//DocumentRoot/onEntryScript"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference jBPM5Extensions.ecore#//DocumentRoot/onExitScript"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//DocumentRoot/packageName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//DocumentRoot/priority"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//DocumentRoot/ruleFlowGroup"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//DocumentRoot/taskName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//DocumentRoot/version"/>
+    </genClasses>
+    <genClasses ecoreClass="jBPM5Extensions.ecore#//GlobalType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//GlobalType/identifier"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//GlobalType/type"/>
+    </genClasses>
+    <genClasses ecoreClass="jBPM5Extensions.ecore#//ImportType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//ImportType/name"/>
+    </genClasses>
+    <genClasses ecoreClass="jBPM5Extensions.ecore#//OnEntryScriptType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//OnEntryScriptType/script"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//OnEntryScriptType/scriptFormat"/>
+    </genClasses>
+    <genClasses ecoreClass="jBPM5Extensions.ecore#//OnExitScriptType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//OnExitScriptType/script"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//OnExitScriptType/scriptFormat"/>
+    </genClasses>
+    <genClasses ecoreClass="jBPM5Extensions.ecore#//Task">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//Task/taskName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//Task/displayName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//Task/icon"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference jBPM5Extensions.ecore#//Task/parameters"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference jBPM5Extensions.ecore#//Task/results"/>
     </genClasses>
     <genClasses ecoreClass="jBPM5Extensions.ecore#//Parameter">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jBPM5Extensions.ecore#//Parameter/name"/>
