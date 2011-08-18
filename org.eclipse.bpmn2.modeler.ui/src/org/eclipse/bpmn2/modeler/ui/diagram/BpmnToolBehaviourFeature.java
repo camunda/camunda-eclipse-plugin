@@ -17,23 +17,18 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.bpmn2.modeler.core.Activator;
-import org.eclipse.bpmn2.modeler.core.features.FeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.activity.ActivitySelectionBehavior;
-import org.eclipse.bpmn2.modeler.core.features.activity.task.extension.ICustomTaskEditor;
 import org.eclipse.bpmn2.modeler.core.features.event.EventSelectionBehavior;
 import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablementPreferences;
 import org.eclipse.bpmn2.modeler.core.runtime.CustomTaskDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.ui.FeatureMap;
+import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.features.activity.task.CustomTaskFeatureContainer;
-import org.eclipse.bpmn2.modeler.ui.features.activity.task.TaskFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.choreography.ChoreographySelectionBehavior;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -46,13 +41,20 @@ import org.eclipse.graphiti.features.IFeatureChecker;
 import org.eclipse.graphiti.features.IFeatureCheckerHolder;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IContext;
+import org.eclipse.graphiti.features.context.IPictogramElementContext;
+import org.eclipse.graphiti.features.context.impl.CreateConnectionContext;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
+import org.eclipse.graphiti.mm.pictograms.Anchor;
+import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.palette.IPaletteCompartmentEntry;
 import org.eclipse.graphiti.palette.impl.ConnectionCreationToolEntry;
 import org.eclipse.graphiti.palette.impl.ObjectCreationToolEntry;
 import org.eclipse.graphiti.palette.impl.PaletteCompartmentEntry;
+import org.eclipse.graphiti.services.Graphiti;
+import org.eclipse.graphiti.tb.ContextButtonEntry;
 import org.eclipse.graphiti.tb.DefaultToolBehaviorProvider;
+import org.eclipse.graphiti.tb.IContextButtonPadData;
 
 public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implements IFeatureCheckerHolder {
 
@@ -252,4 +254,77 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 		}
 		return super.getSelectionBorder(pe);
 	}
+
+	@Override
+	public IContextButtonPadData getContextButtonPad(IPictogramElementContext context) {
+		IContextButtonPadData data = super.getContextButtonPad(context);
+		PictogramElement pe = context.getPictogramElement();
+
+		// 1. set the generic context buttons
+		// note, that we do not add 'remove' (just as an example)
+		setGenericContextButtons(data, pe, CONTEXT_BUTTON_DELETE | CONTEXT_BUTTON_UPDATE);
+
+		// 2. set the expand & collapse buttons
+		// TODO: implement this as a resizable container shape within the current editor instead of as a drilldown feature
+//		CustomContext cc = new CustomContext(new PictogramElement[] { pe });
+//		ICustomFeature[] cf = getFeatureProvider().getCustomFeatures(cc);
+//		for (int i = 0; i < cf.length; i++) {
+//			ICustomFeature iCustomFeature = cf[i];
+//			ContextButtonEntry button = new ContextButtonEntry(iCustomFeature, cc);
+//			button.setText(iCustomFeature.getName()); //$NON-NLS-1$
+//			button.setIconId(iCustomFeature.getImageId());
+//			button.setDescription(iCustomFeature.getDescription());
+//			
+//			data.getDomainSpecificContextButtons().add(button);
+//		}
+
+		// 3. add one domain specific context-button, which offers all
+		// available connection-features as drag&drop features...
+
+		// 3.a. create new CreateConnectionContext
+		CreateConnectionContext ccc = new CreateConnectionContext();
+		ccc.setSourcePictogramElement(pe);
+		Anchor anchor = null;
+		if (pe instanceof Anchor) {
+			anchor = (Anchor) pe;
+		} else if (pe instanceof AnchorContainer) {
+			// assume, that our shapes always have chopbox anchors
+			anchor = Graphiti.getPeService().getChopboxAnchor((AnchorContainer) pe);
+		}
+		ccc.setSourceAnchor(anchor);
+
+		// 3.b. create context button and add "Create Connections" feature
+		ICreateConnectionFeature[] features = getFeatureProvider().getCreateConnectionFeatures();
+		ContextButtonEntry button = new ContextButtonEntry(null, context);
+		button.setText("Create Connection"); //$NON-NLS-1$
+		String description = null;
+		ArrayList<String> names = new ArrayList<String>();
+		button.setIconId(ImageProvider.IMG_16_SEQUENCE_FLOW);
+		for (ICreateConnectionFeature feature : features) {
+			if (feature.isAvailable(ccc) && feature.canStartConnection(ccc)) {
+				button.addDragAndDropFeature(feature);
+				names.add(feature.getCreateName());
+			}
+		}
+		
+		// 3.c. build a reasonable description for the context button action 
+		for (int i=0; i<names.size(); ++i) {
+			if (description==null)
+				description = "Click and drag to create a\n";
+			description += names.get(i);
+			if (i+2 == names.size())
+				description += " or ";
+			else if (i+1 < names.size())
+				description += ", ";
+		}
+		button.setDescription(description);
+
+		// 3.d. add context button, but only if it contains at least one feature
+		if (button.getDragAndDropFeatures().size() > 0) {
+			data.getDomainSpecificContextButtons().add(button);
+		}
+
+		return data;
+	}
+
 }
