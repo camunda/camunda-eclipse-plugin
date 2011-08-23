@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.ui.editor;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
@@ -23,17 +24,12 @@ import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
-import org.eclipse.bpmn2.modeler.ui.BPMN2ContentDescriber;
-import org.eclipse.bpmn2.modeler.ui.preferences.Bpmn2PropertyPage;
 import org.eclipse.bpmn2.modeler.ui.util.ErrorUtils;
 import org.eclipse.bpmn2.modeler.ui.wizards.BPMN2DiagramCreator;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -44,13 +40,10 @@ import org.eclipse.emf.common.command.BasicCommandStack;
 import org.eclipse.emf.common.util.BasicDiagnostic;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.transaction.ExceptionHandler;
 import org.eclipse.emf.transaction.RecordingCommand;
-import org.eclipse.emf.transaction.TransactionalCommandStack;
-import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.TransactionalEditingDomain.Lifecycle;
 import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
-import org.eclipse.graphiti.tb.IToolBehaviorProvider;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.jface.action.IStatusLineManager;
@@ -68,7 +61,6 @@ import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.application.WorkbenchAdvisor;
 
 /**
  * 
@@ -227,6 +219,9 @@ public class BPMN2Editor extends DiagramEditor {
 	}
 	
 	private void importDiagram() {
+		// make sure this guy is active, otherwise it's not selectable
+		getDiagramTypeProvider().getDiagram().setActive(true);
+		
 		DIImport di = new DIImport();
 		di.setDiagram(getDiagramTypeProvider().getDiagram());
 		di.setDomain(getEditingDomain());
@@ -235,6 +230,18 @@ public class BPMN2Editor extends DiagramEditor {
 		di.generateFromDI();
 	}
 
+	@Override
+	protected PictogramElement[] getPictogramElementsForSelection() {
+		// filter out invisible elements when setting selection
+		ArrayList<PictogramElement> visibleList = new ArrayList<PictogramElement>();
+		PictogramElement[] pictogramElements = getSelectedPictogramElements();
+		for (PictogramElement pe : pictogramElements) {
+			if (pe.isVisible())
+				visibleList.add(pe);
+		}
+		return visibleList.toArray(new PictogramElement[visibleList.size()]);
+	}
+	
 	private void addWorkbenchListener() {
 		if (workbenchListener==null) {
 			workbenchListener = new IWorkbenchListener() {

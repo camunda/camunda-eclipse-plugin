@@ -47,15 +47,16 @@ import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.ILayoutFeature;
 import org.eclipse.graphiti.features.context.impl.AddConnectionContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.AreaContext;
+import org.eclipse.graphiti.features.context.impl.LayoutContext;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
@@ -129,11 +130,25 @@ public class DIImport {
 
 					relayoutLanes(ownedElement);
 					// FIXME: we don't really want to leave, but we also don't want all diagrams mixed together
-					return;
+					break;
 				}
+				
+				layoutAll();
 			}
 
 		});
+	}
+	
+	private void layoutAll() {
+		for (BaseElement be : elements.keySet()) {
+//			if (be instanceof SubProcess) {
+				PictogramElement pe = elements.get(be);
+				LayoutContext context = new LayoutContext(pe);
+				ILayoutFeature feature = featureProvider.getLayoutFeature(context);
+				if (feature.canLayout(context))
+					feature.layout(context);
+//			}
+		}
 	}
 
 	public void setDiagram(Diagram diagram) {

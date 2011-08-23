@@ -43,6 +43,8 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
 import org.eclipse.graphiti.features.context.impl.CreateConnectionContext;
+import org.eclipse.graphiti.features.context.impl.CustomContext;
+import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
@@ -265,18 +267,17 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 		setGenericContextButtons(data, pe, CONTEXT_BUTTON_DELETE | CONTEXT_BUTTON_UPDATE);
 
 		// 2. set the expand & collapse buttons
-		// TODO: implement this as a resizable container shape within the current editor instead of as a drilldown feature
-//		CustomContext cc = new CustomContext(new PictogramElement[] { pe });
-//		ICustomFeature[] cf = getFeatureProvider().getCustomFeatures(cc);
-//		for (int i = 0; i < cf.length; i++) {
-//			ICustomFeature iCustomFeature = cf[i];
-//			ContextButtonEntry button = new ContextButtonEntry(iCustomFeature, cc);
-//			button.setText(iCustomFeature.getName()); //$NON-NLS-1$
-//			button.setIconId(iCustomFeature.getImageId());
-//			button.setDescription(iCustomFeature.getDescription());
-//			
-//			data.getDomainSpecificContextButtons().add(button);
-//		}
+		CustomContext cc = new CustomContext(new PictogramElement[] { pe });
+		ICustomFeature[] cf = getFeatureProvider().getCustomFeatures(cc);
+		for (int i = 0; i < cf.length; i++) {
+			ICustomFeature iCustomFeature = cf[i];
+			ContextButtonEntry button = new ContextButtonEntry(iCustomFeature, cc);
+			button.setText(iCustomFeature.getName()); //$NON-NLS-1$
+			button.setIconId(iCustomFeature.getImageId());
+			button.setDescription(iCustomFeature.getDescription());
+			
+			data.getDomainSpecificContextButtons().add(button);
+		}
 
 		// 3. add one domain specific context-button, which offers all
 		// available connection-features as drag&drop features...

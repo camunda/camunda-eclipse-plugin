@@ -15,6 +15,8 @@ package org.eclipse.bpmn2.modeler.ui.diagram;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.bpmn2.SubProcess;
+import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.features.ConnectionFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.DefaultBpmnDeleteFeature;
 import org.eclipse.bpmn2.modeler.core.features.FeatureContainer;
@@ -24,6 +26,8 @@ import org.eclipse.bpmn2.modeler.core.features.bendpoint.MoveBendpointFeature;
 import org.eclipse.bpmn2.modeler.core.features.bendpoint.RemoveBendpointFeature;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.AdHocSubProcessFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.CallActivityFeatureContainer;
+import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.SubProcessCollapseFeature;
+import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.SubProcessExpandFeature;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.SubProcessFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.TransactionFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.activity.task.BusinessRuleTaskFeatureContainer;
@@ -92,6 +96,7 @@ import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IAddBendpointContext;
 import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.context.IDeleteContext;
 import org.eclipse.graphiti.features.context.IDirectEditingContext;
 import org.eclipse.graphiti.features.context.ILayoutContext;
@@ -101,8 +106,8 @@ import org.eclipse.graphiti.features.context.IReconnectionContext;
 import org.eclipse.graphiti.features.context.IRemoveBendpointContext;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.features.context.IUpdateContext;
+import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
-import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.ui.features.DefaultFeatureProvider;
 
 /**
@@ -422,4 +427,17 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 		return new DefaultBpmnDeleteFeature(this);
 	}
 
+	@Override
+	public ICustomFeature[] getCustomFeatures(ICustomContext context) {
+		PictogramElement[] elements = context.getPictogramElements();
+		for (PictogramElement pe : elements) {
+			if (BusinessObjectUtil.containsElementOfType(pe, SubProcess.class)) {
+				return new ICustomFeature[] {
+						new SubProcessExpandFeature(this),
+						new SubProcessCollapseFeature(this)
+				};
+			}
+		}
+		return new ICustomFeature[] {};
+	}
 }

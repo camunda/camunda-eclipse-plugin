@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.utils;
 
+import static org.eclipse.bpmn2.modeler.core.features.activity.AbstractAddActivityFeature.ACTIVITY_DECORATOR;
+
 import java.awt.Dimension;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,6 +40,9 @@ import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
+import org.eclipse.graphiti.mm.pictograms.Anchor;
+import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
+import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -77,6 +82,41 @@ public class FeatureSupport {
 		return lane.getChildLaneSet() == null || lane.getChildLaneSet().getLanes().isEmpty();
 	}
 
+	public static List<PictogramElement> getContainerChildren(ContainerShape container) {
+		List<PictogramElement> list = new ArrayList<PictogramElement>();
+		for (PictogramElement pe : container.getChildren()) {
+			String value = Graphiti.getPeService().getPropertyValue(pe, ACTIVITY_DECORATOR);
+			if (value!=null && "true".equals(value))
+				continue;
+			list.add(pe);
+		}
+		return list;
+	}
+
+	public static List<PictogramElement> getContainerDecorators(ContainerShape container) {
+		List<PictogramElement> list = new ArrayList<PictogramElement>();
+		for (PictogramElement pe : container.getChildren()) {
+			String value = Graphiti.getPeService().getPropertyValue(pe, ACTIVITY_DECORATOR);
+			if (value!=null && "true".equals(value))
+				list.add(pe);
+		}
+		return list;
+	}
+	
+	public static void setContainerChildrenVisible(ContainerShape container, boolean visible) {
+		for (PictogramElement pe : getContainerChildren(container)) {
+			pe.setVisible(visible);
+			if (pe instanceof AnchorContainer) {
+				AnchorContainer ac = (AnchorContainer)pe;
+				for (Anchor a : ac.getAnchors()) {
+					for (Connection c : a.getOutgoingConnections()) {
+						c.setVisible(visible);
+					}
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Use ModelHandler.getInstance(diagram) instead
 	 * 

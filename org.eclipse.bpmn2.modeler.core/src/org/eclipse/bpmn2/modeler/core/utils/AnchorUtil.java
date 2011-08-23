@@ -33,6 +33,7 @@ import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.mm.pictograms.impl.FreeFormConnectionImpl;
 import org.eclipse.graphiti.services.Graphiti;
@@ -336,11 +337,21 @@ public class AnchorUtil {
 	}
 
 	private static void updateEdge(BPMNEdge edge, Diagram diagram) {
-		ContainerShape source = (ContainerShape) Graphiti.getLinkService()
-				.getPictogramElements(diagram, edge.getSourceElement()).get(0);
-		ContainerShape target = (ContainerShape) Graphiti.getLinkService()
-				.getPictogramElements(diagram, edge.getTargetElement()).get(0);
-		Connection connection = (Connection) Graphiti.getLinkService().getPictogramElements(diagram, edge).get(0);
+		List<PictogramElement> elements;
+		elements =  Graphiti.getLinkService().getPictogramElements(diagram, edge.getSourceElement());
+		if (elements.size()==0)
+			return;
+		ContainerShape source = (ContainerShape) elements.get(0);
+		
+		elements =  Graphiti.getLinkService().getPictogramElements(diagram, edge.getTargetElement());
+		if (elements.size()==0)
+			return;
+		ContainerShape target = (ContainerShape) elements.get(0);
+		
+		elements = Graphiti.getLinkService().getPictogramElements(diagram, edge);
+		if (elements.size()==0)
+			return;
+		Connection connection = (Connection) elements.get(0);
 		Tuple<FixPointAnchor, FixPointAnchor> anchors = getSourceAndTargetBoundaryAnchors(source, target, connection);
 
 		ILocation loc = peService.getLocationRelativeToDiagram(anchors.getFirst());

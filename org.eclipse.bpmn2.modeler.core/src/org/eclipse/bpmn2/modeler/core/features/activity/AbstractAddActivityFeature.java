@@ -35,6 +35,8 @@ import org.eclipse.graphiti.services.IPeService;
 
 public abstract class AbstractAddActivityFeature extends AbstractBpmnAddFeature {
 
+	public static final String ACTIVITY_DECORATOR = "activity-decorator";
+
 	public AbstractAddActivityFeature(IFeatureProvider fp) {
 		super(fp);
 	}
@@ -44,7 +46,9 @@ public abstract class AbstractAddActivityFeature extends AbstractBpmnAddFeature 
 		boolean intoDiagram = context.getTargetContainer().equals(getDiagram());
 		boolean intoLane = FeatureSupport.isTargetLane(context) && FeatureSupport.isTargetLaneOnTop(context);
 		boolean intoParticipant = FeatureSupport.isTargetParticipant(context);
-		return intoDiagram || intoLane || intoParticipant;
+		boolean intoSubProcess = FeatureSupport.isTargetSubProcess(context);
+				
+		return intoDiagram || intoLane || intoParticipant || intoSubProcess;
 	}
 
 	@Override
@@ -86,6 +90,11 @@ public abstract class AbstractAddActivityFeature extends AbstractBpmnAddFeature 
 		Graphiti.getPeService().setPropertyValue(containerShape, IS_COMPENSATE_PROPERTY, Boolean.toString(false));
 		Graphiti.getPeService().setPropertyValue(containerShape, IS_LOOP_OR_MULTI_INSTANCE,
 		        LoopCharacteristicType.NULL.getName());
+		// set a property on the decorators so we can distinguish them from the real children (i.e. tasks, etc.)
+		for (PictogramElement pe : containerShape.getChildren()) {
+			Graphiti.getPeService().setPropertyValue(pe, ACTIVITY_DECORATOR, "true");
+		}
+		
 		updatePictogramElement(containerShape);
 		layoutPictogramElement(containerShape);
 

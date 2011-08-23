@@ -19,6 +19,7 @@ import org.eclipse.bpmn2.modeler.ui.features.activity.AbstractActivityFeatureCon
 import org.eclipse.graphiti.features.IDirectEditingFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.ILayoutFeature;
+import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.context.IUpdateContext;
 
 public abstract class AbstractSubProcessFeatureContainer extends AbstractActivityFeatureContainer {
@@ -45,5 +46,10 @@ public abstract class AbstractSubProcessFeatureContainer extends AbstractActivit
 		};
 		multiUpdate.addUpdateFeature(nameUpdateFeature);
 		return multiUpdate;
+	}
+
+	@Override
+	public IResizeShapeFeature getResizeFeature(IFeatureProvider fp) {
+		return new SubProcessResizeFeature(fp);
 	}
 }

@@ -13,7 +13,9 @@
 package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
 import org.eclipse.bpmn2.SubProcess;
+import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.subprocess.AbstractCreateSubProcess;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
@@ -55,6 +57,20 @@ public class SubProcessFeatureContainer extends AbstractSubProcessFeatureContain
 			super(fp, "Expanded Sub-Process", "Inner activity");
 		}
 
+		@Override
+		public Object[] create(ICreateContext context) {
+			Object[] elems = super.create(context);
+			try {
+				BPMNShape shape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(
+						getDiagram(), (SubProcess)elems[0]);
+				shape.setIsExpanded(true);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return elems;
+		}
+		
 		@Override
 		protected SubProcess createFlowElement(ICreateContext context) {
 			SubProcess subProcess = ModelHandler.FACTORY.createSubProcess();
