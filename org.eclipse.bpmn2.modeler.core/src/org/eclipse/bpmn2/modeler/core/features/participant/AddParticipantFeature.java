@@ -48,7 +48,7 @@ public class AddParticipantFeature extends AbstractBpmnAddFeature {
 
 	@Override
 	public PictogramElement add(IAddContext context) {
-		Participant p = (Participant) context.getNewObject();
+		Participant participant = (Participant) context.getNewObject();
 		IGaService gaService = Graphiti.getGaService();
 		IPeService peService = Graphiti.getPeService();
 
@@ -68,16 +68,16 @@ public class AddParticipantFeature extends AbstractBpmnAddFeature {
 		line.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 
 		Shape textShape = peCreateService.createShape(containerShape, false);
-		Text text = gaService.createText(textShape, p.getName());
+		Text text = gaService.createText(textShape, participant.getName());
 		text.setStyle(StyleUtil.getStyleForText(getDiagram()));
 		text.setVerticalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setAngle(-90);
 		gaService.setLocationAndSize(text, 0, 0, 15, height);
-		peService.setPropertyValue(containerShape, MULTIPLICITY, Boolean.toString(false));
+		peService.setPropertyValue(containerShape, MULTIPLICITY, Boolean.toString(participant.getParticipantMultiplicity()!=null));
 
-		createDIShape(containerShape, p);
-		link(textShape, p);
+		createDIShape(containerShape, participant);
+		link(textShape, participant);
 		peCreateService.createChopboxAnchor(containerShape);
 		AnchorUtil.addFixedPointAnchors(containerShape, rect);
 		updatePictogramElement(containerShape);

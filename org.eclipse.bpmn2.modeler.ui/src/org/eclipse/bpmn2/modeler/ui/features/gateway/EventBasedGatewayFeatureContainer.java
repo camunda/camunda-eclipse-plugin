@@ -16,6 +16,7 @@ import org.eclipse.bpmn2.EventBasedGateway;
 import org.eclipse.bpmn2.EventBasedGatewayType;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.gateway.AbstractCreateGatewayFeature;
 import org.eclipse.bpmn2.modeler.core.features.gateway.DefaultAddGatewayFeature;
@@ -68,7 +69,8 @@ public class EventBasedGatewayFeatureContainer extends AbstractGatewayFeatureCon
 			public PictogramElement add(IAddContext context) {
 				PictogramElement element = super.add(context);
 				IPeService service = Graphiti.getPeService();
-				service.setPropertyValue(element, INSTANTIATE_PROPERTY, "false");
+				EventBasedGateway gateway = (EventBasedGateway)context.getNewObject();
+				service.setPropertyValue(element, INSTANTIATE_PROPERTY, Boolean.toString(gateway.isInstantiate()));
 				service.setPropertyValue(element, EVENT_GATEWAY_TYPE_PROPERTY,
 						EventBasedGatewayType.EXCLUSIVE.getName());
 				return element;

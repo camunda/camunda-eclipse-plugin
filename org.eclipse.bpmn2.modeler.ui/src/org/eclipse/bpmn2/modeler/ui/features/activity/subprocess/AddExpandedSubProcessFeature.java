@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 import static org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.SubProcessFeatureContainer.TRIGGERED_BY_EVENT;
 
 import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.features.activity.AbstractAddActivityFeature;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
@@ -37,10 +38,11 @@ public class AddExpandedSubProcessFeature extends AbstractAddActivityFeature {
 	@Override
 	protected void hook(Activity activity, ContainerShape container, IAddContext context, int width, int height) {
 		super.hook(activity, container, context, width, height);
-		Graphiti.getPeService().setPropertyValue(container, TRIGGERED_BY_EVENT, "false");
-
 		IPeService peService = Graphiti.getPeService();
 		IGaService gaService = Graphiti.getGaService();
+
+		SubProcess subprocess = (SubProcess) context.getNewObject();
+		peService.setPropertyValue(container, TRIGGERED_BY_EVENT, Boolean.toString(subprocess.isTriggeredByEvent()));
 
 		Shape textShape = peService.createShape(container, false);
 		Text text = gaService.createDefaultText(getDiagram(), textShape, activity.getName());

@@ -33,6 +33,8 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 
+import static org.eclipse.bpmn2.modeler.core.features.activity.AbstractAddActivityFeature.IS_ACTIVITY;
+
 public class ActivityLayoutFeature extends DefaultBpmnLayoutFeature {
 
 	public ActivityLayoutFeature(IFeatureProvider fp) {
@@ -68,7 +70,7 @@ public class ActivityLayoutFeature extends DefaultBpmnLayoutFeature {
 				continue;
 			}
 
-			Shape rectShape = FeatureSupport.getShape(containerShape, "activity", Boolean.toString(true));
+			Shape rectShape = FeatureSupport.getShape(containerShape, IS_ACTIVITY, Boolean.toString(true));
 			gaService.setSize(rectShape.getGraphicsAlgorithm(), newWidth, newHeight);
 			layoutInRectangle((RoundedRectangle) rectShape.getGraphicsAlgorithm());
 

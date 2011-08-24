@@ -19,6 +19,8 @@ import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.mm.algorithms.Polygon;
@@ -82,7 +84,12 @@ public abstract class AddDataFeature<T extends BaseElement> extends AbstractBpmn
 			createCollectionShape(container, new int[] { whalf, height - 8, whalf, height });
 			createCollectionShape(container, new int[] { whalf + 2, height - 8, whalf + 2, height });
 
-			Graphiti.getPeService().setPropertyValue(container, Properties.COLLECTION_PROPERTY, Boolean.toString(false));
+			String value = "false";
+			EStructuralFeature feature = ((EObject)t).eClass().getEStructuralFeature("isCollection");
+			if (feature!=null && t.eGet(feature)!=null)
+				value = ((Boolean)t.eGet(feature)).toString();
+
+			Graphiti.getPeService().setPropertyValue(container, Properties.COLLECTION_PROPERTY, value);
 		}
 		
 		Shape textShape = peService.createShape(container, false);

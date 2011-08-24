@@ -65,7 +65,7 @@ public class ChoreographyUpdateNameFeature extends AbstractUpdateFeature {
 		while (iterator.hasNext()) {
 			Shape shape = (Shape) iterator.next();
 			String property = peService.getPropertyValue(shape, ChoreographyProperties.CHOREOGRAPHY_NAME);
-			if (property != null && new Boolean(property)) {
+			if (property != null && Boolean.parseBoolean(property)) {
 				return (Text) shape.getGraphicsAlgorithm();
 			}
 		}

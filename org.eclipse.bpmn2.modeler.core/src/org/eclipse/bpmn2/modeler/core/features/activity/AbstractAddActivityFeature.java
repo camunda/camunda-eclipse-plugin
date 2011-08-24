@@ -36,6 +36,7 @@ import org.eclipse.graphiti.services.IPeService;
 public abstract class AbstractAddActivityFeature extends AbstractBpmnAddFeature {
 
 	public static final String ACTIVITY_DECORATOR = "activity-decorator";
+	public static final String IS_ACTIVITY = "activity";
 
 	public AbstractAddActivityFeature(IFeatureProvider fp) {
 		super(fp);
@@ -71,7 +72,7 @@ public abstract class AbstractAddActivityFeature extends AbstractBpmnAddFeature 
 		gaService.setLocationAndSize(rect, 0, 0, width, height);
 		link(rectShape, activity);
 		decorateActivityRectangle(rect);
-		peService.setPropertyValue(rectShape, "activity", Boolean.toString(true));
+		peService.setPropertyValue(rectShape, IS_ACTIVITY, Boolean.toString(true));
 
 		ContainerShape markerContainer = peService.createContainerShape(containerShape, false);
 		Rectangle markerInvisibleRect = gaService.createInvisibleRectangle(markerContainer);
