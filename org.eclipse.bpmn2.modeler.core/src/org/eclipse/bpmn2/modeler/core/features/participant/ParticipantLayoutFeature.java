@@ -18,6 +18,7 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.features.DefaultBpmnLayoutFeature;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -32,7 +33,7 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 
-public class ParticipantLayoutFeature extends AbstractLayoutFeature {
+public class ParticipantLayoutFeature extends DefaultBpmnLayoutFeature {
 
 	public ParticipantLayoutFeature(IFeatureProvider fp) {
 		super(fp);
@@ -79,6 +80,6 @@ public class ParticipantLayoutFeature extends AbstractLayoutFeature {
 		}
 
 		DIUtils.updateDIShape(containerShape);
-		return true;
+		return super.layout(context);
 	}
 }

@@ -15,12 +15,12 @@ package org.eclipse.bpmn2.modeler.ui.features;
 import static org.eclipse.bpmn2.modeler.core.utils.FeatureSupport.getShape;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.modeler.core.features.DefaultBpmnLayoutFeature;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ILayoutContext;
-import org.eclipse.graphiti.features.impl.AbstractLayoutFeature;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -30,7 +30,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.ui.services.GraphitiUi;
 
-public abstract class LayoutBaseElementTextFeature extends AbstractLayoutFeature {
+public abstract class LayoutBaseElementTextFeature extends DefaultBpmnLayoutFeature {
 
 	private static IGaService gaService = Graphiti.getGaService();
 
@@ -65,8 +65,8 @@ public abstract class LayoutBaseElementTextFeature extends AbstractLayoutFeature
 		}
 
 		gaService.setSize(textGa, size.getWidth() + 3, textGa.getHeight());
-
-		return true;
+		
+		return super.layout(context);
 	}
 
 	public abstract int getMinimumWidth();

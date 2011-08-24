@@ -17,26 +17,23 @@ import java.util.Iterator;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.SubProcess;
-import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
+import org.eclipse.bpmn2.modeler.core.features.DefaultBpmnLayoutFeature;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractBoundaryEventOperation;
-import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ILayoutContext;
-import org.eclipse.graphiti.features.impl.AbstractLayoutFeature;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 
-public class ActivityLayoutFeature extends AbstractLayoutFeature {
+public class ActivityLayoutFeature extends DefaultBpmnLayoutFeature {
 
 	public ActivityLayoutFeature(IFeatureProvider fp) {
 		super(fp);
@@ -99,40 +96,6 @@ public class ActivityLayoutFeature extends AbstractLayoutFeature {
 			}
 		}
 		return true;
-	}
-	
-	public static Diagram getDiagram(ContainerShape container) {
-		while ( !(container instanceof Diagram) ) {
-			container = container.getContainer();
-		}
-		return (Diagram)container;
-	}
-	
-	public void layoutConnections(Shape shape) {
-		Diagram diagram = getDiagram();
-		if (diagram!=null) {
-			if (shape.getLink()!=null) {
-				for (Object object : shape.getLink().getBusinessObjects()) {
-					if (object instanceof BPMNShape) {
-						BPMNShape s = (BPMNShape) object;
-						AnchorUtil.reConnect(s, diagram);
-					}
-				}
-			}
-			
-			if (shape instanceof ContainerShape) {
-				for (PictogramElement pe : FeatureSupport.getContainerChildren((ContainerShape)shape)) {
-					if (pe.getLink()!=null) {
-						for (Object object : pe.getLink().getBusinessObjects()) {
-							if (object instanceof BPMNShape) {
-								BPMNShape s = (BPMNShape) object;
-								AnchorUtil.reConnect(s, diagram);
-							}
-						}
-					}
-				}
-			}
-		}
 	}
 
 	protected int getMarkerContainerOffset() {

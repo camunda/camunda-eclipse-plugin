@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.core.features.choreography;
 import static org.eclipse.bpmn2.modeler.core.features.choreography.ChoreographyProperties.TEXT_H;
 
 import org.eclipse.bpmn2.ChoreographyActivity;
+import org.eclipse.bpmn2.modeler.core.features.DefaultBpmnLayoutFeature;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ILayoutContext;
@@ -27,7 +28,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class ChoreographyLayoutFeature extends AbstractLayoutFeature {
+public class ChoreographyLayoutFeature extends DefaultBpmnLayoutFeature {
 
 	protected IPeService peService = Graphiti.getPeService();
 	protected IGaService gaService = Graphiti.getGaService();
@@ -76,7 +77,7 @@ public class ChoreographyLayoutFeature extends AbstractLayoutFeature {
 			// }
 		}
 
-		return true;
+		return super.layout(context);
 	}
 
 	protected void setTextLocation(ContainerShape choreographyContainer, Text text, int w, int h) {
