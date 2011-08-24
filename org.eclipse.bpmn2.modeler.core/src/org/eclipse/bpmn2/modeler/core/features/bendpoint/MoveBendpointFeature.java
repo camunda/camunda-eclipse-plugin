@@ -21,6 +21,7 @@ import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.dd.dc.Point;
+import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IMoveBendpointContext;
 import org.eclipse.graphiti.features.impl.DefaultMoveBendpointFeature;
@@ -45,9 +46,9 @@ public class MoveBendpointFeature extends DefaultMoveBendpointFeature {
 			p.setX(context.getX());
 			p.setY(context.getY());
 			if (index == 1) {
-				AnchorUtil.reConnect((BPMNShape) edge.getSourceElement(), getDiagram());
+				AnchorUtil.reConnect((DiagramElement) edge.getSourceElement(), getDiagram());
 			} else if (index == connection.getBendpoints().size()) {
-				AnchorUtil.reConnect((BPMNShape) edge.getTargetElement(), getDiagram());
+				AnchorUtil.reConnect((DiagramElement) edge.getTargetElement(), getDiagram());
 			}
 		} catch (Exception e) {
 			Activator.logError(e);

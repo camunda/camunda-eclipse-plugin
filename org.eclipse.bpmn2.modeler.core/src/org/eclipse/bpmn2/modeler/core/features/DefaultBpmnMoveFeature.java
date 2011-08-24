@@ -12,9 +12,11 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features;
 
+import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
+import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.features.impl.DefaultMoveShapeFeature;
@@ -31,8 +33,8 @@ public class DefaultBpmnMoveFeature extends DefaultMoveShapeFeature {
 
 		Object[] node = getAllBusinessObjectsForPictogramElement(context.getShape());
 		for (Object object : node) {
-			if (object instanceof BPMNShape) {
-				AnchorUtil.reConnect((BPMNShape) object, getDiagram());
+			if (object instanceof BPMNShape || object instanceof BPMNEdge) {
+				AnchorUtil.reConnect((DiagramElement) object, getDiagram());
 			}
 		}
 	}

@@ -22,6 +22,7 @@ import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.dd.dc.DcFactory;
 import org.eclipse.dd.dc.Point;
+import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddBendpointContext;
 import org.eclipse.graphiti.features.impl.DefaultAddBendpointFeature;
@@ -49,9 +50,9 @@ public class AddBendpointFeature extends DefaultAddBendpointFeature {
 			int index = context.getBendpointIndex() + 1;
 			edge.getWaypoint().add(index, p);
 			if (index == 1) {
-				AnchorUtil.reConnect((BPMNShape) edge.getSourceElement(), getDiagram());
+				AnchorUtil.reConnect((DiagramElement) edge.getSourceElement(), getDiagram());
 			} else if (index == connection.getBendpoints().size()) {
-				AnchorUtil.reConnect((BPMNShape) edge.getTargetElement(), getDiagram());
+				AnchorUtil.reConnect((DiagramElement) edge.getTargetElement(), getDiagram());
 			}
 
 		} catch (Exception e) {

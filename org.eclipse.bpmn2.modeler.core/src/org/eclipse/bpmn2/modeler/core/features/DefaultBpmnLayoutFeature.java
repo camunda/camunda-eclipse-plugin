@@ -4,6 +4,7 @@ import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
+import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ILayoutContext;
 import org.eclipse.graphiti.features.impl.AbstractLayoutFeature;
@@ -39,11 +40,8 @@ public class DefaultBpmnLayoutFeature extends AbstractLayoutFeature {
 		if (diagram!=null) {
 			if (shape.getLink()!=null) {
 				for (Object object : shape.getLink().getBusinessObjects()) {
-					if (object instanceof BPMNShape) {
-						AnchorUtil.reConnect((BPMNShape) object, diagram);
-					}
-					else if (object instanceof BPMNEdge) {
-						AnchorUtil.reConnect((BPMNEdge) object, diagram);
+					if (object instanceof BPMNShape || object instanceof BPMNEdge) {
+						AnchorUtil.reConnect((DiagramElement) object, diagram);
 					}
 				}
 			}
@@ -52,11 +50,8 @@ public class DefaultBpmnLayoutFeature extends AbstractLayoutFeature {
 				for (PictogramElement pe : FeatureSupport.getContainerChildren((ContainerShape)shape)) {
 					if (pe.getLink()!=null) {
 						for (Object object : pe.getLink().getBusinessObjects()) {
-							if (object instanceof BPMNShape) {
-								AnchorUtil.reConnect((BPMNShape) object, diagram);
-							}
-							else if (object instanceof BPMNEdge) {
-								AnchorUtil.reConnect((BPMNEdge) object, diagram);
+							if (object instanceof BPMNShape || object instanceof BPMNEdge) {
+								AnchorUtil.reConnect((DiagramElement) object, diagram);
 							}
 						}
 					}

@@ -318,34 +318,15 @@ public class AnchorUtil {
 		return top.anchor;
 	}
 
-	public static void reConnect(BPMNShape shape, Diagram diagram) {
+	public static void reConnect(DiagramElement element, Diagram diagram) {
 		try {
 			ModelHandler handler = ModelHandler.getInstance(diagram);
 			for (BPMNEdge bpmnEdge : handler.getAll(BPMNEdge.class)) {
 				DiagramElement sourceElement = bpmnEdge.getSourceElement();
 				DiagramElement targetElement = bpmnEdge.getTargetElement();
 				if (sourceElement != null && targetElement != null) {
-					boolean sourceMatches = sourceElement.getId().equals(shape.getId());
-					boolean targetMatches = targetElement.getId().equals(shape.getId());
-					if (sourceMatches || targetMatches) {
-						updateEdge(bpmnEdge, diagram);
-					}
-				}
-			}
-		} catch (Exception e) {
-			Activator.logError(e);
-		}
-	}
-
-	public static void reConnect(BPMNEdge edge, Diagram diagram) {
-		try {
-			ModelHandler handler = ModelHandler.getInstance(diagram);
-			for (BPMNEdge bpmnEdge : handler.getAll(BPMNEdge.class)) {
-				DiagramElement sourceElement = bpmnEdge.getSourceElement();
-				DiagramElement targetElement = bpmnEdge.getTargetElement();
-				if (sourceElement != null && targetElement != null) {
-					boolean sourceMatches = sourceElement.getId().equals(edge.getId());
-					boolean targetMatches = targetElement.getId().equals(edge.getId());
+					boolean sourceMatches = sourceElement.getId().equals(element.getId());
+					boolean targetMatches = targetElement.getId().equals(element.getId());
 					if (sourceMatches || targetMatches) {
 						updateEdge(bpmnEdge, diagram);
 					}
