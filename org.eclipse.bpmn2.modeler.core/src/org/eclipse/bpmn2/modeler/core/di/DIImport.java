@@ -145,6 +145,9 @@ public class DIImport {
 				PictogramElement pe = elements.get(be);
 				LayoutContext context = new LayoutContext(pe);
 				ILayoutFeature feature = featureProvider.getLayoutFeature(context);
+				if (feature==null) {
+					continue;
+				}
 				if (feature.canLayout(context))
 					feature.layout(context);
 //			}
@@ -378,7 +381,9 @@ public class DIImport {
 
 		if (se != null && te != null) {
 
-			createConnectionAndSetBendpoints(bpmnEdge, se, te);
+			Connection conn = createConnectionAndSetBendpoints(bpmnEdge, se, te);
+			elements.put(bpmnElement, conn);
+			
 		} else {
 			Activator.logStatus(new Status(IStatus.WARNING, Activator.PLUGIN_ID,
 					"Couldn't find target element, probably not supported! Source: " + source + " Target: " + target
@@ -444,7 +449,11 @@ public class DIImport {
 		org.eclipse.graphiti.mm.algorithms.styles.Point p = gaService.createPoint((int) point.getX(),
 				(int) point.getY());
 
-		ILocation loc = Graphiti.getPeLayoutService().getLocationRelativeToDiagram((Shape) elem);
+		ILocation loc;
+		if (elem instanceof Connection)
+			loc = Graphiti.getPeLayoutService().getConnectionMidpoint((Connection)elem, 0.5);
+		else
+			loc = Graphiti.getPeLayoutService().getLocationRelativeToDiagram((Shape) elem);
 
 		int x = p.getX() - loc.getX();
 		int y = p.getY() - loc.getY();

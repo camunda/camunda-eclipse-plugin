@@ -29,6 +29,7 @@ import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
+import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -81,11 +82,11 @@ public class AnchorUtil {
 		public ILocation location;
 	}
 
-	public static FixPointAnchor createAnchor(Shape s, AnchorLocation loc, int x, int y) {
+	public static FixPointAnchor createAnchor(AnchorContainer ac, AnchorLocation loc, int x, int y) {
 		IGaService gaService = Graphiti.getGaService();
 		IPeService peService = Graphiti.getPeService();
 
-		FixPointAnchor anchor = peService.createFixPointAnchor(s);
+		FixPointAnchor anchor = peService.createFixPointAnchor(ac);
 		peService.setPropertyValue(anchor, BOUNDARY_FIXPOINT_ANCHOR, loc.getKey());
 		anchor.setLocation(gaService.createPoint(x, y));
 		gaService.createInvisibleRectangle(anchor);
@@ -93,9 +94,9 @@ public class AnchorUtil {
 		return anchor;
 	}
 
-	public static Map<AnchorLocation, BoundaryAnchor> getBoundaryAnchors(Shape s) {
+	public static Map<AnchorLocation, BoundaryAnchor> getBoundaryAnchors(AnchorContainer ac) {
 		Map<AnchorLocation, BoundaryAnchor> map = new HashMap<AnchorLocation, AnchorUtil.BoundaryAnchor>(4);
-		Iterator<Anchor> iterator = s.getAnchors().iterator();
+		Iterator<Anchor> iterator = ac.getAnchors().iterator();
 		while (iterator.hasNext()) {
 			Anchor anchor = iterator.next();
 			String property = Graphiti.getPeService().getPropertyValue(anchor, BOUNDARY_FIXPOINT_ANCHOR);
@@ -117,7 +118,7 @@ public class AnchorUtil {
 	}
 
 	@SuppressWarnings("restriction")
-	public static Tuple<FixPointAnchor, FixPointAnchor> getSourceAndTargetBoundaryAnchors(Shape source, Shape target,
+	public static Tuple<FixPointAnchor, FixPointAnchor> getSourceAndTargetBoundaryAnchors(AnchorContainer source, AnchorContainer target,
 			Connection connection) {
 		Map<AnchorLocation, BoundaryAnchor> sourceBoundaryAnchors = getBoundaryAnchors(source);
 		Map<AnchorLocation, BoundaryAnchor> targetBoundaryAnchors = getBoundaryAnchors(target);
@@ -336,17 +337,36 @@ public class AnchorUtil {
 		}
 	}
 
+	public static void reConnect(BPMNEdge edge, Diagram diagram) {
+		try {
+			ModelHandler handler = ModelHandler.getInstance(diagram);
+			for (BPMNEdge bpmnEdge : handler.getAll(BPMNEdge.class)) {
+				DiagramElement sourceElement = bpmnEdge.getSourceElement();
+				DiagramElement targetElement = bpmnEdge.getTargetElement();
+				if (sourceElement != null && targetElement != null) {
+					boolean sourceMatches = sourceElement.getId().equals(edge.getId());
+					boolean targetMatches = targetElement.getId().equals(edge.getId());
+					if (sourceMatches || targetMatches) {
+						updateEdge(bpmnEdge, diagram);
+					}
+				}
+			}
+		} catch (Exception e) {
+			Activator.logError(e);
+		}
+	}
+
 	private static void updateEdge(BPMNEdge edge, Diagram diagram) {
 		List<PictogramElement> elements;
 		elements =  Graphiti.getLinkService().getPictogramElements(diagram, edge.getSourceElement());
-		if (elements.size()==0)
+		if (elements.size()==0 || !(elements.get(0) instanceof AnchorContainer))
 			return;
-		ContainerShape source = (ContainerShape) elements.get(0);
+		AnchorContainer source = (AnchorContainer) elements.get(0);
 		
 		elements =  Graphiti.getLinkService().getPictogramElements(diagram, edge.getTargetElement());
-		if (elements.size()==0)
+		if (elements.size()==0 || !(elements.get(0) instanceof AnchorContainer))
 			return;
-		ContainerShape target = (ContainerShape) elements.get(0);
+		AnchorContainer target = (AnchorContainer) elements.get(0);
 		
 		elements = Graphiti.getLinkService().getPictogramElements(diagram, edge);
 		if (elements.size()==0)
@@ -370,7 +390,7 @@ public class AnchorUtil {
 	}
 
 	private static void relocateConnection(EList<Anchor> anchors, Tuple<FixPointAnchor, FixPointAnchor> newAnchors,
-			ContainerShape target) {
+			AnchorContainer target) {
 
 		List<Connection> connectionsToBeUpdated = new ArrayList<Connection>();
 
@@ -392,11 +412,11 @@ public class AnchorUtil {
 		}
 	}
 
-	private static void deleteEmptyAdHocAnchors(Shape s) {
+	private static void deleteEmptyAdHocAnchors(AnchorContainer target) {
 		List<Integer> indexes = new ArrayList<Integer>();
 
-		for (int i = s.getAnchors().size()-1; i>=0; --i) {
-			Anchor a = s.getAnchors().get(i);
+		for (int i = target.getAnchors().size()-1; i>=0; --i) {
+			Anchor a = target.getAnchors().get(i);
 			if (!(a instanceof FixPointAnchor)) {
 				continue;
 			}
@@ -408,7 +428,7 @@ public class AnchorUtil {
 		}
 
 		for (int i : indexes) {
-			peService.deletePictogramElement(s.getAnchors().get(i));
+			peService.deletePictogramElement(target.getAnchors().get(i));
 		}
 	}
 
@@ -420,6 +440,16 @@ public class AnchorUtil {
 		AnchorUtil.createAnchor(shape, AnchorLocation.RIGHT, w, h / 2);
 		AnchorUtil.createAnchor(shape, AnchorLocation.BOTTOM, w / 2, h);
 		AnchorUtil.createAnchor(shape, AnchorLocation.LEFT, 0, h / 2);
+	}
+
+	public static void addFixedPointAnchors(Connection conn, GraphicsAlgorithm ga) {
+		IDimension size = gaService.calculateSize(ga);
+		int w = size.getWidth();
+		int h = size.getHeight();
+		AnchorUtil.createAnchor(conn, AnchorLocation.TOP, w / 2, 0);
+		AnchorUtil.createAnchor(conn, AnchorLocation.RIGHT, w, h / 2);
+		AnchorUtil.createAnchor(conn, AnchorLocation.BOTTOM, w / 2, h);
+		AnchorUtil.createAnchor(conn, AnchorLocation.LEFT, 0, h / 2);
 	}
 
 	public static void relocateFixPointAnchors(Shape shape, int w, int h) {

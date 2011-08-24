@@ -44,7 +44,7 @@ public abstract class ConnectionFeatureContainer implements FeatureContainer {
 
 	@Override
 	public ILayoutFeature getLayoutFeature(IFeatureProvider fp) {
-		return null;
+		return new DefaultBpmnLayoutFeature(fp);
 	}
 
 	@Override

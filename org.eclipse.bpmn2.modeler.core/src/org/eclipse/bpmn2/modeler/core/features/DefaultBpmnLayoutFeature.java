@@ -1,5 +1,6 @@
 package org.eclipse.bpmn2.modeler.core.features;
 
+import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
@@ -39,8 +40,10 @@ public class DefaultBpmnLayoutFeature extends AbstractLayoutFeature {
 			if (shape.getLink()!=null) {
 				for (Object object : shape.getLink().getBusinessObjects()) {
 					if (object instanceof BPMNShape) {
-						BPMNShape s = (BPMNShape) object;
-						AnchorUtil.reConnect(s, diagram);
+						AnchorUtil.reConnect((BPMNShape) object, diagram);
+					}
+					else if (object instanceof BPMNEdge) {
+						AnchorUtil.reConnect((BPMNEdge) object, diagram);
 					}
 				}
 			}
@@ -50,8 +53,10 @@ public class DefaultBpmnLayoutFeature extends AbstractLayoutFeature {
 					if (pe.getLink()!=null) {
 						for (Object object : pe.getLink().getBusinessObjects()) {
 							if (object instanceof BPMNShape) {
-								BPMNShape s = (BPMNShape) object;
-								AnchorUtil.reConnect(s, diagram);
+								AnchorUtil.reConnect((BPMNShape) object, diagram);
+							}
+							else if (object instanceof BPMNEdge) {
+								AnchorUtil.reConnect((BPMNEdge) object, diagram);
 							}
 						}
 					}
