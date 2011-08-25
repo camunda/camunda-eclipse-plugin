@@ -190,12 +190,7 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 		}
 
 		@Override
-		public String getCreateImageId() {
-			return ImageProvider.IMG_16_DATA_STORE;
-		}
-
-		@Override
-		public String getCreateLargeImageId() {
+		public String getStencilImageId() {
 			return ImageProvider.IMG_16_DATA_STORE;
 		}
 	}

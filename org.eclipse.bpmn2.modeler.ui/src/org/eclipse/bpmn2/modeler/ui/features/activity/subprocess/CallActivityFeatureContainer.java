@@ -23,10 +23,14 @@ import org.eclipse.bpmn2.GlobalScriptTask;
 import org.eclipse.bpmn2.GlobalTask;
 import org.eclipse.bpmn2.GlobalUserTask;
 import org.eclipse.bpmn2.Process;
+import org.eclipse.bpmn2.SubProcess;
+import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
+import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandableActivityFeature;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Expand;
@@ -53,7 +57,7 @@ import org.eclipse.graphiti.services.IPeService;
 public class CallActivityFeatureContainer extends AbstractSubProcessFeatureContainer {
 
 	private static final int MARKER_OFFSET = 4;
-	private static final String CALL_ACTIITY_REF_PROPERTY = "call.activity.ref";
+	private static final String CALL_ACTIVITY_REF_PROPERTY = "call.activity.ref";
 	private static final String GLOBAL_TASK_SHAPE_PROPERTY = "global.task.shape";
 
 	@Override
@@ -63,7 +67,7 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 
 	@Override
 	public ICreateFeature getCreateFeature(IFeatureProvider fp) {
-		return new CreateCallActivityFeatureContainer(fp);
+		return new CreateCallActivityFeature(fp);
 	}
 
 	@Override
@@ -73,7 +77,7 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 			protected void hook(Activity activity, ContainerShape container, IAddContext context, int width, int height) {
 				super.hook(activity, container, context, width, height);
 				CallActivity callActivity = (CallActivity) activity;
-				Graphiti.getPeService().setPropertyValue(container, CALL_ACTIITY_REF_PROPERTY,
+				Graphiti.getPeService().setPropertyValue(container, CALL_ACTIVITY_REF_PROPERTY,
 						getCallableElementStringValue(callActivity.getCalledElementRef()));
 			}
 
@@ -116,13 +120,19 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 		return multiUpdate;
 	}
 
-	public static class CreateCallActivityFeatureContainer extends AbstractCreateFlowElementFeature<CallActivity> {
+	public static class CreateCallActivityFeature extends AbstractCreateExpandableActivityFeature<CallActivity> {
 
-		public CreateCallActivityFeatureContainer(IFeatureProvider fp) {
+		// NOTE: Even though the Call Activity is an expandable figure, the contents for its "innards"
+		// are (usually) defined somewhere else, so it doesn't make much sense to be able to expand it in the
+		// same sense that a SubProcess would be expanded and rendered. When the "expand" button is clicked
+		// we should probably locate the process where this thing is defined (if possible) and open an
+		// editor to display its contents.
+		
+		public CreateCallActivityFeature(IFeatureProvider fp) {
 			super(fp, "Call Activity",
 					"Identifies a point in the Process where a global Process or a Global Task is used");
 		}
-
+		
 		@Override
 		protected CallActivity createFlowElement(ICreateContext context) {
 			CallActivity callActivity = ModelHandler.FACTORY.createCallActivity();
@@ -131,13 +141,8 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 		}
 
 		@Override
-		public String getCreateImageId() {
+		public String getStencilImageId() {
 			return ImageProvider.IMG_16_CALL_ACTIVITY;
-		}
-
-		@Override
-		public String getCreateLargeImageId() {
-			return getCreateImageId();
 		}
 	}
 
@@ -158,7 +163,7 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 		public IReason updateNeeded(IUpdateContext context) {
 			IPeService peService = Graphiti.getPeService();
 			PictogramElement element = context.getPictogramElement();
-			String property = peService.getPropertyValue(element, CALL_ACTIITY_REF_PROPERTY);
+			String property = peService.getPropertyValue(element, CALL_ACTIVITY_REF_PROPERTY);
 			if (property == null) {
 				return Reason.createFalseReason();
 			}
@@ -213,7 +218,7 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 				expand.vertical.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 			}
 
-			peService.setPropertyValue(container, CALL_ACTIITY_REF_PROPERTY,
+			peService.setPropertyValue(container, CALL_ACTIVITY_REF_PROPERTY,
 					getCallableElementStringValue(callActivity.getCalledElementRef()));
 			return true;
 		}

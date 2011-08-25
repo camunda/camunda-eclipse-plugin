@@ -15,7 +15,7 @@ package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.Transaction;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.features.activity.subprocess.AbstractCreateSubProcess;
+import org.eclipse.bpmn2.modeler.core.features.activity.subprocess.AbstractCreateSubProcessFeature;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.IAddFeature;
@@ -79,7 +79,7 @@ public class TransactionFeatureContainer extends AbstractSubProcessFeatureContai
 		};
 	}
 
-	public static class CreateTransactionFeature extends AbstractCreateSubProcess {
+	public static class CreateTransactionFeature extends AbstractCreateSubProcessFeature {
 
 		public CreateTransactionFeature(IFeatureProvider fp) {
 			super(fp, "Expanded Transaction",

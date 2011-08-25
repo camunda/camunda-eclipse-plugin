@@ -67,13 +67,8 @@ public class DataObjectReferenceFeatureContainer extends AbstractDataFeatureCont
 		}
 
 		@Override
-		public String getCreateImageId() {
+		public String getStencilImageId() {
 			return ImageProvider.IMG_16_DATA_OBJECT;
-		}
-
-		@Override
-		public String getCreateLargeImageId() {
-			return getCreateImageId();
 		}
 	}
 }

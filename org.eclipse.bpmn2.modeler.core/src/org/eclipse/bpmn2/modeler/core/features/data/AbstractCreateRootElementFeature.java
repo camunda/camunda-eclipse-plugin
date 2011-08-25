@@ -55,7 +55,7 @@ public abstract class AbstractCreateRootElementFeature extends AbstractCreateFea
 	
 	public abstract RootElement createRootElement();
 	
-	public abstract String getStencilImageId();
+	protected abstract String getStencilImageId();
 	
 	@Override
 	public String getCreateImageId() {

@@ -87,12 +87,7 @@ public class SubChoreographyFeatureContainer extends AbstractChoreographyFeature
 		}
 
 		@Override
-		public String getCreateImageId() {
-			return ImageProvider.IMG_16_CHOREOGRAPHY_TASK;
-		}
-
-		@Override
-		public String getCreateLargeImageId() {
+		public String getStencilImageId() {
 			return ImageProvider.IMG_16_CHOREOGRAPHY_TASK;
 		}
 	}

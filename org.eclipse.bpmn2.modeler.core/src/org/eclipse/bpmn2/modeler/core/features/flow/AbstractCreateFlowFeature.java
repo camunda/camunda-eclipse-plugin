@@ -66,6 +66,8 @@ public abstract class AbstractCreateFlowFeature<A extends EObject, B extends EOb
 		return getSourceBo(context) != null;
 	}
 
+	protected abstract String getStencilImageId();
+
 	@Override
 	public String getCreateImageId() {
 		return getStencilImageId();
@@ -75,8 +77,6 @@ public abstract class AbstractCreateFlowFeature<A extends EObject, B extends EOb
 	public String getCreateLargeImageId() {
 		return getStencilImageId();
 	}
-
-	protected abstract String getStencilImageId();
 
 	protected abstract BaseElement createFlow(ModelHandler mh, A source, B target);
 

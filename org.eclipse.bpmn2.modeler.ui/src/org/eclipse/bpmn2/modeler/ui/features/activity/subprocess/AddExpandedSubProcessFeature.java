@@ -41,8 +41,12 @@ public class AddExpandedSubProcessFeature extends AbstractAddActivityFeature {
 		IPeService peService = Graphiti.getPeService();
 		IGaService gaService = Graphiti.getGaService();
 
-		SubProcess subprocess = (SubProcess) context.getNewObject();
-		peService.setPropertyValue(container, TRIGGERED_BY_EVENT, Boolean.toString(subprocess.isTriggeredByEvent()));
+		boolean isTriggeredByEvent = false;
+		if (activity instanceof SubProcess) {
+			SubProcess subprocess = (SubProcess) activity;
+			isTriggeredByEvent = subprocess.isTriggeredByEvent();
+		}
+		peService.setPropertyValue(container, TRIGGERED_BY_EVENT, Boolean.toString(isTriggeredByEvent));
 
 		Shape textShape = peService.createShape(container, false);
 		Text text = gaService.createDefaultText(getDiagram(), textShape, activity.getName());

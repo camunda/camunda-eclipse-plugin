@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features;
 
+
 import java.io.IOException;
 
 import org.eclipse.bpmn2.FlowElement;
@@ -22,7 +23,6 @@ import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
@@ -62,6 +62,18 @@ public abstract class AbstractCreateFlowElementFeature<T extends FlowElement> ex
 		addGraphicalRepresentation(context, element);
 		ModelUtil.setID(element);
 		return new Object[] { element };
+	}
+	
+	protected abstract String getStencilImageId();
+	
+	@Override
+	public String getCreateImageId() {
+	    return getStencilImageId();
+	}
+	
+	@Override
+	public String getCreateLargeImageId() {
+	    return getCreateImageId(); // FIXME
 	}
 
 	protected abstract T createFlowElement(ICreateContext context);

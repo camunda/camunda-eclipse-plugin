@@ -10,15 +10,15 @@
  *
  * @author Ivar Meikas
  ******************************************************************************/
-package org.eclipse.bpmn2.modeler.core.features.event;
+package org.eclipse.bpmn2.modeler.core.features.activity.subprocess;
 
-import org.eclipse.bpmn2.Event;
-import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
+import org.eclipse.bpmn2.SubProcess;
+import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandableActivityFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 
-public abstract class AbstractCreateEventFeature extends AbstractCreateFlowElementFeature<Event> {
-	
-	public AbstractCreateEventFeature(IFeatureProvider fp, String name, String description) {
+public abstract class AbstractCreateSubProcessFeature extends AbstractCreateExpandableActivityFeature<SubProcess> {
+
+	public AbstractCreateSubProcessFeature(IFeatureProvider fp, String name, String description) {
 	    super(fp, name, description);
     }
 }

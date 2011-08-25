@@ -21,16 +21,4 @@ public abstract class AbstractCreateGatewayFeature extends AbstractCreateFlowEle
 	public AbstractCreateGatewayFeature(IFeatureProvider fp, String name, String description) {
 		super(fp, name, description);
 	}
-
-	protected abstract String getStencilImageId();
-
-	@Override
-	public String getCreateImageId() {
-		return getStencilImageId();
-	}
-
-	@Override
-	public String getCreateLargeImageId() {
-		return getCreateImageId();
-	}
 }

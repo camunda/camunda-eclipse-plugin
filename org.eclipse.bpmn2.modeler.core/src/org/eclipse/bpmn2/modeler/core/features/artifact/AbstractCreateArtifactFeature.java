@@ -52,7 +52,7 @@ public abstract class AbstractCreateArtifactFeature extends AbstractCreateFeatur
 
 	public abstract Artifact createArtifact(ICreateContext context);
 
-	public abstract String getStencilImageId();
+	protected abstract String getStencilImageId();
 
 	@Override
 	public String getCreateImageId() {
@@ -61,6 +61,6 @@ public abstract class AbstractCreateArtifactFeature extends AbstractCreateFeatur
 
 	@Override
 	public String getCreateLargeImageId() {
-		return getCreateImageId();
+		return getStencilImageId();
 	}
 }

@@ -54,6 +54,6 @@ public abstract class CreateEventDefinition extends AbstractCreateFeature {
 
 	@Override
 	public String getCreateLargeImageId() {
-		return getCreateImageId(); // FIXME
+		return getStencilImageId(); // FIXME
 	}
 }

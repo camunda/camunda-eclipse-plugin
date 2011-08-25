@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
+import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
@@ -40,10 +41,10 @@ public class SubProcessResizeFeature extends DefaultBPMNResizeFeature {
 		ResizeShapeContext resizeShapeContext = (ResizeShapeContext)context;
 
 		ContainerShape containerShape = (ContainerShape) context.getPictogramElement();
-		SubProcess subProcess = BusinessObjectUtil.getFirstElementOfType(containerShape, SubProcess.class);
+		Activity activity = BusinessObjectUtil.getFirstElementOfType(containerShape, Activity.class);
 		try {
 			BPMNShape shape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(
-					getDiagram(), subProcess);
+					getDiagram(), activity);
 			
 			if (shape.isIsExpanded()) {
 
@@ -179,7 +180,6 @@ public class SubProcessResizeFeature extends DefaultBPMNResizeFeature {
 			minWidth = 0;
 			minHeight = 0;
 
-			int size = containerShape.getChildren().size();
 			for (PictogramElement pe : FeatureSupport.getContainerChildren(containerShape)) {
 				GraphicsAlgorithm ga = pe.getGraphicsAlgorithm();
 				if (ga!=null) {
@@ -207,9 +207,9 @@ public class SubProcessResizeFeature extends DefaultBPMNResizeFeature {
 				}
 			}
 			if (minWidth<=0)
-				minWidth = GraphicsUtil.SUB_PROCEESS_DEFAULT_WIDTH;
+				minWidth = GraphicsUtil.TASK_DEFAULT_WIDTH;
 			if (minHeight<=0)
-				minHeight = GraphicsUtil.SUB_PROCESS_DEFAULT_HEIGHT;
+				minHeight = GraphicsUtil.TASK_DEFAULT_HEIGHT;
 		}
 
 		public int getShiftX() {

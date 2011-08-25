@@ -18,7 +18,7 @@ import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.AdHocSubProcess;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.features.activity.subprocess.AbstractCreateSubProcess;
+import org.eclipse.bpmn2.modeler.core.features.activity.subprocess.AbstractCreateSubProcessFeature;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
@@ -65,7 +65,7 @@ public class AdHocSubProcessFeatureContainer extends AbstractSubProcessFeatureCo
 		};
 	}
 
-	public static class CreateAdHocSubProcessFeature extends AbstractCreateSubProcess {
+	public static class CreateAdHocSubProcessFeature extends AbstractCreateSubProcessFeature {
 
 		public CreateAdHocSubProcessFeature(IFeatureProvider fp) {
 			super(fp, "Expanded Ad-Hoc SubProcess",

@@ -20,7 +20,7 @@ import java.util.Map;
 
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.AdHocSubProcessFeatureContainer.CreateAdHocSubProcessFeature;
-import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.CallActivityFeatureContainer.CreateCallActivityFeatureContainer;
+import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.CallActivityFeatureContainer.CreateCallActivityFeature;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.SubProcessFeatureContainer.CreateSubProcessFeature;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.TransactionFeatureContainer.CreateTransactionFeature;
 import org.eclipse.bpmn2.modeler.ui.features.activity.task.BusinessRuleTaskFeatureContainer.CreateBusinessRuleTaskFeature;
@@ -127,7 +127,7 @@ public class FeatureMap {
 		featureMap.put(i.getDataInput(), CreateDataInputFeature.class);
 		featureMap.put(i.getDataOutput(), CreateDataOutputFeature.class);
 		featureMap.put(i.getAdHocSubProcess(), CreateAdHocSubProcessFeature.class);
-		featureMap.put(i.getCallActivity(), CreateCallActivityFeatureContainer.class);
+		featureMap.put(i.getCallActivity(), CreateCallActivityFeature.class);
 		featureMap.put(i.getMessage(), CreateMessageFeature.class);
 		featureMap.put(i.getConversation(), CreateConversationFeature.class);
 		featureMap.put(i.getConversationLink(), CreateConversationLinkFeature.class);
@@ -194,7 +194,7 @@ public class FeatureMap {
 		features.add(CreateTransactionFeature.class);
 		features.add(CreateGroupFeature.class);
 		features.add(CreateAdHocSubProcessFeature.class);
-		features.add(CreateCallActivityFeatureContainer.class);
+		features.add(CreateCallActivityFeature.class);
 		features.add(CreateMessageFeature.class);
 		features.add(CreateConversationFeature.class);
 		features.add(CreateSubChoreographyFeature.class);

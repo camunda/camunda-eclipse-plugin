@@ -21,16 +21,4 @@ public abstract class AbstractCreateTaskFeature extends AbstractCreateFlowElemen
 	public AbstractCreateTaskFeature(IFeatureProvider fp, String name, String description) {
 	    super(fp, name, description);
     }
-	
-	protected abstract String getStencilImageId();
-	
-	@Override
-	public String getCreateImageId() {
-	    return getStencilImageId();
-	}
-	
-	@Override
-	public String getCreateLargeImageId() {
-	    return getCreateImageId(); // FIXME
-	}
 }
