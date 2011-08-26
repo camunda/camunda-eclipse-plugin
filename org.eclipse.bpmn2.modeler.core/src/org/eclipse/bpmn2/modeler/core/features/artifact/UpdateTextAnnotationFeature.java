@@ -14,11 +14,11 @@ package org.eclipse.bpmn2.modeler.core.features.artifact;
 
 import org.eclipse.bpmn2.TextAnnotation;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
-import org.eclipse.bpmn2.modeler.core.features.AbstractBaseElementUpdateFeature;
+import org.eclipse.bpmn2.modeler.core.features.AbstractUpdateBaseElementFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IUpdateContext;
 
-public class UpdateTextAnnotationFeature extends AbstractBaseElementUpdateFeature {
+public class UpdateTextAnnotationFeature extends AbstractUpdateBaseElementFeature {
 
 	public UpdateTextAnnotationFeature(IFeatureProvider fp) {
 		super(fp);

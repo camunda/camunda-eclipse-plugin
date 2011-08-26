@@ -14,7 +14,7 @@ package org.eclipse.bpmn2.modeler.ui.features.conversation;
 
 import org.eclipse.bpmn2.Conversation;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
-import org.eclipse.bpmn2.modeler.core.features.DefaultBpmnMoveFeature;
+import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.conversation.AddConversationFeature;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.eclipse.graphiti.features.IAddFeature;
@@ -63,7 +63,7 @@ public class ConversationFeatureContainer extends BaseElementFeatureContainer {
 
 	@Override
 	public IMoveShapeFeature getMoveFeature(IFeatureProvider fp) {
-		return new DefaultBpmnMoveFeature(fp);
+		return new DefaultMoveBPMNShapeFeature(fp);
 	}
 
 	@Override

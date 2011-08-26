@@ -15,7 +15,7 @@ package org.eclipse.bpmn2.modeler.ui.features;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.bpmn2.modeler.core.features.DefaultBpmnDeleteFeature;
+import org.eclipse.bpmn2.modeler.core.features.DefaultDeleteBPMNShapeFeature;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IDeleteContext;
@@ -25,7 +25,7 @@ import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
-public class AbstractDefaultDeleteFeature extends DefaultBpmnDeleteFeature {
+public class AbstractDefaultDeleteFeature extends DefaultDeleteBPMNShapeFeature {
 	public AbstractDefaultDeleteFeature(IFeatureProvider fp) {
 		super(fp);
 	}

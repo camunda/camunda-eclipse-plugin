@@ -44,7 +44,7 @@ import org.eclipse.bpmn2.modeler.ui.features.data.DataObjectReferenceFeatureCont
 import org.eclipse.bpmn2.modeler.ui.features.data.DataOutputFeatureContainer.CreateDataOutputFeature;
 import org.eclipse.bpmn2.modeler.ui.features.data.DataStoreReferenceFeatureContainer.CreateDataStoreReferenceFeature;
 import org.eclipse.bpmn2.modeler.ui.features.data.MessageFeatureContainer.CreateMessageFeature;
-import org.eclipse.bpmn2.modeler.ui.features.event.BoundaryEventCreateFeature;
+import org.eclipse.bpmn2.modeler.ui.features.event.CreateBoundaryEventFeature;
 import org.eclipse.bpmn2.modeler.ui.features.event.EndEventFeatureContainer.CreateEndEventFeature;
 import org.eclipse.bpmn2.modeler.ui.features.event.IntermediateCatchEventFeatureContainer.CreateIntermediateCatchEventFeature;
 import org.eclipse.bpmn2.modeler.ui.features.event.IntermediateThrowEventFeatureContainer.CreateIntermediateThrowEventFeature;
@@ -117,7 +117,7 @@ public class FeatureMap {
 		featureMap.put(i.getErrorEventDefinition(), CreateErrorEventDefinition.class);
 		featureMap.put(i.getCancelEventDefinition(), CreateCancelEventDefinition.class);
 		featureMap.put(i.getTerminateEventDefinition(), CreateTerminateEventDefinition.class);
-		featureMap.put(i.getBoundaryEvent(), BoundaryEventCreateFeature.class);
+		featureMap.put(i.getBoundaryEvent(), CreateBoundaryEventFeature.class);
 		featureMap.put(i.getSubProcess(), CreateSubProcessFeature.class);
 		featureMap.put(i.getTransaction(), CreateTransactionFeature.class);
 		featureMap.put(i.getGroup(), CreateGroupFeature.class);
@@ -154,7 +154,7 @@ public class FeatureMap {
 		features.add(CreateEndEventFeature.class);
 		features.add(CreateIntermediateThrowEventFeature.class);
 		features.add(CreateIntermediateCatchEventFeature.class);
-		features.add(BoundaryEventCreateFeature.class);
+		features.add(CreateBoundaryEventFeature.class);
 		EVENTS = Collections.unmodifiableList(features);
 
 		features = new ArrayList<Class<? extends IFeature>>();

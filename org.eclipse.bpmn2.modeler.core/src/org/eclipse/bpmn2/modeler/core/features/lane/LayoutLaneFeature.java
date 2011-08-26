@@ -13,14 +13,14 @@
 package org.eclipse.bpmn2.modeler.core.features.lane;
 
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
-import org.eclipse.bpmn2.modeler.core.features.DefaultBpmnLayoutFeature;
+import org.eclipse.bpmn2.modeler.core.features.DefaultLayoutBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ILayoutContext;
 import org.eclipse.graphiti.features.impl.AbstractLayoutFeature;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 
-public class LayoutLaneFeature extends DefaultBpmnLayoutFeature {
+public class LayoutLaneFeature extends DefaultLayoutBPMNShapeFeature {
 
 	public LayoutLaneFeature(IFeatureProvider fp) {
 		super(fp);

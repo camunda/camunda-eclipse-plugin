@@ -21,7 +21,7 @@ import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.di.DIImport;
-import org.eclipse.bpmn2.modeler.core.features.AbstractBpmnAddFeature;
+import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
@@ -41,7 +41,7 @@ import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.ILayoutService;
 import org.eclipse.graphiti.services.IPeCreateService;
 
-public class AddLaneFeature extends AbstractBpmnAddFeature {
+public class AddLaneFeature extends AbstractAddBPMNShapeFeature {
 
 	public AddLaneFeature(IFeatureProvider fp) {
 		super(fp);

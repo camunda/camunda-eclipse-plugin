@@ -64,7 +64,7 @@ public class StartEventFeatureContainer extends AbstractEventFeatureContainer {
 		IUpdateFeature defaultUpdateFeature = super.getUpdateFeature(fp);
 		MultiUpdateFeature updateFeature = new MultiUpdateFeature(fp);
 		updateFeature.addUpdateFeature(defaultUpdateFeature);
-		updateFeature.addUpdateFeature(new SubProcessEventUpdateFeature(fp));
+		updateFeature.addUpdateFeature(new UpdateSubProcessEventFeature(fp));
 		return updateFeature;
 	}
 
@@ -88,9 +88,9 @@ public class StartEventFeatureContainer extends AbstractEventFeatureContainer {
 		}
 	}
 
-	private class SubProcessEventUpdateFeature extends AbstractUpdateFeature {
+	private class UpdateSubProcessEventFeature extends AbstractUpdateFeature {
 
-		public SubProcessEventUpdateFeature(IFeatureProvider fp) {
+		public UpdateSubProcessEventFeature(IFeatureProvider fp) {
 			super(fp);
 		}
 

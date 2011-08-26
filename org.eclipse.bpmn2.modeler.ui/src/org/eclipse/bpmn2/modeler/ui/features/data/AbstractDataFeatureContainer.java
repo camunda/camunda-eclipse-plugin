@@ -13,7 +13,7 @@
 package org.eclipse.bpmn2.modeler.ui.features.data;
 
 import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
-import org.eclipse.bpmn2.modeler.core.features.DefaultBpmnMoveFeature;
+import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
@@ -53,7 +53,7 @@ public abstract class AbstractDataFeatureContainer extends BaseElementFeatureCon
 
 	@Override
 	public IMoveShapeFeature getMoveFeature(IFeatureProvider fp) {
-		return new DefaultBpmnMoveFeature(fp);
+		return new DefaultMoveBPMNShapeFeature(fp);
 	}
 
 	@Override

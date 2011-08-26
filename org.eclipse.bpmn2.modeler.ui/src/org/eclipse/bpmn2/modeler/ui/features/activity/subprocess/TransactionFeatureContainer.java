@@ -12,10 +12,9 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
-import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.Transaction;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.features.activity.subprocess.AbstractCreateSubProcessFeature;
+import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.IAddFeature;
@@ -64,7 +63,7 @@ public class TransactionFeatureContainer extends AbstractSubProcessFeatureContai
 
 	@Override
 	public ILayoutFeature getLayoutFeature(IFeatureProvider fp) {
-		return new SubProcessLayoutFeature(fp) {
+		return new LayoutSubProcessFeature(fp) {
 			@Override
 			protected void layoutInRectangle(RoundedRectangle rect) {
 				IGaService gaService = Graphiti.getGaService();
@@ -79,7 +78,7 @@ public class TransactionFeatureContainer extends AbstractSubProcessFeatureContai
 		};
 	}
 
-	public static class CreateTransactionFeature extends AbstractCreateSubProcessFeature {
+	public static class CreateTransactionFeature extends AbstractCreateExpandableFlowNodeFeature<Transaction> {
 
 		public CreateTransactionFeature(IFeatureProvider fp) {
 			super(fp, "Expanded Transaction",
@@ -87,10 +86,10 @@ public class TransactionFeatureContainer extends AbstractSubProcessFeatureContai
 		}
 
 		@Override
-		protected SubProcess createFlowElement(ICreateContext context) {
-			SubProcess subProcess = ModelHandler.FACTORY.createTransaction();
-			subProcess.setName("Transaction");
-			return subProcess;
+		protected Transaction createFlowElement(ICreateContext context) {
+			Transaction transaction = ModelHandler.FACTORY.createTransaction();
+			transaction.setName("Transaction");
+			return transaction;
 		}
 
 		@Override

@@ -18,7 +18,7 @@ import java.util.Map;
 import org.eclipse.bpmn2.ChoreographyActivity;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
-import org.eclipse.bpmn2.modeler.core.features.DefaultBpmnDeleteFeature;
+import org.eclipse.bpmn2.modeler.core.features.DefaultDeleteBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.PropertyBasedFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.choreography.ChoreographyProperties;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
@@ -108,7 +108,7 @@ public class ChoreographyMessageLinkFeatureContainer extends PropertyBasedFeatur
 
 	@Override
 	public IDeleteFeature getDeleteFeature(IFeatureProvider fp) {
-		return new DefaultBpmnDeleteFeature(fp) {
+		return new DefaultDeleteBPMNShapeFeature(fp) {
 
 			@Override
 			public void delete(IDeleteContext context) {

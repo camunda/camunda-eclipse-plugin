@@ -14,7 +14,7 @@ package org.eclipse.bpmn2.modeler.ui.features.artifact;
 
 import org.eclipse.bpmn2.TextAnnotation;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
-import org.eclipse.bpmn2.modeler.core.features.DefaultBPMNResizeFeature;
+import org.eclipse.bpmn2.modeler.core.features.DefaultResizeBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.artifact.AddTextAnnotationFeature;
 import org.eclipse.bpmn2.modeler.core.features.artifact.DirectEditTextAnnotationFeature;
 import org.eclipse.bpmn2.modeler.core.features.artifact.LayoutTextAnnotationFeature;
@@ -70,7 +70,7 @@ public class TextAnnotationFeatureContainer extends BaseElementFeatureContainer 
 
 	@Override
 	public IResizeShapeFeature getResizeFeature(IFeatureProvider fp) {
-		return new DefaultBPMNResizeFeature(fp);
+		return new DefaultResizeBPMNShapeFeature(fp);
 	}
 
 	@Override

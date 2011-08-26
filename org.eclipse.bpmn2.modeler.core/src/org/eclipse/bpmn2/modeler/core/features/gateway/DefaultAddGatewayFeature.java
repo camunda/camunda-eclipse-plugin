@@ -14,7 +14,7 @@ package org.eclipse.bpmn2.modeler.core.features.gateway;
 
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.Gateway;
-import org.eclipse.bpmn2.modeler.core.features.AbstractBpmnAddFeature;
+import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
@@ -34,7 +34,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class DefaultAddGatewayFeature extends AbstractBpmnAddFeature {
+public class DefaultAddGatewayFeature extends AbstractAddBPMNShapeFeature {
 
 	public DefaultAddGatewayFeature(IFeatureProvider fp) {
 		super(fp);

@@ -13,7 +13,7 @@
 package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.modeler.core.features.AbstractBaseElementUpdateFeature;
+import org.eclipse.bpmn2.modeler.core.features.AbstractUpdateBaseElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.ui.features.activity.AbstractActivityFeatureContainer;
 import org.eclipse.graphiti.features.IDirectEditingFeature;
@@ -31,13 +31,13 @@ public abstract class AbstractSubProcessFeatureContainer extends AbstractActivit
 
 	@Override
 	public ILayoutFeature getLayoutFeature(IFeatureProvider fp) {
-		return new SubProcessLayoutFeature(fp);
+		return new LayoutSubProcessFeature(fp);
 	}
 
 	@Override
 	public MultiUpdateFeature getUpdateFeature(IFeatureProvider fp) {
 		MultiUpdateFeature multiUpdate = super.getUpdateFeature(fp);
-		AbstractBaseElementUpdateFeature nameUpdateFeature = new AbstractBaseElementUpdateFeature(fp) {
+		AbstractUpdateBaseElementFeature nameUpdateFeature = new AbstractUpdateBaseElementFeature(fp) {
 			@Override
 			public boolean canUpdate(IUpdateContext context) {
 				Object bo = getBusinessObjectForPictogramElement(context.getPictogramElement());
@@ -50,6 +50,6 @@ public abstract class AbstractSubProcessFeatureContainer extends AbstractActivit
 
 	@Override
 	public IResizeShapeFeature getResizeFeature(IFeatureProvider fp) {
-		return new SubProcessResizeFeature(fp);
+		return new ResizeSubProcessFeature(fp);
 	}
 }

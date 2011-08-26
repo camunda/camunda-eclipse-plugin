@@ -18,7 +18,7 @@ import java.util.List;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.features.ConnectionFeatureContainer;
-import org.eclipse.bpmn2.modeler.core.features.DefaultBpmnDeleteFeature;
+import org.eclipse.bpmn2.modeler.core.features.DefaultDeleteBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.FeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.ICustomTaskFeature;
 import org.eclipse.bpmn2.modeler.core.features.bendpoint.AddBendpointFeature;
@@ -26,8 +26,8 @@ import org.eclipse.bpmn2.modeler.core.features.bendpoint.MoveBendpointFeature;
 import org.eclipse.bpmn2.modeler.core.features.bendpoint.RemoveBendpointFeature;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.AdHocSubProcessFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.CallActivityFeatureContainer;
-import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.SubProcessCollapseFeature;
-import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.SubProcessExpandFeature;
+import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.CollapseSubProcessFeature;
+import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.ExpandSubProcessFeature;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.SubProcessFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.TransactionFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.activity.task.BusinessRuleTaskFeatureContainer;
@@ -424,7 +424,7 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 				}
 			}
 		}
-		return new DefaultBpmnDeleteFeature(this);
+		return new DefaultDeleteBPMNShapeFeature(this);
 	}
 
 	@Override
@@ -433,8 +433,8 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 		for (PictogramElement pe : elements) {
 			if (BusinessObjectUtil.containsElementOfType(pe, SubProcess.class)) {
 				return new ICustomFeature[] {
-						new SubProcessExpandFeature(this),
-						new SubProcessCollapseFeature(this)
+						new ExpandSubProcessFeature(this),
+						new CollapseSubProcessFeature(this)
 				};
 			}
 		}

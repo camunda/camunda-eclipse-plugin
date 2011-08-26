@@ -15,9 +15,9 @@ package org.eclipse.bpmn2.modeler.ui.features.data;
 import org.eclipse.bpmn2.Message;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.features.AbstractBpmnAddFeature;
+import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
-import org.eclipse.bpmn2.modeler.core.features.DefaultBpmnMoveFeature;
+import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.features.data.AbstractCreateRootElementFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
@@ -62,7 +62,7 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AbstractBpmnAddFeature(fp) {
+		return new AbstractAddBPMNShapeFeature(fp) {
 
 			@Override
 			public boolean canAdd(IAddContext context) {
@@ -129,7 +129,7 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 
 	@Override
 	public IMoveShapeFeature getMoveFeature(IFeatureProvider fp) {
-		return new DefaultBpmnMoveFeature(fp);
+		return new DefaultMoveBPMNShapeFeature(fp);
 	}
 
 	@Override

@@ -13,11 +13,11 @@
 package org.eclipse.bpmn2.modeler.core.features.activity.task;
 
 import org.eclipse.bpmn2.Task;
-import org.eclipse.bpmn2.modeler.core.features.AbstractBaseElementUpdateFeature;
+import org.eclipse.bpmn2.modeler.core.features.AbstractUpdateBaseElementFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IUpdateContext;
 
-public class UpdateTaskFeature extends AbstractBaseElementUpdateFeature {
+public class UpdateTaskFeature extends AbstractUpdateBaseElementFeature {
 
 	public UpdateTaskFeature(IFeatureProvider fp) {
 		super(fp);

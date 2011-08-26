@@ -13,11 +13,11 @@
 package org.eclipse.bpmn2.modeler.core.features.participant;
 
 import org.eclipse.bpmn2.Participant;
-import org.eclipse.bpmn2.modeler.core.features.AbstractBaseElementUpdateFeature;
+import org.eclipse.bpmn2.modeler.core.features.AbstractUpdateBaseElementFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IUpdateContext;
 
-public class UpdateParticipantFeature extends AbstractBaseElementUpdateFeature {
+public class UpdateParticipantFeature extends AbstractUpdateBaseElementFeature {
 
 	public UpdateParticipantFeature(IFeatureProvider fp) {
 		super(fp);

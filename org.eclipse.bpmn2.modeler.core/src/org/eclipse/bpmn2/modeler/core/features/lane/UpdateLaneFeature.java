@@ -13,11 +13,11 @@
 package org.eclipse.bpmn2.modeler.core.features.lane;
 
 import org.eclipse.bpmn2.Lane;
-import org.eclipse.bpmn2.modeler.core.features.AbstractBaseElementUpdateFeature;
+import org.eclipse.bpmn2.modeler.core.features.AbstractUpdateBaseElementFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IUpdateContext;
 
-public class UpdateLaneFeature extends AbstractBaseElementUpdateFeature {
+public class UpdateLaneFeature extends AbstractUpdateBaseElementFeature {
 
 	public UpdateLaneFeature(IFeatureProvider fp) {
 	    super(fp);

@@ -16,12 +16,18 @@ import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementConnectionFeatureContainer;
+import org.eclipse.bpmn2.modeler.core.features.ReconnectBaseElementFeature;
+import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractAddFlowFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractCreateFlowFeature;
+import org.eclipse.bpmn2.modeler.core.features.flow.AbstractReconnectFlowFeature;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.IReconnectionFeature;
+import org.eclipse.graphiti.features.context.IReconnectionContext;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.styles.LineStyle;
 
@@ -54,6 +60,12 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 		return new CreateAssociationFeature(fp);
 	}
 
+	@Override
+	public IReconnectionFeature getReconnectionFeature(IFeatureProvider fp) {
+		// TODO Auto-generated method stub
+		return new ReconnectAssociationFeature(fp);
+	}
+
 	public static class CreateAssociationFeature extends AbstractCreateFlowFeature<BaseElement, BaseElement> {
 
 		public CreateAssociationFeature(IFeatureProvider fp) {
@@ -80,4 +92,23 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 			return mh.createAssociation(source, target);
 		}
 	}
+	
+	
+	public static class ReconnectAssociationFeature extends AbstractReconnectFlowFeature {
+
+		public ReconnectAssociationFeature(IFeatureProvider fp) {
+			super(fp);
+		}
+
+		@Override
+		protected Class<? extends EObject> getTargetClass() {
+			return BaseElement.class;
+		}
+
+		@Override
+		protected Class<? extends EObject> getSourceClass() {
+			return BaseElement.class;
+		}
+	} 
+	
 }

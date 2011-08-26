@@ -15,11 +15,11 @@ package org.eclipse.bpmn2.modeler.ui.features.activity;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
-import org.eclipse.bpmn2.modeler.core.features.DefaultBPMNResizeFeature;
+import org.eclipse.bpmn2.modeler.core.features.DefaultResizeBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
-import org.eclipse.bpmn2.modeler.core.features.activity.ActivityCompensateMarkerUpdateFeature;
-import org.eclipse.bpmn2.modeler.core.features.activity.ActivityLoopAndMultiInstanceMarkerUpdateFeature;
-import org.eclipse.bpmn2.modeler.core.features.activity.ActivityMoveFeature;
+import org.eclipse.bpmn2.modeler.core.features.activity.UpdateActivityCompensateMarkerFeature;
+import org.eclipse.bpmn2.modeler.core.features.activity.UpdateActivityLoopAndMultiInstanceMarkerFeature;
+import org.eclipse.bpmn2.modeler.core.features.activity.MoveActivityFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractBoundaryEventOperation;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
@@ -34,9 +34,9 @@ public abstract class AbstractActivityFeatureContainer extends BaseElementFeatur
 
 	@Override
 	public MultiUpdateFeature getUpdateFeature(IFeatureProvider fp) {
-		ActivityCompensateMarkerUpdateFeature compensateMarkerUpdateFeature = new ActivityCompensateMarkerUpdateFeature(
+		UpdateActivityCompensateMarkerFeature compensateMarkerUpdateFeature = new UpdateActivityCompensateMarkerFeature(
 				fp);
-		ActivityLoopAndMultiInstanceMarkerUpdateFeature loopAndMultiInstanceUpdateFeature = new ActivityLoopAndMultiInstanceMarkerUpdateFeature(
+		UpdateActivityLoopAndMultiInstanceMarkerFeature loopAndMultiInstanceUpdateFeature = new UpdateActivityLoopAndMultiInstanceMarkerFeature(
 				fp);
 		MultiUpdateFeature multiUpdate = new MultiUpdateFeature(fp);
 		multiUpdate.addUpdateFeature(compensateMarkerUpdateFeature);
@@ -46,12 +46,12 @@ public abstract class AbstractActivityFeatureContainer extends BaseElementFeatur
 
 	@Override
 	public IResizeShapeFeature getResizeFeature(IFeatureProvider fp) {
-		return new DefaultBPMNResizeFeature(fp);
+		return new DefaultResizeBPMNShapeFeature(fp);
 	}
 
 	@Override
 	public IMoveShapeFeature getMoveFeature(IFeatureProvider fp) {
-		return new ActivityMoveFeature(fp);
+		return new MoveActivityFeature(fp);
 	}
 
 	@Override

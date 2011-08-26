@@ -15,7 +15,7 @@ package org.eclipse.bpmn2.modeler.ui.features;
 import static org.eclipse.bpmn2.modeler.core.utils.FeatureSupport.getShape;
 
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.modeler.core.features.DefaultBpmnLayoutFeature;
+import org.eclipse.bpmn2.modeler.core.features.DefaultLayoutBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.graphiti.datatypes.IDimension;
@@ -30,7 +30,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.ui.services.GraphitiUi;
 
-public abstract class LayoutBaseElementTextFeature extends DefaultBpmnLayoutFeature {
+public abstract class LayoutBaseElementTextFeature extends DefaultLayoutBPMNShapeFeature {
 
 	private static IGaService gaService = Graphiti.getGaService();
 

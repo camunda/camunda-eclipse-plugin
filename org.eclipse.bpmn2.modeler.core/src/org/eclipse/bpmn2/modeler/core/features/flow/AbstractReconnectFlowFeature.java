@@ -8,10 +8,36 @@
  * Contributors:
  * Red Hat, Inc. - initial API and implementation
  *
- * @author Ivar Meikas
+ * @author Bob Brodt
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features.flow;
 
-public class AbstractReconnectFlowFeature {
+import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.features.ReconnectBaseElementFeature;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.context.IReconnectionContext;
+import org.eclipse.graphiti.features.context.impl.ReconnectionContext;
 
+public abstract class AbstractReconnectFlowFeature extends ReconnectBaseElementFeature {
+
+	public AbstractReconnectFlowFeature(IFeatureProvider fp) {
+		super(fp);
+	}
+	
+	protected abstract Class<? extends EObject> getTargetClass();
+	protected abstract Class<? extends EObject> getSourceClass();
+	
+
+	@Override
+	public boolean canReconnect(IReconnectionContext context) {
+		if (super.canReconnect(context)) {
+			BaseElement targetElement = BusinessObjectUtil.getFirstElementOfType(context.getTargetPictogramElement(), BaseElement.class);
+			if (context.getReconnectType() == ReconnectionContext.RECONNECT_TARGET)
+				return targetElement.getClass().isAssignableFrom(getTargetClass());
+			return targetElement.getClass().isAssignableFrom(getSourceClass());
+		}
+		return false;
+	}
 }

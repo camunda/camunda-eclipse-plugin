@@ -43,6 +43,6 @@ public abstract class BaseElementConnectionFeatureContainer extends ConnectionFe
 
 	@Override
 	public IReconnectionFeature getReconnectionFeature(IFeatureProvider fp) {
-		return new BaseElementReconnectionFeature(fp);
+		return new ReconnectBaseElementFeature(fp);
 	}
 }

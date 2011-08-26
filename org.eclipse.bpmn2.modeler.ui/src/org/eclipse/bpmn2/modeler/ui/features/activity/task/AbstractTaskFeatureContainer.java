@@ -14,9 +14,9 @@ package org.eclipse.bpmn2.modeler.ui.features.activity.task;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Task;
-import org.eclipse.bpmn2.modeler.core.features.AbstractBaseElementUpdateFeature;
+import org.eclipse.bpmn2.modeler.core.features.AbstractUpdateBaseElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
-import org.eclipse.bpmn2.modeler.core.features.activity.ActivityLayoutFeature;
+import org.eclipse.bpmn2.modeler.core.features.activity.LayoutActivityFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.DirectEditTaskFeature;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.features.activity.AbstractActivityFeatureContainer;
@@ -34,7 +34,7 @@ public abstract class AbstractTaskFeatureContainer extends AbstractActivityFeatu
 	@Override
 	public MultiUpdateFeature getUpdateFeature(IFeatureProvider fp) {
 		MultiUpdateFeature multiUpdate = super.getUpdateFeature(fp);
-		AbstractBaseElementUpdateFeature nameUpdateFeature = new AbstractBaseElementUpdateFeature(fp) {
+		AbstractUpdateBaseElementFeature nameUpdateFeature = new AbstractUpdateBaseElementFeature(fp) {
 
 			@Override
 			public boolean canUpdate(IUpdateContext context) {
@@ -53,7 +53,7 @@ public abstract class AbstractTaskFeatureContainer extends AbstractActivityFeatu
 
 	@Override
 	public ILayoutFeature getLayoutFeature(IFeatureProvider fp) {
-		return new ActivityLayoutFeature(fp) {
+		return new LayoutActivityFeature(fp) {
 			@Override
 			protected boolean layoutHook(Shape shape, GraphicsAlgorithm ga, Object bo, int newWidth, int newHeight) {
 				if (bo != null && bo instanceof Task && ga instanceof MultiText) {

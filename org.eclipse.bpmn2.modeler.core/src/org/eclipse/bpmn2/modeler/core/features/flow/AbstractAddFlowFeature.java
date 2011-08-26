@@ -14,7 +14,7 @@ package org.eclipse.bpmn2.modeler.core.features.flow;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.di.DIImport;
-import org.eclipse.bpmn2.modeler.core.features.AbstractBpmnAddFeature;
+import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
@@ -38,7 +38,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public abstract class AbstractAddFlowFeature extends AbstractBpmnAddFeature {
+public abstract class AbstractAddFlowFeature extends AbstractAddBPMNShapeFeature {
 
 	public AbstractAddFlowFeature(IFeatureProvider fp) {
 		super(fp);

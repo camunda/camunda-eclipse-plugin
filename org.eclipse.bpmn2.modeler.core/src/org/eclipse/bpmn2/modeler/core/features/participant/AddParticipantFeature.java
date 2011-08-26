@@ -13,7 +13,7 @@
 package org.eclipse.bpmn2.modeler.core.features.participant;
 
 import org.eclipse.bpmn2.Participant;
-import org.eclipse.bpmn2.modeler.core.features.AbstractBpmnAddFeature;
+import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -31,7 +31,7 @@ import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeCreateService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class AddParticipantFeature extends AbstractBpmnAddFeature {
+public class AddParticipantFeature extends AbstractAddBPMNShapeFeature {
 
 	public static final String MULTIPLICITY = "multiplicity";
 

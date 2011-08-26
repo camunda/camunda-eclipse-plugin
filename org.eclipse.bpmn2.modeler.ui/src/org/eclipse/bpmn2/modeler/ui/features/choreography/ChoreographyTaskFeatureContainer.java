@@ -37,13 +37,13 @@ public class ChoreographyTaskFeatureContainer extends AbstractChoreographyFeatur
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new ChoreographyTaskAddFeature(fp);
+		return new AddChoreographyTaskFeature(fp);
 	}
 
 	@Override
 	public MultiUpdateFeature getUpdateFeature(IFeatureProvider fp) {
 		MultiUpdateFeature multiUpdate = super.getUpdateFeature(fp);
-		multiUpdate.addUpdateFeature(new ChoreographyUpdateMessageFlowFeature(fp));
+		multiUpdate.addUpdateFeature(new UpdateChoreographyMessageFlowFeature(fp));
 		return multiUpdate;
 	}
 

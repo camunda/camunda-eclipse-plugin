@@ -16,12 +16,12 @@ import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.participant.AddParticipantFeature;
-import org.eclipse.bpmn2.modeler.core.features.participant.ParticipantDirectEditFeature;
-import org.eclipse.bpmn2.modeler.core.features.participant.ParticipantLayoutFeature;
-import org.eclipse.bpmn2.modeler.core.features.participant.ParticipantMultiplicityUpdateFeature;
-import org.eclipse.bpmn2.modeler.core.features.participant.ParticipantResizeFeature;
+import org.eclipse.bpmn2.modeler.core.features.participant.DirectEditParticipantFeature;
+import org.eclipse.bpmn2.modeler.core.features.participant.LayoutParticipantFeature;
+import org.eclipse.bpmn2.modeler.core.features.participant.UpdateParticipantMultiplicityFeature;
+import org.eclipse.bpmn2.modeler.core.features.participant.ResizeParticipantFeature;
 import org.eclipse.bpmn2.modeler.core.features.participant.UpdateParticipantFeature;
-import org.eclipse.bpmn2.modeler.ui.features.choreography.ChoreographyUpdateMessageLinkFeature;
+import org.eclipse.bpmn2.modeler.ui.features.choreography.UpdateChoreographyMessageLinkFeature;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
@@ -53,33 +53,33 @@ public class ParticipantFeatureContainer extends BaseElementFeatureContainer {
 	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {
 		MultiUpdateFeature multiUpdate = new MultiUpdateFeature(fp);
 		multiUpdate.addUpdateFeature(new UpdateParticipantFeature(fp));
-		multiUpdate.addUpdateFeature(new ParticipantMultiplicityUpdateFeature(fp));
-		multiUpdate.addUpdateFeature(new ChoreographyUpdateMessageLinkFeature(fp));
+		multiUpdate.addUpdateFeature(new UpdateParticipantMultiplicityFeature(fp));
+		multiUpdate.addUpdateFeature(new UpdateChoreographyMessageLinkFeature(fp));
 		return multiUpdate;
 	}
 
 	@Override
 	public IDirectEditingFeature getDirectEditingFeature(IFeatureProvider fp) {
-		return new ParticipantDirectEditFeature(fp);
+		return new DirectEditParticipantFeature(fp);
 	}
 
 	@Override
 	public ILayoutFeature getLayoutFeature(IFeatureProvider fp) {
-		return new ParticipantLayoutFeature(fp);
+		return new LayoutParticipantFeature(fp);
 	}
 
 	@Override
 	public IMoveShapeFeature getMoveFeature(IFeatureProvider fp) {
-		return new ParticipantMoveFeature(fp);
+		return new MoveParticipantFeature(fp);
 	}
 
 	@Override
 	public IResizeShapeFeature getResizeFeature(IFeatureProvider fp) {
-		return new ParticipantResizeFeature(fp);
+		return new ResizeParticipantFeature(fp);
 	}
 
 	@Override
 	public IDeleteFeature getDeleteFeature(IFeatureProvider fp) {
-		return new ParticipantDeleteFeature(fp);
+		return new DeleteParticipantFeature(fp);
 	}
 }

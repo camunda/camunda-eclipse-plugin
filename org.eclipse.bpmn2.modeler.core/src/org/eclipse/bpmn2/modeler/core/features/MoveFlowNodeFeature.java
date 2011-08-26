@@ -26,7 +26,7 @@ import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
 
-public class MoveFlowNodeFeature extends DefaultBpmnMoveFeature {
+public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 
 	private final List<Algorithm> algorithms;
 

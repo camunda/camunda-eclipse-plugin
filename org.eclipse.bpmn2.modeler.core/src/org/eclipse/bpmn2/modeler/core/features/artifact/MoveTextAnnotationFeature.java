@@ -12,12 +12,12 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features.artifact;
 
-import org.eclipse.bpmn2.modeler.core.features.DefaultBpmnMoveFeature;
+import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
 
-public class MoveTextAnnotationFeature extends DefaultBpmnMoveFeature {
+public class MoveTextAnnotationFeature extends DefaultMoveBPMNShapeFeature {
 
 	public MoveTextAnnotationFeature(IFeatureProvider fp) {
 		super(fp);

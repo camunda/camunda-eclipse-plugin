@@ -12,12 +12,12 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features.activity;
 
-import static org.eclipse.bpmn2.modeler.core.features.activity.ActivityCompensateMarkerUpdateFeature.IS_COMPENSATE_PROPERTY;
-import static org.eclipse.bpmn2.modeler.core.features.activity.ActivityLoopAndMultiInstanceMarkerUpdateFeature.IS_LOOP_OR_MULTI_INSTANCE;
+import static org.eclipse.bpmn2.modeler.core.features.activity.UpdateActivityCompensateMarkerFeature.IS_COMPENSATE_PROPERTY;
+import static org.eclipse.bpmn2.modeler.core.features.activity.UpdateActivityLoopAndMultiInstanceMarkerFeature.IS_LOOP_OR_MULTI_INSTANCE;
 
 import org.eclipse.bpmn2.Activity;
-import org.eclipse.bpmn2.modeler.core.features.AbstractBpmnAddFeature;
-import org.eclipse.bpmn2.modeler.core.features.activity.ActivityLoopAndMultiInstanceMarkerUpdateFeature.LoopCharacteristicType;
+import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.features.activity.UpdateActivityLoopAndMultiInstanceMarkerFeature.LoopCharacteristicType;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
@@ -33,7 +33,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public abstract class AbstractAddActivityFeature extends AbstractBpmnAddFeature {
+public abstract class AbstractAddActivityFeature extends AbstractAddBPMNShapeFeature {
 
 	public static final String ACTIVITY_DECORATOR = "activity-decorator";
 	public static final String IS_ACTIVITY = "activity";

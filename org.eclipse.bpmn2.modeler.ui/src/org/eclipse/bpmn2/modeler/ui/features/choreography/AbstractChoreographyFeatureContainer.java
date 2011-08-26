@@ -14,8 +14,8 @@ package org.eclipse.bpmn2.modeler.ui.features.choreography;
 
 import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
-import org.eclipse.bpmn2.modeler.core.features.choreography.ChoreographyLayoutFeature;
-import org.eclipse.bpmn2.modeler.core.features.choreography.ChoreographyUpdateNameFeature;
+import org.eclipse.bpmn2.modeler.core.features.choreography.LayoutChoreographyFeature;
+import org.eclipse.bpmn2.modeler.core.features.choreography.UpdateChoreographyNameFeature;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
 import org.eclipse.graphiti.features.IDirectEditingFeature;
@@ -29,10 +29,10 @@ public abstract class AbstractChoreographyFeatureContainer extends BaseElementFe
 	@Override
 	public MultiUpdateFeature getUpdateFeature(IFeatureProvider fp) {
 		MultiUpdateFeature multiUpdate = new MultiUpdateFeature(fp);
-		multiUpdate.addUpdateFeature(new ChoreographyUpdateNameFeature(fp));
-		multiUpdate.addUpdateFeature(new ChoreographyUpdateParticipantRefsFeature(fp));
-		multiUpdate.addUpdateFeature(new ChoreographyUpdateInitiatingParticipantFeature(fp));
-		// multiUpdate.addUpdateFeature(new ChoreographyMarkerUpdateFeature(fp)); use it when prop editor supports enums
+		multiUpdate.addUpdateFeature(new UpdateChoreographyNameFeature(fp));
+		multiUpdate.addUpdateFeature(new UpdateChoreographyParticipantRefsFeature(fp));
+		multiUpdate.addUpdateFeature(new UpdateChoreographyInitiatingParticipantFeature(fp));
+		// multiUpdate.addUpdateFeature(new UpdateChoreographyMarkerFeature(fp)); use it when prop editor supports enums
 		return multiUpdate;
 	}
 
@@ -43,17 +43,17 @@ public abstract class AbstractChoreographyFeatureContainer extends BaseElementFe
 
 	@Override
 	public ILayoutFeature getLayoutFeature(IFeatureProvider fp) {
-		return new ChoreographyLayoutFeature(fp);
+		return new LayoutChoreographyFeature(fp);
 	}
 
 	@Override
 	public IMoveShapeFeature getMoveFeature(IFeatureProvider fp) {
-		return new ChoreographyMoveFeature(fp);
+		return new MoveChoreographyFeature(fp);
 	}
 
 	@Override
 	public IResizeShapeFeature getResizeFeature(IFeatureProvider fp) {
-		return new ChoreographyResizeFeature(fp);
+		return new ResizeChoreographyFeature(fp);
 	}
 
 	@Override

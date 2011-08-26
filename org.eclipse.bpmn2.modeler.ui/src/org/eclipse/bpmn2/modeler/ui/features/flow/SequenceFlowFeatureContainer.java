@@ -25,16 +25,18 @@ import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementConnectionFeatureContainer;
-import org.eclipse.bpmn2.modeler.core.features.BaseElementReconnectionFeature;
+import org.eclipse.bpmn2.modeler.core.features.ReconnectBaseElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractAddFlowFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractCreateFlowFeature;
+import org.eclipse.bpmn2.modeler.core.features.flow.AbstractReconnectFlowFeature;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.dd.di.DiagramElement;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
@@ -119,7 +121,7 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 
 	@Override
 	public IReconnectionFeature getReconnectionFeature(IFeatureProvider fp) {
-		return new SequenceFlowReconnectionFeature(fp);
+		return new ReconnectSequenceFlowFeature(fp);
 	}
 
 	@Override
@@ -296,34 +298,23 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 		}
 	}
 	
-	public static class SequenceFlowReconnectionFeature extends BaseElementReconnectionFeature {
+	public static class ReconnectSequenceFlowFeature extends AbstractReconnectFlowFeature {
 
-		public SequenceFlowReconnectionFeature(IFeatureProvider fp) {
+		public ReconnectSequenceFlowFeature(IFeatureProvider fp) {
 			super(fp);
 			// TODO Auto-generated constructor stub
 		}
 
 		@Override
-		public boolean canReconnect(IReconnectionContext context) {
-			if (super.canReconnect(context)) {
-				BaseElement targetElement = BusinessObjectUtil.getFirstElementOfType(context.getTargetPictogramElement(), BaseElement.class);
-				return targetElement instanceof FlowNode;
-			}
-			return false;
+		protected Class<? extends EObject> getTargetClass() {
+			return FlowNode.class;
 		}
 
-//		@Override
-//		public void postReconnect(IReconnectionContext context) {
-//			super.postReconnect(context);
-//			SequenceFlow flow = BusinessObjectUtil.getFirstElementOfType(context.getConnection(), SequenceFlow.class);
-//			FlowNode targetElement = BusinessObjectUtil.getFirstElementOfType(context.getTargetPictogramElement(), FlowNode.class);
-//			if (context.getReconnectType().equals(ReconnectionContext.RECONNECT_TARGET)) {
-//				flow.setTargetRef(targetElement);
-//			}
-//			else {
-//				flow.setSourceRef(targetElement);
-//			}
-//		}
+		@Override
+		protected Class<? extends EObject> getSourceClass() {
+			return FlowNode.class;
+		}
+
 	}
 	
 	private static boolean isDefaultAttributeSupported(FlowNode node) {

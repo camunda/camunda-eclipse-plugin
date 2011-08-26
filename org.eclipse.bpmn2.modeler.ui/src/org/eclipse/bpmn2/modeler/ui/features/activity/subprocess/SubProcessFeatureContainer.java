@@ -13,12 +13,9 @@
 package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
 import org.eclipse.bpmn2.SubProcess;
-import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
-import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandableActivityFeature;
-import org.eclipse.bpmn2.modeler.core.features.activity.subprocess.AbstractCreateSubProcessFeature;
+import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -52,7 +49,7 @@ public class SubProcessFeatureContainer extends AbstractSubProcessFeatureContain
 		return multiUpdate;
 	}
 
-	public static class CreateSubProcessFeature extends AbstractCreateExpandableActivityFeature<SubProcess> {
+	public static class CreateSubProcessFeature extends AbstractCreateExpandableFlowNodeFeature<SubProcess> {
 
 		public CreateSubProcessFeature(IFeatureProvider fp) {
 			super(fp, "Expanded Sub-Process", "Inner activity");

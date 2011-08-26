@@ -30,7 +30,7 @@ import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
-import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandableActivityFeature;
+import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Expand;
@@ -105,7 +105,7 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 
 	@Override
 	public ILayoutFeature getLayoutFeature(IFeatureProvider fp) {
-		return new SubProcessLayoutFeature(fp) {
+		return new LayoutSubProcessFeature(fp) {
 			@Override
 			protected int getMarkerContainerOffset() {
 				return MARKER_OFFSET;
@@ -120,7 +120,7 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 		return multiUpdate;
 	}
 
-	public static class CreateCallActivityFeature extends AbstractCreateExpandableActivityFeature<CallActivity> {
+	public static class CreateCallActivityFeature extends AbstractCreateExpandableFlowNodeFeature<CallActivity> {
 
 		// NOTE: Even though the Call Activity is an expandable figure, the contents for its "innards"
 		// are (usually) defined somewhere else, so it doesn't make much sense to be able to expand it in the

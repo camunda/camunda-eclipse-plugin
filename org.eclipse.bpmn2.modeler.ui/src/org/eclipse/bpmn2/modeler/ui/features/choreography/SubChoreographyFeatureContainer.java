@@ -20,7 +20,8 @@ import org.eclipse.bpmn2.ChoreographyLoopType;
 import org.eclipse.bpmn2.SubChoreography;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
-import org.eclipse.bpmn2.modeler.core.features.choreography.ChoreographyLayoutFeature;
+import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
+import org.eclipse.bpmn2.modeler.core.features.choreography.LayoutChoreographyFeature;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.IAddFeature;
@@ -46,12 +47,12 @@ public class SubChoreographyFeatureContainer extends AbstractChoreographyFeature
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new SubChoreographyAddFeature(fp);
+		return new AddSubChoreographyFeature(fp);
 	}
 
 	@Override
 	public ILayoutFeature getLayoutFeature(IFeatureProvider fp) {
-		return new ChoreographyLayoutFeature(fp) {
+		return new LayoutChoreographyFeature(fp) {
 			@Override
 			protected void setTextLocation(ContainerShape choreographyContainer, Text text, int w, int h) {
 				List<ContainerShape> bandContainers = ChoreographyUtil
@@ -72,7 +73,7 @@ public class SubChoreographyFeatureContainer extends AbstractChoreographyFeature
 		};
 	}
 
-	public static class CreateSubChoreographyFeature extends AbstractCreateFlowElementFeature<SubChoreography> {
+	public static class CreateSubChoreographyFeature extends AbstractCreateExpandableFlowNodeFeature<SubChoreography> {
 
 		public CreateSubChoreographyFeature(IFeatureProvider fp) {
 			super(fp, "Expanded Sub-Choreography", "A compound activity that can contain other activities");

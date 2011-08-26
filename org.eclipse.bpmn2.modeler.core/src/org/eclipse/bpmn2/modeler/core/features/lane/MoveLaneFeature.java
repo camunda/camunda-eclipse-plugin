@@ -13,12 +13,12 @@
 package org.eclipse.bpmn2.modeler.core.features.lane;
 
 import org.eclipse.bpmn2.Lane;
-import org.eclipse.bpmn2.modeler.core.features.DefaultBpmnMoveFeature;
+import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
 
-public class MoveLaneFeature extends DefaultBpmnMoveFeature {
+public class MoveLaneFeature extends DefaultMoveBPMNShapeFeature {
 
 	private MoveLaneFeature moveStrategy;
 

@@ -39,17 +39,17 @@ public class BoundaryEventFeatureContainer extends BaseElementFeatureContainer {
 
 	@Override
 	public ICreateFeature getCreateFeature(IFeatureProvider fp) {
-		return new BoundaryEventCreateFeature(fp);
+		return new CreateBoundaryEventFeature(fp);
 	}
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new BoundaryEventAddFeature(fp);
+		return new AddBoundaryEventFeature(fp);
 	}
 
 	@Override
 	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {
-		return new BoundaryEventUpdateFeature(fp);
+		return new UpdateBoundaryEventFeature(fp);
 	}
 
 	@Override
@@ -59,12 +59,12 @@ public class BoundaryEventFeatureContainer extends BaseElementFeatureContainer {
 
 	@Override
 	public ILayoutFeature getLayoutFeature(IFeatureProvider fp) {
-		return new BoundaryEventLayoutFeature(fp);
+		return new LayoutBoundaryEventFeature(fp);
 	}
 
 	@Override
 	public IMoveShapeFeature getMoveFeature(IFeatureProvider fp) {
-		return new BoundaryEventMoveFeature(fp);
+		return new MoveBoundaryEventFeature(fp);
 	}
 
 	@Override

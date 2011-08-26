@@ -20,10 +20,13 @@ import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementConnectionFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractAddFlowFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractCreateFlowFeature;
+import org.eclipse.bpmn2.modeler.core.features.flow.AbstractReconnectFlowFeature;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.IReconnectionFeature;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
 
 public class ConversationLinkFeatureContainer extends BaseElementConnectionFeatureContainer {
@@ -54,6 +57,11 @@ public class ConversationLinkFeatureContainer extends BaseElementConnectionFeatu
 		return new CreateConversationLinkFeature(fp);
 	}
 
+	@Override
+	public IReconnectionFeature getReconnectionFeature(IFeatureProvider fp) {
+		return new ReconnectConversationLinkFeature(fp);
+	}
+
 	public static class CreateConversationLinkFeature extends AbstractCreateFlowFeature<Conversation, Participant> {
 
 		public CreateConversationLinkFeature(IFeatureProvider fp) {
@@ -82,4 +90,23 @@ public class ConversationLinkFeatureContainer extends BaseElementConnectionFeatu
 			return Participant.class;
 		}
 	}
+	public static class ReconnectConversationLinkFeature extends AbstractReconnectFlowFeature {
+
+		public ReconnectConversationLinkFeature(IFeatureProvider fp) {
+			super(fp);
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		protected Class<? extends EObject> getTargetClass() {
+			return Conversation.class;
+		}
+
+		@Override
+		protected Class<? extends EObject> getSourceClass() {
+			return Participant.class;
+		}
+
+	}
+	
 }
