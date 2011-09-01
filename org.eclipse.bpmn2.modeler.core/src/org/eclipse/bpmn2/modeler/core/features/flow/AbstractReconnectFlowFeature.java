@@ -34,9 +34,11 @@ public abstract class AbstractReconnectFlowFeature extends ReconnectBaseElementF
 	public boolean canReconnect(IReconnectionContext context) {
 		if (super.canReconnect(context)) {
 			BaseElement targetElement = BusinessObjectUtil.getFirstElementOfType(context.getTargetPictogramElement(), BaseElement.class);
-			if (context.getReconnectType() == ReconnectionContext.RECONNECT_TARGET)
-				return targetElement.getClass().isAssignableFrom(getTargetClass());
-			return targetElement.getClass().isAssignableFrom(getSourceClass());
+			if (targetElement!=null) {
+				if (context.getReconnectType() == ReconnectionContext.RECONNECT_TARGET)
+					return getTargetClass().isAssignableFrom(targetElement.getClass());
+				return getSourceClass().isAssignableFrom(targetElement.getClass());
+			}
 		}
 		return false;
 	}

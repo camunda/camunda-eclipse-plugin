@@ -18,10 +18,12 @@ import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IRemoveBendpointContext;
 import org.eclipse.graphiti.features.impl.DefaultRemoveBendpointFeature;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public class RemoveBendpointFeature extends DefaultRemoveBendpointFeature {
 
@@ -29,6 +31,15 @@ public class RemoveBendpointFeature extends DefaultRemoveBendpointFeature {
 	    super(fp);
     }
 	
+	@Override
+	public boolean canRemoveBendpoint(IRemoveBendpointContext context) {
+		Shape connectionPointShape = AnchorUtil.getConnectionPointAt(context.getConnection(), context.getBendpoint());
+		if (connectionPointShape!=null)
+			return false;
+		
+		return super.canRemoveBendpoint(context);
+	}
+
 	@Override
 	public void removeBendpoint(IRemoveBendpointContext context) {
 	    super.removeBendpoint(context);

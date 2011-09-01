@@ -19,13 +19,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.bpmn2.di.BPMNEdge;
-import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.datatypes.ILocation;
+import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.mm.algorithms.Ellipse;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
@@ -34,20 +35,29 @@ import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
-import org.eclipse.graphiti.mm.pictograms.impl.FreeFormConnectionImpl;
 import org.eclipse.graphiti.services.Graphiti;
+import org.eclipse.graphiti.services.ICreateService;
 import org.eclipse.graphiti.services.IGaService;
+import org.eclipse.graphiti.services.ILayoutService;
 import org.eclipse.graphiti.services.IPeService;
 
 public class AnchorUtil {
 
 	public static final String BOUNDARY_FIXPOINT_ANCHOR = "boundary.fixpoint.anchor";
 
+	// values for connection points
+	public static final String CONNECTION_POINT = "connection.point"; //$NON-NLS-1$
+	public static final String CONNECTION_POINT_KEY = "connection.point.key"; //$NON-NLS-1$
+	public static final int CONNECTION_POINT_SIZE = 4;
+
 	private static final IPeService peService = Graphiti.getPeService();
 	private static final IGaService gaService = Graphiti.getGaService();
-
+	private static final ICreateService createService = Graphiti.getCreateService();
+	private static final ILayoutService layoutService = Graphiti.getLayoutService();
+	
 	public enum AnchorLocation {
 		TOP("anchor.top"), BOTTOM("anchor.bottom"), LEFT("anchor.left"), RIGHT("anchor.right");
 
@@ -95,17 +105,35 @@ public class AnchorUtil {
 	}
 
 	public static Map<AnchorLocation, BoundaryAnchor> getBoundaryAnchors(AnchorContainer ac) {
-		Map<AnchorLocation, BoundaryAnchor> map = new HashMap<AnchorLocation, AnchorUtil.BoundaryAnchor>(4);
-		Iterator<Anchor> iterator = ac.getAnchors().iterator();
-		while (iterator.hasNext()) {
-			Anchor anchor = iterator.next();
-			String property = Graphiti.getPeService().getPropertyValue(anchor, BOUNDARY_FIXPOINT_ANCHOR);
-			if (property != null && anchor instanceof FixPointAnchor) {
+		Map<AnchorLocation, BoundaryAnchor> map = new HashMap<AnchorLocation, BoundaryAnchor>(4);
+		
+		if (ac instanceof FreeFormConnection) {
+			// the anchor container is a Connection which does not have any predefined BoundaryAnchors
+			// so we have to synthesize these by looking for connection point shapes owned by the connection
+			for (Shape connectionPointShape : getConnectionPoints((FreeFormConnection)ac)) {
+
 				BoundaryAnchor a = new BoundaryAnchor();
-				a.anchor = (FixPointAnchor) anchor;
-				a.locationType = AnchorLocation.getLocation(property);
-				a.location = peService.getLocationRelativeToDiagram(anchor);
-				map.put(a.locationType, a);
+				a.anchor = getConnectionPointAnchor(connectionPointShape);
+				for (AnchorLocation al : AnchorLocation.values() ) {
+					a.locationType = al;
+					a.location = getConnectionPointLocation(connectionPointShape);
+					map.put(a.locationType, a);
+				}
+			}
+		}
+		else {
+			// anchor container is a ContainerShape - these already have predefined BoundaryAnchors
+			Iterator<Anchor> iterator = ac.getAnchors().iterator();
+			while (iterator.hasNext()) {
+				Anchor anchor = iterator.next();
+				String property = Graphiti.getPeService().getPropertyValue(anchor, BOUNDARY_FIXPOINT_ANCHOR);
+				if (property != null && anchor instanceof FixPointAnchor) {
+					BoundaryAnchor a = new BoundaryAnchor();
+					a.anchor = (FixPointAnchor) anchor;
+					a.locationType = AnchorLocation.getLocation(property);
+					a.location = peService.getLocationRelativeToDiagram(anchor);
+					map.put(a.locationType, a);
+				}
 			}
 		}
 		return map;
@@ -123,8 +151,8 @@ public class AnchorUtil {
 		Map<AnchorLocation, BoundaryAnchor> sourceBoundaryAnchors = getBoundaryAnchors(source);
 		Map<AnchorLocation, BoundaryAnchor> targetBoundaryAnchors = getBoundaryAnchors(target);
 
-		if (connection instanceof FreeFormConnectionImpl) {
-			EList<Point> bendpoints = ((FreeFormConnectionImpl) connection).getBendpoints();
+		if (connection instanceof FreeFormConnection) {
+			EList<Point> bendpoints = ((FreeFormConnection) connection).getBendpoints();
 			if (bendpoints.size() > 0) {
 				FixPointAnchor sourceAnchor = getCorrectAnchor(sourceBoundaryAnchors, bendpoints.get(0));
 				FixPointAnchor targetAnchor = getCorrectAnchor(targetBoundaryAnchors,
@@ -417,24 +445,14 @@ public class AnchorUtil {
 		IDimension size = gaService.calculateSize(ga);
 		int w = size.getWidth();
 		int h = size.getHeight();
-		AnchorUtil.createAnchor(shape, AnchorLocation.TOP, w / 2, 0);
-		AnchorUtil.createAnchor(shape, AnchorLocation.RIGHT, w, h / 2);
-		AnchorUtil.createAnchor(shape, AnchorLocation.BOTTOM, w / 2, h);
-		AnchorUtil.createAnchor(shape, AnchorLocation.LEFT, 0, h / 2);
-	}
-
-	public static void addFixedPointAnchors(Connection conn, GraphicsAlgorithm ga) {
-		IDimension size = gaService.calculateSize(ga);
-		int w = size.getWidth();
-		int h = size.getHeight();
-		AnchorUtil.createAnchor(conn, AnchorLocation.TOP, w / 2, 0);
-		AnchorUtil.createAnchor(conn, AnchorLocation.RIGHT, w, h / 2);
-		AnchorUtil.createAnchor(conn, AnchorLocation.BOTTOM, w / 2, h);
-		AnchorUtil.createAnchor(conn, AnchorLocation.LEFT, 0, h / 2);
+		createAnchor(shape, AnchorLocation.TOP, w / 2, 0);
+		createAnchor(shape, AnchorLocation.RIGHT, w, h / 2);
+		createAnchor(shape, AnchorLocation.BOTTOM, w / 2, h);
+		createAnchor(shape, AnchorLocation.LEFT, 0, h / 2);
 	}
 
 	public static void relocateFixPointAnchors(Shape shape, int w, int h) {
-		Map<AnchorLocation, BoundaryAnchor> anchors = AnchorUtil.getBoundaryAnchors(shape);
+		Map<AnchorLocation, BoundaryAnchor> anchors = getBoundaryAnchors(shape);
 
 		FixPointAnchor anchor = anchors.get(AnchorLocation.TOP).anchor;
 		anchor.setLocation(gaService.createPoint(w / 2, 0));
@@ -447,5 +465,176 @@ public class AnchorUtil {
 
 		anchor = anchors.get(AnchorLocation.LEFT).anchor;
 		anchor.setLocation(gaService.createPoint(0, h / 2));
+	}
+
+	// Connection points allow creation of anchors on FreeFormConnections
+	
+	public static Shape createConnectionPoint(IFeatureProvider fp,
+			FreeFormConnection connection, ILocation location) {
+
+		Shape connectionPointShape = null;
+
+		Point bendPoint = null;
+		Diagram diagram = fp.getDiagramTypeProvider().getDiagram();
+
+		for (Point p : connection.getBendpoints()) {
+			int px = p.getX();
+			int py = p.getY();
+			if (GraphicsUtil.isPointNear(p, location, 20)) {
+				bendPoint = p;
+				location.setX(px);
+				location.setY(py);
+			}
+
+			for (Shape s : diagram.getChildren()) {
+				if (isConnectionPointNear(s, location, 0)) {
+					// this is the connection point on the target connection line
+					// reuse this connection point if it's "close enough" to
+					// target location otherwise create a new connection point
+					if (isConnectionPointNear(s, location, 20)) {
+						bendPoint = p;
+						connectionPointShape = s;
+						location.setX(px);
+						location.setY(py);
+					}
+					break;
+				}
+			}
+		}
+
+		if (connectionPointShape == null) {
+			ICreateService createService = Graphiti.getCreateService();
+
+			connectionPointShape = createConnectionPoint(location, diagram);
+			fp.link(connectionPointShape, connection);
+			connection.getLink().getBusinessObjects().add(connectionPointShape);
+
+			if (bendPoint == null) {
+				bendPoint = createService.createPoint(location.getX(),
+						location.getY());
+				connection.getBendpoints().add(bendPoint);
+			}
+		}
+		return connectionPointShape;
+	}
+
+	public static Shape createConnectionPoint(ILocation location, ContainerShape cs) {
+		
+		// create a circle for the connection point shape
+		Shape connectionPointShape = createService.createShape(cs, true);
+		peService.setPropertyValue(connectionPointShape, CONNECTION_POINT_KEY, CONNECTION_POINT);
+		Ellipse ellipse = createService.createEllipse(connectionPointShape);
+		int x = 0, y = 0;
+		if (location != null) {
+			x = location.getX();
+			y = location.getY();
+		}
+		ellipse.setFilled(true);
+		Diagram diagram = peService.getDiagramForPictogramElement(connectionPointShape);
+		ellipse.setForeground(Graphiti.getGaService().manageColor(diagram, StyleUtil.CLASS_FOREGROUND));
+		
+		// create the anchor
+		getConnectionPointAnchor(connectionPointShape);
+		
+		// set the location
+		setConnectionPointLocation(connectionPointShape, x, y);
+	
+		return connectionPointShape;
+	}
+
+	public static FixPointAnchor getConnectionPointAnchor(Shape connectionPointShape) {
+		if (connectionPointShape.getAnchors().size()==0) {
+			FixPointAnchor anchor = createService.createFixPointAnchor(connectionPointShape);
+			peService.setPropertyValue(anchor, CONNECTION_POINT_KEY, CONNECTION_POINT);
+			
+			// if the anchor doesn't have a GraphicsAlgorithm, GEF will throw a fit
+			// so create an invisible rectangle for it
+			createService.createInvisibleRectangle(anchor);
+		}		
+		return (FixPointAnchor)connectionPointShape.getAnchors().get(0);
+	}
+
+	public static ILocation getConnectionPointLocation(Shape connectionPointShape) {
+		ILocation location = GraphicsUtil.peService.getLocationRelativeToDiagram(connectionPointShape);
+		int x = location.getX() + CONNECTION_POINT_SIZE / 2;
+		int y = location.getY() + CONNECTION_POINT_SIZE / 2;
+		location.setX(x);
+		location.setY(y);
+		return location;
+	}
+	
+	public static void setConnectionPointLocation(Shape connectionPointShape, int x, int y) {
+		
+		if (connectionPointShape.getAnchors().size()==0) {
+			// anchor has not been created yet - need to set both location AND size
+			layoutService.setLocationAndSize(
+					connectionPointShape.getGraphicsAlgorithm(),
+					x - CONNECTION_POINT_SIZE / 2, y - CONNECTION_POINT_SIZE / 2,
+					CONNECTION_POINT_SIZE, CONNECTION_POINT_SIZE);
+		}
+		else {
+			// already created - just set the location
+			layoutService.setLocation(
+					connectionPointShape.getGraphicsAlgorithm(),
+					x - CONNECTION_POINT_SIZE / 2, y - CONNECTION_POINT_SIZE / 2);
+		}
+		
+		FixPointAnchor anchor = getConnectionPointAnchor(connectionPointShape);
+		anchor.setLocation( Graphiti.getCreateService().createPoint(CONNECTION_POINT_SIZE / 2,CONNECTION_POINT_SIZE / 2) );
+		layoutService.setLocation(
+				anchor.getGraphicsAlgorithm(), 
+				CONNECTION_POINT_SIZE / 2,CONNECTION_POINT_SIZE / 2);
+	}
+	
+	public static List<Shape> getConnectionPoints(FreeFormConnection connection) {
+		ArrayList<Shape> list = new ArrayList<Shape>();
+		
+		for (Object o : connection.getLink().getBusinessObjects()) {
+			if ( o instanceof AnchorContainer ) {
+				AnchorContainer c = (AnchorContainer)o;
+				if (AnchorUtil.isConnectionPoint(c)) {
+					list.add((Shape)c);
+				}
+			}
+		}
+		
+		return list;
+	}
+	
+	public static Shape getConnectionPointAt(FreeFormConnection connection, Point point) {
+		for (Shape connectionPointShape : getConnectionPoints(connection)) {
+			if (AnchorUtil.isConnectionPointNear(connectionPointShape, point, 0)) {
+				return connectionPointShape;
+			}
+		}
+		return null;
+	}
+
+
+	public static boolean isConnectionPoint(PictogramElement pe) {
+		String value = Graphiti.getPeService().getPropertyValue(pe, CONNECTION_POINT_KEY);
+		return CONNECTION_POINT.equals(value);
+	}
+
+	public static boolean isConnectionPointNear(PictogramElement pe, ILocation loc, int dist) {
+		if (isConnectionPoint(pe)) {
+			int x = pe.getGraphicsAlgorithm().getX() + CONNECTION_POINT_SIZE / 2;
+			int y = pe.getGraphicsAlgorithm().getY() + CONNECTION_POINT_SIZE / 2;
+			int lx = loc.getX();
+			int ly = loc.getY();
+			return lx-dist <= x && x <= lx+dist && ly-dist <= y && y <= ly+dist;
+		}
+		return false;
+	}
+
+	public static boolean isConnectionPointNear(PictogramElement pe, Point loc, int dist) {
+		if (isConnectionPoint(pe)) {
+			int x = pe.getGraphicsAlgorithm().getX() + CONNECTION_POINT_SIZE / 2;
+			int y = pe.getGraphicsAlgorithm().getY() + CONNECTION_POINT_SIZE / 2;
+			int lx = loc.getX();
+			int ly = loc.getY();
+			return lx-dist <= x && x <= lx+dist && ly-dist <= y && y <= ly+dist;
+		}
+		return false;
 	}
 }

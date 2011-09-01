@@ -28,6 +28,7 @@ import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
 import org.eclipse.graphiti.mm.algorithms.Text;
+import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -65,8 +66,8 @@ public abstract class AbstractAddFlowFeature extends AbstractAddBPMNShapeFeature
 			connection.setStart(addConContext.getSourceAnchor());
 			connection.setEnd(addConContext.getTargetAnchor());
 		} else {
-			ContainerShape sourceContainer = (ContainerShape) addConContext.getSourceAnchor().eContainer();
-			ContainerShape targetContainer = (ContainerShape) addConContext.getTargetAnchor().eContainer();
+			AnchorContainer sourceContainer = (AnchorContainer) addConContext.getSourceAnchor().eContainer();
+			AnchorContainer targetContainer = (AnchorContainer) addConContext.getTargetAnchor().eContainer();
 			Tuple<FixPointAnchor, FixPointAnchor> anchors = AnchorUtil.getSourceAndTargetBoundaryAnchors(
 					sourceContainer, targetContainer, connection);
 
@@ -84,8 +85,8 @@ public abstract class AbstractAddFlowFeature extends AbstractAddBPMNShapeFeature
 		Polyline connectionLine = gaService.createPolyline(connection);
 		connectionLine.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 
-		peService.createChopboxAnchor(connection);
-		AnchorUtil.addFixedPointAnchors(connection, connectionLine);
+//		peService.createChopboxAnchor(connection);
+//		AnchorUtil.addFixedPointAnchors(connection, connectionLine);
 		
 		decorateConnectionLine(connectionLine);
 

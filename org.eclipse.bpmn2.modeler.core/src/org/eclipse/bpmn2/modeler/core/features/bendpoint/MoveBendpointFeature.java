@@ -20,12 +20,17 @@ import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
+import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil.AnchorLocation;
+import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil.BoundaryAnchor;
 import org.eclipse.dd.dc.Point;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IMoveBendpointContext;
 import org.eclipse.graphiti.features.impl.DefaultMoveBendpointFeature;
+import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
+import org.eclipse.graphiti.mm.pictograms.Shape;
+import org.eclipse.graphiti.services.Graphiti;
 
 public class MoveBendpointFeature extends DefaultMoveBendpointFeature {
 
@@ -45,6 +50,12 @@ public class MoveBendpointFeature extends DefaultMoveBendpointFeature {
 			Point p = edge.getWaypoint().get(index);
 			p.setX(context.getX());
 			p.setY(context.getY());
+			
+			// also need to move the connection point if there is one at this bendpoint
+			Shape connectionPointShape = AnchorUtil.getConnectionPointAt(connection, context.getBendpoint());
+			if (connectionPointShape!=null)
+				AnchorUtil.setConnectionPointLocation(connectionPointShape, context.getX(), context.getY());
+			
 			if (index == 1) {
 				AnchorUtil.reConnect((DiagramElement) edge.getSourceElement(), getDiagram());
 			} else if (index == connection.getBendpoints().size()) {

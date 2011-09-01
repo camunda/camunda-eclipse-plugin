@@ -19,6 +19,8 @@ import java.util.Iterator;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.graphiti.datatypes.ILocation;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.GraphicsAlgorithmContainer;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
@@ -27,17 +29,19 @@ import org.eclipse.graphiti.mm.algorithms.Polygon;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
+import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
+import org.eclipse.graphiti.util.IColorConstant;
 
 public class GraphicsUtil {
 
 	private static final IGaService gaService = Graphiti.getGaService();
-	private static final IPeService peService = Graphiti.getPeService();
+	static final IPeService peService = Graphiti.getPeService();
 
 	// TODO move all size properties to separate interface
 	public static int DATA_WIDTH = 36;
@@ -526,5 +530,21 @@ public class GraphicsUtil {
 		compensation.arrow2 = arrow2;
 
 		return compensation;
+	}
+
+	/**
+	 * Check if the given Point is with a given distance of the given Location.
+	 * 
+	 * @param p - the Point to check
+	 * @param loc - the target Location
+	 * @param dist - the maximum distance horizontally and vertically from the given Location
+	 * @return true if the point lies within the rectangular area of the Location.
+	 */
+	public static boolean isPointNear(Point p, ILocation loc, int dist) {
+		int x = p.getX();
+		int y = p.getY();
+		int lx = loc.getX();
+		int ly = loc.getY();
+		return lx-dist <= x && x <= lx+dist && ly-dist <= y && y <= ly+dist;
 	}
 }
