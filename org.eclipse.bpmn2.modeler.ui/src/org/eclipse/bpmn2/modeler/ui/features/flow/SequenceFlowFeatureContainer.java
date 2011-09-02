@@ -280,14 +280,18 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 			// all properties have been correctly set to their initial values in the AddFeature!
 			// see https://issues.jboss.org/browse/JBPM-3102
 			IPeService peService = Graphiti.getPeService();
-			Connection connection = (Connection) context.getPictogramElement();
-			SequenceFlow flow = BusinessObjectUtil.getFirstElementOfType(connection, SequenceFlow.class);
-			String property = peService.getPropertyValue(connection, IS_CONDITIONAL_FLOW_PROPERTY);
-			if (property == null || !canUpdate(context)) {
-				return Reason.createFalseReason();
+			PictogramElement pe = context.getPictogramElement();
+			if (pe instanceof Connection) {
+				Connection connection = (Connection) pe;
+				SequenceFlow flow = BusinessObjectUtil.getFirstElementOfType(connection, SequenceFlow.class);
+				String property = peService.getPropertyValue(connection, IS_CONDITIONAL_FLOW_PROPERTY);
+				if (property == null || !canUpdate(context)) {
+					return Reason.createFalseReason();
+				}
+				boolean changed = flow.getConditionExpression() != null != new Boolean(property);
+				return changed ? Reason.createTrueReason() : Reason.createFalseReason();
 			}
-			boolean changed = flow.getConditionExpression() != null != new Boolean(property);
-			return changed ? Reason.createTrueReason() : Reason.createFalseReason();
+			return Reason.createFalseReason();
 		}
 
 		@Override

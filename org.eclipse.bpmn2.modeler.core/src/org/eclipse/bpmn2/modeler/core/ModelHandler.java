@@ -464,13 +464,16 @@ public class ModelHandler {
 		for (BPMNDiagram d : diagrams) {
 			List<DiagramElement> planeElement = d.getPlane().getPlaneElement();
 
-			for (DiagramElement elem : planeElement) {
-				if (elem instanceof BPMNShape && element.getId() != null
-						&& element.getId().equals(((BPMNShape) elem).getBpmnElement().getId())) {
-					return (elem);
-				} else if (elem instanceof BPMNEdge && element.getId() != null
-						&& element.getId().equals(((BPMNEdge) elem).getBpmnElement().getId())) {
-					return (elem);
+			String id = element.getId();
+			if (id!=null) {
+				for (DiagramElement elem : planeElement) {
+					if (elem instanceof BPMNShape && 
+							id.equals(((BPMNShape) elem).getBpmnElement().getId())) {
+						return (elem);
+					} else if (elem instanceof BPMNEdge &&
+							id.equals(((BPMNEdge) elem).getBpmnElement().getId())) {
+						return (elem);
+					}
 				}
 			}
 		}

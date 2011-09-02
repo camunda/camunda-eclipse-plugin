@@ -16,10 +16,12 @@ import java.util.Collection;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNShape;
+import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IPeService;
 
@@ -29,6 +31,10 @@ public class BusinessObjectUtil {
 	public static boolean containsElementOfType(PictogramElement elem, Class clazz) {
 		if (elem.getLink() == null) {
 			return false;
+		}
+		// if this is a connection point, look at business objects of the connection
+		if (AnchorUtil.isConnectionPoint(elem)) {
+			elem = AnchorUtil.getConnectionPointOwner((Shape)elem);
 		}
 		EList<EObject> businessObjs = elem.getLink().getBusinessObjects();
 		for (EObject eObject : businessObjs) {
@@ -52,6 +58,10 @@ public class BusinessObjectUtil {
 			}
 			if (elem==null || elem.getLink() == null)
 				return null;
+		}
+		// if this is a connection point, look at business objects of the connection
+		if (AnchorUtil.isConnectionPoint(elem)) {
+			elem = AnchorUtil.getConnectionPointOwner((Shape)elem);
 		}
 		EList<EObject> businessObjs = elem.getLink().getBusinessObjects();
 		for (EObject eObject : businessObjs) {

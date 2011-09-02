@@ -29,10 +29,17 @@ import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReconnectionFeature;
+import org.eclipse.graphiti.features.IRemoveBendpointFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.features.context.IContext;
+import org.eclipse.graphiti.features.context.ICreateConnectionContext;
 import org.eclipse.graphiti.features.context.IReconnectionContext;
+import org.eclipse.graphiti.features.context.IRemoveBendpointContext;
 import org.eclipse.graphiti.features.context.impl.AddConnectionContext;
+import org.eclipse.graphiti.features.context.impl.AddContext;
+import org.eclipse.graphiti.features.context.impl.CreateConnectionContext;
 import org.eclipse.graphiti.features.context.impl.ReconnectionContext;
+import org.eclipse.graphiti.features.context.impl.RemoveBendpointContext;
 import org.eclipse.graphiti.features.context.impl.RemoveContext;
 import org.eclipse.graphiti.internal.datatypes.impl.LocationImpl;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
@@ -48,6 +55,8 @@ import org.eclipse.graphiti.services.Graphiti;
 
 public class AssociationFeatureContainer extends BaseElementConnectionFeatureContainer {
 
+	protected CreateConnectionContext createContext;
+	
 	@Override
 	public boolean canApplyTo(Object o) {
 		return super.canApplyTo(o) && o instanceof Association;
@@ -64,24 +73,56 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 			}
 
 			@Override
-			protected void hook(IAddContext context, Connection connection,
-					BaseElement element) {
-				super.hook(context, connection, element);
+			public PictogramElement add(IAddContext context) {
 				AddConnectionContext ac = (AddConnectionContext)context;
 				Anchor sourceAnchor = ac.getSourceAnchor();
 				Anchor targetAnchor = ac.getTargetAnchor();
-				AnchorContainer sourceAnchorContainer = sourceAnchor.getParent();
-				AnchorContainer targetAnchorContainer = targetAnchor.getParent();
-				if (sourceAnchorContainer instanceof FreeFormConnection) {
-					AnchorUtil.createConnectionPoint(getFeatureProvider(),
-							(FreeFormConnection)sourceAnchorContainer,
-							Graphiti.getPeLayoutService().getConnectionMidpoint((FreeFormConnection)sourceAnchorContainer, 0.5));
+				PictogramElement source = sourceAnchor==null ? null : sourceAnchor.getParent();
+				PictogramElement target = targetAnchor==null ? null : targetAnchor.getParent();
+				boolean anchorChanged = false;
+				
+				if (createContext!=null) {
+					if (source==null) {
+						source = createContext.getSourcePictogramElement();
+						sourceAnchor = createContext.getSourceAnchor();
+					}
+					if (target==null) {
+						target = createContext.getTargetPictogramElement();
+						targetAnchor = createContext.getTargetAnchor();
+					}
 				}
-				if (targetAnchorContainer instanceof FreeFormConnection) {
-					AnchorUtil.createConnectionPoint(getFeatureProvider(),
-							(FreeFormConnection)targetAnchorContainer,
-							Graphiti.getPeLayoutService().getConnectionMidpoint((FreeFormConnection)targetAnchorContainer, 0.5));
+				
+				if (sourceAnchor==null && source instanceof FreeFormConnection) {
+					Shape connectionPointShape = AnchorUtil.createConnectionPoint(getFeatureProvider(),
+							(FreeFormConnection)source,
+							Graphiti.getPeLayoutService().getConnectionMidpoint((FreeFormConnection)source, 0.5));
+					sourceAnchor = AnchorUtil.getConnectionPointAnchor(connectionPointShape);
+					anchorChanged = true;
 				}
+				if (targetAnchor==null && target instanceof FreeFormConnection) {
+					Shape connectionPointShape = AnchorUtil.createConnectionPoint(getFeatureProvider(),
+							(FreeFormConnection)target,
+							Graphiti.getPeLayoutService().getConnectionMidpoint((FreeFormConnection)target, 0.5));
+					targetAnchor = AnchorUtil.getConnectionPointAnchor(connectionPointShape);
+					anchorChanged = true;
+				}
+				
+				// this is silly! why are there no setters for sourceAnchor and targetAnchor in AddConnectionContext???
+				if (anchorChanged) {
+					AddConnectionContext newContext = new AddConnectionContext(sourceAnchor, targetAnchor);
+					newContext.setSize(ac.getHeight(), ac.getWidth());
+					newContext.setLocation(ac.getX(), ac.getY());
+					newContext.setNewObject(ac.getNewObject());
+					newContext.setTargetConnection(ac.getTargetConnection());
+					newContext.setTargetConnectionDecorator(ac.getTargetConnectionDecorator());
+					newContext.setTargetContainer(ac.getTargetContainer());
+					
+					context = newContext;
+				}
+				// we're done with this
+				createContext = null;
+				
+				return super.add(context);
 			}
 
 			@Override
@@ -102,10 +143,45 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 		return new ReconnectAssociationFeature(fp);
 	}
 
-	public static class CreateAssociationFeature extends AbstractCreateFlowFeature<BaseElement, BaseElement> {
+	public class CreateAssociationFeature extends AbstractCreateFlowFeature<BaseElement, BaseElement> {
 
 		public CreateAssociationFeature(IFeatureProvider fp) {
 			super(fp, "Association", "Associate information with artifacts and flow objects");
+		}
+
+		@Override
+		public boolean canCreate(ICreateConnectionContext context) {
+			if ( context.getTargetPictogramElement() instanceof FreeFormConnection ) {
+				return true;
+			}
+			return super.canCreate(context);
+		}
+
+		@Override
+		public Connection create(ICreateConnectionContext context) {
+			// save the CreateContext because we'll need it in AddFeature
+			createContext = (CreateConnectionContext)context;
+			Anchor sourceAnchor = createContext.getSourceAnchor();
+			Anchor targetAnchor = createContext.getTargetAnchor();
+			PictogramElement source = createContext.getSourcePictogramElement();
+			PictogramElement target = createContext.getTargetPictogramElement();
+			
+			if (sourceAnchor==null && source instanceof FreeFormConnection) {
+				Shape connectionPointShape = AnchorUtil.createConnectionPoint(getFeatureProvider(),
+						(FreeFormConnection)source,
+						Graphiti.getPeLayoutService().getConnectionMidpoint((FreeFormConnection)source, 0.5));
+				sourceAnchor = AnchorUtil.getConnectionPointAnchor(connectionPointShape);
+				createContext.setSourceAnchor(sourceAnchor);
+			}
+			if (targetAnchor==null && target instanceof FreeFormConnection) {
+				Shape connectionPointShape = AnchorUtil.createConnectionPoint(getFeatureProvider(),
+						(FreeFormConnection)target,
+						Graphiti.getPeLayoutService().getConnectionMidpoint((FreeFormConnection)target, 0.5));
+				targetAnchor = AnchorUtil.getConnectionPointAnchor(connectionPointShape);
+				createContext.setTargetAnchor(targetAnchor);
+			}
+
+			return super.create(context);
 		}
 
 		@Override
@@ -126,6 +202,34 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 		@Override
 		protected BaseElement createFlow(ModelHandler mh, BaseElement source, BaseElement target) {
 			return mh.createAssociation(source, target);
+		}
+
+		@Override
+		protected BaseElement getSourceBo(ICreateConnectionContext context) {
+			Anchor anchor = context.getSourceAnchor();
+			if (anchor != null && anchor.getParent() instanceof Shape) {
+				Shape shape = (Shape) anchor.getParent();
+				Connection conn = AnchorUtil.getConnectionPointOwner(shape);
+				if (conn!=null) {
+					return BusinessObjectUtil.getFirstElementOfType(conn, getTargetClass());
+				}
+				return BusinessObjectUtil.getFirstElementOfType(shape, getTargetClass());
+			}
+			return null;
+		}
+
+		@Override
+		protected BaseElement getTargetBo(ICreateConnectionContext context) {
+			Anchor anchor = context.getTargetAnchor();
+			if (anchor != null && anchor.getParent() instanceof Shape) {
+				Shape shape = (Shape) anchor.getParent();
+				Connection conn = AnchorUtil.getConnectionPointOwner(shape);
+				if (conn!=null) {
+					return BusinessObjectUtil.getFirstElementOfType(conn, getTargetClass());
+				}
+				return BusinessObjectUtil.getFirstElementOfType(shape, getTargetClass());
+			}
+			return null;
 		}
 	}
 	
@@ -180,26 +284,7 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 		public void postReconnect(IReconnectionContext context) {
 			Anchor oldAnchor = context.getOldAnchor();
 			AnchorContainer oldAnchorContainer = oldAnchor.getParent();
-			if (AnchorUtil.isConnectionPoint(oldAnchorContainer) && oldAnchorContainer.getLink()!=null) {
-				List<Connection> allConnections = Graphiti.getPeService().getAllConnections(oldAnchor);
-				if (allConnections.size()==0) {
-					// remove the bendpoint from target connection if there are no other connections going to it
-					FreeFormConnection oldTargetConnection = (FreeFormConnection) oldAnchorContainer.getLink().getBusinessObjects().get(0);
-					
-					Point bp = null;
-					for (Point p : oldTargetConnection.getBendpoints()) {
-						if (AnchorUtil.isConnectionPointNear(oldAnchorContainer, p, 0)) {
-							bp = p;
-							break;
-						}
-					}
-					if (bp!=null)
-						oldTargetConnection.getBendpoints().remove(bp);
-					
-					RemoveContext ctx = new RemoveContext(oldAnchorContainer);
-					getFeatureProvider().getRemoveFeature(ctx).remove(ctx);
-				}
-			}
+			AnchorUtil.deleteConnectionPointIfPossible(getFeatureProvider(), (Shape) oldAnchorContainer);
 			super.postReconnect(context);
 		}
 	} 

@@ -37,6 +37,7 @@ import org.eclipse.bpmn2.di.BpmnDiFactory;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.validation.LiveValidationContentAdapter;
@@ -63,6 +64,7 @@ import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.mm.pictograms.impl.FreeFormConnectionImpl;
@@ -438,10 +440,21 @@ public class DIImport {
 	}
 
 	private FixPointAnchor createAnchor(PictogramElement elem) {
-		FixPointAnchor sa = peService.createFixPointAnchor((AnchorContainer) elem);
-		sa.setReferencedGraphicsAlgorithm(elem.getGraphicsAlgorithm());
-		Rectangle rect = gaService.createInvisibleRectangle(sa);
-		gaService.setSize(rect, 1, 1);
+		FixPointAnchor sa;
+		
+		if (elem instanceof FreeFormConnection) {
+			Shape connectionPointShape = AnchorUtil.createConnectionPoint(featureProvider,
+					(FreeFormConnection)elem,
+					Graphiti.getPeLayoutService().getConnectionMidpoint((FreeFormConnection)elem, 0.5));
+			sa = AnchorUtil.getConnectionPointAnchor(connectionPointShape);
+		}
+		else
+		{
+			sa = peService.createFixPointAnchor((AnchorContainer) elem);
+			sa.setReferencedGraphicsAlgorithm(elem.getGraphicsAlgorithm());
+			Rectangle rect = gaService.createInvisibleRectangle(sa);
+			gaService.setSize(rect, 1, 1);
+		}
 		return sa;
 	}
 
