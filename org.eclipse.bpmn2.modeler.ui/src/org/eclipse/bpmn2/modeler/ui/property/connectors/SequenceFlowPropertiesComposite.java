@@ -13,13 +13,11 @@
 package org.eclipse.bpmn2.modeler.ui.property.connectors;
 
 import org.eclipse.bpmn2.Bpmn2Factory;
-import org.eclipse.bpmn2.ExclusiveGateway;
 import org.eclipse.bpmn2.Expression;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.property.MainPropertiesComposite;
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -143,7 +141,6 @@ public class SequenceFlowPropertiesComposite extends MainPropertiesComposite {
 	private EObject getDefault(SequenceFlow sf) {
 		EObject obj = sf.getSourceRef();
 		if (obj!=null) {
-			EClass ec = obj.eClass();
 			EStructuralFeature feature = obj.eClass().getEStructuralFeature("default");
 			if (feature!=null) {
 				return (EObject) obj.eGet(feature);
