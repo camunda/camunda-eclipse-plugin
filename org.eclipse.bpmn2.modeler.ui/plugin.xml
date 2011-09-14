@@ -99,7 +99,6 @@
 		</runtime>
 
 		<model runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-			modelFactory="org.eclipse.bpmn2.impl.Bpmn2FactoryImpl"
 			resourceFactory="org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceFactoryImpl">
 		</model>
 
@@ -119,18 +118,19 @@
 		<propertyTab category="BPMN2"
 			id="org.eclipse.bpmn2.modeler.sequenceflow.tab"
 			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-			afterTab="org.eclipse.bpmn2.modeler.advanced.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 			label="Sequence Flow">
 		</propertyTab>
 
 		<propertyTab category="BPMN2"
 			id="org.eclipse.bpmn2.modeler.messageFlow.tab"
 			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-			afterTab="org.eclipse.bpmn2.modeler.advanced.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 			label="Message Flow">
 		</propertyTab>
+		
   <propertyTab
-        afterTab="org.eclipse.bpmn2.modeler.advanced.tab"
+        replaceTab="org.eclipse.bpmn2.modeler.main.tab"
         category="BPMN2"
         id="org.eclipse.bpmn2.modeler.assocation.tab"
         label="Assocation"
@@ -138,7 +138,7 @@
   </propertyTab>
 
   <propertyTab
-        afterTab="org.eclipse.bpmn2.modeler.advanced.tab"
+        replaceTab="org.eclipse.bpmn2.modeler.main.tab"
         category="BPMN2"
         id="org.eclipse.bpmn2.modeler.conversationLink.tab"
         label="Conversation Link"
@@ -178,6 +178,7 @@
 			type="org.eclipse.bpmn2.MessageFlow"
 			tab="org.eclipse.bpmn2.modeler.messageFlow.tab">
 		</propertySection>
+		
   <propertySection
         class="org.eclipse.bpmn2.modeler.ui.property.connectors.AssociationPropertySection"
         filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"

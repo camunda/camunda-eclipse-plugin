@@ -25,6 +25,7 @@ public class Bpmn2TabDescriptor extends AbstractTabDescriptor {
 	protected String category;
 	protected String label;
 	protected String afterTab = null;
+	protected String replaceTab = null;
 	protected boolean indented = false;
 	protected Image image = null;
 	protected ArrayList<Bpmn2SectionDescriptor> unfilteredSectionDescriptors = null;
@@ -98,9 +99,15 @@ public class Bpmn2TabDescriptor extends AbstractTabDescriptor {
 	public Object clone() {
 		Bpmn2TabDescriptor clone = new Bpmn2TabDescriptor(id, category, label);
 		clone.afterTab = this.afterTab;
+		clone.replaceTab = this.replaceTab;
 		clone.image = this.image;
 		clone.indented = this.indented;
 		return clone;
 	}
 	
+	public String getReplaceTab() {
+		if (replaceTab==null || replaceTab.trim().length()==0)
+			return null;
+		return replaceTab;
+	}
 }

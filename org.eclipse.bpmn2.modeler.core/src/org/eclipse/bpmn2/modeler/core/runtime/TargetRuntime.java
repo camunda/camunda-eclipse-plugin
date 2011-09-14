@@ -122,6 +122,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 							
 							Bpmn2TabDescriptor td = new Bpmn2TabDescriptor(id,category,label);
 							td.afterTab = e.getAttribute("afterTab");
+							td.replaceTab = e.getAttribute("replaceTab");
 							String indented = e.getAttribute("indented");
 							td.indented = indented!=null && indented.trim().equalsIgnoreCase("true");
 							
@@ -284,11 +285,12 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 		if (afterTab!=null && !afterTab.isEmpty() && !afterTab.equals("top")) {
 			for (TargetRuntime rt : targetRuntimes) {
 				for (Bpmn2TabDescriptor td : rt.getTabs()) {
-					if (td.getId().equals(afterTab) && tab!=td) {
-						addAfterTab(list,td);
-						if (!list.contains(td))
-							list.add(td);
-						return;
+					if (tab!=td) {
+						if (td.getId().equals(afterTab) || afterTab.equals(td.getReplaceTab())) {
+							addAfterTab(list,td);
+							if (!list.contains(td))
+								list.add(td);
+						}
 					}
 				}
 			}
@@ -301,6 +303,14 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 		return tabDescriptors;
 	}
 
+	public Bpmn2TabDescriptor getTabDescriptor(String id) {
+		for (Bpmn2TabDescriptor tab : getTabs()) {
+			if (tab.getId().equals(id))
+				return tab;
+		}
+		return null;
+	}
+	
 	/**
 	 * @return
 	 */

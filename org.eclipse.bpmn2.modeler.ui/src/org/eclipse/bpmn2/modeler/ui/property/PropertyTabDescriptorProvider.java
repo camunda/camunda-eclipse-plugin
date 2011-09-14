@@ -12,8 +12,10 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.property;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.bpmn2.modeler.core.runtime.Bpmn2SectionDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.Bpmn2TabDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
@@ -29,6 +31,7 @@ public class PropertyTabDescriptorProvider implements ITabDescriptorProvider {
 		// TODO Auto-generated constructor stub
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public ITabDescriptor[] getTabDescriptors(IWorkbenchPart part,
 			ISelection selection) {
@@ -38,6 +41,29 @@ public class PropertyTabDescriptorProvider implements ITabDescriptorProvider {
 			rt = ((BPMN2Editor)part).getTargetRuntime();
 		}
 		List<Bpmn2TabDescriptor> desc = rt.getTabDescriptors();
+		ArrayList<Bpmn2TabDescriptor> replaced = new ArrayList<Bpmn2TabDescriptor>();
+		
+		for (Bpmn2TabDescriptor d : desc) {
+			String replacedId = d.getReplaceTab(); 
+			if (replacedId!=null) {
+				boolean empty = true;
+				for (Bpmn2SectionDescriptor s : (List<Bpmn2SectionDescriptor>) d.getSectionDescriptors()) {
+					if (s.appliesTo(part, selection)) {
+						empty = false;
+						break;
+					}
+				}
+				if (!empty) {
+					// replace the tab whose ID is specified as "replaceTab" in this tab.
+					Bpmn2TabDescriptor replacedTab = rt.getTabDescriptor(replacedId);
+					if (replacedTab!=null)
+						replaced.add(replacedTab);
+				}
+			}
+		}
+		if (replaced.size()>0)
+			desc.removeAll(replaced);
+		
 		return desc.toArray(new ITabDescriptor[desc.size()]);
 	}
 
