@@ -129,21 +129,30 @@
 			afterTab="org.eclipse.bpmn2.modeler.advanced.tab"
 			label="Message Flow">
 		</propertyTab>
-  <propertyTab
-        afterTab="org.eclipse.bpmn2.modeler.advanced.tab"
-        category="BPMN2"
-        id="org.eclipse.bpmn2.modeler.assocation.tab"
-        label="Assocation"
-        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
-  </propertyTab>
 
-  <propertyTab
-        afterTab="org.eclipse.bpmn2.modeler.advanced.tab"
-        category="BPMN2"
-        id="org.eclipse.bpmn2.modeler.conversationLink.tab"
-        label="Conversation Link"
-        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
-  </propertyTab>
+		  <propertyTab
+		        afterTab="org.eclipse.bpmn2.modeler.advanced.tab"
+		        category="BPMN2"
+		        id="org.eclipse.bpmn2.modeler.assocation.tab"
+		        label="Assocation"
+		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+		  </propertyTab>
+		
+		  <propertyTab
+		        afterTab="org.eclipse.bpmn2.modeler.advanced.tab"
+		        category="BPMN2"
+		        id="org.eclipse.bpmn2.modeler.conversationLink.tab"
+		        label="Conversation Link"
+		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+		  </propertyTab>
+
+		  <propertyTab
+		        afterTab="org.eclipse.bpmn2.modeler.advanced.tab"
+		        category="BPMN2"
+		        id="org.eclipse.bpmn2.modeler.startEvent.tab"
+		        label="Start Event"
+		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+		  </propertyTab>
 
 		<propertySection
 			class="org.eclipse.bpmn2.modeler.ui.property.Bpmn2MainPropertySection"
@@ -178,23 +187,34 @@
 			type="org.eclipse.bpmn2.MessageFlow"
 			tab="org.eclipse.bpmn2.modeler.messageFlow.tab">
 		</propertySection>
-  <propertySection
-        class="org.eclipse.bpmn2.modeler.ui.property.connectors.AssociationPropertySection"
-        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-        id="org.eclipse.bpmn2.modeler.assocation.section"
-        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-        tab="org.eclipse.bpmn2.modeler.assocation.tab"
-        type="org.eclipse.bpmn2.Association">
-  </propertySection>
 
-  <propertySection
-        class="org.eclipse.bpmn2.modeler.ui.property.connectors.ConversationLinkPropertySection"
-        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-        id="org.eclipse.bpmn2.modeler.conversationLink.section"
-        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-        tab="org.eclipse.bpmn2.modeler.conversationLink.tab"
-        type="org.eclipse.bpmn2.ConversationLink">
-  </propertySection>
+		  <propertySection
+		        class="org.eclipse.bpmn2.modeler.ui.property.connectors.AssociationPropertySection"
+		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+		        id="org.eclipse.bpmn2.modeler.assocation.section"
+		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+		        tab="org.eclipse.bpmn2.modeler.assocation.tab"
+		        type="org.eclipse.bpmn2.Association">
+		  </propertySection>
+		
+		  <propertySection
+		        class="org.eclipse.bpmn2.modeler.ui.property.connectors.ConversationLinkPropertySection"
+		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+		        id="org.eclipse.bpmn2.modeler.conversationLink.section"
+		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+		        tab="org.eclipse.bpmn2.modeler.conversationLink.tab"
+		        type="org.eclipse.bpmn2.ConversationLink">
+		  </propertySection>
+		  
+		  <propertySection
+		        class="org.eclipse.bpmn2.modeler.ui.property.events.StartEventPropertySection"
+		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+		        id="org.eclipse.bpmn2.modeler.startEvent.section"
+		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+		        tab="org.eclipse.bpmn2.modeler.startEvent.tab"
+		        type="org.eclipse.bpmn2.StartEvent">
+		  </propertySection>
+
 	</extension>
 
 </plugin>
