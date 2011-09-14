@@ -184,6 +184,13 @@
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="replaceTab" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
