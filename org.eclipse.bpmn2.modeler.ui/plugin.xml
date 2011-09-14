@@ -130,7 +130,7 @@
 		</propertyTab>
 
 		  <propertyTab
-		        afterTab="org.eclipse.bpmn2.modeler.advanced.tab"
+		        replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 		        category="BPMN2"
 		        id="org.eclipse.bpmn2.modeler.startEvent.tab"
 		        label="Start Event"
@@ -186,7 +186,6 @@
 			type="org.eclipse.bpmn2.MessageFlow"
 			tab="org.eclipse.bpmn2.modeler.messageFlow.tab">
 		</propertySection>
-<<<<<<< HEAD
 
 		  <propertySection
 		        class="org.eclipse.bpmn2.modeler.ui.property.connectors.AssociationPropertySection"
@@ -215,26 +214,6 @@
 		        type="org.eclipse.bpmn2.StartEvent">
 		  </propertySection>
 
-=======
-		
-  <propertySection
-        class="org.eclipse.bpmn2.modeler.ui.property.connectors.AssociationPropertySection"
-        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-        id="org.eclipse.bpmn2.modeler.assocation.section"
-        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-        tab="org.eclipse.bpmn2.modeler.assocation.tab"
-        type="org.eclipse.bpmn2.Association">
-  </propertySection>
-
-  <propertySection
-        class="org.eclipse.bpmn2.modeler.ui.property.connectors.ConversationLinkPropertySection"
-        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-        id="org.eclipse.bpmn2.modeler.conversationLink.section"
-        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-        tab="org.eclipse.bpmn2.modeler.conversationLink.tab"
-        type="org.eclipse.bpmn2.ConversationLink">
-  </propertySection>
->>>>>>> a0e3e8777910cf7c2da536437b855e55f2e74bf1
 	</extension>
 
 </plugin>
