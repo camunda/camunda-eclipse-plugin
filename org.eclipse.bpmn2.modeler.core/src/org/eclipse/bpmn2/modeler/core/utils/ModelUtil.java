@@ -249,6 +249,7 @@ public class ModelUtil {
 			// the EMF model, or is not available.
 			// Use the class name to synthesize a display name
 			obj = attr;
+			itemProviderAdapter.dispose();
 		}
 		
 		String className = obj.eClass().getName();

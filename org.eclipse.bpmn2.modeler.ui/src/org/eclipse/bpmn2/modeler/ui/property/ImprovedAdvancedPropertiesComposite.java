@@ -245,6 +245,7 @@ public class ImprovedAdvancedPropertiesComposite extends Composite {
 				}
 			}
 		}
+		itemProviderAdapter.dispose();
 	}
 
 	private Action createMenuItemFor(String prefix, final EObject baseElement, final EReference eReference,

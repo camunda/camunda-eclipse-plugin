@@ -131,6 +131,8 @@ public class MainPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 			}
 
 		}
+		
+		itemProviderAdapter.dispose();
 	}
 
 	public void bindReference(final EReference reference, final String name) {
