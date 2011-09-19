@@ -254,11 +254,20 @@ public class ModelUtil {
 		
 		String className = obj.eClass().getName();
 		className = className.replaceAll("Impl$", "");
+		return toDisplayName(className);
+	}
+	
+	public static String toDisplayName(String anyName) {
 		String displayName = "";
-		for (char c : className.toCharArray()) {
-			if ('A'<=c && c<'Z') {
+		boolean first = true;
+		for (char c : anyName.toCharArray()) {
+			if (Character.isUpperCase(c)) {
 				if (displayName.length()>0)
 					displayName += " ";
+			}
+			if (first) {
+				c = Character.toUpperCase(c);
+				first = false;
 			}
 			displayName += c;
 		}

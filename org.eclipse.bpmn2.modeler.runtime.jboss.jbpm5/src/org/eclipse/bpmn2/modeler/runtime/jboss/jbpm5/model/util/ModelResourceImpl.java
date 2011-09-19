@@ -67,7 +67,7 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
         return new XMLLoadImpl(createXMLHelper()) {
             @Override
             protected DefaultHandler makeDefaultHandler() {
-                return new ModelerXmlHandler(resource, helper, options);
+                return new ModelXmlHandler(resource, helper, options);
             }
         };
     }
@@ -77,9 +77,9 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
      * which may be either simple ID Strings or QNames. We'll search through all of the objects'
      * IDs first to find the one we're looking for. If not, we'll try a QName search.
      */
-    protected static class ModelerXmlHandler extends BpmnXmlHandler {
+    protected static class ModelXmlHandler extends Bpmn2ModelerXmlHandler {
 
-        public ModelerXmlHandler(XMLResource xmiResource, XMLHelper helper, Map<?, ?> options) {
+        public ModelXmlHandler(XMLResource xmiResource, XMLHelper helper, Map<?, ?> options) {
             super(xmiResource, helper, options);
         }
 
@@ -150,38 +150,5 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 			}
 			return value;
 		}
-
-		/**
-         * Overridden to be able to convert ID references in attributes to URIs during load.
-         * If the reference can't be found by its ID, we'll try a QName search (done in the
-         * super class)
-         * @param ids
-         *  In our case the parameter will contain exactly one ID that we resolve to URI.
-         */
-        @Override
-        protected void setValueFromId(EObject object, EReference eReference, String ids) {
-
-            for (EObject o : objects) {
-                TreeIterator<EObject> iter = o.eAllContents();
-                while (iter.hasNext()) {
-                    EObject obj = iter.next();
-                    EStructuralFeature feature = ((EObject) obj).eClass().getEIDAttribute();
-                    if (feature != null && obj.eGet(feature) != null) {
-                        Object id = obj.eGet(feature);
-                        if (id!=null && id.equals(ids)) {
-                        	try {
-                        		object.eSet(eReference,obj);
-                        	}
-                        	catch(Exception e) {
-                        		continue;
-                        	}
-                        	return;
-                        }
-                    }
-                }
-            }
-
-            super.setValueFromId(object,eReference,ids);
-        }
     }
 } //ModelResourceImpl

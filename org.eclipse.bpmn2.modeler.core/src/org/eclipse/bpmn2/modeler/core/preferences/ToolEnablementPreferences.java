@@ -51,11 +51,11 @@ public class ToolEnablementPreferences {
 
 	// FIXME: Move to extension point
 
-	private static final EStructuralFeature taskName;
-	private final static EStructuralFeature waitFor;
-	private static final EStructuralFeature independent;
-	private static final EStructuralFeature ruleFlowGroup;
-	private static final EStructuralFeature packageName;
+//	private static final EStructuralFeature taskName;
+//	private final static EStructuralFeature waitFor;
+//	private static final EStructuralFeature independent;
+//	private static final EStructuralFeature ruleFlowGroup;
+//	private static final EStructuralFeature packageName;
 
 	static {
 		Bpmn2Package i = Bpmn2Package.eINSTANCE;
@@ -82,12 +82,12 @@ public class ToolEnablementPreferences {
 		elementSet.add(i.getConversation());
 
 		// FIXME: Move to extension point
-		ExtendedMetaData emd = new BasicExtendedMetaData();
-		taskName = emd.demandFeature(DROOLS_NAMESPACE, "taskName", false);
-		waitFor = emd.demandFeature(DROOLS_NAMESPACE, "waitForCompletion", false);
-		independent = emd.demandFeature(DROOLS_NAMESPACE, "independent", false);
-		ruleFlowGroup = emd.demandFeature(DROOLS_NAMESPACE, "ruleFlowGroup", false);
-		packageName = emd.demandFeature(DROOLS_NAMESPACE, "packageName", false);
+//		ExtendedMetaData emd = new BasicExtendedMetaData();
+//		taskName = emd.demandFeature(DROOLS_NAMESPACE, "taskName", false);
+//		waitFor = emd.demandFeature(DROOLS_NAMESPACE, "waitForCompletion", false);
+//		independent = emd.demandFeature(DROOLS_NAMESPACE, "independent", false);
+//		ruleFlowGroup = emd.demandFeature(DROOLS_NAMESPACE, "ruleFlowGroup", false);
+//		packageName = emd.demandFeature(DROOLS_NAMESPACE, "packageName", false);
 	}
 
 	private ToolEnablementPreferences(Preferences prefs) {
@@ -122,12 +122,12 @@ public class ToolEnablementPreferences {
 			}
 
 			// FIXME: create an extension
-			ArrayList<EStructuralFeature> customAttributes = getAttributes(e);
-			for (EStructuralFeature a : customAttributes) {
-				if (!("id".equals(a.getName()) || "anyAttribute".equals(a.getName()))) {
-					possibleFeatures.add(a);
-				}
-			}
+//			ArrayList<EStructuralFeature> customAttributes = getAttributes(e);
+//			for (EStructuralFeature a : customAttributes) {
+//				if (!("id".equals(a.getName()) || "anyAttribute".equals(a.getName()))) {
+//					possibleFeatures.add(a);
+//				}
+//			}
 
 			for (EReference a : e.getEAllContainments()) {
 				possibleFeatures.add(a);
@@ -234,16 +234,16 @@ public class ToolEnablementPreferences {
 	public static ArrayList<EStructuralFeature> getAttributes(EClass eClass) {
 		ArrayList<EStructuralFeature> ret = new ArrayList<EStructuralFeature>();
 
-		if (Bpmn2Package.eINSTANCE.getTask().equals(eClass)) {
-			ret.add(taskName);
-		} else if (Bpmn2Package.eINSTANCE.getCallActivity().equals(eClass)) {
-			ret.add(waitFor);
-			ret.add(independent);
-		} else if (Bpmn2Package.eINSTANCE.getBusinessRuleTask().equals(eClass)) {
-			ret.add(ruleFlowGroup);
-		} else if (Bpmn2Package.eINSTANCE.getProcess().equals(eClass)) {
-			ret.add(packageName);
-		}
+//		if (Bpmn2Package.eINSTANCE.getTask().equals(eClass)) {
+//			ret.add(taskName);
+//		} else if (Bpmn2Package.eINSTANCE.getCallActivity().equals(eClass)) {
+//			ret.add(waitFor);
+//			ret.add(independent);
+//		} else if (Bpmn2Package.eINSTANCE.getBusinessRuleTask().equals(eClass)) {
+//			ret.add(ruleFlowGroup);
+//		} else if (Bpmn2Package.eINSTANCE.getProcess().equals(eClass)) {
+//			ret.add(packageName);
+//		}
 
 		return ret;
 	}

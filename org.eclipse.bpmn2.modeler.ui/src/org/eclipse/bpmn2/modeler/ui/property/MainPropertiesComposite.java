@@ -13,8 +13,12 @@
 package org.eclipse.bpmn2.modeler.ui.property;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.bpmn2.GatewayDirection;
@@ -24,6 +28,7 @@ import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablementPreferences;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
 import org.eclipse.emf.common.util.EList;
@@ -31,6 +36,8 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.util.BasicFeatureMap;
+import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.ui.celleditor.FeatureEditorDialog;
@@ -110,6 +117,15 @@ public class MainPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 					propertyDescriptor.getChoiceOfValues(be);
 					createLabel(displayName);
 					createSingleItemEditor(a, be.eGet(a), propertyDescriptor.getChoiceOfValues(be));
+				} else if ("anyAttribute".equals(a.getName())) {
+					List<Entry> basicList = ((BasicFeatureMap) be.eGet(a)).basicList();
+					for (Entry entry : basicList) {
+						EStructuralFeature feature = entry.getEStructuralFeature();
+						if (Object.class.equals(feature.getEType().getInstanceClass())) {
+							Text t = createTextInput(ModelUtil.toDisplayName(feature.getName()), false);
+							bind(feature, t);
+						}
+					}
 				}
 			}
 		}

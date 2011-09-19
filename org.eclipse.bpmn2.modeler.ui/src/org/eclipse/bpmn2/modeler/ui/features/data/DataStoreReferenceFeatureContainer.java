@@ -13,6 +13,8 @@
 package org.eclipse.bpmn2.modeler.ui.features.data;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.bpmn2.DataStore;
 import org.eclipse.bpmn2.DataStoreReference;
@@ -28,6 +30,8 @@ import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.modeler.ui.features.LayoutBaseElementTextFeature;
+import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -42,6 +46,7 @@ import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.features.impl.DefaultResizeShapeFeature;
+import org.eclipse.graphiti.internal.command.GenericFeatureCommandWithContext;
 import org.eclipse.graphiti.mm.algorithms.Polygon;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
@@ -53,6 +58,11 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
+import org.eclipse.graphiti.ui.internal.util.ui.PopupMenu;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 
 public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContainer {
 
@@ -177,12 +187,35 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 			DataStoreReference dataStoreReference = null;
 			try {
 				dataStoreReference = ModelHandler.FACTORY.createDataStoreReference();
-				dataStoreReference.setName("Data Store Ref");
+
 				DataStore dataStore = ModelHandler.FACTORY.createDataStore();
-				dataStore.setName("Data Store");
-//				dataStore.setId(EcoreUtil.generateUUID());
-				ModelHandler.getInstance(getDiagram()).addRootElement(dataStore);
-				ModelUtil.setID(dataStore);
+				dataStore.setName("New Data Store");
+				
+				List<DataStore> dataStoreList = new ArrayList<DataStore>();
+				dataStoreList.add(dataStore);
+				TreeIterator<EObject> iter = ModelHandler.getInstance(getDiagram()).getDefinitions().eAllContents();
+				while (iter.hasNext()) {
+					EObject obj = iter.next();
+					if (obj instanceof DataStore)
+						dataStoreList.add((DataStore)obj);
+				}
+				
+				DataStore result = dataStore;
+				if (dataStoreList.size()>1) {
+					PopupMenu popupMenu = new PopupMenu(dataStoreList, labelProvider);
+					boolean b = popupMenu.show(Display.getCurrent().getActiveShell());
+					if (b) {
+						result = (DataStore) popupMenu.getResult();
+					}
+				}
+				if (result==dataStore) { // the new one
+					ModelHandler.getInstance(getDiagram()).addRootElement(dataStore);
+					ModelUtil.setID(dataStore);
+					dataStore.setName( dataStore.getId() );
+				}
+				
+				dataStoreReference.setName( result.getName() + " Ref");
+				dataStoreReference.setDataStoreRef(result);
 			} catch (IOException e) {
 				Activator.showErrorWithLogging(e);
 			}
@@ -193,6 +226,33 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 		public String getStencilImageId() {
 			return ImageProvider.IMG_16_DATA_STORE;
 		}
+		
+		private static ILabelProvider labelProvider = new ILabelProvider() {
+
+			public void removeListener(ILabelProviderListener listener) {
+			}
+
+			public boolean isLabelProperty(Object element, String property) {
+				return false;
+			}
+
+			public void dispose() {
+
+			}
+
+			public void addListener(ILabelProviderListener listener) {
+
+			}
+
+			public String getText(Object element) {
+				return ((DataStore)element).getName();
+			}
+
+			public Image getImage(Object element) {
+				return null;
+			}
+
+		};
 	}
 
 	@Override
