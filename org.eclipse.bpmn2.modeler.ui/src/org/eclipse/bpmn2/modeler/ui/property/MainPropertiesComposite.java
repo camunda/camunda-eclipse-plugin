@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.GatewayDirection;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.di.BPMNShape;
@@ -75,7 +76,7 @@ public class MainPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 		super(parent, style);
 	}
 
-	@SuppressWarnings("restriction")
+	@SuppressWarnings({ "restriction", "unchecked" })
 	@Override
 	public void createBindings(EObject be) {
 		try {
@@ -89,47 +90,68 @@ public class MainPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 		ItemProviderAdapter itemProviderAdapter = (ItemProviderAdapter) new Bpmn2ItemProviderAdapterFactory().adapt(be,
 				ItemProviderAdapter.class);
 
-		EList<EAttribute> eAllAttributes = be.eClass().getEAllAttributes();
+		for (EStructuralFeature a : be.eClass().getEAllStructuralFeatures()) {
+
+			Object value = be.eGet(a); // the EList<cl>
+			
+			if (a instanceof EAttribute) {
+				bindAttribute(be,(EAttribute)a,itemProviderAdapter);
+			}
+			else if (value instanceof EList) {
+				bindList(a, be, SHOW_LIST_LABEL | EDITABLE_LIST | ORDERED_LIST);
+			}
+		}
+
+		bindReferences(be,itemProviderAdapter);
+		
+		itemProviderAdapter.dispose();
+	}
+	
+	private void bindAttribute(EObject be, EAttribute a, ItemProviderAdapter itemProviderAdapter) {
+		
 		ToolEnablementPreferences preferences = ToolEnablementPreferences.getPreferences(project);
-
-		for (EAttribute a : eAllAttributes) {
-
-			if (preferences.isEnabled(be.eClass(), a)) {
-				String displayName;
-				boolean isMultiLine = false;
-				IItemPropertyDescriptor propertyDescriptor = itemProviderAdapter.getPropertyDescriptor(be, a);
-
-				if (propertyDescriptor!=null) {
-					displayName = propertyDescriptor.getDisplayName(be);
-					isMultiLine = propertyDescriptor.isMultiLine(be);
-				}
-				else {
-					displayName = a.getName();
-				}
-				
-				if (String.class.equals(a.getEType().getInstanceClass())) {
-					bind(a, createTextInput(displayName, isMultiLine));
-				} else if (boolean.class.equals(a.getEType().getInstanceClass())) {
-					bindBoolean(a, createBooleanInput(displayName));
-				} else if (int.class.equals(a.getEType().getInstanceClass())) {
-					bindInt(a, createIntInput(displayName));
-				} else if (propertyDescriptor != null) {
-					propertyDescriptor.getChoiceOfValues(be);
-					createLabel(displayName);
-					createSingleItemEditor(a, be.eGet(a), propertyDescriptor.getChoiceOfValues(be));
-				} else if ("anyAttribute".equals(a.getName())) {
-					List<Entry> basicList = ((BasicFeatureMap) be.eGet(a)).basicList();
-					for (Entry entry : basicList) {
-						EStructuralFeature feature = entry.getEStructuralFeature();
-						if (Object.class.equals(feature.getEType().getInstanceClass())) {
-							Text t = createTextInput(ModelUtil.toDisplayName(feature.getName()), false);
-							bind(feature, t);
-						}
+		IItemPropertyDescriptor propertyDescriptor = null;
+		if (itemProviderAdapter!=null)
+			propertyDescriptor = itemProviderAdapter.getPropertyDescriptor(be, a);
+		
+		if (preferences.isEnabled(be.eClass(), a)) {
+			String displayName;
+			boolean isMultiLine = false;
+	
+			if (propertyDescriptor!=null) {
+				displayName = propertyDescriptor.getDisplayName(be);
+				isMultiLine = propertyDescriptor.isMultiLine(be);
+			}
+			else {
+				displayName = a.getName();
+			}
+			
+			if (String.class.equals(a.getEType().getInstanceClass())) {
+				bindText(a, createTextInput(displayName, isMultiLine), be);
+			} else if (boolean.class.equals(a.getEType().getInstanceClass())) {
+				bindBoolean(a, createBooleanInput(displayName), be);
+			} else if (int.class.equals(a.getEType().getInstanceClass())) {
+				bindInt(a, createIntInput(displayName), be);
+			} else if (propertyDescriptor != null) {
+				propertyDescriptor.getChoiceOfValues(be);
+				createLabel(displayName);
+				createSingleItemEditor(a, be.eGet(a), propertyDescriptor.getChoiceOfValues(be));
+			} else if ("anyAttribute".equals(a.getName())) {
+				List<Entry> basicList = ((BasicFeatureMap) be.eGet(a)).basicList();
+				for (Entry entry : basicList) {
+					EStructuralFeature feature = entry.getEStructuralFeature();
+					if (Object.class.equals(feature.getEType().getInstanceClass())) {
+						Text t = createTextInput(ModelUtil.toDisplayName(feature.getName()), false);
+						bindText(feature, t, be);
 					}
 				}
 			}
 		}
-
+	}
+	
+	private void bindReferences(EObject be, ItemProviderAdapter itemProviderAdapter) {
+		ToolEnablementPreferences preferences = ToolEnablementPreferences.getPreferences(project);
+		
 		EList<EReference> eAllContainments = be.eClass().getEAllContainments();
 		for (EReference e : be.eClass().getEAllReferences()) {
 			if (preferences.isEnabled(be.eClass(), e) && !eAllContainments.contains(e)) {
@@ -147,8 +169,6 @@ public class MainPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 			}
 
 		}
-		
-		itemProviderAdapter.dispose();
 	}
 
 	public void bindReference(final EReference reference, final String name) {

@@ -101,25 +101,27 @@
 		<model runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
 			resourceFactory="org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceFactoryImpl">
 		</model>
-
+		
+		<!-- Property Tabs -->
+		
 		<propertyTab category="BPMN2"
 			id="org.eclipse.bpmn2.modeler.main.tab"
 			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
 			label="Basic">
 		</propertyTab>
-
-		<propertyTab category="BPMN2"
-			id="org.eclipse.bpmn2.modeler.advanced.tab"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-			afterTab="org.eclipse.bpmn2.modeler.main.tab"
-			label="Advanced">
-		</propertyTab>
 				
 		<propertyTab category="BPMN2"
-			id="org.eclipse.bpmn2.modeler.diagram.tab"
+			id="org.eclipse.bpmn2.modeler.process.diagram.tab"
 			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 			label="Process">
+		</propertyTab>
+				
+		<propertyTab category="BPMN2"
+			id="org.eclipse.bpmn2.modeler.imports.tab"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			afterTab="org.eclipse.bpmn2.modeler.process.diagram.tab"
+			label="Imports">
 		</propertyTab>
 		
 		<propertyTab category="BPMN2"
@@ -136,22 +138,31 @@
 			label="Message Flow">
 		</propertyTab>
 		
-  <propertyTab
-        replaceTab="org.eclipse.bpmn2.modeler.main.tab"
-        category="BPMN2"
-        id="org.eclipse.bpmn2.modeler.assocation.tab"
-        label="Assocation"
-        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
-  </propertyTab>
+		<propertyTab
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			category="BPMN2"
+			id="org.eclipse.bpmn2.modeler.assocation.tab"
+			label="Assocation"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+		</propertyTab>
 
-  <propertyTab
-        replaceTab="org.eclipse.bpmn2.modeler.main.tab"
-        category="BPMN2"
-        id="org.eclipse.bpmn2.modeler.conversationLink.tab"
-        label="Conversation Link"
-        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
-  </propertyTab>
+		<propertyTab
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			category="BPMN2"
+			id="org.eclipse.bpmn2.modeler.conversationLink.tab"
+			label="Conversation Link"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+		</propertyTab>
 
+		<propertyTab category="BPMN2"
+			id="org.eclipse.bpmn2.modeler.advanced.tab"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			afterTab="org.eclipse.bpmn2.modeler.main.tab"
+			label="Advanced">
+		</propertyTab>
+		
+		<!-- Property Sections -->
+		
 		<propertySection
 			class="org.eclipse.bpmn2.modeler.ui.property.Bpmn2MainPropertySection"
 			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
@@ -174,7 +185,16 @@
 			id="org.eclipse.bpmn2.modeler.process.diagram.section"
 			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
 			type="org.eclipse.bpmn2.di.BPMNDiagram"
-			tab="org.eclipse.bpmn2.modeler.diagram.tab">
+			tab="org.eclipse.bpmn2.modeler.process.diagram.tab">
+		</propertySection>
+			
+		<propertySection
+			class="org.eclipse.bpmn2.modeler.ui.property.diagrams.ImportsPropertySection"
+			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+			id="org.eclipse.bpmn2.modeler.imports.section"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			type="org.eclipse.bpmn2.di.BPMNDiagram"
+			tab="org.eclipse.bpmn2.modeler.imports.tab">
 		</propertySection>
 		
 		<propertySection
@@ -195,23 +215,24 @@
 			tab="org.eclipse.bpmn2.modeler.messageFlow.tab">
 		</propertySection>
 		
-  <propertySection
-        class="org.eclipse.bpmn2.modeler.ui.property.connectors.AssociationPropertySection"
-        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-        id="org.eclipse.bpmn2.modeler.assocation.section"
-        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-        tab="org.eclipse.bpmn2.modeler.assocation.tab"
-        type="org.eclipse.bpmn2.Association">
-  </propertySection>
+		<propertySection
+			class="org.eclipse.bpmn2.modeler.ui.property.connectors.AssociationPropertySection"
+			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+			id="org.eclipse.bpmn2.modeler.assocation.section"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			tab="org.eclipse.bpmn2.modeler.assocation.tab"
+			type="org.eclipse.bpmn2.Association">
+		</propertySection>
+		
+		<propertySection
+			class="org.eclipse.bpmn2.modeler.ui.property.connectors.ConversationLinkPropertySection"
+			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+			id="org.eclipse.bpmn2.modeler.conversationLink.section"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			tab="org.eclipse.bpmn2.modeler.conversationLink.tab"
+			type="org.eclipse.bpmn2.ConversationLink">
+		</propertySection>
 
-  <propertySection
-        class="org.eclipse.bpmn2.modeler.ui.property.connectors.ConversationLinkPropertySection"
-        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-        id="org.eclipse.bpmn2.modeler.conversationLink.section"
-        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-        tab="org.eclipse.bpmn2.modeler.conversationLink.tab"
-        type="org.eclipse.bpmn2.ConversationLink">
-  </propertySection>
 	</extension>
 
 </plugin>

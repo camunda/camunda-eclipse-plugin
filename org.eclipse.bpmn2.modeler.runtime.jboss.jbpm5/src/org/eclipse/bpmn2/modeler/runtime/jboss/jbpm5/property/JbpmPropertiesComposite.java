@@ -107,7 +107,7 @@ public class JbpmPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 				for (EStructuralFeature a : attributes) {
 					if (Object.class.equals(a.getEType().getInstanceClass())) {
 						Text t = createTextInput(a.getName(), false);
-						bind(a, t);
+						bindText(a, t);
 					}
 				}
 			}
