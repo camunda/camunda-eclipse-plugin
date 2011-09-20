@@ -161,6 +161,13 @@
 			label="Advanced">
 		</propertyTab>
 		
+		<propertyTab category="BPMN2"
+			id="org.eclipse.bpmn2.modeler.startEvent.tab"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			label="Start Event">
+		</propertyTab>
+		
 		<!-- Property Sections -->
 		
 		<propertySection
