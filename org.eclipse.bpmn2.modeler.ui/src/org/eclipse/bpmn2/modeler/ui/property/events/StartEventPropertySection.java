@@ -15,7 +15,9 @@ package org.eclipse.bpmn2.modeler.ui.property.events;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
@@ -26,22 +28,31 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 public class StartEventPropertySection extends GFPropertySection implements ITabbedPropertyConstants {
 
 	private StartEventPropertiesComposite composite;
+	private TabbedPropertySheetPage aTabbedPropertySheetPage;
 
 	@Override
 	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
+		this.aTabbedPropertySheetPage = aTabbedPropertySheetPage;
 		super.createControls(parent, aTabbedPropertySheetPage);
 		parent.setLayout(new FillLayout());
 
 		composite = new StartEventPropertiesComposite(parent, SWT.BORDER);
-		composite.setSheetPage(aTabbedPropertySheetPage);
 	}
 
 	@Override
 	public void refresh() {
 		PictogramElement pe = getSelectedPictogramElement();
 		if (pe != null) {
-			StartEvent be = BusinessObjectUtil.getFirstElementOfType(pe, StartEvent.class,true);
-			composite.setEObject((BPMN2Editor) getDiagramEditor(), be);
+			EObject be = (EObject) Graphiti.getLinkService()
+					.getBusinessObjectForLinkedPictogramElement(pe);
+			if (be instanceof StartEvent) {
+				StartEvent se = BusinessObjectUtil.
+						getFirstElementOfType(pe, StartEvent.class,true);
+				composite.setEObject((BPMN2Editor) getDiagramEditor(),
+						se);
+			}
+			
+			aTabbedPropertySheetPage.resizeScrolledComposite();
 		}
 	}
 
