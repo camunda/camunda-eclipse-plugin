@@ -13,10 +13,20 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.property;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
-import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.GatewayDirection;
+import org.eclipse.bpmn2.Participant;
+import org.eclipse.bpmn2.di.BPMNShape;
+import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.bpmn2.di.provider.BpmnDiItemProviderAdapterFactory;
+import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
+import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablementPreferences;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
@@ -36,33 +46,48 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.util.BasicFeatureMap;
+import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
+import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ReflectiveItemProviderAdapterFactory;
 import org.eclipse.emf.edit.provider.resource.ResourceItemProviderAdapterFactory;
+import org.eclipse.emf.edit.ui.celleditor.FeatureEditorDialog;
+import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -70,7 +95,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 
 public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 
@@ -89,6 +113,9 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	protected final Composite parent;
 	protected final FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 	protected IProject project;
+	protected final AdapterFactoryLabelProvider LABEL_PROVIDER = new AdapterFactoryLabelProvider(ADAPTER_FACTORY);
+	protected ModelHandler modelHandler;
+	protected BPMNShape shape;
 
 	static {
 		ADAPTER_FACTORY = new ComposedAdapterFactory(ComposedAdapterFactory.Descriptor.Registry.INSTANCE);
@@ -122,19 +149,26 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		setLayout(new GridLayout(3, false));
 	}
 
-	public final void setEObject(BPMN2Editor bpmn2Editor, final EObject be) {
+	public final void setEObject(BPMN2Editor bpmn2Editor, final EObject object) {
 		String projectName = bpmn2Editor.getDiagramTypeProvider().getDiagram().eResource().getURI().segment(1);
 		project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
 		setDiagramEditor(bpmn2Editor);
-		setEObject(be);
+		setEObject(object);
 	}
 
 	private final void setDiagramEditor(BPMN2Editor bpmn2Editor) {
 		this.bpmn2Editor = bpmn2Editor;
+		try {
+			modelHandler = ModelHandlerLocator.getModelHandler(bpmn2Editor.getDiagramTypeProvider().getDiagram()
+					.eResource());
+		} catch (IOException e1) {
+			Activator.showErrorWithLogging(e1);
+			return;
+		}
 	}
 
-	protected final void setEObject(final EObject be) {
-		this.be = be;
+	protected final void setEObject(final EObject object) {
+		be = object;
 		cleanBindings();
 		if (be != null) {
 			createBindings(be);
@@ -143,8 +177,8 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		layout(true, true);
 	}
 
-	protected void setBusinessObject(EObject be) {
-		this.be = be;
+	protected void setBusinessObject(EObject object) {
+		be = object;
 	}
 	
 	/**
@@ -192,29 +226,240 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		return button;
 	}
 
-	protected void createLabel(String name) {
+	protected Label createLabel(String name) {
 		Label label = new Label(this, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		toolkit.adapt(label, true, true);
 		label.setText(name);
 		widgets.add(label);
+		return label;
 	}
 	
 	/**
-	 * Override this to select attributes to be rendered 
+	 * Implement this to select attributes to be rendered 
 	 * @param attribute
 	 * @param object
 	 * @return
 	 */
-	protected boolean canBindAttribute(EAttribute attribute, EObject object) {
-		return true;
+	protected abstract boolean canBindAttribute(EObject object, EAttribute attribute);
+
+	protected void bindAttribute(EObject object, EAttribute attribute, ItemProviderAdapter itemProviderAdapter) {
+		
+		if (!canBindAttribute(object,attribute)) {
+			return;
+		}
+		
+		String displayName = getDisplayName(itemProviderAdapter, object, attribute);
+		Collection choiceOfValues = getChoiceOfValues(itemProviderAdapter, object, attribute);
+		
+		if (String.class.equals(attribute.getEType().getInstanceClass())) {
+			bindText( object, attribute, createTextInput(displayName, getIsMultiLine(itemProviderAdapter,object,attribute)));
+		} else if (boolean.class.equals(attribute.getEType().getInstanceClass())) {
+			bindBoolean(object, attribute, createBooleanInput(displayName));
+		} else if (int.class.equals(attribute.getEType().getInstanceClass())) {
+			bindInt(object, attribute, createIntInput(displayName));
+		} else if (choiceOfValues != null) {
+			createLabel(displayName);
+			createSingleItemEditor(object, attribute, object.eGet(attribute), choiceOfValues);
+		} else if ("anyAttribute".equals(attribute.getName())) {
+			List<Entry> basicList = ((BasicFeatureMap) object.eGet(attribute)).basicList();
+			for (Entry entry : basicList) {
+				EStructuralFeature feature = entry.getEStructuralFeature();
+				if (Object.class.equals(feature.getEType().getInstanceClass())) {
+					Text t = createTextInput(ModelUtil.toDisplayName(feature.getName()), false);
+					bindText( object, feature, t);
+				}
+			}
+		}
 	}
 	
-	protected void bindText(final EStructuralFeature a, final Text text) {
-		bindText(a, text, be);
+	/**
+	 * Implement this to select references to be rendered 
+	 * @param object
+	 * @param attribute
+	 * @return
+	 */
+	protected abstract boolean canBindReference(EObject object, EReference reference);
+
+	protected void bindReferences(EObject object, ItemProviderAdapter itemProviderAdapter) {
+		ToolEnablementPreferences preferences = ToolEnablementPreferences.getPreferences(project);
+		
+		EList<EReference> eAllContainments = object.eClass().getEAllContainments();
+		for (EReference e : object.eClass().getEAllReferences()) {
+			if (preferences.isEnabled(object.eClass(), e) && !eAllContainments.contains(e)) {
+				IItemPropertyDescriptor propertyDescriptor = itemProviderAdapter.getPropertyDescriptor(object, e);
+				if (propertyDescriptor!=null)
+					bindReference(object, e, propertyDescriptor.getDisplayName(e));
+			}
+		}
+
+		if (object instanceof Participant) {
+			Diagram diagram = bpmn2Editor.getDiagramTypeProvider().getDiagram();
+			if (shape != null && shape.getParticipantBandKind() != null) {
+				bindBoolean(shape, shape.eClass().getEStructuralFeature(BpmnDiPackage.BPMN_SHAPE__IS_MESSAGE_VISIBLE),
+						createBooleanInput("Is Message Visible"));
+			}
+
+		}
+	}
+
+	protected void bindReference(EObject object, EReference reference, String name) {
+		if ( !canBindReference(object, reference) ) {
+			return;
+		}
+		
+		Object eGet = object.eGet(reference);
+
+		createLabel(name);
+		if (eGet instanceof List) {
+			createListEditor(object, reference, eGet);
+		} else {
+			createSingleItemEditor(object, reference, eGet, null);
+		}
+	}
+
+	private void createListEditor(final EObject object, final EReference reference, Object eGet) {
+
+		final Text text = new Text(this, SWT.BORDER);
+		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		toolkit.adapt(text, true, true);
+		widgets.add(text);
+
+		Button editButton = new Button(this, SWT.NONE);
+		editButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		editButton.setText("Edit ...");
+		toolkit.adapt(editButton, true, true);
+		widgets.add(editButton);
+
+		final List<EObject> refs = (List<EObject>) eGet;
+		updateTextField(refs, text);
+
+		SelectionAdapter editListener = new SelectionAdapter() {
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				List<EObject> l = null;
+
+				if (modelHandler != null) {
+					l = (List<EObject>) modelHandler.getAll(reference.getEType().getInstanceClass());
+				}
+
+				FeatureEditorDialog featureEditorDialog = new FeatureEditorDialog(getShell(), LABEL_PROVIDER, object,
+						reference, "Select elements", l);
+
+				if (featureEditorDialog.open() == Window.OK) {
+
+					updateEObject(refs, (EList<EObject>) featureEditorDialog.getResult());
+					updateTextField(refs, text);
+				}
+			}
+
+			public void updateEObject(final List<EObject> refs, final EList<EObject> result) {
+				TransactionalEditingDomain domain = bpmn2Editor.getEditingDomain();
+				domain.getCommandStack().execute(new RecordingCommand(domain) {
+					@Override
+					protected void doExecute() {
+
+						if (result == null) {
+							refs.clear();
+							return;
+						}
+						refs.retainAll(result);
+						for (EObject di : result) {
+							if (!refs.contains(di)) {
+								refs.add(di);
+							}
+						}
+					}
+				});
+			}
+		};
+		editButton.addSelectionListener(editListener);
+	}
+
+	private void createSingleItemEditor(final EObject object, final EStructuralFeature reference, Object eGet, Collection values) {
+		final ComboViewer combo = new ComboViewer(this, SWT.BORDER);
+		Combo c = combo.getCombo();
+		combo.setLabelProvider(LABEL_PROVIDER);
+		c.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		toolkit.adapt(c, true, true);
+		widgets.add(c);
+
+		List<Object> l = null;
+
+		if (values != null) {
+			l = Arrays.asList(values.toArray());
+		} else if (modelHandler != null) {
+			l = (List<Object>) modelHandler.getAll(reference.getEType().getInstanceClass());
+		}
+
+		combo.add("");
+		combo.add(l.toArray());
+		if (eGet != null) {
+			combo.setSelection(new StructuredSelection(eGet));
+		}
+
+		combo.addSelectionChangedListener(new ISelectionChangedListener() {
+
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				ISelection selection = combo.getSelection();
+				if (selection instanceof StructuredSelection) {
+					Object firstElement = ((StructuredSelection) selection).getFirstElement();
+					if (firstElement instanceof EObject) {
+						updateEObject(firstElement);
+					} else if (firstElement instanceof GatewayDirection) {
+						updateGatewayDirection(firstElement);
+					} else {
+						updateEObject(null);
+					}
+				}
+			}
+
+			public void updateEObject(final Object result) {
+				TransactionalEditingDomain domain = bpmn2Editor.getEditingDomain();
+				domain.getCommandStack().execute(new RecordingCommand(domain) {
+					@Override
+					protected void doExecute() {
+						object.eSet(reference, result);
+					}
+				});
+			}
+			
+			public void updateGatewayDirection(final Object result) {
+				TransactionalEditingDomain domain = bpmn2Editor.getEditingDomain();
+				domain.getCommandStack().execute(new RecordingCommand(domain) {
+					@Override
+					protected void doExecute() {
+						GatewayDirection direction = (GatewayDirection) result;
+						object.eSet(reference, direction);
+					}
+				});
+			}
+			
+		});
+	}
+
+	private void updateTextField(final List<EObject> refs, Text text) {
+		String listText = "";
+		if (refs != null) {
+			for (int i = 0; i < refs.size() - 1; i++) {
+				listText += LABEL_PROVIDER.getText(refs.get(i)) + ", ";
+			}
+			if (refs.size() > 0) {
+				listText += LABEL_PROVIDER.getText(refs.get(refs.size() - 1));
+			}
+		}
+
+		text.setText(listText);
+	}
+
+	public void setShape(BPMNShape shape) {
+		this.shape = shape;
 	}
 	
-	protected void bindText(final EStructuralFeature a, final Text text, final EObject object) {
+	protected void bindText(final EObject object, final EStructuralFeature a, final Text text) {
 
 		Object eGet = object.eGet(a);
 		if (eGet != null) {
@@ -260,11 +505,8 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		});
 	}
 
-	protected void bindBoolean(final EStructuralFeature a, final Button button) {
-		bindBoolean(a, button, be);
-	}
-
-	protected void bindBoolean(final EStructuralFeature a, final Button button, final EObject object) {
+	protected void bindBoolean(final EObject object, final EStructuralFeature a, final Button button) {
+		
 		button.setSelection((Boolean) object.eGet(a));
 		IObservableValue buttonObserver = SWTObservables.observeSelection(button);
 		buttonObserver.addValueChangeListener(new IValueChangeListener() {
@@ -306,11 +548,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		});
 	}
 	
-	protected void bindInt(final EStructuralFeature a, final Text text) {
-		bindInt(a, text, be);
-	}
-	
-	protected void bindInt(final EStructuralFeature a, final Text text, final EObject object) {
+	protected void bindInt(final EObject object, final EStructuralFeature a, final Text text) {
 
 		text.addVerifyListener(new VerifyListener() {
 
@@ -388,47 +626,56 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	}
 
 	/**
-	 * Override this to select which lists are rendered
+	 * Implement this to select which lists are rendered
 	 * @param feature
 	 * @param object
 	 * @return
 	 */
-	protected boolean canBindList(EStructuralFeature feature, EObject object) {
-		if (!(be.eGet(feature) instanceof EList<?>)) {
-			return false;
-		}
-		Class<?> clazz = feature.getEType().getInstanceClass();
-		if (!EObject.class.isAssignableFrom(clazz)) {
-			return false;
-		}
-		return true;
-	}
+	protected abstract boolean canBindList(EObject object, EStructuralFeature feature);
 	
 	/**
-	 * Override this to select which table columns are rendered
+	 * Implement this to select which table columns are rendered
 	 * @param attribute
 	 * @param object
 	 * @return
 	 */
-	protected boolean canBindListColumn(EAttribute attribute, EObject object) {
-		return true;
-	}
+	protected abstract boolean canBindListColumn(EObject object, EAttribute attribute);
 	
-	protected boolean canModifyListColumn(Object element, EAttribute attribute, EObject object) {
-		return true;
-	}
-	
-	protected void bindList(final EStructuralFeature feature, EObject object, int flags) {
-		if (!canBindList(feature, object)) {
+	/**
+	 * Implement this to select which table columns can be edited
+	 * @param element
+	 * @param attribute
+	 * @param object
+	 * @return
+	 */
+	protected abstract boolean canModifyListColumn(EObject object, EAttribute attribute, Object element);
+
+	/**
+	 * Implement this to provide table style flags 
+	 * @param object
+	 * @param feature
+	 * @return
+	 */
+	protected abstract int getListStyleFlags(EObject object, EStructuralFeature feature);
+
+	protected void bindList(EObject object, EStructuralFeature feature, ItemProviderAdapter itemProviderAdapter) {
+		if (!canBindList(object, feature)) {
 			return;
 		}
-		EList<EObject> list = (EList<EObject>)be.eGet(feature);
+		if (!(object.eGet(feature) instanceof EList<?>)) {
+			return;
+		}
+		Class<?> clazz = feature.getEType().getInstanceClass();
+		if (!EObject.class.isAssignableFrom(clazz)) {
+			return;
+		}
+		EList<EObject> list = (EList<EObject>)object.eGet(feature);
 		
 		ColumnTableProvider tableProvider = new ColumnTableProvider();
 		EClass cl = (EClass) feature.getEType();
 		for (EAttribute a1 : cl.getEAllAttributes()) {
-			if (canBindListColumn(a1, cl))
-			tableProvider.add(new TableColumn(be,a1));
+			if (canBindListColumn(cl, a1))
+			tableProvider.add(new TableColumn(object,a1));
 		}
 
 		if (tableProvider.getColumns().size()==0) {
@@ -436,12 +683,17 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		}
 
 		int span = 3;
+		int flags = getListStyleFlags(object,feature);
+		int border = SWT.NONE;
 		if ((flags & SHOW_LIST_LABEL)!=0) {
-			createLabel(feature.getName());
+			Label label = createLabel(
+					ModelUtil.toDisplayName(feature.getName()));
+			label.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false, 1, 1));
 			span = 2;
+			border = SWT.BORDER;
 		}
 		
-		Composite parent = new Composite(this, SWT.BORDER);
+		Composite parent = new Composite(this, border);
 		parent.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, span, 1));
 		toolkit.paintBordersFor(parent);
 		toolkit.adapt(parent, true, true);
@@ -539,21 +791,16 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 
 		@Override
 		public void dispose() {
-			// TODO Auto-generated method stub
-			
 		}
 
 		@Override
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			// TODO Auto-generated method stub
-			
 		}
 
 		@Override
 		public Object[] getElements(Object inputElement) {
 			return list.toArray();
 		}
-		
 	}
 	
 	public class TableColumn extends ColumnTableProvider.Column implements ILabelProvider, ICellModifier {
@@ -590,7 +837,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		}
 		
 		public boolean canModify(Object element, String property) {
-			return canModifyListColumn(element, attribute, object);
+			return canModifyListColumn(object, attribute, element);
 		}
 		
 		public void modify(Object element, String property, Object value) {
@@ -619,6 +866,46 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		}
 	}
 
+	private String getDisplayName(ItemProviderAdapter itemProviderAdapter, EObject object, EStructuralFeature feature) {
+		IItemPropertyDescriptor propertyDescriptor = null;
+		if (itemProviderAdapter!=null)
+			propertyDescriptor = itemProviderAdapter.getPropertyDescriptor(object, feature);
+		
+		String displayName;
+
+		if (propertyDescriptor!=null) {
+			displayName = propertyDescriptor.getDisplayName(object);
+		}
+		else {
+			displayName = ModelUtil.toDisplayName(feature.getName());
+		}
+		return displayName;
+	}
+
+	private boolean getIsMultiLine(ItemProviderAdapter itemProviderAdapter, EObject object, EStructuralFeature feature) {
+		IItemPropertyDescriptor propertyDescriptor = null;
+		if (itemProviderAdapter!=null)
+			propertyDescriptor = itemProviderAdapter.getPropertyDescriptor(object, feature);
+		
+		boolean isMultiLine = false;
+
+		if (propertyDescriptor!=null) {
+			isMultiLine = propertyDescriptor.isMultiLine(object);
+		}
+		return isMultiLine;
+	}
+
+	private Collection getChoiceOfValues(ItemProviderAdapter itemProviderAdapter, EObject object, EStructuralFeature feature) {
+		IItemPropertyDescriptor propertyDescriptor = null;
+		if (itemProviderAdapter!=null)
+			propertyDescriptor = itemProviderAdapter.getPropertyDescriptor(object, feature);
+		
+		if (propertyDescriptor!=null) {
+			propertyDescriptor.getChoiceOfValues(object);
+		}
+		return null;
+	}
+	
 	protected void cleanBindings() {
 		for (Binding b : bindings) {
 			b.dispose();
