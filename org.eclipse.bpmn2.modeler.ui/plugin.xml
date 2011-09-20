@@ -232,6 +232,15 @@
 			tab="org.eclipse.bpmn2.modeler.conversationLink.tab"
 			type="org.eclipse.bpmn2.ConversationLink">
 		</propertySection>
+		  
+		  <propertySection
+		        class="org.eclipse.bpmn2.modeler.ui.property.events.StartEventPropertySection"
+		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+		        id="org.eclipse.bpmn2.modeler.startEvent.section"
+		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+		        tab="org.eclipse.bpmn2.modeler.startEvent.tab"
+		        type="org.eclipse.bpmn2.StartEvent">
+		  </propertySection>
 
 	</extension>
 

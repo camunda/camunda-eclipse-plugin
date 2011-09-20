@@ -10,15 +10,18 @@
  *
  * @author Innar Made
  ******************************************************************************/
-package org.eclipse.bpmn2.modeler.ui.property;
+package org.eclipse.bpmn2.modeler.ui.property.events;
 
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablementPreferences;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
+import org.eclipse.bpmn2.modeler.ui.property.MainPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.PropertyUtil;
 import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
@@ -27,7 +30,6 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
-import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.ResourceSetChangeEvent;
 import org.eclipse.emf.transaction.ResourceSetListenerImpl;
@@ -42,8 +44,8 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
@@ -54,19 +56,17 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-@SuppressWarnings("unchecked")
-public class ImprovedAdvancedPropertiesComposite extends Composite {
+public class StartEventPropertiesComposite extends Composite {
 
 	private final FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 	private EObject be;
-	private final TreeViewer treeViewer;
+	private final ListViewer listViewer;
 	private TabbedPropertySheetPage aTabbedPropertySheetPage;
 	private BPMN2Editor diagramEditor;
 	private final MainPropertiesComposite mainPropertiesComposite;
@@ -79,7 +79,8 @@ public class ImprovedAdvancedPropertiesComposite extends Composite {
 		public void resourceSetChanged(ResourceSetChangeEvent event) {
 			List<Notification> notifications = event.getNotifications();
 			for (Notification notification : notifications) {
-				treeViewer.refresh(notification.getNotifier(), true);
+				if (!listViewer.getList().isDisposed())
+					listViewer.refresh(notification.getNotifier(), true);
 			}
 		}
 	}
@@ -90,8 +91,9 @@ public class ImprovedAdvancedPropertiesComposite extends Composite {
 	 * @param parent
 	 * @param style
 	 */
-	public ImprovedAdvancedPropertiesComposite(Composite parent, int style) {
+	public StartEventPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
+
 		addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
@@ -113,18 +115,17 @@ public class ImprovedAdvancedPropertiesComposite extends Composite {
 
 		Section sctnProperties = toolkit.createSection(sashForm, ExpandableComposite.TITLE_BAR);
 		toolkit.paintBordersFor(sctnProperties);
-		sctnProperties.setText("Properties");
+		sctnProperties.setText("Event Definitions");
 
 		Composite composite = toolkit.createComposite(sctnProperties, SWT.NONE);
 		toolkit.paintBordersFor(composite);
 		sctnProperties.setClient(composite);
 		composite.setLayout(new GridLayout(1, false));
 
-		treeViewer = new TreeViewer(composite, SWT.BORDER);
-		Tree tree = treeViewer.getTree();
-		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2));
-		toolkit.paintBordersFor(tree);
-		treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+		listViewer = new ListViewer(composite, SWT.BORDER);
+		org.eclipse.swt.widgets.List list = listViewer.getList();
+		list.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2));
+		listViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
@@ -133,8 +134,9 @@ public class ImprovedAdvancedPropertiesComposite extends Composite {
 			}
 		});
 
-		treeViewer.setContentProvider(new PropertyTreeContentProvider(this));
-		treeViewer.setLabelProvider(new AdapterFactoryLabelProvider(AbstractBpmn2PropertiesComposite.ADAPTER_FACTORY));
+		listViewer.setContentProvider(new EventDefinitionListContentProvider());
+		listViewer.setLabelProvider(new EventDefinitionListLabelProvider());
+//		listViewer.setLabelProvider(new AdapterFactoryLabelProvider(AbstractBpmn2PropertiesComposite.ADAPTER_FACTORY));
 
 		Section sctnEditors = toolkit.createSection(sashForm, ExpandableComposite.TITLE_BAR);
 		toolkit.paintBordersFor(sctnEditors);
@@ -148,6 +150,7 @@ public class ImprovedAdvancedPropertiesComposite extends Composite {
 
 	}
 
+	@SuppressWarnings("restriction")
 	public void setEObject(BPMN2Editor diagramEditor, EObject be) {
 		if (domain != null && domainListener != null) {
 			domain.removeResourceSetListener(domainListener);
@@ -159,7 +162,7 @@ public class ImprovedAdvancedPropertiesComposite extends Composite {
 		domainListener = new DomainListener();
 		domain.addResourceSetListener(domainListener);
 
-		treeViewer.setInput(be);
+		listViewer.setInput(be);
 		prefs = ToolEnablementPreferences.getPreferences(diagramEditor.getModelFile().getProject());
 	}
 
@@ -172,14 +175,14 @@ public class ImprovedAdvancedPropertiesComposite extends Composite {
 
 			@Override
 			public void menuAboutToShow(IMenuManager manager) {
-				ImprovedAdvancedPropertiesComposite.this.buildMenu((MenuManager) manager);
+				StartEventPropertiesComposite.this.buildMenu((MenuManager) manager);
 			}
 		});
 
-		Tree tree = treeViewer.getTree();
+		org.eclipse.swt.widgets.List tree = listViewer.getList();
 		Menu menu = manager.createContextMenu(tree);
 		tree.setMenu(menu);
-		aTabbedPropertySheetPage.getSite().registerContextMenu("#PropertiesMenu", manager, treeViewer);
+		aTabbedPropertySheetPage.getSite().registerContextMenu("#PropertiesMenu", manager, listViewer);
 	}
 
 	protected void buildMenu(MenuManager manager) {
@@ -198,7 +201,7 @@ public class ImprovedAdvancedPropertiesComposite extends Composite {
 	}
 
 	private void createRootProperties(MenuManager menuManager) {
-		MenuManager manager = new MenuManager("Add Root Property");
+		MenuManager manager = new MenuManager("Add Event Definition");
 		menuManager.add(manager);
 		createMenuItems(manager, "", be, true);
 	}
@@ -225,22 +228,28 @@ public class ImprovedAdvancedPropertiesComposite extends Composite {
 				if (eAllContainments.contains(feature) && prefs.isEnabled(commandValue.eClass())
 						&& prefs.isEnabled(commandValue.eClass(), feature)) {
 					Object value = baseElement.eGet(feature);
+					
+					if (commandValue instanceof EventDefinition) {
+						String name = PropertyUtil.deCamelCase(commandValue.eClass().getName());
+						Action item = createMenuItemFor(prefix + name, baseElement, (EReference) feature, command.value);
 
-					String name = PropertyUtil.deCamelCase(commandValue.eClass().getName());
-					Action item = createMenuItemFor(prefix + name, baseElement, (EReference) feature, command.value);
+						item.setEnabled(value == null || value instanceof EList);
+						manager.add(item);
+					}
 
-					item.setEnabled(value == null || value instanceof EList);
-					manager.add(item);
 				}
 			} else {
 				if (eAllContainments.contains(feature) && prefs.isEnabled(baseElement.eClass(), feature)) {
 					Object value = baseElement.eGet(feature);
 
-					String name = PropertyUtil.deCamelCase(commandValue.eClass().getName());
-					Action item = createMenuItemFor(prefix + name, baseElement, (EReference) feature, command.value);
+					if (commandValue instanceof EventDefinition) {
+						String name = PropertyUtil.deCamelCase(commandValue.eClass().getName());
+						Action item = createMenuItemFor(prefix + name, baseElement, (EReference) feature, command.value);
 
-					item.setEnabled(value == null || value instanceof EList);
-					manager.add(item);
+						item.setEnabled(value == null || value instanceof EList);
+						manager.add(item);
+					}
+
 				}
 			}
 		}
@@ -273,7 +282,7 @@ public class ImprovedAdvancedPropertiesComposite extends Composite {
 						} else {
 							baseElement.eSet(eReference, value);
 						}
-						treeViewer.refresh(true);
+						listViewer.refresh(true);
 					}
 				});
 			}
@@ -281,7 +290,7 @@ public class ImprovedAdvancedPropertiesComposite extends Composite {
 	}
 
 	private EObject getSelectedBaseElement() {
-		ISelection selection = treeViewer.getSelection();
+		ISelection selection = listViewer.getSelection();
 		EObject baseElement = null;
 
 		if (selection instanceof IStructuredSelection) {
@@ -301,7 +310,7 @@ public class ImprovedAdvancedPropertiesComposite extends Composite {
 			public void run() {
 
 				if (baseElement == null) {
-					treeViewer.refresh(true);
+					listViewer.refresh(true);
 					return;
 				}
 
@@ -333,12 +342,12 @@ public class ImprovedAdvancedPropertiesComposite extends Composite {
 							// }
 							pictogramElement.getLink().getBusinessObjects().clear();
 						}
-						treeViewer.refresh(true);
+						listViewer.refresh(true);
 					}
 				});
 
 			}
 		};
 	}
-}
 
+}
