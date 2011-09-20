@@ -341,3 +341,4 @@ public class ImprovedAdvancedPropertiesComposite extends Composite {
 		};
 	}
 }
+

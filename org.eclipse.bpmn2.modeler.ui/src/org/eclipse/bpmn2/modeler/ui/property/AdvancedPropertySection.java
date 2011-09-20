@@ -72,7 +72,7 @@ public class AdvancedPropertySection extends GFPropertySection implements ITabbe
 
 	@Override
 	public boolean shouldUseExtraSpace() {
-		return true;
+		return false;
 	}
 
 	@Override

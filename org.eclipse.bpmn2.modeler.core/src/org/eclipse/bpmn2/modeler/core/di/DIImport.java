@@ -19,6 +19,7 @@ import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.ConversationLink;
 import org.eclipse.bpmn2.DataAssociation;
+import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.ItemAwareElement;
@@ -111,11 +112,10 @@ public class DIImport {
 				}
 
 				// First: add all IDs to our ID mapping table
-				for (BPMNDiagram d : diagrams) {
-					TreeIterator<EObject> iter = d.eAllContents();
-					while (iter.hasNext()) {
-						ModelUtil.addID( iter.next() );
-					}
+				Definitions definitions = modelHandler.getDefinitions();
+				TreeIterator<EObject> iter = definitions.eAllContents();
+				while (iter.hasNext()) {
+					ModelUtil.addID( iter.next() );
 				}
 				
 				for (BPMNDiagram d : diagrams) {

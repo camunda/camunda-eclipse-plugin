@@ -114,6 +114,13 @@
 			afterTab="org.eclipse.bpmn2.modeler.main.tab"
 			label="Advanced">
 		</propertyTab>
+				
+		<propertyTab category="BPMN2"
+			id="org.eclipse.bpmn2.modeler.diagram.tab"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			label="Process">
+		</propertyTab>
 		
 		<propertyTab category="BPMN2"
 			id="org.eclipse.bpmn2.modeler.sequenceflow.tab"
@@ -167,6 +174,15 @@
 			id="org.eclipse.bpmn2.modeler.advanced.tab.section"
 			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
 			tab="org.eclipse.bpmn2.modeler.advanced.tab">
+		</propertySection>
+		
+		<propertySection
+			class="org.eclipse.bpmn2.modeler.ui.property.diagrams.ProcessDiagramPropertySection"
+			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+			id="org.eclipse.bpmn2.modeler.process.diagram.section"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			type="org.eclipse.bpmn2.di.BPMNDiagram"
+			tab="org.eclipse.bpmn2.modeler.diagram.tab">
 		</propertySection>
 		
 		<propertySection
