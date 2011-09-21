@@ -168,6 +168,13 @@
 			label="Start Event">
 		</propertyTab>
 		
+		<propertyTab category="BPMN2"
+			id="org.eclipse.bpmn2.modeler.endEvent.tab"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			label="End Event">
+		</propertyTab>
+
 		<!-- Property Sections -->
 		
 		<propertySection
@@ -247,6 +254,15 @@
 		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
 		        tab="org.eclipse.bpmn2.modeler.startEvent.tab"
 		        type="org.eclipse.bpmn2.StartEvent">
+		  </propertySection>
+
+		  <propertySection
+		        class="org.eclipse.bpmn2.modeler.ui.property.events.EndEventPropertySection"
+		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+		        id="org.eclipse.bpmn2.modeler.endEvent.section"
+		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+		        tab="org.eclipse.bpmn2.modeler.endEvent.tab"
+		        type="org.eclipse.bpmn2.EndEvent">
 		  </propertySection>
 
 	</extension>
