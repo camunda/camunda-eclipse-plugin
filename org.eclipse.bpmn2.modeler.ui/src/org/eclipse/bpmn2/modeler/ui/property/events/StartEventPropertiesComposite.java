@@ -61,7 +61,7 @@ public class StartEventPropertiesComposite extends MainPropertiesComposite {
 
 	@Override
 	protected int getListStyleFlags(EObject object, EStructuralFeature feature) {
-		return EDITABLE_LIST | ORDERED_LIST;
+		return SHOW_LIST_LABEL | EDITABLE_LIST | ORDERED_LIST;
 	}
 
 	@Override
@@ -74,5 +74,9 @@ public class StartEventPropertiesComposite extends MainPropertiesComposite {
 	
 	@Override
 	protected boolean canBindReference(EObject object, EReference reference) {
+		if (showProperties.contains(reference.getName())) {
+			return true;
+		}
 		return false;
-	}}
+	}
+}
