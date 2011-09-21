@@ -44,12 +44,12 @@ public abstract class AbstractCreateRootElementFeature extends AbstractCreateFea
 			element = createRootElement();
 //			element.setId(EcoreUtil.generateUUID());
 			handler.addRootElement(element);
+			ModelUtil.setID(element);
 		} catch (IOException e) {
 			Activator.logError(e);
 		}
 
 		addGraphicalRepresentation(context, element);
-		ModelUtil.setID(element);
 		return new Object[] { element };
     }
 	

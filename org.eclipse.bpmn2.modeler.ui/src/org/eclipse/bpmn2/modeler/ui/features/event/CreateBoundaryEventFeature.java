@@ -61,11 +61,11 @@ public class CreateBoundaryEventFeature extends AbstractCreateFeature {
 				bo = getBusinessObjectForPictogramElement((PictogramElement) context.getTargetContainer().eContainer());
 			}
 			handler.addFlowElement(bo, event);
+			ModelUtil.setID(event);
 		} catch (IOException e) {
 			Activator.logError(e);
 		}
 		addGraphicalRepresentation(context, event);
-		ModelUtil.setID(event);
 		return new Object[] { event };
 	}
 

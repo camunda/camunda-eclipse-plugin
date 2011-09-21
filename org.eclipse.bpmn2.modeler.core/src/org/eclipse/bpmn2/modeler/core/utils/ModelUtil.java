@@ -222,7 +222,8 @@ public class ModelUtil {
 	public static void setID(EObject obj, Resource res) {
 		EStructuralFeature feature = ((EObject)obj).eClass().getEStructuralFeature("id");
 		if (feature!=null) {
-			obj.eSet(feature, generateID(obj,res));
+			if (obj.eGet(feature)==null)
+				obj.eSet(feature, generateID(obj,res));
 		}
 	}
 

@@ -49,12 +49,12 @@ public class CreateTextAnnotationFeature extends AbstractCreateFeature {
 //			ta.setId(EcoreUtil.generateUUID());
 			mh.addArtifact(FeatureSupport.getTargetParticipant(context, mh), ta);
 			ta.setText("Enter your comment here");
+			ModelUtil.setID(ta);
 		} catch (IOException e) {
 			Activator.logError(e);
 		}
 
 		addGraphicalRepresentation(context, ta);
-		ModelUtil.setID(ta);
 
 		return new Object[] { ta };
 	}

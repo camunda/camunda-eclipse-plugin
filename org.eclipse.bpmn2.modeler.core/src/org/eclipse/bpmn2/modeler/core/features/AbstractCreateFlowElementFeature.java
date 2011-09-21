@@ -56,11 +56,11 @@ public abstract class AbstractCreateFlowElementFeature<T extends FlowElement> ex
 			}
 
 			handler.addFlowElement(getBusinessObjectForPictogramElement(context.getTargetContainer()), element);
+			ModelUtil.setID(element);
 		} catch (IOException e) {
 			Activator.logError(e);
 		}
 		addGraphicalRepresentation(context, element);
-		ModelUtil.setID(element);
 		return new Object[] { element };
 	}
 	
