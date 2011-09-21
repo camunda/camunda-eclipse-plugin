@@ -168,6 +168,69 @@
 			label="Event">
 		</propertyTab>
 
+		<propertyTab category="BPMN2"
+			id="org.eclipse.bpmn2.modeler.task.tab"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			label="Task">
+		</propertyTab>
+
+		<propertyTab
+	        afterTab="org.eclipse.bpmn2.modeler.task.tab"
+	        category="BPMN2"
+	        id="org.eclipse.bpmn2.modeler.scriptTask.tab"
+	        label="Script Task"
+	        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+		</propertyTab>
+
+		<propertyTab
+	        afterTab="org.eclipse.bpmn2.modeler.task.tab"
+	        category="BPMN2"
+	        id="org.eclipse.bpmn2.modeler.serviceTask.tab"
+	        label="Service Task"
+	        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+		</propertyTab>
+
+		<propertyTab
+	        afterTab="org.eclipse.bpmn2.modeler.task.tab"
+	        category="BPMN2"
+	        id="org.eclipse.bpmn2.modeler.userTask.tab"
+	        label="User Task"
+	        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+		</propertyTab>
+
+		<propertyTab
+	        afterTab="org.eclipse.bpmn2.modeler.task.tab"
+	        category="BPMN2"
+	        id="org.eclipse.bpmn2.modeler.sendTask.tab"
+	        label="Send Task"
+	        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+		</propertyTab>
+
+		<propertyTab
+	        afterTab="org.eclipse.bpmn2.modeler.main.tab"
+	        category="BPMN2"
+	        id="org.eclipse.bpmn2.modeler.receiveTask.tab"
+	        label="Receive Task"
+	        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+		</propertyTab>
+
+		<propertyTab
+	        afterTab="org.eclipse.bpmn2.modeler.main.tab"
+	        category="BPMN2"
+	        id="org.eclipse.bpmn2.modeler.businessRuleTask.tab"
+	        label="Business Rule Task"
+	        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+		</propertyTab>
+
+		<propertyTab
+	        afterTab="org.eclipse.bpmn2.modeler.main.tab"
+	        category="BPMN2"
+	        id="org.eclipse.bpmn2.modeler.choreographyTask.tab"
+	        label="Choreography Task"
+	        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+		</propertyTab>
+
 		<!-- Property Sections -->
 		
 		<propertySection
@@ -297,6 +360,77 @@
 		        type="org.eclipse.bpmn2.BoundaryEvent">
 		  </propertySection>
 		  
+		  <propertySection
+		        class="org.eclipse.bpmn2.modeler.ui.property.tasks.TaskPropertySection"
+		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+		        id="org.eclipse.bpmn2.modeler.task.section"
+		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+		        tab="org.eclipse.bpmn2.modeler.task.tab"
+		        type="org.eclipse.bpmn2.Task">
+		  </propertySection>
+
+		  <propertySection
+		        class="org.eclipse.bpmn2.modeler.ui.property.tasks.ScriptTaskPropertySection"
+		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+		        id="org.eclipse.bpmn2.modeler.scriptTask.section"
+		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+		        tab="org.eclipse.bpmn2.modeler.scriptTask.tab"
+		        type="org.eclipse.bpmn2.ScriptTask">
+		  </propertySection>
+
+		  <propertySection
+		        class="org.eclipse.bpmn2.modeler.ui.property.tasks.ServiceTaskPropertySection"
+		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+		        id="org.eclipse.bpmn2.modeler.serviceTask.section"
+		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+		        tab="org.eclipse.bpmn2.modeler.serviceTask.tab"
+		        type="org.eclipse.bpmn2.ServiceTask">
+		  </propertySection>
+
+		  <propertySection
+		        class="org.eclipse.bpmn2.modeler.ui.property.tasks.UserTaskPropertySection"
+		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+		        id="org.eclipse.bpmn2.modeler.userTask.section"
+		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+		        tab="org.eclipse.bpmn2.modeler.userTask.tab"
+		        type="org.eclipse.bpmn2.UserTask">
+		  </propertySection>
+
+		  <propertySection
+		        class="org.eclipse.bpmn2.modeler.ui.property.tasks.SendTaskPropertySection"
+		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+		        id="org.eclipse.bpmn2.modeler.sendTask.section"
+		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+		        tab="org.eclipse.bpmn2.modeler.sendTask.tab"
+		        type="org.eclipse.bpmn2.SendTask">
+		  </propertySection>
+
+		  <propertySection
+		        class="org.eclipse.bpmn2.modeler.ui.property.tasks.ReceiveTaskPropertySection"
+		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+		        id="org.eclipse.bpmn2.modeler.receiveTask.section"
+		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+		        tab="org.eclipse.bpmn2.modeler.receiveTask.tab"
+		        type="org.eclipse.bpmn2.ReceiveTask">
+		  </propertySection>
+
+		  <propertySection
+		        class="org.eclipse.bpmn2.modeler.ui.property.tasks.BusinessRuleTaskPropertySection"
+		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+		        id="org.eclipse.bpmn2.modeler.businessRuleTask.section"
+		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+		        tab="org.eclipse.bpmn2.modeler.businessRuleTask.tab"
+		        type="org.eclipse.bpmn2.BusinessRuleTask">
+		  </propertySection>
+
+		  <propertySection
+		        class="org.eclipse.bpmn2.modeler.ui.property.tasks.ChoreographyTaskPropertySection"
+		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+		        id="org.eclipse.bpmn2.modeler.choreographyTask.section"
+		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+		        tab="org.eclipse.bpmn2.modeler.choreographyTask.tab"
+		        type="org.eclipse.bpmn2.ChoreographyTask">
+		  </propertySection>
 	</extension>
 
 </plugin>

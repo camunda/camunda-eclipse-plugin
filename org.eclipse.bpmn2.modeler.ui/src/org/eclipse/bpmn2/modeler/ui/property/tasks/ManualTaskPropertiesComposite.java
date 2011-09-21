@@ -10,7 +10,7 @@
  *
  * @author Innar Made
  ******************************************************************************/
-package org.eclipse.bpmn2.modeler.ui.property.events;
+package org.eclipse.bpmn2.modeler.ui.property.tasks;
 
 import java.util.ArrayList;
 
@@ -21,7 +21,7 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.swt.widgets.Composite;
 
-public class EndEventPropertiesComposite extends MainPropertiesComposite {
+public class ManualTaskPropertiesComposite extends MainPropertiesComposite {
 
 	private ArrayList<String> showProperties = null;
 	
@@ -31,7 +31,7 @@ public class EndEventPropertiesComposite extends MainPropertiesComposite {
 	 * @param parent
 	 * @param style
 	 */
-	public EndEventPropertiesComposite(Composite parent, int style) {
+	public ManualTaskPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
 		
 		showProperties = new ArrayList<String>();
@@ -40,6 +40,9 @@ public class EndEventPropertiesComposite extends MainPropertiesComposite {
 
 	@Override
 	protected boolean canBindList(EObject object, EStructuralFeature feature) {
+		if (showProperties.contains(feature.getName())) {
+			return true;
+		}
 		return false;
 	}
 
