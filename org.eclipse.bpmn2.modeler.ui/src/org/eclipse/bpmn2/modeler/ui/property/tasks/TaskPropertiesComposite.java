@@ -10,7 +10,7 @@
  *
  * @author Innar Made
  ******************************************************************************/
-package org.eclipse.bpmn2.modeler.ui.property.events;
+package org.eclipse.bpmn2.modeler.ui.property.tasks;
 
 import java.util.ArrayList;
 
@@ -20,8 +20,9 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 
-public class EndEventPropertiesComposite extends MainPropertiesComposite {
+public class TaskPropertiesComposite extends MainPropertiesComposite {
 
 	private ArrayList<String> showProperties = null;
 	
@@ -31,15 +32,40 @@ public class EndEventPropertiesComposite extends MainPropertiesComposite {
 	 * @param parent
 	 * @param style
 	 */
-	public EndEventPropertiesComposite(Composite parent, int style) {
+	public TaskPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
 		
 		showProperties = new ArrayList<String>();
-		// no properties currently
+		showProperties.add("id");
+		showProperties.add("name");
+		showProperties.add("boundaryEventDefs");
+		showProperties.add("completionQuantity");
+		showProperties.add("dataInputAssociations");
+		showProperties.add("dataOutputAssociations");
+		showProperties.add("ioSpecification");
+		showProperties.add("loopCharacteristics");
+		showProperties.add("properties");
+		showProperties.add("resources");
+		showProperties.add("startQuantity");
+		showProperties.add("isForCompensation");
+	}
+
+	@Override
+	public void createBindings(EObject be) {
+		if (be.getClass().getInterfaces().length > 0) {
+			Text roEventType = createTextInput("Task Type", false);
+			roEventType.setEditable(false);
+			roEventType.setText(be.getClass().getInterfaces()[0].getSimpleName());
+			roEventType.setEnabled(false);
+		}
+		super.createBindings(be);
 	}
 
 	@Override
 	protected boolean canBindList(EObject object, EStructuralFeature feature) {
+		if (showProperties.contains(feature.getName())) {
+			return true;
+		}
 		return false;
 	}
 
