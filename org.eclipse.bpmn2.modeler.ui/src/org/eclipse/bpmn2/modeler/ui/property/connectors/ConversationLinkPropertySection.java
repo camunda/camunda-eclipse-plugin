@@ -15,6 +15,8 @@ package org.eclipse.bpmn2.modeler.ui.property.connectors;
 import org.eclipse.bpmn2.ConversationLink;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesSection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.SWT;
@@ -23,7 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-public class ConversationLinkPropertySection extends GFPropertySection implements ITabbedPropertyConstants {
+public class ConversationLinkPropertySection extends AbstractBpmn2PropertiesSection implements ITabbedPropertyConstants {
 
 	private ConversationLinkPropertiesComposite composite;
 
@@ -36,16 +38,18 @@ public class ConversationLinkPropertySection extends GFPropertySection implement
 	}
 
 	@Override
+	protected AbstractBpmn2PropertiesComposite getComposite() {
+		return composite;
+	}
+
+	@Override
 	public void refresh() {
 		PictogramElement pe = getSelectedPictogramElement();
 		if (pe != null) {
 			ConversationLink be = BusinessObjectUtil.getFirstElementOfType(pe, ConversationLink.class,true);
 			composite.setEObject((BPMN2Editor) getDiagramEditor(), be);
+			
+			super.refresh();
 		}
-	}
-
-	@Override
-	public boolean shouldUseExtraSpace() {
-		return true;
 	}
 }

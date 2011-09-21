@@ -34,7 +34,6 @@ public class MainPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 		super(parent, style);
 	}
 
-	@SuppressWarnings({ "restriction", "unchecked" })
 	@Override
 	public void createBindings(EObject be) {
 		
@@ -82,7 +81,7 @@ public class MainPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 
 	@Override
 	protected boolean canModifyListColumn(EObject object, EAttribute attribute, Object element) {
-		return false;
+		return true;
 	}
 
 	@Override

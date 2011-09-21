@@ -15,6 +15,8 @@ package org.eclipse.bpmn2.modeler.ui.property.connectors;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesSection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.SWT;
@@ -23,16 +25,19 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-public class MessageFlowPropertySection extends GFPropertySection implements ITabbedPropertyConstants {
+public class MessageFlowPropertySection extends AbstractBpmn2PropertiesSection implements ITabbedPropertyConstants {
 
 	private MessageFlowPropertiesComposite composite;
 
 	@Override
 	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
-		parent.setLayout(new FillLayout());
-
 		composite = new MessageFlowPropertiesComposite(parent, SWT.BORDER);
+	}
+
+	@Override
+	protected AbstractBpmn2PropertiesComposite getComposite() {
+		return composite;
 	}
 
 	@Override
@@ -41,11 +46,8 @@ public class MessageFlowPropertySection extends GFPropertySection implements ITa
 		if (pe != null) {
 			MessageFlow be = BusinessObjectUtil.getFirstElementOfType(pe, MessageFlow.class,true);
 			composite.setEObject((BPMN2Editor) getDiagramEditor(), be);
+			
+			super.refresh();
 		}
-	}
-
-	@Override
-	public boolean shouldUseExtraSpace() {
-		return true;
 	}
 }

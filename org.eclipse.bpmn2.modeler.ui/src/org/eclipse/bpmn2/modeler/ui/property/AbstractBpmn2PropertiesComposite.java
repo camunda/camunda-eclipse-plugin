@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.GatewayDirection;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.di.BPMNShape;
@@ -81,6 +82,7 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.layout.FillLayout;
@@ -95,16 +97,19 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 
 	public final static ComposedAdapterFactory ADAPTER_FACTORY;
+	public static final Bpmn2Factory MODEL_FACTORY = Bpmn2Factory.eINSTANCE;
 	
 	// bitflags for optional components of list features
 	public final static int SHOW_LIST_LABEL = 1;
 	public final static int EDITABLE_LIST = 2;
 	public final static int ORDERED_LIST = 4;
 	
+	protected TabbedPropertySheetPage tabbedPropertySheetPage;
 	protected EObject be;
 	protected BPMN2Editor bpmn2Editor;
 	protected final DataBindingContext bindingContext;
@@ -148,7 +153,11 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		toolkit.paintBordersFor(this);
 		setLayout(new GridLayout(3, false));
 	}
-
+	
+	public void setSheetPage(TabbedPropertySheetPage tabbedPropertySheetPage) {
+		this.tabbedPropertySheetPage = tabbedPropertySheetPage;
+	}
+	
 	public final void setEObject(BPMN2Editor bpmn2Editor, final EObject object) {
 		String projectName = bpmn2Editor.getDiagramTypeProvider().getDiagram().eResource().getURI().segment(1);
 		project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
@@ -235,6 +244,14 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		return label;
 	}
 	
+	protected Button createPushButton(Composite parent, String name) {
+		final Button button = new Button(parent, SWT.PUSH);
+		button.setText(name);
+		toolkit.adapt(button, true, true);
+		widgets.add(button);
+		return button;
+	}
+
 	/**
 	 * Implement this to select attributes to be rendered 
 	 * @param attribute
@@ -669,19 +686,27 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		if (!EObject.class.isAssignableFrom(clazz)) {
 			return;
 		}
-		EList<EObject> list = (EList<EObject>)object.eGet(feature);
 		
+		final TransactionalEditingDomain editingDomain = bpmn2Editor.getEditingDomain();
+		final EList<EObject> list = (EList<EObject>)object.eGet(feature);
+		final EClass listItemClass = (EClass) feature.getEType();
+		
+		////////////////////////////////////////////////////////////
+		// Collect columns to be displayed and build column provider
+		////////////////////////////////////////////////////////////
 		ColumnTableProvider tableProvider = new ColumnTableProvider();
-		EClass cl = (EClass) feature.getEType();
-		for (EAttribute a1 : cl.getEAllAttributes()) {
-			if (canBindListColumn(cl, a1))
+		for (EAttribute a1 : listItemClass.getEAllAttributes()) {
+			if (canBindListColumn(listItemClass, a1))
 			tableProvider.add(new TableColumn(object,a1));
 		}
-
 		if (tableProvider.getColumns().size()==0) {
 			return;
 		}
 
+		////////////////////////////////////////////////////////////
+		// Display table label and draw border around table if the
+		// SHOW_LIST_LABEL style flag is set
+		////////////////////////////////////////////////////////////
 		int span = 3;
 		int flags = getListStyleFlags(object,feature);
 		int border = SWT.NONE;
@@ -693,42 +718,29 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 			border = SWT.BORDER;
 		}
 		
+		////////////////////////////////////////////////////////////
+		// Create a composite to hold the buttons and table
+		////////////////////////////////////////////////////////////
 		Composite parent = new Composite(this, border);
-		parent.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, span, 1));
+		parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, span, 1));
 		toolkit.paintBordersFor(parent);
 		toolkit.adapt(parent, true, true);
 		widgets.add(parent);
 		parent.setLayout(new GridLayout(2, false));
-
+		
+		////////////////////////////////////////////////////////////
+		// Create button section for add/remove/up/down buttons
+		////////////////////////////////////////////////////////////
 		Composite buttonSection = new Composite(parent, SWT.NONE);
-		buttonSection.setLayoutData(new GridData(GridData.BEGINNING));
+		buttonSection.setLayoutData(new GridData(SWT.TOP, SWT.LEFT, false, false, 1, 1));
 		toolkit.adapt(buttonSection, true, true);
 		widgets.add(buttonSection);
 		buttonSection.setLayout(new FillLayout(SWT.VERTICAL));
-		
-		final Button addButton = new Button(buttonSection, SWT.PUSH);
-		addButton.setText("Add");
-		toolkit.adapt(addButton, true, true);
-		widgets.add(addButton);
 
-		final Button removeButton = new Button(buttonSection, SWT.PUSH);
-		removeButton.setText("Remove");
-		removeButton.setEnabled(false);
-		toolkit.adapt(removeButton, true, true);
-		widgets.add(removeButton);
-
-		final Button upButton = new Button(buttonSection, SWT.PUSH);
-		upButton.setText("Move up");
-		upButton.setEnabled(false);
-		toolkit.adapt(upButton, true, true);
-		widgets.add(upButton);
-
-		final Button downButton = new Button(buttonSection, SWT.PUSH);
-		downButton.setText("Move down");
-		downButton.setEnabled(false);
-		toolkit.adapt(downButton, true, true);
-		widgets.add(downButton);
-		
+		////////////////////////////////////////////////////////////
+		// Create table
+		// allow table to fill entire width if there are no buttons
+		////////////////////////////////////////////////////////////
 		span = 2;
 		if ((flags & (EDITABLE_LIST | ORDERED_LIST))!=0) {
 			span = 1;
@@ -736,6 +748,30 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		else {
 			buttonSection.setVisible(false);
 		}
+		final Table table = new Table(parent, SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.BORDER);
+		toolkit.adapt(table, true, true);
+		widgets.add(table);
+		GridData d = new GridData(SWT.FILL, SWT.FILL, true, true, span, 1);
+		d.widthHint = 100;
+		d.heightHint = 100;
+		table.setLayoutData(d);
+		table.setLinesVisible(true);
+		table.setHeaderVisible(true);
+		
+		////////////////////////////////////////////////////////////
+		// Create buttons for add/remove/up/down
+		////////////////////////////////////////////////////////////
+		final Button addButton = createPushButton(buttonSection, "Add");
+
+		final Button removeButton = createPushButton(buttonSection, "Remove");
+		removeButton.setEnabled(false);
+
+		final Button upButton = createPushButton(buttonSection, "Move Up");
+		upButton.setEnabled(false);
+
+		final Button downButton = createPushButton(buttonSection, "Move Down");
+		downButton.setEnabled(false);
+		
 		if ((flags & EDITABLE_LIST)==0) {
 			addButton.setVisible(false);
 			removeButton.setVisible(false);
@@ -745,15 +781,12 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 			downButton.setVisible(false);
 		}
 		
-		final Table table = new Table(parent, SWT.FULL_SELECTION | SWT.V_SCROLL);
-		toolkit.adapt(table, true, true);
-		widgets.add(table);
-		table.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, span, 1));
-		table.setLinesVisible(true);
-		table.setHeaderVisible(true);
-		
-		TableViewer tableViewer = new TableViewer(table);
+		////////////////////////////////////////////////////////////
+		// Create table viewer and cell editors
+		////////////////////////////////////////////////////////////
+		final TableViewer tableViewer = new TableViewer(table);
 		tableProvider.createTableLayout(table);
+		tableProvider.setTableViewer(tableViewer);
 		
 		tableViewer.setLabelProvider(tableProvider);
 		tableViewer.setCellModifier(tableProvider);
@@ -761,22 +794,89 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		tableViewer.setColumnProperties(tableProvider.getColumnProperties());
 		tableViewer.setCellEditors(tableProvider.createCellEditors(table));
 
-		tableViewer
-				.addPostSelectionChangedListener(new ISelectionChangedListener() {
-					public void selectionChanged(SelectionChangedEvent event) {
-						removeButton.setEnabled(!event.getSelection().isEmpty());
-						int i = table.getSelectionIndex();
-						if (i>0)
-							upButton.setEnabled(!event.getSelection().isEmpty());
-						else
-							upButton.setEnabled(false);
-						if (i<table.getItemCount()-1)
-							downButton.setEnabled(!event.getSelection().isEmpty());
-						else
-							downButton.setEnabled(false);
+		////////////////////////////////////////////////////////////
+		// Create handlers
+		////////////////////////////////////////////////////////////
+		tableViewer.addPostSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent event) {
+				removeButton.setEnabled(!event.getSelection().isEmpty());
+				int i = table.getSelectionIndex();
+				if (i>0)
+					upButton.setEnabled(!event.getSelection().isEmpty());
+				else
+					upButton.setEnabled(false);
+				if (i<table.getItemCount()-1)
+					downButton.setEnabled(!event.getSelection().isEmpty());
+				else
+					downButton.setEnabled(false);
+			}
+		});
+		addButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+					@Override
+					protected void doExecute() {
+						EObject newItem = MODEL_FACTORY.create(listItemClass);
+						list.add(newItem);
+						tableViewer.setInput(list);
+						table.setSelection(list.size()-1);
+						tabbedPropertySheetPage.resizeScrolledComposite();
 					}
 				});
+			}
+		});
+		
+		removeButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+					@Override
+					protected void doExecute() {
+						int i = table.getSelectionIndex();
+						list.remove(i);
+						tableViewer.setInput(list);
+						if (i>=list.size())
+							i = list.size() - 1;
+						if (i>=0)
+							table.setSelection(i);
+						tabbedPropertySheetPage.resizeScrolledComposite();
+					}
+				});
+			}
+		});
+
+		upButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+					@Override
+					protected void doExecute() {
+						int i = table.getSelectionIndex();
+						list.move(i-1, i);
+						tableViewer.setInput(list);
+						table.setSelection(i-1);
+						tabbedPropertySheetPage.resizeScrolledComposite();
+					}
+				});
+			}
+		});
+		
+		downButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+					@Override
+					protected void doExecute() {
+						int i = table.getSelectionIndex();
+						list.move(i+1, i);
+						tableViewer.setInput(list);
+						table.setSelection(i+1);
+						tabbedPropertySheetPage.resizeScrolledComposite();
+					}
+				});
+			}
+		});
+
 		tableViewer.setInput(list);
+		
+		// a TableCursor allows navigation of the table with keys
 		TableCursor.create(table, tableViewer);
 	}
 
@@ -804,12 +904,17 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	}
 	
 	public class TableColumn extends ColumnTableProvider.Column implements ILabelProvider, ICellModifier {
+		private TableViewer tableViewer;
 		private EAttribute attribute;
 		private EObject object;
 		
 		public TableColumn(EObject o, EAttribute a) {
 			object = o;
 			attribute = a;
+		}
+		
+		public void setTableViewer(TableViewer t) {
+			tableViewer = t;
 		}
 		
 		@Override
@@ -843,7 +948,8 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		public void modify(Object element, String property, Object value) {
 			final EObject target = (EObject)element;
 			final Object newValue = value;
-			if (!target.eGet(attribute).equals(value)) {
+			final Object oldValue = target.eGet(attribute); 
+			if (oldValue==null || !oldValue.equals(value)) {
 				TransactionalEditingDomain editingDomain = bpmn2Editor.getEditingDomain();
 				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 					@Override
@@ -857,6 +963,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 				}
 				else
 					bpmn2Editor.showErrorMessage(null);
+				tableViewer.refresh();
 			}
 		}
 

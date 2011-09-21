@@ -33,15 +33,19 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-public class Bpmn2MainPropertySection extends GFPropertySection implements ITabbedPropertyConstants {
+public class Bpmn2MainPropertySection extends AbstractBpmn2PropertiesSection {
 
 	private MainPropertiesComposite composite;
 
 	@Override
 	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
-		parent.setLayout(new FillLayout());
 		composite = new MainPropertiesComposite(parent, SWT.None);
+	}
+
+	@Override
+	protected AbstractBpmn2PropertiesComposite getComposite() {
+		return composite;
 	}
 
 	@Override
@@ -56,6 +60,8 @@ public class Bpmn2MainPropertySection extends GFPropertySection implements ITabb
 			final BPMNShape shape = BusinessObjectUtil.getFirstElementOfType(pe, BPMNShape.class);
 			final BPMN2Editor diagramEditor = (BPMN2Editor) getDiagramEditor();
 			updateComposite(be, diagramEditor, shape);
+			
+			super.refresh();
 		}
 	}
 

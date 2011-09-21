@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableLayout;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -35,13 +36,16 @@ import org.eclipse.swt.widgets.TableColumn;
  */
 public class ColumnTableProvider extends TableProvider {
 
-	protected ArrayList columns = new ArrayList();
+	protected TableViewer tableViewer;
+	protected ArrayList<Column> columns = new ArrayList<Column>();
 
 	/**
 	 * Clients should implement this class for each type of column they want to show
 	 * in the Table.
 	 */
 	public static abstract class Column implements IBaseLabelProvider {
+		
+		protected TableViewer tableViewer;
 		
 		public abstract String getHeaderText();
 		public int getAlignment() { return SWT.LEFT; }
@@ -64,6 +68,10 @@ public class ColumnTableProvider extends TableProvider {
 		}
 		/* ILabelProvider */
 		public Image getImage(Object element) { return null; }
+		
+		public void setTableViewer(TableViewer tv) {
+			tableViewer = tv;
+		}
 	}
 
 	public void add(int index, Column column) {
@@ -75,7 +83,7 @@ public class ColumnTableProvider extends TableProvider {
 		add(columns.size(), column);
 	}
 	public void remove(int index) {
-		Column column = (Column)columns.get(index);
+		Column column = columns.get(index);
 		if (column != null) remove(column);
 	}
 	public void remove(Column column) {
@@ -93,8 +101,7 @@ public class ColumnTableProvider extends TableProvider {
 	 */
 	public void createTableLayout(Table table) {
 		TableLayout tableLayout = new TableLayout();
-		for (Iterator it = columns.iterator(); it.hasNext(); ) {
-			Column column = (Column)it.next();
+		for (Column column : columns) {
 			TableColumn tc = new TableColumn(table, column.getAlignment());
 			tableLayout.addColumnData(new ColumnWeightData(column.getInitialWeight()));
 			tc.setText(column.getHeaderText());
@@ -131,7 +138,7 @@ public class ColumnTableProvider extends TableProvider {
 	 */
 	@Override
 	public String getColumnProperty(int index) {
-		return ((Column)columns.get(index)).getProperty();
+		return columns.get(index).getProperty();
 	}
 	
 	/**
@@ -143,8 +150,15 @@ public class ColumnTableProvider extends TableProvider {
 	public CellEditor[] createCellEditors(Composite parent) {
 		CellEditor[] cellEditors = new CellEditor[columns.size()];
 		for (int i = 0; i<columns.size(); i++)  {
-			cellEditors[i] = ((Column)columns.get(i)).createCellEditor(parent);
+			cellEditors[i] = columns.get(i).createCellEditor(parent);
 		}
 		return cellEditors;
+	}
+	
+	public void setTableViewer(TableViewer tv) {
+		tableViewer = tv;
+		for (Column column : columns)  {
+			column.setTableViewer(tv);
+		}
 	}
 }
