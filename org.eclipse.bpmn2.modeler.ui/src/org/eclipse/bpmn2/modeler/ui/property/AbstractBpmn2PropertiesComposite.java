@@ -43,6 +43,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.dd.dc.provider.DcItemProviderAdapterFactory;
 import org.eclipse.dd.di.provider.DiItemProviderAdapterFactory;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -63,6 +64,8 @@ import org.eclipse.emf.edit.ui.celleditor.FeatureEditorDialog;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.emf.edit.ui.provider.PropertyDescriptor.EDataTypeCellEditor;
 import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.ResourceSetChangeEvent;
+import org.eclipse.emf.transaction.ResourceSetListenerImpl;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.jface.databinding.swt.SWTObservables;
@@ -690,6 +693,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		EList<EObject> list = (EList<EObject>)object.eGet(feature);
 		EObject newItem = MODEL_FACTORY.create(listItemClass);
 		list.add(newItem);
+		ModelUtil.addID(newItem);
 		return newItem;
 	}
 	
@@ -705,7 +709,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		list.remove(item);
 		return true;
 	}
-	
+
 	protected void bindList(final EObject object, final EStructuralFeature feature, ItemProviderAdapter itemProviderAdapter) {
 		if (!canBindList(object, feature)) {
 			return;
@@ -726,6 +730,9 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		// Collect columns to be displayed and build column provider
 		////////////////////////////////////////////////////////////
 		ColumnTableProvider tableProvider = new ColumnTableProvider();
+		for (EStructuralFeature sf : listItemClass.getEAllStructuralFeatures()) {
+			System.out.println(sf);
+		}
 		for (EAttribute a1 : listItemClass.getEAllAttributes()) {
 			if ("anyAttribute".equals(a1.getName())) {
 				List<EStructuralFeature> anyAttributes = new ArrayList<EStructuralFeature>();
@@ -851,6 +858,27 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		tableViewer.setContentProvider(new ContentProvider(object, list));
 		tableViewer.setColumnProperties(tableProvider.getColumnProperties());
 		tableViewer.setCellEditors(tableProvider.createCellEditors(table));
+
+		////////////////////////////////////////////////////////////
+		// add a resource set listener to update the treeviewer when
+		// when something interesting happens
+		////////////////////////////////////////////////////////////
+		final ResourceSetListenerImpl domainListener = new ResourceSetListenerImpl() {
+			@Override
+			public void resourceSetChanged(ResourceSetChangeEvent event) {
+				List<Notification> notifications = event.getNotifications();
+				for (Notification notification : notifications) {
+					tableViewer.setInput(list);
+				}
+			}
+		};
+		bpmn2Editor.getEditingDomain().addResourceSetListener(domainListener);
+		table.addDisposeListener(new DisposeListener() {
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				bpmn2Editor.getEditingDomain().removeResourceSetListener(domainListener);
+			}
+		});
 
 		////////////////////////////////////////////////////////////
 		// Create handlers
