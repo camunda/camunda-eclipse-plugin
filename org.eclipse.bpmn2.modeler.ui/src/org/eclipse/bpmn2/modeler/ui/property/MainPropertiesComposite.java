@@ -76,7 +76,7 @@ public class MainPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 
 	@Override
 	protected boolean canBindListColumn(EObject object, EAttribute attribute) {
-		return false;
+		return true;
 	}
 
 	@Override

@@ -46,10 +46,13 @@ import org.eclipse.dd.di.provider.DiItemProviderAdapterFactory;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
+import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
@@ -58,11 +61,13 @@ import org.eclipse.emf.edit.provider.ReflectiveItemProviderAdapterFactory;
 import org.eclipse.emf.edit.provider.resource.ResourceItemProviderAdapterFactory;
 import org.eclipse.emf.edit.ui.celleditor.FeatureEditorDialog;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
+import org.eclipse.emf.edit.ui.provider.PropertyDescriptor.EDataTypeCellEditor;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -82,7 +87,6 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.layout.FillLayout;
@@ -265,7 +269,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		if (!canBindAttribute(object,attribute)) {
 			return;
 		}
-		
+
 		String displayName = getDisplayName(itemProviderAdapter, object, attribute);
 		Collection choiceOfValues = getChoiceOfValues(itemProviderAdapter, object, attribute);
 		
@@ -675,7 +679,34 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	 */
 	protected abstract int getListStyleFlags(EObject object, EStructuralFeature feature);
 
-	protected void bindList(EObject object, EStructuralFeature feature, ItemProviderAdapter itemProviderAdapter) {
+	/**
+	 * Override this if construction of new list items needs special handling. 
+	 * @param object
+	 * @param feature
+	 * @return
+	 */
+	protected EObject addListItem(EObject object, EStructuralFeature feature) {
+		EClass listItemClass = (EClass) feature.getEType();
+		EList<EObject> list = (EList<EObject>)object.eGet(feature);
+		EObject newItem = MODEL_FACTORY.create(listItemClass);
+		list.add(newItem);
+		return newItem;
+	}
+	
+	/**
+	 * Override this if removal of list items needs special handling. 
+	 * @param object
+	 * @param feature
+	 * @param item
+	 * @return
+	 */
+	protected boolean removeListItem(EObject object, EStructuralFeature feature, Object item) {
+		EList<EObject> list = (EList<EObject>)object.eGet(feature);
+		list.remove(item);
+		return true;
+	}
+	
+	protected void bindList(final EObject object, final EStructuralFeature feature, ItemProviderAdapter itemProviderAdapter) {
 		if (!canBindList(object, feature)) {
 			return;
 		}
@@ -696,8 +727,35 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		////////////////////////////////////////////////////////////
 		ColumnTableProvider tableProvider = new ColumnTableProvider();
 		for (EAttribute a1 : listItemClass.getEAllAttributes()) {
-			if (canBindListColumn(listItemClass, a1))
-			tableProvider.add(new TableColumn(object,a1));
+			if ("anyAttribute".equals(a1.getName())) {
+				List<EStructuralFeature> anyAttributes = new ArrayList<EStructuralFeature>();
+				// are there any actual "anyAttribute" instances we can look at
+				// to get the attribute names and types from?
+				// TODO: enhance the table to dynamically allow creation of new
+				// columns which will be added to the "anyAttributes"
+				for (EObject instance : list) {
+					Object o = instance.eGet(a1);
+					if (o instanceof BasicFeatureMap) {
+						BasicFeatureMap map = (BasicFeatureMap)o;
+						for (Entry entry : map) {
+							EStructuralFeature f1 = entry.getEStructuralFeature();
+							if (f1 instanceof EAttribute && !anyAttributes.contains(f1)) {
+								if (canBindListColumn(listItemClass, (EAttribute)f1)) {
+									tableProvider.add(new TableColumn(object,(EAttribute)f1));
+								}
+								anyAttributes.add(f1);
+							}
+						}
+					}
+				}
+			}
+			else if (FeatureMap.Entry.class.equals(a1.getEType().getInstanceClass())) {
+				// TODO: how do we handle these?
+				// System.out.println("FeatureMapEntry: "+listItemClass.getName()+"."+a1.getName());
+			}
+			else if (canBindListColumn(listItemClass, a1)) {
+				tableProvider.add(new TableColumn(object,a1));
+			}
 		}
 		if (tableProvider.getColumns().size()==0) {
 			return;
@@ -811,16 +869,18 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 					downButton.setEnabled(false);
 			}
 		});
+		
 		addButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 					@Override
 					protected void doExecute() {
-						EObject newItem = MODEL_FACTORY.create(listItemClass);
-						list.add(newItem);
-						tableViewer.setInput(list);
-						table.setSelection(list.size()-1);
-						tabbedPropertySheetPage.resizeScrolledComposite();
+						EObject newItem = addListItem(object,feature);
+						if (newItem!=null) {
+							tableViewer.setInput(list);
+							tableViewer.setSelection(new StructuredSelection(newItem));
+							tabbedPropertySheetPage.resizeScrolledComposite();
+						}
 					}
 				});
 			}
@@ -832,13 +892,14 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 					@Override
 					protected void doExecute() {
 						int i = table.getSelectionIndex();
-						list.remove(i);
-						tableViewer.setInput(list);
-						if (i>=list.size())
-							i = list.size() - 1;
-						if (i>=0)
-							table.setSelection(i);
-						tabbedPropertySheetPage.resizeScrolledComposite();
+						if (removeListItem(object,feature,list.get(i))) {
+							tableViewer.setInput(list);
+							if (i>=list.size())
+								i = list.size() - 1;
+							if (i>=0)
+								tableViewer.setSelection(new StructuredSelection(list.get(i)));
+							tabbedPropertySheetPage.resizeScrolledComposite();
+						}
 					}
 				});
 			}
@@ -852,7 +913,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 						int i = table.getSelectionIndex();
 						list.move(i-1, i);
 						tableViewer.setInput(list);
-						table.setSelection(i-1);
+						tableViewer.setSelection(new StructuredSelection(list.get(i-1)));
 						tabbedPropertySheetPage.resizeScrolledComposite();
 					}
 				});
@@ -867,7 +928,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 						int i = table.getSelectionIndex();
 						list.move(i+1, i);
 						tableViewer.setInput(list);
-						table.setSelection(i+1);
+						tableViewer.setSelection(new StructuredSelection(list.get(i+1)));
 						tabbedPropertySheetPage.resizeScrolledComposite();
 					}
 				});
@@ -938,7 +999,23 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		}
 		
 		public CellEditor createCellEditor (Composite parent) {			
-			return new TextCellEditor(parent, SWT.NO_BACKGROUND );
+			EClassifier ec = attribute.getEType();
+			if ("anyAttribute".equals(attribute.getName())) {
+				List<Entry> basicList = ((BasicFeatureMap) object.eGet(attribute)).basicList();
+				for (Entry entry : basicList) {
+					EStructuralFeature feature = entry.getEStructuralFeature();
+					ec = feature.getEType();
+					if (Object.class.equals(feature.getEType().getInstanceClass())) {
+						System.out.println(feature);
+					}
+				}
+			}
+			
+			if (ec instanceof EDataType) {
+				return new EDataTypeCellEditor((EDataType)ec, parent);
+			}
+			
+			return null;
 		}
 		
 		public boolean canModify(Object element, String property) {
@@ -1008,7 +1085,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 			propertyDescriptor = itemProviderAdapter.getPropertyDescriptor(object, feature);
 		
 		if (propertyDescriptor!=null) {
-			propertyDescriptor.getChoiceOfValues(object);
+			return propertyDescriptor.getChoiceOfValues(object);
 		}
 		return null;
 	}
