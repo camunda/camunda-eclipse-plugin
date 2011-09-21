@@ -730,9 +730,6 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		// Collect columns to be displayed and build column provider
 		////////////////////////////////////////////////////////////
 		ColumnTableProvider tableProvider = new ColumnTableProvider();
-		for (EStructuralFeature sf : listItemClass.getEAllStructuralFeatures()) {
-			System.out.println(sf);
-		}
 		for (EAttribute a1 : listItemClass.getEAllAttributes()) {
 			if ("anyAttribute".equals(a1.getName())) {
 				List<EStructuralFeature> anyAttributes = new ArrayList<EStructuralFeature>();
@@ -1028,21 +1025,9 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		
 		public CellEditor createCellEditor (Composite parent) {			
 			EClassifier ec = attribute.getEType();
-			if ("anyAttribute".equals(attribute.getName())) {
-				List<Entry> basicList = ((BasicFeatureMap) object.eGet(attribute)).basicList();
-				for (Entry entry : basicList) {
-					EStructuralFeature feature = entry.getEStructuralFeature();
-					ec = feature.getEType();
-					if (Object.class.equals(feature.getEType().getInstanceClass())) {
-						System.out.println(feature);
-					}
-				}
-			}
-			
 			if (ec instanceof EDataType) {
 				return new EDataTypeCellEditor((EDataType)ec, parent);
 			}
-			
 			return null;
 		}
 		
