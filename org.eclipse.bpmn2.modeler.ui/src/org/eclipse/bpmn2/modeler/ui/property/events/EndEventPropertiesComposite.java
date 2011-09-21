@@ -35,16 +35,10 @@ public class EndEventPropertiesComposite extends MainPropertiesComposite {
 		super(parent, style);
 		
 		showProperties = new ArrayList<String>();
-		showProperties.add("id");
-		showProperties.add("name");
-		showProperties.add("eventDefinitions");
 	}
 
 	@Override
 	protected boolean canBindList(EObject object, EStructuralFeature feature) {
-		if ("eventDefinitions".equals(feature.getName())) {
-			return true;
-		}
 		return false;
 	}
 

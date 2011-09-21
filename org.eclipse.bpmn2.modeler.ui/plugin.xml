@@ -162,17 +162,10 @@
 		</propertyTab>
 		
 		<propertyTab category="BPMN2"
-			id="org.eclipse.bpmn2.modeler.startEvent.tab"
+			id="org.eclipse.bpmn2.modeler.commonEvent.tab"
 			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
-			label="Start Event">
-		</propertyTab>
-		
-		<propertyTab category="BPMN2"
-			id="org.eclipse.bpmn2.modeler.endEvent.tab"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
-			label="End Event">
+			label="Event">
 		</propertyTab>
 
 		<!-- Property Sections -->
@@ -248,23 +241,62 @@
 		</propertySection>
 		  
 		  <propertySection
+		        class="org.eclipse.bpmn2.modeler.ui.property.events.CommonEventPropertySection"
+		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+		        id="org.eclipse.bpmn2.modeler.commonEvent.section"
+		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+		        tab="org.eclipse.bpmn2.modeler.commonEvent.tab"
+		        type="org.eclipse.bpmn2.Event">
+		  </propertySection>
+
+		  <propertySection
 		        class="org.eclipse.bpmn2.modeler.ui.property.events.StartEventPropertySection"
 		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
 		        id="org.eclipse.bpmn2.modeler.startEvent.section"
 		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-		        tab="org.eclipse.bpmn2.modeler.startEvent.tab"
+		        tab="org.eclipse.bpmn2.modeler.commonEvent.tab"
 		        type="org.eclipse.bpmn2.StartEvent">
 		  </propertySection>
 
-		  <propertySection
+<!--          Don't need End Event property section at the moment because it doesn't add 
+              anything to the Throw Event
+-->
+<!--		  <propertySection
 		        class="org.eclipse.bpmn2.modeler.ui.property.events.EndEventPropertySection"
 		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
 		        id="org.eclipse.bpmn2.modeler.endEvent.section"
 		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-		        tab="org.eclipse.bpmn2.modeler.endEvent.tab"
+		        tab="org.eclipse.bpmn2.modeler.commonEvent.tab"
 		        type="org.eclipse.bpmn2.EndEvent">
+		  </propertySection> -->
+
+		  <propertySection
+		        class="org.eclipse.bpmn2.modeler.ui.property.events.CatchEventPropertySection"
+		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+		        id="org.eclipse.bpmn2.modeler.catchEvent.section"
+		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+		        tab="org.eclipse.bpmn2.modeler.commonEvent.tab"
+		        type="org.eclipse.bpmn2.CatchEvent">
 		  </propertySection>
 
+		  <propertySection
+		        class="org.eclipse.bpmn2.modeler.ui.property.events.ThrowEventPropertySection"
+		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+		        id="org.eclipse.bpmn2.modeler.throwEvent.section"
+		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+		        tab="org.eclipse.bpmn2.modeler.commonEvent.tab"
+		        type="org.eclipse.bpmn2.ThrowEvent">
+		  </propertySection>
+
+		  <propertySection
+		        class="org.eclipse.bpmn2.modeler.ui.property.events.BoundaryEventPropertySection"
+		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+		        id="org.eclipse.bpmn2.modeler.boundaryEvent.section"
+		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+		        tab="org.eclipse.bpmn2.modeler.commonEvent.tab"
+		        type="org.eclipse.bpmn2.BoundaryEvent">
+		  </propertySection>
+		  
 	</extension>
 
 </plugin>

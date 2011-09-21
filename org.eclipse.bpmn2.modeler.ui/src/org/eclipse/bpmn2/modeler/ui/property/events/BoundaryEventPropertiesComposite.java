@@ -21,7 +21,7 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.swt.widgets.Composite;
 
-public class StartEventPropertiesComposite extends MainPropertiesComposite {
+public class BoundaryEventPropertiesComposite extends MainPropertiesComposite {
 
 	private ArrayList<String> showProperties = null;
 	
@@ -31,11 +31,12 @@ public class StartEventPropertiesComposite extends MainPropertiesComposite {
 	 * @param parent
 	 * @param style
 	 */
-	public StartEventPropertiesComposite(Composite parent, int style) {
+	public BoundaryEventPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
 		
 		showProperties = new ArrayList<String>();
-		showProperties.add("isInterrupting");
+		showProperties.add("attachedToRef");
+		showProperties.add("isCancelActivity");
 	}
 
 	@Override

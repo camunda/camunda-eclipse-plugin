@@ -20,8 +20,9 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 
-public class StartEventPropertiesComposite extends MainPropertiesComposite {
+public class CommonEventPropertiesComposite extends MainPropertiesComposite {
 
 	private ArrayList<String> showProperties = null;
 	
@@ -31,11 +32,23 @@ public class StartEventPropertiesComposite extends MainPropertiesComposite {
 	 * @param parent
 	 * @param style
 	 */
-	public StartEventPropertiesComposite(Composite parent, int style) {
+	public CommonEventPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
-		
+	
 		showProperties = new ArrayList<String>();
-		showProperties.add("isInterrupting");
+		showProperties.add("id");
+		showProperties.add("name");
+	}
+
+	@Override
+	public void createBindings(EObject be) {
+		if (be.getClass().getInterfaces().length > 0) {
+			Text roEventType = createTextInput("Event Type", false);
+			roEventType.setEditable(false);
+			roEventType.setText(be.getClass().getInterfaces()[0].getSimpleName());
+			roEventType.setEnabled(false);
+		}
+		super.createBindings(be);
 	}
 
 	@Override

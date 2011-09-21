@@ -21,7 +21,7 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.swt.widgets.Composite;
 
-public class StartEventPropertiesComposite extends MainPropertiesComposite {
+public class CatchEventPropertiesComposite extends MainPropertiesComposite {
 
 	private ArrayList<String> showProperties = null;
 	
@@ -31,15 +31,23 @@ public class StartEventPropertiesComposite extends MainPropertiesComposite {
 	 * @param parent
 	 * @param style
 	 */
-	public StartEventPropertiesComposite(Composite parent, int style) {
+	public CatchEventPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
 		
 		showProperties = new ArrayList<String>();
-		showProperties.add("isInterrupting");
+		showProperties.add("parallelMultiple");
+		showProperties.add("eventDefinitions");
+		showProperties.add("dataOutputs");
 	}
 
 	@Override
 	protected boolean canBindList(EObject object, EStructuralFeature feature) {
+		if ("eventDefinitions".equals(feature.getName())) {
+			return true;
+		}
+		if ("dataOutputs".equals(feature.getName())) {
+			return true;
+		}
 		return false;
 	}
 
