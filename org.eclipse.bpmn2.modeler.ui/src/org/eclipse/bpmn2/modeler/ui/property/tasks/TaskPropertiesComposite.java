@@ -51,17 +51,6 @@ public class TaskPropertiesComposite extends MainPropertiesComposite {
 	}
 
 	@Override
-	public void createBindings(EObject be) {
-		if (be.getClass().getInterfaces().length > 0) {
-			Text roEventType = createTextInput("Task Type", false);
-			roEventType.setEditable(false);
-			roEventType.setText(be.getClass().getInterfaces()[0].getSimpleName());
-			roEventType.setEnabled(false);
-		}
-		super.createBindings(be);
-	}
-
-	@Override
 	protected boolean canBindList(EObject object, EStructuralFeature feature) {
 		if (showProperties.contains(feature.getName())) {
 			return true;
