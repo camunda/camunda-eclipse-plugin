@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.SubProcess;
+import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature;
+import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.features.ConnectionFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.DefaultDeleteBPMNShapeFeature;
@@ -80,6 +82,7 @@ import org.eclipse.bpmn2.modeler.ui.features.gateway.InclusiveGatewayFeatureCont
 import org.eclipse.bpmn2.modeler.ui.features.gateway.ParallelGatewayFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.lane.LaneFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.participant.ParticipantFeatureContainer;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IAddBendpointFeature;
 import org.eclipse.graphiti.features.IAddFeature;
@@ -87,6 +90,7 @@ import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
 import org.eclipse.graphiti.features.IDirectEditingFeature;
+import org.eclipse.graphiti.features.IFeature;
 import org.eclipse.graphiti.features.ILayoutFeature;
 import org.eclipse.graphiti.features.IMoveBendpointFeature;
 import org.eclipse.graphiti.features.IMoveShapeFeature;
@@ -107,8 +111,11 @@ import org.eclipse.graphiti.features.context.IRemoveBendpointContext;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
+import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.ui.features.DefaultFeatureProvider;
+import org.eclipse.graphiti.ui.services.GraphitiUi;
 
 /**
  * Determines what kinds of business objects can be added to a diagram.
@@ -439,5 +446,46 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 			}
 		}
 		return new ICustomFeature[] {};
+	}
+	
+	public IFeature getCreateFeatureForPictogramElement(PictogramElement pe) {
+		if (pe!=null) {
+			EObject be = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(pe);
+			return getCreateFeatureForBusinessObject(be);
+		}
+		return null;
+	}
+	
+	public IFeature getCreateFeatureForBusinessObject(Object be) {
+		if (be!=null) {
+			for ( ICreateConnectionFeature cf : getCreateConnectionFeatures() ) {
+				if (cf instanceof AbstractBpmn2CreateConnectionFeature) {
+					AbstractBpmn2CreateConnectionFeature acf = (AbstractBpmn2CreateConnectionFeature)cf;
+					Class beclass = be.getClass();
+					Class feclass = acf.getBusinessObjectClass();
+					if (feclass.isInterface()) {
+						Class[] ifs = beclass.getInterfaces();
+						if (ifs.length>0 && ifs[0].equals(feclass)) {
+							return acf;
+						}
+					}
+				}
+			}
+			for ( ICreateFeature cf : getCreateFeatures() ) {
+				if (cf instanceof AbstractBpmn2CreateFeature) {
+					AbstractBpmn2CreateFeature acf = (AbstractBpmn2CreateFeature)cf;
+					Class beclass = be.getClass();
+					Class feclass = acf.getBusinessObjectClass();
+					if (feclass.isInterface()) {
+						Class[] ifs = beclass.getInterfaces();
+						if (ifs.length>0 && ifs[0].equals(feclass)) {
+							return acf;
+						}
+					}
+				}
+			}
+		}
+		return null;
+		
 	}
 }

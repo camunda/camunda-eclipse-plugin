@@ -30,6 +30,7 @@ import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
+import org.eclipse.graphiti.features.IFeature;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.impl.ImageImpl;
@@ -66,38 +67,28 @@ public class PropertyLabelProvider extends LabelProvider {
         	return null;
         BPMNFeatureProvider fp = (BPMNFeatureProvider)editor.getDiagramTypeProvider().getFeatureProvider();
 		PictogramElement pe = getPictogramElement(element);
-		
 		if (pe!=null) {
-			EObject be = BusinessObjectUtil.getFirstElementOfType(pe, EObject.class);
-			if (be!=null) {
-				if (pe instanceof Connection) {
-					for ( ICreateConnectionFeature cf : fp.getCreateConnectionFeatures() ) {
-						if (cf instanceof AbstractBpmn2CreateConnectionFeature) {
-							AbstractBpmn2CreateConnectionFeature acf = (AbstractBpmn2CreateConnectionFeature)cf;
-							Class beclass = be.getClass();
-							Class feclass = acf.getBusinessObjectClass();
-							if (feclass.isInterface()) {
-								Class[] ifs = beclass.getInterfaces();
-								if (ifs.length>0 && ifs[0].equals(feclass)) {
-									return GraphitiUi.getImageService().getImageForId(acf.getCreateImageId());
-								}
-							}
-						}
+			EObject be = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(pe);
+			IFeature cf = fp.getCreateFeatureForPictogramElement(pe);
+			if (cf instanceof AbstractBpmn2CreateConnectionFeature) {
+				AbstractBpmn2CreateConnectionFeature acf = (AbstractBpmn2CreateConnectionFeature)cf;
+				Class beclass = be.getClass();
+				Class feclass = acf.getBusinessObjectClass();
+				if (feclass.isInterface()) {
+					Class[] ifs = beclass.getInterfaces();
+					if (ifs.length>0 && ifs[0].equals(feclass)) {
+						return GraphitiUi.getImageService().getImageForId(acf.getCreateImageId());
 					}
 				}
-				else {
-					for ( ICreateFeature cf : fp.getCreateFeatures() ) {
-						if (cf instanceof AbstractBpmn2CreateFeature) {
-							AbstractBpmn2CreateFeature acf = (AbstractBpmn2CreateFeature)cf;
-							Class beclass = be.getClass();
-							Class feclass = acf.getBusinessObjectClass();
-							if (feclass.isInterface()) {
-								Class[] ifs = beclass.getInterfaces();
-								if (ifs.length>0 && ifs[0].equals(feclass)) {
-									return GraphitiUi.getImageService().getImageForId(acf.getCreateImageId());
-								}
-							}
-						}
+			}
+			else if (cf instanceof AbstractBpmn2CreateFeature) {
+				AbstractBpmn2CreateFeature acf = (AbstractBpmn2CreateFeature)cf;
+				Class beclass = be.getClass();
+				Class feclass = acf.getBusinessObjectClass();
+				if (feclass.isInterface()) {
+					Class[] ifs = beclass.getInterfaces();
+					if (ifs.length>0 && ifs[0].equals(feclass)) {
+						return GraphitiUi.getImageService().getImageForId(acf.getCreateImageId());
 					}
 				}
 			}

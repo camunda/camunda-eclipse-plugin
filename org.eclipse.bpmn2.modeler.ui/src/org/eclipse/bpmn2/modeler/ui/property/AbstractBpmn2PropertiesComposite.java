@@ -57,6 +57,7 @@ import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -72,6 +73,9 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -214,6 +218,23 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	protected Label createLabel(String name) {
 		Label label = toolkit.createLabel(this, name);
 		label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		return label;
+	}
+
+	protected Label createDescription(String name) {
+		Label label = toolkit.createLabel(this, name);
+		label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
+
+		Display display = Display.getCurrent();
+		Font font = label.getFont();
+		FontData[] fd = font.getFontData();
+		fd[0].setStyle(SWT.BOLD);
+		font = new Font(display,fd);
+		label.setFont(font);
+		font.dispose();
+		label.setBackground(display.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+		label.setForeground(display.getSystemColor(SWT.COLOR_INFO_FOREGROUND));
+		
 		return label;
 	}
 
