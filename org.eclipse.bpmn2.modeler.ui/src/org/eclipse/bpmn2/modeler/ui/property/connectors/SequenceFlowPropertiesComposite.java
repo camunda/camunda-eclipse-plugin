@@ -52,10 +52,8 @@ public class SequenceFlowPropertiesComposite extends MainPropertiesComposite {
 			
 			final SequenceFlow sequenceFlow = (SequenceFlow) be;
 				
-			addRemoveConditionButton = new Button(this, SWT.PUSH);
+			addRemoveConditionButton = toolkit.createPushButton(this, "Add/Remove Condition");
 			addRemoveConditionButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
-			toolkit.adapt(addRemoveConditionButton, true, true);
-			widgets.add(addRemoveConditionButton);
 			addRemoveConditionButton.addSelectionListener(new SelectionAdapter() {
 				
 				public void widgetSelected(SelectionEvent e) {
@@ -79,10 +77,8 @@ public class SequenceFlowPropertiesComposite extends MainPropertiesComposite {
 			});
 			Expression exp = (Expression) sequenceFlow.getConditionExpression();
 			
-			setDefaultFlowCheckbox = new Button(this, SWT.CHECK);
+			setDefaultFlowCheckbox = toolkit.createCheckboxButton(this, "");
 			setDefaultFlowCheckbox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
-			toolkit.adapt(setDefaultFlowCheckbox, true, true);
-			widgets.add(setDefaultFlowCheckbox);
 			setDefaultFlowCheckbox.addSelectionListener(new SelectionAdapter() {
 				
 				public void widgetSelected(SelectionEvent e) {

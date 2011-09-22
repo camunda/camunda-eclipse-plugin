@@ -14,7 +14,6 @@
 package org.eclipse.bpmn2.modeler.ui.property;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -31,11 +30,7 @@ import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablementPreferences;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
-import org.eclipse.bpmn2.modeler.ui.property.providers.ColumnTableProvider;
-import org.eclipse.bpmn2.modeler.ui.property.providers.TableCursor;
 import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
-import org.eclipse.core.databinding.Binding;
-import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.IValueChangeListener;
 import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
@@ -43,17 +38,13 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.dd.dc.provider.DcItemProviderAdapterFactory;
 import org.eclipse.dd.di.provider.DiItemProviderAdapterFactory;
-import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EClassifier;
-import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
-import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
@@ -62,26 +53,15 @@ import org.eclipse.emf.edit.provider.ReflectiveItemProviderAdapterFactory;
 import org.eclipse.emf.edit.provider.resource.ResourceItemProviderAdapterFactory;
 import org.eclipse.emf.edit.ui.celleditor.FeatureEditorDialog;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
-import org.eclipse.emf.edit.ui.provider.PropertyDescriptor.EDataTypeCellEditor;
 import org.eclipse.emf.transaction.RecordingCommand;
-import org.eclipse.emf.transaction.ResourceSetChangeEvent;
-import org.eclipse.emf.transaction.ResourceSetListenerImpl;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.jface.databinding.swt.SWTObservables;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.ICellModifier;
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TextCellEditor;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -92,7 +72,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -100,10 +80,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Widget;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 public abstract class AbstractBpmn2PropertiesComposite extends Composite {
@@ -119,11 +96,11 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	protected TabbedPropertySheetPage tabbedPropertySheetPage;
 	protected EObject be;
 	protected BPMN2Editor bpmn2Editor;
-	protected final DataBindingContext bindingContext;
-	protected final ArrayList<Widget> widgets = new ArrayList<Widget>();
-	protected final ArrayList<Binding> bindings = new ArrayList<Binding>();
+//	protected final DataBindingContext bindingContext;
+//	protected final ArrayList<Widget> widgets = new ArrayList<Widget>();
+//	protected final ArrayList<Binding> bindings = new ArrayList<Binding>();
 	protected final Composite parent;
-	protected final FormToolkit toolkit = new FormToolkit(Display.getCurrent());
+	protected final TrackingFormToolkit toolkit = new TrackingFormToolkit(Display.getCurrent());
 	protected IProject project;
 	protected final AdapterFactoryLabelProvider LABEL_PROVIDER = new AdapterFactoryLabelProvider(ADAPTER_FACTORY);
 	protected ModelHandler modelHandler;
@@ -149,7 +126,6 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	public AbstractBpmn2PropertiesComposite(Composite parent, int style) {
 		super(parent, style);
 		this.parent = parent;
-		bindingContext = new DataBindingContext();
 		addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
@@ -179,7 +155,6 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 					.eResource());
 		} catch (IOException e1) {
 			Activator.showErrorWithLogging(e1);
-			return;
 		}
 	}
 
@@ -206,18 +181,16 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	protected Text createTextInput(String name, boolean multiLine) {
 		createLabel(name);
 
-		int flag = SWT.BORDER;
+		int flag = SWT.NONE;
 		if (multiLine) {
-			flag |= SWT.BORDER | SWT.WRAP | SWT.MULTI;
+			flag |= SWT.WRAP | SWT.MULTI;
 		}
-		Text text = new Text(this, flag);
+		Text text = toolkit.createText(this, "", flag);
 		GridData data = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
 		if (multiLine) {
 			data.heightHint = 50;
 		}
 		text.setLayoutData(data);
-		toolkit.adapt(text, true, true);
-		widgets.add(text);
 
 		return text;
 	}
@@ -225,38 +198,23 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	protected Text createIntInput(String name) {
 		createLabel(name);
 
-		Text text = new Text(this, SWT.BORDER);
+		Text text = toolkit.createText(this, "");
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-		toolkit.adapt(text, true, true);
-		widgets.add(text);
 		return text;
 	}
 
 	protected Button createBooleanInput(String name) {
 		createLabel(name);
 
-		Button button = new Button(this, SWT.CHECK);
+		Button button = toolkit.createButton(this, name, SWT.CHECK);
 		button.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-		toolkit.adapt(button, true, true);
-		widgets.add(button);
 		return button;
 	}
 
 	protected Label createLabel(String name) {
-		Label label = new Label(this, SWT.NONE);
+		Label label = toolkit.createLabel(this, name);
 		label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		toolkit.adapt(label, true, true);
-		label.setText(name);
-		widgets.add(label);
 		return label;
-	}
-	
-	protected Button createPushButton(Composite parent, String name) {
-		final Button button = new Button(parent, SWT.PUSH);
-		button.setText(name);
-		toolkit.adapt(button, true, true);
-		widgets.add(button);
-		return button;
 	}
 
 	/**
@@ -344,16 +302,11 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 
 	private void createListEditor(final EObject object, final EReference reference, Object eGet) {
 
-		final Text text = new Text(this, SWT.BORDER);
+		final Text text = toolkit.createText(this, "");
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		toolkit.adapt(text, true, true);
-		widgets.add(text);
 
-		Button editButton = new Button(this, SWT.NONE);
+		Button editButton = toolkit.createButton(this, "Edit...", SWT.PUSH);
 		editButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		editButton.setText("Edit ...");
-		toolkit.adapt(editButton, true, true);
-		widgets.add(editButton);
 
 		final List<EObject> refs = (List<EObject>) eGet;
 		updateTextField(refs, text);
@@ -403,12 +356,9 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	}
 
 	private void createSingleItemEditor(final EObject object, final EStructuralFeature reference, Object eGet, Collection values) {
-		final ComboViewer combo = new ComboViewer(this, SWT.BORDER);
-		Combo c = combo.getCombo();
-		combo.setLabelProvider(LABEL_PROVIDER);
-		c.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-		toolkit.adapt(c, true, true);
-		widgets.add(c);
+		final ComboViewer comboViewer = toolkit.createComboViewer(this, LABEL_PROVIDER, SWT.NONE);
+		Combo combo = comboViewer.getCombo();
+		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
 		List<Object> l = null;
 
@@ -418,17 +368,17 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 			l = (List<Object>) modelHandler.getAll(reference.getEType().getInstanceClass());
 		}
 
-		combo.add("");
-		combo.add(l.toArray());
+		comboViewer.add("");
+		comboViewer.add(l.toArray());
 		if (eGet != null) {
-			combo.setSelection(new StructuredSelection(eGet));
+			comboViewer.setSelection(new StructuredSelection(eGet));
 		}
 
-		combo.addSelectionChangedListener(new ISelectionChangedListener() {
+		comboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				ISelection selection = combo.getSelection();
+				ISelection selection = comboViewer.getSelection();
 				if (selection instanceof StructuredSelection) {
 					Object firstElement = ((StructuredSelection) selection).getFirstElement();
 					if (firstElement instanceof EObject) {
@@ -648,7 +598,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 			}
 		});
 	}
-
+	
 	/**
 	 * Implement this to select which lists are rendered
 	 * @param feature
@@ -682,387 +632,53 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	 */
 	protected abstract int getListStyleFlags(EObject object, EStructuralFeature feature);
 
-	/**
-	 * Override this if construction of new list items needs special handling. 
-	 * @param object
-	 * @param feature
-	 * @return
-	 */
-	protected EObject addListItem(EObject object, EStructuralFeature feature) {
-		EClass listItemClass = (EClass) feature.getEType();
-		EList<EObject> list = (EList<EObject>)object.eGet(feature);
-		EObject newItem = MODEL_FACTORY.create(listItemClass);
-		list.add(newItem);
-		ModelUtil.addID(newItem);
-		return newItem;
-	}
-	
-	/**
-	 * Override this if removal of list items needs special handling. 
-	 * @param object
-	 * @param feature
-	 * @param item
-	 * @return
-	 */
-	protected boolean removeListItem(EObject object, EStructuralFeature feature, Object item) {
-		EList<EObject> list = (EList<EObject>)object.eGet(feature);
-		list.remove(item);
-		return true;
-	}
-
 	protected void bindList(final EObject object, final EStructuralFeature feature, ItemProviderAdapter itemProviderAdapter) {
-		if (!canBindList(object, feature)) {
-			return;
-		}
-		if (!(object.eGet(feature) instanceof EList<?>)) {
-			return;
-		}
-		Class<?> clazz = feature.getEType().getInstanceClass();
-		if (!EObject.class.isAssignableFrom(clazz)) {
-			return;
-		}
 		
-		final TransactionalEditingDomain editingDomain = bpmn2Editor.getEditingDomain();
-		final EList<EObject> list = (EList<EObject>)object.eGet(feature);
-		final EClass listItemClass = (EClass) feature.getEType();
-		
-		////////////////////////////////////////////////////////////
-		// Collect columns to be displayed and build column provider
-		////////////////////////////////////////////////////////////
-		ColumnTableProvider tableProvider = new ColumnTableProvider();
-		for (EAttribute a1 : listItemClass.getEAllAttributes()) {
-			if ("anyAttribute".equals(a1.getName())) {
-				List<EStructuralFeature> anyAttributes = new ArrayList<EStructuralFeature>();
-				// are there any actual "anyAttribute" instances we can look at
-				// to get the attribute names and types from?
-				// TODO: enhance the table to dynamically allow creation of new
-				// columns which will be added to the "anyAttributes"
-				for (EObject instance : list) {
-					Object o = instance.eGet(a1);
-					if (o instanceof BasicFeatureMap) {
-						BasicFeatureMap map = (BasicFeatureMap)o;
-						for (Entry entry : map) {
-							EStructuralFeature f1 = entry.getEStructuralFeature();
-							if (f1 instanceof EAttribute && !anyAttributes.contains(f1)) {
-								if (canBindListColumn(listItemClass, (EAttribute)f1)) {
-									tableProvider.add(new TableColumn(object,(EAttribute)f1));
-								}
-								anyAttributes.add(f1);
-							}
-						}
+		if (canBindList(object,feature)) {
+			
+			int oldStyle = getListStyleFlags(object,feature);
+			int newStyle = SWT.NONE;
+			// convert old style flags to new
+			if ((oldStyle & SHOW_LIST_LABEL)!=0)
+				newStyle |= SWT.TITLE;
+			if ((oldStyle & EDITABLE_LIST)!=0)
+				newStyle |= SWT.BUTTON1 | SWT.BUTTON2;
+			if ((oldStyle & ORDERED_LIST)!=0)
+				newStyle |= SWT.BUTTON3 | SWT.BUTTON4;
+			
+			AbstractBpmn2TableComposite tableComposite = new AbstractBpmn2TableComposite(this, newStyle) {
+	
+				@Override
+				protected boolean canBind(EObject object, EStructuralFeature feature) {
+					if (object instanceof EClass) {
+						return true;
 					}
+					if (object.eGet(feature) instanceof EList)
+						return canBindList(object,feature);
+					if (feature instanceof EAttribute)
+						return canBindListColumn(object,(EAttribute)feature);
+					return false;
 				}
-			}
-			else if (FeatureMap.Entry.class.equals(a1.getEType().getInstanceClass())) {
-				// TODO: how do we handle these?
-				// System.out.println("FeatureMapEntry: "+listItemClass.getName()+"."+a1.getName());
-			}
-			else if (canBindListColumn(listItemClass, a1)) {
-				tableProvider.add(new TableColumn(object,a1));
-			}
-		}
-		if (tableProvider.getColumns().size()==0) {
-			return;
-		}
-
-		////////////////////////////////////////////////////////////
-		// Display table label and draw border around table if the
-		// SHOW_LIST_LABEL style flag is set
-		////////////////////////////////////////////////////////////
-		int span = 3;
-		int flags = getListStyleFlags(object,feature);
-		int border = SWT.NONE;
-		if ((flags & SHOW_LIST_LABEL)!=0) {
-			Label label = createLabel(
-					ModelUtil.toDisplayName(feature.getName()));
-			label.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false, 1, 1));
-			span = 2;
-			border = SWT.BORDER;
-		}
-		
-		////////////////////////////////////////////////////////////
-		// Create a composite to hold the buttons and table
-		////////////////////////////////////////////////////////////
-		Composite parent = new Composite(this, border);
-		parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, span, 1));
-		toolkit.paintBordersFor(parent);
-		toolkit.adapt(parent, true, true);
-		widgets.add(parent);
-		parent.setLayout(new GridLayout(2, false));
-		
-		////////////////////////////////////////////////////////////
-		// Create button section for add/remove/up/down buttons
-		////////////////////////////////////////////////////////////
-		Composite buttonSection = new Composite(parent, SWT.NONE);
-		buttonSection.setLayoutData(new GridData(SWT.TOP, SWT.LEFT, false, false, 1, 1));
-		toolkit.adapt(buttonSection, true, true);
-		widgets.add(buttonSection);
-		buttonSection.setLayout(new FillLayout(SWT.VERTICAL));
-
-		////////////////////////////////////////////////////////////
-		// Create table
-		// allow table to fill entire width if there are no buttons
-		////////////////////////////////////////////////////////////
-		span = 2;
-		if ((flags & (EDITABLE_LIST | ORDERED_LIST))!=0) {
-			span = 1;
-		}
-		else {
-			buttonSection.setVisible(false);
-		}
-		final Table table = new Table(parent, SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.BORDER);
-		toolkit.adapt(table, true, true);
-		widgets.add(table);
-		GridData d = new GridData(SWT.FILL, SWT.FILL, true, true, span, 1);
-		d.widthHint = 100;
-		d.heightHint = 100;
-		table.setLayoutData(d);
-		table.setLinesVisible(true);
-		table.setHeaderVisible(true);
-		
-		////////////////////////////////////////////////////////////
-		// Create buttons for add/remove/up/down
-		////////////////////////////////////////////////////////////
-		final Button addButton = createPushButton(buttonSection, "Add");
-
-		final Button removeButton = createPushButton(buttonSection, "Remove");
-		removeButton.setEnabled(false);
-
-		final Button upButton = createPushButton(buttonSection, "Move Up");
-		upButton.setEnabled(false);
-
-		final Button downButton = createPushButton(buttonSection, "Move Down");
-		downButton.setEnabled(false);
-		
-		if ((flags & EDITABLE_LIST)==0) {
-			addButton.setVisible(false);
-			removeButton.setVisible(false);
-		}
-		if ((flags & ORDERED_LIST)==0) {
-			upButton.setVisible(false);
-			downButton.setVisible(false);
-		}
-		
-		////////////////////////////////////////////////////////////
-		// Create table viewer and cell editors
-		////////////////////////////////////////////////////////////
-		final TableViewer tableViewer = new TableViewer(table);
-		tableProvider.createTableLayout(table);
-		tableProvider.setTableViewer(tableViewer);
-		
-		tableViewer.setLabelProvider(tableProvider);
-		tableViewer.setCellModifier(tableProvider);
-		tableViewer.setContentProvider(new ContentProvider(object, list));
-		tableViewer.setColumnProperties(tableProvider.getColumnProperties());
-		tableViewer.setCellEditors(tableProvider.createCellEditors(table));
-
-		////////////////////////////////////////////////////////////
-		// add a resource set listener to update the treeviewer when
-		// when something interesting happens
-		////////////////////////////////////////////////////////////
-		final ResourceSetListenerImpl domainListener = new ResourceSetListenerImpl() {
-			@Override
-			public void resourceSetChanged(ResourceSetChangeEvent event) {
-				List<Notification> notifications = event.getNotifications();
-				for (Notification notification : notifications) {
-					tableViewer.setInput(list);
+	
+				@Override
+				protected boolean canModify(EObject object, EStructuralFeature feature, EObject item) {
+					return canModifyListColumn(object,(EAttribute)feature,item);
 				}
-			}
-		};
-		bpmn2Editor.getEditingDomain().addResourceSetListener(domainListener);
-		table.addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				bpmn2Editor.getEditingDomain().removeResourceSetListener(domainListener);
-			}
-		});
-
-		////////////////////////////////////////////////////////////
-		// Create handlers
-		////////////////////////////////////////////////////////////
-		tableViewer.addPostSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				removeButton.setEnabled(!event.getSelection().isEmpty());
-				int i = table.getSelectionIndex();
-				if (i>0)
-					upButton.setEnabled(!event.getSelection().isEmpty());
-				else
-					upButton.setEnabled(false);
-				if (i<table.getItemCount()-1)
-					downButton.setEnabled(!event.getSelection().isEmpty());
-				else
-					downButton.setEnabled(false);
-			}
-		});
+				
+			};
 		
-		addButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-					@Override
-					protected void doExecute() {
-						EObject newItem = addListItem(object,feature);
-						if (newItem!=null) {
-							tableViewer.setInput(list);
-							tableViewer.setSelection(new StructuredSelection(newItem));
-							tabbedPropertySheetPage.resizeScrolledComposite();
-						}
-					}
-				});
-			}
-		});
-		
-		removeButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-					@Override
-					protected void doExecute() {
-						int i = table.getSelectionIndex();
-						if (removeListItem(object,feature,list.get(i))) {
-							tableViewer.setInput(list);
-							if (i>=list.size())
-								i = list.size() - 1;
-							if (i>=0)
-								tableViewer.setSelection(new StructuredSelection(list.get(i)));
-							tabbedPropertySheetPage.resizeScrolledComposite();
-						}
-					}
-				});
-			}
-		});
+			GridData d = new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1);
+			tableComposite.setLayoutData(d);
 
-		upButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-					@Override
-					protected void doExecute() {
-						int i = table.getSelectionIndex();
-						list.move(i-1, i);
-						tableViewer.setInput(list);
-						tableViewer.setSelection(new StructuredSelection(list.get(i-1)));
-						tabbedPropertySheetPage.resizeScrolledComposite();
-					}
-				});
-			}
-		});
-		
-		downButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-					@Override
-					protected void doExecute() {
-						int i = table.getSelectionIndex();
-						list.move(i+1, i);
-						tableViewer.setInput(list);
-						tableViewer.setSelection(new StructuredSelection(list.get(i+1)));
-						tabbedPropertySheetPage.resizeScrolledComposite();
-					}
-				});
-			}
-		});
-
-		tableViewer.setInput(list);
-		
-		// a TableCursor allows navigation of the table with keys
-		TableCursor.create(table, tableViewer);
-	}
-
-	public class ContentProvider implements IStructuredContentProvider {
-		private EObject parent;
-		private EList<EObject> list;
-		
-		public ContentProvider(EObject p, EList<EObject> l) {
-			parent = p;
-			list = l;
-		}
-
-		@Override
-		public void dispose() {
-		}
-
-		@Override
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		}
-
-		@Override
-		public Object[] getElements(Object inputElement) {
-			return list.toArray();
+			toolkit.adapt(tableComposite);
+			toolkit.widgets.add(tableComposite);
+			
+			tableComposite.setDiagramEditor(bpmn2Editor);
+			tableComposite.setSheetPage(tabbedPropertySheetPage);
+			tableComposite.bindList(object, feature, itemProviderAdapter);
 		}
 	}
 	
-	public class TableColumn extends ColumnTableProvider.Column implements ILabelProvider, ICellModifier {
-		private TableViewer tableViewer;
-		private EAttribute attribute;
-		private EObject object;
-		
-		public TableColumn(EObject o, EAttribute a) {
-			object = o;
-			attribute = a;
-		}
-		
-		public void setTableViewer(TableViewer t) {
-			tableViewer = t;
-		}
-		
-		@Override
-		public String getHeaderText() {
-			return ModelUtil.toDisplayName(attribute.getName());
-		}
-
-		@Override
-		public String getProperty() {
-			return attribute.getName(); //$NON-NLS-1$
-		}
-
-		@Override
-		public int getInitialWeight() {
-			return 10;
-		}
-
-		public String getText(Object element) {
-			Object value = ((EObject)element).eGet(attribute);
-			return value==null ? "" : value.toString();
-		}
-		
-		public CellEditor createCellEditor (Composite parent) {			
-			EClassifier ec = attribute.getEType();
-			if (ec instanceof EDataType) {
-				return new EDataTypeCellEditor((EDataType)ec, parent);
-			}
-			return null;
-		}
-		
-		public boolean canModify(Object element, String property) {
-			return canModifyListColumn(object, attribute, element);
-		}
-		
-		public void modify(Object element, String property, Object value) {
-			final EObject target = (EObject)element;
-			final Object newValue = value;
-			final Object oldValue = target.eGet(attribute); 
-			if (oldValue==null || !oldValue.equals(value)) {
-				TransactionalEditingDomain editingDomain = bpmn2Editor.getEditingDomain();
-				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-					@Override
-					protected void doExecute() {
-						target.eSet(attribute, newValue);
-					}
-				});
-				if (bpmn2Editor.getDiagnostics()!=null) {
-					// revert the change and display error status message.
-					bpmn2Editor.showErrorMessage(bpmn2Editor.getDiagnostics().getMessage());
-				}
-				else
-					bpmn2Editor.showErrorMessage(null);
-				tableViewer.refresh();
-			}
-		}
-
-		@Override
-		public Object getValue(Object element, String property) {
-			return getText(element);
-		}
-	}
-
 	private String getDisplayName(ItemProviderAdapter itemProviderAdapter, EObject object, EStructuralFeature feature) {
 		IItemPropertyDescriptor propertyDescriptor = null;
 		if (itemProviderAdapter!=null)
@@ -1104,15 +720,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	}
 	
 	protected void cleanBindings() {
-		for (Binding b : bindings) {
-			b.dispose();
-		}
-		bindings.clear();
-
-		for (Widget w : widgets) {
-			w.dispose();
-		}
-		widgets.clear();
+		toolkit.disposeWidgets();
 	}
 
 }
