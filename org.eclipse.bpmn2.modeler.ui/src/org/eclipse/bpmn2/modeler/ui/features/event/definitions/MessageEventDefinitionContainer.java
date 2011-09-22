@@ -100,5 +100,13 @@ public class MessageEventDefinitionContainer extends EventDefinitionFeatureConta
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_MESSAGE;
 		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
+		 */
+		@Override
+		public Class getBusinessObjectClass() {
+			return MessageEventDefinition.class;
+		}
 	}
 }

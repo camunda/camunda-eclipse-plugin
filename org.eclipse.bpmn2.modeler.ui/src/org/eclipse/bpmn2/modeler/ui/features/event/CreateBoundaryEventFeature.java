@@ -19,6 +19,7 @@ import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -28,7 +29,7 @@ import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
-public class CreateBoundaryEventFeature extends AbstractCreateFeature {
+public class CreateBoundaryEventFeature extends AbstractBpmn2CreateFeature {
 
 	public CreateBoundaryEventFeature(IFeatureProvider fp) {
 		super(fp, "Boundary Event", "Adds boundary event to activity, defaults to interrupting");
@@ -77,5 +78,13 @@ public class CreateBoundaryEventFeature extends AbstractCreateFeature {
 	@Override
 	public String getCreateLargeImageId() {
 		return getCreateImageId();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
+	 */
+	@Override
+	public Class getBusinessObjectClass() {
+		return BoundaryEvent.class;
 	}
 }

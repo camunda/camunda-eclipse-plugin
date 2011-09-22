@@ -89,6 +89,14 @@ public class ConversationLinkFeatureContainer extends BaseElementConnectionFeatu
 		protected Class<Participant> getTargetClass() {
 			return Participant.class;
 		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature#getBusinessObjectClass()
+		 */
+		@Override
+		public Class getBusinessObjectClass() {
+			return ConversationLink.class;
+		}
 	}
 	public static class ReconnectConversationLinkFeature extends AbstractReconnectFlowFeature {
 

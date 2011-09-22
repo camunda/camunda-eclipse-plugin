@@ -127,5 +127,13 @@ public class CancelEventDefinitionContainer extends EventDefinitionFeatureContai
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_CANCEL;
 		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
+		 */
+		@Override
+		public Class getBusinessObjectClass() {
+			return CancelEventDefinition.class;
+		}
 	}
 }

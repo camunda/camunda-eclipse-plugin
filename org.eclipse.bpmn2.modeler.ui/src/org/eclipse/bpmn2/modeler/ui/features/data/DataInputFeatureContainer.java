@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.data;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.data.AbstractCreateDataInputOutputFeature;
@@ -80,6 +81,14 @@ public class DataInputFeatureContainer extends AbstractDataFeatureContainer {
 		@Override
 		public String getStencilImageId() {
 			return ImageProvider.IMG_16_DATA_INPUT;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
+		 */
+		@Override
+		public Class getBusinessObjectClass() {
+			return DataInput.class;
 		}
 	}
 }

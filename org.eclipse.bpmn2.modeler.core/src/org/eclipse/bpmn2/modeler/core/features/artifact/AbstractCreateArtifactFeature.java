@@ -17,13 +17,14 @@ import java.io.IOException;
 import org.eclipse.bpmn2.Artifact;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
 
-public abstract class AbstractCreateArtifactFeature extends AbstractCreateFeature {
+public abstract class AbstractCreateArtifactFeature extends AbstractBpmn2CreateFeature {
 
 	public AbstractCreateArtifactFeature(IFeatureProvider fp, String name, String description) {
 		super(fp, name, description);

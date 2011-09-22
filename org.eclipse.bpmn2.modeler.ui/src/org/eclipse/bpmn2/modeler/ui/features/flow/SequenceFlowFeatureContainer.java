@@ -157,6 +157,14 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 		protected Class<FlowNode> getTargetClass() {
 			return FlowNode.class;
 		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature#getBusinessObjectClass()
+		 */
+		@Override
+		public Class getBusinessObjectClass() {
+			return SequenceFlow.class;
+		}
 	}
 
 	private static Color manageColor(PictogramElement element, IColorConstant colorConstant) {

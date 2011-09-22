@@ -17,6 +17,7 @@ import java.io.IOException;
 import org.eclipse.bpmn2.Conversation;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -24,7 +25,7 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
 
-public class CreateConversationFeature extends AbstractCreateFeature {
+public class CreateConversationFeature extends AbstractBpmn2CreateFeature {
 
 	public CreateConversationFeature(IFeatureProvider fp) {
 		super(fp, "Conversation", "A logical grouping of Message exchanges");
@@ -60,5 +61,13 @@ public class CreateConversationFeature extends AbstractCreateFeature {
 	@Override
 	public String getCreateLargeImageId() {
 		return ImageProvider.IMG_16_CONVERSATION;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
+	 */
+	@Override
+	public Class getBusinessObjectClass() {
+		return Conversation.class;
 	}
 }

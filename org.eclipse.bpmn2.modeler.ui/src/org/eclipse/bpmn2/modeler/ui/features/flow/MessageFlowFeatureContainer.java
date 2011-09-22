@@ -165,6 +165,14 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 			}
 			return different;
 		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature#getBusinessObjectClass()
+		 */
+		@Override
+		public Class getBusinessObjectClass() {
+			return MessageFlow.class;
+		}
 	}
 	
 	public static class ReconnectMessageFlowFeature extends AbstractReconnectFlowFeature {

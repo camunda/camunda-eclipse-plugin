@@ -27,7 +27,7 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
 
-public abstract class AbstractCreateFlowElementFeature<T extends FlowElement> extends AbstractCreateFeature {
+public abstract class AbstractCreateFlowElementFeature<T extends FlowElement> extends AbstractBpmn2CreateFeature {
 
 	public AbstractCreateFlowElementFeature(IFeatureProvider fp, String name, String description) {
 		super(fp, name, description);

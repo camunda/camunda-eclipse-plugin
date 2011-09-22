@@ -82,5 +82,13 @@ public class AdHocSubProcessFeatureContainer extends AbstractSubProcessFeatureCo
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_AD_HOC_SUB_PROCESS;
 		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
+		 */
+		@Override
+		public Class getBusinessObjectClass() {
+			return AdHocSubProcess.class;
+		}
 	}
 }

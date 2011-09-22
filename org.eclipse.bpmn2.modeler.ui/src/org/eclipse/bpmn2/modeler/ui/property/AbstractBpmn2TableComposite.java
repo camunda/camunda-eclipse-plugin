@@ -295,8 +295,13 @@ public abstract class AbstractBpmn2TableComposite extends Composite {
 			@Override
 			public void resourceSetChanged(ResourceSetChangeEvent event) {
 				List<Notification> notifications = event.getNotifications();
-				for (Notification notification : notifications) {
-					tableViewer.setInput(list);
+				try {
+					for (Notification notification : notifications) {
+						tableViewer.setInput(list);
+					}
+				}
+				catch (Exception e) {
+					// silently ignore :-o
 				}
 			}
 		};

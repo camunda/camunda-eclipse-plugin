@@ -231,6 +231,14 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 			}
 			return null;
 		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature#getBusinessObjectClass()
+		 */
+		@Override
+		public Class getBusinessObjectClass() {
+			return Association.class;
+		}
 	}
 	
 	

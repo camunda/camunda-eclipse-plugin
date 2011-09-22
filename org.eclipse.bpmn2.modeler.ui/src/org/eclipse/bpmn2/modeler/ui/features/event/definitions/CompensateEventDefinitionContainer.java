@@ -143,5 +143,13 @@ public class CompensateEventDefinitionContainer extends EventDefinitionFeatureCo
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_COMPENSATE;
 		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
+		 */
+		@Override
+		public Class getBusinessObjectClass() {
+			return CompensateEventDefinition.class;
+		}
 	}
 }

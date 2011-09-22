@@ -144,6 +144,14 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 		public String getStencilImageId() {
 			return ImageProvider.IMG_16_CALL_ACTIVITY;
 		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
+		 */
+		@Override
+		public Class getBusinessObjectClass() {
+			return CallActivity.class;
+		}
 	}
 
 	private class UpdateCallActivityFeature extends AbstractUpdateFeature {

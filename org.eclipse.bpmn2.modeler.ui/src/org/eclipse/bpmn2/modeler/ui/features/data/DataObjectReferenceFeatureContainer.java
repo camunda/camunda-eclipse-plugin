@@ -70,5 +70,13 @@ public class DataObjectReferenceFeatureContainer extends AbstractDataFeatureCont
 		public String getStencilImageId() {
 			return ImageProvider.IMG_16_DATA_OBJECT;
 		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
+		 */
+		@Override
+		public Class getBusinessObjectClass() {
+			return DataObjectReference.class;
+		}
 	}
 }

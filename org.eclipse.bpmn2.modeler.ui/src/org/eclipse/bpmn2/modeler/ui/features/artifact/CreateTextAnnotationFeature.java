@@ -18,6 +18,7 @@ import org.eclipse.bpmn2.TextAnnotation;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
+import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
@@ -26,7 +27,7 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
 
-public class CreateTextAnnotationFeature extends AbstractCreateFeature {
+public class CreateTextAnnotationFeature extends AbstractBpmn2CreateFeature {
 
 	public CreateTextAnnotationFeature(IFeatureProvider fp) {
 		super(fp, "Annotation", "Provide additional information");
@@ -67,5 +68,13 @@ public class CreateTextAnnotationFeature extends AbstractCreateFeature {
 	@Override
 	public String getCreateLargeImageId() {
 		return getCreateImageId(); // FIXME
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
+	 */
+	@Override
+	public Class getBusinessObjectClass() {
+		return TextAnnotation.class;
 	}
 }

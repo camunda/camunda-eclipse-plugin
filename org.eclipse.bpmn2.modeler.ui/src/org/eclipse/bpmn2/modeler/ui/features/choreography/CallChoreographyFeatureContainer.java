@@ -14,6 +14,7 @@ package org.eclipse.bpmn2.modeler.ui.features.choreography;
 
 import org.eclipse.bpmn2.CallChoreography;
 import org.eclipse.bpmn2.ChoreographyLoopType;
+import org.eclipse.bpmn2.SendTask;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
@@ -75,6 +76,10 @@ public class CallChoreographyFeatureContainer extends AbstractChoreographyFeatur
 		@Override
 		public String getStencilImageId() {
 			return ImageProvider.IMG_16_CHOREOGRAPHY_TASK;
+		}
+		
+		public Class getBusinessObjectClass() {
+			return CallChoreography.class;
 		}
 	}
 }

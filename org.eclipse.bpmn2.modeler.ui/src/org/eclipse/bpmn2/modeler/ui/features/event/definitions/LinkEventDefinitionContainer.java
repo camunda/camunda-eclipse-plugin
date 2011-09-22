@@ -117,5 +117,13 @@ public class LinkEventDefinitionContainer extends EventDefinitionFeatureContaine
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_LINK;
 		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
+		 */
+		@Override
+		public Class getBusinessObjectClass() {
+			return LinkEventDefinition.class;
+		}
 	}
 }

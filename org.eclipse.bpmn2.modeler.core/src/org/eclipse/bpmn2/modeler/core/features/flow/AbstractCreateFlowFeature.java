@@ -17,6 +17,7 @@ import java.io.IOException;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.ecore.EObject;
@@ -27,8 +28,7 @@ import org.eclipse.graphiti.features.context.impl.AddConnectionContext;
 import org.eclipse.graphiti.features.impl.AbstractCreateConnectionFeature;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 
-public abstract class AbstractCreateFlowFeature<A extends EObject, B extends EObject> extends
-		AbstractCreateConnectionFeature {
+public abstract class AbstractCreateFlowFeature<A extends EObject, B extends EObject> extends AbstractBpmn2CreateConnectionFeature {
 
 	public AbstractCreateFlowFeature(IFeatureProvider fp, String name, String description) {
 		super(fp, name, description);

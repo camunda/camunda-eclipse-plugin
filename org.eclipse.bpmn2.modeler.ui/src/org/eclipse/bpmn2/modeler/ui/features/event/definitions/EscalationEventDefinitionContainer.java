@@ -128,5 +128,13 @@ public class EscalationEventDefinitionContainer extends EventDefinitionFeatureCo
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_ESCAlATION;
 		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
+		 */
+		@Override
+		public Class getBusinessObjectClass() {
+			return EscalationEventDefinition.class;
+		}
 	}
 }
