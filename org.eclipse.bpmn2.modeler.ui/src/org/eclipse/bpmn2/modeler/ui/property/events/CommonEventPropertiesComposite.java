@@ -14,7 +14,7 @@ package org.eclipse.bpmn2.modeler.ui.property.events;
 
 import java.util.ArrayList;
 
-import org.eclipse.bpmn2.modeler.ui.property.MainPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
-public class CommonEventPropertiesComposite extends MainPropertiesComposite {
+public class CommonEventPropertiesComposite extends DefaultPropertiesComposite {
 
 	private ArrayList<String> showProperties = null;
 	

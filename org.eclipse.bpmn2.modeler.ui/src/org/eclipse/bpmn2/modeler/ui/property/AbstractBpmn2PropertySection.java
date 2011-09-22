@@ -17,7 +17,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-public abstract class AbstractBpmn2PropertiesSection extends GFPropertySection {
+public abstract class AbstractBpmn2PropertySection extends GFPropertySection {
 	
 	protected AbstractBpmn2PropertiesComposite composite;
 	protected TabbedPropertySheetPage tabbedPropertySheetPage;

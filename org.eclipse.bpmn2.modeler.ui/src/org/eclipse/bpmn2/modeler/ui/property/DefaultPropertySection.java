@@ -33,14 +33,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-public class Bpmn2MainPropertySection extends AbstractBpmn2PropertiesSection {
+public class DefaultPropertySection extends AbstractBpmn2PropertySection {
 
-	private MainPropertiesComposite composite;
+	private DefaultPropertiesComposite composite;
 
 	@Override
 	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
-		composite = new MainPropertiesComposite(parent, SWT.None);
+		composite = new DefaultPropertiesComposite(parent, SWT.None);
 	}
 
 	@Override
@@ -71,18 +71,18 @@ public class Bpmn2MainPropertySection extends AbstractBpmn2PropertiesSection {
 				Resource eResource = be.eResource();
 				if (eResource != null) {
 					Definitions definitions = ModelHandlerLocator.getModelHandler(eResource).getDefinitions();
-					composite.setShape(shape);
-					composite.setEObject(diagramEditor, definitions);
+					getComposite().setShape(shape);
+					getComposite().setEObject(diagramEditor, definitions);
 				} else {
-					composite.setShape(shape);
-					composite.setEObject(diagramEditor, null);
+					getComposite().setShape(shape);
+					getComposite().setEObject(diagramEditor, null);
 				}
 			} catch (IOException e) {
 				Activator.showErrorWithLogging(e);
 			}
 		} else {
-			composite.setShape(shape);
-			composite.setEObject(diagramEditor, be);
+			getComposite().setShape(shape);
+			getComposite().setEObject(diagramEditor, be);
 		}
 	}
 }

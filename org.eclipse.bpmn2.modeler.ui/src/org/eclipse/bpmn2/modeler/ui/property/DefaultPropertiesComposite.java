@@ -22,15 +22,18 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.swt.widgets.Composite;
 
-public class MainPropertiesComposite extends AbstractBpmn2PropertiesComposite {
+public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 
+	protected final static String DESCRIPTION_TAB = "org.eclipse.bpmn2.modeler.description.tab";
+	String tabId;
+	
 	/**
 	 * Create the composite.
 	 * 
 	 * @param parent
 	 * @param style
 	 */
-	public MainPropertiesComposite(Composite parent, int style) {
+	public DefaultPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
 	}
 
@@ -39,12 +42,18 @@ public class MainPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 		
 		ItemProviderAdapter itemProviderAdapter = (ItemProviderAdapter) new Bpmn2ItemProviderAdapterFactory().adapt(be,
 				ItemProviderAdapter.class);
-
+		
+		boolean isDescriptionTab = false;
+		if (tabbedPropertySheetPage!=null) {
+			tabId = tabbedPropertySheetPage.getSelectedTab().getId();
+		}
+		
 		for (EStructuralFeature a : be.eClass().getEAllStructuralFeatures()) {
 
 			Object value = be.eGet(a); // the EList<cl>
 			
 			if (a instanceof EAttribute) {
+				
 				bindAttribute(be,(EAttribute)a,itemProviderAdapter);
 			}
 			else if (value instanceof EList) {
@@ -60,7 +69,19 @@ public class MainPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 	@Override
 	protected boolean canBindAttribute(EObject object, EAttribute attribute) {
 		ToolEnablementPreferences preferences = ToolEnablementPreferences.getPreferences(project);
-		return preferences.isEnabled(object.eClass(), attribute);
+		if (preferences.isEnabled(object.eClass(), attribute)) {
+			if (DESCRIPTION_TAB.equals(tabId)) {
+				if ("id".equals(attribute.getName()) || "name".equals(attribute.getName()))
+					return true;
+				return false;
+			}
+			else if (tabId!=null) {
+				if ("id".equals(attribute.getName()) || "name".equals(attribute.getName()))
+					return false;
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	@Override
@@ -86,6 +107,8 @@ public class MainPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 
 	@Override
 	protected boolean canBindReference(EObject object, EReference reference) {
+		if (DESCRIPTION_TAB.equals(tabId))
+			return false;
 		return true;
 	}
 }

@@ -69,7 +69,7 @@ public class ImprovedAdvancedPropertiesComposite extends Composite {
 	private final TreeViewer treeViewer;
 	private TabbedPropertySheetPage aTabbedPropertySheetPage;
 	private BPMN2Editor diagramEditor;
-	private final MainPropertiesComposite mainPropertiesComposite;
+	private final DefaultPropertiesComposite mainPropertiesComposite;
 	private ToolEnablementPreferences prefs;
 	private TransactionalEditingDomain domain;
 	private DomainListener domainListener;
@@ -140,7 +140,7 @@ public class ImprovedAdvancedPropertiesComposite extends Composite {
 		toolkit.paintBordersFor(sctnEditors);
 		sctnEditors.setText("Attributes");
 
-		mainPropertiesComposite = new MainPropertiesComposite(sctnEditors, SWT.NONE);
+		mainPropertiesComposite = new DefaultPropertiesComposite(sctnEditors, SWT.NONE);
 		sctnEditors.setClient(mainPropertiesComposite);
 		toolkit.adapt(mainPropertiesComposite);
 		toolkit.paintBordersFor(mainPropertiesComposite);

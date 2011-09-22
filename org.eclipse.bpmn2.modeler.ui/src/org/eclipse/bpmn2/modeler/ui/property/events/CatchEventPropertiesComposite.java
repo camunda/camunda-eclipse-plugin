@@ -14,14 +14,14 @@ package org.eclipse.bpmn2.modeler.ui.property.events;
 
 import java.util.ArrayList;
 
-import org.eclipse.bpmn2.modeler.ui.property.MainPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.swt.widgets.Composite;
 
-public class CatchEventPropertiesComposite extends MainPropertiesComposite {
+public class CatchEventPropertiesComposite extends DefaultPropertiesComposite {
 
 	private ArrayList<String> showProperties = null;
 	

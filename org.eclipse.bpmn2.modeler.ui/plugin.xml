@@ -106,8 +106,15 @@
 		<!-- Property Tabs -->
 		
 		<propertyTab category="BPMN2"
+			id="org.eclipse.bpmn2.modeler.description.tab"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			label="Description">
+		</propertyTab>
+		
+		<propertyTab category="BPMN2"
 			id="org.eclipse.bpmn2.modeler.main.tab"
 			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Basic">
 		</propertyTab>
 				
@@ -235,7 +242,15 @@
 		<!-- Property Sections -->
 		
 		<propertySection
-			class="org.eclipse.bpmn2.modeler.ui.property.Bpmn2MainPropertySection"
+			class="org.eclipse.bpmn2.modeler.ui.property.DefaultPropertySection"
+			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+			id="org.eclipse.bpmn2.modeler.description.tab.section"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			tab="org.eclipse.bpmn2.modeler.description.tab">
+		</propertySection>
+		
+		<propertySection
+			class="org.eclipse.bpmn2.modeler.ui.property.DefaultPropertySection"
 			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
 			id="org.eclipse.bpmn2.modeler.main.tab.section"
 			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"

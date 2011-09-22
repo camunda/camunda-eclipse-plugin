@@ -59,7 +59,11 @@ public class PropertyLabelProvider extends LabelProvider {
 	@Override
 	public Image getImage(Object element) {
         IWorkbenchWindow workbenchWindow = Workbench.getInstance().getActiveWorkbenchWindow();
+        if (workbenchWindow==null || workbenchWindow.getActivePage()==null)
+        	return null;
         BPMN2Editor editor = (BPMN2Editor)workbenchWindow.getActivePage().getActiveEditor();
+        if (editor==null)
+        	return null;
         BPMNFeatureProvider fp = (BPMNFeatureProvider)editor.getDiagramTypeProvider().getFeatureProvider();
 		PictogramElement pe = getPictogramElement(element);
 		

@@ -31,7 +31,7 @@ import java.util.List;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablementPreferences;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
-import org.eclipse.bpmn2.modeler.ui.property.MainPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
@@ -48,7 +48,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 
-public class JbpmPropertiesComposite extends MainPropertiesComposite {
+public class JbpmPropertiesComposite extends DefaultPropertiesComposite {
 
 	private ArrayList<EStructuralFeature> attributes;
 	private Button customEditorButton;

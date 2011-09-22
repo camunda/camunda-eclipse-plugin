@@ -12,10 +12,10 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.property.connectors;
 
-import org.eclipse.bpmn2.modeler.ui.property.MainPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.swt.widgets.Composite;
 
-public class MessageFlowPropertiesComposite extends MainPropertiesComposite {
+public class MessageFlowPropertiesComposite extends DefaultPropertiesComposite {
 
 	/**
 	 * Create the composite.
