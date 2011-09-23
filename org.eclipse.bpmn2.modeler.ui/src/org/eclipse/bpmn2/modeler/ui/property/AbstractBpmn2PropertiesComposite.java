@@ -65,6 +65,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusEvent;
@@ -83,7 +84,9 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
@@ -109,6 +112,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	protected final AdapterFactoryLabelProvider LABEL_PROVIDER = new AdapterFactoryLabelProvider(ADAPTER_FACTORY);
 	protected ModelHandler modelHandler;
 	protected BPMNShape shape;
+    private Font descriptionFont = null;
 
 	static {
 		ADAPTER_FACTORY = new ComposedAdapterFactory(ComposedAdapterFactory.Descriptor.Registry.INSTANCE);
@@ -133,6 +137,8 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
+				if (descriptionFont!=null)
+					descriptionFont.dispose();
 				toolkit.dispose();
 			}
 		});
@@ -221,21 +227,31 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		return label;
 	}
 
-	protected Label createDescription(String name) {
-		Label label = toolkit.createLabel(this, name);
-		label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
-
+	protected StyledText createDescription(String description) {
 		Display display = Display.getCurrent();
-		Font font = label.getFont();
-		FontData[] fd = font.getFontData();
-		fd[0].setStyle(SWT.BOLD);
-		font = new Font(display,fd);
-		label.setFont(font);
-		font.dispose();
-		label.setBackground(display.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
-		label.setForeground(display.getSystemColor(SWT.COLOR_INFO_FOREGROUND));
+		final StyledText styledText = new StyledText(this, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.WRAP | SWT.READ_ONLY);
+		styledText.setText(description);
 		
-		return label;
+		toolkit.adapt(styledText);
+		toolkit.widgets.add(styledText);
+
+		if (descriptionFont==null) {
+		    FontData data = display.getSystemFont().getFontData()[0];
+		    descriptionFont = new Font(display, data.getName(), data.getHeight() + 1, SWT.NONE);
+		}
+	    styledText.setFont(descriptionFont);
+		
+		GridData d = new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1);
+		d.horizontalIndent = 4;
+		d.verticalIndent = 4;
+		d.heightHint = 4 * descriptionFont.getFontData()[0].getHeight();
+		d.widthHint = 100;
+		styledText.setLayoutData(d);
+		
+		styledText.setBackground(display.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+		styledText.setForeground(display.getSystemColor(SWT.COLOR_INFO_FOREGROUND));
+		
+		return styledText;
 	}
 
 	/**

@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.ui.diagram;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.bpmn2.SubProcess;
@@ -191,6 +192,8 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 
 		updateFeatureLists();
 	}
+	
+	HashMap<Class,IFeature> mapBusinessObjectClassToCreateFeature = new HashMap<Class,IFeature>();
 
 	public void addFeatureContainer(FeatureContainer fc) throws Exception {
 		
@@ -261,6 +264,19 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 
 		createConnectionFeatures = createConnectionFeatureList
 				.toArray(new ICreateConnectionFeature[createConnectionFeatureList.size()]);
+		
+		for (IFeature cf : createFeatures) {
+			if (cf instanceof AbstractBpmn2CreateFeature) {
+				AbstractBpmn2CreateFeature acf = (AbstractBpmn2CreateFeature)cf;
+				mapBusinessObjectClassToCreateFeature.put(acf.getBusinessObjectClass(), cf);
+			}
+		}
+		for (IFeature cf : createConnectionFeatures) {
+			if (cf instanceof AbstractBpmn2CreateConnectionFeature) {
+				AbstractBpmn2CreateConnectionFeature acf = (AbstractBpmn2CreateConnectionFeature)cf;
+				mapBusinessObjectClassToCreateFeature.put(acf.getBusinessObjectClass(), cf);
+			}
+		}
 	}
 	
 	@Override
@@ -457,35 +473,13 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 	}
 	
 	public IFeature getCreateFeatureForBusinessObject(Object be) {
+		IFeature feature = null;
 		if (be!=null) {
-			for ( ICreateConnectionFeature cf : getCreateConnectionFeatures() ) {
-				if (cf instanceof AbstractBpmn2CreateConnectionFeature) {
-					AbstractBpmn2CreateConnectionFeature acf = (AbstractBpmn2CreateConnectionFeature)cf;
-					Class beclass = be.getClass();
-					Class feclass = acf.getBusinessObjectClass();
-					if (feclass.isInterface()) {
-						Class[] ifs = beclass.getInterfaces();
-						if (ifs.length>0 && ifs[0].equals(feclass)) {
-							return acf;
-						}
-					}
-				}
-			}
-			for ( ICreateFeature cf : getCreateFeatures() ) {
-				if (cf instanceof AbstractBpmn2CreateFeature) {
-					AbstractBpmn2CreateFeature acf = (AbstractBpmn2CreateFeature)cf;
-					Class beclass = be.getClass();
-					Class feclass = acf.getBusinessObjectClass();
-					if (feclass.isInterface()) {
-						Class[] ifs = beclass.getInterfaces();
-						if (ifs.length>0 && ifs[0].equals(feclass)) {
-							return acf;
-						}
-					}
-				}
+			Class[] ifs = be.getClass().getInterfaces();
+			for (int i=0; i<ifs.length && feature==null; ++i) {
+				feature = mapBusinessObjectClassToCreateFeature.get(ifs[i]);
 			}
 		}
-		return null;
-		
+		return feature;
 	}
 }

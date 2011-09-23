@@ -55,7 +55,11 @@ public class UserTaskFeatureContainer extends AbstractTaskFeatureContainer {
 	public static class CreateUserTaskFeature extends AbstractCreateTaskFeature {
 
 		public CreateUserTaskFeature(IFeatureProvider fp) {
-			super(fp, "User Task", "Task performed by human");
+			super(fp, "User Task",
+					"A User Task is a typical \"workflow\" Task where a human"
+					+" performer performs the Task with the assistance of a"
+					+" software application and is scheduled through a task"
+					+" list manager of some sort.");
 		}
 
 		@Override

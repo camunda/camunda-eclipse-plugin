@@ -61,6 +61,12 @@ public class TrackingFormToolkit extends FormToolkit {
 		return label;
 	}
 	
+	public Label createLabel(Composite parent, String text, int style) {
+		Label label = super.createLabel(parent, text, style);
+		widgets.add(label);
+		return label;
+	}
+	
 	public Text createText(Composite parent, String value) {
 		Text text = super.createText(parent, value);
 		widgets.add(text);

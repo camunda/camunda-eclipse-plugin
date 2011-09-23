@@ -291,6 +291,8 @@ public class BPMN2Editor extends DiagramEditor {
 		IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
 		IWorkbenchPage page = win.getActivePage();
 		IWorkbenchPart part = page.getActivePart();
+		if (part==null)
+			return;
 		IWorkbenchPartSite site = part.getSite();
 		IViewSite vSite = ( IViewSite ) site;
 		IActionBars actionBars =  vSite.getActionBars();
