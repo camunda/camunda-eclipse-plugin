@@ -47,7 +47,12 @@ public class TrackingFormToolkit extends FormToolkit {
 		super.dispose();
 		disposeWidgets();
 	}
-	
+
+	public void track(Composite composite) {
+		super.adapt(composite);
+		widgets.add(composite);
+	}
+
 	public void disposeWidgets() {
 		for (Widget w : widgets) {
 			w.dispose();

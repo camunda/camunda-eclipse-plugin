@@ -6,12 +6,24 @@ Bundle-Version: 0.0.1.qualifier
 Bundle-Activator: org.eclipse.bpmn2.modeler.core.Activator
 Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.emf.transaction,
+ org.eclipse.osgi,
  org.eclipse.graphiti,
  org.eclipse.gef,
- org.eclipse.bpmn2.edit
+ org.eclipse.bpmn2.edit,
+ org.eclipse.xsd,
+ org.eclipse.wst.wsdl;bundle-version="1.2.201",
+ org.eclipse.wst.xml.core;bundle-version="1.1.600",
+ org.eclipse.xsd;bundle-version="2.7.0",
+ org.eclipse.wst.sse.ui;bundle-version="[1.1.0,2.0.0)",
+ org.eclipse.wst.sse.core;bundle-version="[1.1.300,2.0.0)",
+ javax.wsdl;bundle-version="[1.5.0,1.6.0)";visibility:=reexport,
+ org.eclipse.wst.xsd.ui;bundle-version="[1.2.101,2.0.0)",
+ org.eclipse.wst.xml.ui;bundle-version="[1.0.400,2.0.0)"
+ 
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.bpmn2.modeler.core,
+ org.eclipse.bpmn2.modeler.core.adapters,
  org.eclipse.bpmn2.modeler.core.di,
  org.eclipse.bpmn2.modeler.core.features,
  org.eclipse.bpmn2.modeler.core.features.activity,
@@ -32,7 +44,8 @@ Export-Package: org.eclipse.bpmn2.modeler.core,
  org.eclipse.bpmn2.modeler.core.preferences,
  org.eclipse.bpmn2.modeler.core.runtime,
  org.eclipse.bpmn2.modeler.core.utils
-Import-Package: org.eclipse.graphiti.ui.features,
+Import-Package: org.eclipse.bpel.wsil.model.inspection,
+ org.eclipse.graphiti.ui.features,
  org.eclipse.jface.viewers,
  org.eclipse.swt.graphics,
  org.eclipse.ui,

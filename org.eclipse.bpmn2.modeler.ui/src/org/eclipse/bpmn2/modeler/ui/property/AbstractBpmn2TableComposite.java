@@ -88,6 +88,9 @@ public abstract class AbstractBpmn2TableComposite extends Composite {
 		toolkit.adapt(this);
 		toolkit.paintBordersFor(this);
 		setLayout(new GridLayout(3, false));
+		// assume we are being placed in an AbstractBpmn2PropertyComposite which has
+		// a GridLayout of 3 columns
+		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 	}
 	
 	public void setDiagramEditor(BPMN2Editor bpmn2Editor) {
@@ -129,7 +132,16 @@ public abstract class AbstractBpmn2TableComposite extends Composite {
 		ModelUtil.addID(newItem);
 		return newItem;
 	}
-	
+
+	/**
+	 * Override this if construction of new list items needs special handling. 
+	 * @param object
+	 * @param feature
+	 * @return
+	 */
+	protected EObject editListItem(EObject object, EStructuralFeature feature) {
+		return null;
+	}	
 	/**
 	 * Override this if removal of list items needs special handling. 
 	 * @param object
@@ -254,10 +266,10 @@ public abstract class AbstractBpmn2TableComposite extends Composite {
 		final Button removeButton = toolkit.createPushButton(buttonSection, "Remove");
 		removeButton.setEnabled(false);
 
-		final Button upButton = toolkit.createPushButton(buttonSection, "Move Up");
+		final Button upButton = toolkit.createPushButton(buttonSection, "Up");
 		upButton.setEnabled(false);
 
-		final Button downButton = toolkit.createPushButton(buttonSection, "Move Down");
+		final Button downButton = toolkit.createPushButton(buttonSection, "Down");
 		downButton.setEnabled(false);
 
 		final Button editButton = toolkit.createPushButton(buttonSection, "Edit...");
@@ -319,6 +331,7 @@ public abstract class AbstractBpmn2TableComposite extends Composite {
 		tableViewer.addPostSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				removeButton.setEnabled(!event.getSelection().isEmpty());
+				editButton.setEnabled(!event.getSelection().isEmpty());
 				int i = table.getSelectionIndex();
 				if (i>0)
 					upButton.setEnabled(!event.getSelection().isEmpty());
@@ -389,6 +402,21 @@ public abstract class AbstractBpmn2TableComposite extends Composite {
 						list.move(i+1, i);
 						tableViewer.setInput(list);
 						tableViewer.setSelection(new StructuredSelection(list.get(i+1)));
+					}
+				});
+			}
+		});
+		
+		editButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+					@Override
+					protected void doExecute() {
+						EObject newItem = editListItem(object,feature);
+						if (newItem!=null) {
+							tableViewer.setInput(list);
+							tableViewer.setSelection(new StructuredSelection(newItem));
+						}
 					}
 				});
 			}

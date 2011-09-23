@@ -15,8 +15,12 @@ package org.eclipse.bpmn2.modeler.core.utils;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.modeler.core.adapters.AdapterRegistry;
+import org.eclipse.bpmn2.modeler.core.adapters.INamespaceMap;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceSetImpl;
 import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
@@ -25,6 +29,8 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
+import org.eclipse.xsd.XSDAttributeDeclaration;
+import org.eclipse.xsd.XSDElementDeclaration;
 
 public class ModelUtil {
 
@@ -277,5 +283,104 @@ public class ModelUtil {
 			displayName += c;
 		}
 		return displayName;
+	}
+
+	
+
+	/**
+	 * This is a slightly hacked resource set that we will be using for to solve
+	 * the problem of loading the right resources from URLs that betray no
+	 * information on the type of the resource.
+	 * 
+	 * @param resourceSet
+	 * 
+	 * @return the BPELResourceSetImpl that walks around the problem indicated.
+	 * 
+	 */
+
+	public static Bpmn2ModelerResourceSetImpl slightlyHackedResourceSet(
+			ResourceSet resourceSet) {
+
+		if (resourceSet instanceof Bpmn2ModelerResourceSetImpl) {
+			return (Bpmn2ModelerResourceSetImpl) resourceSet;
+		}
+
+		Map<Object, Object> map = resourceSet.getLoadOptions();
+		Bpmn2ModelerResourceSetImpl result = (Bpmn2ModelerResourceSetImpl) map
+				.get(Bpmn2ModelerResourceSetImpl.SLIGHTLY_HACKED_KEY);
+		if (result == null) {
+			result = new Bpmn2ModelerResourceSetImpl();
+			map.put(Bpmn2ModelerResourceSetImpl.SLIGHTLY_HACKED_KEY, result);
+		}
+		return result;
+	}
+
+	/**
+	 * Return the resource set that we should be using to load "specific" type
+	 * of resources. The "slightlyHacked" resource set is kept in the load
+	 * options map.
+	 * 
+	 * @param eObj
+	 * @return the slightly hacked resource set.
+	 * 
+	 */
+	public static Bpmn2ModelerResourceSetImpl slightlyHackedResourceSet(EObject eObj) {
+		return slightlyHackedResourceSet(eObj.eResource().getResourceSet());
+	}
+	
+	public static Object resolveXSDObject(Object xsdObject) {
+		if (xsdObject instanceof XSDElementDeclaration) {
+			XSDElementDeclaration resolvedElement = ((XSDElementDeclaration)xsdObject).getResolvedElementDeclaration();
+			if (resolvedElement != null) xsdObject = resolvedElement;
+		} else if (xsdObject instanceof XSDAttributeDeclaration) {
+			XSDAttributeDeclaration resolvedAttribute = ((XSDAttributeDeclaration)xsdObject).getResolvedAttributeDeclaration();
+			if (resolvedAttribute != null) xsdObject = resolvedAttribute;
+		}
+		return xsdObject;
+	}
+
+	/**
+	 * @param eObject
+	 * @return the namespace map for the given object.
+	 */
+
+	@SuppressWarnings("unchecked")
+	static public INamespaceMap<String, String> getNamespaceMap(EObject eObject) {
+
+		if (eObject == null) {
+			throw new NullPointerException(
+					"eObject cannot be null in getNamespaceMap()");
+		}
+
+		INamespaceMap<String, String> nsMap = null;
+    	// Bug 120110 - this eObject may not have a namespace map, but its
+		// ancestors might, so keep searching until we find one or until
+		// we run out of ancestors.
+		while (nsMap==null && eObject!=null) {
+			nsMap = AdapterRegistry.INSTANCE.adapt(
+				eObject, INamespaceMap.class);
+			if (nsMap==null)
+				eObject = eObject.eContainer();
+		}
+		
+		if (nsMap == null) {
+			throw new IllegalStateException(
+					"INamespaceMap cannot be attached to an eObject");
+		}
+
+		return nsMap;
+	}
+
+	public static String getNamespacePrefix(EObject eObject, String namespace) {
+
+		for (EObject context = eObject; context != null; context = context
+				.eContainer()) {
+			List<String> pfxList = getNamespaceMap(context).getReverse(
+					namespace);
+			if (pfxList.size() > 0) {
+				return pfxList.get(0);
+			}
+		}
+		return null;
 	}
 }

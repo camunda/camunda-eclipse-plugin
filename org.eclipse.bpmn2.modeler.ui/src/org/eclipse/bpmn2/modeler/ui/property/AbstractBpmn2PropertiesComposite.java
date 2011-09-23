@@ -157,7 +157,11 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		setDiagramEditor(bpmn2Editor);
 		setEObject(object);
 	}
-
+	
+	public final EObject getEObject() {
+		return be;
+	}
+	
 	private final void setDiagramEditor(BPMN2Editor bpmn2Editor) {
 		this.bpmn2Editor = bpmn2Editor;
 		try {
@@ -679,7 +683,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 			if ((oldStyle & SHOW_LIST_LABEL)!=0)
 				newStyle |= SWT.TITLE;
 			if ((oldStyle & EDITABLE_LIST)!=0)
-				newStyle |= SWT.BUTTON1 | SWT.BUTTON2;
+				newStyle |= SWT.BUTTON1 | SWT.BUTTON2 | SWT.BUTTON5;
 			if ((oldStyle & ORDERED_LIST)!=0)
 				newStyle |= SWT.BUTTON3 | SWT.BUTTON4;
 			
@@ -703,17 +707,21 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 				}
 				
 			};
-		
-			GridData d = new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1);
-			tableComposite.setLayoutData(d);
+			adapt(tableComposite);
 
-			toolkit.adapt(tableComposite);
-			toolkit.widgets.add(tableComposite);
-			
-			tableComposite.setDiagramEditor(bpmn2Editor);
-			tableComposite.setSheetPage(tabbedPropertySheetPage);
 			tableComposite.bindList(object, feature, itemProviderAdapter);
 		}
+	}
+	
+	protected void adapt(AbstractBpmn2TableComposite tableComposite) {
+		GridData d = new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1);
+		tableComposite.setLayoutData(d);
+
+		toolkit.adapt(tableComposite);
+		toolkit.widgets.add(tableComposite);
+		
+		tableComposite.setDiagramEditor(bpmn2Editor);
+		tableComposite.setSheetPage(tabbedPropertySheetPage);
 	}
 	
 	private String getDisplayName(ItemProviderAdapter itemProviderAdapter, EObject object, EStructuralFeature feature) {
