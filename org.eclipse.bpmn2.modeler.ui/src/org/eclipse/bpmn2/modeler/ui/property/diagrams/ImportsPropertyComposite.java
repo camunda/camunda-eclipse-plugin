@@ -34,8 +34,6 @@ public class ImportsPropertyComposite extends DefaultPropertiesComposite  {
 	public void createBindings(EObject be) {
 		
 		importsTable = new ImportsTable();
-		importsTable.setDiagramEditor(bpmn2Editor);
-		importsTable.setSheetPage(tabbedPropertySheetPage);
 		importsTable.bind();
 		toolkit.track(importsTable);
 	}

@@ -21,6 +21,7 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.providers.ColumnTableProvider;
 import org.eclipse.bpmn2.modeler.ui.property.providers.TableCursor;
+import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
@@ -38,6 +39,7 @@ import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.ResourceSetChangeEvent;
 import org.eclipse.emf.transaction.ResourceSetListenerImpl;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
+import org.eclipse.emf.transaction.impl.TransactionChangeRecorder;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -61,7 +63,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 /**
  * @author Bob Brodt
@@ -73,7 +74,7 @@ public abstract class AbstractBpmn2TableComposite extends Composite {
 	
 	protected final TrackingFormToolkit toolkit = new TrackingFormToolkit(Display.getCurrent());
 	protected BPMN2Editor bpmn2Editor;
-	protected TabbedPropertySheetPage tabbedPropertySheetPage;
+
 	protected int style;
 	
 	public AbstractBpmn2TableComposite(Composite parent, int style) {
@@ -95,10 +96,6 @@ public abstract class AbstractBpmn2TableComposite extends Composite {
 	
 	public void setDiagramEditor(BPMN2Editor bpmn2Editor) {
 		this.bpmn2Editor = bpmn2Editor;
-	}
-	
-	public void setSheetPage(TabbedPropertySheetPage tabbedPropertySheetPage) {
-		this.tabbedPropertySheetPage = tabbedPropertySheetPage;
 	}
 
 	/**
@@ -166,7 +163,17 @@ public abstract class AbstractBpmn2TableComposite extends Composite {
 		if (!EObject.class.isAssignableFrom(clazz)) {
 			return;
 		}
-		
+		TransactionChangeRecorder cr = null;
+		TransactionalEditingDomain dom = null;
+		for (Adapter ad : object.eAdapters()) {
+			if (ad instanceof TransactionChangeRecorder) {
+				cr = (TransactionChangeRecorder)ad;
+				dom = cr.getEditingDomain();
+			}
+		}
+
+		if (bpmn2Editor==null)
+			bpmn2Editor = BPMN2Editor.getEditor(object);
 		final TransactionalEditingDomain editingDomain = bpmn2Editor.getEditingDomain();
 		final EList<EObject> list = (EList<EObject>)object.eGet(feature);
 		final EClass listItemClass = (EClass) feature.getEType();
@@ -353,7 +360,6 @@ public abstract class AbstractBpmn2TableComposite extends Composite {
 						if (newItem!=null) {
 							tableViewer.setInput(list);
 							tableViewer.setSelection(new StructuredSelection(newItem));
-							tabbedPropertySheetPage.resizeScrolledComposite();
 						}
 					}
 				});
@@ -372,7 +378,6 @@ public abstract class AbstractBpmn2TableComposite extends Composite {
 								i = list.size() - 1;
 							if (i>=0)
 								tableViewer.setSelection(new StructuredSelection(list.get(i)));
-							tabbedPropertySheetPage.resizeScrolledComposite();
 						}
 					}
 				});

@@ -463,7 +463,8 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 		}
 		return new ICustomFeature[] {};
 	}
-	
+
+	// TODO: move this to the adapter registry
 	public IFeature getCreateFeatureForPictogramElement(PictogramElement pe) {
 		if (pe!=null) {
 			EObject be = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(pe);

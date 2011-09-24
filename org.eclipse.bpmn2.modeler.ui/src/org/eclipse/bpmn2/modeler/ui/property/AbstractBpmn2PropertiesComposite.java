@@ -721,7 +721,6 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		toolkit.widgets.add(tableComposite);
 		
 		tableComposite.setDiagramEditor(bpmn2Editor);
-		tableComposite.setSheetPage(tabbedPropertySheetPage);
 	}
 	
 	private String getDisplayName(ItemProviderAdapter itemProviderAdapter, EObject object, EStructuralFeature feature) {

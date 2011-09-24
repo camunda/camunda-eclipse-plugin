@@ -59,23 +59,21 @@ public class PropertyLabelProvider extends LabelProvider {
 
 	@Override
 	public Image getImage(Object element) {
-        IWorkbenchWindow workbenchWindow = Workbench.getInstance().getActiveWorkbenchWindow();
-        if (workbenchWindow==null || workbenchWindow.getActivePage()==null)
-        	return null;
-        BPMN2Editor editor = (BPMN2Editor)workbenchWindow.getActivePage().getActiveEditor();
-        if (editor==null)
-        	return null;
-        BPMNFeatureProvider fp = (BPMNFeatureProvider)editor.getDiagramTypeProvider().getFeatureProvider();
-		PictogramElement pe = getPictogramElement(element);
-        IFeature cf = fp.getCreateFeatureForPictogramElement(pe);
-		if (cf instanceof AbstractBpmn2CreateFeature) {
-			return GraphitiUi.getImageService().getImageForId(
-					((AbstractBpmn2CreateFeature)cf).getCreateImageId());
-		}
-		if (cf instanceof AbstractBpmn2CreateConnectionFeature) {
-			return GraphitiUi.getImageService().getImageForId(
-					((AbstractBpmn2CreateConnectionFeature)cf).getCreateImageId());
-		}
+        BPMN2Editor editor = BPMN2Editor.getEditor( getBusinessObject(element) );
+        
+        if (editor!=null) {
+		    BPMNFeatureProvider fp = (BPMNFeatureProvider)editor.getDiagramTypeProvider().getFeatureProvider();
+			PictogramElement pe = getPictogramElement(element);
+		    IFeature cf = fp.getCreateFeatureForPictogramElement(pe);
+			if (cf instanceof AbstractBpmn2CreateFeature) {
+				return GraphitiUi.getImageService().getImageForId(
+						((AbstractBpmn2CreateFeature)cf).getCreateImageId());
+			}
+			if (cf instanceof AbstractBpmn2CreateConnectionFeature) {
+				return GraphitiUi.getImageService().getImageForId(
+						((AbstractBpmn2CreateConnectionFeature)cf).getCreateImageId());
+			}
+        }
 		return super.getImage(element);
 	}
 
@@ -121,6 +119,13 @@ public class PropertyLabelProvider extends LabelProvider {
 		if (editPart != null && editPart.getModel() instanceof PictogramElement) {
 			return (PictogramElement) editPart.getModel();
 		}
+		return null;
+	}
+	
+	EObject getBusinessObject(Object element) {
+		PictogramElement pe = getPictogramElement(element);
+		if (pe!=null)
+			return BusinessObjectUtil.getFirstElementOfType(pe, EObject.class);
 		return null;
 	}
 }

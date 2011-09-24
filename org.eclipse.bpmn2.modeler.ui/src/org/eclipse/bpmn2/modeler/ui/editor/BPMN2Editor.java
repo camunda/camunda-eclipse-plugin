@@ -14,6 +14,7 @@ package org.eclipse.bpmn2.modeler.ui.editor;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
@@ -37,8 +38,12 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.command.BasicCommandStack;
+import org.eclipse.emf.common.notify.Adapter;
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.BasicDiagnostic;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain.Lifecycle;
@@ -85,6 +90,40 @@ public class BPMN2Editor extends DiagramEditor {
 	
 	private Bpmn2Preferences preferences;
 	private TargetRuntime targetRuntime;
+
+	protected BPMN2EditorAdapter editorAdapter;
+
+	protected class BPMN2EditorAdapter implements Adapter {
+		public Notifier getTarget() { return null; }
+		public void setTarget(Notifier newTarget) { }
+		public boolean isAdapterForType(Object type) { return (type == BPMN2EditorAdapter.class); }
+		public void notifyChanged(Notification notification) { }
+		public BPMN2Editor getBPMN2Editor() { return BPMN2Editor.this; }
+	}
+
+	/**
+	 * Given a ResourceSet, this helper identifies the BPELEditor (if any) that created it
+	 */
+	public static BPMN2Editor getEditor(EObject object) {
+		if (object.eResource()!=null)
+			return getEditor(object.eResource().getResourceSet());
+		return null;
+	}
+
+	public static BPMN2Editor getEditor(ResourceSet resourceSet) {
+	    Iterator<Adapter> it = resourceSet.eAdapters().iterator();
+	    while (it.hasNext()) {
+	        Object next = it.next();
+	        if (next instanceof BPMN2EditorAdapter) {
+	            return ((BPMN2EditorAdapter)next).getBPMN2Editor();
+	        }
+	    }
+	    return null;
+	}
+	
+	protected BPMN2EditorAdapter getEditorAdapter() {
+		return editorAdapter;
+	}
 
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
@@ -193,6 +232,7 @@ public class BPMN2Editor extends DiagramEditor {
 					Bpmn2ModelerResourceImpl.BPMN2_CONTENT_TYPE_ID);
 
 			resourceSet.setURIConverter(new ProxyURIConverterImplExtension());
+			resourceSet.eAdapters().add(editorAdapter = new BPMN2EditorAdapter());
 
 			modelHandler = ModelHandlerLocator.createModelHandler(modelUri, bpmnResource);
 			ModelHandlerLocator.put(diagramUri, modelHandler);
@@ -319,6 +359,8 @@ public class BPMN2Editor extends DiagramEditor {
 			instances += refs.length;
 		}
 		ModelUtil.clearIDs(modelHandler.getResource(), instances==0);
+		getResourceSet().eAdapters().remove(getEditorAdapter());
+		
 		super.dispose();
 		ModelHandlerLocator.releaseModel(modelUri);
 		// get rid of temp files and folders, but only if the workbench is being shut down.

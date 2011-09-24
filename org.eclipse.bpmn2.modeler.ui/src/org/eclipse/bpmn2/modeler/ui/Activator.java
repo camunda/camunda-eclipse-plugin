@@ -12,11 +12,17 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui;
 
+import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -117,6 +123,50 @@ public class Activator extends AbstractUIPlugin {
 		return getBundle().getSymbolicName();
 	}
 	
+	/**
+	 * Initializes the table of images used in this plugin.
+	 */
+	@Override
+	protected ImageRegistry createImageRegistry() {
+		ImageRegistry registry = super.createImageRegistry();
+		URL baseURL = getBundle().getEntry("/"); //$NON-NLS-1$
+
+		// A little reflection magic ... so that we don't
+		// have to add the createImageDescriptor every time
+		// we add it to the IConstants ..
+		Field fields[] = IConstants.class.getFields();	
+		for(int i=0; i < fields.length; i++) {
+			Field f = fields[i];
+			if (f.getType() != String.class) { 
+				continue;
+			}
+			String name = f.getName();
+			if (name.startsWith("ICON_") || name.startsWith("CURSOR_")) {   //$NON-NLS-1$ //$NON-NLS-2$
+				try {
+					String value = (String) f.get(null);
+					createImageDescriptor(registry, value, baseURL);
+				} catch (Exception e) {
+					logError(e);
+				}
+			}			
+		}
+		return registry;
+	}
+
+	/**
+	 * Creates an image descriptor and places it in the image registry.
+	 */
+	private void createImageDescriptor(ImageRegistry registry, String id, URL baseURL) {
+		URL url = null;
+		try {
+			url = new URL(baseURL, IConstants.ICON_PATH + id);
+		} catch (MalformedURLException e) {
+			logError(e);
+		}
+		ImageDescriptor desc = ImageDescriptor.createFromURL(url);
+		registry.put(id, desc);
+	}
+
 	public Image getImage(String id) {
 		return getImageRegistry().get(id);
 	}
