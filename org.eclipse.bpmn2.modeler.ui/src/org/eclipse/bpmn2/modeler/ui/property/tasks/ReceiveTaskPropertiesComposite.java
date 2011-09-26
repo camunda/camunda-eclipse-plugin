@@ -55,11 +55,6 @@ public class ReceiveTaskPropertiesComposite extends DefaultPropertiesComposite {
 	}
 
 	@Override
-	protected int getListStyleFlags(EObject object, EStructuralFeature feature) {
-		return SHOW_LIST_LABEL | EDITABLE_LIST | ORDERED_LIST;
-	}
-
-	@Override
 	protected boolean canBindAttribute(EObject object, EAttribute attribute) {
 		if (showProperties.contains(attribute.getName())) {
 			return true;

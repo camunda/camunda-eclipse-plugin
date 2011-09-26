@@ -35,7 +35,6 @@ public class ImportsPropertyComposite extends DefaultPropertiesComposite  {
 		
 		importsTable = new ImportsTable();
 		importsTable.bind();
-		toolkit.track(importsTable);
 	}
 
 	public class ImportsTable extends AbstractBpmn2TableComposite {
@@ -46,11 +45,10 @@ public class ImportsPropertyComposite extends DefaultPropertiesComposite  {
 		 */
 		public ImportsTable() {
 			super(ImportsPropertyComposite.this,
-					SWT.BUTTON1 |
-					SWT.BUTTON2 |
-					SWT.BUTTON3 |
-					SWT.BUTTON4 |
-					SWT.BUTTON5
+					HIDE_TITLE |
+					ADD_BUTTON |
+					REMOVE_BUTTON |
+					MOVE_BUTTONS // | SHOW_DETAILS
 			);
 		}
 

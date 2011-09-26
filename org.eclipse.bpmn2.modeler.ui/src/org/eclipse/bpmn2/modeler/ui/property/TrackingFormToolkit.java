@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -25,7 +26,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 
 /**
@@ -125,5 +128,25 @@ public class TrackingFormToolkit extends FormToolkit {
 		Table table = super.createTable(parent, style);
 		widgets.add(table);
 		return table;
+	}
+	
+	public SashForm createSashForm(Composite parent, int style) {
+		SashForm sashForm = new SashForm(parent, SWT.NONE);
+		sashForm.setSashWidth(5);
+		adapt(sashForm);
+		paintBordersFor(sashForm);
+		widgets.add(sashForm);
+		return sashForm;
+	}
+	
+	public Section createSection(Composite parent, String title) {
+		Section section = createSection(parent,
+				ExpandableComposite.TWISTIE |
+				ExpandableComposite.EXPANDED |
+				ExpandableComposite.TITLE_BAR);
+		paintBordersFor(section);
+		section.setText(title);
+		widgets.add(section);
+		return section;
 	}
 }

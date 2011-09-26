@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.property;
 
+import org.eclipse.bpmn2.Participant;
+import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablementPreferences;
@@ -26,15 +28,25 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.graphiti.features.IFeature;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.internal.Workbench;
+import org.eclipse.ui.forms.widgets.Section;
 
 public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 
 	protected final static String DESCRIPTION_TAB = "org.eclipse.bpmn2.modeler.description.tab";
 	String tabId;
 	
+	private Section attributesSection = null;
+	private Composite attributesComposite = null;
+	private Section referencesSection = null;
+	private Composite referencesComposite = null;
+
 	/**
 	 * Create the composite.
 	 * 
@@ -45,6 +57,30 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 		super(parent, style);
 	}
 
+	protected Composite getAttributesParent() {
+		if (attributesSection==null || attributesSection.isDisposed()) {
+			attributesSection = toolkit.createSection(this, "Attributes");
+			attributesSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+			attributesComposite = toolkit.createComposite(attributesSection);
+			attributesSection.setClient(attributesComposite);
+			attributesComposite.setLayout(new GridLayout(3,false));
+			toolkit.track(attributesComposite);
+		}
+		return attributesComposite;
+	}
+
+	protected Composite getReferencesParent() {
+		if (referencesSection==null || referencesSection.isDisposed()) {
+			referencesSection = toolkit.createSection(this, "References");
+			referencesSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+			referencesComposite = toolkit.createComposite(referencesSection);
+			referencesSection.setClient(referencesComposite);
+			referencesComposite.setLayout(new GridLayout(3,false));
+			toolkit.track(referencesComposite);
+		}
+		return referencesComposite;
+	}
+	
 	@Override
 	public void createBindings(EObject be) {
 		
@@ -71,7 +107,7 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 						description = acf.getDescription();
 					}
 					if (description!=null) {
-						createDescription(description);
+						createDescription(this, description);
 					}
 				}
 			}
@@ -82,15 +118,42 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 			Object value = be.eGet(a); // the EList<cl>
 			
 			if (a instanceof EAttribute) {
-				bindAttribute(be,(EAttribute)a,itemProviderAdapter);
+				if (canBindAttribute(be,(EAttribute)a))
+					bindAttribute(getAttributesParent(), be,(EAttribute)a,itemProviderAdapter);
 			}
-			else if (value instanceof EList) {
-				bindList(be, a, itemProviderAdapter);
+		}
+		
+		for (EStructuralFeature a : be.eClass().getEAllStructuralFeatures()) {
+
+			Object value = be.eGet(a); // the EList<cl>
+			
+			if (value instanceof EList) {
+				if (canBindList(be,a))
+					bindList(be, a, itemProviderAdapter);
 			}
 		}
 
 		if (!DESCRIPTION_TAB.equals(tabId)) {
-			bindReferences(be,itemProviderAdapter);
+
+			ToolEnablementPreferences preferences = ToolEnablementPreferences.getPreferences(project);
+			
+			EList<EReference> eAllContainments = be.eClass().getEAllContainments();
+			for (EReference e : be.eClass().getEAllReferences()) {
+				if (preferences.isEnabled(be.eClass(), e) && !eAllContainments.contains(e)) {
+					IItemPropertyDescriptor propertyDescriptor = itemProviderAdapter.getPropertyDescriptor(be, e);
+					if (propertyDescriptor!=null && canBindReference(be, e))
+						bindReference(getReferencesParent(), be, e, propertyDescriptor.getDisplayName(e));
+				}
+			}
+
+			if (be instanceof Participant) {
+				Diagram diagram = bpmn2Editor.getDiagramTypeProvider().getDiagram();
+				if (shape != null && shape.getParticipantBandKind() != null) {
+					bindBoolean(shape, shape.eClass().getEStructuralFeature(BpmnDiPackage.BPMN_SHAPE__IS_MESSAGE_VISIBLE),
+							createBooleanInput(getReferencesParent(), "Is Message Visible"));
+				}
+
+			}
 		}
 		
 		itemProviderAdapter.dispose();
@@ -130,7 +193,7 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 
 	@Override
 	protected int getListStyleFlags(EObject object, EStructuralFeature feature) {
-		return SHOW_LIST_LABEL | EDITABLE_LIST | ORDERED_LIST;
+		return AbstractBpmn2TableComposite.DEFAULT_STYLE;
 	}
 
 	@Override

@@ -14,6 +14,7 @@ package org.eclipse.bpmn2.modeler.ui.property.events;
 
 import java.util.ArrayList;
 
+import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
@@ -47,11 +48,6 @@ public class BoundaryEventPropertiesComposite extends DefaultPropertiesComposite
 	@Override
 	protected boolean canBindListColumn(EObject object, EAttribute attribute) {
 		return true;
-	}
-
-	@Override
-	protected int getListStyleFlags(EObject object, EStructuralFeature feature) {
-		return SHOW_LIST_LABEL | EDITABLE_LIST | ORDERED_LIST;
 	}
 
 	@Override

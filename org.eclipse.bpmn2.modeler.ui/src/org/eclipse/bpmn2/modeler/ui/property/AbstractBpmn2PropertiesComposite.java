@@ -95,18 +95,13 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	public final static ComposedAdapterFactory ADAPTER_FACTORY;
 	public static final Bpmn2Factory MODEL_FACTORY = Bpmn2Factory.eINSTANCE;
 	
-	// bitflags for optional components of list features
-	public final static int SHOW_LIST_LABEL = 1;
-	public final static int EDITABLE_LIST = 2;
-	public final static int ORDERED_LIST = 4;
-	
 	protected TabbedPropertySheetPage tabbedPropertySheetPage;
 	protected EObject be;
 	protected BPMN2Editor bpmn2Editor;
 //	protected final DataBindingContext bindingContext;
 //	protected final ArrayList<Widget> widgets = new ArrayList<Widget>();
 //	protected final ArrayList<Binding> bindings = new ArrayList<Binding>();
-	protected final Composite parent;
+//	protected final Composite parent;
 	protected final TrackingFormToolkit toolkit = new TrackingFormToolkit(Display.getCurrent());
 	protected IProject project;
 	protected final AdapterFactoryLabelProvider LABEL_PROVIDER = new AdapterFactoryLabelProvider(ADAPTER_FACTORY);
@@ -133,7 +128,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	 */
 	public AbstractBpmn2PropertiesComposite(Composite parent, int style) {
 		super(parent, style);
-		this.parent = parent;
+//		this.parent = parent;
 		addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
@@ -145,6 +140,10 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		toolkit.adapt(this);
 		toolkit.paintBordersFor(this);
 		setLayout(new GridLayout(3, false));
+	}
+	
+	public TrackingFormToolkit getToolkit() {
+		return toolkit;
 	}
 	
 	public void setSheetPage(TabbedPropertySheetPage tabbedPropertySheetPage) {
@@ -178,7 +177,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		if (be != null) {
 			createBindings(be);
 		}
-		parent.getParent().layout(true, true);
+		this.getParent().getParent().layout(true, true);
 		layout(true, true);
 	}
 
@@ -192,14 +191,14 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	 */
 	public abstract void createBindings(EObject be);
 
-	protected Text createTextInput(String name, boolean multiLine) {
-		createLabel(name);
+	protected Text createTextInput(Composite parent, String name, boolean multiLine) {
+		createLabel(parent,name);
 
 		int flag = SWT.NONE;
 		if (multiLine) {
 			flag |= SWT.WRAP | SWT.MULTI;
 		}
-		Text text = toolkit.createText(this, "", flag);
+		Text text = toolkit.createText(parent, "", flag);
 		GridData data = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
 		if (multiLine) {
 			data.heightHint = 50;
@@ -209,31 +208,31 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		return text;
 	}
 
-	protected Text createIntInput(String name) {
-		createLabel(name);
+	protected Text createIntInput(Composite parent, String name) {
+		createLabel(parent,name);
 
-		Text text = toolkit.createText(this, "");
+		Text text = toolkit.createText(parent, "");
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		return text;
 	}
 
-	protected Button createBooleanInput(String name) {
-		createLabel(name);
+	protected Button createBooleanInput(Composite parent, String name) {
+		createLabel(parent,name);
 
-		Button button = toolkit.createButton(this, name, SWT.CHECK);
+		Button button = toolkit.createButton(parent, name, SWT.CHECK);
 		button.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		return button;
 	}
 
-	protected Label createLabel(String name) {
-		Label label = toolkit.createLabel(this, name);
+	protected Label createLabel(Composite parent, String name) {
+		Label label = toolkit.createLabel(parent, name);
 		label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		return label;
 	}
 
-	protected StyledText createDescription(String description) {
+	protected StyledText createDescription(Composite parent, String description) {
 		Display display = Display.getCurrent();
-		final StyledText styledText = new StyledText(this, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.WRAP | SWT.READ_ONLY);
+		final StyledText styledText = new StyledText(parent, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.WRAP | SWT.READ_ONLY);
 		styledText.setText(description);
 		
 		toolkit.adapt(styledText);
@@ -266,7 +265,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	 */
 	protected abstract boolean canBindAttribute(EObject object, EAttribute attribute);
 
-	protected void bindAttribute(EObject object, EAttribute attribute, ItemProviderAdapter itemProviderAdapter) {
+	protected void bindAttribute(Composite parent, EObject object, EAttribute attribute, ItemProviderAdapter itemProviderAdapter) {
 		
 		if (!canBindAttribute(object,attribute)) {
 			return;
@@ -276,20 +275,20 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		Collection choiceOfValues = getChoiceOfValues(itemProviderAdapter, object, attribute);
 		
 		if (String.class.equals(attribute.getEType().getInstanceClass())) {
-			bindText( object, attribute, createTextInput(displayName, getIsMultiLine(itemProviderAdapter,object,attribute)));
+			bindText(object, attribute, createTextInput(parent, displayName, getIsMultiLine(itemProviderAdapter,object,attribute)));
 		} else if (boolean.class.equals(attribute.getEType().getInstanceClass())) {
-			bindBoolean(object, attribute, createBooleanInput(displayName));
+			bindBoolean(object, attribute, createBooleanInput(parent, displayName));
 		} else if (int.class.equals(attribute.getEType().getInstanceClass())) {
-			bindInt(object, attribute, createIntInput(displayName));
+			bindInt(object, attribute, createIntInput(parent, displayName));
 		} else if (choiceOfValues != null) {
-			createLabel(displayName);
-			createSingleItemEditor(object, attribute, object.eGet(attribute), choiceOfValues);
+			createLabel(parent, displayName);
+			createSingleItemEditor(parent, object, attribute, object.eGet(attribute), choiceOfValues);
 		} else if ("anyAttribute".equals(attribute.getName())) {
 			List<Entry> basicList = ((BasicFeatureMap) object.eGet(attribute)).basicList();
 			for (Entry entry : basicList) {
 				EStructuralFeature feature = entry.getEStructuralFeature();
 				if (Object.class.equals(feature.getEType().getInstanceClass())) {
-					Text t = createTextInput(ModelUtil.toDisplayName(feature.getName()), false);
+					Text t = createTextInput(parent, ModelUtil.toDisplayName(feature.getName()), false);
 					bindText( object, feature, t);
 				}
 			}
@@ -304,49 +303,27 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	 */
 	protected abstract boolean canBindReference(EObject object, EReference reference);
 
-	protected void bindReferences(EObject object, ItemProviderAdapter itemProviderAdapter) {
-		ToolEnablementPreferences preferences = ToolEnablementPreferences.getPreferences(project);
-		
-		EList<EReference> eAllContainments = object.eClass().getEAllContainments();
-		for (EReference e : object.eClass().getEAllReferences()) {
-			if (preferences.isEnabled(object.eClass(), e) && !eAllContainments.contains(e)) {
-				IItemPropertyDescriptor propertyDescriptor = itemProviderAdapter.getPropertyDescriptor(object, e);
-				if (propertyDescriptor!=null)
-					bindReference(object, e, propertyDescriptor.getDisplayName(e));
-			}
-		}
-
-		if (object instanceof Participant) {
-			Diagram diagram = bpmn2Editor.getDiagramTypeProvider().getDiagram();
-			if (shape != null && shape.getParticipantBandKind() != null) {
-				bindBoolean(shape, shape.eClass().getEStructuralFeature(BpmnDiPackage.BPMN_SHAPE__IS_MESSAGE_VISIBLE),
-						createBooleanInput("Is Message Visible"));
-			}
-
-		}
-	}
-
-	protected void bindReference(EObject object, EReference reference, String name) {
+	protected void bindReference(Composite parent, EObject object, EReference reference, String name) {
 		if ( !canBindReference(object, reference) ) {
 			return;
 		}
 		
 		Object eGet = object.eGet(reference);
 
-		createLabel(name);
+		createLabel(parent, name);
 		if (eGet instanceof List) {
-			createListEditor(object, reference, eGet);
+			createListEditor(parent, object, reference, eGet);
 		} else {
-			createSingleItemEditor(object, reference, eGet, null);
+			createSingleItemEditor(parent, object, reference, eGet, null);
 		}
 	}
 
-	private void createListEditor(final EObject object, final EReference reference, Object eGet) {
+	private void createListEditor(Composite parent, final EObject object, final EReference reference, Object eGet) {
 
-		final Text text = toolkit.createText(this, "");
+		final Text text = toolkit.createText(parent, "");
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
-		Button editButton = toolkit.createButton(this, "Edit...", SWT.PUSH);
+		Button editButton = toolkit.createButton(parent, "Edit...", SWT.PUSH);
 		editButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 
 		final List<EObject> refs = (List<EObject>) eGet;
@@ -396,8 +373,8 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		editButton.addSelectionListener(editListener);
 	}
 
-	private void createSingleItemEditor(final EObject object, final EStructuralFeature reference, Object eGet, Collection values) {
-		final ComboViewer comboViewer = toolkit.createComboViewer(this, LABEL_PROVIDER, SWT.NONE);
+	private void createSingleItemEditor(Composite parent, final EObject object, final EStructuralFeature reference, Object eGet, Collection values) {
+		final ComboViewer comboViewer = toolkit.createComboViewer(parent, LABEL_PROVIDER, SWT.NONE);
 		Combo combo = comboViewer.getCombo();
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
@@ -677,17 +654,8 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		
 		if (canBindList(object,feature)) {
 			
-			int oldStyle = getListStyleFlags(object,feature);
-			int newStyle = SWT.NONE;
-			// convert old style flags to new
-			if ((oldStyle & SHOW_LIST_LABEL)!=0)
-				newStyle |= SWT.TITLE;
-			if ((oldStyle & EDITABLE_LIST)!=0)
-				newStyle |= SWT.BUTTON1 | SWT.BUTTON2 | SWT.BUTTON5;
-			if ((oldStyle & ORDERED_LIST)!=0)
-				newStyle |= SWT.BUTTON3 | SWT.BUTTON4;
-			
-			AbstractBpmn2TableComposite tableComposite = new AbstractBpmn2TableComposite(this, newStyle) {
+			int style = getListStyleFlags(object,feature);
+			AbstractBpmn2TableComposite tableComposite = new AbstractBpmn2TableComposite(this, style) {
 	
 				@Override
 				protected boolean canBind(EObject object, EStructuralFeature feature) {
@@ -719,8 +687,6 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 
 		toolkit.adapt(tableComposite);
 		toolkit.widgets.add(tableComposite);
-		
-		tableComposite.setDiagramEditor(bpmn2Editor);
 	}
 	
 	private String getDisplayName(ItemProviderAdapter itemProviderAdapter, EObject object, EStructuralFeature feature) {

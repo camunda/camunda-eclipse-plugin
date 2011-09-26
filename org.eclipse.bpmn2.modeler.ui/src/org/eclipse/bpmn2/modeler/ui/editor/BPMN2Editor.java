@@ -105,7 +105,7 @@ public class BPMN2Editor extends DiagramEditor {
 	 * Given a ResourceSet, this helper identifies the BPELEditor (if any) that created it
 	 */
 	public static BPMN2Editor getEditor(EObject object) {
-		if (object.eResource()!=null)
+		if (object!=null && object.eResource()!=null)
 			return getEditor(object.eResource().getResourceSet());
 		return null;
 	}
