@@ -107,13 +107,13 @@ public class JbpmPropertiesComposite extends DefaultPropertiesComposite {
 
 				for (EStructuralFeature a : attributes) {
 					if (Object.class.equals(a.getEType().getInstanceClass())) {
-						Text t = createTextInput(a.getName(), false);
+						Text t = createTextInput(getAttributesParent(),a.getName(), false);
 						bindText(be, a, t);
 					}
 				}
 			}
 		}
-		parent.setSize(parent.computeSize(parent.getSize().x, SWT.DEFAULT, true));
+//		parent.setSize(parent.computeSize(parent.getSize().x, SWT.DEFAULT, true));
 	}
 
 	/**

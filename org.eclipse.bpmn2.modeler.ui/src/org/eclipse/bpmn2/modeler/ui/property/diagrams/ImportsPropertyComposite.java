@@ -35,7 +35,6 @@ public class ImportsPropertyComposite extends DefaultPropertiesComposite  {
 		
 		importsTable = new ImportsTable();
 		importsTable.bind();
-		toolkit.track(importsTable);
 	}
 
 	public class ImportsTable extends AbstractBpmn2TableComposite {
@@ -46,11 +45,10 @@ public class ImportsPropertyComposite extends DefaultPropertiesComposite  {
 		 */
 		public ImportsTable() {
 			super(ImportsPropertyComposite.this,
-					SWT.BUTTON1 |
-					SWT.BUTTON2 |
-					SWT.BUTTON3 |
-					SWT.BUTTON4 |
-					SWT.BUTTON5
+					HIDE_TITLE |
+					ADD_BUTTON |
+					REMOVE_BUTTON |
+					MOVE_BUTTONS // | SHOW_DETAILS
 			);
 		}
 
@@ -62,6 +60,7 @@ public class ImportsPropertyComposite extends DefaultPropertiesComposite  {
 			DefinitionsImpl definitions = (DefinitionsImpl)getEObject();
 			EStructuralFeature imports = definitions.eClass().getEStructuralFeature("imports");
 			
+			setSheetPage(tabbedPropertySheetPage);
 			super.bindList(definitions, imports, itemProviderAdapter);
 			
 			itemProviderAdapter.dispose();
@@ -77,23 +76,6 @@ public class ImportsPropertyComposite extends DefaultPropertiesComposite  {
 		@Override
 		protected boolean removeListItem(EObject object, EStructuralFeature feature, Object item) {
 			return super.removeListItem(object, feature, item);
-		}
-
-
-		/* (non-Javadoc)
-		 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite#canBind(org.eclipse.emf.ecore.EObject, org.eclipse.emf.ecore.EStructuralFeature)
-		 */
-		@Override
-		protected boolean canBind(EObject object, EStructuralFeature feature) {
-			return true;
-		}
-
-		/* (non-Javadoc)
-		 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite#canModify(org.eclipse.emf.ecore.EObject, org.eclipse.emf.ecore.EStructuralFeature, org.eclipse.emf.ecore.EObject)
-		 */
-		@Override
-		protected boolean canModify(EObject object, EStructuralFeature feature, EObject item) {
-			return true;
 		}
 
 		@Override

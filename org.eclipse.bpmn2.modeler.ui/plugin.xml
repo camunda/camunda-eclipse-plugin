@@ -240,15 +240,17 @@
 		</propertyTab>
 
 		<!-- Property Sections -->
-		
+
+		<!-- Description Tab Section -->		
 		<propertySection
-			class="org.eclipse.bpmn2.modeler.ui.property.DefaultPropertySection"
+			class="org.eclipse.bpmn2.modeler.ui.property.DescriptionPropertySection"
 			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
 			id="org.eclipse.bpmn2.modeler.description.tab.section"
 			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
 			tab="org.eclipse.bpmn2.modeler.description.tab">
 		</propertySection>
 		
+		<!-- Default Tab Section -->		
 		<propertySection
 			class="org.eclipse.bpmn2.modeler.ui.property.DefaultPropertySection"
 			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
@@ -257,6 +259,7 @@
 			tab="org.eclipse.bpmn2.modeler.main.tab">
 		</propertySection>
 
+		<!-- Advanced Tab Section -->		
 		<propertySection
 			class="org.eclipse.bpmn2.modeler.ui.property.AdvancedPropertySection"
 			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
@@ -265,6 +268,7 @@
 			tab="org.eclipse.bpmn2.modeler.advanced.tab">
 		</propertySection>
 		
+		<!-- Everything else -->		
 		<propertySection
 			class="org.eclipse.bpmn2.modeler.ui.property.diagrams.ProcessDiagramPropertySection"
 			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
@@ -327,7 +331,7 @@
 		        tab="org.eclipse.bpmn2.modeler.commonEvent.tab"
 		        type="org.eclipse.bpmn2.Event">
 		  </propertySection>
-
+<!--
 		  <propertySection
 		        class="org.eclipse.bpmn2.modeler.ui.property.events.StartEventPropertySection"
 		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
@@ -336,7 +340,7 @@
 		        tab="org.eclipse.bpmn2.modeler.commonEvent.tab"
 		        type="org.eclipse.bpmn2.StartEvent">
 		  </propertySection>
-
+-->
 <!--          Don't need End Event property section at the moment because it doesn't add 
               anything to the Throw Event
 -->
@@ -348,7 +352,7 @@
 		        tab="org.eclipse.bpmn2.modeler.commonEvent.tab"
 		        type="org.eclipse.bpmn2.EndEvent">
 		  </propertySection> -->
-
+<!--
 		  <propertySection
 		        class="org.eclipse.bpmn2.modeler.ui.property.events.CatchEventPropertySection"
 		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
@@ -375,6 +379,7 @@
 		        tab="org.eclipse.bpmn2.modeler.commonEvent.tab"
 		        type="org.eclipse.bpmn2.BoundaryEvent">
 		  </propertySection>
+-->
 		  
 		  <propertySection
 		        class="org.eclipse.bpmn2.modeler.ui.property.tasks.TaskPropertySection"

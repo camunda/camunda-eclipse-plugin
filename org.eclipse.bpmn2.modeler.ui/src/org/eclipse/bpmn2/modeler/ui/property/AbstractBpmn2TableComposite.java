@@ -45,11 +45,15 @@ import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -62,31 +66,78 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.forms.events.ExpansionEvent;
+import org.eclipse.ui.forms.events.IExpansionListener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 /**
  * @author Bob Brodt
  *
  */
-public abstract class AbstractBpmn2TableComposite extends Composite {
+public class AbstractBpmn2TableComposite extends Composite {
 
 	public static final Bpmn2Factory MODEL_FACTORY = Bpmn2Factory.eINSTANCE;
 	
-	protected final TrackingFormToolkit toolkit = new TrackingFormToolkit(Display.getCurrent());
+	public static final int HIDE_TITLE = 1 << 18; // Hide section title - useful if this is the only thing in the PropertySheetTab
+	public static final int ADD_BUTTON = 1 << 19; // show "Add" button
+	public static final int REMOVE_BUTTON = 1 << 20; // show "Remove" button
+	public static final int MOVE_BUTTONS = 1 << 21; // show "Up" and "Down" buttons
+	public static final int EDIT_BUTTON = 1 << 23; // show "Edit..." button
+	public static final int SHOW_DETAILS = 1 << 24; // create a "Details" section
+	public static final int DEFAULT_STYLE = (
+			ADD_BUTTON|REMOVE_BUTTON|MOVE_BUTTONS|SHOW_DETAILS);
+	
+	public static final int CUSTOM_STYLES_MASK = (
+			HIDE_TITLE|ADD_BUTTON|REMOVE_BUTTON|MOVE_BUTTONS|EDIT_BUTTON|SHOW_DETAILS);
+	public static final int CUSTOM_BUTTONS_MASK = (
+			ADD_BUTTON|REMOVE_BUTTON|MOVE_BUTTONS|EDIT_BUTTON);
+
+	protected TrackingFormToolkit toolkit;
 	protected BPMN2Editor bpmn2Editor;
+	protected TabbedPropertySheetPage tabbedPropertySheetPage;
+
+	// widgets
+	SashForm sashForm;
+	Section tableSection;
+	Section detailSection;
+	
+	Table table;
+	TableViewer tableViewer;
+	
+	Composite tableAndButtonsComposite;
+	Composite buttonsComposite;
+	Composite tableComposite;
+	Composite detailComposite;
+	
+	Button addButton;
+	Button removeButton;
+	Button upButton;
+	Button downButton;
+	Button editButton;
 
 	protected int style;
 	
-	public AbstractBpmn2TableComposite(Composite parent, int style) {
-		super(parent, style & ~SWT.BUTTON_MASK);
+	protected AbstractTableProvider tableProvider;
+	
+	public AbstractBpmn2TableComposite(final Composite parent, int style) {
+		super(parent, style & ~CUSTOM_STYLES_MASK);
 		addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
-				toolkit.dispose();
+				if (!(parent instanceof AbstractBpmn2PropertiesComposite))
+					toolkit.dispose();
 			}
 		});
+		if (parent instanceof AbstractBpmn2PropertiesComposite) {
+			toolkit = ((AbstractBpmn2PropertiesComposite)parent).getToolkit();
+		}
+		else {
+			toolkit = new TrackingFormToolkit(Display.getCurrent());
+		}
 		this.style = style;
-		toolkit.adapt(this);
+		toolkit.track(this);
 		toolkit.paintBordersFor(this);
 		setLayout(new GridLayout(3, false));
 		// assume we are being placed in an AbstractBpmn2PropertyComposite which has
@@ -94,27 +145,72 @@ public abstract class AbstractBpmn2TableComposite extends Composite {
 		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 	}
 	
-	public void setDiagramEditor(BPMN2Editor bpmn2Editor) {
-		this.bpmn2Editor = bpmn2Editor;
+	public void setSheetPage(TabbedPropertySheetPage tabbedPropertySheetPage) {
+		this.tabbedPropertySheetPage = tabbedPropertySheetPage;
 	}
 
-	/**
-	 * Implement this to select which features are rendered
-	 * @param object - the list object
-	 * @param feature - the feature of the item in the list (column)
-	 * @return true to render the column
-	 */
-	protected abstract boolean canBind(EObject object, EStructuralFeature feature);
+	public void setTableProvider(AbstractTableProvider provider) {
+		tableProvider = provider;
+	}
 	
 	/**
-	 * Implement this to select which columns are editable
-	 * @param object - the list object
-	 * @param feature - the feature of the item contained in the list
-	 * @param item - the selected item in the list
-	 * @return true to allow editing
+	 * Create a default ColumnTableProvider if none was set in setTableProvider();
+	 * @param object
+	 * @param feature
+	 * @return
 	 */
-	protected abstract boolean canModify(EObject object, EStructuralFeature feature, EObject item);
+	public AbstractTableProvider getTableProvider(EObject object, EStructuralFeature feature) {
+		if (tableProvider==null) {
+			final EList<EObject> list = (EList<EObject>)object.eGet(feature);
+			final EClass listItemClass = (EClass) feature.getEType();
 
+			tableProvider = new AbstractTableProvider() {
+				@Override
+				public boolean canModify(EObject object, EStructuralFeature feature, EObject item) {
+					return true;
+				}
+			};
+			
+			for (EAttribute a1 : listItemClass.getEAllAttributes()) {
+				if ("anyAttribute".equals(a1.getName())) {
+					List<EStructuralFeature> anyAttributes = new ArrayList<EStructuralFeature>();
+					// are there any actual "anyAttribute" instances we can look at
+					// to get the feature names and types from?
+					// TODO: enhance the table to dynamically allow creation of new
+					// columns which will be added to the "anyAttributes"
+					for (EObject instance : list) {
+						Object o = instance.eGet(a1);
+						if (o instanceof BasicFeatureMap) {
+							BasicFeatureMap map = (BasicFeatureMap)o;
+							for (Entry entry : map) {
+								EStructuralFeature f1 = entry.getEStructuralFeature();
+								if (f1 instanceof EAttribute && !anyAttributes.contains(f1)) {
+									tableProvider.add(new TableColumn(object,(EAttribute)f1));
+									anyAttributes.add(f1);
+								}
+							}
+						}
+					}
+				}
+				else if (FeatureMap.Entry.class.equals(a1.getEType().getInstanceClass())) {
+					// TODO: how do we handle these?
+					if (a1 instanceof EAttribute)
+						tableProvider.add(new TableColumn(object,a1));
+					else
+						System.out.println("FeatureMapEntry: "+listItemClass.getName()+"."+a1.getName());
+				}
+				else {
+					tableProvider.add(new TableColumn(object,a1));
+				}
+			}
+		}
+		return tableProvider;
+	}
+	
+	public Composite getDetailComposite(Composite parent) {
+		return new DefaultPropertiesComposite(parent, SWT.NONE);
+	}
+	
 	/**
 	 * Override this if construction of new list items needs special handling. 
 	 * @param object
@@ -153,9 +249,6 @@ public abstract class AbstractBpmn2TableComposite extends Composite {
 	}
 
 	protected void bindList(final EObject object, final EStructuralFeature feature, ItemProviderAdapter itemProviderAdapter) {
-		if (!canBind(object, feature)) {
-			return;
-		}
 		if (!(object.eGet(feature) instanceof EList<?>)) {
 			return;
 		}
@@ -174,6 +267,7 @@ public abstract class AbstractBpmn2TableComposite extends Composite {
 
 		if (bpmn2Editor==null)
 			bpmn2Editor = BPMN2Editor.getEditor(object);
+		
 		final TransactionalEditingDomain editingDomain = bpmn2Editor.getEditingDomain();
 		final EList<EObject> list = (EList<EObject>)object.eGet(feature);
 		final EClass listItemClass = (EClass) feature.getEType();
@@ -181,122 +275,75 @@ public abstract class AbstractBpmn2TableComposite extends Composite {
 		////////////////////////////////////////////////////////////
 		// Collect columns to be displayed and build column provider
 		////////////////////////////////////////////////////////////
-		ColumnTableProvider tableProvider = new ColumnTableProvider();
-		for (EAttribute a1 : listItemClass.getEAllAttributes()) {
-			if ("anyAttribute".equals(a1.getName())) {
-				List<EStructuralFeature> anyAttributes = new ArrayList<EStructuralFeature>();
-				// are there any actual "anyAttribute" instances we can look at
-				// to get the feature names and types from?
-				// TODO: enhance the table to dynamically allow creation of new
-				// columns which will be added to the "anyAttributes"
-				for (EObject instance : list) {
-					Object o = instance.eGet(a1);
-					if (o instanceof BasicFeatureMap) {
-						BasicFeatureMap map = (BasicFeatureMap)o;
-						for (Entry entry : map) {
-							EStructuralFeature f1 = entry.getEStructuralFeature();
-							if (f1 instanceof EAttribute && !anyAttributes.contains(f1)) {
-								if (canBind(listItemClass, f1)) {
-									tableProvider.add(new TableColumn(object,(EAttribute)f1));
-								}
-								anyAttributes.add(f1);
-							}
-						}
-					}
-				}
-			}
-			else if (FeatureMap.Entry.class.equals(a1.getEType().getInstanceClass())) {
-				// TODO: how do we handle these?
-				// System.out.println("FeatureMapEntry: "+listItemClass.getName()+"."+a1.getName());
-			}
-			else if (canBind(listItemClass, a1)) {
-				tableProvider.add(new TableColumn(object,a1));
-			}
-		}
-		if (tableProvider.getColumns().size()==0) {
+		if (getTableProvider(object, feature).getColumns().size()==0) {
 			return;
 		}
 
 		////////////////////////////////////////////////////////////
-		// Display table label and draw border around table if the
-		// SWT.TITLE style flag is set
+		// SashForm contains the table section and a possible
+		// details section
 		////////////////////////////////////////////////////////////
-		GridData gridData;
-		int span = 3;
-		int border = SWT.NONE;
-		if ((style & SWT.TITLE)!=0) {
-			Label label = toolkit.createLabel(this, ModelUtil.toDisplayName(feature.getName()));
-			label.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false, 1, 1));
-			span = 2;
-			border = SWT.BORDER;
-		}
+		if ((style & HIDE_TITLE)==0 || (style & SHOW_DETAILS)!=0) {
+			// display title in the table section and/or show a details section
+			// SHOW_DETAILS forces drawing of a section title
+			sashForm = toolkit.createSashForm(this, SWT.NONE);
+			sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+			
+			tableSection = toolkit.createSection(sashForm, ModelUtil.toDisplayName(feature.getName()));
+			tableComposite = toolkit.createComposite(tableSection, SWT.NONE);
+			tableSection.setClient(tableComposite);
+			tableComposite.setLayout(new GridLayout(3, false));
+			createTableAndButtons(tableComposite,style);
+			
+			detailSection = toolkit.createSection(sashForm, ModelUtil.toDisplayName(listItemClass.getName()) + " Details");
+			detailComposite = getDetailComposite(detailSection);
+			detailSection.setClient(detailComposite);
+			toolkit.track(detailComposite);
+			
+			detailSection.setVisible(false);
 
-		////////////////////////////////////////////////////////////
-		// Create a composite to hold the buttons and table
-		////////////////////////////////////////////////////////////
-		Composite tableAndButtonsSection = toolkit.createComposite(this, border);
-		gridData = new GridData(SWT.FILL, SWT.FILL, true, true, span, 1);
-		tableAndButtonsSection.setLayoutData(gridData);
-		tableAndButtonsSection.setLayout(new GridLayout(2, false));
-		
-		////////////////////////////////////////////////////////////
-		// Create button section for add/remove/up/down buttons
-		////////////////////////////////////////////////////////////
-		Composite buttonSection = toolkit.createComposite(tableAndButtonsSection);
-		buttonSection.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
-		buttonSection.setLayout(new FillLayout(SWT.VERTICAL));
+			tableSection.addExpansionListener(new IExpansionListener() {
 
-		////////////////////////////////////////////////////////////
-		// Create table
-		// allow table to fill entire width if there are no buttons
-		////////////////////////////////////////////////////////////
-		span = 2;
-		if ((style & SWT.BUTTON_MASK)!=0) {
-			span = 1;
+				@Override
+				public void expansionStateChanging(ExpansionEvent e) {
+					if (!e.getState()) {
+						detailSection.setVisible(false);
+						tabbedPropertySheetPage.resizeScrolledComposite();
+					}
+				}
+
+				@Override
+				public void expansionStateChanged(ExpansionEvent e) {
+				}
+				
+			});
+			
+			detailSection.addExpansionListener(new IExpansionListener() {
+
+				@Override
+				public void expansionStateChanging(ExpansionEvent e) {
+					if (!e.getState()) {
+						detailSection.setVisible(false);
+						tabbedPropertySheetPage.resizeScrolledComposite();
+					}
+				}
+
+				@Override
+				public void expansionStateChanged(ExpansionEvent e) {
+				}
+				
+			});
+			
+			sashForm.setWeights(new int[] { 1, 1 });
 		}
 		else {
-			buttonSection.setVisible(false);
+			createTableAndButtons(this,style);
 		}
-		final Table table = toolkit.createTable(tableAndButtonsSection, SWT.FULL_SELECTION | SWT.V_SCROLL);
-		gridData = new GridData(SWT.FILL, SWT.FILL, true, true, span, 1);
-		gridData.widthHint = 100;
-		gridData.heightHint = 100;
-		table.setLayoutData(gridData);
-		table.setLinesVisible(true);
-		table.setHeaderVisible(true);
-		
-		////////////////////////////////////////////////////////////
-		// Create buttons for add/remove/up/down
-		////////////////////////////////////////////////////////////
-		final Button addButton = toolkit.createPushButton(buttonSection, "Add");
-
-		final Button removeButton = toolkit.createPushButton(buttonSection, "Remove");
-		removeButton.setEnabled(false);
-
-		final Button upButton = toolkit.createPushButton(buttonSection, "Up");
-		upButton.setEnabled(false);
-
-		final Button downButton = toolkit.createPushButton(buttonSection, "Down");
-		downButton.setEnabled(false);
-
-		final Button editButton = toolkit.createPushButton(buttonSection, "Edit...");
-		editButton.setEnabled(false);
-		
-		if ((style & SWT.BUTTON1)==0)
-			addButton.setVisible(false);
-		if ((style & SWT.BUTTON2)==0)
-			removeButton.setVisible(false);
-		if ((style & SWT.BUTTON3)==0)
-			upButton.setVisible(false);
-		if ((style & SWT.BUTTON4)==0)
-			downButton.setVisible(false);
-		if ((style & SWT.BUTTON5)==0)
-			editButton.setVisible(false);
 		
 		////////////////////////////////////////////////////////////
 		// Create table viewer and cell editors
 		////////////////////////////////////////////////////////////
-		final TableViewer tableViewer = new TableViewer(table);
+		tableViewer = new TableViewer(table);
 		tableProvider.createTableLayout(table);
 		tableProvider.setTableViewer(tableViewer);
 		
@@ -337,102 +384,190 @@ public abstract class AbstractBpmn2TableComposite extends Composite {
 		////////////////////////////////////////////////////////////
 		tableViewer.addPostSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
-				removeButton.setEnabled(!event.getSelection().isEmpty());
-				editButton.setEnabled(!event.getSelection().isEmpty());
-				int i = table.getSelectionIndex();
-				if (i>0)
-					upButton.setEnabled(!event.getSelection().isEmpty());
-				else
-					upButton.setEnabled(false);
-				if (i<table.getItemCount()-1)
-					downButton.setEnabled(!event.getSelection().isEmpty());
-				else
-					downButton.setEnabled(false);
+				boolean enable = !event.getSelection().isEmpty();
+				if (detailSection!=null) {
+					detailSection.setVisible(enable);
+					if (enable) {
+						IStructuredSelection sel = (IStructuredSelection) event.getSelection();
+						if (sel.getFirstElement() instanceof EObject)
+							((DefaultPropertiesComposite)detailComposite).setEObject(bpmn2Editor,(EObject)sel.getFirstElement());
+					}
+					sashForm.layout(true);
+				}
+				if (removeButton!=null)
+					removeButton.setEnabled(enable);
+				if (editButton!=null)
+					editButton.setEnabled(enable);
+				if (upButton!=null && downButton!=null) {
+					int i = table.getSelectionIndex();
+					if (i>0)
+						upButton.setEnabled(enable);
+					else
+						upButton.setEnabled(false);
+					if (i<table.getItemCount()-1)
+						downButton.setEnabled(enable);
+					else
+						downButton.setEnabled(false);
+				}
 			}
 		});
 		
-		addButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-					@Override
-					protected void doExecute() {
-						EObject newItem = addListItem(object,feature);
-						if (newItem!=null) {
-							tableViewer.setInput(list);
-							tableViewer.setSelection(new StructuredSelection(newItem));
+		if (addButton!=null) {
+			addButton.addSelectionListener(new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent e) {
+					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+						@Override
+						protected void doExecute() {
+							EObject newItem = addListItem(object,feature);
+							if (newItem!=null) {
+								tableViewer.setInput(list);
+								tableViewer.setSelection(new StructuredSelection(newItem));
+							}
 						}
-					}
-				});
-			}
-		});
-		
-		removeButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-					@Override
-					protected void doExecute() {
-						int i = table.getSelectionIndex();
-						if (removeListItem(object,feature,list.get(i))) {
-							tableViewer.setInput(list);
-							if (i>=list.size())
-								i = list.size() - 1;
-							if (i>=0)
-								tableViewer.setSelection(new StructuredSelection(list.get(i)));
-						}
-					}
-				});
-			}
-		});
+					});
+				}
+			});
+		}
 
-		upButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-					@Override
-					protected void doExecute() {
-						int i = table.getSelectionIndex();
-						list.move(i-1, i);
-						tableViewer.setInput(list);
-						tableViewer.setSelection(new StructuredSelection(list.get(i-1)));
-					}
-				});
-			}
-		});
-		
-		downButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-					@Override
-					protected void doExecute() {
-						int i = table.getSelectionIndex();
-						list.move(i+1, i);
-						tableViewer.setInput(list);
-						tableViewer.setSelection(new StructuredSelection(list.get(i+1)));
-					}
-				});
-			}
-		});
-		
-		editButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-					@Override
-					protected void doExecute() {
-						EObject newItem = editListItem(object,feature);
-						if (newItem!=null) {
-							tableViewer.setInput(list);
-							tableViewer.setSelection(new StructuredSelection(newItem));
+		if (removeButton!=null) {
+			removeButton.addSelectionListener(new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent e) {
+					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+						@Override
+						protected void doExecute() {
+							int i = table.getSelectionIndex();
+							if (removeListItem(object,feature,list.get(i))) {
+								tableViewer.setInput(list);
+								if (i>=list.size())
+									i = list.size() - 1;
+								if (i>=0)
+									tableViewer.setSelection(new StructuredSelection(list.get(i)));
+							}
 						}
-					}
-				});
-			}
-		});
+					});
+				}
+			});
+		}
 
+		if (upButton!=null && downButton!=null) {
+			upButton.addSelectionListener(new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent e) {
+					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+						@Override
+						protected void doExecute() {
+							int i = table.getSelectionIndex();
+							list.move(i-1, i);
+							tableViewer.setInput(list);
+							tableViewer.setSelection(new StructuredSelection(list.get(i-1)));
+						}
+					});
+				}
+			});
+			
+			downButton.addSelectionListener(new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent e) {
+					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+						@Override
+						protected void doExecute() {
+							int i = table.getSelectionIndex();
+							list.move(i+1, i);
+							tableViewer.setInput(list);
+							tableViewer.setSelection(new StructuredSelection(list.get(i+1)));
+						}
+					});
+				}
+			});
+		}
+
+		if (editButton!=null) {
+			editButton.addSelectionListener(new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent e) {
+					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+						@Override
+						protected void doExecute() {
+							EObject newItem = editListItem(object,feature);
+							if (newItem!=null) {
+								tableViewer.setInput(list);
+								tableViewer.setSelection(new StructuredSelection(newItem));
+							}
+						}
+					});
+				}
+			});
+		}
+		
 		tableViewer.setInput(list);
 		
 		// a TableCursor allows navigation of the table with keys
 		TableCursor.create(table, tableViewer);
 	}
 
+	private void createTableAndButtons(Composite parent, int style) {
+
+		GridData gridData;
+		
+		////////////////////////////////////////////////////////////
+		// Create a composite to hold the buttons and table
+		////////////////////////////////////////////////////////////
+		tableAndButtonsComposite = toolkit.createComposite(parent, SWT.NONE);
+		gridData = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
+		tableAndButtonsComposite.setLayoutData(gridData);
+		tableAndButtonsComposite.setLayout(new GridLayout(2, false));
+		
+		////////////////////////////////////////////////////////////
+		// Create button section for add/remove/up/down buttons
+		////////////////////////////////////////////////////////////
+		buttonsComposite = toolkit.createComposite(tableAndButtonsComposite);
+		buttonsComposite.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
+		buttonsComposite.setLayout(new FillLayout(SWT.VERTICAL));
+
+		////////////////////////////////////////////////////////////
+		// Create table
+		// allow table to fill entire width if there are no buttons
+		////////////////////////////////////////////////////////////
+		int span = 2;
+		if ((style & CUSTOM_BUTTONS_MASK)!=0) {
+			span = 1;
+		}
+		else {
+			buttonsComposite.setVisible(false);
+		}
+		table = toolkit.createTable(tableAndButtonsComposite, SWT.FULL_SELECTION | SWT.V_SCROLL);
+		gridData = new GridData(SWT.FILL, SWT.FILL, true, true, span, 1);
+		gridData.widthHint = 100;
+		gridData.heightHint = 100;
+		table.setLayoutData(gridData);
+		table.setLinesVisible(true);
+		table.setHeaderVisible(true);
+		
+		////////////////////////////////////////////////////////////
+		// Create buttons for add/remove/up/down
+		////////////////////////////////////////////////////////////
+		if ((style & ADD_BUTTON)!=0) {
+			addButton = toolkit.createPushButton(buttonsComposite, "Add");
+		}
+
+		if ((style & REMOVE_BUTTON)!=0) {
+			removeButton = toolkit.createPushButton(buttonsComposite, "Remove");
+			removeButton.setEnabled(false);
+		}
+		
+		if ((style & MOVE_BUTTONS)!=0) {
+			upButton = toolkit.createPushButton(buttonsComposite, "Up");
+			upButton.setEnabled(false);
+	
+			downButton = toolkit.createPushButton(buttonsComposite, "Down");
+			downButton.setEnabled(false);
+		}
+		
+		if ((style & EDIT_BUTTON)!=0) {
+			editButton = toolkit.createPushButton(buttonsComposite, "Edit...");
+			editButton.setEnabled(false);
+		}
+
+		
+	}
+	
 	public class ContentProvider implements IStructuredContentProvider {
 		private EObject parent;
 		private EList<EObject> list;
@@ -499,7 +634,7 @@ public abstract class AbstractBpmn2TableComposite extends Composite {
 		}
 		
 		public boolean canModify(Object element, String property) {
-			return AbstractBpmn2TableComposite.this.canModify(object, feature, (EObject)element);
+			return tableProvider.canModify(object, feature, (EObject)element);
 		}
 
 		public void modify(Object element, String property, Object value) {
@@ -530,4 +665,15 @@ public abstract class AbstractBpmn2TableComposite extends Composite {
 		}
 	}
 
+	public abstract class AbstractTableProvider extends ColumnTableProvider {
+		
+		/**
+		 * Implement this to select which columns are editable
+		 * @param object - the list object
+		 * @param feature - the feature of the item contained in the list
+		 * @param item - the selected item in the list
+		 * @return true to allow editing
+		 */
+		public abstract boolean canModify(EObject object, EStructuralFeature feature, EObject item);
+	}
 }
