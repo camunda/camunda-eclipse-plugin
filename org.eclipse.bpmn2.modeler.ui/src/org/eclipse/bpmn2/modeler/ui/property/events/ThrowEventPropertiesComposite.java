@@ -11,6 +11,7 @@
  * @author Bob Brodt
  ******************************************************************************/
 
+
 package org.eclipse.bpmn2.modeler.ui.property.events;
 
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;

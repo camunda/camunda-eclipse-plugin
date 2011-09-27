@@ -84,6 +84,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.views.properties.tabbed.ISection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
+
 public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 
 	public final static ComposedAdapterFactory ADAPTER_FACTORY;

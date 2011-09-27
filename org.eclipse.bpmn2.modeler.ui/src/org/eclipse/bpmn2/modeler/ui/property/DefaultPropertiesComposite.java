@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.property;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
