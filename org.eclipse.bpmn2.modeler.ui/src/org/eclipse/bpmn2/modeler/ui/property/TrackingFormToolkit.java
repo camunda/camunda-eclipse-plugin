@@ -156,6 +156,14 @@ public class TrackingFormToolkit extends FormToolkit {
 		widgets.add(section);
 		return section;
 	}
+	
+	public Section createSection(Composite parent, String title, int style) {
+		Section section = createSection(parent,style);
+		paintBordersFor(section);
+		section.setText(title);
+		widgets.add(section);
+		return section;
+	}
 
 	protected StyledText createDescription(Composite parent, String description) {
 		Display display = Display.getCurrent();

@@ -89,7 +89,7 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 			IFeature cf = fp.getCreateFeatureForBusinessObject(be);
 			if (cf instanceof AbstractBpmn2CreateConnectionFeature) {
 				AbstractBpmn2CreateConnectionFeature acf = (AbstractBpmn2CreateConnectionFeature) cf;
-				description = acf.getDescription();
+				description = acf.getCreateDescription();
 			} else if (cf instanceof AbstractBpmn2CreateFeature) {
 				AbstractBpmn2CreateFeature acf = (AbstractBpmn2CreateFeature) cf;
 				description = acf.getDescription();

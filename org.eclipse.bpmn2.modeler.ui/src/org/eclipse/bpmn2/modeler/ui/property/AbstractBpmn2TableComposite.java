@@ -31,6 +31,7 @@ import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
@@ -40,6 +41,7 @@ import org.eclipse.emf.transaction.ResourceSetChangeEvent;
 import org.eclipse.emf.transaction.ResourceSetListenerImpl;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.impl.TransactionChangeRecorder;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -63,11 +65,13 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.events.IExpansionListener;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
@@ -143,6 +147,11 @@ public class AbstractBpmn2TableComposite extends Composite {
 		// assume we are being placed in an AbstractBpmn2PropertyComposite which has
 		// a GridLayout of 3 columns
 		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+		
+		if (parent instanceof AbstractBpmn2PropertiesComposite) {
+			bpmn2Editor = ((AbstractBpmn2PropertiesComposite)parent).getDiagramEditor();
+			tabbedPropertySheetPage = ((AbstractBpmn2PropertiesComposite)parent).getSheetPage();
+		}
 	}
 	
 	public void setSheetPage(TabbedPropertySheetPage tabbedPropertySheetPage) {
@@ -207,7 +216,15 @@ public class AbstractBpmn2TableComposite extends Composite {
 		return tableProvider;
 	}
 	
-	public Composite getDetailComposite(Composite parent) {
+	/**
+	 * Override this to create your own Details section. This composite will be displayed
+	 * in a twistie section whenever the user selects an item from the table. The section
+	 * is automatically hidden when the table is collapsed.
+	 * 
+	 * @param parent
+	 * @return
+	 */
+	public Composite createDetailComposite(Composite parent) {
 		return new DefaultPropertiesComposite(parent, SWT.NONE);
 	}
 	
@@ -218,8 +235,19 @@ public class AbstractBpmn2TableComposite extends Composite {
 	 * @return
 	 */
 	protected EObject addListItem(EObject object, EStructuralFeature feature) {
-		EClass listItemClass = (EClass) feature.getEType();
 		EList<EObject> list = (EList<EObject>)object.eGet(feature);
+		EClass listItemClass = (EClass) feature.getEType();
+		if (!(list instanceof EObjectContainmentEList)) {
+			// this is not a containment list so we can't add it
+			// because we don't know where the new object belongs
+			MessageDialog.openError(getShell(), "Internal Error",
+					"Can not create a new " +
+					listItemClass.getName() +
+					" because the list is not a container. " +
+					"The default addListItem() method must be implemented."
+			);
+			return null;
+		}
 		EObject newItem = MODEL_FACTORY.create(listItemClass);
 		list.add(newItem);
 		ModelUtil.addID(newItem);
@@ -227,7 +255,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 	}
 
 	/**
-	 * Override this if construction of new list items needs special handling. 
+	 * Override this if editing of new list items needs special handling. 
 	 * @param object
 	 * @param feature
 	 * @return
@@ -267,6 +295,8 @@ public class AbstractBpmn2TableComposite extends Composite {
 
 		if (bpmn2Editor==null)
 			bpmn2Editor = BPMN2Editor.getEditor(object);
+		if (bpmn2Editor==null)
+			return;
 		
 		final TransactionalEditingDomain editingDomain = bpmn2Editor.getEditingDomain();
 		final EList<EObject> list = (EList<EObject>)object.eGet(feature);
@@ -289,14 +319,18 @@ public class AbstractBpmn2TableComposite extends Composite {
 			sashForm = toolkit.createSashForm(this, SWT.NONE);
 			sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 			
-			tableSection = toolkit.createSection(sashForm, ModelUtil.toDisplayName(feature.getName()));
+			tableSection = toolkit.createSection(sashForm, ModelUtil.toDisplayName(feature.getName()),
+					ExpandableComposite.TWISTIE |
+					ExpandableComposite.COMPACT |
+					ExpandableComposite.TITLE_BAR);
+
 			tableComposite = toolkit.createComposite(tableSection, SWT.NONE);
 			tableSection.setClient(tableComposite);
 			tableComposite.setLayout(new GridLayout(3, false));
 			createTableAndButtons(tableComposite,style);
 			
 			detailSection = toolkit.createSection(sashForm, ModelUtil.toDisplayName(listItemClass.getName()) + " Details");
-			detailComposite = getDetailComposite(detailSection);
+			detailComposite = createDetailComposite(detailSection);
 			detailSection.setClient(detailComposite);
 			toolkit.track(detailComposite);
 			
@@ -308,12 +342,12 @@ public class AbstractBpmn2TableComposite extends Composite {
 				public void expansionStateChanging(ExpansionEvent e) {
 					if (!e.getState()) {
 						detailSection.setVisible(false);
-						tabbedPropertySheetPage.resizeScrolledComposite();
 					}
 				}
 
 				@Override
 				public void expansionStateChanged(ExpansionEvent e) {
+					redrawPage();
 				}
 				
 			});
@@ -324,12 +358,12 @@ public class AbstractBpmn2TableComposite extends Composite {
 				public void expansionStateChanging(ExpansionEvent e) {
 					if (!e.getState()) {
 						detailSection.setVisible(false);
-						tabbedPropertySheetPage.resizeScrolledComposite();
 					}
 				}
 
 				@Override
 				public void expansionStateChanged(ExpansionEvent e) {
+					redrawPage();
 				}
 				
 			});
@@ -371,11 +405,11 @@ public class AbstractBpmn2TableComposite extends Composite {
 				}
 			}
 		};
-		bpmn2Editor.getEditingDomain().addResourceSetListener(domainListener);
+		editingDomain.addResourceSetListener(domainListener);
 		table.addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
-				bpmn2Editor.getEditingDomain().removeResourceSetListener(domainListener);
+				editingDomain.removeResourceSetListener(domainListener);
 			}
 		});
 
@@ -393,6 +427,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 							((DefaultPropertiesComposite)detailComposite).setEObject(bpmn2Editor,(EObject)sel.getFirstElement());
 					}
 					sashForm.layout(true);
+					redrawPage();
 				}
 				if (removeButton!=null)
 					removeButton.setEnabled(enable);
@@ -500,6 +535,15 @@ public class AbstractBpmn2TableComposite extends Composite {
 		
 		// a TableCursor allows navigation of the table with keys
 		TableCursor.create(table, tableViewer);
+		redrawPage();
+	}
+	
+	protected void redrawPage() {
+		if (tabbedPropertySheetPage!=null) {
+			Composite composite = (Composite)tabbedPropertySheetPage.getControl();
+			composite.layout(true);
+			tabbedPropertySheetPage.resizeScrolledComposite();
+		}
 	}
 
 	private void createTableAndButtons(Composite parent, int style) {

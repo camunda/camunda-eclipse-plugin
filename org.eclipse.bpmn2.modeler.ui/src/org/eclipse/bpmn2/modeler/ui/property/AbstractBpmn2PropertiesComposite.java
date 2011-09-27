@@ -145,6 +145,10 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		this.tabbedPropertySheetPage = tabbedPropertySheetPage;
 	}
 	
+	public TabbedPropertySheetPage getSheetPage() {
+		return tabbedPropertySheetPage;
+	}
+	
 	public final void setEObject(BPMN2Editor bpmn2Editor, final EObject object) {
 		String projectName = bpmn2Editor.getDiagramTypeProvider().getDiagram().eResource().getURI().segment(1);
 		project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
@@ -155,16 +159,6 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	
 	public final EObject getEObject() {
 		return be;
-	}
-	
-	private final void setDiagramEditor(BPMN2Editor bpmn2Editor) {
-		this.bpmn2Editor = bpmn2Editor;
-		try {
-			modelHandler = ModelHandlerLocator.getModelHandler(bpmn2Editor.getDiagramTypeProvider().getDiagram()
-					.eResource());
-		} catch (IOException e1) {
-			Activator.showErrorWithLogging(e1);
-		}
 	}
 
 	protected final void setEObject(final EObject object) {
@@ -184,6 +178,20 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		be = object;
 	}
 	
+	protected final void setDiagramEditor(BPMN2Editor bpmn2Editor) {
+		this.bpmn2Editor = bpmn2Editor;
+		try {
+			modelHandler = ModelHandlerLocator.getModelHandler(bpmn2Editor.getDiagramTypeProvider().getDiagram()
+					.eResource());
+		} catch (IOException e1) {
+			Activator.showErrorWithLogging(e1);
+		}
+	}
+	
+	public BPMN2Editor getDiagramEditor() {
+		return bpmn2Editor;
+	}
+
 	protected void cleanBindings() {
 		toolkit.disposeWidgets();
 		if (itemProviderAdapter!=null) {
@@ -649,11 +657,11 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 
 			AbstractBpmn2TableComposite tableComposite = new AbstractBpmn2TableComposite(this, AbstractBpmn2TableComposite.DEFAULT_STYLE);
 			toolkit.track(tableComposite);
-			tableComposite.setSheetPage(tabbedPropertySheetPage);
 			tableComposite.bindList(object, feature, itemProviderAdapter);
 		}
 	}
 	
+	// TODO: create an adapter for this stuff in the AdapterRegistry
 	private String getDisplayName(ItemProviderAdapter itemProviderAdapter, EObject object, EStructuralFeature feature) {
 		IItemPropertyDescriptor propertyDescriptor = null;
 		if (itemProviderAdapter!=null)

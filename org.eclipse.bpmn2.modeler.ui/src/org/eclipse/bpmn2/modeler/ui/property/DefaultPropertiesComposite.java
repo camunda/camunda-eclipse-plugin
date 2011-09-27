@@ -68,7 +68,9 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 							list.add(attribute.getName());
 						}
 					}
-					return (String[]) list.toArray();
+					String a[] = new String[list.size()];
+					list.toArray(a);
+					return a;
 				}
 
 				@Override
@@ -79,7 +81,9 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 							list.add(feature.getName());
 						}
 					}
-					return (String[]) list.toArray();
+					String a[] = new String[list.size()];
+					list.toArray(a);
+					return a;
 				}
 
 				@Override
@@ -88,7 +92,9 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 					for (EReference reference : be.eClass().getEAllReferences()) {
 						list.add(reference.getName());
 					}
-					return (String[]) list.toArray();
+					String a[] = new String[list.size()];
+					list.toArray(a);
+					return a;
 				}
 			};
 		}

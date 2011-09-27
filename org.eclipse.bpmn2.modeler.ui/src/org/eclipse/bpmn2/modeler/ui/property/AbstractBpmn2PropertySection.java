@@ -47,6 +47,8 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection {
 	
 	@Override
 	public void refresh() {
+		Composite composite = (Composite)tabbedPropertySheetPage.getControl();
+		composite.layout(true);
 		tabbedPropertySheetPage.resizeScrolledComposite();
 	}
 
