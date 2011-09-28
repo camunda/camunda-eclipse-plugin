@@ -24,16 +24,9 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection {
 
 	@Override
 	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		this.tabbedPropertySheetPage = aTabbedPropertySheetPage;
 		super.createControls(parent, aTabbedPropertySheetPage);
 		parent.setLayout(new FillLayout());
-	}
-	
-	@Override
-	public void aboutToBeShown() {
-		super.aboutToBeShown();
-		composite = getComposite();
-		composite.setSheetPage(tabbedPropertySheetPage);
+		this.tabbedPropertySheetPage = aTabbedPropertySheetPage;
 	}
 
 	/**

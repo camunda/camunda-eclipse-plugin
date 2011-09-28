@@ -116,8 +116,6 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 		for (String a : getItemProvider(be).getReferences()) {
 			bindReference(be, a);
 		}
-		
-		itemProviderAdapter.dispose();
 	}
 	
 	public abstract class AbstractItemProvider {

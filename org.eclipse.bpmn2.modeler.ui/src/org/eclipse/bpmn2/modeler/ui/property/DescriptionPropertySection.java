@@ -13,12 +13,17 @@
 
 package org.eclipse.bpmn2.modeler.ui.property;
 
+import java.io.IOException;
 import java.util.List;
 
+import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.UserTask;
+import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.diagram.BPMNFeatureProvider;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.emf.ecore.EAttribute;
@@ -84,7 +89,7 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 		public void createBindings(EObject be) {
 			String description = null;
 
-			BPMN2Editor editor = BPMN2Editor.getEditor(be);
+			BPMN2Editor editor = (BPMN2Editor)getDiagramEditor();
 			BPMNFeatureProvider fp = (BPMNFeatureProvider) editor.getDiagramTypeProvider().getFeatureProvider();
 			IFeature cf = fp.getCreateFeatureForBusinessObject(be);
 			if (cf instanceof AbstractBpmn2CreateConnectionFeature) {
@@ -93,6 +98,9 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 			} else if (cf instanceof AbstractBpmn2CreateFeature) {
 				AbstractBpmn2CreateFeature acf = (AbstractBpmn2CreateFeature) cf;
 				description = acf.getDescription();
+			}
+			if (description == null) {
+				description = "No description";
 			}
 			if (description != null) {
 				createDescription(this, description);

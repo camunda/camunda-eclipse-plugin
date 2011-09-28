@@ -163,6 +163,8 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	}
 
 	protected final void setEObject(final EObject object) {
+		if (be==object)
+			return;
 		cleanBindings();
 		be = object;
 		if (be != null) {
@@ -177,6 +179,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 
 	protected void setBusinessObject(EObject object) {
 		be = object;
+		setDiagramEditor(BPMN2Editor.getEditor(be));
 	}
 	
 	protected final void setDiagramEditor(BPMN2Editor bpmn2Editor) {
@@ -208,7 +211,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 			attributesComposite = toolkit.createComposite(attributesSection);
 			attributesSection.setClient(attributesComposite);
 			attributesComposite.setLayout(new GridLayout(3,false));
-			toolkit.track(attributesComposite);
+//			toolkit.track(attributesComposite);
 		}
 		return attributesComposite;
 	}
@@ -220,7 +223,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 			referencesComposite = toolkit.createComposite(referencesSection);
 			referencesSection.setClient(referencesComposite);
 			referencesComposite.setLayout(new GridLayout(3,false));
-			toolkit.track(referencesComposite);
+//			toolkit.track(referencesComposite);
 		}
 		return referencesComposite;
 	}

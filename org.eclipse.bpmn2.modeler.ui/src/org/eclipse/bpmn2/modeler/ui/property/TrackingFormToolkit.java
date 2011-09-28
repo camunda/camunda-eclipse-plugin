@@ -42,7 +42,16 @@ import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
  */
 public class TrackingFormToolkit extends FormToolkit {
 
-	protected final ArrayList<Widget> widgets = new ArrayList<Widget>();
+	private final ArrayList<Widget> widgets = new ArrayList<Widget>() {
+
+		@Override
+		public boolean add(Widget widget) {
+			if (!contains(widget))
+				return super.add(widget);
+			return false;
+		}
+		
+	};
     private Font descriptionFont = null;
 
 	/**

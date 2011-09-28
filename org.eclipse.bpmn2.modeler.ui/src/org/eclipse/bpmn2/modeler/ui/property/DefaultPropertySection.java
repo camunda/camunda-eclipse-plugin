@@ -27,9 +27,11 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
@@ -46,6 +48,11 @@ public class DefaultPropertySection extends AbstractBpmn2PropertySection {
 	@Override
 	protected AbstractBpmn2PropertiesComposite getComposite() {
 		return composite;
+	}
+
+	@Override
+	public void setInput(IWorkbenchPart part, ISelection selection) {
+		super.setInput(part, selection);
 	}
 
 	@Override
@@ -80,7 +87,9 @@ public class DefaultPropertySection extends AbstractBpmn2PropertySection {
 			} catch (IOException e) {
 				Activator.showErrorWithLogging(e);
 			}
-		} else {
+		}
+		else 
+		{
 			getComposite().setShape(shape);
 			getComposite().setEObject(diagramEditor, be);
 		}

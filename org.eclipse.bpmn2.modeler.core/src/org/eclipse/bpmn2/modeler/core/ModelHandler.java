@@ -20,6 +20,7 @@ import org.eclipse.bpmn2.Artifact;
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Factory;
+import org.eclipse.bpmn2.Choreography;
 import org.eclipse.bpmn2.Collaboration;
 import org.eclipse.bpmn2.ConversationLink;
 import org.eclipse.bpmn2.ConversationNode;
@@ -77,15 +78,15 @@ public class ModelHandler {
 				final Definitions definitions = FACTORY.createDefinitions();
 //				definitions.setId(EcoreUtil.generateUUID());
 				ModelUtil.setID(definitions,resource);
-				Collaboration collaboration = FACTORY.createCollaboration();
+				Choreography choreography = FACTORY.createChoreography();
 //				collaboration.setId(EcoreUtil.generateUUID());
-				ModelUtil.setID(collaboration,resource);
+				ModelUtil.setID(choreography,resource);
 				Participant participant = FACTORY.createParticipant();
 //				participant.setId(EcoreUtil.generateUUID());
 				ModelUtil.setID(participant,resource);
 				participant.setName("Internal");
-				collaboration.getParticipants().add(participant);
-				definitions.getRootElements().add(collaboration);
+				choreography.getParticipants().add(participant);
+				definitions.getRootElements().add(choreography);
 
 				domain.getCommandStack().execute(new RecordingCommand(domain) {
 					@Override
@@ -147,7 +148,7 @@ public class ModelHandler {
 	}
 
 	public ConversationNode addConversationNode(ConversationNode conversationNode) {
-		getOrCreateCollaboration().getConversations().add(conversationNode);
+		getOrCreateChoreography().getConversations().add(conversationNode);
 		return conversationNode;
 	}
 
@@ -174,7 +175,7 @@ public class ModelHandler {
 	}
 
 	public Participant addParticipant() {
-		Collaboration collaboration = getOrCreateCollaboration();
+		Collaboration collaboration = getOrCreateChoreography();
 		Participant participant = FACTORY.createParticipant();
 //		participant.setId(EcoreUtil.generateUUID());
 		ModelUtil.setID(participant,resource);
@@ -272,7 +273,7 @@ public class ModelHandler {
 		ModelUtil.setID(messageFlow,resource);
 		messageFlow.setSourceRef(source);
 		messageFlow.setTargetRef(target);
-		getOrCreateCollaboration().getMessageFlows().add(messageFlow);
+		getOrCreateChoreography().getMessageFlows().add(messageFlow);
 		return messageFlow;
 	}
 
@@ -280,7 +281,7 @@ public class ModelHandler {
 		ConversationLink link = FACTORY.createConversationLink();
 		link.setSourceRef(source);
 		link.setTargetRef(target);
-		getOrCreateCollaboration().getConversationLinks().add(link);
+		getOrCreateChoreography().getConversationLinks().add(link);
 		return link;
 	}
 
@@ -326,6 +327,30 @@ public class ModelHandler {
 		return collaboration;
 	}
 
+	private Collaboration getOrCreateChoreography() {
+		final List<RootElement> rootElements = getDefinitions().getRootElements();
+
+		for (RootElement element : rootElements) {
+			if (element instanceof Choreography) {
+				return (Choreography) element;
+			}
+		}
+		TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(resource);
+		final Choreography choreography = FACTORY.createChoreography();
+//		collaboration.setId(EcoreUtil.generateUUID());
+		ModelUtil.setID(choreography,resource);
+		if (domain != null) {
+			domain.getCommandStack().execute(new RecordingCommand(domain) {
+
+				@Override
+				protected void doExecute() {
+					addChoreographyToRootElements(rootElements, choreography);
+				}
+			});
+		}
+		return choreography;
+	}
+
 	private void addCollaborationToRootElements(final List<RootElement> rootElements, final Collaboration collaboration) {
 		Participant participant = FACTORY.createParticipant();
 //		participant.setId(EcoreUtil.generateUUID());
@@ -339,6 +364,21 @@ public class ModelHandler {
 		}
 		collaboration.getParticipants().add(participant);
 		rootElements.add(collaboration);
+	}
+
+	private void addChoreographyToRootElements(final List<RootElement> rootElements, final Choreography choreography) {
+		Participant participant = FACTORY.createParticipant();
+//		participant.setId(EcoreUtil.generateUUID());
+		ModelUtil.setID(participant,resource);
+		participant.setName("Internal");
+		for (RootElement element : rootElements) {
+			if (element instanceof Process) {
+				participant.setProcessRef((Process) element);
+				break;
+			}
+		}
+		choreography.getParticipants().add(participant);
+		rootElements.add(choreography);
 	}
 
 	public Bpmn2ResourceImpl getResource() {
@@ -394,7 +434,7 @@ public class ModelHandler {
 	}
 
 	public Participant getInternalParticipant() {
-		return getOrCreateCollaboration().getParticipants().get(0);
+		return getOrCreateChoreography().getParticipants().get(0);
 	}
 
 	public FlowElementsContainer getFlowElementContainer(Object o) {
@@ -423,7 +463,13 @@ public class ModelHandler {
 
 		Process process = findElementOfType(Process.class, object);
 
-		for (Participant p : getOrCreateCollaboration().getParticipants()) {
+		for (Participant p : getOrCreateChoreography().getParticipants()) {
+			if (p.getProcessRef() != null && p.getProcessRef().equals(process)) {
+				return p;
+			}
+		}
+
+		for (Participant p : getOrCreateChoreography().getParticipants()) {
 			if (p.getProcessRef() != null && p.getProcessRef().equals(process)) {
 				return p;
 			}
