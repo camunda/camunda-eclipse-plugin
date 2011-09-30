@@ -90,6 +90,18 @@
 		</repository>
 
 		<repository>
+			<id>eclipse-bpel</id>
+			<url>http://download.eclipse.org/bpel/update-site</url>
+			<layout>p2</layout>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+
+		<repository>
 			<id>eclipse-graphiti</id>
 			<url>http://download.eclipse.org/graphiti/updates/0.7.1</url>
 			<layout>p2</layout>
