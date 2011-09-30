@@ -14,6 +14,7 @@ package org.eclipse.bpmn2.modeler.ui.property.events;
 
 import java.util.List;
 
+import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
@@ -32,33 +33,19 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 public class ThrowEventPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
 
-	private ThrowEventPropertiesComposite composite;
-
+	/* (non-Javadoc)
+	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
+	 */
 	@Override
-	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		super.createControls(parent, aTabbedPropertySheetPage);
-		composite = new ThrowEventPropertiesComposite(parent, SWT.BORDER);
+	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+		return new ThrowEventPropertiesComposite(this);
 	}
 
 	@Override
-	protected AbstractBpmn2PropertiesComposite getComposite() {
-		return composite;
-	}
-
-	@Override
-	public void refresh() {
-		PictogramElement pe = getSelectedPictogramElement();
-		if (pe != null) {
-			EObject be = (EObject) Graphiti.getLinkService()
-					.getBusinessObjectForLinkedPictogramElement(pe);
-			if (be instanceof ThrowEvent) {
-				ThrowEvent se = BusinessObjectUtil.
-						getFirstElementOfType(pe, ThrowEvent.class,true);
-				composite.setEObject((BPMN2Editor) getDiagramEditor(),
-						se);
-			}
-			
-			super.refresh();
-		}
+	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
+		EObject be = super.getBusinessObjectForPictogramElement(pe);
+		if (be instanceof ThrowEvent)
+			return be;
+		return null;
 	}
 }

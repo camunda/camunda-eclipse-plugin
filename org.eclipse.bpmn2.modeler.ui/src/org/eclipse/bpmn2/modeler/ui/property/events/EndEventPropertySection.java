@@ -13,11 +13,13 @@
 package org.eclipse.bpmn2.modeler.ui.property.events;
 
 import org.eclipse.bpmn2.EndEvent;
+import org.eclipse.bpmn2.SendTask;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DescriptionPropertySection.DescriptionPropertyComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
@@ -28,33 +30,16 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 public class EndEventPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
 
-	private EndEventPropertiesComposite composite;
-
 	@Override
-	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		super.createControls(parent, aTabbedPropertySheetPage);
-		composite = new EndEventPropertiesComposite(parent, SWT.BORDER);
+	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+		return new EndEventPropertiesComposite(this);		
 	}
 
 	@Override
-	protected AbstractBpmn2PropertiesComposite getComposite() {
-		return composite;
-	}
-
-	@Override
-	public void refresh() {
-		PictogramElement pe = getSelectedPictogramElement();
-		if (pe != null) {
-			EObject be = (EObject) Graphiti.getLinkService()
-					.getBusinessObjectForLinkedPictogramElement(pe);
-			if (be instanceof EndEvent) {
-				EndEvent se = BusinessObjectUtil.
-						getFirstElementOfType(pe, EndEvent.class,true);
-				composite.setEObject((BPMN2Editor) getDiagramEditor(),
-						se);
-			}
-			
-			super.refresh();
-		}
+	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
+		EObject be = super.getBusinessObjectForPictogramElement(pe);
+		if (be instanceof EndEvent)
+			return be;
+		return null;
 	}
 }

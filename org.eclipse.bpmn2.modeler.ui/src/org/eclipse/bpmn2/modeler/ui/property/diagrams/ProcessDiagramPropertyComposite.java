@@ -1,18 +1,13 @@
 package org.eclipse.bpmn2.modeler.ui.property.diagrams;
 
-import java.util.List;
-
+import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.swt.widgets.Composite;
 
 public class ProcessDiagramPropertyComposite extends DefaultPropertiesComposite  {
 
-	public ProcessDiagramPropertyComposite(Composite parent, int style) {
-		super(parent, style);
+	public ProcessDiagramPropertyComposite(AbstractBpmn2PropertySection section) {
+		super(section);
 	}
 
 	protected void setBusinessObject(EObject object) {

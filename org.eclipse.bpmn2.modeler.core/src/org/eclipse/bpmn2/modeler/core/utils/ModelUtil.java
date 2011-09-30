@@ -246,6 +246,20 @@ public class ModelUtil {
 		return feature!=null;
 	}
 	
+	public static String getDisplayName(EObject obj) {
+		String objName = toDisplayName( obj.eClass().getName() );
+		EStructuralFeature feature = obj.eClass().getEStructuralFeature("name");
+		if (feature!=null) {
+			String name = (String)obj.eGet(feature);
+			if (name==null || name.isEmpty())
+				name = "Unnamed " + obj.eClass().getName();
+			else
+				name = objName + " \"" + name + "\"";
+			return name;
+		}
+		return objName;
+	}
+	
 	public static String getDisplayName(EObject obj, EAttribute attr) {
 		if (attr!=null) {
 			ItemProviderAdapter itemProviderAdapter = (ItemProviderAdapter) new Bpmn2ItemProviderAdapterFactory()
@@ -271,9 +285,11 @@ public class ModelUtil {
 	public static String toDisplayName(String anyName) {
 		String displayName = "";
 		boolean first = true;
-		for (char c : anyName.toCharArray()) {
+		char[] chars = anyName.toCharArray();
+		for (int i=0; i<chars.length; ++i) {
+			char c = chars[i];
 			if (Character.isUpperCase(c)) {
-				if (displayName.length()>0)
+				if (displayName.length()>0 && i+1<chars.length && !Character.isUpperCase(chars[i+1]))
 					displayName += " ";
 			}
 			if (first) {

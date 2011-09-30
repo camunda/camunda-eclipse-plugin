@@ -14,6 +14,7 @@ package org.eclipse.bpmn2.modeler.ui.property.tasks;
 
 import java.util.List;
 
+import org.eclipse.bpmn2.BusinessRuleTask;
 import org.eclipse.bpmn2.ChoreographyTask;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
@@ -31,33 +32,19 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 public class ChoreographyTaskPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
 
-	private ChoreographyTaskPropertiesComposite composite;
-
+	/* (non-Javadoc)
+	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
+	 */
 	@Override
-	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		super.createControls(parent, aTabbedPropertySheetPage);
-		composite = new ChoreographyTaskPropertiesComposite(parent, SWT.BORDER);
+	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+		return new ChoreographyTaskPropertiesComposite(this);
 	}
 
 	@Override
-	protected AbstractBpmn2PropertiesComposite getComposite() {
-		return composite;
-	}
-
-	@Override
-	public void refresh() {
-		PictogramElement pe = getSelectedPictogramElement();
-		if (pe != null) {
-			EObject be = (EObject) Graphiti.getLinkService()
-					.getBusinessObjectForLinkedPictogramElement(pe);
-			if (be instanceof ChoreographyTask) {
-				ChoreographyTask se = BusinessObjectUtil.
-						getFirstElementOfType(pe, ChoreographyTask.class,true);
-				composite.setEObject((BPMN2Editor) getDiagramEditor(),
-						se);
-			}
-			
-			super.refresh();
-		}
+	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
+		EObject be = super.getBusinessObjectForPictogramElement(pe);
+		if (be instanceof ChoreographyTask)
+			return be;
+		return null;
 	}
 }

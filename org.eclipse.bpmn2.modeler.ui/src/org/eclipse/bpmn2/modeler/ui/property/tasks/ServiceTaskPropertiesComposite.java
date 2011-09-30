@@ -14,6 +14,7 @@
 
 package org.eclipse.bpmn2.modeler.ui.property.tasks;
 
+import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.widgets.Composite;
@@ -21,13 +22,12 @@ import org.eclipse.swt.widgets.Composite;
 public class ServiceTaskPropertiesComposite extends DefaultPropertiesComposite {
 
 	/**
-	 * @param parent
-	 * @param style
+	 * @param section
 	 */
-	public ServiceTaskPropertiesComposite(Composite parent, int style) {
-		super(parent, style);
+	public ServiceTaskPropertiesComposite(AbstractBpmn2PropertySection section) {
+		super(section);
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 

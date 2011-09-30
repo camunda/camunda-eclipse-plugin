@@ -12,18 +12,16 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.property.connectors;
 
+import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.swt.widgets.Composite;
 
 public class AssocationPropertiesComposite extends DefaultPropertiesComposite {
 
 	/**
-	 * Create the composite.
-	 * 
-	 * @param parent
-	 * @param style
+	 * @param section
 	 */
-	public AssocationPropertiesComposite(Composite parent, int style) {
-		super(parent, style);
+	public AssocationPropertiesComposite(AbstractBpmn2PropertySection section) {
+		super(section);
 	}
 }

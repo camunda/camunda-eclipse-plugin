@@ -20,17 +20,17 @@ import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.widgets.Composite;
 
 public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 
 	/**
-	 * @param parent
-	 * @param style
+	 * @param section
 	 */
-	public CommonEventPropertiesComposite(Composite parent, int style) {
-		super(parent, style);
+	public CommonEventPropertiesComposite(AbstractBpmn2PropertySection section) {
+		super(section);
 	}
 
 	/*

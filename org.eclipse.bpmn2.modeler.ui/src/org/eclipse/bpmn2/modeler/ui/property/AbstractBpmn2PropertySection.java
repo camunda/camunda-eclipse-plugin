@@ -12,23 +12,122 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.property;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature;
+import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
+import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablementPreferences;
+import org.eclipse.bpmn2.modeler.core.runtime.IBpmn2PropertySection;
+import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
+import org.eclipse.bpmn2.modeler.ui.Activator;
+import org.eclipse.bpmn2.modeler.ui.diagram.BPMNFeatureProvider;
+import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.graphiti.features.IFeature;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.platform.IDiagramEditor;
+import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.views.properties.tabbed.ISection;
+import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.eclipse.ui.views.properties.tabbed.TabContents;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 
-public abstract class AbstractBpmn2PropertySection extends GFPropertySection {
+public abstract class AbstractBpmn2PropertySection extends GFPropertySection implements IBpmn2PropertySection {
 	
-	protected AbstractBpmn2PropertiesComposite composite;
+	// This map saves the TabbedPropertySheetPage parent composite for each active BPMN2Editor.
+	// The composite is saved and restored from this map when the user switches between editors.
+	protected Map<IWorkbenchPart,Composite> parentMap = new HashMap<IWorkbenchPart,Composite>();
 	protected TabbedPropertySheetPage tabbedPropertySheetPage;
-
+	protected Composite parent;
+	protected BPMN2Editor editor;
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#createControls(org.eclipse.swt.widgets.Composite, org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage)
+	 */
 	@Override
 	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
-		parent.setLayout(new FillLayout());
+		parent.addDisposeListener(new DisposeListener() {
+
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				if (getSectionRoot()!=null)
+					getSectionRoot().dispose();
+			}
+			
+		});
 		this.tabbedPropertySheetPage = aTabbedPropertySheetPage;
+		this.parent = parent;
+		parent.setLayout(new GridLayout(1, false));
+		editor = BPMN2Editor.getActiveEditor();
+		parentMap.put(editor, parent);
 	}
 
+	/**
+	 * Returns the section's parent composite. This is the composite that was
+	 * created by the TabbedPropertySheetPage, not the "root" composite for
+	 * this section.
+	 * 
+	 * @return the TabbedPropertySheetPage composite.
+	 */
+	public Composite getParent() {
+		return parent;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.graphiti.ui.platform.GFPropertySection#getDiagramEditor()
+	 */
+	@Override
+	protected IDiagramEditor getDiagramEditor() {
+		return editor;
+	}
+
+	/**
+	 * Returns the property section's TabbedPropertySheetPage
+	 * 
+	 * @return the TabbedPropertySheetPage that owns this section.
+	 */
+	public TabbedPropertySheetPage getTabbedPropertySheetPage() {
+		return tabbedPropertySheetPage;
+	}
+
+	/**
+	 * Get the section's root composite, which is a subclass of AbstractBpmn2PropertiesComposite.
+	 * Create the composite if it has not been created yet.
+	 * 
+	 * @return the composite
+	 */
+	public AbstractBpmn2PropertiesComposite getSectionRoot() {
+		AbstractBpmn2PropertiesComposite sectionRoot = null;
+		if (parent!=null && !parent.isDisposed()) {
+			if (parent.getChildren().length==0) {
+				sectionRoot = createSectionRoot();
+				sectionRoot.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
+			}
+			sectionRoot = (AbstractBpmn2PropertiesComposite)parent.getChildren()[0];
+		}
+		return sectionRoot;
+	}
+	
 	/**
 	 * The subclass must provide the parent Composite it created in createControls()
 	 * so that we can pass the PropertySheetPage down to the Composite. This is
@@ -36,18 +135,94 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection {
 	 * 
 	 * @return
 	 */
-	protected abstract AbstractBpmn2PropertiesComposite getComposite();
+	protected abstract AbstractBpmn2PropertiesComposite createSectionRoot();
+
+	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
+		return PropertyUtil.getBusinessObjectForPictogramElement(pe);
+	}
 	
+	/* (non-Javadoc)
+	 * Yet another ugly hack: this restores the current property sheet page parent
+	 * composite when a different BPMN2Editor is activated. Apparently TabbedPropertySheetPage
+	 * does not do this for us automatically!
+	 *  
+	 * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#setInput(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
+	 */
+	@Override
+	public void setInput(IWorkbenchPart part, ISelection selection) {
+		super.setInput(part, selection);
+		if (part instanceof BPMN2Editor) {
+			editor = (BPMN2Editor)part;
+			parent = parentMap.get(editor);
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#refresh()
+	 */
 	@Override
 	public void refresh() {
+		PictogramElement pe = getSelectedPictogramElement();
+		if (pe != null) {
+			final EObject be = getBusinessObjectForPictogramElement(pe);
+			if (be!=null) {
+				AbstractBpmn2PropertiesComposite sectionRoot = getSectionRoot();
+				sectionRoot.setEObject((BPMN2Editor) getDiagramEditor(), be);
+				recursivelayout(sectionRoot);
+			}
+		}
+	}
+
+	/**
+	 * Ugly hack to force layout of the entire widget tree of the property sheet page.
+	 * @param parent
+	 */
+	protected void recursivelayout(Composite parent) {
+		Control[] kids = parent.getChildren();
+		for (Control k : kids) {
+			if (k.isDisposed())
+				Activator.logError(new SWTException("Widget is disposed."));
+			if (k instanceof Composite) {
+				recursivelayout((Composite)k);
+				((Composite)k).layout(true);
+			}
+		}
+		parent.layout(true);
+	}
+	
+	/**
+	 * Force a layout of the property sheet page.
+	 */
+	public void layout() {
 		Composite composite = (Composite)tabbedPropertySheetPage.getControl();
 		composite.layout(true);
 		tabbedPropertySheetPage.resizeScrolledComposite();
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#shouldUseExtraSpace()
+	 */
 	@Override
 	public boolean shouldUseExtraSpace() {
 		return true;
 	}
 
+	/* (non-Javadoc)
+	 * Override this to allow the section to decide whether or not it will be rendered.
+	 * @see org.eclipse.bpmn2.modeler.core.runtime.IBpmn2PropertySection#appliesTo(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
+	 */
+	@Override
+	public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
+		BPMN2Editor editor = (BPMN2Editor)part;
+		IProject project = editor.getModelFile().getProject();
+		ToolEnablementPreferences preferences = ToolEnablementPreferences.getPreferences(project);
+		PictogramElement pe = PropertyUtil.getPictogramElementForSelection(selection);
+		EObject selectionBO = PropertyUtil.getBusinessObjectForSelection(selection);
+		
+		if (preferences.isEnabled(selectionBO.eClass())) {
+			EObject thisBO = getBusinessObjectForPictogramElement(pe);
+			return thisBO!=null;			
+		}
+		return false;
+	}
 }

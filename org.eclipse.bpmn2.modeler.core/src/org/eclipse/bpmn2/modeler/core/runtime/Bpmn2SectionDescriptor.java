@@ -14,6 +14,7 @@ package org.eclipse.bpmn2.modeler.core.runtime;
 
 import java.util.List;
 
+import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.gef.EditPart;
@@ -69,28 +70,19 @@ public class Bpmn2SectionDescriptor extends AbstractSectionDescriptor {
 			}
 			
 			// if an input description was specified, check if the selected business object is of this description. 
-			if (appliesToClass!=null && selection instanceof IStructuredSelection &&
-					((IStructuredSelection) selection).isEmpty()==false) {
-			
-				Object firstElement = ((IStructuredSelection) selection).getFirstElement();
-				EditPart editPart = null;
-				if (firstElement instanceof EditPart) {
-					editPart = (EditPart) firstElement;
-				} else if (firstElement instanceof IAdaptable) {
-					editPart = (EditPart) ((IAdaptable) firstElement).getAdapter(EditPart.class);
-				}
-				if (editPart != null && editPart.getModel() instanceof PictogramElement) {
-					PictogramElement pe = (PictogramElement) editPart.getModel();
-					// this is a special hack to allow selection of connection decorator labels:
-					// the connection decorator does not have a business object linked to it,
-					// but its parent (the connection) does.
-					if (pe.getLink()==null && pe.eContainer() instanceof PictogramElement)
-						pe = (PictogramElement)pe.eContainer();
-					if (pe.getLink()!=null) {
-						for (EObject eObj : pe.getLink().getBusinessObjects()){
-							if (appliesToClass.isInstance(eObj)) {
-								return true;
-							}
+			if (appliesToClass!=null) {
+				PictogramElement pe = PropertyUtil.getPictogramElementForSelection(selection);
+				// this is a special hack to allow selection of connection decorator labels:
+				// the connection decorator does not have a business object linked to it,
+				// but its parent (the connection) does.
+				if (pe.getLink()==null && pe.eContainer() instanceof PictogramElement)
+					pe = (PictogramElement)pe.eContainer();
+
+				// check all linked BusinessObjects for a match
+				if (pe.getLink()!=null) {
+					for (EObject eObj : pe.getLink().getBusinessObjects()){
+						if (appliesToClass.isInstance(eObj)) {
+							return true;
 						}
 					}
 				}

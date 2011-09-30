@@ -52,7 +52,11 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 	 * @param style
 	 */
 	public DefaultPropertiesComposite(Composite parent, int style) {
-		super(parent, style);
+		super(parent,style);
+	}
+	
+	public DefaultPropertiesComposite(AbstractBpmn2PropertySection section) {
+		super(section);
 	}
 	
 	public void setItemProvider(AbstractItemProvider provider) {
@@ -118,6 +122,13 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 		}
 	}
 	
+	/**
+	 * Provider class for the Default Properties sheet tab.
+	 * This simply returns a list of attributes, containment ELists and references
+	 * to be rendered on the Default Properties tab. If the DefaultPropertiesComposite
+	 * is subclassed and the client does not specify an item provider, the default
+	 * behavior is to render all structural features for the business object.
+	 */
 	public abstract class AbstractItemProvider {
 		
 		EObject be;

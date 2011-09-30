@@ -14,6 +14,7 @@ package org.eclipse.bpmn2.modeler.ui.property.events;
 
 import java.util.List;
 
+import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
@@ -34,33 +35,19 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 public class CatchEventPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
 
-	private CatchEventPropertiesComposite composite;
-
+	/* (non-Javadoc)
+	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
+	 */
 	@Override
-	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		super.createControls(parent, aTabbedPropertySheetPage);
-		composite = new CatchEventPropertiesComposite(parent, SWT.BORDER);
+	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+		return new CatchEventPropertiesComposite(this);
 	}
 
 	@Override
-	protected AbstractBpmn2PropertiesComposite getComposite() {
-		return composite;
-	}
-
-	@Override
-	public void refresh() {
-		PictogramElement pe = getSelectedPictogramElement();
-		if (pe != null) {
-			EObject be = (EObject) Graphiti.getLinkService()
-					.getBusinessObjectForLinkedPictogramElement(pe);
-			if (be instanceof CatchEvent) {
-				CatchEvent se = BusinessObjectUtil.
-						getFirstElementOfType(pe, CatchEvent.class,true);
-				composite.setEObject((BPMN2Editor) getDiagramEditor(),
-						se);
-			}
-			
-			super.refresh();
-		}
+	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
+		EObject be = super.getBusinessObjectForPictogramElement(pe);
+		if (be instanceof CatchEvent)
+			return be;
+		return null;
 	}
 }

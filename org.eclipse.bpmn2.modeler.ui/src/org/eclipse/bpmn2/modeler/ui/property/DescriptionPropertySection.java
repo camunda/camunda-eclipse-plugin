@@ -13,29 +13,13 @@
 
 package org.eclipse.bpmn2.modeler.ui.property;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.eclipse.bpmn2.Definitions;
-import org.eclipse.bpmn2.UserTask;
-import org.eclipse.bpmn2.di.BPMNDiagram;
-import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
-import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
-import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.diagram.BPMNFeatureProvider;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.graphiti.features.IFeature;
-import org.eclipse.graphiti.mm.pictograms.PictogramElement;
-import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 /**
  * @author Bob Brodt
@@ -43,39 +27,21 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  */
 public class DescriptionPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
 
-	DescriptionPropertyComposite composite;
-
+	/* (non-Javadoc)
+	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
+	 */
 	@Override
-	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		super.createControls(parent, aTabbedPropertySheetPage);
-		composite = new DescriptionPropertyComposite(parent, SWT.None);
-	}
-
-	@Override
-	protected AbstractBpmn2PropertiesComposite getComposite() {
-		return composite;
-	}
-
-	@Override
-	public void refresh() {
-		PictogramElement pe = getSelectedPictogramElement();
-		if (pe != null) {
-			EObject be = (EObject) Graphiti.getLinkService()
-					.getBusinessObjectForLinkedPictogramElement(pe);
-			composite.setEObject((BPMN2Editor) getDiagramEditor(), be);
-			
-			super.refresh();
-		}
+	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+		return new DescriptionPropertyComposite(this);		
 	}
 
 	public class DescriptionPropertyComposite extends AbstractBpmn2PropertiesComposite {
 
 		/**
-		 * @param parent
-		 * @param style
+		 * @param section
 		 */
-		public DescriptionPropertyComposite(Composite parent, int style) {
-			super(parent, style);
+		public DescriptionPropertyComposite(AbstractBpmn2PropertySection section) {
+			super(section);
 		}
 
 		/*

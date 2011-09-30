@@ -17,6 +17,7 @@ import org.eclipse.bpmn2.Expression;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -35,13 +36,10 @@ public class SequenceFlowPropertiesComposite extends DefaultPropertiesComposite 
 	private Button setDefaultFlowCheckbox;
 	
 	/**
-	 * Create the composite.
-	 * 
-	 * @param parent
-	 * @param style
+	 * @param section
 	 */
-	public SequenceFlowPropertiesComposite(Composite parent, int style) {
-		super(parent, style);
+	public SequenceFlowPropertiesComposite(AbstractBpmn2PropertySection section) {
+		super(section);
 	}
 
 	@SuppressWarnings("restriction")
@@ -52,12 +50,12 @@ public class SequenceFlowPropertiesComposite extends DefaultPropertiesComposite 
 			
 			final SequenceFlow sequenceFlow = (SequenceFlow) be;
 				
-			addRemoveConditionButton = toolkit.createPushButton(this, "Add/Remove Condition");
+			addRemoveConditionButton = new Button(this, SWT.PUSH);
 			addRemoveConditionButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
 			addRemoveConditionButton.addSelectionListener(new SelectionAdapter() {
 				
 				public void widgetSelected(SelectionEvent e) {
-					TransactionalEditingDomain domain = bpmn2Editor.getEditingDomain();
+					TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
 					domain.getCommandStack().execute(new RecordingCommand(domain) {
 						@Override
 						protected void doExecute() {
@@ -77,12 +75,12 @@ public class SequenceFlowPropertiesComposite extends DefaultPropertiesComposite 
 			});
 			Expression exp = (Expression) sequenceFlow.getConditionExpression();
 			
-			setDefaultFlowCheckbox = toolkit.createCheckboxButton(this, "");
+			setDefaultFlowCheckbox = new Button(this, SWT.PUSH);
 			setDefaultFlowCheckbox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
 			setDefaultFlowCheckbox.addSelectionListener(new SelectionAdapter() {
 				
 				public void widgetSelected(SelectionEvent e) {
-					TransactionalEditingDomain domain = bpmn2Editor.getEditingDomain();
+					TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
 					domain.getCommandStack().execute(new RecordingCommand(domain) {
 						@Override
 						protected void doExecute() {
@@ -98,7 +96,7 @@ public class SequenceFlowPropertiesComposite extends DefaultPropertiesComposite 
 			if (exp != null) {
 				addRemoveConditionButton.setText("Remove Condition");
 				setDefaultFlowCheckbox.setVisible(false);
-				setBusinessObject(exp);
+				this.be = exp;
 				super.createBindings(exp);
 			}
 			else {

@@ -15,7 +15,9 @@ package org.eclipse.bpmn2.modeler.core.runtime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.views.properties.tabbed.AbstractTabDescriptor;
 import org.eclipse.ui.views.properties.tabbed.TabContents;
 
@@ -100,8 +102,12 @@ public class Bpmn2TabDescriptor extends AbstractTabDescriptor {
 		Bpmn2TabDescriptor clone = new Bpmn2TabDescriptor(id, category, label);
 		clone.afterTab = this.afterTab;
 		clone.replaceTab = this.replaceTab;
-		clone.image = this.image;
+		if (image!=null)
+			clone.image = new Image(Display.getDefault(), this.image, SWT.IMAGE_COPY);
 		clone.indented = this.indented;
+//		for (Bpmn2SectionDescriptor sd : (List<Bpmn2SectionDescriptor>)getSectionDescriptors()) {
+//			clone.getSectionDescriptors().add( new Bpmn2SectionDescriptor(sd) );
+//		}
 		return clone;
 	}
 	

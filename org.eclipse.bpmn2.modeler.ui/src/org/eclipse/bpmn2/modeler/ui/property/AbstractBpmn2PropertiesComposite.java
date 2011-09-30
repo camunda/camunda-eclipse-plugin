@@ -27,6 +27,7 @@ import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablementPreferences;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
@@ -77,9 +78,13 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.views.properties.tabbed.ISection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
@@ -90,21 +95,19 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	public final static ComposedAdapterFactory ADAPTER_FACTORY;
 	public static final Bpmn2Factory MODEL_FACTORY = Bpmn2Factory.eINSTANCE;
 	
-	protected TabbedPropertySheetPage tabbedPropertySheetPage;
+	protected AbstractBpmn2PropertySection propertySection;
 	protected EObject be;
-	protected BPMN2Editor bpmn2Editor;
-	protected final TrackingFormToolkit toolkit = new TrackingFormToolkit(Display.getCurrent());
-	protected IProject project;
+	protected FormToolkit toolkit;
 	protected ToolEnablementPreferences preferences;
 	protected ItemProviderAdapter itemProviderAdapter;
 	protected final AdapterFactoryLabelProvider LABEL_PROVIDER = new AdapterFactoryLabelProvider(ADAPTER_FACTORY);
 	protected ModelHandler modelHandler;
-	protected BPMNShape shape;
 	
-	private Section attributesSection = null;
-	private Composite attributesComposite = null;
-	private Section referencesSection = null;
-	private Composite referencesComposite = null;
+	protected Section attributesSection = null;
+	protected Composite attributesComposite = null;
+	protected Section referencesSection = null;
+	protected Composite referencesComposite = null;
+	protected Font descriptionFont = null;
 	
 
 	static {
@@ -124,37 +127,54 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	 * @param parent
 	 * @param style
 	 */
-	public AbstractBpmn2PropertiesComposite(Composite parent, int style) {
-		super(parent, style);
-//		this.parent = parent;
+	public AbstractBpmn2PropertiesComposite(AbstractBpmn2PropertySection section) {
+		super(section.getParent(), SWT.NONE);
+		
 		addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
-				toolkit.dispose();
+				PropertyUtil.disposeChildWidgets(AbstractBpmn2PropertiesComposite.this);
 			}
 		});
+
+		propertySection = section;
+		toolkit = propertySection.getWidgetFactory();
 		toolkit.adapt(this);
 		toolkit.paintBordersFor(this);
 		setLayout(new GridLayout(3, false));
 	}
 	
-	public TrackingFormToolkit getToolkit() {
-		return toolkit;
+	/**
+	 * @param parent
+	 * @param style
+	 */
+	public AbstractBpmn2PropertiesComposite(Composite parent, int style) {
+		super(parent,style);
+		
+		addDisposeListener(new DisposeListener() {
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				PropertyUtil.disposeChildWidgets(AbstractBpmn2PropertiesComposite.this);
+			}
+		});
+
+		toolkit = new FormToolkit(Display.getCurrent());
+		setLayout(new GridLayout(3, false));
+	}
+
+	public void setPropertySection(AbstractBpmn2PropertySection section) {
+		propertySection = section;
 	}
 	
-	public void setSheetPage(TabbedPropertySheetPage tabbedPropertySheetPage) {
-		this.tabbedPropertySheetPage = tabbedPropertySheetPage;
-	}
-	
-	public TabbedPropertySheetPage getSheetPage() {
-		return tabbedPropertySheetPage;
-	}
-	
-	public final void setEObject(BPMN2Editor bpmn2Editor, final EObject object) {
-		String projectName = bpmn2Editor.getDiagramTypeProvider().getDiagram().eResource().getURI().segment(1);
-		project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+	public void setEObject(BPMN2Editor bpmn2Editor, final EObject object) {
+		IProject project = bpmn2Editor.getModelFile().getProject();
 		preferences = ToolEnablementPreferences.getPreferences(project);
-		setDiagramEditor(bpmn2Editor);
+		try {
+			modelHandler = ModelHandlerLocator.getModelHandler(bpmn2Editor.getDiagramTypeProvider().getDiagram()
+					.eResource());
+		} catch (IOException e1) {
+			Activator.showErrorWithLogging(e1);
+		}
 		setEObject(object);
 	}
 	
@@ -163,41 +183,21 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	}
 
 	protected final void setEObject(final EObject object) {
-		if (be==object)
-			return;
 		cleanBindings();
 		be = object;
 		if (be != null) {
-			setBusinessObject(object);
 			itemProviderAdapter = (ItemProviderAdapter) new Bpmn2ItemProviderAdapterFactory().adapt(
 					be, ItemProviderAdapter.class);
 			createBindings(be);
 		}
-		this.getParent().getParent().layout(true, true);
-		layout(true, true);
-	}
-
-	protected void setBusinessObject(EObject object) {
-		be = object;
-		setDiagramEditor(BPMN2Editor.getEditor(be));
-	}
-	
-	protected final void setDiagramEditor(BPMN2Editor bpmn2Editor) {
-		this.bpmn2Editor = bpmn2Editor;
-		try {
-			modelHandler = ModelHandlerLocator.getModelHandler(bpmn2Editor.getDiagramTypeProvider().getDiagram()
-					.eResource());
-		} catch (IOException e1) {
-			Activator.showErrorWithLogging(e1);
-		}
 	}
 	
 	public BPMN2Editor getDiagramEditor() {
-		return bpmn2Editor;
+		return (BPMN2Editor)propertySection.getDiagramEditor();
 	}
 
 	protected void cleanBindings() {
-		toolkit.disposeWidgets();
+		PropertyUtil.disposeChildWidgets(this);
 		if (itemProviderAdapter!=null) {
 			itemProviderAdapter.dispose();
 			itemProviderAdapter = null;
@@ -206,24 +206,22 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 
 	protected Composite getAttributesParent() {
 		if (attributesSection==null || attributesSection.isDisposed()) {
-			attributesSection = toolkit.createSection(this, "Attributes");
+			attributesSection = createSection(this, "Attributes");
 			attributesSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 			attributesComposite = toolkit.createComposite(attributesSection);
 			attributesSection.setClient(attributesComposite);
 			attributesComposite.setLayout(new GridLayout(3,false));
-//			toolkit.track(attributesComposite);
 		}
 		return attributesComposite;
 	}
 
 	protected Composite getReferencesParent() {
 		if (referencesSection==null || referencesSection.isDisposed()) {
-			referencesSection = toolkit.createSection(this, "References");
+			referencesSection = createSection(this, "References");
 			referencesSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 			referencesComposite = toolkit.createComposite(referencesSection);
 			referencesSection.setClient(referencesComposite);
 			referencesComposite.setLayout(new GridLayout(3,false));
-//			toolkit.track(referencesComposite);
 		}
 		return referencesComposite;
 	}
@@ -273,19 +271,44 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		return label;
 	}
 
+	public Font getDescriptionFont() {
+		if (descriptionFont==null) {
+			Display display = Display.getCurrent();
+		    FontData data = display.getSystemFont().getFontData()[0];
+		    descriptionFont = new Font(display, data.getName(), data.getHeight() + 1, SWT.NONE);
+		}
+		return descriptionFont;
+	}
+
 	protected StyledText createDescription(Composite parent, String description) {
-		StyledText styledText = toolkit.createDescription(parent, description);
+		Display display = Display.getCurrent();
+		final StyledText styledText = new StyledText(parent, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.WRAP | SWT.READ_ONLY);
+		styledText.setText(description);
+
+	    styledText.setFont(getDescriptionFont());
+		
+		styledText.setBackground(display.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+		styledText.setForeground(display.getSystemColor(SWT.COLOR_INFO_FOREGROUND));
 		
 		GridData d = new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1);
 		d.horizontalIndent = 4;
 		d.verticalIndent = 4;
-		d.heightHint = 4 * toolkit.getDescriptionFont().getFontData()[0].getHeight();
+		d.heightHint = 4 * getDescriptionFont().getFontData()[0].getHeight();
 		d.widthHint = 100;
 		styledText.setLayoutData(d);
 
 		return styledText;
 	}
 
+	protected Section createSection(Composite parent, String title) {
+		Section section = toolkit.createSection(parent,
+				ExpandableComposite.TWISTIE |
+				ExpandableComposite.EXPANDED |
+				ExpandableComposite.TITLE_BAR);
+		section.setText(title);
+		return section;
+	}
+	
 	protected void bindAttribute(EObject object, String name) {
 		EStructuralFeature feature = ((EObject)object).eClass().getEStructuralFeature(name);
 		if (feature instanceof EAttribute) {
@@ -382,7 +405,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 			}
 
 			public void updateEObject(final List<EObject> refs, final EList<EObject> result) {
-				TransactionalEditingDomain domain = bpmn2Editor.getEditingDomain();
+				TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
 				domain.getCommandStack().execute(new RecordingCommand(domain) {
 					@Override
 					protected void doExecute() {
@@ -403,9 +426,18 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		};
 		editButton.addSelectionListener(editListener);
 	}
+	
+	public ComboViewer createComboViewer(Composite parent, AdapterFactoryLabelProvider labelProvider, int style) {
+		ComboViewer comboViewer = new ComboViewer(parent, style);
+		comboViewer.setLabelProvider(labelProvider);
+
+		Combo combo = comboViewer.getCombo();
+		
+		return comboViewer;
+	}
 
 	private void createSingleItemEditor(Composite parent, final EObject object, final EStructuralFeature reference, Object eGet, Collection values) {
-		final ComboViewer comboViewer = toolkit.createComboViewer(parent, LABEL_PROVIDER, SWT.NONE);
+		final ComboViewer comboViewer = createComboViewer(parent, LABEL_PROVIDER, SWT.NONE);
 		Combo combo = comboViewer.getCombo();
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
@@ -441,7 +473,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 			}
 
 			public void updateEObject(final Object result) {
-				TransactionalEditingDomain domain = bpmn2Editor.getEditingDomain();
+				TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
 				domain.getCommandStack().execute(new RecordingCommand(domain) {
 					@Override
 					protected void doExecute() {
@@ -451,7 +483,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 			}
 			
 			public void updateGatewayDirection(final Object result) {
-				TransactionalEditingDomain domain = bpmn2Editor.getEditingDomain();
+				TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
 				domain.getCommandStack().execute(new RecordingCommand(domain) {
 					@Override
 					protected void doExecute() {
@@ -477,10 +509,6 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 
 		text.setText(listText);
 	}
-
-	public void setShape(BPMNShape shape) {
-		this.shape = shape;
-	}
 	
 	protected void bindText(final EObject object, final EStructuralFeature a, final Text text) {
 
@@ -497,20 +525,20 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 			public void handleValueChange(final ValueChangeEvent e) {
 
 				if (!text.getText().equals(object.eGet(a))) {
-					TransactionalEditingDomain editingDomain = bpmn2Editor.getEditingDomain();
+					TransactionalEditingDomain editingDomain = getDiagramEditor().getEditingDomain();
 					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 						@Override
 						protected void doExecute() {
 							object.eSet(a, e.diff.getNewValue());
 						}
 					});
-					if (bpmn2Editor.getDiagnostics()!=null) {
+					if (getDiagramEditor().getDiagnostics()!=null) {
 						// revert the change and display error status message.
 						text.setText((String) object.eGet(a));
-						bpmn2Editor.showErrorMessage(bpmn2Editor.getDiagnostics().getMessage());
+						getDiagramEditor().showErrorMessage(getDiagramEditor().getDiagnostics().getMessage());
 					}
 					else
-						bpmn2Editor.showErrorMessage(null);
+						getDiagramEditor().showErrorMessage(null);
 				}
 			}
 		});
@@ -523,7 +551,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 
 			@Override
 			public void focusLost(FocusEvent e) {
-				bpmn2Editor.showErrorMessage(null);
+				getDiagramEditor().showErrorMessage(null);
 			}
 		});
 	}
@@ -539,7 +567,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 			public void handleValueChange(ValueChangeEvent event) {
 
 				if (!object.eGet(a).equals(button.getSelection())) {
-					TransactionalEditingDomain editingDomain = bpmn2Editor.getEditingDomain();
+					TransactionalEditingDomain editingDomain = getDiagramEditor().getEditingDomain();
 					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 						@Override
 						protected void doExecute() {
@@ -547,13 +575,13 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 						}
 					});
 					
-					if (bpmn2Editor.getDiagnostics()!=null) {
+					if (getDiagramEditor().getDiagnostics()!=null) {
 						// revert the change and display error status message.
 						button.setSelection((Boolean) object.eGet(a));
-						bpmn2Editor.showErrorMessage(bpmn2Editor.getDiagnostics().getMessage());
+						getDiagramEditor().showErrorMessage(getDiagramEditor().getDiagnostics().getMessage());
 					}
 					else
-						bpmn2Editor.showErrorMessage(null);
+						getDiagramEditor().showErrorMessage(null);
 				}
 			}
 		});
@@ -566,7 +594,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 
 			@Override
 			public void focusLost(FocusEvent e) {
-				bpmn2Editor.showErrorMessage(null);
+				getDiagramEditor().showErrorMessage(null);
 			}
 		});
 	}
@@ -617,20 +645,20 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 
 			@SuppressWarnings("restriction")
 			private void setFeatureValue(final int i) {
-				RecordingCommand command = new RecordingCommand(bpmn2Editor.getEditingDomain()) {
+				RecordingCommand command = new RecordingCommand(getDiagramEditor().getEditingDomain()) {
 					@Override
 					protected void doExecute() {
 						object.eSet(a, i);
 					}
 				};
-				bpmn2Editor.getEditingDomain().getCommandStack().execute(command);
-				if (bpmn2Editor.getDiagnostics()!=null) {
+				getDiagramEditor().getEditingDomain().getCommandStack().execute(command);
+				if (getDiagramEditor().getDiagnostics()!=null) {
 					// revert the change and display error status message.
 					text.setText((String) object.eGet(a));
-					bpmn2Editor.showErrorMessage(bpmn2Editor.getDiagnostics().getMessage());
+					getDiagramEditor().showErrorMessage(getDiagramEditor().getDiagnostics().getMessage());
 				}
 				else
-					bpmn2Editor.showErrorMessage(null);
+					getDiagramEditor().showErrorMessage(null);
 			}
 		});
 
@@ -643,7 +671,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 
 			@Override
 			public void focusLost(FocusEvent e) {
-				bpmn2Editor.showErrorMessage(null);
+				getDiagramEditor().showErrorMessage(null);
 			}
 		});
 	}
@@ -659,8 +687,11 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 
 		if (preferences.isEnabled(object.eClass(), feature)) {
 
-			AbstractBpmn2TableComposite tableComposite = new AbstractBpmn2TableComposite(this, AbstractBpmn2TableComposite.DEFAULT_STYLE);
-			toolkit.track(tableComposite);
+			AbstractBpmn2TableComposite tableComposite = null;
+			if (propertySection!=null)
+				tableComposite = new AbstractBpmn2TableComposite(propertySection, AbstractBpmn2TableComposite.DEFAULT_STYLE);
+			else
+				tableComposite = new AbstractBpmn2TableComposite(this, AbstractBpmn2TableComposite.DEFAULT_STYLE);
 			tableComposite.bindList(object, feature, itemProviderAdapter);
 		}
 	}

@@ -17,40 +17,26 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-public class ImportsPropertySection extends AbstractBpmn2PropertySection implements
-		ITabbedPropertyConstants {
-	
-	ImportsPropertyComposite composite;
+public class ImportsPropertySection extends AbstractBpmn2PropertySection {
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
+	 */
 	@Override
-	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		super.createControls(parent, aTabbedPropertySheetPage);
-		composite = new ImportsPropertyComposite(parent, SWT.BORDER);
+	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+		return  new ImportsPropertyComposite(this);
 	}
 
 	@Override
-	protected AbstractBpmn2PropertiesComposite getComposite() {
-		return composite;
-	}
-
-	@Override
-	public void refresh() {
-		PictogramElement pe = getSelectedPictogramElement();
-		if (pe != null) {
-			EObject be = (EObject) Graphiti.getLinkService()
-					.getBusinessObjectForLinkedPictogramElement(pe);
-			if (be instanceof BPMNDiagram) {
-				try {
-					Definitions definitions = ModelHandlerLocator
-							.getModelHandler(be.eResource()).getDefinitions();
-					composite.setEObject((BPMN2Editor) getDiagramEditor(),
-							definitions);
-				} catch (IOException e) {
-					Activator.showErrorWithLogging(e);
-				}
+	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
+		EObject be = super.getBusinessObjectForPictogramElement(pe);
+		if (be instanceof BPMNDiagram) {
+			try {
+				return ModelHandlerLocator.getModelHandler(be.eResource()).getDefinitions();
+			} catch (IOException e) {
+				Activator.showErrorWithLogging(e);
 			}
-			
-			super.refresh();
 		}
+		return null;
 	}
 }

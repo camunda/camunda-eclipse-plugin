@@ -548,7 +548,7 @@ public class XSDUtils {
 	
 	/**
 	 * Returns the attributes on the documentation element if they exist.  I.e. returns source and xml:lang
-	 * Returns an empty map if none.
+	 * Returns an empty parentMap if none.
 	 * @param type
 	 * @return
 	 */
@@ -585,7 +585,7 @@ public class XSDUtils {
 
 	/**
 	 * Returns the attributes on the documentation element if they exist.  I.e. returns source and xml:lang
-	 * Returns an empty map if none.
+	 * Returns an empty parentMap if none.
 	 * @param element
 	 * @return
 	 */

@@ -17,6 +17,13 @@ import org.eclipse.ui.IWorkbenchPart;
 
 public interface IBpmn2PropertySection {
 	
+	/**
+	 * Checks the project preferences for BPMN2 element enablement.
+	 * 
+	 * @param part - the BPMN2Editor part
+	 * @param selection - the currently selected BPMN2 element
+	 * @return true if the element is enabled and should be displayed in the property section
+	 */
 	public boolean appliesTo(IWorkbenchPart part, ISelection selection);
 
 }

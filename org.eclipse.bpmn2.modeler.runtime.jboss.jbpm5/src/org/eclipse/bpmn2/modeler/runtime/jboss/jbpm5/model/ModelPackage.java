@@ -94,7 +94,7 @@ public interface ModelPackage extends EPackage {
 	int DOCUMENT_ROOT__MIXED = Bpmn2Package.DOCUMENT_ROOT__MIXED;
 
 	/**
-	 * The feature id for the '<em><b>XMLNS Prefix Map</b></em>' map.
+	 * The feature id for the '<em><b>XMLNS Prefix Map</b></em>' parentMap.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -103,7 +103,7 @@ public interface ModelPackage extends EPackage {
 	int DOCUMENT_ROOT__XMLNS_PREFIX_MAP = Bpmn2Package.DOCUMENT_ROOT__XMLNS_PREFIX_MAP;
 
 	/**
-	 * The feature id for the '<em><b>XSI Schema Location</b></em>' map.
+	 * The feature id for the '<em><b>XSI Schema Location</b></em>' parentMap.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated

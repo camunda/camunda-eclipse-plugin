@@ -34,40 +34,33 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-public class AdvancedPropertySection extends GFPropertySection implements ITabbedPropertyConstants, IBpmn2PropertySection {
+public class AdvancedPropertySection extends AbstractBpmn2PropertySection {
 
-	private ImprovedAdvancedPropertiesComposite composite;
+	private AdvancedPropertiesComposite composite;
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
+	 */
 	@Override
-	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		super.createControls(parent, aTabbedPropertySheetPage);
-		parent.setLayout(new FillLayout());
-
-		composite = new ImprovedAdvancedPropertiesComposite(parent, SWT.BORDER);
-		composite.setSheetPage(aTabbedPropertySheetPage);
+	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+		return new AdvancedPropertiesComposite(this);
 	}
 
 	@Override
-	public void refresh() {
-		PictogramElement pe = getSelectedPictogramElement();
-		if (pe != null) {
-			EObject be = BusinessObjectUtil.getFirstElementOfType(pe, BaseElement.class,true);
-			if (be==null) {
-				// maybe it's the Diagram (editor canvas)?
-				be = BusinessObjectUtil.getFirstElementOfType(pe, BPMNDiagram.class);
-			}
-			if (be instanceof BPMNDiagramImpl) {
-				try {
-					composite.setEObject((BPMN2Editor) getDiagramEditor(),
-							ModelHandlerLocator.getModelHandler(be.eResource()).getDefinitions());
-				} catch (IOException e) {
-					Activator.showErrorWithLogging(e);
-				}
-			} else {
-				composite.setEObject((BPMN2Editor) getDiagramEditor(), be);
-			}
-
+	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
+		EObject be = BusinessObjectUtil.getFirstElementOfType(pe, BaseElement.class,true);
+		if (be==null) {
+			// maybe it's the Diagram (editor canvas)?
+			be = BusinessObjectUtil.getFirstElementOfType(pe, BPMNDiagram.class);
 		}
+		if (be instanceof BPMNDiagramImpl) {
+			try {
+				be = ModelHandlerLocator.getModelHandler(be.eResource()).getDefinitions();
+			} catch (IOException e) {
+				Activator.showErrorWithLogging(e);
+			}
+		}
+		return be;
 	}
 
 	@Override

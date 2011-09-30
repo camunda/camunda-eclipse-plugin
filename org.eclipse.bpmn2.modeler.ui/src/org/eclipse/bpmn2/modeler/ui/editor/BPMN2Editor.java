@@ -52,11 +52,13 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.jface.action.IStatusLineManager;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
@@ -84,7 +86,9 @@ public class BPMN2Editor extends DiagramEditor {
 	private IFile diagramFile;
 	
 	private IWorkbenchListener workbenchListener;
+	private ISelectionListener selectionListener;
 	private boolean workbenchShutdown = false;
+	private static BPMN2Editor activeEditor;
 	
 	private BPMN2EditingDomainListener editingDomainListener;
 	
@@ -109,7 +113,11 @@ public class BPMN2Editor extends DiagramEditor {
 			return getEditor(object.eResource().getResourceSet());
 		return null;
 	}
-
+	
+	public static BPMN2Editor getActiveEditor() {
+		return activeEditor;
+	}
+	
 	public static BPMN2Editor getEditor(ResourceSet resourceSet) {
 	    Iterator<Adapter> it = resourceSet.eAdapters().iterator();
 	    while (it.hasNext()) {
@@ -151,6 +159,7 @@ public class BPMN2Editor extends DiagramEditor {
 		addWorkbenchListener();
 		
 		super.init(site, input);
+		addSelectionListener();
 	}
 
 	public Bpmn2Preferences getPreferences() {
@@ -308,6 +317,30 @@ public class BPMN2Editor extends DiagramEditor {
 		}
 	}
 	
+	private void addSelectionListener()
+	{
+		if (selectionListener==null) {
+			selectionListener = new ISelectionListener() {
+
+				@Override
+				public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+					if (part == BPMN2Editor.this) {
+						activeEditor = BPMN2Editor.this;
+					}
+				}
+				
+			};
+			getSite().getPage().addSelectionListener(selectionListener);
+		}
+	}
+
+	private void removeSelectionListener()
+	{
+		if (selectionListener!=null) {
+			getSite().getPage().removeSelectionListener(selectionListener);
+		}
+	}
+	
 	public BPMN2EditingDomainListener getEditingDomainListener() {
 		if (editingDomainListener==null) {
 			TransactionalEditingDomainImpl editingDomain = (TransactionalEditingDomainImpl)getEditingDomain();
@@ -360,6 +393,9 @@ public class BPMN2Editor extends DiagramEditor {
 		}
 		ModelUtil.clearIDs(modelHandler.getResource(), instances==0);
 		getResourceSet().eAdapters().remove(getEditorAdapter());
+		removeSelectionListener();
+		if (instances==0)
+			activeEditor = null;
 		
 		super.dispose();
 		ModelHandlerLocator.releaseModel(modelUri);

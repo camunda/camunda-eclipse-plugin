@@ -14,6 +14,7 @@ package org.eclipse.bpmn2.modeler.ui.property.tasks;
 
 import java.util.List;
 
+import org.eclipse.bpmn2.ReceiveTask;
 import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
@@ -31,33 +32,19 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 public class ServiceTaskPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
 
-	private ServiceTaskPropertiesComposite composite;
-
+	/* (non-Javadoc)
+	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
+	 */
 	@Override
-	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		super.createControls(parent, aTabbedPropertySheetPage);
-		composite = new ServiceTaskPropertiesComposite(parent, SWT.BORDER);
+	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+		return new ServiceTaskPropertiesComposite(this);
 	}
 
 	@Override
-	protected AbstractBpmn2PropertiesComposite getComposite() {
-		return composite;
-	}
-
-	@Override
-	public void refresh() {
-		PictogramElement pe = getSelectedPictogramElement();
-		if (pe != null) {
-			EObject be = (EObject) Graphiti.getLinkService()
-					.getBusinessObjectForLinkedPictogramElement(pe);
-			if (be instanceof ServiceTask) {
-				ServiceTask se = BusinessObjectUtil.
-						getFirstElementOfType(pe, ServiceTask.class,true);
-				composite.setEObject((BPMN2Editor) getDiagramEditor(),
-						se);
-			}
-			
-			super.refresh();
-		}
+	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
+		EObject be = super.getBusinessObjectForPictogramElement(pe);
+		if (be instanceof ServiceTask)
+			return be;
+		return null;
 	}
 }

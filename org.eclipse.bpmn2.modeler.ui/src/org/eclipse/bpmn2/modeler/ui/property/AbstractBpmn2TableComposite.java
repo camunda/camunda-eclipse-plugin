@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.providers.ColumnTableProvider;
 import org.eclipse.bpmn2.modeler.ui.property.providers.TableCursor;
@@ -99,9 +100,9 @@ public class AbstractBpmn2TableComposite extends Composite {
 	public static final int CUSTOM_BUTTONS_MASK = (
 			ADD_BUTTON|REMOVE_BUTTON|MOVE_BUTTONS|EDIT_BUTTON);
 
-	protected TrackingFormToolkit toolkit;
+	protected AbstractBpmn2PropertySection propertySection;
+	protected FormToolkit toolkit;
 	protected BPMN2Editor bpmn2Editor;
-	protected TabbedPropertySheetPage tabbedPropertySheetPage;
 
 	// widgets
 	SashForm sashForm;
@@ -126,39 +127,46 @@ public class AbstractBpmn2TableComposite extends Composite {
 	
 	protected AbstractTableProvider tableProvider;
 	
-	public AbstractBpmn2TableComposite(final Composite parent, int style) {
-		super(parent, style & ~CUSTOM_STYLES_MASK);
+	public AbstractBpmn2TableComposite(AbstractBpmn2PropertySection section, int style) {
+		super(section.getSectionRoot(), style & ~CUSTOM_STYLES_MASK);
+
 		addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
-				if (!(parent instanceof AbstractBpmn2PropertiesComposite))
-					toolkit.dispose();
+				PropertyUtil.disposeChildWidgets(AbstractBpmn2TableComposite.this);
 			}
 		});
-		if (parent instanceof AbstractBpmn2PropertiesComposite) {
-			toolkit = ((AbstractBpmn2PropertiesComposite)parent).getToolkit();
-		}
-		else {
-			toolkit = new TrackingFormToolkit(Display.getCurrent());
-		}
+
+		setLayout(new GridLayout(3, false));
+		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+		propertySection = section;
+		toolkit = propertySection.getWidgetFactory();
 		this.style = style;
-		toolkit.track(this);
+		toolkit.adapt(this);
 		toolkit.paintBordersFor(this);
+	}
+
+	public AbstractBpmn2TableComposite(final Composite parent, int style) {
+		super(parent, style & ~CUSTOM_STYLES_MASK);
+
+		addDisposeListener(new DisposeListener() {
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				PropertyUtil.disposeChildWidgets(AbstractBpmn2TableComposite.this);
+			}
+		});
+
 		setLayout(new GridLayout(3, false));
 		// assume we are being placed in an AbstractBpmn2PropertyComposite which has
 		// a GridLayout of 3 columns
 		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
-		
-		if (parent instanceof AbstractBpmn2PropertiesComposite) {
-			bpmn2Editor = ((AbstractBpmn2PropertiesComposite)parent).getDiagramEditor();
-			tabbedPropertySheetPage = ((AbstractBpmn2PropertiesComposite)parent).getSheetPage();
-		}
+		toolkit = new FormToolkit(Display.getCurrent());
 	}
 	
-	public void setSheetPage(TabbedPropertySheetPage tabbedPropertySheetPage) {
-		this.tabbedPropertySheetPage = tabbedPropertySheetPage;
+	public TabbedPropertySheetPage getTabbedPropertySheetPage() {
+		return propertySection.getTabbedPropertySheetPage();
 	}
-
+	
 	public void setTableProvider(AbstractTableProvider provider) {
 		tableProvider = provider;
 	}
@@ -226,7 +234,9 @@ public class AbstractBpmn2TableComposite extends Composite {
 	 * @return
 	 */
 	public Composite createDetailComposite(Composite parent) {
-		return new DefaultPropertiesComposite(parent, SWT.NONE);
+		DefaultPropertiesComposite composite = new DefaultPropertiesComposite(parent,SWT.NONE);
+		composite.setPropertySection(propertySection);
+		return composite;
 	}
 	
 	/**
@@ -317,31 +327,38 @@ public class AbstractBpmn2TableComposite extends Composite {
 		if ((style & HIDE_TITLE)==0 || (style & SHOW_DETAILS)!=0) {
 			// display title in the table section and/or show a details section
 			// SHOW_DETAILS forces drawing of a section title
-			sashForm = toolkit.createSashForm(this, SWT.NONE);
+			sashForm = new SashForm(this, SWT.NONE);
 			sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 			
-			tableSection = toolkit.createSection(sashForm, ModelUtil.toDisplayName(feature.getName()),
+			tableSection = toolkit.createSection(sashForm,
 					ExpandableComposite.TWISTIE |
 					ExpandableComposite.COMPACT |
 					ExpandableComposite.TITLE_BAR);
+			tableSection.setText(ModelUtil.toDisplayName(feature.getName()));
 
 			tableComposite = toolkit.createComposite(tableSection, SWT.NONE);
 			tableSection.setClient(tableComposite);
 			tableComposite.setLayout(new GridLayout(3, false));
 			createTableAndButtons(tableComposite,style);
 			
-			detailSection = toolkit.createSection(sashForm, ModelUtil.toDisplayName(listItemClass.getName()) + " Details");
+			detailSection = toolkit.createSection(sashForm,
+					ExpandableComposite.TWISTIE |
+					ExpandableComposite.EXPANDED |
+					ExpandableComposite.TITLE_BAR);
+			detailSection.setText(ModelUtil.toDisplayName(listItemClass.getName()) + " Details");
+
 			detailComposite = createDetailComposite(detailSection);
-			detailSection.setClient(detailComposite);
-			toolkit.track(detailComposite);
-			
+			if (detailComposite!=null) {
+				detailSection.setClient(detailComposite);
+				toolkit.adapt(detailComposite);
+			}
 			detailSection.setVisible(false);
 
 			tableSection.addExpansionListener(new IExpansionListener() {
 
 				@Override
 				public void expansionStateChanging(ExpansionEvent e) {
-					if (!e.getState()) {
+					if (!e.getState() && detailSection!=null) {
 						detailSection.setVisible(false);
 					}
 				}
@@ -353,21 +370,22 @@ public class AbstractBpmn2TableComposite extends Composite {
 				
 			});
 			
-			detailSection.addExpansionListener(new IExpansionListener() {
-
-				@Override
-				public void expansionStateChanging(ExpansionEvent e) {
-					if (!e.getState()) {
-						detailSection.setVisible(false);
+			if (detailSection!=null) {
+				detailSection.addExpansionListener(new IExpansionListener() {
+	
+					@Override
+					public void expansionStateChanging(ExpansionEvent e) {
+						if (!e.getState()) {
+							detailSection.setVisible(false);
+						}
 					}
-				}
-
-				@Override
-				public void expansionStateChanged(ExpansionEvent e) {
-					redrawPage();
-				}
-				
-			});
+	
+					@Override
+					public void expansionStateChanged(ExpansionEvent e) {
+						redrawPage();
+					}
+				});
+			}					
 			
 			sashForm.setWeights(new int[] { 1, 1 });
 		}
@@ -424,8 +442,8 @@ public class AbstractBpmn2TableComposite extends Composite {
 					detailSection.setVisible(enable);
 					if (enable) {
 						IStructuredSelection sel = (IStructuredSelection) event.getSelection();
-						if (sel.getFirstElement() instanceof EObject)
-							((DefaultPropertiesComposite)detailComposite).setEObject(bpmn2Editor,(EObject)sel.getFirstElement());
+						if (sel.getFirstElement() instanceof EObject && detailComposite instanceof AbstractBpmn2PropertiesComposite)
+							((AbstractBpmn2PropertiesComposite)detailComposite).setEObject(bpmn2Editor,(EObject)sel.getFirstElement());
 					}
 					sashForm.layout(true);
 					redrawPage();
@@ -540,11 +558,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 	}
 	
 	protected void redrawPage() {
-		if (tabbedPropertySheetPage!=null) {
-			Composite composite = (Composite)tabbedPropertySheetPage.getControl();
-			composite.layout(true);
-			tabbedPropertySheetPage.resizeScrolledComposite();
-		}
+		propertySection.layout();
 	}
 
 	private void createTableAndButtons(Composite parent, int style) {
@@ -589,24 +603,24 @@ public class AbstractBpmn2TableComposite extends Composite {
 		// Create buttons for add/remove/up/down
 		////////////////////////////////////////////////////////////
 		if ((style & ADD_BUTTON)!=0) {
-			addButton = toolkit.createPushButton(buttonsComposite, "Add");
+			addButton = toolkit.createButton(buttonsComposite, "Add", SWT.PUSH);
 		}
 
 		if ((style & REMOVE_BUTTON)!=0) {
-			removeButton = toolkit.createPushButton(buttonsComposite, "Remove");
+			removeButton = toolkit.createButton(buttonsComposite, "Remove", SWT.PUSH);
 			removeButton.setEnabled(false);
 		}
 		
 		if ((style & MOVE_BUTTONS)!=0) {
-			upButton = toolkit.createPushButton(buttonsComposite, "Up");
+			upButton = toolkit.createButton(buttonsComposite, "Up", SWT.PUSH);
 			upButton.setEnabled(false);
 	
-			downButton = toolkit.createPushButton(buttonsComposite, "Down");
+			downButton = toolkit.createButton(buttonsComposite, "Down", SWT.PUSH);
 			downButton.setEnabled(false);
 		}
 		
 		if ((style & EDIT_BUTTON)!=0) {
-			editButton = toolkit.createPushButton(buttonsComposite, "Edit...");
+			editButton = toolkit.createButton(buttonsComposite, "Edit...", SWT.PUSH);
 			editButton.setEnabled(false);
 		}
 

@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablementPreferences;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
@@ -52,6 +53,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
@@ -62,18 +64,17 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 @SuppressWarnings("unchecked")
-public class ImprovedAdvancedPropertiesComposite extends Composite {
+public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 
-	private final FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 	private EObject be;
 	private final TreeViewer treeViewer;
-	private TabbedPropertySheetPage aTabbedPropertySheetPage;
-	private BPMN2Editor diagramEditor;
-	private final DefaultPropertiesComposite mainPropertiesComposite;
-	private ToolEnablementPreferences prefs;
+	private final DefaultPropertiesComposite detailsPropertiesComposite;
+	private ToolEnablementPreferences preferences;
 	private TransactionalEditingDomain domain;
 	private DomainListener domainListener;
-
+	private Section treeSection;
+	private Section detailsSection;
+	
 	class DomainListener extends ResourceSetListenerImpl {
 		@Override
 		public void resourceSetChanged(ResourceSetChangeEvent event) {
@@ -85,74 +86,86 @@ public class ImprovedAdvancedPropertiesComposite extends Composite {
 	}
 
 	/**
-	 * Create the composite.
-	 * 
-	 * @param parent
-	 * @param style
+	 * @param section
 	 */
-	public ImprovedAdvancedPropertiesComposite(Composite parent, int style) {
-		super(parent, style);
-		addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				toolkit.dispose();
-			}
-		});
-		toolkit.adapt(this);
-		toolkit.paintBordersFor(this);
-		FillLayout fillLayout = new FillLayout(SWT.HORIZONTAL);
-		fillLayout.spacing = 2;
-		fillLayout.marginHeight = 3;
-		fillLayout.marginWidth = 3;
-		setLayout(fillLayout);
+	public AdvancedPropertiesComposite(AbstractBpmn2PropertySection section) {
+		super(section);
 
 		SashForm sashForm = new SashForm(this, SWT.NONE);
 		sashForm.setSashWidth(5);
 		toolkit.adapt(sashForm);
 		toolkit.paintBordersFor(sashForm);
+		sashForm.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,3,1));
 
-		Section sctnProperties = toolkit.createSection(sashForm, ExpandableComposite.TITLE_BAR);
-		toolkit.paintBordersFor(sctnProperties);
-		sctnProperties.setText("Properties");
+		treeSection = toolkit.createSection(sashForm, ExpandableComposite.TITLE_BAR);
+		toolkit.paintBordersFor(treeSection);
 
-		Composite composite = toolkit.createComposite(sctnProperties, SWT.NONE);
+		Composite composite = toolkit.createComposite(treeSection, SWT.NONE);
 		toolkit.paintBordersFor(composite);
-		sctnProperties.setClient(composite);
+		treeSection.setClient(composite);
 		composite.setLayout(new GridLayout(1, false));
 
 		treeViewer = new TreeViewer(composite, SWT.BORDER);
 		Tree tree = treeViewer.getTree();
-		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2));
+		tree.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, false, true, 1, 2));
 		toolkit.paintBordersFor(tree);
 		treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				mainPropertiesComposite.setEObject(diagramEditor, getSelectedBaseElement());
-				aTabbedPropertySheetPage.resizeScrolledComposite();
+				// clean up any table widgets that may have been created by the previous
+				// incarnation of DefaultPropertiesComposite
+				for (Control c : getChildren()) {
+					if (c instanceof AbstractBpmn2TableComposite)
+						c.dispose();
+				}
+				EObject obj = getSelectedBaseElement();
+				if (obj==null) {
+					detailsSection.setVisible(false);
+				}
+				else {
+					detailsSection.setVisible(true);
+					detailsPropertiesComposite.setItemProvider(null);
+					detailsPropertiesComposite.setEObject(propertySection.editor, obj);
+					String name = ModelUtil.getDisplayName(obj);
+					detailsSection.setText(name);
+	
+					propertySection.recursivelayout(AdvancedPropertiesComposite.this);
+					propertySection.tabbedPropertySheetPage.resizeScrolledComposite();
+				}
 			}
 		});
 
 		treeViewer.setContentProvider(new PropertyTreeContentProvider(this));
 		treeViewer.setLabelProvider(new AdapterFactoryLabelProvider(AbstractBpmn2PropertiesComposite.ADAPTER_FACTORY));
 
-		Section sctnEditors = toolkit.createSection(sashForm, ExpandableComposite.TITLE_BAR);
-		toolkit.paintBordersFor(sctnEditors);
-		sctnEditors.setText("Attributes");
+		detailsSection = toolkit.createSection(sashForm, ExpandableComposite.TITLE_BAR);
+		toolkit.paintBordersFor(detailsSection);
+		detailsSection.setText("Properties");
 
-		mainPropertiesComposite = new DefaultPropertiesComposite(sctnEditors, SWT.NONE);
-		sctnEditors.setClient(mainPropertiesComposite);
-		toolkit.adapt(mainPropertiesComposite);
-		toolkit.paintBordersFor(mainPropertiesComposite);
+		detailsPropertiesComposite = new DefaultPropertiesComposite(detailsSection, SWT.NONE);
+		detailsPropertiesComposite.setPropertySection(propertySection);
+		
+		detailsSection.setClient(detailsPropertiesComposite);
+		toolkit.adapt(detailsPropertiesComposite);
+		toolkit.paintBordersFor(detailsPropertiesComposite);
 		sashForm.setWeights(new int[] { 1, 1 });
 
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite#createBindings(org.eclipse.emf.ecore.EObject)
+	 */
+	@Override
+	public void createBindings(EObject be) {
+	}
+
+	@Override
 	public void setEObject(BPMN2Editor diagramEditor, EObject be) {
 		if (domain != null && domainListener != null) {
 			domain.removeResourceSetListener(domainListener);
 		}
-		this.diagramEditor = diagramEditor;
+
 		this.be = be;
 
 		domain = diagramEditor.getEditingDomain();
@@ -160,26 +173,27 @@ public class ImprovedAdvancedPropertiesComposite extends Composite {
 		domain.addResourceSetListener(domainListener);
 
 		treeViewer.setInput(be);
-		prefs = ToolEnablementPreferences.getPreferences(diagramEditor.getModelFile().getProject());
+		preferences = ToolEnablementPreferences.getPreferences(diagramEditor.getModelFile().getProject());
+		hookPropertySheetPageMenu();
+		treeSection.setText(ModelUtil.getObjectName(be));
+		detailsSection.setVisible(false);
 	}
 
-	public void setSheetPage(TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		this.aTabbedPropertySheetPage = aTabbedPropertySheetPage;
-
+	private void hookPropertySheetPageMenu() {
 		MenuManager manager = new MenuManager("#PropertiesMenu");
 		manager.setRemoveAllWhenShown(true);
 		manager.addMenuListener(new IMenuListener() {
 
 			@Override
 			public void menuAboutToShow(IMenuManager manager) {
-				ImprovedAdvancedPropertiesComposite.this.buildMenu((MenuManager) manager);
+				AdvancedPropertiesComposite.this.buildMenu((MenuManager) manager);
 			}
 		});
 
 		Tree tree = treeViewer.getTree();
 		Menu menu = manager.createContextMenu(tree);
 		tree.setMenu(menu);
-		aTabbedPropertySheetPage.getSite().registerContextMenu("#PropertiesMenu", manager, treeViewer);
+		propertySection.tabbedPropertySheetPage.getSite().registerContextMenu("#PropertiesMenu", manager, treeViewer);
 	}
 
 	protected void buildMenu(MenuManager manager) {
@@ -213,7 +227,7 @@ public class ImprovedAdvancedPropertiesComposite extends Composite {
 		ItemProviderAdapter itemProviderAdapter = (ItemProviderAdapter) new Bpmn2ItemProviderAdapterFactory().adapt(
 				baseElement, ItemProviderAdapter.class);
 		Collection<CommandParameter> desc = (Collection<CommandParameter>) itemProviderAdapter.getNewChildDescriptors(
-				baseElement, diagramEditor.getEditingDomain(), null);
+				baseElement, propertySection.editor.getEditingDomain(), null);
 
 		EList<EReference> eAllContainments = baseElement.eClass().getEAllContainments();
 
@@ -222,8 +236,8 @@ public class ImprovedAdvancedPropertiesComposite extends Composite {
 
 			EObject commandValue = (EObject) command.value;
 			if (root) {
-				if (eAllContainments.contains(feature) && prefs.isEnabled(commandValue.eClass())
-						&& prefs.isEnabled(commandValue.eClass(), feature)) {
+				if (eAllContainments.contains(feature) && preferences.isEnabled(commandValue.eClass())
+						&& preferences.isEnabled(commandValue.eClass(), feature)) {
 					Object value = baseElement.eGet(feature);
 
 					String name = PropertyUtil.deCamelCase(commandValue.eClass().getName());
@@ -233,7 +247,7 @@ public class ImprovedAdvancedPropertiesComposite extends Composite {
 					manager.add(item);
 				}
 			} else {
-				if (eAllContainments.contains(feature) && prefs.isEnabled(baseElement.eClass(), feature)) {
+				if (eAllContainments.contains(feature) && preferences.isEnabled(baseElement.eClass(), feature)) {
 					Object value = baseElement.eGet(feature);
 
 					String name = PropertyUtil.deCamelCase(commandValue.eClass().getName());
@@ -251,7 +265,7 @@ public class ImprovedAdvancedPropertiesComposite extends Composite {
 		return new Action(prefix) {
 			@Override
 			public void run() {
-				TransactionalEditingDomain domain = diagramEditor.getEditingDomain();
+				TransactionalEditingDomain domain = propertySection.editor.getEditingDomain();
 				domain.getCommandStack().execute(new RecordingCommand(domain) {
 					@Override
 					protected void doExecute() {
@@ -307,14 +321,14 @@ public class ImprovedAdvancedPropertiesComposite extends Composite {
 
 				final EObject container = baseElement.eContainer();
 				final Object eGet = container.eGet(baseElement.eContainingFeature());
-				TransactionalEditingDomain domain = diagramEditor.getEditingDomain();
+				TransactionalEditingDomain domain = propertySection.editor.getEditingDomain();
 
 				domain.getCommandStack().execute(new RecordingCommand(domain) {
 					@SuppressWarnings("rawtypes")
 					@Override
 					protected void doExecute() {
 						List<PictogramElement> pictogramElements = GraphitiUi.getLinkService().getPictogramElements(
-								diagramEditor.getDiagramTypeProvider().getDiagram(), baseElement);
+								propertySection.editor.getDiagramTypeProvider().getDiagram(), baseElement);
 						if (eGet instanceof EList) {
 							((EList) eGet).remove(baseElement);
 						} else {

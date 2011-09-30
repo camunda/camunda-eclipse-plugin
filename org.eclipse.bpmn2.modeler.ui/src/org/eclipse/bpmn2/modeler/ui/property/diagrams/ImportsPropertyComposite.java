@@ -4,6 +4,7 @@ import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Import;
 import org.eclipse.bpmn2.impl.DefinitionsImpl;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.SchemaImportDialog;
@@ -25,16 +26,28 @@ import org.eclipse.wst.wsdl.internal.impl.DefinitionImpl;
 public class ImportsPropertyComposite extends DefaultPropertiesComposite  {
 
 	ImportsTable importsTable;
-	
-	public ImportsPropertyComposite(Composite parent, int style) {
-		super(parent, style);
+
+	/**
+	 * @param section
+	 */
+	public ImportsPropertyComposite(AbstractBpmn2PropertySection section) {
+		super(section);
 	}
 
 	@Override
 	public void createBindings(EObject be) {
 		
-		importsTable = new ImportsTable();
+		importsTable = new ImportsTable(propertySection);
 		importsTable.bind();
+	}
+
+	@Override
+	protected void cleanBindings() {
+		super.cleanBindings();
+		if (importsTable!=null) {
+			importsTable.dispose();
+			importsTable = null;
+		}
 	}
 
 	public class ImportsTable extends AbstractBpmn2TableComposite {
@@ -43,8 +56,8 @@ public class ImportsPropertyComposite extends DefaultPropertiesComposite  {
 		 * @param parent
 		 * @param style
 		 */
-		public ImportsTable() {
-			super(ImportsPropertyComposite.this,
+		public ImportsTable(AbstractBpmn2PropertySection section) {
+			super(section,
 					HIDE_TITLE |
 					ADD_BUTTON |
 					REMOVE_BUTTON |
@@ -60,7 +73,6 @@ public class ImportsPropertyComposite extends DefaultPropertiesComposite  {
 			DefinitionsImpl definitions = (DefinitionsImpl)getEObject();
 			EStructuralFeature imports = definitions.eClass().getEStructuralFeature("imports");
 			
-			setSheetPage(tabbedPropertySheetPage);
 			super.bindList(definitions, imports, itemProviderAdapter);
 			
 			itemProviderAdapter.dispose();

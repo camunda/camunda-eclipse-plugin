@@ -14,6 +14,7 @@
 
 package org.eclipse.bpmn2.modeler.ui.property.tasks;
 
+import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.widgets.Composite;
@@ -21,11 +22,10 @@ import org.eclipse.swt.widgets.Composite;
 public class ChoreographyTaskPropertiesComposite extends DefaultPropertiesComposite {
 
 	/**
-	 * @param parent
-	 * @param style
+	 * @param section
 	 */
-	public ChoreographyTaskPropertiesComposite(Composite parent, int style) {
-		super(parent, style);
+	public ChoreographyTaskPropertiesComposite(AbstractBpmn2PropertySection section) {
+		super(section);
 	}
 	
 	/*

@@ -15,6 +15,7 @@
 package org.eclipse.bpmn2.modeler.ui.property.events;
 
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.widgets.Composite;
 
@@ -24,8 +25,8 @@ public class EndEventPropertiesComposite extends AbstractBpmn2PropertiesComposit
 	 * @param parent
 	 * @param style
 	 */
-	public EndEventPropertiesComposite(Composite parent, int style) {
-		super(parent, style);
+	public EndEventPropertiesComposite(AbstractBpmn2PropertySection section) {
+		super(section);
 	}
 
 	/* (non-Javadoc)

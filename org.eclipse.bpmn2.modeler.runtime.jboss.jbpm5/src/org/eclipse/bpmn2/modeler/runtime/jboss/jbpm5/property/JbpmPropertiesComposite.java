@@ -31,6 +31,7 @@ import java.util.List;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablementPreferences;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.emf.common.util.EList;
@@ -54,8 +55,9 @@ public class JbpmPropertiesComposite extends DefaultPropertiesComposite {
 	private Button customEditorButton;
 	private GridData buttonGridData;
 
-	public JbpmPropertiesComposite(Composite parent, int none) {
-		super(parent, none);
+	public JbpmPropertiesComposite(AbstractBpmn2PropertySection section) {
+		super(section);
+
 		customEditorButton = new Button(this, SWT.None);
 		customEditorButton.setText("Open Custom Editor");
 		buttonGridData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1);

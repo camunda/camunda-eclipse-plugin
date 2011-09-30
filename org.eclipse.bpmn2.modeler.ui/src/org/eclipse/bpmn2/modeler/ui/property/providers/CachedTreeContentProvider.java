@@ -35,10 +35,10 @@ public abstract class CachedTreeContentProvider implements ITreeContentProvider 
 
 	public static final Object UNKNOWN_PARENT = new Object();
 
-	// A null value in the treeNodeToParent map means the node is a root element. 
+	// A null value in the treeNodeToParent parentMap means the node is a root element. 
 	protected HashMap treeNodeToParent;
 
-	// A null value in the treeNodeToChildren map means the node has children, but
+	// A null value in the treeNodeToChildren parentMap means the node has children, but
 	// we don't yet know what they are.  (If it has no children, an empty array would
 	// be present instead).
 	protected HashMap treeNodeToChildren;

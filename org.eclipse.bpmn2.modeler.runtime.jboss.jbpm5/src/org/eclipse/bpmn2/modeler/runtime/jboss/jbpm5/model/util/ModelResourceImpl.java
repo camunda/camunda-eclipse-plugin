@@ -90,9 +90,9 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 			super.processElement(name, prefix, localName);
 			
 			// ugly hack for https://bugs.eclipse.org/bugs/show_bug.cgi?id=355686
-			// Remove the "type" attribute from the feature map if there is one.
+			// Remove the "type" attribute from the feature parentMap if there is one.
 			// The XSI type will have already been used to construct the EObject,
-			// so any "type" in the feature map will be a duplicate which will
+			// so any "type" in the feature parentMap will be a duplicate which will
 			// cause problems during parsing.
 			// See also getXSIType()
 			try {
