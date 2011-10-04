@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.wizards;
 
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -35,7 +36,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 
-public class BPMN2DiagramWizardPage extends WizardPage {
+public class BPMN2DiagramWizardPage2 extends WizardPage {
 	private Text containerText;
 
 	private Text fileText;
@@ -43,16 +44,17 @@ public class BPMN2DiagramWizardPage extends WizardPage {
 	private final ISelection selection;
 
 	private IResource diagramContainer;
+	private Bpmn2DiagramType diagramType = Bpmn2DiagramType.NONE;
 
 	/**
 	 * Constructor for SampleNewWizardPage.
 	 * 
 	 * @param pageName
 	 */
-	public BPMN2DiagramWizardPage(ISelection selection) {
-		super("wizardPage");
+	public BPMN2DiagramWizardPage2(ISelection selection) {
+		super("wizardPage2");
 		setTitle("New BPMN2 File");
-		setDescription("Create a new BPMN2 file.");
+		setDescription("Select file name.");
 		this.selection = selection;
 	}
 
@@ -99,7 +101,8 @@ public class BPMN2DiagramWizardPage extends WizardPage {
 				dialogChanged();
 			}
 		});
-		initialize();
+		updatePageDescription();
+		updateFilename();
 		dialogChanged();
 		setControl(container);
 	}
@@ -108,8 +111,38 @@ public class BPMN2DiagramWizardPage extends WizardPage {
 	 * Tests if the current workbench selection is a suitable diagramContainer to use.
 	 */
 
-	private void initialize() {
-		String filename = "process.bpmn";
+	private void updatePageDescription() {
+		BPMN2DiagramWizardPage1 page1 = (BPMN2DiagramWizardPage1)getWizard().getPage("wizardPage1");
+		String descriptionType = "Unknown Diagram Type";
+		switch (page1.getDiagramType()) {
+		case PROCESS:
+			descriptionType = "Process Diagram";
+			break;
+		case COLLABORATION:
+			descriptionType = "Collaboration Diagram";
+			break;
+		case CHOREOGRAPHY:
+			descriptionType = "Choreography Diagram";
+			break;
+		}
+		setDescription("Enter a file name for the new "+descriptionType);
+	}
+	
+	private void updateFilename() {
+		BPMN2DiagramWizardPage1 page1 = (BPMN2DiagramWizardPage1)getWizard().getPage("wizardPage1");
+		String fileType = "unknown";
+		String filename = fileType+".bpmn";
+		switch (page1.getDiagramType()) {
+		case PROCESS:
+			fileType = "process";
+			break;
+		case COLLABORATION:
+			fileType = "collaboration";
+			break;
+		case CHOREOGRAPHY:
+			fileType = "choreography";
+			break;
+		}
 		if (selection != null && selection.isEmpty() == false && selection instanceof IStructuredSelection) {
 			IStructuredSelection ssel = (IStructuredSelection) selection;
 			if (ssel.size() > 1) {
@@ -128,9 +161,11 @@ public class BPMN2DiagramWizardPage extends WizardPage {
 				} else {
 					container = ((IResource) obj).getParent();
 				}
-				containerText.setText(container.getFullPath().toString());
+				String text = container.getFullPath().toString();
+				if (text!=null && !text.equals(containerText.getText()))
+					containerText.setText(text);
 				for (int i=1; ; ++i) {
-					filename = "process_" + i + ".bpmn";
+					filename = fileType+"_" + i + ".bpmn";
 					IResource file = container.findMember(filename);
 					if (file==null) {
 						break;
@@ -138,7 +173,17 @@ public class BPMN2DiagramWizardPage extends WizardPage {
 				}
 			}
 		}
-		fileText.setText(filename);
+		if (filename!=null && !filename.equals(fileText.getText()))
+			fileText.setText(filename);
+	}
+
+	@Override
+	public void setVisible(boolean visible) {
+		if (visible) {
+			updatePageDescription();
+			updateFilename();
+		}
+		super.setVisible(visible);
 	}
 
 	/**
@@ -193,6 +238,12 @@ public class BPMN2DiagramWizardPage extends WizardPage {
 			}
 		}
 		updateStatus(null);
+	}
+
+	@Override
+	public boolean isPageComplete() {
+		updateFilename();
+		return true;
 	}
 
 	private void updateStatus(String message) {

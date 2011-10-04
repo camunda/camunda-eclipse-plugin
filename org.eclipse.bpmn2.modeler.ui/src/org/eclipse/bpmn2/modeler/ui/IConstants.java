@@ -43,4 +43,11 @@ public interface IConstants {
 	public final String ICON_XSD_ELEMENT_DECLARATION_16 = "obj16/XSDElementDeclaration.gif"; //$NON-NLS-1$
 	public final String ICON_XSD_COMPLEX_TYPE_DEFINITION_16 = "obj16/XSDComplexTypeDefinition.gif"; //$NON-NLS-1$
 	public final String ICON_XSD_SIMPLE_TYPE_DEFINITION_16 = "obj16/XSDSimpleTypeDefinition.gif"; //$NON-NLS-1$
+	
+	public final String IMAGE_PROCESS = "wizards/process.gif";
+	public final String IMAGE_COLLABORATION = "wizards/collaboration.gif";
+	public final String IMAGE_CHOREOGRAPHY = "wizards/choreography.gif";
+	public final String IMAGE_PROCESS_PUSHED = "wizards/process-pushed.gif";
+	public final String IMAGE_COLLABORATION_PUSHED = "wizards/collaboration-pushed.gif";
+	public final String IMAGE_CHOREOGRAPHY_PUSHED = "wizards/choreography-pushed.gif";
 }

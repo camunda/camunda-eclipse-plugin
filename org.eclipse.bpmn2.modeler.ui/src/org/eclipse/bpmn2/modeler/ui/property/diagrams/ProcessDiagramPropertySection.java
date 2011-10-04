@@ -1,22 +1,13 @@
 package org.eclipse.bpmn2.modeler.ui.property.diagrams;
 
-import java.io.IOException;
-
-import org.eclipse.bpmn2.ManualTask;
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Participant;
+import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.di.BPMNDiagram;
-import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
-import org.eclipse.bpmn2.modeler.ui.Activator;
-import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.tasks.ManualTaskPropertiesComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
-import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 public class ProcessDiagramPropertySection extends AbstractBpmn2PropertySection {
 
@@ -33,17 +24,15 @@ public class ProcessDiagramPropertySection extends AbstractBpmn2PropertySection 
 
 	@Override
 	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
-		EObject be = super.getBusinessObjectForPictogramElement(pe);
-		if (be instanceof Participant) {
-			return ((Participant) be).getProcessRef();
-		} else if (be instanceof BPMNDiagram) {
-			try {
-				return ModelHandlerLocator.getModelHandler(be.eResource()).getInternalParticipant().getProcessRef();
-			} catch (IOException e) {
-				Activator.showErrorWithLogging(e);
-			}
+		EObject bo = super.getBusinessObjectForPictogramElement(pe);
+		if (bo instanceof Participant) {
+			return ((Participant) bo).getProcessRef();
+		} else if (bo instanceof BPMNDiagram) {
+			BaseElement be = ((BPMNDiagram)bo).getPlane().getBpmnElement();
+			if (be instanceof Process)
+				return be;
 		} else
-			return be;
+			return bo;
 		
 		return null;
 	}

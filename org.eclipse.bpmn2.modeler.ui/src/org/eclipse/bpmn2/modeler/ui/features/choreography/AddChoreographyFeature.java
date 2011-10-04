@@ -34,6 +34,7 @@ import org.eclipse.bpmn2.modeler.core.di.DIImport;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.choreography.ChoreographyProperties;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
+import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
@@ -65,8 +66,8 @@ public class AddChoreographyFeature extends AbstractAddBPMNShapeFeature {
 	public PictogramElement add(IAddContext context) {
 		ChoreographyActivity choreography = (ChoreographyActivity) context.getNewObject();
 
-		int width = context.getWidth() > 0 ? context.getWidth() : 150;
-		int height = context.getHeight() > 0 ? context.getHeight() : 150;
+		int width = context.getWidth() > 0 ? context.getWidth() : GraphicsUtil.CHOREOGRAPHY_WIDTH;
+		int height = context.getHeight() > 0 ? context.getHeight() : GraphicsUtil.CHOREOGRAPHY_HEIGHT;
 
 		ContainerShape choreographyContainer = peService.createContainerShape(context.getTargetContainer(), true);
 		RoundedRectangle containerRect = gaService.createRoundedRectangle(choreographyContainer, R, R);

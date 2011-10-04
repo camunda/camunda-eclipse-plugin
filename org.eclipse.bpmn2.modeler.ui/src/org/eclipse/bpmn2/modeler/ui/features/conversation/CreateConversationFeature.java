@@ -15,15 +15,18 @@ package org.eclipse.bpmn2.modeler.ui.features.conversation;
 import java.io.IOException;
 
 import org.eclipse.bpmn2.Conversation;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
+import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
+import org.eclipse.graphiti.services.Graphiti;
 
 public class CreateConversationFeature extends AbstractBpmn2CreateFeature {
 
@@ -44,7 +47,8 @@ public class CreateConversationFeature extends AbstractBpmn2CreateFeature {
 			c = ModelHandler.FACTORY.createConversation();
 //			c.setId(EcoreUtil.generateUUID());
 			c.setName("Conversation");
-			handler.addConversationNode(c);
+	        BPMNDiagram bpmnDiagram = BusinessObjectUtil.getFirstElementOfType(context.getTargetContainer(), BPMNDiagram.class);
+			handler.addConversationNode(bpmnDiagram,c);
 			ModelUtil.setID(c);
 		} catch (IOException e) {
 			Activator.logError(e);

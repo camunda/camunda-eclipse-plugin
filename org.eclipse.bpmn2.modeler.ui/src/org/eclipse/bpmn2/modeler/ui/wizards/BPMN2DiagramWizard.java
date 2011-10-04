@@ -29,7 +29,8 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 
 public class BPMN2DiagramWizard extends Wizard implements INewWizard {
-	private BPMN2DiagramWizardPage page;
+	private BPMN2DiagramWizardPage1 page1;
+	private BPMN2DiagramWizardPage2 page2;
 	private ISelection selection;
 
 	/**
@@ -41,13 +42,15 @@ public class BPMN2DiagramWizard extends Wizard implements INewWizard {
 	}
 
 	/**
-	 * Adding the page to the wizard.
+	 * Adding the page2 to the wizard.
 	 */
 
 	@Override
 	public void addPages() {
-		page = new BPMN2DiagramWizardPage(selection);
-		addPage(page);
+		page1 = new BPMN2DiagramWizardPage1(selection);
+		addPage(page1);
+		page2 = new BPMN2DiagramWizardPage2(selection);
+		addPage(page2);
 	}
 
 	/**
@@ -56,8 +59,8 @@ public class BPMN2DiagramWizard extends Wizard implements INewWizard {
 	 */
 	@Override
 	public boolean performFinish() {
-		final String fileName = page.getFileName();
-		final IResource container = page.getDiagramContainer();
+		final String fileName = page2.getFileName();
+		final IResource container = page2.getDiagramContainer();
 
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			@Override
@@ -73,7 +76,7 @@ public class BPMN2DiagramWizard extends Wizard implements INewWizard {
 
 					factory.setDiagramFolder(folder);
 
-					factory.createDiagram();
+					factory.createDiagram(page1.getDiagramType());
 
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);

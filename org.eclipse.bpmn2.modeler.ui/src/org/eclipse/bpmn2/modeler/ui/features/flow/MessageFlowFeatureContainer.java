@@ -159,6 +159,11 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 				ModelHandler handler = ModelHandler.getInstance(getDiagram());
 				Participant sourceParticipant = handler.getParticipant(source);
 				Participant targetParticipant = handler.getParticipant(target);
+				if (sourceParticipant==null) {
+					if (targetParticipant==null)
+						return true;
+					return false;
+				}
 				different = !sourceParticipant.equals(targetParticipant);
 			} catch (IOException e) {
 				Activator.logError(e);

@@ -47,6 +47,10 @@ public class GraphicsUtil {
 	public static int DATA_WIDTH = 36;
 	public static int DATA_HEIGHT = 50;
 
+	public static int CHOREOGRAPHY_WIDTH = 150;
+	public static int CHOREOGRAPHY_HEIGHT = 150;
+	public static int PARTICIPANT_BAND_HEIGHT = 20;
+
 	public static class Envelope {
 		public Rectangle rect;
 		public Polyline line;

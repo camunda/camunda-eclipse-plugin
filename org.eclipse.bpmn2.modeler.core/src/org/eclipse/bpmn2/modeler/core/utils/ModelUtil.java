@@ -17,7 +17,15 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Choreography;
+import org.eclipse.bpmn2.Collaboration;
+import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.Participant;
+import org.eclipse.bpmn2.RootElement;
+import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterRegistry;
 import org.eclipse.bpmn2.modeler.core.adapters.INamespaceMap;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceSetImpl;
@@ -247,12 +255,27 @@ public class ModelUtil {
 	}
 	
 	public static String getDisplayName(EObject obj) {
-		String objName = toDisplayName( obj.eClass().getName() );
+		String objName = null;
+		if (obj instanceof BPMNDiagram) {
+			Bpmn2DiagramType type = getDiagramType((BPMNDiagram)obj); 
+			if (type == Bpmn2DiagramType.CHOREOGRAPHY) {
+				objName = "Choreography Diagram";
+			}
+			else if (type == Bpmn2DiagramType.COLLABORATION) {
+				objName = "Collaboration Diagram";
+			}
+			else if (type == Bpmn2DiagramType.PROCESS) {
+				objName = "Process Diagram";
+			}
+		}
+		if (objName==null){
+			objName = toDisplayName( obj.eClass().getName() );
+		}
 		EStructuralFeature feature = obj.eClass().getEStructuralFeature("name");
 		if (feature!=null) {
 			String name = (String)obj.eGet(feature);
 			if (name==null || name.isEmpty())
-				name = "Unnamed " + obj.eClass().getName();
+				name = "Unnamed " + objName;
 			else
 				name = objName + " \"" + name + "\"";
 			return name;
@@ -398,5 +421,39 @@ public class ModelUtil {
 			}
 		}
 		return null;
+	}
+	
+	public enum Bpmn2DiagramType {
+		NONE, PROCESS, CHOREOGRAPHY, COLLABORATION;
+	}
+	
+	public static Bpmn2DiagramType getDiagramType(BPMNDiagram diagram) {
+		Definitions defs = (Definitions)diagram.eContainer();
+		BPMNPlane plane = diagram.getPlane();
+		if (plane!=null) {
+			BaseElement be = plane.getBpmnElement();
+			if (be instanceof Process) {
+				for (RootElement re : defs.getRootElements()) {
+					if (re instanceof Choreography) {
+						for (Participant p : ((Choreography)re).getParticipants()) {
+							if (p.getProcessRef() == be)
+								return Bpmn2DiagramType.CHOREOGRAPHY;
+						}
+					}
+					else if (re instanceof Collaboration) {
+						for (Participant p : ((Collaboration)re).getParticipants()) {
+							if (p.getProcessRef() == be)
+								return Bpmn2DiagramType.COLLABORATION;
+						}
+					}
+				}
+				return Bpmn2DiagramType.PROCESS;
+			}
+			else if (be instanceof Choreography)
+				return Bpmn2DiagramType.CHOREOGRAPHY;
+			else if (be instanceof Collaboration)
+				return Bpmn2DiagramType.COLLABORATION;
+		}
+		return Bpmn2DiagramType.NONE;
 	}
 }

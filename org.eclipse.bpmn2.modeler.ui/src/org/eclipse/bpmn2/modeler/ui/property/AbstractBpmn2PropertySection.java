@@ -48,7 +48,9 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabContents;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
 public abstract class AbstractBpmn2PropertySection extends GFPropertySection implements IBpmn2PropertySection {
@@ -59,7 +61,45 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 	protected TabbedPropertySheetPage tabbedPropertySheetPage;
 	protected Composite parent;
 	protected BPMN2Editor editor;
+	private IWorkbenchWindow cachedWorkbenchWindow;
+	private IPartListener partActivationListener = new IPartListener() {
+
+		public void partActivated(IWorkbenchPart part) {
+			if (part instanceof BPMN2Editor) {
+				editor = (BPMN2Editor)part;
+//				parent = parentMap.get(editor);
+			}
+		}
+
+		public void partBroughtToTop(IWorkbenchPart part) {
+		}
+
+		public void partClosed(IWorkbenchPart part) {
+		}
+
+		public void partDeactivated(IWorkbenchPart part) {
+		}
+
+		public void partOpened(IWorkbenchPart part) {
+		}
+	};
 	
+	public AbstractBpmn2PropertySection() {
+		cachedWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		cachedWorkbenchWindow.getPartService().addPartListener(
+				partActivationListener);
+	}
+
+	@Override
+	public void dispose() {
+		super.dispose();
+		if (cachedWorkbenchWindow != null) {
+			cachedWorkbenchWindow.getPartService().removePartListener(
+				partActivationListener);
+			cachedWorkbenchWindow = null;
+		}
+	}
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#createControls(org.eclipse.swt.widgets.Composite, org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage)
 	 */
@@ -70,8 +110,12 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
-				if (getSectionRoot()!=null)
-					getSectionRoot().dispose();
+				if (e.widget instanceof Composite) {
+					Composite parent = ((Composite)e.widget);
+					Control[] kids = parent.getChildren();
+					for (Control c : kids)
+						c.dispose();
+				}
 			}
 			
 		});
@@ -167,8 +211,10 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 			final EObject be = getBusinessObjectForPictogramElement(pe);
 			if (be!=null) {
 				AbstractBpmn2PropertiesComposite sectionRoot = getSectionRoot();
-				sectionRoot.setEObject((BPMN2Editor) getDiagramEditor(), be);
-				recursivelayout(sectionRoot);
+				if (sectionRoot!=null) {
+					sectionRoot.setEObject((BPMN2Editor) getDiagramEditor(), be);
+					recursivelayout(sectionRoot);
+				}
 			}
 		}
 	}
@@ -219,7 +265,7 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 		PictogramElement pe = PropertyUtil.getPictogramElementForSelection(selection);
 		EObject selectionBO = PropertyUtil.getBusinessObjectForSelection(selection);
 		
-		if (preferences.isEnabled(selectionBO.eClass())) {
+		if (selectionBO!=null && preferences.isEnabled(selectionBO.eClass())) {
 			EObject thisBO = getBusinessObjectForPictogramElement(pe);
 			return thisBO!=null;			
 		}

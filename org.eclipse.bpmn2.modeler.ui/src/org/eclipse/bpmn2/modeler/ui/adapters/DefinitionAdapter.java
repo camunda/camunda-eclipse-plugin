@@ -10,7 +10,7 @@ package org.eclipse.bpmn2.modeler.ui.adapters;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.bpmn2.modeler.core.adapters.BasicEObjectaAdapter;
+import org.eclipse.bpmn2.modeler.core.adapters.BasicEObjectAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.INamespaceMap;
 import org.eclipse.wst.wsdl.Definition;
 
@@ -22,7 +22,7 @@ import org.eclipse.wst.wsdl.Definition;
  * @author Bob Brodt
  * @date Oct 12, 2010
  */
-public class DefinitionAdapter extends BasicEObjectaAdapter implements INamespaceMap<String, String> {
+public class DefinitionAdapter extends BasicEObjectAdapter implements INamespaceMap<String, String> {
 
 	/**
 	 * 

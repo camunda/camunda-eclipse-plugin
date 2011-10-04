@@ -88,13 +88,15 @@ public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 	}
 
 	private Object getSourceBo(IMoveShapeContext context, ModelHandler handler) {
-		return context.getSourceContainer().equals(getDiagram()) ? handler.getInternalParticipant()
-				: getBusinessObjectForPictogramElement(context.getSourceContainer());
+		if (context.getSourceContainer().equals(getDiagram()))
+			return handler.getFlowElementContainer(context.getSourceContainer());
+		return getBusinessObjectForPictogramElement(context.getSourceContainer());
 	}
 
 	private Object getTargetBo(IMoveShapeContext context, ModelHandler handler) {
-		return context.getTargetContainer().equals(getDiagram()) ? handler.getInternalParticipant()
-				: getBusinessObjectForPictogramElement(context.getTargetContainer());
+		if (context.getTargetContainer().equals(getDiagram()))
+			return handler.getFlowElementContainer(context.getTargetContainer());
+		return getBusinessObjectForPictogramElement(context.getTargetContainer());
 	}
 
 	private boolean isSourceParticipant(IMoveShapeContext context) {
@@ -263,15 +265,23 @@ public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 		@Override
 		public boolean isMoveAllowed(Object source, Object target) {
 			try {
-				Participant p = (Participant) target;
-				if (p.equals(ModelHandler.getInstance(getDiagram()).getInternalParticipant())) {
-					return true;
+				if (target instanceof Participant) {
+					Participant p = (Participant) target;
+					if (p.equals(ModelHandler.getInstance(getDiagram()).getInternalParticipant())) {
+						return true;
+					}
+					if (p.getProcessRef() == null) {
+						return true;
+					}
+					if (p.getProcessRef().getLaneSets().isEmpty()) {
+						return true;
+					}
 				}
-				if (p.getProcessRef() == null) {
-					return true;
-				}
-				if (p.getProcessRef().getLaneSets().isEmpty()) {
-					return true;
+				else if (target instanceof FlowElementsContainer) {
+					FlowElementsContainer p = (FlowElementsContainer) target;
+					if (p.getLaneSets().isEmpty()) {
+						return true;
+					}
 				}
 			} catch (Exception e) {
 				Activator.logError(e);

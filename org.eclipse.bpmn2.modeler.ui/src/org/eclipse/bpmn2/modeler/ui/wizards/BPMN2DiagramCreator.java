@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -37,6 +38,11 @@ import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.graphiti.ui.services.GraphitiUi;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
+import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 
 public class BPMN2DiagramCreator {
 
@@ -45,11 +51,11 @@ public class BPMN2DiagramCreator {
 	private IFile diagramFile;
 	private URI uri;
 
-	public void createDiagram() throws CoreException {
-		createDiagram(true);
+	public void createDiagram(Bpmn2DiagramType diagramType) throws CoreException {
+		createDiagram(diagramType, true);
 	}
 
-	public DiagramEditorInput createDiagram(boolean openEditor) throws CoreException {
+	public Bpmn2DiagramEditorInput createDiagram(Bpmn2DiagramType diagramType, boolean openEditor) throws CoreException {
 		if (diagramFolder != null && !diagramFolder.exists()) {
 			diagramFolder.create(false, true, null);
 		}
@@ -61,8 +67,9 @@ public class BPMN2DiagramCreator {
 		TransactionalEditingDomain domain = FileService.createEmfFileForDiagram(uri, diagram);
 
 		String providerId = GraphitiUi.getExtensionManager().getDiagramTypeProviderId(diagram.getDiagramTypeId());
-		final DiagramEditorInput editorInput = new Bpmn2DiagramEditorInput(EcoreUtil.getURI(diagram), domain,
+		final Bpmn2DiagramEditorInput editorInput = new Bpmn2DiagramEditorInput(EcoreUtil.getURI(diagram), domain,
 				providerId);
+		editorInput.setInitialDiagramType(diagramType);
 
 		if (openEditor) {
 			openEditor(editorInput);
@@ -163,7 +170,7 @@ public class BPMN2DiagramCreator {
 
 	/**
 	 * Return the BPMN2 model file given a path to either the "diagramFile" temporary file,
-	 * or the acutal model file.
+	 * or the actual model file.
 	 * 
 	 * @param fullPath - path of the actual BPMN2 model file
 	 * @return an IFile for the model file.

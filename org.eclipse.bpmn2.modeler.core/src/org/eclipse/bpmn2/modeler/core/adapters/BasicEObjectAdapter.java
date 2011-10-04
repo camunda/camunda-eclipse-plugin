@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
  * @date Jul 23, 2007
  * 
  */
-public class BasicEObjectaAdapter extends AbstractStatefulAdapter
+public class BasicEObjectAdapter extends AbstractStatefulAdapter
 
 implements IProperty<String, Object>, INamespaceMap<String, String> {
 

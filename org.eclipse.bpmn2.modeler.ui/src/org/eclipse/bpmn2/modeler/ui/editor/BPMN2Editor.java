@@ -15,7 +15,16 @@ package org.eclipse.bpmn2.modeler.ui.editor;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
+import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Bpmn2Factory;
+import org.eclipse.bpmn2.Collaboration;
+import org.eclipse.bpmn2.Participant;
+import org.eclipse.bpmn2.Process;
+import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BpmnDiFactory;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.ProxyURIConverterImplExtension;
@@ -24,9 +33,11 @@ import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.util.ErrorUtils;
 import org.eclipse.bpmn2.modeler.ui.wizards.BPMN2DiagramCreator;
+import org.eclipse.bpmn2.modeler.ui.wizards.Bpmn2DiagramEditorInput;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -46,8 +57,11 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.TransactionalEditingDomain.Lifecycle;
 import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
+import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
@@ -137,18 +151,21 @@ public class BPMN2Editor extends DiagramEditor {
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		
 		try {
+			Bpmn2DiagramType diagramType = Bpmn2DiagramType.NONE;
 			if (input instanceof IFileEditorInput) {
 				modelFile = ((IFileEditorInput) input).getFile();
 				loadPreferences(modelFile.getProject());
 
-				input = createNewDiagramEditorInput();
+				input = createNewDiagramEditorInput(diagramType);
 
 			} else if (input instanceof DiagramEditorInput) {
 				getModelPathFromInput((DiagramEditorInput) input);
 				loadPreferences(modelFile.getProject());
-
+				if (input instanceof Bpmn2DiagramEditorInput)
+					diagramType = ((Bpmn2DiagramEditorInput)input).getInitialDiagramType();
 				// This was incorrectly constructed input, we ditch the old one and make a new and clean one instead
-				input = createNewDiagramEditorInput();
+				// This code path comes in from the New File Wizard
+				input = createNewDiagramEditorInput(diagramType);
 			}
 		} catch (CoreException e) {
 			Activator.showErrorWithLogging(e);
@@ -201,7 +218,7 @@ public class BPMN2Editor extends DiagramEditor {
 	/**
 	 * Beware, creates a new input and changes this editor!
 	 */
-	private IEditorInput createNewDiagramEditorInput() throws CoreException {
+	private Bpmn2DiagramEditorInput createNewDiagramEditorInput(Bpmn2DiagramType diagramType) throws CoreException {
 		IPath fullPath = modelFile.getFullPath();
 		modelUri = URI.createPlatformResourceURI(fullPath.toString(), true);
 
@@ -212,7 +229,7 @@ public class BPMN2Editor extends DiagramEditor {
 		BPMN2DiagramCreator creator = new BPMN2DiagramCreator();
 		creator.setDiagramFile(diagramFile);
 
-		IEditorInput input = creator.createDiagram(false);
+		Bpmn2DiagramEditorInput input = creator.createDiagram(diagramType,false);
 		diagramUri = creator.getUri();
 
 		return input;
@@ -269,13 +286,23 @@ public class BPMN2Editor extends DiagramEditor {
 	
 	private void importDiagram() {
 		// make sure this guy is active, otherwise it's not selectable
-		getDiagramTypeProvider().getDiagram().setActive(true);
+		Diagram diagram = getDiagramTypeProvider().getDiagram();
+		IFeatureProvider featureProvider = getDiagramTypeProvider().getFeatureProvider();
+		diagram.setActive(true);
+		Bpmn2DiagramEditorInput input = (Bpmn2DiagramEditorInput) getEditorInput();
+		Bpmn2DiagramType diagramType = input.getInitialDiagramType();
+
+		if (diagramType != Bpmn2DiagramType.NONE) {
+			BPMNDiagram bpmnDiagram = modelHandler.createDiagramType(diagramType);
+			featureProvider.link(diagram, bpmnDiagram);
+			BPMN2Editor.this.doSave(null);
+		}
 		
 		DIImport di = new DIImport();
-		di.setDiagram(getDiagramTypeProvider().getDiagram());
+		di.setDiagram(diagram);
 		di.setDomain(getEditingDomain());
 		di.setModelHandler(modelHandler);
-		di.setFeatureProvider(getDiagramTypeProvider().getFeatureProvider());
+		di.setFeatureProvider(featureProvider);
 		di.generateFromDI();
 	}
 
