@@ -91,11 +91,14 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 	public AdvancedPropertiesComposite(AbstractBpmn2PropertySection section) {
 		super(section);
 
-		SashForm sashForm = new SashForm(this, SWT.NONE);
+		GridData data;
+		SashForm sashForm = new SashForm(this, SWT.BORDER);
 		sashForm.setSashWidth(5);
 		toolkit.adapt(sashForm);
 		toolkit.paintBordersFor(sashForm);
-		sashForm.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,3,1));
+		data = new GridData(SWT.FILL,SWT.FILL,true,true,3,1);
+		data.widthHint = 800;
+		sashForm.setLayoutData(data);
 
 		treeSection = toolkit.createSection(sashForm, ExpandableComposite.TITLE_BAR);
 		toolkit.paintBordersFor(treeSection);
@@ -107,7 +110,9 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 
 		treeViewer = new TreeViewer(composite, SWT.BORDER);
 		Tree tree = treeViewer.getTree();
-		tree.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, false, true, 1, 2));
+		data = new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1);
+//		data.widthHint = 200;
+		tree.setLayoutData(data);
 		toolkit.paintBordersFor(tree);
 		treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -127,8 +132,8 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 					detailsSection.setVisible(true);
 					detailsPropertiesComposite.setItemProvider(null);
 					detailsPropertiesComposite.setEObject(propertySection.editor, obj);
-					String name = ModelUtil.getDisplayName(obj);
-					detailsSection.setText(name);
+					String name = ModelUtil.getObjectDisplayName(obj);
+					detailsSection.setText(name+" Properties");
 	
 					propertySection.recursivelayout(AdvancedPropertiesComposite.this);
 					propertySection.tabbedPropertySheetPage.resizeScrolledComposite();
@@ -149,7 +154,7 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 		detailsSection.setClient(detailsPropertiesComposite);
 		toolkit.adapt(detailsPropertiesComposite);
 		toolkit.paintBordersFor(detailsPropertiesComposite);
-		sashForm.setWeights(new int[] { 1, 1 });
+		sashForm.setWeights(new int[] { 1, 2 });
 
 	}
 
@@ -176,7 +181,21 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 		preferences = ToolEnablementPreferences.getPreferences(diagramEditor.getModelFile().getProject());
 		hookPropertySheetPageMenu();
 		treeSection.setText(ModelUtil.getObjectName(be));
-		detailsSection.setVisible(false);
+
+		// get rid of previous details properties widgets...
+		PropertyUtil.disposeChildWidgets(detailsPropertiesComposite);
+		// ...including tables
+		Control[] kids = this.getChildren();
+		for (Control k : kids) {
+			if (k instanceof AbstractBpmn2TableComposite) {
+				k.dispose();
+			}
+		}
+		
+		detailsPropertiesComposite.setEObject(propertySection.editor, be);
+		detailsSection.setText("Properties");
+
+		detailsSection.setVisible(true);
 	}
 
 	private void hookPropertySheetPageMenu() {

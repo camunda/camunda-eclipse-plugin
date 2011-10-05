@@ -75,7 +75,7 @@ public class SequenceFlowPropertiesComposite extends DefaultPropertiesComposite 
 			});
 			Expression exp = (Expression) sequenceFlow.getConditionExpression();
 			
-			setDefaultFlowCheckbox = new Button(this, SWT.PUSH);
+			setDefaultFlowCheckbox = new Button(this, SWT.CHECK);
 			setDefaultFlowCheckbox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
 			setDefaultFlowCheckbox.addSelectionListener(new SelectionAdapter() {
 				
@@ -117,6 +117,7 @@ public class SequenceFlowPropertiesComposite extends DefaultPropertiesComposite 
 					setDefaultFlowCheckbox.setVisible(false);
 				}
 			}
+			this.propertySection.recursivelayout(this);
 		}
 		
 	}

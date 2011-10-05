@@ -113,12 +113,17 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 			bindAttribute(be,a);
 		}
 		
-		for (String a : getItemProvider(be).getLists()) {
-			bindList(be, a);
-		}
-
-		for (String a : getItemProvider(be).getReferences()) {
-			bindReference(be, a);
+		if (getDiagramEditor().getPreferences().getShowAdvancedPropertiesTab() == false ||
+				propertySection instanceof AdvancedPropertySection ||
+				getItemProvider(be).alwaysShowAdvancedProperties())
+		{
+			for (String a : getItemProvider(be).getLists()) {
+				bindList(be, a);
+			}
+	
+			for (String a : getItemProvider(be).getReferences()) {
+				bindReference(be, a);
+			}
 		}
 	}
 	
@@ -137,6 +142,10 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 			be = object;
 		}
 		
+		public boolean alwaysShowAdvancedProperties() {
+			return false;
+		}
+
 		public abstract String[] getAttributes();
 		public abstract String[] getLists();
 		public abstract String[] getReferences();

@@ -31,8 +31,7 @@ public class ProcessDiagramPropertySection extends AbstractBpmn2PropertySection 
 			BaseElement be = ((BPMNDiagram)bo).getPlane().getBpmnElement();
 			if (be instanceof Process)
 				return be;
-		} else
-			return bo;
+		}
 		
 		return null;
 	}

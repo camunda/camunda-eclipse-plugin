@@ -37,8 +37,8 @@ public class PropertyUtil {
 		for (Control k : kids) {
 			if (k instanceof Composite) {
 				disposeChildWidgets((Composite)k);
-				((Composite)k).dispose();
 			}
+			k.dispose();
 		}
 	}
 

@@ -253,8 +253,8 @@ public class ModelUtil {
 		EStructuralFeature feature = element.eClass().getEStructuralFeature("name");
 		return feature!=null;
 	}
-	
-	public static String getDisplayName(EObject obj) {
+
+	public static String getObjectDisplayName(EObject obj) {
 		String objName = null;
 		if (obj instanceof BPMNDiagram) {
 			Bpmn2DiagramType type = getDiagramType((BPMNDiagram)obj); 
@@ -271,6 +271,11 @@ public class ModelUtil {
 		if (objName==null){
 			objName = toDisplayName( obj.eClass().getName() );
 		}
+		return objName;
+	}
+
+	public static String getDisplayName(EObject obj) {
+		String objName = getObjectDisplayName(obj);
 		EStructuralFeature feature = obj.eClass().getEStructuralFeature("name");
 		if (feature!=null) {
 			String name = (String)obj.eGet(feature);

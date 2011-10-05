@@ -223,7 +223,7 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 	 * Ugly hack to force layout of the entire widget tree of the property sheet page.
 	 * @param parent
 	 */
-	protected void recursivelayout(Composite parent) {
+	public void recursivelayout(Composite parent) {
 		Control[] kids = parent.getChildren();
 		for (Control k : kids) {
 			if (k.isDisposed())
