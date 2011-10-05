@@ -131,6 +131,32 @@
 			afterTab="org.eclipse.bpmn2.modeler.process.diagram.tab"
 			label="Imports">
 		</propertyTab>
+<!--
+new
+-->
+		<propertyTab category="BPMN2"
+			id="org.eclipse.bpmn2.modeler.datastore.tab"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			label="Data Store">
+		</propertyTab>
+		
+		<propertyTab category="BPMN2"
+			id="org.eclipse.bpmn2.modeler.dataobject.tab"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			label="Data Object">
+		</propertyTab>
+		
+		<propertyTab category="BPMN2"
+			id="org.eclipse.bpmn2.modeler.dataobjectref.tab"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			label="Data Object Reference">
+		</propertyTab>
+<!--
+new
+-->
 		
 		<propertyTab category="BPMN2"
 			id="org.eclipse.bpmn2.modeler.sequenceflow.tab"
@@ -286,6 +312,35 @@
 			type="org.eclipse.bpmn2.di.BPMNDiagram"
 			tab="org.eclipse.bpmn2.modeler.imports.tab">
 		</propertySection>
+<!--
+new
+-->
+		<propertySection
+			class="org.eclipse.bpmn2.modeler.ui.property.data.DataStorePropertySection"
+			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+			id="org.eclipse.bpmn2.modeler.datastore.section"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			tab="org.eclipse.bpmn2.modeler.datastore.tab">
+		</propertySection>
+
+		<propertySection
+			class="org.eclipse.bpmn2.modeler.ui.property.data.DataObjectPropertySection"
+			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+			id="org.eclipse.bpmn2.modeler.dataobjectref.section"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			tab="org.eclipse.bpmn2.modeler.dataobject.tab">
+		</propertySection>
+
+		<propertySection
+			class="org.eclipse.bpmn2.modeler.ui.property.data.DataObjectReferencePropertySection"
+			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+			id="org.eclipse.bpmn2.modeler.dataobjectref.section"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			tab="org.eclipse.bpmn2.modeler.dataobjectref.tab">
+		</propertySection>
+<!--
+new
+-->
 		
 		<propertySection
 			class="org.eclipse.bpmn2.modeler.ui.property.connectors.SequenceFlowPropertySection"

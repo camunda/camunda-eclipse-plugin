@@ -179,7 +179,10 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 	public static class CreateDataStoreReferenceFeature extends AbstractCreateFlowElementFeature<DataStoreReference> {
 
 		public CreateDataStoreReferenceFeature(IFeatureProvider fp) {
-			super(fp, "Data Store", "Persist information that is beyond the scope of the process");
+			super(fp, "Data Store", "Reference to a Data Store instance."+
+					" Data Stores provide a mechanism for Activities to persist data beyond the lifetime of the Process."+
+					" The same Data Store instance can be visualized through a Data Store Reference in one or more"+
+					" places in the Process.");
 		}
 
 		@Override

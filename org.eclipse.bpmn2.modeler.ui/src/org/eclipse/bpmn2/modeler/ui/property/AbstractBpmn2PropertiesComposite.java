@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Stack;
 
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.GatewayDirection;
@@ -30,6 +31,7 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
+import org.eclipse.bpmn2.modeler.ui.property.AdvancedPropertiesComposite.DomainListener;
 import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.IValueChangeListener;
@@ -38,6 +40,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.dd.dc.provider.DcItemProviderAdapterFactory;
 import org.eclipse.dd.di.provider.DiItemProviderAdapterFactory;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
@@ -53,6 +56,8 @@ import org.eclipse.emf.edit.provider.resource.ResourceItemProviderAdapterFactory
 import org.eclipse.emf.edit.ui.celleditor.FeatureEditorDialog;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.ResourceSetChangeEvent;
+import org.eclipse.emf.transaction.ResourceSetListenerImpl;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -102,13 +107,16 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	protected ItemProviderAdapter itemProviderAdapter;
 	protected final AdapterFactoryLabelProvider LABEL_PROVIDER = new AdapterFactoryLabelProvider(ADAPTER_FACTORY);
 	protected ModelHandler modelHandler;
-	
+	private TransactionalEditingDomain domain;
+	private DomainListener domainListener;
+
 	protected Section attributesSection = null;
 	protected Composite attributesComposite = null;
 	protected Section referencesSection = null;
 	protected Composite referencesComposite = null;
 	protected Font descriptionFont = null;
 	
+	protected ChildObjectStack objectStack = new ChildObjectStack();
 
 	static {
 		ADAPTER_FACTORY = new ComposedAdapterFactory(ComposedAdapterFactory.Descriptor.Registry.INSTANCE);
@@ -142,6 +150,11 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		toolkit.adapt(this);
 		toolkit.paintBordersFor(this);
 		setLayout(new GridLayout(3, false));
+		
+
+		domain = section.getDiagramEditor().getEditingDomain();
+		domainListener = new DomainListener();
+		domain.addResourceSetListener(domainListener);
 	}
 	
 	/**
@@ -160,6 +173,14 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 
 		toolkit = new FormToolkit(Display.getCurrent());
 		setLayout(new GridLayout(3, false));
+	}
+
+	@Override
+	public void dispose() {
+		if (domain != null && domainListener != null) {
+			domain.removeResourceSetListener(domainListener);
+		}
+		super.dispose();
 	}
 
 	public void setPropertySection(AbstractBpmn2PropertySection section) {
@@ -206,7 +227,13 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 
 	protected Composite getAttributesParent() {
 		if (attributesSection==null || attributesSection.isDisposed()) {
-			attributesSection = createSection(this, "Attributes");
+
+			if (objectStack.peek()==be)
+				attributesSection = createSection(objectStack.getAttributesParent(), "Attributes");
+			else
+				attributesSection = createSubSection(objectStack.getAttributesParent(),
+						ModelUtil.getObjectDisplayName(objectStack.peek()));
+			
 			attributesSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 			attributesComposite = toolkit.createComposite(attributesSection);
 			attributesSection.setClient(attributesComposite);
@@ -217,7 +244,13 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 
 	protected Composite getReferencesParent() {
 		if (referencesSection==null || referencesSection.isDisposed()) {
-			referencesSection = createSection(this, "References");
+
+			if (objectStack.peek()==be)
+				referencesSection = createSection(objectStack.getReferencesParent(), "References");
+			else
+				referencesSection = createSubSection(objectStack.getReferencesParent(),
+						ModelUtil.getObjectDisplayName(objectStack.peek()));
+
 			referencesSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 			referencesComposite = toolkit.createComposite(referencesSection);
 			referencesSection.setClient(referencesComposite);
@@ -308,19 +341,42 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		section.setText(title);
 		return section;
 	}
+
+	protected Section createSubSection(Composite parent, String title) {
+		Section section = toolkit.createSection(parent,
+				ExpandableComposite.EXPANDED |
+				ExpandableComposite.TITLE_BAR);
+		section.setText(title);
+		section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,true, 3,1));
+		return section;
+	}
+
 	
-	protected void bindAttribute(EObject object, String name) {
+	protected EAttribute getAttributeFeature(EObject object, String name) {
 		EStructuralFeature feature = ((EObject)object).eClass().getEStructuralFeature(name);
 		if (feature instanceof EAttribute) {
+			return (EAttribute)feature;
+		}
+		return null;
+	}
+	
+	protected void bindAttribute(EObject object, String name) {
+		EStructuralFeature feature = getAttributeFeature(object,name);
+		if (feature!=null) {
 			bindAttribute(object,(EAttribute)feature);
 		}
 	}
-	
+
 	protected void bindAttribute(EObject object, EAttribute attribute) {
+		bindAttribute(null,object,attribute);
+	}
+	
+	protected void bindAttribute(Composite parent, EObject object, EAttribute attribute) {
 
 		if (preferences.isEnabled(object.eClass(), attribute)) {
 
-			Composite parent = getAttributesParent();
+			if (parent==null)
+				parent = getAttributesParent();
 			
 			String displayName = getDisplayName(itemProviderAdapter, object, attribute);
 			Collection choiceOfValues = getChoiceOfValues(itemProviderAdapter, object, attribute);
@@ -346,19 +402,29 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 			}
 		}
 	}
-	
-	protected void bindReference(EObject object, String name) {
+	protected EReference getReferenceFeature(EObject object, String name) {
 		EStructuralFeature feature = ((EObject)object).eClass().getEStructuralFeature(name);
 		if (feature instanceof EReference) {
+			return (EReference)feature;
+		}
+		return null;
+	}
+	
+	protected void bindReference(EObject object, String name) {
+		EStructuralFeature feature = getReferenceFeature(object,name);
+		if (feature!=null) {
 			bindReference(object,(EReference)feature);
 		}
 	}
-
+	
 	protected void bindReference(EObject object, EReference reference) {
-
+		bindReference(null, object, reference);
+	}
+	
+	protected void bindReference(Composite parent, EObject object, EReference reference) {
 		if (preferences.isEnabled(object.eClass(), reference)) {
-
-			Composite parent = getReferencesParent();
+			if (parent==null)
+				parent = getReferencesParent();
 			
 			Object eGet = object.eGet(reference);
 			String displayName = getDisplayName(itemProviderAdapter, object, reference);
@@ -368,6 +434,30 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 				createListEditor(parent, object, reference, eGet);
 			} else {
 				createSingleItemEditor(parent, object, reference, eGet, null);
+			}
+		}
+	}
+	
+	protected void bindChild(final EObject object, String name) {
+		final EStructuralFeature feature = ((EObject)object).eClass().getEStructuralFeature(name);
+		if (feature instanceof EReference) {
+			Object value = object.eGet(feature);
+			if (value==null) {
+				TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
+				domain.getCommandStack().execute(new RecordingCommand(domain) {
+					@Override
+					protected void doExecute() {
+						Object newValue = Bpmn2Factory.eINSTANCE.create(((EReference) feature).getEReferenceType());
+						object.eSet(feature, newValue);
+						ModelUtil.setID((EObject)newValue);
+					}
+				});
+				value = object.eGet(feature);
+			}
+			if (value instanceof EObject) {
+				objectStack.push((EObject)value);
+				createBindings((EObject)value);
+				objectStack.pop();
 			}
 		}
 	}
@@ -676,9 +766,16 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		});
 	}
 
-	protected void bindList(EObject object, String name) {
+	protected EStructuralFeature getListFeature(EObject object, String name) {
 		EStructuralFeature feature = ((EObject)object).eClass().getEStructuralFeature(name);
-		if (feature !=null && object.eGet(feature) instanceof EList) {
+		if (feature !=null && object.eGet(feature) instanceof EList)
+			return feature;
+		return null;
+	}
+	
+	protected void bindList(EObject object, String name) {
+		EStructuralFeature feature = getListFeature(object,name);
+		if (feature !=null) {
 			bindList(object,feature);
 		}
 	}
@@ -735,6 +832,74 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 			return propertyDescriptor.getChoiceOfValues(object);
 		}
 		return null;
+	}
+
+	public class ChildObjectStack {
+		private Stack<EObject> objectStack = new Stack<EObject>();
+		private Stack<Composite> attributesCompositeStack = new Stack<Composite>();
+		private Stack<Section> attributesSectionStack = new Stack<Section>();
+		private Stack<Composite> referencesCompositeStack = new Stack<Composite>();
+		private Stack<Section> referencesSectionStack = new Stack<Section>();
+		
+		public void push(EObject object) {
+			attributesCompositeStack.push(AbstractBpmn2PropertiesComposite.this.getAttributesParent());
+			attributesComposite = null;
+			attributesSectionStack.push(attributesSection);
+			attributesSection = null;
+
+			referencesCompositeStack.push(AbstractBpmn2PropertiesComposite.this.getReferencesParent());
+			referencesComposite = null;
+			referencesSectionStack.push(referencesSection);
+			referencesSection = null;
+			objectStack.push(object);
+		}
+		
+		public EObject pop() {
+			if (objectStack.size()>0) {
+				attributesComposite = attributesCompositeStack.pop();
+				referencesSection = referencesSectionStack.pop();
+				
+				return objectStack.pop();
+			}
+			return null;
+		}
+		
+		public EObject peek() {
+			if (objectStack.size()>0) {
+				return objectStack.peek();
+			}
+			return AbstractBpmn2PropertiesComposite.this.be;
+		}
+		
+		public Composite getAttributesParent() {
+			if (objectStack.size()>0) {
+				return attributesCompositeStack.peek();
+			}
+			return AbstractBpmn2PropertiesComposite.this;
+		}
+		
+		public Composite getReferencesParent() {
+			if (objectStack.size()>0) {
+				return referencesCompositeStack.peek();
+			}
+			return AbstractBpmn2PropertiesComposite.this;
+		}
+		
+		public EObject get(int i) {
+			return objectStack.get(i);
+		}
+		
+		public int size() {
+			return objectStack.size();
+		}
+	}
+
+	class DomainListener extends ResourceSetListenerImpl {
+		@Override
+		public void resourceSetChanged(ResourceSetChangeEvent event) {
+//			propertySection.tabbedPropertySheetPage.selectionChanged(getDiagramEditor(), new StructuredSelection());
+//			propertySection.tabbedPropertySheetPage.selectionChanged(getDiagramEditor(), propertySection.getSelection());
+		}
 	}
 
 }
