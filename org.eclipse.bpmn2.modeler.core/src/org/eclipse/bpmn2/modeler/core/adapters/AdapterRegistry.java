@@ -19,10 +19,13 @@ import org.eclipse.core.runtime.IAdapterManager;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.Notifier;
+import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
 import org.eclipse.emf.common.notify.impl.NotificationImpl;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
 
 /**
  * This is the one place where EMF object adapters can be registered. 
@@ -115,7 +118,7 @@ public class AdapterRegistry {
 	 * @param key
 	 * @param factory
 	 */
-	synchronized void registerFactory ( Object key, AdapterFactory factory) {
+	public synchronized AdapterFactory registerFactory ( Object key, AdapterFactory factory) {
 		List<AdapterFactory> list = fKeyToAdapterFactory.get(key);
 		
 		if (list == null) {
@@ -127,6 +130,8 @@ public class AdapterRegistry {
 				list.add (factory);
 			}
 		}
+		
+		return factory;
 	}
 	
 	synchronized void unregisterFactory (Object key, AdapterFactory factory) {
@@ -204,12 +209,33 @@ public class AdapterRegistry {
 						return clazz.cast(adapter);
 					}
 				}
+
+				// adaptNew() maybe?
+				for(AdapterFactory factory : list ) {
+					adapter = factory.adaptNew((Notifier)target, clazz);
+					if (adapter != null && clazz.isInstance(adapter)) {
+						return clazz.cast(adapter);
+					}
+				}					   
 			}
 			
 			list = fKeyToAdapterFactory.get( effectiveClass.getEPackage() );
 			if (list != null) {
 				for(AdapterFactory factory : list ) {
 					adapter = factory.adapt(target, clazz);
+					if (adapter != null && clazz.isInstance(adapter)) {
+						return clazz.cast(adapter);
+					}
+				}					   
+
+				// adaptNew() maybe?
+				for(AdapterFactory factory : list ) {
+					if (factory instanceof ComposedAdapterFactory) {
+						ComposedAdapterFactory cf = (ComposedAdapterFactory)factory;
+						cf.adaptAllNew((Notifier) target);
+					}
+					
+					adapter = factory.adaptNew((Notifier)target, clazz);
 					if (adapter != null && clazz.isInstance(adapter)) {
 						return clazz.cast(adapter);
 					}
@@ -292,6 +318,5 @@ public class AdapterRegistry {
 	public void registerAdapterFactory(IAdapterFactory factory,	Class<?> clazz) {
 		fAdapterManager.registerAdapters(factory, clazz);		
 	}
-
 
 }

@@ -121,7 +121,7 @@ public class JbpmPropertiesComposite extends DefaultPropertiesComposite {
 	/**
 	 * EMF creates new StructuralFeatures for each unspecified anyAttribute
 	 * element. For bindings to work, we must replace these features with EMF
-	 * generated instance, or there would be two or more attributes with the
+	 * generated instance, or there would be two or more properties with the
 	 * same name, but different values.
 	 */
 	private void replaceExistingAnyAttributes(EAttribute attrib) {

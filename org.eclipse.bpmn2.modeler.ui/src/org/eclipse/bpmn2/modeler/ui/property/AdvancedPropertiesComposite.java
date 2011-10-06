@@ -19,6 +19,7 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablementPreferences;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
+import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
@@ -52,6 +53,7 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -142,7 +144,7 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 		});
 
 		treeViewer.setContentProvider(new PropertyTreeContentProvider(this));
-		treeViewer.setLabelProvider(new AdapterFactoryLabelProvider(AbstractBpmn2PropertiesComposite.ADAPTER_FACTORY));
+		treeViewer.setLabelProvider(AdapterUtil.getLabelProvider());
 
 		detailsSection = toolkit.createSection(sashForm, ExpandableComposite.TITLE_BAR);
 		toolkit.paintBordersFor(detailsSection);

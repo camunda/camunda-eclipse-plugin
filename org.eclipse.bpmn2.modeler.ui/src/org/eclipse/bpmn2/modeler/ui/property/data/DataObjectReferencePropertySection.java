@@ -19,7 +19,7 @@ import org.eclipse.bpmn2.DataState;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite.AbstractItemProvider;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite.AbstractPropertiesProvider;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
@@ -29,8 +29,8 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
  */
 public class DataObjectReferencePropertySection extends AbstractBpmn2PropertySection {
 
-	private AbstractItemProvider dataObjectReferenceItemProvider;
-	private AbstractItemProvider dataStateItemProvider;
+	private AbstractPropertiesProvider dataObjectReferenceItemProvider;
+	private AbstractPropertiesProvider dataStateItemProvider;
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
@@ -59,33 +59,28 @@ public class DataObjectReferencePropertySection extends AbstractBpmn2PropertySec
 		}
 
 		@Override
-		public AbstractItemProvider getItemProvider(EObject object) {
+		public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
 			if (object instanceof DataState) {
 				if (dataStateItemProvider == null) {
-					dataStateItemProvider = new AbstractItemProvider(object) {
-						String[] attributes = new String[] { "id", "name" };
+					dataStateItemProvider = new AbstractPropertiesProvider(object) {
+						String[] properties = new String[] { "id", "name" };
 						
 						@Override
-						public String[] getAttributes() {
-							return attributes; 
+						public String[] getProperties() {
+							return properties; 
 						}
 					};
 				}
 				return dataStateItemProvider;
 			}
 			else if (dataObjectReferenceItemProvider == null) {
-				dataObjectReferenceItemProvider = new AbstractItemProvider(object) {
-					String[] refs = new String[] { "dataObjectRef" };
+				dataObjectReferenceItemProvider = new AbstractPropertiesProvider(object) {
+					String[] properties = new String[] { "dataObjectRef" };
 					String[] children = new String[] { "dataState" };
 
 					@Override
-					public String[] getAttributes() {
-						return refs; 
-					}
-					
-					@Override
-					public String[] getReferences() {
-						return null;
+					public String[] getProperties() {
+						return properties; 
 					}
 					
 					@Override

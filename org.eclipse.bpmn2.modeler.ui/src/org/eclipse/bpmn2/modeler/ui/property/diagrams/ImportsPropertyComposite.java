@@ -67,15 +67,10 @@ public class ImportsPropertyComposite extends DefaultPropertiesComposite  {
 
 
 		public void bind() {
-			ItemProviderAdapter itemProviderAdapter = (ItemProviderAdapter) new Bpmn2ItemProviderAdapterFactory().adapt(be,
-					ItemProviderAdapter.class);
-			
 			DefinitionsImpl definitions = (DefinitionsImpl)getEObject();
 			EStructuralFeature imports = definitions.eClass().getEStructuralFeature("imports");
 			
-			super.bindList(definitions, imports, itemProviderAdapter);
-			
-			itemProviderAdapter.dispose();
+			super.bindList(definitions, imports);
 		}
 
 		

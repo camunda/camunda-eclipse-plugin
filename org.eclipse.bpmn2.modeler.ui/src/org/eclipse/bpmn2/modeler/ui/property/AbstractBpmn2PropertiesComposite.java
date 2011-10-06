@@ -14,7 +14,6 @@
 package org.eclipse.bpmn2.modeler.ui.property;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -22,25 +21,20 @@ import java.util.Stack;
 
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.GatewayDirection;
-import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.bpmn2.di.provider.BpmnDiItemProviderAdapterFactory;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablementPreferences;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
+import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
-import org.eclipse.bpmn2.modeler.ui.property.AdvancedPropertiesComposite.DomainListener;
-import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.IValueChangeListener;
 import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.dd.dc.provider.DcItemProviderAdapterFactory;
-import org.eclipse.dd.di.provider.DiItemProviderAdapterFactory;
-import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
@@ -48,11 +42,8 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
-import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
-import org.eclipse.emf.edit.provider.ReflectiveItemProviderAdapterFactory;
-import org.eclipse.emf.edit.provider.resource.ResourceItemProviderAdapterFactory;
 import org.eclipse.emf.edit.ui.celleditor.FeatureEditorDialog;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -68,8 +59,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -83,51 +72,29 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.ui.views.properties.tabbed.ISection;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 
 public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 
-	public final static ComposedAdapterFactory ADAPTER_FACTORY;
-	public static final Bpmn2Factory MODEL_FACTORY = Bpmn2Factory.eINSTANCE;
-	
 	protected AbstractBpmn2PropertySection propertySection;
 	protected EObject be;
 	protected FormToolkit toolkit;
 	protected ToolEnablementPreferences preferences;
-	protected ItemProviderAdapter itemProviderAdapter;
-	protected final AdapterFactoryLabelProvider LABEL_PROVIDER = new AdapterFactoryLabelProvider(ADAPTER_FACTORY);
 	protected ModelHandler modelHandler;
 	private TransactionalEditingDomain domain;
 	private DomainListener domainListener;
 
 	protected Section attributesSection = null;
 	protected Composite attributesComposite = null;
-	protected Section referencesSection = null;
-	protected Composite referencesComposite = null;
 	protected Font descriptionFont = null;
 	
 	protected ChildObjectStack objectStack = new ChildObjectStack();
-
-	static {
-		ADAPTER_FACTORY = new ComposedAdapterFactory(ComposedAdapterFactory.Descriptor.Registry.INSTANCE);
-
-		ADAPTER_FACTORY.addAdapterFactory(new ResourceItemProviderAdapterFactory());
-		ADAPTER_FACTORY.addAdapterFactory(new Bpmn2ItemProviderAdapterFactory());
-		ADAPTER_FACTORY.addAdapterFactory(new BpmnDiItemProviderAdapterFactory());
-		ADAPTER_FACTORY.addAdapterFactory(new DiItemProviderAdapterFactory());
-		ADAPTER_FACTORY.addAdapterFactory(new DcItemProviderAdapterFactory());
-		ADAPTER_FACTORY.addAdapterFactory(new ReflectiveItemProviderAdapterFactory());
-	}
 
 	/**
 	 * NB! Must call setEObject for updating contents and rebuild the UI.
@@ -137,24 +104,9 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	 */
 	public AbstractBpmn2PropertiesComposite(AbstractBpmn2PropertySection section) {
 		super(section.getParent(), SWT.NONE);
-		
-		addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				PropertyUtil.disposeChildWidgets(AbstractBpmn2PropertiesComposite.this);
-			}
-		});
-
 		propertySection = section;
 		toolkit = propertySection.getWidgetFactory();
-		toolkit.adapt(this);
-		toolkit.paintBordersFor(this);
-		setLayout(new GridLayout(3, false));
-		
-
-		domain = section.getDiagramEditor().getEditingDomain();
-		domainListener = new DomainListener();
-		domain.addResourceSetListener(domainListener);
+		initialize();
 	}
 	
 	/**
@@ -163,23 +115,27 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	 */
 	public AbstractBpmn2PropertiesComposite(Composite parent, int style) {
 		super(parent,style);
-		
-		addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				PropertyUtil.disposeChildWidgets(AbstractBpmn2PropertiesComposite.this);
-			}
-		});
-
 		toolkit = new FormToolkit(Display.getCurrent());
-		setLayout(new GridLayout(3, false));
+		initialize();
 	}
 
+	private void initialize() {
+		toolkit.adapt(this);
+		toolkit.paintBordersFor(this);
+		setLayout(new GridLayout(3, false));
+
+		// TODO: do we need this?
+//		domain = BPMN2Editor.getActiveEditor().getEditingDomain();
+//		domainListener = new DomainListener();
+//		domain.addResourceSetListener(domainListener);
+	}
+	
 	@Override
 	public void dispose() {
 		if (domain != null && domainListener != null) {
 			domain.removeResourceSetListener(domainListener);
 		}
+		PropertyUtil.disposeChildWidgets(AbstractBpmn2PropertiesComposite.this);
 		super.dispose();
 	}
 
@@ -207,8 +163,6 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		cleanBindings();
 		be = object;
 		if (be != null) {
-			itemProviderAdapter = (ItemProviderAdapter) new Bpmn2ItemProviderAdapterFactory().adapt(
-					be, ItemProviderAdapter.class);
 			createBindings(be);
 		}
 	}
@@ -219,10 +173,6 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 
 	protected void cleanBindings() {
 		PropertyUtil.disposeChildWidgets(this);
-		if (itemProviderAdapter!=null) {
-			itemProviderAdapter.dispose();
-			itemProviderAdapter = null;
-		}
 	}
 
 	protected Composite getAttributesParent() {
@@ -240,23 +190,6 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 			attributesComposite.setLayout(new GridLayout(3,false));
 		}
 		return attributesComposite;
-	}
-
-	protected Composite getReferencesParent() {
-		if (referencesSection==null || referencesSection.isDisposed()) {
-
-			if (objectStack.peek()==be)
-				referencesSection = createSection(objectStack.getReferencesParent(), "References");
-			else
-				referencesSection = createSubSection(objectStack.getReferencesParent(),
-						ModelUtil.getObjectDisplayName(objectStack.peek()));
-
-			referencesSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
-			referencesComposite = toolkit.createComposite(referencesSection);
-			referencesSection.setClient(referencesComposite);
-			referencesComposite.setLayout(new GridLayout(3,false));
-		}
-		return referencesComposite;
 	}
 
 	/**
@@ -378,11 +311,11 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 			if (parent==null)
 				parent = getAttributesParent();
 			
-			String displayName = getDisplayName(itemProviderAdapter, object, attribute);
-			Collection choiceOfValues = getChoiceOfValues(itemProviderAdapter, object, attribute);
+			String displayName = getDisplayName(object, attribute);
+			Collection choiceOfValues = getChoiceOfValues(object, attribute);
 			
 			if (String.class.equals(attribute.getEType().getInstanceClass())) {
-				bindText(object, attribute, createTextInput(parent, displayName, getIsMultiLine(itemProviderAdapter,object,attribute)));
+				bindText(object, attribute, createTextInput(parent, displayName, getIsMultiLine(object,attribute)));
 			} else if (boolean.class.equals(attribute.getEType().getInstanceClass())) {
 				bindBoolean(object, attribute, createBooleanInput(parent, displayName));
 			} else if (int.class.equals(attribute.getEType().getInstanceClass())) {
@@ -424,10 +357,10 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	protected void bindReference(Composite parent, EObject object, EReference reference) {
 		if (preferences.isEnabled(object.eClass(), reference)) {
 			if (parent==null)
-				parent = getReferencesParent();
+				parent = getAttributesParent();
 			
 			Object eGet = object.eGet(reference);
-			String displayName = getDisplayName(itemProviderAdapter, object, reference);
+			String displayName = getDisplayName(object, reference);
 	
 			createLabel(parent, displayName);
 			if (eGet instanceof List) {
@@ -484,7 +417,8 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 					l = (List<EObject>) modelHandler.getAll(reference.getEType().getInstanceClass());
 				}
 
-				FeatureEditorDialog featureEditorDialog = new FeatureEditorDialog(getShell(), LABEL_PROVIDER, object,
+				FeatureEditorDialog featureEditorDialog = new FeatureEditorDialog(getShell(),
+						AdapterUtil.getLabelProvider(), object,
 						reference, "Select elements", l);
 
 				if (featureEditorDialog.open() == Window.OK) {
@@ -527,7 +461,8 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	}
 
 	private void createSingleItemEditor(Composite parent, final EObject object, final EStructuralFeature reference, Object eGet, Collection values) {
-		final ComboViewer comboViewer = createComboViewer(parent, LABEL_PROVIDER, SWT.NONE);
+		final ComboViewer comboViewer = createComboViewer(parent,
+				AdapterUtil.getLabelProvider(), SWT.NONE);
 		Combo combo = comboViewer.getCombo();
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
@@ -590,10 +525,10 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		String listText = "";
 		if (refs != null) {
 			for (int i = 0; i < refs.size() - 1; i++) {
-				listText += LABEL_PROVIDER.getText(refs.get(i)) + ", ";
+				listText += AdapterUtil.getLabelProvider().getText(refs.get(i)) + ", ";
 			}
 			if (refs.size() > 0) {
-				listText += LABEL_PROVIDER.getText(refs.get(refs.size() - 1));
+				listText += AdapterUtil.getLabelProvider().getText(refs.get(refs.size() - 1));
 			}
 		}
 
@@ -789,15 +724,13 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 				tableComposite = new AbstractBpmn2TableComposite(propertySection, AbstractBpmn2TableComposite.DEFAULT_STYLE);
 			else
 				tableComposite = new AbstractBpmn2TableComposite(this, AbstractBpmn2TableComposite.DEFAULT_STYLE);
-			tableComposite.bindList(object, feature, itemProviderAdapter);
+			tableComposite.bindList(object, feature);
 		}
 	}
 	
 	// TODO: create an adapter for this stuff in the AdapterRegistry
-	private String getDisplayName(ItemProviderAdapter itemProviderAdapter, EObject object, EStructuralFeature feature) {
-		IItemPropertyDescriptor propertyDescriptor = null;
-		if (itemProviderAdapter!=null)
-			propertyDescriptor = itemProviderAdapter.getPropertyDescriptor(object, feature);
+	private String getDisplayName(EObject object, EStructuralFeature feature) {
+		IItemPropertyDescriptor propertyDescriptor = getPropertyDescriptor(object, feature);
 		
 		String displayName;
 
@@ -810,10 +743,8 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		return displayName;
 	}
 
-	private boolean getIsMultiLine(ItemProviderAdapter itemProviderAdapter, EObject object, EStructuralFeature feature) {
-		IItemPropertyDescriptor propertyDescriptor = null;
-		if (itemProviderAdapter!=null)
-			propertyDescriptor = itemProviderAdapter.getPropertyDescriptor(object, feature);
+	private boolean getIsMultiLine(EObject object, EStructuralFeature feature) {
+		IItemPropertyDescriptor propertyDescriptor = getPropertyDescriptor(object, feature);
 		
 		boolean isMultiLine = false;
 
@@ -823,10 +754,8 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		return isMultiLine;
 	}
 
-	private Collection getChoiceOfValues(ItemProviderAdapter itemProviderAdapter, EObject object, EStructuralFeature feature) {
-		IItemPropertyDescriptor propertyDescriptor = null;
-		if (itemProviderAdapter!=null)
-			propertyDescriptor = itemProviderAdapter.getPropertyDescriptor(object, feature);
+	private Collection getChoiceOfValues(EObject object, EStructuralFeature feature) {
+		IItemPropertyDescriptor propertyDescriptor = getPropertyDescriptor(object, feature);
 		
 		if (propertyDescriptor!=null) {
 			return propertyDescriptor.getChoiceOfValues(object);
@@ -834,30 +763,33 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		return null;
 	}
 
+	protected static IItemPropertyDescriptor getPropertyDescriptor(EObject object, EStructuralFeature feature) {
+		AdapterFactory factory;
+		ItemProviderAdapter adapter;
+
+		adapter = (ItemProviderAdapter) AdapterUtil.adapt((Notifier)object, ItemProviderAdapter.class);
+		if (adapter!=null)
+			return adapter.getPropertyDescriptor(object, feature);
+		
+		return null;
+	}
+	
 	public class ChildObjectStack {
 		private Stack<EObject> objectStack = new Stack<EObject>();
 		private Stack<Composite> attributesCompositeStack = new Stack<Composite>();
 		private Stack<Section> attributesSectionStack = new Stack<Section>();
-		private Stack<Composite> referencesCompositeStack = new Stack<Composite>();
-		private Stack<Section> referencesSectionStack = new Stack<Section>();
 		
 		public void push(EObject object) {
 			attributesCompositeStack.push(AbstractBpmn2PropertiesComposite.this.getAttributesParent());
 			attributesComposite = null;
 			attributesSectionStack.push(attributesSection);
 			attributesSection = null;
-
-			referencesCompositeStack.push(AbstractBpmn2PropertiesComposite.this.getReferencesParent());
-			referencesComposite = null;
-			referencesSectionStack.push(referencesSection);
-			referencesSection = null;
 			objectStack.push(object);
 		}
 		
 		public EObject pop() {
 			if (objectStack.size()>0) {
 				attributesComposite = attributesCompositeStack.pop();
-				referencesSection = referencesSectionStack.pop();
 				
 				return objectStack.pop();
 			}
@@ -878,13 +810,6 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 			return AbstractBpmn2PropertiesComposite.this;
 		}
 		
-		public Composite getReferencesParent() {
-			if (objectStack.size()>0) {
-				return referencesCompositeStack.peek();
-			}
-			return AbstractBpmn2PropertiesComposite.this;
-		}
-		
 		public EObject get(int i) {
 			return objectStack.get(i);
 		}
@@ -897,8 +822,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	class DomainListener extends ResourceSetListenerImpl {
 		@Override
 		public void resourceSetChanged(ResourceSetChangeEvent event) {
-//			propertySection.tabbedPropertySheetPage.selectionChanged(getDiagramEditor(), new StructuredSelection());
-//			propertySection.tabbedPropertySheetPage.selectionChanged(getDiagramEditor(), propertySection.getSelection());
+			// TODO: do we need this?
 		}
 	}
 

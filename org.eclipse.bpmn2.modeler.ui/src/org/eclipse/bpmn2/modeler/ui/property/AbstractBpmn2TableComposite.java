@@ -287,7 +287,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 		return true;
 	}
 
-	protected void bindList(final EObject object, final EStructuralFeature feature, ItemProviderAdapter itemProviderAdapter) {
+	protected void bindList(final EObject object, final EStructuralFeature feature) {
 		if (!(object.eGet(feature) instanceof EList<?>)) {
 			return;
 		}

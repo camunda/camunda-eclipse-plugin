@@ -15,7 +15,19 @@ package org.eclipse.bpmn2.modeler.ui.adapters;
 
 import org.eclipse.bpel.wsil.model.inspection.InspectionPackage;
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.di.impl.BpmnDiPackageImpl;
+import org.eclipse.bpmn2.di.provider.BpmnDiItemProviderAdapterFactory;
+import org.eclipse.bpmn2.impl.Bpmn2PackageImpl;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterRegistry;
+import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
+import org.eclipse.dd.dc.impl.DcPackageImpl;
+import org.eclipse.dd.dc.provider.DcItemProviderAdapterFactory;
+import org.eclipse.dd.di.impl.DiPackageImpl;
+import org.eclipse.dd.di.provider.DiItemProviderAdapterFactory;
+import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
+import org.eclipse.emf.edit.provider.ReflectiveItemProviderAdapterFactory;
+import org.eclipse.emf.edit.provider.resource.ResourceItemProviderAdapterFactory;
+import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.wst.wsdl.WSDLPackage;
 import org.eclipse.xsd.XSDPackage;
 
@@ -24,11 +36,10 @@ import org.eclipse.xsd.XSDPackage;
  *
  */
 public class AdapterUtil {
-	
+	private static ComposedAdapterFactory BPMN2_ADAPTER_FACTORIES;
+	private static AdapterFactoryLabelProvider LABEL_PROVIDER;
+
 	static {
-//		AdapterRegistry.INSTANCE.registerAdapterFactory(
-//				Bpmn2Package.eINSTANCE, Bpmn2UIAdapterFactory.getInstance());
-		
 		AdapterRegistry.INSTANCE.registerAdapterFactory(
 			    WSDLPackage.eINSTANCE, Bpmn2WSDLAdapterFactory.getInstance());
 		
@@ -41,8 +52,30 @@ public class AdapterUtil {
 		AdapterRegistry.INSTANCE.registerAdapterFactory(
 			    InspectionPackage.eINSTANCE, Bpmn2WSILAdapterFactory.getInstance() );
 		
+		// BPMN2 metamodel adapter factories
+
+		BPMN2_ADAPTER_FACTORIES = new ComposedAdapterFactory(ComposedAdapterFactory.Descriptor.Registry.INSTANCE);
+
+		BPMN2_ADAPTER_FACTORIES.addAdapterFactory(new ResourceItemProviderAdapterFactory());
+
+		BPMN2_ADAPTER_FACTORIES.addAdapterFactory(
+				AdapterRegistry.INSTANCE.registerFactory(Bpmn2PackageImpl.eINSTANCE, new Bpmn2ItemProviderAdapterFactory()));
+		BPMN2_ADAPTER_FACTORIES.addAdapterFactory(
+				AdapterRegistry.INSTANCE.registerFactory(BpmnDiPackageImpl.eINSTANCE, new BpmnDiItemProviderAdapterFactory()));
+		BPMN2_ADAPTER_FACTORIES.addAdapterFactory(
+				AdapterRegistry.INSTANCE.registerFactory(DcPackageImpl.eINSTANCE, new DcItemProviderAdapterFactory()));
+		BPMN2_ADAPTER_FACTORIES.addAdapterFactory(
+				AdapterRegistry.INSTANCE.registerFactory(DiPackageImpl.eINSTANCE, new DiItemProviderAdapterFactory()));
+
+		BPMN2_ADAPTER_FACTORIES.addAdapterFactory(new ReflectiveItemProviderAdapterFactory());
 	}
 
+	public static AdapterFactoryLabelProvider getLabelProvider() {
+		if (LABEL_PROVIDER==null)
+			LABEL_PROVIDER = new AdapterFactoryLabelProvider(BPMN2_ADAPTER_FACTORIES);
+		return LABEL_PROVIDER;
+	}
+	
 	/**
 	 * @param <T>
 	 * @param target

@@ -77,7 +77,7 @@ public class ToolEnablementPropertyPage extends PropertyPage {
 
 		Label lblEnabledToolsAnd = new Label(container, SWT.NONE);
 		lblEnabledToolsAnd.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
-		lblEnabledToolsAnd.setText("Enabled tools and attributes");
+		lblEnabledToolsAnd.setText("Enabled tools and properties");
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 

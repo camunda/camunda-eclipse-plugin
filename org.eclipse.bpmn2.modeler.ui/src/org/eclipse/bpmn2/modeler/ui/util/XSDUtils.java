@@ -284,12 +284,12 @@ public class XSDUtils {
 
 	/**
 	 * Adds the text to the component as a Documentation element (just like addDocumentation) and then adds the 
-	 * Documentation attributes to the Documentation element if they exist.
+	 * Documentation properties to the Documentation element if they exist.
 	 * If text is null then no documentation is set.
-	 * If attributes is null then no attributes are added to the documentation element.
+	 * If properties is null then no properties are added to the documentation element.
 	 * @param component
 	 * @param text
-	 * @param attributes
+	 * @param properties
 	 * @return
 	 */
 	public static XSDAnnotation addDocumentationAndAttributes(XSDConcreteComponent component, String text, Map attributes)
@@ -309,7 +309,7 @@ public class XSDUtils {
         if (annotation==null)
             return null;
         
-        // no attributes so return
+        // no properties so return
         if (attributes==null || attributes.isEmpty())
             return annotation;
         
@@ -335,7 +335,7 @@ public class XSDUtils {
         if (userInfo==null)
             return null;
         
-        // add attributes
+        // add properties
         String key = null;
         for (Iterator<String> iter = attributes.keySet().iterator(); iter.hasNext();)
         {
@@ -443,7 +443,7 @@ public class XSDUtils {
 	}
 	
 	/**
-	 * Given a BO (XSD Complex Type), return a list of the attributes 
+	 * Given a BO (XSD Complex Type), return a list of the properties 
 	 * within the complexType.
 	 * @param bo
 	 * @return List of XSDAttributeDeclaration
@@ -457,13 +457,13 @@ public class XSDUtils {
 			Object next = attrContents.get(i);
 			
 			// Attribute contents may include actual attribute delcarations (wrapped in XSDAttributeUses) or
-			// attribute group definitions, containing bundles of attributes
+			// attribute group definitions, containing bundles of properties
 			if(next instanceof XSDAttributeUse) {
 				attrs.add( ((XSDAttributeUse) next).getContent().getResolvedAttributeDeclaration() );
 				
 			} else if (next instanceof XSDAttributeGroupDefinition) {
 				
-				// Add these attributes to the end of attrContents to be processed in turn
+				// Add these properties to the end of attrContents to be processed in turn
 				XSDAttributeGroupDefinition attrGroup = (XSDAttributeGroupDefinition) next;
 				if(attrGroup.getResolvedAttributeGroupDefinition() != null)
 					attrContents.addAll(attrGroup.getResolvedAttributeGroupDefinition().getAttributeUses());
@@ -547,7 +547,7 @@ public class XSDUtils {
 	}
 	
 	/**
-	 * Returns the attributes on the documentation element if they exist.  I.e. returns source and xml:lang
+	 * Returns the properties on the documentation element if they exist.  I.e. returns source and xml:lang
 	 * Returns an empty parentMap if none.
 	 * @param type
 	 * @return
@@ -584,7 +584,7 @@ public class XSDUtils {
     }
 
 	/**
-	 * Returns the attributes on the documentation element if they exist.  I.e. returns source and xml:lang
+	 * Returns the properties on the documentation element if they exist.  I.e. returns source and xml:lang
 	 * Returns an empty parentMap if none.
 	 * @param element
 	 * @return
@@ -681,7 +681,7 @@ public class XSDUtils {
 		// must be in the complexContent, ie. we're extending another BO.
 		// if the group and the type are not in the same resource then
 		// we are extending another BO and we don't want to show inherited
-		// attributes.
+		// properties.
 		if ( group.getContents().isEmpty() || group.eResource() != cType.eResource())
 		{
 			// if we are extending another BO then get the elements
@@ -708,7 +708,7 @@ public class XSDUtils {
 	/**
 	 * General utility method for finding a name for an xsd component.  This method will handle
 	 * mapping of xsd primitive names to their human readable counterparts, as well as resolving
-	 * element references for attributes and walking up object hierarchies for anonymous types.  
+	 * element references for properties and walking up object hierarchies for anonymous types.  
 	 * Basically this method should be used whenever a name is needed to minimize the risk of 
 	 * having a name of 'null' -- though this method WILL return null if no name can be found.
 	 * @param component
@@ -844,7 +844,7 @@ public class XSDUtils {
 	}
 	
 	/**
-	 * Return a collection of all types referenced by the attributes (XSDFeatures) of source.  This
+	 * Return a collection of all types referenced by the properties (XSDFeatures) of source.  This
 	 * method is non-recursive (i.e. the list only contains direct references, not references-of-references)
 	 * Will not return null, but may return an empty set.  This will not return a BO reference if the file
 	 * has been deleted (or just doesn't exist).  
@@ -866,7 +866,7 @@ public class XSDUtils {
 	}
 
 	/**
-	 * Return a collection of all types referenced by the attributes (XSDFeatures) of source.  This
+	 * Return a collection of all types referenced by the properties (XSDFeatures) of source.  This
 	 * method is non-recursive (i.e. the list only contains direct references, not references-of-references)
 	 * Will not return null, but may return an empty set.  This will return a BO reference if the file
 	 * has been deleted (or just doesn't exist).  
@@ -879,7 +879,7 @@ public class XSDUtils {
 	}
 
 	/**
-	 * Return a collection of all types referenced by the attributes (XSDFeatures) of source.  This
+	 * Return a collection of all types referenced by the properties (XSDFeatures) of source.  This
 	 * method is non-recursive (i.e. the list only contains direct references, not references-of-references)
 	 * Will not return null, but may return an empty set.  This will return a BO reference if the file
 	 * has been deleted (or just doesn't exist).  
@@ -1073,7 +1073,7 @@ public class XSDUtils {
 	{
 		int max = 1;
 		
-		// not a particle means an attribute use.  attributes are maxed at 1.
+		// not a particle means an attribute use.  properties are maxed at 1.
 		if ( !(xsdElem.eContainer() instanceof XSDParticle) )
 			return max;
 			

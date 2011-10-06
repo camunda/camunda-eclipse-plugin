@@ -20,7 +20,7 @@ import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite.AbstractItemProvider;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite.AbstractPropertiesProvider;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
@@ -37,7 +37,7 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
  */
 public class DataObjectPropertySection extends AbstractBpmn2PropertySection {
 
-	private AbstractItemProvider dataObjectItemProvider;
+	private AbstractPropertiesProvider dataObjectItemProvider;
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
@@ -71,15 +71,15 @@ public class DataObjectPropertySection extends AbstractBpmn2PropertySection {
 		}
 
 		@Override
-		public AbstractItemProvider getItemProvider(EObject object) {
+		public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
 			if (object instanceof DataObject) {
 				if (dataObjectItemProvider == null) {
-					dataObjectItemProvider = new AbstractItemProvider(object) {
+					dataObjectItemProvider = new AbstractPropertiesProvider(object) {
 						String[] allAttributes = new String[] { "id", "name", "isCollection", "itemSubjectRef" };
 						String[] attributes = new String[] { "isCollection", "itemSubjectRef" };
 						
 						@Override
-						public String[] getAttributes() {
+						public String[] getProperties() {
 							EObject bo = PropertyUtil.getBusinessObjectForSelection(propertySection.getSelection());
 							if (bo instanceof DataObjectReference) {
 								return allAttributes;
