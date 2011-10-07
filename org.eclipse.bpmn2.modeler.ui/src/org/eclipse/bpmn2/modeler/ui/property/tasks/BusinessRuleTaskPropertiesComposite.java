@@ -39,4 +39,8 @@ public class BusinessRuleTaskPropertiesComposite extends DefaultPropertiesCompos
 	public void createBindings(EObject be) {
 		bindAttribute(be,"implementation");
 	}
+
+	public BusinessRuleTaskPropertiesComposite(Composite parent, int style) {
+		super(parent, style);
+	}
 }

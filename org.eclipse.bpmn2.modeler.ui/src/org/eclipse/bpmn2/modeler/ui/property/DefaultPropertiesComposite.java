@@ -15,39 +15,20 @@ package org.eclipse.bpmn2.modeler.ui.property;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
-import org.eclipse.bpmn2.Participant;
-import org.eclipse.bpmn2.di.BpmnDiPackage;
-import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature;
-import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
-import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablementPreferences;
+import org.eclipse.bpmn2.impl.Bpmn2PackageImpl;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.diagram.BPMNFeatureProvider;
-import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
-import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.ItemProviderAdapter;
-import org.eclipse.graphiti.features.IFeature;
-import org.eclipse.graphiti.mm.pictograms.Diagram;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.internal.Workbench;
-import org.eclipse.ui.forms.widgets.Section;
 
 public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 
 	protected final String[] EMPTY_STRING_ARRAY = new String[] {};
-	private AbstractPropertiesProvider itemProvider = null;
+	private AbstractPropertiesProvider propertiesProvider = null;
 	
 	/**
 	 * Create the composite.
@@ -63,19 +44,17 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 		super(section);
 	}
 	
-	public void setItemProvider(AbstractPropertiesProvider provider) {
-		itemProvider = provider;
+	public void setPropertiesProvider(AbstractPropertiesProvider provider) {
+		propertiesProvider = provider;
 	}
 	
 	public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
-		if (itemProvider==null) {
-			itemProvider = new AbstractPropertiesProvider(object) {
+		if (propertiesProvider==null) {
+			propertiesProvider = new AbstractPropertiesProvider(object) {
 				public String[] getProperties() {
 					List<String> list = new ArrayList<String>();
-					for (EStructuralFeature attribute : be.eClass().getEAllStructuralFeatures()) {
-						if (attribute instanceof EAttribute) {
-							list.add(attribute.getName());
-						}
+					for (EStructuralFeature attribute : be.eClass().getEStructuralFeatures()) {
+						list.add(attribute.getName());
 					}
 					String a[] = new String[list.size()];
 					list.toArray(a);
@@ -83,7 +62,7 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 				}
 			};
 		}
-		return itemProvider;
+		return propertiesProvider;
 	}
 	
 	@Override
@@ -98,6 +77,12 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 			getAttributesParent();
 			EStructuralFeature feature;
 			for (String a : getPropertiesProvider(be).getProperties()) {
+				EClass eItemClass = null;
+				if (a.contains(".")) {
+					String[] names = a.split("\\.");
+					a = names[0];
+					eItemClass = (EClass)Bpmn2PackageImpl.eINSTANCE.getEClassifier(names[1]);
+				}
 				feature = getAttributeFeature(be,a);
 				if (feature!=null) {
 					bindAttribute(getAttributesParent(), be,(EAttribute)feature);
@@ -110,7 +95,7 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 				{
 					feature = getListFeature(be,a);
 					if (feature!=null) {
-						bindList(be,feature);
+						bindList(be,feature, eItemClass);
 						continue;
 					}
 					feature = getReferenceFeature(be,a);

@@ -18,6 +18,10 @@ import org.eclipse.swt.widgets.Composite;
 
 public class ConversationLinkPropertiesComposite extends DefaultPropertiesComposite {
 
+	public ConversationLinkPropertiesComposite(Composite parent, int style) {
+		super(parent, style);
+	}
+
 	/**
 	 * @param section
 	 */

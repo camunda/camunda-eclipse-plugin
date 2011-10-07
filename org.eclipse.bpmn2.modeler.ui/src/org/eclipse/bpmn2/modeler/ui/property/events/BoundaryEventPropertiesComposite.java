@@ -21,6 +21,10 @@ import org.eclipse.swt.widgets.Composite;
 
 public class BoundaryEventPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 
+	public BoundaryEventPropertiesComposite(Composite parent, int style) {
+		super(parent, style);
+	}
+
 	/**
 	 * @param section
 	 */

@@ -126,10 +126,10 @@
 		</propertyTab>
 				
 		<propertyTab category="BPMN2"
-			id="org.eclipse.bpmn2.modeler.imports.tab"
+			id="org.eclipse.bpmn2.modeler.definitions.tab"
 			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
 			afterTab="org.eclipse.bpmn2.modeler.process.diagram.tab"
-			label="Imports">
+			label="Definitions">
 		</propertyTab>
 <!--
 new
@@ -153,6 +153,13 @@ new
 			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 			label="Data Object Reference">
+		</propertyTab>
+		
+		<propertyTab category="BPMN2"
+			id="org.eclipse.bpmn2.modeler.dataitems.tab"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			label="Data Items">
 		</propertyTab>
 <!--
 new
@@ -305,12 +312,12 @@ new
 		</propertySection>
 			
 		<propertySection
-			class="org.eclipse.bpmn2.modeler.ui.property.diagrams.ImportsPropertySection"
+			class="org.eclipse.bpmn2.modeler.ui.property.diagrams.DefinitionsPropertySection"
 			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-			id="org.eclipse.bpmn2.modeler.imports.section"
+			id="org.eclipse.bpmn2.modeler.definitions.section"
 			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
 			type="org.eclipse.bpmn2.di.BPMNDiagram"
-			tab="org.eclipse.bpmn2.modeler.imports.tab">
+			tab="org.eclipse.bpmn2.modeler.definitions.tab">
 		</propertySection>
 <!--
 new
@@ -337,6 +344,15 @@ new
 			id="org.eclipse.bpmn2.modeler.dataobjectref.section"
 			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
 			tab="org.eclipse.bpmn2.modeler.dataobjectref.tab">
+		</propertySection>
+			
+		<propertySection
+			class="org.eclipse.bpmn2.modeler.ui.property.diagrams.DataItemsPropertySection"
+			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+			id="org.eclipse.bpmn2.modeler.dataitems.section"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			type="org.eclipse.bpmn2.di.BPMNDiagram"
+			tab="org.eclipse.bpmn2.modeler.dataitems.tab">
 		</propertySection>
 <!--
 new

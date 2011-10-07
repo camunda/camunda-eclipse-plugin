@@ -35,6 +35,10 @@ public class SequenceFlowPropertiesComposite extends DefaultPropertiesComposite 
 	private Button addRemoveConditionButton;
 	private Button setDefaultFlowCheckbox;
 	
+	public SequenceFlowPropertiesComposite(Composite parent, int style) {
+		super(parent, style);
+	}
+
 	/**
 	 * @param section
 	 */

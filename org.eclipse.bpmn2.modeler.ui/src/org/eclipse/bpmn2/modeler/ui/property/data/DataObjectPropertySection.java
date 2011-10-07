@@ -15,14 +15,15 @@ package org.eclipse.bpmn2.modeler.ui.property.data;
 
 import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.DataObjectReference;
-import org.eclipse.bpmn2.DataState;
 import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite.AbstractPropertiesProvider;
+import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeRegistry;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Bob Brodt
@@ -37,7 +38,11 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
  */
 public class DataObjectPropertySection extends AbstractBpmn2PropertySection {
 
-	private AbstractPropertiesProvider dataObjectItemProvider;
+	static {
+		PropertiesCompositeRegistry.register(DataObject.class, DataObjectPropertiesComposite.class);
+	}
+	
+	private AbstractPropertiesProvider dataObjectPropertiesProvider;
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
@@ -63,6 +68,10 @@ public class DataObjectPropertySection extends AbstractBpmn2PropertySection {
 	
 	public class DataObjectPropertiesComposite extends DefaultPropertiesComposite {
 
+		public DataObjectPropertiesComposite(Composite parent, int style) {
+			super(parent, style);
+		}
+
 		/**
 		 * @param section
 		 */
@@ -73,8 +82,8 @@ public class DataObjectPropertySection extends AbstractBpmn2PropertySection {
 		@Override
 		public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
 			if (object instanceof DataObject) {
-				if (dataObjectItemProvider == null) {
-					dataObjectItemProvider = new AbstractPropertiesProvider(object) {
+				if (dataObjectPropertiesProvider == null) {
+					dataObjectPropertiesProvider = new AbstractPropertiesProvider(object) {
 						String[] allAttributes = new String[] { "id", "name", "isCollection", "itemSubjectRef" };
 						String[] attributes = new String[] { "isCollection", "itemSubjectRef" };
 						
@@ -93,10 +102,9 @@ public class DataObjectPropertySection extends AbstractBpmn2PropertySection {
 						}
 					};
 				}
-				return dataObjectItemProvider;
+				return dataObjectPropertiesProvider;
 			}
 			return null;
 		}
-		
 	}
 }

@@ -21,6 +21,10 @@ import org.eclipse.swt.widgets.Composite;
 
 public class CatchEventPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 
+	public CatchEventPropertiesComposite(Composite parent, int style) {
+		super(parent, style);
+	}
+
 	/**
 	 * @param parent
 	 * @param style

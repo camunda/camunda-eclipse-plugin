@@ -28,6 +28,10 @@ public class ChoreographyTaskPropertiesComposite extends DefaultPropertiesCompos
 		super(section);
 	}
 	
+	public ChoreographyTaskPropertiesComposite(Composite parent, int style) {
+		super(parent, style);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

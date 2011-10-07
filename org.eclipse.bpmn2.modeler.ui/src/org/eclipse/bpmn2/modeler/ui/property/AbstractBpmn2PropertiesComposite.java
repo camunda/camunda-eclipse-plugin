@@ -37,6 +37,7 @@ import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -123,7 +124,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		toolkit.adapt(this);
 		toolkit.paintBordersFor(this);
 		setLayout(new GridLayout(3, false));
-
+		
 		// TODO: do we need this?
 //		domain = BPMN2Editor.getActiveEditor().getEditingDomain();
 //		domainListener = new DomainListener();
@@ -715,7 +716,11 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		}
 	}
 	
-	protected void bindList(final EObject object, final EStructuralFeature feature) {
+	protected void bindList(EObject object, EStructuralFeature feature) {
+		bindList(object,feature,null);
+	}
+	
+	protected void bindList(EObject object, EStructuralFeature feature, EClass listItemClass) {
 
 		if (preferences.isEnabled(object.eClass(), feature)) {
 
@@ -724,6 +729,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 				tableComposite = new AbstractBpmn2TableComposite(propertySection, AbstractBpmn2TableComposite.DEFAULT_STYLE);
 			else
 				tableComposite = new AbstractBpmn2TableComposite(this, AbstractBpmn2TableComposite.DEFAULT_STYLE);
+			tableComposite.setListItemClass(listItemClass);
 			tableComposite.bindList(object, feature);
 		}
 	}

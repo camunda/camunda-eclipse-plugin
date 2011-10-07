@@ -104,6 +104,8 @@ public class AbstractBpmn2TableComposite extends Composite {
 	protected FormToolkit toolkit;
 	protected BPMN2Editor bpmn2Editor;
 
+	protected EClass listItemClass;
+	
 	// widgets
 	SashForm sashForm;
 	Section tableSection;
@@ -115,7 +117,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 	Composite tableAndButtonsComposite;
 	Composite buttonsComposite;
 	Composite tableComposite;
-	Composite detailComposite;
+	AbstractBpmn2PropertiesComposite detailComposite;
 	
 	Button addButton;
 	Button removeButton;
@@ -171,6 +173,17 @@ public class AbstractBpmn2TableComposite extends Composite {
 		tableProvider = provider;
 	}
 	
+	public void setListItemClass(EClass clazz) {
+		this.listItemClass = clazz;
+	}
+	
+	public EClass getListItemClass(EObject object, EStructuralFeature feature) {
+		if (listItemClass!=null)
+			return listItemClass;
+		return (EClass) feature.getEType();
+		
+	}
+	
 	/**
 	 * Create a default ColumnTableProvider if none was set in setTableProvider();
 	 * @param object
@@ -180,7 +193,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 	public AbstractTableProvider getTableProvider(EObject object, EStructuralFeature feature) {
 		if (tableProvider==null) {
 			final EList<EObject> list = (EList<EObject>)object.eGet(feature);
-			final EClass listItemClass = (EClass) feature.getEType();
+			final EClass listItemClass = getListItemClass(object, feature);
 
 			tableProvider = new AbstractTableProvider() {
 				@Override
@@ -230,12 +243,11 @@ public class AbstractBpmn2TableComposite extends Composite {
 	 * in a twistie section whenever the user selects an item from the table. The section
 	 * is automatically hidden when the table is collapsed.
 	 * 
-	 * @param parent
+	 * @param object
 	 * @return
 	 */
-	public Composite createDetailComposite(Composite parent) {
-		DefaultPropertiesComposite composite = new DefaultPropertiesComposite(parent,SWT.NONE);
-		composite.setPropertySection(propertySection);
+	public AbstractBpmn2PropertiesComposite createDetailComposite(Composite parent, Class eClass) {
+		AbstractBpmn2PropertiesComposite composite = PropertiesCompositeRegistry.createComposite(eClass, parent, SWT.NONE);
 		return composite;
 	}
 	
@@ -247,7 +259,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 	 */
 	protected EObject addListItem(EObject object, EStructuralFeature feature) {
 		EList<EObject> list = (EList<EObject>)object.eGet(feature);
-		EClass listItemClass = (EClass) feature.getEType();
+		EClass listItemClass = getListItemClass(object,feature);
 		if (!(list instanceof EObjectContainmentEList)) {
 			// this is not a containment list so we can't add it
 			// because we don't know where the new object belongs
@@ -287,7 +299,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 		return true;
 	}
 
-	protected void bindList(final EObject object, final EStructuralFeature feature) {
+	public void bindList(final EObject object, final EStructuralFeature feature) {
 		if (!(object.eGet(feature) instanceof EList<?>)) {
 			return;
 		}
@@ -311,7 +323,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 		
 		final TransactionalEditingDomain editingDomain = bpmn2Editor.getEditingDomain();
 		final EList<EObject> list = (EList<EObject>)object.eGet(feature);
-		final EClass listItemClass = (EClass) feature.getEType();
+		final EClass listItemClass = getListItemClass(object,feature);
 		
 		////////////////////////////////////////////////////////////
 		// Collect columns to be displayed and build column provider
@@ -334,7 +346,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 					ExpandableComposite.TWISTIE |
 					ExpandableComposite.COMPACT |
 					ExpandableComposite.TITLE_BAR);
-			tableSection.setText(ModelUtil.toDisplayName(feature.getName()));
+			tableSection.setText(ModelUtil.toDisplayName(feature.getName())+" List");
 
 			tableComposite = toolkit.createComposite(tableSection, SWT.NONE);
 			tableSection.setClient(tableComposite);
@@ -347,10 +359,11 @@ public class AbstractBpmn2TableComposite extends Composite {
 					ExpandableComposite.TITLE_BAR);
 			detailSection.setText(ModelUtil.toDisplayName(listItemClass.getName()) + " Details");
 
-			detailComposite = createDetailComposite(detailSection);
+			detailComposite = createDetailComposite(detailSection, listItemClass.getInstanceClass());
 			if (detailComposite!=null) {
 				detailSection.setClient(detailComposite);
 				toolkit.adapt(detailComposite);
+				detailComposite.setPropertySection(propertySection);
 			}
 			detailSection.setVisible(false);
 
@@ -402,7 +415,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 		
 		tableViewer.setLabelProvider(tableProvider);
 		tableViewer.setCellModifier(tableProvider);
-		tableViewer.setContentProvider(new ContentProvider(object, list));
+		tableViewer.setContentProvider(new ContentProvider(object, feature, list));
 		tableViewer.setColumnProperties(tableProvider.getColumnProperties());
 		tableViewer.setCellEditors(tableProvider.createCellEditors(table));
 
@@ -628,12 +641,14 @@ public class AbstractBpmn2TableComposite extends Composite {
 	}
 	
 	public class ContentProvider implements IStructuredContentProvider {
-		private EObject parent;
+		private EObject object;
+		private EStructuralFeature feature;
 		private EList<EObject> list;
 		
-		public ContentProvider(EObject p, EList<EObject> l) {
-			parent = p;
-			list = l;
+		public ContentProvider(EObject object, EStructuralFeature feature, EList<EObject> list) {
+			this.object = object;
+			this.feature = feature;
+			this.list = list;
 		}
 
 		@Override
@@ -646,7 +661,14 @@ public class AbstractBpmn2TableComposite extends Composite {
 
 		@Override
 		public Object[] getElements(Object inputElement) {
-			return list.toArray();
+			List<EObject> elements = new ArrayList<EObject>();
+			for (EObject o : list) {
+				EClass ec = o.eClass();
+				EClass lic = getListItemClass(object,feature);
+				if (ec == lic)
+					elements.add(o);
+			}
+			return elements.toArray(new EObject[elements.size()]);
 		}
 	}
 	

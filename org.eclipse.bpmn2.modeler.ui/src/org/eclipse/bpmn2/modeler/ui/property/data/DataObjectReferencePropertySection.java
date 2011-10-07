@@ -19,18 +19,23 @@ import org.eclipse.bpmn2.DataState;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeRegistry;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite.AbstractPropertiesProvider;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Bob Brodt
  *
  */
 public class DataObjectReferencePropertySection extends AbstractBpmn2PropertySection {
+	static {
+		PropertiesCompositeRegistry.register(DataObjectReference.class, DataObjectReferencePropertiesComposite.class);
+	}
 
-	private AbstractPropertiesProvider dataObjectReferenceItemProvider;
-	private AbstractPropertiesProvider dataStateItemProvider;
+	private AbstractPropertiesProvider dataObjectReferencePropertiesProvider;
+	private AbstractPropertiesProvider dataStatePropertiesProvider;
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
@@ -58,11 +63,15 @@ public class DataObjectReferencePropertySection extends AbstractBpmn2PropertySec
 			super(section);
 		}
 
+		public DataObjectReferencePropertiesComposite(Composite parent, int style) {
+			super(parent, style);
+		}
+
 		@Override
 		public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
 			if (object instanceof DataState) {
-				if (dataStateItemProvider == null) {
-					dataStateItemProvider = new AbstractPropertiesProvider(object) {
+				if (dataStatePropertiesProvider == null) {
+					dataStatePropertiesProvider = new AbstractPropertiesProvider(object) {
 						String[] properties = new String[] { "id", "name" };
 						
 						@Override
@@ -71,10 +80,10 @@ public class DataObjectReferencePropertySection extends AbstractBpmn2PropertySec
 						}
 					};
 				}
-				return dataStateItemProvider;
+				return dataStatePropertiesProvider;
 			}
-			else if (dataObjectReferenceItemProvider == null) {
-				dataObjectReferenceItemProvider = new AbstractPropertiesProvider(object) {
+			else if (dataObjectReferencePropertiesProvider == null) {
+				dataObjectReferencePropertiesProvider = new AbstractPropertiesProvider(object) {
 					String[] properties = new String[] { "dataObjectRef" };
 					String[] children = new String[] { "dataState" };
 
@@ -94,7 +103,7 @@ public class DataObjectReferencePropertySection extends AbstractBpmn2PropertySec
 					}
 				};
 			}
-			return dataObjectReferenceItemProvider;
+			return dataObjectReferencePropertiesProvider;
 		}
 		
 	}

@@ -26,6 +26,10 @@ import org.eclipse.swt.widgets.Composite;
 
 public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 
+	public CommonEventPropertiesComposite(Composite parent, int style) {
+		super(parent, style);
+	}
+
 	/**
 	 * @param section
 	 */

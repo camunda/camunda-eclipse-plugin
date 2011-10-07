@@ -21,6 +21,10 @@ import org.eclipse.swt.widgets.Composite;
 
 public class ServiceTaskPropertiesComposite extends DefaultPropertiesComposite {
 
+	public ServiceTaskPropertiesComposite(Composite parent, int style) {
+		super(parent, style);
+	}
+
 	/**
 	 * @param section
 	 */

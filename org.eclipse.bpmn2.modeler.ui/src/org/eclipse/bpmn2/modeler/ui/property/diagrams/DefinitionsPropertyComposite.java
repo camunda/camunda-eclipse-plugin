@@ -7,6 +7,7 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite.AbstractPropertiesProvider;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.SchemaImportDialog;
 import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
 import org.eclipse.emf.common.util.EList;
@@ -23,30 +24,62 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.wst.wsdl.Definition;
 import org.eclipse.wst.wsdl.internal.impl.DefinitionImpl;
 
-public class ImportsPropertyComposite extends DefaultPropertiesComposite  {
+public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 
-	ImportsTable importsTable;
+	public DefinitionsPropertyComposite(Composite parent, int style) {
+		super(parent, style);
+	}
+
+	private AbstractPropertiesProvider definitionsPropertiesProvider;
 
 	/**
 	 * @param section
 	 */
-	public ImportsPropertyComposite(AbstractBpmn2PropertySection section) {
+	public DefinitionsPropertyComposite(AbstractBpmn2PropertySection section) {
 		super(section);
 	}
 
 	@Override
-	public void createBindings(EObject be) {
-		
-		importsTable = new ImportsTable(propertySection);
-		importsTable.bind();
+	public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
+		if (definitionsPropertiesProvider==null) {
+			definitionsPropertiesProvider = new AbstractPropertiesProvider(object) {
+				String[] properties = new String[] {
+						"name",
+						"targetNamespace",
+						"typeLanguage",
+						"expressionLanguage",
+						"exporter",
+						"exporterVersion",
+						"imports",
+						"relationships"
+				};
+				
+				@Override
+				public String[] getProperties() {
+					return properties; 
+				}
+
+				@Override
+				public boolean alwaysShowAdvancedProperties() {
+					return true;
+				}
+			};
+		}
+		return definitionsPropertiesProvider;
 	}
 
 	@Override
-	protected void cleanBindings() {
-		super.cleanBindings();
-		if (importsTable!=null) {
-			importsTable.dispose();
-			importsTable = null;
+	protected void bindList(EObject object, EStructuralFeature feature) {
+		if ("imports".equals(feature.getName())) {
+			ImportsTable importsTable = new ImportsTable(propertySection);
+			importsTable.bind();
+		}
+		else if ("relationships".equals(feature.getName())) {
+			AbstractBpmn2TableComposite table = new AbstractBpmn2TableComposite(propertySection, AbstractBpmn2TableComposite.DEFAULT_STYLE);
+			table.bindList(getEObject(), feature);
+		}
+		else {
+			super.bindList(object, feature);
 		}
 	}
 
@@ -57,12 +90,7 @@ public class ImportsPropertyComposite extends DefaultPropertiesComposite  {
 		 * @param style
 		 */
 		public ImportsTable(AbstractBpmn2PropertySection section) {
-			super(section,
-					HIDE_TITLE |
-					ADD_BUTTON |
-					REMOVE_BUTTON |
-					MOVE_BUTTONS // | SHOW_DETAILS
-			);
+			super(section, DEFAULT_STYLE);
 		}
 
 

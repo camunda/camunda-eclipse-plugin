@@ -240,6 +240,7 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 	 * Force a layout of the property sheet page.
 	 */
 	public void layout() {
+		Control sectionRoot = (AbstractBpmn2PropertiesComposite)parent.getChildren()[0];
 		Composite composite = (Composite)tabbedPropertySheetPage.getControl();
 		composite.layout(true);
 		tabbedPropertySheetPage.resizeScrolledComposite();

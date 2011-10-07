@@ -21,6 +21,10 @@ import org.eclipse.swt.widgets.Composite;
 
 public class SendTaskPropertiesComposite extends DefaultPropertiesComposite {
 
+	public SendTaskPropertiesComposite(Composite parent, int style) {
+		super(parent, style);
+	}
+
 	/**
 	 * @param section
 	 */

@@ -18,6 +18,10 @@ import org.eclipse.swt.widgets.Composite;
 
 public class MessageFlowPropertiesComposite extends DefaultPropertiesComposite {
 
+	public MessageFlowPropertiesComposite(Composite parent, int style) {
+		super(parent, style);
+	}
+
 	/**
 	 * @param section
 	 */

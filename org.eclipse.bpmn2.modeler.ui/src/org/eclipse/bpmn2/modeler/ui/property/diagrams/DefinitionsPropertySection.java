@@ -17,14 +17,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-public class ImportsPropertySection extends AbstractBpmn2PropertySection {
+public class DefinitionsPropertySection extends AbstractBpmn2PropertySection {
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
 	 */
 	@Override
 	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
-		return  new ImportsPropertyComposite(this);
+		return new DefinitionsPropertyComposite(this);
 	}
 
 	@Override

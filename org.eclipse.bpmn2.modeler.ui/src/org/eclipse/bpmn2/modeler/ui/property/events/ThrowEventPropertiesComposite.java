@@ -21,6 +21,10 @@ import org.eclipse.swt.widgets.Composite;
 
 public class ThrowEventPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 
+	public ThrowEventPropertiesComposite(Composite parent, int style) {
+		super(parent, style);
+	}
+
 	/**
 	 * @param parent
 	 * @param style

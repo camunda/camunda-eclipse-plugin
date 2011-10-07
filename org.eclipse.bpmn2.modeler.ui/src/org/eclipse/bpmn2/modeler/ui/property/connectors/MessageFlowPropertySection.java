@@ -15,11 +15,16 @@ package org.eclipse.bpmn2.modeler.ui.property.connectors;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeRegistry;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 
 public class MessageFlowPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
+	static {
+		PropertiesCompositeRegistry.register(MessageFlow.class, MessageFlowPropertiesComposite.class);
+	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()

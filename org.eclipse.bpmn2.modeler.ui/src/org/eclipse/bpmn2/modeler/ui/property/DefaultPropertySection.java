@@ -12,7 +12,14 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.property;
 
+import org.eclipse.emf.ecore.EObject;
+
 public class DefaultPropertySection extends AbstractBpmn2PropertySection {
+
+	// Register the DefaultPropertiesComposite as a fallback for rendering EObject
+	static {
+		PropertiesCompositeRegistry.register(EObject.class, DefaultPropertiesComposite.class);
+	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()

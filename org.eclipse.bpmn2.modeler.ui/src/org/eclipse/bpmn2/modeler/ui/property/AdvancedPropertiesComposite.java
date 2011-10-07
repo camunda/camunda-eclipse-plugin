@@ -50,9 +50,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -69,13 +72,15 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 
 	private EObject be;
-	private final TreeViewer treeViewer;
-	private final DefaultPropertiesComposite detailsPropertiesComposite;
+	private TreeViewer treeViewer;
+	private AbstractBpmn2PropertiesComposite detailsPropertiesComposite;
 	private ToolEnablementPreferences preferences;
 	private TransactionalEditingDomain domain;
 	private DomainListener domainListener;
 	private Section treeSection;
 	private Section detailsSection;
+	private Composite detailsComposite;
+	private Button fullDetails;
 	
 	class DomainListener extends ResourceSetListenerImpl {
 		@Override
@@ -120,26 +125,7 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				// clean up any table widgets that may have been created by the previous
-				// incarnation of DefaultPropertiesComposite
-				for (Control c : getChildren()) {
-					if (c instanceof AbstractBpmn2TableComposite)
-						c.dispose();
-				}
-				EObject obj = getSelectedBaseElement();
-				if (obj==null) {
-					detailsSection.setVisible(false);
-				}
-				else {
-					detailsSection.setVisible(true);
-					detailsPropertiesComposite.setItemProvider(null);
-					detailsPropertiesComposite.setEObject(propertySection.editor, obj);
-					String name = ModelUtil.getObjectDisplayName(obj);
-					detailsSection.setText(name+" Properties");
-	
-					propertySection.recursivelayout(AdvancedPropertiesComposite.this);
-					propertySection.tabbedPropertySheetPage.resizeScrolledComposite();
-				}
+				updateDetailsSection();
 			}
 		});
 
@@ -149,17 +135,107 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 		detailsSection = toolkit.createSection(sashForm, ExpandableComposite.TITLE_BAR);
 		toolkit.paintBordersFor(detailsSection);
 		detailsSection.setText("Properties");
+		detailsComposite = toolkit.createComposite(detailsSection);
+		detailsComposite.setLayout(new GridLayout(1,false));
+		detailsSection.setClient(detailsComposite);
 
-		detailsPropertiesComposite = new DefaultPropertiesComposite(detailsSection, SWT.NONE);
-		detailsPropertiesComposite.setPropertySection(propertySection);
+		fullDetails = toolkit.createButton(detailsComposite, "Show advanced details", SWT.CHECK);
+		fullDetails.setLayoutData(new GridData(SWT.LEFT,SWT.TOP,false,false,1,1));
+		fullDetails.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				EObject obj = getSelectedBaseElement();
+				if (obj!=null) {
+					updateDetailsSection();
+				}
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+			
+		});
+
+		// don't construct the details composite yet because no selection has been
+		// made from the tree. We'll construct a details composite using the selected
+		// object's type (class) and then consult the PropertiesCompositeRegistry for
+		// a composite to use to render this object.
 		
-		detailsSection.setClient(detailsPropertiesComposite);
-		toolkit.adapt(detailsPropertiesComposite);
-		toolkit.paintBordersFor(detailsPropertiesComposite);
+//		detailsPropertiesComposite = new DefaultPropertiesComposite(detailsSection, SWT.NONE);
+//		detailsPropertiesComposite.setPropertySection(propertySection);
+//		
+//		detailsSection.setClient(detailsPropertiesComposite);
+//		toolkit.adapt(detailsPropertiesComposite);
+//		toolkit.paintBordersFor(detailsPropertiesComposite);
+		
 		sashForm.setWeights(new int[] { 1, 2 });
 
 	}
 
+	private void updateDetailsSection() {
+		// clean up any table widgets that may have been created by the previous
+		// incarnation of DefaultPropertiesComposite
+		for (Control c : getChildren()) {
+			if (c instanceof AbstractBpmn2TableComposite)
+				c.dispose();
+		}
+		
+		EObject obj = getSelectedBaseElement();
+		if (obj==null) {
+			detailsSection.layout(true); // refresh the layout's clientCache!
+			detailsSection.setVisible(false);
+		}
+		else {
+			// get rid of the old details composite if there was one
+			if (detailsPropertiesComposite!=null) {
+				detailsPropertiesComposite.dispose();
+				detailsPropertiesComposite = null;
+			}
+			// construct a details composite based on the selected object's class
+			if (fullDetails.getSelection()) {
+				detailsPropertiesComposite = new DefaultPropertiesComposite(detailsComposite,SWT.NONE);
+			}
+			else {
+				detailsPropertiesComposite = PropertiesCompositeRegistry.createComposite(obj.getClass(), detailsComposite, SWT.NONE);
+			}
+			Class cc = PropertiesCompositeRegistry.findCompositeClass(obj.getClass());
+			if (cc==null||cc==DefaultPropertiesComposite.class)
+				fullDetails.setVisible(false);
+			else
+				fullDetails.setVisible(true);
+			
+			detailsComposite.layout(true);
+			
+			detailsPropertiesComposite.setPropertySection(propertySection);
+			toolkit.adapt(detailsPropertiesComposite);
+			toolkit.paintBordersFor(detailsPropertiesComposite);
+			detailsSection.layout(true); // refresh the layout's clientCache!
+
+			detailsPropertiesComposite.setEObject(propertySection.editor, obj);
+
+			String name = ModelUtil.getObjectDisplayName(obj);
+			detailsSection.setText(name+" Details");
+			detailsSection.setVisible(true);
+
+			propertySection.recursivelayout(AdvancedPropertiesComposite.this);
+			propertySection.tabbedPropertySheetPage.resizeScrolledComposite();
+		}
+	}
+	
+	protected void addDomainListener(BPMN2Editor editor) {
+		removeDomainListener();
+		domain = editor.getEditingDomain();
+		domainListener = new DomainListener();
+		domain.addResourceSetListener(domainListener);
+	}
+
+	protected void removeDomainListener() {
+		if (domain!=null && domainListener!=null) {
+			domain.removeResourceSetListener(domainListener);
+			domainListener = null;
+		}
+	}
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite#createBindings(org.eclipse.emf.ecore.EObject)
 	 */
@@ -168,34 +244,20 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 	}
 
 	@Override
+	public void dispose() {
+		super.dispose();
+		removeDomainListener();
+	}
+
+	@Override
 	public void setEObject(BPMN2Editor diagramEditor, EObject be) {
-		if (domain != null && domainListener != null) {
-			domain.removeResourceSetListener(domainListener);
-		}
-
 		this.be = be;
-
-		domain = diagramEditor.getEditingDomain();
-		domainListener = new DomainListener();
-		domain.addResourceSetListener(domainListener);
-
+		addDomainListener(diagramEditor);
+		
 		treeViewer.setInput(be);
 		preferences = ToolEnablementPreferences.getPreferences(diagramEditor.getModelFile().getProject());
 		hookPropertySheetPageMenu();
 		treeSection.setText(ModelUtil.getObjectName(be));
-
-		// get rid of previous details properties widgets...
-		PropertyUtil.disposeChildWidgets(detailsPropertiesComposite);
-		// ...including tables
-		Control[] kids = this.getChildren();
-		for (Control k : kids) {
-			if (k instanceof AbstractBpmn2TableComposite) {
-				k.dispose();
-			}
-		}
-		
-		detailsPropertiesComposite.setEObject(propertySection.editor, be);
-		detailsSection.setText("Properties");
 
 		detailsSection.setVisible(true);
 	}

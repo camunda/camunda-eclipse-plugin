@@ -21,6 +21,10 @@ import org.eclipse.swt.widgets.Composite;
 
 public class EndEventPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 
+	public EndEventPropertiesComposite(Composite parent, int style) {
+		super(parent, style);
+	}
+
 	/**
 	 * @param parent
 	 * @param style
