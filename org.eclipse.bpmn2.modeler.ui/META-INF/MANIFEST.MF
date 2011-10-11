@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.eclipse.bpmn2.modeler.ui;singleton:=true
 Bundle-Version: 0.0.1.qualifier
 Bundle-Activator: org.eclipse.bpmn2.modeler.ui.Activator
 Bundle-Vendor: Eclipse.org
+Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui.ide,
  org.eclipse.osgi,
  org.eclipse.graphiti,

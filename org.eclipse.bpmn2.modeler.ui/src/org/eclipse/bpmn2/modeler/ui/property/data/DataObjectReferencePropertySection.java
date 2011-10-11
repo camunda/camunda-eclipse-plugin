@@ -96,11 +96,6 @@ public class DataObjectReferencePropertySection extends AbstractBpmn2PropertySec
 					public String[] getChildren(String name) {
 						return children;
 					}
-					
-					@Override
-					public boolean alwaysShowAdvancedProperties() {
-						return true;
-					}
 				};
 			}
 			return dataObjectReferencePropertiesProvider;

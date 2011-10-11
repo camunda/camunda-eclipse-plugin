@@ -21,9 +21,13 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
 
+
 	private static String BUNDLE_NAME = "org.eclipse.bpmn2.modeler.ui.messages"; //$NON-NLS-1$
 	
+	public static String SchemaImportDialog_0;
+	public static String SchemaImportDialog_1;
 	public static String SchemaImportDialog_2;
+	public static String SchemaImportDialog_3;
 	public static String SchemaImportDialog_4;
 	public static String SchemaImportDialog_5;
 	public static String SchemaImportDialog_6;
@@ -32,14 +36,18 @@ public class Messages extends NLS {
 	public static String SchemaImportDialog_8;
 	public static String SchemaImportDialog_9;
 	public static String SchemaImportDialog_10;
+	public static String SchemaImportDialog_11;
+	public static String SchemaImportDialog_12;
 	public static String SchemaImportDialog_17;
 	public static String SchemaImportDialog_13;
 	public static String SchemaImportDialog_19;
 	public static String SchemaImportDialog_18;
-	public static String SchemaImportDialog_11;
-	public static String SchemaImportDialog_0;
 	public static String SchemaImportDialog_14;
 	public static String SchemaImportDialog_16;
+
+	public static String SchemaImportDialog_20;
+	public static String SchemaImportDialog_21;
+	public static String SchemaImportDialog_22;
 
 	public static String XSDSchemaTreeNode_1;
 	public static String XSDSchemaTreeNode_0;
@@ -61,6 +69,26 @@ public class Messages extends NLS {
 	public static String XSDSchemaAdapter_1;
 	public static String XSDTypeDefinitionAdapter_XSD_Type_1;
 	public static String XSDSimpleTypeDefinitionAdapter_0;
+
+	public static String Bpmn2PreferencePage_HomePage_Description;
+	public static String Bpmn2PreferencePage_EditorPage_Description;
+
+	public static String WSILPreferencePage_WSIL_1;
+	public static String WSILPreferencePage_WSIL_2;
+	public static String WSILPreferencePage_WSIL_Description;
+	public static String WSILPreferencePage_WSIL_Add;
+	public static String WSILPreferencePage_WSIL_EnterLocation;
+	public static String WSILPreferencePage_WSIL_EnterDescription;
+	public static String WSILPreferencePage_WSIL_Remove;
+	public static String WSILPreferencePage_WSIL_MoveUp;
+	public static String WSILPreferencePage_WSIL_MoveDown;
+	public static String WSILPreferencePage_WSIL_OpenInBrowser;
+	public static String WSILPreferencePage_WSIL_NameLimit;
+	public static String WSILPreferencePage_WSIL_DocumentNotLoaded;
+	public static String WSILPreferencePage_WSIL_Abstract;
+	public static String WSILPreferencePage_WSIL_Location;
+	public static String WSILPreferencePage_WSIL_Namespace;
+	public static String WSILPreferencePage_WSIL_Index;
 
 	private Messages() {
 		// Do not instantiate

@@ -27,8 +27,8 @@ import org.osgi.service.prefs.Preferences;
 @SuppressWarnings("restriction")
 public class Bpmn2Preferences implements IPreferenceChangeListener {
 	public final static String PROJECT_PREFERENCES_ID = "org.eclipse.bpmn2.modeler";
-	public final static String TARGET_RUNTIME_ID = "target.runtime";
-	public final static String SHOW_ADVANCED_PROPERTIES_TAB_ID = "show.advanced.properties";
+	public final static String PREF_TARGET_RUNTIME = "target.runtime";
+	public final static String PREF_SHOW_ADVANCED_PROPERTIES = "show.advanced.properties";
 	
 	private Preferences prefs;
 	private boolean loaded;
@@ -52,7 +52,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener {
 	}
 
 	public void restoreDefaults() {
-		prefs.put(TARGET_RUNTIME_ID,TargetRuntime.DEFAULT_RUNTIME_ID);
+		prefs.put(PREF_TARGET_RUNTIME,TargetRuntime.DEFAULT_RUNTIME_ID);
 	}
 	
 	public void dispose() {
@@ -72,8 +72,8 @@ public class Bpmn2Preferences implements IPreferenceChangeListener {
 			// load all preferences: this will eventually include all per-project
 			// as well as global user preferences.
 			targetRuntime = TargetRuntime.getRuntime(
-					prefs.get(TARGET_RUNTIME_ID,TargetRuntime.DEFAULT_RUNTIME_ID));
-			showAdvancedPropertiesTab = prefs.getBoolean(SHOW_ADVANCED_PROPERTIES_TAB_ID, true);
+					prefs.get(PREF_TARGET_RUNTIME,TargetRuntime.DEFAULT_RUNTIME_ID));
+			showAdvancedPropertiesTab = prefs.getBoolean(PREF_SHOW_ADVANCED_PROPERTIES, true);
 			loaded = true;
 		}
 	}
@@ -81,8 +81,8 @@ public class Bpmn2Preferences implements IPreferenceChangeListener {
 	public synchronized void save() throws BackingStoreException {
 		
 		if (dirty) {
-			prefs.put(TARGET_RUNTIME_ID,targetRuntime.getId());
-			prefs.putBoolean(SHOW_ADVANCED_PROPERTIES_TAB_ID, showAdvancedPropertiesTab);
+			prefs.put(PREF_TARGET_RUNTIME,targetRuntime.getId());
+			prefs.putBoolean(PREF_SHOW_ADVANCED_PROPERTIES, showAdvancedPropertiesTab);
 			prefs.flush();
 			
 			dirty = false;

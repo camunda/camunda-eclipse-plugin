@@ -81,6 +81,22 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 
+/**
+ * This is a base class for all Property Sheet Sections. The Composite is used to render
+ * the "structural features" for an EObject, presumably a subclass of BaseElement or some
+ * other BPMN2 metamodel object.
+ * 
+ * The Composite uses a GridLayout with 3 columns: the leftmost column is designated for a
+ * label; the two rightmost columns are designated for input or editing widgets, depending
+ * on the type of structural feature being rendered.
+ * 
+ * EAttribute and EReference type of structural features are collected and rendered within
+ * a non-collapsible FormSection given the title "Attributes". List features are rendered in
+ * collapsible AbstractBpmn2TableComposite table widgets. 
+ * 
+ * Subclasses must implement the abstract createBindings() method to construct their editing
+ * widgets. These widgets are torn down and reconstructed when the editor selection changes.
+ */
 public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 
 	protected AbstractBpmn2PropertySection propertySection;
@@ -98,10 +114,10 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	protected ChildObjectStack objectStack = new ChildObjectStack();
 
 	/**
-	 * NB! Must call setEObject for updating contents and rebuild the UI.
+	 * Constructor for embedding this composite in an AbstractBpmn2PropertySection.
+	 * This is the "normal" method of creating this composite.
 	 * 
-	 * @param parent
-	 * @param style
+	 * @param section
 	 */
 	public AbstractBpmn2PropertiesComposite(AbstractBpmn2PropertySection section) {
 		super(section.getParent(), SWT.NONE);
@@ -111,6 +127,9 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	}
 	
 	/**
+	 * Constructor for embedding this composite in a nested property section,
+	 * e.g. the AdvancedPropertySection uses this.
+	 * 
 	 * @param parent
 	 * @param style
 	 */
@@ -144,6 +163,16 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		propertySection = section;
 	}
 	
+	/**
+	 * This method is called by the when the property sheet tab to update the UI
+	 * after a new selection is made. Updating consists of a full teardown of the
+	 * widget tree and then rebuilding it for the newly selected EObject. Since the
+	 * same composite MAY be used for different EObject types, the widgets may be
+	 * completely different, hence the need for teardown and setup for each new selection.
+	 * 
+	 * @param bpmn2Editor
+	 * @param object
+	 */
 	public void setEObject(BPMN2Editor bpmn2Editor, final EObject object) {
 		IProject project = bpmn2Editor.getModelFile().getProject();
 		preferences = ToolEnablementPreferences.getPreferences(project);
@@ -168,14 +197,33 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		}
 	}
 	
+	/**
+	 * Querries the owning AbstractBpmn2PropertySection for its owning BPMN2Editor.
+	 * If this composite is not owned by a AbstractBpmn2PropertySection, then return
+	 * the currently active editor.
+	 * 
+	 * @return the BPMN2Editor that owns this property section.
+	 */
 	public BPMN2Editor getDiagramEditor() {
-		return (BPMN2Editor)propertySection.getDiagramEditor();
+		if (propertySection!=null)
+			return (BPMN2Editor)propertySection.getDiagramEditor();
+		return BPMN2Editor.getActiveEditor();
 	}
 
+	/**
+	 * Tear down all child widgets
+	 */
 	protected void cleanBindings() {
 		PropertyUtil.disposeChildWidgets(this);
 	}
 
+	/**
+	 * Returns the composite that is used to contain all EAttributes for the
+	 * current selection. The default behavior is to construct a non-collapsible
+	 * Form Section and create a Composite within that section.
+	 * 
+	 * @return the Composite root for the current selection's EAttributes
+	 */
 	protected Composite getAttributesParent() {
 		if (attributesSection==null || attributesSection.isDisposed()) {
 
@@ -194,11 +242,61 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	}
 
 	/**
-	 * This method is called when setEObject is called and this should recreate all bindings and widgets for the
-	 * component.
+	 * This method is called when setEObject is called and this should recreate
+	 *  all bindings and widgets for the current selection.
+	 *  
+	 * @param be the business object linked to the currently selected EditPart
+	 * through the Graphiti DiagramEditor framework.
 	 */
 	public abstract void createBindings(EObject be);
 	
+	/**
+	 * Convenience method to look up an EObject's feature by name.
+	 * 
+	 * @param object the EObject
+	 * @param name the feature name string
+	 * @return the EStructuralFeature or null if the feature does not exist for this object
+	 */
+	protected EStructuralFeature getFeature(EObject object, String name) {
+		EStructuralFeature feature = ((EObject)object).eClass().getEStructuralFeature(name);
+		return feature;
+	}
+
+	/**
+	 * Convenience method to check if a feature is an EAttribute
+	 * @param feature
+	 * @return
+	 */
+	protected boolean isAttribute(EStructuralFeature feature) {
+		return (feature instanceof EAttribute);
+	}
+	
+	/**
+	 * Convenience method to check if a feature is an EList
+	 * @param object
+	 * @param feature
+	 * @return
+	 */
+	protected boolean isList(EObject object, EStructuralFeature feature) {
+		return (feature !=null && object.eGet(feature) instanceof EList);
+	}
+
+	/**
+	 * Convenience method to check if a feature is an EReference
+	 * @param feature
+	 * @return
+	 */
+	protected boolean isReference(EStructuralFeature feature) {
+		return (feature instanceof EReference);
+	}
+	
+	/**
+	 * Creates a Text widget
+	 * @param parent
+	 * @param name
+	 * @param multiLine
+	 * @return
+	 */
 	protected Text createTextInput(Composite parent, String name, boolean multiLine) {
 		createLabel(parent,name);
 
@@ -285,18 +383,9 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		return section;
 	}
 
-	
-	protected EAttribute getAttributeFeature(EObject object, String name) {
-		EStructuralFeature feature = ((EObject)object).eClass().getEStructuralFeature(name);
-		if (feature instanceof EAttribute) {
-			return (EAttribute)feature;
-		}
-		return null;
-	}
-	
 	protected void bindAttribute(EObject object, String name) {
-		EStructuralFeature feature = getAttributeFeature(object,name);
-		if (feature!=null) {
+		EStructuralFeature feature = getFeature(object,name);
+		if (isAttribute(feature)) {
 			bindAttribute(object,(EAttribute)feature);
 		}
 	}
@@ -336,17 +425,10 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 			}
 		}
 	}
-	protected EReference getReferenceFeature(EObject object, String name) {
-		EStructuralFeature feature = ((EObject)object).eClass().getEStructuralFeature(name);
-		if (feature instanceof EReference) {
-			return (EReference)feature;
-		}
-		return null;
-	}
 	
 	protected void bindReference(EObject object, String name) {
-		EStructuralFeature feature = getReferenceFeature(object,name);
-		if (feature!=null) {
+		EStructuralFeature feature = getFeature(object,name);
+		if (isReference(feature)) {
 			bindReference(object,(EReference)feature);
 		}
 	}
@@ -701,17 +783,10 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 			}
 		});
 	}
-
-	protected EStructuralFeature getListFeature(EObject object, String name) {
-		EStructuralFeature feature = ((EObject)object).eClass().getEStructuralFeature(name);
-		if (feature !=null && object.eGet(feature) instanceof EList)
-			return feature;
-		return null;
-	}
 	
 	protected void bindList(EObject object, String name) {
-		EStructuralFeature feature = getListFeature(object,name);
-		if (feature !=null) {
+		EStructuralFeature feature = getFeature(object,name);
+		if (isList(object,feature)) {
 			bindList(object,feature);
 		}
 	}

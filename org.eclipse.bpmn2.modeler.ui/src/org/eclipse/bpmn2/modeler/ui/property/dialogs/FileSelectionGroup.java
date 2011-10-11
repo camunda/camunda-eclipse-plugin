@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -79,6 +80,12 @@ public class FileSelectionGroup extends Composite {
 
 		createViewerFileFilter();
 		createContents();
+	}
+	public void setFileFilter(String filter) {
+		filterPatterns = filter;
+		createViewerFileFilter();
+		treeViewer.setFilters(new ViewerFilter[] {viewerFileFilter});
+		treeViewer.setInput(ResourcesPlugin.getWorkspace());
 	}
 	/**
 	 * Creates ViewerFileFilter using array of objects.

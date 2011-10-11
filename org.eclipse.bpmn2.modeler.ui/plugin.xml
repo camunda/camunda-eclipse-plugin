@@ -32,6 +32,29 @@
 	</extension>
 	-->
 
+	<!-- Preference Pages -->
+	
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.eclipse.bpmn2.modeler.ui.preferences.Bpmn2HomePreferencePage"
+            id="org.eclipse.bpmn2.modeler.ui.preferences.Bpmn2HomePreferencePage"
+            name="%PREFERENCE_PAGE_HOME"/>
+      <page
+            category="org.eclipse.bpmn2.modeler.ui.preferences.Bpmn2HomePreferencePage"
+            class="org.eclipse.bpmn2.modeler.ui.preferences.Bpmn2EditorPreferencePage"
+            id="org.eclipse.bpmn2.modeler.ui.preferences.Bpmn2EditorPreferencePage"
+            name="%PREFERENCE_PAGE_EDITOR">
+      </page>
+      <page
+            category="org.eclipse.bpmn2.modeler.ui.preferences.Bpmn2HomePreferencePage"
+            class="org.eclipse.bpmn2.modeler.ui.preferences.WSILPreferencePage"
+            id="org.eclipse.bpmn2.modeler.ui.preferences.WSILPreferencePage"
+            name="%PREFERENCE_PAGE_WSIL"/>
+   </extension>
+
+	<!-- Property Pages - these per-project settings override the global preferences (above)-->
+
 	<extension point="org.eclipse.ui.propertyPages">
 		<page class="org.eclipse.bpmn2.modeler.ui.preferences.Bpmn2PropertyPage"
 			id="org.eclipse.bpmn2.modeler.ui" name="BPMN2">
@@ -48,7 +71,7 @@
 
 		<page
 			class="org.eclipse.bpmn2.modeler.ui.preferences.ToolEnablementPropertyPage"
-			id="org.eclipse.bpmn2.modeler.ui.toolEnablement" name="Tool Enablement"
+			id="org.eclipse.bpmn2.modeler.ui.toolEnablement" name="%PROPERTY_PAGE_TOOL_ENABLEMENT"
 			category="org.eclipse.bpmn2.modeler.ui">
 		</page>
 	</extension>

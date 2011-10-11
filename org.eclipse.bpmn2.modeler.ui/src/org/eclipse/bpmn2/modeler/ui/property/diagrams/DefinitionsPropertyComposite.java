@@ -23,6 +23,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.wst.wsdl.Definition;
 import org.eclipse.wst.wsdl.internal.impl.DefinitionImpl;
+import org.eclipse.xsd.XSDSchema;
 
 public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 
@@ -57,11 +58,6 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 				@Override
 				public String[] getProperties() {
 					return properties; 
-				}
-
-				@Override
-				public boolean alwaysShowAdvancedProperties() {
-					return true;
 				}
 			};
 		}
@@ -117,7 +113,7 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 		protected EObject addListItem(EObject object, EStructuralFeature feature) {
 			SchemaImportDialog dialog = new SchemaImportDialog(
 					this.getShell(), getEObject());
-			dialog.configureAsWSDLImport();
+//			dialog.configureAsWSDLImport();
 			if (dialog.open() != Window.OK) {
 				return null;
 			}
@@ -129,9 +125,10 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 			Import newItem = null;
 			Definitions bpmn2Definitions = (Definitions)object;
 			if (result[0] instanceof Definition) {
-				newItem = MODEL_FACTORY.createImport();
-
+				// WSDL Definition
 				Definition wsdlDefinition = (Definition)result[0];
+
+				newItem = MODEL_FACTORY.createImport();
 				newItem.setImportType("http://schemas.xmlsoap.org/wsdl/");
 				newItem.setLocation(wsdlDefinition.getLocation());
 				newItem.setNamespace(wsdlDefinition.getTargetNamespace());
@@ -139,9 +136,17 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 				bpmn2Definitions.getImports().add(newItem);
 				ModelUtil.addID(newItem);
 			}
-			else {
-				// XSD
-				// importType = "http://www.w3.org/2001/XMLSchema"
+			else if (result[0] instanceof XSDSchema){
+				// XSD Schema
+				XSDSchema schema = (XSDSchema)result[0];
+				
+				newItem = MODEL_FACTORY.createImport();
+				newItem.setImportType("http://www.w3.org/2001/XMLSchema");
+				newItem.setLocation(schema.getSchemaLocation());
+				newItem.setNamespace(schema.getTargetNamespace());
+
+				bpmn2Definitions.getImports().add(newItem);
+				ModelUtil.addID(newItem);
 			}
 			return newItem;
 		}

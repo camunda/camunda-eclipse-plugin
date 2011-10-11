@@ -62,11 +62,6 @@ public class DataItemsPropertiesComposite extends DefaultPropertiesComposite {
 				public String[] getProperties() {
 					return properties; 
 				}
-
-				@Override
-				public boolean alwaysShowAdvancedProperties() {
-					return true;
-				}
 			};
 		}
 		return propertiesProvider;

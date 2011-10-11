@@ -149,44 +149,54 @@ public class BPMN2DiagramWizardPage2 extends WizardPage {
 		case CHOREOGRAPHY:
 			fileType = "choreography";
 			break;
+		default:
+			return;
 		}
+		
+		IContainer container = getFileContainer();
+		if (container!=null) {
+			String text = container.getFullPath().toString();
+			if (text!=null && !text.equals(containerText.getText()))
+				containerText.setText(text);
+			for (int i=1; ; ++i) {
+				filename = fileType+"_" + i + ".bpmn";
+				IResource file = container.findMember(filename);
+				if (file==null) {
+					break;
+				}
+			}
+		}
+
+		String oldFileText = fileText.getText();
+		if (filename!=null && !filename.equals(oldFileText))
+			fileText.setText(filename);
+	}
+
+	private IContainer getFileContainer() {
 		if (selection != null && selection.isEmpty() == false && selection instanceof IStructuredSelection) {
 			IStructuredSelection ssel = (IStructuredSelection) selection;
-			if (ssel.size() > 1) {
-				return;
-			}
-			Object obj = ssel.getFirstElement();
-			if (obj instanceof IAdaptable) {
-				Object res = ((IAdaptable)obj).getAdapter(IResource.class);
-				if (res!=null)
-					obj = res;
-			}
-			if (obj instanceof Path) {
-				obj = ResourcesPlugin.getWorkspace().getRoot().findMember((Path)obj);
-			}
-			if (obj instanceof IResource) {
-				IContainer container;
-				if (obj instanceof IContainer) {
-					container = (IContainer) obj;
-				} else {
-					container = ((IResource) obj).getParent();
+			if (ssel.size() == 1) {
+				Object obj = ssel.getFirstElement();
+				if (obj instanceof IAdaptable) {
+					Object res = ((IAdaptable)obj).getAdapter(IResource.class);
+					if (res!=null)
+						obj = res;
 				}
-				String text = container.getFullPath().toString();
-				if (text!=null && !text.equals(containerText.getText()))
-					containerText.setText(text);
-				for (int i=1; ; ++i) {
-					filename = fileType+"_" + i + ".bpmn";
-					IResource file = container.findMember(filename);
-					if (file==null) {
-						break;
+				if (obj instanceof Path) {
+					obj = ResourcesPlugin.getWorkspace().getRoot().findMember((Path)obj);
+				}
+				if (obj instanceof IResource) {
+					if (obj instanceof IContainer) {
+						return (IContainer) obj;
+					} else {
+						return ((IResource) obj).getParent();
 					}
 				}
 			}
 		}
-		if (filename!=null && !filename.equals(fileText.getText()))
-			fileText.setText(filename);
+		return null;
 	}
-
+	
 	@Override
 	public void setVisible(boolean visible) {
 		if (visible) {
@@ -208,7 +218,6 @@ public class BPMN2DiagramWizardPage2 extends WizardPage {
 			if (result.length == 1) {
 				selection = new TreeSelection(new TreePath(result));
 				containerText.setText(((Path) result[0]).toString());
-				
 			}
 		}
 	}
@@ -254,8 +263,15 @@ public class BPMN2DiagramWizardPage2 extends WizardPage {
 
 	@Override
 	public boolean isPageComplete() {
-		updateFilename();
-		return true;
+		IContainer container = getFileContainer();
+		String filename = fileText.getText();
+		IResource file = container.findMember(filename);
+		if (file==null) {
+			setErrorMessage(null);
+			return true;
+		}
+		setErrorMessage("The file "+filename+" already exists in this project");
+		return false;
 	}
 
 	private void updateStatus(String message) {

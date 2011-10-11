@@ -26,6 +26,7 @@ import org.eclipse.bpmn2.modeler.ui.property.providers.ServiceTreeContentProvide
 import org.eclipse.bpmn2.modeler.ui.property.providers.VariableTypeTreeContentProvider;
 import org.eclipse.bpmn2.modeler.ui.property.providers.WSILContentProvider;
 import org.eclipse.bpmn2.modeler.ui.Activator;
+import org.eclipse.bpmn2.modeler.ui.IConstants;
 import org.eclipse.bpmn2.modeler.ui.Messages;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceSetImpl;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -41,6 +42,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -61,6 +63,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
@@ -95,24 +98,21 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 	/* button id for browsing WSIL */
 	protected static final int BID_BROWSE_WSIL = IDialogConstants.CLIENT_ID + 5;
 
+	protected static final int BID_IMPORT_XML = IDialogConstants.CLIENT_ID + 6;
+	protected static final int BID_IMPORT_XSD = IDialogConstants.CLIENT_ID + 7;
+	protected static final int BID_IMPORT_WSDL = IDialogConstants.CLIENT_ID + 8;
+	private int TYPE = BID_IMPORT_XSD;
+	private static final String IMPORT_TYPE = "ImportType"; //$NON-NLS-1$
+
 	/* The import source setting, remembered in the dialog settings */
 	private static final String IMPORT_KIND = "ImportKind"; //$NON-NLS-1$
 
 	private static final String EMPTY = ""; //$NON-NLS-1$
 
-	private String[] FILTER_EXTENSIONS = {
-			"*.xsd",
-			"*.wsdl",
-			"*.*"
-	};
-
-	private String[] FILTER_NAMES = {
-			"XSD Files",
-			"WSDL Definition Files",
-			"All"
-	};
-
-	private String resourceFilter = ".xsd";
+	private String[] FILTER_EXTENSIONS;
+	private String[] FILTER_NAMES;
+	private String resourceFilter;
+	protected String fResourceKind;
 
 	protected EObject modelObject;
 
@@ -120,6 +120,7 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 	protected TreeViewer fTreeViewer;
 
 	Text fLocation;
+	Label locationLabel;
 
 	private Composite fLocationComposite;
 	FileSelectionGroup fResourceComposite;
@@ -133,7 +134,9 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 
 	Button fBrowseButton;
 
-	private Group fGroup;
+	private Group fTypeGroup;
+
+	private Group fKindGroup;
 
 	private IDialogSettings fSettings;
 
@@ -147,18 +150,17 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 
 	protected Bpmn2ModelerResourceSetImpl fHackedResourceSet;
 
-	protected String fResourceKind = "xsd";
-
 	long fRunnableStart;
 	URI fRunnableLoadURI;
 	Job fLoaderJob;
 
 	IPreferenceStore fPrefStore = Activator.getDefault().getPreferenceStore();
-	String fBasePath = fPrefStore.getString("PREF_WSIL_URL");
+	String fBasePath = fPrefStore.getString(IConstants.PREF_WSIL_URL);
 
 	// The WSIL radio box is turned off if the WSIL document is not set in the
 	// preferences.
 	Button fBtnWSIL;
+	Button fBtnResource;
 
 	/**
 	 * Create a brand new shiny Schema Import Dialog.
@@ -176,13 +178,20 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 
 		try {
 			KIND = fSettings.getInt(IMPORT_KIND);
+			TYPE = fSettings.getInt(IMPORT_TYPE);
 		} catch (java.lang.NumberFormatException nfe) {
 			KIND = BID_BROWSE_RESOURCE;
+			TYPE = BID_IMPORT_XSD;
 		}
 
 		setDialogBoundsSettings(fSettings, getDialogBoundsStrategy());
 
-		configureAsSchemaImport();
+		if (TYPE==BID_IMPORT_XML)
+			configureAsXMLImport();
+		else if (TYPE==BID_IMPORT_XSD)
+			configureAsSchemaImport();
+		else if (TYPE==BID_IMPORT_WSDL)
+			configureAsWSDLImport();
 	}
 
 	/**
@@ -216,6 +225,7 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 
 		Composite contents = (Composite) super.createDialogArea(parent);
 
+		createImportType(contents);
 		createImportLocation(contents);
 		createImportStructure(contents);
 
@@ -257,6 +267,21 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 			if (checked == false) {
 				return;
 			}
+			if (id == BID_BROWSE_WSIL) {
+				if (fBasePath==null || fBasePath.isEmpty()) {
+					MessageDialog.openInformation(getShell(), "WSIL Browser",
+							"In order to browse a WSIL registry, please configure a\n"+
+							"WSIL Document URL in the BPMN2 Preferences.");
+					Display.getDefault().asyncExec(new Runnable() {
+						@Override
+						public void run() {
+							fBtnWSIL.setSelection(false);
+							fBtnResource.setSelection(true);
+						}
+					});
+					return;
+				}
+			}
 
 			setVisibleControl(fResourceComposite, id == BID_BROWSE_RESOURCE);
 			setVisibleControl(fLocationComposite, id == BID_BROWSE_URL
@@ -273,9 +298,27 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 
 			fSettings.put(IMPORT_KIND, KIND);
 
-			fGroup.getParent().layout(true);
+			fKindGroup.getParent().layout(true);
 		}
+		else if (id == BID_IMPORT_XML || id == BID_IMPORT_XSD
+				|| id == BID_IMPORT_WSDL) {
+			if (checked == false) {
+				return;
+			}
+			if (id == BID_IMPORT_XML)
+				configureAsXMLImport();
+			else if (id == BID_IMPORT_XSD)
+				configureAsSchemaImport();
+			else if (id == BID_IMPORT_WSDL)
+				configureAsWSDLImport();
 
+			markEmptySelection();
+			TYPE = id;
+
+			fSettings.put(IMPORT_TYPE, TYPE);
+
+			fKindGroup.getParent().layout(true);
+		}
 	}
 
 	protected void setVisibleControl(Control c, boolean b) {
@@ -322,10 +365,9 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 
 	}
 
-	protected void createImportLocation(Composite parent) {
-
-		fGroup = new Group(parent, SWT.SHADOW_ETCHED_IN);
-		fGroup.setText(Messages.SchemaImportDialog_4);
+	protected void createImportType(Composite parent) {
+		fTypeGroup = new Group(parent, SWT.SHADOW_ETCHED_IN);
+		fTypeGroup.setText(Messages.SchemaImportDialog_3);
 		GridLayout layout = new GridLayout(1, true);
 		GridData data = new GridData();
 		data.grabExcessVerticalSpace = false;
@@ -333,10 +375,52 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 		data.horizontalAlignment = GridData.FILL;
 		data.verticalAlignment = GridData.FILL;
 
-		fGroup.setLayout(layout);
-		fGroup.setLayoutData(data);
+		fTypeGroup.setLayout(layout);
+		fTypeGroup.setLayoutData(data);
 
-		Composite container = new Composite(fGroup, SWT.NONE);
+		Composite container = new Composite(fTypeGroup, SWT.NONE);
+
+		layout = new GridLayout();
+		layout.makeColumnsEqualWidth = false;
+		layout.numColumns = 3;
+		container.setLayout(layout);
+		data = new GridData();
+		data.grabExcessVerticalSpace = false;
+		data.grabExcessHorizontalSpace = true;
+		data.horizontalAlignment = GridData.FILL;
+		data.verticalAlignment = GridData.CENTER;
+		container.setLayoutData(data);
+
+		Button button;
+		
+//		button = createRadioButton(container, Messages.SchemaImportDialog_20,
+//				BID_IMPORT_XML, TYPE == BID_IMPORT_XML);
+//		button.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
+		
+		button = createRadioButton(container, Messages.SchemaImportDialog_21,
+				BID_IMPORT_XSD, TYPE == BID_IMPORT_XSD);
+		button.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
+		
+		button = createRadioButton(container, Messages.SchemaImportDialog_22,
+				BID_IMPORT_WSDL, TYPE == BID_IMPORT_WSDL);
+		button.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
+	}
+	
+	protected void createImportLocation(Composite parent) {
+
+		fKindGroup = new Group(parent, SWT.SHADOW_ETCHED_IN);
+		fKindGroup.setText(Messages.SchemaImportDialog_4);
+		GridLayout layout = new GridLayout(1, true);
+		GridData data = new GridData();
+		data.grabExcessVerticalSpace = false;
+		data.grabExcessHorizontalSpace = true;
+		data.horizontalAlignment = GridData.FILL;
+		data.verticalAlignment = GridData.FILL;
+
+		fKindGroup.setLayout(layout);
+		fKindGroup.setLayoutData(data);
+
+		Composite container = new Composite(fKindGroup, SWT.NONE);
 
 		layout = new GridLayout();
 		layout.makeColumnsEqualWidth = true;
@@ -349,7 +433,7 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 		data.verticalAlignment = GridData.CENTER;
 		container.setLayoutData(data);
 
-		createRadioButton(container, Messages.SchemaImportDialog_5,
+		fBtnResource = createRadioButton(container, Messages.SchemaImportDialog_5,
 				BID_BROWSE_RESOURCE, KIND == BID_BROWSE_RESOURCE);
 		createRadioButton(container, Messages.SchemaImportDialog_6,
 				BID_BROWSE_FILE, KIND == BID_BROWSE_FILE);
@@ -361,7 +445,7 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 				BID_BROWSE_WSIL, KIND == BID_BROWSE_WSIL);
 
 		// Create location variant
-		fLocationComposite = new Composite(fGroup, SWT.NONE);
+		fLocationComposite = new Composite(fKindGroup, SWT.NONE);
 
 		layout = new GridLayout();
 		layout.numColumns = 3;
@@ -414,7 +498,7 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 		// End of location variant
 
 		// Start Resource Variant
-		fResourceComposite = new FileSelectionGroup(fGroup, new Listener() {
+		fResourceComposite = new FileSelectionGroup(fKindGroup, new Listener() {
 			public void handleEvent(Event event) {
 				IResource resource = fResourceComposite.getSelectedResource();
 				if (resource != null && resource.getType() == IResource.FILE) {
@@ -432,7 +516,7 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 		// End resource variant
 
 		// create WSIL UI widgets
-		createWSILStructure(fGroup);
+		createWSILStructure(fKindGroup);
 
 	}
 
@@ -518,7 +602,7 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 		Object wsilDoc = attemptLoad(URI.createURI(fBasePath),"wsil");
 		fWSILTreeViewer.setInput ( 	wsilDoc ) ;
 		if (wsilDoc == null || wsilDoc instanceof Throwable  ) {
-			fBtnWSIL.setEnabled(false);
+//			fBtnWSIL.setEnabled(false);
 			// that's always available.
 			// delete KIND = BID_BROWSE_RESOURCE; by Grid.Qian
 			// because if not, the dialog always display the resource Control
@@ -558,18 +642,14 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 
 	protected Object createImportStructure(Composite parent) {
 
-		Label location = new Label(parent, SWT.NONE);
-		location.setText(fStructureTitle);
+		locationLabel = new Label(parent, SWT.NONE);
+		locationLabel.setText(fStructureTitle);
 
 		// Tree viewer for variable structure ...
 		fTree = new Tree(parent, SWT.BORDER);
 
-		VariableTypeTreeContentProvider variableContentProvider = new VariableTypeTreeContentProvider(
-				true, true);
 		fTreeViewer = new TreeViewer(fTree);
-		fTreeViewer
-				.setContentProvider(fTreeContentProvider != null ? fTreeContentProvider
-						: variableContentProvider);
+		fTreeViewer.setContentProvider(fTreeContentProvider);
 		fTreeViewer.setLabelProvider(new ModelTreeLabelProvider());
 		fTreeViewer.setInput(null);
 		fTreeViewer.setAutoExpandLevel(3);
@@ -764,6 +844,43 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 	}
 
 	/**
+	 * Configure the dialog as an XML file import dialog. Set the title and the
+	 * structure pane message.
+	 * 
+	 */
+
+	public void configureAsXMLImport() {
+		setTitle(Messages.SchemaImportDialog_1);
+		fStructureTitle = Messages.SchemaImportDialog_12;
+		if (locationLabel!=null)
+			locationLabel.setText(fStructureTitle);
+		fTreeContentProvider = new VariableTypeTreeContentProvider(true, true);
+		if (fTreeViewer!=null)
+			fTreeViewer.setContentProvider(fTreeContentProvider);
+		fResourceKind = "xml";
+
+		String[] wsdl_FILTER_EXTENSIONS = {
+				"*.xml",
+				"*.xsd",
+				"*.wsdl",
+				"*.*"
+		};
+		FILTER_EXTENSIONS = wsdl_FILTER_EXTENSIONS;
+
+		String[] wsdl_FILTER_NAMES = {
+				"XML Files",
+				"XML Schema Files",
+				"WSDL Definition Files",
+				"All"
+		};
+		FILTER_NAMES = wsdl_FILTER_NAMES;
+
+		resourceFilter = ".xml";
+		if (fResourceComposite!=null)
+			fResourceComposite.setFileFilter(resourceFilter);
+	}
+
+	/**
 	 * Configure the dialog as a schema import dialog. Set the title and the
 	 * structure pane message.
 	 * 
@@ -772,7 +889,32 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 	public void configureAsSchemaImport() {
 		setTitle(Messages.SchemaImportDialog_2);
 		fStructureTitle = Messages.SchemaImportDialog_11;
+		if (locationLabel!=null)
+			locationLabel.setText(fStructureTitle);
+		fTreeContentProvider = new VariableTypeTreeContentProvider(true, true);
+		if (fTreeViewer!=null)
+			fTreeViewer.setContentProvider(fTreeContentProvider);
 		fResourceKind = "xsd";
+
+		String[] wsdl_FILTER_EXTENSIONS = {
+				"*.xml",
+				"*.xsd",
+				"*.wsdl",
+				"*.*"
+		};
+		FILTER_EXTENSIONS = wsdl_FILTER_EXTENSIONS;
+
+		String[] wsdl_FILTER_NAMES = {
+				"XML Files",
+				"XML Schema Files",
+				"WSDL Definition Files",
+				"All"
+		};
+		FILTER_NAMES = wsdl_FILTER_NAMES;
+
+		resourceFilter = ".xsd";
+		if (fResourceComposite!=null)
+			fResourceComposite.setFileFilter(resourceFilter);
 	}
 
 	/**
@@ -785,24 +927,32 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 
 		setTitle(Messages.SchemaImportDialog_0);
 		fStructureTitle = Messages.SchemaImportDialog_14;
+		if (locationLabel!=null)
+			locationLabel.setText(fStructureTitle);
 		fTreeContentProvider = new ServiceTreeContentProvider(true);
+		if (fTreeViewer!=null)
+			fTreeViewer.setContentProvider(fTreeContentProvider);
 		fResourceKind = "wsdl";
 
 		String[] wsdl_FILTER_EXTENSIONS = {
 				"*.wsdl",
+				"*.xml",
 				"*.xsd",
 				"*.*"
 		};
 		FILTER_EXTENSIONS = wsdl_FILTER_EXTENSIONS;
+
 		String[] wsdl_FILTER_NAMES = {
-				"XSD Files",
 				"WSDL Definition Files",
+				"XML Files",
+				"XML Schema Files",
 				"All"
 		};
 		FILTER_NAMES = wsdl_FILTER_NAMES;
 
 		resourceFilter = ".wsdl";
-
+		if (fResourceComposite!=null)
+			fResourceComposite.setFileFilter(resourceFilter);
 	}
 
 	/**

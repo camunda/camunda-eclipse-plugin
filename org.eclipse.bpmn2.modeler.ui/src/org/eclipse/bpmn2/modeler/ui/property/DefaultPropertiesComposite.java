@@ -83,26 +83,18 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 					a = names[0];
 					eItemClass = (EClass)Bpmn2PackageImpl.eINSTANCE.getEClassifier(names[1]);
 				}
-				feature = getAttributeFeature(be,a);
-				if (feature!=null) {
+				feature = getFeature(be,a);
+				if (isAttribute(feature)) {
 					bindAttribute(getAttributesParent(), be,(EAttribute)feature);
-					continue;
 				}
-				
-				if (getDiagramEditor().getPreferences().getShowAdvancedPropertiesTab() == false ||
-						propertySection instanceof AdvancedPropertySection ||
-						getPropertiesProvider(be).alwaysShowAdvancedProperties())
-				{
-					feature = getListFeature(be,a);
-					if (feature!=null) {
+				else if (isList(be,feature)) {
+					if (eItemClass==null)
+						bindList(be,feature);
+					else
 						bindList(be,feature, eItemClass);
-						continue;
-					}
-					feature = getReferenceFeature(be,a);
-					if (feature!=null) {
-						bindReference(getAttributesParent(), be,(EReference)feature);
-						continue;
-					}
+				}
+				else if (isReference(feature)) {
+					bindReference(getAttributesParent(), be,(EReference)feature);
 				}
 			}
 		}
@@ -127,10 +119,6 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 		
 		public AbstractPropertiesProvider(EObject object) {
 			be = object;
-		}
-		
-		public boolean alwaysShowAdvancedProperties() {
-			return false;
 		}
 
 		public abstract String[] getProperties();

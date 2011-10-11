@@ -95,11 +95,6 @@ public class DataObjectPropertySection extends AbstractBpmn2PropertySection {
 							}
 							return attributes; 
 						}
-	
-						@Override
-						public boolean alwaysShowAdvancedProperties() {
-							return true;
-						}
 					};
 				}
 				return dataObjectPropertiesProvider;
