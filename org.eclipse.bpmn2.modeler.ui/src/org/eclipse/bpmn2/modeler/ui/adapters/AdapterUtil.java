@@ -109,7 +109,7 @@ public class AdapterUtil {
 	 * In addition, pass a context object to the adapter(s) of the target. 
 	 * 
 	 * The idea is that some adapters can be stateful and depend not only 
-	 * on the objects that they wrap, but also on some other context that is needed
+	 * on the objects that they wrap, button also on some other context that is needed
 	 * to completely and correctly implement the interface for which the adaptor is
 	 * needed.
 	 * 

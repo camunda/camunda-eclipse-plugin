@@ -320,7 +320,7 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 		}
 		button.setDescription(description);
 
-		// 3.d. add context button, but only if it contains at least one feature
+		// 3.d. add context button, button only if it contains at least one feature
 		if (button.getDragAndDropFeatures().size() > 0) {
 			data.getDomainSpecificContextButtons().add(button);
 		}

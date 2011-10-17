@@ -17,7 +17,11 @@ import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeat
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.ui.diagram.BPMNFeatureProvider;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
+import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.transaction.NotificationFilter;
+import org.eclipse.emf.transaction.ResourceSetChangeEvent;
+import org.eclipse.emf.transaction.RollbackException;
 import org.eclipse.graphiti.features.IFeature;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 

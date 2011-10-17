@@ -20,6 +20,7 @@ import org.eclipse.bpmn2.Artifact;
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Factory;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Choreography;
 import org.eclipse.bpmn2.ChoreographyTask;
 import org.eclipse.bpmn2.Collaboration;
@@ -33,8 +34,11 @@ import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.FlowNode;
+import org.eclipse.bpmn2.Import;
 import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.InteractionNode;
+import org.eclipse.bpmn2.ItemDefinition;
+import org.eclipse.bpmn2.ItemKind;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.MessageFlow;
@@ -49,12 +53,16 @@ import org.eclipse.bpmn2.di.BPMNLabel;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.di.BpmnDiFactory;
+import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.bpmn2.di.ParticipantBandKind;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.core.utils.NamespaceUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
+import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
+import org.eclipse.bpmn2.util.Bpmn2Switch;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.DcFactory;
 import org.eclipse.dd.dc.Point;
@@ -63,7 +71,15 @@ import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.impl.DynamicEObjectImpl;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
@@ -71,6 +87,8 @@ import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
+import org.eclipse.wst.wsdl.Definition;
+import org.eclipse.xsd.XSDSchema;
 
 public class ModelHandler {
 	public static final Bpmn2Factory FACTORY = Bpmn2Factory.eINSTANCE;
@@ -87,17 +105,8 @@ public class ModelHandler {
 			TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(resource);
 
 			if (domain != null) {
-				final DocumentRoot docRoot = FACTORY.createDocumentRoot();
-				final Definitions definitions = FACTORY.createDefinitions();
-				ModelUtil.setID(definitions,resource);
-				
-//				Choreography choreography = FACTORY.createChoreography();
-//				ModelUtil.setID(choreography,resource);
-//				Participant participant = FACTORY.createParticipant();
-//				ModelUtil.setID(participant,resource);
-//				participant.setName("Internal");
-//				choreography.getParticipants().add(participant);
-//				definitions.getRootElements().add(choreography);
+				final DocumentRoot docRoot = create(DocumentRoot.class);
+				final Definitions definitions = create(Definitions.class);
 
 				domain.getCommandStack().execute(new RecordingCommand(domain) {
 					@Override
@@ -140,18 +149,18 @@ public class ModelHandler {
 					process.setName(name+" Process");
 
 					// create StartEvent
-					StartEvent startEvent = FACTORY.createStartEvent();
+					StartEvent startEvent = create(StartEvent.class);
 					ModelUtil.setID(startEvent,resource);
 					startEvent.setName("Start Event");
 					process.getFlowElements().add(startEvent);
 					
 					// create SequenceFlow
-					SequenceFlow flow = FACTORY.createSequenceFlow();
+					SequenceFlow flow = create(SequenceFlow.class);
 					ModelUtil.setID(flow,resource);
 					process.getFlowElements().add(flow);
 					
 					// create EndEvent
-					EndEvent endEvent = FACTORY.createEndEvent();
+					EndEvent endEvent = create(EndEvent.class);
 					ModelUtil.setID(endEvent,resource);
 					endEvent.setName("End Event");
 					process.getFlowElements().add(endEvent);
@@ -239,7 +248,7 @@ public class ModelHandler {
 					Process initiatingProcess = createProcess();
 					initiatingProcess.setName(name+" Initiating Process");
 					
-					Participant initiatingParticipant = FACTORY.createParticipant();
+					Participant initiatingParticipant = create(Participant.class);
 					ModelUtil.setID(initiatingParticipant,resource);
 					initiatingParticipant.setName("Initiating Pool");
 					initiatingParticipant.setProcessRef(initiatingProcess);
@@ -247,7 +256,7 @@ public class ModelHandler {
 					Process nonInitiatingProcess = createProcess();
 					nonInitiatingProcess.setName(name+" Non-initiating Process");
 					
-					Participant nonInitiatingParticipant = FACTORY.createParticipant();
+					Participant nonInitiatingParticipant = create(Participant.class);
 					ModelUtil.setID(nonInitiatingParticipant,resource);
 					nonInitiatingParticipant.setName("Non-initiating Pool");
 					nonInitiatingParticipant.setProcessRef(nonInitiatingProcess);
@@ -311,7 +320,7 @@ public class ModelHandler {
 					Choreography choreography = createChoreography();
 					choreography.setName(name+" Choreography");
 					
-					Participant initiatingParticipant = FACTORY.createParticipant();
+					Participant initiatingParticipant = create(Participant.class);
 					ModelUtil.setID(initiatingParticipant,resource);
 					initiatingParticipant.setName(name+" Initiating Participant");
 
@@ -320,7 +329,7 @@ public class ModelHandler {
 					initiatingProcess.setName(name+" Initiating Process");
 					initiatingParticipant.setProcessRef(initiatingProcess);
 					
-					Participant nonInitiatingParticipant = FACTORY.createParticipant();
+					Participant nonInitiatingParticipant = create(Participant.class);
 					ModelUtil.setID(nonInitiatingParticipant,resource);
 					nonInitiatingParticipant.setName(name+" Non-initiating Participant");
 
@@ -332,7 +341,7 @@ public class ModelHandler {
 					choreography.getParticipants().add(initiatingParticipant);
 					choreography.getParticipants().add(nonInitiatingParticipant);
 					
-					ChoreographyTask task = FACTORY.createChoreographyTask();
+					ChoreographyTask task = create(ChoreographyTask.class);
 					ModelUtil.setID(task,resource);
 					task.setName(name+" Choreography Task");
 					task.getParticipantRefs().add(initiatingParticipant);
@@ -392,6 +401,58 @@ public class ModelHandler {
 		return ModelHandlerLocator.getModelHandler(diagram.eResource());
 	}
 
+	public static Import addImport(EObject modelObject, Object importObject) {
+		Import imp = null;
+		Resource resource = modelObject.eResource();
+		if (resource instanceof Bpmn2Resource) {
+			final Definitions bpmn2Definitions = (Definitions) resource.getContents().get(0).eContents().get(0);
+
+			if (importObject instanceof Definition) {
+				// WSDL Definition
+				Definition wsdlDefinition = (Definition)importObject;
+	
+				imp = Bpmn2Factory.eINSTANCE.createImport();
+				imp.setImportType("http://schemas.xmlsoap.org/wsdl/");
+				imp.setLocation(wsdlDefinition.getLocation());
+				imp.setNamespace(wsdlDefinition.getTargetNamespace());
+			}
+			else if (importObject instanceof XSDSchema){
+				// XSD Schema
+				XSDSchema schema = (XSDSchema)importObject;
+				
+				imp = Bpmn2Factory.eINSTANCE.createImport();
+				imp.setImportType("http://www.w3.org/2001/XMLSchema");
+				imp.setLocation(schema.getSchemaLocation());
+				imp.setNamespace(schema.getTargetNamespace());
+			}
+			if (imp!=null) {
+				// make sure this is a new one!
+				for (Import i : bpmn2Definitions.getImports()) {
+					String location = i.getLocation();
+					if (location!=null && location.equals(imp.getLocation())) {
+						imp = null;
+						break;
+					}
+				}
+		
+				if (imp!=null) {
+					TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(modelObject.eResource());
+					if (domain != null) {
+						final Import i = imp;
+						domain.getCommandStack().execute(new RecordingCommand(domain) {
+							@Override
+							protected void doExecute() {
+								bpmn2Definitions.getImports().add(i);
+								NamespaceUtil.addNamespace(i, i.getNamespace());
+							}
+						});
+					}
+				}
+			}
+		}
+		return imp;
+	}
+
 	/**
 	 * @param <T>
 	 * @param target
@@ -445,7 +506,7 @@ public class ModelHandler {
 	private InputOutputSpecification getOrCreateIOSpecification(Object target) {
 		Process process = getOrCreateProcess(getParticipant(target));
 		if (process.getIoSpecification() == null) {
-			InputOutputSpecification ioSpec = FACTORY.createInputOutputSpecification();
+			InputOutputSpecification ioSpec = create(InputOutputSpecification.class);
 //			ioSpec.setId(EcoreUtil.generateUUID());
 			ModelUtil.setID(ioSpec,resource);
 			process.setIoSpecification(ioSpec);
@@ -468,7 +529,7 @@ public class ModelHandler {
 		Participant participant = null;
 		Collaboration collaboration = getParticipantContainer(bpmnDiagram);
 		if (collaboration!=null) {
-			participant = FACTORY.createParticipant();
+			participant = create(Participant.class);
 	//		participant.setId(EcoreUtil.generateUUID());
 			ModelUtil.setID(participant,resource);
 			collaboration.getParticipants().add(participant);
@@ -496,7 +557,7 @@ public class ModelHandler {
 	}
 
 	public Process createProcess() {
-		Process process = FACTORY.createProcess();
+		Process process = create(Process.class);
 //		process.setId(EcoreUtil.generateUUID());
 		ModelUtil.setID(process,resource);
 		process.setName("Process");
@@ -511,7 +572,7 @@ public class ModelHandler {
 		if (participant!=null && participant.getProcessRef()!=null) {
 			return participant.getProcessRef();
 		}
-		Process process = FACTORY.createProcess();
+		Process process = create(Process.class);
 		ModelUtil.setID(process,resource);
 		process.setName("Process for " + participant.getName());
 		getDefinitions().getRootElements().add(process);
@@ -522,12 +583,12 @@ public class ModelHandler {
 	}
 
 	public Lane createLane(Lane targetLane) {
-		Lane lane = FACTORY.createLane();
+		Lane lane = create(Lane.class);
 //		lane.setId(EcoreUtil.generateUUID());
 		ModelUtil.setID(lane,resource);
 
 		if (targetLane.getChildLaneSet() == null) {
-			targetLane.setChildLaneSet(ModelHandler.FACTORY.createLaneSet());
+			targetLane.setChildLaneSet(create(LaneSet.class));
 		}
 
 		LaneSet targetLaneSet = targetLane.getChildLaneSet();
@@ -540,12 +601,12 @@ public class ModelHandler {
 	}
 
 	public Lane createLane(Object target) {
-		Lane lane = FACTORY.createLane();
+		Lane lane = create(Lane.class);
 //		lane.setId(EcoreUtil.generateUUID());
 		ModelUtil.setID(lane,resource);
 		FlowElementsContainer container = getFlowElementContainer(target);
 		if (container.getLaneSets().isEmpty()) {
-			LaneSet laneSet = FACTORY.createLaneSet();
+			LaneSet laneSet = create(LaneSet.class);
 //			laneSet.setId(EcoreUtil.generateUUID());
 			container.getLaneSets().add(laneSet);
 		}
@@ -555,7 +616,7 @@ public class ModelHandler {
 	}
 
 	public void laneToTop(Lane lane) {
-		LaneSet laneSet = FACTORY.createLaneSet();
+		LaneSet laneSet = create(LaneSet.class);
 //		laneSet.setId(EcoreUtil.generateUUID());
 		ModelUtil.setID(laneSet,resource);
 		laneSet.getLanes().add(lane);
@@ -564,7 +625,7 @@ public class ModelHandler {
 	}
 
 	public SequenceFlow createSequenceFlow(FlowNode source, FlowNode target) {
-		SequenceFlow sequenceFlow = FACTORY.createSequenceFlow();
+		SequenceFlow sequenceFlow = create(SequenceFlow.class);
 //		sequenceFlow.setId(EcoreUtil.generateUUID());
 		ModelUtil.setID(sequenceFlow,resource);
 
@@ -578,7 +639,7 @@ public class ModelHandler {
 		MessageFlow messageFlow = null;
 		Participant participant = getParticipant(source);
 		if (participant!=null) {
-			messageFlow = FACTORY.createMessageFlow();
+			messageFlow = create(MessageFlow.class);
 			ModelUtil.setID(messageFlow,resource);
 			messageFlow.setSourceRef(source);
 			messageFlow.setTargetRef(target);
@@ -592,7 +653,7 @@ public class ModelHandler {
 		ConversationLink link = null;
 		Participant participant = getParticipant(source);
 		if (participant!=null) {
-			link = FACTORY.createConversationLink();
+			link = create(ConversationLink.class);
 			link.setSourceRef(source);
 			link.setTargetRef(target);
 			if (participant.eContainer() instanceof Collaboration)
@@ -610,7 +671,7 @@ public class ModelHandler {
 		} else {
 			e = getInternalParticipant();
 		}
-		Association association = FACTORY.createAssociation();
+		Association association = create(Association.class);
 		addArtifact(e, association);
 //		association.setId(EcoreUtil.generateUUID());
 		ModelUtil.setID(association,resource);
@@ -631,7 +692,7 @@ public class ModelHandler {
 	}
 	
 	public Collaboration createCollaboration() {
-		Collaboration collaboration = FACTORY.createCollaboration();
+		Collaboration collaboration = create(Collaboration.class);
 		ModelUtil.setID(collaboration,resource);
 		collaboration.setName("Collaboration");
 		getDefinitions().getRootElements().add(collaboration);
@@ -645,7 +706,7 @@ public class ModelHandler {
 		
 		final List<RootElement> rootElements = getDefinitions().getRootElements();
 		TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(resource);
-		final Collaboration collaboration = FACTORY.createCollaboration();
+		final Collaboration collaboration = create(Collaboration.class);
 //		collaboration.setId(EcoreUtil.generateUUID());
 		ModelUtil.setID(collaboration,resource);
 		if (domain != null) {
@@ -681,7 +742,7 @@ public class ModelHandler {
 	}
 	
 	public Choreography createChoreography() {
-		Choreography choreography = FACTORY.createChoreography();
+		Choreography choreography = create(Choreography.class);
 		ModelUtil.setID(choreography,resource);
 		choreography.setName("Choreography");
 		getDefinitions().getRootElements().add(choreography);
@@ -689,7 +750,7 @@ public class ModelHandler {
 	}
 
 	private void addCollaborationToRootElements(final List<RootElement> rootElements, final Collaboration collaboration) {
-		Participant participant = FACTORY.createParticipant();
+		Participant participant = create(Participant.class);
 //		participant.setId(EcoreUtil.generateUUID());
 		ModelUtil.setID(participant,resource);
 		participant.setName("Internal");
@@ -704,7 +765,7 @@ public class ModelHandler {
 	}
 
 	private void addChoreographyToRootElements(final List<RootElement> rootElements, final Choreography choreography) {
-		Participant participant = FACTORY.createParticipant();
+		Participant participant = create(Participant.class);
 //		participant.setId(EcoreUtil.generateUUID());
 		ModelUtil.setID(participant,resource);
 		participant.setName("Internal");
@@ -882,4 +943,65 @@ public class ModelHandler {
 		return null;
 	}
 
+	/**
+	 * General-purpose factory method that sets appropriate default values for new objects.
+	 */
+	public EObject create(EClass eClass) {
+		EObject newObject = null;
+		EPackage pkg = eClass.getEPackage(); 
+		if (pkg == Bpmn2Package.eINSTANCE) {
+			newObject = Bpmn2Factory.eINSTANCE.create(eClass);
+		}
+		else if (pkg == BpmnDiPackage.eINSTANCE) {
+			newObject = BpmnDiFactory.eINSTANCE.create(eClass);
+		}
+		initialize(newObject);
+		return newObject;
+	}
+	
+	public <T extends EObject> T create(Class<T> clazz) {
+		EObject newObject = null;
+		EClassifier eClassifier = Bpmn2Package.eINSTANCE.getEClassifier(clazz.getName());
+		if (eClassifier instanceof EClass) {
+			EClass eClass = (EClass)eClassifier;
+			newObject = Bpmn2Factory.eINSTANCE.create(eClass);
+		}
+		else {
+			// maybe it's a DI object type?
+			eClassifier = BpmnDiPackage.eINSTANCE.getEClassifier(clazz.getName());
+			if (eClassifier instanceof EClass) {
+				EClass eClass = (EClass)eClassifier;
+				newObject = BpmnDiFactory.eINSTANCE.create(eClass);
+			}
+		}
+		
+		if (newObject!=null) {
+			initialize(newObject);
+		}
+
+		return (T)newObject;
+	}
+	
+	public void initialize(EObject newObject) {
+		if (newObject!=null) {
+			if (newObject.eClass().getEPackage() == Bpmn2Package.eINSTANCE) {
+				// Set appropriate default values for the object features here
+				switch (newObject.eClass().getClassifierID()) {
+				case Bpmn2Package.ITEM_DEFINITION:
+					((ItemDefinition)newObject).setItemKind(ItemKind.INFORMATION);
+			        InternalEObject value = new DynamicEObjectImpl();
+			        URI uri = URI.createURI("test.abc#id");
+			        value.eSetProxyURI(uri);
+			        ((ItemDefinition)newObject).setStructureRef(value);
+				}
+			}
+			
+			// if the object has an "id", assign it now.
+			String id = ModelUtil.setID(newObject,resource);
+			// also set a default name
+			EStructuralFeature feature = newObject.eClass().getEStructuralFeature("name");
+			if (feature!=null)
+				newObject.eSet(feature, ModelUtil.toDisplayName(id));
+		}
+	}
 }

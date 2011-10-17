@@ -426,7 +426,7 @@ public class BPMN2Editor extends DiagramEditor {
 		
 		super.dispose();
 		ModelHandlerLocator.releaseModel(modelUri);
-		// get rid of temp files and folders, but only if the workbench is being shut down.
+		// get rid of temp files and folders, button only if the workbench is being shut down.
 		// when the workbench is restarted, we need to have those temp files around!
 		if (!workbenchShutdown)
 			BPMN2DiagramCreator.dispose(diagramFile);

@@ -54,7 +54,7 @@ public class InclusiveGatewayFeatureContainer extends AbstractGatewayFeatureCont
 	public static class CreateInclusiveGatewayFeature extends AbstractCreateGatewayFeature {
 
 		public CreateInclusiveGatewayFeature(IFeatureProvider fp) {
-			super(fp, "Inclusive Gateway", "Used for creating alternative but also parallel paths");
+			super(fp, "Inclusive Gateway", "Used for creating alternative button also parallel paths");
 		}
 
 		@Override

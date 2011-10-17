@@ -16,10 +16,13 @@ package org.eclipse.bpmn2.modeler.ui.property.tasks;
 
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite.AbstractPropertiesProvider;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.widgets.Composite;
 
 public class ChoreographyTaskPropertiesComposite extends DefaultPropertiesComposite {
+
+	private AbstractPropertiesProvider itemProvider;
 
 	/**
 	 * @param section
@@ -32,15 +35,24 @@ public class ChoreographyTaskPropertiesComposite extends DefaultPropertiesCompos
 		super(parent, style);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite
-	 * #createBindings(org.eclipse.emf.ecore.EObject)
-	 */
 	@Override
-	public void createBindings(EObject be) {
-		bindReference(be,"messageFlowRef");
+	public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
+		if (itemProvider == null) {
+			itemProvider = new AbstractPropertiesProvider(object) {
+				String[] properties = new String[] {
+						"loopType",
+						"initiatingParticipantRef",
+						"participantRefs",
+						"correlationKeys",
+						"messageFlowRef"
+				};
+				
+				@Override
+				public String[] getProperties() {
+					return properties; 
+				}
+			};
+		}
+		return itemProvider;
 	}
 }

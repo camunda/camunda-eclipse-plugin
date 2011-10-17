@@ -19,7 +19,7 @@ import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
-import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeRegistry;
+import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.ui.property.DescriptionPropertySection.DescriptionPropertyComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -31,7 +31,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 public class EndEventPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
 	static {
-		PropertiesCompositeRegistry.register(EndEvent.class, EndEventPropertiesComposite.class);
+		PropertiesCompositeFactory.register(EndEvent.class, EndEventPropertiesComposite.class);
 	}
 
 	@Override

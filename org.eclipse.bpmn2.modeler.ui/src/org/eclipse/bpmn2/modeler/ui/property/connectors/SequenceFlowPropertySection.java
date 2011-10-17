@@ -19,7 +19,7 @@ import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
-import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeRegistry;
+import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.ui.property.tasks.ManualTaskPropertiesComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -33,7 +33,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 public class SequenceFlowPropertySection extends AbstractBpmn2PropertySection {
 	
 	static {
-		PropertiesCompositeRegistry.register(SequenceFlow.class, SequenceFlowPropertiesComposite.class);
+		PropertiesCompositeFactory.register(SequenceFlow.class, SequenceFlowPropertiesComposite.class);
 	}
 
 	/* (non-Javadoc)

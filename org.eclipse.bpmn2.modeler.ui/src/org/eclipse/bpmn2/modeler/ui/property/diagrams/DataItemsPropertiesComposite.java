@@ -35,11 +35,11 @@ import org.eclipse.wst.wsdl.Definition;
  */
 public class DataItemsPropertiesComposite extends DefaultPropertiesComposite {
 
+	private AbstractPropertiesProvider propertiesProvider;
+
 	public DataItemsPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
 	}
-
-	private AbstractPropertiesProvider propertiesProvider;
 
 	/**
 	 * @param section

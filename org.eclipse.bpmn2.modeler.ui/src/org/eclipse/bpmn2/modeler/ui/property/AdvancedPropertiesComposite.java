@@ -159,7 +159,7 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 
 		// don't construct the details composite yet because no selection has been
 		// made from the tree. We'll construct a details composite using the selected
-		// object's type (class) and then consult the PropertiesCompositeRegistry for
+		// object's type (class) and then consult the PropertiesCompositeFactory for
 		// a composite to use to render this object.
 		
 //		detailsPropertiesComposite = new DefaultPropertiesComposite(detailsSection, SWT.NONE);
@@ -197,9 +197,9 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 				detailsPropertiesComposite = new DefaultPropertiesComposite(detailsComposite,SWT.NONE);
 			}
 			else {
-				detailsPropertiesComposite = PropertiesCompositeRegistry.createComposite(obj.getClass(), detailsComposite, SWT.NONE);
+				detailsPropertiesComposite = PropertiesCompositeFactory.createComposite(obj.getClass(), detailsComposite, SWT.NONE);
 			}
-			Class cc = PropertiesCompositeRegistry.findCompositeClass(obj.getClass());
+			Class cc = PropertiesCompositeFactory.findCompositeClass(obj.getClass());
 			if (cc==null||cc==DefaultPropertiesComposite.class)
 				fullDetails.setVisible(false);
 			else

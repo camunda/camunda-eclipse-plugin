@@ -33,6 +33,8 @@ import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablementPreferences;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
+import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
@@ -109,8 +111,8 @@ public class JbpmPropertiesComposite extends DefaultPropertiesComposite {
 
 				for (EStructuralFeature a : attributes) {
 					if (Object.class.equals(a.getEType().getInstanceClass())) {
-						Text t = createTextInput(getAttributesParent(),a.getName(), false);
-						bindText(be, a, t);
+						ObjectEditor editor = new TextObjectEditor(this,be,a);
+						editor.createControl(getAttributesParent(),a.getName());
 					}
 				}
 			}
@@ -122,7 +124,7 @@ public class JbpmPropertiesComposite extends DefaultPropertiesComposite {
 	 * EMF creates new StructuralFeatures for each unspecified anyAttribute
 	 * element. For bindings to work, we must replace these features with EMF
 	 * generated instance, or there would be two or more properties with the
-	 * same name, but different values.
+	 * same name, button different values.
 	 */
 	private void replaceExistingAnyAttributes(EAttribute attrib) {
 		HashMap<EStructuralFeature, EStructuralFeature> replace = new HashMap<EStructuralFeature, EStructuralFeature>();

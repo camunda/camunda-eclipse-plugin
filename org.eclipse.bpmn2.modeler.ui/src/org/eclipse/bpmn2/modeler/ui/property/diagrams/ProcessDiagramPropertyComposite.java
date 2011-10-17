@@ -8,11 +8,11 @@ import org.eclipse.swt.widgets.Composite;
 
 public class ProcessDiagramPropertyComposite extends DefaultPropertiesComposite {
 
+	private AbstractPropertiesProvider itemProvider;
+
 	public ProcessDiagramPropertyComposite(Composite parent, int style) {
 		super(parent, style);
 	}
-
-	private AbstractPropertiesProvider itemProvider;
 
 	public ProcessDiagramPropertyComposite(AbstractBpmn2PropertySection section) {
 		super(section);

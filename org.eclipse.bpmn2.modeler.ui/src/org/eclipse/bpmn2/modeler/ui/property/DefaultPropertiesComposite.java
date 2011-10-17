@@ -84,7 +84,7 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 					eItemClass = (EClass)Bpmn2PackageImpl.eINSTANCE.getEClassifier(names[1]);
 				}
 				feature = getFeature(be,a);
-				if (isAttribute(feature)) {
+				if (isAttribute(be,feature)) {
 					bindAttribute(getAttributesParent(), be,(EAttribute)feature);
 				}
 				else if (isList(be,feature)) {
@@ -93,7 +93,7 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 					else
 						bindList(be,feature, eItemClass);
 				}
-				else if (isReference(feature)) {
+				else if (isReference(be,feature)) {
 					bindReference(getAttributesParent(), be,(EReference)feature);
 				}
 			}

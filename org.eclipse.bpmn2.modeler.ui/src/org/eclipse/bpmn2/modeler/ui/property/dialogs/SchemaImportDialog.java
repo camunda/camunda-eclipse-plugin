@@ -844,11 +844,8 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 	}
 
 	/**
-	 * Configure the dialog as an XML file import dialog. Set the title and the
-	 * structure pane message.
-	 * 
+	 * TODO: not implemented - do we need this?
 	 */
-
 	public void configureAsXMLImport() {
 		setTitle(Messages.SchemaImportDialog_1);
 		fStructureTitle = Messages.SchemaImportDialog_12;

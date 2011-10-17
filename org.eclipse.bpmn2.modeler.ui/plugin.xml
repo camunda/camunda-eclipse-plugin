@@ -272,7 +272,7 @@ new
 		</propertyTab>
 
 		<propertyTab
-	        afterTab="org.eclipse.bpmn2.modeler.main.tab"
+	        replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 	        category="BPMN2"
 	        id="org.eclipse.bpmn2.modeler.receiveTask.tab"
 	        label="Receive Task"
@@ -280,7 +280,7 @@ new
 		</propertyTab>
 
 		<propertyTab
-	        afterTab="org.eclipse.bpmn2.modeler.main.tab"
+	        replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 	        category="BPMN2"
 	        id="org.eclipse.bpmn2.modeler.businessRuleTask.tab"
 	        label="Business Rule Task"
@@ -288,7 +288,7 @@ new
 		</propertyTab>
 
 		<propertyTab
-	        afterTab="org.eclipse.bpmn2.modeler.main.tab"
+	        replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 	        category="BPMN2"
 	        id="org.eclipse.bpmn2.modeler.choreographyTask.tab"
 	        label="Choreography Task"

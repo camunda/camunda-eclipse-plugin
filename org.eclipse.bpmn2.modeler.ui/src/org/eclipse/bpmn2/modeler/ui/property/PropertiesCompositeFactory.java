@@ -44,7 +44,7 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
  *
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class PropertiesCompositeRegistry {
+public class PropertiesCompositeFactory {
 
 	protected final static Map<Class,Class> registry = new HashMap<Class,Class>();
 	

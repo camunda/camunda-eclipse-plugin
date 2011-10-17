@@ -165,7 +165,7 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 		if (parent!=null && !parent.isDisposed()) {
 			if (parent.getChildren().length==0) {
 				sectionRoot = createSectionRoot();
-				sectionRoot.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
+				sectionRoot.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
 			}
 			sectionRoot = (AbstractBpmn2PropertiesComposite)parent.getChildren()[0];
 		}

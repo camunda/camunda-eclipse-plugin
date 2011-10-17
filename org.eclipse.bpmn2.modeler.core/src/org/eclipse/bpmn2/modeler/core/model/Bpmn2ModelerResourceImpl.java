@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.bpmn2.util.ImportHelper;
@@ -41,6 +42,7 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.impl.DynamicEObjectImpl;
 import org.eclipse.emf.ecore.impl.EAttributeImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
@@ -49,6 +51,7 @@ import org.eclipse.emf.ecore.xmi.XMLHelper;
 import org.eclipse.emf.ecore.xmi.XMLLoad;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.XMLLoadImpl;
+import org.eclipse.emf.ecore.xml.type.impl.AnyTypeImpl;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
@@ -157,6 +160,15 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
                     }
                 }
             }
+            
+            // hack to handle QNames and arbitrary strings in structureRefs
+			if (eReference.getName().equals("structureRef")) {
+				DynamicEObjectImpl value = new DynamicEObjectImpl();
+				URI uri = URI.createURI(ids);
+				((DynamicEObjectImpl) value).eSetProxyURI(uri);
+				object.eSet(eReference, value);
+				return;
+			}
 
             super.setValueFromId(object,eReference,ids);
         }

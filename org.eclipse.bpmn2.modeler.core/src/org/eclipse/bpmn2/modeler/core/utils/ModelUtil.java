@@ -221,8 +221,8 @@ public class ModelUtil {
 	 * 
 	 * @param obj - the BPMN2 object
 	 */
-	public static void setID(EObject obj) {
-		setID(obj,obj.eResource());
+	public static String setID(EObject obj) {
+		return setID(obj,obj.eResource());
 	}
 
 	/**
@@ -233,12 +233,16 @@ public class ModelUtil {
 	 * @param obj - the BPMN2 object
 	 * @param res - the Resource to which the object will be added
 	 */
-	public static void setID(EObject obj, Resource res) {
+	public static String setID(EObject obj, Resource res) {
+		String id = null;
 		EStructuralFeature feature = ((EObject)obj).eClass().getEStructuralFeature("id");
 		if (feature!=null) {
-			if (obj.eGet(feature)==null)
-				obj.eSet(feature, generateID(obj,res));
+			if (obj.eGet(feature)==null) {
+				id = generateID(obj,res);
+				obj.eSet(feature, id);
+			}
 		}
+		return id;
 	}
 
 
@@ -249,8 +253,8 @@ public class ModelUtil {
 		return null;
 	}
 
-	public static boolean hasName(BaseElement element) {
-		EStructuralFeature feature = element.eClass().getEStructuralFeature("name");
+	public static boolean hasName(EObject obj) {
+		EStructuralFeature feature = obj.eClass().getEStructuralFeature("name");
 		return feature!=null;
 	}
 
@@ -324,6 +328,8 @@ public class ModelUtil {
 				c = Character.toUpperCase(c);
 				first = false;
 			}
+			if (c=='_')
+				c = ' ';
 			displayName += c;
 		}
 		return displayName;

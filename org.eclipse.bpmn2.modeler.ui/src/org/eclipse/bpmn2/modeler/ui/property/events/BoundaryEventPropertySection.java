@@ -16,14 +16,14 @@ import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
-import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeRegistry;
+import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 
 public class BoundaryEventPropertySection extends AbstractBpmn2PropertySection {
 	static {
-		PropertiesCompositeRegistry.register(BoundaryEvent.class, BoundaryEventPropertiesComposite.class);
+		PropertiesCompositeFactory.register(BoundaryEvent.class, BoundaryEventPropertiesComposite.class);
 	}
 
 	/* (non-Javadoc)

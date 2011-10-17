@@ -14,6 +14,7 @@
 package org.eclipse.bpmn2.modeler.ui.property;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -29,11 +30,19 @@ import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
+import org.eclipse.bpmn2.modeler.ui.property.editors.ComboObjectEditor;
+import org.eclipse.bpmn2.modeler.ui.property.editors.IntObjectEditor;
+import org.eclipse.bpmn2.modeler.ui.property.editors.ListObjectEditor;
+import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
+import org.eclipse.bpmn2.modeler.ui.property.editors.BooleanObjectEditor;
+import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.IValueChangeListener;
 import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
@@ -41,15 +50,20 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.ui.celleditor.FeatureEditorDialog;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
+import org.eclipse.emf.transaction.NotificationFilter;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.ResourceSetChangeEvent;
+import org.eclipse.emf.transaction.ResourceSetListener;
 import org.eclipse.emf.transaction.ResourceSetListenerImpl;
+import org.eclipse.emf.transaction.RollbackException;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -97,15 +111,14 @@ import org.eclipse.ui.forms.widgets.Section;
  * Subclasses must implement the abstract createBindings() method to construct their editing
  * widgets. These widgets are torn down and reconstructed when the editor selection changes.
  */
-public abstract class AbstractBpmn2PropertiesComposite extends Composite {
+public abstract class AbstractBpmn2PropertiesComposite extends Composite implements ResourceSetListener {
 
 	protected AbstractBpmn2PropertySection propertySection;
 	protected EObject be;
 	protected FormToolkit toolkit;
 	protected ToolEnablementPreferences preferences;
 	protected ModelHandler modelHandler;
-	private TransactionalEditingDomain domain;
-	private DomainListener domainListener;
+	protected TransactionalEditingDomain domain;
 
 	protected Section attributesSection = null;
 	protected Composite attributesComposite = null;
@@ -143,18 +156,25 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		toolkit.adapt(this);
 		toolkit.paintBordersFor(this);
 		setLayout(new GridLayout(3, false));
-		
-		// TODO: do we need this?
-//		domain = BPMN2Editor.getActiveEditor().getEditingDomain();
-//		domainListener = new DomainListener();
-//		domain.addResourceSetListener(domainListener);
+		addDomainListener();
+	}
+	
+	private void addDomainListener() {
+		if (domain==null) {
+			domain = BPMN2Editor.getActiveEditor().getEditingDomain();
+			domain.addResourceSetListener(this);
+		}
+	}
+
+	private void removeDomainListener() {
+		if (domain!=null) {
+			domain.removeResourceSetListener(this);
+		}
 	}
 	
 	@Override
 	public void dispose() {
-		if (domain != null && domainListener != null) {
-			domain.removeResourceSetListener(domainListener);
-		}
+		removeDomainListener();
 		PropertyUtil.disposeChildWidgets(AbstractBpmn2PropertiesComposite.this);
 		super.dispose();
 	}
@@ -182,6 +202,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		} catch (IOException e1) {
 			Activator.showErrorWithLogging(e1);
 		}
+		
 		setEObject(object);
 	}
 	
@@ -194,6 +215,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		be = object;
 		if (be != null) {
 			createBindings(be);
+			getParent().layout();
 		}
 	}
 	
@@ -217,6 +239,10 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		PropertyUtil.disposeChildWidgets(this);
 	}
 
+	public FormToolkit getToolkit() {
+		return toolkit;
+	}
+	
 	/**
 	 * Returns the composite that is used to contain all EAttributes for the
 	 * current selection. The default behavior is to construct a non-collapsible
@@ -267,8 +293,10 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	 * @param feature
 	 * @return
 	 */
-	protected boolean isAttribute(EStructuralFeature feature) {
-		return (feature instanceof EAttribute);
+	protected boolean isAttribute(EObject object, EStructuralFeature feature) {
+		if (feature instanceof EAttribute)
+			return true;
+		return false;
 	}
 	
 	/**
@@ -278,7 +306,11 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	 * @return
 	 */
 	protected boolean isList(EObject object, EStructuralFeature feature) {
-		return (feature !=null && object.eGet(feature) instanceof EList);
+		if (feature!=null) {
+			Object list = object.eGet(feature);
+			return (list instanceof EObjectContainmentEList);
+		}
+		return false;
 	}
 
 	/**
@@ -286,48 +318,11 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	 * @param feature
 	 * @return
 	 */
-	protected boolean isReference(EStructuralFeature feature) {
+	protected boolean isReference(EObject object, EStructuralFeature feature) {
+		Object list = object.eGet(feature);
+		if (list instanceof EList && !(list instanceof EObjectContainmentEList))
+			return true;
 		return (feature instanceof EReference);
-	}
-	
-	/**
-	 * Creates a Text widget
-	 * @param parent
-	 * @param name
-	 * @param multiLine
-	 * @return
-	 */
-	protected Text createTextInput(Composite parent, String name, boolean multiLine) {
-		createLabel(parent,name);
-
-		int flag = SWT.NONE;
-		if (multiLine) {
-			flag |= SWT.WRAP | SWT.MULTI;
-		}
-		Text text = toolkit.createText(parent, "", flag);
-		GridData data = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
-		if (multiLine) {
-			data.heightHint = 50;
-		}
-		text.setLayoutData(data);
-
-		return text;
-	}
-
-	protected Text createIntInput(Composite parent, String name) {
-		createLabel(parent,name);
-
-		Text text = toolkit.createText(parent, "");
-		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-		return text;
-	}
-
-	protected Button createBooleanInput(Composite parent, String name) {
-		createLabel(parent,name);
-
-		Button button = toolkit.createButton(parent, "", SWT.CHECK);
-		button.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-		return button;
 	}
 
 	protected Label createLabel(Composite parent, String name) {
@@ -385,7 +380,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 
 	protected void bindAttribute(EObject object, String name) {
 		EStructuralFeature feature = getFeature(object,name);
-		if (isAttribute(feature)) {
+		if (isAttribute(object,feature)) {
 			bindAttribute(object,(EAttribute)feature);
 		}
 	}
@@ -405,22 +400,26 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 			Collection choiceOfValues = getChoiceOfValues(object, attribute);
 			
 			if (String.class.equals(attribute.getEType().getInstanceClass())) {
-				bindText(object, attribute, createTextInput(parent, displayName, getIsMultiLine(object,attribute)));
+				int style = SWT.NONE;
+				if (getIsMultiLine(object,attribute))
+					style |= SWT.MULTI;
+				ObjectEditor editor = new TextObjectEditor(this,object,attribute);
+				editor.createControl(parent,displayName,style);
 			} else if (boolean.class.equals(attribute.getEType().getInstanceClass())) {
-				bindBoolean(object, attribute, createBooleanInput(parent, displayName));
+				ObjectEditor editor = new BooleanObjectEditor(this,object,attribute);
+				editor.createControl(parent,displayName);
 			} else if (int.class.equals(attribute.getEType().getInstanceClass())) {
-				bindInt(object, attribute, createIntInput(parent, displayName));
+				ObjectEditor editor = new IntObjectEditor(this,object,attribute);
+				editor.createControl(parent,displayName);
 			} else if (choiceOfValues != null) {
-				createLabel(parent, displayName);
-				createSingleItemEditor(parent, object, attribute, object.eGet(attribute), choiceOfValues);
+				ObjectEditor editor = new ComboObjectEditor(this,object,attribute);
+				editor.createControl(parent,displayName);
 			} else if ("anyAttribute".equals(attribute.getName())) {
 				List<Entry> basicList = ((BasicFeatureMap) object.eGet(attribute)).basicList();
 				for (Entry entry : basicList) {
 					EStructuralFeature feature = entry.getEStructuralFeature();
-					if (Object.class.equals(feature.getEType().getInstanceClass())) {
-						Text t = createTextInput(parent, ModelUtil.toDisplayName(feature.getName()), false);
-						bindText( object, feature, t);
-					}
+					if (feature instanceof EAttribute)
+						bindAttribute(parent,object,(EAttribute)feature);
 				}
 			}
 		}
@@ -428,7 +427,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	
 	protected void bindReference(EObject object, String name) {
 		EStructuralFeature feature = getFeature(object,name);
-		if (isReference(feature)) {
+		if (isReference(object,feature)) {
 			bindReference(object,(EReference)feature);
 		}
 	}
@@ -445,12 +444,13 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 			Object eGet = object.eGet(reference);
 			String displayName = getDisplayName(object, reference);
 	
-			createLabel(parent, displayName);
+			ObjectEditor editor;
 			if (eGet instanceof List) {
-				createListEditor(parent, object, reference, eGet);
+				editor = new ListObjectEditor(this,object,reference);
 			} else {
-				createSingleItemEditor(parent, object, reference, eGet, null);
+				editor = new ComboObjectEditor(this,object,reference);
 			}
+			editor.createControl(parent,displayName);
 		}
 	}
 	
@@ -478,312 +478,6 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		}
 	}
 
-	private void createListEditor(Composite parent, final EObject object, final EReference reference, Object eGet) {
-
-		final Text text = toolkit.createText(parent, "");
-		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-
-		Button editButton = toolkit.createButton(parent, "Edit...", SWT.PUSH);
-		editButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-
-		final List<EObject> refs = (List<EObject>) eGet;
-		updateTextField(refs, text);
-
-		SelectionAdapter editListener = new SelectionAdapter() {
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				List<EObject> l = null;
-
-				if (modelHandler != null) {
-					l = (List<EObject>) modelHandler.getAll(reference.getEType().getInstanceClass());
-				}
-
-				FeatureEditorDialog featureEditorDialog = new FeatureEditorDialog(getShell(),
-						AdapterUtil.getLabelProvider(), object,
-						reference, "Select elements", l);
-
-				if (featureEditorDialog.open() == Window.OK) {
-
-					updateEObject(refs, (EList<EObject>) featureEditorDialog.getResult());
-					updateTextField(refs, text);
-				}
-			}
-
-			public void updateEObject(final List<EObject> refs, final EList<EObject> result) {
-				TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
-				domain.getCommandStack().execute(new RecordingCommand(domain) {
-					@Override
-					protected void doExecute() {
-
-						if (result == null) {
-							refs.clear();
-							return;
-						}
-						refs.retainAll(result);
-						for (EObject di : result) {
-							if (!refs.contains(di)) {
-								refs.add(di);
-							}
-						}
-					}
-				});
-			}
-		};
-		editButton.addSelectionListener(editListener);
-	}
-	
-	public ComboViewer createComboViewer(Composite parent, AdapterFactoryLabelProvider labelProvider, int style) {
-		ComboViewer comboViewer = new ComboViewer(parent, style);
-		comboViewer.setLabelProvider(labelProvider);
-
-		Combo combo = comboViewer.getCombo();
-		
-		return comboViewer;
-	}
-
-	private void createSingleItemEditor(Composite parent, final EObject object, final EStructuralFeature reference, Object eGet, Collection values) {
-		final ComboViewer comboViewer = createComboViewer(parent,
-				AdapterUtil.getLabelProvider(), SWT.NONE);
-		Combo combo = comboViewer.getCombo();
-		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-
-		List<Object> l = null;
-
-		if (values != null) {
-			l = Arrays.asList(values.toArray());
-		} else if (modelHandler != null) {
-			l = (List<Object>) modelHandler.getAll(reference.getEType().getInstanceClass());
-		}
-
-		comboViewer.add("");
-		comboViewer.add(l.toArray());
-		if (eGet != null) {
-			comboViewer.setSelection(new StructuredSelection(eGet));
-		}
-
-		comboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				ISelection selection = comboViewer.getSelection();
-				if (selection instanceof StructuredSelection) {
-					Object firstElement = ((StructuredSelection) selection).getFirstElement();
-					if (firstElement instanceof EObject) {
-						updateEObject(firstElement);
-					} else if (firstElement instanceof GatewayDirection) {
-						updateGatewayDirection(firstElement);
-					} else {
-						updateEObject(null);
-					}
-				}
-			}
-
-			public void updateEObject(final Object result) {
-				TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
-				domain.getCommandStack().execute(new RecordingCommand(domain) {
-					@Override
-					protected void doExecute() {
-						object.eSet(reference, result);
-					}
-				});
-			}
-			
-			public void updateGatewayDirection(final Object result) {
-				TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
-				domain.getCommandStack().execute(new RecordingCommand(domain) {
-					@Override
-					protected void doExecute() {
-						GatewayDirection direction = (GatewayDirection) result;
-						object.eSet(reference, direction);
-					}
-				});
-			}
-			
-		});
-	}
-
-	private void updateTextField(final List<EObject> refs, Text text) {
-		String listText = "";
-		if (refs != null) {
-			for (int i = 0; i < refs.size() - 1; i++) {
-				listText += AdapterUtil.getLabelProvider().getText(refs.get(i)) + ", ";
-			}
-			if (refs.size() > 0) {
-				listText += AdapterUtil.getLabelProvider().getText(refs.get(refs.size() - 1));
-			}
-		}
-
-		text.setText(listText);
-	}
-	
-	protected void bindText(final EObject object, final EStructuralFeature a, final Text text) {
-
-		Object eGet = object.eGet(a);
-		if (eGet != null) {
-			text.setText(eGet.toString());
-		}
-
-		IObservableValue textObserver = SWTObservables.observeText(text, SWT.Modify);
-		textObserver.addValueChangeListener(new IValueChangeListener() {
-
-			@SuppressWarnings("restriction")
-			@Override
-			public void handleValueChange(final ValueChangeEvent e) {
-
-				if (!text.getText().equals(object.eGet(a))) {
-					TransactionalEditingDomain editingDomain = getDiagramEditor().getEditingDomain();
-					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-						@Override
-						protected void doExecute() {
-							object.eSet(a, e.diff.getNewValue());
-						}
-					});
-					if (getDiagramEditor().getDiagnostics()!=null) {
-						// revert the change and display error status message.
-						text.setText((String) object.eGet(a));
-						getDiagramEditor().showErrorMessage(getDiagramEditor().getDiagnostics().getMessage());
-					}
-					else
-						getDiagramEditor().showErrorMessage(null);
-				}
-			}
-		});
-		
-		text.addFocusListener(new FocusListener() {
-
-			@Override
-			public void focusGained(FocusEvent e) {
-			}
-
-			@Override
-			public void focusLost(FocusEvent e) {
-				getDiagramEditor().showErrorMessage(null);
-			}
-		});
-	}
-
-	protected void bindBoolean(final EObject object, final EStructuralFeature a, final Button button) {
-		
-		button.setSelection((Boolean) object.eGet(a));
-		IObservableValue buttonObserver = SWTObservables.observeSelection(button);
-		buttonObserver.addValueChangeListener(new IValueChangeListener() {
-			
-			@SuppressWarnings("restriction")
-			@Override
-			public void handleValueChange(ValueChangeEvent event) {
-
-				if (!object.eGet(a).equals(button.getSelection())) {
-					TransactionalEditingDomain editingDomain = getDiagramEditor().getEditingDomain();
-					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-						@Override
-						protected void doExecute() {
-							object.eSet(a, button.getSelection());
-						}
-					});
-					
-					if (getDiagramEditor().getDiagnostics()!=null) {
-						// revert the change and display error status message.
-						button.setSelection((Boolean) object.eGet(a));
-						getDiagramEditor().showErrorMessage(getDiagramEditor().getDiagnostics().getMessage());
-					}
-					else
-						getDiagramEditor().showErrorMessage(null);
-				}
-			}
-		});
-		
-		button.addFocusListener(new FocusListener() {
-
-			@Override
-			public void focusGained(FocusEvent e) {
-			}
-
-			@Override
-			public void focusLost(FocusEvent e) {
-				getDiagramEditor().showErrorMessage(null);
-			}
-		});
-	}
-	
-	protected void bindInt(final EObject object, final EStructuralFeature a, final Text text) {
-
-		text.addVerifyListener(new VerifyListener() {
-
-			/**
-			 * taken from
-			 * http://dev.eclipse.org/viewcvs/viewvc.cgi/org.eclipse.swt.snippets/src/org/eclipse/swt/snippets
-			 * /Snippet19.java?view=co
-			 */
-			@Override
-			public void verifyText(VerifyEvent e) {
-				String string = e.text;
-				char[] chars = new char[string.length()];
-				string.getChars(0, chars.length, chars, 0);
-				for (int i = 0; i < chars.length; i++) {
-					if (!('0' <= chars[i] && chars[i] <= '9')) {
-						e.doit = false;
-						return;
-					}
-				}
-			}
-		});
-
-		Object eGet = object.eGet(a);
-		if (eGet != null) {
-			text.setText(eGet.toString());
-		}
-
-		IObservableValue textObserveTextObserveWidget = SWTObservables.observeText(text, SWT.Modify);
-		textObserveTextObserveWidget.addValueChangeListener(new IValueChangeListener() {
-			@Override
-			public void handleValueChange(ValueChangeEvent event) {
-
-				try {
-					final int i = Integer.parseInt(text.getText());
-					if (!object.eGet(a).equals(i)) {
-						setFeatureValue(i);
-					}
-				} catch (NumberFormatException e) {
-					text.setText((String) object.eGet(a));
-					Activator.logError(e);
-				}
-			}
-
-			@SuppressWarnings("restriction")
-			private void setFeatureValue(final int i) {
-				RecordingCommand command = new RecordingCommand(getDiagramEditor().getEditingDomain()) {
-					@Override
-					protected void doExecute() {
-						object.eSet(a, i);
-					}
-				};
-				getDiagramEditor().getEditingDomain().getCommandStack().execute(command);
-				if (getDiagramEditor().getDiagnostics()!=null) {
-					// revert the change and display error status message.
-					text.setText((String) object.eGet(a));
-					getDiagramEditor().showErrorMessage(getDiagramEditor().getDiagnostics().getMessage());
-				}
-				else
-					getDiagramEditor().showErrorMessage(null);
-			}
-		});
-
-		
-		text.addFocusListener(new FocusListener() {
-
-			@Override
-			public void focusGained(FocusEvent e) {
-			}
-
-			@Override
-			public void focusLost(FocusEvent e) {
-				getDiagramEditor().showErrorMessage(null);
-			}
-		});
-	}
-	
 	protected void bindList(EObject object, String name) {
 		EStructuralFeature feature = getFeature(object,name);
 		if (isList(object,feature)) {
@@ -810,7 +504,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 	}
 	
 	// TODO: create an adapter for this stuff in the AdapterRegistry
-	private String getDisplayName(EObject object, EStructuralFeature feature) {
+	protected String getDisplayName(EObject object, EStructuralFeature feature) {
 		IItemPropertyDescriptor propertyDescriptor = getPropertyDescriptor(object, feature);
 		
 		String displayName;
@@ -844,7 +538,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 		return null;
 	}
 
-	protected static IItemPropertyDescriptor getPropertyDescriptor(EObject object, EStructuralFeature feature) {
+	public static IItemPropertyDescriptor getPropertyDescriptor(EObject object, EStructuralFeature feature) {
 		AdapterFactory factory;
 		ItemProviderAdapter adapter;
 
@@ -899,12 +593,51 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite {
 			return objectStack.size();
 		}
 	}
-
-	class DomainListener extends ResourceSetListenerImpl {
-		@Override
-		public void resourceSetChanged(ResourceSetChangeEvent event) {
-			// TODO: do we need this?
-		}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.emf.transaction.ResourceSetListener#resourceSetChanged(org.eclipse.emf.transaction.ResourceSetChangeEvent)
+	 */
+	@Override
+	public void resourceSetChanged(ResourceSetChangeEvent event) {
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.emf.transaction.ResourceSetListener#getFilter()
+	 */
+	@Override
+	public NotificationFilter getFilter() {
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.emf.transaction.ResourceSetListener#transactionAboutToCommit(org.eclipse.emf.transaction.ResourceSetChangeEvent)
+	 */
+	@Override
+	public Command transactionAboutToCommit(ResourceSetChangeEvent event) throws RollbackException {
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.emf.transaction.ResourceSetListener#isAggregatePrecommitListener()
+	 */
+	@Override
+	public boolean isAggregatePrecommitListener() {
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.emf.transaction.ResourceSetListener#isPrecommitOnly()
+	 */
+	@Override
+	public boolean isPrecommitOnly() {
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.emf.transaction.ResourceSetListener#isPostcommitOnly()
+	 */
+	@Override
+	public boolean isPostcommitOnly() {
+		return false;
+	}
 }

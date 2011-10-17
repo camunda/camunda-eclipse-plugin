@@ -15,7 +15,7 @@ package org.eclipse.bpmn2.modeler.ui.property.tasks;
 import org.eclipse.bpmn2.SendTask;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeRegistry;
+import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.ui.property.events.BoundaryEventPropertiesComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -23,7 +23,7 @@ import org.eclipse.graphiti.services.Graphiti;
 
 public class SendTaskPropertySection extends AbstractBpmn2PropertySection {
 	static {
-		PropertiesCompositeRegistry.register(SendTask.class, SendTaskPropertiesComposite.class);
+		PropertiesCompositeFactory.register(SendTask.class, SendTaskPropertiesComposite.class);
 	}
 
 	/* (non-Javadoc)

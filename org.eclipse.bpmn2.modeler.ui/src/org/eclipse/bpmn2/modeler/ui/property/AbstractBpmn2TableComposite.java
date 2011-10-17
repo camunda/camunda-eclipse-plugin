@@ -13,12 +13,16 @@
 
 package org.eclipse.bpmn2.modeler.ui.property;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.Bpmn2Factory;
+import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
+import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.providers.ColumnTableProvider;
 import org.eclipse.bpmn2.modeler.ui.property.providers.TableCursor;
@@ -43,6 +47,7 @@ import org.eclipse.emf.transaction.ResourceSetListenerImpl;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.impl.TransactionChangeRecorder;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -103,6 +108,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 	protected AbstractBpmn2PropertySection propertySection;
 	protected FormToolkit toolkit;
 	protected BPMN2Editor bpmn2Editor;
+	protected IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 
 	protected EClass listItemClass;
 	
@@ -198,7 +204,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 			tableProvider = new AbstractTableProvider() {
 				@Override
 				public boolean canModify(EObject object, EStructuralFeature feature, EObject item) {
-					return true;
+					return false;
 				}
 			};
 			
@@ -247,7 +253,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 	 * @return
 	 */
 	public AbstractBpmn2PropertiesComposite createDetailComposite(Composite parent, Class eClass) {
-		AbstractBpmn2PropertiesComposite composite = PropertiesCompositeRegistry.createComposite(eClass, parent, SWT.NONE);
+		AbstractBpmn2PropertiesComposite composite = PropertiesCompositeFactory.createComposite(eClass, parent, SWT.NONE);
 		return composite;
 	}
 	
@@ -260,9 +266,11 @@ public class AbstractBpmn2TableComposite extends Composite {
 	protected EObject addListItem(EObject object, EStructuralFeature feature) {
 		EList<EObject> list = (EList<EObject>)object.eGet(feature);
 		EClass listItemClass = getListItemClass(object,feature);
+		EObject newItem = null;
 		if (!(list instanceof EObjectContainmentEList)) {
 			// this is not a containment list so we can't add it
 			// because we don't know where the new object belongs
+			
 			MessageDialog.openError(getShell(), "Internal Error",
 					"Can not create a new " +
 					listItemClass.getName() +
@@ -271,9 +279,15 @@ public class AbstractBpmn2TableComposite extends Composite {
 			);
 			return null;
 		}
-		EObject newItem = MODEL_FACTORY.create(listItemClass);
-		list.add(newItem);
-		ModelUtil.addID(newItem);
+		else {
+			try {
+				ModelHandler modelHandler = ModelHandlerLocator.getModelHandler(object.eResource());
+				newItem = modelHandler.create(listItemClass);
+				list.add(newItem);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		return newItem;
 	}
 
@@ -328,7 +342,8 @@ public class AbstractBpmn2TableComposite extends Composite {
 		////////////////////////////////////////////////////////////
 		// Collect columns to be displayed and build column provider
 		////////////////////////////////////////////////////////////
-		if (getTableProvider(object, feature).getColumns().size()==0) {
+		tableProvider = getTableProvider(object, feature);
+		if (tableProvider.getColumns().size()==0) {
 			return;
 		}
 
@@ -340,13 +355,13 @@ public class AbstractBpmn2TableComposite extends Composite {
 			// display title in the table section and/or show a details section
 			// SHOW_DETAILS forces drawing of a section title
 			sashForm = new SashForm(this, SWT.NONE);
-			sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+			sashForm.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 3, 1));
 			
 			tableSection = toolkit.createSection(sashForm,
 					ExpandableComposite.TWISTIE |
 					ExpandableComposite.COMPACT |
 					ExpandableComposite.TITLE_BAR);
-			tableSection.setText(ModelUtil.toDisplayName(feature.getName())+" List");
+			tableSection.setText(ModelUtil.toDisplayName(listItemClass.getName())+" List");
 
 			tableComposite = toolkit.createComposite(tableSection, SWT.NONE);
 			tableSection.setClient(tableComposite);
@@ -378,6 +393,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 
 				@Override
 				public void expansionStateChanged(ExpansionEvent e) {
+					preferenceStore.setValue("table."+listItemClass.getName()+".expanded", e.getState());
 					redrawPage();
 				}
 				
@@ -457,6 +473,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 						IStructuredSelection sel = (IStructuredSelection) event.getSelection();
 						if (sel.getFirstElement() instanceof EObject && detailComposite instanceof AbstractBpmn2PropertiesComposite)
 							((AbstractBpmn2PropertiesComposite)detailComposite).setEObject(bpmn2Editor,(EObject)sel.getFirstElement());
+						detailSection.setExpanded(true);
 					}
 					sashForm.layout(true);
 					redrawPage();
@@ -568,6 +585,10 @@ public class AbstractBpmn2TableComposite extends Composite {
 		// a TableCursor allows navigation of the table with keys
 		TableCursor.create(table, tableViewer);
 		redrawPage();
+		
+		boolean expanded = preferenceStore.getBoolean("table."+listItemClass.getName()+".expanded");
+		if (expanded)
+			tableSection.setExpanded(true);
 	}
 	
 	protected void redrawPage() {
@@ -693,7 +714,9 @@ public class AbstractBpmn2TableComposite extends Composite {
 
 		@Override
 		public String getProperty() {
-			return feature.getName(); //$NON-NLS-1$
+			if (feature!=null)
+				return feature.getName(); //$NON-NLS-1$
+			return "";
 		}
 
 		@Override
@@ -706,10 +729,12 @@ public class AbstractBpmn2TableComposite extends Composite {
 			return value==null ? "" : value.toString();
 		}
 		
-		public CellEditor createCellEditor (Composite parent) {			
-			EClassifier ec = feature.getEType();
-			if (ec instanceof EDataType) {
-				return new EDataTypeCellEditor((EDataType)ec, parent);
+		public CellEditor createCellEditor (Composite parent) {
+			if (feature!=null) {
+				EClassifier ec = feature.getEType();
+				if (ec instanceof EDataType) {
+					return new EDataTypeCellEditor((EDataType)ec, parent);
+				}
 			}
 			return null;
 		}
