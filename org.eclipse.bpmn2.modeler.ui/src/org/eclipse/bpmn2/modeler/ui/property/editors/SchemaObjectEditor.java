@@ -13,6 +13,8 @@
 
 package org.eclipse.bpmn2.modeler.ui.property.editors;
 
+import javax.xml.namespace.QName;
+
 import org.eclipse.bpmn2.Import;
 import org.eclipse.bpmn2.modeler.core.utils.NamespaceUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
@@ -34,6 +36,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.wst.wsdl.Fault;
 import org.eclipse.wst.wsdl.Input;
 import org.eclipse.wst.wsdl.Message;
 import org.eclipse.wst.wsdl.Operation;
@@ -92,25 +95,45 @@ public class SchemaObjectEditor extends TextAndButtonObjectEditor {
 			if (result instanceof PortType) {
 				selectionType = "WSDL Port Type";
 			}
-			else if (result instanceof Operation) {
+			if (result instanceof Operation) {
 				selectionType = "WSDL Operation";
 			}
-			else if (result instanceof Input) {
+			if (result instanceof Input) {
+				Input input = (Input)result;
+				result = input.getMessage();
 				selectionType = "WSDL Input";
 			}
-			else if (result instanceof Output) {
+			if (result instanceof Output) {
+				Output output = (Output)result;
+				result = output.getMessage();
 				selectionType = "WSDL Output";
 			}
-			else if (result instanceof Part) {
+			if (result instanceof Fault) {
+				Fault fault = (Fault)result;
+				result = fault.getMessage();
+				selectionType = "WSDL Fault";
+			}
+			if (result instanceof Part) {
+				Part part = (Part)result;
+				result = part.getElementDeclaration();
 				selectionType = "WSDL Message Part";
 			}
-			else if (result instanceof Message) {
+			if (result instanceof Message) {
+				Message message = (Message)result;
+				QName qname = message.getQName();
+				String prefix = NamespaceUtil.getPrefixForNamespace(object, qname.getNamespaceURI());
+				if (prefix==null)
+					prefix = NamespaceUtil.addNamespace(object, qname.getNamespaceURI());
+				if (prefix!=null)
+					value = prefix + ":";
+				value += qname.getLocalPart();
 				selectionType = "WSDL Message";
 			}
-			else if (result instanceof XSDAttributeDeclaration) {
+			if (result instanceof XSDAttributeDeclaration) {
 				selectionType = "XML Attribute";
 			}
-			else if (result instanceof XSDElementDeclaration) {
+			
+			if (result instanceof XSDElementDeclaration) {
 				XSDElementDeclaration decl = (XSDElementDeclaration)result;
 				String ns = decl.getTargetNamespace();
 				if (ns==null) {
@@ -123,14 +146,14 @@ public class SchemaObjectEditor extends TextAndButtonObjectEditor {
 					value = prefix + ":";
 				value += decl.getName();
 			}
-			else if (result instanceof XSDTypeDefinition) {
+			if (result instanceof XSDTypeDefinition) {
 				XSDTypeDefinition type = (XSDTypeDefinition)result;
 				String prefix = NamespaceUtil.getPrefixForNamespace(object, type.getTargetNamespace());
 				if (prefix!=null)
 					value = prefix + ":";
 				value += type.getName();
 			}
-			else if (result instanceof XSDSchema) {
+			if (result instanceof XSDSchema) {
 				XSDSchema schema = (XSDSchema)result;
 				String prefix = NamespaceUtil.getPrefixForNamespace(object, schema.getTargetNamespace());
 				if (prefix!=null)

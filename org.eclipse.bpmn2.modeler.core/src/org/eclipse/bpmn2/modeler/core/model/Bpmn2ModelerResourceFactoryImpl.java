@@ -26,6 +26,8 @@
  */
 package org.eclipse.bpmn2.modeler.core.model;
 
+import java.util.ArrayList;
+
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.DocumentRoot;
@@ -81,6 +83,9 @@ public class Bpmn2ModelerResourceFactoryImpl extends ResourceFactoryImpl {
                 new ElementHandlerImpl(true));
 
         result.getDefaultSaveOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
+        
+        result.getDefaultSaveOptions().put(XMLResource.OPTION_USE_CACHED_LOOKUP_TABLE,
+        		new ArrayList<Object>());
 
         return result;
     }

@@ -108,7 +108,19 @@ public class DataItemsPropertySection extends AbstractBpmn2PropertySection {
 				final ItemDefinition def = (ItemDefinition)object;
 				
 				if (def.getItemKind().equals(ItemKind.PHYSICAL)) {
-					SchemaObjectEditor editor = new SchemaObjectEditor(this,object,reference);
+					SchemaObjectEditor editor = new SchemaObjectEditor(this,object,reference) {
+						@Override
+						protected boolean updateObject(final Object value) {
+							if (value instanceof String) {
+								// convert to a proxy
+								InternalEObject newValue = new DynamicEObjectImpl();
+						        URI uri = URI.createURI((String)value);
+						        ((DynamicEObjectImpl)newValue).eSetProxyURI(uri);
+						        return super.updateObject(newValue);
+							}
+							return false;
+						}
+					};
 					editor.createControl(parent,displayName);
 				}
 				else {

@@ -961,14 +961,14 @@ public class ModelHandler {
 	
 	public <T extends EObject> T create(Class<T> clazz) {
 		EObject newObject = null;
-		EClassifier eClassifier = Bpmn2Package.eINSTANCE.getEClassifier(clazz.getName());
+		EClassifier eClassifier = Bpmn2Package.eINSTANCE.getEClassifier(clazz.getSimpleName());
 		if (eClassifier instanceof EClass) {
 			EClass eClass = (EClass)eClassifier;
 			newObject = Bpmn2Factory.eINSTANCE.create(eClass);
 		}
 		else {
 			// maybe it's a DI object type?
-			eClassifier = BpmnDiPackage.eINSTANCE.getEClassifier(clazz.getName());
+			eClassifier = BpmnDiPackage.eINSTANCE.getEClassifier(clazz.getSimpleName());
 			if (eClassifier instanceof EClass) {
 				EClass eClass = (EClass)eClassifier;
 				newObject = BpmnDiFactory.eINSTANCE.create(eClass);
@@ -989,10 +989,6 @@ public class ModelHandler {
 				switch (newObject.eClass().getClassifierID()) {
 				case Bpmn2Package.ITEM_DEFINITION:
 					((ItemDefinition)newObject).setItemKind(ItemKind.INFORMATION);
-			        InternalEObject value = new DynamicEObjectImpl();
-			        URI uri = URI.createURI("test.abc#id");
-			        value.eSetProxyURI(uri);
-			        ((ItemDefinition)newObject).setStructureRef(value);
 				}
 			}
 			
