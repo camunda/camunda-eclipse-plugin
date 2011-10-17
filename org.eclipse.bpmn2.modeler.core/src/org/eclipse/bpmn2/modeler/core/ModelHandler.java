@@ -150,18 +150,15 @@ public class ModelHandler {
 
 					// create StartEvent
 					StartEvent startEvent = create(StartEvent.class);
-					ModelUtil.setID(startEvent,resource);
 					startEvent.setName("Start Event");
 					process.getFlowElements().add(startEvent);
 					
 					// create SequenceFlow
 					SequenceFlow flow = create(SequenceFlow.class);
-					ModelUtil.setID(flow,resource);
 					process.getFlowElements().add(flow);
 					
 					// create EndEvent
 					EndEvent endEvent = create(EndEvent.class);
-					ModelUtil.setID(endEvent,resource);
 					endEvent.setName("End Event");
 					process.getFlowElements().add(endEvent);
 					
@@ -249,7 +246,6 @@ public class ModelHandler {
 					initiatingProcess.setName(name+" Initiating Process");
 					
 					Participant initiatingParticipant = create(Participant.class);
-					ModelUtil.setID(initiatingParticipant,resource);
 					initiatingParticipant.setName("Initiating Pool");
 					initiatingParticipant.setProcessRef(initiatingProcess);
 					
@@ -257,7 +253,6 @@ public class ModelHandler {
 					nonInitiatingProcess.setName(name+" Non-initiating Process");
 					
 					Participant nonInitiatingParticipant = create(Participant.class);
-					ModelUtil.setID(nonInitiatingParticipant,resource);
 					nonInitiatingParticipant.setName("Non-initiating Pool");
 					nonInitiatingParticipant.setProcessRef(nonInitiatingProcess);
 					
@@ -321,20 +316,16 @@ public class ModelHandler {
 					choreography.setName(name+" Choreography");
 					
 					Participant initiatingParticipant = create(Participant.class);
-					ModelUtil.setID(initiatingParticipant,resource);
 					initiatingParticipant.setName(name+" Initiating Participant");
 
 					Process initiatingProcess = createProcess();
-					ModelUtil.setID(initiatingProcess,resource);
 					initiatingProcess.setName(name+" Initiating Process");
 					initiatingParticipant.setProcessRef(initiatingProcess);
 					
 					Participant nonInitiatingParticipant = create(Participant.class);
-					ModelUtil.setID(nonInitiatingParticipant,resource);
 					nonInitiatingParticipant.setName(name+" Non-initiating Participant");
 
 					Process nonInitiatingProcess = createProcess();
-					ModelUtil.setID(nonInitiatingProcess,resource);
 					nonInitiatingProcess.setName(name+" Non-initiating Process");
 					nonInitiatingParticipant.setProcessRef(nonInitiatingProcess);
 					
@@ -342,7 +333,6 @@ public class ModelHandler {
 					choreography.getParticipants().add(nonInitiatingParticipant);
 					
 					ChoreographyTask task = create(ChoreographyTask.class);
-					ModelUtil.setID(task,resource);
 					task.setName(name+" Choreography Task");
 					task.getParticipantRefs().add(initiatingParticipant);
 					task.getParticipantRefs().add(nonInitiatingParticipant);
@@ -507,8 +497,6 @@ public class ModelHandler {
 		Process process = getOrCreateProcess(getParticipant(target));
 		if (process.getIoSpecification() == null) {
 			InputOutputSpecification ioSpec = create(InputOutputSpecification.class);
-//			ioSpec.setId(EcoreUtil.generateUUID());
-			ModelUtil.setID(ioSpec,resource);
 			process.setIoSpecification(ioSpec);
 		}
 		return process.getIoSpecification();
@@ -530,8 +518,6 @@ public class ModelHandler {
 		Collaboration collaboration = getParticipantContainer(bpmnDiagram);
 		if (collaboration!=null) {
 			participant = create(Participant.class);
-	//		participant.setId(EcoreUtil.generateUUID());
-			ModelUtil.setID(participant,resource);
 			collaboration.getParticipants().add(participant);
 		}
 		return participant;
@@ -558,9 +544,6 @@ public class ModelHandler {
 
 	public Process createProcess() {
 		Process process = create(Process.class);
-//		process.setId(EcoreUtil.generateUUID());
-		ModelUtil.setID(process,resource);
-		process.setName("Process");
 		getDefinitions().getRootElements().add(process);
 		return process;
 	}
@@ -573,8 +556,6 @@ public class ModelHandler {
 			return participant.getProcessRef();
 		}
 		Process process = create(Process.class);
-		ModelUtil.setID(process,resource);
-		process.setName("Process for " + participant.getName());
 		getDefinitions().getRootElements().add(process);
 		if (participant!=null) {
 			participant.setProcessRef(process);
@@ -584,8 +565,6 @@ public class ModelHandler {
 
 	public Lane createLane(Lane targetLane) {
 		Lane lane = create(Lane.class);
-//		lane.setId(EcoreUtil.generateUUID());
-		ModelUtil.setID(lane,resource);
 
 		if (targetLane.getChildLaneSet() == null) {
 			targetLane.setChildLaneSet(create(LaneSet.class));
@@ -602,23 +581,17 @@ public class ModelHandler {
 
 	public Lane createLane(Object target) {
 		Lane lane = create(Lane.class);
-//		lane.setId(EcoreUtil.generateUUID());
-		ModelUtil.setID(lane,resource);
 		FlowElementsContainer container = getFlowElementContainer(target);
 		if (container.getLaneSets().isEmpty()) {
 			LaneSet laneSet = create(LaneSet.class);
-//			laneSet.setId(EcoreUtil.generateUUID());
 			container.getLaneSets().add(laneSet);
 		}
 		container.getLaneSets().get(0).getLanes().add(lane);
-		ModelUtil.setID(lane);
 		return lane;
 	}
 
 	public void laneToTop(Lane lane) {
 		LaneSet laneSet = create(LaneSet.class);
-//		laneSet.setId(EcoreUtil.generateUUID());
-		ModelUtil.setID(laneSet,resource);
 		laneSet.getLanes().add(lane);
 		Process process = getOrCreateProcess(getInternalParticipant());
 		process.getLaneSets().add(laneSet);
@@ -626,8 +599,6 @@ public class ModelHandler {
 
 	public SequenceFlow createSequenceFlow(FlowNode source, FlowNode target) {
 		SequenceFlow sequenceFlow = create(SequenceFlow.class);
-//		sequenceFlow.setId(EcoreUtil.generateUUID());
-		ModelUtil.setID(sequenceFlow,resource);
 
 		addFlowElement(source, sequenceFlow);
 		sequenceFlow.setSourceRef(source);
@@ -640,7 +611,6 @@ public class ModelHandler {
 		Participant participant = getParticipant(source);
 		if (participant!=null) {
 			messageFlow = create(MessageFlow.class);
-			ModelUtil.setID(messageFlow,resource);
 			messageFlow.setSourceRef(source);
 			messageFlow.setTargetRef(target);
 			if (participant.eContainer() instanceof Collaboration)
@@ -673,8 +643,6 @@ public class ModelHandler {
 		}
 		Association association = create(Association.class);
 		addArtifact(e, association);
-//		association.setId(EcoreUtil.generateUUID());
-		ModelUtil.setID(association,resource);
 		association.setSourceRef(source);
 		association.setTargetRef(target);
 		return association;
@@ -693,8 +661,6 @@ public class ModelHandler {
 	
 	public Collaboration createCollaboration() {
 		Collaboration collaboration = create(Collaboration.class);
-		ModelUtil.setID(collaboration,resource);
-		collaboration.setName("Collaboration");
 		getDefinitions().getRootElements().add(collaboration);
 		return collaboration;
 	}
@@ -707,8 +673,6 @@ public class ModelHandler {
 		final List<RootElement> rootElements = getDefinitions().getRootElements();
 		TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(resource);
 		final Collaboration collaboration = create(Collaboration.class);
-//		collaboration.setId(EcoreUtil.generateUUID());
-		ModelUtil.setID(collaboration,resource);
 		if (domain != null) {
 			domain.getCommandStack().execute(new RecordingCommand(domain) {
 
@@ -743,17 +707,12 @@ public class ModelHandler {
 	
 	public Choreography createChoreography() {
 		Choreography choreography = create(Choreography.class);
-		ModelUtil.setID(choreography,resource);
-		choreography.setName("Choreography");
 		getDefinitions().getRootElements().add(choreography);
 		return choreography;
 	}
 
 	private void addCollaborationToRootElements(final List<RootElement> rootElements, final Collaboration collaboration) {
 		Participant participant = create(Participant.class);
-//		participant.setId(EcoreUtil.generateUUID());
-		ModelUtil.setID(participant,resource);
-		participant.setName("Internal");
 		for (RootElement element : rootElements) {
 			if (element instanceof Process) {
 				participant.setProcessRef((Process) element);
@@ -766,9 +725,6 @@ public class ModelHandler {
 
 	private void addChoreographyToRootElements(final List<RootElement> rootElements, final Choreography choreography) {
 		Participant participant = create(Participant.class);
-//		participant.setId(EcoreUtil.generateUUID());
-		ModelUtil.setID(participant,resource);
-		participant.setName("Internal");
 		for (RootElement element : rootElements) {
 			if (element instanceof Process) {
 				participant.setProcessRef((Process) element);
