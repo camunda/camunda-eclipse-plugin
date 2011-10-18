@@ -22,9 +22,11 @@ import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceSetImpl;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
+import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.providers.ModelTreeLabelProvider;
 import org.eclipse.bpmn2.modeler.ui.property.providers.ServiceTreeContentProvider;
 import org.eclipse.bpmn2.modeler.ui.property.providers.VariableTypeTreeContentProvider;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -49,6 +51,7 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SelectionStatusDialog;
 import org.eclipse.bpmn2.modeler.ui.property.providers.TreeNode;
 
@@ -126,6 +129,7 @@ public class SchemaSelectionDialog extends SelectionStatusDialog {
 		importList = new List(parent, SWT.SINGLE | SWT.BORDER);
 		GridData data = new GridData(SWT.FILL,SWT.FILL,true,true,2,1);
 		data.minimumHeight = 100;
+		data.minimumWidth = 400;
 		importList.setLayoutData(data);
 		
 		int index = 0;
@@ -219,11 +223,17 @@ public class SchemaSelectionDialog extends SelectionStatusDialog {
 			return;
 		}
 
-		final URI uri = URI.createURI(path);
+		URI uri = URI.createFileURI( path );
 		if (uri == null) {
-			return;
+			return ;
+		}
+		if (uri.isRelative()) {
+			// construct absolute path
+			String basePath = BPMN2Editor.getActiveEditor().getModelFile().getLocation().removeLastSegments(1).toString();
+			uri = URI.createFileURI( basePath + "/" + path );
 		}
 
+		final URI loadUri = uri;
 		loaderJob = new Job("") {
 
 			@Override
@@ -232,7 +242,7 @@ public class SchemaSelectionDialog extends SelectionStatusDialog {
 					Thread.sleep(500);
 					tree.getDisplay().asyncExec(new Runnable() {
 						public void run() {
-							input = attemptLoad(uri, importType);
+							input = attemptLoad(loadUri, importType);
 							loadDone();
 						}
 					});
@@ -267,14 +277,16 @@ public class SchemaSelectionDialog extends SelectionStatusDialog {
 
 		if (input == null || input instanceof Exception) {
 			updateStatus(new Status(IStatus.ERROR, Activator.getDefault().PLUGIN_ID, 0,
-					"Cannot load import from "+importLocation, (Throwable)input));
-			treeViewer.setInput(null);
+					"Cannot load "+importLocation, (Throwable)input));
+//			treeViewer.setInput(null);
 			input = null;
 
 		} else {
 			treeViewer.setContentProvider(treeContentProvider);
 			treeViewer.setInput(input);
 			tree.getVerticalBar().setSelection(0);
+			updateStatus(new Status(IStatus.OK, Activator.getDefault().PLUGIN_ID, 0,
+					"Loaded "+importLocation, null));
 		}
 	}
 

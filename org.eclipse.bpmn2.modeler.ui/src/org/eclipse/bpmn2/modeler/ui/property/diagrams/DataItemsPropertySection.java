@@ -107,7 +107,7 @@ public class DataItemsPropertySection extends AbstractBpmn2PropertySection {
 				String displayName = getDisplayName(object, reference);
 				final ItemDefinition def = (ItemDefinition)object;
 				
-				if (def.getItemKind().equals(ItemKind.PHYSICAL)) {
+				if (def.getItemKind().equals(ItemKind.INFORMATION)) {
 					SchemaObjectEditor editor = new SchemaObjectEditor(this,object,reference) {
 						@Override
 						protected boolean updateObject(final Object value) {
