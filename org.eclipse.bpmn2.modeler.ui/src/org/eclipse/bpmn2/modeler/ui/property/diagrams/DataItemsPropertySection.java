@@ -6,7 +6,6 @@ import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.ItemKind;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
-import org.eclipse.bpmn2.modeler.core.utils.NamespaceUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
@@ -15,7 +14,6 @@ import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.SchemaObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.TextAndButtonObjectEditor;
-import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -139,7 +137,7 @@ public class DataItemsPropertySection extends AbstractBpmn2PropertySection {
 							};
 							InputDialog dialog = new InputDialog(
 									getShell(),
-									"Item Definition Structure",
+									"Data Structure",
 									"Enter the data structure reference for this Item Definition",
 									getTextValue(def.getStructureRef()),
 									validator);

@@ -19,6 +19,7 @@ import org.eclipse.graphiti.features.IDirectEditingFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.ILayoutFeature;
 import org.eclipse.graphiti.features.IMoveShapeFeature;
+import org.eclipse.graphiti.features.IRemoveFeature;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IContext;
@@ -38,6 +39,8 @@ public interface FeatureContainer {
 	IDirectEditingFeature getDirectEditingFeature(IFeatureProvider fp);
 
 	ILayoutFeature getLayoutFeature(IFeatureProvider fp);
+
+	IRemoveFeature getRemoveFeature(IFeatureProvider fp);
 
 	IMoveShapeFeature getMoveFeature(IFeatureProvider fp);
 

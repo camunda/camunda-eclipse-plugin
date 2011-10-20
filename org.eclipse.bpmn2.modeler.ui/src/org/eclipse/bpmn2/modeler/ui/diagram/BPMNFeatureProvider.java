@@ -16,10 +16,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.bpmn2.ChoreographyTask;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
-import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.features.ConnectionFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.DefaultDeleteBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.FeatureContainer;
@@ -44,6 +44,7 @@ import org.eclipse.bpmn2.modeler.ui.features.activity.task.TaskFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.activity.task.UserTaskFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.artifact.GroupFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.artifact.TextAnnotationFeatureContainer;
+import org.eclipse.bpmn2.modeler.ui.features.choreography.AddChoreographyParticipantFeature;
 import org.eclipse.bpmn2.modeler.ui.features.choreography.CallChoreographyFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.choreography.ChoreographyMessageLinkFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.choreography.ChoreographyTaskFeatureContainer;
@@ -97,6 +98,7 @@ import org.eclipse.graphiti.features.IMoveBendpointFeature;
 import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.IReconnectionFeature;
 import org.eclipse.graphiti.features.IRemoveBendpointFeature;
+import org.eclipse.graphiti.features.IRemoveFeature;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IAddBendpointContext;
@@ -109,14 +111,15 @@ import org.eclipse.graphiti.features.context.IMoveBendpointContext;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.features.context.IReconnectionContext;
 import org.eclipse.graphiti.features.context.IRemoveBendpointContext;
+import org.eclipse.graphiti.features.context.IRemoveContext;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
-import org.eclipse.graphiti.mm.pictograms.Connection;
+import org.eclipse.graphiti.features.impl.DefaultRemoveFeature;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
+import org.eclipse.graphiti.services.ILinkService;
 import org.eclipse.graphiti.ui.features.DefaultFeatureProvider;
-import org.eclipse.graphiti.ui.services.GraphitiUi;
 
 /**
  * Determines what kinds of business objects can be added to a diagram.
@@ -451,13 +454,37 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 	}
 
 	@Override
+	public IRemoveFeature getRemoveFeature(IRemoveContext context) {
+		Object id = CustomTaskFeatureContainer.getId(context); 
+		for (FeatureContainer container : containers) {
+			if (id!=null && !(container instanceof CustomTaskFeatureContainer))
+				continue;
+			Object o = container.getApplyObject(context);
+			if (o != null && container.canApplyTo(o)) {
+				IRemoveFeature feature = container.getRemoveFeature(this);
+				if (feature != null) {
+					return feature;
+				}
+			}
+		}
+		return new DefaultRemoveFeature(this);
+	}
+
+	@Override
 	public ICustomFeature[] getCustomFeatures(ICustomContext context) {
+		ILinkService ls = Graphiti.getLinkService();
 		PictogramElement[] elements = context.getPictogramElements();
 		for (PictogramElement pe : elements) {
-			if (BusinessObjectUtil.containsElementOfType(pe, SubProcess.class)) {
+			Object bo = ls.getBusinessObjectForLinkedPictogramElement(pe);
+			if (bo instanceof SubProcess) {
 				return new ICustomFeature[] {
-						new ExpandSubProcessFeature(this),
-						new CollapseSubProcessFeature(this)
+					new ExpandSubProcessFeature(this),
+					new CollapseSubProcessFeature(this)
+				};
+			}
+			else if (bo instanceof ChoreographyTask) {
+				return new ICustomFeature[] {
+					new AddChoreographyParticipantFeature(this)
 				};
 			}
 		}

@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.core.features;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReconnectionFeature;
+import org.eclipse.graphiti.features.IRemoveFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
@@ -44,5 +45,10 @@ public abstract class BaseElementConnectionFeatureContainer extends ConnectionFe
 	@Override
 	public IReconnectionFeature getReconnectionFeature(IFeatureProvider fp) {
 		return new ReconnectBaseElementFeature(fp);
+	}
+
+	@Override
+	public IRemoveFeature getRemoveFeature(IFeatureProvider fp) {
+		return null;
 	}
 }

@@ -105,7 +105,8 @@ public class ChoreographyUtil {
 		EObject container = element.eContainer();
 		if (container instanceof PictogramElement) {
 			PictogramElement containerElem = (PictogramElement) container;
-			if (BusinessObjectUtil.containsElementOfType(containerElem, ChoreographyActivity.class)) {
+			Object bo = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(containerElem);
+			if (bo instanceof ChoreographyActivity) {
 				return true;
 			}
 		}
@@ -323,6 +324,7 @@ public class ChoreographyUtil {
 		if (showNames) {
 			addBandLabel(bandShape, p.getName(), w, h);
 		}
+		Graphiti.getPeCreateService().createChopboxAnchor(bandShape);
 		AnchorUtil.addFixedPointAnchors(bandShape, band);
 		peService.setPropertyValue(bandShape, ChoreographyProperties.BAND, Boolean.toString(true));
 		peService.setPropertyValue(bandShape, ChoreographyProperties.MESSAGE_VISIBLE,
@@ -355,6 +357,7 @@ public class ChoreographyUtil {
 		if (showNames) {
 			addBandLabel(bandShape, p.getName(), w, h);
 		}
+		Graphiti.getPeCreateService().createChopboxAnchor(bandShape);
 		AnchorUtil.addFixedPointAnchors(bandShape, band);
 		peService.setPropertyValue(bandShape, ChoreographyProperties.BAND, Boolean.toString(true));
 		peService.setPropertyValue(bandShape, ChoreographyProperties.MESSAGE_VISIBLE,
@@ -387,6 +390,7 @@ public class ChoreographyUtil {
 		if (showNames) {
 			addBandLabel(bandShape, p.getName(), w, h);
 		}
+		Graphiti.getPeCreateService().createChopboxAnchor(bandShape);
 		AnchorUtil.addFixedPointAnchors(bandShape, band);
 		peService.setPropertyValue(bandShape, ChoreographyProperties.BAND, Boolean.toString(true));
 		peService.setPropertyValue(bandShape, ChoreographyProperties.MESSAGE_VISIBLE,

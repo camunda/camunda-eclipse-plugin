@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features;
 
+import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.IRemoveFeature;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
 import org.eclipse.graphiti.mm.PropertyContainer;
@@ -42,4 +44,9 @@ public abstract class PropertyBasedFeatureContainer implements FeatureContainer 
 	protected abstract String getPropertyKey();
 
 	protected abstract boolean canApplyToProperty(String value);
+
+	@Override
+	public IRemoveFeature getRemoveFeature(IFeatureProvider fp) {
+		return null;
+	}
 }

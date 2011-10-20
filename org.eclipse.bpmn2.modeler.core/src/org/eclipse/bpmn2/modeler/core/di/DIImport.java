@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.ChoreographyActivity;
 import org.eclipse.bpmn2.ConversationLink;
 import org.eclipse.bpmn2.DataAssociation;
 import org.eclipse.bpmn2.Definitions;
@@ -237,6 +238,14 @@ public class DIImport {
 			featureProvider.link(newContainer, new Object[] { bpmnElement, shape });
 			if (bpmnElement instanceof Participant) {
 				elements.put(((Participant) bpmnElement).getProcessRef(), newContainer);
+			}
+			else if (bpmnElement instanceof ChoreographyActivity) {
+				ChoreographyActivity ca = (ChoreographyActivity)bpmnElement;
+				for (PictogramElement pe : ((ContainerShape)newContainer).getChildren()) {
+					Object o = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(pe);
+					if (o instanceof Participant)
+						elements.put((Participant)o, pe);
+				}
 			}
 			elements.put(bpmnElement, newContainer);
 			handleEvents(bpmnElement, newContainer);

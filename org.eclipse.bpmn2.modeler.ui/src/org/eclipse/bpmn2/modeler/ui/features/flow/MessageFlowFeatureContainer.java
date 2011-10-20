@@ -19,6 +19,7 @@ import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.InteractionNode;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.Participant;
+import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementConnectionFeatureContainer;
@@ -31,6 +32,7 @@ import org.eclipse.bpmn2.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractReconnectFlowFeature;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.bpmn2.modeler.ui.features.choreography.ChoreographyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
@@ -122,7 +124,20 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 		}
 
 		@Override
+		public boolean canStartConnection(ICreateConnectionContext context) {
+			if (ChoreographyUtil.isChoreographyParticipantBand(context.getSourcePictogramElement()))
+				return false;
+			return true;
+		}
+
+		@Override
 		public boolean canCreate(ICreateConnectionContext context) {
+			if (ChoreographyUtil.isChoreographyParticipantBand(context.getSourcePictogramElement()))
+				return false;
+			if (context.getTargetPictogramElement()!=null) {
+				if (ChoreographyUtil.isChoreographyParticipantBand(context.getTargetPictogramElement()))
+					return false;
+			}
 			InteractionNode source = getSourceBo(context);
 			InteractionNode target = getTargetBo(context);
 			return super.canCreate(context) && isDifferentParticipants(source, target);
