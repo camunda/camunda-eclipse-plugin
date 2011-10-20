@@ -79,9 +79,10 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 			bindAttribute(be,"id");
 			bindAttribute(be,"name");
 
-			bindList(be, "documentation");
-			bindList(be, "extensionDefinitions");
+			bindReference(be, "extensionDefinitions");
+
 			bindList(be, "extensionValues");
+			bindList(be, "documentation");
 		}
 	}
 }

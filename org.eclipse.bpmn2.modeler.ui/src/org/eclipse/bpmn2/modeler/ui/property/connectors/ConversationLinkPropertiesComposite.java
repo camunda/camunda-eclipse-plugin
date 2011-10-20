@@ -14,10 +14,13 @@ package org.eclipse.bpmn2.modeler.ui.property.connectors;
 
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.widgets.Composite;
 
 public class ConversationLinkPropertiesComposite extends DefaultPropertiesComposite {
 
+	// NOTE: This has no additional attributes or other features
+	
 	public ConversationLinkPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
 	}
@@ -27,5 +30,10 @@ public class ConversationLinkPropertiesComposite extends DefaultPropertiesCompos
 	 */
 	public ConversationLinkPropertiesComposite(AbstractBpmn2PropertySection section) {
 		super(section);
+	}
+
+	@Override
+	public void createBindings(EObject be) {
+		getToolkit().createLabel(this, "Nothing to see here...move along!");
 	}
 }

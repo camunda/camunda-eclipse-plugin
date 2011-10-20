@@ -24,6 +24,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
 public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 
@@ -103,6 +104,15 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 			for (String a : getPropertiesProvider(be).getChildren(null)) {
 				bindChild(be,a);
 			}
+		}
+		
+		Control[] kids = getAttributesParent().getChildren();
+		if (kids.length==0) {
+			// yech! ugly hack to hide the Attributes TWISTIE section if it's empty
+			attributesComposite.dispose();
+			attributesComposite = null;
+			attributesSection.dispose();
+			attributesSection = null;
 		}
 	}
 

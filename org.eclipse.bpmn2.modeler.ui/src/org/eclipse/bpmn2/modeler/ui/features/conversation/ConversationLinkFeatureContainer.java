@@ -62,7 +62,7 @@ public class ConversationLinkFeatureContainer extends BaseElementConnectionFeatu
 		return new ReconnectConversationLinkFeature(fp);
 	}
 
-	public static class CreateConversationLinkFeature extends AbstractCreateFlowFeature<Conversation, Participant> {
+	public static class CreateConversationLinkFeature extends AbstractCreateFlowFeature<Participant, Conversation> {
 
 		public CreateConversationLinkFeature(IFeatureProvider fp) {
 			super(fp, "Conversation Link", "Connects Conversation nodes to and from Participants");
@@ -74,20 +74,20 @@ public class ConversationLinkFeatureContainer extends BaseElementConnectionFeatu
 		}
 
 		@Override
-		protected BaseElement createFlow(ModelHandler mh, Conversation source, Participant target) {
+		protected BaseElement createFlow(ModelHandler mh, Participant source, Conversation target) {
 			ConversationLink conversationLink = mh.createConversationLink(source, target);
 			conversationLink.setName("Conversation Link");
 			return conversationLink;
 		}
 
 		@Override
-		protected Class<Conversation> getSourceClass() {
-			return Conversation.class;
+		protected Class<Participant> getSourceClass() {
+			return Participant.class;
 		}
 
 		@Override
-		protected Class<Participant> getTargetClass() {
-			return Participant.class;
+		protected Class<Conversation> getTargetClass() {
+			return Conversation.class;
 		}
 
 		/* (non-Javadoc)

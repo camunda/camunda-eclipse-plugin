@@ -223,7 +223,12 @@ public class SchemaSelectionDialog extends SelectionStatusDialog {
 			return;
 		}
 
-		URI uri = URI.createFileURI( path );
+		URI uri = URI.createURI(path);
+		if (uri == null) {
+			return ;
+		}
+		if (uri.isRelative())
+			uri = URI.createFileURI( path );
 		if (uri == null) {
 			return ;
 		}

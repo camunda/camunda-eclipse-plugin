@@ -319,9 +319,11 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 	 * @return
 	 */
 	protected boolean isReference(EObject object, EStructuralFeature feature) {
-		Object list = object.eGet(feature);
-		if (list instanceof EList && !(list instanceof EObjectContainmentEList))
-			return true;
+		if (feature!=null) {
+			Object list = object.eGet(feature);
+			if (list instanceof EList && !(list instanceof EObjectContainmentEList))
+				return true;
+		}
 		return (feature instanceof EReference);
 	}
 

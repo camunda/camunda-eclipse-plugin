@@ -55,9 +55,6 @@ import org.eclipse.ui.PlatformUI;
 
 public abstract class AbstractBpmn2PropertySection extends GFPropertySection implements IBpmn2PropertySection {
 	
-	// This map saves the TabbedPropertySheetPage parent composite for each active BPMN2Editor.
-	// The composite is saved and restored from this map when the user switches between editors.
-	protected Map<IWorkbenchPart,Composite> parentMap = new HashMap<IWorkbenchPart,Composite>();
 	protected TabbedPropertySheetPage tabbedPropertySheetPage;
 	protected Composite parent;
 	protected BPMN2Editor editor;
@@ -67,7 +64,6 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 		public void partActivated(IWorkbenchPart part) {
 			if (part instanceof BPMN2Editor) {
 				editor = (BPMN2Editor)part;
-//				parent = parentMap.get(editor);
 			}
 		}
 
@@ -123,7 +119,6 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 		this.parent = parent;
 		parent.setLayout(new GridLayout(1, false));
 		editor = BPMN2Editor.getActiveEditor();
-		parentMap.put(editor, parent);
 	}
 
 	/**
@@ -197,7 +192,6 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 		super.setInput(part, selection);
 		if (part instanceof BPMN2Editor) {
 			editor = (BPMN2Editor)part;
-			parent = parentMap.get(editor);
 		}
 	}
 

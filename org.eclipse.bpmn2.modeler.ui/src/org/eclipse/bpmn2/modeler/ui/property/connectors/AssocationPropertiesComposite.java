@@ -14,9 +14,13 @@ package org.eclipse.bpmn2.modeler.ui.property.connectors;
 
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite.AbstractPropertiesProvider;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.widgets.Composite;
 
 public class AssocationPropertiesComposite extends DefaultPropertiesComposite {
+
+	private AbstractPropertiesProvider propertiesProvider;
 
 	public AssocationPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
@@ -27,5 +31,22 @@ public class AssocationPropertiesComposite extends DefaultPropertiesComposite {
 	 */
 	public AssocationPropertiesComposite(AbstractBpmn2PropertySection section) {
 		super(section);
+	}
+
+	@Override
+	public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
+		if (propertiesProvider==null) {
+			propertiesProvider = new AbstractPropertiesProvider(object) {
+				String[] properties = new String[] {
+						"associationDirection"
+				};
+				
+				@Override
+				public String[] getProperties() {
+					return properties; 
+				}
+			};
+		}
+		return propertiesProvider;
 	}
 }

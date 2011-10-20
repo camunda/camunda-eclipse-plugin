@@ -154,9 +154,7 @@
 			afterTab="org.eclipse.bpmn2.modeler.process.diagram.tab"
 			label="Definitions">
 		</propertyTab>
-<!--
-new
--->
+
 		<propertyTab category="BPMN2"
 			id="org.eclipse.bpmn2.modeler.datastore.tab"
 			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
@@ -184,9 +182,6 @@ new
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 			label="Data Items">
 		</propertyTab>
-<!--
-new
--->
 		
 		<propertyTab category="BPMN2"
 			id="org.eclipse.bpmn2.modeler.sequenceflow.tab"
@@ -200,6 +195,13 @@ new
 			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 			label="Message Flow">
+		</propertyTab>
+
+		<propertyTab category="BPMN2"
+			id="org.eclipse.bpmn2.modeler.message.tab"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			label="Message">
 		</propertyTab>
 		
 		<propertyTab
@@ -215,6 +217,14 @@ new
 			category="BPMN2"
 			id="org.eclipse.bpmn2.modeler.conversationLink.tab"
 			label="Conversation Link"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+		</propertyTab>
+
+		<propertyTab
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			category="BPMN2"
+			id="org.eclipse.bpmn2.modeler.conversation.tab"
+			label="Conversation"
 			runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
 		</propertyTab>
 
@@ -342,9 +352,7 @@ new
 			type="org.eclipse.bpmn2.di.BPMNDiagram"
 			tab="org.eclipse.bpmn2.modeler.definitions.tab">
 		</propertySection>
-<!--
-new
--->
+
 		<propertySection
 			class="org.eclipse.bpmn2.modeler.ui.property.data.DataStorePropertySection"
 			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
@@ -377,9 +385,6 @@ new
 			type="org.eclipse.bpmn2.di.BPMNDiagram"
 			tab="org.eclipse.bpmn2.modeler.dataitems.tab">
 		</propertySection>
-<!--
-new
--->
 		
 		<propertySection
 			class="org.eclipse.bpmn2.modeler.ui.property.connectors.SequenceFlowPropertySection"
@@ -400,6 +405,15 @@ new
 		</propertySection>
 		
 		<propertySection
+			class="org.eclipse.bpmn2.modeler.ui.property.data.MessagePropertySection"
+			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+			id="org.eclipse.bpmn2.modeler.message.section"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			type="org.eclipse.bpmn2.Message"
+			tab="org.eclipse.bpmn2.modeler.message.tab">
+		</propertySection>
+		
+		<propertySection
 			class="org.eclipse.bpmn2.modeler.ui.property.connectors.AssociationPropertySection"
 			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
 			id="org.eclipse.bpmn2.modeler.assocation.section"
@@ -407,7 +421,7 @@ new
 			tab="org.eclipse.bpmn2.modeler.assocation.tab"
 			type="org.eclipse.bpmn2.Association">
 		</propertySection>
-		
+
 		<propertySection
 			class="org.eclipse.bpmn2.modeler.ui.property.connectors.ConversationLinkPropertySection"
 			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
@@ -415,6 +429,15 @@ new
 			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
 			tab="org.eclipse.bpmn2.modeler.conversationLink.tab"
 			type="org.eclipse.bpmn2.ConversationLink">
+		</propertySection>
+
+		<propertySection
+			class="org.eclipse.bpmn2.modeler.ui.property.connectors.ConversationPropertySection"
+			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+			id="org.eclipse.bpmn2.modeler.conversation.section"
+			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			tab="org.eclipse.bpmn2.modeler.conversation.tab"
+			type="org.eclipse.bpmn2.Conversation">
 		</propertySection>
 		  
 		  <propertySection

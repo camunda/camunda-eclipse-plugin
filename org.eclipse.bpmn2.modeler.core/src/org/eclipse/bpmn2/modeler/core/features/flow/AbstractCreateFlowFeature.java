@@ -21,11 +21,9 @@ import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeat
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateConnectionContext;
 import org.eclipse.graphiti.features.context.impl.AddConnectionContext;
-import org.eclipse.graphiti.features.impl.AbstractCreateConnectionFeature;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 
 public abstract class AbstractCreateFlowFeature<A extends EObject, B extends EObject> extends AbstractBpmn2CreateConnectionFeature {
