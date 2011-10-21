@@ -42,8 +42,6 @@ public class DataObjectPropertySection extends AbstractBpmn2PropertySection {
 		PropertiesCompositeFactory.register(DataObject.class, DataObjectPropertiesComposite.class);
 	}
 	
-	private AbstractPropertiesProvider dataObjectPropertiesProvider;
-
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
 	 */
@@ -68,6 +66,8 @@ public class DataObjectPropertySection extends AbstractBpmn2PropertySection {
 	
 	public class DataObjectPropertiesComposite extends DefaultPropertiesComposite {
 
+		private AbstractPropertiesProvider propertiesProvider;
+
 		public DataObjectPropertiesComposite(Composite parent, int style) {
 			super(parent, style);
 		}
@@ -82,8 +82,8 @@ public class DataObjectPropertySection extends AbstractBpmn2PropertySection {
 		@Override
 		public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
 			if (object instanceof DataObject) {
-				if (dataObjectPropertiesProvider == null) {
-					dataObjectPropertiesProvider = new AbstractPropertiesProvider(object) {
+				if (propertiesProvider == null) {
+					propertiesProvider = new AbstractPropertiesProvider(object) {
 						String[] allAttributes = new String[] { "id", "name", "isCollection", "itemSubjectRef" };
 						String[] attributes = new String[] { "isCollection", "itemSubjectRef" };
 						
@@ -97,7 +97,7 @@ public class DataObjectPropertySection extends AbstractBpmn2PropertySection {
 						}
 					};
 				}
-				return dataObjectPropertiesProvider;
+				return propertiesProvider;
 			}
 			return null;
 		}

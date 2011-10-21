@@ -1,15 +1,21 @@
 package org.eclipse.bpmn2.modeler.ui.property.diagrams;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
+import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
+import org.eclipse.bpmn2.modeler.ui.property.connectors.MessageFlowPropertiesComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
 public class ProcessDiagramPropertySection extends AbstractBpmn2PropertySection {
+	static {
+		PropertiesCompositeFactory.register(Process.class, ProcessDiagramPropertyComposite.class);
+	}
 
 	/*
 	 * (non-Javadoc)

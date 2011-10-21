@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Composite;
 
 public class ProcessDiagramPropertyComposite extends DefaultPropertiesComposite {
 
-	private AbstractPropertiesProvider itemProvider;
+	private AbstractPropertiesProvider propertiesProvider;
 
 	public ProcessDiagramPropertyComposite(Composite parent, int style) {
 		super(parent, style);
@@ -20,11 +20,14 @@ public class ProcessDiagramPropertyComposite extends DefaultPropertiesComposite 
 
 	@Override
 	public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
-		if (itemProvider == null) {
-			itemProvider = new AbstractPropertiesProvider(object) {
+		if (propertiesProvider == null) {
+			propertiesProvider = new AbstractPropertiesProvider(object) {
 				String[] properties = new String[] {
+						"id", "name",
 						"processType", "isExecutable", "isClosed",
 						"definitionalCollaborationRef",
+						"ioSpecification",
+						"ioBinding",
 						"properties", "laneSets", "correlationSubscriptions"};
 				
 				@Override
@@ -33,6 +36,6 @@ public class ProcessDiagramPropertyComposite extends DefaultPropertiesComposite 
 				}
 			};
 		}
-		return itemProvider;
+		return propertiesProvider;
 	}
 }

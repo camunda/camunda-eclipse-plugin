@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.Bpmn2Factory;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -51,6 +52,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -66,6 +68,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -75,6 +78,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.dialogs.ListDialog;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.events.IExpansionListener;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -138,25 +142,19 @@ public class AbstractBpmn2TableComposite extends Composite {
 	public AbstractBpmn2TableComposite(AbstractBpmn2PropertySection section, int style) {
 		super(section.getSectionRoot(), style & ~CUSTOM_STYLES_MASK);
 
-		addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				PropertyUtil.disposeChildWidgets(AbstractBpmn2TableComposite.this);
-			}
-		});
-
-		setLayout(new GridLayout(3, false));
-		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 		propertySection = section;
 		toolkit = propertySection.getWidgetFactory();
-		this.style = style;
-		toolkit.adapt(this);
-		toolkit.paintBordersFor(this);
+		initialize(style);
 	}
 
 	public AbstractBpmn2TableComposite(final Composite parent, int style) {
 		super(parent, style & ~CUSTOM_STYLES_MASK);
 
+		toolkit = new FormToolkit(Display.getCurrent());
+		initialize(style);
+	}
+	
+	private void initialize(int style) {
 		addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
@@ -164,11 +162,13 @@ public class AbstractBpmn2TableComposite extends Composite {
 			}
 		});
 
-		setLayout(new GridLayout(3, false));
 		// assume we are being placed in an AbstractBpmn2PropertyComposite which has
 		// a GridLayout of 3 columns
+		setLayout(new GridLayout(3, false));
 		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
-		toolkit = new FormToolkit(Display.getCurrent());
+		this.style = style;
+		toolkit.adapt(this);
+		toolkit.paintBordersFor(this);
 	}
 	
 	public TabbedPropertySheetPage getTabbedPropertySheetPage() {
@@ -188,6 +188,86 @@ public class AbstractBpmn2TableComposite extends Composite {
 			return listItemClass;
 		return (EClass) feature.getEType();
 		
+	}
+	
+	/**
+	 * Find all subtypes of the given listItemClass EClass and display a selection
+	 * list if there are more than 1 subtypes.
+	 * 
+	 * @param listItemClass
+	 * @return
+	 */
+	public EClass getListItemClassToAdd(EClass listItemClass) {
+		final List<EClass> items = new ArrayList<EClass>();
+		for (EClassifier eclassifier : Bpmn2Package.eINSTANCE.getEClassifiers() ) {
+			if (eclassifier instanceof EClass) {
+				EClass eclass = (EClass)eclassifier;
+				if (eclass.getEAllSuperTypes().contains(listItemClass)) {
+					items.add(eclass);
+				}
+			}
+		}
+		if (items.size()>1) {
+			ListDialog dialog = new ListDialog(getShell());
+			dialog.setContentProvider(new IStructuredContentProvider() {
+	
+				@Override
+				public void dispose() {
+				}
+	
+				@Override
+				public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+				}
+	
+				@Override
+				public Object[] getElements(Object inputElement) {
+					return items.toArray();
+				}
+				
+			});
+			dialog.setLabelProvider(new ILabelProvider() {
+	
+				@Override
+				public void addListener(ILabelProviderListener listener) {
+				}
+	
+				@Override
+				public void dispose() {
+				}
+	
+				@Override
+				public boolean isLabelProperty(Object element, String property) {
+					return false;
+				}
+	
+				@Override
+				public void removeListener(ILabelProviderListener listener) {
+				}
+	
+				@Override
+				public Image getImage(Object element) {
+					return null;
+				}
+	
+				@Override
+				public String getText(Object element) {
+					return ModelUtil.toDisplayName( ((EClass)element).getName() );
+				}
+				
+			});
+			dialog.setTitle("Select a type of "+
+					ModelUtil.toDisplayName(listItemClass.getName()));
+			dialog.setAddCancelButton(true);
+			dialog.setHelpAvailable(false);
+			dialog.setInput(new Object());
+			dialog.open();
+			Object[] result = dialog.getResult();
+			if (result != null) {
+				return (EClass)result[0];
+			}
+			return null;
+		}
+		return listItemClass;
 	}
 	
 	/**
@@ -282,6 +362,11 @@ public class AbstractBpmn2TableComposite extends Composite {
 		else {
 			try {
 				ModelHandler modelHandler = ModelHandlerLocator.getModelHandler(object.eResource());
+				if (this.listItemClass==null) {
+					listItemClass = getListItemClassToAdd(listItemClass);
+					if (listItemClass==null)
+						return null; // user cancelled
+				}
 				newItem = modelHandler.create(listItemClass);
 				list.add(newItem);
 			} catch (IOException e) {
@@ -378,7 +463,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 			if (detailComposite!=null) {
 				detailSection.setClient(detailComposite);
 				toolkit.adapt(detailComposite);
-				detailComposite.setPropertySection(propertySection);
+//				detailComposite.setPropertySection(propertySection);
 			}
 			detailSection.setVisible(false);
 
@@ -416,7 +501,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 				});
 			}					
 			
-			sashForm.setWeights(new int[] { 1, 1 });
+			sashForm.setWeights(new int[] { 1, 2 });
 		}
 		else {
 			createTableAndButtons(this,style);
@@ -471,8 +556,11 @@ public class AbstractBpmn2TableComposite extends Composite {
 					detailSection.setVisible(enable);
 					if (enable) {
 						IStructuredSelection sel = (IStructuredSelection) event.getSelection();
-						if (sel.getFirstElement() instanceof EObject && detailComposite instanceof AbstractBpmn2PropertiesComposite)
-							((AbstractBpmn2PropertiesComposite)detailComposite).setEObject(bpmn2Editor,(EObject)sel.getFirstElement());
+						if (sel.getFirstElement() instanceof EObject && detailComposite instanceof AbstractBpmn2PropertiesComposite) {
+							EObject o = (EObject)sel.getFirstElement();
+							((AbstractBpmn2PropertiesComposite)detailComposite).setEObject(bpmn2Editor,o);
+							detailSection.setText(ModelUtil.toDisplayName(o.eClass().getName()) + " Details");
+						}
 						detailSection.setExpanded(true);
 					}
 					sashForm.layout(true);
@@ -592,7 +680,10 @@ public class AbstractBpmn2TableComposite extends Composite {
 	}
 	
 	protected void redrawPage() {
-		propertySection.layout();
+		if (propertySection!=null)
+			propertySection.layout();
+		else
+			getParent().layout();
 	}
 
 	private void createTableAndButtons(Composite parent, int style) {
@@ -682,14 +773,21 @@ public class AbstractBpmn2TableComposite extends Composite {
 
 		@Override
 		public Object[] getElements(Object inputElement) {
-			List<EObject> elements = new ArrayList<EObject>();
-			for (EObject o : list) {
-				EClass ec = o.eClass();
-				EClass lic = getListItemClass(object,feature);
-				if (ec == lic)
-					elements.add(o);
+			if (listItemClass==null) {
+				// display all items in the list that are subclasses of listItemClass
+				return list.toArray();
 			}
-			return elements.toArray(new EObject[elements.size()]);
+			else {
+				// we're only interested in display specific EClass instances
+				List<EObject> elements = new ArrayList<EObject>();
+				for (EObject o : list) {
+					EClass ec = o.eClass();
+					EClass lic = getListItemClass(object,feature);
+					if (ec == lic)
+						elements.add(o);
+				}
+				return elements.toArray(new EObject[elements.size()]);
+			}
 		}
 	}
 	

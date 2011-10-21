@@ -34,9 +34,6 @@ public class DataObjectReferencePropertySection extends AbstractBpmn2PropertySec
 		PropertiesCompositeFactory.register(DataObjectReference.class, DataObjectReferencePropertiesComposite.class);
 	}
 
-	private AbstractPropertiesProvider dataObjectReferencePropertiesProvider;
-	private AbstractPropertiesProvider dataStatePropertiesProvider;
-
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
 	 */
@@ -55,6 +52,9 @@ public class DataObjectReferencePropertySection extends AbstractBpmn2PropertySec
 	}
 	
 	public class DataObjectReferencePropertiesComposite extends DefaultPropertiesComposite {
+
+		private AbstractPropertiesProvider dataObjectReferencePropertiesProvider;
+		private AbstractPropertiesProvider dataStatePropertiesProvider;
 
 		/**
 		 * @param section

@@ -47,7 +47,7 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 		super(parent, style);
 	}
 
-	private AbstractPropertiesProvider definitionsPropertiesProvider;
+	private AbstractPropertiesProvider propertiesProvider;
 
 	/**
 	 * @param section
@@ -58,8 +58,8 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 
 	@Override
 	public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
-		if (definitionsPropertiesProvider==null) {
-			definitionsPropertiesProvider = new AbstractPropertiesProvider(object) {
+		if (propertiesProvider==null) {
+			propertiesProvider = new AbstractPropertiesProvider(object) {
 				String[] properties = new String[] {
 						"name",
 						"targetNamespace",
@@ -77,7 +77,7 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 				}
 			};
 		}
-		return definitionsPropertiesProvider;
+		return propertiesProvider;
 	}
 
 	@Override
