@@ -29,7 +29,7 @@
 	</licenses>
 
 	<properties>
-		<tycho-version>0.10.0</tycho-version>
+		<tycho-version>0.13.0</tycho-version>
 	</properties>
 
 	<profiles>
@@ -151,13 +151,13 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.sonatype.tycho</groupId>
+				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-maven-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<extensions>true</extensions>
 			</plugin>
 			<plugin>
-				<groupId>org.sonatype.tycho</groupId>
+				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>target-platform-configuration</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
@@ -168,7 +168,7 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
-					<groupId>org.sonatype.tycho</groupId>
+					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>maven-osgi-compiler-plugin</artifactId>
 					<version>${tycho-version}</version>
 					<configuration>
@@ -178,7 +178,7 @@
 				<plugin>
 					<!-- TODO remove workaround when https://issues.sonatype.org/browse/TYCHO-473 
 						is fixed -->
-					<groupId>org.sonatype.tycho</groupId>
+					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>maven-osgi-source-plugin</artifactId>
 					<version>${tycho-version}</version>
 					<executions>

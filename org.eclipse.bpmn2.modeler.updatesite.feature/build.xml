@@ -1,0 +1,103 @@
+<project default="custom.build" name="aggregate site builder">
+	<!-- if ${WORKSPACE}/site folder exists, target that folder; else generate here. -->
+	<condition property="output.dir" value="${WORKSPACE}/results" else="${basedir}">
+		<available file="${WORKSPACE}/results" />
+	</condition>
+
+	<property name="update.site.source.dir" value="${output.dir}/target/site" />
+
+	<!-- load properties from default (or alternate) properties file -->
+	<property name="associate.properties" value="associate.properties" />
+	<property file="${associate.properties}" />
+
+	<target name="init">
+		<taskdef resource="net/sf/antcontrib/antlib.xml"/>
+	</target>
+
+	<!-- don't do collect.zips,collect.metadata,create.summary.file -->
+	<target name="custom.build" description="aggregate update site extras" depends="init,check.target,add.associate.sites,pack.zip" />
+
+	<target name="add.associate.sites" if="associate.sites">
+		<if>
+			<and>
+				<!-- Defined in associate.properties -->
+				<isset property="associate.sites" />
+				<not>
+					<equals arg1="${associate.sites}" arg2="" />
+				</not>
+			</and>
+			<then>
+				<if>
+					<available file="${update.site.source.dir}/content.jar" type="file" />
+					<then>
+						<unzip src="${update.site.source.dir}/content.jar" dest="${update.site.source.dir}" />
+						<delete file="${update.site.source.dir}/content.jar" />
+					</then>
+				</if>
+				<!-- counter variable -->
+				<var name="associate.sites.0" value="" />
+				<for param="associate.site" list="${associate.sites}" delimiter=", 
+	">
+					<sequential>
+						<var name="associate.sites.0" value="${associate.sites.0}00" />
+					</sequential>
+				</for>
+				<length property="associate.sites.length" string="${associate.sites.0}" />
+
+				<loadfile srcfile="${update.site.source.dir}/content.xml" property="content.xml">
+					<filterchain>
+						<tailfilter lines="-1" skip="1" />
+					</filterchain>
+				</loadfile>
+				<echo file="${update.site.source.dir}/content.xml" message="${content.xml}" />
+				<echo file="${update.site.source.dir}/content.xml" append="true">  &lt;references size='${associate.sites.length}'>
+</echo>
+				<for param="associate.site" list="${associate.sites}" delimiter=", 
+	">
+					<sequential>
+						<!-- insert into content.xml -->
+						<echo file="${update.site.source.dir}/content.xml" append="true">    &lt;repository uri='@{associate.site}' url='@{associate.site}' type='0' options='1'/>
+    &lt;repository uri='@{associate.site}' url='@{associate.site}' type='1' options='1'/>
+</echo>
+					</sequential>
+				</for>
+				<echo file="${update.site.source.dir}/content.xml" append="true">  &lt;/references>
+&lt;/repository>
+</echo>
+				<zip destfile="${update.site.source.dir}/content.jar" basedir="${update.site.source.dir}" includes="content.xml" />
+				<delete file="${update.site.source.dir}/content.xml" />
+			</then>
+		</if>
+	</target>
+
+	<target name="unpack.zip">
+		<unzip src="${output.dir}/target/site_assembly.zip" dest="${update.site.source.dir}" />
+	</target>
+
+	<target name="pack.zip">
+		<zip destfile="${output.dir}/target/site_assembly.zip" update="true" basedir="${update.site.source.dir}" includes="content.* index.html, web/*.css, README*" />
+	</target>
+
+	<target name="check.target">
+		<if>
+			<or>
+				<not>
+					<available file="${output.dir}/target/site" type="dir" />
+				</not>
+				<not>
+					<available file="${output.dir}/target/site_assembly.zip" type="file" />
+				</not>
+			</or>
+			<then>
+				<fail>
+--
+This script must ONLY be called via the pom.xml in this directory, not run directly. 
+Cannot adjust an update site w/o first building it!
+--
+To run this build, use Tycho. Try `mvn3 clean install -fae -e -B`
+</fail>
+			</then>
+		</if>
+	</target>
+
+</project>

@@ -13,7 +13,7 @@ Contributors:
 Red Hat, Inc. - initial API and implementation
 Author: Ivar Meikas
    </copyright>
-   <feature url="features/org.eclipse.bpmn2.modeler_0.0.0.qualifier.jar" id="org.eclipse.bpmn2.modeler" version="0.0.0" patch="true">
+   <feature url="features/org.eclipse.bpmn2.modeler.feature_0.0.0.jar" id="org.eclipse.bpmn2.modeler.feature" version="0.0.0" patch="false">
       <category name="Eclipse BPMN2 Modeler (Incubation)"/>
    </feature>
    <category-def name="Eclipse BPMN2 Modeler (Incubation)" label="Eclipse BPMN2 Modeler (Incubation)">

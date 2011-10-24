@@ -8,7 +8,7 @@
   </parent>
 
   <groupId>org.eclipse.bpmn2.modeler</groupId>
-  <artifactId>org.eclipse.bpmn2.modeler-feature</artifactId>
+  <artifactId>org.eclipse.bpmn2.modeler.feature</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>eclipse-feature</packaging>
   <name>BPMN2 Modeler Feature</name>
