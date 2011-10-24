@@ -316,13 +316,13 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 	 */
 	public ArrayList<Bpmn2TabDescriptor> getTabDescriptors() {
 		ArrayList<Bpmn2TabDescriptor> list = new ArrayList<Bpmn2TabDescriptor>();
+		if (this!=getRuntime(DEFAULT_RUNTIME_ID)) {
+			list = getRuntime(DEFAULT_RUNTIME_ID).getTabDescriptors();
+		}
 		for (Bpmn2TabDescriptor tab : getTabs()) {
 			addAfterTab(list, tab);
 			if (!list.contains(tab))
 				list.add(tab);
-		}
-		if (list.isEmpty() && this!=getRuntime(DEFAULT_RUNTIME_ID)) {
-			return getRuntime(DEFAULT_RUNTIME_ID).getTabDescriptors();
 		}
 		
 		return list;

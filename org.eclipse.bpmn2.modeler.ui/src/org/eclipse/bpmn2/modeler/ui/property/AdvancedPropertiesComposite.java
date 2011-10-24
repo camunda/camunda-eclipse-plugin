@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablementPreferences;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
@@ -45,6 +46,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -254,7 +257,20 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 		this.be = be;
 		addDomainListener(diagramEditor);
 		
-		treeViewer.setInput(be);
+		EObject input = be;
+		while (input.eContainer()!=null) {
+			if (input instanceof Definitions)
+				break;
+			input = input.eContainer();
+		}
+		if (input!=null) {
+			treeViewer.setInput(input);
+			treeViewer.expandAll();
+			treeViewer.setSelection(new StructuredSelection(be),true);
+		}
+		else
+			treeViewer.setInput(be);
+		
 		preferences = ToolEnablementPreferences.getPreferences(diagramEditor.getModelFile().getProject());
 		hookPropertySheetPageMenu();
 		treeSection.setText(ModelUtil.getObjectName(be));

@@ -42,7 +42,7 @@ public class JbpmPropertySection extends AbstractBpmn2PropertySection implements
 	@Override
 	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
 		EObject be = super.getBusinessObjectForPictogramElement(pe);
-		if (be instanceof BaseElement)
+		if (be instanceof org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Task)
 			return be;
 		return null;
 	}

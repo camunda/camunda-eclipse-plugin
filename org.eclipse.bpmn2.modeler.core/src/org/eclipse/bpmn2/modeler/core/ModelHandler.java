@@ -74,6 +74,7 @@ import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -904,13 +905,9 @@ public class ModelHandler {
 	 */
 	public EObject create(EClass eClass) {
 		EObject newObject = null;
-		EPackage pkg = eClass.getEPackage(); 
-		if (pkg == Bpmn2Package.eINSTANCE) {
-			newObject = Bpmn2Factory.eINSTANCE.create(eClass);
-		}
-		else if (pkg == BpmnDiPackage.eINSTANCE) {
-			newObject = BpmnDiFactory.eINSTANCE.create(eClass);
-		}
+		EPackage pkg = eClass.getEPackage();
+		EFactory factory = pkg.getEFactoryInstance();
+		newObject = factory.create(eClass);
 		initialize(newObject);
 		return newObject;
 	}
@@ -952,8 +949,12 @@ public class ModelHandler {
 			String id = ModelUtil.setID(newObject,resource);
 			// also set a default name
 			EStructuralFeature feature = newObject.eClass().getEStructuralFeature("name");
-			if (feature!=null)
-				newObject.eSet(feature, ModelUtil.toDisplayName(id));
+			if (feature!=null) {
+				if (id!=null)
+					newObject.eSet(feature, ModelUtil.toDisplayName(id));
+				else
+					newObject.eSet(feature, "New "+ModelUtil.toDisplayName(newObject.eClass().getName()));
+			}
 		}
 	}
 }

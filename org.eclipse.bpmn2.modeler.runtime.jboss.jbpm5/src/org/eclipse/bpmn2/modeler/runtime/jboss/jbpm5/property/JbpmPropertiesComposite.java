@@ -28,20 +28,19 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
-import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablementPreferences;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Task;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
-import org.eclipse.core.databinding.Binding;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -49,7 +48,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Text;
 
 public class JbpmPropertiesComposite extends DefaultPropertiesComposite {
 
@@ -57,8 +55,16 @@ public class JbpmPropertiesComposite extends DefaultPropertiesComposite {
 	private Button customEditorButton;
 	private GridData buttonGridData;
 
+	public JbpmPropertiesComposite(Composite parent, int style) {
+		super(parent, style);
+	}
+
 	public JbpmPropertiesComposite(AbstractBpmn2PropertySection section) {
 		super(section);
+	}
+
+	@Override
+	public void createBindings(EObject be) {
 
 		customEditorButton = new Button(this, SWT.None);
 		customEditorButton.setText("Open Custom Editor");
@@ -69,11 +75,7 @@ public class JbpmPropertiesComposite extends DefaultPropertiesComposite {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				MessageBox box = new MessageBox(getShell());
-				box.setText("Custom Editor");
-
-				updateDialogContents(box);
-				box.open();
+				MessageDialog.openInformation(getShell(), "Custom Editor", "This dialog will contain a custom editor");
 			}
 
 			@Override
@@ -81,10 +83,7 @@ public class JbpmPropertiesComposite extends DefaultPropertiesComposite {
 
 			}
 		});
-	}
 
-	@Override
-	public void createBindings(EObject be) {
 		boolean showCustomButton = be.eClass().getInstanceClass()
 				.equals(Task.class);
 		customEditorButton.setVisible(showCustomButton);
@@ -117,7 +116,6 @@ public class JbpmPropertiesComposite extends DefaultPropertiesComposite {
 				}
 			}
 		}
-//		parent.setSize(parent.computeSize(parent.getSize().x, SWT.DEFAULT, true));
 	}
 
 	/**
