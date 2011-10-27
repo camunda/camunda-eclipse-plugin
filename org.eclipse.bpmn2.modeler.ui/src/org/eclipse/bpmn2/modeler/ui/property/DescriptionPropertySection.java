@@ -60,6 +60,8 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 			String description = null;
 
 			BPMN2Editor editor = (BPMN2Editor)getDiagramEditor();
+			boolean showAdvancedProperties = editor.getPreferences().getShowAdvancedPropertiesTab();
+
 			BPMNFeatureProvider fp = (BPMNFeatureProvider) editor.getDiagramTypeProvider().getFeatureProvider();
 			IFeature cf = fp.getCreateFeatureForBusinessObject(be);
 			if (cf instanceof AbstractBpmn2CreateConnectionFeature) {
@@ -79,10 +81,11 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 			bindAttribute(be,"id");
 			bindAttribute(be,"name");
 
-			bindReference(be, "extensionDefinitions");
-
-			bindList(be, "extensionValues");
-			bindList(be, "documentation");
+			if (showAdvancedProperties) {
+				bindReference(be, "extensionDefinitions");
+				bindList(be, "extensionValues");
+				bindList(be, "documentation");
+			}
 		}
 	}
 }

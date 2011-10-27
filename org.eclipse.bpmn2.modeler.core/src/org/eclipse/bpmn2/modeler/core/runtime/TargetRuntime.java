@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.core.runtime;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.bpmn2.modeler.core.AbstractPropertyChangeListenerProvider;
 import org.eclipse.bpmn2.modeler.core.Activator;
@@ -193,44 +194,40 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 		if ("value".equals(elem)) {
 			String id = e.getAttribute("id");
 			Value val = new Value(id);
-			for (IConfigurationElement cc : e.getChildren()) {
-				Object propValue = getCustomTaskProperties(ct, cc);
+			for (IConfigurationElement c : e.getChildren()) {
+				Object propValue = getCustomTaskProperties(null, c);
 				val.getValues().add(propValue);
 			}
 			return val;
 		}
-		else {
-			if (e.getChildren().length==0) {
-				if ("property".equals(elem)) {
-					String name = e.getAttribute("name");
-					String value = e.getAttribute("value");
-					String description = e.getAttribute("description");
-					Property prop = new Property(name,description);
-					if (value!=null)
-						prop.getValues().add(value);
-					return prop;
-				}
+		else if ("property".equals(elem)) {
+			String name = e.getAttribute("name");
+			String value = e.getAttribute("value");
+			String ref = e.getAttribute("ref");
+			String description = e.getAttribute("description");
+			Property prop = new Property(name,description);
+			if (value!=null)
+				prop.getValues().add(value);
+			else if (ref!=null) {
+				prop.ref = ref;
 			}
 			else {
-				for (IConfigurationElement c : e.getChildren()) {
-					elem = c.getName();
-					String name = c.getAttribute("name");
-					String value = c.getAttribute("value");
-					String description = c.getAttribute("description");
-					Property prop = new Property(name,description); 
-					if (value!=null)
-						prop.getValues().add(value);
-					for (IConfigurationElement cc : c.getChildren()) {
-						Object propValue = getCustomTaskProperties(ct, cc);
-						prop.getValues().add(propValue);
-					}
-					ct.getProperties().add(prop);
-				}
+				Object o = getCustomTaskProperties(null, e.getChildren()[0]);
+				if (o instanceof Value)
+					prop.getValues().addAll(((Value)o).getValues());
+			}
+			return prop;
+		}
+		else {
+			for (IConfigurationElement c : e.getChildren()) {
+				Object o = getCustomTaskProperties(null, c);
+				if (o instanceof Property && ct!=null)
+					ct.getProperties().add((Property)o);
 			}
 		}
 		return null;
 	}
-	
+
 	private static TargetRuntime getRuntime(IConfigurationElement e) throws InvalidRegistryObjectException, Exception {
 		String runtimeId = e.getAttribute("runtimeId");
 		TargetRuntime rt = getRuntime(runtimeId);

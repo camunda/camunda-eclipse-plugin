@@ -28,8 +28,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablementPreferences;
-import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Task;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;

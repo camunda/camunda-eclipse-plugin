@@ -14,6 +14,7 @@
 package org.eclipse.bpmn2.modeler.ui.property;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -285,6 +286,14 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 	 */
 	protected EStructuralFeature getFeature(EObject object, String name) {
 		EStructuralFeature feature = ((EObject)object).eClass().getEStructuralFeature(name);
+		if (feature==null) {
+			// maybe it's an anyAttribute?
+			List<EStructuralFeature> anyAttributes = ModelUtil.getAnyAttributes(object);
+			for (EStructuralFeature f : anyAttributes) {
+				if (f.getName().equals(name))
+					return f;
+			}
+		}
 		return feature;
 	}
 
@@ -294,8 +303,16 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 	 * @return
 	 */
 	protected boolean isAttribute(EObject object, EStructuralFeature feature) {
+		// maybe it's an anyAttribute?
 		if (feature instanceof EAttribute)
 			return true;
+
+		List<EStructuralFeature> anyAttributes = ModelUtil.getAnyAttributes(object);
+		for (EStructuralFeature f : anyAttributes) {
+			if (f.getName().equals(feature.getName()))
+				return true;
+		}
+		
 		return false;
 	}
 	
@@ -401,16 +418,19 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 			String displayName = getDisplayName(object, attribute);
 			Collection choiceOfValues = getChoiceOfValues(object, attribute);
 			
-			if (String.class.equals(attribute.getEType().getInstanceClass())) {
+			Class eTypeClass = attribute.getEType().getInstanceClass();
+			if (String.class.equals(eTypeClass)) {
 				int style = SWT.NONE;
 				if (getIsMultiLine(object,attribute))
 					style |= SWT.MULTI;
 				ObjectEditor editor = new TextObjectEditor(this,object,attribute);
 				editor.createControl(parent,displayName,style);
-			} else if (boolean.class.equals(attribute.getEType().getInstanceClass())) {
+			} else if (boolean.class.equals(eTypeClass)) {
 				ObjectEditor editor = new BooleanObjectEditor(this,object,attribute);
 				editor.createControl(parent,displayName);
-			} else if (int.class.equals(attribute.getEType().getInstanceClass())) {
+			} else if (int.class.equals(eTypeClass) ||
+					Integer.class.equals(eTypeClass) ||
+					BigInteger.class.equals(eTypeClass) ) {
 				ObjectEditor editor = new IntObjectEditor(this,object,attribute);
 				editor.createControl(parent,displayName);
 			} else if (choiceOfValues != null) {

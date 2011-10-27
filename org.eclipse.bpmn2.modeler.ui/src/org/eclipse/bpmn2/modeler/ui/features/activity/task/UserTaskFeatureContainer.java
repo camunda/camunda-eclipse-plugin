@@ -58,7 +58,7 @@ public class UserTaskFeatureContainer extends AbstractTaskFeatureContainer {
 			super(fp, "User Task",
 					"A User Task is a typical \"workflow\" Task where a human"
 					+" performer performs the Task with the assistance of a"
-					+" software application and is scheduled through a task"
+					+" software application and is scheduled through a customTask"
 					+" list manager of some sort.");
 		}
 

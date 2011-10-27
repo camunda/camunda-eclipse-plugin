@@ -1,15 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2011 Red Hat, Inc.
- *  All rights reserved.
- * This program is made available under the terms of the
- * Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- * Red Hat, Inc. - initial API and implementation
- *
- * @author Bob Brodt
- ******************************************************************************/
 /**
  * <copyright>
  * </copyright>
@@ -29,6 +17,7 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
 
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
+
 import org.eclipse.emf.ecore.xml.type.XMLTypeFactory;
 import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 
@@ -47,7 +36,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
 	 */
 	public static ModelFactory init() {
 		try {
-			ModelFactory theModelFactory = (ModelFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.drools.com"); 
+			ModelFactory theModelFactory = (ModelFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.jboss.org/drools"); 
 			if (theModelFactory != null) {
 				return theModelFactory;
 			}
@@ -81,8 +70,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
 			case ModelPackage.IMPORT_TYPE: return createImportType();
 			case ModelPackage.ON_ENTRY_SCRIPT_TYPE: return createOnEntryScriptType();
 			case ModelPackage.ON_EXIT_SCRIPT_TYPE: return createOnExitScriptType();
-			case ModelPackage.TASK: return createTask();
-			case ModelPackage.PARAMETER: return createParameter();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -182,26 +169,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
 	public OnExitScriptType createOnExitScriptType() {
 		OnExitScriptTypeImpl onExitScriptType = new OnExitScriptTypeImpl();
 		return onExitScriptType;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Task createTask() {
-		TaskImpl task = new TaskImpl();
-		return task;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Parameter createParameter() {
-		ParameterImpl parameter = new ParameterImpl();
-		return parameter;
 	}
 
 	/**

@@ -89,7 +89,7 @@ public class CollapseSubProcessFeature extends AbstractCustomFeature {
 							getDiagram(), subProcess);
 					if (bpmnShape.isIsExpanded()) {
 						
-						// SubProcess is collapsed - resize to standard task size
+						// SubProcess is collapsed - resize to standard customTask size
 						// NOTE: children tasks will be set not-visible in LayoutSubProcessFeature
 						
 						bpmnShape.setIsExpanded(false);

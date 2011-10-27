@@ -1,15 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2011 Red Hat, Inc.
- *  All rights reserved.
- * This program is made available under the terms of the
- * Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- * Red Hat, Inc. - initial API and implementation
- *
- * @author Bob Brodt
- ******************************************************************************/
 /**
  * <copyright>
  * </copyright>
@@ -34,7 +22,7 @@ import org.eclipse.emf.ecore.EReference;
  *   <li>each class,</li>
  *   <li>each feature of each class,</li>
  *   <li>each enum,</li>
- *   <li>and each data description</li>
+ *   <li>and each data type</li>
  * </ul>
  * <!-- end-user-doc -->
  * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelFactory
@@ -56,7 +44,7 @@ public interface ModelPackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	String eNS_URI = "http://www.drools.com";
+	String eNS_URI = "http://www.jboss.org/drools";
 
 	/**
 	 * The package namespace name.
@@ -64,7 +52,7 @@ public interface ModelPackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	String eNS_PREFIX = "jbpm5";
+	String eNS_PREFIX = "tns";
 
 	/**
 	 * The singleton instance of the package.
@@ -94,7 +82,7 @@ public interface ModelPackage extends EPackage {
 	int DOCUMENT_ROOT__MIXED = Bpmn2Package.DOCUMENT_ROOT__MIXED;
 
 	/**
-	 * The feature id for the '<em><b>XMLNS Prefix Map</b></em>' parentMap.
+	 * The feature id for the '<em><b>XMLNS Prefix Map</b></em>' map.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -103,7 +91,7 @@ public interface ModelPackage extends EPackage {
 	int DOCUMENT_ROOT__XMLNS_PREFIX_MAP = Bpmn2Package.DOCUMENT_ROOT__XMLNS_PREFIX_MAP;
 
 	/**
-	 * The feature id for the '<em><b>XSI Schema Location</b></em>' parentMap.
+	 * The feature id for the '<em><b>XSI Schema Location</b></em>' map.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1327,25 +1315,25 @@ public interface ModelPackage extends EPackage {
 	int DOCUMENT_ROOT__USER_TASK = Bpmn2Package.DOCUMENT_ROOT__USER_TASK;
 
 	/**
-	 * The feature id for the '<em><b>Globals</b></em>' containment reference list.
+	 * The feature id for the '<em><b>Global</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__GLOBALS = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 0;
+	int DOCUMENT_ROOT__GLOBAL = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Imports</b></em>' containment reference list.
+	 * The feature id for the '<em><b>Import Type</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT__IMPORTS = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 1;
+	int DOCUMENT_ROOT__IMPORT_TYPE = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>On Entry Script</b></em>' containment reference list.
+	 * The feature id for the '<em><b>On Entry Script</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1354,7 +1342,7 @@ public interface ModelPackage extends EPackage {
 	int DOCUMENT_ROOT__ON_ENTRY_SCRIPT = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 2;
 
 	/**
-	 * The feature id for the '<em><b>On Exit Script</b></em>' containment reference list.
+	 * The feature id for the '<em><b>On Exit Script</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1583,341 +1571,6 @@ public interface ModelPackage extends EPackage {
 	int ON_EXIT_SCRIPT_TYPE_FEATURE_COUNT = 2;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.TaskImpl <em>Task</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.TaskImpl
-	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.ModelPackageImpl#getTask()
-	 * @generated
-	 */
-	int TASK = 5;
-
-	/**
-	 * The feature id for the '<em><b>Extension Values</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__EXTENSION_VALUES = Bpmn2Package.TASK__EXTENSION_VALUES;
-
-	/**
-	 * The feature id for the '<em><b>Documentation</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__DOCUMENTATION = Bpmn2Package.TASK__DOCUMENTATION;
-
-	/**
-	 * The feature id for the '<em><b>Extension Definitions</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__EXTENSION_DEFINITIONS = Bpmn2Package.TASK__EXTENSION_DEFINITIONS;
-
-	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__ID = Bpmn2Package.TASK__ID;
-
-	/**
-	 * The feature id for the '<em><b>Any Attribute</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__ANY_ATTRIBUTE = Bpmn2Package.TASK__ANY_ATTRIBUTE;
-
-	/**
-	 * The feature id for the '<em><b>Auditing</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__AUDITING = Bpmn2Package.TASK__AUDITING;
-
-	/**
-	 * The feature id for the '<em><b>Monitoring</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__MONITORING = Bpmn2Package.TASK__MONITORING;
-
-	/**
-	 * The feature id for the '<em><b>Category Value Ref</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__CATEGORY_VALUE_REF = Bpmn2Package.TASK__CATEGORY_VALUE_REF;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__NAME = Bpmn2Package.TASK__NAME;
-
-	/**
-	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__INCOMING = Bpmn2Package.TASK__INCOMING;
-
-	/**
-	 * The feature id for the '<em><b>Lanes</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__LANES = Bpmn2Package.TASK__LANES;
-
-	/**
-	 * The feature id for the '<em><b>Outgoing</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__OUTGOING = Bpmn2Package.TASK__OUTGOING;
-
-	/**
-	 * The feature id for the '<em><b>Io Specification</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__IO_SPECIFICATION = Bpmn2Package.TASK__IO_SPECIFICATION;
-
-	/**
-	 * The feature id for the '<em><b>Boundary Event Refs</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__BOUNDARY_EVENT_REFS = Bpmn2Package.TASK__BOUNDARY_EVENT_REFS;
-
-	/**
-	 * The feature id for the '<em><b>Properties</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__PROPERTIES = Bpmn2Package.TASK__PROPERTIES;
-
-	/**
-	 * The feature id for the '<em><b>Data Input Associations</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__DATA_INPUT_ASSOCIATIONS = Bpmn2Package.TASK__DATA_INPUT_ASSOCIATIONS;
-
-	/**
-	 * The feature id for the '<em><b>Data Output Associations</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__DATA_OUTPUT_ASSOCIATIONS = Bpmn2Package.TASK__DATA_OUTPUT_ASSOCIATIONS;
-
-	/**
-	 * The feature id for the '<em><b>Resources</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__RESOURCES = Bpmn2Package.TASK__RESOURCES;
-
-	/**
-	 * The feature id for the '<em><b>Loop Characteristics</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__LOOP_CHARACTERISTICS = Bpmn2Package.TASK__LOOP_CHARACTERISTICS;
-
-	/**
-	 * The feature id for the '<em><b>Completion Quantity</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__COMPLETION_QUANTITY = Bpmn2Package.TASK__COMPLETION_QUANTITY;
-
-	/**
-	 * The feature id for the '<em><b>Default</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__DEFAULT = Bpmn2Package.TASK__DEFAULT;
-
-	/**
-	 * The feature id for the '<em><b>Is For Compensation</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__IS_FOR_COMPENSATION = Bpmn2Package.TASK__IS_FOR_COMPENSATION;
-
-	/**
-	 * The feature id for the '<em><b>Start Quantity</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__START_QUANTITY = Bpmn2Package.TASK__START_QUANTITY;
-
-	/**
-	 * The feature id for the '<em><b>Incoming Conversation Links</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__INCOMING_CONVERSATION_LINKS = Bpmn2Package.TASK__INCOMING_CONVERSATION_LINKS;
-
-	/**
-	 * The feature id for the '<em><b>Outgoing Conversation Links</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__OUTGOING_CONVERSATION_LINKS = Bpmn2Package.TASK__OUTGOING_CONVERSATION_LINKS;
-
-	/**
-	 * The feature id for the '<em><b>Task Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__TASK_NAME = Bpmn2Package.TASK_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Display Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__DISPLAY_NAME = Bpmn2Package.TASK_FEATURE_COUNT + 1;
-
-	/**
-	 * The feature id for the '<em><b>Icon</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__ICON = Bpmn2Package.TASK_FEATURE_COUNT + 2;
-
-	/**
-	 * The feature id for the '<em><b>Parameters</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__PARAMETERS = Bpmn2Package.TASK_FEATURE_COUNT + 3;
-
-	/**
-	 * The feature id for the '<em><b>Results</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK__RESULTS = Bpmn2Package.TASK_FEATURE_COUNT + 4;
-
-	/**
-	 * The number of structural features of the '<em>Task</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TASK_FEATURE_COUNT = Bpmn2Package.TASK_FEATURE_COUNT + 5;
-
-	/**
-	 * The meta object id for the '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.ParameterImpl <em>Parameter</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.ParameterImpl
-	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.ModelPackageImpl#getParameter()
-	 * @generated
-	 */
-	int PARAMETER = 6;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PARAMETER__NAME = 0;
-
-	/**
-	 * The feature id for the '<em><b>Type</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PARAMETER__TYPE = 1;
-
-	/**
-	 * The feature id for the '<em><b>Value</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PARAMETER__VALUE = 2;
-
-	/**
-	 * The number of structural features of the '<em>Parameter</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PARAMETER_FEATURE_COUNT = 3;
-
-	/**
 	 * The meta object id for the '<em>Package Name Type</em>' data type.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1925,7 +1578,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.ModelPackageImpl#getPackageNameType()
 	 * @generated
 	 */
-	int PACKAGE_NAME_TYPE = 7;
+	int PACKAGE_NAME_TYPE = 5;
 
 	/**
 	 * The meta object id for the '<em>Priority Type</em>' data type.
@@ -1935,7 +1588,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.ModelPackageImpl#getPriorityType()
 	 * @generated
 	 */
-	int PRIORITY_TYPE = 8;
+	int PRIORITY_TYPE = 6;
 
 	/**
 	 * The meta object id for the '<em>Rule Flow Group Type</em>' data type.
@@ -1945,7 +1598,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.ModelPackageImpl#getRuleFlowGroupType()
 	 * @generated
 	 */
-	int RULE_FLOW_GROUP_TYPE = 9;
+	int RULE_FLOW_GROUP_TYPE = 7;
 
 	/**
 	 * The meta object id for the '<em>Task Name Type</em>' data type.
@@ -1955,7 +1608,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.ModelPackageImpl#getTaskNameType()
 	 * @generated
 	 */
-	int TASK_NAME_TYPE = 10;
+	int TASK_NAME_TYPE = 8;
 
 	/**
 	 * The meta object id for the '<em>Version Type</em>' data type.
@@ -1965,7 +1618,8 @@ public interface ModelPackage extends EPackage {
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.ModelPackageImpl#getVersionType()
 	 * @generated
 	 */
-	int VERSION_TYPE = 11;
+	int VERSION_TYPE = 9;
+
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot <em>Document Root</em>}'.
@@ -1978,32 +1632,32 @@ public interface ModelPackage extends EPackage {
 	EClass getDocumentRoot();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getGlobals <em>Globals</em>}'.
+	 * Returns the meta object for the containment reference '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getGlobal <em>Global</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Globals</em>'.
-	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getGlobals()
+	 * @return the meta object for the containment reference '<em>Global</em>'.
+	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getGlobal()
 	 * @see #getDocumentRoot()
 	 * @generated
 	 */
-	EReference getDocumentRoot_Globals();
+	EReference getDocumentRoot_Global();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getImports <em>Imports</em>}'.
+	 * Returns the meta object for the containment reference '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getImportType <em>Import Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Imports</em>'.
-	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getImports()
+	 * @return the meta object for the containment reference '<em>Import Type</em>'.
+	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getImportType()
 	 * @see #getDocumentRoot()
 	 * @generated
 	 */
-	EReference getDocumentRoot_Imports();
+	EReference getDocumentRoot_ImportType();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getOnEntryScript <em>On Entry Script</em>}'.
+	 * Returns the meta object for the containment reference '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getOnEntryScript <em>On Entry Script</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>On Entry Script</em>'.
+	 * @return the meta object for the containment reference '<em>On Entry Script</em>'.
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getOnEntryScript()
 	 * @see #getDocumentRoot()
 	 * @generated
@@ -2011,10 +1665,10 @@ public interface ModelPackage extends EPackage {
 	EReference getDocumentRoot_OnEntryScript();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getOnExitScript <em>On Exit Script</em>}'.
+	 * Returns the meta object for the containment reference '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getOnExitScript <em>On Exit Script</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>On Exit Script</em>'.
+	 * @return the meta object for the containment reference '<em>On Exit Script</em>'.
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getOnExitScript()
 	 * @see #getDocumentRoot()
 	 * @generated
@@ -2194,114 +1848,6 @@ public interface ModelPackage extends EPackage {
 	EAttribute getOnExitScriptType_ScriptFormat();
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Task <em>Task</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Task</em>'.
-	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Task
-	 * @generated
-	 */
-	EClass getTask();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Task#getTaskName <em>Task Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Task Name</em>'.
-	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Task#getTaskName()
-	 * @see #getTask()
-	 * @generated
-	 */
-	EAttribute getTask_TaskName();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Task#getDisplayName <em>Display Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Display Name</em>'.
-	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Task#getDisplayName()
-	 * @see #getTask()
-	 * @generated
-	 */
-	EAttribute getTask_DisplayName();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Task#getIcon <em>Icon</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Icon</em>'.
-	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Task#getIcon()
-	 * @see #getTask()
-	 * @generated
-	 */
-	EAttribute getTask_Icon();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Task#getParameters <em>Parameters</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Parameters</em>'.
-	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Task#getParameters()
-	 * @see #getTask()
-	 * @generated
-	 */
-	EReference getTask_Parameters();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Task#getResults <em>Results</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Results</em>'.
-	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Task#getResults()
-	 * @see #getTask()
-	 * @generated
-	 */
-	EReference getTask_Results();
-
-	/**
-	 * Returns the meta object for class '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Parameter <em>Parameter</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Parameter</em>'.
-	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Parameter
-	 * @generated
-	 */
-	EClass getParameter();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Parameter#getName <em>Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Parameter#getName()
-	 * @see #getParameter()
-	 * @generated
-	 */
-	EAttribute getParameter_Name();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Parameter#getType <em>Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Type</em>'.
-	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Parameter#getType()
-	 * @see #getParameter()
-	 * @generated
-	 */
-	EAttribute getParameter_Type();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Parameter#getValue <em>Value</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Value</em>'.
-	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Parameter#getValue()
-	 * @see #getParameter()
-	 * @generated
-	 */
-	EAttribute getParameter_Value();
-
-	/**
 	 * Returns the meta object for data type '{@link java.lang.String <em>Package Name Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2377,7 +1923,7 @@ public interface ModelPackage extends EPackage {
 	 *   <li>each class,</li>
 	 *   <li>each feature of each class,</li>
 	 *   <li>each enum,</li>
-	 *   <li>and each data description</li>
+	 *   <li>and each data type</li>
 	 * </ul>
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -2394,23 +1940,23 @@ public interface ModelPackage extends EPackage {
 		EClass DOCUMENT_ROOT = eINSTANCE.getDocumentRoot();
 
 		/**
-		 * The meta object literal for the '<em><b>Globals</b></em>' containment reference list feature.
+		 * The meta object literal for the '<em><b>Global</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference DOCUMENT_ROOT__GLOBALS = eINSTANCE.getDocumentRoot_Globals();
+		EReference DOCUMENT_ROOT__GLOBAL = eINSTANCE.getDocumentRoot_Global();
 
 		/**
-		 * The meta object literal for the '<em><b>Imports</b></em>' containment reference list feature.
+		 * The meta object literal for the '<em><b>Import Type</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference DOCUMENT_ROOT__IMPORTS = eINSTANCE.getDocumentRoot_Imports();
+		EReference DOCUMENT_ROOT__IMPORT_TYPE = eINSTANCE.getDocumentRoot_ImportType();
 
 		/**
-		 * The meta object literal for the '<em><b>On Entry Script</b></em>' containment reference list feature.
+		 * The meta object literal for the '<em><b>On Entry Script</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -2418,7 +1964,7 @@ public interface ModelPackage extends EPackage {
 		EReference DOCUMENT_ROOT__ON_ENTRY_SCRIPT = eINSTANCE.getDocumentRoot_OnEntryScript();
 
 		/**
-		 * The meta object literal for the '<em><b>On Exit Script</b></em>' containment reference list feature.
+		 * The meta object literal for the '<em><b>On Exit Script</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -2560,90 +2106,6 @@ public interface ModelPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute ON_EXIT_SCRIPT_TYPE__SCRIPT_FORMAT = eINSTANCE.getOnExitScriptType_ScriptFormat();
-
-		/**
-		 * The meta object literal for the '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.TaskImpl <em>Task</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.TaskImpl
-		 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.ModelPackageImpl#getTask()
-		 * @generated
-		 */
-		EClass TASK = eINSTANCE.getTask();
-
-		/**
-		 * The meta object literal for the '<em><b>Task Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute TASK__TASK_NAME = eINSTANCE.getTask_TaskName();
-
-		/**
-		 * The meta object literal for the '<em><b>Display Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute TASK__DISPLAY_NAME = eINSTANCE.getTask_DisplayName();
-
-		/**
-		 * The meta object literal for the '<em><b>Icon</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute TASK__ICON = eINSTANCE.getTask_Icon();
-
-		/**
-		 * The meta object literal for the '<em><b>Parameters</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference TASK__PARAMETERS = eINSTANCE.getTask_Parameters();
-
-		/**
-		 * The meta object literal for the '<em><b>Results</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference TASK__RESULTS = eINSTANCE.getTask_Results();
-
-		/**
-		 * The meta object literal for the '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.ParameterImpl <em>Parameter</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.ParameterImpl
-		 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.ModelPackageImpl#getParameter()
-		 * @generated
-		 */
-		EClass PARAMETER = eINSTANCE.getParameter();
-
-		/**
-		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute PARAMETER__NAME = eINSTANCE.getParameter_Name();
-
-		/**
-		 * The meta object literal for the '<em><b>Type</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute PARAMETER__TYPE = eINSTANCE.getParameter_Type();
-
-		/**
-		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute PARAMETER__VALUE = eINSTANCE.getParameter_Value();
 
 		/**
 		 * The meta object literal for the '<em>Package Name Type</em>' data type.

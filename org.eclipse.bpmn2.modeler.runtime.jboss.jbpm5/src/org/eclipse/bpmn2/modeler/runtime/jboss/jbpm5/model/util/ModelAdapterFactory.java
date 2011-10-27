@@ -112,44 +112,12 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
 				return createOnExitScriptTypeAdapter();
 			}
 			@Override
-			public Adapter caseTask(Task object) {
-				return createTaskAdapter();
-			}
-			@Override
-			public Adapter caseParameter(Parameter object) {
-				return createParameterAdapter();
-			}
-			@Override
 			public Adapter caseBpmn2_DocumentRoot(org.eclipse.bpmn2.DocumentRoot object) {
 				return createBpmn2_DocumentRootAdapter();
 			}
 			@Override
 			public Adapter caseImport(Import object) {
 				return createImportAdapter();
-			}
-			@Override
-			public Adapter caseBaseElement(BaseElement object) {
-				return createBaseElementAdapter();
-			}
-			@Override
-			public Adapter caseFlowElement(FlowElement object) {
-				return createFlowElementAdapter();
-			}
-			@Override
-			public Adapter caseFlowNode(FlowNode object) {
-				return createFlowNodeAdapter();
-			}
-			@Override
-			public Adapter caseActivity(Activity object) {
-				return createActivityAdapter();
-			}
-			@Override
-			public Adapter caseInteractionNode(InteractionNode object) {
-				return createInteractionNodeAdapter();
-			}
-			@Override
-			public Adapter caseBpmn2_Task(org.eclipse.bpmn2.Task object) {
-				return createBpmn2_TaskAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -242,20 +210,6 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Parameter <em>Parameter</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Parameter
-	 * @generated
-	 */
-	public Adapter createParameterAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.DocumentRoot <em>Document Root</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -280,104 +234,6 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createImportAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.BaseElement <em>Base Element</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see org.eclipse.bpmn2.BaseElement
-	 * @generated
-	 */
-	public Adapter createBaseElementAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.FlowElement <em>Flow Element</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see org.eclipse.bpmn2.FlowElement
-	 * @generated
-	 */
-	public Adapter createFlowElementAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.FlowNode <em>Flow Node</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see org.eclipse.bpmn2.FlowNode
-	 * @generated
-	 */
-	public Adapter createFlowNodeAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.Activity <em>Activity</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see org.eclipse.bpmn2.Activity
-	 * @generated
-	 */
-	public Adapter createActivityAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.InteractionNode <em>Interaction Node</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see org.eclipse.bpmn2.InteractionNode
-	 * @generated
-	 */
-	public Adapter createInteractionNodeAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.Task <em>Task</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see org.eclipse.bpmn2.Task
-	 * @generated
-	 */
-	public Adapter createBpmn2_TaskAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Task <em>Task</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Task
-	 * @generated
-	 */
-	public Adapter createTaskAdapter() {
 		return null;
 	}
 

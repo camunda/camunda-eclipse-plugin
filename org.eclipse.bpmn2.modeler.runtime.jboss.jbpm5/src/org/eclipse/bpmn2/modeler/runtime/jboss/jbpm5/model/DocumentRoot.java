@@ -17,8 +17,8 @@ import org.eclipse.emf.common.util.EList;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getGlobals <em>Globals</em>}</li>
- *   <li>{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getImports <em>Imports</em>}</li>
+ *   <li>{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getGlobal <em>Global</em>}</li>
+ *   <li>{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getImportType <em>Import Type</em>}</li>
  *   <li>{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getOnEntryScript <em>On Entry Script</em>}</li>
  *   <li>{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getOnExitScript <em>On Exit Script</em>}</li>
  *   <li>{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getPackageName <em>Package Name</em>}</li>
@@ -35,72 +35,112 @@ import org.eclipse.emf.common.util.EList;
  */
 public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	/**
-	 * Returns the value of the '<em><b>Globals</b></em>' containment reference list.
-	 * The list contents are of type {@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.GlobalType}.
+	 * Returns the value of the '<em><b>Global</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Globals</em>' containment reference list isn't clear,
+	 * If the meaning of the '<em>Global</em>' containment reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Globals</em>' containment reference list.
-	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_Globals()
-	 * @model containment="true" transient="true" volatile="true" derived="true"
+	 * @return the value of the '<em>Global</em>' containment reference.
+	 * @see #setGlobal(GlobalType)
+	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_Global()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='global' namespace='##targetNamespace'"
 	 * @generated
 	 */
-	EList<GlobalType> getGlobals();
+	GlobalType getGlobal();
 
 	/**
-	 * Returns the value of the '<em><b>Imports</b></em>' containment reference list.
-	 * The list contents are of type {@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ImportType}.
+	 * Sets the value of the '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getGlobal <em>Global</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Global</em>' containment reference.
+	 * @see #getGlobal()
+	 * @generated
+	 */
+	void setGlobal(GlobalType value);
+
+	/**
+	 * Returns the value of the '<em><b>Import Type</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Imports</em>' containment reference list isn't clear,
+	 * If the meaning of the '<em>Import Type</em>' containment reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Imports</em>' containment reference list.
-	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_Imports()
-	 * @model containment="true" transient="true" volatile="true" derived="true"
+	 * @return the value of the '<em>Import Type</em>' containment reference.
+	 * @see #setImportType(ImportType)
+	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_ImportType()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='import' namespace='##targetNamespace'"
 	 * @generated
 	 */
-	EList<ImportType> getImports();
+	ImportType getImportType();
 
 	/**
-	 * Returns the value of the '<em><b>On Entry Script</b></em>' containment reference list.
-	 * The list contents are of type {@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.OnEntryScriptType}.
+	 * Sets the value of the '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getImportType <em>Import Type</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Import Type</em>' containment reference.
+	 * @see #getImportType()
+	 * @generated
+	 */
+	void setImportType(ImportType value);
+
+	/**
+	 * Returns the value of the '<em><b>On Entry Script</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>On Entry Script</em>' containment reference isn't clear,
+	 * If the meaning of the '<em>On Entry Script</em>' containment reference list isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>On Entry Script</em>' containment reference list.
+	 * @return the value of the '<em>On Entry Script</em>' containment reference.
+	 * @see #setOnEntryScript(OnEntryScriptType)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_OnEntryScript()
-	 * @model containment="true" transient="true" volatile="true" derived="true"
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='onEntry-script' namespace='##targetNamespace'"
 	 * @generated
 	 */
-	EList<OnEntryScriptType> getOnEntryScript();
+	OnEntryScriptType getOnEntryScript();
 
 	/**
-	 * Returns the value of the '<em><b>On Exit Script</b></em>' containment reference list.
-	 * The list contents are of type {@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.OnExitScriptType}.
+	 * Sets the value of the '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getOnEntryScript <em>On Entry Script</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>On Entry Script</em>' containment reference.
+	 * @see #getOnEntryScript()
+	 * @generated
+	 */
+	void setOnEntryScript(OnEntryScriptType value);
+
+	/**
+	 * Returns the value of the '<em><b>On Exit Script</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>On Exit Script</em>' containment reference isn't clear,
+	 * If the meaning of the '<em>On Exit Script</em>' containment reference list isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>On Exit Script</em>' containment reference list.
+	 * @return the value of the '<em>On Exit Script</em>' containment reference.
+	 * @see #setOnExitScript(OnExitScriptType)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_OnExitScript()
-	 * @model containment="true" transient="true" volatile="true" derived="true"
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='onExit-script' namespace='##targetNamespace'"
 	 * @generated
 	 */
-	EList<OnExitScriptType> getOnExitScript();
+	OnExitScriptType getOnExitScript();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getOnExitScript <em>On Exit Script</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>On Exit Script</em>' containment reference.
+	 * @see #getOnExitScript()
+	 * @generated
+	 */
+	void setOnExitScript(OnExitScriptType value);
 
 	/**
 	 * Returns the value of the '<em><b>Package Name</b></em>' attribute.

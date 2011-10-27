@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -35,6 +36,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.util.BasicFeatureMap;
+import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.xsd.XSDAttributeDeclaration;
@@ -466,5 +469,18 @@ public class ModelUtil {
 				return Bpmn2DiagramType.COLLABORATION;
 		}
 		return Bpmn2DiagramType.NONE;
+	}
+	
+	public static List<EStructuralFeature> getAnyAttributes(EObject object) {
+		List<EStructuralFeature> list = new ArrayList<EStructuralFeature>();
+		EStructuralFeature anyAttribute = ((EObject)object).eClass().getEStructuralFeature("anyAttribute");
+		if (anyAttribute!=null && object.eGet(anyAttribute) instanceof BasicFeatureMap) {
+			BasicFeatureMap map = (BasicFeatureMap)object.eGet(anyAttribute);
+			for (Entry entry : map) {
+				EStructuralFeature feature = entry.getEStructuralFeature();
+				list.add(feature);
+			}
+		}
+		return list;
 	}
 }

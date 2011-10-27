@@ -22,7 +22,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 
-import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.emf.ecore.EObject;
@@ -42,7 +42,7 @@ public class JbpmPropertySection extends AbstractBpmn2PropertySection implements
 	@Override
 	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
 		EObject be = super.getBusinessObjectForPictogramElement(pe);
-		if (be instanceof org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.Task)
+		if (be instanceof Task)
 			return be;
 		return null;
 	}

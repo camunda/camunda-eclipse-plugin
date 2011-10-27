@@ -45,11 +45,13 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.DynamicEObjectImpl;
 import org.eclipse.emf.ecore.impl.EAttributeImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
+import org.eclipse.emf.ecore.util.FeatureMapUtil;
 import org.eclipse.emf.ecore.xmi.XMLHelper;
 import org.eclipse.emf.ecore.xmi.XMLLoad;
 import org.eclipse.emf.ecore.xmi.XMLResource;
@@ -195,6 +197,27 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 			}
 
 			super.setValueFromId(object, eReference, ids);
+		}
+		
+		@SuppressWarnings("unchecked")
+		protected void addAnyAttribute(EObject childObject, String namespace, String name, Object value) {
+			EStructuralFeature anyAttribute = childObject.eClass().getEStructuralFeature("anyAttribute");
+			List<BasicFeatureMap.Entry> anyMap = (List<BasicFeatureMap.Entry>)childObject.eGet(anyAttribute);
+			for (BasicFeatureMap.Entry fe : anyMap) {
+				if (fe.getEStructuralFeature() instanceof EAttributeImpl) {
+					EAttributeImpl a = (EAttributeImpl) fe.getEStructuralFeature();
+					if (namespace.equals(a.getExtendedMetaData().getNamespace()) && name.equals(a.getName())) {
+						return;
+					}
+				}
+			}
+			if (anyMap.isEmpty())
+				anyMap = new BasicFeatureMap((InternalEObject) childObject, Bpmn2Package.BASE_ELEMENT__ANY_ATTRIBUTE);
+			
+//			EStructuralFeature attr = extendedMetaData.demandFeature(namespace, name, false);
+			EStructuralFeature attr = extendedMetaData.getAttribute(namespace, name);
+			anyMap.add( FeatureMapUtil.createEntry(attr, value) );
+			childObject.eSet(anyAttribute, anyMap);
 		}
 	}
 

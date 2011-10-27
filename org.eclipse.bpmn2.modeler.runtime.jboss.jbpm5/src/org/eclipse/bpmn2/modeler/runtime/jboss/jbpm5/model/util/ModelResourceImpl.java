@@ -22,12 +22,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.bpmn2.BusinessRuleTask;
+import org.eclipse.bpmn2.ExtensionAttributeValue;
+import org.eclipse.bpmn2.SequenceFlow;
+import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
-import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.impl.EAttributeImpl;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
@@ -95,25 +98,40 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 			// so any "type" in the feature parentMap will be a duplicate which will
 			// cause problems during parsing.
 			// See also getXSIType()
+			EObject childObject = objects.peekEObject();
 			try {
-				EObject childObject = objects.peekEObject();
-				if (childObject!=null) {
-					EStructuralFeature anyAttribute = childObject.eClass().getEStructuralFeature("anyAttribute");
-					if (anyAttribute!=null) {
-						List<BasicFeatureMap.Entry> anyMap = (List<BasicFeatureMap.Entry>)childObject.eGet(anyAttribute);
-						List<BasicFeatureMap.Entry> removed = new ArrayList<BasicFeatureMap.Entry>();
-						for (BasicFeatureMap.Entry fe : anyMap) {
-							if (fe.getEStructuralFeature() instanceof EAttribute) {
-								EAttributeImpl a = (EAttributeImpl)fe.getEStructuralFeature();
-								String n = a.getName();
-								String ns = a.getExtendedMetaData().getNamespace();
-								if (TYPE.equals(n) && XSI_URI.equals(ns)) {
-									removed.add(fe);
-								}
+				EStructuralFeature anyAttribute = childObject.eClass().getEStructuralFeature("anyAttribute");
+				if (anyAttribute!=null) {
+					List<BasicFeatureMap.Entry> anyMap = (List<BasicFeatureMap.Entry>)childObject.eGet(anyAttribute);
+					List<BasicFeatureMap.Entry> removed = new ArrayList<BasicFeatureMap.Entry>();
+					for (BasicFeatureMap.Entry fe : anyMap) {
+						if (fe.getEStructuralFeature() instanceof EAttribute) {
+							EAttributeImpl a = (EAttributeImpl)fe.getEStructuralFeature();
+							String n = a.getName();
+							String ns = a.getExtendedMetaData().getNamespace();
+							if (TYPE.equals(n) && XSI_URI.equals(ns)) {
+								removed.add(fe);
 							}
 						}
-						if (removed.size()>0)
-							anyMap.removeAll(removed);
+					}
+					if (removed.size()>0)
+						anyMap.removeAll(removed);
+				}
+			
+				if (childObject instanceof SequenceFlow) {
+					addAnyAttribute(childObject,ModelPackage.eNS_URI, "priority", "1");
+				}
+				else if (childObject instanceof Process) {
+					addAnyAttribute(childObject,ModelPackage.eNS_URI, "version", "1.0");
+					addAnyAttribute(childObject,ModelPackage.eNS_URI, "packageName", "");
+				}
+				else if (childObject instanceof BusinessRuleTask) {
+					addAnyAttribute(childObject,"http://www.jboss.org/drools/flow/gpd", "ruleFlowGroup", "");
+				}
+				else if (childObject instanceof Task) {
+					List<ExtensionAttributeValue> values = ((Task)childObject).getExtensionValues();
+					for (ExtensionAttributeValue v : values) {
+						System.out.println(v);;
 					}
 				}
 			}

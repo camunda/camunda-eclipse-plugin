@@ -112,10 +112,6 @@ public class ModelValidator extends EObjectValidator {
 				return validateOnEntryScriptType((OnEntryScriptType)value, diagnostics, context);
 			case ModelPackage.ON_EXIT_SCRIPT_TYPE:
 				return validateOnExitScriptType((OnExitScriptType)value, diagnostics, context);
-			case ModelPackage.TASK:
-				return validateTask((Task)value, diagnostics, context);
-			case ModelPackage.PARAMETER:
-				return validateParameter((Parameter)value, diagnostics, context);
 			case ModelPackage.PACKAGE_NAME_TYPE:
 				return validatePackageNameType((String)value, diagnostics, context);
 			case ModelPackage.PRIORITY_TYPE:
@@ -174,24 +170,6 @@ public class ModelValidator extends EObjectValidator {
 	 */
 	public boolean validateOnExitScriptType(OnExitScriptType onExitScriptType, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return validate_EveryDefaultConstraint(onExitScriptType, diagnostics, context);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public boolean validateTask(Task task, DiagnosticChain diagnostics, Map<Object, Object> context) {
-		return validate_EveryDefaultConstraint(task, diagnostics, context);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public boolean validateParameter(Parameter parameter, DiagnosticChain diagnostics, Map<Object, Object> context) {
-		return validate_EveryDefaultConstraint(parameter, diagnostics, context);
 	}
 
 	/**

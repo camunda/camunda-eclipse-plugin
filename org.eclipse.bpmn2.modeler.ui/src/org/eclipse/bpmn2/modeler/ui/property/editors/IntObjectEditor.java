@@ -13,6 +13,8 @@
 
 package org.eclipse.bpmn2.modeler.ui.property.editors;
 
+import java.math.BigInteger;
+
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
@@ -103,7 +105,12 @@ public class IntObjectEditor extends ObjectEditor {
 				RecordingCommand command = new RecordingCommand(getDiagramEditor().getEditingDomain()) {
 					@Override
 					protected void doExecute() {
-						object.eSet(feature, i);
+						Class eTypeClass = feature.getEType().getInstanceClass();
+						if (BigInteger.class.equals(eTypeClass)) {
+							object.eSet(feature, BigInteger.valueOf((long)i));
+						}
+						else
+							object.eSet(feature, i);
 					}
 				};
 				getDiagramEditor().getEditingDomain().getCommandStack().execute(command);

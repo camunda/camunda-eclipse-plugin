@@ -23,6 +23,8 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.util.BasicFeatureMap;
+import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -51,11 +53,18 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 	
 	public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
 		if (propertiesProvider==null) {
-			propertiesProvider = new AbstractPropertiesProvider(object) {
+			final EObject o = object;
+			return new AbstractPropertiesProvider(object) {
 				public String[] getProperties() {
 					List<String> list = new ArrayList<String>();
-					for (EStructuralFeature attribute : be.eClass().getEStructuralFeatures()) {
+					for (EStructuralFeature attribute : o.eClass().getEStructuralFeatures()) {
 						list.add(attribute.getName());
+					}
+					// add the anyAttributes
+					List<EStructuralFeature> anyAttributes = ModelUtil.getAnyAttributes(o);
+					for (EStructuralFeature f : anyAttributes) {
+						if (f instanceof EAttribute && !list.contains(f.getName()))
+							list.add(f.getName());
 					}
 					String a[] = new String[list.size()];
 					list.toArray(a);
@@ -68,16 +77,18 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 	
 	@Override
 	public void createBindings(EObject be) {
-		if (getPropertiesProvider(be)==null) {
+		AbstractPropertiesProvider provider = getPropertiesProvider(be); 
+		if (provider==null) {
 			String tab = propertySection.tabbedPropertySheetPage.getSelectedTab().getLabel();
 			createLabel(this,"No "+tab+" Properties for this "+ModelUtil.getObjectDisplayName(be));
 			return;
 		}
 		
-		if (getPropertiesProvider(be).getProperties()!=null) {
+		String[] properties = provider.getProperties();
+		if (properties!=null) {
 			getAttributesParent();
 			EStructuralFeature feature;
-			for (String a : getPropertiesProvider(be).getProperties()) {
+			for (String a : properties) {
 				EClass eItemClass = null;
 				if (a.contains(".")) {
 					String[] names = a.split("\\.");
@@ -100,8 +111,9 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 			}
 		}
 		
-		if (getPropertiesProvider(be).getChildren(null)!=null) {
-			for (String a : getPropertiesProvider(be).getChildren(null)) {
+		properties = provider.getChildren(null);
+		if (properties!=null) {
+			for (String a : properties) {
 				bindChild(be,a);
 			}
 		}

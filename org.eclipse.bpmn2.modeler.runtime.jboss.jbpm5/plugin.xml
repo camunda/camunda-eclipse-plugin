@@ -5,8 +5,8 @@
    <extension point="org.eclipse.emf.ecore.generated_package">
       <package
             class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage"
-            genModel="model/jBPM5Extension.genmodel"
-            uri="http://www.drools.com">
+            genModel="model/jBPM5Extensions.genmodel"
+            uri="http://www.jboss.org/drools">
       </package>
    </extension>
 
@@ -18,7 +18,7 @@
 		</runtime>
 
 		<model runtimeId="org.jboss.runtime.jbpm5"
-			uri="http://www.drools.com"
+			uri="http://www.jboss.org/drools"
 			resourceFactory="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.util.ModelResourceFactoryImpl">
 		</model>
 
@@ -47,20 +47,67 @@
 			<property name="taskName" value="log"/>
 			<property name="displayName" value="Log Task"/>
 			<property name="icon" value="icons/log.png"/>
-			<property name="parameters">
+			<!-- TODO: wip
+			<property name="extensionValues">
 				<value>
-					<property name="name" value="severity"/>
-					<property name="type" value="Integer"/>
+					<property name="value">
+						<value>
+							<property name="onEntryScript">
+								<value>
+									<property name="script" value="onEntry"/>
+								</value>
+							</property>
+						</value>
+					</property>
 				</value>
+			</property>			
+			-->
+			<property name="ioSpecification">
 				<value>
-					<property name="name" value="message"/>
-					<property name="type" value="String"/>
+					<property name="dataInputs">
+						<value>
+							<property name="name" value="parameter"/>
+						</value>
+					</property>
+					<property name="dataInputs">
+						<value>
+							<property name="name" value="message"/>
+						</value>
+					</property>
+					<property name="dataOutputs">
+						<value>
+							<property name="name" value="result"/>
+						</value>
+					</property>
+
+					<property name="inputSets">
+						<value>
+							<property name="dataInputRefs" ref="ioSpecification/dataInputs#0"/>
+						</value>
+					</property>
+					<property name="inputSets">
+						<value>
+							<property name="dataInputRefs" ref="ioSpecification/dataInputs#1"/>
+						</value>
+					</property>
+
+					<property name="outputSets">
+						<value>
+							<property name="dataOutputRefs" ref="ioSpecification/dataOutputs#0"/>
+						</value>
+					</property>
 				</value>
 			</property>
-			<property name="results">
+			<property name="dataInputAssociations">
 				<value>
-					<property name="name" value="status"/>
-					<property name="type" value="String"/>
+					<property name="sourceRef" value="variable"/>
+					<property name="targetRef" ref="ioSpecification/dataInputs#0"/>
+				</value>
+			</property>
+			<property name="dataInputAssociations">
+				<value>
+					<property name="sourceRef" value="variable"/>
+					<property name="targetRef" ref="ioSpecification/dataInputs#1"/>
 				</value>
 			</property>
 		</customTask>
@@ -71,33 +118,9 @@
 			runtimeId="org.jboss.runtime.jbpm5"
 			name="Email Task"
 			type="Task">
-			<property name="parameters">
-				<value>
-					<property name="name" value="from"/>
-					<property name="type" value="String"/>
-				</value>
-				<value>
-					<property name="name" value="to"/>
-					<property name="type" value="String"/>
-				</value>
-				<value>
-					<property name="name" value="subject"/>
-					<property name="type" value="String"/>
-				</value>
-				<value>
-					<property name="name" value="body"/>
-					<property name="type" value="String"/>
-				</value>
-			</property>
 			<property name="taskName" value="send"/>
 			<property name="displayName" value="Email Task"/>
 			<property name="icon" value="icons/email.png"/>
-			<property name="results">
-				<value>
-					<property name="name" value="reply"/>
-					<property name="type" value="String"/>
-				</value>
-			</property>
 		</customTask>
 
 	</extension>

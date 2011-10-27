@@ -7,8 +7,8 @@
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl;
 
 import java.math.BigInteger;
-
 import java.util.Collection;
+
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.GlobalType;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ImportType;
@@ -20,13 +20,14 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
-import org.eclipse.emf.ecore.util.InternalEList;
 import org.eclipse.emf.ecore.util.FeatureMap;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -35,8 +36,8 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.DocumentRootImpl#getGlobals <em>Globals</em>}</li>
- *   <li>{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.DocumentRootImpl#getImports <em>Imports</em>}</li>
+ *   <li>{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.DocumentRootImpl#getGlobal <em>Global</em>}</li>
+ *   <li>{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.DocumentRootImpl#getImportType <em>Import Type</em>}</li>
  *   <li>{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.DocumentRootImpl#getOnEntryScript <em>On Entry Script</em>}</li>
  *   <li>{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.DocumentRootImpl#getOnExitScript <em>On Exit Script</em>}</li>
  *   <li>{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.DocumentRootImpl#getPackageName <em>Package Name</em>}</li>
@@ -174,8 +175,8 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<GlobalType> getGlobals() {
-		return getMixed().list(ModelPackage.Literals.DOCUMENT_ROOT__GLOBALS);
+	public GlobalType getGlobal() {
+		return (GlobalType)getMixed().get(ModelPackage.Literals.DOCUMENT_ROOT__GLOBAL, true);
 	}
 
 	/**
@@ -183,8 +184,8 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<ImportType> getImports() {
-		return getMixed().list(ModelPackage.Literals.DOCUMENT_ROOT__IMPORTS);
+	public NotificationChain basicSetGlobal(GlobalType newGlobal, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(ModelPackage.Literals.DOCUMENT_ROOT__GLOBAL, newGlobal, msgs);
 	}
 
 	/**
@@ -192,8 +193,8 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<OnEntryScriptType> getOnEntryScript() {
-		return getMixed().list(ModelPackage.Literals.DOCUMENT_ROOT__ON_ENTRY_SCRIPT);
+	public void setGlobal(GlobalType newGlobal) {
+		((FeatureMap.Internal)getMixed()).set(ModelPackage.Literals.DOCUMENT_ROOT__GLOBAL, newGlobal);
 	}
 
 	/**
@@ -201,8 +202,80 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<OnExitScriptType> getOnExitScript() {
-		return getMixed().list(ModelPackage.Literals.DOCUMENT_ROOT__ON_EXIT_SCRIPT);
+	public ImportType getImportType() {
+		return (ImportType)getMixed().get(ModelPackage.Literals.DOCUMENT_ROOT__IMPORT_TYPE, true);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetImportType(ImportType newImportType, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(ModelPackage.Literals.DOCUMENT_ROOT__IMPORT_TYPE, newImportType, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setImportType(ImportType newImportType) {
+		((FeatureMap.Internal)getMixed()).set(ModelPackage.Literals.DOCUMENT_ROOT__IMPORT_TYPE, newImportType);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public OnEntryScriptType getOnEntryScript() {
+		return (OnEntryScriptType)getMixed().get(ModelPackage.Literals.DOCUMENT_ROOT__ON_ENTRY_SCRIPT, true);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetOnEntryScript(OnEntryScriptType newOnEntryScript, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(ModelPackage.Literals.DOCUMENT_ROOT__ON_ENTRY_SCRIPT, newOnEntryScript, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setOnEntryScript(OnEntryScriptType newOnEntryScript) {
+		((FeatureMap.Internal)getMixed()).set(ModelPackage.Literals.DOCUMENT_ROOT__ON_ENTRY_SCRIPT, newOnEntryScript);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public OnExitScriptType getOnExitScript() {
+		return (OnExitScriptType)getMixed().get(ModelPackage.Literals.DOCUMENT_ROOT__ON_EXIT_SCRIPT, true);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetOnExitScript(OnExitScriptType newOnExitScript, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(ModelPackage.Literals.DOCUMENT_ROOT__ON_EXIT_SCRIPT, newOnExitScript, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setOnExitScript(OnExitScriptType newOnExitScript) {
+		((FeatureMap.Internal)getMixed()).set(ModelPackage.Literals.DOCUMENT_ROOT__ON_EXIT_SCRIPT, newOnExitScript);
 	}
 
 	/**
@@ -318,14 +391,14 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case ModelPackage.DOCUMENT_ROOT__GLOBALS:
-				return ((InternalEList<?>)getGlobals()).basicRemove(otherEnd, msgs);
-			case ModelPackage.DOCUMENT_ROOT__IMPORTS:
-				return ((InternalEList<?>)getImports()).basicRemove(otherEnd, msgs);
+			case ModelPackage.DOCUMENT_ROOT__GLOBAL:
+				return basicSetGlobal(null, msgs);
+			case ModelPackage.DOCUMENT_ROOT__IMPORT_TYPE:
+				return basicSetImportType(null, msgs);
 			case ModelPackage.DOCUMENT_ROOT__ON_ENTRY_SCRIPT:
-				return ((InternalEList<?>)getOnEntryScript()).basicRemove(otherEnd, msgs);
+				return basicSetOnEntryScript(null, msgs);
 			case ModelPackage.DOCUMENT_ROOT__ON_EXIT_SCRIPT:
-				return ((InternalEList<?>)getOnExitScript()).basicRemove(otherEnd, msgs);
+				return basicSetOnExitScript(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -338,10 +411,10 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case ModelPackage.DOCUMENT_ROOT__GLOBALS:
-				return getGlobals();
-			case ModelPackage.DOCUMENT_ROOT__IMPORTS:
-				return getImports();
+			case ModelPackage.DOCUMENT_ROOT__GLOBAL:
+				return getGlobal();
+			case ModelPackage.DOCUMENT_ROOT__IMPORT_TYPE:
+				return getImportType();
 			case ModelPackage.DOCUMENT_ROOT__ON_ENTRY_SCRIPT:
 				return getOnEntryScript();
 			case ModelPackage.DOCUMENT_ROOT__ON_EXIT_SCRIPT:
@@ -369,21 +442,17 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case ModelPackage.DOCUMENT_ROOT__GLOBALS:
-				getGlobals().clear();
-				getGlobals().addAll((Collection<? extends GlobalType>)newValue);
+			case ModelPackage.DOCUMENT_ROOT__GLOBAL:
+				setGlobal((GlobalType)newValue);
 				return;
-			case ModelPackage.DOCUMENT_ROOT__IMPORTS:
-				getImports().clear();
-				getImports().addAll((Collection<? extends ImportType>)newValue);
+			case ModelPackage.DOCUMENT_ROOT__IMPORT_TYPE:
+				setImportType((ImportType)newValue);
 				return;
 			case ModelPackage.DOCUMENT_ROOT__ON_ENTRY_SCRIPT:
-				getOnEntryScript().clear();
-				getOnEntryScript().addAll((Collection<? extends OnEntryScriptType>)newValue);
+				setOnEntryScript((OnEntryScriptType)newValue);
 				return;
 			case ModelPackage.DOCUMENT_ROOT__ON_EXIT_SCRIPT:
-				getOnExitScript().clear();
-				getOnExitScript().addAll((Collection<? extends OnExitScriptType>)newValue);
+				setOnExitScript((OnExitScriptType)newValue);
 				return;
 			case ModelPackage.DOCUMENT_ROOT__PACKAGE_NAME:
 				setPackageName((String)newValue);
@@ -412,17 +481,17 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case ModelPackage.DOCUMENT_ROOT__GLOBALS:
-				getGlobals().clear();
+			case ModelPackage.DOCUMENT_ROOT__GLOBAL:
+				setGlobal((GlobalType)null);
 				return;
-			case ModelPackage.DOCUMENT_ROOT__IMPORTS:
-				getImports().clear();
+			case ModelPackage.DOCUMENT_ROOT__IMPORT_TYPE:
+				setImportType((ImportType)null);
 				return;
 			case ModelPackage.DOCUMENT_ROOT__ON_ENTRY_SCRIPT:
-				getOnEntryScript().clear();
+				setOnEntryScript((OnEntryScriptType)null);
 				return;
 			case ModelPackage.DOCUMENT_ROOT__ON_EXIT_SCRIPT:
-				getOnExitScript().clear();
+				setOnExitScript((OnExitScriptType)null);
 				return;
 			case ModelPackage.DOCUMENT_ROOT__PACKAGE_NAME:
 				setPackageName(PACKAGE_NAME_EDEFAULT);
@@ -451,14 +520,14 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case ModelPackage.DOCUMENT_ROOT__GLOBALS:
-				return !getGlobals().isEmpty();
-			case ModelPackage.DOCUMENT_ROOT__IMPORTS:
-				return !getImports().isEmpty();
+			case ModelPackage.DOCUMENT_ROOT__GLOBAL:
+				return getGlobal() != null;
+			case ModelPackage.DOCUMENT_ROOT__IMPORT_TYPE:
+				return getImportType() != null;
 			case ModelPackage.DOCUMENT_ROOT__ON_ENTRY_SCRIPT:
-				return !getOnEntryScript().isEmpty();
+				return getOnEntryScript() != null;
 			case ModelPackage.DOCUMENT_ROOT__ON_EXIT_SCRIPT:
-				return !getOnExitScript().isEmpty();
+				return getOnExitScript() != null;
 			case ModelPackage.DOCUMENT_ROOT__PACKAGE_NAME:
 				return PACKAGE_NAME_EDEFAULT == null ? packageName != null : !PACKAGE_NAME_EDEFAULT.equals(packageName);
 			case ModelPackage.DOCUMENT_ROOT__PRIORITY:

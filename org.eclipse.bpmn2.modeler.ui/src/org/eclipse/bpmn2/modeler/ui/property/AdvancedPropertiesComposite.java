@@ -28,6 +28,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.impl.EStructuralFeatureImpl.BasicFeatureMapEntry;
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
@@ -325,6 +326,9 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 	private void createMenuItems(MenuManager manager, String prefix, EObject baseElement, boolean root) {
 		ItemProviderAdapter itemProviderAdapter = (ItemProviderAdapter) new Bpmn2ItemProviderAdapterFactory().adapt(
 				baseElement, ItemProviderAdapter.class);
+		if (itemProviderAdapter==null)
+			return;
+		
 		Collection<CommandParameter> desc = (Collection<CommandParameter>) itemProviderAdapter.getNewChildDescriptors(
 				baseElement, propertySection.editor.getEditingDomain(), null);
 
@@ -332,8 +336,15 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 
 		for (CommandParameter command : desc) {
 			EStructuralFeature feature = (EStructuralFeature) command.feature;
-
-			EObject commandValue = (EObject) command.value;
+			EObject commandValue = null;
+			if (command.value instanceof BasicFeatureMapEntry) {
+				BasicFeatureMapEntry entry = (BasicFeatureMapEntry)command.value;
+				feature = entry.getEStructuralFeature();
+				commandValue = (EObject)entry.getValue();
+			}
+			else if (command.value instanceof EObject)
+				commandValue = (EObject) command.value;
+			
 			if (root) {
 				if (eAllContainments.contains(feature) && preferences.isEnabled(commandValue.eClass())
 						&& preferences.isEnabled(commandValue.eClass(), feature)) {
