@@ -204,8 +204,10 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 			String name = e.getAttribute("name");
 			String value = e.getAttribute("value");
 			String ref = e.getAttribute("ref");
+			String type = e.getAttribute("type");
 			String description = e.getAttribute("description");
 			Property prop = new Property(name,description);
+			prop.type = type;
 			if (value!=null)
 				prop.getValues().add(value);
 			else if (ref!=null) {

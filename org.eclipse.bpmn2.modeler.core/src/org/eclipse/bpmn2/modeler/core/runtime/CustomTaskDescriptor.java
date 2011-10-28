@@ -23,16 +23,28 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.EcorePackage;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.EStructuralFeature.Internal;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
+import org.eclipse.emf.ecore.util.BasicFeatureMap;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.emf.ecore.util.FeatureMap;
+import org.eclipse.emf.ecore.util.FeatureMap.Entry;
+import org.eclipse.emf.ecore.util.FeatureMapUtil;
+import org.eclipse.emf.ecore.xmi.XMLResource;
+import org.eclipse.emf.ecore.impl.EAttributeImpl;
 import org.eclipse.emf.ecore.impl.EStructuralFeatureImpl.SimpleFeatureMapEntry;
+import org.eclipse.emf.ecore.impl.EcoreFactoryImpl;
 
 public class CustomTaskDescriptor extends BaseRuntimeDescriptor {
 
@@ -73,6 +85,7 @@ public class CustomTaskDescriptor extends BaseRuntimeDescriptor {
 		public String description;
 		public List<Object>values;
 		public String ref;
+		public String type;
 		
 		public Property() {
 			this.name = "unknown";
@@ -147,6 +160,16 @@ public class CustomTaskDescriptor extends BaseRuntimeDescriptor {
 		return properties;
 	}
 	
+	/**
+	 * Creates a custom Task object from a definition in the currently selected
+	 * Target Runtime plugin's "customTask" extension point.
+	 * 
+	 * @param container - the EObject which will eventually contain the new Task.
+	 *                    No changes are made to this object, it is only used to
+	 *                    locate the EMF Resource which will eventually contain
+	 *                    the new Task object.
+	 * @return an initialized Task object
+	 */
 	public EObject createObject(EObject container) {
 		containingResource = container.eResource();
 		customTask = createObject(getType());
@@ -154,10 +177,17 @@ public class CustomTaskDescriptor extends BaseRuntimeDescriptor {
 		return customTask;
 	}
 	
+	/**
+	 * Create and initialize an object of the given EClass name.
+	 * The runtime's EPackage is searched first for the given ECLass; if not
+	 * found, the Bpmn2Package is searched.
+	 * 
+	 * @param className
+	 * @return an initialized EObject or null if the EClass name was not found
+	 */
 	private EObject createObject(String className) {
 		// look in the extension model package for the class name first
-		EPackage pkg = getRuntime().getModelDescriptor().getEPackage();
-		EClass eClass = (EClass) pkg.getEClassifier(className);
+		EClass eClass = (EClass) getEPackage().getEClassifier(className);
 		if (eClass==null) {
 			// if not found, look in BPMN2 package
 			eClass = (EClass) Bpmn2Package.eINSTANCE.getEClassifier(className);
@@ -167,6 +197,13 @@ public class CustomTaskDescriptor extends BaseRuntimeDescriptor {
 		return null;
 	}
 
+	/**
+	 * Create and initialize an object of the given EClass. Initialization consists
+	 * of assigning an ID and setting a default name if the EClass has those features.
+	 * 
+	 * @param eClass - type of object to create
+	 * @return an initialized EObject
+	 */
 	private EObject createObject(EClass eClass) {
 		EObject eObject = eClass.getEPackage().getEFactoryInstance().create(eClass);
 		
@@ -184,10 +221,37 @@ public class CustomTaskDescriptor extends BaseRuntimeDescriptor {
 		return eObject;
 	}
 	
+	/**
+	 * Search the Target Runtime's EPackage for a structural feature with the specified name.
+	 * If the feature is not found in the runtime package, search the Bpmn2Package.
+	 * 
+	 * @param name - name of the feature that specifies both an EClass and an EStructuralFeature
+	 *               in the form "EClassName.EStructuralFeatureName"
+	 * @return
+	 */
+	private EStructuralFeature getFeature(String name) {
+		String[] parts = name.split("\\.");
+		EClass eClass = (EClass)getEPackage().getEClassifier(parts[0]);
+		if (eClass==null) {
+			eClass = (EClass)Bpmn2Package.eINSTANCE.getEClassifier(parts[0]);
+		}
+		if (eClass!=null) {
+			EStructuralFeature feature = eClass.getEStructuralFeature(parts[1]);
+			return feature;
+		}
+		return null;
+	}
+	
+	/**
+	 * Search the Target Runtime's EPackage for a structural feature with the specified name.
+	 * If the feature is not found in the runtime package, search the Bpmn2Package.
+	 * 
+	 * @param type - the feature type, either EAttribute or EReference
+	 * @param name - name of the feature
+	 * @return an EStructuralFeature or null if not found
+	 */
 	private EStructuralFeature getFeature(Class type, String name) {
-		EStructuralFeature feature = getFeature(
-				getRuntime().getModelDescriptor().getEPackage(),
-				type, name);
+		EStructuralFeature feature = getFeature(getEPackage(), type, name);
 		if (feature==null) {
 			// try the bpmn2 package
 			feature = getFeature(Bpmn2Package.eINSTANCE, type, name);
@@ -195,6 +259,14 @@ public class CustomTaskDescriptor extends BaseRuntimeDescriptor {
 		return feature;
 	}
 	
+	/**
+	 * Search the given EPackage for a structural feature with the specified name.
+	 * 
+	 * @param pkg - the EPackage to search
+	 * @param type - the feature type, either EAttribute or EReference
+	 * @param name - name of the feature
+	 * @return an EStructuralFeature or null if not found
+	 */
 	private EStructuralFeature getFeature(EPackage pkg, Class type, String name) {
 		TreeIterator<EObject> it = pkg.eAllContents();
 		while (it.hasNext()) {
@@ -209,47 +281,125 @@ public class CustomTaskDescriptor extends BaseRuntimeDescriptor {
 		return null;
 	}
 	
-	public void populateObject(EObject eObj, List<Property> props) {
+	/**
+	 * Populate the given EObject with a list of values which must be Property objects.
+	 * 
+	 * @param object - the object to initialize
+	 * @param values - list of Property values
+	 */
+	public void populateObjectFromValues(EObject object, List<Object> values) {
 		
-		for (Property prop : props) {
-			populateObject(eObj,prop);
+		for (Object value : values) {
+			if (value instanceof Property)
+				populateObject(object,(Property)value);
+		}
+	}
+
+	/**
+	 * Populate the given EObject with a list of Property objects.
+	 * 
+	 * @param object - the object to initialize
+	 * @param values - list of Property objects
+	 */
+	public void populateObject(EObject object, List<Property> properties) {
+		
+		for (Property prop : properties) {
+			populateObject(object,prop);
 		}
 	}
 	
-	public void populateObject(EObject eObj, Property prop) {
-			
-		EStructuralFeature feature = eObj.eClass().getEStructuralFeature(prop.name);
+	/**
+	 * Set the value of the structural feature. If the feature is a list,
+	 * the value is added to the list.
+	 * 
+	 * @param object
+	 * @param feature
+	 * @param value
+	 */
+	private void setValue(EObject object, EStructuralFeature feature, Object value) {
+		if (feature.isMany()) {
+			((EList)object.eGet(feature)).add(value);
+		}
+		else {
+			object.eSet(feature, value);
+		}
+	}
+	
+	/**
+	 * Return the value of the specified feature from the given EObject.
+	 * If the feature is a list, return the indexed value.
+	 *  
+	 * @param object
+	 * @param feature
+	 * @param index
+	 * @return the feature's value
+	 */
+	private Object getValue(EObject object, EStructuralFeature feature, int index) {
+		if (feature.isMany()) {
+			return ((EList)object.eGet(feature)).get(index<0 ? 0 : index);
+		}
+		return object.eGet(feature);
+	}
+	
+	/**
+	 * Populate the given EObject from the Property tree defined in this runtime
+	 * plugin's "customTask" extension point.
+	 * 
+	 * @param object
+	 * @param property
+	 */
+	public void populateObject(EObject object, Property property) {
+
+		EObject childObject = null;
+		EStructuralFeature childFeature = null;
+		EStructuralFeature feature = object.eClass().getEStructuralFeature(property.name);
+		
 		if (feature==null) {
+			// determine the type of feature, either an EAttribute or an EReference,
+			// from the give Property's characteristics
 			Class type = EAttribute.class;
-			if (prop.ref!=null || prop.getValues().get(0) instanceof Property)
+			// if the Property has a "ref" or if its value is a Property
+			// then this must be an EReference
+			if (property.ref!=null || property.getValues().get(0) instanceof Property)
 				type = EReference.class;
-			feature = getFeature(type,prop.name);
+			// get the feature from the runtime package or from Bpmn2Package,
+			// wherever it's found first
+			feature = getFeature(type,property.name);
 		}
 
+		if (feature==null) {
+			feature = ModelUtil.createDynamicAttribute(getEPackage(), object, property.name, property.type);
+		}
+		
 		if (feature instanceof EAttribute) {
-			// TODO: wip
-//			if ( feature.getEType().getInstanceClass().isInstance(FeatureMap.Entry.class) ) {
-//				for (Object o : prop.getValues()) {
-//					if (o instanceof Property) {
-//						Property prop2 = (Property)o;
-//						EObject eObj2 = createObject(prop2.name);
-//						FeatureMap.Entry entry = new SimpleFeatureMapEntry((Internal) feature,eObj2);
-//						eObj.eSet(feature, eObj2);
-//						populateObject(eObj2,prop2);
-//					}
-//				}
-//			}
-//			else
-				eObj.eSet(feature, prop.getFirstStringValue());
+			if ( feature.getEType().getInstanceClass() == FeatureMap.Entry.class ) {
+				// special handling for FeatureMaps
+				for (Object value : property.getValues()) {
+					if (value instanceof Property) {
+						Property p = (Property)value;
+						childFeature = getFeature(p.name);
+						if (childFeature instanceof EAttribute) {
+							childObject = createObject(((EReference) childFeature));
+							setValue(childObject, childFeature, p.getValues().get(0));
+						}
+						else if (childFeature instanceof EReference) {
+							childObject = createObject(((EReference) childFeature).getEReferenceType());
+							FeatureMap.Entry entry = new SimpleFeatureMapEntry((Internal)childFeature, childObject);
+							setValue(object, feature, entry);
+							populateObjectFromValues(childObject,p.getValues());
+						}
+					}
+				}
+			}
+			else
+				setValue(object, feature, property.getValues().get(0));
 		}
 		else if (feature instanceof EReference) {
 			EReference ref = (EReference)feature;
-			EFactory factory = ref.getEReferenceType().getEPackage().getEFactoryInstance();
-			EObject eObj2 = null;
-			if (prop.ref!=null) {
+			if (property.ref!=null) {
 				// navigate down the newly created custom task to find the object reference
-				eObj2 = customTask;
-				String[] segments = prop.ref.split("/");
+				childObject = customTask;
+				String[] segments = property.ref.split("/");
 				for (String s : segments) {
 					// is the feature an Elist?
 					int index = s.indexOf('#');
@@ -257,42 +407,26 @@ public class CustomTaskDescriptor extends BaseRuntimeDescriptor {
 						index = Integer.parseInt(s.substring(index+1));
 						s = s.split("#")[0];
 					}
-					EStructuralFeature f = eObj2.eClass().getEStructuralFeature(s);
-					if (index<0) {
-						eObj2 = (EObject)eObj2.eGet(f);
-					}
-					else
-					{
-						eObj2 = (EObject)((EList)eObj2.eGet(f)).get(index);
-					}
+					childFeature = childObject.eClass().getEStructuralFeature(s);
+					childObject = (EObject)getValue(childObject, childFeature, index);
 				}
-				if (feature.isMany()) {
-					((EList)eObj.eGet(feature)).add(eObj2);
-				}
-				else {
-					eObj.eSet(feature, eObj2);
-				}
+				setValue(object, feature, childObject);
 			}
 			else
 			{
-				eObj2 = createObject(ref.getEReferenceType());
-				if (feature.isMany()) {
-					((EList)eObj.eGet(feature)).add(eObj2);
-				}
-				else {
-					eObj.eSet(feature, eObj2);
-				}
-				
-				for (Object o : prop.getValues()) {
-					if (o instanceof Property) {
-						Property prop2 = (Property)o;
-						populateObject(eObj2,prop2);
-					}
-				}
+				childObject = createObject(ref.getEReferenceType());
+				setValue(object, feature, childObject);
+				populateObjectFromValues(childObject,property.getValues());
 			}
 		}
 	}
-	
+
+	/**
+	 * Return the value of the given root Property name.
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public Object getProperty(String name) {
 
 		for (Property prop : getProperties()) {

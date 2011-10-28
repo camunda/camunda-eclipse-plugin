@@ -45,23 +45,22 @@
 			name="Log Task"
 			type="Task">
 			<property name="taskName" value="log"/>
-			<property name="displayName" value="Log Task"/>
-			<property name="icon" value="icons/log.png"/>
-			<!-- TODO: wip
+			<property name="displayName" value="Log Task" type="EString"/>
+			<property name="icon" value="icons/log.png" type="EString"/>
 			<property name="extensionValues">
 				<value>
 					<property name="value">
 						<value>
-							<property name="onEntryScript">
+							<property name="DocumentRoot.onEntryScript">
 								<value>
-									<property name="script" value="onEntry"/>
+									<property name="script" value=""/>
+									<property name="scriptFormat" value=""/>
 								</value>
 							</property>
 						</value>
 					</property>
 				</value>
 			</property>			
-			-->
 			<property name="ioSpecification">
 				<value>
 					<property name="dataInputs">
@@ -71,7 +70,7 @@
 					</property>
 					<property name="dataInputs">
 						<value>
-							<property name="name" value="message"/>
+							<property name="name" value="Message"/>
 						</value>
 					</property>
 					<property name="dataOutputs">
@@ -100,14 +99,18 @@
 			</property>
 			<property name="dataInputAssociations">
 				<value>
-					<property name="sourceRef" value="variable"/>
+<!--
+					<property name="sourceRef" value="someVariable"/>
+-->
 					<property name="targetRef" ref="ioSpecification/dataInputs#0"/>
 				</value>
 			</property>
-			<property name="dataInputAssociations">
+			<property name="dataOutputAssociations">
 				<value>
-					<property name="sourceRef" value="variable"/>
-					<property name="targetRef" ref="ioSpecification/dataInputs#1"/>
+					<property name="sourceRef" ref="ioSpecification/dataOutputs#0"/>
+<!--
+					<property name="targetRef" value="someVariable"/>
+-->
 				</value>
 			</property>
 		</customTask>
@@ -119,8 +122,104 @@
 			name="Email Task"
 			type="Task">
 			<property name="taskName" value="send"/>
-			<property name="displayName" value="Email Task"/>
-			<property name="icon" value="icons/email.png"/>
+			<property name="displayName" value="Email Task" type="EString"/>
+			<property name="icon" value="icons/email.png" type="EString"/>
+			<property name="extensionValues">
+				<value>
+					<property name="value">
+						<value>
+							<property name="DocumentRoot.onEntryScript">
+								<value>
+									<property name="script" value=""/>
+									<property name="scriptFormat" value=""/>
+								</value>
+							</property>
+						</value>
+					</property>
+				</value>
+			</property>			
+			<property name="ioSpecification">
+				<value>
+					<property name="dataInputs">
+						<value>
+							<property name="name" value="parameter"/>
+						</value>
+					</property>
+					<property name="dataInputs">
+						<value>
+							<property name="name" value="Body"/>
+						</value>
+					</property>
+					<property name="dataInputs">
+						<value>
+							<property name="name" value="Subject"/>
+						</value>
+					</property>
+					<property name="dataInputs">
+						<value>
+							<property name="name" value="To"/>
+						</value>
+					</property>
+					<property name="dataInputs">
+						<value>
+							<property name="name" value="From"/>
+						</value>
+					</property>
+					<property name="dataOutputs">
+						<value>
+							<property name="name" value="result"/>
+						</value>
+					</property>
+
+					<property name="inputSets">
+						<value>
+							<property name="dataInputRefs" ref="ioSpecification/dataInputs#0"/>
+						</value>
+					</property>
+					<property name="inputSets">
+						<value>
+							<property name="dataInputRefs" ref="ioSpecification/dataInputs#1"/>
+						</value>
+					</property>
+					<property name="inputSets">
+						<value>
+							<property name="dataInputRefs" ref="ioSpecification/dataInputs#2"/>
+						</value>
+					</property>
+					<property name="inputSets">
+						<value>
+							<property name="dataInputRefs" ref="ioSpecification/dataInputs#3"/>
+						</value>
+					</property>
+					<property name="inputSets">
+						<value>
+							<property name="dataInputRefs" ref="ioSpecification/dataInputs#4"/>
+						</value>
+					</property>
+
+					<property name="outputSets">
+						<value>
+							<property name="dataOutputRefs" ref="ioSpecification/dataOutputs#0"/>
+						</value>
+					</property>
+				</value>
+			</property>
+			<property name="dataInputAssociations">
+				<value>
+<!--
+					<property name="sourceRef" value="someVariable"/>
+-->
+					<property name="targetRef" ref="ioSpecification/dataInputs#0"/>
+				</value>
+			</property>
+			<property name="dataOutputAssociations">
+				<value>
+					<property name="sourceRef" ref="ioSpecification/dataOutputs#0"/>
+<!--
+					<property name="targetRef" value="someVariable"/>
+-->
+				</value>
+			</property>
 		</customTask>
 
 	</extension>

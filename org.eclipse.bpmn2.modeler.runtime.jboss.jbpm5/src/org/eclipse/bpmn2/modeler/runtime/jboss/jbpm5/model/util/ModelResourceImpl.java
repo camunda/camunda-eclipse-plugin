@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.BusinessRuleTask;
 import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.bpmn2.SequenceFlow;
@@ -100,23 +101,21 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 			// See also getXSIType()
 			EObject childObject = objects.peekEObject();
 			try {
-				EStructuralFeature anyAttribute = childObject.eClass().getEStructuralFeature("anyAttribute");
-				if (anyAttribute!=null) {
-					List<BasicFeatureMap.Entry> anyMap = (List<BasicFeatureMap.Entry>)childObject.eGet(anyAttribute);
-					List<BasicFeatureMap.Entry> removed = new ArrayList<BasicFeatureMap.Entry>();
-					for (BasicFeatureMap.Entry fe : anyMap) {
-						if (fe.getEStructuralFeature() instanceof EAttribute) {
-							EAttributeImpl a = (EAttributeImpl)fe.getEStructuralFeature();
-							String n = a.getName();
-							String ns = a.getExtendedMetaData().getNamespace();
-							if (TYPE.equals(n) && XSI_URI.equals(ns)) {
-								removed.add(fe);
-							}
+				EStructuralFeature anyAttribute = childObject.eClass().getEStructuralFeature(Bpmn2Package.BASE_ELEMENT__ANY_ATTRIBUTE);
+				List<BasicFeatureMap.Entry> anyMap = (List<BasicFeatureMap.Entry>)childObject.eGet(anyAttribute);
+				List<BasicFeatureMap.Entry> removed = new ArrayList<BasicFeatureMap.Entry>();
+				for (BasicFeatureMap.Entry fe : anyMap) {
+					if (fe.getEStructuralFeature() instanceof EAttribute) {
+						EAttributeImpl a = (EAttributeImpl)fe.getEStructuralFeature();
+						String n = a.getName();
+						String ns = a.getExtendedMetaData().getNamespace();
+						if (TYPE.equals(n) && XSI_URI.equals(ns)) {
+							removed.add(fe);
 						}
 					}
-					if (removed.size()>0)
-						anyMap.removeAll(removed);
 				}
+				if (removed.size()>0)
+					anyMap.removeAll(removed);
 			
 				if (childObject instanceof SequenceFlow) {
 					addAnyAttribute(childObject,ModelPackage.eNS_URI, "priority", "1");
@@ -129,10 +128,9 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 					addAnyAttribute(childObject,"http://www.jboss.org/drools/flow/gpd", "ruleFlowGroup", "");
 				}
 				else if (childObject instanceof Task) {
-					List<ExtensionAttributeValue> values = ((Task)childObject).getExtensionValues();
-					for (ExtensionAttributeValue v : values) {
-						System.out.println(v);;
-					}
+					addAnyAttribute(childObject,ModelPackage.eNS_URI, "taskName", "");
+					addAnyAttribute(childObject,ModelPackage.eNS_URI, "displayName", "");
+					addAnyAttribute(childObject,ModelPackage.eNS_URI, "icon", "");
 				}
 			}
 			catch(Exception e) {
