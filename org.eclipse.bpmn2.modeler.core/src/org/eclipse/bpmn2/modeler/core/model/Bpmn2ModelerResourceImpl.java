@@ -201,7 +201,7 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 		
 		@SuppressWarnings("unchecked")
 		protected void addAnyAttribute(EObject childObject, String namespace, String name, Object value) {
-			EStructuralFeature anyAttribute = childObject.eClass().getEStructuralFeature("anyAttribute");
+			EStructuralFeature anyAttribute = childObject.eClass().getEStructuralFeature(Bpmn2Package.BASE_ELEMENT__ANY_ATTRIBUTE);
 			List<BasicFeatureMap.Entry> anyMap = (List<BasicFeatureMap.Entry>)childObject.eGet(anyAttribute);
 			for (BasicFeatureMap.Entry fe : anyMap) {
 				if (fe.getEStructuralFeature() instanceof EAttributeImpl) {
@@ -211,13 +211,9 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 					}
 				}
 			}
-			if (anyMap.isEmpty())
-				anyMap = new BasicFeatureMap((InternalEObject) childObject, Bpmn2Package.BASE_ELEMENT__ANY_ATTRIBUTE);
 			
-//			EStructuralFeature attr = extendedMetaData.demandFeature(namespace, name, false);
-			EStructuralFeature attr = extendedMetaData.getAttribute(namespace, name);
+			EStructuralFeature attr = extendedMetaData.demandFeature(namespace, name, false);
 			anyMap.add( FeatureMapUtil.createEntry(attr, value) );
-			childObject.eSet(anyAttribute, anyMap);
 		}
 	}
 

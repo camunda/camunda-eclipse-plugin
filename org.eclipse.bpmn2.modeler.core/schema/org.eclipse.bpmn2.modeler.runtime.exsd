@@ -369,7 +369,16 @@
          <attribute name="ref" type="string">
             <annotation>
                <documentation>
-                  
+                  Identifies a reference to a previously created property (no forward references supported at this time). The reference string is a slash-separated name of a property followed by an optional #&lt;number&gt; used to index list objects; for example:
+
+rootFeature/childFeature_1/childFeature_2#0
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="type" type="string">
+            <annotation>
+               <documentation>
+                  If the EMF attribute is created dynamically (i.e. not defined in a model) then this is used as the attribute&apos;s data type.
                </documentation>
             </annotation>
          </attribute>

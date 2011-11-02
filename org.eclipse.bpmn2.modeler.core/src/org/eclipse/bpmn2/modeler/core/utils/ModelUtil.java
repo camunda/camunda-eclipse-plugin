@@ -30,13 +30,19 @@ import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterRegistry;
 import org.eclipse.bpmn2.modeler.core.adapters.INamespaceMap;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceSetImpl;
+import org.eclipse.bpmn2.modeler.core.runtime.ModelDescriptor;
 import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
+import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
@@ -482,5 +488,22 @@ public class ModelUtil {
 			}
 		}
 		return list;
+	}
+	
+	public static EAttribute createDynamicAttribute(EPackage pkg, EObject object, String name, String type) {
+		if (type==null)
+			type = "EString";
+		
+		EDataType eDataType = (EDataType)EcorePackage.eINSTANCE.getEClassifier(type);
+		EAttribute attr = EcorePackage.eINSTANCE.getEcoreFactory().createEAttribute();
+		attr.setName(name);
+		attr.setEType(eDataType);
+		ExtendedMetaData.INSTANCE.setFeatureKind(attr,ExtendedMetaData.ATTRIBUTE_FEATURE);
+		
+		EClass docRoot = ExtendedMetaData.INSTANCE.getDocumentRoot(pkg);
+		docRoot.getEStructuralFeatures().add(attr);
+		ExtendedMetaData.INSTANCE.setNamespace(attr, pkg.getNsURI());
+
+		return attr;
 	}
 }

@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.runtime;
 
+import org.eclipse.emf.ecore.EPackage;
+
 public class BaseRuntimeDescriptor {
 	
 	protected TargetRuntime targetRuntime;
@@ -22,5 +24,9 @@ public class BaseRuntimeDescriptor {
 
 	public void setRuntime(TargetRuntime targetRuntime) {
 		this.targetRuntime = targetRuntime;
+	}
+	
+	EPackage getEPackage() {
+		return targetRuntime.getModelDescriptor().getEPackage();
 	}
 }
