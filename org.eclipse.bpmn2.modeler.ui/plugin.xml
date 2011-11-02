@@ -305,6 +305,22 @@
 	        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
 		</propertyTab>
 
+		<propertyTab
+        afterTab="org.eclipse.bpmn2.modeler.task.tab"
+        category="BPMN2"
+        id="org.eclipse.bpmn2.modeler.activity.input.tab"
+        label="Inputs/Assignments"
+        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+		</propertyTab>
+
+		<propertyTab
+        afterTab="org.eclipse.bpmn2.modeler.task.tab"
+        category="BPMN2"
+        id="org.eclipse.bpmn2.modeler.activity.output.tab"
+        label="Outputs/Assignments"
+        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+		</propertyTab>
+
 		<!-- Property Sections -->
 
 		<!-- Description Tab Section -->		
@@ -569,6 +585,24 @@
 		        tab="org.eclipse.bpmn2.modeler.choreographyTask.tab"
 		        type="org.eclipse.bpmn2.ChoreographyTask">
 		  </propertySection>
+
+		  <propertySection
+		        class="org.eclipse.bpmn2.modeler.ui.property.tasks.ActivityInputPropertySection"
+		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+		        id="org.eclipse.bpmn2.modeler.activity.input.section"
+		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+		        tab="org.eclipse.bpmn2.modeler.activity.input.tab"
+		        type="org.eclipse.bpmn2.Activity">
+		  </propertySection>
+		  <propertySection
+		        class="org.eclipse.bpmn2.modeler.ui.property.tasks.ActivityOutputPropertySection"
+		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+		        id="org.eclipse.bpmn2.modeler.activity.output.section"
+		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+		        tab="org.eclipse.bpmn2.modeler.activity.output.tab"
+		        type="org.eclipse.bpmn2.Activity">
+		  </propertySection>
+
 	</extension>
 
 </plugin>

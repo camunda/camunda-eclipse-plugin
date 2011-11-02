@@ -13,13 +13,14 @@
 
 package org.eclipse.bpmn2.modeler.ui.property.data;
 
+import org.eclipse.bpmn2.Assignment;
 import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.DataObjectReference;
+import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite.AbstractPropertiesProvider;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -40,6 +41,8 @@ public class DataObjectPropertySection extends AbstractBpmn2PropertySection {
 
 	static {
 		PropertiesCompositeFactory.register(DataObject.class, DataObjectPropertiesComposite.class);
+		PropertiesCompositeFactory.register(Assignment.class, DataAssignmentPropertiesComposite.class);
+		PropertiesCompositeFactory.register(FormalExpression.class, ExpressionPropertiesComposite.class);
 	}
 	
 	/* (non-Javadoc)

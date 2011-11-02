@@ -46,12 +46,12 @@ public class TaskPropertiesComposite extends DefaultPropertiesComposite {
 		bindAttribute(be,"isForCompensation");
 		
 		bindList(be, "boundaryEventDefs");
-		bindList(be, "dataInputAssociations");
-		bindList(be, "dataOutputAssociations");
+//		bindList(be, "dataInputAssociations");
+//		bindList(be, "dataOutputAssociations");
 		bindList(be, "properties");
 		bindList(be, "resources");
 
-		bindReference(be,"ioSpecification");
+//		bindReference(be,"ioSpecification");
 		bindReference(be,"loopCharacteristics");
 	}
 }
