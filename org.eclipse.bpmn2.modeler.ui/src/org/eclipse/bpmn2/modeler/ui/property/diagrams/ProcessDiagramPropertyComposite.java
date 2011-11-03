@@ -24,6 +24,7 @@ public class ProcessDiagramPropertyComposite extends DefaultPropertiesComposite 
 			propertiesProvider = new AbstractPropertiesProvider(object) {
 				String[] properties = new String[] {
 						"id", "name",
+						"anyAttribute",
 						"processType", "isExecutable", "isClosed",
 						"definitionalCollaborationRef",
 						"ioSpecification",

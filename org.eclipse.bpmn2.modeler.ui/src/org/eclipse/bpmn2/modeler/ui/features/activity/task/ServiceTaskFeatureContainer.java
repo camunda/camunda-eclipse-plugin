@@ -12,11 +12,13 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity.task;
 
+import org.eclipse.bpmn2.SendTask;
 import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.AbstractCreateTaskFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.AddTaskFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.IAddFeature;
@@ -60,7 +62,7 @@ public class ServiceTaskFeatureContainer extends AbstractTaskFeatureContainer {
 
 		@Override
 		protected Task createFlowElement(ICreateContext context) {
-			ServiceTask task = ModelHandler.FACTORY.createServiceTask();
+			ServiceTask task = Bpmn2ModelerFactory.create(ServiceTask.class);
 			task.setName("Service Task");
 			task.setImplementation("##unspecified");
 			return task;

@@ -17,11 +17,13 @@ import static org.eclipse.bpmn2.modeler.core.features.choreography.ChoreographyP
 import java.util.List;
 
 import org.eclipse.bpmn2.ChoreographyLoopType;
+import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.SubChoreography;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.core.features.choreography.LayoutChoreographyFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.IAddFeature;
@@ -81,7 +83,7 @@ public class SubChoreographyFeatureContainer extends AbstractChoreographyFeature
 
 		@Override
 		protected SubChoreography createFlowElement(ICreateContext context) {
-			SubChoreography subChoreography = ModelHandler.FACTORY.createSubChoreography();
+			SubChoreography subChoreography = Bpmn2ModelerFactory.create(SubChoreography.class);
 			subChoreography.setName("Sub-Choreography");
 			subChoreography.setLoopType(ChoreographyLoopType.NONE);
 			return subChoreography;

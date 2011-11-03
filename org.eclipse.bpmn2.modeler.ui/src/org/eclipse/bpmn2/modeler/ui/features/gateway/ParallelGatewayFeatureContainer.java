@@ -14,9 +14,11 @@ package org.eclipse.bpmn2.modeler.ui.features.gateway;
 
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.ParallelGateway;
+import org.eclipse.bpmn2.UserTask;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.gateway.AbstractCreateGatewayFeature;
 import org.eclipse.bpmn2.modeler.core.features.gateway.DefaultAddGatewayFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Cross;
@@ -59,7 +61,7 @@ public class ParallelGatewayFeatureContainer extends AbstractGatewayFeatureConta
 
 		@Override
 		protected Gateway createFlowElement(ICreateContext context) {
-			return ModelHandler.FACTORY.createParallelGateway();
+			return Bpmn2ModelerFactory.create(ParallelGateway.class);
 		}
 
 		@Override

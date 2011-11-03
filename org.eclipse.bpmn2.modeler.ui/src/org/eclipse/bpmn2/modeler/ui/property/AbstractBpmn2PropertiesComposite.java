@@ -440,8 +440,12 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 				List<Entry> basicList = ((BasicFeatureMap) object.eGet(attribute)).basicList();
 				for (Entry entry : basicList) {
 					EStructuralFeature feature = entry.getEStructuralFeature();
-					if (feature instanceof EAttribute)
+					if (isAttribute(object, feature))
 						bindAttribute(parent,object,(EAttribute)feature);
+					else if (isReference(object, feature))
+						bindReference(parent,object,(EReference)feature);
+					else if (isList(object,feature))
+						bindList(object,feature);
 				}
 			}
 		}

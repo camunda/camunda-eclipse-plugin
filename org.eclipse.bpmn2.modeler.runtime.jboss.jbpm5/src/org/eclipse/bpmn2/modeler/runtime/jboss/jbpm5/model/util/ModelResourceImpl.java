@@ -117,21 +117,21 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 				if (removed.size()>0)
 					anyMap.removeAll(removed);
 			
-				if (childObject instanceof SequenceFlow) {
-					addAnyAttribute(childObject,ModelPackage.eNS_URI, "priority", "1");
-				}
-				else if (childObject instanceof Process) {
-					addAnyAttribute(childObject,ModelPackage.eNS_URI, "version", "1.0");
-					addAnyAttribute(childObject,ModelPackage.eNS_URI, "packageName", "");
-				}
-				else if (childObject instanceof BusinessRuleTask) {
-					addAnyAttribute(childObject,"http://www.jboss.org/drools/flow/gpd", "ruleFlowGroup", "");
-				}
-				else if (childObject instanceof Task) {
-					addAnyAttribute(childObject,ModelPackage.eNS_URI, "taskName", "");
-					addAnyAttribute(childObject,ModelPackage.eNS_URI, "displayName", "");
-					addAnyAttribute(childObject,ModelPackage.eNS_URI, "icon", "");
-				}
+//				if (childObject instanceof SequenceFlow) {
+//					addAnyAttribute(childObject,ModelPackage.eNS_URI, "priority", "1");
+//				}
+//				else if (childObject instanceof Process) {
+//					addAnyAttribute(childObject,ModelPackage.eNS_URI, "version", "1.0");
+//					addAnyAttribute(childObject,ModelPackage.eNS_URI, "packageName", "");
+//				}
+//				else if (childObject instanceof BusinessRuleTask) {
+//					addAnyAttribute(childObject,"http://www.jboss.org/drools/flow/gpd", "ruleFlowGroup", "");
+//				}
+//				else if (childObject instanceof Task) {
+//					addAnyAttribute(childObject,ModelPackage.eNS_URI, "taskName", "");
+//					addAnyAttribute(childObject,ModelPackage.eNS_URI, "displayName", "");
+//					addAnyAttribute(childObject,ModelPackage.eNS_URI, "icon", "");
+//				}
 			}
 			catch(Exception e) {
 			}

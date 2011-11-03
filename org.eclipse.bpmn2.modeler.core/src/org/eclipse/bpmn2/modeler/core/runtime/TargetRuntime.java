@@ -13,15 +13,14 @@
 package org.eclipse.bpmn2.modeler.core.runtime;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.bpmn2.modeler.core.AbstractPropertyChangeListenerProvider;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.IBpmn2RuntimeExtension;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.ICustomTaskFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
-import org.eclipse.bpmn2.modeler.core.runtime.CustomTaskDescriptor.Property;
-import org.eclipse.bpmn2.modeler.core.runtime.CustomTaskDescriptor.Value;
+import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor.Property;
+import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor.Value;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
@@ -39,6 +38,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 	
 	// our cached registry of target runtimes contributed by other plugins
 	protected static TargetRuntime targetRuntimes[];
+	protected static TargetRuntime currentRuntime;
 	
 	protected String name;
 	protected String[] versions;
@@ -49,6 +49,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 	protected ArrayList<Bpmn2TabDescriptor> tabDescriptors;
 	protected ArrayList<Bpmn2SectionDescriptor> sectionDescriptors;
 	protected ArrayList<CustomTaskDescriptor> customTasks;
+	protected ArrayList<ModelExtensionDescriptor> modelExtensions;
 	
 	public TargetRuntime(String id, String name, String versions, String description) {
 		this.id = id;
@@ -65,6 +66,14 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 				return rt;
 		}
 		return null;
+	}
+	
+	public static TargetRuntime getCurrentRuntime() {
+		return currentRuntime;
+	}
+	
+	public static void setCurrentRuntime(TargetRuntime rt) {
+		currentRuntime = rt;
 	}
 	
 	public static TargetRuntime getDefaultRuntime() {
@@ -138,8 +147,17 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 							ct.createFeature = (ICustomTaskFeature) e.createExecutableExtension("createFeature");
 							ct.createFeature.setCustomTaskDescriptor(ct);
 							ct.createFeature.setId(id);
-							getCustomTaskProperties(ct,e);
+							getModelExtensionProperties(ct,e);
 							rt.addCustomTask(ct);
+						}
+						else if (e.getName().equals("modelExtension")) {
+							String id = e.getAttribute("id");
+							String name = e.getAttribute("name");
+							ModelExtensionDescriptor me = new ModelExtensionDescriptor(id,name);
+							me.type = e.getAttribute("type");
+							me.description = e.getAttribute("description");
+							getModelExtensionProperties(me,e);
+							rt.addModelExtension(me);
 						}
 					}
 				}
@@ -188,14 +206,14 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 		return targetRuntimes;
 	}
 	
-	private static Object getCustomTaskProperties(CustomTaskDescriptor ct, IConfigurationElement e) {
+	private static Object getModelExtensionProperties(ModelExtensionDescriptor ct, IConfigurationElement e) {
 		
 		String elem = e.getName();
 		if ("value".equals(elem)) {
 			String id = e.getAttribute("id");
 			Value val = new Value(id);
 			for (IConfigurationElement c : e.getChildren()) {
-				Object propValue = getCustomTaskProperties(null, c);
+				Object propValue = getModelExtensionProperties(null, c);
 				val.getValues().add(propValue);
 			}
 			return val;
@@ -214,7 +232,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 				prop.ref = ref;
 			}
 			else {
-				Object o = getCustomTaskProperties(null, e.getChildren()[0]);
+				Object o = getModelExtensionProperties(null, e.getChildren()[0]);
 				if (o instanceof Value)
 					prop.getValues().addAll(((Value)o).getValues());
 			}
@@ -222,7 +240,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 		}
 		else {
 			for (IConfigurationElement c : e.getChildren()) {
-				Object o = getCustomTaskProperties(null, c);
+				Object o = getModelExtensionProperties(null, c);
 				if (o instanceof Property && ct!=null)
 					ct.getProperties().add((Property)o);
 			}
@@ -277,6 +295,19 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 		getCustomTasks().add(ct);
 	}
 	
+	public ArrayList<ModelExtensionDescriptor> getModelExtensions()
+	{
+		if (modelExtensions==null) {
+			modelExtensions = new ArrayList<ModelExtensionDescriptor>();
+		}
+		return modelExtensions;
+	}
+	
+	public void addModelExtension(ModelExtensionDescriptor me) {
+		me.setRuntime(this);
+		getModelExtensions().add(me);
+	}
+
 	private static void addAfterTab(ArrayList<Bpmn2TabDescriptor> list, Bpmn2TabDescriptor tab) {
 		
 		getAllRuntimes();

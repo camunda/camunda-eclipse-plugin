@@ -17,6 +17,7 @@ import org.eclipse.bpmn2.impl.TaskImpl;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.AbstractCreateTaskFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.AddTaskFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -48,7 +49,7 @@ public class TaskFeatureContainer extends AbstractTaskFeatureContainer {
 
 		@Override
 		protected Task createFlowElement(ICreateContext context) {
-			Task task = ModelHandler.FACTORY.createTask();
+			Task task = Bpmn2ModelerFactory.create(Task.class);
 			task.setName("Task Name");
 			return task;
 		}

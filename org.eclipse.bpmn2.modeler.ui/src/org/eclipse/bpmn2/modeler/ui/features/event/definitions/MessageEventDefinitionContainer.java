@@ -14,10 +14,12 @@ package org.eclipse.bpmn2.modeler.ui.features.event.definitions;
 
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.MessageEventDefinition;
+import org.eclipse.bpmn2.SignalEventDefinition;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.CreateEventDefinition;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.DecorationAlgorithm;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.EventDefinitionFeatureContainer;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Envelope;
@@ -93,7 +95,7 @@ public class MessageEventDefinitionContainer extends EventDefinitionFeatureConta
 
 		@Override
 		protected EventDefinition createEventDefinition(ICreateContext context) {
-			return ModelHandler.FACTORY.createMessageEventDefinition();
+			return Bpmn2ModelerFactory.create(MessageEventDefinition.class);
 		}
 
 		@Override

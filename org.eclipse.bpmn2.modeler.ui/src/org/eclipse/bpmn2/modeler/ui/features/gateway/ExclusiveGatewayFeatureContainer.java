@@ -14,9 +14,11 @@ package org.eclipse.bpmn2.modeler.ui.features.gateway;
 
 import org.eclipse.bpmn2.ExclusiveGateway;
 import org.eclipse.bpmn2.Gateway;
+import org.eclipse.bpmn2.ParallelGateway;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.gateway.AbstractCreateGatewayFeature;
 import org.eclipse.bpmn2.modeler.core.features.gateway.DefaultAddGatewayFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -48,7 +50,7 @@ public class ExclusiveGatewayFeatureContainer extends AbstractGatewayFeatureCont
 
 		@Override
 		protected Gateway createFlowElement(ICreateContext context) {
-			return ModelHandler.FACTORY.createExclusiveGateway();
+			return Bpmn2ModelerFactory.create(ExclusiveGateway.class);
 		}
 
 		@Override

@@ -23,6 +23,7 @@
             <element ref="propertyTab"/>
             <element ref="propertySection"/>
             <element ref="customTask"/>
+            <element ref="modelExtension"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -399,6 +400,49 @@ rootFeature/childFeature_1/childFeature_2#0
             <annotation>
                <documentation>
                   
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="modelExtension">
+      <complexType>
+         <choice minOccurs="1" maxOccurs="unbounded">
+            <element ref="property"/>
+         </choice>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="runtimeId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Identifies one of the previously defined runtime elements in which this Custom Task is defined.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  Descriptive name for this Custom Task. This will be displayed in the Tool Palette.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string">
+            <annotation>
+               <documentation>
+                  Description used in dialogs and tooltips.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="type" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Identifies the business object model type. If the business object model is persisted as an EMF resource, this corresponds to the EMF EClass of the object representing this extensible element.
                </documentation>
             </annotation>
          </attribute>

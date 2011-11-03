@@ -14,9 +14,11 @@ package org.eclipse.bpmn2.modeler.ui.features.choreography;
 
 import org.eclipse.bpmn2.ChoreographyLoopType;
 import org.eclipse.bpmn2.ChoreographyTask;
+import org.eclipse.bpmn2.SubChoreography;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -55,7 +57,7 @@ public class ChoreographyTaskFeatureContainer extends AbstractChoreographyFeatur
 
 		@Override
 		protected ChoreographyTask createFlowElement(ICreateContext context) {
-			ChoreographyTask task = ModelHandler.FACTORY.createChoreographyTask();
+			ChoreographyTask task = Bpmn2ModelerFactory.create(ChoreographyTask.class);
 			task.setName("Choreography Task");
 			task.setLoopType(ChoreographyLoopType.NONE);
 			return task;

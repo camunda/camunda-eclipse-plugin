@@ -190,7 +190,7 @@ public class TableCursor extends Canvas {
 		});
 				
 		// Show the TableCursor when the user releases the "SHIFT" or "CTRL" key.
-		// This signals the end of the multiple selection customTask.
+		// This signals the end of the multiple selection modelObject.
 		table.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {

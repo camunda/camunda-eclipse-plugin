@@ -14,9 +14,11 @@ package org.eclipse.bpmn2.modeler.ui.features.data;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.DataOutput;
+import org.eclipse.bpmn2.DataStore;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.data.AbstractCreateDataInputOutputFeature;
 import org.eclipse.bpmn2.modeler.core.features.data.AddDataFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
@@ -71,7 +73,7 @@ public class DataOutputFeatureContainer extends AbstractDataFeatureContainer {
 		@SuppressWarnings("unchecked")
 		@Override
 		public DataOutput add(Object target, ModelHandler handler) {
-			DataOutput dataOutput = ModelHandler.FACTORY.createDataOutput();
+			DataOutput dataOutput = Bpmn2ModelerFactory.create(DataOutput.class);
 //			dataOutput.setId(EcoreUtil.generateUUID());
 			dataOutput.setName("Data Output");
 			handler.addDataOutput(target, dataOutput);

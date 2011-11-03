@@ -16,12 +16,14 @@ import java.util.Iterator;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.DataObject;
+import org.eclipse.bpmn2.DataObjectReference;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.features.data.AddDataFeature;
 import org.eclipse.bpmn2.modeler.core.features.data.Properties;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -125,7 +127,7 @@ public class DataObjectFeatureContainer extends AbstractDataFeatureContainer {
 
 		@Override
 		protected DataObject createFlowElement(ICreateContext context) {
-			DataObject data = ModelHandler.FACTORY.createDataObject();
+			DataObject data = Bpmn2ModelerFactory.create(DataObject.class);
 			data.setIsCollection(false);
 			data.setName("Data Object");
 			return data;

@@ -519,7 +519,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
 		// Add supertypes to classes
 		documentRootEClass.getESuperTypes().add(theBpmn2Package.getDocumentRoot());
-		importTypeEClass.getESuperTypes().add(theBpmn2Package.getImport());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(documentRootEClass, DocumentRoot.class, "DocumentRoot", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

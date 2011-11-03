@@ -13,9 +13,11 @@
 package org.eclipse.bpmn2.modeler.ui.features.event;
 
 import org.eclipse.bpmn2.IntermediateCatchEvent;
+import org.eclipse.bpmn2.IntermediateThrowEvent;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractCreateEventFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AddEventFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
@@ -56,7 +58,7 @@ public class IntermediateCatchEventFeatureContainer extends AbstractEventFeature
 
 		@Override
 		protected IntermediateCatchEvent createFlowElement(ICreateContext context) {
-			IntermediateCatchEvent event = ModelHandler.FACTORY.createIntermediateCatchEvent();
+			IntermediateCatchEvent event = Bpmn2ModelerFactory.create(IntermediateCatchEvent.class);
 			event.setName("Catch");
 			return event;
 		}

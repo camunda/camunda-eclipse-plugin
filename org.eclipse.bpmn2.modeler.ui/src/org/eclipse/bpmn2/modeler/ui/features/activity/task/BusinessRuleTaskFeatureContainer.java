@@ -14,9 +14,11 @@ package org.eclipse.bpmn2.modeler.ui.features.activity.task;
 
 import org.eclipse.bpmn2.BusinessRuleTask;
 import org.eclipse.bpmn2.Task;
+import org.eclipse.bpmn2.Transaction;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.AbstractCreateTaskFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.AddTaskFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.IAddFeature;
@@ -65,7 +67,7 @@ public class BusinessRuleTaskFeatureContainer extends AbstractTaskFeatureContain
 
 		@Override
 		protected Task createFlowElement(ICreateContext context) {
-			BusinessRuleTask task = ModelHandler.FACTORY.createBusinessRuleTask();
+			BusinessRuleTask task = Bpmn2ModelerFactory.create(BusinessRuleTask.class);
 			task.setName("Business Rule Task");
 			task.setImplementation("##unspecified");
 			return task;

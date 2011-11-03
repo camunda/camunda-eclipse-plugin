@@ -12,12 +12,14 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.event;
 
+import org.eclipse.bpmn2.CancelEventDefinition;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractCreateEventFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AddEventFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -76,7 +78,7 @@ public class StartEventFeatureContainer extends AbstractEventFeatureContainer {
 
 		@Override
 		protected Event createFlowElement(ICreateContext context) {
-			StartEvent start = ModelHandler.FACTORY.createStartEvent();
+			StartEvent start = Bpmn2ModelerFactory.create(StartEvent.class);
 			start.setName("Start");
 			start.setIsInterrupting(true);
 			return start;

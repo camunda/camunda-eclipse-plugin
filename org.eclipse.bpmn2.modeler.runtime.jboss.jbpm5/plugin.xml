@@ -221,6 +221,74 @@
 				</value>
 			</property>
 		</customTask>
+		
+		<modelExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.process"
+			runtimeId="org.jboss.runtime.jbpm5"
+			name="Process Extensions"
+			type="Process">
+			<property name="extensionValues">
+				<value>
+					<property name="value">
+						<value>
+							<property name="DocumentRoot.global">
+								<value>
+									<property name="identifier" value=""/>
+									<property name="type" value=""/>
+								</value>
+							</property>
+						</value>
+					</property>
+				</value>
+			</property>
+			<property name="extensionValues">
+				<value>
+					<property name="value">
+						<value>
+							<property name="DocumentRoot.importType">
+								<value>
+									<property name="name" value=""/>
+								</value>
+							</property>
+						</value>
+					</property>
+				</value>
+			</property>
+			<property name="version" value="1"/>
+			<property name="packageName" value=""/>
+		</modelExtension>
+		
+		<modelExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.sequenceFlow"
+			runtimeId="org.jboss.runtime.jbpm5"
+			name="SequenceFlow Extensions"
+			type="SequenceFlow">
+			<property name="priority" value="1"/>
+		</modelExtension>
+		
+		<modelExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.Task"
+			runtimeId="org.jboss.runtime.jbpm5"
+			name="Task Extensions"
+			type="Task">
+			<property name="taskName" value=""/>
+			<property name="displayName" value="" type="EString"/>
+			<property name="icon" value="" type="EString"/>
+			<property name="extensionValues">
+				<value>
+					<property name="value">
+						<value>
+							<property name="DocumentRoot.onEntryScript">
+								<value>
+									<property name="script" value=""/>
+									<property name="scriptFormat" value=""/>
+								</value>
+							</property>
+						</value>
+					</property>
+				</value>
+			</property>			
+		</modelExtension>
 
 	</extension>
 	

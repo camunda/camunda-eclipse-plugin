@@ -1452,40 +1452,13 @@ public interface ModelPackage extends EPackage {
 	int IMPORT_TYPE = 2;
 
 	/**
-	 * The feature id for the '<em><b>Import Type</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int IMPORT_TYPE__IMPORT_TYPE = Bpmn2Package.IMPORT__IMPORT_TYPE;
-
-	/**
-	 * The feature id for the '<em><b>Location</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int IMPORT_TYPE__LOCATION = Bpmn2Package.IMPORT__LOCATION;
-
-	/**
-	 * The feature id for the '<em><b>Namespace</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int IMPORT_TYPE__NAMESPACE = Bpmn2Package.IMPORT__NAMESPACE;
-
-	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IMPORT_TYPE__NAME = Bpmn2Package.IMPORT_FEATURE_COUNT + 0;
+	int IMPORT_TYPE__NAME = 0;
 
 	/**
 	 * The number of structural features of the '<em>Import Type</em>' class.
@@ -1494,7 +1467,7 @@ public interface ModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IMPORT_TYPE_FEATURE_COUNT = Bpmn2Package.IMPORT_FEATURE_COUNT + 1;
+	int IMPORT_TYPE_FEATURE_COUNT = 1;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.OnEntryScriptTypeImpl <em>On Entry Script Type</em>}' class.

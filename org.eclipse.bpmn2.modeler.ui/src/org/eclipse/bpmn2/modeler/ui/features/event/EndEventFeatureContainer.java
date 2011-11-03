@@ -14,9 +14,11 @@ package org.eclipse.bpmn2.modeler.ui.features.event;
 
 import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.Event;
+import org.eclipse.bpmn2.IntermediateCatchEvent;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractCreateEventFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AddEventFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -54,7 +56,7 @@ public class EndEventFeatureContainer extends AbstractEventFeatureContainer {
 
 		@Override
 		protected Event createFlowElement(ICreateContext context) {
-			EndEvent end = ModelHandler.FACTORY.createEndEvent();
+			EndEvent end = Bpmn2ModelerFactory.create(EndEvent.class);
 			end.setName("End");
 			return end;
 		}

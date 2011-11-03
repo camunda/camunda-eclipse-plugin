@@ -6,6 +6,7 @@
  */
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.bpmn2.Import;
 
 /**
@@ -24,7 +25,7 @@ import org.eclipse.bpmn2.Import;
  * @model extendedMetaData="name='import_._type' kind='empty'"
  * @generated
  */
-public interface ImportType extends Import {
+public interface ImportType extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->

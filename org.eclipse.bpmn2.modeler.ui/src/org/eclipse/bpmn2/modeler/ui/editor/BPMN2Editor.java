@@ -132,6 +132,13 @@ public class BPMN2Editor extends DiagramEditor {
 		return activeEditor;
 	}
 	
+	private void setActiveEditor(BPMN2Editor editor) {
+		activeEditor = editor;
+		if (activeEditor!=null) {
+			TargetRuntime.setCurrentRuntime( getTargetRuntime() );
+		}
+	}
+
 	public static BPMN2Editor getEditor(ResourceSet resourceSet) {
 	    Iterator<Adapter> it = resourceSet.eAdapters().iterator();
 	    while (it.hasNext()) {
@@ -174,6 +181,7 @@ public class BPMN2Editor extends DiagramEditor {
 		// add a listener so we get notified if the workbench is shutting down.
 		// in this case we don't want to delete the temp file!
 		addWorkbenchListener();
+		setActiveEditor(this);
 		
 		super.init(site, input);
 		addSelectionListener();
@@ -352,7 +360,7 @@ public class BPMN2Editor extends DiagramEditor {
 				@Override
 				public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 					if (part == BPMN2Editor.this) {
-						activeEditor = BPMN2Editor.this;
+						setActiveEditor(BPMN2Editor.this );
 					}
 				}
 				
@@ -422,7 +430,7 @@ public class BPMN2Editor extends DiagramEditor {
 		getResourceSet().eAdapters().remove(getEditorAdapter());
 		removeSelectionListener();
 		if (instances==0)
-			activeEditor = null;
+			setActiveEditor(null);
 		
 		super.dispose();
 		ModelHandlerLocator.releaseModel(modelUri);

@@ -13,9 +13,11 @@
 package org.eclipse.bpmn2.modeler.ui.features.event;
 
 import org.eclipse.bpmn2.IntermediateThrowEvent;
+import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractCreateEventFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AddEventFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
@@ -56,7 +58,7 @@ public class IntermediateThrowEventFeatureContainer extends AbstractEventFeature
 
 		@Override
 		protected IntermediateThrowEvent createFlowElement(ICreateContext context) {
-			IntermediateThrowEvent event = ModelHandler.FACTORY.createIntermediateThrowEvent();
+			IntermediateThrowEvent event = Bpmn2ModelerFactory.create(IntermediateThrowEvent.class);
 			event.setName("Throw");
 			return event;
 		}

@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 import java.util.Iterator;
 
 import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.AdHocSubProcess;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.CallableElement;
 import org.eclipse.bpmn2.GlobalBusinessRuleTask;
@@ -31,6 +32,7 @@ import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Expand;
@@ -135,7 +137,7 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 		
 		@Override
 		protected CallActivity createFlowElement(ICreateContext context) {
-			CallActivity callActivity = ModelHandler.FACTORY.createCallActivity();
+			CallActivity callActivity = Bpmn2ModelerFactory.create(CallActivity.class);
 			callActivity.setName("Call Activity");
 			return callActivity;
 		}

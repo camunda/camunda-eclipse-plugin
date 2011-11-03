@@ -39,7 +39,7 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 	protected CustomTaskDescriptor customTaskDescriptor;
 	
 	/* (non-Javadoc)
-	 * Determine if the context applies to this customTask and return the Task object. Return null otherwise.
+	 * Determine if the context applies to this modelObject and return the Task object. Return null otherwise.
 	 * @param context - the Graphiti context.
 	 * 
 	 * @see org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer#getApplyObject(org.eclipse.graphiti.features.context.IContext)
@@ -70,7 +70,7 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 	}
 	
 	/**
-	 * Set this customTask's ID in the given Graphiti context.
+	 * Set this modelObject's ID in the given Graphiti context.
 	 * 
 	 * @param context - if this is a IPictogramElementContext, set the property
 	 *                  in the contained PictogramElement's list of properties;
@@ -89,10 +89,10 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 	}
 	
 	/**
-	 * Returns the customTask ID string from the given Graphiti context.
+	 * Returns the modelObject ID string from the given Graphiti context.
 	 * 
 	 * @param context
-	 * @return - ID string for this customTask.
+	 * @return - ID string for this modelObject.
 	 */
 	public static String getId(IContext context) {
 		Object id = null;
@@ -107,12 +107,12 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 	}
 	
 	/**
-	 * Set this customTask's ID string. The ID is defined in the plugin's
-	 * extension point contribution to org.eclipse.bpmn2.modeler.custom_task.
+	 * Set this modelObject's ID string. The ID is defined in the plugin's
+	 * extension point contribution to org.eclipse.bpmn2.modeler.rutime.
 	 * This will register the Custom Task with the BPMN Feature Provider.
 	 * 
 	 * @param fp - Feature Provider (must be a BPMNFeatureProvider)
-	 * @param id - the customTask ID string.
+	 * @param id - the modelObject ID string.
 	 * @throws Exception
 	 *    Custom Task ID can not be null
 	 *    The Feature Provider is invalid (not a BPMNFeatureProvider)
@@ -127,9 +127,9 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 		this.id = id;
 		
 		if (fp instanceof BPMNFeatureProvider) {
-			// register this custom customTask ID with the BPMNFeatureProvider;
+			// register this custom modelObject ID with the BPMNFeatureProvider;
 			// this will allow the feature provider to find the correct feature container class
-			// for this custom customTask, instead of the generic "Task" feature container
+			// for this custom modelObject, instead of the generic "Task" feature container
 			BPMNFeatureProvider bfp = (BPMNFeatureProvider)fp;
 			try {
 				bfp.addFeatureContainer(this);
@@ -168,7 +168,7 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 	 * Base class for Custom Task Feature construction. Custom Tasks contributed to
 	 * the editor MUST subclass this!
 	 * 
-	 * The Task creation process copies the customTask ID string into the Graphiti create
+	 * The Task creation process copies the modelObject ID string into the Graphiti create
 	 * context during the construction phase, then migrates that ID into the created
 	 * PictogramElement. This is necessary because the ID must be associated with the
 	 * PE in to allow our BPMNFeatureProvider to correctly identify the Custom Task.

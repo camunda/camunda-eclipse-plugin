@@ -12,11 +12,13 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity.task;
 
+import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.UserTask;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.AbstractCreateTaskFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.AddTaskFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.IAddFeature;
@@ -58,13 +60,13 @@ public class UserTaskFeatureContainer extends AbstractTaskFeatureContainer {
 			super(fp, "User Task",
 					"A User Task is a typical \"workflow\" Task where a human"
 					+" performer performs the Task with the assistance of a"
-					+" software application and is scheduled through a customTask"
+					+" software application and is scheduled through a modelObject"
 					+" list manager of some sort.");
 		}
 
 		@Override
 		protected Task createFlowElement(ICreateContext context) {
-			UserTask task = ModelHandler.FACTORY.createUserTask();
+			UserTask task = Bpmn2ModelerFactory.create(UserTask.class);
 			task.setName("User Task");
 			return task;
 		}

@@ -18,6 +18,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Choreography;
@@ -37,12 +38,15 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.EcorePackage;
+import org.eclipse.emf.ecore.impl.EAttributeImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
+import org.eclipse.emf.ecore.util.FeatureMapUtil;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
@@ -491,6 +495,14 @@ public class ModelUtil {
 	}
 	
 	public static EAttribute createDynamicAttribute(EPackage pkg, EObject object, String name, String type) {
+		EClass docRoot = ExtendedMetaData.INSTANCE.getDocumentRoot(pkg);
+		for (EStructuralFeature f : docRoot.getEStructuralFeatures()) {
+			if (f.getName().equals(name)) {
+				if (f instanceof EAttribute)
+					return (EAttribute)f;
+				return null;
+			}
+		}
 		if (type==null)
 			type = "EString";
 		
@@ -500,10 +512,50 @@ public class ModelUtil {
 		attr.setEType(eDataType);
 		ExtendedMetaData.INSTANCE.setFeatureKind(attr,ExtendedMetaData.ATTRIBUTE_FEATURE);
 		
-		EClass docRoot = ExtendedMetaData.INSTANCE.getDocumentRoot(pkg);
 		docRoot.getEStructuralFeatures().add(attr);
 		ExtendedMetaData.INSTANCE.setNamespace(attr, pkg.getNsURI());
 
 		return attr;
 	}
+	
+	public static EReference createDynamicReference(EPackage pkg, EObject object, String name, EObject value) {
+		EClass docRoot = ExtendedMetaData.INSTANCE.getDocumentRoot(pkg);
+		for (EStructuralFeature f : docRoot.getEStructuralFeatures()) {
+			if (f.getName().equals(name)) {
+				if (f instanceof EReference)
+					return (EReference)f;
+				return null;
+			}
+		}
+		EReference ref = EcorePackage.eINSTANCE.getEcoreFactory().createEReference();
+		ref.setName(name);
+		EClass eClass = value.eClass();
+		ref.setEType(eClass);
+		ExtendedMetaData.INSTANCE.setFeatureKind(ref,ExtendedMetaData.ELEMENT_FEATURE);
+		
+		docRoot.getEStructuralFeatures().add(ref);
+		ExtendedMetaData.INSTANCE.setNamespace(ref, pkg.getNsURI());
+
+		return ref;
+	}
+		
+	@SuppressWarnings("unchecked")
+	public static EStructuralFeature addAnyAttribute(EObject childObject, String namespace, String name, Object value) {
+		EStructuralFeature anyAttribute = childObject.eClass().getEStructuralFeature(Bpmn2Package.BASE_ELEMENT__ANY_ATTRIBUTE);
+		List<BasicFeatureMap.Entry> anyMap = (List<BasicFeatureMap.Entry>)childObject.eGet(anyAttribute);
+		for (BasicFeatureMap.Entry fe : anyMap) {
+			if (fe.getEStructuralFeature() instanceof EAttributeImpl) {
+				EAttributeImpl a = (EAttributeImpl) fe.getEStructuralFeature();
+				if (namespace.equals(a.getExtendedMetaData().getNamespace()) && name.equals(a.getName())) {
+					return a;
+				}
+			}
+		}
+		
+		// this featuremap can only hold attributes, not elements
+		EStructuralFeature attr = ExtendedMetaData.INSTANCE.demandFeature(namespace, name, false);
+		anyMap.add( FeatureMapUtil.createEntry(attr, value) );
+		return attr;
+	}
+
 }

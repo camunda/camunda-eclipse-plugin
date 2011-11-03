@@ -18,12 +18,14 @@ import java.util.List;
 
 import org.eclipse.bpmn2.DataStore;
 import org.eclipse.bpmn2.DataStoreReference;
+import org.eclipse.bpmn2.Message;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
@@ -189,9 +191,9 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 		protected DataStoreReference createFlowElement(ICreateContext context) {
 			DataStoreReference dataStoreReference = null;
 			try {
-				dataStoreReference = ModelHandler.FACTORY.createDataStoreReference();
+				dataStoreReference = Bpmn2ModelerFactory.create(DataStoreReference.class);
 
-				DataStore dataStore = ModelHandler.FACTORY.createDataStore();
+				DataStore dataStore = Bpmn2ModelerFactory.create(DataStore.class);
 				dataStore.setName("New Data Store");
 				
 				List<DataStore> dataStoreList = new ArrayList<DataStore>();

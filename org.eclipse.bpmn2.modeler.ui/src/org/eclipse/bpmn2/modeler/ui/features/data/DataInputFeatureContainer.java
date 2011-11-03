@@ -14,9 +14,11 @@ package org.eclipse.bpmn2.modeler.ui.features.data;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.DataInput;
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.data.AbstractCreateDataInputOutputFeature;
 import org.eclipse.bpmn2.modeler.core.features.data.AddDataFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
@@ -70,7 +72,7 @@ public class DataInputFeatureContainer extends AbstractDataFeatureContainer {
 		@SuppressWarnings("unchecked")
 		@Override
 		public DataInput add(Object target, ModelHandler handler) {
-			DataInput dataInput = ModelHandler.FACTORY.createDataInput();
+			DataInput dataInput = Bpmn2ModelerFactory.create(DataInput.class);
 //			dataInput.setId(EcoreUtil.generateUUID());
 			dataInput.setName("Data Input");
 			handler.addDataInput(target, dataInput);

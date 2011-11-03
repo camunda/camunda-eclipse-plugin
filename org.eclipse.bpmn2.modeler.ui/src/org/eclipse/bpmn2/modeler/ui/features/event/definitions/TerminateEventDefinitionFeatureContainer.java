@@ -20,6 +20,7 @@ import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.CreateEventDefinition;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.DecorationAlgorithm;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.EventDefinitionFeatureContainer;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
@@ -91,7 +92,7 @@ public class TerminateEventDefinitionFeatureContainer extends EventDefinitionFea
 
 		@Override
 		protected EventDefinition createEventDefinition(ICreateContext context) {
-			return ModelHandler.FACTORY.createTerminateEventDefinition();
+			return Bpmn2ModelerFactory.create(TerminateEventDefinition.class);
 		}
 
 		@Override

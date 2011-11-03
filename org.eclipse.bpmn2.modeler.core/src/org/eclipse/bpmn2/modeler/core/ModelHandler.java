@@ -92,7 +92,6 @@ import org.eclipse.wst.wsdl.Definition;
 import org.eclipse.xsd.XSDSchema;
 
 public class ModelHandler {
-	public static final Bpmn2Factory FACTORY = Bpmn2Factory.eINSTANCE;
 
 	Bpmn2ResourceImpl resource;
 
@@ -937,13 +936,13 @@ public class ModelHandler {
 	
 	public void initialize(EObject newObject) {
 		if (newObject!=null) {
-			if (newObject.eClass().getEPackage() == Bpmn2Package.eINSTANCE) {
-				// Set appropriate default values for the object features here
-				switch (newObject.eClass().getClassifierID()) {
-				case Bpmn2Package.ITEM_DEFINITION:
-					((ItemDefinition)newObject).setItemKind(ItemKind.INFORMATION);
-				}
-			}
+//			if (newObject.eClass().getEPackage() == Bpmn2Package.eINSTANCE) {
+//				// Set appropriate default values for the object features here
+//				switch (newObject.eClass().getClassifierID()) {
+//				case Bpmn2Package.ITEM_DEFINITION:
+//					((ItemDefinition)newObject).setItemKind(ItemKind.INFORMATION);
+//				}
+//			}
 			
 			// if the object has an "id", assign it now.
 			String id = ModelUtil.setID(newObject,resource);

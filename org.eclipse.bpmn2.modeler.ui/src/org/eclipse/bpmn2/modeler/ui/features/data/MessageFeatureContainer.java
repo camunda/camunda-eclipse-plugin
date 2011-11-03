@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.data;
 
+import org.eclipse.bpmn2.Conversation;
 import org.eclipse.bpmn2.Message;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
@@ -20,6 +21,7 @@ import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.features.data.AbstractCreateRootElementFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
@@ -150,7 +152,7 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 
 		@Override
 		public RootElement createRootElement() {
-			Message message = ModelHandler.FACTORY.createMessage();
+			Message message = Bpmn2ModelerFactory.create(Message.class);
 			message.setName("Message");
 			return message;
 		}

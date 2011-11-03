@@ -17,6 +17,7 @@ import org.eclipse.bpmn2.InclusiveGateway;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.gateway.AbstractCreateGatewayFeature;
 import org.eclipse.bpmn2.modeler.core.features.gateway.DefaultAddGatewayFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
@@ -59,7 +60,7 @@ public class InclusiveGatewayFeatureContainer extends AbstractGatewayFeatureCont
 
 		@Override
 		protected Gateway createFlowElement(ICreateContext context) {
-			return ModelHandler.FACTORY.createInclusiveGateway();
+			return Bpmn2ModelerFactory.create(InclusiveGateway.class);
 		}
 
 		@Override

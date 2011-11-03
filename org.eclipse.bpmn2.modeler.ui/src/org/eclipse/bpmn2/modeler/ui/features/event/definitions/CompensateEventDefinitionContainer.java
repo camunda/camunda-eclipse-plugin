@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.ui.features.event.definitions;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.CompensateEventDefinition;
+import org.eclipse.bpmn2.ConditionalEventDefinition;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.StartEvent;
@@ -23,6 +24,7 @@ import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.CreateEventDefinition;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.DecorationAlgorithm;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.EventDefinitionFeatureContainer;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Compensation;
@@ -136,7 +138,7 @@ public class CompensateEventDefinitionContainer extends EventDefinitionFeatureCo
 
 		@Override
 		protected EventDefinition createEventDefinition(ICreateContext context) {
-			return ModelHandler.FACTORY.createCompensateEventDefinition();
+			return Bpmn2ModelerFactory.create(CompensateEventDefinition.class);
 		}
 
 		@Override

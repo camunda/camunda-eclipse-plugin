@@ -16,8 +16,10 @@ import java.util.Iterator;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.AdHocSubProcess;
+import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
@@ -73,7 +75,7 @@ public class AdHocSubProcessFeatureContainer extends AbstractSubProcessFeatureCo
 
 		@Override
 		protected AdHocSubProcess createFlowElement(ICreateContext context) {
-			AdHocSubProcess adHocSubProcess = ModelHandler.FACTORY.createAdHocSubProcess();
+			AdHocSubProcess adHocSubProcess = Bpmn2ModelerFactory.create(AdHocSubProcess.class);
 			adHocSubProcess.setName("Ad-Hoc SubProcess");
 			return adHocSubProcess;
 		}

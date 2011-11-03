@@ -14,11 +14,13 @@ package org.eclipse.bpmn2.modeler.ui.features.artifact;
 
 import java.io.IOException;
 
+import org.eclipse.bpmn2.Group;
 import org.eclipse.bpmn2.TextAnnotation;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
@@ -46,7 +48,7 @@ public class CreateTextAnnotationFeature extends AbstractBpmn2CreateFeature {
 
 		try {
 			ModelHandler mh = ModelHandlerLocator.getModelHandler(getDiagram().eResource());
-			ta = ModelHandler.FACTORY.createTextAnnotation();
+			ta = Bpmn2ModelerFactory.create(TextAnnotation.class);
 //			ta.setId(EcoreUtil.generateUUID());
 			mh.addArtifact(FeatureSupport.getTargetParticipant(context, mh), ta);
 			ta.setText("Enter your comment here");

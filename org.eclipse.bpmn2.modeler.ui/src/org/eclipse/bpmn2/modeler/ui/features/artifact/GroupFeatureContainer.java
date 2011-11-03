@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.ui.features.artifact;
 
 import org.eclipse.bpmn2.Artifact;
+import org.eclipse.bpmn2.CallChoreography;
 import org.eclipse.bpmn2.Group;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
@@ -20,6 +21,7 @@ import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.DefaultResizeBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.artifact.AbstractCreateArtifactFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
@@ -131,7 +133,7 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 
 		@Override
 		public Artifact createArtifact(ICreateContext context) {
-			Group group = ModelHandler.FACTORY.createGroup();
+			Group group = Bpmn2ModelerFactory.create(Group.class);
 //			group.setId(EcoreUtil.generateUUID());
 			ModelUtil.setID(group);
 			return group;

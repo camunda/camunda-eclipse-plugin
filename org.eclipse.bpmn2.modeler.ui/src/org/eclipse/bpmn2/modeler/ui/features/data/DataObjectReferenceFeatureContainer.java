@@ -13,10 +13,12 @@
 package org.eclipse.bpmn2.modeler.ui.features.data;
 
 import org.eclipse.bpmn2.DataObjectReference;
+import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.features.data.AddDataFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -61,7 +63,7 @@ public class DataObjectReferenceFeatureContainer extends AbstractDataFeatureCont
 
 		@Override
 		protected DataObjectReference createFlowElement(ICreateContext context) {
-			DataObjectReference ref = ModelHandler.FACTORY.createDataObjectReference();
+			DataObjectReference ref = Bpmn2ModelerFactory.create(DataObjectReference.class);
 			ref.setName("Data Object Ref");
 			return ref;
 		}

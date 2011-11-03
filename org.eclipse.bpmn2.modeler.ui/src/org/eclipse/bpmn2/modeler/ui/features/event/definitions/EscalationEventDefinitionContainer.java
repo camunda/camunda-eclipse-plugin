@@ -16,12 +16,14 @@ import org.eclipse.bpmn2.EscalationEventDefinition;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.IntermediateCatchEvent;
+import org.eclipse.bpmn2.LinkEventDefinition;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.CreateEventDefinition;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.DecorationAlgorithm;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.EventDefinitionFeatureContainer;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
@@ -121,7 +123,7 @@ public class EscalationEventDefinitionContainer extends EventDefinitionFeatureCo
 
 		@Override
 		protected EventDefinition createEventDefinition(ICreateContext context) {
-			return ModelHandler.FACTORY.createEscalationEventDefinition();
+			return Bpmn2ModelerFactory.create(EscalationEventDefinition.class);
 		}
 
 		@Override

@@ -99,7 +99,7 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ImportType" eSuperTypes="../../org.eclipse.bpmn2/model/BPMN20.ecore#//Import">
+  <eClassifiers xsi:type="ecore:EClass" name="ImportType">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
       <details key="name" value="import_._type"/>
       <details key="kind" value="empty"/>

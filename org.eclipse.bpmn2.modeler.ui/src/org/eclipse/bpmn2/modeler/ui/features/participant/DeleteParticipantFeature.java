@@ -26,7 +26,7 @@ public class DeleteParticipantFeature extends AbstractDefaultDeleteFeature {
 	@Override
 	public boolean canDelete(IDeleteContext context) {
 		// participant bands in a ChoreographyTask CAN NOT be "delete" (from the model)
-		// but they CAN be "removed" (from the customTask's participantRef list)
+		// but they CAN be "removed" (from the modelObject's participantRef list)
 		if (ChoreographyUtil.isChoreographyParticipantBand(context.getPictogramElement())) {
 			return false;
 		}

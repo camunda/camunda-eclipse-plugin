@@ -14,12 +14,14 @@ package org.eclipse.bpmn2.modeler.ui.features.conversation;
 
 import java.io.IOException;
 
+import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.Conversation;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -44,7 +46,7 @@ public class CreateConversationFeature extends AbstractBpmn2CreateFeature {
 		Conversation c = null;
 		try {
 			ModelHandler handler = ModelHandler.getInstance(getDiagram());
-			c = ModelHandler.FACTORY.createConversation();
+			c = Bpmn2ModelerFactory.create(Conversation.class);
 //			c.setId(EcoreUtil.generateUUID());
 			c.setName("Conversation");
 	        BPMNDiagram bpmnDiagram = BusinessObjectUtil.getFirstElementOfType(context.getTargetContainer(), BPMNDiagram.class);

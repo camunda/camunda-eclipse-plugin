@@ -19,6 +19,7 @@ import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.Process;
+import org.eclipse.bpmn2.impl.Bpmn2FactoryImpl;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -93,7 +94,7 @@ public class MoveFromDiagramToLaneFeature extends MoveLaneFeature {
 		}
 
 		if (targetLane.getChildLaneSet() == null) {
-			LaneSet createLaneSet = ModelHandler.FACTORY.createLaneSet();
+			LaneSet createLaneSet = Bpmn2FactoryImpl.eINSTANCE.createLaneSet();
 //			createLaneSet.setId(EcoreUtil.generateUUID());
 			targetLane.setChildLaneSet(createLaneSet);
 			ModelUtil.setID(createLaneSet);

@@ -12,10 +12,12 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
+import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -57,7 +59,7 @@ public class SubProcessFeatureContainer extends AbstractSubProcessFeatureContain
 		
 		@Override
 		protected SubProcess createFlowElement(ICreateContext context) {
-			SubProcess subProcess = ModelHandler.FACTORY.createSubProcess();
+			SubProcess subProcess = Bpmn2ModelerFactory.create(SubProcess.class);
 			subProcess.setName("SubProcess");
 			subProcess.setTriggeredByEvent(false);
 			return subProcess;

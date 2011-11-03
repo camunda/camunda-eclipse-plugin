@@ -12,11 +12,13 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity.task;
 
+import org.eclipse.bpmn2.ReceiveTask;
 import org.eclipse.bpmn2.ScriptTask;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.AbstractCreateTaskFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.AddTaskFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.IAddFeature;
@@ -60,7 +62,7 @@ public class ScriptTaskFeatureContainer extends AbstractTaskFeatureContainer {
 
 		@Override
 		protected Task createFlowElement(ICreateContext context) {
-			ScriptTask task = ModelHandler.FACTORY.createScriptTask();
+			ScriptTask task = Bpmn2ModelerFactory.create(ScriptTask.class);
 			task.setName("Script Task");
 			return task;
 		}

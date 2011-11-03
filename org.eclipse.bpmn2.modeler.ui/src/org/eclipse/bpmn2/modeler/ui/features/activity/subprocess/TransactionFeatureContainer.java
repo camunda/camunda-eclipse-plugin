@@ -12,9 +12,11 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
+import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.Transaction;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.IAddFeature;
@@ -87,7 +89,7 @@ public class TransactionFeatureContainer extends AbstractSubProcessFeatureContai
 
 		@Override
 		protected Transaction createFlowElement(ICreateContext context) {
-			Transaction transaction = ModelHandler.FACTORY.createTransaction();
+			Transaction transaction = Bpmn2ModelerFactory.create(Transaction.class);
 			transaction.setName("Transaction");
 			return transaction;
 		}

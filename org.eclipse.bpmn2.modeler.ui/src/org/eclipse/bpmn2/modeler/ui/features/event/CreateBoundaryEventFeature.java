@@ -16,10 +16,12 @@ import java.io.IOException;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BoundaryEvent;
+import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -52,7 +54,7 @@ public class CreateBoundaryEventFeature extends AbstractBpmn2CreateFeature {
 		try {
 			Activity activity = (Activity) getBusinessObjectForPictogramElement(context.getTargetContainer());
 			ModelHandler handler = ModelHandler.getInstance(getDiagram());
-			event = ModelHandler.FACTORY.createBoundaryEvent();
+			event = Bpmn2ModelerFactory.create(BoundaryEvent.class);
 //			event.setId(EcoreUtil.generateUUID());
 			event.setAttachedToRef(activity);
 			event.setName("Boundary event");

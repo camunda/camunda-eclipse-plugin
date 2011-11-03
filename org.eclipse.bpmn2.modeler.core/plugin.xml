@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="org.eclipse.bpmn2.modeler.custom_task" name="Custom Task" schema="schema/org.eclipse.bpmn2.modeler.custom_task.exsd"/>
    <extension-point id="org.eclipse.bpmn2.modeler.runtime" name="BPMN2 Modeler Runtime Specialization" schema="schema/org.eclipse.bpmn2.modeler.runtime.exsd"/>
+   
+	<!-- EMF Extensions -->
+   
+	<extension
+		point="org.eclipse.emf.ecore.factory_override">
+		<factory
+			class="org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory"
+			uri="http://www.omg.org/spec/BPMN/20100524/MODEL-XMI">
+		</factory>
+	</extension>
    
    <extension
          point="org.eclipse.emf.validation.constraintProviders">
@@ -50,5 +59,5 @@
             context="org.eclipse.bpmn2.modeler.core.validationContext"
             category="org.eclipse.bpmn2.modeler.core.validation"/>
    </extension>
-   
+
 </plugin>
