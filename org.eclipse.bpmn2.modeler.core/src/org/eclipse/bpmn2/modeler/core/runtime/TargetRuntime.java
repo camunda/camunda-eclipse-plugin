@@ -13,6 +13,8 @@
 package org.eclipse.bpmn2.modeler.core.runtime;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.eclipse.bpmn2.modeler.core.AbstractPropertyChangeListenerProvider;
 import org.eclipse.bpmn2.modeler.core.Activator;
@@ -50,6 +52,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 	protected ArrayList<Bpmn2SectionDescriptor> sectionDescriptors;
 	protected ArrayList<CustomTaskDescriptor> customTasks;
 	protected ArrayList<ModelExtensionDescriptor> modelExtensions;
+	protected ModelEnablementDescriptor modelEnablements;
 	
 	public TargetRuntime(String id, String name, String versions, String description) {
 		this.id = id;
@@ -94,6 +97,8 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 					RUNTIME_ID);
 
 			try {
+				// first create all the Target Runtimes because other
+				// extension elements refer to these by runtimeId
 				for (IConfigurationElement e : config) {
 					if (e.getName().equals("runtime")) {
 						String id = e.getAttribute("id");
@@ -110,6 +115,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 				
 				targetRuntimes = rtList.toArray(new TargetRuntime[rtList.size()]);
 				
+				// process model first
 				for (IConfigurationElement e : config) {
 					if (!e.getName().equals("runtime")) {
 						TargetRuntime rt = getRuntime(e);
@@ -125,7 +131,15 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 								md.setResourceFactory((ResourceFactoryImpl) e.createExecutableExtension("resourceFactory"));
 							rt.setModelDescriptor(md);
 						}
-						else if (e.getName().equals("propertyTab")) {
+					}
+				}
+				
+				// process propertyTab, customTask, modelExtension and modelEnablement next
+				for (IConfigurationElement e : config) {
+					if (!e.getName().equals("runtime")) {
+						TargetRuntime rt = getRuntime(e);
+						
+						if (e.getName().equals("propertyTab")) {
 							String id = e.getAttribute("id");
 							String category = e.getAttribute("category");
 							String label = e.getAttribute("label");
@@ -159,9 +173,26 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 							getModelExtensionProperties(me,e);
 							rt.addModelExtension(me);
 						}
+						else if (e.getName().equals("modelEnablement")) {
+							ModelEnablementDescriptor me = rt.getModelEnablements();
+							if (me==null)
+								rt.setModelEnablements(me = new ModelEnablementDescriptor(rt));
+							
+							for (IConfigurationElement c : e.getChildren()) {
+								String object = c.getAttribute("object");
+								String feature = c.getAttribute("feature");
+								if (c.getName().equals("enable")) {
+									me.setEnabled(object, feature, true);
+								}
+								else if (c.getName().equals("disable")) {
+									me.setEnabled(object, feature, false);
+								}
+							}
+						}
 					}
 				}
-				
+
+				// now that we have all the propertyTab items, process propertySections 
 				for (IConfigurationElement e : config) {
 					if (!e.getName().equals("runtime")) {
 						TargetRuntime rt = getRuntime(e);
@@ -185,9 +216,12 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 						}
 					}
 				}
-				
-				// associate property sections with their respective tabs
+
+				// All done parsing configuration elements
+				// now go back and fix up some things...
 				for (TargetRuntime rt : targetRuntimes) {
+					
+					// associate property sections with their respective tabs
 					for (Bpmn2TabDescriptor td : rt.getTabs()) {
 						for (Bpmn2SectionDescriptor sd : rt.getSections()) {
 							if (sd.tab.equals(td.id)) {
@@ -197,6 +231,39 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 							}
 						}
 					}
+					
+					// add customTask and modelExtension features to modelEnablements
+					// these are enabled by default and can't be disabled.
+					ModelEnablementDescriptor me = rt.getModelEnablements();
+					if (me==null)
+						rt.setModelEnablements(me = new ModelEnablementDescriptor(rt));
+
+					for (ModelExtensionDescriptor med : rt.getModelExtensions()) {
+						for (Property p : med.getProperties()) {
+							me.setEnabled(med.getType(), p.name, true);
+						}
+					}
+					for (CustomTaskDescriptor ct : rt.getCustomTasks()) {
+						for (Property p : ct.getProperties()) {
+							me.setEnabled(ct.getType(), p.name, true);
+						}
+					}
+					
+					// DEBUG:
+//					System.out.println("Runtime: "+rt.getName()+" # of enabled model elements: "+me.getAllEnabled().size());
+//					List<String> classes = new ArrayList<String>(me.getAllEnabled().size());
+//					classes.addAll(me.getAllEnabled());
+//					Collections.sort(classes);
+//					for (String c : classes) {
+//						System.out.println(c);
+//						List<String> features = new ArrayList<String>(me.getAllEnabled(c).size());
+//						features.addAll(me.getAllEnabled(c));
+//						Collections.sort(features);
+//						for (String f : features) {
+//							System.out.println("  "+f);
+//						}
+//					}
+//					System.out.println("");
 				}
 				
 			} catch (Exception ex) {
@@ -306,6 +373,16 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 	public void addModelExtension(ModelExtensionDescriptor me) {
 		me.setRuntime(this);
 		getModelExtensions().add(me);
+	}
+	
+	public ModelEnablementDescriptor getModelEnablements()
+	{
+		return modelEnablements;
+	}
+	
+	public void setModelEnablements(ModelEnablementDescriptor me) {
+		me.setRuntime(this);
+		modelEnablements = me;
 	}
 
 	private static void addAfterTab(ArrayList<Bpmn2TabDescriptor> list, Bpmn2TabDescriptor tab) {

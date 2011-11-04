@@ -290,6 +290,28 @@
 			</property>			
 		</modelExtension>
 
+		<modelEnablement runtimeId="org.jboss.runtime.jbpm5">
+			<disable object="all"/>
+			<enable object="Definitions"/>
+			<enable object="Process"/>
+			<enable object="StartEvent"/>
+			<enable object="EndEvent"/>
+			<enable object="BusinessRuleTask"/>
+			<enable object="ExclusiveGateway"/>
+			<enable object="InclusiveGateway"/>
+			<enable object="CallActivity"/>
+			<enable object="ScriptTask"/>
+			<enable object="IntermediateCatchEvent"/>
+			<enable object="UserTask"/>
+			<enable object="SubProcess"/>
+			<enable object="Task"/>
+			<enable object="SequenceFlow"/>
+
+			<disable object="Import"/>
+			<disable object="ExtensionDefinition"/>
+			<disable object="Relationship"/>
+		</modelEnablement>
+		
 	</extension>
 	
 </plugin>

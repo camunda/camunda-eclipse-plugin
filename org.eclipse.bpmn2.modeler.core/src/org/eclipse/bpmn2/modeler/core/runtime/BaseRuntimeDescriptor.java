@@ -18,6 +18,13 @@ public class BaseRuntimeDescriptor {
 	
 	protected TargetRuntime targetRuntime;
 	
+	public BaseRuntimeDescriptor() {
+	}
+
+	public BaseRuntimeDescriptor(TargetRuntime rt) {
+		targetRuntime = rt;
+	}
+	
 	public TargetRuntime getRuntime() {
 		return targetRuntime;
 	}

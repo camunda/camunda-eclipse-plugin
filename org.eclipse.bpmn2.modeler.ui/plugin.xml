@@ -123,6 +123,7 @@
 		</runtime>
 
 		<model runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			uri="http://www.omg.org/spec/BPMN/20100524/MODEL-XMI"
 			resourceFactory="org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceFactoryImpl">
 		</model>
 		
