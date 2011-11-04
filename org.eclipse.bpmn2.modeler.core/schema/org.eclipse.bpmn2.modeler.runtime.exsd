@@ -24,6 +24,7 @@
             <element ref="propertySection"/>
             <element ref="customTask"/>
             <element ref="modelExtension"/>
+            <element ref="modelEnablement"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -443,6 +444,60 @@ rootFeature/childFeature_1/childFeature_2#0
             <annotation>
                <documentation>
                   Identifies the business object model type. If the business object model is persisted as an EMF resource, this corresponds to the EMF EClass of the object representing this extensible element.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="modelEnablement">
+      <complexType>
+         <choice>
+            <element ref="enable" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="disable" minOccurs="0" maxOccurs="unbounded"/>
+         </choice>
+         <attribute name="runtimeId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Identifies one of the previously defined runtime elements in which this Custom Task is defined.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="enable">
+      <complexType>
+         <attribute name="object" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="feature" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="disable">
+      <complexType>
+         <attribute name="object" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="feature" type="string">
+            <annotation>
+               <documentation>
+                  
                </documentation>
             </annotation>
          </attribute>
