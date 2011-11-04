@@ -56,10 +56,7 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 			setEnabled(getSubClasses(i.getEventDefinition()), true);
 			setEnabled(getSubClasses(i.getLoopCharacteristics()), true);
 			setEnabled(getSubClasses(i.getExpression()), true);
-<<<<<<< HEAD
 			setEnabled(i.getDefinitions(), true);
-=======
->>>>>>> e599c5400a96417341377f0733275c921a766e14
 			setEnabled(i.getOperation(), true);
 			setEnabled(i.getLane(), true);
 			setEnabled(i.getEscalation(), true);
