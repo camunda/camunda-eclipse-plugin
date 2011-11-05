@@ -17,8 +17,8 @@ import java.util.Map;
 
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
-import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablementPreferences;
 import org.eclipse.bpmn2.modeler.core.runtime.IBpmn2PropertySection;
+import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.diagram.BPMNFeatureProvider;
@@ -256,11 +256,11 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 	public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
 		BPMN2Editor editor = (BPMN2Editor)part;
 		IProject project = editor.getModelFile().getProject();
-		ToolEnablementPreferences preferences = ToolEnablementPreferences.getPreferences(project);
+		ModelEnablementDescriptor modelEnablement = editor.getTargetRuntime().getModelEnablements();
 		PictogramElement pe = PropertyUtil.getPictogramElementForSelection(selection);
 		EObject selectionBO = PropertyUtil.getBusinessObjectForSelection(selection);
 		
-		if (selectionBO!=null && preferences.isEnabled(selectionBO.eClass())) {
+		if (selectionBO!=null && modelEnablement.isEnabled(selectionBO.eClass())) {
 			EObject thisBO = getBusinessObjectForPictogramElement(pe);
 			return thisBO!=null;			
 		}

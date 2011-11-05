@@ -97,7 +97,7 @@ public class DataItemsPropertySection extends AbstractBpmn2PropertySection {
 		@Override
 		protected void bindReference(Composite parent, EObject object, EReference reference) {
 			if ("structureRef".equals(reference.getName()) &&
-					preferences.isEnabled(object.eClass(), reference)) {
+					modelEnablement.isEnabled(object.eClass(), reference)) {
 				
 				if (parent==null)
 					parent = getAttributesParent();

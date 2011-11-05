@@ -68,12 +68,6 @@
 				</or>
 			</enabledWhen>
 		</page>
-
-		<page
-			class="org.eclipse.bpmn2.modeler.ui.preferences.ToolEnablementPropertyPage"
-			id="org.eclipse.bpmn2.modeler.ui.toolEnablement" name="%PROPERTY_PAGE_TOOL_ENABLEMENT"
-			category="org.eclipse.bpmn2.modeler.ui">
-		</page>
 	</extension>
 
 	<extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">

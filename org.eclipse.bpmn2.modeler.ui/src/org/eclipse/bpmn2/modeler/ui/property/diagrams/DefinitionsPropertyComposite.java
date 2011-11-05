@@ -82,16 +82,18 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 
 	@Override
 	protected void bindList(EObject object, EStructuralFeature feature) {
-		if ("imports".equals(feature.getName())) {
-			ImportsTable importsTable = new ImportsTable(propertySection);
-			importsTable.bind();
-		}
-		else if ("relationships".equals(feature.getName())) {
-			AbstractBpmn2TableComposite table = new AbstractBpmn2TableComposite(propertySection, AbstractBpmn2TableComposite.DEFAULT_STYLE);
-			table.bindList(getEObject(), feature);
-		}
-		else {
-			super.bindList(object, feature);
+		if (modelEnablement.isEnabled(object.eClass(), feature)) {
+			if ("imports".equals(feature.getName())) {
+				ImportsTable importsTable = new ImportsTable(propertySection);
+				importsTable.bind();
+			}
+			else if ("relationships".equals(feature.getName())) {
+				AbstractBpmn2TableComposite table = new AbstractBpmn2TableComposite(propertySection, AbstractBpmn2TableComposite.DEFAULT_STYLE);
+				table.bindList(getEObject(), feature);
+			}
+			else {
+				super.bindList(object, feature);
+			}
 		}
 	}
 

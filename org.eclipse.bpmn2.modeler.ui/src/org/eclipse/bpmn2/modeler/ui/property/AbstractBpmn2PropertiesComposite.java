@@ -25,7 +25,7 @@ import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.GatewayDirection;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
-import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablementPreferences;
+import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
@@ -117,7 +117,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 	protected AbstractBpmn2PropertySection propertySection;
 	protected EObject be;
 	protected FormToolkit toolkit;
-	protected ToolEnablementPreferences preferences;
+	protected ModelEnablementDescriptor modelEnablement;
 	protected ModelHandler modelHandler;
 	protected TransactionalEditingDomain domain;
 
@@ -195,8 +195,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 	 * @param object
 	 */
 	public void setEObject(BPMN2Editor bpmn2Editor, final EObject object) {
-		IProject project = bpmn2Editor.getModelFile().getProject();
-		preferences = ToolEnablementPreferences.getPreferences(project);
+		modelEnablement = bpmn2Editor.getTargetRuntime().getModelEnablements();
 		try {
 			modelHandler = ModelHandlerLocator.getModelHandler(bpmn2Editor.getDiagramTypeProvider().getDiagram()
 					.eResource());
@@ -410,7 +409,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 	
 	protected void bindAttribute(Composite parent, EObject object, EAttribute attribute) {
 
-		if (preferences.isEnabled(object.eClass(), attribute)) {
+		if (modelEnablement.isEnabled(object.eClass(), attribute)) {
 
 			if (parent==null)
 				parent = getAttributesParent();
@@ -463,7 +462,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 	}
 	
 	protected void bindReference(Composite parent, EObject object, EReference reference) {
-		if (preferences.isEnabled(object.eClass(), reference)) {
+		if (modelEnablement.isEnabled(object.eClass(), reference)) {
 			if (parent==null)
 				parent = getAttributesParent();
 			
@@ -517,7 +516,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 	
 	protected void bindList(EObject object, EStructuralFeature feature, EClass listItemClass) {
 
-		if (preferences.isEnabled(object.eClass(), feature)) {
+		if (modelEnablement.isEnabled(object.eClass(), feature)) {
 
 			AbstractBpmn2TableComposite tableComposite = null;
 			if (propertySection!=null)

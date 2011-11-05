@@ -785,7 +785,7 @@ public class WSILPreferencePage extends PreferencePage implements IWorkbenchPref
 						
 			if (element instanceof Link) {
 				Link link = (Link) element;
-				// TODO: do we need to support namespace templates in preferences?
+				// TODO: do we need to support namespace templates in modelEnablement?
 //				return  NamespaceUtils.convertUriToNamespace( link.getReferencedNamespace() );
 				return link.getReferencedNamespace();
 			}

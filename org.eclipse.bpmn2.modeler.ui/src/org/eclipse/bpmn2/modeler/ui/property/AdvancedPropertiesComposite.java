@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Definitions;
-import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablementPreferences;
+import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
 import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
@@ -78,7 +78,7 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 	private EObject be;
 	private TreeViewer treeViewer;
 	private AbstractBpmn2PropertiesComposite detailsPropertiesComposite;
-	private ToolEnablementPreferences preferences;
+	private ModelEnablementDescriptor modelEnablement;
 	private TransactionalEditingDomain domain;
 	private DomainListener domainListener;
 	private Section treeSection;
@@ -272,7 +272,7 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 		else
 			treeViewer.setInput(be);
 		
-		preferences = ToolEnablementPreferences.getPreferences(diagramEditor.getModelFile().getProject());
+		modelEnablement = diagramEditor.getTargetRuntime().getModelEnablements();
 		hookPropertySheetPageMenu();
 		treeSection.setText(ModelUtil.getObjectName(be));
 
@@ -346,8 +346,8 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 				commandValue = (EObject) command.value;
 			
 			if (root) {
-				if (eAllContainments.contains(feature) && preferences.isEnabled(commandValue.eClass())
-						&& preferences.isEnabled(commandValue.eClass(), feature)) {
+				if (eAllContainments.contains(feature) && modelEnablement.isEnabled(commandValue.eClass())
+						&& modelEnablement.isEnabled(commandValue.eClass(), feature)) {
 					Object value = baseElement.eGet(feature);
 
 					String name = PropertyUtil.deCamelCase(commandValue.eClass().getName());
@@ -357,7 +357,7 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 					manager.add(item);
 				}
 			} else {
-				if (eAllContainments.contains(feature) && preferences.isEnabled(baseElement.eClass(), feature)) {
+				if (eAllContainments.contains(feature) && modelEnablement.isEnabled(baseElement.eClass(), feature)) {
 					Object value = baseElement.eGet(feature);
 
 					String name = PropertyUtil.deCamelCase(commandValue.eClass().getName());

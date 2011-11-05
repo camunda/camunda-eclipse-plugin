@@ -158,7 +158,7 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 	String fBasePath = fPrefStore.getString(IConstants.PREF_WSIL_URL);
 
 	// The WSIL radio box is turned off if the WSIL document is not set in the
-	// preferences.
+	// modelEnablement.
 	Button fBtnWSIL;
 	Button fBtnResource;
 

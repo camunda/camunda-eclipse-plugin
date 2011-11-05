@@ -299,6 +299,9 @@
 			<enable object="BusinessRuleTask"/>
 			<enable object="ExclusiveGateway"/>
 			<enable object="InclusiveGateway"/>
+			<enable object="ParallelGateway"/>
+			<enable object="EventBasedGateway"/>
+			<enable object="ComplexGateway"/>
 			<enable object="CallActivity"/>
 			<enable object="ScriptTask"/>
 			<enable object="IntermediateCatchEvent"/>
@@ -307,9 +310,35 @@
 			<enable object="Task"/>
 			<enable object="SequenceFlow"/>
 
+			<enable object="ConditionalEventDefinition"/>
+			<enable object="TimerEventDefinition"/>
+			<enable object="SignalEventDefinition"/>
+			<enable object="MessageEventDefinition"/>
+			<enable object="EscalationEventDefinition"/>
+			<enable object="CompensateEventDefinition"/>
+			<enable object="LinkEventDefinition"/>
+			<enable object="ErrorEventDefinition"/>
+			<enable object="CancelEventDefinition"/>
+			<enable object="TerminateEventDefinition"/>
+
+			<enable object="DataStore"/>
+			<enable object="DataStoreReference"/>
+
 			<disable object="Import"/>
 			<disable object="ExtensionDefinition"/>
 			<disable object="Relationship"/>
+			<disable object="MessageFlow"/>
+			<disable object="Association"/>
+			<disable object="ConversationLink"/>
+			<disable object="ConversationAssociation"/>
+			<disable object="Collaboration"/>
+			<disable object="Choreography"/>
+			<disable object="ConversationNode"/>
+			<disable object="ExtensionAttributeDefinition"/>
+			<disable object="MessageFlowAssociation"/>
+			<disable object="Participant"/>
+			<disable object="ParticipantAssociation"/>
+			<disable object="ParticipantMultiplicity"/>
 		</modelEnablement>
 		
 	</extension>
