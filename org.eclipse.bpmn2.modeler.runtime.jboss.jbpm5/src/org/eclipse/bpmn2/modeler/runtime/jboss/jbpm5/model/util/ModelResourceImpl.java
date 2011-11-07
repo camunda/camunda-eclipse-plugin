@@ -23,10 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.bpmn2.Bpmn2Package;
-import org.eclipse.bpmn2.BusinessRuleTask;
-import org.eclipse.bpmn2.ExtensionAttributeValue;
-import org.eclipse.bpmn2.SequenceFlow;
-import org.eclipse.bpmn2.Task;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
 import org.eclipse.emf.common.util.URI;
@@ -40,6 +37,8 @@ import org.eclipse.emf.ecore.xmi.XMLHelper;
 import org.eclipse.emf.ecore.xmi.XMLLoad;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.XMLLoadImpl;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
@@ -87,6 +86,27 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
             super(xmiResource, helper, options);
         }
 
+		@Override
+		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+			for (int i=0; i<attributes.getLength(); ++i ) {
+				String n = attributes.getQName(i);
+				if (n.startsWith("xmlns:")) {
+					String v = attributes.getValue(i);
+					if (ModelPackage.eINSTANCE.getNsURI().equals(v)) {
+						Bpmn2ModelerFactory.setEnableModelExtensions(false);
+						break;
+					}
+				}
+			}
+			super.startElement(uri, localName, qName, attributes);
+		}
+
+		@Override
+		public void endDocument() {
+			super.endDocument();
+			Bpmn2ModelerFactory.setEnableModelExtensions(true);
+		}
+
 		@SuppressWarnings("unchecked")
 		@Override
 		protected void processElement(String name, String prefix, String localName) {
@@ -116,22 +136,6 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 				}
 				if (removed.size()>0)
 					anyMap.removeAll(removed);
-			
-//				if (childObject instanceof SequenceFlow) {
-//					addAnyAttribute(childObject,ModelPackage.eNS_URI, "priority", "1");
-//				}
-//				else if (childObject instanceof Process) {
-//					addAnyAttribute(childObject,ModelPackage.eNS_URI, "version", "1.0");
-//					addAnyAttribute(childObject,ModelPackage.eNS_URI, "packageName", "");
-//				}
-//				else if (childObject instanceof BusinessRuleTask) {
-//					addAnyAttribute(childObject,"http://www.jboss.org/drools/flow/gpd", "ruleFlowGroup", "");
-//				}
-//				else if (childObject instanceof Task) {
-//					addAnyAttribute(childObject,ModelPackage.eNS_URI, "taskName", "");
-//					addAnyAttribute(childObject,ModelPackage.eNS_URI, "displayName", "");
-//					addAnyAttribute(childObject,ModelPackage.eNS_URI, "icon", "");
-//				}
 			}
 			catch(Exception e) {
 			}

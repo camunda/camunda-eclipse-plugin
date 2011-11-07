@@ -20,28 +20,47 @@ import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
 
 /**
+ * This Factory will invoke the super factory to create a "bare bones"
+ * model object, and then "decorate" it with model extensions defined
+ * by the Target Runtime plugin extension.
+ *   
  * @author Bob Brodt
  *
  */
 public class Bpmn2ModelerFactory extends Bpmn2FactoryImpl {
 	
+	// Allows the XML loader for a particular target runtime to temporarily disable
+	// model extensions. This prevents extensions being added multiple times by
+	// ModelExtensionDescriptor.populateObject() every time a file is loaded.
+	protected static boolean enableModelExtensions = true;
+	
     @Override
     public EObject create(EClass eClass) {
     	EObject object = super.create(eClass);
-    	TargetRuntime rt = TargetRuntime.getCurrentRuntime();
-    	if (rt!=null) {
-	    	for (ModelExtensionDescriptor med : rt.getModelExtensions()) {
-	    		if (med.getType().equals(eClass.getName())) {
-	    			med.populateObject(object);
-	    			break;
-	    		}
+    	if (enableModelExtensions) {
+	    	TargetRuntime rt = TargetRuntime.getCurrentRuntime();
+	    	if (rt!=null) {
+		    	for (ModelExtensionDescriptor med : rt.getModelExtensions()) {
+		    		if (med.getType().equals(eClass.getName())) {
+		    			med.populateObject(object);
+		    			break;
+		    		}
+		    	}
 	    	}
     	}
     	return object;
     }
-    
+
+    public static void setEnableModelExtensions(boolean enable) {
+    	enableModelExtensions = enable;
+    }
+
+    public static boolean getEnableModelExtensions() {
+    	return enableModelExtensions;
+    }
 	
 	@SuppressWarnings("unchecked")
 	public static <T extends EObject> T create(Class<T> clazz) {
