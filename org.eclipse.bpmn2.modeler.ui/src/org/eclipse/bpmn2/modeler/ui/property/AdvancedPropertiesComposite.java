@@ -20,6 +20,7 @@ import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
@@ -272,7 +273,7 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 		else
 			treeViewer.setInput(be);
 		
-		modelEnablement = diagramEditor.getTargetRuntime().getModelEnablements();
+		modelEnablement = diagramEditor.getTargetRuntime().getModelEnablements(be);
 		hookPropertySheetPageMenu();
 		treeSection.setText(ModelUtil.getObjectName(be));
 

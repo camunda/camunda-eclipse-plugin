@@ -598,6 +598,112 @@
 		        type="org.eclipse.bpmn2.Activity">
 		  </propertySection>
 
+
+		<modelEnablement runtimeId="org.eclipse.bpmn2.modeler.runtime.none" type="Choreography">
+			<disable object="all"/>
+			<enable object="Definitions"/>
+			<enable object="Group"/>
+
+			<enable object="StartEvent"/>
+			<enable object="EndEvent"/>
+
+			<enable object="TextAnnotation"/>
+			<enable object="SequenceFlow"/>
+			<enable object="Choreography"/>
+			<enable object="SubChoreography"/>
+			<enable object="CallChoreography"/>
+			<enable object="ChoreographyTask"/>
+
+			<enable object="ExclusiveGateway"/>
+			<enable object="InclusiveGateway"/>
+			<enable object="ParallelGateway"/>
+			<enable object="EventBasedGateway"/>
+			<enable object="ComplexGateway"/>
+
+			<enable object="ConditionalEventDefinition"/>
+			<enable object="TimerEventDefinition"/>
+			<enable object="SignalEventDefinition"/>
+			<enable object="MessageEventDefinition"/>
+			<enable object="EscalationEventDefinition"/>
+			<enable object="CompensateEventDefinition"/>
+			<enable object="LinkEventDefinition"/>
+			<enable object="ErrorEventDefinition"/>
+			<enable object="CancelEventDefinition"/>
+			<enable object="TerminateEventDefinition"/>
+
+			<disable object="MessageFlow"/>
+			<disable object="ConversationLink"/>
+			<disable object="ConversationAssociation"/>
+			<disable object="Collaboration"/>
+			<disable object="ConversationNode"/>
+			<disable object="ExtensionAttributeDefinition"/>
+			<disable object="MessageFlowAssociation"/>
+		</modelEnablement>
+
+		<modelEnablement runtimeId="org.eclipse.bpmn2.modeler.runtime.none" type="Collaboration">
+			<disable object="all"/>
+			<enable object="default" feature="Process"/>
+
+			<enable object="Participant"/>
+			<enable object="Lane"/>
+			<enable object="MessageFlow"/>
+			<enable object="Conversation"/>
+			<enable object="SubConversation"/>
+			<enable object="CallConversation"/>
+			<enable object="ConversationLink"/>
+		</modelEnablement>
+
+		<modelEnablement runtimeId="org.eclipse.bpmn2.modeler.runtime.none" type="Process">
+			<disable object="all"/>
+			<enable object="Definitions"/>
+			<enable object="Process"/>
+
+			<enable object="StartEvent"/>
+			<enable object="EndEvent"/>
+
+			<enable object="BusinessRuleTask"/>
+			<enable object="ExclusiveGateway"/>
+			<enable object="InclusiveGateway"/>
+			<enable object="ParallelGateway"/>
+			<enable object="EventBasedGateway"/>
+			<enable object="ComplexGateway"/>
+			<enable object="CallActivity"/>
+			<enable object="ScriptTask"/>
+			<enable object="IntermediateCatchEvent"/>
+			<enable object="UserTask"/>
+			<enable object="SubProcess"/>
+			<enable object="Task"/>
+			<enable object="SequenceFlow"/>
+
+			<enable object="ConditionalEventDefinition"/>
+			<enable object="TimerEventDefinition"/>
+			<enable object="SignalEventDefinition"/>
+			<enable object="MessageEventDefinition"/>
+			<enable object="EscalationEventDefinition"/>
+			<enable object="CompensateEventDefinition"/>
+			<enable object="LinkEventDefinition"/>
+			<enable object="ErrorEventDefinition"/>
+			<enable object="CancelEventDefinition"/>
+			<enable object="TerminateEventDefinition"/>
+
+			<enable object="DataStore"/>
+			<enable object="DataStoreReference"/>
+			
+			<disable object="Lane"/>
+			<disable object="MessageFlow"/>
+			<disable object="Association"/>
+			<disable object="ConversationLink"/>
+			<disable object="ConversationAssociation"/>
+			<disable object="Collaboration"/>
+			<disable object="Choreography"/>
+			<disable object="ConversationNode"/>
+			<disable object="ExtensionAttributeDefinition"/>
+			<disable object="MessageFlowAssociation"/>
+			<disable object="Participant"/>
+			<disable object="ParticipantAssociation"/>
+			<disable object="ParticipantMultiplicity"/>
+		</modelEnablement>
+
 	</extension>
 
 </plugin>

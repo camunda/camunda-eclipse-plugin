@@ -19,9 +19,11 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.di.BpmnDiPackage;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -37,6 +39,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 
 	private Hashtable<String, HashSet<String>> classes = new Hashtable<String, HashSet<String>>();
+	private String type;
 	
 	// require a TargetRuntime!
 	private ModelEnablementDescriptor() {
@@ -47,6 +50,14 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 		setEnabledAll(true);
 	}
 
+	public void setType(String type) {
+		this.type = type;
+	}
+	
+	public String getType() {
+		return type;
+	}
+	
 	private void setEnabledAll(boolean enabled) {
 		if (enabled) {
 			Bpmn2Package i = Bpmn2Package.eINSTANCE;
@@ -112,8 +123,6 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 	
 	public void setEnabled(String className, boolean enabled) {
 		EClass eClass = getEClass(className);
-		if (eClass==null)
-			return;
 		
 		// add an entry for the class name by itself
 		if (enabled) {
@@ -121,16 +130,18 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 				return;
 			HashSet<String> features = new HashSet<String>();
 			classes.put(className, features);
-			for (EAttribute a : eClass.getEAllAttributes()) {
-				features.add(a.getName());
-			}
-			for (EReference a : eClass.getEAllContainments()) {
-				features.add(a.getName());
-				setEnabled(a.getEReferenceType(), true);
-			}
-			for (EReference a : eClass.getEAllReferences()) {
-				features.add(a.getName());
-				setEnabled(a.getEReferenceType(), true);
+			if (eClass!=null) {
+				for (EAttribute a : eClass.getEAllAttributes()) {
+					features.add(a.getName());
+				}
+				for (EReference a : eClass.getEAllContainments()) {
+					features.add(a.getName());
+					setEnabled(a.getEReferenceType(), true);
+				}
+				for (EReference a : eClass.getEAllReferences()) {
+					features.add(a.getName());
+					setEnabled(a.getEReferenceType(), true);
+				}
 			}
 		}
 		else {
@@ -143,26 +154,44 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 			List<String> removed = new ArrayList<String>();
 			for (Entry<String, HashSet<String>> entry : classes.entrySet()) {
 				EClass ec = getEClass(entry.getKey());
-				HashSet<String> features = entry.getValue();
-
-				for (EReference a : ec.getEAllContainments()) {
-					// if this feature is a reference to the
-					// class being disabled, remove it
-					if (a.getEReferenceType() == eClass)
-						removed.add(a.getName());
+				if (ec!=null) {
+					HashSet<String> features = entry.getValue();
+	
+					for (EReference a : ec.getEAllContainments()) {
+						// if this feature is a reference to the
+						// class being disabled, remove it
+						if (a.getEReferenceType() == eClass)
+							removed.add(a.getName());
+					}
+					for (EReference a : ec.getEAllReferences()) {
+						if (a.getEReferenceType() == eClass)
+							removed.add(a.getName());
+					}
+					features.removeAll(removed);
 				}
-				for (EReference a : ec.getEAllReferences()) {
-					if (a.getEReferenceType() == eClass)
-						removed.add(a.getName());
-				}
-				features.removeAll(removed);
 			}
 		}
 	}
 	
 	public void setEnabled(String className, String featureName, boolean enabled) {
-		if ("all".equals(className))
+		if ("all".equals(className)) {
+			// enable all model objects
 			setEnabledAll(enabled);
+		}
+		else if ("default".equals(className)) {
+			// select the set of enablements from the default runtime
+			// an optional featureName is used to specify a ModelEnablement type
+			TargetRuntime rt = TargetRuntime.getDefaultRuntime();
+			String type = getType();
+			if (featureName!=null)
+				type = featureName;
+			Set <Entry<String, HashSet<String>>> otherClasses = rt.getModelEnablements(ModelUtil.getDiagramType(type)).classes.entrySet(); 
+			for (Entry<String, HashSet<String>> entry : otherClasses) {
+				for (String feature : entry.getValue()) {
+					setEnabled(entry.getKey(), feature, enabled);
+				}
+			}
+		}
 		else if (featureName!=null && !featureName.isEmpty()) {
 			if (enabled) {
 				HashSet<String> features;

@@ -23,9 +23,12 @@ import org.eclipse.bpmn2.modeler.core.features.activity.task.ICustomTaskFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor.Property;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor.Value;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceFactoryImpl;
@@ -52,7 +55,8 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 	protected ArrayList<Bpmn2SectionDescriptor> sectionDescriptors;
 	protected ArrayList<CustomTaskDescriptor> customTasks;
 	protected ArrayList<ModelExtensionDescriptor> modelExtensions;
-	protected ModelEnablementDescriptor modelEnablements;
+	protected ArrayList<ModelEnablementDescriptor> modelEnablements;
+	protected ModelEnablementDescriptor defaultModelEnablements;
 	
 	public TargetRuntime(String id, String name, String versions, String description) {
 		this.id = id;
@@ -134,12 +138,55 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 					}
 				}
 				
+				// need to process the Default Runtime first (defined in o.e.b.m.ui) because
+				// other plugins can refer to this.
+				for (IConfigurationElement e : config) {
+					if (!e.getName().equals("runtime")) {
+						TargetRuntime rt = getRuntime(e);
+						if (rt.getId().equals(TargetRuntime.DEFAULT_RUNTIME_ID)) {
+							if (e.getName().equals("propertyTab")) {
+								String id = e.getAttribute("id");
+								String category = e.getAttribute("category");
+								String label = e.getAttribute("label");
+								
+								Bpmn2TabDescriptor td = new Bpmn2TabDescriptor(id,category,label);
+								td.afterTab = e.getAttribute("afterTab");
+								td.replaceTab = e.getAttribute("replaceTab");
+								String indented = e.getAttribute("indented");
+								td.indented = indented!=null && indented.trim().equalsIgnoreCase("true");
+								
+								rt.getTabs().add(td);
+							}
+							if (e.getName().equals("modelEnablement")) {
+								ModelEnablementDescriptor me;
+								String type = e.getAttribute("type");
+								rt.addModelEnablements(me = new ModelEnablementDescriptor(rt));
+								me.setType(type);
+								
+								for (IConfigurationElement c : e.getChildren()) {
+									String object = c.getAttribute("object");
+									String feature = c.getAttribute("feature");
+									if (c.getName().equals("enable")) {
+										me.setEnabled(object, feature, true);
+									}
+									else if (c.getName().equals("disable")) {
+										me.setEnabled(object, feature, false);
+									}
+								}
+							}
+						}
+					}
+				}
 				// process propertyTab, customTask, modelExtension and modelEnablement next
 				for (IConfigurationElement e : config) {
 					if (!e.getName().equals("runtime")) {
 						TargetRuntime rt = getRuntime(e);
 						
 						if (e.getName().equals("propertyTab")) {
+							if (rt.getId().equals(TargetRuntime.DEFAULT_RUNTIME_ID)) {
+								// already done
+								continue;
+							}
 							String id = e.getAttribute("id");
 							String category = e.getAttribute("category");
 							String label = e.getAttribute("label");
@@ -174,9 +221,14 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 							rt.addModelExtension(me);
 						}
 						else if (e.getName().equals("modelEnablement")) {
-							ModelEnablementDescriptor me = rt.getModelEnablements();
-							if (me==null)
-								rt.setModelEnablements(me = new ModelEnablementDescriptor(rt));
+							if (rt.getId().equals(TargetRuntime.DEFAULT_RUNTIME_ID)) {
+								// already done
+								continue;
+							}
+							ModelEnablementDescriptor me;
+							String type = e.getAttribute("type");
+							rt.addModelEnablements(me = new ModelEnablementDescriptor(rt));
+							me.setType(type);
 							
 							for (IConfigurationElement c : e.getChildren()) {
 								String object = c.getAttribute("object");
@@ -234,36 +286,38 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 					
 					// add customTask and modelExtension features to modelEnablements
 					// these are enabled by default and can't be disabled.
-					ModelEnablementDescriptor me = rt.getModelEnablements();
-					if (me==null)
-						rt.setModelEnablements(me = new ModelEnablementDescriptor(rt));
-
-					for (ModelExtensionDescriptor med : rt.getModelExtensions()) {
-						for (Property p : med.getProperties()) {
-							me.setEnabled(med.getType(), p.name, true);
+					for (ModelEnablementDescriptor me : rt.getModelEnablements()) {
+						for (ModelExtensionDescriptor med : rt.getModelExtensions()) {
+							for (Property p : med.getProperties()) {
+								me.setEnabled(med.getType(), p.name, true);
+							}
 						}
-					}
-					for (CustomTaskDescriptor ct : rt.getCustomTasks()) {
-						for (Property p : ct.getProperties()) {
-							me.setEnabled(ct.getType(), p.name, true);
+						for (CustomTaskDescriptor ct : rt.getCustomTasks()) {
+							me.setEnabled(ct.getId(), true);
+							for (Property p : ct.getProperties()) {
+								me.setEnabled(ct.getType(), p.name, true);
+								// the tool palette checks for enablement of this custom task ID
+							}
 						}
-					}
 					
 					// DEBUG:
-//					System.out.println("Runtime: "+rt.getName()+" # of enabled model elements: "+me.getAllEnabled().size());
-//					List<String> classes = new ArrayList<String>(me.getAllEnabled().size());
-//					classes.addAll(me.getAllEnabled());
-//					Collections.sort(classes);
-//					for (String c : classes) {
-//						System.out.println(c);
-//						List<String> features = new ArrayList<String>(me.getAllEnabled(c).size());
-//						features.addAll(me.getAllEnabled(c));
-//						Collections.sort(features);
-//						for (String f : features) {
-//							System.out.println("  "+f);
-//						}
-//					}
-//					System.out.println("");
+						System.out.println("Runtime: '"+rt.getName()+
+								"'\nEnablement type: '"+me.getType()+
+								"'\nNumber of enabled model elements: "+me.getAllEnabled().size());
+						List<String> classes = new ArrayList<String>(me.getAllEnabled().size());
+						classes.addAll(me.getAllEnabled());
+						Collections.sort(classes);
+						for (String c : classes) {
+							System.out.println(c);
+							List<String> features = new ArrayList<String>(me.getAllEnabled(c).size());
+							features.addAll(me.getAllEnabled(c));
+							Collections.sort(features);
+							for (String f : features) {
+								System.out.println("  "+f);
+							}
+						}
+						System.out.println("");
+					}
 				}
 				
 			} catch (Exception ex) {
@@ -375,14 +429,41 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 		getModelExtensions().add(me);
 	}
 	
-	public ModelEnablementDescriptor getModelEnablements()
+	public ArrayList<ModelEnablementDescriptor> getModelEnablements()
 	{
+		if (modelEnablements==null) {
+			modelEnablements = new ArrayList<ModelEnablementDescriptor>();
+		}
 		return modelEnablements;
 	}
 	
-	public void setModelEnablements(ModelEnablementDescriptor me) {
+	public ModelEnablementDescriptor getModelEnablements(EObject object)
+	{
+		return getModelEnablements( ModelUtil.getDiagramType(object) );
+	}
+	
+	public ModelEnablementDescriptor getModelEnablements(Bpmn2DiagramType diagramType)
+	{
+		for (ModelEnablementDescriptor me : getModelEnablements()) {
+			String s = diagramType.name();
+			if (diagramType == Bpmn2DiagramType.NONE && me.getType()==null)
+				return me;
+			if (s.equalsIgnoreCase(me.getType()))
+				return me;
+		}
+		if (this != getDefaultRuntime()) {
+			// fall back to enablements from Default Runtime
+			return getDefaultRuntime().getModelEnablements(diagramType);
+		}
+		
+		if (defaultModelEnablements==null)
+			defaultModelEnablements = new ModelEnablementDescriptor(getDefaultRuntime());
+		return defaultModelEnablements;
+	}
+	
+	public void addModelEnablements(ModelEnablementDescriptor me) {
 		me.setRuntime(this);
-		modelEnablements = me;
+		getModelEnablements().add(me);
 	}
 
 	private static void addAfterTab(ArrayList<Bpmn2TabDescriptor> list, Bpmn2TabDescriptor tab) {

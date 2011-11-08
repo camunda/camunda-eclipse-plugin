@@ -198,25 +198,8 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 
 			super.setValueFromId(object, eReference, ids);
 		}
-		
-		@SuppressWarnings("unchecked")
-		protected void addAnyAttribute(EObject childObject, String namespace, String name, Object value) {
-			EStructuralFeature anyAttribute = childObject.eClass().getEStructuralFeature(Bpmn2Package.BASE_ELEMENT__ANY_ATTRIBUTE);
-			List<BasicFeatureMap.Entry> anyMap = (List<BasicFeatureMap.Entry>)childObject.eGet(anyAttribute);
-			for (BasicFeatureMap.Entry fe : anyMap) {
-				if (fe.getEStructuralFeature() instanceof EAttributeImpl) {
-					EAttributeImpl a = (EAttributeImpl) fe.getEStructuralFeature();
-					if (namespace.equals(a.getExtendedMetaData().getNamespace()) && name.equals(a.getName())) {
-						return;
-					}
-				}
-			}
-			
-			EStructuralFeature attr = extendedMetaData.demandFeature(namespace, name, false);
-			anyMap.add( FeatureMapUtil.createEntry(attr, value) );
-		}
 	}
-
+	
 	public static class Bpmn2ModelerXMLSave extends XMLSaveImpl {
 
 		public Bpmn2ModelerXMLSave(XMLHelper helper) {

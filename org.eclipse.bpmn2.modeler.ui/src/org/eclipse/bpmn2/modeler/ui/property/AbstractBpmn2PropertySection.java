@@ -20,6 +20,7 @@ import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.runtime.IBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.diagram.BPMNFeatureProvider;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
@@ -255,10 +256,9 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 	@Override
 	public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
 		BPMN2Editor editor = (BPMN2Editor)part;
-		IProject project = editor.getModelFile().getProject();
-		ModelEnablementDescriptor modelEnablement = editor.getTargetRuntime().getModelEnablements();
 		PictogramElement pe = PropertyUtil.getPictogramElementForSelection(selection);
 		EObject selectionBO = PropertyUtil.getBusinessObjectForSelection(selection);
+		ModelEnablementDescriptor modelEnablement = editor.getTargetRuntime().getModelEnablements(selectionBO);
 		
 		if (selectionBO!=null && modelEnablement.isEnabled(selectionBO.eClass())) {
 			EObject thisBO = getBusinessObjectForPictogramElement(pe);

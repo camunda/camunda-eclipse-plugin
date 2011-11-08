@@ -23,6 +23,7 @@ import org.eclipse.bpmn2.modeler.core.features.event.EventSelectionBehavior;
 import org.eclipse.bpmn2.modeler.core.runtime.CustomTaskDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.bpmn2.modeler.ui.FeatureMap;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
@@ -32,6 +33,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.FeatureCheckerAdapter;
@@ -49,6 +51,7 @@ import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.palette.IPaletteCompartmentEntry;
 import org.eclipse.graphiti.palette.impl.ConnectionCreationToolEntry;
@@ -81,7 +84,9 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 		}
 
 		BPMN2Editor editor = (BPMN2Editor)getDiagramTypeProvider().getDiagramEditor();
-		ModelEnablementDescriptor med = editor.getTargetRuntime().getModelEnablements();
+		Diagram diagram = getDiagramTypeProvider().getDiagram();
+		Object object = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(diagram);
+		ModelEnablementDescriptor med = editor.getTargetRuntime().getModelEnablements((EObject)object);
 		
 		List<IPaletteCompartmentEntry> ret = new ArrayList<IPaletteCompartmentEntry>();
 
@@ -98,7 +103,7 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 		createDataCompartments(med, ret, featureProvider);
 		createOtherCompartments(med, ret, featureProvider);
 
-		createCustomTasks(ret, featureProvider);
+		createCustomTasks(med, ret, featureProvider);
 
 		return ret.toArray(new IPaletteCompartmentEntry[ret.size()]);
 	}
@@ -183,6 +188,8 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 
 		for (ICreateFeature cf : tools) {
 			EClass feature = FeatureMap.getElement(cf);
+			if (feature==null)
+				continue;
 			if (med.isEnabled(feature) && neededEntries.contains(cf.getClass())) {
 				ObjectCreationToolEntry objectCreationToolEntry = new ObjectCreationToolEntry(cf.getCreateName(),
 						cf.getCreateDescription(), cf.getCreateImageId(), cf.getCreateLargeImageId(), cf);
@@ -191,29 +198,29 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 		}
 	}
 
-	private void createCustomTasks(List<IPaletteCompartmentEntry> ret, IFeatureProvider featureProvider) {
+	private void createCustomTasks(ModelEnablementDescriptor med, List<IPaletteCompartmentEntry> ret, IFeatureProvider featureProvider) {
 		PaletteCompartmentEntry compartmentEntry = null;
 		BPMN2Editor editor = (BPMN2Editor) getDiagramTypeProvider().getDiagramEditor();
 		TargetRuntime rt = editor.getTargetRuntime();
 		
 		try {
 			for (CustomTaskDescriptor tc : rt.getCustomTasks()) {
-				
-				CustomTaskFeatureContainer container = (CustomTaskFeatureContainer)tc.getCreateFeature();
-
-				container.setId(featureProvider, tc.getId());
-				ICreateFeature cf = container.getCreateFeature(featureProvider);
-				ObjectCreationToolEntry objectCreationToolEntry = new ObjectCreationToolEntry(tc.getName(),
-						cf.getCreateDescription(), cf.getCreateImageId(), cf.getCreateLargeImageId(), cf);
-				
-				if (compartmentEntry==null) {
-					compartmentEntry = new PaletteCompartmentEntry("Custom Task", null);
-					compartmentEntry.setInitiallyOpen(false);
-					ret.add(compartmentEntry);
+				if (med.isEnabled(tc.getId())) {
+					CustomTaskFeatureContainer container = (CustomTaskFeatureContainer)tc.getCreateFeature();
+	
+					container.setId(featureProvider, tc.getId());
+					ICreateFeature cf = container.getCreateFeature(featureProvider);
+					ObjectCreationToolEntry objectCreationToolEntry = new ObjectCreationToolEntry(tc.getName(),
+							cf.getCreateDescription(), cf.getCreateImageId(), cf.getCreateLargeImageId(), cf);
+					
+					if (compartmentEntry==null) {
+						compartmentEntry = new PaletteCompartmentEntry("Custom Task", null);
+						compartmentEntry.setInitiallyOpen(false);
+						ret.add(compartmentEntry);
+					}
+					
+					compartmentEntry.addToolEntry(objectCreationToolEntry);
 				}
-				
-				compartmentEntry.addToolEntry(objectCreationToolEntry);
-
 			}
 		} catch (Exception ex) {
 			Activator.logError(ex);

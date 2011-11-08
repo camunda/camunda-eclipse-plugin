@@ -450,33 +450,46 @@ public class ModelUtil {
 	public enum Bpmn2DiagramType {
 		NONE, PROCESS, CHOREOGRAPHY, COLLABORATION;
 	}
+
+	public static Bpmn2DiagramType getDiagramType(String name) {
+		for (Bpmn2DiagramType t : Bpmn2DiagramType.values()) {
+			if (t.toString().equalsIgnoreCase(name))
+				return t;
+		}
+		return Bpmn2DiagramType.NONE;
+	}
 	
-	public static Bpmn2DiagramType getDiagramType(BPMNDiagram diagram) {
-		Definitions defs = (Definitions)diagram.eContainer();
-		BPMNPlane plane = diagram.getPlane();
-		if (plane!=null) {
-			BaseElement be = plane.getBpmnElement();
-			if (be instanceof Process) {
-				for (RootElement re : defs.getRootElements()) {
-					if (re instanceof Choreography) {
-						for (Participant p : ((Choreography)re).getParticipants()) {
-							if (p.getProcessRef() == be)
-								return Bpmn2DiagramType.CHOREOGRAPHY;
+	public static Bpmn2DiagramType getDiagramType(EObject object) {
+		if (object!=null && object.eResource()!=null) {
+			Definitions defs = (Definitions) object.eResource().getContents().get(0).eContents().get(0);
+			if (defs.getDiagrams().size()>=1) {
+				BPMNDiagram diagram = defs.getDiagrams().get(0);
+				BPMNPlane plane = diagram.getPlane();
+				if (plane!=null) {
+					BaseElement be = plane.getBpmnElement();
+					if (be instanceof Process) {
+						for (RootElement re : defs.getRootElements()) {
+							if (re instanceof Choreography) {
+								for (Participant p : ((Choreography)re).getParticipants()) {
+									if (p.getProcessRef() == be)
+										return Bpmn2DiagramType.CHOREOGRAPHY;
+								}
+							}
+							else if (re instanceof Collaboration) {
+								for (Participant p : ((Collaboration)re).getParticipants()) {
+									if (p.getProcessRef() == be)
+										return Bpmn2DiagramType.COLLABORATION;
+								}
+							}
 						}
+						return Bpmn2DiagramType.PROCESS;
 					}
-					else if (re instanceof Collaboration) {
-						for (Participant p : ((Collaboration)re).getParticipants()) {
-							if (p.getProcessRef() == be)
-								return Bpmn2DiagramType.COLLABORATION;
-						}
-					}
+					else if (be instanceof Choreography)
+						return Bpmn2DiagramType.CHOREOGRAPHY;
+					else if (be instanceof Collaboration)
+						return Bpmn2DiagramType.COLLABORATION;
 				}
-				return Bpmn2DiagramType.PROCESS;
 			}
-			else if (be instanceof Choreography)
-				return Bpmn2DiagramType.CHOREOGRAPHY;
-			else if (be instanceof Collaboration)
-				return Bpmn2DiagramType.COLLABORATION;
 		}
 		return Bpmn2DiagramType.NONE;
 	}

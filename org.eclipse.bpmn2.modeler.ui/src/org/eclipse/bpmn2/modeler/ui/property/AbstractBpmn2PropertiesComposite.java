@@ -24,6 +24,7 @@ import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
@@ -167,7 +168,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 	 * @param object
 	 */
 	public void setEObject(BPMN2Editor bpmn2Editor, final EObject object) {
-		modelEnablement = bpmn2Editor.getTargetRuntime().getModelEnablements();
+		modelEnablement = bpmn2Editor.getTargetRuntime().getModelEnablements(object);
 		try {
 			modelHandler = ModelHandlerLocator.getModelHandler(bpmn2Editor.getDiagramTypeProvider().getDiagram()
 					.eResource());
