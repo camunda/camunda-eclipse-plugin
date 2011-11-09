@@ -30,6 +30,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener {
 	public final static String PROJECT_PREFERENCES_ID = "org.eclipse.bpmn2.modeler";
 	public final static String PREF_TARGET_RUNTIME = "target.runtime";
 	public final static String PREF_SHOW_ADVANCED_PROPERTIES = "show.advanced.properties";
+	public final static String PREF_OVERRIDE_MODEL_ENABLEMENTS = "override.model.enablements";
 	
 	private Preferences prefs;
 	private boolean loaded;
@@ -38,6 +39,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener {
 	// the per-project preferences:
 	private TargetRuntime targetRuntime;
 	private boolean showAdvancedPropertiesTab;
+	private boolean overrideModelEnablements;
 	
 	// the global user preferences:
 	// TODO: stuff like colors, fonts, etc.
@@ -75,6 +77,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener {
 			targetRuntime = TargetRuntime.getRuntime(
 					prefs.get(PREF_TARGET_RUNTIME,TargetRuntime.DEFAULT_RUNTIME_ID));
 			showAdvancedPropertiesTab = prefs.getBoolean(PREF_SHOW_ADVANCED_PROPERTIES, true);
+			overrideModelEnablements = prefs.getBoolean(PREF_OVERRIDE_MODEL_ENABLEMENTS, false);
 			loaded = true;
 		}
 	}
@@ -84,6 +87,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener {
 		if (dirty) {
 			prefs.put(PREF_TARGET_RUNTIME,targetRuntime.getId());
 			prefs.putBoolean(PREF_SHOW_ADVANCED_PROPERTIES, showAdvancedPropertiesTab);
+			prefs.putBoolean(PREF_OVERRIDE_MODEL_ENABLEMENTS, overrideModelEnablements);
 			prefs.flush();
 			
 			dirty = false;
@@ -141,6 +145,16 @@ public class Bpmn2Preferences implements IPreferenceChangeListener {
 	
 	public void setShowAdvancedPropertiesTab(boolean show) {
 		showAdvancedPropertiesTab = show;
+		dirty = true;
+	}
+	
+	public boolean getOverrideModelEnablements() {
+		load();
+		return overrideModelEnablements;
+	}
+	
+	public void setOverrideModelEnablements(boolean override) {
+		overrideModelEnablements = override;
 		dirty = true;
 	}
 

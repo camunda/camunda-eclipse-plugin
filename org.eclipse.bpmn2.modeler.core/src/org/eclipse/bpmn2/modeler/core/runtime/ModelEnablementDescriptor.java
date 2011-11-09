@@ -23,7 +23,10 @@ import java.util.Set;
 
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.di.BpmnDiPackage;
+import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
+import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablementPreferences;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -40,6 +43,8 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 
 	private Hashtable<String, HashSet<String>> classes = new Hashtable<String, HashSet<String>>();
 	private String type;
+	private Bpmn2Preferences bpmn2Preferences;
+	private ToolEnablementPreferences toolEnablementPreferences;
 	
 	// require a TargetRuntime!
 	private ModelEnablementDescriptor() {
@@ -48,6 +53,11 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 	public ModelEnablementDescriptor(TargetRuntime rt) {
 		super(rt);
 		setEnabledAll(true);
+		
+		IProject project = TargetRuntime.getActiveProject();
+		bpmn2Preferences = new Bpmn2Preferences(project);
+		toolEnablementPreferences = ToolEnablementPreferences.getPreferences(project);
+
 	}
 
 	public void setType(String type) {
@@ -215,6 +225,12 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 	}
 
 	public boolean isEnabled(String className, String featureName) {
+		if (bpmn2Preferences.getOverrideModelEnablements()) {
+			String name = className;
+			if (featureName!=null && !featureName.isEmpty())
+				name += "." + featureName;
+			return toolEnablementPreferences.isEnabled(name);
+		}
 		if (classes.containsKey(className)) {
 			if (featureName!=null && !featureName.isEmpty()) {
 				return classes.get(className).contains(featureName);
@@ -233,7 +249,7 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 	}
 
 	public boolean isEnabled(String className) {
-		return classes.containsKey(className);
+		return isEnabled(className, null);
 	}
 	
 	public Collection<String> getAllEnabled() {

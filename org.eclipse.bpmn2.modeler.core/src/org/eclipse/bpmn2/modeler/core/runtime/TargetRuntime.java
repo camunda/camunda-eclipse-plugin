@@ -25,6 +25,8 @@ import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor.Property;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor.Value;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
@@ -32,6 +34,10 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceFactoryImpl;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.views.navigator.ResourceNavigator;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 
 
@@ -562,5 +568,23 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 
 	public void setRuntimeExtension(IBpmn2RuntimeExtension runtimeExtension) {
 		this.runtimeExtension = runtimeExtension;
+	}
+
+	// TODO: use CNF for indigo & future - keep ResourceNavigator for backward compatibility
+	// TODO: move to some other utility class
+	public static IProject getActiveProject() {
+		IViewPart[] parts = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViews();
+		IProject activeProject = null;
+
+		for (int i = 0; i < parts.length; i++) {
+			if (parts[i] instanceof ResourceNavigator) {
+				ResourceNavigator navigator = (ResourceNavigator) parts[i];
+				StructuredSelection sel = (StructuredSelection) navigator.getTreeViewer().getSelection();
+				IResource resource = (IResource) sel.getFirstElement();
+				activeProject = resource.getProject();
+				break;
+			}
+		}
+		return activeProject;
 	}
 }

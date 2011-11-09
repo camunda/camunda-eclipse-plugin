@@ -18,9 +18,9 @@ import org.eclipse.ui.IWorkbench;
  * us to create a page that is small and knows how to 
  * save, restore and apply itself.
  * <p>
- * This page is used to modify modelEnablement only. They
+ * This page is used to modify preferences only. They
  * are stored in the preference store that belongs to
- * the main plug-in class. That way, modelEnablement can
+ * the main plug-in class. That way, preferences can
  * be accessed directly via the preference store.
  */
 
@@ -37,7 +37,7 @@ public class Bpmn2HomePreferencePage
 	/**
 	 * Creates the field editors. Field editors are abstractions of
 	 * the common GUI blocks needed to manipulate various types
-	 * of modelEnablement. Each field editor knows how to save and
+	 * of preferences. Each field editor knows how to save and
 	 * restore itself.
 	 */
 	@Override
