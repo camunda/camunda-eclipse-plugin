@@ -43,8 +43,6 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 
 	private Hashtable<String, HashSet<String>> classes = new Hashtable<String, HashSet<String>>();
 	private String type;
-	private Bpmn2Preferences bpmn2Preferences;
-	private ToolEnablementPreferences toolEnablementPreferences;
 	
 	// require a TargetRuntime!
 	private ModelEnablementDescriptor() {
@@ -53,11 +51,6 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 	public ModelEnablementDescriptor(TargetRuntime rt) {
 		super(rt);
 		setEnabledAll(true);
-		
-		IProject project = TargetRuntime.getActiveProject();
-		bpmn2Preferences = new Bpmn2Preferences(project);
-		toolEnablementPreferences = ToolEnablementPreferences.getPreferences(project);
-
 	}
 
 	public void setType(String type) {
@@ -224,12 +217,24 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 			setEnabled(className, enabled);
 	}
 
+	
+	private Bpmn2Preferences getBpmn2Preferences() {
+		IProject project = TargetRuntime.getActiveProject();
+		return new Bpmn2Preferences(project);
+	}
+	
+	private ToolEnablementPreferences getToolEnablementPreferences() {
+		IProject project = TargetRuntime.getActiveProject();
+		return ToolEnablementPreferences.getPreferences(project);
+	}
+
+
 	public boolean isEnabled(String className, String featureName) {
-		if (bpmn2Preferences.getOverrideModelEnablements()) {
+		if (getBpmn2Preferences().getOverrideModelEnablements()) {
 			String name = className;
 			if (featureName!=null && !featureName.isEmpty())
 				name += "." + featureName;
-			return toolEnablementPreferences.isEnabled(name);
+			return getToolEnablementPreferences().isEnabled(name);
 		}
 		if (classes.containsKey(className)) {
 			if (featureName!=null && !featureName.isEmpty()) {
@@ -268,7 +273,7 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 	public Collection<String> getAllEnabled(String className) {
 		if (classes.containsKey(className))
 			return classes.get(className);
-		return null;
+		return new ArrayList<String>();
 	}
 	
 	public static List<EClass> getSubClasses(EClass parentClass) {

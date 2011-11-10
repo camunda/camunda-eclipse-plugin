@@ -36,6 +36,9 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceFactoryImpl;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.navigator.ResourceNavigator;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
@@ -50,6 +53,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 	// our cached registry of target runtimes contributed by other plugins
 	protected static TargetRuntime targetRuntimes[];
 	protected static TargetRuntime currentRuntime;
+	protected static IProject activeProject;
 	
 	protected String name;
 	protected String[] versions;
@@ -570,19 +574,30 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 		this.runtimeExtension = runtimeExtension;
 	}
 
+	public static void setActiveProject(IProject project) {
+		activeProject = project;
+	}
+	
 	// TODO: use CNF for indigo & future - keep ResourceNavigator for backward compatibility
 	// TODO: move to some other utility class
 	public static IProject getActiveProject() {
-		IViewPart[] parts = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViews();
-		IProject activeProject = null;
-
-		for (int i = 0; i < parts.length; i++) {
-			if (parts[i] instanceof ResourceNavigator) {
-				ResourceNavigator navigator = (ResourceNavigator) parts[i];
-				StructuredSelection sel = (StructuredSelection) navigator.getTreeViewer().getSelection();
-				IResource resource = (IResource) sel.getFirstElement();
-				activeProject = resource.getProject();
-				break;
+		if (activeProject!=null)
+			return activeProject;
+		
+		IWorkbench workbench = PlatformUI.getWorkbench(); 
+		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+		IWorkbenchPage page = window.getActivePage();
+		if (page!=null) {
+			IViewPart[] parts = page.getViews();
+	
+			for (int i = 0; i < parts.length; i++) {
+				if (parts[i] instanceof ResourceNavigator) {
+					ResourceNavigator navigator = (ResourceNavigator) parts[i];
+					StructuredSelection sel = (StructuredSelection) navigator.getTreeViewer().getSelection();
+					IResource resource = (IResource) sel.getFirstElement();
+					activeProject = resource.getProject();
+					break;
+				}
 			}
 		}
 		return activeProject;
