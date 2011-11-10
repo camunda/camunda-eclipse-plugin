@@ -19,6 +19,8 @@ import java.util.List;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablement;
 import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablementPreferences;
+import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
+import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.observable.list.WritableList;
@@ -36,9 +38,11 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
@@ -81,10 +85,10 @@ public class ToolEnablementPropertyPage extends PropertyPage {
 		container.setLayout(new GridLayout(3, false));
 		container.setLayoutData(new GridData(SWT.FILL, SWT.LEFT, true, false, 1, 1));
 		
-		final Button override = new Button(container,SWT.CHECK);
-		override.setText("Override default tool enablements with these settings:");
-		override.setSelection(bpmn2Preferences.getOverrideModelEnablements());
-		override.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 3, 1));
+		final Button btnOverride = new Button(container,SWT.CHECK);
+		btnOverride.setText("Override default tool enablements with these settings:");
+		btnOverride.setSelection(bpmn2Preferences.getOverrideModelEnablements());
+		btnOverride.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 3, 1));
 
 		checkboxTreeViewer = new CheckboxTreeViewer(container, SWT.BORDER);
 		checkboxTree = checkboxTreeViewer.getTree();
@@ -92,9 +96,36 @@ public class ToolEnablementPropertyPage extends PropertyPage {
 		data.heightHint = 200;
 		checkboxTree.setLayoutData(data);
 
-		new Label(container, SWT.NONE);
+		final Button btnCopy = new Button(container,SWT.FLAT);
+		btnCopy.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+		btnCopy.setText("Copy");
 
-		Button btnImportProfile = new Button(container, SWT.NONE);
+		final Label lblCopy = new Label(container, SWT.NONE);
+		lblCopy.setText("all enablements from Target Runtime:");
+		lblCopy.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+
+		final Combo cboCopy = new Combo(container, SWT.NONE);
+		cboCopy.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
+		TargetRuntime cr = bpmn2Preferences.getRuntime();
+		int i = 0;
+		for (TargetRuntime rt : TargetRuntime.getAllRuntimes()) {
+			for (ModelEnablementDescriptor md : rt.getModelEnablements()) {
+				String text = rt.getName();
+				if (md.getType()!=null)
+					text += " - " + md.getType();
+				cboCopy.add(text);
+				cboCopy.setData(Integer.toString(i), md);
+				if (rt == cr)
+					cboCopy.select(i);
+				++i;
+			}
+		}
+
+		Composite importExportButtons = new Composite(container, SWT.NONE);
+		importExportButtons.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 3, 1));
+		importExportButtons.setLayout(new FillLayout());
+
+		Button btnImportProfile = new Button(importExportButtons, SWT.NONE);
 		btnImportProfile.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -115,7 +146,7 @@ public class ToolEnablementPropertyPage extends PropertyPage {
 		});
 		btnImportProfile.setText("Import Profile ...");
 
-		Button btnExportProfile = new Button(container, SWT.NONE);
+		Button btnExportProfile = new Button(importExportButtons, SWT.NONE);
 		btnExportProfile.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -130,7 +161,6 @@ public class ToolEnablementPropertyPage extends PropertyPage {
 				}
 			}
 		});
-		btnExportProfile.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		btnExportProfile.setText("Export Profile ...");
 
 		checkboxTreeViewer.setComparer(new IElementComparer() {
@@ -148,14 +178,37 @@ public class ToolEnablementPropertyPage extends PropertyPage {
 		checkboxTreeViewer.setUseHashlookup(true);
 		m_bindingContext = initDataBindings();
 		
-		checkboxTree.setEnabled(override.getSelection());
-		override.addSelectionListener(new SelectionAdapter() {
+		boolean enable = btnOverride.getSelection();
+		checkboxTree.setEnabled(enable);
+		btnCopy.setEnabled(enable);
+		lblCopy.setEnabled(enable);
+		cboCopy.setEnabled(enable);
+
+		btnOverride.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				checkboxTree.setEnabled(override.getSelection());
-				bpmn2Preferences.setOverrideModelEnablements(override.getSelection());
+				boolean enable = btnOverride.getSelection();
+				checkboxTree.setEnabled(enable);
+				bpmn2Preferences.setOverrideModelEnablements(enable);
+				btnCopy.setEnabled(enable);
+				lblCopy.setEnabled(enable);
+				cboCopy.setEnabled(enable);
 			}
 		});
+		
+		btnCopy.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				int i = cboCopy.getSelectionIndex();
+				ModelEnablementDescriptor md = (ModelEnablementDescriptor) cboCopy.getData(Integer.toString(i)); 
+				toolEnablementPreferences.setEnablements(md);
+				
+				reloadPreferences();
+				checkboxTreeViewer.refresh();
+				restoreDefaults();
+			}
+		});
+
 
 		restoreDefaults();
 

@@ -18,6 +18,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.Platform;
@@ -66,6 +68,7 @@ public class ToolEnablementPreferences {
 		elementSet.addAll(getSubClasses(i.getEventDefinition()));
 		elementSet.addAll(getSubClasses(i.getLoopCharacteristics()));
 		elementSet.addAll(getSubClasses(i.getExpression()));
+		elementSet.add(i.getDefinitions());
 		elementSet.add(i.getOperation());
 		elementSet.add(i.getLane());
 		elementSet.add(i.getEscalation());
@@ -80,14 +83,6 @@ public class ToolEnablementPreferences {
 		elementSet.add(i.getConversationLink());
 		elementSet.add(i.getGroup());
 		elementSet.add(i.getConversation());
-
-		// FIXME: Move to extension point
-//		ExtendedMetaData emd = new BasicExtendedMetaData();
-//		taskName = emd.demandFeature(DROOLS_NAMESPACE, "taskName", false);
-//		waitFor = emd.demandFeature(DROOLS_NAMESPACE, "waitForCompletion", false);
-//		independent = emd.demandFeature(DROOLS_NAMESPACE, "independent", false);
-//		ruleFlowGroup = emd.demandFeature(DROOLS_NAMESPACE, "ruleFlowGroup", false);
-//		packageName = emd.demandFeature(DROOLS_NAMESPACE, "packageName", false);
 	}
 
 	private ToolEnablementPreferences(Preferences prefs) {
@@ -101,6 +96,31 @@ public class ToolEnablementPreferences {
 		return new ToolEnablementPreferences(prefs);
 	}
 
+	public void setEnablements(ModelEnablementDescriptor md) {
+		setEnabledAll(false);
+		
+		Collection<String> enablements = md.getAllEnabled();
+		for (String s : enablements) {
+			String className = null;
+			String featureName = null;
+			if (s.contains(".")) {
+				String[] a = s.split("\\.");
+				className = a[0];
+				featureName = a[1];
+			}
+			else
+				className = s;
+			for (EClass e : elementSet) {
+				if (e.getName().equals(className)) {
+					prefs.putBoolean(className, true);
+					if (featureName!=null)
+						prefs.putBoolean(className+"."+featureName, true);
+					break;
+				}
+			}
+		}
+	}
+	
 	public List<ToolEnablement> getAllElements() {
 		ArrayList<ToolEnablement> ret = new ArrayList<ToolEnablement>();
 
@@ -121,14 +141,6 @@ public class ToolEnablementPreferences {
 				}
 			}
 
-			// FIXME: create an extension
-//			ArrayList<EStructuralFeature> customAttributes = getAttributes(e);
-//			for (EStructuralFeature a : customAttributes) {
-//				if (!("id".equals(a.getName()) || "anyAttribute".equals(a.getName()))) {
-//					possibleFeatures.add(a);
-//				}
-//			}
-
 			for (EReference a : e.getEAllContainments()) {
 				possibleFeatures.add(a);
 			}
@@ -147,6 +159,26 @@ public class ToolEnablementPreferences {
 		}
 		sortTools(ret);
 		return ret;
+	}
+	
+	private void setEnabledAll(boolean enabled) {
+		for (EClass e : elementSet) {
+			prefs.putBoolean(e.getName(), enabled);
+
+			for (EAttribute a : e.getEAllAttributes()) {
+				if (!("id".equals(a.getName()) || "anyAttribute".equals(a.getName()))) {
+					prefs.putBoolean(e.getName()+"."+a.getName(), enabled);
+				}
+			}
+
+			for (EReference a : e.getEAllContainments()) {
+				prefs.putBoolean(e.getName()+"."+a.getName(), enabled);
+			}
+
+			for (EReference a : e.getEAllReferences()) {
+				prefs.putBoolean(e.getName()+"."+a.getName(), enabled);
+			}
+		}
 	}
 
 	private void sortTools(ArrayList<ToolEnablement> ret) {

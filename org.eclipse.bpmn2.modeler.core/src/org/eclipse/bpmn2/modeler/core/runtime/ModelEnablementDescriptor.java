@@ -253,7 +253,16 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 	}
 	
 	public Collection<String> getAllEnabled() {
-		return classes.keySet();
+		ArrayList<String> list = new ArrayList<String>();
+		for (Entry<String, HashSet<String>> entry : classes.entrySet()) {
+			String className = entry.getKey();
+			list.add(className);
+			HashSet<String> features = entry.getValue();
+			for (String featureName : features) {
+				list.add(className + "." + featureName);
+			}
+		}
+		return list;
 	}
 	
 	public Collection<String> getAllEnabled(String className) {
