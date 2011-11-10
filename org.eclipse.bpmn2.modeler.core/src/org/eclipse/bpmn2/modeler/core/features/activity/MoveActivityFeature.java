@@ -112,11 +112,11 @@ public class MoveActivityFeature extends MoveFlowNodeFeature {
 				newContext.putProperty(ACTIVITY_MOVE_PROPERTY, true);
 
 				IMoveShapeFeature moveFeature = getFeatureProvider().getMoveShapeFeature(newContext);
+				Graphiti.getPeService().sendToFront(context.getShape());
 				if (moveFeature.canMoveShape(newContext)) {
 					moveFeature.moveShape(newContext);
 				}
 				
-				Graphiti.getPeService().sendToFront(context.getShape());
 			}
 		}.doWork(activity, getDiagram());
 		

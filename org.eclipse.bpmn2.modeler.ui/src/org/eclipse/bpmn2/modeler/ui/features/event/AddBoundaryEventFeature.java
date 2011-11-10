@@ -66,6 +66,7 @@ public class AddBoundaryEventFeature extends AbstractAddBPMNShapeFeature {
 
 		Object prop = context.getProperty(DIImport.IMPORT_PROPERTY);
 		boolean importing = prop != null && (Boolean) prop;
+		// FIXME: what's going on here?
 		ContainerShape target = importing ? context.getTargetContainer() : (ContainerShape) context
 		        .getTargetContainer().eContainer();
 

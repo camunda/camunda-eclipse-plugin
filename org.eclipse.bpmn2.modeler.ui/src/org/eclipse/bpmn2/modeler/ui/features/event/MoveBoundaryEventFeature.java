@@ -95,8 +95,8 @@ public class MoveBoundaryEventFeature extends MoveFlowNodeFeature {
 					containerShape, (Shape) activityContainer);
 			BoundaryEventPositionHelper.assignPositionOnLineProperty(containerShape, newPos);
 		}
-
 		Graphiti.getPeService().sendToFront(containerShape);
+
 		super.postMoveShape(context);
 	}
 }

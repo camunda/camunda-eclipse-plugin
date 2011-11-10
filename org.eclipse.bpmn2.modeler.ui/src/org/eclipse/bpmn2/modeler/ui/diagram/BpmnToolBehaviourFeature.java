@@ -96,9 +96,9 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 
 		createConnectors(med, ret, featureProvider);
 
-		createEventsCompartments(med, ret, featureProvider);
 		createTasksCompartments(med, ret, featureProvider);
 		createGatewaysCompartments(med, ret, featureProvider);
+		createEventsCompartments(med, ret, featureProvider);
 		createEventDefinitionsCompartments(med, ret, featureProvider);
 		createDataCompartments(med, ret, featureProvider);
 		createOtherCompartments(med, ret, featureProvider);

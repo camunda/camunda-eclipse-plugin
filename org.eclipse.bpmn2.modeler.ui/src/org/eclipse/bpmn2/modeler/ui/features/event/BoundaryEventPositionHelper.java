@@ -12,15 +12,19 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.event;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
+import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
+import org.eclipse.graphiti.features.context.impl.MoveShapeContext;
 import org.eclipse.graphiti.mm.PropertyContainer;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
+import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -78,9 +82,14 @@ public class BoundaryEventPositionHelper {
 		GraphicsAlgorithm activityGa = activityContainer.getGraphicsAlgorithm();
 		ILocation activityLoc = peService.getLocationRelativeToDiagram(activityContainer);
 
-		if (!(activityContainer.equals(context.getTargetContainer()) || activityContainer.eContainer().equals(
-		        context.getTargetContainer()))) {
-			return false;
+		if (!activityContainer.equals(context.getTargetContainer())) {
+			if (activityContainer.eContainer().equals(context.getTargetContainer())) {
+				ContainerShape parent = (ContainerShape)activityContainer.eContainer();
+				// FIXME: what's going on here?
+				if (parent instanceof Diagram) {
+					return false;
+				}
+			}
 		}
 
 		PositionOnLine pos = getPositionOnLine(x, y, eventGa.getWidth(), eventGa.getHeight(), activityLoc.getX(),
