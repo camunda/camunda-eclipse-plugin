@@ -46,6 +46,7 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
@@ -408,7 +409,8 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 			} else if (choiceOfValues != null) {
 				ObjectEditor editor = new ComboObjectEditor(this,object,attribute);
 				editor.createControl(parent,displayName);
-			} else if ("anyAttribute".equals(attribute.getName())) {
+			} else if ("anyAttribute".equals(attribute.getName()) ||
+					object.eGet(attribute) instanceof FeatureMap) {
 				List<Entry> basicList = ((BasicFeatureMap) object.eGet(attribute)).basicList();
 				for (Entry entry : basicList) {
 					EStructuralFeature feature = entry.getEStructuralFeature();

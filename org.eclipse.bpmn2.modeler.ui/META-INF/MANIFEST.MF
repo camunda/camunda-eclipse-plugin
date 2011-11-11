@@ -48,6 +48,7 @@ Export-Package: org.eclipse.bpmn2.modeler.ui,
  org.eclipse.bpmn2.modeler.ui.preferences,
  org.eclipse.bpmn2.modeler.ui.property,
  org.eclipse.bpmn2.modeler.ui.property.editors,
+ org.eclipse.bpmn2.modeler.ui.property.tasks,
  org.eclipse.bpmn2.modeler.ui.util,
  org.eclipse.bpmn2.modeler.ui.views,
  org.eclipse.bpmn2.modeler.ui.wizards

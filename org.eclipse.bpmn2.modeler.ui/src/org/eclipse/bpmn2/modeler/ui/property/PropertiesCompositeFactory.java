@@ -101,7 +101,7 @@ public class PropertiesCompositeFactory {
 					return map.get(eClass);
 				}
 				for (Class iface : eClass.getInterfaces()) {
-					if (registry.containsKey(iface)) {
+					if (map.containsKey(iface)) {
 						return map.get(iface);
 					}
 				}

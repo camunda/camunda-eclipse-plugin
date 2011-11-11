@@ -16,13 +16,13 @@ import org.eclipse.bpmn2.modeler.core.features.activity.task.ICustomTaskFeature;
 
 public class CustomTaskDescriptor extends ModelExtensionDescriptor {
 
-	protected ICustomTaskFeature createFeature;
+	protected ICustomTaskFeature featureContainer;
 	
 	public CustomTaskDescriptor(String id, String name) {
 		super(id,name);
 	}
 	
-	public ICustomTaskFeature getCreateFeature() {
-		return createFeature;
+	public ICustomTaskFeature getFeatureContainer() {
+		return featureContainer;
 	}
 }

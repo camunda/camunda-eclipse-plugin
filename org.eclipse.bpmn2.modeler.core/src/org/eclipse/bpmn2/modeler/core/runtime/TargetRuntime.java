@@ -13,8 +13,6 @@
 package org.eclipse.bpmn2.modeler.core.runtime;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import org.eclipse.bpmn2.modeler.core.AbstractPropertyChangeListenerProvider;
 import org.eclipse.bpmn2.modeler.core.Activator;
@@ -215,9 +213,9 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 							CustomTaskDescriptor ct = new CustomTaskDescriptor(id,name);
 							ct.type = e.getAttribute("type");
 							ct.description = e.getAttribute("description");
-							ct.createFeature = (ICustomTaskFeature) e.createExecutableExtension("createFeature");
-							ct.createFeature.setCustomTaskDescriptor(ct);
-							ct.createFeature.setId(id);
+							ct.featureContainer = (ICustomTaskFeature) e.createExecutableExtension("featureContainer");
+							ct.featureContainer.setCustomTaskDescriptor(ct);
+							ct.featureContainer.setId(id);
 							getModelExtensionProperties(ct,e);
 							currentRuntime.addCustomTask(ct);
 						}
@@ -303,10 +301,10 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 							}
 						}
 						for (CustomTaskDescriptor ct : rt.getCustomTasks()) {
+							// the tool palette checks for enablement of this custom task ID
 							me.setEnabled(ct.getId(), true);
 							for (Property p : ct.getProperties()) {
 								me.setEnabled(ct.getType(), p.name, true);
-								// the tool palette checks for enablement of this custom task ID
 							}
 						}
 					
@@ -501,6 +499,15 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 		return tabDescriptors;
 	}
 
+	public static Bpmn2TabDescriptor findTabDescriptor(String id) {
+		for (TargetRuntime rt : TargetRuntime.getAllRuntimes()) {
+			Bpmn2TabDescriptor tab = rt.getTabDescriptor(id);
+			if (tab!=null)
+				return tab;
+		}
+		return null;
+	}
+	
 	public Bpmn2TabDescriptor getTabDescriptor(String id) {
 		for (Bpmn2TabDescriptor tab : getTabs()) {
 			if (tab.getId().equals(id))

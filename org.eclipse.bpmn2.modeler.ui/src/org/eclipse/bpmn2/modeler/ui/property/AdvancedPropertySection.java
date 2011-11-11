@@ -29,6 +29,7 @@ import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
@@ -45,7 +46,7 @@ public class AdvancedPropertySection extends AbstractBpmn2PropertySection {
 	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
 		return new AdvancedPropertiesComposite(this);
 	}
-
+	
 	@Override
 	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
 		EObject be = BusinessObjectUtil.getFirstElementOfType(pe, BaseElement.class,true);

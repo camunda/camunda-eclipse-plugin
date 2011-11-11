@@ -74,9 +74,11 @@ public class PropertyUtil {
 	}
 
 	public static EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
-		Object be = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(pe);
-		if (be instanceof EObject)
-			return (EObject) be;
+		if (pe!=null) {
+			Object be = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(pe);
+			if (be instanceof EObject)
+				return (EObject) be;
+		}
 		return null;
 	}
 

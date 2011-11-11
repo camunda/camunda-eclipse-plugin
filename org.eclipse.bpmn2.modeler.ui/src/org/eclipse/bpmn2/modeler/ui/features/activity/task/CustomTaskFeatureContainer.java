@@ -6,11 +6,15 @@ import java.util.List;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.impl.TaskImpl;
+import org.eclipse.bpmn2.modeler.core.features.activity.AbstractAddActivityFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.AbstractCreateTaskFeature;
+import org.eclipse.bpmn2.modeler.core.features.activity.task.AddTaskFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.ICustomTaskFeature;
 import org.eclipse.bpmn2.modeler.core.runtime.CustomTaskDescriptor;
+import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor.Property;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.ui.diagram.BPMNFeatureProvider;
+import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
@@ -96,6 +100,19 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 	 */
 	public static String getId(IContext context) {
 		Object id = null;
+
+		if (context instanceof IAddContext) {
+			EObject object = (EObject) ((IAddContext)context).getNewObject();
+			TargetRuntime rt = TargetRuntime.getCurrentRuntime();
+			for (CustomTaskDescriptor ct : rt.getCustomTasks()) {
+				id = ct.getFeatureContainer().getId(object);
+				if (id!=null) {
+					context.putProperty(CUSTOM_TASK_ID, id);
+					return (String)id;
+				}
+			}
+		}
+		
 		if (context instanceof IPictogramElementContext) {
 			PictogramElement pe = ((IPictogramElementContext)context).getPictogramElement();
 			id = Graphiti.getPeService().getPropertyValue(pe,CUSTOM_TASK_ID); 
@@ -104,6 +121,10 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 			id = context.getProperty(CUSTOM_TASK_ID);
 		}
 		return (String)id;
+	}
+
+	public String getId(EObject object) {
+		return null;
 	}
 	
 	/**
@@ -160,6 +181,11 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 	@Override
 	public ICreateFeature getCreateFeature(IFeatureProvider fp) {
 		return new CreateCustomTaskFeature(fp);
+	}
+	
+	@Override
+	public IAddFeature getAddFeature(IFeatureProvider fp) {
+		return new AddCustomTaskFeature(fp);
 	}
 
 	/**
@@ -226,4 +252,21 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 		
 	}
 
+	public class AddCustomTaskFeature extends AddTaskFeature {
+
+		/**
+		 * @param fp
+		 */
+		public AddCustomTaskFeature(IFeatureProvider fp) {
+			super(fp);
+		}
+
+		@Override
+		public PictogramElement add(IAddContext context) {
+			PictogramElement pe = super.add(context);
+			// make sure everyone knows that this PE is a custom task
+			Graphiti.getPeService().setPropertyValue(pe,CUSTOM_TASK_ID,getId());
+			return pe;
+		}
+	}
 }

@@ -37,6 +37,10 @@ public class TaskPropertySection extends AbstractBpmn2PropertySection {
 		PropertiesCompositeFactory.register(Task.class, TaskPropertiesComposite.class);
 	}
 
+	public TaskPropertySection() {
+		super();
+	}
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
 	 */

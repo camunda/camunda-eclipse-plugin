@@ -214,6 +214,12 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 		}
 	}
 
+	@Override
+	// make this public!
+	public PictogramElement getSelectedPictogramElement() {
+		return super.getSelectedPictogramElement();
+	}
+
 	/**
 	 * Ugly hack to force layout of the entire widget tree of the property sheet page.
 	 * @param parent

@@ -23,6 +23,7 @@ import org.eclipse.emf.transaction.NotificationFilter;
 import org.eclipse.emf.transaction.ResourceSetChangeEvent;
 import org.eclipse.emf.transaction.RollbackException;
 import org.eclipse.graphiti.features.IFeature;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 
 /**
@@ -60,10 +61,10 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 			String description = null;
 
 			BPMN2Editor editor = (BPMN2Editor)getDiagramEditor();
-			boolean showAdvancedProperties = editor.getPreferences().getShowAdvancedPropertiesTab();
 
 			BPMNFeatureProvider fp = (BPMNFeatureProvider) editor.getDiagramTypeProvider().getFeatureProvider();
-			IFeature cf = fp.getCreateFeatureForBusinessObject(be);
+			PictogramElement pe = propertySection.getSelectedPictogramElement();
+			IFeature cf = fp.getCreateFeatureForPictogramElement(pe);
 			if (cf instanceof AbstractBpmn2CreateConnectionFeature) {
 				AbstractBpmn2CreateConnectionFeature acf = (AbstractBpmn2CreateConnectionFeature) cf;
 				description = acf.getCreateDescription();
@@ -80,12 +81,7 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 			
 			bindAttribute(be,"id");
 			bindAttribute(be,"name");
-
-			if (showAdvancedProperties) {
-				bindReference(be, "extensionDefinitions");
-				bindList(be, "extensionValues");
-				bindList(be, "documentation");
-			}
+			bindList(be, "documentation");
 		}
 	}
 }

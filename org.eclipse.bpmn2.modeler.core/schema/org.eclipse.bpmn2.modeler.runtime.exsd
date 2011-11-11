@@ -310,6 +310,16 @@
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="description" type="string">
+            <annotation>
+               <documentation>
+                  Description used in dialogs and tooltips.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
          <attribute name="type" type="string">
             <annotation>
                <documentation>
@@ -317,7 +327,7 @@
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="createFeature" type="string" use="required">
+         <attribute name="featureContainer" type="string" use="required">
             <annotation>
                <documentation>
                   The Graphiti Feature Container that provides create, add and update functionality in the editor for this Custom Task.
@@ -325,13 +335,6 @@
                <appinfo>
                   <meta.attribute kind="java" basedOn="org.eclipse.bpmn2.modeler.ui.features.activity.task.CustomTaskFeatureContainer:"/>
                </appinfo>
-            </annotation>
-         </attribute>
-         <attribute name="description" type="string">
-            <annotation>
-               <documentation>
-                  Description used in dialogs and tooltips.
-               </documentation>
             </annotation>
          </attribute>
       </complexType>

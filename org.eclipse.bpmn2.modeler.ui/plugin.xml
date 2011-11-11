@@ -694,6 +694,9 @@
 
 			<enable object="DataStore"/>
 			<enable object="DataStoreReference"/>
+
+			<enable object="ExtensionAttributeValue"/>
+			<enable object="ExtensionAttributeDefinition"/>
 			
 			<disable object="Lane"/>
 			<disable object="MessageFlow"/>
@@ -703,7 +706,6 @@
 			<disable object="Collaboration"/>
 			<disable object="Choreography"/>
 			<disable object="ConversationNode"/>
-			<disable object="ExtensionAttributeDefinition"/>
 			<disable object="MessageFlowAssociation"/>
 			<disable object="Participant"/>
 			<disable object="ParticipantAssociation"/>

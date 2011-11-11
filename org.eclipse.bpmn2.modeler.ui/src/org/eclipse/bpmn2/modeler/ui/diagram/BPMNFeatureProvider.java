@@ -27,6 +27,9 @@ import org.eclipse.bpmn2.modeler.core.features.activity.task.ICustomTaskFeature;
 import org.eclipse.bpmn2.modeler.core.features.bendpoint.AddBendpointFeature;
 import org.eclipse.bpmn2.modeler.core.features.bendpoint.MoveBendpointFeature;
 import org.eclipse.bpmn2.modeler.core.features.bendpoint.RemoveBendpointFeature;
+import org.eclipse.bpmn2.modeler.core.runtime.CustomTaskDescriptor;
+import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
+import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.AdHocSubProcessFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.CallActivityFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.CollapseSubProcessFeature;
@@ -286,10 +289,24 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 	
 	@Override
 	public IAddFeature getAddFeature(IAddContext context) {
+		// only here do we need to search all of the Custom Task extensions to check if
+		// the newObject (in AddContext) is a Custom Task. This is because of a chicken/egg
+		// problem during DIImport: the Custom Task feature containers are not added to
+		// the toolpalette until AFTER the file is loaded (in DIImport) and getAddFeature()
+		// is called during file loading.
 		Object id = CustomTaskFeatureContainer.getId(context); 
+		if (id!=null) {
+			BPMN2Editor editor = (BPMN2Editor)getDiagramTypeProvider().getDiagramEditor();;
+			TargetRuntime rt = editor.getTargetRuntime();
+			for (CustomTaskDescriptor ct : rt.getCustomTasks()) {
+				if (id.equals(ct.getId())) {
+					CustomTaskFeatureContainer container = (CustomTaskFeatureContainer)ct.getFeatureContainer();
+					return container.getAddFeature(this);
+				}
+			}
+		}
+		
 		for (FeatureContainer container : containers) {
-			if (id!=null && !(container instanceof CustomTaskFeatureContainer))
-				continue;
 			Object o = container.getApplyObject(context);
 			if (o != null && container.canApplyTo(o)) {
 				IAddFeature feature = container.getAddFeature(this);
@@ -496,6 +513,18 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 	// TODO: move this to the adapter registry
 	public IFeature getCreateFeatureForPictogramElement(PictogramElement pe) {
 		if (pe!=null) {
+			String id = Graphiti.getPeService().getPropertyValue(pe,ICustomTaskFeature.CUSTOM_TASK_ID);
+			if (id!=null) {
+				for (FeatureContainer container : containers) {
+					if (container instanceof CustomTaskFeatureContainer) {
+						CustomTaskFeatureContainer ctf = (CustomTaskFeatureContainer)container;
+						if (id.equals(ctf.getId())) {
+							return ctf.getCreateFeature(this);
+						}
+					}
+				}
+			}
+
 			EObject be = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(pe);
 			return getCreateFeatureForBusinessObject(be);
 		}

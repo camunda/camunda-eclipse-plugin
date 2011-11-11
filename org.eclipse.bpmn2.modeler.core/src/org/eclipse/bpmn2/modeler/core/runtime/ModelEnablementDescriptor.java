@@ -238,7 +238,8 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 		}
 		if (classes.containsKey(className)) {
 			if (featureName!=null && !featureName.isEmpty()) {
-				return classes.get(className).contains(featureName);
+				HashSet<String> features = classes.get(className);
+				return features.contains(featureName);
 			}
 			return true;
 		}

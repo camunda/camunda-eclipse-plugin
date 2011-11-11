@@ -211,7 +211,8 @@ public class DIImport {
 			// FIXME: we currently generate participant bands automatically
 			return;
 		}
-		IAddFeature addFeature = featureProvider.getAddFeature(new AddContext(new AreaContext(), bpmnElement));
+		AddContext context = new AddContext(new AreaContext(), bpmnElement);
+		IAddFeature addFeature = featureProvider.getAddFeature(context);
 
 		if (addFeature == null) {
 			Activator.logStatus(new Status(IStatus.WARNING, Activator.PLUGIN_ID, "Element not supported: "
@@ -219,7 +220,6 @@ public class DIImport {
 			return;
 		}
 
-		AddContext context = new AddContext();
 		context.putProperty(IMPORT_PROPERTY, true);
 		context.setNewObject(bpmnElement);
 		context.setSize((int) shape.getBounds().getWidth(), (int) shape.getBounds().getHeight());

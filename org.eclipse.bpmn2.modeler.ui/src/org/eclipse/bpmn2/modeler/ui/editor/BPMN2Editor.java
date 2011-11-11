@@ -305,6 +305,10 @@ public class BPMN2Editor extends DiagramEditor {
 		di.setModelHandler(modelHandler);
 		di.setFeatureProvider(featureProvider);
 		di.generateFromDI();
+
+		// this needs to happen AFTER the diagram has been imported because we need
+		// to be able to determine the diagram type from the file's contents in order
+		// to build the right tool palette for the target runtime and model enablements.
 		GFPaletteRoot pr = (GFPaletteRoot)getPaletteRoot();
 		pr.updatePaletteEntries();
 	}

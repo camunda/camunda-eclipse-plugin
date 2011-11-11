@@ -24,43 +24,46 @@
 
 		<propertyTab
 			category="BPMN2"
-			id="bpmn2.jbpm.tab"
+			id="bpmn2.jbpm.customTask.tab"
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 			runtimeId="org.jboss.runtime.jbpm5"
 			label="Custom Task">
 		</propertyTab>
 
-		<propertySection
-			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmPropertySection"
-			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-			id="bpmn2.jbpm.tab.section"
+		<propertyTab
+			category="BPMN2"
+			id="bpmn2.jbpm.task.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.task.tab"
 			runtimeId="org.jboss.runtime.jbpm5"
-			tab="bpmn2.jbpm.tab">
+			label="Task">
+		</propertyTab>
+
+		<propertySection
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.CustomTaskPropertySection"
+			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+			id="bpmn2.jbpm.customTask.tab.section"
+			runtimeId="org.jboss.runtime.jbpm5"
+			tab="bpmn2.jbpm.customTask.tab">
+		</propertySection>
+
+		<propertySection
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmTaskPropertySection"
+			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+			id="bpmn2.jbpm.task.tab.section"
+			runtimeId="org.jboss.runtime.jbpm5"
+			tab="bpmn2.jbpm.task.tab">
 		</propertySection>
 
 		<customTask
-			createFeature="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.LogTaskFeatureContainer"
+			featureContainer="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmCustomTaskFeatureContainer"
 			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.LogTask"
 			runtimeId="org.jboss.runtime.jbpm5"
 			name="Log Task"
+			description="This task is used to log messages"
 			type="Task">
 			<property name="taskName" value="log"/>
 			<property name="displayName" value="Log Task" type="EString"/>
 			<property name="icon" value="icons/log.png" type="EString"/>
-			<property name="extensionValues">
-				<value>
-					<property name="value">
-						<value>
-							<property name="DocumentRoot.onEntryScript">
-								<value>
-									<property name="script" value=""/>
-									<property name="scriptFormat" value=""/>
-								</value>
-							</property>
-						</value>
-					</property>
-				</value>
-			</property>			
 			<property name="ioSpecification">
 				<value>
 					<property name="dataInputs">
@@ -116,28 +119,15 @@
 		</customTask>
 
 		<customTask
-			createFeature="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.EmailTaskFeatureContainer"
+			featureContainer="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmCustomTaskFeatureContainer"
 			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.EmailTask"
 			runtimeId="org.jboss.runtime.jbpm5"
 			name="Email Task"
+			description="This task is used to send emails"
 			type="Task">
 			<property name="taskName" value="send"/>
 			<property name="displayName" value="Email Task" type="EString"/>
 			<property name="icon" value="icons/email.png" type="EString"/>
-			<property name="extensionValues">
-				<value>
-					<property name="value">
-						<value>
-							<property name="DocumentRoot.onEntryScript">
-								<value>
-									<property name="script" value=""/>
-									<property name="scriptFormat" value=""/>
-								</value>
-							</property>
-						</value>
-					</property>
-				</value>
-			</property>			
 			<property name="ioSpecification">
 				<value>
 					<property name="dataInputs">
@@ -271,9 +261,6 @@
 			runtimeId="org.jboss.runtime.jbpm5"
 			name="Task Extensions"
 			type="Task">
-			<property name="taskName" value=""/>
-			<property name="displayName" value="" type="EString"/>
-			<property name="icon" value="" type="EString"/>
 			<property name="extensionValues">
 				<value>
 					<property name="value">
@@ -288,11 +275,30 @@
 					</property>
 				</value>
 			</property>			
+			<property name="extensionValues">
+				<value>
+					<property name="value">
+						<value>
+							<property name="DocumentRoot.onExitScript">
+								<value>
+									<property name="script" value=""/>
+									<property name="scriptFormat" value=""/>
+								</value>
+							</property>
+						</value>
+					</property>
+				</value>
+			</property>
 		</modelExtension>
 
 		<modelEnablement runtimeId="org.jboss.runtime.jbpm5" type="Process">
 			<disable object="all"/>
 			<enable object="default" feature="Process"/>
+			<enable object="ExtensionAttributeValue" feature="onEntryScript"/>
+			<enable object="ExtensionAttributeValue" feature="onExitScript"/>
+
+			<enable object="OnEntryScriptType" feature="script"/>
+			<enable object="OnEntryScriptType" feature="scriptFormat"/>
 
 			<disable object="Import"/>
 			<disable object="ExtensionDefinition"/>

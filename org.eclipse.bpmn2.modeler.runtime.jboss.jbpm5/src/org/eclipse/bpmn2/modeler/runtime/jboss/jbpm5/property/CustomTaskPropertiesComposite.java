@@ -38,52 +38,19 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.MessageBox;
 
-public class JbpmPropertiesComposite extends DefaultPropertiesComposite {
+public class CustomTaskPropertiesComposite extends DefaultPropertiesComposite {
 
-	private ArrayList<EStructuralFeature> attributes;
-	private Button customEditorButton;
-	private GridData buttonGridData;
-
-	public JbpmPropertiesComposite(Composite parent, int style) {
+	public CustomTaskPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
 	}
 
-	public JbpmPropertiesComposite(AbstractBpmn2PropertySection section) {
+	public CustomTaskPropertiesComposite(AbstractBpmn2PropertySection section) {
 		super(section);
 	}
 
 	@Override
 	public void createBindings(EObject be) {
 
-		customEditorButton = new Button(this, SWT.None);
-		customEditorButton.setText("Open Custom Editor");
-		buttonGridData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1);
-		customEditorButton.setLayoutData(buttonGridData);
-		toolkit.adapt(customEditorButton, true, true);
-		customEditorButton.addSelectionListener(new SelectionListener() {
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				MessageDialog.openInformation(getShell(), "Custom Editor", "This dialog will contain a custom editor");
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-
-			}
-		});
-
-		boolean showCustomButton = be.eClass().getInstanceClass()
-				.equals(Task.class);
-		customEditorButton.setVisible(showCustomButton);
-		buttonGridData.exclude = !showCustomButton;
-	}
-
-	private void updateDialogContents(MessageBox box) {
-		for (EStructuralFeature eStructuralFeature : attributes) {
-			if (eStructuralFeature.getName().equals("taskName"))
-				box.setMessage("Here should be a custom editor for "
-						+ be.eGet(eStructuralFeature) + " !");
-		}
+		bindAttribute(be,"anyAttribute");
 	}
 }
