@@ -132,7 +132,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 				// process model first
 				for (IConfigurationElement e : config) {
 					if (!e.getName().equals("runtime")) {
-						TargetRuntime rt = getRuntime(e);
+						currentRuntime = getRuntime(e);
 						
 						if (e.getName().equals("model")) {
 							ModelDescriptor md = new ModelDescriptor();
@@ -143,7 +143,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 							}
 							if (e.getAttribute("resourceFactory")!=null)
 								md.setResourceFactory((ResourceFactoryImpl) e.createExecutableExtension("resourceFactory"));
-							rt.setModelDescriptor(md);
+							currentRuntime.setModelDescriptor(md);
 						}
 					}
 				}
@@ -152,8 +152,8 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 				// other plugins can refer to this.
 				for (IConfigurationElement e : config) {
 					if (!e.getName().equals("runtime")) {
-						TargetRuntime rt = getRuntime(e);
-						if (rt.getId().equals(TargetRuntime.DEFAULT_RUNTIME_ID)) {
+						currentRuntime = getRuntime(e);
+						if (currentRuntime.getId().equals(TargetRuntime.DEFAULT_RUNTIME_ID)) {
 							if (e.getName().equals("propertyTab")) {
 								String id = e.getAttribute("id");
 								String category = e.getAttribute("category");
@@ -165,12 +165,12 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 								String indented = e.getAttribute("indented");
 								td.indented = indented!=null && indented.trim().equalsIgnoreCase("true");
 								
-								rt.getTabs().add(td);
+								currentRuntime.getTabs().add(td);
 							}
 							if (e.getName().equals("modelEnablement")) {
 								ModelEnablementDescriptor me;
 								String type = e.getAttribute("type");
-								rt.addModelEnablements(me = new ModelEnablementDescriptor(rt));
+								currentRuntime.addModelEnablements(me = new ModelEnablementDescriptor(currentRuntime));
 								me.setType(type);
 								
 								for (IConfigurationElement c : e.getChildren()) {
@@ -190,10 +190,10 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 				// process propertyTab, customTask, modelExtension and modelEnablement next
 				for (IConfigurationElement e : config) {
 					if (!e.getName().equals("runtime")) {
-						TargetRuntime rt = getRuntime(e);
+						currentRuntime = getRuntime(e);
 						
 						if (e.getName().equals("propertyTab")) {
-							if (rt.getId().equals(TargetRuntime.DEFAULT_RUNTIME_ID)) {
+							if (currentRuntime.getId().equals(TargetRuntime.DEFAULT_RUNTIME_ID)) {
 								// already done
 								continue;
 							}
@@ -207,7 +207,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 							String indented = e.getAttribute("indented");
 							td.indented = indented!=null && indented.trim().equalsIgnoreCase("true");
 							
-							rt.getTabs().add(td);
+							currentRuntime.getTabs().add(td);
 						}
 						else if (e.getName().equals("customTask")) {
 							String id = e.getAttribute("id");
@@ -219,7 +219,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 							ct.createFeature.setCustomTaskDescriptor(ct);
 							ct.createFeature.setId(id);
 							getModelExtensionProperties(ct,e);
-							rt.addCustomTask(ct);
+							currentRuntime.addCustomTask(ct);
 						}
 						else if (e.getName().equals("modelExtension")) {
 							String id = e.getAttribute("id");
@@ -228,16 +228,16 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 							me.type = e.getAttribute("type");
 							me.description = e.getAttribute("description");
 							getModelExtensionProperties(me,e);
-							rt.addModelExtension(me);
+							currentRuntime.addModelExtension(me);
 						}
 						else if (e.getName().equals("modelEnablement")) {
-							if (rt.getId().equals(TargetRuntime.DEFAULT_RUNTIME_ID)) {
+							if (currentRuntime.getId().equals(TargetRuntime.DEFAULT_RUNTIME_ID)) {
 								// already done
 								continue;
 							}
 							ModelEnablementDescriptor me;
 							String type = e.getAttribute("type");
-							rt.addModelEnablements(me = new ModelEnablementDescriptor(rt));
+							currentRuntime.addModelEnablements(me = new ModelEnablementDescriptor(currentRuntime));
 							me.setType(type);
 							
 							for (IConfigurationElement c : e.getChildren()) {
@@ -257,7 +257,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 				// now that we have all the propertyTab items, process propertySections 
 				for (IConfigurationElement e : config) {
 					if (!e.getName().equals("runtime")) {
-						TargetRuntime rt = getRuntime(e);
+						currentRuntime = getRuntime(e);
 
 						if (e.getName().equals("propertySection")) {
 							String id = e.getAttribute("id");
@@ -274,7 +274,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 							if (type!=null && !type.isEmpty())
 								sd.appliesToClass = Class.forName(type);
 
-							rt.getSections().add(sd);
+							currentRuntime.getSections().add(sd);
 						}
 					}
 				}
@@ -311,22 +311,22 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 						}
 					
 					// DEBUG:
-						System.out.println("Runtime: '"+rt.getName()+
-								"'\nEnablement type: '"+me.getType()+
-								"'\nNumber of enabled model elements: "+me.getAllEnabled().size());
-						List<String> classes = new ArrayList<String>(me.getAllEnabled().size());
-						classes.addAll(me.getAllEnabled());
-						Collections.sort(classes);
-						for (String c : classes) {
-							System.out.println(c);
-							List<String> features = new ArrayList<String>(me.getAllEnabled(c).size());
-							features.addAll(me.getAllEnabled(c));
-							Collections.sort(features);
-							for (String f : features) {
-								System.out.println("  "+f);
-							}
-						}
-						System.out.println("");
+//						System.out.println("Runtime: '"+rt.getName()+
+//								"'\nEnablement type: '"+me.getType()+
+//								"'\nNumber of enabled model elements: "+me.getAllEnabled().size());
+//						List<String> classes = new ArrayList<String>(me.getAllEnabled().size());
+//						classes.addAll(me.getAllEnabled());
+//						Collections.sort(classes);
+//						for (String c : classes) {
+//							System.out.println(c);
+//							List<String> features = new ArrayList<String>(me.getAllEnabled(c).size());
+//							features.addAll(me.getAllEnabled(c));
+//							Collections.sort(features);
+//							for (String f : features) {
+//								System.out.println("  "+f);
+//							}
+//						}
+//						System.out.println("");
 					}
 				}
 				

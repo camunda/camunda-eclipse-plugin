@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.ui.property;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import org.eclipse.bpmn2.modeler.core.runtime.Bpmn2SectionDescriptor;
@@ -46,10 +47,16 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class PropertiesCompositeFactory {
 
-	protected final static Map<Class,Class> registry = new HashMap<Class,Class>();
+	protected final static Hashtable<TargetRuntime, Hashtable<Class,Class>> registry = new Hashtable<TargetRuntime,Hashtable<Class,Class>>();
 	
 	public static void register(Class eClass, Class composite) {
-		registry.put(eClass, composite);
+		TargetRuntime rt = TargetRuntime.getCurrentRuntime();
+		Hashtable<Class,Class> map = registry.get(rt);
+		if (map==null) {
+			map = new Hashtable<Class,Class>();
+			registry.put(rt,map);
+		}
+		map.put(eClass, composite);
 		
 		// make sure the constructors are declared
 		try {
@@ -68,39 +75,53 @@ public class PropertiesCompositeFactory {
 		}
 	}
 	
-	public static Class unregister(EClass eClass) {
-		if (registry.containsKey(eClass))
-			return registry.remove(eClass);
+	public static Class unregister(TargetRuntime rt, EClass eClass) {
+		if (registry.containsKey(rt)) {
+			Hashtable<Class,Class> map = registry.get(rt);
+			return map.remove(eClass);
+		}
 		return null;
 	}
 	
 	public static Class findCompositeClass(Class eClass) {
-		while (eClass!=null) {
-			if (registry.containsKey(eClass)) {
-				return registry.get(eClass);
-			}
-			for (Class iface : eClass.getInterfaces()) {
-				if (registry.containsKey(iface)) {
-					return registry.get(iface);
+		TargetRuntime rt = TargetRuntime.getCurrentRuntime();
+		Class composite = findCompositeClass(registry.get(rt),eClass);
+		if (composite==null && rt!=TargetRuntime.getDefaultRuntime()) {
+			// fall back to default target runtime
+			rt = TargetRuntime.getDefaultRuntime();
+			composite = findCompositeClass(registry.get(rt),eClass);
+		}
+		return composite;
+	}
+	
+	public static Class findCompositeClass(Hashtable<Class,Class> map, Class eClass) {
+		if (map!=null) {
+			while (eClass!=null) {
+				if (map.containsKey(eClass)) {
+					return map.get(eClass);
 				}
-			}
-			// if this is an interface, it won't have a super class,
-			// so check all implemented interfaces
-			if (eClass.isInterface()) {
 				for (Class iface : eClass.getInterfaces()) {
-					Class composite = findCompositeClass(iface);
-					if (composite!=null)
-						return composite;
+					if (registry.containsKey(iface)) {
+						return map.get(iface);
+					}
 				}
+				// if this is an interface, it won't have a super class,
+				// so check all implemented interfaces
+				if (eClass.isInterface()) {
+					for (Class iface : eClass.getInterfaces()) {
+						Class composite = findCompositeClass(map,iface);
+						if (composite!=null)
+							return composite;
+					}
+				}
+				eClass = eClass.getSuperclass();
 			}
-			eClass = eClass.getSuperclass();
 		}
 		return null;
 	}
 		
 	public static AbstractBpmn2PropertiesComposite createComposite(Class eClass, AbstractBpmn2PropertySection section) {
 		AbstractBpmn2PropertiesComposite composite = null;
-		System.out.println("createComposit");
 		Class clazz = findCompositeClass(eClass);
 		if (clazz!=null) {
 			try {
