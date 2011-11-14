@@ -176,6 +176,11 @@ public class BPMN2Editor extends DiagramEditor {
 		addWorkbenchListener();
 		setActiveEditor(this);
 		
+		// allow the runtime extension to construct custom tasks and whatever else it needs
+		// custom tasks should be added to the current target runtime's custom tasks list
+		// where they will be picked up by the toolpalette refresh.
+		getTargetRuntime().getRuntimeExtension().initialize();
+		
 		super.init(site, input);
 		addSelectionListener();
 	}

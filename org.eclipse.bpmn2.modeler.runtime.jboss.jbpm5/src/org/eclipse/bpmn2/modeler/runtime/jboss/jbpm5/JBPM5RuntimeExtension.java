@@ -51,7 +51,9 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 		return false;
 	}
 
-
+	public void initialize() {
+	}
+	
 	private class RootElementParser extends SAXParser {
 		@Override
 		public void startElement(QName qName, XMLAttributes attributes, Augmentations augmentations)

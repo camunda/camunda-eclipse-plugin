@@ -25,4 +25,6 @@ public interface IBpmn2RuntimeExtension {
 	 * @return true if the file is targeted for this runtime, false if the file is generic BPMN 2.0
 	 */
 	public boolean isContentForRuntime(IFile file);
+	
+	public void initialize();
 }
