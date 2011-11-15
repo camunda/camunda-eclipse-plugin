@@ -56,6 +56,7 @@ import org.eclipse.emf.transaction.ResourceSetChangeEvent;
 import org.eclipse.emf.transaction.ResourceSetListener;
 import org.eclipse.emf.transaction.RollbackException;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Font;
@@ -65,6 +66,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.forms.events.ExpansionEvent;
+import org.eclipse.ui.forms.events.IExpansionListener;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -94,6 +97,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 	protected ModelEnablementDescriptor modelEnablement;
 	protected ModelHandler modelHandler;
 	protected TransactionalEditingDomain domain;
+	protected IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 
 	protected Section attributesSection = null;
 	protected Composite attributesComposite = null;
@@ -237,6 +241,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 			attributesComposite = toolkit.createComposite(attributesSection);
 			attributesSection.setClient(attributesComposite);
 			attributesComposite.setLayout(new GridLayout(3,false));
+			attributesSection.setExpanded(true);
 		}
 		return attributesComposite;
 	}
@@ -358,6 +363,21 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 				ExpandableComposite.EXPANDED |
 				ExpandableComposite.TITLE_BAR);
 		section.setText(title);
+		
+		final String prefKey = "section."+getEObject().eClass().getName()+title+"."+".expanded";
+		boolean expanded = preferenceStore.getBoolean(prefKey);
+		section.setExpanded(expanded);
+
+		section.addExpansionListener(new IExpansionListener() {
+			@Override
+			public void expansionStateChanging(ExpansionEvent e) {
+			}
+
+			@Override
+			public void expansionStateChanged(ExpansionEvent e) {
+				preferenceStore.setValue(prefKey, e.getState());
+			}
+		});
 		return section;
 	}
 

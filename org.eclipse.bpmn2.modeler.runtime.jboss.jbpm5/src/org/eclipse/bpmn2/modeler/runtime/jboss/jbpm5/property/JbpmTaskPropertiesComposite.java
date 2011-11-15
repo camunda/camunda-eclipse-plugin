@@ -59,16 +59,15 @@ public class JbpmTaskPropertiesComposite extends TaskPropertiesComposite {
 		// TODO: handle extension values in a generic way in AbstractBpmn2propertiesComposite
 		for (ExtensionAttributeValue eav : task.getExtensionValues()) {
 			FeatureMap fm = eav.getValue();
-			for (Entry e : fm) {
-				EStructuralFeature f = e.getEStructuralFeature();
-				if ("onEntryScript".equals(f.getName())) {
+			for (Entry entry : fm) {
+				EStructuralFeature feature = entry.getEStructuralFeature();
+				if ("onEntryScript".equals(feature.getName())) {
 					Section section = this.createSection(composite, "On Entry Script");
-					section.setExpanded(false);
 					section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 					Composite sectionComposite = toolkit.createComposite(section);
 					section.setClient(sectionComposite);
 					sectionComposite.setLayout(new GridLayout(3,false));
-					OnEntryScriptType est = (OnEntryScriptType)e.getValue();
+					OnEntryScriptType est = (OnEntryScriptType)entry.getValue();
 
 					ObjectEditor editor;
 					editor = new TextObjectEditor(this,est,est.eClass().getEStructuralFeature("scriptFormat"));
@@ -77,14 +76,13 @@ public class JbpmTaskPropertiesComposite extends TaskPropertiesComposite {
 					editor = new TextObjectEditor(this,est,est.eClass().getEStructuralFeature("script"));
 					editor.createControl(sectionComposite,"Script",SWT.MULTI);
 				}
-				else if ("onExitScript".equals(f.getName())) {
+				else if ("onExitScript".equals(feature.getName())) {
 					Section section = this.createSection(composite, "On Exit Script");
-					section.setExpanded(false);
 					section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 					Composite sectionComposite = toolkit.createComposite(section);
 					section.setClient(sectionComposite);
 					sectionComposite.setLayout(new GridLayout(3,false));
-					OnExitScriptType est = (OnExitScriptType)e.getValue();
+					OnExitScriptType est = (OnExitScriptType)entry.getValue();
 
 					ObjectEditor editor;
 					editor = new TextObjectEditor(this,est,est.eClass().getEStructuralFeature("scriptFormat"));

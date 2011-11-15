@@ -27,4 +27,11 @@ public class DefaultBpmn2RuntimeExtension implements IBpmn2RuntimeExtension {
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.bpmn2.modeler.core.IBpmn2RuntimeExtension#initialize()
+	 */
+	@Override
+	public void initialize() {
+	}
+
 }
