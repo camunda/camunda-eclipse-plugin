@@ -30,7 +30,5 @@ public class DefaultBpmn2RuntimeExtension implements IBpmn2RuntimeExtension {
 	@Override
 	public void initialize() {
 		// TODO Auto-generated method stub
-		
-	}
-
+	}		
 }

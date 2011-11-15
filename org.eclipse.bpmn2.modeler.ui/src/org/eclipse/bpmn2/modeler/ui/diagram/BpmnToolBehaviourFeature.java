@@ -111,57 +111,64 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 	private void createEventsCompartments(ModelEnablementDescriptor med, List<IPaletteCompartmentEntry> ret,
 			IFeatureProvider featureProvider) {
 		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry("Events", null);
-		ret.add(compartmentEntry);
 
 		createEntries(med, FeatureMap.EVENTS, compartmentEntry, featureProvider);
+
+		if (compartmentEntry.getToolEntries().size()>0)
+			ret.add(compartmentEntry);
 	}
 
 	private void createOtherCompartments(ModelEnablementDescriptor med, List<IPaletteCompartmentEntry> ret,
 			IFeatureProvider featureProvider) {
 		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry("Other", null);
 		compartmentEntry.setInitiallyOpen(false);
-		ret.add(compartmentEntry);
 
 		createEntries(med, FeatureMap.OTHER, compartmentEntry, featureProvider);
 
+		if (compartmentEntry.getToolEntries().size()>0)
+			ret.add(compartmentEntry);
 	}
 
 	private void createDataCompartments(ModelEnablementDescriptor med, List<IPaletteCompartmentEntry> ret,
 			IFeatureProvider featureProvider) {
 		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry("Data Items", null);
 		compartmentEntry.setInitiallyOpen(false);
-		ret.add(compartmentEntry);
 
 		createEntries(med, FeatureMap.DATA, compartmentEntry, featureProvider);
 
+		if (compartmentEntry.getToolEntries().size()>0)
+			ret.add(compartmentEntry);
 	}
 
 	private void createEventDefinitionsCompartments(ModelEnablementDescriptor med, List<IPaletteCompartmentEntry> ret,
 			IFeatureProvider featureProvider) {
 		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry("Event Definitions", null);
 		compartmentEntry.setInitiallyOpen(false);
-		ret.add(compartmentEntry);
 
 		createEntries(med, FeatureMap.EVENT_DEFINITIONS, compartmentEntry, featureProvider);
 
+		if (compartmentEntry.getToolEntries().size()>0)
+			ret.add(compartmentEntry);
 	}
 
 	private void createGatewaysCompartments(ModelEnablementDescriptor med, List<IPaletteCompartmentEntry> ret,
 			IFeatureProvider featureProvider) {
 		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry("Gateways", null);
-		ret.add(compartmentEntry);
 
 		createEntries(med, FeatureMap.GATEWAYS, compartmentEntry, featureProvider);
 
+		if (compartmentEntry.getToolEntries().size()>0)
+			ret.add(compartmentEntry);
 	}
 
 	private void createTasksCompartments(ModelEnablementDescriptor med, List<IPaletteCompartmentEntry> ret,
 			IFeatureProvider featureProvider) {
 		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry("Tasks", null);
-		ret.add(compartmentEntry);
 
 		createEntries(med, FeatureMap.TASKS, compartmentEntry, featureProvider);
 
+		if (compartmentEntry.getToolEntries().size()>0)
+			ret.add(compartmentEntry);
 	}
 
 	private void createConnectors(ModelEnablementDescriptor med, List<IPaletteCompartmentEntry> ret,

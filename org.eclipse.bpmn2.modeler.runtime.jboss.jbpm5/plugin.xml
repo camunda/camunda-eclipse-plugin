@@ -293,7 +293,11 @@
 
 		<modelEnablement runtimeId="org.jboss.runtime.jbpm5" type="Process">
 			<disable object="all"/>
-			<enable object="default" feature="Process"/>
+<!--			<enable object="default" feature="Process"/> -->
+			<enable object="StartEvent"/>
+			<enable object="EndEvent"/>
+			<enable object="ScriptTask"/>
+
 			<enable object="ExtensionAttributeValue" feature="onEntryScript"/>
 			<enable object="ExtensionAttributeValue" feature="onExitScript"/>
 

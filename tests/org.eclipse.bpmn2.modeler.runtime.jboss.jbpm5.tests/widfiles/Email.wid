@@ -3,7 +3,11 @@ import org.drools.process.core.datatype.impl.type.StringDataType;
 [
 
   [
+<<<<<<< HEAD
     "name" : "Email",
+=======
+    "name" : "Email WID",
+>>>>>>> e0e8403b9f1a310d065cb04ac713171347dfb058
     "description" : "Sending emails",
     "version" : "1.0",
     "parameters" : [
@@ -12,7 +16,11 @@ import org.drools.process.core.datatype.impl.type.StringDataType;
     	"Subject" : new StringDataType(),
     	"Body" : new StringDataType()
     ],
+<<<<<<< HEAD
     "displayName" : "Email",
+=======
+    "displayName" : "Email (WID) Task",
+>>>>>>> e0e8403b9f1a310d065cb04ac713171347dfb058
     "icon" : "email.gif",
     "eclipse:customEditor" : "org.drools.eclipse.flow.common.editor.editpart.work.EmailCustomEditor",
     "category" : "Communication",
