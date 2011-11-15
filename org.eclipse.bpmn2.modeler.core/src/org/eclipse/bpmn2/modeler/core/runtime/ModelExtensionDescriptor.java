@@ -453,4 +453,24 @@ public class ModelExtensionDescriptor extends BaseRuntimeDescriptor {
 		}
 		return null;
 	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setProperties(List<Property> properties) {
+		this.properties = properties;
+	}
 }

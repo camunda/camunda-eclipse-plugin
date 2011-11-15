@@ -25,4 +25,8 @@ public class CustomTaskDescriptor extends ModelExtensionDescriptor {
 	public ICustomTaskFeature getFeatureContainer() {
 		return featureContainer;
 	}
+
+	public void setFeatureContainer(ICustomTaskFeature featureContainer) {
+		this.featureContainer = featureContainer;
+	}
 }

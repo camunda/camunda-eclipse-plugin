@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.core.runtime;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.eclipse.bpmn2.modeler.core.AbstractPropertyChangeListenerProvider;
 import org.eclipse.bpmn2.modeler.core.Activator;
@@ -417,6 +418,16 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 			customTasks = new ArrayList<CustomTaskDescriptor>();
 		}
 		return customTasks;
+	}
+	
+	public boolean customTaskExists ( String id ) {
+		Iterator<CustomTaskDescriptor> ctIter = customTasks.iterator();
+		while (ctIter.hasNext()) {
+			CustomTaskDescriptor ctd = ctIter.next();
+			if (ctd.getId().equalsIgnoreCase(id)) 
+				return true;
+		}
+		return false;
 	}
 	
 	public void addCustomTask(CustomTaskDescriptor ct) {

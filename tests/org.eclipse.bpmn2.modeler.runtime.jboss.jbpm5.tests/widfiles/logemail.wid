@@ -2,14 +2,14 @@ import org.drools.process.core.datatype.impl.type.StringDataType;
 [
 
    [
-     "name" : "Email",
+     "name" : "SimpleEmail",
      "parameters" : [
        "From" : new StringDataType(),
        "To" : new StringDataType(),
        "Subject" : new StringDataType(),
        "Body" : new StringDataType()
      ],
-     "displayName" : "Email",
+     "displayName" : "Simple Email",
      "icon" : "icons/import_statement.gif",
      "customEditor" :
 "org.drools.eclipse.flow.common.editor.editpart.work.EmailCustomEditor"

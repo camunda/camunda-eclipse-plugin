@@ -1,0 +1,24 @@
+import org.drools.process.core.datatype.impl.type.StringDataType;
+
+[
+
+  [
+    "name" : "Twitter",
+    "description" : "Send a twitter message",
+    "version" : "1.0",
+    "parameters" : [
+    	"Message" : new StringDataType()
+    ],
+    "displayName" : "Twitter",
+    "icon" : "twitter.gif",
+    "category" : "Communication",
+    "eclipse:customEditor" : "org.drools.eclipse.flow.common.editor.editpart.work.SampleCustomEditor",
+    "defaultHandler" : "org.jbpm.process.workitem.twitter.TwitterHandler",
+    "documentation" : "index.html",
+    "dependencies" : [ 
+      "file:./lib/jbpm-twitter.jar", 
+      "file:./lib/twitter4j-core-2.2.2.jar"
+    ]
+  ]
+
+]
