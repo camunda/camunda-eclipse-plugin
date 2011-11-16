@@ -54,6 +54,7 @@
 			tab="bpmn2.jbpm.task.tab">
 		</propertySection>
 
+<!--
 		<customTask
 			featureContainer="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmCustomTaskFeatureContainer"
 			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.LogTask"
@@ -102,18 +103,14 @@
 			</property>
 			<property name="dataInputAssociations">
 				<value>
-<!--
 					<property name="sourceRef" value="someVariable"/>
--->
 					<property name="targetRef" ref="ioSpecification/dataInputs#0"/>
 				</value>
 			</property>
 			<property name="dataOutputAssociations">
 				<value>
 					<property name="sourceRef" ref="ioSpecification/dataOutputs#0"/>
-<!--
 					<property name="targetRef" value="someVariable"/>
--->
 				</value>
 			</property>
 		</customTask>
@@ -196,18 +193,14 @@
 			</property>
 			<property name="dataInputAssociations">
 				<value>
-<!--
 					<property name="sourceRef" value="someVariable"/>
--->
 					<property name="targetRef" ref="ioSpecification/dataInputs#0"/>
 				</value>
 			</property>
 			<property name="dataOutputAssociations">
 				<value>
 					<property name="sourceRef" ref="ioSpecification/dataOutputs#0"/>
-<!--
 					<property name="targetRef" value="someVariable"/>
--->
 				</value>
 			</property>
 		</customTask>
@@ -290,13 +283,19 @@
 				</value>
 			</property>
 		</modelExtension>
+-->
 
 		<modelEnablement runtimeId="org.jboss.runtime.jbpm5" type="Process">
 			<disable object="all"/>
 <!--			<enable object="default" feature="Process"/> -->
+			<enable object="Definitions"/>
+			<enable object="Process"/>
 			<enable object="StartEvent"/>
 			<enable object="EndEvent"/>
 			<enable object="ScriptTask"/>
+			<enable object="ExclusiveGateway"/>
+			<enable object="InclusiveGateway"/>
+			<enable object="ParallelGateway"/>
 
 			<enable object="ExtensionAttributeValue" feature="onEntryScript"/>
 			<enable object="ExtensionAttributeValue" feature="onExitScript"/>
@@ -304,10 +303,24 @@
 			<enable object="OnEntryScriptType" feature="script"/>
 			<enable object="OnEntryScriptType" feature="scriptFormat"/>
 
+			<disable object="Task"/>
 			<disable object="Import"/>
 			<disable object="ExtensionDefinition"/>
 			<disable object="Relationship"/>
 			<disable object="ExtensionAttributeDefinition"/>
+
+			<disable object="Lane"/>
+			<disable object="MessageFlow"/>
+			<disable object="Association"/>
+			<disable object="ConversationLink"/>
+			<disable object="ConversationAssociation"/>
+			<disable object="Collaboration"/>
+			<disable object="Choreography"/>
+			<disable object="ConversationNode"/>
+			<disable object="MessageFlowAssociation"/>
+			<disable object="Participant"/>
+			<disable object="ParticipantAssociation"/>
+			<disable object="ParticipantMultiplicity"/>
 		</modelEnablement>
 		
 	</extension>
