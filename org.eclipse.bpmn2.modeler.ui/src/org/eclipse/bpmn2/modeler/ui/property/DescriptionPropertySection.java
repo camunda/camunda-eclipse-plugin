@@ -17,13 +17,19 @@ import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeat
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.ui.diagram.BPMNFeatureProvider;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
+import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
+import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.NotificationFilter;
 import org.eclipse.emf.transaction.ResourceSetChangeEvent;
 import org.eclipse.emf.transaction.RollbackException;
 import org.eclipse.graphiti.features.IFeature;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 
 /**
@@ -39,6 +45,12 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
 		return new DescriptionPropertyComposite(this);		
 	}
+	
+	@Override
+	public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
+		// always show this tab
+		return true;
+	}
 
 	public class DescriptionPropertyComposite extends AbstractBpmn2PropertiesComposite {
 
@@ -48,7 +60,7 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 		public DescriptionPropertyComposite(AbstractBpmn2PropertySection section) {
 			super(section);
 		}
-
+		
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -79,9 +91,25 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 				createDescription(this, description);
 			}
 			
+			// temporarily enable these for this tab only!
+			boolean idEnabled = modelEnablement.isEnabled(be.eClass().getName(), "id");
+			boolean nameEnabled = modelEnablement.isEnabled(be.eClass().getName(), "name");
+			boolean documentationEnabled = modelEnablement.isEnabled(be.eClass().getName(), "documentation");
+			
+			modelEnablement.setEnabled(be.eClass().getName(), "id", true);
+			modelEnablement.setEnabled(be.eClass().getName(), "name", true);
+			modelEnablement.setEnabled(be.eClass().getName(), "documentation", true);
+
 			bindAttribute(be,"id");
 			bindAttribute(be,"name");
 			bindList(be, "documentation");
+
+			if (!idEnabled)
+				modelEnablement.setEnabled(be.eClass().getName(), "id", false);
+			if (!nameEnabled)
+				modelEnablement.setEnabled(be.eClass().getName(), "name", false);
+			if (!documentationEnabled)
+				modelEnablement.setEnabled(be.eClass().getName(), "documentation", false);
 		}
 	}
 }
