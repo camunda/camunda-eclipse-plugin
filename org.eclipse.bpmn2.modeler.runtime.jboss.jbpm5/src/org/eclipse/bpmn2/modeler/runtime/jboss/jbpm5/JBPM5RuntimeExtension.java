@@ -193,6 +193,9 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 		if (propName.equalsIgnoreCase("customEditor")) {
 			return wid.getCustomEditor();
 		}
+		if (propName.equalsIgnoreCase("eclipse:customEditor")) {
+			return wid.getEclipseCustomEditor();
+		}
 		return null;
 	}
 	
@@ -262,12 +265,24 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 			dataInputs.getValues().add(dataInputsName);
 			ioSpecification.getValues().add(dataInputs);
 		}
+
+		// this code if enabled will create a default output variable
 		
-		Property dataOutputs = new Property("dataOutputs", null);
-		Property dataOutputsName = new Property("name", null);
-		dataOutputsName.getValues().add("result");
-		dataOutputs.getValues().add(dataOutputsName);
-		ioSpecification.getValues().add(dataOutputs);
+//		if (wid.getResults().isEmpty()) {
+//			Property dataOutputs = new Property("dataOutputs", null);
+//			Property dataOutputsName = new Property("name", null);
+//			dataOutputsName.getValues().add("result");
+//			dataOutputs.getValues().add(dataOutputsName);
+//			ioSpecification.getValues().add(dataOutputs);
+//		} else {
+			for (Entry<String, String> entry : wid.getResults().entrySet()) {
+				Property dataOutputs = new Property("dataOutputs", null);
+				Property dataOutputsName = new Property("name", null);
+				dataOutputsName.getValues().add(entry.getKey());
+				dataOutputs.getValues().add(dataOutputsName);
+				ioSpecification.getValues().add(dataOutputs);
+			}
+//		}
 
 		Object[] values = ioSpecification.getValues().toArray();
 		int inputCounter = -1;

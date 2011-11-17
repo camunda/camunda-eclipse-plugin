@@ -18,6 +18,10 @@ import java.util.Map;
  */
 public class WIDHandler {
 	
+	public enum Section {
+	    PARAMETERS, RESULTS, DEPENDENCIES 
+	}
+	
     /**
      * Takes in the String content of a *.wid/*.conf file from jbpm5 and 
      * parses it into a HashMap of WorkItemDefinition classes
@@ -53,6 +57,8 @@ public class WIDHandler {
     	  int openBrackets = 0;
     	  WorkItemDefinition currentWid = new WorkItemDefinitionImpl();
     	  
+    	  Section current = Section.PARAMETERS;
+    	  
           for (int i = 0; i < strings.length; i++) {
         	  String trim = strings[i].trim();
         	  if (trim.length() == 0) continue;
@@ -61,6 +67,17 @@ public class WIDHandler {
         			  trim = strings[i].trim() + strings[i+1].trim();
         		  } else {
         			  openBrackets++;
+        		  }
+        		  String[] nameValue = trim.split("[:]+"); //$NON-NLS-1$
+        		  if (nameValue.length == 2) {
+        			  String name = nameValue[0].replace('"', ' ').trim();
+        			  if (name.equalsIgnoreCase("parameters")) {
+	    				  current = Section.PARAMETERS;
+	    			  } else if (name.equalsIgnoreCase("results")) {
+	    				  current = Section.RESULTS;
+	    			  } else if (name.equalsIgnoreCase("dependencies")) {
+	    				  current = Section.DEPENDENCIES;
+	    			  }
         		  }
         	  }
         	  if (trim.startsWith("]") || trim.endsWith("]")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -74,9 +91,14 @@ public class WIDHandler {
         	  }
         	  if (trim.contains(":")) { //$NON-NLS-1$
         		  String[] nameValue = trim.split("[:]+"); //$NON-NLS-1$
-        		  if (nameValue.length == 2) {
+        		  if (nameValue.length == 2 || nameValue.length == 3) {
         			  String name = nameValue[0].replace('"', ' ').trim();
-        			  String value = nameValue[1].replace('"', ' ').replace(',', ' ').
+        			  int valueIndex = 1;
+        			  if (nameValue.length == 3) {
+        				  valueIndex = 2;
+        				  name = name + ':' + nameValue[1].replace('"', ' ').trim();
+        			  }
+        			  String value = nameValue[valueIndex].replace('"', ' ').replace(',', ' ').
         					  replace('[',' ').trim();
         			  if (openBrackets == 2 && value.trim().length() > 0) {
         				  if (name.equalsIgnoreCase("name")) { //$NON-NLS-1$
@@ -87,9 +109,14 @@ public class WIDHandler {
         					  currentWid.setIcon(value);
         				  } else if (name.equalsIgnoreCase("customEditor")) { //$NON-NLS-1$
         					  currentWid.setCustomEditor(value);
+        				  } else if (name.equalsIgnoreCase("eclipse:customEditor")) { //$NON-NLS-1$
+        					  currentWid.setEclipseCustomEditor(value);
         				  }
         			  } else if (openBrackets == 3 && value.trim().length() > 0) {
-        				  currentWid.getParameters().put(name, value);
+        				  if (current == Section.PARAMETERS)
+        					  currentWid.getParameters().put(name, value);
+        				  else if (current == Section.RESULTS)
+        					  currentWid.getResults().put(name, value);
         			  }
         		  }
         	  }

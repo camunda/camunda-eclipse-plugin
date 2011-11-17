@@ -97,6 +97,8 @@ public class WorkItemDefinitionImpl implements WorkItemDefinition {
 
 	@Override
 	public HashMap<String, String> getResults() {
+		if (this.widResults == null) 
+			this.widResults = new HashMap<String, String>();
 		return this.widResults;
 	}
 
