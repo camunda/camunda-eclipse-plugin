@@ -24,14 +24,19 @@ public class WorkItemDefinitionImpl implements WorkItemDefinition {
 				+ ", widDisplayName=" + widDisplayName  //$NON-NLS-1$
 				+ ", widIcon=" + widIcon //$NON-NLS-1$
 				+ ", widCustomEditor=" + widCustomEditor //$NON-NLS-1$
-				+ ", widParameters=" + widParameters + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+				+ ", widEclipseCustomEditor=" + widEclipseCustomEditor //$NON-NLS-1$
+				+ ", widParameters=" + widParameters //$NON-NLS-1$
+				+ ", widResults=" + widResults //$NON-NLS-1$
+				+ "]"; //$NON-NLS-1$
 	}
 
 	private String widName;
 	private String widDisplayName;
 	private String widIcon;
 	private String widCustomEditor;
+	private String widEclipseCustomEditor;
 	private HashMap<String, String> widParameters;
+	private HashMap<String, String> widResults;
 
 	@Override
 	public String getName() {
@@ -78,6 +83,21 @@ public class WorkItemDefinitionImpl implements WorkItemDefinition {
 	@Override
 	public void setCustomEditor(String editor) {
 		this.widCustomEditor = editor;
+	}
+
+	@Override
+	public String getEclipseCustomEditor() {
+		return this.widEclipseCustomEditor;
+	}
+
+	@Override
+	public void setEclipseCustomEditor(String editor) {
+		this.widEclipseCustomEditor = editor;
+	}
+
+	@Override
+	public HashMap<String, String> getResults() {
+		return this.widResults;
 	}
 
 }

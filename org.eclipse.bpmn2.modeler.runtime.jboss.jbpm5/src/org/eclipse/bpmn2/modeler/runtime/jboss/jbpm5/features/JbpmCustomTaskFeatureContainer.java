@@ -87,10 +87,15 @@ public class JbpmCustomTaskFeatureContainer extends CustomTaskFeatureContainer {
 	@Override
 	public ICreateFeature getCreateFeature(IFeatureProvider fp) {
 		String iconPath = (String) customTaskDescriptor.getProperty("icon");
+		if (iconPath != null && iconPath.trim().length() > 0) {
+			return new JbpmCreateCustomTaskFeature(fp,
+					customTaskDescriptor.getName(),
+					customTaskDescriptor.getDescription(),
+					iconPath);
+		}
 		return new JbpmCreateCustomTaskFeature(fp,
 				customTaskDescriptor.getName(),
-				customTaskDescriptor.getDescription(),
-				iconPath);
+				customTaskDescriptor.getDescription());
 	}
 
 	@Override
@@ -98,16 +103,14 @@ public class JbpmCustomTaskFeatureContainer extends CustomTaskFeatureContainer {
 		final String iconPath = (String) customTaskDescriptor.getProperty("icon"); 
 		if (iconPath != null && iconPath.trim().length() > 0) {
 			return new AddCustomTaskFeature(fp) {
-
 				@Override
 				protected void decorateActivityRectangle(RoundedRectangle rect) {
 					IGaService service = Graphiti.getGaService();
 					Image img = service.createImage(rect, iconPath);
-					service.setLocationAndSize(img, 2, 2, GraphicsUtil.TASK_IMAGE_SIZE, 
-								GraphicsUtil.TASK_IMAGE_SIZE);
+					service.setLocationAndSize(img, 2, 2, GraphicsUtil.TASK_IMAGE_SIZE,
+							GraphicsUtil.TASK_IMAGE_SIZE);
 				}
 			};
-			
 		}
 		return new AddCustomTaskFeature(fp) {
 

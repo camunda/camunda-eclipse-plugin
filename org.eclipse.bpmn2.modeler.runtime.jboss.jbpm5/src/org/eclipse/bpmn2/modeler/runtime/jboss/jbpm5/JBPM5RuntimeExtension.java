@@ -14,6 +14,8 @@ package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -34,16 +36,16 @@ import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmCustomTaskFeat
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.wid.WIDException;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.wid.WIDHandler;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.wid.WorkItemDefinition;
-import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.graphiti.ui.internal.platform.ExtensionManager;
-import org.eclipse.graphiti.ui.platform.IImageProvider;
-import org.eclipse.graphiti.ui.services.GraphitiUi;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.graphiti.ui.internal.GraphitiUIPlugin;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.xml.sax.InputSource;
 
 @SuppressWarnings("restriction")
@@ -139,18 +141,28 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 			// process basic properties here
 			setBasicProps ( ct, wid);
 			
+			// push the icon into the image registry
 			IProject project = TargetRuntime.getActiveProject();
 			String iconPath = getWIDPropertyValue("icon", wid);
-			IFile iconIFile = project.getFile(iconPath);
-			IImageProvider[] imageProviders = ExtensionManager.getSingleton().getImageProviders();
-			for (int i = 0; i < imageProviders.length; i++) {
-				if (imageProviders[i] instanceof JBPM5ImageProvider) {
-					JBPM5ImageProvider imgProvider = (JBPM5ImageProvider) imageProviders[i];
-					imgProvider.setPluginId(Activator.PLUGIN_ID);
-					String path = iconIFile.getLocation().makeAbsolute().toOSString();
-					imgProvider.addImageFilePathLazy(iconPath, path);
-					GraphitiUi.getImageService().getImageDescriptorForId(iconPath);
+			Path tempPath = new Path(iconPath);
+			String iconName = tempPath.lastSegment();
+			IconResourceVisitor visitor = new IconResourceVisitor(iconName);
+			try {
+				project.accept(visitor, IResource.DEPTH_INFINITE, false);
+				if (visitor.getIconResources() != null && visitor.getIconResources().size() > 0) {
+					ArrayList<IResource> icons = visitor.getIconResources();
+					IResource icon = icons.get(0);
+					URL url = icon.getLocationURI().toURL();
+					ImageDescriptor image = ImageDescriptor.createFromURL(url);
+
+					ImageRegistry imageRegistry = GraphitiUIPlugin.getDefault().getImageRegistry();
+					if (imageRegistry.get(iconPath) == null)
+						imageRegistry.put(iconPath, image);
 				}
+			} catch (CoreException e1) {
+				e1.printStackTrace();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
 			}
 			
 			// process xml properties here - i.e. task variables
@@ -202,6 +214,11 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 		return prop;
 	}
 	
+	/*
+	 * Create the input and output data associations
+	 * @param ioSpecification
+	 * @param ct
+	 */
 	private void createDataAssociations ( Property ioSpecification, CustomTaskDescriptor ct) {
 		Object[] values = ioSpecification.getValues().toArray();
 		int inputCounter = -1;
@@ -349,6 +366,35 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 		}
 	}
 	
+	/*
+	 * Class: Visits each file in the project looking for the icon
+	 * @author bfitzpat
+	 *
+	 */
+	private class IconResourceVisitor implements IResourceVisitor {
+		
+		private ArrayList<IResource> iconResources = new ArrayList<IResource>();
+		private String iconName;
+		
+		public IconResourceVisitor ( String iconName ) {
+			this.iconName = iconName;
+		}
+		
+		public boolean visit (IResource resource) throws CoreException {
+			if (resource.getType() == IResource.FILE) {
+				if (((IFile)resource).getName().equalsIgnoreCase(iconName)) {
+					iconResources.add(resource);
+					return true;
+				}
+			}
+			return true;
+		}
+		
+		public ArrayList<IResource> getIconResources() {
+			return iconResources;
+		}
+	}
+
 	private class RootElementParser extends SAXParser {
 		@Override
 		public void startElement(QName qName, XMLAttributes attributes, Augmentations augmentations)
@@ -358,7 +404,7 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 
 			// search the "definitions" for a drools namespace
 			if (ROOT_ELEMENT.equals(qName.localpart)) {
-				Enumeration e = fNamespaceContext.getAllPrefixes();
+				Enumeration<?> e = fNamespaceContext.getAllPrefixes();
 				while (e.hasMoreElements()) {
 					String prefix = (String)e.nextElement();
 					String namespace = fNamespaceContext.getURI(prefix);

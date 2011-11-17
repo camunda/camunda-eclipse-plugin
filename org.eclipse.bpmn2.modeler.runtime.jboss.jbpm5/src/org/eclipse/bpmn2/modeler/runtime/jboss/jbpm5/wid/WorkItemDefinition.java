@@ -23,10 +23,13 @@ public interface WorkItemDefinition {
 	public void setName ( String name );
 	public String getDisplayName();
 	public String getCustomEditor();
+	public String getEclipseCustomEditor();
 	public void setCustomEditor ( String editor );
+	public void setEclipseCustomEditor ( String editor );
 	public void setDispalyName ( String displayName );
 	public String getIcon();
 	public void setIcon ( String iconPath );
 	public HashMap<String, String> getParameters();
+	public HashMap<String, String> getResults();
 	
 }
