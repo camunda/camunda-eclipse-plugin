@@ -34,14 +34,19 @@ import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmCustomTaskFeat
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.wid.WIDException;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.wid.WIDHandler;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.wid.WorkItemDefinition;
+import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.graphiti.ui.internal.platform.ExtensionManager;
+import org.eclipse.graphiti.ui.platform.IImageProvider;
+import org.eclipse.graphiti.ui.services.GraphitiUi;
 import org.xml.sax.InputSource;
 
+@SuppressWarnings("restriction")
 public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 
 	private static final String BPMN2_NAMESPACE = "http://www.omg.org/spec/BPMN/20100524/MODEL"; //$NON-NLS-1$
@@ -133,6 +138,20 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 			
 			// process basic properties here
 			setBasicProps ( ct, wid);
+			
+			IProject project = TargetRuntime.getActiveProject();
+			String iconPath = getWIDPropertyValue("icon", wid);
+			IFile iconIFile = project.getFile(iconPath);
+			IImageProvider[] imageProviders = ExtensionManager.getSingleton().getImageProviders();
+			for (int i = 0; i < imageProviders.length; i++) {
+				if (imageProviders[i] instanceof JBPM5ImageProvider) {
+					JBPM5ImageProvider imgProvider = (JBPM5ImageProvider) imageProviders[i];
+					imgProvider.setPluginId(Activator.PLUGIN_ID);
+					String path = iconIFile.getLocation().makeAbsolute().toOSString();
+					imgProvider.addImageFilePathLazy(iconPath, path);
+					GraphitiUi.getImageService().getImageDescriptorForId(iconPath);
+				}
+			}
 			
 			// process xml properties here - i.e. task variables
 			Property ioSpecification = createIOSpecificationSection(ct, wid);
@@ -246,13 +265,6 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 					inputSetsRef.ref = "ioSpecification/dataInputs#" + inputCounter;
 					inputSets.getValues().add(inputSetsRef);
 					ioSpecification.getValues().add(inputSets);
-					
-//					Property dataInputAssociations = new Property ( "dataInputAssociations", null);
-//					Property targetRef = new Property ("targetRef", null);
-//					targetRef.ref = "ioSpecification/dataInputs#" + inputCounter;
-//					dataInputAssociations.getValues().add(targetRef);
-//					ct.getProperties().add(dataInputAssociations);
-					
 				} else 	if (prop.name.equals("dataOutputs")) {
 					outputCounter++;
 					Property outputSets = new Property("outputSets", null);
@@ -260,12 +272,6 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 					outputSetsRef.ref = "ioSpecification/dataOutputs#" + outputCounter;
 					outputSets.getValues().add(outputSetsRef);
 					ioSpecification.getValues().add(outputSets);
-
-//					Property dataOutputAssociations = new Property ( "dataOutputAssociations", null);
-//					Property sourceRef = new Property ("sourceRef", null);
-//					sourceRef.ref = "ioSpecification/dataOutputs#" + outputCounter;
-//					dataOutputAssociations.getValues().add(sourceRef);
-//					ct.getProperties().add(dataOutputAssociations);
 				}
 
 			}

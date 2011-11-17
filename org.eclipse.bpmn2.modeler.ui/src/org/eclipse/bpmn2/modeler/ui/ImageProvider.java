@@ -207,4 +207,5 @@ public class ImageProvider extends AbstractImageProvider {
 
 		addImageFilePath(IMG_16_ADD_PARTICIPANT, ICONS_16 + "addparticipant.png");
 	}
+
 }

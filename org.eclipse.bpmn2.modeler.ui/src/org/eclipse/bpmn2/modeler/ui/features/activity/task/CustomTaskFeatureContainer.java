@@ -1,19 +1,14 @@
 package org.eclipse.bpmn2.modeler.ui.features.activity.task;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.impl.TaskImpl;
-import org.eclipse.bpmn2.modeler.core.features.activity.AbstractAddActivityFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.AbstractCreateTaskFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.AddTaskFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.ICustomTaskFeature;
 import org.eclipse.bpmn2.modeler.core.runtime.CustomTaskDescriptor;
-import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor.Property;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.ui.diagram.BPMNFeatureProvider;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -24,18 +19,7 @@ import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
-import org.eclipse.graphiti.mm.pictograms.impl.DiagramImpl;
 import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EClassifier;
-import org.eclipse.emf.ecore.EFactory;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.common.util.URI;
 
 public class CustomTaskFeatureContainer extends TaskFeatureContainer implements ICustomTaskFeature {
 	
@@ -246,7 +230,7 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
+		public Class<Task> getBusinessObjectClass() {
 			return Task.class;
 		}
 		

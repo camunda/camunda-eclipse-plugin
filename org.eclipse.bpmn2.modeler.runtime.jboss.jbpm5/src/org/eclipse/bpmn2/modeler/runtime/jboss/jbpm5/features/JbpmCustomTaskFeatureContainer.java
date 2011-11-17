@@ -25,7 +25,6 @@ package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features;
 import java.util.List;
 
 import org.eclipse.bpmn2.Task;
-import org.eclipse.bpmn2.modeler.core.features.activity.task.AddTaskFeature;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor.Property;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -87,21 +86,60 @@ public class JbpmCustomTaskFeatureContainer extends CustomTaskFeatureContainer {
 
 	@Override
 	public ICreateFeature getCreateFeature(IFeatureProvider fp) {
-		return new CreateCustomTaskFeature(fp,
+		String iconPath = (String) customTaskDescriptor.getProperty("icon");
+		return new JbpmCreateCustomTaskFeature(fp,
 				customTaskDescriptor.getName(),
-				customTaskDescriptor.getDescription());
+				customTaskDescriptor.getDescription(),
+				iconPath);
 	}
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
+		final String iconPath = (String) customTaskDescriptor.getProperty("icon"); 
+		if (iconPath != null && iconPath.trim().length() > 0) {
+			return new AddCustomTaskFeature(fp) {
+
+				@Override
+				protected void decorateActivityRectangle(RoundedRectangle rect) {
+					IGaService service = Graphiti.getGaService();
+					Image img = service.createImage(rect, iconPath);
+					service.setLocationAndSize(img, 2, 2, GraphicsUtil.TASK_IMAGE_SIZE, 
+								GraphicsUtil.TASK_IMAGE_SIZE);
+				}
+			};
+			
+		}
 		return new AddCustomTaskFeature(fp) {
 
 			@Override
 			protected void decorateActivityRectangle(RoundedRectangle rect) {
 				IGaService service = Graphiti.getGaService();
 				Image img = service.createImage(rect, ImageProvider.IMG_16_USER_TASK);
-				service.setLocationAndSize(img, 2, 2, GraphicsUtil.TASK_IMAGE_SIZE, GraphicsUtil.TASK_IMAGE_SIZE);
+				service.setLocationAndSize(img, 2, 2, GraphicsUtil.TASK_IMAGE_SIZE, 
+							GraphicsUtil.TASK_IMAGE_SIZE);
 			}
 		};
 	}
+	
+	public class JbpmCreateCustomTaskFeature extends CreateCustomTaskFeature {
+		
+		private String imagePath = null;
+
+		public JbpmCreateCustomTaskFeature(IFeatureProvider fp, String name,
+				String description) {
+			super(fp, name, description);
+		}
+		
+		public JbpmCreateCustomTaskFeature(IFeatureProvider fp, String name,
+				String description, String imagePath) {
+			this(fp, name, description);
+			this.imagePath = imagePath;
+		}
+
+		@Override
+		public String getCreateImageId() {
+			return this.imagePath;
+		}
+	}
+
 }
