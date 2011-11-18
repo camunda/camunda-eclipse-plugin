@@ -491,7 +491,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 			for (TargetRuntime rt : targetRuntimes) {
 				for (Bpmn2TabDescriptor td : rt.getTabs()) {
 					if (tab!=td) {
-						if (td.getId().equals(afterTab) || afterTab.equals(td.getReplaceTab())) {
+						if (td.getId().equals(afterTab) || td.isReplacementForTab(afterTab)) {
 							addAfterTab(list,td);
 							if (!list.contains(td))
 								list.add(td);

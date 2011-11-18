@@ -136,9 +136,7 @@ public class ToolEnablementPreferences {
 			ArrayList<ToolEnablement> children = new ArrayList<ToolEnablement>();
 
 			for (EAttribute a : e.getEAllAttributes()) {
-				if (!("id".equals(a.getName()) || "anyAttribute".equals(a.getName()))) {
-					possibleFeatures.add(a);
-				}
+				possibleFeatures.add(a);
 			}
 
 			for (EReference a : e.getEAllContainments()) {
@@ -166,9 +164,7 @@ public class ToolEnablementPreferences {
 			prefs.putBoolean(e.getName(), enabled);
 
 			for (EAttribute a : e.getEAllAttributes()) {
-				if (!("id".equals(a.getName()) || "anyAttribute".equals(a.getName()))) {
-					prefs.putBoolean(e.getName()+"."+a.getName(), enabled);
-				}
+				prefs.putBoolean(e.getName()+"."+a.getName(), enabled);
 			}
 
 			for (EReference a : e.getEAllContainments()) {

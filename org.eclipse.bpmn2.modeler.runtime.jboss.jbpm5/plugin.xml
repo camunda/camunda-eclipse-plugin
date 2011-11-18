@@ -46,6 +46,22 @@
 			label="Empty">
 		</propertyTab>
 
+		<propertyTab
+			category="BPMN2"
+			id="bpmn2.jbpm.diagram.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.process.diagram.tab"
+			runtimeId="org.jboss.runtime.jbpm5"
+			label="Diagram">
+		</propertyTab>
+
+		<propertyTab
+			category="BPMN2"
+			id="bpmn2.jbpm.description.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.description.tab"
+			runtimeId="org.jboss.runtime.jbpm5"
+			label="Description">
+		</propertyTab>
+
 		<propertySection
 			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.CustomTaskPropertySection"
 			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
@@ -63,11 +79,19 @@
 		</propertySection>
 
 		<propertySection
-			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmEmptyPropertySection"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmDescriptionPropertySection"
 			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-			id="bpmn2.jbpm.empty.tab.section"
+			id="bpmn2.jbpm.description.tab.section"
 			runtimeId="org.jboss.runtime.jbpm5"
-			tab="bpmn2.jbpm.empty.tab">
+			tab="bpmn2.jbpm.description.tab">
+		</propertySection>
+
+		<propertySection
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmDiagramPropertySection"
+			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+			id="bpmn2.jbpm.diagram.tab.section"
+			runtimeId="org.jboss.runtime.jbpm5"
+			tab="bpmn2.jbpm.diagram.tab">
 		</propertySection>
 
 <!--
@@ -220,6 +244,7 @@
 				</value>
 			</property>
 		</customTask>
+-->
 		
 		<modelExtension
 			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.process"
@@ -254,7 +279,7 @@
 				</value>
 			</property>
 			<property name="version" value="1"/>
-			<property name="packageName" value=""/>
+			<property name="packageName" value="defaultPackage"/>
 		</modelExtension>
 		
 		<modelExtension
@@ -264,7 +289,8 @@
 			type="SequenceFlow">
 			<property name="priority" value="1"/>
 		</modelExtension>
-		
+
+<!--		
 		<modelExtension
 			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.Task"
 			runtimeId="org.jboss.runtime.jbpm5"

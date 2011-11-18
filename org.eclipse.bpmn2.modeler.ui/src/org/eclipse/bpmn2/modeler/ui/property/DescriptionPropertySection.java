@@ -70,26 +70,8 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 		 */
 		@Override
 		public void createBindings(EObject be) {
-			String description = null;
 
-			BPMN2Editor editor = (BPMN2Editor)getDiagramEditor();
-
-			BPMNFeatureProvider fp = (BPMNFeatureProvider) editor.getDiagramTypeProvider().getFeatureProvider();
-			PictogramElement pe = propertySection.getSelectedPictogramElement();
-			IFeature cf = fp.getCreateFeatureForPictogramElement(pe);
-			if (cf instanceof AbstractBpmn2CreateConnectionFeature) {
-				AbstractBpmn2CreateConnectionFeature acf = (AbstractBpmn2CreateConnectionFeature) cf;
-				description = acf.getCreateDescription();
-			} else if (cf instanceof AbstractBpmn2CreateFeature) {
-				AbstractBpmn2CreateFeature acf = (AbstractBpmn2CreateFeature) cf;
-				description = acf.getDescription();
-			}
-			if (description == null) {
-				description = "No description";
-			}
-			if (description != null) {
-				createDescription(this, description);
-			}
+			bindDescription(be);
 			
 			// temporarily enable these for this tab only!
 			boolean idEnabled = modelEnablement.isEnabled(be.eClass().getName(), "id");
@@ -110,6 +92,29 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 				modelEnablement.setEnabled(be.eClass().getName(), "name", false);
 			if (!documentationEnabled)
 				modelEnablement.setEnabled(be.eClass().getName(), "documentation", false);
+		}
+		
+		protected void bindDescription(EObject be) {
+			String description = null;
+
+			BPMN2Editor editor = (BPMN2Editor)getDiagramEditor();
+
+			BPMNFeatureProvider fp = (BPMNFeatureProvider) editor.getDiagramTypeProvider().getFeatureProvider();
+			PictogramElement pe = propertySection.getSelectedPictogramElement();
+			IFeature cf = fp.getCreateFeatureForPictogramElement(pe);
+			if (cf instanceof AbstractBpmn2CreateConnectionFeature) {
+				AbstractBpmn2CreateConnectionFeature acf = (AbstractBpmn2CreateConnectionFeature) cf;
+				description = acf.getCreateDescription();
+			} else if (cf instanceof AbstractBpmn2CreateFeature) {
+				AbstractBpmn2CreateFeature acf = (AbstractBpmn2CreateFeature) cf;
+				description = acf.getDescription();
+			}
+			if (description == null) {
+				description = "No description";
+			}
+			if (description != null) {
+				createDescription(this, description);
+			}
 		}
 	}
 }

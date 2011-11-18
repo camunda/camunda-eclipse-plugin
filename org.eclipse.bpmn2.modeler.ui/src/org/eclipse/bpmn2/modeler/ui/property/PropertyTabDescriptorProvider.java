@@ -49,20 +49,23 @@ public class PropertyTabDescriptorProvider implements ITabDescriptorProvider {
 		for (Bpmn2TabDescriptor d : desc) {
 			String replacedId = d.getReplaceTab();
 			if (replacedId!=null) {
+				String[] replacements = replacedId.split(" ");
 				// tab replacement is only done if the replacement tab has section descriptors
 				// that want the replacement to happen.
-				boolean replace = false;
-				for (Bpmn2SectionDescriptor s : (List<Bpmn2SectionDescriptor>) d.getSectionDescriptors()) {
-					// ask the section if it wants to replace this tab
-					replace = s.doReplaceTab(replacedId, part, selection);
-					if (replace)
-						break;
-				}
-				if (replace) {
-					// replace the tab whose ID is specified as "replaceTab" in this tab.
-					Bpmn2TabDescriptor replacedTab = TargetRuntime.findTabDescriptor(replacedId);
-					if (replacedTab!=null)
-						replaced.add(replacedTab);
+				for (String id : replacements) {
+					boolean replace = false;
+					for (Bpmn2SectionDescriptor s : (List<Bpmn2SectionDescriptor>) d.getSectionDescriptors()) {
+						// ask the section if it wants to replace this tab
+						replace = s.doReplaceTab(id, part, selection);
+						if (replace)
+							break;
+					}
+					if (replace) {
+						// replace the tab whose ID is specified as "replaceTab" in this tab.
+						Bpmn2TabDescriptor replacedTab = TargetRuntime.findTabDescriptor(id);
+						if (replacedTab!=null)
+							replaced.add(replacedTab);
+					}
 				}
 			}
 		}

@@ -33,13 +33,10 @@ import org.eclipse.ui.IWorkbenchPart;
  *
  */
 public class JbpmEmptyPropertySection extends TaskPropertySection {
-	static {
-		PropertiesCompositeFactory.register(Task.class, JbpmTaskPropertiesComposite.class);
-	}
 
 	@Override
 	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
-		return new JbpmTaskPropertiesComposite(this);
+		return null;
 	}
 
 	@Override
@@ -49,12 +46,6 @@ public class JbpmEmptyPropertySection extends TaskPropertySection {
 	
 	@Override
 	public boolean doReplaceTab(String id, IWorkbenchPart part, ISelection selection) {
-		// only replace the tab if this is a Gateway.
-		// Gateways do not have any "Basic" attributes to display
-		BPMN2Editor editor = (BPMN2Editor)part;
-		PictogramElement pe = PropertyUtil.getPictogramElementForSelection(selection);
-		EObject selectionBO = PropertyUtil.getBusinessObjectForSelection(selection);
-		// TODO: there may be others...
-		return selectionBO instanceof Gateway;
+		return true;
 	}
 }

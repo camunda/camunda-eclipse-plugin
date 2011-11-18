@@ -108,4 +108,16 @@ public class Bpmn2TabDescriptor extends AbstractTabDescriptor {
 			return null;
 		return replaceTab;
 	}
+	
+	public boolean isReplacementForTab(String id) {
+		String replacements = getReplaceTab();
+		if (replacements!=null) {
+			String[] rep = replacements.split(" ");
+			for (String r : rep) {
+				if (r.equals(id))
+					return true;
+			}
+		}
+		return false;
+	}
 }

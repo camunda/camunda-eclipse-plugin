@@ -28,6 +28,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.EStructuralFeature.Internal;
 import org.eclipse.emf.ecore.impl.EStructuralFeatureImpl.SimpleFeatureMapEntry;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -383,7 +384,8 @@ public class ModelExtensionDescriptor extends BaseRuntimeDescriptor {
 		}
 
 		if (feature==null) {
-			feature = ModelUtil.createDynamicAttribute(getEPackage(), object, property.name, property.type);
+			EPackage pkg = getEPackage();
+			feature = ModelUtil.createDynamicAttribute(pkg, object, property.name, property.type);
 		}
 		
 		if (feature instanceof EAttribute) {
