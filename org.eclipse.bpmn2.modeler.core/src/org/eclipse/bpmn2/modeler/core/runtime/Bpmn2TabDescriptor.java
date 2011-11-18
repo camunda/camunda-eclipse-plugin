@@ -30,7 +30,6 @@ public class Bpmn2TabDescriptor extends AbstractTabDescriptor {
 	protected String replaceTab = null;
 	protected boolean indented = false;
 	protected Image image = null;
-	protected ArrayList<Bpmn2SectionDescriptor> unfilteredSectionDescriptors = null;
 	
 	public Bpmn2TabDescriptor(String id, String category, String label) {
 		this.id = id;
@@ -65,13 +64,6 @@ public class Bpmn2TabDescriptor extends AbstractTabDescriptor {
 		if (image==null)
 			return super.getImage();
 		return image;
-	}
-
-	@Override
-	public List getSectionDescriptors() {
-		if (unfilteredSectionDescriptors==null)
-			return super.getSectionDescriptors();
-		return unfilteredSectionDescriptors;
 	}
 
 	@Override

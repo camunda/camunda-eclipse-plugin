@@ -38,6 +38,14 @@
 			label="Task">
 		</propertyTab>
 
+		<propertyTab
+			category="BPMN2"
+			id="bpmn2.jbpm.empty.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			runtimeId="org.jboss.runtime.jbpm5"
+			label="Empty">
+		</propertyTab>
+
 		<propertySection
 			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.CustomTaskPropertySection"
 			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
@@ -52,6 +60,14 @@
 			id="bpmn2.jbpm.task.tab.section"
 			runtimeId="org.jboss.runtime.jbpm5"
 			tab="bpmn2.jbpm.task.tab">
+		</propertySection>
+
+		<propertySection
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmEmptyPropertySection"
+			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+			id="bpmn2.jbpm.empty.tab.section"
+			runtimeId="org.jboss.runtime.jbpm5"
+			tab="bpmn2.jbpm.empty.tab">
 		</propertySection>
 
 <!--

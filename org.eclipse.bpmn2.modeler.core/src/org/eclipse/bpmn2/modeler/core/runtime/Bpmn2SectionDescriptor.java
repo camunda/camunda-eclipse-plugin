@@ -128,5 +128,18 @@ public class Bpmn2SectionDescriptor extends AbstractSectionDescriptor {
 			// TODO Auto-generated method stub
 			return super.getInputTypes();
 		}
+
+		/**
+		 * @param replacedId
+		 * @param part
+		 * @param selection
+		 * @return
+		 */
+		public boolean doReplaceTab(String replacedId, IWorkbenchPart part, ISelection selection) {
+			if (sectionClass instanceof IBpmn2PropertySection) {
+				return ((IBpmn2PropertySection)sectionClass).doReplaceTab(replacedId, part, selection);
+			}
+		return appliesTo(part,selection);
+		}
 		
 	}

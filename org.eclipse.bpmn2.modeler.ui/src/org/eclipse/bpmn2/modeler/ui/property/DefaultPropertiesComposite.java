@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.views.properties.tabbed.TabContents;
 
 public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 
@@ -79,8 +80,7 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 	public void createBindings(EObject be) {
 		AbstractPropertiesProvider provider = getPropertiesProvider(be); 
 		if (provider==null) {
-			String tab = propertySection.tabbedPropertySheetPage.getSelectedTab().getLabel();
-			createLabel(this,"No "+tab+" Properties for this "+ModelUtil.getObjectDisplayName(be));
+			createMissingPropertiesLabel(be);
 			return;
 		}
 		
@@ -120,14 +120,22 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 			}
 		}
 		
-		Control[] kids = getAttributesParent().getChildren();
-		if (kids.length==0) {
+		if (getAttributesParent().getChildren().length==0) {
 			// yech! ugly hack to hide the Attributes TWISTIE section if it's empty
 			attributesComposite.dispose();
 			attributesComposite = null;
 			attributesSection.dispose();
 			attributesSection = null;
 		}
+
+		if (getChildren().length==0) {
+			createMissingPropertiesLabel(be);
+		}
+	}
+	
+	private void createMissingPropertiesLabel(EObject be) {
+		String tab = propertySection.tabbedPropertySheetPage.getSelectedTab().getLabel();
+		createLabel(this,"No "+tab+" Properties for this "+ModelUtil.getObjectDisplayName(be));
 	}
 
 	/**

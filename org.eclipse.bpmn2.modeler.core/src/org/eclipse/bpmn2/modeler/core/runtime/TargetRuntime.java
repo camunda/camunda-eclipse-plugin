@@ -286,9 +286,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 					for (Bpmn2TabDescriptor td : rt.getTabs()) {
 						for (Bpmn2SectionDescriptor sd : rt.getSections()) {
 							if (sd.tab.equals(td.id)) {
-								if (td.unfilteredSectionDescriptors==null)
-									td.unfilteredSectionDescriptors = new ArrayList<Bpmn2SectionDescriptor>();
-								td.unfilteredSectionDescriptors.add(sd);
+								td.getSectionDescriptors().add(sd);
 							}
 						}
 					}

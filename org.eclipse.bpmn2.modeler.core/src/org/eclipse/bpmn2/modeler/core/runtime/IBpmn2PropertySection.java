@@ -26,4 +26,14 @@ public interface IBpmn2PropertySection {
 	 */
 	public boolean appliesTo(IWorkbenchPart part, ISelection selection);
 
+	/**
+	 * Asks the Property Section implementation if tab replacement should be
+	 * processed for the given editor selection.
+	 * 
+	 * @param id - ID of the tab to be replaced
+	 * @param part - the BPMN2 Editor
+	 * @param selection - the selected object in the editor canvas
+	 * @return true if the tab replacement should be done.
+	 */
+	public boolean doReplaceTab(String id, IWorkbenchPart part, ISelection selection);
 }

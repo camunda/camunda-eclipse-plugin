@@ -272,4 +272,8 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 		}
 		return false;
 	}
+	
+	public boolean doReplaceTab(String id, IWorkbenchPart part, ISelection selection) {
+		return true;
+	}
 }
