@@ -1,0 +1,19 @@
+import org.drools.process.core.datatype.impl.type.StringDataType;
+[
+
+  [
+    "name" : "Java",
+    "parameters" : [
+    	"Class" : new StringDataType(),
+    	"Method" : new StringDataType(),
+    	"Object" : new ObjectDataType(),
+    	"ParameterTypes" : new ListDataType(new StringDataType()),
+    	"Parameters" : new ListDataType(new ObjectDataType())
+    ],
+    "results" : [
+        "Result" : new ObjectDataType()
+    ]
+    "displayName" : "Java",
+    "customEditor" : "org.drools.eclipse.flow.common.editor.editpart.work.SampleCustomEditor"
+  ]
+]

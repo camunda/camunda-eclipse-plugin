@@ -46,6 +46,12 @@ public class TestWIDHandler {
 				URL setupUrl = FileLocator.find(bundle, path, Collections.EMPTY_MAP);
 				File setupFile = new File(FileLocator.toFileURL(setupUrl).toURI());
 				filepath = setupFile.getAbsolutePath();
+			} else {
+				Bundle bundle = Activator.getDefault().getBundle();
+				IPath path = new Path(filepath);
+				URL setupUrl = FileLocator.find(bundle, path, Collections.EMPTY_MAP);
+				File setupFile = new File(FileLocator.toFileURL(setupUrl).toURI());
+				filepath = setupFile.getAbsolutePath();
 			}
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
@@ -71,7 +77,8 @@ public class TestWIDHandler {
 	}
 	
 	@Test
-	public void test() {
+	public void testBasic() {
+		System.out.println("testBasic: logemail.wid");
 		String content = getFile(null);
 		HashMap<String, WorkItemDefinition> widMap = new HashMap<String, WorkItemDefinition>();
 		try {
@@ -84,9 +91,49 @@ public class TestWIDHandler {
 		while(widIterator.hasNext())
 			System.out.println(widIterator.next().toString());
 	}
+	
+	@Test
+	public void testComplex() {
+		System.out.println("testComplex: widfiles/Email.wid");
+		String content = getFile("widfiles/Email.wid");
+		HashMap<String, WorkItemDefinition> widMap = new HashMap<String, WorkItemDefinition>();
+		try {
+			WIDHandler.evaluateWorkDefinitions(widMap, content);
+		} catch (WIDException e) {
+			Assert.fail("Failed with exception " + e.getMessage());
+		}
+		Assert.assertTrue(!widMap.isEmpty());
+		java.util.Iterator<WorkItemDefinition> widIterator = widMap.values().iterator();
+		while(widIterator.hasNext()) {
+			WorkItemDefinition wid = widIterator.next();
+			Assert.assertTrue(wid.getEclipseCustomEditor() != null &&
+					wid.getEclipseCustomEditor().trim().length() > 0);
+			System.out.println(wid.toString());
+		};
+	}
+
+	@Test
+	public void testResults() {
+		System.out.println("testResults: widfiles/java.wid");
+		String content = getFile("widfiles/java.wid");
+		HashMap<String, WorkItemDefinition> widMap = new HashMap<String, WorkItemDefinition>();
+		try {
+			WIDHandler.evaluateWorkDefinitions(widMap, content);
+		} catch (WIDException e) {
+			Assert.fail("Failed with exception " + e.getMessage());
+		}
+		Assert.assertTrue(!widMap.isEmpty());
+		java.util.Iterator<WorkItemDefinition> widIterator = widMap.values().iterator();
+		while(widIterator.hasNext()) {
+			WorkItemDefinition wid = widIterator.next();
+			Assert.assertTrue(!wid.getResults().isEmpty());
+			System.out.println(wid.toString());
+		}
+	}
 
 	@Test
 	public void testFail() {
+		System.out.println("testFail: no wid");
 		HashMap<String, WorkItemDefinition> widMap = new HashMap<String, WorkItemDefinition>();
 		try {
 			WIDHandler.evaluateWorkDefinitions(widMap, null);
