@@ -150,7 +150,7 @@ public class ModelHandler {
 
 					// create StartEvent
 					StartEvent startEvent = create(StartEvent.class);
-					startEvent.setName("Start Event");
+//					startEvent.setName("Start Event");
 					process.getFlowElements().add(startEvent);
 					
 					// create SequenceFlow
@@ -159,7 +159,7 @@ public class ModelHandler {
 					
 					// create EndEvent
 					EndEvent endEvent = create(EndEvent.class);
-					endEvent.setName("End Event");
+//					endEvent.setName("End Event");
 					process.getFlowElements().add(endEvent);
 					
 					// hook 'em up
@@ -947,13 +947,13 @@ public class ModelHandler {
 			// if the object has an "id", assign it now.
 			String id = ModelUtil.setID(newObject,resource);
 			// also set a default name
-			EStructuralFeature feature = newObject.eClass().getEStructuralFeature("name");
-			if (feature!=null) {
-				if (id!=null)
-					newObject.eSet(feature, ModelUtil.toDisplayName(id));
-				else
-					newObject.eSet(feature, "New "+ModelUtil.toDisplayName(newObject.eClass().getName()));
-			}
+//			EStructuralFeature feature = newObject.eClass().getEStructuralFeature("name");
+//			if (feature!=null) {
+//				if (id!=null)
+//					newObject.eSet(feature, ModelUtil.toDisplayName(id));
+//				else
+//					newObject.eSet(feature, "New "+ModelUtil.toDisplayName(newObject.eClass().getName()));
+//			}
 		}
 	}
 }

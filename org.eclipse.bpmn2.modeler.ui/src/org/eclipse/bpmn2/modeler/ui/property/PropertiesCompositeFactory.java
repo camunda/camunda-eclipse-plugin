@@ -27,6 +27,8 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -96,7 +98,7 @@ public class PropertiesCompositeFactory {
 	
 	public static Class findCompositeClass(Hashtable<Class,Class> map, Class eClass) {
 		if (map!=null) {
-			while (eClass!=null) {
+			while (eClass!=null && eClass!=EObjectImpl.class) {
 				if (map.containsKey(eClass)) {
 					return map.get(eClass);
 				}
@@ -167,6 +169,9 @@ public class PropertiesCompositeFactory {
 			}
 			
 		}
+		if (composite==null)
+			composite = new DefaultPropertiesComposite(parent,style);
+		
 		return composite;
 	}
 	

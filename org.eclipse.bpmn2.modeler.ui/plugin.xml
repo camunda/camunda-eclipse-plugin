@@ -325,6 +325,14 @@
         runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
 		</propertyTab>
 
+		<propertyTab
+	        replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+	        category="BPMN2"
+	        id="org.eclipse.bpmn2.modeler.gateway.tab"
+	        label="Gateway"
+	        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+		</propertyTab>
+
 		<!-- Property Sections -->
 
 		<!-- Description Tab Section -->		
@@ -467,6 +475,15 @@
 		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
 		        tab="org.eclipse.bpmn2.modeler.commonEvent.tab"
 		        type="org.eclipse.bpmn2.Event">
+		  </propertySection>
+		  
+		  <propertySection
+		        class="org.eclipse.bpmn2.modeler.ui.property.gateways.GatewayPropertySection"
+		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
+		        id="org.eclipse.bpmn2.modeler.gateway.section"
+		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+		        tab="org.eclipse.bpmn2.modeler.gateway.tab"
+		        type="org.eclipse.bpmn2.Gateway">
 		  </propertySection>
 <!--
 		  <propertySection
