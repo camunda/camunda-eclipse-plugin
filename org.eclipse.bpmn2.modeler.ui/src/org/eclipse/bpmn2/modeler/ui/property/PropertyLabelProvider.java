@@ -13,6 +13,9 @@
 
 package org.eclipse.bpmn2.modeler.ui.property;
 
+import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Process;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -58,6 +61,10 @@ public class PropertyLabelProvider extends LabelProvider {
 	public String getText(Object element) {
 		EObject be = PropertyUtil.getBusinessObjectForSelection((ISelection)element);
 		if (be!=null) {
+			BaseElement bpmnElement = ((BPMNDiagram)be).getPlane().getBpmnElement();
+			if (bpmnElement instanceof Process) {
+				be = bpmnElement;
+			}
 			return ModelUtil.getDisplayName(be);
 		}
 		return super.getText(element);

@@ -179,7 +179,18 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 	public void setEnabled(String className, String featureName, boolean enabled) {
 		if ("all".equals(className)) {
 			// enable all model objects
-			setEnabledAll(enabled);
+			if (featureName==null)
+				setEnabledAll(enabled);
+			else {
+				// enable feature for all classes
+				for (Entry<String, HashSet<String>> entry : classes.entrySet()) {
+					HashSet<String> features = entry.getValue();
+					if (enabled)
+						features.add(featureName);
+					else
+						features.remove(featureName);
+				}
+			}
 		}
 		else if ("default".equals(className)) {
 			// select the set of enablements from the default runtime

@@ -13,7 +13,12 @@
 
 package org.eclipse.bpmn2.modeler.core.features;
 
+import java.util.List;
+
+import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
+import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
 
@@ -51,7 +56,18 @@ public abstract class AbstractBpmn2CreateFeature extends AbstractCreateFeature {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
+	@Override
+	public boolean isAvailable(IContext context) {
+		List<ModelEnablementDescriptor> enablements = TargetRuntime.getCurrentRuntime().getModelEnablements();
+		for (ModelEnablementDescriptor e : enablements) {
+			String n = getBusinessObjectClass().getSimpleName();
+			if (e.isEnabled(n))
+				return true;
+		}
+		return false;
+	}
+
 	/**
 	 * @return
 	 */
