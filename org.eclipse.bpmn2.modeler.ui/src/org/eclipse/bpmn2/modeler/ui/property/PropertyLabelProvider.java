@@ -61,9 +61,11 @@ public class PropertyLabelProvider extends LabelProvider {
 	public String getText(Object element) {
 		EObject be = PropertyUtil.getBusinessObjectForSelection((ISelection)element);
 		if (be!=null) {
-			BaseElement bpmnElement = ((BPMNDiagram)be).getPlane().getBpmnElement();
-			if (bpmnElement instanceof Process) {
-				be = bpmnElement;
+			if (be instanceof BPMNDiagram) {
+				BaseElement bpmnElement = ((BPMNDiagram)be).getPlane().getBpmnElement();
+				if (bpmnElement instanceof Process) {
+					be = bpmnElement;
+				}
 			}
 			return ModelUtil.getDisplayName(be);
 		}
