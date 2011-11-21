@@ -21,7 +21,6 @@
             <element ref="runtime"/>
             <element ref="model"/>
             <element ref="propertyTab"/>
-            <element ref="propertySection"/>
             <element ref="customTask"/>
             <element ref="modelExtension"/>
             <element ref="modelEnablement"/>
@@ -144,7 +143,7 @@
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="runtimeId" type="string" use="required">
+         <attribute name="runtimeId" type="string">
             <annotation>
                <documentation>
                   Identifies one of the previously defined runtime elements for which this propertyTab will be used.
@@ -158,7 +157,7 @@
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="category" type="string" use="required">
+         <attribute name="category" type="string">
             <annotation>
                <documentation>
                   The category used to group tabs.
@@ -193,44 +192,6 @@
                </documentation>
             </annotation>
          </attribute>
-      </complexType>
-   </element>
-
-   <element name="propertySection">
-      <annotation>
-         <documentation>
-            Describes a list of sections to be displayed within tabs that will be contributed to the tabbed property sheet.
-         </documentation>
-      </annotation>
-      <complexType>
-         <attribute name="id" type="string" use="required">
-            <annotation>
-               <documentation>
-                  An optional ID for the section.
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="runtimeId" type="string" use="required">
-            <annotation>
-               <documentation>
-                  Identifies one of the previously defined runtime elements for which this section will be displayed.
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="name" type="string">
-            <annotation>
-               <documentation>
-                  An optional name of the section.
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="tab" type="string" use="required">
-            <annotation>
-               <documentation>
-                  The tab in which this section appears.
-               </documentation>
-            </annotation>
-         </attribute>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
@@ -239,31 +200,6 @@
                <appinfo>
                   <meta.attribute kind="java" basedOn="org.eclipse.graphiti.ui.platform.GFPropertySection:"/>
                </appinfo>
-            </annotation>
-         </attribute>
-         <attribute name="afterSection" type="string">
-            <annotation>
-               <documentation>
-                  When there is more than one section in a tab, sections are sorted by the afterSection attribute.
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="filter" type="string">
-            <annotation>
-               <documentation>
-                  The class that implements a section filter, i.e. implements org.eclipse.jface.viewers.IFilter. A filter is used to override the type mapper and input for the selection. When a filter is specified, type mapper and input are ignored.
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.jface.viewers.IFilter"/>
-               </appinfo>
-            </annotation>
-         </attribute>
-         <attribute name="enablesFor" type="string">
-            <annotation>
-               <documentation>
-                  a value indicating the selection count which must be met to enable the section. If specified and the condition is not met, the section is not displayed. If omitted, the section enablement is not affected. The following attribute formats are currently supported:
- n  - a precise number of items selected.  For example: enablesFor=&quot; 1&quot; enables the section only when 1 item is selected
-               </documentation>
             </annotation>
          </attribute>
          <attribute name="type" type="string">

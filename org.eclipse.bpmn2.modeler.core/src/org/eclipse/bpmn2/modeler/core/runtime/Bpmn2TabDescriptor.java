@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.core.runtime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -31,8 +32,22 @@ public class Bpmn2TabDescriptor extends AbstractTabDescriptor {
 	protected boolean indented = false;
 	protected Image image = null;
 	
+	public Bpmn2TabDescriptor(IConfigurationElement e) {
+		id = e.getAttribute("id");
+		category = e.getAttribute("category");
+		if (category==null || category.isEmpty())
+			category = "BPMN2";
+		label = e.getAttribute("label");
+		afterTab = e.getAttribute("afterTab");
+		replaceTab = e.getAttribute("replaceTab");
+		String s = e.getAttribute("indented");
+		indented = s!=null && s.trim().equalsIgnoreCase("true");
+	}
+	
 	public Bpmn2TabDescriptor(String id, String category, String label) {
 		this.id = id;
+		if (category==null || category.isEmpty() )
+			category = "BPMN2";
 		this.category = category;
 		this.label = label;
 	}

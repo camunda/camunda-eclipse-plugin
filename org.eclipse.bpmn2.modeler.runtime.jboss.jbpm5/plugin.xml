@@ -23,110 +23,55 @@
 		</model>
 
 		<propertyTab
-			category="BPMN2"
 			id="bpmn2.jbpm.customTask.tab"
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
-			runtimeId="org.jboss.runtime.jbpm5"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.CustomTaskPropertySection"
 			label="Custom Task">
 		</propertyTab>
-		<propertySection
-			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.CustomTaskPropertySection"
-			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-			id="bpmn2.jbpm.customTask.tab.section"
-			runtimeId="org.jboss.runtime.jbpm5"
-			tab="bpmn2.jbpm.customTask.tab">
-		</propertySection>
 
 		<propertyTab
-			category="BPMN2"
 			id="bpmn2.jbpm.task.tab"
 			replaceTab="org.eclipse.bpmn2.modeler.task.tab"
-			runtimeId="org.jboss.runtime.jbpm5"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmTaskPropertySection"
 			label="Task">
 		</propertyTab>
-		<propertySection
-			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmTaskPropertySection"
-			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-			id="bpmn2.jbpm.task.tab.section"
-			runtimeId="org.jboss.runtime.jbpm5"
-			tab="bpmn2.jbpm.task.tab">
-		</propertySection>
 
 		<propertyTab
-			category="BPMN2"
 			id="bpmn2.jbpm.empty.tab"
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
-			runtimeId="org.jboss.runtime.jbpm5"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmEmptyPropertySection"
 			label="Empty">
 		</propertyTab>
-		<propertySection
-			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmEmptyPropertySection"
-			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-			id="bpmn2.jbpm.empty.tab.section"
-			runtimeId="org.jboss.runtime.jbpm5"
-			tab="bpmn2.jbpm.empty.tab">
-		</propertySection>
 
 		<propertyTab
-			category="BPMN2"
 			id="bpmn2.jbpm.diagram.tab"
 			replaceTab="org.eclipse.bpmn2.modeler.process.diagram.tab"
-			runtimeId="org.jboss.runtime.jbpm5"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmDiagramPropertySection"
 			label="Diagram">
 		</propertyTab>
-		<propertySection
-			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmDiagramPropertySection"
-			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-			id="bpmn2.jbpm.diagram.tab.section"
-			runtimeId="org.jboss.runtime.jbpm5"
-			tab="bpmn2.jbpm.diagram.tab">
-		</propertySection>
 		
 		<propertyTab
-			category="BPMN2"
 			id="bpmn2.jbpm.description.tab"
 			replaceTab="org.eclipse.bpmn2.modeler.description.tab"
-			runtimeId="org.jboss.runtime.jbpm5"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmDescriptionPropertySection"
 			label="Description">
 		</propertyTab>
-		<propertySection
-			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmDescriptionPropertySection"
-			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-			id="bpmn2.jbpm.description.tab.section"
-			runtimeId="org.jboss.runtime.jbpm5"
-			tab="bpmn2.jbpm.description.tab">
-		</propertySection>
 
 		<propertyTab
-	        replaceTab="org.eclipse.bpmn2.modeler.scriptTask.tab"
-	        category="BPMN2"
 	        id="bpmn2.jbpm.scriptTask.tab"
-	        label="Script Task"
-	        runtimeId="org.jboss.runtime.jbpm5">
-		</propertyTab>
-		<propertySection
+	        replaceTab="org.eclipse.bpmn2.modeler.scriptTask.tab"
 		    class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmScriptTaskPropertySection"
-		    filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-		    id="bpmn2.jbpm.scriptTask.section"
-		    runtimeId="org.jboss.runtime.jbpm5"
-		    tab="bpmn2.jbpm.scriptTask.tab"
+	        label="Script Task"
 		    type="org.eclipse.bpmn2.ScriptTask">
-		</propertySection>
+		</propertyTab>
 
-		<propertyTab category="BPMN2"
+		<propertyTab
 			id="org.jboss.runtime.jbpm5.sequenceflow.tab"
-			runtimeId="org.jboss.runtime.jbpm5"
 			replaceTab="org.eclipse.bpmn2.modeler.sequenceflow.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmSequenceFlowPropertySection"
+			type="org.eclipse.bpmn2.SequenceFlow"
 			label="Sequence Flow">
 		</propertyTab>
-		<propertySection
-			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmSequenceFlowPropertySection"
-			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-			id="org.jboss.runtime.jbpm5.sequenceflow.tab.section"
-			runtimeId="org.jboss.runtime.jbpm5"
-			type="org.eclipse.bpmn2.SequenceFlow"
-			tab="org.jboss.runtime.jbpm5.sequenceflow.tab">
-		</propertySection>
 
 <!--
 		<customTask

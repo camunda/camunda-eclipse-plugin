@@ -15,7 +15,9 @@ package org.eclipse.bpmn2.modeler.core.runtime;
 import java.util.List;
 
 import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.gef.EditPart;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -29,25 +31,35 @@ import org.eclipse.ui.views.properties.tabbed.ISection;
 
 public class Bpmn2SectionDescriptor extends AbstractSectionDescriptor {
 
-		protected String name;
 		protected String id;
 		protected String tab;
-		protected String label;
 		protected AbstractPropertySection sectionClass;
 		protected Class appliesToClass;
 		protected String enablesFor;
 		protected String filter;
-		protected String afterSection;
 		
-		public Bpmn2SectionDescriptor(String id, String tab, String label) {
-			this.id = id;
-			this.tab = tab;
-			this.label = label;
+		public Bpmn2SectionDescriptor(Bpmn2TabDescriptor td, IConfigurationElement e) {
+			tab = td.getId();
+			id = tab + ".section";
+
+			try {
+				sectionClass = (AbstractPropertySection) e.createExecutableExtension("class");
+				filter = e.getAttribute("filter");
+				if (filter==null || filter.isEmpty())
+					filter = "org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter";
+				enablesFor = e.getAttribute("enablesFor");
+				String type = e.getAttribute("type");
+				if (type!=null && !type.isEmpty())
+					appliesToClass = Class.forName(type);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			
+			td.getSectionDescriptors().add(this);
 		}
 		
 		@Override
 		public String getId() {
-			// TODO Auto-generated method stub
 			return id;
 		}
 
@@ -92,13 +104,6 @@ public class Bpmn2SectionDescriptor extends AbstractSectionDescriptor {
 		}
 
 		@Override
-		public String getAfterSection() {
-			if (afterSection==null || afterSection.trim().length()==0)
-				return super.getAfterSection();
-			return afterSection;
-		}
-
-		@Override
 		public int getEnablesFor() {
 			try {
 				return Integer.parseInt(enablesFor);
@@ -111,8 +116,6 @@ public class Bpmn2SectionDescriptor extends AbstractSectionDescriptor {
 
 		@Override
 		public IFilter getFilter() {
-			// TODO Auto-generated method stub
-//			return super.getFilter();
 			return new IFilter() {
 
 				@Override
@@ -125,7 +128,6 @@ public class Bpmn2SectionDescriptor extends AbstractSectionDescriptor {
 
 		@Override
 		public List getInputTypes() {
-			// TODO Auto-generated method stub
 			return super.getInputTypes();
 		}
 
@@ -139,7 +141,7 @@ public class Bpmn2SectionDescriptor extends AbstractSectionDescriptor {
 			if (sectionClass instanceof IBpmn2PropertySection) {
 				return ((IBpmn2PropertySection)sectionClass).doReplaceTab(replacedId, part, selection);
 			}
-		return appliesTo(part,selection);
+			return appliesTo(part,selection);
 		}
 		
 	}

@@ -57,8 +57,9 @@ public class CustomTaskPropertySection extends AbstractBpmn2PropertySection impl
 		EObject object = PropertyUtil.getBusinessObjectForSelection(selection);
 		ModelEnablementDescriptor modelEnablement = editor.getTargetRuntime().getModelEnablements(object);
 		
-		if (object!=null && modelEnablement.isEnabled(object.eClass())) {
-			if (object instanceof Task) {
+		if (object instanceof Task) {
+			if (modelEnablement.isEnabled(object.eClass()))
+			{
 				List<EStructuralFeature> features = ModelUtil.getAnyAttributes(object);
 				for (EStructuralFeature f : features) {
 					if ("taskName".equals(f.getName()))

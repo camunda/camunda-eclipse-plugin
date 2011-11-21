@@ -61,7 +61,6 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 	private IBpmn2RuntimeExtension runtimeExtension;
 	protected ModelDescriptor modelDescriptor;
 	protected ArrayList<Bpmn2TabDescriptor> tabDescriptors;
-	protected ArrayList<Bpmn2SectionDescriptor> sectionDescriptors;
 	protected ArrayList<CustomTaskDescriptor> customTasks;
 	protected ArrayList<ModelExtensionDescriptor> modelExtensions;
 	protected ArrayList<ModelEnablementDescriptor> modelEnablements;
@@ -154,16 +153,8 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 						currentRuntime = getRuntime(e);
 						if (currentRuntime.getId().equals(TargetRuntime.DEFAULT_RUNTIME_ID)) {
 							if (e.getName().equals("propertyTab")) {
-								String id = e.getAttribute("id");
-								String category = e.getAttribute("category");
-								String label = e.getAttribute("label");
-								
-								Bpmn2TabDescriptor td = new Bpmn2TabDescriptor(id,category,label);
-								td.afterTab = e.getAttribute("afterTab");
-								td.replaceTab = e.getAttribute("replaceTab");
-								String indented = e.getAttribute("indented");
-								td.indented = indented!=null && indented.trim().equalsIgnoreCase("true");
-								
+								Bpmn2TabDescriptor td = new Bpmn2TabDescriptor(e);
+								Bpmn2SectionDescriptor sd = new Bpmn2SectionDescriptor(td,e);
 								currentRuntime.getTabs().add(td);
 							}
 							if (e.getName().equals("modelEnablement")) {
@@ -196,16 +187,8 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 								// already done
 								continue;
 							}
-							String id = e.getAttribute("id");
-							String category = e.getAttribute("category");
-							String label = e.getAttribute("label");
-							
-							Bpmn2TabDescriptor td = new Bpmn2TabDescriptor(id,category,label);
-							td.afterTab = e.getAttribute("afterTab");
-							td.replaceTab = e.getAttribute("replaceTab");
-							String indented = e.getAttribute("indented");
-							td.indented = indented!=null && indented.trim().equalsIgnoreCase("true");
-							
+							Bpmn2TabDescriptor td = new Bpmn2TabDescriptor(e);
+							Bpmn2SectionDescriptor sd = new Bpmn2SectionDescriptor(td,e);
 							currentRuntime.getTabs().add(td);
 						}
 						else if (e.getName().equals("customTask")) {
@@ -253,43 +236,11 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 					}
 				}
 
-				// now that we have all the propertyTab items, process propertySections 
-				for (IConfigurationElement e : config) {
-					if (!e.getName().equals("runtime")) {
-						currentRuntime = getRuntime(e);
-
-						if (e.getName().equals("propertySection")) {
-							String id = e.getAttribute("id");
-							String tab = e.getAttribute("tab");
-							String label = e.getAttribute("label");
-	
-							Bpmn2SectionDescriptor sd = new Bpmn2SectionDescriptor(id,tab,label);
-							sd.sectionClass = (AbstractPropertySection) e.createExecutableExtension("class");
-							sd.name = e.getAttribute("name");
-							sd.afterSection = e.getAttribute("afterSection");
-							sd.filter = e.getAttribute("filter");
-							sd.enablesFor = e.getAttribute("enablesFor");
-							String type = e.getAttribute("type");
-							if (type!=null && !type.isEmpty())
-								sd.appliesToClass = Class.forName(type);
-
-							currentRuntime.getSections().add(sd);
-						}
-					}
-				}
 
 				// All done parsing configuration elements
 				// now go back and fix up some things...
 				for (TargetRuntime rt : targetRuntimes) {
 					
-					// associate property sections with their respective tabs
-					for (Bpmn2TabDescriptor td : rt.getTabs()) {
-						for (Bpmn2SectionDescriptor sd : rt.getSections()) {
-							if (sd.tab.equals(td.id)) {
-								td.getSectionDescriptors().add(sd);
-							}
-						}
-					}
 					
 					// add customTask and modelExtension features to modelEnablements
 					// these are enabled by default and can't be disabled.
@@ -376,16 +327,11 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 		return null;
 	}
 
-	private static TargetRuntime getRuntime(IConfigurationElement e) throws InvalidRegistryObjectException, Exception {
+	private static TargetRuntime getRuntime(IConfigurationElement e) {
 		String runtimeId = e.getAttribute("runtimeId");
 		TargetRuntime rt = getRuntime(runtimeId);
-		if (rt==null) {
-			throw new Exception("Plug-in " + Activator.PLUGIN_ID +
-					" was unable to find the target runtime with id " +
-					runtimeId +
-					" referenced in the " + e.getName() + " section "
-					);
-		}
+		if (rt==null)
+			return currentRuntime;
 		return rt;
 	}
 	
@@ -542,46 +488,6 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 		return list;
 	}
 	
-	private static void addAfterSection(ArrayList<Bpmn2SectionDescriptor> list, Bpmn2SectionDescriptor section) {
-		
-		getAllRuntimes();
-		String afterSection = section.getAfterSection();
-		if (afterSection!=null) {
-			for (TargetRuntime rt : targetRuntimes) {
-				for (Bpmn2SectionDescriptor td : rt.getSections()) {
-					if (td.getId().equals(afterSection)) {
-						addAfterSection(list,td);
-						list.add(td);
-						return;
-					}
-				}
-			}
-		}
-	}
-	
-	private ArrayList<Bpmn2SectionDescriptor> getSections() {
-		if (sectionDescriptors==null)
-			sectionDescriptors = new ArrayList<Bpmn2SectionDescriptor>();
-		return sectionDescriptors;
-	}
-	
-	/**
-	 * @return
-	 */
-	public ArrayList<Bpmn2SectionDescriptor> getSectionDescriptors() {
-		ArrayList<Bpmn2SectionDescriptor> list = new ArrayList<Bpmn2SectionDescriptor>();
-		for (Bpmn2SectionDescriptor section : getSections()) {
-			addAfterSection(list, section);
-			if (!list.contains(section))
-				list.add(section);
-		}
-		if (list.isEmpty() && this!=getRuntime(DEFAULT_RUNTIME_ID)) {
-			return getRuntime(DEFAULT_RUNTIME_ID).getSectionDescriptors();
-		}
-		
-		return list;
-	}
-
 	public IBpmn2RuntimeExtension getRuntimeExtension() {
 		return runtimeExtension;
 	}

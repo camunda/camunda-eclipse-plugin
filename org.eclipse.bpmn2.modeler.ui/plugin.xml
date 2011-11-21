@@ -118,511 +118,226 @@
 	<!-- Provide a default "runtime" behavior -->
 
 	<extension point="org.eclipse.bpmn2.modeler.runtime">
-		<runtime
-        class="org.eclipse.bpmn2.modeler.ui.DefaultBpmn2RuntimeExtension"
-        description="Default runtime definition"
-        id="org.eclipse.bpmn2.modeler.runtime.none"
-        name="None">
+		<runtime class="org.eclipse.bpmn2.modeler.ui.DefaultBpmn2RuntimeExtension"
+			description="Default runtime definition" id="org.eclipse.bpmn2.modeler.runtime.none"
+			name="None">
 		</runtime>
 
 		<model runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
 			uri="http://www.omg.org/spec/BPMN/20100524/MODEL-XMI"
 			resourceFactory="org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceFactoryImpl">
 		</model>
-		
+
 		<!-- Property Tabs -->
-		
-		<propertyTab category="BPMN2"
+
+		<propertyTab
 			id="org.eclipse.bpmn2.modeler.description.tab"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			class="org.eclipse.bpmn2.modeler.ui.property.DescriptionPropertySection"
 			label="Description">
 		</propertyTab>
-		
-		<propertyTab category="BPMN2"
+
+		<propertyTab
 			id="org.eclipse.bpmn2.modeler.main.tab"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			class="org.eclipse.bpmn2.modeler.ui.property.DefaultPropertySection"
 			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Basic">
 		</propertyTab>
-				
-		<propertyTab category="BPMN2"
+
+		<propertyTab
+			id="org.eclipse.bpmn2.modeler.advanced.tab"
+			class="org.eclipse.bpmn2.modeler.ui.property.AdvancedPropertySection"
+			afterTab="org.eclipse.bpmn2.modeler.main.tab"
+			label="Advanced">
+		</propertyTab>
+
+		<propertyTab
 			id="org.eclipse.bpmn2.modeler.process.diagram.tab"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			class="org.eclipse.bpmn2.modeler.ui.property.diagrams.ProcessDiagramPropertySection"
+			type="org.eclipse.bpmn2.di.BPMNDiagram"
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 			label="Process">
 		</propertyTab>
-				
-		<propertyTab category="BPMN2"
+
+		<propertyTab
 			id="org.eclipse.bpmn2.modeler.definitions.tab"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			class="org.eclipse.bpmn2.modeler.ui.property.diagrams.DefinitionsPropertySection"
+			type="org.eclipse.bpmn2.di.BPMNDiagram"
 			afterTab="org.eclipse.bpmn2.modeler.process.diagram.tab"
 			label="Definitions">
 		</propertyTab>
 
-		<propertyTab category="BPMN2"
+		<propertyTab
 			id="org.eclipse.bpmn2.modeler.datastore.tab"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			class="org.eclipse.bpmn2.modeler.ui.property.data.DataStorePropertySection"
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 			label="Data Store">
 		</propertyTab>
-		
-		<propertyTab category="BPMN2"
+
+		<propertyTab
 			id="org.eclipse.bpmn2.modeler.dataobject.tab"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			class="org.eclipse.bpmn2.modeler.ui.property.data.DataObjectPropertySection"
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 			label="Data Object">
 		</propertyTab>
-		
-		<propertyTab category="BPMN2"
+
+		<propertyTab
 			id="org.eclipse.bpmn2.modeler.dataobjectref.tab"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			class="org.eclipse.bpmn2.modeler.ui.property.data.DataObjectReferencePropertySection"
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 			label="Data Object Reference">
 		</propertyTab>
-		
-		<propertyTab category="BPMN2"
+
+		<propertyTab
 			id="org.eclipse.bpmn2.modeler.dataitems.tab"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			class="org.eclipse.bpmn2.modeler.ui.property.diagrams.DataItemsPropertySection"
+			type="org.eclipse.bpmn2.di.BPMNDiagram"
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 			label="Data Items">
 		</propertyTab>
-		
-		<propertyTab category="BPMN2"
+
+		<propertyTab
 			id="org.eclipse.bpmn2.modeler.sequenceflow.tab"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			class="org.eclipse.bpmn2.modeler.ui.property.connectors.SequenceFlowPropertySection"
+			type="org.eclipse.bpmn2.SequenceFlow"
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 			label="Sequence Flow">
 		</propertyTab>
 
-		<propertyTab category="BPMN2"
+		<propertyTab
 			id="org.eclipse.bpmn2.modeler.messageFlow.tab"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			class="org.eclipse.bpmn2.modeler.ui.property.connectors.MessageFlowPropertySection"
+			type="org.eclipse.bpmn2.MessageFlow"
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 			label="Message Flow">
 		</propertyTab>
 
-		<propertyTab category="BPMN2"
+		<propertyTab
 			id="org.eclipse.bpmn2.modeler.message.tab"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			class="org.eclipse.bpmn2.modeler.ui.property.data.MessagePropertySection"
+			type="org.eclipse.bpmn2.Message"
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 			label="Message">
 		</propertyTab>
-		
+
 		<propertyTab
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
-			category="BPMN2"
 			id="org.eclipse.bpmn2.modeler.assocation.tab"
-			label="Assocation"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+			class="org.eclipse.bpmn2.modeler.ui.property.connectors.AssociationPropertySection"
+			type="org.eclipse.bpmn2.Association"
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			label="Assocation">
 		</propertyTab>
 
 		<propertyTab
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
-			category="BPMN2"
 			id="org.eclipse.bpmn2.modeler.conversationLink.tab"
-			label="Conversation Link"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+			class="org.eclipse.bpmn2.modeler.ui.property.connectors.ConversationLinkPropertySection"
+			type="org.eclipse.bpmn2.ConversationLink"
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			label="Conversation Link">
 		</propertyTab>
 
 		<propertyTab
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
-			category="BPMN2"
 			id="org.eclipse.bpmn2.modeler.conversation.tab"
-			label="Conversation"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+			class="org.eclipse.bpmn2.modeler.ui.property.connectors.ConversationPropertySection"
+			type="org.eclipse.bpmn2.Conversation"
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			label="Conversation">
 		</propertyTab>
 
-		<propertyTab category="BPMN2"
-			id="org.eclipse.bpmn2.modeler.advanced.tab"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-			afterTab="org.eclipse.bpmn2.modeler.main.tab"
-			label="Advanced">
-		</propertyTab>
-		
-		<propertyTab category="BPMN2"
+		<propertyTab
 			id="org.eclipse.bpmn2.modeler.commonEvent.tab"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			class="org.eclipse.bpmn2.modeler.ui.property.events.CommonEventPropertySection"
+			type="org.eclipse.bpmn2.Event"
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 			label="Event">
 		</propertyTab>
 
-		<propertyTab category="BPMN2"
+		<propertyTab
 			id="org.eclipse.bpmn2.modeler.task.tab"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
+			class="org.eclipse.bpmn2.modeler.ui.property.tasks.TaskPropertySection"
+			type="org.eclipse.bpmn2.Task"
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 			label="Task">
 		</propertyTab>
 
 		<propertyTab
-	        afterTab="org.eclipse.bpmn2.modeler.task.tab"
-	        category="BPMN2"
-	        id="org.eclipse.bpmn2.modeler.scriptTask.tab"
-	        label="Script Task"
-	        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+			id="org.eclipse.bpmn2.modeler.scriptTask.tab"
+			class="org.eclipse.bpmn2.modeler.ui.property.tasks.ScriptTaskPropertySection"
+			type="org.eclipse.bpmn2.ScriptTask"
+			afterTab="org.eclipse.bpmn2.modeler.task.tab"
+			label="Script Task">
 		</propertyTab>
 
 		<propertyTab
-	        afterTab="org.eclipse.bpmn2.modeler.task.tab"
-	        category="BPMN2"
-	        id="org.eclipse.bpmn2.modeler.serviceTask.tab"
-	        label="Service Task"
-	        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+			id="org.eclipse.bpmn2.modeler.serviceTask.tab"
+			class="org.eclipse.bpmn2.modeler.ui.property.tasks.ServiceTaskPropertySection"
+			type="org.eclipse.bpmn2.ServiceTask"
+			afterTab="org.eclipse.bpmn2.modeler.task.tab"
+			label="Service Task">
 		</propertyTab>
 
 		<propertyTab
-	        afterTab="org.eclipse.bpmn2.modeler.task.tab"
-	        category="BPMN2"
-	        id="org.eclipse.bpmn2.modeler.userTask.tab"
-	        label="User Task"
-	        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+			id="org.eclipse.bpmn2.modeler.userTask.tab"
+			class="org.eclipse.bpmn2.modeler.ui.property.tasks.UserTaskPropertySection"
+			type="org.eclipse.bpmn2.UserTask"
+			afterTab="org.eclipse.bpmn2.modeler.task.tab"
+			label="User Task">
 		</propertyTab>
 
 		<propertyTab
-	        afterTab="org.eclipse.bpmn2.modeler.task.tab"
-	        category="BPMN2"
-	        id="org.eclipse.bpmn2.modeler.sendTask.tab"
-	        label="Send Task"
-	        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+			id="org.eclipse.bpmn2.modeler.sendTask.tab"
+			class="org.eclipse.bpmn2.modeler.ui.property.tasks.SendTaskPropertySection"
+			type="org.eclipse.bpmn2.SendTask"
+			afterTab="org.eclipse.bpmn2.modeler.task.tab"
+			label="Send Task">
 		</propertyTab>
 
 		<propertyTab
-	        replaceTab="org.eclipse.bpmn2.modeler.main.tab"
-	        category="BPMN2"
-	        id="org.eclipse.bpmn2.modeler.receiveTask.tab"
-	        label="Receive Task"
-	        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+			id="org.eclipse.bpmn2.modeler.receiveTask.tab"
+			class="org.eclipse.bpmn2.modeler.ui.property.tasks.ReceiveTaskPropertySection"
+			type="org.eclipse.bpmn2.ReceiveTask"
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			label="Receive Task">
 		</propertyTab>
 
 		<propertyTab
-	        replaceTab="org.eclipse.bpmn2.modeler.main.tab"
-	        category="BPMN2"
-	        id="org.eclipse.bpmn2.modeler.businessRuleTask.tab"
-	        label="Business Rule Task"
-	        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+			id="org.eclipse.bpmn2.modeler.businessRuleTask.tab"
+			class="org.eclipse.bpmn2.modeler.ui.property.tasks.BusinessRuleTaskPropertySection"
+			type="org.eclipse.bpmn2.BusinessRuleTask"
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			label="Business Rule Task">
 		</propertyTab>
 
 		<propertyTab
-	        replaceTab="org.eclipse.bpmn2.modeler.main.tab"
-	        category="BPMN2"
-	        id="org.eclipse.bpmn2.modeler.choreographyTask.tab"
-	        label="Choreography Task"
-	        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+			id="org.eclipse.bpmn2.modeler.choreographyTask.tab"
+			class="org.eclipse.bpmn2.modeler.ui.property.tasks.ChoreographyTaskPropertySection"
+			type="org.eclipse.bpmn2.ChoreographyTask"
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			label="Choreography Task">
 		</propertyTab>
 
 		<propertyTab
-        afterTab="org.eclipse.bpmn2.modeler.task.tab"
-        category="BPMN2"
-        id="org.eclipse.bpmn2.modeler.activity.input.tab"
-        label="Inputs/Assignments"
-        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+			id="org.eclipse.bpmn2.modeler.activity.input.tab"
+			class="org.eclipse.bpmn2.modeler.ui.property.tasks.ActivityInputPropertySection"
+			 type="org.eclipse.bpmn2.Activity"
+			afterTab="org.eclipse.bpmn2.modeler.task.tab"
+			label="Inputs/Assignments">
 		</propertyTab>
 
 		<propertyTab
-        afterTab="org.eclipse.bpmn2.modeler.task.tab"
-        category="BPMN2"
-        id="org.eclipse.bpmn2.modeler.activity.output.tab"
-        label="Outputs/Assignments"
-        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+			id="org.eclipse.bpmn2.modeler.activity.output.tab"
+			class="org.eclipse.bpmn2.modeler.ui.property.tasks.ActivityOutputPropertySection"
+			type="org.eclipse.bpmn2.Activity"
+			afterTab="org.eclipse.bpmn2.modeler.task.tab"
+			label="Outputs/Assignments">
 		</propertyTab>
 
 		<propertyTab
-	        replaceTab="org.eclipse.bpmn2.modeler.main.tab"
-	        category="BPMN2"
-	        id="org.eclipse.bpmn2.modeler.gateway.tab"
-	        label="Gateway"
-	        runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+			id="org.eclipse.bpmn2.modeler.gateway.tab"
+			class="org.eclipse.bpmn2.modeler.ui.property.gateways.GatewayPropertySection"
+			type="org.eclipse.bpmn2.Gateway"
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			label="Gateway">
 		</propertyTab>
-
-		<!-- Property Sections -->
-
-		<!-- Description Tab Section -->		
-		<propertySection
-			class="org.eclipse.bpmn2.modeler.ui.property.DescriptionPropertySection"
-			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-			id="org.eclipse.bpmn2.modeler.description.tab.section"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-			tab="org.eclipse.bpmn2.modeler.description.tab">
-		</propertySection>
-		
-		<!-- Default Tab Section -->		
-		<propertySection
-			class="org.eclipse.bpmn2.modeler.ui.property.DefaultPropertySection"
-			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-			id="org.eclipse.bpmn2.modeler.main.tab.section"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-			tab="org.eclipse.bpmn2.modeler.main.tab">
-		</propertySection>
-
-		<!-- Advanced Tab Section -->		
-		<propertySection
-			class="org.eclipse.bpmn2.modeler.ui.property.AdvancedPropertySection"
-			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-			id="org.eclipse.bpmn2.modeler.advanced.tab.section"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-			tab="org.eclipse.bpmn2.modeler.advanced.tab">
-		</propertySection>
-		
-		<!-- Everything else -->		
-		<propertySection
-			class="org.eclipse.bpmn2.modeler.ui.property.diagrams.ProcessDiagramPropertySection"
-			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-			id="org.eclipse.bpmn2.modeler.process.diagram.section"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-			type="org.eclipse.bpmn2.di.BPMNDiagram"
-			tab="org.eclipse.bpmn2.modeler.process.diagram.tab">
-		</propertySection>
-			
-		<propertySection
-			class="org.eclipse.bpmn2.modeler.ui.property.diagrams.DefinitionsPropertySection"
-			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-			id="org.eclipse.bpmn2.modeler.definitions.section"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-			type="org.eclipse.bpmn2.di.BPMNDiagram"
-			tab="org.eclipse.bpmn2.modeler.definitions.tab">
-		</propertySection>
-
-		<propertySection
-			class="org.eclipse.bpmn2.modeler.ui.property.data.DataStorePropertySection"
-			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-			id="org.eclipse.bpmn2.modeler.datastore.section"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-			tab="org.eclipse.bpmn2.modeler.datastore.tab">
-		</propertySection>
-
-		<propertySection
-			class="org.eclipse.bpmn2.modeler.ui.property.data.DataObjectPropertySection"
-			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-			id="org.eclipse.bpmn2.modeler.dataobjectref.section"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-			tab="org.eclipse.bpmn2.modeler.dataobject.tab">
-		</propertySection>
-
-		<propertySection
-			class="org.eclipse.bpmn2.modeler.ui.property.data.DataObjectReferencePropertySection"
-			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-			id="org.eclipse.bpmn2.modeler.dataobjectref.section"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-			tab="org.eclipse.bpmn2.modeler.dataobjectref.tab">
-		</propertySection>
-			
-		<propertySection
-			class="org.eclipse.bpmn2.modeler.ui.property.diagrams.DataItemsPropertySection"
-			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-			id="org.eclipse.bpmn2.modeler.dataitems.section"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-			type="org.eclipse.bpmn2.di.BPMNDiagram"
-			tab="org.eclipse.bpmn2.modeler.dataitems.tab">
-		</propertySection>
-		
-		<propertySection
-			class="org.eclipse.bpmn2.modeler.ui.property.connectors.SequenceFlowPropertySection"
-			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-			id="org.eclipse.bpmn2.modeler.sequenceflow.section"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-			type="org.eclipse.bpmn2.SequenceFlow"
-			tab="org.eclipse.bpmn2.modeler.sequenceflow.tab">
-		</propertySection>
-
-		<propertySection
-			class="org.eclipse.bpmn2.modeler.ui.property.connectors.MessageFlowPropertySection"
-			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-			id="org.eclipse.bpmn2.modeler.messageflow.section"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-			type="org.eclipse.bpmn2.MessageFlow"
-			tab="org.eclipse.bpmn2.modeler.messageFlow.tab">
-		</propertySection>
-		
-		<propertySection
-			class="org.eclipse.bpmn2.modeler.ui.property.data.MessagePropertySection"
-			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-			id="org.eclipse.bpmn2.modeler.message.section"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-			type="org.eclipse.bpmn2.Message"
-			tab="org.eclipse.bpmn2.modeler.message.tab">
-		</propertySection>
-		
-		<propertySection
-			class="org.eclipse.bpmn2.modeler.ui.property.connectors.AssociationPropertySection"
-			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-			id="org.eclipse.bpmn2.modeler.assocation.section"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-			tab="org.eclipse.bpmn2.modeler.assocation.tab"
-			type="org.eclipse.bpmn2.Association">
-		</propertySection>
-
-		<propertySection
-			class="org.eclipse.bpmn2.modeler.ui.property.connectors.ConversationLinkPropertySection"
-			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-			id="org.eclipse.bpmn2.modeler.conversationLink.section"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-			tab="org.eclipse.bpmn2.modeler.conversationLink.tab"
-			type="org.eclipse.bpmn2.ConversationLink">
-		</propertySection>
-
-		<propertySection
-			class="org.eclipse.bpmn2.modeler.ui.property.connectors.ConversationPropertySection"
-			filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-			id="org.eclipse.bpmn2.modeler.conversation.section"
-			runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-			tab="org.eclipse.bpmn2.modeler.conversation.tab"
-			type="org.eclipse.bpmn2.Conversation">
-		</propertySection>
-		  
-		  <propertySection
-		        class="org.eclipse.bpmn2.modeler.ui.property.events.CommonEventPropertySection"
-		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-		        id="org.eclipse.bpmn2.modeler.commonEvent.section"
-		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-		        tab="org.eclipse.bpmn2.modeler.commonEvent.tab"
-		        type="org.eclipse.bpmn2.Event">
-		  </propertySection>
-		  
-		  <propertySection
-		        class="org.eclipse.bpmn2.modeler.ui.property.gateways.GatewayPropertySection"
-		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-		        id="org.eclipse.bpmn2.modeler.gateway.section"
-		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-		        tab="org.eclipse.bpmn2.modeler.gateway.tab"
-		        type="org.eclipse.bpmn2.Gateway">
-		  </propertySection>
-<!--
-		  <propertySection
-		        class="org.eclipse.bpmn2.modeler.ui.property.events.StartEventPropertySection"
-		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-		        id="org.eclipse.bpmn2.modeler.startEvent.section"
-		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-		        tab="org.eclipse.bpmn2.modeler.commonEvent.tab"
-		        type="org.eclipse.bpmn2.StartEvent">
-		  </propertySection>
--->
-<!--          Don't need End Event property section at the moment because it doesn't add 
-              anything to the Throw Event
--->
-<!--		  <propertySection
-		        class="org.eclipse.bpmn2.modeler.ui.property.events.EndEventPropertySection"
-		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-		        id="org.eclipse.bpmn2.modeler.endEvent.section"
-		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-		        tab="org.eclipse.bpmn2.modeler.commonEvent.tab"
-		        type="org.eclipse.bpmn2.EndEvent">
-		  </propertySection> -->
-<!--
-		  <propertySection
-		        class="org.eclipse.bpmn2.modeler.ui.property.events.CatchEventPropertySection"
-		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-		        id="org.eclipse.bpmn2.modeler.catchEvent.section"
-		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-		        tab="org.eclipse.bpmn2.modeler.commonEvent.tab"
-		        type="org.eclipse.bpmn2.CatchEvent">
-		  </propertySection>
-
-		  <propertySection
-		        class="org.eclipse.bpmn2.modeler.ui.property.events.ThrowEventPropertySection"
-		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-		        id="org.eclipse.bpmn2.modeler.throwEvent.section"
-		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-		        tab="org.eclipse.bpmn2.modeler.commonEvent.tab"
-		        type="org.eclipse.bpmn2.ThrowEvent">
-		  </propertySection>
-
-		  <propertySection
-		        class="org.eclipse.bpmn2.modeler.ui.property.events.BoundaryEventPropertySection"
-		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-		        id="org.eclipse.bpmn2.modeler.boundaryEvent.section"
-		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-		        tab="org.eclipse.bpmn2.modeler.commonEvent.tab"
-		        type="org.eclipse.bpmn2.BoundaryEvent">
-		  </propertySection>
--->
-		  
-		  <propertySection
-		        class="org.eclipse.bpmn2.modeler.ui.property.tasks.TaskPropertySection"
-		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-		        id="org.eclipse.bpmn2.modeler.task.section"
-		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-		        tab="org.eclipse.bpmn2.modeler.task.tab"
-		        type="org.eclipse.bpmn2.Task">
-		  </propertySection>
-
-		  <propertySection
-		        class="org.eclipse.bpmn2.modeler.ui.property.tasks.ScriptTaskPropertySection"
-		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-		        id="org.eclipse.bpmn2.modeler.scriptTask.section"
-		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-		        tab="org.eclipse.bpmn2.modeler.scriptTask.tab"
-		        type="org.eclipse.bpmn2.ScriptTask">
-		  </propertySection>
-
-		  <propertySection
-		        class="org.eclipse.bpmn2.modeler.ui.property.tasks.ServiceTaskPropertySection"
-		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-		        id="org.eclipse.bpmn2.modeler.serviceTask.section"
-		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-		        tab="org.eclipse.bpmn2.modeler.serviceTask.tab"
-		        type="org.eclipse.bpmn2.ServiceTask">
-		  </propertySection>
-
-		  <propertySection
-		        class="org.eclipse.bpmn2.modeler.ui.property.tasks.UserTaskPropertySection"
-		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-		        id="org.eclipse.bpmn2.modeler.userTask.section"
-		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-		        tab="org.eclipse.bpmn2.modeler.userTask.tab"
-		        type="org.eclipse.bpmn2.UserTask">
-		  </propertySection>
-
-		  <propertySection
-		        class="org.eclipse.bpmn2.modeler.ui.property.tasks.SendTaskPropertySection"
-		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-		        id="org.eclipse.bpmn2.modeler.sendTask.section"
-		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-		        tab="org.eclipse.bpmn2.modeler.sendTask.tab"
-		        type="org.eclipse.bpmn2.SendTask">
-		  </propertySection>
-
-		  <propertySection
-		        class="org.eclipse.bpmn2.modeler.ui.property.tasks.ReceiveTaskPropertySection"
-		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-		        id="org.eclipse.bpmn2.modeler.receiveTask.section"
-		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-		        tab="org.eclipse.bpmn2.modeler.receiveTask.tab"
-		        type="org.eclipse.bpmn2.ReceiveTask">
-		  </propertySection>
-
-		  <propertySection
-		        class="org.eclipse.bpmn2.modeler.ui.property.tasks.BusinessRuleTaskPropertySection"
-		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-		        id="org.eclipse.bpmn2.modeler.businessRuleTask.section"
-		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-		        tab="org.eclipse.bpmn2.modeler.businessRuleTask.tab"
-		        type="org.eclipse.bpmn2.BusinessRuleTask">
-		  </propertySection>
-
-		  <propertySection
-		        class="org.eclipse.bpmn2.modeler.ui.property.tasks.ChoreographyTaskPropertySection"
-		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-		        id="org.eclipse.bpmn2.modeler.choreographyTask.section"
-		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-		        tab="org.eclipse.bpmn2.modeler.choreographyTask.tab"
-		        type="org.eclipse.bpmn2.ChoreographyTask">
-		  </propertySection>
-
-		  <propertySection
-		        class="org.eclipse.bpmn2.modeler.ui.property.tasks.ActivityInputPropertySection"
-		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-		        id="org.eclipse.bpmn2.modeler.activity.input.section"
-		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-		        tab="org.eclipse.bpmn2.modeler.activity.input.tab"
-		        type="org.eclipse.bpmn2.Activity">
-		  </propertySection>
-		  <propertySection
-		        class="org.eclipse.bpmn2.modeler.ui.property.tasks.ActivityOutputPropertySection"
-		        filter="org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter"
-		        id="org.eclipse.bpmn2.modeler.activity.output.section"
-		        runtimeId="org.eclipse.bpmn2.modeler.runtime.none"
-		        tab="org.eclipse.bpmn2.modeler.activity.output.tab"
-		        type="org.eclipse.bpmn2.Activity">
-		  </propertySection>
 
 
 		<modelEnablement runtimeId="org.eclipse.bpmn2.modeler.runtime.none" type="Choreography">
