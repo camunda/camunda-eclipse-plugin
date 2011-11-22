@@ -14,8 +14,11 @@
 package org.eclipse.bpmn2.modeler.ui.property.editors;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
@@ -40,17 +43,21 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 
 /**
+ * EObject Reference List Editor.
+ * This class implements an EObject reference list editor. The feature must be an EList of EObject references.
+ * The list is rendered in a single-line text field with an "Edit" button to the right. Clicking the edit button
+ * displays an EMF FeatureEditorDialog, which allows adding, removing and reordering of available object references.
+ * 
  * @author Bob Brodt
- *
  */
-public class ListObjectEditor extends MultivalueObjectEditor {
+public class FeatureListObjectEditor extends MultivalueObjectEditor {
 
 	/**
 	 * @param parent
 	 * @param object
 	 * @param feature
 	 */
-	public ListObjectEditor(AbstractBpmn2PropertiesComposite parent, EObject object, EStructuralFeature feature) {
+	public FeatureListObjectEditor(AbstractBpmn2PropertiesComposite parent, EObject object, EStructuralFeature feature) {
 		super(parent, object, feature);
 	}
 
@@ -76,7 +83,9 @@ public class ListObjectEditor extends MultivalueObjectEditor {
 			@SuppressWarnings("unchecked")
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				List values = getChoiceOfValues(object,feature);
+				Hashtable<String,Object> choices = getChoiceOfValues(object,feature);
+				List values = new ArrayList();
+				values.addAll(choices.values());
 
 				FeatureEditorDialog featureEditorDialog = new FeatureEditorDialog(parent.getShell(),
 						AdapterUtil.getLabelProvider(), object, feature, "Select elements", values) {
@@ -94,7 +103,6 @@ public class ListObjectEditor extends MultivalueObjectEditor {
 				};
 
 				if (featureEditorDialog.open() == Window.OK) {
-
 					updateEObject(refs, (EList<EObject>) featureEditorDialog.getResult());
 					updateTextField(refs, text);
 				}

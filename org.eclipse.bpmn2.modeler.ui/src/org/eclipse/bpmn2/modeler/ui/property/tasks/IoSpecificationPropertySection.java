@@ -12,18 +12,17 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.property.tasks;
 
-import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
-public class ActivityInputPropertySection extends AbstractBpmn2PropertySection {
+public class IoSpecificationPropertySection extends AbstractBpmn2PropertySection {
 	static {
-		PropertiesCompositeFactory.register(Activity.class, ActivityInputPropertiesComposite.class);
-		PropertiesCompositeFactory.register(InputOutputSpecification.class, ActivityInputPropertiesComposite.class);
+		PropertiesCompositeFactory.register(InputOutputSpecification.class, IoSpecificationPropertiesComposite.class);
 	}
 
 	/* (non-Javadoc)
@@ -31,14 +30,17 @@ public class ActivityInputPropertySection extends AbstractBpmn2PropertySection {
 	 */
 	@Override
 	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
-		return new ActivityInputPropertiesComposite(this);
+		return new IoSpecificationPropertiesComposite(this);
 	}
 
 	@Override
 	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
 		EObject be = super.getBusinessObjectForPictogramElement(pe);
-		if (be instanceof Activity)
-			return be;
+		if (be!=null) {
+			EStructuralFeature feature = be.eClass().getEStructuralFeature("ioSpecification");
+			if (feature != null)
+				return be;
+		}
 		return null;
 	}
 }

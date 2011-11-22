@@ -121,8 +121,12 @@ public class PropertiesCompositeFactory {
 		}
 		return null;
 	}
-		
+
 	public static AbstractBpmn2PropertiesComposite createComposite(Class eClass, AbstractBpmn2PropertySection section) {
+		return createComposite(eClass,section,true);
+	}
+	
+	public static AbstractBpmn2PropertiesComposite createComposite(Class eClass, AbstractBpmn2PropertySection section, boolean useDefault) {
 		AbstractBpmn2PropertiesComposite composite = null;
 		Class clazz = findCompositeClass(eClass);
 		if (clazz!=null) {
@@ -139,15 +143,26 @@ public class PropertiesCompositeFactory {
 					composite = (AbstractBpmn2PropertiesComposite) ctor.newInstance(section);
 				}
 			} catch (Exception e) {
-				logError(eClass,e);
-				composite = new DefaultPropertiesComposite(section);
+				if (useDefault)
+					logError(eClass,e);
 			}
 			
 		}
+		
+		if (composite==null && useDefault)
+			composite = new DefaultPropertiesComposite(section);
+
+		if (!useDefault && composite instanceof DefaultPropertiesComposite)
+			composite = null;
+		
 		return composite;
 	}
 	
 	public static AbstractBpmn2PropertiesComposite createComposite(Class eClass, Composite parent, int style) {
+		return createComposite(eClass,parent,style,true);
+	}
+	
+	public static AbstractBpmn2PropertiesComposite createComposite(Class eClass, Composite parent, int style, boolean useDefault) {
 		AbstractBpmn2PropertiesComposite composite = null;
 		Class clazz = findCompositeClass(eClass);
 		if (clazz!=null) {
@@ -164,13 +179,17 @@ public class PropertiesCompositeFactory {
 					composite = (AbstractBpmn2PropertiesComposite) ctor.newInstance(parent,style);
 				}
 			} catch (Exception e) {
-				logError(eClass,e);
-				composite = new DefaultPropertiesComposite(parent,style);
+				if (useDefault)
+					logError(eClass,e);
 			}
 			
 		}
-		if (composite==null)
+		
+		if (composite==null && useDefault)
 			composite = new DefaultPropertiesComposite(parent,style);
+
+		if (!useDefault && composite instanceof DefaultPropertiesComposite)
+			composite = null;
 		
 		return composite;
 	}

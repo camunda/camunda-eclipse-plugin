@@ -316,6 +316,13 @@
 		</propertyTab>
 
 		<propertyTab
+			id="org.eclipse.bpmn2.modeler.activity.io.tab"
+			class="org.eclipse.bpmn2.modeler.ui.property.tasks.IoSpecificationPropertySection"
+			afterTab="org.eclipse.bpmn2.modeler.task.tab"
+			label="I/O Parameters">
+		</propertyTab>
+<!--
+		<propertyTab
 			id="org.eclipse.bpmn2.modeler.activity.input.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.tasks.ActivityInputPropertySection"
 			 type="org.eclipse.bpmn2.Activity"
@@ -330,7 +337,7 @@
 			afterTab="org.eclipse.bpmn2.modeler.task.tab"
 			label="Outputs/Assignments">
 		</propertyTab>
-
+-->
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.gateway.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.gateways.GatewayPropertySection"

@@ -26,13 +26,17 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
+ * Base class for EObject feature editors. All subclasses must render the given object's feature,
+ * which may be either an attribute, a reference to an EObject, or a list of EObject references.
+ * Subclasses must also provide means to populate the display widgets from the feature and save
+ * modifications to the feature made in the display widget.
+ * 
  * @author Bob Brodt
- *
  */
 public abstract class ObjectEditor {
-	EObject object;
-	EStructuralFeature feature;
-	AbstractBpmn2PropertiesComposite parent;
+	protected EObject object;
+	protected EStructuralFeature feature;
+	protected AbstractBpmn2PropertiesComposite parent;
 	
 	public ObjectEditor(AbstractBpmn2PropertiesComposite parent, EObject object, EStructuralFeature feature) {
 		this.parent = parent;

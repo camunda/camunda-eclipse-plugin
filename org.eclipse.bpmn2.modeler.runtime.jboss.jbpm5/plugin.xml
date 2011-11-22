@@ -72,7 +72,6 @@
 			type="org.eclipse.bpmn2.SequenceFlow"
 			label="Sequence Flow">
 		</propertyTab>
-
 <!--
 		<customTask
 			featureContainer="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmCustomTaskFeatureContainer"
@@ -81,14 +80,14 @@
 			name="Log Task"
 			description="This task is used to log messages"
 			type="Task">
-			<property name="taskName" value="log"/>
-			<property name="displayName" value="Log Task" type="EString"/>
+			<property name="taskName" value="SampleLogTask"/>
+			<property name="displayName" value="Sample Log Task" type="EString"/>
 			<property name="icon" value="icons/log.png" type="EString"/>
 			<property name="ioSpecification">
 				<value>
 					<property name="dataInputs">
 						<value>
-							<property name="name" value="parameter"/>
+							<property name="name" value="Parameter"/>
 						</value>
 					</property>
 					<property name="dataInputs">
@@ -126,6 +125,12 @@
 					<property name="targetRef" ref="ioSpecification/dataInputs#0"/>
 				</value>
 			</property>
+			<property name="dataInputAssociations">
+				<value>
+					<property name="sourceRef" value="someVariable"/>
+					<property name="targetRef" ref="ioSpecification/dataInputs#1"/>
+				</value>
+			</property>
 			<property name="dataOutputAssociations">
 				<value>
 					<property name="sourceRef" ref="ioSpecification/dataOutputs#0"/>
@@ -133,22 +138,23 @@
 				</value>
 			</property>
 		</customTask>
-
+-->	
+<!--
 		<customTask
 			featureContainer="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmCustomTaskFeatureContainer"
 			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.EmailTask"
 			runtimeId="org.jboss.runtime.jbpm5"
-			name="Email Task"
+			name="Sample Email Task"
 			description="This task is used to send emails"
 			type="Task">
-			<property name="taskName" value="send"/>
-			<property name="displayName" value="Email Task" type="EString"/>
+			<property name="taskName" value="SampleEmailTask"/>
+			<property name="displayName" value="Sample Email Task" type="EString"/>
 			<property name="icon" value="icons/email.png" type="EString"/>
 			<property name="ioSpecification">
 				<value>
 					<property name="dataInputs">
 						<value>
-							<property name="name" value="parameter"/>
+							<property name="name" value="Attachment"/>
 						</value>
 					</property>
 					<property name="dataInputs">
@@ -324,7 +330,6 @@
 			<enable object="OnEntryScriptType" feature="script"/>
 			<enable object="OnEntryScriptType" feature="scriptFormat"/>
 
-			<disable object="Task"/>
 			<disable object="Import"/>
 			<disable object="ExtensionDefinition"/>
 			<disable object="Relationship"/>

@@ -16,7 +16,9 @@ package org.eclipse.bpmn2.modeler.ui.property.editors;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.eclipse.bpmn2.GatewayDirection;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
@@ -48,6 +50,8 @@ import org.eclipse.swt.widgets.Control;
  */
 public class ComboObjectEditor extends MultivalueObjectEditor {
 
+	protected ComboViewer comboViewer;
+	
 	/**
 	 * @param parent
 	 * @param object
@@ -64,20 +68,23 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 	public Control createControl(Composite composite, String label, int style) {
 		createLabel(composite, label);
 
-		final ComboViewer comboViewer = createComboViewer(composite,
+		comboViewer = createComboViewer(composite,
 				AdapterUtil.getLabelProvider(), style);
 		Combo combo = comboViewer.getCombo();
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
-		Object eGet =  object.eGet(feature);
+		Object oldValue =  object.eGet(feature);
 
-		Collection values = getChoiceOfValues(object, feature);
+		Hashtable<String,Object> choices = getChoiceOfValues(object, feature);
 		comboViewer.add("");
-		for (Object o : values)
-			if (o!=null)
-				comboViewer.add(o);
-		if (eGet != null) {
-			comboViewer.setSelection(new StructuredSelection(eGet));
+		for (Entry<String, Object> entry : choices.entrySet()) {
+			comboViewer.add(entry.getKey());
+			Object newValue = entry.getValue(); 
+			if (newValue!=null) {
+				comboViewer.setData(entry.getKey(), newValue);
+				if (newValue==oldValue)
+					comboViewer.setSelection(new StructuredSelection(entry.getKey()));
+			}
 		}
 
 		comboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -86,28 +93,26 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 			public void selectionChanged(SelectionChangedEvent event) {
 				ISelection selection = comboViewer.getSelection();
 				if (selection instanceof StructuredSelection) {
-					Object firstElement = ((StructuredSelection) selection).getFirstElement();
-					if (firstElement instanceof EObject || firstElement instanceof Enumerator) {
+					String firstElement = (String) ((StructuredSelection) selection).getFirstElement();
+					if(comboViewer.getData(firstElement)!=null)
+						updateEObject(comboViewer.getData(firstElement));
+					else
 						updateEObject(firstElement);
-					}
-					else {
-						updateEObject(null);
-					}
 				}
-			}
-
-			public void updateEObject(final Object result) {
-				TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
-				domain.getCommandStack().execute(new RecordingCommand(domain) {
-					@Override
-					protected void doExecute() {
-						object.eSet(feature, result);
-					}
-				});
 			}
 		});
 		
 		return combo;
+	}
+
+	protected void updateEObject(final Object result) {
+		TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
+		domain.getCommandStack().execute(new RecordingCommand(domain) {
+			@Override
+			protected void doExecute() {
+				object.eSet(feature, result);
+			}
+		});
 	}
 
 	private ComboViewer createComboViewer(Composite parent, AdapterFactoryLabelProvider labelProvider, int style) {

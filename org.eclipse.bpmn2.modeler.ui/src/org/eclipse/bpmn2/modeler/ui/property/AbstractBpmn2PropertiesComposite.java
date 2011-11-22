@@ -32,7 +32,7 @@ import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.BooleanObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ComboObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.IntObjectEditor;
-import org.eclipse.bpmn2.modeler.ui.property.editors.ListObjectEditor;
+import org.eclipse.bpmn2.modeler.ui.property.editors.FeatureListObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
 import org.eclipse.emf.common.command.Command;
@@ -390,25 +390,50 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 		return section;
 	}
 
+	// TODO: clean this mess up! Too many variations of bindAttribute()
+	
 	protected void bindAttribute(EObject object, String name) {
+		bindAttribute(null,object,name, null);
+	}
+
+	protected void bindAttribute(EObject object, String name, String label) {
+		bindAttribute(null,object,name,label);
+	}
+	
+	protected void bindAttribute(Composite parent, EObject object, String name) {
+		bindAttribute(parent,object,name,null);
+	}
+	
+	protected void bindAttribute(Composite parent, EObject object, String name, String label) {
 		EStructuralFeature feature = getFeature(object,name);
 		if (isAttribute(object,feature)) {
-			bindAttribute(object,(EAttribute)feature);
+			bindAttribute(object,(EAttribute)feature,label);
 		}
 	}
 
 	protected void bindAttribute(EObject object, EAttribute attribute) {
-		bindAttribute(null,object,attribute);
+		bindAttribute(null,object,attribute,null);
+	}
+	
+	protected void bindAttribute(EObject object, EAttribute attribute, String label) {
+		bindAttribute(null,object,attribute,label);
 	}
 	
 	protected void bindAttribute(Composite parent, EObject object, EAttribute attribute) {
+		bindAttribute(parent,object,attribute,null);
+	}
+	
+	protected void bindAttribute(Composite parent, EObject object, EAttribute attribute, String label) {
 
 		if (modelEnablement.isEnabled(object.eClass(), attribute)) {
 
 			if (parent==null)
 				parent = getAttributesParent();
 			
-			String displayName = getDisplayName(object, attribute);
+			String displayName = label;
+			if (displayName==null)
+				displayName = getDisplayName(object, attribute);
+			
 			Collection choiceOfValues = getChoiceOfValues(object, attribute);
 			
 			Class eTypeClass = attribute.getEType().getInstanceClass();
@@ -445,13 +470,6 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 		}
 	}
 	
-	protected void bindAttribute(Composite parent, EObject object, String name) {
-		EStructuralFeature feature = getFeature(object,name);
-		if (isAttribute(object,feature)) {
-			bindAttribute(parent, object,(EAttribute)feature);
-		}
-	}
-	
 	protected void bindReference(Composite parent, EObject object, String name) {
 		EStructuralFeature feature = getFeature(object,name);
 		if (isReference(object,feature)) {
@@ -475,16 +493,22 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 			if (parent==null)
 				parent = getAttributesParent();
 			
-			Object eGet = object.eGet(reference);
 			String displayName = getDisplayName(object, reference);
 	
-			ObjectEditor editor;
-			if (eGet instanceof List) {
-				editor = new ListObjectEditor(this,object,reference);
-			} else {
-				editor = new ComboObjectEditor(this,object,reference);
+			AbstractBpmn2PropertiesComposite composite = PropertiesCompositeFactory.createComposite(
+					reference.getEReferenceType().getInstanceClass(), propertySection, false);
+			if (composite!=null) {
+				composite.setEObject(propertySection.editor, object);
 			}
-			editor.createControl(parent,displayName);
+			else {
+				ObjectEditor editor;
+				if (reference.isMany()) {
+					editor = new FeatureListObjectEditor(this,object,reference);
+				} else {
+					editor = new ComboObjectEditor(this,object,reference);
+				}
+				editor.createControl(parent,displayName);
+			}
 		}
 	}
 	

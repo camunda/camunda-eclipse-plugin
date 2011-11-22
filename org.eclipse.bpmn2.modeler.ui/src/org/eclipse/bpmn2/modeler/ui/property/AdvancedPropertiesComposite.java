@@ -203,8 +203,6 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 			}
 			else {
 				detailsPropertiesComposite = PropertiesCompositeFactory.createComposite(obj.getClass(), detailsComposite, SWT.NONE);
-				if (detailsPropertiesComposite==null)
-					detailsPropertiesComposite = PropertiesCompositeFactory.createComposite(obj.getClass(), detailsComposite, SWT.NONE);
 			}
 			Class cc = PropertiesCompositeFactory.findCompositeClass(obj.getClass());
 			if (cc==null||cc==DefaultPropertiesComposite.class)

@@ -181,6 +181,13 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 		return PropertyUtil.getBusinessObjectForPictogramElement(pe);
 	}
 	
+	protected EObject getBusinessObjectForSelection() {
+		PictogramElement pe = getSelectedPictogramElement();
+		if (pe != null)
+			return getBusinessObjectForPictogramElement(pe);
+		return null;
+	}
+	
 	/* (non-Javadoc)
 	 * Yet another ugly hack: this restores the current property sheet page parent
 	 * composite when a different BPMN2Editor is activated. Apparently TabbedPropertySheetPage
