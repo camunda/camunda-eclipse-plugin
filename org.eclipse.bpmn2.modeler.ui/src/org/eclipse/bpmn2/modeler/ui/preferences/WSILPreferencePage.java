@@ -101,7 +101,7 @@ public class WSILPreferencePage extends PreferencePage implements IWorkbenchPref
 	
 	private static String WSIL = "wsil";
 	
-	// Track the  modification of any element in the WSIL model.
+	// Track the  modification of any parameter in the WSIL model.
 	// we don't use commands and stacks here.
 	EContentAdapter fContentAdapter = new EContentAdapter() {
 			
@@ -533,7 +533,7 @@ public class WSILPreferencePage extends PreferencePage implements IWorkbenchPref
 		
 		linkTableViewer.setInput( fWsilDocument );
 		
-		// Track the  modification of any element in the WSIL model.
+		// Track the  modification of any parameter in the WSIL model.
 		// we don't use commands and stacks here.
 		if (fWsilDocument != null) {
 			fWsilDocument.eResource().eAdapters().add( fContentAdapter );

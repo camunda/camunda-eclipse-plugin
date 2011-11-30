@@ -12,7 +12,12 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.property;
 
+import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
+import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite.AbstractPropertiesProvider;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.ui.IWorkbenchPart;
 
 public class DefaultPropertySection extends AbstractBpmn2PropertySection {
 
@@ -27,5 +32,24 @@ public class DefaultPropertySection extends AbstractBpmn2PropertySection {
 	@Override
 	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
 		return new DefaultPropertiesComposite(this);
+	}
+
+	@Override
+	public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
+//		BPMN2Editor editor = (BPMN2Editor)part;
+//		EObject object = getBusinessObjectForSelection();
+//		DefaultPropertiesComposite composite = new DefaultPropertiesComposite();
+//		AbstractPropertiesProvider provider = composite.getPropertiesProvider(object);
+//		ModelEnablementDescriptor modelEnablement = editor.getTargetRuntime().getModelEnablements(object);
+//		String className = object.eClass().getName();
+//		if (modelEnablement.isEnabled(className)) {
+//			String[] properties = provider.getProperties();
+//			for (String featureName : properties) {
+//				if (modelEnablement.isEnabled(className, featureName))
+//					return true;
+//			}
+//		}
+//		return false;
+		return super.appliesTo(part, selection);
 	}
 }

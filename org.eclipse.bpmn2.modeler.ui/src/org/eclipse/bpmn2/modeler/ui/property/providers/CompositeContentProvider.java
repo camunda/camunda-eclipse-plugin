@@ -55,7 +55,7 @@ public class CompositeContentProvider extends AbstractContentProvider {
 	@Override
 	public void collectElements (Object input, List list) {
 		
-		// Check if the input element is a complex one
+		// Check if the input parameter is a complex one
 		if (collectComplex(input, list)) {
 			return ;
 		}

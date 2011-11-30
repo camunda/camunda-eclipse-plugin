@@ -21,6 +21,7 @@ import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
+import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
@@ -398,6 +399,11 @@ public class AbstractBpmn2TableComposite extends Composite {
 		return true;
 	}
 
+	public void setTitle(String title) {
+		if (tableSection!=null)
+			tableSection.setText(title);
+	}
+	
 	public void bindList(final EObject object, final EStructuralFeature feature) {
 		if (!(object.eGet(feature) instanceof EList<?>)) {
 			return;
@@ -428,6 +434,18 @@ public class AbstractBpmn2TableComposite extends Composite {
 		// Collect columns to be displayed and build column provider
 		////////////////////////////////////////////////////////////
 		tableProvider = getTableProvider(object, feature);
+		// remove disabled columns
+		List<TableColumn> removed = new ArrayList<TableColumn>();
+		for (TableColumn tc : (List<TableColumn>)tableProvider.getColumns()) {
+			ModelEnablementDescriptor modelEnablement = bpmn2Editor.getTargetRuntime().getModelEnablements(tc.object);
+			if (!modelEnablement.isEnabled(listItemClass.getName(), tc.feature.getName())) {
+				removed.add(tc);
+			}
+		}
+		if (removed.size()>0) {
+			for (TableColumn tc : removed)
+				tableProvider.remove(tc);
+		}
 		if (tableProvider.getColumns().size()==0) {
 			return;
 		}
@@ -558,8 +576,8 @@ public class AbstractBpmn2TableComposite extends Composite {
 						IStructuredSelection sel = (IStructuredSelection) event.getSelection();
 						if (sel.getFirstElement() instanceof EObject && detailComposite instanceof AbstractBpmn2PropertiesComposite) {
 							EObject o = (EObject)sel.getFirstElement();
-							((AbstractBpmn2PropertiesComposite)detailComposite).setEObject(bpmn2Editor,o);
 							detailSection.setText(ModelUtil.toDisplayName(o.eClass().getName()) + " Details");
+							((AbstractBpmn2PropertiesComposite)detailComposite).setEObject(bpmn2Editor,o);
 						}
 						detailSection.setExpanded(true);
 					}
@@ -792,13 +810,13 @@ public class AbstractBpmn2TableComposite extends Composite {
 	}
 	
 	public class TableColumn extends ColumnTableProvider.Column implements ILabelProvider, ICellModifier {
-		private TableViewer tableViewer;
-		private EStructuralFeature feature;
-		private EObject object;
+		protected TableViewer tableViewer;
+		protected EStructuralFeature feature;
+		protected EObject object;
 		
-		public TableColumn(EObject o, EAttribute a) {
+		public TableColumn(EObject o, EStructuralFeature f) {
 			object = o;
-			feature = a;
+			feature = f;
 		}
 		
 		public void setTableViewer(TableViewer t) {

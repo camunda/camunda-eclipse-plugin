@@ -730,7 +730,7 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 			protected IStatus run (IProgressMonitor monitor) {
 				monitor.beginTask(msg, 1);				
 				// Bug 290090 - move this to asyncExec() as below because the method will
-				// modify UI element, if not, will have a invalid access error.
+				// modify UI parameter, if not, will have a invalid access error.
 
 				/* fInput = attemptLoad(fRunnableLoadURI); */
 

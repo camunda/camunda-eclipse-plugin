@@ -35,7 +35,7 @@ public abstract class CachedTreeContentProvider implements ITreeContentProvider 
 
 	public static final Object UNKNOWN_PARENT = new Object();
 
-	// A null value in the treeNodeToParent parentMap means the node is a root element. 
+	// A null value in the treeNodeToParent parentMap means the node is a root parameter. 
 	protected HashMap treeNodeToParent;
 
 	// A null value in the treeNodeToChildren parentMap means the node has children, button
@@ -57,8 +57,8 @@ public abstract class CachedTreeContentProvider implements ITreeContentProvider 
 
 	/**
 	 * Returns an array describing the path from a node up to the root.  The node will
-	 * be the first element of the array, its parent will be the 2nd, and so on, with
-	 * a top-level node (i.e. a root) as the last element of the array.  Note that the
+	 * be the first parameter of the array, its parent will be the 2nd, and so on, with
+	 * a top-level node (i.e. a root) as the last parameter of the array.  Note that the
 	 * input object of the content provider is *NOT* included in this path, because the
 	 * top-level nodes returned by getElements() have a parent value of null.
 	 */

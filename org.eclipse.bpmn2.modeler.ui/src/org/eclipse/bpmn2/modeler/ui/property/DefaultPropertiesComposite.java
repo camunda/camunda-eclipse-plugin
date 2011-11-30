@@ -134,8 +134,10 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 	}
 	
 	private void createMissingPropertiesLabel(EObject be) {
-		String tab = propertySection.tabbedPropertySheetPage.getSelectedTab().getLabel();
-		createLabel(this,"No "+tab+" Properties for this "+ModelUtil.getObjectDisplayName(be));
+		if (propertySection!=null) {
+			String tab = propertySection.tabbedPropertySheetPage.getSelectedTab().getLabel();
+			createLabel(this,"No "+tab+" Properties for this "+ModelUtil.getObjectDisplayName(be));
+		}
 	}
 
 	/**

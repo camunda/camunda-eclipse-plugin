@@ -581,7 +581,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		  (getDocumentRoot_Global(), 
 		   source, 
 		   new String[] {
-			 "kind", "element",
+			 "kind", "parameter",
 			 "name", "global",
 			 "namespace", "##targetNamespace"
 		   });		
@@ -589,7 +589,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		  (getDocumentRoot_ImportType(), 
 		   source, 
 		   new String[] {
-			 "kind", "element",
+			 "kind", "parameter",
 			 "name", "import",
 			 "namespace", "##targetNamespace"
 		   });		
@@ -597,7 +597,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		  (getDocumentRoot_OnEntryScript(), 
 		   source, 
 		   new String[] {
-			 "kind", "element",
+			 "kind", "parameter",
 			 "name", "onEntry-script",
 			 "namespace", "##targetNamespace"
 		   });		
@@ -605,7 +605,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		  (getDocumentRoot_OnExitScript(), 
 		   source, 
 		   new String[] {
-			 "kind", "element",
+			 "kind", "parameter",
 			 "name", "onExit-script",
 			 "namespace", "##targetNamespace"
 		   });		
@@ -695,7 +695,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		  (getOnEntryScriptType_Script(), 
 		   source, 
 		   new String[] {
-			 "kind", "element",
+			 "kind", "parameter",
 			 "name", "script",
 			 "namespace", "##targetNamespace"
 		   });		
@@ -717,7 +717,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		  (getOnExitScriptType_Script(), 
 		   source, 
 		   new String[] {
-			 "kind", "element",
+			 "kind", "parameter",
 			 "name", "script",
 			 "namespace", "##targetNamespace"
 		   });		

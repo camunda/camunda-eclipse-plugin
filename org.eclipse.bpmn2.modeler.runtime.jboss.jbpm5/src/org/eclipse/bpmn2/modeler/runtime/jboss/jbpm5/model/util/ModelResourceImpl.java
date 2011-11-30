@@ -147,7 +147,7 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 				return attribs.getValue(ExtendedMetaData.XSI_URI,
 						XMLResource.TYPE);
 
-			// If an element specifies multiple xsi:type data types, the last one wins.
+			// If an parameter specifies multiple xsi:type data types, the last one wins.
 			// NOTE: we must check for "type" in any namespace with the URI
 			// "http://www.w3.org/2001/XMLSchema-instance"
 			String value = null;

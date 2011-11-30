@@ -145,7 +145,11 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 		detailsSection.setClient(detailsComposite);
 
 		fullDetails = toolkit.createButton(detailsComposite, "Show advanced details", SWT.CHECK);
-		fullDetails.setLayoutData(new GridData(SWT.LEFT,SWT.TOP,false,false,1,1));
+		data = new GridData(SWT.LEFT,SWT.TOP,false,false,1,1);
+		data.exclude = true;
+		fullDetails.setLayoutData(data);
+		fullDetails.setVisible(false); // TODO: is the "Show advanced details" useful?
+		
 		fullDetails.addSelectionListener(new SelectionListener() {
 
 			@Override
@@ -204,6 +208,8 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 			else {
 				detailsPropertiesComposite = PropertiesCompositeFactory.createComposite(obj.getClass(), detailsComposite, SWT.NONE);
 			}
+			detailsPropertiesComposite.setLayoutData(new GridData(SWT.FILL,SWT.TOP,true,false,3,1));
+
 			Class cc = PropertiesCompositeFactory.findCompositeClass(obj.getClass());
 			if (cc==null||cc==DefaultPropertiesComposite.class)
 				fullDetails.setVisible(false);

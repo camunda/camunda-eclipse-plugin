@@ -38,7 +38,7 @@ public interface OnEntryScriptType extends EObject {
 	 * @see #setScript(String)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getOnEntryScriptType_Script()
 	 * @model dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
-	 *        extendedMetaData="kind='element' name='script' namespace='##targetNamespace'"
+	 *        extendedMetaData="kind='parameter' name='script' namespace='##targetNamespace'"
 	 * @generated
 	 */
 	String getScript();

@@ -56,6 +56,7 @@ import org.eclipse.emf.transaction.ResourceSetChangeEvent;
 import org.eclipse.emf.transaction.ResourceSetListener;
 import org.eclipse.emf.transaction.RollbackException;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
+import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -96,7 +97,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 	protected FormToolkit toolkit;
 	protected ModelEnablementDescriptor modelEnablement;
 	protected ModelHandler modelHandler;
-	protected TransactionalEditingDomain domain;
+	protected TransactionalEditingDomainImpl domain;
 	protected IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 
 	protected Section attributesSection = null;
@@ -131,7 +132,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 		initialize();
 	}
 
-	private void initialize() {
+	protected void initialize() {
 		toolkit.adapt(this);
 		toolkit.paintBordersFor(this);
 		setLayout(new GridLayout(3, false));
@@ -140,7 +141,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 	
 	private void addDomainListener() {
 		if (domain==null) {
-			domain = BPMN2Editor.getActiveEditor().getEditingDomain();
+			domain = (TransactionalEditingDomainImpl)BPMN2Editor.getActiveEditor().getEditingDomain();
 			domain.addResourceSetListener(this);
 		}
 	}
@@ -228,14 +229,14 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 	 * 
 	 * @return the Composite root for the current selection's EAttributes
 	 */
-	protected Composite getAttributesParent() {
+	public Composite getAttributesParent() {
 		if (attributesSection==null || attributesSection.isDisposed()) {
 
 			if (objectStack.peek()==be)
 				attributesSection = createSection(objectStack.getAttributesParent(), "Attributes");
 			else
 				attributesSection = createSubSection(objectStack.getAttributesParent(),
-						ModelUtil.getObjectDisplayName(objectStack.peek()));
+						ModelUtil.getObjectDisplayName(objectStack.peek()) + " Attributes");
 			
 			attributesSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 			attributesComposite = toolkit.createComposite(attributesSection);
@@ -244,6 +245,16 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 			attributesSection.setExpanded(true);
 		}
 		return attributesComposite;
+	}
+	
+	/**
+	 * Set the title of the Attributes section
+	 * @param title
+	 */
+	public void setTitle(String title) {
+		getAttributesParent();
+		if (attributesSection!=null)
+			attributesSection.setText(title);
 	}
 
 	/**
@@ -517,7 +528,6 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 		if (feature instanceof EReference) {
 			Object value = object.eGet(feature);
 			if (value==null) {
-				TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
 				domain.getCommandStack().execute(new RecordingCommand(domain) {
 					@Override
 					protected void doExecute() {

@@ -125,7 +125,7 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 	 */
 	public void setId(IFeatureProvider fp, String id) throws Exception {
 		
-		// "id" is a required element in the extension point.
+		// "id" is a required parameter in the extension point.
 		if (id==null || id.isEmpty()) {
 			throw new Exception("Custom Task ID can not be null");
 		}

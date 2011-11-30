@@ -13,7 +13,7 @@ package org.eclipse.bpmn2.modeler.ui.adapters;
 import org.eclipse.swt.graphics.Image;
 
 /**
- * An ILabeledElement provides UI facilities for labeling the element.
+ * An ILabeledElement provides UI facilities for labeling the parameter.
  * This includes both images and a string label.
  */
 public interface ILabeledElement {

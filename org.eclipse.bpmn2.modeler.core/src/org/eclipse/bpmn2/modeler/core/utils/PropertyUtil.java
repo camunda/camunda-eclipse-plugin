@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -42,6 +43,14 @@ public class PropertyUtil {
 		}
 	}
 
+	public static void layoutAllParents(Composite child) {
+		Composite parent = child;
+		while (parent!=null && parent.getParent() instanceof Composite) {
+			parent = parent.getParent(); 
+			parent.layout();
+		}
+	}
+	
 	public static EditPart getEditPartForSelection(ISelection selection) {
 		if (selection instanceof IStructuredSelection &&
 				((IStructuredSelection) selection).isEmpty()==false) {

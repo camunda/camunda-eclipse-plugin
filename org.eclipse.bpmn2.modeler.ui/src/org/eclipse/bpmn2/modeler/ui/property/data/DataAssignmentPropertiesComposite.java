@@ -16,27 +16,19 @@ import org.eclipse.bpmn2.Assignment;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Expression;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.Activator;
+import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.transaction.RecordingCommand;
-import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.forms.widgets.ExpandableComposite;
-import org.eclipse.ui.forms.widgets.Section;
 
 public class DataAssignmentPropertiesComposite extends DefaultPropertiesComposite {
 
-	private Button addRemoveToExpressionButton;
-	private Button addRemoveFromExpressionButton;
+	private DefaultPropertiesComposite fromDetails;
+	private DefaultPropertiesComposite toDetails;
 
 	public DataAssignmentPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
@@ -48,7 +40,14 @@ public class DataAssignmentPropertiesComposite extends DefaultPropertiesComposit
 	public DataAssignmentPropertiesComposite(AbstractBpmn2PropertySection section) {
 		super(section);
 	}
-
+	
+	@Override
+	protected void cleanBindings() {
+		super.cleanBindings();
+		fromDetails = null;
+		toDetails = null;
+	}
+	
 	@SuppressWarnings("restriction")
 	@Override
 	public void createBindings(final EObject be) {
@@ -56,94 +55,49 @@ public class DataAssignmentPropertiesComposite extends DefaultPropertiesComposit
 		if (be instanceof Assignment) {
 			
 			final Assignment assignment = (Assignment) be;
-				
-			addRemoveToExpressionButton = new Button(this, SWT.PUSH);
-			addRemoveToExpressionButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
-			addRemoveToExpressionButton.addSelectionListener(new SelectionAdapter() {
-				
-				public void widgetSelected(SelectionEvent e) {
-					TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
-					domain.getCommandStack().execute(new RecordingCommand(domain) {
-						@Override
-						protected void doExecute() {
-							if (assignment.getTo()!=null)
-								assignment.setTo(null);
-							else {
-								Expression exp = Bpmn2Factory.eINSTANCE.createFormalExpression();
-								assignment.setTo(exp);
-								ModelUtil.setID(exp);
-							}
-							setEObject(be);
-						}
-					});
-				}
-			});
-			addRemoveFromExpressionButton = new Button(this, SWT.PUSH);
-			addRemoveFromExpressionButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
-			addRemoveFromExpressionButton.addSelectionListener(new SelectionAdapter() {
-				
-				public void widgetSelected(SelectionEvent e) {
-					TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
-					domain.getCommandStack().execute(new RecordingCommand(domain) {
-						@Override
-						protected void doExecute() {
-							if (assignment.getFrom()!=null)
-								assignment.setFrom(null);
-							else {
-								Expression exp = Bpmn2Factory.eINSTANCE.createFormalExpression();
-								assignment.setFrom(exp);
-								ModelUtil.setID(exp);
-							}
-							setEObject(be);
-						}
-					});
-				}
-			});
-			Expression toExp = (Expression) assignment.getTo();
-			if (toExp != null) {
-				addRemoveToExpressionButton.setText("Remove To Expression");
-				this.be = toExp;
-				Section header = toolkit.createSection(this, ExpandableComposite.TITLE_BAR);
-				header.setText("To Expression");
-				header.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 3, 1));
-				bindAttribute(this, toExp, "body");
-				bindReference(this, toExp, "evaluatesToTypeRef");
-				bindAttribute(this, toExp, "language");
+			
+			// an Assignment is not really valid without both a From and To
+			Expression toExp = assignment.getTo();
+			if (toExp==null) {
+				domain.getCommandStack().execute(new RecordingCommand(domain) {
+					@Override
+					protected void doExecute() {
+						Expression exp = Bpmn2Factory.eINSTANCE.createFormalExpression();
+						assignment.setTo(exp);
+						ModelUtil.setID(exp);
+					}
+				});
+				toExp = assignment.getTo();
 			}
-			else {
-				addRemoveToExpressionButton.setText("Add To Expression");
+			
+			Expression fromExp = assignment.getFrom();
+			if (fromExp==null) {
+				domain.getCommandStack().execute(new RecordingCommand(domain) {
+					@Override
+					protected void doExecute() {
+						Expression exp = Bpmn2Factory.eINSTANCE.createFormalExpression();
+						assignment.setFrom(exp);
+						ModelUtil.setID(exp);
+					}
+				});
+				fromExp = assignment.getFrom();
 			}
-			Expression fromExp = (Expression) assignment.getFrom();
-			if (fromExp != null) {
-				addRemoveFromExpressionButton.setText("Remove From Expression");
-				this.be = fromExp;
-				Section header = toolkit.createSection(this, ExpandableComposite.TITLE_BAR );
-				header.setText("From Expression");
-				header.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 3, 1));
-				bindAttribute(this, fromExp, "body");
-				bindReference(this, fromExp, "evaluatesToTypeRef");
-				bindAttribute(this, fromExp, "language");
+			
+			if (toDetails==null) {
+				toDetails = new DefaultPropertiesComposite(this,SWT.BORDER);
+				toDetails.setLayoutData(new GridData(SWT.FILL,SWT.TOP,true,false,3,1));
 			}
-			else {
-				addRemoveFromExpressionButton.setText("Add From Expression");
+			toDetails.setEObject(getDiagramEditor(), toExp);
+			toDetails.setTitle("To Expression");
+	
+			if (fromDetails==null) {
+				fromDetails = new DefaultPropertiesComposite(this,SWT.BORDER);
+				fromDetails.setLayoutData(new GridData(SWT.FILL,SWT.TOP,true,false,3,1));
 			}
-			recursivelayout(this);
+			fromDetails.setEObject(getDiagramEditor(), fromExp);
+			fromDetails.setTitle("From Expression");
+	
+			PropertyUtil.layoutAllParents(this);
 		}
-		
 	}
-	
-	private void recursivelayout(Composite parent) {
-		Control[] kids = parent.getChildren();
-		for (Control k : kids) {
-			if (k.isDisposed())
-				Activator.logError(new SWTException("Widget is disposed."));
-			if (k instanceof Composite) {
-				recursivelayout((Composite)k);
-				((Composite)k).layout(true);
-			}
-		}
-		parent.layout(true);
-	}
-	
-	
 }

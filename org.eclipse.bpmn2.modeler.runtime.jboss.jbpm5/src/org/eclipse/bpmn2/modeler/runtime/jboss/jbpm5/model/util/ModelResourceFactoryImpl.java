@@ -73,7 +73,7 @@ public class ModelResourceFactoryImpl extends Bpmn2ModelerResourceFactoryImpl {
 
         result.getDefaultSaveOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
         
-        // save xsi:schemaLocation in Definitions element
+        // save xsi:schemaLocation in Definitions parameter
         result.getDefaultSaveOptions().put(XMLResource.OPTION_SCHEMA_LOCATION, Boolean.TRUE);
 
         return result;

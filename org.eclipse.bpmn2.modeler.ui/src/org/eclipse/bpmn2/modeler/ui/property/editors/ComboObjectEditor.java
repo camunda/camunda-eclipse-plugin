@@ -94,10 +94,13 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 				ISelection selection = comboViewer.getSelection();
 				if (selection instanceof StructuredSelection) {
 					String firstElement = (String) ((StructuredSelection) selection).getFirstElement();
-					if(comboViewer.getData(firstElement)!=null)
+					if(firstElement!=null && comboViewer.getData(firstElement)!=null)
 						updateEObject(comboViewer.getData(firstElement));
-					else
+					else {
+						if (firstElement!=null && firstElement.isEmpty())
+							firstElement = null;
 						updateEObject(firstElement);
+					}
 				}
 			}
 		});

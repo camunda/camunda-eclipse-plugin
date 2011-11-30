@@ -14,23 +14,23 @@ import org.eclipse.emf.common.notify.Notification;
 
 /**
  * An INamedElement provides a common API for accessing the
- * name of a model element.
+ * name of a model parameter.
  */
 public interface INamedElement {
 	/**
-	 * Return the name of the given element. The name may
+	 * Return the name of the given parameter. The name may
 	 * be null.
 	 */
 	public String getName(Object modelObject);
 	
 	/**
-	 * Set the name of the element to the given string.
+	 * Set the name of the parameter to the given string.
 	 * The string may be null;
 	 */
 	public void setName(Object modelObject, String name);
 	
 	/**
-	 * Returns true if the given notification affects the name of the model element. 
+	 * Returns true if the given notification affects the name of the model parameter. 
 	 */
 	public boolean isNameAffected(Object modelObject, Notification n);
 }

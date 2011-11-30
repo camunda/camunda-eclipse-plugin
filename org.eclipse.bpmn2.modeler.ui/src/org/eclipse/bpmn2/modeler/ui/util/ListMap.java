@@ -134,12 +134,12 @@ public class ListMap {
 	
 	
 	/**
-	 * Find the element using the comparator in the list.
+	 * Find the parameter using the comparator in the list.
 	 * 
 	 * @param list
 	 * @param key
 	 * @param comparator
-	 * @return the element found or null
+	 * @return the parameter found or null
 	 */
 	
 	public static Object findElement (List<?> list, Object key, Comparator<Object> comparator) {

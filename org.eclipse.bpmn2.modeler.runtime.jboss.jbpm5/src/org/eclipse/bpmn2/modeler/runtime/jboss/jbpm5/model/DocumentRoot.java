@@ -46,7 +46,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @see #setGlobal(GlobalType)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_Global()
 	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
-	 *        extendedMetaData="kind='element' name='global' namespace='##targetNamespace'"
+	 *        extendedMetaData="kind='parameter' name='global' namespace='##targetNamespace'"
 	 * @generated
 	 */
 	GlobalType getGlobal();
@@ -73,7 +73,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @see #setImportType(ImportType)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_ImportType()
 	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
-	 *        extendedMetaData="kind='element' name='import' namespace='##targetNamespace'"
+	 *        extendedMetaData="kind='parameter' name='import' namespace='##targetNamespace'"
 	 * @generated
 	 */
 	ImportType getImportType();
@@ -100,7 +100,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @see #setOnEntryScript(OnEntryScriptType)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_OnEntryScript()
 	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
-	 *        extendedMetaData="kind='element' name='onEntry-script' namespace='##targetNamespace'"
+	 *        extendedMetaData="kind='parameter' name='onEntry-script' namespace='##targetNamespace'"
 	 * @generated
 	 */
 	OnEntryScriptType getOnEntryScript();
@@ -127,7 +127,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @see #setOnExitScript(OnExitScriptType)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_OnExitScript()
 	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
-	 *        extendedMetaData="kind='element' name='onExit-script' namespace='##targetNamespace'"
+	 *        extendedMetaData="kind='parameter' name='onExit-script' namespace='##targetNamespace'"
 	 * @generated
 	 */
 	OnExitScriptType getOnExitScript();
