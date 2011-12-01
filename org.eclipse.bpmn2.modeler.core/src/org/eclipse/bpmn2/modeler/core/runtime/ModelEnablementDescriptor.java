@@ -257,8 +257,10 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 		return false;
 	}
 	
-	public boolean isEnabled(EClass eClass, EStructuralFeature featureName) {
-		return isEnabled(eClass.getName(), featureName.getName());
+	public boolean isEnabled(EClass eClass, EStructuralFeature feature) {
+		if (feature==null)
+			return isEnabled(eClass);
+		return isEnabled(eClass.getName(), feature.getName());
 	}
 	
 	public boolean isEnabled(EClass eClass) {

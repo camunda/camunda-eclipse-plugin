@@ -97,6 +97,8 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 		protected void bindDescription(EObject be) {
 			String description = null;
 
+			// TODO: descriptions come from the Graphiti CreateFeatures for each element.
+			// This should probably be handled by some sort of description/label provider.
 			BPMN2Editor editor = (BPMN2Editor)getDiagramEditor();
 
 			BPMNFeatureProvider fp = (BPMNFeatureProvider) editor.getDiagramTypeProvider().getFeatureProvider();
@@ -109,9 +111,7 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 				AbstractBpmn2CreateFeature acf = (AbstractBpmn2CreateFeature) cf;
 				description = acf.getDescription();
 			}
-			if (description == null) {
-				description = "No description";
-			}
+
 			if (description != null) {
 				createDescription(this, description);
 			}

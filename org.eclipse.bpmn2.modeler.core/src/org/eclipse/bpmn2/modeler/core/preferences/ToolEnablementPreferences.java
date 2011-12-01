@@ -45,8 +45,6 @@ import org.osgi.service.prefs.Preferences;
 
 public class ToolEnablementPreferences {
 
-	private static final String DROOLS_NAMESPACE = "http://www.jboss.org/drools";
-
 	private final Preferences prefs;
 
 	private static HashSet<EClass> elementSet = new HashSet<EClass>();

@@ -79,7 +79,6 @@ public class StartEventFeatureContainer extends AbstractEventFeatureContainer {
 		@Override
 		protected Event createFlowElement(ICreateContext context) {
 			StartEvent start = Bpmn2ModelerFactory.create(StartEvent.class);
-			start.setName("Start");
 			start.setIsInterrupting(true);
 			return start;
 		}

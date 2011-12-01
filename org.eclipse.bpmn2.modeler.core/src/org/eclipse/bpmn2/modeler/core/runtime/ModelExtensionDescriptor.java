@@ -32,6 +32,7 @@ import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.EStructuralFeature.Internal;
 import org.eclipse.emf.ecore.impl.EStructuralFeatureImpl.SimpleFeatureMapEntry;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.emf.ecore.util.FeatureMap;
 
 /**
@@ -225,6 +226,17 @@ public class ModelExtensionDescriptor extends BaseRuntimeDescriptor {
 		}
 		if (eClass!=null) {
 			EStructuralFeature feature = eClass.getEStructuralFeature(parts[1]);
+			if (ExtendedMetaData.INSTANCE.getFeatureKind(feature) == ExtendedMetaData.UNSPECIFIED_FEATURE) {
+				if (feature instanceof EAttribute) {
+					ExtendedMetaData.INSTANCE.setFeatureKind(feature,ExtendedMetaData.ATTRIBUTE_FEATURE);
+				}
+				else {
+					ExtendedMetaData.INSTANCE.setFeatureKind(feature,ExtendedMetaData.ELEMENT_FEATURE);
+				}
+				ExtendedMetaData.INSTANCE.setNamespace(feature, eClass.getEPackage().getNsURI());
+				ExtendedMetaData.INSTANCE.setName(feature, feature.getName());
+			}
+			
 			return feature;
 		}
 		return null;

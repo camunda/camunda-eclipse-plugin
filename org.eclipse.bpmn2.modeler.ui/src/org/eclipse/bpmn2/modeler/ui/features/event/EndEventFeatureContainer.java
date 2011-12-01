@@ -57,7 +57,6 @@ public class EndEventFeatureContainer extends AbstractEventFeatureContainer {
 		@Override
 		protected Event createFlowElement(ICreateContext context) {
 			EndEvent end = Bpmn2ModelerFactory.create(EndEvent.class);
-			end.setName("End");
 			return end;
 		}
 

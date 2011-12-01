@@ -438,7 +438,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 		List<TableColumn> removed = new ArrayList<TableColumn>();
 		for (TableColumn tc : (List<TableColumn>)tableProvider.getColumns()) {
 			ModelEnablementDescriptor modelEnablement = bpmn2Editor.getTargetRuntime().getModelEnablements(tc.object);
-			if (!modelEnablement.isEnabled(listItemClass.getName(), tc.feature.getName())) {
+			if (!modelEnablement.isEnabled(listItemClass, tc.feature)) {
 				removed.add(tc);
 			}
 		}

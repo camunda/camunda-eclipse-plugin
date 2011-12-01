@@ -288,6 +288,7 @@ public class BPMN2Editor extends DiagramEditor {
 			});
 		}
 		basicCommandStack.saveIsDone();
+		basicCommandStack.flush();
 	}
 	
 	private void importDiagram() {
