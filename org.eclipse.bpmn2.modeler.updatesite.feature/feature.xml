@@ -25,7 +25,7 @@ Author: Ivar Meikas
    </license>
 
    <includes
-         id="org.eclipse.bpmn2.modeler"
+         id="org.eclipse.bpmn2.modeler.feature"
          version="0.0.0"/>
 
 </feature>
