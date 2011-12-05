@@ -144,25 +144,27 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 			// push the icon into the image registry
 			IProject project = TargetRuntime.getActiveProject();
 			String iconPath = getWIDPropertyValue("icon", wid);
-			Path tempPath = new Path(iconPath);
-			String iconName = tempPath.lastSegment();
-			IconResourceVisitor visitor = new IconResourceVisitor(iconName);
-			try {
-				project.accept(visitor, IResource.DEPTH_INFINITE, false);
-				if (visitor.getIconResources() != null && visitor.getIconResources().size() > 0) {
-					ArrayList<IResource> icons = visitor.getIconResources();
-					IResource icon = icons.get(0);
-					URL url = icon.getLocationURI().toURL();
-					ImageDescriptor image = ImageDescriptor.createFromURL(url);
-
-					ImageRegistry imageRegistry = GraphitiUIPlugin.getDefault().getImageRegistry();
-					if (imageRegistry.get(iconPath) == null)
-						imageRegistry.put(iconPath, image);
+			if (iconPath != null) {
+				Path tempPath = new Path(iconPath);
+				String iconName = tempPath.lastSegment();
+				IconResourceVisitor visitor = new IconResourceVisitor(iconName);
+				try {
+					project.accept(visitor, IResource.DEPTH_INFINITE, false);
+					if (visitor.getIconResources() != null && visitor.getIconResources().size() > 0) {
+						ArrayList<IResource> icons = visitor.getIconResources();
+						IResource icon = icons.get(0);
+						URL url = icon.getLocationURI().toURL();
+						ImageDescriptor image = ImageDescriptor.createFromURL(url);
+	
+						ImageRegistry imageRegistry = GraphitiUIPlugin.getDefault().getImageRegistry();
+						if (imageRegistry.get(iconPath) == null)
+							imageRegistry.put(iconPath, image);
+					}
+				} catch (CoreException e1) {
+					e1.printStackTrace();
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
 				}
-			} catch (CoreException e1) {
-				e1.printStackTrace();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
 			}
 			
 			// process xml properties here - i.e. task variables
@@ -212,6 +214,9 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 		String type = "EString";
 		Property prop = new Property(name, description);
 		prop.type = type;
+		if (value == null && propName.equalsIgnoreCase("icon")) {
+			value = "task.png";
+		}
 		if (value!=null)
 			prop.getValues().add(value);
 		return prop;
@@ -287,27 +292,28 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 		Object[] values = ioSpecification.getValues().toArray();
 		int inputCounter = -1;
 		int outputCounter = -1;
+		Property inputSets = new Property("inputSets", null);
+		Property outputSets = new Property("outputSets", null);
 		for (int i = 0; i < values.length; i++) {
 			if (values[i] instanceof Property) {
 				Property prop = (Property) values[i];
 				if (prop.name.equals("dataInputs")) {
 					inputCounter++;
-					Property inputSets = new Property("inputSets", null);
 					Property inputSetsRef = new Property ("dataInputRefs", null);
 					inputSetsRef.ref = "ioSpecification/dataInputs#" + inputCounter;
 					inputSets.getValues().add(inputSetsRef);
-					ioSpecification.getValues().add(inputSets);
 				} else 	if (prop.name.equals("dataOutputs")) {
 					outputCounter++;
-					Property outputSets = new Property("outputSets", null);
 					Property outputSetsRef = new Property ("dataOutputRefs", null);
 					outputSetsRef.ref = "ioSpecification/dataOutputs#" + outputCounter;
 					outputSets.getValues().add(outputSetsRef);
-					ioSpecification.getValues().add(outputSets);
 				}
-
 			}
 		}
+		if (inputSets.getValues().size() > 0) 
+			ioSpecification.getValues().add(inputSets);
+		if (outputSets.getValues().size() > 0) 
+			ioSpecification.getValues().add(outputSets);
 		
 		ct.getProperties().add(ioSpecification);
 		return ioSpecification;
