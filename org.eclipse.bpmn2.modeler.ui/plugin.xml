@@ -316,6 +316,22 @@
 		</propertyTab>
 
 		<propertyTab
+			id="org.eclipse.bpmn2.modeler.callActivity.tab"
+			class="org.eclipse.bpmn2.modeler.ui.property.tasks.CallActivityPropertySection"
+			type="org.eclipse.bpmn2.ChoreographyTask"
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			label="Call Activity">
+		</propertyTab>
+
+		<propertyTab
+			id="org.eclipse.bpmn2.modeler.subProcess.tab"
+			class="org.eclipse.bpmn2.modeler.ui.property.tasks.SubProcessPropertySection"
+			type="org.eclipse.bpmn2.ChoreographyTask"
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			label="Sub Process">
+		</propertyTab>
+
+		<propertyTab
 			id="org.eclipse.bpmn2.modeler.activity.io.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.tasks.IoParametersPropertySection"
 			afterTab="org.eclipse.bpmn2.modeler.task.tab"

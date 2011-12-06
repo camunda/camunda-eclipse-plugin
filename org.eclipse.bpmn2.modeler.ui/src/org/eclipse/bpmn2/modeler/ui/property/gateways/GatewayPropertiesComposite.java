@@ -38,8 +38,16 @@ public class GatewayPropertiesComposite extends DefaultPropertiesComposite {
 	public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
 		if (itemProvider == null) {
 			itemProvider = new AbstractPropertiesProvider(object) {
+				// lump all the gateway properties into one composite
+				// if a gateway doesn't have one of the attributes listed here,
+				// it simply won't be displayed.
 				String[] properties = new String[] {
 						"gatewayDirection",
+						"isInstantiate",
+						"activationCondition",
+						"eventGatewayType"
+						// note: "default" sequence flow is already being displayed in the SequenceFlow tab
+						// so, no need to show it here
 				};
 				
 				@Override

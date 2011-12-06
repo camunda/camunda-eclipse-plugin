@@ -19,16 +19,16 @@ import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.widgets.Composite;
 
-public class TaskPropertiesComposite extends ActivityPropertiesComposite {
+public class CallActivityPropertiesComposite extends ActivityPropertiesComposite {
 
-	public TaskPropertiesComposite(Composite parent, int style) {
+	public CallActivityPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
 	}
 
 	/**
 	 * @param section
 	 */
-	public TaskPropertiesComposite(AbstractBpmn2PropertySection section) {
+	public CallActivityPropertiesComposite(AbstractBpmn2PropertySection section) {
 		super(section);
 	}
 	
@@ -42,5 +42,7 @@ public class TaskPropertiesComposite extends ActivityPropertiesComposite {
 	@Override
 	public void createBindings(EObject be) {
 		super.createBindings(be);
+		
+		bindAttribute(be,"calledElement");
 	}
 }

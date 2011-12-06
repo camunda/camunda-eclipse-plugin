@@ -27,6 +27,10 @@ public class BusinessRuleTaskPropertiesComposite extends DefaultPropertiesCompos
 	public BusinessRuleTaskPropertiesComposite(AbstractBpmn2PropertySection section) {
 		super(section);
 	}
+	
+	public BusinessRuleTaskPropertiesComposite(Composite parent, int style) {
+		super(parent, style);
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -38,9 +42,5 @@ public class BusinessRuleTaskPropertiesComposite extends DefaultPropertiesCompos
 	@Override
 	public void createBindings(EObject be) {
 		bindAttribute(be,"implementation");
-	}
-
-	public BusinessRuleTaskPropertiesComposite(Composite parent, int style) {
-		super(parent, style);
 	}
 }
