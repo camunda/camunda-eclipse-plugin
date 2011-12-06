@@ -71,7 +71,7 @@ public class JbpmTaskPropertiesComposite extends TaskPropertiesComposite {
 
 					ObjectEditor editor;
 					editor = new TextObjectEditor(this,est,est.eClass().getEStructuralFeature("scriptFormat"));
-					editor.createControl(sectionComposite,"Script Format",SWT.NONE);
+					editor.createControl(sectionComposite,"Script Language",SWT.NONE);
 
 					editor = new TextObjectEditor(this,est,est.eClass().getEStructuralFeature("script"));
 					editor.createControl(sectionComposite,"Script",SWT.MULTI);
@@ -86,7 +86,7 @@ public class JbpmTaskPropertiesComposite extends TaskPropertiesComposite {
 
 					ObjectEditor editor;
 					editor = new TextObjectEditor(this,est,est.eClass().getEStructuralFeature("scriptFormat"));
-					editor.createControl(sectionComposite,"Script Format",SWT.NONE);
+					editor.createControl(sectionComposite,"Script Language",SWT.NONE);
 
 					editor = new TextObjectEditor(this,est,est.eClass().getEStructuralFeature("script"));
 					editor.createControl(sectionComposite,"Script",SWT.MULTI);
