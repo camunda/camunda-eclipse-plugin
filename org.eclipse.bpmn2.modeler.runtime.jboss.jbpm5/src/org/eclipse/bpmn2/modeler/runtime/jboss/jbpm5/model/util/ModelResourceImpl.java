@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
@@ -36,6 +37,7 @@ import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.emf.ecore.xmi.XMLHelper;
 import org.eclipse.emf.ecore.xmi.XMLLoad;
 import org.eclipse.emf.ecore.xmi.XMLResource;
+import org.eclipse.emf.ecore.xmi.XMLSave;
 import org.eclipse.emf.ecore.xmi.impl.XMLLoadImpl;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -75,7 +77,20 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
         };
     }
 
-    /**
+    @Override
+	protected XMLSave createXMLSave() {
+    	if (getContents().size()>0 && getContents().get(0) instanceof DocumentRoot) {
+    		DocumentRoot root = (DocumentRoot) getContents().get(0);
+    		root.getXSISchemaLocation().clear();
+    		root.getXSISchemaLocation().put("http://www.omg.org/spec/BPMN/20100524/MODEL", "BPMN20.xsd");
+    		for (Map.Entry<String, String> entry : root.getXSISchemaLocation().entrySet()) {
+    			System.out.println(entry.getKey()+" = "+entry.getValue());
+    		}
+    	}
+		return super.createXMLSave();
+	}
+
+	/**
      * We need extend the standard SAXXMLHandler to hook into the handling of attribute references
      * which may be either simple ID Strings or QNames. We'll search through all of the objects'
      * IDs first to find the one we're looking for. If not, we'll try a QName search.
