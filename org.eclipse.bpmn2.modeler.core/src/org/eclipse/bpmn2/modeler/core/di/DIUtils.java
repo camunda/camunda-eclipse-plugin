@@ -153,7 +153,7 @@ public class DIUtils {
 
 				List<DiagramElement> elements = bpmnDiagram.getPlane().getPlaneElement();
 				elements.add(bpmnShape);
-				ModelUtil.setID(shape);
+				ModelUtil.setID(bpmnShape);
 
 				fp.link(shape, new Object[] { elem, bpmnShape });
 				break;
