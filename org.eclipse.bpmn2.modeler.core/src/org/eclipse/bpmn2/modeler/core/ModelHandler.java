@@ -840,9 +840,15 @@ public class ModelHandler {
 		
 		Collaboration collaboration = getParticipantContainer(null);
 		if (collaboration!=null) {
-			for (Participant p : collaboration.getParticipants()) {
-				if (p.getProcessRef() != null && p.getProcessRef().equals(process)) {
-					return p;
+			if (process==null) {
+				if (collaboration.getParticipants().size()>0)
+					return collaboration.getParticipants().get(0);
+			}
+			else {
+				for (Participant p : collaboration.getParticipants()) {
+					if (p.getProcessRef() != null && p.getProcessRef().equals(process)) {
+						return p;
+					}
 				}
 			}
 		}
