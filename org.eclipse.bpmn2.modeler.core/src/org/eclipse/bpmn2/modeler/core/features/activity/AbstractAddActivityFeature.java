@@ -16,17 +16,29 @@ import static org.eclipse.bpmn2.modeler.core.features.activity.UpdateActivityCom
 import static org.eclipse.bpmn2.modeler.core.features.activity.UpdateActivityLoopAndMultiInstanceMarkerFeature.IS_LOOP_OR_MULTI_INSTANCE;
 
 import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.features.activity.UpdateActivityLoopAndMultiInstanceMarkerFeature.LoopCharacteristicType;
+import org.eclipse.bpmn2.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
+import org.eclipse.bpmn2.modeler.core.utils.Tuple;
+import org.eclipse.graphiti.datatypes.ILocation;
+import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.IReconnectionFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.features.context.impl.CreateConnectionContext;
+import org.eclipse.graphiti.features.context.impl.ReconnectionContext;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
+import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
+import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
@@ -99,6 +111,39 @@ public abstract class AbstractAddActivityFeature extends AbstractAddBPMNShapeFea
 		updatePictogramElement(containerShape);
 		layoutPictogramElement(containerShape);
 
+		if (context.getTargetConnection()!=null) {
+			Connection connection = context.getTargetConnection();
+			AnchorContainer oldSourceContainer = connection.getStart().getParent();
+			AnchorContainer oldTargetContainer = connection.getEnd().getParent();
+			BaseElement baseElement = BusinessObjectUtil.getFirstElementOfType(connection, BaseElement.class);
+			ILocation targetLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(containerShape);
+			
+			Tuple<FixPointAnchor, FixPointAnchor> anchors = AnchorUtil.getSourceAndTargetBoundaryAnchors(oldSourceContainer, containerShape, connection);
+
+			ReconnectionContext rc = new ReconnectionContext(connection, connection.getEnd(), anchors.getSecond(), targetLocation);
+			rc.setTargetPictogramElement(containerShape);
+			rc.setReconnectType(ReconnectionContext.RECONNECT_TARGET);
+			IReconnectionFeature rf = getFeatureProvider().getReconnectionFeature(rc);
+			rf.reconnect(rc);
+			
+			// connection = get create feature, create connection
+			CreateConnectionContext ccc = new CreateConnectionContext();
+			ccc.setSourcePictogramElement(containerShape);
+			ccc.setTargetPictogramElement(oldTargetContainer);
+			anchors = AnchorUtil.getSourceAndTargetBoundaryAnchors(containerShape, oldTargetContainer, connection);
+			ccc.setSourceAnchor(anchors.getFirst());
+			ccc.setTargetAnchor(anchors.getSecond());
+			
+			for (ICreateConnectionFeature cf : getFeatureProvider().getCreateConnectionFeatures()) {
+				if (cf instanceof AbstractCreateFlowFeature) {
+					AbstractCreateFlowFeature acf = (AbstractCreateFlowFeature) cf;
+					if (acf.getBusinessObjectClass().isAssignableFrom(baseElement.getClass())) {
+						connection = acf.create(ccc);
+						break;
+					}
+				}
+			}
+		}
 		return containerShape;
 	}
 
