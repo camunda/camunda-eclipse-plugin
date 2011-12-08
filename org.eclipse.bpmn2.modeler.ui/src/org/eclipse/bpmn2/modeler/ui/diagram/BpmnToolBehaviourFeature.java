@@ -280,11 +280,11 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 
 		// 1. set the generic context buttons
 		// Participant bands can only be removed from the choreograpy task
+		int genericButtons = CONTEXT_BUTTON_DELETE;
 		if (ChoreographyUtil.isChoreographyParticipantBand(pe)) {
-			setGenericContextButtons(data, pe, CONTEXT_BUTTON_REMOVE);
+			genericButtons |= CONTEXT_BUTTON_REMOVE;
 		}
-		else
-			setGenericContextButtons(data, pe, CONTEXT_BUTTON_DELETE);
+		setGenericContextButtons(data, pe, genericButtons);
 
 		// 2. set the expand & collapse buttons
 		CustomContext cc = new CustomContext(new PictogramElement[] { pe });
