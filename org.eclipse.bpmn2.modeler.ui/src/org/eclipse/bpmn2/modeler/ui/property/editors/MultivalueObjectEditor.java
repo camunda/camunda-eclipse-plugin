@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.emf.ecore.EClassifier;
@@ -84,7 +85,10 @@ public abstract class MultivalueObjectEditor extends ObjectEditor {
 				values = (List<Object>) modelHandler.getAll(feature.getEType().getInstanceClass());
 				names = new ArrayList<String>();
 				for (Object o : values) {
-					names.add(o.toString());
+					if (o instanceof EObject)
+						names.add(ModelUtil.getDisplayName((EObject)o));
+					else
+						names.add(o.toString());
 				}
 			} catch (IOException e1) {
 				Activator.showErrorWithLogging(e1);
@@ -100,8 +104,12 @@ public abstract class MultivalueObjectEditor extends ObjectEditor {
 				Object v = values.get(i);
 				if (v==null)
 					values.remove(i--);
-				else
-					choices.put(v.toString(), v);
+				else {
+					if (v instanceof EObject)
+						choices.put(ModelUtil.getDisplayName((EObject)v), v);
+					else
+						choices.put(v.toString(), v);
+				}
 			}
 		}
 		return choices;

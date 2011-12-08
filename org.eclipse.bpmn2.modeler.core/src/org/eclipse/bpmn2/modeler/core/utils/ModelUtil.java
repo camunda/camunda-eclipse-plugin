@@ -302,6 +302,10 @@ public class ModelUtil {
 				name = objName + " \"" + name + "\"";
 			return name;
 		}
+		feature = obj.eClass().getEStructuralFeature("id");
+		if (feature!=null) {
+			objName = (String)obj.eGet(feature);
+		}
 		return objName;
 	}
 	
