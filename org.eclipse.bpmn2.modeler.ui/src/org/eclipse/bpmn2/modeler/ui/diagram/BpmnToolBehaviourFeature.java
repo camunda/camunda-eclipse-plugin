@@ -19,16 +19,15 @@ import java.util.List;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.features.activity.ActivitySelectionBehavior;
 import org.eclipse.bpmn2.modeler.core.features.event.EventSelectionBehavior;
-//import org.eclipse.bpmn2.modeler.core.preferences.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.CustomTaskDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
-import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.bpmn2.modeler.ui.FeatureMap;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.features.activity.task.CustomTaskFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.choreography.ChoreographySelectionBehavior;
+import org.eclipse.bpmn2.modeler.ui.features.choreography.ChoreographyUtil;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.emf.common.util.EList;
@@ -277,14 +276,19 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 	public IContextButtonPadData getContextButtonPad(IPictogramElementContext context) {
 		IContextButtonPadData data = super.getContextButtonPad(context);
 		PictogramElement pe = context.getPictogramElement();
+		IFeatureProvider fp = getFeatureProvider();
 
 		// 1. set the generic context buttons
-		// note, that we do not add 'remove' (just as an example)
-//		setGenericContextButtons(data, pe, CONTEXT_BUTTON_DELETE | CONTEXT_BUTTON_UPDATE);
+		// Participant bands can only be removed from the choreograpy task
+		if (ChoreographyUtil.isChoreographyParticipantBand(pe)) {
+			setGenericContextButtons(data, pe, CONTEXT_BUTTON_REMOVE);
+		}
+		else
+			setGenericContextButtons(data, pe, CONTEXT_BUTTON_DELETE);
 
 		// 2. set the expand & collapse buttons
 		CustomContext cc = new CustomContext(new PictogramElement[] { pe });
-		ICustomFeature[] cf = getFeatureProvider().getCustomFeatures(cc);
+		ICustomFeature[] cf = fp.getCustomFeatures(cc);
 		for (int i = 0; i < cf.length; i++) {
 			ICustomFeature iCustomFeature = cf[i];
 			ContextButtonEntry button = new ContextButtonEntry(iCustomFeature, cc);
@@ -311,7 +315,7 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 		ccc.setSourceAnchor(anchor);
 
 		// 3.b. create context button and add "Create Connections" feature
-		ICreateConnectionFeature[] features = getFeatureProvider().getCreateConnectionFeatures();
+		ICreateConnectionFeature[] features = fp.getCreateConnectionFeatures();
 		ContextButtonEntry button = new ContextButtonEntry(null, context);
 		button.setText("Create Connection"); //$NON-NLS-1$
 		String description = null;
