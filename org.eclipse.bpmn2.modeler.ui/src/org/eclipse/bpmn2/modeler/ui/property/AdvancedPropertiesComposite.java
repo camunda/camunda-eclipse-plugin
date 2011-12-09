@@ -12,11 +12,16 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.property;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablement;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
@@ -61,6 +66,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Sash;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -86,6 +92,7 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 	private Section detailsSection;
 	private Composite detailsComposite;
 	private Button fullDetails;
+	private HashSet<Control> myChildren = new HashSet<Control>();
 	
 	class DomainListener extends ResourceSetListenerImpl {
 		@Override
@@ -144,6 +151,7 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 		detailsComposite.setLayout(new GridLayout(1,false));
 		detailsSection.setClient(detailsComposite);
 
+
 		fullDetails = toolkit.createButton(detailsComposite, "Show advanced details", SWT.CHECK);
 		data = new GridData(SWT.LEFT,SWT.TOP,false,false,1,1);
 		data.exclude = true;
@@ -179,16 +187,37 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 //		toolkit.paintBordersFor(detailsPropertiesComposite);
 		
 		sashForm.setWeights(new int[] { 1, 2 });
-
 	}
 
-	private void updateDetailsSection() {
+	private void saveChildren(Control parent) {
+		myChildren.add(parent);
+		if (parent instanceof Composite) {
+			Control[] children = ((Composite)parent).getChildren();
+			for (Control c : children) {
+				myChildren.add(c);
+				saveChildren(c);
+			}
+		}
+	}
+	
+	private void disposeDetailsChildren(Composite parent) {
 		// clean up any table widgets that may have been created by the previous
 		// incarnation of DefaultPropertiesComposite
-		for (Control c : getChildren()) {
-			if (c instanceof AbstractBpmn2TableComposite)
-				c.dispose();
+		for (Control c : parent.getChildren()) {
+			if (!myChildren.contains(c)) {
+				// argh! For some reason the Sash in a SashForm is not returned as one of its children
+				if (!(c instanceof Sash))
+					c.dispose();
+			}
+			else if (c instanceof Composite)
+				disposeDetailsChildren((Composite)c);
 		}
+	}
+	
+	private void updateDetailsSection() {
+		if (myChildren.size()==0)
+			saveChildren(getParent());
+		disposeDetailsChildren(getParent());
 		
 		EObject obj = getSelectedBaseElement();
 		if (obj==null) {
@@ -196,11 +225,6 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 			detailsSection.setVisible(false);
 		}
 		else {
-			// get rid of the old details composite if there was one
-			if (detailsPropertiesComposite!=null) {
-				detailsPropertiesComposite.dispose();
-				detailsPropertiesComposite = null;
-			}
 			// construct a details composite based on the selected object's class
 			if (fullDetails.getSelection()) {
 				detailsPropertiesComposite = new DefaultPropertiesComposite(detailsComposite,SWT.NONE);
@@ -340,7 +364,8 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 				baseElement, propertySection.editor.getEditingDomain(), null);
 
 		EList<EReference> eAllContainments = baseElement.eClass().getEAllContainments();
-
+		List<Action>items = new ArrayList<Action>();
+		
 		for (CommandParameter command : desc) {
 			EStructuralFeature feature = (EStructuralFeature) command.feature;
 			EObject commandValue = null;
@@ -353,28 +378,37 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 				commandValue = (EObject) command.value;
 			
 			if (root) {
-				if (eAllContainments.contains(feature) && modelEnablement.isEnabled(commandValue.eClass())
-						&& modelEnablement.isEnabled(commandValue.eClass(), feature)) {
+				if (eAllContainments.contains(feature) && modelEnablement.isEnabled(commandValue.eClass())) {
 					Object value = baseElement.eGet(feature);
 
 					String name = PropertyUtil.deCamelCase(commandValue.eClass().getName());
 					Action item = createMenuItemFor(prefix + name, baseElement, (EReference) feature, command.value);
 
 					item.setEnabled(value == null || value instanceof EList);
-					manager.add(item);
+					items.add(item);
 				}
 			} else {
-				if (eAllContainments.contains(feature) && modelEnablement.isEnabled(baseElement.eClass(), feature)) {
+				if (eAllContainments.contains(feature) && modelEnablement.isEnabled(baseElement.eClass(), feature) &&
+						 modelEnablement.isEnabled(commandValue.eClass())) {
 					Object value = baseElement.eGet(feature);
 
 					String name = PropertyUtil.deCamelCase(commandValue.eClass().getName());
 					Action item = createMenuItemFor(prefix + name, baseElement, (EReference) feature, command.value);
 
 					item.setEnabled(value == null || value instanceof EList);
-					manager.add(item);
+					items.add(item);
 				}
 			}
 		}
+		Collections.sort(items, new Comparator<Action>() {
+			@Override
+			public int compare(Action a1, Action a2) {
+				return a1.getText().compareToIgnoreCase(a2.getText());
+			}
+		});
+
+		for (Action a : items)
+			manager.add(a);
 	}
 
 	private Action createMenuItemFor(String prefix, final EObject baseElement, final EReference eReference,
