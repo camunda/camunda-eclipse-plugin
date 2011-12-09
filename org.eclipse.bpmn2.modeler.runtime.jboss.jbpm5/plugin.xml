@@ -336,6 +336,7 @@
 			<disable object="ExtensionAttributeDefinition"/>
 
 			<disable object="all" feature="id"/>
+			<enable object="Process" feature="id"/>
 			<disable object="Lane"/>
 			<disable object="MessageFlow"/>
 			<disable object="Association"/>

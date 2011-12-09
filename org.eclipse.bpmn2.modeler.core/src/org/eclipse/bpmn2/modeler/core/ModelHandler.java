@@ -147,6 +147,11 @@ public class ModelHandler {
 
 					Process process = createProcess();
 					process.setName(name+" Process");
+					// the Process ID should be the same as the resource name
+					String filename = resource.getURI().lastSegment();
+					if (filename.contains("."))
+						filename = filename.split("\\.")[0];
+					process.setId( ModelUtil.generateID(process,resource,filename) );
 
 					// create StartEvent
 					StartEvent startEvent = create(StartEvent.class);

@@ -121,8 +121,9 @@ public class ModelUtil {
 	 * @param obj - the BPMN2 object
 	 * @return the ID string
 	 */
-	private static String generateDefaultID(EObject obj) {
-		String name = getObjectName(obj);
+	private static String generateDefaultID(EObject obj, String name) {
+		if (name==null)
+			name = getObjectName(obj);
 		Integer value = defaultIds.get(name);
 		if (value==null)
 			value = Integer.valueOf(1);
@@ -152,6 +153,10 @@ public class ModelUtil {
 	 * @return the ID string
 	 */
 	public static String generateID(EObject obj, Resource res) {
+		return generateID(obj, res, null);
+	}
+
+	public static String generateID(EObject obj, Resource res, String name) {
 		Object key = (res==null ? getKey(obj) : getKey(res));
 		if (key!=null) {
 			Hashtable<String, EObject> tab = ids.get(key);
@@ -160,18 +165,23 @@ public class ModelUtil {
 				ids.put(key, tab);
 			}
 			
-			String name = getObjectName(obj);
+			String id = name;
+			if (name==null) {
+				name = getObjectName(obj);
+				id = name + "_" + 1;
+			}
+			
 			for (int i=1;; ++i) {
-				String id = name + "_" + i;
 				if (tab.get(id)==null) {
 					tab.put(id, obj);
 					return id;
 				}
+				id = name + "_" + i;
 			}
 		}
-		return generateDefaultID(obj);
+		return generateDefaultID(obj, name);
 	}
-
+	
 	/**
 	 * Add an ID string to the ID mapping table(s). This must be used during model import
 	 * to add existing BPMN2 element IDs to the table so we don't generate duplicates.
