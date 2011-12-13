@@ -14,27 +14,15 @@
 package org.eclipse.bpmn2.modeler.ui.property;
 
 import java.lang.reflect.Constructor;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Map;
 
-import org.eclipse.bpmn2.modeler.core.runtime.Bpmn2SectionDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.ui.Activator;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 
 /**
  * This class maintains the registry of PropertySheetPage Composite widgets for each

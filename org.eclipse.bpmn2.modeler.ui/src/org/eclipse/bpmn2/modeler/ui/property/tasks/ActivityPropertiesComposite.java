@@ -54,4 +54,8 @@ public class ActivityPropertiesComposite extends DefaultPropertiesComposite {
 //		bindReference(be,"ioSpecification");
 		bindReference(be,"loopCharacteristics");
 	}
+	
+	public void createBindingsSuper(EObject be) {
+		super.createBindings(be);
+	}
 }
