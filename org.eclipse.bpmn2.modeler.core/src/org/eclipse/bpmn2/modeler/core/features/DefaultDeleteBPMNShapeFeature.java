@@ -27,4 +27,7 @@ public class DefaultDeleteBPMNShapeFeature extends DefaultDeleteFeature {
 		return true;
 	}
 
+	public boolean canDelete(IDeleteContext context) {
+		return true;
+	}
 }

@@ -22,6 +22,7 @@ import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeat
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.features.ConnectionFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.DefaultDeleteBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.features.DefaultRemoveBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.FeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.ICustomTaskFeature;
 import org.eclipse.bpmn2.modeler.core.features.bendpoint.AddBendpointFeature;
@@ -486,7 +487,7 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 				}
 			}
 		}
-		return new DefaultRemoveFeature(this);
+		return new DefaultRemoveBPMNShapeFeature(this);
 	}
 
 	@Override

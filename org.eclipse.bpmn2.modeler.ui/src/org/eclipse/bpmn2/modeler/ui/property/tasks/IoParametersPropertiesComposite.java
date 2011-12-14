@@ -40,6 +40,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 
@@ -79,26 +80,33 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 			// the container parameter must be an Activity or CallableElement (i.e. a Process or GlobalTask)
 			InputOutputSpecification ioSpecification = (InputOutputSpecification)be.eGet(ioSpecificationFeature);
 			if (ioSpecification==null) {
-				domain.getCommandStack().execute(new RecordingCommand(domain) {
-					@Override
-					protected void doExecute() {
-						InputOutputSpecification newValue = Bpmn2Factory.eINSTANCE.createInputOutputSpecification();
-						be.eSet(ioSpecificationFeature, newValue);
-						ModelUtil.setID((EObject)newValue);
-					}
-				});
-				ioSpecification = (InputOutputSpecification)be.eGet(ioSpecificationFeature);
+				boolean create = MessageDialog.openQuestion(getShell(), "Missing I/O Parameters",
+						"The "+be.eClass().getName()+" does not have a I/O specification - create it now?");
+				
+				if (create) {
+					domain.getCommandStack().execute(new RecordingCommand(domain) {
+						@Override
+						protected void doExecute() {
+							InputOutputSpecification newValue = Bpmn2Factory.eINSTANCE.createInputOutputSpecification();
+							be.eSet(ioSpecificationFeature, newValue);
+							ModelUtil.setID((EObject)newValue);
+						}
+					});
+					ioSpecification = (InputOutputSpecification)be.eGet(ioSpecificationFeature);
+				}
 			}
 
-			EStructuralFeature dataInputsFeature = getFeature(ioSpecification, "dataInputs");
-			inputTable = new IOParametersTable(be, ioSpecification, dataInputsFeature);
-			inputTable.bindList(ioSpecification, dataInputsFeature);
-			inputTable.setTitle("Input Parameters");
-
-			EStructuralFeature dataOutputsFeature = getFeature(ioSpecification, "dataOutputs");
-			outputTable = new IOParametersTable(be, ioSpecification, dataOutputsFeature);
-			outputTable.bindList(ioSpecification, dataOutputsFeature);
-			outputTable.setTitle("Output Parameters");
+			if (ioSpecification!=null) {
+				EStructuralFeature dataInputsFeature = getFeature(ioSpecification, "dataInputs");
+				inputTable = new IOParametersTable(be, ioSpecification, dataInputsFeature);
+				inputTable.bindList(ioSpecification, dataInputsFeature);
+				inputTable.setTitle("Input Parameters");
+	
+				EStructuralFeature dataOutputsFeature = getFeature(ioSpecification, "dataOutputs");
+				outputTable = new IOParametersTable(be, ioSpecification, dataOutputsFeature);
+				outputTable.bindList(ioSpecification, dataOutputsFeature);
+				outputTable.setTitle("Output Parameters");
+			}
 		}
 		else {
 			// the container is a ThrowEvent
