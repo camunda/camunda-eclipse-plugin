@@ -382,6 +382,13 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 					Object value = baseElement.eGet(feature);
 
 					String name = PropertyUtil.deCamelCase(commandValue.eClass().getName());
+					if (name.equalsIgnoreCase("Expression") || name.equalsIgnoreCase("Formal Expression")) {
+						if (feature.getName() != null && !feature.getName().isEmpty()) {
+							String featureName = PropertyUtil.deCamelCase(' ' + feature.getName());
+							featureName = featureName.substring(0, 1).toUpperCase() + featureName.substring(1);
+							name = featureName + ' ' + name;
+						}
+					}
 					Action item = createMenuItemFor(prefix + name, baseElement, (EReference) feature, command.value);
 
 					item.setEnabled(value == null || value instanceof EList);
@@ -393,6 +400,13 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 					Object value = baseElement.eGet(feature);
 
 					String name = PropertyUtil.deCamelCase(commandValue.eClass().getName());
+					if (name.equalsIgnoreCase("Expression") || name.equalsIgnoreCase("Formal Expression")) {
+						if (feature.getName() != null && !feature.getName().isEmpty()) {
+							String featureName = PropertyUtil.deCamelCase(' ' + feature.getName());
+							featureName = featureName.substring(0, 1).toUpperCase() + featureName.substring(1);
+							name = featureName + ' ' + name;
+						}
+					}
 					Action item = createMenuItemFor(prefix + name, baseElement, (EReference) feature, command.value);
 
 					item.setEnabled(value == null || value instanceof EList);
