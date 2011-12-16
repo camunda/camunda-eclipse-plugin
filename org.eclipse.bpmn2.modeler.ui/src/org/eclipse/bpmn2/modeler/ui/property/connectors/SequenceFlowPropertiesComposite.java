@@ -17,6 +17,7 @@ import org.eclipse.bpmn2.Expression;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.emf.ecore.EObject;
@@ -121,7 +122,7 @@ public class SequenceFlowPropertiesComposite extends DefaultPropertiesComposite 
 					setDefaultFlowCheckbox.setVisible(false);
 				}
 			}
-			this.propertySection.recursivelayout(this);
+			PropertyUtil.recursivelayout(this);
 		}
 		
 	}

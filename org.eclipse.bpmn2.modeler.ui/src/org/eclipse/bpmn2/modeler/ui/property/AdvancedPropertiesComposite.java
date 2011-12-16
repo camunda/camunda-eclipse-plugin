@@ -253,7 +253,7 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 			detailsSection.setText(name+" Details");
 			detailsSection.setVisible(true);
 
-			propertySection.recursivelayout(AdvancedPropertiesComposite.this);
+			PropertyUtil.recursivelayout(AdvancedPropertiesComposite.this);
 			propertySection.tabbedPropertySheetPage.resizeScrolledComposite();
 		}
 	}

@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.core.utils;
 
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.gef.EditPart;
@@ -21,6 +22,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -138,5 +140,22 @@ public class PropertyUtil {
 				dump((Composite)k, indent+1);
 			}
 		}
+	}
+
+	/**
+	 * Ugly hack to force layout of the entire widget tree of the property sheet page.
+	 * @param parent
+	 */
+	public static void recursivelayout(Composite parent) {
+		Control[] kids = parent.getChildren();
+		for (Control k : kids) {
+			if (k.isDisposed())
+				Activator.logError(new SWTException("Widget is disposed."));
+			if (k instanceof Composite) {
+				recursivelayout((Composite)k);
+				((Composite)k).layout(true);
+			}
+		}
+		parent.layout(true);
 	}
 }

@@ -21,7 +21,6 @@ import org.eclipse.bpmn2.modeler.core.runtime.IBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
-import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.diagram.BPMNFeatureProvider;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.core.resources.IProject;
@@ -33,7 +32,6 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Point;
@@ -215,7 +213,7 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 				AbstractBpmn2PropertiesComposite sectionRoot = getSectionRoot();
 				if (sectionRoot!=null) {
 					sectionRoot.setEObject((BPMN2Editor) getDiagramEditor(), be);
-					recursivelayout(sectionRoot);
+					PropertyUtil.recursivelayout(sectionRoot);
 				}
 			}
 		}
@@ -227,23 +225,6 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 		return super.getSelectedPictogramElement();
 	}
 
-	/**
-	 * Ugly hack to force layout of the entire widget tree of the property sheet page.
-	 * @param parent
-	 */
-	public void recursivelayout(Composite parent) {
-		Control[] kids = parent.getChildren();
-		for (Control k : kids) {
-			if (k.isDisposed())
-				Activator.logError(new SWTException("Widget is disposed."));
-			if (k instanceof Composite) {
-				recursivelayout((Composite)k);
-				((Composite)k).layout(true);
-			}
-		}
-		parent.layout(true);
-	}
-	
 	/**
 	 * Force a layout of the property sheet page.
 	 */

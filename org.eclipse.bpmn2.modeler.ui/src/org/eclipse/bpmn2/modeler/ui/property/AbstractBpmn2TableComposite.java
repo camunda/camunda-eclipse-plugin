@@ -705,8 +705,10 @@ public class AbstractBpmn2TableComposite extends Composite {
 	protected void redrawPage() {
 		if (propertySection!=null)
 			propertySection.layout();
-		else
+		else {
+			PropertyUtil.recursivelayout(this);
 			getParent().layout();
+		}
 	}
 
 	private void createTableAndButtons(Composite parent, int style) {

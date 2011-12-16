@@ -20,6 +20,7 @@ import org.eclipse.bpmn2.LoopCharacteristics;
 import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
 import org.eclipse.bpmn2.StandardLoopCharacteristics;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.emf.ecore.EObject;
@@ -128,7 +129,7 @@ public class CallActivityPropertiesComposite extends ActivityPropertiesComposite
 				addMultiLoopButton.setText("Add Multi-Instance Loop Characteristics");
 				addMultiLoopButton.setVisible(true);
 			}
-			this.propertySection.recursivelayout(this);
+			PropertyUtil.recursivelayout(this);
 		}
 	}
 }
