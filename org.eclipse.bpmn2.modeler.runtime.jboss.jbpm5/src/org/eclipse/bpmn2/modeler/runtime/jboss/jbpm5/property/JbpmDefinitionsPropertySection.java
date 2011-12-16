@@ -14,17 +14,18 @@
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
-import org.eclipse.bpmn2.modeler.ui.property.diagrams.DataItemsPropertySection;
+import org.eclipse.bpmn2.modeler.ui.property.diagrams.DefinitionsPropertyComposite;
+import org.eclipse.bpmn2.modeler.ui.property.diagrams.DefinitionsPropertySection;
 
 /**
  * @author Bob Brodt
  *
  */
-public class JbpmDataItemsPropertySection extends DataItemsPropertySection {
+public class JbpmDefinitionsPropertySection extends DefinitionsPropertySection {
 
 	@Override
 	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
-		return new JbpmDataItemsPropertiesComposite(this);
+		return new JbpmDefinitionsPropertyComposite(this);
 	}
 
 }

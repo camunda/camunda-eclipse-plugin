@@ -48,7 +48,7 @@ public class ExtensionValueTableComposite extends AbstractBpmn2TableComposite {
 	@SuppressWarnings("unchecked")
 	protected void addExtensionValue(EObject object) {
 		EStructuralFeature evf = listParentObject.eClass().getEStructuralFeature("extensionValues");
-		EList<EObject> list = (EList<EObject>)object.eGet(evf);
+		EList<EObject> list = (EList<EObject>)listParentObject.eGet(evf);
 
 		ExtensionAttributeValue newItem = Bpmn2Factory.eINSTANCE.createExtensionAttributeValue();
 		FeatureMap map = newItem.getValue();
