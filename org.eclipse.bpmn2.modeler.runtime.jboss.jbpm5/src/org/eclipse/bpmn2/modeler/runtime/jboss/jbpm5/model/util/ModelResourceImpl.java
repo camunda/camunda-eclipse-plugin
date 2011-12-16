@@ -39,6 +39,7 @@ import org.eclipse.emf.ecore.xmi.XMLLoad;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.XMLSave;
 import org.eclipse.emf.ecore.xmi.impl.XMLLoadImpl;
+import org.eclipse.emf.ecore.xmi.impl.XMLString;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -83,11 +84,43 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
     		DocumentRoot root = (DocumentRoot) getContents().get(0);
     		root.getXSISchemaLocation().clear();
     		root.getXSISchemaLocation().put("http://www.omg.org/spec/BPMN/20100524/MODEL", "BPMN20.xsd");
-    		for (Map.Entry<String, String> entry : root.getXSISchemaLocation().entrySet()) {
-    			System.out.println(entry.getKey()+" = "+entry.getValue());
-    		}
     	}
-		return super.createXMLSave();
+		return new Bpmn2ModelerXMLSave(createXMLHelper()) {
+			
+			private boolean needTargetNamespace = true;
+			
+			@Override
+			protected boolean shouldSaveFeature(EObject o, EStructuralFeature f) {
+				if (Bpmn2Package.eINSTANCE.getDocumentation_Text().equals(f))
+					return false;
+				if (Bpmn2Package.eINSTANCE.getFormalExpression_Body().equals(f))
+					return false;
+				return super.shouldSaveFeature(o, f);
+			}
+
+			@Override
+			protected void init(XMLResource resource, Map<?, ?> options) {
+				super.init(resource, options);
+		        doc = new XMLString(Integer.MAX_VALUE, publicId, systemId, null) {
+		        	@Override
+		        	public void addAttribute(String name, String value) {
+		        		if ("targetNamespace".equals(name))
+		        			needTargetNamespace = false;
+		        		else if (XSI_SCHEMA_LOCATION.equals(name)) {
+		        			value = "http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd";
+		        		}
+		        		super.addAttribute(name, value);
+		        	}
+		        };
+			}
+			  
+			@Override
+			protected void addNamespaceDeclarations() {
+				if (needTargetNamespace)
+					doc.addAttribute("targetNamespace", ModelPackage.eNS_URI);
+				super.addNamespaceDeclarations();
+			}
+		};
 	}
 
 	/**
