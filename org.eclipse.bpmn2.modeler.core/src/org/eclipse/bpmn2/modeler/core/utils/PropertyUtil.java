@@ -12,8 +12,8 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.utils;
 
+import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
-import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.gef.EditPart;
