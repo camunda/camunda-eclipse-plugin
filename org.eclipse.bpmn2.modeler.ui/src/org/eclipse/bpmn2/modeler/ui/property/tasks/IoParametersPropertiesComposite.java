@@ -127,7 +127,7 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 			this.ioSpecification = ioSpecification;
 			if (container instanceof Activity) {
 				this.activity = (Activity)container;
-				tableProvider = new AbstractTableProvider() {
+				columnProvider = new AbstractTableColumnProvider() {
 					@Override
 					public boolean canModify(EObject object, EStructuralFeature feature, EObject item) {
 						return true;
@@ -136,7 +136,7 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 
 				EClass listItemClass = getListItemClass(ioSpecification, ioFeature);
 				EAttribute name = (EAttribute)listItemClass.getEStructuralFeature("name");
-				tableProvider.add(new TableColumn(ioSpecification,name));
+				columnProvider.add(new TableColumn(ioSpecification,name));
 			}
 			else if (container instanceof CallableElement) {
 				this.element = (CallableElement)container;

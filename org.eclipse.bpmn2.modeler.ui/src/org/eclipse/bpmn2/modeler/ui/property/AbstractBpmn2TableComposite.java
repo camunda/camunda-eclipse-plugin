@@ -115,6 +115,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 	protected BPMN2Editor bpmn2Editor;
 	protected IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 
+	protected EObject listParentObject;
 	protected EClass listItemClass;
 	
 	// widgets
@@ -138,7 +139,8 @@ public class AbstractBpmn2TableComposite extends Composite {
 
 	protected int style;
 	
-	protected AbstractTableProvider tableProvider;
+	protected AbstractTableColumnProvider columnProvider;
+	protected TableContentProvider contentProvider;
 	
 	public AbstractBpmn2TableComposite(AbstractBpmn2PropertySection section, int style) {
 		super(section.getSectionRoot(), style & ~CUSTOM_STYLES_MASK);
@@ -174,10 +176,6 @@ public class AbstractBpmn2TableComposite extends Composite {
 	
 	public TabbedPropertySheetPage getTabbedPropertySheetPage() {
 		return propertySection.getTabbedPropertySheetPage();
-	}
-	
-	public void setTableProvider(AbstractTableProvider provider) {
-		tableProvider = provider;
 	}
 	
 	public void setListItemClass(EClass clazz) {
@@ -277,12 +275,12 @@ public class AbstractBpmn2TableComposite extends Composite {
 	 * @param feature
 	 * @return
 	 */
-	public AbstractTableProvider getTableProvider(EObject object, EStructuralFeature feature) {
-		if (tableProvider==null) {
+	public AbstractTableColumnProvider getColumnProvider(EObject object, EStructuralFeature feature) {
+		if (columnProvider==null) {
 			final EList<EObject> list = (EList<EObject>)object.eGet(feature);
 			final EClass listItemClass = getListItemClass(object, feature);
 
-			tableProvider = new AbstractTableProvider() {
+			columnProvider = new AbstractTableColumnProvider() {
 				@Override
 				public boolean canModify(EObject object, EStructuralFeature feature, EObject item) {
 					return false;
@@ -303,7 +301,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 							for (Entry entry : map) {
 								EStructuralFeature f1 = entry.getEStructuralFeature();
 								if (f1 instanceof EAttribute && !anyAttributes.contains(f1)) {
-									tableProvider.add(new TableColumn(object,(EAttribute)f1));
+									columnProvider.add(new TableColumn(object,(EAttribute)f1));
 									anyAttributes.add(f1);
 								}
 							}
@@ -313,16 +311,16 @@ public class AbstractBpmn2TableComposite extends Composite {
 				else if (FeatureMap.Entry.class.equals(a1.getEType().getInstanceClass())) {
 					// TODO: how do we handle these?
 					if (a1 instanceof EAttribute)
-						tableProvider.add(new TableColumn(object,a1));
+						columnProvider.add(new TableColumn(object,a1));
 					else
 						System.out.println("FeatureMapEntry: "+listItemClass.getName()+"."+a1.getName());
 				}
 				else {
-					tableProvider.add(new TableColumn(object,a1));
+					columnProvider.add(new TableColumn(object,a1));
 				}
 			}
 		}
-		return tableProvider;
+		return columnProvider;
 	}
 	
 	/**
@@ -336,6 +334,12 @@ public class AbstractBpmn2TableComposite extends Composite {
 	public AbstractBpmn2PropertiesComposite createDetailComposite(Composite parent, Class eClass) {
 		AbstractBpmn2PropertiesComposite composite = PropertiesCompositeFactory.createComposite(eClass, parent, SWT.NONE);
 		return composite;
+	}
+	
+	public TableContentProvider getContentProvider(EObject object, EStructuralFeature feature, EList<EObject>list) {
+		if (contentProvider==null)
+			contentProvider = new TableContentProvider(object, feature, list);
+		return contentProvider;
 	}
 	
 	/**
@@ -426,6 +430,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 		if (bpmn2Editor==null)
 			return;
 		
+		listParentObject = object;
 		final TransactionalEditingDomain editingDomain = bpmn2Editor.getEditingDomain();
 		final EList<EObject> list = (EList<EObject>)object.eGet(feature);
 		final EClass listItemClass = getListItemClass(object,feature);
@@ -433,10 +438,10 @@ public class AbstractBpmn2TableComposite extends Composite {
 		////////////////////////////////////////////////////////////
 		// Collect columns to be displayed and build column provider
 		////////////////////////////////////////////////////////////
-		tableProvider = getTableProvider(object, feature);
+		columnProvider = getColumnProvider(object, feature);
 		// remove disabled columns
 		List<TableColumn> removed = new ArrayList<TableColumn>();
-		for (TableColumn tc : (List<TableColumn>)tableProvider.getColumns()) {
+		for (TableColumn tc : (List<TableColumn>)columnProvider.getColumns()) {
 			ModelEnablementDescriptor modelEnablement = bpmn2Editor.getTargetRuntime().getModelEnablements(tc.object);
 			if (!modelEnablement.isEnabled(listItemClass, tc.feature)) {
 				removed.add(tc);
@@ -444,9 +449,9 @@ public class AbstractBpmn2TableComposite extends Composite {
 		}
 		if (removed.size()>0) {
 			for (TableColumn tc : removed)
-				tableProvider.remove(tc);
+				columnProvider.remove(tc);
 		}
-		if (tableProvider.getColumns().size()==0) {
+		if (columnProvider.getColumns().size()==0) {
 			return;
 		}
 
@@ -529,14 +534,14 @@ public class AbstractBpmn2TableComposite extends Composite {
 		// Create table viewer and cell editors
 		////////////////////////////////////////////////////////////
 		tableViewer = new TableViewer(table);
-		tableProvider.createTableLayout(table);
-		tableProvider.setTableViewer(tableViewer);
+		columnProvider.createTableLayout(table);
+		columnProvider.setTableViewer(tableViewer);
 		
-		tableViewer.setLabelProvider(tableProvider);
-		tableViewer.setCellModifier(tableProvider);
-		tableViewer.setContentProvider(new ContentProvider(object, feature, list));
-		tableViewer.setColumnProperties(tableProvider.getColumnProperties());
-		tableViewer.setCellEditors(tableProvider.createCellEditors(table));
+		tableViewer.setLabelProvider(columnProvider);
+		tableViewer.setCellModifier(columnProvider);
+		tableViewer.setContentProvider(getContentProvider(object,feature,list));
+		tableViewer.setColumnProperties(columnProvider.getColumnProperties());
+		tableViewer.setCellEditors(columnProvider.createCellEditors(table));
 
 		////////////////////////////////////////////////////////////
 		// add a resource set listener to update the treeviewer when
@@ -770,12 +775,12 @@ public class AbstractBpmn2TableComposite extends Composite {
 		
 	}
 	
-	public class ContentProvider implements IStructuredContentProvider {
-		private EObject object;
-		private EStructuralFeature feature;
-		private EList<EObject> list;
+	public class TableContentProvider implements IStructuredContentProvider {
+		protected EObject object;
+		protected EStructuralFeature feature;
+		protected EList<EObject> list;
 		
-		public ContentProvider(EObject object, EStructuralFeature feature, EList<EObject> list) {
+		public TableContentProvider(EObject object, EStructuralFeature feature, EList<EObject> list) {
 			this.object = object;
 			this.feature = feature;
 			this.list = list;
@@ -856,7 +861,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 		}
 		
 		public boolean canModify(Object element, String property) {
-			return tableProvider.canModify(object, feature, (EObject)element);
+			return columnProvider.canModify(object, feature, (EObject)element);
 		}
 
 		public void modify(Object element, String property, Object value) {
@@ -887,7 +892,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 		}
 	}
 
-	public abstract class AbstractTableProvider extends ColumnTableProvider {
+	public abstract class AbstractTableColumnProvider extends ColumnTableProvider {
 		
 		/**
 		 * Implement this to select which columns are editable

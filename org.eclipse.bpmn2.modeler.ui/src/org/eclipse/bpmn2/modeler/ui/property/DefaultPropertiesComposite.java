@@ -94,6 +94,8 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 					String[] names = a.split("\\.");
 					a = names[0];
 					eItemClass = (EClass)Bpmn2PackageImpl.eINSTANCE.getEClassifier(names[1]);
+					if (eItemClass==null)
+						eItemClass = (EClass) getDiagramEditor().getTargetRuntime().getModelDescriptor().getEPackage().getEClassifier(names[1]);
 				}
 				feature = getFeature(be,a);
 				if (modelEnablement.isEnabled(be.eClass(),feature)) {

@@ -22,7 +22,7 @@ import org.eclipse.bpmn2.Import;
  * </p>
  *
  * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getImportType()
- * @model extendedMetaData="name='import_._type' kind='empty'"
+ * @model extendedMetaData="name='import_._type' kind='element' namespace='##targetNamespace'"
  * @generated
  */
 public interface ImportType extends EObject {
@@ -38,7 +38,7 @@ public interface ImportType extends EObject {
 	 * @see #setName(String)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getImportType_Name()
 	 * @model dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
-	 *        extendedMetaData="kind='attribute' name='name'"
+	 *        extendedMetaData="kind='attribute' name='name' namespace='##targetNamespace'"
 	 * @generated
 	 */
 	String getName();

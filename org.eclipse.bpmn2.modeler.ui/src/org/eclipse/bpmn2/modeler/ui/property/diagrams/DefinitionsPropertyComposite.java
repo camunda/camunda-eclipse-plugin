@@ -12,7 +12,7 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.NamespaceUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite.AbstractTableProvider;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite.AbstractTableColumnProvider;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite.TableColumn;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.SchemaImportDialog;
@@ -99,8 +99,6 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 
 	public class ImportsTable extends AbstractBpmn2TableComposite {
 
-		private AbstractTableProvider tableProvider;
-		
 		/**
 		 * @param parent
 		 * @param style
@@ -119,9 +117,9 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 
 		
 		@Override
-		public AbstractTableProvider getTableProvider(EObject object, EStructuralFeature feature) {
-			if (tableProvider==null) {
-				tableProvider = new AbstractTableProvider() {
+		public AbstractTableColumnProvider getColumnProvider(EObject object, EStructuralFeature feature) {
+			if (columnProvider==null) {
+				columnProvider = new AbstractTableColumnProvider() {
 					@Override
 					public boolean canModify(EObject object, EStructuralFeature feature, EObject item) {
 						return false;
@@ -144,19 +142,17 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 						return "";
 					}
 				};
-				tableProvider.add(tableColumn);
+				columnProvider.add(tableColumn);
 				// add remaining columns
 				EClass eClass = Bpmn2Package.eINSTANCE.getImport();
-				tableProvider.add(new TableColumn(object,
+				columnProvider.add(new TableColumn(object,
 						(EAttribute)eClass.getEStructuralFeature("namespace")));
-				tableProvider.add(new TableColumn(object,
+				columnProvider.add(new TableColumn(object,
 						(EAttribute)eClass.getEStructuralFeature("location")));
-				tableProvider.add(new TableColumn(object,
+				columnProvider.add(new TableColumn(object,
 						(EAttribute)eClass.getEStructuralFeature("importType")));
-	
-				setTableProvider(tableProvider);
 			}
-			return tableProvider;
+			return columnProvider;
 		}
 
 

@@ -30,4 +30,6 @@ Export-Package: org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5,
 Import-Package: org.eclipse.bpmn2.modeler.ui,
  org.eclipse.bpmn2.modeler.ui.editor,
  org.eclipse.bpmn2.modeler.ui.features.activity.task,
- org.eclipse.bpmn2.modeler.ui.property
+ org.eclipse.bpmn2.modeler.ui.property,
+ org.eclipse.bpmn2.modeler.ui.property.providers
+ 

@@ -30,7 +30,7 @@ import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite.AbstractTableProvider;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite.AbstractTableColumnProvider;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite.TableColumn;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -381,8 +381,8 @@ public class IoParametersPropertySection extends AbstractBpmn2PropertySection {
 			}
 			
 			@Override
-			public AbstractTableProvider getTableProvider(EObject object, EStructuralFeature feature) {
-				tableProvider = new AbstractTableProvider() {
+			public AbstractTableColumnProvider getColumnProvider(EObject object, EStructuralFeature feature) {
+				columnProvider = new AbstractTableColumnProvider() {
 					@Override
 					public boolean canModify(EObject object, EStructuralFeature feature, EObject item) {
 						return false;
@@ -390,10 +390,10 @@ public class IoParametersPropertySection extends AbstractBpmn2PropertySection {
 				};
 				EClass listItemClass = getListItemClass(object, feature);
 				
-				tableProvider.add(new AssignmentsTableColumn(object,listItemClass.getEStructuralFeature("to")));
-				tableProvider.add(new AssignmentsTableColumn(object,listItemClass.getEStructuralFeature("from")));
+				columnProvider.add(new AssignmentsTableColumn(object,listItemClass.getEStructuralFeature("to")));
+				columnProvider.add(new AssignmentsTableColumn(object,listItemClass.getEStructuralFeature("from")));
 
-				return tableProvider;
+				return columnProvider;
 			}
 
 			public class AssignmentsTableColumn extends TableColumn {

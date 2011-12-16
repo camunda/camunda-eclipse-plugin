@@ -219,7 +219,7 @@ public class WSILPreferencePage extends PreferencePage implements IWorkbenchPref
 		tableProvider.add(new IndexColumn());
 		tableProvider.add(new AbstractColumn());
 		tableProvider.add(new LocationColumn());
-		// tableProvider.add(new NamespaceColumn());
+		// columnProvider.add(new NamespaceColumn());
 		
 		linkTableViewer = new TableViewer(linkTable);
 		tableProvider.createTableLayout(linkTable);

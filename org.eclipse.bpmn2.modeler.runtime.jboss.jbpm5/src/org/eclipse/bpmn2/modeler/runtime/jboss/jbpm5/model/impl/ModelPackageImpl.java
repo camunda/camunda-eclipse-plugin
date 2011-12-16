@@ -575,13 +575,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		   source, 
 		   new String[] {
 			 "name", "",
-			 "kind", "mixed"
+			 "kind", "mixed",
+			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
 		  (getDocumentRoot_Global(), 
 		   source, 
 		   new String[] {
-			 "kind", "parameter",
+			 "kind", "element",
 			 "name", "global",
 			 "namespace", "##targetNamespace"
 		   });		
@@ -589,7 +590,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		  (getDocumentRoot_ImportType(), 
 		   source, 
 		   new String[] {
-			 "kind", "parameter",
+			 "kind", "element",
 			 "name", "import",
 			 "namespace", "##targetNamespace"
 		   });		
@@ -597,7 +598,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		  (getDocumentRoot_OnEntryScript(), 
 		   source, 
 		   new String[] {
-			 "kind", "parameter",
+			 "kind", "element",
 			 "name", "onEntry-script",
 			 "namespace", "##targetNamespace"
 		   });		
@@ -605,7 +606,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		  (getDocumentRoot_OnExitScript(), 
 		   source, 
 		   new String[] {
-			 "kind", "parameter",
+			 "kind", "element",
 			 "name", "onExit-script",
 			 "namespace", "##targetNamespace"
 		   });		
@@ -654,48 +655,54 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		   source, 
 		   new String[] {
 			 "name", "global_._type",
-			 "kind", "empty"
+			 "kind", "element",
+			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
 		  (getGlobalType_Identifier(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
-			 "name", "identifier"
+			 "name", "identifier",
+			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
 		  (getGlobalType_Type(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
-			 "name", "type"
+			 "name", "type",
+			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
 		  (importTypeEClass, 
 		   source, 
 		   new String[] {
 			 "name", "import_._type",
-			 "kind", "empty"
+			 "kind", "element",
+			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
 		  (getImportType_Name(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
-			 "name", "name"
+			 "name", "name",
+			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
 		  (onEntryScriptTypeEClass, 
 		   source, 
 		   new String[] {
 			 "name", "onEntry-script_._type",
-			 "kind", "elementOnly"
+			 "kind", "elementOnly",
+			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
 		  (getOnEntryScriptType_Script(), 
 		   source, 
 		   new String[] {
-			 "kind", "parameter",
+			 "kind", "element",
 			 "name", "script",
 			 "namespace", "##targetNamespace"
 		   });		
@@ -704,20 +711,22 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
-			 "name", "scriptFormat"
+			 "name", "scriptFormat",
+			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
 		  (onExitScriptTypeEClass, 
 		   source, 
 		   new String[] {
 			 "name", "onExit-script_._type",
-			 "kind", "elementOnly"
+			 "kind", "elementOnly",
+			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
 		  (getOnExitScriptType_Script(), 
 		   source, 
 		   new String[] {
-			 "kind", "parameter",
+			 "kind", "element",
 			 "name", "script",
 			 "namespace", "##targetNamespace"
 		   });		
@@ -726,7 +735,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
-			 "name", "scriptFormat"
+			 "name", "scriptFormat",
+			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
 		  (packageNameTypeEDataType, 
