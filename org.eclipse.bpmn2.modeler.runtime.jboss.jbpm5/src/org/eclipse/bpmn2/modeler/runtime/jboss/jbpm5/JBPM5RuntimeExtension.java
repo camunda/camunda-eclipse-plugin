@@ -373,8 +373,8 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 		
 		public boolean visit (IResource resource) throws CoreException {
 			if (resource.getType() == IResource.FILE) {
-				if (((IFile)resource).getFileExtension().equalsIgnoreCase("conf") ||
-						((IFile)resource).getFileExtension().equalsIgnoreCase("wid")) {
+				if ("conf".equalsIgnoreCase(((IFile)resource).getFileExtension()) ||
+						"wid".equalsIgnoreCase(((IFile)resource).getFileExtension())) {
 					widResources.add(resource);
 					return true;
 				}
