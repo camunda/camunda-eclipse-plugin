@@ -88,6 +88,14 @@
 			type="org.eclipse.bpmn2.SequenceFlow"
 			label="Sequence Flow">
 		</propertyTab>
+
+		<propertyTab
+			id="org.jboss.runtime.jbpm5.activitiy.io.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmIoParametersPropertySection"
+			replaceTab="org.eclipse.bpmn2.modeler.activity.io.tab"
+			label="I/O Parameters">
+		</propertyTab>
+		
 <!--
 		<customTask
 			featureContainer="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmCustomTaskFeatureContainer"
