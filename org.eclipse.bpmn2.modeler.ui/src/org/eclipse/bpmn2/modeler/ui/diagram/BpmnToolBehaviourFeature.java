@@ -48,10 +48,13 @@ import org.eclipse.graphiti.features.context.impl.CreateConnectionContext;
 import org.eclipse.graphiti.features.context.impl.CustomContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
+import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.palette.IPaletteCompartmentEntry;
 import org.eclipse.graphiti.palette.impl.ConnectionCreationToolEntry;
 import org.eclipse.graphiti.palette.impl.ObjectCreationToolEntry;
@@ -268,6 +271,20 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 			return EventSelectionBehavior.getSelectionBorder(pe);
 		} else if (ChoreographySelectionBehavior.canApplyTo(pe)) {
 			return ChoreographySelectionBehavior.getSelectionBorder(pe);
+		}
+		else if (pe instanceof ContainerShape) {
+			if (((ContainerShape)pe).getChildren().size()>0) {
+				GraphicsAlgorithm ga = ((ContainerShape)pe).getChildren().get(0).getGraphicsAlgorithm();
+				if (!(ga instanceof Text))
+					return ga;
+				ga = ((ContainerShape)pe).getGraphicsAlgorithm();
+				if (ga.getGraphicsAlgorithmChildren().size()>0)
+					return ga.getGraphicsAlgorithmChildren().get(0);
+				return ga;
+			}
+		}
+		else if (pe instanceof Shape) {
+			return ((Shape)pe).getGraphicsAlgorithm();
 		}
 		return super.getSelectionBorder(pe);
 	}

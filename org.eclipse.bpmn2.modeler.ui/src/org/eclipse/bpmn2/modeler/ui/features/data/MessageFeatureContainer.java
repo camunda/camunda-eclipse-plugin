@@ -52,6 +52,10 @@ import org.eclipse.graphiti.services.IPeService;
 
 public class MessageFeatureContainer extends BaseElementFeatureContainer {
 
+	public static final int ENVELOPE_WIDTH = 30;
+	public static final int ENVELOPE_HEIGHT = 20;
+	public static final int ENVELOPE_TEXT_HEIGHT = 20;
+
 	@Override
 	public boolean canApplyTo(Object o) {
 		return super.canApplyTo(o) && o instanceof Message;
@@ -77,15 +81,15 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 				IPeService peService = Graphiti.getPeService();
 				Message msg = (Message) context.getNewObject();
 
-				int width = context.getWidth() > 0 ? context.getWidth() : 30;
-				int height = context.getHeight() > 0 ? context.getHeight() : 20;
-				int textArea = 15;
+//				int width = ENVELOPE_WIDTH;
+//				int height = ENVELOPE_HEIGHT;
+//				int textArea = ENVELOPE_TEXT_HEIGHT;
 
 				ContainerShape container = peService.createContainerShape(context.getTargetContainer(), true);
 				Rectangle invisibleRect = gaService.createInvisibleRectangle(container);
-				gaService.setLocationAndSize(invisibleRect, context.getX(), context.getY(), width, height + textArea);
+				gaService.setLocationAndSize(invisibleRect, context.getX(), context.getY(), ENVELOPE_WIDTH, ENVELOPE_HEIGHT + ENVELOPE_TEXT_HEIGHT);
 
-				Envelope envelope = GraphicsUtil.createEnvelope(invisibleRect, 0, 0, width, height);
+				Envelope envelope = GraphicsUtil.createEnvelope(invisibleRect, 0, 0, ENVELOPE_WIDTH, ENVELOPE_HEIGHT);
 				envelope.rect.setFilled(true);
 				StyleUtil.applyBGStyle(envelope.rect, this);
 				envelope.line.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
@@ -97,7 +101,7 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 				text.setStyle(StyleUtil.getStyleForText(getDiagram()));
 				text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
 				text.setVerticalAlignment(Orientation.ALIGNMENT_TOP);
-				gaService.setLocationAndSize(text, 0, height, width, textArea);
+				gaService.setLocationAndSize(text, 0, ENVELOPE_HEIGHT, ENVELOPE_WIDTH, ENVELOPE_TEXT_HEIGHT);
 
 				peService.createChopboxAnchor(container);
 				AnchorUtil.addFixedPointAnchors(container, invisibleRect);
