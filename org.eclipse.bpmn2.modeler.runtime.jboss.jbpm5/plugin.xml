@@ -355,6 +355,9 @@
 			<disable object="Participant"/>
 			<disable object="ParticipantAssociation"/>
 			<disable object="ParticipantMultiplicity"/>
+			<disable object="DataStore"/>
+			<disable object="DataStoreReference"/>
+			<disable object="Message"/>
 		</modelEnablement>
 		
 	</extension>
