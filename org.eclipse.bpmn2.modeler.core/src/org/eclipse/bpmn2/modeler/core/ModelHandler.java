@@ -77,6 +77,7 @@ import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.DynamicEObjectImpl;
@@ -910,6 +911,35 @@ public class ModelHandler {
 		return null;
 	}
 
+	public void set(EObject object, EStructuralFeature feature, Object value) {
+		// if the feature is a reference, then we need to figure out where the new object
+		// belongs (i.e. what is its containment object?) and stuff it there.
+		if (value instanceof EObject) {
+			Definitions definitions = null;
+			Process process = null;
+			Collaboration collaboration = null;
+			Choreography choreography = null;
+			EObject parent = object;
+			while (parent.eContainer()!=null) {
+				if (parent instanceof Definitions)
+					definitions = (Definitions)parent;
+				if (parent instanceof Process)
+					process = (Process)parent;
+				if (parent instanceof Collaboration)
+					collaboration = (Collaboration)parent;
+				if (parent instanceof Choreography)
+					choreography = (Choreography)parent;
+				
+				parent = parent.eContainer();
+			}
+			
+			if (value instanceof RootElement) {
+				definitions.getRootElements().add((RootElement) value);
+			}
+		}
+		object.eSet(feature, value);
+	}
+	
 	/**
 	 * General-purpose factory method that sets appropriate default values for new objects.
 	 */

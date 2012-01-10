@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.core.runtime.IAdapterManager;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
@@ -200,6 +201,11 @@ public class AdapterRegistry {
 			
 			EObject eObj = (EObject) target;
 			EClass effectiveClass = eObj.eClass();
+			for (Adapter  a : eObj.eAdapters()) {
+				if (a != null && clazz.isInstance(a)) {
+					return clazz.cast(a);
+				}
+			}
 			
 			List<AdapterFactory> list = fKeyToAdapterFactory.get( effectiveClass );
 			if (list != null) {

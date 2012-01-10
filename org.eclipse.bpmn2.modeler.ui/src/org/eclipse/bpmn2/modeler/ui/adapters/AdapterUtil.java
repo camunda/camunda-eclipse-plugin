@@ -59,7 +59,7 @@ public class AdapterUtil {
 		BPMN2_ADAPTER_FACTORIES.addAdapterFactory(new ResourceItemProviderAdapterFactory());
 
 		BPMN2_ADAPTER_FACTORIES.addAdapterFactory(
-				AdapterRegistry.INSTANCE.registerFactory(Bpmn2PackageImpl.eINSTANCE, new Bpmn2ItemProviderAdapterFactory()));
+				AdapterRegistry.INSTANCE.registerFactory(Bpmn2PackageImpl.eINSTANCE, new Bpmn2EditorItemProviderAdapterFactory()));
 		BPMN2_ADAPTER_FACTORIES.addAdapterFactory(
 				AdapterRegistry.INSTANCE.registerFactory(BpmnDiPackageImpl.eINSTANCE, new BpmnDiItemProviderAdapterFactory()));
 		BPMN2_ADAPTER_FACTORIES.addAdapterFactory(

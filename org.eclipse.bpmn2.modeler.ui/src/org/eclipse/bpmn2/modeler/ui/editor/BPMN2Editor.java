@@ -450,4 +450,8 @@ public class BPMN2Editor extends DiagramEditor {
 	public IFile getModelFile() {
 		return modelFile;
 	}
+	
+	public ModelHandler getModelHandler() {
+		return modelHandler;
+	}
 }

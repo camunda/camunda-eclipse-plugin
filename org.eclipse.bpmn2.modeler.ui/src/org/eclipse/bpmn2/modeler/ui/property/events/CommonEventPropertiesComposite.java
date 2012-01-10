@@ -55,7 +55,7 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 			bindAttribute(be,"parallelMultiple");
 		}
 		if (be instanceof BoundaryEvent) {
-			bindAttribute(be,"isCancelActivity");
+			bindAttribute(be,"cancelActivity");
 		}
 		
 		// Lists
@@ -68,11 +68,6 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 				bindList(be,"dataInputs");
 			if (be instanceof CatchEvent)
 				bindList(be,"dataOutputs");
-		}
-		
-		// References
-		if (be instanceof CatchEvent || be instanceof BoundaryEvent) {
-			bindReference(be,"attachedToRef");
 		}
 	}
 }

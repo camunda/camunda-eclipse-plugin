@@ -42,6 +42,5 @@ public class BoundaryEventPropertiesComposite extends AbstractBpmn2PropertiesCom
 	@Override
 	public void createBindings(EObject be) {
 		bindAttribute(be,"isCancelActivity");
-		bindReference(be,"attachedToRef");
 	}
 }

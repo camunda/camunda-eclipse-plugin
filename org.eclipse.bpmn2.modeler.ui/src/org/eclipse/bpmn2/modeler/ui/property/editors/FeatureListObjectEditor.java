@@ -25,6 +25,7 @@ import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.dialogs.FeatureEditingDialog;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -35,6 +36,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -71,66 +73,99 @@ public class FeatureListObjectEditor extends MultivalueObjectEditor {
 		final Text text = getToolkit().createText(composite, "");
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
-		Button editButton = getToolkit().createButton(composite, "Edit...", SWT.PUSH);
-		editButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-
 		Object eGet = object.eGet(feature);
 		final List<EObject> refs = (List<EObject>) eGet;
 		updateTextField(refs, text);
 
-		SelectionAdapter editListener = new SelectionAdapter() {
+		boolean canEdit = canEdit();
+		boolean canCreateNew = canCreateNew();
 
-			@SuppressWarnings("unchecked")
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				Hashtable<String,Object> choices = getChoiceOfValues(object,feature);
-				List values = new ArrayList();
-				values.addAll(choices.values());
+		if (canEdit || canCreateNew) {
+			Composite buttons =  getToolkit().createComposite(composite);
+			buttons.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+			buttons.setLayout(new FillLayout(SWT.HORIZONTAL));
 
-				FeatureEditorDialog featureEditorDialog = new FeatureEditorDialog(parent.getShell(),
-						AdapterUtil.getLabelProvider(), object, feature, "Select elements", values) {
-
-					@Override
-					protected Control createDialogArea(Composite parent) {
-						if (parent.getLayoutData() instanceof GridData) {
-							GridData data = (GridData)parent.getLayoutData();
-							data.widthHint = Display.getCurrent().getBounds().width / 8;
-						}
-						Composite contents = (Composite)super.createDialogArea(parent);
-						return contents;
-					}
-
-				};
-
-				if (featureEditorDialog.open() == Window.OK) {
-					updateEObject(refs, (EList<EObject>) featureEditorDialog.getResult());
-					updateTextField(refs, text);
-				}
+			if (canCreateNew) {
+				// TODO: this isn't working yet.
+//				Button createButton = getToolkit().createButton(buttons, "Add New...", SWT.PUSH);
+//				createButton.addSelectionListener(new SelectionAdapter() {
+//					public void widgetSelected(SelectionEvent e) {
+//						// create a new target object
+//						FeatureEditingDialog dialog = new FeatureEditingDialog(getDiagramEditor(), object, feature, null);							
+//						if ( dialog.open() == Window.OK) {
+//							addEObject(refs, dialog.getNewObject());
+//							updateTextField(refs, text);
+//						}
+//					}
+//				});
 			}
+			if (canEdit) {
+				Button editButton = getToolkit().createButton(buttons, "Select...", SWT.PUSH);
+				editButton.addSelectionListener(new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent e) {
+						Hashtable<String,Object> choices = getChoiceOfValues(object,feature);
+						List values = new ArrayList();
+						values.addAll(choices.values());
 
-			public void updateEObject(final List<EObject> refs, final EList<EObject> result) {
-				TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
-				domain.getCommandStack().execute(new RecordingCommand(domain) {
-					@Override
-					protected void doExecute() {
+						FeatureEditorDialog featureEditorDialog = new FeatureEditorDialog(parent.getShell(),
+								AdapterUtil.getLabelProvider(), object, feature, "Select elements", values) {
 
-						if (result == null) {
-							refs.clear();
-							return;
-						}
-						refs.retainAll(result);
-						for (EObject di : result) {
-							if (!refs.contains(di)) {
-								refs.add(di);
+							@Override
+							protected Control createDialogArea(Composite parent) {
+								if (parent.getLayoutData() instanceof GridData) {
+									GridData data = (GridData)parent.getLayoutData();
+									data.widthHint = Display.getCurrent().getBounds().width / 8;
+								}
+								Composite contents = (Composite)super.createDialogArea(parent);
+								return contents;
 							}
+
+						};
+
+						if (featureEditorDialog.open() == Window.OK) {
+							updateEObject(refs, (EList<EObject>) featureEditorDialog.getResult());
+							updateTextField(refs, text);
 						}
 					}
 				});
 			}
-		};
-		editButton.addSelectionListener(editListener);
-		
+		}
+
 		return text;
+	}
+
+	private void updateEObject(final List<EObject> refs, final EList<EObject> result) {
+		TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
+		domain.getCommandStack().execute(new RecordingCommand(domain) {
+			@Override
+			protected void doExecute() {
+
+				if (result == null) {
+					refs.clear();
+					return;
+				}
+				refs.retainAll(result);
+				for (EObject di : result) {
+					if (!refs.contains(di)) {
+						refs.add(di);
+					}
+				}
+			}
+		});
+	}
+
+	private void addEObject(final List<EObject> refs, final EObject result) {
+		TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
+		domain.getCommandStack().execute(new RecordingCommand(domain) {
+			@Override
+			protected void doExecute() {
+				getDiagramEditor().getModelHandler().set(object, feature, (EObject)result);
+
+				if (!refs.contains(result)) {
+					refs.add(result);
+				}
+			}
+		});
 	}
 
 	private void updateTextField(final List<EObject> refs, Text text) {

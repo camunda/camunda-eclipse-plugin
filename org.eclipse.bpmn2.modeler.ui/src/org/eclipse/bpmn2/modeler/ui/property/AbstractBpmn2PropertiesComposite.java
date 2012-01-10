@@ -361,7 +361,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 		GridData d = new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1);
 		d.horizontalIndent = 4;
 		d.verticalIndent = 4;
-		d.heightHint = 4 * getDescriptionFont().getFontData()[0].getHeight();
+		d.heightHint = (int)(5.5 * getDescriptionFont().getFontData()[0].getHeight());
 		d.widthHint = 100;
 		styledText.setLayoutData(d);
 

@@ -314,7 +314,8 @@ public class ModelUtil {
 		}
 		feature = obj.eClass().getEStructuralFeature("id");
 		if (feature!=null) {
-			objName = (String)obj.eGet(feature);
+			if (obj.eGet(feature)!=null)
+				objName = (String)obj.eGet(feature);
 		}
 		return objName;
 	}

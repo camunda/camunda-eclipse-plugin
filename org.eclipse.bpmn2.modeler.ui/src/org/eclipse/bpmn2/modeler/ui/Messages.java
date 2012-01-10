@@ -73,6 +73,9 @@ public class Messages extends NLS {
 	public static String Bpmn2PreferencePage_HomePage_Description;
 	public static String Bpmn2PreferencePage_EditorPage_Description;
 
+	public static String UI_ScriptTask_long_description;
+	public static String UI_CallActivity_long_description;
+	
 	public static String WSILPreferencePage_WSIL_1;
 	public static String WSILPreferencePage_WSIL_2;
 	public static String WSILPreferencePage_WSIL_Description;

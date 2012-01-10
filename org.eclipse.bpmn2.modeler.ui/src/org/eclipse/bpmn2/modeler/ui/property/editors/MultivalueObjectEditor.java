@@ -24,7 +24,10 @@ import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
+import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
+import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -113,5 +116,44 @@ public abstract class MultivalueObjectEditor extends ObjectEditor {
 			}
 		}
 		return choices;
+	}
+	
+	protected boolean canEdit() {
+		if (!(feature.getEType() instanceof EClass))
+			return false;
+		
+		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+		if (adapter!=null) {
+			Object o = adapter.getProperty(feature,Bpmn2ExtendedPropertiesAdapter.UI_CAN_EDIT);
+			if (o instanceof Boolean)
+				return (Boolean)o;
+		}
+		return true;
+	}
+	
+	protected boolean canCreateNew() {
+		if (!(feature.getEType() instanceof EClass))
+			return false;
+
+		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+		if (adapter!=null) {
+			Object o = adapter.getProperty(feature,Bpmn2ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW);
+			if (o instanceof Boolean)
+				return (Boolean)o;
+		}
+		return true;
+	}
+	
+	protected boolean canSetNull() {
+		if (!(feature.getEType() instanceof EClass))
+			return false;
+
+		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+		if (adapter!=null) {
+			Object o = adapter.getProperty(feature,Bpmn2ExtendedPropertiesAdapter.UI_CAN_SET_NULL);
+			if (o instanceof Boolean)
+				return (Boolean)o;
+		}
+		return true;
 	}
 }

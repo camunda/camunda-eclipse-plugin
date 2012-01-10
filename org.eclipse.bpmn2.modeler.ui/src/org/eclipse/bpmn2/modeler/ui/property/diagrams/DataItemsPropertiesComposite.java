@@ -53,10 +53,12 @@ public class DataItemsPropertiesComposite extends DefaultPropertiesComposite {
 		if (propertiesProvider==null) {
 			propertiesProvider = new AbstractPropertiesProvider(object) {
 				String[] properties = new String[] {
-						"rootElements.ItemDefinition",
 						"rootElements.DataStore",
 						"rootElements.Message",
-						"rootElements.Error"
+						"rootElements.Error",
+						"rootElements.Escalation",
+						"rootElements.Signal",
+						"rootElements.CorrelationProperty"
 				};
 				
 				@Override

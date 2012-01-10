@@ -585,6 +585,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 							((AbstractBpmn2PropertiesComposite)detailComposite).setEObject(bpmn2Editor,o);
 						}
 						detailSection.setExpanded(true);
+						PropertyUtil.recursivelayout(detailSection);
 					}
 					sashForm.layout(true);
 					redrawPage();
