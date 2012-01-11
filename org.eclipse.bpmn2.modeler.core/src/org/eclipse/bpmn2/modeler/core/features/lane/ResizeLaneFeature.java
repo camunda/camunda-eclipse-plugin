@@ -13,8 +13,8 @@
 package org.eclipse.bpmn2.modeler.core.features.lane;
 
 import org.eclipse.bpmn2.Lane;
-import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.features.DefaultResizeBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;

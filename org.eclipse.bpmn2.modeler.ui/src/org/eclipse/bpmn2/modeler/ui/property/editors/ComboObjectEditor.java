@@ -13,36 +13,17 @@
 
 package org.eclipse.bpmn2.modeler.ui.property.editors;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map.Entry;
 
-import org.eclipse.bpmn2.Bpmn2Factory;
-import org.eclipse.bpmn2.GatewayDirection;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
-import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
-import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
-import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.FeatureEditingDialog;
-import org.eclipse.emf.common.notify.Notifier;
-import org.eclipse.emf.common.util.Enumerator;
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
-import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.dialogs.PopupDialog;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -56,17 +37,10 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.forms.FormDialog;
-import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /**
  * @author Bob Brodt

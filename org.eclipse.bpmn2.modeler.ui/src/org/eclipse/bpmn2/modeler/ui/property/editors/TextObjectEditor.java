@@ -53,11 +53,13 @@ public class TextObjectEditor extends ObjectEditor {
 		createLabel(composite,label);
 
 		boolean multiLine = ((style & SWT.MULTI) != 0);
+		if (multiLine)
+			style |= SWT.V_SCROLL;
 
 		final Text text = getToolkit().createText(composite, "", style);
 		GridData data = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
 		if (multiLine) {
-			data.heightHint = 50;
+			data.heightHint = 100;
 		}
 		text.setLayoutData(data);
 

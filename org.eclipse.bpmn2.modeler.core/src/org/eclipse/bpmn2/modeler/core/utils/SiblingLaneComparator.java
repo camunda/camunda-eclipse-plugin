@@ -15,7 +15,6 @@ package org.eclipse.bpmn2.modeler.core.utils;
 import java.util.Comparator;
 
 import org.eclipse.bpmn2.Lane;
-import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
 final class SiblingLaneComparator implements Comparator<Shape> {

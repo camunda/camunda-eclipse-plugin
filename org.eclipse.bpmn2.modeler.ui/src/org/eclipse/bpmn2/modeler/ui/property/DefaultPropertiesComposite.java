@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eclipse.bpmn2.impl.Bpmn2PackageImpl;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -138,7 +139,7 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 	private void createMissingPropertiesLabel(EObject be) {
 		if (propertySection!=null) {
 			String tab = propertySection.tabbedPropertySheetPage.getSelectedTab().getLabel();
-			createLabel(this,"No "+tab+" Properties for this "+ModelUtil.getObjectDisplayName(be));
+			createLabel(this,"No "+tab+" Properties for this "+PropertyUtil.getObjectDisplayName(be));
 		}
 	}
 

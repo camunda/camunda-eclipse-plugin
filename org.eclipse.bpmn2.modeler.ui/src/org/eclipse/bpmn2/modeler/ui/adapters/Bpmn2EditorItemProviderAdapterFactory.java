@@ -16,7 +16,9 @@ package org.eclipse.bpmn2.modeler.ui.adapters;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallActivity;
+import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.ScriptTask;
+import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.ui.Messages;
 import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
@@ -24,6 +26,7 @@ import org.eclipse.bpmn2.util.Bpmn2Switch;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 
 /**
  * This class adds a name-value map to the Bpmn2ItemProviderAdapterFactory.
@@ -47,6 +50,12 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
     protected Bpmn2Switch<Bpmn2ExtendedPropertiesAdapter> modelSwitch = new Bpmn2Switch<Bpmn2ExtendedPropertiesAdapter>() {
 
         @Override
+		public Bpmn2ExtendedPropertiesAdapter defaultCase(EObject object) {
+        	Bpmn2ExtendedPropertiesAdapter adapter = new Bpmn2ExtendedPropertiesAdapter(Bpmn2EditorItemProviderAdapterFactory.this,object);
+        	return adapter;
+		}
+
+		@Override
         public Bpmn2ExtendedPropertiesAdapter caseScriptTask(ScriptTask object) {
         	Bpmn2ExtendedPropertiesAdapter adapter = caseTask(object);
         	adapter.setProperty(Bpmn2ExtendedPropertiesAdapter.LONG_DESCRIPTION, Messages.UI_ScriptTask_long_description); //$NON-NLS-1$
@@ -72,6 +81,38 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 		public Bpmn2ExtendedPropertiesAdapter caseActivity(Activity object) {
         	Bpmn2ExtendedPropertiesAdapter adapter = new Bpmn2ExtendedPropertiesAdapter(Bpmn2EditorItemProviderAdapterFactory.this,object);
         	addActivityProperties(adapter);
+        	return adapter;
+		}
+
+		@Override
+		public Bpmn2ExtendedPropertiesAdapter caseSequenceFlow(SequenceFlow object) {
+        	Bpmn2ExtendedPropertiesAdapter adapter = new Bpmn2ExtendedPropertiesAdapter(Bpmn2EditorItemProviderAdapterFactory.this,object);
+        	return adapter;
+		}
+
+		@Override
+		public Bpmn2ExtendedPropertiesAdapter caseFormalExpression(FormalExpression object) {
+        	Bpmn2ExtendedPropertiesAdapter adapter = new Bpmn2ExtendedPropertiesAdapter(Bpmn2EditorItemProviderAdapterFactory.this,object);
+        	EStructuralFeature body = Bpmn2Package.eINSTANCE.getFormalExpression_Body();
+        	adapter.setFeatureDescriptor(body,
+    			new Bpmn2FeatureDescriptor(object,body) {
+    				@Override
+    				public String getLabel(Object context) {
+						EObject object = this.object;
+    					if (context instanceof EObject)
+    						object = (EObject)context;
+    					if (object.eContainer() instanceof SequenceFlow)
+    						return "Constraint";
+    					return super.getLabel(context);
+    				}
+
+					@Override
+					public boolean isMultiLine(Object context) {
+						// formal expression body is always a multiline text field
+						return true;
+					}
+    			}
+        	);
         	return adapter;
 		}
 

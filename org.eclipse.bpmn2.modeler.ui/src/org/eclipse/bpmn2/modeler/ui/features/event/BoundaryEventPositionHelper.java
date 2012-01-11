@@ -16,7 +16,7 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.features.context.ICreateContext;

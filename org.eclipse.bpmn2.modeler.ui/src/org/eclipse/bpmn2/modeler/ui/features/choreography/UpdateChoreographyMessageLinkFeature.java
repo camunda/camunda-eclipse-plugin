@@ -15,7 +15,7 @@ package org.eclipse.bpmn2.modeler.ui.features.choreography;
 import static org.eclipse.bpmn2.modeler.core.features.choreography.ChoreographyProperties.MESSAGE_VISIBLE;
 
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReason;
 import org.eclipse.graphiti.features.context.IUpdateContext;

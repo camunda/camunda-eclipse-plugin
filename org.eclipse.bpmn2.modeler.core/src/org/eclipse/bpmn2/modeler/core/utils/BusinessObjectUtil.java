@@ -10,20 +10,23 @@
  *
  * @author Ivar Meikas
  ******************************************************************************/
-package org.eclipse.bpmn2.modeler.core.features;
+package org.eclipse.bpmn2.modeler.core.utils;
 
 import java.util.Collection;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.gef.EditPart;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IPeService;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 
 public class BusinessObjectUtil {
 
@@ -102,5 +105,45 @@ public class BusinessObjectUtil {
 		}
 
 		return foundElem;
+	}
+
+	public static PictogramElement getPictogramElementForSelection(ISelection selection) {
+		EditPart editPart = getEditPartForSelection(selection);
+		if (editPart != null && editPart.getModel() instanceof PictogramElement) {
+			return (PictogramElement) editPart.getModel();
+		}
+		return null;
+	}
+
+	public static EObject getBusinessObjectForSelection(ISelection selection) {
+		PictogramElement pe = getPictogramElementForSelection(selection);
+		if (pe!=null)
+			return getFirstElementOfType(pe, EObject.class);
+		return null;
+	}
+
+	public static EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
+		if (pe!=null) {
+			Object be = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(pe);
+			if (be instanceof EObject)
+				return (EObject) be;
+		}
+		return null;
+	}
+
+	public static EditPart getEditPartForSelection(ISelection selection) {
+		if (selection instanceof IStructuredSelection &&
+				((IStructuredSelection) selection).isEmpty()==false) {
+		
+			Object firstElement = ((IStructuredSelection) selection).getFirstElement();
+			EditPart editPart = null;
+			if (firstElement instanceof EditPart) {
+				editPart = (EditPart) firstElement;
+			} else if (firstElement instanceof IAdaptable) {
+				editPart = (EditPart) ((IAdaptable) firstElement).getAdapter(EditPart.class);
+			}
+			return editPart;
+		}
+		return null;
 	}
 }

@@ -37,6 +37,7 @@ public class ItemAwareElementPropertiesComposite extends DefaultPropertiesCompos
 		if (propertiesProvider==null) {
 			propertiesProvider = new AbstractPropertiesProvider(object) {
 				String[] properties = new String[] {
+						"id",
 						"name",
 						"dataState",
 						"itemSubjectRef"

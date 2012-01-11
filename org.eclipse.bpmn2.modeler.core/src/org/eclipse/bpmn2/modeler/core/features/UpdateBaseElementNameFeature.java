@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.core.features;
 import static org.eclipse.bpmn2.modeler.core.utils.FeatureSupport.getChildElementOfType;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReason;

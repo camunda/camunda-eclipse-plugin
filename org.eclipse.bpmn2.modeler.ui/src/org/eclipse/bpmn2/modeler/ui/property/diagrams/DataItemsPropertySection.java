@@ -102,7 +102,7 @@ public class DataItemsPropertySection extends AbstractBpmn2PropertySection {
 				if (parent==null)
 					parent = getAttributesParent();
 				
-				String displayName = getDisplayName(object, reference);
+				String displayName = getLabel(object, reference);
 				final ItemDefinition def = (ItemDefinition)object;
 				
 				if (def.getItemKind().equals(ItemKind.INFORMATION)) {

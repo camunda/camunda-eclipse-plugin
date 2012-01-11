@@ -15,25 +15,19 @@ package org.eclipse.bpmn2.modeler.ui.property.editors;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
-import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 
 /**
  * Base class for Object Editors whose feature is a multi-valued item; either a one-of-many
@@ -72,16 +66,8 @@ public abstract class MultivalueObjectEditor extends ObjectEditor {
 		List<String> names = null;
 		List<Object> values = null;
 		
-		IItemPropertyDescriptor propertyDescriptor = AbstractBpmn2PropertiesComposite.getPropertyDescriptor(object, feature);
-		
-		if (propertyDescriptor!=null) {
-			try {
-				values = (List) propertyDescriptor.getChoiceOfValues(object);
-			}
-			catch(Exception e) {
-				// ignore NPE from eResolveProxy() if unable to resolve
-			}
-		}
+		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+		values = (List)adapter.getFeatureDescriptor(feature).getChoiceOfValues(object);
 		if (values==null) {
 			try {
 				ModelHandler modelHandler = ModelHandlerLocator.getModelHandler(getDiagram().eResource());
@@ -89,7 +75,7 @@ public abstract class MultivalueObjectEditor extends ObjectEditor {
 				names = new ArrayList<String>();
 				for (Object o : values) {
 					if (o instanceof EObject)
-						names.add(ModelUtil.getDisplayName((EObject)o));
+						names.add(PropertyUtil.getDisplayName((EObject)o));
 					else
 						names.add(o.toString());
 				}
@@ -109,7 +95,7 @@ public abstract class MultivalueObjectEditor extends ObjectEditor {
 					values.remove(i--);
 				else {
 					if (v instanceof EObject)
-						choices.put(ModelUtil.getDisplayName((EObject)v), v);
+						choices.put(PropertyUtil.getDisplayName((EObject)v), v);
 					else
 						choices.put(v.toString(), v);
 				}

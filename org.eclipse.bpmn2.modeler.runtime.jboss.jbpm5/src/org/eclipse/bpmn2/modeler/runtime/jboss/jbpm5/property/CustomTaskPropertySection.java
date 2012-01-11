@@ -26,8 +26,8 @@ import java.util.List;
 
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
@@ -53,8 +53,8 @@ public class CustomTaskPropertySection extends AbstractBpmn2PropertySection impl
 		// only show this property section if the selected Task is a "custom task"
 		// that is, it has a "taskName" extension attribute
 		BPMN2Editor editor = (BPMN2Editor)part;
-		PictogramElement pe = PropertyUtil.getPictogramElementForSelection(selection);
-		EObject object = PropertyUtil.getBusinessObjectForSelection(selection);
+		PictogramElement pe = BusinessObjectUtil.getPictogramElementForSelection(selection);
+		EObject object = BusinessObjectUtil.getBusinessObjectForSelection(selection);
 		ModelEnablementDescriptor modelEnablement = editor.getTargetRuntime().getModelEnablements(object);
 		
 		if (object instanceof Task) {

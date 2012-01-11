@@ -15,7 +15,7 @@ package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.SequenceFlow;
-import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.property.connectors.SequenceFlowPropertySection;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -30,7 +30,7 @@ public class JbpmSequenceFlowPropertySection extends SequenceFlowPropertySection
 
 	@Override
 	public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
-		EObject be = PropertyUtil.getBusinessObjectForSelection(selection);
+		EObject be = BusinessObjectUtil.getBusinessObjectForSelection(selection);
 		if (be instanceof SequenceFlow) {
 			if (((SequenceFlow) be).getSourceRef() instanceof Gateway)
 				return true;

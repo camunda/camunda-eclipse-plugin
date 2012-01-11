@@ -18,10 +18,10 @@ import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
-import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.diagram.BPMNFeatureProvider;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeature;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -38,12 +38,12 @@ public class PropertyLabelProvider extends LabelProvider {
 
 	@Override
 	public Image getImage(Object element) {
-		EObject be = PropertyUtil.getBusinessObjectForSelection((ISelection)element);
+		EObject be = BusinessObjectUtil.getBusinessObjectForSelection((ISelection)element);
         BPMN2Editor editor = BPMN2Editor.getEditor( be );
         
         if (editor!=null) {
 		    BPMNFeatureProvider fp = (BPMNFeatureProvider)editor.getDiagramTypeProvider().getFeatureProvider();
-			PictogramElement pe = PropertyUtil.getPictogramElementForSelection((ISelection)element);
+			PictogramElement pe = BusinessObjectUtil.getPictogramElementForSelection((ISelection)element);
 		    IFeature cf = fp.getCreateFeatureForPictogramElement(pe);
 			if (cf instanceof AbstractBpmn2CreateFeature) {
 				return GraphitiUi.getImageService().getImageForId(
@@ -59,7 +59,7 @@ public class PropertyLabelProvider extends LabelProvider {
 
 	@Override
 	public String getText(Object element) {
-		EObject be = PropertyUtil.getBusinessObjectForSelection((ISelection)element);
+		EObject be = BusinessObjectUtil.getBusinessObjectForSelection((ISelection)element);
 		if (be!=null) {
 			if (be instanceof BPMNDiagram) {
 				BaseElement bpmnElement = ((BPMNDiagram)be).getPlane().getBpmnElement();
@@ -67,7 +67,7 @@ public class PropertyLabelProvider extends LabelProvider {
 					be = bpmnElement;
 				}
 			}
-			return ModelUtil.getDisplayName(be);
+			return PropertyUtil.getDisplayName(be);
 		}
 		return super.getText(element);
 	}

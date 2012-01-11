@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.core.features;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.di.BPMNEdge;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;

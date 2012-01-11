@@ -280,68 +280,6 @@ public class ModelUtil {
 		EStructuralFeature feature = obj.eClass().getEStructuralFeature("name");
 		return feature!=null;
 	}
-
-	public static String getObjectDisplayName(EObject obj) {
-		String objName = null;
-		if (obj instanceof BPMNDiagram) {
-			Bpmn2DiagramType type = getDiagramType((BPMNDiagram)obj); 
-			if (type == Bpmn2DiagramType.CHOREOGRAPHY) {
-				objName = "Choreography Diagram";
-			}
-			else if (type == Bpmn2DiagramType.COLLABORATION) {
-				objName = "Collaboration Diagram";
-			}
-			else if (type == Bpmn2DiagramType.PROCESS) {
-				objName = "Process Diagram";
-			}
-		}
-		if (objName==null){
-			objName = toDisplayName( obj.eClass().getName() );
-		}
-		return objName;
-	}
-
-	public static String getDisplayName(EObject obj) {
-		String objName = getObjectDisplayName(obj);
-		EStructuralFeature feature = obj.eClass().getEStructuralFeature("name");
-		if (feature!=null) {
-			String name = (String)obj.eGet(feature);
-			if (name==null || name.isEmpty())
-				name = "Unnamed " + objName;
-			else
-				name = objName + " \"" + name + "\"";
-			return name;
-		}
-		feature = obj.eClass().getEStructuralFeature("id");
-		if (feature!=null) {
-			if (obj.eGet(feature)!=null)
-				objName = (String)obj.eGet(feature);
-		}
-		return objName;
-	}
-	
-	public static String getDisplayName(EObject obj, EAttribute attr) {
-		if (attr!=null) {
-			ItemProviderAdapter itemProviderAdapter = (ItemProviderAdapter) new Bpmn2ItemProviderAdapterFactory()
-					.adapt(obj, ItemProviderAdapter.class);
-			if (itemProviderAdapter!=null) {
-				IItemPropertyDescriptor propertyDescriptor = itemProviderAdapter.getPropertyDescriptor(obj,attr);
-				itemProviderAdapter.dispose();
-				if (propertyDescriptor!=null)
-					return propertyDescriptor.getDisplayName(attr);
-			}
-			
-			// There are no property descriptors available for this EObject -
-			// this is probably because the "edit" plugin was not generated for
-			// the EMF model, or is not available.
-			// Use the class name to synthesize a display name
-			obj = attr;
-		}
-		
-		String className = obj.eClass().getName();
-		className = className.replaceAll("Impl$", "");
-		return toDisplayName(className);
-	}
 	
 	public static String toDisplayName(String anyName) {
 		String displayName = "";

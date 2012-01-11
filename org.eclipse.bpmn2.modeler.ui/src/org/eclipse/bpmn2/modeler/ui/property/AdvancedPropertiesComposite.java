@@ -24,10 +24,10 @@ import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablement;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
@@ -249,7 +249,7 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 
 			detailsPropertiesComposite.setEObject(propertySection.editor, obj);
 
-			String name = ModelUtil.getObjectDisplayName(obj);
+			String name = PropertyUtil.getObjectDisplayName(obj);
 			detailsSection.setText(name+" Details");
 			detailsSection.setVisible(true);
 

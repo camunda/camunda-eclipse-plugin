@@ -17,9 +17,9 @@ import org.eclipse.bpmn2.Expression;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.data.ExpressionPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -31,7 +31,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-public class SequenceFlowPropertiesComposite extends DefaultPropertiesComposite {
+public class SequenceFlowPropertiesComposite extends ExpressionPropertiesComposite {
 
 	private Button addRemoveConditionButton;
 	private Button setDefaultFlowCheckbox;
@@ -112,7 +112,7 @@ public class SequenceFlowPropertiesComposite extends DefaultPropertiesComposite 
 					String objectName = flowNode.getName();
 					if (objectName!=null && objectName.isEmpty())
 						objectName = null;
-					String typeName = ModelUtil.getDisplayName(flowNode,null);
+					String typeName = PropertyUtil.getDisplayName(flowNode,null);
 					setDefaultFlowCheckbox.setVisible(true);
 					setDefaultFlowCheckbox.setSelection( getDefault(sequenceFlow) == sequenceFlow );
 					setDefaultFlowCheckbox.setText("Default Flow for "+ typeName +

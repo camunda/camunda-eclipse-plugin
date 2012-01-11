@@ -14,7 +14,7 @@ package org.eclipse.bpmn2.modeler.ui.property.connectors;
 
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.ManualTask;
-import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;

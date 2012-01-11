@@ -19,9 +19,9 @@ import static org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.createEventShape
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
-import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;

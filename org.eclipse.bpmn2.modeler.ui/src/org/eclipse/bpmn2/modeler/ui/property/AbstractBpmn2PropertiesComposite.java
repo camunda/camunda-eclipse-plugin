@@ -24,20 +24,18 @@ import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
-import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
+import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.BooleanObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ComboObjectEditor;
-import org.eclipse.bpmn2.modeler.ui.property.editors.IntObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.FeatureListObjectEditor;
+import org.eclipse.bpmn2.modeler.ui.property.editors.IntObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.command.Command;
-import org.eclipse.emf.common.notify.AdapterFactory;
-import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -48,14 +46,11 @@ import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
-import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.transaction.NotificationFilter;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.ResourceSetChangeEvent;
 import org.eclipse.emf.transaction.ResourceSetListener;
 import org.eclipse.emf.transaction.RollbackException;
-import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
@@ -236,7 +231,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 				attributesSection = createSection(objectStack.getAttributesParent(), "Attributes");
 			else
 				attributesSection = createSubSection(objectStack.getAttributesParent(),
-						ModelUtil.getObjectDisplayName(objectStack.peek()) + " Attributes");
+						PropertyUtil.getObjectDisplayName(objectStack.peek()) + " Attributes");
 			
 			attributesSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 			attributesComposite = toolkit.createComposite(attributesSection);
@@ -441,9 +436,8 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 			if (parent==null)
 				parent = getAttributesParent();
 			
-			String displayName = label;
-			if (displayName==null)
-				displayName = getDisplayName(object, attribute);
+			if (label==null)
+				label = getLabel(object, attribute);
 			
 			Collection choiceOfValues = getChoiceOfValues(object, attribute);
 			
@@ -453,18 +447,18 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 				if (getIsMultiLine(object,attribute))
 					style |= SWT.MULTI;
 				ObjectEditor editor = new TextObjectEditor(this,object,attribute);
-				editor.createControl(parent,displayName,style);
+				editor.createControl(parent,label,style);
 			} else if (boolean.class.equals(eTypeClass)) {
 				ObjectEditor editor = new BooleanObjectEditor(this,object,attribute);
-				editor.createControl(parent,displayName);
+				editor.createControl(parent,label);
 			} else if (int.class.equals(eTypeClass) ||
 					Integer.class.equals(eTypeClass) ||
 					BigInteger.class.equals(eTypeClass) ) {
 				ObjectEditor editor = new IntObjectEditor(this,object,attribute);
-				editor.createControl(parent,displayName);
+				editor.createControl(parent,label);
 			} else if (choiceOfValues != null) {
 				ObjectEditor editor = new ComboObjectEditor(this,object,attribute);
-				editor.createControl(parent,displayName);
+				editor.createControl(parent,label);
 			} else if ("anyAttribute".equals(attribute.getName()) ||
 					object.eGet(attribute) instanceof FeatureMap) {
 				List<Entry> basicList = ((BasicFeatureMap) object.eGet(attribute)).basicList();
@@ -504,7 +498,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 			if (parent==null)
 				parent = getAttributesParent();
 			
-			String displayName = getDisplayName(object, reference);
+			String displayName = getLabel(object, reference);
 	
 			AbstractBpmn2PropertiesComposite composite = PropertiesCompositeFactory.createComposite(
 					reference.getEReferenceType().getInstanceClass(), propertySection, false);
@@ -571,50 +565,19 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 		}
 	}
 	
-	// TODO: create an adapter for this stuff in the AdapterRegistry
-	protected String getDisplayName(EObject object, EStructuralFeature feature) {
-		IItemPropertyDescriptor propertyDescriptor = getPropertyDescriptor(object, feature);
-		
-		String displayName;
-
-		if (propertyDescriptor!=null) {
-			displayName = propertyDescriptor.getDisplayName(object);
-		}
-		else {
-			displayName = ModelUtil.toDisplayName(feature.getName());
-		}
-		return displayName;
+	public static String getLabel(EObject object, EStructuralFeature feature) {
+		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+		return adapter.getFeatureDescriptor(feature).getLabel(object);
 	}
 
-	private boolean getIsMultiLine(EObject object, EStructuralFeature feature) {
-		IItemPropertyDescriptor propertyDescriptor = getPropertyDescriptor(object, feature);
-		
-		boolean isMultiLine = false;
-
-		if (propertyDescriptor!=null) {
-			isMultiLine = propertyDescriptor.isMultiLine(object);
-		}
-		return isMultiLine;
+	public static boolean getIsMultiLine(EObject object, EStructuralFeature feature) {
+		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+		return adapter.getFeatureDescriptor(feature).isMultiLine(object);
 	}
 
-	private Collection getChoiceOfValues(EObject object, EStructuralFeature feature) {
-		IItemPropertyDescriptor propertyDescriptor = getPropertyDescriptor(object, feature);
-		
-		if (propertyDescriptor!=null) {
-			return propertyDescriptor.getChoiceOfValues(object);
-		}
-		return null;
-	}
-
-	public static IItemPropertyDescriptor getPropertyDescriptor(EObject object, EStructuralFeature feature) {
-		AdapterFactory factory;
-		ItemProviderAdapter adapter;
-
-		adapter = (ItemProviderAdapter) AdapterUtil.adapt((Notifier)object, ItemProviderAdapter.class);
-		if (adapter!=null)
-			return adapter.getPropertyDescriptor(object, feature);
-		
-		return null;
+	public static Collection getChoiceOfValues(EObject object, EStructuralFeature feature) {
+		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+		return adapter.getFeatureDescriptor(feature).getChoiceOfValues(object);
 	}
 	
 	public class ChildObjectStack {

@@ -14,9 +14,9 @@ package org.eclipse.bpmn2.modeler.core.features.activity;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.SubProcess;
-import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.features.MoveFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractBoundaryEventOperation;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IMoveShapeFeature;

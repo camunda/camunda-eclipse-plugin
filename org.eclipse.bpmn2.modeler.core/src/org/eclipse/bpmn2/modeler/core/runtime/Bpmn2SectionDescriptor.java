@@ -14,7 +14,7 @@ package org.eclipse.bpmn2.modeler.core.runtime;
 
 import java.util.List;
 
-import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -83,7 +83,7 @@ public class Bpmn2SectionDescriptor extends AbstractSectionDescriptor {
 			
 			// if an input description was specified, check if the selected business object is of this description. 
 			if (appliesToClass!=null) {
-				PictogramElement pe = PropertyUtil.getPictogramElementForSelection(selection);
+				PictogramElement pe = BusinessObjectUtil.getPictogramElementForSelection(selection);
 				// this is a special hack to allow selection of connection decorator labels:
 				// the connection decorator does not have a business object linked to it,
 				// but its parent (the connection) does.

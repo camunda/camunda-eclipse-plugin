@@ -55,3 +55,4 @@ Export-Package: org.eclipse.bpmn2.modeler.ui,
  org.eclipse.bpmn2.modeler.ui.util,
  org.eclipse.bpmn2.modeler.ui.views,
  org.eclipse.bpmn2.modeler.ui.wizards
+Import-Package: org.eclipse.emf.workspace

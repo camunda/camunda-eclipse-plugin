@@ -16,7 +16,7 @@ import static org.eclipse.bpmn2.modeler.core.features.choreography.ChoreographyP
 
 import org.eclipse.bpmn2.ChoreographyActivity;
 import org.eclipse.bpmn2.modeler.core.features.DefaultLayoutBPMNShapeFeature;
-import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ILayoutContext;
 import org.eclipse.graphiti.features.impl.AbstractLayoutFeature;

@@ -13,10 +13,10 @@
 
 package org.eclipse.bpmn2.modeler.ui.property.dialogs;
 
-import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -49,11 +49,11 @@ public class FeatureEditingDialog extends Dialog {
 	public int open() {
 		String title = null;
 		if (newObject!=null)
-			title = "Edit " + ModelUtil.getDisplayName(newObject);
+			title = "Edit " + PropertyUtil.getDisplayName(newObject);
 		create();
 		getShell().setSize(500,500);
 		if (title==null)
-			title = "Create New " + ModelUtil.getObjectDisplayName(newObject);
+			title = "Create New " + PropertyUtil.getObjectDisplayName(newObject);
 		getShell().setText(title);
 		return super.open();
 	}

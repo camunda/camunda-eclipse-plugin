@@ -13,7 +13,7 @@
 package org.eclipse.bpmn2.modeler.core.features.participant;
 
 import org.eclipse.bpmn2.ChoreographyActivity;
-import org.eclipse.bpmn2.modeler.core.features.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;

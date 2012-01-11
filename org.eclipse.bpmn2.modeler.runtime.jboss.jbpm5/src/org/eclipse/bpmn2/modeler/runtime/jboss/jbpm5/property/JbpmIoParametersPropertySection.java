@@ -25,7 +25,6 @@ import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ScriptTask;
 import org.eclipse.bpmn2.ThrowEvent;
-import org.eclipse.bpmn2.modeler.core.utils.PropertyUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
@@ -35,6 +34,7 @@ import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite.Abstrac
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite.TableColumn;
 import org.eclipse.bpmn2.modeler.ui.property.tasks.IoParametersPropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.tasks.IoParametersPropertySection;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
