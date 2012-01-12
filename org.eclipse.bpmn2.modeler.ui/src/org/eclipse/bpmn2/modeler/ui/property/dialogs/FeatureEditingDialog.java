@@ -49,11 +49,11 @@ public class FeatureEditingDialog extends Dialog {
 	public int open() {
 		String title = null;
 		if (newObject!=null)
-			title = "Edit " + PropertyUtil.getDisplayName(newObject);
+			title = "Edit " + PropertyUtil.getLabel(newObject);
 		create();
 		getShell().setSize(500,500);
 		if (title==null)
-			title = "Create New " + PropertyUtil.getObjectDisplayName(newObject);
+			title = "Create New " + PropertyUtil.getLabel(newObject);
 		getShell().setText(title);
 		return super.open();
 	}

@@ -37,8 +37,6 @@ import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.Import;
 import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.InteractionNode;
-import org.eclipse.bpmn2.ItemDefinition;
-import org.eclipse.bpmn2.ItemKind;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.MessageFlow;
@@ -49,7 +47,6 @@ import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
-import org.eclipse.bpmn2.di.BPMNLabel;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.di.BpmnDiFactory;
@@ -58,20 +55,17 @@ import org.eclipse.bpmn2.di.ParticipantBandKind;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.core.utils.NamespaceUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
+import org.eclipse.bpmn2.modeler.core.utils.NamespaceUtil;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
-import org.eclipse.bpmn2.util.Bpmn2Switch;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.DcFactory;
 import org.eclipse.dd.dc.Point;
-import org.eclipse.dd.dc.impl.BoundsImpl;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EFactory;
@@ -79,10 +73,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.impl.DynamicEObjectImpl;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
@@ -914,27 +905,44 @@ public class ModelHandler {
 	public void set(EObject object, EStructuralFeature feature, Object value) {
 		// if the feature is a reference, then we need to figure out where the new object
 		// belongs (i.e. what is its containment object?) and stuff it there.
-		if (value instanceof EObject) {
-			Definitions definitions = null;
-			Process process = null;
-			Collaboration collaboration = null;
-			Choreography choreography = null;
-			EObject parent = object;
-			while (parent.eContainer()!=null) {
-				if (parent instanceof Definitions)
-					definitions = (Definitions)parent;
-				if (parent instanceof Process)
-					process = (Process)parent;
-				if (parent instanceof Collaboration)
-					collaboration = (Collaboration)parent;
-				if (parent instanceof Choreography)
-					choreography = (Choreography)parent;
+		boolean featureIsContainer = true;
+		if (feature instanceof EReference) {
+			EReference ref = (EReference)feature;
+			featureIsContainer = ref.isContainer();
+		}
+		
+		if (!featureIsContainer) {
+			if (value instanceof EObject) {
+				DocumentRoot root = null;
+				Definitions definitions = null;
+				Process process = null;
+				Collaboration collaboration = null;
+				Choreography choreography = null;
+				EObject parent = object;
+				while (parent.eContainer()!=null) {
+					if (parent instanceof Definitions)
+						definitions = (Definitions)parent;
+					if (parent instanceof Process)
+						process = (Process)parent;
+					if (parent instanceof Collaboration)
+						collaboration = (Collaboration)parent;
+					if (parent instanceof Choreography)
+						choreography = (Choreography)parent;
+					if (parent instanceof DocumentRoot)
+						root = (DocumentRoot)parent;
+					parent = parent.eContainer();
+					if (parent instanceof DocumentRoot)
+						root = (DocumentRoot)parent;
+				}
 				
-				parent = parent.eContainer();
-			}
-			
-			if (value instanceof RootElement) {
-				definitions.getRootElements().add((RootElement) value);
+				if (value instanceof RootElement) {
+					definitions.getRootElements().add((RootElement) value);
+				}
+				else if (root!=null) {
+					EStructuralFeature rootFeature = root.eClass().getEStructuralFeature(feature.getName());
+					if (rootFeature!=null)
+						root.eSet(rootFeature, value);
+				}
 			}
 		}
 		object.eSet(feature, value);

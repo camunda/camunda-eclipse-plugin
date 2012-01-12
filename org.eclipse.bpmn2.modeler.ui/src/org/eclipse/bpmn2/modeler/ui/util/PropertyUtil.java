@@ -12,12 +12,17 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.util;
 
+import java.util.Collection;
+
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.bpmn2.modeler.ui.Activator;
+import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
+import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
@@ -119,11 +124,97 @@ public class PropertyUtil {
 		parent.layout(true);
 	}
 
+	/*
+	 * Various model object and feature UI property methods
+	 */
+	public static String getLabel(EObject object) {
+		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+		if (adapter!=null)
+			return adapter.getObjectDescriptor().getLabel(object);
+		return ModelUtil.toDisplayName( object.eClass().getName() );
+	}
+	
+	public static String getLabel(EObject object, EStructuralFeature feature) {
+		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+		if (adapter!=null)
+			return adapter.getFeatureDescriptor(feature).getLabel(object);
+		return ModelUtil.toDisplayName( feature.getName() );
+	}
+	
+	public static String getText(EObject object) {
+		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+		if (adapter!=null)
+			return adapter.getObjectDescriptor().getText(object);
+		return getDisplayName(object);
+	}
+	
+	public static String getText(EObject object, EStructuralFeature feature) {
+		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+		if (adapter!=null)
+			return adapter.getFeatureDescriptor(feature).getText(object);
+		return getDisplayName(object, feature);
+	}
 
-	public static String getObjectDisplayName(EObject obj) {
+	public static boolean getIsMultiLine(EObject object, EStructuralFeature feature) {
+		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+		if (adapter!=null)
+			return adapter.getFeatureDescriptor(feature).isMultiLine(object);
+		return false;
+	}
+
+	public static Collection getChoiceOfValues(EObject object, EStructuralFeature feature) {
+		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+		if (adapter!=null)
+			return adapter.getFeatureDescriptor(feature).getChoiceOfValues(object);
+		return null;
+	}
+
+	public static boolean canEdit(EObject object, EStructuralFeature feature) {
+		if (feature.getEType() instanceof EClass) {
+			Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+			if (adapter!=null) {
+				Object result = adapter.getProperty(feature, Bpmn2ExtendedPropertiesAdapter.UI_CAN_EDIT);
+				if (result instanceof Boolean)
+					return ((Boolean)result);
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	public static boolean canCreateNew(EObject object, EStructuralFeature feature) {
+		if (feature.getEType() instanceof EClass) {
+			Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+			if (adapter!=null) {
+				Object result = adapter.getProperty(feature, Bpmn2ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW);
+				if (result instanceof Boolean)
+					return ((Boolean)result);
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	public static boolean canSetNull(EObject object, EStructuralFeature feature) {
+		if (feature.getEType() instanceof EClass) {
+			Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+			if (adapter!=null) {
+				Object result = adapter.getProperty(feature, Bpmn2ExtendedPropertiesAdapter.UI_CAN_SET_NULL);
+				if (result instanceof Boolean)
+					return ((Boolean)result);
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	/*
+	 * Fallbacks in case a property provider does not exist
+	 */
+	private static String getDisplayName(EObject object) {
 		String objName = null;
-		if (obj instanceof BPMNDiagram) {
-			Bpmn2DiagramType type = ModelUtil.getDiagramType((BPMNDiagram)obj); 
+		if (object instanceof BPMNDiagram) {
+			Bpmn2DiagramType type = ModelUtil.getDiagramType((BPMNDiagram)object); 
 			if (type == Bpmn2DiagramType.CHOREOGRAPHY) {
 				objName = "Choreography Diagram";
 			}
@@ -135,50 +226,26 @@ public class PropertyUtil {
 			}
 		}
 		if (objName==null){
-			objName = ModelUtil.toDisplayName( obj.eClass().getName() );
+			objName = ModelUtil.toDisplayName( object.eClass().getName() );
 		}
-		return objName;
-	}
-
-	public static String getDisplayName(EObject obj) {
-		String objName = getObjectDisplayName(obj);
-		EStructuralFeature feature = obj.eClass().getEStructuralFeature("name");
+		EStructuralFeature feature = object.eClass().getEStructuralFeature("name");
 		if (feature!=null) {
-			String name = (String)obj.eGet(feature);
+			String name = (String)object.eGet(feature);
 			if (name==null || name.isEmpty())
 				name = "Unnamed " + objName;
 			else
 				name = objName + " \"" + name + "\"";
 			return name;
 		}
-		feature = obj.eClass().getEStructuralFeature("id");
+		feature = object.eClass().getEStructuralFeature("id");
 		if (feature!=null) {
-			if (obj.eGet(feature)!=null)
-				objName = (String)obj.eGet(feature);
+			if (object.eGet(feature)!=null)
+				objName = (String)object.eGet(feature);
 		}
 		return objName;
 	}
 	
-	public static String getDisplayName(EObject obj, EAttribute attr) {
-		if (attr!=null) {
-			ItemProviderAdapter itemProviderAdapter = (ItemProviderAdapter) new Bpmn2ItemProviderAdapterFactory()
-					.adapt(obj, ItemProviderAdapter.class);
-			if (itemProviderAdapter!=null) {
-				IItemPropertyDescriptor propertyDescriptor = itemProviderAdapter.getPropertyDescriptor(obj,attr);
-				itemProviderAdapter.dispose();
-				if (propertyDescriptor!=null)
-					return propertyDescriptor.getDisplayName(attr);
-			}
-			
-			// There are no property descriptors available for this EObject -
-			// this is probably because the "edit" plugin was not generated for
-			// the EMF model, or is not available.
-			// Use the class name to synthesize a display name
-			obj = attr;
-		}
-		
-		String className = obj.eClass().getName();
-		className = className.replaceAll("Impl$", "");
-		return ModelUtil.toDisplayName(className);
+	private static String getDisplayName(EObject object, EStructuralFeature feature) {
+		return getDisplayName(object) + ": " + ModelUtil.toDisplayName(feature.getName());
 	}
 }

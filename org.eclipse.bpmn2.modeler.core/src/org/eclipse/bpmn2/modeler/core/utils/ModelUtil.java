@@ -33,6 +33,7 @@ import org.eclipse.bpmn2.modeler.core.adapters.INamespaceMap;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceSetImpl;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelDescriptor;
 import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
@@ -41,6 +42,7 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.EcorePackage;
+import org.eclipse.emf.ecore.impl.DynamicEObjectImpl;
 import org.eclipse.emf.ecore.impl.EAttributeImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -86,7 +88,7 @@ public class ModelUtil {
 	 * @param obj - the BPMN2 object
 	 * @return name string
 	 */
-	public static String getObjectName(EObject obj) {
+	private static String getObjectName(EObject obj) {
 		String name;
 		EStructuralFeature feature = ((EObject)obj).eClass().getEStructuralFeature("bpmnElement");
 		if (feature!=null && obj.eGet(feature)!=null) {
@@ -134,16 +136,6 @@ public class ModelUtil {
 	}
 
 	/**
-	 * Generate an ID string for a given BPMN2 object.
-	 * 
-	 * @param obj - the BPMN2 object
-	 * @return the ID string
-	 */
-	public static String generateID(EObject obj) {
-		return generateID(obj,obj.eResource());
-	}
-
-	/**
 	 * Generate an ID string for a given BPMN2 object that will (eventually!) be added to the given Resource.
 	 * 
 	 * CAUTION: IDs for objects that have already been deleted WILL be reused.
@@ -152,7 +144,7 @@ public class ModelUtil {
 	 * @param res - the Resource to which the object will be added
 	 * @return the ID string
 	 */
-	public static String generateID(EObject obj, Resource res) {
+	private static String generateID(EObject obj, Resource res) {
 		return generateID(obj, res, null);
 	}
 
@@ -281,7 +273,13 @@ public class ModelUtil {
 		return feature!=null;
 	}
 	
+	public static String getLabel(EObject object) {
+		return toDisplayName(object.eClass().getName());
+	}
+	
 	public static String toDisplayName(String anyName) {
+		// get rid of the "Impl" java suffix
+		anyName = anyName.replaceAll("Impl$", "");
 		String displayName = "";
 		boolean first = true;
 		char[] chars = anyName.toCharArray();
@@ -505,7 +503,7 @@ public class ModelUtil {
 
 		return ref;
 	}
-		
+
 	@SuppressWarnings("unchecked")
 	public static EStructuralFeature addAnyAttribute(EObject childObject, String namespace, String name, Object value) {
 		EStructuralFeature anyAttribute = childObject.eClass().getEStructuralFeature(Bpmn2Package.BASE_ELEMENT__ANY_ATTRIBUTE);
@@ -525,4 +523,22 @@ public class ModelUtil {
 		return attr;
 	}
 
+	public static Object createStructurRef(String value) {
+		DynamicEObjectImpl object = new DynamicEObjectImpl();
+		object.eSetProxyURI(URI.createURI(value));
+		return object;
+	}
+	
+	public static String getStructureRefValue(Object value) {
+		if (value instanceof DynamicEObjectImpl) {
+			DynamicEObjectImpl de = (DynamicEObjectImpl)value;
+			URI uri = de.eProxyURI();
+			return uri.toString();
+		}
+		return null;
+	}
+	
+	public static boolean isStructureRefValue(Object value) {
+		return value instanceof DynamicEObjectImpl;
+	}
 }

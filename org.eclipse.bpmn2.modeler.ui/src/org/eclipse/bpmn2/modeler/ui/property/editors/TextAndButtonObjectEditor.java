@@ -13,16 +13,12 @@
 
 package org.eclipse.bpmn2.modeler.ui.property.editors;
 
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
-import org.eclipse.bpmn2.modeler.ui.property.dialogs.SchemaSelectionDialog;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.impl.DynamicEObjectImpl;
-import org.eclipse.emf.ecore.xml.type.impl.AnyTypeImpl;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -32,7 +28,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 
 /**
  * @author Bob Brodt
@@ -141,10 +136,8 @@ public abstract class TextAndButtonObjectEditor extends ObjectEditor {
 		if (value==null)
 			value = object.eGet(feature);
 		
-		if (value instanceof DynamicEObjectImpl) {
-			DynamicEObjectImpl de = (DynamicEObjectImpl)value;
-			URI uri = de.eProxyURI();
-			return uri.toString();
+		if (ModelUtil.isStructureRefValue(value)) {
+			return ModelUtil.getStructureRefValue(value);
 		}
 		else if (value instanceof EObject) {
 			EObject object = (EObject)value;

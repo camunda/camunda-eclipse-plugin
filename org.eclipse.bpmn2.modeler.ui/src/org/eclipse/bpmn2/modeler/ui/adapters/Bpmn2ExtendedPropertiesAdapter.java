@@ -58,6 +58,10 @@ public class Bpmn2ExtendedPropertiesAdapter extends AdapterImpl {
 		this.adapterFactory = adapterFactory;
 		setTarget(target);
 	}
+	
+	public void setObjectDescriptor(Bpmn2ObjectDescriptor pd) {
+		setProperty(PROPERTY_DESCRIPTOR,pd);
+	}
 
 	public Bpmn2ObjectDescriptor getObjectDescriptor() {
 		Bpmn2ObjectDescriptor pd = (Bpmn2ObjectDescriptor) getProperty(PROPERTY_DESCRIPTOR);
@@ -84,6 +88,13 @@ public class Bpmn2ExtendedPropertiesAdapter extends AdapterImpl {
 	public Object getProperty(String key) {
 		return objectProperties.get(key);
 	}
+	
+	public boolean getBooleanProperty(String key) {
+		Object result = getProperty(key);
+		if (result instanceof Boolean)
+			return ((Boolean)result);
+		return false;
+	}
 
 	public void setProperty(String key, Object value) {
 		objectProperties.put(key, value);
@@ -91,6 +102,13 @@ public class Bpmn2ExtendedPropertiesAdapter extends AdapterImpl {
 
 	public Object getProperty(EStructuralFeature feature, String key) {
 		return getProperty(feature.getFeatureID(), key);
+	}
+	
+	public boolean getBooleanProperty(EStructuralFeature feature, String key) {
+		Object result = getProperty(feature, key);
+		if (result instanceof Boolean)
+			return ((Boolean)result);
+		return false;
 	}
 
 	public void setProperty(EStructuralFeature feature, String key, Object value) {

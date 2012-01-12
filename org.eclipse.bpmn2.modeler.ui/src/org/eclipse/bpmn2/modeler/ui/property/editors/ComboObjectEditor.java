@@ -19,6 +19,7 @@ import java.util.Map.Entry;
 import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.FeatureEditingDialog;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
@@ -49,6 +50,7 @@ import org.eclipse.swt.widgets.Control;
 public class ComboObjectEditor extends MultivalueObjectEditor {
 
 	protected ComboViewer comboViewer;
+	private boolean ignoreComboSelections;
 	
 	/**
 	 * @param parent
@@ -66,8 +68,8 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 	public Control createControl(Composite composite, String label, int style) {
 		createLabel(composite, label);
 
-		boolean canEdit = canEdit();
-		boolean canCreateNew = canCreateNew();
+		boolean canEdit = PropertyUtil.canEdit(object,feature);
+		boolean canCreateNew = PropertyUtil.canCreateNew(object,feature);
 		
 		comboViewer = createComboViewer(composite,
 				AdapterUtil.getLabelProvider(), style);
@@ -135,15 +137,17 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				ISelection selection = comboViewer.getSelection();
-				if (selection instanceof StructuredSelection) {
-					String firstElement = (String) ((StructuredSelection) selection).getFirstElement();
-					if(firstElement!=null && comboViewer.getData(firstElement)!=null)
-						updateEObject(comboViewer.getData(firstElement));
-					else {
-						if (firstElement!=null && firstElement.isEmpty())
-							firstElement = null;
-						updateEObject(firstElement);
+				if (!ignoreComboSelections) {
+					ISelection selection = comboViewer.getSelection();
+					if (selection instanceof StructuredSelection) {
+						String firstElement = (String) ((StructuredSelection) selection).getFirstElement();
+						if(firstElement!=null && comboViewer.getData(firstElement)!=null)
+							updateEObject(comboViewer.getData(firstElement));
+						else {
+							if (firstElement!=null && firstElement.isEmpty())
+								firstElement = null;
+							updateEObject(firstElement);
+						}
 					}
 				}
 			}
@@ -156,11 +160,13 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 		if (comboViewer!=null) {
 			Object oldValue =  object.eGet(feature);
 	
+			ignoreComboSelections = true;
 			while (comboViewer.getElementAt(0) != null)
 				comboViewer.remove(comboViewer.getElementAt(0));
+			ignoreComboSelections = false;
 			
 			Hashtable<String,Object> choices = getChoiceOfValues(object, feature);
-			if (canSetNull()) {
+			if (PropertyUtil.canSetNull(object,feature)) {
 				// selecting this one will set the target's value to null
 				comboViewer.add("");
 			}
@@ -178,13 +184,15 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 	}
 
 	protected void updateEObject(final Object result) {
-		TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
-		domain.getCommandStack().execute(new RecordingCommand(domain) {
-			@Override
-			protected void doExecute() {
-				object.eSet(feature, result);
-			}
-		});
+		if (result != object.eGet(feature)) {
+			TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
+			domain.getCommandStack().execute(new RecordingCommand(domain) {
+				@Override
+				protected void doExecute() {
+					object.eSet(feature, result);
+				}
+			});
+		}
 	}
 
 	protected void addEObject(final Object result) {

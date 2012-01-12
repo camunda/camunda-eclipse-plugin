@@ -26,6 +26,7 @@ import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.FeatureEditingDialog;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -77,8 +78,8 @@ public class FeatureListObjectEditor extends MultivalueObjectEditor {
 		final List<EObject> refs = (List<EObject>) eGet;
 		updateTextField(refs, text);
 
-		boolean canEdit = canEdit();
-		boolean canCreateNew = canCreateNew();
+		boolean canEdit = PropertyUtil.canEdit(object,feature);
+		boolean canCreateNew = PropertyUtil.canCreateNew(object,feature);
 
 		if (canEdit || canCreateNew) {
 			Composite buttons =  getToolkit().createComposite(composite);

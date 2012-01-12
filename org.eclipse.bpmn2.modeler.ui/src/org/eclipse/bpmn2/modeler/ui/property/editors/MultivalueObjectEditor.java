@@ -67,15 +67,18 @@ public abstract class MultivalueObjectEditor extends ObjectEditor {
 		List<Object> values = null;
 		
 		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
-		values = (List)adapter.getFeatureDescriptor(feature).getChoiceOfValues(object);
+		values = (List)PropertyUtil.getChoiceOfValues(object, feature);
 		if (values==null) {
 			try {
 				ModelHandler modelHandler = ModelHandlerLocator.getModelHandler(getDiagram().eResource());
 				values = (List<Object>) modelHandler.getAll(feature.getEType().getInstanceClass());
 				names = new ArrayList<String>();
 				for (Object o : values) {
+					adapter = null;
 					if (o instanceof EObject)
-						names.add(PropertyUtil.getDisplayName((EObject)o));
+						adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(o, Bpmn2ExtendedPropertiesAdapter.class);
+					if (adapter!=null)
+						names.add(adapter.getFeatureDescriptor(feature).getText((EObject)o));
 					else
 						names.add(o.toString());
 				}
@@ -94,52 +97,16 @@ public abstract class MultivalueObjectEditor extends ObjectEditor {
 				if (v==null)
 					values.remove(i--);
 				else {
+					adapter = null;
 					if (v instanceof EObject)
-						choices.put(PropertyUtil.getDisplayName((EObject)v), v);
+						adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(v, Bpmn2ExtendedPropertiesAdapter.class);
+					if (adapter!=null)
+						choices.put(adapter.getFeatureDescriptor(feature).getText((EObject)v), v);
 					else
 						choices.put(v.toString(), v);
 				}
 			}
 		}
 		return choices;
-	}
-	
-	protected boolean canEdit() {
-		if (!(feature.getEType() instanceof EClass))
-			return false;
-		
-		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
-		if (adapter!=null) {
-			Object o = adapter.getProperty(feature,Bpmn2ExtendedPropertiesAdapter.UI_CAN_EDIT);
-			if (o instanceof Boolean)
-				return (Boolean)o;
-		}
-		return true;
-	}
-	
-	protected boolean canCreateNew() {
-		if (!(feature.getEType() instanceof EClass))
-			return false;
-
-		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
-		if (adapter!=null) {
-			Object o = adapter.getProperty(feature,Bpmn2ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW);
-			if (o instanceof Boolean)
-				return (Boolean)o;
-		}
-		return true;
-	}
-	
-	protected boolean canSetNull() {
-		if (!(feature.getEType() instanceof EClass))
-			return false;
-
-		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
-		if (adapter!=null) {
-			Object o = adapter.getProperty(feature,Bpmn2ExtendedPropertiesAdapter.UI_CAN_SET_NULL);
-			if (o instanceof Boolean)
-				return (Boolean)o;
-		}
-		return true;
 	}
 }

@@ -67,7 +67,7 @@ public class PropertyLabelProvider extends LabelProvider {
 					be = bpmnElement;
 				}
 			}
-			return PropertyUtil.getDisplayName(be);
+			return PropertyUtil.getText(be);
 		}
 		return super.getText(element);
 	}

@@ -25,8 +25,6 @@ import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
-import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
-import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.BooleanObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ComboObjectEditor;
@@ -231,7 +229,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 				attributesSection = createSection(objectStack.getAttributesParent(), "Attributes");
 			else
 				attributesSection = createSubSection(objectStack.getAttributesParent(),
-						PropertyUtil.getObjectDisplayName(objectStack.peek()) + " Attributes");
+						PropertyUtil.getText(objectStack.peek()) + " Attributes");
 			
 			attributesSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 			attributesComposite = toolkit.createComposite(attributesSection);
@@ -437,14 +435,14 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 				parent = getAttributesParent();
 			
 			if (label==null)
-				label = getLabel(object, attribute);
+				label = PropertyUtil.getLabel(object, attribute);
 			
-			Collection choiceOfValues = getChoiceOfValues(object, attribute);
+			Collection choiceOfValues = PropertyUtil.getChoiceOfValues(object, attribute);
 			
 			Class eTypeClass = attribute.getEType().getInstanceClass();
 			if (String.class.equals(eTypeClass)) {
 				int style = SWT.NONE;
-				if (getIsMultiLine(object,attribute))
+				if (PropertyUtil.getIsMultiLine(object,attribute))
 					style |= SWT.MULTI;
 				ObjectEditor editor = new TextObjectEditor(this,object,attribute);
 				editor.createControl(parent,label,style);
@@ -498,7 +496,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 			if (parent==null)
 				parent = getAttributesParent();
 			
-			String displayName = getLabel(object, reference);
+			String displayName = PropertyUtil.getLabel(object, reference);
 	
 			AbstractBpmn2PropertiesComposite composite = PropertiesCompositeFactory.createComposite(
 					reference.getEReferenceType().getInstanceClass(), propertySection, false);
@@ -563,21 +561,6 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 			tableComposite.setListItemClass(listItemClass);
 			tableComposite.bindList(object, feature);
 		}
-	}
-	
-	public static String getLabel(EObject object, EStructuralFeature feature) {
-		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
-		return adapter.getFeatureDescriptor(feature).getLabel(object);
-	}
-
-	public static boolean getIsMultiLine(EObject object, EStructuralFeature feature) {
-		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
-		return adapter.getFeatureDescriptor(feature).isMultiLine(object);
-	}
-
-	public static Collection getChoiceOfValues(EObject object, EStructuralFeature feature) {
-		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
-		return adapter.getFeatureDescriptor(feature).getChoiceOfValues(object);
 	}
 	
 	public class ChildObjectStack {

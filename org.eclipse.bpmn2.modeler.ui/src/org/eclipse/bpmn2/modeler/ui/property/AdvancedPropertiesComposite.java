@@ -249,7 +249,7 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 
 			detailsPropertiesComposite.setEObject(propertySection.editor, obj);
 
-			String name = PropertyUtil.getObjectDisplayName(obj);
+			String name = PropertyUtil.getText(obj);
 			detailsSection.setText(name+" Details");
 			detailsSection.setVisible(true);
 
@@ -305,7 +305,7 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 		
 		modelEnablement = diagramEditor.getTargetRuntime().getModelEnablements(be);
 		hookPropertySheetPageMenu();
-		treeSection.setText(ModelUtil.getObjectName(be));
+		treeSection.setText(PropertyUtil.getText(be));
 
 		detailsSection.setVisible(true);
 	}

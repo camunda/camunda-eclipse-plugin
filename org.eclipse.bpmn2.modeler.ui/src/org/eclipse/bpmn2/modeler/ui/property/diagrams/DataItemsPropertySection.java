@@ -6,6 +6,7 @@ import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.ItemKind;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
@@ -14,13 +15,11 @@ import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.SchemaObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.TextAndButtonObjectEditor;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.impl.DynamicEObjectImpl;
 import org.eclipse.emf.transaction.ResourceSetChangeEvent;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.jface.dialogs.IInputValidator;
@@ -102,7 +101,7 @@ public class DataItemsPropertySection extends AbstractBpmn2PropertySection {
 				if (parent==null)
 					parent = getAttributesParent();
 				
-				String displayName = getLabel(object, reference);
+				String displayName = PropertyUtil.getLabel(object, reference);
 				final ItemDefinition def = (ItemDefinition)object;
 				
 				if (def.getItemKind().equals(ItemKind.INFORMATION)) {
@@ -111,10 +110,7 @@ public class DataItemsPropertySection extends AbstractBpmn2PropertySection {
 						protected boolean updateObject(final Object value) {
 							if (value instanceof String) {
 								// convert to a proxy
-								InternalEObject newValue = new DynamicEObjectImpl();
-						        URI uri = URI.createURI((String)value);
-						        ((DynamicEObjectImpl)newValue).eSetProxyURI(uri);
-						        return super.updateObject(newValue);
+						        return super.updateObject(ModelUtil.createStructurRef((String)value));
 							}
 							return false;
 						}
@@ -142,10 +138,7 @@ public class DataItemsPropertySection extends AbstractBpmn2PropertySection {
 									getTextValue(def.getStructureRef()),
 									validator);
 							if (dialog.open()==Window.OK){
-								InternalEObject value = new DynamicEObjectImpl();
-						        URI uri = URI.createURI(dialog.getValue());
-						        ((DynamicEObjectImpl)value).eSetProxyURI(uri);
-								updateObject(value);
+								updateObject(ModelUtil.createStructurRef(dialog.getValue()));
 							}
 						}
 					};
