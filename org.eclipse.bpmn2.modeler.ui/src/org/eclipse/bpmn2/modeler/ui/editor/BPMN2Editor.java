@@ -57,21 +57,16 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.graphiti.ui.internal.editor.GFPaletteRoot;
-import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.ISelectionListener;
-import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchPartSite;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
@@ -397,29 +392,6 @@ public class BPMN2Editor extends DiagramEditor {
 	
 	public BasicDiagnostic getDiagnostics() {
 		return getEditingDomainListener().getDiagnostics();
-	}
-	
-	public void showErrorMessage(String msg) {
-		IWorkbench wb = PlatformUI.getWorkbench();
-		IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
-		IWorkbenchPage page = win.getActivePage();
-		IWorkbenchPart part = page.getActivePart();
-		if (part==null)
-			return;
-		IWorkbenchPartSite site = part.getSite();
-		IViewSite vSite = ( IViewSite ) site;
-		IActionBars actionBars =  vSite.getActionBars();
-
-		if( actionBars == null )
-			return;
-
-		IStatusLineManager statusLineManager = actionBars.getStatusLineManager();
-		if( statusLineManager == null )
-			return;
-		
-		statusLineManager.setErrorMessage(msg);
-		statusLineManager.markDirty();
-		statusLineManager.update(true);
 	}
 	
 	@Override

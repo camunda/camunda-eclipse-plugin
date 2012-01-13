@@ -13,10 +13,14 @@
 
 package org.eclipse.bpmn2.modeler.ui.property.editors;
 
+import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
+import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -70,5 +74,23 @@ public abstract class ObjectEditor {
 		Label label = getToolkit().createLabel(parent, name);
 		label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		return label;
+	}
+
+	protected void updateEObject(final Object result) {
+		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+		if (adapter!=null) {
+			adapter.getFeatureDescriptor(feature).setValue(object, result);
+			return;
+		}
+		
+		if (result != object.eGet(feature)) {
+			TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
+			domain.getCommandStack().execute(new RecordingCommand(domain) {
+				@Override
+				protected void doExecute() {
+					object.eSet(feature, result);
+				}
+			});
+		}
 	}
 }

@@ -17,10 +17,12 @@ import java.util.Hashtable;
 import java.util.Map.Entry;
 
 import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
+import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.FeatureEditingDialog;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -176,22 +178,10 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 				Object newValue = entry.getValue(); 
 				if (newValue!=null) {
 					comboViewer.setData(entry.getKey(), newValue);
-					if (newValue==oldValue)
+					if (newValue.equals(oldValue))
 						comboViewer.setSelection(new StructuredSelection(entry.getKey()));
 				}
 			}
-		}
-	}
-
-	protected void updateEObject(final Object result) {
-		if (result != object.eGet(feature)) {
-			TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
-			domain.getCommandStack().execute(new RecordingCommand(domain) {
-				@Override
-				protected void doExecute() {
-					object.eSet(feature, result);
-				}
-			});
 		}
 	}
 

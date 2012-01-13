@@ -97,9 +97,13 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 					eItemClass = (EClass)Bpmn2PackageImpl.eINSTANCE.getEClassifier(names[1]);
 					if (eItemClass==null)
 						eItemClass = (EClass) getDiagramEditor().getTargetRuntime().getModelDescriptor().getEPackage().getEClassifier(names[1]);
+					if (eItemClass!=null) {
+						if (!modelEnablement.isEnabled(eItemClass))
+							continue;
+					}
 				}
 				feature = getFeature(be,a);
-				if (modelEnablement.isEnabled(be.eClass(),feature)) {
+				if (modelEnablement.isEnabled(be.eClass(),feature) || eItemClass!=null) {
 					if (isAttribute(be,feature)) {
 						bindAttribute(getAttributesParent(), be,(EAttribute)feature);
 					}

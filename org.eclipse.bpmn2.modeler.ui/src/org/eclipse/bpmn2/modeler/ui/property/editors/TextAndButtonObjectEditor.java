@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.ui.property.editors;
 
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.util.ErrorUtils;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -101,10 +102,10 @@ public abstract class TextAndButtonObjectEditor extends ObjectEditor {
 				}
 			});
 			if (getDiagramEditor().getDiagnostics()!=null) {
-				getDiagramEditor().showErrorMessage(getDiagramEditor().getDiagnostics().getMessage());
+				ErrorUtils.showErrorMessage(getDiagramEditor().getDiagnostics().getMessage());
 			}
 			else {
-				getDiagramEditor().showErrorMessage(null);
+				ErrorUtils.showErrorMessage(null);
 				updateText(value);
 				return true;
 			}

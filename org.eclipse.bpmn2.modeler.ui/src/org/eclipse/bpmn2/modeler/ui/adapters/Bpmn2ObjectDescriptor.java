@@ -16,11 +16,18 @@ package org.eclipse.bpmn2.modeler.ui.adapters;
 import java.util.Collection;
 
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notifier;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
+import org.eclipse.emf.edit.domain.EditingDomain;
+import org.eclipse.emf.edit.domain.IEditingDomainProvider;
+import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
 
 /**
  * @author Bob Brodt
@@ -31,8 +38,9 @@ public class Bpmn2ObjectDescriptor {
 	protected EObject object;
 	protected String label;
 	protected String text;
+	protected AdapterFactory adapterFactory;
 	
-	public Bpmn2ObjectDescriptor(EObject object) {
+	public Bpmn2ObjectDescriptor(AdapterFactory adapterFactory, EObject object) {
 		this.object = object;
 	}
 	
@@ -79,10 +87,47 @@ public class Bpmn2ObjectDescriptor {
 	}
 
 	protected IItemPropertyDescriptor getPropertyDescriptor(EStructuralFeature feature) {
+		return getPropertyDescriptor(object, feature);
+	}
+
+	protected IItemPropertyDescriptor getPropertyDescriptor(EObject object, EStructuralFeature feature) {
 		ItemProviderAdapter adapter =
 				(ItemProviderAdapter) AdapterUtil.adapt((Notifier)object, ItemProviderAdapter.class);
 		if (adapter!=null)
 			return adapter.getPropertyDescriptor(object, feature);
+		return null;
+	}
+	
+	protected EObject clone(EObject oldObject) {
+		EObject newObject = null;
+		if (oldObject!=null) {
+			EClass eClass = oldObject.eClass();
+			newObject = eClass.getEPackage().getEFactoryInstance().create(eClass);
+			for (EStructuralFeature f : eClass.getEAllAttributes()) {
+				newObject.eSet(f, oldObject.eGet(f));
+			}
+		}
+		return newObject;
+	}
+
+	public TransactionalEditingDomain getEditingDomain(Object object) {
+		EObject eObject = (EObject) object;
+		EditingDomain result = AdapterFactoryEditingDomain.getEditingDomainFor(eObject);
+		if (result == null) {
+			if (adapterFactory instanceof IEditingDomainProvider) {
+				result = ((IEditingDomainProvider) adapterFactory).getEditingDomain();
+			}
+
+			if (result == null && adapterFactory instanceof ComposeableAdapterFactory) {
+				AdapterFactory rootAdapterFactory = ((ComposeableAdapterFactory) adapterFactory)
+						.getRootAdapterFactory();
+				if (rootAdapterFactory instanceof IEditingDomainProvider) {
+					result = ((IEditingDomainProvider) rootAdapterFactory).getEditingDomain();
+				}
+			}
+		}
+		if (result instanceof TransactionalEditingDomain)
+			return (TransactionalEditingDomain)result;
 		return null;
 	}
 }

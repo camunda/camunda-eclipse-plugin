@@ -14,6 +14,7 @@ package org.eclipse.bpmn2.modeler.ui.util;
 
 import java.util.Collection;
 
+import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
@@ -127,11 +128,15 @@ public class PropertyUtil {
 	/*
 	 * Various model object and feature UI property methods
 	 */
-	public static String getLabel(EObject object) {
-		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
-		if (adapter!=null)
-			return adapter.getObjectDescriptor().getLabel(object);
-		return ModelUtil.toDisplayName( object.eClass().getName() );
+	public static String getLabel(Object object) {
+		if (object instanceof EObject) {
+			EObject eObject = (EObject)object;
+			Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(eObject, Bpmn2ExtendedPropertiesAdapter.class);
+			if (adapter!=null)
+				return adapter.getObjectDescriptor().getLabel(eObject);
+			return ModelUtil.toDisplayName( eObject.eClass().getName() );
+		}
+		return object.toString();
 	}
 	
 	public static String getLabel(EObject object, EStructuralFeature feature) {
@@ -141,11 +146,15 @@ public class PropertyUtil {
 		return ModelUtil.toDisplayName( feature.getName() );
 	}
 	
-	public static String getText(EObject object) {
-		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
-		if (adapter!=null)
-			return adapter.getObjectDescriptor().getText(object);
-		return getDisplayName(object);
+	public static String getText(Object object) {
+		if (object instanceof EObject) {
+			EObject eObject = (EObject)object;
+			Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(eObject, Bpmn2ExtendedPropertiesAdapter.class);
+			if (adapter!=null)
+				return adapter.getObjectDescriptor().getText(eObject);
+			return getDisplayName(eObject);
+		}
+		return object.toString();
 	}
 	
 	public static String getText(EObject object, EStructuralFeature feature) {
@@ -208,6 +217,18 @@ public class PropertyUtil {
 		return false;
 	}
 	
+	public static boolean isMultiChoice(EObject object, EStructuralFeature feature) {
+		if (feature.getEType() instanceof EClass) {
+			Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+			if (adapter!=null) {
+				Object result = adapter.getProperty(feature, Bpmn2ExtendedPropertiesAdapter.UI_IS_MULTI_CHOICE);
+				if (result instanceof Boolean)
+					return ((Boolean)result);
+			}
+		}
+		return getChoiceOfValues(object,feature) != null;
+	}
+
 	/*
 	 * Fallbacks in case a property provider does not exist
 	 */
@@ -246,6 +267,9 @@ public class PropertyUtil {
 	}
 	
 	private static String getDisplayName(EObject object, EStructuralFeature feature) {
-		return getDisplayName(object) + ": " + ModelUtil.toDisplayName(feature.getName());
+		Object value = object.eGet(feature);
+		if (value==null)
+			return "";
+		return value.toString();
 	}
 }

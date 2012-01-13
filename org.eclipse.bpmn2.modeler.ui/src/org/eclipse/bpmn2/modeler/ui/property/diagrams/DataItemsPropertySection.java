@@ -11,6 +11,7 @@ import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.SchemaObjectEditor;
@@ -28,7 +29,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
-public class DataItemsPropertySection extends AbstractBpmn2PropertySection {
+public class DataItemsPropertySection extends DefaultPropertySection {
 	
 	static {
 		PropertiesCompositeFactory.register(ItemDefinition.class, ItemDefinitionPropertiesComposite.class);
@@ -101,8 +102,8 @@ public class DataItemsPropertySection extends AbstractBpmn2PropertySection {
 				if (parent==null)
 					parent = getAttributesParent();
 				
-				String displayName = PropertyUtil.getLabel(object, reference);
 				final ItemDefinition def = (ItemDefinition)object;
+				String displayName = PropertyUtil.getLabel(object, reference);
 				
 				if (def.getItemKind().equals(ItemKind.INFORMATION)) {
 					SchemaObjectEditor editor = new SchemaObjectEditor(this,object,reference) {

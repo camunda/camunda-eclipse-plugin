@@ -13,9 +13,16 @@
 
 package org.eclipse.bpmn2.modeler.ui.adapters;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallActivity;
+import org.eclipse.bpmn2.DataState;
+import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ItemDefinition;
@@ -31,6 +38,10 @@ import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.edit.command.SetCommand;
+import org.eclipse.emf.edit.domain.EditingDomain;
+import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
 
 /**
  * This class adds a name-value map to the Bpmn2ItemProviderAdapterFactory.
@@ -51,12 +62,21 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 		return super.adaptNew(object, type);
 	}
 	
-    protected Bpmn2Switch<Bpmn2ExtendedPropertiesAdapter> modelSwitch = new Bpmn2Switch<Bpmn2ExtendedPropertiesAdapter>() {
+    protected Bpmn2Switch<Bpmn2ExtendedPropertiesAdapter> modelSwitch = new Bpmn2ExtendedPropertiesSwitch(this);
+    
+    public class Bpmn2ExtendedPropertiesSwitch extends Bpmn2Switch<Bpmn2ExtendedPropertiesAdapter> {
 
+    	private Bpmn2EditorItemProviderAdapterFactory adapterFactory;
+    	
+    	public Bpmn2ExtendedPropertiesSwitch(Bpmn2EditorItemProviderAdapterFactory adapterFactory) {
+    		super();
+    		this.adapterFactory = adapterFactory;
+    	}
+    	
         @Override
 		public Bpmn2ExtendedPropertiesAdapter defaultCase(EObject object) {
-        	Bpmn2ExtendedPropertiesAdapter adapter = new Bpmn2ExtendedPropertiesAdapter(Bpmn2EditorItemProviderAdapterFactory.this,object);
-        	adapter.setObjectDescriptor(new Bpmn2ObjectDescriptor(object) {
+        	Bpmn2ExtendedPropertiesAdapter adapter = new Bpmn2ExtendedPropertiesAdapter(adapterFactory,object);
+        	adapter.setObjectDescriptor(new Bpmn2ObjectDescriptor(adapterFactory, object) {
 				@Override
 				public String getLabel(Object context) {
 					EObject object = this.object;
@@ -101,7 +121,7 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 
         @Override
         public Bpmn2ExtendedPropertiesAdapter caseCallActivity(CallActivity object) {
-        	Bpmn2ExtendedPropertiesAdapter adapter = new Bpmn2ExtendedPropertiesAdapter(Bpmn2EditorItemProviderAdapterFactory.this,object);
+        	Bpmn2ExtendedPropertiesAdapter adapter = new Bpmn2ExtendedPropertiesAdapter(adapterFactory,object);
         	adapter.setProperty(Bpmn2ExtendedPropertiesAdapter.LONG_DESCRIPTION, Messages.UI_CallActivity_long_description); //$NON-NLS-1$
         	adapter.setProperty(Bpmn2Package.CALL_ACTIVITY__CALLED_ELEMENT_REF, Bpmn2ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW, Boolean.FALSE);
         	return adapter;
@@ -116,23 +136,23 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 
 		@Override
 		public Bpmn2ExtendedPropertiesAdapter caseActivity(Activity object) {
-        	Bpmn2ExtendedPropertiesAdapter adapter = new Bpmn2ExtendedPropertiesAdapter(Bpmn2EditorItemProviderAdapterFactory.this,object);
+        	Bpmn2ExtendedPropertiesAdapter adapter = new Bpmn2ExtendedPropertiesAdapter(adapterFactory,object);
         	addActivityProperties(adapter);
         	return adapter;
 		}
 
 		@Override
 		public Bpmn2ExtendedPropertiesAdapter caseSequenceFlow(SequenceFlow object) {
-        	Bpmn2ExtendedPropertiesAdapter adapter = new Bpmn2ExtendedPropertiesAdapter(Bpmn2EditorItemProviderAdapterFactory.this,object);
+        	Bpmn2ExtendedPropertiesAdapter adapter = new Bpmn2ExtendedPropertiesAdapter(adapterFactory,object);
         	return adapter;
 		}
 
 		@Override
 		public Bpmn2ExtendedPropertiesAdapter caseFormalExpression(FormalExpression object) {
-        	Bpmn2ExtendedPropertiesAdapter adapter = new Bpmn2ExtendedPropertiesAdapter(Bpmn2EditorItemProviderAdapterFactory.this,object);
+        	Bpmn2ExtendedPropertiesAdapter adapter = new Bpmn2ExtendedPropertiesAdapter(adapterFactory,object);
         	EStructuralFeature body = Bpmn2Package.eINSTANCE.getFormalExpression_Body();
         	adapter.setFeatureDescriptor(body,
-    			new Bpmn2FeatureDescriptor(object,body) {
+    			new Bpmn2FeatureDescriptor(adapterFactory,object,body) {
     				@Override
     				public String getLabel(Object context) {
 						EObject object = this.object;
@@ -155,21 +175,17 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 
 		@Override
 		public Bpmn2ExtendedPropertiesAdapter caseItemDefinition(ItemDefinition object) {
-        	Bpmn2ExtendedPropertiesAdapter adapter = new Bpmn2ExtendedPropertiesAdapter(Bpmn2EditorItemProviderAdapterFactory.this,object);
-        	EStructuralFeature ref = Bpmn2Package.eINSTANCE.getItemDefinition_StructureRef();
+        	final Bpmn2ExtendedPropertiesAdapter adapter = new Bpmn2ExtendedPropertiesAdapter(adapterFactory,object);
+        	final EStructuralFeature ref = Bpmn2Package.eINSTANCE.getItemDefinition_StructureRef();
         	adapter.setFeatureDescriptor(ref,
-    			new Bpmn2FeatureDescriptor(object,ref) {
+    			new Bpmn2FeatureDescriptor(adapterFactory,object,ref) {
     				@Override
     				public String getLabel(Object context) {
 						EObject object = this.object;
     					if (context instanceof EObject)
     						object = (EObject)context;
     					if (object instanceof ItemDefinition) {
-        					ItemDefinition itemDefinition = (ItemDefinition) object;
-        					if (itemDefinition.getItemKind().equals(ItemKind.PHYSICAL))
-        						return "Physical Type";
-        					else if (itemDefinition.getItemKind().equals(ItemKind.INFORMATION))
-        						return "Informational Type";
+    						return "Data Type";
     					}
     					return super.getLabel(context);
     				}
@@ -180,21 +196,38 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
     					if (context instanceof EObject)
     						object = (EObject)context;
     					if (object instanceof ItemDefinition) {
-    						return ModelUtil.getStructureRefValue( ((ItemDefinition)object).getStructureRef() );
+    						String type = " (Undefined";
+        					ItemDefinition itemDefinition = (ItemDefinition) object;
+        					if (itemDefinition.getItemKind().equals(ItemKind.PHYSICAL))
+        						type = " (Physical";
+        					else if (itemDefinition.getItemKind().equals(ItemKind.INFORMATION))
+        						type = " (Informational";
+        					if (itemDefinition.isIsCollection())
+        						type += " Collection)";
+        					else
+        						type += ")";
+
+    						return ModelUtil.getStructureRefValue( ((ItemDefinition)object).getStructureRef() ) + type;
     					}
     					return super.getText(context);
 					}
     			}
         	);
+        	adapter.setObjectDescriptor(new Bpmn2ObjectDescriptor(adapterFactory, object) {
+				@Override
+				public String getText(Object context) {
+					return adapter.getFeatureDescriptor(ref).getText(context);
+				}
+        	});
         	return adapter;
 		}
 
 		@Override
 		public Bpmn2ExtendedPropertiesAdapter caseItemAwareElement(ItemAwareElement object) {
-        	Bpmn2ExtendedPropertiesAdapter adapter = new Bpmn2ExtendedPropertiesAdapter(Bpmn2EditorItemProviderAdapterFactory.this,object);
+        	Bpmn2ExtendedPropertiesAdapter adapter = new Bpmn2ExtendedPropertiesAdapter(adapterFactory,object);
         	EStructuralFeature ref = Bpmn2Package.eINSTANCE.getItemAwareElement_ItemSubjectRef();
         	adapter.setFeatureDescriptor(ref,
-    			new Bpmn2FeatureDescriptor(object,ref) {
+    			new Bpmn2FeatureDescriptor(adapterFactory,object,ref) {
     				@Override
     				public String getLabel(Object context) {
 						EObject object = this.object;
@@ -228,8 +261,46 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
     					}
 						return super.getText(context);
 					}
+        		}
+        	);
+        	
+        	ref = Bpmn2Package.eINSTANCE.getItemAwareElement_DataState();
+        	adapter.setFeatureDescriptor(ref,
+    			new Bpmn2FeatureDescriptor(adapterFactory,object,ref) {
+					@Override
+					public void setValue(EObject context, Object value) {
+						final EObject object = context==null ? this.object : context;
+						if (value instanceof String) {
+							// construct a DataState from the given name string
+							DataState ds = Bpmn2Factory.eINSTANCE.createDataState();
+							ds.setName((String)value);
+							value = ds;
+						}
+						if (value instanceof DataState) {
+							final DataState oldValue = (DataState) object.eGet(feature);
+							if (value != oldValue) {
+								// if this DataState belongs to some other ItemAwareElement, make a copy
+								final DataState newValue = (DataState)(((DataState)value).eContainer()!=null ?
+									clone((EObject) value) : value);
+								TransactionalEditingDomain editingDomain = getEditingDomain(object);
+								if (editingDomain == null) {
+									object.eSet(feature, value);
+								} else {
+									editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+										@Override
+										protected void doExecute() {
+											object.eSet(feature, newValue);
+											ModelUtil.setID(newValue);
+										}
+									});
+								}
+							}
+						}
+					}
     			}
         	);
+        	adapter.setProperty(Bpmn2Package.ITEM_AWARE_ELEMENT__DATA_STATE, Bpmn2ExtendedPropertiesAdapter.UI_IS_MULTI_CHOICE, Boolean.FALSE);
+
         	return adapter;
 		}
 

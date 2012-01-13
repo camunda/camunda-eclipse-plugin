@@ -31,6 +31,7 @@ import org.eclipse.bpmn2.modeler.ui.property.editors.ComboObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.FeatureListObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.IntObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
+import org.eclipse.bpmn2.modeler.ui.property.editors.TextAndButtonObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.command.Command;
@@ -50,7 +51,10 @@ import org.eclipse.emf.transaction.ResourceSetChangeEvent;
 import org.eclipse.emf.transaction.ResourceSetListener;
 import org.eclipse.emf.transaction.RollbackException;
 import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
+import org.eclipse.jface.dialogs.IInputValidator;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Font;
@@ -505,10 +509,15 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 			}
 			else {
 				ObjectEditor editor;
-				if (reference.isMany()) {
-					editor = new FeatureListObjectEditor(this,object,reference);
-				} else {
-					editor = new ComboObjectEditor(this,object,reference);
+				if (PropertyUtil.isMultiChoice(object, reference)) {
+					if (reference.isMany()) {
+						editor = new FeatureListObjectEditor(this,object,reference);
+					} else {
+						editor = new ComboObjectEditor(this,object,reference);
+					}
+				}
+				else {
+					editor = new TextObjectEditor(this,object,reference);
 				}
 				editor.createControl(parent,displayName);
 			}
@@ -551,7 +560,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 	
 	protected void bindList(EObject object, EStructuralFeature feature, EClass listItemClass) {
 
-		if (modelEnablement.isEnabled(object.eClass(), feature)) {
+		if (modelEnablement.isEnabled(object.eClass(), feature) || modelEnablement.isEnabled(listItemClass)) {
 
 			AbstractBpmn2TableComposite tableComposite = null;
 			if (propertySection!=null)

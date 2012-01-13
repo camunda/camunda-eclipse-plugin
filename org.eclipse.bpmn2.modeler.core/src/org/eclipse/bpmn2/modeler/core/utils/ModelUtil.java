@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Choreography;
@@ -33,6 +34,8 @@ import org.eclipse.bpmn2.modeler.core.adapters.INamespaceMap;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceSetImpl;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelDescriptor;
 import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -540,5 +543,48 @@ public class ModelUtil {
 	
 	public static boolean isStructureRefValue(Object value) {
 		return value instanceof DynamicEObjectImpl;
+	}
+	
+	public static DocumentRoot getDocumentRoot(EObject object) {
+		EList<EObject> contents = object.eResource().getContents();
+		if (!contents.isEmpty() && contents.get(0) instanceof DocumentRoot) {
+			return (DocumentRoot)contents.get(0);
+		}
+		return null;
+	}
+	
+	public static List<EObject> getAllReachableObjects(EObject object, EStructuralFeature feature) {
+		ArrayList<EObject> list = null;
+		if (object!=null && feature.getEType() instanceof EClass) {
+			Resource resource = object.eResource();
+			if (resource!=null) {
+				EClass eClass = (EClass)feature.getEType();
+				list = new ArrayList<EObject>();
+				TreeIterator<EObject> contents = resource.getAllContents();
+				while (contents.hasNext()) {
+					Object item = contents.next();
+					if (eClass.isInstance(item)) {
+						list.add((EObject)item);
+					}
+				}
+			}
+		}
+		return list;
+	}
+	
+	public static List<EObject> getAllReachableObjects(EObject object, EClass eClass) {
+		ArrayList<EObject> list = null;
+		Resource resource = object.eResource();
+		if (resource!=null) {
+			list = new ArrayList<EObject>();
+			TreeIterator<EObject> contents = resource.getAllContents();
+			while (contents.hasNext()) {
+				Object item = contents.next();
+				if (eClass.isInstance(item)) {
+					list.add((EObject)item);
+				}
+			}
+		}
+		return list;
 	}
 }

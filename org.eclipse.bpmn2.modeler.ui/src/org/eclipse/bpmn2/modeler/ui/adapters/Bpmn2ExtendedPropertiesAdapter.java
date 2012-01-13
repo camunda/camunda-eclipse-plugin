@@ -40,6 +40,7 @@ public class Bpmn2ExtendedPropertiesAdapter extends AdapterImpl {
 	public final static String UI_CAN_EDIT = "ui.can.edit";
 	public final static String UI_CAN_CREATE_NEW = "ui.can.create.new";
 	public final static String UI_CAN_SET_NULL = "ui.can.set.null";
+	public final static String UI_IS_MULTI_CHOICE = "ui.is.multi.choice";
 	public final static String PROPERTY_DESCRIPTOR = "property.descriptor";
 	
 	protected Hashtable<
@@ -66,7 +67,7 @@ public class Bpmn2ExtendedPropertiesAdapter extends AdapterImpl {
 	public Bpmn2ObjectDescriptor getObjectDescriptor() {
 		Bpmn2ObjectDescriptor pd = (Bpmn2ObjectDescriptor) getProperty(PROPERTY_DESCRIPTOR);
 		if (pd==null) {
-			pd = new Bpmn2ObjectDescriptor((EObject)getTarget());
+			pd = new Bpmn2ObjectDescriptor(adapterFactory, (EObject)getTarget());
 			setProperty(PROPERTY_DESCRIPTOR,pd);
 		}
 		return pd;
@@ -75,7 +76,7 @@ public class Bpmn2ExtendedPropertiesAdapter extends AdapterImpl {
 	public Bpmn2FeatureDescriptor getFeatureDescriptor(EStructuralFeature feature) {
 		Bpmn2FeatureDescriptor pd = (Bpmn2FeatureDescriptor) getProperty(feature.getFeatureID(),PROPERTY_DESCRIPTOR);
 		if (pd==null) {
-			pd = new Bpmn2FeatureDescriptor((EObject)getTarget(), feature);
+			pd = new Bpmn2FeatureDescriptor(adapterFactory, (EObject)getTarget(), feature);
 			setProperty(feature.getFeatureID(),PROPERTY_DESCRIPTOR,pd);
 		}
 		return pd;

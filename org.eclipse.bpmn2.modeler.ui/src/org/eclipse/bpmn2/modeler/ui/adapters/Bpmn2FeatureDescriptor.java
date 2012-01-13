@@ -13,12 +13,22 @@
 
 package org.eclipse.bpmn2.modeler.ui.adapters;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notifier;
+import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.edit.command.SetCommand;
+import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
+import org.eclipse.emf.edit.domain.EditingDomain;
+import org.eclipse.emf.edit.domain.IEditingDomainProvider;
+import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 
@@ -32,8 +42,8 @@ public class Bpmn2FeatureDescriptor extends Bpmn2ObjectDescriptor {
 	protected int multiline = 0; // -1 = false, +1 = true, 0 = unset
 	protected Collection choiceOfValues; // for static lists
 	
-	public Bpmn2FeatureDescriptor(EObject object, EStructuralFeature feature) {
-		super(object);
+	public Bpmn2FeatureDescriptor(AdapterFactory adapterFactory, EObject object, EStructuralFeature feature) {
+		super(adapterFactory, object);
 		this.feature = feature;
 	}
 	
@@ -80,16 +90,16 @@ public class Bpmn2FeatureDescriptor extends Bpmn2ObjectDescriptor {
 						text = name;
 				}
 			}
-			if (text==null) {
-				f = o.eClass().getEStructuralFeature("id");
-				if (f!=null) {
-					Object id = o.eGet(f);
-					if (id!=null && !id.toString().isEmpty())
-						text = id.toString();
-				}
-			}
+//			if (text==null) {
+//				f = o.eClass().getEStructuralFeature("id");
+//				if (f!=null) {
+//					Object id = o.eGet(f);
+//					if (id!=null && !id.toString().isEmpty())
+//						text = id.toString();
+//				}
+//			}
 		}
-		return text;
+		return text == null ? "" : text;
 	}
 
 	public void setChoiceOfValues(Collection choiceOfValues) {
@@ -97,6 +107,7 @@ public class Bpmn2FeatureDescriptor extends Bpmn2ObjectDescriptor {
 	}
 	
 	public Collection getChoiceOfValues(Object context) {
+		EObject object = context instanceof EObject ? (EObject)context : this.object;
 		if (choiceOfValues==null) {
 			try {
 				IItemPropertyDescriptor propertyDescriptor = getPropertyDescriptor(feature);
@@ -108,7 +119,9 @@ public class Bpmn2FeatureDescriptor extends Bpmn2ObjectDescriptor {
 				// ignore exceptions if we fail to resolve proxies;
 				// e.g. and instance of a DynamicEObjectImpl with a bogus
 				// URI is used for ItemDefinition.structureRef
+				// fallback is to do our own search
 			}
+			return ModelUtil.getAllReachableObjects(object, feature);
 		}
 		return choiceOfValues;
 	}
@@ -125,4 +138,24 @@ public class Bpmn2FeatureDescriptor extends Bpmn2ObjectDescriptor {
 		}
 		return multiline == 1;
 	}
+	
+	public void setValue(EObject context, Object value) {
+		EObject object = this.object;
+		if (context!=null)
+			object = context;
+		
+		IItemPropertyDescriptor propertyDescriptor = getPropertyDescriptor(object, feature);
+		if (propertyDescriptor != null) {
+			propertyDescriptor.setPropertyValue(object, value);
+			return;
+		}
+
+		EditingDomain editingDomain = getEditingDomain(object);
+		if (editingDomain == null) {
+			object.eSet(feature, value);
+		} else {
+			editingDomain.getCommandStack().execute(SetCommand.create(editingDomain, object, feature, value));
+		}
+	}
+
 }

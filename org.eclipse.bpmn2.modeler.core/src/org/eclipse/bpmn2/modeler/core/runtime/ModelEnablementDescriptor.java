@@ -264,6 +264,8 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 	}
 	
 	public boolean isEnabled(EClass eClass) {
+		if (eClass==null)
+			return false;
 		return isEnabled(eClass.getName());
 	}
 

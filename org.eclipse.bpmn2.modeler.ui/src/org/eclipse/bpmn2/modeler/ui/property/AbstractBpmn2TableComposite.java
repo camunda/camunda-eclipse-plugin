@@ -27,6 +27,7 @@ import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.providers.ColumnTableProvider;
 import org.eclipse.bpmn2.modeler.ui.property.providers.TableCursor;
+import org.eclipse.bpmn2.modeler.ui.util.ErrorUtils;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notification;
@@ -295,14 +296,16 @@ public class AbstractBpmn2TableComposite extends Composite {
 					// TODO: enhance the table to dynamically allow creation of new
 					// columns which will be added to the "anyAttributes"
 					for (EObject instance : list) {
-						Object o = instance.eGet(a1);
-						if (o instanceof BasicFeatureMap) {
-							BasicFeatureMap map = (BasicFeatureMap)o;
-							for (Entry entry : map) {
-								EStructuralFeature f1 = entry.getEStructuralFeature();
-								if (f1 instanceof EAttribute && !anyAttributes.contains(f1)) {
-									columnProvider.add(new TableColumn(object,(EAttribute)f1));
-									anyAttributes.add(f1);
+						if (listItemClass.isInstance(instance)) {
+							Object o = instance.eGet(a1);
+							if (o instanceof BasicFeatureMap) {
+								BasicFeatureMap map = (BasicFeatureMap)o;
+								for (Entry entry : map) {
+									EStructuralFeature f1 = entry.getEStructuralFeature();
+									if (f1 instanceof EAttribute && !anyAttributes.contains(f1)) {
+										columnProvider.add(new TableColumn(object,(EAttribute)f1));
+										anyAttributes.add(f1);
+									}
 								}
 							}
 						}
@@ -881,10 +884,10 @@ public class AbstractBpmn2TableComposite extends Composite {
 				});
 				if (bpmn2Editor.getDiagnostics()!=null) {
 					// revert the change and display error status message.
-					bpmn2Editor.showErrorMessage(bpmn2Editor.getDiagnostics().getMessage());
+					ErrorUtils.showErrorMessage(bpmn2Editor.getDiagnostics().getMessage());
 				}
 				else
-					bpmn2Editor.showErrorMessage(null);
+					ErrorUtils.showErrorMessage(null);
 				tableViewer.refresh();
 			}
 		}

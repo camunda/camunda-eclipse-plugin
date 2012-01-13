@@ -17,6 +17,7 @@ import java.math.BigInteger;
 
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.util.ErrorUtils;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.IValueChangeListener;
 import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
@@ -117,10 +118,10 @@ public class IntObjectEditor extends ObjectEditor {
 				if (getDiagramEditor().getDiagnostics()!=null) {
 					// revert the change and display error status message.
 					text.setText((String) object.eGet(feature));
-					getDiagramEditor().showErrorMessage(getDiagramEditor().getDiagnostics().getMessage());
+					ErrorUtils.showErrorMessage(getDiagramEditor().getDiagnostics().getMessage());
 				}
 				else
-					getDiagramEditor().showErrorMessage(null);
+					ErrorUtils.showErrorMessage(null);
 			}
 		});
 
@@ -133,7 +134,7 @@ public class IntObjectEditor extends ObjectEditor {
 
 			@Override
 			public void focusLost(FocusEvent e) {
-				getDiagramEditor().showErrorMessage(null);
+				ErrorUtils.showErrorMessage(null);
 			}
 		});
 

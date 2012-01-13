@@ -66,7 +66,6 @@ public abstract class MultivalueObjectEditor extends ObjectEditor {
 		List<String> names = null;
 		List<Object> values = null;
 		
-		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
 		values = (List)PropertyUtil.getChoiceOfValues(object, feature);
 		if (values==null) {
 			try {
@@ -74,13 +73,7 @@ public abstract class MultivalueObjectEditor extends ObjectEditor {
 				values = (List<Object>) modelHandler.getAll(feature.getEType().getInstanceClass());
 				names = new ArrayList<String>();
 				for (Object o : values) {
-					adapter = null;
-					if (o instanceof EObject)
-						adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(o, Bpmn2ExtendedPropertiesAdapter.class);
-					if (adapter!=null)
-						names.add(adapter.getFeatureDescriptor(feature).getText((EObject)o));
-					else
-						names.add(o.toString());
+					names.add( PropertyUtil.getText(o) );
 				}
 			} catch (IOException e1) {
 				Activator.showErrorWithLogging(e1);
@@ -88,8 +81,12 @@ public abstract class MultivalueObjectEditor extends ObjectEditor {
 		}
 		
 		if (names!=null) {
-			for (int i=0; i<names.size(); ++i)
-				choices.put(names.get(i), values.get(i));
+			for (int i=0; i<names.size(); ++i) {
+				String text = names.get(i);
+				while (choices.containsKey(text))
+					text += " ";
+				choices.put(text, values.get(i));
+			}
 		}
 		else {
 			for (int i=0; i<values.size(); ++i) {
@@ -97,13 +94,10 @@ public abstract class MultivalueObjectEditor extends ObjectEditor {
 				if (v==null)
 					values.remove(i--);
 				else {
-					adapter = null;
-					if (v instanceof EObject)
-						adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(v, Bpmn2ExtendedPropertiesAdapter.class);
-					if (adapter!=null)
-						choices.put(adapter.getFeatureDescriptor(feature).getText((EObject)v), v);
-					else
-						choices.put(v.toString(), v);
+					String text = PropertyUtil.getText(v);
+					while (choices.containsKey(text))
+						text += " ";
+					choices.put(text, v);
 				}
 			}
 		}
