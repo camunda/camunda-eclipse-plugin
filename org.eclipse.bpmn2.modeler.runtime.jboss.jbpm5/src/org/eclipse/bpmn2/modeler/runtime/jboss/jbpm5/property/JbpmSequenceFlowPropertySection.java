@@ -16,6 +16,7 @@ package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.connectors.SequenceFlowPropertySection;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -37,4 +38,10 @@ public class JbpmSequenceFlowPropertySection extends SequenceFlowPropertySection
 		}
 		return false;
 	}
+
+	@Override
+	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+		return new JbpmSequenceFlowPropertiesComposite(this);
+	}
+	
 }

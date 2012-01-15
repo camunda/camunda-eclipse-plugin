@@ -42,7 +42,6 @@ import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
-import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.ui.provider.PropertyDescriptor.EDataTypeCellEditor;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.ResourceSetChangeEvent;
@@ -64,8 +63,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -76,9 +73,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.dialogs.ListDialog;
 import org.eclipse.ui.forms.events.ExpansionEvent;
@@ -118,6 +113,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 
 	protected EObject listParentObject;
 	protected EClass listItemClass;
+	protected ModelEnablementDescriptor modelEnablement;
 	
 	// widgets
 	SashForm sashForm;
@@ -203,7 +199,9 @@ public class AbstractBpmn2TableComposite extends Composite {
 			if (eclassifier instanceof EClass) {
 				EClass eclass = (EClass)eclassifier;
 				if (eclass.getEAllSuperTypes().contains(listItemClass)) {
-					items.add(eclass);
+					if (!modelEnablement.isEnabled(eclass)) {
+						items.add(eclass);
+					}
 				}
 			}
 		}
@@ -434,6 +432,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 			return;
 		
 		listParentObject = object;
+		modelEnablement = bpmn2Editor.getTargetRuntime().getModelEnablements(object);
 		final TransactionalEditingDomain editingDomain = bpmn2Editor.getEditingDomain();
 		final EList<EObject> list = (EList<EObject>)object.eGet(feature);
 		final EClass listItemClass = getListItemClass(object,feature);
@@ -445,7 +444,6 @@ public class AbstractBpmn2TableComposite extends Composite {
 		// remove disabled columns
 		List<TableColumn> removed = new ArrayList<TableColumn>();
 		for (TableColumn tc : (List<TableColumn>)columnProvider.getColumns()) {
-			ModelEnablementDescriptor modelEnablement = bpmn2Editor.getTargetRuntime().getModelEnablements(tc.object);
 			if (!modelEnablement.isEnabled(listItemClass, tc.feature)) {
 				removed.add(tc);
 			}
