@@ -18,26 +18,26 @@ import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.DataAssociation;
 import org.eclipse.bpmn2.DataInput;
+import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.DataOutput;
-import org.eclipse.bpmn2.Expression;
+import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ThrowEvent;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite.AbstractTableColumnProvider;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite.TableColumn;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.ResourceSetChangeEvent;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -232,9 +232,84 @@ public class IoParametersPropertySection extends AbstractBpmn2PropertySection {
 		
 		private void createWidgets() {
 			
-			if (association==null) {
+			if (association==null && !(be instanceof DataInput || be instanceof DataOutput)) {
 				this.createLabel(this, "The I/O Parameter \""+parameterName+"\" can not have Mappings.");
 				return;
+			} else {
+				EObject container = be.eContainer();
+				if (container instanceof InputOutputSpecification) {
+					EObject containerContainer = container.eContainer();
+					if (containerContainer instanceof Activity) {
+						activity = (Activity)containerContainer;
+						List<? extends DataAssociation> associations = null;
+						if (isInput)
+							associations = activity.getDataInputAssociations();
+						else
+							associations = activity.getDataOutputAssociations();
+
+						if (associations!=null) {
+							for (DataAssociation a : associations) {
+								if (isInput) {
+									if (a.getTargetRef() == be) {
+										association = a;
+										break;
+									}
+									if (a.getSourceRef().isEmpty() || a.getTargetRef() == null) {
+										association = a;
+										break;
+									}
+								}
+								else
+								{
+									for (ItemAwareElement e : a.getSourceRef()) {
+										if (e == be) {
+											association = a;
+											break;
+										}
+										if (a.getSourceRef().isEmpty() || a.getTargetRef() == null) {
+											association = a;
+											break;
+										}
+									}
+									if (association!=null)
+										break;
+								}
+							}
+						}
+						if (association == null) {
+							if (isInput) {
+								@SuppressWarnings("restriction")
+								TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
+								domain.getCommandStack().execute(new RecordingCommand(domain) {
+									@Override
+									protected void doExecute() {
+										DataInputAssociation diAssociation = 
+												Bpmn2Factory.eINSTANCE.createDataInputAssociation();
+										diAssociation.setTargetRef(parameter);
+										activity.getDataInputAssociations().add(diAssociation);
+										ModelUtil.setID(diAssociation);
+										association = diAssociation;
+									}
+								});							
+							}
+							else {
+								@SuppressWarnings("restriction")
+								TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
+								domain.getCommandStack().execute(new RecordingCommand(domain) {
+									@Override
+									protected void doExecute() {
+										DataOutputAssociation doAssociation = 
+												Bpmn2Factory.eINSTANCE.createDataOutputAssociation();
+										doAssociation.getSourceRef().add(parameter);
+										activity.getDataOutputAssociations().add(doAssociation);
+										ModelUtil.setID(doAssociation);
+										association = doAssociation;
+									}
+								});							
+							}
+						}
+					}
+				}
 			}
 
 			if (mapPropertyButton==null) {
@@ -291,12 +366,18 @@ public class IoParametersPropertySection extends AbstractBpmn2PropertySection {
 						public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
 							if (propertiesProvider == null) {
 								propertiesProvider = new AbstractPropertiesProvider(object) {
-									String[] properties = new String[] {
-										"sourceRef"
-									};
-									
 									@Override
 									public String[] getProperties() {
+										String[] properties = null;
+										if (isInput) {
+											properties = new String[] {
+													"sourceRef"
+											};
+										} else {
+											properties = new String[] {
+													"targetRef"
+											};
+										}
 										return properties; 
 									}
 								};
