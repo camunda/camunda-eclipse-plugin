@@ -95,12 +95,12 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 
 			@Override
 			protected int getWidth() {
-				return 100;
+				return GraphicsUtil.TASK_DEFAULT_WIDTH;
 			}
 
 			@Override
 			protected int getHeight() {
-				return 100;
+				return GraphicsUtil.TASK_DEFAULT_HEIGHT;
 			}
 		};
 	}
