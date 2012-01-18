@@ -41,6 +41,7 @@ public class BusinessRuleTaskPropertiesComposite extends DefaultPropertiesCompos
 	 */
 	@Override
 	public void createBindings(EObject be) {
+		bindAttribute(be,"anyAttribute");
 		bindAttribute(be,"implementation");
 	}
 }

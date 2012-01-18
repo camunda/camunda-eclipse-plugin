@@ -43,6 +43,12 @@ public class JbpmSequenceFlowPropertiesComposite extends SequenceFlowPropertiesC
 		super(parent, style);
 	}
 	
+	@Override
+	public void createBindings(EObject be) {
+		bindAttribute(this, be, "priority");
+		super.createBindings(be);
+	}
+	
 	protected void bindAttribute(Composite parent, EObject object, EAttribute attribute, String label) {
 		if ("language".equals(attribute.getName())) {
 			ObjectEditor editor = new ComboObjectEditor(this,be,be.eClass().getEStructuralFeature("language")) {

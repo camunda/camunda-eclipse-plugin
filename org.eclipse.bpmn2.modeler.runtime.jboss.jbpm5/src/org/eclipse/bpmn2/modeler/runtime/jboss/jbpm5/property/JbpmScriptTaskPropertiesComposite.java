@@ -13,32 +13,16 @@
 
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 
-import org.eclipse.bpmn2.ExtensionAttributeValue;
-import org.eclipse.bpmn2.Task;
-import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.OnEntryScriptType;
-import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.OnExitScriptType;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ComboObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
-import org.eclipse.bpmn2.modeler.ui.property.tasks.TaskPropertiesComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.util.FeatureMap;
-import org.eclipse.emf.ecore.util.FeatureMap.Entry;
-import org.eclipse.emf.transaction.RecordingCommand;
-import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.forms.widgets.Section;
 
 /**
  * @author Bob Brodt
@@ -75,5 +59,7 @@ public class JbpmScriptTaskPropertiesComposite extends JbpmTaskPropertiesComposi
 		
 		editor = new TextObjectEditor(this,be,be.eClass().getEStructuralFeature("script"));
 		editor.createControl(getAttributesParent(),"Script",SWT.MULTI);
+		
+		super.createBindings(be);
 	}
 }

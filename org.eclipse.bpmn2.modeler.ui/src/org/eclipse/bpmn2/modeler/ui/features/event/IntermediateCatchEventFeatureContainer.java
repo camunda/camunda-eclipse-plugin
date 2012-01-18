@@ -59,7 +59,6 @@ public class IntermediateCatchEventFeatureContainer extends AbstractEventFeature
 		@Override
 		protected IntermediateCatchEvent createFlowElement(ICreateContext context) {
 			IntermediateCatchEvent event = Bpmn2ModelerFactory.create(IntermediateCatchEvent.class);
-			event.setName("Catch");
 			return event;
 		}
 

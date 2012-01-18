@@ -13,12 +13,15 @@
 
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 
+import org.eclipse.bpmn2.ComplexGateway;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.SequenceFlow;
+import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.connectors.SequenceFlowPropertySection;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
@@ -31,10 +34,28 @@ public class JbpmSequenceFlowPropertySection extends SequenceFlowPropertySection
 
 	@Override
 	public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
-		EObject be = BusinessObjectUtil.getBusinessObjectForSelection(selection);
-		if (be instanceof SequenceFlow) {
-			if (((SequenceFlow) be).getSourceRef() instanceof Gateway)
-				return true;
+		if (super.appliesTo(part, selection)) {
+			EObject be = BusinessObjectUtil.getBusinessObjectForSelection(selection);
+			if (be instanceof SequenceFlow) {
+				// only show this tab if the sequence flow is attached to a Gateway
+				if (((SequenceFlow) be).getSourceRef() instanceof Gateway) {
+					Gateway gateway = (Gateway) ((SequenceFlow) be).getSourceRef();
+					// hide this tab if the "condition expression" on the Sequence Flow
+					// or the (possibly) attached Gateway's "default flow" feature is disabled
+					boolean conditionEnabled = true;
+					boolean defaultEnabled = true;
+					ModelEnablementDescriptor modelEnablement = getModelEnablement(selection);
+					if (!modelEnablement.isEnabled("SequenceFlow", "conditionExpression")) {
+						conditionEnabled = false;
+					}
+					EStructuralFeature defaultFeature = gateway.eClass().getEStructuralFeature("default");
+					if (defaultFeature!=null) {
+						if (!modelEnablement.isEnabled(gateway.eClass(), defaultFeature))
+							defaultEnabled = false;
+					}
+					return conditionEnabled || defaultEnabled;
+				}
+			}
 		}
 		return false;
 	}

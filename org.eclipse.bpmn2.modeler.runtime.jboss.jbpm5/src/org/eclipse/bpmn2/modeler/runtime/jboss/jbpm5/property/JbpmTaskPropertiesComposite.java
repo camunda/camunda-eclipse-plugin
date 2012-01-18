@@ -36,7 +36,7 @@ import org.eclipse.ui.forms.widgets.Section;
  * @author Bob Brodt
  *
  */
-public class JbpmTaskPropertiesComposite extends TaskPropertiesComposite {
+public class JbpmTaskPropertiesComposite extends JbpmActivityPropertiesComposite {
 
 	/**
 	 * @param section
@@ -47,52 +47,5 @@ public class JbpmTaskPropertiesComposite extends TaskPropertiesComposite {
 
 	public JbpmTaskPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
-	}
-
-	@Override
-	public void createBindings(EObject be) {
-		super.createBindings(be);
-		Composite composite = getAttributesParent();
-		
-		Task task = (Task)be;
-		
-		// TODO: handle extension values in a generic way in AbstractBpmn2propertiesComposite
-		for (ExtensionAttributeValue eav : task.getExtensionValues()) {
-			FeatureMap fm = eav.getValue();
-			for (Entry entry : fm) {
-				EStructuralFeature feature = entry.getEStructuralFeature();
-				if ("onEntryScript".equals(feature.getName())) {
-					Section section = this.createSection(composite, "On Entry Script");
-					section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
-					Composite sectionComposite = toolkit.createComposite(section);
-					section.setClient(sectionComposite);
-					sectionComposite.setLayout(new GridLayout(3,false));
-					OnEntryScriptType est = (OnEntryScriptType)entry.getValue();
-
-					ObjectEditor editor;
-					editor = new TextObjectEditor(this,est,est.eClass().getEStructuralFeature("scriptFormat"));
-					editor.createControl(sectionComposite,"Script Language",SWT.NONE);
-
-					editor = new TextObjectEditor(this,est,est.eClass().getEStructuralFeature("script"));
-					editor.createControl(sectionComposite,"Script",SWT.MULTI);
-				}
-				else if ("onExitScript".equals(feature.getName())) {
-					Section section = this.createSection(composite, "On Exit Script");
-					section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
-					Composite sectionComposite = toolkit.createComposite(section);
-					section.setClient(sectionComposite);
-					sectionComposite.setLayout(new GridLayout(3,false));
-					OnExitScriptType est = (OnExitScriptType)entry.getValue();
-
-					ObjectEditor editor;
-					editor = new TextObjectEditor(this,est,est.eClass().getEStructuralFeature("scriptFormat"));
-					editor.createControl(sectionComposite,"Script Language",SWT.NONE);
-
-					editor = new TextObjectEditor(this,est,est.eClass().getEStructuralFeature("script"));
-					editor.createControl(sectionComposite,"Script",SWT.MULTI);
-				}
-			}
-		}
-
 	}
 }

@@ -337,8 +337,8 @@ public class ModelExtensionDescriptor extends BaseRuntimeDescriptor {
 		}
 		else {
 			if (value instanceof String) {
+				EDataType eDataType = (EDataType)feature.getEType();
 				try {
-					EDataType eDataType = (EDataType)feature.getEType();
 					// TODO: figure out why feature.eClass().getEPackage().getEFactoryInstance() doesn't
 					// return the correct factory!
 					EFactory factory = getEPackage(feature).getEFactoryInstance();
@@ -346,6 +346,8 @@ public class ModelExtensionDescriptor extends BaseRuntimeDescriptor {
 				}
 				catch (Exception e)
 				{
+					EFactory factory = EcorePackage.eINSTANCE.getEFactoryInstance();
+					value = factory.createFromString(eDataType, (String)value);
 				}
 			}
 			

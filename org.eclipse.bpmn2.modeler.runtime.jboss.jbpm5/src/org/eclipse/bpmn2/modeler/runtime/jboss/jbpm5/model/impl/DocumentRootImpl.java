@@ -45,6 +45,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.DocumentRootImpl#getRuleFlowGroup <em>Rule Flow Group</em>}</li>
  *   <li>{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.DocumentRootImpl#getTaskName <em>Task Name</em>}</li>
  *   <li>{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.DocumentRootImpl#getVersion <em>Version</em>}</li>
+ *   <li>{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.DocumentRootImpl#isWaitForCompletion <em>Wait For Completion</em>}</li>
+ *   <li>{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.DocumentRootImpl#isIndependent <em>Independent</em>}</li>
  * </ul>
  * </p>
  *
@@ -150,6 +152,46 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 	 * @ordered
 	 */
 	protected BigInteger version = VERSION_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #isWaitForCompletion() <em>Wait For Completion</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isWaitForCompletion()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean WAIT_FOR_COMPLETION_EDEFAULT = false;
+
+	/**
+	 * The cached value of the '{@link #isWaitForCompletion() <em>Wait For Completion</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isWaitForCompletion()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean waitForCompletion = WAIT_FOR_COMPLETION_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #isIndependent() <em>Independent</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isIndependent()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean INDEPENDENT_EDEFAULT = false;
+
+	/**
+	 * The cached value of the '{@link #isIndependent() <em>Independent</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isIndependent()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean independent = INDEPENDENT_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -388,6 +430,48 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public boolean isWaitForCompletion() {
+		return waitForCompletion;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setWaitForCompletion(boolean newWaitForCompletion) {
+		boolean oldWaitForCompletion = waitForCompletion;
+		waitForCompletion = newWaitForCompletion;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__WAIT_FOR_COMPLETION, oldWaitForCompletion, waitForCompletion));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean isIndependent() {
+		return independent;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setIndependent(boolean newIndependent) {
+		boolean oldIndependent = independent;
+		independent = newIndependent;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__INDEPENDENT, oldIndependent, independent));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -429,6 +513,10 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 				return getTaskName();
 			case ModelPackage.DOCUMENT_ROOT__VERSION:
 				return getVersion();
+			case ModelPackage.DOCUMENT_ROOT__WAIT_FOR_COMPLETION:
+				return isWaitForCompletion();
+			case ModelPackage.DOCUMENT_ROOT__INDEPENDENT:
+				return isIndependent();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -469,6 +557,12 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 			case ModelPackage.DOCUMENT_ROOT__VERSION:
 				setVersion((BigInteger)newValue);
 				return;
+			case ModelPackage.DOCUMENT_ROOT__WAIT_FOR_COMPLETION:
+				setWaitForCompletion((Boolean)newValue);
+				return;
+			case ModelPackage.DOCUMENT_ROOT__INDEPENDENT:
+				setIndependent((Boolean)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -508,6 +602,12 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 			case ModelPackage.DOCUMENT_ROOT__VERSION:
 				setVersion(VERSION_EDEFAULT);
 				return;
+			case ModelPackage.DOCUMENT_ROOT__WAIT_FOR_COMPLETION:
+				setWaitForCompletion(WAIT_FOR_COMPLETION_EDEFAULT);
+				return;
+			case ModelPackage.DOCUMENT_ROOT__INDEPENDENT:
+				setIndependent(INDEPENDENT_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -538,6 +638,10 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 				return TASK_NAME_EDEFAULT == null ? taskName != null : !TASK_NAME_EDEFAULT.equals(taskName);
 			case ModelPackage.DOCUMENT_ROOT__VERSION:
 				return VERSION_EDEFAULT == null ? version != null : !VERSION_EDEFAULT.equals(version);
+			case ModelPackage.DOCUMENT_ROOT__WAIT_FOR_COMPLETION:
+				return waitForCompletion != WAIT_FOR_COMPLETION_EDEFAULT;
+			case ModelPackage.DOCUMENT_ROOT__INDEPENDENT:
+				return independent != INDEPENDENT_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -562,6 +666,10 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 		result.append(taskName);
 		result.append(", version: ");
 		result.append(version);
+		result.append(", waitForCompletion: ");
+		result.append(waitForCompletion);
+		result.append(", independent: ");
+		result.append(independent);
 		result.append(')');
 		return result.toString();
 	}

@@ -24,16 +24,21 @@ import java.util.Map;
 
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.DocumentRoot;
+import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.OnEntryScriptType;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.OnExitScriptType;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.impl.EAttributeImpl;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
+import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.xmi.XMLHelper;
 import org.eclipse.emf.ecore.xmi.XMLLoad;
 import org.eclipse.emf.ecore.xmi.XMLResource;
@@ -186,6 +191,35 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 					anyMap.removeAll(removed);
 			}
 			catch(Exception e) {
+			}
+			
+			// The model factory has already created all of the additional elements
+			// defined in the runtime plugin's modelExtension. If the file we are loading
+			// has these elements defined, then they must replace the ones that were added
+			// during object creation.
+			if (childObject instanceof OnEntryScriptType || childObject instanceof OnExitScriptType) {
+				Class clazz = childObject.getClass();
+				// The Task should only have one of these!
+				EObject task = childObject.eContainer().eContainer();
+				EStructuralFeature f = task.eClass().getEStructuralFeature("extensionValues");
+				if (f!=null) {
+					EList<ExtensionAttributeValue> values = (EList<ExtensionAttributeValue>)task.eGet(f);
+					if (values!=null) {
+						List<Object> removed = new ArrayList<Object>();
+						for (ExtensionAttributeValue v : values) {
+							FeatureMap map = v.getValue();
+							for (int i=0; i<map.size(); ++i) {
+								Object value = map.getValue(i);
+								if (value.getClass()==clazz && value!=childObject) {
+									removed.add(v);
+									break;
+								}
+							}
+						}
+						if (removed.size()>0)
+							values.removeAll(removed);
+					}
+				}
 			}
 		}
 

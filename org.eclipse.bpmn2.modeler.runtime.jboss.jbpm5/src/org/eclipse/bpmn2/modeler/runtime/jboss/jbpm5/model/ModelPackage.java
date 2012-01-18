@@ -1396,13 +1396,31 @@ public interface ModelPackage extends EPackage {
 	int DOCUMENT_ROOT__VERSION = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 8;
 
 	/**
+	 * The feature id for the '<em><b>Wait For Completion</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__WAIT_FOR_COMPLETION = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 9;
+
+	/**
+	 * The feature id for the '<em><b>Independent</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__INDEPENDENT = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 10;
+
+	/**
 	 * The number of structural features of the '<em>Document Root</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT_FEATURE_COUNT = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 9;
+	int DOCUMENT_ROOT_FEATURE_COUNT = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 11;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.GlobalTypeImpl <em>Global Type</em>}' class.
@@ -1704,6 +1722,28 @@ public interface ModelPackage extends EPackage {
 	EAttribute getDocumentRoot_Version();
 
 	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#isWaitForCompletion <em>Wait For Completion</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Wait For Completion</em>'.
+	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#isWaitForCompletion()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EAttribute getDocumentRoot_WaitForCompletion();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#isIndependent <em>Independent</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Independent</em>'.
+	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#isIndependent()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EAttribute getDocumentRoot_Independent();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.GlobalType <em>Global Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1983,6 +2023,22 @@ public interface ModelPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute DOCUMENT_ROOT__VERSION = eINSTANCE.getDocumentRoot_Version();
+
+		/**
+		 * The meta object literal for the '<em><b>Wait For Completion</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DOCUMENT_ROOT__WAIT_FOR_COMPLETION = eINSTANCE.getDocumentRoot_WaitForCompletion();
+
+		/**
+		 * The meta object literal for the '<em><b>Independent</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DOCUMENT_ROOT__INDEPENDENT = eINSTANCE.getDocumentRoot_Independent();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl.GlobalTypeImpl <em>Global Type</em>}' class.
