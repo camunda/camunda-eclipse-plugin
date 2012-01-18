@@ -26,6 +26,8 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getRuleFlowGroup <em>Rule Flow Group</em>}</li>
  *   <li>{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getTaskName <em>Task Name</em>}</li>
  *   <li>{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#getVersion <em>Version</em>}</li>
+ *   <li>{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#isWaitForCompletion <em>Wait For Completion</em>}</li>
+ *   <li>{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#isIndependent <em>Independent</em>}</li>
  * </ul>
  * </p>
  *
@@ -99,7 +101,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @return the value of the '<em>On Entry Script</em>' containment reference.
 	 * @see #setOnEntryScript(OnEntryScriptType)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_OnEntryScript()
-	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
+	 * @model containment="true" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='onEntry-script' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -126,7 +128,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @return the value of the '<em>On Exit Script</em>' containment reference.
 	 * @see #setOnExitScript(OnExitScriptType)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_OnExitScript()
-	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
+	 * @model containment="true" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='onExit-script' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -276,5 +278,59 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @generated
 	 */
 	void setVersion(BigInteger value);
+
+	/**
+	 * Returns the value of the '<em><b>Wait For Completion</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Wait For Completion</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Wait For Completion</em>' attribute.
+	 * @see #setWaitForCompletion(boolean)
+	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_WaitForCompletion()
+	 * @model upper="-2"
+	 *        extendedMetaData="kind='attribute' name='waitForCompletion' namespace='##targetNamespace'"
+	 * @generated
+	 */
+	boolean isWaitForCompletion();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#isWaitForCompletion <em>Wait For Completion</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Wait For Completion</em>' attribute.
+	 * @see #isWaitForCompletion()
+	 * @generated
+	 */
+	void setWaitForCompletion(boolean value);
+
+	/**
+	 * Returns the value of the '<em><b>Independent</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Independent</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Independent</em>' attribute.
+	 * @see #setIndependent(boolean)
+	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_Independent()
+	 * @model upper="-2"
+	 *        extendedMetaData="kind='attribute' name='independent' namespace='##targetNamespace'"
+	 * @generated
+	 */
+	boolean isIndependent();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot#isIndependent <em>Independent</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Independent</em>' attribute.
+	 * @see #isIndependent()
+	 * @generated
+	 */
+	void setIndependent(boolean value);
 
 } // DocumentRoot

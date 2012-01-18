@@ -40,7 +40,8 @@ public class Bpmn2ModelerFactory extends Bpmn2FactoryImpl {
     @Override
     public EObject create(EClass eClass) {
     	EObject object = super.create(eClass);
-    	if (enableModelExtensions) {
+//    	if (enableModelExtensions)
+    	{
 	    	TargetRuntime rt = TargetRuntime.getCurrentRuntime();
 	    	if (rt!=null) {
 		    	for (ModelExtensionDescriptor med : rt.getModelExtensions()) {

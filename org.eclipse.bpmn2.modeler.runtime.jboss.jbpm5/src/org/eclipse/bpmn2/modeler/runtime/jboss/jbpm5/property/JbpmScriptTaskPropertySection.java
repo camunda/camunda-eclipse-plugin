@@ -13,8 +13,10 @@
 
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.ScriptTask;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.emf.ecore.EObject;
@@ -32,11 +34,9 @@ public class JbpmScriptTaskPropertySection extends JbpmTaskPropertySection {
 	}
 
 	@Override
-	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
-		EObject bo = super.getBusinessObjectForPictogramElement(pe);
-		if (bo instanceof ScriptTask)
-			return bo;
-		return null;
+	public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
+		EObject object = BusinessObjectUtil.getBusinessObjectForSelection(selection);
+		return Bpmn2Package.eINSTANCE.getScriptTask() == object.eClass();
 	}
 
 	@Override

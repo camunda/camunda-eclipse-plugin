@@ -73,6 +73,11 @@ public class GraphicsUtil {
 		public Polyline horizontal;
 	}
 
+	public static class DiagonalCross {
+		public Polyline diagonalAsc;
+		public Polyline diagonalDesc;
+	}
+
 	public static class MultiInstance {
 		public Polyline line1;
 		public Polyline line2;
@@ -150,6 +155,25 @@ public class GraphicsUtil {
 		return cross;
 	}
 
+	public static DiagonalCross createGatewayDiagonalCross(ContainerShape container) {
+		IPeService service = Graphiti.getPeService();
+
+		Shape diagonalDescShape = service.createShape(container, false);
+		Polyline diagonalDesc = gaService.createPolyline(diagonalDescShape, new int[] { 13, 14, 37, 37 });
+		diagonalDesc.setLineWidth(3);
+		peService.setPropertyValue(diagonalDescShape, DELETABLE_PROPERTY, "true");
+
+		Shape diagonalAscShape = service.createShape(container, false);
+		Polyline diagonalAsc = gaService.createPolyline(diagonalAscShape, new int[] { 37, 14, 13, 37 });
+		diagonalAsc.setLineWidth(3);
+		peService.setPropertyValue(diagonalAscShape, DELETABLE_PROPERTY, "true");
+
+		DiagonalCross diagonalCross = new DiagonalCross();
+		diagonalCross.diagonalDesc = diagonalDesc;
+		diagonalCross.diagonalAsc = diagonalAsc;
+		return diagonalCross;
+	}
+
 	public static Polygon createEventGatewayParallelCross(ContainerShape container) {
 		Shape crossShape = peService.createShape(container, false);
 		int n1 = 14;
@@ -191,12 +215,12 @@ public class GraphicsUtil {
 
 		Shape diagonalDescShape = service.createShape(container, false);
 		Polyline diagonalDesc = gaService.createPolyline(diagonalDescShape, new int[] { 13, 14, 37, 37 });
-		diagonalDesc.setLineWidth(4);
+		diagonalDesc.setLineWidth(3);
 		peService.setPropertyValue(diagonalDescShape, DELETABLE_PROPERTY, "true");
 
 		Shape diagonalAscShape = service.createShape(container, false);
 		Polyline diagonalAsc = gaService.createPolyline(diagonalAscShape, new int[] { 37, 14, 13, 37 });
-		diagonalAsc.setLineWidth(4);
+		diagonalAsc.setLineWidth(3);
 		peService.setPropertyValue(diagonalAscShape, DELETABLE_PROPERTY, "true");
 
 		Asterisk a = new Asterisk();

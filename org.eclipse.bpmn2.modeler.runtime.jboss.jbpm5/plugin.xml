@@ -53,6 +53,20 @@
 		</propertyTab>
 
 		<propertyTab
+			id="bpmn2.jbpm.userTask.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.userTask.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmUserTaskPropertySection"
+			label="User Task">
+		</propertyTab>
+
+		<propertyTab
+			id="bpmn2.jbpm.callActivity.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.callActivity.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmCallActivityPropertySection"
+			label="Call Activity">
+		</propertyTab>
+
+		<propertyTab
 			id="bpmn2.jbpm.empty.tab"
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmEmptyPropertySection"
@@ -271,8 +285,52 @@
 			type="SequenceFlow">
 			<property name="priority" value="1"/>
 		</modelExtension>
+		
+		<modelExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.businessRuleTask"
+			runtimeId="org.jboss.runtime.jbpm5"
+			name="BusinessRuleTask Extensions"
+			type="BusinessRuleTask">
+			<property name="ruleFlowGroup" value=""/>
+		</modelExtension>
+		
+		<modelExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.callActivity"
+			runtimeId="org.jboss.runtime.jbpm5"
+			name="CallActivity Extensions"
+			type="CallActivity">
+			<property name="waitForCompletion" value="false"/>
+			<property name="independent" value="false"/>
+			<property name="extensionValues">
+				<value>
+					<property name="value">
+						<value>
+							<property name="DocumentRoot.onEntryScript">
+								<value>
+									<property name="script" value=""/>
+									<property name="scriptFormat" value=""/>
+								</value>
+							</property>
+						</value>
+					</property>
+				</value>
+			</property>			
+			<property name="extensionValues">
+				<value>
+					<property name="value">
+						<value>
+							<property name="DocumentRoot.onExitScript">
+								<value>
+									<property name="script" value=""/>
+									<property name="scriptFormat" value=""/>
+								</value>
+							</property>
+						</value>
+					</property>
+				</value>
+			</property>
+		</modelExtension>
 
-<!--		
 		<modelExtension
 			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.Task"
 			runtimeId="org.jboss.runtime.jbpm5"
@@ -307,7 +365,41 @@
 				</value>
 			</property>
 		</modelExtension>
--->
+
+		<modelExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.UserTask"
+			runtimeId="org.jboss.runtime.jbpm5"
+			name="UserTask Extensions"
+			type="UserTask">
+			<property name="extensionValues">
+				<value>
+					<property name="value">
+						<value>
+							<property name="DocumentRoot.onEntryScript">
+								<value>
+									<property name="script" value=""/>
+									<property name="scriptFormat" value=""/>
+								</value>
+							</property>
+						</value>
+					</property>
+				</value>
+			</property>			
+			<property name="extensionValues">
+				<value>
+					<property name="value">
+						<value>
+							<property name="DocumentRoot.onExitScript">
+								<value>
+									<property name="script" value=""/>
+									<property name="scriptFormat" value=""/>
+								</value>
+							</property>
+						</value>
+					</property>
+				</value>
+			</property>
+		</modelExtension>
 
 		<modelEnablement runtimeId="org.jboss.runtime.jbpm5" type="Process">
 			<disable object="all"/>

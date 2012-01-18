@@ -26,6 +26,8 @@ import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
@@ -39,6 +41,7 @@ import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.ResourceSetChangeEvent;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -46,6 +49,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.forms.widgets.Section;
 
 public class IoParametersPropertySection extends AbstractBpmn2PropertySection {
@@ -61,6 +65,21 @@ public class IoParametersPropertySection extends AbstractBpmn2PropertySection {
 	@Override
 	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
 		return new IoParametersPropertiesComposite(this);
+	}
+
+	@Override
+	public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
+		if (super.appliesTo(part, selection)) {
+			ModelEnablementDescriptor modelEnablement = getModelEnablement(selection);
+			EObject selectionBO = BusinessObjectUtil.getBusinessObjectForSelection(selection);
+			EStructuralFeature feature = selectionBO.eClass().getEStructuralFeature("ioSpecification");
+			if (feature != null) {
+				if (!modelEnablement.isEnabled(selectionBO.eClass(), feature))
+					return false;
+			}
+			return true;
+		}
+		return false;
 	}
 
 	@Override

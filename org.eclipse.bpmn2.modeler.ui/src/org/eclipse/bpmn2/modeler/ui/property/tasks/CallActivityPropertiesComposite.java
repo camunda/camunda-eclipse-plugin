@@ -22,6 +22,7 @@ import org.eclipse.bpmn2.StandardLoopCharacteristics;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite.AbstractPropertiesProvider;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -40,9 +41,6 @@ public class CallActivityPropertiesComposite extends ActivityPropertiesComposite
 		PropertiesCompositeFactory.register(MultiInstanceLoopCharacteristics.class, MultiInstanceLoopCharacteristicsPropertiesComposite.class);
 	}
 
-	private Button addStandardLoopButton;
-	private Button addMultiLoopButton;
-
 	public CallActivityPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
 	}
@@ -53,83 +51,23 @@ public class CallActivityPropertiesComposite extends ActivityPropertiesComposite
 	public CallActivityPropertiesComposite(AbstractBpmn2PropertySection section) {
 		super(section);
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite
-	 * #createBindings(org.eclipse.emf.ecore.EObject)
-	 */
+
 	@Override
-	public void createBindings(EObject be) {
-
-		if (be instanceof CallActivity) {
-			
-			bindReference(be,"calledElementRef");
-
-			final CallActivity callActivity = (CallActivity) be;
+	public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
+		if (propertiesProvider==null) {
+			propertiesProvider = new AbstractPropertiesProvider(object) {
+				String[] properties = new String[] {
+						"anyAttribute",
+						"calledElementRef",
+						"loopCharacteristics",
+				};
 				
-			addStandardLoopButton = new Button(this, SWT.PUSH);
-			addStandardLoopButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
-			addStandardLoopButton.addSelectionListener(new SelectionAdapter() {
-				
-				public void widgetSelected(SelectionEvent e) {
-					@SuppressWarnings("restriction")
-					TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
-					domain.getCommandStack().execute(new RecordingCommand(domain) {
-						@Override
-						protected void doExecute() {
-							if (callActivity.getLoopCharacteristics() !=null)
-								callActivity.setLoopCharacteristics(null);
-							else {
-								StandardLoopCharacteristics loopChar = Bpmn2Factory.eINSTANCE.createStandardLoopCharacteristics();
-								callActivity.setLoopCharacteristics(loopChar);
-								ModelUtil.setID(loopChar);
-							}
-							setEObject(callActivity);
-						}
-					});
+				@Override
+				public String[] getProperties() {
+					return properties; 
 				}
-			});
-
-			addMultiLoopButton = new Button(this, SWT.PUSH);
-			addMultiLoopButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
-			addMultiLoopButton.addSelectionListener(new SelectionAdapter() {
-				
-				public void widgetSelected(SelectionEvent e) {
-					@SuppressWarnings("restriction")
-					TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
-					domain.getCommandStack().execute(new RecordingCommand(domain) {
-						@Override
-						protected void doExecute() {
-							if (callActivity.getLoopCharacteristics() !=null)
-								callActivity.setLoopCharacteristics(null);
-							else {
-								MultiInstanceLoopCharacteristics loopChar = Bpmn2Factory.eINSTANCE.createMultiInstanceLoopCharacteristics();
-								callActivity.setLoopCharacteristics(loopChar);
-								ModelUtil.setID(loopChar);
-							}
-							setEObject(callActivity);
-						}
-					});
-				}
-			});
-
-			LoopCharacteristics loopChar = (LoopCharacteristics) callActivity.getLoopCharacteristics();
-			
-			if (loopChar != null) {
-				addStandardLoopButton.setText("Remove Loop Characteristics");
-				addMultiLoopButton.setVisible(false);
-//				this.be = loopChar;
-				super.createBindingsSuper(loopChar);
-			}
-			else {
-				addStandardLoopButton.setText("Add Standard Loop Characteristics");
-				addMultiLoopButton.setText("Add Multi-Instance Loop Characteristics");
-				addMultiLoopButton.setVisible(true);
-			}
-			PropertyUtil.recursivelayout(this);
+			};
 		}
+		return propertiesProvider;
 	}
 }

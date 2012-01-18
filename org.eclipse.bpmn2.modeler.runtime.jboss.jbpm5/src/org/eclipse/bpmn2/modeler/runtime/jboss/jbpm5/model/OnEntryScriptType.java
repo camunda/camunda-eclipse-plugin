@@ -37,7 +37,7 @@ public interface OnEntryScriptType extends EObject {
 	 * @return the value of the '<em>Script</em>' attribute.
 	 * @see #setScript(String)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getOnEntryScriptType_Script()
-	 * @model dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
+	 * @model required="true"
 	 *        extendedMetaData="kind='element' name='script' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -64,7 +64,7 @@ public interface OnEntryScriptType extends EObject {
 	 * @return the value of the '<em>Script Format</em>' attribute.
 	 * @see #setScriptFormat(String)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getOnEntryScriptType_ScriptFormat()
-	 * @model dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
+	 * @model required="true"
 	 *        extendedMetaData="kind='attribute' name='scriptFormat' namespace='##targetNamespace'"
 	 * @generated
 	 */

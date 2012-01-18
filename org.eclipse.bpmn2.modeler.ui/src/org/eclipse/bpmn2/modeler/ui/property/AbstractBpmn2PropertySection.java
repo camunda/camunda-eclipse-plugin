@@ -59,6 +59,7 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 	protected Composite parent;
 	protected BPMN2Editor editor;
 	private IWorkbenchWindow cachedWorkbenchWindow;
+	
 	private IPartListener partActivationListener = new IPartListener() {
 
 		public void partActivated(IWorkbenchPart part) {
@@ -250,16 +251,23 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 	 */
 	@Override
 	public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
-		BPMN2Editor editor = (BPMN2Editor)part;
+		editor = (BPMN2Editor)part;
 		PictogramElement pe = BusinessObjectUtil.getPictogramElementForSelection(selection);
 		EObject selectionBO = BusinessObjectUtil.getBusinessObjectForSelection(selection);
-		ModelEnablementDescriptor modelEnablement = editor.getTargetRuntime().getModelEnablements(selectionBO);
+		ModelEnablementDescriptor modelEnablement = getModelEnablement(selection);
 		
 		if (selectionBO!=null && modelEnablement.isEnabled(selectionBO.eClass())) {
 			EObject thisBO = getBusinessObjectForPictogramElement(pe);
 			return thisBO!=null;			
 		}
 		return false;
+	}
+	
+	protected ModelEnablementDescriptor getModelEnablement(ISelection selection) {
+		EObject selectionBO = BusinessObjectUtil.getBusinessObjectForSelection(selection);
+		if (selectionBO!=null)
+			return editor.getTargetRuntime().getModelEnablements(selectionBO);
+		return null;
 	}
 	
 	public boolean doReplaceTab(String id, IWorkbenchPart part, ISelection selection) {

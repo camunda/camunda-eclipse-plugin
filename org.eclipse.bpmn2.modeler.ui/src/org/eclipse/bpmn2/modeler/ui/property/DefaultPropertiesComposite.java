@@ -33,7 +33,7 @@ import org.eclipse.ui.views.properties.tabbed.TabContents;
 public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 
 	protected final String[] EMPTY_STRING_ARRAY = new String[] {};
-	private AbstractPropertiesProvider propertiesProvider = null;
+	protected AbstractPropertiesProvider propertiesProvider = null;
 	
 	/**
 	 * Create the composite.
@@ -103,18 +103,20 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 					}
 				}
 				feature = getFeature(be,a);
-				if (modelEnablement.isEnabled(be.eClass(),feature) || eItemClass!=null) {
-					if (isAttribute(be,feature)) {
-						bindAttribute(getAttributesParent(), be,(EAttribute)feature);
-					}
-					else if (isList(be,feature)) {
-						if (eItemClass==null)
-							bindList(be,feature);
-						else
-							bindList(be,feature, eItemClass);
-					}
-					else if (isReference(be,feature)) {
-						bindReference(getAttributesParent(), be,(EReference)feature);
+				if (feature!=null) {
+					if (modelEnablement.isEnabled(be.eClass(),feature) || eItemClass!=null) {
+						if (isAttribute(be,feature)) {
+							bindAttribute(getAttributesParent(), be,(EAttribute)feature);
+						}
+						else if (isList(be,feature)) {
+							if (eItemClass==null)
+								bindList(be,feature);
+							else
+								bindList(be,feature, eItemClass);
+						}
+						else if (isReference(be,feature)) {
+							bindReference(getAttributesParent(), be,(EReference)feature);
+						}
 					}
 				}
 			}
@@ -143,7 +145,7 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 	private void createMissingPropertiesLabel(EObject be) {
 		if (propertySection!=null) {
 			String tab = propertySection.tabbedPropertySheetPage.getSelectedTab().getLabel();
-			createLabel(this,"No "+tab+" Properties for this "+PropertyUtil.getText(be));
+//			createLabel(this,"No "+tab+" Properties for this "+PropertyUtil.getText(be));
 		}
 	}
 

@@ -13,10 +13,16 @@
 
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Task;
+import org.eclipse.bpmn2.UserTask;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.ui.property.tasks.TaskPropertySection;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * @author Bob Brodt
@@ -25,6 +31,12 @@ import org.eclipse.bpmn2.modeler.ui.property.tasks.TaskPropertySection;
 public class JbpmTaskPropertySection extends TaskPropertySection {
 	static {
 		PropertiesCompositeFactory.register(Task.class, JbpmTaskPropertiesComposite.class);
+	}
+
+	@Override
+	public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
+		EObject object = BusinessObjectUtil.getBusinessObjectForSelection(selection);
+		return Bpmn2Package.eINSTANCE.getTask() == object.eClass();
 	}
 
 	@Override
