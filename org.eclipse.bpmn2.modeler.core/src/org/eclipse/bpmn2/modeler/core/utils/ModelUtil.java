@@ -416,7 +416,7 @@ public class ModelUtil {
 	
 	public static Bpmn2DiagramType getDiagramType(EObject object) {
 		if (object!=null && object.eResource()!=null) {
-			Definitions defs = (Definitions) object.eResource().getContents().get(0).eContents().get(0);
+			Definitions defs = getDefinitions(object);
 			if (defs.getDiagrams().size()>=1) {
 				BPMNDiagram diagram = defs.getDiagrams().get(0);
 				BPMNPlane plane = diagram.getPlane();
@@ -543,6 +543,13 @@ public class ModelUtil {
 	
 	public static boolean isStructureRefValue(Object value) {
 		return value instanceof DynamicEObjectImpl;
+	}
+	
+	public static Definitions getDefinitions(EObject object) {
+		Object defs = object.eResource().getContents().get(0).eContents().get(0);
+		if (defs instanceof Definitions)
+			return (Definitions)defs;
+		return null;
 	}
 	
 	public static DocumentRoot getDocumentRoot(EObject object) {

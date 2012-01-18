@@ -39,6 +39,7 @@ import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -132,6 +133,17 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
     				public String getLabel(Object context) {
    						return "Called Activity";
     				}
+    				
+    				@Override
+    				public String getText(Object context) {
+    					CallActivity object = (CallActivity)this.object;
+    					if (context instanceof CallActivity)
+    						object = (CallActivity)context;
+    					CallableElement ce = object.getCalledElementRef();
+    					if (ce.eIsProxy())
+    						return ((InternalEObject)ce).eProxyURI().fragment();
+    					return super.getText(context);
+    				}
     			}
         	);
         	return adapter;
@@ -206,18 +218,22 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
     					if (context instanceof EObject)
     						object = (EObject)context;
     					if (object instanceof ItemDefinition) {
-    						String type = " (Undefined";
         					ItemDefinition itemDefinition = (ItemDefinition) object;
-        					if (itemDefinition.getItemKind().equals(ItemKind.PHYSICAL))
-        						type = " (Physical";
-        					else if (itemDefinition.getItemKind().equals(ItemKind.INFORMATION))
-        						type = " (Informational";
-        					if (itemDefinition.isIsCollection())
-        						type += " Collection)";
+        					if (itemDefinition.getStructureRef()!=null) {
+        						String type = " (Undefined";
+	        					if (itemDefinition.getItemKind().equals(ItemKind.PHYSICAL))
+	        						type = " (Physical";
+	        					else if (itemDefinition.getItemKind().equals(ItemKind.INFORMATION))
+	        						type = " (Informational";
+	        					if (itemDefinition.isIsCollection())
+	        						type += " Collection)";
+	        					else
+	        						type += ")";
+	
+	    						return ModelUtil.getStructureRefValue( itemDefinition.getStructureRef() ) + type;
+        					}
         					else
-        						type += ")";
-
-    						return ModelUtil.getStructureRefValue( ((ItemDefinition)object).getStructureRef() ) + type;
+        						return "";
     					}
     					return super.getText(context);
 					}

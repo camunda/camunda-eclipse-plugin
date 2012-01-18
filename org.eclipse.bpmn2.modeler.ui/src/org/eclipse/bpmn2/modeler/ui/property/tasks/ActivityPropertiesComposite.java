@@ -181,33 +181,6 @@ public class ActivityPropertiesComposite extends DefaultPropertiesComposite {
 
 			PropertyUtil.recursivelayout(this);
 		}
-		else if ("calledElementRef".equals(reference.getName())) {
-			if (modelEnablement.isEnabled(object.eClass(), reference)) {
-				if (parent==null)
-					parent = getAttributesParent();
-				
-				String displayName = PropertyUtil.getLabel(object, reference);
-				ObjectEditor editor = new ComboObjectEditor(this,object,reference) {
-					protected void updateEObject(Object result) {
-						if (result==null) {
-							TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
-							domain.getCommandStack().execute(new RecordingCommand(domain) {
-								@Override
-								protected void doExecute() {
-									CallableElement ce = (CallableElement)Bpmn2Factory.eINSTANCE.create(Bpmn2Package.eINSTANCE.getCallableElement());
-									getDiagramEditor().getModelHandler().getDefinitions().getRootElements().add(ce);
-									ModelUtil.setID(ce);
-									ce.setName("some random text");
-									
-									object.eSet(feature, ce);
-								}
-							});
-						}
-					}
-				};
-				editor.createControl(parent,displayName);
-			}
-		}
 		else
 			super.bindReference(parent, object, reference);
 	}

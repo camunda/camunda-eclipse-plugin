@@ -75,7 +75,7 @@ public class TextObjectEditor extends ObjectEditor {
 			public void handleValueChange(final ValueChangeEvent e) {
 
 				if (!text.getText().equals( PropertyUtil.getText(object, feature) )) {
-					updateEObject(e.diff.getNewValue());
+					updateObject(e.diff.getNewValue());
 					if (getDiagramEditor().getDiagnostics()!=null) {
 						// revert the change and display error status message.
 						text.setText(PropertyUtil.getText(object, feature));

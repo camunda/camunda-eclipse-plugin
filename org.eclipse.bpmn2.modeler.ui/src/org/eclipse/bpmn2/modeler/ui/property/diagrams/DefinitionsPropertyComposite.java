@@ -236,11 +236,12 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 						}
 						
 					};
+					String initialValue = getObjectText();
 					InputDialog dialog = new InputDialog(
 							getShell(),
 							"Namespace Prefix",
 							"Enter a namespace prefix",
-							getNamespacePrefix(),
+							initialValue,
 							validator);
 					if (dialog.open()==Window.OK){
 						updateObject(dialog.getValue());
@@ -253,15 +254,12 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 					NamespaceUtil.removeNamespaceForPrefix(imp, prefix);
 					// and add new
 					NamespaceUtil.addNamespace(imp, (String)value, imp.getNamespace());
-					updateText(value);
+					setText((String) value);
 					return true;
 				}
 				
-				protected String getTextValue(Object value) {
-					if (value==null) {
-						return getNamespacePrefix();
-					}
-					return (String)value;
+				protected String getObjectText() {
+					return getNamespacePrefix();
 				}
 			};
 			editor.createControl(composite,"Namespace Prefix",SWT.NONE);

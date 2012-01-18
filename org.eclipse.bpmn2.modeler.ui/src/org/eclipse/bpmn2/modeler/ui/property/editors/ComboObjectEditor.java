@@ -123,7 +123,7 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 										object, feature, value);
 								if ( dialog.open() == Window.OK) {
 									value = dialog.getNewObject();
-									updateEObject(value);
+									updateObject(value);
 									fillCombo();
 								}
 							}
@@ -144,11 +144,11 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 					if (selection instanceof StructuredSelection) {
 						String firstElement = (String) ((StructuredSelection) selection).getFirstElement();
 						if(firstElement!=null && comboViewer.getData(firstElement)!=null)
-							updateEObject(comboViewer.getData(firstElement));
+							updateObject(comboViewer.getData(firstElement));
 						else {
 							if (firstElement!=null && firstElement.isEmpty())
 								firstElement = null;
-							updateEObject(firstElement);
+							updateObject(firstElement);
 						}
 					}
 				}

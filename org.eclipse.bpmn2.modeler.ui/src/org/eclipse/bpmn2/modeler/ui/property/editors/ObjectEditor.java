@@ -76,11 +76,11 @@ public abstract class ObjectEditor {
 		return label;
 	}
 
-	protected void updateEObject(final Object result) {
+	protected boolean updateObject(final Object result) {
 		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
 		if (adapter!=null) {
 			adapter.getFeatureDescriptor(feature).setValue(object, result);
-			return;
+			return true;
 		}
 		
 		if (result != object.eGet(feature)) {
@@ -92,5 +92,6 @@ public abstract class ObjectEditor {
 				}
 			});
 		}
+		return true;
 	}
 }

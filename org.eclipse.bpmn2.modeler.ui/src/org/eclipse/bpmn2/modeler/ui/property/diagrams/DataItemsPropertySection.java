@@ -132,11 +132,13 @@ public class DataItemsPropertySection extends DefaultPropertySection {
 								}
 								
 							};
+							
+							String initialValue = ModelUtil.getStructureRefValue(def.getStructureRef());
 							InputDialog dialog = new InputDialog(
 									getShell(),
 									"Data Structure",
 									"Enter the data structure reference for this Item Definition",
-									getTextValue(def.getStructureRef()),
+									initialValue,
 									validator);
 							if (dialog.open()==Window.OK){
 								updateObject(ModelUtil.createStructurRef(dialog.getValue()));

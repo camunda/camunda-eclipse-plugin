@@ -16,6 +16,7 @@ package org.eclipse.bpmn2.modeler.ui.property.editors;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.util.ErrorUtils;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -62,7 +63,7 @@ public abstract class TextAndButtonObjectEditor extends ObjectEditor {
 		button = getToolkit().createButton(composite, "Edit...", SWT.PUSH);
 		button.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 
-		updateText( getTextValue(null) );
+		updateText();
 
 		SelectionAdapter editListener = new SelectionAdapter() {
 
@@ -92,6 +93,7 @@ public abstract class TextAndButtonObjectEditor extends ObjectEditor {
 	 * @param value
 	 * @return true if the object was successfully updated, false if error
 	 */
+	@Override
 	protected boolean updateObject(final Object value) {
 		if (value != object.eGet(feature)) {
 			TransactionalEditingDomain editingDomain = getDiagramEditor().getEditingDomain();
@@ -106,7 +108,7 @@ public abstract class TextAndButtonObjectEditor extends ObjectEditor {
 			}
 			else {
 				ErrorUtils.showErrorMessage(null);
-				updateText(value);
+				updateText();
 				return true;
 			}
 		}
@@ -118,8 +120,12 @@ public abstract class TextAndButtonObjectEditor extends ObjectEditor {
 	 * 
 	 * @param value - new value for the text field
 	 */
-	protected void updateText(Object value) {
-		text.setText( getTextValue(value) );
+	protected void updateText() {
+		setText( getObjectText());
+	}
+	
+	protected void setText(String value) {
+		text.setText(value);
 	}
 	
 	/**
@@ -133,25 +139,7 @@ public abstract class TextAndButtonObjectEditor extends ObjectEditor {
 	 * 
 	 * @return string representation of the EObject feature's value.
 	 */
-	protected String getTextValue(Object value) {
-		if (value==null)
-			value = object.eGet(feature);
-		
-		if (ModelUtil.isStructureRefValue(value)) {
-			return ModelUtil.getStructureRefValue(value);
-		}
-		else if (value instanceof EObject) {
-			EObject object = (EObject)value;
-			EStructuralFeature feature = object.eClass().getEStructuralFeature("name");
-			String name = object.eClass().getName();
-			if (feature!=null && object.eIsSet(feature)) {
-				return name+" "+object.eGet(feature);
-			}
-			else
-				return name;
-		}
-		else if (value==null)
-			return "";
-		return value.toString();
+	protected String getObjectText() {
+		return PropertyUtil.getText(object, feature);
 	}
 }
