@@ -30,7 +30,7 @@ public class JbpmUserTaskPropertySection extends JbpmTaskPropertySection {
 	@Override
 	public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
 		EObject object = BusinessObjectUtil.getBusinessObjectForSelection(selection);
-		return Bpmn2Package.eINSTANCE.getUserTask() == object.eClass();
+		return object!=null && Bpmn2Package.eINSTANCE.getUserTask() == object.eClass();
 	}
 
 	@Override

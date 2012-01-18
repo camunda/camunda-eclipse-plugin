@@ -16,7 +16,9 @@ package org.eclipse.bpmn2.modeler.ui.property.tasks;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Bpmn2Factory;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallActivity;
+import org.eclipse.bpmn2.CallableElement;
 import org.eclipse.bpmn2.LoopCharacteristics;
 import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
 import org.eclipse.bpmn2.StandardLoopCharacteristics;
@@ -26,6 +28,10 @@ import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite.AbstractPropertiesProvider;
+import org.eclipse.bpmn2.modeler.ui.property.editors.ComboObjectEditor;
+import org.eclipse.bpmn2.modeler.ui.property.editors.FeatureListObjectEditor;
+import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
+import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
@@ -42,6 +48,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.Section;
 
 public class ActivityPropertiesComposite extends DefaultPropertiesComposite {
+
+	static {
+		PropertiesCompositeFactory.register(StandardLoopCharacteristics.class, StandardLoopCharacteristicsPropertiesComposite.class);
+		PropertiesCompositeFactory.register(MultiInstanceLoopCharacteristics.class, MultiInstanceLoopCharacteristicsPropertiesComposite.class);
+	}
 
 	private Button addStandardLoopButton;
 	private Button addMultiLoopButton;
@@ -64,6 +75,8 @@ public class ActivityPropertiesComposite extends DefaultPropertiesComposite {
 		if (propertiesProvider==null) {
 			propertiesProvider = new AbstractPropertiesProvider(object) {
 				String[] properties = new String[] {
+						"anyAttribute",
+						"calledElementRef", // only used in CallActivity
 						"completionQuantity",
 						"startQuantity",
 						"isForCompensation",
@@ -167,6 +180,33 @@ public class ActivityPropertiesComposite extends DefaultPropertiesComposite {
 			}
 
 			PropertyUtil.recursivelayout(this);
+		}
+		else if ("calledElementRef".equals(reference.getName())) {
+			if (modelEnablement.isEnabled(object.eClass(), reference)) {
+				if (parent==null)
+					parent = getAttributesParent();
+				
+				String displayName = PropertyUtil.getLabel(object, reference);
+				ObjectEditor editor = new ComboObjectEditor(this,object,reference) {
+					protected void updateEObject(Object result) {
+						if (result==null) {
+							TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
+							domain.getCommandStack().execute(new RecordingCommand(domain) {
+								@Override
+								protected void doExecute() {
+									CallableElement ce = (CallableElement)Bpmn2Factory.eINSTANCE.create(Bpmn2Package.eINSTANCE.getCallableElement());
+									getDiagramEditor().getModelHandler().getDefinitions().getRootElements().add(ce);
+									ModelUtil.setID(ce);
+									ce.setName("some random text");
+									
+									object.eSet(feature, ce);
+								}
+							});
+						}
+					}
+				};
+				editor.createControl(parent,displayName);
+			}
 		}
 		else
 			super.bindReference(parent, object, reference);

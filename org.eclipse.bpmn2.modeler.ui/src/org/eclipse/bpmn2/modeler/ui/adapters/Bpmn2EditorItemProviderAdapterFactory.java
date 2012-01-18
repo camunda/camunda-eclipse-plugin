@@ -21,6 +21,7 @@ import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallActivity;
+import org.eclipse.bpmn2.CallableElement;
 import org.eclipse.bpmn2.DataState;
 import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.FormalExpression;
@@ -123,7 +124,16 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
         public Bpmn2ExtendedPropertiesAdapter caseCallActivity(CallActivity object) {
         	Bpmn2ExtendedPropertiesAdapter adapter = new Bpmn2ExtendedPropertiesAdapter(adapterFactory,object);
         	adapter.setProperty(Bpmn2ExtendedPropertiesAdapter.LONG_DESCRIPTION, Messages.UI_CallActivity_long_description); //$NON-NLS-1$
-        	adapter.setProperty(Bpmn2Package.CALL_ACTIVITY__CALLED_ELEMENT_REF, Bpmn2ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW, Boolean.FALSE);
+        	adapter.setProperty(Bpmn2Package.CALL_ACTIVITY__CALLED_ELEMENT_REF, Bpmn2ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW, Boolean.TRUE);
+        	EStructuralFeature ce = Bpmn2Package.eINSTANCE.getCallActivity_CalledElementRef();
+        	adapter.setFeatureDescriptor(ce,
+    			new Bpmn2FeatureDescriptor(adapterFactory,object,ce) {
+    				@Override
+    				public String getLabel(Object context) {
+   						return "Called Activity";
+    				}
+    			}
+        	);
         	return adapter;
         }
 
@@ -302,6 +312,11 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
         	adapter.setProperty(Bpmn2Package.ITEM_AWARE_ELEMENT__DATA_STATE, Bpmn2ExtendedPropertiesAdapter.UI_IS_MULTI_CHOICE, Boolean.FALSE);
 
         	return adapter;
+		}
+
+		@Override
+		public Bpmn2ExtendedPropertiesAdapter caseCallableElement(CallableElement object) {
+			return super.caseCallableElement(object);
 		}
 
 		private void addActivityProperties(Bpmn2ExtendedPropertiesAdapter adapter) {

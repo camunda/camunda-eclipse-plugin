@@ -29,7 +29,7 @@ public class JbpmCallActivityPropertySection extends JbpmActivityPropertySection
 	@Override
 	public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
 		EObject object = BusinessObjectUtil.getBusinessObjectForSelection(selection);
-		return Bpmn2Package.eINSTANCE.getCallActivity() == object.eClass();
+		return object!=null && Bpmn2Package.eINSTANCE.getCallActivity() == object.eClass();
 	}
 
 	@Override
