@@ -230,7 +230,7 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 	private void createDataAssociations ( Property ioSpecification, CustomTaskDescriptor ct) {
 		Object[] values = ioSpecification.getValues().toArray();
 		int inputCounter = -1;
-		int outputCounter = -1;
+//		int outputCounter = -1;
 		for (int i = 0; i < values.length; i++) {
 			if (values[i] instanceof Property) {
 				Property prop = (Property) values[i];
@@ -241,15 +241,17 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 					targetRef.ref = "ioSpecification/dataInputs#" + inputCounter;
 					dataInputAssociations.getValues().add(targetRef);
 					ct.getProperties().add(dataInputAssociations);
-					
-				} else 	if (prop.name.equals("dataOutputs")) {
-					outputCounter++;
-					Property dataOutputAssociations = new Property ( "dataOutputAssociations", null);
-					Property sourceRef = new Property ("sourceRef", null);
-					sourceRef.ref = "ioSpecification/dataOutputs#" + outputCounter;
-					dataOutputAssociations.getValues().add(sourceRef);
-					ct.getProperties().add(dataOutputAssociations);
 				}
+//				} else 	if (prop.name.equals("dataOutputs")) {
+//					outputCounter++;
+//					Property dataOutputAssociations = new Property ( "dataOutputAssociations", null);
+//					Property sourceRef = new Property ("sourceRef", null);
+//					sourceRef.ref = "ioSpecification/dataOutputs#" + outputCounter;
+//					dataOutputAssociations.getValues().add(sourceRef);
+////					Property targetRef = new Property ("targetRef", null);
+////					dataOutputAssociations.getValues().add(targetRef);
+//					ct.getProperties().add(dataOutputAssociations);
+//				}
 
 			}
 		}
