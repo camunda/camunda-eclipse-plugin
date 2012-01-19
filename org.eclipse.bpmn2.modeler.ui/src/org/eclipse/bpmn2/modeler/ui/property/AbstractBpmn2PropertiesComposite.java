@@ -365,17 +365,19 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 		return styledText;
 	}
 
-	protected Section createSection(Composite parent, String title) {
+	protected Section createSection(Composite parent, final String title) {
 		Section section = toolkit.createSection(parent,
 				ExpandableComposite.TWISTIE |
 				ExpandableComposite.EXPANDED |
 				ExpandableComposite.TITLE_BAR);
 		section.setText(title);
 		
-		final String prefKey = "section."+getEObject().eClass().getName()+title+"."+".expanded";
-		boolean expanded = preferenceStore.getBoolean(prefKey);
-		section.setExpanded(expanded);
-
+		if (getEObject()!=null) {
+			final String prefKey = "section."+getEObject().eClass().getName()+title+"."+".expanded";
+			boolean expanded = preferenceStore.getBoolean(prefKey);
+			section.setExpanded(expanded);
+		}
+		
 		section.addExpansionListener(new IExpansionListener() {
 			@Override
 			public void expansionStateChanging(ExpansionEvent e) {
@@ -383,7 +385,10 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 
 			@Override
 			public void expansionStateChanged(ExpansionEvent e) {
-				preferenceStore.setValue(prefKey, e.getState());
+				if (getEObject()!=null) {
+					final String prefKey = "section."+getEObject().eClass().getName()+title+"."+".expanded";
+					preferenceStore.setValue(prefKey, e.getState());
+				}
 			}
 		});
 		return section;
