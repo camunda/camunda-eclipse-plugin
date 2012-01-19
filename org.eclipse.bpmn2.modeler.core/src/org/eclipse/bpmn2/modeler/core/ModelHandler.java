@@ -955,6 +955,9 @@ public class ModelHandler {
 		EObject newObject = null;
 		EPackage pkg = eClass.getEPackage();
 		EFactory factory = pkg.getEFactoryInstance();
+		// make sure we don't try to construct abstract objects here!
+		if (eClass == Bpmn2Package.eINSTANCE.getExpression())
+			eClass = Bpmn2Package.eINSTANCE.getFormalExpression();
 		newObject = factory.create(eClass);
 		initialize(newObject);
 		return newObject;

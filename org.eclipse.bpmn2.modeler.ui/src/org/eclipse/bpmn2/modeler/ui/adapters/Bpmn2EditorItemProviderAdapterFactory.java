@@ -24,10 +24,12 @@ import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.CallableElement;
 import org.eclipse.bpmn2.DataState;
 import org.eclipse.bpmn2.DocumentRoot;
+import org.eclipse.bpmn2.Expression;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.ItemKind;
+import org.eclipse.bpmn2.ResourceAssignmentExpression;
 import org.eclipse.bpmn2.ScriptTask;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.Task;
@@ -333,6 +335,59 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 		@Override
 		public Bpmn2ExtendedPropertiesAdapter caseCallableElement(CallableElement object) {
 			return super.caseCallableElement(object);
+		}
+
+		@Override
+		public Bpmn2ExtendedPropertiesAdapter caseResourceAssignmentExpression(ResourceAssignmentExpression object) {
+        	final Bpmn2ExtendedPropertiesAdapter adapter = new Bpmn2ExtendedPropertiesAdapter(adapterFactory,object);
+        	final EStructuralFeature ref = Bpmn2Package.eINSTANCE.getResourceAssignmentExpression_Expression();
+        	adapter.setFeatureDescriptor(ref,
+    			new Bpmn2FeatureDescriptor(adapterFactory,object,ref) {
+
+					@Override
+					public String getText(Object context) {
+						EObject object = this.object;
+    					if (context instanceof ResourceAssignmentExpression)
+    						object = (EObject)context;
+    					ResourceAssignmentExpression rae = null;
+    					if (object instanceof ResourceAssignmentExpression)
+    						rae = (ResourceAssignmentExpression) object;
+    					if (rae!=null && rae.getExpression() instanceof FormalExpression) {
+    						return ((FormalExpression)rae.getExpression()).getBody();
+    					}
+						return "";
+					}
+
+					@Override
+					public void setValue(EObject context, Object value) {
+						ResourceAssignmentExpression rae = (ResourceAssignmentExpression)this.object;
+						if (!(rae.getExpression() instanceof FormalExpression)) {
+							final FormalExpression e = Bpmn2Factory.eINSTANCE.createFormalExpression();
+							e.setBody((String) value);
+							TransactionalEditingDomain editingDomain = getEditingDomain(object);
+							if (editingDomain == null) {
+								object.eSet(feature, value);
+							} else {
+								editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+									@Override
+									protected void doExecute() {
+										object.eSet(feature, e);
+										ModelUtil.setID(e);
+									}
+								});
+							}
+						}
+					}
+        		}
+        	);
+        	adapter.setObjectDescriptor(new Bpmn2ObjectDescriptor(adapterFactory, object) {
+				@Override
+				public String getText(Object context) {
+					return adapter.getFeatureDescriptor(ref).getText(context);
+				}
+        	});
+
+        	return adapter;
 		}
 
 		private void addActivityProperties(Bpmn2ExtendedPropertiesAdapter adapter) {

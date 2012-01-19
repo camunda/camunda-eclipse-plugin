@@ -21,6 +21,10 @@ import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
@@ -176,8 +180,16 @@ public class PropertiesCompositeFactory {
 		if (composite==null && useDefault)
 			composite = new DefaultPropertiesComposite(parent,style);
 
-		if (!useDefault && composite instanceof DefaultPropertiesComposite)
+		if (!useDefault && composite.getClass() == DefaultPropertiesComposite.class)
 			composite = null;
+		
+		// set a default layout data
+		if (composite!=null) {
+			if (parent.getLayout() instanceof GridLayout) {
+				GridLayout layout = (GridLayout)parent.getLayout(); 
+				composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
+			}
+		}
 		
 		return composite;
 	}

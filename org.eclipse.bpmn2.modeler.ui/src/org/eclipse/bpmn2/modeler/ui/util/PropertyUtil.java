@@ -129,21 +129,30 @@ public class PropertyUtil {
 	 * Various model object and feature UI property methods
 	 */
 	public static String getLabel(Object object) {
+		String label = "";
 		if (object instanceof EObject) {
 			EObject eObject = (EObject)object;
 			Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(eObject, Bpmn2ExtendedPropertiesAdapter.class);
 			if (adapter!=null)
-				return adapter.getObjectDescriptor().getLabel(eObject);
-			return ModelUtil.toDisplayName( eObject.eClass().getName() );
+				label = adapter.getObjectDescriptor().getLabel(eObject);
+			else
+				label = ModelUtil.toDisplayName( eObject.eClass().getName() );
 		}
-		return object.toString();
+		else
+			label = object.toString();
+		label = label.replaceAll(" Ref$", "");
+		return label;
 	}
 	
 	public static String getLabel(EObject object, EStructuralFeature feature) {
+		String label = "";
 		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
 		if (adapter!=null)
-			return adapter.getFeatureDescriptor(feature).getLabel(object);
-		return ModelUtil.toDisplayName( feature.getName() );
+			label = adapter.getFeatureDescriptor(feature).getLabel(object);
+		else
+			label = ModelUtil.toDisplayName( feature.getName() );
+		label = label.replaceAll(" Ref$", "");
+		return label;
 	}
 	
 	public static String getText(Object object) {

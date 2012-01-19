@@ -18,6 +18,7 @@ import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.DataObjectReference;
 import org.eclipse.bpmn2.Expression;
 import org.eclipse.bpmn2.FormalExpression;
+import org.eclipse.bpmn2.ResourceAssignmentExpression;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
@@ -45,6 +46,7 @@ public class DataObjectPropertySection extends AbstractBpmn2PropertySection {
 		PropertiesCompositeFactory.register(Assignment.class, DataAssignmentPropertiesComposite.class);
 		PropertiesCompositeFactory.register(Expression.class, ExpressionPropertiesComposite.class);
 		PropertiesCompositeFactory.register(FormalExpression.class, ExpressionPropertiesComposite.class);
+		PropertiesCompositeFactory.register(ResourceAssignmentExpression.class, ResourceAssignmentExpressionPropertiesComposite.class);
 	}
 	
 	/* (non-Javadoc)

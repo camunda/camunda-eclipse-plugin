@@ -65,7 +65,6 @@ public class FeatureEditingDialog extends Dialog {
 		AbstractBpmn2PropertiesComposite comp = PropertiesCompositeFactory.createComposite(
 				feature.getEType().getInstanceClass(), dialogArea, SWT.NONE);
 		
-		comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		if (newObject==null) {
 			// create the new object
 			newObject = editor.getModelHandler().create((EClass)feature.getEType());
