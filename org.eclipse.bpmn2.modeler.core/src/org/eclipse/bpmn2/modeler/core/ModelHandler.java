@@ -45,6 +45,7 @@ import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.StartEvent;
+import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNPlane;
@@ -806,6 +807,13 @@ public class ModelHandler {
 		}
 		if (o instanceof Participant) {
 			return getOrCreateProcess((Participant) o);
+		}
+		if (o instanceof SubProcess) {
+			EObject container = (SubProcess)o;
+			while (!(container instanceof Process) && container.eContainer()!=null) {
+				container = container.eContainer();
+			}
+			return (FlowElementsContainer) container;
 		}
 		return findElementOfType(FlowElementsContainer.class, o);
 	}
