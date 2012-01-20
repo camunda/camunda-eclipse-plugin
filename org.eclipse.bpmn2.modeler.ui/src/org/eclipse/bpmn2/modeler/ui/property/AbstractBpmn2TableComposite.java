@@ -165,7 +165,10 @@ public class AbstractBpmn2TableComposite extends Composite {
 		// assume we are being placed in an AbstractBpmn2PropertyComposite which has
 		// a GridLayout of 3 columns
 		setLayout(new GridLayout(3, false));
-		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+		if (getParent().getLayout() instanceof GridLayout) {
+			GridLayout layout = (GridLayout) getParent().getLayout();
+			setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, layout.numColumns, 1));
+		}
 		this.style = style;
 		toolkit.adapt(this);
 		toolkit.paintBordersFor(this);

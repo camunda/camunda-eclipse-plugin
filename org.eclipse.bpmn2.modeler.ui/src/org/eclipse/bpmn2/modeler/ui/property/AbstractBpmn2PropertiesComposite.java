@@ -20,8 +20,10 @@ import java.util.List;
 import java.util.Stack;
 
 import org.eclipse.bpmn2.Bpmn2Factory;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
+import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
@@ -133,6 +135,11 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 		toolkit.adapt(this);
 		toolkit.paintBordersFor(this);
 		setLayout(new GridLayout(3, false));
+		// set a default Layout Data if the parent is using a GridLayout
+		if (getParent().getLayout() instanceof GridLayout) {
+			GridLayout layout = (GridLayout) getParent().getLayout();
+			setLayoutData(new GridData(SWT.FILL,SWT.TOP,true,false,layout.numColumns,1));
+		}
 		addDomainListener();
 	}
 	
@@ -506,13 +513,38 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 				parent = getAttributesParent();
 			
 			String displayName = PropertyUtil.getLabel(object, reference);
-	
-			AbstractBpmn2PropertiesComposite composite = PropertiesCompositeFactory.createComposite(
-					reference.getEReferenceType().getInstanceClass(), propertySection, false);
-			if (composite!=null) {
-				composite.setEObject(propertySection.editor, object);
+
+			if (getDiagramEditor().getPreferences().getExpandProperties()) {
+				AbstractBpmn2PropertiesComposite composite = null;
+				if (propertySection!=null) {
+					composite = PropertiesCompositeFactory.createComposite(
+						reference.getEReferenceType().getInstanceClass(), propertySection, true);
+				}
+				else {
+					composite = PropertiesCompositeFactory.createComposite(
+						reference.getEReferenceType().getInstanceClass(), parent, SWT.NONE, true);
+				}
+				
+				if (composite!=null) {
+					EObject value = (EObject)object.eGet(reference);
+					if (value==null) {
+						value = getDiagramEditor().getModelHandler().create((EClass)reference.getEType());
+						value.eAdapters().add( new InsertionAdapter(object, reference, value) );
+					}
+					composite.setEObject(getDiagramEditor(), value);
+					composite.setTitle( PropertyUtil.getLabel(object,reference) + " Details");
+				}
+				else {
+					Label label = createLabel(
+							parent,
+							"Internal error: cannot display properties for "+
+							displayName+
+							" because the property page does not exist.");
+					label.setLayoutData(new GridData(SWT.FILL,SWT.TOP,true,false,3,1));
+				}
 			}
-			else {
+			else
+			{
 				ObjectEditor editor;
 				if (PropertyUtil.isMultiChoice(object, reference)) {
 					if (reference.isMany()) {

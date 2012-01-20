@@ -33,6 +33,7 @@ public class Bpmn2PropertyPage extends PropertyPage {
 	
 	private Combo cboRuntimes;
 	private Button btnShowAdvancedProperties;
+	private Button btnExpandProperties;
 	
 	public Bpmn2PropertyPage() {
 		super();
@@ -49,7 +50,7 @@ public class Bpmn2PropertyPage extends PropertyPage {
 
 		Label lblRuntime = new Label(container, SWT.NONE);
 		lblRuntime.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
-		lblRuntime.setText("Targeted runtime:");
+		lblRuntime.setText(Bpmn2Preferences.PREF_TARGET_RUNTIME_LABEL);
 		
 		cboRuntimes = new Combo(container, SWT.NONE);
 		cboRuntimes.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
@@ -65,8 +66,14 @@ public class Bpmn2PropertyPage extends PropertyPage {
 		
 		btnShowAdvancedProperties = new Button(container, SWT.CHECK);
 		btnShowAdvancedProperties.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
-		btnShowAdvancedProperties.setText("Show the Advanced Properties Tab for BPMN2 Elements");
+		btnShowAdvancedProperties.setText(Bpmn2Preferences.PREF_SHOW_ADVANCED_PROPERTIES_LABEL);
 		btnShowAdvancedProperties.setSelection( prefs.getShowAdvancedPropertiesTab() );
+
+		
+		btnExpandProperties = new Button(container, SWT.CHECK);
+		btnExpandProperties.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
+		btnExpandProperties.setText(Bpmn2Preferences.PREF_EXPAND_PROPERTIES_LABEL);
+		btnExpandProperties.setSelection( prefs.getExpandProperties() );
 
 		return container;
 	}
@@ -112,6 +119,9 @@ public class Bpmn2PropertyPage extends PropertyPage {
 		
 		boolean show = btnShowAdvancedProperties.getSelection();
 		prefs.setShowAdvancedPropertiesTab(show);
+		
+		boolean expand = btnExpandProperties.getSelection();
+		prefs.setExpandProperties(expand);
 		
 		prefs.save();
 	}

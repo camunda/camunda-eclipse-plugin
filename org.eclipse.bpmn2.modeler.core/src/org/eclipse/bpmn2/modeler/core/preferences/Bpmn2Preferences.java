@@ -13,7 +13,9 @@
 package org.eclipse.bpmn2.modeler.core.preferences;
 
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
+import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.core.internal.resources.ProjectPreferences;
+import org.eclipse.core.internal.preferences.DefaultPreferences;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
@@ -22,14 +24,22 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
 @SuppressWarnings("restriction")
-public class Bpmn2Preferences implements IPreferenceChangeListener {
+public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyChangeListener {
 	public final static String PROJECT_PREFERENCES_ID = "org.eclipse.bpmn2.modeler";
 	public final static String PREF_TARGET_RUNTIME = "target.runtime";
+	public final static String PREF_TARGET_RUNTIME_LABEL = "Target &Runtime";
 	public final static String PREF_SHOW_ADVANCED_PROPERTIES = "show.advanced.properties";
+	public final static String PREF_SHOW_ADVANCED_PROPERTIES_LABEL = "Show the &Advanced Properties Tab for BPMN2 Elements";
+	public final static String PREF_EXPAND_PROPERTIES = "expand.properties";
+	public final static String PREF_EXPAND_PROPERTIES_LABEL = "E&xpand compound property details instead of showing a selection list";
 	public final static String PREF_OVERRIDE_MODEL_ENABLEMENTS = "override.model.enablements";
 	
 	private Preferences prefs;
@@ -40,6 +50,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener {
 	private TargetRuntime targetRuntime;
 	private boolean showAdvancedPropertiesTab;
 	private boolean overrideModelEnablements;
+	private boolean expandProperties;
 	
 	// the global user preferences:
 	// TODO: stuff like colors, fonts, etc.
@@ -52,6 +63,8 @@ public class Bpmn2Preferences implements IPreferenceChangeListener {
 				.node(PROJECT_PREFERENCES_ID);
 		if (prefs instanceof ProjectPreferences)
 			((ProjectPreferences)prefs).addPreferenceChangeListener(this);
+		
+		Activator.getDefault().getPreferenceStore().addPropertyChangeListener(this);
 	}
 
 	public void restoreDefaults() {
@@ -78,6 +91,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener {
 					prefs.get(PREF_TARGET_RUNTIME,TargetRuntime.DEFAULT_RUNTIME_ID));
 			showAdvancedPropertiesTab = prefs.getBoolean(PREF_SHOW_ADVANCED_PROPERTIES, true);
 			overrideModelEnablements = prefs.getBoolean(PREF_OVERRIDE_MODEL_ENABLEMENTS, false);
+			expandProperties = prefs.getBoolean(PREF_EXPAND_PROPERTIES, false);
 			loaded = true;
 		}
 	}
@@ -88,6 +102,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener {
 			prefs.put(PREF_TARGET_RUNTIME,targetRuntime.getId());
 			prefs.putBoolean(PREF_SHOW_ADVANCED_PROPERTIES, showAdvancedPropertiesTab);
 			prefs.putBoolean(PREF_OVERRIDE_MODEL_ENABLEMENTS, overrideModelEnablements);
+			prefs.putBoolean(PREF_EXPAND_PROPERTIES, expandProperties);
 			prefs.flush();
 			
 			dirty = false;
@@ -157,9 +172,27 @@ public class Bpmn2Preferences implements IPreferenceChangeListener {
 		overrideModelEnablements = override;
 		dirty = true;
 	}
+	
+	public boolean getExpandProperties() {
+		load();
+		return expandProperties;
+	}
+	
+	public void setExpandProperties(boolean expand) {
+		expandProperties = expand;
+		dirty = true;
+	}
 
 	@Override
 	public void preferenceChange(PreferenceChangeEvent event) {
+		reload();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
+	 */
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
 		reload();
 	}
 }

@@ -2,7 +2,7 @@ package org.eclipse.bpmn2.modeler.ui.preferences;
 
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
-import org.eclipse.bpmn2.modeler.ui.Activator;
+import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.ui.IConstants;
 import org.eclipse.bpmn2.modeler.ui.Messages;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
@@ -44,9 +44,15 @@ public class Bpmn2HomePreferencePage
 	public void createFieldEditors() {
 		BooleanFieldEditor showAdvancedPropsTab = new BooleanFieldEditor(
 				Bpmn2Preferences.PREF_SHOW_ADVANCED_PROPERTIES,
-				"Show the &Advanced Properties Tab for BPMN2 Elements",
+				Bpmn2Preferences.PREF_SHOW_ADVANCED_PROPERTIES_LABEL,
 				getFieldEditorParent());
 		addField(showAdvancedPropsTab);
+
+		BooleanFieldEditor expandProperties = new BooleanFieldEditor(
+				Bpmn2Preferences.PREF_EXPAND_PROPERTIES,
+				Bpmn2Preferences.PREF_EXPAND_PROPERTIES_LABEL,
+				getFieldEditorParent());
+		addField(expandProperties);
 		
 		String[][] entries = new String[TargetRuntime.getAllRuntimes().length][2];
 		int i = 0;
@@ -58,7 +64,7 @@ public class Bpmn2HomePreferencePage
 
 		ComboFieldEditor targetRuntimes = new ComboFieldEditor(
 				Bpmn2Preferences.PREF_TARGET_RUNTIME,
-				"Target &Runtime",
+				Bpmn2Preferences.PREF_TARGET_RUNTIME_LABEL,
 				entries,
 				getFieldEditorParent());
 		addField(targetRuntimes);

@@ -18,18 +18,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.Activity;
-import org.eclipse.bpmn2.Assignment;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.CallableElement;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
-import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.InputSet;
 import org.eclipse.bpmn2.OutputSet;
-import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
+import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
@@ -37,10 +36,8 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 
@@ -80,33 +77,19 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 			// the container parameter must be an Activity or CallableElement (i.e. a Process or GlobalTask)
 			InputOutputSpecification ioSpecification = (InputOutputSpecification)be.eGet(ioSpecificationFeature);
 			if (ioSpecification==null) {
-				boolean create = MessageDialog.openQuestion(getShell(), "Missing I/O Parameters",
-						"The "+be.eClass().getName()+" does not have a I/O specification - create it now?");
-				
-				if (create) {
-					domain.getCommandStack().execute(new RecordingCommand(domain) {
-						@Override
-						protected void doExecute() {
-							InputOutputSpecification newValue = Bpmn2Factory.eINSTANCE.createInputOutputSpecification();
-							be.eSet(ioSpecificationFeature, newValue);
-							ModelUtil.setID((EObject)newValue);
-						}
-					});
-					ioSpecification = (InputOutputSpecification)be.eGet(ioSpecificationFeature);
-				}
+				ioSpecification = Bpmn2Factory.eINSTANCE.createInputOutputSpecification();
+				ioSpecification.eAdapters().add( new InsertionAdapter(be, "ioSpecification", ioSpecification) );
 			}
 
-			if (ioSpecification!=null) {
-				EStructuralFeature dataInputsFeature = getFeature(ioSpecification, "dataInputs");
-				inputTable = new IOParametersTable(be, ioSpecification, dataInputsFeature);
-				inputTable.bindList(ioSpecification, dataInputsFeature);
-				inputTable.setTitle("Input Parameters");
-	
-				EStructuralFeature dataOutputsFeature = getFeature(ioSpecification, "dataOutputs");
-				outputTable = new IOParametersTable(be, ioSpecification, dataOutputsFeature);
-				outputTable.bindList(ioSpecification, dataOutputsFeature);
-				outputTable.setTitle("Output Parameters");
-			}
+			EStructuralFeature dataInputsFeature = getFeature(ioSpecification, "dataInputs");
+			inputTable = new IOParametersTable(be, ioSpecification, dataInputsFeature);
+			inputTable.bindList(ioSpecification, dataInputsFeature);
+			inputTable.setTitle("Input Parameters");
+
+			EStructuralFeature dataOutputsFeature = getFeature(ioSpecification, "dataOutputs");
+			outputTable = new IOParametersTable(be, ioSpecification, dataOutputsFeature);
+			outputTable.bindList(ioSpecification, dataOutputsFeature);
+			outputTable.setTitle("Output Parameters");
 		}
 		else {
 			// the container is a ThrowEvent
@@ -123,6 +106,9 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 		
 		public IOParametersTable(EObject container, InputOutputSpecification ioSpecification, EStructuralFeature ioFeature) {
 			super(IoParametersPropertiesComposite.this, AbstractBpmn2TableComposite.DEFAULT_STYLE | AbstractBpmn2TableComposite.EDIT_BUTTON);
+			// since the ioSpecification may not yet be contained in a Resource, the table baseclass
+			// will have no idea which editor this thing belongs to, so we set it here.
+			bpmn2Editor = BPMN2Editor.getEditor(container);
 			this.ioFeature = ioFeature;
 			this.ioSpecification = ioSpecification;
 			if (container instanceof Activity) {
@@ -162,6 +148,9 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 				return null;
 			}
 			String name = dialog.getValue();
+			
+			// Make sure that the ioSpecification is contained in our Activity.
+			InsertionAdapter.executeIfNeeded(ioSpecification);
 			
 			param = super.addListItem(object, feature);
 			if (param instanceof DataInput) {

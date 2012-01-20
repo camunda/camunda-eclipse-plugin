@@ -13,6 +13,7 @@
 
 package org.eclipse.bpmn2.modeler.ui.property.editors;
 
+import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
@@ -77,13 +78,23 @@ public abstract class ObjectEditor {
 	}
 
 	protected boolean updateObject(final Object result) {
-		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
-		if (adapter!=null) {
-			adapter.getFeatureDescriptor(feature).setValue(object, result);
-			return true;
-		}
-		
 		if (result != object.eGet(feature)) {
+			InsertionAdapter insertionAdapter = AdapterUtil.adapt(object, InsertionAdapter.class);
+			if (insertionAdapter!=null) {
+				// make sure the new object is added to its container first
+				// so that it inherits the container's Resource and EditingDomain
+				// before we try to change its value.
+				insertionAdapter.execute();
+			}
+			
+			// use the Extended Properties adapter if there is one
+			Bpmn2ExtendedPropertiesAdapter adapter = AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+			if (adapter!=null) {
+				adapter.getFeatureDescriptor(feature).setValue(object, result);
+				return true;
+			}
+		
+			// fallback is to set the new value here
 			TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
 			domain.getCommandStack().execute(new RecordingCommand(domain) {
 				@Override

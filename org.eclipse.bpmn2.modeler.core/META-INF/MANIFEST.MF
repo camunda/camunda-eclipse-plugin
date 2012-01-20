@@ -45,9 +45,13 @@ Export-Package: org.eclipse.bpmn2.modeler.core,
  org.eclipse.bpmn2.modeler.core.preferences,
  org.eclipse.bpmn2.modeler.core.runtime,
  org.eclipse.bpmn2.modeler.core.utils
+ 
 Import-Package: org.eclipse.bpel.wsil.model.inspection,
  org.eclipse.graphiti.ui.features,
+ org.eclipse.jface.util,
  org.eclipse.jface.viewers,
+ org.eclipse.jface.preference,
  org.eclipse.swt.graphics,
  org.eclipse.ui,
+ org.eclipse.ui.plugin,
  org.eclipse.ui.views.properties.tabbed
