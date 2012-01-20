@@ -143,7 +143,7 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
     						object = (CallActivity)context;
     					CallableElement ce = object.getCalledElementRef();
     					if (ce.eIsProxy())
-    						return ((InternalEObject)ce).eProxyURI().fragment();
+    						return ((InternalEObject)ce).eProxyURI().lastSegment();
     					return super.getText(context);
     				}
     			}
