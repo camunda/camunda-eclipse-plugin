@@ -27,16 +27,25 @@ import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.ItemAwareElement;
+import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite.AbstractPropertiesProvider;
+import org.eclipse.bpmn2.modeler.ui.property.data.ItemAwareElementPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.editors.ComboObjectEditor;
+import org.eclipse.bpmn2.modeler.ui.property.editors.FeatureListObjectEditor;
+import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
+import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.swt.SWT;
@@ -129,15 +138,17 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 		expressionComposite = null;
 		expressionDetailsComposite = null;
 		assignmentsTable = null;
-//		boolean propertyWidgetsShowing = false;
-//		boolean expressionWidgetsShowing = false;
-//		boolean transformationWidgetsShowing = false;
-//		boolean advancedMappingWidgetsShowing = false;
+		propertyWidgetsShowing = false;
+		expressionWidgetsShowing = false;
+		transformationWidgetsShowing = false;
+		advancedMappingWidgetsShowing = false;
 	}
 	
 	@Override
 	public void createBindings(EObject be) {
 
+		String sectionTitle = "";
+		
 		association = null;
 		if (be instanceof DataInput) {
 			isInput = true;
@@ -150,11 +161,6 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 		else {
 			createWidgets();
 			return;
-		}
-		
-		// set section title
-		if (getParent() instanceof Section) {
-			((Section)getParent()).setText("Parameter \""+parameterName+"\" Mapping");
 		}
 		parameter = (ItemAwareElement)be;
 		
@@ -169,11 +175,44 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 				else
 					associations = activity.getDataOutputAssociations();
 			}
+			sectionTitle = "Parameter \""+parameterName+"\" Mapping";
 		}
-		else if (be instanceof ThrowEvent) {
+		else if (container instanceof ThrowEvent) {
 			event = (ThrowEvent)container;
-			if (isInput)
-				associations = event.getDataInputAssociation();
+			associations = event.getDataInputAssociation();
+			if (associations.size()==0) {
+				association = FACTORY.createDataInputAssociation();
+				association.setTargetRef((ItemAwareElement) be);
+				InsertionAdapter.add(event, PACKAGE.getThrowEvent_DataInputAssociation(), association);
+			}
+			DefaultPropertiesComposite dataInputDetails = new DefaultPropertiesComposite(this,SWT.NONE) {
+
+				@Override
+				public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
+					if (propertiesProvider==null) {
+						propertiesProvider = new AbstractPropertiesProvider(object) {
+							String[] properties = new String[] {
+									"name",
+									"isCollection",
+							};
+							
+							@Override
+							public String[] getProperties() {
+								return properties; 
+							}
+						};
+					}
+					return propertiesProvider;
+				}
+				
+			};
+			dataInputDetails.setEObject(getDiagramEditor(), be);
+			sectionTitle = "Data Input Details";
+		}
+		
+		// set section title
+		if (getParent() instanceof Section) {
+			((Section)getParent()).setText(sectionTitle);
 		}
 
 		if (associations!=null) {
@@ -200,6 +239,7 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 		createWidgets();			
 		
 		PropertyUtil.layoutAllParents(this);
+		PropertyUtil.recursivelayout(getParent().getParent());
 	}
 
 	private MapType getMapType() {
@@ -345,24 +385,22 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 						// and add it to the Activity's DataInput/OutputAssociations list using
 						// an InsertionAdapter.
 						if (isInput) {
-							DataInputAssociation diAssociation = 
-									Bpmn2Factory.eINSTANCE.createDataInputAssociation();
+							DataInputAssociation diAssociation = modelHandler.create(DataInputAssociation.class);
 							diAssociation.setTargetRef(parameter);
 							association = diAssociation;
-							association.eAdapters().add(new InsertionAdapter(
+							InsertionAdapter.add(
 									activity,
-									Bpmn2Package.eINSTANCE.getActivity_DataInputAssociations(),
-									association));
+									PACKAGE.getActivity_DataInputAssociations(),
+									association);
 						}
 						else {
-							DataOutputAssociation doAssociation = 
-									Bpmn2Factory.eINSTANCE.createDataOutputAssociation();
+							DataOutputAssociation doAssociation = modelHandler.create(DataOutputAssociation.class);
 							doAssociation.getSourceRef().add(parameter);
 							association = doAssociation;
-							association.eAdapters().add(new InsertionAdapter(
+							InsertionAdapter.add(
 									activity,
-									Bpmn2Package.eINSTANCE.getActivity_DataInputAssociations(),
-									association));
+									PACKAGE.getActivity_DataInputAssociations(),
+									association);
 						}
 					}
 				}
@@ -454,7 +492,6 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 			if (show) {
 				if (propertyDetailsComposite==null) {
 					propertyDetailsComposite = new DefaultPropertiesComposite(this,SWT.BORDER) {
-						private AbstractPropertiesProvider propertiesProvider;
 	
 						@Override
 						public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
@@ -478,8 +515,21 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 							}
 							return propertiesProvider;
 						}
+
+						@Override
+						protected void bindReference(Composite parent, EObject object, EReference reference) {
+							if ("sourceRef".equals(reference.getName())) {
+								if (modelEnablement.isEnabled(object.eClass(), reference)) {
+									String displayName = PropertyUtil.getLabel(object, reference);
+									ObjectEditor editor = new ComboObjectEditor(this,object,reference);
+									editor.createControl(parent,displayName);
+								}
+							}
+							else
+								super.bindReference(parent, object, reference);
+						}
+						
 					};
-					propertyDetailsComposite.setLayoutData(new GridData(SWT.FILL,SWT.TOP,true,false,1,1));
 					propertyDetailsComposite.setEObject(getDiagramEditor(), association);
 					propertyDetailsComposite.setTitle("Properties");
 				}
@@ -510,8 +560,10 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 				// create a new Transformation FormalExpression
 				FormalExpression transformation = association.getTransformation();
 				if (!updatingWidgets && transformation==null) {
-					transformation = Bpmn2Factory.eINSTANCE.createFormalExpression();
-					transformation.eAdapters().add( new InsertionAdapter(association, Bpmn2Package.eINSTANCE.getDataAssociation_Transformation(), transformation) );
+					transformation = modelHandler.createStandby(
+							association,
+							PACKAGE.getDataAssociation_Transformation(),
+							FormalExpression.class);
 				}
 				if (transformationDetailsComposite==null) {
 					transformationDetailsComposite = new DefaultPropertiesComposite(transformationComposite,SWT.NONE);
@@ -565,21 +617,21 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 				}
 				if (!updatingWidgets) {
 					if (assignment==null) {
-						assignment = Bpmn2Factory.eINSTANCE.createAssignment();
-						FormalExpression paramExpression = Bpmn2Factory.eINSTANCE.createFormalExpression();
+						assignment = FACTORY.createAssignment();
+						FormalExpression paramExpression = FACTORY.createFormalExpression();
 						paramExpression.setBody(parameter.getId());
 						if (isInput)
 							assignment.setTo(paramExpression);
 						else
 							assignment.setFrom(paramExpression);
-						assignment.eAdapters().add( new InsertionAdapter(association, Bpmn2Package.eINSTANCE.getDataAssociation_Assignment(), assignment) );
+						InsertionAdapter.add(association, PACKAGE.getDataAssociation_Assignment(), assignment);
 					}
 					if (expression==null) {
-						expression = Bpmn2Factory.eINSTANCE.createFormalExpression();
+						expression = FACTORY.createFormalExpression();
 						if (isInput)
-							expression.eAdapters().add( new InsertionAdapter(assignment, Bpmn2Package.eINSTANCE.getAssignment_From(), expression) );
+							InsertionAdapter.add(assignment, PACKAGE.getAssignment_From(), expression);
 						else
-							expression.eAdapters().add( new InsertionAdapter(assignment, Bpmn2Package.eINSTANCE.getAssignment_To(), expression) );
+							InsertionAdapter.add(assignment, PACKAGE.getAssignment_To(), expression);
 					}
 				}
 	
@@ -625,8 +677,10 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 				// create a new Transformation FormalExpression
 				FormalExpression transformation = association.getTransformation();
 				if (!updatingWidgets && transformation==null) {
-					transformation = Bpmn2Factory.eINSTANCE.createFormalExpression();
-					transformation.eAdapters().add( new InsertionAdapter(association, Bpmn2Package.eINSTANCE.getDataAssociation_Transformation(), transformation) );
+					transformation = modelHandler.createStandby(
+							association,
+							PACKAGE.getDataAssociation_Transformation(),
+							FormalExpression.class);
 				}
 	
 				if (transformationDetailsComposite==null) {

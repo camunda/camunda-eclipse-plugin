@@ -16,6 +16,8 @@ package org.eclipse.bpmn2.modeler.ui.property;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.bpmn2.Bpmn2Factory;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.impl.Bpmn2PackageImpl;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;

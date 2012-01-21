@@ -90,7 +90,8 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  */
 public class AbstractBpmn2TableComposite extends Composite {
 
-	public static final Bpmn2Factory MODEL_FACTORY = Bpmn2Factory.eINSTANCE;
+	public final static Bpmn2Package PACKAGE = Bpmn2Package.eINSTANCE;
+	public final static Bpmn2Factory FACTORY = Bpmn2Factory.eINSTANCE;
 	
 	public static final int HIDE_TITLE = 1 << 18; // Hide section title - useful if this is the only thing in the PropertySheetTab
 	public static final int ADD_BUTTON = 1 << 19; // show "Add" button
@@ -198,7 +199,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 	 */
 	public EClass getListItemClassToAdd(EClass listItemClass) {
 		final List<EClass> items = new ArrayList<EClass>();
-		for (EClassifier eclassifier : Bpmn2Package.eINSTANCE.getEClassifiers() ) {
+		for (EClassifier eclassifier : PACKAGE.getEClassifiers() ) {
 			if (eclassifier instanceof EClass) {
 				EClass eclass = (EClass)eclassifier;
 				if (eclass.getEAllSuperTypes().contains(listItemClass)) {

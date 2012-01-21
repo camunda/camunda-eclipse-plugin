@@ -53,6 +53,7 @@ import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.di.BpmnDiFactory;
 import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.bpmn2.di.ParticipantBandKind;
+import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -75,6 +76,7 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.util.EObjectEList;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
@@ -921,8 +923,8 @@ public class ModelHandler {
 		
 		if (!featureIsContainer) {
 			if (value instanceof EObject) {
-				DocumentRoot root = null;
-				Definitions definitions = null;
+				DocumentRoot root = (DocumentRoot)getDefinitions().eContainer();
+				Definitions definitions = getDefinitions();
 				Process process = null;
 				Collaboration collaboration = null;
 				Choreography choreography = null;
@@ -953,7 +955,14 @@ public class ModelHandler {
 				}
 			}
 		}
-		object.eSet(feature, value);
+		if (object.eGet(feature) instanceof EObjectEList) {
+			// the feature is a reference list - user must have meant to insert
+			// the value into this list...
+			EObjectEList list = (EObjectEList)object.eGet(feature);
+			list.add(value);
+		}
+		else
+			object.eSet(feature, value);
 	}
 	
 	/**
@@ -971,6 +980,12 @@ public class ModelHandler {
 		return newObject;
 	}
 	
+	public <T extends EObject> T createStandby(EObject object, EStructuralFeature feature, Class<T> clazz) {
+		T newObject = create(clazz);
+		newObject.eAdapters().add(new InsertionAdapter(resource, object, feature, newObject));
+		return newObject;
+	}
+
 	public <T extends EObject> T create(Class<T> clazz) {
 		EObject newObject = null;
 		EClassifier eClassifier = Bpmn2Package.eINSTANCE.getEClassifier(clazz.getSimpleName());

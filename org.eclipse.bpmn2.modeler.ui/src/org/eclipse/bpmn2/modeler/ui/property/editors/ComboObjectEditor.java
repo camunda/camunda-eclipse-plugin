@@ -24,6 +24,7 @@ import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.util.EObjectEList;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
@@ -161,6 +162,13 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 	protected void fillCombo() {
 		if (comboViewer!=null) {
 			Object oldValue =  object.eGet(feature);
+			// hack to deal with List features: use the first element in the list to
+			// determine which item to select as active in the combobox
+			if (oldValue instanceof EObjectEList) {
+				EObjectEList list = (EObjectEList)oldValue;
+				if (list.size()>0)
+					oldValue = list.get(0);
+			}
 	
 			ignoreComboSelections = true;
 			while (comboViewer.getElementAt(0) != null)

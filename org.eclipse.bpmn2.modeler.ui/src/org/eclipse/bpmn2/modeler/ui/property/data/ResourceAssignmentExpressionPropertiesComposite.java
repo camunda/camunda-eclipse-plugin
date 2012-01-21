@@ -38,7 +38,7 @@ public class ResourceAssignmentExpressionPropertiesComposite extends ExpressionP
 	public void setEObject(BPMN2Editor bpmn2Editor, EObject object) {
 		object = ((ResourceAssignmentExpression)object).getExpression();
 		if (object==null)
-			object = getDiagramEditor().getModelHandler().create(Bpmn2Package.eINSTANCE.getExpression());
+			object = getDiagramEditor().getModelHandler().create(PACKAGE.getExpression());
 		super.setEObject(bpmn2Editor, object);
 	}
 

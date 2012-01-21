@@ -50,7 +50,7 @@ public class ExtensionValueTableComposite extends AbstractBpmn2TableComposite {
 		EStructuralFeature evf = listParentObject.eClass().getEStructuralFeature("extensionValues");
 		EList<EObject> list = (EList<EObject>)listParentObject.eGet(evf);
 
-		ExtensionAttributeValue newItem = Bpmn2Factory.eINSTANCE.createExtensionAttributeValue();
+		ExtensionAttributeValue newItem = FACTORY.createExtensionAttributeValue();
 		FeatureMap map = newItem.getValue();
 		map.add(extensionValueFeature, object);
 		list.add(newItem);

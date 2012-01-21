@@ -24,6 +24,8 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.EObjectEList;
 import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.domain.EditingDomain;
@@ -31,6 +33,8 @@ import org.eclipse.emf.edit.domain.IEditingDomainProvider;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
+import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
 
 /**
  * @author Bob Brodt
@@ -139,10 +143,28 @@ public class Bpmn2FeatureDescriptor extends Bpmn2ObjectDescriptor {
 		return multiline == 1;
 	}
 	
-	public void setValue(EObject context, Object value) {
+	public void setValue(EObject context, final Object value) {
 		EObject object = this.object;
 		if (context!=null)
 			object = context;
+		
+		if (object.eGet(feature) instanceof EObjectEList) {
+			// the feature is a reference list - user must have meant to insert
+			// the value into this list...
+			final EObjectEList list = (EObjectEList)object.eGet(feature);
+			TransactionalEditingDomain editingDomain = getEditingDomain(object);
+			if (editingDomain == null) {
+				list.add(value);
+			} else {
+				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+					@Override
+					protected void doExecute() {
+						list.add(value);
+					}
+				});
+			}
+			return;
+		}
 		
 		IItemPropertyDescriptor propertyDescriptor = getPropertyDescriptor(object, feature);
 		if (propertyDescriptor != null) {

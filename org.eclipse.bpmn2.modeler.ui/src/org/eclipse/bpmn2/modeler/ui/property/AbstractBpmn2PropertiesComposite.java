@@ -91,6 +91,9 @@ import org.eclipse.ui.forms.widgets.Section;
  */
 public abstract class AbstractBpmn2PropertiesComposite extends Composite implements ResourceSetListener {
 
+	public final static Bpmn2Package PACKAGE = Bpmn2Package.eINSTANCE;
+	public final static Bpmn2Factory FACTORY = Bpmn2Factory.eINSTANCE;
+
 	protected AbstractBpmn2PropertySection propertySection;
 	protected EObject be;
 	protected FormToolkit toolkit;
@@ -528,8 +531,8 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 				if (composite!=null) {
 					EObject value = (EObject)object.eGet(reference);
 					if (value==null) {
-						value = getDiagramEditor().getModelHandler().create((EClass)reference.getEType());
-						value.eAdapters().add( new InsertionAdapter(object, reference, value) );
+						value = modelHandler.create((EClass)reference.getEType());
+						InsertionAdapter.add(object, reference, value);
 					}
 					composite.setEObject(getDiagramEditor(), value);
 					composite.setTitle( PropertyUtil.getLabel(object,reference) + " Details");
@@ -569,7 +572,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 				domain.getCommandStack().execute(new RecordingCommand(domain) {
 					@Override
 					protected void doExecute() {
-						Object newValue = Bpmn2Factory.eINSTANCE.create(((EReference) feature).getEReferenceType());
+						Object newValue = FACTORY.create(((EReference) feature).getEReferenceType());
 						object.eSet(feature, newValue);
 						ModelUtil.setID((EObject)newValue);
 					}

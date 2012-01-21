@@ -144,7 +144,7 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 				};
 				columnProvider.add(tableColumn);
 				// add remaining columns
-				EClass eClass = Bpmn2Package.eINSTANCE.getImport();
+				EClass eClass = PACKAGE.getImport();
 				columnProvider.add(new TableColumn(object,
 						(EAttribute)eClass.getEStructuralFeature("namespace")));
 				columnProvider.add(new TableColumn(object,

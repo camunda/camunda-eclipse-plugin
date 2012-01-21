@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.ui.property;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.runtime.IBpmn2PropertySection;
@@ -141,6 +142,12 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 		return editor;
 	}
 
+	protected ModelHandler getModelHandler() {
+		if (editor!=null)
+			return editor.getModelHandler();
+		return null;
+	}
+	
 	/**
 	 * Returns the property section's TabbedPropertySheetPage
 	 * 

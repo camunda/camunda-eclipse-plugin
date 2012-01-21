@@ -22,6 +22,7 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
@@ -36,18 +37,23 @@ import org.eclipse.emf.transaction.util.TransactionUtil;
  */
 public class InsertionAdapter extends EContentAdapter {
 	
+	protected Resource resource;
 	protected EObject object;
 	protected EStructuralFeature feature;
 	protected EObject value;
 	
-	public InsertionAdapter(final EObject object, final EStructuralFeature feature, EObject value) {
+	public InsertionAdapter(EObject object, EStructuralFeature feature, EObject value) {
+		this(null,object,feature,value);
+	}
+
+	public InsertionAdapter(Resource resource, EObject object, EStructuralFeature feature, EObject value) {
 		// in order for this to work, the object must be contained in a Resource,
 		// the value must NOT YET be contained in a Resource,
 		// and the value must be an instance of the feature EType.
 //		assert(object.eResource()!=null);
 //		assert(value.eResource()==null);
 //		assert(feature.getEType().isInstance(value));
-		
+		this.resource = resource;
 		this.object = object;
 		this.feature = feature;
 		this.value = value;
@@ -55,6 +61,18 @@ public class InsertionAdapter extends EContentAdapter {
 	
 	public InsertionAdapter(EObject object, String featureName, EObject value) {
 		this(object, object.eClass().getEStructuralFeature(featureName), value);
+	}
+	
+	public static EObject add(EObject object, EStructuralFeature feature, EObject value) {
+		value.eAdapters().add(
+				new InsertionAdapter(object, feature, value));
+		return value;
+	}
+	
+	public static EObject add(EObject object, String featureName, EObject value) {
+		value.eAdapters().add(
+				new InsertionAdapter(object, featureName, value));
+		return value;
 	}
 
 	public void notifyChanged(Notification notification) {
@@ -117,10 +135,14 @@ public class InsertionAdapter extends EContentAdapter {
 	}
 	
 	private TransactionalEditingDomain getEditingDomain() {
-		return
+		if (resource==null) {
+			return
 				(object.eResource()==null) ?
 				null : 
 				TransactionUtil.getEditingDomain(object.eResource());
+		}
+		else
+			return TransactionUtil.getEditingDomain(resource);
 	}
 	
 	public static void executeIfNeeded(EObject value) {

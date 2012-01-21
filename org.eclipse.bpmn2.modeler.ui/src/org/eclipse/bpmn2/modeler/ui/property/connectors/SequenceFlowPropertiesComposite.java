@@ -67,7 +67,7 @@ public class SequenceFlowPropertiesComposite extends ExpressionPropertiesComposi
 							if (sequenceFlow.getConditionExpression()!=null)
 								sequenceFlow.setConditionExpression(null);
 							else {
-								Expression exp = Bpmn2Factory.eINSTANCE.createFormalExpression();
+								Expression exp = FACTORY.createFormalExpression();
 								sequenceFlow.setConditionExpression(exp);
 								ModelUtil.setID(exp);
 								

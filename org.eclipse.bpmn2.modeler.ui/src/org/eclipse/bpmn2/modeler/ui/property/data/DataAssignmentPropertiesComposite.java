@@ -62,7 +62,7 @@ public class DataAssignmentPropertiesComposite extends DefaultPropertiesComposit
 				domain.getCommandStack().execute(new RecordingCommand(domain) {
 					@Override
 					protected void doExecute() {
-						Expression exp = Bpmn2Factory.eINSTANCE.createFormalExpression();
+						Expression exp = FACTORY.createFormalExpression();
 						assignment.setTo(exp);
 						ModelUtil.setID(exp);
 					}
@@ -75,7 +75,7 @@ public class DataAssignmentPropertiesComposite extends DefaultPropertiesComposit
 				domain.getCommandStack().execute(new RecordingCommand(domain) {
 					@Override
 					protected void doExecute() {
-						Expression exp = Bpmn2Factory.eINSTANCE.createFormalExpression();
+						Expression exp = FACTORY.createFormalExpression();
 						assignment.setFrom(exp);
 						ModelUtil.setID(exp);
 					}

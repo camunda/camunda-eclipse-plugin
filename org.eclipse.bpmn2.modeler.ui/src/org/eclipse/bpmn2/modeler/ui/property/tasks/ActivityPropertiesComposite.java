@@ -151,7 +151,7 @@ public class ActivityPropertiesComposite extends DefaultPropertiesComposite {
 						domain.getCommandStack().execute(new RecordingCommand(domain) {
 							@Override
 							protected void doExecute() {
-								StandardLoopCharacteristics loopChar = Bpmn2Factory.eINSTANCE.createStandardLoopCharacteristics();
+								StandardLoopCharacteristics loopChar = FACTORY.createStandardLoopCharacteristics();
 								activity.setLoopCharacteristics(loopChar);
 								ModelUtil.setID(loopChar);
 								setEObject(activity);
@@ -169,7 +169,7 @@ public class ActivityPropertiesComposite extends DefaultPropertiesComposite {
 						domain.getCommandStack().execute(new RecordingCommand(domain) {
 							@Override
 							protected void doExecute() {
-								MultiInstanceLoopCharacteristics loopChar = Bpmn2Factory.eINSTANCE.createMultiInstanceLoopCharacteristics();
+								MultiInstanceLoopCharacteristics loopChar = FACTORY.createMultiInstanceLoopCharacteristics();
 								activity.setLoopCharacteristics(loopChar);
 								ModelUtil.setID(loopChar);
 								setEObject(activity);

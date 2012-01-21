@@ -54,7 +54,7 @@ public class StandardLoopCharacteristicsPropertiesComposite extends
 							if (standardLoop.getLoopCondition() !=null)
 								standardLoop.setLoopCondition(null);
 							else {
-								Expression exp = Bpmn2Factory.eINSTANCE.createFormalExpression();
+								Expression exp = FACTORY.createFormalExpression();
 								standardLoop.setLoopCondition(exp);
 								ModelUtil.setID(exp);
 							}
@@ -77,7 +77,7 @@ public class StandardLoopCharacteristicsPropertiesComposite extends
 							if (standardLoop.getLoopMaximum() !=null)
 								standardLoop.setLoopMaximum(null);
 							else {
-								Expression exp = Bpmn2Factory.eINSTANCE.createFormalExpression();
+								Expression exp = FACTORY.createFormalExpression();
 								standardLoop.setLoopMaximum(exp);
 								ModelUtil.setID(exp);
 							}

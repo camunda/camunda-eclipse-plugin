@@ -77,8 +77,8 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 			// the container parameter must be an Activity or CallableElement (i.e. a Process or GlobalTask)
 			InputOutputSpecification ioSpecification = (InputOutputSpecification)be.eGet(ioSpecificationFeature);
 			if (ioSpecification==null) {
-				ioSpecification = Bpmn2Factory.eINSTANCE.createInputOutputSpecification();
-				ioSpecification.eAdapters().add( new InsertionAdapter(be, "ioSpecification", ioSpecification) );
+				ioSpecification = FACTORY.createInputOutputSpecification();
+				InsertionAdapter.add(be, "ioSpecification", ioSpecification);
 			}
 
 			EStructuralFeature dataInputsFeature = getFeature(ioSpecification, "dataInputs");
@@ -158,7 +158,7 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 				((DataInput)param).setName(name);
 				List<InputSet> inputSets = ioSpecification.getInputSets();
 				if (inputSets.size()==0) {
-					inputSets.add(Bpmn2Factory.eINSTANCE.createInputSet());
+					inputSets.add(FACTORY.createInputSet());
 				}
 				InputSet is = inputSets.get(0);
 				is.getDataInputRefs().add((DataInput) param);
@@ -169,7 +169,7 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 				((DataOutput)param).setName(name);
 				List<OutputSet> outputSets = ioSpecification.getOutputSets();
 				if (outputSets.size()==0) {
-					outputSets.add(Bpmn2Factory.eINSTANCE.createOutputSet());
+					outputSets.add(FACTORY.createOutputSet());
 				}
 				OutputSet os = outputSets.get(0);
 				os.getDataOutputRefs().add((DataOutput) param);
@@ -178,13 +178,13 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 			if (activity!=null) {
 				// this is an Activity - create an Input or Output DataAssociation
 				if (param instanceof DataInput) {
-					DataInputAssociation inputAssociation = Bpmn2Factory.eINSTANCE.createDataInputAssociation();
+					DataInputAssociation inputAssociation = FACTORY.createDataInputAssociation();
 					activity.getDataInputAssociations().add(inputAssociation);
 					inputAssociation.setTargetRef((DataInput) param);
 				}
 				else if (param instanceof DataOutput)
 				{
-					DataOutputAssociation outputAssociation = Bpmn2Factory.eINSTANCE.createDataOutputAssociation();
+					DataOutputAssociation outputAssociation = FACTORY.createDataOutputAssociation();
 					activity.getDataOutputAssociations().add(outputAssociation);
 					outputAssociation.getSourceRef().clear();
 					outputAssociation.getSourceRef().add((DataOutput) param);
