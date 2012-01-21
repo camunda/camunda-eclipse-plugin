@@ -167,8 +167,8 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 
 		@Override
 		public Bpmn2ExtendedPropertiesAdapter caseFormalExpression(FormalExpression object) {
-        	Bpmn2ExtendedPropertiesAdapter adapter = new Bpmn2ExtendedPropertiesAdapter(adapterFactory,object);
-        	EStructuralFeature body = Bpmn2Package.eINSTANCE.getFormalExpression_Body();
+        	final Bpmn2ExtendedPropertiesAdapter adapter = new Bpmn2ExtendedPropertiesAdapter(adapterFactory,object);
+        	final EStructuralFeature body = Bpmn2Package.eINSTANCE.getFormalExpression_Body();
         	adapter.setFeatureDescriptor(body,
     			new Bpmn2FeatureDescriptor(adapterFactory,object,body) {
     				@Override
@@ -188,7 +188,14 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 					}
     			}
         	);
-        	return adapter;
+			adapter.setObjectDescriptor(new Bpmn2ObjectDescriptor(adapterFactory, object) {
+				@Override
+				public String getText(Object context) {
+					return adapter.getFeatureDescriptor(body).getText(context);
+				}
+			});
+
+			return adapter;
 		}
 
 		@Override
@@ -235,13 +242,13 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 					}
     			}
         	);
-        	adapter.setObjectDescriptor(new Bpmn2ObjectDescriptor(adapterFactory, object) {
+			adapter.setObjectDescriptor(new Bpmn2ObjectDescriptor(adapterFactory, object) {
 				@Override
 				public String getText(Object context) {
 					return adapter.getFeatureDescriptor(ref).getText(context);
 				}
-        	});
-        	return adapter;
+			});
+			return adapter;
 		}
 
 		@Override
