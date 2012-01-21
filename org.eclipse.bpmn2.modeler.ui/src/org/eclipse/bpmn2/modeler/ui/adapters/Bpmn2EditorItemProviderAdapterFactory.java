@@ -20,6 +20,7 @@ import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.CallableElement;
 import org.eclipse.bpmn2.DataAssociation;
 import org.eclipse.bpmn2.DataState;
+import org.eclipse.bpmn2.Error;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ItemDefinition;
@@ -424,6 +425,30 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 					}
         		}
         	);
+
+        	return adapter;
+		}
+
+		@Override
+		public Bpmn2ExtendedPropertiesAdapter caseError(Error object) {
+        	final Bpmn2ExtendedPropertiesAdapter adapter = new Bpmn2ExtendedPropertiesAdapter(adapterFactory,object);
+        	final EStructuralFeature ref = Bpmn2Package.eINSTANCE.getResourceAssignmentExpression_Expression();
+        	adapter.setObjectDescriptor(new Bpmn2ObjectDescriptor(adapterFactory, object) {
+				@Override
+				public String getText(Object context) {
+					final Error error = context instanceof Error ?
+							(Error)context :
+							(Error)this.object;
+					String text = "";
+					if (error.getName()!=null) {
+						text += error.getName();
+					}
+					else if (error.getErrorCode()!=null) {
+						text += "Error Code " + error.getErrorCode();
+					}
+					return text;
+				}
+        	});
 
         	return adapter;
 		}
