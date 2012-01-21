@@ -19,6 +19,7 @@ import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
+import org.eclipse.bpmn2.modeler.ui.property.tasks.DataAssociationPropertiesComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;

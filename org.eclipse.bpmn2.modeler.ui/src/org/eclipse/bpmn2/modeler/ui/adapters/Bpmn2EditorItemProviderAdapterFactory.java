@@ -13,18 +13,13 @@
 
 package org.eclipse.bpmn2.modeler.ui.adapters;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.CallableElement;
+import org.eclipse.bpmn2.DataAssociation;
 import org.eclipse.bpmn2.DataState;
-import org.eclipse.bpmn2.DocumentRoot;
-import org.eclipse.bpmn2.Expression;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ItemDefinition;
@@ -42,8 +37,6 @@ import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.edit.command.SetCommand;
-import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 
@@ -386,6 +379,51 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 					return adapter.getFeatureDescriptor(ref).getText(context);
 				}
         	});
+
+        	return adapter;
+		}
+
+		@Override
+		public Bpmn2ExtendedPropertiesAdapter caseDataAssociation(DataAssociation object) {
+        	final Bpmn2ExtendedPropertiesAdapter adapter = new Bpmn2ExtendedPropertiesAdapter(adapterFactory,object);
+        	final EStructuralFeature ref = Bpmn2Package.eINSTANCE.getDataAssociation_SourceRef();
+        	adapter.setFeatureDescriptor(ref,
+    			new Bpmn2FeatureDescriptor(adapterFactory,object,ref) {
+
+					@Override
+					public void setValue(EObject context, final Object value) {
+						final DataAssociation association = context instanceof DataAssociation ?
+								(DataAssociation)context :
+								(DataAssociation)this.object;
+    					
+						TransactionalEditingDomain editingDomain = getEditingDomain(object);
+						if (association.getSourceRef().size()==0) {
+							if (editingDomain == null) {
+								association.getSourceRef().add((ItemAwareElement)value);
+							} else {
+								editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+									@Override
+									protected void doExecute() {
+										association.getSourceRef().add((ItemAwareElement)value);
+									}
+								});
+							}
+						}
+						else {
+							if (editingDomain == null) {
+								association.getSourceRef().set(0,(ItemAwareElement)value);
+							} else {
+								editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+									@Override
+									protected void doExecute() {
+										association.getSourceRef().set(0,(ItemAwareElement)value);
+									}
+								});
+							}
+						}
+					}
+        		}
+        	);
 
         	return adapter;
 		}
