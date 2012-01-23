@@ -290,8 +290,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @return the value of the '<em>Wait For Completion</em>' attribute.
 	 * @see #setWaitForCompletion(boolean)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_WaitForCompletion()
-	 * @model upper="-2"
-	 *        extendedMetaData="kind='attribute' name='waitForCompletion' namespace='##targetNamespace'"
+	 * @model extendedMetaData="kind='attribute' name='waitForCompletion' namespace='##targetNamespace'"
 	 * @generated
 	 */
 	boolean isWaitForCompletion();
@@ -317,8 +316,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @return the value of the '<em>Independent</em>' attribute.
 	 * @see #setIndependent(boolean)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_Independent()
-	 * @model upper="-2"
-	 *        extendedMetaData="kind='attribute' name='independent' namespace='##targetNamespace'"
+	 * @model extendedMetaData="kind='attribute' name='independent' namespace='##targetNamespace'"
 	 * @generated
 	 */
 	boolean isIndependent();
