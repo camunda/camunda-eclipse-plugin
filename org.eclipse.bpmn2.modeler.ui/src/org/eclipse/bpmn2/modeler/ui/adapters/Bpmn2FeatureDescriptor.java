@@ -16,12 +16,19 @@ package org.eclipse.bpmn2.modeler.ui.adapters;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.eclipse.bpmn2.Choreography;
+import org.eclipse.bpmn2.Collaboration;
+import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.DocumentRoot;
+import org.eclipse.bpmn2.Process;
+import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
@@ -148,6 +155,39 @@ public class Bpmn2FeatureDescriptor extends Bpmn2ObjectDescriptor {
 		if (context!=null)
 			object = context;
 		
+		boolean featureIsContainer = true;
+		if (feature instanceof EReference) {
+			EReference ref = (EReference)feature;
+			featureIsContainer = ref.isContainer();
+		}
+		
+		if (!featureIsContainer) {
+			// if this reference is not the container, try to figure out where it belongs
+			if (value instanceof EObject) {
+				Definitions definitions = ModelUtil.getDefinitions(object);
+//				Process process = null;
+//				Collaboration collaboration = null;
+//				Choreography choreography = null;
+				EObject parent = object;
+				while (parent.eContainer()!=null) {
+					if (parent instanceof Definitions)
+						definitions = (Definitions)parent;
+//					if (parent instanceof Process)
+//						process = (Process)parent;
+//					if (parent instanceof Collaboration)
+//						collaboration = (Collaboration)parent;
+//					if (parent instanceof Choreography)
+//						choreography = (Choreography)parent;
+					parent = parent.eContainer();
+				}
+				
+				if (value instanceof RootElement) {
+					if (!definitions.getRootElements().contains(value))
+						definitions.getRootElements().add((RootElement) value);
+				}
+			}
+		}
+
 		if (object.eGet(feature) instanceof EObjectEList) {
 			// the feature is a reference list - user must have meant to insert
 			// the value into this list...

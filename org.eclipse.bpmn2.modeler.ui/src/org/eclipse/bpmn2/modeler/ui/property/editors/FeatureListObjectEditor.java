@@ -94,7 +94,7 @@ public class FeatureListObjectEditor extends MultivalueObjectEditor {
 //						// create a new target object
 //						FeatureEditingDialog dialog = new FeatureEditingDialog(getDiagramEditor(), object, feature, null);							
 //						if ( dialog.open() == Window.OK) {
-//							addEObject(refs, dialog.getNewObject());
+//							updateObject(refs, dialog.getNewObject());
 //							updateTextField(refs, text);
 //						}
 //					}
@@ -150,20 +150,6 @@ public class FeatureListObjectEditor extends MultivalueObjectEditor {
 					if (!refs.contains(di)) {
 						refs.add(di);
 					}
-				}
-			}
-		});
-	}
-
-	private void addEObject(final List<EObject> refs, final EObject result) {
-		TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
-		domain.getCommandStack().execute(new RecordingCommand(domain) {
-			@Override
-			protected void doExecute() {
-				getDiagramEditor().getModelHandler().set(object, feature, (EObject)result);
-
-				if (!refs.contains(result)) {
-					refs.add(result);
 				}
 			}
 		});

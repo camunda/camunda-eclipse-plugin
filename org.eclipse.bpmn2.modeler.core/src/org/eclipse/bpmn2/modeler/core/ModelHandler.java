@@ -911,59 +911,6 @@ public class ModelHandler {
 
 		return null;
 	}
-
-	public void set(EObject object, EStructuralFeature feature, Object value) {
-		// if the feature is a reference, then we need to figure out where the new object
-		// belongs (i.e. what is its containment object?) and stuff it there.
-		boolean featureIsContainer = true;
-		if (feature instanceof EReference) {
-			EReference ref = (EReference)feature;
-			featureIsContainer = ref.isContainer();
-		}
-		
-		if (!featureIsContainer) {
-			if (value instanceof EObject) {
-				DocumentRoot root = (DocumentRoot)getDefinitions().eContainer();
-				Definitions definitions = getDefinitions();
-				Process process = null;
-				Collaboration collaboration = null;
-				Choreography choreography = null;
-				EObject parent = object;
-				while (parent.eContainer()!=null) {
-					if (parent instanceof Definitions)
-						definitions = (Definitions)parent;
-					if (parent instanceof Process)
-						process = (Process)parent;
-					if (parent instanceof Collaboration)
-						collaboration = (Collaboration)parent;
-					if (parent instanceof Choreography)
-						choreography = (Choreography)parent;
-					if (parent instanceof DocumentRoot)
-						root = (DocumentRoot)parent;
-					parent = parent.eContainer();
-					if (parent instanceof DocumentRoot)
-						root = (DocumentRoot)parent;
-				}
-				
-				if (value instanceof RootElement) {
-					definitions.getRootElements().add((RootElement) value);
-				}
-				else if (root!=null) {
-					EStructuralFeature rootFeature = root.eClass().getEStructuralFeature(feature.getName());
-					if (rootFeature!=null)
-						root.eSet(rootFeature, value);
-				}
-			}
-		}
-		if (object.eGet(feature) instanceof EObjectEList) {
-			// the feature is a reference list - user must have meant to insert
-			// the value into this list...
-			EObjectEList list = (EObjectEList)object.eGet(feature);
-			list.add(value);
-		}
-		else
-			object.eSet(feature, value);
-	}
 	
 	/**
 	 * General-purpose factory method that sets appropriate default values for new objects.

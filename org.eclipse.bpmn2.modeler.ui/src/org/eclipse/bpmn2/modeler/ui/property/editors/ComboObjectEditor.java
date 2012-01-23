@@ -17,7 +17,7 @@ import java.util.Hashtable;
 import java.util.Map.Entry;
 
 import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
-import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2ExtendedPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.Bpmn2ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.FeatureEditingDialog;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
@@ -101,7 +101,7 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 						FeatureEditingDialog dialog = new FeatureEditingDialog(getDiagramEditor(), object, feature, null);							
 						if ( dialog.open() == Window.OK) {
 							EObject value = dialog.getNewObject();
-							addEObject(value);
+							updateObject(value);
 							fillCombo();
 						}
 					}
@@ -191,16 +191,6 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 				}
 			}
 		}
-	}
-
-	protected void addEObject(final Object result) {
-		TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
-		domain.getCommandStack().execute(new RecordingCommand(domain) {
-			@Override
-			protected void doExecute() {
-				getDiagramEditor().getModelHandler().set(object, feature, (EObject)result);
-			}
-		});
 	}
 
 	private ComboViewer createComboViewer(Composite parent, AdapterFactoryLabelProvider labelProvider, int style) {

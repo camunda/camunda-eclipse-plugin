@@ -17,8 +17,7 @@ import java.util.List;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Assignment;
-import org.eclipse.bpmn2.Bpmn2Factory;
-import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.DataAssociation;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
@@ -27,22 +26,16 @@ import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.ItemAwareElement;
-import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite.AbstractPropertiesProvider;
-import org.eclipse.bpmn2.modeler.ui.property.data.ItemAwareElementPropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ComboObjectEditor;
-import org.eclipse.bpmn2.modeler.ui.property.editors.FeatureListObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
-import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
@@ -83,7 +76,7 @@ import org.eclipse.ui.forms.widgets.Section;
  */
 public class DataAssociationPropertiesComposite extends DefaultPropertiesComposite implements IResourceChangeListener {
 	
-	enum MapType {
+	public enum MapType {
 		None,
 		Property,
 		Transformation,
@@ -91,30 +84,28 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 		Advanced
 	};
 
-	Activity activity;
-	ThrowEvent event;
-	ItemAwareElement parameter;
-	String parameterName;
-	DataAssociation association;
-	boolean isInput;
-	boolean updatingWidgets;
-	Button mapPropertyButton;
-	Button mapExpressionButton;
-	Button mapTransformationButton;
-	Button advancedMappingButton;
+	protected ItemAwareElement parameter;
+	protected String parameterName;
+	protected DataAssociation association;
+	protected boolean isInput;
+	protected boolean updatingWidgets;
+	protected Button mapPropertyButton;
+	protected Button mapExpressionButton;
+	protected Button mapTransformationButton;
+	protected Button advancedMappingButton;
 	// holds the Transformation expression details and Assignments table
-	Composite transformationComposite;
-	DefaultPropertiesComposite transformationDetailsComposite;
-	Composite expressionComposite;
-	DefaultPropertiesComposite expressionDetailsComposite;
-	AssignmentsTable assignmentsTable;
+	protected Composite transformationComposite;
+	protected DefaultPropertiesComposite transformationDetailsComposite;
+	protected Composite expressionComposite;
+	protected DefaultPropertiesComposite expressionDetailsComposite;
+	protected AssignmentsTable assignmentsTable;
 	// holds the Property details
-	Composite propertyComposite;
-	DefaultPropertiesComposite propertyDetailsComposite;
-	boolean propertyWidgetsShowing = false;
-	boolean expressionWidgetsShowing = false;
-	boolean transformationWidgetsShowing = false;
-	boolean advancedMappingWidgetsShowing = false;
+	protected Composite propertyComposite;
+	protected DefaultPropertiesComposite propertyDetailsComposite;
+	protected boolean propertyWidgetsShowing = false;
+	protected boolean expressionWidgetsShowing = false;
+	protected boolean transformationWidgetsShowing = false;
+	protected boolean advancedMappingWidgetsShowing = false;
 	
 	public DataAssociationPropertiesComposite(AbstractBpmn2PropertySection section) {
 		super(section);
@@ -169,7 +160,7 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 		if (container instanceof InputOutputSpecification) {
 			EObject containerContainer = container.eContainer();
 			if (containerContainer instanceof Activity) {
-				activity = (Activity)containerContainer;
+				Activity activity = (Activity)containerContainer;
 				if (isInput)
 					associations = activity.getDataInputAssociations();
 				else
@@ -178,12 +169,12 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 			sectionTitle = "Parameter \""+parameterName+"\" Mapping";
 		}
 		else if (container instanceof ThrowEvent) {
-			event = (ThrowEvent)container;
-			associations = event.getDataInputAssociation();
+			ThrowEvent throwEvent = (ThrowEvent)container;
+			associations = throwEvent.getDataInputAssociation();
 			if (associations.size()==0) {
 				association = FACTORY.createDataInputAssociation();
 				association.setTargetRef((ItemAwareElement) be);
-				InsertionAdapter.add(event, PACKAGE.getThrowEvent_DataInputAssociation(), association);
+				InsertionAdapter.add(throwEvent, PACKAGE.getThrowEvent_DataInputAssociation(), association);
 			}
 			DefaultPropertiesComposite dataInputDetails = new DefaultPropertiesComposite(this,SWT.NONE) {
 
@@ -208,6 +199,38 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 			};
 			dataInputDetails.setEObject(getDiagramEditor(), be);
 			sectionTitle = "Data Input Details";
+		}
+		else if (container instanceof CatchEvent) {
+			CatchEvent catchEvent = (CatchEvent)container;
+			associations = catchEvent.getDataOutputAssociation();
+			if (associations.size()==0) {
+				association = FACTORY.createDataInputAssociation();
+				association.setTargetRef((ItemAwareElement) be);
+				InsertionAdapter.add(catchEvent, PACKAGE.getCatchEvent_DataOutputAssociation(), association);
+			}
+			DefaultPropertiesComposite dataOutputDetails = new DefaultPropertiesComposite(this,SWT.NONE) {
+
+				@Override
+				public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
+					if (propertiesProvider==null) {
+						propertiesProvider = new AbstractPropertiesProvider(object) {
+							String[] properties = new String[] {
+									"name",
+									"isCollection",
+							};
+							
+							@Override
+							public String[] getProperties() {
+								return properties; 
+							}
+						};
+					}
+					return propertiesProvider;
+				}
+				
+			};
+			dataOutputDetails.setEObject(getDiagramEditor(), be);
+			sectionTitle = "Data Output Details";
 		}
 		
 		// set section title
@@ -346,7 +369,7 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 			if (container instanceof InputOutputSpecification) {
 				EObject containerContainer = container.eContainer();
 				if (containerContainer instanceof Activity) {
-					activity = (Activity)containerContainer;
+					Activity activity = (Activity)containerContainer;
 					List<? extends DataAssociation> associations = null;
 					if (isInput)
 						associations = activity.getDataInputAssociations();

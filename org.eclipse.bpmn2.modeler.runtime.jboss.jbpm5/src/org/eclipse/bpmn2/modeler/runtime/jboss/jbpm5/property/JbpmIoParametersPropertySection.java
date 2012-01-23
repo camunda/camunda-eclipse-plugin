@@ -18,7 +18,9 @@ import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.DataAssociation;
 import org.eclipse.bpmn2.DataInput;
+import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.DataOutput;
+import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.Expression;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.InputOutputSpecification;
@@ -32,6 +34,7 @@ import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite.AbstractTableColumnProvider;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite.TableColumn;
+import org.eclipse.bpmn2.modeler.ui.property.tasks.DataAssociationPropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.tasks.IoParametersPropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.tasks.IoParametersPropertySection;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
@@ -52,7 +55,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.Section;
 
 public class JbpmIoParametersPropertySection extends IoParametersPropertySection {
-
+	static {
+		PropertiesCompositeFactory.register(DataInput.class, JbpmDataAssociationPropertiesComposite.class);
+		PropertiesCompositeFactory.register(DataOutput.class, JbpmDataAssociationPropertiesComposite.class);
+	}
+	
 	@Override
 	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
 		EObject be = super.getBusinessObjectForPictogramElement(pe);

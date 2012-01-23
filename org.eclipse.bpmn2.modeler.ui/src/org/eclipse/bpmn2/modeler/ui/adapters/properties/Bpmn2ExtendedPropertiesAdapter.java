@@ -11,10 +11,13 @@
  * @author Bob Brodt
  ******************************************************************************/
 
-package org.eclipse.bpmn2.modeler.ui.adapters;
+package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
 import java.util.Hashtable;
 
+import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2EditorItemProviderAdapterFactory;
+import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2FeatureDescriptor;
+import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2ObjectDescriptor;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.ecore.EObject;
@@ -54,10 +57,10 @@ public class Bpmn2ExtendedPropertiesAdapter extends AdapterImpl {
 	
 	protected AdapterFactory adapterFactory;
 	
-	public Bpmn2ExtendedPropertiesAdapter(AdapterFactory adapterFactory, EObject target) {
+	public Bpmn2ExtendedPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
 		super();
 		this.adapterFactory = adapterFactory;
-		setTarget(target);
+		setTarget(object);
 	}
 	
 	public void setObjectDescriptor(Bpmn2ObjectDescriptor pd) {
