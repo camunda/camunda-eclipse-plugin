@@ -13,6 +13,7 @@
 
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 
+import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.tasks.DataAssociationPropertiesComposite;
 import org.eclipse.emf.ecore.EObject;
@@ -48,5 +49,9 @@ public class JbpmDataAssociationPropertiesComposite extends DataAssociationPrope
 		((GridData)advancedMappingButton.getLayoutData()).exclude = true;
 		mapTransformationButton.setVisible(false);
 		advancedMappingButton.setVisible(false);
+		if (be instanceof DataOutput) {
+			((GridData)mapExpressionButton.getLayoutData()).exclude = true;
+			mapExpressionButton.setVisible(false);
+		}
 	}
 }
