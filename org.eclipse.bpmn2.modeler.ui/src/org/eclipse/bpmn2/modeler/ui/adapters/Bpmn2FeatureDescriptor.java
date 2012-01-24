@@ -181,20 +181,38 @@ public class Bpmn2FeatureDescriptor extends Bpmn2ObjectDescriptor {
 					}
 				});
 			}
-			return;
+		}
+		else {
+			IItemPropertyDescriptor propertyDescriptor = getPropertyDescriptor(object, feature);
+			if (propertyDescriptor != null) {
+				propertyDescriptor.setPropertyValue(object, value);
+			}
+			else {
+				TransactionalEditingDomain editingDomain = getEditingDomain(object);
+				if (editingDomain == null) {
+					object.eSet(feature, value);
+				} else {
+					editingDomain.getCommandStack().execute(SetCommand.create(editingDomain, object, feature, value));
+				}
+			}
 		}
 		
-		IItemPropertyDescriptor propertyDescriptor = getPropertyDescriptor(object, feature);
-		if (propertyDescriptor != null) {
-			propertyDescriptor.setPropertyValue(object, value);
-			return;
-		}
-
-		EditingDomain editingDomain = getEditingDomain(object);
-		if (editingDomain == null) {
-			object.eSet(feature, value);
-		} else {
-			editingDomain.getCommandStack().execute(SetCommand.create(editingDomain, object, feature, value));
+		if (value instanceof RootElement && ((RootElement)value).eContainer()==null) {
+			// stuff all root elements into Definitions.rootElements
+			final Definitions definitions = ModelUtil.getDefinitions(object);
+			if (definitions!=null) {
+				TransactionalEditingDomain editingDomain = getEditingDomain(object);
+				if (editingDomain == null) {
+					definitions.getRootElements().add((RootElement)value);
+				} else {
+					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+						@Override
+						protected void doExecute() {
+							definitions.getRootElements().add((RootElement)value);
+						}
+					});
+				}
+			}
 		}
 	}
 
