@@ -187,6 +187,13 @@ public class PropertyUtil {
 		return null;
 	}
 
+	public static EObject createValue(EObject object, EStructuralFeature feature) {
+		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+		if (adapter!=null)
+			return adapter.getFeatureDescriptor(feature).createValue(object);
+		return null;
+	}
+
 	public static boolean canEdit(EObject object, EStructuralFeature feature) {
 		if (feature.getEType() instanceof EClass) {
 			Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);

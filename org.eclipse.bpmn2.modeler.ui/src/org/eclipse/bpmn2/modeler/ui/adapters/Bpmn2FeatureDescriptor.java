@@ -13,6 +13,7 @@
 
 package org.eclipse.bpmn2.modeler.ui.adapters;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -22,6 +23,7 @@ import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
+import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notifier;
@@ -150,44 +152,20 @@ public class Bpmn2FeatureDescriptor extends Bpmn2ObjectDescriptor {
 		return multiline == 1;
 	}
 	
+	public EObject createValue(EObject context) {
+		EObject object = context instanceof EObject ? (EObject)context : this.object;
+		try {
+			ModelHandler mh = ModelHandler.getInstance(object);
+			return mh.create((EClass)feature.getEType());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public void setValue(EObject context, final Object value) {
-		EObject object = this.object;
-		if (context!=null)
-			object = context;
+		EObject object = context instanceof EObject ? (EObject)context : this.object;
 		
-		boolean featureIsContainer = true;
-		if (feature instanceof EReference) {
-			EReference ref = (EReference)feature;
-			featureIsContainer = ref.isContainer();
-		}
-		
-		if (!featureIsContainer) {
-			// if this reference is not the container, try to figure out where it belongs
-			if (value instanceof EObject) {
-				Definitions definitions = ModelUtil.getDefinitions(object);
-//				Process process = null;
-//				Collaboration collaboration = null;
-//				Choreography choreography = null;
-				EObject parent = object;
-				while (parent.eContainer()!=null) {
-					if (parent instanceof Definitions)
-						definitions = (Definitions)parent;
-//					if (parent instanceof Process)
-//						process = (Process)parent;
-//					if (parent instanceof Collaboration)
-//						collaboration = (Collaboration)parent;
-//					if (parent instanceof Choreography)
-//						choreography = (Choreography)parent;
-					parent = parent.eContainer();
-				}
-				
-				if (value instanceof RootElement) {
-					if (!definitions.getRootElements().contains(value))
-						definitions.getRootElements().add((RootElement) value);
-				}
-			}
-		}
-
 		if (object.eGet(feature) instanceof EObjectEList) {
 			// the feature is a reference list - user must have meant to insert
 			// the value into this list...

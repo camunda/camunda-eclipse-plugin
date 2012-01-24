@@ -13,11 +13,24 @@
 
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.DataAssociation;
+import org.eclipse.bpmn2.DataStore;
+import org.eclipse.bpmn2.DocumentRoot;
+import org.eclipse.bpmn2.Event;
+import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.ItemAwareElement;
+import org.eclipse.bpmn2.Property;
+import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2FeatureDescriptor;
 import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -36,24 +49,89 @@ public class DataAssociationPropertiesAdapter extends Bpmn2ExtendedPropertiesAda
 	public DataAssociationPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
 		super(adapterFactory, object);
 
-    	final EStructuralFeature ref = Bpmn2Package.eINSTANCE.getDataAssociation_SourceRef();
-    	setFeatureDescriptor(ref,
-			new Bpmn2FeatureDescriptor(adapterFactory,object,ref) {
+    	EStructuralFeature ref;
+    	
+    	ref = Bpmn2Package.eINSTANCE.getDataAssociation_SourceRef();
+    	setFeatureDescriptor(ref, new SourceTargetFeatureDescriptor(adapterFactory,object,ref));
+    	ref = Bpmn2Package.eINSTANCE.getDataAssociation_TargetRef();
+    	setFeatureDescriptor(ref, new SourceTargetFeatureDescriptor(adapterFactory,object,ref));
+	}
 
-				@Override
-				public void setValue(EObject context, final Object value) {
-					final DataAssociation association = context instanceof DataAssociation ?
-							(DataAssociation)context :
-							(DataAssociation)this.object;
-					
-					TransactionalEditingDomain editingDomain = getEditingDomain(object);
+	public class SourceTargetFeatureDescriptor extends Bpmn2FeatureDescriptor {
+
+		public SourceTargetFeatureDescriptor(AdapterFactory adapterFactory, EObject object, EStructuralFeature feature) {
+			super(adapterFactory, object, feature);
+		}
+		
+			@Override
+    		public Collection getChoiceOfValues(Object context) {
+				List<EObject> values = new ArrayList<EObject>();
+				// search for all Properties and DataStores
+				// Properties are contained in the nearest enclosing Process or Event;
+				// DataStores are contained in the DocumentRoot
+    			EObject object = context instanceof EObject ? (EObject)context : this.object;
+    			values.addAll( ModelUtil.collectAncestorObjects(object, "properties", new Class[] {Process.class, Event.class}) );
+    			values.addAll( ModelUtil.collectAncestorObjects(object, "dataStore", new Class[] {DocumentRoot.class}) );
+    			return values;
+    		}
+			
+			@Override
+			public EObject createValue(EObject context) {
+				EObject object = context instanceof EObject ? (EObject)context : this.object;
+				EClass eClass = null;
+				if (ModelUtil.findNearestAncestor(object, new Class[] {Process.class, Event.class}) != null)
+					eClass = Bpmn2Package.eINSTANCE.getProperty();
+				else if(ModelUtil.findNearestAncestor(object, new Class[] {DocumentRoot.class}) != null)
+					eClass = Bpmn2Package.eINSTANCE.getDataStore();
+				
+				if (eClass!=null) {
+					try {
+						ModelHandler mh = ModelHandler.getInstance(object);
+						return mh.create(eClass);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				return null;
+			}
+			
+			@Override
+			public void setValue(EObject context, final Object value) {
+				final DataAssociation association = context instanceof DataAssociation ?
+						(DataAssociation)context :
+						(DataAssociation)this.object;
+
+				EObject container = null;
+				EStructuralFeature containerFeature = null;
+				if (value instanceof Property) {
+					container = ModelUtil.findNearestAncestor(association, new Class[] {Process.class, Event.class});
+					containerFeature = container.eClass().getEStructuralFeature("properties");
+				}
+				else {
+					container = ModelUtil.findNearestAncestor(association, new Class[] {DocumentRoot.class});
+					containerFeature = container.eClass().getEStructuralFeature("dataStore");
+				}
+
+				final EObject c = container;
+				final EStructuralFeature cf = containerFeature;
+				
+				TransactionalEditingDomain editingDomain = getEditingDomain(association);
+				if (feature == Bpmn2Package.eINSTANCE.getDataAssociation_SourceRef()) {
 					if (association.getSourceRef().size()==0) {
 						if (editingDomain == null) {
+							if (c.eGet(cf) instanceof List)
+								((List)c.eGet(cf)).add(value);
+							else
+								c.eSet(cf, value);
 							association.getSourceRef().add((ItemAwareElement)value);
 						} else {
 							editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 								@Override
 								protected void doExecute() {
+									if (c.eGet(cf) instanceof List)
+										((List)c.eGet(cf)).add(value);
+									else
+										c.eSet(cf, value);
 									association.getSourceRef().add((ItemAwareElement)value);
 								}
 							});
@@ -61,19 +139,46 @@ public class DataAssociationPropertiesAdapter extends Bpmn2ExtendedPropertiesAda
 					}
 					else {
 						if (editingDomain == null) {
+							if (c.eGet(cf) instanceof List)
+								((List)c.eGet(cf)).add(value);
+							else
+								c.eSet(cf, value);
 							association.getSourceRef().set(0,(ItemAwareElement)value);
 						} else {
 							editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 								@Override
 								protected void doExecute() {
+									if (c.eGet(cf) instanceof List)
+										((List)c.eGet(cf)).add(value);
+									else
+										c.eSet(cf, value);
 									association.getSourceRef().set(0,(ItemAwareElement)value);
 								}
 							});
 						}
 					}
 				}
-    		}
-    	);
+				else {
+					if (editingDomain == null) {
+						if (c.eGet(cf) instanceof List)
+							((List)c.eGet(cf)).add(value);
+						else
+							c.eSet(cf, value);
+						association.setTargetRef((ItemAwareElement)value);
+					} else {
+						editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+							@Override
+							protected void doExecute() {
+								if (c.eGet(cf) instanceof List)
+									((List)c.eGet(cf)).add(value);
+								else
+									c.eSet(cf, value);
+								association.setTargetRef((ItemAwareElement)value);
+							}
+						});
+					}
+				}
+			}
+		
 	}
-
 }

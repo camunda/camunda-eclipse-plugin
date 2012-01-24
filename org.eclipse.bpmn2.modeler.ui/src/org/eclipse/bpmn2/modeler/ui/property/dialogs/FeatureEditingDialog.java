@@ -67,7 +67,7 @@ public class FeatureEditingDialog extends Dialog {
 		
 		if (newObject==null) {
 			// create the new object
-			newObject = editor.getModelHandler().create((EClass)feature.getEType());
+			newObject = PropertyUtil.createValue(object, feature);
 		}
 		comp.setEObject(BPMN2Editor.getActiveEditor(), newObject);
 		

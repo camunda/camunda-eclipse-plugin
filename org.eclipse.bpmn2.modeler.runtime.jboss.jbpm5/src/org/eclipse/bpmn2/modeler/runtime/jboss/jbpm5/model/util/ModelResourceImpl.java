@@ -173,51 +173,53 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 			// cause problems during parsing.
 			// See also getXSIType()
 			EObject childObject = objects.peekEObject();
-			try {
-				EStructuralFeature anyAttribute = childObject.eClass().getEStructuralFeature(Bpmn2Package.BASE_ELEMENT__ANY_ATTRIBUTE);
-				List<BasicFeatureMap.Entry> anyMap = (List<BasicFeatureMap.Entry>)childObject.eGet(anyAttribute);
-				List<BasicFeatureMap.Entry> removed = new ArrayList<BasicFeatureMap.Entry>();
-				for (BasicFeatureMap.Entry fe : anyMap) {
-					if (fe.getEStructuralFeature() instanceof EAttribute) {
-						EAttributeImpl a = (EAttributeImpl)fe.getEStructuralFeature();
-						String n = a.getName();
-						String ns = a.getExtendedMetaData().getNamespace();
-						if (TYPE.equals(n) && XSI_URI.equals(ns)) {
-							removed.add(fe);
-						}
-					}
-				}
-				if (removed.size()>0)
-					anyMap.removeAll(removed);
-			}
-			catch(Exception e) {
-			}
-			
-			// The model factory has already created all of the additional elements
-			// defined in the runtime plugin's modelExtension. If the file we are loading
-			// has these elements defined, then they must replace the ones that were added
-			// during object creation.
-			if (childObject instanceof OnEntryScriptType || childObject instanceof OnExitScriptType) {
-				Class clazz = childObject.getClass();
-				// The Task should only have one of these!
-				EObject task = childObject.eContainer().eContainer();
-				EStructuralFeature f = task.eClass().getEStructuralFeature("extensionValues");
-				if (f!=null) {
-					EList<ExtensionAttributeValue> values = (EList<ExtensionAttributeValue>)task.eGet(f);
-					if (values!=null) {
-						List<Object> removed = new ArrayList<Object>();
-						for (ExtensionAttributeValue v : values) {
-							FeatureMap map = v.getValue();
-							for (int i=0; i<map.size(); ++i) {
-								Object value = map.getValue(i);
-								if (value.getClass()==clazz && value!=childObject) {
-									removed.add(v);
-									break;
-								}
+			if (childObject!=null) {
+				try {
+					EStructuralFeature anyAttribute = childObject.eClass().getEStructuralFeature(Bpmn2Package.BASE_ELEMENT__ANY_ATTRIBUTE);
+					List<BasicFeatureMap.Entry> anyMap = (List<BasicFeatureMap.Entry>)childObject.eGet(anyAttribute);
+					List<BasicFeatureMap.Entry> removed = new ArrayList<BasicFeatureMap.Entry>();
+					for (BasicFeatureMap.Entry fe : anyMap) {
+						if (fe.getEStructuralFeature() instanceof EAttribute) {
+							EAttributeImpl a = (EAttributeImpl)fe.getEStructuralFeature();
+							String n = a.getName();
+							String ns = a.getExtendedMetaData().getNamespace();
+							if (TYPE.equals(n) && XSI_URI.equals(ns)) {
+								removed.add(fe);
 							}
 						}
-						if (removed.size()>0)
-							values.removeAll(removed);
+					}
+					if (removed.size()>0)
+						anyMap.removeAll(removed);
+				}
+				catch(Exception e) {
+				}
+				
+				// The model factory has already created all of the additional elements
+				// defined in the runtime plugin's modelExtension. If the file we are loading
+				// has these elements defined, then they must replace the ones that were added
+				// during object creation.
+				if (childObject instanceof OnEntryScriptType || childObject instanceof OnExitScriptType) {
+					Class clazz = childObject.getClass();
+					// The Task should only have one of these!
+					EObject task = childObject.eContainer().eContainer();
+					EStructuralFeature f = task.eClass().getEStructuralFeature("extensionValues");
+					if (f!=null) {
+						EList<ExtensionAttributeValue> values = (EList<ExtensionAttributeValue>)task.eGet(f);
+						if (values!=null) {
+							List<Object> removed = new ArrayList<Object>();
+							for (ExtensionAttributeValue v : values) {
+								FeatureMap map = v.getValue();
+								for (int i=0; i<map.size(); ++i) {
+									Object value = map.getValue(i);
+									if (value.getClass()==clazz && value!=childObject) {
+										removed.add(v);
+										break;
+									}
+								}
+							}
+							if (removed.size()>0)
+								values.removeAll(removed);
+						}
 					}
 				}
 			}

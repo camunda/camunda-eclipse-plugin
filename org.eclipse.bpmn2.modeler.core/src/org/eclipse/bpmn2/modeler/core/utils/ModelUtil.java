@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.core.utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -593,5 +594,30 @@ public class ModelUtil {
 			}
 		}
 		return list;
+	}
+	
+	public static EObject findNearestAncestor(EObject object, Class[] types) {
+		EObject ancestor = null;
+		ancestor = object.eContainer();
+		while (ancestor!=null) {
+			Class type = ancestor.getClass();
+			for (Class t : types) {
+				if (t.isAssignableFrom(type))
+					return ancestor;
+			}
+			ancestor = ancestor.eContainer();
+		}
+		return ancestor;
+	}
+	
+	public static List<EObject> collectAncestorObjects(EObject object, String featureName, Class[] ancestorTypes) {
+		List<EObject> values = new ArrayList<EObject>();
+		EObject ancestor = ModelUtil.findNearestAncestor(object, ancestorTypes);
+		if (ancestor!=null) {
+			EStructuralFeature feature = ancestor.eClass().getEStructuralFeature(featureName);
+			if (feature!=null && ancestor.eGet(feature) instanceof List)
+				values.addAll((List<EObject>) ancestor.eGet(feature));
+		}
+		return values;
 	}
 }

@@ -387,8 +387,8 @@ public class ModelHandler {
 	}
 	
 	
-	public static ModelHandler getInstance(Diagram diagram) throws IOException {
-		return ModelHandlerLocator.getModelHandler(diagram.eResource());
+	public static ModelHandler getInstance(EObject object) throws IOException {
+		return ModelHandlerLocator.getModelHandler(object.eResource());
 	}
 
 	public static Import addImport(EObject modelObject, Object importObject) {
