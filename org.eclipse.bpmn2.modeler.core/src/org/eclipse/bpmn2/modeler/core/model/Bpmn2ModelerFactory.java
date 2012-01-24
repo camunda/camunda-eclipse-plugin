@@ -36,17 +36,17 @@ public class Bpmn2ModelerFactory extends Bpmn2FactoryImpl {
 	// model extensions. This prevents extensions being added multiple times by
 	// ModelExtensionDescriptor.populateObject() every time a file is loaded.
 	protected static boolean enableModelExtensions = true;
-	
-    @Override
+
+	@Override
     public EObject create(EClass eClass) {
     	EObject object = super.create(eClass);
-//    	if (enableModelExtensions)
+    	if (enableModelExtensions)
     	{
 	    	TargetRuntime rt = TargetRuntime.getCurrentRuntime();
 	    	if (rt!=null) {
 		    	for (ModelExtensionDescriptor med : rt.getModelExtensions()) {
 		    		if (med.getType().equals(eClass.getName())) {
-		    			med.populateObject(object);
+		    			med.populateObject(object, eResource());
 		    			break;
 		    		}
 		    	}

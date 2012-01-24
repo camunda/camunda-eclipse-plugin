@@ -106,7 +106,7 @@ public class ModelUtil {
 	
 	private static Object getKey(EObject obj) {
 		if (obj.eResource()==null) {
-			System.out.println("The object type "+obj.getClass().getName()+" is not contained in a Resource");
+//			System.out.println("The object type "+obj.getClass().getName()+" is not contained in a Resource");
 			return null;
 		}
 		assert(obj!=null);

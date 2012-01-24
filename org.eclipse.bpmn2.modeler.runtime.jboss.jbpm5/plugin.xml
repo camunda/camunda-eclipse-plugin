@@ -399,6 +399,81 @@
 					</property>
 				</value>
 			</property>
+			<property name="ioSpecification">
+				<value>
+					<property name="dataInputs">
+						<value>
+							<property name="name" value="TaskName"/>
+						</value>
+					</property>
+					<property name="dataInputs">
+						<value>
+							<property name="name" value="Priority"/>
+						</value>
+					</property>
+					<property name="dataInputs">
+						<value>
+							<property name="name" value="Comment"/>
+						</value>
+					</property>
+					<property name="dataInputs">
+						<value>
+							<property name="name" value="GroupId"/>
+						</value>
+					</property>
+					<property name="dataInputs">
+						<value>
+							<property name="name" value="Skippable"/>
+						</value>
+					</property>
+					<property name="dataInputs">
+						<value>
+							<property name="name" value="Content"/>
+						</value>
+					</property>
+
+					<property name="inputSets">
+						<value>
+							<property name="dataInputRefs" ref="ioSpecification/dataInputs#0"/>
+							<property name="dataInputRefs" ref="ioSpecification/dataInputs#1"/>
+							<property name="dataInputRefs" ref="ioSpecification/dataInputs#2"/>
+							<property name="dataInputRefs" ref="ioSpecification/dataInputs#3"/>
+							<property name="dataInputRefs" ref="ioSpecification/dataInputs#4"/>
+							<property name="dataInputRefs" ref="ioSpecification/dataInputs#5"/>
+						</value>
+					</property>
+				</value>
+			</property>
+			<property name="dataInputAssociations">
+				<value>
+					<property name="targetRef" ref="ioSpecification/dataInputs#0"/>
+				</value>
+			</property>
+			<property name="dataInputAssociations">
+				<value>
+					<property name="targetRef" ref="ioSpecification/dataInputs#1"/>
+				</value>
+			</property>
+			<property name="dataInputAssociations">
+				<value>
+					<property name="targetRef" ref="ioSpecification/dataInputs#2"/>
+				</value>
+			</property>
+			<property name="dataInputAssociations">
+				<value>
+					<property name="targetRef" ref="ioSpecification/dataInputs#3"/>
+				</value>
+			</property>
+			<property name="dataInputAssociations">
+				<value>
+					<property name="targetRef" ref="ioSpecification/dataInputs#4"/>
+				</value>
+			</property>
+			<property name="dataInputAssociations">
+				<value>
+					<property name="targetRef" ref="ioSpecification/dataInputs#5"/>
+				</value>
+			</property>
 		</modelExtension>
 
 		<modelEnablement runtimeId="org.jboss.runtime.jbpm5" type="Process">

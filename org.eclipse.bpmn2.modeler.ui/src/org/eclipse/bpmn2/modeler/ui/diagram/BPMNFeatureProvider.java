@@ -39,6 +39,7 @@ import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.SubProcessFeatu
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.TransactionFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.activity.task.BusinessRuleTaskFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.activity.task.CustomTaskFeatureContainer;
+import org.eclipse.bpmn2.modeler.ui.features.activity.task.CustomTaskFeatureContainer.CreateCustomTaskFeature;
 import org.eclipse.bpmn2.modeler.ui.features.activity.task.ManualTaskFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.activity.task.ReceiveTaskFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.activity.task.ScriptTaskFeatureContainer;
@@ -276,6 +277,9 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 		
 		for (IFeature cf : createFeatures) {
 			if (cf instanceof AbstractBpmn2CreateFeature) {
+				if (cf instanceof CreateCustomTaskFeature) {
+					continue;
+				}
 				AbstractBpmn2CreateFeature acf = (AbstractBpmn2CreateFeature)cf;
 				mapBusinessObjectClassToCreateFeature.put(acf.getBusinessObjectClass(), cf);
 			}

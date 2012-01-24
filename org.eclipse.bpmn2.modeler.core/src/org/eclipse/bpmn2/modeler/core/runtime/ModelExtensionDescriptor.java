@@ -150,7 +150,7 @@ public class ModelExtensionDescriptor extends BaseRuntimeDescriptor {
 	
 	/**
 	 * Creates a custom Task object from a definition in the currently selected
-	 * Target Runtime plugin's "modelObject" extension point.
+	 * Target Runtime plugin's "modelExtension" extension point.
 	 * 
 	 * @param container - the EObject which will eventually contain the new Task.
 	 *                    No changes are made to this object, it is only used to
@@ -293,6 +293,13 @@ public class ModelExtensionDescriptor extends BaseRuntimeDescriptor {
 			if (value instanceof Property)
 				populateObject(object,(Property)value);
 		}
+	}
+	
+	public EObject populateObject(EObject object, Resource resource) {
+		containingResource = resource;
+		modelObject = object;
+		populateObject(modelObject);
+		return modelObject;
 	}
 
 	public void populateObject(EObject object) {
