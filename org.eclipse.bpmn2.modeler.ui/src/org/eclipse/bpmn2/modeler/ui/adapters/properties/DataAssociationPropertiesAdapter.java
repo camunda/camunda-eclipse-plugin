@@ -70,7 +70,8 @@ public class DataAssociationPropertiesAdapter extends Bpmn2ExtendedPropertiesAda
 				// Properties are contained in the nearest enclosing Process or Event;
 				// DataStores are contained in the DocumentRoot
     			EObject object = context instanceof EObject ? (EObject)context : this.object;
-    			values.addAll( ModelUtil.collectAncestorObjects(object, "properties", new Class[] {Process.class, Event.class}) );
+    			values.addAll( ModelUtil.collectAncestorObjects(object, "properties", new Class[] {Process.class}) );
+    			values.addAll( ModelUtil.collectAncestorObjects(object, "properties", new Class[] {Event.class}) );
     			values.addAll( ModelUtil.collectAncestorObjects(object, "dataStore", new Class[] {DocumentRoot.class}) );
     			return values;
     		}
@@ -78,8 +79,10 @@ public class DataAssociationPropertiesAdapter extends Bpmn2ExtendedPropertiesAda
 			@Override
 			public EObject createValue(EObject context) {
 				EObject object = context instanceof EObject ? (EObject)context : this.object;
+				// what kind of object should we create? Property or DataStore?
 				EClass eClass = null;
 				if (ModelUtil.findNearestAncestor(object, new Class[] {Process.class, Event.class}) != null)
+					// nearest ancestor is a Process or Event, so new object will be a Property
 					eClass = Bpmn2Package.eINSTANCE.getProperty();
 				else if(ModelUtil.findNearestAncestor(object, new Class[] {DocumentRoot.class}) != null)
 					eClass = Bpmn2Package.eINSTANCE.getDataStore();
@@ -104,12 +107,20 @@ public class DataAssociationPropertiesAdapter extends Bpmn2ExtendedPropertiesAda
 				EObject container = null;
 				EStructuralFeature containerFeature = null;
 				if (value instanceof Property) {
-					container = ModelUtil.findNearestAncestor(association, new Class[] {Process.class, Event.class});
-					containerFeature = container.eClass().getEStructuralFeature("properties");
+					if (((Property)value).eContainer()==null) {
+						// this Property isn't owned by anything yet - figure out who the owner is
+						container = ModelUtil.findNearestAncestor(association, new Class[] {Event.class});
+						if (container==null)
+							container = ModelUtil.findNearestAncestor(association, new Class[] {Process.class});
+						containerFeature = container.eClass().getEStructuralFeature("properties");
+					}
 				}
-				else {
-					container = ModelUtil.findNearestAncestor(association, new Class[] {DocumentRoot.class});
-					containerFeature = container.eClass().getEStructuralFeature("dataStore");
+				else if (value instanceof DataStore) {
+					if (((DataStore)value).eContainer()==null) {
+						// this DataStore isn't owned by anything yet - figure out who the owner is
+						container = ModelUtil.findNearestAncestor(association, new Class[] {DocumentRoot.class});
+						containerFeature = container.eClass().getEStructuralFeature("dataStore");
+					}
 				}
 
 				final EObject c = container;
@@ -119,19 +130,23 @@ public class DataAssociationPropertiesAdapter extends Bpmn2ExtendedPropertiesAda
 				if (feature == Bpmn2Package.eINSTANCE.getDataAssociation_SourceRef()) {
 					if (association.getSourceRef().size()==0) {
 						if (editingDomain == null) {
-							if (c.eGet(cf) instanceof List)
-								((List)c.eGet(cf)).add(value);
-							else
-								c.eSet(cf, value);
+							if (c!=null) {
+								if (c.eGet(cf) instanceof List)
+									((List)c.eGet(cf)).add(value);
+								else
+									c.eSet(cf, value);
+							}
 							association.getSourceRef().add((ItemAwareElement)value);
 						} else {
 							editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 								@Override
 								protected void doExecute() {
-									if (c.eGet(cf) instanceof List)
-										((List)c.eGet(cf)).add(value);
-									else
-										c.eSet(cf, value);
+									if (c!=null) {
+										if (c.eGet(cf) instanceof List)
+											((List)c.eGet(cf)).add(value);
+										else
+											c.eSet(cf, value);
+									}
 									association.getSourceRef().add((ItemAwareElement)value);
 								}
 							});
@@ -139,19 +154,23 @@ public class DataAssociationPropertiesAdapter extends Bpmn2ExtendedPropertiesAda
 					}
 					else {
 						if (editingDomain == null) {
-							if (c.eGet(cf) instanceof List)
-								((List)c.eGet(cf)).add(value);
-							else
-								c.eSet(cf, value);
+							if (c!=null) {
+								if (c.eGet(cf) instanceof List)
+									((List)c.eGet(cf)).add(value);
+								else
+									c.eSet(cf, value);
+							}
 							association.getSourceRef().set(0,(ItemAwareElement)value);
 						} else {
 							editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 								@Override
 								protected void doExecute() {
-									if (c.eGet(cf) instanceof List)
-										((List)c.eGet(cf)).add(value);
-									else
-										c.eSet(cf, value);
+									if (c!=null) {
+										if (c.eGet(cf) instanceof List)
+											((List)c.eGet(cf)).add(value);
+										else
+											c.eSet(cf, value);
+									}
 									association.getSourceRef().set(0,(ItemAwareElement)value);
 								}
 							});
@@ -160,19 +179,23 @@ public class DataAssociationPropertiesAdapter extends Bpmn2ExtendedPropertiesAda
 				}
 				else {
 					if (editingDomain == null) {
-						if (c.eGet(cf) instanceof List)
-							((List)c.eGet(cf)).add(value);
-						else
-							c.eSet(cf, value);
+						if (c!=null) {
+							if (c.eGet(cf) instanceof List)
+								((List)c.eGet(cf)).add(value);
+							else
+								c.eSet(cf, value);
+						}
 						association.setTargetRef((ItemAwareElement)value);
 					} else {
 						editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 							@Override
 							protected void doExecute() {
-								if (c.eGet(cf) instanceof List)
-									((List)c.eGet(cf)).add(value);
-								else
-									c.eSet(cf, value);
+								if (c!=null) {
+									if (c.eGet(cf) instanceof List)
+										((List)c.eGet(cf)).add(value);
+									else
+										c.eSet(cf, value);
+								}
 								association.setTargetRef((ItemAwareElement)value);
 							}
 						});
