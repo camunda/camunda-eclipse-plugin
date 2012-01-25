@@ -64,27 +64,34 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 	private void setEnabledAll(boolean enabled) {
 		if (enabled) {
 			Bpmn2Package i = Bpmn2Package.eINSTANCE;
-			setEnabled(getSubClasses(i.getFlowElement()), true);
-			setEnabled(getSubClasses(i.getDataAssociation()), true);
-			setEnabled(getSubClasses(i.getRootElement()), true);
-			setEnabled(getSubClasses(i.getEventDefinition()), true);
-			setEnabled(getSubClasses(i.getLoopCharacteristics()), true);
-			setEnabled(getSubClasses(i.getExpression()), true);
-			setEnabled(i.getDefinitions(), true);
-			setEnabled(i.getOperation(), true);
-			setEnabled(i.getLane(), true);
-			setEnabled(i.getEscalation(), true);
-			setEnabled(i.getPotentialOwner(), true);
-			setEnabled(i.getResourceAssignmentExpression(), true);
-			setEnabled(i.getInputSet(), true);
-			setEnabled(i.getOutputSet(), true);
-			setEnabled(i.getAssignment(), true);
-			setEnabled(i.getAssociation(), true);
-			setEnabled(i.getTextAnnotation(), true);
-			setEnabled(i.getMessageFlow(), true);
-			setEnabled(i.getConversationLink(), true);
-			setEnabled(i.getGroup(), true);
-			setEnabled(i.getConversation(), true);
+			final List<EClass> items = new ArrayList<EClass>();
+			for (EClassifier eclassifier : i.getEClassifiers() ) {
+				if (eclassifier instanceof EClass) {
+					items.add((EClass)eclassifier);
+				}
+			}
+			setEnabled(items,true);
+//			setEnabled(getSubClasses(i.getFlowElement()), true);
+//			setEnabled(getSubClasses(i.getDataAssociation()), true);
+//			setEnabled(getSubClasses(i.getRootElement()), true);
+//			setEnabled(getSubClasses(i.getEventDefinition()), true);
+//			setEnabled(getSubClasses(i.getLoopCharacteristics()), true);
+//			setEnabled(getSubClasses(i.getExpression()), true);
+//			setEnabled(i.getDefinitions(), true);
+//			setEnabled(i.getOperation(), true);
+//			setEnabled(i.getLane(), true);
+//			setEnabled(i.getEscalation(), true);
+//			setEnabled(getSubClasses(i.getPotentialOwner()), true);
+//			setEnabled(i.getResourceAssignmentExpression(), true);
+//			setEnabled(i.getInputSet(), true);
+//			setEnabled(i.getOutputSet(), true);
+//			setEnabled(i.getAssignment(), true);
+//			setEnabled(i.getAssociation(), true);
+//			setEnabled(i.getTextAnnotation(), true);
+//			setEnabled(i.getMessageFlow(), true);
+//			setEnabled(i.getConversationLink(), true);
+//			setEnabled(i.getGroup(), true);
+//			setEnabled(i.getConversation(), true);
 		}
 		else {
 			classes.clear();

@@ -55,6 +55,7 @@ public class DataItemsPropertiesComposite extends DefaultPropertiesComposite {
 				String[] properties = new String[] {
 						"rootElements.ItemDefinition",
 						"rootElements.DataStore",
+						"rootElements.Resource",
 						"rootElements.Message",
 						"rootElements.Error",
 						"rootElements.Escalation",

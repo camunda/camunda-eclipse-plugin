@@ -59,28 +59,35 @@ public class ToolEnablementPreferences {
 
 	static {
 		Bpmn2Package i = Bpmn2Package.eINSTANCE;
-		elementSet.addAll(getSubClasses(i.getFlowElement()));
-		elementSet.addAll(getSubClasses(i.getItemAwareElement()));
-		elementSet.addAll(getSubClasses(i.getDataAssociation()));
-		elementSet.addAll(getSubClasses(i.getRootElement()));
-		elementSet.addAll(getSubClasses(i.getEventDefinition()));
-		elementSet.addAll(getSubClasses(i.getLoopCharacteristics()));
-		elementSet.addAll(getSubClasses(i.getExpression()));
-		elementSet.add(i.getDefinitions());
-		elementSet.add(i.getOperation());
-		elementSet.add(i.getLane());
-		elementSet.add(i.getEscalation());
-		elementSet.add(i.getPotentialOwner());
-		elementSet.add(i.getResourceAssignmentExpression());
-		elementSet.add(i.getInputSet());
-		elementSet.add(i.getOutputSet());
-		elementSet.add(i.getAssignment());
-		elementSet.add(i.getAssociation());
-		elementSet.add(i.getTextAnnotation());
-		elementSet.add(i.getMessageFlow());
-		elementSet.add(i.getConversationLink());
-		elementSet.add(i.getGroup());
-		elementSet.add(i.getConversation());
+		final List<EClass> items = new ArrayList<EClass>();
+		for (EClassifier eclassifier : i.getEClassifiers() ) {
+			if (eclassifier instanceof EClass) {
+				items.add((EClass)eclassifier);
+			}
+		}
+		elementSet.addAll(items);
+//		elementSet.addAll(getSubClasses(i.getFlowElement()));
+//		elementSet.addAll(getSubClasses(i.getItemAwareElement()));
+//		elementSet.addAll(getSubClasses(i.getDataAssociation()));
+//		elementSet.addAll(getSubClasses(i.getRootElement()));
+//		elementSet.addAll(getSubClasses(i.getEventDefinition()));
+//		elementSet.addAll(getSubClasses(i.getLoopCharacteristics()));
+//		elementSet.addAll(getSubClasses(i.getExpression()));
+//		elementSet.add(i.getDefinitions());
+//		elementSet.add(i.getOperation());
+//		elementSet.add(i.getLane());
+//		elementSet.add(i.getEscalation());
+//		elementSet.add(i.getPotentialOwner());
+//		elementSet.add(i.getResourceAssignmentExpression());
+//		elementSet.add(i.getInputSet());
+//		elementSet.add(i.getOutputSet());
+//		elementSet.add(i.getAssignment());
+//		elementSet.add(i.getAssociation());
+//		elementSet.add(i.getTextAnnotation());
+//		elementSet.add(i.getMessageFlow());
+//		elementSet.add(i.getConversationLink());
+//		elementSet.add(i.getGroup());
+//		elementSet.add(i.getConversation());
 	}
 
 	private ToolEnablementPreferences(Preferences prefs) {

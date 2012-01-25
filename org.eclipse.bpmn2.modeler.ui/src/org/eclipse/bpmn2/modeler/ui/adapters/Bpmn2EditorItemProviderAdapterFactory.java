@@ -26,6 +26,8 @@ import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.ItemKind;
 import org.eclipse.bpmn2.ResourceAssignmentExpression;
+import org.eclipse.bpmn2.ResourceParameterBinding;
+import org.eclipse.bpmn2.ResourceRole;
 import org.eclipse.bpmn2.ScriptTask;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.Task;
@@ -40,6 +42,8 @@ import org.eclipse.bpmn2.modeler.ui.adapters.properties.FormalExpressionProperti
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ItemAwareElementPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ItemDefinitionPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ResourceAssignmentExpressionPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.ResourceParameterBindingPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.ResourceRolePropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ScriptTaskPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.SequenceFlowPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.TaskPropertiesAdapter;
@@ -168,6 +172,11 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 		}
 
 		@Override
+		public Bpmn2ExtendedPropertiesAdapter caseResourceRole(ResourceRole object) {
+        	return new ResourceRolePropertiesAdapter(adapterFactory,object);
+		}
+
+		@Override
 		public Bpmn2ExtendedPropertiesAdapter caseDataAssociation(DataAssociation object) {
         	return new DataAssociationPropertiesAdapter(adapterFactory,object);
 		}
@@ -176,6 +185,13 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 		public Bpmn2ExtendedPropertiesAdapter caseError(Error object) {
         	return new ErrorPropertiesAdapter(adapterFactory,object);
 		}
+
+		@Override
+		public Bpmn2ExtendedPropertiesAdapter caseResourceParameterBinding(ResourceParameterBinding object) {
+        	return new ResourceParameterBindingPropertiesAdapter(adapterFactory,object);
+		}
+		
+		
     };
 	
 }

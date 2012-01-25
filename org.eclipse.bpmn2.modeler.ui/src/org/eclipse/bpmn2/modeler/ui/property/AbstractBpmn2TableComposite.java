@@ -20,7 +20,6 @@ import java.util.List;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
@@ -109,7 +108,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 
 	protected AbstractBpmn2PropertySection propertySection;
 	protected FormToolkit toolkit;
-	protected BPMN2Editor bpmn2Editor;
+//	protected BPMN2Editor bpmn2Editor;
 	protected IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 
 	protected EObject listParentObject;
@@ -168,7 +167,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 		setLayout(new GridLayout(3, false));
 		if (getParent().getLayout() instanceof GridLayout) {
 			GridLayout layout = (GridLayout) getParent().getLayout();
-			setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, layout.numColumns, 1));
+			setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, layout.numColumns, 1));
 		}
 		this.style = style;
 		toolkit.adapt(this);
@@ -179,6 +178,14 @@ public class AbstractBpmn2TableComposite extends Composite {
 		return propertySection.getTabbedPropertySheetPage();
 	}
 	
+	public BPMN2Editor getDiagramEditor() {
+		if (propertySection!=null)
+			return (BPMN2Editor)propertySection.getDiagramEditor();
+		if (getParent() instanceof AbstractBpmn2PropertiesComposite)
+			return ((AbstractBpmn2PropertiesComposite)getParent()).getDiagramEditor();
+		return BPMN2Editor.getActiveEditor();
+	}
+
 	public void setListItemClass(EClass clazz) {
 		this.listItemClass = clazz;
 	}
@@ -203,7 +210,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 			if (eclassifier instanceof EClass) {
 				EClass eclass = (EClass)eclassifier;
 				if (eclass.getEAllSuperTypes().contains(listItemClass)) {
-					if (!modelEnablement.isEnabled(eclass)) {
+					if (modelEnablement.isEnabled(eclass)) {
 						items.add(eclass);
 					}
 				}
@@ -370,18 +377,14 @@ public class AbstractBpmn2TableComposite extends Composite {
 			return null;
 		}
 		else {
-			try {
-				ModelHandler modelHandler = ModelHandlerLocator.getModelHandler(object.eResource());
-				if (this.listItemClass==null) {
-					listItemClass = getListItemClassToAdd(listItemClass);
-					if (listItemClass==null)
-						return null; // user cancelled
-				}
-				newItem = modelHandler.create(listItemClass);
-				list.add(newItem);
-			} catch (IOException e) {
-				e.printStackTrace();
+			ModelHandler modelHandler = getDiagramEditor().getModelHandler();
+			if (this.listItemClass==null) {
+				listItemClass = getListItemClassToAdd(listItemClass);
+				if (listItemClass==null)
+					return null; // user cancelled
 			}
+			newItem = modelHandler.create(listItemClass);
+			list.add(newItem);
 		}
 		return newItem;
 	}
@@ -430,10 +433,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 			}
 		}
 
-		if (bpmn2Editor==null)
-			bpmn2Editor = BPMN2Editor.getEditor(object);
-		if (bpmn2Editor==null)
-			return;
+		final BPMN2Editor bpmn2Editor = getDiagramEditor();
 		
 		listParentObject = object;
 		modelEnablement = bpmn2Editor.getTargetRuntime().getModelEnablements(object);
@@ -487,12 +487,12 @@ public class AbstractBpmn2TableComposite extends Composite {
 					ExpandableComposite.TITLE_BAR);
 			detailSection.setText(ModelUtil.toDisplayName(listItemClass.getName()) + " Details");
 
-			detailComposite = createDetailComposite(detailSection, listItemClass.getInstanceClass());
-			if (detailComposite!=null) {
-				detailSection.setClient(detailComposite);
-				toolkit.adapt(detailComposite);
-//				detailComposite.setPropertySection(propertySection);
-			}
+//			detailComposite = createDetailComposite(detailSection, listItemClass.getInstanceClass());
+//			if (detailComposite!=null) {
+//				detailSection.setClient(detailComposite);
+//				toolkit.adapt(detailComposite);
+////				detailComposite.setPropertySection(propertySection);
+//			}
 			detailSection.setVisible(false);
 
 			tableSection.addExpansionListener(new IExpansionListener() {
@@ -584,8 +584,16 @@ public class AbstractBpmn2TableComposite extends Composite {
 					detailSection.setVisible(enable);
 					if (enable) {
 						IStructuredSelection sel = (IStructuredSelection) event.getSelection();
-						if (sel.getFirstElement() instanceof EObject && detailComposite instanceof AbstractBpmn2PropertiesComposite) {
+
+						if (sel.getFirstElement() instanceof EObject) {
 							EObject o = (EObject)sel.getFirstElement();
+							
+							if (detailComposite!=null)
+								detailComposite.dispose();
+							detailComposite = createDetailComposite(detailSection, o.eClass().getInstanceClass());
+							detailSection.setClient(detailComposite);
+							toolkit.adapt(detailComposite);
+
 							detailSection.setText(ModelUtil.toDisplayName(o.eClass().getName()) + " Details");
 							((AbstractBpmn2PropertiesComposite)detailComposite).setEObject(bpmn2Editor,o);
 						}
@@ -725,7 +733,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 		// Create a composite to hold the buttons and table
 		////////////////////////////////////////////////////////////
 		tableAndButtonsComposite = toolkit.createComposite(parent, SWT.NONE);
-		gridData = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
+		gridData = new GridData(SWT.FILL, SWT.TOP, true, true, 3, 1);
 		tableAndButtonsComposite.setLayoutData(gridData);
 		tableAndButtonsComposite.setLayout(new GridLayout(2, false));
 		
@@ -748,7 +756,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 			buttonsComposite.setVisible(false);
 		}
 		table = toolkit.createTable(tableAndButtonsComposite, SWT.FULL_SELECTION | SWT.V_SCROLL);
-		gridData = new GridData(SWT.FILL, SWT.FILL, true, true, span, 1);
+		gridData = new GridData(SWT.FILL, SWT.TOP, true, true, span, 1);
 		gridData.widthHint = 100;
 		gridData.heightHint = 100;
 		table.setLayoutData(gridData);
@@ -873,6 +881,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 		}
 
 		public void modify(Object element, String property, Object value) {
+			BPMN2Editor bpmn2Editor = getDiagramEditor();
 			final EObject target = (EObject)element;
 			final Object newValue = value;
 			final Object oldValue = target.eGet(feature); 

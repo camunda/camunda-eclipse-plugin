@@ -28,6 +28,8 @@ public class ModelHandlerLocator {
 	private static HashMap<URI, ModelHandler> diagramMap = new HashMap<URI, ModelHandler>();
 
 	public static ModelHandler getModelHandler(Resource eResource) throws IOException {
+		if (eResource==null)
+			return null;
 		URI uri = eResource.getURI();
 		String[] segments = uri.segments();
 

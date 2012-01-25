@@ -16,8 +16,10 @@ import org.eclipse.bpmn2.Assignment;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Expression;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -27,8 +29,8 @@ import org.eclipse.swt.widgets.Composite;
 
 public class DataAssignmentPropertiesComposite extends DefaultPropertiesComposite {
 
-	private DefaultPropertiesComposite fromDetails;
-	private DefaultPropertiesComposite toDetails;
+	private AbstractBpmn2PropertiesComposite fromDetails;
+	private AbstractBpmn2PropertiesComposite toDetails;
 
 	public DataAssignmentPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
@@ -84,15 +86,15 @@ public class DataAssignmentPropertiesComposite extends DefaultPropertiesComposit
 			}
 			
 			if (toDetails==null) {
-				toDetails = new DefaultPropertiesComposite(this,SWT.BORDER);
-				toDetails.setLayoutData(new GridData(SWT.FILL,SWT.TOP,true,false,3,1));
+				toDetails = PropertiesCompositeFactory.createComposite(
+						Expression.class, this, SWT.NONE, true);
 			}
 			toDetails.setEObject(getDiagramEditor(), toExp);
 			toDetails.setTitle("To Expression");
 	
 			if (fromDetails==null) {
-				fromDetails = new DefaultPropertiesComposite(this,SWT.BORDER);
-				fromDetails.setLayoutData(new GridData(SWT.FILL,SWT.TOP,true,false,3,1));
+				fromDetails = PropertiesCompositeFactory.createComposite(
+						Expression.class, this, SWT.NONE, true);
 			}
 			fromDetails.setEObject(getDiagramEditor(), fromExp);
 			fromDetails.setTitle("From Expression");

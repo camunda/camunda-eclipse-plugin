@@ -106,9 +106,6 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 		
 		public IOParametersTable(EObject container, InputOutputSpecification ioSpecification, EStructuralFeature ioFeature) {
 			super(IoParametersPropertiesComposite.this, AbstractBpmn2TableComposite.DEFAULT_STYLE | AbstractBpmn2TableComposite.EDIT_BUTTON);
-			// since the ioSpecification may not yet be contained in a Resource, the table baseclass
-			// will have no idea which editor this thing belongs to, so we set it here.
-			bpmn2Editor = BPMN2Editor.getEditor(container);
 			this.ioFeature = ioFeature;
 			this.ioSpecification = ioSpecification;
 			if (container instanceof Activity) {

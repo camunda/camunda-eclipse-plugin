@@ -110,9 +110,6 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 		
 		public DataInputsTable(Composite parent, ThrowEvent throwEvent) {
 			super(parent, AbstractBpmn2TableComposite.DEFAULT_STYLE | AbstractBpmn2TableComposite.EDIT_BUTTON);
-			// since the ioSpecification may not yet be contained in a Resource, the table baseclass
-			// will have no idea which editor this thing belongs to, so we set it here.
-			bpmn2Editor = BPMN2Editor.getEditor(throwEvent);
 			this.throwEvent = throwEvent;
 		}
 
@@ -184,9 +181,6 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 		
 		public DataOutputsTable(Composite parent, CatchEvent catchEvent) {
 			super(parent, AbstractBpmn2TableComposite.DEFAULT_STYLE | AbstractBpmn2TableComposite.EDIT_BUTTON);
-			// since the ioSpecification may not yet be contained in a Resource, the table baseclass
-			// will have no idea which editor this thing belongs to, so we set it here.
-			bpmn2Editor = BPMN2Editor.getEditor(catchEvent);
 			this.catchEvent = catchEvent;
 		}
 

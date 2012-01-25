@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Choreography;
 import org.eclipse.bpmn2.Collaboration;
 import org.eclipse.bpmn2.Definitions;
@@ -24,6 +25,7 @@ import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notifier;
@@ -81,11 +83,12 @@ public class Bpmn2FeatureDescriptor extends Bpmn2ObjectDescriptor {
 	
 	public String getText(Object context) {
 		if (text==null) {
+			String t = null;
 			// derive text from feature's value: default behavior is
 			// to use the "name" attribute if there is one;
 			// if not, use the "id" attribute;
 			// fallback is to use the feature's toString()
-			EObject o = object;
+			EObject o = null;
 			EStructuralFeature f = null;
 			if (feature!=null) {
 				Object value = object.eGet(feature); 
@@ -93,24 +96,25 @@ public class Bpmn2FeatureDescriptor extends Bpmn2ObjectDescriptor {
 					o = (EObject)object.eGet(feature);
 				}
 				else if (value!=null)
-					text = value.toString();
+					t = value.toString();
 			}
-			if (text==null) {
+			if (t==null && o!=null) {
 				f = o.eClass().getEStructuralFeature("name");
 				if (f!=null) {
 					String name = (String)o.eGet(f);
 					if (name!=null && !name.isEmpty())
-						text = name;
+						t = name;
 				}
 			}
-//			if (text==null) {
-//				f = o.eClass().getEStructuralFeature("id");
-//				if (f!=null) {
-//					Object id = o.eGet(f);
-//					if (id!=null && !id.toString().isEmpty())
-//						text = id.toString();
-//				}
-//			}
+			if (t==null && o!=null) {
+				f = o.eClass().getEStructuralFeature("id");
+				if (f!=null) {
+					Object id = o.eGet(f);
+					if (id!=null && !id.toString().isEmpty())
+						t = id.toString();
+				}
+			}
+			return t == null ? "" : t;
 		}
 		return text == null ? "" : text;
 	}
@@ -156,7 +160,13 @@ public class Bpmn2FeatureDescriptor extends Bpmn2ObjectDescriptor {
 		EObject object = context instanceof EObject ? (EObject)context : this.object;
 		try {
 			ModelHandler mh = ModelHandler.getInstance(object);
-			return mh.create((EClass)feature.getEType());
+			if (mh!=null)
+				return mh.create((EClass)feature.getEType());
+			// object is not yet added to a Resource so use an insertion adapter
+			// to add it later
+			EObject value = Bpmn2Factory.eINSTANCE.create((EClass)feature.getEType());
+			InsertionAdapter.add(object, feature, value);
+			return value;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

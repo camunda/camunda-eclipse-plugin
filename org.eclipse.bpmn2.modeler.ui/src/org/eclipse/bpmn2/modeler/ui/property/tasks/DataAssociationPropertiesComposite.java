@@ -23,14 +23,17 @@ import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
+import org.eclipse.bpmn2.Expression;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ComboObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
@@ -95,9 +98,9 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 	protected Button advancedMappingButton;
 	// holds the Transformation expression details and Assignments table
 	protected Composite transformationComposite;
-	protected DefaultPropertiesComposite transformationDetailsComposite;
+	protected AbstractBpmn2PropertiesComposite transformationDetailsComposite;
 	protected Composite expressionComposite;
-	protected DefaultPropertiesComposite expressionDetailsComposite;
+	protected AbstractBpmn2PropertiesComposite expressionDetailsComposite;
 	protected AssignmentsTable assignmentsTable;
 	// holds the Property details
 	protected Composite propertyComposite;
@@ -589,7 +592,8 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 							FormalExpression.class);
 				}
 				if (transformationDetailsComposite==null) {
-					transformationDetailsComposite = new DefaultPropertiesComposite(transformationComposite,SWT.NONE);
+					transformationDetailsComposite = PropertiesCompositeFactory.createComposite(
+							Expression.class, transformationComposite, SWT.NONE, true);
 				}
 				transformationDetailsComposite.setEObject(getDiagramEditor(), transformation);
 				transformationDetailsComposite.setTitle("Transformation");
@@ -659,7 +663,8 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 				}
 	
 				if (expressionDetailsComposite==null) {
-					expressionDetailsComposite = new DefaultPropertiesComposite(expressionComposite,SWT.NONE);
+					expressionDetailsComposite = PropertiesCompositeFactory.createComposite(
+							Expression.class, expressionComposite, SWT.NONE, true);
 				}
 				expressionDetailsComposite.setEObject(getDiagramEditor(), expression);//association.getexpression());
 				expressionDetailsComposite.setTitle("Expression");
@@ -707,7 +712,8 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 				}
 	
 				if (transformationDetailsComposite==null) {
-					transformationDetailsComposite = new DefaultPropertiesComposite(transformationComposite,SWT.NONE);
+					transformationDetailsComposite = PropertiesCompositeFactory.createComposite(
+							Expression.class, transformationComposite, SWT.NONE, true);
 				}
 				transformationDetailsComposite.setEObject(getDiagramEditor(), transformation);//association.getTransformation());
 				transformationDetailsComposite.setTitle("Transformation");
