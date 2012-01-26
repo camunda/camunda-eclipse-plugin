@@ -13,10 +13,14 @@
 package org.eclipse.bpmn2.modeler.core.di;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.ChoreographyActivity;
 import org.eclipse.bpmn2.ConversationLink;
 import org.eclipse.bpmn2.DataAssociation;
@@ -173,11 +177,39 @@ public class DIImport {
 	public void setFeatureProvider(IFeatureProvider featureProvider) {
 		this.featureProvider = featureProvider;
 	}
-
+	
+	/**
+	 * Imports shapes from DI. Since we don't know the order of shapes in DI,
+	 * we may get an inner element like a boundary element before its parent.
+	 * Therefore we use a queue to postpone the import of such elements, and
+	 * prevent the layouting from crashing.
+	 * 
+	 * @param ownedElement
+	 */
 	private void importShapes(List<DiagramElement> ownedElement) {
+		Queue<BPMNShape> shapeQueue = new ConcurrentLinkedQueue<BPMNShape>();
+		
+		// Enqueue shapes
 		for (DiagramElement diagramElement : ownedElement) {
 			if (diagramElement instanceof BPMNShape) {
-				createShape((BPMNShape) diagramElement);
+				BPMNShape diShape = (BPMNShape) diagramElement;
+				if (diShape.getBpmnElement() != null) {
+					shapeQueue.offer(diShape);
+				}
+			}
+		}
+		
+		// Process Queue
+		for (Iterator<BPMNShape> iterator = shapeQueue.iterator(); iterator.hasNext();) {
+			BPMNShape currentShape = iterator.next();
+			
+			if (currentShape.getBpmnElement() instanceof BoundaryEvent &&
+				!elements.containsKey(((BoundaryEvent) currentShape.getBpmnElement()).getAttachedToRef())){
+				// post-pone
+				shapeQueue.offer(currentShape);
+			}
+			else {
+				createShape(currentShape);
 			}
 		}
 	}
