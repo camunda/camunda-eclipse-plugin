@@ -395,7 +395,7 @@
 			<enable object="CancelEventDefinition"/>
 			<enable object="TerminateEventDefinition"/>
 
-			<disable object="MessageFlow"/>
+			<enable object="MessageFlow"/>
 			<disable object="ConversationLink"/>
 			<disable object="ConversationAssociation"/>
 			<disable object="Collaboration"/>
