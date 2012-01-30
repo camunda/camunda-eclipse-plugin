@@ -13,8 +13,10 @@
 
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
+import java.lang.reflect.Field;
 import java.util.Hashtable;
 
+import org.eclipse.bpmn2.modeler.ui.Messages;
 import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2EditorItemProviderAdapterFactory;
 import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2FeatureDescriptor;
 import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2ObjectDescriptor;
@@ -61,6 +63,13 @@ public class Bpmn2ExtendedPropertiesAdapter extends AdapterImpl {
 		super();
 		this.adapterFactory = adapterFactory;
 		setTarget(object);
+    	try {
+        	String fieldName = "UI_" + object.eClass().getName().replaceAll("Impl$", "") + "_long_description";
+			Field field = Messages.class.getField(fieldName);
+			String text = (String)field.get(null);
+			setProperty(Bpmn2ExtendedPropertiesAdapter.LONG_DESCRIPTION, text);
+		} catch (Exception e) {
+		}
 	}
 	
 	public void setObjectDescriptor(Bpmn2ObjectDescriptor pd) {

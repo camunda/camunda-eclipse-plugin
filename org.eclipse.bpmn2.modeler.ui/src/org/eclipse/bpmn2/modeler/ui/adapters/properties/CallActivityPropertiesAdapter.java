@@ -36,7 +36,6 @@ public class CallActivityPropertiesAdapter extends ActivityPropertiesAdapter {
 	public CallActivityPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
 		super(adapterFactory, object);
 
-    	setProperty(Bpmn2ExtendedPropertiesAdapter.LONG_DESCRIPTION, Messages.UI_CallActivity_long_description); //$NON-NLS-1$
     	setProperty(Bpmn2Package.CALL_ACTIVITY__CALLED_ELEMENT_REF, Bpmn2ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW, Boolean.TRUE);
     	EStructuralFeature ce = Bpmn2Package.eINSTANCE.getCallActivity_CalledElementRef();
     	setFeatureDescriptor(ce,

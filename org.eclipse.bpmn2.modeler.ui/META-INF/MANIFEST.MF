@@ -31,6 +31,8 @@ Require-Bundle: org.eclipse.ui.ide,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.bpmn2.modeler.ui,
+ org.eclipse.bpmn2.modeler.ui.adapters,
+ org.eclipse.bpmn2.modeler.ui.adapters.properties,
  org.eclipse.bpmn2.modeler.ui.diagram,
  org.eclipse.bpmn2.modeler.ui.editor,
  org.eclipse.bpmn2.modeler.ui.features.activity.subprocess,

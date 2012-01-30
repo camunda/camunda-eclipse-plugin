@@ -103,23 +103,6 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 			if (adapter!=null) {
 				description = (String) adapter.getProperty(Bpmn2ExtendedPropertiesAdapter.LONG_DESCRIPTION);
 			}
-			
-			if (description==null) {
-				// TODO: descriptions come from the Graphiti CreateFeatures for each element.
-				// This should probably be handled by some sort of description/label provider.
-				BPMN2Editor editor = (BPMN2Editor)getDiagramEditor();
-	
-				BPMNFeatureProvider fp = (BPMNFeatureProvider) editor.getDiagramTypeProvider().getFeatureProvider();
-				PictogramElement pe = propertySection.getSelectedPictogramElement();
-				IFeature cf = fp.getCreateFeatureForPictogramElement(pe);
-				if (cf instanceof AbstractBpmn2CreateConnectionFeature) {
-					AbstractBpmn2CreateConnectionFeature acf = (AbstractBpmn2CreateConnectionFeature) cf;
-					description = acf.getCreateDescription();
-				} else if (cf instanceof AbstractBpmn2CreateFeature) {
-					AbstractBpmn2CreateFeature acf = (AbstractBpmn2CreateFeature) cf;
-					description = acf.getDescription();
-				}
-			}
 			return description;
 		}
 	}

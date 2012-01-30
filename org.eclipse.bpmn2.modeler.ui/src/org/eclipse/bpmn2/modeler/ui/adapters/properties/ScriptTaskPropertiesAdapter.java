@@ -29,7 +29,6 @@ public class ScriptTaskPropertiesAdapter extends TaskPropertiesAdapter {
 	 */
 	public ScriptTaskPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
 		super(adapterFactory, object);
-    	setProperty(Bpmn2ExtendedPropertiesAdapter.LONG_DESCRIPTION, Messages.UI_ScriptTask_long_description); //$NON-NLS-1$
 	}
 
 }

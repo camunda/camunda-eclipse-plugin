@@ -75,6 +75,7 @@ public class Messages extends NLS {
 
 	public static String UI_ScriptTask_long_description;
 	public static String UI_CallActivity_long_description;
+	public static String UI_StartEvent_long_description;
 	
 	public static String WSILPreferencePage_WSIL_1;
 	public static String WSILPreferencePage_WSIL_2;
