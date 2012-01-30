@@ -89,7 +89,7 @@ public class UpdateChoreographyMessageFlowFeature extends AbstractUpdateFeature 
 			}
 		}
 
-		ChoreographyUtil.drawMessageLinks(choreographyContainer);
+		ChoreographyUtil.drawMessageLinks(getFeatureProvider(),choreographyContainer);
 
 		String choreoIds = ChoreographyUtil.getMessageRefIds(choreography);
 		peService.setPropertyValue(choreographyContainer, MESSAGE_REF_IDS, choreoIds);

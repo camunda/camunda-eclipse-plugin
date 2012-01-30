@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.bpmn2.ChoreographyTask;
+import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
@@ -49,6 +50,7 @@ import org.eclipse.bpmn2.modeler.ui.features.activity.task.TaskFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.activity.task.UserTaskFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.artifact.GroupFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.artifact.TextAnnotationFeatureContainer;
+import org.eclipse.bpmn2.modeler.ui.features.choreography.AddChoreographyMessageFeature;
 import org.eclipse.bpmn2.modeler.ui.features.choreography.AddChoreographyParticipantFeature;
 import org.eclipse.bpmn2.modeler.ui.features.choreography.CallChoreographyFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.choreography.ChoreographyMessageLinkFeatureContainer;
@@ -509,6 +511,11 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 			else if (bo instanceof ChoreographyTask) {
 				return new ICustomFeature[] {
 					new AddChoreographyParticipantFeature(this)
+				};
+			}
+			else if (bo instanceof Participant) {
+				return new ICustomFeature[] {
+					new AddChoreographyMessageFeature(this)
 				};
 			}
 		}

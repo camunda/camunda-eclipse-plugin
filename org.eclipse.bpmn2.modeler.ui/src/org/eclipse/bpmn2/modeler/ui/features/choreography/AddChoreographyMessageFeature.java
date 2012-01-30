@@ -20,7 +20,10 @@ import java.util.List;
 import org.eclipse.bpmn2.Choreography;
 import org.eclipse.bpmn2.ChoreographyTask;
 import org.eclipse.bpmn2.DataStore;
+import org.eclipse.bpmn2.Message;
+import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.Participant;
+import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -44,7 +47,7 @@ import org.eclipse.swt.widgets.Display;
  * @author Bob Brodt
  *
  */
-public class AddChoreographyParticipantFeature extends AbstractCustomFeature {
+public class AddChoreographyMessageFeature extends AbstractCustomFeature {
 	
 	private static ILabelProvider labelProvider = new ILabelProvider() {
 
@@ -64,7 +67,7 @@ public class AddChoreographyParticipantFeature extends AbstractCustomFeature {
 		}
 
 		public String getText(Object element) {
-			return ((Participant)element).getName();
+			return ChoreographyUtil.getMessageName((Message)element);
 		}
 
 		public Image getImage(Object element) {
@@ -76,23 +79,23 @@ public class AddChoreographyParticipantFeature extends AbstractCustomFeature {
 	/**
 	 * @param fp
 	 */
-	public AddChoreographyParticipantFeature(IFeatureProvider fp) {
+	public AddChoreographyMessageFeature(IFeatureProvider fp) {
 		super(fp);
 	}
 	
 	@Override
 	public String getName() {
-	    return "Add Participant";
+	    return "Add Message";
 	}
 	
 	@Override
 	public String getDescription() {
-	    return "Add a new Participant to this Choreography Task";
+	    return "Add a new Message to this Choreography Task";
 	}
 
 	@Override
 	public String getImageId() {
-		return ImageProvider.IMG_16_ADD_PARTICIPANT;
+		return ImageProvider.IMG_16_ADD_MESSAGE;
 	}
 
 	@Override
@@ -106,8 +109,30 @@ public class AddChoreographyParticipantFeature extends AbstractCustomFeature {
 		if (pes != null && pes.length == 1) {
 			PictogramElement pe = pes[0];
 			Object bo = getBusinessObjectForPictogramElement(pe);
-			if (bo instanceof ChoreographyTask) {
-				return true;
+			if (pe instanceof ContainerShape && bo instanceof Participant) {
+				Participant participant = (Participant)bo;
+				
+				Object parent = getBusinessObjectForPictogramElement(((ContainerShape)pe).getContainer());
+				if (parent instanceof ChoreographyTask) {
+					
+					// Check if choreography task already associated with MessageFlow
+					// with this participant as the source
+					ChoreographyTask ct=(ChoreographyTask)parent;
+					
+					if (ct.getParticipantRefs().size() == 2) {
+						boolean canAdd=true;
+						
+						for (MessageFlow mf : ct.getMessageFlowRef()) {
+							if (mf.getSourceRef() != null &&
+									mf.getSourceRef().equals(participant)) {
+								canAdd = false;
+								break;
+							}
+						}
+						
+						return (canAdd);
+					}
+				}
 			}
 		}
 		return false;
@@ -122,47 +147,63 @@ public class AddChoreographyParticipantFeature extends AbstractCustomFeature {
 		if (pes != null && pes.length == 1) {
 			PictogramElement pe = pes[0];
 			Object bo = getBusinessObjectForPictogramElement(pe);
-			if (pe instanceof ContainerShape && bo instanceof ChoreographyTask) {
+			if (pe instanceof ContainerShape && bo instanceof Participant) {
 				try {
 					ModelHandler mh = ModelHandler.getInstance(getDiagram());
 
 					ContainerShape containerShape = (ContainerShape)pe;
-					ChoreographyTask task = (ChoreographyTask)bo;
+					Participant participant = (Participant)bo;
 					
-					Participant participant = null;
-					List<Participant> participantList = new ArrayList<Participant>();
-					participant = mh.create(Participant.class);
-					participant.setName("New Participant");
-					
-					participantList.add(participant);
-					TreeIterator<EObject> iter = mh.getDefinitions().eAllContents();
-					while (iter.hasNext()) {
-						EObject obj = iter.next();
-						if (obj instanceof Participant && !task.getParticipantRefs().contains(obj))
-							participantList.add((Participant)obj);
-					}
-					Participant result = participant;
-	
-					boolean doit = true;
-					if (participantList.size()>1) {
-						PopupMenu popupMenu = new PopupMenu(participantList, labelProvider);
-						doit = popupMenu.show(Display.getCurrent().getActiveShell());
+					Object parent = getBusinessObjectForPictogramElement(containerShape.getContainer());
+					if (parent instanceof ChoreographyTask) {
+						ChoreographyTask ct=(ChoreographyTask)parent;
+												
+						Message message = null;
+						List<Message> messageList = new ArrayList<Message>();
+						message = mh.create(Message.class);
+						message.setName("New Message");
+						
+						messageList.add(message);
+						for (RootElement re : mh.getDefinitions().getRootElements()) {
+							if (re instanceof Message) {
+								messageList.add((Message)re);
+							}
+						}
+
+						Message result = message;
+		
+						boolean doit = true;
+						if (messageList.size()>1) {
+							PopupMenu popupMenu = new PopupMenu(messageList, labelProvider);
+							doit = popupMenu.show(Display.getCurrent().getActiveShell());
+							if (doit) {
+								result = (Message) popupMenu.getResult();
+							}
+						}
 						if (doit) {
-							result = (Participant) popupMenu.getResult();
-						}
-					}
-					if (doit) {
-						if (result==participant) { // the new one
-							participant.setName( ModelUtil.toDisplayName(participant.getId()) );
-							Choreography choreography = (Choreography)task.eContainer();
-							choreography.getParticipants().add(result);
-						}
+							if (result==message) { // the new one
+								message.setName( ModelUtil.toDisplayName(message.getId()) );
+								
+								mh.getDefinitions().getRootElements().add(result);
+							}
+							
+							java.util.List<Participant> parts=new java.util.ArrayList<Participant>(
+													ct.getParticipantRefs());
+							parts.remove(participant);
+							
+							if (parts.size() == 1) {
+								MessageFlow mf=mh.createMessageFlow(participant, parts.get(0));
+								mf.setName(ModelUtil.toDisplayName(mf.getId()));
+								
+								Choreography choreography = (Choreography)ct.eContainer();
+								choreography.getMessageFlows().add(mf);
 
-						if (task.getInitiatingParticipantRef() == null) {
-							task.setInitiatingParticipantRef(result);
+								mf.setMessageRef(result);
+								ct.getMessageFlowRef().add(mf);
+							} else {
+								// REPORT ERROR??
+							}
 						}
-
-						task.getParticipantRefs().add(result);
 					}
 				} catch (IOException e) {
 					Activator.logError(e);

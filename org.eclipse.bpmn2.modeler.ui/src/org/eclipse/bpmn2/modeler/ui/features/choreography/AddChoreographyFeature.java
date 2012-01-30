@@ -120,7 +120,7 @@ public class AddChoreographyFeature extends AbstractAddBPMNShapeFeature {
 		peService.createChopboxAnchor(choreographyContainer);
 		createDIShape(choreographyContainer, choreography);
 		AnchorUtil.addFixedPointAnchors(choreographyContainer, containerRect);
-		ChoreographyUtil.drawMessageLinks(choreographyContainer);
+		ChoreographyUtil.drawMessageLinks(getFeatureProvider(),choreographyContainer);
 		return choreographyContainer;
 	}
 

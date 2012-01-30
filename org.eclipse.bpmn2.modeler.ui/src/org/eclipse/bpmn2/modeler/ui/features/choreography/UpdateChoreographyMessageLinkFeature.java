@@ -51,7 +51,7 @@ public class UpdateChoreographyMessageLinkFeature extends AbstractUpdateFeature 
 	@Override
 	public boolean update(IUpdateContext context) {
 
-		ChoreographyUtil.drawMessageLinks((ContainerShape) context.getPictogramElement().eContainer());
+		ChoreographyUtil.drawMessageLinks(getFeatureProvider(), (ContainerShape) context.getPictogramElement().eContainer());
 
 		BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(context.getPictogramElement(), BPMNShape.class);
 		Graphiti.getPeService().setPropertyValue(context.getPictogramElement(), MESSAGE_VISIBLE,

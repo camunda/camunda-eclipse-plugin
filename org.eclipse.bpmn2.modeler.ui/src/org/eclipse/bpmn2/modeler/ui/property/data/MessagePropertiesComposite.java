@@ -37,6 +37,7 @@ public class MessagePropertiesComposite extends DefaultPropertiesComposite {
 		if (propertiesProvider==null) {
 			propertiesProvider = new AbstractPropertiesProvider(object) {
 				String[] properties = new String[] {
+						"name",
 						"itemRef"
 				};
 				

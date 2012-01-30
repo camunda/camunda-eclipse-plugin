@@ -68,7 +68,7 @@ public class UpdateChoreographyParticipantRefsFeature extends AbstractUpdateFeat
 		peService.setPropertyValue(context.getPictogramElement(), PARTICIPANT_REF_IDS,
 				ChoreographyUtil.getParticipantRefIds(choreography));
 
-		ChoreographyUtil.drawMessageLinks((ContainerShape) context.getPictogramElement());
+		ChoreographyUtil.drawMessageLinks(getFeatureProvider(), (ContainerShape) context.getPictogramElement());
 		return true;
 	}
 

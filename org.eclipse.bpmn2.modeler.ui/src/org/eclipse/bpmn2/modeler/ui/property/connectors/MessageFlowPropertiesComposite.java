@@ -37,7 +37,9 @@ public class MessageFlowPropertiesComposite extends DefaultPropertiesComposite {
 		if (propertiesProvider==null) {
 			propertiesProvider = new AbstractPropertiesProvider(object) {
 				String[] properties = new String[] {
-						"messageRef"
+						"messageRef",
+						"sourceRef",
+						"targetRef"
 				};
 				
 				@Override

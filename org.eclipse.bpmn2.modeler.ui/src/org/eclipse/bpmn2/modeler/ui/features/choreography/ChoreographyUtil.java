@@ -31,6 +31,7 @@ import org.eclipse.bpmn2.ChoreographyActivity;
 import org.eclipse.bpmn2.ChoreographyLoopType;
 import org.eclipse.bpmn2.ChoreographyTask;
 import org.eclipse.bpmn2.InteractionNode;
+import org.eclipse.bpmn2.Message;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.di.BPMNDiagram;
@@ -46,6 +47,7 @@ import org.eclipse.bpmn2.modeler.core.utils.Tuple;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil.AnchorLocation;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil.BoundaryAnchor;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Envelope;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.EList;
@@ -422,7 +424,7 @@ public class ChoreographyUtil {
 		}
 	}
 
-	private static void drawMessageLink(String name, BoundaryAnchor boundaryAnchor, int x, int y, boolean filled) {
+	private static ContainerShape drawMessageLink(String name, BoundaryAnchor boundaryAnchor, int x, int y, boolean filled) {
 		Diagram diagram = peService.getDiagramForAnchor(boundaryAnchor.anchor);
 
 		FreeFormConnection connection = peService.createFreeFormConnection(diagram);
@@ -463,6 +465,7 @@ public class ChoreographyUtil {
 		connection.setStart(boundaryAnchor.anchor);
 		connection.setEnd(AnchorUtil.getBoundaryAnchors(envelope).get(envelopeAnchorLoc).anchor);
 		peService.setPropertyValue(envelope, MESSAGE_LINK, Boolean.toString(true));
+		return envelope;
 	}
 
 	public static void drawMultiplicityMarkers(ContainerShape container) {
@@ -511,7 +514,7 @@ public class ChoreographyUtil {
 		return createParticipantBandContainerShape(bandKind, container, null, bpmnShape, showNames);
 	}
 
-	public static void drawMessageLinks(ContainerShape choreographyContainer) {
+	public static void drawMessageLinks(IFeatureProvider fp, ContainerShape choreographyContainer) {
 
 		List<MessageFlow> messageFlows = new ArrayList<MessageFlow>();
 		ChoreographyTask choreography = BusinessObjectUtil.getFirstElementOfType(choreographyContainer,
@@ -574,9 +577,12 @@ public class ChoreographyUtil {
 
 		String topMessageName = null;
 		String bottomMessageName = null;
+		Message topMessage = null;
+		Message bottomMessage = null;
 
 		if (shouldDrawTopMessage) {
 			topMessageName = getMessageName(messageFlows, topAndBottom.getFirst());
+			topMessage = getMessage(messageFlows, topAndBottom.getFirst());
 		}
 		if (topMessageName == null) {
 			topMessageName = new String();
@@ -584,6 +590,7 @@ public class ChoreographyUtil {
 
 		if (shouldDrawBottomMessage) {
 			bottomMessageName = getMessageName(messageFlows, topAndBottom.getSecond());
+			bottomMessage = getMessage(messageFlows, topAndBottom.getSecond());
 		}
 		if (bottomMessageName == null) {
 			bottomMessageName = new String();
@@ -595,7 +602,8 @@ public class ChoreographyUtil {
 
 		if (!hasTopMessage && shouldDrawTopMessage) {
 			int y = (int) (bounds.getY() - ENVELOPE_HEIGHT_MODIFIER - ENV_H);
-			drawMessageLink(topMessageName, topBoundaryAnchor, x, y, isFilled(topAndBottom.getFirst()));
+			ContainerShape envelope = drawMessageLink(topMessageName, topBoundaryAnchor, x, y, isFilled(topAndBottom.getFirst()));
+			fp.link(envelope, topMessage);
 		} else if (hasTopMessage && !shouldDrawTopMessage) {
 			PictogramElement envelope = (PictogramElement) topConnections.get(topConnectionIndex).getEnd().eContainer();
 			peService.deletePictogramElement(topConnections.get(topConnectionIndex));
@@ -607,7 +615,8 @@ public class ChoreographyUtil {
 
 		if (!hasBottomMessage && shouldDrawBottomMessage) {
 			int y = (int) (bounds.getY() + bounds.getHeight() + ENVELOPE_HEIGHT_MODIFIER);
-			drawMessageLink(bottomMessageName, bottomBoundaryAnchor, x, y, isFilled(topAndBottom.getSecond()));
+			ContainerShape envelope = drawMessageLink(bottomMessageName, bottomBoundaryAnchor, x, y, isFilled(topAndBottom.getSecond()));
+			fp.link(envelope, bottomMessage);
 		} else if (hasBottomMessage && !shouldDrawBottomMessage) {
 			PictogramElement envelope = (PictogramElement) bottomConnections.get(bottomConnectionIndex).getEnd()
 					.eContainer();
@@ -662,12 +671,47 @@ public class ChoreographyUtil {
 			if (bpmnShape.isIsMessageVisible()) {
 				for (MessageFlow flow : messageFlows) {
 					if (flow.getSourceRef().equals(participant)) {
-						return flow.getName();
+						return getMessageFlowName(flow);
 					}
 				}
 			}
 		}
 		return null;
+	}
+
+	private static Message getMessage(List<MessageFlow> messageFlows, List<ContainerShape> bands) {
+		for (ContainerShape band : bands) {
+			Participant participant = BusinessObjectUtil.getFirstElementOfType(band, Participant.class);
+			BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(band, BPMNShape.class);
+			if (bpmnShape.isIsMessageVisible()) {
+				for (MessageFlow flow : messageFlows) {
+					if (flow.getSourceRef().equals(participant)) {
+						return flow.getMessageRef();
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	public static String getMessageFlowName(MessageFlow flow) {
+		if (flow.getMessageRef() == null) {
+			return flow.getName();
+		} else if (flow.getMessageRef().getItemRef()==null ||
+				flow.getMessageRef().getItemRef().getStructureRef()==null) {
+			return flow.getMessageRef().getName();
+		} else {
+			return PropertyUtil.getText(flow.getMessageRef().getItemRef());
+		}
+	}
+	
+	public static String getMessageName(Message mesg) {
+		if (mesg.getItemRef()==null ||
+				mesg.getItemRef().getStructureRef()==null) {
+			return mesg.getName();
+		} else {
+			return PropertyUtil.getText(mesg.getItemRef());
+		}
 	}
 
 	public static void moveChoreographyMessageLinks(ContainerShape choreographyContainer) {
