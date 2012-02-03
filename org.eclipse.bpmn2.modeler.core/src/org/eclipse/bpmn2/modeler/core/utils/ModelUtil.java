@@ -527,23 +527,32 @@ public class ModelUtil {
 		return attr;
 	}
 
-	public static Object createStructurRef(String value) {
-		DynamicEObjectImpl object = new DynamicEObjectImpl();
-		object.eSetProxyURI(URI.createURI(value));
-		return object;
+	public static EObject createStringWrapper(String value) {
+		DynamicEObjectImpl de = new DynamicEObjectImpl();
+		de.eSetProxyURI(URI.createURI(value));
+		return de;
 	}
 	
-	public static String getStructureRefValue(Object value) {
-		if (value instanceof DynamicEObjectImpl) {
-			DynamicEObjectImpl de = (DynamicEObjectImpl)value;
+	public static String getStringWrapperValue(Object wrapper) {
+		if (wrapper instanceof DynamicEObjectImpl) {
+			DynamicEObjectImpl de = (DynamicEObjectImpl)wrapper;
 			URI uri = de.eProxyURI();
 			return uri.toString();
 		}
 		return null;
 	}
 	
-	public static boolean isStructureRefValue(Object value) {
-		return value instanceof DynamicEObjectImpl;
+	public static boolean setStringWrapperValue(Object wrapper, String value) {
+		if (isStringWrapper(wrapper)) {
+			DynamicEObjectImpl de = (DynamicEObjectImpl)wrapper;
+			de.eSetProxyURI(URI.createURI(value));
+			return true;
+		}
+		return false;
+	}
+	
+	public static boolean isStringWrapper(Object wrapper) {
+		return wrapper instanceof DynamicEObjectImpl;
 	}
 	
 	public static Definitions getDefinitions(EObject object) {

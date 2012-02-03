@@ -201,7 +201,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 		be = object;
 		if (be != null) {
 			createBindings(be);
-			getParent().layout();
+			PropertyUtil.recursivelayout(getParent());
 		}
 	}
 	

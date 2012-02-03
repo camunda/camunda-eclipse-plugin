@@ -24,6 +24,7 @@ import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
+import org.eclipse.bpmn2.modeler.ui.property.dialogs.ModelSubclassSelectionDialog;
 import org.eclipse.bpmn2.modeler.ui.property.providers.ColumnTableProvider;
 import org.eclipse.bpmn2.modeler.ui.property.providers.TableCursor;
 import org.eclipse.bpmn2.modeler.ui.util.ErrorUtils;
@@ -60,6 +61,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
@@ -111,7 +113,8 @@ public class AbstractBpmn2TableComposite extends Composite {
 //	protected BPMN2Editor bpmn2Editor;
 	protected IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 
-	protected EObject listParentObject;
+	protected EObject object;
+	protected EStructuralFeature feature;
 	protected EClass listItemClass;
 	protected ModelEnablementDescriptor modelEnablement;
 	
@@ -205,78 +208,12 @@ public class AbstractBpmn2TableComposite extends Composite {
 	 * @return
 	 */
 	public EClass getListItemClassToAdd(EClass listItemClass) {
-		final List<EClass> items = new ArrayList<EClass>();
-		for (EClassifier eclassifier : PACKAGE.getEClassifiers() ) {
-			if (eclassifier instanceof EClass) {
-				EClass eclass = (EClass)eclassifier;
-				if (eclass.getEAllSuperTypes().contains(listItemClass)) {
-					if (modelEnablement.isEnabled(eclass)) {
-						items.add(eclass);
-					}
-				}
-			}
+		EClass eclass = null;
+		ModelSubclassSelectionDialog dialog = new ModelSubclassSelectionDialog(getDiagramEditor(), object, feature);
+		if (dialog.open()==Window.OK){
+			eclass = (EClass)dialog.getResult()[0];
 		}
-		if (items.size()>1) {
-			ListDialog dialog = new ListDialog(getShell());
-			dialog.setContentProvider(new IStructuredContentProvider() {
-	
-				@Override
-				public void dispose() {
-				}
-	
-				@Override
-				public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-				}
-	
-				@Override
-				public Object[] getElements(Object inputElement) {
-					return items.toArray();
-				}
-				
-			});
-			dialog.setLabelProvider(new ILabelProvider() {
-	
-				@Override
-				public void addListener(ILabelProviderListener listener) {
-				}
-	
-				@Override
-				public void dispose() {
-				}
-	
-				@Override
-				public boolean isLabelProperty(Object element, String property) {
-					return false;
-				}
-	
-				@Override
-				public void removeListener(ILabelProviderListener listener) {
-				}
-	
-				@Override
-				public Image getImage(Object element) {
-					return null;
-				}
-	
-				@Override
-				public String getText(Object element) {
-					return ModelUtil.toDisplayName( ((EClass)element).getName() );
-				}
-				
-			});
-			dialog.setTitle("Select a type of "+
-					ModelUtil.toDisplayName(listItemClass.getName()));
-			dialog.setAddCancelButton(true);
-			dialog.setHelpAvailable(false);
-			dialog.setInput(new Object());
-			dialog.open();
-			Object[] result = dialog.getResult();
-			if (result != null) {
-				return (EClass)result[0];
-			}
-			return null;
-		}
-		return listItemClass;
+		return eclass;
 	}
 	
 	/**
@@ -416,17 +353,17 @@ public class AbstractBpmn2TableComposite extends Composite {
 			tableSection.setText(title);
 	}
 	
-	public void bindList(final EObject object, final EStructuralFeature feature) {
-		if (!(object.eGet(feature) instanceof EList<?>)) {
+	public void bindList(final EObject theobject, final EStructuralFeature thefeature) {
+		if (!(theobject.eGet(thefeature) instanceof EList<?>)) {
 			return;
 		}
-		Class<?> clazz = feature.getEType().getInstanceClass();
+		Class<?> clazz = thefeature.getEType().getInstanceClass();
 		if (!EObject.class.isAssignableFrom(clazz)) {
 			return;
 		}
 		TransactionChangeRecorder cr = null;
 		TransactionalEditingDomain dom = null;
-		for (Adapter ad : object.eAdapters()) {
+		for (Adapter ad : theobject.eAdapters()) {
 			if (ad instanceof TransactionChangeRecorder) {
 				cr = (TransactionChangeRecorder)ad;
 				dom = cr.getEditingDomain();
@@ -435,16 +372,17 @@ public class AbstractBpmn2TableComposite extends Composite {
 
 		final BPMN2Editor bpmn2Editor = getDiagramEditor();
 		
-		listParentObject = object;
-		modelEnablement = bpmn2Editor.getTargetRuntime().getModelEnablements(object);
+		this.object = theobject;
+		this.feature = thefeature;
+		modelEnablement = bpmn2Editor.getTargetRuntime().getModelEnablements(theobject);
 		final TransactionalEditingDomain editingDomain = bpmn2Editor.getEditingDomain();
-		final EList<EObject> list = (EList<EObject>)object.eGet(feature);
-		final EClass listItemClass = getListItemClass(object,feature);
+		final EList<EObject> list = (EList<EObject>)theobject.eGet(thefeature);
+		final EClass listItemClass = getListItemClass(theobject,thefeature);
 		
 		////////////////////////////////////////////////////////////
 		// Collect columns to be displayed and build column provider
 		////////////////////////////////////////////////////////////
-		columnProvider = getColumnProvider(object, feature);
+		columnProvider = getColumnProvider(theobject, thefeature);
 		// remove disabled columns
 		List<TableColumn> removed = new ArrayList<TableColumn>();
 		for (TableColumn tc : (List<TableColumn>)columnProvider.getColumns()) {
@@ -544,7 +482,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 		
 		tableViewer.setLabelProvider(columnProvider);
 		tableViewer.setCellModifier(columnProvider);
-		tableViewer.setContentProvider(getContentProvider(object,feature,list));
+		tableViewer.setContentProvider(getContentProvider(theobject,thefeature,list));
 		tableViewer.setColumnProperties(columnProvider.getColumnProperties());
 		tableViewer.setCellEditors(columnProvider.createCellEditors(table));
 
@@ -627,7 +565,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 						@Override
 						protected void doExecute() {
-							EObject newItem = addListItem(object,feature);
+							EObject newItem = addListItem(theobject,thefeature);
 							if (newItem!=null) {
 								tableViewer.setInput(list);
 								tableViewer.setSelection(new StructuredSelection(newItem));
@@ -645,7 +583,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 						@Override
 						protected void doExecute() {
 							int i = table.getSelectionIndex();
-							if (removeListItem(object,feature,list.get(i))) {
+							if (removeListItem(theobject,thefeature,list.get(i))) {
 								tableViewer.setInput(list);
 								if (i>=list.size())
 									i = list.size() - 1;
@@ -694,7 +632,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 						@Override
 						protected void doExecute() {
-							EObject newItem = editListItem(object,feature);
+							EObject newItem = editListItem(theobject,thefeature);
 							if (newItem!=null) {
 								tableViewer.setInput(list);
 								tableViewer.setSelection(new StructuredSelection(newItem));
@@ -712,7 +650,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 		redrawPage();
 		
 		boolean expanded = preferenceStore.getBoolean("table."+listItemClass.getName()+".expanded");
-		if (expanded)
+		if (expanded && tableSection!=null)
 			tableSection.setExpanded(true);
 	}
 	

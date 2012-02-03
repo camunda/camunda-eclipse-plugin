@@ -84,8 +84,8 @@ public class ItemAwareElementPropertiesAdapter extends Bpmn2ExtendedPropertiesAd
     	setFeatureDescriptor(ref,
 			new Bpmn2FeatureDescriptor(adapterFactory,object,ref) {
 				@Override
-				public void setValue(EObject context, Object value) {
-					final EObject object = context==null ? this.object : context;
+				public void setValue(Object context, Object value) {
+					final EObject object = (EObject) (context instanceof EObject ? context : this.object);
 					if (value instanceof String) {
 						// construct a DataState from the given name string
 						DataState ds = Bpmn2Factory.eINSTANCE.createDataState();

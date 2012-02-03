@@ -77,7 +77,7 @@ public class DataAssociationPropertiesAdapter extends Bpmn2ExtendedPropertiesAda
     		}
 			
 			@Override
-			public EObject createValue(EObject context) {
+			public EObject createObject(Object context) {
 				EObject object = context instanceof EObject ? (EObject)context : this.object;
 				// what kind of object should we create? Property or DataStore?
 				EClass eClass = null;
@@ -99,7 +99,7 @@ public class DataAssociationPropertiesAdapter extends Bpmn2ExtendedPropertiesAda
 			}
 			
 			@Override
-			public void setValue(EObject context, final Object value) {
+			public void setValue(Object context, final Object value) {
 				final DataAssociation association = context instanceof DataAssociation ?
 						(DataAssociation)context :
 						(DataAssociation)this.object;

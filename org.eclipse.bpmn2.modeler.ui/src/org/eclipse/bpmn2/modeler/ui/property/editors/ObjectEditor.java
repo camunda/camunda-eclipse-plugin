@@ -18,6 +18,8 @@ import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.Bpmn2ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.util.ErrorUtils;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -78,7 +80,12 @@ public abstract class ObjectEditor {
 	}
 
 	protected boolean updateObject(final Object result) {
-		if (result != object.eGet(feature)) {
+		Bpmn2ExtendedPropertiesAdapter adapter = AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+		boolean valueChanged = adapter==null ?
+				(result != object.eGet(feature)) :
+				!(result.equals(adapter.getFeatureDescriptor(feature).getValue()));
+		
+		if (valueChanged) {
 			InsertionAdapter insertionAdapter = AdapterUtil.adapt(object, InsertionAdapter.class);
 			if (insertionAdapter!=null) {
 				// make sure the new object is added to its container first
@@ -88,21 +95,27 @@ public abstract class ObjectEditor {
 			}
 			
 			// use the Extended Properties adapter if there is one
-			Bpmn2ExtendedPropertiesAdapter adapter = AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
 			if (adapter!=null) {
-				adapter.getFeatureDescriptor(feature).setValue(object, result);
-				return true;
+				adapter.getFeatureDescriptor(feature).setValue(result);
 			}
-		
-			// fallback is to set the new value here
-			TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
-			domain.getCommandStack().execute(new RecordingCommand(domain) {
-				@Override
-				protected void doExecute() {
-					object.eSet(feature, result);
-				}
-			});
+			else {
+				// fallback is to set the new value here using good ol' EObject.eSet()
+				TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
+				domain.getCommandStack().execute(new RecordingCommand(domain) {
+					@Override
+					protected void doExecute() {
+						object.eSet(feature, result);
+					}
+				});
+			}
+			if (getDiagramEditor().getDiagnostics()!=null) {
+				ErrorUtils.showErrorMessage(getDiagramEditor().getDiagnostics().getMessage());
+				return false;
+			}
+			else
+				ErrorUtils.showErrorMessage(null);
 		}
+		
 		return true;
 	}
 }

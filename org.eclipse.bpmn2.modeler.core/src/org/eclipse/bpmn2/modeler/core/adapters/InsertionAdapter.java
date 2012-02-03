@@ -53,7 +53,10 @@ public class InsertionAdapter extends EContentAdapter {
 //		assert(object.eResource()!=null);
 //		assert(value.eResource()==null);
 //		assert(feature.getEType().isInstance(value));
-		this.resource = resource;
+		if (resource==null)
+			this.resource = object.eResource();
+		else
+			this.resource = resource;
 		this.object = object;
 		this.feature = feature;
 		this.value = value;
@@ -155,5 +158,9 @@ public class InsertionAdapter extends EContentAdapter {
 		}
 		for (InsertionAdapter adapter : allAdapters)
 			adapter.execute();
+	}
+	
+	public Resource getResource() {
+		return resource;
 	}
 }

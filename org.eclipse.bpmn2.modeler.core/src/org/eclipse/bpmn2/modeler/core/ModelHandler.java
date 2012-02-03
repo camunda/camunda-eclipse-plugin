@@ -392,8 +392,12 @@ public class ModelHandler {
 	}
 
 	public static Import addImport(EObject modelObject, Object importObject) {
-		Import imp = null;
 		Resource resource = modelObject.eResource();
+		return addImport(resource,importObject);
+	}
+	
+	public static Import addImport(Resource resource, Object importObject) {
+		Import imp = null;
 		if (resource instanceof Bpmn2Resource) {
 			final Definitions bpmn2Definitions = (Definitions) resource.getContents().get(0).eContents().get(0);
 
@@ -426,14 +430,14 @@ public class ModelHandler {
 				}
 		
 				if (imp!=null) {
-					TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(modelObject.eResource());
+					TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(resource);
 					if (domain != null) {
 						final Import i = imp;
 						domain.getCommandStack().execute(new RecordingCommand(domain) {
 							@Override
 							protected void doExecute() {
 								bpmn2Definitions.getImports().add(i);
-								NamespaceUtil.addNamespace(i, i.getNamespace());
+								NamespaceUtil.addNamespace(i.eResource(), i.getNamespace());
 							}
 						});
 					}

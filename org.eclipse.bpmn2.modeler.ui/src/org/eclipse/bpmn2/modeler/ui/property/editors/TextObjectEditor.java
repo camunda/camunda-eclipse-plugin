@@ -27,6 +27,7 @@ import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -38,6 +39,8 @@ import org.eclipse.swt.widgets.Text;
  */
 public class TextObjectEditor extends ObjectEditor {
 
+	protected Text text;
+	
 	/**
 	 * @param parent
 	 * @param object
@@ -58,14 +61,14 @@ public class TextObjectEditor extends ObjectEditor {
 		if (multiLine)
 			style |= SWT.V_SCROLL;
 
-		final Text text = getToolkit().createText(composite, "", style);
+		text = getToolkit().createText(composite, "", style);
 		GridData data = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
 		if (multiLine) {
 			data.heightHint = 100;
 		}
 		text.setLayoutData(data);
 
-		text.setText(PropertyUtil.getText(object, feature));
+		setText(PropertyUtil.getText(object, feature));
 
 		IObservableValue textObserver = SWTObservables.observeText(text, SWT.Modify);
 		textObserver.addValueChangeListener(new IValueChangeListener() {
@@ -73,17 +76,7 @@ public class TextObjectEditor extends ObjectEditor {
 			@SuppressWarnings("restriction")
 			@Override
 			public void handleValueChange(final ValueChangeEvent e) {
-
-				if (!text.getText().equals( PropertyUtil.getText(object, feature) )) {
-					updateObject(e.diff.getNewValue());
-					if (getDiagramEditor().getDiagnostics()!=null) {
-						// revert the change and display error status message.
-						text.setText(PropertyUtil.getText(object, feature));
-						ErrorUtils.showErrorMessage(getDiagramEditor().getDiagnostics().getMessage());
-					}
-					else
-						ErrorUtils.showErrorMessage(null);
-				}
+				updateObject(e.diff.getNewValue());
 			}
 		});
 		
@@ -103,4 +96,46 @@ public class TextObjectEditor extends ObjectEditor {
 		return text;
 	}
 
+	@Override
+	protected boolean updateObject(Object result) {
+		if (super.updateObject(result)) {
+			updateText();
+			return true;
+		}
+		// revert the change on error
+		text.setText(PropertyUtil.getText(object, feature));
+		return false;
+	}
+
+	/**
+	 * Update the read-only text field with the give value
+	 * 
+	 * @param value - new value for the text field
+	 */
+	protected void updateText() {
+		int pos = text.getCaretPosition();
+		setText(getText());
+		text.setSelection(pos, pos);
+	}
+	
+	protected void setText(String value) {
+		if (value==null)
+			value = "";
+		text.setText(value);
+	}
+	
+	/**
+	 * Returns the string representation of the given value used for
+	 * display in the text field. The default implementation correctly
+	 * handles structureRef values (proxy URIs from a DynamicEObject)
+	 * and provides reasonable behavior for EObject values.
+	 * 
+	 * @param value - new object value. If null is passed in, the implementation
+	 * should substitute the original value of the EObject's feature.
+	 * 
+	 * @return string representation of the EObject feature's value.
+	 */
+	protected String getText() {
+		return PropertyUtil.getText(object, feature);
+	}
 }

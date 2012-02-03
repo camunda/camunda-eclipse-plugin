@@ -167,6 +167,9 @@ public class PropertyUtil {
 	}
 	
 	public static String getText(EObject object, EStructuralFeature feature) {
+		if (feature==null)
+			return getText(object);
+		
 		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
 		if (adapter!=null)
 			return adapter.getFeatureDescriptor(feature).getText(object);
@@ -187,10 +190,17 @@ public class PropertyUtil {
 		return null;
 	}
 
-	public static EObject createValue(EObject object, EStructuralFeature feature) {
+	public static EObject createObject(EObject object, EStructuralFeature feature) {
 		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
 		if (adapter!=null)
-			return adapter.getFeatureDescriptor(feature).createValue(object);
+			return adapter.getFeatureDescriptor(feature).createObject(object);
+		return null;
+	}
+
+	public static EObject createObject(EObject object, EStructuralFeature feature, EClass eclass) {
+		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+		if (adapter!=null)
+			return adapter.getFeatureDescriptor(feature).createObject(object, eclass);
 		return null;
 	}
 

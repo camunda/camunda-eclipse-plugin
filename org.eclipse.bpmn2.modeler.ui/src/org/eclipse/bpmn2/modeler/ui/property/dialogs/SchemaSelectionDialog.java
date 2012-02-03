@@ -13,20 +13,19 @@
 
 package org.eclipse.bpmn2.modeler.ui.property.dialogs;
 
-import java.io.IOException;
-
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Import;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
+import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceSetImpl;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
+import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.providers.ModelTreeLabelProvider;
 import org.eclipse.bpmn2.modeler.ui.property.providers.ServiceTreeContentProvider;
+import org.eclipse.bpmn2.modeler.ui.property.providers.TreeNode;
 import org.eclipse.bpmn2.modeler.ui.property.providers.VariableTypeTreeContentProvider;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -40,7 +39,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -51,12 +49,11 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SelectionStatusDialog;
-import org.eclipse.bpmn2.modeler.ui.property.providers.TreeNode;
 
 public class SchemaSelectionDialog extends SelectionStatusDialog {
 
+	protected BPMN2Editor bpmn2Editor;
 	protected EObject modelObject;
 	protected Object input; // an XSDSchema or WSDL Definition
 	protected List importList;
@@ -67,6 +64,7 @@ public class SchemaSelectionDialog extends SelectionStatusDialog {
 	protected String importType;
 	protected String importLocation;
 	protected Job loaderJob;
+	private String selectionPath;
 	
 	/**
 	 * @param parent
@@ -77,7 +75,7 @@ public class SchemaSelectionDialog extends SelectionStatusDialog {
 		setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX);
 
 		modelObject = object;
-		hackedResourceSet = ModelUtil.slightlyHackedResourceSet(modelObject);
+		bpmn2Editor = BPMN2Editor.getActiveEditor();
 	}
 
 	@Override
@@ -115,7 +113,7 @@ public class SchemaSelectionDialog extends SelectionStatusDialog {
 				if (dialog.open() == Window.OK) {
 					Object result[] = dialog.getResult();
 					if (result.length == 1) {
-						Import imp = ModelHandler.addImport(modelObject, result[0]);
+						Import imp = ModelHandler.addImport(bpmn2Editor.getModelHandler().getResource(), result[0]);
 						if (imp!=null) {
 							int index = importList.getItemCount();
 							importList.add(imp.getLocation());
@@ -179,6 +177,7 @@ public class SchemaSelectionDialog extends SelectionStatusDialog {
 						TreeNode tn = (TreeNode)data;
 						Object[] result = new Object[] {tn.getModelObject()};
 						setSelectionResult(result);
+						setSelectionPath(sel[0]);
 						updateOK(true);
 					}
 					else
@@ -189,7 +188,33 @@ public class SchemaSelectionDialog extends SelectionStatusDialog {
 
 		return tree;
 	}
+	
+	protected void setSelectionPath(TreeItem sel) {
+		selectionPath = buildSelectionPath(sel);
+	}
 
+	public String getSelectionPath() {
+		return selectionPath;
+	}
+	
+	private String buildSelectionPath(TreeItem sel) {
+		String path = "";
+		TreeItem parent = sel.getParentItem();
+		if (parent!=null) {
+			path += buildSelectionPath(parent);
+		
+			Object data = sel.getData();
+			if (data instanceof TreeNode) {
+				TreeNode tn = (TreeNode)data;
+				path += "/" + tn.getLabel();
+			}
+		}
+		else
+			path = ""; // this is the tree root
+		
+		return path;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -234,7 +259,7 @@ public class SchemaSelectionDialog extends SelectionStatusDialog {
 		}
 		if (uri.isRelative()) {
 			// construct absolute path
-			String basePath = BPMN2Editor.getActiveEditor().getModelFile().getLocation().removeLastSegments(1).toString();
+			String basePath = bpmn2Editor.getModelFile().getLocation().removeLastSegments(1).toString();
 			uri = URI.createFileURI( basePath + "/" + path );
 		}
 
@@ -266,6 +291,7 @@ public class SchemaSelectionDialog extends SelectionStatusDialog {
 
 		Resource resource = null;
 		try {
+			hackedResourceSet = ModelUtil.slightlyHackedResourceSet(bpmn2Editor.getResourceSet());
 			resource = hackedResourceSet.getResource(uri, true, kind);
 		} catch (Exception e) {
 			return e;
@@ -303,12 +329,7 @@ public class SchemaSelectionDialog extends SelectionStatusDialog {
 	}
 
 	public Definitions getDefinitions() {
-		try {
-			return ModelHandlerLocator.getModelHandler(modelObject.eResource()).getDefinitions();
-		} catch (IOException e) {
-			Activator.showErrorWithLogging(e);
-		}
-		return null;
+		return bpmn2Editor.getModelHandler().getDefinitions();
 	}
 	
 	public java.util.List<Import> getImports() {

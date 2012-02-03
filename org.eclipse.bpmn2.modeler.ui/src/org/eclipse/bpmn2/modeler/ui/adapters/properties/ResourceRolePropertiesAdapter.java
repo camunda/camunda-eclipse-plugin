@@ -58,7 +58,7 @@ public class ResourceRolePropertiesAdapter extends Bpmn2ExtendedPropertiesAdapte
 				}
 
 				@Override
-				public void setValue(EObject context, Object value) {
+				public void setValue(Object context, Object value) {
 					final ResourceRole rr = (ResourceRole)(context instanceof ResourceRole ? context : object);
 					ResourceAssignmentExpression rae = rr.getResourceAssignmentExpression();
 					if (rae!=null) {

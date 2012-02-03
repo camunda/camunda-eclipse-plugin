@@ -136,7 +136,7 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 					@Override
 					public String getText(Object element) {
 						Import imp = (Import)element;
-						String prefix = NamespaceUtil.getPrefixForNamespace(imp, imp.getNamespace());
+						String prefix = NamespaceUtil.getPrefixForNamespace(imp.eResource(), imp.getNamespace());
 						if (prefix!=null)
 							return prefix;
 						return "";
@@ -183,7 +183,7 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 				}
 			}
 			if (canRemoveNamespace)
-				NamespaceUtil.removeNamespace(imp, imp.getNamespace());
+				NamespaceUtil.removeNamespace(imp.eResource(), imp.getNamespace());
 			return super.removeListItem(object, feature, item);
 		}
 
@@ -229,14 +229,14 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 
 						@Override
 						public String isValid(String newText) {
-							String ns = NamespaceUtil.getNamespaceForPrefix(imp, newText);
+							String ns = NamespaceUtil.getNamespaceForPrefix(imp.eResource(), newText);
 							if (ns==null)
 								return null;
 							return "Prefix "+newText+" is already used for namespace\n"+ns;
 						}
 						
 					};
-					String initialValue = getObjectText();
+					String initialValue = getText();
 					InputDialog dialog = new InputDialog(
 							getShell(),
 							"Namespace Prefix",
@@ -251,14 +251,14 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 				protected boolean updateObject(final Object value) {
 					// remove old prefix
 					String prefix = text.getText();
-					NamespaceUtil.removeNamespaceForPrefix(imp, prefix);
+					NamespaceUtil.removeNamespaceForPrefix(imp.eResource(), prefix);
 					// and add new
-					NamespaceUtil.addNamespace(imp, (String)value, imp.getNamespace());
+					NamespaceUtil.addNamespace(imp.eResource(), (String)value, imp.getNamespace());
 					setText((String) value);
 					return true;
 				}
 				
-				protected String getObjectText() {
+				protected String getText() {
 					return getNamespacePrefix();
 				}
 			};
@@ -269,7 +269,7 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 		
 		private String getNamespacePrefix() {
 			Import imp = (Import)be;
-			String prefix = NamespaceUtil.getPrefixForNamespace(imp, imp.getNamespace());
+			String prefix = NamespaceUtil.getPrefixForNamespace(imp.eResource(), imp.getNamespace());
 			if (prefix==null)
 				prefix = "";
 			return prefix;

@@ -21,17 +21,19 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
+// TODO: this needs to be a FormDialog
 public class FeatureEditingDialog extends Dialog {
 
 	protected BPMN2Editor editor;
 	protected EObject object;
 	protected EStructuralFeature feature;
 	protected EObject newObject;
+	protected boolean cancel = false;
 	
 	public FeatureEditingDialog(BPMN2Editor editor, EObject object, EStructuralFeature feature, EObject value) {
 		super(editor.getEditorSite().getShell());
@@ -51,6 +53,9 @@ public class FeatureEditingDialog extends Dialog {
 		if (newObject!=null)
 			title = "Edit " + PropertyUtil.getLabel(newObject);
 		create();
+		if (cancel)
+			return Window.CANCEL;
+		
 		getShell().setSize(500,500);
 		if (title==null)
 			title = "Create New " + PropertyUtil.getLabel(newObject);
@@ -62,13 +67,19 @@ public class FeatureEditingDialog extends Dialog {
 	protected Control createDialogArea(Composite parent) {
 		Composite dialogArea = (Composite) super.createDialogArea(parent);
 		
-		AbstractBpmn2PropertiesComposite comp = PropertiesCompositeFactory.createComposite(
-				feature.getEType().getInstanceClass(), dialogArea, SWT.NONE);
-		
+		EClass eclass = (EClass)feature.getEType();
 		if (newObject==null) {
 			// create the new object
-			newObject = PropertyUtil.createValue(object, feature);
+			ModelSubclassSelectionDialog dialog = new ModelSubclassSelectionDialog(editor, object, feature);
+			if (dialog.open()==Window.OK){
+				eclass = (EClass)dialog.getResult()[0];
+				newObject = PropertyUtil.createObject(object, feature, eclass);
+			}
+			else
+				cancel = true;
 		}
+		AbstractBpmn2PropertiesComposite comp = PropertiesCompositeFactory.createComposite(
+				eclass.getInstanceClass(), dialogArea, SWT.NONE);
 		comp.setEObject(BPMN2Editor.getActiveEditor(), newObject);
 		
 		return dialogArea;

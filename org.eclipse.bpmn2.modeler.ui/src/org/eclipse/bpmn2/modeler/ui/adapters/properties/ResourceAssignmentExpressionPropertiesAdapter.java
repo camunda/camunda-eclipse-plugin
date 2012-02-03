@@ -58,7 +58,7 @@ public class ResourceAssignmentExpressionPropertiesAdapter extends Bpmn2Extended
 				}
 
 				@Override
-				public void setValue(EObject context, Object value) {
+				public void setValue(Object context, Object value) {
 					ResourceAssignmentExpression rae = (ResourceAssignmentExpression)this.object;
 					if (!(rae.getExpression() instanceof FormalExpression)) {
 						final FormalExpression e = Bpmn2Factory.eINSTANCE.createFormalExpression();

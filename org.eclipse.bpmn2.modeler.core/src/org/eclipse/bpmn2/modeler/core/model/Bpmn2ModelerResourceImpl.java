@@ -180,7 +180,7 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 
 			// hack to handle QNames and arbitrary strings in structureRefs
 			if (eReference.getName().equals("structureRef")) {
-				object.eSet(eReference, ModelUtil.createStructurRef(ids));
+				object.eSet(eReference, ModelUtil.createStringWrapper(ids));
 				return;
 			}
 

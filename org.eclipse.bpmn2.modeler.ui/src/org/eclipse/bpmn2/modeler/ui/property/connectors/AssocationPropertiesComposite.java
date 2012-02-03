@@ -20,8 +20,6 @@ import org.eclipse.swt.widgets.Composite;
 
 public class AssocationPropertiesComposite extends DefaultPropertiesComposite {
 
-	private AbstractPropertiesProvider propertiesProvider;
-
 	public AssocationPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
 	}

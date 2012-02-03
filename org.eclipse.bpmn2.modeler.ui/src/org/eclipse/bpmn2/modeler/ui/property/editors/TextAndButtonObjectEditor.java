@@ -24,20 +24,21 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * @author Bob Brodt
  *
  */
-public abstract class TextAndButtonObjectEditor extends ObjectEditor {
+public abstract class TextAndButtonObjectEditor extends TextObjectEditor {
 
-	protected Label text;
 	protected Button button;
 
 	/**
@@ -54,12 +55,13 @@ public abstract class TextAndButtonObjectEditor extends ObjectEditor {
 	 */
 	@Override
 	public Control createControl(Composite composite, String label, int style) {
-		createLabel(composite, label);
+		super.createControl(composite, label, style);
 
-		text = getToolkit().createLabel(composite, "", SWT.BORDER );
-		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		text.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
-
+		// we assume that the "Edit" button will handle editing of this read-only text field
+		text.setEditable(false);
+		GridData data = (GridData)text.getLayoutData();
+		data.horizontalSpan = 1;
+		
 		button = getToolkit().createButton(composite, "Edit...", SWT.PUSH);
 		button.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 
@@ -82,64 +84,4 @@ public abstract class TextAndButtonObjectEditor extends ObjectEditor {
 	 * The implementation must override this to handle the "Edit..." button click.
 	 */
 	protected abstract void buttonClicked(); 
-
-	/**
-	 * Update the value of the EObject's feature being edited.
-	 * 
-	 * As a side-effect, if the new value was set successfully,
-	 * the text field is also updated with the new string representation
-	 * for the object value.
-	 *  
-	 * @param value
-	 * @return true if the object was successfully updated, false if error
-	 */
-	@Override
-	protected boolean updateObject(final Object value) {
-		if (value != object.eGet(feature)) {
-			TransactionalEditingDomain editingDomain = getDiagramEditor().getEditingDomain();
-			editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-				@Override
-				protected void doExecute() {
-					object.eSet(feature, value);
-				}
-			});
-			if (getDiagramEditor().getDiagnostics()!=null) {
-				ErrorUtils.showErrorMessage(getDiagramEditor().getDiagnostics().getMessage());
-			}
-			else {
-				ErrorUtils.showErrorMessage(null);
-				updateText();
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Update the read-only text field with the give value
-	 * 
-	 * @param value - new value for the text field
-	 */
-	protected void updateText() {
-		setText( getObjectText());
-	}
-	
-	protected void setText(String value) {
-		text.setText(value);
-	}
-	
-	/**
-	 * Returns the string representation of the given value used for
-	 * display in the text field. The default implementation correctly
-	 * handles structureRef values (proxy URIs from a DynamicEObject)
-	 * and provides reasonable behavior for EObject values.
-	 * 
-	 * @param value - new object value. If null is passed in, the implementation
-	 * should substitute the original value of the EObject's feature.
-	 * 
-	 * @return string representation of the EObject feature's value.
-	 */
-	protected String getObjectText() {
-		return PropertyUtil.getText(object, feature);
-	}
 }

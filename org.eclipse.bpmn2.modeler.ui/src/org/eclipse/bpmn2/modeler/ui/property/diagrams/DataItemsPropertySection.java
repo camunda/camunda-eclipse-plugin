@@ -1,6 +1,7 @@
 package org.eclipse.bpmn2.modeler.ui.property.diagrams;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.ItemKind;
@@ -13,11 +14,14 @@ import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
+import org.eclipse.bpmn2.modeler.ui.property.editors.ComboObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.SchemaObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.TextAndButtonObjectEditor;
+import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -93,7 +97,37 @@ public class DataItemsPropertySection extends DefaultPropertySection {
 			}
 			return propertiesProvider;
 		}
+		
+		protected void bindAttribute(Composite parent, EObject object, EAttribute attribute, String label) {
 
+			if ("itemKind".equals(attribute.getName())) {
+				if (modelEnablement.isEnabled(object.eClass(), attribute)) {
+	
+					if (parent==null)
+						parent = getAttributesParent();
+					
+					if (label==null)
+						label = PropertyUtil.getLabel(object, attribute);
+					
+					Collection choiceOfValues = PropertyUtil.getChoiceOfValues(object, attribute);
+					ObjectEditor editor = new ComboObjectEditor(this,object,attribute) {
+						protected boolean updateObject(final Object result) {
+							super.updateObject(result);
+							Display.getCurrent().syncExec( new Runnable() {
+								@Override
+								public void run() {
+									setEObject(getEObject());
+								}
+							});
+							return true;
+						}
+					};
+					
+					editor.createControl(parent,label);
+				}
+			}
+		}
+		
 		@Override
 		protected void bindReference(Composite parent, EObject object, EReference reference) {
 			if ("structureRef".equals(reference.getName()) &&
@@ -106,43 +140,14 @@ public class DataItemsPropertySection extends DefaultPropertySection {
 				String displayName = PropertyUtil.getLabel(object, reference);
 				
 				if (def.getItemKind().equals(ItemKind.INFORMATION)) {
-					SchemaObjectEditor editor = new SchemaObjectEditor(this,object,reference) {
-						@Override
-						protected boolean updateObject(final Object value) {
-							if (value instanceof String) {
-								// convert to a proxy
-						        return super.updateObject(ModelUtil.createStructurRef((String)value));
-							}
-							return false;
-						}
-					};
+					SchemaObjectEditor editor = new SchemaObjectEditor(this,object,reference);
 					editor.createControl(parent,displayName);
 				}
 				else {
-					ObjectEditor editor = new TextAndButtonObjectEditor(this,object,reference) {
+					ObjectEditor editor = new TextObjectEditor(this,object,reference) {
 						@Override
-						protected void buttonClicked() {
-							IInputValidator validator = new IInputValidator() {
-
-								@Override
-								public String isValid(String newText) {
-									if (newText==null || newText.isEmpty())
-										return "Please enter some text";
-									return null;
-								}
-								
-							};
-							
-							String initialValue = ModelUtil.getStructureRefValue(def.getStructureRef());
-							InputDialog dialog = new InputDialog(
-									getShell(),
-									"Data Structure",
-									"Enter the data structure reference for this Item Definition",
-									initialValue,
-									validator);
-							if (dialog.open()==Window.OK){
-								updateObject(ModelUtil.createStructurRef(dialog.getValue()));
-							}
+						protected boolean updateObject(Object result) {
+							return super.updateObject(ModelUtil.createStringWrapper((String)result));
 						}
 					};
 					editor.createControl(parent,displayName);
@@ -150,27 +155,6 @@ public class DataItemsPropertySection extends DefaultPropertySection {
 			}
 			else
 				super.bindReference(parent, object, reference);
-		}
-		
-		@Override
-		public void resourceSetChanged(ResourceSetChangeEvent event) {
-			if (be!=null) {
-				for (Notification n : event.getNotifications()) {
-					EStructuralFeature structureRef = be.eClass().getEStructuralFeature("itemKind");
-					if (n.getNotifier()==this.be &&
-							n.getFeature()==structureRef &&
-							n.getEventType() == Notification.SET) {
-						// force rebuild of UI
-						Display.getCurrent().syncExec( new Runnable() {
-							@Override
-							public void run() {
-								setEObject(getEObject());
-							}
-						});
-						break;
-					}
-				}
-			}
 		}
 	}
 }

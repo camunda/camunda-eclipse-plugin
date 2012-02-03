@@ -20,6 +20,7 @@ import org.eclipse.bpel.wsil.model.inspection.Link;
 import org.eclipse.bpel.wsil.model.inspection.Name;
 import org.eclipse.bpel.wsil.model.inspection.Service;
 import org.eclipse.bpel.wsil.model.inspection.TypeOfAbstract;
+import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.providers.ModelLabelProvider;
 import org.eclipse.bpmn2.modeler.ui.property.providers.ModelTreeLabelProvider;
 import org.eclipse.bpmn2.modeler.ui.property.providers.ServiceTreeContentProvider;
@@ -39,6 +40,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -74,6 +76,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.dialogs.SelectionStatusDialog;
 import org.eclipse.ui.part.DrillDownComposite;
+import org.eclipse.wst.wsdl.Definition;
+import org.eclipse.xsd.XSDSchema;
 
 /**
  * Browse for complex/simple types available in the process and choose that
@@ -114,6 +118,7 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 	private String resourceFilter;
 	protected String fResourceKind;
 
+	protected BPMN2Editor bpmn2Editor;
 	protected EObject modelObject;
 
 	protected Tree fTree;
@@ -192,6 +197,8 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 			configureAsSchemaImport();
 		else if (TYPE==BID_IMPORT_WSDL)
 			configureAsWSDLImport();
+		
+		bpmn2Editor = BPMN2Editor.getActiveEditor();
 	}
 
 	/**
@@ -208,7 +215,8 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 		this.modelObject = eObject;
 		setTitle(Messages.SchemaImportDialog_2);
 
-		fHackedResourceSet = ModelUtil.slightlyHackedResourceSet(eObject);
+		ResourceSet rs =  bpmn2Editor.getResourceSet();
+		fHackedResourceSet = ModelUtil.slightlyHackedResourceSet(rs);
 	}
 
 	/**
@@ -776,7 +784,24 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 					MessageFormat.format(Messages.SchemaImportDialog_18,fRunnableLoadURI,elapsed),null)) ;
 				
 			fTreeViewer.setInput(fInput);				
-			fTree.getVerticalBar().setSelection(0);			
+			fTree.getVerticalBar().setSelection(0);
+
+			// display a warning if this import does not define a targetNamespace
+			String type = null;
+			String ns = null;
+			if (fInput instanceof XSDSchema) {
+				ns = ((XSDSchema)fInput).getTargetNamespace();
+				type = "XSD Schema";
+			}
+			else if (fInput instanceof Definition) {
+				ns = ((Definition)fInput).getTargetNamespace();
+				type = "WSDL";
+			}
+			if (ns==null || ns.isEmpty()) {
+				updateStatus ( new Status(IStatus.WARNING, Activator.getDefault().getID(),0,
+						"This "+type+" does not define a target namespace",null)) ;
+					
+			}
 		}
 	}
 	

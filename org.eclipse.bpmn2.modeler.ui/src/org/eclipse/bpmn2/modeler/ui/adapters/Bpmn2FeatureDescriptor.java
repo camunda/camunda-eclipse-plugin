@@ -155,16 +155,27 @@ public class Bpmn2FeatureDescriptor extends Bpmn2ObjectDescriptor {
 		}
 		return multiline == 1;
 	}
+
+	public EObject createObject() {
+		return createObject(object);
+	}
 	
-	public EObject createValue(EObject context) {
+	public EObject createObject(Object context) {
+		return createObject(context, null);
+	}		
+	
+	public EObject createObject(Object context, EClass eclass) {
 		EObject object = context instanceof EObject ? (EObject)context : this.object;
 		try {
+			if (eclass==null)
+				eclass = (EClass)feature.getEType();
+			
 			ModelHandler mh = ModelHandler.getInstance(object);
 			if (mh!=null)
-				return mh.create((EClass)feature.getEType());
+				return mh.create(eclass);
 			// object is not yet added to a Resource so use an insertion adapter
 			// to add it later
-			EObject value = Bpmn2Factory.eINSTANCE.create((EClass)feature.getEType());
+			EObject value = Bpmn2Factory.eINSTANCE.create(eclass);
 			InsertionAdapter.add(object, feature, value);
 			return value;
 		} catch (IOException e) {
@@ -172,8 +183,25 @@ public class Bpmn2FeatureDescriptor extends Bpmn2ObjectDescriptor {
 		}
 		return null;
 	}
+
+	// NOTE: getValue() and setValue() must be symmetrical; that is, setValue()
+	// must be able to handle the object type returned by getValue(), although
+	// setValue() may also know how to convert from other types, e.g. String,
+	// Integer, etc.
+	public Object getValue() {
+		return getValue(object);
+	}
 	
-	public void setValue(EObject context, final Object value) {
+	public Object getValue(Object context) {
+		EObject object = context instanceof EObject ? (EObject)context : this.object;
+		return object.eGet(feature);
+	}
+	
+	public void setValue(Object value) {
+		setValue(object,value);
+	}
+	
+	public void setValue(Object context, final Object value) {
 		EObject object = context instanceof EObject ? (EObject)context : this.object;
 		
 		if (object.eGet(feature) instanceof EObjectEList) {

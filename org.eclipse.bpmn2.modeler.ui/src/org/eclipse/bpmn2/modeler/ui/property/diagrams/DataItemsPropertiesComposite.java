@@ -60,7 +60,8 @@ public class DataItemsPropertiesComposite extends DefaultPropertiesComposite {
 						"rootElements.Error",
 						"rootElements.Escalation",
 						"rootElements.Signal",
-						"rootElements.CorrelationProperty"
+						"rootElements.CorrelationProperty",
+						"rootElements.Interface",
 				};
 				
 				@Override

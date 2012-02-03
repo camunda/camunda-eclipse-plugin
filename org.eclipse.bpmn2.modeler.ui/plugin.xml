@@ -337,6 +337,13 @@
 			afterTab="org.eclipse.bpmn2.modeler.task.tab"
 			label="I/O Parameters">
 		</propertyTab>
+
+		<propertyTab
+			id="org.eclipse.bpmn2.modeler.interface.tab"
+			class="org.eclipse.bpmn2.modeler.ui.property.data.InterfacePropertySection"
+			afterTab="org.eclipse.bpmn2.modeler.main.tab"
+			label="Interfaces">
+		</propertyTab>
 <!--
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.activity.input.tab"

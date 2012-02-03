@@ -18,6 +18,7 @@ import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.DataAssociation;
 import org.eclipse.bpmn2.Error;
 import org.eclipse.bpmn2.FormalExpression;
+import org.eclipse.bpmn2.Interface;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.Message;
@@ -91,7 +92,7 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 					EObject object = this.object;
 					if (context instanceof EObject)
 						object = (EObject)context;
-					if (ModelUtil.isStructureRefValue(object)) {
+					if (ModelUtil.isStringWrapper(object)) {
 						return "Item Type";
 					}
 					return super.getLabel(context);
@@ -102,8 +103,8 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 					EObject object = this.object;
 					if (context instanceof EObject)
 						object = (EObject)context;
-					if (ModelUtil.isStructureRefValue(object)) {
-						return ModelUtil.getStructureRefValue(object);
+					if (ModelUtil.isStringWrapper(object)) {
+						return ModelUtil.getStringWrapperValue(object);
 					}
 					if (object instanceof EObject) {
 						EObject eo = (EObject)object;
@@ -194,6 +195,11 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 		@Override
 		public Bpmn2ExtendedPropertiesAdapter caseMessage(Message object) {
         	return new MessagePropertiesAdapter(adapterFactory,object);
+		}
+
+		@Override
+		public Bpmn2ExtendedPropertiesAdapter caseInterface(Interface object) {
+			return new InterfacePropertiesAdapter(adapterFactory,object);
 		}
 
 		

@@ -20,6 +20,7 @@ import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
@@ -30,9 +31,9 @@ import org.eclipse.emf.transaction.util.TransactionUtil;
  */
 public class NamespaceUtil {
 
-	public static Map<String,String> getXMLNSPrefixMap(EObject object) {
-		if (object!=null && object.eResource()!=null) {
-			EList<EObject> contents = object.eResource().getContents();
+	public static Map<String,String> getXMLNSPrefixMap(Resource resource) {
+		if (resource!=null) {
+			EList<EObject> contents = resource.getContents();
 			if (!contents.isEmpty() && contents.get(0) instanceof DocumentRoot) {
 				return ((DocumentRoot)contents.get(0)).getXMLNSPrefixMap();
 			}
@@ -40,15 +41,15 @@ public class NamespaceUtil {
 		return null;
 	}
 
-	public static String getNamespaceForPrefix(EObject object, String prefix) {
-		Map<String,String> map = getXMLNSPrefixMap(object);
+	public static String getNamespaceForPrefix(Resource resource, String prefix) {
+		Map<String,String> map = getXMLNSPrefixMap(resource);
 		if (map!=null)
 			return map.get(prefix);
 		return null;
 	}
 	
-	public static String getPrefixForNamespace(EObject object, String namespace) {
-		Map<String,String> map = getXMLNSPrefixMap(object);
+	public static String getPrefixForNamespace(Resource resource, String namespace) {
+		Map<String,String> map = getXMLNSPrefixMap(resource);
 		if (map!=null) {
 			for (Entry<String, String> e : map.entrySet()) {
 				String value = e.getValue();
@@ -59,8 +60,8 @@ public class NamespaceUtil {
 		return null;
 	}
 	
-	public static boolean hasNamespace(EObject object, String namespace) {
-		Map<String,String> map = getXMLNSPrefixMap(object);
+	public static boolean hasNamespace(Resource resource, String namespace) {
+		Map<String,String> map = getXMLNSPrefixMap(resource);
 		if (map!=null) {
 			for (Entry<String, String> e : map.entrySet()) {
 				String value = e.getValue();
@@ -71,34 +72,34 @@ public class NamespaceUtil {
 		return false;
 	}
 	
-	public static boolean hasPrefix(EObject object, String prefix) {
-		Map<String,String> map = getXMLNSPrefixMap(object);
+	public static boolean hasPrefix(Resource resource, String prefix) {
+		Map<String,String> map = getXMLNSPrefixMap(resource);
 		if (map!=null) {
 			return map.containsKey(prefix);
 		}
 		return false;
 	}
 	
-	public static String addNamespace(EObject object, String namespace) {
-		if (hasNamespace(object,namespace))
+	public static String addNamespace(Resource resource, String namespace) {
+		if (hasNamespace(resource,namespace))
 			return null;
 		// generate a prefix
 		String prefix = null;
-		Map<String,String> map = getXMLNSPrefixMap(object);
+		Map<String,String> map = getXMLNSPrefixMap(resource);
 		if (map!=null) {
 			prefix = "ns";
 			int index = 1;
 			while (map.containsKey(prefix+index))
 				++index;
-			prefix = addNamespace(object, prefix+index, namespace);
+			prefix = addNamespace(resource, prefix+index, namespace);
 		}
 		return prefix;
 	}
 	
-	public static String addNamespace(final EObject object, final String prefix, final String namespace) {
-		final Map<String,String> map = getXMLNSPrefixMap(object);
+	public static String addNamespace(final Resource resource, final String prefix, final String namespace) {
+		final Map<String,String> map = getXMLNSPrefixMap(resource);
 		if (map!=null) {
-			TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(object.eResource());
+			TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(resource);
 			if (domain != null) {
 				domain.getCommandStack().execute(new RecordingCommand(domain) {
 					@Override
@@ -120,8 +121,8 @@ public class NamespaceUtil {
 	 * @return the namespace prefix if the mapping was successfully removed
 	 * or null otherwise
 	 */
-	public static String removeNamespace(final EObject object, final String namespace) {
-		final Map<String,String> map = getXMLNSPrefixMap(object);
+	public static String removeNamespace(final Resource resource, final String namespace) {
+		final Map<String,String> map = getXMLNSPrefixMap(resource);
 		if (map!=null) {
 			String prefix = null;
 			for (Entry<String, String> e : map.entrySet()) {
@@ -132,7 +133,7 @@ public class NamespaceUtil {
 				}
 			}
 			if (prefix!=null && map.containsKey(prefix)) {
-				TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(object.eResource());
+				TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(resource);
 				if (domain != null) {
 					final String p = prefix;
 					domain.getCommandStack().execute(new RecordingCommand(domain) {
@@ -156,10 +157,10 @@ public class NamespaceUtil {
 	 * @return the namespace if the mapping was successfully removed
 	 * or null otherwise
 	 */
-	public static String removeNamespaceForPrefix(final EObject object, final String prefix) {
-		final Map<String,String> map = getXMLNSPrefixMap(object);
+	public static String removeNamespaceForPrefix(final Resource resource, final String prefix) {
+		final Map<String,String> map = getXMLNSPrefixMap(resource);
 		if (map!=null && map.containsKey(prefix)) {
-			TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(object.eResource());
+			TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(resource);
 			if (domain != null) {
 				String ns = map.get(prefix);
 				domain.getCommandStack().execute(new RecordingCommand(domain) {
