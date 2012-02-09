@@ -51,7 +51,7 @@ public class CallActivityPropertiesAdapter extends ActivityPropertiesAdapter {
 					if (context instanceof CallActivity)
 						object = (CallActivity)context;
 					CallableElement ce = object.getCalledElementRef();
-					if (ce.eIsProxy())
+					if (ce!=null && ce.eIsProxy())
 						return ((InternalEObject)ce).eProxyURI().lastSegment();
 					return super.getText(context);
 				}

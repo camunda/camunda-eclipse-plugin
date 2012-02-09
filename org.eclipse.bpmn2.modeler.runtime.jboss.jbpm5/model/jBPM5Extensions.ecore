@@ -43,49 +43,56 @@
         <details key="namespace" value="##targetNamespace"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="packageName" eType="#//PackageNameType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="packageName" upperBound="-2"
+        eType="#//PackageNameType">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="attribute"/>
         <details key="name" value="packageName"/>
         <details key="namespace" value="##targetNamespace"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="priority" eType="#//PriorityType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="priority" upperBound="-2"
+        eType="#//PriorityType">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="attribute"/>
         <details key="name" value="priority"/>
         <details key="namespace" value="##targetNamespace"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ruleFlowGroup" eType="#//RuleFlowGroupType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ruleFlowGroup" upperBound="-2"
+        eType="#//RuleFlowGroupType">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="attribute"/>
         <details key="name" value="ruleFlowGroup"/>
         <details key="namespace" value="##targetNamespace"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="taskName" eType="#//TaskNameType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="taskName" upperBound="-2"
+        eType="#//TaskNameType">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="attribute"/>
         <details key="name" value="taskName"/>
         <details key="namespace" value="##targetNamespace"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" eType="#//VersionType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" upperBound="-2"
+        eType="#//VersionType">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="attribute"/>
         <details key="name" value="version"/>
         <details key="namespace" value="##targetNamespace"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="waitForCompletion" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="waitForCompletion" upperBound="-2"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="attribute"/>
         <details key="name" value="waitForCompletion"/>
         <details key="namespace" value="##targetNamespace"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="independent" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="independent" upperBound="-2"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="attribute"/>
         <details key="name" value="independent"/>

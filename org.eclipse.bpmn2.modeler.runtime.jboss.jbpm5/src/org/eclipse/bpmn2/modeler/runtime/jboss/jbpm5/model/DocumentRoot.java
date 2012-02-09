@@ -155,7 +155,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @return the value of the '<em>Package Name</em>' attribute.
 	 * @see #setPackageName(String)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_PackageName()
-	 * @model dataType="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.PackageNameType"
+	 * @model dataType="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.PackageNameType" upper="-2"
 	 *        extendedMetaData="kind='attribute' name='packageName' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -182,7 +182,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @return the value of the '<em>Priority</em>' attribute.
 	 * @see #setPriority(BigInteger)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_Priority()
-	 * @model dataType="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.PriorityType"
+	 * @model dataType="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.PriorityType" upper="-2"
 	 *        extendedMetaData="kind='attribute' name='priority' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -209,7 +209,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @return the value of the '<em>Rule Flow Group</em>' attribute.
 	 * @see #setRuleFlowGroup(String)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_RuleFlowGroup()
-	 * @model dataType="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.RuleFlowGroupType"
+	 * @model dataType="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.RuleFlowGroupType" upper="-2"
 	 *        extendedMetaData="kind='attribute' name='ruleFlowGroup' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -236,7 +236,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @return the value of the '<em>Task Name</em>' attribute.
 	 * @see #setTaskName(String)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_TaskName()
-	 * @model dataType="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.TaskNameType"
+	 * @model dataType="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.TaskNameType" upper="-2"
 	 *        extendedMetaData="kind='attribute' name='taskName' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -263,7 +263,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @return the value of the '<em>Version</em>' attribute.
 	 * @see #setVersion(BigInteger)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_Version()
-	 * @model dataType="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.VersionType"
+	 * @model dataType="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.VersionType" upper="-2"
 	 *        extendedMetaData="kind='attribute' name='version' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -290,7 +290,8 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @return the value of the '<em>Wait For Completion</em>' attribute.
 	 * @see #setWaitForCompletion(boolean)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_WaitForCompletion()
-	 * @model extendedMetaData="kind='attribute' name='waitForCompletion' namespace='##targetNamespace'"
+	 * @model upper="-2"
+	 *        extendedMetaData="kind='attribute' name='waitForCompletion' namespace='##targetNamespace'"
 	 * @generated
 	 */
 	boolean isWaitForCompletion();
@@ -316,7 +317,8 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @return the value of the '<em>Independent</em>' attribute.
 	 * @see #setIndependent(boolean)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_Independent()
-	 * @model extendedMetaData="kind='attribute' name='independent' namespace='##targetNamespace'"
+	 * @model upper="-2"
+	 *        extendedMetaData="kind='attribute' name='independent' namespace='##targetNamespace'"
 	 * @generated
 	 */
 	boolean isIndependent();
