@@ -38,14 +38,14 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 
-public class CustomTaskPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
+public class JbpmCustomTaskPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
 	 */
 	@Override
 	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
-		return new CustomTaskPropertiesComposite(this);
+		return new JbpmCustomTaskPropertiesComposite(this);
 	}
 	
 	@Override

@@ -38,19 +38,13 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.MessageBox;
 
-public class CustomTaskPropertiesComposite extends DefaultPropertiesComposite {
+public class JbpmCustomTaskPropertiesComposite extends JbpmActivityPropertiesComposite {
 
-	public CustomTaskPropertiesComposite(Composite parent, int style) {
+	public JbpmCustomTaskPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
 	}
 
-	public CustomTaskPropertiesComposite(AbstractBpmn2PropertySection section) {
+	public JbpmCustomTaskPropertiesComposite(AbstractBpmn2PropertySection section) {
 		super(section);
-	}
-
-	@Override
-	public void createBindings(EObject be) {
-
-		bindAttribute(be,"anyAttribute");
 	}
 }

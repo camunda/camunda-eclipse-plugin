@@ -40,8 +40,8 @@
 
 		<propertyTab
 			id="bpmn2.jbpm.customTask.tab"
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
-			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.CustomTaskPropertySection"
+			replaceTab="org.eclipse.bpmn2.modeler.task.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmCustomTaskPropertySection"
 			label="Custom Task">
 		</propertyTab>
 
