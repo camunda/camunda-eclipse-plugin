@@ -112,16 +112,18 @@ public class ActivityPropertiesComposite extends DefaultPropertiesComposite {
 				removeLoopButton.addSelectionListener(new SelectionAdapter() {
 					
 					public void widgetSelected(SelectionEvent e) {
-						@SuppressWarnings("restriction")
-						TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
-						domain.getCommandStack().execute(new RecordingCommand(domain) {
-							@Override
-							protected void doExecute() {
-								if (activity.getLoopCharacteristics() !=null)
-									activity.setLoopCharacteristics(null);
-								setEObject(activity);
-							}
-						});
+						if (removeLoopButton.getSelection()) {
+							@SuppressWarnings("restriction")
+							TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
+							domain.getCommandStack().execute(new RecordingCommand(domain) {
+								@Override
+								protected void doExecute() {
+									if (activity.getLoopCharacteristics() !=null)
+										activity.setLoopCharacteristics(null);
+									setEObject(activity);
+								}
+							});
+						}
 					}
 				});
 				
@@ -146,17 +148,19 @@ public class ActivityPropertiesComposite extends DefaultPropertiesComposite {
 				addStandardLoopButton.addSelectionListener(new SelectionAdapter() {
 					
 					public void widgetSelected(SelectionEvent e) {
-						@SuppressWarnings("restriction")
-						TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
-						domain.getCommandStack().execute(new RecordingCommand(domain) {
-							@Override
-							protected void doExecute() {
-								StandardLoopCharacteristics loopChar = FACTORY.createStandardLoopCharacteristics();
-								activity.setLoopCharacteristics(loopChar);
-								ModelUtil.setID(loopChar);
-								setEObject(activity);
-							}
-						});
+						if (addStandardLoopButton.getSelection()) {
+							@SuppressWarnings("restriction")
+							TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
+							domain.getCommandStack().execute(new RecordingCommand(domain) {
+								@Override
+								protected void doExecute() {
+									StandardLoopCharacteristics loopChar = FACTORY.createStandardLoopCharacteristics();
+									activity.setLoopCharacteristics(loopChar);
+									ModelUtil.setID(loopChar);
+									setEObject(activity);
+								}
+							});
+						}
 					}
 				});
 	
@@ -164,17 +168,19 @@ public class ActivityPropertiesComposite extends DefaultPropertiesComposite {
 				addMultiLoopButton.addSelectionListener(new SelectionAdapter() {
 					
 					public void widgetSelected(SelectionEvent e) {
-						@SuppressWarnings("restriction")
-						TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
-						domain.getCommandStack().execute(new RecordingCommand(domain) {
-							@Override
-							protected void doExecute() {
-								MultiInstanceLoopCharacteristics loopChar = FACTORY.createMultiInstanceLoopCharacteristics();
-								activity.setLoopCharacteristics(loopChar);
-								ModelUtil.setID(loopChar);
-								setEObject(activity);
-							}
-						});
+						if (addMultiLoopButton.getSelection()) {
+							@SuppressWarnings("restriction")
+							TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
+							domain.getCommandStack().execute(new RecordingCommand(domain) {
+								@Override
+								protected void doExecute() {
+									MultiInstanceLoopCharacteristics loopChar = FACTORY.createMultiInstanceLoopCharacteristics();
+									activity.setLoopCharacteristics(loopChar);
+									ModelUtil.setID(loopChar);
+									setEObject(activity);
+								}
+							});
+						}
 					}
 				});
 			}

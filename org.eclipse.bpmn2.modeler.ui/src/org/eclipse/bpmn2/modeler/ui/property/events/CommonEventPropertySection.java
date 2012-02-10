@@ -12,30 +12,29 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.property.events;
 
-import java.util.List;
-
 import org.eclipse.bpmn2.BoundaryEvent;
+import org.eclipse.bpmn2.CatchEvent;
+import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.Event;
-import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
-import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
+import org.eclipse.bpmn2.StartEvent;
+import org.eclipse.bpmn2.ThrowEvent;
+import org.eclipse.bpmn2.TimerEventDefinition;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
-import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 public class CommonEventPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
 	static {
 		PropertiesCompositeFactory.register(Event.class, CommonEventPropertiesComposite.class);
+		PropertiesCompositeFactory.register(StartEvent.class, StartEventPropertiesComposite.class);
+		PropertiesCompositeFactory.register(EndEvent.class, EndEventPropertiesComposite.class);
+		PropertiesCompositeFactory.register(CatchEvent.class, CatchEventPropertiesComposite.class);
+		PropertiesCompositeFactory.register(ThrowEvent.class, ThrowEventPropertiesComposite.class);
+		PropertiesCompositeFactory.register(BoundaryEvent.class, BoundaryEventPropertiesComposite.class);
+		PropertiesCompositeFactory.register(TimerEventDefinition.class, TimerEventDefinitionPropertiesComposite.class);
 	}
 
 	/* (non-Javadoc)

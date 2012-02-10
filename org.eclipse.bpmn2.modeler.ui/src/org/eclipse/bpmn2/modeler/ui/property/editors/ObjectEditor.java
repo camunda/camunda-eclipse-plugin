@@ -61,6 +61,15 @@ public abstract class ObjectEditor {
 		return createControl(parent,label,SWT.NONE);
 	}
 	
+	public void setObject(EObject object) {
+		this.object = object;
+	}
+	
+	public void setObject(EObject object, EStructuralFeature feature) {
+		this.object = object;
+		this.feature = feature;
+	}
+	
 	protected FormToolkit getToolkit() {
 		return parent.getToolkit();
 	}

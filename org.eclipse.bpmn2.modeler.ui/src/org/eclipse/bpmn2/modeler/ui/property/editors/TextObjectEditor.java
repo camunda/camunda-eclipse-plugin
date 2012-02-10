@@ -95,6 +95,18 @@ public class TextObjectEditor extends ObjectEditor {
 		
 		return text;
 	}
+	
+	@Override
+	public void setObject(EObject object) {
+		super.setObject(object);
+		updateText();
+	}
+	
+	@Override
+	public void setObject(EObject object, EStructuralFeature feature) {
+		super.setObject(object, feature);
+		updateText();
+	}
 
 	@Override
 	protected boolean updateObject(Object result) {
