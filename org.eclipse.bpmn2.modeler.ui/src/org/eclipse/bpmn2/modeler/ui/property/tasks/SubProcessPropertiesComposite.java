@@ -40,6 +40,7 @@ public class SubProcessPropertiesComposite extends ActivityPropertiesComposite {
 				String[] properties = new String[] {
 						"triggeredByEvent",
 						"loopCharacteristics",
+						"properties",
 				};
 				
 				@Override
