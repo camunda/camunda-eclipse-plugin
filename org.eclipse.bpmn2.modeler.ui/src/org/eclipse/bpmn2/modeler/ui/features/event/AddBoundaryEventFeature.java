@@ -19,6 +19,7 @@ import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.modeler.core.di.DIImport;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.features.event.AbstractUpdateEventFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
@@ -101,6 +102,10 @@ public class AddBoundaryEventFeature extends AbstractAddBPMNShapeFeature {
 		}
 
 		peService.setPropertyValue(containerShape, BOUNDARY_EVENT_CANCEL, Boolean.toString(event.isCancelActivity()));
+		peService.setPropertyValue(containerShape, GraphicsUtil.ACTIVITY_MARKER_CONTAINER, Boolean.toString(true));
+		peService.setPropertyValue(containerShape,
+				UpdateBoundaryEventFeature.BOUNDARY_EVENT_MARKER,
+				AbstractUpdateEventFeature.getEventDefinitionsValue(event));
 
 		link(containerShape, event);
 		updatePictogramElement(containerShape);

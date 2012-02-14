@@ -57,13 +57,16 @@ public class ModelSubclassSelectionDialog extends ListDialog {
 		for (EClassifier eclassifier : object.eClass().getEPackage().getEClassifiers() ) {
 			if (eclassifier instanceof EClass) {
 				EClass eclass = (EClass)eclassifier;
-				if (eclass.getEAllSuperTypes().contains(listItemClass)) {
+				if (eclass.getESuperTypes().contains(listItemClass)) {
 					if (modelEnablement.isEnabled(eclass)) {
 						items.add(eclass);
 					}
 				}
 			}
 		}
+		
+		filterList(items);
+		
 		if (items.size()>1) {
 			setContentProvider(new IStructuredContentProvider() {
 	
@@ -119,6 +122,10 @@ public class ModelSubclassSelectionDialog extends ListDialog {
 		}
 	}
 
+	// allow override to add/remove items from the superset
+	protected void filterList(List<EClass> items) {
+	}
+	
 	@Override
 	public int open() {
 		if (items.size()<=1) {

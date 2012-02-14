@@ -14,17 +14,22 @@ package org.eclipse.bpmn2.modeler.ui.features.event;
 
 import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.Event;
-import org.eclipse.bpmn2.IntermediateCatchEvent;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractCreateEventFeature;
+import org.eclipse.bpmn2.modeler.core.features.event.AbstractUpdateEventFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AddEventFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.services.Graphiti;
+import org.eclipse.graphiti.services.IPeService;
 
 public class EndEventFeatureContainer extends AbstractEventFeatureContainer {
 
@@ -45,7 +50,24 @@ public class EndEventFeatureContainer extends AbstractEventFeatureContainer {
 			protected void decorateEllipse(Ellipse e) {
 				e.setLineWidth(3);
 			}
+			
+			@Override
+			protected void hook(ContainerShape container) {
+				IPeService peService = Graphiti.getPeService();
+				EndEvent event = BusinessObjectUtil.getFirstElementOfType(container, EndEvent.class);
+				peService.setPropertyValue(container,
+						UpdateEndEventFeature.END_EVENT_MARKER,
+						AbstractUpdateEventFeature.getEventDefinitionsValue(event));
+			}
 		};
+	}
+
+	@Override
+	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {
+		MultiUpdateFeature updateFeature = new MultiUpdateFeature(fp);
+		updateFeature.addUpdateFeature(super.getUpdateFeature(fp));
+		updateFeature.addUpdateFeature(new UpdateEndEventFeature(fp));
+		return updateFeature;
 	}
 
 	public static class CreateEndEventFeature extends AbstractCreateEventFeature {
@@ -71,6 +93,26 @@ public class EndEventFeatureContainer extends AbstractEventFeatureContainer {
 		@Override
 		public Class getBusinessObjectClass() {
 			return EndEvent.class;
+		}
+	}
+
+	protected static class UpdateEndEventFeature extends AbstractUpdateEventFeature {
+
+		public static String END_EVENT_MARKER = "marker.end.event";
+
+		/**
+		 * @param fp
+		 */
+		public UpdateEndEventFeature(IFeatureProvider fp) {
+			super(fp);
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.bpmn2.modeler.core.features.activity.AbstractUpdateMarkerFeature#getPropertyKey()
+		 */
+		@Override
+		protected String getPropertyKey() {
+			return END_EVENT_MARKER;
 		}
 	}
 }

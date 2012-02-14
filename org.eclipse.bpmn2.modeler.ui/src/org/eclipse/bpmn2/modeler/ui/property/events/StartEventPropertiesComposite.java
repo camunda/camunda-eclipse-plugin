@@ -14,12 +14,12 @@
 
 package org.eclipse.bpmn2.modeler.ui.property.events;
 
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.widgets.Composite;
 
-public class StartEventPropertiesComposite extends AbstractBpmn2PropertiesComposite {
+public class StartEventPropertiesComposite extends DefaultPropertiesComposite {
 
 	public StartEventPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
@@ -32,16 +32,22 @@ public class StartEventPropertiesComposite extends AbstractBpmn2PropertiesCompos
 	public StartEventPropertiesComposite(AbstractBpmn2PropertySection section) {
 		super(section);
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite
-	 * #createBindings(org.eclipse.emf.ecore.EObject)
-	 */
+
 	@Override
-	public void createBindings(EObject be) {
-		bindAttribute(be,"isInterrupting");
+	public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
+		if (propertiesProvider == null) {
+			propertiesProvider = new AbstractPropertiesProvider(object) {
+				String[] properties = new String[] {
+						"isInterrupting",
+						"eventDefinitions",
+				};
+				
+				@Override
+				public String[] getProperties() {
+					return properties; 
+				}
+			};
+		}
+		return propertiesProvider;
 	}
 }

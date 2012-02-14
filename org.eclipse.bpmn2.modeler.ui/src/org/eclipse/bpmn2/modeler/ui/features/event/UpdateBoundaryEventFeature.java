@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.ui.features.event;
 import static org.eclipse.bpmn2.modeler.ui.features.event.BoundaryEventFeatureContainer.BOUNDARY_EVENT_CANCEL;
 
 import org.eclipse.bpmn2.BoundaryEvent;
+import org.eclipse.bpmn2.modeler.core.features.event.AbstractUpdateEventFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReason;
 import org.eclipse.graphiti.features.context.IUpdateContext;
@@ -24,7 +25,9 @@ import org.eclipse.graphiti.mm.algorithms.Ellipse;
 import org.eclipse.graphiti.mm.algorithms.styles.LineStyle;
 import org.eclipse.graphiti.services.Graphiti;
 
-public class UpdateBoundaryEventFeature extends AbstractUpdateFeature {
+public class UpdateBoundaryEventFeature extends AbstractUpdateEventFeature {
+
+	public static String BOUNDARY_EVENT_MARKER = "marker.boundary.event";
 
 	public UpdateBoundaryEventFeature(IFeatureProvider fp) {
 		super(fp);
@@ -32,6 +35,9 @@ public class UpdateBoundaryEventFeature extends AbstractUpdateFeature {
 
 	@Override
 	public IReason updateNeeded(IUpdateContext context) {
+		if (super.updateNeeded(context).toBoolean())
+			return Reason.createTrueReason();
+		
 		String cancelProperty = Graphiti.getPeService().getPropertyValue(context.getPictogramElement(),
 		        BOUNDARY_EVENT_CANCEL);
 		BoundaryEvent event = (BoundaryEvent) getBusinessObjectForPictogramElement(context.getPictogramElement());
@@ -42,6 +48,8 @@ public class UpdateBoundaryEventFeature extends AbstractUpdateFeature {
 
 	@Override
 	public boolean update(IUpdateContext context) {
+		super.update(context);
+		
 		BoundaryEvent event = (BoundaryEvent) getBusinessObjectForPictogramElement(context.getPictogramElement());
 
 		Graphiti.getPeService().setPropertyValue(context.getPictogramElement(), BOUNDARY_EVENT_CANCEL,
@@ -60,5 +68,13 @@ public class UpdateBoundaryEventFeature extends AbstractUpdateFeature {
 	@Override
 	public boolean canUpdate(IUpdateContext context) {
 		return getBusinessObjectForPictogramElement(context.getPictogramElement()) instanceof BoundaryEvent;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.bpmn2.modeler.core.features.activity.AbstractUpdateMarkerFeature#getPropertyKey()
+	 */
+	@Override
+	protected String getPropertyKey() {
+		return BOUNDARY_EVENT_MARKER;
 	}
 }

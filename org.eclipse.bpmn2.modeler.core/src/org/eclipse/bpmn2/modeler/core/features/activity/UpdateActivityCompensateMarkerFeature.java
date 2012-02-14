@@ -19,7 +19,7 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Compensation;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 
-public class UpdateActivityCompensateMarkerFeature extends AbstractUpdateMarkerFeature {
+public class UpdateActivityCompensateMarkerFeature extends AbstractUpdateMarkerFeature<Activity> {
 	
 	public static String IS_COMPENSATE_PROPERTY = "marker.compensate";
 	
@@ -28,17 +28,17 @@ public class UpdateActivityCompensateMarkerFeature extends AbstractUpdateMarkerF
     }
 
 	@Override
-    String getPropertyKey() {
+	protected String getPropertyKey() {
 	    return IS_COMPENSATE_PROPERTY;
     }
 
 	@Override
-	boolean isPropertyChanged(Activity activity, String propertyValue) {
+	protected boolean isPropertyChanged(Activity activity, String propertyValue) {
 		return activity.isIsForCompensation() != new Boolean(propertyValue);
 	}
 	
 	@Override
-	void doUpdate(Activity activity, ContainerShape markerContainer) {
+	protected void doUpdate(Activity activity, ContainerShape markerContainer) {
 		if (activity.isIsForCompensation()) {
 			Compensation compensation = GraphicsUtil.createActivityMarkerCompensate(markerContainer);
 			compensation.arrow1.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
@@ -49,7 +49,7 @@ public class UpdateActivityCompensateMarkerFeature extends AbstractUpdateMarkerF
 	}
 	
 	@Override
-    String convertPropertyToString(Activity activity) {
+	protected String convertPropertyToString(Activity activity) {
 	    return Boolean.toString(activity.isIsForCompensation());
     }
 }

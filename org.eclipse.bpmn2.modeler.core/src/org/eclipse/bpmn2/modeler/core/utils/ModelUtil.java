@@ -21,6 +21,8 @@ import java.util.Map;
 
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.DocumentRoot;
+import org.eclipse.bpmn2.Event;
+import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Choreography;
@@ -304,7 +306,16 @@ public class ModelUtil {
 		return displayName;
 	}
 
-	
+	@SuppressWarnings("unchecked")
+	public static List<EventDefinition> getEventDefinitions(Event event) {
+		if (event!=null) {
+			EStructuralFeature feature = event.eClass().getEStructuralFeature("eventDefinitions");
+			if (feature!=null) {
+				return (List<EventDefinition>) event.eGet(feature);
+			}
+		}
+		return new ArrayList<EventDefinition>();
+	}
 
 	/**
 	 * This is a slightly hacked resource set that we will be using for to solve

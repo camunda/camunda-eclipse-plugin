@@ -23,6 +23,7 @@ import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
+import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
@@ -71,6 +72,7 @@ public class AddEventFeature extends AbstractAddBPMNShapeFeature {
 
 		Shape ellipseShape = peService.createShape(containerShape, false);
 		peService.setPropertyValue(ellipseShape, EVENT_ELEMENT, EVENT_CIRCLE);
+		peService.setPropertyValue(containerShape, GraphicsUtil.ACTIVITY_MARKER_CONTAINER, Boolean.toString(true));
 		Ellipse ellipse = createEventShape(ellipseShape);
 		StyleUtil.applyBGStyle(ellipse, this);
 		decorateEllipse(ellipse);
@@ -85,8 +87,8 @@ public class AddEventFeature extends AbstractAddBPMNShapeFeature {
 
 		peService.createChopboxAnchor(containerShape);
 		AnchorUtil.addFixedPointAnchors(containerShape, ellipse);
-		hook(containerShape);
 		createDIShape(containerShape, e);
+		hook(containerShape);
 		updatePictogramElement(containerShape);
 		layoutPictogramElement(containerShape);
 		return containerShape;

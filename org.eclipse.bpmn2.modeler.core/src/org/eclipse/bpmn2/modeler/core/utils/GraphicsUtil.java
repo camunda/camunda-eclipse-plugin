@@ -361,6 +361,11 @@ public class GraphicsUtil {
 	}
 
 	public static boolean clearEvent(ContainerShape shape) {
+		return clearEvent(shape,false);
+	}
+
+	public static boolean clearEvent(ContainerShape shape, boolean clearAll) {
+	
 		boolean cleared = false;
 
 		Iterator<PictogramElement> iterator = peService.getAllContainedPictogramElements(shape).iterator();
@@ -372,8 +377,7 @@ public class GraphicsUtil {
 			}
 
 			EList<EObject> objects = element.getLink().getBusinessObjects();
-
-			if (!objects.isEmpty() && objects.size() > 1) {
+			if (clearAll==false && objects.size() > 1) {
 				return false;
 			}
 

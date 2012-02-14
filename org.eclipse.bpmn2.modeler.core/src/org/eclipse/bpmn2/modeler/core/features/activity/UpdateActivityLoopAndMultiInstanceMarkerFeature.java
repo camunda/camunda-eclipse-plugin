@@ -23,7 +23,7 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.MultiInstance;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 
-public class UpdateActivityLoopAndMultiInstanceMarkerFeature extends AbstractUpdateMarkerFeature {
+public class UpdateActivityLoopAndMultiInstanceMarkerFeature extends AbstractUpdateMarkerFeature<Activity> {
 
 	public static String IS_LOOP_OR_MULTI_INSTANCE = "marker.loop.or.multi";
 
@@ -53,17 +53,17 @@ public class UpdateActivityLoopAndMultiInstanceMarkerFeature extends AbstractUpd
 	}
 
 	@Override
-	String getPropertyKey() {
+	protected String getPropertyKey() {
 		return IS_LOOP_OR_MULTI_INSTANCE;
 	}
 
 	@Override
-	boolean isPropertyChanged(Activity activity, String propertyValue) {
+	protected boolean isPropertyChanged(Activity activity, String propertyValue) {
 		return !getLoopCharacteristicsValue(activity).getName().equals(propertyValue);
 	}
 
 	@Override
-	void doUpdate(Activity activity, ContainerShape markerContainer) {
+	protected void doUpdate(Activity activity, ContainerShape markerContainer) {
 		GraphicsUtil.clearActivityMarker(markerContainer, GraphicsUtil.ACTIVITY_MARKER_LOOP_CHARACTERISTIC);
 		switch (getLoopCharacteristicsValue(activity)) {
 		case LOOP:
@@ -87,7 +87,7 @@ public class UpdateActivityLoopAndMultiInstanceMarkerFeature extends AbstractUpd
 	}
 
 	@Override
-	String convertPropertyToString(Activity activity) {
+	protected String convertPropertyToString(Activity activity) {
 		return getLoopCharacteristicsValue(activity).getName();
 	}
 

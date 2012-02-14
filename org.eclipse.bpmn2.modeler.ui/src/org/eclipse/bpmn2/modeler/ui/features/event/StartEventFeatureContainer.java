@@ -12,14 +12,15 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.event;
 
-import org.eclipse.bpmn2.CancelEventDefinition;
 import org.eclipse.bpmn2.Event;
+import org.eclipse.bpmn2.IntermediateCatchEvent;
 import org.eclipse.bpmn2.StartEvent;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractCreateEventFeature;
+import org.eclipse.bpmn2.modeler.core.features.event.AbstractUpdateEventFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AddEventFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -57,16 +58,21 @@ public class StartEventFeatureContainer extends AbstractEventFeatureContainer {
 			@Override
 			protected void hook(ContainerShape container) {
 				Graphiti.getPeService().setPropertyValue(container, INTERRUPTING, Boolean.toString(true));
+				IPeService peService = Graphiti.getPeService();
+				StartEvent event = BusinessObjectUtil.getFirstElementOfType(container, StartEvent.class);
+				peService.setPropertyValue(container,
+						UpdateStartEventFeature.START_EVENT_MARKER,
+						AbstractUpdateEventFeature.getEventDefinitionsValue(event));
 			}
 		};
 	}
 
 	@Override
 	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {
-		IUpdateFeature defaultUpdateFeature = super.getUpdateFeature(fp);
 		MultiUpdateFeature updateFeature = new MultiUpdateFeature(fp);
-		updateFeature.addUpdateFeature(defaultUpdateFeature);
+		updateFeature.addUpdateFeature(super.getUpdateFeature(fp));
 		updateFeature.addUpdateFeature(new UpdateSubProcessEventFeature(fp));
+		updateFeature.addUpdateFeature(new UpdateStartEventFeature(fp));
 		return updateFeature;
 	}
 
@@ -94,6 +100,26 @@ public class StartEventFeatureContainer extends AbstractEventFeatureContainer {
 		@Override
 		public Class getBusinessObjectClass() {
 			return StartEvent.class;
+		}
+	}
+
+	protected static class UpdateStartEventFeature extends AbstractUpdateEventFeature {
+
+		public static String START_EVENT_MARKER = "marker.start.event";
+
+		/**
+		 * @param fp
+		 */
+		public UpdateStartEventFeature(IFeatureProvider fp) {
+			super(fp);
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.bpmn2.modeler.core.features.activity.AbstractUpdateMarkerFeature#getPropertyKey()
+		 */
+		@Override
+		protected String getPropertyKey() {
+			return START_EVENT_MARKER;
 		}
 	}
 

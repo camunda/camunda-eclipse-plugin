@@ -18,54 +18,42 @@ import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.ThrowEvent;
+import org.eclipse.bpmn2.modeler.core.features.activity.AbstractUpdateMarkerFeature;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.IReason;
 import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.impl.AbstractAddShapeFeature;
+import org.eclipse.graphiti.features.impl.AbstractUpdateFeature;
 import org.eclipse.graphiti.mm.algorithms.Polygon;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 
-public abstract class AbstractAddEventDefinitionFeature extends AbstractAddShapeFeature {
+public abstract class AbstractUpdateEventDefinitionFeature extends AbstractUpdateFeature {
 
-
-	public AbstractAddEventDefinitionFeature(IFeatureProvider fp) {
+	public AbstractUpdateEventDefinitionFeature(IFeatureProvider fp) {
 		super(fp);
 	}
 
-	@Override
-	public boolean canAdd(IAddContext context) {
-		Object bo = getBusinessObjectForPictogramElement(context.getTargetContainer());
-		return bo != null && bo instanceof Event;
-	}
-
-	@Override
-	public PictogramElement add(IAddContext context) {
-		ContainerShape container = context.getTargetContainer();
-		Event event = (Event) getBusinessObjectForPictogramElement(container);
-
-		draw(event, (EventDefinition)context.getNewObject(), container);
-		return null;
-	}
-	
-	public void draw(Event event, EventDefinition eventDef, ContainerShape container) {
+	public void draw(Event event, ContainerShape container) {
 
 		List<EventDefinition> eventDefinitions = ModelUtil.getEventDefinitions(event);
 		int size = eventDefinitions.size();
 
-		if (size > 1) {
-			if (GraphicsUtil.clearEvent(container)) {
-				Shape multipleShape = Graphiti.getPeService().createShape(container, false);
-				drawForEvent(event, multipleShape);
-				link(multipleShape, eventDefinitions.toArray(new EventDefinition[size]));
-			}
-		} else {
+		GraphicsUtil.clearEvent(container, true);
+		if (size==1) {
 			Shape addedShape = getDecorationAlgorithm(event).draw(container);
-			link(addedShape, eventDef);
+			link(addedShape, eventDefinitions.get(0));
+		}
+		else if (size > 1) {
+			Shape multipleShape = Graphiti.getPeService().createShape(container, false);
+			drawForEvent(event, multipleShape);
+			link(multipleShape, eventDefinitions.toArray(new EventDefinition[size]));
 		}
 	}
 

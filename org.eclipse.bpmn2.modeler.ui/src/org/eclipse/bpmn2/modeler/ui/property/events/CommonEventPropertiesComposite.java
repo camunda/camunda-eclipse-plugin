@@ -25,11 +25,18 @@ import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
+import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.Event;
+import org.eclipse.bpmn2.FlowElementsContainer;
+import org.eclipse.bpmn2.ImplicitThrowEvent;
 import org.eclipse.bpmn2.InputSet;
+import org.eclipse.bpmn2.IntermediateCatchEvent;
+import org.eclipse.bpmn2.IntermediateThrowEvent;
 import org.eclipse.bpmn2.OutputSet;
 import org.eclipse.bpmn2.StartEvent;
+import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.ThrowEvent;
+import org.eclipse.bpmn2.Transaction;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
@@ -37,6 +44,7 @@ import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite.AbstractTableColumnProvider;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite.TableColumn;
+import org.eclipse.bpmn2.modeler.ui.property.dialogs.ModelSubclassSelectionDialog;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -50,6 +58,7 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 
 	AbstractBpmn2TableComposite inputTable;
 	AbstractBpmn2TableComposite outputTable;
+	EventDefinitionsTable eventsTable;
 
 	public CommonEventPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
@@ -88,7 +97,10 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 			bindList(be,"properties");
 		}
 		if (be instanceof CatchEvent || be instanceof ThrowEvent) {
-			bindList(be,"eventDefinitions");
+			eventsTable = new EventDefinitionsTable(this, (Event)be);
+			eventsTable.bindList(be, getFeature(be, "eventDefinitions"));
+			eventsTable.setTitle("Event Definitions");
+
 			if (be instanceof ThrowEvent) {
 				ThrowEvent throwEvent = (ThrowEvent)be;
 				inputTable = new DataInputsTable(this, throwEvent);
@@ -104,6 +116,100 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 		}
 	}
 	
+	public class EventDefinitionsTable extends AbstractBpmn2TableComposite {
+		
+		Event event;
+		
+		public EventDefinitionsTable(Composite parent, Event event) {
+			super(parent, AbstractBpmn2TableComposite.DEFAULT_STYLE | AbstractBpmn2TableComposite.EDIT_BUTTON);
+			this.event = event;
+		}
+		
+		public EClass getListItemClassToAdd(EClass listItemClass) {
+			EClass eclass = null;
+			ModelSubclassSelectionDialog dialog = new ModelSubclassSelectionDialog(getDiagramEditor(), object, feature) {
+				@Override
+				protected void filterList(List<EClass> items) {
+					FlowElementsContainer container = null;
+					EObject parent = event.eContainer();
+					while (parent!=null) {
+						if (parent instanceof FlowElementsContainer) {
+							container = (FlowElementsContainer)parent;
+							break;
+						}
+						parent = parent.eContainer();
+					}
+					List<EClass> filteredItems = new ArrayList<EClass>();
+					List<EClass> allowedItems = new ArrayList<EClass>();
+					if (event instanceof BoundaryEvent) {
+						if (container instanceof Transaction)
+							allowedItems.add(PACKAGE.getCancelEventDefinition());
+						allowedItems.add(PACKAGE.getCompensateEventDefinition());
+						allowedItems.add(PACKAGE.getConditionalEventDefinition());
+						allowedItems.add(PACKAGE.getErrorEventDefinition());
+						allowedItems.add(PACKAGE.getEscalationEventDefinition());
+						allowedItems.add(PACKAGE.getMessageEventDefinition());
+						allowedItems.add(PACKAGE.getSignalEventDefinition());
+						allowedItems.add(PACKAGE.getTimerEventDefinition());
+					}
+					else if (event instanceof IntermediateCatchEvent) {
+						allowedItems.add(PACKAGE.getConditionalEventDefinition());
+						allowedItems.add(PACKAGE.getLinkEventDefinition());
+						allowedItems.add(PACKAGE.getMessageEventDefinition());
+						allowedItems.add(PACKAGE.getSignalEventDefinition());
+						allowedItems.add(PACKAGE.getTimerEventDefinition());
+					}
+					else if (event instanceof StartEvent) {
+						if (container instanceof SubProcess) {
+							allowedItems.add(PACKAGE.getCompensateEventDefinition());
+							allowedItems.add(PACKAGE.getErrorEventDefinition());
+							allowedItems.add(PACKAGE.getEscalationEventDefinition());
+						}
+						allowedItems.add(PACKAGE.getConditionalEventDefinition());
+						allowedItems.add(PACKAGE.getMessageEventDefinition());
+						allowedItems.add(PACKAGE.getSignalEventDefinition());
+						allowedItems.add(PACKAGE.getTimerEventDefinition());
+					}
+					else if (event instanceof EndEvent) {
+						if (container instanceof Transaction)
+							allowedItems.add(PACKAGE.getCancelEventDefinition());
+						allowedItems.add(PACKAGE.getCompensateEventDefinition());
+						allowedItems.add(PACKAGE.getErrorEventDefinition());
+						allowedItems.add(PACKAGE.getEscalationEventDefinition());
+						allowedItems.add(PACKAGE.getMessageEventDefinition());
+						allowedItems.add(PACKAGE.getSignalEventDefinition());
+						allowedItems.add(PACKAGE.getTerminateEventDefinition());
+					}
+					else if (event instanceof ImplicitThrowEvent) {
+						allowedItems.add(PACKAGE.getCompensateEventDefinition());
+						allowedItems.add(PACKAGE.getEscalationEventDefinition());
+						allowedItems.add(PACKAGE.getLinkEventDefinition());
+						allowedItems.add(PACKAGE.getMessageEventDefinition());
+						allowedItems.add(PACKAGE.getSignalEventDefinition());
+					}
+					else if (event instanceof IntermediateThrowEvent) {
+						allowedItems.add(PACKAGE.getCompensateEventDefinition());
+						allowedItems.add(PACKAGE.getEscalationEventDefinition());
+						allowedItems.add(PACKAGE.getLinkEventDefinition());
+						allowedItems.add(PACKAGE.getMessageEventDefinition());
+						allowedItems.add(PACKAGE.getSignalEventDefinition());
+					}
+					for (EClass eclass : items) {
+						if (allowedItems.contains(eclass))
+							filteredItems.add(eclass);
+					}
+					items.clear();
+					items.addAll(filteredItems);
+				}
+			};
+			
+			if (dialog.open()==Window.OK){
+				eclass = (EClass)dialog.getResult()[0];
+			}
+			return eclass;
+		}
+	}
+
 	public class DataInputsTable extends AbstractBpmn2TableComposite {
 
 		ThrowEvent throwEvent;

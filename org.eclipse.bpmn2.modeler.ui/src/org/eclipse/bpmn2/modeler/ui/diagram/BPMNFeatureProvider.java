@@ -294,6 +294,15 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 		}
 	}
 	
+	public FeatureContainer getFeatureContainer(Object object) {
+		for (FeatureContainer container : containers) {
+			if (object != null && container.canApplyTo(object)) {
+				return container;
+			}
+		}
+		return null;
+	}
+	
 	@Override
 	public IAddFeature getAddFeature(IAddContext context) {
 		// only here do we need to search all of the Custom Task extensions to check if
