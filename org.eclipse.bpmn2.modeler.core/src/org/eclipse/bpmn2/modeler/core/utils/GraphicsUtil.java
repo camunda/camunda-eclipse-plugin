@@ -360,34 +360,16 @@ public class GraphicsUtil {
 		return cross;
 	}
 
-	public static boolean clearEvent(ContainerShape shape) {
-		return clearEvent(shape,false);
-	}
-
-	public static boolean clearEvent(ContainerShape shape, boolean clearAll) {
-	
-		boolean cleared = false;
-
-		Iterator<PictogramElement> iterator = peService.getAllContainedPictogramElements(shape).iterator();
-		while (iterator.hasNext()) {
-			PictogramElement element = iterator.next();
-
-			if (element.getLink() == null) {
-				continue;
-			}
-
-			EList<EObject> objects = element.getLink().getBusinessObjects();
-			if (clearAll==false && objects.size() > 1) {
-				return false;
-			}
-
-			if (objects.get(0) != null && objects.get(0) instanceof EventDefinition) {
-				peService.deletePictogramElement(element);
-				cleared = true;
+	public static void deleteEventShape(ContainerShape containerShape) {
+		for (PictogramElement shape : containerShape.getChildren()) {
+			if (shape.getLink() != null) {
+				EList<EObject> objects = shape.getLink().getBusinessObjects();
+				if (objects.size()>0 && objects.get(0) instanceof EventDefinition) {
+					peService.deletePictogramElement(shape);
+					break;
+				}
 			}
 		}
-
-		return cleared;
 	}
 
 	/* OTHER */

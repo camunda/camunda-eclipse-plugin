@@ -16,6 +16,7 @@ package org.eclipse.bpmn2.modeler.core.features.event;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.IntermediateCatchEvent;
@@ -61,10 +62,8 @@ public abstract class AbstractUpdateEventFeature extends AbstractUpdateMarkerFea
 		List<EventDefinition> eventDefinitions = ModelUtil.getEventDefinitions(event);
 		int size = eventDefinitions.size();
 		
-		if (size==0) {
-			GraphicsUtil.clearEvent(container, true);
-		}
-		else {
+		GraphicsUtil.deleteEventShape(container);
+		if (size!=0) {
 			EventDefinition eventDefinition = eventDefinitions.get(0);
 
 			// either find the existing Shape that is linked with an EventDefinition...
@@ -117,6 +116,11 @@ public abstract class AbstractUpdateEventFeature extends AbstractUpdateMarkerFea
 			if (!result.isEmpty())
 				result += " ";
 			result += ed.getId();
+		}
+		// Parallel Multiple has a different visual than Multiple for Catch Events
+		if (element instanceof CatchEvent) {
+			if (((CatchEvent)element).isParallelMultiple())
+				result += "+";
 		}
 		return result;
 	}

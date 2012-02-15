@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.CallableElement;
 import org.eclipse.bpmn2.CatchEvent;
@@ -130,23 +131,32 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 			ModelSubclassSelectionDialog dialog = new ModelSubclassSelectionDialog(getDiagramEditor(), object, feature) {
 				@Override
 				protected void filterList(List<EClass> items) {
-					FlowElementsContainer container = null;
-					EObject parent = event.eContainer();
-					while (parent!=null) {
-						if (parent instanceof FlowElementsContainer) {
-							container = (FlowElementsContainer)parent;
-							break;
+					BaseElement eventOwner = null;
+					if (event instanceof BoundaryEvent) {
+						eventOwner = ((BoundaryEvent)event).getAttachedToRef();
+					}
+					else {
+						EObject parent = event.eContainer();
+						while (parent!=null) {
+							if (parent instanceof FlowElementsContainer ) {
+								eventOwner = (BaseElement)parent;
+								break;
+							}
+							parent = parent.eContainer();
 						}
-						parent = parent.eContainer();
 					}
 					List<EClass> filteredItems = new ArrayList<EClass>();
 					List<EClass> allowedItems = new ArrayList<EClass>();
 					if (event instanceof BoundaryEvent) {
-						if (container instanceof Transaction)
-							allowedItems.add(PACKAGE.getCancelEventDefinition());
-						allowedItems.add(PACKAGE.getCompensateEventDefinition());
+						if (eventOwner instanceof Transaction) {
+							if (((BoundaryEvent)event).isCancelActivity())
+								allowedItems.add(PACKAGE.getCancelEventDefinition());
+						}
+						if (((BoundaryEvent)event).isCancelActivity())
+							allowedItems.add(PACKAGE.getCompensateEventDefinition());
 						allowedItems.add(PACKAGE.getConditionalEventDefinition());
-						allowedItems.add(PACKAGE.getErrorEventDefinition());
+						if (((BoundaryEvent)event).isCancelActivity())
+							allowedItems.add(PACKAGE.getErrorEventDefinition());
 						allowedItems.add(PACKAGE.getEscalationEventDefinition());
 						allowedItems.add(PACKAGE.getMessageEventDefinition());
 						allowedItems.add(PACKAGE.getSignalEventDefinition());
@@ -160,9 +170,11 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 						allowedItems.add(PACKAGE.getTimerEventDefinition());
 					}
 					else if (event instanceof StartEvent) {
-						if (container instanceof SubProcess) {
-							allowedItems.add(PACKAGE.getCompensateEventDefinition());
-							allowedItems.add(PACKAGE.getErrorEventDefinition());
+						if (eventOwner instanceof SubProcess) {
+							if (((StartEvent)event).isIsInterrupting()) {
+								allowedItems.add(PACKAGE.getCompensateEventDefinition());
+								allowedItems.add(PACKAGE.getErrorEventDefinition());
+							}
 							allowedItems.add(PACKAGE.getEscalationEventDefinition());
 						}
 						allowedItems.add(PACKAGE.getConditionalEventDefinition());
@@ -171,7 +183,7 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 						allowedItems.add(PACKAGE.getTimerEventDefinition());
 					}
 					else if (event instanceof EndEvent) {
-						if (container instanceof Transaction)
+						if (eventOwner instanceof Transaction)
 							allowedItems.add(PACKAGE.getCancelEventDefinition());
 						allowedItems.add(PACKAGE.getCompensateEventDefinition());
 						allowedItems.add(PACKAGE.getErrorEventDefinition());

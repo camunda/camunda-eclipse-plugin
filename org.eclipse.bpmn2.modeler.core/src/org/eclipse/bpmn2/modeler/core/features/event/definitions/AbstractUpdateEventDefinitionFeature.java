@@ -45,7 +45,7 @@ public abstract class AbstractUpdateEventDefinitionFeature extends AbstractUpdat
 		List<EventDefinition> eventDefinitions = ModelUtil.getEventDefinitions(event);
 		int size = eventDefinitions.size();
 
-		GraphicsUtil.clearEvent(container, true);
+		GraphicsUtil.deleteEventShape(container);
 		if (size==1) {
 			Shape addedShape = getDecorationAlgorithm(event).draw(container);
 			link(addedShape, eventDefinitions.get(0));

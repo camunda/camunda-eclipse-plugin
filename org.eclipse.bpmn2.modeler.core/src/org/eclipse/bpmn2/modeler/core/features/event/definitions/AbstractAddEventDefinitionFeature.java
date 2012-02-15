@@ -57,12 +57,11 @@ public abstract class AbstractAddEventDefinitionFeature extends AbstractAddShape
 		List<EventDefinition> eventDefinitions = ModelUtil.getEventDefinitions(event);
 		int size = eventDefinitions.size();
 
+		GraphicsUtil.deleteEventShape(container);
 		if (size > 1) {
-			if (GraphicsUtil.clearEvent(container)) {
-				Shape multipleShape = Graphiti.getPeService().createShape(container, false);
-				drawForEvent(event, multipleShape);
-				link(multipleShape, eventDefinitions.toArray(new EventDefinition[size]));
-			}
+			Shape multipleShape = Graphiti.getPeService().createShape(container, false);
+			drawForEvent(event, multipleShape);
+			link(multipleShape, eventDefinitions.toArray(new EventDefinition[size]));
 		} else {
 			Shape addedShape = getDecorationAlgorithm(event).draw(container);
 			link(addedShape, eventDef);

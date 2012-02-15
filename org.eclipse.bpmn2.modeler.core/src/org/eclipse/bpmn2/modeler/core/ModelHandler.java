@@ -815,11 +815,12 @@ public class ModelHandler {
 			return getOrCreateProcess((Participant) o);
 		}
 		if (o instanceof SubProcess) {
-			EObject container = (SubProcess)o;
-			while (!(container instanceof Process) && container.eContainer()!=null) {
-				container = container.eContainer();
-			}
-			return (FlowElementsContainer) container;
+//			EObject container = (SubProcess)o;
+//			while (!(container instanceof Process) && container.eContainer()!=null) {
+//				container = container.eContainer();
+//			}
+//			return (FlowElementsContainer) container;
+			return (FlowElementsContainer) o;
 		}
 		return findElementOfType(FlowElementsContainer.class, o);
 	}
