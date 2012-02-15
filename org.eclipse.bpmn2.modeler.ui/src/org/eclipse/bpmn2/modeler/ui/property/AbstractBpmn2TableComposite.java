@@ -234,6 +234,11 @@ public class AbstractBpmn2TableComposite extends Composite {
 				}
 			};
 			
+			// default is to include property name
+			EStructuralFeature nameAttribute = listItemClass.getEStructuralFeature("name");
+			if (nameAttribute!=null)
+				columnProvider.add(new TableColumn(object, nameAttribute));
+
 			for (EAttribute a1 : listItemClass.getEAllAttributes()) {
 				if ("anyAttribute".equals(a1.getName())) {
 					List<EStructuralFeature> anyAttributes = new ArrayList<EStructuralFeature>();
@@ -265,7 +270,8 @@ public class AbstractBpmn2TableComposite extends Composite {
 						System.out.println("FeatureMapEntry: "+listItemClass.getName()+"."+a1.getName());
 				}
 				else {
-					columnProvider.add(new TableColumn(object,a1));
+					if (a1!=nameAttribute)
+						columnProvider.add(new TableColumn(object,a1));
 				}
 			}
 		}
@@ -519,7 +525,6 @@ public class AbstractBpmn2TableComposite extends Composite {
 			public void selectionChanged(SelectionChangedEvent event) {
 				boolean enable = !event.getSelection().isEmpty();
 				if (detailSection!=null) {
-					detailSection.setVisible(enable);
 					if (enable) {
 						IStructuredSelection sel = (IStructuredSelection) event.getSelection();
 
@@ -535,7 +540,9 @@ public class AbstractBpmn2TableComposite extends Composite {
 							detailSection.setText(ModelUtil.toDisplayName(o.eClass().getName()) + " Details");
 							((AbstractBpmn2PropertiesComposite)detailComposite).setEObject(bpmn2Editor,o);
 						}
-						detailSection.setExpanded(true);
+						enable = detailComposite.getChildren().length>0;
+						detailSection.setVisible(enable);
+						detailSection.setExpanded(enable);
 						PropertyUtil.recursivelayout(detailSection);
 					}
 					sashForm.layout(true);

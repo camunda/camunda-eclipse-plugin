@@ -478,22 +478,90 @@
 
 		<modelEnablement runtimeId="org.jboss.runtime.jbpm5" type="Process">
 			<disable object="all"/>
-<!--			<enable object="default" feature="Process"/> -->
 			<enable object="Definitions"/>
-			<!--
-			<enable object="Definitions" feature="expressionLanguage"/>
-			<enable object="Definitions" feature="name"/>
-			<enable object="Definitions" feature="targetNamespace"/>
-			<enable object="Definitions" feature="typeLanguage"/>
-			<enable object="Definitions" feature="documentation"/>
-			-->
-			<enable object="Process"/>
-			<enable object="StartEvent"/>
-			<enable object="EndEvent"/>
-			<enable object="ScriptTask"/>
-			<enable object="ExclusiveGateway"/>
-			<enable object="InclusiveGateway"/>
-			<enable object="ParallelGateway"/>
+			
+			<!-- process -->
+			<enable object="Process" feature="anyAttribute"/>
+			<enable object="Process" feature="flowElements"/>
+			<enable object="Process" feature="name"/>
+			<enable object="Process" feature="properties"/>
+			<enable object="SubProcess" feature="flowElements"/>
+			<enable object="SubProcess" feature="loopCharacteristics"/>
+			<enable object="SubProcess" feature="name"/>
+			<enable object="SubProcess" feature="properties"/>
+
+			<!-- gateways -->
+			<enable object="ExclusiveGateway" feature="gatewayDirection"/>
+			<enable object="ExclusiveGateway" feature="name"/>
+			<enable object="InclusiveGateway" feature="gatewayDirection"/>
+			<enable object="InclusiveGateway" feature="name"/>
+			<enable object="ParallelGateway" feature="gatewayDirection"/>
+			<enable object="ParallelGateway" feature="name"/>
+
+			<!-- tasks -->
+			<enable object="BusinessRuleTask" feature="anyAttribute"/>
+			<enable object="BusinessRuleTask" feature="name"/>
+			<enable object="CallActivity" feature="anyAttribute"/>
+			<enable object="CallActivity" feature="calledElementRef"/>
+			<enable object="CallActivity" feature="dataInputAssociations"/>
+			<enable object="CallActivity" feature="dataOutputAssociations"/>
+			<enable object="CallActivity" feature="ioSpecification"/>
+			<enable object="CallActivity" feature="name"/>
+			<enable object="ScriptTask" feature="name"/>
+			<enable object="ScriptTask" feature="script"/>
+			<enable object="ScriptTask" feature="scriptFormat"/>
+			<enable object="ServiceTask" feature="anyAttribute"/>
+			<enable object="ServiceTask" feature="dataInputAssociations"/>
+			<enable object="ServiceTask" feature="dataOutputAssociations"/>
+			<enable object="ServiceTask" feature="ioSpecification"/>
+			<enable object="ServiceTask" feature="name"/>
+			<enable object="ServiceTask" feature="operationRef"/>
+			<enable object="Task" feature="anyAttribute"/>
+			<enable object="Task" feature="dataInputAssociations"/>
+			<enable object="Task" feature="dataOutputAssociations"/>
+			<enable object="Task" feature="ioSpecification"/>
+			<enable object="Task" feature="name"/>
+			<enable object="UserTask" feature="dataInputAssociations"/>
+			<enable object="UserTask" feature="dataOutputAssociations"/>
+			<enable object="UserTask" feature="ioSpecification"/>
+			<enable object="UserTask" feature="name"/>
+			<enable object="UserTask" feature="resources"/>
+
+			<!-- connections -->
+			<enable object="SequenceFlow" feature="conditionExpression"/>
+			<enable object="SequenceFlow" feature="name"/>
+			<enable object="SequenceFlow" feature="sourceRef"/>
+			<enable object="SequenceFlow" feature="targetRef"/>
+
+			<!-- events -->
+			<enable object="Escalation" feature="escalationCode"/>
+			<enable object="Escalation" feature="name"/>
+			<enable object="EscalationEventDefinition" feature="escalationRef"/>
+			<enable object="IntermediateCatchEvent" feature="dataOutputAssociation"/>
+			<enable object="IntermediateCatchEvent" feature="dataOutputs"/>
+			<enable object="IntermediateCatchEvent" feature="eventDefinitions"/>
+			<enable object="IntermediateCatchEvent" feature="name"/>
+			<enable object="IntermediateCatchEvent" feature="outputSet"/>
+			<enable object="Signal" feature="name"/>
+			<enable object="SignalEventDefinition" feature="signalRef"/>
+			<enable object="StartEvent" feature="name"/>
+			<enable object="EndEvent" feature="dataInputAssociation"/>
+			<enable object="EndEvent" feature="dataInputs"/>
+			<enable object="EndEvent" feature="eventDefinitions"/>
+			<enable object="EndEvent" feature="inputSet"/>
+			<enable object="EndEvent" feature="name"/>
+			<enable object="TerminateEventDefinition"/>
+			<disable object="TerminateEventDefinition" feature="all"/>
+			<enable object="TimerEventDefinition" feature="timeCycle"/>
+			<enable object="TimerEventDefinition" feature="timeDuration"/>
+
+			<enable object="ItemDefinition" feature="anyAttribute"/>
+			<enable object="ItemDefinition" feature="structureRef"/>
+
+			<enable object="LaneSet" feature="name"/>
+
+			<enable object="MultiInstanceLoopCharacteristics" feature="inputDataItem"/>
+			<enable object="MultiInstanceLoopCharacteristics" feature="loopDataInputRef"/>
 
 			<enable object="ExtensionAttributeValue" feature="onEntryScript"/>
 			<enable object="ExtensionAttributeValue" feature="onExitScript"/>
@@ -503,13 +571,20 @@
 			<enable object="OnEntryScriptType" feature="script"/>
 			<enable object="OnEntryScriptType" feature="scriptFormat"/>
 
+			<!-- globally disable all BaseElement attributes like documentation and id -->
+			<disable object="all" feature="documentation"/>
+			<disable object="all" feature="id"/>
+			<!-- except for these -->
+			<enable object="Process" feature="id"/>
+			<enable object="Escalation" feature="id"/>
+			<enable object="Signal" feature="id"/>
+			<enable object="ItemDefinition" feature="id"/>
+			<enable object="EventDefinition" feature="id"/>
+
 			<disable object="Import"/>
 			<disable object="ExtensionDefinition"/>
 			<disable object="Relationship"/>
 			<disable object="ExtensionAttributeDefinition"/>
-
-			<disable object="all" feature="id"/>
-			<enable object="Process" feature="id"/>
 			<disable object="Lane"/>
 			<disable object="MessageFlow"/>
 			<disable object="Association"/>

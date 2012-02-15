@@ -126,6 +126,7 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 			this.event = event;
 		}
 		
+		@Override
 		public EClass getListItemClassToAdd(EClass listItemClass) {
 			EClass eclass = null;
 			ModelSubclassSelectionDialog dialog = new ModelSubclassSelectionDialog(getDiagramEditor(), object, feature) {

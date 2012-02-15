@@ -112,18 +112,16 @@ public class ActivityPropertiesComposite extends DefaultPropertiesComposite {
 				removeLoopButton.addSelectionListener(new SelectionAdapter() {
 					
 					public void widgetSelected(SelectionEvent e) {
-						if (removeLoopButton.getSelection()) {
-							@SuppressWarnings("restriction")
-							TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
-							domain.getCommandStack().execute(new RecordingCommand(domain) {
-								@Override
-								protected void doExecute() {
-									if (activity.getLoopCharacteristics() !=null)
-										activity.setLoopCharacteristics(null);
-									setEObject(activity);
-								}
-							});
-						}
+						@SuppressWarnings("restriction")
+						TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
+						domain.getCommandStack().execute(new RecordingCommand(domain) {
+							@Override
+							protected void doExecute() {
+								if (activity.getLoopCharacteristics() !=null)
+									activity.setLoopCharacteristics(null);
+								setEObject(activity);
+							}
+						});
 					}
 				});
 				
@@ -145,6 +143,8 @@ public class ActivityPropertiesComposite extends DefaultPropertiesComposite {
 				noneButton.setSelection(true);
 				
 				addStandardLoopButton = toolkit.createButton(buttonComposite, "Standard", SWT.RADIO);
+				if (!modelEnablement.isEnabled(PACKAGE.getStandardLoopCharacteristics()))
+					addStandardLoopButton.setVisible(false);
 				addStandardLoopButton.addSelectionListener(new SelectionAdapter() {
 					
 					public void widgetSelected(SelectionEvent e) {
@@ -165,6 +165,8 @@ public class ActivityPropertiesComposite extends DefaultPropertiesComposite {
 				});
 	
 				addMultiLoopButton = toolkit.createButton(buttonComposite, "Multi-Instance", SWT.RADIO);
+				if (!modelEnablement.isEnabled(PACKAGE.getMultiInstanceLoopCharacteristics()))
+					addMultiLoopButton.setVisible(false);
 				addMultiLoopButton.addSelectionListener(new SelectionAdapter() {
 					
 					public void widgetSelected(SelectionEvent e) {
