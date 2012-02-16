@@ -68,24 +68,24 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 			bindDescription(be);
 			
 			// temporarily enable these for this tab only!
-			boolean idEnabled = modelEnablement.isEnabled(be.eClass().getName(), "id");
+//			boolean idEnabled = modelEnablement.isEnabled(be.eClass().getName(), "id");
 			boolean nameEnabled = modelEnablement.isEnabled(be.eClass().getName(), "name");
-			boolean documentationEnabled = modelEnablement.isEnabled(be.eClass().getName(), "documentation");
+//			boolean documentationEnabled = modelEnablement.isEnabled(be.eClass().getName(), "documentation");
 			
-			modelEnablement.setEnabled(be.eClass().getName(), "id", true);
+//			modelEnablement.setEnabled(be.eClass().getName(), "id", true);
 			modelEnablement.setEnabled(be.eClass().getName(), "name", true);
-			modelEnablement.setEnabled(be.eClass().getName(), "documentation", true);
+//			modelEnablement.setEnabled(be.eClass().getName(), "documentation", true);
 
 			bindAttribute(be,"id");
 			bindAttribute(be,"name");
 			bindList(be, "documentation");
 
-			if (!idEnabled)
-				modelEnablement.setEnabled(be.eClass().getName(), "id", false);
+//			if (!idEnabled)
+//				modelEnablement.setEnabled(be.eClass().getName(), "id", false);
 			if (!nameEnabled)
 				modelEnablement.setEnabled(be.eClass().getName(), "name", false);
-			if (!documentationEnabled)
-				modelEnablement.setEnabled(be.eClass().getName(), "documentation", false);
+//			if (!documentationEnabled)
+//				modelEnablement.setEnabled(be.eClass().getName(), "documentation", false);
 		}
 		
 		protected void bindDescription(EObject be) {
