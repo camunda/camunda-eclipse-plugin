@@ -367,14 +367,6 @@ public class AbstractBpmn2TableComposite extends Composite {
 		if (!EObject.class.isAssignableFrom(clazz)) {
 			return;
 		}
-		TransactionChangeRecorder cr = null;
-		TransactionalEditingDomain dom = null;
-		for (Adapter ad : theobject.eAdapters()) {
-			if (ad instanceof TransactionChangeRecorder) {
-				cr = (TransactionChangeRecorder)ad;
-				dom = cr.getEditingDomain();
-			}
-		}
 
 		final BPMN2Editor bpmn2Editor = getDiagramEditor();
 		
@@ -392,8 +384,10 @@ public class AbstractBpmn2TableComposite extends Composite {
 		// remove disabled columns
 		List<TableColumn> removed = new ArrayList<TableColumn>();
 		for (TableColumn tc : (List<TableColumn>)columnProvider.getColumns()) {
-			if (!modelEnablement.isEnabled(listItemClass, tc.feature)) {
-				removed.add(tc);
+			if (!"id".equals(tc.feature.getName())) {
+				if (!modelEnablement.isEnabled(listItemClass, tc.feature)) {
+					removed.add(tc);
+				}
 			}
 		}
 		if (removed.size()>0) {
