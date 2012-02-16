@@ -476,6 +476,14 @@ If &quot;object&quot; has the value &quot;default&quot;, then this refers to a d
       </complexType>
    </element>
 
+   <element name="propertyExtension" type="string">
+      <annotation>
+         <documentation>
+            Provider classes for model objects and features.
+         </documentation>
+      </annotation>
+   </element>
+
    <annotation>
       <appinfo>
          <meta.section type="since"/>

@@ -18,9 +18,10 @@ import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.DataState;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ItemDefinition;
+import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
+import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
+import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
-import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2FeatureDescriptor;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -31,7 +32,7 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain;
  * @author Bob Brodt
  *
  */
-public class ItemAwareElementPropertiesAdapter extends Bpmn2ExtendedPropertiesAdapter {
+public class ItemAwareElementPropertiesAdapter extends Bpmn2EditorPropertiesAdapter {
 
 	/**
 	 * @param adapterFactory
@@ -43,7 +44,7 @@ public class ItemAwareElementPropertiesAdapter extends Bpmn2ExtendedPropertiesAd
     	EStructuralFeature ref = Bpmn2Package.eINSTANCE.getItemAwareElement_ItemSubjectRef();
     	
     	setFeatureDescriptor(ref,
-			new Bpmn2FeatureDescriptor(adapterFactory,object,ref) {
+			new FeatureDescriptor(adapterFactory,object,ref) {
 				@Override
 				public String getLabel(Object context) {
 					EObject object = this.object;
@@ -55,7 +56,7 @@ public class ItemAwareElementPropertiesAdapter extends Bpmn2ExtendedPropertiesAd
 					else if (object instanceof ItemAwareElement)
 						itemDefinition = (ItemDefinition) object.eGet(feature);
 					if (itemDefinition!=null) {
-						Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(itemDefinition, Bpmn2ExtendedPropertiesAdapter.class);
+						ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(itemDefinition, Bpmn2EditorPropertiesAdapter.class);
 						return adapter.getFeatureDescriptor(Bpmn2Package.eINSTANCE.getItemDefinition_StructureRef()).getLabel(itemDefinition);
 					}
 					return ModelUtil.getLabel(object) + " Type";
@@ -72,7 +73,7 @@ public class ItemAwareElementPropertiesAdapter extends Bpmn2ExtendedPropertiesAd
 					else if (object instanceof ItemAwareElement)
 						itemDefinition = (ItemDefinition) object.eGet(feature);
 					if (itemDefinition!=null) {
-						Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(itemDefinition, Bpmn2ExtendedPropertiesAdapter.class);
+						ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(itemDefinition, Bpmn2EditorPropertiesAdapter.class);
 						return adapter.getFeatureDescriptor(Bpmn2Package.eINSTANCE.getItemDefinition_StructureRef()).getText(itemDefinition);
 					}
 					return super.getText(context);
@@ -82,7 +83,7 @@ public class ItemAwareElementPropertiesAdapter extends Bpmn2ExtendedPropertiesAd
     	
     	ref = Bpmn2Package.eINSTANCE.getItemAwareElement_DataState();
     	setFeatureDescriptor(ref,
-			new Bpmn2FeatureDescriptor(adapterFactory,object,ref) {
+			new FeatureDescriptor(adapterFactory,object,ref) {
 				@Override
 				public void setValue(Object context, Object value) {
 					final EObject object = (EObject) (context instanceof EObject ? context : this.object);
@@ -116,7 +117,7 @@ public class ItemAwareElementPropertiesAdapter extends Bpmn2ExtendedPropertiesAd
 			}
     	);
     	
-    	setProperty(Bpmn2Package.ITEM_AWARE_ELEMENT__DATA_STATE, Bpmn2ExtendedPropertiesAdapter.UI_IS_MULTI_CHOICE, Boolean.FALSE);
+    	setProperty(Bpmn2Package.ITEM_AWARE_ELEMENT__DATA_STATE, Bpmn2EditorPropertiesAdapter.UI_IS_MULTI_CHOICE, Boolean.FALSE);
 	}
 
 }

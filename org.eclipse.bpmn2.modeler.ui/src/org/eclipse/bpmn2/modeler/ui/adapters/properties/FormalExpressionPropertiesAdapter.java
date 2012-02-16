@@ -15,8 +15,8 @@ package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.SequenceFlow;
-import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2FeatureDescriptor;
-import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2ObjectDescriptor;
+import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
+import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -25,7 +25,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
  * @author Bob Brodt
  *
  */
-public class FormalExpressionPropertiesAdapter extends Bpmn2ExtendedPropertiesAdapter {
+public class FormalExpressionPropertiesAdapter extends Bpmn2EditorPropertiesAdapter {
 
 	/**
 	 * @param adapterFactory
@@ -36,7 +36,7 @@ public class FormalExpressionPropertiesAdapter extends Bpmn2ExtendedPropertiesAd
 
     	final EStructuralFeature body = Bpmn2Package.eINSTANCE.getFormalExpression_Body();
     	setFeatureDescriptor(body,
-			new Bpmn2FeatureDescriptor(adapterFactory,object,body) {
+			new FeatureDescriptor(adapterFactory,object,body) {
 				@Override
 				public String getLabel(Object context) {
 					EObject object = this.object;
@@ -54,7 +54,7 @@ public class FormalExpressionPropertiesAdapter extends Bpmn2ExtendedPropertiesAd
 				}
 			}
     	);
-		setObjectDescriptor(new Bpmn2ObjectDescriptor(adapterFactory, object) {
+		setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
 			@Override
 			public String getText(Object context) {
 				return getFeatureDescriptor(body).getText(context);

@@ -11,43 +11,22 @@
  * @author Bob Brodt
  ******************************************************************************/
 
-package org.eclipse.bpmn2.modeler.ui.adapters.properties;
+package org.eclipse.bpmn2.modeler.core.adapters;
 
-import java.lang.reflect.Field;
 import java.util.Hashtable;
 
-import org.eclipse.bpmn2.modeler.ui.Messages;
-import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2EditorItemProviderAdapterFactory;
-import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2FeatureDescriptor;
-import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2ObjectDescriptor;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 /**
- * This class provides "extended" BPMN2 model object properties for the UI that the
- * generated EMF edit.provider does not. Also, we can't easily extend the BPMN2 metamodel
- * edit.provider classes so this adapter sits on top of those classes.
- * 
- * Whenever necessary (i.e. classes for which the editor does not need extended properties),
- * this class will delegate to the BPMN2 edit.provider classes ItemProviderAdapter and
- * ItemPropertyDescriptor.
- * 
- * @see Bpmn2EditorItemProviderAdapterFactory
- * 
- * TODO: expose this framework as an extension point for runtime plugins
+ * @author Bob Brodt
+ *
  */
-public class Bpmn2ExtendedPropertiesAdapter extends AdapterImpl {
-
-	// common property keys
-	public final static String LONG_DESCRIPTION = "long.description";
-	public final static String UI_CAN_EDIT = "ui.can.edit";
-	public final static String UI_CAN_CREATE_NEW = "ui.can.create.new";
-	public final static String UI_CAN_SET_NULL = "ui.can.set.null";
-	public final static String UI_IS_MULTI_CHOICE = "ui.is.multi.choice";
-	public final static String PROPERTY_DESCRIPTOR = "property.descriptor";
+public class ExtendedPropertiesAdapter extends AdapterImpl {
 	
+	public static final String PROPERTY_DESCRIPTOR = "property.descriptor";
 	protected Hashtable<
 		Integer, // feature ID
 		Hashtable<String,Object>> // property key and value
@@ -59,49 +38,42 @@ public class Bpmn2ExtendedPropertiesAdapter extends AdapterImpl {
 	
 	protected AdapterFactory adapterFactory;
 	
-	public Bpmn2ExtendedPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public ExtendedPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
 		super();
 		this.adapterFactory = adapterFactory;
 		setTarget(object);
-    	try {
-        	String fieldName = "UI_" + object.eClass().getName().replaceAll("Impl$", "") + "_long_description";
-			Field field = Messages.class.getField(fieldName);
-			String text = (String)field.get(null);
-			setProperty(Bpmn2ExtendedPropertiesAdapter.LONG_DESCRIPTION, text);
-		} catch (Exception e) {
-		}
 	}
-	
-	public void setObjectDescriptor(Bpmn2ObjectDescriptor pd) {
+
+	public void setObjectDescriptor(ObjectDescriptor pd) {
 		setProperty(PROPERTY_DESCRIPTOR,pd);
 	}
 
-	public Bpmn2ObjectDescriptor getObjectDescriptor() {
-		Bpmn2ObjectDescriptor pd = (Bpmn2ObjectDescriptor) getProperty(PROPERTY_DESCRIPTOR);
+	public ObjectDescriptor getObjectDescriptor() {
+		ObjectDescriptor pd = (ObjectDescriptor) getProperty(PROPERTY_DESCRIPTOR);
 		if (pd==null) {
-			pd = new Bpmn2ObjectDescriptor(adapterFactory, (EObject)getTarget());
+			pd = new ObjectDescriptor(adapterFactory, (EObject)getTarget());
 			setProperty(PROPERTY_DESCRIPTOR,pd);
 		}
 		return pd;
 	}
 
-	public Bpmn2FeatureDescriptor getFeatureDescriptor(EStructuralFeature feature) {
-		Bpmn2FeatureDescriptor pd = (Bpmn2FeatureDescriptor) getProperty(feature.getFeatureID(),PROPERTY_DESCRIPTOR);
+	public FeatureDescriptor getFeatureDescriptor(EStructuralFeature feature) {
+		FeatureDescriptor pd = (FeatureDescriptor) getProperty(feature.getFeatureID(),PROPERTY_DESCRIPTOR);
 		if (pd==null) {
-			pd = new Bpmn2FeatureDescriptor(adapterFactory, (EObject)getTarget(), feature);
+			pd = new FeatureDescriptor(adapterFactory, (EObject)getTarget(), feature);
 			setProperty(feature.getFeatureID(),PROPERTY_DESCRIPTOR,pd);
 		}
 		return pd;
 	}
-	
-	public void setFeatureDescriptor(EStructuralFeature feature, Bpmn2FeatureDescriptor pd) {
+
+	public void setFeatureDescriptor(EStructuralFeature feature, FeatureDescriptor pd) {
 		setProperty(feature.getFeatureID(),PROPERTY_DESCRIPTOR,pd);
 	}
-	
+
 	public Object getProperty(String key) {
 		return objectProperties.get(key);
 	}
-	
+
 	public boolean getBooleanProperty(String key) {
 		Object result = getProperty(key);
 		if (result instanceof Boolean)
@@ -116,7 +88,7 @@ public class Bpmn2ExtendedPropertiesAdapter extends AdapterImpl {
 	public Object getProperty(EStructuralFeature feature, String key) {
 		return getProperty(feature.getFeatureID(), key);
 	}
-	
+
 	public boolean getBooleanProperty(EStructuralFeature feature, String key) {
 		Object result = getProperty(feature, key);
 		if (result instanceof Boolean)

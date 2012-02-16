@@ -15,7 +15,7 @@ package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.Participant;
-import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2ObjectDescriptor;
+import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
 import org.eclipse.bpmn2.modeler.ui.features.choreography.ChoreographyUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EObject;
@@ -24,7 +24,7 @@ import org.eclipse.emf.ecore.EObject;
  * @author Gary Brown
  *
  */
-public class MessageFlowPropertiesAdapter extends Bpmn2ExtendedPropertiesAdapter {
+public class MessageFlowPropertiesAdapter extends Bpmn2EditorPropertiesAdapter {
 
 	/**
 	 * @param adapterFactory
@@ -33,7 +33,7 @@ public class MessageFlowPropertiesAdapter extends Bpmn2ExtendedPropertiesAdapter
 	public MessageFlowPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
 		super(adapterFactory, object);
 		
-    	setObjectDescriptor(new Bpmn2ObjectDescriptor(adapterFactory, object) {
+    	setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
 			@Override
 			public String getText(Object context) {
 				final MessageFlow mf = context instanceof MessageFlow ?

@@ -27,8 +27,8 @@ import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2FeatureDescriptor;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -40,7 +40,7 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain;
  * @author Bob Brodt
  *
  */
-public class DataAssociationPropertiesAdapter extends Bpmn2ExtendedPropertiesAdapter {
+public class DataAssociationPropertiesAdapter extends Bpmn2EditorPropertiesAdapter {
 
 	/**
 	 * @param adapterFactory
@@ -57,7 +57,7 @@ public class DataAssociationPropertiesAdapter extends Bpmn2ExtendedPropertiesAda
     	setFeatureDescriptor(ref, new SourceTargetFeatureDescriptor(adapterFactory,object,ref));
 	}
 
-	public class SourceTargetFeatureDescriptor extends Bpmn2FeatureDescriptor {
+	public class SourceTargetFeatureDescriptor extends FeatureDescriptor {
 
 		public SourceTargetFeatureDescriptor(AdapterFactory adapterFactory, EObject object, EStructuralFeature feature) {
 			super(adapterFactory, object, feature);

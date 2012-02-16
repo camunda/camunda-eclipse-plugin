@@ -14,9 +14,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.bpmn2.di.impl.BpmnDiPackageImpl;
+import org.eclipse.bpmn2.di.provider.BpmnDiItemProviderAdapterFactory;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.core.runtime.IAdapterManager;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.dd.dc.impl.DcPackageImpl;
+import org.eclipse.dd.dc.provider.DcItemProviderAdapterFactory;
+import org.eclipse.dd.di.impl.DiPackageImpl;
+import org.eclipse.dd.di.provider.DiItemProviderAdapterFactory;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
@@ -27,6 +33,9 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
+import org.eclipse.emf.edit.provider.ReflectiveItemProviderAdapterFactory;
+import org.eclipse.emf.edit.provider.resource.ResourceItemProviderAdapterFactory;
+import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 
 /**
  * This is the one place where EMF object adapters can be registered. 
@@ -37,12 +46,27 @@ import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
  */
 
 public class AdapterRegistry {
+	
+	public static ComposedAdapterFactory BPMN2_ADAPTER_FACTORIES = new ComposedAdapterFactory(ComposedAdapterFactory.Descriptor.Registry.INSTANCE);;
+	static AdapterFactoryLabelProvider LABEL_PROVIDER;
 
 	/**
 	 * The singleton instance of this registry.
 	 */
 	
 	static final public AdapterRegistry INSTANCE = new AdapterRegistry();
+	
+	static {
+		BPMN2_ADAPTER_FACTORIES.addAdapterFactory(new ResourceItemProviderAdapterFactory());
+		BPMN2_ADAPTER_FACTORIES.addAdapterFactory(
+				INSTANCE.registerFactory(BpmnDiPackageImpl.eINSTANCE, new BpmnDiItemProviderAdapterFactory()));
+		BPMN2_ADAPTER_FACTORIES.addAdapterFactory(
+				INSTANCE.registerFactory(DcPackageImpl.eINSTANCE, new DcItemProviderAdapterFactory()));
+		BPMN2_ADAPTER_FACTORIES.addAdapterFactory(
+				INSTANCE.registerFactory(DiPackageImpl.eINSTANCE, new DiItemProviderAdapterFactory()));
+
+		BPMN2_ADAPTER_FACTORIES.addAdapterFactory(new ReflectiveItemProviderAdapterFactory());
+	}
 
 	/** For every type of EClass or EPackage, register an Adapter Factory 
 	 *   This means that a particular EClass or EPackage may have N
@@ -325,4 +349,9 @@ public class AdapterRegistry {
 		fAdapterManager.registerAdapters(factory, clazz);		
 	}
 
+	public static AdapterFactoryLabelProvider getLabelProvider() {
+		if (LABEL_PROVIDER==null)
+			LABEL_PROVIDER = new AdapterFactoryLabelProvider(BPMN2_ADAPTER_FACTORIES);
+		return LABEL_PROVIDER;
+	}
 }

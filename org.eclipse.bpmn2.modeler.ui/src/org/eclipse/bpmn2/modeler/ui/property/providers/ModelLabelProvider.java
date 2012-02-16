@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.property.providers;
 
-import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
+import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.ui.adapters.ILabeledElement;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;

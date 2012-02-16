@@ -22,10 +22,10 @@ import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.Message;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
+import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2FeatureDescriptor;
-import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2ObjectDescriptor;
 import org.eclipse.bpmn2.modeler.ui.features.choreography.ChoreographyUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EObject;
@@ -35,7 +35,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
  * @author Gary Brown
  *
  */
-public class MessagePropertiesAdapter extends Bpmn2ExtendedPropertiesAdapter {
+public class MessagePropertiesAdapter extends Bpmn2EditorPropertiesAdapter {
 
 	/**
 	 * @param adapterFactory
@@ -44,7 +44,7 @@ public class MessagePropertiesAdapter extends Bpmn2ExtendedPropertiesAdapter {
 	public MessagePropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
 		super(adapterFactory, object);
 		
-    	setObjectDescriptor(new Bpmn2ObjectDescriptor(adapterFactory, object) {
+    	setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
 			@Override
 			public String getText(Object context) {
 				final Message mesg = context instanceof Message ?
@@ -57,7 +57,7 @@ public class MessagePropertiesAdapter extends Bpmn2ExtendedPropertiesAdapter {
     	
     	final EStructuralFeature ref = Bpmn2Package.eINSTANCE.getMessage_ItemRef();
     	setFeatureDescriptor(ref,
-			new Bpmn2FeatureDescriptor(adapterFactory,object,ref) {
+			new FeatureDescriptor(adapterFactory,object,ref) {
 	    		@Override
 				public EObject createObject(Object context) {
 					final Message msg = context instanceof Message ?

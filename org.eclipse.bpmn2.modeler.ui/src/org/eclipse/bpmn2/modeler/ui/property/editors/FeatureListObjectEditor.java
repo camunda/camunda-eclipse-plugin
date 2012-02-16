@@ -22,8 +22,8 @@ import java.util.Map;
 
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
+import org.eclipse.bpmn2.modeler.core.adapters.AdapterRegistry;
 import org.eclipse.bpmn2.modeler.ui.Activator;
-import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.FeatureEditingDialog;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
@@ -109,7 +109,7 @@ public class FeatureListObjectEditor extends MultivalueObjectEditor {
 						values.addAll(choices.values());
 
 						FeatureEditorDialog featureEditorDialog = new FeatureEditorDialog(parent.getShell(),
-								AdapterUtil.getLabelProvider(), object, feature, "Select elements", values) {
+								AdapterRegistry.getLabelProvider(), object, feature, "Select elements", values) {
 
 							@Override
 							protected Control createDialogArea(Composite parent) {
@@ -159,10 +159,10 @@ public class FeatureListObjectEditor extends MultivalueObjectEditor {
 		String listText = "";
 		if (refs != null) {
 			for (int i = 0; i < refs.size() - 1; i++) {
-				listText += AdapterUtil.getLabelProvider().getText(refs.get(i)) + ", ";
+				listText += AdapterRegistry.getLabelProvider().getText(refs.get(i)) + ", ";
 			}
 			if (refs.size() > 0) {
-				listText += AdapterUtil.getLabelProvider().getText(refs.get(refs.size() - 1));
+				listText += AdapterRegistry.getLabelProvider().getText(refs.get(refs.size() - 1));
 			}
 		}
 

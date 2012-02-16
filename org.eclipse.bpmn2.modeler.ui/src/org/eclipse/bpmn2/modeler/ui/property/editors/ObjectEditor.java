@@ -13,9 +13,10 @@
 
 package org.eclipse.bpmn2.modeler.ui.property.editors;
 
+import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
+import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
-import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
-import org.eclipse.bpmn2.modeler.ui.adapters.properties.Bpmn2ExtendedPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.Bpmn2EditorPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.util.ErrorUtils;
@@ -89,7 +90,7 @@ public abstract class ObjectEditor {
 	}
 
 	protected boolean updateObject(final Object result) {
-		Bpmn2ExtendedPropertiesAdapter adapter = AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+		ExtendedPropertiesAdapter adapter = AdapterUtil.adapt(object, Bpmn2EditorPropertiesAdapter.class);
 		boolean valueChanged = adapter==null ?
 				(result != object.eGet(feature)) :
 				!(result.equals(adapter.getFeatureDescriptor(feature).getValue()));

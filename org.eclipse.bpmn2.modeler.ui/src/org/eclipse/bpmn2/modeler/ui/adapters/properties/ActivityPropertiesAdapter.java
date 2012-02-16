@@ -21,7 +21,7 @@ import org.eclipse.emf.ecore.EObject;
  * @author Bob Brodt
  *
  */
-public class ActivityPropertiesAdapter extends Bpmn2ExtendedPropertiesAdapter {
+public class ActivityPropertiesAdapter extends Bpmn2EditorPropertiesAdapter {
 
 	/**
 	 * @param adapterFactory
@@ -29,8 +29,8 @@ public class ActivityPropertiesAdapter extends Bpmn2ExtendedPropertiesAdapter {
 	 */
 	public ActivityPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
 		super(adapterFactory, object);
-    	setProperty(Bpmn2Package.ACTIVITY__LOOP_CHARACTERISTICS, Bpmn2ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW, Boolean.FALSE);
-    	setProperty(Bpmn2Package.ACTIVITY__LOOP_CHARACTERISTICS, Bpmn2ExtendedPropertiesAdapter.UI_CAN_EDIT, Boolean.FALSE);
+    	setProperty(Bpmn2Package.ACTIVITY__LOOP_CHARACTERISTICS, Bpmn2EditorPropertiesAdapter.UI_CAN_CREATE_NEW, Boolean.FALSE);
+    	setProperty(Bpmn2Package.ACTIVITY__LOOP_CHARACTERISTICS, Bpmn2EditorPropertiesAdapter.UI_CAN_EDIT, Boolean.FALSE);
 	}
 
 }

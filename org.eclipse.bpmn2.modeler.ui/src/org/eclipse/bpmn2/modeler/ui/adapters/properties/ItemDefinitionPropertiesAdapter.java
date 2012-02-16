@@ -17,10 +17,10 @@ import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Interface;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.ItemKind;
+import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
+import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2FeatureDescriptor;
-import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2ObjectDescriptor;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -29,7 +29,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
  * @author Bob Brodt
  *
  */
-public class ItemDefinitionPropertiesAdapter extends Bpmn2ExtendedPropertiesAdapter {
+public class ItemDefinitionPropertiesAdapter extends Bpmn2EditorPropertiesAdapter {
 
 	/**
 	 * @param adapterFactory
@@ -40,7 +40,7 @@ public class ItemDefinitionPropertiesAdapter extends Bpmn2ExtendedPropertiesAdap
 
     	final EStructuralFeature ref = Bpmn2Package.eINSTANCE.getItemDefinition_StructureRef();
     	setFeatureDescriptor(ref,
-			new Bpmn2FeatureDescriptor(adapterFactory,object,ref) {
+			new FeatureDescriptor(adapterFactory,object,ref) {
 				@Override
 				public String getLabel(Object context) {
 					EObject object = this.object;
@@ -118,7 +118,7 @@ public class ItemDefinitionPropertiesAdapter extends Bpmn2ExtendedPropertiesAdap
 			}
     	);
     	
-		setObjectDescriptor(new Bpmn2ObjectDescriptor(adapterFactory, object) {
+		setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
 			@Override
 			public String getText(Object context) {
 				return getFeatureDescriptor(ref).getText(context);

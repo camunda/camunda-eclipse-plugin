@@ -16,8 +16,8 @@ package org.eclipse.bpmn2.modeler.ui.property.editors;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 
-import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
-import org.eclipse.bpmn2.modeler.ui.adapters.properties.Bpmn2ExtendedPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.core.adapters.AdapterRegistry;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.Bpmn2EditorPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.FeatureEditingDialog;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
@@ -75,7 +75,7 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 		boolean canCreateNew = PropertyUtil.canCreateNew(object,feature);
 		
 		comboViewer = createComboViewer(composite,
-				AdapterUtil.getLabelProvider(), style);
+				AdapterRegistry.getLabelProvider(), style);
 		Combo combo = comboViewer.getCombo();
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, (canEdit || canCreateNew) ? 1 : 2, 1));
 		combo.addDisposeListener(new DisposeListener() {

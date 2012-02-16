@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.EObject;
  * @author Bob Brodt
  *
  */
-public class SequenceFlowPropertiesAdapter extends Bpmn2ExtendedPropertiesAdapter {
+public class SequenceFlowPropertiesAdapter extends Bpmn2EditorPropertiesAdapter {
 
 	/**
 	 * @param adapterFactory

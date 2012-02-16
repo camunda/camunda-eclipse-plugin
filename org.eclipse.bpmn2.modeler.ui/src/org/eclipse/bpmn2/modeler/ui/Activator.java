@@ -16,6 +16,13 @@ import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.eclipse.bpel.wsil.model.inspection.InspectionPackage;
+import org.eclipse.bpmn2.impl.Bpmn2PackageImpl;
+import org.eclipse.bpmn2.modeler.core.adapters.AdapterRegistry;
+import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2EditorItemProviderAdapterFactory;
+import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2WSDLAdapterFactory;
+import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2WSILAdapterFactory;
+import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2XSDAdapterFactory;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
@@ -26,6 +33,8 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.wst.wsdl.WSDLPackage;
+import org.eclipse.xsd.XSDPackage;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -38,6 +47,22 @@ public class Activator extends AbstractUIPlugin {
 
 	// The shared instance
 	private static Activator plugin;
+	
+	// Adapter Factory registration
+	static {
+		AdapterRegistry.INSTANCE.registerAdapterFactory(
+			    WSDLPackage.eINSTANCE, Bpmn2WSDLAdapterFactory.getInstance());
+		
+		AdapterRegistry.INSTANCE.registerAdapterFactory(
+			    XSDPackage.eINSTANCE, Bpmn2XSDAdapterFactory.getInstance());
+		
+		AdapterRegistry.INSTANCE.registerAdapterFactory(
+			    InspectionPackage.eINSTANCE, Bpmn2WSILAdapterFactory.getInstance() );
+		
+		// BPMN2 metamodel adapter factories
+		AdapterRegistry.BPMN2_ADAPTER_FACTORIES.addAdapterFactory(
+				AdapterRegistry.INSTANCE.registerFactory(Bpmn2PackageImpl.eINSTANCE, new Bpmn2EditorItemProviderAdapterFactory()));
+	}
 
 	/**
 	 * The constructor

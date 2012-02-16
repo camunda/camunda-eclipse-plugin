@@ -21,11 +21,11 @@ import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.modeler.core.adapters.AdapterRegistry;
 import org.eclipse.bpmn2.modeler.core.preferences.ToolEnablement;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
-import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
@@ -142,7 +142,7 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 		});
 
 		treeViewer.setContentProvider(new PropertyTreeContentProvider(this));
-		treeViewer.setLabelProvider(AdapterUtil.getLabelProvider());
+		treeViewer.setLabelProvider(AdapterRegistry.getLabelProvider());
 
 		detailsSection = toolkit.createSection(sashForm, ExpandableComposite.TITLE_BAR);
 		toolkit.paintBordersFor(detailsSection);

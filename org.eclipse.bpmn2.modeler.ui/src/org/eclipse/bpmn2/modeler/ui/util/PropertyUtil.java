@@ -16,11 +16,12 @@ import java.util.Collection;
 
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
+import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.bpmn2.modeler.ui.Activator;
-import org.eclipse.bpmn2.modeler.ui.adapters.AdapterUtil;
-import org.eclipse.bpmn2.modeler.ui.adapters.properties.Bpmn2ExtendedPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.Bpmn2EditorPropertiesAdapter;
 import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -132,7 +133,7 @@ public class PropertyUtil {
 		String label = "";
 		if (object instanceof EObject) {
 			EObject eObject = (EObject)object;
-			Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(eObject, Bpmn2ExtendedPropertiesAdapter.class);
+			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(eObject, Bpmn2EditorPropertiesAdapter.class);
 			if (adapter!=null)
 				label = adapter.getObjectDescriptor().getLabel(eObject);
 			else
@@ -146,7 +147,7 @@ public class PropertyUtil {
 	
 	public static String getLabel(EObject object, EStructuralFeature feature) {
 		String label = "";
-		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2EditorPropertiesAdapter.class);
 		if (adapter!=null)
 			label = adapter.getFeatureDescriptor(feature).getLabel(object);
 		else
@@ -158,7 +159,7 @@ public class PropertyUtil {
 	public static String getText(Object object) {
 		if (object instanceof EObject) {
 			EObject eObject = (EObject)object;
-			Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(eObject, Bpmn2ExtendedPropertiesAdapter.class);
+			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(eObject, Bpmn2EditorPropertiesAdapter.class);
 			if (adapter!=null)
 				return adapter.getObjectDescriptor().getText(eObject);
 			return getDisplayName(eObject);
@@ -170,35 +171,35 @@ public class PropertyUtil {
 		if (feature==null)
 			return getText(object);
 		
-		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2EditorPropertiesAdapter.class);
 		if (adapter!=null)
 			return adapter.getFeatureDescriptor(feature).getText(object);
 		return getDisplayName(object, feature);
 	}
 
 	public static boolean getIsMultiLine(EObject object, EStructuralFeature feature) {
-		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2EditorPropertiesAdapter.class);
 		if (adapter!=null)
 			return adapter.getFeatureDescriptor(feature).isMultiLine(object);
 		return false;
 	}
 
 	public static Collection getChoiceOfValues(EObject object, EStructuralFeature feature) {
-		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2EditorPropertiesAdapter.class);
 		if (adapter!=null)
 			return adapter.getFeatureDescriptor(feature).getChoiceOfValues(object);
 		return null;
 	}
 
 	public static EObject createObject(EObject object, EStructuralFeature feature) {
-		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2EditorPropertiesAdapter.class);
 		if (adapter!=null)
 			return adapter.getFeatureDescriptor(feature).createObject(object);
 		return null;
 	}
 
 	public static EObject createObject(EObject object, EStructuralFeature feature, EClass eclass) {
-		Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2EditorPropertiesAdapter.class);
 		if (adapter!=null)
 			return adapter.getFeatureDescriptor(feature).createObject(object, eclass);
 		return null;
@@ -206,9 +207,9 @@ public class PropertyUtil {
 
 	public static boolean canEdit(EObject object, EStructuralFeature feature) {
 		if (feature.getEType() instanceof EClass) {
-			Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2EditorPropertiesAdapter.class);
 			if (adapter!=null) {
-				Object result = adapter.getProperty(feature, Bpmn2ExtendedPropertiesAdapter.UI_CAN_EDIT);
+				Object result = adapter.getProperty(feature, Bpmn2EditorPropertiesAdapter.UI_CAN_EDIT);
 				if (result instanceof Boolean)
 					return ((Boolean)result);
 			}
@@ -219,9 +220,9 @@ public class PropertyUtil {
 	
 	public static boolean canCreateNew(EObject object, EStructuralFeature feature) {
 		if (feature.getEType() instanceof EClass) {
-			Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2EditorPropertiesAdapter.class);
 			if (adapter!=null) {
-				Object result = adapter.getProperty(feature, Bpmn2ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW);
+				Object result = adapter.getProperty(feature, Bpmn2EditorPropertiesAdapter.UI_CAN_CREATE_NEW);
 				if (result instanceof Boolean)
 					return ((Boolean)result);
 			}
@@ -232,9 +233,9 @@ public class PropertyUtil {
 	
 	public static boolean canSetNull(EObject object, EStructuralFeature feature) {
 		if (feature.getEType() instanceof EClass) {
-			Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2EditorPropertiesAdapter.class);
 			if (adapter!=null) {
-				Object result = adapter.getProperty(feature, Bpmn2ExtendedPropertiesAdapter.UI_CAN_SET_NULL);
+				Object result = adapter.getProperty(feature, Bpmn2EditorPropertiesAdapter.UI_CAN_SET_NULL);
 				if (result instanceof Boolean)
 					return ((Boolean)result);
 			}
@@ -245,9 +246,9 @@ public class PropertyUtil {
 	
 	public static boolean isMultiChoice(EObject object, EStructuralFeature feature) {
 		if (feature.getEType() instanceof EClass) {
-			Bpmn2ExtendedPropertiesAdapter adapter = (Bpmn2ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2ExtendedPropertiesAdapter.class);
+			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2EditorPropertiesAdapter.class);
 			if (adapter!=null) {
-				Object result = adapter.getProperty(feature, Bpmn2ExtendedPropertiesAdapter.UI_IS_MULTI_CHOICE);
+				Object result = adapter.getProperty(feature, Bpmn2EditorPropertiesAdapter.UI_IS_MULTI_CHOICE);
 				if (result instanceof Boolean)
 					return ((Boolean)result);
 			}

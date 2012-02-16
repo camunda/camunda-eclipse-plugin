@@ -29,8 +29,8 @@ public class TaskPropertiesAdapter extends ActivityPropertiesAdapter {
 	 */
 	public TaskPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
 		super(adapterFactory, object);
-    	setProperty(Bpmn2Package.INTERACTION_NODE__INCOMING_CONVERSATION_LINKS, Bpmn2ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW, Boolean.FALSE);
-    	setProperty(Bpmn2Package.INTERACTION_NODE__OUTGOING_CONVERSATION_LINKS, Bpmn2ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW, Boolean.FALSE);
+    	setProperty(Bpmn2Package.INTERACTION_NODE__INCOMING_CONVERSATION_LINKS, Bpmn2EditorPropertiesAdapter.UI_CAN_CREATE_NEW, Boolean.FALSE);
+    	setProperty(Bpmn2Package.INTERACTION_NODE__OUTGOING_CONVERSATION_LINKS, Bpmn2EditorPropertiesAdapter.UI_CAN_CREATE_NEW, Boolean.FALSE);
 	}
 
 }

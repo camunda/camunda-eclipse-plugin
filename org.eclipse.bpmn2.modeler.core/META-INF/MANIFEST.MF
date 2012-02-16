@@ -6,6 +6,7 @@ Bundle-Version: 0.0.1.qualifier
 Bundle-Activator: org.eclipse.bpmn2.modeler.core.Activator
 Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.emf.transaction,
+ org.eclipse.emf.edit.ui,
  org.eclipse.osgi,
  org.eclipse.graphiti;bundle-version="[0.7.3,1.0.0)",
  org.eclipse.gef,
