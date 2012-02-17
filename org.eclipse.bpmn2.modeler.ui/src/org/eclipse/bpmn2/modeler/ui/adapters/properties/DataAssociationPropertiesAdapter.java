@@ -16,6 +16,7 @@ package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.eclipse.bpmn2.Bpmn2Package;
@@ -65,7 +66,7 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter 
 		}
 		
 			@Override
-    		public Collection getChoiceOfValues(Object context) {
+    		public Hashtable<String, Object> getChoiceOfValues(Object context) {
 				List<EObject> values = new ArrayList<EObject>();
 				// search for all Properties and DataStores
 				// Properties are contained in the nearest enclosing Process or Event;
@@ -74,7 +75,8 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter 
     			values.addAll( ModelUtil.collectAncestorObjects(object, "properties", new Class[] {Process.class}) );
     			values.addAll( ModelUtil.collectAncestorObjects(object, "properties", new Class[] {Event.class}) );
     			values.addAll( ModelUtil.collectAncestorObjects(object, "dataStore", new Class[] {DocumentRoot.class}) );
-    			return values;
+    			super.setChoiceOfValues(values);
+    			return super.getChoiceOfValues(context);
     		}
 			
 			@Override

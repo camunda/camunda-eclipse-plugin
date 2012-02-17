@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.ui.util;
 
 import java.util.Collection;
+import java.util.Hashtable;
 
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
@@ -178,7 +179,7 @@ public class PropertyUtil {
 		return false;
 	}
 
-	public static Collection getChoiceOfValues(EObject object, EStructuralFeature feature) {
+	public static Hashtable<String, Object> getChoiceOfValues(EObject object, EStructuralFeature feature) {
 		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
 		if (adapter!=null)
 			return adapter.getFeatureDescriptor(feature).getChoiceOfValues(object);

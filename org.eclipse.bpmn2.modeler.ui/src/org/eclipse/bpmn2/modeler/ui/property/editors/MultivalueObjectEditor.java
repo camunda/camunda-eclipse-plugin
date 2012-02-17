@@ -59,45 +59,6 @@ public abstract class MultivalueObjectEditor extends ObjectEditor {
 	 * @return
 	 */
 	protected Hashtable<String,Object> getChoiceOfValues(EObject object, EStructuralFeature feature) {
-		Hashtable<String,Object> choices = new Hashtable<String,Object>();
-		List<String> names = null;
-		List<Object> values = null;
-		
-		values = (List)PropertyUtil.getChoiceOfValues(object, feature);
-		if (values==null) {
-			try {
-				ModelHandler modelHandler = ModelHandlerLocator.getModelHandler(getDiagram().eResource());
-				values = (List<Object>) modelHandler.getAll(feature.getEType().getInstanceClass());
-				names = new ArrayList<String>();
-				for (Object o : values) {
-					names.add( PropertyUtil.getText(o) );
-				}
-			} catch (IOException e1) {
-				Activator.showErrorWithLogging(e1);
-			}
-		}
-		
-		if (names!=null) {
-			for (int i=0; i<names.size(); ++i) {
-				String text = names.get(i);
-				while (choices.containsKey(text))
-					text += " ";
-				choices.put(text, values.get(i));
-			}
-		}
-		else {
-			for (int i=0; i<values.size(); ++i) {
-				Object v = values.get(i);
-				if (v==null)
-					values.remove(i--);
-				else {
-					String text = PropertyUtil.getText(v);
-					while (choices.containsKey(text))
-						text += " ";
-					choices.put(text, v);
-				}
-			}
-		}
-		return choices;
+		return PropertyUtil.getChoiceOfValues(object, feature);
 	}
 }

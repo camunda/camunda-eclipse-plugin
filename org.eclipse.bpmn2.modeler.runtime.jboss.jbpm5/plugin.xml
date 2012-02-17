@@ -570,6 +570,9 @@
 			<enable object="DataInputAssociation"/>
 			<enable object="DataOutput"/>
 			<enable object="DataOutputAssociation"/>
+			<disable object="FormalExpression"/>
+			<enable object="FormalExpression" feature="body"/>
+			<enable object="FormalExpression" feature="language"/>
 
 			<enable object="LaneSet" feature="name"/>
 

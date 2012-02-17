@@ -16,6 +16,7 @@ package org.eclipse.bpmn2.modeler.ui.property;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Stack;
 
@@ -452,7 +453,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 			if (label==null)
 				label = PropertyUtil.getLabel(object, attribute);
 			
-			Collection choiceOfValues = PropertyUtil.getChoiceOfValues(object, attribute);
+			Hashtable<String,Object> choiceOfValues = PropertyUtil.getChoiceOfValues(object, attribute);
 			
 			Class eTypeClass = attribute.getEType().getInstanceClass();
 			if (choiceOfValues != null) {

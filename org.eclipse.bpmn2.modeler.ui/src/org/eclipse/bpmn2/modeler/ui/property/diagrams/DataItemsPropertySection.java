@@ -102,7 +102,6 @@ public class DataItemsPropertySection extends DefaultPropertySection {
 					if (label==null)
 						label = PropertyUtil.getLabel(object, attribute);
 					
-					Collection choiceOfValues = PropertyUtil.getChoiceOfValues(object, attribute);
 					ObjectEditor editor = new ComboObjectEditor(this,object,attribute) {
 						protected boolean updateObject(final Object result) {
 							super.updateObject(result);

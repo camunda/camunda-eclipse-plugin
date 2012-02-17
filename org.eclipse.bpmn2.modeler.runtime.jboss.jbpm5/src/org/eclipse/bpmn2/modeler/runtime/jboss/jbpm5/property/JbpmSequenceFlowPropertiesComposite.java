@@ -46,23 +46,4 @@ public class JbpmSequenceFlowPropertiesComposite extends SequenceFlowPropertiesC
 		bindAttribute(this, be, "priority");
 		super.createBindings(be);
 	}
-	
-	protected void bindAttribute(Composite parent, EObject object, EAttribute attribute, String label) {
-		if ("language".equals(attribute.getName())) {
-			ObjectEditor editor = new ComboObjectEditor(this,be,be.eClass().getEStructuralFeature("language")) {
-				
-				@Override
-				protected Hashtable getChoiceOfValues(EObject object, EStructuralFeature feature) {
-					Hashtable<String, Object> values = new Hashtable<String, Object>();
-					values.put("Java", "http://www.java.com/java");
-					values.put("MVEL", "http://www.mvel.org/2.0");
-					values.put("Rule", "http://www.jboss.org/drools/rule");
-					return values;
-				}
-			};
-			editor.createControl(getAttributesParent(),"Script Language");
-		}
-		else
-			super.bindAttribute(parent, object, attribute, label);
-	}
 }

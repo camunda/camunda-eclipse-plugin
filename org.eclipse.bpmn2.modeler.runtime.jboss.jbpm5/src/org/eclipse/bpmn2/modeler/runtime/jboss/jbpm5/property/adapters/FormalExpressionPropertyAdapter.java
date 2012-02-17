@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.eclipse.bpmn2.Bpmn2Package;
@@ -40,19 +41,37 @@ public class FormalExpressionPropertyAdapter extends FormalExpressionPropertiesA
 		super(adapterFactory, object);
 
     	final EStructuralFeature language = Bpmn2Package.eINSTANCE.getFormalExpression_Language();
-    	setFeatureDescriptor(language,
-			new FeatureDescriptor(adapterFactory,object,language) {
+    	FeatureDescriptor fd = new FeatureDescriptor(adapterFactory,object,language) {
+			@Override
+			public String getLabel(Object context) {
+				return "Script Language";
+			}
+		};
+		Hashtable<String, Object> choiceOfValues = new Hashtable<String, Object>();
+		choiceOfValues.put("Java", "http://www.java.com/java");
+		choiceOfValues.put("MVEL", "http://www.mvel.org/2.0");
+		if (object.eContainer() instanceof SequenceFlow)
+			choiceOfValues.put("Rule", "http://www.jboss.org/drools/rule");
+    	fd.setChoiceOfValues(choiceOfValues);
+    	setFeatureDescriptor(language,fd);
+    	
+    	final EStructuralFeature body = Bpmn2Package.eINSTANCE.getFormalExpression_Body();
+    	setFeatureDescriptor(body,
+			new FeatureDescriptor(adapterFactory,object,body) {
 				@Override
 				public String getLabel(Object context) {
-					return "Language";
+					EObject object = this.object;
+					if (context instanceof EObject)
+						object = (EObject)context;
+					if (object.eContainer() instanceof SequenceFlow)
+						return "Constraint";
+					return "Script";
 				}
 
 				@Override
-				public Collection getChoiceOfValues(Object context) {
-					List<String> choices = new ArrayList<String>();
-					choices.add("http://www.java.com/java");
-					choices.add("http://www.mvel.org/2.0");
-					return choices;
+				public boolean isMultiLine(Object context) {
+					// formal expression body is always a multiline text field
+					return true;
 				}
 			}
     	);

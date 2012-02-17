@@ -40,26 +40,4 @@ public class JbpmScriptTaskPropertiesComposite extends JbpmTaskPropertiesComposi
 	public JbpmScriptTaskPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
 	}
-
-	@Override
-	public void createBindings(EObject be) {
-		ObjectEditor editor;
-		
-		editor = new ComboObjectEditor(this,be,be.eClass().getEStructuralFeature("scriptFormat")) {
-			
-			@Override
-			protected Hashtable getChoiceOfValues(EObject object, EStructuralFeature feature) {
-				Hashtable<String, Object> values = new Hashtable<String, Object>();
-				values.put("Java", "http://www.java.com/java");
-				values.put("MVEL", "http://www.mvel.org/2.0");
-				return values;
-			}
-		};
-		editor.createControl(getAttributesParent(),"Script Language");
-		
-		editor = new TextObjectEditor(this,be,be.eClass().getEStructuralFeature("script"));
-		editor.createControl(getAttributesParent(),"Script",SWT.MULTI);
-		
-		super.createBindings(be);
-	}
 }

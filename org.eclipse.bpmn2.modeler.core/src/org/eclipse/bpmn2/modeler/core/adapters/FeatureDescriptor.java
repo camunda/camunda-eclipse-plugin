@@ -15,6 +15,9 @@ package org.eclipse.bpmn2.modeler.core.adapters;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Definitions;
@@ -39,7 +42,7 @@ public class FeatureDescriptor extends ObjectDescriptor {
 
 	protected EStructuralFeature feature;
 	protected int multiline = 0; // -1 = false, +1 = true, 0 = unset
-	protected Collection choiceOfValues; // for static lists
+	protected Hashtable<String, Object> choiceOfValues; // for static lists
 	
 	public FeatureDescriptor(AdapterFactory adapterFactory, EObject object, EStructuralFeature feature) {
 		super(adapterFactory, object);
@@ -103,17 +106,40 @@ public class FeatureDescriptor extends ObjectDescriptor {
 		return text == null ? "" : text;
 	}
 
-	public void setChoiceOfValues(Collection choiceOfValues) {
+	public void setChoiceOfValues(Hashtable<String, Object> choiceOfValues) {
 		this.choiceOfValues = choiceOfValues;
 	}
+
+	/**
+	 * Convenience method to set choice of values from an object list.
+	 * @param values
+	 */
+	public void setChoiceOfValues(Collection values) {
+		if (values!=null) {
+			choiceOfValues = new Hashtable<String,Object>();
+			Iterator iter = values.iterator();
+			while (iter.hasNext()) {
+				Object value = iter.next();
+				if (value!=null) {
+					String text = getValueText(value);
+					while (choiceOfValues.containsKey(text))
+						text += " ";
+					choiceOfValues.put(text, value);
+				}
+			}
+		}
+	}
 	
-	public Collection getChoiceOfValues(Object context) {
+	public Hashtable<String, Object> getChoiceOfValues(Object context) {
 		EObject object = context instanceof EObject ? (EObject)context : this.object;
 		if (choiceOfValues==null) {
+			List<String> names = null;
+			Collection values = null;
+			
 			try {
 				IItemPropertyDescriptor propertyDescriptor = getPropertyDescriptor(feature);
 				if (propertyDescriptor!=null) {
-					return propertyDescriptor.getChoiceOfValues(object);
+					values = propertyDescriptor.getChoiceOfValues(object);
 				}
 			}
 			catch (Exception e) {
@@ -122,9 +148,38 @@ public class FeatureDescriptor extends ObjectDescriptor {
 				// URI is used for ItemDefinition.structureRef
 				// fallback is to do our own search
 			}
-			return ModelUtil.getAllReachableObjects(object, feature);
+
+			if (values==null)
+				values = ModelUtil.getAllReachableObjects(object, feature);
+			
+			if (values!=null) {
+				Hashtable<String,Object> choices = new Hashtable<String,Object>();
+				Iterator iter = values.iterator();
+				while (iter.hasNext()) {
+					Object value = iter.next();
+					if (value!=null) {
+						String text = getValueText(value);
+						while (choices.containsKey(text))
+							text += " ";
+						choices.put(text, value);
+					}
+				}
+				return choices;
+			}
 		}
 		return choiceOfValues;
+	}
+	
+	// copied from PropertyUtil in UI plugin
+	private String getValueText(Object value) {
+		if (value instanceof EObject) {
+			EObject eObject = (EObject)value;
+			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(eObject, ExtendedPropertiesAdapter.class);
+			if (adapter!=null)
+				return adapter.getObjectDescriptor().getText(eObject);
+			return ModelUtil.toDisplayName( eObject.eClass().getName() );
+		}
+		return value.toString();
 	}
 
 	public void setMultiLine(boolean multiline) {
