@@ -12,7 +12,6 @@ package org.eclipse.bpmn2.modeler.ui.property.providers;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.viewers.CellEditor;

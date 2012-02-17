@@ -14,6 +14,7 @@
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EObject;
 
@@ -21,7 +22,7 @@ import org.eclipse.emf.ecore.EObject;
  * @author Bob Brodt
  *
  */
-public class ResourceParameterBindingPropertiesAdapter extends Bpmn2EditorPropertiesAdapter {
+public class ResourceParameterBindingPropertiesAdapter extends ExtendedPropertiesAdapter {
 
 	/**
 	 * @param adapterFactory
@@ -31,10 +32,10 @@ public class ResourceParameterBindingPropertiesAdapter extends Bpmn2EditorProper
 		super(adapterFactory, object);
 
 		// ResourceParameters are contained in Resource, a root element
-    	setProperty(Bpmn2Package.RESOURCE_PARAMETER_BINDING__PARAMETER_REF, Bpmn2EditorPropertiesAdapter.UI_IS_MULTI_CHOICE, Boolean.TRUE);
-    	setProperty(Bpmn2Package.RESOURCE_PARAMETER_BINDING__PARAMETER_REF, Bpmn2EditorPropertiesAdapter.UI_CAN_CREATE_NEW, Boolean.FALSE);
-    	setProperty(Bpmn2Package.RESOURCE_PARAMETER_BINDING__PARAMETER_REF, Bpmn2EditorPropertiesAdapter.UI_CAN_EDIT, Boolean.FALSE);
-    	setProperty(Bpmn2Package.RESOURCE_PARAMETER_BINDING__PARAMETER_REF, Bpmn2EditorPropertiesAdapter.UI_CAN_SET_NULL, Boolean.TRUE);
+    	setProperty(Bpmn2Package.RESOURCE_PARAMETER_BINDING__PARAMETER_REF, ExtendedPropertiesAdapter.UI_IS_MULTI_CHOICE, Boolean.TRUE);
+    	setProperty(Bpmn2Package.RESOURCE_PARAMETER_BINDING__PARAMETER_REF, ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW, Boolean.FALSE);
+    	setProperty(Bpmn2Package.RESOURCE_PARAMETER_BINDING__PARAMETER_REF, ExtendedPropertiesAdapter.UI_CAN_EDIT, Boolean.FALSE);
+    	setProperty(Bpmn2Package.RESOURCE_PARAMETER_BINDING__PARAMETER_REF, ExtendedPropertiesAdapter.UI_CAN_SET_NULL, Boolean.TRUE);
 	}
 
 }

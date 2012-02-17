@@ -33,7 +33,6 @@ import org.eclipse.bpmn2.modeler.ui.property.editors.ComboObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.FeatureListObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.IntObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
-import org.eclipse.bpmn2.modeler.ui.property.editors.TextAndButtonObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.command.Command;
@@ -53,10 +52,7 @@ import org.eclipse.emf.transaction.ResourceSetChangeEvent;
 import org.eclipse.emf.transaction.ResourceSetListener;
 import org.eclipse.emf.transaction.RollbackException;
 import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
-import org.eclipse.jface.dialogs.IInputValidator;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Font;
@@ -459,7 +455,11 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 			Collection choiceOfValues = PropertyUtil.getChoiceOfValues(object, attribute);
 			
 			Class eTypeClass = attribute.getEType().getInstanceClass();
-			if (String.class.equals(eTypeClass)) {
+			if (choiceOfValues != null) {
+				ObjectEditor editor = new ComboObjectEditor(this,object,attribute);
+				editor.createControl(parent,label);
+			}
+			else if (String.class.equals(eTypeClass)) {
 				int style = SWT.NONE;
 				if (PropertyUtil.getIsMultiLine(object,attribute))
 					style |= SWT.MULTI;
@@ -472,9 +472,6 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 					Integer.class.equals(eTypeClass) ||
 					BigInteger.class.equals(eTypeClass) ) {
 				ObjectEditor editor = new IntObjectEditor(this,object,attribute);
-				editor.createControl(parent,label);
-			} else if (choiceOfValues != null) {
-				ObjectEditor editor = new ComboObjectEditor(this,object,attribute);
 				editor.createControl(parent,label);
 			} else if ("anyAttribute".equals(attribute.getName()) ||
 					object.eGet(attribute) instanceof FeatureMap) {

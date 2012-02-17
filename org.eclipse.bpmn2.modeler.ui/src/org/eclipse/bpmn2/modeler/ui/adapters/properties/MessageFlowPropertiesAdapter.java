@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.Participant;
+import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
 import org.eclipse.bpmn2.modeler.ui.features.choreography.ChoreographyUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -24,7 +25,7 @@ import org.eclipse.emf.ecore.EObject;
  * @author Gary Brown
  *
  */
-public class MessageFlowPropertiesAdapter extends Bpmn2EditorPropertiesAdapter {
+public class MessageFlowPropertiesAdapter extends ExtendedPropertiesAdapter {
 
 	/**
 	 * @param adapterFactory

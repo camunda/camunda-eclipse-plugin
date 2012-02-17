@@ -12,12 +12,12 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.wizards;
 
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
-import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 
 public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
 

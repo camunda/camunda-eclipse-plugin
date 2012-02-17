@@ -12,7 +12,6 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.participant;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.bpmn2.Definitions;

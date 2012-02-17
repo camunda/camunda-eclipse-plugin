@@ -19,9 +19,7 @@ import java.util.List;
 
 import org.eclipse.bpmn2.Choreography;
 import org.eclipse.bpmn2.ChoreographyTask;
-import org.eclipse.bpmn2.DataStore;
 import org.eclipse.bpmn2.Participant;
-import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;

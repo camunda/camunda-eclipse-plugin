@@ -16,7 +16,6 @@ import org.eclipse.bpmn2.modeler.ui.IConstants;
 import org.eclipse.bpmn2.modeler.ui.Messages;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.wst.wsdl.Fault;
 
 public class FaultAdapter extends AbstractStatefulAdapter implements ILabeledElement, IContentProposal {

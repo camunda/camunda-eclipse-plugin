@@ -7,7 +7,6 @@
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.bpmn2.Import;
 
 /**
  * <!-- begin-user-doc -->

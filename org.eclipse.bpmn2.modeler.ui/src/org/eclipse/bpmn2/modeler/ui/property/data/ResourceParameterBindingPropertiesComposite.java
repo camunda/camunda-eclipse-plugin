@@ -14,7 +14,6 @@
 package org.eclipse.bpmn2.modeler.ui.property.data;
 
 import org.eclipse.bpmn2.Expression;
-import org.eclipse.bpmn2.ResourceAssignmentExpression;
 import org.eclipse.bpmn2.ResourceParameterBinding;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;

@@ -11,10 +11,6 @@
 package org.eclipse.bpmn2.modeler.ui.property.providers;
 
 
-import org.eclipse.bpmn2.modeler.ui.property.providers.MessageTypeTreeNode;
-import org.eclipse.bpmn2.modeler.ui.property.providers.XSDElementDeclarationTreeNode;
-import org.eclipse.bpmn2.modeler.ui.property.providers.XSDSchemaTreeNode;
-import org.eclipse.bpmn2.modeler.ui.property.providers.XSDTypeDefinitionTreeNode;
 import org.eclipse.bpmn2.modeler.ui.util.ListMap;
 import org.eclipse.wst.wsdl.Definition;
 import org.eclipse.wst.wsdl.Message;

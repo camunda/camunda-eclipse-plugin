@@ -13,7 +13,6 @@ package org.eclipse.bpmn2.modeler.ui.adapters;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterProvider;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
-
 import org.eclipse.wst.wsdl.internal.util.WSDLAdapterFactory;
 
 

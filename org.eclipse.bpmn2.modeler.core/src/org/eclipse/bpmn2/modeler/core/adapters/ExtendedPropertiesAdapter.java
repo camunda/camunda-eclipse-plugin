@@ -13,8 +13,10 @@
 
 package org.eclipse.bpmn2.modeler.core.adapters;
 
+import java.lang.reflect.Field;
 import java.util.Hashtable;
 
+import org.eclipse.bpmn2.modeler.core.utils.JavaReflectionUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.ecore.EObject;
@@ -25,8 +27,15 @@ import org.eclipse.emf.ecore.EStructuralFeature;
  *
  */
 public class ExtendedPropertiesAdapter extends AdapterImpl {
-	
+
+	// common property keys
+	public final static String LONG_DESCRIPTION = "long.description";
+	public final static String UI_CAN_EDIT = "ui.can.edit";
+	public final static String UI_CAN_CREATE_NEW = "ui.can.create.new";
+	public final static String UI_CAN_SET_NULL = "ui.can.set.null";
+	public final static String UI_IS_MULTI_CHOICE = "ui.is.multi.choice";
 	public static final String PROPERTY_DESCRIPTOR = "property.descriptor";
+	
 	protected Hashtable<
 		Integer, // feature ID
 		Hashtable<String,Object>> // property key and value
@@ -42,8 +51,23 @@ public class ExtendedPropertiesAdapter extends AdapterImpl {
 		super();
 		this.adapterFactory = adapterFactory;
 		setTarget(object);
-	}
 
+		// Set the model element's long description from the Messages class.
+		// The field in Messages that contains the description will have the
+		// form: "UI_<BPMN2ElementName>_long_description".
+		// The Messages class must be contained somewhere in the package hierarchy
+		// that contains the adapter factory class; by default, this will be the
+		// BPMN2 modeler UI plugin hierarchy, starting with org.eclipse.bpmn2.modeler.ui.adapters
+    	try {
+        	String fieldName = "UI_" + object.eClass().getName().replaceAll("Impl$", "") + "_long_description";
+        	Class messages = JavaReflectionUtil.findClass(adapterFactory, "Messages");
+			Field field = messages.getField(fieldName);
+			String text = (String)field.get(null);
+			setProperty(LONG_DESCRIPTION, text);
+		} catch (Exception e) {
+		}
+	}
+    
 	public void setObjectDescriptor(ObjectDescriptor pd) {
 		setProperty(PROPERTY_DESCRIPTOR,pd);
 	}

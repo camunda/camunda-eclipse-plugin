@@ -29,10 +29,12 @@ import org.eclipse.bpmn2.ResourceRole;
 import org.eclipse.bpmn2.ScriptTask;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.Task;
+import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
+import org.eclipse.bpmn2.modeler.core.runtime.PropertyExtensionDescriptor;
+import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ActivityPropertiesAdapter;
-import org.eclipse.bpmn2.modeler.ui.adapters.properties.Bpmn2EditorPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.CallActivityPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.DataAssociationPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ErrorPropertiesAdapter;
@@ -63,20 +65,20 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 
 	public Bpmn2EditorItemProviderAdapterFactory() {
 		super();
-		supportedTypes.add(Bpmn2EditorPropertiesAdapter.class);
+		supportedTypes.add(ExtendedPropertiesAdapter.class);
 	}
 
 	@Override
 	public Adapter adaptNew(Notifier object, Object type) {
-		if (type == Bpmn2EditorPropertiesAdapter.class) {
+		if (type == ExtendedPropertiesAdapter.class) {
 			return modelSwitch.doSwitch((EObject) object);
 		}
 		return super.adaptNew(object, type);
 	}
 	
-    protected Bpmn2Switch<Bpmn2EditorPropertiesAdapter> modelSwitch = new Bpmn2ExtendedPropertiesSwitch(this);
+    protected Bpmn2Switch<ExtendedPropertiesAdapter> modelSwitch = new Bpmn2ExtendedPropertiesSwitch(this);
     
-    public class Bpmn2ExtendedPropertiesSwitch extends Bpmn2Switch<Bpmn2EditorPropertiesAdapter> {
+    public class Bpmn2ExtendedPropertiesSwitch extends Bpmn2Switch<ExtendedPropertiesAdapter> {
 
     	private Bpmn2EditorItemProviderAdapterFactory adapterFactory;
     	
@@ -86,8 +88,8 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
     	}
     	
         @Override
-		public Bpmn2EditorPropertiesAdapter defaultCase(EObject object) {
-        	Bpmn2EditorPropertiesAdapter adapter = new Bpmn2EditorPropertiesAdapter(adapterFactory,object);
+		public ExtendedPropertiesAdapter defaultCase(EObject object) {
+        	ExtendedPropertiesAdapter adapter = new ExtendedPropertiesAdapter(adapterFactory,object);
         	adapter.setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
 				@Override
 				public String getLabel(Object context) {
@@ -124,87 +126,143 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
         	return adapter;
 		}
 
+        private ExtendedPropertiesAdapter getTargetRuntimeAdapter(EObject object) {
+			PropertyExtensionDescriptor ped = TargetRuntime.getCurrentRuntime().getPropertyExtension(object.getClass());
+			if (ped!=null)
+				return ped.getAdapter(adapterFactory,object);
+			return null;
+        }
+        
 		@Override
-        public Bpmn2EditorPropertiesAdapter caseScriptTask(ScriptTask object) {
+        public ExtendedPropertiesAdapter caseScriptTask(ScriptTask object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
 			return new ScriptTaskPropertiesAdapter(adapterFactory,object);
         }
 
         @Override
-        public Bpmn2EditorPropertiesAdapter caseCallActivity(CallActivity object) {
+        public ExtendedPropertiesAdapter caseCallActivity(CallActivity object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
         	return new CallActivityPropertiesAdapter(adapterFactory,object);
         }
 
 		@Override
-		public Bpmn2EditorPropertiesAdapter caseTask(Task object) {
+		public ExtendedPropertiesAdapter caseTask(Task object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
 			return new TaskPropertiesAdapter(adapterFactory,object);
 		}
 
 		@Override
-		public Bpmn2EditorPropertiesAdapter caseActivity(Activity object) {
+		public ExtendedPropertiesAdapter caseActivity(Activity object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
         	return new ActivityPropertiesAdapter(adapterFactory,object);
 		}
 
 		@Override
-		public Bpmn2EditorPropertiesAdapter caseSequenceFlow(SequenceFlow object) {
+		public ExtendedPropertiesAdapter caseSequenceFlow(SequenceFlow object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
         	return new SequenceFlowPropertiesAdapter(adapterFactory,object);
 		}
 
 		@Override
-		public Bpmn2EditorPropertiesAdapter caseFormalExpression(FormalExpression object) {
+		public ExtendedPropertiesAdapter caseFormalExpression(FormalExpression object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
 	    	return new FormalExpressionPropertiesAdapter(adapterFactory,object);
 		}
 
 		@Override
-		public Bpmn2EditorPropertiesAdapter caseItemDefinition(ItemDefinition object) {
+		public ExtendedPropertiesAdapter caseItemDefinition(ItemDefinition object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
         	return new ItemDefinitionPropertiesAdapter(adapterFactory,object);
 		}
 
 		@Override
-		public Bpmn2EditorPropertiesAdapter caseItemAwareElement(ItemAwareElement object) {
+		public ExtendedPropertiesAdapter caseItemAwareElement(ItemAwareElement object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
         	return new ItemAwareElementPropertiesAdapter(adapterFactory,object);
 		}
 
 		@Override
-		public Bpmn2EditorPropertiesAdapter caseResourceAssignmentExpression(ResourceAssignmentExpression object) {
+		public ExtendedPropertiesAdapter caseResourceAssignmentExpression(ResourceAssignmentExpression object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
         	return new ResourceAssignmentExpressionPropertiesAdapter(adapterFactory,object);
 		}
 
 		@Override
-		public Bpmn2EditorPropertiesAdapter caseResourceRole(ResourceRole object) {
+		public ExtendedPropertiesAdapter caseResourceRole(ResourceRole object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
         	return new ResourceRolePropertiesAdapter(adapterFactory,object);
 		}
 
 		@Override
-		public Bpmn2EditorPropertiesAdapter caseDataAssociation(DataAssociation object) {
+		public ExtendedPropertiesAdapter caseDataAssociation(DataAssociation object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
         	return new DataAssociationPropertiesAdapter(adapterFactory,object);
 		}
 
 		@Override
-		public Bpmn2EditorPropertiesAdapter caseError(Error object) {
+		public ExtendedPropertiesAdapter caseError(Error object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
         	return new ErrorPropertiesAdapter(adapterFactory,object);
 		}
 
 		@Override
-		public Bpmn2EditorPropertiesAdapter caseResourceParameterBinding(ResourceParameterBinding object) {
+		public ExtendedPropertiesAdapter caseResourceParameterBinding(ResourceParameterBinding object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
         	return new ResourceParameterBindingPropertiesAdapter(adapterFactory,object);
 		}
 		
 		@Override
-		public Bpmn2EditorPropertiesAdapter caseMessageFlow(MessageFlow object) {
+		public ExtendedPropertiesAdapter caseMessageFlow(MessageFlow object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
         	return new MessageFlowPropertiesAdapter(adapterFactory,object);
 		}
 
 		@Override
-		public Bpmn2EditorPropertiesAdapter caseMessage(Message object) {
+		public ExtendedPropertiesAdapter caseMessage(Message object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
         	return new MessagePropertiesAdapter(adapterFactory,object);
 		}
 
 		@Override
-		public Bpmn2EditorPropertiesAdapter caseInterface(Interface object) {
+		public ExtendedPropertiesAdapter caseInterface(Interface object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
 			return new InterfacePropertiesAdapter(adapterFactory,object);
 		}
 
-		
+
+		// TODO: add remaining BPMN2 elements
     };
 	
 }

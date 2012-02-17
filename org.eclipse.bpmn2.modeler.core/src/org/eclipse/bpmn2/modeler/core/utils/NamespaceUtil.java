@@ -16,7 +16,6 @@ package org.eclipse.bpmn2.modeler.core.utils;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;

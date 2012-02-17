@@ -6,7 +6,6 @@ package org.eclipse.bpmn2.modeler.ui.adapters;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.IConstants;
 import org.eclipse.bpmn2.modeler.ui.Messages;
-
 import org.eclipse.swt.graphics.Image;
 
 /**

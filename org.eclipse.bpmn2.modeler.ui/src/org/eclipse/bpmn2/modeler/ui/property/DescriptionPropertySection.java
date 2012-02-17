@@ -15,14 +15,7 @@ package org.eclipse.bpmn2.modeler.ui.property;
 
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
-import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature;
-import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
-import org.eclipse.bpmn2.modeler.ui.adapters.properties.Bpmn2EditorPropertiesAdapter;
-import org.eclipse.bpmn2.modeler.ui.diagram.BPMNFeatureProvider;
-import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.graphiti.features.IFeature;
-import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
@@ -100,9 +93,9 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 		public String getDescription(EObject object) {
 			String description = null;
 
-			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, Bpmn2EditorPropertiesAdapter.class);
+			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
 			if (adapter!=null) {
-				description = (String) adapter.getProperty(Bpmn2EditorPropertiesAdapter.LONG_DESCRIPTION);
+				description = (String) adapter.getProperty(ExtendedPropertiesAdapter.LONG_DESCRIPTION);
 			}
 			return description;
 		}

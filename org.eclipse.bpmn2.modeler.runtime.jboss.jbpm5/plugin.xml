@@ -110,6 +110,14 @@
 			label="I/O Parameters">
 		</propertyTab>
 		
+		<propertyExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.FormalExpression"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.FormalExpression"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.FormalExpressionPropertyAdapter">
+		</propertyExtension>
+		
+		
 <!--
 		<customTask
 			featureContainer="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmCustomTaskFeatureContainer"
@@ -557,6 +565,11 @@
 
 			<enable object="ItemDefinition" feature="anyAttribute"/>
 			<enable object="ItemDefinition" feature="structureRef"/>
+			
+			<enable object="DataInput"/>
+			<enable object="DataInputAssociation"/>
+			<enable object="DataOutput"/>
+			<enable object="DataOutputAssociation"/>
 
 			<enable object="LaneSet" feature="name"/>
 

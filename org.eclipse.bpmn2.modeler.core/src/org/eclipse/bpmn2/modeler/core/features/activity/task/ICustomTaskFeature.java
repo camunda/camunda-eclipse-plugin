@@ -14,8 +14,6 @@ package org.eclipse.bpmn2.modeler.core.features.activity.task;
 
 import org.eclipse.bpmn2.modeler.core.runtime.CustomTaskDescriptor;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.graphiti.features.IFeatureProvider;
-import org.eclipse.graphiti.features.context.IContext;
 
 public interface ICustomTaskFeature {
 

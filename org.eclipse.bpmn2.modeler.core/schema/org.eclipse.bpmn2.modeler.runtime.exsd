@@ -24,6 +24,7 @@
             <element ref="customTask"/>
             <element ref="modelExtension"/>
             <element ref="modelEnablement"/>
+            <element ref="propertyExtension"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -476,12 +477,48 @@ If &quot;object&quot; has the value &quot;default&quot;, then this refers to a d
       </complexType>
    </element>
 
-   <element name="propertyExtension" type="string">
+   <element name="propertyExtension">
       <annotation>
          <documentation>
             Provider classes for model objects and features.
          </documentation>
       </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Unique ID for the propertyExtension extension.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="runtimeId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Identifies one of the previously defined runtime elements for which this propertyExtension will be used.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The class that implements the property extension adapter, i.e. extends the org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter class.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.graphiti.ui.platform.GFPropertySection:"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="type" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The BPMN2 element EClass to which this propertyExtension applies. This must be a fully qualified class name, e.g. &quot;org.eclipse.bpmn2.SequenceFlow&quot;.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
    </element>
 
    <annotation>

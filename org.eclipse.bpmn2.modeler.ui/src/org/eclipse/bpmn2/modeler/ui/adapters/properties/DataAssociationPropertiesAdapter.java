@@ -23,10 +23,11 @@ import org.eclipse.bpmn2.DataAssociation;
 import org.eclipse.bpmn2.DataStore;
 import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.Event;
-import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.ItemAwareElement;
+import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -40,7 +41,7 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain;
  * @author Bob Brodt
  *
  */
-public class DataAssociationPropertiesAdapter extends Bpmn2EditorPropertiesAdapter {
+public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter {
 
 	/**
 	 * @param adapterFactory

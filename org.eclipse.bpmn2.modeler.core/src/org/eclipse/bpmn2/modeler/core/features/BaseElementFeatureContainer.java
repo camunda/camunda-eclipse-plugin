@@ -19,7 +19,6 @@ import org.eclipse.graphiti.features.IRemoveFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
-import org.eclipse.graphiti.features.impl.DefaultRemoveFeature;
 
 public abstract class BaseElementFeatureContainer implements FeatureContainer {
 

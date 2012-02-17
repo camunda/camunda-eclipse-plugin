@@ -16,8 +16,6 @@ import java.util.Iterator;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.DataObject;
-import org.eclipse.bpmn2.DataObjectReference;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;

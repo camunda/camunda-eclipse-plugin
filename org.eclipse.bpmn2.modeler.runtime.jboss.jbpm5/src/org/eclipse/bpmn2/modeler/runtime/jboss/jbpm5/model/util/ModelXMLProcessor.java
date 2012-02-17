@@ -21,11 +21,8 @@ package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.util;
 import java.util.Map;
 
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
-
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.resource.Resource;
-
 import org.eclipse.emf.ecore.xmi.util.XMLProcessor;
 
 /**

@@ -7,17 +7,20 @@
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl;
 
 import java.math.BigInteger;
-import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.*;
 
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.GlobalType;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ImportType;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelFactory;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.OnEntryScriptType;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.OnExitScriptType;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
-
 import org.eclipse.emf.ecore.xml.type.XMLTypeFactory;
 import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 

@@ -36,8 +36,8 @@ import org.eclipse.bpmn2.modeler.ui.features.artifact.GroupFeatureContainer.Crea
 import org.eclipse.bpmn2.modeler.ui.features.choreography.CallChoreographyFeatureContainer.CreateCallChoreographyFeature;
 import org.eclipse.bpmn2.modeler.ui.features.choreography.ChoreographyTaskFeatureContainer.CreateChoreographyTaskFeature;
 import org.eclipse.bpmn2.modeler.ui.features.choreography.SubChoreographyFeatureContainer.CreateSubChoreographyFeature;
-import org.eclipse.bpmn2.modeler.ui.features.conversation.CreateConversationFeature;
 import org.eclipse.bpmn2.modeler.ui.features.conversation.ConversationLinkFeatureContainer.CreateConversationLinkFeature;
+import org.eclipse.bpmn2.modeler.ui.features.conversation.CreateConversationFeature;
 import org.eclipse.bpmn2.modeler.ui.features.data.DataInputFeatureContainer.CreateDataInputFeature;
 import org.eclipse.bpmn2.modeler.ui.features.data.DataObjectFeatureContainer.CreateDataObjectFeature;
 import org.eclipse.bpmn2.modeler.ui.features.data.DataObjectReferenceFeatureContainer.CreateDataObjectReferenceFeature;

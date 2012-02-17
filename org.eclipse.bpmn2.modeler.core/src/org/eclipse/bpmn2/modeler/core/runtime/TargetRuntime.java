@@ -18,6 +18,7 @@ import java.util.Iterator;
 import org.eclipse.bpmn2.modeler.core.AbstractPropertyChangeListenerProvider;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.IBpmn2RuntimeExtension;
+import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.ICustomTaskFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor.Property;
@@ -27,7 +28,6 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
@@ -40,7 +40,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.navigator.ResourceNavigator;
-import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 
 
 public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
@@ -65,6 +64,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 	protected ArrayList<ModelExtensionDescriptor> modelExtensions;
 	protected ArrayList<ModelEnablementDescriptor> modelEnablements;
 	protected ModelEnablementDescriptor defaultModelEnablements;
+	protected ArrayList<PropertyExtensionDescriptor> propertyExtensions;
 	
 	public TargetRuntime(String id, String name, String versions, String description) {
 		this.id = id;
@@ -177,7 +177,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 						}
 					}
 				}
-				// process propertyTab, customTask, modelExtension and modelEnablement next
+				// process propertyTab, propertyExtension, customTask, modelExtension and modelEnablement next
 				for (IConfigurationElement e : config) {
 					if (!e.getName().equals("runtime")) {
 						currentRuntime = getRuntime(e);
@@ -202,6 +202,13 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 							ct.featureContainer.setId(id);
 							getModelExtensionProperties(ct,e);
 							currentRuntime.addCustomTask(ct);
+						}
+						else if (e.getName().equals("propertyExtension")) {
+							String id = e.getAttribute("id");
+							PropertyExtensionDescriptor pe = new PropertyExtensionDescriptor(currentRuntime);
+							pe.type = e.getAttribute("type");
+							pe.adapterClassName = e.getAttribute("class");
+							currentRuntime.addPropertyExtension(pe);
 						}
 						else if (e.getName().equals("modelExtension")) {
 							String id = e.getAttribute("id");
@@ -390,6 +397,36 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 	public void addModelExtension(ModelExtensionDescriptor me) {
 		me.setRuntime(this);
 		getModelExtensions().add(me);
+	}
+	
+	public ArrayList<PropertyExtensionDescriptor> getPropertyExtensions()
+	{
+		if (propertyExtensions==null) {
+			propertyExtensions = new ArrayList<PropertyExtensionDescriptor>();
+		}
+		return propertyExtensions;
+	}
+	
+	public void addPropertyExtension(PropertyExtensionDescriptor me) {
+		me.setRuntime(this);
+		getPropertyExtensions().add(me);
+	}
+
+	public PropertyExtensionDescriptor getPropertyExtension(Class clazz) {
+		for (PropertyExtensionDescriptor ped : getPropertyExtensions()) {
+			String className = clazz.getName();
+			if (className.equals(ped.type))
+				return ped;
+			// well, that didn't work...
+			// The "type" name should be the BPMN2 element's interface definition;
+			// if it's an implementation class name, try to convert it to its
+			// interface name.
+			className = className.replaceFirst("\\.impl\\.", ".");
+			className = className.replaceFirst("Impl$", "");
+			if (className.equals(ped.type))
+				return ped;
+		}
+		return null;
 	}
 	
 	public ArrayList<ModelEnablementDescriptor> getModelEnablements()

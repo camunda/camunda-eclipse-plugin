@@ -13,8 +13,6 @@
 package org.eclipse.bpmn2.modeler.ui.features.data;
 
 import org.eclipse.bpmn2.DataObjectReference;
-import org.eclipse.bpmn2.DataOutput;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.features.data.AddDataFeature;

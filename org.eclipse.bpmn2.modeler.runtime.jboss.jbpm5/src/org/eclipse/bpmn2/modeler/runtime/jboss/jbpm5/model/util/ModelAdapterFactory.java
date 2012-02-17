@@ -18,21 +18,15 @@
  */
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.util;
 
-import org.eclipse.bpmn2.Activity;
-import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.FlowElement;
-import org.eclipse.bpmn2.FlowNode;
-import org.eclipse.bpmn2.Import;
-import org.eclipse.bpmn2.InteractionNode;
-import org.eclipse.bpmn2.Task;
-
-import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.*;
-
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.GlobalType;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ImportType;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.OnEntryScriptType;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.OnExitScriptType;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
-
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
-
 import org.eclipse.emf.ecore.EObject;
 
 /**

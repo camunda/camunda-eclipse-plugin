@@ -7,7 +7,6 @@
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model;
 
 import java.math.BigInteger;
-import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->

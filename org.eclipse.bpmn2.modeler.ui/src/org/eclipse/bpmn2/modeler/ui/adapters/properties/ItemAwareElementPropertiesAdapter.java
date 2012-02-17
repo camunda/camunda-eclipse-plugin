@@ -19,8 +19,8 @@ import org.eclipse.bpmn2.DataState;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
-import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EObject;
@@ -32,7 +32,7 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain;
  * @author Bob Brodt
  *
  */
-public class ItemAwareElementPropertiesAdapter extends Bpmn2EditorPropertiesAdapter {
+public class ItemAwareElementPropertiesAdapter extends ExtendedPropertiesAdapter {
 
 	/**
 	 * @param adapterFactory
@@ -56,7 +56,7 @@ public class ItemAwareElementPropertiesAdapter extends Bpmn2EditorPropertiesAdap
 					else if (object instanceof ItemAwareElement)
 						itemDefinition = (ItemDefinition) object.eGet(feature);
 					if (itemDefinition!=null) {
-						ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(itemDefinition, Bpmn2EditorPropertiesAdapter.class);
+						ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(itemDefinition, ExtendedPropertiesAdapter.class);
 						return adapter.getFeatureDescriptor(Bpmn2Package.eINSTANCE.getItemDefinition_StructureRef()).getLabel(itemDefinition);
 					}
 					return ModelUtil.getLabel(object) + " Type";
@@ -73,7 +73,7 @@ public class ItemAwareElementPropertiesAdapter extends Bpmn2EditorPropertiesAdap
 					else if (object instanceof ItemAwareElement)
 						itemDefinition = (ItemDefinition) object.eGet(feature);
 					if (itemDefinition!=null) {
-						ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(itemDefinition, Bpmn2EditorPropertiesAdapter.class);
+						ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(itemDefinition, ExtendedPropertiesAdapter.class);
 						return adapter.getFeatureDescriptor(Bpmn2Package.eINSTANCE.getItemDefinition_StructureRef()).getText(itemDefinition);
 					}
 					return super.getText(context);
@@ -117,7 +117,7 @@ public class ItemAwareElementPropertiesAdapter extends Bpmn2EditorPropertiesAdap
 			}
     	);
     	
-    	setProperty(Bpmn2Package.ITEM_AWARE_ELEMENT__DATA_STATE, Bpmn2EditorPropertiesAdapter.UI_IS_MULTI_CHOICE, Boolean.FALSE);
+    	setProperty(Bpmn2Package.ITEM_AWARE_ELEMENT__DATA_STATE, ExtendedPropertiesAdapter.UI_IS_MULTI_CHOICE, Boolean.FALSE);
 	}
 
 }

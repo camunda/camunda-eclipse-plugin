@@ -16,7 +16,6 @@ package org.eclipse.bpmn2.modeler.ui.property;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;

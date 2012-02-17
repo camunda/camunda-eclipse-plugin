@@ -18,7 +18,6 @@ import org.eclipse.bpmn2.modeler.ui.IConstants;
 import org.eclipse.bpmn2.modeler.ui.Messages;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.wst.wsdl.PortType;
 import org.eclipse.wst.wsdl.WSDLPackage;
 

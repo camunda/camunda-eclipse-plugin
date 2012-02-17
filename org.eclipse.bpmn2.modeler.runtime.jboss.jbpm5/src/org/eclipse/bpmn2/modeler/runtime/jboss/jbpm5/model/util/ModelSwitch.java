@@ -8,8 +8,12 @@ package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.util;
 
 import java.util.List;
 
-import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.*;
-
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.GlobalType;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ImportType;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.OnEntryScriptType;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.OnExitScriptType;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 

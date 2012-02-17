@@ -6,15 +6,10 @@
  */
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl;
 
-import org.eclipse.bpmn2.impl.ImportImpl;
-
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ImportType;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
-
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 

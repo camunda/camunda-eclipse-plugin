@@ -17,10 +17,7 @@ import static org.eclipse.bpmn2.modeler.core.features.choreography.ChoreographyP
 import java.util.List;
 
 import org.eclipse.bpmn2.ChoreographyLoopType;
-import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.SubChoreography;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.core.features.choreography.LayoutChoreographyFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;

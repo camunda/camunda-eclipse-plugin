@@ -26,6 +26,7 @@ Export-Package: org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5,
  org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl,
  org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.util,
  org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property,
+ org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters,
  org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.wid
 Import-Package: org.eclipse.bpmn2.modeler.ui,
  org.eclipse.bpmn2.modeler.ui.editor,

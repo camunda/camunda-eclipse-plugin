@@ -14,7 +14,6 @@
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
-import org.eclipse.bpmn2.modeler.ui.property.diagrams.DefinitionsPropertyComposite;
 import org.eclipse.bpmn2.modeler.ui.property.diagrams.DefinitionsPropertySection;
 
 /**
