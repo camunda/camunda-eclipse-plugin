@@ -373,38 +373,6 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 				EObject containerContainer = container.eContainer();
 				if (containerContainer instanceof Activity) {
 					Activity activity = (Activity)containerContainer;
-					List<? extends DataAssociation> associations = null;
-					if (isInput)
-						associations = activity.getDataInputAssociations();
-					else
-						associations = activity.getDataOutputAssociations();
-					for (DataAssociation a : associations) {
-						if (isInput) {
-							if (a.getTargetRef() == be) {
-								association = a;
-								break;
-							}
-							if (a.getSourceRef().isEmpty() || a.getTargetRef() == null) {
-								association = a;
-								break;
-							}
-						}
-						else
-						{
-							for (ItemAwareElement e : a.getSourceRef()) {
-								if (e == be) {
-									association = a;
-									break;
-								}
-								if (a.getSourceRef().isEmpty() || a.getTargetRef() == null) {
-									association = a;
-									break;
-								}
-							}
-							if (association!=null)
-								break;
-						}
-					}
 
 					if (association == null) {
 						// if no DataAssociation was found for this Activity, create a new one
