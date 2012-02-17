@@ -563,9 +563,9 @@
 			<enable object="TimerEventDefinition" feature="timeCycle"/>
 			<enable object="TimerEventDefinition" feature="timeDuration"/>
 
+			<!-- data definitions -->
 			<enable object="ItemDefinition" feature="anyAttribute"/>
 			<enable object="ItemDefinition" feature="structureRef"/>
-			
 			<enable object="DataInput"/>
 			<enable object="DataInputAssociation"/>
 			<enable object="DataOutput"/>
@@ -573,6 +573,9 @@
 			<disable object="FormalExpression"/>
 			<enable object="FormalExpression" feature="body"/>
 			<enable object="FormalExpression" feature="language"/>
+			<enable object="Property" feature="id"/>
+			<enable object="Property" feature="name"/>
+			<enable object="Property" feature="itemSubjectRef"/>
 
 			<enable object="LaneSet" feature="name"/>
 

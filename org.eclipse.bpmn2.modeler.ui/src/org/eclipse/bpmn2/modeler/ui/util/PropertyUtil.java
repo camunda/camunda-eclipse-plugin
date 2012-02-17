@@ -212,6 +212,18 @@ public class PropertyUtil {
 		}
 		return false;
 	}
+
+	public static boolean canEditInline(EObject object, EStructuralFeature feature) {
+		if (feature.getEType() instanceof EClass) {
+			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
+			if (adapter!=null) {
+				Object result = adapter.getProperty(feature, ExtendedPropertiesAdapter.UI_CAN_EDIT_INLINE);
+				if (result instanceof Boolean)
+					return ((Boolean)result);
+			}
+		}
+		return false;
+	}
 	
 	public static boolean canCreateNew(EObject object, EStructuralFeature feature) {
 		if (feature.getEType() instanceof EClass) {

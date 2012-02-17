@@ -47,5 +47,7 @@ public class JbpmUserTaskPropertiesComposite extends JbpmTaskPropertiesComposite
 		}
 		TextObjectEditor editor = new TextObjectEditor(this, owner, PACKAGE.getResourceRole_Name());
 		editor.createControl("Actor");
+		
+		bindList(be, "properties");
 	}
 }

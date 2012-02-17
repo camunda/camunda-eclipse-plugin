@@ -23,6 +23,8 @@ import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.Message;
 import org.eclipse.bpmn2.MessageFlow;
+import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
+import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.ResourceAssignmentExpression;
 import org.eclipse.bpmn2.ResourceParameterBinding;
 import org.eclipse.bpmn2.ResourceRole;
@@ -44,6 +46,8 @@ import org.eclipse.bpmn2.modeler.ui.adapters.properties.ItemAwareElementProperti
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ItemDefinitionPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.MessageFlowPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.MessagePropertiesAdapter;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.MultiInstanceLoopCharacteristicsPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.PropertyPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ResourceAssignmentExpressionPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ResourceParameterBindingPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ResourceRolePropertiesAdapter;
@@ -109,16 +113,6 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 						object = (EObject)context;
 					if (ModelUtil.isStringWrapper(object)) {
 						return ModelUtil.getStringWrapperValue(object);
-					}
-					if (object instanceof EObject) {
-						EObject eo = (EObject)object;
-						EStructuralFeature feature = eo.eClass().getEStructuralFeature("name");
-						String name = eo.eClass().getName();
-						if (feature!=null && eo.eIsSet(feature)) {
-							return name+" "+eo.eGet(feature);
-						}
-						else
-							return name;
 					}
 					return super.getText(context);
 				}
@@ -259,6 +253,22 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 			if (adapter!=null)
 				return adapter;
 			return new InterfacePropertiesAdapter(adapterFactory,object);
+		}
+
+		@Override
+		public ExtendedPropertiesAdapter caseProperty(Property object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
+			return new PropertyPropertiesAdapter(adapterFactory,object);
+		}
+
+		@Override
+		public ExtendedPropertiesAdapter caseMultiInstanceLoopCharacteristics(MultiInstanceLoopCharacteristics object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
+			return new MultiInstanceLoopCharacteristicsPropertiesAdapter(adapterFactory,object);
 		}
 
 

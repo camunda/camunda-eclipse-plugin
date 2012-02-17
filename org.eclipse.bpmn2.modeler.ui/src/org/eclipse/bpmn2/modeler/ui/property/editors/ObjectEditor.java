@@ -89,9 +89,10 @@ public abstract class ObjectEditor {
 
 	protected boolean updateObject(final Object result) {
 		ExtendedPropertiesAdapter adapter = AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
-		boolean valueChanged = adapter==null ?
-				(result != object.eGet(feature)) :
-				!(result.equals(adapter.getFeatureDescriptor(feature).getValue()));
+		Object oldValue = adapter==null ? object.eGet(feature) : adapter.getFeatureDescriptor(feature).getValue();
+		boolean valueChanged = (result != oldValue);
+		if (result!=null && oldValue!=null)
+			valueChanged = !result.equals(oldValue);
 		
 		if (valueChanged) {
 			InsertionAdapter insertionAdapter = AdapterUtil.adapt(object, InsertionAdapter.class);

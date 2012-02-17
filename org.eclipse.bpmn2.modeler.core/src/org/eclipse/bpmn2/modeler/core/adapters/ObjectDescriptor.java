@@ -59,27 +59,31 @@ public class ObjectDescriptor {
 	
 	public String getText(Object context) {
 		if (text==null) {
+			EObject object = context instanceof EObject ? (EObject)context : this.object;
 			// derive text from feature's value: default behavior is
 			// to use the "name" attribute if there is one;
 			// if not, use the "id" attribute;
 			// fallback is to use the feature's toString()
+			String text = ModelUtil.toDisplayName(object.eClass().getName());
+			Object name = null;
 			EStructuralFeature f = null;
-			if (text==null) {
-				f = object.eClass().getEStructuralFeature("name");
-				if (f!=null) {
-					String name = (String)object.eGet(f);
-					if (name!=null && !name.isEmpty())
-						text = name;
-				}
+			f = object.eClass().getEStructuralFeature("name");
+			if (f!=null) {
+				name = object.eGet(f);
+				if (name==null || name.toString().isEmpty())
+					name = null;
 			}
-			if (text==null) {
+			if (name==null) {
 				f = object.eClass().getEStructuralFeature("id");
 				if (f!=null) {
-					Object id = object.eGet(f);
-					if (id!=null && !id.toString().isEmpty())
-						text = id.toString();
+					name = object.eGet(f);
+					if (name==null || name.toString().isEmpty())
+						name = null;
 				}
 			}
+			if (name==null)
+				name = "Unnamed " + text;
+			return (String)name;
 		}
 		return text;
 	}

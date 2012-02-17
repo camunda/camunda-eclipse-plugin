@@ -33,6 +33,10 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
@@ -50,6 +54,7 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 
 	protected ComboViewer comboViewer;
 	private boolean ignoreComboSelections;
+	private boolean keyPressed = false;
 	
 	/**
 	 * @param parent
@@ -68,8 +73,11 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 		createLabel(composite, label);
 
 		boolean canEdit = PropertyUtil.canEdit(object,feature);
+		boolean canEditInline = PropertyUtil.canEditInline(object,feature);
 		boolean canCreateNew = PropertyUtil.canCreateNew(object,feature);
 		
+		if (!canEditInline)
+			style |= SWT.READ_ONLY;
 		comboViewer = createComboViewer(composite,
 				AdapterRegistry.getLabelProvider(), style);
 		Combo combo = comboViewer.getCombo();
@@ -82,6 +90,37 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 			}
 			
 		});
+		
+		if (canEditInline) {
+			combo.addKeyListener( new KeyListener() {
+
+				@Override
+				public void keyPressed(KeyEvent e) {
+					keyPressed = true;
+				}
+
+				@Override
+				public void keyReleased(KeyEvent e) {
+				}
+				
+			});
+			combo.addFocusListener( new FocusListener() {
+
+				@Override
+				public void focusGained(FocusEvent e) {
+				}
+
+				@Override
+				public void focusLost(FocusEvent e) {
+					if (keyPressed) {
+						keyPressed = false;
+						String text = comboViewer.getCombo().getText();
+						comboViewer.setSelection(new StructuredSelection(text));
+					}
+				}
+				
+			});
+		}
 
 		Composite buttons = null;
 		if (canEdit || canCreateNew) {
@@ -145,7 +184,10 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 						else {
 							if (firstElement!=null && firstElement.isEmpty())
 								firstElement = null;
+							if (firstElement==null)
+								firstElement = comboViewer.getCombo().getText();
 							updateObject(firstElement);
+							fillCombo();
 						}
 					}
 				}
@@ -155,6 +197,12 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 		return combo;
 	}
 	
+	@Override
+	protected boolean updateObject(Object result) {
+		keyPressed = false;
+		return super.updateObject(result);
+	}
+
 	protected void fillCombo() {
 		if (comboViewer!=null) {
 			Object oldValue =  object.eGet(feature);

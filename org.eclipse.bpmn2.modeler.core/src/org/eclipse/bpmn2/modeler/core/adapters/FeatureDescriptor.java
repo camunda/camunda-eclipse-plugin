@@ -171,7 +171,7 @@ public class FeatureDescriptor extends ObjectDescriptor {
 	}
 	
 	// copied from PropertyUtil in UI plugin
-	private String getValueText(Object value) {
+	protected String getValueText(Object value) {
 		if (value instanceof EObject) {
 			EObject eObject = (EObject)value;
 			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(eObject, ExtendedPropertiesAdapter.class);

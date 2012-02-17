@@ -86,6 +86,8 @@ public class JbpmDataItemsPropertiesComposite extends DataItemsPropertiesComposi
 					};
 					globalsTable.bindList(process, ModelPackage.eINSTANCE.getDocumentRoot_Global());
 					globalsTable.setTitle("Globals");
+
+					bindList(process, "properties");
 				}
 			}
 		}

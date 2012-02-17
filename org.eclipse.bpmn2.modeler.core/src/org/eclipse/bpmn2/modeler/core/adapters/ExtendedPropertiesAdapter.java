@@ -31,6 +31,10 @@ public class ExtendedPropertiesAdapter extends AdapterImpl {
 	// common property keys
 	public final static String LONG_DESCRIPTION = "long.description";
 	public final static String UI_CAN_EDIT = "ui.can.edit";
+	// Any adapter that uses this must override setValue() which understands
+	// how to convert a String to the required type.
+	// This is used in ComboObjectEditor (maybe others in the future)
+	public final static String UI_CAN_EDIT_INLINE = "ui.can.edit.inline";
 	public final static String UI_CAN_CREATE_NEW = "ui.can.create.new";
 	public final static String UI_CAN_SET_NULL = "ui.can.set.null";
 	public final static String UI_IS_MULTI_CHOICE = "ui.is.multi.choice";
