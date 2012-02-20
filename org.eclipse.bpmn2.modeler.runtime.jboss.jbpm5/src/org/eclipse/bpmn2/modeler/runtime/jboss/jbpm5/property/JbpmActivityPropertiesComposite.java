@@ -13,11 +13,14 @@
 
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 
+import java.util.Hashtable;
+
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.OnEntryScriptType;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.OnExitScriptType;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
+import org.eclipse.bpmn2.modeler.ui.property.editors.ComboObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.tasks.ActivityPropertiesComposite;
@@ -60,39 +63,44 @@ public class JbpmActivityPropertiesComposite extends ActivityPropertiesComposite
 		for (ExtensionAttributeValue eav : activity.getExtensionValues()) {
 			FeatureMap fm = eav.getValue();
 			for (Entry entry : fm) {
-				EStructuralFeature feature = entry.getEStructuralFeature();
-				if ("onEntryScript".equals(feature.getName())) {
-					Section section = this.createSection(composite, "On Entry Script");
-					section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
-					Composite sectionComposite = toolkit.createComposite(section);
-					section.setClient(sectionComposite);
-					sectionComposite.setLayout(new GridLayout(3,false));
-					OnEntryScriptType est = (OnEntryScriptType)entry.getValue();
-
-					ObjectEditor editor;
-					editor = new TextObjectEditor(this,est,est.eClass().getEStructuralFeature("scriptFormat"));
-					editor.createControl(sectionComposite,"Script Language",SWT.NONE);
-
-					editor = new TextObjectEditor(this,est,est.eClass().getEStructuralFeature("script"));
-					editor.createControl(sectionComposite,"Script",SWT.MULTI);
-				}
-				else if ("onExitScript".equals(feature.getName())) {
-					Section section = this.createSection(composite, "On Exit Script");
-					section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
-					Composite sectionComposite = toolkit.createComposite(section);
-					section.setClient(sectionComposite);
-					sectionComposite.setLayout(new GridLayout(3,false));
-					OnExitScriptType est = (OnExitScriptType)entry.getValue();
-
-					ObjectEditor editor;
-					editor = new TextObjectEditor(this,est,est.eClass().getEStructuralFeature("scriptFormat"));
-					editor.createControl(sectionComposite,"Script Language",SWT.NONE);
-
-					editor = new TextObjectEditor(this,est,est.eClass().getEStructuralFeature("script"));
-					editor.createControl(sectionComposite,"Script",SWT.MULTI);
-				}
+				createEntryExitScriptSection(activity, entry);
 			}
 		}
+	}
+	
+	private void createEntryExitScriptSection(Activity activity, Entry entry) {
 
+		String title;
+		EStructuralFeature feature = entry.getEStructuralFeature();
+		if ("onEntryScript".equals(feature.getName()))
+			title = "On Entry Script";
+		else if ("onExitScript".equals(feature.getName()))
+			title = "On Exit Script";
+		else
+			return;
+		
+		Section section = this.createSection(this, title);
+		section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+		Composite sectionComposite = toolkit.createComposite(section);
+		section.setClient(sectionComposite);
+		sectionComposite.setLayout(new GridLayout(3,false));
+		EObject est = (EObject)entry.getValue();
+
+		ObjectEditor editor;
+		editor = new ComboObjectEditor(this,est,est.eClass().getEStructuralFeature("scriptFormat")) {
+
+			@Override
+			protected Hashtable<String, Object> getChoiceOfValues(EObject object, EStructuralFeature feature) {
+				Hashtable<String, Object> choiceOfValues = new Hashtable<String, Object>();
+				choiceOfValues.put("Java", "http://www.java.com/java");
+				choiceOfValues.put("MVEL", "http://www.mvel.org/2.0");
+				return choiceOfValues;
+			}
+			
+		};
+		editor.createControl(sectionComposite,"Script Language",SWT.NONE);
+
+		editor = new TextObjectEditor(this,est,est.eClass().getEStructuralFeature("script"));
+		editor.createControl(sectionComposite,"Script",SWT.MULTI);
 	}
 }
