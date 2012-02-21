@@ -550,6 +550,20 @@
 			<enable object="IntermediateCatchEvent" feature="eventDefinitions"/>
 			<enable object="IntermediateCatchEvent" feature="name"/>
 			<enable object="IntermediateCatchEvent" feature="outputSet"/>
+
+			<enable object="IntermediateThrowEvent" feature="DataInputAssociation"/>
+			<enable object="IntermediateThrowEvent" feature="DataInputs"/>
+			<enable object="IntermediateThrowEvent" feature="eventDefinitions"/>
+			<enable object="IntermediateThrowEvent" feature="name"/>
+			<enable object="IntermediateThrowEvent" feature="inputSet"/>
+
+			<enable object="BoundaryEvent" feature="cancelActivity"/>
+			<enable object="BoundaryEvent" feature="dataOutputAssociation"/>
+			<enable object="BoundaryEvent" feature="dataOutputs"/>
+			<enable object="BoundaryEvent" feature="eventDefinitions"/>
+			<enable object="BoundaryEvent" feature="name"/>
+			<enable object="BoundaryEvent" feature="outputSet"/>
+
 			<enable object="Signal" feature="name"/>
 			<enable object="SignalEventDefinition" feature="signalRef"/>
 			<enable object="StartEvent" feature="name"/>
@@ -562,6 +576,8 @@
 			<disable object="TerminateEventDefinition" feature="all"/>
 			<enable object="TimerEventDefinition" feature="timeCycle"/>
 			<enable object="TimerEventDefinition" feature="timeDuration"/>
+			<enable object="Error"/>
+			<enable object="ErrorEventDefinition"/>
 
 			<!-- data definitions -->
 			<enable object="ItemDefinition" feature="anyAttribute"/>
