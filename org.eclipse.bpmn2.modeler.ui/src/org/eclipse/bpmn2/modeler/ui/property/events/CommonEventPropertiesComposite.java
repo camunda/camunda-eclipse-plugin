@@ -115,7 +115,7 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 		Event event;
 		
 		public EventDefinitionsTable(Composite parent, Event event) {
-			super(parent, AbstractBpmn2TableComposite.DEFAULT_STYLE | AbstractBpmn2TableComposite.EDIT_BUTTON);
+			super(parent, ADD_BUTTON|REMOVE_BUTTON|SHOW_DETAILS);
 			this.event = event;
 		}
 		
@@ -221,7 +221,7 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 		ThrowEvent throwEvent;
 		
 		public DataInputsTable(Composite parent, ThrowEvent throwEvent) {
-			super(parent, AbstractBpmn2TableComposite.DEFAULT_STYLE | AbstractBpmn2TableComposite.EDIT_BUTTON);
+			super(parent, ADD_BUTTON|REMOVE_BUTTON|SHOW_DETAILS);
 			this.throwEvent = throwEvent;
 		}
 
@@ -292,7 +292,7 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 		CatchEvent catchEvent;
 		
 		public DataOutputsTable(Composite parent, CatchEvent catchEvent) {
-			super(parent, AbstractBpmn2TableComposite.DEFAULT_STYLE | AbstractBpmn2TableComposite.EDIT_BUTTON);
+			super(parent, ADD_BUTTON|REMOVE_BUTTON|SHOW_DETAILS);
 			this.catchEvent = catchEvent;
 		}
 
