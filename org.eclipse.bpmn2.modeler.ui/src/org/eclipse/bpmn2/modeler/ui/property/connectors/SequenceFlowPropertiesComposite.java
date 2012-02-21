@@ -53,6 +53,8 @@ public class SequenceFlowPropertiesComposite extends ExpressionPropertiesComposi
 		if (be instanceof SequenceFlow) {
 			
 			final SequenceFlow sequenceFlow = (SequenceFlow) be;
+			
+			GridData data;
 				
 			addRemoveConditionButton = new Button(this, SWT.PUSH);
 			addRemoveConditionButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
@@ -80,7 +82,12 @@ public class SequenceFlowPropertiesComposite extends ExpressionPropertiesComposi
 			Expression exp = (Expression) sequenceFlow.getConditionExpression();
 			
 			setDefaultFlowCheckbox = new Button(this, SWT.CHECK);
-			setDefaultFlowCheckbox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
+			data = new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1);
+			if (!allowDefault(sequenceFlow)) {
+				data.exclude = true;
+				setDefaultFlowCheckbox.setVisible(false);
+			}
+			setDefaultFlowCheckbox.setLayoutData(data);
 			setDefaultFlowCheckbox.addSelectionListener(new SelectionAdapter() {
 				
 				public void widgetSelected(SelectionEvent e) {
@@ -112,10 +119,12 @@ public class SequenceFlowPropertiesComposite extends ExpressionPropertiesComposi
 					if (objectName!=null && objectName.isEmpty())
 						objectName = null;
 					String typeName = PropertyUtil.getText(flowNode);
-					setDefaultFlowCheckbox.setVisible(true);
-					setDefaultFlowCheckbox.setSelection( getDefault(sequenceFlow) == sequenceFlow );
-					setDefaultFlowCheckbox.setText("Default Flow for "+ typeName +
-							(objectName==null ? "" : (" \"" + objectName + "\"")));
+					if (allowDefault(sequenceFlow)) {
+						setDefaultFlowCheckbox.setVisible(true);
+						setDefaultFlowCheckbox.setSelection( getDefault(sequenceFlow) == sequenceFlow );
+						setDefaultFlowCheckbox.setText("Default Flow for "+ typeName +
+								(objectName==null ? "" : (" \"" + objectName + "\"")));
+					}
 				}
 				else {
 					setDefaultFlowCheckbox.setVisible(false);
@@ -126,8 +135,18 @@ public class SequenceFlowPropertiesComposite extends ExpressionPropertiesComposi
 		
 	}
 	
+	private boolean allowDefault(SequenceFlow sf) {
+		EObject obj = sf.getSourceRef();
+		if (obj!=null) {
+			EStructuralFeature feature = obj.eClass().getEStructuralFeature("default");
+			if (feature==null || !modelEnablement.isEnabled(obj.eClass(),feature)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	private void setDefault(SequenceFlow sf, EObject target) {
-
 		EObject obj = sf.getSourceRef();
 		if (obj!=null) {
 			EStructuralFeature feature = obj.eClass().getEStructuralFeature("default");
