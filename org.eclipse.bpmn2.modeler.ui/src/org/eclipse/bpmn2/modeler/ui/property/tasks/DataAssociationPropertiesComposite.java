@@ -722,7 +722,7 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 	public class AssignmentsTable extends AbstractBpmn2TableComposite {
 
 		public AssignmentsTable(Composite parent) {
-			super(parent, AbstractBpmn2TableComposite.DEFAULT_STYLE);
+			super(parent, ADD_BUTTON|REMOVE_BUTTON|MOVE_BUTTONS|SHOW_DETAILS);
 		}
 		
 		@Override

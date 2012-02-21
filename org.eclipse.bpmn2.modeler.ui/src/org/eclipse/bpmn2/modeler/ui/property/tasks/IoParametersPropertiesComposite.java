@@ -103,7 +103,7 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 		boolean isInput;
 		
 		public IOParametersTable(EObject container, InputOutputSpecification ioSpecification, EStructuralFeature ioFeature) {
-			super(IoParametersPropertiesComposite.this, AbstractBpmn2TableComposite.DEFAULT_STYLE | AbstractBpmn2TableComposite.EDIT_BUTTON);
+			super(IoParametersPropertiesComposite.this, ADD_BUTTON|REMOVE_BUTTON|SHOW_DETAILS);
 			this.ioFeature = ioFeature;
 			this.ioSpecification = ioSpecification;
 			if (container instanceof Activity) {
