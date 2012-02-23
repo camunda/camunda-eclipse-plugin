@@ -29,6 +29,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -65,6 +66,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 	protected ArrayList<ModelEnablementDescriptor> modelEnablements;
 	protected ModelEnablementDescriptor defaultModelEnablements;
 	protected ArrayList<PropertyExtensionDescriptor> propertyExtensions;
+	protected ArrayList<FeatureContainerDescriptor> featureContainers;
 	
 	public TargetRuntime(String id, String name, String versions, String description) {
 		this.id = id;
@@ -209,6 +211,13 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 							pe.type = e.getAttribute("type");
 							pe.adapterClassName = e.getAttribute("class");
 							currentRuntime.addPropertyExtension(pe);
+						}
+						else if (e.getName().equals("featureContainer")) {
+							String id = e.getAttribute("id");
+							FeatureContainerDescriptor fc = new FeatureContainerDescriptor(currentRuntime);
+							fc.type = e.getAttribute("type");
+							fc.containerClassName = e.getAttribute("class");
+							currentRuntime.addFeatureContainer(fc);
 						}
 						else if (e.getName().equals("modelExtension")) {
 							String id = e.getAttribute("id");
@@ -429,6 +438,36 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 		return null;
 	}
 	
+	public ArrayList<FeatureContainerDescriptor> getFeatureContainers()
+	{
+		if (featureContainers==null) {
+			featureContainers = new ArrayList<FeatureContainerDescriptor>();
+		}
+		return featureContainers;
+	}
+	
+	public void addFeatureContainer(FeatureContainerDescriptor me) {
+		me.setRuntime(this);
+		getFeatureContainers().add(me);
+	}
+
+	public FeatureContainerDescriptor getFeatureContainer(EClass clazz) {
+		for (FeatureContainerDescriptor fcd : getFeatureContainers()) {
+			String className = clazz.getInstanceClassName();
+			if (className.equals(fcd.type))
+				return fcd;
+			// well, that didn't work...
+			// The "type" name should be the BPMN2 element's interface definition;
+			// if it's an implementation class name, try to convert it to its
+			// interface name.
+			className = className.replaceFirst("\\.impl\\.", ".");
+			className = className.replaceFirst("Impl$", "");
+			if (className.equals(fcd.type))
+				return fcd;
+		}
+		return null;
+	}
+
 	public ArrayList<ModelEnablementDescriptor> getModelEnablements()
 	{
 		if (modelEnablements==null) {

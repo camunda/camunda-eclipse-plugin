@@ -25,6 +25,7 @@
             <element ref="modelExtension"/>
             <element ref="modelEnablement"/>
             <element ref="propertyExtension"/>
+            <element ref="featureContainer"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -512,6 +513,38 @@ If &quot;object&quot; has the value &quot;default&quot;, then this refers to a d
             <annotation>
                <documentation>
                   The BPMN2 element EClass to which this propertyExtension applies. This must be a fully qualified class name, e.g. &quot;org.eclipse.bpmn2.SequenceFlow&quot;.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="featureContainer">
+      <complexType>
+         <attribute name="runtimeId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Identifies one of the previously defined runtime elements for which this featureContainer will be used.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The class that implements the Graphiti Feature Container class. The class must implement the BPMN2 Code Feature Container interface.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.bpmn2.modeler.core.features.FeatureContainer"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="type" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The BPMN2 element EClass to which this featureContainer applies. This must be a fully qualified class name, e.g. &quot;org.eclipse.bpmn2.SequenceFlow&quot;.
                </documentation>
                <appinfo>
                   <meta.attribute kind="java"/>

@@ -66,6 +66,9 @@ import org.eclipse.graphiti.tb.IContextButtonPadData;
 
 public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implements IFeatureCheckerHolder {
 
+	BPMNFeatureProvider featureProvider;
+	ModelEnablementDescriptor modelEnablements;
+	
 	public BpmnToolBehaviourFeature(IDiagramTypeProvider diagramTypeProvider) {
 		super(diagramTypeProvider);
 	}
@@ -88,133 +91,120 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 		BPMN2Editor editor = (BPMN2Editor)getDiagramTypeProvider().getDiagramEditor();
 		Diagram diagram = getDiagramTypeProvider().getDiagram();
 		Object object = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(diagram);
-		ModelEnablementDescriptor med = editor.getTargetRuntime().getModelEnablements((EObject)object);
+		modelEnablements = editor.getTargetRuntime().getModelEnablements((EObject)object);
+		featureProvider = (BPMNFeatureProvider)getFeatureProvider();
 		
-		List<IPaletteCompartmentEntry> ret = new ArrayList<IPaletteCompartmentEntry>();
+		List<IPaletteCompartmentEntry> palette = new ArrayList<IPaletteCompartmentEntry>();
 
 		// add compartments from super class
+		createConnectors(palette);
+		createTasksCompartments(palette);
+		createGatewaysCompartments(palette);
+		createEventsCompartments(palette);
+		createEventDefinitionsCompartments(palette);
+		createDataCompartments(palette);
+		createOtherCompartments(palette);
+		createCustomTasks(palette);
 
-		IFeatureProvider featureProvider = getFeatureProvider();
-
-		createConnectors(med, ret, featureProvider);
-
-		createTasksCompartments(med, ret, featureProvider);
-		createGatewaysCompartments(med, ret, featureProvider);
-		createEventsCompartments(med, ret, featureProvider);
-		createEventDefinitionsCompartments(med, ret, featureProvider);
-		createDataCompartments(med, ret, featureProvider);
-		createOtherCompartments(med, ret, featureProvider);
-
-		createCustomTasks(med, ret, featureProvider);
-
-		return ret.toArray(new IPaletteCompartmentEntry[ret.size()]);
+		return palette.toArray(new IPaletteCompartmentEntry[palette.size()]);
 	}
 
-	private void createEventsCompartments(ModelEnablementDescriptor med, List<IPaletteCompartmentEntry> ret,
-			IFeatureProvider featureProvider) {
+	private void createEventsCompartments(List<IPaletteCompartmentEntry> palette) {
 		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry("Events", null);
 
-		createEntries(med, FeatureMap.EVENTS, compartmentEntry, featureProvider);
+		createEntries(FeatureMap.EVENTS, compartmentEntry);
 
 		if (compartmentEntry.getToolEntries().size()>0)
-			ret.add(compartmentEntry);
+			palette.add(compartmentEntry);
 	}
 
-	private void createOtherCompartments(ModelEnablementDescriptor med, List<IPaletteCompartmentEntry> ret,
-			IFeatureProvider featureProvider) {
+	private void createOtherCompartments(List<IPaletteCompartmentEntry> palette) {
 		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry("Other", null);
 		compartmentEntry.setInitiallyOpen(false);
 
-		createEntries(med, FeatureMap.OTHER, compartmentEntry, featureProvider);
+		createEntries(FeatureMap.OTHER, compartmentEntry);
 
 		if (compartmentEntry.getToolEntries().size()>0)
-			ret.add(compartmentEntry);
+			palette.add(compartmentEntry);
 	}
 
-	private void createDataCompartments(ModelEnablementDescriptor med, List<IPaletteCompartmentEntry> ret,
-			IFeatureProvider featureProvider) {
+	private void createDataCompartments(List<IPaletteCompartmentEntry> palette) {
 		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry("Data Items", null);
 		compartmentEntry.setInitiallyOpen(false);
 
-		createEntries(med, FeatureMap.DATA, compartmentEntry, featureProvider);
+		createEntries(FeatureMap.DATA, compartmentEntry);
 
 		if (compartmentEntry.getToolEntries().size()>0)
-			ret.add(compartmentEntry);
+			palette.add(compartmentEntry);
 	}
 
-	private void createEventDefinitionsCompartments(ModelEnablementDescriptor med, List<IPaletteCompartmentEntry> ret,
-			IFeatureProvider featureProvider) {
+	private void createEventDefinitionsCompartments(List<IPaletteCompartmentEntry> palette) {
 		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry("Event Definitions", null);
 		compartmentEntry.setInitiallyOpen(false);
 
-		createEntries(med, FeatureMap.EVENT_DEFINITIONS, compartmentEntry, featureProvider);
+		createEntries(FeatureMap.EVENT_DEFINITIONS, compartmentEntry);
 
 		if (compartmentEntry.getToolEntries().size()>0)
-			ret.add(compartmentEntry);
+			palette.add(compartmentEntry);
 	}
 
-	private void createGatewaysCompartments(ModelEnablementDescriptor med, List<IPaletteCompartmentEntry> ret,
-			IFeatureProvider featureProvider) {
+	private void createGatewaysCompartments(List<IPaletteCompartmentEntry> palette) {
 		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry("Gateways", null);
 
-		createEntries(med, FeatureMap.GATEWAYS, compartmentEntry, featureProvider);
+		createEntries(FeatureMap.GATEWAYS, compartmentEntry);
 
 		if (compartmentEntry.getToolEntries().size()>0)
-			ret.add(compartmentEntry);
+			palette.add(compartmentEntry);
 	}
 
-	private void createTasksCompartments(ModelEnablementDescriptor med, List<IPaletteCompartmentEntry> ret,
-			IFeatureProvider featureProvider) {
+	private void createTasksCompartments(List<IPaletteCompartmentEntry> palette) {
 		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry("Tasks", null);
 
-		createEntries(med, FeatureMap.TASKS, compartmentEntry, featureProvider);
+		createEntries(FeatureMap.TASKS, compartmentEntry);
 
 		if (compartmentEntry.getToolEntries().size()>0)
-			ret.add(compartmentEntry);
+			palette.add(compartmentEntry);
 	}
 
-	private void createConnectors(ModelEnablementDescriptor med, List<IPaletteCompartmentEntry> ret,
-			IFeatureProvider featureProvider) {
-		PaletteCompartmentEntry compartmentEntry;
-		compartmentEntry = new PaletteCompartmentEntry("Connectors", null);
-		ret.add(compartmentEntry);
-		// add all create-connection-features to the new stack-entry
-		ICreateConnectionFeature[] createConnectionFeatures = featureProvider.getCreateConnectionFeatures();
-		for (ICreateConnectionFeature cf : createConnectionFeatures) {
-			if (med.isEnabled(FeatureMap.getElement(cf))) {
-				ConnectionCreationToolEntry connectionCreationToolEntry = new ConnectionCreationToolEntry(
-						cf.getCreateName(), cf.getCreateDescription(), cf.getCreateImageId(),
-						cf.getCreateLargeImageId());
-				connectionCreationToolEntry.addCreateConnectionFeature(cf);
-				compartmentEntry.addToolEntry(connectionCreationToolEntry);
-			}
-		}
+	private void createConnectors(List<IPaletteCompartmentEntry> palette) {
+		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry("Connectors", null);
+
+		createEntries(FeatureMap.CONNECTORS, compartmentEntry);
+
+		if (compartmentEntry.getToolEntries().size()>0)
+			palette.add(compartmentEntry);
 	}
 
-	private void createEntries(ModelEnablementDescriptor med, List<Class<? extends IFeature>> neededEntries,
-			PaletteCompartmentEntry compartmentEntry, IFeatureProvider featureProvider) {
-		List<ICreateFeature> tools = Arrays.asList(featureProvider.getCreateFeatures());
-
-		for (ICreateFeature cf : tools) {
-			EClass feature = FeatureMap.getElement(cf);
-			if (feature==null)
-				continue;
-			if (med.isEnabled(feature) && neededEntries.contains(cf.getClass())) {
-				ObjectCreationToolEntry objectCreationToolEntry = new ObjectCreationToolEntry(cf.getCreateName(),
+	private void createEntries(List<Class> neededEntries, PaletteCompartmentEntry compartmentEntry) {
+		for (Class c : neededEntries) {
+			if (modelEnablements.isEnabled(c.getSimpleName())) {
+				IFeature feature = featureProvider.getCreateFeatureForBusinessObject(c);
+				if (feature instanceof ICreateFeature) {
+					ICreateFeature cf = (ICreateFeature)feature;
+					ObjectCreationToolEntry objectCreationToolEntry = new ObjectCreationToolEntry(cf.getCreateName(),
 						cf.getCreateDescription(), cf.getCreateImageId(), cf.getCreateLargeImageId(), cf);
-				compartmentEntry.addToolEntry(objectCreationToolEntry);
+					compartmentEntry.addToolEntry(objectCreationToolEntry);
+				}
+				else if (feature instanceof ICreateConnectionFeature) {
+					ICreateConnectionFeature cf = (ICreateConnectionFeature)feature;
+					ConnectionCreationToolEntry connectionCreationToolEntry = new ConnectionCreationToolEntry(
+							cf.getCreateName(), cf.getCreateDescription(), cf.getCreateImageId(),
+							cf.getCreateLargeImageId());
+					connectionCreationToolEntry.addCreateConnectionFeature(cf);
+					compartmentEntry.addToolEntry(connectionCreationToolEntry);
+				}
 			}
 		}
 	}
 
-	private void createCustomTasks(ModelEnablementDescriptor med, List<IPaletteCompartmentEntry> ret, IFeatureProvider featureProvider) {
+	private void createCustomTasks(List<IPaletteCompartmentEntry> ret) {
 		PaletteCompartmentEntry compartmentEntry = null;
 		BPMN2Editor editor = (BPMN2Editor) getDiagramTypeProvider().getDiagramEditor();
 		TargetRuntime rt = editor.getTargetRuntime();
 		
 		try {
 			for (CustomTaskDescriptor tc : rt.getCustomTasks()) {
-				if (true) {//med.isEnabled(tc.getId())) {
+				if (true) {//modelEnablements.isEnabled(tc.getId())) {
 					CustomTaskFeatureContainer container = (CustomTaskFeatureContainer)tc.getFeatureContainer();
 	
 					container.setId(featureProvider, tc.getId());

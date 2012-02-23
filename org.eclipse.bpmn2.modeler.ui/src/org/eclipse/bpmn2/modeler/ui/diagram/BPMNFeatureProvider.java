@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.bpmn2.ChoreographyTask;
+import org.eclipse.bpmn2.EventDefinition;
+import org.eclipse.bpmn2.Group;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature;
@@ -30,7 +32,9 @@ import org.eclipse.bpmn2.modeler.core.features.bendpoint.AddBendpointFeature;
 import org.eclipse.bpmn2.modeler.core.features.bendpoint.MoveBendpointFeature;
 import org.eclipse.bpmn2.modeler.core.features.bendpoint.RemoveBendpointFeature;
 import org.eclipse.bpmn2.modeler.core.runtime.CustomTaskDescriptor;
+import org.eclipse.bpmn2.modeler.core.runtime.FeatureContainerDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.AdHocSubProcessFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.CallActivityFeatureContainer;
@@ -110,12 +114,14 @@ import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IAddBendpointContext;
 import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.context.IDeleteContext;
 import org.eclipse.graphiti.features.context.IDirectEditingContext;
 import org.eclipse.graphiti.features.context.ILayoutContext;
 import org.eclipse.graphiti.features.context.IMoveBendpointContext;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
+import org.eclipse.graphiti.features.context.IPictogramElementContext;
 import org.eclipse.graphiti.features.context.IReconnectionContext;
 import org.eclipse.graphiti.features.context.IRemoveBendpointContext;
 import org.eclipse.graphiti.features.context.IRemoveContext;
@@ -257,6 +263,16 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 			}
 		}
 
+		BPMN2Editor editor = BPMN2Editor.getActiveEditor(); //(BPMN2Editor)getDiagramTypeProvider().getDiagramEditor();;
+		TargetRuntime rt = editor.getTargetRuntime();
+		for (FeatureContainerDescriptor fcd : rt.getFeatureContainers()) {
+			FeatureContainer container = fcd.getFeatureContainer();
+			ICreateFeature createFeature = container.getCreateFeature(this);
+			if (createFeature != null) {
+				createFeaturesList.add(createFeature);
+			}
+		}
+
 		createFeatures = createFeaturesList.toArray(new ICreateFeature[createFeaturesList.size()]);
 
 		List<ICreateConnectionFeature> createConnectionFeatureList = new ArrayList<ICreateConnectionFeature>();
@@ -276,6 +292,7 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 		createConnectionFeatures = createConnectionFeatureList
 				.toArray(new ICreateConnectionFeature[createConnectionFeatureList.size()]);
 		
+		mapBusinessObjectClassToCreateFeature.clear();
 		for (IFeature cf : createFeatures) {
 			if (cf instanceof AbstractBpmn2CreateFeature) {
 				if (cf instanceof CreateCustomTaskFeature) {
@@ -293,15 +310,40 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 		}
 	}
 	
-	public FeatureContainer getFeatureContainer(Object object) {
+	private EObject getApplyObject(IContext context) {
+		if (context instanceof IAddContext) {
+			Object object = ((IAddContext) context).getNewObject();
+			if (object instanceof EObject)
+				return (EObject)object;
+		} else if (context instanceof IPictogramElementContext) {
+			return BusinessObjectUtil.getFirstElementOfType(
+					(((IPictogramElementContext) context).getPictogramElement()), EObject.class);
+		}
+		return null;
+	}
+	public FeatureContainer getFeatureContainer(IContext context) {
+		
+		EObject object = getApplyObject(context);
+		if (object!=null) {
+			BPMN2Editor editor = (BPMN2Editor)getDiagramTypeProvider().getDiagramEditor();;
+			TargetRuntime rt = editor.getTargetRuntime();
+			FeatureContainerDescriptor fcd = rt.getFeatureContainer(object.eClass());
+			if (fcd!=null)
+				return fcd.getFeatureContainer();
+		}
+		
+		Object id = CustomTaskFeatureContainer.getId(context); 
 		for (FeatureContainer container : containers) {
-			if (object != null && container.canApplyTo(object)) {
+			if (id!=null && !(container instanceof CustomTaskFeatureContainer))
+				continue;
+			Object o = container.getApplyObject(context);
+			if (o != null && container.canApplyTo(o)) {
 				return container;
 			}
 		}
 		return null;
 	}
-	
+
 	@Override
 	public IAddFeature getAddFeature(IAddContext context) {
 		// only here do we need to search all of the Custom Task extensions to check if
@@ -321,15 +363,11 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 			}
 		}
 		
-		for (FeatureContainer container : containers) {
-			Object o = container.getApplyObject(context);
-			if (o != null && container.canApplyTo(o)) {
-				IAddFeature feature = container.getAddFeature(this);
-				if (feature == null) {
-					break;
-				}
+		FeatureContainer container = getFeatureContainer(context);
+		if (container!=null) {
+			IAddFeature feature = container.getAddFeature(this);
+			if (feature != null)
 				return feature;
-			}
 		}
 		return super.getAddFeature(context);
 	}
@@ -341,20 +379,12 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 
 	@Override
 	public IUpdateFeature getUpdateFeature(IUpdateContext context) {
-		Object id = CustomTaskFeatureContainer.getId(context); 
-		for (FeatureContainer container : containers) {
-			if (id!=null && !(container instanceof CustomTaskFeatureContainer))
-				continue;
-			Object o = container.getApplyObject(context);
-			if (o != null && container.canApplyTo(o)) {
-				IUpdateFeature feature = container.getUpdateFeature(this);
-				if (feature == null) {
-					break;
-				}
+		FeatureContainer container = getFeatureContainer(context);
+		if (container!=null) {
+			IUpdateFeature feature = container.getUpdateFeature(this);
+			if (feature != null)
 				return feature;
-			}
 		}
-
 		return super.getUpdateFeature(context);
 	}
 
@@ -365,77 +395,45 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 
 	@Override
 	public IDirectEditingFeature getDirectEditingFeature(IDirectEditingContext context) {
-		Object id = CustomTaskFeatureContainer.getId(context); 
-		for (FeatureContainer container : containers) {
-			if (id!=null && !(container instanceof CustomTaskFeatureContainer))
-				continue;
-			Object o = container.getApplyObject(context);
-			if (o != null && container.canApplyTo(o)) {
-				IDirectEditingFeature feature = container.getDirectEditingFeature(this);
-				if (feature == null) {
-					break;
-				}
+		FeatureContainer container = getFeatureContainer(context);
+		if (container!=null) {
+			IDirectEditingFeature feature = container.getDirectEditingFeature(this);
+			if (feature != null)
 				return feature;
-			}
 		}
-
 		return super.getDirectEditingFeature(context);
 	}
 
 	@Override
 	public ILayoutFeature getLayoutFeature(ILayoutContext context) {
-		Object id = CustomTaskFeatureContainer.getId(context); 
-		for (FeatureContainer container : containers) {
-			if (id!=null && !(container instanceof CustomTaskFeatureContainer))
-				continue;
-			Object o = container.getApplyObject(context);
-			if (o != null && container.canApplyTo(o)) {
-				ILayoutFeature feature = container.getLayoutFeature(this);
-				if (feature == null) {
-					break;
-				}
+		FeatureContainer container = getFeatureContainer(context);
+		if (container!=null) {
+			ILayoutFeature feature = container.getLayoutFeature(this);
+			if (feature != null)
 				return feature;
-			}
 		}
-
 		return super.getLayoutFeature(context);
 	}
 
 	@Override
 	public IMoveShapeFeature getMoveShapeFeature(IMoveShapeContext context) {
-		Object id = CustomTaskFeatureContainer.getId(context); 
-		for (FeatureContainer container : containers) {
-			if (id!=null && !(container instanceof CustomTaskFeatureContainer))
-				continue;
-			Object o = container.getApplyObject(context);
-			if (o != null && container.canApplyTo(o)) {
-				IMoveShapeFeature feature = container.getMoveFeature(this);
-				if (feature == null) {
-					break;
-				}
+		FeatureContainer container = getFeatureContainer(context);
+		if (container!=null) {
+			IMoveShapeFeature feature = container.getMoveFeature(this);
+			if (feature != null)
 				return feature;
-			}
 		}
-
 		return super.getMoveShapeFeature(context);
 	}
 
 	@Override
 	public IResizeShapeFeature getResizeShapeFeature(IResizeShapeContext context) {
-		Object id = CustomTaskFeatureContainer.getId(context); 
-		for (FeatureContainer container : containers) {
-			if (id!=null && !(container instanceof CustomTaskFeatureContainer))
-				continue;
-			Object o = container.getApplyObject(context);
-			if (o != null && container.canApplyTo(o)) {
-				IResizeShapeFeature feature = container.getResizeFeature(this);
-				if (feature == null) {
-					break;
-				}
+		FeatureContainer container = getFeatureContainer(context);
+		if (container!=null) {
+			IResizeShapeFeature feature = container.getResizeFeature(this);
+			if (feature != null)
 				return feature;
-			}
 		}
-
 		return super.getResizeShapeFeature(context);
 	}
 
@@ -455,8 +453,7 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 	}
 
 	@Override
-	public IReconnectionFeature getReconnectionFeature(
-			IReconnectionContext context) {
+	public IReconnectionFeature getReconnectionFeature(IReconnectionContext context) {
 		for (FeatureContainer container : containers) {
 			Object o = container.getApplyObject(context);
 			if (o != null && container.canApplyTo(o) && container instanceof ConnectionFeatureContainer) {
@@ -472,34 +469,22 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 
 	@Override
 	public IDeleteFeature getDeleteFeature(IDeleteContext context) {
-		Object id = CustomTaskFeatureContainer.getId(context); 
-		for (FeatureContainer container : containers) {
-			if (id!=null && !(container instanceof CustomTaskFeatureContainer))
-				continue;
-			Object o = container.getApplyObject(context);
-			if (o != null && container.canApplyTo(o)) {
-				IDeleteFeature feature = container.getDeleteFeature(this);
-				if (feature != null) {
-					return feature;
-				}
-			}
+		FeatureContainer container = getFeatureContainer(context);
+		if (container!=null) {
+			IDeleteFeature feature = container.getDeleteFeature(this);
+			if (feature != null)
+				return feature;
 		}
 		return new DefaultDeleteBPMNShapeFeature(this);
 	}
 
 	@Override
 	public IRemoveFeature getRemoveFeature(IRemoveContext context) {
-		Object id = CustomTaskFeatureContainer.getId(context); 
-		for (FeatureContainer container : containers) {
-			if (id!=null && !(container instanceof CustomTaskFeatureContainer))
-				continue;
-			Object o = container.getApplyObject(context);
-			if (o != null && container.canApplyTo(o)) {
-				IRemoveFeature feature = container.getRemoveFeature(this);
-				if (feature != null) {
-					return feature;
-				}
-			}
+		FeatureContainer container = getFeatureContainer(context);
+		if (container!=null) {
+			IRemoveFeature feature = container.getRemoveFeature(this);
+			if (feature != null)
+				return feature;
 		}
 		return new DefaultRemoveBPMNShapeFeature(this);
 	}
@@ -560,5 +545,9 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 			}
 		}
 		return feature;
+	}
+	
+	public IFeature getCreateFeatureForBusinessObject(Class clazz) {
+		return mapBusinessObjectClassToCreateFeature.get(clazz);
 	}
 }

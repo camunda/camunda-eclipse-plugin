@@ -50,9 +50,9 @@ import org.eclipse.swt.widgets.Composite;
 
 public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesComposite {
 
-	AbstractBpmn2TableComposite inputTable;
-	AbstractBpmn2TableComposite outputTable;
-	EventDefinitionsTable eventsTable;
+	protected AbstractBpmn2TableComposite inputTable;
+	protected AbstractBpmn2TableComposite outputTable;
+	protected EventDefinitionsTable eventsTable;
 
 	public CommonEventPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
@@ -112,7 +112,7 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 	
 	public class EventDefinitionsTable extends AbstractBpmn2TableComposite {
 		
-		Event event;
+		protected Event event;
 		
 		public EventDefinitionsTable(Composite parent, Event event) {
 			super(parent, ADD_BUTTON|REMOVE_BUTTON|SHOW_DETAILS);

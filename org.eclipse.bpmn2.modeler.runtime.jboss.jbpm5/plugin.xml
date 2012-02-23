@@ -109,6 +109,14 @@
 			replaceTab="org.eclipse.bpmn2.modeler.activity.io.tab"
 			label="I/O Parameters">
 		</propertyTab>
+
+		<propertyTab
+			id="org.jboss.runtime.jbpm5.commonEvent.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmCommonEventPropertySection"
+			type="org.eclipse.bpmn2.Event"
+			replaceTab="org.eclipse.bpmn2.modeler.commonEvent.tab"
+			label="Event">
+		</propertyTab>
 		
 		<propertyExtension
 			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.FormalExpression"
@@ -117,6 +125,29 @@
 			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.FormalExpressionPropertyAdapter">
 		</propertyExtension>
 		
+		<featureContainer
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.TimerEventDefinition"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmTimerEventDefinitionFeatureContainer">
+		</featureContainer>
+		
+		<featureContainer
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.TerminateEventDefinition"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmTerminateEventDefinitionFeatureContainer">
+		</featureContainer>
+		
+		<featureContainer
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.SignalEventDefinition"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmSignalEventDefinitionFeatureContainer">
+		</featureContainer>
+		
+		<featureContainer
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.ErrorEventDefinition"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmErrorEventDefinitionFeatureContainer">
+		</featureContainer>
 		
 <!--
 		<customTask
