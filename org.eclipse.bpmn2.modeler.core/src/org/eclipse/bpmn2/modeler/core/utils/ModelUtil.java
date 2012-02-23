@@ -628,10 +628,11 @@ public class ModelUtil {
 	public static List<EObject> collectAncestorObjects(EObject object, String featureName, Class[] ancestorTypes) {
 		List<EObject> values = new ArrayList<EObject>();
 		EObject ancestor = ModelUtil.findNearestAncestor(object, ancestorTypes);
-		if (ancestor!=null) {
+		while (ancestor!=null) {
 			EStructuralFeature feature = ancestor.eClass().getEStructuralFeature(featureName);
 			if (feature!=null && ancestor.eGet(feature) instanceof List)
 				values.addAll((List<EObject>) ancestor.eGet(feature));
+			ancestor = ModelUtil.findNearestAncestor(ancestor, ancestorTypes);
 		}
 		return values;
 	}

@@ -30,6 +30,7 @@ import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
@@ -156,8 +157,8 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter 
 					
 				containerFeature = container.eClass().getEStructuralFeature("properties");
 				Property property = Bpmn2Factory.eINSTANCE.createProperty();
-				ModelUtil.setID(property,object.eResource());
-				property.setName((String)value);
+				ExtendedPropertiesAdapter adapter = AdapterUtil.adapt(property, ExtendedPropertiesAdapter.class);
+				adapter.getObjectDescriptor().setText((String)value);
 				InsertionAdapter.add(container, containerFeature, property);
 				value = property;
 			}

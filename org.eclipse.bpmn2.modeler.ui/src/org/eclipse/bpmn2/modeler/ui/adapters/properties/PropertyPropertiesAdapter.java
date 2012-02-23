@@ -23,6 +23,7 @@ import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
 import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.MultiInstanceLoopCharacteristicsPropertiesAdapter.LoopCharacteristicsDataInputFeatureDescriptor;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -47,31 +48,34 @@ public class PropertyPropertiesAdapter extends ExtendedPropertiesAdapter {
 
 			@Override
 			public void setText(String text) {
-				super.setText(text);
+				int i = text.lastIndexOf("/");
+				if (i>=0)
+					text = text.substring(i+1);
+				text = text.trim();
+				((Property)object).setName(text);
 			}
 
-			// TODO: fix this!
-//			@Override
-//			public String getText(Object context) {
-//				Property property = (Property)(context instanceof Property ? context : this.object);
-//				String text = property.getName();
-//				if (text==null || text.isEmpty())
-//					text = property.getId();
-//				
-//				EObject container = property.eContainer();
-//				while (container!=null) {
-//					if (container instanceof Participant) {
-//						container = ((Participant)container).getProcessRef();
-//						if (container==null)
-//							break;
-//					}
-//					if (container instanceof Activity || container instanceof Process) {
-//						text = PropertyUtil.getText(container) + "/" + text;
-//					}
-//					container = container.eContainer();
-//				}
-//				return text;
-//			}
+			@Override
+			public String getValueText(Object context) {
+				Property property = (Property)(context instanceof Property ? context : this.object);
+				String text = property.getName();
+				if (text==null || text.isEmpty())
+					text = property.getId();
+				
+				EObject container = property.eContainer();
+				while (container!=null) {
+					if (container instanceof Participant) {
+						container = ((Participant)container).getProcessRef();
+						if (container==null)
+							break;
+					}
+					if (container instanceof Activity || container instanceof Process) {
+						text = PropertyUtil.getText(container) + "/" + text;
+					}
+					container = container.eContainer();
+				}
+				return text;
+			}
 			
 		};
 		setFeatureDescriptor(f, fd);
@@ -81,11 +85,12 @@ public class PropertyPropertiesAdapter extends ExtendedPropertiesAdapter {
 			@Override
 			public void setText(String text) {
 				fd.setText(text);
+				ModelUtil.setID(object);
 			}
 
 			@Override
 			public String getText(Object context) {
-				return fd.getText(context);
+				return fd.getValueText(context);
 			}
 			
 		});
