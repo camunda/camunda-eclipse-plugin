@@ -18,6 +18,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
@@ -68,10 +69,25 @@ public class MultiInstanceLoopCharacteristicsPropertiesAdapter extends ExtendedP
 			EObject container = object.eContainer();
 			while (container!=null) {
 				if (container instanceof Activity || container instanceof Process) {
-					EStructuralFeature f = container.eClass().getEStructuralFeature("properties");
-					List<EObject> properties = (List<EObject>)container.eGet(f);
-					for (EObject p : properties) {
-						values.put( getValueText(p), p);
+					List properties = null;
+					if (feature.getName().equals("inputDataItem")) {
+						EStructuralFeature f = container.eClass().getEStructuralFeature("ioSpecification");
+						if (f!=null) {
+							InputOutputSpecification ioSpecification = (InputOutputSpecification)container.eGet(f);
+							if (ioSpecification!=null)
+								properties = ioSpecification.getDataInputs();
+						}
+					}
+					else {
+						EStructuralFeature f = container.eClass().getEStructuralFeature("properties");
+						if (f!=null)
+							properties = (List)container.eGet(f);
+					}
+					
+					if (properties!=null) {
+						for (Object p : properties) {
+							values.put( getValueText(p), p);
+						}
 					}
 				}
 				container = container.eContainer();

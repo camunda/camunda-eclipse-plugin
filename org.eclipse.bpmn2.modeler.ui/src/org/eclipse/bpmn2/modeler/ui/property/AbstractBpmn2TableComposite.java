@@ -378,9 +378,11 @@ public class AbstractBpmn2TableComposite extends Composite {
 		// remove disabled columns
 		List<TableColumn> removed = new ArrayList<TableColumn>();
 		for (TableColumn tc : (List<TableColumn>)columnProvider.getColumns()) {
-			if (!"id".equals(tc.feature.getName())) {
-				if (!modelEnablement.isEnabled(listItemClass, tc.feature)) {
-					removed.add(tc);
+			if (tc.feature!=null) {
+				if (!"id".equals(tc.feature.getName())) {
+					if (!modelEnablement.isEnabled(listItemClass, tc.feature)) {
+						removed.add(tc);
+					}
 				}
 			}
 		}

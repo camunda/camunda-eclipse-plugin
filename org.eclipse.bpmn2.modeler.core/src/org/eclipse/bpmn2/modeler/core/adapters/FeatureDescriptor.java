@@ -241,7 +241,7 @@ public class FeatureDescriptor extends ObjectDescriptor {
 	}
 	
 	public void setValue(Object context, final Object value) {
-		EObject object = context instanceof EObject ? (EObject)context : this.object;
+		final EObject object = context instanceof EObject ? (EObject)context : this.object;
 		
 		if (object.eGet(feature) instanceof EObjectEList) {
 			// the feature is a reference list - user must have meant to insert
@@ -269,7 +269,14 @@ public class FeatureDescriptor extends ObjectDescriptor {
 				if (editingDomain == null) {
 					object.eSet(feature, value);
 				} else {
-					editingDomain.getCommandStack().execute(SetCommand.create(editingDomain, object, feature, value));
+					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+						@Override
+						protected void doExecute() {
+							object.eSet(feature, value);
+							Object o = object.eGet(feature);
+							System.out.println(o);
+						}
+					});
 				}
 			}
 		}
