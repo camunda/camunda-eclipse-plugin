@@ -73,6 +73,12 @@
 			class="org.eclipse.bpmn2.modeler.ui.preferences.ToolEnablementPropertyPage"
 			id="org.eclipse.bpmn2.modeler.ui.toolEnablement" name="%PROPERTY_PAGE_TOOL_ENABLEMENT"
 			category="org.eclipse.bpmn2.modeler.ui">
+			<enabledWhen>
+				<or>
+					<adapt type="org.eclipse.core.resources.IProject">
+					</adapt>
+				</or>
+			</enabledWhen>
 		</page>
 	</extension>
 
