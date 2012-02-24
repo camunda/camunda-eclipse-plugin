@@ -15,11 +15,17 @@ package org.eclipse.bpmn2.modeler.core.features;
 
 import java.util.List;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICreateConnectionContext;
+import org.eclipse.graphiti.features.context.IPictogramElementContext;
+import org.eclipse.graphiti.features.context.IReconnectionContext;
 import org.eclipse.graphiti.features.impl.AbstractCreateConnectionFeature;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 
@@ -67,11 +73,30 @@ public abstract class AbstractBpmn2CreateConnectionFeature extends
 
 	@Override
 	public boolean isAvailable(IContext context) {
-		List<ModelEnablementDescriptor> enablements = TargetRuntime.getCurrentRuntime().getModelEnablements();
-		for (ModelEnablementDescriptor e : enablements) {
+		Object o = null;
+		if (context instanceof ICreateConnectionContext) {
+			ICreateConnectionContext ccc = (ICreateConnectionContext)context;
+			if (ccc.getTargetPictogramElement()!=null) {
+				o = BusinessObjectUtil.getFirstElementOfType(
+						ccc.getTargetPictogramElement(), BaseElement.class);
+			}
+			else if (ccc.getSourcePictogramElement()!=null) {
+				o = BusinessObjectUtil.getFirstElementOfType(
+						ccc.getSourcePictogramElement(), BaseElement.class);
+			}
+		}
+		else if (context instanceof IReconnectionContext) {
+			IReconnectionContext rc = (IReconnectionContext)context;
+			if (rc.getTargetPictogramElement()!=null) {
+				o = BusinessObjectUtil.getFirstElementOfType(
+						rc.getTargetPictogramElement(), BaseElement.class);
+			}
+		}
+		
+		if (o instanceof EObject) {
 			String n = getBusinessObjectClass().getSimpleName();
-			if (e.isEnabled(n))
-				return true;
+			ModelEnablementDescriptor e = TargetRuntime.getCurrentRuntime().getModelEnablements((EObject)o);
+			return e.isEnabled(n);
 		}
 		return false;
 	}

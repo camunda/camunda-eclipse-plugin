@@ -468,12 +468,8 @@
 
 			<enable object="ExtensionAttributeValue"/>
 			<enable object="ExtensionAttributeDefinition"/>
-   <enable
-         object="StandardLoopCharacteristics">
-   </enable>
-   <enable
-         object="MultiInstanceLoopCharacteristics">
-   </enable>
+			<enable object="StandardLoopCharacteristics"/>
+			<enable object="MultiInstanceLoopCharacteristics"/>
 			
 			<disable object="Lane"/>
 			<disable object="MessageFlow"/>
