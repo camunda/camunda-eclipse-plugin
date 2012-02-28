@@ -54,6 +54,7 @@ import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.datatypes.ILocation;
@@ -200,17 +201,60 @@ public class DIImport {
 		}
 		
 		// Process Queue
-		for (Iterator<BPMNShape> iterator = shapeQueue.iterator(); iterator.hasNext();) {
-			BPMNShape currentShape = iterator.next();
-			
-			if (currentShape.getBpmnElement() instanceof BoundaryEvent &&
-				!elements.containsKey(((BoundaryEvent) currentShape.getBpmnElement()).getAttachedToRef())){
-				// post-pone
-				shapeQueue.offer(currentShape);
-			}
-			else {
-				createShape(currentShape);
-			}
+		int requeueCount = 0;
+		int queueLength = shapeQueue.size();
+		while ( !shapeQueue.isEmpty() && requeueCount<queueLength ) {
+				BPMNShape currentShape = shapeQueue.remove();
+				BaseElement bpmnElement = currentShape.getBpmnElement();
+				boolean postpone = false;
+				
+				if (bpmnElement instanceof BoundaryEvent &&
+					!elements.containsKey(((BoundaryEvent) bpmnElement).getAttachedToRef())){
+					postpone = true;
+				}
+				else if (bpmnElement instanceof FlowNode) {
+					
+					EObject container = bpmnElement.eContainer();
+					if ((container instanceof SubProcess || container instanceof SubChoreography) &&
+							!elements.containsKey(container)) {
+						postpone = true;
+					}
+					else if (!((FlowNode)bpmnElement).getLanes().isEmpty()) {
+						List<Lane> lanes = ((FlowNode)bpmnElement).getLanes();
+						for (Lane lane : lanes) {
+							if (!elements.containsKey(lane)) {
+								postpone = true;
+								break;
+							}
+						}
+					}		
+				}
+				
+				if (postpone) {
+					// post-pone
+					shapeQueue.offer(currentShape);
+					++requeueCount;
+				}
+				else {
+					createShape(currentShape);
+					requeueCount = 0;
+				}
+		}
+		if (shapeQueue.size()!=0) {
+			String elementList = "";
+			for (Iterator<BPMNShape> iterator = shapeQueue.iterator(); iterator.hasNext();) {
+				BPMNShape currentShape = iterator.next();
+				BaseElement bpmnElement = currentShape.getBpmnElement();
+				if (bpmnElement!=null) {
+					String id = bpmnElement.getId();
+					if (id!=null) {
+						elementList += bpmnElement.eClass().getName() + " " + id + "\n";
+					}
+				}
+				
+			}			
+			Activator.logStatus(new Status(IStatus.WARNING, Activator.PLUGIN_ID, "Unsatisfied BPMN elements: "
+					+ elementList));
 		}
 	}
 
