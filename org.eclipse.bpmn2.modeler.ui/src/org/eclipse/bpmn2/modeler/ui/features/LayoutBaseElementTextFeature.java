@@ -51,20 +51,20 @@ public abstract class LayoutBaseElementTextFeature extends DefaultLayoutBPMNShap
 	public boolean layout(ILayoutContext context) {
 		ContainerShape container = (ContainerShape) context.getPictogramElement();
 
-		Shape textShape = getShape(container, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
-		Text textGa = (Text) textShape.getGraphicsAlgorithm();
-		String text = textGa.getValue() == null ? "" : textGa.getValue();
-		IDimension size = GraphitiUi.getUiLayoutService().calculateTextSize(text, textGa.getFont());
+//		Shape textShape = getShape(container, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
+//		Text textGa = (Text) textShape.getGraphicsAlgorithm();
+//		String text = textGa.getValue() == null ? "" : textGa.getValue();
+//		IDimension size = GraphitiUi.getUiLayoutService().calculateTextSize(text, textGa.getFont());
 
 		GraphicsAlgorithm parentGa = container.getGraphicsAlgorithm();
 
-		if (size.getWidth() > getMinimumWidth()) {
-			gaService.setSize(parentGa, size.getWidth() + 3, parentGa.getHeight());
-		} else {
-			gaService.setSize(parentGa, getMinimumWidth(), parentGa.getHeight());
-		}
+//		if (size.getWidth() > getMinimumWidth()) {
+//			gaService.setSize(parentGa, parentGa.getWidth(), parentGa.getHeight());
+//		} else {
+//			gaService.setSize(parentGa, getMinimumWidth(), parentGa.getHeight());
+//		}
 
-		gaService.setSize(textGa, size.getWidth() + 3, textGa.getHeight());
+//		gaService.setSize(textGa, size.getWidth() + 3, textGa.getHeight());
 		
 		return super.layout(context);
 	}

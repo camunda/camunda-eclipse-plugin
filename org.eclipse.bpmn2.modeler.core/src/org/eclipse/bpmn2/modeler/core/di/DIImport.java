@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
@@ -27,6 +28,7 @@ import org.eclipse.bpmn2.DataAssociation;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.FlowNode;
+import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.MessageFlow;
@@ -45,6 +47,7 @@ import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
+import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.validation.LiveValidationContentAdapter;
 import org.eclipse.core.runtime.IStatus;
@@ -322,6 +325,12 @@ public class DIImport {
 					if (o instanceof Participant)
 						elements.put((Participant)o, pe);
 				}
+			} else if (bpmnElement instanceof Event) {
+				GraphicsUtil.setEventSize(context.getWidth(), context.getHeight(), diagram);
+			} else if (bpmnElement instanceof Gateway) {
+				GraphicsUtil.setGatewaySize(context.getWidth(), context.getHeight(), diagram);
+			} else if (bpmnElement instanceof Activity && !(bpmnElement instanceof SubProcess)) {
+				GraphicsUtil.setActivitySize(context.getWidth(), context.getHeight(), diagram);
 			}
 			elements.put(bpmnElement, newContainer);
 			handleEvents(bpmnElement, newContainer);

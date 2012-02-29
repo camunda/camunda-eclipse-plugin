@@ -119,6 +119,16 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 			protected Class<? extends BaseElement> getBoClass() {
 				return Association.class;
 			}
+
+			@Override
+			protected int getHeight() {
+				return 0;
+			}
+
+			@Override
+			protected int getWidth() {
+				return 0;
+			}
 		};
 	}
 

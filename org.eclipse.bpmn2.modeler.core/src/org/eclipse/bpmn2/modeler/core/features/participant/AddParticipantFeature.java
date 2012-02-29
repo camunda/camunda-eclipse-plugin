@@ -56,15 +56,15 @@ public class AddParticipantFeature extends AbstractAddBPMNShapeFeature {
 		IPeCreateService peCreateService = Graphiti.getPeCreateService();
 		ContainerShape containerShape = peCreateService.createContainerShape(targetDiagram, true);
 
-		int width = context.getWidth() > 0 ? context.getWidth() : 600;
-		int height = context.getHeight() > 0 ? context.getHeight() : 100;
+		int width = this.getWidth(context);
+		int height = this.getHeight(context);
 
 		Rectangle rect = gaService.createRectangle(containerShape);
 		StyleUtil.applyBGStyle(rect, this);
 		gaService.setLocationAndSize(rect, context.getX(), context.getY(), width, height);
 
 		Shape lineShape = peCreateService.createShape(containerShape, false);
-		Polyline line = gaService.createPolyline(lineShape, new int[] { 15, 0, 15, height });
+		Polyline line = gaService.createPolyline(lineShape, new int[] { 30, 0, 30, height });
 		line.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 
 		Shape textShape = peCreateService.createShape(containerShape, false);
@@ -73,7 +73,7 @@ public class AddParticipantFeature extends AbstractAddBPMNShapeFeature {
 		text.setVerticalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setAngle(-90);
-		gaService.setLocationAndSize(text, 0, 0, 15, height);
+		gaService.setLocationAndSize(text, 0, 0, 30, height);
 		peService.setPropertyValue(containerShape, MULTIPLICITY, Boolean.toString(participant.getParticipantMultiplicity()!=null));
 
 		createDIShape(containerShape, participant);
@@ -83,5 +83,15 @@ public class AddParticipantFeature extends AbstractAddBPMNShapeFeature {
 		updatePictogramElement(containerShape);
 		layoutPictogramElement(containerShape);
 		return containerShape;
+	}
+
+	@Override
+	protected int getHeight() {
+		return 100;
+	}
+
+	@Override
+	protected int getWidth() {
+		return 600;
 	}
 }

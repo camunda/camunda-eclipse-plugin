@@ -4,8 +4,8 @@ import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.ui.Messages;
+import org.eclipse.bpmn2.modeler.ui.util.SelectableComboFieldEditor;
 import org.eclipse.jface.preference.BooleanFieldEditor;
-import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -62,11 +62,14 @@ public class Bpmn2HomePreferencePage
 			++i;
 		}
 
-		ComboFieldEditor targetRuntimes = new ComboFieldEditor(
+		SelectableComboFieldEditor targetRuntimes = new SelectableComboFieldEditor(
 				Bpmn2Preferences.PREF_TARGET_RUNTIME,
 				Bpmn2Preferences.PREF_TARGET_RUNTIME_LABEL,
 				entries,
 				getFieldEditorParent());
+		targetRuntimes.setPreferenceStore(getPreferenceStore());
+		targetRuntimes.setSelectedValue(TargetRuntime.getFirstNonDefaultId());
+		
 		addField(targetRuntimes);
 	}
 

@@ -67,8 +67,8 @@ public class AddChoreographyFeature extends AbstractAddBPMNShapeFeature {
 	public PictogramElement add(IAddContext context) {
 		ChoreographyActivity choreography = (ChoreographyActivity) context.getNewObject();
 
-		int width = context.getWidth() > 0 ? context.getWidth() : GraphicsUtil.CHOREOGRAPHY_WIDTH;
-		int height = context.getHeight() > 0 ? context.getHeight() : GraphicsUtil.CHOREOGRAPHY_HEIGHT;
+		int width = this.getWidth(context);
+		int height = this.getHeight(context);
 
 		ContainerShape choreographyContainer = peService.createContainerShape(context.getTargetContainer(), true);
 		RoundedRectangle containerRect = gaService.createRoundedRectangle(choreographyContainer, R, R);
@@ -182,5 +182,15 @@ public class AddChoreographyFeature extends AbstractAddBPMNShapeFeature {
 
 	protected boolean isShowNames() {
 		return true;
+	}
+
+	@Override
+	protected int getHeight() {
+		return GraphicsUtil.CHOREOGRAPHY_HEIGHT;
+	}
+
+	@Override
+	protected int getWidth() {
+		return GraphicsUtil.CHOREOGRAPHY_WIDTH;
 	}
 }

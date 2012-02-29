@@ -45,9 +45,9 @@ public class EventSelectionBehavior {
 
 	public static GraphicsAlgorithm[] getClickArea(PictogramElement element) {
 		Iterator<Shape> iterator = Graphiti.getPeService().getAllContainedShapes((ContainerShape) element).iterator();
-		GraphicsAlgorithm[] algorithms = new GraphicsAlgorithm[2];
+		GraphicsAlgorithm[] algorithms = new GraphicsAlgorithm[1];
 		algorithms[0] = iterator.next().getGraphicsAlgorithm();
-		algorithms[1] = iterator.next().getGraphicsAlgorithm();
+//		algorithms[1] = iterator.next().getGraphicsAlgorithm();
 		return algorithms;
 	}
 

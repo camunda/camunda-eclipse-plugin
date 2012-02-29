@@ -55,8 +55,8 @@ public class AddTextAnnotationFeature extends AbstractAddBPMNShapeFeature {
 
 		IGaService gaService = Graphiti.getGaService();
 
-		int width = context.getWidth() > 0 ? context.getWidth() : 50;
-		int height = context.getHeight() > 0 ? context.getHeight() : 100;
+		int width = this.getWidth(context);
+		int height = this.getHeight(context);
 		int commentEdge = 15;
 
 		Rectangle rect = gaService.createInvisibleRectangle(containerShape);
@@ -83,5 +83,15 @@ public class AddTextAnnotationFeature extends AbstractAddBPMNShapeFeature {
 		
 		layoutPictogramElement(containerShape);
 		return containerShape;
+	}
+
+	@Override
+	protected int getHeight() {
+		return 100;
+	}
+
+	@Override
+	protected int getWidth() {
+		return 50;
 	}
 }

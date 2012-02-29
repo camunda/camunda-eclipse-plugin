@@ -36,6 +36,7 @@ import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.bpmn2.util.ImportHelper;
+import org.eclipse.bpmn2.util.QNameURIHandler;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
@@ -61,6 +62,8 @@ import org.xml.sax.helpers.DefaultHandler;
 public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 
 	public static final String BPMN2_CONTENT_TYPE_ID = "org.eclipse.bpmn2.content-description.xml";
+	private BpmnXmlHelper xmlHelper;
+	private QNameURIHandler uriHandler;
 
 	/**
 	 * Creates an instance of the resource.
@@ -70,6 +73,16 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 	 */
 	public Bpmn2ModelerResourceImpl(URI uri) {
 		super(uri);
+		
+		// overwrite helper and uri handler in options map
+		this.xmlHelper = new BpmnXmlHelper(this);
+        this.uriHandler = new FragmentQNameURIHandler(xmlHelper);
+        this.getDefaultLoadOptions().put(XMLResource.OPTION_URI_HANDLER, uriHandler);
+        this.getDefaultLoadOptions().put(XMLResource.OPTION_DEFER_IDREF_RESOLUTION, true);
+        this.getDefaultSaveOptions().put(XMLResource.OPTION_URI_HANDLER, uriHandler);
+
+        // only necessary if this resource will not be added to a ResourceSet instantly
+        this.eAdapters().add(oppositeReferenceAdapter);
 	}
 
 	/**
@@ -297,5 +310,36 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 
 			return retArray;
 		}
+	}
+	
+	// TODO check this, is this the correct way to deal with this ID prefixes
+	/**
+	 * QName handler to make create URIs out of the fragment, which is the local part of the QName
+	 * 
+	 * Most other tools dont understand QNames in referencing attributes
+	 * 
+	 * @author drobisch
+	 *
+	 */
+	public static class FragmentQNameURIHandler extends QNameURIHandler {
+		
+		protected BpmnXmlHelper xmlHelper;
+		
+		public FragmentQNameURIHandler(BpmnXmlHelper xmlHelper) {
+			super(xmlHelper);
+			this.xmlHelper = xmlHelper;
+		}
+		
+		@Override
+		public URI deresolve(URI uri) {
+	        String fragment = uri.fragment();
+	        if (fragment != null && !fragment.startsWith("/"))
+	        {
+                // return just fragment (i.e. without the '#'), always assume local reference
+                return URI.createURI(fragment);
+	        }
+	        return super.deresolve(uri);
+		}
+		
 	}
 }

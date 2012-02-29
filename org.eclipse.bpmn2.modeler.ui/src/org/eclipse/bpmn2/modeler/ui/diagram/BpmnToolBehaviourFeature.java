@@ -34,6 +34,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.FeatureCheckerAdapter;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
@@ -285,6 +286,11 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 		PictogramElement pe = context.getPictogramElement();
 		IFeatureProvider fp = getFeatureProvider();
 
+		if( pe.getGraphicsAlgorithm()!= null && pe.getGraphicsAlgorithm().getWidth() < 40 ){
+		    ILocation origin = getAbsoluteLocation(pe.getGraphicsAlgorithm());
+		    data.getPadLocation().setRectangle(origin.getX(), origin.getY(), 40, 40);
+		}
+		
 		// 1. set the generic context buttons
 		// Participant bands can only be removed from the choreograpy task
 		int genericButtons = CONTEXT_BUTTON_DELETE;

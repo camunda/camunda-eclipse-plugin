@@ -65,8 +65,8 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature {
 		ContainerShape containerShape = peCreateService.createContainerShape(context.getTargetContainer(), true);
 		IGaService gaService = Graphiti.getGaService();
 
-		int width = context.getWidth() > 0 ? context.getWidth() : 600;
-		int height = context.getHeight() > 0 ? context.getHeight() : 100;
+		int width = this.getWidth(context);
+		int height = this.getHeight(context);
 
 		Rectangle rect = gaService.createRectangle(containerShape);
 
@@ -76,21 +76,21 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature {
 			GraphicsAlgorithm ga = context.getTargetContainer().getGraphicsAlgorithm();
 
 			if (getNumberOfLanes(context) == 1) {
-				gaService.setLocationAndSize(rect, 15, 0, width - 15, height);
+				gaService.setLocationAndSize(rect, 30, 0, width - 30, height);
 				for (Shape s : getFlowNodeShapes(context, lane)) {
 					Graphiti.getPeService().sendToFront(s);
 					s.setContainer(containerShape);
 				}
 			} else {
 				if (context.getWidth() == -1 || context.getHeight() == -1) {
-					gaService.setLocationAndSize(rect, 15, ga.getWidth() - 1, ga.getHeight() - 15, height);
+					gaService.setLocationAndSize(rect, 30, ga.getWidth() - 1, ga.getHeight() - 30, height);
 					// gaService.setLocationAndSize(rect, context.getX(), context.getY(), width, height);
 				} else {
 					ILayoutService layoutService = Graphiti.getLayoutService();
 					ILocation loc = layoutService.getLocationRelativeToDiagram(containerShape);
 					int x = context.getX() - loc.getX();
 					int y = context.getY() - loc.getY();
-					gaService.setLocationAndSize(rect, x - 15, y, ga.getWidth() - 15, height);
+					gaService.setLocationAndSize(rect, x, y, ga.getWidth(), height);
 				}
 			}
 			containerShape.setContainer(context.getTargetContainer());
@@ -151,5 +151,15 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature {
 			return laneSets.size();
 		}
 		return 0;
+	}
+
+	@Override
+	protected int getHeight() {
+		return 100;
+	}
+
+	@Override
+	protected int getWidth() {
+		return 600;
 	}
 }

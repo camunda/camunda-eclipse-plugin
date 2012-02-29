@@ -103,8 +103,16 @@ public abstract class ObjectEditor {
 				insertionAdapter.execute();
 			}
 			
-			// use the Extended Properties adapter if there is one
-			if (adapter!=null) {
+			if (isEmpty(result)){
+				TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
+				domain.getCommandStack().execute(new RecordingCommand(domain) {
+					@Override
+					protected void doExecute() {
+						object.eUnset(feature);
+					}
+				});
+			}
+			else if (adapter!=null) { 			// use the Extended Properties adapter if there is one
 				adapter.getFeatureDescriptor(feature).setValue(result);
 			}
 			else {
@@ -127,4 +135,17 @@ public abstract class ObjectEditor {
 		
 		return true;
 	}
+
+	private boolean isEmpty(Object result) {
+		if (result == null){
+			return true;
+		}
+		
+		if (result instanceof String){
+			return ((String) result).isEmpty();
+		}
+		
+		return false;
+	}
+	
 }

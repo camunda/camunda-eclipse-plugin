@@ -71,8 +71,8 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 				IPeService peService = Graphiti.getPeService();
 				Group group = (Group) context.getNewObject();
 
-				int width = context.getWidth() > 0 ? context.getWidth() : 400;
-				int height = context.getHeight() > 0 ? context.getHeight() : 400;
+				int width = this.getWidth(context);
+				int height = this.getHeight(context);
 
 				ContainerShape container = peService.createContainerShape(context.getTargetContainer(), true);
 				RoundedRectangle rect = gaService.createRoundedRectangle(container, 5, 5);
@@ -88,6 +88,16 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 				link(container, group);
 				createDIShape(container, group);
 				return container;
+			}
+
+			@Override
+			protected int getHeight() {
+				return 400;
+			}
+
+			@Override
+			protected int getWidth() {
+				return 400;
 			}
 		};
 	}

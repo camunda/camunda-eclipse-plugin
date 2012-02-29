@@ -90,8 +90,8 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 				IPeService peService = Graphiti.getPeService();
 				DataStoreReference store = (DataStoreReference) context.getNewObject();
 
-				int width = 50;
-				int height = 50;
+				int width = this.getWidth();
+				int height = this.getHeight();
 				int textArea = 15;
 
 				ContainerShape container = peService.createContainerShape(context.getTargetContainer(), true);
@@ -135,6 +135,16 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 				createDIShape(container, store);
 				layoutPictogramElement(container);
 				return container;
+			}
+
+			@Override
+			protected int getHeight() {
+				return 50;
+			}
+
+			@Override
+			protected int getWidth() {
+				return 50;
 			}
 		};
 	}

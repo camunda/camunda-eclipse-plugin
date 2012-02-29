@@ -93,6 +93,7 @@ import org.eclipse.bpmn2.modeler.ui.features.gateway.EventBasedGatewayFeatureCon
 import org.eclipse.bpmn2.modeler.ui.features.gateway.ExclusiveGatewayFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.gateway.InclusiveGatewayFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.gateway.ParallelGatewayFeatureContainer;
+import org.eclipse.bpmn2.modeler.ui.features.label.LabelFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.lane.LaneFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.participant.ParticipantFeatureContainer;
 import org.eclipse.emf.ecore.EObject;
@@ -151,6 +152,7 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 		super(dtp);
 
 		containers = new ArrayList<FeatureContainer>();
+		containers.add(new LabelFeatureContainer());
 		containers.add(new GroupFeatureContainer());
 		containers.add(new DataObjectFeatureContainer());
 		containers.add(new DataObjectReferenceFeatureContainer());

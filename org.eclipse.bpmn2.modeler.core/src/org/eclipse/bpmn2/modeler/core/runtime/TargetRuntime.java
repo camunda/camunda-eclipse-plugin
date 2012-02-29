@@ -97,6 +97,29 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 		return getRuntime(DEFAULT_RUNTIME_ID);
 	}
 	
+	/**
+	 * 
+	 * @return the first runtime which is non default, if there are more than on runtime or if there is only the default runtime
+	 * return the DEFAULT_RUNTIME_ID
+	 */
+	public static String getFirstNonDefaultId(){
+		String runtimeId = null;
+		int nonDefaultRuntimeCount = 0;
+		
+		for (TargetRuntime rt :TargetRuntime.getAllRuntimes()) {
+			if (!rt.getId().equals(TargetRuntime.DEFAULT_RUNTIME_ID)){
+				nonDefaultRuntimeCount++;
+				runtimeId = rt.getId();
+			}
+		}
+		
+		if (nonDefaultRuntimeCount == 1 && runtimeId != null){
+			return runtimeId;
+		}else{
+			return TargetRuntime.DEFAULT_RUNTIME_ID;
+		}
+	}
+	
 	public void setResourceSet(ResourceSet resourceSet) {
 		resourceSet.getResourceFactoryRegistry().getContentTypeToFactoryMap().put(
 				Bpmn2ModelerResourceImpl.BPMN2_CONTENT_TYPE_ID, modelDescriptor.getResourceFactory());
@@ -326,7 +349,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 			else if (ref!=null) {
 				prop.ref = ref;
 			}
-			else {
+			else if(e.getChildren().length > 0){
 				Object o = getModelExtensionProperties(null, e.getChildren()[0]);
 				if (o instanceof Value)
 					prop.getValues().addAll(((Value)o).getValues());

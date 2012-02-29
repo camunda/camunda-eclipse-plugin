@@ -83,9 +83,10 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		if (!loaded) {
 			// load all preferences: this will eventually include all per-project
 			// as well as global user preferences.
+			
 			targetRuntime = TargetRuntime.getRuntime(
-					prefs.get(PREF_TARGET_RUNTIME,TargetRuntime.DEFAULT_RUNTIME_ID));
-			showAdvancedPropertiesTab = prefs.getBoolean(PREF_SHOW_ADVANCED_PROPERTIES, true);
+					prefs.get(PREF_TARGET_RUNTIME, TargetRuntime.getFirstNonDefaultId() ));
+			showAdvancedPropertiesTab = prefs.getBoolean(PREF_SHOW_ADVANCED_PROPERTIES, false);
 			overrideModelEnablements = prefs.getBoolean(PREF_OVERRIDE_MODEL_ENABLEMENTS, false);
 			expandProperties = prefs.getBoolean(PREF_EXPAND_PROPERTIES, false);
 			loaded = true;

@@ -339,6 +339,11 @@ public class ModelExtensionDescriptor extends BaseRuntimeDescriptor {
 	 * @param value
 	 */
 	private void setValue(EObject object, EStructuralFeature feature, Object value) {
+		// should not set null value features
+		if (value == null) {
+			return;
+		}
+		
 		if (feature.isMany()) {
 			((EList)object.eGet(feature)).add(value);
 		}
@@ -391,13 +396,15 @@ public class ModelExtensionDescriptor extends BaseRuntimeDescriptor {
 		EStructuralFeature childFeature = null;
 		EStructuralFeature feature = object.eClass().getEStructuralFeature(property.name);
 		
+		Object firstValue = property.getValues().isEmpty() ? null : property.getValues().get(0);
+		
 		if (feature==null) {
 			// determine the type of feature, either an EAttribute or an EReference,
 			// from the give Property's characteristics
 			Class type = EAttribute.class;
 			// if the Property has a "ref" or if its value is a Property
 			// then this must be an EReference
-			if (property.ref!=null || property.getValues().get(0) instanceof Property)
+			if (property.ref!=null || firstValue instanceof Property)
 				type = EReference.class;
 			// get the feature from the runtime package or from Bpmn2Package,
 			// wherever it's found first
@@ -418,7 +425,7 @@ public class ModelExtensionDescriptor extends BaseRuntimeDescriptor {
 						childFeature = getFeature(p.name);
 						if (childFeature instanceof EAttribute) {
 							childObject = createObject(((EReference) childFeature));
-							setValue(childObject, childFeature, p.getValues().get(0));
+							setValue(childObject, childFeature, firstValue);
 						}
 						else if (childFeature instanceof EReference) {
 							childObject = createObject(((EReference) childFeature).getEReferenceType());
@@ -430,7 +437,7 @@ public class ModelExtensionDescriptor extends BaseRuntimeDescriptor {
 				}
 			}
 			else
-				setValue(object, feature, property.getValues().get(0));
+				setValue(object, feature, firstValue);
 		}
 		else if (feature instanceof EReference) {
 			EReference ref = (EReference)feature;

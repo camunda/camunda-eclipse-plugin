@@ -82,11 +82,11 @@ public class MoveActivityFeature extends MoveFlowNodeFeature {
 //					"\n"
 //			);
 			
-			msc.setX(x);
-			msc.setY(y);
-			msc.setDeltaX(deltaX);
-			msc.setDeltaY(deltaY);
-			msc.setTargetContainer(oldContainer);
+//			msc.setX(x);
+//			msc.setY(y);
+//			msc.setDeltaX(deltaX);
+//			msc.setDeltaY(deltaY);
+//			msc.setTargetContainer(oldContainer);
 		}
 
 		super.preMoveShape(context);

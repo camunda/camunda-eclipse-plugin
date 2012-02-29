@@ -901,7 +901,7 @@ public class ModelHandler {
 			String id = element.getId();
 			if (id!=null) {
 				for (DiagramElement elem : planeElement) {
-					if (elem instanceof BPMNShape && 
+					if (elem instanceof BPMNShape && ((BPMNShape) elem).getBpmnElement() != null &&
 							id.equals(((BPMNShape) elem).getBpmnElement().getId())) {
 						return (elem);
 					} else if (elem instanceof BPMNEdge &&

@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.ui.features.event;
 
 import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
+import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.bpmn2.modeler.core.features.DirectEditFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.MoveFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
@@ -26,10 +27,20 @@ import org.eclipse.graphiti.features.ILayoutFeature;
 import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
+import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.features.impl.DefaultResizeShapeFeature;
 
 public abstract class AbstractEventFeatureContainer extends BaseElementFeatureContainer {
+	
+	@Override
+	public Object getApplyObject(IContext context) {
+		if (context.getProperty(ContextConstants.LABEL_CONTEXT) == null
+				|| !((Boolean) context.getProperty(ContextConstants.LABEL_CONTEXT))) {
+			return super.getApplyObject(context);
+		}
+		return null;
+	}
 
 	@Override
 	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {

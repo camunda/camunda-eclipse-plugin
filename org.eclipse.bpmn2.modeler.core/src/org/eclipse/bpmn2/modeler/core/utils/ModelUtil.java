@@ -263,9 +263,11 @@ public class ModelUtil {
 
 
 	public static String getName(BaseElement element) {
-		EStructuralFeature feature = element.eClass().getEStructuralFeature("name");
-		if (feature!=null && element.eGet(feature) instanceof String)
-			return (String) element.eGet(feature);
+		if (element != null) {
+			EStructuralFeature feature = element.eClass().getEStructuralFeature("name");
+			if (feature!=null && element.eGet(feature) instanceof String)
+				return (String) element.eGet(feature);
+		}
 		return null;
 	}
 

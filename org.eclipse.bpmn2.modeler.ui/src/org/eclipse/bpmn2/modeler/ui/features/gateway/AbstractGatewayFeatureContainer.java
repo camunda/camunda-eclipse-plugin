@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.ui.features.gateway;
 
 import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
+import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.bpmn2.modeler.core.features.MoveFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
@@ -26,6 +27,7 @@ import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.IReason;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
+import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.context.impl.UpdateContext;
@@ -33,8 +35,18 @@ import org.eclipse.graphiti.features.impl.DefaultResizeShapeFeature;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public abstract class AbstractGatewayFeatureContainer extends BaseElementFeatureContainer {
+
+	@Override
+	public Object getApplyObject(IContext context) {
+		if (context.getProperty(ContextConstants.LABEL_CONTEXT) == null
+				|| !((Boolean) context.getProperty(ContextConstants.LABEL_CONTEXT))) {
+			return super.getApplyObject(context);
+		}
+		return null;
+	}
 
 	@Override
 	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {
@@ -88,7 +100,7 @@ public abstract class AbstractGatewayFeatureContainer extends BaseElementFeature
 		public boolean canUpdate(IUpdateContext context) {
 			IFeatureProvider featureProvider = getDiagramEditor().getDiagramTypeProvider().getFeatureProvider();
 
-			ContainerShape gatewayShape = (ContainerShape) context.getPictogramElement();
+			Shape gatewayShape = (Shape) context.getPictogramElement();
 			for (Anchor anchor : gatewayShape.getAnchors()) {
 				for (Connection connection : anchor.getIncomingConnections() ) {
 					IUpdateContext updateCtx = new UpdateContext(connection);
@@ -117,7 +129,7 @@ public abstract class AbstractGatewayFeatureContainer extends BaseElementFeature
 		public IReason updateNeeded(IUpdateContext context) {
 			IFeatureProvider featureProvider = getDiagramEditor().getDiagramTypeProvider().getFeatureProvider();
 
-			ContainerShape gatewayShape = (ContainerShape) context.getPictogramElement();
+			Shape gatewayShape = (Shape) context.getPictogramElement();
 			for (Anchor anchor : gatewayShape.getAnchors()) {
 				for (Connection connection : anchor.getIncomingConnections() ) {
 					IUpdateContext updateCtx = new UpdateContext(connection);
@@ -163,7 +175,6 @@ public abstract class AbstractGatewayFeatureContainer extends BaseElementFeature
 					}
 				}
 			}
-			
 			return super.update(context);
 		}
 	}

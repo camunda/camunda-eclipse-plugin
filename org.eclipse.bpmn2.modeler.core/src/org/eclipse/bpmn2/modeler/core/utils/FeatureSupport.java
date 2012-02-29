@@ -156,7 +156,7 @@ public class FeatureSupport {
 		EObject elem = BusinessObjectUtil.getFirstElementOfType(container, BaseElement.class);
 		IGaService service = Graphiti.getGaService();
 		int height = 0;
-		int width = container.getGraphicsAlgorithm().getWidth() - 15;
+		int width = container.getGraphicsAlgorithm().getWidth() - 30;
 
 		EList<Shape> children = container.getChildren();
 		ECollections.sort(children, new SiblingLaneComparator());
@@ -164,7 +164,7 @@ public class FeatureSupport {
 			Object bo = BusinessObjectUtil.getFirstElementOfType(s, BaseElement.class);
 			if (bo != null && (bo instanceof Lane || bo instanceof Participant) && !bo.equals(elem)) {
 				GraphicsAlgorithm ga = s.getGraphicsAlgorithm();
-				service.setLocation(ga, 15, height);
+				service.setLocation(ga, 30, height);
 				height += ga.getHeight() - 1;
 				if (ga.getWidth() >= width) {
 					width = ga.getWidth();
@@ -179,7 +179,7 @@ public class FeatureSupport {
 		if (height == 0) {
 			return new Dimension(ga.getWidth(), ga.getHeight());
 		} else {
-			int newWidth = width + 15;
+			int newWidth = width + 30;
 			int newHeight = height + 1;
 			service.setSize(ga, newWidth, newHeight);
 
@@ -275,7 +275,7 @@ public class FeatureSupport {
 	private static void postResizeFixLenghts(ContainerShape root) {
 		IGaService service = Graphiti.getGaService();
 		BaseElement elem = BusinessObjectUtil.getFirstElementOfType(root, BaseElement.class);
-		int width = root.getGraphicsAlgorithm().getWidth() - 15;
+		int width = root.getGraphicsAlgorithm().getWidth() - 30;
 
 		for (Shape s : root.getChildren()) {
 			Object o = BusinessObjectUtil.getFirstElementOfType(s, BaseElement.class);

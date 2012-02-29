@@ -91,6 +91,16 @@ public abstract class AbstractAddFlowFeature extends AbstractAddBPMNShapeFeature
 
 		return connection;
 	}
+	
+	@Override
+	protected int getHeight() {
+		return -1;
+	}
+
+	@Override
+	protected int getWidth() {
+		return -1;
+	}
 
 	protected abstract Class<? extends BaseElement> getBoClass();
 

@@ -43,8 +43,8 @@ public class AddConversationFeature extends AbstractAddBPMNShapeFeature {
 		IPeService peService = Graphiti.getPeService();
 		Conversation c = (Conversation) context.getNewObject();
 
-		int w = context.getWidth() > 0 ? context.getWidth() : 30;
-		int h = context.getHeight() > 0 ? context.getHeight() : 30;
+		int w = this.getWidth(context);
+		int h = this.getHeight(context);
 
 		ContainerShape containerShape = peService.createContainerShape(context.getTargetContainer(), true);
 		Rectangle rect = gaService.createInvisibleRectangle(containerShape);
@@ -62,5 +62,15 @@ public class AddConversationFeature extends AbstractAddBPMNShapeFeature {
 		link(containerShape, c);
 		createDIShape(containerShape, c);
 		return containerShape;
+	}
+
+	@Override
+	protected int getHeight() {
+		return 30;
+	}
+
+	@Override
+	protected int getWidth() {
+		return 30;
 	}
 }

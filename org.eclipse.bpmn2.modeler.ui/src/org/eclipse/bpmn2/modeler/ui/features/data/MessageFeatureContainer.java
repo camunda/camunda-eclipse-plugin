@@ -79,15 +79,14 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 				IPeService peService = Graphiti.getPeService();
 				Message msg = (Message) context.getNewObject();
 
-//				int width = ENVELOPE_WIDTH;
-//				int height = ENVELOPE_HEIGHT;
-//				int textArea = ENVELOPE_TEXT_HEIGHT;
+				int width = this.getWidth();
+				int height = this.getHeight();
 
 				ContainerShape container = peService.createContainerShape(context.getTargetContainer(), true);
 				Rectangle invisibleRect = gaService.createInvisibleRectangle(container);
-				gaService.setLocationAndSize(invisibleRect, context.getX(), context.getY(), ENVELOPE_WIDTH, ENVELOPE_HEIGHT + ENVELOPE_TEXT_HEIGHT);
+				gaService.setLocationAndSize(invisibleRect, context.getX(), context.getY(), width, height + ENVELOPE_TEXT_HEIGHT);
 
-				Envelope envelope = GraphicsUtil.createEnvelope(invisibleRect, 0, 0, ENVELOPE_WIDTH, ENVELOPE_HEIGHT);
+				Envelope envelope = GraphicsUtil.createEnvelope(invisibleRect, 0, 0, width, height);
 				envelope.rect.setFilled(true);
 				StyleUtil.applyBGStyle(envelope.rect, this);
 				envelope.line.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
@@ -99,7 +98,7 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 				text.setStyle(StyleUtil.getStyleForText(getDiagram()));
 				text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
 				text.setVerticalAlignment(Orientation.ALIGNMENT_TOP);
-				gaService.setLocationAndSize(text, 0, ENVELOPE_HEIGHT, ENVELOPE_WIDTH, ENVELOPE_TEXT_HEIGHT);
+				gaService.setLocationAndSize(text, 0, height, width, ENVELOPE_TEXT_HEIGHT);
 
 				peService.createChopboxAnchor(container);
 				AnchorUtil.addFixedPointAnchors(container, invisibleRect);
@@ -107,6 +106,16 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 				createDIShape(container, msg);
 				layoutPictogramElement(container);
 				return container;
+			}
+
+			@Override
+			protected int getHeight() {
+				return ENVELOPE_HEIGHT;
+			}
+
+			@Override
+			protected int getWidth() {
+				return ENVELOPE_WIDTH;
 			}
 		};
 	}

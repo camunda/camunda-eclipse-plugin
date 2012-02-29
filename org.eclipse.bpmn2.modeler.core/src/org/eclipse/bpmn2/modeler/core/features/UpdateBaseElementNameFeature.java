@@ -23,7 +23,6 @@ import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.impl.AbstractUpdateFeature;
 import org.eclipse.graphiti.features.impl.Reason;
 import org.eclipse.graphiti.mm.algorithms.AbstractText;
-import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
@@ -55,8 +54,11 @@ public class UpdateBaseElementNameFeature extends AbstractUpdateFeature {
 		String elementName = ModelUtil.getName(element);
 		Shape textShape = getChildElementOfType(container, TEXT_ELEMENT, Boolean.toString(true), Shape.class);
 		if (textShape!=null) {
-			String name = ((Text) textShape.getGraphicsAlgorithm()).getValue();
-	
+			String name = "";
+			if (textShape.getGraphicsAlgorithm() instanceof AbstractText) {
+				AbstractText text = (AbstractText) textShape.getGraphicsAlgorithm();
+				name = text.getValue();
+			}
 			if (elementName != null) {
 				return elementName.equals(name) ? Reason.createFalseReason() : Reason.createTrueReason();
 			} else if (name != null) {
@@ -73,7 +75,12 @@ public class UpdateBaseElementNameFeature extends AbstractUpdateFeature {
 		        BaseElement.class);
 		Shape textShape = getChildElementOfType(container, TEXT_ELEMENT, Boolean.toString(true), Shape.class);
 		if (textShape!=null) {
-			((AbstractText) textShape.getGraphicsAlgorithm()).setValue(ModelUtil.getName(element));
+			AbstractText text = (AbstractText) textShape.getGraphicsAlgorithm();
+			String name = ModelUtil.getName(element);
+			if (name == null) {
+				name = "";
+			}
+			text.setValue(name);
 			layoutPictogramElement(context.getPictogramElement());
 		}
 		return true;

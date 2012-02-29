@@ -12,7 +12,6 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.event;
 
-import static org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.EVENT_SIZE;
 import static org.eclipse.bpmn2.modeler.ui.features.event.BoundaryEventFeatureContainer.BOUNDARY_EVENT_CANCEL;
 
 import org.eclipse.bpmn2.Activity;
@@ -75,13 +74,16 @@ public class AddBoundaryEventFeature extends AbstractAddBPMNShapeFeature {
 		Ellipse ellipse = gaService.createEllipse(containerShape);
 		StyleUtil.applyBGStyle(ellipse, this);
 
+		int gatewayWidth = this.getWidth(context);
+		int gatewayHeight = this.getHeight();
+
 		if (importing) { // if loading from DI then place according to context
-			gaService.setLocationAndSize(ellipse, context.getX(), context.getY(), EVENT_SIZE, EVENT_SIZE);
+			gaService.setLocationAndSize(ellipse, context.getX(), context.getY(), gatewayWidth, gatewayHeight);
 		} else { // otherwise place it in the center of shape for user to adjust it
 			GraphicsAlgorithm ga = context.getTargetContainer().getGraphicsAlgorithm();
-			int x = ga.getX() + context.getX() - (EVENT_SIZE / 2);
-			int y = ga.getY() + context.getY() - (EVENT_SIZE / 2);
-			gaService.setLocationAndSize(ellipse, x, y, EVENT_SIZE, EVENT_SIZE);
+			int x = ga.getX() + context.getX() - (gatewayWidth / 2);
+			int y = ga.getY() + context.getY() - (gatewayHeight / 2);
+			gaService.setLocationAndSize(ellipse, x, y, gatewayHeight, gatewayHeight);
 		}
 
 		Ellipse circle = GraphicsUtil.createIntermediateEventCircle(ellipse);
@@ -110,5 +112,15 @@ public class AddBoundaryEventFeature extends AbstractAddBPMNShapeFeature {
 		link(containerShape, event);
 		updatePictogramElement(containerShape);
 		return containerShape;
+	}
+
+	@Override
+	protected int getHeight() {
+		return GraphicsUtil.getEventSize(getDiagram()).getHeight();
+	}
+
+	@Override
+	protected int getWidth() {
+		return GraphicsUtil.getEventSize(getDiagram()).getWidth();
 	}
 }

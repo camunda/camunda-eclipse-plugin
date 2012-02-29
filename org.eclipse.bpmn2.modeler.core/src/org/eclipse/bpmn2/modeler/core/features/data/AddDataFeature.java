@@ -57,8 +57,8 @@ public abstract class AddDataFeature<T extends BaseElement> extends AbstractAddB
 		@SuppressWarnings("unchecked")
 		T t = (T) context.getNewObject();
 
-		int width = GraphicsUtil.DATA_WIDTH;
-		int height = GraphicsUtil.DATA_HEIGHT;
+		int width = this.getWidth();
+		int height = this.getHeight();
 		int e = 10;
 		int textArea = 15;
 		
@@ -119,6 +119,16 @@ public abstract class AddDataFeature<T extends BaseElement> extends AbstractAddB
 		return collectionShape;
 	}
 
+	@Override
+	protected int getHeight() {
+		return GraphicsUtil.DATA_HEIGHT;
+	}
+
+	@Override
+	protected int getWidth() {
+		return GraphicsUtil.DATA_WIDTH;
+	}
+	
 	protected void decorate(Polygon p) {
 	}
 

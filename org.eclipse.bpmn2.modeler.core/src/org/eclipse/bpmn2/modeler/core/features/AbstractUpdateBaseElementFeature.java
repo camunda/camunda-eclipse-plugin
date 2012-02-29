@@ -53,7 +53,11 @@ public abstract class AbstractUpdateBaseElementFeature extends AbstractUpdateFea
 			for (Shape shape : cs.getChildren()) {
 				if (shape.getGraphicsAlgorithm() instanceof AbstractText) {
 					AbstractText text = (AbstractText) shape.getGraphicsAlgorithm();
-					text.setValue(FeatureSupport.getBusinessValue(context));
+					String value = FeatureSupport.getBusinessValue(context);
+					if (value == null) {
+						value = "";
+					}
+					text.setValue(value);
 					return true;
 				}
 			}

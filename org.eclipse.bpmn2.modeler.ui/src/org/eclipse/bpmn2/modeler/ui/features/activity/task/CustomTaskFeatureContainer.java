@@ -85,7 +85,12 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 	public static String getId(IContext context) {
 		Object id = null;
 
-		if (context instanceof IAddContext) {
+		/**
+		 * IAddContext can also mean that a file is dragged,
+		 * therefore we have to check if we are really dragging a customTask
+		 */
+		if (context instanceof IAddContext && 
+			((IAddContext)context).getNewObject() instanceof EObject ) {
 			EObject object = (EObject) ((IAddContext)context).getNewObject();
 			TargetRuntime rt = TargetRuntime.getCurrentRuntime();
 			for (CustomTaskDescriptor ct : rt.getCustomTasks()) {

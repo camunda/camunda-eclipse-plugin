@@ -15,7 +15,6 @@ package org.eclipse.bpmn2.modeler.core.features.gateway;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
-import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
@@ -25,8 +24,6 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.mm.algorithms.Polygon;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
-import org.eclipse.graphiti.mm.algorithms.Text;
-import org.eclipse.graphiti.mm.algorithms.styles.Orientation;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -56,34 +53,43 @@ public class DefaultAddGatewayFeature extends AbstractAddBPMNShapeFeature {
 		IGaService gaService = Graphiti.getGaService();
 		IPeService peService = Graphiti.getPeService();
 
-		int d = 2 * GraphicsUtil.GATEWAY_RADIUS;
-		int p = GraphicsUtil.GATEWAY_TEXT_AREA;
+		int gatewayWidth = this.getWidth(context);
+		int gatewayHeight = this.getHeight(context);
 
-		ContainerShape containerShape = peService.createContainerShape(context.getTargetContainer(), true);
-		Rectangle rect = gaService.createInvisibleRectangle(containerShape);
-		gaService.setLocationAndSize(rect, context.getX(), context.getY(), d, d + p);
+		// Create a container for the gateway-symbol
+		final ContainerShape gatewayContainerShape = peService.createContainerShape(context.getTargetContainer(), true);
+		final Rectangle gatewayRect = gaService.createInvisibleRectangle(gatewayContainerShape);
+		gaService.setLocationAndSize(gatewayRect, context.getX(), context.getY(), gatewayWidth, gatewayHeight);
 
-		Shape gatewayShape = peService.createShape(containerShape, false);
-		Polygon gateway = GraphicsUtil.createGateway(gatewayShape);
+		Shape gatewayShape = peService.createShape(gatewayContainerShape, false);
+		Polygon gateway = GraphicsUtil.createGateway(gatewayShape, gatewayWidth, gatewayHeight);
 		StyleUtil.applyBGStyle(gateway, this);
-		gaService.setLocationAndSize(gateway, 0, 0, d, d);
-		decorateGateway(containerShape);
+		gaService.setLocationAndSize(gateway, 0, 0, gatewayWidth, gatewayHeight);
+		decorateGateway(gatewayContainerShape);
 
-		Shape textShape = peService.createShape(containerShape, false);
-		peService.setPropertyValue(textShape, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
-		Text text = gaService.createDefaultText(getDiagram(), textShape, addedGateway.getName());
-		text.setStyle(StyleUtil.getStyleForText(getDiagram()));
-		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
-		text.setVerticalAlignment(Orientation.ALIGNMENT_TOP);
-		gaService.setLocationAndSize(text, 0, d, d, p);
-
-		createDIShape(containerShape, addedGateway);
-		peService.createChopboxAnchor(containerShape);
-		AnchorUtil.addFixedPointAnchors(containerShape, gateway);
-		layoutPictogramElement(containerShape);
-		return containerShape;
+		createDIShape(gatewayContainerShape, addedGateway);
+		peService.createChopboxAnchor(gatewayContainerShape);
+		AnchorUtil.addFixedPointAnchors(gatewayContainerShape, gateway);
+		layoutPictogramElement(gatewayContainerShape);
+		
+		// Use context for labeling! 
+		this.prepareAddContext(context, gatewayWidth, gatewayHeight);
+		this.getFeatureProvider().getAddFeature(context).add(context);
+		
+		return gatewayContainerShape;
 	}
 
 	protected void decorateGateway(ContainerShape container) {
 	}
+
+	@Override
+	protected int getHeight() {
+		return GraphicsUtil.getGatewaySize(this.getDiagram()).getHeight();
+	}
+
+	@Override
+	protected int getWidth() {
+		return GraphicsUtil.getGatewaySize(this.getDiagram()).getWidth();
+	}
+	
 }

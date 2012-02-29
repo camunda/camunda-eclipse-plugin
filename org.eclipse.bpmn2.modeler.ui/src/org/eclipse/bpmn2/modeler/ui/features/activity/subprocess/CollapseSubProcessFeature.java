@@ -99,8 +99,8 @@ public class CollapseSubProcessFeature extends AbstractCustomFeature {
 						IResizeShapeFeature resizeFeature = getFeatureProvider().getResizeShapeFeature(resizeContext);
 						int oldWidth = ga.getWidth();
 						int oldHeight = ga.getHeight();
-						int newWidth = GraphicsUtil.TASK_DEFAULT_WIDTH;
-						int newHeight = GraphicsUtil.TASK_DEFAULT_HEIGHT;
+						int newWidth = GraphicsUtil.getActivitySize(getDiagram()).getWidth();
+						int newHeight = GraphicsUtil.getActivitySize(getDiagram()).getHeight();
 						resizeContext.setX(ga.getX() + oldWidth/2 - newWidth/2);
 						resizeContext.setY(ga.getY() + oldHeight/2 - newHeight/2);
 						resizeContext.setWidth(newWidth);

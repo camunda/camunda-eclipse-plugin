@@ -71,8 +71,8 @@ public abstract class AbstractAddActivityFeature extends AbstractAddBPMNShapeFea
 		IGaService gaService = Graphiti.getGaService();
 		IPeService peService = Graphiti.getPeService();
 
-		int width = context.getWidth() > 0 ? context.getWidth() : getWidth();
-		int height = context.getHeight() > 0 ? context.getHeight() : getHeight();
+		int width = context.getWidth() > 0 ? context.getWidth() : this.getWidth();
+		int height = context.getHeight() > 0 ? context.getHeight() : this.getHeight();
 
 		ContainerShape containerShape = peService.createContainerShape(context.getTargetContainer(), true);
 		Rectangle invisibleRect = gaService.createInvisibleRectangle(containerShape);

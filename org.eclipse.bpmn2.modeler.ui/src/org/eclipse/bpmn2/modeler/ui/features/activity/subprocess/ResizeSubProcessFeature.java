@@ -138,13 +138,13 @@ public class ResizeSubProcessFeature extends DefaultResizeBPMNShapeFeature {
 				for (PictogramElement pe : FeatureSupport.getContainerDecorators(containerShape)) {
 					GraphicsAlgorithm childGa = pe.getGraphicsAlgorithm();
 					if (childGa!=null) {
-						childGa.setWidth(GraphicsUtil.TASK_DEFAULT_WIDTH);
-						childGa.setHeight(GraphicsUtil.TASK_DEFAULT_HEIGHT);
+						childGa.setWidth(GraphicsUtil.getActivitySize(getDiagram()).getWidth());
+						childGa.setHeight(GraphicsUtil.getActivitySize(getDiagram()).getHeight());
 					}
 				}
 				
-				resizeShapeContext.setWidth(GraphicsUtil.TASK_DEFAULT_WIDTH);
-				resizeShapeContext.setHeight(GraphicsUtil.TASK_DEFAULT_HEIGHT);
+				resizeShapeContext.setWidth(GraphicsUtil.getActivitySize(getDiagram()).getWidth());
+				resizeShapeContext.setHeight(GraphicsUtil.getActivitySize(getDiagram()).getHeight());
 			}
 			
 		} catch (Exception e) {

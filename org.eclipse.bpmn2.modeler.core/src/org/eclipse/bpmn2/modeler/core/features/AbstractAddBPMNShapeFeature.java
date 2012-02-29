@@ -36,6 +36,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.impl.AbstractAddShapeFeature;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -154,4 +155,22 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 		}
 		link(connection, new Object[] { conElement, edge });
 	}
+	
+	protected void prepareAddContext(IAddContext context, int width, int height) {
+		context.putProperty(ContextConstants.LABEL_CONTEXT, true);
+		context.putProperty(ContextConstants.WIDTH, width);
+		context.putProperty(ContextConstants.HEIGHT, height);
+		context.putProperty(ContextConstants.BASE_ELEMENT, context.getNewObject());
+	}
+	
+	protected int getHeight(IAddContext context) {
+		return context.getHeight() > 0 ? context.getHeight() : this.getHeight();
+	}
+	
+	protected int getWidth(IAddContext context) {
+		return context.getWidth() > 0 ? context.getWidth() : this.getWidth();
+	}
+	
+	protected abstract int getHeight();
+	protected abstract int getWidth();
 }

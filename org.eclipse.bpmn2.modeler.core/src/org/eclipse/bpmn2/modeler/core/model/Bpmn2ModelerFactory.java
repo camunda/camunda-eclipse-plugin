@@ -43,6 +43,14 @@ public class Bpmn2ModelerFactory extends Bpmn2FactoryImpl {
     	{
 	    	TargetRuntime rt = TargetRuntime.getCurrentRuntime();
 	    	if (rt!=null) {
+    			
+	    		if (!eClass.getName().equals(Bpmn2Package.eINSTANCE.getDocumentRoot().getName()) && 
+	    			rt.getModelDescriptor().getEPackage().getEClassifier(eClass.getName()) != null
+	    			&& !rt.getId().equals(TargetRuntime.DEFAULT_RUNTIME_ID) ) {
+    				EClass clazz = (EClass) rt.getModelDescriptor().getEPackage().getEClassifier(eClass.getName());
+	    			object = rt.getModelDescriptor().getEFactory().create(clazz);
+    			}
+	    		
 		    	for (ModelExtensionDescriptor med : rt.getModelExtensions()) {
 		    		if (med.getType().equals(eClass.getName())) {
 		    			med.populateObject(object, eResource());
