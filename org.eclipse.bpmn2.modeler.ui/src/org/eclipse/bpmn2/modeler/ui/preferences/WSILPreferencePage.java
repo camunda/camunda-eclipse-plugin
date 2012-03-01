@@ -93,6 +93,7 @@ public class WSILPreferencePage extends PreferencePage implements IWorkbenchPref
 
 	WSILDocument fWsilDocument;
 
+	Button addButton;
 	Button removeButton;
 	Button moveUpButton;
 	Button moveDownButton;
@@ -256,12 +257,12 @@ public class WSILPreferencePage extends PreferencePage implements IWorkbenchPref
 		data = new GridData( GridData.VERTICAL_ALIGN_BEGINNING | GridData.HORIZONTAL_ALIGN_CENTER );		 
 		buttonList.setLayoutData( data );
 		
-		Button add = new Button(buttonList, SWT.NONE);
-		add.setText(Messages.WSILPreferencePage_WSIL_Add);
+		addButton = new Button(buttonList, SWT.NONE);
+		addButton.setText(Messages.WSILPreferencePage_WSIL_Add);
 		data = new GridData(  GridData.FILL_HORIZONTAL );
 	
-		add.setLayoutData(data);
-		add.addSelectionListener(new SelectionAdapter() {
+		addButton.setLayoutData(data);
+		addButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				
@@ -472,6 +473,7 @@ public class WSILPreferencePage extends PreferencePage implements IWorkbenchPref
 		moveDownButton.setEnabled(idx >= 0 && idx < linkList.size() - 1);
 		removeButton.setEnabled( fLinkSelection != null );
 		openInBrowserButton.setEnabled( fLinkSelection != null );
+		addButton.setEnabled( fWsilDocument != null );
 	}
 	
 	
@@ -537,6 +539,7 @@ public class WSILPreferencePage extends PreferencePage implements IWorkbenchPref
 		if (fWsilDocument != null) {
 			fWsilDocument.eResource().eAdapters().add( fContentAdapter );
 		}
+		updateButtons();
 	}
 
 
