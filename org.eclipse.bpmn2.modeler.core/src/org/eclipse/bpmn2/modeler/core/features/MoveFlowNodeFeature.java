@@ -265,6 +265,8 @@ public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 		@Override
 		public boolean isMoveAllowed(Object source, Object target) {
 			try {
+				if (source==target)
+					return true;
 				if (target instanceof Participant) {
 					Participant p = (Participant) target;
 					if (p.equals(ModelHandler.getInstance(getDiagram()).getInternalParticipant())) {

@@ -470,8 +470,8 @@
 			<enable object="ExtensionAttributeDefinition"/>
 			<enable object="StandardLoopCharacteristics"/>
 			<enable object="MultiInstanceLoopCharacteristics"/>
+			<enable object="Lane"/>
 			
-			<disable object="Lane"/>
 			<disable object="MessageFlow"/>
 			<disable object="Association"/>
 			<disable object="ConversationLink"/>
