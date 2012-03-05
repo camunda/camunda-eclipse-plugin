@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.runtime;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.emf.ecore.EPackage;
 
 public class BaseRuntimeDescriptor {
@@ -34,6 +35,8 @@ public class BaseRuntimeDescriptor {
 	}
 	
 	EPackage getEPackage() {
-		return targetRuntime.getModelDescriptor().getEPackage();
+		if (targetRuntime.getModelDescriptor()!=null)
+			return targetRuntime.getModelDescriptor().getEPackage();
+		return Bpmn2Package.eINSTANCE;
 	}
 }

@@ -280,7 +280,9 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 				// now go back and fix up some things...
 				for (TargetRuntime rt : targetRuntimes) {
 					
-					
+					if (rt.modelDescriptor==null) {
+						rt.modelDescriptor = getDefaultRuntime().getModelDescriptor(); 
+					}
 					// add customTask and modelExtension features to modelEnablements
 					// these are enabled by default and can't be disabled.
 					for (ModelEnablementDescriptor me : rt.getModelEnablements()) {
