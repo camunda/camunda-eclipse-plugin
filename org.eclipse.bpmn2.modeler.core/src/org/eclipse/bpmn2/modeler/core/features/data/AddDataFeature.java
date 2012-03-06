@@ -92,18 +92,22 @@ public abstract class AddDataFeature<T extends BaseElement> extends AbstractAddB
 			Graphiti.getPeService().setPropertyValue(container, Properties.COLLECTION_PROPERTY, value);
 		}
 		
-		Shape textShape = peService.createShape(container, false);
-		peService.setPropertyValue(textShape, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
-		Text text = gaService.createDefaultText(getDiagram(), textShape, getName(t));
-		text.setStyle(StyleUtil.getStyleForText(getDiagram()));
-		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
-		text.setVerticalAlignment(Orientation.ALIGNMENT_TOP);
-		gaService.setLocationAndSize(text, 0, height, width, textArea);
+//		Shape textShape = peService.createShape(container, false);
+//		peService.setPropertyValue(textShape, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
+//		Text text = gaService.createDefaultText(getDiagram(), textShape, getName(t));
+//		text.setStyle(StyleUtil.getStyleForText(getDiagram()));
+//		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
+//		text.setVerticalAlignment(Orientation.ALIGNMENT_TOP);
+//		gaService.setLocationAndSize(text, 0, height, width, textArea);
 		
 		peService.createChopboxAnchor(container);
 		AnchorUtil.addFixedPointAnchors(container, invisibleRect);
 		createDIShape(container, t);
 		layoutPictogramElement(container);
+		
+		this.prepareAddContext(context, width, height);
+		this.getFeatureProvider().getAddFeature(context).add(context);
+		
 		return container;
 	}
 

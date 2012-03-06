@@ -17,6 +17,7 @@ import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.features.data.AbstractCreateRootElementFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
@@ -26,6 +27,7 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Envelope;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.modeler.ui.features.LayoutBaseElementTextFeature;
+import org.eclipse.bpmn2.modeler.ui.features.choreography.UpdateChoreographyMessageFlowFeature;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
@@ -37,13 +39,11 @@ import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
+import org.eclipse.graphiti.features.impl.DefaultMoveShapeFeature;
 import org.eclipse.graphiti.features.impl.DefaultResizeShapeFeature;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
-import org.eclipse.graphiti.mm.algorithms.Text;
-import org.eclipse.graphiti.mm.algorithms.styles.Orientation;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
-import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
@@ -52,7 +52,6 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 
 	public static final int ENVELOPE_WIDTH = 30;
 	public static final int ENVELOPE_HEIGHT = 20;
-	public static final int ENVELOPE_TEXT_HEIGHT = 20;
 
 	@Override
 	public boolean canApplyTo(Object o) {
@@ -84,27 +83,22 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 
 				ContainerShape container = peService.createContainerShape(context.getTargetContainer(), true);
 				Rectangle invisibleRect = gaService.createInvisibleRectangle(container);
-				gaService.setLocationAndSize(invisibleRect, context.getX(), context.getY(), width, height + ENVELOPE_TEXT_HEIGHT);
+				gaService.setLocationAndSize(invisibleRect, context.getX(), context.getY(), width, height);
 
 				Envelope envelope = GraphicsUtil.createEnvelope(invisibleRect, 0, 0, width, height);
 				envelope.rect.setFilled(true);
 				StyleUtil.applyBGStyle(envelope.rect, this);
 				envelope.line.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 
-				Shape textShape = peService.createShape(container, false);
-				peService
-						.setPropertyValue(textShape, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
-				Text text = gaService.createDefaultText(getDiagram(), textShape, msg.getName());
-				text.setStyle(StyleUtil.getStyleForText(getDiagram()));
-				text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
-				text.setVerticalAlignment(Orientation.ALIGNMENT_TOP);
-				gaService.setLocationAndSize(text, 0, height, width, ENVELOPE_TEXT_HEIGHT);
-
 				peService.createChopboxAnchor(container);
 				AnchorUtil.addFixedPointAnchors(container, invisibleRect);
 
 				createDIShape(container, msg);
 				layoutPictogramElement(container);
+				
+				this.prepareAddContext(context, width, height);
+				this.getFeatureProvider().getAddFeature(context).add(context);
+				
 				return container;
 			}
 
@@ -122,7 +116,12 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 
 	@Override
 	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {
-		return new UpdateBaseElementNameFeature(fp);
+		// because ChoreographyTasks have an associated Message visual,
+		// we need to allow these to update themselves also.
+		MultiUpdateFeature multiUpdate = new MultiUpdateFeature(fp);
+		multiUpdate.addUpdateFeature(new UpdateBaseElementNameFeature(fp));
+		multiUpdate.addUpdateFeature(new UpdateChoreographyMessageFlowFeature(fp));
+		return multiUpdate;
 	}
 
 	@Override
@@ -171,6 +170,14 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 		@Override
 		public String getStencilImageId() {
 			return ImageProvider.IMG_16_MESSAGE;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
+		 */
+		@Override
+		public Class getBusinessObjectClass() {
+			return Message.class;
 		}
 	}
 
