@@ -322,24 +322,61 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 	 *
 	 */
 	public static class FragmentQNameURIHandler extends QNameURIHandler {
-		
+
 		protected BpmnXmlHelper xmlHelper;
-		
+
 		public FragmentQNameURIHandler(BpmnXmlHelper xmlHelper) {
 			super(xmlHelper);
 			this.xmlHelper = xmlHelper;
 		}
-		
+
 		@Override
 		public URI deresolve(URI uri) {
-	        String fragment = uri.fragment();
-	        if (fragment != null && !fragment.startsWith("/"))
-	        {
-                // return just fragment (i.e. without the '#'), always assume local reference
-                return URI.createURI(fragment);
-	        }
-	        return super.deresolve(uri);
+			String fragment = uri.fragment();
+			if (fragment != null && !fragment.startsWith("/")) {
+				// return just fragment (i.e. without the '#'), always assume
+				// local reference
+				return URI.createURI(fragment);
+			}
+			return super.deresolve(uri);
 		}
-		
+
+		@Override
+		public String convertQNameToUri(String qName) {
+			if (qName.contains("#") || qName.contains("/")) {
+				// We already have an URI and not QName, e.g. URL
+				return qName;
+			}
+
+			// Split into prefix and local part (fragment)
+			String[] parts = qName.split(":");
+			String prefix, fragment;
+			if (parts.length == 1) {
+				prefix = null;
+				fragment = qName;
+			} else if (parts.length == 2) {
+				prefix = parts[0];
+				fragment = parts[1];
+			} else
+				throw new IllegalArgumentException("Illegal QName: " + qName);
+
+			if (fragment.contains(".")) {
+				// HACK: officially IDs can contain ".", but unfortunately
+				// XmlHandler calls resolve also for xsi:schemaLocation stuff
+				// and similar, that are
+				// NO URIs. We must not process them.
+				return qName;
+			}
+
+			boolean isTargetNamespacePrefix = false;
+			try {
+				isTargetNamespacePrefix = xmlHelper.isTargetNamespace(prefix);
+			} catch (Exception e) {
+			}
+			if (!isTargetNamespacePrefix)
+				return xmlHelper.getPathForPrefix(prefix).appendFragment(fragment).toString();
+			else
+				return baseURI.appendFragment(fragment).toString();
+		}
 	}
 }
