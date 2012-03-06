@@ -66,6 +66,11 @@ public class AddEventFeature extends AbstractAddBPMNShapeFeature {
 
 		int eventWidth = this.getWidth(context);
 		int eventHeight = this.getHeight(context);
+		// for backward compatibility with older files that included
+		// the label height in the figure height
+		if (eventWidth!=eventHeight) {
+			eventWidth = eventHeight = Math.min(eventWidth, eventHeight);
+		}
 
 		ContainerShape eventContainerShape = peService.createContainerShape(context.getTargetContainer(), true);
 		Rectangle invisibleRect = gaService.createInvisibleRectangle(eventContainerShape);

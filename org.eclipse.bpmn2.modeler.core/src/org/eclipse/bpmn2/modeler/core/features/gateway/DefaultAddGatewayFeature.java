@@ -55,6 +55,11 @@ public class DefaultAddGatewayFeature extends AbstractAddBPMNShapeFeature {
 
 		int gatewayWidth = this.getWidth(context);
 		int gatewayHeight = this.getHeight(context);
+		// for backward compatibility with older files that included
+		// the label height in the figure height
+		if (gatewayWidth!=gatewayHeight) {
+			gatewayWidth = gatewayHeight = Math.min(gatewayWidth, gatewayHeight);
+		}
 
 		// Create a container for the gateway-symbol
 		final ContainerShape gatewayContainerShape = peService.createContainerShape(context.getTargetContainer(), true);
