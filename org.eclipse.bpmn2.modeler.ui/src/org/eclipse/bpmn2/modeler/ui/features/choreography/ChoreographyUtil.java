@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.ChoreographyActivity;
 import org.eclipse.bpmn2.ChoreographyLoopType;
 import org.eclipse.bpmn2.ChoreographyTask;
@@ -38,6 +39,7 @@ import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil.BoundaryAnchor;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Envelope;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
@@ -574,16 +576,16 @@ public class ChoreographyUtil implements ChoreographyProperties {
 		Message bottomMessage = null;
 
 		if (shouldDrawTopMessage) {
+			topMessage = getMessage(messageFlows, topAndBottom.getFirst(), !hasTopMessage);
 			topMessageName = getMessageName(messageFlows, topAndBottom.getFirst());
-			topMessage = getMessage(messageFlows, topAndBottom.getFirst());
 		}
 		if (topMessageName == null) {
 			topMessageName = new String();
 		}
 
 		if (shouldDrawBottomMessage) {
+			bottomMessage = getMessage(messageFlows, topAndBottom.getSecond(), !hasBottomMessage);
 			bottomMessageName = getMessageName(messageFlows, topAndBottom.getSecond());
-			bottomMessage = getMessage(messageFlows, topAndBottom.getSecond());
 		}
 		if (bottomMessageName == null) {
 			bottomMessageName = new String();
@@ -675,13 +677,20 @@ public class ChoreographyUtil implements ChoreographyProperties {
 		return null;
 	}
 
-	private static Message getMessage(List<MessageFlow> messageFlows, List<ContainerShape> bands) {
+	private static Message getMessage(List<MessageFlow> messageFlows, List<ContainerShape> bands, boolean create) {
 		for (ContainerShape band : bands) {
 			Participant participant = BusinessObjectUtil.getFirstElementOfType(band, Participant.class);
 			BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(band, BPMNShape.class);
 			if (bpmnShape.isIsMessageVisible()) {
 				for (MessageFlow flow : messageFlows) {
 					if (flow.getSourceRef().equals(participant)) {
+						if (flow.getMessageRef()==null && create) {
+							Message msg = Bpmn2Factory.eINSTANCE.createMessage();
+							ModelUtil.setID(msg, participant.eResource());
+							msg.setName("Undefined Message");
+							ModelUtil.getDefinitions(participant).getRootElements().add(msg);
+							flow.setMessageRef(msg);
+						}
 						return flow.getMessageRef();
 					}
 				}

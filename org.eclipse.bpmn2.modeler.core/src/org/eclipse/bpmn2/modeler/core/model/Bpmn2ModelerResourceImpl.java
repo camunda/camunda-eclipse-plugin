@@ -26,6 +26,7 @@
  */
 package org.eclipse.bpmn2.modeler.core.model;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -33,10 +34,18 @@ import java.util.Map;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.RootElement;
+import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.eclipse.bpmn2.di.BPMNEdge;
+import org.eclipse.bpmn2.di.BPMNLabel;
+import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.bpmn2.util.ImportHelper;
 import org.eclipse.bpmn2.util.QNameURIHandler;
+import org.eclipse.dd.dc.Bounds;
+import org.eclipse.dd.dc.Point;
+import org.eclipse.dd.di.DiagramElement;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
@@ -51,6 +60,9 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.XMLSave;
 import org.eclipse.emf.ecore.xmi.impl.XMLLoadImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMLSaveImpl;
+import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
+import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
@@ -100,16 +112,7 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 
 	@Override
 	protected XMLSave createXMLSave() {
-		return new Bpmn2ModelerXMLSave(createXMLHelper()) {
-			@Override
-			protected boolean shouldSaveFeature(EObject o, EStructuralFeature f) {
-				if (Bpmn2Package.eINSTANCE.getDocumentation_Text().equals(f))
-					return false;
-				if (Bpmn2Package.eINSTANCE.getFormalExpression_Body().equals(f))
-					return false;
-				return super.shouldSaveFeature(o, f);
-			}
-		};
+		return new Bpmn2ModelerXMLSave(createXMLHelper());
 	}
 
 	@Override
@@ -202,6 +205,8 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 	}
 	
 	public static class Bpmn2ModelerXMLSave extends XMLSaveImpl {
+		protected float minX = Float.MAX_VALUE;
+		protected float minY = Float.MAX_VALUE;
 
 		public Bpmn2ModelerXMLSave(XMLHelper helper) {
 			super(helper);
@@ -211,6 +216,125 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 		protected void init(XMLResource resource, Map<?, ?> options) {
 			super.init(resource, options);
 			featureTable = new Bpmn2ModelerXMLSave.Bpmn2Lookup(map, extendedMetaData, elementHandler);
+			
+			final List<BPMNDiagram> diagrams = getAll(BPMNDiagram.class, resource);
+			for (BPMNDiagram bpmnDiagram : diagrams) {
+				findMinXY(bpmnDiagram);
+			}
+			
+		}
+		
+		protected <T> List<T> getAll(Class<T> class1, Resource resource) {
+			ArrayList<T> l = new ArrayList<T>();
+			TreeIterator<EObject> contents = resource.getAllContents();
+			for (; contents.hasNext();) {
+				Object t = contents.next();
+				if (class1.isInstance(t)) {
+					l.add((T) t);
+				}
+			}
+			return l;
+		}
+		
+		protected void findMinXY(BPMNDiagram bpmnDiagram) {
+			EList<DiagramElement> elements = (EList<DiagramElement>) bpmnDiagram.getPlane().getPlaneElement();
+			for (DiagramElement e : elements) {
+				if (e instanceof BPMNShape) {
+					Bounds b = ((BPMNShape)e).getBounds();
+					minX = Math.min(minX, b.getX());
+					minY = Math.min(minY, b.getY());
+				}
+				else if (e instanceof BPMNEdge) {
+					List<Point> points = ((BPMNEdge)e).getWaypoint();
+					for (Point p : points) {
+						minX = Math.min(minX, p.getX());
+						minY = Math.min(minY, p.getY());
+					}
+
+				}
+				else if (e instanceof BPMNLabel) {
+					Bounds b = ((BPMNLabel)e).getBounds();
+					minX = Math.min(minX, b.getX());
+					minY = Math.min(minY, b.getY());
+				}
+			}
+		}
+
+		@Override
+		protected void saveElement(EObject o, EStructuralFeature f) {
+			float oldX = 0, oldY = 0;
+			List<Point> oldPoints = null;
+			
+			if (o instanceof BPMNShape) {
+				Bounds b = ((BPMNShape)o).getBounds();
+				if (minX<0) {
+					oldX = b.getX();
+					b.setX(oldX - minX);
+				}
+				if (minY<0) {
+					oldY = b.getY();
+					b.setY(oldY - minY);
+				}
+			}
+			else if (o instanceof BPMNEdge) {
+				List<Point> points = ((BPMNEdge)o).getWaypoint();
+				oldPoints = new ArrayList<Point>();
+				oldPoints.addAll(points);
+				for (Point p : points) {
+					if (minX<0)
+						p.setX( p.getX() - minX);
+					if (minY<0)
+						p.setY( p.getY() - minY);
+				}
+			}
+			else if (o instanceof BPMNLabel) {
+				Bounds b = ((BPMNLabel)o).getBounds();
+				if (b!=null) {
+					if (minX<0) {
+						oldX = b.getX();
+						b.setX(oldX - minX);
+					}
+					if (minY<0) {
+						oldY = b.getY();
+						b.setY(oldY - minY);
+					}
+				}
+			}
+
+			super.saveElement(o, f);
+			
+			if (o instanceof BPMNShape) {
+				Bounds b = ((BPMNShape)o).getBounds();
+				if (minX<0) {
+					b.setX(oldX);
+				}
+				if (minY<0) {
+					b.setY(oldY);
+				}
+			}
+			else if (o instanceof BPMNEdge) {
+				List<Point> points = ((BPMNEdge)o).getWaypoint();
+				int index = 0;
+				for (Point p : points) {
+					if (minX<0)
+						p.setX(oldPoints.get(index).getX());
+					if (minY<0)
+						p.setY(oldPoints.get(index).getY());
+					++index;
+				}
+			}
+			else if (o instanceof BPMNLabel) {
+				Bounds b = ((BPMNLabel)o).getBounds();
+				if (b!=null) {
+					if (minX<0) {
+						b.setX(oldX);
+					}
+					if (minY<0) {
+						b.setY(oldY);
+					}
+				}
+			}
+			
 		}
 
 		@Override
