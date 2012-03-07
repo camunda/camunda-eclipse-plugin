@@ -92,7 +92,7 @@ public class UpdateBaseElementNameFeature extends AbstractUpdateFeature {
 
 		if (pe instanceof ContainerShape) {
 			IGaService gaService = Graphiti.getGaService();
-			ContainerShape container = (ContainerShape)pe;
+				ContainerShape container = (ContainerShape)pe;
 			
 			Shape shape = container.getChildren().get(0); // Otherwise, this would never be reached!
 			
