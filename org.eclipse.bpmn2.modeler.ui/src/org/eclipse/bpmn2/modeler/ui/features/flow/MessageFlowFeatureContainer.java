@@ -101,10 +101,7 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 
 	@Override
 	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {
-		MultiUpdateFeature multiUpdate = new MultiUpdateFeature(fp);
-		multiUpdate.addUpdateFeature(new UpdateBaseElementNameFeature(fp));
-		// TODO: any other updates needed?
-		return multiUpdate;
+		return new UpdateBaseElementNameFeature(fp);
 	}
 
 	@Override

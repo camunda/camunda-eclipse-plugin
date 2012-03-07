@@ -27,6 +27,7 @@ import org.eclipse.graphiti.features.impl.DefaultMoveShapeFeature;
 import org.eclipse.graphiti.mm.algorithms.AbstractText;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 
 public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
@@ -54,21 +55,23 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 	protected void postMoveShape(IMoveShapeContext context) {
 		DIUtils.updateDIShape(context.getPictogramElement());
 
-		Object[] node = getAllBusinessObjectsForPictogramElement(context.getShape());
+		Shape shape = context.getShape();
+		Object[] node = getAllBusinessObjectsForPictogramElement(shape);
 		
 		for (Object object : node) {
 			List<PictogramElement> picElements = Graphiti.getLinkService().getPictogramElements(getDiagram(), (EObject) object);
 			for (PictogramElement element : picElements){
-				if (Graphiti.getPeService().getPropertyValue(element, GraphicsUtil.LABEL_PROPERTY) != null){
+				if (element!=shape &&
+						Graphiti.getPeService().getPropertyValue(element, GraphicsUtil.LABEL_PROPERTY) != null){
 					try{
 						ContainerShape container = (ContainerShape) element;
 						GraphicsUtil.alignWithShape(
 								(AbstractText) container.getChildren().get(0).getGraphicsAlgorithm(), 
 								container,
-								context.getShape().getGraphicsAlgorithm().getWidth(),
-								context.getShape().getGraphicsAlgorithm().getHeight(),
-								context.getShape().getGraphicsAlgorithm().getX(),
-								context.getShape().getGraphicsAlgorithm().getY(),
+								shape.getGraphicsAlgorithm().getWidth(),
+								shape.getGraphicsAlgorithm().getHeight(),
+								shape.getGraphicsAlgorithm().getX(),
+								shape.getGraphicsAlgorithm().getY(),
 								preShapeX,
 								preShapeY
 						);

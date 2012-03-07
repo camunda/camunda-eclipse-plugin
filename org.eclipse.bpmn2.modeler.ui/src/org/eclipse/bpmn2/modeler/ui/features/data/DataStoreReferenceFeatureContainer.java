@@ -92,11 +92,10 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 
 				int width = this.getWidth();
 				int height = this.getHeight();
-				int textArea = 15;
 
 				ContainerShape container = peService.createContainerShape(context.getTargetContainer(), true);
 				Rectangle invisibleRect = gaService.createInvisibleRectangle(container);
-				gaService.setLocationAndSize(invisibleRect, context.getX(), context.getY(), width, height + textArea);
+				gaService.setLocationAndSize(invisibleRect, context.getX(), context.getY(), width, height);
 
 				int whalf = width / 2;
 
@@ -121,19 +120,23 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 				Polyline lineTop = gaService.createPolyline(invisibleRect, xy, bend);
 				lineTop.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 
-				Shape textShape = peService.createShape(container, false);
-				peService
-						.setPropertyValue(textShape, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
-				Text text = gaService.createDefaultText(getDiagram(), textShape, store.getName());
-				text.setStyle(StyleUtil.getStyleForText(getDiagram()));
-				text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
-				text.setVerticalAlignment(Orientation.ALIGNMENT_TOP);
-				gaService.setLocationAndSize(text, 0, height, width, textArea);
+//				Shape textShape = peService.createShape(container, false);
+//				peService
+//						.setPropertyValue(textShape, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
+//				Text text = gaService.createDefaultText(getDiagram(), textShape, store.getName());
+//				text.setStyle(StyleUtil.getStyleForText(getDiagram()));
+//				text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
+//				text.setVerticalAlignment(Orientation.ALIGNMENT_TOP);
+//				gaService.setLocationAndSize(text, 0, height, width, textArea);
 
 				peService.createChopboxAnchor(container);
 				AnchorUtil.addFixedPointAnchors(container, invisibleRect);
 				createDIShape(container, store);
 				layoutPictogramElement(container);
+				
+				this.prepareAddContext(context, width, height);
+				this.getFeatureProvider().getAddFeature(context).add(context);
+				
 				return container;
 			}
 

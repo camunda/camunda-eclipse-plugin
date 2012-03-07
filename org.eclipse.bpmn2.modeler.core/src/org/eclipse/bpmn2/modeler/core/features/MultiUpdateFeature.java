@@ -24,7 +24,7 @@ import org.eclipse.graphiti.features.impl.Reason;
 
 public class MultiUpdateFeature extends AbstractUpdateFeature {
 
-	private List<IUpdateFeature> features = new ArrayList<IUpdateFeature>();
+	protected List<IUpdateFeature> features = new ArrayList<IUpdateFeature>();
 
 	public MultiUpdateFeature(IFeatureProvider fp) {
 		super(fp);

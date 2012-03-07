@@ -12,13 +12,6 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.choreography;
 
-import static org.eclipse.bpmn2.modeler.core.features.choreography.ChoreographyProperties.ENVELOPE_HEIGHT_MODIFIER;
-import static org.eclipse.bpmn2.modeler.core.features.choreography.ChoreographyProperties.ENV_H;
-import static org.eclipse.bpmn2.modeler.core.features.choreography.ChoreographyProperties.ENV_W;
-import static org.eclipse.bpmn2.modeler.core.features.choreography.ChoreographyProperties.MARKER_H;
-import static org.eclipse.bpmn2.modeler.core.features.choreography.ChoreographyProperties.MESSAGE_LINK;
-import static org.eclipse.bpmn2.modeler.core.features.choreography.ChoreographyProperties.R;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -75,7 +68,7 @@ import org.eclipse.graphiti.services.IPeService;
 import org.eclipse.graphiti.ui.services.GraphitiUi;
 import org.eclipse.graphiti.util.IColorConstant;
 
-public class ChoreographyUtil {
+public class ChoreographyUtil implements ChoreographyProperties {
 
 	private static IGaService gaService = Graphiti.getGaService();
 	private static IPeService peService = Graphiti.getPeService();
@@ -525,7 +518,7 @@ public class ChoreographyUtil {
 
 		List<ContainerShape> bandContainers = getParticipantBandContainerShapes(choreographyContainer);
 		Tuple<List<ContainerShape>, List<ContainerShape>> topAndBottom = getTopAndBottomBands(bandContainers);
-		List<ContainerShape> shapesWithVisileMessages = new ArrayList<ContainerShape>();
+		List<ContainerShape> shapesWithVisibleMessages = new ArrayList<ContainerShape>();
 
 		Map<AnchorLocation, BoundaryAnchor> boundaryAnchors = AnchorUtil.getBoundaryAnchors(choreographyContainer);
 		BoundaryAnchor topBoundaryAnchor = boundaryAnchors.get(AnchorLocation.TOP);
@@ -540,7 +533,7 @@ public class ChoreographyUtil {
 			EObject container = connection.getEnd().eContainer();
 			if (container instanceof PropertyContainer) {
 				String property = peService.getPropertyValue((PropertyContainer) container, MESSAGE_LINK);
-				if (property != null && new Boolean(property)) {
+				if (Boolean.parseBoolean(property)) {
 					topConnectionIndex = i;
 					hasTopMessage = true;
 					break;
@@ -555,7 +548,7 @@ public class ChoreographyUtil {
 			EObject container = connection.getEnd().eContainer();
 			if (container instanceof PropertyContainer) {
 				String property = peService.getPropertyValue((PropertyContainer) container, MESSAGE_LINK);
-				if (property != null && new Boolean(property)) {
+				if (Boolean.parseBoolean(property)) {
 					bottomConnectionIndex = i;
 					hasBottomMessage = true;
 					break;
@@ -568,12 +561,12 @@ public class ChoreographyUtil {
 			ContainerShape bandContainer = iterator.next();
 			BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(bandContainer, BPMNShape.class);
 			if (bpmnShape.isIsMessageVisible()) {
-				shapesWithVisileMessages.add(bandContainer);
+				shapesWithVisibleMessages.add(bandContainer);
 			}
 		}
 
-		boolean shouldDrawTopMessage = !Collections.disjoint(topAndBottom.getFirst(), shapesWithVisileMessages);
-		boolean shouldDrawBottomMessage = !Collections.disjoint(topAndBottom.getSecond(), shapesWithVisileMessages);
+		boolean shouldDrawTopMessage = !Collections.disjoint(topAndBottom.getFirst(), shapesWithVisibleMessages);
+		boolean shouldDrawBottomMessage = !Collections.disjoint(topAndBottom.getSecond(), shapesWithVisibleMessages);
 
 		String topMessageName = null;
 		String bottomMessageName = null;
@@ -604,6 +597,7 @@ public class ChoreographyUtil {
 			int y = (int) (bounds.getY() - ENVELOPE_HEIGHT_MODIFIER - ENV_H);
 			ContainerShape envelope = drawMessageLink(topMessageName, topBoundaryAnchor, x, y, isFilled(topAndBottom.getFirst()));
 			fp.link(envelope, topMessage);
+			peService.setPropertyValue(envelope, MESSAGE_NAME, topMessageName);
 		} else if (hasTopMessage && !shouldDrawTopMessage) {
 			PictogramElement envelope = (PictogramElement) topConnections.get(topConnectionIndex).getEnd().eContainer();
 			peService.deletePictogramElement(topConnections.get(topConnectionIndex));
@@ -617,6 +611,7 @@ public class ChoreographyUtil {
 			int y = (int) (bounds.getY() + bounds.getHeight() + ENVELOPE_HEIGHT_MODIFIER);
 			ContainerShape envelope = drawMessageLink(bottomMessageName, bottomBoundaryAnchor, x, y, isFilled(topAndBottom.getSecond()));
 			fp.link(envelope, bottomMessage);
+			peService.setPropertyValue(envelope, MESSAGE_NAME, bottomMessageName);
 		} else if (hasBottomMessage && !shouldDrawBottomMessage) {
 			PictogramElement envelope = (PictogramElement) bottomConnections.get(bottomConnectionIndex).getEnd()
 					.eContainer();
@@ -659,6 +654,7 @@ public class ChoreographyUtil {
 				IDimension size = GraphitiUi.getUiLayoutService().calculateTextSize(label, text.getFont());
 				gaService.setSize(containerShape.getGraphicsAlgorithm(), ENV_W + size.getWidth() + 3, ENV_H);
 				gaService.setSize(text, size.getWidth(), size.getHeight());
+				peService.setPropertyValue(containerShape, MESSAGE_NAME, label);
 				break;
 			}
 		}
@@ -701,7 +697,12 @@ public class ChoreographyUtil {
 				flow.getMessageRef().getItemRef().getStructureRef()==null) {
 			return flow.getMessageRef().getName();
 		} else {
-			return PropertyUtil.getText(flow.getMessageRef().getItemRef());
+			String messageName = flow.getMessageRef().getName();
+			String itemDefinitionName = PropertyUtil.getText(flow.getMessageRef().getItemRef());
+			String text = itemDefinitionName;
+			if (messageName!=null && !messageName.isEmpty())
+				text += "/" + messageName;
+			return text;
 		}
 	}
 	
