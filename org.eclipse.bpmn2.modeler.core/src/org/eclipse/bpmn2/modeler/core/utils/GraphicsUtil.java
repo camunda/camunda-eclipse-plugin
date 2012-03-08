@@ -784,6 +784,7 @@ public class GraphicsUtil {
 	public static final String ACTIVITY_MARKER_LOOP_CHARACTERISTIC = "activity.marker.loop.characteristic";
 	public static final String ACTIVITY_MARKER_AD_HOC = "activity.marker.adhoc";
 	public static final String ACTIVITY_MARKER_EXPAND = "activity.marker.expand";
+	public static final String EVENT_MARKER_CONTAINER = "event.marker.container";
 
 	public static Compensation createActivityMarkerCompensate(ContainerShape markerContainer) {
 		GraphicsAlgorithmContainer algorithmContainer = createActivityMarkerGaContainer(markerContainer,

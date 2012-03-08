@@ -81,6 +81,10 @@ public abstract class AbstractUpdateMarkerFeature<T extends FlowElement> extends
 		if(property != null && new Boolean(property)) {
 			return shape instanceof ContainerShape;
 		}
+		property = Graphiti.getPeService().getPropertyValue(shape, GraphicsUtil.EVENT_MARKER_CONTAINER);
+		if(property != null && new Boolean(property)) {
+			return shape instanceof ContainerShape;
+		}
 		return false;
 	}
 	
