@@ -73,7 +73,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 
-	public static final String BPMN2_CONTENT_TYPE_ID = "org.eclipse.bpmn2.content-description.xml";
+	public static final String BPMN2_CONTENT_TYPE_ID = "org.eclipse.bpmn2.content-type.xml";
 	private BpmnXmlHelper xmlHelper;
 	private QNameURIHandler uriHandler;
 

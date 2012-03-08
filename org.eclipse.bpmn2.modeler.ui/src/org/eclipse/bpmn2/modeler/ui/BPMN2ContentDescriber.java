@@ -22,8 +22,12 @@ import org.apache.xerces.xni.Augmentations;
 import org.apache.xerces.xni.QName;
 import org.apache.xerces.xni.XMLAttributes;
 import org.apache.xerces.xni.XNIException;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.content.IContentDescription;
+import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.ITextContentDescriber;
 import org.xml.sax.InputSource;
 
@@ -104,4 +108,22 @@ public class BPMN2ContentDescriber implements ITextContentDescriber {
 		private static final long serialVersionUID = 1L;
 	}
 
+	public static boolean isBPMN2File(IResource res)
+	{
+		try
+		{
+			if (res.getType() == IResource.FILE) {
+				IContentDescription desc = ((IFile) res).getContentDescription();
+				if (desc != null) {
+					IContentType type = desc.getContentType();
+					if (type.getId().equals(Bpmn2ModelerResourceImpl.BPMN2_CONTENT_TYPE_ID))
+						return true;
+				}
+			}
+		}
+		catch(Exception ex)
+		{
+		}
+		return false;
+	}
 }

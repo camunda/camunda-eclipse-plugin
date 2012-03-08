@@ -27,6 +27,7 @@ import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.bpmn2.modeler.ui.Activator;
+import org.eclipse.bpmn2.modeler.ui.IFileChangeListener;
 import org.eclipse.bpmn2.modeler.ui.util.ErrorUtils;
 import org.eclipse.bpmn2.modeler.ui.wizards.BPMN2DiagramCreator;
 import org.eclipse.bpmn2.modeler.ui.wizards.Bpmn2DiagramEditorInput;
@@ -58,6 +59,7 @@ import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.graphiti.ui.internal.editor.GFPaletteRoot;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
@@ -86,6 +88,7 @@ public class BPMN2Editor extends DiagramEditor {
 	private IFile modelFile;
 	private IFile diagramFile;
 	
+	private IFileChangeListener fileChangeListener;
 	private IWorkbenchListener workbenchListener;
 	private ISelectionListener selectionListener;
 	private boolean workbenchShutdown = false;
@@ -178,6 +181,7 @@ public class BPMN2Editor extends DiagramEditor {
 		
 		super.init(site, input);
 		addSelectionListener();
+		addFileChangeListener();
 	}
 
 	public Bpmn2Preferences getPreferences() {
@@ -373,6 +377,51 @@ public class BPMN2Editor extends DiagramEditor {
 	{
 		if (selectionListener!=null) {
 			getSite().getPage().removeSelectionListener(selectionListener);
+			selectionListener = null;
+		}
+	}
+
+	private void addFileChangeListener() {
+		if (fileChangeListener==null) {
+			fileChangeListener = new IFileChangeListener() {
+				public void deleted(IPath filePath) {
+					// close the editor if either the dummy diagramfile (in the .bpmn2 folder)
+					// or the model file is deleted
+					if (modelFile.getFullPath().equals(filePath)) {
+						// Close the editor.
+						Display display = getSite().getShell().getDisplay();
+						display.asyncExec(new Runnable() {
+							public void run() {
+								getSite().getPage().closeEditor(BPMN2Editor.this, false);
+							}
+						});
+					}
+					else if (diagramFile.getFullPath().equals(filePath)) {
+						// already handled by Graphiti
+					}
+				}
+				public void moved(IPath oldFilePath, IPath newFilePath) {
+					// handle file move/rename after the fact (i.e. newFile now exists, old file does not)
+					if (modelFile.getFullPath().equals(oldFilePath)) {
+						// same behavior as Graphiti
+						// TODO: if Graphiti behavior changes so that it can handle file rename/move
+						// then we need to change this as well.
+						deleted(oldFilePath);
+					}
+					else if (diagramFile.getFullPath().equals(oldFilePath)) {
+						// Graphiti handles this as a file delete notification and closes the editor.
+						System.out.println("BPMN2Editor diagram file has moved from "+oldFilePath+" to "+newFilePath);
+					}
+				}
+			};
+			Activator.getDefault().getResourceChangeListener().addListener(fileChangeListener);
+		}
+	}
+
+	private void removeFileChangeListener() {
+		if (fileChangeListener!=null) {
+			Activator.getDefault().getResourceChangeListener().removeListener(fileChangeListener);
+			fileChangeListener = null;
 		}
 	}
 	
@@ -406,6 +455,7 @@ public class BPMN2Editor extends DiagramEditor {
 		ModelUtil.clearIDs(modelHandler.getResource(), instances==0);
 		getResourceSet().eAdapters().remove(getEditorAdapter());
 		removeSelectionListener();
+		removeFileChangeListener();
 		if (instances==0)
 			setActiveEditor(null);
 		
@@ -421,6 +471,10 @@ public class BPMN2Editor extends DiagramEditor {
 
 	public IFile getModelFile() {
 		return modelFile;
+	}
+
+	public IFile getDiagramFile() {
+		return diagramFile;
 	}
 	
 	public ModelHandler getModelHandler() {

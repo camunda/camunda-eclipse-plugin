@@ -11,6 +11,7 @@
 			id="org.eclipse.bpmn2.modeler.ui.diagram" name="BPMN2 Diagram">
 		</wizard>
 	</extension>
+	
 	<extension point="org.eclipse.ui.editors">
 		<editor class="org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor"
 			contributorClass="org.eclipse.graphiti.ui.editor.DiagramEditorActionBarContributor"
@@ -21,16 +22,16 @@
 		</editor>
 	</extension>
 
-	<!--
 	<extension point="org.eclipse.core.contenttype.contentTypes">
 		<content-type base-type="org.eclipse.core.runtime.xml"
-			id="org.eclipse.bpmn2.modeler.contenttype" name="BPMN2 Editor File"
-			file-extensions="bpmn,bpmn2" priority="normal">
+			id="org.eclipse.bpmn2.content-type.xml"
+			name="BPMN2 Modeler File"
+			file-extensions="bpmn,bpmn2"
+			priority="normal">
 			<describer class="org.eclipse.bpmn2.modeler.ui.BPMN2ContentDescriber">
 			</describer>
 		</content-type>
 	</extension>
-	-->
 
 	<!-- Preference Pages -->
 	

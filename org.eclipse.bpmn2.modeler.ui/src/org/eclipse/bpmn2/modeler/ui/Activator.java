@@ -23,6 +23,13 @@ import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2EditorItemProviderAdapterFacto
 import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2WSDLAdapterFactory;
 import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2WSILAdapterFactory;
 import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2XSDAdapterFactory;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.ISaveContext;
+import org.eclipse.core.resources.ISaveParticipant;
+import org.eclipse.core.resources.ISavedState;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
@@ -47,6 +54,10 @@ public class Activator extends AbstractUIPlugin {
 
 	// The shared instance
 	private static Activator plugin;
+	
+	// handles changes to the bpmn file
+	private BPMN2ResourceChangeListener resourceChangeListener;
+	private ISaveParticipant saveParticipant;
 	
 	// Adapter Factory registration
 	static {
@@ -78,6 +89,8 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+
+		initializeResourceChangeListener();
 	}
 
 	/*
@@ -88,6 +101,11 @@ public class Activator extends AbstractUIPlugin {
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
+		
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		if (workspace != null) {
+			workspace.removeResourceChangeListener(this.resourceChangeListener);
+		}
 	}
 
 	/**
@@ -195,4 +213,67 @@ public class Activator extends AbstractUIPlugin {
 	public Image getImage(String id) {
 		return getImageRegistry().get(id);
 	}
+
+
+	/**
+	 * Installs the IResourceChangeListener for this Plugin. Also
+	 * checks if there were any changes to bpmn files while the plug-in
+	 * was not active.
+	 */
+	private void initializeResourceChangeListener() throws CoreException {
+		this.resourceChangeListener = new BPMN2ResourceChangeListener();
+		// Add the save participant in a separate thread
+		// to make sure that it doesn't block the UI thread and potentially cause
+		// deadlocks with the code that caused our plugin to be started.
+		Thread initSaveParticipantThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					IWorkspace workspace = ResourcesPlugin.getWorkspace();
+					workspace.addResourceChangeListener(Activator.this.resourceChangeListener, IResourceChangeEvent.POST_BUILD);
+					ISavedState savedState = workspace.addSaveParticipant("BPMN2 Modeler", getSaveParticipant());
+					if (savedState != null) {
+						savedState.processResourceChangeEvents(Activator.this.resourceChangeListener);
+					}
+				} catch (CoreException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		});
+		initSaveParticipantThread.setName("BPMN2 Modeler plugin init"); //$NON-NLS-1$
+		initSaveParticipantThread.start();
+	}
+
+	/**
+	 * We are only interested in the resource delta while the plugin was
+	 * not active and don't really care about the plug-in save lifecycle.
+	 */
+	private ISaveParticipant getSaveParticipant() {
+		if (this.saveParticipant == null) {
+			this.saveParticipant = new ISaveParticipant() {
+				@Override
+				public void doneSaving(ISaveContext context) {
+				}
+				@Override
+				public void prepareToSave(ISaveContext context) throws CoreException {
+				}
+				@Override
+				public void rollback(ISaveContext context) {
+				}
+				@Override
+				public void saving(ISaveContext context) throws CoreException {
+					context.needDelta();
+				}
+			};
+		}
+		return this.saveParticipant;
+	}
+
+	/**
+	 * Returns the resource change listener.
+	 */
+	public BPMN2ResourceChangeListener getResourceChangeListener() {
+		return this.resourceChangeListener;
+	}
+
 }
