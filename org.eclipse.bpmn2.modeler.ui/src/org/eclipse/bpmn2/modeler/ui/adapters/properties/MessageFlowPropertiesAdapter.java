@@ -40,7 +40,7 @@ public class MessageFlowPropertiesAdapter extends ExtendedPropertiesAdapter {
 				final MessageFlow mf = context instanceof MessageFlow ?
 						(MessageFlow)context :
 						(MessageFlow)this.object;
-				String text = "";
+				String text = "Message Flow ";
 				if (mf.getMessageRef()!=null) {
 					text += ChoreographyUtil.getMessageFlowName(mf);
 				}

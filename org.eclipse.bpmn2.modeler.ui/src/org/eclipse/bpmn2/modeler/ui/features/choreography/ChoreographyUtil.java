@@ -58,6 +58,7 @@ import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
 import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.algorithms.styles.LineStyle;
 import org.eclipse.graphiti.mm.algorithms.styles.Orientation;
+import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -569,6 +570,7 @@ public class ChoreographyUtil implements ChoreographyProperties {
 
 		boolean shouldDrawTopMessage = !Collections.disjoint(topAndBottom.getFirst(), shapesWithVisibleMessages);
 		boolean shouldDrawBottomMessage = !Collections.disjoint(topAndBottom.getSecond(), shapesWithVisibleMessages);
+		ContainerShape envelope;
 
 		String topMessageName = null;
 		String bottomMessageName = null;
@@ -576,7 +578,7 @@ public class ChoreographyUtil implements ChoreographyProperties {
 		Message bottomMessage = null;
 
 		if (shouldDrawTopMessage) {
-			topMessage = getMessage(messageFlows, topAndBottom.getFirst(), !hasTopMessage);
+			topMessage = getMessage(messageFlows, topAndBottom.getFirst(), false);
 			topMessageName = getMessageName(messageFlows, topAndBottom.getFirst());
 		}
 		if (topMessageName == null) {
@@ -584,7 +586,7 @@ public class ChoreographyUtil implements ChoreographyProperties {
 		}
 
 		if (shouldDrawBottomMessage) {
-			bottomMessage = getMessage(messageFlows, topAndBottom.getSecond(), !hasBottomMessage);
+			bottomMessage = getMessage(messageFlows, topAndBottom.getSecond(), false);
 			bottomMessageName = getMessageName(messageFlows, topAndBottom.getSecond());
 		}
 		if (bottomMessageName == null) {
@@ -595,39 +597,66 @@ public class ChoreographyUtil implements ChoreographyProperties {
 		Bounds bounds = bpmnShape.getBounds();
 		int x = (int) ((bounds.getX() + bounds.getWidth() / 2) - (ENV_W / 2));
 
+		envelope = null;
 		if (!hasTopMessage && shouldDrawTopMessage) {
 			int y = (int) (bounds.getY() - ENVELOPE_HEIGHT_MODIFIER - ENV_H);
-			ContainerShape envelope = drawMessageLink(topMessageName, topBoundaryAnchor, x, y, isFilled(topAndBottom.getFirst()));
-			fp.link(envelope, topMessage);
+			envelope = drawMessageLink(topMessageName, topBoundaryAnchor, x, y, isFilled(topAndBottom.getFirst()));
+			if (topMessage!=null)
+				fp.link(envelope, topMessage);
 			peService.setPropertyValue(envelope, MESSAGE_NAME, topMessageName);
 		} else if (hasTopMessage && !shouldDrawTopMessage) {
-			PictogramElement envelope = (PictogramElement) topConnections.get(topConnectionIndex).getEnd().eContainer();
+			envelope = (ContainerShape) topConnections.get(topConnectionIndex).getEnd().eContainer();
 			peService.deletePictogramElement(topConnections.get(topConnectionIndex));
 			peService.deletePictogramElement(envelope);
+			envelope = null;
 		} else if (hasTopMessage && shouldDrawTopMessage) {
-			PictogramElement envelope = (PictogramElement) topConnections.get(topConnectionIndex).getEnd().eContainer();
+			envelope = (ContainerShape) topConnections.get(topConnectionIndex).getEnd().eContainer();
 			setMessageLabel(topMessageName, envelope);
 		}
+		if (envelope!=null) {
+			// link up the message flow
+			MessageFlow flow = getMessageFlow(messageFlows, topAndBottom.getFirst());
+			linkMessageFlow(fp, flow, envelope);
+		}
 
+		envelope = null;
 		if (!hasBottomMessage && shouldDrawBottomMessage) {
 			int y = (int) (bounds.getY() + bounds.getHeight() + ENVELOPE_HEIGHT_MODIFIER);
-			ContainerShape envelope = drawMessageLink(bottomMessageName, bottomBoundaryAnchor, x, y, isFilled(topAndBottom.getSecond()));
-			fp.link(envelope, bottomMessage);
+			envelope = drawMessageLink(bottomMessageName, bottomBoundaryAnchor, x, y, isFilled(topAndBottom.getSecond()));
+			if (bottomMessage!=null)
+				fp.link(envelope, bottomMessage);
 			peService.setPropertyValue(envelope, MESSAGE_NAME, bottomMessageName);
 		} else if (hasBottomMessage && !shouldDrawBottomMessage) {
-			PictogramElement envelope = (PictogramElement) bottomConnections.get(bottomConnectionIndex).getEnd()
+			envelope = (ContainerShape) bottomConnections.get(bottomConnectionIndex).getEnd()
 					.eContainer();
 			peService.deletePictogramElement(bottomConnections.get(bottomConnectionIndex));
 			peService.deletePictogramElement(envelope);
+			envelope = null;
 		} else if (hasBottomMessage && shouldDrawBottomMessage) {
-			PictogramElement envelope = (PictogramElement) bottomConnections.get(bottomConnectionIndex).getEnd()
+			envelope = (ContainerShape) bottomConnections.get(bottomConnectionIndex).getEnd()
 					.eContainer();
 			setMessageLabel(bottomMessageName, envelope);
 		}
-
+		if (envelope!=null) {
+			// link up the message flow
+			MessageFlow flow = getMessageFlow(messageFlows, topAndBottom.getSecond());
+			linkMessageFlow(fp, flow, envelope);
+		}
+		
 		return;
 	}
 
+	private static void linkMessageFlow(IFeatureProvider fp, MessageFlow flow,ContainerShape envelope) {
+		for (Anchor a : envelope.getAnchors()) {
+			for (Connection c : a.getIncomingConnections()) {
+				fp.link(c, flow);
+			}
+			for (Connection c : a.getOutgoingConnections()) {
+				fp.link(c, flow);
+			}
+		}
+	}
+	
 	private static boolean isFilled(List<ContainerShape> bands) {
 		boolean filled = true;
 		for (ContainerShape band : bands) {
@@ -677,24 +706,32 @@ public class ChoreographyUtil implements ChoreographyProperties {
 		return null;
 	}
 
-	private static Message getMessage(List<MessageFlow> messageFlows, List<ContainerShape> bands, boolean create) {
+	private static MessageFlow getMessageFlow(List<MessageFlow> messageFlows, List<ContainerShape> bands) {
 		for (ContainerShape band : bands) {
 			Participant participant = BusinessObjectUtil.getFirstElementOfType(band, Participant.class);
 			BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(band, BPMNShape.class);
 			if (bpmnShape.isIsMessageVisible()) {
 				for (MessageFlow flow : messageFlows) {
 					if (flow.getSourceRef().equals(participant)) {
-						if (flow.getMessageRef()==null && create) {
-							Message msg = Bpmn2Factory.eINSTANCE.createMessage();
-							ModelUtil.setID(msg, participant.eResource());
-							msg.setName("Undefined Message");
-							ModelUtil.getDefinitions(participant).getRootElements().add(msg);
-							flow.setMessageRef(msg);
-						}
-						return flow.getMessageRef();
+						return flow;
 					}
 				}
 			}
+		}
+		return null;
+	}
+
+	private static Message getMessage(List<MessageFlow> messageFlows, List<ContainerShape> bands, boolean create) {
+		MessageFlow flow = getMessageFlow(messageFlows, bands);
+		if (flow!=null) {
+			if (flow.getMessageRef()==null && create) {
+				Message msg = Bpmn2Factory.eINSTANCE.createMessage();
+				ModelUtil.setID(msg, flow.eResource());
+				msg.setName("Undefined Message");
+				ModelUtil.getDefinitions(flow).getRootElements().add(msg);
+				flow.setMessageRef(msg);
+			}
+			return flow.getMessageRef();
 		}
 		return null;
 	}
