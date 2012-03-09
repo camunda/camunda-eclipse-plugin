@@ -18,15 +18,20 @@ import java.util.List;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.MessageFlow;
+import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.di.BpmnDiFactory;
+import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
+import org.eclipse.bpmn2.modeler.core.di.DIImport;
+import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.DcFactory;
@@ -37,6 +42,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.features.context.IContext;
+import org.eclipse.graphiti.features.context.ITargetContext;
 import org.eclipse.graphiti.features.impl.AbstractAddShapeFeature;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -48,17 +55,20 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 		super(fp);
 	}
 
-	protected void createDIShape(Shape gShape, BaseElement elem) {
+	protected BPMNShape findDIShape(BaseElement elem) {
 		try {
-			BPMNShape shape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(
-					getDiagram(), elem);
-			createDIShape(gShape, elem, shape);
+			return (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(elem);
 		} catch (IOException e) {
 			Activator.logError(e);
 		}
+		return null;
+	}
+	
+	protected BPMNShape createDIShape(Shape gShape, BaseElement elem) {
+		return createDIShape(gShape, elem, findDIShape(elem));
 	}
 
-	protected void createDIShape(Shape gShape, BaseElement elem, BPMNShape shape) {
+	protected BPMNShape createDIShape(Shape gShape, BaseElement elem, BPMNShape shape) {
 		ILocation loc = Graphiti.getLayoutService().getLocationRelativeToDiagram(gShape);
 		if (shape == null) {
 			EList<EObject> businessObjects = Graphiti.getLinkService().getLinkForPictogramElement(getDiagram())
@@ -80,6 +90,9 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 					bounds.setX(loc.getX());
 					bounds.setY(loc.getY());
 					shape.setBounds(bounds);
+					
+					// TODO: get default orientation from Preferences
+					shape.setIsHorizontal(true);
 
 					addShape(shape, bpmnDiagram);
 					ModelUtil.setID(shape);
@@ -87,25 +100,25 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 			}
 		}
 		link(gShape, new Object[] { elem, shape });
+		return shape;
 	}
-
+	
 	private void addShape(DiagramElement elem, BPMNDiagram bpmnDiagram) {
 		List<DiagramElement> elements = bpmnDiagram.getPlane().getPlaneElement();
 		elements.add(elem);
 	}
 
-	protected void createDIEdge(Connection connection, BaseElement conElement) {
+	protected BPMNEdge createDIEdge(Connection connection, BaseElement conElement) {
 		try {
-			BPMNEdge edge = (BPMNEdge) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(
-					getDiagram(), conElement);
-			createDIEdge(connection, conElement, edge);
+			BPMNEdge edge = (BPMNEdge) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(conElement);
+			return createDIEdge(connection, conElement, edge);
 		} catch (IOException e) {
 			Activator.logError(e);
 		}
-
+		return null;
 	}
 
-	protected void createDIEdge(Connection connection, BaseElement conElement, BPMNEdge edge) throws IOException {
+	protected BPMNEdge createDIEdge(Connection connection, BaseElement conElement, BPMNEdge edge) throws IOException {
 		ModelHandler modelHandler = ModelHandlerLocator.getModelHandler(getDiagram().eResource());
 		if (edge == null) {
 			EList<EObject> businessObjects = Graphiti.getLinkService().getLinkForPictogramElement(getDiagram())
@@ -119,19 +132,19 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 					edge.setBpmnElement(conElement);
 
 					if (conElement instanceof Association) {
-						edge.setSourceElement(modelHandler.findDIElement(getDiagram(),
+						edge.setSourceElement(modelHandler.findDIElement(
 								((Association) conElement).getSourceRef()));
-						edge.setTargetElement(modelHandler.findDIElement(getDiagram(),
+						edge.setTargetElement(modelHandler.findDIElement(
 								((Association) conElement).getTargetRef()));
 					} else if (conElement instanceof MessageFlow) {
-						edge.setSourceElement(modelHandler.findDIElement(getDiagram(),
+						edge.setSourceElement(modelHandler.findDIElement(
 								(BaseElement) ((MessageFlow) conElement).getSourceRef()));
-						edge.setTargetElement(modelHandler.findDIElement(getDiagram(),
+						edge.setTargetElement(modelHandler.findDIElement(
 								(BaseElement) ((MessageFlow) conElement).getTargetRef()));
 					} else if (conElement instanceof SequenceFlow) {
-						edge.setSourceElement(modelHandler.findDIElement(getDiagram(),
+						edge.setSourceElement(modelHandler.findDIElement(
 								((SequenceFlow) conElement).getSourceRef()));
-						edge.setTargetElement(modelHandler.findDIElement(getDiagram(),
+						edge.setTargetElement(modelHandler.findDIElement(
 								((SequenceFlow) conElement).getTargetRef()));
 					}
 
@@ -154,6 +167,7 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 			}
 		}
 		link(connection, new Object[] { conElement, edge });
+		return edge;
 	}
 	
 	protected void prepareAddContext(IAddContext context, int width, int height) {
@@ -164,11 +178,33 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 	}
 	
 	protected int getHeight(IAddContext context) {
-		return context.getHeight() > 0 ? context.getHeight() : this.getHeight();
+		return context.getHeight() > 0 ? context.getHeight() :
+			(isHorizontal(context) ? getHeight() : getWidth());
 	}
 	
 	protected int getWidth(IAddContext context) {
-		return context.getWidth() > 0 ? context.getWidth() : this.getWidth();
+		return context.getWidth() > 0 ? context.getWidth() :
+			(isHorizontal(context) ? getWidth() : getHeight());
+	}
+
+	protected boolean isHorizontal(ITargetContext context) {
+		if (context.getProperty(DIImport.IMPORT_PROPERTY) == null) {
+			// not importing - set isHorizontal to be the same as parent Pool
+			if (FeatureSupport.isTargetParticipant(context)) {
+				Participant targetParticipant = FeatureSupport.getTargetParticipant(context);
+				BPMNShape participantShape = findDIShape(targetParticipant);
+				if (participantShape!=null)
+					return participantShape.isIsHorizontal();
+			}
+			else if (FeatureSupport.isTargetLane(context)) {
+				Lane targetLane = FeatureSupport.getTargetLane(context);
+				BPMNShape laneShape = findDIShape(targetLane);
+				if (laneShape!=null)
+					return laneShape.isIsHorizontal();
+			}
+		}
+		// TODO: set default orientation from Preferences
+		return true;
 	}
 	
 	protected abstract int getHeight();

@@ -13,8 +13,11 @@
 package org.eclipse.bpmn2.modeler.core.features.participant;
 
 import org.eclipse.bpmn2.Participant;
+import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
+import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
+import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
@@ -63,8 +66,16 @@ public class AddParticipantFeature extends AbstractAddBPMNShapeFeature {
 		StyleUtil.applyBGStyle(rect, this);
 		gaService.setLocationAndSize(rect, context.getX(), context.getY(), width, height);
 
+		BPMNShape bpmnShape = createDIShape(containerShape, participant);
+		boolean horz = bpmnShape.isIsHorizontal();
+		FeatureSupport.setHorizontal(containerShape, horz);
+
 		Shape lineShape = peCreateService.createShape(containerShape, false);
-		Polyline line = gaService.createPolyline(lineShape, new int[] { 30, 0, 30, height });
+		Polyline line;
+		if (horz)
+			line = gaService.createPolyline(lineShape, new int[] { 30, 0, 30, height });
+		else
+			line = gaService.createPolyline(lineShape, new int[] { 0, 30, width, 30 });
 		line.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 
 		Shape textShape = peCreateService.createShape(containerShape, false);
@@ -72,12 +83,10 @@ public class AddParticipantFeature extends AbstractAddBPMNShapeFeature {
 		text.setStyle(StyleUtil.getStyleForText(getDiagram()));
 		text.setVerticalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
-		text.setAngle(-90);
-		gaService.setLocationAndSize(text, 0, 0, 30, height);
-		peService.setPropertyValue(containerShape, MULTIPLICITY, Boolean.toString(participant.getParticipantMultiplicity()!=null));
-
-		createDIShape(containerShape, participant);
 		link(textShape, participant);
+
+		peService.setPropertyValue(containerShape, MULTIPLICITY, Boolean.toString(participant.getParticipantMultiplicity()!=null));
+		
 		peCreateService.createChopboxAnchor(containerShape);
 		AnchorUtil.addFixedPointAnchors(containerShape, rect);
 		updatePictogramElement(containerShape);
@@ -87,11 +96,13 @@ public class AddParticipantFeature extends AbstractAddBPMNShapeFeature {
 
 	@Override
 	protected int getHeight() {
+		// TODO: get default width & height based on orientation Preferences
 		return 100;
 	}
 
 	@Override
 	protected int getWidth() {
+		// TODO: get default width & height based on orientation Preferences
 		return 600;
 	}
 }

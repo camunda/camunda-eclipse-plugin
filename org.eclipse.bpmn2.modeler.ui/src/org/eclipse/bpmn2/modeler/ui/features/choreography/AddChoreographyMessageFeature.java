@@ -158,7 +158,7 @@ public class AddChoreographyMessageFeature extends AbstractCustomFeature {
 						Message message = null;
 						List<Message> messageList = new ArrayList<Message>();
 						message = mh.create(Message.class);
-						message.setName("New Message");
+						message.setName(message.getId());
 						
 						messageList.add(message);
 						for (RootElement re : mh.getDefinitions().getRootElements()) {

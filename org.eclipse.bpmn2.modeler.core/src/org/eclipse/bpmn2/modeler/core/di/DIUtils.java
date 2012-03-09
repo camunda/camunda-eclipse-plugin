@@ -85,7 +85,7 @@ public class DIUtils {
 					.get(0).eResource());
 
 			EObject be = BusinessObjectUtil.getFirstElementOfType(connection, clazz);
-			BPMNEdge edge = (BPMNEdge) modelHandler.findDIElement(diagram, (BaseElement) be);
+			BPMNEdge edge = (BPMNEdge) modelHandler.findDIElement((BaseElement) be);
 			Point point = DcFactory.eINSTANCE.createPoint();
 
 			List<Point> waypoint = edge.getWaypoint();

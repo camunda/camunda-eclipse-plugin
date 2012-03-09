@@ -63,8 +63,7 @@ public class CollapseSubProcessFeature extends AbstractCustomFeature {
 			Object bo = getBusinessObjectForPictogramElement(pes[0]);
 			if (bo instanceof SubProcess) {
 				try {
-					BPMNShape bpmnShape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(
-							getDiagram(), (SubProcess)bo);
+					BPMNShape bpmnShape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement((SubProcess)bo);
 					if (bpmnShape.isIsExpanded())
 						ret = true;
 				} catch (Exception e) {
@@ -85,8 +84,7 @@ public class CollapseSubProcessFeature extends AbstractCustomFeature {
 				ContainerShape containerShape = (ContainerShape)pe0;
 				SubProcess subProcess = (SubProcess)bo;
 				try {
-					BPMNShape bpmnShape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(
-							getDiagram(), subProcess);
+					BPMNShape bpmnShape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(subProcess);
 					if (bpmnShape.isIsExpanded()) {
 						
 						// SubProcess is collapsed - resize to standard modelObject size

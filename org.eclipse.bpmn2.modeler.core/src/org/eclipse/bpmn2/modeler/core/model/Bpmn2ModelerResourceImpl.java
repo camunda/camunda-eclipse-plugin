@@ -38,6 +38,7 @@ import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNLabel;
 import org.eclipse.bpmn2.di.BPMNShape;
+import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.bpmn2.util.ImportHelper;
@@ -52,6 +53,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.emf.ecore.xmi.XMLHelper;
@@ -112,7 +114,14 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 
 	@Override
 	protected XMLSave createXMLSave() {
-		return new Bpmn2ModelerXMLSave(createXMLHelper());
+		return new Bpmn2ModelerXMLSave(createXMLHelper()) {
+            @Override
+            protected boolean shouldSaveFeature(EObject o, EStructuralFeature f) {
+                if (o instanceof BPMNShape && f==BpmnDiPackage.eINSTANCE.getBPMNShape_IsHorizontal())
+                    return true;
+                return super.shouldSaveFeature(o, f);
+            }
+		};
 	}
 
 	@Override
@@ -161,6 +170,28 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 
 		public Bpmn2ModelerXmlHandler(XMLResource xmiResource, XMLHelper helper, Map<?, ?> options) {
 			super(xmiResource, helper, options);
+		}
+
+		@Override
+		protected void handleObjectAttribs(EObject obj) {
+			super.handleObjectAttribs(obj);
+			if (obj instanceof BPMNShape) {
+				boolean isHorizontalSet = false;
+				if (attribs != null) {
+					for (int i = 0, size = attribs.getLength(); i < size; ++i) {
+						String name = attribs.getQName(i);
+						if ("isHorizontal".equals(name)) {
+							isHorizontalSet = true;
+							break;
+						}
+					}
+				}
+				if (!isHorizontalSet) {
+					BPMNShape shape = (BPMNShape)obj;
+					// TODO: if "isHorizontal" is not set, get default orientation from Preferences
+					shape.setIsHorizontal(true);
+				}
+			}
 		}
 
 		/**

@@ -50,8 +50,7 @@ public class LayoutSubProcessFeature extends LayoutActivityFeature {
 		ContainerShape containerShape = (ContainerShape) context.getPictogramElement();
 		SubProcess subProcess = BusinessObjectUtil.getFirstElementOfType(containerShape, SubProcess.class);
 		try {
-			BPMNShape shape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(
-					getDiagram(), subProcess);
+			BPMNShape shape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(subProcess);
 			
 			if (shape.isIsExpanded()) {
 				

@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.bpmn2.ChoreographyTask;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.Group;
+import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature;
@@ -95,7 +96,9 @@ import org.eclipse.bpmn2.modeler.ui.features.gateway.InclusiveGatewayFeatureCont
 import org.eclipse.bpmn2.modeler.ui.features.gateway.ParallelGatewayFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.label.LabelFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.lane.LaneFeatureContainer;
+import org.eclipse.bpmn2.modeler.ui.features.lane.RotateLaneFeature;
 import org.eclipse.bpmn2.modeler.ui.features.participant.ParticipantFeatureContainer;
+import org.eclipse.bpmn2.modeler.ui.features.participant.RotatePoolFeature;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IAddBendpointFeature;
@@ -510,7 +513,13 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 			}
 			else if (bo instanceof Participant) {
 				return new ICustomFeature[] {
-					new AddChoreographyMessageFeature(this)
+					new AddChoreographyMessageFeature(this),
+					new RotatePoolFeature(this)
+				};
+			}
+			else if (bo instanceof Lane) {
+				return new ICustomFeature[] {
+					new RotateLaneFeature(this)
 				};
 			}
 		}

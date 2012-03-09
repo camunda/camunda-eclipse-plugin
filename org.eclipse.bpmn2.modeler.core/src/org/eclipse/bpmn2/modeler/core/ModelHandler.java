@@ -892,7 +892,7 @@ public class ModelHandler {
 		return l;
 	}
 
-	public DiagramElement findDIElement(Diagram diagram, BaseElement element) {
+	public DiagramElement findDIElement(BaseElement element) {
 		List<BPMNDiagram> diagrams = getAll(BPMNDiagram.class);
 
 		for (BPMNDiagram d : diagrams) {

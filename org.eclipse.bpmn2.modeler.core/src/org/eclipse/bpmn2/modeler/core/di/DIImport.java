@@ -304,9 +304,11 @@ public class DIImport {
 		context.setSize((int) shape.getBounds().getWidth(), (int) shape.getBounds().getHeight());
 
 		if (bpmnElement instanceof Lane) {
-			handleLane(bpmnElement, context, shape);
+			handleLane((Lane)bpmnElement, context, shape);
 		} else if (bpmnElement instanceof FlowNode) {
 			handleFlowNode((FlowNode) bpmnElement, context, shape);
+		} else if (bpmnElement instanceof Participant) {
+			handleParticipant((Participant) bpmnElement, context, shape);
 		} else {
 			context.setTargetContainer(diagram);
 			context.setLocation((int) shape.getBounds().getX(), (int) shape.getBounds().getY());
@@ -360,8 +362,14 @@ public class DIImport {
 		}
 	}
 
-	private void handleLane(BaseElement bpmnElement, AddContext context, BPMNShape shape) {
-		BaseElement parent = (BaseElement) ((Lane) bpmnElement).eContainer().eContainer();
+	private void handleParticipant(Participant participant, AddContext context, BPMNShape shape) {
+		context.setTargetContainer(diagram);
+		context.setLocation((int) shape.getBounds().getX(), (int) shape.getBounds().getY());
+		FeatureSupport.setHorizontal(context, shape.isIsHorizontal());
+	}
+	
+	private void handleLane(Lane lane, AddContext context, BPMNShape shape) {
+		BaseElement parent = (BaseElement)lane.eContainer().eContainer();
 		ContainerShape cont = diagram;
 
 		// find the process this lane belongs to
@@ -387,7 +395,7 @@ public class DIImport {
 
 		context.setTargetContainer(cont);
 		context.setLocation((int) shape.getBounds().getX(), (int) shape.getBounds().getY());
-
+		FeatureSupport.setHorizontal(context, shape.isIsHorizontal());
 	}
 
 	private void handleFlowNode(FlowNode node, AddContext context, BPMNShape shape) {
@@ -491,10 +499,10 @@ public class DIImport {
 		// We get most of the information from the BpmnEdge, not from the referencing business object. Because of this
 		// we must ensure, that the edge contains necessary information.
 		if (bpmnEdge.getSourceElement() == null) {
-			bpmnEdge.setSourceElement(modelHandler.findDIElement(diagram, (BaseElement) source));
+			bpmnEdge.setSourceElement(modelHandler.findDIElement((BaseElement) source));
 		}
 		if (bpmnEdge.getTargetElement() == null) {
-			bpmnEdge.setTargetElement(modelHandler.findDIElement(diagram, (BaseElement) target));
+			bpmnEdge.setTargetElement(modelHandler.findDIElement((BaseElement) target));
 		}
 	}
 
