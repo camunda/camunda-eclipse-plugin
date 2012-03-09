@@ -105,23 +105,23 @@ public class RotatePoolFeature extends AbstractCustomFeature {
 
 	private void changeOrientation(ContainerShape container, boolean horz) {
 		IGaService gaService = Graphiti.getGaService();
-			GraphicsAlgorithm ga = container.getGraphicsAlgorithm();
-			int x = ga.getX();
-			int y = ga.getY();
-			int width = ga.getWidth();
-			int height = ga.getHeight();
-			gaService.setLocationAndSize(ga, x, y, height, width);
-			
+		GraphicsAlgorithm ga = container.getGraphicsAlgorithm();
+		int x = ga.getX();
+		int y = ga.getY();
+		int width = ga.getWidth();
+		int height = ga.getHeight();
+		gaService.setLocationAndSize(ga, x, y, height, width);
+
 		FeatureSupport.setHorizontal(container, horz);
-			DIUtils.updateDIShape(container);
+		DIUtils.updateDIShape(container);
 
 		for (PictogramElement pe : container.getChildren()) {
 			if (pe instanceof ContainerShape) {
 				if (BusinessObjectUtil.getFirstElementOfType(pe, Lane.class) != null) {
-					changeOrientation((ContainerShape)pe,horz);
+					changeOrientation((ContainerShape) pe, horz);
 				}
+			}
 		}
-	}
 	}
 
 }
