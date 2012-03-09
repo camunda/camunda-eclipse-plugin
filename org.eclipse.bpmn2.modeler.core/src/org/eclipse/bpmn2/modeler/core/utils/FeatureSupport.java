@@ -26,12 +26,14 @@ import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.TextAnnotation;
+import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
 import org.eclipse.graphiti.features.context.ITargetContext;
 import org.eclipse.graphiti.mm.algorithms.AbstractText;
@@ -51,6 +53,7 @@ import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
 public class FeatureSupport {
+	public static final String IS_HORIZONTAL_PROPERTY = "isHorizontal";
 
 	public static boolean isTargetSubProcess(ITargetContext context) {
 		return BusinessObjectUtil.containsElementOfType(context.getTargetContainer(), SubProcess.class);
@@ -64,6 +67,11 @@ public class FeatureSupport {
 		return BusinessObjectUtil.containsElementOfType(element, Lane.class);
 	}
 
+	public static Lane getTargetLane(ITargetContext context) {
+		PictogramElement element = context.getTargetContainer();
+		return BusinessObjectUtil.getFirstElementOfType(element, Lane.class);
+	}
+	
 	public static boolean isTargetParticipant(ITargetContext context) {
 		return isParticipant(context.getTargetContainer());
 	}
@@ -72,6 +80,11 @@ public class FeatureSupport {
 		return BusinessObjectUtil.containsElementOfType(element, Participant.class);
 	}
 
+	public static Participant getTargetParticipant(ITargetContext context) {
+		PictogramElement element = context.getTargetContainer();
+		return BusinessObjectUtil.getFirstElementOfType(element, Participant.class);
+	}
+	
 	public static boolean isLaneOnTop(Lane lane) {
 		return lane.getChildLaneSet() == null || lane.getChildLaneSet().getLanes().isEmpty();
 	}
@@ -81,6 +94,35 @@ public class FeatureSupport {
 		return lane.getChildLaneSet() == null || lane.getChildLaneSet().getLanes().isEmpty();
 	}
 
+	public static boolean isHorizontal(ContainerShape container) {
+		String v = Graphiti.getPeService().getPropertyValue(container, IS_HORIZONTAL_PROPERTY);
+		if (v==null) {
+			// TODO: get default orientation from preferences
+			return true;
+		}
+		return Boolean.parseBoolean(v);
+	}
+	
+	public static void setHorizontal(ContainerShape container, boolean isHorizontal) {
+		Graphiti.getPeService().setPropertyValue(container, IS_HORIZONTAL_PROPERTY, Boolean.toString(isHorizontal));
+		BPMNShape bs = BusinessObjectUtil.getFirstElementOfType(container, BPMNShape.class);
+		if (bs!=null)
+			bs.setIsHorizontal(isHorizontal);
+	}
+	
+	public static boolean isHorizontal(IContext context) {
+		Object v = context.getProperty(IS_HORIZONTAL_PROPERTY);
+		if (v==null) {
+			// TODO: get default orientation from preferences
+			return true;
+		}
+		return (Boolean)v;
+	}
+	
+	public static void setHorizontal(IContext context, boolean isHorizontal) {
+		context.putProperty(IS_HORIZONTAL_PROPERTY, isHorizontal);
+	}
+	
 	public static List<PictogramElement> getContainerChildren(ContainerShape container) {
 		List<PictogramElement> list = new ArrayList<PictogramElement>();
 		for (PictogramElement pe : container.getChildren()) {
@@ -157,6 +199,15 @@ public class FeatureSupport {
 		IGaService service = Graphiti.getGaService();
 		int height = 0;
 		int width = container.getGraphicsAlgorithm().getWidth() - 30;
+		boolean horz = isHorizontal(container);
+		if (horz) {
+			height = 0;
+			width = container.getGraphicsAlgorithm().getWidth() - 30;
+		}
+		else {
+			width = 0;
+			height = container.getGraphicsAlgorithm().getHeight() - 30;
+		}
 
 		EList<Shape> children = container.getChildren();
 		ECollections.sort(children, new SiblingLaneComparator());
@@ -164,38 +215,78 @@ public class FeatureSupport {
 			Object bo = BusinessObjectUtil.getFirstElementOfType(s, BaseElement.class);
 			if (bo != null && (bo instanceof Lane || bo instanceof Participant) && !bo.equals(elem)) {
 				GraphicsAlgorithm ga = s.getGraphicsAlgorithm();
-				service.setLocation(ga, 30, height);
-				height += ga.getHeight() - 1;
-				if (ga.getWidth() >= width) {
-					width = ga.getWidth();
-				} else {
-					service.setSize(ga, width, ga.getHeight());
+				if (horz) {
+					service.setLocation(ga, 30, height);
+					height += ga.getHeight() - 1;
+					if (ga.getWidth() >= width) {
+						width = ga.getWidth();
+					} else {
+						service.setSize(ga, width, ga.getHeight());
+					}
+				}
+				else {
+					service.setLocation(ga, width, 30);
+					width += ga.getWidth() - 1;
+					if (ga.getHeight() >= height) {
+						height = ga.getHeight();
+					} else {
+						service.setSize(ga, ga.getWidth(), height);
+					}
 				}
 			}
 		}
 
 		GraphicsAlgorithm ga = container.getGraphicsAlgorithm();
 
-		if (height == 0) {
-			return new Dimension(ga.getWidth(), ga.getHeight());
-		} else {
-			int newWidth = width + 30;
-			int newHeight = height + 1;
-			service.setSize(ga, newWidth, newHeight);
-
-			for (Shape s : children) {
-				GraphicsAlgorithm childGa = s.getGraphicsAlgorithm();
-				if (childGa instanceof Text) {
-					s.getGraphicsAlgorithm().setHeight(newHeight);
-				} else if (childGa instanceof Polyline) {
-					Polyline line = (Polyline) childGa;
-					Point firstPoint = line.getPoints().get(0);
-					Point newPoint = service.createPoint(firstPoint.getX(), newHeight);
-					line.getPoints().set(1, newPoint);
+		if (horz) {
+			if (height == 0) {
+				return new Dimension(ga.getWidth(), ga.getHeight());
+			} else {
+				int newWidth = width + 30;
+				int newHeight = height + 1;
+				service.setSize(ga, newWidth, newHeight);
+	
+				for (Shape s : children) {
+					GraphicsAlgorithm childGa = s.getGraphicsAlgorithm();
+					if (childGa instanceof Text) {
+						Text text = (Text)childGa;
+						text.setAngle(-90);
+						service.setLocationAndSize(text, 5, 0, 15, newHeight);
+					} else if (childGa instanceof Polyline) {
+						Polyline line = (Polyline) childGa;
+						Point firstPoint = line.getPoints().get(0);
+						Point newPoint = service.createPoint(firstPoint.getX(), newHeight);
+						line.getPoints().set(1, newPoint);
+					}
 				}
+	
+				return new Dimension(newWidth, newHeight);
 			}
-
-			return new Dimension(newWidth, newHeight);
+		}
+		else {
+			if (width == 0) {
+				return new Dimension(ga.getWidth(), ga.getHeight());
+			} else {
+				int newWidth = width + 1;
+				int newHeight = height + 30;
+				service.setSize(ga, newWidth, newHeight);
+	
+				for (Shape s : children) {
+					GraphicsAlgorithm childGa = s.getGraphicsAlgorithm();
+					if (childGa instanceof Text) {
+						Text text = (Text)childGa;
+						text.setAngle(0);
+						service.setLocationAndSize(text, 0, 5, newWidth, 15);
+					} else if (childGa instanceof Polyline) {
+						Polyline line = (Polyline) childGa;
+						Point firstPoint = line.getPoints().get(0);
+						Point newPoint = service.createPoint(newWidth, firstPoint.getY());
+						line.getPoints().set(1, newPoint);
+					}
+				}
+	
+				return new Dimension(newWidth, newHeight);
+			}
 		}
 	}
 
@@ -204,6 +295,7 @@ public class FeatureSupport {
 		List<Dimension> dimensions = new ArrayList<Dimension>();
 		IGaService service = Graphiti.getGaService();
 		int foundContainers = 0;
+		boolean horz = isHorizontal(root);
 
 		for (Shape s : root.getChildren()) {
 			Object bo = BusinessObjectUtil.getFirstElementOfType(s, BaseElement.class);
@@ -221,11 +313,24 @@ public class FeatureSupport {
 			for (Shape s : root.getChildren()) {
 				GraphicsAlgorithm childGa = s.getGraphicsAlgorithm();
 				if (childGa instanceof Text) {
-					s.getGraphicsAlgorithm().setHeight(ga.getHeight());
+					if (horz) {
+						Text text = (Text)childGa;
+						text.setAngle(-90);
+						service.setLocationAndSize(text, 5, 0, 15, ga.getHeight());
+					}
+					else {
+						Text text = (Text)childGa;
+						text.setAngle(0);
+						service.setLocationAndSize(text, 0, 5, ga.getWidth(), 15);
+					}
 				} else if (childGa instanceof Polyline) {
 					Polyline line = (Polyline) childGa;
 					Point firstPoint = line.getPoints().get(0);
-					Point newPoint = service.createPoint(firstPoint.getX(), ga.getHeight());
+					Point newPoint;
+					if (horz)
+						newPoint = service.createPoint(firstPoint.getX(), ga.getHeight());
+					else
+						newPoint = service.createPoint(ga.getWidth(), firstPoint.getY());
 					line.getPoints().set(1, newPoint);
 				}
 			}
@@ -236,7 +341,7 @@ public class FeatureSupport {
 			return resize(root);
 		}
 
-		return getMaxDimension(dimensions);
+		return getMaxDimension(horz, dimensions);
 	}
 
 	/**
@@ -255,20 +360,29 @@ public class FeatureSupport {
 		return !bo.equals(currentBo);
 	}
 
-	private static Dimension getMaxDimension(List<Dimension> dimensions) {
+	private static Dimension getMaxDimension(boolean horz, List<Dimension> dimensions) {
 		if (dimensions.isEmpty()) {
 			return null;
 		}
 		int height = 0;
 		int width = 0;
 
-		for (Dimension d : dimensions) {
-			height += d.height;
-			if (d.width > width) {
-				width = d.width;
+		if (horz) {
+			for (Dimension d : dimensions) {
+				height += d.height;
+				if (d.width > width) {
+					width = d.width;
+				}
 			}
 		}
-
+		else {
+			for (Dimension d : dimensions) {
+				width += d.width;
+				if (d.height > height) {
+					height = d.height;
+				}
+			}
+		}
 		return new Dimension(width, height);
 	}
 
@@ -276,12 +390,17 @@ public class FeatureSupport {
 		IGaService service = Graphiti.getGaService();
 		BaseElement elem = BusinessObjectUtil.getFirstElementOfType(root, BaseElement.class);
 		int width = root.getGraphicsAlgorithm().getWidth() - 30;
+		int height = root.getGraphicsAlgorithm().getHeight() - 30;
+		boolean horz = isHorizontal(root);
 
 		for (Shape s : root.getChildren()) {
 			Object o = BusinessObjectUtil.getFirstElementOfType(s, BaseElement.class);
 			if (checkForResize(elem, s, o)) {
 				GraphicsAlgorithm ga = s.getGraphicsAlgorithm();
-				service.setSize(ga, width, ga.getHeight());
+				if (horz)
+					service.setSize(ga, width, ga.getHeight());
+				else
+					service.setSize(ga, ga.getWidth(), height);
 				postResizeFixLenghts((ContainerShape) s);
 			}
 		}

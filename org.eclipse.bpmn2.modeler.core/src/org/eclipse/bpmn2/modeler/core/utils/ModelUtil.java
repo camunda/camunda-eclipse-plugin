@@ -277,6 +277,8 @@ public class ModelUtil {
 	}
 	
 	public static String getLabel(EObject object) {
+		if (object==null)
+			return "";
 		return toDisplayName(object.eClass().getName());
 	}
 	

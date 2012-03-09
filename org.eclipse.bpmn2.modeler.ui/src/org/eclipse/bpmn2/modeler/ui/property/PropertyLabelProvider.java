@@ -73,7 +73,7 @@ public class PropertyLabelProvider extends LabelProvider {
 			return PropertyUtil.getText(be);
 		}
 		PictogramElement pe = BusinessObjectUtil.getPictogramElementForSelection((ISelection)element);
-		if (pe!=null) {
+		if (pe!=null && pe.getGraphicsAlgorithm()!=null) {
 			return ModelUtil.getLabel( pe.getGraphicsAlgorithm() );
 		}
 		return super.getText(element);

@@ -50,6 +50,7 @@ import org.eclipse.graphiti.features.context.impl.CreateConnectionContext;
 import org.eclipse.graphiti.features.context.impl.CustomContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
+import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
@@ -267,7 +268,7 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 		else if (pe instanceof ContainerShape) {
 			if (((ContainerShape)pe).getChildren().size()>0) {
 				GraphicsAlgorithm ga = ((ContainerShape)pe).getChildren().get(0).getGraphicsAlgorithm();
-				if (!(ga instanceof Text))
+				if (!(ga instanceof Text) && !(ga instanceof Polyline))
 					return ga;
 				ga = ((ContainerShape)pe).getGraphicsAlgorithm();
 				if (ga.getGraphicsAlgorithmChildren().size()>0)
@@ -312,12 +313,14 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 		ICustomFeature[] cf = fp.getCustomFeatures(cc);
 		for (int i = 0; i < cf.length; i++) {
 			ICustomFeature iCustomFeature = cf[i];
-			ContextButtonEntry button = new ContextButtonEntry(iCustomFeature, cc);
-			button.setText(iCustomFeature.getName()); //$NON-NLS-1$
-			button.setIconId(iCustomFeature.getImageId());
-			button.setDescription(iCustomFeature.getDescription());
-			
-			data.getDomainSpecificContextButtons().add(button);
+			if (iCustomFeature.canExecute(cc)) {
+				ContextButtonEntry button = new ContextButtonEntry(iCustomFeature, cc);
+				button.setText(iCustomFeature.getName()); //$NON-NLS-1$
+				button.setIconId(iCustomFeature.getImageId());
+				button.setDescription(iCustomFeature.getDescription());
+				
+				data.getDomainSpecificContextButtons().add(button);
+			}
 		}
 
 		// 3. add one domain specific context-button, which offers all

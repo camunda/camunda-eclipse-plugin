@@ -45,7 +45,7 @@ public class AddBendpointFeature extends DefaultAddBendpointFeature {
 			p.setX(context.getX());
 			p.setY(context.getY());
 
-			BPMNEdge edge = (BPMNEdge) modelHandler.findDIElement(getDiagram(), element);
+			BPMNEdge edge = (BPMNEdge) modelHandler.findDIElement(element);
 			int index = context.getBendpointIndex() + 1;
 			edge.getWaypoint().add(index, p);
 			if (index == 1) {

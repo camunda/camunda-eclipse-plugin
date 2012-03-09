@@ -40,7 +40,7 @@ public class MoveBendpointFeature extends DefaultMoveBendpointFeature {
 			FreeFormConnection connection = context.getConnection();
 			BaseElement element = (BaseElement) BusinessObjectUtil.getFirstElementOfType(connection, BaseElement.class);
 			ModelHandler modelHandler = ModelHandlerLocator.getModelHandler(getDiagram().eResource());
-			BPMNEdge edge = (BPMNEdge) modelHandler.findDIElement(getDiagram(), element);
+			BPMNEdge edge = (BPMNEdge) modelHandler.findDIElement(element);
 			int index = context.getBendpointIndex() + 1;
 			Point p = edge.getWaypoint().get(index);
 			p.setX(context.getX());

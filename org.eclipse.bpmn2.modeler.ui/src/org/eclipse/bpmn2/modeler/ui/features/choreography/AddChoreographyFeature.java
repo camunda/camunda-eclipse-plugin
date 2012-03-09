@@ -144,7 +144,7 @@ public class AddChoreographyFeature extends AbstractAddBPMNShapeFeature {
 		BPMNShape choreoBpmnShape = null;
 
 		for (BPMNShape shape : shapes) {
-			if (shape.getBpmnElement().equals(choreography)) {
+			if (choreography.equals(shape.getBpmnElement())) {
 				choreoBpmnShape = shape;
 				break;
 			}

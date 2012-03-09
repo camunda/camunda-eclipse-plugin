@@ -20,10 +20,13 @@ import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.SubProcess;
+import org.eclipse.bpmn2.di.BPMNShape;
+import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.bpmn2.modeler.core.di.DIImport;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
+import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -40,6 +43,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.ILayoutService;
 import org.eclipse.graphiti.services.IPeCreateService;
+import org.eclipse.graphiti.services.IPeService;
 
 public class AddLaneFeature extends AbstractAddBPMNShapeFeature {
 
@@ -62,8 +66,10 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature {
 		Lane lane = (Lane) context.getNewObject();
 
 		IPeCreateService peCreateService = Graphiti.getPeCreateService();
-		ContainerShape containerShape = peCreateService.createContainerShape(context.getTargetContainer(), true);
 		IGaService gaService = Graphiti.getGaService();
+		IPeService peService = Graphiti.getPeService();
+
+		ContainerShape containerShape = peCreateService.createContainerShape(context.getTargetContainer(), true);
 
 		int width = this.getWidth(context);
 		int height = this.getHeight(context);
@@ -72,41 +78,46 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature {
 
 		StyleUtil.applyBGStyle(rect, this);
 
-		if (FeatureSupport.isTargetLane(context) || FeatureSupport.isTargetParticipant(context)) {
-			GraphicsAlgorithm ga = context.getTargetContainer().getGraphicsAlgorithm();
+		BPMNShape bpmnShape = createDIShape(containerShape, lane);
+		if (context.getProperty(DIImport.IMPORT_PROPERTY) == null) {
+			// not importing - set isHorizontal to be the same as parent Pool
+			if (FeatureSupport.isTargetParticipant(context)) {
+				Participant targetParticipant = FeatureSupport.getTargetParticipant(context);
+				BPMNShape participantShape = findDIShape(targetParticipant);
+				if (participantShape!=null)
+					bpmnShape.setIsHorizontal(participantShape.isIsHorizontal());
+			}
+			else if (FeatureSupport.isTargetLane(context)) {
+				Lane targetLane = FeatureSupport.getTargetLane(context);
+				BPMNShape laneShape = findDIShape(targetLane);
+				if (laneShape!=null)
+					bpmnShape.setIsHorizontal(laneShape.isIsHorizontal());
+			}
+		}
+		boolean horz = bpmnShape.isIsHorizontal();
+		FeatureSupport.setHorizontal(containerShape, horz);
+		gaService.setLocationAndSize(rect, context.getX(), context.getY(), width, height); ///
 
-			if (getNumberOfLanes(context) == 1) {
-				gaService.setLocationAndSize(rect, 30, 0, width - 30, height);
-				for (Shape s : getFlowNodeShapes(context, lane)) {
-					Graphiti.getPeService().sendToFront(s);
-					s.setContainer(containerShape);
-				}
-			} else {
-				if (context.getWidth() == -1 || context.getHeight() == -1) {
-					gaService.setLocationAndSize(rect, 30, ga.getWidth() - 1, ga.getHeight() - 30, height);
-					// gaService.setLocationAndSize(rect, context.getX(), context.getY(), width, height);
-				} else {
-					ILayoutService layoutService = Graphiti.getLayoutService();
-					ILocation loc = layoutService.getLocationRelativeToDiagram(containerShape);
-					int x = context.getX() - loc.getX();
-					int y = context.getY() - loc.getY();
-					gaService.setLocationAndSize(rect, x, y, ga.getWidth(), height);
-				}
+		if (FeatureSupport.isTargetLane(context) || FeatureSupport.isTargetParticipant(context)) {
+			for (Shape s : getFlowNodeShapes(context, lane)) {
+				Graphiti.getPeService().sendToFront(s);
+				s.setContainer(containerShape);
 			}
 			containerShape.setContainer(context.getTargetContainer());
-		} else {
-			gaService.setLocationAndSize(rect, context.getX(), context.getY(), width, height);
 		}
-
+		
 		Shape textShape = peCreateService.createShape(containerShape, false);
 		Text text = gaService.createText(textShape, lane.getName());
 		text.setStyle(StyleUtil.getStyleForText(getDiagram()));
 		text.setVerticalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
-		text.setAngle(-90);
-		gaService.setLocationAndSize(text, 0, 0, 15, height);
-
-		createDIShape(containerShape, lane);
+		if (horz) {
+			text.setAngle(-90);
+			gaService.setLocationAndSize(text, 0, 0, 15, height);
+		}
+		else {
+			gaService.setLocationAndSize(text, 0, 0, width, 15);
+		}
 		link(textShape, lane);
 
 		peCreateService.createChopboxAnchor(containerShape);
@@ -155,11 +166,13 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature {
 
 	@Override
 	protected int getHeight() {
+		// TODO: get default width & height based on orientation Preferences
 		return 100;
 	}
 
 	@Override
 	protected int getWidth() {
+		// TODO: get default width & height based on orientation Preferences
 		return 600;
 	}
 }

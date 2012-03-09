@@ -34,8 +34,7 @@ public abstract class AbstractCreateExpandableFlowNodeFeature<T extends FlowNode
 		Object[] elems = super.create(context);
 		try {
 			
-			BPMNShape shape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(
-					getDiagram(), (T)elems[0]);
+			BPMNShape shape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement((T)elems[0]);
 			
 			// if the Activity is expandable, set "isExpanded" to true because
 			// this feature will always create an expanded BPMNShape.

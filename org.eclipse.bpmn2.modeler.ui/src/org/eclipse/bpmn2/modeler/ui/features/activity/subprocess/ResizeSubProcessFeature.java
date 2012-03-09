@@ -42,8 +42,7 @@ public class ResizeSubProcessFeature extends DefaultResizeBPMNShapeFeature {
 		ContainerShape containerShape = (ContainerShape) context.getPictogramElement();
 		Activity activity = BusinessObjectUtil.getFirstElementOfType(containerShape, Activity.class);
 		try {
-			BPMNShape shape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(
-					getDiagram(), activity);
+			BPMNShape shape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(activity);
 			
 			if (shape.isIsExpanded()) {
 
