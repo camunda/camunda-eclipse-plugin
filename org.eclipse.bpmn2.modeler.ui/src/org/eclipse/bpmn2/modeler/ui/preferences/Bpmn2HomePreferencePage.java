@@ -53,6 +53,12 @@ public class Bpmn2HomePreferencePage
 				Bpmn2Preferences.PREF_EXPAND_PROPERTIES_LABEL,
 				getFieldEditorParent());
 		addField(expandProperties);
+
+		BooleanFieldEditor defaultOrientation = new BooleanFieldEditor(
+				Bpmn2Preferences.PREF_VERTICAL_ORIENTATION,
+				Bpmn2Preferences.PREF_VERTICAL_ORIENTATION_LABEL,
+				getFieldEditorParent());
+		addField(defaultOrientation);
 		
 		String[][] entries = new String[TargetRuntime.getAllRuntimes().length][2];
 		int i = 0;

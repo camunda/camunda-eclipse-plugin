@@ -37,6 +37,8 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	public final static String PREF_EXPAND_PROPERTIES = "expand.properties";
 	public final static String PREF_EXPAND_PROPERTIES_LABEL = "E&xpand compound property details instead of showing a selection list";
 	public final static String PREF_OVERRIDE_MODEL_ENABLEMENTS = "override.model.enablements";
+	public final static String PREF_VERTICAL_ORIENTATION = "vertical.orientation";
+	public final static String PREF_VERTICAL_ORIENTATION_LABEL = "Use &Vertical layout for Pools and Lanes";
 	
 	private Preferences prefs;
 	private boolean loaded;
@@ -47,6 +49,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	private boolean showAdvancedPropertiesTab;
 	private boolean overrideModelEnablements;
 	private boolean expandProperties;
+	private boolean verticalOrientation;
 	
 	// the global user preferences:
 	// TODO: stuff like colors, fonts, etc.
@@ -89,6 +92,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			showAdvancedPropertiesTab = prefs.getBoolean(PREF_SHOW_ADVANCED_PROPERTIES, false);
 			overrideModelEnablements = prefs.getBoolean(PREF_OVERRIDE_MODEL_ENABLEMENTS, false);
 			expandProperties = prefs.getBoolean(PREF_EXPAND_PROPERTIES, false);
+			verticalOrientation = prefs.getBoolean(PREF_VERTICAL_ORIENTATION, false);
 			loaded = true;
 		}
 	}
@@ -100,6 +104,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			prefs.putBoolean(PREF_SHOW_ADVANCED_PROPERTIES, showAdvancedPropertiesTab);
 			prefs.putBoolean(PREF_OVERRIDE_MODEL_ENABLEMENTS, overrideModelEnablements);
 			prefs.putBoolean(PREF_EXPAND_PROPERTIES, expandProperties);
+			prefs.putBoolean(PREF_VERTICAL_ORIENTATION, verticalOrientation);
 			prefs.flush();
 			
 			dirty = false;
@@ -180,6 +185,14 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		dirty = true;
 	}
 
+	public boolean isVerticalOrientation() {
+		return verticalOrientation;
+	}
+
+	public void setVerticalOrientation(boolean vertical) {
+		verticalOrientation = vertical;
+	}
+	
 	@Override
 	public void preferenceChange(PreferenceChangeEvent event) {
 		reload();

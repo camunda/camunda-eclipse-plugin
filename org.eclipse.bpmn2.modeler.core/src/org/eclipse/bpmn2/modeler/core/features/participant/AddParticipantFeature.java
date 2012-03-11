@@ -96,13 +96,11 @@ public class AddParticipantFeature extends AbstractAddBPMNShapeFeature {
 
 	@Override
 	protected int getHeight() {
-		// TODO: get default width & height based on orientation Preferences
 		return 100;
 	}
 
 	@Override
 	protected int getWidth() {
-		// TODO: get default width & height based on orientation Preferences
 		return 600;
 	}
 }

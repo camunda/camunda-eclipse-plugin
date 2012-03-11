@@ -31,6 +31,7 @@ import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.di.DIImport;
+import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.dd.dc.Bounds;
@@ -48,6 +49,7 @@ import org.eclipse.graphiti.features.impl.AbstractAddShapeFeature;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeature {
 
@@ -91,9 +93,12 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 					bounds.setY(loc.getY());
 					shape.setBounds(bounds);
 					
-					// TODO: get default orientation from Preferences
-					shape.setIsHorizontal(true);
-
+					if (elem instanceof Lane || elem instanceof Participant) {
+						IPreferenceStore prefs = Activator.getDefault().getPreferenceStore();
+						boolean vert = prefs.getBoolean(Bpmn2Preferences.PREF_VERTICAL_ORIENTATION);
+						shape.setIsHorizontal(!vert);
+					}
+					
 					addShape(shape, bpmnDiagram);
 					ModelUtil.setID(shape);
 				}
@@ -203,8 +208,8 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 					return laneShape.isIsHorizontal();
 			}
 		}
-		// TODO: set default orientation from Preferences
-		return true;
+		IPreferenceStore prefs = Activator.getDefault().getPreferenceStore();
+		return !prefs.getBoolean(Bpmn2Preferences.PREF_VERTICAL_ORIENTATION);
 	}
 	
 	protected abstract int getHeight();

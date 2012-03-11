@@ -33,12 +33,16 @@ import java.util.Map;
 
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.Lane;
+import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNLabel;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.di.BpmnDiPackage;
+import org.eclipse.bpmn2.modeler.core.Activator;
+import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.bpmn2.util.ImportHelper;
@@ -65,6 +69,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMLSaveImpl;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
@@ -117,8 +122,11 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 		return new Bpmn2ModelerXMLSave(createXMLHelper()) {
             @Override
             protected boolean shouldSaveFeature(EObject o, EStructuralFeature f) {
-                if (o instanceof BPMNShape && f==BpmnDiPackage.eINSTANCE.getBPMNShape_IsHorizontal())
-                    return true;
+                if (o instanceof BPMNShape && f==BpmnDiPackage.eINSTANCE.getBPMNShape_IsHorizontal()) {
+                	BPMNShape s = (BPMNShape)o;
+                	if (s.getBpmnElement() instanceof Lane || s.getBpmnElement() instanceof Participant)
+                		return true;
+                }
                 return super.shouldSaveFeature(o, f);
             }
 		};
@@ -188,8 +196,9 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 				}
 				if (!isHorizontalSet) {
 					BPMNShape shape = (BPMNShape)obj;
-					// TODO: if "isHorizontal" is not set, get default orientation from Preferences
-					shape.setIsHorizontal(true);
+					IPreferenceStore prefs = Activator.getDefault().getPreferenceStore();
+					boolean vert = prefs.getBoolean(Bpmn2Preferences.PREF_VERTICAL_ORIENTATION);
+					shape.setIsHorizontal(!vert);
 				}
 			}
 		}
