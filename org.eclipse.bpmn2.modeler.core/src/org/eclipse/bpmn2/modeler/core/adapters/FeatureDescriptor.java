@@ -159,6 +159,8 @@ public class FeatureDescriptor extends ObjectDescriptor {
 					Object value = iter.next();
 					if (value!=null) {
 						String text = getValueText(value);
+						if (text==null)
+							text = "";
 						while (choices.containsKey(text))
 							text += " ";
 						choices.put(text, value);

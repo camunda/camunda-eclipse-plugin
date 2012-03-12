@@ -139,18 +139,32 @@ public class DIImport {
 					importShapes(ownedElement);
 					importConnections(ownedElement);
 
-					relayoutLanes(ownedElement);
+//					relayoutLanes(ownedElement);
 					// FIXME: we don't really want to leave, but we also don't want all diagrams mixed together
 					break;
 				}
 				
-				layoutAll();
+//				layoutAll();
 			}
 
 		});
 	}
 	
 	private void layoutAll() {
+//		final List<BPMNDiagram> diagrams = modelHandler.getAll(BPMNDiagram.class);
+//		for (BPMNDiagram d : diagrams) {
+//			BPMNPlane plane = d.getPlane();
+//			for (DiagramElement de : plane.getPlaneElement()) {
+//				if (de instanceof BPMNShape) {
+//					BaseElement be = ((BPMNShape) de).getBpmnElement();
+//					PictogramElement pe = elements.get(be);
+//					if (pe instanceof Shape ) {
+//						Graphiti.getPeService().sendToFront((Shape)pe);
+//					}
+//				}
+//			}
+//		}
+		
 		for (BaseElement be : elements.keySet()) {
 //			if (be instanceof SubProcess) {
 				PictogramElement pe = elements.get(be);
@@ -392,9 +406,15 @@ public class DIImport {
 				}
 			}
 		}
+		
+		int x = (int) shape.getBounds().getX();
+		int y = (int) shape.getBounds().getY();
+		ILocation loc = Graphiti.getPeLayoutService().getLocationRelativeToDiagram(cont);
+		x -= loc.getX();
+		y -= loc.getY();
 
 		context.setTargetContainer(cont);
-		context.setLocation((int) shape.getBounds().getX(), (int) shape.getBounds().getY());
+		context.setLocation((int) x, y);
 		FeatureSupport.setHorizontal(context, shape.isIsHorizontal());
 	}
 

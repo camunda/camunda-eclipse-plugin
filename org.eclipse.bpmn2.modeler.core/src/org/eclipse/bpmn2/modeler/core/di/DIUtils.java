@@ -38,10 +38,10 @@ import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.PictogramLink;
 import org.eclipse.graphiti.mm.pictograms.Shape;
-import org.eclipse.graphiti.mm.pictograms.impl.FreeFormConnectionImpl;
 import org.eclipse.graphiti.services.Graphiti;
 
 public class DIUtils {
@@ -79,12 +79,12 @@ public class DIUtils {
 		}
 	}
 
-	public static void updateDIEdge(Diagram diagram, Connection connection, Class clazz) {
+	public static void updateDIEdge(Connection connection) {
 		try {
 			ModelHandler modelHandler = ModelHandlerLocator.getModelHandler(connection.getLink().getBusinessObjects()
 					.get(0).eResource());
 
-			EObject be = BusinessObjectUtil.getFirstElementOfType(connection, clazz);
+			EObject be = BusinessObjectUtil.getFirstElementOfType(connection, BaseElement.class);
 			BPMNEdge edge = (BPMNEdge) modelHandler.findDIElement((BaseElement) be);
 			Point point = DcFactory.eINSTANCE.createPoint();
 
@@ -102,11 +102,14 @@ public class DIUtils {
 			}
 			waypoint.add(point);
 
-			if (connection instanceof FreeFormConnectionImpl) {
-				FreeFormConnectionImpl freeForm = (FreeFormConnectionImpl) connection;
+			if (connection instanceof FreeFormConnection) {
+				FreeFormConnection freeForm = (FreeFormConnection) connection;
 				EList<org.eclipse.graphiti.mm.algorithms.styles.Point> bendpoints = freeForm.getBendpoints();
 				for (org.eclipse.graphiti.mm.algorithms.styles.Point bp : bendpoints) {
-					addBendPoint(freeForm, point);
+					point = DcFactory.eINSTANCE.createPoint();
+					point.setX(bp.getX());
+					point.setY(bp.getY());
+					waypoint.add(point);
 				}
 			}
 
@@ -126,7 +129,7 @@ public class DIUtils {
 		}
 	}
 
-	static void addBendPoint(FreeFormConnectionImpl freeForm, Point point) {
+	static void addBendPoint(FreeFormConnection freeForm, Point point) {
 		freeForm.getBendpoints().add(Graphiti.getGaService().createPoint((int) point.getX(), (int) point.getY()));
 	}
 
