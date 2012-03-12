@@ -19,6 +19,7 @@ import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.OnEntryScriptType;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.OnExitScriptType;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ComboObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
@@ -68,7 +69,7 @@ public class JbpmActivityPropertiesComposite extends ActivityPropertiesComposite
 		}
 	}
 	
-	private void createEntryExitScriptSection(Activity activity, Entry entry) {
+	protected void createEntryExitScriptSection(Activity activity, Entry entry) {
 
 		String title;
 		EStructuralFeature feature = entry.getEStructuralFeature();
@@ -86,8 +87,12 @@ public class JbpmActivityPropertiesComposite extends ActivityPropertiesComposite
 		sectionComposite.setLayout(new GridLayout(3,false));
 		EObject est = (EObject)entry.getValue();
 
+		createScriptWidgets(sectionComposite, est);
+	}
+	
+	protected void createScriptWidgets(Composite composite, EObject object) {
 		ObjectEditor editor;
-		editor = new ComboObjectEditor(this,est,est.eClass().getEStructuralFeature("scriptFormat")) {
+		editor = new ComboObjectEditor(this,object,object.eClass().getEStructuralFeature("scriptFormat")) {
 
 			@Override
 			protected Hashtable<String, Object> getChoiceOfValues(EObject object, EStructuralFeature feature) {
@@ -98,9 +103,9 @@ public class JbpmActivityPropertiesComposite extends ActivityPropertiesComposite
 			}
 			
 		};
-		editor.createControl(sectionComposite,"Script Language",SWT.NONE);
+		editor.createControl(composite,"Script Language",SWT.NONE);
 
-		editor = new TextObjectEditor(this,est,est.eClass().getEStructuralFeature("script"));
-		editor.createControl(sectionComposite,"Script",SWT.MULTI);
+		editor = new TextObjectEditor(this,object,object.eClass().getEStructuralFeature("script"));
+		editor.createControl(composite,"Script",SWT.MULTI);
 	}
 }
