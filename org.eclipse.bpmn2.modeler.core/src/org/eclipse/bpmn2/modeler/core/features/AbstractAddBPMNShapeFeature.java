@@ -32,7 +32,6 @@ import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.di.DIImport;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
-import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.core.resources.IProject;
@@ -55,8 +54,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
 
 public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeature {
 
-	Bpmn2Preferences prefs = null;
-	
 	public AbstractAddBPMNShapeFeature(IFeatureProvider fp) {
 		super(fp);
 	}
@@ -98,7 +95,7 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 					shape.setBounds(bounds);
 					
 					if (elem instanceof Lane || elem instanceof Participant) {
-						shape.setIsHorizontal(!getBpmn2Preferences().isVerticalOrientation());
+						shape.setIsHorizontal(!Bpmn2Preferences.getInstance().isVerticalOrientation());
 					}
 					
 					addShape(shape, bpmnDiagram);
@@ -108,14 +105,6 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 		}
 		link(gShape, new Object[] { elem, shape });
 		return shape;
-	}
-	
-	private Bpmn2Preferences getBpmn2Preferences() {
-		if (prefs==null) {
-			IProject project = TargetRuntime.getActiveProject();
-			prefs = new Bpmn2Preferences(project);
-		}
-		return prefs;
 	}
 
 	private void addShape(DiagramElement elem, BPMNDiagram bpmnDiagram) {
@@ -218,7 +207,7 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 					return laneShape.isIsHorizontal();
 			}
 		}
-		return !getBpmn2Preferences().isVerticalOrientation();
+		return !Bpmn2Preferences.getInstance().isVerticalOrientation();
 	}
 	
 	protected abstract int getHeight();

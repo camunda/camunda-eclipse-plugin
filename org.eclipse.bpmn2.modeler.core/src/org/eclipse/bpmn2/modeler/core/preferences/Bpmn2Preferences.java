@@ -12,24 +12,39 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.preferences;
 
+import java.util.Hashtable;
+
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.core.internal.resources.ProjectPreferences;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ProjectScope;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.views.navigator.ResourceNavigator;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
+import org.eclipse.emf.common.util.URI;
 
 @SuppressWarnings("restriction")
-public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyChangeListener {
+public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyChangeListener, IResourceChangeListener {
 	public final static String PROJECT_PREFERENCES_ID = "org.eclipse.bpmn2.modeler";
 	public final static String PREF_TARGET_RUNTIME = "target.runtime";
 	public final static String PREF_TARGET_RUNTIME_LABEL = "Target &Runtime";
@@ -41,22 +56,25 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	public final static String PREF_VERTICAL_ORIENTATION = "vertical.orientation";
 	public final static String PREF_VERTICAL_ORIENTATION_LABEL = "Use &Vertical layout for Pools and Lanes";
 	
+	private static Hashtable<IProject,Bpmn2Preferences> instances = null;
+	private static IProject activeProject;
+
+	private IProject project;
 	private Preferences projectPreferences;
 	private IPreferenceStore globalPreferences;
 	private boolean loaded;
 	private boolean dirty;
 	
-	// the per-project preferences:
 	private TargetRuntime targetRuntime;
 	private boolean showAdvancedPropertiesTab;
 	private boolean overrideModelEnablements;
 	private boolean expandProperties;
 	private boolean verticalOrientation;
 	
-	// the global user preferences:
 	// TODO: stuff like colors, fonts, etc.
 
-	public Bpmn2Preferences(IProject project) {
+	private Bpmn2Preferences(IProject project) {
+		this.project = project;
 		IEclipsePreferences rootNode = Platform.getPreferencesService()
 				.getRootNode();
 		projectPreferences = rootNode.node(ProjectScope.SCOPE)
@@ -67,6 +85,61 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		
 		globalPreferences = Activator.getDefault().getPreferenceStore();
 		globalPreferences.addPropertyChangeListener(this);
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+	}
+
+	// various preference instance getters
+	
+	/**
+	 * Return the Preferences for the currently active project. This should be used
+	 * with caution: the active project is set by the BPMN2Editor, so this should only
+	 * be used in a context that is known to have an active editor.
+	 * 
+	 * @return project preferences
+	 */
+	public static Bpmn2Preferences getInstance() {
+		return getInstance(getActiveProject());
+	}
+	
+	/**
+	 * Return the Preferences for the project containing the EMF Resource
+	 * 
+	 * @param resource
+	 * @return project preferences
+	 */
+	public static Bpmn2Preferences getInstance(Resource resource) {
+		return getInstance(resource.getURI());
+	}
+	
+	/**
+	 * Return the Preferences for the project containing the EMF Resource specified
+	 * by the resource URI. This must be a Platform URI.
+	 * 
+	 * @param resourceURI
+	 * @return project preferences
+	 */
+	public static Bpmn2Preferences getInstance(URI resourceURI) {
+		String filename = resourceURI.toPlatformString(true);
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().findMember(filename).getProject();
+		return getInstance(project);
+	}
+	
+	/**
+	 * Return the Preferences for the given project.
+	 * 
+	 * @param project
+	 * @return project preferences
+	 */
+	public static Bpmn2Preferences getInstance(IProject project) {
+		if (instances==null) {
+			instances = new Hashtable<IProject,Bpmn2Preferences>();
+		}
+		Bpmn2Preferences pref = instances.get(project);
+		if (pref==null) {
+			pref = new Bpmn2Preferences(project);
+			instances.put(project, pref);
+		}
+		return pref;
 	}
 	
 	public void restoreDefaults() {
@@ -105,6 +178,8 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		if (projectPreferences instanceof ProjectPreferences)
 			((ProjectPreferences)projectPreferences).removePreferenceChangeListener(this);
 		globalPreferences.removePropertyChangeListener(this);
+		instances.remove(project);
+		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 	}
 	
 	public synchronized void reload() {
@@ -284,5 +359,51 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			projectPreferences.put(key, value);
 			dirty = true;
 		}
+	}
+
+	// TODO: use CNF for indigo & future - keep ResourceNavigator for backward compatibility
+	public static IProject getActiveProject() {
+		if (activeProject!=null)
+			return activeProject;
+		
+		IWorkbench workbench = PlatformUI.getWorkbench(); 
+		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+		IWorkbenchPage page = window.getActivePage();
+		if (page!=null) {
+			IViewPart[] parts = page.getViews();
+	
+			for (int i = 0; i < parts.length; i++) {
+				if (parts[i] instanceof ResourceNavigator) {
+					ResourceNavigator navigator = (ResourceNavigator) parts[i];
+					StructuredSelection sel = (StructuredSelection) navigator.getTreeViewer().getSelection();
+					IResource resource = (IResource) sel.getFirstElement();
+					activeProject = resource.getProject();
+					break;
+				}
+			}
+		}
+		return activeProject;
+	}
+
+	public static void setActiveProject(IProject project) {
+		activeProject = project;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
+	 */
+	@Override
+	public void resourceChanged(IResourceChangeEvent event) {
+		int type = event.getType();
+		if (type==IResourceChangeEvent.PRE_CLOSE) {
+			try {
+				save();
+			} catch (BackingStoreException e) {
+				e.printStackTrace();
+			}
+			dispose();
+		}
+		if (type==IResourceChangeEvent.PRE_DELETE)
+			dispose();
 	}
 }

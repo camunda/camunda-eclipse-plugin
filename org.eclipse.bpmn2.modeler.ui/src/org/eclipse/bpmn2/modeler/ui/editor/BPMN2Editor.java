@@ -125,7 +125,7 @@ public class BPMN2Editor extends DiagramEditor {
 	private void setActiveEditor(BPMN2Editor editor) {
 		activeEditor = editor;
 		if (activeEditor!=null) {
-			TargetRuntime.setActiveProject(modelFile.getProject());
+			Bpmn2Preferences.setActiveProject(modelFile.getProject());
 			TargetRuntime.setCurrentRuntime( getTargetRuntime() );
 		}
 	}
@@ -194,7 +194,7 @@ public class BPMN2Editor extends DiagramEditor {
 	}
 	
 	private void loadPreferences(IProject project) {
-		preferences = new Bpmn2Preferences(project);
+		preferences = Bpmn2Preferences.getInstance(project);
 		preferences.load();
 	}
 

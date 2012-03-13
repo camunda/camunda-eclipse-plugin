@@ -247,19 +247,14 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 	}
 
 	
-	private Bpmn2Preferences getBpmn2Preferences() {
-		IProject project = TargetRuntime.getActiveProject();
-		return new Bpmn2Preferences(project);
-	}
-	
 	private ToolEnablementPreferences getToolEnablementPreferences() {
-		IProject project = TargetRuntime.getActiveProject();
+		IProject project = Bpmn2Preferences.getActiveProject();
 		return ToolEnablementPreferences.getPreferences(project);
 	}
 
 
 	public boolean isEnabled(String className, String featureName) {
-		if (getBpmn2Preferences().getOverrideModelEnablements()) {
+		if (Bpmn2Preferences.getInstance().getOverrideModelEnablements()) {
 			String name = className;
 			if (featureName!=null && !featureName.isEmpty())
 				name += "." + featureName;

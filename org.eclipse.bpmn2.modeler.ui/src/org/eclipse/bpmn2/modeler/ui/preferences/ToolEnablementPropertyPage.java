@@ -224,7 +224,8 @@ public class ToolEnablementPropertyPage extends PropertyPage {
 
 	private void initData() {
 		toolEnablementPreferences = ToolEnablementPreferences.getPreferences((IProject) getElement().getAdapter(IProject.class));
-		bpmn2Preferences = new Bpmn2Preferences((IProject) getElement().getAdapter(IProject.class));
+		IProject project = (IProject)getElement().getAdapter(IProject.class);
+		bpmn2Preferences = Bpmn2Preferences.getInstance(project);
 
 		reloadPreferences();
 	}

@@ -91,7 +91,6 @@ import org.eclipse.xsd.XSDSchema;
 public class ModelHandler {
 
 	Bpmn2ResourceImpl resource;
-	Bpmn2Preferences prefs = null;
 
 	ModelHandler() {
 	}
@@ -264,7 +263,7 @@ public class ModelHandler {
 
 					// create DI shapes
 
-					boolean vert = getBpmn2Preferences().isVerticalOrientation();
+					boolean vert = Bpmn2Preferences.getInstance(resource).isVerticalOrientation();
 					// initiating pool
 					BPMNShape shape = BpmnDiFactory.eINSTANCE.createBPMNShape();
 					ModelUtil.setID(shape,resource);
@@ -408,15 +407,6 @@ public class ModelHandler {
 		return bpmnDiagram;
 	}
 	
-	
-	public Bpmn2Preferences getBpmn2Preferences() {
-		if (prefs == null) {
-			String filename = resource.getURI().toPlatformString(true);
-			IProject project = ResourcesPlugin.getWorkspace().getRoot().findMember(filename).getProject();
-			prefs = new Bpmn2Preferences(project);
-		}
-		return prefs;
-	}
 	
 	public static ModelHandler getInstance(EObject object) throws IOException {
 		return ModelHandlerLocator.getModelHandler(object.eResource());

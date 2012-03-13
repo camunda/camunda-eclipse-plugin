@@ -96,7 +96,7 @@ public class Bpmn2PropertyPage extends PropertyPage {
 
 	private void initData() {
 		IProject project = (IProject) getElement().getAdapter(IProject.class);
-		prefs = new Bpmn2Preferences(project);
+		prefs = Bpmn2Preferences.getInstance(project);
 		prefs.load();
 	}
 

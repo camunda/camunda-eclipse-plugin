@@ -43,7 +43,6 @@ import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
-import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.bpmn2.util.ImportHelper;
@@ -200,18 +199,10 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 				}
 				if (!isHorizontalSet) {
 					BPMNShape shape = (BPMNShape)obj;
-					boolean vert = getBpmn2Preferences().isVerticalOrientation();
+					boolean vert = Bpmn2Preferences.getInstance(this.resourceURI).isVerticalOrientation();
 					shape.setIsHorizontal(!vert);
 				}
 			}
-		}
-		
-		private Bpmn2Preferences getBpmn2Preferences() {
-			if (prefs==null) {
-				IProject project = TargetRuntime.getActiveProject();
-				prefs = new Bpmn2Preferences(project);
-			}
-			return prefs;
 		}
 
 		/**

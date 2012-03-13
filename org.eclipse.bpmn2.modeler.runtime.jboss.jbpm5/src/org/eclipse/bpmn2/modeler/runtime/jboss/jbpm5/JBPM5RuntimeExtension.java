@@ -29,6 +29,7 @@ import org.apache.xerces.xni.QName;
 import org.apache.xerces.xni.XMLAttributes;
 import org.apache.xerces.xni.XNIException;
 import org.eclipse.bpmn2.modeler.core.IBpmn2RuntimeExtension;
+import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.runtime.CustomTaskDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor.Property;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
@@ -84,7 +85,7 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 	 * @see org.eclipse.bpmn2.modeler.core.IBpmn2RuntimeExtension#initialize()
 	 */
 	public void initialize() {
-		IProject project = TargetRuntime.getActiveProject();
+		IProject project = Bpmn2Preferences.getActiveProject();
 		if (project != null) {
 			ArrayList<WorkItemDefinition> wids = new ArrayList<WorkItemDefinition>();
 			try {
@@ -142,7 +143,7 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 			setBasicProps ( ct, wid);
 			
 			// push the icon into the image registry
-			IProject project = TargetRuntime.getActiveProject();
+			IProject project = Bpmn2Preferences.getActiveProject();
 			String iconPath = getWIDPropertyValue("icon", wid);
 			if (iconPath != null) {
 				Path tempPath = new Path(iconPath);
