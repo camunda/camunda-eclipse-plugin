@@ -32,8 +32,10 @@ import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.di.DIImport;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
+import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.DcFactory;
 import org.eclipse.dd.dc.Point;
@@ -53,6 +55,8 @@ import org.eclipse.jface.preference.IPreferenceStore;
 
 public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeature {
 
+	Bpmn2Preferences prefs = null;
+	
 	public AbstractAddBPMNShapeFeature(IFeatureProvider fp) {
 		super(fp);
 	}
@@ -94,9 +98,7 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 					shape.setBounds(bounds);
 					
 					if (elem instanceof Lane || elem instanceof Participant) {
-						IPreferenceStore prefs = Activator.getDefault().getPreferenceStore();
-						boolean vert = prefs.getBoolean(Bpmn2Preferences.PREF_VERTICAL_ORIENTATION);
-						shape.setIsHorizontal(!vert);
+						shape.setIsHorizontal(!getBpmn2Preferences().isVerticalOrientation());
 					}
 					
 					addShape(shape, bpmnDiagram);
@@ -108,6 +110,14 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 		return shape;
 	}
 	
+	private Bpmn2Preferences getBpmn2Preferences() {
+		if (prefs==null) {
+			IProject project = TargetRuntime.getActiveProject();
+			prefs = new Bpmn2Preferences(project);
+		}
+		return prefs;
+	}
+
 	private void addShape(DiagramElement elem, BPMNDiagram bpmnDiagram) {
 		List<DiagramElement> elements = bpmnDiagram.getPlane().getPlaneElement();
 		elements.add(elem);
@@ -208,8 +218,7 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 					return laneShape.isIsHorizontal();
 			}
 		}
-		IPreferenceStore prefs = Activator.getDefault().getPreferenceStore();
-		return !prefs.getBoolean(Bpmn2Preferences.PREF_VERTICAL_ORIENTATION);
+		return !getBpmn2Preferences().isVerticalOrientation();
 	}
 	
 	protected abstract int getHeight();

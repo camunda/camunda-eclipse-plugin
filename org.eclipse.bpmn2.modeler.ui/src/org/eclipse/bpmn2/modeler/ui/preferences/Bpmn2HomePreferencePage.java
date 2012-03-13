@@ -7,6 +7,8 @@ import org.eclipse.bpmn2.modeler.ui.Messages;
 import org.eclipse.bpmn2.modeler.ui.util.SelectableComboFieldEditor;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -73,8 +75,9 @@ public class Bpmn2HomePreferencePage
 				Bpmn2Preferences.PREF_TARGET_RUNTIME_LABEL,
 				entries,
 				getFieldEditorParent());
+
 		targetRuntimes.setPreferenceStore(getPreferenceStore());
-		targetRuntimes.setSelectedValue(TargetRuntime.getFirstNonDefaultId());
+//		targetRuntimes.setSelectedValue(getPreferenceStore().getString(Bpmn2Preferences.PREF_TARGET_RUNTIME));
 		
 		addField(targetRuntimes);
 	}

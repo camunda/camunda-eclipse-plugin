@@ -43,10 +43,12 @@ import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
+import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.bpmn2.util.ImportHelper;
 import org.eclipse.bpmn2.util.QNameURIHandler;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.Point;
 import org.eclipse.dd.di.DiagramElement;
@@ -176,6 +178,8 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 	 */
 	protected static class Bpmn2ModelerXmlHandler extends BpmnXmlHandler {
 
+		Bpmn2Preferences prefs = null;
+		
 		public Bpmn2ModelerXmlHandler(XMLResource xmiResource, XMLHelper helper, Map<?, ?> options) {
 			super(xmiResource, helper, options);
 		}
@@ -196,11 +200,18 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 				}
 				if (!isHorizontalSet) {
 					BPMNShape shape = (BPMNShape)obj;
-					IPreferenceStore prefs = Activator.getDefault().getPreferenceStore();
-					boolean vert = prefs.getBoolean(Bpmn2Preferences.PREF_VERTICAL_ORIENTATION);
+					boolean vert = getBpmn2Preferences().isVerticalOrientation();
 					shape.setIsHorizontal(!vert);
 				}
 			}
+		}
+		
+		private Bpmn2Preferences getBpmn2Preferences() {
+			if (prefs==null) {
+				IProject project = TargetRuntime.getActiveProject();
+				prefs = new Bpmn2Preferences(project);
+			}
+			return prefs;
 		}
 
 		/**

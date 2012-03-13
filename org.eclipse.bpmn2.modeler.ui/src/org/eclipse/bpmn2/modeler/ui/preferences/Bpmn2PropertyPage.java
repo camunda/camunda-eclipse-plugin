@@ -34,6 +34,7 @@ public class Bpmn2PropertyPage extends PropertyPage {
 	private Combo cboRuntimes;
 	private Button btnShowAdvancedProperties;
 	private Button btnExpandProperties;
+	private Button btnVerticalOrientation;
 	
 	public Bpmn2PropertyPage() {
 		super();
@@ -69,11 +70,15 @@ public class Bpmn2PropertyPage extends PropertyPage {
 		btnShowAdvancedProperties.setText(Bpmn2Preferences.PREF_SHOW_ADVANCED_PROPERTIES_LABEL);
 		btnShowAdvancedProperties.setSelection( prefs.getShowAdvancedPropertiesTab() );
 
-		
 		btnExpandProperties = new Button(container, SWT.CHECK);
 		btnExpandProperties.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
 		btnExpandProperties.setText(Bpmn2Preferences.PREF_EXPAND_PROPERTIES_LABEL);
 		btnExpandProperties.setSelection( prefs.getExpandProperties() );
+		
+		btnVerticalOrientation = new Button(container, SWT.CHECK);
+		btnVerticalOrientation.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
+		btnVerticalOrientation.setText(Bpmn2Preferences.PREF_VERTICAL_ORIENTATION_LABEL);
+		btnVerticalOrientation.setSelection( prefs.isVerticalOrientation() );
 
 		return container;
 	}
@@ -122,6 +127,9 @@ public class Bpmn2PropertyPage extends PropertyPage {
 		
 		boolean expand = btnExpandProperties.getSelection();
 		prefs.setExpandProperties(expand);
+		
+		boolean vertical = btnVerticalOrientation.getSelection();
+		prefs.setVerticalOrientation(vertical);
 		
 		prefs.save();
 	}

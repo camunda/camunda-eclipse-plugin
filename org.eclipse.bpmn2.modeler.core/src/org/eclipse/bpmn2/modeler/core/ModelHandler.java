@@ -54,6 +54,7 @@ import org.eclipse.bpmn2.di.BpmnDiFactory;
 import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.bpmn2.di.ParticipantBandKind;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
+import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -61,6 +62,9 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.bpmn2.modeler.core.utils.NamespaceUtil;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.DcFactory;
 import org.eclipse.dd.dc.Point;
@@ -87,6 +91,7 @@ import org.eclipse.xsd.XSDSchema;
 public class ModelHandler {
 
 	Bpmn2ResourceImpl resource;
+	Bpmn2Preferences prefs = null;
 
 	ModelHandler() {
 	}
@@ -258,18 +263,28 @@ public class ModelHandler {
 					collaboration.getParticipants().add(nonInitiatingParticipant);
 
 					// create DI shapes
-					
+
+					boolean vert = getBpmn2Preferences().isVerticalOrientation();
 					// initiating pool
 					BPMNShape shape = BpmnDiFactory.eINSTANCE.createBPMNShape();
 					ModelUtil.setID(shape,resource);
 
 					shape.setBpmnElement(initiatingParticipant);
 					Bounds bounds = DcFactory.eINSTANCE.createBounds();
-					bounds.setX(100);
-					bounds.setY(100);
-					bounds.setWidth(1000);
-					bounds.setHeight(200);
+					if (vert) {
+						bounds.setX(100);
+						bounds.setY(100);
+						bounds.setWidth(200);
+						bounds.setHeight(1000);
+					}
+					else {
+						bounds.setX(100);
+						bounds.setY(100);
+						bounds.setWidth(1000);
+						bounds.setHeight(200);
+					}
 					shape.setBounds(bounds);
+					shape.setIsHorizontal(!vert);
 					plane.getPlaneElement().add(shape);
 
 					// non-initiating pool
@@ -278,11 +293,20 @@ public class ModelHandler {
 
 					shape.setBpmnElement(nonInitiatingParticipant);
 					bounds = DcFactory.eINSTANCE.createBounds();
-					bounds.setX(100);
-					bounds.setY(400);
-					bounds.setWidth(1000);
-					bounds.setHeight(200);
+					if (vert) {
+						bounds.setX(400);
+						bounds.setY(100);
+						bounds.setWidth(200);
+						bounds.setHeight(1000);
+					}
+					else {
+						bounds.setX(100);
+						bounds.setY(400);
+						bounds.setWidth(1000);
+						bounds.setHeight(200);
+					}
 					shape.setBounds(bounds);
+					shape.setIsHorizontal(!vert);
 					plane.getPlaneElement().add(shape);
 					
 					plane.setBpmnElement(collaboration);
@@ -384,6 +408,15 @@ public class ModelHandler {
 		return bpmnDiagram;
 	}
 	
+	
+	public Bpmn2Preferences getBpmn2Preferences() {
+		if (prefs == null) {
+			String filename = resource.getURI().toPlatformString(true);
+			IProject project = ResourcesPlugin.getWorkspace().getRoot().findMember(filename).getProject();
+			prefs = new Bpmn2Preferences(project);
+		}
+		return prefs;
+	}
 	
 	public static ModelHandler getInstance(EObject object) throws IOException {
 		return ModelHandlerLocator.getModelHandler(object.eResource());

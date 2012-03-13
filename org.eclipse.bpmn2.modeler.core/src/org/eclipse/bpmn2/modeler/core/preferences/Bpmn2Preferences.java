@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.osgi.service.prefs.BackingStoreException;
@@ -40,7 +41,8 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	public final static String PREF_VERTICAL_ORIENTATION = "vertical.orientation";
 	public final static String PREF_VERTICAL_ORIENTATION_LABEL = "Use &Vertical layout for Pools and Lanes";
 	
-	private Preferences prefs;
+	private Preferences projectPreferences;
+	private IPreferenceStore globalPreferences;
 	private boolean loaded;
 	private boolean dirty;
 	
@@ -57,22 +59,52 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	public Bpmn2Preferences(IProject project) {
 		IEclipsePreferences rootNode = Platform.getPreferencesService()
 				.getRootNode();
-		prefs = rootNode.node(ProjectScope.SCOPE)
+		projectPreferences = rootNode.node(ProjectScope.SCOPE)
 				.node(project.getName())
 				.node(PROJECT_PREFERENCES_ID);
-		if (prefs instanceof ProjectPreferences)
-			((ProjectPreferences)prefs).addPreferenceChangeListener(this);
+		if (projectPreferences instanceof ProjectPreferences)
+			((ProjectPreferences)projectPreferences).addPreferenceChangeListener(this);
 		
-		Activator.getDefault().getPreferenceStore().addPropertyChangeListener(this);
+		globalPreferences = Activator.getDefault().getPreferenceStore();
+		globalPreferences.addPropertyChangeListener(this);
 	}
-
+	
 	public void restoreDefaults() {
-		prefs.put(PREF_TARGET_RUNTIME,TargetRuntime.DEFAULT_RUNTIME_ID);
+		projectPreferences.remove(PREF_TARGET_RUNTIME);
+		projectPreferences.remove(PREF_SHOW_ADVANCED_PROPERTIES);
+		projectPreferences.remove(PREF_EXPAND_PROPERTIES);
+		projectPreferences.remove(PREF_VERTICAL_ORIENTATION);
+		
+		globalPreferences.setDefault(PREF_TARGET_RUNTIME,TargetRuntime.getFirstNonDefaultId());
+		globalPreferences.setDefault(PREF_SHOW_ADVANCED_PROPERTIES, false);
+		globalPreferences.setDefault(PREF_EXPAND_PROPERTIES, false);
+		globalPreferences.setDefault(PREF_VERTICAL_ORIENTATION, false);
+		
+		globalPreferences.setToDefault(PREF_TARGET_RUNTIME);
+		globalPreferences.setToDefault(PREF_SHOW_ADVANCED_PROPERTIES);
+		globalPreferences.setToDefault(PREF_EXPAND_PROPERTIES);
+		globalPreferences.setToDefault(PREF_VERTICAL_ORIENTATION);
+		loaded = false;
+		load();
+	}
+	
+	public boolean hasProjectPreference(String key) {
+		try {
+			String[] keys;
+			keys = projectPreferences.keys();
+			for (String k : keys) {
+				if (k.equals(key))
+					return true;
+			}
+		} catch (BackingStoreException e) {
+		}
+		return false;
 	}
 	
 	public void dispose() {
-		if (prefs instanceof ProjectPreferences)
-			((ProjectPreferences)prefs).removePreferenceChangeListener(this);
+		if (projectPreferences instanceof ProjectPreferences)
+			((ProjectPreferences)projectPreferences).removePreferenceChangeListener(this);
+		globalPreferences.removePropertyChangeListener(this);
 	}
 	
 	public synchronized void reload() {
@@ -87,12 +119,16 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			// load all preferences: this will eventually include all per-project
 			// as well as global user preferences.
 			
-			targetRuntime = TargetRuntime.getRuntime(
-					prefs.get(PREF_TARGET_RUNTIME, TargetRuntime.getFirstNonDefaultId() ));
-			showAdvancedPropertiesTab = prefs.getBoolean(PREF_SHOW_ADVANCED_PROPERTIES, false);
-			overrideModelEnablements = prefs.getBoolean(PREF_OVERRIDE_MODEL_ENABLEMENTS, false);
-			expandProperties = prefs.getBoolean(PREF_EXPAND_PROPERTIES, false);
-			verticalOrientation = prefs.getBoolean(PREF_VERTICAL_ORIENTATION, false);
+			overrideModelEnablements = projectPreferences.getBoolean(PREF_OVERRIDE_MODEL_ENABLEMENTS, false);
+
+			String id = getString(PREF_TARGET_RUNTIME,TargetRuntime.getFirstNonDefaultId());
+			if (id==null || id.isEmpty())
+				id = TargetRuntime.getFirstNonDefaultId();
+			targetRuntime = TargetRuntime.getRuntime(id);
+			showAdvancedPropertiesTab = getBoolean(PREF_SHOW_ADVANCED_PROPERTIES, false);
+			expandProperties = getBoolean(PREF_EXPAND_PROPERTIES, false);
+			verticalOrientation = getBoolean(PREF_VERTICAL_ORIENTATION, false);
+			
 			loaded = true;
 		}
 	}
@@ -100,21 +136,23 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	public synchronized void save() throws BackingStoreException {
 		
 		if (dirty) {
-			prefs.put(PREF_TARGET_RUNTIME,targetRuntime.getId());
-			prefs.putBoolean(PREF_SHOW_ADVANCED_PROPERTIES, showAdvancedPropertiesTab);
-			prefs.putBoolean(PREF_OVERRIDE_MODEL_ENABLEMENTS, overrideModelEnablements);
-			prefs.putBoolean(PREF_EXPAND_PROPERTIES, expandProperties);
-			prefs.putBoolean(PREF_VERTICAL_ORIENTATION, verticalOrientation);
-			prefs.flush();
+			// this is the only preference that is a project property,
+			// and not saved in the preference store for this plugin.
+			projectPreferences.putBoolean(PREF_OVERRIDE_MODEL_ENABLEMENTS, overrideModelEnablements);
+
+			setString(PREF_TARGET_RUNTIME,targetRuntime.getId());
+			setBoolean(PREF_SHOW_ADVANCED_PROPERTIES, showAdvancedPropertiesTab);
+			setBoolean(PREF_EXPAND_PROPERTIES, expandProperties);
+			setBoolean(PREF_VERTICAL_ORIENTATION, verticalOrientation);
+			
+			projectPreferences.flush();
 			
 			dirty = false;
 		}
 	}
 	
 	public TargetRuntime getRuntime() {
-		
 		load();
-		
 		return targetRuntime;
 	}
 
@@ -150,9 +188,8 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	public void setRuntime(TargetRuntime rt) {
 		
 		assert(rt!=null);
+		overrideGlobalString(PREF_TARGET_RUNTIME, rt.getId());
 		targetRuntime = rt;
-		
-		dirty = true;
 	}
 	
 	public boolean getShowAdvancedPropertiesTab() {
@@ -161,8 +198,8 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	}
 	
 	public void setShowAdvancedPropertiesTab(boolean show) {
+		overrideGlobalBoolean(PREF_SHOW_ADVANCED_PROPERTIES, show);
 		showAdvancedPropertiesTab = show;
-		dirty = true;
 	}
 	
 	public boolean getOverrideModelEnablements() {
@@ -181,15 +218,17 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	}
 	
 	public void setExpandProperties(boolean expand) {
+		overrideGlobalBoolean(PREF_EXPAND_PROPERTIES, expand);
 		expandProperties = expand;
-		dirty = true;
 	}
 
 	public boolean isVerticalOrientation() {
+		load();
 		return verticalOrientation;
 	}
 
 	public void setVerticalOrientation(boolean vertical) {
+		overrideGlobalBoolean(PREF_VERTICAL_ORIENTATION, vertical);
 		verticalOrientation = vertical;
 	}
 	
@@ -204,5 +243,46 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		reload();
+	}
+
+	// preference/property getters and setters
+	public boolean getBoolean(String key, boolean defaultValue) {
+		if (hasProjectPreference(key))
+			return projectPreferences.getBoolean(key, defaultValue);
+		return globalPreferences.getBoolean(key);
+	}
+	
+	public void setBoolean(String key, boolean value) {
+		if (hasProjectPreference(key))
+			projectPreferences.putBoolean(key, value);
+		else
+			globalPreferences.setValue(key, value);
+	}
+
+	private void overrideGlobalBoolean(String key, boolean value) {
+		if (value!=globalPreferences.getBoolean(key)) {
+			projectPreferences.putBoolean(key, value);
+			dirty = true;
+		}
+	}
+	
+	public String getString(String key, String defaultValue) {
+		if (hasProjectPreference(key))
+			return projectPreferences.get(key, defaultValue);
+		return globalPreferences.getString(key);
+	}
+	
+	public void setString(String key, String value) {
+		if (hasProjectPreference(key))
+			projectPreferences.put(key, value);
+		else
+			globalPreferences.setValue(key, value);
+	}
+
+	private void overrideGlobalString(String key, String value) {
+		if (value!=globalPreferences.getString(key)) {
+			projectPreferences.put(key, value);
+			dirty = true;
+		}
 	}
 }
