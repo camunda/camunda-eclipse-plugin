@@ -62,7 +62,9 @@ public class AdvancedPropertySection extends AbstractBpmn2PropertySection {
 
 	@Override
 	public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
-		BPMN2Editor editor = (BPMN2Editor)part;
-		return editor.getPreferences().getShowAdvancedPropertiesTab();
+		BPMN2Editor editor = (BPMN2Editor)part.getAdapter(BPMN2Editor.class);
+		if (editor!=null)
+			return editor.getPreferences().getShowAdvancedPropertiesTab();
+		return false;
 	}
 }

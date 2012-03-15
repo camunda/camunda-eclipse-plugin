@@ -37,7 +37,7 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 	@Override
 	public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
 		// always show this tab
-		return true;
+		return getBusinessObjectForSelection(selection) != null;
 	}
 
 	public class DescriptionPropertyComposite extends AbstractBpmn2PropertiesComposite {

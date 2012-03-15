@@ -36,8 +36,9 @@ class BpmnModelViewerSelectionListener implements ISelectionListener {
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 
-		if (part instanceof BPMN2Editor) {
-			editor = (BPMN2Editor) part;
+		Object bpmn2Editor = part.getAdapter(BPMN2Editor.class);
+		if (bpmn2Editor instanceof BPMN2Editor) {
+			editor = (BPMN2Editor)bpmn2Editor;
 			try {
 				ModelHandler modelHandler = ModelHandlerLocator.getModelHandler(editor.getDiagramTypeProvider()
 						.getDiagram().eResource());

@@ -37,8 +37,9 @@ public class PropertyTabDescriptorProvider implements ITabDescriptorProvider {
 			ISelection selection) {
 		
 		TargetRuntime rt = TargetRuntime.getDefaultRuntime();
-		if (part instanceof BPMN2Editor) {
-			rt = ((BPMN2Editor)part).getTargetRuntime();
+		Object bpmn2Editor = part.getAdapter(BPMN2Editor.class);
+		if (bpmn2Editor instanceof BPMN2Editor) {
+			rt = ((BPMN2Editor)bpmn2Editor).getTargetRuntime();
 		}
 		
 		List<Bpmn2TabDescriptor> desc = rt.getTabDescriptors();

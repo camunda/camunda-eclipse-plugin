@@ -916,22 +916,36 @@ public class ModelHandler {
 	}
 
 	public DiagramElement findDIElement(BaseElement element) {
-		List<BPMNDiagram> diagrams = getAll(BPMNDiagram.class);
+		String id = element.getId();
+		if (id==null || id.isEmpty())
+			return null;
 
+		List<BPMNDiagram> diagrams = getAll(BPMNDiagram.class);
 		for (BPMNDiagram d : diagrams) {
 			List<DiagramElement> planeElement = d.getPlane().getPlaneElement();
-
-			String id = element.getId();
-			if (id!=null) {
-				for (DiagramElement elem : planeElement) {
-					if (elem instanceof BPMNShape && ((BPMNShape) elem).getBpmnElement() != null &&
-							id.equals(((BPMNShape) elem).getBpmnElement().getId())) {
-						return (elem);
-					} else if (elem instanceof BPMNEdge &&
-							id.equals(((BPMNEdge) elem).getBpmnElement().getId())) {
-						return (elem);
-					}
+			
+			for (DiagramElement elem : planeElement) {
+				if (elem instanceof BPMNShape && ((BPMNShape) elem).getBpmnElement() != null &&
+						id.equals(((BPMNShape) elem).getBpmnElement().getId())) {
+					return (elem);
+				} else if (elem instanceof BPMNEdge &&
+						id.equals(((BPMNEdge) elem).getBpmnElement().getId())) {
+					return (elem);
 				}
+			}
+		}
+		return null;
+	}
+
+	public BaseElement findElement(String id) {
+		if (id==null || id.isEmpty())
+			return null;
+		
+		List<BaseElement> baseElements = getAll(BaseElement.class);
+
+		for (BaseElement be : baseElements) {
+			if (id.equals(be.getId())) {
+				return be;
 			}
 		}
 

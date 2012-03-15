@@ -34,8 +34,7 @@ public class JbpmDescriptionPropertySection extends DescriptionPropertySection {
 	
 	@Override
 	public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
-		// always show this tab
-		return true;
+		return getBusinessObjectForSelection(selection) != null;
 	}
 
 	@Override

@@ -13,7 +13,14 @@
 	</extension>
 	
 	<extension point="org.eclipse.ui.editors">
-		<editor class="org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor"
+		<!--
+		The multipage editor is still experimental.
+		To quickly revert back to the original, single page editor
+		simply replace the editor class with this:
+			class="org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor"
+		-->
+		<editor
+			class="org.eclipse.bpmn2.modeler.ui.editor.BPMN2MultiPageEditor"
 			contributorClass="org.eclipse.graphiti.ui.editor.DiagramEditorActionBarContributor"
 			default="true" extensions="bpmn,bpmn2" icon="icons/bpmn2_editor_16.png"
 			id="org.eclipse.bpmn2.modeler.ui.bpmn2editor" name="BPMN2 Visual Editor">

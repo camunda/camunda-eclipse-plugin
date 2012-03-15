@@ -12,17 +12,25 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.property;
 
+import java.util.List;
+
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
+
 import org.eclipse.bpmn2.modeler.core.runtime.IBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.platform.IDiagramEditor;
+import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -35,6 +43,9 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.eclipse.wst.sse.ui.StructuredTextEditor;
+import org.eclipse.wst.xml.core.internal.document.ElementImpl;
+import org.eclipse.wst.xml.core.internal.document.AttrImpl;
 
 public abstract class AbstractBpmn2PropertySection extends GFPropertySection implements IBpmn2PropertySection {
 	
@@ -46,8 +57,9 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 	private IPartListener partActivationListener = new IPartListener() {
 
 		public void partActivated(IWorkbenchPart part) {
-			if (part instanceof BPMN2Editor) {
-				editor = (BPMN2Editor)part;
+			Object bpmn2Editor = part.getAdapter(BPMN2Editor.class);
+			if (bpmn2Editor instanceof BPMN2Editor) {
+				editor = (BPMN2Editor)bpmn2Editor;
 			}
 		}
 
@@ -170,6 +182,16 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 		return BusinessObjectUtil.getBusinessObjectForPictogramElement(pe);
 	}
 	
+	protected EObject getBusinessObjectForSelection(ISelection selection) {
+		if (selection instanceof IStructuredSelection) {
+			IStructuredSelection ss = (IStructuredSelection)selection;
+			Object elem = ss.getFirstElement();
+			if (elem instanceof PictogramElement)
+				return getBusinessObjectForPictogramElement((PictogramElement) elem);
+		}
+		return null;
+	}
+	
 	protected EObject getBusinessObjectForSelection() {
 		PictogramElement pe = getSelectedPictogramElement();
 		if (pe != null)
@@ -187,8 +209,9 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 	@Override
 	public void setInput(IWorkbenchPart part, ISelection selection) {
 		super.setInput(part, selection);
-		if (part instanceof BPMN2Editor) {
-			editor = (BPMN2Editor)part;
+		Object bpmn2Editor = part.getAdapter(BPMN2Editor.class);
+		if (bpmn2Editor instanceof BPMN2Editor) {
+			editor = (BPMN2Editor)bpmn2Editor;
 		}
 	}
 
@@ -240,14 +263,16 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 	 */
 	@Override
 	public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
-		editor = (BPMN2Editor)part;
-		PictogramElement pe = BusinessObjectUtil.getPictogramElementForSelection(selection);
-		EObject selectionBO = BusinessObjectUtil.getBusinessObjectForSelection(selection);
-		ModelEnablementDescriptor modelEnablement = getModelEnablement(selection);
-		
-		if (selectionBO!=null && modelEnablement.isEnabled(selectionBO.eClass())) {
-			EObject thisBO = getBusinessObjectForPictogramElement(pe);
-			return thisBO!=null;			
+		editor = (BPMN2Editor)part.getAdapter(BPMN2Editor.class);
+		if (editor!=null) {
+			PictogramElement pe = BusinessObjectUtil.getPictogramElementForSelection(selection);
+			EObject selectionBO = BusinessObjectUtil.getBusinessObjectForSelection(selection);
+			ModelEnablementDescriptor modelEnablement = getModelEnablement(selection);
+			
+			if (selectionBO!=null && modelEnablement.isEnabled(selectionBO.eClass())) {
+				EObject thisBO = getBusinessObjectForPictogramElement(pe);
+				return thisBO!=null;			
+			}
 		}
 		return false;
 	}

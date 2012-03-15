@@ -112,6 +112,11 @@ public class BusinessObjectUtil {
 		if (editPart != null && editPart.getModel() instanceof PictogramElement) {
 			return (PictogramElement) editPart.getModel();
 		}
+		if (selection instanceof IStructuredSelection) {
+			Object o = ((IStructuredSelection)selection).getFirstElement();
+			if (o instanceof PictogramElement)
+				return (PictogramElement)o;
+		}
 		return null;
 	}
 

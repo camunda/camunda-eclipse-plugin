@@ -144,7 +144,7 @@ public class DIImport {
 					break;
 				}
 				
-//				layoutAll();
+				layoutAll();
 			}
 
 		});
