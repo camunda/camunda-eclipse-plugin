@@ -183,13 +183,7 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 	}
 	
 	protected EObject getBusinessObjectForSelection(ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection ss = (IStructuredSelection)selection;
-			Object elem = ss.getFirstElement();
-			if (elem instanceof PictogramElement)
-				return getBusinessObjectForPictogramElement((PictogramElement) elem);
-		}
-		return null;
+		return BusinessObjectUtil.getBusinessObjectForSelection(selection);
 	}
 	
 	protected EObject getBusinessObjectForSelection() {
