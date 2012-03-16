@@ -78,8 +78,8 @@
 
 		<repository>
 			<id>eclipse-bpmn2</id>
-			<!--  TODO: change this when BPMN2 metamodel finds a premanent home -->
-			<url>http://download.eclipse.org/bpmn2-modeler/bpmn2/site</url>
+			<!--  TODO: change this when BPMN2 metamodel finds a permanent home -->
+			<url>https://hudson.eclipse.org/hudson/job/bpmn2-nightly/ws/org.eclipse.bpmn2.site/target/site/</url>
 			<layout>p2</layout>
 			<snapshots>
 				<enabled>true</enabled>

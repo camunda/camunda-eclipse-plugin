@@ -3,10 +3,7 @@
 <plugin>
 	<extension point="org.eclipse.ui.newWizards">
 		<!-- <primaryWizard id="org.eclipse.bpmn2.modeler.ui.diagram"> </primaryWizard> -->
-		<category id="org.eclipse.bpmn2.modeler.ui.mainCategory"
-			name="BPMN2">
-		</category>
-		<wizard category="org.eclipse.bpmn2.modeler.ui.mainCategory"
+		<wizard category="org.eclipse.bpmn2.wizardCategory"
 			class="org.eclipse.bpmn2.modeler.ui.wizards.BPMN2DiagramWizard" icon="icons/bpmn2_editor_16.png"
 			id="org.eclipse.bpmn2.modeler.ui.diagram" name="BPMN2 Diagram">
 		</wizard>
@@ -23,7 +20,7 @@
 			class="org.eclipse.bpmn2.modeler.ui.editor.BPMN2MultiPageEditor"
 			contributorClass="org.eclipse.graphiti.ui.editor.DiagramEditorActionBarContributor"
 			default="true" extensions="bpmn,bpmn2" icon="icons/bpmn2_editor_16.png"
-			id="org.eclipse.bpmn2.modeler.ui.bpmn2editor" name="BPMN2 Visual Editor">
+			id="org.eclipse.bpmn2.modeler.ui.bpmn2editor" name="Bpmn2 Diagram Editor">
 			<contentTypeBinding contentTypeId="org.eclipse.bpmn2.content-type.xml">
 			</contentTypeBinding>
 		</editor>
