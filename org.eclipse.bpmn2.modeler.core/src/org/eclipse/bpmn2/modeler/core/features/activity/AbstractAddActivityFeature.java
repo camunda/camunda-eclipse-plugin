@@ -108,9 +108,6 @@ public abstract class AbstractAddActivityFeature extends AbstractAddBPMNShapeFea
 			Graphiti.getPeService().setPropertyValue(pe, ACTIVITY_DECORATOR, "true");
 		}
 		
-		updatePictogramElement(containerShape);
-		layoutPictogramElement(containerShape);
-
 		if (context.getTargetConnection()!=null) {
 			Connection connection = context.getTargetConnection();
 			AnchorContainer oldSourceContainer = connection.getStart().getParent();
@@ -134,16 +131,21 @@ public abstract class AbstractAddActivityFeature extends AbstractAddBPMNShapeFea
 			ccc.setSourceAnchor(anchors.getFirst());
 			ccc.setTargetAnchor(anchors.getSecond());
 			
+			Connection newConnection = null;
 			for (ICreateConnectionFeature cf : getFeatureProvider().getCreateConnectionFeatures()) {
 				if (cf instanceof AbstractCreateFlowFeature) {
 					AbstractCreateFlowFeature acf = (AbstractCreateFlowFeature) cf;
 					if (acf.getBusinessObjectClass().isAssignableFrom(baseElement.getClass())) {
-						connection = acf.create(ccc);
+						newConnection = acf.create(ccc);
 						break;
 					}
 				}
 			}
 		}
+		
+		updatePictogramElement(containerShape);
+		layoutPictogramElement(containerShape);
+		
 		return containerShape;
 	}
 

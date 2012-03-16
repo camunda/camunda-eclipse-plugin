@@ -44,7 +44,7 @@ public class BPMN2DiagramWizardPage1 extends WizardPage implements IConstants {
 	 */
 	public BPMN2DiagramWizardPage1(ISelection selection) {
 		super("wizardPage1");
-		setTitle("New BPMN2 File");
+		setTitle("BPMN2 Diagram Type");
 		setDescription("Select a BPMN 2.0 Diagram Type.");
 		this.selection = selection;
 	}

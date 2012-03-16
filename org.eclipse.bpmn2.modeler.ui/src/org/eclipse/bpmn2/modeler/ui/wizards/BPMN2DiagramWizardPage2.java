@@ -55,7 +55,7 @@ public class BPMN2DiagramWizardPage2 extends WizardPage {
 	 */
 	public BPMN2DiagramWizardPage2(ISelection selection) {
 		super("wizardPage2");
-		setTitle("New BPMN2 File");
+		setTitle("BPMN2 Diagram File");
 		setDescription("Select file name.");
 		this.selection = selection;
 	}
