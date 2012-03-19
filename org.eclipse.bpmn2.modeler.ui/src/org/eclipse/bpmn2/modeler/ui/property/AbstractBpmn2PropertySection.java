@@ -220,8 +220,10 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 			if (be!=null) {
 				AbstractBpmn2PropertiesComposite sectionRoot = getSectionRoot();
 				if (sectionRoot!=null) {
-					sectionRoot.setEObject((BPMN2Editor) getDiagramEditor(), be);
-					PropertyUtil.recursivelayout(sectionRoot);
+					if (sectionRoot.getEObject() != be) {
+						sectionRoot.setEObject((BPMN2Editor) getDiagramEditor(), be);
+						PropertyUtil.recursivelayout(sectionRoot);
+					}
 				}
 			}
 		}
