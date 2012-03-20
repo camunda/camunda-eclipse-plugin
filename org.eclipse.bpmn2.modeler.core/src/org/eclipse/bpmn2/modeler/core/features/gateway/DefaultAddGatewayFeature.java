@@ -53,35 +53,42 @@ public class DefaultAddGatewayFeature extends AbstractAddBPMNShapeFeature {
 		IGaService gaService = Graphiti.getGaService();
 		IPeService peService = Graphiti.getPeService();
 
-		int gatewayWidth = this.getWidth(context);
-		int gatewayHeight = this.getHeight(context);
+		int width = this.getWidth(context);
+		int height = this.getHeight(context);
 		// for backward compatibility with older files that included
 		// the label height in the figure height
-		if (gatewayWidth!=gatewayHeight) {
-			gatewayWidth = gatewayHeight = Math.min(gatewayWidth, gatewayHeight);
+		if (width!=height) {
+			width = height = Math.min(width, height);
 		}
-
+		adjustLocation(context, width, height);
+		
+		int x = context.getX();
+		int y = context.getY();
+		
 		// Create a container for the gateway-symbol
-		final ContainerShape gatewayContainerShape = peService.createContainerShape(context.getTargetContainer(), true);
-		final Rectangle gatewayRect = gaService.createInvisibleRectangle(gatewayContainerShape);
-		gaService.setLocationAndSize(gatewayRect, context.getX(), context.getY(), gatewayWidth, gatewayHeight);
+		final ContainerShape containerShape = peService.createContainerShape(context.getTargetContainer(), true);
+		final Rectangle gatewayRect = gaService.createInvisibleRectangle(containerShape);
+		gaService.setLocationAndSize(gatewayRect, x, y, width, height);
 
-		Shape gatewayShape = peService.createShape(gatewayContainerShape, false);
-		Polygon gateway = GraphicsUtil.createGateway(gatewayShape, gatewayWidth, gatewayHeight);
+		Shape gatewayShape = peService.createShape(containerShape, false);
+		Polygon gateway = GraphicsUtil.createGateway(gatewayShape, width, height);
 		StyleUtil.applyBGStyle(gateway, this);
-		gaService.setLocationAndSize(gateway, 0, 0, gatewayWidth, gatewayHeight);
-		decorateGateway(gatewayContainerShape);
+		gaService.setLocationAndSize(gateway, 0, 0, width, height);
+		decorateGateway(containerShape);
 
-		createDIShape(gatewayContainerShape, addedGateway);
-		peService.createChopboxAnchor(gatewayContainerShape);
-		AnchorUtil.addFixedPointAnchors(gatewayContainerShape, gateway);
-		layoutPictogramElement(gatewayContainerShape);
+		createDIShape(containerShape, addedGateway);
+		peService.createChopboxAnchor(containerShape);
+		AnchorUtil.addFixedPointAnchors(containerShape, gateway);
+		
+		splitConnection(context, containerShape);
+		
+		layoutPictogramElement(containerShape);
 		
 		// Use context for labeling! 
-		this.prepareAddContext(context, gatewayWidth, gatewayHeight);
+		this.prepareAddContext(context, width, height);
 		this.getFeatureProvider().getAddFeature(context).add(context);
 		
-		return gatewayContainerShape;
+		return containerShape;
 	}
 
 	protected void decorateGateway(ContainerShape container) {

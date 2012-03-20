@@ -43,6 +43,7 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.PictogramLink;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
+import org.eclipse.graphiti.services.ILayoutService;
 
 public class DIUtils {
 
@@ -81,6 +82,7 @@ public class DIUtils {
 
 	public static void updateDIEdge(Connection connection) {
 		try {
+			ILayoutService layoutService = Graphiti.getLayoutService();
 			ModelHandler modelHandler = ModelHandlerLocator.getModelHandler(connection.getLink().getBusinessObjects()
 					.get(0).eResource());
 
@@ -91,15 +93,10 @@ public class DIUtils {
 			List<Point> waypoint = edge.getWaypoint();
 			waypoint.clear();
 
-			GraphicsAlgorithm graphicsAlgorithm = connection.getStart().getGraphicsAlgorithm();
-			// FIXME connections must create anchors!!!
-			if (graphicsAlgorithm != null) {
-				point.setX(graphicsAlgorithm.getX());
-				point.setY(graphicsAlgorithm.getY());
-			} else {
-				point.setX(connection.getStart().getParent().getGraphicsAlgorithm().getX());
-				point.setY(connection.getStart().getParent().getGraphicsAlgorithm().getY());
-			}
+			ILocation loc;
+			loc = layoutService.getLocationRelativeToDiagram(connection.getStart());
+			point.setX(loc.getX());
+			point.setY(loc.getY());
 			waypoint.add(point);
 
 			if (connection instanceof FreeFormConnection) {
@@ -114,14 +111,9 @@ public class DIUtils {
 			}
 
 			point = DcFactory.eINSTANCE.createPoint();
-			graphicsAlgorithm = connection.getEnd().getGraphicsAlgorithm();
-			if (graphicsAlgorithm != null) {
-				point.setX(graphicsAlgorithm.getX());
-				point.setY(graphicsAlgorithm.getY());
-			} else {
-				point.setX(connection.getEnd().getParent().getGraphicsAlgorithm().getX());
-				point.setY(connection.getEnd().getParent().getGraphicsAlgorithm().getY());
-			}
+			loc = layoutService.getLocationRelativeToDiagram(connection.getEnd());
+			point.setX(loc.getX());
+			point.setY(loc.getY());
 			waypoint.add(point);
 
 		} catch (IOException e) {

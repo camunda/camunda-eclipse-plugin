@@ -31,14 +31,17 @@ import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReconnectionFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.CreateConnectionContext;
 import org.eclipse.graphiti.features.context.impl.ReconnectionContext;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
+import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
@@ -73,10 +76,15 @@ public abstract class AbstractAddActivityFeature extends AbstractAddBPMNShapeFea
 
 		int width = context.getWidth() > 0 ? context.getWidth() : this.getWidth();
 		int height = context.getHeight() > 0 ? context.getHeight() : this.getHeight();
+		
+		adjustLocation(context,width,height);
+		
+		int x = context.getX();
+		int y = context.getY();
 
 		ContainerShape containerShape = peService.createContainerShape(context.getTargetContainer(), true);
 		Rectangle invisibleRect = gaService.createInvisibleRectangle(containerShape);
-		gaService.setLocationAndSize(invisibleRect, context.getX(), context.getY(), width, height);
+		gaService.setLocationAndSize(invisibleRect, x, y, width, height);
 
 		Shape rectShape = peService.createShape(containerShape, false);
 		RoundedRectangle rect = gaService.createRoundedRectangle(rectShape, 5, 5);
@@ -89,7 +97,7 @@ public abstract class AbstractAddActivityFeature extends AbstractAddBPMNShapeFea
 		ContainerShape markerContainer = peService.createContainerShape(containerShape, false);
 		Rectangle markerInvisibleRect = gaService.createInvisibleRectangle(markerContainer);
 		int h = 10;
-		int y = height - h - 3 - getMarkerContainerOffset();
+		y = height - h - 3 - getMarkerContainerOffset();
 		gaService.setLocationAndSize(markerInvisibleRect, 0, y, invisibleRect.getWidth(), h);
 		peService.setPropertyValue(markerContainer, GraphicsUtil.ACTIVITY_MARKER_CONTAINER, Boolean.toString(true));
 
@@ -107,41 +115,8 @@ public abstract class AbstractAddActivityFeature extends AbstractAddBPMNShapeFea
 		for (PictogramElement pe : containerShape.getChildren()) {
 			Graphiti.getPeService().setPropertyValue(pe, ACTIVITY_DECORATOR, "true");
 		}
-		
-		if (context.getTargetConnection()!=null) {
-			Connection connection = context.getTargetConnection();
-			AnchorContainer oldSourceContainer = connection.getStart().getParent();
-			AnchorContainer oldTargetContainer = connection.getEnd().getParent();
-			BaseElement baseElement = BusinessObjectUtil.getFirstElementOfType(connection, BaseElement.class);
-			ILocation targetLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(containerShape);
-			
-			Tuple<FixPointAnchor, FixPointAnchor> anchors = AnchorUtil.getSourceAndTargetBoundaryAnchors(oldSourceContainer, containerShape, connection);
 
-			ReconnectionContext rc = new ReconnectionContext(connection, connection.getEnd(), anchors.getSecond(), targetLocation);
-			rc.setTargetPictogramElement(containerShape);
-			rc.setReconnectType(ReconnectionContext.RECONNECT_TARGET);
-			IReconnectionFeature rf = getFeatureProvider().getReconnectionFeature(rc);
-			rf.reconnect(rc);
-			
-			// connection = get create feature, create connection
-			CreateConnectionContext ccc = new CreateConnectionContext();
-			ccc.setSourcePictogramElement(containerShape);
-			ccc.setTargetPictogramElement(oldTargetContainer);
-			anchors = AnchorUtil.getSourceAndTargetBoundaryAnchors(containerShape, oldTargetContainer, connection);
-			ccc.setSourceAnchor(anchors.getFirst());
-			ccc.setTargetAnchor(anchors.getSecond());
-			
-			Connection newConnection = null;
-			for (ICreateConnectionFeature cf : getFeatureProvider().getCreateConnectionFeatures()) {
-				if (cf instanceof AbstractCreateFlowFeature) {
-					AbstractCreateFlowFeature acf = (AbstractCreateFlowFeature) cf;
-					if (acf.getBusinessObjectClass().isAssignableFrom(baseElement.getClass())) {
-						newConnection = acf.create(ccc);
-						break;
-					}
-				}
-			}
-		}
+		splitConnection(context, containerShape);
 		
 		updatePictogramElement(containerShape);
 		layoutPictogramElement(containerShape);

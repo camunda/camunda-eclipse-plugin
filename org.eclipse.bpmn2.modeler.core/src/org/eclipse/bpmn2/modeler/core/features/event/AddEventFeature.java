@@ -64,44 +64,44 @@ public class AddEventFeature extends AbstractAddBPMNShapeFeature {
 		IGaService gaService = Graphiti.getGaService();
 		IPeService peService = Graphiti.getPeService();
 
-		int eventWidth = this.getWidth(context);
-		int eventHeight = this.getHeight(context);
+		int width = this.getWidth(context);
+		int height = this.getHeight(context);
 		// for backward compatibility with older files that included
 		// the label height in the figure height
-		if (eventWidth!=eventHeight) {
-			eventWidth = eventHeight = Math.min(eventWidth, eventHeight);
+		if (width!=height) {
+			width = height = Math.min(width, height);
 		}
+		
+		adjustLocation(context,width,height);
+		
+		int x = context.getX();
+		int y = context.getY();
 
-		ContainerShape eventContainerShape = peService.createContainerShape(context.getTargetContainer(), true);
-		Rectangle invisibleRect = gaService.createInvisibleRectangle(eventContainerShape);
-		gaService.setLocationAndSize(invisibleRect, context.getX(), context.getY(), eventWidth, eventHeight);
+		ContainerShape containerShape = peService.createContainerShape(context.getTargetContainer(), true);
+		Rectangle invisibleRect = gaService.createInvisibleRectangle(containerShape);
+		gaService.setLocationAndSize(invisibleRect, x, y, width, height);
 
-		Shape ellipseShape = peService.createShape(eventContainerShape, false);
+		Shape ellipseShape = peService.createShape(containerShape, false);
 		peService.setPropertyValue(ellipseShape, EVENT_ELEMENT, EVENT_CIRCLE);
-		peService.setPropertyValue(eventContainerShape, GraphicsUtil.EVENT_MARKER_CONTAINER, Boolean.toString(true));
-		Ellipse ellipse = createEventShape(ellipseShape, eventWidth, eventHeight);
+		peService.setPropertyValue(containerShape, GraphicsUtil.EVENT_MARKER_CONTAINER, Boolean.toString(true));
+		Ellipse ellipse = createEventShape(ellipseShape, width, height);
 		StyleUtil.applyBGStyle(ellipse, this);
 		decorateEllipse(ellipse);
 
-//		Shape textShape = peService.createShape(eventContainerShape, false);
-//		peService.setPropertyValue(textShape, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
-//		Text text = gaService.createDefaultText(getDiagram(), textShape, e.getName());
-//		text.setStyle(StyleUtil.getStyleForText(getDiagram()));
-//		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
-//		text.setVerticalAlignment(Orientation.ALIGNMENT_TOP);
-//		gaService.setLocationAndSize(text, 0, EVENT_SIZE, EVENT_SIZE, EVENT_TEXT_AREA);
-
-		peService.createChopboxAnchor(eventContainerShape);
-		AnchorUtil.addFixedPointAnchors(eventContainerShape, ellipse);
-		createDIShape(eventContainerShape, e);
-		hook(eventContainerShape);
-		updatePictogramElement(eventContainerShape);
-		layoutPictogramElement(eventContainerShape);
+		peService.createChopboxAnchor(containerShape);
+		AnchorUtil.addFixedPointAnchors(containerShape, ellipse);
+		createDIShape(containerShape, e);
+		hook(containerShape);
 		
-		this.prepareAddContext(context, eventWidth, eventHeight);
+		splitConnection(context, containerShape);
+		
+		updatePictogramElement(containerShape);
+		layoutPictogramElement(containerShape);
+		
+		this.prepareAddContext(context, width, height);
 		this.getFeatureProvider().getAddFeature(context).add(context);
 		
-		return eventContainerShape;
+		return containerShape;
 	}
 
 	protected void decorateEllipse(Ellipse ellipse) {
