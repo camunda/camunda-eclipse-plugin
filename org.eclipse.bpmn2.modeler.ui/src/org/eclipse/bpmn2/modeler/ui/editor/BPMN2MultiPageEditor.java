@@ -35,9 +35,12 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabFolder2Listener;
 import org.eclipse.swt.custom.CTabFolderEvent;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.MultiPageEditorSite;
 import org.eclipse.ui.part.MultiPageSelectionProvider;
@@ -269,7 +272,8 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 
 			try {
 				int pageIndex = tabFolder.getItemCount();
-				addPage(pageIndex, sourceViewer, BPMN2MultiPageEditor.this.getEditorInput());
+				FileEditorInput input = new FileEditorInput(designEditor.getModelFile());
+				addPage(pageIndex, sourceViewer, input);
 				tabFolder.getItem(pageIndex).setShowClose(true);
 				
 				setPageText(pageIndex,"Source");
