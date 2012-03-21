@@ -185,12 +185,12 @@ public class AddChoreographyFeature extends AbstractAddBPMNShapeFeature {
 	}
 
 	@Override
-	protected int getHeight() {
+	public int getHeight() {
 		return GraphicsUtil.CHOREOGRAPHY_HEIGHT;
 	}
 
 	@Override
-	protected int getWidth() {
+	public int getWidth() {
 		return GraphicsUtil.CHOREOGRAPHY_WIDTH;
 	}
 }

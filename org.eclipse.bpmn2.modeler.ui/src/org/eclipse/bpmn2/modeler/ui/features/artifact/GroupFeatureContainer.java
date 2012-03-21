@@ -91,12 +91,12 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 			}
 
 			@Override
-			protected int getHeight() {
+			public int getHeight() {
 				return 400;
 			}
 
 			@Override
-			protected int getWidth() {
+			public int getWidth() {
 				return 400;
 			}
 		};

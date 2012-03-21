@@ -40,6 +40,7 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
+import org.eclipse.graphiti.services.ILayoutService;
 import org.eclipse.graphiti.services.IPeService;
 import org.eclipse.graphiti.ui.services.GraphitiUi;
 
@@ -1005,5 +1006,39 @@ public class GraphicsUtil {
 			}
 		}
 		return new Size(TASK_DEFAULT_WIDTH, TASK_DEFAULT_HEIGHT);
+	}
+	
+	public static boolean intersects(Shape shape1, Shape shape2) {
+		ILayoutService layoutService = Graphiti.getLayoutService();
+		ILocation loc2 = layoutService.getLocationRelativeToDiagram(shape2);
+		int x2 = loc2.getX();
+		int y2 = loc2.getY();
+		int w2 = getShapeWidth(shape2);
+		int h2 = getShapeHeight(shape2);
+		return intersects(shape1, x2, y2, w2, h2);
+	}
+	
+	public static boolean intersects(Shape shape1, int x2, int y2, int w2, int h2) {
+		ILayoutService layoutService = Graphiti.getLayoutService();
+		ILocation loc1 = layoutService.getLocationRelativeToDiagram(shape1);
+		int x1 = loc1.getX();
+		int y1 = loc1.getY();
+		int w1 = getShapeWidth(shape1);
+		int h1 = getShapeHeight(shape1);
+		return intersects(x1, y1, w1, h1, x2, y2, w2, h2);
+	}
+
+	public static boolean intersects(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
+		if(x2<=x1 || y1<=y2) {  
+			int t1, t2, t3, t4;
+			t1 = x1; x1 = x2; x2 = t1;  
+			t2 = y1; y1 = y2; y2 = t2;  
+			t3 = w1; w1 = w2; w2 = t3;  
+			t4 = h1; h1 = h2; h2 = t4;  
+		}  
+		if( y2 + h2 < y1 || y1 + h1 < y2 ||  x2 + w2 < x1 || x1 + w1 < x2 ) {
+			return false;
+		}
+		return true;
 	}
 }

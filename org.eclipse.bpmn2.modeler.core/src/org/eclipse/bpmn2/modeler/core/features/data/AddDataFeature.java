@@ -124,12 +124,12 @@ public abstract class AddDataFeature<T extends BaseElement> extends AbstractAddB
 	}
 
 	@Override
-	protected int getHeight() {
+	public int getHeight() {
 		return GraphicsUtil.DATA_HEIGHT;
 	}
 
 	@Override
-	protected int getWidth() {
+	public int getWidth() {
 		return GraphicsUtil.DATA_WIDTH;
 	}
 	

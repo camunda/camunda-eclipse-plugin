@@ -115,12 +115,12 @@ public class AddBoundaryEventFeature extends AbstractAddBPMNShapeFeature {
 	}
 
 	@Override
-	protected int getHeight() {
+	public int getHeight() {
 		return GraphicsUtil.getEventSize(getDiagram()).getHeight();
 	}
 
 	@Override
-	protected int getWidth() {
+	public int getWidth() {
 		return GraphicsUtil.getEventSize(getDiagram()).getWidth();
 	}
 }

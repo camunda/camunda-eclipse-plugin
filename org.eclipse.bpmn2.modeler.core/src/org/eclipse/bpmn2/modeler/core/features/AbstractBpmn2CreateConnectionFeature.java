@@ -16,6 +16,7 @@ package org.eclipse.bpmn2.modeler.core.features;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
@@ -92,6 +93,9 @@ public abstract class AbstractBpmn2CreateConnectionFeature extends
 						rc.getTargetPictogramElement(), BaseElement.class);
 			}
 		}
+		
+		if (o instanceof EndEvent)
+			return false;
 		
 		if (o instanceof EObject) {
 			String n = getBusinessObjectClass().getSimpleName();

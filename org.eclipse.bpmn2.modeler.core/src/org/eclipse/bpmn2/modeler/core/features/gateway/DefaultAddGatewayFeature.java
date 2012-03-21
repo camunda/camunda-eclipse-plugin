@@ -95,12 +95,12 @@ public class DefaultAddGatewayFeature extends AbstractAddBPMNShapeFeature {
 	}
 
 	@Override
-	protected int getHeight() {
+	public int getHeight() {
 		return GraphicsUtil.getGatewaySize(this.getDiagram()).getHeight();
 	}
 
 	@Override
-	protected int getWidth() {
+	public int getWidth() {
 		return GraphicsUtil.getGatewaySize(this.getDiagram()).getWidth();
 	}
 	

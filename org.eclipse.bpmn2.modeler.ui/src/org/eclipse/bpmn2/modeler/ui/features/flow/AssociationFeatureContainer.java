@@ -121,12 +121,12 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 			}
 
 			@Override
-			protected int getHeight() {
+			public int getHeight() {
 				return 0;
 			}
 
 			@Override
-			protected int getWidth() {
+			public int getWidth() {
 				return 0;
 			}
 		};

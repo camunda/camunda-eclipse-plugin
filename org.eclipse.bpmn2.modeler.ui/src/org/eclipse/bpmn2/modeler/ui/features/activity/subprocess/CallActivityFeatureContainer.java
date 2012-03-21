@@ -88,12 +88,12 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 			}
 
 			@Override
-			protected int getWidth() {
+			public int getWidth() {
 				return GraphicsUtil.getActivitySize(getDiagram()).getWidth();
 			}
 
 			@Override
-			protected int getHeight() {
+			public int getHeight() {
 				return GraphicsUtil.getActivitySize(getDiagram()).getHeight();
 			}
 		};

@@ -141,12 +141,12 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 			}
 
 			@Override
-			protected int getHeight() {
+			public int getHeight() {
 				return 50;
 			}
 
 			@Override
-			protected int getWidth() {
+			public int getWidth() {
 				return 50;
 			}
 		};

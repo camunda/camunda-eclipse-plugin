@@ -58,13 +58,13 @@ public class AddTaskFeature extends AbstractAddActivityFeature {
 	}
 
 	@Override
-	protected int getWidth() {
+	public int getWidth() {
 		return GraphicsUtil.getActivitySize(getDiagram()).getWidth();
 //		return GraphicsUtil.TASK_DEFAULT_WIDTH;
 	}
 
 	@Override
-	protected int getHeight() {
+	public int getHeight() {
 		return GraphicsUtil.getActivitySize(getDiagram()).getHeight();
 //		return GraphicsUtil.TASK_DEFAULT_HEIGHT;
 	}

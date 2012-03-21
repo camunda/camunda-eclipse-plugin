@@ -65,12 +65,12 @@ public class AddConversationFeature extends AbstractAddBPMNShapeFeature {
 	}
 
 	@Override
-	protected int getHeight() {
+	public int getHeight() {
 		return 30;
 	}
 
 	@Override
-	protected int getWidth() {
+	public int getWidth() {
 		return 30;
 	}
 }

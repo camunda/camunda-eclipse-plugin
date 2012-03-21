@@ -93,12 +93,12 @@ public abstract class AbstractAddFlowFeature extends AbstractAddBPMNShapeFeature
 	}
 	
 	@Override
-	protected int getHeight() {
+	public int getHeight() {
 		return -1;
 	}
 
 	@Override
-	protected int getWidth() {
+	public int getWidth() {
 		return -1;
 	}
 

@@ -16,11 +16,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.ChoreographyTask;
 import org.eclipse.bpmn2.EventDefinition;
+import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.Group;
+import org.eclipse.bpmn2.IntermediateCatchEvent;
+import org.eclipse.bpmn2.IntermediateThrowEvent;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.Participant;
+import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
@@ -37,6 +42,7 @@ import org.eclipse.bpmn2.modeler.core.runtime.FeatureContainerDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
+import org.eclipse.bpmn2.modeler.ui.features.activity.AppendActivityFeature;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.AdHocSubProcessFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.CallActivityFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.CollapseSubProcessFeature;
@@ -69,6 +75,7 @@ import org.eclipse.bpmn2.modeler.ui.features.data.DataObjectReferenceFeatureCont
 import org.eclipse.bpmn2.modeler.ui.features.data.DataOutputFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.data.DataStoreReferenceFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.data.MessageFeatureContainer;
+import org.eclipse.bpmn2.modeler.ui.features.event.AppendEventFeature;
 import org.eclipse.bpmn2.modeler.ui.features.event.BoundaryEventFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.event.EndEventFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.event.IntermediateCatchEventFeatureContainer;
@@ -89,6 +96,7 @@ import org.eclipse.bpmn2.modeler.ui.features.flow.DataInputAssociationFeatureCon
 import org.eclipse.bpmn2.modeler.ui.features.flow.DataOutputAssociationFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.flow.MessageFlowFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.flow.SequenceFlowFeatureContainer;
+import org.eclipse.bpmn2.modeler.ui.features.gateway.AppendGatewayFeature;
 import org.eclipse.bpmn2.modeler.ui.features.gateway.ComplexGatewayFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.gateway.EventBasedGatewayFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.gateway.ExclusiveGatewayFeatureContainer;
@@ -498,32 +506,35 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 	public ICustomFeature[] getCustomFeatures(ICustomContext context) {
 		ILinkService ls = Graphiti.getLinkService();
 		PictogramElement[] elements = context.getPictogramElements();
+		List<ICustomFeature> list = new ArrayList<ICustomFeature>();
 		for (PictogramElement pe : elements) {
 			Object bo = ls.getBusinessObjectForLinkedPictogramElement(pe);
 			if (bo instanceof SubProcess) {
-				return new ICustomFeature[] {
-					new ExpandSubProcessFeature(this),
-					new CollapseSubProcessFeature(this)
-				};
+				list.add(new ExpandSubProcessFeature(this));
+				list.add(new CollapseSubProcessFeature(this));
 			}
 			else if (bo instanceof ChoreographyTask) {
-				return new ICustomFeature[] {
-					new AddChoreographyParticipantFeature(this)
-				};
+				list.add(new AddChoreographyParticipantFeature(this));
 			}
 			else if (bo instanceof Participant) {
-				return new ICustomFeature[] {
-					new AddChoreographyMessageFeature(this),
-					new RotatePoolFeature(this)
-				};
+				list.add(new AddChoreographyMessageFeature(this));
+				list.add(new RotatePoolFeature(this));
 			}
 			else if (bo instanceof Lane) {
-				return new ICustomFeature[] {
-					new RotateLaneFeature(this)
-				};
+				list.add(new RotateLaneFeature(this));
+			}
+			
+			if (bo instanceof Activity ||
+					bo instanceof Gateway ||
+					bo instanceof StartEvent ||
+					bo instanceof IntermediateCatchEvent ||
+					bo instanceof IntermediateThrowEvent) {
+				list.add(new AppendActivityFeature(this));
+				list.add(new AppendGatewayFeature(this));
+				list.add(new AppendEventFeature(this));
 			}
 		}
-		return new ICustomFeature[] {};
+		return list.toArray(new ICustomFeature[list.size()]);
 	}
 
 	// TODO: move this to the adapter registry

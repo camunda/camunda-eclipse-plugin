@@ -60,12 +60,12 @@ public class AddExpandedSubProcessFeature extends AbstractAddActivityFeature {
 	}
 
 	@Override
-	protected int getWidth() {
+	public int getWidth() {
 		return GraphicsUtil.SUB_PROCEESS_DEFAULT_WIDTH;
 	}
 
 	@Override
-	protected int getHeight() {
+	public int getHeight() {
 		return GraphicsUtil.SUB_PROCESS_DEFAULT_HEIGHT;
 	}
 }

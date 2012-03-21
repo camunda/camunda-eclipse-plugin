@@ -95,12 +95,12 @@ public class AddParticipantFeature extends AbstractAddBPMNShapeFeature {
 	}
 
 	@Override
-	protected int getHeight() {
+	public int getHeight() {
 		return 100;
 	}
 
 	@Override
-	protected int getWidth() {
+	public int getWidth() {
 		return 600;
 	}
 }
