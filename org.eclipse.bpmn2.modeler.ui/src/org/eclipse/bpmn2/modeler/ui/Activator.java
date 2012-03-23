@@ -17,8 +17,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.bpel.wsil.model.inspection.InspectionPackage;
+import org.eclipse.bpmn2.di.impl.BpmnDiPackageImpl;
 import org.eclipse.bpmn2.impl.Bpmn2PackageImpl;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterRegistry;
+import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2EditorDiItemProviderAdapterFactory;
 import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2EditorItemProviderAdapterFactory;
 import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2WSDLAdapterFactory;
 import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2WSILAdapterFactory;
@@ -73,6 +75,8 @@ public class Activator extends AbstractUIPlugin {
 		// BPMN2 metamodel adapter factories
 		AdapterRegistry.BPMN2_ADAPTER_FACTORIES.addAdapterFactory(
 				AdapterRegistry.INSTANCE.registerFactory(Bpmn2PackageImpl.eINSTANCE, new Bpmn2EditorItemProviderAdapterFactory()));
+		AdapterRegistry.BPMN2_ADAPTER_FACTORIES.addAdapterFactory(
+				AdapterRegistry.INSTANCE.registerFactory(BpmnDiPackageImpl.eINSTANCE, new Bpmn2EditorDiItemProviderAdapterFactory()));
 	}
 
 	/**

@@ -57,8 +57,8 @@ public class AdapterRegistry {
 	
 	static {
 		BPMN2_ADAPTER_FACTORIES.addAdapterFactory(new ResourceItemProviderAdapterFactory());
-		BPMN2_ADAPTER_FACTORIES.addAdapterFactory(
-				INSTANCE.registerFactory(BpmnDiPackageImpl.eINSTANCE, new BpmnDiItemProviderAdapterFactory()));
+//		BPMN2_ADAPTER_FACTORIES.addAdapterFactory(
+//				INSTANCE.registerFactory(BpmnDiPackageImpl.eINSTANCE, new BpmnDiItemProviderAdapterFactory()));
 		BPMN2_ADAPTER_FACTORIES.addAdapterFactory(
 				INSTANCE.registerFactory(DcPackageImpl.eINSTANCE, new DcItemProviderAdapterFactory()));
 		BPMN2_ADAPTER_FACTORIES.addAdapterFactory(

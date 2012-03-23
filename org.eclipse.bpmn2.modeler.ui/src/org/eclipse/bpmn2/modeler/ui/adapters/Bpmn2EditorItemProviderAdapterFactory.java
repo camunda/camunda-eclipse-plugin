@@ -57,9 +57,9 @@ import org.eclipse.bpmn2.modeler.ui.adapters.properties.TaskPropertiesAdapter;
 import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
 import org.eclipse.bpmn2.util.Bpmn2Switch;
 import org.eclipse.emf.common.notify.Adapter;
+import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
 
 /**
  * This class adds a name-value map to the Bpmn2ItemProviderAdapterFactory.
@@ -74,19 +74,19 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 
 	@Override
 	public Adapter adaptNew(Notifier object, Object type) {
-		if (type == ExtendedPropertiesAdapter.class) {
-			return modelSwitch.doSwitch((EObject) object);
+		if (type == ExtendedPropertiesAdapter.class && object instanceof EObject) {
+			return bpmn2ModelSwitch.doSwitch((EObject) object);
 		}
 		return super.adaptNew(object, type);
 	}
 	
-    protected Bpmn2Switch<ExtendedPropertiesAdapter> modelSwitch = new Bpmn2ExtendedPropertiesSwitch(this);
+    protected Bpmn2Switch<ExtendedPropertiesAdapter> bpmn2ModelSwitch = new Bpmn2ExtendedPropertiesSwitch(this);
     
     public class Bpmn2ExtendedPropertiesSwitch extends Bpmn2Switch<ExtendedPropertiesAdapter> {
 
-    	private Bpmn2EditorItemProviderAdapterFactory adapterFactory;
+    	private AdapterFactory adapterFactory;
     	
-    	public Bpmn2ExtendedPropertiesSwitch(Bpmn2EditorItemProviderAdapterFactory adapterFactory) {
+    	public Bpmn2ExtendedPropertiesSwitch(AdapterFactory adapterFactory) {
     		super();
     		this.adapterFactory = adapterFactory;
     	}
@@ -274,5 +274,4 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 
 		// TODO: add remaining BPMN2 elements
     };
-	
 }

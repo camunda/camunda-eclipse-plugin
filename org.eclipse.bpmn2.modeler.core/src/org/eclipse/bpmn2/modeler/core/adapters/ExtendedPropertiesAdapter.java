@@ -16,7 +16,9 @@ package org.eclipse.bpmn2.modeler.core.adapters;
 import java.lang.reflect.Field;
 import java.util.Hashtable;
 
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.utils.JavaReflectionUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.ecore.EObject;
@@ -56,6 +58,26 @@ public class ExtendedPropertiesAdapter extends AdapterImpl {
 		this.adapterFactory = adapterFactory;
 		setTarget(object);
 
+		String name = "";
+		if (object instanceof BPMNDiagram) {
+			switch(ModelUtil.getDiagramType(object)) {
+			case NONE:
+				name = "UnknownDiagram";
+				break;
+			case PROCESS:
+				name = "ProcessDiagram";
+				break;
+			case CHOREOGRAPHY:
+				name = "ChoreographyDiagram";
+				break;
+			case COLLABORATION:
+				name = "CollaborationDiagram";
+				break;
+			}
+		}
+		else {
+			name = object.eClass().getName().replaceAll("Impl$", "");
+		}
 		// Set the model element's long description from the Messages class.
 		// The field in Messages that contains the description will have the
 		// form: "UI_<BPMN2ElementName>_long_description".
@@ -63,7 +85,7 @@ public class ExtendedPropertiesAdapter extends AdapterImpl {
 		// that contains the adapter factory class; by default, this will be the
 		// BPMN2 modeler UI plugin hierarchy, starting with org.eclipse.bpmn2.modeler.ui.adapters
     	try {
-        	String fieldName = "UI_" + object.eClass().getName().replaceAll("Impl$", "") + "_long_description";
+        	String fieldName = "UI_" + name + "_long_description";
         	Class messages = JavaReflectionUtil.findClass(adapterFactory, "Messages");
 			Field field = messages.getField(fieldName);
 			String text = (String)field.get(null);

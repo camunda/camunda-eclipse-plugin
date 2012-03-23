@@ -73,9 +73,52 @@ public class Messages extends NLS {
 	public static String Bpmn2PreferencePage_HomePage_Description;
 	public static String Bpmn2PreferencePage_EditorPage_Description;
 
+	public static String UI_UnknownDiagram_long_description;
+	public static String UI_ProcessDiagram_long_description;
+	public static String UI_ChoreographyDiagram_long_description;
+	public static String UI_CollaborationDiagram_long_description;
+	
+	public static String UI_SequenceFlow_long_description;
+	public static String UI_MessageFlow_long_description;
+	public static String UI_Association_long_description;
+	public static String UI_Annotation_long_description;
+	public static String UI_Task_long_description;
+	public static String UI_ManualTask_long_description;
+	public static String UI_UserTask_long_description;
+	public static String UI_BusinessRuleTask_long_description;
+	public static String UI_ServiceTask_long_description;
+	public static String UI_SendTask_long_description;
+	public static String UI_ReceiveTask_long_description;
+	public static String UI_ChoreographyTask_long_description;
 	public static String UI_ScriptTask_long_description;
-	public static String UI_CallActivity_long_description;
+
 	public static String UI_StartEvent_long_description;
+	public static String UI_EndEvent_long_description;
+	public static String UI_IntermediateThrowEvent_long_description;
+	public static String UI_IntermediateCatchEvent_long_description;
+	public static String UI_BoundaryEvent_long_description;
+	public static String UI_DataStore_long_description;
+	public static String UI_DataInput_long_description;
+	public static String UI_DataOutput_long_description;
+	public static String UI_Message_long_description;
+	
+	public static String UI_ExclusiveGateway_long_description;
+	public static String UI_InclusiveGateway_long_description;
+	public static String UI_ParallelGateway_long_description;
+	public static String UI_EventBasedGateway_long_description;
+	public static String UI_ComplexGateway_long_description;
+	
+	public static String UI_Participant_long_description;
+	public static String UI_Lane_long_description;
+	public static String UI_SubProcess_long_description;
+	public static String UI_Group_long_description;
+	public static String UI_SubChoreography_long_description;
+	public static String UI_CallActivity_long_description;
+	public static String UI_Conversation_long_description;
+	public static String UI_CallConversation_long_description;
+	public static String UI_SubConversation_long_description;
+	
+	
 	
 	public static String WSILPreferencePage_WSIL_1;
 	public static String WSILPreferencePage_WSIL_2;
