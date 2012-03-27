@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.wid;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * @author bfitzpat
@@ -35,8 +35,8 @@ public class WorkItemDefinitionImpl implements WorkItemDefinition {
 	private String widIcon;
 	private String widCustomEditor;
 	private String widEclipseCustomEditor;
-	private HashMap<String, String> widParameters;
-	private HashMap<String, String> widResults;
+	private LinkedHashMap<String, String> widParameters;
+	private LinkedHashMap<String, String> widResults;
 
 	@Override
 	public String getName() {
@@ -54,9 +54,9 @@ public class WorkItemDefinitionImpl implements WorkItemDefinition {
 	}
 
 	@Override
-	public HashMap<String, String> getParameters() {
+	public LinkedHashMap<String, String> getParameters() {
 		if (this.widParameters == null) 
-			this.widParameters = new HashMap<String, String>();
+			this.widParameters = new LinkedHashMap<String, String>();
 		return this.widParameters;
 	}
 
@@ -96,9 +96,9 @@ public class WorkItemDefinitionImpl implements WorkItemDefinition {
 	}
 
 	@Override
-	public HashMap<String, String> getResults() {
+	public LinkedHashMap<String, String> getResults() {
 		if (this.widResults == null) 
-			this.widResults = new HashMap<String, String>();
+			this.widResults = new LinkedHashMap<String, String>();
 		return this.widResults;
 	}
 

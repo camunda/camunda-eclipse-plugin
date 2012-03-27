@@ -14,6 +14,8 @@ package org.eclipse.bpmn2.modeler.core.features.activity.task;
 
 import org.eclipse.bpmn2.modeler.core.runtime.CustomTaskDescriptor;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.custom.ICustomFeature;
 
 public interface ICustomTaskFeature {
 
@@ -34,4 +36,5 @@ public interface ICustomTaskFeature {
 	 */
 	public abstract String getId(EObject object);
 
+	public abstract ICustomFeature[] getCustomFeatures(IFeatureProvider fp);
 }

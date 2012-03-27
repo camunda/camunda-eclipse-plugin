@@ -20,6 +20,8 @@ import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.eclipse.bpmn2.modeler.ui.features.LayoutBaseElementTextFeature;
+import org.eclipse.bpmn2.modeler.ui.features.activity.AppendActivityFeature;
+import org.eclipse.bpmn2.modeler.ui.features.gateway.AppendGatewayFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
 import org.eclipse.graphiti.features.IDirectEditingFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -29,6 +31,7 @@ import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
+import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.features.impl.DefaultResizeShapeFeature;
 
 public abstract class AbstractEventFeatureContainer extends BaseElementFeatureContainer {
@@ -81,5 +84,14 @@ public abstract class AbstractEventFeatureContainer extends BaseElementFeatureCo
 	@Override
 	public IDeleteFeature getDeleteFeature(IFeatureProvider fp) {
 		return new AbstractDefaultDeleteFeature(fp);
+	}
+
+	@Override
+	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
+		return new ICustomFeature[] {
+			new AppendActivityFeature(fp),
+			new AppendGatewayFeature(fp),
+			new AppendEventFeature(fp)
+		};
 	}
 }

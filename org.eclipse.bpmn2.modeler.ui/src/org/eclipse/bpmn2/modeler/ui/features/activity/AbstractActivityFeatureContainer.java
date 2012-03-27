@@ -22,12 +22,15 @@ import org.eclipse.bpmn2.modeler.core.features.activity.UpdateActivityLoopAndMul
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractBoundaryEventOperation;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
+import org.eclipse.bpmn2.modeler.ui.features.event.AppendEventFeature;
+import org.eclipse.bpmn2.modeler.ui.features.gateway.AppendGatewayFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.context.IDeleteContext;
 import org.eclipse.graphiti.features.context.impl.DeleteContext;
+import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 
 public abstract class AbstractActivityFeatureContainer extends BaseElementFeatureContainer {
@@ -70,6 +73,15 @@ public abstract class AbstractActivityFeatureContainer extends BaseElementFeatur
 				}.doWork(activity, getDiagram());
 				super.delete(context);
 			}
+		};
+	}
+
+	@Override
+	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
+		return new ICustomFeature[] {
+			new AppendActivityFeature(fp),
+			new AppendGatewayFeature(fp),
+			new AppendEventFeature(fp)
 		};
 	}
 }

@@ -21,6 +21,8 @@ import org.eclipse.bpmn2.modeler.core.features.lane.MoveLaneFeature;
 import org.eclipse.bpmn2.modeler.core.features.lane.ResizeLaneFeature;
 import org.eclipse.bpmn2.modeler.core.features.lane.UpdateLaneFeature;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
+import org.eclipse.bpmn2.modeler.ui.features.choreography.AddChoreographyMessageFeature;
+import org.eclipse.bpmn2.modeler.ui.features.participant.RotatePoolFeature;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
@@ -30,6 +32,7 @@ import org.eclipse.graphiti.features.ILayoutFeature;
 import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
+import org.eclipse.graphiti.features.custom.ICustomFeature;
 
 public class LaneFeatureContainer extends BaseElementFeatureContainer {
 
@@ -78,4 +81,10 @@ public class LaneFeatureContainer extends BaseElementFeatureContainer {
 		return new AbstractDefaultDeleteFeature(fp);
 	}
 
+	@Override
+	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
+		return new ICustomFeature[] {
+			new RotateLaneFeature(fp)
+		};
+	}
 }

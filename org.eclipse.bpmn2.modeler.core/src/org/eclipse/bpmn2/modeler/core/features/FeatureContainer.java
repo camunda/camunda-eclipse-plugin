@@ -23,6 +23,7 @@ import org.eclipse.graphiti.features.IRemoveFeature;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IContext;
+import org.eclipse.graphiti.features.custom.ICustomFeature;
 
 public interface FeatureContainer {
 
@@ -47,5 +48,7 @@ public interface FeatureContainer {
 	IResizeShapeFeature getResizeFeature(IFeatureProvider fp);
 
 	IDeleteFeature getDeleteFeature(IFeatureProvider fp);
+	
+	ICustomFeature[] getCustomFeatures(IFeatureProvider fp);
 
 }

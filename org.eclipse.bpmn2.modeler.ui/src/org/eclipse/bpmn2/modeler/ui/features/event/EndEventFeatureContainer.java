@@ -26,6 +26,7 @@ import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.ICreateContext;
+import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.services.Graphiti;
@@ -70,6 +71,11 @@ public class EndEventFeatureContainer extends AbstractEventFeatureContainer {
 		return updateFeature;
 	}
 
+	@Override
+	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
+		return null;
+	}
+	
 	public static class CreateEndEventFeature extends AbstractCreateEventFeature {
 
 		public CreateEndEventFeature(IFeatureProvider fp) {

@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.wid;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * WorkItemDefinition simply captures the data we need from the *.wid/*.conf file
@@ -29,7 +29,7 @@ public interface WorkItemDefinition {
 	public void setDispalyName ( String displayName );
 	public String getIcon();
 	public void setIcon ( String iconPath );
-	public HashMap<String, String> getParameters();
-	public HashMap<String, String> getResults();
+	public LinkedHashMap<String, String> getParameters();
+	public LinkedHashMap<String, String> getResults();
 	
 }

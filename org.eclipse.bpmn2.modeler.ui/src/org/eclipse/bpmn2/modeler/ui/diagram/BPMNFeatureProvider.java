@@ -130,6 +130,7 @@ import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.context.IDeleteContext;
 import org.eclipse.graphiti.features.context.IDirectEditingContext;
+import org.eclipse.graphiti.features.context.IDoubleClickContext;
 import org.eclipse.graphiti.features.context.ILayoutContext;
 import org.eclipse.graphiti.features.context.IMoveBendpointContext;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
@@ -505,35 +506,33 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 	@Override
 	public ICustomFeature[] getCustomFeatures(ICustomContext context) {
 		ILinkService ls = Graphiti.getLinkService();
-		PictogramElement[] elements = context.getPictogramElements();
 		List<ICustomFeature> list = new ArrayList<ICustomFeature>();
-		for (PictogramElement pe : elements) {
-			Object bo = ls.getBusinessObjectForLinkedPictogramElement(pe);
-			if (bo instanceof SubProcess) {
-				list.add(new ExpandSubProcessFeature(this));
-				list.add(new CollapseSubProcessFeature(this));
-			}
-			else if (bo instanceof ChoreographyTask) {
-				list.add(new AddChoreographyParticipantFeature(this));
-			}
-			else if (bo instanceof Participant) {
-				list.add(new AddChoreographyMessageFeature(this));
-				list.add(new RotatePoolFeature(this));
-			}
-			else if (bo instanceof Lane) {
-				list.add(new RotateLaneFeature(this));
-			}
-			
-			if (bo instanceof Activity ||
-					bo instanceof Gateway ||
-					bo instanceof StartEvent ||
-					bo instanceof IntermediateCatchEvent ||
-					bo instanceof IntermediateThrowEvent) {
-				list.add(new AppendActivityFeature(this));
-				list.add(new AppendGatewayFeature(this));
-				list.add(new AppendEventFeature(this));
+
+		BPMN2Editor editor = (BPMN2Editor)getDiagramTypeProvider().getDiagramEditor();;
+		TargetRuntime rt = editor.getTargetRuntime();
+		for (CustomTaskDescriptor ct : rt.getCustomTasks()) {
+			ICustomTaskFeature ctf = ct.getFeatureContainer();
+			if (ctf!=null) {
+				ICustomFeature[] cfa = ctf.getCustomFeatures(this);
+				if (cfa!=null) {
+					for (ICustomFeature cf : cfa) {
+						list.add(cf);
+					}
+				}
 			}
 		}
+		for (FeatureContainer fc : containers) {
+			Object o = fc.getApplyObject(context);
+			if (o!=null && fc.canApplyTo(o)) {
+				ICustomFeature[] cfa = fc.getCustomFeatures(this);
+				if (cfa!=null) {
+					for (ICustomFeature cf : cfa) {
+						list.add(cf);
+					}
+				}
+			}
+		}
+		
 		return list.toArray(new ICustomFeature[list.size()]);
 	}
 

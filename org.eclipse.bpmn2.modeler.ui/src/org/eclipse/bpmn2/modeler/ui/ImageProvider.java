@@ -145,6 +145,7 @@ public class ImageProvider extends AbstractImageProvider {
 	
 	public static final String IMG_16_EXPAND = PREFIX + "expand" + dot16;
 	public static final String IMG_16_COLLAPSE = PREFIX + "collapse" + dot16;
+	public static final String IMG_16_CONFIGURE = PREFIX + "configure" + dot16;
 
 	public static final String IMG_16_ADD_PARTICIPANT = PREFIX + "addparticipant" + dot16;
 	public static final String IMG_16_ADD_MESSAGE = PREFIX + "addmessage" + dot16;
@@ -206,6 +207,7 @@ public class ImageProvider extends AbstractImageProvider {
 		addImageFilePath(IMG_16_ACTION, ICONS_16 + "action.gif");
 		addImageFilePath(IMG_16_EXPAND, ICONS_16 + "expand.png");
 		addImageFilePath(IMG_16_COLLAPSE, ICONS_16 + "collapse.png");
+		addImageFilePath(IMG_16_CONFIGURE, ICONS_16 + "configure.png");
 
 		addImageFilePath(IMG_16_ADD_PARTICIPANT, ICONS_16 + "addparticipant.png");
 		addImageFilePath(IMG_16_ADD_MESSAGE, ICONS_16 + "addmessage.png");

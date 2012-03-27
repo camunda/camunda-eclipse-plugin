@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
@@ -57,7 +59,8 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 	private static final String ROOT_ELEMENT = "definitions"; //$NON-NLS-1$
 
 	private RootElementParser parser;
-
+	private List<WorkItemDefinition> workItemDefinitions;
+	
 	/* (non-Javadoc)
 	 * Check if the given input file is a drools-generated (jBPM) process file.
 	 * 
@@ -79,6 +82,22 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 		return false;
 	}
 
+	public List<WorkItemDefinition> getWorkItemDefinitions() {
+		if (workItemDefinitions==null)
+			workItemDefinitions = new ArrayList<WorkItemDefinition>();
+		return workItemDefinitions;
+	}
+
+	public WorkItemDefinition getWorkItemDefinition(String taskName) {
+		List<WorkItemDefinition> wids = getWorkItemDefinitions();
+		for (WorkItemDefinition wid : wids) {
+			if (taskName.equals(wid.getName())) {
+				return wid;
+			}
+		}
+		return null;
+	}
+	
 	/** 
 	 * Initialize in this case finds all the *.wid/*.conf files in the project
 	 * and creates CustomTaskDescriptors for each task included
@@ -87,7 +106,8 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 	public void initialize() {
 		IProject project = Bpmn2Preferences.getActiveProject();
 		if (project != null) {
-			ArrayList<WorkItemDefinition> wids = new ArrayList<WorkItemDefinition>();
+			getWorkItemDefinitions();
+			workItemDefinitions.clear();
 			try {
 				WIDResourceVisitor visitor = new WIDResourceVisitor();
 				project.accept(visitor, IResource.DEPTH_INFINITE, false);
@@ -96,16 +116,16 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 					while (resourceIter.hasNext()) {
 						IResource resource = resourceIter.next();
 						HashMap<String, WorkItemDefinition> widMap = 
-								new HashMap<String, WorkItemDefinition>();
+								new LinkedHashMap<String, WorkItemDefinition>();
 						String content = getFile(resource);
 						WIDHandler.evaluateWorkDefinitions(widMap, content);
-						wids.addAll(widMap.values());
+						workItemDefinitions.addAll(widMap.values());
 					}
 				}
-				if (!wids.isEmpty()) {
+				if (!workItemDefinitions.isEmpty()) {
 					TargetRuntime.getCurrentRuntime().getCustomTasks().clear();
 				
-					java.util.Iterator<WorkItemDefinition> widIterator = wids.iterator();
+					java.util.Iterator<WorkItemDefinition> widIterator = workItemDefinitions.iterator();
 					while(widIterator.hasNext()) {
 						WorkItemDefinition wid = widIterator.next();
 						CustomTaskDescriptor ctd = convertWIDtoCT(wid);

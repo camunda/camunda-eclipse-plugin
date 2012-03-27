@@ -21,6 +21,8 @@ import org.eclipse.bpmn2.modeler.core.features.participant.LayoutParticipantFeat
 import org.eclipse.bpmn2.modeler.core.features.participant.ResizeParticipantFeature;
 import org.eclipse.bpmn2.modeler.core.features.participant.UpdateParticipantFeature;
 import org.eclipse.bpmn2.modeler.core.features.participant.UpdateParticipantMultiplicityFeature;
+import org.eclipse.bpmn2.modeler.ui.features.choreography.AddChoreographyMessageFeature;
+import org.eclipse.bpmn2.modeler.ui.features.choreography.AddChoreographyParticipantFeature;
 import org.eclipse.bpmn2.modeler.ui.features.choreography.RemoveChoreographyParticipantFeature;
 import org.eclipse.bpmn2.modeler.ui.features.choreography.UpdateChoreographyMessageLinkFeature;
 import org.eclipse.graphiti.features.IAddFeature;
@@ -33,6 +35,7 @@ import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.IRemoveFeature;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
+import org.eclipse.graphiti.features.custom.ICustomFeature;
 
 public class ParticipantFeatureContainer extends BaseElementFeatureContainer {
 
@@ -88,5 +91,13 @@ public class ParticipantFeatureContainer extends BaseElementFeatureContainer {
 	@Override
 	public IRemoveFeature getRemoveFeature(IFeatureProvider fp) {
 		return new RemoveChoreographyParticipantFeature(fp);
+	}
+
+	@Override
+	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
+		return new ICustomFeature[] {
+			new AddChoreographyMessageFeature(fp),
+			new RotatePoolFeature(fp)
+		};
 	}
 }

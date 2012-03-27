@@ -18,10 +18,13 @@ import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.CollapseSubProcessFeature;
+import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.ExpandSubProcessFeature;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
+import org.eclipse.graphiti.features.custom.ICustomFeature;
 
 public class ChoreographyTaskFeatureContainer extends AbstractChoreographyFeatureContainer {
 
@@ -45,6 +48,13 @@ public class ChoreographyTaskFeatureContainer extends AbstractChoreographyFeatur
 		MultiUpdateFeature multiUpdate = super.getUpdateFeature(fp);
 		multiUpdate.addUpdateFeature(new UpdateChoreographyMessageFlowFeature(fp));
 		return multiUpdate;
+	}
+	
+	@Override
+	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
+		return new ICustomFeature[] {
+			new AddChoreographyParticipantFeature(fp)
+		};
 	}
 
 	public static class CreateChoreographyTaskFeature extends AbstractCreateFlowElementFeature<ChoreographyTask> {

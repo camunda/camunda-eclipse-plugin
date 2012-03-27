@@ -113,6 +113,10 @@ public class WIDHandler {
         					  currentWid.setEclipseCustomEditor(value);
         				  }
         			  } else if (openBrackets == 3 && value.trim().length() > 0) {
+        				  if (value.startsWith("new") && value.indexOf("(")>0) {
+        					  int index = value.indexOf("(");
+        					  value = value.substring(3,index).trim();
+        				  }
         				  if (current == Section.PARAMETERS)
         					  currentWid.getParameters().put(name, value);
         				  else if (current == Section.RESULTS)

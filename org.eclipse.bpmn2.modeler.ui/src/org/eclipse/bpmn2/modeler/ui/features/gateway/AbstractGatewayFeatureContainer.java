@@ -19,6 +19,10 @@ import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.eclipse.bpmn2.modeler.ui.features.LayoutBaseElementTextFeature;
+import org.eclipse.bpmn2.modeler.ui.features.activity.AppendActivityFeature;
+import org.eclipse.bpmn2.modeler.ui.features.choreography.AddChoreographyMessageFeature;
+import org.eclipse.bpmn2.modeler.ui.features.event.AppendEventFeature;
+import org.eclipse.bpmn2.modeler.ui.features.participant.RotatePoolFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
 import org.eclipse.graphiti.features.IDirectEditingFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -31,6 +35,7 @@ import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.context.impl.UpdateContext;
+import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.features.impl.DefaultResizeShapeFeature;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
@@ -88,7 +93,16 @@ public abstract class AbstractGatewayFeatureContainer extends BaseElementFeature
 	public IDeleteFeature getDeleteFeature(IFeatureProvider fp) {
 		return new AbstractDefaultDeleteFeature(fp);
 	}
-	
+
+	@Override
+	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
+		return new ICustomFeature[] {
+			new AppendActivityFeature(fp),
+			new AppendGatewayFeature(fp),
+			new AppendEventFeature(fp)
+		};
+	}
+
 	private class UpdateAbstractGatewayFeature extends UpdateBaseElementNameFeature {
 
 		public UpdateAbstractGatewayFeature(IFeatureProvider fp) {

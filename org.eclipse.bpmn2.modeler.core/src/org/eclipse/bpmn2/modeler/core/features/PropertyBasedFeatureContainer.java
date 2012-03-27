@@ -16,6 +16,7 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IRemoveFeature;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
+import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.mm.PropertyContainer;
 import org.eclipse.graphiti.services.Graphiti;
 
@@ -47,6 +48,11 @@ public abstract class PropertyBasedFeatureContainer implements FeatureContainer 
 
 	@Override
 	public IRemoveFeature getRemoveFeature(IFeatureProvider fp) {
+		return null;
+	}
+	
+	@Override
+	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
 		return null;
 	}
 }

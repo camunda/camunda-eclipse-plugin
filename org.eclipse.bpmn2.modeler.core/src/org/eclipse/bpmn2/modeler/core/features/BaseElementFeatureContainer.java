@@ -20,10 +20,13 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IRemoveFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.IContext;
+import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
 import org.eclipse.graphiti.features.context.IUpdateContext;
+import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.mm.algorithms.AbstractText;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public abstract class BaseElementFeatureContainer implements FeatureContainer {
@@ -54,6 +57,11 @@ public abstract class BaseElementFeatureContainer implements FeatureContainer {
 			return BusinessObjectUtil.getFirstElementOfType(
 					(((IPictogramElementContext) context).getPictogramElement()), BaseElement.class);
 		}
+		if (context instanceof ICustomContext) {
+			PictogramElement[] pes = ((ICustomContext) context).getPictogramElements();
+			if (pes.length==1)
+				return BusinessObjectUtil.getFirstElementOfType(pes[0], BaseElement.class);
+		}
 		return null;
 	}
 
@@ -64,6 +72,11 @@ public abstract class BaseElementFeatureContainer implements FeatureContainer {
 
 	@Override
 	public IRemoveFeature getRemoveFeature(IFeatureProvider fp) {
+		return null;
+	}
+	
+	@Override
+	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
 		return null;
 	}
 }

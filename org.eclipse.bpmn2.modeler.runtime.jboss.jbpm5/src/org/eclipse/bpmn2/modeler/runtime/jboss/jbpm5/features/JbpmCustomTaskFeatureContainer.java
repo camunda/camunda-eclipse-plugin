@@ -22,13 +22,46 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
 
+import org.eclipse.bpmn2.Bpmn2Factory;
+import org.eclipse.bpmn2.DataInput;
+import org.eclipse.bpmn2.DataInputAssociation;
+import org.eclipse.bpmn2.ItemAwareElement;
+import org.eclipse.bpmn2.ItemDefinition;
+import org.eclipse.bpmn2.ItemKind;
 import org.eclipse.bpmn2.Task;
+import org.eclipse.bpmn2.modeler.core.IBpmn2RuntimeExtension;
+import org.eclipse.bpmn2.modeler.core.runtime.CustomTaskDescriptor;
+import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor.Property;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.JBPM5RuntimeExtension;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.customeditor.SampleCustomEditor;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.drools.process.core.ParameterDefinition;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.drools.process.core.WorkDefinition;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.drools.process.core.datatype.DataType;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.drools.process.core.datatype.DataTypeFactory;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.drools.process.core.datatype.DataTypeRegistry;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.drools.process.core.datatype.impl.type.UndefinedDataType;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.drools.process.core.impl.ParameterDefinitionImpl;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.drools.process.core.impl.WorkDefinitionImpl;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.drools.process.core.impl.WorkImpl;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.wid.WorkItemDefinition;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.features.activity.task.CustomTaskFeatureContainer;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -37,8 +70,11 @@ import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.IContext;
+import org.eclipse.graphiti.features.context.ICustomContext;
+import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.mm.algorithms.Image;
 import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 
@@ -124,6 +160,11 @@ public class JbpmCustomTaskFeatureContainer extends CustomTaskFeatureContainer {
 		};
 	}
 	
+	@Override
+	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
+		return new ICustomFeature[] {new DoubleClickFeature(fp)};
+	}
+
 	public class JbpmCreateCustomTaskFeature extends CreateCustomTaskFeature {
 		
 		private String imagePath = null;
@@ -145,4 +186,195 @@ public class JbpmCustomTaskFeatureContainer extends CustomTaskFeatureContainer {
 		}
 	}
 
+	public class DoubleClickFeature implements ICustomFeature {
+
+		protected IFeatureProvider fp;
+		boolean hasChanges = false;
+		
+		/**
+		 * @param fp
+		 */
+		public DoubleClickFeature(IFeatureProvider fp) {
+			this.fp = fp;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.graphiti.features.IFeature#isAvailable(org.eclipse.graphiti.features.context.IContext)
+		 */
+		@Override
+		public boolean isAvailable(IContext context) {
+			return true;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.graphiti.features.custom.ICustomFeature#canExecute(org.eclipse.graphiti.features.context.ICustomContext)
+		 */
+		@Override
+		public boolean canExecute(ICustomContext context) {
+			return canExecute((IContext)context);
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.graphiti.features.IFeature#canExecute(org.eclipse.graphiti.features.context.IContext)
+		 */
+		@Override
+		public boolean canExecute(IContext context) {
+			BPMN2Editor editor = (BPMN2Editor)getFeatureProvider().getDiagramTypeProvider().getDiagramEditor();
+			IBpmn2RuntimeExtension rte = editor.getTargetRuntime().getRuntimeExtension();
+			if (rte instanceof JBPM5RuntimeExtension && context instanceof ICustomContext) {
+				PictogramElement[] pes = ((ICustomContext) context).getPictogramElements();
+				if (pes.length==1) {
+					Object o = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(pes[0]);
+					if (o instanceof Task) {
+						Task task = (Task)o;
+						List<EStructuralFeature> features = ModelUtil.getAnyAttributes(task);
+						for (EStructuralFeature f : features) {
+							if ("taskName".equals(f.getName())) {
+								// make sure the Work Item Definition exists
+								String taskName = (String)task.eGet(f);
+								return ((JBPM5RuntimeExtension)rte).getWorkItemDefinition(taskName) != null;
+							}
+						}
+					}
+				}
+			}
+			return false;
+		}
+		
+		/* (non-Javadoc)
+		 * @see org.eclipse.graphiti.features.custom.ICustomFeature#execute(org.eclipse.graphiti.features.context.ICustomContext)
+		 */
+		@Override
+		public void execute(ICustomContext context) {
+			execute((IContext)context);
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.graphiti.features.IFeature#execute(org.eclipse.graphiti.features.context.IContext)
+		 */
+		@Override
+		public void execute(IContext context) {
+			BPMN2Editor editor = (BPMN2Editor)getFeatureProvider().getDiagramTypeProvider().getDiagramEditor();
+			PictogramElement pe = ((ICustomContext) context).getPictogramElements()[0];
+			final Task task = (Task)Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(pe);
+			String taskName = "";
+			List<EStructuralFeature> features = ModelUtil.getAnyAttributes(task);
+			for (EStructuralFeature f : features) {
+				if ("taskName".equals(f.getName())) {
+					taskName = (String)task.eGet(f);
+					break;
+				}
+			}
+			
+			IBpmn2RuntimeExtension rte = editor.getTargetRuntime().getRuntimeExtension();
+			WorkItemDefinition workItemDefinition = ((JBPM5RuntimeExtension)rte).getWorkItemDefinition(taskName);
+			
+			WorkDefinitionImpl wd = new WorkDefinitionImpl();
+			for (String name : workItemDefinition.getParameters().keySet()) {
+				String type = workItemDefinition.getParameters().get(name);
+				DataTypeFactory factory = DataTypeRegistry.getFactory(type);
+				ParameterDefinitionImpl pd = new ParameterDefinitionImpl(name,factory.createDataType());
+				wd.addParameter(pd);
+			}
+			
+			WorkImpl w = new WorkImpl();
+			w.setName(taskName);
+			w.setParameterDefinitions(wd.getParameters());
+			for (DataInputAssociation dia : task.getDataInputAssociations()) {
+				DataInput dataInput = (DataInput)dia.getTargetRef();
+				if (dataInput!=null) {
+					String name = dataInput.getName();
+					String value = "";
+					ItemDefinition itemDefinition = dataInput.getItemSubjectRef();
+					if (itemDefinition!=null) {
+						Object structureRef = itemDefinition.getStructureRef();
+						if (ModelUtil.isStringWrapper(structureRef)) {
+							w.setParameter(name, ModelUtil.getStringWrapperValue(structureRef));
+						}
+					}
+				}
+			}
+
+			SampleCustomEditor dialog = new SampleCustomEditor(editor.getSite().getShell());
+			dialog.setWorkDefinition(wd);
+			dialog.setWork(w);
+			dialog.show();
+			hasChanges = dialog.getWork() != w;
+			if (hasChanges) {
+				w = (WorkImpl) dialog.getWork();
+				for (Entry<String, Object> entry : w.getParameters().entrySet()) {
+					for (DataInputAssociation dia : task.getDataInputAssociations()) {
+						DataInput dataInput = (DataInput)dia.getTargetRef();
+						if (dataInput!=null) {
+							String name = dataInput.getName();
+							Object value = w.getParameter(name);
+							ParameterDefinition parameterDefinition = w.getParameterDefinition(name);
+							if (!parameterDefinition.getType().verifyDataType(value)) {
+								
+							}
+							String string = parameterDefinition.getType().writeValue(value);
+							EObject structureRef = ModelUtil.createStringWrapper(string);
+							ItemDefinition itemDefinition = dataInput.getItemSubjectRef();
+							if (itemDefinition==null) {
+								itemDefinition = Bpmn2Factory.eINSTANCE.createItemDefinition();
+								ModelUtil.getDefinitions(task).getRootElements().add(itemDefinition);
+								ModelUtil.setID(itemDefinition);
+							}
+							itemDefinition.setItemKind(ItemKind.PHYSICAL);
+							itemDefinition.setStructureRef(structureRef);
+							dataInput.setItemSubjectRef(itemDefinition);
+						}
+					}
+				}
+			}
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.graphiti.features.IFeature#canUndo(org.eclipse.graphiti.features.context.IContext)
+		 */
+		@Override
+		public boolean canUndo(IContext context) {
+			return true;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.graphiti.features.IFeature#hasDoneChanges()
+		 */
+		@Override
+		public boolean hasDoneChanges() {
+			return hasChanges;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.graphiti.IName#getName()
+		 */
+		@Override
+		public String getName() {
+			return "Configure Work Item";
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.graphiti.IDescription#getDescription()
+		 */
+		@Override
+		public String getDescription() {
+			return "Configure the Parameters for this Custom Task";
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.graphiti.features.IFeatureProviderHolder#getFeatureProvider()
+		 */
+		@Override
+		public IFeatureProvider getFeatureProvider() {
+			return fp;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.graphiti.features.custom.ICustomFeature#getImageId()
+		 */
+		@Override
+		public String getImageId() {
+			return ImageProvider.IMG_16_CONFIGURE;
+		}
+	}
 }

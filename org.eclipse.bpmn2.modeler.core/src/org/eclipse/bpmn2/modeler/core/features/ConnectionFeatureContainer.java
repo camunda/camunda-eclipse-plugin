@@ -22,6 +22,7 @@ import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.IReconnectionFeature;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
+import org.eclipse.graphiti.features.custom.ICustomFeature;
 
 public abstract class ConnectionFeatureContainer implements FeatureContainer {
 
@@ -63,6 +64,11 @@ public abstract class ConnectionFeatureContainer implements FeatureContainer {
 	}
 	
 	public IReconnectionFeature getReconnectionFeature(IFeatureProvider fp) {
+		return null;
+	}
+	
+	@Override
+	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
 		return null;
 	}
 }

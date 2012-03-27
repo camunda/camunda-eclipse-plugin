@@ -13,7 +13,6 @@
 package org.eclipse.bpmn2.modeler.ui.diagram;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.bpmn2.modeler.core.Activator;
@@ -32,7 +31,6 @@ import org.eclipse.bpmn2.modeler.ui.features.choreography.ChoreographyUtil;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.graphiti.datatypes.ILocation;
@@ -45,6 +43,7 @@ import org.eclipse.graphiti.features.IFeatureChecker;
 import org.eclipse.graphiti.features.IFeatureCheckerHolder;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IContext;
+import org.eclipse.graphiti.features.context.IDoubleClickContext;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
 import org.eclipse.graphiti.features.context.impl.CreateConnectionContext;
 import org.eclipse.graphiti.features.context.impl.CustomContext;
@@ -370,6 +369,23 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 		}
 
 		return data;
+	}
+
+	@Override
+	public ICustomFeature getDoubleClickFeature(IDoubleClickContext context) {
+		ICustomFeature[] cf = getFeatureProvider().getCustomFeatures(context);
+		for (int i = 0; i < cf.length; i++) {
+			ICustomFeature iCustomFeature = cf[i];
+			if (iCustomFeature.canExecute(context)) {
+				return iCustomFeature;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public GraphicsAlgorithm getChopboxAnchorArea(PictogramElement pe) {
+		return super.getChopboxAnchorArea(pe);
 	}
 
 }
