@@ -43,9 +43,7 @@ import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.drools.process.core.Work;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.drools.process.core.WorkDefinition;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.drools.process.core.WorkEditor;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.drools.process.core.datatype.DataType;
-import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.drools.process.core.impl.ParameterDefinitionImpl;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.drools.process.core.impl.WorkImpl;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -79,12 +77,11 @@ public class SampleCustomEditor extends EditBeanDialog<Work> implements WorkEdit
         
         Label nameLabel = new Label(composite, SWT.NONE);
         nameLabel.setText("Name: ");
+        nameLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
+        
         Text nameText = new Text(composite, SWT.NONE);
         nameText.setEditable(false);
-        GridData gridData = new GridData();
-        gridData.grabExcessHorizontalSpace = true;
-        gridData.horizontalAlignment = GridData.FILL;
-        nameText.setLayoutData(gridData);
+        nameText.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
         String name = work.getName();
         nameText.setText(name == null ? "" : name);
         
@@ -92,11 +89,10 @@ public class SampleCustomEditor extends EditBeanDialog<Work> implements WorkEdit
         for (ParameterDefinition param: parameters) {
             Label label = new Label(composite, SWT.NONE);
             label.setText(param.getName() + ": ");
-            Text text = new Text(composite, SWT.NONE);
-            gridData = new GridData();
-            gridData.grabExcessHorizontalSpace = true;
-            gridData.horizontalAlignment = GridData.FILL;
-            text.setLayoutData(gridData);
+            label.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
+            
+            Text text = new Text(composite, SWT.BORDER);
+            text.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
             texts.put(param.getName(), text);
             Object value = work.getParameter(param.getName());
             text.setText(value == null ? "" : value.toString());
@@ -112,11 +108,15 @@ public class SampleCustomEditor extends EditBeanDialog<Work> implements WorkEdit
             String text = entry.getValue().getText();
             ParameterDefinition pd = value.getParameterDefinition(entry.getKey());
             DataType type = pd.getType();
-            if (!type.verifyDataType( type.readValue(text)) ) {
-            	MessageDialog.openError(getShell(), "Data Type Error",
-            			"The value for parameter "+entry.getKey()+
-            			" does not conform to data type "+pd.getType().getStringType());
-            	return value;
+            try {
+            	type.readValue(text);
+            }
+            catch (Exception e) {
+            	throw new IllegalArgumentException(
+            			"The value \""+text+"\" "+
+            			"for parameter \""+entry.getKey()+"\" "+
+            			"does not conform to the "+pd.getType().getStringType()+" "+
+            			"data type.");
             }
             work.setParameter(entry.getKey(), "".equals(text) ? null : text);
         }

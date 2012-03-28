@@ -273,8 +273,7 @@ public class JbpmCustomTaskFeatureContainer extends CustomTaskFeatureContainer {
 			for (String name : workItemDefinition.getParameters().keySet()) {
 				String type = workItemDefinition.getParameters().get(name);
 				DataTypeFactory factory = DataTypeRegistry.getFactory(type);
-				ParameterDefinitionImpl pd = new ParameterDefinitionImpl(name,factory.createDataType());
-				wd.addParameter(pd);
+				wd.addParameter( new ParameterDefinitionImpl(name,factory.createDataType()) );
 			}
 			
 			WorkImpl w = new WorkImpl();
@@ -284,12 +283,17 @@ public class JbpmCustomTaskFeatureContainer extends CustomTaskFeatureContainer {
 				DataInput dataInput = (DataInput)dia.getTargetRef();
 				if (dataInput!=null) {
 					String name = dataInput.getName();
-					String value = "";
 					ItemDefinition itemDefinition = dataInput.getItemSubjectRef();
 					if (itemDefinition!=null) {
 						Object structureRef = itemDefinition.getStructureRef();
 						if (ModelUtil.isStringWrapper(structureRef)) {
-							w.setParameter(name, ModelUtil.getStringWrapperValue(structureRef));
+							ParameterDefinition parameterDefinition = w.getParameterDefinition(name);
+							try {
+								Object value = parameterDefinition.getType().readValue(ModelUtil.getStringWrapperValue(structureRef));
+								w.setParameter(name, value);
+							}
+							catch (Exception e) {
+							}
 						}
 					}
 				}
@@ -299,22 +303,19 @@ public class JbpmCustomTaskFeatureContainer extends CustomTaskFeatureContainer {
 			dialog.setWorkDefinition(wd);
 			dialog.setWork(w);
 			dialog.show();
+			
 			hasChanges = dialog.getWork() != w;
 			if (hasChanges) {
 				w = (WorkImpl) dialog.getWork();
-				for (Entry<String, Object> entry : w.getParameters().entrySet()) {
-					for (DataInputAssociation dia : task.getDataInputAssociations()) {
-						DataInput dataInput = (DataInput)dia.getTargetRef();
-						if (dataInput!=null) {
-							String name = dataInput.getName();
-							Object value = w.getParameter(name);
-							ParameterDefinition parameterDefinition = w.getParameterDefinition(name);
-							if (!parameterDefinition.getType().verifyDataType(value)) {
-								
-							}
-							String string = parameterDefinition.getType().writeValue(value);
-							EObject structureRef = ModelUtil.createStringWrapper(string);
-							ItemDefinition itemDefinition = dataInput.getItemSubjectRef();
+				for (DataInputAssociation dia : task.getDataInputAssociations()) {
+					DataInput dataInput = (DataInput)dia.getTargetRef();
+					if (dataInput!=null) {
+						String name = dataInput.getName();
+						ItemDefinition itemDefinition = dataInput.getItemSubjectRef();
+						// this always comes back as a String from the SampleCustomEditor dialog
+						String value = (String)w.getParameter(name);
+						if (value!=null && !value.isEmpty()) {
+							EObject structureRef = ModelUtil.createStringWrapper(value);
 							if (itemDefinition==null) {
 								itemDefinition = Bpmn2Factory.eINSTANCE.createItemDefinition();
 								ModelUtil.getDefinitions(task).getRootElements().add(itemDefinition);
@@ -323,6 +324,11 @@ public class JbpmCustomTaskFeatureContainer extends CustomTaskFeatureContainer {
 							itemDefinition.setItemKind(ItemKind.PHYSICAL);
 							itemDefinition.setStructureRef(structureRef);
 							dataInput.setItemSubjectRef(itemDefinition);
+						}
+						else if (itemDefinition!=null) {
+							// TODO: remove Item Definition if it is on longer referenced anywhere
+//							ModelUtil.getDefinitions(task).getRootElements().remove(itemDefinition);
+							dataInput.setItemSubjectRef(null);
 						}
 					}
 				}

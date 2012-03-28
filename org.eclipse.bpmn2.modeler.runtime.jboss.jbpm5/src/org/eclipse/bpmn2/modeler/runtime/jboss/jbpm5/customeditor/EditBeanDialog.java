@@ -17,13 +17,16 @@
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.customeditor;
 
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.Activator;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * Dialog for editing a JavaBean.
@@ -42,10 +45,6 @@ public abstract class EditBeanDialog<T> extends Dialog {
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
         newShell.setText(title);
-    }
-    
-    protected Point getInitialSize() {
-        return new Point(400, 200);
     }
     
     public T getValue() {
@@ -69,8 +68,6 @@ public abstract class EditBeanDialog<T> extends Dialog {
     }
     
     protected void showError(String error) {
-        ErrorDialog.openError(getShell(), "Error", error, new Status(
-            IStatus.ERROR, Activator.PLUGIN_ID,
-            IStatus.ERROR, error, null));
+        MessageDialog.openError(getShell(), "Error", error);
     }
 }
