@@ -54,7 +54,7 @@ public class AddConversationFeature extends AbstractAddBPMNShapeFeature {
 		int[] xy = { w_5th, 0, w_5th * 4, 0, w, h / 2, w_5th * 4, h, w_5th, h, 0, h / 2 };
 		Polygon hexagon = gaService.createPolygon(rect, xy);
 
-		StyleUtil.applyBGStyle(hexagon, this);
+		StyleUtil.applyStyle(hexagon, c);
 
 		peService.createChopboxAnchor(containerShape);
 		AnchorUtil.addFixedPointAnchors(containerShape, rect);

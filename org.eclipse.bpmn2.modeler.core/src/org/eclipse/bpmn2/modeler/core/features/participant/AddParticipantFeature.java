@@ -63,7 +63,7 @@ public class AddParticipantFeature extends AbstractAddBPMNShapeFeature {
 		int height = this.getHeight(context);
 
 		Rectangle rect = gaService.createRectangle(containerShape);
-		StyleUtil.applyBGStyle(rect, this);
+		StyleUtil.applyStyle(rect, participant);
 		gaService.setLocationAndSize(rect, context.getX(), context.getY(), width, height);
 
 		BPMNShape bpmnShape = createDIShape(containerShape, participant);

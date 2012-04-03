@@ -73,7 +73,7 @@ public class AddChoreographyFeature extends AbstractAddBPMNShapeFeature {
 		ContainerShape choreographyContainer = peService.createContainerShape(context.getTargetContainer(), true);
 		RoundedRectangle containerRect = gaService.createRoundedRectangle(choreographyContainer, R, R);
 		gaService.setLocationAndSize(containerRect, context.getX(), context.getY(), width, height);
-		StyleUtil.applyBGStyle(containerRect, this);
+		StyleUtil.applyStyle(containerRect, choreography);
 		decorateContainerRect(containerRect);
 
 		Object importProperty = context.getProperty(DIImport.IMPORT_PROPERTY);

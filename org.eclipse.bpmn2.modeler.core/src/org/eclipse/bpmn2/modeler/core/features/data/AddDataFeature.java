@@ -70,7 +70,7 @@ public abstract class AddDataFeature<T extends BaseElement> extends AbstractAddB
 		Polygon rect = gaService.createPolygon(rectShape, new int[] { 0, 0, width - e, 0, width, e, width, height, 0,
 				height });
 		rect.setLineWidth(1);
-		StyleUtil.applyBGStyle(rect, this);
+		StyleUtil.applyStyle(rect,t);
 		decorate(rect);
 
 		int p = width - e - 1;

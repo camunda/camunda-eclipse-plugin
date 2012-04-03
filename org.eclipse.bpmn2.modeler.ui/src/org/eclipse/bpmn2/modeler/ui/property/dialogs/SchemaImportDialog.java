@@ -21,9 +21,9 @@ import org.eclipse.bpel.wsil.model.inspection.Name;
 import org.eclipse.bpel.wsil.model.inspection.Service;
 import org.eclipse.bpel.wsil.model.inspection.TypeOfAbstract;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceSetImpl;
+import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
-import org.eclipse.bpmn2.modeler.ui.IConstants;
 import org.eclipse.bpmn2.modeler.ui.Messages;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.providers.ModelLabelProvider;
@@ -160,7 +160,7 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 	Job fLoaderJob;
 
 	IPreferenceStore fPrefStore = Activator.getDefault().getPreferenceStore();
-	String fBasePath = fPrefStore.getString(IConstants.PREF_WSIL_URL);
+	String fBasePath = fPrefStore.getString(Bpmn2Preferences.PREF_WSIL_URL);
 
 	// The WSIL radio box is turned off if the WSIL document is not set in the
 	// modelEnablement.

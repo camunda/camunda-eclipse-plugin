@@ -87,7 +87,7 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 
 				Envelope envelope = GraphicsUtil.createEnvelope(invisibleRect, 0, 0, width, height);
 				envelope.rect.setFilled(true);
-				StyleUtil.applyBGStyle(envelope.rect, this);
+				StyleUtil.applyStyle(envelope.rect, msg);
 				envelope.line.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 
 				peService.createChopboxAnchor(container);

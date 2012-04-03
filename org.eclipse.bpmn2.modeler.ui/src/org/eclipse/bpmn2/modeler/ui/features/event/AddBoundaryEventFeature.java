@@ -72,7 +72,7 @@ public class AddBoundaryEventFeature extends AbstractAddBPMNShapeFeature {
 
 		ContainerShape containerShape = peService.createContainerShape(target, true);
 		Ellipse ellipse = gaService.createEllipse(containerShape);
-		StyleUtil.applyBGStyle(ellipse, this);
+		StyleUtil.applyStyle(ellipse, event);
 
 		int gatewayWidth = this.getWidth(context);
 		int gatewayHeight = this.getHeight();

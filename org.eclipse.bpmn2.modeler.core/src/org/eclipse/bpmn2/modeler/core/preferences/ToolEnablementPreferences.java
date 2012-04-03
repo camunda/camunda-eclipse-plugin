@@ -47,13 +47,6 @@ public class ToolEnablementPreferences {
 
 	private static HashSet<EClass> elementSet = new HashSet<EClass>();
 
-	// FIXME: Move to extension point
-
-//	private static final EStructuralFeature taskName;
-//	private final static EStructuralFeature waitFor;
-//	private static final EStructuralFeature independent;
-//	private static final EStructuralFeature ruleFlowGroup;
-//	private static final EStructuralFeature packageName;
 
 	static {
 		Bpmn2Package i = Bpmn2Package.eINSTANCE;

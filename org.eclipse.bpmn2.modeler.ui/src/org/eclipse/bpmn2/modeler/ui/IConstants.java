@@ -50,10 +50,4 @@ public interface IConstants {
 	public final String IMAGE_PROCESS_PUSHED = "wizards/process-pushed.gif";
 	public final String IMAGE_COLLABORATION_PUSHED = "wizards/collaboration-pushed.gif";
 	public final String IMAGE_CHOREOGRAPHY_PUSHED = "wizards/choreography-pushed.gif";
-
-	public final String PREF_WSIL_URL = "wsil.url";
-	
-	public final static String PREF_CANVAS_COLOR = "canvas.color";
-	public final static String PREF_GRID_COLOR = "grid.color";
-	public final static String PREF_SHOW_GRID = "show.grid";
 }

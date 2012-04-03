@@ -12,7 +12,10 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.preferences;
 
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
@@ -28,6 +31,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -55,7 +60,17 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	public final static String PREF_OVERRIDE_MODEL_ENABLEMENTS = "override.model.enablements";
 	public final static String PREF_VERTICAL_ORIENTATION = "vertical.orientation";
 	public final static String PREF_VERTICAL_ORIENTATION_LABEL = "Use &Vertical layout for Pools and Lanes";
-	
+	public final static String PREF_WSIL_URL = "wsil.url";
+	public final static String PREF_SHAPE_STYLE = "shape.style";
+	// do we need these? >>
+	public final static String PREF_SHAPE_DEFAULT_COLOR = "shape.default.color";
+	public final static String PREF_SHAPE_PRIMARY_SELECTED_COLOR = "shape.primary.selected.color";
+	public final static String PREF_SHAPE_SECONDARY_SELECTED_COLOR = "shape.secondary.selected.color";
+	public final static String PREF_SHAPE_BORDER_COLOR = "shape.border.color";
+	public final static String PREF_TEXT_COLOR = "text.color";
+	public final static String PREF_TEXT_FONT = "text.font";
+	// << do we need these?
+
 	private static Hashtable<IProject,Bpmn2Preferences> instances = null;
 	private static IProject activeProject;
 
@@ -70,6 +85,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	private boolean overrideModelEnablements;
 	private boolean expandProperties;
 	private boolean verticalOrientation;
+	private HashMap<Class, ShapeStyle> shapeStyles = new HashMap<Class, ShapeStyle>();
 	
 	// TODO: stuff like colors, fonts, etc.
 
@@ -142,6 +158,16 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		return pref;
 	}
 	
+	public IPreferenceStore getGlobalPreferences()
+	{
+		return globalPreferences;
+	}
+	
+	public Preferences getProjectPreferences()
+	{
+		return projectPreferences;
+	}
+	
 	public void restoreDefaults() {
 		projectPreferences.remove(PREF_TARGET_RUNTIME);
 		projectPreferences.remove(PREF_SHOW_ADVANCED_PROPERTIES);
@@ -191,8 +217,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	public void load() {
 		
 		if (!loaded) {
-			// load all preferences: this will eventually include all per-project
-			// as well as global user preferences.
+			// load all preferences
 			
 			overrideModelEnablements = projectPreferences.getBoolean(PREF_OVERRIDE_MODEL_ENABLEMENTS, false);
 
@@ -209,7 +234,6 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	}
 	
 	public synchronized void save() throws BackingStoreException {
-		
 		if (dirty) {
 			// this is the only preference that is a project property,
 			// and not saved in the preference store for this plugin.
@@ -220,9 +244,69 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			setBoolean(PREF_EXPAND_PROPERTIES, expandProperties);
 			setBoolean(PREF_VERTICAL_ORIENTATION, verticalOrientation);
 			
-			projectPreferences.flush();
-			
-			dirty = false;
+		}
+		
+		for (Entry<Class, ShapeStyle> entry : shapeStyles.entrySet()) {
+			setShapeStyle(entry.getKey(), entry.getValue());
+		}
+		
+		projectPreferences.flush();
+		dirty = false;
+	}
+	
+	public static String getShapeStyleId(EObject object) {
+		try {
+			Class clazz = Class.forName(object.eClass().getInstanceClassName());
+			return getShapeStyleId(clazz);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static String getShapeStyleId(Class clazz) {
+		return clazz.getSimpleName() + "." + PREF_SHAPE_STYLE;
+	}
+
+	public ShapeStyle getShapeStyle(EObject object) {
+		Class clazz;
+		try {
+			clazz = Class.forName(object.eClass().getInstanceClassName());
+			return getShapeStyle(clazz);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public ShapeStyle getShapeStyle(Class clazz) {
+		ShapeStyle ss = shapeStyles.get(clazz);
+		if (ss==null) {
+			String key = clazz.getSimpleName() + "." + PREF_SHAPE_STYLE;
+			String value;
+			if (hasProjectPreference(key)) {
+				value = projectPreferences.get(key, "");
+			}
+			else {
+				value = globalPreferences.getString(key);
+			}
+			ss = ShapeStyle.decode(value);
+			shapeStyles.put(clazz, ss);
+		}
+		return ss;
+	}
+	
+	public void setShapeStyle(Class clazz, ShapeStyle style) {
+		if (style.isDirty()) {
+			String key = clazz.getSimpleName() + "." + PREF_SHAPE_STYLE;
+			String value = ShapeStyle.encode(style);
+			if (hasProjectPreference(key))
+				projectPreferences.put(key, value);
+			else
+				globalPreferences.setValue(key, value);
+			shapeStyles.put(clazz, style);
+			style.setDirty(false);
+			dirty = true;
 		}
 	}
 	

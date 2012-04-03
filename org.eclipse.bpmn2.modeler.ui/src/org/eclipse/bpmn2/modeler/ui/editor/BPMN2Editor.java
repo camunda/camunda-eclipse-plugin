@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
@@ -24,8 +25,10 @@ import org.eclipse.bpmn2.modeler.core.di.DIImport;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
+import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.IFileChangeListener;
 import org.eclipse.bpmn2.modeler.ui.util.ErrorUtils;
@@ -46,6 +49,7 @@ import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.BasicDiagnostic;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -54,13 +58,18 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain.Lifecycle;
 import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.services.Graphiti;
+import org.eclipse.graphiti.services.IPeService;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.editor.DiagramEditorContextMenuProvider;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.graphiti.ui.internal.editor.GFPaletteRoot;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -79,7 +88,7 @@ import org.eclipse.ui.PlatformUI;
  * 
  */
 @SuppressWarnings("restriction")
-public class BPMN2Editor extends DiagramEditor {
+public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListener {
 
 	public static final String EDITOR_ID = "org.eclipse.bpmn2.modeler.ui.bpmn2editor";
 	public static final String CONTRIBUTOR_ID = "org.eclipse.bpmn2.modeler.ui.PropertyContributor";
@@ -199,6 +208,7 @@ public class BPMN2Editor extends DiagramEditor {
 	private void loadPreferences(IProject project) {
 		preferences = Bpmn2Preferences.getInstance(project);
 		preferences.load();
+		preferences.getGlobalPreferences().addPropertyChangeListener(this);
 	}
 
 	/**
@@ -456,6 +466,8 @@ public class BPMN2Editor extends DiagramEditor {
 			instances += refs.length;
 		}
 		ModelUtil.clearIDs(modelHandler.getResource(), instances==0);
+		getPreferences().getInstance(modelHandler.getResource()).getGlobalPreferences().removePropertyChangeListener(this);
+		
 		getResourceSet().eAdapters().remove(getEditorAdapter());
 		removeSelectionListener();
 		removeFileChangeListener();
@@ -490,5 +502,41 @@ public class BPMN2Editor extends DiagramEditor {
 		super.selectionChanged(part,selection); // Graphiti's DiagramEditorInternal
 		// but apparently GEF doesn't
 		updateActions(getSelectionActions()); // usually done in GEF's GraphicalEditor
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
+	 */
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		if (event.getProperty().endsWith(Bpmn2Preferences.PREF_SHAPE_STYLE)) {
+			getEditingDomain().getCommandStack().execute(new RecordingCommand(getEditingDomain()) {
+				@Override
+				protected void doExecute() {
+					IPeService peService = Graphiti.getPeService();
+					TreeIterator<EObject> iter = getDiagramTypeProvider().getDiagram().eAllContents();
+					while (iter.hasNext()) {
+						EObject o = iter.next();
+						if (o instanceof PictogramElement) {
+							PictogramElement pe = (PictogramElement)o;
+							BaseElement be = BusinessObjectUtil.getFirstElementOfType(pe, BaseElement.class);
+							if (be!=null) {
+								TreeIterator<EObject> childIter = pe.eAllContents();
+								while (childIter.hasNext()) {
+									o = childIter.next();
+									if (o instanceof GraphicsAlgorithm) {
+										GraphicsAlgorithm ga = (GraphicsAlgorithm)o;
+										if (peService.getPropertyValue(ga, Bpmn2Preferences.PREF_SHAPE_STYLE)!=null) {
+											StyleUtil.applyStyle(ga, be);
+										}
+									}
+			
+								}
+							}
+						}
+					}
+				}
+			});
+		}
 	}
 }
