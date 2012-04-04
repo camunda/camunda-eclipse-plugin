@@ -73,7 +73,7 @@ public abstract class AbstractAddActivityFeature extends AbstractAddBPMNShapeFea
 
 		Shape rectShape = peService.createShape(containerShape, false);
 		RoundedRectangle rect = gaService.createRoundedRectangle(rectShape, 5, 5);
-		StyleUtil.applyBGStyle(rect, this);
+		StyleUtil.applyStyle(rect, activity);
 		gaService.setLocationAndSize(rect, 0, 0, width, height);
 		link(rectShape, activity);
 		decorateActivityRectangle(rect);

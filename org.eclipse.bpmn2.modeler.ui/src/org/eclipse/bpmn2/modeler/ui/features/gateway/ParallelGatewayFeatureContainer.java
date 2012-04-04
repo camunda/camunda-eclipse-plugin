@@ -44,9 +44,7 @@ public class ParallelGatewayFeatureContainer extends AbstractGatewayFeatureConta
 		return new DefaultAddGatewayFeature(fp) {
 			@Override
 			protected void decorateGateway(ContainerShape container) {
-				Cross cross = GraphicsUtil.createGatewayCross(container);
-				cross.vertical.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-				cross.horizontal.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+				GraphicsUtil.createGatewayCross(container);
 			}
 		};
 	}

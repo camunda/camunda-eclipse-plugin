@@ -74,13 +74,13 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 				int l = 15;
 				
 				Polyline polyline = gaService.createPolygon(endDecorator, new int[] { -l, w, 0, 0, -l, -w, -l, w });
-				polyline.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+//				polyline.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 				polyline.setBackground(manageColor(IColorConstant.WHITE));
 				polyline.setFilled(true);
 				polyline.setLineWidth(1);
 
 				Ellipse ellipse = gaService.createEllipse(startDecorator);
-				ellipse.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+//				ellipse.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 				ellipse.setBackground(manageColor(IColorConstant.WHITE));
 				ellipse.setFilled(true);
 				ellipse.setLineWidth(1);

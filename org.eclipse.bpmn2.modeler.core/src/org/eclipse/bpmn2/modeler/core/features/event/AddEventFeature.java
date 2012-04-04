@@ -85,7 +85,7 @@ public class AddEventFeature extends AbstractAddBPMNShapeFeature {
 		peService.setPropertyValue(ellipseShape, EVENT_ELEMENT, EVENT_CIRCLE);
 		peService.setPropertyValue(containerShape, GraphicsUtil.EVENT_MARKER_CONTAINER, Boolean.toString(true));
 		Ellipse ellipse = createEventShape(ellipseShape, width, height);
-		StyleUtil.applyBGStyle(ellipse, this);
+		StyleUtil.applyStyle(ellipse, e);
 		decorateEllipse(ellipse);
 
 		peService.createChopboxAnchor(containerShape);

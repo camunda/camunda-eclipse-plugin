@@ -105,7 +105,7 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 				polygon.setFilled(true);
 				// polygon.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 
-				StyleUtil.applyBGStyle(polygon, this);
+				StyleUtil.applyStyle(polygon, store);
 
 				xy = new int[] { 0, 14, whalf, 24, width, 14 };
 				bend = new int[] { 0, 0, whalf, whalf, 0, 0 };

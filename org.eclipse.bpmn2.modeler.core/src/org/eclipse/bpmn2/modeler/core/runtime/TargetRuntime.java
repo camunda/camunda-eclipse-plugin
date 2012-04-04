@@ -13,14 +13,19 @@
 package org.eclipse.bpmn2.modeler.core.runtime;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.modeler.core.AbstractPropertyChangeListenerProvider;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.IBpmn2RuntimeExtension;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.ICustomTaskFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
+import org.eclipse.bpmn2.modeler.core.preferences.ShapeStyle;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor.Property;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor.Value;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -29,6 +34,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -58,7 +64,8 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 	protected ModelEnablementDescriptor defaultModelEnablements;
 	protected ArrayList<PropertyExtensionDescriptor> propertyExtensions;
 	protected ArrayList<FeatureContainerDescriptor> featureContainers;
-	
+	protected HashMap<Class, ShapeStyle> shapeStyles;
+
 	public TargetRuntime(String id, String name, String versions, String description) {
 		this.id = id;
 		this.name = name;
@@ -262,6 +269,15 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 									me.setEnabled(object, feature, false);
 								}
 							}
+						}
+						else if (e.getName().equals("style")) {
+							String object = e.getAttribute("object");
+							String shapeColor = e.getAttribute("shapeColor");
+							String textColor = e.getAttribute("textColor");
+							String font = e.getAttribute("font");
+							EClass eclass = (EClass)Bpmn2Package.eINSTANCE.getEClassifier(object);
+							ShapeStyle ss = new ShapeStyle(shapeColor, textColor, font);
+							currentRuntime.getShapeStyles().put(eclass.getInstanceClass(), ss);
 						}
 					}
 				}
@@ -519,6 +535,13 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 	public void addModelEnablements(ModelEnablementDescriptor me) {
 		me.setRuntime(this);
 		getModelEnablements().add(me);
+	}
+	
+	public Map<Class, ShapeStyle> getShapeStyles() {
+		if (shapeStyles==null) {
+			shapeStyles = new HashMap<Class, ShapeStyle>();
+		}
+		return shapeStyles;
 	}
 
 	private static void addAfterTab(ArrayList<Bpmn2TabDescriptor> list, Bpmn2TabDescriptor tab) {

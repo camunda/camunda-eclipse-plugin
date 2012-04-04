@@ -88,26 +88,19 @@ public class UpdateEventBasedGatewayFeature extends AbstractUpdateFeature {
 
 	private void drawEventBased(ContainerShape container) {
 		Ellipse outer = GraphicsUtil.createGatewayOuterCircle(container);
-		outer.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 		Ellipse inner = GraphicsUtil.createGatewayInnerCircle(outer);
-		inner.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 		Polygon pentagon = GraphicsUtil.createGatewayPentagon(container);
-		pentagon.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 		pentagon.setFilled(false);
 	}
 
 	private void drawExclusiveEventBased(ContainerShape container) {
 		Ellipse ellipse = GraphicsUtil.createGatewayOuterCircle(container);
-		ellipse.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 		Polygon pentagon = GraphicsUtil.createGatewayPentagon(container);
-		pentagon.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 		pentagon.setFilled(false);
 	}
 
 	private void drawParallelMultipleEventBased(ContainerShape container) {
 		Ellipse ellipse = GraphicsUtil.createGatewayOuterCircle(container);
-		ellipse.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 		Polygon cross = GraphicsUtil.createEventGatewayParallelCross(container);
-		cross.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 	}
 }

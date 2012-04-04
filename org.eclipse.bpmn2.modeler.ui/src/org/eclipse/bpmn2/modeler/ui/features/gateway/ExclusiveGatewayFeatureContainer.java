@@ -39,9 +39,7 @@ public class ExclusiveGatewayFeatureContainer extends AbstractGatewayFeatureCont
 		return new DefaultAddGatewayFeature(fp) {
 			@Override
 			protected void decorateGateway(ContainerShape container) {
-				DiagonalCross cross = GraphicsUtil.createGatewayDiagonalCross(container);
-				cross.diagonalAsc.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-				cross.diagonalDesc.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+				GraphicsUtil.createGatewayDiagonalCross(container);
 			}
 		};
 	}

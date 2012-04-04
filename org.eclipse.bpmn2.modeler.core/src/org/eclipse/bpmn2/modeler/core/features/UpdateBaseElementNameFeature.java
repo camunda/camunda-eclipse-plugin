@@ -95,6 +95,8 @@ public class UpdateBaseElementNameFeature extends AbstractUpdateFeature {
 				ContainerShape container = (ContainerShape)pe;
 			
 			Shape shape = container.getChildren().get(0); // Otherwise, this would never be reached!
+			if (!(shape.getGraphicsAlgorithm() instanceof AbstractText))
+				return true;
 			
 			GraphicsAlgorithm textGA = container.getGraphicsAlgorithm();
 			AbstractText text = (AbstractText) shape.getGraphicsAlgorithm();

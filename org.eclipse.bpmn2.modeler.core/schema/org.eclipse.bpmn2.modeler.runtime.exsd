@@ -26,6 +26,7 @@
             <element ref="modelEnablement"/>
             <element ref="propertyExtension"/>
             <element ref="featureContainer"/>
+            <element ref="style" minOccurs="0" maxOccurs="unbounded"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -549,6 +550,45 @@ If &quot;object&quot; has the value &quot;default&quot;, then this refers to a d
                <appinfo>
                   <meta.attribute kind="java"/>
                </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="style">
+      <complexType>
+         <attribute name="object" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Name of the BPMN2 element to enable. All references made by this element to other BPMN2 elements are enabled also (note: if needed, the referenced element types can subsequently be disabled).
+
+This may also be a Custom Task ID to show it on the tool palette.
+
+The special object name &quot;all&quot; is used to refer to all BPMN2 elements.
+
+The value &quot;default&quot; is used by contributing plugins to refer to enablements in the Default Target Runtime defined in the editor core plugins.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="shapeColor" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="font" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="textColor" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
             </annotation>
          </attribute>
       </complexType>

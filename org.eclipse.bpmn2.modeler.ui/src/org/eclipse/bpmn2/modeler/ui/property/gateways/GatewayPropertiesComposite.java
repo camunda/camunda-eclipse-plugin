@@ -43,7 +43,7 @@ public class GatewayPropertiesComposite extends DefaultPropertiesComposite {
 				// it simply won't be displayed.
 				String[] properties = new String[] {
 						"gatewayDirection",
-						"isInstantiate",
+						"instantiate",
 						"activationCondition",
 						"eventGatewayType"
 						// note: "default" sequence flow is already being displayed in the SequenceFlow tab

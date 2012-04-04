@@ -88,7 +88,7 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 				IGaService gaService = Graphiti.getGaService();
 				Polyline arrow = gaService.createPolygon(decorator, new int[] { -l, w, 0, 0, -l, -w, -l, w });
 
-				arrow.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+//				arrow.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 				arrow.setLineWidth(2);
 			}
 
@@ -184,7 +184,7 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 			}
 			def = createDefaultConnectionDecorator(connection);
 			GraphicsAlgorithm ga = def.getGraphicsAlgorithm();
-			ga.setForeground(manageColor(connection,StyleUtil.CLASS_FOREGROUND));
+//			ga.setForeground(manageColor(connection,StyleUtil.CLASS_FOREGROUND));
 		} else {
 			if (def != null) {
 				peService.deletePictogramElement(def);
@@ -193,7 +193,7 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 				cond = createConditionalConnectionDecorator(connection);
 				GraphicsAlgorithm ga = cond.getGraphicsAlgorithm();
 				ga.setFilled(true);
-				ga.setForeground(manageColor(connection,StyleUtil.CLASS_FOREGROUND));
+//				ga.setForeground(manageColor(connection,StyleUtil.CLASS_FOREGROUND));
 				ga.setBackground(manageColor(connection,IColorConstant.WHITE));
 			}
 		}
@@ -252,7 +252,7 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 			ConnectionDecorator decorator = createConditionalConnectionDecorator(connection);
 			GraphicsAlgorithm ga = decorator.getGraphicsAlgorithm();
 			ga.setFilled(true);
-			ga.setForeground(manageColor(connection, StyleUtil.CLASS_FOREGROUND));
+//			ga.setForeground(manageColor(connection, StyleUtil.CLASS_FOREGROUND));
 			ga.setBackground(manageColor(connection, IColorConstant.WHITE));
 		} else if (cond != null) {
 			peService.deletePictogramElement(cond);

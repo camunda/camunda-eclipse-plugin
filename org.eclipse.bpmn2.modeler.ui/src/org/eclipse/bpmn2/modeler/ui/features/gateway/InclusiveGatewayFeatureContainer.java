@@ -40,8 +40,7 @@ public class InclusiveGatewayFeatureContainer extends AbstractGatewayFeatureCont
 			@Override
 			protected void decorateGateway(ContainerShape container) {
 				Ellipse ellipse = GraphicsUtil.createGatewayOuterCircle(container);
-				ellipse.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-				ellipse.setLineWidth(2);
+				ellipse.setLineWidth(3);
 			}
 		};
 	}

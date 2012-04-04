@@ -43,11 +43,7 @@ public class ComplexGatewayFeatureContainer extends AbstractGatewayFeatureContai
 		return new DefaultAddGatewayFeature(fp) {
 			@Override
 			protected void decorateGateway(ContainerShape container) {
-				Asterisk asterisk = GraphicsUtil.createGatewayAsterisk(container);
-				asterisk.horizontal.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-				asterisk.vertical.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-				asterisk.diagonalAsc.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-				asterisk.diagonalDesc.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+				GraphicsUtil.createGatewayAsterisk(container);
 			}
 		};
 	}

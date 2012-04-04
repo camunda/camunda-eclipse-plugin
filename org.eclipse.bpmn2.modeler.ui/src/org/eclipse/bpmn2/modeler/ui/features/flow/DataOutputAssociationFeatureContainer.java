@@ -55,7 +55,7 @@ public class DataOutputAssociationFeatureContainer extends BaseElementConnection
 				int l = 10;
 
 				Polyline polyline = gaService.createPolyline(endDecorator, new int[] { -l, w, 0, 0, -l, -w });
-				polyline.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+//				polyline.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 				polyline.setLineWidth(1);
 			}
 

@@ -72,7 +72,7 @@ public class DefaultAddGatewayFeature extends AbstractAddBPMNShapeFeature {
 
 		Shape gatewayShape = peService.createShape(containerShape, false);
 		Polygon gateway = GraphicsUtil.createGateway(gatewayShape, width, height);
-		StyleUtil.applyBGStyle(gateway, this);
+		StyleUtil.applyStyle(gateway, addedGateway);
 		gaService.setLocationAndSize(gateway, 0, 0, width, height);
 		decorateGateway(containerShape);
 

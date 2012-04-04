@@ -24,8 +24,8 @@ import org.eclipse.bpel.wsil.model.inspection.Link;
 import org.eclipse.bpel.wsil.model.inspection.TypeOfAbstract;
 import org.eclipse.bpel.wsil.model.inspection.WSILDocument;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceSetImpl;
+import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.ui.Activator;
-import org.eclipse.bpmn2.modeler.ui.IConstants;
 import org.eclipse.bpmn2.modeler.ui.Messages;
 import org.eclipse.bpmn2.modeler.ui.property.providers.ColumnTableProvider;
 import org.eclipse.bpmn2.modeler.ui.property.providers.TableCursor;
@@ -435,7 +435,7 @@ public class WSILPreferencePage extends PreferencePage implements IWorkbenchPref
 	private void initializeValues() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		
-		wsilURL.setText(store.getString(IConstants.PREF_WSIL_URL));
+		wsilURL.setText(store.getString(Bpmn2Preferences.PREF_WSIL_URL));
 		
 		attemptLoad (wsilURL.getText() );
 	}
@@ -448,7 +448,7 @@ public class WSILPreferencePage extends PreferencePage implements IWorkbenchPref
 	private void storeValues() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		
-		store.setValue(IConstants.PREF_WSIL_URL, wsilURL.getText());	
+		store.setValue(Bpmn2Preferences.PREF_WSIL_URL, wsilURL.getText());	
 
 		if (fWsilDocument != null) {
 			

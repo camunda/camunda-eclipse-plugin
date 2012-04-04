@@ -490,6 +490,51 @@
 			<disable object="ParticipantMultiplicity"/>
 		</modelEnablement>
 
+		<style object="AdHocSubProcess" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="Association" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="Association" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="BoundaryEvent" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="BusinessRuleTask" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="CallActivity" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="CallChoreography" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="ChoreographyTask" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="ComplexGateway" shapeColor="200,200,100" textColor="000000" font="arial,10,-,-"/>
+		<style object="Conversation" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="DataAssociation" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="DataAssociation" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="DataInput" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="DataObject" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="DataObjectReference" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="DataOutput" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="DataStoreReference" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="EndEvent" shapeColor="C82020" textColor="404040" font="arial,10,-,B"/>
+		<style object="EventBasedGateway" shapeColor="200,200,100" textColor="000000" font="arial,10,-,-"/>
+		<style object="ExclusiveGateway" shapeColor="200,200,100" textColor="000000" font="arial,10,-,-"/>
+		<style object="Group" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="InclusiveGateway" shapeColor="200,200,100" textColor="000000" font="arial,10,-,-"/>
+		<style object="IntermediateCatchEvent" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="IntermediateThrowEvent" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="Lane" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="ManualTask" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="Message" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="MessageFlow" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="MessageFlow" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="ParallelGateway" shapeColor="200,200,100" textColor="000000" font="arial,10,-,-"/>
+		<style object="Participant" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="ReceiveTask" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="ScriptTask" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="SendTask" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="SequenceFlow" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="SequenceFlow" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="ServiceTask" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="StartEvent" shapeColor="20C820" textColor="404040" font="arial,10,-,B"/>
+		<style object="SubChoreography" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="SubProcess" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="Task" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="TextAnnotation" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="Transaction" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="UserTask" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+
 	</extension>
 
 </plugin>

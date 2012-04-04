@@ -78,7 +78,8 @@ public abstract class AbstractAddFlowFeature extends AbstractAddBPMNShapeFeature
 		}
 		
 		Polyline connectionLine = gaService.createPolyline(connection);
-		connectionLine.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+//		connectionLine.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+		StyleUtil.applyStyle(connectionLine, element);
 
 //		peService.createChopboxAnchor(connection);
 //		AnchorUtil.addFixedPointAnchors(connection, connectionLine);

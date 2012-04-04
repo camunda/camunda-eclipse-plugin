@@ -76,7 +76,7 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature {
 
 		Rectangle rect = gaService.createRectangle(containerShape);
 
-		StyleUtil.applyBGStyle(rect, this);
+		StyleUtil.applyStyle(rect, lane);
 
 		BPMNShape bpmnShape = createDIShape(containerShape, lane);
 		if (context.getProperty(DIImport.IMPORT_PROPERTY) == null) {
