@@ -94,11 +94,11 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		IEclipsePreferences rootNode = Platform.getPreferencesService()
 				.getRootNode();
 		if (project!=null) {
-			projectPreferences = rootNode.node(ProjectScope.SCOPE)
-					.node(project.getName())
-					.node(PROJECT_PREFERENCES_ID);
-			if (projectPreferences instanceof ProjectPreferences)
-				((ProjectPreferences)projectPreferences).addPreferenceChangeListener(this);
+		projectPreferences = rootNode.node(ProjectScope.SCOPE)
+				.node(project.getName())
+				.node(PROJECT_PREFERENCES_ID);
+		if (projectPreferences instanceof ProjectPreferences)
+			((ProjectPreferences)projectPreferences).addPreferenceChangeListener(this);
 		}		
 		globalPreferences = Activator.getDefault().getPreferenceStore();
 		globalPreferences.addPropertyChangeListener(this);
@@ -175,10 +175,10 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	
 	public void restoreDefaults() {
 		if (projectPreferences!=null) {
-			projectPreferences.remove(PREF_TARGET_RUNTIME);
-			projectPreferences.remove(PREF_SHOW_ADVANCED_PROPERTIES);
-			projectPreferences.remove(PREF_EXPAND_PROPERTIES);
-			projectPreferences.remove(PREF_VERTICAL_ORIENTATION);
+		projectPreferences.remove(PREF_TARGET_RUNTIME);
+		projectPreferences.remove(PREF_SHOW_ADVANCED_PROPERTIES);
+		projectPreferences.remove(PREF_EXPAND_PROPERTIES);
+		projectPreferences.remove(PREF_VERTICAL_ORIENTATION);
 			for (Class key : shapeStyles.keySet()) {
 				projectPreferences.remove(getShapeStyleId(key));
 			}
@@ -236,7 +236,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		if (!loaded) {
 			// load all preferences
 			if (projectPreferences!=null)
-				overrideModelEnablements = projectPreferences.getBoolean(PREF_OVERRIDE_MODEL_ENABLEMENTS, false);
+			overrideModelEnablements = projectPreferences.getBoolean(PREF_OVERRIDE_MODEL_ENABLEMENTS, false);
 
 			String id = getString(PREF_TARGET_RUNTIME,TargetRuntime.getFirstNonDefaultId());
 			if (id==null || id.isEmpty())
@@ -255,7 +255,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			// this is the only preference that is a project property,
 			// and not saved in the preference store for this plugin.
 			if (projectPreferences!=null)
-				projectPreferences.putBoolean(PREF_OVERRIDE_MODEL_ENABLEMENTS, overrideModelEnablements);
+			projectPreferences.putBoolean(PREF_OVERRIDE_MODEL_ENABLEMENTS, overrideModelEnablements);
 
 			setString(PREF_TARGET_RUNTIME,targetRuntime.getId());
 			setBoolean(PREF_SHOW_ADVANCED_PROPERTIES, showAdvancedPropertiesTab);
@@ -269,7 +269,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		}
 		
 		if (projectPreferences!=null)
-			projectPreferences.flush();
+		projectPreferences.flush();
 		dirty = false;
 	}
 	
@@ -485,7 +485,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		if (activeProject!=null)
 			return activeProject;
 		
-		IWorkbench workbench = PlatformUI.getWorkbench();
+		IWorkbench workbench = PlatformUI.getWorkbench(); 
 		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 		IWorkbenchPage page = window.getActivePage();
 		if (page!=null) {
