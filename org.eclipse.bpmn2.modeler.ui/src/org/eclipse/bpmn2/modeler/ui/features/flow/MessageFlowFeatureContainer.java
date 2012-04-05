@@ -26,6 +26,7 @@ import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractAddFlowFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractReconnectFlowFeature;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.modeler.ui.features.choreography.ChoreographyUtil;
@@ -58,33 +59,31 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 		return new AbstractAddFlowFeature(fp) {
 
 			@Override
-			protected void decorateConnectionLine(Polyline connectionLine) {
-				connectionLine.setLineStyle(LineStyle.DASH);
-			}
-
-			@Override
-			protected void createConnectionDecorators(Connection connection) {
+			protected Polyline createConnectionLine(Connection connection) {
 				IPeService peService = Graphiti.getPeService();
 				IGaService gaService = Graphiti.getGaService();
+				BaseElement be = BusinessObjectUtil.getFirstBaseElement(connection);
+
+				Polyline connectionLine = super.createConnectionLine(connection);
+				connectionLine.setLineStyle(LineStyle.DASH);
+				connectionLine.setLineWidth(2);
 
 				ConnectionDecorator endDecorator = peService.createConnectionDecorator(connection, false, 1.0, true);
 				ConnectionDecorator startDecorator = peService.createConnectionDecorator(connection, false, 0, true);
 
 				int w = 5;
-				int l = 15;
+				int l = 10;
 				
-				Polyline polyline = gaService.createPolygon(endDecorator, new int[] { -l, w, 0, 0, -l, -w, -l, w });
-//				polyline.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-				polyline.setBackground(manageColor(IColorConstant.WHITE));
-				polyline.setFilled(true);
-				polyline.setLineWidth(1);
+				Polyline arrowhead = gaService.createPolygon(endDecorator, new int[] { -l, w, 0, 0, -l, -w, -l, w });
+				StyleUtil.applyStyle(arrowhead, be);
+				arrowhead.setBackground(manageColor(IColorConstant.WHITE));
 
-				Ellipse ellipse = gaService.createEllipse(startDecorator);
-//				ellipse.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-				ellipse.setBackground(manageColor(IColorConstant.WHITE));
-				ellipse.setFilled(true);
-				ellipse.setLineWidth(1);
-				gaService.setSize(ellipse, 10, 10);
+				Ellipse circle = gaService.createEllipse(startDecorator);
+				gaService.setSize(circle, 10, 10);
+				StyleUtil.applyStyle(circle, be);
+				circle.setBackground(manageColor(IColorConstant.WHITE));
+				
+				return connectionLine;
 			}
 
 			@Override

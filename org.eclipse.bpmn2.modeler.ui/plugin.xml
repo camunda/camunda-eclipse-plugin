@@ -452,6 +452,7 @@
 			<enable object="CallActivity"/>
 			<enable object="ScriptTask"/>
 			<enable object="IntermediateCatchEvent"/>
+			<enable object="IntermediateThrowEvent"/>
 			<enable object="UserTask"/>
 			<enable object="SubProcess"/>
 			<enable object="Task"/>
@@ -490,50 +491,50 @@
 			<disable object="ParticipantMultiplicity"/>
 		</modelEnablement>
 
-		<style object="AdHocSubProcess" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="Association" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="Association" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="BoundaryEvent" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="BusinessRuleTask" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="CallActivity" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="CallChoreography" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="ChoreographyTask" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="ComplexGateway" shapeColor="200,200,100" textColor="000000" font="arial,10,-,-"/>
-		<style object="Conversation" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="DataAssociation" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="DataAssociation" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="DataInput" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="DataObject" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="DataObjectReference" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="DataOutput" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="DataStoreReference" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="EndEvent" shapeColor="C82020" textColor="404040" font="arial,10,-,B"/>
-		<style object="EventBasedGateway" shapeColor="200,200,100" textColor="000000" font="arial,10,-,-"/>
-		<style object="ExclusiveGateway" shapeColor="200,200,100" textColor="000000" font="arial,10,-,-"/>
-		<style object="Group" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="InclusiveGateway" shapeColor="200,200,100" textColor="000000" font="arial,10,-,-"/>
-		<style object="IntermediateCatchEvent" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="IntermediateThrowEvent" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="Lane" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="ManualTask" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="Message" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="MessageFlow" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="MessageFlow" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="ParallelGateway" shapeColor="200,200,100" textColor="000000" font="arial,10,-,-"/>
-		<style object="Participant" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="ReceiveTask" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="ScriptTask" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="SendTask" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="SequenceFlow" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="SequenceFlow" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="ServiceTask" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="StartEvent" shapeColor="20C820" textColor="404040" font="arial,10,-,B"/>
-		<style object="SubChoreography" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="SubProcess" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="Task" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="TextAnnotation" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="Transaction" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
-		<style object="UserTask" shapeColor="D4E7F8" textColor="000000" font="arial,10,-,-"/>
+		<style object="AdHocSubProcess" background="D4E7F8"/>
+		<style object="Association" background="D4E7F8"/>
+		<style object="Association" background="D4E7F8"/>
+		<style object="BoundaryEvent" background="D4E7F8"/>
+		<style object="BusinessRuleTask" background="D4E7F8"/>
+		<style object="CallActivity" background="D4E7F8"/>
+		<style object="CallChoreography" background="D4E7F8"/>
+		<style object="ChoreographyTask" background="D4E7F8"/>
+		<style object="ComplexGateway" background="200,200,100"/>
+		<style object="Conversation" background="D4E7F8"/>
+		<style object="DataAssociation" background="D4E7F8"/>
+		<style object="DataAssociation" background="D4E7F8"/>
+		<style object="DataInput" background="D4E7F8"/>
+		<style object="DataObject" background="D4E7F8"/>
+		<style object="DataObjectReference" background="D4E7F8"/>
+		<style object="DataOutput" background="D4E7F8"/>
+		<style object="DataStoreReference" background="D4E7F8"/>
+		<style object="EndEvent" background="C82020"/>
+		<style object="EventBasedGateway" background="200,200,100"/>
+		<style object="ExclusiveGateway" background="200,200,100"/>
+		<style object="Group" background="D4E7F8"/>
+		<style object="InclusiveGateway" background="200,200,100"/>
+		<style object="IntermediateCatchEvent" background="D4E7F8"/>
+		<style object="IntermediateThrowEvent" background="D4E7F8"/>
+		<style object="Lane" background="D4E7F8"/>
+		<style object="ManualTask" background="D4E7F8"/>
+		<style object="Message" background="D4E7F8"/>
+		<style object="MessageFlow" background="D4E7F8"/>
+		<style object="MessageFlow" background="D4E7F8"/>
+		<style object="ParallelGateway" background="200,200,100"/>
+		<style object="Participant" background="D4E7F8"/>
+		<style object="ReceiveTask" background="D4E7F8"/>
+		<style object="ScriptTask" background="D4E7F8"/>
+		<style object="SendTask" background="D4E7F8"/>
+		<style object="SequenceFlow" background="D4E7F8"/>
+		<style object="SequenceFlow" background="D4E7F8"/>
+		<style object="ServiceTask" background="D4E7F8"/>
+		<style object="StartEvent" background="20C820"/>
+		<style object="SubChoreography" background="D4E7F8"/>
+		<style object="SubProcess" background="D4E7F8"/>
+		<style object="Task" background="D4E7F8"/>
+		<style object="TextAnnotation" background="D4E7F8"/>
+		<style object="Transaction" background="D4E7F8"/>
+		<style object="UserTask" background="D4E7F8"/>
 
 	</extension>
 

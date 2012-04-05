@@ -50,7 +50,7 @@ public class AddTaskFeature extends AbstractAddActivityFeature {
 		MultiText text = gaService.createDefaultMultiText(getDiagram(), textShape, activity.getName());
 		int padding = GraphicsUtil.TASK_IMAGE_SIZE;
 		gaService.setLocationAndSize(text, 0, padding, width, height - padding);
-		text.setStyle(StyleUtil.getStyleForText(getDiagram()));
+		StyleUtil.applyStyle(text, activity);
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setVerticalAlignment(Orientation.ALIGNMENT_TOP);
 		text.setFont(gaService.manageFont(getDiagram(), GaServiceImpl.DEFAULT_FONT, 8, false, true));

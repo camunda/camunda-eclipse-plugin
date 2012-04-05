@@ -76,11 +76,11 @@ public class AddParticipantFeature extends AbstractAddBPMNShapeFeature {
 			line = gaService.createPolyline(lineShape, new int[] { 30, 0, 30, height });
 		else
 			line = gaService.createPolyline(lineShape, new int[] { 0, 30, width, 30 });
-		line.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+		StyleUtil.applyStyle(line, participant);
 
 		Shape textShape = peCreateService.createShape(containerShape, false);
 		Text text = gaService.createText(textShape, participant.getName());
-		text.setStyle(StyleUtil.getStyleForText(getDiagram()));
+		StyleUtil.applyStyle(text, participant);
 		text.setVerticalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
 		link(textShape, participant);

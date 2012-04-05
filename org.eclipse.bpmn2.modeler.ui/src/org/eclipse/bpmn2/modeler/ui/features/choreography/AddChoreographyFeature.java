@@ -85,7 +85,7 @@ public class AddChoreographyFeature extends AbstractAddBPMNShapeFeature {
 
 		Text text = gaService.createDefaultText(getDiagram(), nameShape);
 		text.setValue(choreography.getName());
-		text.setStyle(StyleUtil.getStyleForText(getDiagram()));
+		StyleUtil.applyStyle(text, choreography);
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setVerticalAlignment(Orientation.ALIGNMENT_TOP);
 		text.setFont(gaService.manageFont(getDiagram(), GaServiceImpl.DEFAULT_FONT, 8, false, true));

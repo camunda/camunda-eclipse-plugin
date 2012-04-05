@@ -16,6 +16,7 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementConnectionFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractAddFlowFeature;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
@@ -40,23 +41,23 @@ public class DataOutputAssociationFeatureContainer extends BaseElementConnection
 		return new AbstractAddFlowFeature(fp) {
 
 			@Override
-			protected void decorateConnectionLine(Polyline connectionLine) {
-				connectionLine.setLineStyle(LineStyle.DOT);
-			}
-
-			@Override
-			protected void createConnectionDecorators(Connection connection) {
+			protected Polyline createConnectionLine(Connection connection) {
 				IPeService peService = Graphiti.getPeService();
 				IGaService gaService = Graphiti.getGaService();
+				BaseElement be = BusinessObjectUtil.getFirstBaseElement(connection);
+
+				Polyline connectionLine = super.createConnectionLine(connection);
+				connectionLine.setLineStyle(LineStyle.DOT);
 
 				ConnectionDecorator endDecorator = peService.createConnectionDecorator(connection, false, 1.0, true);
 
 				int w = 5;
 				int l = 10;
 
-				Polyline polyline = gaService.createPolyline(endDecorator, new int[] { -l, w, 0, 0, -l, -w });
-//				polyline.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-				polyline.setLineWidth(1);
+				Polyline arrowhead = gaService.createPolyline(endDecorator, new int[] { -l, w, 0, 0, -l, -w });
+				StyleUtil.applyStyle(arrowhead, be);
+				
+				return connectionLine;
 			}
 
 			@Override

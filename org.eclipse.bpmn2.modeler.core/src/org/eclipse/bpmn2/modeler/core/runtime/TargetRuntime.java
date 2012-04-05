@@ -272,11 +272,12 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 						}
 						else if (e.getName().equals("style")) {
 							String object = e.getAttribute("object");
-							String shapeColor = e.getAttribute("shapeColor");
+							String foreground = e.getAttribute("foreground");
+							String background = e.getAttribute("background");
 							String textColor = e.getAttribute("textColor");
 							String font = e.getAttribute("font");
 							EClass eclass = (EClass)Bpmn2Package.eINSTANCE.getEClassifier(object);
-							ShapeStyle ss = new ShapeStyle(shapeColor, textColor, font);
+							ShapeStyle ss = new ShapeStyle(foreground, background, textColor, font);
 							currentRuntime.getShapeStyles().put(eclass.getInstanceClass(), ss);
 						}
 					}

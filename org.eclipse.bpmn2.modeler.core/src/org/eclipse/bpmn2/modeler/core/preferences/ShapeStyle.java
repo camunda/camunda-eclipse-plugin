@@ -31,41 +31,50 @@ import org.eclipse.swt.graphics.RGB;
 public class ShapeStyle {
 
 	public static IColorConstant DEFAULT_COLOR = new ColorConstant(212, 231, 248);
-	IColorConstant shapeDefaultColor;
+	public static String DEFAULT_FONT_STRING = "arial,10,-,-";
+	IColorConstant shapeBackground;
 	IColorConstant shapePrimarySelectedColor;
 	IColorConstant shapeSecondarySelectedColor;
-	IColorConstant shapeBorderColor;
+	IColorConstant shapeForeground;
 	Font textFont;
 	IColorConstant textColor;
 	boolean dirty;
 
 	public ShapeStyle() {
 		setDefaultColors(DEFAULT_COLOR);
-		textFont = stringToFont("arial,10,-,-");
+		textFont = stringToFont(DEFAULT_FONT_STRING);
 	}
 
-	public ShapeStyle(String shapeColor, String textColor, String font) {
-		shapeDefaultColor = stringToColor(shapeColor);
-		setDefaultColors(shapeDefaultColor);
-		this.textColor = stringToColor(textColor);
+	public ShapeStyle(String foreground, String background, String textColor, String font) {
+		// only background color is required to set up default color scheme
+		shapeBackground = stringToColor(background);
+		setDefaultColors(shapeBackground);
+		
+		// optional:
+		if (foreground!=null && !foreground.isEmpty())
+			shapeForeground = stringToColor(foreground);
+		if (textColor!=null && !textColor.isEmpty())
+			this.textColor = stringToColor(textColor);
+		if (font==null || font.isEmpty())
+			font = DEFAULT_FONT_STRING;
 		textFont = stringToFont(font);
 	}
 	
 	protected ShapeStyle(String s) {
 		String[] a = s.trim().split(";");
-		shapeDefaultColor = stringToColor(a[0]);
+		shapeBackground = stringToColor(a[0]);
 		shapePrimarySelectedColor = stringToColor(a[1]);
 		shapeSecondarySelectedColor = stringToColor(a[2]);
-		shapeBorderColor = stringToColor(a[3]);
+		shapeForeground = stringToColor(a[3]);
 		textFont = stringToFont(a[4]);
 		textColor = stringToColor(a[5]);
 	}
 	
 	public void setDefaultColors(IColorConstant defaultColor) {
-		setShapeDefaultColor(defaultColor);
+		setShapeBackground(defaultColor);
 		setShapePrimarySelectedColor(StyleUtil.shiftColor(defaultColor, 32));
 		setShapeSecondarySelectedColor(StyleUtil.shiftColor(defaultColor, -32));
-		setShapeBorderColor(StyleUtil.shiftColor(defaultColor, -32));
+		setShapeForeground(StyleUtil.shiftColor(defaultColor, -128));
 		setTextColor(StyleUtil.shiftColor(defaultColor, -128));
 	}
 	
@@ -77,13 +86,13 @@ public class ShapeStyle {
 		this.dirty = dirty;
 	}
 	
-	public IColorConstant getShapeDefaultColor() {
-		return shapeDefaultColor;
+	public IColorConstant getShapeBackground() {
+		return shapeBackground;
 	}
 
-	public void setShapeDefaultColor(IColorConstant shapeDefaultColor) {
-		if (!compare(this.shapeDefaultColor, shapeDefaultColor)) {
-			this.shapeDefaultColor = shapeDefaultColor;
+	public void setShapeBackground(IColorConstant shapeDefaultColor) {
+		if (!compare(this.shapeBackground, shapeDefaultColor)) {
+			this.shapeBackground = shapeDefaultColor;
 			setDirty(true);
 		}
 	}
@@ -110,13 +119,13 @@ public class ShapeStyle {
 		}
 	}
 
-	public IColorConstant getShapeBorderColor() {
-		return shapeBorderColor;
+	public IColorConstant getShapeForeground() {
+		return shapeForeground;
 	}
 
-	public void setShapeBorderColor(IColorConstant shapeBorderColor) {
-		if (!compare(this.shapeBorderColor, shapeBorderColor)) {
-			this.shapeBorderColor = shapeBorderColor;
+	public void setShapeForeground(IColorConstant shapeBorderColor) {
+		if (!compare(this.shapeForeground, shapeBorderColor)) {
+			this.shapeForeground = shapeBorderColor;
 			setDirty(true);
 		}
 	}
@@ -215,10 +224,10 @@ public class ShapeStyle {
 	
 	public static String encode(ShapeStyle sp) {
 		return new String(
-				colorToString(sp.shapeDefaultColor) + ";" +
+				colorToString(sp.shapeBackground) + ";" +
 				colorToString(sp.shapePrimarySelectedColor) + ";" +
 				colorToString(sp.shapeSecondarySelectedColor) + ";" +
-				colorToString(sp.shapeBorderColor) + ";" +
+				colorToString(sp.shapeForeground) + ";" +
 				fontToString(sp.textFont) + ";" +
 				colorToString(sp.textColor)
 				);
@@ -248,10 +257,10 @@ public class ShapeStyle {
 
 	public static boolean compare(ShapeStyle s1, ShapeStyle s2) {
 		return
-				compare(s1.shapeDefaultColor, s2.shapeDefaultColor) ||
+				compare(s1.shapeBackground, s2.shapeBackground) ||
 				compare(s1.shapePrimarySelectedColor, s2.shapePrimarySelectedColor) ||
 				compare(s1.shapeSecondarySelectedColor, s2.shapeSecondarySelectedColor) ||
-				compare(s1.shapeBorderColor, s2.shapeBorderColor) ||
+				compare(s1.shapeForeground, s2.shapeForeground) ||
 				compare(s1.textFont, s2.textFont) ||
 				compare(s1.textColor, s2.textColor);
 	}

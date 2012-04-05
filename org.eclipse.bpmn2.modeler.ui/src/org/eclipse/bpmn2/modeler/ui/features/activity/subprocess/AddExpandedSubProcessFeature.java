@@ -52,7 +52,7 @@ public class AddExpandedSubProcessFeature extends AbstractAddActivityFeature {
 		Shape textShape = peService.createShape(container, false);
 		Text text = gaService.createDefaultText(getDiagram(), textShape, activity.getName());
 		gaService.setLocationAndSize(text, 5, 5, width - 10, 15);
-		text.setStyle(StyleUtil.getStyleForText(getDiagram()));
+		StyleUtil.applyStyle(text, activity);
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setVerticalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setFont(gaService.manageFont(getDiagram(), GaServiceImpl.DEFAULT_FONT, 8, false, true));

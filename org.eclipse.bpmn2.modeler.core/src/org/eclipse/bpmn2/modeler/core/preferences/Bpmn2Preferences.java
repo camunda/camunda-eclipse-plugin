@@ -62,14 +62,6 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	public final static String PREF_VERTICAL_ORIENTATION_LABEL = "Use &Vertical layout for Pools and Lanes";
 	public final static String PREF_WSIL_URL = "wsil.url";
 	public final static String PREF_SHAPE_STYLE = "shape.style";
-	// do we need these? >>
-	public final static String PREF_SHAPE_DEFAULT_COLOR = "shape.default.color";
-	public final static String PREF_SHAPE_PRIMARY_SELECTED_COLOR = "shape.primary.selected.color";
-	public final static String PREF_SHAPE_SECONDARY_SELECTED_COLOR = "shape.secondary.selected.color";
-	public final static String PREF_SHAPE_BORDER_COLOR = "shape.border.color";
-	public final static String PREF_TEXT_COLOR = "text.color";
-	public final static String PREF_TEXT_FONT = "text.font";
-	// << do we need these?
 
 	private static Hashtable<IProject,Bpmn2Preferences> instances = null;
 	private static IProject activeProject;

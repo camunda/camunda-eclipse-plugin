@@ -84,7 +84,7 @@ public class AddCollapsedSubprocessFeature extends AbstractAddFeature {
 		Shape textShape = peService.createShape(containerShape, false);
 		MultiText text = gaService.createDefaultMultiText(getDiagram(), textShape, subprocess.getName());
 		gaService.setLocationAndSize(text, 10, 10, 80, 80);
-		text.setStyle(StyleUtil.getStyleForText(getDiagram()));
+		StyleUtil.applyStyle(text, subprocess);
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setVerticalAlignment(Orientation.ALIGNMENT_TOP);
 		text.setFont(gaService.manageFont(getDiagram(), GaServiceImpl.DEFAULT_FONT, 8, false, true));

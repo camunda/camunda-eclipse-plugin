@@ -14,7 +14,13 @@ package org.eclipse.bpmn2.modeler.core.utils;
 
 import java.util.Collection;
 
+import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Conversation;
+import org.eclipse.bpmn2.DataInputAssociation;
+import org.eclipse.bpmn2.DataOutputAssociation;
+import org.eclipse.bpmn2.MessageFlow;
+import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.emf.common.util.EList;
@@ -75,6 +81,10 @@ public class BusinessObjectUtil {
 		return null;
 	}
 
+	public static BaseElement getFirstBaseElement(PictogramElement pe) {
+		return BusinessObjectUtil.getFirstElementOfType(pe, BaseElement.class);
+	}
+	
 	public static PictogramElement getFirstBaseElementFromDiagram(Diagram diagram, BaseElement e) {
 		PictogramElement foundElem = null;
 
@@ -150,5 +160,15 @@ public class BusinessObjectUtil {
 			return editPart;
 		}
 		return null;
+	}
+	
+	public static boolean isConnection(Class be) {
+		return
+				be == SequenceFlow.class ||
+				be == Association.class ||
+				be == MessageFlow.class ||
+				be == DataInputAssociation.class ||
+				be == DataOutputAssociation.class ||
+				be == Conversation.class;
 	}
 }

@@ -17,6 +17,7 @@ import org.eclipse.bpmn2.modeler.core.di.DIImport;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
@@ -74,20 +75,12 @@ public abstract class AbstractAddFlowFeature extends AbstractAddBPMNShapeFeature
 			ConnectionDecorator labelDecorator = Graphiti.getPeService().createConnectionDecorator(connection, true, 0.5, true);
 			Text text = gaService.createText(labelDecorator, ModelUtil.getName(element));
 			peService.setPropertyValue(labelDecorator, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
-			text.setStyle(StyleUtil.getStyleForText(getDiagram()));
+			StyleUtil.applyStyle(text, element);
 		}
-		
-		Polyline connectionLine = gaService.createPolyline(connection);
-//		connectionLine.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-		StyleUtil.applyStyle(connectionLine, element);
-
-//		peService.createChopboxAnchor(connection);
-//		AnchorUtil.addFixedPointAnchors(connection, connectionLine);
-		
-		decorateConnectionLine(connectionLine);
 
 		createDIEdge(connection, element);
-		createConnectionDecorators(connection);
+		
+		createConnectionLine(connection);
 		hook(addConContext, connection, element);
 
 		return connection;
@@ -108,9 +101,11 @@ public abstract class AbstractAddFlowFeature extends AbstractAddBPMNShapeFeature
 	protected void hook(IAddContext context, Connection connection, BaseElement element) {
 	}
 
-	protected void decorateConnectionLine(Polyline connectionLine) {
-	}
+	protected Polyline createConnectionLine(Connection connection) {
+		BaseElement be = BusinessObjectUtil.getFirstBaseElement(connection);
+		Polyline connectionLine = Graphiti.getGaService().createPolyline(connection);
+		StyleUtil.applyStyle(connectionLine, be);
 
-	protected void createConnectionDecorators(Connection connection) {
+		return connectionLine;
 	}
 }

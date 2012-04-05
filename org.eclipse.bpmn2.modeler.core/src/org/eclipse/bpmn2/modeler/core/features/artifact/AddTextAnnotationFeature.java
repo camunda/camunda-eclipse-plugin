@@ -71,7 +71,7 @@ public class AddTextAnnotationFeature extends AbstractAddBPMNShapeFeature {
 
 		Shape textShape = peCreateService.createShape(containerShape, false);
 		MultiText text = gaService.createDefaultMultiText(getDiagram(), textShape, annotation.getText());
-		text.setStyle(StyleUtil.getStyleForText(getDiagram()));
+		StyleUtil.applyStyle(text, annotation);
 		text.setVerticalAlignment(Orientation.ALIGNMENT_TOP);
 		gaService.setLocationAndSize(text, 5, 5, width - 5, height - 5);
 

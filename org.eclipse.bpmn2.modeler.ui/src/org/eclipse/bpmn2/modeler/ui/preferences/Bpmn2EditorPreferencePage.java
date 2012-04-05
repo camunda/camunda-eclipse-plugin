@@ -64,10 +64,10 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 	Composite container;
 	LinkedHashMap<Class, ShapeStyle> shapeStyles;
 	Class currentSelection;
-	ColorControl shapeDefaultColor;
+	ColorControl shapeBackground;
 	ColorControl shapePrimarySelectedColor;
 	ColorControl shapeSecondarySelectedColor;
-	ColorControl shapeBorderColor;
+	ColorControl shapeForeground;
 	FontControl textFont;
 	ColorControl textColor;
 
@@ -85,7 +85,6 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 		preferences = Bpmn2Preferences.getInstance();
 
 		List<Class> allElements = new ArrayList<Class>();
-		allElements.addAll(FeatureMap.CONNECTORS);
 		allElements.addAll(FeatureMap.CONNECTORS);
 		allElements.addAll(FeatureMap.EVENTS);
 		allElements.addAll(FeatureMap.GATEWAYS);
@@ -106,11 +105,13 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 		for (Class c : allElements) {
 			ShapeStyle ss = preferences.getShapeStyle(c);
 			shapeStyles.put(c, ss);
-			IColorConstant shapeColor = ss.getShapeDefaultColor();
-			IColorConstant textColor = ss.getTextColor();
-			Font font = ss.getTextFont();
+//			IColorConstant foreground = ss.getShapeForeground();
+//			IColorConstant background = ss.getShapeBackground();
+//			IColorConstant textColor = ss.getTextColor();
+//			Font font = ss.getTextFont();
 //			System.out.println("\t\t<style object=\""+c.getSimpleName()+"\""+
-//					" shapeColor=\""+ShapeStyle.colorToString(shapeColor)+"\""+
+//					" foreground=\""+ShapeStyle.colorToString(foreground)+"\""+
+//					" background=\""+ShapeStyle.colorToString(background)+"\""+
 //					" textColor=\""+ShapeStyle.colorToString(textColor)+"\""+
 //					" font=\""+ShapeStyle.fontToString(font)+"\"/>");
 		}
@@ -137,23 +138,25 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
         
         styleEditors = new Composite(container, SWT.NONE);
         styleEditors.setLayoutData(new GridData(SWT.FILL,SWT.TOP,true,false,1,1));
-        styleEditors.setLayout(new GridLayout(1,false));
+        GridLayout layout = new GridLayout(1,false);
+        layout.verticalSpacing = 0;
+        styleEditors.setLayout(layout);
         styleEditors.setFont(parent.getFont());
         styleEditors.setVisible(false);
 
-		shapeDefaultColor = new ColorControl("&Default Color:",styleEditors);
-		shapeDefaultColor.addSelectionListener( new SelectionListener() {
+		shapeBackground = new ColorControl("&Fill Color:",styleEditors);
+		shapeBackground.addSelectionListener( new SelectionListener() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				ShapeStyle ss = shapeStyles.get(currentSelection);
-				IColorConstant c = shapeDefaultColor.getSelectedColor();
-				if (!ShapeStyle.compare(ss.getShapeDefaultColor(),c)) {
+				IColorConstant c = shapeBackground.getSelectedColor();
+				if (!ShapeStyle.compare(ss.getShapeBackground(),c)) {
 					// update secondary colors
 					ss.setDefaultColors(c);
 					shapePrimarySelectedColor.setSelectedColor(ss.getShapePrimarySelectedColor());
 					shapeSecondarySelectedColor.setSelectedColor(ss.getShapeSecondarySelectedColor());
-					shapeBorderColor.setSelectedColor(ss.getShapeBorderColor());
+					shapeForeground.setSelectedColor(ss.getShapeForeground());
 					textColor.setSelectedColor(ss.getTextColor());
 				}
 			}
@@ -163,9 +166,9 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 			}
     		
     	});
+		shapeForeground = new ColorControl("&Foreground Color:",styleEditors);
 		shapePrimarySelectedColor = new ColorControl("&Selected Color:",styleEditors);
 		shapeSecondarySelectedColor = new ColorControl("&Multi-Selected Color:",styleEditors);
-		shapeBorderColor = new ColorControl("&Border Color:",styleEditors);
 		textColor = new ColorControl("&Label Color:",styleEditors);
 		textFont = new FontControl("Label &Font:",styleEditors);
 
@@ -175,10 +178,10 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 	private void saveStyleEditors() {
 		if (currentSelection!=null) {
 			ShapeStyle ss = shapeStyles.get(currentSelection);
-			ss.setShapeDefaultColor(shapeDefaultColor.getSelectedColor());
+			ss.setShapeBackground(shapeBackground.getSelectedColor());
 			ss.setShapePrimarySelectedColor(shapePrimarySelectedColor.getSelectedColor());
 			ss.setShapeSecondarySelectedColor(shapeSecondarySelectedColor.getSelectedColor());
-			ss.setShapeBorderColor(shapeBorderColor.getSelectedColor());
+			ss.setShapeForeground(shapeForeground.getSelectedColor());
 			ss.setTextFont(textFont.getSelectedFont());
 			ss.setTextColor(textColor.getSelectedColor());
 			preferences.setShapeStyle(currentSelection, ss);
@@ -191,12 +194,24 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 			Class c = (Class)sel.getFirstElement();
 			ShapeStyle ss = shapeStyles.get(c);
 
-			shapeDefaultColor.setSelectedColor(ss.getShapeDefaultColor());
+			shapeBackground.setSelectedColor(ss.getShapeBackground());
 			shapePrimarySelectedColor.setSelectedColor(ss.getShapePrimarySelectedColor());
 			shapeSecondarySelectedColor.setSelectedColor(ss.getShapeSecondarySelectedColor());
-			shapeBorderColor.setSelectedColor(ss.getShapeBorderColor());
+			shapeForeground.setSelectedColor(ss.getShapeForeground());
 			textFont.setSelectedFont(ss.getTextFont());
 			textColor.setSelectedColor(ss.getTextColor());
+
+			boolean visible = true;
+			if (FeatureMap.CONNECTORS.contains(c)) {
+				visible = false;
+			}
+			shapeBackground.setVisible(visible);
+			((GridData)shapeBackground.getLayoutData()).exclude = !visible;
+			shapePrimarySelectedColor.setVisible(visible);
+			((GridData)shapePrimarySelectedColor.getLayoutData()).exclude = !visible;
+			shapeSecondarySelectedColor.setVisible(visible);
+			((GridData)shapeSecondarySelectedColor.getLayoutData()).exclude = !visible;
+			container.layout();
 		}
 	}
 	

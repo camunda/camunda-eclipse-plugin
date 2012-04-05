@@ -57,12 +57,6 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 		return new AbstractAddFlowFeature(fp) {
 
 			@Override
-			protected void decorateConnectionLine(Polyline connectionLine) {
-				connectionLine.setLineWidth(2);
-				connectionLine.setLineStyle(LineStyle.DOT);
-			}
-
-			@Override
 			public PictogramElement add(IAddContext context) {
 				AddConnectionContext ac = (AddConnectionContext)context;
 				Anchor sourceAnchor = ac.getSourceAnchor();
@@ -114,7 +108,15 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 				
 				return super.add(context);
 			}
-
+			
+			@Override
+			protected Polyline createConnectionLine(Connection connection) {
+				Polyline connectionLine = super.createConnectionLine(connection);
+				connectionLine.setLineWidth(2);
+				connectionLine.setLineStyle(LineStyle.DOT);
+				return connectionLine;
+			}
+			
 			@Override
 			protected Class<? extends BaseElement> getBoClass() {
 				return Association.class;

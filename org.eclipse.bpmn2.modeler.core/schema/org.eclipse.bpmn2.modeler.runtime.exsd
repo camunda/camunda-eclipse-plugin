@@ -570,21 +570,28 @@ The value &quot;default&quot; is used by contributing plugins to refer to enable
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="shapeColor" type="string" use="required">
+         <attribute name="foreground" type="string">
             <annotation>
                <documentation>
                   
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="font" type="string" use="required">
+         <attribute name="background" type="string" use="required">
             <annotation>
                <documentation>
                   
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="textColor" type="string" use="required">
+         <attribute name="font" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="textColor" type="string">
             <annotation>
                <documentation>
                   

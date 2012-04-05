@@ -48,6 +48,7 @@ import org.eclipse.graphiti.features.impl.Reason;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.styles.Color;
+import org.eclipse.graphiti.mm.algorithms.styles.LineStyle;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -78,18 +79,25 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 			}
 
 			@Override
-			protected void createConnectionDecorators(Connection connection) {
-				int w = 3;
-				int l = 8;
+			protected Polyline createConnectionLine(Connection connection) {
+				IPeService peService = Graphiti.getPeService();
+				IGaService gaService = Graphiti.getGaService();
+				BaseElement be = BusinessObjectUtil.getFirstBaseElement(connection);
+
+				Polyline connectionLine = super.createConnectionLine(connection);
+				connectionLine.setLineStyle(LineStyle.SOLID);
+				connectionLine.setLineWidth(2);
+
+				int w = 5;
+				int l = 15;
 				
-				ConnectionDecorator decorator = Graphiti.getPeService().createConnectionDecorator(connection, false,
+				ConnectionDecorator decorator = peService.createConnectionDecorator(connection, false,
 						1.0, true);
 
-				IGaService gaService = Graphiti.getGaService();
-				Polyline arrow = gaService.createPolygon(decorator, new int[] { -l, w, 0, 0, -l, -w, -l, w });
-
-//				arrow.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-				arrow.setLineWidth(2);
+				Polyline arrowhead = gaService.createPolygon(decorator, new int[] { -l, w, 0, 0, -l, -w, -l, w });
+				StyleUtil.applyStyle(arrowhead, be);
+				
+				return connectionLine;
 			}
 
 			@Override

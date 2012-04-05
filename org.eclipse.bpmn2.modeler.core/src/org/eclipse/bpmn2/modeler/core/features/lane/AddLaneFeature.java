@@ -108,7 +108,7 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature {
 		
 		Shape textShape = peCreateService.createShape(containerShape, false);
 		Text text = gaService.createText(textShape, lane.getName());
-		text.setStyle(StyleUtil.getStyleForText(getDiagram()));
+		StyleUtil.applyStyle(text, lane);
 		text.setVerticalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
 		if (horz) {

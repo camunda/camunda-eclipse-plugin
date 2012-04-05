@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.ChoreographyActivity;
 import org.eclipse.bpmn2.ChoreographyLoopType;
@@ -400,9 +401,10 @@ public class ChoreographyUtil implements ChoreographyProperties {
 		Diagram diagram = peService.getDiagramForShape(container);
 		Shape labelShape = peService.createShape(container, false);
 		Text label = gaService.createDefaultText(diagram, labelShape);
+		BaseElement be = BusinessObjectUtil.getFirstBaseElement(container);
 		label.setValue(name);
 		gaService.setLocationAndSize(label, 0, 0, w, h);
-		label.setStyle(StyleUtil.getStyleForText(peService.getDiagramForPictogramElement(container)));
+		StyleUtil.applyStyle(label, be);
 		label.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
 		label.setVerticalAlignment(Orientation.ALIGNMENT_CENTER);
 	}

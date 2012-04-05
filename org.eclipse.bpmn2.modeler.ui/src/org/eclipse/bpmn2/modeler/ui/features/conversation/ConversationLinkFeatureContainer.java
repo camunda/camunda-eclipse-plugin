@@ -28,6 +28,8 @@ import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReconnectionFeature;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
+import org.eclipse.graphiti.mm.algorithms.styles.LineStyle;
+import org.eclipse.graphiti.mm.pictograms.Connection;
 
 public class ConversationLinkFeatureContainer extends BaseElementConnectionFeatureContainer {
 
@@ -41,8 +43,10 @@ public class ConversationLinkFeatureContainer extends BaseElementConnectionFeatu
 		return new AbstractAddFlowFeature(fp) {
 
 			@Override
-			protected void decorateConnectionLine(Polyline connectionLine) {
+			protected Polyline createConnectionLine(Connection connection) {
+				Polyline connectionLine = super.createConnectionLine(connection);
 				connectionLine.setLineWidth(3);
+				return connectionLine;
 			}
 
 			@Override
