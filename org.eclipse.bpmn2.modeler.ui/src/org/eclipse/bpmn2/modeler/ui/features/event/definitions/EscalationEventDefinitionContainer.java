@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.event.definitions;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.EscalationEventDefinition;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
@@ -22,8 +23,10 @@ import org.eclipse.bpmn2.modeler.core.features.event.definitions.AbstractEventDe
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.CreateEventDefinition;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.DecorationAlgorithm;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
+import org.eclipse.bpmn2.modeler.core.utils.StyleUtil.FillStyle;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -72,19 +75,20 @@ public class EscalationEventDefinitionContainer extends AbstractEventDefinitionF
 	}
 
 	private Shape draw(DecorationAlgorithm algorithm, ContainerShape shape) {
+		BaseElement be = BusinessObjectUtil.getFirstBaseElement(shape);
 		Shape escalationShape = Graphiti.getPeService().createShape(shape, false);
 		Polygon escalation = GraphicsUtil.createEventEscalation(escalationShape);
-		escalation.setFilled(false);
-		escalation.setForeground(algorithm.manageColor(StyleUtil.CLASS_FOREGROUND));
+		StyleUtil.setFillStyle(escalation, FillStyle.FILL_STYLE_BACKGROUND);
+		StyleUtil.applyStyle(escalation, be);
 		return escalationShape;
 	}
 
 	private Shape drawFilled(DecorationAlgorithm algorithm, ContainerShape shape) {
+		BaseElement be = BusinessObjectUtil.getFirstBaseElement(shape);
 		Shape escalationShape = Graphiti.getPeService().createShape(shape, false);
 		Polygon escalation = GraphicsUtil.createEventEscalation(escalationShape);
-		escalation.setFilled(true);
-		escalation.setBackground(algorithm.manageColor(StyleUtil.CLASS_FOREGROUND));
-		escalation.setForeground(algorithm.manageColor(StyleUtil.CLASS_FOREGROUND));
+		StyleUtil.setFillStyle(escalation, FillStyle.FILL_STYLE_FOREGROUND);
+		StyleUtil.applyStyle(escalation, be);
 		return escalationShape;
 	}
 

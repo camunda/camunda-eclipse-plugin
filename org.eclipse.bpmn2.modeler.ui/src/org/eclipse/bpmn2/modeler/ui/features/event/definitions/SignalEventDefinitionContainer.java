@@ -12,14 +12,17 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.event.definitions;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.SignalEventDefinition;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.AbstractEventDefinitionFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.CreateEventDefinition;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.DecorationAlgorithm;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
+import org.eclipse.bpmn2.modeler.core.utils.StyleUtil.FillStyle;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -67,19 +70,20 @@ public class SignalEventDefinitionContainer extends AbstractEventDefinitionFeatu
 	}
 
 	private Shape draw(DecorationAlgorithm algorithm, ContainerShape shape) {
+		BaseElement be = BusinessObjectUtil.getFirstElementOfType(shape, BaseElement.class, true);
 		Shape signalShape = Graphiti.getPeService().createShape(shape, false);
 		Polygon signal = GraphicsUtil.createEventSignal(signalShape);
-		signal.setFilled(false);
-		signal.setForeground(algorithm.manageColor(StyleUtil.CLASS_FOREGROUND));
+		StyleUtil.setFillStyle(signal, FillStyle.FILL_STYLE_BACKGROUND);
+		StyleUtil.applyStyle(signal, be);
 		return signalShape;
 	}
 
 	private Shape drawFilled(DecorationAlgorithm algorithm, ContainerShape shape) {
+		BaseElement be = BusinessObjectUtil.getFirstElementOfType(shape, BaseElement.class, true);
 		Shape signalShape = Graphiti.getPeService().createShape(shape, false);
 		Polygon signal = GraphicsUtil.createEventSignal(signalShape);
-		signal.setFilled(true);
-		signal.setBackground(algorithm.manageColor(StyleUtil.CLASS_FOREGROUND));
-		signal.setForeground(algorithm.manageColor(StyleUtil.CLASS_FOREGROUND));
+		StyleUtil.setFillStyle(signal, FillStyle.FILL_STYLE_FOREGROUND);
+		StyleUtil.applyStyle(signal, be);
 		return signalShape;
 	}
 

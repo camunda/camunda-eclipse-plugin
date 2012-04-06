@@ -46,7 +46,8 @@ public class StyleUtil {
 		FILL_STYLE_NONE,
 		FILL_STYLE_FOREGROUND,
 		FILL_STYLE_BACKGROUND,
-		FILL_STYLE_DEFAULT };
+		FILL_STYLE_DEFAULT,
+		FILL_STYLE_INVERT };
 	
 	public static final IColorConstant CLASS_FOREGROUND = new ColorConstant(116, 143, 165);
 	public static final IColorConstant CLASS_BACKGROUND = new ColorConstant(220, 233, 255);
@@ -76,7 +77,7 @@ public class StyleUtil {
 		return null;
 	}
 
-	private static Diagram findDiagram(GraphicsAlgorithm shape) {
+	public static Diagram findDiagram(GraphicsAlgorithm shape) {
 		EObject container = shape.eContainer();
 		while (container!=null && !(container instanceof Diagram)) {
 			container = container.eContainer();
@@ -117,6 +118,8 @@ public class StyleUtil {
 			}
 			else {
 				String id = Bpmn2Preferences.getShapeStyleId(be);
+				
+				// Style only used for drawing gradients
 				Style s = findStyle(diagram, id);
 				if(s == null) {
 					s = gaService.createStyle(diagram, id);
@@ -124,33 +127,40 @@ public class StyleUtil {
 				
 				if (ga instanceof AbstractText) {
 					Font f = ss.getTextFont();
-					s.setFont(gaService.manageFont(diagram, f.getName(), f.getSize(), f.isItalic(), f.isBold()));
 					((AbstractText)ga).setFont(gaService.manageFont(diagram, f.getName(), f.getSize(), f.isItalic(), f.isBold()));
 					ga.setForeground(gaService.manageColor(diagram, foreground));
 				}
 				else {
 					s.setForeground(gaService.manageColor(diagram, foreground));
+					ga.setForeground(gaService.manageColor(diagram, foreground));
 				}
 				
 				String fillStyle = peService.getPropertyValue(ga, FILL_STYLE);
-				if (fillStyle==null || fillStyle.equals(FillStyle.FILL_STYLE_DEFAULT)) {
+				if (fillStyle==null || fillStyle.equals(FillStyle.FILL_STYLE_DEFAULT.name())) {
+					// fill with gradient
 					ga.setFilled(true);
+					s.setFilled(true);
 					AdaptedGradientColoredAreas gradient = getStyleAdaptions(be);
 					gaService.setRenderingStyle(s, gradient);
+					ga.setStyle(s);
 				}
-				else if (fillStyle.equals(FillStyle.FILL_STYLE_FOREGROUND)) {
+				else if (fillStyle.equals(FillStyle.FILL_STYLE_FOREGROUND.name())) {
 					ga.setFilled(true);
-					s.setBackground(gaService.manageColor(diagram, foreground));
+					ga.setBackground(gaService.manageColor(diagram, foreground));
 				}
-				else if (fillStyle.equals(FillStyle.FILL_STYLE_BACKGROUND)) {
+				else if (fillStyle.equals(FillStyle.FILL_STYLE_BACKGROUND.name())) {
 					ga.setFilled(true);
-					s.setBackground(gaService.manageColor(diagram, background));
+					ga.setBackground(gaService.manageColor(diagram, background));
+				}
+				else if (fillStyle.equals(FillStyle.FILL_STYLE_INVERT.name())) {
+					ga.setFilled(true);
+					ga.setForeground(gaService.manageColor(diagram, background));
+					ga.setBackground(gaService.manageColor(diagram, foreground));
 				}
 				else {
 					ga.setFilled(false);
+					ga.setBackground(gaService.manageColor(diagram, background));
 				}
-				
-				ga.setStyle(s);
 			}
 		}
 	}

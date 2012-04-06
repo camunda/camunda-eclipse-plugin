@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.event.definitions;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.ThrowEvent;
@@ -20,14 +21,21 @@ import org.eclipse.bpmn2.modeler.core.features.event.definitions.AbstractEventDe
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.CreateEventDefinition;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.DecorationAlgorithm;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
+import org.eclipse.bpmn2.modeler.core.utils.StyleUtil.FillStyle;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
+import org.eclipse.graphiti.mm.algorithms.Image;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
+import org.eclipse.graphiti.services.IGaService;
+import org.eclipse.graphiti.util.IColorConstant;
 
 public class TimerEventDefinitionContainer extends AbstractEventDefinitionFeatureContainer {
 	
@@ -67,8 +75,16 @@ public class TimerEventDefinitionContainer extends AbstractEventDefinitionFeatur
 	}
 
 	private Shape draw(ContainerShape shape) {
+		BaseElement be = BusinessObjectUtil.getFirstElementOfType(shape, BaseElement.class, true);
 		Shape timerShape = Graphiti.getPeService().createShape(shape, false);
-		GraphicsUtil.createEventImage(timerShape, ImageProvider.IMG_20_TIMER);
+		Image image = GraphicsUtil.createEventImage(timerShape, ImageProvider.IMG_20_TIMER);
+
+		// TODO: can't change foreground color of an Image?
+//		Diagram diagram = StyleUtil.findDiagram(image);
+//		IGaService gaService = Graphiti.getGaService();
+//		image.setForeground(gaService.manageColor(diagram, IColorConstant.GREEN));
+//		StyleUtil.setFillStyle(image, FillStyle.FILL_STYLE_NONE);
+//		StyleUtil.applyStyle(image, be);
 		return timerShape;
 	}
 

@@ -14,13 +14,16 @@ package org.eclipse.bpmn2.modeler.core.features.event.definitions;
 
 import java.util.List;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.ThrowEvent;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
+import org.eclipse.bpmn2.modeler.core.utils.StyleUtil.FillStyle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.impl.AbstractUpdateFeature;
 import org.eclipse.graphiti.mm.algorithms.Polygon;
@@ -62,17 +65,20 @@ public abstract class AbstractUpdateEventDefinitionFeature extends AbstractUpdat
 	}
 	
 	private void drawMultiple(Event event, Shape shape) {
+		BaseElement be = BusinessObjectUtil.getFirstElementOfType(shape, BaseElement.class, true);
 		Polygon pentagon = GraphicsUtil.createEventPentagon(shape);
-		pentagon.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 		if (event instanceof ThrowEvent) {
-			pentagon.setBackground(manageColor(StyleUtil.CLASS_FOREGROUND));
+			StyleUtil.setFillStyle(pentagon, FillStyle.FILL_STYLE_FOREGROUND);
 		} else {
-			pentagon.setFilled(false);
+			StyleUtil.setFillStyle(pentagon, FillStyle.FILL_STYLE_BACKGROUND);
 		}
+		StyleUtil.applyStyle(pentagon, be);
 	}
 	
 	private void drawParallelMultiple(Event event, Shape shape) {
+		BaseElement be = BusinessObjectUtil.getFirstElementOfType(shape, BaseElement.class, true);
 		Polygon cross = GraphicsUtil.createEventParallelMultiple(shape);
-		cross.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+		StyleUtil.setFillStyle(cross, FillStyle.FILL_STYLE_BACKGROUND);
+		StyleUtil.applyStyle(cross, be);
 	}
 }

@@ -12,14 +12,17 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.event.definitions;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.MessageEventDefinition;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.AbstractEventDefinitionFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.CreateEventDefinition;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.DecorationAlgorithm;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Envelope;
+import org.eclipse.bpmn2.modeler.core.utils.StyleUtil.FillStyle;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -68,20 +71,24 @@ public class MessageEventDefinitionContainer extends AbstractEventDefinitionFeat
 	}
 
 	private Shape drawEnvleope(DecorationAlgorithm algorithm, ContainerShape shape) {
+		BaseElement be = BusinessObjectUtil.getFirstElementOfType(shape, BaseElement.class, true);
 		Shape envelopeShape = Graphiti.getPeService().createShape(shape, false);
 		Envelope env = GraphicsUtil.createEventEnvelope(envelopeShape);
-		env.rect.setForeground(algorithm.manageColor(StyleUtil.CLASS_FOREGROUND));
-		env.line.setForeground(algorithm.manageColor(StyleUtil.CLASS_FOREGROUND));
+		StyleUtil.setFillStyle(env.rect, FillStyle.FILL_STYLE_BACKGROUND);
+		StyleUtil.applyStyle(env.rect, be);
+		StyleUtil.setFillStyle(env.line, FillStyle.FILL_STYLE_BACKGROUND);
+		StyleUtil.applyStyle(env.line, be);
 		return envelopeShape;
 	}
 
 	private Shape drawFilledEnvelope(DecorationAlgorithm algorithm, ContainerShape shape) {
+		BaseElement be = BusinessObjectUtil.getFirstElementOfType(shape, BaseElement.class, true);
 		Shape envelopeShape = Graphiti.getPeService().createShape(shape, false);
 		Envelope env = GraphicsUtil.createEventEnvelope(envelopeShape);
-		env.rect.setFilled(true);
-		env.rect.setBackground(algorithm.manageColor(StyleUtil.CLASS_FOREGROUND));
-		env.rect.setForeground(algorithm.manageColor(StyleUtil.CLASS_FOREGROUND));
-		env.line.setForeground(algorithm.manageColor(IColorConstant.WHITE));
+		StyleUtil.setFillStyle(env.rect, FillStyle.FILL_STYLE_INVERT);
+		StyleUtil.applyStyle(env.rect, be);
+		StyleUtil.setFillStyle(env.line, FillStyle.FILL_STYLE_INVERT);
+		StyleUtil.applyStyle(env.line, be);
 		return envelopeShape;
 	}
 

@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.event.definitions;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.ErrorEventDefinition;
@@ -24,8 +25,10 @@ import org.eclipse.bpmn2.modeler.core.features.event.definitions.AbstractEventDe
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.CreateEventDefinition;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.DecorationAlgorithm;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
+import org.eclipse.bpmn2.modeler.core.utils.StyleUtil.FillStyle;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -74,19 +77,20 @@ public class ErrorEventDefinitionContainer extends AbstractEventDefinitionFeatur
 	}
 
 	private Shape draw(DecorationAlgorithm algorithm, ContainerShape shape) {
+		BaseElement be = BusinessObjectUtil.getFirstElementOfType(shape, BaseElement.class, true);
 		Shape errorShape = Graphiti.getPeService().createShape(shape, false);
 		Polygon error = GraphicsUtil.createEventError(errorShape);
-		error.setFilled(false);
-		error.setForeground(algorithm.manageColor(StyleUtil.CLASS_FOREGROUND));
+		StyleUtil.setFillStyle(error, FillStyle.FILL_STYLE_BACKGROUND);
+		StyleUtil.applyStyle(error, be);
 		return errorShape;
 	}
 
 	private Shape drawFilled(DecorationAlgorithm algorithm, ContainerShape shape) {
+		BaseElement be = BusinessObjectUtil.getFirstElementOfType(shape, BaseElement.class, true);
 		Shape errorShape = Graphiti.getPeService().createShape(shape, false);
 		Polygon error = GraphicsUtil.createEventError(errorShape);
-		error.setFilled(true);
-		error.setForeground(algorithm.manageColor(StyleUtil.CLASS_FOREGROUND));
-		error.setBackground(algorithm.manageColor(StyleUtil.CLASS_FOREGROUND));
+		StyleUtil.setFillStyle(error, FillStyle.FILL_STYLE_FOREGROUND);
+		StyleUtil.applyStyle(error, be);
 		return errorShape;
 	}
 

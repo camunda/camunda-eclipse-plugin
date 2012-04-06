@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.event.definitions;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.CancelEventDefinition;
 import org.eclipse.bpmn2.CatchEvent;
@@ -22,9 +23,11 @@ import org.eclipse.bpmn2.modeler.core.features.event.definitions.AbstractEventDe
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.CreateEventDefinition;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.DecorationAlgorithm;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
+import org.eclipse.bpmn2.modeler.core.utils.StyleUtil.FillStyle;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -72,19 +75,20 @@ public class CancelEventDefinitionContainer extends AbstractEventDefinitionFeatu
 	}
 
 	private Shape draw(DecorationAlgorithm algorithm, ContainerShape shape) {
+		BaseElement be = BusinessObjectUtil.getFirstElementOfType(shape, BaseElement.class, true);
 		Shape cancelShape = Graphiti.getPeService().createShape(shape, false);
 		Polygon link = GraphicsUtil.createEventCancel(cancelShape);
-		link.setFilled(false);
-		link.setForeground(algorithm.manageColor(StyleUtil.CLASS_FOREGROUND));
+		StyleUtil.setFillStyle(link, FillStyle.FILL_STYLE_BACKGROUND);
+		StyleUtil.applyStyle(link, be);
 		return cancelShape;
 	}
 
 	private Shape drawFilled(DecorationAlgorithm algorithm, ContainerShape shape) {
+		BaseElement be = BusinessObjectUtil.getFirstElementOfType(shape, BaseElement.class, true);
 		Shape cancelShape = Graphiti.getPeService().createShape(shape, false);
 		Polygon link = GraphicsUtil.createEventCancel(cancelShape);
-		link.setFilled(true);
-		link.setBackground(algorithm.manageColor(StyleUtil.CLASS_FOREGROUND));
-		link.setForeground(algorithm.manageColor(StyleUtil.CLASS_FOREGROUND));
+		StyleUtil.setFillStyle(link, FillStyle.FILL_STYLE_FOREGROUND);
+		StyleUtil.applyStyle(link, be);
 		return cancelShape;
 	}
 
