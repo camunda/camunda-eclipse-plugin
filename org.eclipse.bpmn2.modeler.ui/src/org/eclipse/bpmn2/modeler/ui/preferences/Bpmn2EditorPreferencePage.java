@@ -16,7 +16,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
+import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.preferences.ShapeStyle;
@@ -60,6 +62,7 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 
 	Bpmn2Preferences preferences;
 	ListViewer elementsListViewer;
+	List<Class> allElements;
 	Composite styleEditors;
 	Composite container;
 	LinkedHashMap<Class, ShapeStyle> shapeStyles;
@@ -84,7 +87,7 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 
 		preferences = Bpmn2Preferences.getInstance();
 
-		List<Class> allElements = new ArrayList<Class>();
+		allElements = new ArrayList<Class>();
 		allElements.addAll(FeatureMap.CONNECTORS);
 		allElements.addAll(FeatureMap.EVENTS);
 		allElements.addAll(FeatureMap.GATEWAYS);
@@ -99,22 +102,6 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 			}
 			
 		});
-		
-		shapeStyles = new LinkedHashMap<Class, ShapeStyle>();
-		shapeStyles.clear();
-		for (Class c : allElements) {
-			ShapeStyle ss = preferences.getShapeStyle(c);
-			shapeStyles.put(c, ss);
-//			IColorConstant foreground = ss.getShapeForeground();
-//			IColorConstant background = ss.getShapeBackground();
-//			IColorConstant textColor = ss.getTextColor();
-//			Font font = ss.getTextFont();
-//			System.out.println("\t\t<style object=\""+c.getSimpleName()+"\""+
-//					" foreground=\""+ShapeStyle.colorToString(foreground)+"\""+
-//					" background=\""+ShapeStyle.colorToString(background)+"\""+
-//					" textColor=\""+ShapeStyle.colorToString(textColor)+"\""+
-//					" font=\""+ShapeStyle.fontToString(font)+"\"/>");
-		}
 	}
 
 	@Override
@@ -133,8 +120,6 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
         elementsListViewer.setContentProvider(new BEListContentProvider());
         elementsListViewer.setLabelProvider(new BEListLabelProvider());
         elementsListViewer.addSelectionChangedListener(new BEListSelectionChangedListener());
-        elementsListViewer.setInput(shapeStyles);
-		elementsListViewer.getList().setSelection(0);
         
         styleEditors = new Composite(container, SWT.NONE);
         styleEditors.setLayoutData(new GridData(SWT.FILL,SWT.TOP,true,false,1,1));
@@ -171,6 +156,8 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 		shapeSecondarySelectedColor = new ColorControl("&Multi-Selected Color:",styleEditors);
 		textColor = new ColorControl("&Label Color:",styleEditors);
 		textFont = new FontControl("Label &Font:",styleEditors);
+		
+		loadStyleEditors();
 
         return container;
 	}
@@ -184,13 +171,38 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 			ss.setShapeForeground(shapeForeground.getSelectedColor());
 			ss.setTextFont(textFont.getSelectedFont());
 			ss.setTextColor(textColor.getSelectedColor());
-			preferences.setShapeStyle(currentSelection, ss);
 		}
 	}
 	
 	private void loadStyleEditors() {
+		if (shapeStyles==null) {
+			shapeStyles = new LinkedHashMap<Class, ShapeStyle>();
+			for (Class c : allElements) {
+				ShapeStyle ss = preferences.getShapeStyle(c);
+				shapeStyles.put(c, ss);
+//			IColorConstant foreground = ss.getShapeForeground();
+//			IColorConstant background = ss.getShapeBackground();
+//			IColorConstant textColor = ss.getTextColor();
+//			Font font = ss.getTextFont();
+//			System.out.println("\t\t<style object=\""+c.getSimpleName()+"\""+
+//					" foreground=\""+ShapeStyle.colorToString(foreground)+"\""+
+//					" background=\""+ShapeStyle.colorToString(background)+"\""+
+//					" textColor=\""+ShapeStyle.colorToString(textColor)+"\""+
+//					" font=\""+ShapeStyle.fontToString(font)+"\"/>");
+
+				if (c==SequenceFlow.class) {
+					preferences.getShapeStyle(c);
+					System.out.println(ShapeStyle.colorToString(ss.getShapeForeground()));
+				}
+			}
+	        elementsListViewer.setInput(shapeStyles);
+	        currentSelection = null;
+	        elementsListViewer.setSelection(null);
+			styleEditors.setVisible(false);
+		}
+
 		IStructuredSelection sel = (IStructuredSelection)elementsListViewer.getSelection();
-		if (sel!=null) {
+		if (sel!=null && sel.getFirstElement()!=null) {
 			Class c = (Class)sel.getFirstElement();
 			ShapeStyle ss = shapeStyles.get(c);
 
@@ -218,11 +230,22 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 	@Override
 	protected void performDefaults() {
 		super.performDefaults();
+		try {
+			preferences.restoreDefaults();
+			shapeStyles = null;
+			loadStyleEditors();
+			preferences.save();
+		}
+		catch(Exception e) {
+		}
 	}
 
 	@Override
 	public boolean performOk() {
 		saveStyleEditors();
+		for (Entry<Class, ShapeStyle> entry : shapeStyles.entrySet()) {
+			preferences.setShapeStyle(entry.getKey(), entry.getValue());
+		}
 		try {
 			preferences.save();
 		} catch (BackingStoreException e) {
@@ -282,15 +305,18 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 		 */
 		@Override
 		public void selectionChanged(SelectionChangedEvent event) {
-	        styleEditors.setVisible(true);
+			IStructuredSelection sel = (IStructuredSelection)elementsListViewer.getSelection();
 			if (currentSelection!=null) {
 				saveStyleEditors();
 			}
 			
-			IStructuredSelection sel = (IStructuredSelection)elementsListViewer.getSelection();
-			if (sel!=null) {
+			if (sel!=null && sel.getFirstElement()!=null) {
+				styleEditors.setVisible(true);
 				currentSelection = (Class)sel.getFirstElement();
 			}
+			else
+				styleEditors.setVisible(false);
+
 			loadStyleEditors();
 		}
 		

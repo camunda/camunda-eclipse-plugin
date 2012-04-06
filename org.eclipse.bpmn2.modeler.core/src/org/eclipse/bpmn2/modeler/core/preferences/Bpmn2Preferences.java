@@ -12,11 +12,14 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.preferences;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
+import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.core.internal.resources.ProjectPreferences;
@@ -166,30 +169,35 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	}
 	
 	public void restoreDefaults() {
-		if (projectPreferences!=null) {
-		projectPreferences.remove(PREF_TARGET_RUNTIME);
-		projectPreferences.remove(PREF_SHOW_ADVANCED_PROPERTIES);
-		projectPreferences.remove(PREF_EXPAND_PROPERTIES);
-		projectPreferences.remove(PREF_VERTICAL_ORIENTATION);
+		if (projectPreferences != null) {
+			projectPreferences.remove(PREF_TARGET_RUNTIME);
+			projectPreferences.remove(PREF_SHOW_ADVANCED_PROPERTIES);
+			projectPreferences.remove(PREF_EXPAND_PROPERTIES);
+			projectPreferences.remove(PREF_VERTICAL_ORIENTATION);
 			for (Class key : shapeStyles.keySet()) {
 				projectPreferences.remove(getShapeStyleId(key));
 			}
-		}		
-		globalPreferences.setDefault(PREF_TARGET_RUNTIME,TargetRuntime.getFirstNonDefaultId());
+		}
+		globalPreferences.setDefault(PREF_TARGET_RUNTIME, TargetRuntime.getFirstNonDefaultId());
 		globalPreferences.setDefault(PREF_SHOW_ADVANCED_PROPERTIES, false);
 		globalPreferences.setDefault(PREF_EXPAND_PROPERTIES, false);
 		globalPreferences.setDefault(PREF_VERTICAL_ORIENTATION, false);
 		for (Class key : shapeStyles.keySet()) {
 			globalPreferences.setDefault(getShapeStyleId(key), IPreferenceStore.STRING_DEFAULT_DEFAULT);
 		}
-		
+
 		globalPreferences.setToDefault(PREF_TARGET_RUNTIME);
 		globalPreferences.setToDefault(PREF_SHOW_ADVANCED_PROPERTIES);
 		globalPreferences.setToDefault(PREF_EXPAND_PROPERTIES);
 		globalPreferences.setToDefault(PREF_VERTICAL_ORIENTATION);
-		
-		for (Class key : shapeStyles.keySet()) {
+
+		List<Class> keys = new ArrayList<Class>();
+		keys.addAll(shapeStyles.keySet());
+		shapeStyles.clear();
+		for (Class key : keys) {
 			globalPreferences.setToDefault(getShapeStyleId(key));
+			ShapeStyle ss = getShapeStyle(key);
+			ss.setDirty(true);
 		}
 
 		loaded = false;
@@ -228,7 +236,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		if (!loaded) {
 			// load all preferences
 			if (projectPreferences!=null)
-			overrideModelEnablements = projectPreferences.getBoolean(PREF_OVERRIDE_MODEL_ENABLEMENTS, false);
+				overrideModelEnablements = projectPreferences.getBoolean(PREF_OVERRIDE_MODEL_ENABLEMENTS, false);
 
 			String id = getString(PREF_TARGET_RUNTIME,TargetRuntime.getFirstNonDefaultId());
 			if (id==null || id.isEmpty())
@@ -247,7 +255,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			// this is the only preference that is a project property,
 			// and not saved in the preference store for this plugin.
 			if (projectPreferences!=null)
-			projectPreferences.putBoolean(PREF_OVERRIDE_MODEL_ENABLEMENTS, overrideModelEnablements);
+				projectPreferences.putBoolean(PREF_OVERRIDE_MODEL_ENABLEMENTS, overrideModelEnablements);
 
 			setString(PREF_TARGET_RUNTIME,targetRuntime.getId());
 			setBoolean(PREF_SHOW_ADVANCED_PROPERTIES, showAdvancedPropertiesTab);
@@ -261,7 +269,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		}
 		
 		if (projectPreferences!=null)
-		projectPreferences.flush();
+			projectPreferences.flush();
 		dirty = false;
 	}
 	
@@ -302,11 +310,11 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 				value = globalPreferences.getString(key);
 				if (value.isEmpty()) {
 					//get from TargetRuntime
-					ss = getRuntime().getShapeStyles().get(clazz);
+					ss = getRuntime().getShapeStyle(clazz);
 					if (ss==null) {
 						if (!TargetRuntime.DEFAULT_RUNTIME_ID.equals(getRuntime().getId())) {
 							// search default runtime
-							ss = TargetRuntime.getDefaultRuntime().getShapeStyles().get(clazz);
+							ss = TargetRuntime.getDefaultRuntime().getShapeStyle(clazz);
 						}
 						if (ss==null) {
 							// give up

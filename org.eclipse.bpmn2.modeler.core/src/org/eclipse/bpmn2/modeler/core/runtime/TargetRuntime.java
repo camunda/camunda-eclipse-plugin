@@ -538,11 +538,22 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 		getModelEnablements().add(me);
 	}
 	
-	public Map<Class, ShapeStyle> getShapeStyles() {
+	protected Map<Class, ShapeStyle> getShapeStyles() {
 		if (shapeStyles==null) {
 			shapeStyles = new HashMap<Class, ShapeStyle>();
 		}
 		return shapeStyles;
+	}
+	
+	public ShapeStyle getShapeStyle(Class c) {
+		ShapeStyle ss = getShapeStyles().get(c);
+		if (ss==null && !TargetRuntime.DEFAULT_RUNTIME_ID.equals(id)) {
+			// not defined in this TargetRuntime - check default TargetRuntime
+			ss = TargetRuntime.getDefaultRuntime().getShapeStyle(c);
+			if (ss!=null)
+				return ss;
+		}
+		return new ShapeStyle(ss);
 	}
 
 	private static void addAfterTab(ArrayList<Bpmn2TabDescriptor> list, Bpmn2TabDescriptor tab) {

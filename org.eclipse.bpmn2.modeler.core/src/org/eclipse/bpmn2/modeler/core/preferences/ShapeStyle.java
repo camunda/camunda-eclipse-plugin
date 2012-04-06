@@ -45,6 +45,10 @@ public class ShapeStyle {
 		textFont = stringToFont(DEFAULT_FONT_STRING);
 	}
 
+	public ShapeStyle(ShapeStyle other) {
+		this(encode(other));
+	}
+
 	public ShapeStyle(String foreground, String background, String textColor, String font) {
 		// only background color is required to set up default color scheme
 		shapeBackground = stringToColor(background);
@@ -223,6 +227,8 @@ public class ShapeStyle {
 	}
 	
 	public static String encode(ShapeStyle sp) {
+		if (sp==null)
+			return encode(new ShapeStyle());
 		return new String(
 				colorToString(sp.shapeBackground) + ";" +
 				colorToString(sp.shapePrimarySelectedColor) + ";" +
