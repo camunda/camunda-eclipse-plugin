@@ -259,13 +259,15 @@ public class BPMN2DiagramWizardPage2 extends WizardPage {
 	@Override
 	public boolean isPageComplete() {
 		IContainer container = getFileContainer();
-		String filename = fileText.getText();
-		IResource file = container.findMember(filename);
-		if (file==null) {
-			setErrorMessage(null);
-			return true;
+		if (container!=null) {
+			String filename = fileText.getText();
+			IResource file = container.findMember(filename);
+			if (file==null) {
+				setErrorMessage(null);
+				return true;
+			}
+			setErrorMessage("The file "+filename+" already exists in this project");
 		}
-		setErrorMessage("The file "+filename+" already exists in this project");
 		return false;
 	}
 
