@@ -185,6 +185,13 @@
 		</propertyTab>
 
 		<propertyTab
+			id="org.eclipse.bpmn2.modeler.datastoreref.tab"
+			class="org.eclipse.bpmn2.modeler.ui.property.data.DataStoreReferencePropertySection"
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			label="Reference">
+		</propertyTab>
+
+		<propertyTab
 			id="org.eclipse.bpmn2.modeler.dataobject.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.data.DataObjectPropertySection"
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
@@ -195,7 +202,7 @@
 			id="org.eclipse.bpmn2.modeler.dataobjectref.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.data.DataObjectReferencePropertySection"
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
-			label="Data Object Reference">
+			label="Reference">
 		</propertyTab>
 
 		<propertyTab
@@ -425,7 +432,6 @@
 		<modelEnablement runtimeId="org.eclipse.bpmn2.modeler.runtime.none" type="Collaboration">
 			<disable object="all"/>
 			<enable object="default" feature="Process"/>
-			<disable object="DataObject"/>
 			<disable object="DataObjectReference"/>
 
 			<enable object="Participant"/>
@@ -473,7 +479,6 @@
 
 			<enable object="DataStore"/>
 			<enable object="DataStoreReference"/>
-			<enable object="DataObject"/>
 			<enable object="DataObjectReference"/>
 			<enable object="Group"/>
 

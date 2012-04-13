@@ -16,9 +16,11 @@ package org.eclipse.bpmn2.modeler.ui.property.data;
 import org.eclipse.bpmn2.Assignment;
 import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.DataObjectReference;
+import org.eclipse.bpmn2.DataState;
 import org.eclipse.bpmn2.Expression;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.HumanPerformer;
+import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.Performer;
 import org.eclipse.bpmn2.PotentialOwner;
 import org.eclipse.bpmn2.ResourceAssignmentExpression;
@@ -28,6 +30,7 @@ import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite.AbstractPropertiesProvider;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.swt.widgets.Composite;
@@ -47,6 +50,7 @@ public class DataObjectPropertySection extends AbstractBpmn2PropertySection {
 
 	static {
 		PropertiesCompositeFactory.register(DataObject.class, DataObjectPropertiesComposite.class);
+		PropertiesCompositeFactory.register(DataObjectReference.class, DataObjectPropertiesComposite.class);
 		PropertiesCompositeFactory.register(Assignment.class, DataAssignmentPropertiesComposite.class);
 		PropertiesCompositeFactory.register(Expression.class, ExpressionPropertiesComposite.class);
 		PropertiesCompositeFactory.register(FormalExpression.class, ExpressionPropertiesComposite.class);
@@ -68,20 +72,20 @@ public class DataObjectPropertySection extends AbstractBpmn2PropertySection {
 	@Override
 	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
 		EObject bo = super.getBusinessObjectForPictogramElement(pe);
-		if (bo instanceof DataObjectReference) {
-			if ( ((DataObjectReference) bo).getDataObjectRef() == null)
-				return bo;
-			return ((DataObjectReference) bo).getDataObjectRef();
-		} else if (bo instanceof DataObject) {
+		if (bo instanceof DataObject) {
 			return bo;
 		}
-		
+		if (bo instanceof DataObjectReference) {
+			return ((DataObjectReference)bo).getDataObjectRef();
+		}		
+
 		return null;
 	}
 	
 	public class DataObjectPropertiesComposite extends DefaultPropertiesComposite {
 
-		private AbstractPropertiesProvider propertiesProvider;
+		private AbstractPropertiesProvider dataObjectReferencePropertiesProvider;
+		private AbstractPropertiesProvider dataStatePropertiesProvider;
 
 		public DataObjectPropertiesComposite(Composite parent, int style) {
 			super(parent, style);
@@ -96,23 +100,57 @@ public class DataObjectPropertySection extends AbstractBpmn2PropertySection {
 
 		@Override
 		public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
-			if (object instanceof DataObject) {
-				if (propertiesProvider == null) {
-					propertiesProvider = new AbstractPropertiesProvider(object) {
-						String[] allAttributes = new String[] { "id", "name", "isCollection", "itemSubjectRef" };
-						String[] attributes = new String[] { "isCollection", "itemSubjectRef" };
+			if (object instanceof DataState) {
+				if (dataStatePropertiesProvider == null) {
+					dataStatePropertiesProvider = new AbstractPropertiesProvider(object) {
+						String[] properties = new String[] { "id", "name" };
 						
 						@Override
 						public String[] getProperties() {
-							EObject bo = BusinessObjectUtil.getBusinessObjectForSelection(propertySection.getSelection());
-							if (bo instanceof DataObjectReference) {
-								return allAttributes;
-							}
-							return attributes; 
+							return properties; 
+						}
+					};
+				}
+				return dataStatePropertiesProvider;
+			}
+			else if (object instanceof DataObject) {
+				if (propertiesProvider == null) {
+					propertiesProvider = new AbstractPropertiesProvider(object) {
+						String[] properties = new String[] { "id", "name", "isCollection", "itemSubjectRef" };
+						String[] children = new String[] { "dataState" };
+						
+						@Override
+						public String[] getProperties() {
+							return properties;
+						}
+						
+						@Override
+						public String[] getChildren(String name) {
+							return children;
 						}
 					};
 				}
 				return propertiesProvider;
+			}
+			else if (object instanceof DataObjectReference) {
+				if (dataObjectReferencePropertiesProvider == null) {
+					dataObjectReferencePropertiesProvider = new AbstractPropertiesProvider(object) {
+						String[] properties = new String[] { "id", "name" };
+						String[] children = new String[] { "dataObjectRef" , "dataState" };
+	
+						@Override
+						public String[] getProperties() {
+							return properties; 
+						}
+						
+						@Override
+						public String[] getChildren(String name) {
+							return children;
+						}
+					};
+			
+				}
+				return dataObjectReferencePropertiesProvider;
 			}
 			return null;
 		}

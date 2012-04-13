@@ -12,17 +12,27 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.data;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.DataObject;
+import org.eclipse.bpmn2.DataObjectReference;
+import org.eclipse.bpmn2.FlowElement;
+import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.features.data.AddDataFeature;
 import org.eclipse.bpmn2.modeler.core.features.data.Properties;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -37,6 +47,11 @@ import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IPeService;
+import org.eclipse.graphiti.ui.internal.util.ui.PopupMenu;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 
 public class DataObjectFeatureContainer extends AbstractDataFeatureContainer {
 
@@ -116,19 +131,94 @@ public class DataObjectFeatureContainer extends AbstractDataFeatureContainer {
 		}
 	}
 
-	public static class CreateDataObjectFeature extends AbstractCreateFlowElementFeature<DataObject> {
+	public static class CreateDataObjectFeature extends AbstractCreateFlowElementFeature<FlowElement> {
+
+		private static ILabelProvider labelProvider = new ILabelProvider() {
+
+			public void removeListener(ILabelProviderListener listener) {
+			}
+
+			public boolean isLabelProperty(Object element, String property) {
+				return false;
+			}
+
+			public void dispose() {
+
+			}
+
+			public void addListener(ILabelProviderListener listener) {
+
+			}
+
+			public String getText(Object element) {
+				if (((DataObject) element).getId() == null)
+					return ((DataObject) element).getName();
+				return "Reference existing \"" + ((DataObject) element).getName() + "\"";
+			}
+
+			public Image getImage(Object element) {
+				return null;
+			}
+
+		};
 
 		public CreateDataObjectFeature(IFeatureProvider fp) {
 			super(fp, "Data Object",
 					"Provides information about what activities require to be performed or what they produce");
 		}
 
+		/* (non-Javadoc)
+		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#createFlowElement(org.eclipse.graphiti.features.context.ICreateContext)
+		 * @code org.eclipse.bpmn2.modeler.ui.features.data.DataStoreReferenceFeatureContainer
+		 */
 		@Override
-		protected DataObject createFlowElement(ICreateContext context) {
-			DataObject data = Bpmn2ModelerFactory.create(DataObject.class);
-			data.setIsCollection(false);
-			data.setName("Data Object");
-			return data;
+		protected FlowElement createFlowElement(ICreateContext context) {
+			try {
+				DataObjectReference dataObjectReference = null;
+				DataObject dataObject = null;
+				ModelHandler mh = ModelHandler.getInstance(getDiagram());
+				dataObjectReference = Bpmn2ModelerFactory.create(DataObjectReference.class);
+				dataObject = Bpmn2ModelerFactory.create(DataObject.class);
+				dataObject.setName("Create a new Data Object");
+				Object container = getBusinessObjectForPictogramElement(context.getTargetContainer());
+
+				List<DataObject> dataObjectList = new ArrayList<DataObject>();
+				dataObjectList.add(dataObject);
+				TreeIterator<EObject> iter = mh.getDefinitions().eAllContents();
+				while (iter.hasNext()) {
+					EObject obj = iter.next();
+					if (obj instanceof DataObject)
+						dataObjectList.add((DataObject) obj);
+				}
+
+				DataObject result = dataObject;
+				if (dataObjectList.size() > 1) {
+					PopupMenu popupMenu = new PopupMenu(dataObjectList, labelProvider);
+					boolean b = popupMenu.show(Display.getCurrent().getActiveShell());
+					if (b) {
+						result = (DataObject) popupMenu.getResult();
+					}
+				}
+				if (result == dataObject) { // the new one
+					mh.addFlowElement(container,dataObject);
+					ModelUtil.setID(dataObject);
+					dataObject.setIsCollection(false);
+					dataObject.setName(ModelUtil.toDisplayName(dataObject.getId()));
+					dataObjectReference.setName(dataObject.getName());
+					return dataObject;
+				} else {
+					mh.addFlowElement(container,dataObjectReference);
+					ModelUtil.setID(dataObjectReference);
+					dataObjectReference.setName(result.getName() + " Ref");
+					dataObjectReference.setDataObjectRef(result);
+					dataObject = result;
+					return dataObjectReference;
+				}
+
+			} catch (IOException e) {
+				Activator.showErrorWithLogging(e);
+			}
+			return null;
 		}
 
 		@Override

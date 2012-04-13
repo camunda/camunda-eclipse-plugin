@@ -190,60 +190,6 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 
 	public static class CreateDataStoreReferenceFeature extends AbstractCreateFlowElementFeature<DataStoreReference> {
 
-		public CreateDataStoreReferenceFeature(IFeatureProvider fp) {
-			super(fp, "Data Store", "Reference to a Data Store instance."+
-					" Data Stores provide a mechanism for Activities to persist data beyond the lifetime of the Process."+
-					" The same Data Store instance can be visualized through a Data Store Reference in one or more"+
-					" places in the Process.");
-		}
-
-		@Override
-		protected DataStoreReference createFlowElement(ICreateContext context) {
-			DataStoreReference dataStoreReference = null;
-			try {
-				dataStoreReference = Bpmn2ModelerFactory.create(DataStoreReference.class);
-
-				DataStore dataStore = Bpmn2ModelerFactory.create(DataStore.class);
-				dataStore.setName("Create a new Data Store");
-				
-				List<DataStore> dataStoreList = new ArrayList<DataStore>();
-				dataStoreList.add(dataStore);
-				TreeIterator<EObject> iter = ModelHandler.getInstance(getDiagram()).getDefinitions().eAllContents();
-				while (iter.hasNext()) {
-					EObject obj = iter.next();
-					if (obj instanceof DataStore)
-						dataStoreList.add((DataStore)obj);
-				}
-				
-				DataStore result = dataStore;
-				if (dataStoreList.size()>1) {
-					PopupMenu popupMenu = new PopupMenu(dataStoreList, labelProvider);
-					boolean b = popupMenu.show(Display.getCurrent().getActiveShell());
-					if (b) {
-						result = (DataStore) popupMenu.getResult();
-					}
-				}
-				if (result==dataStore) { // the new one
-					ModelHandler.getInstance(getDiagram()).addRootElement(dataStore);
-					ModelUtil.setID(dataStore);
-					dataStore.setName( ModelUtil.toDisplayName(dataStore.getId()) );
-					dataStoreReference.setName(dataStore.getName());
-				}
-				else
-					dataStoreReference.setName( result.getName() + " Ref");
-				
-				dataStoreReference.setDataStoreRef(result);
-			} catch (IOException e) {
-				Activator.showErrorWithLogging(e);
-			}
-			return dataStoreReference;
-		}
-
-		@Override
-		public String getStencilImageId() {
-			return ImageProvider.IMG_16_DATA_STORE;
-		}
-		
 		private static ILabelProvider labelProvider = new ILabelProvider() {
 
 			public void removeListener(ILabelProviderListener listener) {
@@ -262,9 +208,9 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 			}
 
 			public String getText(Object element) {
-				if (((DataStore)element).getId()==null)
-					return ((DataStore)element).getName();
-				return "Reference existing \"" + ((DataStore)element).getName() + "\"";
+				if (((DataStore) element).getId() == null)
+					return ((DataStore) element).getName();
+				return "Reference existing \"" + ((DataStore) element).getName() + "\"";
 			}
 
 			public Image getImage(Object element) {
@@ -273,8 +219,77 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 
 		};
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
+		public CreateDataStoreReferenceFeature(IFeatureProvider fp) {
+			super(
+					fp,
+					"Data Store",
+					"Reference to a Data Store instance."
+							+ " Data Stores provide a mechanism for Activities to persist data beyond the lifetime of the Process."
+							+ " The same Data Store instance can be visualized through a Data Store Reference in one or more"
+							+ " places in the Process.");
+		}
+
+		@Override
+		protected DataStoreReference createFlowElement(ICreateContext context) {
+			// NOTE: this is slightly different from DataObject/DataObjectReference:
+			// Both DataObject and DataObjectReference instances are contained in some FlowElementContainer
+			// (e.g. a Process) whereas DataStore instances are contained in the root element "Definitions".
+			// This means that whenever the user creates a "Data Store" (using DND from the tool palette),
+			// it necessarily means that a DataStoreReference is created and added to the FlowElementContainer
+			// which is the target of the ICreateContext. In addition, if the new DataStoreReference refers
+			// to a new DataStore, one is created and added to Definitions.
+			// 
+			DataStoreReference dataStoreReference = null;
+			try {
+				ModelHandler mh = ModelHandler.getInstance(getDiagram());
+				dataStoreReference = Bpmn2ModelerFactory.create(DataStoreReference.class);
+
+				DataStore dataStore = Bpmn2ModelerFactory.create(DataStore.class);
+				dataStore.setName("Create a new Data Store");
+
+				List<DataStore> dataStoreList = new ArrayList<DataStore>();
+				dataStoreList.add(dataStore);
+				TreeIterator<EObject> iter = mh.getDefinitions().eAllContents();
+				while (iter.hasNext()) {
+					EObject obj = iter.next();
+					if (obj instanceof DataStore)
+						dataStoreList.add((DataStore) obj);
+				}
+
+				DataStore result = dataStore;
+				if (dataStoreList.size() > 1) {
+					PopupMenu popupMenu = new PopupMenu(dataStoreList, labelProvider);
+					boolean b = popupMenu.show(Display.getCurrent().getActiveShell());
+					if (b) {
+						result = (DataStore) popupMenu.getResult();
+					}
+				}
+				if (result == dataStore) { // the new one
+					mh.addRootElement(dataStore);
+					ModelUtil.setID(dataStore);
+					dataStore.setName(ModelUtil.toDisplayName(dataStore.getId()));
+					dataStoreReference.setName(dataStore.getName());
+				} else
+					dataStoreReference.setName(result.getName() + " Ref");
+
+				dataStoreReference.setDataStoreRef(result);
+			} catch (IOException e) {
+				Activator.showErrorWithLogging(e);
+			}
+			return dataStoreReference;
+		}
+
+		@Override
+		public String getStencilImageId() {
+			return ImageProvider.IMG_16_DATA_STORE;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature
+		 * #getFlowElementClass()
 		 */
 		@Override
 		public Class getBusinessObjectClass() {

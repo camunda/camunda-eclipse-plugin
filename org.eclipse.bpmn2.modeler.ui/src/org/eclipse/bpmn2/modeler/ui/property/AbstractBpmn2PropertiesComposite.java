@@ -240,7 +240,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 				attributesSection = createSection(objectStack.getAttributesParent(), "Attributes");
 			else
 				attributesSection = createSubSection(objectStack.getAttributesParent(),
-						PropertyUtil.getText(objectStack.peek()) + " Attributes");
+						ModelUtil.getLabel(objectStack.peek()) + " Attributes");
 			
 			attributesSection.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, true, 3, 1));
 			attributesComposite = toolkit.createComposite(attributesSection);

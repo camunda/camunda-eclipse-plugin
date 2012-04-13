@@ -15,10 +15,14 @@ package org.eclipse.bpmn2.modeler.ui.property.data;
 
 import org.eclipse.bpmn2.DataStore;
 import org.eclipse.bpmn2.DataStoreReference;
+import org.eclipse.bpmn2.DataState;
+import org.eclipse.bpmn2.DataStore;
+import org.eclipse.bpmn2.DataStoreReference;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite.AbstractPropertiesProvider;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.swt.widgets.Composite;
@@ -56,6 +60,9 @@ public class DataStorePropertySection extends AbstractBpmn2PropertySection {
 	
 	public class DataStorePropertiesComposite extends DefaultPropertiesComposite {
 
+		private AbstractPropertiesProvider dataStoreReferencePropertiesProvider;
+		private AbstractPropertiesProvider dataStatePropertiesProvider;
+
 		public DataStorePropertiesComposite(Composite parent, int style) {
 			super(parent, style);
 		}
@@ -65,6 +72,63 @@ public class DataStorePropertySection extends AbstractBpmn2PropertySection {
 		 */
 		public DataStorePropertiesComposite(AbstractBpmn2PropertySection section) {
 			super(section);
+		}
+
+		@Override
+		public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
+			if (object instanceof DataState) {
+				if (dataStatePropertiesProvider == null) {
+					dataStatePropertiesProvider = new AbstractPropertiesProvider(object) {
+						String[] properties = new String[] { "id", "name" };
+						
+						@Override
+						public String[] getProperties() {
+							return properties; 
+						}
+					};
+				}
+				return dataStatePropertiesProvider;
+			}
+			else if (object instanceof DataStore) {
+				if (propertiesProvider == null) {
+					propertiesProvider = new AbstractPropertiesProvider(object) {
+						String[] properties = new String[] { "id", "name", "capacity", "isUnlimited", "itemSubjectRef" };
+						String[] children = new String[] { "dataState" };
+						
+						@Override
+						public String[] getProperties() {
+							return properties;
+						}
+						
+						@Override
+						public String[] getChildren(String name) {
+							return children;
+						}
+					};
+				}
+				return propertiesProvider;
+			}
+			else if (object instanceof DataStoreReference) {
+				if (dataStoreReferencePropertiesProvider == null) {
+					dataStoreReferencePropertiesProvider = new AbstractPropertiesProvider(object) {
+						String[] properties = new String[] { "id", "name" };
+						String[] children = new String[] { "dataStoreRef" , "dataState" };
+	
+						@Override
+						public String[] getProperties() {
+							return properties; 
+						}
+						
+						@Override
+						public String[] getChildren(String name) {
+							return children;
+						}
+					};
+			
+				}
+				return dataStoreReferencePropertiesProvider;
+			}
+			return null;
 		}
 	}
 }

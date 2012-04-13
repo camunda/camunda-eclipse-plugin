@@ -13,6 +13,7 @@
 
 package org.eclipse.bpmn2.modeler.ui.property.data;
 
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.DataObjectReference;
 import org.eclipse.bpmn2.DataState;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
@@ -80,23 +81,27 @@ public class DataObjectReferencePropertySection extends AbstractBpmn2PropertySec
 				}
 				return dataStatePropertiesProvider;
 			}
-			else if (dataObjectReferencePropertiesProvider == null) {
-				dataObjectReferencePropertiesProvider = new AbstractPropertiesProvider(object) {
-					String[] properties = new String[] { "dataObjectRef" };
-					String[] children = new String[] { "dataState" };
-
-					@Override
-					public String[] getProperties() {
-						return properties; 
-					}
-					
-					@Override
-					public String[] getChildren(String name) {
-						return children;
-					}
-				};
+			else if (object instanceof DataObjectReference) {
+				if (dataObjectReferencePropertiesProvider == null) {
+					dataObjectReferencePropertiesProvider = new AbstractPropertiesProvider(object) {
+						String[] properties = new String[] { "id", "name" };
+						String[] children = new String[] { "dataState" };
+	
+						@Override
+						public String[] getProperties() {
+							return properties; 
+						}
+						
+						@Override
+						public String[] getChildren(String name) {
+							return children;
+						}
+					};
+			
+				}
+				return dataObjectReferencePropertiesProvider;
 			}
-			return dataObjectReferencePropertiesProvider;
+			return null;
 		}
 		
 	}

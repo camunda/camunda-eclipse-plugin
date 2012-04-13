@@ -127,7 +127,7 @@ public class FeatureMap {
 
 		features = new ArrayList<Class>();
 		features.add(DataObject.class);
-		features.add(DataObjectReference.class);
+//		features.add(DataObjectReference.class);
 		features.add(DataStoreReference.class);
 		features.add(DataInput.class);
 		features.add(DataOutput.class);
