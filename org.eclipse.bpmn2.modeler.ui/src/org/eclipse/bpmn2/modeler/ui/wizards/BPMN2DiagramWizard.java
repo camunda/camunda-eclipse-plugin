@@ -61,6 +61,7 @@ public class BPMN2DiagramWizard extends Wizard implements INewWizard {
 	public boolean performFinish() {
 		final String fileName = page2.getFileName();
 		final IResource container = page2.getDiagramContainer();
+		final String targetNamespace = page2.getTargetNamespace();
 
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			@Override
@@ -76,7 +77,7 @@ public class BPMN2DiagramWizard extends Wizard implements INewWizard {
 
 					factory.setDiagramFolder(folder);
 
-					factory.createDiagram(page1.getDiagramType());
+					factory.createDiagram(page1.getDiagramType(), targetNamespace);
 
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);

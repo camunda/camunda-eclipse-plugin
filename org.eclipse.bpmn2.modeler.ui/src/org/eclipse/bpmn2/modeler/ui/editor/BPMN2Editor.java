@@ -162,20 +162,23 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		
 		try {
 			Bpmn2DiagramType diagramType = Bpmn2DiagramType.NONE;
+			String targetNamespace = null;
 			if (input instanceof IFileEditorInput) {
 				modelFile = ((IFileEditorInput) input).getFile();
 				loadPreferences(modelFile.getProject());
 
-				input = createNewDiagramEditorInput(diagramType);
+				input = createNewDiagramEditorInput(diagramType, targetNamespace);
 
 			} else if (input instanceof DiagramEditorInput) {
 				getModelPathFromInput((DiagramEditorInput) input);
 				loadPreferences(modelFile.getProject());
-				if (input instanceof Bpmn2DiagramEditorInput)
+				if (input instanceof Bpmn2DiagramEditorInput) {
 					diagramType = ((Bpmn2DiagramEditorInput)input).getInitialDiagramType();
+					targetNamespace = ((Bpmn2DiagramEditorInput)input).getTargetNamespace();
+				}
 				// This was incorrectly constructed input, we ditch the old one and make a new and clean one instead
 				// This code path comes in from the New File Wizard
-				input = createNewDiagramEditorInput(diagramType);
+				input = createNewDiagramEditorInput(diagramType, targetNamespace);
 			}
 		} catch (CoreException e) {
 			Activator.showErrorWithLogging(e);
@@ -236,7 +239,8 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	/**
 	 * Beware, creates a new input and changes this editor!
 	 */
-	private Bpmn2DiagramEditorInput createNewDiagramEditorInput(Bpmn2DiagramType diagramType) throws CoreException {
+	private Bpmn2DiagramEditorInput createNewDiagramEditorInput(Bpmn2DiagramType diagramType, String targetNamespace)
+			throws CoreException {
 		IPath fullPath = modelFile.getFullPath();
 		modelUri = URI.createPlatformResourceURI(fullPath.toString(), true);
 
@@ -247,7 +251,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		BPMN2DiagramCreator creator = new BPMN2DiagramCreator();
 		creator.setDiagramFile(diagramFile);
 
-		Bpmn2DiagramEditorInput input = creator.createDiagram(diagramType,false);
+		Bpmn2DiagramEditorInput input = creator.createDiagram(diagramType,targetNamespace,false);
 		diagramUri = creator.getUri();
 
 		return input;
@@ -310,9 +314,10 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		diagram.setActive(true);
 		Bpmn2DiagramEditorInput input = (Bpmn2DiagramEditorInput) getEditorInput();
 		Bpmn2DiagramType diagramType = input.getInitialDiagramType();
+		String targetNamespace = input.getTargetNamespace();
 
 		if (diagramType != Bpmn2DiagramType.NONE) {
-			BPMNDiagram bpmnDiagram = modelHandler.createDiagramType(diagramType);
+			BPMNDiagram bpmnDiagram = modelHandler.createDiagramType(diagramType, targetNamespace);
 			featureProvider.link(diagram, bpmnDiagram);
 			BPMN2Editor.this.doSave(null);
 		}

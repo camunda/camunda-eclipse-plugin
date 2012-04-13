@@ -12,8 +12,11 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.wizards;
 
+import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
+import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
@@ -42,6 +45,7 @@ public class BPMN2DiagramWizardPage2 extends WizardPage {
 	private Text containerText;
 
 	private Text fileText;
+	private Text targetNamespaceText;
 
 	private ISelection selection;
 
@@ -95,20 +99,37 @@ public class BPMN2DiagramWizardPage2 extends WizardPage {
 		label.setText("&File name:");
 
 		fileText = new Text(container, SWT.BORDER | SWT.SINGLE);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		fileText.setLayoutData(gd);
+		fileText.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false, 2, 1));
 		fileText.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent e) {
 				dialogChanged();
 			}
 		});
+
+		label = new Label(container, SWT.NULL);
+		label.setText("&Target Namespace:");
+
+		targetNamespaceText = new Text(container, SWT.BORDER | SWT.SINGLE);
+		targetNamespaceText.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false, 2, 1));
+		targetNamespaceText.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				dialogChanged();
+			}
+		});
+
 		updatePageDescription();
 		updateFilename();
 		dialogChanged();
 		setControl(container);
 	}
 
+	private Bpmn2DiagramType getDiagramType() {
+		BPMN2DiagramWizardPage1 page1 = (BPMN2DiagramWizardPage1)getWizard().getPage("wizardPage1");
+		return page1.getDiagramType();
+	}
+		
 	/**
 	 * Tests if the current workbench selection is a suitable diagramContainer to use.
 	 */
@@ -253,6 +274,16 @@ public class BPMN2DiagramWizardPage2 extends WizardPage {
 				return;
 			}
 		}
+		
+		TargetRuntime rt = Bpmn2Preferences.getInstance(diagramContainer.getProject()).getRuntime();
+		String targetNamespace = rt.getRuntimeExtension().getTargetNamespace(getDiagramType());
+		if (targetNamespace==null)
+			targetNamespace = "";
+		if (!targetNamespaceText.getText().equals(targetNamespace)) {
+			targetNamespaceText.setText(targetNamespace);
+			updateFilename();
+		}
+		
 		updateStatus(null);
 	}
 
@@ -263,10 +294,16 @@ public class BPMN2DiagramWizardPage2 extends WizardPage {
 			String filename = fileText.getText();
 			IResource file = container.findMember(filename);
 			if (file==null) {
-				setErrorMessage(null);
-				return true;
+				String targetNamespace = targetNamespaceText.getText();
+				if (!targetNamespace.isEmpty()) {
+					setErrorMessage(null);
+					return true;
+				}
+				else
+					setErrorMessage("A Target Namespace must be specified");
 			}
-			setErrorMessage("The file "+filename+" already exists in this project");
+			else
+				setErrorMessage("The file "+filename+" already exists in this project");
 		}
 		return false;
 	}
@@ -286,5 +323,9 @@ public class BPMN2DiagramWizardPage2 extends WizardPage {
 
 	public IResource getDiagramContainer() {
 		return diagramContainer;
+	}
+
+	public String getTargetNamespace() {
+		return targetNamespaceText.getText();
 	}
 }

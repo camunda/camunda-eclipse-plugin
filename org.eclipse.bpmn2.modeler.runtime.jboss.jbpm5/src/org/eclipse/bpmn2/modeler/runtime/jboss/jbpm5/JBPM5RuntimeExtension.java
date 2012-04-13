@@ -35,6 +35,7 @@ import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.runtime.CustomTaskDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor.Property;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmCustomTaskFeatureContainer;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.wid.WIDException;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.wid.WIDHandler;
@@ -82,6 +83,10 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 		return false;
 	}
 
+	public String getTargetNamespace(Bpmn2DiagramType diagramType){
+		return DROOLS_NAMESPACE;
+	}
+	
 	public List<WorkItemDefinition> getWorkItemDefinitions() {
 		if (workItemDefinitions==null)
 			workItemDefinitions = new ArrayList<WorkItemDefinition>();

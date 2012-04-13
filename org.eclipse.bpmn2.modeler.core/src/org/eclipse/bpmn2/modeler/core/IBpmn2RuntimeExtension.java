@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core;
 
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.core.resources.IFile;
 
 public interface IBpmn2RuntimeExtension {
@@ -25,6 +26,6 @@ public interface IBpmn2RuntimeExtension {
 	 * @return true if the file is targeted for this runtime, false if the file is generic BPMN 2.0
 	 */
 	public boolean isContentForRuntime(IFile file);
-	
+	public String getTargetNamespace(Bpmn2DiagramType diagramType);
 	public void initialize();
 }

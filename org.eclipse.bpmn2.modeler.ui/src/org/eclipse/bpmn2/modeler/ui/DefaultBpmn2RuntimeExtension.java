@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui;
 import org.eclipse.bpmn2.modeler.core.IBpmn2RuntimeExtension;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.core.resources.IFile;
 
 
@@ -25,6 +26,23 @@ public class DefaultBpmn2RuntimeExtension implements IBpmn2RuntimeExtension {
 	public boolean isContentForRuntime(IFile file) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public String getTargetNamespace(Bpmn2DiagramType diagramType){
+		String type = "";
+		switch (diagramType) {
+		case PROCESS:
+			type = "/process";
+			break;
+		case COLLABORATION:
+			type = "/collaboration";
+			break;
+		case CHOREOGRAPHY:
+			type = "/choreography";
+			break;
+		}
+		return "http://sample.bpmn2.org/bpmn2/sample" + type;
 	}
 
 	@Override

@@ -44,11 +44,11 @@ public class BPMN2DiagramCreator {
 	private IFile diagramFile;
 	private URI uri;
 
-	public void createDiagram(Bpmn2DiagramType diagramType) throws CoreException {
-		createDiagram(diagramType, true);
+	public Bpmn2DiagramEditorInput createDiagram(Bpmn2DiagramType diagramType, String targetNamespace) throws CoreException {
+		return createDiagram(diagramType, targetNamespace, true);
 	}
 
-	public Bpmn2DiagramEditorInput createDiagram(Bpmn2DiagramType diagramType, boolean openEditor) throws CoreException {
+	public Bpmn2DiagramEditorInput createDiagram(Bpmn2DiagramType diagramType, String targetNamespace, boolean openEditor) throws CoreException {
 		if (diagramFolder != null && !diagramFolder.exists()) {
 			diagramFolder.create(false, true, null);
 		}
@@ -63,6 +63,7 @@ public class BPMN2DiagramCreator {
 		final Bpmn2DiagramEditorInput editorInput = new Bpmn2DiagramEditorInput(EcoreUtil.getURI(diagram), domain,
 				providerId);
 		editorInput.setInitialDiagramType(diagramType);
+		editorInput.setTargetNamespace(targetNamespace);
 
 		if (openEditor) {
 			openEditor(editorInput);

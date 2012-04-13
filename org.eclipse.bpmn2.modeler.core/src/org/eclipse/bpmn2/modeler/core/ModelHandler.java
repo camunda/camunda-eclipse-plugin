@@ -117,16 +117,23 @@ public class ModelHandler {
 		}
 	}
 
-	public BPMNDiagram createDiagramType(final Bpmn2DiagramType diagramType) {
+	public BPMNDiagram createDiagramType(final Bpmn2DiagramType diagramType, String targetNamespace) {
+		BPMNDiagram diagram = null;
 		switch (diagramType) {
 		case PROCESS:
-			return createProcessDiagram("Default");
+			diagram = createProcessDiagram("Default");
+			break;
 		case COLLABORATION:
-			return createCollaborationDiagram("Default");
+			diagram = createCollaborationDiagram("Default");
+			break;
 		case CHOREOGRAPHY:
-			return createChoreographyDiagram("Default");
+			diagram = createChoreographyDiagram("Default");
+			break;
 		}
-		return null;
+		if (diagram!=null)
+			getDefinitions().setTargetNamespace(targetNamespace);
+		
+		return diagram;
 	}
 	
 	public BPMNDiagram createProcessDiagram(final String name) {

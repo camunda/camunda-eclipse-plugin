@@ -23,6 +23,7 @@ public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
 
 	private final TransactionalEditingDomain domain;
 	private Bpmn2DiagramType initialDiagramType = Bpmn2DiagramType.NONE;
+	private String targetNamespace;
 
 	Bpmn2DiagramEditorInput(URI diagramUri, TransactionalEditingDomain domain, String providerId) {
 		super(diagramUri, domain, providerId);
@@ -35,6 +36,14 @@ public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
 
 	public void setInitialDiagramType(Bpmn2DiagramType initialDiagramType) {
 		this.initialDiagramType = initialDiagramType;
+	}
+
+	public String getTargetNamespace() {
+		return targetNamespace;
+	}
+
+	public void setTargetNamespace(String targetNamespace) {
+		this.targetNamespace = targetNamespace;
 	}
 
 	@Override
