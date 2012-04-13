@@ -425,6 +425,8 @@
 		<modelEnablement runtimeId="org.eclipse.bpmn2.modeler.runtime.none" type="Collaboration">
 			<disable object="all"/>
 			<enable object="default" feature="Process"/>
+			<disable object="DataObject"/>
+			<disable object="DataObjectReference"/>
 
 			<enable object="Participant"/>
 			<enable object="Lane"/>
@@ -471,6 +473,9 @@
 
 			<enable object="DataStore"/>
 			<enable object="DataStoreReference"/>
+			<enable object="DataObject"/>
+			<enable object="DataObjectReference"/>
+			<enable object="Group"/>
 
 			<enable object="ExtensionAttributeValue"/>
 			<enable object="ExtensionAttributeDefinition"/>
