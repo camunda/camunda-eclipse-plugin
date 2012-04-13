@@ -13,6 +13,9 @@
 
 package org.eclipse.bpmn2.modeler.ui.property.diagrams;
 
+import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.Process;
+import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.emf.ecore.EObject;
@@ -60,5 +63,20 @@ public class DataItemsPropertiesComposite extends DefaultPropertiesComposite {
 			};
 		}
 		return propertiesProvider;
+	}
+
+	@Override
+	public void createBindings(EObject be) {
+		if (be instanceof Definitions) {
+			Definitions definitions = (Definitions)be;
+			for (RootElement re : definitions.getRootElements()) {
+				if (re instanceof Process) {
+					Process process = (Process)re;
+					bindList(process, "properties");
+					bindList(process, "resources");
+				}
+			}
+		}
+		super.createBindings(be);
 	}
 }
