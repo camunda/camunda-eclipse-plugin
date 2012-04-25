@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.ChoreographyTask;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.Participant;
@@ -30,6 +31,7 @@ import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
+import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -95,10 +97,16 @@ public class FeatureSupport {
 	}
 
 	public static boolean isHorizontal(ContainerShape container) {
+		EObject parent = container.eContainer();
+		if (parent instanceof PictogramElement) {
+			// participant bands are always "vertical" so that
+			// the label is drawn horizontally by the LayoutFeature
+			if (BusinessObjectUtil.getFirstElementOfType((PictogramElement)parent, ChoreographyTask.class) != null)
+				return false;
+		}
 		String v = Graphiti.getPeService().getPropertyValue(container, IS_HORIZONTAL_PROPERTY);
 		if (v==null) {
-			// TODO: get default orientation from preferences
-			return true;
+			return !Bpmn2Preferences.getInstance().isVerticalOrientation();
 		}
 		return Boolean.parseBoolean(v);
 	}

@@ -66,7 +66,7 @@ public class DefaultDeleteBPMNShapeFeature extends DefaultDeleteFeature {
 		}
 	}
 	
-	private void deleteContainer(IFeatureProvider fp, ContainerShape cShape) {
+	protected void deleteContainer(IFeatureProvider fp, ContainerShape cShape) {
 		Object[] children = cShape.getChildren().toArray();
 		for (Object shape : children) {
 			if (shape instanceof ContainerShape) {
@@ -76,7 +76,7 @@ public class DefaultDeleteBPMNShapeFeature extends DefaultDeleteFeature {
 		}
 	}
 
-	private void deleteConnections(IFeatureProvider fp, EList<Connection> connections) {
+	protected void deleteConnections(IFeatureProvider fp, EList<Connection> connections) {
 		List<Connection> con = new ArrayList<Connection>();
 		con.addAll(connections);
 		for (Connection connection : con) {
