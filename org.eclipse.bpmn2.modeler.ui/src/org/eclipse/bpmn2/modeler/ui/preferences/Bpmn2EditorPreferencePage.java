@@ -231,7 +231,7 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 	protected void performDefaults() {
 		super.performDefaults();
 		try {
-			preferences.restoreDefaults();
+			preferences.restoreDefaults(false);
 			shapeStyles = null;
 			loadStyleEditors();
 			preferences.save();

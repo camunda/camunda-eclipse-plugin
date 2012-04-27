@@ -1,4 +1,4 @@
-package org.eclipse.bpmn2.modeler.ui.util;
+package org.eclipse.bpmn2.modeler.ui.preferences;
 
 import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.swt.widgets.Composite;

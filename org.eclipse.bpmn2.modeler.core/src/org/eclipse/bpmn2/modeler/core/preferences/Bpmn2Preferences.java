@@ -17,11 +17,24 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.bpmn2.AdHocSubProcess;
+import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.CallActivity;
+import org.eclipse.bpmn2.CallChoreography;
+import org.eclipse.bpmn2.ExclusiveGateway;
+import org.eclipse.bpmn2.Lane;
+import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.SequenceFlow;
+import org.eclipse.bpmn2.SubChoreography;
+import org.eclipse.bpmn2.SubProcess;
+import org.eclipse.bpmn2.Transaction;
+import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.core.internal.resources.ProjectPreferences;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -61,8 +74,16 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	public final static String PREF_EXPAND_PROPERTIES = "expand.properties";
 	public final static String PREF_EXPAND_PROPERTIES_LABEL = "E&xpand compound property details instead of showing a selection list";
 	public final static String PREF_OVERRIDE_MODEL_ENABLEMENTS = "override.model.enablements";
-	public final static String PREF_VERTICAL_ORIENTATION = "vertical.orientation";
-	public final static String PREF_VERTICAL_ORIENTATION_LABEL = "Use &Vertical layout for Pools and Lanes";
+	public final static String PREF_IS_HORIZONTAL = "is.horizontal";
+	public final static String PREF_IS_HORIZONTAL_LABEL = "&Horizontal layout of Pools, Lanes and diagram elements [isHorizontal]";
+	
+	public final static String PREF_IS_EXPANDED = "is.expanded";
+	public final static String PREF_IS_EXPANDED_LABEL = "Expand activity containers (SubProcess, CallActivity, etc.) [isExpanded]";
+	public final static String PREF_IS_MESSAGE_VISIBLE = "is.message.visible";
+	public final static String PREF_IS_MESSAGE_VISIBLE_LABEL = "Show Participant Band Messages [isMessageVisible]";
+	public final static String PREF_IS_MARKER_VISIBLE = "is.marker.visible";
+	public final static String PREF_IS_MARKER_VISIBLE_LABEL = "Decorate Exclusive Gateway with \"X\" marker [isMarkerVisible]";
+	
 	public final static String PREF_WSIL_URL = "wsil.url";
 	public final static String PREF_SHAPE_STYLE = "shape.style";
 
@@ -75,11 +96,22 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	private boolean loaded;
 	private boolean dirty;
 	
+	public enum BPMNDIAttributeDefault {
+		USE_DI_VALUE,
+		DEFAULT_TRUE,
+		ALWAYS_TRUE,
+		ALWAYS_FALSE
+	};
+	
 	private TargetRuntime targetRuntime;
 	private boolean showAdvancedPropertiesTab;
 	private boolean overrideModelEnablements;
 	private boolean expandProperties;
-	private boolean verticalOrientation;
+	private BPMNDIAttributeDefault isHorizontal;
+	private BPMNDIAttributeDefault isExpanded;
+	private BPMNDIAttributeDefault isMessageVisible;
+	private BPMNDIAttributeDefault isMarkerVisible;
+	
 	private HashMap<Class, ShapeStyle> shapeStyles = new HashMap<Class, ShapeStyle>();
 	
 	// TODO: stuff like colors, fonts, etc.
@@ -168,12 +200,15 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		return projectPreferences;
 	}
 	
-	public void restoreDefaults() {
-		if (projectPreferences != null) {
+	public void restoreDefaults(boolean resetProjectPreferences) {
+		if (resetProjectPreferences && projectPreferences != null) {
 			projectPreferences.remove(PREF_TARGET_RUNTIME);
 			projectPreferences.remove(PREF_SHOW_ADVANCED_PROPERTIES);
 			projectPreferences.remove(PREF_EXPAND_PROPERTIES);
-			projectPreferences.remove(PREF_VERTICAL_ORIENTATION);
+			projectPreferences.remove(PREF_IS_HORIZONTAL);
+			projectPreferences.remove(PREF_IS_EXPANDED);
+			projectPreferences.remove(PREF_IS_MESSAGE_VISIBLE);
+			projectPreferences.remove(PREF_IS_MARKER_VISIBLE);
 			for (Class key : shapeStyles.keySet()) {
 				projectPreferences.remove(getShapeStyleId(key));
 			}
@@ -181,7 +216,10 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		globalPreferences.setDefault(PREF_TARGET_RUNTIME, TargetRuntime.getFirstNonDefaultId());
 		globalPreferences.setDefault(PREF_SHOW_ADVANCED_PROPERTIES, false);
 		globalPreferences.setDefault(PREF_EXPAND_PROPERTIES, false);
-		globalPreferences.setDefault(PREF_VERTICAL_ORIENTATION, false);
+		globalPreferences.setDefault(PREF_IS_HORIZONTAL, BPMNDIAttributeDefault.DEFAULT_TRUE.name());
+		globalPreferences.setDefault(PREF_IS_EXPANDED, BPMNDIAttributeDefault.ALWAYS_TRUE.name());
+		globalPreferences.setDefault(PREF_IS_MESSAGE_VISIBLE, BPMNDIAttributeDefault.ALWAYS_TRUE.name());
+		globalPreferences.setDefault(PREF_IS_MARKER_VISIBLE, BPMNDIAttributeDefault.DEFAULT_TRUE.name());
 		for (Class key : shapeStyles.keySet()) {
 			globalPreferences.setDefault(getShapeStyleId(key), IPreferenceStore.STRING_DEFAULT_DEFAULT);
 		}
@@ -189,7 +227,10 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		globalPreferences.setToDefault(PREF_TARGET_RUNTIME);
 		globalPreferences.setToDefault(PREF_SHOW_ADVANCED_PROPERTIES);
 		globalPreferences.setToDefault(PREF_EXPAND_PROPERTIES);
-		globalPreferences.setToDefault(PREF_VERTICAL_ORIENTATION);
+		globalPreferences.setToDefault(PREF_IS_HORIZONTAL);
+		globalPreferences.setToDefault(PREF_IS_EXPANDED);
+		globalPreferences.setToDefault(PREF_IS_MESSAGE_VISIBLE);
+		globalPreferences.setToDefault(PREF_IS_MARKER_VISIBLE);
 
 		List<Class> keys = new ArrayList<Class>();
 		keys.addAll(shapeStyles.keySet());
@@ -244,7 +285,10 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			targetRuntime = TargetRuntime.getRuntime(id);
 			showAdvancedPropertiesTab = getBoolean(PREF_SHOW_ADVANCED_PROPERTIES, false);
 			expandProperties = getBoolean(PREF_EXPAND_PROPERTIES, false);
-			verticalOrientation = getBoolean(PREF_VERTICAL_ORIENTATION, false);
+			isHorizontal = getBPMNDIAttributeDefault(PREF_IS_HORIZONTAL, BPMNDIAttributeDefault.USE_DI_VALUE);
+			isExpanded = getBPMNDIAttributeDefault(PREF_IS_EXPANDED, BPMNDIAttributeDefault.USE_DI_VALUE);
+			isMessageVisible = getBPMNDIAttributeDefault(PREF_IS_MESSAGE_VISIBLE, BPMNDIAttributeDefault.USE_DI_VALUE);
+			isMarkerVisible = getBPMNDIAttributeDefault(PREF_IS_MARKER_VISIBLE, BPMNDIAttributeDefault.USE_DI_VALUE);
 			
 			loaded = true;
 		}
@@ -260,8 +304,11 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			setString(PREF_TARGET_RUNTIME,targetRuntime.getId());
 			setBoolean(PREF_SHOW_ADVANCED_PROPERTIES, showAdvancedPropertiesTab);
 			setBoolean(PREF_EXPAND_PROPERTIES, expandProperties);
-			setBoolean(PREF_VERTICAL_ORIENTATION, verticalOrientation);
-			
+			setBPMNDIAttributeDefault(PREF_IS_HORIZONTAL, isHorizontal);
+
+			setBPMNDIAttributeDefault(PREF_IS_EXPANDED, isExpanded);
+			setBPMNDIAttributeDefault(PREF_IS_MESSAGE_VISIBLE, isMessageVisible);
+			setBPMNDIAttributeDefault(PREF_IS_MARKER_VISIBLE, isMarkerVisible);
 		}
 		
 		for (Entry<Class, ShapeStyle> entry : shapeStyles.entrySet()) {
@@ -416,16 +463,57 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		expandProperties = expand;
 	}
 
-	public boolean isVerticalOrientation() {
+	public boolean isHorizontalDefault() {
 		load();
-		return verticalOrientation;
+		return isHorizontal==BPMNDIAttributeDefault.ALWAYS_TRUE ||
+				isHorizontal==BPMNDIAttributeDefault.DEFAULT_TRUE;
 	}
 
-	public void setVerticalOrientation(boolean vertical) {
-		overrideGlobalBoolean(PREF_VERTICAL_ORIENTATION, vertical);
-		verticalOrientation = vertical;
+	public BPMNDIAttributeDefault getIsHorizontal() {
+		return isHorizontal;
 	}
 	
+	public void setIsHorizontal(BPMNDIAttributeDefault value) {
+		overrideGlobalBPMNDIAttributeDefault(PREF_IS_HORIZONTAL, value);
+		this.isHorizontal = value;
+	}
+
+	public boolean isExpandedDefault() {
+		load();
+		return isExpanded==BPMNDIAttributeDefault.ALWAYS_TRUE ||
+				isExpanded==BPMNDIAttributeDefault.DEFAULT_TRUE;
+	}
+
+	public BPMNDIAttributeDefault getIsExpanded() {
+		load();
+		return isExpanded;
+	}
+
+	public void setIsExpanded(BPMNDIAttributeDefault value) {
+		overrideGlobalBPMNDIAttributeDefault(PREF_IS_EXPANDED, value);
+		this.isExpanded = value;
+	}
+
+	public BPMNDIAttributeDefault getIsMessageVisible() {
+		load();
+		return isMessageVisible;
+	}
+
+	public void setIsMessageVisible(BPMNDIAttributeDefault value) {
+		overrideGlobalBPMNDIAttributeDefault(PREF_IS_MESSAGE_VISIBLE, value);
+		this.isMessageVisible = value;
+	}
+
+	public BPMNDIAttributeDefault getIsMarkerVisible() {
+		load();
+		return isMarkerVisible;
+	}
+
+	public void setIsMarkerVisible(BPMNDIAttributeDefault value) {
+		overrideGlobalBPMNDIAttributeDefault(PREF_IS_MARKER_VISIBLE, value);
+		this.isMarkerVisible = value;
+	}
+
 	@Override
 	public void preferenceChange(PreferenceChangeEvent event) {
 		reload();
@@ -443,7 +531,9 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	public boolean getBoolean(String key, boolean defaultValue) {
 		if (hasProjectPreference(key))
 			return projectPreferences.getBoolean(key, defaultValue);
-		return globalPreferences.getBoolean(key);
+		if (globalPreferences.contains(key))
+			return globalPreferences.getBoolean(key);
+		return defaultValue;
 	}
 	
 	public void setBoolean(String key, boolean value) {
@@ -463,7 +553,9 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	public String getString(String key, String defaultValue) {
 		if (hasProjectPreference(key))
 			return projectPreferences.get(key, defaultValue);
-		return globalPreferences.getString(key);
+		if (globalPreferences.contains(key))
+			return globalPreferences.getString(key);
+		return defaultValue;
 	}
 	
 	public void setString(String key, String value) {
@@ -477,6 +569,234 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		if (value!=globalPreferences.getString(key)) {
 			projectPreferences.put(key, value);
 			dirty = true;
+		}
+	}
+
+	public BPMNDIAttributeDefault getBPMNDIAttributeDefault(String key, BPMNDIAttributeDefault defaultValue) {
+		BPMNDIAttributeDefault value = null;
+		if (hasProjectPreference(key))
+			value = BPMNDIAttributeDefault.valueOf(projectPreferences.get(key, defaultValue.name()));
+		else if (globalPreferences.contains(key))
+			value = BPMNDIAttributeDefault.valueOf(globalPreferences.getString(key));
+		else
+			value = defaultValue;
+		return value;
+	}
+	
+	public void setBPMNDIAttributeDefault(String key, BPMNDIAttributeDefault value) {
+		if (hasProjectPreference(key))
+			projectPreferences.put(key, value.name());
+		else
+			globalPreferences.setValue(key, value.name());
+	}
+
+	private void overrideGlobalBPMNDIAttributeDefault(String key, BPMNDIAttributeDefault value) {
+		if (value!=BPMNDIAttributeDefault.valueOf(globalPreferences.getString(key))) {
+			projectPreferences.put(key, value.name());
+			dirty = true;
+		}
+	}
+
+	public static String[] getBPMNDIAttributeDefaultChoices() {
+		BPMNDIAttributeDefault[] values = BPMNDIAttributeDefault.values();
+		String[] choices = new String[values.length];
+		int i = 0;
+		for (BPMNDIAttributeDefault v : values) {
+			String text = "None";
+			switch (v) {
+			case USE_DI_VALUE:
+				text = "False if not set";
+				break;
+			case DEFAULT_TRUE:
+				text = "True if not set";
+				break;
+			case ALWAYS_TRUE:
+				text = "Always true";
+				break;
+			case ALWAYS_FALSE:
+				text = "Always false";
+				break;
+			}
+			choices[i++] = text;
+		}
+		return choices;
+	}
+	
+	public static String[][] getBPMNDIAttributeDefaultChoicesAndValues() {
+		String[] choices = getBPMNDIAttributeDefaultChoices();
+		BPMNDIAttributeDefault[] values = BPMNDIAttributeDefault.values();
+		String[][] choicesAndValues = new String[choices.length][2];
+		int i = 0;
+		for (BPMNDIAttributeDefault v : values) {
+			choicesAndValues[i][0] = choices[i];
+			choicesAndValues[i][1] = v.name();
+			++i;
+		}
+		return choicesAndValues;
+	}
+	
+	/**
+	 * Applies preference defaults to a BPMNShape object. The <code>attribs</code> map should contain
+	 * only those attributes that are set on the BPMNShape object (as read from the bpmn XML file).
+	 * This is used to determine the appropriate default values for certain optional attributes, e.g.
+	 * isHorizontal, isExpanded, etc.
+	 * 
+	 * @param bpmnShape - the BPMNShape object whose attributes are to be set
+	 * @param attribs - map of BPMN DI attributes currently set on the BPMNShape object. May be null.
+	 * @see getIsHorizontal(), getIsExpanded(), getIsMessageVisible() and getIsMarkerVisible()
+	 */
+	public void applyBPMNDIDefaults(BPMNShape bpmnShape, Map<String,String>attribs) {
+		boolean isHorizontalSet = false;
+		boolean isExpandedSet = false;
+		boolean isMessageVisibleSet = false;
+		boolean isMarkerVisibleSet = false;
+		boolean choreographyActivityShapeSet = false;
+		
+		if (attribs != null) {
+			for (Entry<String, String> entry : attribs.entrySet()) {
+				String name = entry.getKey();
+				if ("isHorizontal".equals(name)) {
+					isHorizontalSet = true;
+				}
+				if ("isExpanded".equals(name)) {
+					isExpandedSet = true;
+				}
+				if ("isMessageVisible".equals(name)) {
+					isMessageVisibleSet = true;
+				}
+				if ("isMarkerVisible".equals(name)) {
+					isMarkerVisibleSet = true;
+				}
+				if ("choreographyActivityShape".equals(name)) {
+					choreographyActivityShapeSet = true;
+				}
+			}
+		}
+		
+		BaseElement be = bpmnShape.getBpmnElement();
+		
+		// isHorizontal only applies to Pools and Lanes, not Participant bands
+		if (!isHorizontalSet) {
+			if ((be instanceof Participant && !choreographyActivityShapeSet) || be instanceof Lane) {
+				boolean horz = isHorizontalDefault();
+				bpmnShape.setIsHorizontal(horz);
+			}
+		}
+		else {
+			if ((be instanceof Participant && !choreographyActivityShapeSet) || be instanceof Lane) {
+				BPMNDIAttributeDefault df = getIsHorizontal();
+				switch(df) {
+				case ALWAYS_TRUE:
+					bpmnShape.setIsHorizontal(true);
+					break;
+				case ALWAYS_FALSE:
+					bpmnShape.setIsHorizontal(false);
+					break;
+				}
+
+			}
+		}
+		
+		// isExpanded only applies to activity containers (SubProcess, AdHocSubProcess, etc.)
+		if (!isExpandedSet) {
+			if (be instanceof  SubProcess ||
+					be instanceof AdHocSubProcess ||
+					be instanceof Transaction ||
+					be instanceof SubChoreography ||
+					be instanceof CallActivity ||
+					be instanceof CallChoreography) {
+				boolean value = false;
+				BPMNDIAttributeDefault df = getIsExpanded();
+				switch(df) {
+				case ALWAYS_TRUE:
+				case DEFAULT_TRUE:
+					value = true;
+					break;
+				case ALWAYS_FALSE:
+				case USE_DI_VALUE:
+					value = false;
+				}
+				bpmnShape.setIsExpanded(value);
+			}
+		}
+		else {
+			if (be instanceof  SubProcess ||
+					be instanceof AdHocSubProcess ||
+					be instanceof Transaction ||
+					be instanceof SubChoreography ||
+					be instanceof CallActivity ||
+					be instanceof CallChoreography) {
+				BPMNDIAttributeDefault df = getIsExpanded();
+				switch(df) {
+				case ALWAYS_TRUE:
+					bpmnShape.setIsExpanded(true);
+					break;
+				case ALWAYS_FALSE:
+					bpmnShape.setIsExpanded(false);
+					break;
+				}
+			}
+		}
+		
+		// isMessageVisible only applies to Participant Bands
+		if (!isMessageVisibleSet) {
+			if (be instanceof Participant && choreographyActivityShapeSet) {
+				boolean value = false;
+				BPMNDIAttributeDefault df = getIsMessageVisible();
+				switch(df) {
+				case ALWAYS_TRUE:
+				case DEFAULT_TRUE:
+					value = true;
+					break;
+				case ALWAYS_FALSE:
+				case USE_DI_VALUE:
+					value = false;
+				}
+				bpmnShape.setIsMessageVisible(value);
+			}
+		}
+		else {
+			if (be instanceof Participant && choreographyActivityShapeSet) {
+				BPMNDIAttributeDefault df = getIsMessageVisible();
+				switch(df) {
+				case ALWAYS_TRUE:
+					bpmnShape.setIsMessageVisible(true);
+					break;
+				case ALWAYS_FALSE:
+					bpmnShape.setIsMessageVisible(false);
+					break;
+				}
+			}
+		}
+		
+		// isMarkerVisible only applies to ExclusiveGateway
+		if (!isMarkerVisibleSet) {
+			if (be instanceof ExclusiveGateway) {
+				BPMNDIAttributeDefault df = getIsMarkerVisible();
+				switch(df) {
+				case ALWAYS_TRUE:
+				case DEFAULT_TRUE:
+					bpmnShape.setIsMarkerVisible(true);
+					break;
+				case ALWAYS_FALSE:
+				case USE_DI_VALUE:
+					bpmnShape.setIsMarkerVisible(false);
+					break;
+				}
+			}
+		}
+		else {
+			if (be instanceof ExclusiveGateway) {
+				BPMNDIAttributeDefault df = getIsMarkerVisible();
+				switch(df) {
+				case ALWAYS_TRUE:
+					bpmnShape.setIsMarkerVisible(true);
+					break;
+				case ALWAYS_FALSE:
+					bpmnShape.setIsMarkerVisible(false);
+					break;
+				}
+			}
 		}
 	}
 

@@ -27,11 +27,11 @@
 package org.eclipse.bpmn2.modeler.core.model;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.Participant;
@@ -41,13 +41,11 @@ import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNLabel;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.di.BpmnDiPackage;
-import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.bpmn2.util.ImportHelper;
 import org.eclipse.bpmn2.util.QNameURIHandler;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.Point;
 import org.eclipse.dd.di.DiagramElement;
@@ -58,7 +56,6 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.emf.ecore.xmi.XMLHelper;
@@ -67,10 +64,6 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.XMLSave;
 import org.eclipse.emf.ecore.xmi.impl.XMLLoadImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMLSaveImpl;
-import org.eclipse.emf.transaction.RecordingCommand;
-import org.eclipse.emf.transaction.TransactionalEditingDomain;
-import org.eclipse.emf.transaction.util.TransactionUtil;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
@@ -187,20 +180,16 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 		protected void handleObjectAttribs(EObject obj) {
 			super.handleObjectAttribs(obj);
 			if (obj instanceof BPMNShape) {
-				boolean isHorizontalSet = false;
+				BPMNShape bpmnShape = (BPMNShape)obj;
+
+				Hashtable<String,String> map = new Hashtable<String,String>();
 				if (attribs != null) {
 					for (int i = 0, size = attribs.getLength(); i < size; ++i) {
-						String name = attribs.getQName(i);
-						if ("isHorizontal".equals(name)) {
-							isHorizontalSet = true;
-							break;
-						}
+						String key = attribs.getQName(i);
+						String value = attribs.getValue(i);
+						map.put(key, value);
 					}
-				}
-				if (!isHorizontalSet) {
-					BPMNShape shape = (BPMNShape)obj;
-					boolean vert = Bpmn2Preferences.getInstance(this.resourceURI).isVerticalOrientation();
-					shape.setIsHorizontal(!vert);
+					Bpmn2Preferences.getInstance(this.resourceURI).applyBPMNDIDefaults(bpmnShape, map);
 				}
 			}
 		}

@@ -198,7 +198,7 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 
 	protected ContainerShape createNewShape(ModelHandler mh, ContainerShape oldShape, EClass newType) {
 		ILayoutService layoutService = Graphiti.getLayoutService();
-		boolean vert = Bpmn2Preferences.getInstance().isVerticalOrientation();
+		boolean horz = Bpmn2Preferences.getInstance().isHorizontalDefault();
 
 		ILocation loc = layoutService.getLocationRelativeToDiagram(oldShape);
 		int x = loc.getX();
@@ -229,23 +229,7 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 		AbstractAddBPMNShapeFeature af = (AbstractAddBPMNShapeFeature)getFeatureProvider().getAddFeature(ac);
 		int w = af.getWidth();
 		int h = af.getHeight();
-		if (vert) {
-			x += width/2;
-			y += height + 50 + h/2;
-			boolean done = false;
-			while (!done) {
-				done = true;
-				List<Shape> shapes = getFlowElementChildren(containerShape);
-				for (Shape s : shapes) {
-					if (GraphicsUtil.intersects(s, x-w/2, y-h/2, w, h)) {
-						x += 100;
-						done = false;
-						break;
-					}
-				}
-			}
-		}
-		else {
+		if (horz) {
 			x += width + 50 + w/2;
 			y += height/2;
 			boolean done = false;
@@ -255,6 +239,22 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 				for (Shape s : shapes) {
 					if (GraphicsUtil.intersects(s, x-w/2, y-h/2, w, h)) {
 						y += 100;
+						done = false;
+						break;
+					}
+				}
+			}
+		}
+		else {
+			x += width/2;
+			y += height + 50 + h/2;
+			boolean done = false;
+			while (!done) {
+				done = true;
+				List<Shape> shapes = getFlowElementChildren(containerShape);
+				for (Shape s : shapes) {
+					if (GraphicsUtil.intersects(s, x-w/2, y-h/2, w, h)) {
+						x += 100;
 						done = false;
 						break;
 					}
@@ -302,14 +302,14 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 			ILocation loc0 = layoutService.getLocationRelativeToDiagram(connection.getStart());
 			ILocation loc1 = layoutService.getLocationRelativeToDiagram(connection.getEnd());
 			if (loc0.getX()!=loc1.getX() && loc0.getY()!=loc1.getY()) {
-				boolean vert = Bpmn2Preferences.getInstance().isVerticalOrientation();
+				boolean horz = Bpmn2Preferences.getInstance().isHorizontalDefault();
 				FreeFormConnection ff = (FreeFormConnection)connection;
 				Point p;
-				if (vert) {
-					p = Graphiti.getCreateService().createPoint(loc1.getX(), loc0.getY());
+				if (horz) {
+					p = Graphiti.getCreateService().createPoint(loc0.getX(), loc1.getY());
 				}
 				else {
-					p = Graphiti.getCreateService().createPoint(loc0.getX(), loc1.getY());
+					p = Graphiti.getCreateService().createPoint(loc1.getX(), loc0.getY());
 				}
 				ff.getBendpoints().add(p);
 				DIUtils.updateDIEdge(connection);
@@ -324,11 +324,11 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 					// the connection's End anchor has changed as a result of inserting the bendpoint
 					// so need to adjust the bendpoint
 					ff.getBendpoints().clear();
-					if (vert) {
-						p = Graphiti.getCreateService().createPoint(newloc1.getX(), newloc0.getY());
+					if (horz) {
+						p = Graphiti.getCreateService().createPoint(newloc0.getX(), newloc1.getY());
 					}
 					else {
-						p = Graphiti.getCreateService().createPoint(newloc0.getX(), newloc1.getY());
+						p = Graphiti.getCreateService().createPoint(newloc1.getX(), newloc0.getY());
 					}
 					ff.getBendpoints().add(p);
 					DIUtils.updateDIEdge(connection);

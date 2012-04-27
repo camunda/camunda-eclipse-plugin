@@ -81,7 +81,7 @@ public class TransactionFeatureContainer extends AbstractSubProcessFeatureContai
 	public static class CreateTransactionFeature extends AbstractCreateExpandableFlowNodeFeature<Transaction> {
 
 		public CreateTransactionFeature(IFeatureProvider fp) {
-			super(fp, "Expanded Transaction",
+			super(fp, "Transaction",
 					"Specialized description of sub-process that will have behavior controlled by transaction protocol");
 		}
 

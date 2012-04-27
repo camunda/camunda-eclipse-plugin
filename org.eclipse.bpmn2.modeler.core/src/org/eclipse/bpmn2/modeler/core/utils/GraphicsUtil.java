@@ -1041,4 +1041,17 @@ public class GraphicsUtil {
 		}
 		return true;
 	}
+
+	public static Shape getShapeForProperty(ContainerShape container, String propertyKey) {
+		IPeService peService = Graphiti.getPeService();
+		Iterator<Shape> iterator = peService.getAllContainedShapes(container).iterator();
+		while (iterator.hasNext()) {
+			Shape shape = iterator.next();
+			String property = peService.getPropertyValue(shape, propertyKey);
+			if (property != null && new Boolean(property)) {
+				return shape;
+			}
+		}
+		return null;
+	}
 }

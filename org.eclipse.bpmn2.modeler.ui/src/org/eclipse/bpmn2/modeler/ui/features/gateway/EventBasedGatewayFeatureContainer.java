@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.ui.features.gateway;
 import org.eclipse.bpmn2.EventBasedGateway;
 import org.eclipse.bpmn2.EventBasedGatewayType;
 import org.eclipse.bpmn2.Gateway;
+import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.gateway.AbstractCreateGatewayFeature;
 import org.eclipse.bpmn2.modeler.core.features.gateway.DefaultAddGatewayFeature;
@@ -54,7 +55,7 @@ public class EventBasedGatewayFeatureContainer extends AbstractGatewayFeatureCon
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return new DefaultAddGatewayFeature(fp) {
 			@Override
-			protected void decorateGateway(ContainerShape container) {
+			protected void decorateGateway(ContainerShape container, BPMNShape bpmnShape) {
 				Ellipse outer = GraphicsUtil.createGatewayOuterCircle(container);
 				Ellipse inner = GraphicsUtil.createGatewayInnerCircle(outer);
 				Polygon pentagon = GraphicsUtil.createGatewayPentagon(container);

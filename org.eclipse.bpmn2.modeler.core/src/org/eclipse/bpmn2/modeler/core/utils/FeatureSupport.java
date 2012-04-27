@@ -106,7 +106,7 @@ public class FeatureSupport {
 		}
 		String v = Graphiti.getPeService().getPropertyValue(container, IS_HORIZONTAL_PROPERTY);
 		if (v==null) {
-			return !Bpmn2Preferences.getInstance().isVerticalOrientation();
+			return Bpmn2Preferences.getInstance().isHorizontalDefault();
 		}
 		return Boolean.parseBoolean(v);
 	}

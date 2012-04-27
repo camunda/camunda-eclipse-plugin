@@ -85,45 +85,19 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 		return createDIShape(gShape, elem, findDIShape(elem));
 	}
 
-	protected BPMNShape createDIShape(Shape gShape, BaseElement elem, BPMNShape shape) {
-		ILocation loc = Graphiti.getLayoutService().getLocationRelativeToDiagram(gShape);
-		if (shape == null) {
-			EList<EObject> businessObjects = Graphiti.getLinkService().getLinkForPictogramElement(getDiagram())
-					.getBusinessObjects();
-			for (EObject eObject : businessObjects) {
-				if (eObject instanceof BPMNDiagram) {
-					BPMNDiagram bpmnDiagram = (BPMNDiagram) eObject;
-
-					shape = BpmnDiFactory.eINSTANCE.createBPMNShape();
-//					shape.setId(EcoreUtil.generateUUID());
-					shape.setBpmnElement(elem);
-					Bounds bounds = DcFactory.eINSTANCE.createBounds();
-					if (elem instanceof Activity) {
-						bounds.setHeight(gShape.getGraphicsAlgorithm().getHeight());
-					} else {
-						bounds.setHeight(gShape.getGraphicsAlgorithm().getHeight());
-					}
-					bounds.setWidth(gShape.getGraphicsAlgorithm().getWidth());
-					bounds.setX(loc.getX());
-					bounds.setY(loc.getY());
-					shape.setBounds(bounds);
-					
-					if (elem instanceof Lane || elem instanceof Participant) {
-						shape.setIsHorizontal(!Bpmn2Preferences.getInstance().isVerticalOrientation());
-					}
-					
-					addShape(shape, bpmnDiagram);
-					ModelUtil.setID(shape);
-				}
-			}
+	protected BPMNShape createDIShape(Shape shape, BaseElement elem, BPMNShape bpmnShape) {
+		ILocation loc = Graphiti.getLayoutService().getLocationRelativeToDiagram(shape);
+		if (bpmnShape == null) {
+			int x = loc.getX();
+			int y = loc.getY();
+			int w = shape.getGraphicsAlgorithm().getWidth();
+			int h = shape.getGraphicsAlgorithm().getHeight();
+			bpmnShape = DIUtils.createDIShape(shape, elem, x, y, w, h, getFeatureProvider(), getDiagram());
 		}
-		link(gShape, new Object[] { elem, shape });
-		return shape;
-	}
-
-	private void addShape(DiagramElement elem, BPMNDiagram bpmnDiagram) {
-		List<DiagramElement> elements = bpmnDiagram.getPlane().getPlaneElement();
-		elements.add(elem);
+		else {
+			link(shape, new Object[] { elem, bpmnShape });
+		}
+		return bpmnShape;
 	}
 
 	protected BPMNEdge createDIEdge(Connection connection, BaseElement conElement) {
@@ -136,6 +110,7 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 		return null;
 	}
 
+	// TODO: move this to DIUtils
 	protected BPMNEdge createDIEdge(Connection connection, BaseElement conElement, BPMNEdge edge) throws IOException {
 		ModelHandler modelHandler = ModelHandlerLocator.getModelHandler(getDiagram().eResource());
 		if (edge == null) {
@@ -179,7 +154,7 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 					point.setY(targetLoc.getY());
 					edge.getWaypoint().add(point);
 
-					addShape(edge, bpmnDiagram);
+					DIUtils.addShape(edge, bpmnDiagram);
 					ModelUtil.setID(edge);
 				}
 			}
@@ -358,7 +333,7 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 					return laneShape.isIsHorizontal();
 			}
 		}
-		return !Bpmn2Preferences.getInstance().isVerticalOrientation();
+		return Bpmn2Preferences.getInstance().isHorizontalDefault();
 	}
 	
 	public abstract int getHeight();

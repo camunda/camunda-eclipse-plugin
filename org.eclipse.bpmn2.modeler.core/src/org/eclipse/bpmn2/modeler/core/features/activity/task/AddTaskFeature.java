@@ -53,7 +53,7 @@ public class AddTaskFeature extends AbstractAddActivityFeature {
 		StyleUtil.applyStyle(text, activity);
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setVerticalAlignment(Orientation.ALIGNMENT_TOP);
-		text.setFont(gaService.manageFont(getDiagram(), GaServiceImpl.DEFAULT_FONT, 8, false, true));
+//		text.setFont(gaService.manageFont(getDiagram(), GaServiceImpl.DEFAULT_FONT, 8, false, true));
 		link(textShape, activity);
 	}
 

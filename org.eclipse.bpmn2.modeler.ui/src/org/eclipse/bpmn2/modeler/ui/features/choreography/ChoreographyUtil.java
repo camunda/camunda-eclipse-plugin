@@ -573,7 +573,7 @@ public class ChoreographyUtil implements ChoreographyProperties {
 		boolean shouldDrawTopMessage = !Collections.disjoint(topAndBottom.getFirst(), shapesWithVisibleMessages);
 		boolean shouldDrawBottomMessage = !Collections.disjoint(topAndBottom.getSecond(), shapesWithVisibleMessages);
 		ContainerShape envelope;
-
+		
 		String topMessageName = null;
 		String bottomMessageName = null;
 		Message topMessage = null;
@@ -599,8 +599,9 @@ public class ChoreographyUtil implements ChoreographyProperties {
 		Bounds bounds = bpmnShape.getBounds();
 		int x = (int) ((bounds.getX() + bounds.getWidth() / 2) - (ENV_W / 2));
 
+		MessageFlow flow = getMessageFlow(messageFlows, topAndBottom.getFirst());
 		envelope = null;
-		if (!hasTopMessage && shouldDrawTopMessage) {
+		if (!hasTopMessage && shouldDrawTopMessage && flow!=null) {
 			int y = (int) (bounds.getY() - ENVELOPE_HEIGHT_MODIFIER - ENV_H);
 			envelope = drawMessageLink(topMessageName, topBoundaryAnchor, x, y, isFilled(topAndBottom.getFirst()));
 			if (topMessage!=null)
@@ -611,18 +612,18 @@ public class ChoreographyUtil implements ChoreographyProperties {
 			peService.deletePictogramElement(topConnections.get(topConnectionIndex));
 			peService.deletePictogramElement(envelope);
 			envelope = null;
-		} else if (hasTopMessage && shouldDrawTopMessage) {
+		} else if (hasTopMessage && shouldDrawTopMessage && flow!=null) {
 			envelope = (ContainerShape) topConnections.get(topConnectionIndex).getEnd().eContainer();
 			setMessageLabel(topMessageName, envelope);
 		}
 		if (envelope!=null) {
 			// link up the message flow
-			MessageFlow flow = getMessageFlow(messageFlows, topAndBottom.getFirst());
 			linkMessageFlow(fp, flow, envelope);
 		}
 
 		envelope = null;
-		if (!hasBottomMessage && shouldDrawBottomMessage) {
+		flow = getMessageFlow(messageFlows, topAndBottom.getSecond());
+		if (!hasBottomMessage && shouldDrawBottomMessage && flow!=null) {
 			int y = (int) (bounds.getY() + bounds.getHeight() + ENVELOPE_HEIGHT_MODIFIER);
 			envelope = drawMessageLink(bottomMessageName, bottomBoundaryAnchor, x, y, isFilled(topAndBottom.getSecond()));
 			if (bottomMessage!=null)
@@ -634,14 +635,13 @@ public class ChoreographyUtil implements ChoreographyProperties {
 			peService.deletePictogramElement(bottomConnections.get(bottomConnectionIndex));
 			peService.deletePictogramElement(envelope);
 			envelope = null;
-		} else if (hasBottomMessage && shouldDrawBottomMessage) {
+		} else if (hasBottomMessage && shouldDrawBottomMessage && flow!=null) {
 			envelope = (ContainerShape) bottomConnections.get(bottomConnectionIndex).getEnd()
 					.eContainer();
 			setMessageLabel(bottomMessageName, envelope);
 		}
 		if (envelope!=null) {
 			// link up the message flow
-			MessageFlow flow = getMessageFlow(messageFlows, topAndBottom.getSecond());
 			linkMessageFlow(fp, flow, envelope);
 		}
 		

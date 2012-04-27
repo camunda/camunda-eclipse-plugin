@@ -187,9 +187,9 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 			CallActivity callActivity = BusinessObjectUtil.getFirstElementOfType(context.getPictogramElement(),
 					CallActivity.class);
 
-			ContainerShape markerContainer = (ContainerShape) getShape(container,
+			ContainerShape markerContainer = (ContainerShape) GraphicsUtil.getShapeForProperty(container,
 					GraphicsUtil.ACTIVITY_MARKER_CONTAINER);
-			Shape globalTaskShape = getShape(container, GLOBAL_TASK_SHAPE_PROPERTY);
+			Shape globalTaskShape = GraphicsUtil.getShapeForProperty(container, GLOBAL_TASK_SHAPE_PROPERTY);
 
 			if (callActivity.getCalledElementRef() == null) {
 				GraphicsUtil.clearActivityMarker(markerContainer, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
@@ -247,18 +247,5 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 		} else {
 			return null;
 		}
-	}
-
-	private Shape getShape(ContainerShape container, String propertyKey) {
-		IPeService peService = Graphiti.getPeService();
-		Iterator<Shape> iterator = peService.getAllContainedShapes(container).iterator();
-		while (iterator.hasNext()) {
-			Shape shape = iterator.next();
-			String property = peService.getPropertyValue(shape, propertyKey);
-			if (property != null && new Boolean(property)) {
-				return shape;
-			}
-		}
-		return null;
 	}
 }

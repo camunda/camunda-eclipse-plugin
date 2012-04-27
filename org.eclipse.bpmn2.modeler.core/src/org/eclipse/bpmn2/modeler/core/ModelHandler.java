@@ -91,7 +91,8 @@ import org.eclipse.xsd.XSDSchema;
 public class ModelHandler {
 
 	Bpmn2ResourceImpl resource;
-
+	Bpmn2Preferences prefs;
+	
 	ModelHandler() {
 	}
 
@@ -117,6 +118,12 @@ public class ModelHandler {
 		}
 	}
 
+	public Bpmn2Preferences getPreferences() {
+		if (prefs==null)
+			prefs = Bpmn2Preferences.getInstance(resource);
+		return prefs;
+	}
+	
 	public BPMNDiagram createDiagramType(final Bpmn2DiagramType diagramType, String targetNamespace) {
 		BPMNDiagram diagram = null;
 		switch (diagramType) {
@@ -190,6 +197,7 @@ public class ModelHandler {
 					bounds.setHeight(GraphicsUtil.EVENT_SIZE);
 					shape.setBounds(bounds);
 					plane.getPlaneElement().add(shape);
+					getPreferences().applyBPMNDIDefaults(shape, null);
 					
 					// SequenceFlow edge
 					BPMNEdge edge = BpmnDiFactory.eINSTANCE.createBPMNEdge();
@@ -220,6 +228,7 @@ public class ModelHandler {
 					bounds.setHeight(GraphicsUtil.EVENT_SIZE);
 					shape.setBounds(bounds);
 					plane.getPlaneElement().add(shape);
+					getPreferences().applyBPMNDIDefaults(shape, null);
 
 					edge.setTargetElement(shape);
 					
@@ -270,28 +279,29 @@ public class ModelHandler {
 
 					// create DI shapes
 
-					boolean vert = Bpmn2Preferences.getInstance(resource).isVerticalOrientation();
+					boolean horz = getPreferences().isHorizontalDefault();
 					// initiating pool
 					BPMNShape shape = BpmnDiFactory.eINSTANCE.createBPMNShape();
 					ModelUtil.setID(shape,resource);
 
 					shape.setBpmnElement(initiatingParticipant);
 					Bounds bounds = DcFactory.eINSTANCE.createBounds();
-					if (vert) {
-						bounds.setX(100);
-						bounds.setY(100);
-						bounds.setWidth(200);
-						bounds.setHeight(1000);
-					}
-					else {
+					if (horz) {
 						bounds.setX(100);
 						bounds.setY(100);
 						bounds.setWidth(1000);
 						bounds.setHeight(200);
 					}
+					else {
+						bounds.setX(100);
+						bounds.setY(100);
+						bounds.setWidth(200);
+						bounds.setHeight(1000);
+					}
 					shape.setBounds(bounds);
-					shape.setIsHorizontal(!vert);
+					shape.setIsHorizontal(horz);
 					plane.getPlaneElement().add(shape);
+					getPreferences().applyBPMNDIDefaults(shape, null);
 
 					// non-initiating pool
 					shape = BpmnDiFactory.eINSTANCE.createBPMNShape();
@@ -299,22 +309,23 @@ public class ModelHandler {
 
 					shape.setBpmnElement(nonInitiatingParticipant);
 					bounds = DcFactory.eINSTANCE.createBounds();
-					if (vert) {
-						bounds.setX(400);
-						bounds.setY(100);
-						bounds.setWidth(200);
-						bounds.setHeight(1000);
-					}
-					else {
+					if (horz) {
 						bounds.setX(100);
 						bounds.setY(400);
 						bounds.setWidth(1000);
 						bounds.setHeight(200);
 					}
+					else {
+						bounds.setX(400);
+						bounds.setY(100);
+						bounds.setWidth(200);
+						bounds.setHeight(1000);
+					}
 					shape.setBounds(bounds);
-					shape.setIsHorizontal(!vert);
+					shape.setIsHorizontal(horz);
 					plane.getPlaneElement().add(shape);
-					
+					getPreferences().applyBPMNDIDefaults(shape, null);
+
 					plane.setBpmnElement(collaboration);
 					bpmnDiagram.setPlane(plane);
 					bpmnDiagram.setName(name+" Collaboration Diagram");
@@ -378,6 +389,7 @@ public class ModelHandler {
 					bounds.setHeight(GraphicsUtil.CHOREOGRAPHY_HEIGHT);
 					taskShape.setBounds(bounds);
 					plane.getPlaneElement().add(taskShape);
+					getPreferences().applyBPMNDIDefaults(taskShape, null);
 
 					BPMNShape participantShape = BpmnDiFactory.eINSTANCE.createBPMNShape();
 					ModelUtil.setID(participantShape,resource);
@@ -391,7 +403,8 @@ public class ModelHandler {
 					bounds.setHeight(GraphicsUtil.PARTICIPANT_BAND_HEIGHT);
 					participantShape.setBounds(bounds);
 					plane.getPlaneElement().add(participantShape);
-					
+					getPreferences().applyBPMNDIDefaults(participantShape, null);
+
 					participantShape = BpmnDiFactory.eINSTANCE.createBPMNShape();
 					ModelUtil.setID(participantShape,resource);
 					participantShape.setBpmnElement(nonInitiatingParticipant);
@@ -404,6 +417,7 @@ public class ModelHandler {
 					bounds.setHeight(GraphicsUtil.PARTICIPANT_BAND_HEIGHT);
 					participantShape.setBounds(bounds);
 					plane.getPlaneElement().add(participantShape);
+					getPreferences().applyBPMNDIDefaults(participantShape, null);
 
 					plane.setBpmnElement(choreography);
 					bpmnDiagram.setPlane(plane);

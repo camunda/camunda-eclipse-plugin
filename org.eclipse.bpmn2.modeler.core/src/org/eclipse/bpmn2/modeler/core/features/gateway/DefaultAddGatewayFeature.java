@@ -14,6 +14,7 @@ package org.eclipse.bpmn2.modeler.core.features.gateway;
 
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.Gateway;
+import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
@@ -74,11 +75,11 @@ public class DefaultAddGatewayFeature extends AbstractAddBPMNShapeFeature {
 		Polygon gateway = GraphicsUtil.createGateway(gatewayShape, width, height);
 		StyleUtil.applyStyle(gateway, addedGateway);
 		gaService.setLocationAndSize(gateway, 0, 0, width, height);
-		decorateGateway(containerShape);
 
-		createDIShape(containerShape, addedGateway);
+		BPMNShape bpmnShape = createDIShape(containerShape, addedGateway);
 		peService.createChopboxAnchor(containerShape);
 		AnchorUtil.addFixedPointAnchors(containerShape, gateway);
+		decorateGateway(containerShape, bpmnShape);
 		
 		splitConnection(context, containerShape);
 		
@@ -91,7 +92,7 @@ public class DefaultAddGatewayFeature extends AbstractAddBPMNShapeFeature {
 		return containerShape;
 	}
 
-	protected void decorateGateway(ContainerShape container) {
+	protected void decorateGateway(ContainerShape container, BPMNShape bpmnShape) {
 	}
 
 	@Override

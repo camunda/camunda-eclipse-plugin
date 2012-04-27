@@ -14,9 +14,11 @@ package org.eclipse.bpmn2.modeler.ui.features.gateway;
 
 import org.eclipse.bpmn2.ExclusiveGateway;
 import org.eclipse.bpmn2.Gateway;
+import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.features.gateway.AbstractCreateGatewayFeature;
 import org.eclipse.bpmn2.modeler.core.features.gateway.DefaultAddGatewayFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
+import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.DiagonalCross;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
@@ -38,8 +40,12 @@ public class ExclusiveGatewayFeatureContainer extends AbstractGatewayFeatureCont
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return new DefaultAddGatewayFeature(fp) {
 			@Override
-			protected void decorateGateway(ContainerShape container) {
-				GraphicsUtil.createGatewayDiagonalCross(container);
+			protected void decorateGateway(ContainerShape container, BPMNShape bpmnShape) {
+				// TODO: handle showExclusiveGatewayMarker property change event in BPMN2Editor
+				// and override the default gateway UpdateFeature to show/hide the "X" marker.
+				if (bpmnShape.isIsMarkerVisible()) {
+					GraphicsUtil.createGatewayDiagonalCross(container);
+				}
 			}
 		};
 	}

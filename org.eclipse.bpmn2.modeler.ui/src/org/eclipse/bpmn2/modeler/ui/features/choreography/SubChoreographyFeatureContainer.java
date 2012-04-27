@@ -75,7 +75,7 @@ public class SubChoreographyFeatureContainer extends AbstractChoreographyFeature
 	public static class CreateSubChoreographyFeature extends AbstractCreateExpandableFlowNodeFeature<SubChoreography> {
 
 		public CreateSubChoreographyFeature(IFeatureProvider fp) {
-			super(fp, "Expanded Sub-Choreography", "A compound activity that can contain other activities");
+			super(fp, "Sub-Choreography", "A compound activity that can contain other activities");
 		}
 
 		@Override

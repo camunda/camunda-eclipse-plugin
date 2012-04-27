@@ -17,8 +17,10 @@ import static org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.SubProce
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.features.activity.AbstractAddActivityFeature;
+import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
+import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Expand;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.internal.services.impl.GaServiceImpl;
@@ -55,17 +57,31 @@ public class AddExpandedSubProcessFeature extends AbstractAddActivityFeature {
 		StyleUtil.applyStyle(text, activity);
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setVerticalAlignment(Orientation.ALIGNMENT_CENTER);
-		text.setFont(gaService.manageFont(getDiagram(), GaServiceImpl.DEFAULT_FONT, 8, false, true));
+//		text.setFont(gaService.manageFont(getDiagram(), GaServiceImpl.DEFAULT_FONT, 8, false, true));
 		link(textShape, activity);
+
+		// TODO: should this go into the UpdateFeature?
+		// see UpdateCallActivityFeature for implementation
+//		ContainerShape markerContainer = (ContainerShape) GraphicsUtil.getShapeForProperty(container,
+//				GraphicsUtil.ACTIVITY_MARKER_CONTAINER);
+//		
+//		Expand expand = GraphicsUtil.createActivityMarkerExpand(markerContainer);
+//		expand.rect.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+//		expand.horizontal.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+//		expand.vertical.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 	}
 
 	@Override
 	public int getWidth() {
-		return GraphicsUtil.SUB_PROCEESS_DEFAULT_WIDTH;
+		if (Bpmn2Preferences.getInstance().isExpandedDefault())
+			return GraphicsUtil.SUB_PROCEESS_DEFAULT_WIDTH;
+		return GraphicsUtil.TASK_DEFAULT_WIDTH;
 	}
 
 	@Override
 	public int getHeight() {
-		return GraphicsUtil.SUB_PROCESS_DEFAULT_HEIGHT;
+		if (Bpmn2Preferences.getInstance().isExpandedDefault())
+			return GraphicsUtil.SUB_PROCESS_DEFAULT_HEIGHT;
+		return GraphicsUtil.TASK_DEFAULT_HEIGHT;
 	}
 }

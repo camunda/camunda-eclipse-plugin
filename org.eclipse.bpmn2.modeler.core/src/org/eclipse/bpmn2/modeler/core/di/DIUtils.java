@@ -23,6 +23,7 @@ import org.eclipse.bpmn2.di.BpmnDiFactory;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
+import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.dd.dc.Bounds;
@@ -137,7 +138,6 @@ public class DIUtils {
 				BPMNDiagram bpmnDiagram = (BPMNDiagram) eObject;
 
 				bpmnShape = BpmnDiFactory.eINSTANCE.createBPMNShape();
-//				bpmnShape.setId(EcoreUtil.generateUUID());
 				bpmnShape.setBpmnElement(elem);
 				Bounds bounds = DcFactory.eINSTANCE.createBounds();
 				bounds.setX(x);
@@ -146,8 +146,9 @@ public class DIUtils {
 				bounds.setHeight(h);
 				bpmnShape.setBounds(bounds);
 
-				List<DiagramElement> elements = bpmnDiagram.getPlane().getPlaneElement();
-				elements.add(bpmnShape);
+				Bpmn2Preferences.getInstance(bpmnDiagram.eResource()).applyBPMNDIDefaults(bpmnShape, null);
+
+				addShape(bpmnShape,bpmnDiagram);
 				ModelUtil.setID(bpmnShape);
 
 				fp.link(shape, new Object[] { elem, bpmnShape });
@@ -156,5 +157,10 @@ public class DIUtils {
 		}
 
 		return bpmnShape;
+	}
+
+	public static void addShape(DiagramElement elem, BPMNDiagram bpmnDiagram) {
+		List<DiagramElement> elements = bpmnDiagram.getPlane().getPlaneElement();
+		elements.add(elem);
 	}
 }

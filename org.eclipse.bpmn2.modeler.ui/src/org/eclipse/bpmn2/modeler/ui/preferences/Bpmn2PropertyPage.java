@@ -13,8 +13,10 @@
 package org.eclipse.bpmn2.modeler.ui.preferences;
 
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
+import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences.BPMNDIAttributeDefault;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.ui.Activator;
+import org.eclipse.bpmn2.modeler.ui.Messages;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -23,6 +25,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.osgi.service.prefs.BackingStoreException;
@@ -34,58 +37,65 @@ public class Bpmn2PropertyPage extends PropertyPage {
 	private Combo cboRuntimes;
 	private Button btnShowAdvancedProperties;
 	private Button btnExpandProperties;
-	private Button btnVerticalOrientation;
+	private BPMNDIAttributeDefaultCombo cboIsHorizontal;
+	private BPMNDIAttributeDefaultCombo cboIsExpanded;
+	private BPMNDIAttributeDefaultCombo cboIsMessageVisible;
+	private BPMNDIAttributeDefaultCombo cboIsMarkerVisible;
 	
 	public Bpmn2PropertyPage() {
 		super();
 		setTitle("BPMN2");
+		setDescription(Messages.Bpmn2PreferencePage_HomePage_Description);
 	}
 
 	@Override
 	protected Control createContents(Composite parent) {
 		
-		initData();
-		
 		Composite container = new Composite(parent, SWT.NULL);
 		container.setLayout(new GridLayout(3, false));
 
-		Label lblRuntime = new Label(container, SWT.NONE);
-		lblRuntime.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
-		lblRuntime.setText(Bpmn2Preferences.PREF_TARGET_RUNTIME_LABEL);
+		Label label = new Label(container, SWT.NONE);
+		label.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+		label.setText(Bpmn2Preferences.PREF_TARGET_RUNTIME_LABEL);
 		
-		cboRuntimes = new Combo(container, SWT.NONE);
+		cboRuntimes = new Combo(container, SWT.READ_ONLY);
 		cboRuntimes.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
 		
-		TargetRuntime cr = prefs.getRuntime();
-		int i = 0;
-		for (TargetRuntime r : TargetRuntime.getAllRuntimes()) {
-			cboRuntimes.add(r.getName());
-			if (r == cr)
-				cboRuntimes.select(i);
-			++i;
-		}
-		
 		btnShowAdvancedProperties = new Button(container, SWT.CHECK);
-		btnShowAdvancedProperties.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
+		btnShowAdvancedProperties.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
 		btnShowAdvancedProperties.setText(Bpmn2Preferences.PREF_SHOW_ADVANCED_PROPERTIES_LABEL);
-		btnShowAdvancedProperties.setSelection( prefs.getShowAdvancedPropertiesTab() );
 
 		btnExpandProperties = new Button(container, SWT.CHECK);
-		btnExpandProperties.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
+		btnExpandProperties.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
 		btnExpandProperties.setText(Bpmn2Preferences.PREF_EXPAND_PROPERTIES_LABEL);
-		btnExpandProperties.setSelection( prefs.getExpandProperties() );
+
+		// Default values for optional BPMN DI attributes
+		Group group = new Group(container, SWT.BORDER);
+		group.setLayout(new GridLayout(3,false));
+		group.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
+		group.setText("Default values for BPMN Diagram Interchange (DI) optional attributes");
+
+		cboIsHorizontal = new BPMNDIAttributeDefaultCombo(group);
+		cboIsHorizontal.setText(Bpmn2Preferences.PREF_IS_HORIZONTAL_LABEL);
 		
-		btnVerticalOrientation = new Button(container, SWT.CHECK);
-		btnVerticalOrientation.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
-		btnVerticalOrientation.setText(Bpmn2Preferences.PREF_VERTICAL_ORIENTATION_LABEL);
-		btnVerticalOrientation.setSelection( prefs.isVerticalOrientation() );
+		cboIsExpanded = new BPMNDIAttributeDefaultCombo(group);
+		cboIsExpanded.setText(Bpmn2Preferences.PREF_IS_EXPANDED_LABEL);
+		
+		cboIsMessageVisible = new BPMNDIAttributeDefaultCombo(group);
+		cboIsMessageVisible.setText(Bpmn2Preferences.PREF_IS_MESSAGE_VISIBLE_LABEL);
+		
+		cboIsMarkerVisible = new BPMNDIAttributeDefaultCombo(group);
+		cboIsMarkerVisible.setText(Bpmn2Preferences.PREF_IS_MARKER_VISIBLE_LABEL);
+
+		initData();
 
 		return container;
 	}
 
 	private void restoreDefaults() {
-		prefs.restoreDefaults();
+		prefs.restoreDefaults(true);
 		prefs.getRuntime();
+		initData();
 	}
 
 	@Override
@@ -98,6 +108,22 @@ public class Bpmn2PropertyPage extends PropertyPage {
 		IProject project = (IProject) getElement().getAdapter(IProject.class);
 		prefs = Bpmn2Preferences.getInstance(project);
 		prefs.load();
+
+		btnShowAdvancedProperties.setSelection( prefs.getShowAdvancedPropertiesTab() );
+		btnExpandProperties.setSelection( prefs.getExpandProperties() );
+		cboIsHorizontal.setValue(prefs.getIsHorizontal());
+		cboIsExpanded.setValue( prefs.getIsExpanded() );
+		cboIsMessageVisible.setValue( prefs.getIsMessageVisible() );
+		cboIsMarkerVisible.setValue( prefs.getIsMarkerVisible() );
+		
+		TargetRuntime cr = prefs.getRuntime();
+		int i = 0;
+		for (TargetRuntime r : TargetRuntime.getAllRuntimes()) {
+			cboRuntimes.add(r.getName());
+			if (r == cr)
+				cboRuntimes.select(i);
+			++i;
+		}
 	}
 
 	@Override
@@ -122,14 +148,12 @@ public class Bpmn2PropertyPage extends PropertyPage {
 		TargetRuntime rt = TargetRuntime.getAllRuntimes()[i];
 		prefs.setRuntime(rt);
 		
-		boolean show = btnShowAdvancedProperties.getSelection();
-		prefs.setShowAdvancedPropertiesTab(show);
-		
-		boolean expand = btnExpandProperties.getSelection();
-		prefs.setExpandProperties(expand);
-		
-		boolean vertical = btnVerticalOrientation.getSelection();
-		prefs.setVerticalOrientation(vertical);
+		prefs.setShowAdvancedPropertiesTab(btnShowAdvancedProperties.getSelection());
+		prefs.setExpandProperties(btnExpandProperties.getSelection());
+		prefs.setIsHorizontal(cboIsHorizontal.getValue());
+		prefs.setIsExpanded(cboIsExpanded.getValue());
+		prefs.setIsMessageVisible(cboIsMessageVisible.getValue());
+		prefs.setIsMarkerVisible(cboIsMarkerVisible.getValue());
 		
 		prefs.save();
 	}

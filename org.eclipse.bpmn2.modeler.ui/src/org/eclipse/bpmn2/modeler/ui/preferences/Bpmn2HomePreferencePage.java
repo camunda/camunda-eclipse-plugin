@@ -4,11 +4,14 @@ import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.ui.Messages;
-import org.eclipse.bpmn2.modeler.ui.util.SelectableComboFieldEditor;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -44,24 +47,6 @@ public class Bpmn2HomePreferencePage
 	 */
 	@Override
 	public void createFieldEditors() {
-		BooleanFieldEditor showAdvancedPropsTab = new BooleanFieldEditor(
-				Bpmn2Preferences.PREF_SHOW_ADVANCED_PROPERTIES,
-				Bpmn2Preferences.PREF_SHOW_ADVANCED_PROPERTIES_LABEL,
-				getFieldEditorParent());
-		addField(showAdvancedPropsTab);
-
-		BooleanFieldEditor expandProperties = new BooleanFieldEditor(
-				Bpmn2Preferences.PREF_EXPAND_PROPERTIES,
-				Bpmn2Preferences.PREF_EXPAND_PROPERTIES_LABEL,
-				getFieldEditorParent());
-		addField(expandProperties);
-
-		BooleanFieldEditor defaultOrientation = new BooleanFieldEditor(
-				Bpmn2Preferences.PREF_VERTICAL_ORIENTATION,
-				Bpmn2Preferences.PREF_VERTICAL_ORIENTATION_LABEL,
-				getFieldEditorParent());
-		addField(defaultOrientation);
-		
 		String[][] entries = new String[TargetRuntime.getAllRuntimes().length][2];
 		int i = 0;
 		for (TargetRuntime r : TargetRuntime.getAllRuntimes()) {
@@ -80,12 +65,59 @@ public class Bpmn2HomePreferencePage
 //		targetRuntimes.setSelectedValue(getPreferenceStore().getString(Bpmn2Preferences.PREF_TARGET_RUNTIME));
 		
 		addField(targetRuntimes);
+
+		BooleanFieldEditor showAdvancedPropsTab = new BooleanFieldEditor(
+				Bpmn2Preferences.PREF_SHOW_ADVANCED_PROPERTIES,
+				Bpmn2Preferences.PREF_SHOW_ADVANCED_PROPERTIES_LABEL,
+				getFieldEditorParent());
+		addField(showAdvancedPropsTab);
+
+		BooleanFieldEditor expandProperties = new BooleanFieldEditor(
+				Bpmn2Preferences.PREF_EXPAND_PROPERTIES,
+				Bpmn2Preferences.PREF_EXPAND_PROPERTIES_LABEL,
+				getFieldEditorParent());
+		addField(expandProperties);
+
+		Group group = new Group(getFieldEditorParent(), SWT.BORDER);
+		group.setLayout(new GridLayout(3,false));
+		group.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
+		group.setText("Default values for BPMN Diagram Interchange (DI) optional attributes");
+
+		BPMNDIAttributeDefaultComboFieldEditor isHorizontal = new BPMNDIAttributeDefaultComboFieldEditor(
+				Bpmn2Preferences.PREF_IS_HORIZONTAL,
+				Bpmn2Preferences.PREF_IS_HORIZONTAL_LABEL,
+				group);
+		addField(isHorizontal);
+
+		BPMNDIAttributeDefaultComboFieldEditor isExpanded = new BPMNDIAttributeDefaultComboFieldEditor(
+				Bpmn2Preferences.PREF_IS_EXPANDED,
+				Bpmn2Preferences.PREF_IS_EXPANDED_LABEL,
+				group);
+		addField(isExpanded);
+
+		BPMNDIAttributeDefaultComboFieldEditor isMessageVisible = new BPMNDIAttributeDefaultComboFieldEditor(
+				Bpmn2Preferences.PREF_IS_MESSAGE_VISIBLE,
+				Bpmn2Preferences.PREF_IS_MESSAGE_VISIBLE_LABEL,
+				group);
+		addField(isMessageVisible);
+
+		BPMNDIAttributeDefaultComboFieldEditor isMarkerVisible = new BPMNDIAttributeDefaultComboFieldEditor(
+				Bpmn2Preferences.PREF_IS_MARKER_VISIBLE,
+				Bpmn2Preferences.PREF_IS_MARKER_VISIBLE_LABEL,
+				group);
+		addField(isMarkerVisible);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	public void init(IWorkbench workbench) {
+	}
+
+	@Override
+	protected void performDefaults() {
+		Bpmn2Preferences.getInstance().restoreDefaults(false);
+		super.performDefaults();
 	}
 	
 }

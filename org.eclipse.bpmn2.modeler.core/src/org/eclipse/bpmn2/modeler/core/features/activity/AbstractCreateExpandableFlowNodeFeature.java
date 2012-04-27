@@ -38,9 +38,9 @@ public abstract class AbstractCreateExpandableFlowNodeFeature<T extends FlowNode
 			
 			// if the Activity is expandable, set "isExpanded" to true because
 			// this feature will always create an expanded BPMNShape.
-			EStructuralFeature feature = ((EObject)shape).eClass().getEStructuralFeature("isExpanded");
-			if (feature!=null)
-				shape.eSet(feature, Boolean.TRUE);
+//			EStructuralFeature feature = ((EObject)shape).eClass().getEStructuralFeature("isExpanded");
+//			if (feature!=null)
+//				shape.eSet(feature, Boolean.TRUE);
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
