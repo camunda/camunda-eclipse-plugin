@@ -35,6 +35,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
@@ -46,6 +47,7 @@ import org.eclipse.bpmn2.modeler.core.IBpmn2RuntimeExtension;
 import org.eclipse.bpmn2.modeler.core.runtime.CustomTaskDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor.Property;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.JBPM5RuntimeExtension;
@@ -102,6 +104,9 @@ public class JbpmCustomTaskFeatureContainer extends CustomTaskFeatureContainer {
 	}
 	
 	public String getId(EObject object) {
+		if (object==null)
+			return null;
+		
 		List<EStructuralFeature> features = ModelUtil.getAnyAttributes(object);
 		for (EStructuralFeature f : features) {
 			if ("taskName".equals(f.getName())) {
@@ -203,7 +208,13 @@ public class JbpmCustomTaskFeatureContainer extends CustomTaskFeatureContainer {
 		 */
 		@Override
 		public boolean isAvailable(IContext context) {
-			return true;
+			PictogramElement[] pes = ((ICustomContext)context).getPictogramElements();
+			if (pes.length==1) {
+				BaseElement be = BusinessObjectUtil.getFirstBaseElement(pes[0]);
+				String id = getId(be);
+				return id!=null;
+			}
+			return false;
 		}
 
 		/* (non-Javadoc)

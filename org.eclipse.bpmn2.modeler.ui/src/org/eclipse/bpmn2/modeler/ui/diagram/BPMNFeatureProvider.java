@@ -516,7 +516,8 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 				ICustomFeature[] cfa = ctf.getCustomFeatures(this);
 				if (cfa!=null) {
 					for (ICustomFeature cf : cfa) {
-						list.add(cf);
+						if (cf.isAvailable(context))
+							list.add(cf);
 					}
 				}
 			}
