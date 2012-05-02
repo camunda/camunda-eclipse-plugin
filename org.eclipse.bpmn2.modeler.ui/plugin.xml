@@ -501,50 +501,45 @@
 			<disable object="ParticipantMultiplicity"/>
 		</modelEnablement>
 
-		<style object="AdHocSubProcess" background="D4E7F8"/>
-		<style object="Association" background="D4E7F8"/>
-		<style object="Association" background="D4E7F8"/>
-		<style object="BoundaryEvent" background="D4E7F8"/>
-		<style object="BusinessRuleTask" background="D4E7F8"/>
-		<style object="CallActivity" background="D4E7F8"/>
-		<style object="CallChoreography" background="D4E7F8"/>
-		<style object="ChoreographyTask" background="D4E7F8"/>
-		<style object="ComplexGateway" background="200,200,100"/>
-		<style object="Conversation" background="D4E7F8"/>
-		<style object="DataAssociation" background="D4E7F8"/>
-		<style object="DataAssociation" background="D4E7F8"/>
-		<style object="DataInput" background="D4E7F8"/>
-		<style object="DataObject" background="D4E7F8"/>
-		<style object="DataObjectReference" background="D4E7F8"/>
-		<style object="DataOutput" background="D4E7F8"/>
-		<style object="DataStoreReference" background="D4E7F8"/>
-		<style object="EndEvent" background="C82020"/>
-		<style object="EventBasedGateway" background="200,200,100"/>
-		<style object="ExclusiveGateway" background="200,200,100"/>
-		<style object="Group" background="D4E7F8"/>
-		<style object="InclusiveGateway" background="200,200,100"/>
-		<style object="IntermediateCatchEvent" background="D4E7F8"/>
-		<style object="IntermediateThrowEvent" background="D4E7F8"/>
-		<style object="Lane" background="D4E7F8"/>
-		<style object="ManualTask" background="D4E7F8"/>
-		<style object="Message" background="D4E7F8"/>
-		<style object="MessageFlow" background="D4E7F8"/>
-		<style object="MessageFlow" background="D4E7F8"/>
-		<style object="ParallelGateway" background="200,200,100"/>
-		<style object="Participant" background="D4E7F8"/>
-		<style object="ReceiveTask" background="D4E7F8"/>
-		<style object="ScriptTask" background="D4E7F8"/>
-		<style object="SendTask" background="D4E7F8"/>
-		<style object="SequenceFlow" background="D4E7F8"/>
-		<style object="SequenceFlow" background="D4E7F8"/>
-		<style object="ServiceTask" background="D4E7F8"/>
-		<style object="StartEvent" background="20C820"/>
-		<style object="SubChoreography" background="D4E7F8"/>
-		<style object="SubProcess" background="D4E7F8"/>
-		<style object="Task" background="D4E7F8"/>
-		<style object="TextAnnotation" background="D4E7F8"/>
-		<style object="Transaction" background="D4E7F8"/>
-		<style object="UserTask" background="D4E7F8"/>
+		<style object="AdHocSubProcess" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="Association" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="BoundaryEvent" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="BusinessRuleTask" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="CallActivity" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="CallChoreography" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="ChoreographyTask" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="ComplexGateway" foreground="484800" background="C8C864" textColor="484800" font="arial,10,-,-"/>
+		<style object="Conversation" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="DataAssociation" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="DataInput" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="DataObject" foreground="546778" background="D4E7F8" textColor="546778" font="Arial,10,-,-"/>
+		<style object="DataOutput" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="DataStoreReference" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="EndEvent" foreground="7F0000" background="FF8080" textColor="7F0000" font="arial,10,-,-"/>
+		<style object="EventBasedGateway" foreground="484800" background="C8C864" textColor="484800" font="arial,10,-,-"/>
+		<style object="ExclusiveGateway" foreground="484800" background="C8C864" textColor="484800" font="arial,10,-,-"/>
+		<style object="Group" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="InclusiveGateway" foreground="7F7F00" background="FFFF80" textColor="7F7F00" font="arial,10,-,-"/>
+		<style object="IntermediateCatchEvent" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="IntermediateThrowEvent" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="Lane" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="ManualTask" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="Message" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="MessageFlow" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="ParallelGateway" foreground="484800" background="C8C864" textColor="484800" font="arial,10,-,-"/>
+		<style object="Participant" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="ReceiveTask" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="ScriptTask" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="SendTask" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="SequenceFlow" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="ServiceTask" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="StartEvent" foreground="007F00" background="80FF80" textColor="007F00" font="arial,10,-,-"/>
+		<style object="SubChoreography" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="SubProcess" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="Task" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="TextAnnotation" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="Transaction" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
+		<style object="UserTask" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
 
 	</extension>
 
