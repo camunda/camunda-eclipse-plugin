@@ -73,6 +73,7 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 	ColorControl shapeForeground;
 	FontControl textFont;
 	ColorControl textColor;
+	boolean debug;
 
 	public Bpmn2EditorPreferencePage() {
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
@@ -180,19 +181,16 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 			for (Class c : allElements) {
 				ShapeStyle ss = preferences.getShapeStyle(c);
 				shapeStyles.put(c, ss);
-//			IColorConstant foreground = ss.getShapeForeground();
-//			IColorConstant background = ss.getShapeBackground();
-//			IColorConstant textColor = ss.getTextColor();
-//			Font font = ss.getTextFont();
-//			System.out.println("\t\t<style object=\""+c.getSimpleName()+"\""+
-//					" foreground=\""+ShapeStyle.colorToString(foreground)+"\""+
-//					" background=\""+ShapeStyle.colorToString(background)+"\""+
-//					" textColor=\""+ShapeStyle.colorToString(textColor)+"\""+
-//					" font=\""+ShapeStyle.fontToString(font)+"\"/>");
-
-				if (c==SequenceFlow.class) {
-					preferences.getShapeStyle(c);
-					System.out.println(ShapeStyle.colorToString(ss.getShapeForeground()));
+			if (debug) {
+				IColorConstant foreground = ss.getShapeForeground();
+				IColorConstant background = ss.getShapeBackground();
+				IColorConstant textColor = ss.getTextColor();
+				Font font = ss.getTextFont();
+				System.out.println("\t\t<style object=\""+c.getSimpleName()+"\""+
+						" foreground=\""+ShapeStyle.colorToString(foreground)+"\""+
+						" background=\""+ShapeStyle.colorToString(background)+"\""+
+						" textColor=\""+ShapeStyle.colorToString(textColor)+"\""+
+						" font=\""+ShapeStyle.fontToString(font)+"\"/>");
 				}
 			}
 	        elementsListViewer.setInput(shapeStyles);

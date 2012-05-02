@@ -101,7 +101,7 @@ public class ToolEnablementPropertyPage extends PropertyPage {
 		lblCopy.setText("all enablements from Target Runtime:");
 		lblCopy.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 
-		final Combo cboCopy = new Combo(container, SWT.NONE);
+		final Combo cboCopy = new Combo(container, SWT.READ_ONLY);
 		cboCopy.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
 		TargetRuntime cr = bpmn2Preferences.getRuntime();
 		int i = 0;

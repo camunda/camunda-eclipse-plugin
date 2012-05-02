@@ -71,6 +71,8 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	public final static String PREF_TARGET_RUNTIME_LABEL = "Target &Runtime";
 	public final static String PREF_SHOW_ADVANCED_PROPERTIES = "show.advanced.properties";
 	public final static String PREF_SHOW_ADVANCED_PROPERTIES_LABEL = "Show the &Advanced Properties Tab for BPMN2 Elements";
+	public final static String PREF_SHOW_DESCRIPTIONS = "show.descriptions";
+	public final static String PREF_SHOW_DESCRIPTIONS_LABEL = "Show &descriptions in Properties Tab for BPMN2 Elements";
 	public final static String PREF_EXPAND_PROPERTIES = "expand.properties";
 	public final static String PREF_EXPAND_PROPERTIES_LABEL = "E&xpand compound property details instead of showing a selection list";
 	public final static String PREF_OVERRIDE_MODEL_ENABLEMENTS = "override.model.enablements";
@@ -107,6 +109,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	private boolean showAdvancedPropertiesTab;
 	private boolean overrideModelEnablements;
 	private boolean expandProperties;
+	private boolean showDescriptions;
 	private BPMNDIAttributeDefault isHorizontal;
 	private BPMNDIAttributeDefault isExpanded;
 	private BPMNDIAttributeDefault isMessageVisible;
@@ -204,6 +207,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		if (resetProjectPreferences && projectPreferences != null) {
 			projectPreferences.remove(PREF_TARGET_RUNTIME);
 			projectPreferences.remove(PREF_SHOW_ADVANCED_PROPERTIES);
+			projectPreferences.remove(PREF_SHOW_DESCRIPTIONS);
 			projectPreferences.remove(PREF_EXPAND_PROPERTIES);
 			projectPreferences.remove(PREF_IS_HORIZONTAL);
 			projectPreferences.remove(PREF_IS_EXPANDED);
@@ -215,6 +219,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		}
 		globalPreferences.setDefault(PREF_TARGET_RUNTIME, TargetRuntime.getFirstNonDefaultId());
 		globalPreferences.setDefault(PREF_SHOW_ADVANCED_PROPERTIES, false);
+		globalPreferences.setDefault(PREF_SHOW_DESCRIPTIONS, true);
 		globalPreferences.setDefault(PREF_EXPAND_PROPERTIES, false);
 		globalPreferences.setDefault(PREF_IS_HORIZONTAL, BPMNDIAttributeDefault.DEFAULT_TRUE.name());
 		globalPreferences.setDefault(PREF_IS_EXPANDED, BPMNDIAttributeDefault.ALWAYS_TRUE.name());
@@ -226,6 +231,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 
 		globalPreferences.setToDefault(PREF_TARGET_RUNTIME);
 		globalPreferences.setToDefault(PREF_SHOW_ADVANCED_PROPERTIES);
+		globalPreferences.setToDefault(PREF_SHOW_DESCRIPTIONS);
 		globalPreferences.setToDefault(PREF_EXPAND_PROPERTIES);
 		globalPreferences.setToDefault(PREF_IS_HORIZONTAL);
 		globalPreferences.setToDefault(PREF_IS_EXPANDED);
@@ -284,6 +290,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 				id = TargetRuntime.getFirstNonDefaultId();
 			targetRuntime = TargetRuntime.getRuntime(id);
 			showAdvancedPropertiesTab = getBoolean(PREF_SHOW_ADVANCED_PROPERTIES, false);
+			showDescriptions = getBoolean(PREF_SHOW_DESCRIPTIONS, false);
 			expandProperties = getBoolean(PREF_EXPAND_PROPERTIES, false);
 			isHorizontal = getBPMNDIAttributeDefault(PREF_IS_HORIZONTAL, BPMNDIAttributeDefault.USE_DI_VALUE);
 			isExpanded = getBPMNDIAttributeDefault(PREF_IS_EXPANDED, BPMNDIAttributeDefault.USE_DI_VALUE);
@@ -303,6 +310,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 
 			setString(PREF_TARGET_RUNTIME,targetRuntime.getId());
 			setBoolean(PREF_SHOW_ADVANCED_PROPERTIES, showAdvancedPropertiesTab);
+			setBoolean(PREF_SHOW_DESCRIPTIONS, showDescriptions);
 			setBoolean(PREF_EXPAND_PROPERTIES, expandProperties);
 			setBPMNDIAttributeDefault(PREF_IS_HORIZONTAL, isHorizontal);
 
@@ -441,6 +449,16 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	public void setShowAdvancedPropertiesTab(boolean show) {
 		overrideGlobalBoolean(PREF_SHOW_ADVANCED_PROPERTIES, show);
 		showAdvancedPropertiesTab = show;
+	}
+	
+	public boolean getShowDescriptions() {
+		load();
+		return showDescriptions;
+	}
+	
+	public void setShowDescriptions(boolean show) {
+		overrideGlobalBoolean(PREF_SHOW_DESCRIPTIONS, show);
+		showDescriptions = show;
 	}
 	
 	public boolean getOverrideModelEnablements() {

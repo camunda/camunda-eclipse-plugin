@@ -36,6 +36,7 @@ public class Bpmn2PropertyPage extends PropertyPage {
 	
 	private Combo cboRuntimes;
 	private Button btnShowAdvancedProperties;
+	private Button btnShowDescriptions;
 	private Button btnExpandProperties;
 	private BPMNDIAttributeDefaultCombo cboIsHorizontal;
 	private BPMNDIAttributeDefaultCombo cboIsExpanded;
@@ -64,6 +65,10 @@ public class Bpmn2PropertyPage extends PropertyPage {
 		btnShowAdvancedProperties = new Button(container, SWT.CHECK);
 		btnShowAdvancedProperties.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
 		btnShowAdvancedProperties.setText(Bpmn2Preferences.PREF_SHOW_ADVANCED_PROPERTIES_LABEL);
+		
+		btnShowDescriptions = new Button(container, SWT.CHECK);
+		btnShowDescriptions.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
+		btnShowDescriptions.setText(Bpmn2Preferences.PREF_SHOW_DESCRIPTIONS_LABEL);
 
 		btnExpandProperties = new Button(container, SWT.CHECK);
 		btnExpandProperties.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
@@ -110,6 +115,7 @@ public class Bpmn2PropertyPage extends PropertyPage {
 		prefs.load();
 
 		btnShowAdvancedProperties.setSelection( prefs.getShowAdvancedPropertiesTab() );
+		btnShowDescriptions.setSelection( prefs.getShowDescriptions() );
 		btnExpandProperties.setSelection( prefs.getExpandProperties() );
 		cboIsHorizontal.setValue(prefs.getIsHorizontal());
 		cboIsExpanded.setValue( prefs.getIsExpanded() );
@@ -149,6 +155,7 @@ public class Bpmn2PropertyPage extends PropertyPage {
 		prefs.setRuntime(rt);
 		
 		prefs.setShowAdvancedPropertiesTab(btnShowAdvancedProperties.getSelection());
+		prefs.setShowDescriptions(btnShowDescriptions.getSelection());
 		prefs.setExpandProperties(btnExpandProperties.getSelection());
 		prefs.setIsHorizontal(cboIsHorizontal.getValue());
 		prefs.setIsExpanded(cboIsExpanded.getValue());

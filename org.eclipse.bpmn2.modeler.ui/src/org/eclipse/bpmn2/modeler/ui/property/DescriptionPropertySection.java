@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.ui.property;
 
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
@@ -83,10 +84,12 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 		}
 		
 		protected void bindDescription(EObject be) {
-			String description = getDescription(be);
-
-			if (description != null) {
-				createDescription(this, description);
+			if (Bpmn2Preferences.getInstance().getShowDescriptions()) {
+				String description = getDescription(be);
+	
+				if (description != null) {
+					createDescription(this, description);
+				}
 			}
 		}
 		

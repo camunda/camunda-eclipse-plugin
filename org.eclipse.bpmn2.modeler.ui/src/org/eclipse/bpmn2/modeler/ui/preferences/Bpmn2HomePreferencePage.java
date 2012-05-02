@@ -72,6 +72,12 @@ public class Bpmn2HomePreferencePage
 				getFieldEditorParent());
 		addField(showAdvancedPropsTab);
 
+		BooleanFieldEditor showDescriptions = new BooleanFieldEditor(
+				Bpmn2Preferences.PREF_SHOW_DESCRIPTIONS,
+				Bpmn2Preferences.PREF_SHOW_DESCRIPTIONS_LABEL,
+				getFieldEditorParent());
+		addField(showDescriptions);
+
 		BooleanFieldEditor expandProperties = new BooleanFieldEditor(
 				Bpmn2Preferences.PREF_EXPAND_PROPERTIES,
 				Bpmn2Preferences.PREF_EXPAND_PROPERTIES_LABEL,
