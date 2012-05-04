@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
+import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.di.BpmnDiFactory;
 import org.eclipse.bpmn2.modeler.core.Activator;
@@ -162,5 +163,23 @@ public class DIUtils {
 	public static void addShape(DiagramElement elem, BPMNDiagram bpmnDiagram) {
 		List<DiagramElement> elements = bpmnDiagram.getPlane().getPlaneElement();
 		elements.add(elem);
+	}
+	
+	public static DiagramElement findDiagramElement(List<BPMNDiagram> diagrams, BaseElement bpmnElement) {
+		for (BPMNDiagram d : diagrams) {
+			BPMNPlane plane = d.getPlane();
+			List<DiagramElement> planeElements = plane.getPlaneElement();
+			for (DiagramElement de : planeElements) {
+				if (de instanceof BPMNShape) {
+					if (bpmnElement == ((BPMNShape)de).getBpmnElement())
+						return de;
+				}
+				if (de instanceof BPMNEdge) {
+					if (bpmnElement == ((BPMNEdge)de).getBpmnElement())
+						return de;
+				}
+			}
+		}
+		return null;
 	}
 }

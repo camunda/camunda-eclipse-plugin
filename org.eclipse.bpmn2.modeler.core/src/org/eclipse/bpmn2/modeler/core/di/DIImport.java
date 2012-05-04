@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.di;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +32,7 @@ import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.Lane;
+import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
@@ -52,6 +54,7 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.validation.LiveValidationContentAdapter;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.Point;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.EList;
@@ -68,6 +71,7 @@ import org.eclipse.graphiti.features.context.impl.AddConnectionContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.AreaContext;
 import org.eclipse.graphiti.features.context.impl.LayoutContext;
+import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
@@ -218,45 +222,98 @@ public class DIImport {
 		}
 		
 		// Process Queue
-		int requeueCount = 0;
 		int queueLength = shapeQueue.size();
-		while ( !shapeQueue.isEmpty() && requeueCount<queueLength ) {
+		for (int pass=0; pass<=1; ++pass) {
+			int requeueCount = 0;
+			while (!shapeQueue.isEmpty() && requeueCount < queueLength) {
 				BPMNShape currentShape = shapeQueue.remove();
 				BaseElement bpmnElement = currentShape.getBpmnElement();
 				boolean postpone = false;
-				
-				if (bpmnElement instanceof BoundaryEvent &&
-					!elements.containsKey(((BoundaryEvent) bpmnElement).getAttachedToRef())){
+	
+				if (bpmnElement instanceof BoundaryEvent
+						&& !elements.containsKey(((BoundaryEvent) bpmnElement).getAttachedToRef())) {
 					postpone = true;
-				}
-				else if (bpmnElement instanceof FlowNode) {
-					
+				} else if (bpmnElement instanceof FlowNode) {
+	
 					EObject container = bpmnElement.eContainer();
-					if ((container instanceof SubProcess || container instanceof SubChoreography) &&
-							!elements.containsKey(container)) {
+					if ((container instanceof SubProcess || container instanceof SubChoreography)
+							&& !elements.containsKey(container)) {
 						postpone = true;
-					}
-					else if (!((FlowNode)bpmnElement).getLanes().isEmpty()) {
-						List<Lane> lanes = ((FlowNode)bpmnElement).getLanes();
-						for (Lane lane : lanes) {
-							if (!elements.containsKey(lane)) {
-								postpone = true;
-								break;
+					} else if (!((FlowNode) bpmnElement).getLanes().isEmpty()) {
+						List<Lane> lanes = ((FlowNode) bpmnElement).getLanes();
+						if (pass==0) {
+							for (Lane lane : lanes) {
+								if (!elements.containsKey(lane)) {
+									postpone = true;
+									break;
+								}
 							}
 						}
-					}		
+						else {
+							// synthesize missing Lane shapes
+							List<BPMNDiagram> diagrams = modelHandler.getAll(BPMNDiagram.class);
+							for (Lane lane : lanes) {
+								if (!elements.containsKey(lane)) {
+									// this is a new one
+									ContainerShape targetContainer = null;
+									int xMin = Integer.MAX_VALUE;
+									int yMin = Integer.MAX_VALUE;
+									int width = 0;
+									int height = 0;
+									for (FlowNode flowNode : lane.getFlowNodeRefs()) {
+										BPMNShape flowNodeBPMNShape = (BPMNShape)DIUtils.findDiagramElement(diagrams,flowNode);
+										if (flowNodeBPMNShape!=null) {
+											// adjust bounds of Lane
+											Bounds bounds = flowNodeBPMNShape.getBounds();
+											int x = (int)bounds.getX();
+											int y = (int)bounds.getY();
+											int w = (int)bounds.getWidth();
+											int h = (int)bounds.getHeight();
+											if (x<xMin)
+												xMin = x;
+											if (y<yMin) 
+												yMin = y;
+											if (xMin+width < x + w)
+												width = x - xMin + w;
+											if (yMin+height < y + h)
+												height = y - yMin + h;
+										}
+									}
+									if (width>0 && height>0) {
+										// create a new BPMNShape for this Lane
+										AddContext context = new AddContext(new AreaContext(), lane);
+										context.setX(xMin-10);
+										context.setY(yMin-10);
+										context.setWidth(width+20);
+										context.setHeight(height+20);
+										context.putProperty(IMPORT_PROPERTY, true);
+										// determine the container into which to place the new Lane
+										handleLane(lane, context, null);
+										IAddFeature addFeature = featureProvider.getAddFeature(context);
+										ContainerShape newContainer = (ContainerShape)addFeature.add(context);
+										DIUtils.createDIShape(newContainer, lane, xMin, yMin, width, height, featureProvider, diagram);
+										newContainer.getGraphicsAlgorithm().setTransparency(0.5);
+										Graphiti.getPeService().sendToBack(newContainer);
+										
+										elements.put(lane, newContainer);
+									}									
+								}
+							}
+						}
+					}
 				}
-				
+	
 				if (postpone) {
 					// post-pone
 					shapeQueue.offer(currentShape);
 					++requeueCount;
-				}
-				else {
+				} else {
 					createShape(currentShape);
 					requeueCount = 0;
 				}
+			}
 		}
+		
 		if (shapeQueue.size()!=0) {
 			String elementList = "";
 			for (Iterator<BPMNShape> iterator = shapeQueue.iterator(); iterator.hasNext();) {
@@ -406,16 +463,18 @@ public class DIImport {
 				}
 			}
 		}
-		
-		int x = (int) shape.getBounds().getX();
-		int y = (int) shape.getBounds().getY();
-		ILocation loc = Graphiti.getPeLayoutService().getLocationRelativeToDiagram(cont);
-		x -= loc.getX();
-		y -= loc.getY();
-
 		context.setTargetContainer(cont);
-		context.setLocation((int) x, y);
-		FeatureSupport.setHorizontal(context, shape.isIsHorizontal());
+
+		if (shape!=null) {
+			int x = (int) shape.getBounds().getX();
+			int y = (int) shape.getBounds().getY();
+			ILocation loc = Graphiti.getPeLayoutService().getLocationRelativeToDiagram(cont);
+			x -= loc.getX();
+			y -= loc.getY();
+	
+			context.setLocation((int) x, y);
+			FeatureSupport.setHorizontal(context, shape.isIsHorizontal());
+		}
 	}
 
 	private void handleFlowNode(FlowNode node, AddContext context, BPMNShape shape) {
