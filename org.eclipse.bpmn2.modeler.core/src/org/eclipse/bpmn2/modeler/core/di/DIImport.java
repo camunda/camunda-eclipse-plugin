@@ -222,6 +222,8 @@ public class DIImport {
 		}
 		
 		// Process Queue
+		// First pass tries to find the missing BPMNShape container
+		// Second pass synthesizes missing containers 
 		int queueLength = shapeQueue.size();
 		for (int pass=0; pass<=1; ++pass) {
 			int requeueCount = 0;
@@ -229,7 +231,7 @@ public class DIImport {
 				BPMNShape currentShape = shapeQueue.remove();
 				BaseElement bpmnElement = currentShape.getBpmnElement();
 				boolean postpone = false;
-	
+
 				if (bpmnElement instanceof BoundaryEvent
 						&& !elements.containsKey(((BoundaryEvent) bpmnElement).getAttachedToRef())) {
 					postpone = true;
@@ -251,53 +253,8 @@ public class DIImport {
 						}
 						else {
 							// synthesize missing Lane shapes
-							List<BPMNDiagram> diagrams = modelHandler.getAll(BPMNDiagram.class);
 							for (Lane lane : lanes) {
-								if (!elements.containsKey(lane)) {
-									// this is a new one
-									ContainerShape targetContainer = null;
-									int xMin = Integer.MAX_VALUE;
-									int yMin = Integer.MAX_VALUE;
-									int width = 0;
-									int height = 0;
-									for (FlowNode flowNode : lane.getFlowNodeRefs()) {
-										BPMNShape flowNodeBPMNShape = (BPMNShape)DIUtils.findDiagramElement(diagrams,flowNode);
-										if (flowNodeBPMNShape!=null) {
-											// adjust bounds of Lane
-											Bounds bounds = flowNodeBPMNShape.getBounds();
-											int x = (int)bounds.getX();
-											int y = (int)bounds.getY();
-											int w = (int)bounds.getWidth();
-											int h = (int)bounds.getHeight();
-											if (x<xMin)
-												xMin = x;
-											if (y<yMin) 
-												yMin = y;
-											if (xMin+width < x + w)
-												width = x - xMin + w;
-											if (yMin+height < y + h)
-												height = y - yMin + h;
-										}
-									}
-									if (width>0 && height>0) {
-										// create a new BPMNShape for this Lane
-										AddContext context = new AddContext(new AreaContext(), lane);
-										context.setX(xMin-10);
-										context.setY(yMin-10);
-										context.setWidth(width+20);
-										context.setHeight(height+20);
-										context.putProperty(IMPORT_PROPERTY, true);
-										// determine the container into which to place the new Lane
-										handleLane(lane, context, null);
-										IAddFeature addFeature = featureProvider.getAddFeature(context);
-										ContainerShape newContainer = (ContainerShape)addFeature.add(context);
-										DIUtils.createDIShape(newContainer, lane, xMin, yMin, width, height, featureProvider, diagram);
-										newContainer.getGraphicsAlgorithm().setTransparency(0.5);
-										Graphiti.getPeService().sendToBack(newContainer);
-										
-										elements.put(lane, newContainer);
-									}									
-								}
+								synthesizeLane(lane);
 							}
 						}
 					}
@@ -332,6 +289,54 @@ public class DIImport {
 		}
 	}
 
+	private void synthesizeLane(Lane lane) {
+		if (!elements.containsKey(lane)) {
+			List<BPMNDiagram> diagrams = modelHandler.getAll(BPMNDiagram.class);
+			// this is a new one
+			int xMin = Integer.MAX_VALUE;
+			int yMin = Integer.MAX_VALUE;
+			int width = 0;
+			int height = 0;
+			for (FlowNode flowNode : lane.getFlowNodeRefs()) {
+				BPMNShape flowNodeBPMNShape = (BPMNShape)DIUtils.findDiagramElement(diagrams,flowNode);
+				if (flowNodeBPMNShape!=null) {
+					// adjust bounds of Lane
+					Bounds bounds = flowNodeBPMNShape.getBounds();
+					int x = (int)bounds.getX();
+					int y = (int)bounds.getY();
+					int w = (int)bounds.getWidth();
+					int h = (int)bounds.getHeight();
+					if (x<xMin)
+						xMin = x;
+					if (y<yMin) 
+						yMin = y;
+					if (xMin+width < x + w)
+						width = x - xMin + w;
+					if (yMin+height < y + h)
+						height = y - yMin + h;
+				}
+			}
+			if (width>0 && height>0) {
+				// create a new BPMNShape for this Lane
+				AddContext context = new AddContext(new AreaContext(), lane);
+				context.setX(xMin-10);
+				context.setY(yMin-10);
+				context.setWidth(width+20);
+				context.setHeight(height+20);
+				context.putProperty(IMPORT_PROPERTY, true);
+				// determine the container into which to place the new Lane
+				handleLane(lane, context, null);
+				IAddFeature addFeature = featureProvider.getAddFeature(context);
+				ContainerShape newContainer = (ContainerShape)addFeature.add(context);
+				DIUtils.createDIShape(newContainer, lane, xMin, yMin, width, height, featureProvider, diagram);
+				newContainer.getGraphicsAlgorithm().setTransparency(0.5);
+				Graphiti.getPeService().sendToBack(newContainer);
+				
+				elements.put(lane, newContainer);
+			}									
+		}
+	}
+	
 	private void importConnections(List<DiagramElement> ownedElement) {
 		for (DiagramElement diagramElement : ownedElement) {
 			if (diagramElement instanceof BPMNEdge) {
