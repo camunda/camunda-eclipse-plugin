@@ -19,6 +19,7 @@ import org.eclipse.bpmn2.CallableElement;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
 import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -51,8 +52,12 @@ public class CallActivityPropertiesAdapter extends ActivityPropertiesAdapter {
 					if (context instanceof CallActivity)
 						object = (CallActivity)context;
 					CallableElement ce = object.getCalledElementRef();
-					if (ce!=null && ce.eIsProxy())
-						return ((InternalEObject)ce).eProxyURI().lastSegment();
+					if (ce!=null && ce.eIsProxy()) {
+						URI uri = ((InternalEObject)ce).eProxyURI();
+						if (uri.hasFragment())
+							return uri.fragment();
+						return uri.lastSegment();
+					}
 					return super.getText(context);
 				}
 			}
