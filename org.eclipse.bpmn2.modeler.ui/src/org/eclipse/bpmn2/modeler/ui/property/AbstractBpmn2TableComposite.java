@@ -539,17 +539,17 @@ public class AbstractBpmn2TableComposite extends Composite {
 					redrawPage();
 				}
 				if (removeButton!=null)
-					removeButton.setEnabled(enable);
+					removeButton.setEnabled(true);
 				if (editButton!=null)
 					editButton.setEnabled(enable);
 				if (upButton!=null && downButton!=null) {
 					int i = table.getSelectionIndex();
 					if (i>0)
-						upButton.setEnabled(enable);
+						upButton.setEnabled(true);
 					else
 						upButton.setEnabled(false);
 					if (i<table.getItemCount()-1)
-						downButton.setEnabled(enable);
+						downButton.setEnabled(true);
 					else
 						downButton.setEnabled(false);
 				}
