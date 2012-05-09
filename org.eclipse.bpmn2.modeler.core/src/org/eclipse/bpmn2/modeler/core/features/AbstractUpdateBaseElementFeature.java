@@ -31,13 +31,20 @@ public abstract class AbstractUpdateBaseElementFeature extends AbstractUpdateFea
 
 	@Override
 	public IReason updateNeeded(IUpdateContext context) {
-		String shapeValue = FeatureSupport.getShapeValue(context);
-		String businessValue = FeatureSupport.getBusinessValue(context);
-
-		boolean updateNeeded = shapeValue != null && !shapeValue.equals(businessValue);
-		
-		if (updateNeeded) {
-			return Reason.createTrueReason("Name out of date");
+		PictogramElement pe = context.getPictogramElement();
+		if (pe instanceof ContainerShape) {
+			String shapeValue = FeatureSupport.getShapeValue(context);
+			if (shapeValue==null)
+				shapeValue = "";
+			String businessValue = FeatureSupport.getBusinessValue(context);
+			if (businessValue==null)
+				businessValue = "";
+	
+			boolean updateNeeded = !shapeValue.equals(businessValue);
+			
+			if (updateNeeded) {
+				return Reason.createTrueReason("Name out of date");
+			}
 		}
 		
 		return Reason.createFalseReason();
