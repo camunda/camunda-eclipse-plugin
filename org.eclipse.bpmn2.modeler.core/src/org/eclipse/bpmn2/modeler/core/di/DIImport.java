@@ -328,7 +328,6 @@ public class DIImport {
 				handleLane(lane, context, null);
 				IAddFeature addFeature = featureProvider.getAddFeature(context);
 				ContainerShape newContainer = (ContainerShape)addFeature.add(context);
-				DIUtils.createDIShape(newContainer, lane, xMin, yMin, width, height, featureProvider, diagram);
 				newContainer.getGraphicsAlgorithm().setTransparency(0.5);
 				Graphiti.getPeService().sendToBack(newContainer);
 				
