@@ -646,7 +646,7 @@ public class ModelHandler {
 	public SequenceFlow createSequenceFlow(FlowNode source, FlowNode target) {
 		SequenceFlow sequenceFlow = create(SequenceFlow.class);
 
-		addFlowElement(source, sequenceFlow);
+		addFlowElement(source.eContainer(), sequenceFlow);
 		sequenceFlow.setSourceRef(source);
 		sequenceFlow.setTargetRef(target);
 		return sequenceFlow;
