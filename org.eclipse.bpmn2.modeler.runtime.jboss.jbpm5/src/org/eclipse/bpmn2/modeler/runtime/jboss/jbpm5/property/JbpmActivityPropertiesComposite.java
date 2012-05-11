@@ -17,10 +17,16 @@ import java.util.Hashtable;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.ExtensionAttributeValue;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.GlobalType;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelFactory;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.OnEntryScriptType;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.OnExitScriptType;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.ExtensionValueTableComposite;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ComboObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
@@ -29,6 +35,9 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
+import org.eclipse.jface.dialogs.IInputValidator;
+import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -56,56 +65,51 @@ public class JbpmActivityPropertiesComposite extends ActivityPropertiesComposite
 	@Override
 	public void createBindings(EObject be) {
 		super.createBindings(be);
-		Composite composite = this; //getAttributesParent();
 		
-		Activity activity = (Activity)be;
+		ScriptTableComposite onEntryScriptTable = new ScriptTableComposite(this);
+		onEntryScriptTable.bindList(be, ModelPackage.eINSTANCE.getDocumentRoot_OnEntryScript());
+		onEntryScriptTable.setTitle("On Entry Scripts");
 		
-		// TODO: handle extension values in a generic way in AbstractBpmn2propertiesComposite
-		for (ExtensionAttributeValue eav : activity.getExtensionValues()) {
-			FeatureMap fm = eav.getValue();
-			for (Entry entry : fm) {
-				createEntryExitScriptSection(activity, entry);
-			}
+		ScriptTableComposite onExitScriptTable = new ScriptTableComposite(this);
+		onExitScriptTable.bindList(be, ModelPackage.eINSTANCE.getDocumentRoot_OnExitScript());
+		onExitScriptTable.setTitle("On Exit Scripts");
+	}
+	
+	private class ScriptTableComposite extends ExtensionValueTableComposite {
+
+		/**
+		 * @param parent
+		 * @param style
+		 */
+		public ScriptTableComposite(Composite parent) {
+			super(parent, AbstractBpmn2TableComposite.DEFAULT_STYLE);
 		}
-	}
-	
-	protected void createEntryExitScriptSection(Activity activity, Entry entry) {
 
-		String title;
-		EStructuralFeature feature = entry.getEStructuralFeature();
-		if ("onEntryScript".equals(feature.getName()))
-			title = "On Entry Script";
-		else if ("onExitScript".equals(feature.getName()))
-			title = "On Exit Script";
-		else
-			return;
-		
-		Section section = this.createSection(this, title);
-		section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
-		Composite sectionComposite = toolkit.createComposite(section);
-		section.setClient(sectionComposite);
-		sectionComposite.setLayout(new GridLayout(3,false));
-		EObject est = (EObject)entry.getValue();
+		/* (non-Javadoc)
+		 * @see org.eclipse.bpmn2.modeler.ui.property.ExtensionValueTableComposite#addListItem(org.eclipse.emf.ecore.EObject, org.eclipse.emf.ecore.EStructuralFeature)
+		 */
+		@Override
+		protected EObject addListItem(EObject object, EStructuralFeature feature) {
+			EObject newScript = ModelFactory.eINSTANCE.create(listItemClass);
+			EStructuralFeature f = newScript.eClass().getEStructuralFeature("script");
+			if (f!=null)
+				newScript.eSet(feature, "");
+			f = newScript.eClass().getEStructuralFeature("scriptFormat");
+			if (f!=null)
+				newScript.eSet(f,"http://www.java.com/java");
+			addExtensionValue(newScript);
+			return newScript;
+		}
 
-		createScriptWidgets(sectionComposite, est);
-	}
-	
-	protected void createScriptWidgets(Composite composite, EObject object) {
-		ObjectEditor editor;
-		editor = new ComboObjectEditor(this,object,object.eClass().getEStructuralFeature("scriptFormat")) {
-
-			@Override
-			protected Hashtable<String, Object> getChoiceOfValues(EObject object, EStructuralFeature feature) {
-				Hashtable<String, Object> choiceOfValues = new Hashtable<String, Object>();
-				choiceOfValues.put("Java", "http://www.java.com/java");
-				choiceOfValues.put("MVEL", "http://www.mvel.org/2.0");
-				return choiceOfValues;
-			}
-			
-		};
-		editor.createControl(composite,"Script Language",SWT.NONE);
-
-		editor = new TextObjectEditor(this,object,object.eClass().getEStructuralFeature("script"));
-		editor.createControl(composite,"Script",SWT.MULTI);
+		@Override
+		public AbstractBpmn2PropertiesComposite createDetailComposite(final Composite parent, Class eClass) {
+			return new JbpmScriptTaskPropertiesComposite(parent, SWT.NONE) {
+				@Override
+				public Composite getAttributesParent() {
+					((Section)parent).setText("Script Details");
+					return (Composite) ((Section)parent).getClient();
+				}
+			};
+		}
 	}
 }

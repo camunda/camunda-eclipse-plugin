@@ -30,6 +30,7 @@ import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -197,7 +198,10 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 		}
 
 		@Override
-		protected boolean removeListItem(EObject object, EStructuralFeature feature, Object item) {
+		protected Object removeListItem(EObject object, EStructuralFeature feature, int index) {
+			EList<EObject> list = (EList<EObject>)object.eGet(feature);
+			EObject item = list.get(index);
+
 			if (item instanceof DataInput) {
 				// remove parameter from inputSets
 				List<InputSet> inputSets = ioSpecification.getInputSets();
@@ -243,7 +247,7 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 			else
 				return false;
  
-			return super.removeListItem(object, feature, item);
+			return super.removeListItem(object, feature, index);
 		}
 		
 	}

@@ -28,6 +28,7 @@ import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.ImplicitThrowEvent;
+import org.eclipse.bpmn2.Import;
 import org.eclipse.bpmn2.InputSet;
 import org.eclipse.bpmn2.IntermediateCatchEvent;
 import org.eclipse.bpmn2.IntermediateThrowEvent;
@@ -40,6 +41,7 @@ import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.ModelSubclassSelectionDialog;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -267,8 +269,10 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 		}
 
 		@Override
-		protected boolean removeListItem(EObject object, EStructuralFeature feature, Object item) {
+		protected Object removeListItem(EObject object, EStructuralFeature feature, int index) {
 			// remove parameter from inputSets
+			EList<EObject> list = (EList<EObject>)object.eGet(feature);
+			EObject item = list.get(index);
 			InputSet inputSet = throwEvent.getInputSet();
 			if (inputSet.getDataInputRefs().contains(item))
 				inputSet.getDataInputRefs().remove(item);
@@ -282,7 +286,7 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 			}
 			dataInputAssociations.removeAll(removed);
  
-			return super.removeListItem(object, feature, item);
+			return super.removeListItem(object, feature, index);
 		}
 	}
 
@@ -340,8 +344,10 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 		}
 
 		@Override
-		protected boolean removeListItem(EObject object, EStructuralFeature feature, Object item) {
+		protected Object removeListItem(EObject object, EStructuralFeature feature, int index) {
 			// remove parameter from outputSets
+			EList<EObject> list = (EList<EObject>)object.eGet(feature);
+			EObject item = list.get(index);
 			OutputSet outputSet = catchEvent.getOutputSet();
 			if (outputSet.getDataOutputRefs().contains(item))
 				outputSet.getDataOutputRefs().remove(item);
@@ -355,7 +361,7 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 			}
 			dataOutputAssociations.removeAll(removed);
  
-			return super.removeListItem(object, feature, item);
+			return super.removeListItem(object, feature, index);
 		}
 		
 		

@@ -8,6 +8,7 @@ package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.impl;
 
 import java.math.BigInteger;
 
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.*;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.DocumentRoot;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.GlobalType;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ImportType;

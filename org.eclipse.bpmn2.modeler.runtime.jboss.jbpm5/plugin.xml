@@ -340,34 +340,6 @@
 			type="CallActivity">
 			<property name="waitForCompletion" value="false"/>
 			<property name="independent" value="false"/>
-			<property name="extensionValues">
-				<value>
-					<property name="value">
-						<value>
-							<property name="DocumentRoot.onEntryScript">
-								<value>
-									<property name="script" value=""/>
-									<property name="scriptFormat" value=""/>
-								</value>
-							</property>
-						</value>
-					</property>
-				</value>
-			</property>			
-			<property name="extensionValues">
-				<value>
-					<property name="value">
-						<value>
-							<property name="DocumentRoot.onExitScript">
-								<value>
-									<property name="script" value=""/>
-									<property name="scriptFormat" value=""/>
-								</value>
-							</property>
-						</value>
-					</property>
-				</value>
-			</property>
 		</modelExtension>
 
 		<modelExtension
@@ -375,6 +347,7 @@
 			runtimeId="org.jboss.runtime.jbpm5"
 			name="Task Extensions"
 			type="Task">
+			<!-- onEntryScript and onExitScript are actually lists which may be initially empty
 			<property name="extensionValues">
 				<value>
 					<property name="value">
@@ -403,6 +376,7 @@
 					</property>
 				</value>
 			</property>
+			-->
 		</modelExtension>
 
 		<modelExtension
@@ -410,34 +384,6 @@
 			runtimeId="org.jboss.runtime.jbpm5"
 			name="UserTask Extensions"
 			type="UserTask">
-			<property name="extensionValues">
-				<value>
-					<property name="value">
-						<value>
-							<property name="DocumentRoot.onEntryScript">
-								<value>
-									<property name="script" value=""/>
-									<property name="scriptFormat" value=""/>
-								</value>
-							</property>
-						</value>
-					</property>
-				</value>
-			</property>			
-			<property name="extensionValues">
-				<value>
-					<property name="value">
-						<value>
-							<property name="DocumentRoot.onExitScript">
-								<value>
-									<property name="script" value=""/>
-									<property name="scriptFormat" value=""/>
-								</value>
-							</property>
-						</value>
-					</property>
-				</value>
-			</property>
 			<property name="ioSpecification">
 				<value>
 					<property name="dataInputs">
@@ -636,6 +582,9 @@
 
 			<enable object="OnEntryScriptType" feature="script"/>
 			<enable object="OnEntryScriptType" feature="scriptFormat"/>
+
+			<enable object="OnExitScriptType" feature="script"/>
+			<enable object="OnExitScriptType" feature="scriptFormat"/>
 
 			<!-- globally disable all BaseElement attributes like documentation and id -->
 			<disable object="all" feature="documentation"/>

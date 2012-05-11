@@ -10,6 +10,7 @@ import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.SchemaImportDialog;
 import org.eclipse.bpmn2.modeler.ui.property.editors.TextAndButtonObjectEditor;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -144,9 +145,10 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 
 
 		@Override
-		protected boolean removeListItem(EObject object, EStructuralFeature feature, Object item) {
+		protected Object removeListItem(EObject object, EStructuralFeature feature, int index) {
 			Definitions defs = (Definitions)object;
-			Import imp = (Import)item;
+			EList<Import> list = (EList<Import>)object.eGet(feature);
+			Import imp = list.get(index);
 			boolean canRemoveNamespace = true;
 			for (Import i : defs.getImports()) {
 				if (i!=imp) {
@@ -165,7 +167,7 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 			}
 			if (canRemoveNamespace)
 				NamespaceUtil.removeNamespace(imp.eResource(), imp.getNamespace());
-			return super.removeListItem(object, feature, item);
+			return super.removeListItem(object, feature, index);
 		}
 
 		@Override

@@ -342,9 +342,23 @@ public class AbstractBpmn2TableComposite extends Composite {
 	 * @param item
 	 * @return
 	 */
-	protected boolean removeListItem(EObject object, EStructuralFeature feature, Object item) {
+	protected Object removeListItem(EObject object, EStructuralFeature feature, int index) {
 		EList<EObject> list = (EList<EObject>)object.eGet(feature);
-		list.remove(item);
+		list.remove(index);
+		if (index>=list.size())
+			return list.get(index-1);
+		return list.get(index);
+	}
+
+	protected Object moveListItemUp(EObject object, EStructuralFeature feature, int index) {
+		EList<EObject> list = (EList<EObject>)object.eGet(feature);
+		list.move(index-1, index);
+		return true;
+	}
+
+	protected Object moveListItemDown(EObject object, EStructuralFeature feature, int index) {
+		EList<EObject> list = (EList<EObject>)object.eGet(feature);
+		list.move(index+1, index);
 		return true;
 	}
 
@@ -580,12 +594,13 @@ public class AbstractBpmn2TableComposite extends Composite {
 						@Override
 						protected void doExecute() {
 							int i = table.getSelectionIndex();
-							if (removeListItem(theobject,thefeature,list.get(i))) {
+							Object item = removeListItem(theobject,thefeature,i);
+							if (item!=null) {
 								tableViewer.setInput(list);
 								if (i>=list.size())
 									i = list.size() - 1;
 								if (i>=0)
-									tableViewer.setSelection(new StructuredSelection(list.get(i)));
+									tableViewer.setSelection(new StructuredSelection(item));
 							}
 						}
 					});
@@ -600,9 +615,9 @@ public class AbstractBpmn2TableComposite extends Composite {
 						@Override
 						protected void doExecute() {
 							int i = table.getSelectionIndex();
-							list.move(i-1, i);
+							Object item = moveListItemUp(object,feature,i);
 							tableViewer.setInput(list);
-							tableViewer.setSelection(new StructuredSelection(list.get(i-1)));
+							tableViewer.setSelection(new StructuredSelection(item));
 						}
 					});
 				}
@@ -614,9 +629,9 @@ public class AbstractBpmn2TableComposite extends Composite {
 						@Override
 						protected void doExecute() {
 							int i = table.getSelectionIndex();
-							list.move(i+1, i);
+							Object item = moveListItemDown(object,feature,i);
 							tableViewer.setInput(list);
-							tableViewer.setSelection(new StructuredSelection(list.get(i+1)));
+							tableViewer.setSelection(new StructuredSelection(item));
 						}
 					});
 				}

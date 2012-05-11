@@ -100,7 +100,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @return the value of the '<em>On Entry Script</em>' containment reference.
 	 * @see #setOnEntryScript(OnEntryScriptType)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_OnEntryScript()
-	 * @model containment="true" transient="true" volatile="true" derived="true"
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='onEntry-script' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -127,7 +127,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @return the value of the '<em>On Exit Script</em>' containment reference.
 	 * @see #setOnExitScript(OnExitScriptType)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_OnExitScript()
-	 * @model containment="true" transient="true" volatile="true" derived="true"
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='onExit-script' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -154,7 +154,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @return the value of the '<em>Package Name</em>' attribute.
 	 * @see #setPackageName(String)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_PackageName()
-	 * @model dataType="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.PackageNameType" upper="-2"
+	 * @model dataType="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.PackageNameType"
 	 *        extendedMetaData="kind='attribute' name='packageName' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -181,7 +181,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @return the value of the '<em>Priority</em>' attribute.
 	 * @see #setPriority(BigInteger)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_Priority()
-	 * @model dataType="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.PriorityType" upper="-2"
+	 * @model dataType="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.PriorityType"
 	 *        extendedMetaData="kind='attribute' name='priority' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -208,7 +208,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @return the value of the '<em>Rule Flow Group</em>' attribute.
 	 * @see #setRuleFlowGroup(String)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_RuleFlowGroup()
-	 * @model dataType="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.RuleFlowGroupType" upper="-2"
+	 * @model dataType="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.RuleFlowGroupType"
 	 *        extendedMetaData="kind='attribute' name='ruleFlowGroup' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -235,7 +235,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @return the value of the '<em>Task Name</em>' attribute.
 	 * @see #setTaskName(String)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_TaskName()
-	 * @model dataType="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.TaskNameType" upper="-2"
+	 * @model dataType="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.TaskNameType"
 	 *        extendedMetaData="kind='attribute' name='taskName' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -262,7 +262,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @return the value of the '<em>Version</em>' attribute.
 	 * @see #setVersion(BigInteger)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_Version()
-	 * @model dataType="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.VersionType" upper="-2"
+	 * @model dataType="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.VersionType"
 	 *        extendedMetaData="kind='attribute' name='version' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -289,8 +289,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @return the value of the '<em>Wait For Completion</em>' attribute.
 	 * @see #setWaitForCompletion(boolean)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_WaitForCompletion()
-	 * @model upper="-2"
-	 *        extendedMetaData="kind='attribute' name='waitForCompletion' namespace='##targetNamespace'"
+	 * @model extendedMetaData="kind='attribute' name='waitForCompletion' namespace='##targetNamespace'"
 	 * @generated
 	 */
 	boolean isWaitForCompletion();
@@ -316,8 +315,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @return the value of the '<em>Independent</em>' attribute.
 	 * @see #setIndependent(boolean)
 	 * @see org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage#getDocumentRoot_Independent()
-	 * @model upper="-2"
-	 *        extendedMetaData="kind='attribute' name='independent' namespace='##targetNamespace'"
+	 * @model extendedMetaData="kind='attribute' name='independent' namespace='##targetNamespace'"
 	 * @generated
 	 */
 	boolean isIndependent();
