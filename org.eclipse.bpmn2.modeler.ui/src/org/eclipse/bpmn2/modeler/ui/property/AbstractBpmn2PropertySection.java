@@ -78,8 +78,10 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 	
 	public AbstractBpmn2PropertySection() {
 		cachedWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		cachedWorkbenchWindow.getPartService().addPartListener(
+		if (cachedWorkbenchWindow != null) {
+			cachedWorkbenchWindow.getPartService().addPartListener(
 				partActivationListener);
+		}
 	}
 
 	@Override
