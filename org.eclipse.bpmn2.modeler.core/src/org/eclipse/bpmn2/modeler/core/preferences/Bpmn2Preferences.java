@@ -825,17 +825,19 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		
 		IWorkbench workbench = PlatformUI.getWorkbench(); 
 		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-		IWorkbenchPage page = window.getActivePage();
-		if (page!=null) {
-			IViewPart[] parts = page.getViews();
-	
-			for (int i = 0; i < parts.length; i++) {
-				if (parts[i] instanceof ResourceNavigator) {
-					ResourceNavigator navigator = (ResourceNavigator) parts[i];
-					StructuredSelection sel = (StructuredSelection) navigator.getTreeViewer().getSelection();
-					IResource resource = (IResource) sel.getFirstElement();
-					activeProject = resource.getProject();
-					break;
+		if (window!=null) {
+			IWorkbenchPage page = window.getActivePage();
+			if (page!=null) {
+				IViewPart[] parts = page.getViews();
+		
+				for (int i = 0; i < parts.length; i++) {
+					if (parts[i] instanceof ResourceNavigator) {
+						ResourceNavigator navigator = (ResourceNavigator) parts[i];
+						StructuredSelection sel = (StructuredSelection) navigator.getTreeViewer().getSelection();
+						IResource resource = (IResource) sel.getFirstElement();
+						activeProject = resource.getProject();
+						break;
+					}
 				}
 			}
 		}
