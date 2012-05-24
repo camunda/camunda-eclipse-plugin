@@ -579,6 +579,10 @@
 			<enable object="ExtensionAttributeValue" feature="onExitScript"/>
 			<enable object="GlobalType"/>
 			<enable object="ImportType"/>
+			<enable object="Interface"/>
+			<enable object="Operation"/>
+			<disable object="Operation" feature="implementationRef"/>
+			<enable object="Message"/>
 
 			<enable object="OnEntryScriptType" feature="script"/>
 			<enable object="OnEntryScriptType" feature="scriptFormat"/>
@@ -614,7 +618,6 @@
 			<disable object="ParticipantMultiplicity"/>
 			<disable object="DataStore"/>
 			<disable object="DataStoreReference"/>
-			<disable object="Message"/>
 		</modelEnablement>
 		
 	</extension>

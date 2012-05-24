@@ -315,7 +315,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 		}
 		else {
 			ModelHandler modelHandler = getDiagramEditor().getModelHandler();
-			if (this.listItemClass==null) {
+			if (listItemClass==null) {
 				listItemClass = getListItemClassToAdd(listItemClass);
 				if (listItemClass==null)
 					return null; // user cancelled
@@ -334,7 +334,8 @@ public class AbstractBpmn2TableComposite extends Composite {
 	 */
 	protected EObject editListItem(EObject object, EStructuralFeature feature) {
 		return null;
-	}	
+	}
+	
 	/**
 	 * Override this if removal of list items needs special handling. 
 	 * @param object
@@ -344,24 +345,66 @@ public class AbstractBpmn2TableComposite extends Composite {
 	 */
 	protected Object removeListItem(EObject object, EStructuralFeature feature, int index) {
 		EList<EObject> list = (EList<EObject>)object.eGet(feature);
-		list.remove(index);
-		if (index>=list.size())
-			return list.get(index-1);
-		return list.get(index);
+		int[] map = buildIndexMap(object,feature);
+		removeListItem(list,map[index]);
+		if (index>0 && index>=map.length) {
+			return list.get(map[index-1]);
+		}
+		return null;
 	}
 
+	protected void removeListItem(EList<EObject> list, int realIndex) {
+		list.remove(realIndex);
+	}
+	
 	protected Object moveListItemUp(EObject object, EStructuralFeature feature, int index) {
 		EList<EObject> list = (EList<EObject>)object.eGet(feature);
-		list.move(index-1, index);
-		return true;
+		int[] map = buildIndexMap(object,feature);
+		if (index>0) {
+			list.move(map[index-1], map[index]);
+			return true;
+		}
+		return false;
 	}
 
 	protected Object moveListItemDown(EObject object, EStructuralFeature feature, int index) {
 		EList<EObject> list = (EList<EObject>)object.eGet(feature);
-		list.move(index+1, index);
-		return true;
+		int[] map = buildIndexMap(object,feature);
+		if (map.length>=index+1) {
+			list.move(map[index+1], map[index]);
+			return true;
+		}
+		return false;
 	}
 
+	protected int[] buildIndexMap(EObject object, EStructuralFeature feature) {
+		EList<EObject> list = (EList<EObject>)object.eGet(feature);
+		EClass listItemClass = getListItemClass(object,feature);
+		int[] map = null;
+		if (listItemClass!=null) {
+			int[] tempMap = new int[list.size()];
+			int index = 0;
+			int realIndex = 0;
+			for (EObject o : list) {
+				EClass ec = o.eClass();
+				if (ec == listItemClass) {
+					tempMap[index] = realIndex;
+					++index;
+				}
+				++realIndex;
+			}
+			map = new int[tempMap.length];
+			for (int i=0; i<map.length; ++i)
+				map[i] = tempMap[i];
+		}
+		else {
+			map = new int[list.size()];
+			for (int i=0; i<map.length; ++i)
+				map[i] = i;
+		}
+		return map;
+	}
+	
 	public void setTitle(String title) {
 		if (tableSection!=null)
 			tableSection.setText(title);
@@ -505,6 +548,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 			public void resourceSetChanged(ResourceSetChangeEvent event) {
 				List<Notification> notifications = event.getNotifications();
 				try {
+					final EList<EObject> list = (EList<EObject>)theobject.eGet(thefeature);
 					for (Notification notification : notifications) {
 						tableViewer.setInput(list);
 					}
@@ -578,6 +622,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 						protected void doExecute() {
 							EObject newItem = addListItem(theobject,thefeature);
 							if (newItem!=null) {
+								final EList<EObject> list = (EList<EObject>)theobject.eGet(thefeature);
 								tableViewer.setInput(list);
 								tableViewer.setSelection(new StructuredSelection(newItem));
 							}
@@ -596,6 +641,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 							int i = table.getSelectionIndex();
 							Object item = removeListItem(theobject,thefeature,i);
 							if (item!=null) {
+								final EList<EObject> list = (EList<EObject>)theobject.eGet(thefeature);
 								tableViewer.setInput(list);
 								if (i>=list.size())
 									i = list.size() - 1;
@@ -616,6 +662,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 						protected void doExecute() {
 							int i = table.getSelectionIndex();
 							Object item = moveListItemUp(object,feature,i);
+							final EList<EObject> list = (EList<EObject>)theobject.eGet(thefeature);
 							tableViewer.setInput(list);
 							tableViewer.setSelection(new StructuredSelection(item));
 						}
@@ -630,6 +677,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 						protected void doExecute() {
 							int i = table.getSelectionIndex();
 							Object item = moveListItemDown(object,feature,i);
+							final EList<EObject> list = (EList<EObject>)theobject.eGet(thefeature);
 							tableViewer.setInput(list);
 							tableViewer.setSelection(new StructuredSelection(item));
 						}
@@ -646,6 +694,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 						protected void doExecute() {
 							EObject newItem = editListItem(theobject,thefeature);
 							if (newItem!=null) {
+								final EList<EObject> list = (EList<EObject>)theobject.eGet(thefeature);
 								tableViewer.setInput(list);
 								tableViewer.setSelection(new StructuredSelection(newItem));
 							}
@@ -762,6 +811,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 
 		@Override
 		public Object[] getElements(Object inputElement) {
+			EClass listItemClass = getListItemClass(object,feature);
 			if (listItemClass==null) {
 				// display all items in the list that are subclasses of listItemClass
 				return list.toArray();
@@ -771,8 +821,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 				List<EObject> elements = new ArrayList<EObject>();
 				for (EObject o : list) {
 					EClass ec = o.eClass();
-					EClass lic = getListItemClass(object,feature);
-					if (ec == lic)
+					if (ec == listItemClass)
 						elements.add(o);
 				}
 				return elements.toArray(new EObject[elements.size()]);

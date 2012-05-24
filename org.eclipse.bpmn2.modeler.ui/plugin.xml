@@ -446,26 +446,42 @@
 		<modelEnablement runtimeId="org.eclipse.bpmn2.modeler.runtime.none" type="Process">
 			<disable object="all"/>
 			<enable object="Definitions"/>
+
+			<!-- process -->
 			<enable object="Process"/>
+			<enable object="SubProcess"/>
 
-			<enable object="StartEvent"/>
-			<enable object="EndEvent"/>
-
-			<enable object="BusinessRuleTask"/>
+			<!-- gateways -->
 			<enable object="ExclusiveGateway"/>
 			<enable object="InclusiveGateway"/>
 			<enable object="ParallelGateway"/>
 			<enable object="EventBasedGateway"/>
 			<enable object="ComplexGateway"/>
+
+			<!-- tasks -->
+			<enable object="BusinessRuleTask"/>
 			<enable object="CallActivity"/>
 			<enable object="ScriptTask"/>
+			<enable object="ServiceTask"/>
+			<enable object="Task"/>
+			<enable object="UserTask"/>
+
+			<!-- connections -->
+			<enable object="SequenceFlow"/>
+			<enable object="Association"/>
+
+			<!-- events -->
+			<enable object="StartEvent"/>
+			<enable object="EndEvent"/>
 			<enable object="IntermediateCatchEvent"/>
 			<enable object="IntermediateThrowEvent"/>
-			<enable object="UserTask"/>
-			<enable object="SubProcess"/>
-			<enable object="Task"/>
-			<enable object="SequenceFlow"/>
+			<enable object="Escalation"/>
+			<enable object="BoundaryEvent"/>
+			<enable object="Signal"/>
+			<enable object="Error"/>
+			<enable object="ErrorEventDefinition"/>
 
+			<!-- event definitions -->
 			<enable object="ConditionalEventDefinition"/>
 			<enable object="TimerEventDefinition"/>
 			<enable object="SignalEventDefinition"/>
@@ -477,19 +493,28 @@
 			<enable object="CancelEventDefinition"/>
 			<enable object="TerminateEventDefinition"/>
 
+			<!-- data definitions -->
+			<enable object="Operation"/>
+			<enable object="Interface"/>
+			<enable object="ItemDefinition"/>
+			<enable object="Message"/>
+			<enable object="DataInput"/>
+			<enable object="DataInputAssociation"/>
+			<enable object="DataOutput"/>
+			<enable object="DataOutputAssociation"/>
+			<enable object="Property"/>
 			<enable object="DataStore"/>
 			<enable object="DataStoreReference"/>
 			<enable object="DataObjectReference"/>
 			<enable object="Group"/>
-
 			<enable object="ExtensionAttributeValue"/>
 			<enable object="ExtensionAttributeDefinition"/>
 			<enable object="StandardLoopCharacteristics"/>
 			<enable object="MultiInstanceLoopCharacteristics"/>
 			<enable object="Lane"/>
+			<enable object="LaneSet"/>
 			
 			<disable object="MessageFlow"/>
-			<disable object="Association"/>
 			<disable object="ConversationLink"/>
 			<disable object="ConversationAssociation"/>
 			<disable object="Collaboration"/>
