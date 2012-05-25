@@ -183,8 +183,10 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 							if (e.getName().equals("modelEnablement")) {
 								ModelEnablementDescriptor me;
 								String type = e.getAttribute("type");
+								String profile = e.getAttribute("profile");
 								currentRuntime.addModelEnablements(me = new ModelEnablementDescriptor(currentRuntime));
 								me.setType(type);
+								me.setProfile(profile);
 								
 								for (IConfigurationElement c : e.getChildren()) {
 									String object = c.getAttribute("object");
@@ -256,8 +258,10 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 							}
 							ModelEnablementDescriptor me;
 							String type = e.getAttribute("type");
+							String profile = e.getAttribute("profile");
 							currentRuntime.addModelEnablements(me = new ModelEnablementDescriptor(currentRuntime));
 							me.setType(type);
+							me.setProfile(profile);
 							
 							for (IConfigurationElement c : e.getChildren()) {
 								String object = c.getAttribute("object");
@@ -516,16 +520,25 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 	
 	public ModelEnablementDescriptor getModelEnablements(Bpmn2DiagramType diagramType)
 	{
+		return getModelEnablements(diagramType, null);
+	}
+	
+	public ModelEnablementDescriptor getModelEnablements(Bpmn2DiagramType diagramType, String profile)
+	{
 		for (ModelEnablementDescriptor me : getModelEnablements()) {
 			String s = diagramType.name();
-			if (diagramType == Bpmn2DiagramType.NONE && me.getType()==null)
-				return me;
-			if (s.equalsIgnoreCase(me.getType()))
-				return me;
+			if (diagramType == Bpmn2DiagramType.NONE && me.getType()==null) {
+				if (profile==null || profile.equalsIgnoreCase(me.getProfile()))
+					return me;
+			}
+			if (s.equalsIgnoreCase(me.getType())) {
+				if (profile==null || profile.equalsIgnoreCase(me.getProfile()))
+					return me;
+			}
 		}
 		if (this != getDefaultRuntime()) {
 			// fall back to enablements from Default Runtime
-			return getDefaultRuntime().getModelEnablements(diagramType);
+			return getDefaultRuntime().getModelEnablements(diagramType, profile);
 		}
 		
 		if (defaultModelEnablements==null)
