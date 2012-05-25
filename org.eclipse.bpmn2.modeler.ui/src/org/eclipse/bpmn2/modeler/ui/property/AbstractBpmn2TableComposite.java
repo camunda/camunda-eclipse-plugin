@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.Interface;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -38,6 +39,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.emf.edit.ui.provider.PropertyDescriptor.EDataTypeCellEditor;
@@ -94,6 +96,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 	public static final int MOVE_BUTTONS = 1 << 21; // show "Up" and "Down" buttons
 	public static final int EDIT_BUTTON = 1 << 23; // show "Edit..." button
 	public static final int SHOW_DETAILS = 1 << 24; // create a "Details" section
+	public static final int DELETE_BUTTON = 1 << 25; // show "Delete" button - this uses EcoreUtil.delete() to kill the EObject
 	public static final int DEFAULT_STYLE = (
 			ADD_BUTTON|REMOVE_BUTTON|MOVE_BUTTONS|SHOW_DETAILS);
 	
@@ -125,6 +128,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 	Composite tableComposite;
 	AbstractBpmn2PropertiesComposite detailComposite;
 	
+	boolean removeIsDelete = false;
 	Button addButton;
 	Button removeButton;
 	Button upButton;
@@ -346,15 +350,23 @@ public class AbstractBpmn2TableComposite extends Composite {
 	protected Object removeListItem(EObject object, EStructuralFeature feature, int index) {
 		EList<EObject> list = (EList<EObject>)object.eGet(feature);
 		int[] map = buildIndexMap(object,feature);
-		removeListItem(list,map[index]);
-		if (index>0 && index>=map.length) {
-			return list.get(map[index-1]);
-		}
-		return null;
+		EObject selected = null;
+		if (index<map.length-1)
+			selected = list.get(map[index+1]);
+		list.remove(map[index]);
+		return selected;
 	}
-
-	protected void removeListItem(EList<EObject> list, int realIndex) {
-		list.remove(realIndex);
+	
+	protected Object deleteListItem(EObject object, EStructuralFeature feature, int index) {
+		EList<EObject> list = (EList<EObject>)object.eGet(feature);
+		int[] map = buildIndexMap(object,feature);
+		EObject removed = list.get(map[index]);
+		EObject selected = null;
+		if (index<map.length-1)
+			selected = list.get(map[index+1]);
+		// this ensures that all references to this Interface are removed
+		EcoreUtil.delete(removed);
+		return selected;
 	}
 	
 	protected Object moveListItemUp(EObject object, EStructuralFeature feature, int index) {
@@ -362,19 +374,19 @@ public class AbstractBpmn2TableComposite extends Composite {
 		int[] map = buildIndexMap(object,feature);
 		if (index>0) {
 			list.move(map[index-1], map[index]);
-			return true;
+			return list.get(map[index-1]);
 		}
-		return false;
+		return null;
 	}
 
 	protected Object moveListItemDown(EObject object, EStructuralFeature feature, int index) {
 		EList<EObject> list = (EList<EObject>)object.eGet(feature);
 		int[] map = buildIndexMap(object,feature);
-		if (map.length>=index+1) {
+		if (index<map.length-1) {
 			list.move(map[index+1], map[index]);
-			return true;
+			return list.get(map[index+1]);
 		}
-		return false;
+		return null;
 	}
 
 	protected int[] buildIndexMap(EObject object, EStructuralFeature feature) {
@@ -393,8 +405,8 @@ public class AbstractBpmn2TableComposite extends Composite {
 				}
 				++realIndex;
 			}
-			map = new int[tempMap.length];
-			for (int i=0; i<map.length; ++i)
+			map = new int[index];
+			for (int i=0; i<index; ++i)
 				map[i] = tempMap[i];
 		}
 		else {
@@ -589,15 +601,15 @@ public class AbstractBpmn2TableComposite extends Composite {
 							((AbstractBpmn2PropertiesComposite)detailComposite).setEObject(bpmn2Editor,o);
 						}
 						enable = detailComposite.getChildren().length>0;
-						detailSection.setVisible(enable);
-						detailSection.setExpanded(enable);
-						PropertyUtil.recursivelayout(detailSection);
 					}
-					sashForm.layout(true);
-					redrawPage();
+					detailSection.setVisible(enable);
+					detailSection.setExpanded(enable);
+					PropertyUtil.recursivelayout(detailSection);
+//					sashForm.layout(true);
+//					redrawPage();
 				}
 				if (removeButton!=null)
-					removeButton.setEnabled(true);
+					removeButton.setEnabled(enable);
 				if (editButton!=null)
 					editButton.setEnabled(enable);
 				if (upButton!=null && downButton!=null) {
@@ -606,7 +618,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 						upButton.setEnabled(true);
 					else
 						upButton.setEnabled(false);
-					if (i<table.getItemCount()-1)
+					if (i>=0 && i<table.getItemCount()-1)
 						downButton.setEnabled(true);
 					else
 						downButton.setEnabled(false);
@@ -639,7 +651,12 @@ public class AbstractBpmn2TableComposite extends Composite {
 						@Override
 						protected void doExecute() {
 							int i = table.getSelectionIndex();
-							Object item = removeListItem(theobject,thefeature,i);
+							Object item;
+							if (removeIsDelete)
+								item = deleteListItem(theobject,thefeature,i);
+							else
+								item = removeListItem(theobject,thefeature,i);
+							
 							if (item!=null) {
 								final EList<EObject> list = (EList<EObject>)theobject.eGet(thefeature);
 								tableViewer.setInput(list);
@@ -769,7 +786,12 @@ public class AbstractBpmn2TableComposite extends Composite {
 			addButton = toolkit.createButton(buttonsComposite, "Add", SWT.PUSH);
 		}
 
-		if ((style & REMOVE_BUTTON)!=0) {
+		if ((style & DELETE_BUTTON)!=0) {
+			removeIsDelete = true;
+			removeButton = toolkit.createButton(buttonsComposite, "Delete", SWT.PUSH);
+			removeButton.setEnabled(false);
+		}
+		else if ((style & REMOVE_BUTTON)!=0) {
 			removeButton = toolkit.createButton(buttonsComposite, "Remove", SWT.PUSH);
 			removeButton.setEnabled(false);
 		}
@@ -811,7 +833,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 
 		@Override
 		public Object[] getElements(Object inputElement) {
-			EClass listItemClass = getListItemClass(object,feature);
+//			EClass listItemClass = getListItemClass(object,feature);
 			if (listItemClass==null) {
 				// display all items in the list that are subclasses of listItemClass
 				return list.toArray();
