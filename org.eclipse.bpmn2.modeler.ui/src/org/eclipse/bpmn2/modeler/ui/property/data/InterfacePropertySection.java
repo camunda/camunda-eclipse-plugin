@@ -121,7 +121,7 @@ public class InterfacePropertySection extends DefaultPropertySection {
 						AbstractBpmn2TableComposite.SHOW_DETAILS |
 						AbstractBpmn2TableComposite.ADD_BUTTON |
 						AbstractBpmn2TableComposite.MOVE_BUTTONS |
-						AbstractBpmn2TableComposite.REMOVE_BUTTON);
+						AbstractBpmn2TableComposite.DELETE_BUTTON);
 			}
 
 			@Override
@@ -146,13 +146,6 @@ public class InterfacePropertySection extends DefaultPropertySection {
 				list.add(iface);
 				return iface;
 			}
-			
-			@Override
-			protected void removeListItem(EList<EObject> list, int realIndex) {
-				Interface iface = (Interface)list.get(realIndex);
-				// this ensures that all references to this Interface are removed
-				EcoreUtil.delete(iface);
-			}
 		}
 		
 		public class ProvidedInterfacesTable extends AbstractBpmn2TableComposite {
@@ -165,6 +158,7 @@ public class InterfacePropertySection extends DefaultPropertySection {
 				super(parent,
 						AbstractBpmn2TableComposite.SHOW_DETAILS |
 						AbstractBpmn2TableComposite.ADD_BUTTON |
+						AbstractBpmn2TableComposite.MOVE_BUTTONS |
 						AbstractBpmn2TableComposite.REMOVE_BUTTON);
 			}
 
@@ -173,8 +167,17 @@ public class InterfacePropertySection extends DefaultPropertySection {
 				Definitions defs = ModelUtil.getDefinitions(object);
 				final List<Interface>items = new ArrayList<Interface>();
 				for (EObject o : defs.getRootElements()) {
-					if (o instanceof Interface)
-						items.add((Interface)o);
+					if (o instanceof Interface) {
+						if (object instanceof Participant) {
+							Participant participant = (Participant)object;
+							if (!participant.getInterfaceRefs().contains(o))
+								items.add((Interface)o);
+						} else if (object instanceof CallableElement) {
+							CallableElement callableElement = (CallableElement)object;
+							if (!callableElement.getSupportedInterfaceRefs().contains(o))
+								items.add((Interface)o);
+						}
+					}
 				}
 				Interface iface = null;
 				ListDialog dialog = new ListDialog(getShell());
@@ -238,7 +241,7 @@ public class InterfacePropertySection extends DefaultPropertySection {
 				}
 				else {
 					MessageDialog.openInformation(getShell(), "No Defined Interfaces",
-							"There are no Interfaces defined yet.\n"+
+							"There are no new Interfaces to add.\n"+
 							"Please create a new Interface in the \"Defined Interfaces\" first."
 					);
 				}
