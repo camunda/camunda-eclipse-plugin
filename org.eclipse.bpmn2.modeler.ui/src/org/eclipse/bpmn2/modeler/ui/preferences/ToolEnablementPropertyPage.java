@@ -105,15 +105,18 @@ public class ToolEnablementPropertyPage extends PropertyPage {
 		cboCopy.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
 		TargetRuntime cr = bpmn2Preferences.getRuntime();
 		int i = 0;
+		int iSelected = -1;
 		for (TargetRuntime rt : TargetRuntime.getAllRuntimes()) {
 			for (ModelEnablementDescriptor md : rt.getModelEnablements()) {
 				String text = rt.getName();
 				if (md.getType()!=null)
 					text += " - " + md.getType();
+				if (md.getProfile()!=null)
+					text += " (" + md.getProfile() + ")";
 				cboCopy.add(text);
 				cboCopy.setData(Integer.toString(i), md);
-				if (rt == cr)
-					cboCopy.select(i);
+				if (rt == cr && iSelected<0)
+					cboCopy.select(iSelected = i);
 				++i;
 			}
 		}

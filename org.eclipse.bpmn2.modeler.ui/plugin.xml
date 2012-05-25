@@ -387,62 +387,6 @@
 			label="Gateway">
 		</propertyTab>
 
-
-		<modelEnablement runtimeId="org.eclipse.bpmn2.modeler.runtime.none" type="Choreography">
-			<disable object="all"/>
-			<enable object="Definitions"/>
-			<enable object="Group"/>
-
-			<enable object="StartEvent"/>
-			<enable object="EndEvent"/>
-
-			<enable object="TextAnnotation"/>
-			<enable object="SequenceFlow"/>
-			<enable object="Choreography"/>
-			<enable object="SubChoreography"/>
-			<enable object="CallChoreography"/>
-			<enable object="ChoreographyTask"/>
-
-			<enable object="ExclusiveGateway"/>
-			<enable object="InclusiveGateway"/>
-			<enable object="ParallelGateway"/>
-			<enable object="EventBasedGateway"/>
-			<enable object="ComplexGateway"/>
-
-			<enable object="ConditionalEventDefinition"/>
-			<enable object="TimerEventDefinition"/>
-			<enable object="SignalEventDefinition"/>
-			<enable object="MessageEventDefinition"/>
-			<enable object="EscalationEventDefinition"/>
-			<enable object="CompensateEventDefinition"/>
-			<enable object="LinkEventDefinition"/>
-			<enable object="ErrorEventDefinition"/>
-			<enable object="CancelEventDefinition"/>
-			<enable object="TerminateEventDefinition"/>
-
-			<enable object="MessageFlow"/>
-			<disable object="ConversationLink"/>
-			<disable object="ConversationAssociation"/>
-			<disable object="Collaboration"/>
-			<disable object="ConversationNode"/>
-			<disable object="ExtensionAttributeDefinition"/>
-			<disable object="MessageFlowAssociation"/>
-		</modelEnablement>
-
-		<modelEnablement runtimeId="org.eclipse.bpmn2.modeler.runtime.none" type="Collaboration">
-			<disable object="all"/>
-			<enable object="default" feature="Process"/>
-			<disable object="DataObjectReference"/>
-
-			<enable object="Participant"/>
-			<enable object="Lane"/>
-			<enable object="MessageFlow"/>
-			<enable object="Conversation"/>
-			<enable object="SubConversation"/>
-			<enable object="CallConversation"/>
-			<enable object="ConversationLink"/>
-		</modelEnablement>
-
 		<modelEnablement runtimeId="org.eclipse.bpmn2.modeler.runtime.none" type="Process">
 			<disable object="all"/>
 			<enable object="Definitions"/>
@@ -524,6 +468,63 @@
 			<disable object="Participant"/>
 			<disable object="ParticipantAssociation"/>
 			<disable object="ParticipantMultiplicity"/>
+		</modelEnablement>
+
+		<modelEnablement runtimeId="org.eclipse.bpmn2.modeler.runtime.none" type="Choreography">
+			<disable object="all"/>
+			<enable object="Definitions"/>
+			<enable object="Group"/>
+
+			<enable object="StartEvent"/>
+			<enable object="EndEvent"/>
+
+			<enable object="TextAnnotation"/>
+			<enable object="SequenceFlow"/>
+			<enable object="Choreography"/>
+			<enable object="SubChoreography"/>
+			<enable object="CallChoreography"/>
+			<enable object="ChoreographyTask"/>
+
+			<enable object="ExclusiveGateway"/>
+			<enable object="InclusiveGateway"/>
+			<enable object="ParallelGateway"/>
+			<enable object="EventBasedGateway"/>
+			<enable object="ComplexGateway"/>
+
+			<enable object="ConditionalEventDefinition"/>
+			<enable object="TimerEventDefinition"/>
+			<enable object="SignalEventDefinition"/>
+			<enable object="MessageEventDefinition"/>
+			<enable object="EscalationEventDefinition"/>
+			<enable object="CompensateEventDefinition"/>
+			<enable object="LinkEventDefinition"/>
+			<enable object="ErrorEventDefinition"/>
+			<enable object="CancelEventDefinition"/>
+			<enable object="TerminateEventDefinition"/>
+
+			<enable object="MessageFlow"/>
+			<disable object="ConversationLink"/>
+			<disable object="ConversationAssociation"/>
+			<disable object="Collaboration"/>
+			<disable object="ConversationNode"/>
+			<disable object="ExtensionAttributeDefinition"/>
+			<disable object="MessageFlowAssociation"/>
+		</modelEnablement>
+
+		<modelEnablement runtimeId="org.eclipse.bpmn2.modeler.runtime.none" type="Collaboration">
+			<disable object="all"/>
+			<!-- copy the enablements from "Process" diagram type -->
+			<enable object="default" feature="Process"/>
+			
+			<!-- and then change these objects -->
+			<disable object="DataObjectReference"/>
+			<enable object="Participant"/>
+			<enable object="Lane"/>
+			<enable object="MessageFlow"/>
+			<enable object="Conversation"/>
+			<enable object="SubConversation"/>
+			<enable object="CallConversation"/>
+			<enable object="ConversationLink"/>
 		</modelEnablement>
 
 		<style object="AdHocSubProcess" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>

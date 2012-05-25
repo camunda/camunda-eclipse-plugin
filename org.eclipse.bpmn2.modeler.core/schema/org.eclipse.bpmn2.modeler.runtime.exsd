@@ -422,6 +422,13 @@ rootFeature/childFeature_1/childFeature_2#0
                </restriction>
             </simpleType>
          </attribute>
+         <attribute name="profile" type="string">
+            <annotation>
+               <documentation>
+                  An optional profile name that can be used to define different levels of enablment within each diagram type.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
