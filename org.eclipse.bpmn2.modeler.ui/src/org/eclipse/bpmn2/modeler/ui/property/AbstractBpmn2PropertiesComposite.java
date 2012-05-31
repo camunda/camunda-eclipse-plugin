@@ -234,6 +234,9 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 	 * @return the Composite root for the current selection's EAttributes
 	 */
 	public Composite getAttributesParent() {
+		if (getParent() instanceof Section)
+			return this;
+		
 		if (attributesSection==null || attributesSection.isDisposed()) {
 
 			if (objectStack.peek()==be)

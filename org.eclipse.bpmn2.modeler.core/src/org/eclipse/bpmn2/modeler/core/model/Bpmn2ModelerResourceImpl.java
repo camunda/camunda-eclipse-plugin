@@ -250,6 +250,7 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 
 		public Bpmn2ModelerXMLSave(XMLHelper helper) {
 			super(helper);
+			helper.getPrefixToNamespaceMap().clear();
 		}
 
 		@Override
