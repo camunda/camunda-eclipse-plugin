@@ -34,6 +34,7 @@ import java.util.Map;
 
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.RootElement;
@@ -235,7 +236,7 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 			}
 
 			// hack to handle QNames and arbitrary strings in structureRefs
-			if (eReference.getName().equals("structureRef")) {
+			if (eReference.getName().equals("structureRef") && object instanceof ItemDefinition) {
 				object.eSet(eReference, ModelUtil.createStringWrapper(ids));
 				return;
 			}
