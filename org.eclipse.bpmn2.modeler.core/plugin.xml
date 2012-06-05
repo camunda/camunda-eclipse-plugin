@@ -44,6 +44,36 @@
                   </event>
                </target>
             </constraint>
+            <constraint
+			        lang="OCL"
+			         severity="ERROR"
+			         mode="Live"
+			         name="StartEventIncoming"
+			         id="org.eclipse.bpmn2.modeler.core.validation.StartEvent.incoming"
+			         statusCode="2" isEnabledByDefault="true">
+			      <description>Start Event must not have incoming flows</description>
+			      <message>The {0} must not have incoming sequence flows.</message>
+			      <target class="StartEvent" />
+			      
+			      <![CDATA[
+			         self.incoming->isEmpty()
+			      ]]>
+			</constraint>
+			<constraint
+			        lang="OCL"
+			         severity="ERROR"
+			         mode="Live"
+			         name="EndEventOutgoing"
+			         id="org.eclipse.bpmn2.modeler.core.validation.EndEvent.outgoing"
+			         statusCode="3" isEnabledByDefault="true">
+			      <description>End Event must not have outgoing flows</description>
+			      <message>The {0} must not have outgoing sequence flows.</message>
+			      <target class="EndEvent" />
+			      
+			      <![CDATA[
+			         self.outgoing->isEmpty()
+			      ]]>
+			</constraint>
          </constraints>
       </constraintProvider>
    </extension>
