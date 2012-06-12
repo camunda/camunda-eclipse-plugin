@@ -123,15 +123,6 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 	@Override
 	protected XMLSave createXMLSave() {
 		return new Bpmn2ModelerXMLSave(createXMLHelper()) {
-            @Override
-            protected boolean shouldSaveFeature(EObject o, EStructuralFeature f) {
-                if (o instanceof BPMNShape && f==BpmnDiPackage.eINSTANCE.getBPMNShape_IsHorizontal()) {
-                	BPMNShape s = (BPMNShape)o;
-                	if (s.getBpmnElement() instanceof Lane || s.getBpmnElement() instanceof Participant)
-                		return true;
-                }
-                return super.shouldSaveFeature(o, f);
-            }
 		};
 	}
 
@@ -263,6 +254,22 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 			}
 			
 		}
+		
+        @Override
+        protected boolean shouldSaveFeature(EObject o, EStructuralFeature f) {
+            if (o instanceof BPMNShape && f==BpmnDiPackage.eINSTANCE.getBPMNShape_IsHorizontal()) {
+            	BPMNShape s = (BPMNShape)o;
+            	if (s.getBpmnElement() instanceof Lane || s.getBpmnElement() instanceof Participant)
+            		return true;
+            }
+            
+            // we also want to store x and y with value zero, would be skipped because of default value otherwise
+            if (o instanceof Bounds) {
+            	return true;
+            }
+            
+            return super.shouldSaveFeature(o, f);
+        }
 		
 		protected <T> List<T> getAll(Class<T> class1, Resource resource) {
 			ArrayList<T> l = new ArrayList<T>();

@@ -52,7 +52,8 @@ public class BusinessRuleTaskFeatureContainer extends AbstractTaskFeatureContain
 
 			@Override
 			public int getWidth() {
-				return GraphicsUtil.TASK_DEFAULT_WIDTH + 50;
+				return GraphicsUtil.getActivitySize(getDiagram()).getWidth();
+//				return GraphicsUtil.TASK_DEFAULT_WIDTH + 50;
 			}
 		};
 	}

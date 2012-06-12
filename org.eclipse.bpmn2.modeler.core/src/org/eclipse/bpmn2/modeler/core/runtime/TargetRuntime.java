@@ -22,7 +22,6 @@ import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.modeler.core.AbstractPropertyChangeListenerProvider;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.IBpmn2RuntimeExtension;
-import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.ICustomTaskFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
 import org.eclipse.bpmn2.modeler.core.preferences.ShapeStyle;
@@ -30,7 +29,6 @@ import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor.Property;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor.Value;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.ecore.EClass;
@@ -188,16 +186,20 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 								me.setType(type);
 								me.setProfile(profile);
 								
+								if (e.getAttribute("override") != null) {
+									me.setOverride(new Boolean(e.getAttribute("override")));
+								}
+								
 								for (IConfigurationElement c : e.getChildren()) {
 									String object = c.getAttribute("object");
 									String feature = c.getAttribute("feature");
 									if (c.getName().equals("enable")) {
 										me.setEnabled(object, feature, true);
-									}
-									else if (c.getName().equals("disable")) {
+									} else if (c.getName().equals("disable")) {
 										me.setEnabled(object, feature, false);
 									}
 								}
+
 							}
 						}
 					}
@@ -263,16 +265,20 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 							me.setType(type);
 							me.setProfile(profile);
 							
+							if (e.getAttribute("override") != null) {
+								me.setOverride(new Boolean(e.getAttribute("override")));
+							}
+							
 							for (IConfigurationElement c : e.getChildren()) {
 								String object = c.getAttribute("object");
 								String feature = c.getAttribute("feature");
 								if (c.getName().equals("enable")) {
 									me.setEnabled(object, feature, true);
-								}
-								else if (c.getName().equals("disable")) {
+								} else if (c.getName().equals("disable")) {
 									me.setEnabled(object, feature, false);
 								}
 							}
+
 						}
 						else if (e.getName().equals("style")) {
 							String object = e.getAttribute("object");

@@ -12,8 +12,6 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
-import java.util.Iterator;
-
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.CallableElement;
@@ -23,8 +21,10 @@ import org.eclipse.bpmn2.GlobalScriptTask;
 import org.eclipse.bpmn2.GlobalTask;
 import org.eclipse.bpmn2.GlobalUserTask;
 import org.eclipse.bpmn2.Process;
+import org.eclipse.bpmn2.modeler.core.features.DefaultResizeBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
+import org.eclipse.bpmn2.modeler.core.features.activity.LayoutActivityFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
@@ -36,13 +36,16 @@ import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.ILayoutFeature;
 import org.eclipse.graphiti.features.IReason;
+import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.impl.AbstractUpdateFeature;
 import org.eclipse.graphiti.features.impl.Reason;
+import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Image;
 import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
+import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -101,11 +104,20 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 
 	@Override
 	public ILayoutFeature getLayoutFeature(IFeatureProvider fp) {
-		return new LayoutSubProcessFeature(fp) {
-			@Override
+		return new LayoutActivityFeature(fp) {
 			protected int getMarkerContainerOffset() {
 				return MARKER_OFFSET;
 			}
+			
+			@Override
+			protected boolean layoutHook(Shape shape, GraphicsAlgorithm ga, Object bo, int newWidth, int newHeight) {
+				if (bo != null && bo instanceof Activity && ga instanceof Text) {
+					Graphiti.getGaService().setLocationAndSize(ga, 5, 5, newWidth - 10, 15);
+					return true;
+				}
+				return false;
+			}
+			
 		};
 	}
 
@@ -114,6 +126,11 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 		MultiUpdateFeature multiUpdate = super.getUpdateFeature(fp);
 		multiUpdate.addUpdateFeature(new UpdateCallActivityFeature(fp));
 		return multiUpdate;
+	}
+	
+	@Override
+	public IResizeShapeFeature getResizeFeature(IFeatureProvider fp) {
+		return new DefaultResizeBPMNShapeFeature(fp);
 	}
 
 	public static class CreateCallActivityFeature extends AbstractCreateExpandableFlowNodeFeature<CallActivity> {

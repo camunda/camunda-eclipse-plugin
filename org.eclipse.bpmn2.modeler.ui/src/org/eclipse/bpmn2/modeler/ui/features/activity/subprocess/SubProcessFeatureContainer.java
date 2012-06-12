@@ -26,6 +26,7 @@ import org.eclipse.graphiti.features.custom.ICustomFeature;
 public class SubProcessFeatureContainer extends AbstractSubProcessFeatureContainer {
 
 	public static final String TRIGGERED_BY_EVENT = "triggered-by-event-key";
+	public static final String IS_EXPANDED = "is-expanded-key";
 
 	@Override
 	public boolean canApplyTo(Object o) {

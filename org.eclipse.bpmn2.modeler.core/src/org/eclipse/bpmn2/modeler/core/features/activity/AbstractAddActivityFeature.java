@@ -24,6 +24,7 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -61,6 +62,13 @@ public abstract class AbstractAddActivityFeature extends AbstractAddBPMNShapeFea
 
 		int width = context.getWidth() > 0 ? context.getWidth() : this.getWidth();
 		int height = context.getHeight() > 0 ? context.getHeight() : this.getHeight();
+		
+		GraphicsAlgorithm targetAlgorithm = context.getTargetContainer().getGraphicsAlgorithm();
+		
+		if (targetAlgorithm != null) {
+			width = Math.min(targetAlgorithm.getWidth(), width);
+			height = Math.min(targetAlgorithm.getHeight(), height);
+		}
 		
 		adjustLocation(context,width,height);
 		

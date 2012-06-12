@@ -49,9 +49,7 @@ public class BooleanObjectEditor extends ObjectEditor {
 	
 	public Control createControl(Composite composite, String label, int style) {
 
-		createLabel(composite, label);
-		
-		button = getToolkit().createButton(composite, "", SWT.CHECK);
+		button = getToolkit().createButton(composite, label, SWT.CHECK);
 		button.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		button.setSelection((Boolean) object.eGet(feature));
 		IObservableValue buttonObserver = SWTObservables.observeSelection(button);

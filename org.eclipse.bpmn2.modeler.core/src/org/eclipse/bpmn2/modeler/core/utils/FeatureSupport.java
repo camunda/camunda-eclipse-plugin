@@ -46,6 +46,7 @@ import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
+import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -160,6 +161,9 @@ public class FeatureSupport {
 				for (Anchor a : ac.getAnchors()) {
 					for (Connection c : a.getOutgoingConnections()) {
 						c.setVisible(visible);
+						for (ConnectionDecorator decorator : c.getConnectionDecorators()) {
+							decorator.setVisible(visible);
+						}
 					}
 				}
 			}
@@ -299,7 +303,7 @@ public class FeatureSupport {
 			}
 		}
 	}
-
+	
 	private static Dimension resizeRecursively(ContainerShape root) {
 		BaseElement elem = BusinessObjectUtil.getFirstElementOfType(root, BaseElement.class);
 		List<Dimension> dimensions = new ArrayList<Dimension>();

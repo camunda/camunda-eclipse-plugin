@@ -50,6 +50,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.graphiti.ui.internal.GraphitiUIPlugin;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.swt.widgets.Composite;
 import org.xml.sax.InputSource;
 
 @SuppressWarnings("restriction")
@@ -480,4 +481,10 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 	private class RejectedException extends RuntimeException {
 		private static final long serialVersionUID = 1L;
 	}
+
+	@Override
+	public Composite getPreferencesComposite(Composite parent, Bpmn2Preferences preferences) {
+		return null;
+	}
+
 }

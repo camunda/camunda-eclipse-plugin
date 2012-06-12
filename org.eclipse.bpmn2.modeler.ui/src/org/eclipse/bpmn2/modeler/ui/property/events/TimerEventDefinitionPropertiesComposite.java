@@ -116,7 +116,7 @@ public class TimerEventDefinitionPropertiesComposite extends DefaultPropertiesCo
 		timeDateButton.addSelectionListener(new SelectionAdapter() {
 			
 			public void widgetSelected(SelectionEvent e) {
-				if (timeDurationButton.getSelection() && timerType!=TimerType.TIMEDATE) {
+				if (timeDateButton.getSelection() && timerType!=TimerType.TIMEDATE) {
 					TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
 					domain.getCommandStack().execute(new RecordingCommand(domain) {
 						@Override

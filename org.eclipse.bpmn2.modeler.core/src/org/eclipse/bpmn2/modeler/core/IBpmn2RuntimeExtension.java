@@ -12,8 +12,10 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core;
 
+import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.swt.widgets.Composite;
 
 public interface IBpmn2RuntimeExtension {
 
@@ -28,4 +30,6 @@ public interface IBpmn2RuntimeExtension {
 	public boolean isContentForRuntime(IFile file);
 	public String getTargetNamespace(Bpmn2DiagramType diagramType);
 	public void initialize();
+	
+	public Composite getPreferencesComposite(Composite parent, Bpmn2Preferences preferences);
 }

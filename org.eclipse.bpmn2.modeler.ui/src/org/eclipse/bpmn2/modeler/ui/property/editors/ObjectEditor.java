@@ -43,6 +43,7 @@ public abstract class ObjectEditor {
 	protected EObject object;
 	protected EStructuralFeature feature;
 	protected AbstractBpmn2PropertiesComposite parent;
+	private Label label;
 	
 	public ObjectEditor(AbstractBpmn2PropertiesComposite parent, EObject object, EStructuralFeature feature) {
 		this.parent = parent;
@@ -82,8 +83,12 @@ public abstract class ObjectEditor {
 	}
 	
 	protected Label createLabel(Composite parent, String name) {
-		Label label = getToolkit().createLabel(parent, name);
+		label = getToolkit().createLabel(parent, name);
 		label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		return label;
+	}
+	
+	public Label getLabel() {
 		return label;
 	}
 

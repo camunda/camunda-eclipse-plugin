@@ -28,7 +28,9 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
 
 public abstract class AbstractCreateFlowElementFeature<T extends FlowElement> extends AbstractBpmn2CreateFeature {
-
+	
+	public static final String OPTION_DONT_ADD = "DONT_ADD";
+	
 	public AbstractCreateFlowElementFeature(IFeatureProvider fp, String name, String description) {
 		super(fp, name, description);
 	}
@@ -60,7 +62,9 @@ public abstract class AbstractCreateFlowElementFeature<T extends FlowElement> ex
 		} catch (IOException e) {
 			Activator.logError(e);
 		}
-		addGraphicalRepresentation(context, element);
+		if (context.getProperty(OPTION_DONT_ADD) == null) {
+			addGraphicalRepresentation(context, element);
+		}
 		return new Object[] { element };
 	}
 	

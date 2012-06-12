@@ -16,12 +16,14 @@ package org.eclipse.bpmn2.modeler.ui.property.dialogs;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -53,10 +55,11 @@ public class ModelSubclassSelectionDialog extends ListDialog {
 		
 		ModelEnablementDescriptor modelEnablement = bpmn2Editor.getTargetRuntime().getModelEnablements(object);
 		items = new ArrayList<EClass>();
-		for (EClassifier eclassifier : object.eClass().getEPackage().getEClassifiers() ) {
+				
+		for (EClassifier eclassifier : Bpmn2Package.eINSTANCE.getEClassifiers()) {
 			if (eclassifier instanceof EClass) {
 				EClass eclass = (EClass)eclassifier;
-				if (eclass.getESuperTypes().contains(listItemClass)) {
+				if (eclass.getEAllSuperTypes().contains(listItemClass)) {
 					if (modelEnablement.isEnabled(eclass)) {
 						items.add(eclass);
 					}

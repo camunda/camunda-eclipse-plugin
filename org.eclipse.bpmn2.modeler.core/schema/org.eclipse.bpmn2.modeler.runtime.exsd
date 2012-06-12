@@ -429,6 +429,16 @@ rootFeature/childFeature_1/childFeature_2#0
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="override" type="boolean">
+            <annotation>
+               <documentation>
+                  Controls the processing of the modelEnablement. By default the model enablements will be effective instantly on opening a diagram with the corresponding type and runtime. 
+
+If set to &quot;false&quot;, the model enablement will not be effective by default. 
+If not set, this value will be treated as &quot;true&quot;.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

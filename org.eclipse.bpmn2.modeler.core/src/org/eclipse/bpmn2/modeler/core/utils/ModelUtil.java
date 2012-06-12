@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Choreography;
 import org.eclipse.bpmn2.Collaboration;
@@ -26,6 +27,7 @@ import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
+import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
@@ -53,6 +55,9 @@ import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.emf.ecore.util.FeatureMapUtil;
+import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
+import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.xsd.XSDAttributeDeclaration;
 import org.eclipse.xsd.XSDElementDeclaration;
 
@@ -314,6 +319,38 @@ public class ModelUtil {
 			}
 		}
 		return new ArrayList<EventDefinition>();
+	}
+	
+	/**
+	 * Checks if an event has a specific event definition type defined
+	 * 
+	 * @param event the event to be checked
+	 * @param clazz the class of the event definition to 
+	 * @return true if the event definition is defined for this event instance, false otherwise
+	 */
+	public static boolean hasEventDefinition (Event event, Class<?> clazz) {
+		for (EventDefinition def : getEventDefinitions(event)) {
+			if (clazz.isInstance(def)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Get the first event definition for an given event and given type
+	 * 
+	 * @param event the event 
+	 * @param clazz the event definition class
+	 * @return the first event definition definied for this event instance
+	 */
+	public static EventDefinition getEventDefinition (Event event, Class<?> clazz) {
+		for (EventDefinition def : getEventDefinitions(event)) {
+			if (clazz.isInstance(def)) {
+				return def;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -639,5 +676,47 @@ public class ModelUtil {
 			ancestor = ModelUtil.findNearestAncestor(ancestor, ancestorTypes);
 		}
 		return values;
+	}
+	
+	public static List<ExtensionAttributeValue> getExtensionAttributeValues(EObject be) {
+		if (be instanceof Participant) {
+			final Participant participant = (Participant) be;
+			if (participant.getProcessRef() == null) {
+				if (participant.eContainer() instanceof Collaboration) {
+					Collaboration collab = (Collaboration) participant.eContainer();
+					if (collab.eContainer() instanceof Definitions) {
+						final Definitions definitions = (Definitions) collab.eContainer();
+						
+						TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(definitions.eResource());
+						
+						domain.getCommandStack().execute(new RecordingCommand(domain) {
+							@Override
+							protected void doExecute() {
+								Process process = Bpmn2Factory.eINSTANCE.createProcess();
+								process.setId(generateID(process, definitions.eResource()));
+								participant.setProcessRef(process);
+								
+								definitions.getRootElements().add(process);
+							}
+							
+						});
+						
+					}
+				}
+			}
+			return participant.getProcessRef().getExtensionValues();
+		}
+		if (be instanceof BPMNDiagram) {
+			BPMNDiagram diagram = (BPMNDiagram) be;
+			BaseElement bpmnElement = diagram.getPlane().getBpmnElement();
+			if (bpmnElement instanceof org.eclipse.bpmn2.Process) {
+				return bpmnElement.getExtensionValues();
+			}
+		}
+		if (be instanceof BaseElement) {
+			return ((BaseElement) be).getExtensionValues();
+		}
+
+		return new ArrayList<ExtensionAttributeValue>();
 	}
 }

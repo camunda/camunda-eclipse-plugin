@@ -60,7 +60,6 @@ import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.datatypes.ILocation;
@@ -170,7 +169,7 @@ public class DIImport {
 //		}
 		
 		for (BaseElement be : elements.keySet()) {
-//			if (be instanceof SubProcess) {
+			if (be instanceof SubProcess) { // we need the layout to hide children if collapsed
 				PictogramElement pe = elements.get(be);
 				LayoutContext context = new LayoutContext(pe);
 				ILayoutFeature feature = featureProvider.getLayoutFeature(context);
@@ -179,7 +178,7 @@ public class DIImport {
 				}
 				if (feature.canLayout(context))
 					feature.layout(context);
-//			}
+			}
 		}
 	}
 
@@ -376,7 +375,12 @@ public class DIImport {
 
 		context.putProperty(IMPORT_PROPERTY, true);
 		context.setNewObject(bpmnElement);
+
 		context.setSize((int) shape.getBounds().getWidth(), (int) shape.getBounds().getHeight());
+
+		if ( (bpmnElement instanceof SubProcess) && !shape.isIsExpanded()) {
+			context.setSize(GraphicsUtil.getActivitySize(diagram).getWidth(), GraphicsUtil.getActivitySize(diagram).getHeight());
+		}
 
 		if (bpmnElement instanceof Lane) {
 			handleLane((Lane)bpmnElement, context, shape);
@@ -409,6 +413,7 @@ public class DIImport {
 			} else if (bpmnElement instanceof Activity && !(bpmnElement instanceof SubProcess)) {
 				GraphicsUtil.setActivitySize(context.getWidth(), context.getHeight(), diagram);
 			}
+			
 			elements.put(bpmnElement, newContainer);
 			handleEvents(bpmnElement, newContainer);
 		}

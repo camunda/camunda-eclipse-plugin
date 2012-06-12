@@ -13,25 +13,19 @@
 
 package org.eclipse.bpmn2.modeler.ui.features;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.BoundaryEvent;
-import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.FlowElement;
-import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.SequenceFlow;
-import org.eclipse.bpmn2.StartEvent;
-import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
-import org.eclipse.bpmn2.modeler.core.features.flow.AbstractCreateFlowFeature;
+import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
@@ -40,16 +34,13 @@ import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
-import org.eclipse.bpmn2.modeler.ui.Activator;
-import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
+import org.eclipse.bpmn2.modeler.ui.diagram.BPMNFeatureProvider;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.ILocation;
-import org.eclipse.graphiti.features.IAddFeature;
-import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICustomContext;
@@ -57,10 +48,11 @@ import org.eclipse.graphiti.features.context.impl.AddConnectionContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.AreaContext;
 import org.eclipse.graphiti.features.context.impl.CreateConnectionContext;
+import org.eclipse.graphiti.features.context.impl.CreateContext;
 import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
+import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
-import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
@@ -168,6 +160,9 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 		List<EClass> subtypes = new ArrayList<EClass>();
 		for (EClassifier ec : Bpmn2Package.eINSTANCE.getEClassifiers() ) {
 			if (ec instanceof EClass) {
+				if ( ((EClass) ec).isAbstract()) {
+					continue;
+				}
 				EList<EClass>superTypes = ((EClass)ec).getEAllSuperTypes(); 
 				if (superTypes.contains(newType) &&
 						enablements.isEnabled((EClass)ec)) {
@@ -209,7 +204,20 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 		int width = ga.getWidth();
 		int height = ga.getHeight();
 		
-		EObject newObject = mh.create(newType);
+		BPMNFeatureProvider fp = (BPMNFeatureProvider) getFeatureProvider();
+		AbstractCreateFeature createFeature = (AbstractCreateFeature) fp.getCreateFeatureForBusinessObject(newType.getInstanceClass());
+		
+		CreateContext createContext = new CreateContext();
+		createContext.putProperty(AbstractCreateFlowElementFeature.OPTION_DONT_ADD, "true");
+		createContext.setTargetContainer(oldShape.getContainer());
+		
+		FlowElement newObject = null;
+		if (createFeature != null) {
+			newObject = (FlowElement) createFeature.create(createContext)[0];
+		}else {
+			newObject = (FlowElement) mh.create(newType);
+		}
+		
 		ContainerShape containerShape = oldShape.getContainer();
 		if (containerShape!=getDiagram()) {
 			// we are adding a new shape to a container (e.g a SubProcess)
@@ -220,8 +228,7 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 			yOffset = loc.getY();
 		}
 		BaseElement oldObject = BusinessObjectUtil.getFirstElementOfType(oldShape, BaseElement.class);
-		FlowElementsContainer containerObject = mh.getFlowElementContainer(oldObject);
-		containerObject.getFlowElements().add((FlowElement)newObject);
+		
 		if (oldObject instanceof Lane) {
 			((Lane)oldObject).getFlowNodeRefs().add((FlowNode)newObject);
 		}

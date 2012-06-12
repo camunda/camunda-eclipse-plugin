@@ -43,7 +43,7 @@ import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public abstract class AbstractGatewayFeatureContainer extends BaseElementFeatureContainer {
-
+	
 	@Override
 	public Object getApplyObject(IContext context) {
 		if (context.getProperty(ContextConstants.LABEL_CONTEXT) == null

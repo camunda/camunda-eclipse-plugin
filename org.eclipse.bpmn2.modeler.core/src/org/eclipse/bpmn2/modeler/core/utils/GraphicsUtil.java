@@ -238,6 +238,19 @@ public class GraphicsUtil {
 	private static int getShapeWidth(Shape shape) {
 		return shape.getGraphicsAlgorithm().getWidth();
 	}
+	
+	public static Shape getShape(ContainerShape container, String propertyKey) {
+		IPeService peService = Graphiti.getPeService();
+		Iterator<Shape> iterator = peService.getAllContainedShapes(container).iterator();
+		while (iterator.hasNext()) {
+			Shape shape = iterator.next();
+			String property = peService.getPropertyValue(shape, propertyKey);
+			if (property != null && new Boolean(property)) {
+				return shape;
+			}
+		}
+		return null;
+	}
 
 //	private static final int[] GATEWAY = { 0, GATEWAY_RADIUS, GATEWAY_RADIUS, 0, 2 * GATEWAY_RADIUS, GATEWAY_RADIUS,
 //	        GATEWAY_RADIUS, 2 * GATEWAY_RADIUS };
@@ -884,6 +897,8 @@ public class GraphicsUtil {
 
 		int totalWidth = MARKER_WIDTH;
 		int parentW = ((ContainerShape) markerContainer.eContainer()).getGraphicsAlgorithm().getWidth();
+		int parentH = ((ContainerShape) markerContainer.eContainer()).getGraphicsAlgorithm().getHeight();
+		
 		int lastX = 0;
 
 		Iterator<Shape> iterator = peService.getAllContainedShapes(markerContainer).iterator();
@@ -894,7 +909,7 @@ public class GraphicsUtil {
 			lastX = containedGa.getX() + containedGa.getWidth();
 		}
 
-		gaService.setLocationAndSize(ga, (parentW / 2) - (totalWidth / 2), ga.getY(), totalWidth, MARKER_HEIGHT);
+		gaService.setLocationAndSize(ga, (parentW / 2) - (totalWidth / 2), parentH-MARKER_WIDTH, totalWidth, MARKER_HEIGHT);
 
 		Shape shape = peService.createShape(markerContainer, false);
 		peService.setPropertyValue(shape, property, Boolean.toString(true));

@@ -460,6 +460,7 @@ public class ModelExtensionDescriptor extends BaseRuntimeDescriptor {
 			else
 			{
 				childObject = createObject(ref.getEReferenceType());
+				object.eResource();
 				setValue(object, feature, childObject);
 				populateObjectFromValues(childObject,property.getValues());
 			}

@@ -36,7 +36,9 @@ public class CreateTextAnnotationFeature extends AbstractBpmn2CreateFeature {
 	public boolean canCreate(ICreateContext context) {
 		boolean intoDiagram = context.getTargetContainer().equals(getDiagram());
 		boolean intoLane = FeatureSupport.isTargetLane(context) && FeatureSupport.isTargetLaneOnTop(context);
-		return intoDiagram || intoLane;
+		boolean intoParticipant = FeatureSupport.isTargetParticipant(context);
+		
+		return intoDiagram || intoLane || intoParticipant;
 	}
 
 	@Override

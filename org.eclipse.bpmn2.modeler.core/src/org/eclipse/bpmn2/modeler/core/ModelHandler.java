@@ -62,9 +62,6 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.bpmn2.modeler.core.utils.NamespaceUtil;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.DcFactory;
 import org.eclipse.dd.dc.Point;
@@ -601,11 +598,23 @@ public class ModelHandler {
 		if (participant!=null && participant.getProcessRef()!=null) {
 			return participant.getProcessRef();
 		}
-		Process process = create(Process.class);
-		getDefinitions().getRootElements().add(process);
-		if (participant!=null) {
-			participant.setProcessRef(process);
+		
+		Process process = null;
+		
+		if (participant == null) {
+			List<Process> processes = getAll(Process.class);
+			// not a collaboration, and only one process -> append it there
+			process = processes.size() == 1 ? processes.get(0) : null; 
 		}
+		
+		if (process == null) {
+			process = create(Process.class);
+			getDefinitions().getRootElements().add(process);
+			if (participant!=null) {
+				participant.setProcessRef(process);
+			}
+		}
+
 		return process;
 	}
 
@@ -850,8 +859,12 @@ public class ModelHandler {
 		}
 		if (o instanceof BPMNDiagram) {
 			BaseElement be = ((BPMNDiagram)o).getPlane().getBpmnElement();
-			if (be instanceof FlowElementsContainer)
+			if (be != null && be instanceof FlowElementsContainer) {
 				return (FlowElementsContainer)be;
+			}
+			else { // somebody did not understand the BPMNPlane (seems to be common), try adding to the first process
+				return getAll(Process.class).get(0);
+			}
 		}
 		if (o instanceof Participant) {
 			return getOrCreateProcess((Participant) o);

@@ -14,6 +14,7 @@ package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.di.BPMNShape;
+import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.features.DefaultResizeBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
@@ -147,10 +148,9 @@ public class ResizeSubProcessFeature extends DefaultResizeBPMNShapeFeature {
 			}
 			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Activator.logError(e);
 		}
-		Graphiti.getPeService().sendToFront(containerShape);
+		Graphiti.getPeService().sendToBack(containerShape);
 		
 		super.resizeShape(context);
 	}

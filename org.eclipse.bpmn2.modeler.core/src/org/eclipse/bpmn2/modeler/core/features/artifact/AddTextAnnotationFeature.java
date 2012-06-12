@@ -43,7 +43,9 @@ public class AddTextAnnotationFeature extends AbstractAddBPMNShapeFeature {
 		boolean intoDiagram = context.getTargetContainer() instanceof Diagram;
 		boolean intoLane = FeatureSupport.isTargetLane(context) && FeatureSupport.isTargetLaneOnTop(context);
 		boolean intoSubProcess = FeatureSupport.isTargetSubProcess(context);
-		return isAnnotation && (intoDiagram || intoLane || intoSubProcess);
+		boolean intoParticipant = FeatureSupport.isTargetParticipant(context);
+		
+		return isAnnotation && (intoDiagram || intoLane || intoSubProcess || intoParticipant);
 	}
 
 	@Override

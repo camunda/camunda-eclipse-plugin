@@ -13,7 +13,9 @@
 package org.eclipse.bpmn2.modeler.ui;
 import org.eclipse.bpmn2.modeler.core.IBpmn2RuntimeExtension;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
+import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.swt.widgets.Composite;
 
 
 public class DefaultBpmn2RuntimeExtension implements IBpmn2RuntimeExtension {
@@ -48,5 +50,10 @@ public class DefaultBpmn2RuntimeExtension implements IBpmn2RuntimeExtension {
 	@Override
 	public void initialize() {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public Composite getPreferencesComposite(Composite parent, Bpmn2Preferences preferences) {
+		return null;
 	}		
 }

@@ -27,6 +27,7 @@ import org.eclipse.bpmn2.modeler.core.features.event.definitions.DecorationAlgor
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil.FillStyle;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
@@ -136,7 +137,10 @@ public class ErrorEventDefinitionContainer extends AbstractEventDefinitionFeatur
 
 		@Override
 		protected EventDefinition createEventDefinition(ICreateContext context) {
-			return Bpmn2ModelerFactory.create(ErrorEventDefinition.class);
+			ErrorEventDefinition definition = Bpmn2ModelerFactory.create(ErrorEventDefinition.class);
+		  Event e = (Event) getBusinessObjectForPictogramElement(context.getTargetContainer());
+		  ModelUtil.getDefinitions(e).getRootElements().add(0, definition.getErrorRef());
+		  return definition;
 		}
 
 		@Override

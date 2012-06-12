@@ -12,7 +12,6 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
-import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
@@ -24,11 +23,9 @@ import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.context.ILayoutContext;
 import org.eclipse.graphiti.features.context.impl.ResizeShapeContext;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
-import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
-import org.eclipse.graphiti.services.Graphiti;
 
 public class LayoutSubProcessFeature extends LayoutActivityFeature {
 
@@ -38,11 +35,12 @@ public class LayoutSubProcessFeature extends LayoutActivityFeature {
 
 	@Override
 	protected boolean layoutHook(Shape shape, GraphicsAlgorithm ga, Object bo, int newWidth, int newHeight) {
-		if (bo != null && bo instanceof Activity && ga instanceof Text) {
-			Graphiti.getGaService().setLocationAndSize(ga, 5, 5, newWidth - 10, 15);
-			return true;
-		}
-		return false;
+//		FIXME whats that supposed to do? it will move label of children to positions where they are not visible
+//		if (bo != null && bo instanceof Activity && ga instanceof Text) {
+//			Graphiti.getGaService().setLocationAndSize(ga, 5, 5, newWidth - 10, 15);
+//			return true;
+//		}
+		return true;
 	}
 	
 	@Override

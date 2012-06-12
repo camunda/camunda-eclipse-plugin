@@ -218,6 +218,7 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 		containers.add(new LaneFeatureContainer());
 		containers.add(new TextAnnotationFeatureContainer());
 		containers.add(new ChoreographyMessageLinkFeatureContainer());
+		containers.add(new LabelFeatureContainer());
 
 		updateFeatureLists();
 	}

@@ -37,6 +37,7 @@ import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
+import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -50,7 +51,7 @@ import org.eclipse.graphiti.services.ILayoutService;
 public class DIUtils {
 
 	public static void updateDIShape(PictogramElement element) {
-
+		
 		PictogramLink link = element.getLink();
 		if (link == null) {
 			return;
@@ -79,6 +80,24 @@ public class DIUtils {
 					updateDIShape(shape);
 				}
 			}
+		}
+
+		updateConnections(element);
+	}
+	
+	public static void updateConnections(PictogramElement element) {
+		if (element instanceof Shape) {
+			EList<Anchor> anchors = ((Shape) element).getAnchors();
+			
+			for (Anchor anchor : anchors) {
+				List<Connection> connections = Graphiti.getPeService().getAllConnections(anchor);
+				for (Connection connection : connections){
+					updateDIEdge(connection);
+				}
+				connections.size();
+			}
+			
+			anchors.size();
 		}
 	}
 

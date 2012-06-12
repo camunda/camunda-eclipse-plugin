@@ -45,6 +45,9 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 	private String type;
 	private String profile;
 
+	private Boolean override = true;
+	
+	
 	// require a TargetRuntime!
 	private ModelEnablementDescriptor() {
 	}
@@ -70,6 +73,14 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 		this.profile = profile;
 	}
 
+	public void setOverride(Boolean override) {
+		this.override = override;
+	}
+	
+	public Boolean isOverride() {
+		return override;
+	}
+	
 	private void setEnabledAll(boolean enabled) {
 		if (enabled) {
 			Bpmn2Package i = Bpmn2Package.eINSTANCE;
@@ -278,14 +289,15 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 				name += "." + featureName;
 			return getToolEnablementPreferences().isEnabled(name);
 		}
-		if (classes.containsKey(className)) {
+		if (classes.containsKey(className) && isOverride()) {
 			if (featureName!=null && !featureName.isEmpty()) {
 				HashSet<String> features = classes.get(className);
 				return features.contains(featureName);
 			}
 			return true;
 		}
-		return false;
+		
+		return !isOverride();
 	}
 	
 	public boolean isEnabled(EClass eClass, EStructuralFeature feature) {

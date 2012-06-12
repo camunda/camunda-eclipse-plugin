@@ -88,6 +88,7 @@ public class UpdateBaseElementNameFeature extends AbstractUpdateFeature {
 			}
 			text.setValue(name);
 			layoutPictogramElement(context.getPictogramElement());
+
 		}
 
 		if (pe instanceof ContainerShape) {

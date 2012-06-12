@@ -13,9 +13,14 @@
 package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
 import static org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.SubProcessFeatureContainer.TRIGGERED_BY_EVENT;
+import static org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.SubProcessFeatureContainer.IS_EXPANDED;
+
+import java.io.IOException;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.SubProcess;
+import org.eclipse.bpmn2.di.BPMNShape;
+import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.features.activity.AbstractAddActivityFeature;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
@@ -45,11 +50,22 @@ public class AddExpandedSubProcessFeature extends AbstractAddActivityFeature {
 		IGaService gaService = Graphiti.getGaService();
 
 		boolean isTriggeredByEvent = false;
+		boolean isExpanded = true;
+		
 		if (activity instanceof SubProcess) {
 			SubProcess subprocess = (SubProcess) activity;
 			isTriggeredByEvent = subprocess.isTriggeredByEvent();
+			try {
+				BPMNShape bpmnShape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(subprocess);
+				if (bpmnShape != null) {
+					isExpanded = bpmnShape.isIsExpanded();
+				}
+			} catch (IOException e) {
+				throw new IllegalStateException("Could not get DI shape for subprocess:"+subprocess);
+			}
 		}
 		peService.setPropertyValue(container, TRIGGERED_BY_EVENT, Boolean.toString(isTriggeredByEvent));
+		peService.setPropertyValue(container, IS_EXPANDED, Boolean.toString(isExpanded));
 
 		Shape textShape = peService.createShape(container, false);
 		Text text = gaService.createDefaultText(getDiagram(), textShape, activity.getName());
@@ -59,16 +75,16 @@ public class AddExpandedSubProcessFeature extends AbstractAddActivityFeature {
 		text.setVerticalAlignment(Orientation.ALIGNMENT_CENTER);
 //		text.setFont(gaService.manageFont(getDiagram(), GaServiceImpl.DEFAULT_FONT, 8, false, true));
 		link(textShape, activity);
-
-		// TODO: should this go into the UpdateFeature?
-		// see UpdateCallActivityFeature for implementation
-//		ContainerShape markerContainer = (ContainerShape) GraphicsUtil.getShapeForProperty(container,
-//				GraphicsUtil.ACTIVITY_MARKER_CONTAINER);
-//		
-//		Expand expand = GraphicsUtil.createActivityMarkerExpand(markerContainer);
-//		expand.rect.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-//		expand.horizontal.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-//		expand.vertical.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+		
+		ContainerShape markerContainer = (ContainerShape) GraphicsUtil.getShape(container,
+				GraphicsUtil.ACTIVITY_MARKER_CONTAINER);
+		
+		if (!isExpanded){
+			Expand expand = GraphicsUtil.createActivityMarkerExpand(markerContainer);
+			expand.rect.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+			expand.horizontal.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+			expand.vertical.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+		}
 	}
 
 	@Override

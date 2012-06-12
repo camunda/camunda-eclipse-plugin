@@ -1,8 +1,9 @@
 package org.eclipse.bpmn2.modeler.ui.features.label;
 
+import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.FlowElementsContainer;
-import org.eclipse.bpmn2.FlowNode;
+import org.eclipse.bpmn2.modeler.core.di.DIImport;
 import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
@@ -45,9 +46,13 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		
 		int width = (Integer) context.getProperty(ContextConstants.WIDTH);
 		int height = (Integer) context.getProperty(ContextConstants.HEIGHT);
+		
+		int x = context.getX();
+		int y = context.getY();
+		
 		BaseElement baseElement = (BaseElement) context.getProperty(ContextConstants.BASE_ELEMENT);
 		
-		final ContainerShape textContainerShape = peService.createContainerShape(context.getTargetContainer(), true);
+		final ContainerShape textContainerShape = peService.createContainerShape(getTargetContainer(context), true);
 		gaService.createInvisibleRectangle(textContainerShape);
 		
 		Shape textShape = peService.createShape(textContainerShape, false);
@@ -58,14 +63,43 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setVerticalAlignment(Orientation.ALIGNMENT_TOP);
 		
-		GraphicsUtil.alignWithShape(text, textContainerShape, width, height, context.getX(), context.getY(), 0, 0);
+		// Boundary events get a different add context, so use the context coodinates relative
+		if ( (baseElement instanceof BoundaryEvent) && !isImport(context) ){
+			x = context.getTargetContainer().getGraphicsAlgorithm().getX() + context.getX()-width/2;
+			y = context.getTargetContainer().getGraphicsAlgorithm().getY() + context.getY()-height/2;
+		}
+		
+		GraphicsUtil.alignWithShape(text, textContainerShape, width, height, x, y, 0, 0);
 		
 		this.link(textContainerShape, baseElement);
 		Graphiti.getPeService().setPropertyValue(textContainerShape, GraphicsUtil.LABEL_PROPERTY, "true");
 		
 		updatePictogramElement(textContainerShape);
 		layoutPictogramElement(textContainerShape);
+		
 		return textContainerShape;
+	}
+	
+	private boolean isImport(IAddContext context) {
+		return context.getProperty(DIImport.IMPORT_PROPERTY) == null ? false : (Boolean) context.getProperty(DIImport.IMPORT_PROPERTY);
+	}
+	
+	/**
+	 * Get the correct target container, boundary events need special handling, because we need to find a parent,
+	 * where the label is visible.
+	 * 
+	 * @param context
+	 * @return the target container for the current context
+	 */
+	ContainerShape getTargetContainer(IAddContext context) {
+		boolean isBoundary = context.getProperty(ContextConstants.BASE_ELEMENT) instanceof BoundaryEvent;
+		
+		if ( isBoundary && !isImport(context) ){
+			if (context.getTargetContainer()!=null){
+				return context.getTargetContainer().getContainer();
+			}
+		}
+		return context.getTargetContainer();
 	}
 
 }
