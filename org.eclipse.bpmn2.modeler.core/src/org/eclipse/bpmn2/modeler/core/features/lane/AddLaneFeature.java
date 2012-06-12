@@ -145,7 +145,9 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature {
 		}
 		
 		peService.sendToBack(containerShape);
-		peService.sendToBack(context.getTargetContainer());
+		if (context.getTargetContainer().getContainer() != null) { // only children may be sent back
+			peService.sendToBack(context.getTargetContainer());
+		}
 		
 		return containerShape;
 	}

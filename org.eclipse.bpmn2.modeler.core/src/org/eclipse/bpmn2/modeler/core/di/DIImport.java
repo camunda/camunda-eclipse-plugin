@@ -586,10 +586,22 @@ public class DIImport {
 	private void addSourceAndTargetToEdge(BPMNEdge bpmnEdge, EObject source, EObject target) {
 		// We get most of the information from the BpmnEdge, not from the referencing business object. Because of this
 		// we must ensure, that the edge contains necessary information.
-		if (bpmnEdge.getSourceElement() == null) {
+		DiagramElement sourceElement = null;
+		DiagramElement targetElement = null;
+		
+		try {
+			sourceElement = bpmnEdge.getSourceElement();
+			targetElement = bpmnEdge.getTargetElement();
+		}catch (ClassCastException e) {
+			// some other modelers like Yaoqiang BPMN are doing it wrong, they reference business objects instead of 
+			// DiagramElements (see BPMN 2.0 spec, p. 405, 12.2.3.5). this will cause an execption 
+			// in the BPMN 2.0 metamodel implementation
+		}
+		
+		if (sourceElement == null) {
 			bpmnEdge.setSourceElement(modelHandler.findDIElement((BaseElement) source));
 		}
-		if (bpmnEdge.getTargetElement() == null) {
+		if (targetElement == null) {
 			bpmnEdge.setTargetElement(modelHandler.findDIElement((BaseElement) target));
 		}
 	}
