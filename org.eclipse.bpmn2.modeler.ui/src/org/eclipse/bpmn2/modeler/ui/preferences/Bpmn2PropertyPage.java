@@ -51,6 +51,7 @@ public class Bpmn2PropertyPage extends PropertyPage {
 
 	@Override
 	protected Control createContents(Composite parent) {
+		loadPrefs();
 		
 		Composite container = new Composite(parent, SWT.NULL);
 		container.setLayout(new GridLayout(3, false));
@@ -110,12 +111,14 @@ public class Bpmn2PropertyPage extends PropertyPage {
 		super.performDefaults();
 		restoreDefaults();
 	}
-
-	private void initData() {
+	
+	public void loadPrefs() {
 		IProject project = (IProject) getElement().getAdapter(IProject.class);
 		prefs = Bpmn2Preferences.getInstance(project);
 		prefs.load();
+	}
 
+	private void initData() {
 		btnShowAdvancedProperties.setSelection( prefs.getShowAdvancedPropertiesTab() );
 		btnShowDescriptions.setSelection( prefs.getShowDescriptions() );
 		btnExpandProperties.setSelection( prefs.getExpandProperties() );
