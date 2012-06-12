@@ -13,7 +13,6 @@
 package org.eclipse.bpmn2.modeler.ui.preferences;
 
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
-import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences.BPMNDIAttributeDefault;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.Messages;
@@ -93,7 +92,7 @@ public class Bpmn2PropertyPage extends PropertyPage {
 		cboIsMarkerVisible = new BPMNDIAttributeDefaultCombo(group);
 		cboIsMarkerVisible.setText(Bpmn2Preferences.PREF_IS_MARKER_VISIBLE_LABEL);
 		
-		runtimeComposite = cr.getRuntimeExtension().getPreferencesComposite(container, prefs);
+		runtimeComposite = prefs.getRuntime().getRuntimeExtension().getPreferencesComposite(container, prefs);
 
 		initData();
 

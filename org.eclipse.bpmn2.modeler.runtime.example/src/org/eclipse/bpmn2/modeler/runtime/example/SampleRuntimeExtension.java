@@ -15,6 +15,8 @@ package org.eclipse.bpmn2.modeler.runtime.example;
 
 import org.eclipse.bpmn2.modeler.core.IBpmn2RuntimeExtension;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 
 /**
@@ -44,6 +46,12 @@ public class SampleRuntimeExtension implements IBpmn2RuntimeExtension {
 	@Override
 	public boolean isContentForRuntime(IFile file) {
 		return true;
+	}
+
+	@Override
+	public Composite getPreferencesComposite(Composite parent,
+			Bpmn2Preferences preferences) {
+		return null;
 	}
 
 }
