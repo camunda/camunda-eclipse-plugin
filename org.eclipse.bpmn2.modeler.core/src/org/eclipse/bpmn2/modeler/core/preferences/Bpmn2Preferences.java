@@ -835,8 +835,10 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 						ResourceNavigator navigator = (ResourceNavigator) parts[i];
 						StructuredSelection sel = (StructuredSelection) navigator.getTreeViewer().getSelection();
 						IResource resource = (IResource) sel.getFirstElement();
-						activeProject = resource.getProject();
-						break;
+						if (resource!=null) {
+							activeProject = resource.getProject();
+							break;
+						}
 					}
 				}
 			}
