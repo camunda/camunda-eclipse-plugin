@@ -159,7 +159,6 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
-		
 		try {
 			Bpmn2DiagramType diagramType = Bpmn2DiagramType.NONE;
 			String targetNamespace = null;
