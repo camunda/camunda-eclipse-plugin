@@ -118,7 +118,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 	// widgets
 	SashForm sashForm;
 	Section tableSection;
-	Section detailSection;
+	protected Section detailSection;
 	
 	Table table;
 	TableViewer tableViewer;
@@ -426,10 +426,10 @@ public class AbstractBpmn2TableComposite extends Composite {
 		if (!(theobject.eGet(thefeature) instanceof EList<?>)) {
 			return;
 		}
-		Class<?> clazz = thefeature.getEType().getInstanceClass();
-		if (!EObject.class.isAssignableFrom(clazz)) {
-			return;
-		}
+//		Class<?> clazz = thefeature.getEType().getInstanceClass();
+//		if (!EObject.class.isAssignableFrom(clazz)) {
+//			return;
+//		}
 
 		final BPMN2Editor bpmn2Editor = getDiagramEditor();
 		
@@ -443,25 +443,8 @@ public class AbstractBpmn2TableComposite extends Composite {
 		////////////////////////////////////////////////////////////
 		// Collect columns to be displayed and build column provider
 		////////////////////////////////////////////////////////////
-		columnProvider = getColumnProvider(theobject, thefeature);
-		// remove disabled columns
-		List<TableColumn> removed = new ArrayList<TableColumn>();
-		for (TableColumn tc : (List<TableColumn>)columnProvider.getColumns()) {
-			if (tc.feature!=null) {
-				if (!"id".equals(tc.feature.getName())) {
-					if (!modelEnablement.isEnabled(listItemClass, tc.feature)) {
-						removed.add(tc);
-					}
-				}
-			}
-		}
-		if (removed.size()>0) {
-			for (TableColumn tc : removed)
-				columnProvider.remove(tc);
-		}
-		if (columnProvider.getColumns().size()==0) {
+		if (createColumnProvider(theobject, thefeature) <= 0)
 			return;
-		}
 
 		////////////////////////////////////////////////////////////
 		// SashForm contains the table section and a possible
@@ -484,38 +467,32 @@ public class AbstractBpmn2TableComposite extends Composite {
 			tableComposite.setLayout(new GridLayout(3, false));
 			createTableAndButtons(tableComposite,style);
 			
-			detailSection = toolkit.createSection(sashForm,
-					ExpandableComposite.TWISTIE |
-					ExpandableComposite.EXPANDED |
-					ExpandableComposite.TITLE_BAR);
-			detailSection.setText(ModelUtil.toDisplayName(listItemClass.getName()) + " Details");
+			if ((style & SHOW_DETAILS)!=0) {
+				detailSection = toolkit.createSection(sashForm,
+						ExpandableComposite.TWISTIE |
+						ExpandableComposite.EXPANDED |
+						ExpandableComposite.TITLE_BAR);
+				detailSection.setText(ModelUtil.toDisplayName(listItemClass.getName()) + " Details");
 
-//			detailComposite = createDetailComposite(detailSection, listItemClass.getInstanceClass());
-//			if (detailComposite!=null) {
-//				detailSection.setClient(detailComposite);
-//				toolkit.adapt(detailComposite);
-////				detailComposite.setPropertySection(propertySection);
-//			}
-			detailSection.setVisible(false);
+				detailSection.setVisible(false);
 
-			tableSection.addExpansionListener(new IExpansionListener() {
-
-				@Override
-				public void expansionStateChanging(ExpansionEvent e) {
-					if (!e.getState() && detailSection!=null) {
-						detailSection.setVisible(false);
+				tableSection.addExpansionListener(new IExpansionListener() {
+	
+					@Override
+					public void expansionStateChanging(ExpansionEvent e) {
+						if (!e.getState() && detailSection!=null) {
+							detailSection.setVisible(false);
+						}
 					}
-				}
-
-				@Override
-				public void expansionStateChanged(ExpansionEvent e) {
-					preferenceStore.setValue("table."+listItemClass.getName()+".expanded", e.getState());
-					redrawPage();
-				}
-				
-			});
+	
+					@Override
+					public void expansionStateChanged(ExpansionEvent e) {
+						preferenceStore.setValue("table."+listItemClass.getName()+".expanded", e.getState());
+						redrawPage();
+					}
+					
+				});
 			
-			if (detailSection!=null) {
 				detailSection.addExpansionListener(new IExpansionListener() {
 	
 					@Override
@@ -530,9 +507,10 @@ public class AbstractBpmn2TableComposite extends Composite {
 						redrawPage();
 					}
 				});
+				sashForm.setWeights(new int[] { 1, 2 });
 			}					
-			
-			sashForm.setWeights(new int[] { 1, 2 });
+			else
+				sashForm.setWeights(new int[] { 1 });
 		}
 		else {
 			createTableAndButtons(this,style);
@@ -597,10 +575,11 @@ public class AbstractBpmn2TableComposite extends Composite {
 							detailSection.setClient(detailComposite);
 							toolkit.adapt(detailComposite);
 
-							detailSection.setText(ModelUtil.toDisplayName(o.eClass().getName()) + " Details");
+							if (detailSection.getText().isEmpty())
+								detailSection.setText(ModelUtil.toDisplayName(o.eClass().getName()) + " Details");
 							((AbstractBpmn2PropertiesComposite)detailComposite).setEObject(bpmn2Editor,o);
+							enable = detailComposite.getChildren().length>0;
 						}
-						enable = detailComposite.getChildren().length>0;
 					}
 					detailSection.setVisible(enable);
 					detailSection.setExpanded(enable);
@@ -732,6 +711,34 @@ public class AbstractBpmn2TableComposite extends Composite {
 			tableSection.setExpanded(true);
 	}
 	
+	/**
+	 * @param theobject
+	 * @param thefeature
+	 * @return
+	 */
+	protected int createColumnProvider(EObject theobject, EStructuralFeature thefeature) {
+		if (columnProvider==null) {
+			EClass listItemClass = getListItemClass(theobject,thefeature);
+			columnProvider = getColumnProvider(theobject, thefeature);
+			// remove disabled columns
+			List<TableColumn> removed = new ArrayList<TableColumn>();
+			for (TableColumn tc : (List<TableColumn>)columnProvider.getColumns()) {
+				if (tc.feature!=null) {
+					if (!"id".equals(tc.feature.getName())) {
+						if (!modelEnablement.isEnabled(listItemClass, tc.feature)) {
+							removed.add(tc);
+						}
+					}
+				}
+			}
+			if (removed.size()>0) {
+				for (TableColumn tc : removed)
+					columnProvider.remove(tc);
+			}
+		}
+		return columnProvider.getColumns().size();
+	}
+
 	protected void redrawPage() {
 		if (propertySection!=null)
 			propertySection.layout();
@@ -867,7 +874,9 @@ public class AbstractBpmn2TableComposite extends Composite {
 		
 		@Override
 		public String getHeaderText() {
-			return ModelUtil.toDisplayName(feature.getName());
+			if (feature!=null)
+				return ModelUtil.toDisplayName(feature.getName());
+			return "";
 		}
 
 		@Override
