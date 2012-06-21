@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.preferences;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -48,6 +49,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -56,6 +58,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.eclipse.ui.views.navigator.ResourceNavigator;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
@@ -85,6 +88,9 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	public final static String PREF_WSIL_URL = "wsil.url";
 	public final static String PREF_SHAPE_STYLE = "shape.style";
 
+	public final static String PREF_CONNECTION_TIMEOUT = "connection.timeout";
+	public final static String PREF_CONNECTION_TIMEOUT_LABEL = "Connection Timeout for resolving remote objects (milliseconds)";
+
 	private static Hashtable<IProject,Bpmn2Preferences> instances = null;
 	private static IProject activeProject;
 
@@ -110,6 +116,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	private BPMNDIAttributeDefault isExpanded;
 	private BPMNDIAttributeDefault isMessageVisible;
 	private BPMNDIAttributeDefault isMarkerVisible;
+	private String connectionTimeout;
 	
 	private HashMap<Class, ShapeStyle> shapeStyles = new HashMap<Class, ShapeStyle>();
 	
@@ -212,8 +219,15 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			for (Class key : shapeStyles.keySet()) {
 				projectPreferences.remove(getShapeStyleId(key));
 			}
+			try {
+				projectPreferences.flush();
+			} catch (BackingStoreException e) {
+				e.printStackTrace();
+			}
 		}
-		globalPreferences.setDefault(PREF_TARGET_RUNTIME, TargetRuntime.getFirstNonDefaultId());
+		String rid = TargetRuntime.getFirstNonDefaultId();
+		globalPreferences.setValue(PREF_TARGET_RUNTIME, rid);
+//		globalPreferences.setDefault(PREF_TARGET_RUNTIME, rid);
 		globalPreferences.setDefault(PREF_SHOW_ADVANCED_PROPERTIES, false);
 		globalPreferences.setDefault(PREF_SHOW_DESCRIPTIONS, true);
 		globalPreferences.setDefault(PREF_EXPAND_PROPERTIES, false);
@@ -224,8 +238,9 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		for (Class key : shapeStyles.keySet()) {
 			globalPreferences.setDefault(getShapeStyleId(key), IPreferenceStore.STRING_DEFAULT_DEFAULT);
 		}
+		globalPreferences.setDefault(PREF_CONNECTION_TIMEOUT, "60000");
 
-		globalPreferences.setToDefault(PREF_TARGET_RUNTIME);
+//		globalPreferences.setToDefault(PREF_TARGET_RUNTIME);
 		globalPreferences.setToDefault(PREF_SHOW_ADVANCED_PROPERTIES);
 		globalPreferences.setToDefault(PREF_SHOW_DESCRIPTIONS);
 		globalPreferences.setToDefault(PREF_EXPAND_PROPERTIES);
@@ -242,7 +257,13 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			ShapeStyle ss = getShapeStyle(key);
 			ss.setDirty(true);
 		}
-
+		
+		try {
+			((ScopedPreferenceStore)globalPreferences).save();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		loaded = false;
 		load();
 	}
@@ -292,6 +313,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			isExpanded = getBPMNDIAttributeDefault(PREF_IS_EXPANDED, BPMNDIAttributeDefault.USE_DI_VALUE);
 			isMessageVisible = getBPMNDIAttributeDefault(PREF_IS_MESSAGE_VISIBLE, BPMNDIAttributeDefault.USE_DI_VALUE);
 			isMarkerVisible = getBPMNDIAttributeDefault(PREF_IS_MARKER_VISIBLE, BPMNDIAttributeDefault.USE_DI_VALUE);
+			connectionTimeout = this.getString(PREF_CONNECTION_TIMEOUT, "60000");
 			
 			loaded = true;
 		}
@@ -313,6 +335,9 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			setBPMNDIAttributeDefault(PREF_IS_EXPANDED, isExpanded);
 			setBPMNDIAttributeDefault(PREF_IS_MESSAGE_VISIBLE, isMessageVisible);
 			setBPMNDIAttributeDefault(PREF_IS_MARKER_VISIBLE, isMarkerVisible);
+			
+			setString(PREF_CONNECTION_TIMEOUT, connectionTimeout);
+
 		}
 		
 		for (Entry<Class, ShapeStyle> entry : shapeStyles.entrySet()) {
@@ -526,6 +551,21 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		this.isMarkerVisible = value;
 	}
 
+	public String getConnectionTimeout() {
+		load();
+		return connectionTimeout;
+	}
+	
+	public void setConnectionTimeout(String value) {
+		try {
+			Integer.parseInt(value);
+			overrideGlobalString(PREF_CONNECTION_TIMEOUT, value);
+			this.connectionTimeout = value;
+		}
+		catch (Exception e) {
+		}
+	}
+	
 	@Override
 	public void preferenceChange(PreferenceChangeEvent event) {
 		reload();
@@ -829,8 +869,10 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 						ResourceNavigator navigator = (ResourceNavigator) parts[i];
 						StructuredSelection sel = (StructuredSelection) navigator.getTreeViewer().getSelection();
 						IResource resource = (IResource) sel.getFirstElement();
-						activeProject = resource.getProject();
-						break;
+						if (resource!=null) {
+							activeProject = resource.getProject();
+							break;
+						}
 					}
 				}
 			}

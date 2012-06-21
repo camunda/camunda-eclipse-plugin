@@ -6,6 +6,7 @@ import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.ui.Messages;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
@@ -112,6 +113,13 @@ public class Bpmn2HomePreferencePage
 				Bpmn2Preferences.PREF_IS_MARKER_VISIBLE_LABEL,
 				group);
 		addField(isMarkerVisible);
+		
+		IntegerFieldEditor connectionTimeout = new IntegerFieldEditor(
+				Bpmn2Preferences.PREF_CONNECTION_TIMEOUT,
+				Bpmn2Preferences.PREF_CONNECTION_TIMEOUT_LABEL,
+				getFieldEditorParent());
+		addField(connectionTimeout);
+		
 	}
 
 	/* (non-Javadoc)

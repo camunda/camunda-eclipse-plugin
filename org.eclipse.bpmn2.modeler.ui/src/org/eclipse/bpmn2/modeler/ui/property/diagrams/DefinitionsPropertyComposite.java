@@ -1,20 +1,34 @@
 package org.eclipse.bpmn2.modeler.ui.property.diagrams;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.Import;
 import org.eclipse.bpmn2.impl.DefinitionsImpl;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.utils.NamespaceUtil;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.dialogs.NamespacesEditingDialog;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.SchemaImportDialog;
+import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.TextAndButtonObjectEditor;
+import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.util.EcoreEMap;
+import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
@@ -30,7 +44,8 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 	}
 
 	private AbstractPropertiesProvider propertiesProvider;
-
+	private NamespacesTable namespacesTable;
+	
 	/**
 	 * @param section
 	 */
@@ -63,6 +78,19 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 	}
 
 	@Override
+	public void createBindings(EObject be) {
+		super.createBindings(be);
+		if (namespacesTable!=null)
+			namespacesTable.dispose();
+		
+		namespacesTable = new NamespacesTable(propertySection);
+		DefinitionsImpl definitions = (DefinitionsImpl)getEObject();
+		DocumentRoot root = (DocumentRoot) definitions.eContainer();
+		namespacesTable.bindList(root, Bpmn2Package.eINSTANCE.getDocumentRoot_XMLNSPrefixMap());
+		namespacesTable.setTitle("Namespaces");
+	}
+
+	@Override
 	protected void bindList(EObject object, EStructuralFeature feature) {
 		if (modelEnablement.isEnabled(object.eClass(), feature)) {
 			if ("imports".equals(feature.getName())) {
@@ -79,6 +107,167 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 		}
 	}
 
+	public class NamespacesTable extends AbstractBpmn2TableComposite {
+		
+		public NamespacesTable(AbstractBpmn2PropertySection section) {
+			super(section, ADD_BUTTON | REMOVE_BUTTON | SHOW_DETAILS);
+		}
+
+		
+		@Override
+		protected EObject addListItem(EObject object, EStructuralFeature feature) {
+			DocumentRoot root = (DocumentRoot)object;
+			Map<String,String> map = root.getXMLNSPrefixMap();
+			NamespacesEditingDialog dialog = new NamespacesEditingDialog(getShell(), "Create New Namespace", map, "","");
+			if (dialog.open() == Window.OK) {
+				System.out.println(dialog.getPrefix()+" : "+dialog.getNamespace());
+				map.put(dialog.getPrefix(), dialog.getNamespace());
+			}
+			return null;
+		}
+
+		@Override
+		protected Object removeListItem(EObject object, EStructuralFeature feature, int index) {
+			DocumentRoot root = (DocumentRoot)object;
+			Map<String,String> map = root.getXMLNSPrefixMap();
+			for ( Map.Entry<String, String> entry : map.entrySet() ) {
+				if (index-- == 0) {
+					map.remove( entry.getKey() );
+					break;
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public AbstractBpmn2PropertiesComposite createDetailComposite(final Composite parent, Class eClass) {
+			detailSection.setText("Namespace Details");
+			AbstractBpmn2PropertiesComposite composite = new DefaultPropertiesComposite(parent, SWT.NONE) {
+				
+				@Override
+				protected void bindAttribute(Composite parent, EObject object, EAttribute attribute, String label) {
+					if (attribute.getName().equals("key")) {
+						ObjectEditor editor = new TextAndButtonObjectEditor(this,be,attribute) {
+
+							@Override
+							protected void buttonClicked() {
+								Map.Entry<String, String> entry = (Map.Entry<String, String>)object;
+								DocumentRoot root = (DocumentRoot)object.eContainer();
+								Map<String, String> map = (Map<String, String>)root.getXMLNSPrefixMap();
+								NamespacesEditingDialog dialog = new NamespacesEditingDialog(getShell(), "Change Namespace Prefix", map, entry.getKey(),null);
+								if (dialog.open() == Window.OK) {
+									updateObject(dialog.getPrefix());
+								}
+							}
+							
+							@Override
+							protected boolean updateObject(final Object result) {
+								// we can't just change the key because the map that contains it
+								// needs to be updated, so remove old key, then add new.
+								if (result instanceof String && !((String)result).isEmpty() ) {
+									final Map.Entry<String, String> entry = (Map.Entry<String, String>)object;
+									final String oldKey = entry.getKey();
+									TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
+									domain.getCommandStack().execute(new RecordingCommand(domain) {
+										@Override
+										protected void doExecute() {
+											DocumentRoot root = (DocumentRoot)object.eContainer();
+											Map<String, String> map = (Map<String, String>)root.getXMLNSPrefixMap();
+											String value = map.remove(oldKey);
+											map.put((String)result, value);
+										}
+									});
+									return true;
+								}
+								text.setText(PropertyUtil.getText(object, feature));
+								return false;
+							}
+						};
+						editor.createControl(parent,"Prefix",SWT.NONE);
+					}
+					else {
+						ObjectEditor editor = new TextObjectEditor(this,be,attribute);
+						editor.createControl(parent,"Namespace",SWT.NONE);
+					}
+				}
+			};
+			return composite;
+		}
+
+		@Override
+		public TableContentProvider getContentProvider(EObject object, EStructuralFeature feature, EList<EObject>list) {
+			if (contentProvider==null) {
+				contentProvider = new TableContentProvider(object, feature, list) {
+
+					@Override
+					public Object[] getElements(Object inputElement) {
+						List<Object> elements = new ArrayList<Object>();
+						EcoreEMap<String,String> map = (EcoreEMap<String,String>)inputElement;
+						for ( Map.Entry<String, String> entry : map.entrySet() ) {
+							elements.add(entry);
+						}
+						return elements.toArray(new EObject[elements.size()]);
+					}
+
+				};
+			}
+			return contentProvider;
+		}
+		
+		@Override
+		protected int createColumnProvider(EObject theobject, EStructuralFeature thefeature) {
+			if (columnProvider==null) {
+				columnProvider = getColumnProvider(theobject, thefeature);
+			}
+			return columnProvider.getColumns().size();
+		}
+		
+		@Override
+		public AbstractTableColumnProvider getColumnProvider(EObject object, EStructuralFeature feature) {
+			if (columnProvider==null) {
+				columnProvider = new AbstractTableColumnProvider() {
+					@Override
+					public boolean canModify(EObject object, EStructuralFeature feature, EObject item) {
+						return false;
+					}
+				};
+				columnProvider.add(new NamespacesTableColumn(object, 0));
+				columnProvider.add(new NamespacesTableColumn(object, 1));
+			}
+			return columnProvider;
+		}
+		
+		public class NamespacesTableColumn extends TableColumn {
+			
+			int columnIndex;
+			
+			public NamespacesTableColumn(EObject object, int columnIndex) {
+				super(object,null);
+				this.columnIndex = columnIndex;
+			}
+
+			@Override
+			public String getProperty() {
+				return getHeaderText();
+			}
+
+			@Override
+			public String getHeaderText() {
+				if (columnIndex==0)
+					return "Prefix";
+				return "Namespace";
+			}
+
+			@Override
+			public String getText(Object element) {
+				Map.Entry<String, String> entry = (Map.Entry<String, String>)element;
+				if (columnIndex==0)
+					return entry.getKey();
+				return entry.getValue();
+			}
+		}
+	}
+	
 	public class ImportsTable extends AbstractBpmn2TableComposite {
 
 		/**

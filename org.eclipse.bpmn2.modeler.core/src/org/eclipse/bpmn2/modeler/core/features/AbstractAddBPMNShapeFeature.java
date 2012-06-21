@@ -101,6 +101,7 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 		}
 		else {
 			link(shape, new Object[] { elem, bpmnShape });
+			Bpmn2Preferences.getInstance(bpmnShape.eResource()).applyBPMNDIDefaults(bpmnShape, null);
 		}
 		return bpmnShape;
 	}
