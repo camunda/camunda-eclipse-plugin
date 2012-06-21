@@ -15,7 +15,6 @@ package org.eclipse.bpmn2.modeler.core.preferences;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -27,14 +26,12 @@ import org.eclipse.bpmn2.CallChoreography;
 import org.eclipse.bpmn2.ExclusiveGateway;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.Participant;
-import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.SubChoreography;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.Transaction;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
-import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.core.internal.resources.ProjectPreferences;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -47,7 +44,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
-import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -62,7 +59,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.navigator.ResourceNavigator;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
-import org.eclipse.emf.common.util.URI;
 
 @SuppressWarnings("restriction")
 public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyChangeListener, IResourceChangeListener {
@@ -333,9 +329,8 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			Class clazz = Class.forName(object.eClass().getInstanceClassName());
 			return getShapeStyleId(clazz);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			return getShapeStyleId(object.getClass());
 		}
-		return null;
 	}
 	
 	public static String getShapeStyleId(Class clazz) {
@@ -348,9 +343,8 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			clazz = Class.forName(object.eClass().getInstanceClassName());
 			return getShapeStyle(clazz);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			return getShapeStyle(object.getClass());
 		}
-		return null;
 	}
 	
 	public ShapeStyle getShapeStyle(Class clazz) {
