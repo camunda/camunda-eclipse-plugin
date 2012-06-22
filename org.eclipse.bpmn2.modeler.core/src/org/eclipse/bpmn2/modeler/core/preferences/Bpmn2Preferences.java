@@ -206,7 +206,24 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		return projectPreferences;
 	}
 	
+	public void loadDefaults() {
+		String rid = TargetRuntime.getFirstNonDefaultId();
+		globalPreferences.setDefault(PREF_TARGET_RUNTIME, rid);
+		globalPreferences.setDefault(PREF_SHOW_ADVANCED_PROPERTIES, false);
+		globalPreferences.setDefault(PREF_SHOW_DESCRIPTIONS, true);
+		globalPreferences.setDefault(PREF_EXPAND_PROPERTIES, false);
+		globalPreferences.setDefault(PREF_IS_HORIZONTAL, BPMNDIAttributeDefault.DEFAULT_TRUE.name());
+		globalPreferences.setDefault(PREF_IS_EXPANDED, BPMNDIAttributeDefault.ALWAYS_TRUE.name());
+		globalPreferences.setDefault(PREF_IS_MESSAGE_VISIBLE, BPMNDIAttributeDefault.ALWAYS_TRUE.name());
+		globalPreferences.setDefault(PREF_IS_MARKER_VISIBLE, BPMNDIAttributeDefault.DEFAULT_TRUE.name());
+		for (Class key : shapeStyles.keySet()) {
+			globalPreferences.setDefault(getShapeStyleId(key), IPreferenceStore.STRING_DEFAULT_DEFAULT);
+		}
+		globalPreferences.setDefault(PREF_CONNECTION_TIMEOUT, "60000");
+	}
+	
 	public void restoreDefaults(boolean resetProjectPreferences) {
+		loadDefaults();
 		if (resetProjectPreferences && projectPreferences != null) {
 			projectPreferences.remove(PREF_TARGET_RUNTIME);
 			projectPreferences.remove(PREF_SHOW_ADVANCED_PROPERTIES);
@@ -225,22 +242,8 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 				e.printStackTrace();
 			}
 		}
-		String rid = TargetRuntime.getFirstNonDefaultId();
-		globalPreferences.setValue(PREF_TARGET_RUNTIME, rid);
-//		globalPreferences.setDefault(PREF_TARGET_RUNTIME, rid);
-		globalPreferences.setDefault(PREF_SHOW_ADVANCED_PROPERTIES, false);
-		globalPreferences.setDefault(PREF_SHOW_DESCRIPTIONS, true);
-		globalPreferences.setDefault(PREF_EXPAND_PROPERTIES, false);
-		globalPreferences.setDefault(PREF_IS_HORIZONTAL, BPMNDIAttributeDefault.DEFAULT_TRUE.name());
-		globalPreferences.setDefault(PREF_IS_EXPANDED, BPMNDIAttributeDefault.ALWAYS_TRUE.name());
-		globalPreferences.setDefault(PREF_IS_MESSAGE_VISIBLE, BPMNDIAttributeDefault.ALWAYS_TRUE.name());
-		globalPreferences.setDefault(PREF_IS_MARKER_VISIBLE, BPMNDIAttributeDefault.DEFAULT_TRUE.name());
-		for (Class key : shapeStyles.keySet()) {
-			globalPreferences.setDefault(getShapeStyleId(key), IPreferenceStore.STRING_DEFAULT_DEFAULT);
-		}
-		globalPreferences.setDefault(PREF_CONNECTION_TIMEOUT, "60000");
 
-//		globalPreferences.setToDefault(PREF_TARGET_RUNTIME);
+		globalPreferences.setToDefault(PREF_TARGET_RUNTIME);
 		globalPreferences.setToDefault(PREF_SHOW_ADVANCED_PROPERTIES);
 		globalPreferences.setToDefault(PREF_SHOW_DESCRIPTIONS);
 		globalPreferences.setToDefault(PREF_EXPAND_PROPERTIES);
@@ -263,9 +266,6 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		loaded = false;
-		load();
 	}
 	
 	public boolean hasProjectPreference(String key) {
@@ -299,6 +299,8 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		
 		if (!loaded) {
 			// load all preferences
+			loadDefaults();
+			
 			if (projectPreferences!=null)
 				overrideModelEnablements = projectPreferences.getBoolean(PREF_OVERRIDE_MODEL_ENABLEMENTS, false);
 

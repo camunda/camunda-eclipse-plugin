@@ -266,7 +266,7 @@ public class PropertyUtil {
 	/*
 	 * Fallbacks in case a property provider does not exist
 	 */
-	private static String getDisplayName(EObject object) {
+	public static String getDisplayName(EObject object) {
 		String objName = null;
 		if (object instanceof BPMNDiagram) {
 			Bpmn2DiagramType type = ModelUtil.getDiagramType((BPMNDiagram)object); 

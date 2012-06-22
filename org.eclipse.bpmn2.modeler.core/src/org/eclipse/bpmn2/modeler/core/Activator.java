@@ -46,9 +46,7 @@ public class Activator extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 		IPreferenceStore store  = getPreferenceStore();
-		if (!store.contains(Bpmn2Preferences.PREF_TARGET_RUNTIME))
-			Bpmn2Preferences.getInstance().restoreDefaults(false);
-
+		Bpmn2Preferences.getInstance().load();
 	}
 
 	/*

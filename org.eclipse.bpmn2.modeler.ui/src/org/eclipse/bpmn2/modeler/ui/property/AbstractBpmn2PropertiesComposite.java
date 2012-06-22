@@ -591,22 +591,23 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 		}
 	}
 
-	protected void bindList(EObject object, String name) {
+	protected AbstractBpmn2TableComposite bindList(EObject object, String name) {
 		EStructuralFeature feature = getFeature(object,name);
 		if (isList(object,feature)) {
-			bindList(object,feature);
+			return bindList(object,feature);
 		}
+		return null;
 	}
 	
-	protected void bindList(EObject object, EStructuralFeature feature) {
-		bindList(object,feature,null);
+	protected AbstractBpmn2TableComposite bindList(EObject object, EStructuralFeature feature) {
+		return bindList(object,feature,null);
 	}
 	
-	protected void bindList(EObject object, EStructuralFeature feature, EClass listItemClass) {
+	protected AbstractBpmn2TableComposite bindList(EObject object, EStructuralFeature feature, EClass listItemClass) {
 
+		AbstractBpmn2TableComposite tableComposite = null;
 		if (modelEnablement.isEnabled(object.eClass(), feature) || modelEnablement.isEnabled(listItemClass)) {
 
-			AbstractBpmn2TableComposite tableComposite = null;
 			if (propertySection!=null)
 				tableComposite = new AbstractBpmn2TableComposite(propertySection, AbstractBpmn2TableComposite.DEFAULT_STYLE);
 			else
@@ -614,6 +615,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 			tableComposite.setListItemClass(listItemClass);
 			tableComposite.bindList(object, feature);
 		}
+		return tableComposite;
 	}
 	
 	public class ChildObjectStack {

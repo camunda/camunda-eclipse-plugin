@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -22,6 +23,7 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.URIConverter;
 import org.eclipse.emf.ecore.resource.impl.ResourceFactoryRegistryImpl;
@@ -38,15 +40,14 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 @SuppressWarnings("nls")
 
 public class Bpmn2ModelerResourceSetImpl extends ResourceSetImpl implements IResourceChangeListener {
-	// Bugzilla 320545:
-	// this ID identifies the BPEL file content type
+	// this ID identifies the BPMN file content type
 	public static final String BPMN2_CONTENT_TYPE = "org.eclipse.bpmn2.content-type.xml"; //$NON-NLS-1$
 	 
+	private String connectionTimeout;
+	private String readTimeout;
+
 	public Bpmn2ModelerResourceSetImpl() {
 		super();
-		// FIX ME: This should not have dependency on running eclipse.
-		// IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		// workspace.addResourceChangeListener(this, IResourceChangeEvent.POST_BUILD);
 	}
 
 	/**
@@ -54,8 +55,61 @@ public class Bpmn2ModelerResourceSetImpl extends ResourceSetImpl implements IRes
 	 */
 	static public final String SLIGHTLY_HACKED_KEY = "slightly.hacked.resource.set";
 	
+	/* (non-Javadoc)
+	 * 
+	 * Intercept getEObject() calls and validate the URI.
+	 * This allows us to use arbitrary proxy URIs for things like ItemDefinition.structureRef
+	 * 
+	 * Also handle the setting of connection timeout here for URIs that do not point to physical
+	 * resources, or resources that are currently unavailable due to (e.g. possibly) server outages.
+	 * 
+	 * @see org.eclipse.emf.ecore.resource.impl.ResourceSetImpl#getEObject(org.eclipse.emf.common.util.URI, boolean)
+	 */
+	@Override
+	public EObject getEObject(URI uri, boolean loadOnDemand) {
+		EObject o = null;
+		if (uri!=null) {
+			uri.trimFragment();
+			if (uri.fragment()!=null) {
+				setDefaultTimeoutProperties();
+				o = super.getEObject(uri, loadOnDemand);
+				restoreTimeoutProperties();
+			}
+		}
+		return o;
+	}
+
+	private void saveTimeoutProperties() {
+		if (connectionTimeout==null) {
+			connectionTimeout = System.getProperty("sun.net.client.defaultConnectTimeout");
+			if (connectionTimeout==null)
+				connectionTimeout = "";
+		}
+		if (readTimeout==null) {
+			readTimeout = System.getProperty("sun.net.client.defaultReadTimeout");
+			if (readTimeout==null)
+				readTimeout = "";
+		}
+	}
 	
+	private void restoreTimeoutProperties() {
+		if(connectionTimeout!=null) {
+			System.setProperty("sun.net.client.defaultConnectTimeout", connectionTimeout);
+			connectionTimeout = null;
+		}
+		if (readTimeout!=null) {
+			System.setProperty("sun.net.client.defaultReadTimeout", readTimeout);
+			readTimeout = null;
+		}
+	}
 	
+	private void setDefaultTimeoutProperties() {
+		saveTimeoutProperties();
+		String timeout = Bpmn2Preferences.getInstance().getConnectionTimeout();
+		System.setProperty("sun.net.client.defaultConnectTimeout", timeout);
+		System.setProperty("sun.net.client.defaultReadTimeout", timeout);
+	}
+
 	/**
 	 * Load the resource from the resource set, assuming that it is the kind
 	 * indicated by the last argument. The "kind" parameter is the extension 

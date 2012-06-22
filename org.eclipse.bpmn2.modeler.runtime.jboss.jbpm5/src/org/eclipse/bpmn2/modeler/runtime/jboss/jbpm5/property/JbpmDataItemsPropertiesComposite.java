@@ -24,6 +24,7 @@ import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
 import org.eclipse.bpmn2.modeler.ui.property.ExtensionValueTableComposite;
 import org.eclipse.bpmn2.modeler.ui.property.diagrams.DataItemsPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.jface.dialogs.IInputValidator;
@@ -85,9 +86,10 @@ public class JbpmDataItemsPropertiesComposite extends DataItemsPropertiesComposi
 						}
 					};
 					globalsTable.bindList(process, ModelPackage.eINSTANCE.getDocumentRoot_Global());
-					globalsTable.setTitle("Globals");
+					globalsTable.setTitle("Globals for "+PropertyUtil.getDisplayName(process));
 
 //					bindList(process, "properties");
+//					bindList(process, "resources");
 				}
 			}
 		}
