@@ -20,14 +20,14 @@ import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 
 /**
  * @author Bob Brodt
  *
  */
 public class DataItemsPropertiesComposite extends DefaultPropertiesComposite {
-
-	private AbstractPropertiesProvider propertiesProvider;
 
 	public DataItemsPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
@@ -47,13 +47,11 @@ public class DataItemsPropertiesComposite extends DefaultPropertiesComposite {
 				String[] properties = new String[] {
 						"rootElements.ItemDefinition",
 						"rootElements.DataStore",
-						"rootElements.Resource",
 						"rootElements.Message",
 						"rootElements.Error",
 						"rootElements.Escalation",
 						"rootElements.Signal",
-						"rootElements.CorrelationProperty",
-						"rootElements.Interface",
+						"rootElements.CorrelationProperty"
 				};
 				
 				@Override
@@ -72,8 +70,12 @@ public class DataItemsPropertiesComposite extends DefaultPropertiesComposite {
 			for (RootElement re : definitions.getRootElements()) {
 				if (re instanceof Process) {
 					Process process = (Process)re;
-					bindList(process, "properties");
-					bindList(process, "resources");
+					AbstractBpmn2TableComposite table = bindList(process, "properties");
+					if (table!=null)
+						table.setTitle("Properties for "+PropertyUtil.getDisplayName(process));
+					table = bindList(process, "resources");
+					if (table!=null)
+						table.setTitle("Resources for "+PropertyUtil.getDisplayName(process));
 				}
 			}
 		}

@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceSetImpl;
+import org.eclipse.core.commands.operations.DefaultOperationHistory;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -32,19 +34,36 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.common.util.WrappedException;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.Transaction;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
+import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
+import org.eclipse.emf.workspace.WorkspaceEditingDomainFactory;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.ui.editor.DiagramEditorFactory;
+import org.eclipse.emf.workspace.IWorkspaceCommandStack;
+import org.eclipse.graphiti.ui.internal.editor.GFWorkspaceCommandStackImpl;
 
 public class FileService {
 
+	public static class MyDiagramEditorFactory extends DiagramEditorFactory {
+		public static TransactionalEditingDomain createResourceSetAndEditingDomain() {
+			final ResourceSet resourceSet = new Bpmn2ModelerResourceSetImpl();
+			final IWorkspaceCommandStack workspaceCommandStack = new GFWorkspaceCommandStackImpl(new DefaultOperationHistory());
+
+			final TransactionalEditingDomainImpl editingDomain = new TransactionalEditingDomainImpl(new ComposedAdapterFactory(
+					ComposedAdapterFactory.Descriptor.Registry.INSTANCE), workspaceCommandStack, resourceSet);
+			WorkspaceEditingDomainFactory.INSTANCE.mapResourceSet(editingDomain);
+			return editingDomain;
+		}
+	}
+	
 	public static TransactionalEditingDomain createEmfFileForDiagram(URI diagramResourceUri, final Diagram diagram) {
 
 		// Create a resource set and EditingDomain
-		final TransactionalEditingDomain editingDomain = DiagramEditorFactory.createResourceSetAndEditingDomain();
+		final TransactionalEditingDomain editingDomain = MyDiagramEditorFactory.createResourceSetAndEditingDomain();
 		final ResourceSet resourceSet = editingDomain.getResourceSet();
 		// Create a resource for this file.
 		final Resource resource = resourceSet.createResource(diagramResourceUri);

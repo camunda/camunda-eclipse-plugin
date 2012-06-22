@@ -91,20 +91,23 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 	}
 
 	@Override
-	protected void bindList(EObject object, EStructuralFeature feature) {
+	protected AbstractBpmn2TableComposite bindList(EObject object, EStructuralFeature feature) {
 		if (modelEnablement.isEnabled(object.eClass(), feature)) {
 			if ("imports".equals(feature.getName())) {
 				ImportsTable importsTable = new ImportsTable(propertySection);
 				importsTable.bind();
+				return importsTable;
 			}
 			else if ("relationships".equals(feature.getName())) {
 				AbstractBpmn2TableComposite table = new AbstractBpmn2TableComposite(propertySection, AbstractBpmn2TableComposite.DEFAULT_STYLE);
 				table.bindList(getEObject(), feature);
+				return table;
 			}
 			else {
-				super.bindList(object, feature);
+				return super.bindList(object, feature);
 			}
 		}
+		return null;
 	}
 
 	public class NamespacesTable extends AbstractBpmn2TableComposite {

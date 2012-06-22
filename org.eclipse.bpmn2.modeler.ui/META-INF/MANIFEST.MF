@@ -8,8 +8,8 @@ Bundle-Vendor: Eclipse.org
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui.ide,
  org.eclipse.osgi,
- org.eclipse.graphiti;bundle-version="[0.7.3,1.0.0)",
- org.eclipse.graphiti.ui;bundle-version="[0.7.3,1.0.0)",
+ org.eclipse.graphiti,
+ org.eclipse.graphiti.ui,
  org.eclipse.bpmn2.modeler.core,
  org.eclipse.emf.transaction;bundle-version="1.4.0",
  org.eclipse.ui.views.properties.tabbed;bundle-version="3.5.100",
@@ -60,3 +60,4 @@ Export-Package: org.eclipse.bpmn2.modeler.ui,
  org.eclipse.bpmn2.modeler.ui.util,
  org.eclipse.bpmn2.modeler.ui.views,
  org.eclipse.bpmn2.modeler.ui.wizards
+Import-Package: org.eclipse.emf.workspace
