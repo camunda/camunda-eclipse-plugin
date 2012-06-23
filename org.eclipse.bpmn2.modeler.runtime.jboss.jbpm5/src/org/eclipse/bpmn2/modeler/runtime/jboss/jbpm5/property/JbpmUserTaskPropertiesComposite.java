@@ -18,6 +18,7 @@ import org.eclipse.bpmn2.PotentialOwner;
 import org.eclipse.bpmn2.ResourceAssignmentExpression;
 import org.eclipse.bpmn2.UserTask;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
 import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -40,7 +41,7 @@ public class JbpmUserTaskPropertiesComposite extends JbpmTaskPropertiesComposite
 	}
 
 	@Override
-	protected void bindList(EObject object, EStructuralFeature feature, EClass listItemClass) {
+	protected AbstractBpmn2TableComposite bindList(EObject object, EStructuralFeature feature, EClass listItemClass) {
 		if (feature.getName().equals("resources")) {
 			if (modelEnablement.isEnabled(object.eClass(), feature)) {
 				UserTask task = (UserTask)object;
@@ -65,9 +66,10 @@ public class JbpmUserTaskPropertiesComposite extends JbpmTaskPropertiesComposite
 				TextObjectEditor editor = new TextObjectEditor(this, expression, PACKAGE.getFormalExpression_Body());
 				editor.createControl(getAttributesParent(), "Actor", SWT.NONE);
 			}
+			return null;
 		}
 		else
-			super.bindList(object, feature, listItemClass);
+			return super.bindList(object, feature, listItemClass);
 	}
 	
 	
