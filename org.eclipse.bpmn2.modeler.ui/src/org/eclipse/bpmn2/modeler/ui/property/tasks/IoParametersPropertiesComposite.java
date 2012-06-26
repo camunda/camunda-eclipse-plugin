@@ -134,7 +134,7 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 
 						@Override
 						public String isValid(String newText) {
-							if (newText==null || newText.isEmpty() || newText.contains(" "))
+							if (newText==null || newText.isEmpty())
 								return "Please enter a valid name";
 							return null;
 						}
