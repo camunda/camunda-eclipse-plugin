@@ -12,11 +12,18 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.event;
 
+import java.util.List;
+
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.modeler.core.features.MoveFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.MoveActivityFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
+import org.eclipse.bpmn2.presentation.Bpmn2Editor;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
@@ -41,6 +48,7 @@ public class MoveBoundaryEventFeature extends MoveFlowNodeFeature {
 		ContainerShape targetContainer = context.getTargetContainer();
 		Activity activity = BusinessObjectUtil.getFirstElementOfType(targetContainer, Activity.class);
 		Object property = context.getProperty(MoveActivityFeature.ACTIVITY_MOVE_PROPERTY);
+		
 		if (activity != null && property == null) {
 			ContainerShape taskContainer = context.getTargetContainer();
 			ContainerShape parentContainer = (ContainerShape) context.getPictogramElement().eContainer();
@@ -66,6 +74,19 @@ public class MoveBoundaryEventFeature extends MoveFlowNodeFeature {
 	@Override
 	public boolean canMoveShape(IMoveShapeContext context) {
 		Object property = context.getProperty("activity.move");
+		PictogramElement[] selection = getDiagramEditor().getSelectedPictogramElements();
+		boolean singleSelection = selection != null && selection.length == 1;
+		
+		BoundaryEvent event = (BoundaryEvent) context.getShape().getLink().getBusinessObjects().get(0);
+		List<PictogramElement> activityPictogramElements = Graphiti.getLinkService().getPictogramElements(getDiagram(), event.getAttachedToRef());
+		for (PictogramElement activityElement : activityPictogramElements) {
+			if (!singleSelection && ModelUtil.isElementSelected(getDiagramEditor().getSelectedPictogramElements(), activityElement)){
+				context.putProperty("selection.move", true);
+				context.putProperty("activity.move", false);
+				return true;
+			}
+		}
+		
 		boolean movedByActivity = property != null && (Boolean) property;
 		if (!movedByActivity && !BoundaryEventPositionHelper.canMoveTo(context, getDiagram())) {
 			return false;
@@ -81,13 +102,18 @@ public class MoveBoundaryEventFeature extends MoveFlowNodeFeature {
 	@Override
 	protected void postMoveShape(IMoveShapeContext context) {
 		ContainerShape containerShape = (ContainerShape) context.getPictogramElement();
-
+		
 		Object property = context.getProperty("activity.move");
+		Object selectionFlag = context.getProperty("selection.move");
 		if (property != null && (Boolean) property) {
 			IGaService gaService = Graphiti.getGaService();
 			GraphicsAlgorithm ga = containerShape.getGraphicsAlgorithm();
 			gaService.setLocation(ga, ga.getX() + context.getDeltaX(), ga.getY() + context.getDeltaY());
-		} else {
+		} 
+		else if (selectionFlag != null && (Boolean) selectionFlag) {
+			// do nothing, let base class do the job
+		}
+		else {
 			BoundaryEvent event = BusinessObjectUtil.getFirstElementOfType(containerShape, BoundaryEvent.class);
 			PictogramElement activityContainer = BusinessObjectUtil.getFirstBaseElementFromDiagram(getDiagram(),
 					event.getAttachedToRef());
@@ -95,8 +121,9 @@ public class MoveBoundaryEventFeature extends MoveFlowNodeFeature {
 					containerShape, (Shape) activityContainer);
 			BoundaryEventPositionHelper.assignPositionOnLineProperty(containerShape, newPos);
 		}
-		Graphiti.getPeService().sendToFront(containerShape);
-
+		
+		Graphiti.getPeService().sendToFront(context.getShape());
+		
 		super.postMoveShape(context);
 	}
 }

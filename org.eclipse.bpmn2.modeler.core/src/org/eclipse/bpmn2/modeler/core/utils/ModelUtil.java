@@ -58,6 +58,7 @@ import org.eclipse.emf.ecore.util.FeatureMapUtil;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.xsd.XSDAttributeDeclaration;
 import org.eclipse.xsd.XSDElementDeclaration;
 
@@ -600,6 +601,15 @@ public class ModelUtil {
 	
 	public static boolean isStringWrapper(Object wrapper) {
 		return wrapper instanceof DynamicEObjectImpl;
+	}
+	
+	public static boolean isElementSelected(PictogramElement[] elements, PictogramElement element) {
+		for (PictogramElement search : elements) {
+			if (search.equals(element)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public static Definitions getDefinitions(EObject object) {

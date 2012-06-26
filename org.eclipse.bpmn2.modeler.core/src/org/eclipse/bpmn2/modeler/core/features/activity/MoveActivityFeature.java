@@ -97,6 +97,8 @@ public class MoveActivityFeature extends MoveFlowNodeFeature {
 		super.postMoveShape(context);
 		PictogramElement containerShape = context.getPictogramElement();
 		Activity activity = BusinessObjectUtil.getFirstElementOfType(containerShape, Activity.class);
+		Graphiti.getPeService().sendToFront(context.getShape());
+		
 		new AbstractBoundaryEventOperation() {
 			@Override
 			protected void doWorkInternal(ContainerShape container) {
@@ -112,11 +114,9 @@ public class MoveActivityFeature extends MoveFlowNodeFeature {
 				newContext.putProperty(ACTIVITY_MOVE_PROPERTY, true);
 
 				IMoveShapeFeature moveFeature = getFeatureProvider().getMoveShapeFeature(newContext);
-				Graphiti.getPeService().sendToFront(context.getShape());
 				if (moveFeature.canMoveShape(newContext)) {
 					moveFeature.moveShape(newContext);
 				}
-				
 			}
 		}.doWork(activity, getDiagram());
 		

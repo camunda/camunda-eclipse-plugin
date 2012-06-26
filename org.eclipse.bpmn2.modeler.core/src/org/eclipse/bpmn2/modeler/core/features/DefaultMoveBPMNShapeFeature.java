@@ -19,6 +19,7 @@ import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -65,16 +66,19 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 						Graphiti.getPeService().getPropertyValue(element, GraphicsUtil.LABEL_PROPERTY) != null){
 					try{
 						ContainerShape container = (ContainerShape) element;
-						GraphicsUtil.alignWithShape(
-								(AbstractText) container.getChildren().get(0).getGraphicsAlgorithm(), 
-								container,
-								shape.getGraphicsAlgorithm().getWidth(),
-								shape.getGraphicsAlgorithm().getHeight(),
-								shape.getGraphicsAlgorithm().getX(),
-								shape.getGraphicsAlgorithm().getY(),
-								preShapeX,
-								preShapeY
-						);
+						// only align when not selected, the move feature of the label will do the job when selected
+						if (!ModelUtil.isElementSelected(getDiagramEditor().getSelectedPictogramElements(), element)) {
+							GraphicsUtil.alignWithShape(
+									(AbstractText) container.getChildren().get(0).getGraphicsAlgorithm(), 
+									container,
+									shape.getGraphicsAlgorithm().getWidth(),
+									shape.getGraphicsAlgorithm().getHeight(),
+									shape.getGraphicsAlgorithm().getX(),
+									shape.getGraphicsAlgorithm().getY(),
+									preShapeX,
+									preShapeY
+							);
+						}
 					}
 					catch(Exception e){
 						new RuntimeException("Composition of label container is not as expected");
