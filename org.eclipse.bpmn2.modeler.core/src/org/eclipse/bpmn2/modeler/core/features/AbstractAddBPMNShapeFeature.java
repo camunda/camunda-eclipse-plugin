@@ -13,21 +13,15 @@
 package org.eclipse.bpmn2.modeler.core.features;
 
 import java.io.IOException;
-import java.util.List;
 
-import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.CallActivity;
-import org.eclipse.bpmn2.CallChoreography;
 import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.StartEvent;
-import org.eclipse.bpmn2.SubChoreography;
-import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNShape;
@@ -44,14 +38,12 @@ import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
-import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.DcFactory;
 import org.eclipse.dd.dc.Point;
-import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.graphiti.datatypes.ILocation;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReconnectionFeature;
@@ -181,7 +173,6 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 			return;
 		}
 		
-		ILayoutService layoutService = Graphiti.getLayoutService();
 		int x = context.getX();
 		int y = context.getY();
 		((AddContext)context).setWidth(width);
@@ -193,10 +184,12 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 			// x or y so that the point lies on the line instead of just near it.
 			Anchor a0 = connection.getStart();
 			Anchor a1 = connection.getEnd();
-			double x0 = layoutService.getLocationRelativeToDiagram(a0).getX();
-			double y0 = layoutService.getLocationRelativeToDiagram(a0).getY();
-			double x1 = layoutService.getLocationRelativeToDiagram(a1).getX();
-			double y1 = layoutService.getLocationRelativeToDiagram(a1).getY();
+			
+			double x0 = getRelativeLocationX(a0);
+			double y0 = getRelativeLocationY(a0);
+			double x1 = getRelativeLocationX(a1);
+			double y1 = getRelativeLocationY(a1);
+			
 			if (x0 != x1) {
 				double m = (y1 - y0) / (x1 - x0);
 				double b = y0 - m * x0;
@@ -231,6 +224,38 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 		((AddContext)context).setX(x);
 	}
 	
+	private double getRelativeLocationX(Anchor anchor) {
+		double result = 0.0;
+		if (anchor instanceof FixPointAnchor) {
+			FixPointAnchor fpa = (FixPointAnchor) anchor;
+			IRectangle gaBoundsForAnchor = Graphiti.getPeService().getGaBoundsForAnchor(anchor);
+			result = gaBoundsForAnchor.getX() + fpa.getLocation().getX();
+			
+			AnchorContainer anchorContainer = anchor.getParent();
+			if (anchorContainer instanceof Shape) {
+				Shape shape = (Shape) anchorContainer;
+				result = result + shape.getGraphicsAlgorithm().getX();
+			}
+		}
+		return result;
+	}
+	
+	private double getRelativeLocationY(Anchor anchor) {
+		double result = 0.0;
+		if (anchor instanceof FixPointAnchor) {
+			FixPointAnchor fpa = (FixPointAnchor) anchor;
+			IRectangle gaBoundsForAnchor = Graphiti.getPeService().getGaBoundsForAnchor(anchor);
+			result = gaBoundsForAnchor.getY() + fpa.getLocation().getY();
+			
+			AnchorContainer anchorContainer = anchor.getParent();
+			if (anchorContainer instanceof Shape) {
+				Shape shape = (Shape) anchorContainer;
+				result = result + shape.getGraphicsAlgorithm().getY();
+			}
+		}
+		return result;
+	}
+
 	protected void splitConnection(IAddContext context, ContainerShape containerShape) {
 		if (context.getProperty(DIImport.IMPORT_PROPERTY) != null) {
 			return;
