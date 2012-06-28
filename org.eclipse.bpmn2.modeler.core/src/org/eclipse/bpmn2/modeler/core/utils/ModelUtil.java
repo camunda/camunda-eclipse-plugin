@@ -28,6 +28,7 @@ import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.ExtensionAttributeValue;
+import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
@@ -664,25 +665,43 @@ public class ModelUtil {
 	
 	public static EObject findNearestAncestor(EObject object, Class[] types) {
 		EObject ancestor = null;
-		ancestor = object.eContainer();
-		while (ancestor!=null) {
-			Class type = ancestor.getClass();
-			for (Class t : types) {
-				if (t.isAssignableFrom(type))
-					return ancestor;
+		if (object!=null) {
+			ancestor = object.eContainer();
+			while (ancestor!=null) {
+				Class type = ancestor.getClass();
+				for (Class t : types) {
+					if (t.isAssignableFrom(type))
+						return ancestor;
+				}
+				ancestor = ancestor.eContainer();
 			}
-			ancestor = ancestor.eContainer();
 		}
 		return ancestor;
 	}
 	
 	public static List<EObject> collectAncestorObjects(EObject object, String featureName, Class[] ancestorTypes) {
+		return collectAncestorObjects(object, featureName, ancestorTypes, null);
+	}
+	
+	public static List<EObject> collectAncestorObjects(EObject object, String featureName, Class[] ancestorTypes, Class[] objectTypes) {
 		List<EObject> values = new ArrayList<EObject>();
 		EObject ancestor = ModelUtil.findNearestAncestor(object, ancestorTypes);
 		while (ancestor!=null) {
 			EStructuralFeature feature = ancestor.eClass().getEStructuralFeature(featureName);
-			if (feature!=null && ancestor.eGet(feature) instanceof List)
-				values.addAll((List<EObject>) ancestor.eGet(feature));
+			if (feature!=null && ancestor.eGet(feature) instanceof List) {
+				List<EObject> objects = (List<EObject>) ancestor.eGet(feature);
+				if (objectTypes==null) {
+					values.addAll(objects);
+				}
+				else {
+					for (EObject item : objects) {
+						for (Class t : objectTypes) {
+							if (t.isAssignableFrom(item.getClass()))
+								values.add(item);
+						}
+					}
+				}
+			}
 			ancestor = ModelUtil.findNearestAncestor(ancestor, ancestorTypes);
 		}
 		return values;

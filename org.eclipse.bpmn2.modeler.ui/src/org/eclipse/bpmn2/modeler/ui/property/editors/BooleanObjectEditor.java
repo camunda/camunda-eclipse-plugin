@@ -49,7 +49,11 @@ public class BooleanObjectEditor extends ObjectEditor {
 	
 	public Control createControl(Composite composite, String label, int style) {
 
-		button = getToolkit().createButton(composite, label, SWT.CHECK);
+		// create a separate label to the LEFT of the checkbox, otherwise the grid layout will
+		// be off by one column for all other widgets that are created after this one.
+		createLabel(composite, label);
+		
+		button = getToolkit().createButton(composite, "", SWT.CHECK);
 		button.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		button.setSelection((Boolean) object.eGet(feature));
 		IObservableValue buttonObserver = SWTObservables.observeSelection(button);

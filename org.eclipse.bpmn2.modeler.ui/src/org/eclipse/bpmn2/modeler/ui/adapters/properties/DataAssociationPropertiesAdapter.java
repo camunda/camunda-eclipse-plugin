@@ -22,10 +22,14 @@ import java.util.List;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.CallableElement;
 import org.eclipse.bpmn2.DataAssociation;
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.DataStore;
 import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.Event;
+import org.eclipse.bpmn2.FlowElementsContainer;
+import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.Property;
@@ -90,6 +94,26 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter 
 			values.addAll( ModelUtil.collectAncestorObjects(object, "properties", new Class[] {Process.class}) );
 			values.addAll( ModelUtil.collectAncestorObjects(object, "properties", new Class[] {Event.class}) );
 			values.addAll( ModelUtil.collectAncestorObjects(object, "dataStore", new Class[] {DocumentRoot.class}) );
+			values.addAll( ModelUtil.collectAncestorObjects(object, "flowElements", new Class[] {FlowElementsContainer.class}, new Class[] {ItemAwareElement.class}));
+			
+			Activity activity = (Activity)ModelUtil.findNearestAncestor(object.eContainer(), new Class[] {Activity.class});
+			if (activity!=null) {
+				InputOutputSpecification ioSpec = activity.getIoSpecification();
+				if (ioSpec!=null) {
+					values.addAll(ioSpec.getDataInputs());
+					values.addAll(ioSpec.getDataOutputs());
+				}
+			}
+			
+			CallableElement callable = (CallableElement)ModelUtil.findNearestAncestor(object.eContainer(), new Class[] {CallableElement.class});
+			if (callable!=null) {
+				InputOutputSpecification ioSpec = callable.getIoSpecification();
+				if (ioSpec!=null) {
+					values.addAll(ioSpec.getDataInputs());
+					values.addAll(ioSpec.getDataOutputs());
+				}
+			}
+			
 			super.setChoiceOfValues(values);
 			return super.getChoiceOfValues(context);
 		}
