@@ -75,8 +75,6 @@ public class ModelResourceFactoryImpl extends Bpmn2ModelerResourceFactoryImpl {
         
         // save xsi:schemaLocation in Definitions parameter
         result.getDefaultSaveOptions().put(XMLResource.OPTION_SCHEMA_LOCATION, Boolean.TRUE);
-        result.getDefaultSaveOptions().put(XMLResource.OPTION_PROCESS_DANGLING_HREF, Boolean.TRUE);
-        
 
         return result;
     }
