@@ -13,18 +13,23 @@
 
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
+import java.util.Hashtable;
+
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.Message;
+import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.features.choreography.ChoreographyUtil;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
@@ -56,7 +61,7 @@ public class MessagePropertiesAdapter extends ExtendedPropertiesAdapter {
     	setFeatureDescriptor(ref,
 			new FeatureDescriptor(adapterFactory,object,ref) {
 	    		@Override
-				public EObject createObject(Object context) {
+				public EObject createObject(Object context, EClass eClass) {
 					final Message msg = context instanceof Message ?
 							(Message)context :
 							(Message)this.object;
@@ -65,6 +70,26 @@ public class MessagePropertiesAdapter extends ExtendedPropertiesAdapter {
 					Definitions definitions = ModelUtil.getDefinitions(msg);
 					InsertionAdapter.add(definitions, Bpmn2Package.eINSTANCE.getDefinitions_RootElements(), itemDefinition);
 					return itemDefinition;
+	    		}
+	    		
+	    		@Override
+	    		public Hashtable<String, Object> getChoiceOfValues(Object context) {
+					final Message msg = context instanceof Message ?
+							(Message)context :
+							(Message)this.object;
+					Hashtable<String,Object> choices = new Hashtable<String,Object>();
+					ItemDefinition itemDefinition = msg.getItemRef();
+					if (itemDefinition!=null)
+						choices.put(PropertyUtil.getText(itemDefinition), itemDefinition);
+					Definitions definitions = ModelUtil.getDefinitions(msg);
+					if (definitions!=null) {
+						for (RootElement re : definitions.getRootElements()) {
+							if (re instanceof ItemDefinition) {
+								choices.put(PropertyUtil.getText(re), re);
+							}
+						}
+					}
+					return choices;
 	    		}
     		}
     	);

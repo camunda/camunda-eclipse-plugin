@@ -21,6 +21,7 @@ import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
@@ -53,7 +54,7 @@ public class InterfacePropertiesAdapter extends ExtendedPropertiesAdapter {
 				}
 				
 	    		@Override
-				public EObject createObject(Object context) {
+				public EObject createObject(Object context, EClass eClass) {
 					final Interface iface = context instanceof Interface ?
 							(Interface)context :
 							(Interface)this.object;

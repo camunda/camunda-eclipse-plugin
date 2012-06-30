@@ -119,16 +119,16 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter 
 		}
 		
 		@Override
-		public EObject createObject(Object context) {
+		public EObject createObject(Object context, EClass eClass) {
 			EObject object = context instanceof EObject ? (EObject)context : this.object;
 			// what kind of object should we create? Property or DataStore?
-			EClass eClass = null;
-			if (ModelUtil.findNearestAncestor(object, new Class[] {Process.class, Event.class}) != null)
-				// nearest ancestor is a Process or Event, so new object will be a Property
-				eClass = Bpmn2Package.eINSTANCE.getProperty();
-			else if(ModelUtil.findNearestAncestor(object, new Class[] {DocumentRoot.class}) != null)
-				eClass = Bpmn2Package.eINSTANCE.getDataStore();
-			
+			if (eClass==null) {
+				if (ModelUtil.findNearestAncestor(object, new Class[] {Process.class, Event.class}) != null)
+					// nearest ancestor is a Process or Event, so new object will be a Property
+					eClass = Bpmn2Package.eINSTANCE.getProperty();
+				else if(ModelUtil.findNearestAncestor(object, new Class[] {DocumentRoot.class}) != null)
+					eClass = Bpmn2Package.eINSTANCE.getDataStore();
+			}			
 			if (eClass!=null) {
 				try {
 					ModelHandler mh = ModelHandler.getInstance(object);

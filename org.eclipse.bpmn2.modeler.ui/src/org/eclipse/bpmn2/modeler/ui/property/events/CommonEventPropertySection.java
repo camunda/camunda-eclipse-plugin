@@ -14,6 +14,7 @@ package org.eclipse.bpmn2.modeler.ui.property.events;
 
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.CatchEvent;
+import org.eclipse.bpmn2.ConditionalEventDefinition;
 import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.StartEvent;
@@ -22,6 +23,7 @@ import org.eclipse.bpmn2.TimerEventDefinition;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
+import org.eclipse.bpmn2.modeler.ui.property.data.ConditionalEventDefinitionPropertiesComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
@@ -35,6 +37,7 @@ public class CommonEventPropertySection extends AbstractBpmn2PropertySection imp
 		PropertiesCompositeFactory.register(ThrowEvent.class, ThrowEventPropertiesComposite.class);
 		PropertiesCompositeFactory.register(BoundaryEvent.class, BoundaryEventPropertiesComposite.class);
 		PropertiesCompositeFactory.register(TimerEventDefinition.class, TimerEventDefinitionPropertiesComposite.class);
+		PropertiesCompositeFactory.register(ConditionalEventDefinition.class, ConditionalEventDefinitionPropertiesComposite.class);
 	}
 
 	/* (non-Javadoc)

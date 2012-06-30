@@ -192,10 +192,14 @@ public class AbstractBpmn2TableComposite extends Composite {
 	}
 	
 	public EClass getListItemClass(EObject object, EStructuralFeature feature) {
-		if (listItemClass!=null)
-			return listItemClass;
+		return listItemClass;
+	}
+	
+	public EClass getDefaultListItemClass(EObject object, EStructuralFeature feature) {
+		EClass lic = getListItemClass(object,feature);
+		if (lic!=null)
+			return lic;
 		return (EClass) feature.getEType();
-		
 	}
 	
 	/**
@@ -223,7 +227,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 	public AbstractTableColumnProvider getColumnProvider(EObject object, EStructuralFeature feature) {
 		if (columnProvider==null) {
 			final EList<EObject> list = (EList<EObject>)object.eGet(feature);
-			final EClass listItemClass = getListItemClass(object, feature);
+			final EClass listItemClass = getDefaultListItemClass(object, feature);
 
 			columnProvider = new AbstractTableColumnProvider() {
 				@Override
@@ -438,7 +442,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 		modelEnablement = bpmn2Editor.getTargetRuntime().getModelEnablements(theobject);
 		final TransactionalEditingDomain editingDomain = bpmn2Editor.getEditingDomain();
 		final EList<EObject> list = (EList<EObject>)theobject.eGet(thefeature);
-		final EClass listItemClass = getListItemClass(theobject,thefeature);
+		final EClass listItemClass = getDefaultListItemClass(theobject,thefeature);
 		
 		////////////////////////////////////////////////////////////
 		// Collect columns to be displayed and build column provider
@@ -718,7 +722,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 	 */
 	protected int createColumnProvider(EObject theobject, EStructuralFeature thefeature) {
 		if (columnProvider==null) {
-			EClass listItemClass = getListItemClass(theobject,thefeature);
+			EClass listItemClass = getDefaultListItemClass(theobject,thefeature);
 			columnProvider = getColumnProvider(theobject, thefeature);
 			// remove disabled columns
 			List<TableColumn> removed = new ArrayList<TableColumn>();
@@ -840,7 +844,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 
 		@Override
 		public Object[] getElements(Object inputElement) {
-//			EClass listItemClass = getListItemClass(object,feature);
+			EClass listItemClass = getListItemClass(object,feature);
 			if (listItemClass==null) {
 				// display all items in the list that are subclasses of listItemClass
 				return list.toArray();

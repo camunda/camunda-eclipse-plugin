@@ -459,10 +459,8 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 			if (label==null)
 				label = PropertyUtil.getLabel(object, attribute);
 			
-			Hashtable<String,Object> choiceOfValues = PropertyUtil.getChoiceOfValues(object, attribute);
-			
 			Class eTypeClass = attribute.getEType().getInstanceClass();
-			if (choiceOfValues != null) {
+			if (PropertyUtil.isMultiChoice(object, attribute)) {
 				ObjectEditor editor = new ComboObjectEditor(this,object,attribute);
 				editor.createControl(parent,label);
 			}

@@ -35,7 +35,9 @@ import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterRegistry;
+import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.INamespaceMap;
+import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceSetImpl;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
@@ -110,12 +112,13 @@ public class ModelUtil {
 	}
 	
 	private static Object getKey(EObject obj) {
-		if (obj.eResource()==null) {
+		Resource resource = getResource(obj);
+		if (resource==null) {
 //			System.out.println("The object type "+obj.getClass().getName()+" is not contained in a Resource");
 			return null;
 		}
 		assert(obj!=null);
-		return getKey(obj.eResource());
+		return getKey(resource);
 	}
 	
 	private static Object getKey(Resource res) {
@@ -245,7 +248,7 @@ public class ModelUtil {
 	 * @param obj - the BPMN2 object
 	 */
 	public static String setID(EObject obj) {
-		return setID(obj,obj.eResource());
+		return setID(obj,getResource(obj));
 	}
 
 	/**
@@ -465,7 +468,7 @@ public class ModelUtil {
 	}
 	
 	public static Bpmn2DiagramType getDiagramType(EObject object) {
-		if (object!=null && object.eResource()!=null) {
+		if (object!=null && getResource(object)!=null) {
 			Definitions defs = getDefinitions(object);
 			if (defs.getDiagrams().size()>=1) {
 				BPMNDiagram diagram = defs.getDiagrams().get(0);
@@ -613,17 +616,42 @@ public class ModelUtil {
 		return false;
 	}
 	
+	public static Resource getResource(EObject object) {
+		Resource resource = object.eResource();
+		if (resource==null) {
+			InsertionAdapter insertionAdapter = AdapterUtil.adapt(object, InsertionAdapter.class);
+			if (insertionAdapter!=null)
+				resource = insertionAdapter.getResource();
+			if (resource==null) {
+				EClass eclass = object.eClass();
+				for (EReference ref : eclass.getEAllReferences()) {
+					Object value = object.eGet(ref);
+					if (value instanceof EObject) {
+						resource = getResource((EObject) value);
+						if (resource!=null)
+							return resource;
+					}
+				}
+			}
+		}
+		return resource;
+	}
 	public static Definitions getDefinitions(EObject object) {
-		Object defs = object.eResource().getContents().get(0).eContents().get(0);
-		if (defs instanceof Definitions)
-			return (Definitions)defs;
+		Resource resource = getResource(object);
+		if (resource!=null) {
+			Object defs = resource.getContents().get(0).eContents().get(0);
+			if (defs instanceof Definitions)
+				return (Definitions)defs;
+		}
 		return null;
 	}
 	
 	public static DocumentRoot getDocumentRoot(EObject object) {
-		EList<EObject> contents = object.eResource().getContents();
-		if (!contents.isEmpty() && contents.get(0) instanceof DocumentRoot) {
-			return (DocumentRoot)contents.get(0);
+		Resource resource = getResource(object);
+		if (resource!=null) {
+			EList<EObject> contents = resource.getContents();
+			if (!contents.isEmpty() && contents.get(0) instanceof DocumentRoot)
+				return (DocumentRoot)contents.get(0);
 		}
 		return null;
 	}
@@ -631,7 +659,7 @@ public class ModelUtil {
 	public static List<EObject> getAllReachableObjects(EObject object, EStructuralFeature feature) {
 		ArrayList<EObject> list = null;
 		if (object!=null && feature.getEType() instanceof EClass) {
-			Resource resource = object.eResource();
+			Resource resource = getResource(object);
 			if (resource!=null) {
 				EClass eClass = (EClass)feature.getEType();
 				list = new ArrayList<EObject>();
@@ -649,7 +677,7 @@ public class ModelUtil {
 	
 	public static List<EObject> getAllReachableObjects(EObject object, EClass eClass) {
 		ArrayList<EObject> list = null;
-		Resource resource = object.eResource();
+		Resource resource = getResource(object);
 		if (resource!=null) {
 			list = new ArrayList<EObject>();
 			TreeIterator<EObject> contents = resource.getAllContents();
@@ -714,7 +742,7 @@ public class ModelUtil {
 				if (participant.eContainer() instanceof Collaboration) {
 					Collaboration collab = (Collaboration) participant.eContainer();
 					if (collab.eContainer() instanceof Definitions) {
-						final Definitions definitions = (Definitions) collab.eContainer();
+						final Definitions definitions = getDefinitions(collab);
 						
 						TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(definitions.eResource());
 						

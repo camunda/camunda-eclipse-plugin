@@ -16,6 +16,7 @@ package org.eclipse.bpmn2.modeler.ui.property.data;
 import org.eclipse.bpmn2.Interface;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite.AbstractPropertiesProvider;
 import org.eclipse.bpmn2.modeler.ui.property.editors.SchemaObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
@@ -42,7 +43,26 @@ public class InterfacePropertiesComposite extends DefaultPropertiesComposite {
 	public InterfacePropertiesComposite(AbstractBpmn2PropertySection section) {
 		super(section);
 	}
-	
+
+	@Override
+	public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
+		if (propertiesProvider==null) {
+			propertiesProvider = new AbstractPropertiesProvider(object) {
+				String[] properties = new String[] {
+						"name",
+						"implementationRef",
+						"operations"
+				};
+				
+				@Override
+				public String[] getProperties() {
+					return properties; 
+				}
+			};
+		}
+		return propertiesProvider;
+	}
+
 	@Override
 	protected void bindReference(Composite parent, EObject object, EReference reference) {
 		if ("implementationRef".equals(reference.getName()) &&

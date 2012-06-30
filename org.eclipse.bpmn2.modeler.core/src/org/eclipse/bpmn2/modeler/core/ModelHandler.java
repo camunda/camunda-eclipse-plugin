@@ -24,6 +24,7 @@ import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Choreography;
 import org.eclipse.bpmn2.ChoreographyTask;
 import org.eclipse.bpmn2.Collaboration;
+import org.eclipse.bpmn2.ConditionalEventDefinition;
 import org.eclipse.bpmn2.ConversationLink;
 import org.eclipse.bpmn2.ConversationNode;
 import org.eclipse.bpmn2.DataInput;
@@ -31,6 +32,7 @@ import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.EndEvent;
+import org.eclipse.bpmn2.Expression;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.FlowNode;
@@ -53,6 +55,7 @@ import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.di.BpmnDiFactory;
 import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.bpmn2.di.ParticipantBandKind;
+import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
@@ -990,6 +993,29 @@ public class ModelHandler {
 	 * General-purpose factory method that sets appropriate default values for new objects.
 	 */
 	public EObject create(EClass eClass) {
+		return create(this.resource, eClass);
+	}
+	
+	public <T extends EObject> T createStandby(EObject object, EStructuralFeature feature, EClass eClass) {
+		return (T) createStandby(this.resource, object, feature, eClass);
+	}
+
+	public <T extends EObject> T create(Class<T> clazz) {
+		return (T) create(this.resource, clazz);
+	}
+	
+	public <T extends EObject> T createStandby(EObject object, EStructuralFeature feature, Class<T> clazz) {
+		return createStandby(this.resource, object, feature, clazz);
+	}
+
+	public void initialize(EObject newObject) {
+		ModelHandler.initialize(this.resource, newObject);
+	}
+	
+	////////////////////////////////////////////////////////////////////////////
+	// static versions of the above, for convenience
+	
+	public static EObject create(Resource resource, EClass eClass) {
 		EObject newObject = null;
 		EPackage pkg = eClass.getEPackage();
 		EFactory factory = pkg.getEFactoryInstance();
@@ -997,17 +1023,19 @@ public class ModelHandler {
 		if (eClass == Bpmn2Package.eINSTANCE.getExpression())
 			eClass = Bpmn2Package.eINSTANCE.getFormalExpression();
 		newObject = factory.create(eClass);
-		initialize(newObject);
+		initialize(resource, newObject);
 		return newObject;
 	}
 	
-	public <T extends EObject> T createStandby(EObject object, EStructuralFeature feature, Class<T> clazz) {
-		T newObject = create(clazz);
+	public static EObject createStandby(Resource resource, EObject object, EStructuralFeature feature, EClass eClass) {
+		if (resource==null)
+			resource  = ModelUtil.getResource(object);
+		EObject newObject = create(resource, eClass);
 		newObject.eAdapters().add(new InsertionAdapter(resource, object, feature, newObject));
 		return newObject;
 	}
 
-	public <T extends EObject> T create(Class<T> clazz) {
+	public static <T extends EObject> T create(Resource resource, Class<T> clazz) {
 		EObject newObject = null;
 		EClassifier eClassifier = Bpmn2Package.eINSTANCE.getEClassifier(clazz.getSimpleName());
 		if (eClassifier instanceof EClass) {
@@ -1024,21 +1052,33 @@ public class ModelHandler {
 		}
 		
 		if (newObject!=null) {
-			initialize(newObject);
+			initialize(resource, newObject);
 		}
 
 		return (T)newObject;
 	}
 	
-	public void initialize(EObject newObject) {
+	public static <T extends EObject> T createStandby(Resource resource, EObject object, EStructuralFeature feature, Class<T> clazz) {
+		if (resource==null)
+			resource  = ModelUtil.getResource(object);
+		T newObject = create(resource, clazz);
+		newObject.eAdapters().add(new InsertionAdapter(resource, object, feature, newObject));
+		return newObject;
+	}
+
+	public static void initialize(Resource resource, EObject newObject) {
 		if (newObject!=null) {
-//			if (newObject.eClass().getEPackage() == Bpmn2Package.eINSTANCE) {
-//				// Set appropriate default values for the object features here
-//				switch (newObject.eClass().getClassifierID()) {
-//				case Bpmn2Package.ITEM_DEFINITION:
-//					((ItemDefinition)newObject).setItemKind(ItemKind.INFORMATION);
-//				}
-//			}
+			if (newObject.eClass().getEPackage() == Bpmn2Package.eINSTANCE) {
+				// Set appropriate default values for the object features here
+				switch (newObject.eClass().getClassifierID()) {
+				case Bpmn2Package.CONDITIONAL_EVENT_DEFINITION:
+					{
+						Expression expr = Bpmn2Factory.eINSTANCE.createFormalExpression();
+						((ConditionalEventDefinition)newObject).setCondition(expr);
+					}
+					break;
+				}
+			}
 			
 			// if the object has an "id", assign it now.
 			String id = ModelUtil.setID(newObject,resource);
@@ -1052,4 +1092,5 @@ public class ModelHandler {
 //			}
 		}
 	}
+	
 }

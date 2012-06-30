@@ -120,7 +120,7 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 			super(parent, ADD_BUTTON|REMOVE_BUTTON|SHOW_DETAILS);
 			this.event = event;
 		}
-		
+
 		@Override
 		public EClass getListItemClassToAdd(EClass listItemClass) {
 			EClass eclass = null;

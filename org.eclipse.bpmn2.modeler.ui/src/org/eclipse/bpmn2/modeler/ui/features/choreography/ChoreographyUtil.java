@@ -759,7 +759,10 @@ public class ChoreographyUtil implements ChoreographyProperties {
 				mesg.getItemRef().getStructureRef()==null) {
 			return mesg.getName();
 		} else {
-			return PropertyUtil.getText(mesg.getItemRef());
+			String type = "(" + PropertyUtil.getText(mesg.getItemRef()) +")";
+			if (mesg.getName()==null)
+				return type; 
+			return mesg.getName() + type;
 		}
 	}
 

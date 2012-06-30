@@ -126,7 +126,7 @@ public class InterfacePropertySection extends DefaultPropertySection {
 
 			@Override
 			public EClass getListItemClass(EObject object, EStructuralFeature feature) {
-				return Bpmn2Package.eINSTANCE.getInterface();
+				return listItemClass = Bpmn2Package.eINSTANCE.getInterface();
 			}
 
 			public void bindList(EObject theobject) {
@@ -156,7 +156,8 @@ public class InterfacePropertySection extends DefaultPropertySection {
 			 */
 			public ProvidedInterfacesTable(Composite parent) {
 				super(parent,
-						AbstractBpmn2TableComposite.SHOW_DETAILS |
+						// only allow details editing in DefinedInterfacesTable
+//						AbstractBpmn2TableComposite.SHOW_DETAILS |
 						AbstractBpmn2TableComposite.ADD_BUTTON |
 						AbstractBpmn2TableComposite.MOVE_BUTTONS |
 						AbstractBpmn2TableComposite.REMOVE_BUTTON);

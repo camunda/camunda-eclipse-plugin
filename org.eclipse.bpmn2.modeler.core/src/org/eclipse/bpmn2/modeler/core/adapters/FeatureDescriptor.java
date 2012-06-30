@@ -196,10 +196,6 @@ public class FeatureDescriptor extends ObjectDescriptor {
 		}
 		return multiline == 1;
 	}
-
-	public EObject createObject() {
-		return createObject(object);
-	}
 	
 	public EObject createObject(Object context) {
 		return createObject(context, null);
@@ -213,12 +209,11 @@ public class FeatureDescriptor extends ObjectDescriptor {
 			
 			ModelHandler mh = ModelHandler.getInstance(object);
 			if (mh!=null)
-				return mh.create(eclass);
+				return mh.createStandby(object, feature, eclass);
+			
 			// object is not yet added to a Resource so use an insertion adapter
 			// to add it later
-			EObject value = Bpmn2Factory.eINSTANCE.create(eclass);
-			InsertionAdapter.add(object, feature, value);
-			return value;
+			return ModelHandler.createStandby(null, object, feature, eclass);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

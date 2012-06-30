@@ -126,10 +126,12 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 		
 		if (getAttributesParent().getChildren().length==0) {
 			// yech! ugly hack to hide the Attributes TWISTIE section if it's empty
-			attributesComposite.dispose();
-			attributesComposite = null;
-			attributesSection.dispose();
-			attributesSection = null;
+			if (attributesComposite!=null) {
+				attributesComposite.dispose();
+				attributesComposite = null;
+				attributesSection.dispose();
+				attributesSection = null;
+			}
 		}
 
 		if (getChildren().length==0) {
