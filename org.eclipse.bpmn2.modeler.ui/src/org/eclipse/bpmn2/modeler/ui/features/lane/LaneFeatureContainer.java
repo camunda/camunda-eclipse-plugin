@@ -78,7 +78,7 @@ public class LaneFeatureContainer extends BaseElementFeatureContainer {
 
 	@Override
 	public IDeleteFeature getDeleteFeature(IFeatureProvider fp) {
-		return new AbstractDefaultDeleteFeature(fp);
+		return new DeleteLaneFeature(fp);
 	}
 
 	@Override
