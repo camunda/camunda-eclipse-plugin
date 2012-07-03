@@ -31,6 +31,7 @@ import org.eclipse.graphiti.services.IPeLayoutService;
 public class MoveActivityFeature extends MoveFlowNodeFeature {
 
 	public static final String ACTIVITY_MOVE_PROPERTY = "activity.move";
+	public static final String SELECTION_MOVE_PROPERTY = "selection.move";
 
 	public MoveActivityFeature(IFeatureProvider fp) {
 		super(fp);
