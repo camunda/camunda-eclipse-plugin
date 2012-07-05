@@ -197,7 +197,7 @@ public class FeatureSupport {
 		DIUtils.updateDIShape(root);
 	}
 
-	private static ContainerShape getRootContainer(ContainerShape container) {
+	public static ContainerShape getRootContainer(ContainerShape container) {
 		ContainerShape parent = container.getContainer();
 		EObject bo = BusinessObjectUtil.getFirstElementOfType(parent, BaseElement.class);
 		if (bo != null && (bo instanceof Lane || bo instanceof Participant)) {
@@ -497,5 +497,80 @@ public class FeatureSupport {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Returns a list of {@link PictogramElement}s which contains an element to the
+	 * assigned businessObjectClazz, i.e. the list contains {@link PictogramElement}s
+	 * which meet the following constraint:<br>
+	 * <code>
+	 * 	foreach child of root:<br>
+	 *  BusinessObjectUtil.containsChildElementOfType(child, businessObjectClazz) == true
+	 * </code>
+	 * @param root
+	 * @param businessObjectClazz
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	public static List<PictogramElement> getChildsOfBusinessObjectType(ContainerShape root, Class businessObjectClazz) {
+		List<PictogramElement> result = new ArrayList<PictogramElement>();
+		for (Shape currentShape : root.getChildren()) {
+			if (BusinessObjectUtil.containsChildElementOfType(currentShape, businessObjectClazz)) {
+				result.add(currentShape);
+			}
+		}
+		return result;
+	}
+	
+	public static Shape getFirstLaneInContainer(ContainerShape root) {
+		List<PictogramElement> laneShapes = getChildsOfBusinessObjectType(root, Lane.class);
+		if (!laneShapes.isEmpty()) {
+			Iterator<PictogramElement> iterator = laneShapes.iterator();
+			PictogramElement result = iterator.next();
+			GraphicsAlgorithm ga = result.getGraphicsAlgorithm();
+			if (isHorizontal(root)) {
+				while (iterator.hasNext()) {
+					PictogramElement currentShape = iterator.next();
+					if (currentShape.getGraphicsAlgorithm().getY() < ga.getY()) {
+						result = currentShape;
+					}
+				}
+			} else {
+				while (iterator.hasNext()) {
+					PictogramElement currentShape = iterator.next();
+					if (currentShape.getGraphicsAlgorithm().getX() < ga.getX()) {
+						result = currentShape;
+					}
+				}				
+			}
+			return (Shape) result;
+		}
+		return root;
+	}
+	
+	public static Shape getLastLaneInContainer(ContainerShape root) {
+		List<PictogramElement> laneShapes = getChildsOfBusinessObjectType(root, Lane.class);
+		if (!laneShapes.isEmpty()) {
+			Iterator<PictogramElement> iterator = laneShapes.iterator();
+			PictogramElement result = iterator.next();
+			GraphicsAlgorithm ga = result.getGraphicsAlgorithm();
+			if (isHorizontal(root)) {
+				while (iterator.hasNext()) {
+					PictogramElement currentShape = iterator.next();
+					if (currentShape.getGraphicsAlgorithm().getY() > ga.getY()) {
+						result = currentShape;
+					}
+				}
+			} else {
+				while (iterator.hasNext()) {
+					PictogramElement currentShape = iterator.next();
+					if (currentShape.getGraphicsAlgorithm().getX() > ga.getX()) {
+						result = currentShape;
+					}
+				}				
+			}
+			return (Shape) result;
+		}
+		return root;
 	}
 }

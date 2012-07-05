@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.gef.EditPart;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -49,6 +50,22 @@ public class BusinessObjectUtil {
 		for (EObject eObject : businessObjs) {
 			if (clazz.isInstance(eObject)) {
 				return true;
+			}
+		}
+		return false;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public static boolean containsChildElementOfType(PictogramElement root, Class clazz) {
+		if (AnchorUtil.isConnectionPoint(root)) {
+			root = AnchorUtil.getConnectionPointOwner((Shape)root);
+		}
+		if (root instanceof ContainerShape) {
+			ContainerShape rootContainer = (ContainerShape) root;
+			for (Shape currentShape : rootContainer.getChildren()) {
+				if (containsElementOfType(currentShape, clazz)) {
+					return true;
+				}
 			}
 		}
 		return false;

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallableElement;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
@@ -115,8 +116,9 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 						return true;
 					}
 				};
-
-				EClass listItemClass = getListItemClass(ioSpecification, ioFeature);
+				EClass listItemClass = (EClass)ioFeature.getEType();
+				setListItemClass(listItemClass);
+				
 				EAttribute name = (EAttribute)listItemClass.getEStructuralFeature("name");
 				columnProvider.add(new TableColumn(ioSpecification,name));
 			}
