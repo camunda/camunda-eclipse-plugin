@@ -573,4 +573,101 @@ public class FeatureSupport {
 		}
 		return root;
 	}
+	
+	public static ContainerShape getLaneBefore(ContainerShape container) {
+		if (!BusinessObjectUtil.containsElementOfType(container, Lane.class)) {
+			return null;
+		}
+		
+		ContainerShape parentContainerShape = container.getContainer();
+		if (parentContainerShape == null) {
+			return null;
+		}
+		
+		GraphicsAlgorithm ga = container.getGraphicsAlgorithm();
+		int x = ga.getX();
+		int y = ga.getY();
+		boolean isHorizontal = isHorizontal(container);
+		
+		ContainerShape result = null;
+		for (PictogramElement picElem : getChildsOfBusinessObjectType(parentContainerShape, Lane.class)) {
+			if (picElem instanceof ContainerShape && !picElem.equals(container)) {
+				ContainerShape currentContainerShape = (ContainerShape) picElem;
+				GraphicsAlgorithm currentGA = currentContainerShape.getGraphicsAlgorithm();
+				if (isHorizontal) {
+					if (currentGA.getY() < y) {
+						if (result != null) {
+							GraphicsAlgorithm resultGA = result.getGraphicsAlgorithm();
+							if (resultGA.getY() < currentGA.getY()) {
+								result = currentContainerShape;
+							}
+						} else {
+							result = currentContainerShape;
+						}
+					}
+				} else {
+					if (currentGA.getX() < x) {
+						if (result != null) {
+							GraphicsAlgorithm resultGA = result.getGraphicsAlgorithm();
+							if (resultGA.getX() < currentGA.getX()) {
+								result = currentContainerShape;
+							}
+						} else {
+							result = currentContainerShape;
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
+	
+	public static ContainerShape getLaneAfter(ContainerShape container) {
+		if (!BusinessObjectUtil.containsElementOfType(container, Lane.class)) {
+			return null;
+		}
+		
+		ContainerShape parentContainerShape = container.getContainer();
+		if (parentContainerShape == null) {
+			return null;
+		}
+		
+		GraphicsAlgorithm ga = container.getGraphicsAlgorithm();
+		int x = ga.getX();
+		int y = ga.getY();
+		boolean isHorizontal = isHorizontal(container);
+		
+		ContainerShape result = null;
+		for (PictogramElement picElem : getChildsOfBusinessObjectType(parentContainerShape, Lane.class)) {
+			if (picElem instanceof ContainerShape && !picElem.equals(container)) {
+				ContainerShape currentContainerShape = (ContainerShape) picElem;
+				GraphicsAlgorithm currentGA = currentContainerShape.getGraphicsAlgorithm();
+				if (isHorizontal) {
+					if (currentGA.getY() > y) {
+						if (result != null) {
+							GraphicsAlgorithm resultGA = result.getGraphicsAlgorithm();
+							if (resultGA.getY() > currentGA.getY()) {
+								result = currentContainerShape;
+							}
+						} else {
+							result = currentContainerShape;
+						}
+					}
+				} else {
+					if (currentGA.getX() > x) {
+						if (result != null) {
+							GraphicsAlgorithm resultGA = result.getGraphicsAlgorithm();
+							if (resultGA.getX() > currentGA.getX()) {
+								result = currentContainerShape;
+							}
+						} else {
+							result = currentContainerShape;
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
+
 }

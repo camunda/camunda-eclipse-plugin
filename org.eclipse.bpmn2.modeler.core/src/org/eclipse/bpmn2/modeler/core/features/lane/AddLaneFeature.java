@@ -37,6 +37,7 @@ import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.algorithms.styles.Orientation;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
@@ -45,6 +46,9 @@ import org.eclipse.graphiti.services.IPeCreateService;
 import org.eclipse.graphiti.services.IPeService;
 
 public class AddLaneFeature extends AbstractAddBPMNShapeFeature {
+	
+	public static final int DEFAULT_LANE_WIDTH = 600;
+	public static final int DEFAULT_LANE_HEIGHT = 100;
 
 	public AddLaneFeature(IFeatureProvider fp) {
 		super(fp);
@@ -215,6 +219,9 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature {
 	@Override
 	protected int getHeight(IAddContext context) {
 		if (context.getProperty(DIImport.IMPORT_PROPERTY) == null){
+			if (context.getTargetContainer() instanceof Diagram) {
+				return getHeight();
+			}
 			int height = context.getTargetContainer().getGraphicsAlgorithm().getHeight();
 			
 			Bounds bounds = getPreviousBounds(context);
@@ -229,6 +236,9 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature {
 	@Override
 	public int getWidth(IAddContext context) {
 		if (context.getProperty(DIImport.IMPORT_PROPERTY) == null){
+			if (context.getTargetContainer() instanceof Diagram) {
+				return getWidth();
+			}
 			int width = context.getTargetContainer().getGraphicsAlgorithm().getWidth();
 			
 			Bounds bounds = getPreviousBounds(context);
@@ -242,11 +252,11 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature {
 
 	@Override
 	public int getHeight() {
-		return 100;
+		return DEFAULT_LANE_HEIGHT;
 	}
 
 	@Override
 	public int getWidth() {
-		return 600;
+		return DEFAULT_LANE_WIDTH;
 	}
 }

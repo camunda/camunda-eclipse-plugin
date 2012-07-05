@@ -37,6 +37,8 @@ import org.eclipse.graphiti.services.IPeService;
 public class AddParticipantFeature extends AbstractAddBPMNShapeFeature {
 
 	public static final String MULTIPLICITY = "multiplicity";
+	public static final int DEFAULT_POOL_WIDTH = 600;
+	public static final int DEFAULT_POOL_HEIGHT = 100;
 
 	public AddParticipantFeature(IFeatureProvider fp) {
 		super(fp);
@@ -96,11 +98,11 @@ public class AddParticipantFeature extends AbstractAddBPMNShapeFeature {
 
 	@Override
 	public int getHeight() {
-		return 100;
+		return DEFAULT_POOL_HEIGHT;
 	}
 
 	@Override
 	public int getWidth() {
-		return 600;
+		return DEFAULT_POOL_WIDTH;
 	}
 }
