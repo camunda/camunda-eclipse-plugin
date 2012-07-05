@@ -44,6 +44,7 @@ import org.eclipse.bpmn2.di.BPMNLabel;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
+import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.bpmn2.util.ImportHelper;
@@ -569,7 +570,8 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 			if (pkg != Bpmn2Package.eINSTANCE &&
 					pkg != BpmnDiPackage.eINSTANCE &&
 					pkg != DcPackage.eINSTANCE &&
-					pkg != DiPackage.eINSTANCE) {
+					pkg != DiPackage.eINSTANCE &&
+					pkg != TargetRuntime.getCurrentRuntime().getModelDescriptor().getEPackage()) {
 				return eClass.getEStructuralFeature(name);
 			}
 			return super.getFeature(eClass, namespaceURI, name, isElement);
