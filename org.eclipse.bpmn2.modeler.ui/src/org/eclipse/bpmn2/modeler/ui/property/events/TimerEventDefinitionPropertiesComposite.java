@@ -106,8 +106,11 @@ public class TimerEventDefinitionPropertiesComposite extends DefaultPropertiesCo
 			timeDurationButton.setSelection(true);
 			timerType = TimerType.TIMEDURATION;
 		}
-		else
+		else{
+			timerType = TimerType.NONE;
 			exp = FACTORY.createFormalExpression();
+		}
+			
 		if (exp.getBody()==null)
 			exp.setBody("");
 		
