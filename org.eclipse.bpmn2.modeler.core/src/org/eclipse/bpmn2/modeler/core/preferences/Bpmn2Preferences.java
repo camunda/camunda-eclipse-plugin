@@ -439,8 +439,11 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	 * @return
 	 */
 	public TargetRuntime getRuntime(IFile file) {
-		
 		load();
+		
+		if (TargetRuntime.getAllRuntimes() == null) {
+			return TargetRuntime.getDefaultRuntime();
+		}
 		
 		if (targetRuntime == TargetRuntime.getDefaultRuntime()) {
 			for (TargetRuntime rt : TargetRuntime.getAllRuntimes()) {

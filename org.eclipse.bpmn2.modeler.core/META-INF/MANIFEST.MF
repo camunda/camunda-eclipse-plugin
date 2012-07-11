@@ -24,7 +24,8 @@ Require-Bundle: org.eclipse.emf.transaction,
  org.eclipse.wst.xml.ui;bundle-version="[1.0.400,2.0.0)",
  org.eclipse.jst.j2ee,
  org.eclipse.ui.ide,
- org.eclipse.core.commands
+ org.eclipse.core.commands,
+ org.eclipse.emf.validation.ocl;bundle-version="1.4.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.bpmn2.modeler.core,
