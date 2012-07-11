@@ -73,7 +73,10 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 	}
 	
 	public static TargetRuntime getRuntime(String id) {
-		getAllRuntimes();
+		if (getAllRuntimes() == null) {
+			return null;
+		}
+		
 		for (TargetRuntime rt : getAllRuntimes()) {
 			if (rt.id.equals(id))
 				return rt;
@@ -101,6 +104,10 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 	public static String getFirstNonDefaultId(){
 		String runtimeId = null;
 		int nonDefaultRuntimeCount = 0;
+		
+		if (TargetRuntime.getAllRuntimes() == null) {
+			return TargetRuntime.DEFAULT_RUNTIME_ID;
+		}
 		
 		for (TargetRuntime rt :TargetRuntime.getAllRuntimes()) {
 			if (!rt.getId().equals(TargetRuntime.DEFAULT_RUNTIME_ID)){

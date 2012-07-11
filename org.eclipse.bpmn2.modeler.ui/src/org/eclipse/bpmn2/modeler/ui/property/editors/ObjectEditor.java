@@ -16,9 +16,9 @@ package org.eclipse.bpmn2.modeler.ui.property.editors;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
+import org.eclipse.bpmn2.modeler.core.utils.ErrorUtils;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
-import org.eclipse.bpmn2.modeler.ui.util.ErrorUtils;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -100,42 +100,46 @@ public abstract class ObjectEditor {
 			valueChanged = !result.equals(oldValue);
 		
 		if (valueChanged) {
-			InsertionAdapter insertionAdapter = AdapterUtil.adapt(object, InsertionAdapter.class);
-			if (insertionAdapter!=null) {
-				// make sure the new object is added to its container first
-				// so that it inherits the container's Resource and EditingDomain
-				// before we try to change its value.
-				insertionAdapter.execute();
+			try {
+				InsertionAdapter insertionAdapter = AdapterUtil.adapt(object, InsertionAdapter.class);
+				if (insertionAdapter!=null) {
+					// make sure the new object is added to its container first
+					// so that it inherits the container's Resource and EditingDomain
+					// before we try to change its value.
+					insertionAdapter.execute();
+				}
+				
+				if (isEmpty(result)){
+					TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
+					domain.getCommandStack().execute(new RecordingCommand(domain) {
+						@Override
+						protected void doExecute() {
+							object.eUnset(feature);
+						}
+					});
+				}
+				else if (adapter!=null) { 			// use the Extended Properties adapter if there is one
+					adapter.getFeatureDescriptor(feature).setValue(result);
+				}
+				else {
+					// fallback is to set the new value here using good ol' EObject.eSet()
+					TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
+					domain.getCommandStack().execute(new RecordingCommand(domain) {
+						@Override
+						protected void doExecute() {
+							object.eSet(feature, result);
+						}
+					});
+				}
+			}catch (Exception e) {
+				ErrorUtils.showErrorMessage(e.getMessage());
 			}
-			
-			if (isEmpty(result)){
-				TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
-				domain.getCommandStack().execute(new RecordingCommand(domain) {
-					@Override
-					protected void doExecute() {
-						object.eUnset(feature);
-					}
-				});
-			}
-			else if (adapter!=null) { 			// use the Extended Properties adapter if there is one
-				adapter.getFeatureDescriptor(feature).setValue(result);
-			}
-			else {
-				// fallback is to set the new value here using good ol' EObject.eSet()
-				TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
-				domain.getCommandStack().execute(new RecordingCommand(domain) {
-					@Override
-					protected void doExecute() {
-						object.eSet(feature, result);
-					}
-				});
-			}
+
 			if (getDiagramEditor().getDiagnostics()!=null) {
 				ErrorUtils.showErrorMessage(getDiagramEditor().getDiagnostics().getMessage());
 				return false;
 			}
-			else
-				ErrorUtils.showErrorMessage(null);
+				
 		}
 		
 		return true;

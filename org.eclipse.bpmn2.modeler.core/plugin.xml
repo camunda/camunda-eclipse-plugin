@@ -24,16 +24,16 @@
             <constraint
                   lang="Java"
                   class="org.eclipse.bpmn2.modeler.core.validation.ValidIdConstraint"
-                  severity="ERROR"
+                  severity="CANCEL"
                   mode="Live"
                   name="Valid IDs"
                   id="org.eclipse.bpmn2.modeler.core.validation.ValidId"
                   statusCode="1">
                <description>
-                  IDs should not contain spaces.
+                  IDs must be valid.
                </description>
                <message>
-                  The {0} 'id' may not contain spaces.
+                  The {0} ID must be a valid ID.
                </message>
                <target class="BaseElement">
                   <event name="Set">
@@ -46,33 +46,46 @@
             </constraint>
             <constraint
 			        lang="OCL"
-			         severity="ERROR"
+			         severity="CANCEL"
 			         mode="Live"
 			         name="StartEventIncoming"
 			         id="org.eclipse.bpmn2.modeler.core.validation.StartEvent.incoming"
 			         statusCode="2" isEnabledByDefault="true">
 			      <description>Start Event must not have incoming flows</description>
-			      <message>The {0} must not have incoming sequence flows.</message>
+			      <message>Start Event must not have incoming sequence flows.</message>
 			      <target class="StartEvent" />
-			      
 			      <![CDATA[
-			         self.incoming->isEmpty()
+			      	self.incoming->isEmpty()
 			      ]]>
 			</constraint>
 			<constraint
 			        lang="OCL"
-			         severity="ERROR"
+			         severity="CANCEL"
 			         mode="Live"
 			         name="EndEventOutgoing"
 			         id="org.eclipse.bpmn2.modeler.core.validation.EndEvent.outgoing"
 			         statusCode="3" isEnabledByDefault="true">
 			      <description>End Event must not have outgoing flows</description>
-			      <message>The {0} must not have outgoing sequence flows.</message>
+			      <message>End Event must not have outgoing sequence flows.</message>
 			      <target class="EndEvent" />
-			      
 			      <![CDATA[
 			         self.outgoing->isEmpty()
 			      ]]>
+			</constraint>
+			<constraint
+			        lang="OCL"
+			         severity="CANCEL"
+			         mode="Live"
+			         name="UniqueId"
+			         id="org.eclipse.bpmn2.modeler.core.validation.BaseElement.id"
+			         statusCode="3" isEnabledByDefault="true">
+			      <description>ID needs to be unique.</description>
+			      <message>ID needs to be unqiue.</message>
+			      <target class="BaseElement" />
+					<![CDATA[
+						BaseElement.allInstances()->forAll(b |
+						b <> self implies b.id <> self.id)
+					]]>
 			</constraint>
          </constraints>
       </constraintProvider>

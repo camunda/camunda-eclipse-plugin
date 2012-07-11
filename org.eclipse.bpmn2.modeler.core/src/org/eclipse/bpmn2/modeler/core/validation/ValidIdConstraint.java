@@ -20,7 +20,9 @@ import org.eclipse.emf.validation.EMFEventType;
 import org.eclipse.emf.validation.IValidationContext;
 
 public class ValidIdConstraint extends AbstractModelConstraint {
-
+	
+	String validIdRegEx = "^[^0-9][a-zA-Z0-9-_]*";
+	
 	@Override
 	public IStatus validate(IValidationContext ctx) {
 		EObject eObj = ctx.getTarget();
@@ -33,14 +35,14 @@ public class ValidIdConstraint extends AbstractModelConstraint {
 				id = ((BaseElement)eObj).getId(); 
 			}
 			
-			if (id == null || id.length() == 0 || id.indexOf(' ')>=0) {
+			if (id == null || id.length() == 0 || id.indexOf(' ')>=0 || !id.matches(validIdRegEx) ) {
 				return ctx.createFailureStatus(new Object[] {eObj.eClass().getName()});
 			}
 		// In the case of live mode.
 		} else {
-			Object newValue = ctx.getFeatureNewValue();
+			String newValue = (String) ctx.getFeatureNewValue();
 			
-			if (newValue == null || ((String)newValue).length() == 0 || ((String)newValue).indexOf(' ')>=0) {
+			if (newValue == null || newValue.length() == 0 || newValue.indexOf(' ')>=0 || !newValue.matches(validIdRegEx)) {
 				return ctx.createFailureStatus(new Object[] {eObj.eClass().getName()});
 			}
 		}

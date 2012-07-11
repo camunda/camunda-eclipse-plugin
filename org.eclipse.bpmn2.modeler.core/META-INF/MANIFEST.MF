@@ -47,8 +47,8 @@ Export-Package: org.eclipse.bpmn2.modeler.core,
  org.eclipse.bpmn2.modeler.core.model,
  org.eclipse.bpmn2.modeler.core.preferences,
  org.eclipse.bpmn2.modeler.core.runtime,
- org.eclipse.bpmn2.modeler.core.utils
- 
+ org.eclipse.bpmn2.modeler.core.utils,
+ org.eclipse.bpmn2.modeler.core.validation
 Import-Package: org.eclipse.bpel.wsil.model.inspection,
  org.eclipse.graphiti.ui.features,
  org.eclipse.jface.util,
