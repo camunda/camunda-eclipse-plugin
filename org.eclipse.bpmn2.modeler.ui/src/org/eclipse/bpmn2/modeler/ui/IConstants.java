@@ -50,4 +50,11 @@ public interface IConstants {
 	public final String IMAGE_PROCESS_PUSHED = "wizards/process-pushed.gif";
 	public final String IMAGE_COLLABORATION_PUSHED = "wizards/collaboration-pushed.gif";
 	public final String IMAGE_CHOREOGRAPHY_PUSHED = "wizards/choreography-pushed.gif";
+
+	public final String ICON_BPMN2_PROCESS_16 = "obj16/bpmn2process.png"; //$NON-NLS-1$
+	public final String ICON_BPMN2_INTERFACE_16 = "obj16/bpmn2interface.png"; //$NON-NLS-1$
+	public final String ICON_BPMN2_OPERATION_16 = "obj16/bpmn2operation.png"; //$NON-NLS-1$
+	public final String ICON_BPMN2_INPUT_16 = "obj16/bpmn2input.png"; //$NON-NLS-1$
+	public final String ICON_BPMN2_OUTPUT_16 = "obj16/bpmn2output.png"; //$NON-NLS-1$
+	public final String ICON_BPMN2_ERROR_16 = "obj16/bpmn2error.png"; //$NON-NLS-1$
 }

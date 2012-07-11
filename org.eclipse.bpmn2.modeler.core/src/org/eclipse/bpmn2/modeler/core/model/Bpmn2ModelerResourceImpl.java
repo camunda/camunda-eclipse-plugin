@@ -34,6 +34,7 @@ import java.util.Map;
 
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.Import;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.Participant;
@@ -193,6 +194,16 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 					}
 					Bpmn2Preferences.getInstance(this.resourceURI).applyBPMNDIDefaults(bpmnShape, map);
 				}
+			}
+			else if (obj instanceof ItemDefinition) {
+				ItemDefinition itemDef = (ItemDefinition)obj;
+
+				Definitions definitions = ImportHelper.getDefinitions(xmlResource);
+				URI referencingURI = ImportHelper.makeURICanonical(resourceURI);
+				String location = ModelUtil.getStringWrapperValue(itemDef.getStructureRef());
+				URI uri = URI.createURI(location).resolve(referencingURI);
+				Import imp = ImportHelper.findImportForLocation(definitions, uri);
+				itemDef.setImport(imp);
 			}
 		}
 

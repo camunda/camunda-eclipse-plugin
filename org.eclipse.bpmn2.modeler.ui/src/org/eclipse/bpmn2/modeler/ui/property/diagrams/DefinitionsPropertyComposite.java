@@ -9,7 +9,7 @@ import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.Import;
 import org.eclipse.bpmn2.impl.DefinitionsImpl;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.utils.ImportUtil;
 import org.eclipse.bpmn2.modeler.core.utils.NamespaceUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
@@ -338,28 +338,11 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 
 		@Override
 		protected Object removeListItem(EObject object, EStructuralFeature feature, int index) {
-			Definitions defs = (Definitions)object;
 			EList<Import> list = (EList<Import>)object.eGet(feature);
 			Import imp = list.get(index);
-			boolean canRemoveNamespace = true;
-			for (Import i : defs.getImports()) {
-				if (i!=imp) {
-					String loc1 = i.getLocation();
-					String loc2 = imp.getLocation();
-					String ns1 = i.getNamespace();
-					String ns2 = imp.getNamespace();
-					// different import locations, same namespace?
-					if (loc1!=null && loc2!=null && !loc1.equals(loc2) &&
-							ns1!=null && ns2!=null && ns1.equals(ns2)) {
-						// this namespace is still in use by another import!
-						canRemoveNamespace = false;
-						break;
-					}
-				}
-			}
-			if (canRemoveNamespace)
-				NamespaceUtil.removeNamespace(imp.eResource(), imp.getNamespace());
-			return super.removeListItem(object, feature, index);
+			ImportUtil.removeImport(imp);
+//			return super.removeListItem(object, feature, index);
+			return null;
 		}
 
 		@Override
@@ -368,7 +351,7 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 			if (dialog.open() == Window.OK) {
 				Object result[] = dialog.getResult();
 				if (result.length == 1) {
-					return ModelHandler.addImport(object, result[0]);
+					return ImportUtil.addImport(object, result[0]);
 				}
 			}
 			return null;

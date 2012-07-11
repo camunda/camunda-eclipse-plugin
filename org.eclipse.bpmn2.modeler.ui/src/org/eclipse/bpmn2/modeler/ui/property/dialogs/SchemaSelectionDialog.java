@@ -15,8 +15,8 @@ package org.eclipse.bpmn2.modeler.ui.property.dialogs;
 
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Import;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceSetImpl;
+import org.eclipse.bpmn2.modeler.core.utils.ImportUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
@@ -111,7 +111,7 @@ public class SchemaSelectionDialog extends SelectionStatusDialog {
 				if (dialog.open() == Window.OK) {
 					Object result[] = dialog.getResult();
 					if (result.length == 1) {
-						Import imp = ModelHandler.addImport(bpmn2Editor.getModelHandler().getResource(), result[0]);
+						Import imp = ImportUtil.addImport(bpmn2Editor.getModelHandler().getResource(), result[0]);
 						if (imp!=null) {
 							int index = importList.getItemCount();
 							importList.add(imp.getLocation());
