@@ -55,6 +55,7 @@ import org.eclipse.emf.ecore.impl.EAttributeImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.emf.ecore.util.FeatureMapUtil;
@@ -590,6 +591,9 @@ public class ModelUtil {
 			DynamicEObjectImpl de = (DynamicEObjectImpl)wrapper;
 			URI uri = de.eProxyURI();
 			return uri.toString();
+		}
+		else if (wrapper instanceof EObject) {
+			return EcoreUtil.getURI((EObject)wrapper).toString();
 		}
 		return null;
 	}

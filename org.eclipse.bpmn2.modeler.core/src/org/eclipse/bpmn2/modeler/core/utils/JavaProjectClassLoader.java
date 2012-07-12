@@ -11,7 +11,7 @@
  * @author Bob Brodt
  ******************************************************************************/
 
-package org.eclipse.bpmn2.modeler.ui.util;
+package org.eclipse.bpmn2.modeler.core.utils;
 
 import java.io.File;
 import java.net.URL;
@@ -102,7 +102,7 @@ public class JavaProjectClassLoader extends ClassLoader {
 		return results;
 	}
 	
-	public IJavaProject[] findProject(final String className) {
+	public static IJavaProject[] findProject(final String className) {
 		SearchPattern pattern = SearchPattern.createPattern(className,
 	            IJavaSearchConstants.TYPE, IJavaSearchConstants.TYPE,
 	            SearchPattern.R_EXACT_MATCH);
@@ -139,7 +139,7 @@ public class JavaProjectClassLoader extends ClassLoader {
 			} catch (Exception e) {
 			}
 		}
-		return (IJavaProject[]) results.toArray(new Object[results.size()]);
+		return (IJavaProject[]) results.toArray(new IJavaProject[results.size()]);
 	}
 
 	private static String computeForURLClassLoader(String classpath) {

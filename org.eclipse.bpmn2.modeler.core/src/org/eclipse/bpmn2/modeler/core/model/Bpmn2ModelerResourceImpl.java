@@ -201,9 +201,15 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 				Definitions definitions = ImportHelper.getDefinitions(xmlResource);
 				URI referencingURI = ImportHelper.makeURICanonical(resourceURI);
 				String location = ModelUtil.getStringWrapperValue(itemDef.getStructureRef());
-				URI uri = URI.createURI(location).resolve(referencingURI);
-				Import imp = ImportHelper.findImportForLocation(definitions, uri);
-				itemDef.setImport(imp);
+				if (location!=null) {
+					int i = location.indexOf("$");
+					if (i>0)
+						location = location.substring(0,i);
+					URI uri = URI.createURI(location).resolve(referencingURI);
+					uri = uri.trimFragment();
+					Import imp = ImportHelper.findImportForLocation(definitions, uri);
+					itemDef.setImport(imp);
+				}
 			}
 		}
 

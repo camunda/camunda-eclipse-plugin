@@ -248,27 +248,29 @@ public class AdapterRegistry {
 				}					   
 			}
 			
-			list = fKeyToAdapterFactory.get( effectiveClass.getEPackage() );
-			if (list != null) {
-				for(AdapterFactory factory : list ) {
-					adapter = factory.adapt(target, clazz);
-					if (adapter != null && clazz.isInstance(adapter)) {
-						return clazz.cast(adapter);
-					}
-				}					   
-
-				// adaptNew() maybe?
-				for(AdapterFactory factory : list ) {
-					if (factory instanceof ComposedAdapterFactory) {
-						ComposedAdapterFactory cf = (ComposedAdapterFactory)factory;
-						cf.adaptAllNew((Notifier) target);
-					}
-					
-					adapter = factory.adaptNew((Notifier)target, clazz);
-					if (adapter != null && clazz.isInstance(adapter)) {
-						return clazz.cast(adapter);
-					}
-				}					   
+			if (effectiveClass!=null) {
+				list = fKeyToAdapterFactory.get( effectiveClass.getEPackage() );
+				if (list != null) {
+					for(AdapterFactory factory : list ) {
+						adapter = factory.adapt(target, clazz);
+						if (adapter != null && clazz.isInstance(adapter)) {
+							return clazz.cast(adapter);
+						}
+					}					   
+	
+					// adaptNew() maybe?
+					for(AdapterFactory factory : list ) {
+						if (factory instanceof ComposedAdapterFactory) {
+							ComposedAdapterFactory cf = (ComposedAdapterFactory)factory;
+							cf.adaptAllNew((Notifier) target);
+						}
+						
+						adapter = factory.adaptNew((Notifier)target, clazz);
+						if (adapter != null && clazz.isInstance(adapter)) {
+							return clazz.cast(adapter);
+						}
+					}					   
+				}
 			}
 		}
 				
