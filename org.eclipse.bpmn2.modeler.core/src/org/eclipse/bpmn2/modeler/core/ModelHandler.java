@@ -36,7 +36,6 @@ import org.eclipse.bpmn2.Expression;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.FlowNode;
-import org.eclipse.bpmn2.Import;
 import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.InteractionNode;
 import org.eclipse.bpmn2.Lane;
@@ -55,15 +54,12 @@ import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.di.BpmnDiFactory;
 import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.bpmn2.di.ParticipantBandKind;
-import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
-import org.eclipse.bpmn2.modeler.core.utils.NamespaceUtil;
-import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.DcFactory;
@@ -85,8 +81,6 @@ import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
-import org.eclipse.wst.wsdl.Definition;
-import org.eclipse.xsd.XSDSchema;
 
 public class ModelHandler {
 
@@ -431,62 +425,6 @@ public class ModelHandler {
 	
 	public static ModelHandler getInstance(EObject object) throws IOException {
 		return ModelHandlerLocator.getModelHandler(object.eResource());
-	}
-
-	public static Import addImport(EObject modelObject, Object importObject) {
-		Resource resource = modelObject.eResource();
-		return addImport(resource,importObject);
-	}
-	
-	public static Import addImport(Resource resource, Object importObject) {
-		Import imp = null;
-		if (resource instanceof Bpmn2Resource) {
-			final Definitions bpmn2Definitions = (Definitions) resource.getContents().get(0).eContents().get(0);
-
-			if (importObject instanceof Definition) {
-				// WSDL Definition
-				Definition wsdlDefinition = (Definition)importObject;
-	
-				imp = Bpmn2Factory.eINSTANCE.createImport();
-				imp.setImportType("http://schemas.xmlsoap.org/wsdl/");
-				imp.setLocation(wsdlDefinition.getLocation());
-				imp.setNamespace(wsdlDefinition.getTargetNamespace());
-			}
-			else if (importObject instanceof XSDSchema){
-				// XSD Schema
-				XSDSchema schema = (XSDSchema)importObject;
-				
-				imp = Bpmn2Factory.eINSTANCE.createImport();
-				imp.setImportType("http://www.w3.org/2001/XMLSchema");
-				imp.setLocation(schema.getSchemaLocation());
-				imp.setNamespace(schema.getTargetNamespace());
-			}
-			if (imp!=null) {
-				// make sure this is a new one!
-				for (Import i : bpmn2Definitions.getImports()) {
-					String location = i.getLocation();
-					if (location!=null && location.equals(imp.getLocation())) {
-						imp = null;
-						break;
-					}
-				}
-		
-				if (imp!=null) {
-					TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(resource);
-					if (domain != null) {
-						final Import i = imp;
-						domain.getCommandStack().execute(new RecordingCommand(domain) {
-							@Override
-							protected void doExecute() {
-								bpmn2Definitions.getImports().add(i);
-								NamespaceUtil.addNamespace(i.eResource(), i.getNamespace());
-							}
-						});
-					}
-				}
-			}
-		}
-		return imp;
 	}
 
 	/**

@@ -297,6 +297,13 @@ public class PropertyUtil {
 			if (object.eGet(feature)!=null)
 				objName = (String)object.eGet(feature);
 		}
+		feature = object.eClass().getEStructuralFeature("qName");
+		if (feature!=null) {
+			Object qName = object.eGet(feature);
+			if (qName!=null) {
+				return qName.toString();
+			}
+		}
 		return objName;
 	}
 	
