@@ -47,6 +47,7 @@ import org.eclipse.bpmn2.modeler.ui.property.providers.TreeNode;
 import org.eclipse.bpmn2.modeler.ui.property.providers.VariableTypeTreeContentProvider;
 import org.eclipse.bpmn2.modeler.ui.property.providers.WSILContentProvider;
 import org.eclipse.bpmn2.modeler.ui.util.CharSequenceCompiler;
+import org.eclipse.bpmn2.modeler.ui.util.JavaProjectClassLoader;
 import org.eclipse.core.internal.resources.Project;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
