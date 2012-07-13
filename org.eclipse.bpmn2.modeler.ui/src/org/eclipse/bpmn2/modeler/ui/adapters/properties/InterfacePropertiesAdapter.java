@@ -97,6 +97,18 @@ public class InterfacePropertiesAdapter extends ExtendedPropertiesAdapter {
 			public String getText(Object context) {
 				return getFeatureDescriptor(ref).getText(context);
 			}
+
+			@Override
+			public boolean equals(Object obj) {
+				if (obj instanceof Interface) {
+					Interface i = (Interface)obj;
+					if (ModelUtil.compare(i.getName(),((Interface)object).getName())) {
+						if (ModelUtil.compare(i.getImplementationRef(),((Interface)object).getImplementationRef()))
+							return true;
+					}
+				}
+				return false;
+			}
 		});
 
 	}

@@ -28,6 +28,7 @@ import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.ExtensionAttributeValue;
+import org.eclipse.bpmn2.Interface;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
@@ -694,7 +695,30 @@ public class ModelUtil {
 		}
 		return list;
 	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> List<T> getAllRootElements(Definitions definitions, final Class<T> class1) {
+		ArrayList<T> list = new ArrayList<T>();
+		for (RootElement re : definitions.getRootElements()) {
+			if (class1.isInstance(re)) {
+				list.add((T) re);
+			}
+		}
+		return list;
+	}
 	
+	public static boolean compare(Object v1, Object v2) {
+		if (v1==null) {
+			if (v2!=null)
+				return false;
+		}
+		else if (v2==null) {
+			if (v1!=null)
+				return false;
+		}
+		return v1.equals(v2);
+	}
+
 	public static EObject findNearestAncestor(EObject object, Class[] types) {
 		EObject ancestor = null;
 		if (object!=null) {
