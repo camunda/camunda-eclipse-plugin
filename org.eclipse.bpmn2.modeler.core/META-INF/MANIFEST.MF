@@ -7,6 +7,7 @@ Bundle-Activator: org.eclipse.bpmn2.modeler.core.Activator
 Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.emf.transaction,
  org.eclipse.emf.edit.ui,
+ org.eclipse.emf.validation.ocl,
  org.eclipse.osgi,
  org.eclipse.graphiti;bundle-version="0.8.2",
  org.eclipse.graphiti.ui;bundle-version="0.8.2",
