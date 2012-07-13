@@ -12,7 +12,7 @@
 			uri="http://www.omg.org/spec/BPMN/20100524/MODEL-XMI">
 		</factory>
 	</extension>
-   
+
    <extension
          point="org.eclipse.emf.validation.constraintProviders">
       <category
@@ -102,5 +102,11 @@
             context="org.eclipse.bpmn2.modeler.core.validationContext"
             category="org.eclipse.bpmn2.modeler.core.validation"/>
    </extension>
+	
+	<extension point="org.eclipse.emf.validation.validationListeners">
+		<listener class="org.eclipse.bpmn2.modeler.core.validation.ProblemsReporter">
+			<clientContext id="org.eclipse.bpmn2.modeler.core.validationContext"/>
+		</listener>
+	</extension>
 
 </plugin>
