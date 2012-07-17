@@ -45,10 +45,10 @@ public class BPMN2DiagramCreator {
 	private URI uri;
 
 	public Bpmn2DiagramEditorInput createDiagram(Bpmn2DiagramType diagramType, String targetNamespace) throws CoreException {
-		return createDiagram(diagramType, targetNamespace, true);
+		return createDiagram(diagramType, targetNamespace, null);
 	}
 
-	public Bpmn2DiagramEditorInput createDiagram(Bpmn2DiagramType diagramType, String targetNamespace, boolean openEditor) throws CoreException {
+	public Bpmn2DiagramEditorInput createDiagram(Bpmn2DiagramType diagramType, String targetNamespace, BPMN2Editor diagramEditor) throws CoreException {
 		if (diagramFolder != null && !diagramFolder.exists()) {
 			diagramFolder.create(false, true, null);
 		}
@@ -57,7 +57,7 @@ public class BPMN2DiagramCreator {
 				diagramFile.getFullPath().removeFileExtension().lastSegment(), true);
 		uri = URI.createPlatformResourceURI(diagramFile.getFullPath().toString(), true);
 
-		TransactionalEditingDomain domain = FileService.createEmfFileForDiagram(uri, diagram);
+		TransactionalEditingDomain domain = FileService.createEmfFileForDiagram(uri, diagram, diagramEditor);
 
 		String providerId = GraphitiUi.getExtensionManager().getDiagramTypeProviderId(diagram.getDiagramTypeId());
 		final Bpmn2DiagramEditorInput editorInput = new Bpmn2DiagramEditorInput(EcoreUtil.getURI(diagram), domain,
@@ -65,7 +65,7 @@ public class BPMN2DiagramCreator {
 		editorInput.setInitialDiagramType(diagramType);
 		editorInput.setTargetNamespace(targetNamespace);
 
-		if (openEditor) {
+		if (diagramEditor==null) {
 			openEditor(editorInput);
 		}
 

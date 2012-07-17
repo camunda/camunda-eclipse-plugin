@@ -75,6 +75,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
@@ -132,7 +133,7 @@ public class ModelHandler {
 			break;
 		}
 		if (diagram!=null)
-			getDefinitions().setTargetNamespace(targetNamespace);
+			((Definitions)diagram.eContainer()).setTargetNamespace(targetNamespace);
 		
 		return diagram;
 	}
@@ -140,6 +141,7 @@ public class ModelHandler {
 	public BPMNDiagram createProcessDiagram(final String name) {
 	
 		EList<EObject> contents = resource.getContents();
+		ResourceSet rs = resource.getResourceSet();
 		TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(resource);
 		final BPMNDiagram bpmnDiagram = BpmnDiFactory.eINSTANCE.createBPMNDiagram();
 

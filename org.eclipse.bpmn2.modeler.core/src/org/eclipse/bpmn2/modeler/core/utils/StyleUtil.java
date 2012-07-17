@@ -129,6 +129,8 @@ public class StyleUtil {
 					Font f = ss.getTextFont();
 					((AbstractText)ga).setFont(gaService.manageFont(diagram, f.getName(), f.getSize(), f.isItalic(), f.isBold()));
 					ga.setForeground(gaService.manageColor(diagram, foreground));
+					// Text does not have a fill style (yet)
+					return;
 				}
 				else {
 					s.setForeground(gaService.manageColor(diagram, foreground));

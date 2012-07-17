@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceSetImpl;
+import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.core.commands.operations.DefaultOperationHistory;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -39,35 +40,36 @@ import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.Transaction;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
+import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
 import org.eclipse.emf.workspace.WorkspaceEditingDomainFactory;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
-import org.eclipse.graphiti.ui.editor.DiagramEditorFactory;
 import org.eclipse.emf.workspace.IWorkspaceCommandStack;
 import org.eclipse.graphiti.ui.internal.editor.GFWorkspaceCommandStackImpl;
 
 public class FileService {
 
-	public static class MyDiagramEditorFactory extends DiagramEditorFactory {
-		public static TransactionalEditingDomain createResourceSetAndEditingDomain() {
-			final ResourceSet resourceSet = new Bpmn2ModelerResourceSetImpl();
-			final IWorkspaceCommandStack workspaceCommandStack = new GFWorkspaceCommandStackImpl(new DefaultOperationHistory());
+	public static TransactionalEditingDomain createEmfFileForDiagram(URI diagramResourceUri, final Diagram diagram, BPMN2Editor diagramEditor) {
 
-			final TransactionalEditingDomainImpl editingDomain = new TransactionalEditingDomainImpl(new ComposedAdapterFactory(
-					ComposedAdapterFactory.Descriptor.Registry.INSTANCE), workspaceCommandStack, resourceSet);
-			WorkspaceEditingDomainFactory.INSTANCE.mapResourceSet(editingDomain);
-			return editingDomain;
+		ResourceSet resourceSet = null;
+		TransactionalEditingDomain editingDomain = null;
+		if (diagramEditor==null) {
+			// Create a resource set and EditingDomain
+			resourceSet = new Bpmn2ModelerResourceSetImpl();
+			editingDomain = TransactionUtil.getEditingDomain(resourceSet);
+			if (editingDomain == null) {
+				// Not yet existing, create one
+				editingDomain = TransactionalEditingDomain.Factory.INSTANCE.createEditingDomain(resourceSet);
+			}
 		}
-	}
-	
-	public static TransactionalEditingDomain createEmfFileForDiagram(URI diagramResourceUri, final Diagram diagram) {
-
-		// Create a resource set and EditingDomain
-		final TransactionalEditingDomain editingDomain = MyDiagramEditorFactory.createResourceSetAndEditingDomain();
-		final ResourceSet resourceSet = editingDomain.getResourceSet();
+		else {
+			editingDomain = diagramEditor.getEditingDomain();
+			resourceSet = diagramEditor.getResourceSet();
+		}
+		
 		// Create a resource for this file.
 		final Resource resource = resourceSet.createResource(diagramResourceUri);
-		final CommandStack commandStack = editingDomain.getCommandStack();
+		CommandStack commandStack = editingDomain.getCommandStack();
 		commandStack.execute(new RecordingCommand(editingDomain) {
 
 			@Override

@@ -28,11 +28,6 @@ public class DefaultLayoutBPMNShapeFeature extends AbstractLayoutFeature {
 		layoutConnections(context.getPictogramElement());
 		return true;
 	}
-
-	@Override
-	protected void layoutPictogramElement(PictogramElement pe) {
-		super.layoutPictogramElement(pe);
-	}
 	
 	public void layoutConnections(PictogramElement shape) {
 		Diagram diagram = getDiagram();

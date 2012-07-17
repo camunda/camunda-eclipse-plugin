@@ -169,7 +169,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	 * @return project preferences
 	 */
 	public static Bpmn2Preferences getInstance(URI resourceURI) {
-		String filename = resourceURI.toPlatformString(true);
+		String filename = resourceURI.trimSegments(1).toPlatformString(true);
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().findMember(filename).getProject();
 		return getInstance(project);
 	}
