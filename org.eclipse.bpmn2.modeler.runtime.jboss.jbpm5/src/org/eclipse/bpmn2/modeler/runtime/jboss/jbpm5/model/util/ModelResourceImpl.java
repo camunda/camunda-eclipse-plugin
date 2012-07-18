@@ -85,11 +85,6 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 
     @Override
 	protected XMLSave createXMLSave() {
-    	if (getContents().size()>0 && getContents().get(0) instanceof DocumentRoot) {
-    		DocumentRoot root = (DocumentRoot) getContents().get(0);
-    		root.getXSISchemaLocation().clear();
-    		root.getXSISchemaLocation().put("http://www.omg.org/spec/BPMN/20100524/MODEL", "BPMN20.xsd");
-    	}
 		return new Bpmn2ModelerXMLSave(createXMLHelper()) {
 			
 			private boolean needTargetNamespace = true;
