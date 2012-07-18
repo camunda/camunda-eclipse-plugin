@@ -57,12 +57,14 @@ public class BPMN2EditingDomainListener extends TransactionalEditingDomainListen
 			final ConstraintStatus constraintStatus = (ConstraintStatus) status;
 			
 			final Resource resource = constraintStatus.getTarget().eResource();
-			final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new 
-					Path(resource.getURI().toPlatformString(true)));
-			if (constraintStatus.getSeverity() == IStatus.CANCEL) {
-				ErrorUtils.showErrorMessage(constraintStatus.getMessage());
-			}else if (constraintStatus.getSeverity() == IStatus.WARNING) {
-				resource.getWarnings().add(new ValidationDiagnostic(status, resource));
+			if (resource!=null) {
+				final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new 
+						Path(resource.getURI().toPlatformString(true)));
+				if (constraintStatus.getSeverity() == IStatus.CANCEL) {
+					ErrorUtils.showErrorMessage(constraintStatus.getMessage());
+				}else if (constraintStatus.getSeverity() == IStatus.WARNING) {
+					resource.getWarnings().add(new ValidationDiagnostic(status, resource));
+				}
 			}
 		}
 		else if(status!= null) {

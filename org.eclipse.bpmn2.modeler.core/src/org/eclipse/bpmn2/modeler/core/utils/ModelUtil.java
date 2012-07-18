@@ -778,10 +778,9 @@ public class ModelUtil {
 							@Override
 							protected void doExecute() {
 								Process process = Bpmn2Factory.eINSTANCE.createProcess();
-								process.setId(generateID(process, definitions.eResource()));
 								participant.setProcessRef(process);
-								
 								definitions.getRootElements().add(process);
+								ModelUtil.setID(process);
 							}
 							
 						});

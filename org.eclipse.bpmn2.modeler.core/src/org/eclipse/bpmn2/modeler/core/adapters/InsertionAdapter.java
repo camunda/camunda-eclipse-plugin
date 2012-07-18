@@ -126,10 +126,16 @@ public class InsertionAdapter extends EContentAdapter {
 				domain.getCommandStack().execute(new RecordingCommand(domain) {
 					@Override
 					protected void doExecute() {
-						if (list==null)
-							object.eSet(feature, value);
-						else
-							list.add(value);
+						ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
+						if (adapter!=null) {
+							adapter.getFeatureDescriptor(feature).setValue(value);
+						}
+						else {
+							if (list==null)
+								object.eSet(feature, value);
+							else
+								list.add(value);
+						}
 						// assign the value's ID if it has one
 						ModelUtil.setID(value);
 					}

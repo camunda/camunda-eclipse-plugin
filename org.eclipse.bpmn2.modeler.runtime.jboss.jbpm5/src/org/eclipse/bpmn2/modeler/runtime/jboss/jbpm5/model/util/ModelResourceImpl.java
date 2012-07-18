@@ -22,7 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.CallActivity;
+import org.eclipse.bpmn2.CallableElement;
 import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
@@ -34,7 +37,9 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.EAttributeImpl;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
@@ -219,6 +224,20 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 				}
 			}
 			return value;
+		}
+		
+		@Override
+		protected void setValueFromId(EObject object, EReference eReference, String ids) {
+			// the CalledElementRef in CallActivity is just an ID. This means we need
+			// to create a CallableElement which is simply a proxy, not a real object.
+			if (object instanceof CallActivity) {
+				CallActivity ca = (CallActivity)object;
+				CallableElement ce = (CallableElement)Bpmn2Factory.eINSTANCE.create(Bpmn2Package.eINSTANCE.getCallableElement());
+				((InternalEObject)ce).eSetProxyURI(URI.createURI(ids));
+				ca.setCalledElementRef(ce);
+			}
+			else
+				super.setValueFromId(object, eReference, ids);
 		}
     }
 } //ModelResourceImpl

@@ -309,6 +309,15 @@
 -->
 		
 		<modelExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.definitions"
+			runtimeId="org.jboss.runtime.jbpm5"
+			name="Definitions Extensions"
+			type="Definitions">
+			<property name="expressionLanguage" value="http://www.mvel.org/2.0"/>
+			<property name="typeLanguage" value="http://www.java.com/javaTypes"/>
+		</modelExtension>
+		
+		<modelExtension
 			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.process"
 			runtimeId="org.jboss.runtime.jbpm5"
 			name="Process Extensions"

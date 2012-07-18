@@ -172,11 +172,11 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter 
 				container = association;
 				for (;;) {
 					container = ModelUtil.findNearestAncestor(container, new Class[] {Activity.class, Event.class, Process.class});
-					if (container!=null) {
-						containerFeature = container.eClass().getEStructuralFeature("properties");
-						if (modelEnablement.isEnabled(container.eClass(), containerFeature))
-							break;
-					}
+					if (container==null)
+						return;
+					containerFeature = container.eClass().getEStructuralFeature("properties");
+					if (modelEnablement.isEnabled(container.eClass(), containerFeature))
+						break;
 				}
 					
 				containerFeature = container.eClass().getEStructuralFeature("properties");

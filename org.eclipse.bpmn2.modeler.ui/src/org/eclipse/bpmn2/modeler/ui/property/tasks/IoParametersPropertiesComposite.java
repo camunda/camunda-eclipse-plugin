@@ -28,6 +28,7 @@ import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.InputSet;
 import org.eclipse.bpmn2.OutputSet;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
@@ -160,6 +161,7 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 				}
 				InputSet is = inputSets.get(0);
 				is.getDataInputRefs().add((DataInput) param);
+				ModelUtil.setID(is);
 			}
 			else if (param instanceof DataOutput)
 			{
@@ -171,6 +173,7 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 				}
 				OutputSet os = outputSets.get(0);
 				os.getDataOutputRefs().add((DataOutput) param);
+				ModelUtil.setID(os);
 			}
 			
 			if (activity!=null) {
@@ -179,6 +182,7 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 					DataInputAssociation inputAssociation = FACTORY.createDataInputAssociation();
 					activity.getDataInputAssociations().add(inputAssociation);
 					inputAssociation.setTargetRef((DataInput) param);
+					ModelUtil.setID(inputAssociation);
 				}
 				else if (param instanceof DataOutput)
 				{
@@ -186,6 +190,7 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 					activity.getDataOutputAssociations().add(outputAssociation);
 					outputAssociation.getSourceRef().clear();
 					outputAssociation.getSourceRef().add((DataOutput) param);
+					ModelUtil.setID(outputAssociation);
 				}
 			}
 			else if (element!=null) {

@@ -16,6 +16,7 @@ package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.DataState;
+import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
@@ -77,6 +78,22 @@ public class ItemAwareElementPropertiesAdapter extends ExtendedPropertiesAdapter
 						return adapter.getFeatureDescriptor(Bpmn2Package.eINSTANCE.getItemDefinition_StructureRef()).getText(itemDefinition);
 					}
 					return super.getText(context);
+				}
+				
+				@Override
+				public void setValue(Object context, Object value) {
+					final EObject object = (EObject) (context instanceof EObject ? context : this.object);
+					if (value instanceof ItemDefinition) {
+						ItemDefinition itemDef = (ItemDefinition)value;
+						if (itemDef.eContainer()==null) {
+							Definitions defs = ModelUtil.getDefinitions(object);
+							if (!defs.getRootElements().contains(itemDef)) {
+								defs.getRootElements().add(itemDef);
+								ModelUtil.setID(itemDef);
+							}
+						}
+						object.eSet(feature, itemDef);
+					}
 				}
     		}
     	);

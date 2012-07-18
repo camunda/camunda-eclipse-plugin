@@ -728,10 +728,10 @@ public class ChoreographyUtil implements ChoreographyProperties {
 		if (flow!=null) {
 			if (flow.getMessageRef()==null && create) {
 				Message msg = Bpmn2Factory.eINSTANCE.createMessage();
-				ModelUtil.setID(msg, flow.eResource());
 				msg.setName("Undefined Message");
 				ModelUtil.getDefinitions(flow).getRootElements().add(msg);
 				flow.setMessageRef(msg);
+				ModelUtil.setID(msg);
 			}
 			return flow.getMessageRef();
 		}
