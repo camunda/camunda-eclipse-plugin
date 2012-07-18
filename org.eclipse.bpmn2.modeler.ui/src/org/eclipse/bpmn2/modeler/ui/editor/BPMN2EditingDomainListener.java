@@ -56,6 +56,8 @@ public class BPMN2EditingDomainListener extends TransactionalEditingDomainListen
 		if (status != null && event.getTransaction().getStatus() instanceof ConstraintStatus) {
 			final ConstraintStatus constraintStatus = (ConstraintStatus) status;
 			
+			// temporary hack: sometimes the target is not contained in a Resource (yet!)
+			// see references to InsertionAdapter in the code...
 			final Resource resource = constraintStatus.getTarget().eResource();
 			if (resource!=null) {
 				final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new 
@@ -66,6 +68,9 @@ public class BPMN2EditingDomainListener extends TransactionalEditingDomainListen
 					resource.getWarnings().add(new ValidationDiagnostic(status, resource));
 				}
 			}
+			else
+				ErrorUtils.showErrorMessage(constraintStatus.getMessage());
+
 		}
 		else if(status!= null) {
 			// TODO not working yet, if not canceled, show the warnings in the problem view

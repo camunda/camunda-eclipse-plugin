@@ -37,6 +37,7 @@ import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.Transaction;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
@@ -253,6 +254,7 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 			if (inputSet==null) {
 				inputSet = FACTORY.createInputSet();
 				throwEvent.setInputSet(inputSet);
+				ModelUtil.setID(inputSet);
 			}
 			inputSet.getDataInputRefs().add((DataInput) param);
 			
@@ -260,6 +262,7 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 			DataInputAssociation inputAssociation = FACTORY.createDataInputAssociation();
 			throwEvent.getDataInputAssociation().add(inputAssociation);
 			inputAssociation.setTargetRef((DataInput) param);
+			ModelUtil.setID(inputAssociation);
 			return param;
 		}
 
@@ -326,6 +329,7 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 			if (outputSet==null) {
 				outputSet = FACTORY.createOutputSet();
 				catchEvent.setOutputSet(outputSet);
+				ModelUtil.setID(outputSet);
 			}
 			outputSet.getDataOutputRefs().add((DataOutput) param);
 
@@ -335,6 +339,8 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 			catchEvent.getDataOutputAssociation().add(outputAssociation);
 			outputAssociation.getSourceRef().clear();
 			outputAssociation.getSourceRef().add((DataOutput) param);
+			ModelUtil.setID(outputAssociation);
+
 			return param;
 		}
 

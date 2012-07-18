@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.ExtensionAttributeValue;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -61,6 +62,7 @@ public abstract class ExtensionValueTableComposite extends AbstractBpmn2TableCom
 			FeatureMap map = newItem.getValue();
 			map.add(extensionValueFeature, value);
 			list.add(newItem);
+			ModelUtil.setID(newItem);
 		}
 		else {
 			ExtensionAttributeValue oldItem = (ExtensionAttributeValue) list.get(0);
