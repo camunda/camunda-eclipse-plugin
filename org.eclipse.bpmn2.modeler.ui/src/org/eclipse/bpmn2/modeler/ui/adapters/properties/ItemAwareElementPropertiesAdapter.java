@@ -13,12 +13,18 @@
 
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
+import java.io.IOException;
+import java.util.Hashtable;
+import java.util.List;
+
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.DataState;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ItemDefinition;
+import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
@@ -45,7 +51,7 @@ public class ItemAwareElementPropertiesAdapter extends ExtendedPropertiesAdapter
     	EStructuralFeature ref = Bpmn2Package.eINSTANCE.getItemAwareElement_ItemSubjectRef();
     	
     	setFeatureDescriptor(ref,
-			new FeatureDescriptor(adapterFactory,object,ref) {
+			new RootElementRefFeatureDescriptor(adapterFactory,object,ref) {
 				@Override
 				public String getLabel(Object context) {
 					EObject object = this.object;
@@ -79,22 +85,6 @@ public class ItemAwareElementPropertiesAdapter extends ExtendedPropertiesAdapter
 					}
 					return super.getText(context);
 				}
-				
-				@Override
-				public void setValue(Object context, Object value) {
-					final EObject object = (EObject) (context instanceof EObject ? context : this.object);
-					if (value instanceof ItemDefinition) {
-						ItemDefinition itemDef = (ItemDefinition)value;
-						if (itemDef.eContainer()==null) {
-							Definitions defs = ModelUtil.getDefinitions(object);
-							if (!defs.getRootElements().contains(itemDef)) {
-								defs.getRootElements().add(itemDef);
-								ModelUtil.setID(itemDef);
-							}
-						}
-						object.eSet(feature, itemDef);
-					}
-				}
     		}
     	);
     	
@@ -124,6 +114,7 @@ public class ItemAwareElementPropertiesAdapter extends ExtendedPropertiesAdapter
 									@Override
 									protected void doExecute() {
 										object.eSet(feature, newValue);
+										newValue.setId(null);
 										ModelUtil.setID(newValue);
 									}
 								});
@@ -131,10 +122,32 @@ public class ItemAwareElementPropertiesAdapter extends ExtendedPropertiesAdapter
 						}
 					}
 				}
+
+				@Override
+				public Hashtable<String, Object> getChoiceOfValues(Object context) {
+					final EObject object = context !=null ?
+							(EObject)context :
+							(EObject)this.object;
+							
+					Hashtable<String,Object> choices = new Hashtable<String,Object>();
+					try {
+						List<DataState> states = ModelHandler.getInstance(this.object).getAll(DataState.class);
+						for (DataState s : states) {
+							String label = s.getName();
+							if (label==null || label.isEmpty())
+								label = "ID: " + s.getId();
+							else
+								label += " (ID: " +  s.getId() + ")";
+							choices.put(label,s);
+						}
+					} catch (IOException e) {
+					}
+					return choices;
+				}
 			}
     	);
     	
-    	setProperty(Bpmn2Package.ITEM_AWARE_ELEMENT__DATA_STATE, ExtendedPropertiesAdapter.UI_IS_MULTI_CHOICE, Boolean.FALSE);
+    	setProperty(Bpmn2Package.ITEM_AWARE_ELEMENT__DATA_STATE, ExtendedPropertiesAdapter.UI_IS_MULTI_CHOICE, Boolean.TRUE);
 	}
 
 }

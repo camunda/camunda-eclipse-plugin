@@ -25,7 +25,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
  * @author Bob Brodt
  *
  */
-public class ErrorPropertiesAdapter extends ExtendedPropertiesAdapter {
+public class ErrorPropertiesAdapter extends RootElementPropertiesAdapter {
 
 	/**
 	 * @param adapterFactory
@@ -46,8 +46,10 @@ public class ErrorPropertiesAdapter extends ExtendedPropertiesAdapter {
 					text += error.getName();
 				}
 				else if (error.getErrorCode()!=null) {
-					text += "Error Code " + error.getErrorCode();
+					text += "Error Code: " + error.getErrorCode();
 				}
+				if (text.isEmpty())
+					text = "ID: " + error.getId();
 				return text;
 			}
     	});

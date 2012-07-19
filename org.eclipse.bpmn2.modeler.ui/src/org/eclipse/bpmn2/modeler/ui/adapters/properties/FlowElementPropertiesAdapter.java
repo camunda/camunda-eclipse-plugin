@@ -31,7 +31,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
  * @author Bob Brodt
  *
  */
-public class FlowElementPropertiesAdapter extends ExtendedPropertiesAdapter {
+public class FlowElementPropertiesAdapter extends ItemAwareElementPropertiesAdapter {
 
 	/**
 	 * @param adapterFactory

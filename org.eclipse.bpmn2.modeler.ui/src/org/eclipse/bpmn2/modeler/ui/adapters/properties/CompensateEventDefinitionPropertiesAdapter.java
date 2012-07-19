@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.EObject;
  * @author Bob Brodt
  *
  */
-public class CompensateEventDefinitionPropertiesAdapter extends ExtendedPropertiesAdapter {
+public class CompensateEventDefinitionPropertiesAdapter extends RootElementPropertiesAdapter {
 
 	/**
 	 * @param adapterFactory

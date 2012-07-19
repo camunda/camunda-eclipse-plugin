@@ -14,11 +14,8 @@
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
 import org.eclipse.bpmn2.Bpmn2Package;
-import org.eclipse.bpmn2.Message;
-import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
-import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
+import org.eclipse.bpmn2.Escalation;
 import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
-import org.eclipse.bpmn2.modeler.ui.features.choreography.ChoreographyUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -27,20 +24,34 @@ import org.eclipse.emf.ecore.EStructuralFeature;
  * @author Bob Brodt
  *
  */
-public class ReceiveTaskPropertiesAdapter extends TaskPropertiesAdapter {
+public class EscalationPropertiesAdapter extends RootElementPropertiesAdapter {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public ReceiveTaskPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public EscalationPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
 		super(adapterFactory, object);
-
-    	EStructuralFeature ref = Bpmn2Package.eINSTANCE.getReceiveTask_MessageRef();
-    	setFeatureDescriptor(ref, new RootElementRefFeatureDescriptor(adapterFactory,object,ref));
-
-    	ref = Bpmn2Package.eINSTANCE.getReceiveTask_OperationRef();
-    	setFeatureDescriptor(ref, new RootElementRefFeatureDescriptor(adapterFactory,object,ref));
+		
+    	final EStructuralFeature ref = Bpmn2Package.eINSTANCE.getResourceAssignmentExpression_Expression();
+    	setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
+			@Override
+			public String getText(Object context) {
+				final Escalation error = context instanceof Escalation ?
+						(Escalation)context :
+						(Escalation)this.object;
+				String text = "";
+				if (error.getName()!=null) {
+					text += error.getName();
+				}
+				else if (error.getEscalationCode()!=null) {
+					text += "Escalation Code: " + error.getEscalationCode();
+				}
+				if (text.isEmpty())
+					text = "ID: " + error.getId();
+				return text;
+			}
+    	});
 	}
 
 }

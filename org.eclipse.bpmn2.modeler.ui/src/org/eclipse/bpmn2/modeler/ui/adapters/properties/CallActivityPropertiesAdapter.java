@@ -40,7 +40,7 @@ public class CallActivityPropertiesAdapter extends ActivityPropertiesAdapter {
     	setProperty(Bpmn2Package.CALL_ACTIVITY__CALLED_ELEMENT_REF, ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW, Boolean.TRUE);
     	EStructuralFeature ce = Bpmn2Package.eINSTANCE.getCallActivity_CalledElementRef();
     	setFeatureDescriptor(ce,
-			new FeatureDescriptor(adapterFactory,object,ce) {
+			new RootElementRefFeatureDescriptor(adapterFactory,object,ce) {
 				@Override
 				public String getLabel(Object context) {
 						return "Called Activity";

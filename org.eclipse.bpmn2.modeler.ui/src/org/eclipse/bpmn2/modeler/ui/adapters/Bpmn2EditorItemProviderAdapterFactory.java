@@ -15,34 +15,39 @@ package org.eclipse.bpmn2.modeler.ui.adapters;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.CallActivity;
+import org.eclipse.bpmn2.CallChoreography;
+import org.eclipse.bpmn2.CallConversation;
 import org.eclipse.bpmn2.CompensateEventDefinition;
+import org.eclipse.bpmn2.CorrelationKey;
+import org.eclipse.bpmn2.CorrelationPropertyBinding;
 import org.eclipse.bpmn2.CorrelationPropertyRetrievalExpression;
 import org.eclipse.bpmn2.DataAssociation;
 import org.eclipse.bpmn2.DataInput;
+import org.eclipse.bpmn2.DataObjectReference;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.Error;
-import org.eclipse.bpmn2.ErrorEventDefinition;
-import org.eclipse.bpmn2.EscalationEventDefinition;
+import org.eclipse.bpmn2.Escalation;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.Interface;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.Message;
-import org.eclipse.bpmn2.MessageEventDefinition;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
 import org.eclipse.bpmn2.Operation;
+import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.ReceiveTask;
 import org.eclipse.bpmn2.ResourceAssignmentExpression;
 import org.eclipse.bpmn2.ResourceParameterBinding;
 import org.eclipse.bpmn2.ResourceRole;
+import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.ScriptTask;
 import org.eclipse.bpmn2.SendTask;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.ServiceTask;
-import org.eclipse.bpmn2.SignalEventDefinition;
+import org.eclipse.bpmn2.Signal;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
@@ -51,34 +56,39 @@ import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ActivityPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.CallActivityPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.CallChoreographyPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.CallConversationPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.CompensateEventDefinitionPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.CorrelationKeyPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.CorrelationPropertyBindingPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.CorrelationPropertyRetrievalExpressionPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.DataAssociationPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.DataInputPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.DataObjectReferencePropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.DataOutputPropertiesAdapter;
-import org.eclipse.bpmn2.modeler.ui.adapters.properties.ErrorEventDefinitionPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ErrorPropertiesAdapter;
-import org.eclipse.bpmn2.modeler.ui.adapters.properties.EscalationEventDefinitionPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.EscalationPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.FlowElementPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.FormalExpressionPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.InterfacePropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ItemAwareElementPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ItemDefinitionPropertiesAdapter;
-import org.eclipse.bpmn2.modeler.ui.adapters.properties.MessageEventDefinitionPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.MessageFlowPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.MessagePropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.MultiInstanceLoopCharacteristicsPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.OperationPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.ParticipantPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.PropertyPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ReceiveTaskPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ResourceAssignmentExpressionPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ResourceParameterBindingPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ResourceRolePropertiesAdapter;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.RootElementPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ScriptTaskPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.SendTaskPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.SequenceFlowPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ServiceTaskPropertiesAdapter;
-import org.eclipse.bpmn2.modeler.ui.adapters.properties.SignalEventDefinitionPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.SignalPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.TaskPropertiesAdapter;
 import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
 import org.eclipse.bpmn2.util.Bpmn2Switch;
@@ -322,14 +332,6 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 		}
 
 		@Override
-		public ExtendedPropertiesAdapter caseMessageEventDefinition(MessageEventDefinition object) {
-			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
-			if (adapter!=null)
-				return adapter;
-        	return new MessageEventDefinitionPropertiesAdapter(adapterFactory,object);
-		}
-
-		@Override
 		public ExtendedPropertiesAdapter caseProperty(Property object) {
 			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
 			if (adapter!=null)
@@ -386,30 +388,78 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 		}
 
 		@Override
-		public ExtendedPropertiesAdapter caseEscalationEventDefinition(EscalationEventDefinition object) {
+		public ExtendedPropertiesAdapter caseRootElement(RootElement object) {
 			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
 			if (adapter!=null)
 				return adapter;
-			return new EscalationEventDefinitionPropertiesAdapter(adapterFactory,object);
-		}
-
-		@Override
-		public ExtendedPropertiesAdapter caseErrorEventDefinition(ErrorEventDefinition object) {
-			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
-			if (adapter!=null)
-				return adapter;
-			return new ErrorEventDefinitionPropertiesAdapter(adapterFactory,object);
-		}
-
-		@Override
-		public ExtendedPropertiesAdapter caseSignalEventDefinition(SignalEventDefinition object) {
-			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
-			if (adapter!=null)
-				return adapter;
-			return new SignalEventDefinitionPropertiesAdapter(adapterFactory,object);
+			return new RootElementPropertiesAdapter(adapterFactory,object);
 		}
 
 
 		// TODO: add remaining BPMN2 elements
+
+		@Override
+		public ExtendedPropertiesAdapter caseDataObjectReference(DataObjectReference object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
+			return new DataObjectReferencePropertiesAdapter(adapterFactory,object);
+		}
+
+		@Override
+		public ExtendedPropertiesAdapter caseEscalation(Escalation object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
+			return new EscalationPropertiesAdapter(adapterFactory,object);
+		}
+
+        @Override
+        public ExtendedPropertiesAdapter caseCallChoreography(CallChoreography object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
+        	return new CallChoreographyPropertiesAdapter(adapterFactory,object);
+        }
+
+        @Override
+        public ExtendedPropertiesAdapter caseCallConversation(CallConversation object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
+        	return new CallConversationPropertiesAdapter(adapterFactory,object);
+        }
+
+        @Override
+        public ExtendedPropertiesAdapter caseCorrelationKey(CorrelationKey object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
+        	return new CorrelationKeyPropertiesAdapter(adapterFactory,object);
+        }
+
+        @Override
+        public ExtendedPropertiesAdapter caseCorrelationPropertyBinding(CorrelationPropertyBinding object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
+        	return new CorrelationPropertyBindingPropertiesAdapter(adapterFactory,object);
+        }
+
+        @Override
+        public ExtendedPropertiesAdapter caseParticipant(Participant object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
+        	return new ParticipantPropertiesAdapter(adapterFactory,object);
+        }
+
+		@Override
+		public ExtendedPropertiesAdapter caseSignal(Signal object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
+			return new SignalPropertiesAdapter(adapterFactory,object);
+		}
     };
 }

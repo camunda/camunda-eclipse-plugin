@@ -55,6 +55,7 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 	protected ComboViewer comboViewer;
 	private boolean ignoreComboSelections;
 	private boolean keyPressed = false;
+	private Button editButton = null;
 	
 	/**
 	 * @param parent
@@ -143,7 +144,7 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 				});
 			}
 			if (canEdit) {
-				Button editButton = getToolkit().createButton(buttons, "Edit...", SWT.PUSH);
+				editButton = getToolkit().createButton(buttons, "Edit...", SWT.PUSH);
 				editButton.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 						ISelection selection = comboViewer.getSelection();
@@ -189,6 +190,8 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 							updateObject(firstElement);
 							fillCombo();
 						}
+						if (editButton!=null)
+							editButton.setEnabled(firstElement!=null && !firstElement.isEmpty());
 					}
 				}
 			}
@@ -224,16 +227,22 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 				// selecting this one will set the target's value to null
 				comboViewer.add("");
 			}
+			
 			// add all other possible selections
+			boolean hasSelection = false;
 			for (Entry<String, Object> entry : choices.entrySet()) {
 				comboViewer.add(entry.getKey());
 				Object newValue = entry.getValue(); 
 				if (newValue!=null) {
 					comboViewer.setData(entry.getKey(), newValue);
-					if (newValue.equals(oldValue))
+					if (newValue.equals(oldValue)) {
 						comboViewer.setSelection(new StructuredSelection(entry.getKey()));
+						hasSelection = true;
+					}
 				}
 			}
+			if (editButton!=null)
+				editButton.setEnabled(hasSelection);
 		}
 	}
 

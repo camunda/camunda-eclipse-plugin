@@ -27,7 +27,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
  * @author Bob Brodt
  *
  */
-public class SendTaskPropertiesAdapter extends ExtendedPropertiesAdapter {
+public class SendTaskPropertiesAdapter extends TaskPropertiesAdapter {
 
 	/**
 	 * @param adapterFactory
@@ -37,6 +37,9 @@ public class SendTaskPropertiesAdapter extends ExtendedPropertiesAdapter {
 		super(adapterFactory, object);
 
     	EStructuralFeature ref = Bpmn2Package.eINSTANCE.getSendTask_MessageRef();
+    	setFeatureDescriptor(ref, new RootElementRefFeatureDescriptor(adapterFactory,object,ref));
+
+    	ref = Bpmn2Package.eINSTANCE.getSendTask_OperationRef();
     	setFeatureDescriptor(ref, new RootElementRefFeatureDescriptor(adapterFactory,object,ref));
 	}
 

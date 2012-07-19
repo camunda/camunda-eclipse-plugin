@@ -17,12 +17,13 @@ import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 
 /**
  * @author Bob Brodt
  *
  */
-public class ServiceTaskPropertiesAdapter extends ExtendedPropertiesAdapter {
+public class ServiceTaskPropertiesAdapter extends TaskPropertiesAdapter {
 
 	/**
 	 * @param adapterFactory
@@ -32,6 +33,9 @@ public class ServiceTaskPropertiesAdapter extends ExtendedPropertiesAdapter {
 		super(adapterFactory, object);
     	setProperty(Bpmn2Package.SERVICE_TASK__OPERATION_REF, ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW, Boolean.FALSE);
     	setProperty(Bpmn2Package.SERVICE_TASK__OPERATION_REF, ExtendedPropertiesAdapter.UI_CAN_EDIT, Boolean.FALSE);
+
+    	EStructuralFeature ref = Bpmn2Package.eINSTANCE.getServiceTask_OperationRef();
+    	setFeatureDescriptor(ref, new RootElementRefFeatureDescriptor(adapterFactory,object,ref));
 	}
 
 }

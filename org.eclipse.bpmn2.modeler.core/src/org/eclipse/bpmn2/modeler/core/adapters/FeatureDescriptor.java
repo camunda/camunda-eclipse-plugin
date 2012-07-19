@@ -203,21 +203,24 @@ public class FeatureDescriptor extends ObjectDescriptor {
 	
 	public EObject createObject(Object context, EClass eclass) {
 		EObject object = context instanceof EObject ? (EObject)context : this.object;
+		EObject newObject = null;
 		try {
 			if (eclass==null)
 				eclass = (EClass)feature.getEType();
 			
 			ModelHandler mh = ModelHandler.getInstance(object);
-			if (mh!=null)
-				return mh.createStandby(object, feature, eclass);
-			
-			// object is not yet added to a Resource so use an insertion adapter
-			// to add it later
-			return ModelHandler.createStandby(null, object, feature, eclass);
+			if (mh!=null) {
+				newObject = mh.createStandby(object, feature, eclass);
+			}
+			else {
+				// object is not yet added to a Resource so use an insertion adapter
+				// to add it later
+				newObject = ModelHandler.createStandby(null, object, feature, eclass);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return null;
+		return newObject;
 	}
 
 	// NOTE: getValue() and setValue() must be symmetrical; that is, setValue()

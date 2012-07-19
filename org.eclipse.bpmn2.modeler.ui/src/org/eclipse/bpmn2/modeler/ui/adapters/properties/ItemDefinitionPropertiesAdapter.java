@@ -60,26 +60,7 @@ public class ItemDefinitionPropertiesAdapter extends ExtendedPropertiesAdapter {
 					if (itemDefinition.getStructureRef()!=null) {
 						return ModelUtil.getStringWrapperValue(itemDefinition.getStructureRef());
 					}
-					return "";
-					// this bit doesn't allow for manual editing of a QName, so it's been removed
-//					final ItemDefinition itemDefinition = context instanceof ItemDefinition ?
-//							(ItemDefinition)context :
-//							(ItemDefinition)this.object;
-//							
-//					if (itemDefinition.getStructureRef()!=null) {
-//    						String type = " (Undefined";
-//        					if (itemDefinition.getItemKind().equals(ItemKind.PHYSICAL))
-//        						type = " (Physical";
-//        					else if (itemDefinition.getItemKind().equals(ItemKind.INFORMATION))
-//        						type = " (Informational";
-//        					if (itemDefinition.isIsCollection())
-//        						type += " Collection)";
-//        					else
-//        						type += ")";
-//
-//						return ModelUtil.getStructureRefValue( itemDefinition.getStructureRef() ) + type;
-//					}
-//					return super.getText(context);
+					return itemDefinition.getId() + " type is undefined";
 				}
 				
 	    		@Override

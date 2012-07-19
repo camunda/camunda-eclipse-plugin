@@ -20,6 +20,8 @@ import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Message;
 import org.eclipse.bpmn2.RootElement;
+import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
+import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EClass;
@@ -50,7 +52,15 @@ public class RootElementRefFeatureDescriptor extends FeatureDescriptor {
 				(EObject)context :
 				(EObject)this.object;
 
-		EObject rootElement = Bpmn2Factory.eINSTANCE.create(eClass);
+		EObject rootElement = null;
+		if (feature.getEType() != eClass) {
+			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
+			if (adapter!=null)
+				rootElement = adapter.getFeatureDescriptor(feature).createObject(object, eClass);
+		}
+		if (rootElement==null)
+			rootElement = Bpmn2Factory.eINSTANCE.create(eClass);
+		
 		Definitions definitions = ModelUtil.getDefinitions(object);
 		InsertionAdapter.add(definitions, Bpmn2Package.eINSTANCE.getDefinitions_RootElements(), rootElement);
 		return rootElement;
