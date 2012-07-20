@@ -250,7 +250,7 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 					List<DataInputAssociation> dataInputAssociations = activity.getDataInputAssociations();
 					List<DataInputAssociation> removed = new ArrayList<DataInputAssociation>();
 					for (DataInputAssociation dia : dataInputAssociations) {
-						if (dia.getTargetRef().equals(item))
+						if (dia.getTargetRef()!=null && dia.getTargetRef().equals(item))
 							removed.add(dia);
 					}
 					dataInputAssociations.removeAll(removed);
@@ -259,7 +259,7 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 					List<DataOutputAssociation> dataOutputAssociations = activity.getDataOutputAssociations();
 					List<DataOutputAssociation> removed = new ArrayList<DataOutputAssociation>();
 					for (DataOutputAssociation doa : dataOutputAssociations) {
-						if (doa.getTargetRef().equals(item))
+						if (doa.getTargetRef()!=null && doa.getTargetRef().equals(item))
 							removed.add(doa);
 					}
 					dataOutputAssociations.removeAll(removed);
