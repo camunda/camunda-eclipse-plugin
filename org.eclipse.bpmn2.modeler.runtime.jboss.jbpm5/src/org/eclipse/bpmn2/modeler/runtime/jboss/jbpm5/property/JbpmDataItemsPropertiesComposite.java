@@ -17,6 +17,7 @@ package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.GlobalType;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelFactory;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
@@ -27,9 +28,6 @@ import org.eclipse.bpmn2.modeler.ui.property.diagrams.DataItemsPropertiesComposi
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.jface.dialogs.IInputValidator;
-import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -63,21 +61,22 @@ public class JbpmDataItemsPropertiesComposite extends DataItemsPropertiesComposi
 						
 						@Override
 						protected EObject addListItem(EObject object, EStructuralFeature feature) {
-							InputDialog dialog = new InputDialog(getShell(), "Add Global",
-									"Enter new global variable name","", new IInputValidator() {
-
-										@Override
-										public String isValid(String newText) {
-											if (newText==null || newText.isEmpty() || newText.contains(" "))
-												return "Please enter a valid name";
-											return null;
-										}
-										
-									});
-							if (dialog.open()!=Window.OK){
-								return null;
+							// generate a unique global variable name
+							String base = "globalVar";
+							int suffix = 1;
+							String name = base + suffix;
+							for (;;) {
+								boolean found = false;
+								for (Object g : ModelUtil.getAllExtensionAttributeValues(object, GlobalType.class)) {
+									if (name.equals(((GlobalType)g).getIdentifier()) ) {
+										found = true;
+										break;
+									}
+								}
+								if (!found)
+									break;
+								name = base + ++suffix;
 							}
-							String name = dialog.getValue();
 							
 							GlobalType newGlobal = (GlobalType)ModelFactory.eINSTANCE.create(listItemClass);
 							newGlobal.setIdentifier(name);

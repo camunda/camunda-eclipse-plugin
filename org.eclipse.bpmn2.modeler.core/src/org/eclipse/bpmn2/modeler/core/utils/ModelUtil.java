@@ -58,6 +58,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
+import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.emf.ecore.util.FeatureMapUtil;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -761,6 +762,23 @@ public class ModelUtil {
 			ancestor = ModelUtil.findNearestAncestor(ancestor, ancestorTypes);
 		}
 		return values;
+	}
+	
+	public static <T> List<T> getAllExtensionAttributeValues(EObject object, Class<T> clazz) {
+		List<T> results = new ArrayList<T>();
+		
+		EStructuralFeature evf = object.eClass().getEStructuralFeature("extensionValues");
+		EList<ExtensionAttributeValue> list = (EList<ExtensionAttributeValue>)object.eGet(evf);
+		for (ExtensionAttributeValue eav : list) {
+			FeatureMap fm = eav.getValue();
+			for (Entry e : fm) {
+				EStructuralFeature sf = e.getEStructuralFeature();
+				if (clazz.isInstance(e.getValue())) {
+					results.add((T)e.getValue());
+				}
+			}
+		}
+		return results;
 	}
 	
 	public static List<ExtensionAttributeValue> getExtensionAttributeValues(EObject be) {

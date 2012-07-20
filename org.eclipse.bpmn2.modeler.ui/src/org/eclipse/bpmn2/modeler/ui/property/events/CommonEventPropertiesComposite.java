@@ -28,7 +28,6 @@ import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.ImplicitThrowEvent;
-import org.eclipse.bpmn2.Import;
 import org.eclipse.bpmn2.InputSet;
 import org.eclipse.bpmn2.IntermediateCatchEvent;
 import org.eclipse.bpmn2.IntermediateThrowEvent;
@@ -46,8 +45,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.jface.dialogs.IInputValidator;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 
@@ -230,33 +227,33 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 
 		@Override
 		protected EObject addListItem(EObject object, EStructuralFeature feature) {
-			EObject param = null;
-			InputDialog dialog = new InputDialog(getShell(), "Add Input Parameter",
-					"Enter new parameter name","", new IInputValidator() {
-
-						@Override
-						public String isValid(String newText) {
-							if (newText==null || newText.isEmpty() || newText.contains(" "))
-								return "Please enter a valid name";
-							return null;
-						}
-						
-					});
-			if (dialog.open()!=Window.OK){
-				return null;
-			}
-			String name = dialog.getValue();
-			
-			param = super.addListItem(object, feature);
-			// add the new parameter to the InputSet
-			((DataInput)param).setName(name);
 			InputSet inputSet = throwEvent.getInputSet();
 			if (inputSet==null) {
 				inputSet = FACTORY.createInputSet();
 				throwEvent.setInputSet(inputSet);
 				ModelUtil.setID(inputSet);
 			}
-			inputSet.getDataInputRefs().add((DataInput) param);
+			// generate a unique parameter name
+			String base = "inParam";
+			int suffix = 1;
+			String name = base + suffix;
+			for (;;) {
+				boolean found = false;
+				for (DataInput p : inputSet.getDataInputRefs()) {
+					if (name.equals(p.getName())) {
+						found = true;
+						break;
+					}
+				}
+				if (!found)
+					break;
+				name = base + ++suffix;
+			}
+			
+			DataInput param = (DataInput)super.addListItem(object, feature);
+			// add the new parameter to the InputSet
+			(param).setName(name);
+			inputSet.getDataInputRefs().add(param);
 			
 			// create a DataInputAssociation
 			DataInputAssociation inputAssociation = FACTORY.createDataInputAssociation();
@@ -305,40 +302,40 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 
 		@Override
 		protected EObject addListItem(EObject object, EStructuralFeature feature) {
-			EObject param = null;
-			InputDialog dialog = new InputDialog(getShell(), "Add Output Parameter",
-					"Enter new parameter name","", new IInputValidator() {
-
-						@Override
-						public String isValid(String newText) {
-							if (newText==null || newText.isEmpty() || newText.contains(" "))
-								return "Please enter a valid name";
-							return null;
-						}
-						
-					});
-			if (dialog.open()!=Window.OK){
-				return null;
-			}
-			String name = dialog.getValue();
-			
-			param = super.addListItem(object, feature);
-			// add the new parameter to the OutputSet
-			((DataOutput)param).setName(name);
 			OutputSet outputSet = catchEvent.getOutputSet();
 			if (outputSet==null) {
 				outputSet = FACTORY.createOutputSet();
 				catchEvent.setOutputSet(outputSet);
 				ModelUtil.setID(outputSet);
 			}
-			outputSet.getDataOutputRefs().add((DataOutput) param);
+			// generate a unique parameter name
+			String base = "outParam";
+			int suffix = 1;
+			String name = base + suffix;
+			for (;;) {
+				boolean found = false;
+				for (DataOutput p : outputSet.getDataOutputRefs()) {
+					if (name.equals(p.getName())) {
+						found = true;
+						break;
+					}
+				}
+				if (!found)
+					break;
+				name = base + ++suffix;
+			}
+
+			DataOutput param = (DataOutput)super.addListItem(object, feature);
+			// add the new parameter to the OutputSet
+			param.setName(name);
+			outputSet.getDataOutputRefs().add(param);
 
 			
 			// create a Data OutputAssociation
 			DataOutputAssociation outputAssociation = FACTORY.createDataOutputAssociation();
 			catchEvent.getDataOutputAssociation().add(outputAssociation);
 			outputAssociation.getSourceRef().clear();
-			outputAssociation.getSourceRef().add((DataOutput) param);
+			outputAssociation.getSourceRef().add( param);
 			ModelUtil.setID(outputAssociation);
 
 			return param;

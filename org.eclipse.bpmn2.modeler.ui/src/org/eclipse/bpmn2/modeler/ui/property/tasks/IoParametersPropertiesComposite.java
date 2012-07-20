@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.Activity;
-import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallableElement;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
@@ -37,9 +36,6 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.jface.dialogs.IInputValidator;
-import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -132,21 +128,6 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 		@Override
 		protected EObject addListItem(EObject object, EStructuralFeature feature) {
 			EObject param = null;
-			InputDialog dialog = new InputDialog(getShell(), "Add Parameter",
-					"Enter new parameter name","", new IInputValidator() {
-
-						@Override
-						public String isValid(String newText) {
-							if (newText==null || newText.isEmpty())
-								return "Please enter a valid name";
-							return null;
-						}
-						
-					});
-			if (dialog.open()!=Window.OK){
-				return null;
-			}
-			String name = dialog.getValue();
 			
 			// Make sure that the ioSpecification is contained in our Activity.
 			InsertionAdapter.executeIfNeeded(ioSpecification);
@@ -154,26 +135,62 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 			param = super.addListItem(object, feature);
 			if (param instanceof DataInput) {
 				// add the new parameter to the InputSet
-				((DataInput)param).setName(name);
 				List<InputSet> inputSets = ioSpecification.getInputSets();
 				if (inputSets.size()==0) {
 					inputSets.add(FACTORY.createInputSet());
 				}
-				InputSet is = inputSets.get(0);
-				is.getDataInputRefs().add((DataInput) param);
-				ModelUtil.setID(is);
+				InputSet inputSet = inputSets.get(0);
+				
+				// generate a unique parameter name
+				String base = "input";
+				int suffix = 1;
+				String name = base + suffix;
+				for (;;) {
+					boolean found = false;
+					for (DataInput p : inputSet.getDataInputRefs()) {
+						if (name.equals(p.getName())) {
+							found = true;
+							break;
+						}
+					}
+					if (!found)
+						break;
+					name = base + ++suffix;
+				}
+				((DataInput)param).setName(name);
+
+				inputSet.getDataInputRefs().add((DataInput) param);
+				ModelUtil.setID(inputSet);
 			}
 			else if (param instanceof DataOutput)
 			{
 				// add the new parameter to the OutputSet
-				((DataOutput)param).setName(name);
 				List<OutputSet> outputSets = ioSpecification.getOutputSets();
 				if (outputSets.size()==0) {
 					outputSets.add(FACTORY.createOutputSet());
 				}
-				OutputSet os = outputSets.get(0);
-				os.getDataOutputRefs().add((DataOutput) param);
-				ModelUtil.setID(os);
+				OutputSet outputSet = outputSets.get(0);
+				
+				// generate a unique parameter name
+				String base = "output";
+				int suffix = 1;
+				String name = base + suffix;
+				for (;;) {
+					boolean found = false;
+					for (DataOutput p : outputSet.getDataOutputRefs()) {
+						if (name.equals(p.getName())) {
+							found = true;
+							break;
+						}
+					}
+					if (!found)
+						break;
+					name = base + ++suffix;
+				}
+				((DataOutput)param).setName(name);
+
+				outputSet.getDataOutputRefs().add((DataOutput) param);
+				ModelUtil.setID(outputSet);
 			}
 			
 			if (activity!=null) {
