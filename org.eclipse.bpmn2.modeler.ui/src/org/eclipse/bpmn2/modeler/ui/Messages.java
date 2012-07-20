@@ -56,6 +56,7 @@ public class Messages extends NLS {
 	public static String SchemaImportDialog_28;
 	public static String SchemaImportDialog_29;
 	public static String SchemaImportDialog_30;
+	public static String SchemaImportDialog_31;
 
 	public static String XSDSchemaTreeNode_1;
 	public static String XSDSchemaTreeNode_0;

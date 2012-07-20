@@ -347,7 +347,7 @@ public class DefinitionsPropertyComposite extends DefaultPropertiesComposite  {
 
 		@Override
 		protected EObject addListItem(EObject object, EStructuralFeature feature) {
-			SchemaImportDialog dialog = new SchemaImportDialog(getShell(), object);
+			SchemaImportDialog dialog = new SchemaImportDialog(getShell());
 			if (dialog.open() == Window.OK) {
 				Object result[] = dialog.getResult();
 				if (result.length == 1) {

@@ -10,9 +10,17 @@
  *******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.property.providers;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.bpmn2.modeler.ui.Activator;
+import org.eclipse.bpmn2.modeler.ui.IConstants;
 import org.eclipse.bpmn2.modeler.ui.util.ListMap;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.wsdl.Definition;
 import org.eclipse.wst.wsdl.PortType;
 
@@ -31,8 +39,8 @@ public class JavaTreeContentProvider extends ModelTreeContentProvider {
 		super(isCondensed);
 		
 		fContentProvider = new CompositeContentProvider ();
-//		fContentProvider.add ( new ServiceContentProvider() );
-//		fContentProvider.add ( new PortTypeContentProvider() );	
+		fContentProvider.add ( new JavaTypeContentProvider() );
+		fContentProvider.add ( new JavaMemberContentProvider() );	
 		
 	}
 
@@ -43,10 +51,15 @@ public class JavaTreeContentProvider extends ModelTreeContentProvider {
 	@Override
 	public Object[] primGetElements (Object inputElement) {
 		
+		ITreeNode result = getTreeNode ( inputElement );
+		if (result != null) {
+			return new Object[] { result } ;
+		}
+		
 		if (inputElement instanceof List) {									
 			List list = (List)inputElement;
 			return (Object[]) ListMap.Map ( 
-					list.toArray(),						
+					fContentProvider.getElements( inputElement ), //list.toArray(),						
 					new ListMap.Visitor () {		
 						public Object visit (Object obj) {
 							Object r = getTreeNode ( obj );
@@ -63,27 +76,12 @@ public class JavaTreeContentProvider extends ModelTreeContentProvider {
 	ITreeNode getTreeNode ( Object inputElement ) {
 		
 		if (inputElement instanceof Class) {
-			return new TreeNode (inputElement,isCondensed) {
-
-				@Override
-				public String getLabel() {
-					Class c = (Class)modelObject;
-					return c.getSimpleName() + " (" + c.getPackage().getName() + ")";
-				}
-				
-				@Override
-				public Object[] getChildren() {
-					return null;
-				}
-
-				@Override
-				public boolean hasChildren() {
-					return false;
-				}
-			};
+			return new JavaTypeTreeNode(inputElement,isCondensed);
 		}
-		
+		else if (inputElement instanceof Member) {
+			return new JavaMemberTreeNode(inputElement,isCondensed);
+		}
+
 		return null;
-		
 	}
 }

@@ -63,15 +63,24 @@ public class JavaProjectClassLoader extends ClassLoader {
 	}
 	
 	public List<Class> findClasses(String classNamePattern) {
+		final List<Class> results = new ArrayList<Class>();
 		if (classNamePattern.endsWith(".java")) {
 			classNamePattern = classNamePattern.substring(0,classNamePattern.lastIndexOf("."));
 		}
-		if (!classNamePattern.endsWith("*"))
+		// find exact matches first
+		findClasses(classNamePattern, results);
+		// and then everything else
+		if (!classNamePattern.endsWith("*")) {
 			classNamePattern += "*";
+			findClasses(classNamePattern, results);
+		}
+		return results;
+	}
+	
+	public void findClasses(String classNamePattern, final List<Class> results) {
 		SearchPattern pattern = SearchPattern.createPattern(classNamePattern,
 	            IJavaSearchConstants.TYPE, IJavaSearchConstants.TYPE,
 	            SearchPattern.R_PATTERN_MATCH);
-		final List<Class> results = new ArrayList<Class>();
 		SearchEngine searchEngine = new SearchEngine();
 		IJavaSearchScope scope = SearchEngine.createJavaSearchScope((IJavaElement[]) new IJavaProject[] {javaProject});
 		SearchRequestor requestor = new SearchRequestor() {
@@ -83,8 +92,17 @@ public class JavaProjectClassLoader extends ClassLoader {
 						IPackageFragment pf = (IPackageFragment)e;
 						String className = pf.getElementName() + "." + elementName;
 						Class c = findClass(className);
-						if (c!=null)
-							results.add(c);
+						if (c!=null) {
+							boolean found = false;
+							for (Class cr : results) {
+								if (cr.getName().equals(c.getName())) {
+									found = true;
+									break;
+								}
+							}
+							if (!found)
+								results.add(c);
+						}
 					}
 					e = e.getParent();
 				}
@@ -99,7 +117,6 @@ public class JavaProjectClassLoader extends ClassLoader {
 					null);
 		} catch (CoreException e) {
 		}
-		return results;
 	}
 	
 	public static IJavaProject[] findProject(final String className) {

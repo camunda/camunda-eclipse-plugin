@@ -98,6 +98,12 @@ import org.eclipse.xsd.XSDSchema;
 
 public class SchemaImportDialog extends SelectionStatusDialog {
 
+	// resource type flags for configuring this dialog:
+	public final static int ALLOW_XSD   = (1 << 0);
+	public final static int ALLOW_WSDL  = (1 << 1);
+	public final static int ALLOW_BPMN2 = (1 << 2);
+	public final static int ALLOW_JAVA  = (1 << 3);
+	
 	// Button id for browsing the workspace
 	protected final static int BID_BROWSE_WORKSPACE = IDialogConstants.CLIENT_ID + 1;
 	// Button id for browsing URLs
@@ -142,6 +148,7 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 
 	protected BPMN2Editor bpmn2Editor;
 	protected EObject modelObject;
+	protected int allowedResourceTypes;
 
 	protected Tree fTree;
 	protected TreeViewer fTreeViewer;
@@ -195,7 +202,7 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 	 * 
 	 * @param parent
 	 */
-	public SchemaImportDialog(Shell parent) {
+	public SchemaImportDialog(Shell parent, int allowedResourceTypes) {
 
 		super(parent);
 		setStatusLineAboveButtons(true);
@@ -214,6 +221,34 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 
 		setDialogBoundsSettings(fSettings, getDialogBoundsStrategy());
 
+		this.allowedResourceTypes = allowedResourceTypes;
+		if ((allowedResourceTypes & ALLOW_XSD) == 0) {
+			if (fImportType==BID_IMPORT_XML || fImportType==BID_IMPORT_XSD)
+				fImportType = 0;
+		}
+		if ((allowedResourceTypes & ALLOW_WSDL) == 0) {
+			if (fImportType==BID_IMPORT_WSDL)
+				fImportType = 0;
+		}
+		if ((allowedResourceTypes & ALLOW_BPMN2) == 0) {
+			if (fImportType==BID_IMPORT_BPMN2)
+				fImportType = 0;
+		}
+		if ((allowedResourceTypes & ALLOW_JAVA) == 0) {
+			if (fImportType==BID_IMPORT_JAVA)
+				fImportType = 0;
+		}
+		if (fImportType==0) {
+			if ((allowedResourceTypes & ALLOW_XSD) != 0)
+				fImportType = BID_IMPORT_XSD;
+			if ((allowedResourceTypes & ALLOW_WSDL) != 0)
+				fImportType = BID_IMPORT_WSDL;
+			if ((allowedResourceTypes & ALLOW_BPMN2) != 0)
+				fImportType = BID_IMPORT_BPMN2;
+			if ((allowedResourceTypes & ALLOW_JAVA) != 0)
+				fImportType = BID_IMPORT_JAVA;
+		}
+
 		if (fImportType==BID_IMPORT_XML)
 			configureAsXMLImport();
 		else if (fImportType==BID_IMPORT_XSD)
@@ -226,25 +261,14 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 			configureAsJavaImport();
 		
 		bpmn2Editor = BPMN2Editor.getActiveEditor();
-	}
-
-	/**
-	 * Create a brand new shiny Schema Import Dialog
-	 * 
-	 * @param parent
-	 *            shell to use
-	 * @param eObject
-	 *            the model object to use as reference
-	 */
-	public SchemaImportDialog(Shell parent, EObject eObject) {
-		this(parent);
-
-		this.modelObject = eObject;
-
 		ResourceSet rs =  bpmn2Editor.getResourceSet();
 		fHackedResourceSet = ModelUtil.slightlyHackedResourceSet(rs);
 	}
-
+	
+	public SchemaImportDialog(Shell parent) {
+		this(parent, -1);
+	}
+	
 	/**
 	 * 
 	 * @see Dialog#createDialogArea(Composite)
@@ -434,14 +458,14 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 		fTypeGroup = new Group(parent, SWT.SHADOW_ETCHED_IN);
 		fTypeGroup.setText(Messages.SchemaImportDialog_3);
 		GridLayout layout = new GridLayout(1, true);
-		GridData data = new GridData();
-		data.grabExcessVerticalSpace = false;
-		data.grabExcessHorizontalSpace = true;
-		data.horizontalAlignment = GridData.FILL;
-		data.verticalAlignment = GridData.FILL;
+		GridData typeGroupGridData = new GridData();
+		typeGroupGridData.grabExcessVerticalSpace = false;
+		typeGroupGridData.grabExcessHorizontalSpace = true;
+		typeGroupGridData.horizontalAlignment = GridData.FILL;
+		typeGroupGridData.verticalAlignment = GridData.FILL;
 
 		fTypeGroup.setLayout(layout);
-		fTypeGroup.setLayoutData(data);
+		fTypeGroup.setLayoutData(typeGroupGridData);
 
 		Composite container = new Composite(fTypeGroup, SWT.NONE);
 
@@ -449,7 +473,7 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 		layout.makeColumnsEqualWidth = false;
 		layout.numColumns = 4;
 		container.setLayout(layout);
-		data = new GridData();
+		GridData data = new GridData();
 		data.grabExcessVerticalSpace = false;
 		data.grabExcessHorizontalSpace = true;
 		data.horizontalAlignment = GridData.FILL;
@@ -461,22 +485,38 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 //		button = createRadioButton(container, Messages.SchemaImportDialog_20,
 //				BID_IMPORT_XML, fImportType == BID_IMPORT_XML);
 //		button.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
+		int buttonCount = 0;
+		if ((allowedResourceTypes & ALLOW_XSD) != 0) {
+			button = createRadioButton(container, Messages.SchemaImportDialog_21,
+					BID_IMPORT_XSD, fImportType == BID_IMPORT_XSD);
+			button.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
+			++buttonCount;
+		}
 		
-		button = createRadioButton(container, Messages.SchemaImportDialog_21,
-				BID_IMPORT_XSD, fImportType == BID_IMPORT_XSD);
-		button.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
+		if ((allowedResourceTypes & ALLOW_WSDL) != 0) {
+			button = createRadioButton(container, Messages.SchemaImportDialog_22,
+					BID_IMPORT_WSDL, fImportType == BID_IMPORT_WSDL);
+			button.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
+			++buttonCount;
+		}
 		
-		button = createRadioButton(container, Messages.SchemaImportDialog_22,
-				BID_IMPORT_WSDL, fImportType == BID_IMPORT_WSDL);
-		button.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
+		if ((allowedResourceTypes & ALLOW_BPMN2) != 0) {
+			button = createRadioButton(container, Messages.SchemaImportDialog_28,
+					BID_IMPORT_BPMN2, fImportType == BID_IMPORT_BPMN2);
+			button.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
+			++buttonCount;
+		}
 		
-		button = createRadioButton(container, Messages.SchemaImportDialog_28,
-				BID_IMPORT_BPMN2, fImportType == BID_IMPORT_BPMN2);
-		button.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
-		
-		button = createRadioButton(container, Messages.SchemaImportDialog_23,
-				BID_IMPORT_JAVA, fImportType == BID_IMPORT_JAVA);
-		button.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
+		if ((allowedResourceTypes & ALLOW_JAVA) != 0) {
+			button = createRadioButton(container, Messages.SchemaImportDialog_23,
+					BID_IMPORT_JAVA, fImportType == BID_IMPORT_JAVA);
+			button.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
+			++buttonCount;
+		}
+		if (buttonCount==1) {
+			fTypeGroup.setVisible(false);
+			typeGroupGridData.exclude = true;
+		}
 	}
 	
 	protected void createImportLocation(Composite parent) {
@@ -740,7 +780,12 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 			public void selectionChanged(SelectionChangedEvent event) {
 				IStructuredSelection sel = (IStructuredSelection) event.getSelection();
 				if (!sel.isEmpty()) {
-					updateStatus(Status.OK_STATUS);		
+					computeResult();
+					if (getResult()!=null)
+						updateStatus(Status.OK_STATUS);
+					else
+						updateStatus(new Status(IStatus.ERROR, Activator.getDefault().getID(),0,
+								Messages.SchemaImportDialog_31,null));
 				} else {
 					markEmptySelection();
 				}
@@ -994,7 +1039,10 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 			IStructuredSelection sel = (IStructuredSelection)fTreeViewer.getSelection();
 			if (!sel.isEmpty()) {
 				TreeNode treeNode = (TreeNode)sel.getFirstElement();
-				setSelectionResult(new Object[] { treeNode.getModelObject() });
+				if (treeNode.getModelObject() instanceof Class)
+					setSelectionResult(new Object[] { treeNode.getModelObject() });
+				else
+					setSelectionResult(null);
 			}
 		}
 		else {

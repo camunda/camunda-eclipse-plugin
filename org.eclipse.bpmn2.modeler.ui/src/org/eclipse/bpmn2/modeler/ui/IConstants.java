@@ -57,4 +57,10 @@ public interface IConstants {
 	public final String ICON_BPMN2_INPUT_16 = "obj16/bpmn2input.png"; //$NON-NLS-1$
 	public final String ICON_BPMN2_OUTPUT_16 = "obj16/bpmn2output.png"; //$NON-NLS-1$
 	public final String ICON_BPMN2_ERROR_16 = "obj16/bpmn2error.png"; //$NON-NLS-1$
+
+	public final String ICON_JAVA_CLASS_16 = "obj16/javaClass.png"; //$NON-NLS-1$
+	public final String ICON_JAVA_INTERFACE_16 = "obj16/javaInterface.png"; //$NON-NLS-1$
+	public final String ICON_JAVA_PUBLIC_METHOD_16 = "obj16/javaPublicMethod.png"; //$NON-NLS-1$
+	public final String ICON_JAVA_PUBLIC_FIELD_16 = "obj16/javaPublicField.png"; //$NON-NLS-1$
+	
 }

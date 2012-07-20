@@ -23,6 +23,7 @@ import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
 import org.eclipse.bpmn2.modeler.ui.property.ExtensionValueTableComposite;
 import org.eclipse.bpmn2.modeler.ui.property.diagrams.DefinitionsPropertyComposite;
+import org.eclipse.bpmn2.modeler.ui.property.dialogs.SchemaImportDialog;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.jface.dialogs.IInputValidator;
@@ -63,25 +64,21 @@ public class JbpmDefinitionsPropertyComposite extends DefinitionsPropertyComposi
 						
 						@Override
 						protected EObject addListItem(EObject object, EStructuralFeature feature) {
-							InputDialog dialog = new InputDialog(getShell(), "Add Import",
-									"Enter new import type","", new IInputValidator() {
-
-										@Override
-										public String isValid(String newText) {
-											if (newText==null || newText.isEmpty() || newText.contains(" "))
-												return "Please enter a valid import type";
-											return null;
-										}
-										
-									});
-							if (dialog.open()!=Window.OK){
-								return null;
+							String name = null;
+							ImportType newImport = null;
+							SchemaImportDialog dialog = new SchemaImportDialog(getShell(), SchemaImportDialog.ALLOW_JAVA);
+							if (dialog.open() == Window.OK) {
+								Object result[] = dialog.getResult();
+								if (result.length == 1 && result[0] instanceof Class) {
+									name = ((Class)result[0]).getName();
+								}
 							}
-							String name = dialog.getValue();
-							
-							ImportType newImport = (ImportType)ModelFactory.eINSTANCE.create(listItemClass);
-							newImport.setName(name);
-							addExtensionValue(newImport);
+
+							if (name!=null && !name.isEmpty()) {
+								newImport = (ImportType)ModelFactory.eINSTANCE.create(listItemClass);
+								newImport.setName(name);
+								addExtensionValue(newImport);
+							}
 							return newImport;
 						}
 					};

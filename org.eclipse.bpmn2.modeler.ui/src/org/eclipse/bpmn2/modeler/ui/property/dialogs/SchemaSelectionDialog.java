@@ -107,7 +107,7 @@ public class SchemaSelectionDialog extends SelectionStatusDialog {
 		addImport.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				SchemaImportDialog dialog = new SchemaImportDialog(getShell(), modelObject);
+				SchemaImportDialog dialog = new SchemaImportDialog(getShell());
 				if (dialog.open() == Window.OK) {
 					Object result[] = dialog.getResult();
 					if (result.length == 1) {
