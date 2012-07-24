@@ -16,36 +16,28 @@ package org.eclipse.bpmn2.modeler.core.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Definitions;
-import org.eclipse.bpmn2.EndPoint;
 import org.eclipse.bpmn2.Import;
 import org.eclipse.bpmn2.Interface;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.ItemKind;
-import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.impl.DynamicEObjectImpl;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.emf.transaction.RecordingCommand;
-import org.eclipse.emf.transaction.TransactionalEditingDomain;
-import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.wst.wsdl.Definition;
-import org.eclipse.wst.wsdl.Message;
 import org.eclipse.wst.wsdl.Binding;
-import org.eclipse.wst.wsdl.PortType;
-import org.eclipse.wst.wsdl.Operation;
-import org.eclipse.wst.wsdl.Input;
-import org.eclipse.wst.wsdl.Output;
+import org.eclipse.wst.wsdl.Definition;
 import org.eclipse.wst.wsdl.Fault;
+import org.eclipse.wst.wsdl.Input;
+import org.eclipse.wst.wsdl.Message;
+import org.eclipse.wst.wsdl.Operation;
+import org.eclipse.wst.wsdl.Output;
+import org.eclipse.wst.wsdl.PortType;
 import org.eclipse.xsd.XSDElementDeclaration;
 import org.eclipse.xsd.XSDSchema;
 
@@ -94,7 +86,7 @@ public class ImportUtil {
 				// WSDL Definition
 				Definition wsdlDefinition = (Definition)importObject;
 	
-				imp = Bpmn2Factory.eINSTANCE.createImport();
+				imp = Bpmn2ModelerFactory.create(Import.class);
 				imp.setImportType("http://schemas.xmlsoap.org/wsdl/");
 				imp.setLocation(wsdlDefinition.getLocation());
 				imp.setNamespace(wsdlDefinition.getTargetNamespace());
@@ -103,7 +95,7 @@ public class ImportUtil {
 				// XSD Schema
 				XSDSchema schema = (XSDSchema)importObject;
 				
-				imp = Bpmn2Factory.eINSTANCE.createImport();
+				imp = Bpmn2ModelerFactory.create(Import.class);
 				imp.setImportType("http://www.w3.org/2001/XMLSchema");
 				imp.setLocation(schema.getSchemaLocation());
 				imp.setNamespace(schema.getTargetNamespace());
@@ -116,7 +108,7 @@ public class ImportUtil {
 //				String name = clazz.getName().replaceAll("\\.", "/").concat(".class");
 //				java.net.URL url = cl.getResource(name);
 //				URI uri = URI.createPlatformPluginURI(url.getPath(), true);
-				imp = Bpmn2Factory.eINSTANCE.createImport();
+				imp = Bpmn2ModelerFactory.create(Import.class);
 				imp.setImportType("http://www.java.com/javaTypes");
 				imp.setLocation(clazz.getName());
 				imp.setNamespace("http://" + clazz.getPackage().getName());
@@ -125,7 +117,7 @@ public class ImportUtil {
 				// BPMN 2.0 Diagram file
 				Definitions defs = (Definitions)importObject;
 				
-				imp = Bpmn2Factory.eINSTANCE.createImport();
+				imp = Bpmn2ModelerFactory.create(Import.class);
 				imp.setImportType("http://www.omg.org/spec/BPMN/20100524/MODEL");
 				imp.setLocation(defs.eResource().getURI().toString());
 				imp.setNamespace(defs.getTargetNamespace());
@@ -266,7 +258,7 @@ public class ImportUtil {
 	 * @return the newly created object, or an existing Interface with the same name and implementation reference
 	 */
 	private static Interface createInterface(Definitions definitions, Import imp, PortType portType) {
-		Interface intf = Bpmn2Factory.eINSTANCE.createInterface();
+		Interface intf = Bpmn2ModelerFactory.create(Interface.class);
 		intf.setName(portType.getQName().getLocalPart());
 		intf.setImplementationRef(portType);
 		Interface i = findInterface(definitions,intf);
@@ -323,7 +315,7 @@ public class ImportUtil {
 	 */
 	private static void createOperations(Definitions definitions, Import imp, Interface intf, PortType portType) {
 		for (Operation wsdlop : (List<Operation>)portType.getEOperations()) {
-			org.eclipse.bpmn2.Operation bpmn2op = Bpmn2Factory.eINSTANCE.createOperation();
+			org.eclipse.bpmn2.Operation bpmn2op = Bpmn2ModelerFactory.create(org.eclipse.bpmn2.Operation.class);
 			bpmn2op.setImplementationRef(wsdlop);
 			bpmn2op.setName(wsdlop.getName());
 			
@@ -413,7 +405,7 @@ public class ImportUtil {
 	 * @return the newly created object, or an existing Message that is identical to the given WSDL Message
 	 */
 	private static org.eclipse.bpmn2.Message createMessage(Definitions definitions, Import imp, Message wsdlmsg) {
-		org.eclipse.bpmn2.Message bpmn2msg = Bpmn2Factory.eINSTANCE.createMessage();
+		org.eclipse.bpmn2.Message bpmn2msg = Bpmn2ModelerFactory.create(org.eclipse.bpmn2.Message.class);
 		ItemDefinition itemDef = createItemDefinition(definitions, imp, wsdlmsg);
 		bpmn2msg.setItemRef(itemDef);
 		bpmn2msg.setName(wsdlmsg.getQName().getLocalPart());
@@ -472,7 +464,7 @@ public class ImportUtil {
 	 * @return the newly created object, or an existing Error that is identical to the given WSDL Fault
 	 */
 	private static org.eclipse.bpmn2.Error createError(Definitions definitions, Import imp, Fault fault) {
-		org.eclipse.bpmn2.Error error = Bpmn2Factory.eINSTANCE.createError();
+		org.eclipse.bpmn2.Error error = Bpmn2ModelerFactory.create(org.eclipse.bpmn2.Error.class);
 		ItemDefinition itemDef = createItemDefinition(definitions, imp, fault, ItemKind.INFORMATION);
 		error.setName(fault.getName());
 		error.setStructureRef(itemDef);
@@ -562,7 +554,7 @@ public class ImportUtil {
 	 * @return the newly created object, or an existing ItemDefinition that is identical to the given String type
 	 */
 	private static ItemDefinition createItemDefinition(Definitions definitions, Import imp, EObject structureRef, ItemKind kind) {
-		ItemDefinition itemDef = Bpmn2Factory.eINSTANCE.createItemDefinition();
+		ItemDefinition itemDef = Bpmn2ModelerFactory.create(ItemDefinition.class);
 		itemDef.setImport(imp);
 		itemDef.setItemKind(kind);
 		itemDef.setStructureRef(structureRef);
@@ -586,7 +578,7 @@ public class ImportUtil {
 	 * @return the ItemDefinition object if found, or null
 	 */
 	private static ItemDefinition findItemDefinition(Definitions definitions, Import imp, EObject structureRef, ItemKind kind) {
-		ItemDefinition itemDef = Bpmn2Factory.eINSTANCE.createItemDefinition();
+		ItemDefinition itemDef = Bpmn2ModelerFactory.create(ItemDefinition.class);
 		itemDef.setImport(imp);
 		itemDef.setItemKind(kind);
 		itemDef.setStructureRef(structureRef);

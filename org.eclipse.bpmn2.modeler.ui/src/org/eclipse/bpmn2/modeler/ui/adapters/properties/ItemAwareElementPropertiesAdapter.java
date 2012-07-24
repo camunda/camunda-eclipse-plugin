@@ -17,17 +17,15 @@ import java.io.IOException;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.DataState;
-import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EObject;
@@ -96,7 +94,7 @@ public class ItemAwareElementPropertiesAdapter extends ExtendedPropertiesAdapter
 					final EObject object = (EObject) (context instanceof EObject ? context : this.object);
 					if (value instanceof String) {
 						// construct a DataState from the given name string
-						DataState ds = Bpmn2Factory.eINSTANCE.createDataState();
+						DataState ds = Bpmn2ModelerFactory.create(DataState.class);
 						ds.setName((String)value);
 						value = ds;
 					}

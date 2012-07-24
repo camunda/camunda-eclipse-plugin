@@ -19,11 +19,11 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Stack;
 
-import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
@@ -88,7 +88,7 @@ import org.eclipse.ui.forms.widgets.Section;
 public abstract class AbstractBpmn2PropertiesComposite extends Composite implements ResourceSetListener {
 
 	public final static Bpmn2Package PACKAGE = Bpmn2Package.eINSTANCE;
-	public final static Bpmn2Factory FACTORY = Bpmn2Factory.eINSTANCE;
+	public final static Bpmn2ModelerFactory FACTORY = Bpmn2ModelerFactory.getInstance();
 
 	protected AbstractBpmn2PropertySection propertySection;
 	protected EObject be;

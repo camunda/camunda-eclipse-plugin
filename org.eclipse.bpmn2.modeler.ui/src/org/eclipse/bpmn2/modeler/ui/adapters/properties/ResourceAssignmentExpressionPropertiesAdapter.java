@@ -13,13 +13,13 @@
 
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
-import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.ResourceAssignmentExpression;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
 import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EObject;
@@ -62,7 +62,7 @@ public class ResourceAssignmentExpressionPropertiesAdapter extends ExtendedPrope
 				public void setValue(Object context, Object value) {
 					ResourceAssignmentExpression rae = (ResourceAssignmentExpression)this.object;
 					if (!(rae.getExpression() instanceof FormalExpression)) {
-						final FormalExpression e = Bpmn2Factory.eINSTANCE.createFormalExpression();
+						final FormalExpression e = Bpmn2ModelerFactory.create(FormalExpression.class);
 						e.setBody((String) value);
 						TransactionalEditingDomain editingDomain = getEditingDomain(object);
 						if (editingDomain == null) {

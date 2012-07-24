@@ -138,8 +138,9 @@ public class ErrorEventDefinitionContainer extends AbstractEventDefinitionFeatur
 		@Override
 		protected EventDefinition createEventDefinition(ICreateContext context) {
 			ErrorEventDefinition definition = Bpmn2ModelerFactory.create(ErrorEventDefinition.class);
-		  Event e = (Event) getBusinessObjectForPictogramElement(context.getTargetContainer());
-		  ModelUtil.getDefinitions(e).getRootElements().add(0, definition.getErrorRef());
+// definition.getErrorRef() is always null - can't add a null to <definitions>
+//		  Event e = (Event) getBusinessObjectForPictogramElement(context.getTargetContainer());
+//		  ModelUtil.getDefinitions(e).getRootElements().add(0, definition.getErrorRef());
 		  return definition;
 		}
 

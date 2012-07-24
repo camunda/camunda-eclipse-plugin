@@ -28,7 +28,6 @@ package org.eclipse.bpmn2.modeler.core.model;
 
 import java.util.ArrayList;
 
-import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.util.OnlyContainmentTypeInfo;
@@ -100,9 +99,8 @@ public class Bpmn2ModelerResourceFactoryImpl extends ResourceFactoryImpl {
 
     public Definitions createAndInitResource(URI uri) {
         Resource resource = createResource(uri);
-        Bpmn2Factory factory = Bpmn2Factory.eINSTANCE;
-        Definitions definitions = factory.createDefinitions();
-        DocumentRoot docummentRoot = factory.createDocumentRoot();
+        Definitions definitions = Bpmn2ModelerFactory.create(Definitions.class);
+        DocumentRoot docummentRoot = Bpmn2ModelerFactory.create(DocumentRoot.class);
         docummentRoot.setDefinitions(definitions);
         resource.getContents().add(docummentRoot);
 

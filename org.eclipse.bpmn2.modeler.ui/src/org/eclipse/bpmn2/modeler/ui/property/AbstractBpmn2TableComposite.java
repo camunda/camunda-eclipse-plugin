@@ -16,12 +16,9 @@ package org.eclipse.bpmn2.modeler.ui.property;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
-import org.eclipse.bpmn2.Interface;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
-import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ErrorUtils;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -90,7 +87,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 public class AbstractBpmn2TableComposite extends Composite {
 
 	public final static Bpmn2Package PACKAGE = Bpmn2Package.eINSTANCE;
-	public final static Bpmn2Factory FACTORY = Bpmn2Factory.eINSTANCE;
+	public final static Bpmn2ModelerFactory FACTORY = Bpmn2ModelerFactory.getInstance();
 	
 	public static final int HIDE_TITLE = 1 << 18; // Hide section title - useful if this is the only thing in the PropertySheetTab
 	public static final int ADD_BUTTON = 1 << 19; // show "Add" button

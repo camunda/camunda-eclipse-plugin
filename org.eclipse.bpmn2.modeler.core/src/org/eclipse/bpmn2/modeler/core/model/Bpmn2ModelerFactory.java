@@ -36,6 +36,10 @@ public class Bpmn2ModelerFactory extends Bpmn2FactoryImpl {
 	// ModelExtensionDescriptor.populateObject() every time a file is loaded.
 	protected static boolean enableModelExtensions = true;
 
+	public static Bpmn2ModelerFactory getInstance() {
+		return (Bpmn2ModelerFactory) Bpmn2ModelerFactory.eINSTANCE;
+	}
+	
 	@Override
     public EObject create(EClass eClass) {
     	EObject object = super.create(eClass);
