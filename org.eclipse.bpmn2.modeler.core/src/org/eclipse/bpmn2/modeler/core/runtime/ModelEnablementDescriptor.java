@@ -45,7 +45,7 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 	private String type;
 	private String profile;
 
-	private Boolean override = true;
+	private Boolean override = false;
 	
 	
 	// require a TargetRuntime!
