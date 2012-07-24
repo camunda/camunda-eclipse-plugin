@@ -283,13 +283,14 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 
 
 	public boolean isEnabled(String className, String featureName) {
+//		System.out.println(className+"."+featureName);
 		if (Bpmn2Preferences.getInstance().getOverrideModelEnablements()) {
 			String name = className;
 			if (featureName!=null && !featureName.isEmpty())
 				name += "." + featureName;
 			return getToolEnablementPreferences().isEnabled(name);
 		}
-		if (classes.containsKey(className) && isOverride()) {
+		if (classes.containsKey(className)) { // && isOverride()) {
 			if (featureName!=null && !featureName.isEmpty()) {
 				HashSet<String> features = classes.get(className);
 				return features.contains(featureName);
@@ -297,7 +298,7 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 			return true;
 		}
 		
-		return !isOverride();
+		return false; //!isOverride();
 	}
 	
 	public boolean isEnabled(EClass eClass, EStructuralFeature feature) {

@@ -141,7 +141,7 @@ public class PropertyUtil {
 	}
 	
 	public static String getLabel(EObject object, EStructuralFeature feature) {
-		String label = "";
+		String label = "x";
 		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
 		if (adapter!=null)
 			label = adapter.getFeatureDescriptor(feature).getLabel(object);
@@ -159,7 +159,7 @@ public class PropertyUtil {
 				return adapter.getObjectDescriptor().getText(eObject);
 			return getDisplayName(eObject);
 		}
-		return object.toString();
+		return object==null ? null : object.toString();
 	}
 	
 	public static String getText(EObject object, EStructuralFeature feature) {

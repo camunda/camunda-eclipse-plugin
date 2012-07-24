@@ -71,11 +71,13 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 	 */
 	@Override
 	public Control createControl(Composite composite, String label, int style) {
+		if (label==null)
+			label = PropertyUtil.getLabel(object,feature);
 		createLabel(composite, label);
 
-		boolean canEdit = PropertyUtil.canEdit(object,feature);
-		boolean canEditInline = PropertyUtil.canEditInline(object,feature);
-		boolean canCreateNew = PropertyUtil.canCreateNew(object,feature);
+		boolean canEdit = canEdit();
+		boolean canEditInline = canEditInline();
+		boolean canCreateNew = canCreateNew();
 		
 		if (!canEditInline)
 			style |= SWT.READ_ONLY;
@@ -134,12 +136,9 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 				createButton.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 						// create a new target object
-						FeatureEditingDialog dialog = new FeatureEditingDialog(getDiagramEditor(), object, feature, null);							
-						if ( dialog.open() == Window.OK) {
-							EObject value = dialog.getNewObject();
-							updateObject(value);
-							fillCombo();
-						}
+						EObject value = createObject();
+						updateObject(value);
+						fillCombo();
 					}
 				});
 			}
@@ -156,13 +155,9 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 							}
 							if (firstElement != null && comboViewer.getData(firstElement) instanceof EObject) {
 								EObject value = (EObject) comboViewer.getData(firstElement);
-								FeatureEditingDialog dialog = new FeatureEditingDialog(getDiagramEditor(),
-										object, feature, value);
-								if ( dialog.open() == Window.OK) {
-									value = dialog.getNewObject();
-									updateObject(value);
-									fillCombo();
-								}
+								value = editObject(value);
+								updateObject(value);
+								fillCombo();
 							}
 						}
 					}
@@ -200,6 +195,33 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 		return combo;
 	}
 	
+	protected boolean canEdit() {
+		return PropertyUtil.canEdit(object,feature);
+	}
+	
+	protected boolean canEditInline() {
+		return PropertyUtil.canEditInline(object,feature);
+	}
+	
+	protected boolean canCreateNew() {
+		return PropertyUtil.canCreateNew(object,feature);
+	}
+	
+	protected EObject createObject() {
+		FeatureEditingDialog dialog = new FeatureEditingDialog(getDiagramEditor(), object, feature, null);							
+		if ( dialog.open() == Window.OK)
+			return dialog.getNewObject();
+		return null;
+	}
+	
+	protected EObject editObject(EObject value) {
+		FeatureEditingDialog dialog = new FeatureEditingDialog(getDiagramEditor(),
+				object, feature, value);
+		if ( dialog.open() == Window.OK)
+			return dialog.getNewObject();
+		return null;
+	}
+
 	@Override
 	protected boolean updateObject(Object result) {
 		keyPressed = false;
@@ -235,7 +257,7 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 				Object newValue = entry.getValue(); 
 				if (newValue!=null) {
 					comboViewer.setData(entry.getKey(), newValue);
-					if (newValue.equals(oldValue)) {
+					if (newValue.equals(oldValue) || entry.getKey().equals(oldValue)) {
 						comboViewer.setSelection(new StructuredSelection(entry.getKey()));
 						hasSelection = true;
 					}

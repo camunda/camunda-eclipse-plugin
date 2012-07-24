@@ -223,7 +223,7 @@ public class AdapterRegistry {
 		if (target instanceof EObject) {
 			
 			EObject eObj = (EObject) target;
-			EClass effectiveClass = eObj.eClass();
+			EClass effectiveClass = eObj instanceof EClass ? (EClass)eObj : eObj.eClass();
 			for (Adapter  a : eObj.eAdapters()) {
 				if (a != null && clazz.isInstance(a)) {
 					return clazz.cast(a);
@@ -265,6 +265,17 @@ public class AdapterRegistry {
 							cf.adaptAllNew((Notifier) target);
 						}
 						
+						adapter = factory.adaptNew((Notifier)target, clazz);
+						if (adapter != null && clazz.isInstance(adapter)) {
+							return clazz.cast(adapter);
+						}
+					}					   
+				}
+				
+				// last chance: check instance class of an EClass
+				list = fKeyToAdapterFactory.get( effectiveClass.getInstanceClass() );
+				if (list != null) {
+					for(AdapterFactory factory : list ) {
 						adapter = factory.adaptNew((Notifier)target, clazz);
 						if (adapter != null && clazz.isInstance(adapter)) {
 							return clazz.cast(adapter);

@@ -49,6 +49,7 @@ import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.bpmn2.Signal;
 import org.eclipse.bpmn2.Task;
+import org.eclipse.bpmn2.modeler.core.adapters.AdapterRegistry;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.PropertyExtensionDescriptor;
@@ -95,6 +96,7 @@ import org.eclipse.bpmn2.util.Bpmn2Switch;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notifier;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -111,7 +113,10 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 	@Override
 	public Adapter adaptNew(Notifier object, Object type) {
 		if (type == ExtendedPropertiesAdapter.class && object instanceof EObject) {
-			return bpmn2ModelSwitch.doSwitch((EObject) object);
+			Adapter adapter = bpmn2ModelSwitch.doSwitch((EObject) object);
+			if (!(object instanceof EClass))
+				((EObject)object).eAdapters().add(adapter);
+			return adapter;
 		}
 		return super.adaptNew(object, type);
 	}
@@ -133,36 +138,56 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
     	public Bpmn2ExtendedPropertiesSwitch(AdapterFactory adapterFactory) {
     		super();
     		this.adapterFactory = adapterFactory;
+    		// This adapter can handle the <propertyExtension>s from foreign models also!
+    		for (TargetRuntime rt : TargetRuntime.getAllRuntimes()){
+	    		for (PropertyExtensionDescriptor ped : rt.getPropertyExtensions()) {
+	    			AdapterRegistry.INSTANCE.registerFactory(ped.getInstanceClass(), adapterFactory);
+	    		}
+    		}
     	}
     	
         @Override
 		public ExtendedPropertiesAdapter defaultCase(EObject object) {
-        	ExtendedPropertiesAdapter adapter = new ExtendedPropertiesAdapter(adapterFactory,object);
-        	adapter.setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
-				@Override
-				public String getLabel(Object context) {
-					EObject object = this.object;
-					if (context instanceof EObject)
-						object = (EObject)context;
-					if (ModelUtil.isStringWrapper(object)) {
-						return "Item Type";
+        	ExtendedPropertiesAdapter adapter = null;
+        	if (object instanceof EClass)
+        	    adapter = getTargetRuntimeAdapter((EClass)object);
+        	else
+        		adapter = getTargetRuntimeAdapter(object);
+        	if (adapter==null) {
+	        	adapter = new ExtendedPropertiesAdapter(adapterFactory,object);
+	        	adapter.setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
+					@Override
+					public String getLabel(Object context) {
+						EObject object = this.object;
+						if (context instanceof EObject)
+							object = (EObject)context;
+						if (ModelUtil.isStringWrapper(object)) {
+							return "Item Type";
+						}
+						return super.getLabel(context);
 					}
-					return super.getLabel(context);
-				}
-
-				@Override
-				public String getText(Object context) {
-					EObject object = this.object;
-					if (context instanceof EObject)
-						object = (EObject)context;
-					if (ModelUtil.isStringWrapper(object)) {
-						return ModelUtil.getStringWrapperValue(object);
+	
+					@Override
+					public String getText(Object context) {
+						EObject object = this.object;
+						if (context instanceof EObject)
+							object = (EObject)context;
+						if (ModelUtil.isStringWrapper(object)) {
+							return ModelUtil.getStringWrapperValue(object);
+						}
+						return super.getText(context);
 					}
-					return super.getText(context);
-				}
-        	});
+	        	});
+        	}
         	return adapter;
 		}
+
+        private ExtendedPropertiesAdapter getTargetRuntimeAdapter(EClass eclass) {
+            PropertyExtensionDescriptor ped = TargetRuntime.getCurrentRuntime().getPropertyExtension(eclass.getInstanceClass());
+            if (ped!=null)
+                return ped.getAdapter(adapterFactory,eclass);
+            return null;
+        }
 
         private ExtendedPropertiesAdapter getTargetRuntimeAdapter(EObject object) {
 			PropertyExtensionDescriptor ped = TargetRuntime.getCurrentRuntime().getPropertyExtension(object.getClass());

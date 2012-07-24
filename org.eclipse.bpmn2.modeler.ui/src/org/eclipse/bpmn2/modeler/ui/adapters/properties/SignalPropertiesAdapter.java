@@ -34,7 +34,6 @@ public class SignalPropertiesAdapter extends RootElementPropertiesAdapter {
 	public SignalPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
 		super(adapterFactory, object);
 		
-    	final EStructuralFeature ref = Bpmn2Package.eINSTANCE.getResourceAssignmentExpression_Expression();
     	setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
 			@Override
 			public String getText(Object context) {

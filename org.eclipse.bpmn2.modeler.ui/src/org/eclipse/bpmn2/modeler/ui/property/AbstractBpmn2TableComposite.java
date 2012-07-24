@@ -877,8 +877,12 @@ public class AbstractBpmn2TableComposite extends Composite {
 		
 		@Override
 		public String getHeaderText() {
-			if (feature!=null)
+			if (feature!=null) {
+				if (feature.eContainer() instanceof EClass) {
+					return PropertyUtil.getLabel(feature.eContainer(), feature);
+				}
 				return ModelUtil.toDisplayName(feature.getName());
+			}
 			return "";
 		}
 

@@ -37,6 +37,18 @@ public class PropertyExtensionDescriptor extends BaseRuntimeDescriptor {
 		super(rt);
 	}
 
+	public Class getInstanceClass() {
+		try {
+			ClassLoader cl = this.getRuntime().getRuntimeExtension().getClass().getClassLoader();
+			Constructor ctor = null;
+			return Class.forName(type, true, cl);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public ExtendedPropertiesAdapter getAdapter(AdapterFactory adapterFactory, EObject object) {
 		try {
 			ClassLoader cl = this.getRuntime().getRuntimeExtension().getClass().getClassLoader();
