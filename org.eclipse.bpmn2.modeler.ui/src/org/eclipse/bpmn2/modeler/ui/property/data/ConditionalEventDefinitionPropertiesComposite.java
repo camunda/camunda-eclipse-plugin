@@ -12,18 +12,13 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.property.data;
 
-import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.ConditionalEventDefinition;
-import org.eclipse.bpmn2.Expression;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.widgets.Composite;
 
 public class ConditionalEventDefinitionPropertiesComposite extends ExpressionPropertiesComposite {
-
-	private AbstractPropertiesProvider propertiesProvider;
 
 	public ConditionalEventDefinitionPropertiesComposite(Composite parent, int style) {
 		super(parent, style);

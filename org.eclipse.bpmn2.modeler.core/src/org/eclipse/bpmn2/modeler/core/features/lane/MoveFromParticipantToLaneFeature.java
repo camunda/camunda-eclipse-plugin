@@ -17,7 +17,7 @@ import java.io.IOException;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.Participant;
-import org.eclipse.bpmn2.impl.Bpmn2FactoryImpl;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
@@ -89,7 +89,7 @@ public class MoveFromParticipantToLaneFeature extends MoveLaneFeature {
 		}
 
 		if (toLane.getChildLaneSet() == null) {
-			LaneSet createLaneSet = Bpmn2FactoryImpl.eINSTANCE.createLaneSet();
+			LaneSet createLaneSet = Bpmn2ModelerFactory.create(LaneSet.class);
 //			createLaneSet.setId(EcoreUtil.generateUUID());
 			toLane.setChildLaneSet(createLaneSet);
 			ModelUtil.setID(createLaneSet);

@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Choreography;
 import org.eclipse.bpmn2.Collaboration;
@@ -28,8 +27,6 @@ import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.ExtensionAttributeValue;
-import org.eclipse.bpmn2.Interface;
-import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
@@ -39,6 +36,7 @@ import org.eclipse.bpmn2.modeler.core.adapters.AdapterRegistry;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.INamespaceMap;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceSetImpl;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
@@ -795,7 +793,7 @@ public class ModelUtil {
 						domain.getCommandStack().execute(new RecordingCommand(domain) {
 							@Override
 							protected void doExecute() {
-								Process process = Bpmn2Factory.eINSTANCE.createProcess();
+								Process process = Bpmn2ModelerFactory.create(Process.class);
 								participant.setProcessRef(process);
 								definitions.getRootElements().add(process);
 								ModelUtil.setID(process);
@@ -821,4 +819,23 @@ public class ModelUtil {
 
 		return new ArrayList<ExtensionAttributeValue>();
 	}
+	
+	public static void addExtensionAttributeValue(EObject object, EStructuralFeature feature, EObject value) {
+		EStructuralFeature evf = object.eClass().getEStructuralFeature("extensionValues");
+		EList<EObject> list = (EList<EObject>)object.eGet(evf);
+		
+		if (list.size()==0) {
+			ExtensionAttributeValue newItem = Bpmn2ModelerFactory.create(ExtensionAttributeValue.class);
+			FeatureMap map = newItem.getValue();
+			map.add(feature, value);
+			list.add(newItem);
+			ModelUtil.setID(newItem);
+		}
+		else {
+			ExtensionAttributeValue oldItem = (ExtensionAttributeValue) list.get(0);
+			FeatureMap map = oldItem.getValue();
+			map.add(feature, value);
+		}
+	}
+
 }

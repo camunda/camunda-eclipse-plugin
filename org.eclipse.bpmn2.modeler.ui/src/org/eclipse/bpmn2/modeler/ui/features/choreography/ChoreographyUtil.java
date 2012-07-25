@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.ChoreographyActivity;
 import org.eclipse.bpmn2.ChoreographyLoopType;
 import org.eclipse.bpmn2.ChoreographyTask;
@@ -34,6 +33,7 @@ import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.di.ParticipantBandKind;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.choreography.ChoreographyProperties;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil.AnchorLocation;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil.BoundaryAnchor;
@@ -727,7 +727,7 @@ public class ChoreographyUtil implements ChoreographyProperties {
 		MessageFlow flow = getMessageFlow(messageFlows, bands);
 		if (flow!=null) {
 			if (flow.getMessageRef()==null && create) {
-				Message msg = Bpmn2Factory.eINSTANCE.createMessage();
+				Message msg = Bpmn2ModelerFactory.create(Message.class);
 				msg.setName("Undefined Message");
 				ModelUtil.getDefinitions(flow).getRootElements().add(msg);
 				flow.setMessageRef(msg);

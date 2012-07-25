@@ -19,7 +19,6 @@ import java.util.List;
 import org.eclipse.bpmn2.Artifact;
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Choreography;
 import org.eclipse.bpmn2.ChoreographyTask;
@@ -55,6 +54,7 @@ import org.eclipse.bpmn2.di.BpmnDiFactory;
 import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.bpmn2.di.ParticipantBandKind;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
@@ -980,7 +980,7 @@ public class ModelHandler {
 		EClassifier eClassifier = Bpmn2Package.eINSTANCE.getEClassifier(clazz.getSimpleName());
 		if (eClassifier instanceof EClass) {
 			EClass eClass = (EClass)eClassifier;
-			newObject = Bpmn2Factory.eINSTANCE.create(eClass);
+			newObject = Bpmn2ModelerFactory.getInstance().create(eClass);
 		}
 		else {
 			// maybe it's a DI object type?
@@ -1013,7 +1013,7 @@ public class ModelHandler {
 				switch (newObject.eClass().getClassifierID()) {
 				case Bpmn2Package.CONDITIONAL_EVENT_DEFINITION:
 					{
-						Expression expr = Bpmn2Factory.eINSTANCE.createFormalExpression();
+						Expression expr = Bpmn2ModelerFactory.getInstance().createFormalExpression();
 						((ConditionalEventDefinition)newObject).setCondition(expr);
 					}
 					break;

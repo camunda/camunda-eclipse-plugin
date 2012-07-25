@@ -18,7 +18,7 @@ import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
-import org.eclipse.bpmn2.impl.Bpmn2FactoryImpl;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
@@ -71,7 +71,7 @@ public class MoveFromLaneToParticipantFeature extends MoveLaneFeature {
 
 		Process process = targetParticipant.getProcessRef();
 		if (process.getLaneSets().isEmpty()) {
-			LaneSet createLaneSet = Bpmn2FactoryImpl.eINSTANCE.createLaneSet();
+			LaneSet createLaneSet = Bpmn2ModelerFactory.create(LaneSet.class);
 //			createLaneSet.setId(EcoreUtil.generateUUID());
 			process.getLaneSets().add(createLaneSet);
 			ModelUtil.setID(createLaneSet);

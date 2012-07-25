@@ -22,18 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.CallableElement;
-import org.eclipse.bpmn2.DocumentRoot;
-import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
-import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.OnEntryScriptType;
-import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.OnExitScriptType;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
@@ -43,7 +37,6 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.EAttributeImpl;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
-import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.xmi.XMLHelper;
 import org.eclipse.emf.ecore.xmi.XMLLoad;
 import org.eclipse.emf.ecore.xmi.XMLResource;
@@ -232,7 +225,7 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 			// to create a CallableElement which is simply a proxy, not a real object.
 			if (object instanceof CallActivity) {
 				CallActivity ca = (CallActivity)object;
-				CallableElement ce = (CallableElement)Bpmn2Factory.eINSTANCE.create(Bpmn2Package.eINSTANCE.getCallableElement());
+				CallableElement ce = Bpmn2ModelerFactory.create(CallableElement.class);
 				((InternalEObject)ce).eSetProxyURI(URI.createURI(ids));
 				ca.setCalledElementRef(ce);
 			}

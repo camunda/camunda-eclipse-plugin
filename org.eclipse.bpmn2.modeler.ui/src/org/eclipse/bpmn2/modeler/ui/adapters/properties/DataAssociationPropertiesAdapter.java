@@ -15,16 +15,13 @@ package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
 
 import org.eclipse.bpmn2.Activity;
-import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallableElement;
 import org.eclipse.bpmn2.DataAssociation;
-import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.DataStore;
 import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.Event;
@@ -38,6 +35,7 @@ import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
@@ -47,7 +45,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
-import org.eclipse.emf.transaction.TransactionalEditingDomain.Factory;
 
 /**
  * @author Bob Brodt
@@ -180,7 +177,7 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter 
 				}
 					
 				containerFeature = container.eClass().getEStructuralFeature("properties");
-				Property property = Bpmn2Factory.eINSTANCE.createProperty();
+				Property property = Bpmn2ModelerFactory.create(Property.class);
 				ExtendedPropertiesAdapter adapter = AdapterUtil.adapt(property, ExtendedPropertiesAdapter.class);
 				adapter.getObjectDescriptor().setText((String)value);
 				InsertionAdapter.add(container, containerFeature, property);

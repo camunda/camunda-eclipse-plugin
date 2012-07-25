@@ -13,9 +13,8 @@
 
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 
-import org.eclipse.bpmn2.Bpmn2Factory;
-import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallableElement;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.ErrorUtils;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
@@ -89,7 +88,7 @@ public class JbpmCallActivityPropertiesComposite extends JbpmActivityPropertiesC
 							domain.getCommandStack().execute(new RecordingCommand(domain) {
 								@Override
 								protected void doExecute() {
-									CallableElement ce = (CallableElement)Bpmn2Factory.eINSTANCE.create(Bpmn2Package.eINSTANCE.getCallableElement());
+									CallableElement ce = Bpmn2ModelerFactory.create(CallableElement.class);
 									((InternalEObject)ce).eSetProxyURI(URI.createURI((String)result));
 									
 									object.eSet(feature, ce);
