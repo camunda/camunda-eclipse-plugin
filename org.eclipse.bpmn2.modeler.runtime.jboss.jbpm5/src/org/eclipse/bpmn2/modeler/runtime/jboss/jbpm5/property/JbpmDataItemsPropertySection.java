@@ -14,13 +14,18 @@
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 
 import org.eclipse.bpmn2.DataStore;
+import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.ItemDefinition;
+import org.eclipse.bpmn2.ItemKind;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.GlobalType;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ImportType;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelFactory;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.util.JbpmModelUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
@@ -88,15 +93,12 @@ public class JbpmDataItemsPropertySection extends DataItemsPropertySection {
 							newImport = (ImportType)ModelFactory.eINSTANCE.createImportType();
 							newImport.setName(name);
 							final EStructuralFeature importFeature = ModelPackage.eINSTANCE.getDocumentRoot_ImportType();
-							final EObject value = newImport;
+							final ImportType value = newImport;
 							TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
 							domain.getCommandStack().execute(new RecordingCommand(domain) {
 								@Override
 								protected void doExecute() {
-									EObject parent = object.eContainer();
-									while (parent!=null && !(parent instanceof org.eclipse.bpmn2.Process))
-										parent = parent.eContainer();
-									ModelUtil.addExtensionAttributeValue(parent, importFeature, value);
+									JbpmModelUtil.addImport(object);
 								}
 							});
 						}

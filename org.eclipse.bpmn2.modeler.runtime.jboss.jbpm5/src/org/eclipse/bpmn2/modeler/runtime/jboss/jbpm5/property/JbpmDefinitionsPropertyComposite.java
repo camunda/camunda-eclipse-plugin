@@ -19,6 +19,7 @@ import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ImportType;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelFactory;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
+import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.util.JbpmModelUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
 import org.eclipse.bpmn2.modeler.ui.property.ExtensionValueTableComposite;
@@ -59,26 +60,11 @@ public class JbpmDefinitionsPropertyComposite extends DefinitionsPropertyComposi
 					ExtensionValueTableComposite importsTable = new ExtensionValueTableComposite(
 							this, AbstractBpmn2TableComposite.DEFAULT_STYLE)
 					{
-						
 						@Override
 						protected EObject addListItem(EObject object, EStructuralFeature feature) {
-							String name = null;
-							ImportType newImport = null;
-							SchemaImportDialog dialog = new SchemaImportDialog(getShell(), SchemaImportDialog.ALLOW_JAVA);
-							if (dialog.open() == Window.OK) {
-								Object result[] = dialog.getResult();
-								if (result.length == 1 && result[0] instanceof Class) {
-									name = ((Class)result[0]).getName();
-								}
-							}
-
-							if (name!=null && !name.isEmpty()) {
-								newImport = (ImportType)ModelFactory.eINSTANCE.create(listItemClass);
-								newImport.setName(name);
-								addExtensionValue(newImport);
-							}
-							return newImport;
+							return JbpmModelUtil.addImport(object);
 						}
+
 					};
 					importsTable.bindList(process, ModelPackage.eINSTANCE.getDocumentRoot_ImportType());
 					importsTable.setTitle("Imports");

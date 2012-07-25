@@ -13,14 +13,10 @@
 
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Hashtable;
-import java.util.List;
 
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.SequenceFlow;
-import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.FormalExpressionPropertiesAdapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -31,13 +27,13 @@ import org.eclipse.emf.ecore.EStructuralFeature;
  * @author Bob Brodt
  *
  */
-public class FormalExpressionPropertyAdapter extends FormalExpressionPropertiesAdapter {
+public class JbpmFormalExpressionPropertiesAdapter extends FormalExpressionPropertiesAdapter {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public FormalExpressionPropertyAdapter(AdapterFactory adapterFactory, EObject object) {
+	public JbpmFormalExpressionPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
 		super(adapterFactory, object);
 
     	final EStructuralFeature language = Bpmn2Package.eINSTANCE.getFormalExpression_Language();

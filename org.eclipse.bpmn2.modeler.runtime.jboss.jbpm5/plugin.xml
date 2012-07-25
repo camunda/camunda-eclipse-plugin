@@ -122,14 +122,21 @@
 			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.FormalExpression"
 			runtimeId="org.jboss.runtime.jbpm5"
 			type="org.eclipse.bpmn2.FormalExpression"
-			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.FormalExpressionPropertyAdapter">
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.JbpmFormalExpressionPropertiesAdapter">
 		</propertyExtension>
-				
+
 		<propertyExtension
 			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.GlobalType"
 			runtimeId="org.jboss.runtime.jbpm5"
 			type="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.GlobalType"
-			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.GlobalTypePropertyAdapter">
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.JbpmGlobalTypePropertiesAdapter">
+		</propertyExtension>
+
+		<propertyExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.Property"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.Property"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.JbpmPropertyPropertiesAdapter">
 		</propertyExtension>
 		
 		<featureContainer

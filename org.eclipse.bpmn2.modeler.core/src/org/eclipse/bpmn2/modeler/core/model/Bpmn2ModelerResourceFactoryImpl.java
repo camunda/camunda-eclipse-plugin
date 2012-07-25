@@ -71,8 +71,6 @@ public class Bpmn2ModelerResourceFactoryImpl extends ResourceFactoryImpl {
         result.getDefaultSaveOptions().put(XMLResource.OPTION_SAVE_TYPE_INFORMATION,
                 new OnlyContainmentTypeInfo());
 
-        result.getDefaultLoadOptions().put(XMLResource.OPTION_USE_ENCODED_ATTRIBUTE_STYLE,
-                Boolean.TRUE);
         result.getDefaultSaveOptions().put(XMLResource.OPTION_USE_ENCODED_ATTRIBUTE_STYLE,
                 Boolean.TRUE);
 

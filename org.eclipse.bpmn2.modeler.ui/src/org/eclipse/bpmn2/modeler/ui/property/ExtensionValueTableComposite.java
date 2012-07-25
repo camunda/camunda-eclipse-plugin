@@ -55,21 +55,6 @@ public abstract class ExtensionValueTableComposite extends AbstractBpmn2TableCom
 	@SuppressWarnings("unchecked")
 	protected void addExtensionValue(EObject value) {
 		ModelUtil.addExtensionAttributeValue(object, extensionValueFeature, value);
-//		EStructuralFeature evf = object.eClass().getEStructuralFeature("extensionValues");
-//		EList<EObject> list = (EList<EObject>)object.eGet(evf);
-//		
-//		if (list.size()==0) {
-//			ExtensionAttributeValue newItem = FACTORY.createExtensionAttributeValue();
-//			FeatureMap map = newItem.getValue();
-//			map.add(extensionValueFeature, value);
-//			list.add(newItem);
-//			ModelUtil.setID(newItem);
-//		}
-//		else {
-//			ExtensionAttributeValue oldItem = (ExtensionAttributeValue) list.get(0);
-//			FeatureMap map = oldItem.getValue();
-//			map.add(extensionValueFeature, value);
-//		}
 	}
 	
 	protected Object removeListItem(EObject object, EStructuralFeature feature, int index) {

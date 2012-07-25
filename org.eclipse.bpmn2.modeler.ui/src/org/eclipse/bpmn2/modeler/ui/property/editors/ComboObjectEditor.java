@@ -17,6 +17,8 @@ import java.util.Hashtable;
 import java.util.Map.Entry;
 
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterRegistry;
+import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
+import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.FeatureEditingDialog;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
@@ -251,20 +253,30 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 			}
 			
 			// add all other possible selections
-			boolean hasSelection = false;
+			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(oldValue, ExtendedPropertiesAdapter.class);
+			StructuredSelection currentSelection = null;
 			for (Entry<String, Object> entry : choices.entrySet()) {
 				comboViewer.add(entry.getKey());
 				Object newValue = entry.getValue(); 
 				if (newValue!=null) {
 					comboViewer.setData(entry.getKey(), newValue);
-					if (newValue.equals(oldValue) || entry.getKey().equals(oldValue)) {
-						comboViewer.setSelection(new StructuredSelection(entry.getKey()));
-						hasSelection = true;
+					if (currentSelection==null) {
+						if (newValue.equals(oldValue) || entry.getKey().equals(oldValue)) {
+							currentSelection = new StructuredSelection(entry.getKey());
+						}
+						else if (adapter!=null) {
+							if (adapter.getObjectDescriptor().equals(newValue)) {
+								currentSelection = new StructuredSelection(entry.getKey());
+							}
+						}
 					}
 				}
 			}
+			
+			if (currentSelection!=null)
+				comboViewer.setSelection(currentSelection);
 			if (editButton!=null)
-				editButton.setEnabled(hasSelection);
+				editButton.setEnabled(currentSelection!=null);
 		}
 	}
 

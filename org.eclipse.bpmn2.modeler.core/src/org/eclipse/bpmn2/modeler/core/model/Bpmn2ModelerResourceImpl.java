@@ -44,12 +44,15 @@ import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNLabel;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.di.BpmnDiPackage;
+import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.bpmn2.util.ImportHelper;
 import org.eclipse.bpmn2.util.QNameURIHandler;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.DcPackage;
 import org.eclipse.dd.dc.Point;
@@ -234,9 +237,19 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 						Object id = obj.eGet(feature);
 						if (id != null && id.equals(ids)) {
 							try {
-								object.eSet(eReference, obj);
+								if (object.eGet(eReference) instanceof EList) {
+									((EList)object.eGet(eReference)).add(obj);
+								}
+								else {
+									object.eSet(eReference, obj);
+								}
 							} catch (Exception e) {
-								continue;
+								String msg = "Invalid or unknown reference from:\n  " +
+										object + "\nfeature:\n  " + eReference +
+										"\nto:\n  " + obj;
+								IStatus s = new Status(Status.ERROR, Activator.PLUGIN_ID,
+										msg, e);
+								Activator.getDefault().logStatus(s);
 							}
 							return;
 						}

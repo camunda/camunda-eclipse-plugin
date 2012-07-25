@@ -61,10 +61,9 @@ public class ModelResourceFactoryImpl extends Bpmn2ModelerResourceFactoryImpl {
         result.getDefaultSaveOptions().put(XMLResource.OPTION_SAVE_TYPE_INFORMATION,
                 new OnlyContainmentTypeInfo());
 
-        result.getDefaultLoadOptions().put(XMLResource.OPTION_USE_ENCODED_ATTRIBUTE_STYLE,
-                Boolean.TRUE);
+        // allow "href" object resolution
         result.getDefaultSaveOptions().put(XMLResource.OPTION_USE_ENCODED_ATTRIBUTE_STYLE,
-                Boolean.TRUE);
+                Boolean.FALSE);
 
         result.getDefaultLoadOptions().put(XMLResource.OPTION_USE_LEXICAL_HANDLER, Boolean.TRUE);
 
