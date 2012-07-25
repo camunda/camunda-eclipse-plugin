@@ -83,8 +83,7 @@
 			      <message>ID needs to be unqiue.</message>
 			      <target class="BaseElement" />
 					<![CDATA[
-						BaseElement.allInstances()->forAll(b |
-						b <> self implies b.id <> self.id)
+						BaseElement.allInstances()->select(s | s.id = self.id)->size() = 1
 					]]>
 			</constraint>
          </constraints>

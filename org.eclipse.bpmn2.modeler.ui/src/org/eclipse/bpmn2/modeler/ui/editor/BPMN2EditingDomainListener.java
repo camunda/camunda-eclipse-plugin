@@ -12,22 +12,14 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.editor;
 
-import org.eclipse.bpmn2.modeler.core.utils.ErrorUtils;
-import org.eclipse.bpmn2.modeler.core.validation.ValidationDiagnostic;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.BasicDiagnostic;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.transaction.ExceptionHandler;
 import org.eclipse.emf.transaction.TransactionalCommandStack;
 import org.eclipse.emf.transaction.TransactionalEditingDomainEvent;
 import org.eclipse.emf.transaction.TransactionalEditingDomainListenerImpl;
-import org.eclipse.emf.validation.model.ConstraintStatus;
 
 public class BPMN2EditingDomainListener extends TransactionalEditingDomainListenerImpl implements ExceptionHandler {
 	
@@ -52,53 +44,6 @@ public class BPMN2EditingDomainListener extends TransactionalEditingDomainListen
 	@Override
 	public void transactionClosed(TransactionalEditingDomainEvent event) {
 		super.transactionClosed(event);
-		IStatus status = event.getTransaction().getStatus();
-		if (status != null && event.getTransaction().getStatus() instanceof ConstraintStatus) {
-			final ConstraintStatus constraintStatus = (ConstraintStatus) status;
-			
-			// temporary hack: sometimes the target is not contained in a Resource (yet!)
-			// see references to InsertionAdapter in the code...
-			final Resource resource = constraintStatus.getTarget().eResource();
-			if (resource!=null) {
-				final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new 
-						Path(resource.getURI().toPlatformString(true)));
-				if (constraintStatus.getSeverity() == IStatus.CANCEL) {
-					ErrorUtils.showErrorMessage(constraintStatus.getMessage());
-				}else if (constraintStatus.getSeverity() == IStatus.WARNING) {
-					resource.getWarnings().add(new ValidationDiagnostic(status, resource));
-				}
-			}
-			else
-				ErrorUtils.showErrorMessage(constraintStatus.getMessage());
-
-		}
-		else if(status!= null) {
-			// TODO not working yet, if not canceled, show the warnings in the problem view
-			// maybe this should be done via a ValidationAdapter, see http://help.eclipse.org/galileo/index.jsp?topic=/org.eclipse.emf.validation.doc/tutorials/validationAdapterTutorial.html
-			//			Resource bpmnResource = bpmn2Editor.getResourceSet().getResources().get(1);
-//			if (bpmnResource.isLoaded()) {
-//				IBatchValidator validator = ModelValidationService.getInstance().newValidator(EvaluationMode.BATCH);
-//				validator.setIncludeLiveConstraints(true);
-//				Resource validationResource = bpmn2Editor.getResourceSet().getResources().get(1);
-//				DocumentRoot content = (DocumentRoot) validationResource.getContents().get(0);
-//				IStatus validationResult = validator.validate(content.getDefinitions());
-//				int sev = validationResult.getSeverity();
-//				IStatus[] results = new IStatus[] {validationResult};
-//				if (validationResult.isMultiStatus()) {
-//					results = validationResult.getChildren();
-//				}
-//				
-//				for (IStatus s : results) {
-//					if (sev == IStatus.CANCEL) {
-//						ErrorUtils.showErrorMessage(s.getMessage());
-//					}
-//					
-//					if (sev == IStatus.WARNING) {
-//						validationResource.getWarnings().add(new ValidationDiagnostic(s, validationResource));
-//					}
-//				}
-//			}
-		}
 	}
 	
 	@Override
