@@ -16,7 +16,7 @@ package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 import java.util.Hashtable;
 
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite.AbstractPropertiesProvider;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultDetailComposite.AbstractPropertiesProvider;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ComboObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;

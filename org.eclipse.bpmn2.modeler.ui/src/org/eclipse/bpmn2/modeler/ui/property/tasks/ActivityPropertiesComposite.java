@@ -19,9 +19,9 @@ import org.eclipse.bpmn2.LoopCharacteristics;
 import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
 import org.eclipse.bpmn2.StandardLoopCharacteristics;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
@@ -36,7 +36,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-public class ActivityPropertiesComposite extends DefaultPropertiesComposite {
+public class ActivityPropertiesComposite extends DefaultDetailComposite {
 
 	static {
 		PropertiesCompositeFactory.register(StandardLoopCharacteristics.class, StandardLoopCharacteristicsPropertiesComposite.class);
@@ -46,7 +46,7 @@ public class ActivityPropertiesComposite extends DefaultPropertiesComposite {
 	private Button addStandardLoopButton;
 	private Button addMultiLoopButton;
 	private Button removeLoopButton;
-	protected AbstractBpmn2PropertiesComposite loopCharacteristicsComposite;
+	protected AbstractDetailComposite loopCharacteristicsComposite;
 	
 	public ActivityPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
@@ -87,14 +87,14 @@ public class ActivityPropertiesComposite extends DefaultPropertiesComposite {
 	protected void bindReference(Composite parent, EObject object, EReference reference) {
 		if ("loopCharacteristics".equals(reference.getName())) {
 
-			final Activity activity = (Activity) be;
+			final Activity activity = (Activity) businessObject;
 			LoopCharacteristics loopCharacteristics = (LoopCharacteristics) activity.getLoopCharacteristics();
 				
 			if (loopCharacteristics != null) {
 				loopCharacteristicsComposite = PropertiesCompositeFactory.createDetailComposite(LoopCharacteristics.class, this, SWT.NONE);
 				loopCharacteristicsComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 
-				loopCharacteristicsComposite.setEObject(getDiagramEditor(), loopCharacteristics);
+				loopCharacteristicsComposite.setBusinessObject(loopCharacteristics);
 
 				removeLoopButton = toolkit.createButton(loopCharacteristicsComposite.getAttributesParent(), "Remove Loop Characteristics", SWT.PUSH);
 				removeLoopButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
@@ -108,7 +108,7 @@ public class ActivityPropertiesComposite extends DefaultPropertiesComposite {
 							protected void doExecute() {
 								if (activity.getLoopCharacteristics() !=null)
 									activity.setLoopCharacteristics(null);
-								setEObject(activity);
+								setBusinessObject(activity);
 							}
 						});
 					}
@@ -146,7 +146,7 @@ public class ActivityPropertiesComposite extends DefaultPropertiesComposite {
 									StandardLoopCharacteristics loopChar = FACTORY.createStandardLoopCharacteristics();
 									activity.setLoopCharacteristics(loopChar);
 									ModelUtil.setID(loopChar);
-									setEObject(activity);
+									setBusinessObject(activity);
 								}
 							});
 						}
@@ -168,7 +168,7 @@ public class ActivityPropertiesComposite extends DefaultPropertiesComposite {
 									MultiInstanceLoopCharacteristics loopChar = FACTORY.createMultiInstanceLoopCharacteristics();
 									activity.setLoopCharacteristics(loopChar);
 									ModelUtil.setID(loopChar);
-									setEObject(activity);
+									setBusinessObject(activity);
 								}
 							});
 						}

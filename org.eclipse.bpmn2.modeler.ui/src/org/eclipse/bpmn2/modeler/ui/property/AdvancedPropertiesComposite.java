@@ -69,11 +69,11 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Section;
 
 @SuppressWarnings("unchecked")
-public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposite {
+public class AdvancedPropertiesComposite extends AbstractDetailComposite {
 
 	private EObject be;
 	private TreeViewer treeViewer;
-	private AbstractBpmn2PropertiesComposite detailsPropertiesComposite;
+	private AbstractDetailComposite detailsPropertiesComposite;
 	private ModelEnablementDescriptor modelEnablement;
 	private TransactionalEditingDomain domain;
 	private DomainListener domainListener;
@@ -216,7 +216,7 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 		else {
 			// construct a details composite based on the selected object's class
 			if (fullDetails.getSelection()) {
-				detailsPropertiesComposite = new DefaultPropertiesComposite(detailsComposite,SWT.NONE);
+				detailsPropertiesComposite = new DefaultDetailComposite(detailsComposite,SWT.NONE);
 			}
 			else {
 				detailsPropertiesComposite = PropertiesCompositeFactory.createDetailComposite(obj.getClass(), detailsComposite, SWT.NONE);
@@ -224,7 +224,7 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 			detailsPropertiesComposite.setLayoutData(new GridData(SWT.FILL,SWT.TOP,true,false,3,1));
 
 			Class cc = PropertiesCompositeFactory.findDetailCompositeClass(obj.getClass());
-			if (cc==null||cc==DefaultPropertiesComposite.class)
+			if (cc==null||cc==DefaultDetailComposite.class)
 				fullDetails.setVisible(false);
 			else
 				fullDetails.setVisible(true);
@@ -236,7 +236,7 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 			toolkit.paintBordersFor(detailsPropertiesComposite);
 			detailsSection.layout(true); // refresh the layout's clientCache!
 
-			detailsPropertiesComposite.setEObject(propertySection.editor, obj);
+			detailsPropertiesComposite.setBusinessObject(obj);
 
 			String name = PropertyUtil.getText(obj);
 			detailsSection.setText(name+" Details");
@@ -274,9 +274,8 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 	}
 
 	@Override
-	public void setEObject(BPMN2Editor diagramEditor, EObject be) {
-		this.be = be;
-		addDomainListener(diagramEditor);
+	public void setBusinessObject(EObject be) {
+		super.setBusinessObject(be);
 		
 		EObject input = be;
 		while (input.eContainer()!=null) {
@@ -292,7 +291,6 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 		else
 			treeViewer.setInput(be);
 		
-		modelEnablement = diagramEditor.getTargetRuntime().getModelEnablements(be);
 		hookPropertySheetPageMenu();
 		treeSection.setText(PropertyUtil.getText(be));
 

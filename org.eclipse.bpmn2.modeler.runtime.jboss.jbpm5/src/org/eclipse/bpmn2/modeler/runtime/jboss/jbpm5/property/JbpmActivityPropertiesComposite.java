@@ -15,10 +15,10 @@ package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelFactory;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
-import org.eclipse.bpmn2.modeler.ui.property.ExtensionValueTableComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite;
+import org.eclipse.bpmn2.modeler.ui.property.ExtensionValueListComposite;
 import org.eclipse.bpmn2.modeler.ui.property.tasks.ActivityPropertiesComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -57,14 +57,14 @@ public class JbpmActivityPropertiesComposite extends ActivityPropertiesComposite
 		onExitScriptTable.setTitle("On Exit Scripts");
 	}
 	
-	private class ScriptTableComposite extends ExtensionValueTableComposite {
+	private class ScriptTableComposite extends ExtensionValueListComposite {
 
 		/**
 		 * @param parent
 		 * @param style
 		 */
 		public ScriptTableComposite(Composite parent) {
-			super(parent, AbstractBpmn2TableComposite.DEFAULT_STYLE);
+			super(parent, AbstractListComposite.DEFAULT_STYLE);
 		}
 
 		/* (non-Javadoc)
@@ -84,7 +84,7 @@ public class JbpmActivityPropertiesComposite extends ActivityPropertiesComposite
 		}
 
 		@Override
-		public AbstractBpmn2PropertiesComposite createDetailComposite(final Composite parent, Class eClass) {
+		public AbstractDetailComposite createDetailComposite(final Composite parent, Class eClass) {
 			return new JbpmScriptTaskPropertiesComposite(parent, SWT.NONE) {
 				@Override
 				public Composite getAttributesParent() {

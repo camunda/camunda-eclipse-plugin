@@ -10,12 +10,12 @@ import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
-import org.eclipse.bpmn2.modeler.ui.property.diagrams.DataItemsPropertiesComposite.PropertiesTable;
+import org.eclipse.bpmn2.modeler.ui.property.diagrams.DataItemsPropertiesComposite.PropertyListComposite;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ComboObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.SchemaObjectEditor;
@@ -33,14 +33,14 @@ public class DataItemsPropertySection extends DefaultPropertySection {
 	static {
 		PropertiesCompositeFactory.register(ItemDefinition.class, ItemDefinitionPropertiesComposite.class);
 		// Will this work? Make it so!
-		PropertiesCompositeFactory.register(Property.class, PropertiesTable.class);
+		PropertiesCompositeFactory.register(Property.class, PropertyListComposite.class);
 	}
 
 	public DataItemsPropertySection() {
 	}
 
 	@Override
-	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+	protected AbstractDetailComposite createSectionRoot() {
 		return new DataItemsPropertiesComposite(this);
 	}
 
@@ -61,7 +61,7 @@ public class DataItemsPropertySection extends DefaultPropertySection {
 		return null;
 	}
 
-	public class ItemDefinitionPropertiesComposite extends DefaultPropertiesComposite {
+	public class ItemDefinitionPropertiesComposite extends DefaultDetailComposite {
 
 		private AbstractPropertiesProvider propertiesProvider;
 
@@ -112,7 +112,7 @@ public class DataItemsPropertySection extends DefaultPropertySection {
 							Display.getCurrent().syncExec( new Runnable() {
 								@Override
 								public void run() {
-									setEObject(getEObject());
+									setBusinessObject(getBusinessObject());
 								}
 							});
 							return true;

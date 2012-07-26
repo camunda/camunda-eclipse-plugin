@@ -16,7 +16,7 @@ package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.ScriptTask;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.viewers.ISelection;
@@ -38,7 +38,7 @@ public class JbpmScriptTaskPropertySection extends JbpmTaskPropertySection {
 	}
 
 	@Override
-	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+	protected AbstractDetailComposite createSectionRoot() {
 		return new JbpmScriptTaskPropertiesComposite(this);
 	}
 }

@@ -14,12 +14,12 @@
 
 package org.eclipse.bpmn2.modeler.ui.property.events;
 
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.widgets.Composite;
 
-public class EndEventPropertiesComposite extends AbstractBpmn2PropertiesComposite {
+public class EndEventPropertiesComposite extends AbstractDetailComposite {
 
 	public EndEventPropertiesComposite(Composite parent, int style) {
 		super(parent, style);

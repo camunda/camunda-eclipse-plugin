@@ -4,7 +4,7 @@ import org.eclipse.bpmn2.Expression;
 import org.eclipse.bpmn2.StandardLoopCharacteristics;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultDetailComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
 public class StandardLoopCharacteristicsPropertiesComposite extends
-		DefaultPropertiesComposite {
+		DefaultDetailComposite {
 
 	private Button addRemoveLoopConditionExpressionButton;
 	private Button addRemoveLoopMaximumExpressionButton;
@@ -57,7 +57,7 @@ public class StandardLoopCharacteristicsPropertiesComposite extends
 								standardLoop.setLoopCondition(exp);
 								ModelUtil.setID(exp);
 							}
-							setEObject(standardLoop);
+							setBusinessObject(standardLoop);
 						}
 					});
 				}
@@ -80,7 +80,7 @@ public class StandardLoopCharacteristicsPropertiesComposite extends
 								standardLoop.setLoopMaximum(exp);
 								ModelUtil.setID(exp);
 							}
-							setEObject(standardLoop);
+							setBusinessObject(standardLoop);
 						}
 					});
 				}
@@ -91,7 +91,7 @@ public class StandardLoopCharacteristicsPropertiesComposite extends
 
 			if (loopexp != null) {
 				addRemoveLoopConditionExpressionButton.setText("Remove Loop Condition");
-				this.be = loopexp;
+				this.businessObject = loopexp;
 				super.createBindings(loopexp);
 			}
 			else {
@@ -100,7 +100,7 @@ public class StandardLoopCharacteristicsPropertiesComposite extends
 
 			if (maxexp != null) {
 				addRemoveLoopMaximumExpressionButton.setText("Remove Loop Maximum");
-				this.be = maxexp;
+				this.businessObject = maxexp;
 				super.createBindings(maxexp);
 			}
 			else {

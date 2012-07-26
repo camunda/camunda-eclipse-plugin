@@ -13,7 +13,7 @@
 
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.diagrams.DefinitionsPropertySection;
 
 /**
@@ -23,7 +23,7 @@ import org.eclipse.bpmn2.modeler.ui.property.diagrams.DefinitionsPropertySection
 public class JbpmDefinitionsPropertySection extends DefinitionsPropertySection {
 
 	@Override
-	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+	protected AbstractDetailComposite createSectionRoot() {
 		return new JbpmDefinitionsPropertyComposite(this);
 	}
 

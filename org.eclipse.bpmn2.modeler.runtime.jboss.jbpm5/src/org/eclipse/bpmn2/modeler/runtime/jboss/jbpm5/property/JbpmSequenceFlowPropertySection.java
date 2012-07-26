@@ -17,7 +17,7 @@ import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.connectors.SequenceFlowPropertySection;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -59,7 +59,7 @@ public class JbpmSequenceFlowPropertySection extends SequenceFlowPropertySection
 	}
 
 	@Override
-	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+	protected AbstractDetailComposite createSectionRoot() {
 		return new JbpmSequenceFlowPropertiesComposite(this);
 	}
 	

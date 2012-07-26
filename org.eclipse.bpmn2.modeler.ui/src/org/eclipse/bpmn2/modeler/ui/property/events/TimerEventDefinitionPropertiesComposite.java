@@ -17,7 +17,7 @@ import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.TimerEventDefinition;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Label;
  * @author Bob Brodt
  *
  */
-public class TimerEventDefinitionPropertiesComposite extends DefaultPropertiesComposite {
+public class TimerEventDefinitionPropertiesComposite extends DefaultDetailComposite {
 
 	private Button timeDateButton;
 	private Button timeCycleButton;

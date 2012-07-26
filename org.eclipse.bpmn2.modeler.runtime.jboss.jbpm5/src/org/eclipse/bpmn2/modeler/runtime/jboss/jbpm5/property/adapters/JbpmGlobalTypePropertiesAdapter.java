@@ -86,8 +86,10 @@ public class JbpmGlobalTypePropertiesAdapter extends ExtendedPropertiesAdapter {
 				
 				@Override
 				public Hashtable<String, Object> getChoiceOfValues(Object context) {
-					EObject object = context instanceof EObject ? (EObject)context : this.object;
-					return JbpmModelUtil.collectAllDataTypes(object);
+					final GlobalType global = context instanceof GlobalType ?
+							(GlobalType)context :
+							(GlobalType)this.object;
+					return JbpmModelUtil.collectAllDataTypes(global);
 				}
 				
 				@Override

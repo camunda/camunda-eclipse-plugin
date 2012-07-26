@@ -13,11 +13,11 @@
 package org.eclipse.bpmn2.modeler.ui.property.connectors;
 
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultDetailComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.widgets.Composite;
 
-public class MessageFlowPropertiesComposite extends DefaultPropertiesComposite {
+public class MessageFlowPropertiesComposite extends DefaultDetailComposite {
 
 	private AbstractPropertiesProvider propertiesProvider;
 

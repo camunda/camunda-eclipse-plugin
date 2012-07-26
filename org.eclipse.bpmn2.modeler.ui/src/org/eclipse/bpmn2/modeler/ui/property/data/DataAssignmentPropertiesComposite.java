@@ -15,9 +15,9 @@ package org.eclipse.bpmn2.modeler.ui.property.data;
 import org.eclipse.bpmn2.Assignment;
 import org.eclipse.bpmn2.Expression;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
@@ -25,10 +25,10 @@ import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
-public class DataAssignmentPropertiesComposite extends DefaultPropertiesComposite {
+public class DataAssignmentPropertiesComposite extends DefaultDetailComposite {
 
-	private AbstractBpmn2PropertiesComposite fromDetails;
-	private AbstractBpmn2PropertiesComposite toDetails;
+	private AbstractDetailComposite fromDetails;
+	private AbstractDetailComposite toDetails;
 
 	public DataAssignmentPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
@@ -59,7 +59,7 @@ public class DataAssignmentPropertiesComposite extends DefaultPropertiesComposit
 			// an Assignment is not really valid without both a From and To
 			Expression toExp = assignment.getTo();
 			if (toExp==null) {
-				domain.getCommandStack().execute(new RecordingCommand(domain) {
+				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 					@Override
 					protected void doExecute() {
 						Expression exp = FACTORY.createFormalExpression();
@@ -72,7 +72,7 @@ public class DataAssignmentPropertiesComposite extends DefaultPropertiesComposit
 			
 			Expression fromExp = assignment.getFrom();
 			if (fromExp==null) {
-				domain.getCommandStack().execute(new RecordingCommand(domain) {
+				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 					@Override
 					protected void doExecute() {
 						Expression exp = FACTORY.createFormalExpression();
@@ -85,16 +85,16 @@ public class DataAssignmentPropertiesComposite extends DefaultPropertiesComposit
 			
 			if (toDetails==null) {
 				toDetails = PropertiesCompositeFactory.createDetailComposite(
-						Expression.class, this, SWT.NONE, true);
+						Expression.class, this, SWT.NONE);
 			}
-			toDetails.setEObject(getDiagramEditor(), toExp);
+			toDetails.setBusinessObject(toExp);
 			toDetails.setTitle("To Expression");
 	
 			if (fromDetails==null) {
 				fromDetails = PropertiesCompositeFactory.createDetailComposite(
-						Expression.class, this, SWT.NONE, true);
+						Expression.class, this, SWT.NONE);
 			}
-			fromDetails.setEObject(getDiagramEditor(), fromExp);
+			fromDetails.setBusinessObject(fromExp);
 			fromDetails.setTitle("From Expression");
 	
 			PropertyUtil.layoutAllParents(this);

@@ -14,7 +14,7 @@
 package org.eclipse.bpmn2.modeler.ui.property.editors;
 
 import org.eclipse.bpmn2.modeler.core.utils.ErrorUtils;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.IValueChangeListener;
@@ -43,7 +43,7 @@ public class TextObjectEditor extends ObjectEditor {
 	 * @param object
 	 * @param feature
 	 */
-	public TextObjectEditor(AbstractBpmn2PropertiesComposite parent, EObject object, EStructuralFeature feature) {
+	public TextObjectEditor(AbstractDetailComposite parent, EObject object, EStructuralFeature feature) {
 		super(parent, object, feature);
 	}
 

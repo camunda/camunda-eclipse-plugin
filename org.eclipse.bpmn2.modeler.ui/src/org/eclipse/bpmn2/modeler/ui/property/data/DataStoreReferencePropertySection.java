@@ -15,9 +15,9 @@ package org.eclipse.bpmn2.modeler.ui.property.data;
 
 import org.eclipse.bpmn2.DataStoreReference;
 import org.eclipse.bpmn2.DataState;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -36,7 +36,7 @@ public class DataStoreReferencePropertySection extends AbstractBpmn2PropertySect
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
 	 */
 	@Override
-	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+	protected AbstractDetailComposite createSectionRoot() {
 		return new DataStoreReferencePropertiesComposite(this);
 	}
 
@@ -49,7 +49,7 @@ public class DataStoreReferencePropertySection extends AbstractBpmn2PropertySect
 		return null;
 	}
 	
-	public class DataStoreReferencePropertiesComposite extends DefaultPropertiesComposite {
+	public class DataStoreReferencePropertiesComposite extends DefaultDetailComposite {
 
 		private AbstractPropertiesProvider dataStoreReferencePropertiesProvider;
 		private AbstractPropertiesProvider dataStatePropertiesProvider;

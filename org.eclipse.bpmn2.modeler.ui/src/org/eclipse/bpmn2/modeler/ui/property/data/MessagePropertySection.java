@@ -14,7 +14,7 @@ package org.eclipse.bpmn2.modeler.ui.property.data;
 
 import org.eclipse.bpmn2.Message;
 import org.eclipse.bpmn2.Property;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.emf.ecore.EObject;
@@ -31,7 +31,7 @@ public class MessagePropertySection extends AbstractBpmn2PropertySection impleme
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
 	 */
 	@Override
-	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+	protected AbstractDetailComposite createSectionRoot() {
 		return new MessagePropertiesComposite(this);
 	}
 

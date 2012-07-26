@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters;
 
 import java.util.Hashtable;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
@@ -56,9 +57,10 @@ public class JbpmFormalExpressionPropertiesAdapter extends FormalExpressionPrope
 			new FeatureDescriptor(adapterFactory,object,body) {
 				@Override
 				public String getLabel(Object context) {
-					EObject object = this.object;
-					if (context instanceof EObject)
-						object = (EObject)context;
+					EObject object = context instanceof BaseElement ?
+						object = (EObject)context :
+						this.object;
+						
 					if (object.eContainer() instanceof SequenceFlow)
 						return "Constraint";
 					return "Script";

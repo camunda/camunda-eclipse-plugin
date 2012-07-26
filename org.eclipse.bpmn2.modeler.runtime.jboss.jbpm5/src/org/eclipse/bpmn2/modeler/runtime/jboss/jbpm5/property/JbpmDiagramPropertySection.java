@@ -14,8 +14,8 @@
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 
 import org.eclipse.bpmn2.di.BPMNDiagram;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
@@ -42,9 +42,9 @@ public class JbpmDiagramPropertySection extends DefaultPropertySection {
 	}
 
 	@Override
-	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+	protected AbstractDetailComposite createSectionRoot() {
 		
-		return new DefaultPropertiesComposite(this) {
+		return new DefaultDetailComposite(this) {
 			
 			@Override
 			public void createBindings(EObject be) {

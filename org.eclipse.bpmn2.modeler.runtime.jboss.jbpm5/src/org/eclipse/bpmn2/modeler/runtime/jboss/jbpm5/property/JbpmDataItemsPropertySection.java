@@ -26,9 +26,9 @@ import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ImportType;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelFactory;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.util.JbpmModelUtil;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.ui.property.diagrams.DataItemsPropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.SchemaImportDialog;
@@ -54,11 +54,11 @@ public class JbpmDataItemsPropertySection extends DataItemsPropertySection {
 	}
 
 	@Override
-	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+	protected AbstractDetailComposite createSectionRoot() {
 		return new JbpmDataItemsPropertiesComposite(this);
 	}
 
-	public class GlobalTypePropertiesComposite extends DefaultPropertiesComposite {
+	public class GlobalTypePropertiesComposite extends DefaultDetailComposite {
 
 		public GlobalTypePropertiesComposite(Composite parent, int style) {
 			super(parent, style);

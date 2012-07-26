@@ -13,7 +13,7 @@
 package org.eclipse.bpmn2.modeler.ui.property.events;
 
 import org.eclipse.bpmn2.EndEvent;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.emf.ecore.EObject;
@@ -26,7 +26,7 @@ public class EndEventPropertySection extends AbstractBpmn2PropertySection implem
 	}
 
 	@Override
-	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+	protected AbstractDetailComposite createSectionRoot() {
 		return new EndEventPropertiesComposite(this);		
 	}
 

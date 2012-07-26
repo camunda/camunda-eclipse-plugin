@@ -18,7 +18,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterRegistry;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -53,7 +53,7 @@ public class FeatureListObjectEditor extends MultivalueObjectEditor {
 	 * @param object
 	 * @param feature
 	 */
-	public FeatureListObjectEditor(AbstractBpmn2PropertiesComposite parent, EObject object, EStructuralFeature feature) {
+	public FeatureListObjectEditor(AbstractDetailComposite parent, EObject object, EStructuralFeature feature) {
 		super(parent, object, feature);
 	}
 

@@ -44,7 +44,7 @@ public class ItemDefinitionPropertiesAdapter extends ExtendedPropertiesAdapter {
 				@Override
 				public String getLabel(Object context) {
 					EObject object = this.object;
-					if (context instanceof EObject)
+					if (context instanceof ItemDefinition)
 						object = (EObject)context;
 					if (object instanceof ItemDefinition) {
 						return "Data Type";
@@ -103,6 +103,11 @@ public class ItemDefinitionPropertiesAdapter extends ExtendedPropertiesAdapter {
 			@Override
 			public String getText(Object context) {
 				return getFeatureDescriptor(ref).getText(context);
+			}
+			
+			@Override
+			public String getLabel(Object context) {
+				return getFeatureDescriptor(ref).getLabel(context);
 			}
 		});
 	}

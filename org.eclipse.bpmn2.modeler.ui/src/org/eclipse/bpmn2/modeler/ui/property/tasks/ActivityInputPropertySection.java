@@ -14,7 +14,7 @@ package org.eclipse.bpmn2.modeler.ui.property.tasks;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.InputOutputSpecification;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.emf.ecore.EObject;
@@ -30,7 +30,7 @@ public class ActivityInputPropertySection extends AbstractBpmn2PropertySection {
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
 	 */
 	@Override
-	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+	protected AbstractDetailComposite createSectionRoot() {
 		return new ActivityInputPropertiesComposite(this);
 	}
 

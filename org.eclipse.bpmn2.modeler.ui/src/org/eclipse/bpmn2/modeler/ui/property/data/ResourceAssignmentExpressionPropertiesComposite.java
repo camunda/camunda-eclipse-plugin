@@ -16,7 +16,7 @@ package org.eclipse.bpmn2.modeler.ui.property.data;
 import org.eclipse.bpmn2.Expression;
 import org.eclipse.bpmn2.ResourceAssignmentExpression;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class ResourceAssignmentExpressionPropertiesComposite extends ExpressionPropertiesComposite {
 
-	private AbstractBpmn2PropertiesComposite exprDetails;
+	private AbstractDetailComposite exprDetails;
 
 	public ResourceAssignmentExpressionPropertiesComposite(AbstractBpmn2PropertySection section) {
 		super(section);
@@ -62,9 +62,9 @@ public class ResourceAssignmentExpressionPropertiesComposite extends ExpressionP
 			
 			if (exprDetails==null) {
 				exprDetails = PropertiesCompositeFactory.createDetailComposite(
-						Expression.class, this, SWT.NONE, true);
+						Expression.class, this, SWT.NONE);
 			}
-			exprDetails.setEObject(getDiagramEditor(), expr);
+			exprDetails.setBusinessObject(expr);
 			exprDetails.setTitle("Resource Assignment Expression");
 	
 			PropertyUtil.layoutAllParents(this);

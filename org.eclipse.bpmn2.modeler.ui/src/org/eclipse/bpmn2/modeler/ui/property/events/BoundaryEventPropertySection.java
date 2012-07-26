@@ -13,7 +13,7 @@
 package org.eclipse.bpmn2.modeler.ui.property.events;
 
 import org.eclipse.bpmn2.BoundaryEvent;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -24,7 +24,7 @@ public class BoundaryEventPropertySection extends AbstractBpmn2PropertySection {
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
 	 */
 	@Override
-	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+	protected AbstractDetailComposite createSectionRoot() {
 		return new BoundaryEventPropertiesComposite(this);
 	}
 

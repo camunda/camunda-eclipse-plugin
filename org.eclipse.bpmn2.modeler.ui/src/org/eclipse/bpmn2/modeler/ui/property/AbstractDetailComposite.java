@@ -85,18 +85,7 @@ import org.eclipse.ui.forms.widgets.Section;
  * Subclasses must implement the abstract createBindings() method to construct their editing
  * widgets. These widgets are torn down and reconstructed when the editor selection changes.
  */
-public abstract class AbstractBpmn2PropertiesComposite extends Composite implements ResourceSetListener {
-
-	public final static Bpmn2Package PACKAGE = Bpmn2Package.eINSTANCE;
-	public final static Bpmn2ModelerFactory FACTORY = Bpmn2ModelerFactory.getInstance();
-
-	protected AbstractBpmn2PropertySection propertySection;
-	protected EObject be;
-	protected FormToolkit toolkit;
-	protected ModelEnablementDescriptor modelEnablement;
-	protected ModelHandler modelHandler;
-	protected TransactionalEditingDomainImpl domain;
-	protected IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
+public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase implements ResourceSetListener {
 
 	protected Section attributesSection = null;
 	protected Composite attributesComposite = null;
@@ -110,11 +99,8 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 	 * 
 	 * @param section
 	 */
-	public AbstractBpmn2PropertiesComposite(AbstractBpmn2PropertySection section) {
-		super(section.getParent(), SWT.NONE);
-		propertySection = section;
-		toolkit = propertySection.getWidgetFactory();
-		initialize();
+	public AbstractDetailComposite(AbstractBpmn2PropertySection section) {
+		super(section);
 	}
 	
 	/**
@@ -124,98 +110,27 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 	 * @param parent
 	 * @param style
 	 */
-	public AbstractBpmn2PropertiesComposite(Composite parent, int style) {
+	public AbstractDetailComposite(Composite parent, int style) {
 		super(parent,style);
-		toolkit = new FormToolkit(Display.getCurrent());
-		initialize();
 	}
 
-	protected void initialize() {
-		toolkit.adapt(this);
-		toolkit.paintBordersFor(this);
-		setLayout(new GridLayout(3, false));
-		// set a default Layout Data if the parent is using a GridLayout
-		if (getParent().getLayout() instanceof GridLayout) {
-			GridLayout layout = (GridLayout) getParent().getLayout();
-			setLayoutData(new GridData(SWT.FILL,SWT.TOP,true,false,layout.numColumns,1));
-		}
-		addDomainListener();
-	}
-	
-	private void addDomainListener() {
-		if (domain==null) {
-			domain = (TransactionalEditingDomainImpl)BPMN2Editor.getActiveEditor().getEditingDomain();
-			domain.addResourceSetListener(this);
-		}
-	}
-
-	private void removeDomainListener() {
-		if (domain!=null) {
-			domain.removeResourceSetListener(this);
-		}
-	}
-	
-	@Override
-	public void dispose() {
-		removeDomainListener();
-		PropertyUtil.disposeChildWidgets(AbstractBpmn2PropertiesComposite.this);
-		super.dispose();
-	}
-
-	public void setPropertySection(AbstractBpmn2PropertySection section) {
-		propertySection = section;
-	}
-	
-	public AbstractBpmn2PropertySection getPropertySection() {
-		return propertySection;
-	}
-	
 	/**
-	 * This method is called by the when the property sheet tab to update the UI
+	 * This method is called by the property sheet tab section to update the UI
 	 * after a new selection is made. Updating consists of a full teardown of the
 	 * widget tree and then rebuilding it for the newly selected EObject. Since the
 	 * same composite MAY be used for different EObject types, the widgets may be
 	 * completely different, hence the need for teardown and setup for each new selection.
 	 * 
-	 * @param bpmn2Editor
 	 * @param object
 	 */
-	public void setEObject(BPMN2Editor bpmn2Editor, final EObject object) {
-		modelEnablement = bpmn2Editor.getTargetRuntime().getModelEnablements(object);
-		try {
-			modelHandler = ModelHandlerLocator.getModelHandler(bpmn2Editor.getDiagramTypeProvider().getDiagram()
-					.eResource());
-		} catch (IOException e1) {
-			Activator.showErrorWithLogging(e1);
-		}
+	public void setBusinessObject(final EObject object) {
+		super.setBusinessObject(object);
 		
-		setEObject(object);
-	}
-	
-	public final EObject getEObject() {
-		return be;
-	}
-
-	protected final void setEObject(final EObject object) {
 		cleanBindings();
-		be = object;
-		if (be != null) {
-			createBindings(be);
+		if (businessObject != null) {
+			createBindings(businessObject);
 			PropertyUtil.recursivelayout(getParent());
 		}
-	}
-	
-	/**
-	 * Querries the owning AbstractBpmn2PropertySection for its owning BPMN2Editor.
-	 * If this composite is not owned by a AbstractBpmn2PropertySection, then return
-	 * the currently active editor.
-	 * 
-	 * @return the BPMN2Editor that owns this property section.
-	 */
-	public BPMN2Editor getDiagramEditor() {
-		if (propertySection!=null)
-			return (BPMN2Editor)propertySection.getDiagramEditor();
-		return BPMN2Editor.getActiveEditor();
 	}
 
 	/**
@@ -223,10 +138,6 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 	 */
 	protected void cleanBindings() {
 		PropertyUtil.disposeChildWidgets(this);
-	}
-
-	public FormToolkit getToolkit() {
-		return toolkit;
 	}
 	
 	/**
@@ -242,7 +153,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 		
 		if (attributesSection==null || attributesSection.isDisposed()) {
 
-			if (objectStack.peek()==be)
+			if (objectStack.peek()==businessObject)
 				attributesSection = createSection(objectStack.getAttributesParent(), "Attributes");
 			else
 				attributesSection = createSubSection(objectStack.getAttributesParent(),
@@ -269,7 +180,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 
 	/**
 	 * This method is called when setEObject is called and this should recreate
-	 *  all bindings and widgets for the current selection.
+	 * all bindings and widgets for the current selection.
 	 *  
 	 * @param be the business object linked to the currently selected EditPart
 	 * through the Graphiti DiagramEditor framework.
@@ -385,8 +296,8 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 				ExpandableComposite.TITLE_BAR);
 		section.setText(title);
 		
-		if (getEObject()!=null) {
-			final String prefKey = "section."+getEObject().eClass().getName()+title+"."+".expanded";
+		if (getBusinessObject()!=null) {
+			final String prefKey = "section."+getBusinessObject().eClass().getName()+title+"."+".expanded";
 			boolean expanded = preferenceStore.getBoolean(prefKey);
 			section.setExpanded(expanded);
 		}
@@ -398,8 +309,8 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 
 			@Override
 			public void expansionStateChanged(ExpansionEvent e) {
-				if (getEObject()!=null) {
-					final String prefKey = "section."+getEObject().eClass().getName()+title+"."+".expanded";
+				if (getBusinessObject()!=null) {
+					final String prefKey = "section."+getBusinessObject().eClass().getName()+title+"."+".expanded";
 					preferenceStore.setValue(prefKey, e.getState());
 				}
 			}
@@ -520,14 +431,14 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 			String displayName = PropertyUtil.getLabel(object, reference);
 
 			if (getDiagramEditor().getPreferences().getExpandProperties()) {
-				AbstractBpmn2PropertiesComposite composite = null;
+				AbstractDetailComposite composite = null;
 				if (propertySection!=null) {
 					composite = PropertiesCompositeFactory.createDetailComposite(
-						reference.getEReferenceType().getInstanceClass(), propertySection, true);
+						reference.getEReferenceType().getInstanceClass(), propertySection);
 				}
 				else {
 					composite = PropertiesCompositeFactory.createDetailComposite(
-						reference.getEReferenceType().getInstanceClass(), parent, SWT.NONE, true);
+						reference.getEReferenceType().getInstanceClass(), parent, SWT.NONE);
 				}
 				
 				if (composite!=null) {
@@ -536,7 +447,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 						value = modelHandler.create((EClass)reference.getEType());
 						InsertionAdapter.add(object, reference, value);
 					}
-					composite.setEObject(getDiagramEditor(), value);
+					composite.setBusinessObject(value);
 					composite.setTitle( PropertyUtil.getLabel(object,reference) + " Details");
 				}
 				else {
@@ -571,7 +482,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 		if (feature instanceof EReference) {
 			Object value = object.eGet(feature);
 			if (value==null) {
-				domain.getCommandStack().execute(new RecordingCommand(domain) {
+				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 					@Override
 					protected void doExecute() {
 						Object newValue = FACTORY.create(((EReference) feature).getEReferenceType());
@@ -589,7 +500,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 		}
 	}
 
-	protected AbstractBpmn2TableComposite bindList(EObject object, String name) {
+	protected AbstractListComposite bindList(EObject object, String name) {
 		EStructuralFeature feature = getFeature(object,name);
 		if (isList(object,feature)) {
 			return bindList(object,feature);
@@ -597,30 +508,23 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 		return null;
 	}
 	
-	protected AbstractBpmn2TableComposite bindList(EObject object, EStructuralFeature feature) {
+	protected AbstractListComposite bindList(EObject object, EStructuralFeature feature) {
 		return bindList(object,feature,null);
 	}
 	
-	protected AbstractBpmn2TableComposite bindList(EObject object, EStructuralFeature feature, EClass listItemClass) {
+	protected AbstractListComposite bindList(EObject object, EStructuralFeature feature, EClass listItemClass) {
 
-		AbstractBpmn2TableComposite tableComposite = null;
+		AbstractListComposite tableComposite = null;
 		if (modelEnablement.isEnabled(object.eClass(), feature) || modelEnablement.isEnabled(listItemClass)) {
-
-//			if (propertySection!=null)
-//				tableComposite = new AbstractBpmn2TableComposite(propertySection, AbstractBpmn2TableComposite.DEFAULT_STYLE);
-//			else
-//				tableComposite = new AbstractBpmn2TableComposite(this, AbstractBpmn2TableComposite.DEFAULT_STYLE);
-
 			Class clazz = (listItemClass!=null) ?
 					listItemClass.getInstanceClass() :
 					feature.getEType().getInstanceClass();
 			if (propertySection!=null) {
-				tableComposite = PropertiesCompositeFactory.createListComposite(clazz, propertySection, true);
+				tableComposite = PropertiesCompositeFactory.createListComposite(clazz, propertySection);
 			}
 			else {
-				tableComposite = PropertiesCompositeFactory.createListComposite(clazz, this, SWT.NONE, true);
+				tableComposite = PropertiesCompositeFactory.createListComposite(clazz, this, AbstractListComposite.DEFAULT_STYLE);
 			}
-			
 			
 			tableComposite.setListItemClass(listItemClass);
 			tableComposite.bindList(object, feature);
@@ -634,7 +538,7 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 		private Stack<Section> attributesSectionStack = new Stack<Section>();
 		
 		public void push(EObject object) {
-			attributesCompositeStack.push(AbstractBpmn2PropertiesComposite.this.getAttributesParent());
+			attributesCompositeStack.push(AbstractDetailComposite.this.getAttributesParent());
 			attributesComposite = null;
 			attributesSectionStack.push(attributesSection);
 			attributesSection = null;
@@ -654,14 +558,14 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 			if (objectStack.size()>0) {
 				return objectStack.peek();
 			}
-			return AbstractBpmn2PropertiesComposite.this.be;
+			return AbstractDetailComposite.this.businessObject;
 		}
 		
 		public Composite getAttributesParent() {
 			if (objectStack.size()>0) {
 				return attributesCompositeStack.peek();
 			}
-			return AbstractBpmn2PropertiesComposite.this;
+			return AbstractDetailComposite.this;
 		}
 		
 		public EObject get(int i) {

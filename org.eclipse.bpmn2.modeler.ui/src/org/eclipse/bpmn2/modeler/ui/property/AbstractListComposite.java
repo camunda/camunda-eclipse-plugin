@@ -16,15 +16,9 @@ package org.eclipse.bpmn2.modeler.ui.property;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.bpmn2.Bpmn2Package;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
-import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ErrorUtils;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
-import org.eclipse.bpmn2.modeler.ui.property.dialogs.ModelSubclassSelectionDialog;
 import org.eclipse.bpmn2.modeler.ui.property.providers.ColumnTableProvider;
 import org.eclipse.bpmn2.modeler.ui.property.providers.TableCursor;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
@@ -37,17 +31,12 @@ import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.emf.edit.ui.provider.PropertyDescriptor.EDataTypeCellEditor;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.ResourceSetChangeEvent;
-import org.eclipse.emf.transaction.ResourceSetListenerImpl;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -58,7 +47,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
@@ -70,12 +58,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.events.IExpansionListener;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  
@@ -84,10 +70,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  * @author Bob Brodt
  *
  */
-public class AbstractBpmn2TableComposite extends Composite {
-
-	public final static Bpmn2Package PACKAGE = Bpmn2Package.eINSTANCE;
-	public final static Bpmn2ModelerFactory FACTORY = Bpmn2ModelerFactory.getInstance();
+public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 	
 	public static final int HIDE_TITLE = 1 << 18; // Hide section title - useful if this is the only thing in the PropertySheetTab
 	public static final int ADD_BUTTON = 1 << 19; // show "Add" button
@@ -104,15 +87,9 @@ public class AbstractBpmn2TableComposite extends Composite {
 	public static final int CUSTOM_BUTTONS_MASK = (
 			ADD_BUTTON|REMOVE_BUTTON|MOVE_BUTTONS|EDIT_BUTTON);
 
-	protected AbstractBpmn2PropertySection propertySection;
-	protected FormToolkit toolkit;
 //	protected BPMN2Editor bpmn2Editor;
-	protected IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 
-	protected EObject object;
 	protected EStructuralFeature feature;
-	protected EClass listItemClass;
-	protected ModelEnablementDescriptor modelEnablement;
 	
 	// widgets
 	SashForm sashForm;
@@ -125,7 +102,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 	Composite tableAndButtonsComposite;
 	Composite buttonsComposite;
 	Composite tableComposite;
-	AbstractBpmn2PropertiesComposite detailComposite;
+	AbstractDetailComposite detailComposite;
 	
 	boolean removeIsDelete = false;
 	Button addButton;
@@ -133,96 +110,33 @@ public class AbstractBpmn2TableComposite extends Composite {
 	Button upButton;
 	Button downButton;
 	Button editButton;
-
-	protected int style;
 	
 	protected AbstractTableColumnProvider columnProvider;
 	protected TableContentProvider contentProvider;
 	
-	public AbstractBpmn2TableComposite(AbstractBpmn2PropertySection section) {
+	public AbstractListComposite(AbstractBpmn2PropertySection section) {
 		this(section,DEFAULT_STYLE);
 	}
 	
-	public AbstractBpmn2TableComposite(AbstractBpmn2PropertySection section, int style) {
+	public AbstractListComposite(AbstractBpmn2PropertySection section, int style) {
 		super(section.getSectionRoot(), style & ~CUSTOM_STYLES_MASK);
-
-		propertySection = section;
-		toolkit = propertySection.getWidgetFactory();
-		initialize(style);
-	}
-
-	public AbstractBpmn2TableComposite(final Composite parent) {
-		this(parent,DEFAULT_STYLE);
-	}
-	
-	public AbstractBpmn2TableComposite(final Composite parent, int style) {
-		super(parent, style & ~CUSTOM_STYLES_MASK);
-
-		toolkit = new FormToolkit(Display.getCurrent());
-		initialize(style);
-	}
-	
-	private void initialize(int style) {
-		addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				PropertyUtil.disposeChildWidgets(AbstractBpmn2TableComposite.this);
-			}
-		});
-
-		// assume we are being placed in an AbstractBpmn2PropertyComposite which has
-		// a GridLayout of 3 columns
-		setLayout(new GridLayout(3, false));
-		if (getParent().getLayout() instanceof GridLayout) {
-			GridLayout layout = (GridLayout) getParent().getLayout();
-			setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, layout.numColumns, 1));
-		}
 		this.style = style;
-		toolkit.adapt(this);
-		toolkit.paintBordersFor(this);
 	}
 	
-	public TabbedPropertySheetPage getTabbedPropertySheetPage() {
-		return propertySection.getTabbedPropertySheetPage();
-	}
-	
-	public BPMN2Editor getDiagramEditor() {
-		if (propertySection!=null)
-			return (BPMN2Editor)propertySection.getDiagramEditor();
-		if (getParent() instanceof AbstractBpmn2PropertiesComposite)
-			return ((AbstractBpmn2PropertiesComposite)getParent()).getDiagramEditor();
-		return BPMN2Editor.getActiveEditor();
+	public AbstractListComposite(final Composite parent, int style) {
+		super(parent, style & ~CUSTOM_STYLES_MASK);
+		this.style = style;
 	}
 
-	public void setListItemClass(EClass clazz) {
-		this.listItemClass = clazz;
-	}
+	abstract public void setListItemClass(EClass clazz);
 	
-	public EClass getListItemClass(EObject object, EStructuralFeature feature) {
-		return listItemClass;
-	}
+	abstract public EClass getListItemClass(EObject object, EStructuralFeature feature);
 	
 	public EClass getDefaultListItemClass(EObject object, EStructuralFeature feature) {
 		EClass lic = getListItemClass(object,feature);
 		if (lic!=null)
 			return lic;
 		return (EClass) feature.getEType();
-	}
-	
-	/**
-	 * Find all subtypes of the given listItemClass EClass and display a selection
-	 * list if there are more than 1 subtypes.
-	 * 
-	 * @param listItemClass
-	 * @return
-	 */
-	public EClass getListItemClassToAdd(EClass listItemClass) {
-		EClass eclass = null;
-		ModelSubclassSelectionDialog dialog = new ModelSubclassSelectionDialog(getDiagramEditor(), object, feature);
-		if (dialog.open()==Window.OK){
-			eclass = (EClass)dialog.getResult()[0];
-		}
-		return eclass;
 	}
 	
 	/**
@@ -275,8 +189,6 @@ public class AbstractBpmn2TableComposite extends Composite {
 					// TODO: how do we handle these?
 					if (a1 instanceof EAttribute)
 						columnProvider.add(new TableColumn(object,a1));
-					else
-						System.out.println("FeatureMapEntry: "+listItemClass.getName()+"."+a1.getName());
 				}
 				else {
 					if (a1!=nameAttribute)
@@ -292,13 +204,11 @@ public class AbstractBpmn2TableComposite extends Composite {
 	 * in a twistie section whenever the user selects an item from the table. The section
 	 * is automatically hidden when the table is collapsed.
 	 * 
-	 * @param object
+	 * @param parent
+	 * @param eClass
 	 * @return
 	 */
-	public AbstractBpmn2PropertiesComposite createDetailComposite(Composite parent, Class eClass) {
-		AbstractBpmn2PropertiesComposite composite = PropertiesCompositeFactory.createDetailComposite(eClass, parent, SWT.NONE);
-		return composite;
-	}
+	abstract public AbstractDetailComposite createDetailComposite(Composite parent, Class eClass);
 	
 	public TableContentProvider getContentProvider(EObject object, EStructuralFeature feature, EList<EObject>list) {
 		if (contentProvider==null)
@@ -307,98 +217,56 @@ public class AbstractBpmn2TableComposite extends Composite {
 	}
 	
 	/**
-	 * Override this if construction of new list items needs special handling. 
+	 * Add a new list item. 
 	 * @param object
 	 * @param feature
-	 * @return
+	 * @return the new item to be added to the list, or null if item creation failed
 	 */
-	protected EObject addListItem(EObject object, EStructuralFeature feature) {
-		EList<EObject> list = (EList<EObject>)object.eGet(feature);
-		EClass listItemClass = getListItemClass(object,feature);
-		EObject newItem = null;
-		if (!(list instanceof EObjectContainmentEList)) {
-			// this is not a containment list so we can't add it
-			// because we don't know where the new object belongs
-			
-			MessageDialog.openError(getShell(), "Internal Error",
-					"Can not create a new " +
-					listItemClass.getName() +
-					" because the list is not a container. " +
-					"The default addListItem() method must be implemented."
-			);
-			return null;
-		}
-		else {
-			ModelHandler modelHandler = getDiagramEditor().getModelHandler();
-			if (listItemClass==null) {
-				listItemClass = getListItemClassToAdd(listItemClass);
-				if (listItemClass==null)
-					return null; // user cancelled
-			}
-			newItem = modelHandler.create(listItemClass);
-			list.add(newItem);
-		}
-		return newItem;
-	}
+	abstract protected EObject addListItem(EObject object, EStructuralFeature feature);
 
 	/**
-	 * Override this if editing of new list items needs special handling. 
+	 * Edit the currently selected list item. 
 	 * @param object
 	 * @param feature
-	 * @return
+	 * @return the selected item if edit was successful, null if not
 	 */
-	protected EObject editListItem(EObject object, EStructuralFeature feature) {
-		return null;
-	}
+	abstract protected EObject editListItem(EObject object, EStructuralFeature feature);
 	
 	/**
-	 * Override this if removal of list items needs special handling. 
+	 * Remove a list item (does not delete it from the model.) 
 	 * @param object
 	 * @param feature
 	 * @param item
-	 * @return
+	 * @return the item that follows the one removed, or null if the removed item was at the bottom of the list
 	 */
-	protected Object removeListItem(EObject object, EStructuralFeature feature, int index) {
-		EList<EObject> list = (EList<EObject>)object.eGet(feature);
-		int[] map = buildIndexMap(object,feature);
-		EObject selected = null;
-		if (index<map.length-1)
-			selected = list.get(map[index+1]);
-		list.remove(map[index]);
-		return selected;
-	}
+	abstract protected Object removeListItem(EObject object, EStructuralFeature feature, int index);
 	
-	protected Object deleteListItem(EObject object, EStructuralFeature feature, int index) {
-		EList<EObject> list = (EList<EObject>)object.eGet(feature);
-		int[] map = buildIndexMap(object,feature);
-		EObject removed = list.get(map[index]);
-		EObject selected = null;
-		if (index<map.length-1)
-			selected = list.get(map[index+1]);
-		// this ensures that all references to this Interface are removed
-		EcoreUtil.delete(removed);
-		return selected;
-	}
+	/**
+	 * Remove an item from the list and delete it from model. 
+	 * @param object
+	 * @param feature
+	 * @param index
+	 * @return the item that follows the one deleted, or null if the deleted item was at the bottom of the list
+	 */
+	abstract protected Object deleteListItem(EObject object, EStructuralFeature feature, int index);
 	
-	protected Object moveListItemUp(EObject object, EStructuralFeature feature, int index) {
-		EList<EObject> list = (EList<EObject>)object.eGet(feature);
-		int[] map = buildIndexMap(object,feature);
-		if (index>0) {
-			list.move(map[index-1], map[index]);
-			return list.get(map[index-1]);
-		}
-		return null;
-	}
+	/**
+	 * Move the currently selected item up in the list.
+	 * @param object
+	 * @param feature
+	 * @param index
+	 * @return the selected item if it was moved, null if the item is already at the top of the list.
+	 */
+	abstract protected Object moveListItemUp(EObject object, EStructuralFeature feature, int index);
 
-	protected Object moveListItemDown(EObject object, EStructuralFeature feature, int index) {
-		EList<EObject> list = (EList<EObject>)object.eGet(feature);
-		int[] map = buildIndexMap(object,feature);
-		if (index<map.length-1) {
-			list.move(map[index+1], map[index]);
-			return list.get(map[index+1]);
-		}
-		return null;
-	}
+	/**
+	 * Move the currently selected item down in the list.
+	 * @param object
+	 * @param feature
+	 * @param index
+	 * @return the selected item if it was moved, null if the item is already at the bottom of the list.
+	 */
+	abstract protected Object moveListItemDown(EObject object, EStructuralFeature feature, int index);
 
 	protected int[] buildIndexMap(EObject object, EStructuralFeature feature) {
 		EList<EObject> list = (EList<EObject>)object.eGet(feature);
@@ -443,18 +311,16 @@ public class AbstractBpmn2TableComposite extends Composite {
 //		}
 
 		final BPMN2Editor bpmn2Editor = getDiagramEditor();
-		
-		this.object = theobject;
+		setBusinessObject(theobject);
 		this.feature = thefeature;
-		modelEnablement = bpmn2Editor.getTargetRuntime().getModelEnablements(theobject);
-		final TransactionalEditingDomain editingDomain = bpmn2Editor.getEditingDomain();
-		final EList<EObject> list = (EList<EObject>)theobject.eGet(thefeature);
-		final EClass listItemClass = getDefaultListItemClass(theobject,thefeature);
+		final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
+		final EClass listItemClass = getDefaultListItemClass(businessObject,feature);
+		final String label = PropertyUtil.getLabel(listItemClass);
 		
 		////////////////////////////////////////////////////////////
 		// Collect columns to be displayed and build column provider
 		////////////////////////////////////////////////////////////
-		if (createColumnProvider(theobject, thefeature) <= 0)
+		if (createColumnProvider(businessObject, feature) <= 0)
 			return;
 
 		////////////////////////////////////////////////////////////
@@ -471,7 +337,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 					ExpandableComposite.TWISTIE |
 					ExpandableComposite.COMPACT |
 					ExpandableComposite.TITLE_BAR);
-			tableSection.setText(ModelUtil.toDisplayName(listItemClass.getName())+" List");
+			tableSection.setText(label+" List");
 
 			tableComposite = toolkit.createComposite(tableSection, SWT.NONE);
 			tableSection.setClient(tableComposite);
@@ -483,7 +349,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 						ExpandableComposite.TWISTIE |
 						ExpandableComposite.EXPANDED |
 						ExpandableComposite.TITLE_BAR);
-				detailSection.setText(ModelUtil.toDisplayName(listItemClass.getName()) + " Details");
+				detailSection.setText(label+" Details");
 
 				detailSection.setVisible(false);
 
@@ -536,36 +402,9 @@ public class AbstractBpmn2TableComposite extends Composite {
 		
 		tableViewer.setLabelProvider(columnProvider);
 		tableViewer.setCellModifier(columnProvider);
-		tableViewer.setContentProvider(getContentProvider(theobject,thefeature,list));
+		tableViewer.setContentProvider(getContentProvider(businessObject,feature,list));
 		tableViewer.setColumnProperties(columnProvider.getColumnProperties());
 		tableViewer.setCellEditors(columnProvider.createCellEditors(table));
-
-		////////////////////////////////////////////////////////////
-		// add a resource set listener to update the treeviewer when
-		// when something interesting happens
-		////////////////////////////////////////////////////////////
-		final ResourceSetListenerImpl domainListener = new ResourceSetListenerImpl() {
-			@Override
-			public void resourceSetChanged(ResourceSetChangeEvent event) {
-				List<Notification> notifications = event.getNotifications();
-				try {
-					final EList<EObject> list = (EList<EObject>)theobject.eGet(thefeature);
-					for (Notification notification : notifications) {
-						tableViewer.setInput(list);
-					}
-				}
-				catch (Exception e) {
-					// silently ignore :-o
-				}
-			}
-		};
-		editingDomain.addResourceSetListener(domainListener);
-		table.addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				editingDomain.removeResourceSetListener(domainListener);
-			}
-		});
 
 		////////////////////////////////////////////////////////////
 		// Create handlers
@@ -586,9 +425,9 @@ public class AbstractBpmn2TableComposite extends Composite {
 							detailSection.setClient(detailComposite);
 							toolkit.adapt(detailComposite);
 
-							if (detailSection.getText().isEmpty())
-								detailSection.setText(ModelUtil.toDisplayName(o.eClass().getName()) + " Details");
-							((AbstractBpmn2PropertiesComposite)detailComposite).setEObject(bpmn2Editor,o);
+//							if (detailSection.getText().isEmpty())
+								detailSection.setText(PropertyUtil.getLabel(o)+" Details");
+							((AbstractDetailComposite)detailComposite).setBusinessObject(o);
 							enable = detailComposite.getChildren().length>0;
 						}
 					}
@@ -622,9 +461,9 @@ public class AbstractBpmn2TableComposite extends Composite {
 					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 						@Override
 						protected void doExecute() {
-							EObject newItem = addListItem(theobject,thefeature);
+							EObject newItem = addListItem(businessObject,feature);
 							if (newItem!=null) {
-								final EList<EObject> list = (EList<EObject>)theobject.eGet(thefeature);
+								final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
 								tableViewer.setInput(list);
 								tableViewer.setSelection(new StructuredSelection(newItem));
 							}
@@ -643,12 +482,12 @@ public class AbstractBpmn2TableComposite extends Composite {
 							int i = table.getSelectionIndex();
 							Object item;
 							if (removeIsDelete)
-								item = deleteListItem(theobject,thefeature,i);
+								item = deleteListItem(businessObject,feature,i);
 							else
-								item = removeListItem(theobject,thefeature,i);
+								item = removeListItem(businessObject,feature,i);
 							
 							if (item!=null) {
-								final EList<EObject> list = (EList<EObject>)theobject.eGet(thefeature);
+								final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
 								tableViewer.setInput(list);
 								if (i>=list.size())
 									i = list.size() - 1;
@@ -668,8 +507,8 @@ public class AbstractBpmn2TableComposite extends Composite {
 						@Override
 						protected void doExecute() {
 							int i = table.getSelectionIndex();
-							Object item = moveListItemUp(object,feature,i);
-							final EList<EObject> list = (EList<EObject>)theobject.eGet(thefeature);
+							Object item = moveListItemUp(businessObject,feature,i);
+							final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
 							tableViewer.setInput(list);
 							tableViewer.setSelection(new StructuredSelection(item));
 						}
@@ -683,8 +522,8 @@ public class AbstractBpmn2TableComposite extends Composite {
 						@Override
 						protected void doExecute() {
 							int i = table.getSelectionIndex();
-							Object item = moveListItemDown(object,feature,i);
-							final EList<EObject> list = (EList<EObject>)theobject.eGet(thefeature);
+							Object item = moveListItemDown(businessObject,feature,i);
+							final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
 							tableViewer.setInput(list);
 							tableViewer.setSelection(new StructuredSelection(item));
 						}
@@ -699,9 +538,9 @@ public class AbstractBpmn2TableComposite extends Composite {
 					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 						@Override
 						protected void doExecute() {
-							EObject newItem = editListItem(theobject,thefeature);
+							EObject newItem = editListItem(businessObject,feature);
 							if (newItem!=null) {
-								final EList<EObject> list = (EList<EObject>)theobject.eGet(thefeature);
+								final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
 								tableViewer.setInput(list);
 								tableViewer.setSelection(new StructuredSelection(newItem));
 							}
@@ -720,6 +559,20 @@ public class AbstractBpmn2TableComposite extends Composite {
 		boolean expanded = preferenceStore.getBoolean("table."+listItemClass.getName()+".expanded");
 		if (expanded && tableSection!=null)
 			tableSection.setExpanded(true);
+	}
+	
+	@Override
+	public void resourceSetChanged(ResourceSetChangeEvent event) {
+		List<Notification> notifications = event.getNotifications();
+		try {
+			final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
+			for (Notification notification : notifications) {
+				tableViewer.setInput(list);
+			}
+		}
+		catch (Exception e) {
+			// silently ignore :-o
+		}
 	}
 	
 	/**

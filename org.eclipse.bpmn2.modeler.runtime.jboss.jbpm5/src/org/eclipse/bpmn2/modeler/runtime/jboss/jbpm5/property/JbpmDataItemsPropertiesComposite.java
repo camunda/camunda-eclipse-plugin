@@ -22,8 +22,8 @@ import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.GlobalType;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelFactory;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
-import org.eclipse.bpmn2.modeler.ui.property.ExtensionValueTableComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite;
+import org.eclipse.bpmn2.modeler.ui.property.ExtensionValueListComposite;
 import org.eclipse.bpmn2.modeler.ui.property.diagrams.DataItemsPropertiesComposite;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
@@ -55,8 +55,8 @@ public class JbpmDataItemsPropertiesComposite extends DataItemsPropertiesComposi
 			for (RootElement re : definitions.getRootElements()) {
 				if (re instanceof Process) {
 					Process process = (Process)re;
-					ExtensionValueTableComposite globalsTable = new ExtensionValueTableComposite(
-							this, AbstractBpmn2TableComposite.DEFAULT_STYLE)
+					ExtensionValueListComposite globalsTable = new ExtensionValueListComposite(
+							this, AbstractListComposite.DEFAULT_STYLE)
 					{
 						
 						@Override

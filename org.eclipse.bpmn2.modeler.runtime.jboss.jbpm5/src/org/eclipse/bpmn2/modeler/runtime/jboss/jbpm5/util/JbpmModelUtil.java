@@ -185,7 +185,7 @@ public class JbpmModelUtil {
 	 * 
 	 * NOTE: This method will create an ItemDefinition if it does not already exist.
 	 * 
-	 * @param object - a context EObject used to search for ItemDefinitions, and to create
+	 * @param businessObject - a context EObject used to search for ItemDefinitions, and to create
 	 *                 new ItemDefinitions if necessary.
 	 * @param value - one of the Object values in the map returned by collectAllDataTypes().
 	 * @return an ItemDefinition for the data type

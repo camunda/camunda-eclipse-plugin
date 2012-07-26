@@ -82,8 +82,10 @@ public class JbpmPropertyPropertiesAdapter extends PropertyPropertiesAdapter {
 				
 				@Override
 				public Hashtable<String, Object> getChoiceOfValues(Object context) {
-					EObject object = context instanceof EObject ? (EObject)context : this.object;
-					return JbpmModelUtil.collectAllDataTypes(object);
+					final Property property = context instanceof Property ?
+							(Property)context :
+							(Property)this.object;
+					return JbpmModelUtil.collectAllDataTypes(property);
 				}
 				
 				@Override

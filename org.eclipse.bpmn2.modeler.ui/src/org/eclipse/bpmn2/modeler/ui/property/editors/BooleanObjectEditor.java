@@ -14,7 +14,7 @@
 package org.eclipse.bpmn2.modeler.ui.property.editors;
 
 import org.eclipse.bpmn2.modeler.core.utils.ErrorUtils;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.IValueChangeListener;
 import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
@@ -40,10 +40,10 @@ public class BooleanObjectEditor extends ObjectEditor {
 	protected Button button;
 	
 	/**
-	 * @param object
+	 * @param businessObject
 	 * @param feature
 	 */
-	public BooleanObjectEditor(AbstractBpmn2PropertiesComposite parent, EObject obj, EStructuralFeature feat) {
+	public BooleanObjectEditor(AbstractDetailComposite parent, EObject obj, EStructuralFeature feat) {
 		super(parent, obj, feat);
 	}
 	

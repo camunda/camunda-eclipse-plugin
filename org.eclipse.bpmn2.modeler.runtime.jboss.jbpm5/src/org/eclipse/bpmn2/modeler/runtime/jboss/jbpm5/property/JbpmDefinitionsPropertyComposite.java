@@ -21,8 +21,8 @@ import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelFactory;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.util.JbpmModelUtil;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
-import org.eclipse.bpmn2.modeler.ui.property.ExtensionValueTableComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite;
+import org.eclipse.bpmn2.modeler.ui.property.ExtensionValueListComposite;
 import org.eclipse.bpmn2.modeler.ui.property.diagrams.DefinitionsPropertyComposite;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.SchemaImportDialog;
 import org.eclipse.emf.ecore.EObject;
@@ -57,8 +57,8 @@ public class JbpmDefinitionsPropertyComposite extends DefinitionsPropertyComposi
 			for (RootElement re : definitions.getRootElements()) {
 				if (re instanceof Process) {
 					Process process = (Process)re;
-					ExtensionValueTableComposite importsTable = new ExtensionValueTableComposite(
-							this, AbstractBpmn2TableComposite.DEFAULT_STYLE)
+					ExtensionValueListComposite importsTable = new ExtensionValueListComposite(
+							this, AbstractListComposite.DEFAULT_STYLE)
 					{
 						@Override
 						protected EObject addListItem(EObject object, EStructuralFeature feature) {

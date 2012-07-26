@@ -13,7 +13,7 @@
 package org.eclipse.bpmn2.modeler.ui.property.tasks;
 
 import org.eclipse.bpmn2.ChoreographyTask;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.emf.ecore.EObject;
@@ -29,7 +29,7 @@ public class ChoreographyTaskPropertySection extends AbstractBpmn2PropertySectio
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
 	 */
 	@Override
-	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+	protected AbstractDetailComposite createSectionRoot() {
 		return new ChoreographyTaskPropertiesComposite(this);
 	}
 

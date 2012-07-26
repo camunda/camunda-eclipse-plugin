@@ -86,7 +86,7 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter 
 			// search for all Properties and DataStores
 			// Properties are contained in the nearest enclosing Process or Event;
 			// DataStores are contained in the DocumentRoot
-			EObject object = context instanceof EObject ? (EObject)context : this.object;
+			EObject object = context instanceof DataAssociation ? (EObject)context : this.object;
 			values.addAll( ModelUtil.collectAncestorObjects(object, "properties", new Class[] {Activity.class}) );
 			values.addAll( ModelUtil.collectAncestorObjects(object, "properties", new Class[] {Process.class}) );
 			values.addAll( ModelUtil.collectAncestorObjects(object, "properties", new Class[] {Event.class}) );
@@ -117,7 +117,7 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter 
 		
 		@Override
 		public EObject createObject(Object context, EClass eClass) {
-			EObject object = context instanceof EObject ? (EObject)context : this.object;
+			EObject object = context instanceof DataAssociation ? (EObject)context : this.object;
 			// what kind of object should we create? Property or DataStore?
 			if (eClass==null) {
 				if (ModelUtil.findNearestAncestor(object, new Class[] {Process.class, Event.class}) != null)

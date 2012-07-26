@@ -32,12 +32,12 @@ public class ConditionalEventDefinitionPropertiesComposite extends ExpressionPro
 	}
 
 	@Override
-	public void setEObject(BPMN2Editor bpmn2Editor, EObject object) {
+	public void setBusinessObject(EObject object) {
 		if (object instanceof ConditionalEventDefinition) {
 			ConditionalEventDefinition ced = (ConditionalEventDefinition)object;
 			object = ced.getCondition();
 		}
-		super.setEObject(bpmn2Editor, object);
+		super.setBusinessObject(object);
 	}
 	
 }

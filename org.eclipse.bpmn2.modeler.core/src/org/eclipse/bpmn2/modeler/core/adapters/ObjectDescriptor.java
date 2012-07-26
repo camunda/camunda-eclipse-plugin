@@ -48,8 +48,14 @@ public class ObjectDescriptor {
 	}
 	
 	public String getLabel(Object context) {
+		EObject object = (context instanceof EObject) ?
+				(EObject)context :
+				this.object;
+		EClass eclass = (object instanceof EClass) ?
+				(EClass)object :
+				object.eClass();
 		if (label==null) {
-			label = ModelUtil.toDisplayName(object.eClass().getName());
+			label = ModelUtil.toDisplayName(eclass.getName());
 		}
 		return label;
 	}

@@ -74,7 +74,7 @@ public class SequenceFlowPropertiesComposite extends ExpressionPropertiesComposi
 								
 								setDefault(sequenceFlow,null);
 							}
-							setEObject(be);
+							setBusinessObject(be);
 						}
 					});
 				}
@@ -107,7 +107,7 @@ public class SequenceFlowPropertiesComposite extends ExpressionPropertiesComposi
 			if (exp != null) {
 				addRemoveConditionButton.setText("Remove Condition");
 				setDefaultFlowCheckbox.setVisible(false);
-				this.be = exp;
+				this.businessObject = exp;
 				super.createBindings(exp);
 			}
 			else {

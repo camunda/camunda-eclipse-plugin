@@ -18,7 +18,7 @@ import javax.xml.namespace.QName;
 import org.eclipse.bpmn2.Import;
 import org.eclipse.bpmn2.modeler.core.utils.NamespaceUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.SchemaSelectionDialog;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -55,7 +55,7 @@ public class SchemaObjectEditor extends TextAndButtonObjectEditor {
 	 * @param object
 	 * @param feature
 	 */
-	public SchemaObjectEditor(AbstractBpmn2PropertiesComposite parent, EObject object, EStructuralFeature feature) {
+	public SchemaObjectEditor(AbstractDetailComposite parent, EObject object, EStructuralFeature feature) {
 		super(parent, object, feature);
 		resource = BPMN2Editor.getActiveEditor().getModelHandler().getResource();
 	}

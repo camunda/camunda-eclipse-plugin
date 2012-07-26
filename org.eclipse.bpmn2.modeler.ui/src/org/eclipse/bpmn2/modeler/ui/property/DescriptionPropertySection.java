@@ -31,7 +31,7 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
 	 */
 	@Override
-	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+	protected AbstractDetailComposite createSectionRoot() {
 		return new DescriptionPropertyComposite(this);		
 	}
 	
@@ -41,7 +41,7 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 		return getBusinessObjectForSelection(selection) != null;
 	}
 
-	public class DescriptionPropertyComposite extends AbstractBpmn2PropertiesComposite {
+	public class DescriptionPropertyComposite extends AbstractDetailComposite {
 
 		/**
 		 * @param section

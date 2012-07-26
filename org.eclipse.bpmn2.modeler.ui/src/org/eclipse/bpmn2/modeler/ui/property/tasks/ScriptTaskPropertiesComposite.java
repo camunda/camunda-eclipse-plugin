@@ -15,14 +15,14 @@
 package org.eclipse.bpmn2.modeler.ui.property.tasks;
 
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
-public class ScriptTaskPropertiesComposite extends DefaultPropertiesComposite {
+public class ScriptTaskPropertiesComposite extends DefaultDetailComposite {
 
 	public ScriptTaskPropertiesComposite(Composite parent, int style) {
 		super(parent, style);

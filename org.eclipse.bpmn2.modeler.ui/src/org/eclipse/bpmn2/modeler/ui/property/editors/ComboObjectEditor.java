@@ -19,7 +19,7 @@ import java.util.Map.Entry;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterRegistry;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.FeatureEditingDialog;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
@@ -64,7 +64,7 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 	 * @param object
 	 * @param feature
 	 */
-	public ComboObjectEditor(AbstractBpmn2PropertiesComposite parent, EObject object, EStructuralFeature feature) {
+	public ComboObjectEditor(AbstractDetailComposite parent, EObject object, EStructuralFeature feature) {
 		super(parent, object, feature);
 	}
 

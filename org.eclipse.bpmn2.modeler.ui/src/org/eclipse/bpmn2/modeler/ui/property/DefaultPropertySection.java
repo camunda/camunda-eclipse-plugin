@@ -18,18 +18,18 @@ import org.eclipse.ui.IWorkbenchPart;
 
 public class DefaultPropertySection extends AbstractBpmn2PropertySection {
 
-	// Register the DefaultPropertiesComposite as a fallback for rendering EObject
+	// Register the Default List and Detail Composites as fallback for rendering EObject
 	static {
-		PropertiesCompositeFactory.register(EObject.class, DefaultPropertiesComposite.class);
-		PropertiesCompositeFactory.register(EObject.class, AbstractBpmn2TableComposite.class);
+		PropertiesCompositeFactory.register(EObject.class, DefaultDetailComposite.class);
+		PropertiesCompositeFactory.register(EObject.class, DefaultListComposite.class);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
 	 */
 	@Override
-	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
-		return new DefaultPropertiesComposite(this);
+	protected AbstractDetailComposite createSectionRoot() {
+		return new DefaultDetailComposite(this);
 	}
 
 	@Override

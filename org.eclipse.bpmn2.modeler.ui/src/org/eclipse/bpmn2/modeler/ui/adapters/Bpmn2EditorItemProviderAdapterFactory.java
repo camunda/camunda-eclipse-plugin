@@ -14,6 +14,7 @@
 package org.eclipse.bpmn2.modeler.ui.adapters;
 
 import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.CallChoreography;
 import org.eclipse.bpmn2.CallConversation;
@@ -98,6 +99,8 @@ import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * This class adds a name-value map to the Bpmn2ItemProviderAdapterFactory.
@@ -113,9 +116,10 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 	@Override
 	public Adapter adaptNew(Notifier object, Object type) {
 		if (type == ExtendedPropertiesAdapter.class && object instanceof EObject) {
-			Adapter adapter = bpmn2ModelSwitch.doSwitch((EObject) object);
-			if (!(object instanceof EClass))
+		    Adapter adapter = bpmn2ModelSwitch.doSwitch((EObject) object);
+		    if (adapter!=null && !(object instanceof EClass)) {
 				((EObject)object).eAdapters().add(adapter);
+		    }
 			return adapter;
 		}
 		return super.adaptNew(object, type);
@@ -134,7 +138,7 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
     public class Bpmn2ExtendedPropertiesSwitch extends Bpmn2Switch<ExtendedPropertiesAdapter> {
 
     	private AdapterFactory adapterFactory;
-    	
+        
     	public Bpmn2ExtendedPropertiesSwitch(AdapterFactory adapterFactory) {
     		super();
     		this.adapterFactory = adapterFactory;
@@ -149,8 +153,18 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
         @Override
 		public ExtendedPropertiesAdapter defaultCase(EObject object) {
         	ExtendedPropertiesAdapter adapter = null;
-        	if (object instanceof EClass)
+        	if (object instanceof EClass) {
         	    adapter = getTargetRuntimeAdapter((EClass)object);
+        	    if (adapter==null) {
+    		    	EClass eclass = (EClass)object;
+    		    	EPackage pkg = (EPackage)(eclass).eContainer();
+    		    	if (pkg == Bpmn2Package.eINSTANCE) {
+    		    		object = pkg.getEFactoryInstance().create(eclass);
+    		    		adapter = doSwitch(object);
+    		    		EcoreUtil.delete(object);
+    		    	}
+        	    }
+        	}
         	else
         		adapter = getTargetRuntimeAdapter(object);
         	if (adapter==null) {
@@ -184,6 +198,8 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 
         private ExtendedPropertiesAdapter getTargetRuntimeAdapter(EClass eclass) {
             PropertyExtensionDescriptor ped = TargetRuntime.getCurrentRuntime().getPropertyExtension(eclass.getInstanceClass());
+            if (ped==null && TargetRuntime.getCurrentRuntime() != TargetRuntime.getDefaultRuntime())
+            	ped = TargetRuntime.getDefaultRuntime().getPropertyExtension(eclass.getInstanceClass());
             if (ped!=null)
                 return ped.getAdapter(adapterFactory,eclass);
             return null;
@@ -191,6 +207,8 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 
         private ExtendedPropertiesAdapter getTargetRuntimeAdapter(EObject object) {
 			PropertyExtensionDescriptor ped = TargetRuntime.getCurrentRuntime().getPropertyExtension(object.getClass());
+            if (ped==null && TargetRuntime.getCurrentRuntime() != TargetRuntime.getDefaultRuntime())
+                ped = TargetRuntime.getDefaultRuntime().getPropertyExtension(object.getClass());
 			if (ped!=null)
 				return ped.getAdapter(adapterFactory,object);
 			return null;

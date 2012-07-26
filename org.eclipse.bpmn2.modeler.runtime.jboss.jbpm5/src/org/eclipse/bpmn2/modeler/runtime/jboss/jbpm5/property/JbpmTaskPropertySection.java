@@ -19,7 +19,7 @@ import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.ui.property.tasks.TaskPropertySection;
 import org.eclipse.emf.ecore.EObject;
@@ -52,7 +52,7 @@ public class JbpmTaskPropertySection extends TaskPropertySection {
 	}
 
 	@Override
-	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+	protected AbstractDetailComposite createSectionRoot() {
 		return new JbpmTaskPropertiesComposite(this);
 	}
 }

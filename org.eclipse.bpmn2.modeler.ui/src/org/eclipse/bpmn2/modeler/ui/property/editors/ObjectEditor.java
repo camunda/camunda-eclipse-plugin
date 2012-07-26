@@ -18,7 +18,7 @@ import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.utils.ErrorUtils;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -42,10 +42,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public abstract class ObjectEditor {
 	protected EObject object;
 	protected EStructuralFeature feature;
-	protected AbstractBpmn2PropertiesComposite parent;
+	protected AbstractDetailComposite parent;
 	private Label label;
 	
-	public ObjectEditor(AbstractBpmn2PropertiesComposite parent, EObject object, EStructuralFeature feature) {
+	public ObjectEditor(AbstractDetailComposite parent, EObject object, EStructuralFeature feature) {
 		this.parent = parent;
 		this.object = object;
 		this.feature = feature;

@@ -14,7 +14,7 @@
 package org.eclipse.bpmn2.modeler.ui.property.dialogs;
 
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EClass;
@@ -78,9 +78,9 @@ public class FeatureEditingDialog extends Dialog {
 			else
 				cancel = true;
 		}
-		AbstractBpmn2PropertiesComposite comp = PropertiesCompositeFactory.createDetailComposite(
+		AbstractDetailComposite comp = PropertiesCompositeFactory.createDetailComposite(
 				eclass.getInstanceClass(), dialogArea, SWT.NONE);
-		comp.setEObject(BPMN2Editor.getActiveEditor(), newObject);
+		comp.setBusinessObject(newObject);
 		
 		return dialogArea;
 	}

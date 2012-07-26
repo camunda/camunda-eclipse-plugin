@@ -159,14 +159,14 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 	 * 
 	 * @return the composite
 	 */
-	public AbstractBpmn2PropertiesComposite getSectionRoot() {
-		AbstractBpmn2PropertiesComposite sectionRoot = null;
+	public AbstractDetailComposite getSectionRoot() {
+		AbstractDetailComposite sectionRoot = null;
 		if (parent!=null && !parent.isDisposed()) {
 			if (parent.getChildren().length==0) {
 				sectionRoot = createSectionRoot();
 				sectionRoot.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
 			}
-			sectionRoot = (AbstractBpmn2PropertiesComposite)parent.getChildren()[0];
+			sectionRoot = (AbstractDetailComposite)parent.getChildren()[0];
 		}
 		return sectionRoot;
 	}
@@ -178,7 +178,7 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 	 * 
 	 * @return
 	 */
-	protected abstract AbstractBpmn2PropertiesComposite createSectionRoot();
+	protected abstract AbstractDetailComposite createSectionRoot();
 
 	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
 		return BusinessObjectUtil.getBusinessObjectForPictogramElement(pe);
@@ -220,10 +220,11 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 		if (pe != null) {
 			final EObject be = getBusinessObjectForPictogramElement(pe);
 			if (be!=null) {
-				AbstractBpmn2PropertiesComposite sectionRoot = getSectionRoot();
+				AbstractDetailComposite sectionRoot = getSectionRoot();
 				if (sectionRoot!=null) {
-					if (sectionRoot.getEObject() != be) {
-						sectionRoot.setEObject((BPMN2Editor) getDiagramEditor(), be);
+					if (sectionRoot.getBusinessObject() != be) {
+						sectionRoot.setDiagramEditor((BPMN2Editor) getDiagramEditor());
+						sectionRoot.setBusinessObject(be);
 						PropertyUtil.recursivelayout(sectionRoot);
 					}
 				}
@@ -241,7 +242,7 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 	 * Force a layout of the property sheet page.
 	 */
 	public void layout() {
-		Control sectionRoot = (AbstractBpmn2PropertiesComposite)parent.getChildren()[0];
+		Control sectionRoot = (AbstractDetailComposite)parent.getChildren()[0];
 		Composite composite = (Composite)tabbedPropertySheetPage.getControl();
 		composite.layout(true);
 		tabbedPropertySheetPage.resizeScrolledComposite();

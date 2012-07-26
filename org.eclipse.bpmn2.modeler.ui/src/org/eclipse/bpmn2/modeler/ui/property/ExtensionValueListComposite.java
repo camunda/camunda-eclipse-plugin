@@ -26,7 +26,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.swt.widgets.Composite;
 
-public abstract class ExtensionValueTableComposite extends AbstractBpmn2TableComposite {
+public abstract class ExtensionValueListComposite extends DefaultListComposite {
 
 	EStructuralFeature extensionValueFeature;
 
@@ -34,7 +34,7 @@ public abstract class ExtensionValueTableComposite extends AbstractBpmn2TableCom
 	 * @param parent
 	 * @param style
 	 */
-	public ExtensionValueTableComposite(Composite parent, int style) {
+	public ExtensionValueListComposite(Composite parent, int style) {
 		super(parent, style);
 	}
 	
@@ -46,15 +46,13 @@ public abstract class ExtensionValueTableComposite extends AbstractBpmn2TableCom
 	}
 	
 	/* (non-Javadoc)
-	 * Subclasses must provide this because each extensionValue has its own set of attributes
-	 *
-	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite#addListItem(org.eclipse.emf.ecore.EObject, org.eclipse.emf.ecore.EStructuralFeature)
+	 * @see org.eclipse.bpmn2.modeler.ui.property.DefaultListComposite#addListItem(org.eclipse.emf.ecore.EObject, org.eclipse.emf.ecore.EStructuralFeature)
 	 */
 	protected abstract EObject addListItem(EObject object, EStructuralFeature feature);
 	
 	@SuppressWarnings("unchecked")
 	protected void addExtensionValue(EObject value) {
-		ModelUtil.addExtensionAttributeValue(object, extensionValueFeature, value);
+		ModelUtil.addExtensionAttributeValue(businessObject, extensionValueFeature, value);
 	}
 	
 	protected Object removeListItem(EObject object, EStructuralFeature feature, int index) {

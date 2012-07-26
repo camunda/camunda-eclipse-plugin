@@ -29,10 +29,11 @@ import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultDetailComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultListComposite;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ComboObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
@@ -77,7 +78,7 @@ import org.eclipse.ui.forms.widgets.Section;
  *    o Copy the Data Association “sourceRef” value into the “targetRef.” Only one
  *      sourceRef parameter is allowed in this case.					
  */
-public class DataAssociationPropertiesComposite extends DefaultPropertiesComposite implements IResourceChangeListener {
+public class DataAssociationPropertiesComposite extends DefaultDetailComposite implements IResourceChangeListener {
 	
 	public enum MapType {
 		None,
@@ -98,13 +99,13 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 	protected Button advancedMappingButton;
 	// holds the Transformation expression details and Assignments table
 	protected Composite transformationComposite;
-	protected AbstractBpmn2PropertiesComposite transformationDetailsComposite;
+	protected AbstractDetailComposite transformationDetailsComposite;
 	protected Composite expressionComposite;
-	protected AbstractBpmn2PropertiesComposite expressionDetailsComposite;
-	protected AssignmentsTable assignmentsTable;
+	protected AbstractDetailComposite expressionDetailsComposite;
+	protected AssignmentListComposite assignmentsTable;
 	// holds the Property details
 	protected Composite propertyComposite;
-	protected DefaultPropertiesComposite propertyDetailsComposite;
+	protected DefaultDetailComposite propertyDetailsComposite;
 	protected boolean propertyWidgetsShowing = false;
 	protected boolean expressionWidgetsShowing = false;
 	protected boolean transformationWidgetsShowing = false;
@@ -179,7 +180,7 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 				association.setTargetRef((ItemAwareElement) be);
 				InsertionAdapter.add(throwEvent, PACKAGE.getThrowEvent_DataInputAssociation(), association);
 			}
-			DefaultPropertiesComposite dataInputDetails = new DefaultPropertiesComposite(this,SWT.NONE) {
+			DefaultDetailComposite dataInputDetails = new DefaultDetailComposite(this,SWT.NONE) {
 
 				@Override
 				public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
@@ -200,7 +201,7 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 				}
 				
 			};
-			dataInputDetails.setEObject(getDiagramEditor(), be);
+			dataInputDetails.setBusinessObject(be);
 			sectionTitle = "Data Input Details";
 		}
 		else if (container instanceof CatchEvent) {
@@ -211,7 +212,7 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 				association.setTargetRef((ItemAwareElement) be);
 				InsertionAdapter.add(catchEvent, PACKAGE.getCatchEvent_DataOutputAssociation(), association);
 			}
-			DefaultPropertiesComposite dataOutputDetails = new DefaultPropertiesComposite(this,SWT.NONE) {
+			DefaultDetailComposite dataOutputDetails = new DefaultDetailComposite(this,SWT.NONE) {
 
 				@Override
 				public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
@@ -232,7 +233,7 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 				}
 				
 			};
-			dataOutputDetails.setEObject(getDiagramEditor(), be);
+			dataOutputDetails.setBusinessObject(be);
 			sectionTitle = "Data Output Details";
 		}
 		
@@ -364,11 +365,11 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 	
 	private void createWidgets() {
 		
-		if (association==null && !(be instanceof DataInput || be instanceof DataOutput)) {
+		if (association==null && !(businessObject instanceof DataInput || businessObject instanceof DataOutput)) {
 			this.createLabel(this, "The I/O Parameter \""+parameterName+"\" can not have Mappings.");
 			return;
 		} else {
-			EObject container = be.eContainer();
+			EObject container = businessObject.eContainer();
 			if (container instanceof InputOutputSpecification) {
 				EObject containerContainer = container.eContainer();
 				if (containerContainer instanceof Activity) {
@@ -485,7 +486,7 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 		if (show != propertyWidgetsShowing) {
 			if (show) {
 				if (propertyDetailsComposite==null) {
-					propertyDetailsComposite = new DefaultPropertiesComposite(this,SWT.BORDER) {
+					propertyDetailsComposite = new DefaultDetailComposite(this,SWT.BORDER) {
 	
 						@Override
 						public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
@@ -524,7 +525,7 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 						}
 						
 					};
-					propertyDetailsComposite.setEObject(getDiagramEditor(), association);
+					propertyDetailsComposite.setBusinessObject(association);
 					propertyDetailsComposite.setTitle("Properties");
 				}
 			}
@@ -561,9 +562,9 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 				}
 				if (transformationDetailsComposite==null) {
 					transformationDetailsComposite = PropertiesCompositeFactory.createDetailComposite(
-							Expression.class, transformationComposite, SWT.NONE, true);
+							Expression.class, transformationComposite, SWT.NONE);
 				}
-				transformationDetailsComposite.setEObject(getDiagramEditor(), transformation);
+				transformationDetailsComposite.setBusinessObject(transformation);
 				transformationDetailsComposite.setTitle("Transformation");
 	
 			}
@@ -575,7 +576,7 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 				
 				// remove the Transformation and assignments
 				if (!updatingWidgets && association.getTransformation()!=null) {
-					domain.getCommandStack().execute(new RecordingCommand(domain) {
+					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 						@Override
 						protected void doExecute() {
 							association.setTransformation(null);
@@ -632,9 +633,9 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 	
 				if (expressionDetailsComposite==null) {
 					expressionDetailsComposite = PropertiesCompositeFactory.createDetailComposite(
-							Expression.class, expressionComposite, SWT.NONE, true);
+							Expression.class, expressionComposite, SWT.NONE);
 				}
-				expressionDetailsComposite.setEObject(getDiagramEditor(), expression);//association.getexpression());
+				expressionDetailsComposite.setBusinessObject(expression);//association.getexpression());
 				expressionDetailsComposite.setTitle("Expression");
 			}
 			else {
@@ -645,7 +646,7 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 				
 				// remove the Transformation and assignments
 				if (!updatingWidgets && association.getAssignment().size()==1) {
-					domain.getCommandStack().execute(new RecordingCommand(domain) {
+					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 						@Override
 						protected void doExecute() {
 							association.getAssignment().clear();
@@ -681,14 +682,14 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 	
 				if (transformationDetailsComposite==null) {
 					transformationDetailsComposite = PropertiesCompositeFactory.createDetailComposite(
-							Expression.class, transformationComposite, SWT.NONE, true);
+							Expression.class, transformationComposite, SWT.NONE);
 				}
-				transformationDetailsComposite.setEObject(getDiagramEditor(), transformation);//association.getTransformation());
+				transformationDetailsComposite.setBusinessObject(transformation);//association.getTransformation());
 				transformationDetailsComposite.setTitle("Transformation");
 				
 				if (assignmentsTable!=null)
 					assignmentsTable.dispose();
-				assignmentsTable = new AssignmentsTable(transformationComposite);
+				assignmentsTable = new AssignmentListComposite(transformationComposite);
 				assignmentsTable.setLayoutData(new GridData(SWT.FILL,SWT.TOP,true,false,1,1));
 				assignmentsTable.bindList(association, association.eClass().getEStructuralFeature("assignment"));
 				assignmentsTable.setTitle("Assignments");
@@ -706,7 +707,7 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 				
 				// remove the Transformation and assignments
 				if (!updatingWidgets && (association.getAssignment().size()>0 || association.getTransformation()!=null)) {
-					domain.getCommandStack().execute(new RecordingCommand(domain) {
+					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 						@Override
 						protected void doExecute() {
 							association.getAssignment().clear();
@@ -719,9 +720,9 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 		}
 	}
 
-	public class AssignmentsTable extends AbstractBpmn2TableComposite {
+	public class AssignmentListComposite extends DefaultListComposite {
 
-		public AssignmentsTable(Composite parent) {
+		public AssignmentListComposite(Composite parent) {
 			super(parent, ADD_BUTTON|REMOVE_BUTTON|MOVE_BUTTONS|SHOW_DETAILS);
 		}
 		

@@ -34,7 +34,7 @@ public class AdvancedPropertySection extends AbstractBpmn2PropertySection {
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
 	 */
 	@Override
-	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+	protected AbstractDetailComposite createSectionRoot() {
 		return new AdvancedPropertiesComposite(this);
 	}
 	

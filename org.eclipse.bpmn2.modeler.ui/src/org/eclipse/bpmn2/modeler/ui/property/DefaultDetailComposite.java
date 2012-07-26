@@ -25,7 +25,7 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.swt.widgets.Composite;
 
-public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite {
+public class DefaultDetailComposite extends AbstractDetailComposite {
 
 	protected final String[] EMPTY_STRING_ARRAY = new String[] {};
 	protected AbstractPropertiesProvider propertiesProvider = null;
@@ -36,11 +36,11 @@ public class DefaultPropertiesComposite extends AbstractBpmn2PropertiesComposite
 	 * @param parent
 	 * @param style
 	 */
-	public DefaultPropertiesComposite(Composite parent, int style) {
+	public DefaultDetailComposite(Composite parent, int style) {
 		super(parent,style);
 	}
 	
-	public DefaultPropertiesComposite(AbstractBpmn2PropertySection section) {
+	public DefaultDetailComposite(AbstractBpmn2PropertySection section) {
 		super(section);
 	}
 	

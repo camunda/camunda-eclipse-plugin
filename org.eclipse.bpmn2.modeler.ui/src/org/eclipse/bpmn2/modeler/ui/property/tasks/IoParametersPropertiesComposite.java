@@ -28,9 +28,10 @@ import org.eclipse.bpmn2.InputSet;
 import org.eclipse.bpmn2.OutputSet;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultListComposite;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -44,10 +45,10 @@ import org.eclipse.swt.widgets.Composite;
  * 
  * TODO: handle ThrowEvent parameters
  */
-public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComposite {
+public class IoParametersPropertiesComposite extends AbstractDetailComposite {
 
-	AbstractBpmn2TableComposite inputTable;
-	AbstractBpmn2TableComposite outputTable;
+	AbstractListComposite inputTable;
+	AbstractListComposite outputTable;
 	
 	public IoParametersPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
@@ -93,7 +94,7 @@ public class IoParametersPropertiesComposite extends AbstractBpmn2PropertiesComp
 		}
 	}
 	
-	public class IOParametersTable extends AbstractBpmn2TableComposite {
+	public class IOParametersTable extends DefaultListComposite {
 
 		Activity activity;
 		CallableElement element;

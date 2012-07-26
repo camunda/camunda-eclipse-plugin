@@ -14,6 +14,7 @@
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
@@ -41,7 +42,7 @@ public class FormalExpressionPropertiesAdapter extends ExtendedPropertiesAdapter
 				@Override
 				public String getLabel(Object context) {
 					EObject object = this.object;
-					if (context instanceof EObject)
+					if (context instanceof FormalExpression)
 						object = (EObject)context;
 					if (object.eContainer() instanceof SequenceFlow)
 						return "Constraint";

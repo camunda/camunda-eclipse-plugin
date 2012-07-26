@@ -37,9 +37,10 @@ import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.Transaction;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultListComposite;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.ModelSubclassSelectionDialog;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
@@ -48,10 +49,10 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 
-public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesComposite {
+public class CommonEventPropertiesComposite extends AbstractDetailComposite {
 
-	protected AbstractBpmn2TableComposite inputTable;
-	protected AbstractBpmn2TableComposite outputTable;
+	protected AbstractListComposite inputTable;
+	protected AbstractListComposite outputTable;
 	protected EventDefinitionsTable eventsTable;
 
 	public CommonEventPropertiesComposite(Composite parent, int style) {
@@ -110,7 +111,7 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 		}
 	}
 	
-	public class EventDefinitionsTable extends AbstractBpmn2TableComposite {
+	public class EventDefinitionsTable extends DefaultListComposite {
 		
 		protected Event event;
 		
@@ -122,7 +123,7 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 		@Override
 		public EClass getListItemClassToAdd(EClass listItemClass) {
 			EClass eclass = null;
-			ModelSubclassSelectionDialog dialog = new ModelSubclassSelectionDialog(getDiagramEditor(), object, feature) {
+			ModelSubclassSelectionDialog dialog = new ModelSubclassSelectionDialog(getDiagramEditor(), businessObject, feature) {
 				@Override
 				protected void filterList(List<EClass> items) {
 					BaseElement eventOwner = null;
@@ -216,7 +217,7 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 		}
 	}
 
-	public class DataInputsTable extends AbstractBpmn2TableComposite {
+	public class DataInputsTable extends DefaultListComposite {
 
 		ThrowEvent throwEvent;
 		
@@ -291,7 +292,7 @@ public class CommonEventPropertiesComposite extends AbstractBpmn2PropertiesCompo
 	}
 
 	
-	public class DataOutputsTable extends AbstractBpmn2TableComposite {
+	public class DataOutputsTable extends DefaultListComposite {
 
 		CatchEvent catchEvent;
 		

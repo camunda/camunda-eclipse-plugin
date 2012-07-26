@@ -15,7 +15,7 @@ package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
@@ -33,7 +33,7 @@ public class JbpmUserTaskPropertySection extends JbpmTaskPropertySection {
 	}
 
 	@Override
-	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+	protected AbstractDetailComposite createSectionRoot() {
 		return new JbpmUserTaskPropertiesComposite(this);
 	}
 

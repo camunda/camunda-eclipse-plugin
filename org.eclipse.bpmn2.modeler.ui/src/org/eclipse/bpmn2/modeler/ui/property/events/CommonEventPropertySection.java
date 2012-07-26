@@ -20,7 +20,7 @@ import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.TimerEventDefinition;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.ui.property.data.ConditionalEventDefinitionPropertiesComposite;
@@ -44,7 +44,7 @@ public class CommonEventPropertySection extends AbstractBpmn2PropertySection imp
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
 	 */
 	@Override
-	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+	protected AbstractDetailComposite createSectionRoot() {
 		return new CommonEventPropertiesComposite(this);
 	}
 

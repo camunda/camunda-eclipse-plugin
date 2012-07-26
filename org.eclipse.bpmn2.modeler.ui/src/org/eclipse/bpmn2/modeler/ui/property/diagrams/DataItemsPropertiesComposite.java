@@ -13,26 +13,26 @@
 
 package org.eclipse.bpmn2.modeler.ui.property.diagrams;
 
-import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultDetailComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultListComposite;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2TableComposite;
-import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Bob Brodt
  *
  */
-public class DataItemsPropertiesComposite extends DefaultPropertiesComposite {
+public class DataItemsPropertiesComposite extends DefaultDetailComposite {
 
 	public DataItemsPropertiesComposite(Composite parent, int style) {
 		super(parent, style);
@@ -77,10 +77,10 @@ public class DataItemsPropertiesComposite extends DefaultPropertiesComposite {
 					Process process = (Process)re;
 					EStructuralFeature feature = process.eClass().getEStructuralFeature("properties");
 					if (modelEnablement.isEnabled(process.eClass(), feature)) {
-						PropertiesTable propertiesTable = new PropertiesTable(this); 
+						PropertyListComposite propertiesTable = new PropertyListComposite(this); 
 						propertiesTable.bindList(process, feature);
 					}
-					AbstractBpmn2TableComposite table = bindList(process, "resources");
+					AbstractListComposite table = bindList(process, "resources");
 					if (table!=null)
 						table.setTitle("Resources for "+PropertyUtil.getDisplayName(process));
 				}
@@ -90,12 +90,10 @@ public class DataItemsPropertiesComposite extends DefaultPropertiesComposite {
 	}
 	
 	@Override
-	protected AbstractBpmn2TableComposite bindList(EObject object, EStructuralFeature feature, EClass listItemClass) {
+	protected AbstractListComposite bindList(EObject object, EStructuralFeature feature, EClass listItemClass) {
 		if (listItemClass!=null && listItemClass.getName().equals("ItemDefinition")) {
 			if (modelEnablement.isEnabled(object.eClass(), feature) || modelEnablement.isEnabled(listItemClass)) {
-				AbstractBpmn2TableComposite table = super.bindList(object, feature, listItemClass);
-				if (table!=null)
-					table.setTitle("Data Types");
+				AbstractListComposite table = super.bindList(object, feature, listItemClass);
 				return table;
 			}
 			return null;
@@ -104,17 +102,17 @@ public class DataItemsPropertiesComposite extends DefaultPropertiesComposite {
 			return super.bindList(object, feature, listItemClass);
 	}
 
-	public class PropertiesTable extends AbstractBpmn2TableComposite {
+	public class PropertyListComposite extends DefaultListComposite {
 
-		public PropertiesTable(AbstractBpmn2PropertySection section) {
+		public PropertyListComposite(AbstractBpmn2PropertySection section) {
 			super(section);
 		}
 		
-		public PropertiesTable(Composite parent) {
+		public PropertyListComposite(Composite parent) {
 			this(parent, DEFAULT_STYLE);
 		}
 		
-		public PropertiesTable(Composite parent, int style) {
+		public PropertyListComposite(Composite parent, int style) {
 			super(parent,style);
 		}
 		
@@ -127,14 +125,14 @@ public class DataItemsPropertiesComposite extends DefaultPropertiesComposite {
 
 		@Override
 		protected EObject addListItem(EObject object, EStructuralFeature feature) {
-			Process process = (Process)object;
+			EList<Property> properties = (EList)object.eGet(feature);
 			// generate a unique parameter name
-			String base = "processVar";
+			String base = "localVar";
 			int suffix = 1;
 			String name = base + suffix;
 			for (;;) {
 				boolean found = false;
-				for (Property p : process.getProperties()) {
+				for (Property p : properties) {
 					if (name.equals(p.getName())) {
 						found = true;
 						break;

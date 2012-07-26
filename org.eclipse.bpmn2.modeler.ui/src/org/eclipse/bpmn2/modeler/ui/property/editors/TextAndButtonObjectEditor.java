@@ -13,7 +13,7 @@
 
 package org.eclipse.bpmn2.modeler.ui.property.editors;
 
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.swt.SWT;
@@ -37,7 +37,7 @@ public abstract class TextAndButtonObjectEditor extends TextObjectEditor {
 	 * @param object
 	 * @param feature
 	 */
-	public TextAndButtonObjectEditor(AbstractBpmn2PropertiesComposite parent, EObject object, EStructuralFeature feature) {
+	public TextAndButtonObjectEditor(AbstractDetailComposite parent, EObject object, EStructuralFeature feature) {
 		super(parent, object, feature);
 	}
 

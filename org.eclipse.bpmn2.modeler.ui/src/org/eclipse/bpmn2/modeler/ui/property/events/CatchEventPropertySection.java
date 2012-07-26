@@ -13,7 +13,7 @@
 package org.eclipse.bpmn2.modeler.ui.property.events;
 
 import org.eclipse.bpmn2.CatchEvent;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -25,7 +25,7 @@ public class CatchEventPropertySection extends AbstractBpmn2PropertySection impl
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
 	 */
 	@Override
-	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+	protected AbstractDetailComposite createSectionRoot() {
 		return new CatchEventPropertiesComposite(this);
 	}
 

@@ -19,9 +19,9 @@ import org.eclipse.bpmn2.GlobalManualTask;
 import org.eclipse.bpmn2.GlobalScriptTask;
 import org.eclipse.bpmn2.GlobalTask;
 import org.eclipse.bpmn2.GlobalUserTask;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -46,7 +46,7 @@ public class CallActivityPropertySection extends AbstractBpmn2PropertySection im
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
 	 */
 	@Override
-	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+	protected AbstractDetailComposite createSectionRoot() {
 		return new CallActivityPropertiesComposite(this);
 	}
 
@@ -58,7 +58,7 @@ public class CallActivityPropertySection extends AbstractBpmn2PropertySection im
 		return null;
 	}
 	
-	public class GlobalTaskPropertiesComposite extends DefaultPropertiesComposite {
+	public class GlobalTaskPropertiesComposite extends DefaultDetailComposite {
 
 		public GlobalTaskPropertiesComposite(Composite parent, int style) {
 			super(parent, style);

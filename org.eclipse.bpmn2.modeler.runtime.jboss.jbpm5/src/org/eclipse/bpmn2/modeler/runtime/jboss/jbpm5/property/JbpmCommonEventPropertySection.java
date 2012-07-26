@@ -14,7 +14,7 @@
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 
 import org.eclipse.bpmn2.Event;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.ui.property.events.CommonEventPropertySection;
 
@@ -28,7 +28,7 @@ public class JbpmCommonEventPropertySection extends CommonEventPropertySection {
 	}
 	
 	@Override
-	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
+	protected AbstractDetailComposite createSectionRoot() {
 		return new JbpmCommonEventPropertiesComposite(this);
 	}
 }
