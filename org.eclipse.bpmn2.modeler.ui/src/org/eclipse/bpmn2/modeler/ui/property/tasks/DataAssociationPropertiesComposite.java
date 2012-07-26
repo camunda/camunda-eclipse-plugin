@@ -560,7 +560,7 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 							FormalExpression.class);
 				}
 				if (transformationDetailsComposite==null) {
-					transformationDetailsComposite = PropertiesCompositeFactory.createComposite(
+					transformationDetailsComposite = PropertiesCompositeFactory.createDetailComposite(
 							Expression.class, transformationComposite, SWT.NONE, true);
 				}
 				transformationDetailsComposite.setEObject(getDiagramEditor(), transformation);
@@ -631,7 +631,7 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 				}
 	
 				if (expressionDetailsComposite==null) {
-					expressionDetailsComposite = PropertiesCompositeFactory.createComposite(
+					expressionDetailsComposite = PropertiesCompositeFactory.createDetailComposite(
 							Expression.class, expressionComposite, SWT.NONE, true);
 				}
 				expressionDetailsComposite.setEObject(getDiagramEditor(), expression);//association.getexpression());
@@ -680,7 +680,7 @@ public class DataAssociationPropertiesComposite extends DefaultPropertiesComposi
 				}
 	
 				if (transformationDetailsComposite==null) {
-					transformationDetailsComposite = PropertiesCompositeFactory.createComposite(
+					transformationDetailsComposite = PropertiesCompositeFactory.createDetailComposite(
 							Expression.class, transformationComposite, SWT.NONE, true);
 				}
 				transformationDetailsComposite.setEObject(getDiagramEditor(), transformation);//association.getTransformation());

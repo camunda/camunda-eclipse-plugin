@@ -40,14 +40,25 @@ import org.eclipse.swt.widgets.Display;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class PropertiesCompositeFactory {
 
-	protected final static Hashtable<TargetRuntime, Hashtable<Class,Class>> registry = new Hashtable<TargetRuntime,Hashtable<Class,Class>>();
+	protected final static Hashtable<TargetRuntime, Hashtable<Class,Class>> detailRegistry = new Hashtable<TargetRuntime,Hashtable<Class,Class>>();
+	protected final static Hashtable<TargetRuntime, Hashtable<Class,Class>> listRegistry = new Hashtable<TargetRuntime,Hashtable<Class,Class>>();
+
+	public enum CompositeType {
+		DETAIL,
+		LIST
+	};
 	
 	public static void register(Class eClass, Class composite) {
 		TargetRuntime rt = TargetRuntime.getCurrentRuntime();
-		Hashtable<Class,Class> map = registry.get(rt);
+		Hashtable<Class,Class> map = AbstractBpmn2TableComposite.class.isAssignableFrom(composite) ?
+				listRegistry.get(rt) :
+				detailRegistry.get(rt);
 		if (map==null) {
 			map = new Hashtable<Class,Class>();
-			registry.put(rt,map);
+			if (AbstractBpmn2TableComposite.class.isAssignableFrom(composite))
+				listRegistry.put(rt,map);
+			else
+				detailRegistry.put(rt,map);
 		}
 		map.put(eClass, composite);
 		
@@ -68,26 +79,82 @@ public class PropertiesCompositeFactory {
 		}
 	}
 	
-	public static Class unregister(TargetRuntime rt, EClass eClass) {
-		if (registry.containsKey(rt)) {
-			Hashtable<Class,Class> map = registry.get(rt);
-			return map.remove(eClass);
-		}
-		return null;
-	}
+//	public static Class unregister(TargetRuntime rt, EClass eClass) {
+//		if (detailRegistry.containsKey(rt)) {
+//			Hashtable<Class,Class> map = detailRegistry.get(rt);
+//			return map.remove(eClass);
+//		}
+//		return null;
+//	}
 	
-	public static Class findCompositeClass(Class eClass) {
+	////////////////////////////////////////////////////////////////////////////////
+	// Detail Composite methods
+	////////////////////////////////////////////////////////////////////////////////
+	public static Class findDetailCompositeClass(Class eClass) {
 		TargetRuntime rt = TargetRuntime.getCurrentRuntime();
-		Class composite = findCompositeClass(registry.get(rt),eClass);
+		Class composite = findCompositeClass(detailRegistry.get(rt),eClass);
 		if (composite==null && rt!=TargetRuntime.getDefaultRuntime()) {
 			// fall back to default target runtime
 			rt = TargetRuntime.getDefaultRuntime();
-			composite = findCompositeClass(registry.get(rt),eClass);
+			composite = findCompositeClass(detailRegistry.get(rt),eClass);
 		}
 		return composite;
 	}
+
+	public static AbstractBpmn2PropertiesComposite createDetailComposite(Class eClass, AbstractBpmn2PropertySection section) {
+		return createDetailComposite(eClass,section,true);
+	}
 	
-	public static Class findCompositeClass(Hashtable<Class,Class> map, Class eClass) {
+	public static AbstractBpmn2PropertiesComposite createDetailComposite(Class eClass, AbstractBpmn2PropertySection section, boolean useDefault) {
+		Class clazz = findDetailCompositeClass(eClass);
+		return (AbstractBpmn2PropertiesComposite)createComposite(clazz, eClass, section, useDefault, CompositeType.DETAIL);
+	}
+	
+	public static AbstractBpmn2PropertiesComposite createDetailComposite(Class eClass, Composite parent, int style) {
+		return createDetailComposite(eClass,parent,style,true);
+	}
+	
+	public static AbstractBpmn2PropertiesComposite createDetailComposite(Class eClass, Composite parent, int style, boolean useDefault) {
+		Class clazz = findDetailCompositeClass(eClass);
+		return (AbstractBpmn2PropertiesComposite)createComposite(clazz, eClass, parent, style, useDefault, CompositeType.DETAIL);
+	}
+
+	////////////////////////////////////////////////////////////////////////////////
+	// List Composite methods
+	////////////////////////////////////////////////////////////////////////////////
+	public static Class findListCompositeClass(Class eClass) {
+		TargetRuntime rt = TargetRuntime.getCurrentRuntime();
+		Class composite = findCompositeClass(listRegistry.get(rt),eClass);
+		if (composite==null && rt!=TargetRuntime.getDefaultRuntime()) {
+			// fall back to default target runtime
+			rt = TargetRuntime.getDefaultRuntime();
+			composite = findCompositeClass(listRegistry.get(rt),eClass);
+		}
+		return composite;
+	}
+
+	public static AbstractBpmn2TableComposite createListComposite(Class eClass, AbstractBpmn2PropertySection section) {
+		return createListComposite(eClass,section,true);
+	}
+	
+	public static AbstractBpmn2TableComposite createListComposite(Class eClass, AbstractBpmn2PropertySection section, boolean useDefault) {
+		Class clazz = findListCompositeClass(eClass);
+		return (AbstractBpmn2TableComposite)createComposite(clazz, eClass, section, useDefault, CompositeType.LIST);
+	}
+	
+	public static AbstractBpmn2TableComposite createListComposite(Class eClass, Composite parent, int style) {
+		return createListComposite(eClass,parent,style,true);
+	}
+	
+	public static AbstractBpmn2TableComposite createListComposite(Class eClass, Composite parent, int style, boolean useDefault) {
+		Class clazz = findListCompositeClass(eClass);
+		return (AbstractBpmn2TableComposite)createComposite(clazz, eClass, parent, style, useDefault, CompositeType.LIST);
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////
+	// Common
+	////////////////////////////////////////////////////////////////////////////////
+	private static Class findCompositeClass(Hashtable<Class,Class> map, Class eClass) {
 		if (map!=null) {
 			while (eClass!=null && eClass!=EObjectImpl.class) {
 				if (map.containsKey(eClass)) {
@@ -113,13 +180,8 @@ public class PropertiesCompositeFactory {
 		return null;
 	}
 
-	public static AbstractBpmn2PropertiesComposite createComposite(Class eClass, AbstractBpmn2PropertySection section) {
-		return createComposite(eClass,section,true);
-	}
-	
-	public static AbstractBpmn2PropertiesComposite createComposite(Class eClass, AbstractBpmn2PropertySection section, boolean useDefault) {
-		AbstractBpmn2PropertiesComposite composite = null;
-		Class clazz = findCompositeClass(eClass);
+	private static Composite createComposite(Class clazz, Class eClass, AbstractBpmn2PropertySection section, boolean useDefault, CompositeType type) {
+		Composite composite = null;
 		if (clazz!=null) {
 			try {
 				Constructor ctor = null;
@@ -127,11 +189,11 @@ public class PropertiesCompositeFactory {
 				Class ec = clazz.getEnclosingClass();
 				if (ec!=null) {
 					ctor = clazz.getConstructor(ec,AbstractBpmn2PropertySection.class);
-					composite = (AbstractBpmn2PropertiesComposite) ctor.newInstance(null,section);
+					composite = (Composite) ctor.newInstance(null,section);
 				}
 				else {
 					ctor = clazz.getConstructor(AbstractBpmn2PropertySection.class);
-					composite = (AbstractBpmn2PropertiesComposite) ctor.newInstance(section);
+					composite = (Composite) ctor.newInstance(section);
 				}
 			} catch (Exception e) {
 				if (useDefault)
@@ -141,21 +203,16 @@ public class PropertiesCompositeFactory {
 		}
 		
 		if (composite==null && useDefault)
-			composite = new DefaultPropertiesComposite(section);
+			composite = createDefaultComposite(type, section);
 
-		if (!useDefault && composite instanceof DefaultPropertiesComposite)
+		if (!useDefault && isDefaultComposite(composite))
 			composite = null;
 		
 		return composite;
 	}
 	
-	public static AbstractBpmn2PropertiesComposite createComposite(Class eClass, Composite parent, int style) {
-		return createComposite(eClass,parent,style,true);
-	}
-	
-	public static AbstractBpmn2PropertiesComposite createComposite(Class eClass, Composite parent, int style, boolean useDefault) {
-		AbstractBpmn2PropertiesComposite composite = null;
-		Class clazz = findCompositeClass(eClass);
+	private static Composite createComposite(Class clazz, Class eClass, Composite parent, int style, boolean useDefault, CompositeType type) {
+		Composite composite = null;
 		if (clazz!=null) {
 			try {
 				Constructor ctor = null;
@@ -163,11 +220,11 @@ public class PropertiesCompositeFactory {
 				Class ec = clazz.getEnclosingClass();
 				if (ec!=null) {
 					ctor = clazz.getConstructor(ec,Composite.class,int.class);
-					composite = (AbstractBpmn2PropertiesComposite) ctor.newInstance(null,parent,style);
+					composite = (Composite) ctor.newInstance(null,parent,style);
 				}
 				else {
 					ctor = clazz.getConstructor(Composite.class,int.class);
-					composite = (AbstractBpmn2PropertiesComposite) ctor.newInstance(parent,style);
+					composite = (Composite) ctor.newInstance(parent,style);
 				}
 			} catch (Exception e) {
 				if (useDefault)
@@ -177,9 +234,9 @@ public class PropertiesCompositeFactory {
 		}
 		
 		if (composite==null && useDefault)
-			composite = new DefaultPropertiesComposite(parent,style);
+			composite = createDefaultComposite(type, parent, style);
 
-		if (!useDefault && composite.getClass() == DefaultPropertiesComposite.class)
+		if (!useDefault && isDefaultComposite(composite))
 			composite = null;
 		
 		// set a default layout data
@@ -191,6 +248,23 @@ public class PropertiesCompositeFactory {
 		}
 		
 		return composite;
+	}
+	
+	private static Composite createDefaultComposite(CompositeType type, AbstractBpmn2PropertySection section) {
+		if (type==CompositeType.DETAIL)
+			return new DefaultPropertiesComposite(section);
+		return new AbstractBpmn2TableComposite(section);
+	}
+
+	private static Composite createDefaultComposite(CompositeType type, Composite parent, int style) {
+		if (type==CompositeType.DETAIL)
+			return new DefaultPropertiesComposite(parent,style);
+		return new AbstractBpmn2TableComposite(parent,style);
+	}
+	
+	private static boolean isDefaultComposite(Composite composite) {
+		return composite.getClass() == DefaultPropertiesComposite.class
+				|| composite.getClass() == AbstractBpmn2TableComposite.class;
 	}
 	
 	private static void logError(Class eClass, Exception e) {

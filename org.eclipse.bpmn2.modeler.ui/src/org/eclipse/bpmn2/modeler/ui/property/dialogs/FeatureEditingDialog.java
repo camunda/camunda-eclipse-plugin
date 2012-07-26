@@ -78,7 +78,7 @@ public class FeatureEditingDialog extends Dialog {
 			else
 				cancel = true;
 		}
-		AbstractBpmn2PropertiesComposite comp = PropertiesCompositeFactory.createComposite(
+		AbstractBpmn2PropertiesComposite comp = PropertiesCompositeFactory.createDetailComposite(
 				eclass.getInstanceClass(), dialogArea, SWT.NONE);
 		comp.setEObject(BPMN2Editor.getActiveEditor(), newObject);
 		

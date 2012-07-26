@@ -522,11 +522,11 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 			if (getDiagramEditor().getPreferences().getExpandProperties()) {
 				AbstractBpmn2PropertiesComposite composite = null;
 				if (propertySection!=null) {
-					composite = PropertiesCompositeFactory.createComposite(
+					composite = PropertiesCompositeFactory.createDetailComposite(
 						reference.getEReferenceType().getInstanceClass(), propertySection, true);
 				}
 				else {
-					composite = PropertiesCompositeFactory.createComposite(
+					composite = PropertiesCompositeFactory.createDetailComposite(
 						reference.getEReferenceType().getInstanceClass(), parent, SWT.NONE, true);
 				}
 				
@@ -606,10 +606,22 @@ public abstract class AbstractBpmn2PropertiesComposite extends Composite impleme
 		AbstractBpmn2TableComposite tableComposite = null;
 		if (modelEnablement.isEnabled(object.eClass(), feature) || modelEnablement.isEnabled(listItemClass)) {
 
-			if (propertySection!=null)
-				tableComposite = new AbstractBpmn2TableComposite(propertySection, AbstractBpmn2TableComposite.DEFAULT_STYLE);
-			else
-				tableComposite = new AbstractBpmn2TableComposite(this, AbstractBpmn2TableComposite.DEFAULT_STYLE);
+//			if (propertySection!=null)
+//				tableComposite = new AbstractBpmn2TableComposite(propertySection, AbstractBpmn2TableComposite.DEFAULT_STYLE);
+//			else
+//				tableComposite = new AbstractBpmn2TableComposite(this, AbstractBpmn2TableComposite.DEFAULT_STYLE);
+
+			Class clazz = (listItemClass!=null) ?
+					listItemClass.getInstanceClass() :
+					feature.getEType().getInstanceClass();
+			if (propertySection!=null) {
+				tableComposite = PropertiesCompositeFactory.createListComposite(clazz, propertySection, true);
+			}
+			else {
+				tableComposite = PropertiesCompositeFactory.createListComposite(clazz, this, SWT.NONE, true);
+			}
+			
+			
 			tableComposite.setListItemClass(listItemClass);
 			tableComposite.bindList(object, feature);
 		}

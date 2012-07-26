@@ -91,7 +91,7 @@ public class ActivityPropertiesComposite extends DefaultPropertiesComposite {
 			LoopCharacteristics loopCharacteristics = (LoopCharacteristics) activity.getLoopCharacteristics();
 				
 			if (loopCharacteristics != null) {
-				loopCharacteristicsComposite = PropertiesCompositeFactory.createComposite(LoopCharacteristics.class, this, SWT.NONE);
+				loopCharacteristicsComposite = PropertiesCompositeFactory.createDetailComposite(LoopCharacteristics.class, this, SWT.NONE);
 				loopCharacteristicsComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 
 				loopCharacteristicsComposite.setEObject(getDiagramEditor(), loopCharacteristics);

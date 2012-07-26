@@ -61,7 +61,7 @@ public class ResourceAssignmentExpressionPropertiesComposite extends ExpressionP
 			}
 			
 			if (exprDetails==null) {
-				exprDetails = PropertiesCompositeFactory.createComposite(
+				exprDetails = PropertiesCompositeFactory.createDetailComposite(
 						Expression.class, this, SWT.NONE, true);
 			}
 			exprDetails.setEObject(getDiagramEditor(), expr);

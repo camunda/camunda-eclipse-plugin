@@ -71,7 +71,7 @@ public class ResourceParameterBindingPropertiesComposite extends DefaultProperti
 			}
 			
 			if (exprDetails==null) {
-				exprDetails = PropertiesCompositeFactory.createComposite(
+				exprDetails = PropertiesCompositeFactory.createDetailComposite(
 						Expression.class, this, SWT.NONE, true);
 			}
 			exprDetails.setEObject(getDiagramEditor(), expr);

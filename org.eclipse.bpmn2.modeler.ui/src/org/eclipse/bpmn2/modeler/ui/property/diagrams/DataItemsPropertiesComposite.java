@@ -20,6 +20,7 @@ import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.swt.widgets.Composite;
@@ -78,7 +79,6 @@ public class DataItemsPropertiesComposite extends DefaultPropertiesComposite {
 					if (modelEnablement.isEnabled(process.eClass(), feature)) {
 						PropertiesTable propertiesTable = new PropertiesTable(this); 
 						propertiesTable.bindList(process, feature);
-						propertiesTable.setTitle("Properties for "+PropertyUtil.getDisplayName(process));
 					}
 					AbstractBpmn2TableComposite table = bindList(process, "resources");
 					if (table!=null)
@@ -89,12 +89,42 @@ public class DataItemsPropertiesComposite extends DefaultPropertiesComposite {
 		super.createBindings(be);
 	}
 	
+	@Override
+	protected AbstractBpmn2TableComposite bindList(EObject object, EStructuralFeature feature, EClass listItemClass) {
+		if (listItemClass!=null && listItemClass.getName().equals("ItemDefinition")) {
+			if (modelEnablement.isEnabled(object.eClass(), feature) || modelEnablement.isEnabled(listItemClass)) {
+				AbstractBpmn2TableComposite table = super.bindList(object, feature, listItemClass);
+				if (table!=null)
+					table.setTitle("Data Types");
+				return table;
+			}
+			return null;
+		}
+		else
+			return super.bindList(object, feature, listItemClass);
+	}
+
 	public class PropertiesTable extends AbstractBpmn2TableComposite {
 
-		public PropertiesTable(Composite parent) {
-			super(parent, AbstractBpmn2TableComposite.DEFAULT_STYLE);
+		public PropertiesTable(AbstractBpmn2PropertySection section) {
+			super(section);
 		}
 		
+		public PropertiesTable(Composite parent) {
+			this(parent, DEFAULT_STYLE);
+		}
+		
+		public PropertiesTable(Composite parent, int style) {
+			super(parent,style);
+		}
+		
+		@Override
+		public void bindList(EObject theobject, EStructuralFeature thefeature) {
+			// TODO Auto-generated method stub
+			super.bindList(theobject, thefeature);
+			setTitle("Variables for "+PropertyUtil.getDisplayName(theobject));
+		}
+
 		@Override
 		protected EObject addListItem(EObject object, EStructuralFeature feature) {
 			Process process = (Process)object;

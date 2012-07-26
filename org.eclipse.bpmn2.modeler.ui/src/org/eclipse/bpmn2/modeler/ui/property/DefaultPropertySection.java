@@ -21,6 +21,7 @@ public class DefaultPropertySection extends AbstractBpmn2PropertySection {
 	// Register the DefaultPropertiesComposite as a fallback for rendering EObject
 	static {
 		PropertiesCompositeFactory.register(EObject.class, DefaultPropertiesComposite.class);
+		PropertiesCompositeFactory.register(EObject.class, AbstractBpmn2TableComposite.class);
 	}
 
 	/* (non-Javadoc)

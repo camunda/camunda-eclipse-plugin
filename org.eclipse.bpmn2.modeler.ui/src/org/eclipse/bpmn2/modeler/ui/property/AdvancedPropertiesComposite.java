@@ -219,11 +219,11 @@ public class AdvancedPropertiesComposite extends AbstractBpmn2PropertiesComposit
 				detailsPropertiesComposite = new DefaultPropertiesComposite(detailsComposite,SWT.NONE);
 			}
 			else {
-				detailsPropertiesComposite = PropertiesCompositeFactory.createComposite(obj.getClass(), detailsComposite, SWT.NONE);
+				detailsPropertiesComposite = PropertiesCompositeFactory.createDetailComposite(obj.getClass(), detailsComposite, SWT.NONE);
 			}
 			detailsPropertiesComposite.setLayoutData(new GridData(SWT.FILL,SWT.TOP,true,false,3,1));
 
-			Class cc = PropertiesCompositeFactory.findCompositeClass(obj.getClass());
+			Class cc = PropertiesCompositeFactory.findDetailCompositeClass(obj.getClass());
 			if (cc==null||cc==DefaultPropertiesComposite.class)
 				fullDetails.setVisible(false);
 			else

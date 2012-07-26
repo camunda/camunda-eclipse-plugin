@@ -84,14 +84,14 @@ public class DataAssignmentPropertiesComposite extends DefaultPropertiesComposit
 			}
 			
 			if (toDetails==null) {
-				toDetails = PropertiesCompositeFactory.createComposite(
+				toDetails = PropertiesCompositeFactory.createDetailComposite(
 						Expression.class, this, SWT.NONE, true);
 			}
 			toDetails.setEObject(getDiagramEditor(), toExp);
 			toDetails.setTitle("To Expression");
 	
 			if (fromDetails==null) {
-				fromDetails = PropertiesCompositeFactory.createComposite(
+				fromDetails = PropertiesCompositeFactory.createDetailComposite(
 						Expression.class, this, SWT.NONE, true);
 			}
 			fromDetails.setEObject(getDiagramEditor(), fromExp);

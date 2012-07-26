@@ -139,6 +139,10 @@ public class AbstractBpmn2TableComposite extends Composite {
 	protected AbstractTableColumnProvider columnProvider;
 	protected TableContentProvider contentProvider;
 	
+	public AbstractBpmn2TableComposite(AbstractBpmn2PropertySection section) {
+		this(section,DEFAULT_STYLE);
+	}
+	
 	public AbstractBpmn2TableComposite(AbstractBpmn2PropertySection section, int style) {
 		super(section.getSectionRoot(), style & ~CUSTOM_STYLES_MASK);
 
@@ -147,6 +151,10 @@ public class AbstractBpmn2TableComposite extends Composite {
 		initialize(style);
 	}
 
+	public AbstractBpmn2TableComposite(final Composite parent) {
+		this(parent,DEFAULT_STYLE);
+	}
+	
 	public AbstractBpmn2TableComposite(final Composite parent, int style) {
 		super(parent, style & ~CUSTOM_STYLES_MASK);
 
@@ -288,7 +296,7 @@ public class AbstractBpmn2TableComposite extends Composite {
 	 * @return
 	 */
 	public AbstractBpmn2PropertiesComposite createDetailComposite(Composite parent, Class eClass) {
-		AbstractBpmn2PropertiesComposite composite = PropertiesCompositeFactory.createComposite(eClass, parent, SWT.NONE);
+		AbstractBpmn2PropertiesComposite composite = PropertiesCompositeFactory.createDetailComposite(eClass, parent, SWT.NONE);
 		return composite;
 	}
 	
