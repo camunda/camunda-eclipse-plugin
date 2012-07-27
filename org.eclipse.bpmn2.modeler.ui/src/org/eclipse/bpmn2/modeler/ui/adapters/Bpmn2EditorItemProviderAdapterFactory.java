@@ -13,6 +13,8 @@
 
 package org.eclipse.bpmn2.modeler.ui.adapters;
 
+import java.util.Hashtable;
+
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallActivity;
@@ -100,6 +102,7 @@ import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
@@ -137,6 +140,7 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
     
     public class Bpmn2ExtendedPropertiesSwitch extends Bpmn2Switch<ExtendedPropertiesAdapter> {
 
+    	protected Hashtable<EClass,EObject> dummyObjects = new Hashtable<EClass,EObject>();
     	private AdapterFactory adapterFactory;
         
     	public Bpmn2ExtendedPropertiesSwitch(AdapterFactory adapterFactory) {
@@ -150,18 +154,40 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
     		}
     	}
     	
+        /* (non-Javadoc)
+         * @see org.eclipse.bpmn2.util.Bpmn2Switch#defaultCase(org.eclipse.emf.ecore.EObject)
+         * 
+         * The default case for this switch is to search the current target runtime plugin for
+         * ExtendedPropertiesAdapters that can handle the given EObject.
+         * 
+         * If the given EObject is actually an EClass, then a dummy EObject is constructed and cached
+         * for use by the adapter. This could cause problems if the adapter is used for anything other
+         * than providing simple static information (labels, etc.)
+         *  
+         * For an example usage of this, see the org.eclipse.bpmn2.modeler.ui.util.PropertyUtil#getLabel(Object)
+         * call in the List Composite, to fetch section titles and table column headers from the adapter:
+         * @see org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite#bindList(EObject,EStructuralFeature)
+         * 
+         * If no adapter is found for the given EObject, a generic one is constructed and returned.
+         */
         @Override
 		public ExtendedPropertiesAdapter defaultCase(EObject object) {
         	ExtendedPropertiesAdapter adapter = null;
         	if (object instanceof EClass) {
+        		// this is an EClass: search the current target runtime for an adapter that
+        		// can handle this thing.
         	    adapter = getTargetRuntimeAdapter((EClass)object);
         	    if (adapter==null) {
+        	    	// if none is found, create a dummy EObject and cache it
     		    	EClass eclass = (EClass)object;
     		    	EPackage pkg = (EPackage)(eclass).eContainer();
     		    	if (pkg == Bpmn2Package.eINSTANCE) {
-    		    		object = pkg.getEFactoryInstance().create(eclass);
+    		    		object = dummyObjects.get(eclass);
+    		    		if (object==null) {
+    		    			object = pkg.getEFactoryInstance().create(eclass);
+    		    			dummyObjects.put(eclass, object);
+    		    		}
     		    		adapter = doSwitch(object);
-    		    		EcoreUtil.delete(object);
     		    	}
         	    }
         	}
