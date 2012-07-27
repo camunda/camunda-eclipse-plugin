@@ -36,7 +36,7 @@ public class EscalationPropertiesAdapter extends RootElementPropertiesAdapter {
     	final EStructuralFeature ref = Bpmn2Package.eINSTANCE.getResourceAssignmentExpression_Expression();
     	setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
 			@Override
-			public String getText(Object context) {
+			public String getDisplayName(Object context) {
 				final Escalation error = context instanceof Escalation ?
 						(Escalation)context :
 						(Escalation)this.object;

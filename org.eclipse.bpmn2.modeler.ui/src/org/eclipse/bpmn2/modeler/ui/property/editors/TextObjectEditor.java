@@ -65,7 +65,7 @@ public class TextObjectEditor extends ObjectEditor {
 		}
 		text.setLayoutData(data);
 
-		setText(PropertyUtil.getText(object, feature));
+		setText(PropertyUtil.getDisplayName(object, feature));
 
 		IObservableValue textObserver = SWTObservables.observeText(text, SWT.Modify);
 		textObserver.addValueChangeListener(new IValueChangeListener() {
@@ -112,7 +112,7 @@ public class TextObjectEditor extends ObjectEditor {
 			return true;
 		}
 		// revert the change on error
-		text.setText(PropertyUtil.getText(object, feature));
+		text.setText(PropertyUtil.getDisplayName(object, feature));
 		return false;
 	}
 
@@ -145,6 +145,6 @@ public class TextObjectEditor extends ObjectEditor {
 	 * @return string representation of the EObject feature's value.
 	 */
 	protected String getText() {
-		return PropertyUtil.getText(object, feature);
+		return PropertyUtil.getDisplayName(object, feature);
 	}
 }

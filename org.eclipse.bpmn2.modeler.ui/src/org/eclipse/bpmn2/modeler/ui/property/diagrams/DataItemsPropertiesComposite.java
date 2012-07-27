@@ -82,7 +82,7 @@ public class DataItemsPropertiesComposite extends DefaultDetailComposite {
 					}
 					AbstractListComposite table = bindList(process, "resources");
 					if (table!=null)
-						table.setTitle("Resources for "+PropertyUtil.getDisplayName(process));
+						table.setTitle("Resources for "+PropertyUtil.getLongDisplayName(process));
 				}
 			}
 		}
@@ -120,7 +120,7 @@ public class DataItemsPropertiesComposite extends DefaultDetailComposite {
 		public void bindList(EObject theobject, EStructuralFeature thefeature) {
 			// TODO Auto-generated method stub
 			super.bindList(theobject, thefeature);
-			setTitle("Variables for "+PropertyUtil.getDisplayName(theobject));
+			setTitle("Variables for "+PropertyUtil.getLongDisplayName(theobject));
 		}
 
 		@Override

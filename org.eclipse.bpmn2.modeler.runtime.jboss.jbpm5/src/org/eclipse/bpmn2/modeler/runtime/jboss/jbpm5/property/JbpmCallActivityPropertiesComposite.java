@@ -68,7 +68,7 @@ public class JbpmCallActivityPropertiesComposite extends JbpmActivityPropertiesC
 							
 						};
 						
-						String initialValue = PropertyUtil.getText(object,feature);
+						String initialValue = PropertyUtil.getDisplayName(object,feature);
 						InputDialog dialog = new InputDialog(
 								getShell(),
 								"Called Activity",

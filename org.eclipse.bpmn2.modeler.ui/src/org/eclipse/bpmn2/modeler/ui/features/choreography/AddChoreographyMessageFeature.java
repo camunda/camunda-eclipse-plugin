@@ -179,7 +179,7 @@ public class AddChoreographyMessageFeature extends AbstractCustomFeature {
 						}
 						if (doit) {
 							if (result==message) { // the new one
-								message.setName( PropertyUtil.getText(message)); // ModelUtil.toDisplayName(message.getId()) );
+								message.setName( PropertyUtil.getDisplayName(message)); // ModelUtil.toDisplayName(message.getId()) );
 								
 								mh.getDefinitions().getRootElements().add(result);
 							}

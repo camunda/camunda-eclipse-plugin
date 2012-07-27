@@ -151,25 +151,25 @@ public class PropertyUtil {
 		return label;
 	}
 	
-	public static String getText(Object object) {
+	public static String getDisplayName(Object object) {
 		if (object instanceof EObject) {
 			EObject eObject = (EObject)object;
 			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(eObject, ExtendedPropertiesAdapter.class);
 			if (adapter!=null)
-				return adapter.getObjectDescriptor().getText(eObject);
-			return getDisplayName(eObject);
+				return adapter.getObjectDescriptor().getDisplayName(eObject);
+			return getLongDisplayName(eObject);
 		}
 		return object==null ? null : object.toString();
 	}
 	
-	public static String getText(EObject object, EStructuralFeature feature) {
+	public static String getDisplayName(EObject object, EStructuralFeature feature) {
 		if (feature==null)
-			return getText(object);
+			return getDisplayName(object);
 		
 		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
 		if (adapter!=null)
-			return adapter.getFeatureDescriptor(feature).getText(object);
-		return getDisplayName(object, feature);
+			return adapter.getFeatureDescriptor(feature).getDisplayName(object);
+		return getLongDisplayName(object, feature);
 	}
 
 	public static boolean getIsMultiLine(EObject object, EStructuralFeature feature) {
@@ -266,7 +266,7 @@ public class PropertyUtil {
 	/*
 	 * Fallbacks in case a property provider does not exist
 	 */
-	public static String getDisplayName(EObject object) {
+	public static String getLongDisplayName(EObject object) {
 		String objName = null;
 		if (object instanceof BPMNDiagram) {
 			Bpmn2DiagramType type = ModelUtil.getDiagramType((BPMNDiagram)object); 
@@ -307,7 +307,7 @@ public class PropertyUtil {
 		return objName;
 	}
 	
-	private static String getDisplayName(EObject object, EStructuralFeature feature) {
+	private static String getLongDisplayName(EObject object, EStructuralFeature feature) {
 		Object value = object.eGet(feature);
 		if (value==null)
 			return "";

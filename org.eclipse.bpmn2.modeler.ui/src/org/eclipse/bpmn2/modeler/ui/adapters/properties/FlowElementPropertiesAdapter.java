@@ -43,7 +43,7 @@ public class FlowElementPropertiesAdapter extends ItemAwareElementPropertiesAdap
 		final FeatureDescriptor fd = new FeatureDescriptor(adapterFactory,object, f) {
 
 			@Override
-			public void setText(String text) {
+			public void setDisplayName(String text) {
 				int i = text.lastIndexOf("/");
 				if (i>=0)
 					text = text.substring(i+1);
@@ -52,7 +52,7 @@ public class FlowElementPropertiesAdapter extends ItemAwareElementPropertiesAdap
 			}
 
 			@Override
-			public String getValueText(Object context) {
+			public String getChoiceString(Object context) {
 				FlowElement flowElement = (FlowElement)(context instanceof FlowElement ? context : this.object);
 				String text = flowElement.getName();
 				if (text==null || text.isEmpty())
@@ -66,7 +66,7 @@ public class FlowElementPropertiesAdapter extends ItemAwareElementPropertiesAdap
 							break;
 					}
 					if (container instanceof Activity || container instanceof Process) {
-						text = PropertyUtil.getText(container) + "/" + text;
+						text = PropertyUtil.getDisplayName(container) + "/" + text;
 					}
 					container = container.eContainer();
 				}
@@ -79,14 +79,14 @@ public class FlowElementPropertiesAdapter extends ItemAwareElementPropertiesAdap
 		setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
 
 			@Override
-			public void setText(String text) {
-				fd.setText(text);
+			public void setDisplayName(String text) {
+				fd.setDisplayName(text);
 				ModelUtil.setID(object);
 			}
 
 			@Override
-			public String getText(Object context) {
-				return fd.getValueText(context);
+			public String getDisplayName(Object context) {
+				return fd.getDisplayName(context);
 			}
 		});
 	}

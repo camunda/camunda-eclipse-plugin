@@ -68,7 +68,7 @@ public class ItemAwareElementPropertiesAdapter extends ExtendedPropertiesAdapter
 				}
 
 				@Override
-				public String getText(Object context) {
+				public String getDisplayName(Object context) {
 					EObject object = this.object;
 					if (context instanceof EObject)
 						object = (EObject)context;
@@ -79,9 +79,9 @@ public class ItemAwareElementPropertiesAdapter extends ExtendedPropertiesAdapter
 						itemDefinition = (ItemDefinition) object.eGet(feature);
 					if (itemDefinition!=null) {
 						ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(itemDefinition, ExtendedPropertiesAdapter.class);
-						return adapter.getFeatureDescriptor(Bpmn2Package.eINSTANCE.getItemDefinition_StructureRef()).getText(itemDefinition);
+						return adapter.getFeatureDescriptor(Bpmn2Package.eINSTANCE.getItemDefinition_StructureRef()).getDisplayName(itemDefinition);
 					}
-					return super.getText(context);
+					return super.getDisplayName(context);
 				}
     		}
     	);

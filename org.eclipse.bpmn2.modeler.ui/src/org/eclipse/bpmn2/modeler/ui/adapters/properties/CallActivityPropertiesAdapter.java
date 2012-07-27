@@ -47,7 +47,7 @@ public class CallActivityPropertiesAdapter extends ActivityPropertiesAdapter {
 				}
 				
 				@Override
-				public String getText(Object context) {
+				public String getDisplayName(Object context) {
 					CallActivity object = (CallActivity)this.object;
 					if (context instanceof CallActivity)
 						object = (CallActivity)context;
@@ -58,7 +58,7 @@ public class CallActivityPropertiesAdapter extends ActivityPropertiesAdapter {
 							return uri.fragment();
 						return uri.lastSegment();
 					}
-					return super.getText(context);
+					return super.getDisplayName(context);
 				}
 			}
     	);

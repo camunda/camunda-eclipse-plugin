@@ -36,7 +36,7 @@ public class MessageFlowPropertiesAdapter extends ExtendedPropertiesAdapter {
 		
     	setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
 			@Override
-			public String getText(Object context) {
+			public String getDisplayName(Object context) {
 				final MessageFlow mf = context instanceof MessageFlow ?
 						(MessageFlow)context :
 						(MessageFlow)this.object;

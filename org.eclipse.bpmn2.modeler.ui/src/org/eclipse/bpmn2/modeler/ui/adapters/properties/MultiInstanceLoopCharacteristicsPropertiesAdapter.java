@@ -86,7 +86,7 @@ public class MultiInstanceLoopCharacteristicsPropertiesAdapter extends ExtendedP
 					
 					if (properties!=null) {
 						for (Object p : properties) {
-							values.put( getValueText(p), p);
+							values.put( getChoiceString(p), p);
 						}
 					}
 				}

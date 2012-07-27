@@ -37,7 +37,7 @@ public class MessagePropertiesAdapter extends RootElementPropertiesAdapter {
 		
     	setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
 			@Override
-			public String getText(Object context) {
+			public String getDisplayName(Object context) {
 				final Message mesg = context instanceof Message ?
 						(Message)context :
 						(Message)this.object;

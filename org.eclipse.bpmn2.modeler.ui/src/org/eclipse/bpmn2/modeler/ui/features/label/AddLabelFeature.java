@@ -57,7 +57,7 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		
 		Shape textShape = peService.createShape(textContainerShape, false);
 		peService.setPropertyValue(textShape, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
-		String name = PropertyUtil.getText(baseElement);
+		String name = PropertyUtil.getDisplayName(baseElement);
 		MultiText text = gaService.createDefaultMultiText(getDiagram(), textShape, name);
 		StyleUtil.applyStyle(text, baseElement);
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);

@@ -746,7 +746,7 @@ public class ChoreographyUtil implements ChoreographyProperties {
 			return flow.getMessageRef().getName();
 		} else {
 			String messageName = flow.getMessageRef().getName();
-			String itemDefinitionName = PropertyUtil.getText(flow.getMessageRef().getItemRef());
+			String itemDefinitionName = PropertyUtil.getDisplayName(flow.getMessageRef().getItemRef());
 			String text = itemDefinitionName;
 			if (messageName!=null && !messageName.isEmpty())
 				text += "/" + messageName;
@@ -759,7 +759,7 @@ public class ChoreographyUtil implements ChoreographyProperties {
 				mesg.getItemRef().getStructureRef()==null) {
 			return mesg.getName();
 		} else {
-			String type = "(" + PropertyUtil.getText(mesg.getItemRef()) +")";
+			String type = "(" + PropertyUtil.getDisplayName(mesg.getItemRef()) +")";
 			if (mesg.getName()==null)
 				return type; 
 			return mesg.getName() + type;

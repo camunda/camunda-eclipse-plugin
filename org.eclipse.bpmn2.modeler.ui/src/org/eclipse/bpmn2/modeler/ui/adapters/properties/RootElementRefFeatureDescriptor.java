@@ -74,12 +74,12 @@ public class RootElementRefFeatureDescriptor extends FeatureDescriptor {
 		Hashtable<String,Object> choices = new Hashtable<String,Object>();
 		EObject rootElement = (EObject) object.eGet(feature);
 		if (rootElement!=null)
-			choices.put(PropertyUtil.getText(rootElement), rootElement);
+			choices.put(PropertyUtil.getDisplayName(rootElement), rootElement);
 		Definitions definitions = ModelUtil.getDefinitions(object);
 		if (definitions!=null) {
 			for (RootElement re : definitions.getRootElements()) {
 				if (re.eClass() == feature.getEType()) {
-					choices.put(PropertyUtil.getText(re), re);
+					choices.put(PropertyUtil.getDisplayName(re), re);
 				}
 			}
 		}

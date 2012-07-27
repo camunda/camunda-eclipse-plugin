@@ -43,7 +43,7 @@ public class InterfacePropertiesAdapter extends ExtendedPropertiesAdapter {
     	setFeatureDescriptor(ref,
 			new FeatureDescriptor(adapterFactory,object,ref) {
 				@Override
-				public String getText(Object context) {
+				public String getDisplayName(Object context) {
 					final Interface iface = context instanceof Interface ?
 							(Interface)context :
 							(Interface)this.object;
@@ -51,7 +51,7 @@ public class InterfacePropertiesAdapter extends ExtendedPropertiesAdapter {
 					if (iface.getImplementationRef()!=null) {
 						String text = ModelUtil.getStringWrapperValue( iface.getImplementationRef() ); // + type;
 						if (text==null)
-							return PropertyUtil.getText(iface.getImplementationRef());
+							return PropertyUtil.getDisplayName(iface.getImplementationRef());
 					}
 					return "";
 				}
@@ -94,8 +94,8 @@ public class InterfacePropertiesAdapter extends ExtendedPropertiesAdapter {
     	
 		setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
 			@Override
-			public String getText(Object context) {
-				return getFeatureDescriptor(ref).getText(context);
+			public String getDisplayName(Object context) {
+				return getFeatureDescriptor(ref).getDisplayName(context);
 			}
 
 			@Override

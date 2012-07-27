@@ -118,7 +118,7 @@ public class SequenceFlowPropertiesComposite extends ExpressionPropertiesComposi
 					String objectName = flowNode.getName();
 					if (objectName!=null && objectName.isEmpty())
 						objectName = null;
-					String typeName = PropertyUtil.getText(flowNode);
+					String typeName = PropertyUtil.getDisplayName(flowNode);
 					if (allowDefault(sequenceFlow)) {
 						setDefaultFlowCheckbox.setVisible(true);
 						setDefaultFlowCheckbox.setSelection( getDefault(sequenceFlow) == sequenceFlow );

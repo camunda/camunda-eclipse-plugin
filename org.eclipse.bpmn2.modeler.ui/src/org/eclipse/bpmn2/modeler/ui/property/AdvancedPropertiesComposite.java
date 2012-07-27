@@ -238,7 +238,7 @@ public class AdvancedPropertiesComposite extends AbstractDetailComposite {
 
 			detailsPropertiesComposite.setBusinessObject(obj);
 
-			String name = PropertyUtil.getText(obj);
+			String name = PropertyUtil.getDisplayName(obj);
 			detailsSection.setText(name+" Details");
 			detailsSection.setVisible(true);
 
@@ -292,7 +292,7 @@ public class AdvancedPropertiesComposite extends AbstractDetailComposite {
 			treeViewer.setInput(be);
 		
 		hookPropertySheetPageMenu();
-		treeSection.setText(PropertyUtil.getText(be));
+		treeSection.setText(PropertyUtil.getDisplayName(be));
 
 		detailsSection.setVisible(true);
 	}

@@ -45,7 +45,7 @@ public class ResourceAssignmentExpressionPropertiesAdapter extends ExtendedPrope
 			new FeatureDescriptor(adapterFactory,object,ref) {
 
 				@Override
-				public String getText(Object context) {
+				public String getDisplayName(Object context) {
 					EObject object = this.object;
 					if (context instanceof ResourceAssignmentExpression)
 						object = (EObject)context;
@@ -82,8 +82,8 @@ public class ResourceAssignmentExpressionPropertiesAdapter extends ExtendedPrope
     	);
     	setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
 			@Override
-			public String getText(Object context) {
-				return getFeatureDescriptor(ref).getText(context);
+			public String getDisplayName(Object context) {
+				return getFeatureDescriptor(ref).getDisplayName(context);
 			}
     	});
 	}

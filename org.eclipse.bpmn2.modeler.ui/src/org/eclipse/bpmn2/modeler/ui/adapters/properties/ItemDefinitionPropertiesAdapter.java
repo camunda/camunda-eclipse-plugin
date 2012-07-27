@@ -53,7 +53,7 @@ public class ItemDefinitionPropertiesAdapter extends ExtendedPropertiesAdapter {
 				}
 
 				@Override
-				public String getText(Object context) {
+				public String getDisplayName(Object context) {
 					ItemDefinition itemDefinition = context instanceof ItemDefinition ?
 							(ItemDefinition)context :
 							(ItemDefinition)this.object;
@@ -101,8 +101,8 @@ public class ItemDefinitionPropertiesAdapter extends ExtendedPropertiesAdapter {
     	
 		setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
 			@Override
-			public String getText(Object context) {
-				return getFeatureDescriptor(ref).getText(context);
+			public String getDisplayName(Object context) {
+				return getFeatureDescriptor(ref).getDisplayName(context);
 			}
 			
 			@Override

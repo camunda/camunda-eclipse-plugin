@@ -61,7 +61,7 @@ public class UpdateSubProcessFeature extends AbstractUpdateFeature {
 				return Reason.createTrueReason("Expanded property changed");
 			}
 			
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new IllegalStateException("Could not get DI shape for subprocess:"+process);
 		}
 

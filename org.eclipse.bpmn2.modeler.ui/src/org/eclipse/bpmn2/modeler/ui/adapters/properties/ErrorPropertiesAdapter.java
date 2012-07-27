@@ -37,7 +37,7 @@ public class ErrorPropertiesAdapter extends RootElementPropertiesAdapter {
     	final EStructuralFeature ref = Bpmn2Package.eINSTANCE.getResourceAssignmentExpression_Expression();
     	setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
 			@Override
-			public String getText(Object context) {
+			public String getDisplayName(Object context) {
 				final Error error = context instanceof Error ?
 						(Error)context :
 						(Error)this.object;

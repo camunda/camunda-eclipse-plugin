@@ -174,7 +174,7 @@ public class JbpmModelUtil {
 			stringValue = ((ImportType)value).getName();
 		}
 		else if (value instanceof ItemDefinition) {
-			stringValue = PropertyUtil.getText((ItemDefinition)value);
+			stringValue = PropertyUtil.getDisplayName((ItemDefinition)value);
 		}
 		return stringValue;
 	}

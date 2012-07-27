@@ -62,12 +62,14 @@ public class FeatureDescriptor extends ObjectDescriptor {
 		return label;
 	}
 	
-	public void setText(String text) {
-		this.text = text;
+	@Override
+	public void setDisplayName(String text) {
+		this.name = text;
 	}
 	
-	public String getText(Object context) {
-		if (text==null) {
+	@Override
+	public String getDisplayName(Object context) {
+		if (name==null) {
 			String t = null;
 			// derive text from feature's value: default behavior is
 			// to use the "name" attribute if there is one;
@@ -78,7 +80,7 @@ public class FeatureDescriptor extends ObjectDescriptor {
 			if (feature!=null) {
 				Object value = object.eGet(feature); 
 				if (value instanceof EObject) {
-					o = (EObject)object.eGet(feature);
+					o = (EObject)value;
 				}
 				else if (value!=null)
 					t = value.toString();
@@ -101,7 +103,7 @@ public class FeatureDescriptor extends ObjectDescriptor {
 			}
 			return t == null ? "" : t;
 		}
-		return text == null ? "" : text;
+		return name == null ? "" : name;
 	}
 
 	public void setChoiceOfValues(Hashtable<String, Object> choiceOfValues) {
@@ -119,7 +121,7 @@ public class FeatureDescriptor extends ObjectDescriptor {
 			while (iter.hasNext()) {
 				Object value = iter.next();
 				if (value!=null) {
-					String text = getValueText(value);
+					String text = getChoiceString(value);
 					while (choiceOfValues.containsKey(text))
 						text += " ";
 					choiceOfValues.put(text, value);
@@ -128,6 +130,16 @@ public class FeatureDescriptor extends ObjectDescriptor {
 		}
 	}
 	
+	/**
+	 * Returns a list of name-value pairs for display in a combo box or selection list.
+	 * The String is what gets displayed in the selection list, while the Object is
+	 * implementation-specific: this can be a reference to an element, string or whatever.
+	 * The implementation is responsible for interpreting this value by overriding the
+	 * setValue() method, and must update the object feature accordingly.
+	 * 
+	 * @param context
+	 * @return
+	 */
 	public Hashtable<String, Object> getChoiceOfValues(Object context) {
 		EObject object = context instanceof EObject ? (EObject)context : this.object;
 		if (choiceOfValues==null) {
@@ -156,7 +168,7 @@ public class FeatureDescriptor extends ObjectDescriptor {
 				while (iter.hasNext()) {
 					Object value = iter.next();
 					if (value!=null) {
-						String text = getValueText(value);
+						String text = getChoiceString(value);
 						if (text==null)
 							text = "";
 						while (choices.containsKey(text))
@@ -171,12 +183,12 @@ public class FeatureDescriptor extends ObjectDescriptor {
 	}
 	
 	// copied from PropertyUtil in UI plugin
-	public String getValueText(Object value) {
+	public String getChoiceString(Object value) {
 		if (value instanceof EObject) {
 			EObject eObject = (EObject)value;
 			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(eObject, ExtendedPropertiesAdapter.class);
 			if (adapter!=null)
-				return adapter.getObjectDescriptor().getText(eObject);
+				return adapter.getObjectDescriptor().getDisplayName(eObject);
 			return ModelUtil.toDisplayName( eObject.eClass().getName() );
 		}
 		return value.toString();

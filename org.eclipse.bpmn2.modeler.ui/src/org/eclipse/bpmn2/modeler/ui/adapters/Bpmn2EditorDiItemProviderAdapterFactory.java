@@ -73,14 +73,14 @@ public class Bpmn2EditorDiItemProviderAdapterFactory extends BpmnDiItemProviderA
 				}
 
 				@Override
-				public String getText(Object context) {
+				public String getDisplayName(Object context) {
 					EObject object = this.object;
 					if (context instanceof EObject)
 						object = (EObject)context;
 					if (ModelUtil.isStringWrapper(object)) {
 						return ModelUtil.getStringWrapperValue(object);
 					}
-					return super.getText(context);
+					return super.getDisplayName(context);
 				}
         	});
         	return adapter;

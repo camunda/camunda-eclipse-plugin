@@ -179,7 +179,7 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter 
 				containerFeature = container.eClass().getEStructuralFeature("properties");
 				Property property = Bpmn2ModelerFactory.create(Property.class);
 				ExtendedPropertiesAdapter adapter = AdapterUtil.adapt(property, ExtendedPropertiesAdapter.class);
-				adapter.getObjectDescriptor().setText((String)value);
+				adapter.getObjectDescriptor().setDisplayName((String)value);
 				InsertionAdapter.add(container, containerFeature, property);
 				value = property;
 			}

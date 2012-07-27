@@ -36,7 +36,7 @@ public class SignalPropertiesAdapter extends RootElementPropertiesAdapter {
 		
     	setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
 			@Override
-			public String getText(Object context) {
+			public String getDisplayName(Object context) {
 				final Signal error = context instanceof Signal ?
 						(Signal)context :
 						(Signal)this.object;

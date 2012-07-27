@@ -36,7 +36,7 @@ public class ObjectDescriptor {
 
 	protected EObject object;
 	protected String label;
-	protected String text;
+	protected String name;
 	protected AdapterFactory adapterFactory;
 	
 	public ObjectDescriptor(AdapterFactory adapterFactory, EObject object) {
@@ -60,39 +60,39 @@ public class ObjectDescriptor {
 		return label;
 	}
 	
-	public void setText(String text) {
-		this.text = text;
+	public void setDisplayName(String name) {
+		this.name = name;
 	}
 	
-	public String getText(Object context) {
-		if (text==null) {
+	public String getDisplayName(Object context) {
+		if (name==null) {
 			EObject object = context instanceof EObject ? (EObject)context : this.object;
 			// derive text from feature's value: default behavior is
 			// to use the "name" attribute if there is one;
 			// if not, use the "id" attribute;
 			// fallback is to use the feature's toString()
 			String text = ModelUtil.toDisplayName(object.eClass().getName());
-			Object name = null;
+			Object value = null;
 			EStructuralFeature f = null;
 			f = object.eClass().getEStructuralFeature("name");
 			if (f!=null) {
-				name = object.eGet(f);
-				if (name==null || name.toString().isEmpty())
-					name = null;
+				value = object.eGet(f);
+				if (value==null || value.toString().isEmpty())
+					value = null;
 			}
-			if (name==null) {
+			if (value==null) {
 				f = object.eClass().getEStructuralFeature("id");
 				if (f!=null) {
-					name = object.eGet(f);
-					if (name==null || name.toString().isEmpty())
-						name = null;
+					value = object.eGet(f);
+					if (value==null || value.toString().isEmpty())
+						value = null;
 				}
 			}
-			if (name==null)
-				name = "Unnamed " + text;
-			return (String)name;
+			if (value==null)
+				value = "Unnamed " + text;
+			return (String)value;
 		}
-		return text;
+		return name;
 	}
 
 	protected IItemPropertyDescriptor getPropertyDescriptor(EStructuralFeature feature) {

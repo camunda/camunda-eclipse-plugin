@@ -43,12 +43,12 @@ public class ResourceRolePropertiesAdapter extends ExtendedPropertiesAdapter {
 			new FeatureDescriptor(adapterFactory,object,ref) {
 
 				@Override
-				public String getText(Object context) {
+				public String getDisplayName(Object context) {
 					final ResourceRole rr = (ResourceRole)(context instanceof ResourceRole ? context : object);
 					ResourceAssignmentExpression rae = rr.getResourceAssignmentExpression();
 					if (rae!=null) {
 						ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(rae, ExtendedPropertiesAdapter.class);
-						return adapter.getObjectDescriptor().getText(rae);
+						return adapter.getObjectDescriptor().getDisplayName(rae);
 					}
 					return "";
 				}

@@ -95,7 +95,8 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 		if (modelEnablement.isEnabled(object.eClass(), feature)) {
 			if ("imports".equals(feature.getName())) {
 				ImportListComposite importsTable = new ImportListComposite(propertySection);
-				importsTable.bind();
+				EStructuralFeature importsFeature = object.eClass().getEStructuralFeature("imports");
+				importsTable.bindList(object, importsFeature);
 				return importsTable;
 			}
 			else if ("relationships".equals(feature.getName())) {
@@ -182,7 +183,7 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 									});
 									return true;
 								}
-								text.setText(PropertyUtil.getText(object, feature));
+								text.setText(PropertyUtil.getDisplayName(object, feature));
 								return false;
 							}
 						};
@@ -281,15 +282,6 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 			super(section);
 		}
 
-
-		public void bind() {
-			DefinitionsImpl definitions = (DefinitionsImpl)getBusinessObject();
-			EStructuralFeature imports = definitions.eClass().getEStructuralFeature("imports");
-			
-			super.bindList(definitions, imports);
-		}
-
-		
 		@Override
 		public AbstractTableColumnProvider getColumnProvider(EObject object, EStructuralFeature feature) {
 			if (columnProvider==null) {

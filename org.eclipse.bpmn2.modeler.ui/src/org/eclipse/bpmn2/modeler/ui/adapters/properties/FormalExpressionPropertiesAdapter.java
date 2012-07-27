@@ -58,8 +58,8 @@ public class FormalExpressionPropertiesAdapter extends ExtendedPropertiesAdapter
     	);
 		setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
 			@Override
-			public String getText(Object context) {
-				return getFeatureDescriptor(body).getText(context);
+			public String getDisplayName(Object context) {
+				return getFeatureDescriptor(body).getDisplayName(context);
 			}
 		});
 	}
