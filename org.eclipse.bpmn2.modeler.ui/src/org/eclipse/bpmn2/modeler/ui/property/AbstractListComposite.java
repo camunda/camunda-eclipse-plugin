@@ -132,6 +132,13 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 	
 	abstract public EClass getListItemClass(EObject object, EStructuralFeature feature);
 	
+	public EClass getListItemClass() {
+		EClass eclass = getListItemClass(businessObject, feature);
+		if (eclass==null)
+			eclass = (EClass) feature.getEType();
+		return eclass;
+	}
+	
 	public EClass getDefaultListItemClass(EObject object, EStructuralFeature feature) {
 		EClass lic = getListItemClass(object,feature);
 		if (lic!=null)
@@ -310,7 +317,6 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 //			return;
 //		}
 
-		final BPMN2Editor bpmn2Editor = getDiagramEditor();
 		setBusinessObject(theobject);
 		this.feature = thefeature;
 		final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
@@ -740,7 +746,8 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 		public String getHeaderText() {
 			if (feature!=null) {
 				if (feature.eContainer() instanceof EClass) {
-					return PropertyUtil.getLabel(feature.eContainer(), feature);
+					EClass eclass = getListItemClass();
+					return PropertyUtil.getLabel(eclass, feature);
 				}
 				return ModelUtil.toDisplayName(feature.getName());
 			}

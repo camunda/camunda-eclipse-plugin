@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
 import java.util.Hashtable;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.RootElement;
@@ -34,26 +35,24 @@ import org.eclipse.emf.ecore.EStructuralFeature;
  * @author Bob Brodt
  *
  */
-public class RootElementRefFeatureDescriptor extends FeatureDescriptor {
+public class RootElementRefFeatureDescriptor<T extends BaseElement> extends FeatureDescriptor<T> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 * @param feature
 	 */
-	public RootElementRefFeatureDescriptor(AdapterFactory adapterFactory, EObject object, EStructuralFeature feature) {
+	public RootElementRefFeatureDescriptor(AdapterFactory adapterFactory, T object, EStructuralFeature feature) {
 		super(adapterFactory, object, feature);
 	}
 	
 	@Override
 	public EObject createObject(Object context, EClass eClass) {
-		final EObject object = context !=null ?
-				(EObject)context :
-				(EObject)this.object;
+		final T object = adopt(context);
 
 		EObject rootElement = null;
 		if (feature.getEType() != eClass) {
-			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
+			ExtendedPropertiesAdapter<T> adapter = (ExtendedPropertiesAdapter<T>) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
 			if (adapter!=null)
 				rootElement = adapter.getFeatureDescriptor(feature).createObject(object, eClass);
 		}
@@ -67,9 +66,7 @@ public class RootElementRefFeatureDescriptor extends FeatureDescriptor {
 	
 	@Override
 	public Hashtable<String, Object> getChoiceOfValues(Object context) {
-		final EObject object = context !=null ?
-				(EObject)context :
-				(EObject)this.object;
+		final T object = adopt(context);
 				
 		Hashtable<String,Object> choices = new Hashtable<String,Object>();
 		EObject rootElement = (EObject) object.eGet(feature);

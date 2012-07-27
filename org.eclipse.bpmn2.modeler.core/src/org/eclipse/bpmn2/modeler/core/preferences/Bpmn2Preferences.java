@@ -444,7 +444,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		if (TargetRuntime.getAllRuntimes() == null) {
 			return TargetRuntime.getDefaultRuntime();
 		}
-		
+
 		if (targetRuntime == TargetRuntime.getDefaultRuntime()) {
 			for (TargetRuntime rt : TargetRuntime.getAllRuntimes()) {
 				if (rt.getRuntimeExtension().isContentForRuntime(file)) {
@@ -455,6 +455,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		else
 			return targetRuntime;
 		
+		// if no other plugins have claimed this file, use the Default Target Runtime
 		return TargetRuntime.getDefaultRuntime();
 	}
 	

@@ -14,28 +14,28 @@
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 /**
  * @author Bob Brodt
  *
  */
-public class ServiceTaskPropertiesAdapter extends TaskPropertiesAdapter {
+public class ServiceTaskPropertiesAdapter extends TaskPropertiesAdapter<ServiceTask> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public ServiceTaskPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public ServiceTaskPropertiesAdapter(AdapterFactory adapterFactory, ServiceTask object) {
 		super(adapterFactory, object);
-    	setProperty(Bpmn2Package.SERVICE_TASK__OPERATION_REF, ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW, Boolean.FALSE);
-    	setProperty(Bpmn2Package.SERVICE_TASK__OPERATION_REF, ExtendedPropertiesAdapter.UI_CAN_EDIT, Boolean.FALSE);
+    	setProperty(Bpmn2Package.SERVICE_TASK__OPERATION_REF, UI_CAN_CREATE_NEW, Boolean.FALSE);
+    	setProperty(Bpmn2Package.SERVICE_TASK__OPERATION_REF, UI_CAN_EDIT, Boolean.FALSE);
 
     	EStructuralFeature ref = Bpmn2Package.eINSTANCE.getServiceTask_OperationRef();
-    	setFeatureDescriptor(ref, new RootElementRefFeatureDescriptor(adapterFactory,object,ref));
+    	setFeatureDescriptor(ref, new RootElementRefFeatureDescriptor<ServiceTask>(adapterFactory,object,ref));
 	}
 
 }

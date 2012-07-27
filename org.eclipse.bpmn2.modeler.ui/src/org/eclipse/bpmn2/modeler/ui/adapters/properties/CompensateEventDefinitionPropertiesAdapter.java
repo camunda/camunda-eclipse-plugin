@@ -14,24 +14,23 @@
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
 import org.eclipse.bpmn2.Bpmn2Package;
-import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
+import org.eclipse.bpmn2.CompensateEventDefinition;
 import org.eclipse.emf.common.notify.AdapterFactory;
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * @author Bob Brodt
  *
  */
-public class CompensateEventDefinitionPropertiesAdapter extends RootElementPropertiesAdapter {
+public class CompensateEventDefinitionPropertiesAdapter extends RootElementPropertiesAdapter<CompensateEventDefinition> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public CompensateEventDefinitionPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public CompensateEventDefinitionPropertiesAdapter(AdapterFactory adapterFactory, CompensateEventDefinition object) {
 		super(adapterFactory, object);
-    	setProperty(Bpmn2Package.COMPENSATE_EVENT_DEFINITION__ACTIVITY_REF, ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW, Boolean.FALSE);
-    	setProperty(Bpmn2Package.COMPENSATE_EVENT_DEFINITION__ACTIVITY_REF, ExtendedPropertiesAdapter.UI_CAN_EDIT, Boolean.FALSE);
+    	setProperty(Bpmn2Package.COMPENSATE_EVENT_DEFINITION__ACTIVITY_REF, UI_CAN_CREATE_NEW, Boolean.FALSE);
+    	setProperty(Bpmn2Package.COMPENSATE_EVENT_DEFINITION__ACTIVITY_REF, UI_CAN_EDIT, Boolean.FALSE);
 	}
 
 }

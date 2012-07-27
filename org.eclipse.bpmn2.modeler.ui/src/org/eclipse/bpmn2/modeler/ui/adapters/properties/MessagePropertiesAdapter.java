@@ -26,21 +26,19 @@ import org.eclipse.emf.ecore.EStructuralFeature;
  * @author Gary Brown
  *
  */
-public class MessagePropertiesAdapter extends RootElementPropertiesAdapter {
+public class MessagePropertiesAdapter extends RootElementPropertiesAdapter<Message> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public MessagePropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public MessagePropertiesAdapter(AdapterFactory adapterFactory, Message object) {
 		super(adapterFactory, object);
 		
-    	setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
+    	setObjectDescriptor(new ObjectDescriptor<Message>(adapterFactory, object) {
 			@Override
 			public String getDisplayName(Object context) {
-				final Message mesg = context instanceof Message ?
-						(Message)context :
-						(Message)this.object;
+				final Message mesg = adopt(context);
 				String text = ChoreographyUtil.getMessageName(mesg);
 				return text;
 			}

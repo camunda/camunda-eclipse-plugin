@@ -31,16 +31,16 @@ import org.eclipse.emf.ecore.EStructuralFeature;
  * @author Bob Brodt
  *
  */
-public class DataInputPropertiesAdapter extends ItemAwareElementPropertiesAdapter {
+public class DataInputPropertiesAdapter extends ItemAwareElementPropertiesAdapter<DataInput> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public DataInputPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public DataInputPropertiesAdapter(AdapterFactory adapterFactory, DataInput object) {
 		super(adapterFactory, object);
     	EStructuralFeature f = Bpmn2Package.eINSTANCE.getDataInput_Name();
-		final FeatureDescriptor fd = new FeatureDescriptor(adapterFactory,object, f) {
+		final FeatureDescriptor<DataInput> fd = new FeatureDescriptor<DataInput>(adapterFactory,object, f) {
 
 			@Override
 			public void setDisplayName(String text) {
@@ -53,7 +53,7 @@ public class DataInputPropertiesAdapter extends ItemAwareElementPropertiesAdapte
 
 			@Override
 			public String getChoiceString(Object context) {
-				DataInput dataInput = (DataInput)(context instanceof DataInput ? context : this.object);
+				DataInput dataInput = adopt(context);
 				String text = dataInput.getName();
 				if (text==null || text.isEmpty())
 					text = dataInput.getId();
@@ -76,7 +76,7 @@ public class DataInputPropertiesAdapter extends ItemAwareElementPropertiesAdapte
 		};
 		setFeatureDescriptor(f, fd);
 		
-		setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
+		setObjectDescriptor(new ObjectDescriptor<DataInput>(adapterFactory, object) {
 
 			@Override
 			public void setDisplayName(String text) {

@@ -29,34 +29,26 @@ import org.eclipse.emf.ecore.EStructuralFeature;
  * @author Bob Brodt
  *
  */
-public class ItemDefinitionPropertiesAdapter extends ExtendedPropertiesAdapter {
+public class ItemDefinitionPropertiesAdapter extends ExtendedPropertiesAdapter<ItemDefinition> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public ItemDefinitionPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public ItemDefinitionPropertiesAdapter(AdapterFactory adapterFactory, ItemDefinition object) {
 		super(adapterFactory, object);
 
     	final EStructuralFeature ref = Bpmn2Package.eINSTANCE.getItemDefinition_StructureRef();
     	setFeatureDescriptor(ref,
-			new FeatureDescriptor(adapterFactory,object,ref) {
+			new FeatureDescriptor<ItemDefinition>(adapterFactory,object,ref) {
 				@Override
 				public String getLabel(Object context) {
-					EObject object = this.object;
-					if (context instanceof ItemDefinition)
-						object = (EObject)context;
-					if (object instanceof ItemDefinition) {
-						return "Data Type";
-					}
-					return super.getLabel(context);
+					return "Data Type";
 				}
 
 				@Override
 				public String getDisplayName(Object context) {
-					ItemDefinition itemDefinition = context instanceof ItemDefinition ?
-							(ItemDefinition)context :
-							(ItemDefinition)this.object;
+					final ItemDefinition itemDefinition = adopt(context);
 					if (itemDefinition.getStructureRef()!=null) {
 						return ModelUtil.getStringWrapperValue(itemDefinition.getStructureRef());
 					}
@@ -65,10 +57,7 @@ public class ItemDefinitionPropertiesAdapter extends ExtendedPropertiesAdapter {
 				
 	    		@Override
 				public EObject createObject(Object context, EClass eClass) {
-					final ItemDefinition itemDefinition = context instanceof ItemDefinition ?
-							(ItemDefinition)context :
-							(ItemDefinition)this.object;
-
+					final ItemDefinition itemDefinition = adopt(context);
 					EObject structureRef = ModelUtil.createStringWrapper("");
 					InsertionAdapter.add(itemDefinition, ref, structureRef);
 					return structureRef;
@@ -76,18 +65,12 @@ public class ItemDefinitionPropertiesAdapter extends ExtendedPropertiesAdapter {
 
 	    		@Override
 	    		public Object getValue(Object context) {
-					ItemDefinition itemDefinition = context instanceof ItemDefinition ?
-							(ItemDefinition)context :
-							(ItemDefinition)this.object;
+					final ItemDefinition itemDefinition = adopt(context);
 					return itemDefinition.getStructureRef();
 	    		}
 
 	    		@Override
 	    		public void setValue(Object context, Object value) {
-					ItemDefinition itemDefinition = context instanceof ItemDefinition ?
-							(ItemDefinition)context :
-							(ItemDefinition)this.object;
-
 	    			if (value instanceof String) {
 						value = ModelUtil.createStringWrapper((String)value);
 	    			}
@@ -99,7 +82,7 @@ public class ItemDefinitionPropertiesAdapter extends ExtendedPropertiesAdapter {
 			}
     	);
     	
-		setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
+		setObjectDescriptor(new ObjectDescriptor<ItemDefinition>(adapterFactory, object) {
 			@Override
 			public String getDisplayName(Object context) {
 				return getFeatureDescriptor(ref).getDisplayName(context);

@@ -50,13 +50,13 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain;
  * @author Bob Brodt
  *
  */
-public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter {
+public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter<DataAssociation> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public DataAssociationPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public DataAssociationPropertiesAdapter(AdapterFactory adapterFactory, DataAssociation object) {
 		super(adapterFactory, object);
 
     	EStructuralFeature ref;
@@ -74,9 +74,9 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter 
 		setProperty(ref, UI_CAN_CREATE_NEW, Boolean.FALSE);
 	}
 
-	public class SourceTargetFeatureDescriptor extends FeatureDescriptor {
+	public class SourceTargetFeatureDescriptor extends FeatureDescriptor<DataAssociation> {
 
-		public SourceTargetFeatureDescriptor(AdapterFactory adapterFactory, EObject object, EStructuralFeature feature) {
+		public SourceTargetFeatureDescriptor(AdapterFactory adapterFactory, DataAssociation object, EStructuralFeature feature) {
 			super(adapterFactory, object, feature);
 		}
 		
@@ -86,14 +86,14 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter 
 			// search for all Properties and DataStores
 			// Properties are contained in the nearest enclosing Process or Event;
 			// DataStores are contained in the DocumentRoot
-			EObject object = context instanceof DataAssociation ? (EObject)context : this.object;
-			values.addAll( ModelUtil.collectAncestorObjects(object, "properties", new Class[] {Activity.class}) );
-			values.addAll( ModelUtil.collectAncestorObjects(object, "properties", new Class[] {Process.class}) );
-			values.addAll( ModelUtil.collectAncestorObjects(object, "properties", new Class[] {Event.class}) );
-			values.addAll( ModelUtil.collectAncestorObjects(object, "dataStore", new Class[] {DocumentRoot.class}) );
-			values.addAll( ModelUtil.collectAncestorObjects(object, "flowElements", new Class[] {FlowElementsContainer.class}, new Class[] {ItemAwareElement.class}));
+			DataAssociation association = adopt(context);
+			values.addAll( ModelUtil.collectAncestorObjects(association, "properties", new Class[] {Activity.class}) );
+			values.addAll( ModelUtil.collectAncestorObjects(association, "properties", new Class[] {Process.class}) );
+			values.addAll( ModelUtil.collectAncestorObjects(association, "properties", new Class[] {Event.class}) );
+			values.addAll( ModelUtil.collectAncestorObjects(association, "dataStore", new Class[] {DocumentRoot.class}) );
+			values.addAll( ModelUtil.collectAncestorObjects(association, "flowElements", new Class[] {FlowElementsContainer.class}, new Class[] {ItemAwareElement.class}));
 			
-			Activity activity = (Activity)ModelUtil.findNearestAncestor(object.eContainer(), new Class[] {Activity.class});
+			Activity activity = (Activity)ModelUtil.findNearestAncestor(association.eContainer(), new Class[] {Activity.class});
 			if (activity!=null) {
 				InputOutputSpecification ioSpec = activity.getIoSpecification();
 				if (ioSpec!=null) {
@@ -102,7 +102,7 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter 
 				}
 			}
 			
-			CallableElement callable = (CallableElement)ModelUtil.findNearestAncestor(object.eContainer(), new Class[] {CallableElement.class});
+			CallableElement callable = (CallableElement)ModelUtil.findNearestAncestor(association.eContainer(), new Class[] {CallableElement.class});
 			if (callable!=null) {
 				InputOutputSpecification ioSpec = callable.getIoSpecification();
 				if (ioSpec!=null) {
@@ -117,18 +117,18 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter 
 		
 		@Override
 		public EObject createObject(Object context, EClass eClass) {
-			EObject object = context instanceof DataAssociation ? (EObject)context : this.object;
+			DataAssociation association = adopt(context);
 			// what kind of object should we create? Property or DataStore?
 			if (eClass==null) {
-				if (ModelUtil.findNearestAncestor(object, new Class[] {Process.class, Event.class}) != null)
+				if (ModelUtil.findNearestAncestor(association, new Class[] {Process.class, Event.class}) != null)
 					// nearest ancestor is a Process or Event, so new object will be a Property
 					eClass = Bpmn2Package.eINSTANCE.getProperty();
-				else if(ModelUtil.findNearestAncestor(object, new Class[] {DocumentRoot.class}) != null)
+				else if(ModelUtil.findNearestAncestor(association, new Class[] {DocumentRoot.class}) != null)
 					eClass = Bpmn2Package.eINSTANCE.getDataStore();
 			}			
 			if (eClass!=null) {
 				try {
-					ModelHandler mh = ModelHandler.getInstance(object);
+					ModelHandler mh = ModelHandler.getInstance(association);
 					return mh.create(eClass);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -139,9 +139,7 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter 
 		
 		@Override
 		public void setValue(Object context, Object value) {
-			final DataAssociation association = context instanceof DataAssociation ?
-					(DataAssociation)context :
-					(DataAssociation)this.object;
+			final DataAssociation association = adopt(context);
 
 			EObject container = null;
 			EStructuralFeature containerFeature = null;
@@ -178,7 +176,7 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter 
 					
 				containerFeature = container.eClass().getEStructuralFeature("properties");
 				Property property = Bpmn2ModelerFactory.create(Property.class);
-				ExtendedPropertiesAdapter adapter = AdapterUtil.adapt(property, ExtendedPropertiesAdapter.class);
+				ExtendedPropertiesAdapter<Property> adapter = AdapterUtil.adapt(property, ExtendedPropertiesAdapter.class);
 				adapter.getObjectDescriptor().setDisplayName((String)value);
 				InsertionAdapter.add(container, containerFeature, property);
 				value = property;
@@ -186,7 +184,7 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter 
 
 			final EObject c = container;
 			final EStructuralFeature cf = containerFeature;
-			final Object v = value;
+			final ItemAwareElement v = (ItemAwareElement)value;
 			
 			TransactionalEditingDomain editingDomain = getEditingDomain(association);
 			if (feature == Bpmn2Package.eINSTANCE.getDataAssociation_SourceRef()) {
@@ -198,7 +196,7 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter 
 							else
 								c.eSet(cf, v);
 						}
-						association.getSourceRef().add((ItemAwareElement)v);
+						association.getSourceRef().add(v);
 					} else {
 						editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 							@Override
@@ -209,7 +207,7 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter 
 									else
 										c.eSet(cf, v);
 								}
-								association.getSourceRef().add((ItemAwareElement)v);
+								association.getSourceRef().add(v);
 							}
 						});
 					}
@@ -222,7 +220,7 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter 
 							else
 								c.eSet(cf, v);
 						}
-						association.getSourceRef().set(0,(ItemAwareElement)v);
+						association.getSourceRef().set(0,v);
 					} else {
 						editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 							@Override
@@ -233,7 +231,7 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter 
 									else
 										c.eSet(cf, v);
 								}
-								association.getSourceRef().set(0,(ItemAwareElement)v);
+								association.getSourceRef().set(0,v);
 							}
 						});
 					}
@@ -247,7 +245,7 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter 
 						else
 							c.eSet(cf, v);
 					}
-					association.setTargetRef((ItemAwareElement)v);
+					association.setTargetRef(v);
 				} else {
 					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 						@Override
@@ -258,7 +256,7 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter 
 								else
 									c.eSet(cf, v);
 							}
-							association.setTargetRef((ItemAwareElement)v);
+							association.setTargetRef(v);
 						}
 					});
 				}

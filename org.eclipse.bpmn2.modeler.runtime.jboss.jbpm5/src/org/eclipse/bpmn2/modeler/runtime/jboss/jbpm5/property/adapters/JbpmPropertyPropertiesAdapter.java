@@ -14,30 +14,13 @@
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters;
 
 import java.util.Hashtable;
-import java.util.List;
-import java.util.Map.Entry;
 
 import org.eclipse.bpmn2.Bpmn2Package;
-import org.eclipse.bpmn2.Definitions;
-import org.eclipse.bpmn2.ItemDefinition;
-import org.eclipse.bpmn2.ItemKind;
 import org.eclipse.bpmn2.Property;
-import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
-import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
-import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.drools.process.core.datatype.DataType;
-import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.drools.process.core.datatype.DataTypeFactory;
-import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.drools.process.core.datatype.DataTypeRegistry;
-import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.drools.process.core.datatype.impl.type.EnumDataType;
-import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.drools.process.core.datatype.impl.type.UndefinedDataType;
-import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.GlobalType;
-import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ImportType;
-import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.util.JbpmModelUtil;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.PropertyPropertiesAdapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
@@ -52,14 +35,14 @@ public class JbpmPropertyPropertiesAdapter extends PropertyPropertiesAdapter {
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public JbpmPropertyPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public JbpmPropertyPropertiesAdapter(AdapterFactory adapterFactory, Property object) {
 		super(adapterFactory, object);
-    	setProperty(Bpmn2Package.PROPERTY__ITEM_SUBJECT_REF, ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW, Boolean.TRUE);
-    	setProperty(Bpmn2Package.PROPERTY__ITEM_SUBJECT_REF, ExtendedPropertiesAdapter.UI_CAN_EDIT, Boolean.FALSE);
+    	setProperty(Bpmn2Package.PROPERTY__ITEM_SUBJECT_REF, UI_CAN_CREATE_NEW, Boolean.TRUE);
+    	setProperty(Bpmn2Package.PROPERTY__ITEM_SUBJECT_REF, UI_CAN_EDIT, Boolean.FALSE);
 
     	EStructuralFeature feature = Bpmn2Package.eINSTANCE.getItemAwareElement_ItemSubjectRef();
     	setFeatureDescriptor(feature,
-			new FeatureDescriptor(adapterFactory,object,feature) {
+			new FeatureDescriptor<Property>(adapterFactory,object,feature) {
 				@Override
 				public String getLabel(Object context) {
 					return "Data Type";
@@ -67,9 +50,7 @@ public class JbpmPropertyPropertiesAdapter extends PropertyPropertiesAdapter {
 				
 				@Override
 				public void setValue(Object context, final Object value) {
-					final Property property = context instanceof Property ?
-							(Property)context :
-							(Property)this.object;
+					final Property property = adopt(context);
 
 					TransactionalEditingDomain domain = getEditingDomain(object);
 					domain.getCommandStack().execute(new RecordingCommand(domain) {
@@ -82,9 +63,7 @@ public class JbpmPropertyPropertiesAdapter extends PropertyPropertiesAdapter {
 				
 				@Override
 				public Hashtable<String, Object> getChoiceOfValues(Object context) {
-					final Property property = context instanceof Property ?
-							(Property)context :
-							(Property)this.object;
+					final Property property = adopt(context);
 					return JbpmModelUtil.collectAllDataTypes(property);
 				}
 				
@@ -92,6 +71,54 @@ public class JbpmPropertyPropertiesAdapter extends PropertyPropertiesAdapter {
 				public boolean isMultiLine(Object context) {
 					return true;
 				}
+			}
+    	);
+
+    	feature = Bpmn2Package.eINSTANCE.getProperty_Name();
+    	setFeatureDescriptor(feature,
+			new FeatureDescriptor<Property>(adapterFactory,object,feature) {
+				@Override
+				public String getLabel(Object context) {
+					return "Description";
+				}
+//				
+//				@Override
+//				public void setValue(Object context, final Object value) {
+//					final Property property = adopt(context);
+//
+//					TransactionalEditingDomain domain = getEditingDomain(object);
+//					domain.getCommandStack().execute(new RecordingCommand(domain) {
+//						@Override
+//						protected void doExecute() {
+//							property.setId((String)value);
+//							property.setName((String)value);
+//						}
+//					});
+//				}
+			}
+    	);
+
+    	feature = Bpmn2Package.eINSTANCE.getBaseElement_Id();
+    	setFeatureDescriptor(feature,
+			new FeatureDescriptor<Property>(adapterFactory,object,feature) {
+				@Override
+				public String getLabel(Object context) {
+					return "Name";
+				}
+//				
+//				@Override
+//				public void setValue(Object context, final Object value) {
+//					final Property property = adopt(context);
+//
+//					TransactionalEditingDomain domain = getEditingDomain(object);
+//					domain.getCommandStack().execute(new RecordingCommand(domain) {
+//						@Override
+//						protected void doExecute() {
+//							property.setId((String)value);
+//							property.setName((String)value);
+//						}
+//					});
+//				}
 			}
     	);
 	}

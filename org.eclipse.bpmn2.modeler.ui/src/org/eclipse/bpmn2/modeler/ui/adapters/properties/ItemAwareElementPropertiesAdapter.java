@@ -37,19 +37,19 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain;
  * @author Bob Brodt
  *
  */
-public class ItemAwareElementPropertiesAdapter extends ExtendedPropertiesAdapter {
+public class ItemAwareElementPropertiesAdapter<T extends ItemAwareElement> extends ExtendedPropertiesAdapter<T> {
 
 	/**
 	 * @param adapterFactory
 	 * @param target
 	 */
-	public ItemAwareElementPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public ItemAwareElementPropertiesAdapter(AdapterFactory adapterFactory, T object) {
 		super(adapterFactory, object);
 		
     	EStructuralFeature ref = Bpmn2Package.eINSTANCE.getItemAwareElement_ItemSubjectRef();
     	
     	setFeatureDescriptor(ref,
-			new RootElementRefFeatureDescriptor(adapterFactory,object,ref) {
+			new RootElementRefFeatureDescriptor<T>(adapterFactory,object,ref) {
 				@Override
 				public String getLabel(Object context) {
 					EObject object = this.object;
@@ -61,7 +61,8 @@ public class ItemAwareElementPropertiesAdapter extends ExtendedPropertiesAdapter
 					else if (object instanceof ItemAwareElement)
 						itemDefinition = (ItemDefinition) object.eGet(feature);
 					if (itemDefinition!=null) {
-						ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(itemDefinition, ExtendedPropertiesAdapter.class);
+						ExtendedPropertiesAdapter<ItemDefinition> adapter =
+								(ExtendedPropertiesAdapter<ItemDefinition>) AdapterUtil.adapt(itemDefinition, ExtendedPropertiesAdapter.class);
 						return adapter.getFeatureDescriptor(Bpmn2Package.eINSTANCE.getItemDefinition_StructureRef()).getLabel(itemDefinition);
 					}
 					return ModelUtil.getLabel(object) + " Type";
@@ -78,7 +79,8 @@ public class ItemAwareElementPropertiesAdapter extends ExtendedPropertiesAdapter
 					else if (object instanceof ItemAwareElement)
 						itemDefinition = (ItemDefinition) object.eGet(feature);
 					if (itemDefinition!=null) {
-						ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(itemDefinition, ExtendedPropertiesAdapter.class);
+						ExtendedPropertiesAdapter<ItemDefinition> adapter =
+								(ExtendedPropertiesAdapter<ItemDefinition>) AdapterUtil.adapt(itemDefinition, ExtendedPropertiesAdapter.class);
 						return adapter.getFeatureDescriptor(Bpmn2Package.eINSTANCE.getItemDefinition_StructureRef()).getDisplayName(itemDefinition);
 					}
 					return super.getDisplayName(context);
@@ -88,10 +90,10 @@ public class ItemAwareElementPropertiesAdapter extends ExtendedPropertiesAdapter
     	
     	ref = Bpmn2Package.eINSTANCE.getItemAwareElement_DataState();
     	setFeatureDescriptor(ref,
-			new FeatureDescriptor(adapterFactory,object,ref) {
+			new FeatureDescriptor<T>(adapterFactory,object,ref) {
 				@Override
 				public void setValue(Object context, Object value) {
-					final EObject object = (EObject) (context instanceof EObject ? context : this.object);
+					final ItemAwareElement element = adopt(context);
 					if (value instanceof String) {
 						// construct a DataState from the given name string
 						DataState ds = Bpmn2ModelerFactory.create(DataState.class);
@@ -99,19 +101,19 @@ public class ItemAwareElementPropertiesAdapter extends ExtendedPropertiesAdapter
 						value = ds;
 					}
 					if (value instanceof DataState) {
-						final DataState oldValue = (DataState) object.eGet(feature);
+						final DataState oldValue = (DataState) element.eGet(feature);
 						if (value != oldValue) {
 							// if this DataState belongs to some other ItemAwareElement, make a copy
 							final DataState newValue = (DataState)(((DataState)value).eContainer()!=null ?
-								clone((EObject) value) : value);
-							TransactionalEditingDomain editingDomain = getEditingDomain(object);
+								clone((T) value) : value);
+							TransactionalEditingDomain editingDomain = getEditingDomain(element);
 							if (editingDomain == null) {
-								object.eSet(feature, value);
+								element.eSet(feature, value);
 							} else {
 								editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 									@Override
 									protected void doExecute() {
-										object.eSet(feature, newValue);
+										element.eSet(feature, newValue);
 										newValue.setId(null);
 										ModelUtil.setID(newValue);
 									}
@@ -123,10 +125,6 @@ public class ItemAwareElementPropertiesAdapter extends ExtendedPropertiesAdapter
 
 				@Override
 				public Hashtable<String, Object> getChoiceOfValues(Object context) {
-					final EObject object = context !=null ?
-							(EObject)context :
-							(EObject)this.object;
-							
 					Hashtable<String,Object> choices = new Hashtable<String,Object>();
 					try {
 						List<DataState> states = ModelHandler.getInstance(this.object).getAll(DataState.class);
@@ -145,7 +143,7 @@ public class ItemAwareElementPropertiesAdapter extends ExtendedPropertiesAdapter
 			}
     	);
     	
-    	setProperty(Bpmn2Package.ITEM_AWARE_ELEMENT__DATA_STATE, ExtendedPropertiesAdapter.UI_IS_MULTI_CHOICE, Boolean.TRUE);
+    	setProperty(Bpmn2Package.ITEM_AWARE_ELEMENT__DATA_STATE, UI_IS_MULTI_CHOICE, Boolean.TRUE);
 	}
 
 }

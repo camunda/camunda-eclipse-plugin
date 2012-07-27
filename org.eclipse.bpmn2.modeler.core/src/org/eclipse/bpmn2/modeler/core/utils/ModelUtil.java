@@ -79,6 +79,8 @@ public class ModelUtil {
 	// Map of ID strings and sequential counters for each BPMN2 element description.
 	public static HashMap<String, Integer> defaultIds = new HashMap<String, Integer>();
 
+	protected static Hashtable<EClass,EObject> dummyObjects = new Hashtable<EClass,EObject>();
+
 	/**
 	 * Clear the IDs hashmap for the given EMF Resource. This should be called
 	 * when the editor is disposed to avoid unnecessary growth of the IDs table.
@@ -838,4 +840,22 @@ public class ModelUtil {
 		}
 	}
 
+	/**
+	 * Dummy objects are constructed when needed for an ExtendedPropertiesAdapter. The adapter factory
+	 * (@see org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2EditorItemProviderAdapterFactory) knows how to
+	 * construct an ExtendedPropertiesAdapter from an EClass, however the adapter itself needs an EObject.
+	 * This method constructs and caches these dummy objects as they are needed.
+	 * 
+	 * @param eclass
+	 * @return
+	 */
+	public static EObject getDummyObject(EClass eclass) {
+		EObject object = dummyObjects.get(eclass);
+		if (object==null && eclass.eContainer() instanceof EPackage) {
+	    	EPackage pkg = (EPackage)eclass.eContainer();
+			object = pkg.getEFactoryInstance().create(eclass);
+			dummyObjects.put(eclass, object);
+		}
+		return object;
+	}
 }

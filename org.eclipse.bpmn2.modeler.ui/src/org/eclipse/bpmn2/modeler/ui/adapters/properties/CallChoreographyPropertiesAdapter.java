@@ -14,26 +14,26 @@
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.CallChoreography;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 /**
  * @author Bob Brodt
  *
  */
-public class CallChoreographyPropertiesAdapter extends ExtendedPropertiesAdapter {
+public class CallChoreographyPropertiesAdapter extends ExtendedPropertiesAdapter<CallChoreography> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public CallChoreographyPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public CallChoreographyPropertiesAdapter(AdapterFactory adapterFactory, CallChoreography object) {
 		super(adapterFactory, object);
 		
     	final EStructuralFeature ref = Bpmn2Package.eINSTANCE.getCallChoreography_CalledChoreographyRef();
-    	setFeatureDescriptor(ref, new RootElementRefFeatureDescriptor(adapterFactory,object,ref));
+    	setFeatureDescriptor(ref, new RootElementRefFeatureDescriptor<CallChoreography>(adapterFactory,object,ref));
 	}
 
 }

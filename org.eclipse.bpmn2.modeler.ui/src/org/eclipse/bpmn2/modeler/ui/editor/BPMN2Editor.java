@@ -80,11 +80,13 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
@@ -106,7 +108,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	
 	private IFileChangeListener fileChangeListener;
 	private IWorkbenchListener workbenchListener;
-	private ISelectionListener selectionListener;
+	private IPartListener2 selectionListener;
 	private boolean workbenchShutdown = false;
 	private static BPMN2Editor activeEditor;
 	
@@ -141,8 +143,8 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	private void setActiveEditor(BPMN2Editor editor) {
 		activeEditor = editor;
 		if (activeEditor!=null) {
-			Bpmn2Preferences.setActiveProject(modelFile.getProject());
-			TargetRuntime.setCurrentRuntime( getTargetRuntime() );
+			Bpmn2Preferences.setActiveProject(activeEditor.modelFile.getProject());
+			TargetRuntime.setCurrentRuntime( activeEditor.getTargetRuntime() );
 		}
 	}
 
@@ -382,27 +384,54 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		}
 	}
 	
-	private void addSelectionListener()
-	{
-		if (selectionListener==null) {
-			selectionListener = new ISelectionListener() {
+	private void addSelectionListener() {
+		if (selectionListener == null) {
+			IWorkbenchPage page = getSite().getPage();
+			selectionListener = new IPartListener2() {
+				public void partActivated(IWorkbenchPartReference partRef) {
+				}
 
 				@Override
-				public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-					if (part == BPMN2Editor.this) {
-						setActiveEditor(BPMN2Editor.this );
+				public void partBroughtToTop(IWorkbenchPartReference partRef) {
+					IWorkbenchPart part = partRef.getPart(false);
+					if (part instanceof BPMN2MultiPageEditor) {
+						BPMN2MultiPageEditor ed = (BPMN2MultiPageEditor)part;
+						setActiveEditor(ed.designEditor);
 					}
 				}
-				
+
+				@Override
+				public void partClosed(IWorkbenchPartReference partRef) {
+				}
+
+				@Override
+				public void partDeactivated(IWorkbenchPartReference partRef) {
+				}
+
+				@Override
+				public void partOpened(IWorkbenchPartReference partRef) {
+				}
+
+				@Override
+				public void partHidden(IWorkbenchPartReference partRef) {
+				}
+
+				@Override
+				public void partVisible(IWorkbenchPartReference partRef) {
+				}
+
+				@Override
+				public void partInputChanged(IWorkbenchPartReference partRef) {
+				}
 			};
-			getSite().getPage().addSelectionListener(selectionListener);
+			page.addPartListener(selectionListener);
 		}
 	}
 
 	private void removeSelectionListener()
 	{
 		if (selectionListener!=null) {
-			getSite().getPage().removeSelectionListener(selectionListener);
+			getSite().getPage().removePartListener(selectionListener);
 			selectionListener = null;
 		}
 	}

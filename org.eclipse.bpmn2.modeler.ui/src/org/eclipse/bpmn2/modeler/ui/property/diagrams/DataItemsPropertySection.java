@@ -15,7 +15,6 @@ import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
-import org.eclipse.bpmn2.modeler.ui.property.diagrams.DataItemsPropertiesComposite.PropertyListComposite;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ComboObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.SchemaObjectEditor;

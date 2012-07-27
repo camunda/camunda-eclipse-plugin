@@ -14,26 +14,25 @@
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
 import org.eclipse.bpmn2.Bpmn2Package;
-import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
+import org.eclipse.bpmn2.DataStoreReference;
 import org.eclipse.emf.common.notify.AdapterFactory;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 /**
  * @author Bob Brodt
  *
  */
-public class DataStoreReferencePropertiesAdapter extends ItemAwareElementPropertiesAdapter {
+public class DataStoreReferencePropertiesAdapter extends ItemAwareElementPropertiesAdapter<DataStoreReference> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public DataStoreReferencePropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public DataStoreReferencePropertiesAdapter(AdapterFactory adapterFactory, DataStoreReference object) {
 		super(adapterFactory, object);
 		
     	final EStructuralFeature ref = Bpmn2Package.eINSTANCE.getDataStoreReference_DataStoreRef();
-    	setFeatureDescriptor(ref, new RootElementRefFeatureDescriptor(adapterFactory,object,ref));
+    	setFeatureDescriptor(ref, new RootElementRefFeatureDescriptor<DataStoreReference>(adapterFactory,object,ref));
 	}
 
 }

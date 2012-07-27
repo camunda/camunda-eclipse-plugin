@@ -140,7 +140,6 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
     
     public class Bpmn2ExtendedPropertiesSwitch extends Bpmn2Switch<ExtendedPropertiesAdapter> {
 
-    	protected Hashtable<EClass,EObject> dummyObjects = new Hashtable<EClass,EObject>();
     	private AdapterFactory adapterFactory;
         
     	public Bpmn2ExtendedPropertiesSwitch(AdapterFactory adapterFactory) {
@@ -179,20 +178,13 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
         	    adapter = getTargetRuntimeAdapter((EClass)object);
         	    if (adapter==null) {
         	    	// if none is found, create a dummy EObject and cache it
-    		    	EClass eclass = (EClass)object;
-    		    	EPackage pkg = (EPackage)(eclass).eContainer();
-    		    	if (pkg == Bpmn2Package.eINSTANCE) {
-    		    		object = dummyObjects.get(eclass);
-    		    		if (object==null) {
-    		    			object = pkg.getEFactoryInstance().create(eclass);
-    		    			dummyObjects.put(eclass, object);
-    		    		}
-    		    		adapter = doSwitch(object);
-    		    	}
+   		    		object = ModelUtil.getDummyObject((EClass)object);
+   		    		adapter = doSwitch(object);
         	    }
         	}
         	else
         		adapter = getTargetRuntimeAdapter(object);
+        	
         	if (adapter==null) {
 	        	adapter = new ExtendedPropertiesAdapter(adapterFactory,object);
 	        	adapter.setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {

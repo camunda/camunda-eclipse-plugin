@@ -15,32 +15,27 @@ package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Error;
-import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
 import org.eclipse.emf.common.notify.AdapterFactory;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 /**
  * @author Bob Brodt
  *
  */
-public class ErrorPropertiesAdapter extends RootElementPropertiesAdapter {
+public class ErrorPropertiesAdapter extends RootElementPropertiesAdapter<Error> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public ErrorPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public ErrorPropertiesAdapter(AdapterFactory adapterFactory, Error object) {
 		super(adapterFactory, object);
 		
-    	final EStructuralFeature ref = Bpmn2Package.eINSTANCE.getResourceAssignmentExpression_Expression();
-    	setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
+    	setObjectDescriptor(new ObjectDescriptor<Error>(adapterFactory, object) {
 			@Override
 			public String getDisplayName(Object context) {
-				final Error error = context instanceof Error ?
-						(Error)context :
-						(Error)this.object;
+				final Error error = adopt(context);
 				String text = "";
 				if (error.getName()!=null) {
 					text += error.getName();

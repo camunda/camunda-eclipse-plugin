@@ -13,20 +13,20 @@
 
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
+import org.eclipse.bpmn2.ScriptTask;
 import org.eclipse.emf.common.notify.AdapterFactory;
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * @author Bob Brodt
  *
  */
-public class ScriptTaskPropertiesAdapter extends TaskPropertiesAdapter {
+public class ScriptTaskPropertiesAdapter extends TaskPropertiesAdapter<ScriptTask> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public ScriptTaskPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public ScriptTaskPropertiesAdapter(AdapterFactory adapterFactory, ScriptTask object) {
 		super(adapterFactory, object);
 	}
 

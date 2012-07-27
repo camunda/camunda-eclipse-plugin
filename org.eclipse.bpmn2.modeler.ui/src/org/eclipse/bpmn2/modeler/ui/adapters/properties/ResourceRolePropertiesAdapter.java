@@ -20,34 +20,34 @@ import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
 import org.eclipse.emf.common.notify.AdapterFactory;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 /**
  * @author Bob Brodt
  *
  */
-public class ResourceRolePropertiesAdapter extends ExtendedPropertiesAdapter {
+public class ResourceRolePropertiesAdapter extends ExtendedPropertiesAdapter<ResourceRole> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public ResourceRolePropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public ResourceRolePropertiesAdapter(AdapterFactory adapterFactory, ResourceRole object) {
 		super(adapterFactory, object);
 		// ResourceRoles are contained in Process, GlobalTask and Activity
     	setProperty(Bpmn2Package.RESOURCE_ROLE__RESOURCE_ASSIGNMENT_EXPRESSION, ExtendedPropertiesAdapter.UI_IS_MULTI_CHOICE, Boolean.FALSE);
 
     	final EStructuralFeature ref = Bpmn2Package.eINSTANCE.getResourceRole_ResourceAssignmentExpression();
     	setFeatureDescriptor(ref,
-			new FeatureDescriptor(adapterFactory,object,ref) {
+			new FeatureDescriptor<ResourceRole>(adapterFactory,object,ref) {
 
 				@Override
 				public String getDisplayName(Object context) {
-					final ResourceRole rr = (ResourceRole)(context instanceof ResourceRole ? context : object);
+					final ResourceRole rr = adopt(context);
 					ResourceAssignmentExpression rae = rr.getResourceAssignmentExpression();
 					if (rae!=null) {
-						ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(rae, ExtendedPropertiesAdapter.class);
+						ExtendedPropertiesAdapter<ResourceAssignmentExpression> adapter =
+								(ExtendedPropertiesAdapter<ResourceAssignmentExpression>) AdapterUtil.adapt(rae, ExtendedPropertiesAdapter.class);
 						return adapter.getObjectDescriptor().getDisplayName(rae);
 					}
 					return "";
@@ -55,10 +55,11 @@ public class ResourceRolePropertiesAdapter extends ExtendedPropertiesAdapter {
 
 				@Override
 				public void setValue(Object context, Object value) {
-					final ResourceRole rr = (ResourceRole)(context instanceof ResourceRole ? context : object);
+					final ResourceRole rr = adopt(context);
 					ResourceAssignmentExpression rae = rr.getResourceAssignmentExpression();
 					if (rae!=null) {
-						ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(rae, ExtendedPropertiesAdapter.class);
+						ExtendedPropertiesAdapter<ResourceAssignmentExpression> adapter =
+								(ExtendedPropertiesAdapter<ResourceAssignmentExpression>) AdapterUtil.adapt(rae, ExtendedPropertiesAdapter.class);
 				    	EStructuralFeature raeFeature = Bpmn2Package.eINSTANCE.getResourceAssignmentExpression_Expression();
 						adapter.getFeatureDescriptor(raeFeature).setValue(rae, value);
 					}

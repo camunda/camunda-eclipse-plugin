@@ -13,42 +13,36 @@
 
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
-import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Escalation;
 import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
 import org.eclipse.emf.common.notify.AdapterFactory;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
 
 /**
  * @author Bob Brodt
  *
  */
-public class EscalationPropertiesAdapter extends RootElementPropertiesAdapter {
+public class EscalationPropertiesAdapter extends RootElementPropertiesAdapter<Escalation> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public EscalationPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public EscalationPropertiesAdapter(AdapterFactory adapterFactory, Escalation object) {
 		super(adapterFactory, object);
 		
-    	final EStructuralFeature ref = Bpmn2Package.eINSTANCE.getResourceAssignmentExpression_Expression();
-    	setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
+    	setObjectDescriptor(new ObjectDescriptor<Escalation>(adapterFactory, object) {
 			@Override
 			public String getDisplayName(Object context) {
-				final Escalation error = context instanceof Escalation ?
-						(Escalation)context :
-						(Escalation)this.object;
+				final Escalation escalation = adopt(context);
 				String text = "";
-				if (error.getName()!=null) {
-					text += error.getName();
+				if (escalation.getName()!=null) {
+					text += escalation.getName();
 				}
-				else if (error.getEscalationCode()!=null) {
-					text += "Escalation Code: " + error.getEscalationCode();
+				else if (escalation.getEscalationCode()!=null) {
+					text += "Escalation Code: " + escalation.getEscalationCode();
 				}
 				if (text.isEmpty())
-					text = "ID: " + error.getId();
+					text = "ID: " + escalation.getId();
 				return text;
 			}
     	});

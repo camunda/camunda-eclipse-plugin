@@ -14,26 +14,26 @@
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.CorrelationKey;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 /**
  * @author Bob Brodt
  *
  */
-public class CorrelationKeyPropertiesAdapter extends ExtendedPropertiesAdapter {
+public class CorrelationKeyPropertiesAdapter extends ExtendedPropertiesAdapter<CorrelationKey> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public CorrelationKeyPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public CorrelationKeyPropertiesAdapter(AdapterFactory adapterFactory, CorrelationKey object) {
 		super(adapterFactory, object);
 		
     	final EStructuralFeature ref = Bpmn2Package.eINSTANCE.getCorrelationKey_CorrelationPropertyRef();
-    	setFeatureDescriptor(ref, new RootElementRefFeatureDescriptor(adapterFactory,object,ref));
+    	setFeatureDescriptor(ref, new RootElementRefFeatureDescriptor<CorrelationKey>(adapterFactory,object,ref));
 	}
 
 }

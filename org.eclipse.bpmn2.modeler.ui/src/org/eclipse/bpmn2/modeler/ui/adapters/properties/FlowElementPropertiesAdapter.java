@@ -29,18 +29,20 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 
 /**
  * @author Bob Brodt
- *
+ * TODO: This was intended for elements that are both FlowElements and ItemAwareElements like
+ * DataObject, DataObjectReference and DataStoreReference but alas, multiple inheritance ain't
+ * happening in java. need to figure this out...
  */
-public class FlowElementPropertiesAdapter extends ItemAwareElementPropertiesAdapter {
+public class FlowElementPropertiesAdapter<T extends FlowElement> extends ExtendedPropertiesAdapter<T> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public FlowElementPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public FlowElementPropertiesAdapter(AdapterFactory adapterFactory, T object) {
 		super(adapterFactory, object);
     	EStructuralFeature f = Bpmn2Package.eINSTANCE.getFlowElement_Name();
-		final FeatureDescriptor fd = new FeatureDescriptor(adapterFactory,object, f) {
+		final FeatureDescriptor<T> fd = new FeatureDescriptor<T>(adapterFactory,object, f) {
 
 			@Override
 			public void setDisplayName(String text) {
@@ -48,12 +50,12 @@ public class FlowElementPropertiesAdapter extends ItemAwareElementPropertiesAdap
 				if (i>=0)
 					text = text.substring(i+1);
 				text = text.trim();
-				((FlowElement)object).setName(text);
+				((T)object).setName(text);
 			}
 
 			@Override
 			public String getChoiceString(Object context) {
-				FlowElement flowElement = (FlowElement)(context instanceof FlowElement ? context : this.object);
+				T flowElement = adopt(context);
 				String text = flowElement.getName();
 				if (text==null || text.isEmpty())
 					text = flowElement.getId();
@@ -76,7 +78,7 @@ public class FlowElementPropertiesAdapter extends ItemAwareElementPropertiesAdap
 		};
 		setFeatureDescriptor(f, fd);
 		
-		setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
+		setObjectDescriptor(new ObjectDescriptor<T>(adapterFactory, object) {
 
 			@Override
 			public void setDisplayName(String text) {

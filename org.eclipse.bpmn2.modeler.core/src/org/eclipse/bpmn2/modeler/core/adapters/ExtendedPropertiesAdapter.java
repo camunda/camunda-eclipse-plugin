@@ -28,7 +28,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
  * @author Bob Brodt
  *
  */
-public class ExtendedPropertiesAdapter extends AdapterImpl {
+public class ExtendedPropertiesAdapter<T extends EObject> extends AdapterImpl {
 
 	// common property keys
 	public final static String LONG_DESCRIPTION = "long.description";
@@ -53,7 +53,7 @@ public class ExtendedPropertiesAdapter extends AdapterImpl {
 	
 	protected AdapterFactory adapterFactory;
 	
-	public ExtendedPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public ExtendedPropertiesAdapter(AdapterFactory adapterFactory, T object) {
 		super();
 		this.adapterFactory = adapterFactory;
 		setTarget(object);
@@ -94,29 +94,29 @@ public class ExtendedPropertiesAdapter extends AdapterImpl {
 		}
 	}
     
-	public void setObjectDescriptor(ObjectDescriptor pd) {
+	public void setObjectDescriptor(ObjectDescriptor<T> pd) {
 		setProperty(PROPERTY_DESCRIPTOR,pd);
 	}
 
-	public ObjectDescriptor getObjectDescriptor() {
-		ObjectDescriptor pd = (ObjectDescriptor) getProperty(PROPERTY_DESCRIPTOR);
+	public ObjectDescriptor<T> getObjectDescriptor() {
+		ObjectDescriptor<T> pd = (ObjectDescriptor<T>) getProperty(PROPERTY_DESCRIPTOR);
 		if (pd==null) {
-			pd = new ObjectDescriptor(adapterFactory, (EObject)getTarget());
+			pd = new ObjectDescriptor<T>(adapterFactory, (T)getTarget());
 			setProperty(PROPERTY_DESCRIPTOR,pd);
 		}
 		return pd;
 	}
 
-	public FeatureDescriptor getFeatureDescriptor(EStructuralFeature feature) {
-		FeatureDescriptor pd = (FeatureDescriptor) getProperty(feature.getFeatureID(),PROPERTY_DESCRIPTOR);
+	public FeatureDescriptor<T> getFeatureDescriptor(EStructuralFeature feature) {
+		FeatureDescriptor<T> pd = (FeatureDescriptor<T>) getProperty(feature.getFeatureID(),PROPERTY_DESCRIPTOR);
 		if (pd==null) {
-			pd = new FeatureDescriptor(adapterFactory, (EObject)getTarget(), feature);
+			pd = new FeatureDescriptor<T>(adapterFactory, (T)getTarget(), feature);
 			setProperty(feature.getFeatureID(),PROPERTY_DESCRIPTOR,pd);
 		}
 		return pd;
 	}
 
-	public void setFeatureDescriptor(EStructuralFeature feature, FeatureDescriptor pd) {
+	public void setFeatureDescriptor(EStructuralFeature feature, FeatureDescriptor<T> pd) {
 		setProperty(feature.getFeatureID(),PROPERTY_DESCRIPTOR,pd);
 	}
 

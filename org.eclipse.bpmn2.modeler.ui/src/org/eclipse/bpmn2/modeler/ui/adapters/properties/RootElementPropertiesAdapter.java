@@ -20,24 +20,23 @@ import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 /**
  * @author Bob Brodt
  *
  */
-public class RootElementPropertiesAdapter extends ExtendedPropertiesAdapter {
+public class RootElementPropertiesAdapter<T extends RootElement> extends ExtendedPropertiesAdapter<T> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public RootElementPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public RootElementPropertiesAdapter(AdapterFactory adapterFactory, T object) {
 		super(adapterFactory, object);
 		
-		// create a Root Element feature descriptor for every feature that is a reference to a RootElement
-		// the RootElementFeatureDescriptor is used to construct RootElement objects via its createObject()
+		// create a Root Element Reference feature descriptor for every feature that is a reference to a RootElement
+		// the RootElementRefFeatureDescriptor is used to construct RootElement objects via its createObject()
 		// method, and inserts those objects into the document root.
 		EList<EStructuralFeature>list = object.eClass().getEAllStructuralFeatures();
 		for (EStructuralFeature ref : list) {
@@ -46,7 +45,7 @@ public class RootElementPropertiesAdapter extends ExtendedPropertiesAdapter {
 				EList<EClass> supertypes = ((EClass)type).getEAllSuperTypes();
 				for (EClass st : supertypes) {
 					if (st == Bpmn2Package.eINSTANCE.getRootElement()) {
-						setFeatureDescriptor(ref, new RootElementRefFeatureDescriptor(adapterFactory,object,ref));
+						setFeatureDescriptor(ref, new RootElementRefFeatureDescriptor<T>(adapterFactory,object,ref));
 					}
 				}
 			}

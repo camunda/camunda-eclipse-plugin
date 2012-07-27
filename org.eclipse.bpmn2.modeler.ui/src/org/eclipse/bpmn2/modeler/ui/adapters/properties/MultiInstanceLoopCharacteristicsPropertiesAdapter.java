@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.InputOutputSpecification;
+import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
@@ -31,13 +32,13 @@ import org.eclipse.emf.ecore.EStructuralFeature;
  * @author Bob Brodt
  *
  */
-public class MultiInstanceLoopCharacteristicsPropertiesAdapter extends ExtendedPropertiesAdapter {
+public class MultiInstanceLoopCharacteristicsPropertiesAdapter extends ExtendedPropertiesAdapter<MultiInstanceLoopCharacteristics> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public MultiInstanceLoopCharacteristicsPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public MultiInstanceLoopCharacteristicsPropertiesAdapter(AdapterFactory adapterFactory, MultiInstanceLoopCharacteristics object) {
 		super(adapterFactory, object);
 
     	EStructuralFeature f = Bpmn2Package.eINSTANCE.getMultiInstanceLoopCharacteristics_InputDataItem();
@@ -47,14 +48,14 @@ public class MultiInstanceLoopCharacteristicsPropertiesAdapter extends ExtendedP
 		setFeatureDescriptor(f, new LoopCharacteristicsDataInputFeatureDescriptor(adapterFactory,object, f));
 	}
 
-	protected class LoopCharacteristicsDataInputFeatureDescriptor extends FeatureDescriptor {
+	protected class LoopCharacteristicsDataInputFeatureDescriptor extends FeatureDescriptor<MultiInstanceLoopCharacteristics> {
 
 		/**
 		 * @param adapterFactory
 		 * @param object
 		 * @param feature
 		 */
-		public LoopCharacteristicsDataInputFeatureDescriptor(AdapterFactory adapterFactory, EObject object, EStructuralFeature feature) {
+		public LoopCharacteristicsDataInputFeatureDescriptor(AdapterFactory adapterFactory, MultiInstanceLoopCharacteristics object, EStructuralFeature feature) {
 			super(adapterFactory, object, feature);
 
 			setProperty(feature, UI_CAN_EDIT, Boolean.FALSE);
@@ -64,9 +65,9 @@ public class MultiInstanceLoopCharacteristicsPropertiesAdapter extends ExtendedP
 		@Override
 		public Hashtable<String, Object> getChoiceOfValues(Object context) {
 			Hashtable<String, Object> values = new Hashtable<String, Object>();
-			EObject object = context instanceof EObject ? (EObject)context : this.object;
+			MultiInstanceLoopCharacteristics loopCharacteristics = adopt(context);
 			
-			EObject container = object.eContainer();
+			EObject container = loopCharacteristics.eContainer();
 			while (container!=null) {
 				if (container instanceof Activity || container instanceof Process) {
 					List properties = null;

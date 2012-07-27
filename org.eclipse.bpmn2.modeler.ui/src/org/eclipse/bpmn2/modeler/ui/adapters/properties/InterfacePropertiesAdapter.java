@@ -30,23 +30,21 @@ import org.eclipse.emf.ecore.EStructuralFeature;
  * @author Bob Brodt
  *
  */
-public class InterfacePropertiesAdapter extends ExtendedPropertiesAdapter {
+public class InterfacePropertiesAdapter extends ExtendedPropertiesAdapter<Interface> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public InterfacePropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public InterfacePropertiesAdapter(AdapterFactory adapterFactory, Interface object) {
 		super(adapterFactory, object);
 		
     	final EStructuralFeature ref = Bpmn2Package.eINSTANCE.getInterface_ImplementationRef();
     	setFeatureDescriptor(ref,
-			new FeatureDescriptor(adapterFactory,object,ref) {
+			new FeatureDescriptor<Interface>(adapterFactory,object,ref) {
 				@Override
 				public String getDisplayName(Object context) {
-					final Interface iface = context instanceof Interface ?
-							(Interface)context :
-							(Interface)this.object;
+					final Interface iface = adopt(context);
 							
 					if (iface.getImplementationRef()!=null) {
 						String text = ModelUtil.getStringWrapperValue( iface.getImplementationRef() ); // + type;
@@ -58,9 +56,7 @@ public class InterfacePropertiesAdapter extends ExtendedPropertiesAdapter {
 				
 	    		@Override
 				public EObject createObject(Object context, EClass eClass) {
-					final Interface iface = context instanceof Interface ?
-							(Interface)context :
-							(Interface)this.object;
+					final Interface iface = adopt(context);
 
 					EObject impl = ModelUtil.createStringWrapper("");
 					InsertionAdapter.add(iface, ref, impl);
@@ -69,18 +65,12 @@ public class InterfacePropertiesAdapter extends ExtendedPropertiesAdapter {
 
 	    		@Override
 	    		public Object getValue(Object context) {
-					Interface iface = context instanceof Interface ?
-							(Interface)context :
-							(Interface)this.object;
+					final Interface iface = adopt(context);
 					return iface.getImplementationRef();
 	    		}
 
 	    		@Override
 	    		public void setValue(Object context, Object value) {
-					Interface iface = context instanceof Interface ?
-							(Interface)context :
-							(Interface)this.object;
-
 					if (value instanceof String) {
 						value = ModelUtil.createStringWrapper((String)value);
 	    			}
@@ -92,7 +82,7 @@ public class InterfacePropertiesAdapter extends ExtendedPropertiesAdapter {
     		}
     	);
     	
-		setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
+		setObjectDescriptor(new ObjectDescriptor<Interface>(adapterFactory, object) {
 			@Override
 			public String getDisplayName(Object context) {
 				return getFeatureDescriptor(ref).getDisplayName(context);
@@ -101,9 +91,9 @@ public class InterfacePropertiesAdapter extends ExtendedPropertiesAdapter {
 			@Override
 			public boolean equals(Object obj) {
 				if (obj instanceof Interface) {
-					Interface i = (Interface)obj;
-					if (ModelUtil.compare(i.getName(),((Interface)object).getName())) {
-						if (ModelUtil.compare(i.getImplementationRef(),((Interface)object).getImplementationRef()))
+					Interface iface = (Interface)obj;
+					if (ModelUtil.compare(iface.getName(),(object).getName())) {
+						if (ModelUtil.compare(iface.getImplementationRef(),(object).getImplementationRef()))
 							return true;
 					}
 				}

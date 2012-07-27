@@ -13,21 +13,21 @@
 
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
+import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * @author Bob Brodt
  *
  */
-public class SequenceFlowPropertiesAdapter extends ExtendedPropertiesAdapter {
+public class SequenceFlowPropertiesAdapter extends ExtendedPropertiesAdapter<SequenceFlow> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public SequenceFlowPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public SequenceFlowPropertiesAdapter(AdapterFactory adapterFactory, SequenceFlow object) {
 		super(adapterFactory, object);
 		
 		// TODO: any special handling here?

@@ -13,22 +13,22 @@
 
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
+import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * @author Bob Brodt
  *
  */
-public class ActivityPropertiesAdapter extends ExtendedPropertiesAdapter {
+public class ActivityPropertiesAdapter<T extends Activity> extends ExtendedPropertiesAdapter<T> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public ActivityPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public ActivityPropertiesAdapter(AdapterFactory adapterFactory, T object) {
 		super(adapterFactory, object);
     	setProperty(Bpmn2Package.ACTIVITY__LOOP_CHARACTERISTICS, ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW, Boolean.FALSE);
     	setProperty(Bpmn2Package.ACTIVITY__LOOP_CHARACTERISTICS, ExtendedPropertiesAdapter.UI_CAN_EDIT, Boolean.FALSE);

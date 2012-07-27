@@ -19,37 +19,34 @@ import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
 import org.eclipse.bpmn2.modeler.ui.features.choreography.ChoreographyUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * @author Gary Brown
  *
  */
-public class MessageFlowPropertiesAdapter extends ExtendedPropertiesAdapter {
+public class MessageFlowPropertiesAdapter extends ExtendedPropertiesAdapter<MessageFlow> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public MessageFlowPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public MessageFlowPropertiesAdapter(AdapterFactory adapterFactory, MessageFlow object) {
 		super(adapterFactory, object);
 		
-    	setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
+    	setObjectDescriptor(new ObjectDescriptor<MessageFlow>(adapterFactory, object) {
 			@Override
 			public String getDisplayName(Object context) {
-				final MessageFlow mf = context instanceof MessageFlow ?
-						(MessageFlow)context :
-						(MessageFlow)this.object;
+				final MessageFlow flow = adopt(context);
 				String text = "";
-				if (mf.getMessageRef()!=null) {
-					text += ChoreographyUtil.getMessageFlowName(mf);
+				if (flow.getMessageRef()!=null) {
+					text += ChoreographyUtil.getMessageFlowName(flow);
 				}
 				
-				if (mf.getSourceRef() instanceof Participant) {
-					text += " "+((Participant)mf.getSourceRef()).getName()+"->";
+				if (flow.getSourceRef() instanceof Participant) {
+					text += " "+((Participant)flow.getSourceRef()).getName()+"->";
 					
-					if (mf.getTargetRef() instanceof Participant) {
-						text += ((Participant)mf.getTargetRef()).getName();
+					if (flow.getTargetRef() instanceof Participant) {
+						text += ((Participant)flow.getTargetRef()).getName();
 					}
 				}
 				return text;

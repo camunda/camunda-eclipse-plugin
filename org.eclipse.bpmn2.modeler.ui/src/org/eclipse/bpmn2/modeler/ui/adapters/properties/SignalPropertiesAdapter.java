@@ -25,27 +25,25 @@ import org.eclipse.emf.ecore.EStructuralFeature;
  * @author Bob Brodt
  *
  */
-public class SignalPropertiesAdapter extends RootElementPropertiesAdapter {
+public class SignalPropertiesAdapter extends RootElementPropertiesAdapter<Signal> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public SignalPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public SignalPropertiesAdapter(AdapterFactory adapterFactory, Signal object) {
 		super(adapterFactory, object);
 		
-    	setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
+    	setObjectDescriptor(new ObjectDescriptor<Signal>(adapterFactory, object) {
 			@Override
 			public String getDisplayName(Object context) {
-				final Signal error = context instanceof Signal ?
-						(Signal)context :
-						(Signal)this.object;
+				final Signal signal = adopt(context);
 				String text = "";
-				if (error.getName()!=null) {
-					text += error.getName();
+				if (signal.getName()!=null) {
+					text += signal.getName();
 				}
 				if (text.isEmpty())
-					text = "ID: " + error.getId();
+					text = "ID: " + signal.getId();
 				return text;
 			}
     	});

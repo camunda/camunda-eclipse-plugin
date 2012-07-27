@@ -28,29 +28,27 @@ import org.eclipse.emf.ecore.InternalEObject;
  * @author Bob Brodt
  *
  */
-public class CallActivityPropertiesAdapter extends ActivityPropertiesAdapter {
+public class CallActivityPropertiesAdapter extends ActivityPropertiesAdapter<CallActivity> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public CallActivityPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public CallActivityPropertiesAdapter(AdapterFactory adapterFactory, CallActivity object) {
 		super(adapterFactory, object);
 
     	setProperty(Bpmn2Package.CALL_ACTIVITY__CALLED_ELEMENT_REF, ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW, Boolean.TRUE);
     	EStructuralFeature ce = Bpmn2Package.eINSTANCE.getCallActivity_CalledElementRef();
     	setFeatureDescriptor(ce,
-			new RootElementRefFeatureDescriptor(adapterFactory,object,ce) {
+			new RootElementRefFeatureDescriptor<CallActivity>(adapterFactory,object,ce) {
 				@Override
 				public String getLabel(Object context) {
-						return "Called Activity";
+					return "Called Activity";
 				}
 				
 				@Override
 				public String getDisplayName(Object context) {
-					CallActivity object = (CallActivity)this.object;
-					if (context instanceof CallActivity)
-						object = (CallActivity)context;
+					CallActivity object = adopt(context);
 					CallableElement ce = object.getCalledElementRef();
 					if (ce!=null && ce.eIsProxy()) {
 						URI uri = ((InternalEObject)ce).eProxyURI();

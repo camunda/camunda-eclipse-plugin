@@ -34,17 +34,17 @@ import org.eclipse.emf.ecore.EStructuralFeature;
  * @author Bob Brodt
  *
  */
-public class PropertyPropertiesAdapter extends ItemAwareElementPropertiesAdapter {
+public class PropertyPropertiesAdapter extends ItemAwareElementPropertiesAdapter<Property> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public PropertyPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public PropertyPropertiesAdapter(AdapterFactory adapterFactory, Property object) {
 		super(adapterFactory, object);
 
     	EStructuralFeature f = Bpmn2Package.eINSTANCE.getProperty_Name();
-		final FeatureDescriptor fd = new FeatureDescriptor(adapterFactory,object, f) {
+		final FeatureDescriptor<Property> fd = new FeatureDescriptor<Property>(adapterFactory,object, f) {
 
 			@Override
 			public void setDisplayName(String text) {
@@ -57,7 +57,7 @@ public class PropertyPropertiesAdapter extends ItemAwareElementPropertiesAdapter
 
 			@Override
 			public String getChoiceString(Object context) {
-				Property property = (Property)(context instanceof Property ? context : this.object);
+				Property property = adopt(context);
 				String text = property.getName();
 				if (text==null || text.isEmpty())
 					text = property.getId();
@@ -80,7 +80,7 @@ public class PropertyPropertiesAdapter extends ItemAwareElementPropertiesAdapter
 		};
 		setFeatureDescriptor(f, fd);
 		
-		setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
+		setObjectDescriptor(new ObjectDescriptor<Property>(adapterFactory, object) {
 
 			@Override
 			public void setDisplayName(String text) {

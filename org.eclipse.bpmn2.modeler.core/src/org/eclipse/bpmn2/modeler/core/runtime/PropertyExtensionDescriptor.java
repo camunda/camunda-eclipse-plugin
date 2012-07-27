@@ -17,7 +17,9 @@ import java.lang.reflect.Constructor;
 
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.widgets.Composite;
 
@@ -54,7 +56,15 @@ public class PropertyExtensionDescriptor extends BaseRuntimeDescriptor {
 			ClassLoader cl = this.getRuntime().getRuntimeExtension().getClass().getClassLoader();
 			Constructor ctor = null;
 			Class adapterClass = Class.forName(adapterClassName, true, cl);
-			ctor = adapterClass.getConstructor(AdapterFactory.class, EObject.class);
+			EClass eclass = null;
+			if (object instanceof EClass) {
+				eclass = (EClass)object;
+				object = ModelUtil.getDummyObject(eclass);
+			}
+			else {
+				eclass = object.eClass();
+			}
+			ctor = adapterClass.getConstructor(AdapterFactory.class, eclass.getInstanceClass());
 			return (ExtendedPropertiesAdapter)ctor.newInstance(adapterFactory, object);
 		} catch (Exception e) {
 			Activator.logError(e);

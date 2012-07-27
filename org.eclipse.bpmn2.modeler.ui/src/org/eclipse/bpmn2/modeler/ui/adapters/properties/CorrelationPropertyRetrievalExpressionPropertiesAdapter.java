@@ -14,30 +14,26 @@
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
 import org.eclipse.bpmn2.Bpmn2Package;
-import org.eclipse.bpmn2.Message;
+import org.eclipse.bpmn2.CorrelationPropertyRetrievalExpression;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
-import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
-import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
-import org.eclipse.bpmn2.modeler.ui.features.choreography.ChoreographyUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 /**
  * @author Bob Brodt
  *
  */
-public class CorrelationPropertyRetrievalExpressionPropertiesAdapter extends ExtendedPropertiesAdapter {
+public class CorrelationPropertyRetrievalExpressionPropertiesAdapter extends ExtendedPropertiesAdapter<CorrelationPropertyRetrievalExpression> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public CorrelationPropertyRetrievalExpressionPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public CorrelationPropertyRetrievalExpressionPropertiesAdapter(AdapterFactory adapterFactory, CorrelationPropertyRetrievalExpression object) {
 		super(adapterFactory, object);
 
     	EStructuralFeature ref = Bpmn2Package.eINSTANCE.getCorrelationPropertyRetrievalExpression_MessageRef();
-    	setFeatureDescriptor(ref, new RootElementRefFeatureDescriptor(adapterFactory,object,ref));
+    	setFeatureDescriptor(ref, new RootElementRefFeatureDescriptor<CorrelationPropertyRetrievalExpression>(adapterFactory,object,ref));
 	}
 
 }

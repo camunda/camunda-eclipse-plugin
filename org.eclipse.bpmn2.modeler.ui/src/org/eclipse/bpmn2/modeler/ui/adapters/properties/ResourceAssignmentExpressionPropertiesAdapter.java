@@ -31,47 +31,42 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain;
  * @author Bob Brodt
  *
  */
-public class ResourceAssignmentExpressionPropertiesAdapter extends ExtendedPropertiesAdapter {
+public class ResourceAssignmentExpressionPropertiesAdapter extends ExtendedPropertiesAdapter<ResourceAssignmentExpression> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public ResourceAssignmentExpressionPropertiesAdapter(AdapterFactory adapterFactory, EObject object) {
+	public ResourceAssignmentExpressionPropertiesAdapter(AdapterFactory adapterFactory, ResourceAssignmentExpression object) {
 		super(adapterFactory, object);
 
     	final EStructuralFeature ref = Bpmn2Package.eINSTANCE.getResourceAssignmentExpression_Expression();
     	setFeatureDescriptor(ref,
-			new FeatureDescriptor(adapterFactory,object,ref) {
+			new FeatureDescriptor<ResourceAssignmentExpression>(adapterFactory,object,ref) {
 
 				@Override
 				public String getDisplayName(Object context) {
-					EObject object = this.object;
-					if (context instanceof ResourceAssignmentExpression)
-						object = (EObject)context;
-					ResourceAssignmentExpression rae = null;
-					if (object instanceof ResourceAssignmentExpression)
-						rae = (ResourceAssignmentExpression) object;
-					if (rae!=null && rae.getExpression() instanceof FormalExpression) {
-						return ((FormalExpression)rae.getExpression()).getBody();
+					ResourceAssignmentExpression expression = adopt(context);
+					if (expression.getExpression() instanceof FormalExpression) {
+						return ((FormalExpression)expression.getExpression()).getBody();
 					}
 					return "";
 				}
 
 				@Override
 				public void setValue(Object context, Object value) {
-					ResourceAssignmentExpression rae = (ResourceAssignmentExpression)this.object;
-					if (!(rae.getExpression() instanceof FormalExpression)) {
+					final ResourceAssignmentExpression expression = adopt(context);
+					if (!(expression.getExpression() instanceof FormalExpression)) {
 						final FormalExpression e = Bpmn2ModelerFactory.create(FormalExpression.class);
 						e.setBody((String) value);
-						TransactionalEditingDomain editingDomain = getEditingDomain(object);
+						TransactionalEditingDomain editingDomain = getEditingDomain(expression);
 						if (editingDomain == null) {
-							object.eSet(feature, value);
+							expression.eSet(feature, e);
 						} else {
 							editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 								@Override
 								protected void doExecute() {
-									object.eSet(feature, e);
+									expression.eSet(feature, e);
 									ModelUtil.setID(e);
 								}
 							});
@@ -80,7 +75,7 @@ public class ResourceAssignmentExpressionPropertiesAdapter extends ExtendedPrope
 				}
     		}
     	);
-    	setObjectDescriptor(new ObjectDescriptor(adapterFactory, object) {
+    	setObjectDescriptor(new ObjectDescriptor<ResourceAssignmentExpression>(adapterFactory, object) {
 			@Override
 			public String getDisplayName(Object context) {
 				return getFeatureDescriptor(ref).getDisplayName(context);

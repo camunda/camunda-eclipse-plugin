@@ -36,13 +36,13 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain;
  * @author Bob Brodt
  *
  */
-public class FeatureDescriptor extends ObjectDescriptor {
+public class FeatureDescriptor<T extends EObject> extends ObjectDescriptor<T> {
 
 	protected EStructuralFeature feature;
 	protected int multiline = 0; // -1 = false, +1 = true, 0 = unset
 	protected Hashtable<String, Object> choiceOfValues; // for static lists
 	
-	public FeatureDescriptor(AdapterFactory adapterFactory, EObject object, EStructuralFeature feature) {
+	public FeatureDescriptor(AdapterFactory adapterFactory, T object, EStructuralFeature feature) {
 		super(adapterFactory, object);
 		this.feature = feature;
 	}
@@ -101,7 +101,7 @@ public class FeatureDescriptor extends ObjectDescriptor {
 						t = id.toString();
 				}
 			}
-			return t == null ? "" : t;
+			return t == null ? ModelUtil.getLabel(object) : t;
 		}
 		return name == null ? "" : name;
 	}
@@ -212,7 +212,7 @@ public class FeatureDescriptor extends ObjectDescriptor {
 	}		
 	
 	public EObject createObject(Object context, EClass eclass) {
-		EObject object = context instanceof EObject ? (EObject)context : this.object;
+		T object = adopt(context);
 		EObject newObject = null;
 		try {
 			if (eclass==null)
@@ -251,7 +251,7 @@ public class FeatureDescriptor extends ObjectDescriptor {
 	}
 	
 	public void setValue(Object context, final Object value) {
-		final EObject object = context instanceof EObject ? (EObject)context : this.object;
+		final T object = adopt(context);
 		
 		if (object.eGet(feature) instanceof EObjectEList) {
 			// the feature is a reference list - user must have meant to insert
@@ -260,11 +260,13 @@ public class FeatureDescriptor extends ObjectDescriptor {
 			TransactionalEditingDomain editingDomain = getEditingDomain(object);
 			if (editingDomain == null) {
 				list.add(value);
+				insertRootElementIfNeeded(value);
 			} else {
 				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 					@Override
 					protected void doExecute() {
 						list.add(value);
+						insertRootElementIfNeeded(value);
 					}
 				});
 			}
@@ -278,31 +280,13 @@ public class FeatureDescriptor extends ObjectDescriptor {
 				TransactionalEditingDomain editingDomain = getEditingDomain(object);
 				if (editingDomain == null) {
 					object.eSet(feature, value);
+					insertRootElementIfNeeded(value);
 				} else {
 					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 						@Override
 						protected void doExecute() {
 							object.eSet(feature, value);
-							Object o = object.eGet(feature);
-							System.out.println(o);
-						}
-					});
-				}
-			}
-		}
-		
-		if (value instanceof RootElement && ((RootElement)value).eContainer()==null) {
-			// stuff all root elements into Definitions.rootElements
-			final Definitions definitions = ModelUtil.getDefinitions(object);
-			if (definitions!=null) {
-				TransactionalEditingDomain editingDomain = getEditingDomain(object);
-				if (editingDomain == null) {
-					definitions.getRootElements().add((RootElement)value);
-				} else {
-					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-						@Override
-						protected void doExecute() {
-							definitions.getRootElements().add((RootElement)value);
+							insertRootElementIfNeeded(value);
 						}
 					});
 				}
@@ -310,4 +294,13 @@ public class FeatureDescriptor extends ObjectDescriptor {
 		}
 	}
 
+	private void insertRootElementIfNeeded(Object value) {
+		if (value instanceof RootElement && ((RootElement)value).eContainer()==null) {
+			// stuff all root elements into Definitions.rootElements
+			final Definitions definitions = ModelUtil.getDefinitions(object);
+			if (definitions!=null) {
+				definitions.getRootElements().add((RootElement)value);
+			}
+		}
+	}
 }

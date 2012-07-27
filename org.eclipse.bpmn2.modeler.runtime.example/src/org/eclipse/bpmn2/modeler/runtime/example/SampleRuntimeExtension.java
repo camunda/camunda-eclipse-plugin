@@ -45,7 +45,11 @@ public class SampleRuntimeExtension implements IBpmn2RuntimeExtension {
 	 */
 	@Override
 	public boolean isContentForRuntime(IFile file) {
-		return true;
+		// IMPORTANT: The plugin is responsible for inspecting the file contents!
+		// Unless you are absolutely sure that the file is targeted for this runtime
+		// (by, e.g. looking at the targetNamespace or some other feature) then this
+		// method must return FALSE.
+		return false;
 	}
 
 	@Override
