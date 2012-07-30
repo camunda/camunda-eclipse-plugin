@@ -19,6 +19,7 @@ import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.util.JbpmModelUtil;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.ItemAwareElementFeatureDescriptor;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.PropertyPropertiesAdapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -42,7 +43,7 @@ public class JbpmPropertyPropertiesAdapter extends PropertyPropertiesAdapter {
 
     	EStructuralFeature feature = Bpmn2Package.eINSTANCE.getItemAwareElement_ItemSubjectRef();
     	setFeatureDescriptor(feature,
-			new FeatureDescriptor<Property>(adapterFactory,object,feature) {
+			new ItemAwareElementFeatureDescriptor<Property>(adapterFactory,object,feature) {
 				@Override
 				public String getLabel(Object context) {
 					return "Data Type";
@@ -59,6 +60,11 @@ public class JbpmPropertyPropertiesAdapter extends PropertyPropertiesAdapter {
 							property.setItemSubjectRef(JbpmModelUtil.getDataType(property, value));
 						}
 					});
+				}
+
+				@Override
+				public String getDisplayName(Object context) {
+					return super.getDisplayName(context);
 				}
 				
 				@Override

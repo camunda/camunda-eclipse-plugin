@@ -23,6 +23,9 @@ import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite.AbstractTableColumnProvider;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite.DefaultTableColumnProvider;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite.TableColumn;
 import org.eclipse.bpmn2.modeler.ui.property.diagrams.DataItemsPropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.diagrams.PropertyListComposite;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.SchemaImportDialog;
@@ -125,7 +128,16 @@ public class JbpmDataItemsPropertySection extends DataItemsPropertySection {
 			super(parent);
 			// TODO Auto-generated constructor stub
 		}
-
+		
+		public AbstractTableColumnProvider getColumnProvider(EObject object, EStructuralFeature feature) {
+			if (columnProvider==null) {
+				columnProvider = new DefaultTableColumnProvider();
+				columnProvider.add(new TableColumn(object, PACKAGE.getBaseElement_Id()));
+				columnProvider.add(new TableColumn(object, PACKAGE.getItemAwareElement_ItemSubjectRef()));
+			}
+			return columnProvider;
+		}
+		
 		@Override
 		protected EObject addListItem(EObject object, EStructuralFeature feature) {
 			Property prop  = (Property)super.addListItem(object, feature);

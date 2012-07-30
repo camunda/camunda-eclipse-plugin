@@ -157,12 +157,7 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 			final EList<EObject> list = (EList<EObject>)object.eGet(feature);
 			final EClass listItemClass = getDefaultListItemClass(object, feature);
 
-			columnProvider = new AbstractTableColumnProvider() {
-				@Override
-				public boolean canModify(EObject object, EStructuralFeature feature, EObject item) {
-					return false;
-				}
-			};
+			columnProvider = new DefaultTableColumnProvider();
 			
 			// default is to include property name
 			EStructuralFeature nameAttribute = listItemClass.getEStructuralFeature("name");
@@ -744,14 +739,16 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 		
 		@Override
 		public String getHeaderText() {
+			String text = "";
 			if (feature!=null) {
 				if (feature.eContainer() instanceof EClass) {
 					EClass eclass = getListItemClass();
-					return PropertyUtil.getLabel(eclass, feature);
+					text = PropertyUtil.getLabel(eclass, feature);
 				}
-				return ModelUtil.toDisplayName(feature.getName());
+				else
+					text = ModelUtil.toDisplayName(feature.getName());
 			}
-			return "";
+			return text;
 		}
 
 		@Override
@@ -767,6 +764,9 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 		}
 
 		public String getText(Object element) {
+			if (element instanceof EObject) {
+				return PropertyUtil.getDisplayName((EObject)element,feature);
+			}
 			Object value = ((EObject)element).eGet(feature);
 			return value==null ? "" : value.toString();
 		}
@@ -824,5 +824,13 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 		 * @return true to allow editing
 		 */
 		public abstract boolean canModify(EObject object, EStructuralFeature feature, EObject item);
+	}
+	
+
+	public class DefaultTableColumnProvider extends AbstractTableColumnProvider {
+		@Override
+		public boolean canModify(EObject object, EStructuralFeature feature, EObject item) {
+			return false;
+		}
 	}
 }
