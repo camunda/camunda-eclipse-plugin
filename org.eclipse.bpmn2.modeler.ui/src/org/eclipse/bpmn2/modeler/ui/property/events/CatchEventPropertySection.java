@@ -26,7 +26,7 @@ public class CatchEventPropertySection extends AbstractBpmn2PropertySection impl
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new CatchEventPropertiesComposite(this);
+		return new CatchEventDetailComposite(this);
 	}
 
 	@Override

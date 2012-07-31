@@ -154,7 +154,7 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 	}
 
 	/**
-	 * Get the section's root composite, which is a subclass of AbstractBpmn2PropertiesComposite.
+	 * Get the section's root composite, which is a subclass of AbstractBpmn2DetailComposite.
 	 * Create the composite if it has not been created yet.
 	 * 
 	 * @return the composite

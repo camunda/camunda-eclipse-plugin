@@ -36,7 +36,7 @@ public class DefaultPropertySection extends AbstractBpmn2PropertySection {
 	public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
 //		BPMN2Editor editor = (BPMN2Editor)part;
 //		EObject object = getBusinessObjectForSelection();
-//		DefaultPropertiesComposite composite = new DefaultPropertiesComposite();
+//		DefaultDetailComposite composite = new DefaultDetailComposite();
 //		AbstractPropertiesProvider provider = composite.getPropertiesProvider(object);
 //		ModelEnablementDescriptor modelEnablement = editor.getTargetRuntime().getModelEnablements(object);
 //		String className = object.eClass().getName();

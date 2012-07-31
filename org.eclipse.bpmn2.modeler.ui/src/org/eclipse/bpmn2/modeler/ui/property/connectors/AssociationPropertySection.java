@@ -21,7 +21,7 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
 public class AssociationPropertySection extends AbstractBpmn2PropertySection {
 	static {
-		PropertiesCompositeFactory.register(Association.class, AssocationPropertiesComposite.class);
+		PropertiesCompositeFactory.register(Association.class, AssocationDetailComposite.class);
 	}
 
 	/* (non-Javadoc)
@@ -29,7 +29,7 @@ public class AssociationPropertySection extends AbstractBpmn2PropertySection {
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new AssocationPropertiesComposite(this);
+		return new AssocationDetailComposite(this);
 	}
 
 	@Override

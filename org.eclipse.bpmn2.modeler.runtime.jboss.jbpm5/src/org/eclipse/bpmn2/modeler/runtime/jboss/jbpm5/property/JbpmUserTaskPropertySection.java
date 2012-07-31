@@ -34,7 +34,7 @@ public class JbpmUserTaskPropertySection extends JbpmTaskPropertySection {
 
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new JbpmUserTaskPropertiesComposite(this);
+		return new JbpmUserTaskDetailComposite(this);
 	}
 
 }

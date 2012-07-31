@@ -49,16 +49,16 @@ import org.eclipse.swt.widgets.Composite;
 public class DataObjectPropertySection extends AbstractBpmn2PropertySection {
 
 	static {
-		PropertiesCompositeFactory.register(DataObject.class, DataObjectPropertiesComposite.class);
-		PropertiesCompositeFactory.register(DataObjectReference.class, DataObjectPropertiesComposite.class);
-		PropertiesCompositeFactory.register(Assignment.class, DataAssignmentPropertiesComposite.class);
-		PropertiesCompositeFactory.register(Expression.class, ExpressionPropertiesComposite.class);
-		PropertiesCompositeFactory.register(FormalExpression.class, ExpressionPropertiesComposite.class);
-		PropertiesCompositeFactory.register(ResourceAssignmentExpression.class, ResourceAssignmentExpressionPropertiesComposite.class);
-		PropertiesCompositeFactory.register(ResourceParameterBinding.class, ResourceParameterBindingPropertiesComposite.class);
-		PropertiesCompositeFactory.register(PotentialOwner.class, ResourceRolePropertiesComposite.class);
-		PropertiesCompositeFactory.register(HumanPerformer.class, ResourceRolePropertiesComposite.class);
-		PropertiesCompositeFactory.register(Performer.class, ResourceRolePropertiesComposite.class);
+		PropertiesCompositeFactory.register(DataObject.class, DataObjectDetailComposite.class);
+		PropertiesCompositeFactory.register(DataObjectReference.class, DataObjectDetailComposite.class);
+		PropertiesCompositeFactory.register(Assignment.class, DataAssignmentDetailComposite.class);
+		PropertiesCompositeFactory.register(Expression.class, ExpressionDetailComposite.class);
+		PropertiesCompositeFactory.register(FormalExpression.class, ExpressionDetailComposite.class);
+		PropertiesCompositeFactory.register(ResourceAssignmentExpression.class, ResourceAssignmentExpressionDetailComposite.class);
+		PropertiesCompositeFactory.register(ResourceParameterBinding.class, ResourceParameterBindingDetailComposite.class);
+		PropertiesCompositeFactory.register(PotentialOwner.class, ResourceRoleDetailComposite.class);
+		PropertiesCompositeFactory.register(HumanPerformer.class, ResourceRoleDetailComposite.class);
+		PropertiesCompositeFactory.register(Performer.class, ResourceRoleDetailComposite.class);
 	}
 	
 	/* (non-Javadoc)
@@ -66,7 +66,7 @@ public class DataObjectPropertySection extends AbstractBpmn2PropertySection {
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new DataObjectPropertiesComposite(this);
+		return new DataObjectDetailComposite(this);
 	}
 
 	@Override
@@ -82,19 +82,19 @@ public class DataObjectPropertySection extends AbstractBpmn2PropertySection {
 		return null;
 	}
 	
-	public class DataObjectPropertiesComposite extends DefaultDetailComposite {
+	public class DataObjectDetailComposite extends DefaultDetailComposite {
 
 		private AbstractPropertiesProvider dataObjectReferencePropertiesProvider;
 		private AbstractPropertiesProvider dataStatePropertiesProvider;
 
-		public DataObjectPropertiesComposite(Composite parent, int style) {
+		public DataObjectDetailComposite(Composite parent, int style) {
 			super(parent, style);
 		}
 
 		/**
 		 * @param section
 		 */
-		public DataObjectPropertiesComposite(AbstractBpmn2PropertySection section) {
+		public DataObjectDetailComposite(AbstractBpmn2PropertySection section) {
 			super(section);
 		}
 

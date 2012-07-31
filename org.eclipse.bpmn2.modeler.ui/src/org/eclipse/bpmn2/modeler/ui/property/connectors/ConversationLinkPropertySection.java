@@ -22,7 +22,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 
 public class ConversationLinkPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
 	static {
-		PropertiesCompositeFactory.register(ConversationLink.class, ConversationLinkPropertiesComposite.class);
+		PropertiesCompositeFactory.register(ConversationLink.class, ConversationLinkDetailComposite.class);
 	}
 
 	/* (non-Javadoc)
@@ -30,7 +30,7 @@ public class ConversationLinkPropertySection extends AbstractBpmn2PropertySectio
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new ConversationLinkPropertiesComposite(this);
+		return new ConversationLinkDetailComposite(this);
 	}
 
 	@Override

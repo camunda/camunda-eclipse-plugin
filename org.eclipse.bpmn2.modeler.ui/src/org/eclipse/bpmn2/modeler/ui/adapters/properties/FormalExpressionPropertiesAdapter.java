@@ -38,6 +38,15 @@ public class FormalExpressionPropertiesAdapter extends ExtendedPropertiesAdapter
     	final EStructuralFeature body = Bpmn2Package.eINSTANCE.getFormalExpression_Body();
     	setFeatureDescriptor(body,
 			new FeatureDescriptor<FormalExpression>(adapterFactory,object,body) {
+    		
+	    		@Override
+	    		public String getDisplayName(Object context) {
+					FormalExpression expression = adopt(context);
+					if (expression.getBody()==null)
+						return "";
+					return expression.getBody();
+	    		}
+	    		
 				@Override
 				public String getLabel(Object context) {
 					FormalExpression expression = adopt(context);

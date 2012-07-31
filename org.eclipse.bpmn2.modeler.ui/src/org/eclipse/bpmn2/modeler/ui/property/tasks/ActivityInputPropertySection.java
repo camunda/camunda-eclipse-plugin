@@ -22,8 +22,8 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
 public class ActivityInputPropertySection extends AbstractBpmn2PropertySection {
 	static {
-		PropertiesCompositeFactory.register(Activity.class, ActivityInputPropertiesComposite.class);
-		PropertiesCompositeFactory.register(InputOutputSpecification.class, ActivityInputPropertiesComposite.class);
+		PropertiesCompositeFactory.register(Activity.class, ActivityInputDetailComposite.class);
+		PropertiesCompositeFactory.register(InputOutputSpecification.class, ActivityInputDetailComposite.class);
 	}
 
 	/* (non-Javadoc)
@@ -31,7 +31,7 @@ public class ActivityInputPropertySection extends AbstractBpmn2PropertySection {
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new ActivityInputPropertiesComposite(this);
+		return new ActivityInputDetailComposite(this);
 	}
 
 	@Override

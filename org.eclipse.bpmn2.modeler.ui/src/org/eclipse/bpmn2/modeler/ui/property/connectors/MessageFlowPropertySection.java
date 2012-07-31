@@ -22,7 +22,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 
 public class MessageFlowPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
 	static {
-		PropertiesCompositeFactory.register(MessageFlow.class, MessageFlowPropertiesComposite.class);
+		PropertiesCompositeFactory.register(MessageFlow.class, MessageFlowDetailComposite.class);
 	}
 
 	/* (non-Javadoc)
@@ -30,7 +30,7 @@ public class MessageFlowPropertySection extends AbstractBpmn2PropertySection imp
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new MessageFlowPropertiesComposite(this);
+		return new MessageFlowDetailComposite(this);
 	}
 
 	@Override

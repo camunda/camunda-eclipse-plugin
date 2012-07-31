@@ -24,11 +24,11 @@ import org.eclipse.bpmn2.modeler.ui.property.events.CommonEventPropertySection;
  */
 public class JbpmCommonEventPropertySection extends CommonEventPropertySection {
 	static {
-		PropertiesCompositeFactory.register(Event.class, JbpmCommonEventPropertiesComposite.class);
+		PropertiesCompositeFactory.register(Event.class, JbpmCommonEventDetailComposite.class);
 	}
 	
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new JbpmCommonEventPropertiesComposite(this);
+		return new JbpmCommonEventDetailComposite(this);
 	}
 }

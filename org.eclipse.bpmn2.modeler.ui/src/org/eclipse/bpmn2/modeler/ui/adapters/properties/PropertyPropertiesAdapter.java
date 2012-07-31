@@ -17,9 +17,12 @@ import java.util.ArrayList;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.CatchEvent;
+import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.Property;
+import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
 import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
@@ -63,13 +66,16 @@ public class PropertyPropertiesAdapter extends ItemAwareElementPropertiesAdapter
 					text = property.getId();
 				
 				EObject container = property.eContainer();
-				while (container!=null) {
+				while (container!=null && !(container instanceof Definitions)) {
 					if (container instanceof Participant) {
 						container = ((Participant)container).getProcessRef();
 						if (container==null)
 							break;
 					}
-					if (container instanceof Activity || container instanceof Process) {
+					else if (container instanceof Activity || container instanceof Process) {
+						text = PropertyUtil.getDisplayName(container) + "/" + text;
+					}
+					else if (container instanceof CatchEvent || container instanceof ThrowEvent) {
 						text = PropertyUtil.getDisplayName(container) + "/" + text;
 					}
 					container = container.eContainer();

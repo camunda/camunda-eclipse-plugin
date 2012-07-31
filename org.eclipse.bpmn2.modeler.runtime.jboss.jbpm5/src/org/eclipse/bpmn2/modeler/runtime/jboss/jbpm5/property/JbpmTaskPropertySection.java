@@ -33,7 +33,7 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public class JbpmTaskPropertySection extends TaskPropertySection {
 	static {
-		PropertiesCompositeFactory.register(Task.class, JbpmTaskPropertiesComposite.class);
+		PropertiesCompositeFactory.register(Task.class, JbpmTaskDetailComposite.class);
 	}
 
 	@Override
@@ -53,6 +53,6 @@ public class JbpmTaskPropertySection extends TaskPropertySection {
 
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new JbpmTaskPropertiesComposite(this);
+		return new JbpmTaskDetailComposite(this);
 	}
 }

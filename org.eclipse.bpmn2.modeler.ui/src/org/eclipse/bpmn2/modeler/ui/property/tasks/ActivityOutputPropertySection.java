@@ -21,7 +21,7 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
 public class ActivityOutputPropertySection extends AbstractBpmn2PropertySection {
 	static {
-		PropertiesCompositeFactory.register(Activity.class, ActivityOutputPropertiesComposite.class);
+		PropertiesCompositeFactory.register(Activity.class, ActivityOutputDetailComposite.class);
 	}
 
 	/* (non-Javadoc)
@@ -29,7 +29,7 @@ public class ActivityOutputPropertySection extends AbstractBpmn2PropertySection 
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new ActivityOutputPropertiesComposite(this);
+		return new ActivityOutputDetailComposite(this);
 	}
 
 	@Override

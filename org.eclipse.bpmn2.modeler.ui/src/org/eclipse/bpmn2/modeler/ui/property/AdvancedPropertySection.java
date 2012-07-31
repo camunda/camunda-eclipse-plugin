@@ -28,14 +28,14 @@ import org.eclipse.ui.IWorkbenchPart;
 
 public class AdvancedPropertySection extends AbstractBpmn2PropertySection {
 
-	private AdvancedPropertiesComposite composite;
+	private AdvancedDetailComposite composite;
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new AdvancedPropertiesComposite(this);
+		return new AdvancedDetailComposite(this);
 	}
 	
 	@Override

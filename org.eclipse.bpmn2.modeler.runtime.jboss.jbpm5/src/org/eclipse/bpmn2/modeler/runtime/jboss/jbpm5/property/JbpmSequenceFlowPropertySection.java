@@ -60,7 +60,7 @@ public class JbpmSequenceFlowPropertySection extends SequenceFlowPropertySection
 
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new JbpmSequenceFlowPropertiesComposite(this);
+		return new JbpmSequenceFlowDetailComposite(this);
 	}
 	
 }

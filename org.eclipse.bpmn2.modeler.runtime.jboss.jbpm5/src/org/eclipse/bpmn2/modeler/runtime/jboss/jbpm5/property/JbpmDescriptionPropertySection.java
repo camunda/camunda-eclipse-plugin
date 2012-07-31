@@ -67,7 +67,7 @@ public class JbpmDescriptionPropertySection extends DescriptionPropertySection {
 					bindAttribute(process, "processType");
 					bindAttribute(process, "isExecutable");
 					bindAttribute(process, "isClosed");
-//					bindList(process, "properties"); // this has moved to JbpmDataItemsPropertiesComposite
+//					bindList(process, "properties"); // this has moved to JbpmDataItemsDetailComposite
 					bindList(process, "laneSets");
 				}
 			}

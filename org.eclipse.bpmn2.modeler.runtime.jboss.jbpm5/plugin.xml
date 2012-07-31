@@ -866,7 +866,7 @@
 			<disable object="Property" feature="documentation"/>
 			<disable object="Property" feature="extensionDefinitions"/>
 			<disable object="Property" feature="extensionValues"/>
-			<disable object="Property" feature="id"/>
+			<disable object="Property" feature="name"/>
 			<enable object="ReceiveTask"/>
 			<disable object="ReceiveTask" feature="anyAttribute"/>
 			<disable object="ReceiveTask" feature="auditing"/>

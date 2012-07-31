@@ -22,7 +22,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 
 public class BusinessRuleTaskPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
 	static {
-		PropertiesCompositeFactory.register(BusinessRuleTask.class, BusinessRuleTaskPropertiesComposite.class);
+		PropertiesCompositeFactory.register(BusinessRuleTask.class, BusinessRuleTaskDetailComposite.class);
 	}
 
 	/* (non-Javadoc)
@@ -30,7 +30,7 @@ public class BusinessRuleTaskPropertySection extends AbstractBpmn2PropertySectio
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new BusinessRuleTaskPropertiesComposite(this);
+		return new BusinessRuleTaskDetailComposite(this);
 	}
 
 	@Override

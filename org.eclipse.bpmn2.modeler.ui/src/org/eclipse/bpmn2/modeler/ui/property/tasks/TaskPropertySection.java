@@ -21,7 +21,7 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
 public class TaskPropertySection extends AbstractBpmn2PropertySection {
 	static {
-		PropertiesCompositeFactory.register(Task.class, TaskPropertiesComposite.class);
+		PropertiesCompositeFactory.register(Task.class, TaskDetailComposite.class);
 	}
 
 	public TaskPropertySection() {
@@ -33,7 +33,7 @@ public class TaskPropertySection extends AbstractBpmn2PropertySection {
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new TaskPropertiesComposite(this);
+		return new TaskDetailComposite(this);
 	}
 
 	@Override

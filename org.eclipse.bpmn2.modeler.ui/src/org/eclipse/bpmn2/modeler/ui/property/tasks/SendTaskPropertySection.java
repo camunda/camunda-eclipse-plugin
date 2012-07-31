@@ -21,7 +21,7 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
 public class SendTaskPropertySection extends AbstractBpmn2PropertySection {
 	static {
-		PropertiesCompositeFactory.register(SendTask.class, SendTaskPropertiesComposite.class);
+		PropertiesCompositeFactory.register(SendTask.class, SendTaskDetailComposite.class);
 	}
 
 	/* (non-Javadoc)
@@ -29,7 +29,7 @@ public class SendTaskPropertySection extends AbstractBpmn2PropertySection {
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new SendTaskPropertiesComposite(this);
+		return new SendTaskDetailComposite(this);
 	}
 
 	@Override

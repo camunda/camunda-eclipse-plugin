@@ -34,7 +34,7 @@ public class JbpmCallActivityPropertySection extends JbpmActivityPropertySection
 
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new JbpmCallActivityPropertiesComposite(this);
+		return new JbpmCallActivityDetailComposite(this);
 	}
 
 }

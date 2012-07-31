@@ -34,8 +34,8 @@ import org.eclipse.swt.widgets.Composite;
 public class DataStorePropertySection extends AbstractBpmn2PropertySection {
 
 	static {
-		// register the DataStorePropertiesComposite for rendering DataStore objects
-		PropertiesCompositeFactory.register(DataStore.class, DataStorePropertiesComposite.class);
+		// register the DataStoreDetailComposite for rendering DataStore objects
+		PropertiesCompositeFactory.register(DataStore.class, DataStoreDetailComposite.class);
 	}
 	
 	/* (non-Javadoc)
@@ -43,7 +43,7 @@ public class DataStorePropertySection extends AbstractBpmn2PropertySection {
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new DataStorePropertiesComposite(this);
+		return new DataStoreDetailComposite(this);
 	}
 
 	@Override
@@ -58,19 +58,19 @@ public class DataStorePropertySection extends AbstractBpmn2PropertySection {
 		return null;
 	}
 	
-	public class DataStorePropertiesComposite extends DefaultDetailComposite {
+	public class DataStoreDetailComposite extends DefaultDetailComposite {
 
 		private AbstractPropertiesProvider dataStoreReferencePropertiesProvider;
 		private AbstractPropertiesProvider dataStatePropertiesProvider;
 
-		public DataStorePropertiesComposite(Composite parent, int style) {
+		public DataStoreDetailComposite(Composite parent, int style) {
 			super(parent, style);
 		}
 
 		/**
 		 * @param section
 		 */
-		public DataStorePropertiesComposite(AbstractBpmn2PropertySection section) {
+		public DataStoreDetailComposite(AbstractBpmn2PropertySection section) {
 			super(section);
 		}
 

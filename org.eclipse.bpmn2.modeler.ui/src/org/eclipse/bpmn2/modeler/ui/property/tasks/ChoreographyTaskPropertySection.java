@@ -22,7 +22,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 
 public class ChoreographyTaskPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
 	static {
-		PropertiesCompositeFactory.register(ChoreographyTask.class, ChoreographyTaskPropertiesComposite.class);
+		PropertiesCompositeFactory.register(ChoreographyTask.class, ChoreographyTaskDetailComposite.class);
 	}
 
 	/* (non-Javadoc)
@@ -30,7 +30,7 @@ public class ChoreographyTaskPropertySection extends AbstractBpmn2PropertySectio
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new ChoreographyTaskPropertiesComposite(this);
+		return new ChoreographyTaskDetailComposite(this);
 	}
 
 	@Override

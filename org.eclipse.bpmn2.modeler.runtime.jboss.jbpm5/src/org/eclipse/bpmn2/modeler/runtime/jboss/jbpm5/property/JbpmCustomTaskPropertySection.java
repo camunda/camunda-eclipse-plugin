@@ -45,7 +45,7 @@ public class JbpmCustomTaskPropertySection extends AbstractBpmn2PropertySection 
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new JbpmCustomTaskPropertiesComposite(this);
+		return new JbpmCustomTaskDetailComposite(this);
 	}
 	
 	@Override

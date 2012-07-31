@@ -22,7 +22,7 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 public class SequenceFlowPropertySection extends AbstractBpmn2PropertySection {
 	
 	static {
-		PropertiesCompositeFactory.register(SequenceFlow.class, SequenceFlowPropertiesComposite.class);
+		PropertiesCompositeFactory.register(SequenceFlow.class, SequenceFlowDetailComposite.class);
 	}
 
 	/* (non-Javadoc)
@@ -30,7 +30,7 @@ public class SequenceFlowPropertySection extends AbstractBpmn2PropertySection {
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new SequenceFlowPropertiesComposite(this);
+		return new SequenceFlowDetailComposite(this);
 	}
 
 	@Override

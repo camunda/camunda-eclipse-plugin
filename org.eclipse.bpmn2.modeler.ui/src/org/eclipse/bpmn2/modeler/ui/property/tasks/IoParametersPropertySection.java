@@ -28,9 +28,9 @@ import org.eclipse.ui.IWorkbenchPart;
 
 public class IoParametersPropertySection extends AbstractBpmn2PropertySection {
 	static {
-		PropertiesCompositeFactory.register(InputOutputSpecification.class, IoParametersPropertiesComposite.class);
-		PropertiesCompositeFactory.register(DataInput.class, DataAssociationPropertiesComposite.class);
-		PropertiesCompositeFactory.register(DataOutput.class, DataAssociationPropertiesComposite.class);
+		PropertiesCompositeFactory.register(InputOutputSpecification.class, IoParametersDetailComposite.class);
+		PropertiesCompositeFactory.register(DataInput.class, DataAssociationDetailComposite.class);
+		PropertiesCompositeFactory.register(DataOutput.class, DataAssociationDetailComposite.class);
 	}
 
 	/* (non-Javadoc)
@@ -38,7 +38,7 @@ public class IoParametersPropertySection extends AbstractBpmn2PropertySection {
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new IoParametersPropertiesComposite(this);
+		return new IoParametersDetailComposite(this);
 	}
 
 	@Override

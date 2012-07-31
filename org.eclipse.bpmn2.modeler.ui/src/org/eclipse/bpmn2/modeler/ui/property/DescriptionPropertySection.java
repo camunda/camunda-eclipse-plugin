@@ -54,7 +54,7 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 		 * (non-Javadoc)
 		 * 
 		 * @see
-		 * org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite
+		 * org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2DetailComposite
 		 * #createBindings(org.eclipse.emf.ecore.EObject)
 		 */
 		@Override

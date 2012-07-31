@@ -22,12 +22,12 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 
 public class EndEventPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
 	static {
-		PropertiesCompositeFactory.register(EndEvent.class, EndEventPropertiesComposite.class);
+		PropertiesCompositeFactory.register(EndEvent.class, EndEventDetailComposite.class);
 	}
 
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new EndEventPropertiesComposite(this);		
+		return new EndEventDetailComposite(this);		
 	}
 
 	@Override

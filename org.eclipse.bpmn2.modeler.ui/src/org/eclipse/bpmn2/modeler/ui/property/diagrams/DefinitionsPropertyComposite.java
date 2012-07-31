@@ -15,6 +15,7 @@ import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultListComposite;
+import org.eclipse.bpmn2.modeler.ui.property.TableColumn;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.NamespacesEditingDialog;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.SchemaImportDialog;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
@@ -235,8 +236,8 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 						return false;
 					}
 				};
-				columnProvider.add(new NamespacesTableColumn(object, 0));
-				columnProvider.add(new NamespacesTableColumn(object, 1));
+				columnProvider.add(new NamespacesTableColumn(this,object, 0));
+				columnProvider.add(new NamespacesTableColumn(this,object, 1));
 			}
 			return columnProvider;
 		}
@@ -245,8 +246,8 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 			
 			int columnIndex;
 			
-			public NamespacesTableColumn(EObject object, int columnIndex) {
-				super(object,null);
+			public NamespacesTableColumn(AbstractListComposite abstractListComposite, EObject object, int columnIndex) {
+				super(abstractListComposite, object,null);
 				this.columnIndex = columnIndex;
 			}
 
@@ -293,7 +294,7 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 				};
 				
 				// add a namespace prefix column that does NOT come from the Import object
-				TableColumn tableColumn = new TableColumn(object,null) {
+				TableColumn tableColumn = new TableColumn(this, object,null) {
 					@Override
 					public String getHeaderText() {
 						return "Namespace Prefix";
@@ -311,11 +312,11 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 				columnProvider.add(tableColumn);
 				// add remaining columns
 				EClass eClass = PACKAGE.getImport();
-				columnProvider.add(new TableColumn(object,
+				columnProvider.add(new TableColumn(this, object,
 						(EAttribute)eClass.getEStructuralFeature("namespace")));
-				columnProvider.add(new TableColumn(object,
+				columnProvider.add(new TableColumn(this, object,
 						(EAttribute)eClass.getEStructuralFeature("location")));
-				columnProvider.add(new TableColumn(object,
+				columnProvider.add(new TableColumn(this, object,
 						(EAttribute)eClass.getEStructuralFeature("importType")));
 			}
 			return columnProvider;

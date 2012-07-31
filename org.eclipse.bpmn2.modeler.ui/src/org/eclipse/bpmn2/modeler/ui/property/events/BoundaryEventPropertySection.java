@@ -25,7 +25,7 @@ public class BoundaryEventPropertySection extends AbstractBpmn2PropertySection {
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new BoundaryEventPropertiesComposite(this);
+		return new BoundaryEventDetailComposite(this);
 	}
 
 	@Override

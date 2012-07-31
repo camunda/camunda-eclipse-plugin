@@ -22,7 +22,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 
 public class StartEventPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
 	static {
-		PropertiesCompositeFactory.register(StartEvent.class, StartEventPropertiesComposite.class);
+		PropertiesCompositeFactory.register(StartEvent.class, StartEventDetailComposite.class);
 	}
 
 	/* (non-Javadoc)
@@ -30,7 +30,7 @@ public class StartEventPropertySection extends AbstractBpmn2PropertySection impl
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new StartEventPropertiesComposite(this);
+		return new StartEventDetailComposite(this);
 	}
 
 	@Override

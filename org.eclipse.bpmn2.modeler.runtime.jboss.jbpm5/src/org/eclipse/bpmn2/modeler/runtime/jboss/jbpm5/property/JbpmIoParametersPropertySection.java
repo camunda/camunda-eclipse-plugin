@@ -22,8 +22,8 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
 public class JbpmIoParametersPropertySection extends IoParametersPropertySection {
 	static {
-		PropertiesCompositeFactory.register(DataInput.class, JbpmDataAssociationPropertiesComposite.class);
-		PropertiesCompositeFactory.register(DataOutput.class, JbpmDataAssociationPropertiesComposite.class);
+		PropertiesCompositeFactory.register(DataInput.class, JbpmDataAssociationDetailComposite.class);
+		PropertiesCompositeFactory.register(DataOutput.class, JbpmDataAssociationDetailComposite.class);
 	}
 	
 	@Override

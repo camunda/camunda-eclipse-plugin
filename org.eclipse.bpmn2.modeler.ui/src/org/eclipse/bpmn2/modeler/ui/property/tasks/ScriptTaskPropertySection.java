@@ -23,7 +23,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 
 public class ScriptTaskPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
 	static {
-		PropertiesCompositeFactory.register(ScriptTask.class, ScriptTaskPropertiesComposite.class);
+		PropertiesCompositeFactory.register(ScriptTask.class, ScriptTaskDetailComposite.class);
 	}
 
 	/* (non-Javadoc)
@@ -31,7 +31,7 @@ public class ScriptTaskPropertySection extends AbstractBpmn2PropertySection impl
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new ScriptTaskPropertiesComposite(this);
+		return new ScriptTaskDetailComposite(this);
 	}
 
 	@Override

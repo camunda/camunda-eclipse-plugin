@@ -25,13 +25,13 @@ final class PropertyTreeContentProvider implements ITreeContentProvider {
 	/**
 	 * 
 	 */
-	private final AdvancedPropertiesComposite advancedPropertiesComposite;
+	private final AdvancedDetailComposite advancedDetailComposite;
 
 	/**
-	 * @param advancedPropertiesComposite
+	 * @param advancedDetailComposite
 	 */
-	PropertyTreeContentProvider(AdvancedPropertiesComposite improvedAdvancedPropertiesComposite) {
-		this.advancedPropertiesComposite = improvedAdvancedPropertiesComposite;
+	PropertyTreeContentProvider(AdvancedDetailComposite improvedAdvancedDetailComposite) {
+		this.advancedDetailComposite = improvedAdvancedDetailComposite;
 	}
 
 	@Override

@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class DataObjectReferencePropertySection extends AbstractBpmn2PropertySection {
 	static {
-		PropertiesCompositeFactory.register(DataObjectReference.class, DataObjectReferencePropertiesComposite.class);
+		PropertiesCompositeFactory.register(DataObjectReference.class, DataObjectReferenceDetailComposite.class);
 	}
 
 	/* (non-Javadoc)
@@ -38,7 +38,7 @@ public class DataObjectReferencePropertySection extends AbstractBpmn2PropertySec
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new DataObjectReferencePropertiesComposite(this);
+		return new DataObjectReferenceDetailComposite(this);
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class DataObjectReferencePropertySection extends AbstractBpmn2PropertySec
 		return null;
 	}
 	
-	public class DataObjectReferencePropertiesComposite extends DefaultDetailComposite {
+	public class DataObjectReferenceDetailComposite extends DefaultDetailComposite {
 
 		private AbstractPropertiesProvider dataObjectReferencePropertiesProvider;
 		private AbstractPropertiesProvider dataStatePropertiesProvider;
@@ -58,11 +58,11 @@ public class DataObjectReferencePropertySection extends AbstractBpmn2PropertySec
 		/**
 		 * @param section
 		 */
-		public DataObjectReferencePropertiesComposite(AbstractBpmn2PropertySection section) {
+		public DataObjectReferenceDetailComposite(AbstractBpmn2PropertySection section) {
 			super(section);
 		}
 
-		public DataObjectReferencePropertiesComposite(Composite parent, int style) {
+		public DataObjectReferenceDetailComposite(Composite parent, int style) {
 			super(parent, style);
 		}
 

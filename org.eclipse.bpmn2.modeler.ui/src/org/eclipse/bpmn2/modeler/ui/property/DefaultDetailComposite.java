@@ -149,7 +149,7 @@ public class DefaultDetailComposite extends AbstractDetailComposite {
 	/**
 	 * Provider class for the Default Properties sheet tab.
 	 * This simply returns a list of properties, containment ELists and references
-	 * to be rendered on the Default Properties tab. If the DefaultPropertiesComposite
+	 * to be rendered on the Default Properties tab. If the DefaultDetailComposite
 	 * is subclassed and the client does not specify an item provider, the default
 	 * behavior is to render all structural features for the business object.
 	 */

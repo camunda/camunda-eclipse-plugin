@@ -22,7 +22,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 
 public class ServiceTaskPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
 	static {
-		PropertiesCompositeFactory.register(ServiceTask.class, ServiceTaskPropertiesComposite.class);
+		PropertiesCompositeFactory.register(ServiceTask.class, ServiceTaskDetailComposite.class);
 	}
 
 	/* (non-Javadoc)
@@ -30,7 +30,7 @@ public class ServiceTaskPropertySection extends AbstractBpmn2PropertySection imp
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new ServiceTaskPropertiesComposite(this);
+		return new ServiceTaskDetailComposite(this);
 	}
 
 	@Override

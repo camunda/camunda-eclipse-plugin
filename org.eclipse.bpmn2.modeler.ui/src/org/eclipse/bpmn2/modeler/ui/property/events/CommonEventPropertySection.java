@@ -23,21 +23,21 @@ import org.eclipse.bpmn2.TimerEventDefinition;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
-import org.eclipse.bpmn2.modeler.ui.property.data.ConditionalEventDefinitionPropertiesComposite;
+import org.eclipse.bpmn2.modeler.ui.property.data.ConditionalEventDefinitionDetailComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 
 public class CommonEventPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
 	static {
-		PropertiesCompositeFactory.register(Event.class, CommonEventPropertiesComposite.class);
-		PropertiesCompositeFactory.register(StartEvent.class, StartEventPropertiesComposite.class);
-		PropertiesCompositeFactory.register(EndEvent.class, EndEventPropertiesComposite.class);
-		PropertiesCompositeFactory.register(CatchEvent.class, CatchEventPropertiesComposite.class);
-		PropertiesCompositeFactory.register(ThrowEvent.class, ThrowEventPropertiesComposite.class);
-		PropertiesCompositeFactory.register(BoundaryEvent.class, BoundaryEventPropertiesComposite.class);
-		PropertiesCompositeFactory.register(TimerEventDefinition.class, TimerEventDefinitionPropertiesComposite.class);
-		PropertiesCompositeFactory.register(ConditionalEventDefinition.class, ConditionalEventDefinitionPropertiesComposite.class);
+		PropertiesCompositeFactory.register(Event.class, CommonEventDetailComposite.class);
+		PropertiesCompositeFactory.register(StartEvent.class, StartEventDetailComposite.class);
+		PropertiesCompositeFactory.register(EndEvent.class, EndEventDetailComposite.class);
+		PropertiesCompositeFactory.register(CatchEvent.class, CatchEventDetailComposite.class);
+		PropertiesCompositeFactory.register(ThrowEvent.class, ThrowEventDetailComposite.class);
+		PropertiesCompositeFactory.register(BoundaryEvent.class, BoundaryEventDetailComposite.class);
+		PropertiesCompositeFactory.register(TimerEventDefinition.class, TimerEventDefinitionDetailComposite.class);
+		PropertiesCompositeFactory.register(ConditionalEventDefinition.class, ConditionalEventDefinitionDetailComposite.class);
 	}
 
 	/* (non-Javadoc)
@@ -45,7 +45,7 @@ public class CommonEventPropertySection extends AbstractBpmn2PropertySection imp
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new CommonEventPropertiesComposite(this);
+		return new CommonEventDetailComposite(this);
 	}
 
 	@Override

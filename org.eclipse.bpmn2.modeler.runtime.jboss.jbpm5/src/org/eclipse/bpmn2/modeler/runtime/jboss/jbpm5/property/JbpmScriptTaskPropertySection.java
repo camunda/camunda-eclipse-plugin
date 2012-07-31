@@ -28,7 +28,7 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public class JbpmScriptTaskPropertySection extends JbpmTaskPropertySection {
 	static {
-		PropertiesCompositeFactory.register(ScriptTask.class, JbpmScriptTaskPropertiesComposite.class);
+		PropertiesCompositeFactory.register(ScriptTask.class, JbpmScriptTaskDetailComposite.class);
 	}
 
 	@Override
@@ -39,6 +39,6 @@ public class JbpmScriptTaskPropertySection extends JbpmTaskPropertySection {
 
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new JbpmScriptTaskPropertiesComposite(this);
+		return new JbpmScriptTaskDetailComposite(this);
 	}
 }

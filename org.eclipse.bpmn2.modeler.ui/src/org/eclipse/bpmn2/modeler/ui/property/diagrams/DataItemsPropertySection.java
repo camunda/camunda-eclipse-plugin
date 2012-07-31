@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Display;
 public class DataItemsPropertySection extends DefaultPropertySection {
 	
 	static {
-		PropertiesCompositeFactory.register(ItemDefinition.class, ItemDefinitionPropertiesComposite.class);
+		PropertiesCompositeFactory.register(ItemDefinition.class, ItemDefinitionDetailComposite.class);
 		// Will this work? Make it so!
 		PropertiesCompositeFactory.register(Property.class, PropertyListComposite.class);
 	}
@@ -40,7 +40,7 @@ public class DataItemsPropertySection extends DefaultPropertySection {
 
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new DataItemsPropertiesComposite(this);
+		return new DataItemsDetailComposite(this);
 	}
 
 	@Override
@@ -60,18 +60,18 @@ public class DataItemsPropertySection extends DefaultPropertySection {
 		return null;
 	}
 
-	public class ItemDefinitionPropertiesComposite extends DefaultDetailComposite {
+	public class ItemDefinitionDetailComposite extends DefaultDetailComposite {
 
 		private AbstractPropertiesProvider propertiesProvider;
 
-		public ItemDefinitionPropertiesComposite(Composite parent, int style) {
+		public ItemDefinitionDetailComposite(Composite parent, int style) {
 			super(parent, style);
 		}
 
 		/**
 		 * @param section
 		 */
-		public ItemDefinitionPropertiesComposite(AbstractBpmn2PropertySection section) {
+		public ItemDefinitionDetailComposite(AbstractBpmn2PropertySection section) {
 			super(section);
 		}
 

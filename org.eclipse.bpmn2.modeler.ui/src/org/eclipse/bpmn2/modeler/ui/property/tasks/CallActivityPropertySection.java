@@ -34,12 +34,12 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
  */
 public class CallActivityPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
 	static {
-		PropertiesCompositeFactory.register(CallActivity.class, CallActivityPropertiesComposite.class);
-		PropertiesCompositeFactory.register(GlobalTask.class, GlobalTaskPropertiesComposite.class);
-		PropertiesCompositeFactory.register(GlobalBusinessRuleTask.class, GlobalTaskPropertiesComposite.class);
-		PropertiesCompositeFactory.register(GlobalManualTask.class, GlobalTaskPropertiesComposite.class);
-		PropertiesCompositeFactory.register(GlobalScriptTask.class, GlobalTaskPropertiesComposite.class);
-		PropertiesCompositeFactory.register(GlobalUserTask.class, GlobalTaskPropertiesComposite.class);
+		PropertiesCompositeFactory.register(CallActivity.class, CallActivityDetailComposite.class);
+		PropertiesCompositeFactory.register(GlobalTask.class, GlobalTaskDetailComposite.class);
+		PropertiesCompositeFactory.register(GlobalBusinessRuleTask.class, GlobalTaskDetailComposite.class);
+		PropertiesCompositeFactory.register(GlobalManualTask.class, GlobalTaskDetailComposite.class);
+		PropertiesCompositeFactory.register(GlobalScriptTask.class, GlobalTaskDetailComposite.class);
+		PropertiesCompositeFactory.register(GlobalUserTask.class, GlobalTaskDetailComposite.class);
 	}
 
 	/* (non-Javadoc)
@@ -47,7 +47,7 @@ public class CallActivityPropertySection extends AbstractBpmn2PropertySection im
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new CallActivityPropertiesComposite(this);
+		return new CallActivityDetailComposite(this);
 	}
 
 	@Override
@@ -58,13 +58,13 @@ public class CallActivityPropertySection extends AbstractBpmn2PropertySection im
 		return null;
 	}
 	
-	public class GlobalTaskPropertiesComposite extends DefaultDetailComposite {
+	public class GlobalTaskDetailComposite extends DefaultDetailComposite {
 
-		public GlobalTaskPropertiesComposite(Composite parent, int style) {
+		public GlobalTaskDetailComposite(Composite parent, int style) {
 			super(parent, style);
 		}
 
-		public GlobalTaskPropertiesComposite(AbstractBpmn2PropertySection section) {
+		public GlobalTaskDetailComposite(AbstractBpmn2PropertySection section) {
 			super(section);
 		}
 

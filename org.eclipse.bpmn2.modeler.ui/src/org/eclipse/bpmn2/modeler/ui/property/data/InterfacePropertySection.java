@@ -39,7 +39,7 @@ import org.eclipse.ui.dialogs.ListDialog;
 public class InterfacePropertySection extends DefaultPropertySection {
 
 	static {
-		PropertiesCompositeFactory.register(Interface.class, InterfacePropertiesComposite.class);
+		PropertiesCompositeFactory.register(Interface.class, InterfaceDetailComposite.class);
 	}
 
 	@Override

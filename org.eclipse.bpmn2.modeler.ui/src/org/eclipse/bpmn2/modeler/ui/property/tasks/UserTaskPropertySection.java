@@ -21,7 +21,7 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
 public class UserTaskPropertySection extends AbstractBpmn2PropertySection {
 	static {
-		PropertiesCompositeFactory.register(UserTask.class, UserTaskPropertiesComposite.class);
+		PropertiesCompositeFactory.register(UserTask.class, UserTaskDetailComposite.class);
 	}
 
 	/* (non-Javadoc)
@@ -29,7 +29,7 @@ public class UserTaskPropertySection extends AbstractBpmn2PropertySection {
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new UserTaskPropertiesComposite(this);
+		return new UserTaskDetailComposite(this);
 	}
 
 	@Override

@@ -27,12 +27,12 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 
 public class GatewayPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
 	static {
-		PropertiesCompositeFactory.register(Gateway.class, GatewayPropertiesComposite.class);
-		PropertiesCompositeFactory.register(ComplexGateway.class, GatewayPropertiesComposite.class);
-		PropertiesCompositeFactory.register(EventBasedGateway.class, GatewayPropertiesComposite.class);
-		PropertiesCompositeFactory.register(ExclusiveGateway.class, GatewayPropertiesComposite.class);
-		PropertiesCompositeFactory.register(InclusiveGateway.class, GatewayPropertiesComposite.class);
-		PropertiesCompositeFactory.register(ParallelGateway.class, GatewayPropertiesComposite.class);
+		PropertiesCompositeFactory.register(Gateway.class, GatewayDetailComposite.class);
+		PropertiesCompositeFactory.register(ComplexGateway.class, GatewayDetailComposite.class);
+		PropertiesCompositeFactory.register(EventBasedGateway.class, GatewayDetailComposite.class);
+		PropertiesCompositeFactory.register(ExclusiveGateway.class, GatewayDetailComposite.class);
+		PropertiesCompositeFactory.register(InclusiveGateway.class, GatewayDetailComposite.class);
+		PropertiesCompositeFactory.register(ParallelGateway.class, GatewayDetailComposite.class);
 	}
 
 	/* (non-Javadoc)
@@ -40,7 +40,7 @@ public class GatewayPropertySection extends AbstractBpmn2PropertySection impleme
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new GatewayPropertiesComposite(this);
+		return new GatewayDetailComposite(this);
 	}
 
 	@Override

@@ -16,9 +16,6 @@ package org.eclipse.bpmn2.modeler.ui.property;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.bpmn2.modeler.core.utils.ErrorUtils;
-import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.providers.ColumnTableProvider;
 import org.eclipse.bpmn2.modeler.ui.property.providers.TableCursor;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
@@ -26,20 +23,13 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EClassifier;
-import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
-import org.eclipse.emf.edit.ui.provider.PropertyDescriptor.EDataTypeCellEditor;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.ResourceSetChangeEvent;
-import org.eclipse.emf.transaction.TransactionalEditingDomain;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ICellModifier;
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -162,7 +152,7 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 			// default is to include property name
 			EStructuralFeature nameAttribute = listItemClass.getEStructuralFeature("name");
 			if (nameAttribute!=null)
-				columnProvider.add(new TableColumn(object, nameAttribute));
+				columnProvider.add(new TableColumn(this, object, nameAttribute));
 
 			for (EAttribute a1 : listItemClass.getEAllAttributes()) {
 				if ("anyAttribute".equals(a1.getName())) {
@@ -179,7 +169,7 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 								for (Entry entry : map) {
 									EStructuralFeature f1 = entry.getEStructuralFeature();
 									if (f1 instanceof EAttribute && !anyAttributes.contains(f1)) {
-										columnProvider.add(new TableColumn(object,(EAttribute)f1));
+										columnProvider.add(new TableColumn(this, object,(EAttribute)f1));
 										anyAttributes.add(f1);
 									}
 								}
@@ -190,11 +180,11 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 				else if (FeatureMap.Entry.class.equals(a1.getEType().getInstanceClass())) {
 					// TODO: how do we handle these?
 					if (a1 instanceof EAttribute)
-						columnProvider.add(new TableColumn(object,a1));
+						columnProvider.add(new TableColumn(this, object,a1));
 				}
 				else {
 					if (a1!=nameAttribute)
-						columnProvider.add(new TableColumn(object,a1));
+						columnProvider.add(new TableColumn(this, object,a1));
 				}
 			}
 		}
@@ -723,97 +713,6 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 		}
 	}
 	
-	public class TableColumn extends ColumnTableProvider.Column implements ILabelProvider, ICellModifier {
-		protected TableViewer tableViewer;
-		protected EStructuralFeature feature;
-		protected EObject object;
-		
-		public TableColumn(EObject o, EStructuralFeature f) {
-			object = o;
-			feature = f;
-		}
-		
-		public void setTableViewer(TableViewer t) {
-			tableViewer = t;
-		}
-		
-		@Override
-		public String getHeaderText() {
-			String text = "";
-			if (feature!=null) {
-				if (feature.eContainer() instanceof EClass) {
-					EClass eclass = getListItemClass();
-					text = PropertyUtil.getLabel(eclass, feature);
-				}
-				else
-					text = ModelUtil.toDisplayName(feature.getName());
-			}
-			return text;
-		}
-
-		@Override
-		public String getProperty() {
-			if (feature!=null)
-				return feature.getName(); //$NON-NLS-1$
-			return "";
-		}
-
-		@Override
-		public int getInitialWeight() {
-			return 10;
-		}
-
-		public String getText(Object element) {
-			if (element instanceof EObject) {
-				return PropertyUtil.getDisplayName((EObject)element,feature);
-			}
-			Object value = ((EObject)element).eGet(feature);
-			return value==null ? "" : value.toString();
-		}
-		
-		public CellEditor createCellEditor (Composite parent) {
-			if (feature!=null) {
-				EClassifier ec = feature.getEType();
-				if (ec instanceof EDataType) {
-					return new EDataTypeCellEditor((EDataType)ec, parent);
-				}
-			}
-			return null;
-		}
-		
-		public boolean canModify(Object element, String property) {
-			return columnProvider.canModify(object, feature, (EObject)element);
-		}
-
-		public void modify(Object element, String property, Object value) {
-			BPMN2Editor bpmn2Editor = getDiagramEditor();
-			final EObject target = (EObject)element;
-			final Object newValue = value;
-			final Object oldValue = target.eGet(feature); 
-			if (oldValue==null || !oldValue.equals(value)) {
-				TransactionalEditingDomain editingDomain = bpmn2Editor.getEditingDomain();
-				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-					@Override
-					protected void doExecute() {
-						target.eSet(feature, newValue);
-					}
-				});
-				if (bpmn2Editor.getDiagnostics()!=null) {
-					// revert the change and display error status message.
-					ErrorUtils.showErrorMessage(bpmn2Editor.getDiagnostics().getMessage());
-				}
-				else
-					ErrorUtils.showErrorMessage(null);
-				tableViewer.refresh();
-			}
-		}
-
-		@Override
-		public Object getValue(Object element, String property) {
-			return getText(element);
-		}
-	}
-
 	public abstract class AbstractTableColumnProvider extends ColumnTableProvider {
 		
 		/**

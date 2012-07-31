@@ -27,7 +27,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
  */
 public class SubProcessPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
 	static {
-		PropertiesCompositeFactory.register(SubProcess.class, SubProcessPropertiesComposite.class);
+		PropertiesCompositeFactory.register(SubProcess.class, SubProcessDetailComposite.class);
 	}
 
 	/* (non-Javadoc)
@@ -35,7 +35,7 @@ public class SubProcessPropertySection extends AbstractBpmn2PropertySection impl
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new SubProcessPropertiesComposite(this);
+		return new SubProcessDetailComposite(this);
 	}
 
 	@Override
