@@ -30,8 +30,8 @@ public class ActivityPropertiesAdapter<T extends Activity> extends ExtendedPrope
 	 */
 	public ActivityPropertiesAdapter(AdapterFactory adapterFactory, T object) {
 		super(adapterFactory, object);
-    	setProperty(Bpmn2Package.ACTIVITY__LOOP_CHARACTERISTICS, ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW, Boolean.FALSE);
-    	setProperty(Bpmn2Package.ACTIVITY__LOOP_CHARACTERISTICS, ExtendedPropertiesAdapter.UI_CAN_EDIT, Boolean.FALSE);
+    	setProperty(Bpmn2Package.ACTIVITY__LOOP_CHARACTERISTICS, UI_CAN_CREATE_NEW, Boolean.FALSE);
+    	setProperty(Bpmn2Package.ACTIVITY__LOOP_CHARACTERISTICS, UI_CAN_EDIT, Boolean.FALSE);
 	}
 
 }

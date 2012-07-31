@@ -13,8 +13,12 @@
 
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
+import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.ScriptTask;
+import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
 import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.ecore.EStructuralFeature;
 
 /**
  * @author Bob Brodt
@@ -28,6 +32,33 @@ public class ScriptTaskPropertiesAdapter extends TaskPropertiesAdapter<ScriptTas
 	 */
 	public ScriptTaskPropertiesAdapter(AdapterFactory adapterFactory, ScriptTask object) {
 		super(adapterFactory, object);
+
+
+    	EStructuralFeature ref = Bpmn2Package.eINSTANCE.getScriptTask_Script();
+    	setFeatureDescriptor(ref,
+			new FeatureDescriptor<ScriptTask>(adapterFactory,object,ref) {
+    		
+	    		@Override
+	    		public String getDisplayName(Object context) {
+	    			ScriptTask task = adopt(context);
+					if (task.getScript()==null)
+						return "";
+					return task.getScript();
+	    		}
+    	});
+    	
+    	ref = Bpmn2Package.eINSTANCE.getScriptTask_ScriptFormat();
+    	setFeatureDescriptor(ref,
+			new FeatureDescriptor<ScriptTask>(adapterFactory,object,ref) {
+    		
+	    		@Override
+	    		public String getDisplayName(Object context) {
+	    			ScriptTask task = adopt(context);
+					if (task.getScriptFormat()==null)
+						return "text/xml"; // TODO: is there a default mime-type?
+					return task.getScriptFormat();
+	    		}
+    	});
 	}
 
 }
