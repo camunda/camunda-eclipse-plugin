@@ -3,19 +3,14 @@ package org.eclipse.bpmn2.modeler.ui.property.events;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.bpmn2.Assignment;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.InputSet;
-import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultListComposite;
-import org.eclipse.bpmn2.modeler.ui.property.TableColumn;
+import org.eclipse.bpmn2.modeler.ui.property.tasks.IoParameterMappingColumn;
 import org.eclipse.bpmn2.modeler.ui.property.tasks.IoParameterNameColumn;
-import org.eclipse.bpmn2.modeler.ui.property.tasks.InputParameterMappingColumn;
-import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -26,19 +21,17 @@ public class DataInputsListComposite extends DefaultListComposite {
 	ThrowEvent throwEvent;
 
 	public DataInputsListComposite(Composite parent, ThrowEvent throwEvent) {
-		super(parent, ADD_BUTTON|REMOVE_BUTTON|SHOW_DETAILS);
+		super(parent, ADD_BUTTON|REMOVE_BUTTON|EDIT_BUTTON|SHOW_DETAILS);
 		this.throwEvent = throwEvent;
 	
-		columnProvider = new DefaultTableColumnProvider();
+		columnProvider = new ListCompositeColumnProvider(this,true);
 		
 		EStructuralFeature f;
-		
 		f = PACKAGE.getDataInput_Name();
-		IoParameterNameColumn nameColumn = new IoParameterNameColumn(this,throwEvent,f);
-		columnProvider.add(nameColumn);
+		columnProvider.add(new IoParameterNameColumn(throwEvent,f));
 
 		f = PACKAGE.getThrowEvent_DataInputAssociation();
-		columnProvider.add(new InputParameterMappingColumn(this,nameColumn,throwEvent,f));
+		columnProvider.add(new IoParameterMappingColumn(throwEvent,f));
 	}
 
 	@Override

@@ -87,20 +87,6 @@ public class JbpmPropertyPropertiesAdapter extends PropertyPropertiesAdapter {
 				public String getLabel(Object context) {
 					return "Description";
 				}
-//				
-//				@Override
-//				public void setValue(Object context, final Object value) {
-//					final Property property = adopt(context);
-//
-//					TransactionalEditingDomain domain = getEditingDomain(object);
-//					domain.getCommandStack().execute(new RecordingCommand(domain) {
-//						@Override
-//						protected void doExecute() {
-//							property.setId((String)value);
-//							property.setName((String)value);
-//						}
-//					});
-//				}
 			}
     	);
 
@@ -111,20 +97,6 @@ public class JbpmPropertyPropertiesAdapter extends PropertyPropertiesAdapter {
 				public String getLabel(Object context) {
 					return "Name";
 				}
-//				
-//				@Override
-//				public void setValue(Object context, final Object value) {
-//					final Property property = adopt(context);
-//
-//					TransactionalEditingDomain domain = getEditingDomain(object);
-//					domain.getCommandStack().execute(new RecordingCommand(domain) {
-//						@Override
-//						protected void doExecute() {
-//							property.setId((String)value);
-//							property.setName((String)value);
-//						}
-//					});
-//				}
 			}
     	);
 	}

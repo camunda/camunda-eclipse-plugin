@@ -10,10 +10,8 @@ import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.OutputSet;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultListComposite;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite.DefaultTableColumnProvider;
+import org.eclipse.bpmn2.modeler.ui.property.tasks.IoParameterMappingColumn;
 import org.eclipse.bpmn2.modeler.ui.property.tasks.IoParameterNameColumn;
-import org.eclipse.bpmn2.modeler.ui.property.tasks.InputParameterMappingColumn;
-import org.eclipse.bpmn2.modeler.ui.property.tasks.OutputParameterMappingColumn;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -24,19 +22,17 @@ public class DataOutputsListComposite extends DefaultListComposite {
 	CatchEvent catchEvent;
 	
 	public DataOutputsListComposite(Composite parent, CatchEvent catchEvent) {
-		super(parent, ADD_BUTTON|REMOVE_BUTTON|SHOW_DETAILS);
+		super(parent, ADD_BUTTON|REMOVE_BUTTON|EDIT_BUTTON|SHOW_DETAILS);
 		this.catchEvent = catchEvent;
 		
-		columnProvider = new DefaultTableColumnProvider();
+		columnProvider = new ListCompositeColumnProvider(this,true);
 		
 		EStructuralFeature f;
-		
 		f = PACKAGE.getDataOutput_Name();
-		IoParameterNameColumn nameColumn = new IoParameterNameColumn(this,catchEvent,f);
-		columnProvider.add(nameColumn);
+		columnProvider.add(new IoParameterNameColumn(catchEvent,f));
 
 		f = PACKAGE.getCatchEvent_DataOutputAssociation();
-		columnProvider.add(new OutputParameterMappingColumn(this,nameColumn,catchEvent,f));
+		columnProvider.add(new IoParameterMappingColumn(catchEvent,f));
 	}
 
 	@Override

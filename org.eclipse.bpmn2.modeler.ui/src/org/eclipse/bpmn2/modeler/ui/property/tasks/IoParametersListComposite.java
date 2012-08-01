@@ -15,6 +15,7 @@ import org.eclipse.bpmn2.OutputSet;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultListComposite;
+import org.eclipse.bpmn2.modeler.ui.property.TableColumn;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -33,27 +34,28 @@ public class IoParametersListComposite extends DefaultListComposite {
 	boolean isInput;
 	
 	public IoParametersListComposite(IoParametersDetailComposite detailComposite, EObject container, InputOutputSpecification ioSpecification, EStructuralFeature ioFeature) {
-		super(detailComposite, ADD_BUTTON|REMOVE_BUTTON|SHOW_DETAILS);
+		super(detailComposite, ADD_BUTTON|REMOVE_BUTTON|EDIT_BUTTON|SHOW_DETAILS);
 		this.ioFeature = ioFeature;
 		this.ioSpecification = ioSpecification;
 		isInput = ("dataInputs".equals(ioFeature.getName()));
 		if (container instanceof Activity) {
 			this.activity = (Activity)container;
-			columnProvider = new DefaultTableColumnProvider();
+			columnProvider = new ListCompositeColumnProvider(this, true);
 			EClass listItemClass = (EClass)ioFeature.getEType();
 			setListItemClass(listItemClass);
 			
 			EStructuralFeature f;
 			f = (EAttribute)listItemClass.getEStructuralFeature("name");
-			final IoParameterNameColumn nameColumn = new IoParameterNameColumn(this, activity,f);
-			columnProvider.add(nameColumn);
+			columnProvider.add(new IoParameterNameColumn(activity,f));
 			if (isInput) {
+				columnProvider.add(new TableColumn(activity,PACKAGE.getDataInput_IsCollection()));
 				f = PACKAGE.getActivity_DataInputAssociations();
-				columnProvider.add(new InputParameterMappingColumn(this, nameColumn,activity,f));
+				columnProvider.add(new IoParameterMappingColumn(activity,f));
 			}
 			else {
+				columnProvider.add(new TableColumn(activity,PACKAGE.getDataOutput_IsCollection()));
 				f = PACKAGE.getActivity_DataOutputAssociations();
-				columnProvider.add(new OutputParameterMappingColumn(this, nameColumn,activity,f));
+				columnProvider.add(new IoParameterMappingColumn(activity,f));
 			}
 		}
 		else if (container instanceof CallableElement) {

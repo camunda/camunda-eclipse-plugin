@@ -18,12 +18,16 @@ import java.util.Hashtable;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
+import org.eclipse.bpmn2.modeler.core.utils.ErrorUtils;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Point;
@@ -141,7 +145,7 @@ public class PropertyUtil {
 	}
 	
 	public static String getLabel(EObject object, EStructuralFeature feature) {
-		String label = "x";
+		String label = "";
 		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
 		if (adapter!=null)
 			label = adapter.getFeatureDescriptor(feature).getLabel(object);
@@ -186,6 +190,59 @@ public class PropertyUtil {
 		return null;
 	}
 
+	public static boolean isEmpty(Object result) {
+		if (result == null)
+			return true;
+		if (result instanceof String)
+			return ((String) result).isEmpty();
+		return false;
+	}
+
+	public static boolean setValue(TransactionalEditingDomain domain, final EObject object, final EStructuralFeature feature, final Object value) {
+		ExtendedPropertiesAdapter adapter = AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
+		Object oldValue = adapter==null ? object.eGet(feature) : adapter.getFeatureDescriptor(feature).getValue();
+		boolean valueChanged = (value != oldValue);
+		if (value!=null && oldValue!=null)
+			valueChanged = !value.equals(oldValue);
+		
+		if (valueChanged) {
+			try {
+				InsertionAdapter insertionAdapter = AdapterUtil.adapt(object, InsertionAdapter.class);
+				if (insertionAdapter!=null) {
+					// make sure the new object is added to its container first
+					// so that it inherits the container's Resource and EditingDomain
+					// before we try to change its value.
+					insertionAdapter.execute();
+				}
+				
+				if (isEmpty(value)){
+					domain.getCommandStack().execute(new RecordingCommand(domain) {
+						@Override
+						protected void doExecute() {
+							object.eUnset(feature);
+						}
+					});
+				}
+				else if (adapter!=null) { 			// use the Extended Properties adapter if there is one
+					adapter.getFeatureDescriptor(feature).setValue(value);
+				}
+				else {
+					// fallback is to set the new value here using good ol' EObject.eSet()
+					domain.getCommandStack().execute(new RecordingCommand(domain) {
+						@Override
+						protected void doExecute() {
+							object.eSet(feature, value);
+						}
+					});
+				}
+			} catch (Exception e) {
+				ErrorUtils.showErrorMessage(e.getMessage());
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	public static EObject createObject(EObject object, EStructuralFeature feature) {
 		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
 		if (adapter!=null)

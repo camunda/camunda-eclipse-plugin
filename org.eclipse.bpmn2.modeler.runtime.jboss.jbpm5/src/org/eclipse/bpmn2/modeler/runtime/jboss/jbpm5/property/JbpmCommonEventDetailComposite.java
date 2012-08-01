@@ -21,7 +21,7 @@ import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.events.CommonEventDetailComposite;
-import org.eclipse.bpmn2.modeler.ui.property.events.CommonEventDetailComposite.EventDefinitionsListComposite;
+import org.eclipse.bpmn2.modeler.ui.property.events.EventDefinitionsListComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.jface.dialogs.MessageDialog;

@@ -101,7 +101,7 @@ public class FeatureDescriptor<T extends EObject> extends ObjectDescriptor<T> {
 						t = id.toString();
 				}
 			}
-			return t == null ? ModelUtil.getLabel(object) : t;
+			return t == null ? "" /*ModelUtil.getLabel(object)*/ : t;
 		}
 		return name == null ? "" : name;
 	}

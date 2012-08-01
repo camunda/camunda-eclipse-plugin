@@ -13,7 +13,11 @@
 
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
+import java.util.Hashtable;
+import java.util.List;
+
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
@@ -52,7 +56,7 @@ public class ItemDefinitionPropertiesAdapter extends ExtendedPropertiesAdapter<I
 					if (itemDefinition.getStructureRef()!=null) {
 						return ModelUtil.getStringWrapperValue(itemDefinition.getStructureRef());
 					}
-					return itemDefinition.getId() + " type is undefined";
+					return ""; //itemDefinition.getId() + " type is undefined";
 				}
 				
 	    		@Override
@@ -79,6 +83,29 @@ public class ItemDefinitionPropertiesAdapter extends ExtendedPropertiesAdapter<I
 	    			}
 	    			super.setValue(object, value);
 	    		}
+
+				@Override
+				public Hashtable<String, Object> getChoiceOfValues(Object context) {
+					ItemDefinition object = adopt(context);
+					// add all ItemDefinitions
+					Hashtable<String,Object> choices = new Hashtable<String,Object>();
+					String s;
+					Definitions defs = ModelUtil.getDefinitions(object);
+					List<ItemDefinition> itemDefs = ModelUtil.getAllRootElements(defs, ItemDefinition.class);
+					for (ItemDefinition id : itemDefs) {
+						s = ModelUtil.getStringWrapperValue(id.getStructureRef());
+						if (s==null || s.isEmpty())
+							s = id.getId();
+						choices.put(s,id);
+					}
+					return choices;
+				}
+
+				@Override
+				public String getChoiceString(Object value) {
+					return super.getChoiceString(value);
+				}
+	    		
 			}
     	);
     	

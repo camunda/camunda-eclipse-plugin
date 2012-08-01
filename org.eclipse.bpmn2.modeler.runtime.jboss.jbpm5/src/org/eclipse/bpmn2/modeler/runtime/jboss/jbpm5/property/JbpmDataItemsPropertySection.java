@@ -23,8 +23,8 @@ import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite.AbstractTableColumnProvider;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite.DefaultTableColumnProvider;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite.ListCompositeColumnProvider;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite.ListCompositeColumnProvider;
 import org.eclipse.bpmn2.modeler.ui.property.TableColumn;
 import org.eclipse.bpmn2.modeler.ui.property.diagrams.DataItemsPropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.diagrams.PropertyListComposite;
@@ -116,24 +116,21 @@ public class JbpmDataItemsPropertySection extends DataItemsPropertySection {
 
 		public JbpmPropertyListComposite(AbstractBpmn2PropertySection section) {
 			super(section);
-			// TODO Auto-generated constructor stub
 		}
 
 		public JbpmPropertyListComposite(Composite parent, int style) {
 			super(parent, style);
-			// TODO Auto-generated constructor stub
 		}
 
 		public JbpmPropertyListComposite(Composite parent) {
 			super(parent);
-			// TODO Auto-generated constructor stub
 		}
 		
-		public AbstractTableColumnProvider getColumnProvider(EObject object, EStructuralFeature feature) {
+		public ListCompositeColumnProvider getColumnProvider(EObject object, EStructuralFeature feature) {
 			if (columnProvider==null) {
-				columnProvider = new DefaultTableColumnProvider();
-				columnProvider.add(new TableColumn(this, object, PACKAGE.getBaseElement_Id()));
-				columnProvider.add(new TableColumn(this, object, PACKAGE.getItemAwareElement_ItemSubjectRef()));
+				columnProvider = new ListCompositeColumnProvider(this,true);
+				columnProvider.add(new TableColumn(object, PACKAGE.getBaseElement_Id()));
+				columnProvider.add(new TableColumn(object, PACKAGE.getItemAwareElement_ItemSubjectRef()));
 			}
 			return columnProvider;
 		}

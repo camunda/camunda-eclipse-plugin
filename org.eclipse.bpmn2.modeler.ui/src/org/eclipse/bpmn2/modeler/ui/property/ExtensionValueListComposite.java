@@ -182,9 +182,9 @@ public abstract class ExtensionValueListComposite extends DefaultListComposite {
 	}
 	
 	@Override
-	public TableContentProvider getContentProvider(EObject object, EStructuralFeature feature, EList<EObject>list) {
+	public ListCompositeContentProvider getContentProvider(EObject object, EStructuralFeature feature, EList<EObject>list) {
 		if (contentProvider==null) {
-			contentProvider = new TableContentProvider(object, feature, list) {
+			contentProvider = new ListCompositeContentProvider(this, object, feature, list) {
 
 				@Override
 				public Object[] getElements(Object inputElement) {

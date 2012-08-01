@@ -3,6 +3,9 @@ package org.eclipse.bpmn2.modeler.ui.property.diagrams;
 import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultListComposite;
+import org.eclipse.bpmn2.modeler.ui.property.TableColumn;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite.ListCompositeColumnProvider;
+import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite.ListCompositeColumnProvider;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -12,11 +15,11 @@ import org.eclipse.swt.widgets.Composite;
 public class PropertyListComposite extends DefaultListComposite {
 
 	public PropertyListComposite(AbstractBpmn2PropertySection section) {
-		super(section);
+		super(section, DEFAULT_STYLE|EDIT_BUTTON);
 	}
 	
 	public PropertyListComposite(Composite parent) {
-		this(parent, DEFAULT_STYLE);
+		this(parent, DEFAULT_STYLE|EDIT_BUTTON);
 	}
 	
 	public PropertyListComposite(Composite parent, int style) {
@@ -25,9 +28,17 @@ public class PropertyListComposite extends DefaultListComposite {
 	
 	@Override
 	public void bindList(EObject theobject, EStructuralFeature thefeature) {
-		// TODO Auto-generated method stub
 		super.bindList(theobject, thefeature);
 		setTitle("Variables for "+PropertyUtil.getLongDisplayName(theobject));
+	}
+	
+	public ListCompositeColumnProvider getColumnProvider(EObject object, EStructuralFeature feature) {
+		if (columnProvider==null) {
+			columnProvider = new ListCompositeColumnProvider(this,true);
+			columnProvider.add(new TableColumn(object, PACKAGE.getProperty_Name()));
+			columnProvider.add(new TableColumn(object, PACKAGE.getItemAwareElement_ItemSubjectRef()));
+		}
+		return columnProvider;
 	}
 
 	@Override

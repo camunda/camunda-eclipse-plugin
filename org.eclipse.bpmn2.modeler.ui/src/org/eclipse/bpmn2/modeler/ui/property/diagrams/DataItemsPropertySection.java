@@ -31,7 +31,7 @@ public class DataItemsPropertySection extends DefaultPropertySection {
 	
 	static {
 		PropertiesCompositeFactory.register(ItemDefinition.class, ItemDefinitionDetailComposite.class);
-		// Will this work? Make it so!
+		PropertiesCompositeFactory.register(ItemDefinition.class, ItemDefinitionListComposite.class);
 		PropertiesCompositeFactory.register(Property.class, PropertyListComposite.class);
 	}
 
@@ -82,7 +82,9 @@ public class DataItemsPropertySection extends DefaultPropertySection {
 					String[] properties = new String[] {
 							"itemKind",
 							"isCollection",
-							"structureRef"
+							"structureRef",
+							// this thing is transient so it won't be serialized; no point in allowing user to set it
+							// "import"
 					};
 					
 					@Override
@@ -121,6 +123,8 @@ public class DataItemsPropertySection extends DefaultPropertySection {
 					editor.createControl(parent,label);
 				}
 			}
+			else
+				super.bindAttribute(parent, object, attribute, label);
 		}
 		
 		@Override

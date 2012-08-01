@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eclipse.bpmn2.modeler.ui.property.providers.ColumnTableProvider;
 import org.eclipse.bpmn2.modeler.ui.property.providers.TableCursor;
+import org.eclipse.bpmn2.modeler.ui.property.providers.ColumnTableProvider.Column;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
@@ -101,8 +102,8 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 	Button downButton;
 	Button editButton;
 	
-	protected AbstractTableColumnProvider columnProvider;
-	protected TableContentProvider contentProvider;
+	protected ListCompositeColumnProvider columnProvider;
+	protected ListCompositeContentProvider contentProvider;
 	
 	public AbstractListComposite(AbstractBpmn2PropertySection section) {
 		this(section,DEFAULT_STYLE);
@@ -142,17 +143,19 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 	 * @param feature
 	 * @return
 	 */
-	public AbstractTableColumnProvider getColumnProvider(EObject object, EStructuralFeature feature) {
+	public ListCompositeColumnProvider getColumnProvider(EObject object, EStructuralFeature feature) {
 		if (columnProvider==null) {
 			final EList<EObject> list = (EList<EObject>)object.eGet(feature);
 			final EClass listItemClass = getDefaultListItemClass(object, feature);
 
-			columnProvider = new DefaultTableColumnProvider();
+			boolean canModify = ((style & SHOW_DETAILS)==0 && (style & EDIT_BUTTON)==0)
+					|| ((style & SHOW_DETAILS)!=0 && (style & EDIT_BUTTON)!=0);
+			columnProvider = new ListCompositeColumnProvider(this, canModify);
 			
 			// default is to include property name
 			EStructuralFeature nameAttribute = listItemClass.getEStructuralFeature("name");
 			if (nameAttribute!=null)
-				columnProvider.add(new TableColumn(this, object, nameAttribute));
+				columnProvider.add(new TableColumn(object, nameAttribute));
 
 			for (EAttribute a1 : listItemClass.getEAllAttributes()) {
 				if ("anyAttribute".equals(a1.getName())) {
@@ -169,7 +172,7 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 								for (Entry entry : map) {
 									EStructuralFeature f1 = entry.getEStructuralFeature();
 									if (f1 instanceof EAttribute && !anyAttributes.contains(f1)) {
-										columnProvider.add(new TableColumn(this, object,(EAttribute)f1));
+										columnProvider.add(new TableColumn(object,(EAttribute)f1));
 										anyAttributes.add(f1);
 									}
 								}
@@ -180,11 +183,11 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 				else if (FeatureMap.Entry.class.equals(a1.getEType().getInstanceClass())) {
 					// TODO: how do we handle these?
 					if (a1 instanceof EAttribute)
-						columnProvider.add(new TableColumn(this, object,a1));
+						columnProvider.add(new TableColumn(object,a1));
 				}
 				else {
 					if (a1!=nameAttribute)
-						columnProvider.add(new TableColumn(this, object,a1));
+						columnProvider.add(new TableColumn(object,a1));
 				}
 			}
 		}
@@ -202,9 +205,9 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 	 */
 	abstract public AbstractDetailComposite createDetailComposite(Composite parent, Class eClass);
 	
-	public TableContentProvider getContentProvider(EObject object, EStructuralFeature feature, EList<EObject>list) {
+	public ListCompositeContentProvider getContentProvider(EObject object, EStructuralFeature feature, EList<EObject>list) {
 		if (contentProvider==null)
-			contentProvider = new TableContentProvider(object, feature, list);
+			contentProvider = new ListCompositeContentProvider(this, object, feature, list);
 		return contentProvider;
 	}
 	
@@ -358,7 +361,6 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 						preferenceStore.setValue("table."+listItemClass.getName()+".expanded", e.getState());
 						redrawPage();
 					}
-					
 				});
 			
 				detailSection.addExpansionListener(new IExpansionListener() {
@@ -367,6 +369,8 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 					public void expansionStateChanging(ExpansionEvent e) {
 						if (!e.getState()) {
 							detailSection.setVisible(false);
+							if (editButton!=null)
+								editButton.setSelection(false);
 						}
 					}
 	
@@ -403,30 +407,8 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 		tableViewer.addPostSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				boolean enable = !event.getSelection().isEmpty();
-				if (detailSection!=null) {
-					if (enable) {
-						IStructuredSelection sel = (IStructuredSelection) event.getSelection();
-
-						if (sel.getFirstElement() instanceof EObject) {
-							EObject o = (EObject)sel.getFirstElement();
-							
-							if (detailComposite!=null)
-								detailComposite.dispose();
-							detailComposite = createDetailComposite(detailSection, o.eClass().getInstanceClass());
-							detailSection.setClient(detailComposite);
-							toolkit.adapt(detailComposite);
-
-//							if (detailSection.getText().isEmpty())
-								detailSection.setText(PropertyUtil.getLabel(o)+" Details");
-							((AbstractDetailComposite)detailComposite).setBusinessObject(o);
-							enable = detailComposite.getChildren().length>0;
-						}
-					}
-					detailSection.setVisible(enable);
-					detailSection.setExpanded(enable);
-					PropertyUtil.recursivelayout(detailSection);
-//					sashForm.layout(true);
-//					redrawPage();
+				if ((style & SHOW_DETAILS)!=0 && (style & EDIT_BUTTON)==0) {
+					showDetails(enable);
 				}
 				if (removeButton!=null)
 					removeButton.setEnabled(enable);
@@ -526,17 +508,25 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 		if (editButton!=null) {
 			editButton.addSelectionListener(new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
-					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-						@Override
-						protected void doExecute() {
-							EObject newItem = editListItem(businessObject,feature);
-							if (newItem!=null) {
-								final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
-								tableViewer.setInput(list);
-								tableViewer.setSelection(new StructuredSelection(newItem));
+					if ((style & SHOW_DETAILS)!=0) {
+						if (editButton.getSelection())
+							showDetails(true);
+						else
+							showDetails(false);
+					}
+					else {
+						editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+							@Override
+							protected void doExecute() {
+								EObject newItem = editListItem(businessObject,feature);
+								if (newItem!=null) {
+									final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
+									tableViewer.setInput(list);
+									tableViewer.setSelection(new StructuredSelection(newItem));
+								}
 							}
-						}
-					});
+						});
+					}
 				}
 			});
 		}
@@ -550,6 +540,32 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 		boolean expanded = preferenceStore.getBoolean("table."+listItemClass.getName()+".expanded");
 		if (expanded && tableSection!=null)
 			tableSection.setExpanded(true);
+	}
+	
+	private void showDetails(boolean enable) {
+		if (enable) {
+
+			IStructuredSelection selection = (IStructuredSelection)tableViewer.getSelection();
+			if (selection.getFirstElement() instanceof EObject) {
+				EObject o = (EObject)selection.getFirstElement();
+				
+				if (detailComposite!=null)
+					detailComposite.dispose();
+				detailComposite = createDetailComposite(detailSection, o.eClass().getInstanceClass());
+				detailSection.setClient(detailComposite);
+				toolkit.adapt(detailComposite);
+
+//				if (detailSection.getText().isEmpty())
+					detailSection.setText(PropertyUtil.getLabel(o)+" Details");
+				((AbstractDetailComposite)detailComposite).setBusinessObject(o);
+				enable = detailComposite.getChildren().length>0;
+			}
+		}
+		detailSection.setVisible(enable);
+		detailSection.setExpanded(enable);
+		PropertyUtil.recursivelayout(detailSection);
+//		sashForm.layout(true);
+//		redrawPage();
 	}
 	
 	@Override
@@ -667,19 +683,22 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 		}
 		
 		if ((style & EDIT_BUTTON)!=0) {
-			editButton = toolkit.createButton(buttonsComposite, "Edit...", SWT.PUSH);
+			if ((style & SHOW_DETAILS)!=0)
+				editButton = toolkit.createButton(buttonsComposite, "Details...", SWT.TOGGLE);
+			else
+				editButton = toolkit.createButton(buttonsComposite, "Edit...", SWT.PUSH);
 			editButton.setEnabled(false);
 		}
-
-		
 	}
 	
-	public class TableContentProvider implements IStructuredContentProvider {
+	public class ListCompositeContentProvider implements IStructuredContentProvider {
+		protected final AbstractListComposite listComposite;
 		protected EObject object;
 		protected EStructuralFeature feature;
 		protected EList<EObject> list;
 		
-		public TableContentProvider(EObject object, EStructuralFeature feature, EList<EObject> list) {
+		public ListCompositeContentProvider(AbstractListComposite listComposite, EObject object, EStructuralFeature feature, EList<EObject> list) {
+			this.listComposite = listComposite;
 			this.object = object;
 			this.feature = feature;
 			this.list = list;
@@ -713,7 +732,19 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 		}
 	}
 	
-	public abstract class AbstractTableColumnProvider extends ColumnTableProvider {
+	public class ListCompositeColumnProvider extends ColumnTableProvider {
+		protected final AbstractListComposite listComposite;
+		protected boolean canModify = false;
+
+		public ListCompositeColumnProvider(AbstractListComposite list) {
+			this(list,false);
+		}
+		
+		public ListCompositeColumnProvider(AbstractListComposite list, boolean canModify) {
+			super();
+			this.canModify = canModify;
+			this.listComposite = list;
+		}
 		
 		/**
 		 * Implement this to select which columns are editable
@@ -722,14 +753,28 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 		 * @param item - the selected item in the list
 		 * @return true to allow editing
 		 */
-		public abstract boolean canModify(EObject object, EStructuralFeature feature, EObject item);
-	}
-	
-
-	public class DefaultTableColumnProvider extends AbstractTableColumnProvider {
-		@Override
 		public boolean canModify(EObject object, EStructuralFeature feature, EObject item) {
-			return false;
+			return canModify;
+		}
+		
+		public void add(EObject object, EStructuralFeature feature) {
+			add(object, (EClass)feature.eContainer(), feature);
+		}
+		
+		public void add(EObject object, EClass eclass, EStructuralFeature feature) {
+			if (listComposite.modelEnablement.isEnabled(eclass,feature))
+				this.add(new TableColumn(object, feature));
+		}
+		
+		public void add(TableColumn tc) {
+			EStructuralFeature feature = tc.feature;
+			if (feature instanceof EStructuralFeature) {
+				EClass eclass = (EClass)feature.eContainer();
+				if (!listComposite.modelEnablement.isEnabled(eclass,feature))
+					return;
+			}
+			tc.setOwner(listComposite);
+			super.add(tc);
 		}
 	}
 }

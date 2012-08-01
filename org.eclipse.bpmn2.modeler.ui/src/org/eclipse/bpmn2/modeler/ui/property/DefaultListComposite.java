@@ -2,6 +2,7 @@ package org.eclipse.bpmn2.modeler.ui.property;
 
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.ModelSubclassSelectionDialog;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -88,6 +89,10 @@ public class DefaultListComposite extends AbstractListComposite {
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite#editListItem(org.eclipse.emf.ecore.EObject, org.eclipse.emf.ecore.EStructuralFeature)
 	 */
 	protected EObject editListItem(EObject object, EStructuralFeature feature) {
+		MessageDialog.openError(getShell(), "Internal Error",
+				"A List Item Editor has not been defined for "+
+				PropertyUtil.getDisplayName(object, feature)
+				);
 		return null;
 	}
 	

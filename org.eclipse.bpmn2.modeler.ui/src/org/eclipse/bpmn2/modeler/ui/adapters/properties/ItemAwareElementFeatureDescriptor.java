@@ -7,6 +7,7 @@ import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
@@ -17,20 +18,7 @@ public class ItemAwareElementFeatureDescriptor<T extends ItemAwareElement> exten
 
 	@Override
 	public String getLabel(Object context) {
-		EObject object = this.object;
-		if (context instanceof EObject)
-			object = (EObject)context;
-		ItemDefinition itemDefinition = null;
-		if (object instanceof ItemDefinition)
-			itemDefinition = (ItemDefinition) object;
-		else if (object instanceof ItemAwareElement)
-			itemDefinition = (ItemDefinition) object.eGet(feature);
-		if (itemDefinition!=null) {
-			ExtendedPropertiesAdapter<ItemDefinition> adapter =
-					(ExtendedPropertiesAdapter<ItemDefinition>) AdapterUtil.adapt(itemDefinition, ExtendedPropertiesAdapter.class);
-			return adapter.getFeatureDescriptor(Bpmn2Package.eINSTANCE.getItemDefinition_StructureRef()).getLabel(itemDefinition);
-		}
-		return ModelUtil.getLabel(object) + " Type";
+		return "Data Type";
 	}
 
 	@Override

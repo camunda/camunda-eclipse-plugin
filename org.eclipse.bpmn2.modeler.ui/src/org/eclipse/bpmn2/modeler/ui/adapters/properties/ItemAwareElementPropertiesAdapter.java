@@ -27,6 +27,7 @@ import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 
@@ -66,7 +67,7 @@ public class ItemAwareElementPropertiesAdapter<T extends ItemAwareElement> exten
 						if (value != oldValue) {
 							// if this DataState belongs to some other ItemAwareElement, make a copy
 							final DataState newValue = (DataState)(((DataState)value).eContainer()!=null ?
-								clone((T) value) : value);
+								EcoreUtil.copy((DataState) value) : value);
 							TransactionalEditingDomain editingDomain = getEditingDomain(element);
 							if (editingDomain == null) {
 								element.eSet(feature, value);
@@ -93,8 +94,8 @@ public class ItemAwareElementPropertiesAdapter<T extends ItemAwareElement> exten
 							String label = s.getName();
 							if (label==null || label.isEmpty())
 								label = "ID: " + s.getId();
-							else
-								label += " (ID: " +  s.getId() + ")";
+//							else
+//								label += " (ID: " +  s.getId() + ")";
 							choices.put(label,s);
 						}
 					} catch (IOException e) {

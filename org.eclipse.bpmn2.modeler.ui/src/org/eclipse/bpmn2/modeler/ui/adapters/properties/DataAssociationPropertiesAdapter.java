@@ -162,23 +162,29 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter<
 				}
 			}
 			else if (value instanceof String) {
-				ModelEnablementDescriptor modelEnablement = BPMN2Editor.getActiveEditor().getTargetRuntime().getModelEnablements(object);
-				// find nearest element that can contain a Property and create one
-				container = association;
-				for (;;) {
-					container = ModelUtil.findNearestAncestor(container, new Class[] {Activity.class, Event.class, Process.class});
-					if (container==null)
-						return;
+				// first check if a property with this name already exists
+				Hashtable<String, Object> choices = getChoiceOfValues(object);
+				Property property = (Property)choices.get(value);
+				if (property==null) {
+					// need to create a new one!
+					ModelEnablementDescriptor modelEnablement = BPMN2Editor.getActiveEditor().getTargetRuntime().getModelEnablements(object);
+					// find nearest element that can contain a Property and create one
+					container = association;
+					for (;;) {
+						container = ModelUtil.findNearestAncestor(container, new Class[] {Activity.class, Event.class, Process.class});
+						if (container==null)
+							return;
+						containerFeature = container.eClass().getEStructuralFeature("properties");
+						if (modelEnablement.isEnabled(container.eClass(), containerFeature))
+							break;
+					}
+						
 					containerFeature = container.eClass().getEStructuralFeature("properties");
-					if (modelEnablement.isEnabled(container.eClass(), containerFeature))
-						break;
+					property = Bpmn2ModelerFactory.create(Property.class);
+					ExtendedPropertiesAdapter<Property> adapter = AdapterUtil.adapt(property, ExtendedPropertiesAdapter.class);
+					adapter.getObjectDescriptor().setDisplayName((String)value);
+					InsertionAdapter.add(container, containerFeature, property);
 				}
-					
-				containerFeature = container.eClass().getEStructuralFeature("properties");
-				Property property = Bpmn2ModelerFactory.create(Property.class);
-				ExtendedPropertiesAdapter<Property> adapter = AdapterUtil.adapt(property, ExtendedPropertiesAdapter.class);
-				adapter.getObjectDescriptor().setDisplayName((String)value);
-				InsertionAdapter.add(container, containerFeature, property);
 				value = property;
 			}
 

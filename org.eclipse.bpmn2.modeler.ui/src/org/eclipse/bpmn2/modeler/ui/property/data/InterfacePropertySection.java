@@ -44,7 +44,7 @@ public class InterfacePropertySection extends DefaultPropertySection {
 
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new InterfaceDetailComposite(this);
+		return new InterfaceSectionRoot(this);
 	}
 
 	public InterfacePropertySection() {
@@ -67,7 +67,7 @@ public class InterfacePropertySection extends DefaultPropertySection {
 		return null;
 	}
 	
-	public class InterfaceDetailComposite extends DefaultDetailComposite {
+	public class InterfaceSectionRoot extends DefaultDetailComposite {
 
 		DefinedInterfaceListComposite definedInterfacesTable;
 		ProvidedInterfaceListComposite providedInterfacesTable;
@@ -76,14 +76,14 @@ public class InterfacePropertySection extends DefaultPropertySection {
 		 * @param parent
 		 * @param style
 		 */
-		public InterfaceDetailComposite(Composite parent, int style) {
+		public InterfaceSectionRoot(Composite parent, int style) {
 			super(parent, style);
 		}
 
 		/**
 		 * @param section
 		 */
-		public InterfaceDetailComposite(AbstractBpmn2PropertySection section) {
+		public InterfaceSectionRoot(AbstractBpmn2PropertySection section) {
 			super(section);
 		}
 

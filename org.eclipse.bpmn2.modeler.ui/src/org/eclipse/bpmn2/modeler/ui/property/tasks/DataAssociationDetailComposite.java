@@ -204,7 +204,7 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 			DefaultDetailComposite dataIoDetails = new DataInputOutputDetailComposite(this,SWT.NONE);
 			dataIoDetails.setBusinessObject(be);
 			sectionTitle = (isInput ? "Input" : "Output") +
-				" Parameter Mapping";
+				" Parameter Mapping Details";
 		}
 		else if (container instanceof ThrowEvent) {
 			ThrowEvent throwEvent = (ThrowEvent)container;
@@ -216,7 +216,7 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 			}
 			DefaultDetailComposite dataInputDetails = new DataInputOutputDetailComposite(this,SWT.NONE);
 			dataInputDetails.setBusinessObject(be);
-			sectionTitle = "Data Input Details";
+			sectionTitle = "Data Input Mapping Details";
 		}
 		else if (container instanceof CatchEvent) {
 			CatchEvent catchEvent = (CatchEvent)container;
@@ -228,7 +228,7 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 			}
 			DefaultDetailComposite dataOutputDetails = new DataInputOutputDetailComposite(this,SWT.NONE);
 			dataOutputDetails.setBusinessObject(be);
-			sectionTitle = "Data Output Details";
+			sectionTitle = "Data Output Mapping Details";
 		}
 		
 		// set section title
@@ -528,6 +528,25 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 					propertyDetailsComposite.dispose();
 					propertyDetailsComposite = null;
 				}
+				
+				// remove the Property reference
+				boolean clear = false;
+				if (isInput)
+					clear = association.getSourceRef().size()>0;
+				else
+					clear = association.getTargetRef()!=null;
+				
+				if (!updatingWidgets && clear) {
+					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+						@Override
+						protected void doExecute() {
+							if (isInput)
+								association.getSourceRef().clear();
+							else
+								association.setTargetRef(null);
+						}
+					});
+				}
 			}
 			propertyWidgetsShowing = show;
 		}
@@ -721,24 +740,19 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 		}
 		
 		@Override
-		public AbstractTableColumnProvider getColumnProvider(EObject object, EStructuralFeature feature) {
-			columnProvider = new AbstractTableColumnProvider() {
-				@Override
-				public boolean canModify(EObject object, EStructuralFeature feature, EObject item) {
-					return false;
-				}
-			};
+		public ListCompositeColumnProvider getColumnProvider(EObject object, EStructuralFeature feature) {
+			columnProvider = new ListCompositeColumnProvider(this);
 			
-			columnProvider.add(new AssignmentsTableColumn(this,object,PACKAGE.getAssignment_To()));
-			columnProvider.add(new AssignmentsTableColumn(this,object,PACKAGE.getAssignment_From()));
+			columnProvider.add(new AssignmentsTableColumn(object,PACKAGE.getAssignment_To()));
+			columnProvider.add(new AssignmentsTableColumn(object,PACKAGE.getAssignment_From()));
 
 			return columnProvider;
 		}
 
 		public class AssignmentsTableColumn extends TableColumn {
 
-			public AssignmentsTableColumn(AbstractListComposite abstractListComposite, EObject o, EStructuralFeature f) {
-				super(abstractListComposite, o, f);
+			public AssignmentsTableColumn(EObject o, EStructuralFeature f) {
+				super(o, f);
 			}
 
 			public String getText(Object element) {

@@ -200,9 +200,9 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 		}
 
 		@Override
-		public TableContentProvider getContentProvider(EObject object, EStructuralFeature feature, EList<EObject>list) {
+		public ListCompositeContentProvider getContentProvider(EObject object, EStructuralFeature feature, EList<EObject>list) {
 			if (contentProvider==null) {
-				contentProvider = new TableContentProvider(object, feature, list) {
+				contentProvider = new ListCompositeContentProvider(this, object, feature, list) {
 
 					@Override
 					public Object[] getElements(Object inputElement) {
@@ -228,16 +228,11 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 		}
 		
 		@Override
-		public AbstractTableColumnProvider getColumnProvider(EObject object, EStructuralFeature feature) {
+		public ListCompositeColumnProvider getColumnProvider(EObject object, EStructuralFeature feature) {
 			if (columnProvider==null) {
-				columnProvider = new AbstractTableColumnProvider() {
-					@Override
-					public boolean canModify(EObject object, EStructuralFeature feature, EObject item) {
-						return false;
-					}
-				};
-				columnProvider.add(new NamespacesTableColumn(this,object, 0));
-				columnProvider.add(new NamespacesTableColumn(this,object, 1));
+				columnProvider = new ListCompositeColumnProvider(this);
+				columnProvider.add(new NamespacesTableColumn(object, 0));
+				columnProvider.add(new NamespacesTableColumn(object, 1));
 			}
 			return columnProvider;
 		}
@@ -246,8 +241,8 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 			
 			int columnIndex;
 			
-			public NamespacesTableColumn(AbstractListComposite abstractListComposite, EObject object, int columnIndex) {
-				super(abstractListComposite, object,null);
+			public NamespacesTableColumn(EObject object, int columnIndex) {
+				super(object,null);
 				this.columnIndex = columnIndex;
 			}
 
@@ -284,17 +279,12 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 		}
 
 		@Override
-		public AbstractTableColumnProvider getColumnProvider(EObject object, EStructuralFeature feature) {
+		public ListCompositeColumnProvider getColumnProvider(EObject object, EStructuralFeature feature) {
 			if (columnProvider==null) {
-				columnProvider = new AbstractTableColumnProvider() {
-					@Override
-					public boolean canModify(EObject object, EStructuralFeature feature, EObject item) {
-						return false;
-					}
-				};
+				columnProvider = new ListCompositeColumnProvider(this);
 				
 				// add a namespace prefix column that does NOT come from the Import object
-				TableColumn tableColumn = new TableColumn(this, object,null) {
+				TableColumn tableColumn = new TableColumn(object,null) {
 					@Override
 					public String getHeaderText() {
 						return "Namespace Prefix";
@@ -311,13 +301,9 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 				};
 				columnProvider.add(tableColumn);
 				// add remaining columns
-				EClass eClass = PACKAGE.getImport();
-				columnProvider.add(new TableColumn(this, object,
-						(EAttribute)eClass.getEStructuralFeature("namespace")));
-				columnProvider.add(new TableColumn(this, object,
-						(EAttribute)eClass.getEStructuralFeature("location")));
-				columnProvider.add(new TableColumn(this, object,
-						(EAttribute)eClass.getEStructuralFeature("importType")));
+				columnProvider.add(new TableColumn(object,PACKAGE.getImport_Namespace()));
+				columnProvider.add(new TableColumn(object,PACKAGE.getImport_Location()));
+				columnProvider.add(new TableColumn(object,PACKAGE.getImport_ImportType()));
 			}
 			return columnProvider;
 		}
