@@ -129,8 +129,8 @@ public class JbpmDataItemsPropertySection extends DataItemsPropertySection {
 		public ListCompositeColumnProvider getColumnProvider(EObject object, EStructuralFeature feature) {
 			if (columnProvider==null) {
 				columnProvider = new ListCompositeColumnProvider(this,true);
-				columnProvider.add(new TableColumn(object, PACKAGE.getBaseElement_Id()));
-				columnProvider.add(new TableColumn(object, PACKAGE.getItemAwareElement_ItemSubjectRef()));
+				columnProvider.add(object, PACKAGE.getProperty(), PACKAGE.getBaseElement_Id());
+				columnProvider.add(object, PACKAGE.getProperty(), PACKAGE.getItemAwareElement_ItemSubjectRef());
 			}
 			return columnProvider;
 		}

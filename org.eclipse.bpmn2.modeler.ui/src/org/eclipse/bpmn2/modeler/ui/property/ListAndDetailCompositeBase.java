@@ -121,9 +121,16 @@ public class ListAndDetailCompositeBase extends Composite implements ResourceSet
 			return ((ListAndDetailCompositeBase)parent).getDiagramEditor();
 		return BPMN2Editor.getActiveEditor();
 	}
+	
+	public ModelEnablementDescriptor getModelEnablement(EObject object) {
+		if (object==null)
+			object = businessObject;
+		modelEnablement = getDiagramEditor().getTargetRuntime().getModelEnablements(object);
+		return modelEnablement;
+	}
 
 	public void setBusinessObject(EObject object) {
-		modelEnablement = getDiagramEditor().getTargetRuntime().getModelEnablements(object);
+		getModelEnablement(object);
 		try {
 			modelHandler = ModelHandlerLocator.getModelHandler(
 					getDiagramEditor().getDiagramTypeProvider().getDiagram().eResource());
@@ -132,7 +139,7 @@ public class ListAndDetailCompositeBase extends Composite implements ResourceSet
 		}
 		businessObject = object;
 	}
-	
+
 	public final EObject getBusinessObject() {
 		return businessObject;
 	}

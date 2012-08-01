@@ -148,6 +148,8 @@ public class TableColumn extends ColumnTableProvider.Column implements ILabelPro
 				String[] items = ((ComboBoxCellEditor)cellEditor).getItems();
 				value = choices.get(items[index]);
 			}
+			else
+				value = null;
 		}
 		
 		boolean result = PropertyUtil.setValue(getEditingDomain(), object, feature, value);

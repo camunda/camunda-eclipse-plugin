@@ -32,14 +32,12 @@ public class ItemDefinitionListComposite extends DefaultListComposite {
 
 	public ListCompositeColumnProvider getColumnProvider(EObject object, EStructuralFeature feature) {
 		if (columnProvider==null) {
-			ListCompositeColumnProvider cp = new ListCompositeColumnProvider(this,true);
+			columnProvider = new ListCompositeColumnProvider(this,true);
 			EClass eclass = PACKAGE.getItemDefinition();
 			
-			cp.add(object,PACKAGE.getItemDefinition_StructureRef());
-			cp.add(object,PACKAGE.getItemDefinition_ItemKind());
-			cp.add(object,PACKAGE.getItemDefinition_IsCollection());
-
-			columnProvider = cp; 
+			columnProvider.add(object,PACKAGE.getItemDefinition_StructureRef());
+			columnProvider.add(object,PACKAGE.getItemDefinition_ItemKind());
+			columnProvider.add(object,PACKAGE.getItemDefinition_IsCollection());
 		}
 		return columnProvider;
 	}

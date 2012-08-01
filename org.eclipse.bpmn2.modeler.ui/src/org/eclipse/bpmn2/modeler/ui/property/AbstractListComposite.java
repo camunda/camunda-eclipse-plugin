@@ -134,7 +134,11 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 		EClass lic = getListItemClass(object,feature);
 		if (lic!=null)
 			return lic;
-		return (EClass) feature.getEType();
+		lic = (EClass) feature.getEType();
+		EClass oc = object.eClass();
+		if (oc.isInstance(lic))
+			return oc;
+		return lic;
 	}
 	
 	/**
@@ -152,10 +156,10 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 					|| ((style & SHOW_DETAILS)!=0 && (style & EDIT_BUTTON)!=0);
 			columnProvider = new ListCompositeColumnProvider(this, canModify);
 			
-			// default is to include property name
+			// default is to include property name as the first column
 			EStructuralFeature nameAttribute = listItemClass.getEStructuralFeature("name");
 			if (nameAttribute!=null)
-				columnProvider.add(new TableColumn(object, nameAttribute));
+				columnProvider.add(object, listItemClass, nameAttribute);
 
 			for (EAttribute a1 : listItemClass.getEAllAttributes()) {
 				if ("anyAttribute".equals(a1.getName())) {
@@ -172,7 +176,7 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 								for (Entry entry : map) {
 									EStructuralFeature f1 = entry.getEStructuralFeature();
 									if (f1 instanceof EAttribute && !anyAttributes.contains(f1)) {
-										columnProvider.add(new TableColumn(object,(EAttribute)f1));
+										columnProvider.add(object, listItemClass, f1);
 										anyAttributes.add(f1);
 									}
 								}
@@ -183,11 +187,11 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 				else if (FeatureMap.Entry.class.equals(a1.getEType().getInstanceClass())) {
 					// TODO: how do we handle these?
 					if (a1 instanceof EAttribute)
-						columnProvider.add(new TableColumn(object,a1));
+						columnProvider.add(object, listItemClass, a1);
 				}
 				else {
 					if (a1!=nameAttribute)
-						columnProvider.add(new TableColumn(object,a1));
+						columnProvider.add(object, listItemClass, a1);
 				}
 			}
 		}
@@ -762,19 +766,33 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 		}
 		
 		public void add(EObject object, EClass eclass, EStructuralFeature feature) {
-			if (listComposite.modelEnablement.isEnabled(eclass,feature))
-				this.add(new TableColumn(object, feature));
+			if (listComposite.getModelEnablement(object).isEnabled(eclass,feature)) {
+				TableColumn tc = new TableColumn(object, feature);
+				tc.setOwner(listComposite);
+				super.add(tc);
+			}
 		}
 		
 		public void add(TableColumn tc) {
 			EStructuralFeature feature = tc.feature;
-			if (feature instanceof EStructuralFeature) {
-				EClass eclass = (EClass)feature.eContainer();
-				if (!listComposite.modelEnablement.isEnabled(eclass,feature))
+			EObject object = tc.object;
+			if (object!=null) {
+				if (listComposite.getModelEnablement(object).isEnabled(object.eClass(),feature)) {
+					tc.setOwner(listComposite);
+					super.add(tc);
 					return;
+				}
 			}
-			tc.setOwner(listComposite);
-			super.add(tc);
+			if (feature!=null) {
+				EClass eclass = (EClass)feature.eContainer();
+				if (listComposite.getModelEnablement(object).isEnabled(eclass,feature)) {
+					tc.setOwner(listComposite);
+					super.add(tc);
+					return;
+				}
+			}
+//			tc.setOwner(listComposite);
+//			super.add(tc);
 		}
 	}
 }

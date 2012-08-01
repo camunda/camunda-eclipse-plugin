@@ -269,14 +269,16 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	}
 	
 	public boolean hasProjectPreference(String key) {
-		try {
-			String[] keys;
-			keys = projectPreferences.keys();
-			for (String k : keys) {
-				if (k.equals(key))
-					return true;
+		if (projectPreferences!=null) {
+			try {
+				String[] keys;
+				keys = projectPreferences.keys();
+				for (String k : keys) {
+					if (k.equals(key))
+						return true;
+				}
+			} catch (Exception e) {
 			}
-		} catch (Exception e) {
 		}
 		return false;
 	}

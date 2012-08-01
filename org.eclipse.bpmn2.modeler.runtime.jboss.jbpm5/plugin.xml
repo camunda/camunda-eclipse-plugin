@@ -584,6 +584,7 @@
 			<disable object="CallActivity" feature="properties"/>
 			<disable object="CallActivity" feature="resources"/>
 			<disable object="CallActivity" feature="startQuantity"/>
+			<enable object="CatchEvent" feature="dataOutputAssociation"/>
 			<enable object="CompensateEventDefinition"/>
 			<disable object="CompensateEventDefinition" feature="anyAttribute"/>
 			<disable object="CompensateEventDefinition" feature="documentation"/>
@@ -597,6 +598,7 @@
 			<disable object="ConditionalEventDefinition" feature="extensionDefinitions"/>
 			<disable object="ConditionalEventDefinition" feature="extensionValues"/>
 			<disable object="ConditionalEventDefinition" feature="id"/>
+			<enable object="DataInput"/>
 			<enable object="DataInputAssociation"/>
 			<disable object="DataInputAssociation" feature="documentation"/>
 			<disable object="DataInputAssociation" feature="extensionDefinitions"/>
@@ -613,6 +615,7 @@
 			<disable object="DataObject" feature="isCollection"/>
 			<disable object="DataObject" feature="monitoring"/>
 			<disable object="DataObject" feature="name"/>
+			<enable object="DataOutput"/>
 			<enable object="DataOutputAssociation"/>
 			<disable object="DataOutputAssociation" feature="documentation"/>
 			<disable object="DataOutputAssociation" feature="extensionDefinitions"/>
@@ -668,6 +671,7 @@
 			<disable object="EscalationEventDefinition" feature="extensionDefinitions"/>
 			<disable object="EscalationEventDefinition" feature="extensionValues"/>
 			<disable object="EscalationEventDefinition" feature="id"/>
+			<enable object="EventDefinition"/>
 			<enable object="ExclusiveGateway"/>
 			<disable object="ExclusiveGateway" feature="anyAttribute"/>
 			<disable object="ExclusiveGateway" feature="auditing"/>
@@ -745,10 +749,14 @@
 			<disable object="IntermediateThrowEvent" feature="outgoing"/>
 			<disable object="IntermediateThrowEvent" feature="outgoingConversationLinks"/>
 			<disable object="IntermediateThrowEvent" feature="properties"/>
+			<enable object="ItemAwareElement"/>
 			<enable object="ItemDefinition"/>
 			<disable object="ItemDefinition" feature="documentation"/>
 			<disable object="ItemDefinition" feature="extensionDefinitions"/>
 			<disable object="ItemDefinition" feature="import"/>
+			<disable object="ItemDefinition" feature="extensionValues"/>
+			<disable object="ItemDefinition" feature="isCollection"/>
+			<disable object="ItemDefinition" feature="itemKind"/>
 			<enable object="Lane"/>
 			<disable object="Lane" feature="anyAttribute"/>
 			<disable object="Lane" feature="childLaneSet"/>
@@ -1063,6 +1071,7 @@
 			<disable object="TerminateEventDefinition" feature="extensionDefinitions"/>
 			<disable object="TerminateEventDefinition" feature="extensionValues"/>
 			<disable object="TerminateEventDefinition" feature="id"/>
+			<enable object="ThrowEvent" feature="dataInputAssociation"/>
 			<enable object="TimerEventDefinition"/>
 			<disable object="TimerEventDefinition" feature="anyAttribute"/>
 			<disable object="TimerEventDefinition" feature="documentation"/>
@@ -1097,6 +1106,9 @@
 			<enable object="ImportType"/>
 			<enable object="OnEntryScriptType"/>
 			<enable object="OnExitScriptType"/>
+			
+			<disable object="all" feature="isCollection"/>
+			<disable object="all" feature="dataState"/>
 		</modelEnablement>
 		
 		<modelEnablement runtimeId="org.jboss.runtime.jbpm5" type="Process" profile="brms">
@@ -1121,9 +1133,6 @@
 			<disable object="InputSet"/>
 			<disable object="IntermediateThrowEvent"/>
 			<disable object="Lane"/>
-			<disable object="ItemDefinition" feature="extensionValues"/>
-			<disable object="ItemDefinition" feature="isCollection"/>
-			<disable object="ItemDefinition" feature="itemKind"/>
 			<disable object="LinkEventDefinition"/>
 			<disable object="ManualTask"/>
 			<disable object="Message"/>

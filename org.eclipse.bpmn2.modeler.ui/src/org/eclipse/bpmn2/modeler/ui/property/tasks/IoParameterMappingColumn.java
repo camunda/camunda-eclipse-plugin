@@ -40,7 +40,12 @@ public class IoParameterMappingColumn extends TableColumn {
 
 	@Override
 	public String getHeaderText() {
-		return "Mapped to";
+		return PropertyUtil.getLabel(
+				Bpmn2Package.eINSTANCE.getDataAssociation(),
+				feature.getName().startsWith("dataInput") ?
+					Bpmn2Package.eINSTANCE.getDataAssociation_SourceRef() :
+					Bpmn2Package.eINSTANCE.getDataAssociation_TargetRef()
+		);
 	}
 
 	@Override

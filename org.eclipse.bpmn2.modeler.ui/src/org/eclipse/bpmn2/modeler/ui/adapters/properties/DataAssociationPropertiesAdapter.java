@@ -81,6 +81,11 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter<
 		}
 		
 		@Override
+		public String getLabel(Object context) {
+			return "Mapped To";
+		}
+
+		@Override
 		public Hashtable<String, Object> getChoiceOfValues(Object context) {
 			List<EObject> values = new ArrayList<EObject>();
 			// search for all Properties and DataStores

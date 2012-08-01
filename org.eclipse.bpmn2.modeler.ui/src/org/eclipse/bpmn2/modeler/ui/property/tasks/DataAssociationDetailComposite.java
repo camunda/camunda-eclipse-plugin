@@ -53,6 +53,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.widgets.Section;
 
 /**
@@ -201,8 +202,8 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 				else
 					associations = activity.getDataOutputAssociations();
 			}
-			DefaultDetailComposite dataIoDetails = new DataInputOutputDetailComposite(this,SWT.NONE);
-			dataIoDetails.setBusinessObject(be);
+			DataInputOutputDetailComposite details = new DataInputOutputDetailComposite(this,SWT.NONE);
+			details.setBusinessObject(be);
 			sectionTitle = (isInput ? "Input" : "Output") +
 				" Parameter Mapping Details";
 		}
@@ -214,8 +215,8 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 				association.setTargetRef((ItemAwareElement) be);
 				InsertionAdapter.add(throwEvent, PACKAGE.getThrowEvent_DataInputAssociation(), association);
 			}
-			DefaultDetailComposite dataInputDetails = new DataInputOutputDetailComposite(this,SWT.NONE);
-			dataInputDetails.setBusinessObject(be);
+			DataInputOutputDetailComposite details = new DataInputOutputDetailComposite(this,SWT.NONE);
+			details.setBusinessObject(be);
 			sectionTitle = "Data Input Mapping Details";
 		}
 		else if (container instanceof CatchEvent) {
@@ -226,8 +227,8 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 				association.setTargetRef((ItemAwareElement) be);
 				InsertionAdapter.add(catchEvent, PACKAGE.getCatchEvent_DataOutputAssociation(), association);
 			}
-			DefaultDetailComposite dataOutputDetails = new DataInputOutputDetailComposite(this,SWT.NONE);
-			dataOutputDetails.setBusinessObject(be);
+			DataInputOutputDetailComposite details = new DataInputOutputDetailComposite(this,SWT.NONE);
+			details.setBusinessObject(be);
 			sectionTitle = "Data Output Mapping Details";
 		}
 		
@@ -479,9 +480,27 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 	private void showPropertyWidgets(boolean show) {
 		if (show != propertyWidgetsShowing) {
 			if (show) {
+				if (propertyComposite==null) {
+					propertyComposite = toolkit.createComposite(this, SWT.NONE);
+					GridLayout layout = new GridLayout(3,false);
+					layout.verticalSpacing = 0;
+					layout.marginHeight = 0;
+					propertyComposite.setLayout(layout);
+					propertyComposite.setLayoutData(new GridData(SWT.FILL,SWT.TOP,true,true,3,1));
+				}
+				else {
+					propertyComposite.setVisible(true);
+					((GridData)propertyComposite.getLayoutData()).exclude = false;
+				}
+
 				if (propertyDetailsComposite==null) {
-					propertyDetailsComposite = new DefaultDetailComposite(this,SWT.BORDER) {
-	
+					propertyDetailsComposite = new DefaultDetailComposite(propertyComposite,SWT.NONE) {
+
+						@Override
+						public Composite getAttributesParent() {
+							return propertyComposite;
+						}
+
 						@Override
 						public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
 							if (propertiesProvider == null) {
@@ -507,15 +526,9 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 
 						@Override
 						protected void bindReference(Composite parent, EObject object, EReference reference) {
-							if ("sourceRef".equals(reference.getName())) {
-								if (modelEnablement.isEnabled(object.eClass(), reference)) {
-									String displayName = PropertyUtil.getLabel(object, reference);
-									ObjectEditor editor = new ComboObjectEditor(this,object,reference);
-									editor.createControl(parent,displayName);
-								}
-							}
-							else
-								super.bindReference(parent, object, reference);
+							String displayName = PropertyUtil.getLabel(object, reference);
+							ObjectEditor editor = new ComboObjectEditor(this,object,reference);
+							editor.createControl(parent,displayName);
 						}
 						
 					};
@@ -524,9 +537,9 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 				}
 			}
 			else {
-				if (propertyDetailsComposite!=null) {
-					propertyDetailsComposite.dispose();
-					propertyDetailsComposite = null;
+				if (propertyComposite!=null) {
+					propertyComposite.setVisible(false);
+					((GridData)propertyComposite.getLayoutData()).exclude = true;
 				}
 				
 				// remove the Property reference
@@ -605,7 +618,7 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 		if (show != expressionWidgetsShowing) {
 			if (show) {
 				if (expressionComposite==null) {
-					expressionComposite = toolkit.createComposite(this, SWT.BORDER);
+					expressionComposite = toolkit.createComposite(this, SWT.NONE);
 					expressionComposite.setLayout(new GridLayout(1,false));
 					expressionComposite.setLayoutData(new GridData(SWT.FILL,SWT.TOP,true,true,3,1));
 				}

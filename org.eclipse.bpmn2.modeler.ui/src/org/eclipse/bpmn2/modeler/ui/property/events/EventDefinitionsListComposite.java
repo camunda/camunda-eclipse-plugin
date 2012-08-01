@@ -18,6 +18,7 @@ import org.eclipse.bpmn2.modeler.ui.property.DefaultListComposite;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.ModelSubclassSelectionDialog;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 
