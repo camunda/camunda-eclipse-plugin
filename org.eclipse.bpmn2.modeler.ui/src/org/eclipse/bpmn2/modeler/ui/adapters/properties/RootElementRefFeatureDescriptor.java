@@ -14,6 +14,7 @@
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
 import java.util.Hashtable;
+import java.util.Iterator;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
@@ -27,6 +28,7 @@ import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -69,9 +71,20 @@ public class RootElementRefFeatureDescriptor<T extends BaseElement> extends Feat
 		final T object = adopt(context);
 				
 		Hashtable<String,Object> choices = new Hashtable<String,Object>();
-		EObject rootElement = (EObject) object.eGet(feature);
-		if (rootElement!=null)
-			choices.put(PropertyUtil.getDisplayName(rootElement), rootElement);
+		Object value = object.eGet(feature);
+		if (value instanceof EList) {
+			Iterator iter = ((EList)value).iterator();
+			while (iter.hasNext()) {
+				value = iter.next();
+				if (value instanceof RootElement)
+					choices.put(PropertyUtil.getDisplayName(value), value);
+			}
+		}
+		else if (value instanceof EObject) {
+			EObject rootElement = (EObject) value;
+			if (rootElement!=null)
+				choices.put(PropertyUtil.getDisplayName(rootElement), rootElement);
+		}
 		Definitions definitions = ModelUtil.getDefinitions(object);
 		if (definitions!=null) {
 			for (RootElement re : definitions.getRootElements()) {

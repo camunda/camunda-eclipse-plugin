@@ -58,7 +58,7 @@ public class JbpmDefinitionsPropertyComposite extends DefinitionsPropertyComposi
 				if (re instanceof Process) {
 					Process process = (Process)re;
 					ExtensionValueListComposite importsTable = new ExtensionValueListComposite(
-							this, AbstractListComposite.DEFAULT_STYLE)
+							this,  AbstractListComposite.READ_ONLY_STYLE)
 					{
 						@Override
 						protected EObject addListItem(EObject object, EStructuralFeature feature) {

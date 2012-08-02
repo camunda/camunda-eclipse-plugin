@@ -23,19 +23,19 @@
 		</model>
 
 		<propertyTab
-			id="bpmn2.jbpm.dataitems.tab"
-			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmDataItemsPropertySection"
-			type="org.eclipse.bpmn2.di.BPMNDiagram"
-			replaceTab="org.eclipse.bpmn2.modeler.dataitems.tab"
-			label="Data Items">
-		</propertyTab>
-
-		<propertyTab
 			id="bpmn2.jbpm.definitions.tab"
 			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmDefinitionsPropertySection"
 			type="org.eclipse.bpmn2.di.BPMNDiagram"
 			replaceTab="org.eclipse.bpmn2.modeler.definitions.tab"
 			label="Definitions">
+		</propertyTab>
+
+		<propertyTab
+			id="bpmn2.jbpm.dataitems.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmDataItemsPropertySection"
+			type="org.eclipse.bpmn2.di.BPMNDiagram"
+			replaceTab="org.eclipse.bpmn2.modeler.dataitems.tab"
+			label="Data Items">
 		</propertyTab>
 
 		<propertyTab

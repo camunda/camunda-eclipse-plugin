@@ -24,6 +24,7 @@ import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite;
 import org.eclipse.bpmn2.modeler.ui.property.ExtensionValueListComposite;
+import org.eclipse.bpmn2.modeler.ui.property.DefaultDetailComposite.AbstractPropertiesProvider;
 import org.eclipse.bpmn2.modeler.ui.property.diagrams.DataItemsDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
@@ -49,6 +50,30 @@ public class JbpmDataItemsDetailComposite extends DataItemsDetailComposite {
 	
 
 	@Override
+	public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
+		if (propertiesProvider==null) {
+			propertiesProvider = new AbstractPropertiesProvider(object) {
+				String[] properties = new String[] {
+						"rootElements.Process.properties",
+						"rootElements.ItemDefinition",
+						"rootElements.Process.resources",
+						"rootElements.Resource",
+						"rootElements.Message",
+						"rootElements.Error",
+						"rootElements.Escalation",
+						"rootElements.Signal"
+				};
+				
+				@Override
+				public String[] getProperties() {
+					return properties; 
+				}
+			};
+		}
+		return propertiesProvider;
+	}
+
+	@Override
 	public void createBindings(EObject be) {
 		if (be instanceof Definitions) {
 			Definitions definitions = (Definitions)be;
@@ -56,7 +81,7 @@ public class JbpmDataItemsDetailComposite extends DataItemsDetailComposite {
 				if (re instanceof Process) {
 					Process process = (Process)re;
 					ExtensionValueListComposite globalsTable = new ExtensionValueListComposite(
-							this, AbstractListComposite.DEFAULT_STYLE)
+							this, AbstractListComposite.DEFAULT_STYLE|AbstractListComposite.EDIT_BUTTON)
 					{
 						
 						@Override

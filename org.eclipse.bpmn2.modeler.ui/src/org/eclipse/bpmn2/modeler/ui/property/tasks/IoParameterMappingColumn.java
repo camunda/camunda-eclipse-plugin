@@ -20,6 +20,7 @@ import org.eclipse.bpmn2.modeler.core.utils.ErrorUtils;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite;
 import org.eclipse.bpmn2.modeler.ui.property.TableColumn;
+import org.eclipse.bpmn2.modeler.ui.property.TableColumn.CustomComboBoxCellEditor;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -87,40 +88,40 @@ public class IoParameterMappingColumn extends TableColumn {
 
 	@Override
 	public Object getValue(Object element, String property) {
-		int index = -1;
-		choices = null;
+		Integer value = new Integer(-1);
 		ItemAwareElement source = (ItemAwareElement)element;
 		DataAssociation da = getDataAssociation(source);
 		if (da!=null) {
 			ItemAwareElement target = getTargetElement(da);
 			association = da;
-			List<String> items = new ArrayList<String>();
 			EStructuralFeature f = getTargetFeature(source);
-			choices = PropertyUtil.getChoiceOfValues(da, f);
-			items.addAll(choices.keySet());
-			((ComboBoxCellEditor)cellEditor).setItems(items.toArray(new String[items.size()]));
-			for (int i=0; i<items.size(); ++i) {
-				if ( choices.get(items.get(i)) == target) {
-					index = i;
-					break;
-				}
-			}
+			((CustomComboBoxCellEditor)cellEditor).setValue(da,f,target);
+			value = (Integer)cellEditor.getValue();
 		}
-		return new Integer(index);
+		return value;
 	}
-
+	
+	@Override
+	protected CellEditor createCellEditor(Object element, String property) {
+		CellEditor ce = new CustomComboBoxCellEditor(getParent(), object, feature);
+		setCellEditor(ce);
+		return ce;
+	}
+	
 	@Override
 	public boolean canModify(Object element, String property) {
-		// only allow the combobox cell editor to work if the DataAssociation is
-		// with a Property (no Assignments or Transformations please!)
-		// Other types of associations must be done in the Detail section
-		DataAssociation da = getDataAssociation((ItemAwareElement)element);
-		if (da!= null) {
-			if (getTargetElement(da) == null) {
-				if (!da.getAssignment().isEmpty() || da.getTransformation()!=null)
-					return false;
+		if (super.canModify(element, property)) {
+			// only allow the combobox cell editor to work if the DataAssociation is
+			// with a Property (no Assignments or Transformations please!)
+			// Other types of associations must be done in the Detail section
+			DataAssociation da = getDataAssociation((ItemAwareElement)element);
+			if (da!= null) {
+				if (getTargetElement(da) == null) {
+					if (!da.getAssignment().isEmpty() || da.getTransformation()!=null)
+						return false;
+				}
+				return true;
 			}
-			return true;
 		}
 		return false;
 	}

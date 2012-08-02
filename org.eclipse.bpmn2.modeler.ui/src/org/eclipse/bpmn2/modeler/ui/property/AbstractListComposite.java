@@ -16,6 +16,7 @@ package org.eclipse.bpmn2.modeler.ui.property;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.property.providers.ColumnTableProvider;
 import org.eclipse.bpmn2.modeler.ui.property.providers.TableCursor;
 import org.eclipse.bpmn2.modeler.ui.property.providers.ColumnTableProvider.Column;
@@ -31,6 +32,9 @@ import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.ResourceSetChangeEvent;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -44,16 +48,23 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.events.IExpansionListener;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ui.menus.CommandContributionItem;
+import org.eclipse.ui.menus.CommandContributionItemParameter;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  
 
@@ -72,6 +83,8 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 	public static final int DELETE_BUTTON = 1 << 25; // show "Delete" button - this uses EcoreUtil.delete() to kill the EObject
 	public static final int DEFAULT_STYLE = (
 			ADD_BUTTON|REMOVE_BUTTON|MOVE_BUTTONS|SHOW_DETAILS);
+	public static final int READ_ONLY_STYLE = (
+			ADD_BUTTON|REMOVE_BUTTON|MOVE_BUTTONS);
 	
 	public static final int CUSTOM_STYLES_MASK = (
 			HIDE_TITLE|ADD_BUTTON|REMOVE_BUTTON|MOVE_BUTTONS|EDIT_BUTTON|SHOW_DETAILS);
@@ -152,8 +165,12 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 			final EList<EObject> list = (EList<EObject>)object.eGet(feature);
 			final EClass listItemClass = getDefaultListItemClass(object, feature);
 
-			boolean canModify = ((style & SHOW_DETAILS)==0 && (style & EDIT_BUTTON)==0)
-					|| ((style & SHOW_DETAILS)!=0 && (style & EDIT_BUTTON)!=0);
+			boolean canModify;
+			if (style==READ_ONLY_STYLE)
+				canModify = false;
+			else
+				canModify = ((style & SHOW_DETAILS)==0 && (style & EDIT_BUTTON)==0)
+						|| ((style & SHOW_DETAILS)!=0 && (style & EDIT_BUTTON)!=0);
 			columnProvider = new ListCompositeColumnProvider(this, canModify);
 			
 			// default is to include property name as the first column
@@ -195,6 +212,10 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 				}
 			}
 		}
+		return columnProvider;
+	}
+
+	public ListCompositeColumnProvider getColumnProvider() {
 		return columnProvider;
 	}
 	
@@ -300,6 +321,39 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 			tableSection.setText(title);
 	}
 	
+	protected Section createDetailSection(Composite parent, String label) {
+		Section section = toolkit.createSection(parent,
+				ExpandableComposite.LEFT_TEXT_CLIENT_ALIGNMENT |
+				ExpandableComposite.EXPANDED |
+				ExpandableComposite.TITLE_BAR);
+		section.setText(label+" Details");
+		section.setVisible(false);
+
+	    ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
+	    ToolBar toolbar = toolBarManager.createControl(section);
+	    final Cursor handCursor = new Cursor(Display.getCurrent(),SWT.CURSOR_HAND);
+	    toolbar.setCursor(handCursor);
+	    // Cursor needs to be explicitly disposed
+	    toolbar.addDisposeListener(new DisposeListener() {
+	        public void widgetDisposed(DisposeEvent e) {
+	            if ((handCursor != null) && (handCursor.isDisposed() == false)) {
+	                handCursor.dispose();
+	            }
+	        }
+	    });
+	    ImageDescriptor id = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/16/close.png");
+	    toolBarManager.add( new Action("Close", id) {
+			@Override
+			public void run() {
+				super.run();
+				showDetails(false);
+			}
+	    });
+	    toolBarManager.update(true);
+	    section.setTextClient(toolbar);
+	    return section;
+	}
+	
 	public void bindList(final EObject theobject, final EStructuralFeature thefeature) {
 		if (!(theobject.eGet(thefeature) instanceof EList<?>)) {
 			return;
@@ -343,14 +397,24 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 			createTableAndButtons(tableComposite,style);
 			
 			if ((style & SHOW_DETAILS)!=0) {
-				detailSection = toolkit.createSection(sashForm,
-						ExpandableComposite.TWISTIE |
-						ExpandableComposite.EXPANDED |
-						ExpandableComposite.TITLE_BAR);
-				detailSection.setText(label+" Details");
-
-				detailSection.setVisible(false);
-
+				detailSection = createDetailSection(sashForm, label);
+				detailSection.addExpansionListener(new IExpansionListener() {
+					
+					@Override
+					public void expansionStateChanging(ExpansionEvent e) {
+						if (!e.getState()) {
+							detailSection.setVisible(false);
+							if (editButton!=null)
+								editButton.setSelection(false);
+						}
+					}
+	
+					@Override
+					public void expansionStateChanged(ExpansionEvent e) {
+						redrawPage();
+					}
+				});
+				
 				tableSection.addExpansionListener(new IExpansionListener() {
 	
 					@Override
@@ -367,22 +431,6 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 					}
 				});
 			
-				detailSection.addExpansionListener(new IExpansionListener() {
-	
-					@Override
-					public void expansionStateChanging(ExpansionEvent e) {
-						if (!e.getState()) {
-							detailSection.setVisible(false);
-							if (editButton!=null)
-								editButton.setSelection(false);
-						}
-					}
-	
-					@Override
-					public void expansionStateChanged(ExpansionEvent e) {
-						redrawPage();
-					}
-				});
 				sashForm.setWeights(new int[] { 1, 2 });
 			}					
 			else
@@ -453,6 +501,7 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 		if (removeButton!=null) {
 			removeButton.addSelectionListener(new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
+					showDetails(false);
 					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 						@Override
 						protected void doExecute() {
@@ -567,7 +616,9 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 		}
 		detailSection.setVisible(enable);
 		detailSection.setExpanded(enable);
-		PropertyUtil.recursivelayout(detailSection);
+		if (editButton!=null)
+			editButton.setSelection(enable);
+//		PropertyUtil.recursivelayout(detailSection);
 //		sashForm.layout(true);
 //		redrawPage();
 	}
@@ -738,7 +789,7 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 	
 	public class ListCompositeColumnProvider extends ColumnTableProvider {
 		protected final AbstractListComposite listComposite;
-		protected boolean canModify = false;
+		protected boolean canModify = true;
 
 		public ListCompositeColumnProvider(AbstractListComposite list) {
 			this(list,false);
@@ -761,26 +812,28 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 			return canModify;
 		}
 		
-		public void add(EObject object, EStructuralFeature feature) {
-			add(object, (EClass)feature.eContainer(), feature);
+		public TableColumn add(EObject object, EStructuralFeature feature) {
+			return add(object, (EClass)feature.eContainer(), feature);
 		}
 		
-		public void add(EObject object, EClass eclass, EStructuralFeature feature) {
+		public TableColumn add(EObject object, EClass eclass, EStructuralFeature feature) {
+			TableColumn tc = null;
 			if (listComposite.getModelEnablement(object).isEnabled(eclass,feature)) {
-				TableColumn tc = new TableColumn(object, feature);
+				tc = new TableColumn(object, feature);
 				tc.setOwner(listComposite);
 				super.add(tc);
 			}
+			return tc;
 		}
 		
-		public void add(TableColumn tc) {
+		public TableColumn add(TableColumn tc) {
 			EStructuralFeature feature = tc.feature;
 			EObject object = tc.object;
 			if (object!=null) {
 				if (listComposite.getModelEnablement(object).isEnabled(object.eClass(),feature)) {
 					tc.setOwner(listComposite);
 					super.add(tc);
-					return;
+					return tc;
 				}
 			}
 			if (feature!=null) {
@@ -788,11 +841,10 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 				if (listComposite.getModelEnablement(object).isEnabled(eclass,feature)) {
 					tc.setOwner(listComposite);
 					super.add(tc);
-					return;
+					return tc;
 				}
 			}
-//			tc.setOwner(listComposite);
-//			super.add(tc);
+			return tc;
 		}
 	}
 }

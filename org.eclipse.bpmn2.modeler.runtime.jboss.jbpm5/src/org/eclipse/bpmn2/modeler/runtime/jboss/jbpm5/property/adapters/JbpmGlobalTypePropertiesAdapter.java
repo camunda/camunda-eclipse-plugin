@@ -37,7 +37,8 @@ public class JbpmGlobalTypePropertiesAdapter extends ExtendedPropertiesAdapter<G
 	 */
 	public JbpmGlobalTypePropertiesAdapter(AdapterFactory adapterFactory, GlobalType object) {
 		super(adapterFactory, object);
-    	setProperty(ModelPackage.GLOBAL_TYPE__TYPE, ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW, Boolean.TRUE);
+    	setProperty(ModelPackage.GLOBAL_TYPE__TYPE, UI_CAN_CREATE_NEW, Boolean.TRUE);
+    	setProperty(ModelPackage.GLOBAL_TYPE__TYPE, UI_IS_MULTI_CHOICE, Boolean.TRUE);
 
     	EStructuralFeature feature = ModelPackage.eINSTANCE.getGlobalType_Identifier();
     	setFeatureDescriptor(feature,

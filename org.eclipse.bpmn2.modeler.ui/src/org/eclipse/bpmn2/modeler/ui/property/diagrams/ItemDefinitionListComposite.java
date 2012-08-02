@@ -35,7 +35,7 @@ public class ItemDefinitionListComposite extends DefaultListComposite {
 			columnProvider = new ListCompositeColumnProvider(this,true);
 			EClass eclass = PACKAGE.getItemDefinition();
 			
-			columnProvider.add(object,PACKAGE.getItemDefinition_StructureRef());
+			columnProvider.add(object,PACKAGE.getItemDefinition_StructureRef()).setEditable(false);
 			columnProvider.add(object,PACKAGE.getItemDefinition_ItemKind());
 			columnProvider.add(object,PACKAGE.getItemDefinition_IsCollection());
 		}

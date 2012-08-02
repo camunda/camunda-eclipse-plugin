@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.ItemKind;
 import org.eclipse.bpmn2.Property;
+import org.eclipse.bpmn2.ResourceRole;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -33,6 +34,7 @@ public class DataItemsPropertySection extends DefaultPropertySection {
 		PropertiesCompositeFactory.register(ItemDefinition.class, ItemDefinitionDetailComposite.class);
 		PropertiesCompositeFactory.register(ItemDefinition.class, ItemDefinitionListComposite.class);
 		PropertiesCompositeFactory.register(Property.class, PropertyListComposite.class);
+		PropertiesCompositeFactory.register(ResourceRole.class, ResourceRoleListComposite.class);
 	}
 
 	public DataItemsPropertySection() {

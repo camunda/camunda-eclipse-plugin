@@ -1,56 +1,54 @@
 package org.eclipse.bpmn2.modeler.ui.property.diagrams;
 
-import org.eclipse.bpmn2.Property;
+import org.eclipse.bpmn2.ResourceRole;
 import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultListComposite;
 import org.eclipse.bpmn2.modeler.ui.property.TableColumn;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite.ListCompositeColumnProvider;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite.ListCompositeColumnProvider;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.swt.widgets.Composite;
 
-public class PropertyListComposite extends DefaultListComposite {
+public class ResourceRoleListComposite extends DefaultListComposite {
 
-	public PropertyListComposite(AbstractBpmn2PropertySection section) {
+	public ResourceRoleListComposite(AbstractBpmn2PropertySection section) {
 		super(section, DEFAULT_STYLE|EDIT_BUTTON);
 	}
 	
-	public PropertyListComposite(Composite parent) {
+	public ResourceRoleListComposite(Composite parent) {
 		this(parent, DEFAULT_STYLE|EDIT_BUTTON);
 	}
 	
-	public PropertyListComposite(Composite parent, int style) {
+	public ResourceRoleListComposite(Composite parent, int style) {
 		super(parent,style);
 	}
 	
 	@Override
 	public void bindList(EObject theobject, EStructuralFeature thefeature) {
 		super.bindList(theobject, thefeature);
-		PropertyUtil.setLabel(theobject, thefeature, "Variables");
+		PropertyUtil.setLabel(theobject, thefeature, "Roles");
 	}
 	
 	public ListCompositeColumnProvider getColumnProvider(EObject object, EStructuralFeature feature) {
 		if (columnProvider==null) {
 			columnProvider = new ListCompositeColumnProvider(this,true);
-			columnProvider.add(new TableColumn(object, PACKAGE.getProperty_Name()));
-			columnProvider.add(new TableColumn(object, PACKAGE.getItemAwareElement_ItemSubjectRef()));
+			columnProvider.add(new TableColumn(object, PACKAGE.getResourceRole_Name()));
+			columnProvider.add(new TableColumn(object, PACKAGE.getResourceRole_ResourceRef()));
 		}
 		return columnProvider;
 	}
 
 	@Override
 	protected EObject addListItem(EObject object, EStructuralFeature feature) {
-		EList<Property> properties = (EList)object.eGet(feature);
+		EList<ResourceRole> roles = (EList)object.eGet(feature);
 		// generate a unique parameter name
-		String base = "localVar";
+		String base = "Role";
 		int suffix = 1;
 		String name = base + suffix;
 		for (;;) {
 			boolean found = false;
-			for (Property p : properties) {
+			for (ResourceRole p : roles) {
 				if (name.equals(p.getName()) || name.equals(p.getId())) {
 					found = true;
 					break;
@@ -60,8 +58,8 @@ public class PropertyListComposite extends DefaultListComposite {
 				break;
 			name = base + ++suffix;
 		}
-		Property prop  = (Property)super.addListItem(object, feature);
-		prop.setName(name);
-		return prop;
+		ResourceRole role  = (ResourceRole)super.addListItem(object, feature);
+		role.setName(name);
+		return role;
 	}
 }

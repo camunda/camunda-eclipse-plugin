@@ -47,13 +47,21 @@ public class DataItemsDetailComposite extends DefaultDetailComposite {
 		if (propertiesProvider==null) {
 			propertiesProvider = new AbstractPropertiesProvider(object) {
 				String[] properties = new String[] {
+						"rootElements.Process.properties",
 						"rootElements.ItemDefinition",
+						"rootElements.Process.resources",
+						"rootElements.Resource",
 						"rootElements.DataStore",
 						"rootElements.Message",
 						"rootElements.Error",
 						"rootElements.Escalation",
 						"rootElements.Signal",
-						"rootElements.CorrelationProperty"
+						"rootElements.Process.correlationSubscriptions",
+						"rootElements.CorrelationProperty",
+						"rootElements.Process.collaborations",
+						"rootElements.PartnerEntity",
+						"rootElements.PartnerRole",
+						"rootElements.EndPoint",
 				};
 				
 				@Override
@@ -72,12 +80,8 @@ public class DataItemsDetailComposite extends DefaultDetailComposite {
 			for (RootElement re : definitions.getRootElements()) {
 				if (re instanceof Process) {
 					Process process = (Process)re;
-					AbstractListComposite table;
-					
-					table = bindList(process,"properties");
-					table = bindList(process, "resources");
-					if (table!=null)
-						table.setTitle("Resources for "+PropertyUtil.getLongDisplayName(process));
+//					bindList(process,"properties");
+//					bindList(process, "resources");
 				}
 			}
 		}

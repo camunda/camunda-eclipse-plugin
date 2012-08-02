@@ -144,6 +144,12 @@ public class PropertyUtil {
 		return label;
 	}
 	
+	public static void setLabel(EObject object, EStructuralFeature feature, String label) {
+		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
+		if (adapter!=null)
+			adapter.getFeatureDescriptor(feature).setLabel(label);
+	}
+
 	public static String getLabel(EObject object, EStructuralFeature feature) {
 		String label = "";
 		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
@@ -309,7 +315,8 @@ public class PropertyUtil {
 	}
 	
 	public static boolean isMultiChoice(EObject object, EStructuralFeature feature) {
-		if (feature.getEType() instanceof EClass) {
+		if (feature.getEType() instanceof EClass)
+		{
 			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
 			if (adapter!=null) {
 				Object result = adapter.getProperty(feature, ExtendedPropertiesAdapter.UI_IS_MULTI_CHOICE);
