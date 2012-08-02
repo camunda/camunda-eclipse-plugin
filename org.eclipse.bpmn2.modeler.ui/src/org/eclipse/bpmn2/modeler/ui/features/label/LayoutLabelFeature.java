@@ -35,57 +35,58 @@ public class LayoutLabelFeature extends AbstractLayoutFeature {
 	public boolean layout(ILayoutContext context) {
 		ContainerShape containerShape = (ContainerShape) context.getPictogramElement();
 		SubProcess subProcess = BusinessObjectUtil.getFirstElementOfType(containerShape, SubProcess.class);
-		try {
-			BPMNShape shape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(subProcess);
-			
-			if (shape.isIsExpanded()) {
+		if (subProcess!=null) {
+			try {
+				BPMNShape shape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(subProcess);
 				
-				// SubProcess is expanded
-				
-				boolean needResize = false;
-				GraphicsAlgorithm parentGa = containerShape.getGraphicsAlgorithm();
-				
-				for (PictogramElement pe : FeatureSupport.getContainerChildren(containerShape)) {
-					GraphicsAlgorithm ga = pe.getGraphicsAlgorithm();
-					if (ga!=null) {
-						if (ga.getX() < 0 || ga.getY() < 0) {
-							needResize = true;
-							break;
-						}
-						if (ga.getX() + ga.getWidth() > parentGa.getWidth()) {
-							needResize = true;
-							break;
-						}
-						if (ga.getY() + ga.getHeight() > parentGa.getHeight()) {
-							needResize = true;
-							break;
+				if (shape.isIsExpanded()) {
+					
+					// SubProcess is expanded
+					
+					boolean needResize = false;
+					GraphicsAlgorithm parentGa = containerShape.getGraphicsAlgorithm();
+					
+					for (PictogramElement pe : FeatureSupport.getContainerChildren(containerShape)) {
+						GraphicsAlgorithm ga = pe.getGraphicsAlgorithm();
+						if (ga!=null) {
+							if (ga.getX() < 0 || ga.getY() < 0) {
+								needResize = true;
+								break;
+							}
+							if (ga.getX() + ga.getWidth() > parentGa.getWidth()) {
+								needResize = true;
+								break;
+							}
+							if (ga.getY() + ga.getHeight() > parentGa.getHeight()) {
+								needResize = true;
+								break;
+							}
 						}
 					}
+					if (needResize) {
+						ResizeShapeContext resizeContext = new ResizeShapeContext(containerShape);
+						resizeContext.setX(parentGa.getX());
+						resizeContext.setY(parentGa.getY());
+						resizeContext.setWidth(parentGa.getWidth());
+						resizeContext.setHeight(parentGa.getHeight());
+						IResizeShapeFeature resizeFeature = getFeatureProvider().getResizeShapeFeature(resizeContext);
+						resizeFeature.resizeShape(resizeContext);
+					}
+					
+					FeatureSupport.setContainerChildrenVisible(containerShape, true);
 				}
-				if (needResize) {
-					ResizeShapeContext resizeContext = new ResizeShapeContext(containerShape);
-					resizeContext.setX(parentGa.getX());
-					resizeContext.setY(parentGa.getY());
-					resizeContext.setWidth(parentGa.getWidth());
-					resizeContext.setHeight(parentGa.getHeight());
-					IResizeShapeFeature resizeFeature = getFeatureProvider().getResizeShapeFeature(resizeContext);
-					resizeFeature.resizeShape(resizeContext);
+				else {
+					
+					// SubProcess is collapsed
+					
+					FeatureSupport.setContainerChildrenVisible(containerShape, false);
 				}
 				
-				FeatureSupport.setContainerChildrenVisible(containerShape, true);
+			} catch (Exception e) {
+				// It's OK, I've played a programmer before...
+				// e.printStackTrace();
 			}
-			else {
-				
-				// SubProcess is collapsed
-				
-				FeatureSupport.setContainerChildrenVisible(containerShape, false);
-			}
-			
-		} catch (Exception e) {
-			// It's OK, I've played a programmer before...
-			// e.printStackTrace();
 		}
-		
 		return true;
 	}
 

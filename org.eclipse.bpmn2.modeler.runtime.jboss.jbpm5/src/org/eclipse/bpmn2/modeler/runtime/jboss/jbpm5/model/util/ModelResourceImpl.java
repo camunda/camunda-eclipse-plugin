@@ -169,20 +169,24 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 			if (childObject!=null) {
 				try {
 					EStructuralFeature anyAttribute = childObject.eClass().getEStructuralFeature(Bpmn2Package.BASE_ELEMENT__ANY_ATTRIBUTE);
-					List<BasicFeatureMap.Entry> anyMap = (List<BasicFeatureMap.Entry>)childObject.eGet(anyAttribute);
-					List<BasicFeatureMap.Entry> removed = new ArrayList<BasicFeatureMap.Entry>();
-					for (BasicFeatureMap.Entry fe : anyMap) {
-						if (fe.getEStructuralFeature() instanceof EAttribute) {
-							EAttributeImpl a = (EAttributeImpl)fe.getEStructuralFeature();
-							String n = a.getName();
-							String ns = a.getExtendedMetaData().getNamespace();
-							if (TYPE.equals(n) && XSI_URI.equals(ns)) {
-								removed.add(fe);
+					if (anyAttribute!=null) {
+						List<BasicFeatureMap.Entry> anyMap = (List<BasicFeatureMap.Entry>)childObject.eGet(anyAttribute);
+						if (anyMap!=null) {
+							List<BasicFeatureMap.Entry> removed = new ArrayList<BasicFeatureMap.Entry>();
+							for (BasicFeatureMap.Entry fe : anyMap) {
+								if (fe.getEStructuralFeature() instanceof EAttribute) {
+									EAttributeImpl a = (EAttributeImpl)fe.getEStructuralFeature();
+									String n = a.getName();
+									String ns = a.getExtendedMetaData().getNamespace();
+									if (TYPE.equals(n) && XSI_URI.equals(ns)) {
+										removed.add(fe);
+									}
+								}
 							}
+							if (removed.size()>0)
+								anyMap.removeAll(removed);
 						}
 					}
-					if (removed.size()>0)
-						anyMap.removeAll(removed);
 				}
 				catch(Exception e) {
 				}

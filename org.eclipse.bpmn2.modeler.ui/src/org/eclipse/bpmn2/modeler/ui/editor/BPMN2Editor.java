@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.ui.editor;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -38,6 +39,8 @@ import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -77,6 +80,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
@@ -89,6 +93,9 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.dialogs.SaveAsDialog;
+import org.eclipse.ui.ide.ResourceUtil;
+import org.eclipse.ui.part.FileEditorInput;
 
 /**
  * 
@@ -538,6 +545,73 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		return modelHandler;
 	}
 
+	@Override
+	public boolean isSaveAsAllowed() {
+		return true;
+	}
+	
+	@Override
+	public void doSaveAs() {
+		IFile oldFile = getModelFile();
+		SaveAsDialog saveAsDialog = new SaveAsDialog(getSite().getShell());
+		saveAsDialog.setOriginalFile(oldFile);
+		saveAsDialog.create();
+		if (saveAsDialog.open() == SaveAsDialog.CANCEL) {
+			return;
+		}
+		IPath newFilePath = saveAsDialog.getResult();
+		if (newFilePath == null){
+			return;
+		}
+		
+        IFile newFile = ResourcesPlugin.getWorkspace().getRoot().getFile(newFilePath);
+        IWorkbenchPage page = getSite().getPage();
+        
+        try {
+        	// Save the current(old) file
+        	doSave(null);
+        	// if new file exists, close its editor (if open) and delete the existing file
+            if (newFile.exists()) {
+    			IEditorPart editorPart = ResourceUtil.findEditor(page, newFile);
+    			if (editorPart!=null)
+	    			page.closeEditor(editorPart, false);
+        		newFile.delete(true, null);
+            }
+            // make a copy
+			oldFile.copy(newFilePath, true, null);
+		} catch (CoreException e) {
+			showErrorDialogWithLogging(e);
+			return;
+		}
+
+        // open new editor
+    	try {
+			page.openEditor(new FileEditorInput(newFile), BPMN2Editor.EDITOR_ID);
+		} catch (PartInitException e1) {
+			showErrorDialogWithLogging(e1);
+			return;
+		}
+    	
+    	// and close the old editor
+		IEditorPart editorPart = ResourceUtil.findEditor(page, oldFile);
+		if (editorPart!=null)
+			page.closeEditor(editorPart, false);
+		
+    	try {
+			newFile.refreshLocal(IResource.DEPTH_ZERO,null);
+		} catch (CoreException e) {
+			showErrorDialogWithLogging(e);
+			return;
+		}
+	}
+
+	// Show error dialog and log the error
+	private void showErrorDialogWithLogging(Exception e) {
+		Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage(), e);
+		ErrorUtils.showErrorWithLogging(status);
+	}
+	
+	
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		// Graphiti understands multipage editors

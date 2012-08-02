@@ -330,6 +330,8 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 	 */
 	@Override
 	public void doSaveAs() {
+		IEditorPart activeEditor = getActiveEditor();
+		activeEditor.doSaveAs();
 	}
 
 	/* (non-Javadoc)
@@ -337,7 +339,13 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 	 */
 	@Override
 	public boolean isSaveAsAllowed() {
-		return false;
+		
+		/* 
+		 * Depending upon the active page in multipage editor, call the saveAsAllowed. 
+		 * It helps to see whether a particular editor allows 'save as' feature 
+		 */
+		IEditorPart activeEditor = getActiveEditor();
+		return activeEditor.isSaveAsAllowed();
 	}
 
 	public class DesignEditor extends BPMN2Editor {
