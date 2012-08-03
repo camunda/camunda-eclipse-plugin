@@ -178,4 +178,12 @@ public class InsertionAdapter extends EContentAdapter {
 		}
 		return resource;
 	}
+	
+	public static Resource getResource(EObject object) {
+		InsertionAdapter adapter = AdapterUtil.adapt(object, InsertionAdapter.class);
+		if (adapter!=null) {
+			return adapter.getResource();
+		}
+		return object.eResource();
+	}
 }

@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.impl.DynamicEObjectImpl;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.domain.IEditingDomainProvider;
@@ -203,5 +204,43 @@ public class ObjectDescriptor<T extends EObject> {
 		if (result instanceof TransactionalEditingDomain)
 			return (TransactionalEditingDomain)result;
 		return null;
+	}
+
+	public T createObject(Object context) {
+		return createObject(null,context);
+	}
+	
+	public T createObject(Resource resource, Object context) {
+	
+		EClass eClass = null;
+		if (context instanceof EClass) {
+			eClass = (EClass)context;
+		}
+		else if (context instanceof EObject) {
+			eClass = ((EObject)context).eClass();
+			if (resource==null)
+				resource = ((EObject)context).eResource();
+		}
+		else {
+			eClass = object.eClass();
+		}
+		assert(object.eClass().isSuperTypeOf(eClass));
+
+		T newObject = (T) eClass.getEPackage().getEFactoryInstance().create(eClass);
+		
+		if (resource==null)
+			resource = InsertionAdapter.getResource(object);
+		
+		// if the object has an "id", assign it now.
+		String id = ModelUtil.setID(newObject,resource);
+		// also set a default name
+		EStructuralFeature feature = newObject.eClass().getEStructuralFeature("name");
+		if (feature!=null) {
+			if (id!=null)
+				newObject.eSet(feature, ModelUtil.toDisplayName(id));
+			else
+				newObject.eSet(feature, "New "+ModelUtil.toDisplayName(newObject.eClass().getName()));
+		}
+		return newObject;
 	}
 }

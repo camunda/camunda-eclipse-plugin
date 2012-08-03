@@ -125,7 +125,6 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 			Map<String,String> map = root.getXMLNSPrefixMap();
 			NamespacesEditingDialog dialog = new NamespacesEditingDialog(getShell(), "Create New Namespace", map, "","");
 			if (dialog.open() == Window.OK) {
-				System.out.println(dialog.getPrefix()+" : "+dialog.getNamespace());
 				map.put(dialog.getPrefix(), dialog.getNamespace());
 			}
 			return null;

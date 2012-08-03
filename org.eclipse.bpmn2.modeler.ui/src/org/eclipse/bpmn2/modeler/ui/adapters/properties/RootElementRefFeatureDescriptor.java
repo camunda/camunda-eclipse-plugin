@@ -49,14 +49,14 @@ public class RootElementRefFeatureDescriptor<T extends BaseElement> extends Feat
 	}
 	
 	@Override
-	public EObject createObject(Object context, EClass eClass) {
+	public EObject createFeature(Object context, EClass eClass) {
 		final T object = adopt(context);
 
 		EObject rootElement = null;
 		if (feature.getEType() != eClass) {
 			ExtendedPropertiesAdapter<T> adapter = (ExtendedPropertiesAdapter<T>) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
 			if (adapter!=null)
-				rootElement = adapter.getFeatureDescriptor(feature).createObject(object, eClass);
+				rootElement = adapter.getFeatureDescriptor(feature).createFeature(object, eClass);
 		}
 		if (rootElement==null)
 			rootElement = Bpmn2ModelerFactory.getInstance().create(eClass);

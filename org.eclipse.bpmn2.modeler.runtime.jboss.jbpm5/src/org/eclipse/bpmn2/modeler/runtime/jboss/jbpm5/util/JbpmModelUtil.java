@@ -25,8 +25,14 @@ import org.eclipse.bpmn2.modeler.ui.property.dialogs.SchemaImportDialog;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.dialogs.ListDialog;
 
 public class JbpmModelUtil {
 
@@ -38,16 +44,9 @@ public class JbpmModelUtil {
 	 *                 ImportType will be created.
 	 * @return an ImportType object if it was created, null if the user canceled the import dialog.
 	 */
-	public static ImportType addImport(EObject object) {
-		Process process = null;
-		if (object instanceof Process)
-			process = (Process)object;
-		else
-			process = (Process) ModelUtil.findNearestAncestor(object, new Class[] { Process.class });
-		EStructuralFeature feature = ModelPackage.eINSTANCE.getDocumentRoot_ImportType();
+	public static String showImportDialog(EObject object) {
 		String className = null;
-		ImportType newImport = null;
-		Shell shell = BPMN2Editor.getActiveEditor().getSite().getShell();
+		Shell shell = BPMN2Editor.getEditor(object).getSite().getShell();
 		SchemaImportDialog dialog = new SchemaImportDialog(shell, SchemaImportDialog.ALLOW_JAVA);
 		if (dialog.open() == Window.OK) {
 			Object result[] = dialog.getResult();
@@ -55,36 +54,96 @@ public class JbpmModelUtil {
 				className = ((Class)result[0]).getName();
 			}
 		}
-
-		if (className!=null && !className.isEmpty()) {
-			Definitions definitions = ModelUtil.getDefinitions(process);
-			newImport = (ImportType)ModelFactory.eINSTANCE.create(ModelPackage.eINSTANCE.getImportType());
-			newImport.setName(className);
-			ModelUtil.addExtensionAttributeValue(process, feature, newImport);
-			
-			ItemDefinition itemDef = Bpmn2ModelerFactory.create(ItemDefinition.class);
-			itemDef.setItemKind(ItemKind.PHYSICAL);
-			EObject structureRef = ModelUtil.createStringWrapper(className);
-			itemDef.setStructureRef(structureRef);
-			if (ImportUtil.findItemDefinition(definitions, itemDef)==null) {
-
-				// create a reference to the ImportType as an extension element to the ItemDefinition
-//				ImportType ref = (ImportType)ModelFactory.eINSTANCE.create(ModelPackage.eINSTANCE.getImportType());
-//				((InternalEObject)ref).eSetProxyURI(EcoreUtil.getURI(newImport));
-//				ModelUtil.addExtensionAttributeValue(itemDef, feature, ref);
-				// Nope, don't need this! The ItemDefinition needs to stick around, otherwise the data types
-				// for process variables and globals would disappear. Besides, jBPM allows data types
-				// (a.k.a. ItemDefinitions) to be defined as sort of "forward references" without actual
-				// knowledge of the physicial structure of the data type - these get resolved (somehow,
-				// through FM maybe?) at runtime.
-				// As a side note: if a type is unknown (i.e. there is no "import") then the structure
-				// will be unknown in java scripts (FormalExpressions).
-
-				// add the ItemDefinition to the root elements
-				definitions.getRootElements().add(itemDef);
-				ModelUtil.setID(itemDef);
+		return className;
+	}
+	
+	public static ImportType addImport(final String className, final EObject object) {
+		if (className==null || className.isEmpty())
+			return null;
+		
+		final Definitions definitions = ModelUtil.getDefinitions(object);
+		if (definitions==null)
+			return null;
+		
+		Process process = null;
+		if (object instanceof Process)
+			process = (Process)object;
+		else {
+			process = (Process) ModelUtil.findNearestAncestor(object, new Class[] { Process.class });
+			if (process==null) {
+				List<Process> processes = ModelUtil.getAllRootElements(definitions, Process.class);
+				if (processes.size()>1) {
+					// TODO: allow user to pick one?
+					process = processes.get(0);
+				}
+				else if (processes.size()==1)
+					process = processes.get(0);
+				else {
+					Shell shell = BPMN2Editor.getEditor(object).getSite().getShell();
+					MessageDialog.openError(shell, "Error", "No processes defined!");
+				}
 			}
 		}
+		
+		final Process fProcess = process;
+		final ImportType newImport = (ImportType)ModelFactory.eINSTANCE.create(ModelPackage.eINSTANCE.getImportType());
+		newImport.setName(className);
+
+		TransactionalEditingDomain domain = BPMN2Editor.getEditor(object).getEditingDomain();
+		domain.getCommandStack().execute(new RecordingCommand(domain) {
+			@Override
+			protected void doExecute() {
+				
+				ModelUtil.addExtensionAttributeValue(fProcess,
+						ModelPackage.eINSTANCE.getDocumentRoot_ImportType(), newImport);
+				
+				if (object instanceof ItemDefinition) {
+					// update the ItemDefinition passed to us...
+					ItemDefinition oldItemDef = (ItemDefinition)object;
+					String oldName = ModelUtil.getStringWrapperValue(oldItemDef.getStructureRef());
+					// ...but only if the structureRef is empty
+					if (oldName!=null && !oldName.isEmpty()) {
+						// if not, duplicate the old one
+						ItemDefinition newItemDef = Bpmn2ModelerFactory.create(ItemDefinition.class);
+						newItemDef.setItemKind(ItemKind.PHYSICAL);
+						EObject structureRef = ModelUtil.createStringWrapper(oldName);
+						newItemDef.setStructureRef(structureRef);
+						// and add it as a new one
+						definitions.getRootElements().add(newItemDef);
+						ModelUtil.setID(newItemDef);
+					}
+					// and now update the existing item's structureRef
+					oldItemDef.setItemKind(ItemKind.PHYSICAL);
+					EObject structureRef = ModelUtil.createStringWrapper(className);
+					oldItemDef.setStructureRef(structureRef);
+				}
+				else {
+					// create a new ItemDefinition
+					ItemDefinition itemDef = Bpmn2ModelerFactory.create(ItemDefinition.class);
+					itemDef.setItemKind(ItemKind.PHYSICAL);
+					EObject structureRef = ModelUtil.createStringWrapper(className);
+					itemDef.setStructureRef(structureRef);
+					if (ImportUtil.findItemDefinition(definitions, itemDef)==null) {
+			
+						// create a reference to the ImportType as an extension element to the ItemDefinition?
+//						ImportType ref = (ImportType)ModelFactory.eINSTANCE.create(ModelPackage.eINSTANCE.getImportType());
+//						((InternalEObject)ref).eSetProxyURI(EcoreUtil.getURI(newImport));
+//						ModelUtil.addExtensionAttributeValue(itemDef, feature, ref);
+						// Nope, don't need this! The ItemDefinition needs to stick around, otherwise the data types
+						// for process variables and globals would disappear. Besides, jBPM allows data types
+						// (a.k.a. ItemDefinitions) to be defined as sort of "forward references" without actual
+						// knowledge of the physicial structure of the data type - these get resolved (somehow,
+						// through FM maybe?) at runtime.
+						// As a side note: if a type is unknown (i.e. there is no "import") then the structure
+						// will be unknown in java scripts (FormalExpressions).
+			
+						// add the ItemDefinition to the root elements
+						definitions.getRootElements().add(itemDef);
+						ModelUtil.setID(itemDef);
+					}
+				}
+			}
+		});
 		return newImport;
 	}
 	
@@ -200,7 +259,7 @@ public class JbpmModelUtil {
 			itemDef = findOrCreateItemDefinition( context, ((DataType)value).getStringType() );
 		}
 		else if (value instanceof ImportType) {
-			itemDef = findOrCreateItemDefinition( context, (String)value );
+			itemDef = findOrCreateItemDefinition( context, ((ImportType)value).getName() );
 		}
 		else if (value instanceof ItemDefinition) {
 			itemDef = (ItemDefinition)value;

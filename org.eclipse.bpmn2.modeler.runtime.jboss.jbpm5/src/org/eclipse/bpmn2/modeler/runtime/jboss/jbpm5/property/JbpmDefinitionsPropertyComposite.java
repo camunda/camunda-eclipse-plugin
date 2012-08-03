@@ -62,7 +62,8 @@ public class JbpmDefinitionsPropertyComposite extends DefinitionsPropertyComposi
 					{
 						@Override
 						protected EObject addListItem(EObject object, EStructuralFeature feature) {
-							return JbpmModelUtil.addImport(object);
+							String name = JbpmModelUtil.showImportDialog(object);
+							return JbpmModelUtil.addImport(name, object);
 						}
 
 					};

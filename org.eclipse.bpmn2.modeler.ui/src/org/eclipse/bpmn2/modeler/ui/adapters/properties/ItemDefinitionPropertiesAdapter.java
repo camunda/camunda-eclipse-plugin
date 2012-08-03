@@ -60,7 +60,7 @@ public class ItemDefinitionPropertiesAdapter extends ExtendedPropertiesAdapter<I
 				}
 				
 	    		@Override
-				public EObject createObject(Object context, EClass eClass) {
+				public EObject createFeature(Object context, EClass eClass) {
 					final ItemDefinition itemDefinition = adopt(context);
 					EObject structureRef = ModelUtil.createStringWrapper("");
 					InsertionAdapter.add(itemDefinition, ref, structureRef);

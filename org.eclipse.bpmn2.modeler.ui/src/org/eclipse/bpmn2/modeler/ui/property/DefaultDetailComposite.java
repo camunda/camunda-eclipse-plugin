@@ -56,8 +56,15 @@ public class DefaultDetailComposite extends AbstractDetailComposite {
 			return new AbstractPropertiesProvider(object) {
 				public String[] getProperties() {
 					List<String> list = new ArrayList<String>();
+					EClass c = o.eClass();
+					// add name and id attributes first (if any)
+					if (c.getEStructuralFeature("name")!=null)
+						list.add("name");
+					if (c.getEStructuralFeature("id")!=null)
+						list.add("id");
 					for (EStructuralFeature attribute : o.eClass().getEStructuralFeatures()) {
-						list.add(attribute.getName());
+						if (!list.contains(attribute.getName()))
+							list.add(attribute.getName());
 					}
 					// add the anyAttributes
 					List<EStructuralFeature> anyAttributes = ModelUtil.getAnyAttributes(o);

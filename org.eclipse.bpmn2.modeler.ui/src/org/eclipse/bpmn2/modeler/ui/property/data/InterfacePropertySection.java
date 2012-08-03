@@ -21,6 +21,7 @@ import org.eclipse.bpmn2.modeler.ui.property.DefaultDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultListComposite;
 import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -131,11 +132,7 @@ public class InterfacePropertySection extends DefaultPropertySection {
 
 		@Override
 		protected EObject addListItem(EObject object, EStructuralFeature feature) {
-			Interface iface = Bpmn2ModelerFactory.create(Interface.class);
-			Definitions defs = (Definitions)object;
-			defs.getRootElements().add(iface);
-			ModelUtil.setID(iface);
-			iface.setName("New "+iface.getId());
+			Interface iface = (Interface) PropertyUtil.createObject(object.eResource(), PACKAGE.getInterface());
 			
 			EList<EObject> list = (EList<EObject>)object.eGet(feature);
 			list.add(iface);

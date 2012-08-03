@@ -49,13 +49,12 @@ public class DefaultListComposite extends AbstractListComposite {
 			return null;
 		}
 		else {
-			ModelHandler modelHandler = getDiagramEditor().getModelHandler();
 			if (listItemClass==null) {
 				listItemClass = getListItemClassToAdd(listItemClass);
 				if (listItemClass==null)
 					return null; // user cancelled
 			}
-			newItem = modelHandler.create(listItemClass);
+			newItem = PropertyUtil.createFeature(object,feature,listItemClass);
 			list.add(newItem);
 		}
 		return newItem;

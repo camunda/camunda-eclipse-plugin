@@ -207,30 +207,32 @@ public class FeatureDescriptor<T extends EObject> extends ObjectDescriptor<T> {
 		return multiline == 1;
 	}
 	
-	public EObject createObject(Object context) {
-		return createObject(context, null);
+	public EObject createFeature(Object context) {
+		if (context instanceof EClass)
+			return createFeature(object, (EClass)context);
+		return createFeature(context, null);
 	}		
 	
-	public EObject createObject(Object context, EClass eclass) {
+	public EObject createFeature(Object context, EClass eclass) {
 		T object = adopt(context);
-		EObject newObject = null;
+		EObject newFeature = null;
 		try {
 			if (eclass==null)
 				eclass = (EClass)feature.getEType();
 			
 			ModelHandler mh = ModelHandler.getInstance(object);
 			if (mh!=null) {
-				newObject = mh.createStandby(object, feature, eclass);
+				newFeature = mh.createStandby(object, feature, eclass);
 			}
 			else {
 				// object is not yet added to a Resource so use an insertion adapter
 				// to add it later
-				newObject = ModelHandler.createStandby(null, object, feature, eclass);
+				newFeature = ModelHandler.createStandby(null, object, feature, eclass);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return newObject;
+		return newFeature;
 	}
 
 	// NOTE: getValue() and setValue() must be symmetrical; that is, setValue()
