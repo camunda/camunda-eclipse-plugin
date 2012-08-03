@@ -121,7 +121,7 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter<
 		}
 		
 		@Override
-		public EObject createObject(Object context, EClass eClass) {
+		public EObject createFeature(Object context, EClass eClass) {
 			DataAssociation association = adopt(context);
 			// what kind of object should we create? Property or DataStore?
 			if (eClass==null) {

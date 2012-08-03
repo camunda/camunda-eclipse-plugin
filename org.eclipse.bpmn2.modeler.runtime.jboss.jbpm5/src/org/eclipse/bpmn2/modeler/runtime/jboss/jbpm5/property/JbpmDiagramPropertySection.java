@@ -33,6 +33,11 @@ import org.eclipse.swt.SWT;
  */
 public class JbpmDiagramPropertySection extends DefaultPropertySection {
 	
+	
+	public JbpmDiagramPropertySection() {
+		super();
+	}
+
 	@Override
 	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
 		EObject be = super.getBusinessObjectForPictogramElement(pe);

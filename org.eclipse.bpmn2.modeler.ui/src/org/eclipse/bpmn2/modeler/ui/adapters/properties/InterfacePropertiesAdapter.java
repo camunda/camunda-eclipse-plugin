@@ -55,7 +55,7 @@ public class InterfacePropertiesAdapter extends ExtendedPropertiesAdapter<Interf
 				}
 				
 	    		@Override
-				public EObject createObject(Object context, EClass eClass) {
+				public EObject createFeature(Object context, EClass eClass) {
 					final Interface iface = adopt(context);
 
 					EObject impl = ModelUtil.createStringWrapper("");

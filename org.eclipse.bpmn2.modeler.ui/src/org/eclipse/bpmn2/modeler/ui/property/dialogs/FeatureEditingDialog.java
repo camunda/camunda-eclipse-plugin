@@ -73,7 +73,7 @@ public class FeatureEditingDialog extends Dialog {
 			ModelSubclassSelectionDialog dialog = new ModelSubclassSelectionDialog(editor, object, feature);
 			if (dialog.open()==Window.OK){
 				eclass = (EClass)dialog.getResult()[0];
-				newObject = PropertyUtil.createObject(object, feature, eclass);
+				newObject = PropertyUtil.createFeature(object, feature, eclass);
 			}
 			else
 				cancel = true;

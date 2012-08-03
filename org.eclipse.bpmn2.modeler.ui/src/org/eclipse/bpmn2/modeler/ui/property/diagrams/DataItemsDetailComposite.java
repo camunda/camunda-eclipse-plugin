@@ -47,21 +47,11 @@ public class DataItemsDetailComposite extends DefaultDetailComposite {
 		if (propertiesProvider==null) {
 			propertiesProvider = new AbstractPropertiesProvider(object) {
 				String[] properties = new String[] {
-						"rootElements.Process.properties",
-						"rootElements.ItemDefinition",
-						"rootElements.Process.resources",
-						"rootElements.Resource",
-						"rootElements.DataStore",
-						"rootElements.Message",
-						"rootElements.Error",
-						"rootElements.Escalation",
-						"rootElements.Signal",
-						"rootElements.Process.correlationSubscriptions",
-						"rootElements.CorrelationProperty",
-						"rootElements.Process.collaborations",
-						"rootElements.PartnerEntity",
-						"rootElements.PartnerRole",
-						"rootElements.EndPoint",
+						"rootElements#Process.properties",
+						"rootElements#Process.resources",
+						"rootElements#Process.correlationSubscriptions",
+						"rootElements#Process.collaborations",
+						"rootElements#Process.artifacts",
 				};
 				
 				@Override

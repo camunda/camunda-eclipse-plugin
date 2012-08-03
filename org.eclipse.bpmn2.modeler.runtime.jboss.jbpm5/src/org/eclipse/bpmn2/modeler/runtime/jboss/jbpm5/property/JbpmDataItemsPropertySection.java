@@ -13,6 +13,7 @@
 
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 
+import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.GlobalType;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ImportType;
@@ -27,6 +28,7 @@ import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite.ListComposite
 import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite.ListCompositeColumnProvider;
 import org.eclipse.bpmn2.modeler.ui.property.TableColumn;
 import org.eclipse.bpmn2.modeler.ui.property.diagrams.DataItemsPropertySection;
+import org.eclipse.bpmn2.modeler.ui.property.diagrams.ItemDefinitionListComposite;
 import org.eclipse.bpmn2.modeler.ui.property.diagrams.PropertyListComposite;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.SchemaImportDialog;
 import org.eclipse.bpmn2.modeler.ui.property.editors.ComboObjectEditor;
@@ -49,6 +51,7 @@ public class JbpmDataItemsPropertySection extends DataItemsPropertySection {
 	static {
 		// register the DataStoreDetailComposite for rendering DataStore objects
 		PropertiesCompositeFactory.register(GlobalType.class, GlobalTypeDetailComposite.class);
+		PropertiesCompositeFactory.register(ItemDefinition.class, JbpmItemDefinitionDetailComposite.class);
 		PropertiesCompositeFactory.register(Property.class, JbpmPropertyListComposite.class);
 	}
 
@@ -78,30 +81,8 @@ public class JbpmDataItemsPropertySection extends DataItemsPropertySection {
 					}
 					
 					protected EObject createObject() {
-						String name = null;
-						ImportType newImport = null;
-						SchemaImportDialog dialog = new SchemaImportDialog(getShell(), SchemaImportDialog.ALLOW_JAVA);
-						if (dialog.open() == Window.OK) {
-							Object result[] = dialog.getResult();
-							if (result.length == 1 && result[0] instanceof Class) {
-								name = ((Class)result[0]).getName();
-							}
-						}
-
-						if (name!=null && !name.isEmpty()) {
-							newImport = (ImportType)ModelFactory.eINSTANCE.createImportType();
-							newImport.setName(name);
-							final EStructuralFeature importFeature = ModelPackage.eINSTANCE.getDocumentRoot_ImportType();
-							final ImportType value = newImport;
-							TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
-							domain.getCommandStack().execute(new RecordingCommand(domain) {
-								@Override
-								protected void doExecute() {
-									JbpmModelUtil.addImport(object);
-								}
-							});
-						}
-						return newImport;
+						String name = JbpmModelUtil.showImportDialog(object);
+						return JbpmModelUtil.addImport(name, object);
 					}
 				};
 				editor.createControl(parent,label);

@@ -96,8 +96,16 @@ public abstract class ObjectEditor {
 	protected boolean updateObject(final Object result) {
 		TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
 		boolean success = PropertyUtil.setValue(domain, object, feature, result);
-		if (!success || getDiagramEditor().getDiagnostics()!=null) {
-			ErrorUtils.showErrorMessage(getDiagramEditor().getDiagnostics().getMessage());
+		if (!success) {
+			if (getDiagramEditor().getDiagnostics()!=null) {
+				ErrorUtils.showErrorMessage(getDiagramEditor().getDiagnostics().getMessage());
+			}
+			else {
+				ErrorUtils.showErrorMessage(
+						"Can't set '"+PropertyUtil.getDisplayName(object)+
+						"' "+PropertyUtil.getLabel(object,feature)+
+						" with value '"+PropertyUtil.getDisplayName(result)+"'");
+			}
 			return false;
 		}
 		return true;

@@ -155,13 +155,6 @@
 		</propertyTab>
 
 		<propertyTab
-			id="org.eclipse.bpmn2.modeler.advanced.tab"
-			class="org.eclipse.bpmn2.modeler.ui.property.AdvancedPropertySection"
-			afterTab="org.eclipse.bpmn2.modeler.main.tab"
-			label="Advanced">
-		</propertyTab>
-
-		<propertyTab
 			id="org.eclipse.bpmn2.modeler.process.diagram.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.diagrams.ProcessDiagramPropertySection"
 			type="org.eclipse.bpmn2.di.BPMNDiagram"
@@ -170,11 +163,26 @@
 		</propertyTab>
 
 		<propertyTab
+			id="org.eclipse.bpmn2.modeler.interface.tab"
+			class="org.eclipse.bpmn2.modeler.ui.property.data.InterfacePropertySection"
+			afterTab="org.eclipse.bpmn2.modeler.process.diagram.tab"
+			label="Interfaces">
+		</propertyTab>
+
+		<propertyTab
 			id="org.eclipse.bpmn2.modeler.definitions.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.diagrams.DefinitionsPropertySection"
 			type="org.eclipse.bpmn2.di.BPMNDiagram"
-			afterTab="org.eclipse.bpmn2.modeler.process.diagram.tab"
+			afterTab="org.eclipse.bpmn2.modeler.interface.tab"
 			label="Definitions">
+		</propertyTab>
+
+		<propertyTab
+			id="org.eclipse.bpmn2.modeler.dataitems.tab"
+			class="org.eclipse.bpmn2.modeler.ui.property.diagrams.DataItemsPropertySection"
+			type="org.eclipse.bpmn2.di.BPMNDiagram"
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			label="Data Items">
 		</propertyTab>
 
 		<propertyTab
@@ -203,14 +211,6 @@
 			class="org.eclipse.bpmn2.modeler.ui.property.data.DataObjectReferencePropertySection"
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 			label="Reference">
-		</propertyTab>
-
-		<propertyTab
-			id="org.eclipse.bpmn2.modeler.dataitems.tab"
-			class="org.eclipse.bpmn2.modeler.ui.property.diagrams.DataItemsPropertySection"
-			type="org.eclipse.bpmn2.di.BPMNDiagram"
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
-			label="Data Items">
 		</propertyTab>
 
 		<propertyTab
@@ -355,13 +355,6 @@
 			afterTab="org.eclipse.bpmn2.modeler.task.tab"
 			label="I/O Parameters">
 		</propertyTab>
-
-		<propertyTab
-			id="org.eclipse.bpmn2.modeler.interface.tab"
-			class="org.eclipse.bpmn2.modeler.ui.property.data.InterfacePropertySection"
-			afterTab="org.eclipse.bpmn2.modeler.main.tab"
-			label="Interfaces">
-		</propertyTab>
 <!--
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.activity.input.tab"
@@ -385,6 +378,13 @@
 			type="org.eclipse.bpmn2.Gateway"
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 			label="Gateway">
+		</propertyTab>
+
+		<propertyTab
+			id="org.eclipse.bpmn2.modeler.advanced.tab"
+			class="org.eclipse.bpmn2.modeler.ui.property.AdvancedPropertySection"
+			afterTab="org.eclipse.bpmn2.modeler.main.tab"
+			label="Advanced">
 		</propertyTab>
 
 		<modelEnablement runtimeId="org.eclipse.bpmn2.modeler.runtime.none" type="Process">

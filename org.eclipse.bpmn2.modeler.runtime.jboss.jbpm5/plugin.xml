@@ -21,12 +21,27 @@
 			uri="http://www.jboss.org/drools"
 			resourceFactory="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.util.ModelResourceFactoryImpl">
 		</model>
+		
+		<propertyTab
+			id="bpmn2.jbpm.description.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.description.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmDescriptionPropertySection"
+			label="Description">
+		</propertyTab>
+
+		<propertyTab
+			id="bpmn2.jbpm.diagram.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.process.diagram.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmDiagramPropertySection"
+			label="Diagram">
+		</propertyTab>
 
 		<propertyTab
 			id="bpmn2.jbpm.definitions.tab"
 			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmDefinitionsPropertySection"
 			type="org.eclipse.bpmn2.di.BPMNDiagram"
 			replaceTab="org.eclipse.bpmn2.modeler.definitions.tab"
+			afterTab="org.eclipse.bpmn2.modeler.interface.tab"
 			label="Definitions">
 		</propertyTab>
 
@@ -71,20 +86,6 @@
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmEmptyPropertySection"
 			label="Empty">
-		</propertyTab>
-
-		<propertyTab
-			id="bpmn2.jbpm.diagram.tab"
-			replaceTab="org.eclipse.bpmn2.modeler.process.diagram.tab"
-			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmDiagramPropertySection"
-			label="Diagram">
-		</propertyTab>
-		
-		<propertyTab
-			id="bpmn2.jbpm.description.tab"
-			replaceTab="org.eclipse.bpmn2.modeler.description.tab"
-			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmDescriptionPropertySection"
-			label="Description">
 		</propertyTab>
 
 		<propertyTab

@@ -41,25 +41,25 @@ public class ResourceRoleListComposite extends DefaultListComposite {
 
 	@Override
 	protected EObject addListItem(EObject object, EStructuralFeature feature) {
-		EList<ResourceRole> roles = (EList)object.eGet(feature);
-		// generate a unique parameter name
-		String base = "Role";
-		int suffix = 1;
-		String name = base + suffix;
-		for (;;) {
-			boolean found = false;
-			for (ResourceRole p : roles) {
-				if (name.equals(p.getName()) || name.equals(p.getId())) {
-					found = true;
-					break;
-				}
-			}
-			if (!found)
-				break;
-			name = base + ++suffix;
-		}
+//		EList<ResourceRole> roles = (EList)object.eGet(feature);
+//		// generate a unique parameter name
+//		String base = "Role";
+//		int suffix = 1;
+//		String name = base + suffix;
+//		for (;;) {
+//			boolean found = false;
+//			for (ResourceRole p : roles) {
+//				if (name.equals(p.getName()) || name.equals(p.getId())) {
+//					found = true;
+//					break;
+//				}
+//			}
+//			if (!found)
+//				break;
+//			name = base + ++suffix;
+//		}
 		ResourceRole role  = (ResourceRole)super.addListItem(object, feature);
-		role.setName(name);
+//		role.setName(name);
 		return role;
 	}
 }

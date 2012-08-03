@@ -81,13 +81,19 @@ public class InsertionAdapter extends EContentAdapter {
 	public void notifyChanged(Notification notification) {
 		super.notifyChanged(notification);
 		if (notification.getNotifier() == value) {
+			// execute if an attribute in the new value has changed
 			executeIfNeeded(value);
+		}
+		else if (notification.getNotifier()==object && notification.getNewValue()==value) {
+			// if the new value has been added to the object, we can remove this adapter
+			object.eAdapters().remove(this);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public void execute() {
 		// remove this adapter from the value - this adapter is a one-shot deal!
+		object.eAdapters().remove(this);
 		executeIfNeeded(object);
 		value.eAdapters().remove(this);
 		// set the value in the object
@@ -177,5 +183,13 @@ public class InsertionAdapter extends EContentAdapter {
 				return insertionAdapter.getResource();
 		}
 		return resource;
+	}
+	
+	public static Resource getResource(EObject object) {
+		InsertionAdapter adapter = AdapterUtil.adapt(object, InsertionAdapter.class);
+		if (adapter!=null) {
+			return adapter.getResource();
+		}
+		return object.eResource();
 	}
 }

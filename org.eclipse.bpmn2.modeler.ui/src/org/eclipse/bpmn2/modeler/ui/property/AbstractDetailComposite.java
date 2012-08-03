@@ -482,15 +482,7 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 		if (feature instanceof EReference) {
 			Object value = object.eGet(feature);
 			if (value==null) {
-				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-					@Override
-					protected void doExecute() {
-						Object newValue = FACTORY.create(((EReference) feature).getEReferenceType());
-						object.eSet(feature, newValue);
-						ModelUtil.setID((EObject)newValue);
-					}
-				});
-				value = object.eGet(feature);
+				value = PropertyUtil.createFeature(object, feature);
 			}
 			if (value instanceof EObject) {
 				objectStack.push((EObject)value);

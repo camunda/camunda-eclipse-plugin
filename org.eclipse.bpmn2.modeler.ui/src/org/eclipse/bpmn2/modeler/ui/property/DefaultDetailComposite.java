@@ -56,8 +56,15 @@ public class DefaultDetailComposite extends AbstractDetailComposite {
 			return new AbstractPropertiesProvider(object) {
 				public String[] getProperties() {
 					List<String> list = new ArrayList<String>();
+					EClass c = o.eClass();
+					// add name and id attributes first (if any)
+					if (c.getEStructuralFeature("name")!=null)
+						list.add("name");
+					if (c.getEStructuralFeature("id")!=null)
+						list.add("id");
 					for (EStructuralFeature attribute : o.eClass().getEStructuralFeatures()) {
-						list.add(attribute.getName());
+						if (!list.contains(attribute.getName()))
+							list.add(attribute.getName());
 					}
 					// add the anyAttributes
 					List<EStructuralFeature> anyAttributes = ModelUtil.getAnyAttributes(o);
@@ -95,28 +102,37 @@ public class DefaultDetailComposite extends AbstractDetailComposite {
 		return composite;
 	}
 	
+	/**
+	 * "rootElements#Process.resources#HumanPerformer"
+	 * @param be
+	 * @param property
+	 * @return
+	 */
 	protected Composite bindProperty(EObject be, String property) {
 		Composite composite = null;
-		String[] names = property.split("\\.");
-		String name0 = names[0];
-		EStructuralFeature feature = getFeature(be,name0);
+		String[] propArray = property.split("\\.");
+		String prop0 = propArray[0];
+		String[] featureAndClassArray = prop0.split("#");
+		String featureName = featureAndClassArray[0];
+		EStructuralFeature feature = getFeature(be,featureName);
 		EClass eclass = null;
-		if (names.length>1) {
-			eclass = (EClass)Bpmn2PackageImpl.eINSTANCE.getEClassifier(names[1]);
+		if (featureAndClassArray.length>1) {
+			String className = featureAndClassArray[1];
+			eclass = (EClass)Bpmn2PackageImpl.eINSTANCE.getEClassifier(className);
 			if (eclass==null)
-				eclass = (EClass) getDiagramEditor().getTargetRuntime().getModelDescriptor().getEPackage().getEClassifier(names[1]);
+				eclass = (EClass) getDiagramEditor().getTargetRuntime().getModelDescriptor().getEPackage().getEClassifier(className);
 			if (eclass!=null) {
 				if (!modelEnablement.isEnabled(eclass))
 					return null;
 			}
 		}
 		
-		int next = (eclass==null) ? 1 : 2;
+		// reconstruct the remainder of the property string (if any)
 		property = "";
-		for (int i=next; i<names.length; ++i) {
+		for (int i=1; i<propArray.length; ++i) {
 			if (!property.isEmpty())
 				property += ".";
-			property += names[i];
+			property += propArray[i];
 		}
 		
 		if (!property.isEmpty()) {
@@ -126,9 +142,11 @@ public class DefaultDetailComposite extends AbstractDetailComposite {
 				if (value instanceof EList) {
 					for (Object o : (EList)value) {
 						if (eclass.isInstance(o)) {
+							propArray = property.split("[\\.#]");
+							featureName = propArray[0];
+							feature = getFeature((EObject)o,featureName);
 							composite = bindProperty((EObject)o, property);
 							if (composite instanceof AbstractListComposite) {
-								feature = getFeature((EObject)o,property);
 								((AbstractListComposite)composite).setTitle(
 										PropertyUtil.getLabel((EObject)o,feature)+
 										" for "+
@@ -172,21 +190,6 @@ public class DefaultDetailComposite extends AbstractDetailComposite {
 			EStructuralFeature feature;
 			for (String property : properties) {
 				bindProperty(be,property);
-//				EClass eItemClass = null;
-//				String featureName = property;
-//				if (property.contains(".")) {
-//					String[] names = property.split("\\.");
-//					featureName = names[0];
-//					eItemClass = (EClass)Bpmn2PackageImpl.eINSTANCE.getEClassifier(names[1]);
-//					if (eItemClass==null)
-//						eItemClass = (EClass) getDiagramEditor().getTargetRuntime().getModelDescriptor().getEPackage().getEClassifier(names[1]);
-//					if (eItemClass!=null) {
-//						if (!modelEnablement.isEnabled(eItemClass))
-//							continue;
-//					}
-//				}
-//				feature = getFeature(be,featureName);
-//				bindFeature(be,feature,eItemClass);
 			}
 		}
 		

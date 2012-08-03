@@ -26,6 +26,7 @@ import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.swt.SWT;
@@ -249,17 +250,28 @@ public class PropertyUtil {
 		return true;
 	}
 	
-	public static EObject createObject(EObject object, EStructuralFeature feature) {
+	public static EObject createObject(Object object) {
+		return createObject(null,object);
+	}		
+	
+	public static EObject createObject(Resource resource, Object object) {
 		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
 		if (adapter!=null)
-			return adapter.getFeatureDescriptor(feature).createObject(object);
+			return adapter.getObjectDescriptor().createObject(resource, object);
 		return null;
 	}
 
-	public static EObject createObject(EObject object, EStructuralFeature feature, EClass eclass) {
+	public static EObject createFeature(EObject object, EStructuralFeature feature) {
 		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
 		if (adapter!=null)
-			return adapter.getFeatureDescriptor(feature).createObject(object, eclass);
+			return adapter.getFeatureDescriptor(feature).createFeature(object);
+		return null;
+	}
+
+	public static EObject createFeature(EObject object, EStructuralFeature feature, EClass eclass) {
+		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
+		if (adapter!=null)
+			return adapter.getFeatureDescriptor(feature).createFeature(object, eclass);
 		return null;
 	}
 

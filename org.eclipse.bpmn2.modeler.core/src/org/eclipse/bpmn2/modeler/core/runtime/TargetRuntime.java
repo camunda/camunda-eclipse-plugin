@@ -582,25 +582,28 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 		return new ShapeStyle(ss);
 	}
 
-	private static void addAfterTab(ArrayList<Bpmn2TabDescriptor> list, Bpmn2TabDescriptor tab) {
+	private void addAfterTab(ArrayList<Bpmn2TabDescriptor> list, Bpmn2TabDescriptor tab) {
 		
 		getAllRuntimes();
 		String afterTab = tab.getAfterTab();
 		if (afterTab!=null && !afterTab.isEmpty() && !afterTab.equals("top")) {
+			String id = tab.getId();
 			for (TargetRuntime rt : targetRuntimes) {
 				for (Bpmn2TabDescriptor td : rt.getTabs()) {
 					if (tab!=td) {
 						if (td.getId().equals(afterTab) || td.isReplacementForTab(afterTab)) {
 							addAfterTab(list,td);
-							if (!list.contains(td))
-								list.add(td);
+							if (rt==this || rt==TargetRuntime.getDefaultRuntime()) {
+								if (!list.contains(td))
+									list.add(td);
+							}
 						}
 					}
 				}
 			}
 		}
 	}
-
+	
 	private ArrayList<Bpmn2TabDescriptor> getTabs() {
 		if (tabDescriptors==null)
 			tabDescriptors = new ArrayList<Bpmn2TabDescriptor>();
@@ -629,9 +632,6 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 	 */
 	public ArrayList<Bpmn2TabDescriptor> getTabDescriptors() {
 		ArrayList<Bpmn2TabDescriptor> list = new ArrayList<Bpmn2TabDescriptor>();
-		if (this!=getRuntime(DEFAULT_RUNTIME_ID)) {
-			list = getRuntime(DEFAULT_RUNTIME_ID).getTabDescriptors();
-		}
 		for (Bpmn2TabDescriptor tab : getTabs()) {
 			addAfterTab(list, tab);
 			if (!list.contains(tab))

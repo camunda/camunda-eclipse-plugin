@@ -44,7 +44,6 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 		super(parent, style);
 	}
 
-	private AbstractPropertiesProvider propertiesProvider;
 	private NamespaceListComposite namespacesTable;
 	
 	/**
@@ -59,14 +58,25 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 		if (propertiesProvider==null) {
 			propertiesProvider = new AbstractPropertiesProvider(object) {
 				String[] properties = new String[] {
+						"imports",
 						"name",
 						"targetNamespace",
 						"typeLanguage",
 						"expressionLanguage",
 						"exporter",
 						"exporterVersion",
-						"imports",
-						"relationships"
+						"rootElements#ItemDefinition",
+						"relationships",
+						"rootElements#PartnerEntity",
+						"rootElements#PartnerRole",
+						"rootElements#EndPoint",
+						"rootElements#Resource",
+						"rootElements#DataStore",
+						"rootElements#Message",
+						"rootElements#Error",
+						"rootElements#Escalation",
+						"rootElements#Signal",
+						"rootElements#CorrelationProperty",
 				};
 				
 				@Override
@@ -92,24 +102,21 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 	}
 
 	@Override
-	protected AbstractListComposite bindList(EObject object, EStructuralFeature feature) {
-		if (modelEnablement.isEnabled(object.eClass(), feature)) {
-			if ("imports".equals(feature.getName())) {
-				ImportListComposite importsTable = new ImportListComposite(propertySection);
-				EStructuralFeature importsFeature = object.eClass().getEStructuralFeature("imports");
-				importsTable.bindList(object, importsFeature);
-				return importsTable;
-			}
-			else if ("relationships".equals(feature.getName())) {
-				DefaultListComposite table = new DefaultListComposite(propertySection);
-				table.bindList(getBusinessObject(), feature);
-				return table;
-			}
-			else {
-				return super.bindList(object, feature);
-			}
+	protected AbstractListComposite bindList(EObject object, EStructuralFeature feature, EClass listItemClass) {
+		if ("imports".equals(feature.getName())) {
+			ImportListComposite importsTable = new ImportListComposite(propertySection);
+			EStructuralFeature importsFeature = object.eClass().getEStructuralFeature("imports");
+			importsTable.bindList(object, importsFeature);
+			return importsTable;
 		}
-		return null;
+		else if ("relationships".equals(feature.getName())) {
+			DefaultListComposite table = new DefaultListComposite(propertySection);
+			table.bindList(getBusinessObject(), feature);
+			return table;
+		}
+		else {
+			return super.bindList(object, feature, listItemClass);
+		}
 	}
 
 	public class NamespaceListComposite extends DefaultListComposite {
@@ -125,7 +132,6 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 			Map<String,String> map = root.getXMLNSPrefixMap();
 			NamespacesEditingDialog dialog = new NamespacesEditingDialog(getShell(), "Create New Namespace", map, "","");
 			if (dialog.open() == Window.OK) {
-				System.out.println(dialog.getPrefix()+" : "+dialog.getNamespace());
 				map.put(dialog.getPrefix(), dialog.getNamespace());
 			}
 			return null;

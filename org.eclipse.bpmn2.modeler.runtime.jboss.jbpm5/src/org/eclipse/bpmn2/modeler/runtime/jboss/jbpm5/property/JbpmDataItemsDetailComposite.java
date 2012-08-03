@@ -54,14 +54,8 @@ public class JbpmDataItemsDetailComposite extends DataItemsDetailComposite {
 		if (propertiesProvider==null) {
 			propertiesProvider = new AbstractPropertiesProvider(object) {
 				String[] properties = new String[] {
-						"rootElements.Process.properties",
-						"rootElements.ItemDefinition",
-						"rootElements.Process.resources",
-						"rootElements.Resource",
-						"rootElements.Message",
-						"rootElements.Error",
-						"rootElements.Escalation",
-						"rootElements.Signal"
+						"rootElements#Process.properties",
+						"rootElements#Process.resources",
 				};
 				
 				@Override

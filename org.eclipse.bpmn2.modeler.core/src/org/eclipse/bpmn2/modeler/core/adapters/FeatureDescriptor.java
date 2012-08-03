@@ -27,6 +27,7 @@ import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EObjectEList;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -207,30 +208,33 @@ public class FeatureDescriptor<T extends EObject> extends ObjectDescriptor<T> {
 		return multiline == 1;
 	}
 	
-	public EObject createObject(Object context) {
-		return createObject(context, null);
+	public EObject createFeature(Object context) {
+		if (context instanceof EClass)
+			return createFeature(object, (EClass)context);
+		return createFeature(context, null);
 	}		
 	
-	public EObject createObject(Object context, EClass eclass) {
+	public EObject createFeature(Object context, EClass eclass) {
+		return createFeature(object.eResource(),context,eclass);
+	}
+	
+	public EObject createFeature(Resource resource, Object context, EClass eclass) {
 		T object = adopt(context);
-		EObject newObject = null;
+		EObject newFeature = null;
 		try {
 			if (eclass==null)
 				eclass = (EClass)feature.getEType();
 			
-			ModelHandler mh = ModelHandler.getInstance(object);
-			if (mh!=null) {
-				newObject = mh.createStandby(object, feature, eclass);
+			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(eclass, ExtendedPropertiesAdapter.class);
+			if (adapter!=null) {
+				newFeature = adapter.getObjectDescriptor().createObject(resource, eclass);
+				object.eAdapters().add(new InsertionAdapter(object, feature, newFeature));
 			}
-			else {
-				// object is not yet added to a Resource so use an insertion adapter
-				// to add it later
-				newObject = ModelHandler.createStandby(null, object, feature, eclass);
-			}
-		} catch (IOException e) {
+			
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return newObject;
+		return newFeature;
 	}
 
 	// NOTE: getValue() and setValue() must be symmetrical; that is, setValue()
