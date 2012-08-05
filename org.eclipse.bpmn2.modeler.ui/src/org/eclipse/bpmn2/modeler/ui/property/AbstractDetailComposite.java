@@ -129,7 +129,6 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 		cleanBindings();
 		if (businessObject != null) {
 			createBindings(businessObject);
-			PropertyUtil.recursivelayout(getParent());
 		}
 	}
 
@@ -432,7 +431,7 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 
 			if (getDiagramEditor().getPreferences().getExpandProperties()) {
 				AbstractDetailComposite composite = null;
-				if (propertySection!=null) {
+				if (getPropertySection()!=null) {
 					composite = PropertiesCompositeFactory.createDetailComposite(
 						reference.getEReferenceType().getInstanceClass(), propertySection);
 				}
@@ -511,7 +510,7 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 			Class clazz = (listItemClass!=null) ?
 					listItemClass.getInstanceClass() :
 					feature.getEType().getInstanceClass();
-			if (propertySection!=null) {
+			if (getPropertySection()!=null) {
 				tableComposite = PropertiesCompositeFactory.createListComposite(clazz, propertySection);
 			}
 			else {

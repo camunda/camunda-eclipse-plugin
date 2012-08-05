@@ -229,7 +229,6 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 						sectionRoot.setBusinessObject(be);
 						if (parent.isLayoutDeferred())
 							parent.setLayoutDeferred(false);
-						PropertyUtil.recursivelayout(sectionRoot);
 					}
 				}
 			}

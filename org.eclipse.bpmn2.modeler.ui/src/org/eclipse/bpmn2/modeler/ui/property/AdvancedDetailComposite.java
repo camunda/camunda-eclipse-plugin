@@ -242,8 +242,7 @@ public class AdvancedDetailComposite extends AbstractDetailComposite {
 			detailsSection.setText(name+" Details");
 			detailsSection.setVisible(true);
 
-			PropertyUtil.recursivelayout(AdvancedDetailComposite.this);
-			propertySection.tabbedPropertySheetPage.resizeScrolledComposite();
+			redrawPage();
 		}
 	}
 	
@@ -348,7 +347,7 @@ public class AdvancedDetailComposite extends AbstractDetailComposite {
 			return;
 		
 		Collection<CommandParameter> desc = (Collection<CommandParameter>) itemProviderAdapter.getNewChildDescriptors(
-				baseElement, propertySection.editor.getEditingDomain(), null);
+				baseElement, getDiagramEditor().getEditingDomain(), null);
 
 		EList<EReference> eAllContainments = baseElement.eClass().getEAllContainments();
 		List<Action>items = new ArrayList<Action>();
@@ -417,7 +416,7 @@ public class AdvancedDetailComposite extends AbstractDetailComposite {
 		return new Action(prefix) {
 			@Override
 			public void run() {
-				TransactionalEditingDomain domain = propertySection.editor.getEditingDomain();
+				TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
 				domain.getCommandStack().execute(new RecordingCommand(domain) {
 					@Override
 					protected void doExecute() {
@@ -473,14 +472,14 @@ public class AdvancedDetailComposite extends AbstractDetailComposite {
 
 				final EObject container = baseElement.eContainer();
 				final Object eGet = container.eGet(baseElement.eContainingFeature());
-				TransactionalEditingDomain domain = propertySection.editor.getEditingDomain();
+				TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
 
 				domain.getCommandStack().execute(new RecordingCommand(domain) {
 					@SuppressWarnings("rawtypes")
 					@Override
 					protected void doExecute() {
 						List<PictogramElement> pictogramElements = GraphitiUi.getLinkService().getPictogramElements(
-								propertySection.editor.getDiagramTypeProvider().getDiagram(), baseElement);
+								getDiagramEditor().getDiagramTypeProvider().getDiagram(), baseElement);
 						if (eGet instanceof EList) {
 							((EList) eGet).remove(baseElement);
 						} else {

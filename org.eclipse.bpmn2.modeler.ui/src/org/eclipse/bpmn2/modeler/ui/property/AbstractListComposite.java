@@ -460,15 +460,14 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 					detailSection.setText(PropertyUtil.getLabel(o)+" Details");
 				((AbstractDetailComposite)detailComposite).setBusinessObject(o);
 				enable = detailComposite.getChildren().length>0;
+				tableSection.setExpanded(true);
 			}
 		}
 		detailSection.setVisible(enable);
 		detailSection.setExpanded(enable);
 		if (editAction!=null)
 			editAction.setChecked(enable);
-//		PropertyUtil.recursivelayout(detailSection);
-//		sashForm.layout(true);
-//		redrawPage();
+		redrawPage();
 	}
 	
 	@Override
@@ -511,15 +510,6 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 			}
 		}
 		return columnProvider.getColumns().size();
-	}
-
-	protected void redrawPage() {
-		if (propertySection!=null)
-			propertySection.layout();
-		else {
-			PropertyUtil.recursivelayout(this);
-			getParent().layout();
-		}
 	}
 
 	private Section createListSection(Composite parent, String label) {

@@ -94,7 +94,7 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 		if (namespacesTable!=null)
 			namespacesTable.dispose();
 		
-		namespacesTable = new NamespaceListComposite(propertySection);
+		namespacesTable = new NamespaceListComposite(getPropertySection());
 		DefinitionsImpl definitions = (DefinitionsImpl)getBusinessObject();
 		DocumentRoot root = (DocumentRoot) definitions.eContainer();
 		namespacesTable.bindList(root, Bpmn2Package.eINSTANCE.getDocumentRoot_XMLNSPrefixMap());
@@ -104,13 +104,13 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 	@Override
 	protected AbstractListComposite bindList(EObject object, EStructuralFeature feature, EClass listItemClass) {
 		if ("imports".equals(feature.getName())) {
-			ImportListComposite importsTable = new ImportListComposite(propertySection);
+			ImportListComposite importsTable = new ImportListComposite(getPropertySection());
 			EStructuralFeature importsFeature = object.eClass().getEStructuralFeature("imports");
 			importsTable.bindList(object, importsFeature);
 			return importsTable;
 		}
 		else if ("relationships".equals(feature.getName())) {
-			DefaultListComposite table = new DefaultListComposite(propertySection);
+			DefaultListComposite table = new DefaultListComposite(getPropertySection());
 			table.bindList(getBusinessObject(), feature);
 			return table;
 		}

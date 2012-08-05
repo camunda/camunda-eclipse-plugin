@@ -216,7 +216,7 @@ public class DefaultDetailComposite extends AbstractDetailComposite {
 	}
 	
 	private void createMissingPropertiesLabel(EObject be) {
-		if (propertySection!=null) {
+		if (getDiagramEditor()!=null) {
 			String tab = propertySection.tabbedPropertySheetPage.getSelectedTab().getLabel();
 //			createLabel(this,"No "+tab+" Properties for this "+PropertyUtil.getText(be));
 		}
