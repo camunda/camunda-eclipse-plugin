@@ -224,7 +224,11 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 				if (sectionRoot!=null) {
 					if (sectionRoot.getBusinessObject() != be) {
 						sectionRoot.setDiagramEditor((BPMN2Editor) getDiagramEditor());
+						if (!parent.isLayoutDeferred())
+							parent.setLayoutDeferred(true);
 						sectionRoot.setBusinessObject(be);
+						if (parent.isLayoutDeferred())
+							parent.setLayoutDeferred(false);
 						PropertyUtil.recursivelayout(sectionRoot);
 					}
 				}

@@ -91,8 +91,6 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 	public static final int CUSTOM_BUTTONS_MASK = (
 			ADD_BUTTON|REMOVE_BUTTON|MOVE_BUTTONS|EDIT_BUTTON);
 
-//	protected BPMN2Editor bpmn2Editor;
-
 	protected EStructuralFeature feature;
 	
 	// widgets
@@ -102,18 +100,14 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 	
 	Table table;
 	TableViewer tableViewer;
-	
-	Composite tableAndButtonsComposite;
-	Composite buttonsComposite;
-	Composite tableComposite;
 	AbstractDetailComposite detailComposite;
 	
 	boolean removeIsDelete = false;
-	Button addButton;
-	Button removeButton;
-	Button upButton;
-	Button downButton;
-	Button editButton;
+	Action addAction;
+	Action removeAction;
+	Action upAction;
+	Action downAction;
+	Action editAction;
 	
 	protected ListCompositeColumnProvider columnProvider;
 	protected ListCompositeContentProvider contentProvider;
@@ -321,39 +315,6 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 			tableSection.setText(title);
 	}
 	
-	protected Section createDetailSection(Composite parent, String label) {
-		Section section = toolkit.createSection(parent,
-				ExpandableComposite.LEFT_TEXT_CLIENT_ALIGNMENT |
-				ExpandableComposite.EXPANDED |
-				ExpandableComposite.TITLE_BAR);
-		section.setText(label+" Details");
-		section.setVisible(false);
-
-	    ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
-	    ToolBar toolbar = toolBarManager.createControl(section);
-	    final Cursor handCursor = new Cursor(Display.getCurrent(),SWT.CURSOR_HAND);
-	    toolbar.setCursor(handCursor);
-	    // Cursor needs to be explicitly disposed
-	    toolbar.addDisposeListener(new DisposeListener() {
-	        public void widgetDisposed(DisposeEvent e) {
-	            if ((handCursor != null) && (handCursor.isDisposed() == false)) {
-	                handCursor.dispose();
-	            }
-	        }
-	    });
-	    ImageDescriptor id = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/16/close.png");
-	    toolBarManager.add( new Action("Close", id) {
-			@Override
-			public void run() {
-				super.run();
-				showDetails(false);
-			}
-	    });
-	    toolBarManager.update(true);
-	    section.setTextClient(toolbar);
-	    return section;
-	}
-	
 	public void bindList(final EObject theobject, final EStructuralFeature thefeature) {
 		if (!(theobject.eGet(thefeature) instanceof EList<?>)) {
 			return;
@@ -385,16 +346,7 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 			sashForm = new SashForm(this, SWT.NONE);
 			sashForm.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 3, 1));
 			
-			tableSection = toolkit.createSection(sashForm,
-					ExpandableComposite.TWISTIE |
-					ExpandableComposite.COMPACT |
-					ExpandableComposite.TITLE_BAR);
-			tableSection.setText(label+" List");
-
-			tableComposite = toolkit.createComposite(tableSection, SWT.NONE);
-			tableSection.setClient(tableComposite);
-			tableComposite.setLayout(new GridLayout(3, false));
-			createTableAndButtons(tableComposite,style);
+			tableSection = createListSection(sashForm,label);
 			
 			if ((style & SHOW_DETAILS)!=0) {
 				detailSection = createDetailSection(sashForm, label);
@@ -404,8 +356,8 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 					public void expansionStateChanging(ExpansionEvent e) {
 						if (!e.getState()) {
 							detailSection.setVisible(false);
-							if (editButton!=null)
-								editButton.setSelection(false);
+							if (editAction!=null)
+								editAction.setChecked(false);
 						}
 					}
 	
@@ -437,7 +389,7 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 				sashForm.setWeights(new int[] { 1 });
 		}
 		else {
-			createTableAndButtons(this,style);
+			tableSection = createListSection(sashForm,label);
 		}
 		
 		////////////////////////////////////////////////////////////
@@ -462,127 +414,23 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 				if ((style & SHOW_DETAILS)!=0 && (style & EDIT_BUTTON)==0) {
 					showDetails(enable);
 				}
-				if (removeButton!=null)
-					removeButton.setEnabled(enable);
-				if (editButton!=null)
-					editButton.setEnabled(enable);
-				if (upButton!=null && downButton!=null) {
+				if (removeAction!=null)
+					removeAction.setEnabled(enable);
+				if (editAction!=null)
+					editAction.setEnabled(enable);
+				if (upAction!=null && downAction!=null) {
 					int i = table.getSelectionIndex();
 					if (i>0)
-						upButton.setEnabled(true);
+						upAction.setEnabled(true);
 					else
-						upButton.setEnabled(false);
+						upAction.setEnabled(false);
 					if (i>=0 && i<table.getItemCount()-1)
-						downButton.setEnabled(true);
+						downAction.setEnabled(true);
 					else
-						downButton.setEnabled(false);
+						downAction.setEnabled(false);
 				}
 			}
 		});
-		
-		if (addButton!=null) {
-			addButton.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-						@Override
-						protected void doExecute() {
-							EObject newItem = addListItem(businessObject,feature);
-							if (newItem!=null) {
-								final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
-								tableViewer.setInput(list);
-								tableViewer.setSelection(new StructuredSelection(newItem));
-							}
-						}
-					});
-				}
-			});
-		}
-
-		if (removeButton!=null) {
-			removeButton.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					showDetails(false);
-					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-						@Override
-						protected void doExecute() {
-							int i = table.getSelectionIndex();
-							Object item;
-							if (removeIsDelete)
-								item = deleteListItem(businessObject,feature,i);
-							else
-								item = removeListItem(businessObject,feature,i);
-							
-							if (item!=null) {
-								final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
-								tableViewer.setInput(list);
-								if (i>=list.size())
-									i = list.size() - 1;
-								if (i>=0)
-									tableViewer.setSelection(new StructuredSelection(item));
-							}
-						}
-					});
-				}
-			});
-		}
-
-		if (upButton!=null && downButton!=null) {
-			upButton.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-						@Override
-						protected void doExecute() {
-							int i = table.getSelectionIndex();
-							Object item = moveListItemUp(businessObject,feature,i);
-							final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
-							tableViewer.setInput(list);
-							tableViewer.setSelection(new StructuredSelection(item));
-						}
-					});
-				}
-			});
-			
-			downButton.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-						@Override
-						protected void doExecute() {
-							int i = table.getSelectionIndex();
-							Object item = moveListItemDown(businessObject,feature,i);
-							final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
-							tableViewer.setInput(list);
-							tableViewer.setSelection(new StructuredSelection(item));
-						}
-					});
-				}
-			});
-		}
-
-		if (editButton!=null) {
-			editButton.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					if ((style & SHOW_DETAILS)!=0) {
-						if (editButton.getSelection())
-							showDetails(true);
-						else
-							showDetails(false);
-					}
-					else {
-						editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-							@Override
-							protected void doExecute() {
-								EObject newItem = editListItem(businessObject,feature);
-								if (newItem!=null) {
-									final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
-									tableViewer.setInput(list);
-									tableViewer.setSelection(new StructuredSelection(newItem));
-								}
-							}
-						});
-					}
-				}
-			});
-		}
 		
 		tableViewer.setInput(list);
 		
@@ -616,8 +464,8 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 		}
 		detailSection.setVisible(enable);
 		detailSection.setExpanded(enable);
-		if (editButton!=null)
-			editButton.setSelection(enable);
+		if (editAction!=null)
+			editAction.setChecked(enable);
 //		PropertyUtil.recursivelayout(detailSection);
 //		sashForm.layout(true);
 //		redrawPage();
@@ -674,76 +522,202 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 		}
 	}
 
-	private void createTableAndButtons(Composite parent, int style) {
+	private Section createListSection(Composite parent, String label) {
+		Section section = toolkit.createSection(parent,
+				ExpandableComposite.TWISTIE |
+				ExpandableComposite.COMPACT |
+				ExpandableComposite.TITLE_BAR);
+		section.setText(label+" List");
 
-		GridData gridData;
+		Composite tableComposite = toolkit.createComposite(section, SWT.NONE);
+		section.setClient(tableComposite);
+		tableComposite.setLayout(new GridLayout(1, false));
 		
-		////////////////////////////////////////////////////////////
-		// Create a composite to hold the buttons and table
-		////////////////////////////////////////////////////////////
-		tableAndButtonsComposite = toolkit.createComposite(parent, SWT.NONE);
-		gridData = new GridData(SWT.FILL, SWT.TOP, true, true, 3, 1);
-		tableAndButtonsComposite.setLayoutData(gridData);
-		tableAndButtonsComposite.setLayout(new GridLayout(2, false));
-		
-		////////////////////////////////////////////////////////////
-		// Create button section for add/remove/up/down buttons
-		////////////////////////////////////////////////////////////
-		buttonsComposite = toolkit.createComposite(tableAndButtonsComposite);
-		buttonsComposite.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
-		buttonsComposite.setLayout(new FillLayout(SWT.VERTICAL));
-
-		////////////////////////////////////////////////////////////
-		// Create table
-		// allow table to fill entire width if there are no buttons
-		////////////////////////////////////////////////////////////
-		int span = 2;
-		if ((style & CUSTOM_BUTTONS_MASK)!=0) {
-			span = 1;
-		}
-		else {
-			buttonsComposite.setVisible(false);
-		}
-		table = toolkit.createTable(tableAndButtonsComposite, SWT.FULL_SELECTION | SWT.V_SCROLL);
-		gridData = new GridData(SWT.FILL, SWT.TOP, true, true, span, 1);
+		table = toolkit.createTable(tableComposite, SWT.FULL_SELECTION | SWT.V_SCROLL);
+		GridData gridData = new GridData(SWT.FILL, SWT.TOP, true, true, 1, 1);
 		gridData.widthHint = 100;
 		gridData.heightHint = 100;
 		table.setLayoutData(gridData);
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
-		
-		////////////////////////////////////////////////////////////
-		// Create buttons for add/remove/up/down
-		////////////////////////////////////////////////////////////
-		if ((style & ADD_BUTTON)!=0) {
-			addButton = toolkit.createButton(buttonsComposite, "Add", SWT.PUSH);
-		}
 
-		if ((style & DELETE_BUTTON)!=0) {
-			removeIsDelete = true;
-			removeButton = toolkit.createButton(buttonsComposite, "Delete", SWT.PUSH);
-			removeButton.setEnabled(false);
+		
+	    ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
+	    ToolBar toolbar = toolBarManager.createControl(section);
+
+	    ImageDescriptor id = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/20/add.png");
+		if ((style & ADD_BUTTON)!=0) {
+			addAction = new Action("Add", id) {
+				@Override
+				public void run() {
+					super.run();
+					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+						@Override
+						protected void doExecute() {
+							EObject newItem = addListItem(businessObject,feature);
+							if (newItem!=null) {
+								final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
+								tableViewer.setInput(list);
+								tableViewer.setSelection(new StructuredSelection(newItem));
+								showDetails(true);
+							}
+						}
+					});
+				}
+			};
+			toolBarManager.add(addAction);
 		}
-		else if ((style & REMOVE_BUTTON)!=0) {
-			removeButton = toolkit.createButton(buttonsComposite, "Remove", SWT.PUSH);
-			removeButton.setEnabled(false);
+		
+		if ((style & DELETE_BUTTON)!=0 || (style & REMOVE_BUTTON)!=0) {
+			
+			if ((style & DELETE_BUTTON)!=0) {
+				removeIsDelete = true;
+				id = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/20/delete.png");
+			}
+			else {
+				id = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/20/remove.png");
+			}
+			removeAction = new Action("Remove", id) {
+				@Override
+				public void run() {
+					super.run();
+					showDetails(false);
+					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+						@Override
+						protected void doExecute() {
+							int i = table.getSelectionIndex();
+							Object item;
+							if (removeIsDelete)
+								item = deleteListItem(businessObject,feature,i);
+							else
+								item = removeListItem(businessObject,feature,i);
+							
+							if (item!=null) {
+								final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
+								tableViewer.setInput(list);
+								if (i>=list.size())
+									i = list.size() - 1;
+								if (i>=0)
+									tableViewer.setSelection(new StructuredSelection(item));
+							}
+						}
+					});
+				}
+			};
+			toolBarManager.add(removeAction);
+			removeAction.setEnabled(false);
 		}
 		
 		if ((style & MOVE_BUTTONS)!=0) {
-			upButton = toolkit.createButton(buttonsComposite, "Up", SWT.PUSH);
-			upButton.setEnabled(false);
+			id = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/20/up.png");
+			upAction = new Action("Move Up", id) {
+				@Override
+				public void run() {
+					super.run();
+					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+						@Override
+						protected void doExecute() {
+							int i = table.getSelectionIndex();
+							Object item = moveListItemUp(businessObject,feature,i);
+							final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
+							tableViewer.setInput(list);
+							tableViewer.setSelection(new StructuredSelection(item));
+						}
+					});
+				}
+			};
+			toolBarManager.add(upAction);
+			upAction.setEnabled(false);
 	
-			downButton = toolkit.createButton(buttonsComposite, "Down", SWT.PUSH);
-			downButton.setEnabled(false);
+			id = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/20/down.png");
+			downAction = new Action("Move Down", id) {
+				@Override
+				public void run() {
+					super.run();
+					editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+						@Override
+						protected void doExecute() {
+							int i = table.getSelectionIndex();
+							Object item = moveListItemDown(businessObject,feature,i);
+							final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
+							tableViewer.setInput(list);
+							tableViewer.setSelection(new StructuredSelection(item));
+						}
+					});
+				}
+			};
+			toolBarManager.add(downAction);
+			downAction.setEnabled(false);
 		}
 		
 		if ((style & EDIT_BUTTON)!=0) {
-			if ((style & SHOW_DETAILS)!=0)
-				editButton = toolkit.createButton(buttonsComposite, "Details...", SWT.TOGGLE);
-			else
-				editButton = toolkit.createButton(buttonsComposite, "Edit...", SWT.PUSH);
-			editButton.setEnabled(false);
+			id = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/20/edit.png");
+			editAction = new Action("Edit", id) {
+				@Override
+				public void run() {
+					super.run();
+					if ((style & SHOW_DETAILS)!=0) {
+						if (!editAction.isChecked()) {
+							showDetails(true);
+						}
+						else {
+							showDetails(false);
+						}
+					}
+					else {
+						editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+							@Override
+							protected void doExecute() {
+								EObject newItem = editListItem(businessObject,feature);
+								if (newItem!=null) {
+									final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
+									tableViewer.setInput(list);
+									tableViewer.setSelection(new StructuredSelection(newItem));
+								}
+							}
+						});
+					}
+				}
+			};
+			toolBarManager.add(editAction);
+			editAction.setEnabled(false);
 		}
+		
+	    toolBarManager.update(true);
+	    section.setTextClient(toolbar);
+	    return section;
+	}
+	
+	protected Section createDetailSection(Composite parent, String label) {
+		Section section = toolkit.createSection(parent,
+				ExpandableComposite.EXPANDED |
+				ExpandableComposite.TITLE_BAR);
+		section.setText(label+" Details");
+		section.setVisible(false);
+
+	    ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
+	    ToolBar toolbar = toolBarManager.createControl(section);
+	    final Cursor handCursor = new Cursor(Display.getCurrent(),SWT.CURSOR_HAND);
+	    toolbar.setCursor(handCursor);
+	    // Cursor needs to be explicitly disposed
+	    toolbar.addDisposeListener(new DisposeListener() {
+	        public void widgetDisposed(DisposeEvent e) {
+	            if ((handCursor != null) && (handCursor.isDisposed() == false)) {
+	                handCursor.dispose();
+	            }
+	        }
+	    });
+	    ImageDescriptor id = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/20/close.png");
+	    toolBarManager.add( new Action("Close", id) {
+			@Override
+			public void run() {
+				super.run();
+				showDetails(false);
+			}
+	    });
+	    toolBarManager.update(true);
+	    section.setTextClient(toolbar);
+	    return section;
 	}
 	
 	public class ListCompositeContentProvider implements IStructuredContentProvider {
