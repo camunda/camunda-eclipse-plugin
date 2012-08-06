@@ -76,8 +76,6 @@ public class ResourceParameterBindingDetailComposite extends DefaultDetailCompos
 			}
 			exprDetails.setBusinessObject(expr);
 			exprDetails.setTitle("Parameter Expression");
-	
-			PropertyUtil.layoutAllParents(this);
 		}
 	}
 

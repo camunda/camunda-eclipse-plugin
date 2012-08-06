@@ -43,6 +43,14 @@ public class CommonEventDetailComposite extends AbstractDetailComposite {
 		super(section);
 	}
 
+	@Override
+	public void cleanBindings() {
+		super.cleanBindings();
+		inputTable = null;
+		outputTable = null;
+		eventsTable = null;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

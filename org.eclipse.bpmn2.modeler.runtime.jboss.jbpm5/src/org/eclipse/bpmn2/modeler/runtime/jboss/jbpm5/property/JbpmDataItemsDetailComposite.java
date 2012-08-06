@@ -37,6 +37,8 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class JbpmDataItemsDetailComposite extends DataItemsDetailComposite {
 
+	ExtensionValueListComposite globalsTable;
+	
 	/**
 	 * @param section
 	 */
@@ -68,13 +70,19 @@ public class JbpmDataItemsDetailComposite extends DataItemsDetailComposite {
 	}
 
 	@Override
+	public void cleanBindings() {
+		super.cleanBindings();
+		globalsTable = null;
+	}
+
+	@Override
 	public void createBindings(EObject be) {
 		if (be instanceof Definitions) {
 			Definitions definitions = (Definitions)be;
 			for (RootElement re : definitions.getRootElements()) {
 				if (re instanceof Process) {
 					Process process = (Process)re;
-					ExtensionValueListComposite globalsTable = new ExtensionValueListComposite(
+					globalsTable = new ExtensionValueListComposite(
 							this, AbstractListComposite.DEFAULT_STYLE|AbstractListComposite.EDIT_BUTTON)
 					{
 						
@@ -105,9 +113,6 @@ public class JbpmDataItemsDetailComposite extends DataItemsDetailComposite {
 					};
 					globalsTable.bindList(process, ModelPackage.eINSTANCE.getDocumentRoot_Global());
 					globalsTable.setTitle("Globals for "+PropertyUtil.getLongDisplayName(process));
-
-//					bindList(process, "properties");
-//					bindList(process, "resources");
 				}
 			}
 		}

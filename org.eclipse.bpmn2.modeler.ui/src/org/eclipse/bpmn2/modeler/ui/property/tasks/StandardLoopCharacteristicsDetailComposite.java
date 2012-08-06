@@ -31,10 +31,15 @@ public class StandardLoopCharacteristicsDetailComposite extends
 		super(section);
 	}
 
+	@Override
+	public void cleanBindings() {
+		super.cleanBindings();
+		addRemoveLoopConditionExpressionButton = null;
+		addRemoveLoopMaximumExpressionButton = null;
+	}
+
 	public void createBindings(EObject be) {
 		bindAttribute(be,"testBefore");
-//		bindReference(be,"loopCondition");
-//		bindReference(be,"loopMaximum");
 		
 		if (be instanceof StandardLoopCharacteristics) {
 			
@@ -106,7 +111,6 @@ public class StandardLoopCharacteristicsDetailComposite extends
 			else {
 				addRemoveLoopMaximumExpressionButton.setText("Add Loop Maximum");
 			}
-//			this.propertySection.recursivelayout(this);
 		}
 	}
 }

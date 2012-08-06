@@ -52,7 +52,10 @@ import org.eclipse.emf.transaction.ResourceSetChangeEvent;
 import org.eclipse.emf.transaction.ResourceSetListener;
 import org.eclipse.emf.transaction.RollbackException;
 import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Font;
@@ -62,11 +65,13 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.events.IExpansionListener;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 
 /**
@@ -294,7 +299,20 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 				ExpandableComposite.EXPANDED |
 				ExpandableComposite.TITLE_BAR);
 		section.setText(title);
-		
+
+		// TODO: add a Close button to allow user to hide sections s/he is not interested in.
+//	    ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
+//	    ToolBar toolbar = toolBarManager.createControl(section);
+//	    ImageDescriptor id = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/20/close.png");
+//	    toolBarManager.add( new Action("Close", id) {
+//			@Override
+//			public void run() {
+//				super.run();
+//			}
+//	    });
+//	    toolBarManager.update(true);
+//	    section.setTextClient(toolbar);
+
 		if (getBusinessObject()!=null) {
 			final String prefKey = "section."+getBusinessObject().eClass().getName()+title+"."+".expanded";
 			boolean expanded = preferenceStore.getBoolean(prefKey);
@@ -566,52 +584,5 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 		public int size() {
 			return objectStack.size();
 		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.emf.transaction.ResourceSetListener#resourceSetChanged(org.eclipse.emf.transaction.ResourceSetChangeEvent)
-	 */
-	@Override
-	public void resourceSetChanged(ResourceSetChangeEvent event) {
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.emf.transaction.ResourceSetListener#getFilter()
-	 */
-	@Override
-	public NotificationFilter getFilter() {
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.emf.transaction.ResourceSetListener#transactionAboutToCommit(org.eclipse.emf.transaction.ResourceSetChangeEvent)
-	 */
-	@Override
-	public Command transactionAboutToCommit(ResourceSetChangeEvent event) throws RollbackException {
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.emf.transaction.ResourceSetListener#isAggregatePrecommitListener()
-	 */
-	@Override
-	public boolean isAggregatePrecommitListener() {
-		return false;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.emf.transaction.ResourceSetListener#isPrecommitOnly()
-	 */
-	@Override
-	public boolean isPrecommitOnly() {
-		return false;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.emf.transaction.ResourceSetListener#isPostcommitOnly()
-	 */
-	@Override
-	public boolean isPostcommitOnly() {
-		return false;
 	}
 }

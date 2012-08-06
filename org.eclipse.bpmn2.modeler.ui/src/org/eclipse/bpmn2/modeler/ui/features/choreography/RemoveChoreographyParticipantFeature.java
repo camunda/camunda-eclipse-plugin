@@ -56,6 +56,9 @@ public class RemoveChoreographyParticipantFeature extends DefaultRemoveFeature {
 			if (bo instanceof ChoreographyTask) {
 				ChoreographyTask task = (ChoreographyTask)bo;
 				task.getParticipantRefs().remove(participant);
+				if (task.getInitiatingParticipantRef() == participant) {
+					task.setInitiatingParticipantRef(null);
+				}
 			}
 		}
 		super.execute(context);

@@ -53,8 +53,5 @@ public class ActivityOutputDetailComposite extends AbstractDetailComposite {
 			}
 			bindList(abe, "dataOutputAssociations");
 		}
-//		bindList(be, "dataInputAssociations");
-//		bindList(be, "dataOutputAssociations");
-//		bindReference(be,"ioSpecification");
 	}
 }

@@ -32,6 +32,9 @@ import org.eclipse.ui.forms.widgets.Section;
  */
 public class JbpmActivityDetailComposite extends ActivityDetailComposite {
 
+	ScriptTableComposite onEntryScriptTable;
+	ScriptTableComposite onExitScriptTable;
+	
 	/**
 	 * @param section
 	 */
@@ -43,16 +46,22 @@ public class JbpmActivityDetailComposite extends ActivityDetailComposite {
 		super(parent, style);
 	}
 
+	@Override
+	public void cleanBindings() {
+		super.cleanBindings();
+		onEntryScriptTable = null;
+		onExitScriptTable = null;
+	}
 
 	@Override
 	public void createBindings(EObject be) {
 		super.createBindings(be);
 		
-		ScriptTableComposite onEntryScriptTable = new ScriptTableComposite(this);
+		onEntryScriptTable = new ScriptTableComposite(this);
 		onEntryScriptTable.bindList(be, ModelPackage.eINSTANCE.getDocumentRoot_OnEntryScript());
 		onEntryScriptTable.setTitle("On Entry Scripts");
 		
-		ScriptTableComposite onExitScriptTable = new ScriptTableComposite(this);
+		onExitScriptTable = new ScriptTableComposite(this);
 		onExitScriptTable.bindList(be, ModelPackage.eINSTANCE.getDocumentRoot_OnExitScript());
 		onExitScriptTable.setTitle("On Exit Scripts");
 	}

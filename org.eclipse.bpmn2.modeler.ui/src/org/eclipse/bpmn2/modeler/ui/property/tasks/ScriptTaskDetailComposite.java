@@ -24,6 +24,8 @@ import org.eclipse.swt.widgets.Composite;
 
 public class ScriptTaskDetailComposite extends DefaultDetailComposite {
 
+	private TextObjectEditor scriptEditor;
+	
 	public ScriptTaskDetailComposite(Composite parent, int style) {
 		super(parent, style);
 	}
@@ -33,6 +35,12 @@ public class ScriptTaskDetailComposite extends DefaultDetailComposite {
 	 */
 	public ScriptTaskDetailComposite(AbstractBpmn2PropertySection section) {
 		super(section);
+	}
+
+	@Override
+	public void cleanBindings() {
+		super.cleanBindings();
+		scriptEditor = null;
 	}
 
 	/*
@@ -46,7 +54,7 @@ public class ScriptTaskDetailComposite extends DefaultDetailComposite {
 	public void createBindings(EObject be) {
 		bindAttribute(be,"scriptFormat");
 //		bindAttribute(be,"script");
-		ObjectEditor editor = new TextObjectEditor(this,be,be.eClass().getEStructuralFeature("script"));
-		editor.createControl(getAttributesParent(),"Script",SWT.MULTI);
+		scriptEditor = new TextObjectEditor(this,be,be.eClass().getEStructuralFeature("script"));
+		scriptEditor.createControl(getAttributesParent(),"Script",SWT.MULTI);
 	}
 }

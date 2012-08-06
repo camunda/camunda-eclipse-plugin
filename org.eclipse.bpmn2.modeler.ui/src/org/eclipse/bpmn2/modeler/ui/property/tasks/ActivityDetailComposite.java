@@ -60,6 +60,14 @@ public class ActivityDetailComposite extends DefaultDetailComposite {
 	}
 
 	@Override
+	public void cleanBindings() {
+		super.cleanBindings();
+		addStandardLoopButton = null;
+		addMultiLoopButton = null;
+		loopCharacteristicsComposite = null;
+	}
+	
+	@Override
 	public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
 		if (propertiesProvider==null) {
 			propertiesProvider = new AbstractPropertiesProvider(object) {
@@ -69,10 +77,10 @@ public class ActivityDetailComposite extends DefaultDetailComposite {
 						"completionQuantity",
 						"startQuantity",
 						"isForCompensation",
+						"loopCharacteristics",
 						"boundaryEventDefs",
 						"properties",
 						"resources",
-						"loopCharacteristics",
 				};
 				
 				@Override
@@ -175,8 +183,7 @@ public class ActivityDetailComposite extends DefaultDetailComposite {
 					}
 				});
 			}
-
-			PropertyUtil.recursivelayout(this);
+			redrawPage();
 		}
 		else
 			super.bindReference(parent, object, reference);

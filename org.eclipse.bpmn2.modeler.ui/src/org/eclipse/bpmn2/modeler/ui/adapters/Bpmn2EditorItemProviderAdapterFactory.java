@@ -41,6 +41,7 @@ import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
 import org.eclipse.bpmn2.Operation;
 import org.eclipse.bpmn2.Participant;
+import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.ReceiveTask;
 import org.eclipse.bpmn2.ResourceAssignmentExpression;
@@ -84,6 +85,7 @@ import org.eclipse.bpmn2.modeler.ui.adapters.properties.MessagePropertiesAdapter
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.MultiInstanceLoopCharacteristicsPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.OperationPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ParticipantPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.ProcessPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.PropertyPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ReceiveTaskPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ResourceAssignmentExpressionPropertiesAdapter;
@@ -531,6 +533,14 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 			if (adapter!=null)
 				return adapter;
         	return new ImportPropertiesAdapter(adapterFactory,object);
+		}
+
+		@Override
+		public ExtendedPropertiesAdapter caseProcess(Process object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
+        	return new ProcessPropertiesAdapter(adapterFactory,object);
 		}
     };
 }

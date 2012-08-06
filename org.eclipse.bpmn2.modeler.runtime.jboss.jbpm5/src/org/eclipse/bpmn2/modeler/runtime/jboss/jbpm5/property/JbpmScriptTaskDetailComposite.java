@@ -31,6 +31,9 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class JbpmScriptTaskDetailComposite extends JbpmTaskDetailComposite {
 
+	ComboObjectEditor scriptFormatEditor;
+	TextObjectEditor scriptEditor;
+	
 	/**
 	 * @param section
 	 */
@@ -43,9 +46,15 @@ public class JbpmScriptTaskDetailComposite extends JbpmTaskDetailComposite {
 	}
 
 	@Override
+	public void cleanBindings() {
+		super.cleanBindings();
+		scriptFormatEditor = null;
+		scriptEditor = null;
+	}
+
+	@Override
 	public void createBindings(EObject be) {
-		ObjectEditor editor;
-		editor = new ComboObjectEditor(this,be,be.eClass().getEStructuralFeature("scriptFormat")) {
+		scriptFormatEditor = new ComboObjectEditor(this,be,be.eClass().getEStructuralFeature("scriptFormat")) {
 
 			@Override
 			protected Hashtable<String, Object> getChoiceOfValues(EObject object, EStructuralFeature feature) {
@@ -56,9 +65,9 @@ public class JbpmScriptTaskDetailComposite extends JbpmTaskDetailComposite {
 			}
 			
 		};
-		editor.createControl(getAttributesParent(),"Script Language",SWT.NONE);
+		scriptFormatEditor.createControl(getAttributesParent(),"Script Language",SWT.NONE);
 
-		editor = new TextObjectEditor(this,be,be.eClass().getEStructuralFeature("script"));
-		editor.createControl(getAttributesParent(),"Script",SWT.MULTI);
+		scriptEditor = new TextObjectEditor(this,be,be.eClass().getEStructuralFeature("script"));
+		scriptEditor.createControl(getAttributesParent(),"Script",SWT.MULTI);
 	}
 }

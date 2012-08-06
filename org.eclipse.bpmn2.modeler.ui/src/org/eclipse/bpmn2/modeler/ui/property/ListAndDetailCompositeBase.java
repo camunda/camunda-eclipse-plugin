@@ -105,11 +105,12 @@ public class ListAndDetailCompositeBase extends Composite implements ResourceSet
 	}
 
 	protected void redrawPage() {
-		if (getPropertySection()!=null)
-			getPropertySection().layout();
-		else {
-			PropertyUtil.recursivelayout(this);
+		if (getPropertySection()!=null) {
 			getParent().layout();
+			getPropertySection().layout();
+		}
+		else {
+			PropertyUtil.recursivelayout(getParent());
 		}
 	}
 
@@ -175,6 +176,7 @@ public class ListAndDetailCompositeBase extends Composite implements ResourceSet
 
 	@Override
 	public void resourceSetChanged(ResourceSetChangeEvent event) {
+//		setBusinessObject(getBusinessObject());
 	}
 
 	@Override

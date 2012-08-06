@@ -81,6 +81,7 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 				modelEnablement.setEnabled(be.eClass().getName(), "name", false);
 //			if (!documentationEnabled)
 //				modelEnablement.setEnabled(be.eClass().getName(), "documentation", false);
+			redrawPage();
 		}
 		
 		protected void bindDescription(EObject be) {

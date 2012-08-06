@@ -96,8 +96,6 @@ public class DataAssignmentDetailComposite extends DefaultDetailComposite {
 			}
 			fromDetails.setBusinessObject(fromExp);
 			fromDetails.setTitle("From Expression");
-	
-			PropertyUtil.layoutAllParents(this);
 		}
 	}
 }

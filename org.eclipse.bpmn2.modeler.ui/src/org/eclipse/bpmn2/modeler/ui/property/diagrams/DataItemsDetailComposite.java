@@ -62,21 +62,6 @@ public class DataItemsDetailComposite extends DefaultDetailComposite {
 		}
 		return propertiesProvider;
 	}
-
-	@Override
-	public void createBindings(EObject be) {
-		if (be instanceof Definitions) {
-			Definitions definitions = (Definitions)be;
-			for (RootElement re : definitions.getRootElements()) {
-				if (re instanceof Process) {
-					Process process = (Process)re;
-//					bindList(process,"properties");
-//					bindList(process, "resources");
-				}
-			}
-		}
-		super.createBindings(be);
-	}
 	
 	@Override
 	protected AbstractListComposite bindList(EObject object, EStructuralFeature feature, EClass listItemClass) {

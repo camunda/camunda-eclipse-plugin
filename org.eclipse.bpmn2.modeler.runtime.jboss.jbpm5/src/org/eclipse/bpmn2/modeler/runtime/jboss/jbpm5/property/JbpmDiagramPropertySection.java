@@ -32,8 +32,7 @@ import org.eclipse.swt.SWT;
  *
  */
 public class JbpmDiagramPropertySection extends DefaultPropertySection {
-	
-	
+
 	public JbpmDiagramPropertySection() {
 		super();
 	}
@@ -51,6 +50,14 @@ public class JbpmDiagramPropertySection extends DefaultPropertySection {
 		
 		return new DefaultDetailComposite(this) {
 			
+			TextObjectEditor documentationEditor;
+
+			@Override
+			public void cleanBindings() {
+				super.cleanBindings();
+				documentationEditor = null;
+			}
+
 			@Override
 			public void createBindings(EObject be) {
 
@@ -58,8 +65,8 @@ public class JbpmDiagramPropertySection extends DefaultPropertySection {
 				bindAttribute(be,"name");
 
 				EAttribute documentation = (EAttribute) be.eClass().getEStructuralFeature("documentation");
-				ObjectEditor editor = new TextObjectEditor(this,be,documentation);
-				editor.createControl(getAttributesParent(),"Documentation",SWT.MULTI);
+				documentationEditor = new TextObjectEditor(this,be,documentation);
+				documentationEditor.createControl(getAttributesParent(),"Documentation",SWT.MULTI);
 			}
 		};
 	}

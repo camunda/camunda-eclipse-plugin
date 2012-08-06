@@ -49,9 +49,14 @@ public class JbpmCommonEventDetailComposite extends CommonEventDetailComposite {
 	}
 
 	@Override
+	public void cleanBindings() {
+		super.cleanBindings();
+		eventsTable = null;
+	}
+
+	@Override
 	public void createBindings(EObject be) {
 		super.createBindings(be);
-		eventsTable.dispose();
 		eventsTable = new EventDefinitionsListComposite(this, (Event)be) {
 
 			@Override

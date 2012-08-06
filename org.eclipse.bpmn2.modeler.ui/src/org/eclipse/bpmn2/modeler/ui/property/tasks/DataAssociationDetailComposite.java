@@ -258,10 +258,7 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 				}
 			}
 		}
-		createWidgets();			
-		
-		PropertyUtil.layoutAllParents(this);
-		PropertyUtil.recursivelayout(getParent().getParent());
+		createWidgets();
 	}
 	
 	private MapType getMapType() {
@@ -353,7 +350,6 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 				showAdvancedMappingWidgets(true);
 				break;
 			}
-			PropertyUtil.layoutAllParents(DataAssociationDetailComposite.this);
 			updatingWidgets = false;
 		}
 	}
@@ -410,7 +406,7 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 						showAdvancedMappingWidgets(false);
 
 						showPropertyWidgets(true);
-						PropertyUtil.layoutAllParents(DataAssociationDetailComposite.this);
+						redrawPage();
 					}
 				}
 			});
@@ -429,7 +425,7 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 						showAdvancedMappingWidgets(false);
 
 						showTransformationWidgets(true);
-						PropertyUtil.layoutAllParents(DataAssociationDetailComposite.this);
+						redrawPage();
 					}
 				}
 			});
@@ -448,7 +444,7 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 						showAdvancedMappingWidgets(false);
 
 						showExpressionWidgets(true);
-						PropertyUtil.layoutAllParents(DataAssociationDetailComposite.this);
+						redrawPage();
 					}
 				}
 			});
@@ -467,7 +463,7 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 						showExpressionWidgets(false);
 						
 						showAdvancedMappingWidgets(true);
-						PropertyUtil.layoutAllParents(DataAssociationDetailComposite.this);
+						redrawPage();
 					}
 				}
 			});

@@ -315,7 +315,7 @@ public class ModelUtil {
 				c = ' ';
 			displayName += c;
 		}
-		return displayName;
+		return displayName.trim();
 	}
 
 	@SuppressWarnings("unchecked")

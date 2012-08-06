@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.ItemDefinition;
+import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
@@ -28,6 +29,7 @@ import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource;
 
 /**
  * @author Bob Brodt
@@ -60,7 +62,7 @@ public class ItemDefinitionPropertiesAdapter extends ExtendedPropertiesAdapter<I
 				}
 				
 	    		@Override
-				public EObject createFeature(Object context, EClass eClass) {
+				public EObject createFeature(Resource resource, Object context, EClass eClass) {
 					final ItemDefinition itemDefinition = adopt(context);
 					EObject structureRef = ModelUtil.createStringWrapper("");
 					InsertionAdapter.add(itemDefinition, ref, structureRef);
@@ -118,6 +120,18 @@ public class ItemDefinitionPropertiesAdapter extends ExtendedPropertiesAdapter<I
 			@Override
 			public String getLabel(Object context) {
 				return getFeatureDescriptor(ref).getLabel(context);
+			}
+			
+			@Override
+			
+			public ItemDefinition createObject(Resource resource, Object context) {
+				ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(
+						Bpmn2Package.eINSTANCE.getRootElement(),
+						ExtendedPropertiesAdapter.class);
+				ItemDefinition itemDef = (ItemDefinition) adapter.getObjectDescriptor().createObject(resource, object);
+				EObject value = ModelUtil.createStringWrapper(itemDef.getId());
+				itemDef.setStructureRef(value);
+				return itemDef;
 			}
 		});
 	}

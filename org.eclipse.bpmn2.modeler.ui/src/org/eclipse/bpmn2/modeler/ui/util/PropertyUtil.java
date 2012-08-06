@@ -262,16 +262,17 @@ public class PropertyUtil {
 	}
 
 	public static EObject createFeature(EObject object, EStructuralFeature feature) {
-		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
-		if (adapter!=null)
-			return adapter.getFeatureDescriptor(feature).createFeature(object);
-		return null;
+		return createFeature(object, feature, null);
 	}
 
 	public static EObject createFeature(EObject object, EStructuralFeature feature, EClass eclass) {
+		return createFeature(null, object, feature, eclass);
+	}
+	
+	public static EObject createFeature(Resource resource, EObject object, EStructuralFeature feature, EClass eclass) {
 		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
 		if (adapter!=null)
-			return adapter.getFeatureDescriptor(feature).createFeature(object, eclass);
+			return adapter.getFeatureDescriptor(feature).createFeature(resource, object, eclass);
 		return null;
 	}
 

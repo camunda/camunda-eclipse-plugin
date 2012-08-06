@@ -46,6 +46,13 @@ public class SequenceFlowDetailComposite extends ExpressionDetailComposite {
 		super(section);
 	}
 
+	@Override
+	public void cleanBindings() {
+		super.cleanBindings();
+		addRemoveConditionButton = null;
+		setDefaultFlowCheckbox = null;
+	}
+
 	@SuppressWarnings("restriction")
 	@Override
 	public void createBindings(final EObject be) {
@@ -130,7 +137,7 @@ public class SequenceFlowDetailComposite extends ExpressionDetailComposite {
 					setDefaultFlowCheckbox.setVisible(false);
 				}
 			}
-			PropertyUtil.recursivelayout(this);
+			redrawPage();
 		}
 		
 	}

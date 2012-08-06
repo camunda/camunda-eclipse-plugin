@@ -32,6 +32,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource;
 
 /**
  * @author Bob Brodt
@@ -49,19 +50,26 @@ public class RootElementRefFeatureDescriptor<T extends BaseElement> extends Feat
 	}
 	
 	@Override
-	public EObject createFeature(Object context, EClass eClass) {
+	public EObject createFeature(Resource resource, Object context, EClass eClass) {
 		final T object = adopt(context);
 
 		EObject rootElement = null;
-		if (feature.getEType() != eClass) {
-			ExtendedPropertiesAdapter<T> adapter = (ExtendedPropertiesAdapter<T>) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
-			if (adapter!=null)
-				rootElement = adapter.getFeatureDescriptor(feature).createFeature(object, eClass);
+		if (eClass==null)
+			eClass = (EClass)feature.getEType();
+		else if (feature.getEType() != eClass) {
+			ExtendedPropertiesAdapter<T> adapter = (ExtendedPropertiesAdapter<T>) AdapterUtil.adapt(eClass, ExtendedPropertiesAdapter.class);
+			if (adapter!=null) {
+				rootElement = adapter.getObjectDescriptor().createObject(eClass);
+			}
 		}
-		if (rootElement==null)
-			rootElement = Bpmn2ModelerFactory.getInstance().create(eClass);
+		
+		if (rootElement==null) {
+			rootElement = this.createObject(eClass);
+		}
 		
 		Definitions definitions = ModelUtil.getDefinitions(object);
+		if (definitions==null)
+			definitions = (Definitions) resource.getContents().get(0).eContents().get(0);
 		InsertionAdapter.add(definitions, Bpmn2Package.eINSTANCE.getDefinitions_RootElements(), rootElement);
 		return rootElement;
 	}

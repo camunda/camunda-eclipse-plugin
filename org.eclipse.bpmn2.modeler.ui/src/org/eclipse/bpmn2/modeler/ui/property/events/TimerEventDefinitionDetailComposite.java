@@ -40,6 +40,7 @@ public class TimerEventDefinitionDetailComposite extends DefaultDetailComposite 
 	private Button timeDateButton;
 	private Button timeCycleButton;
 	private Button timeDurationButton;
+	private TextObjectEditor timeValueEditor;
 
 	enum TimerType {
 		NONE,
@@ -62,6 +63,14 @@ public class TimerEventDefinitionDetailComposite extends DefaultDetailComposite 
 	 */
 	public TimerEventDefinitionDetailComposite(AbstractBpmn2PropertySection section) {
 		super(section);
+	}
+
+	@Override
+	public void cleanBindings() {
+		super.cleanBindings();
+		timeDateButton = null;
+		timeCycleButton = null;
+		timeDurationButton = null;
 	}
 
 	@Override
@@ -114,7 +123,7 @@ public class TimerEventDefinitionDetailComposite extends DefaultDetailComposite 
 		if (exp.getBody()==null)
 			exp.setBody("");
 		
-		final TextObjectEditor editor = new TextObjectEditor(this, exp, PACKAGE.getFormalExpression_Body());
+		timeValueEditor = new TextObjectEditor(this, exp, PACKAGE.getFormalExpression_Body());
 		
 		timeDateButton.addSelectionListener(new SelectionAdapter() {
 			
@@ -130,7 +139,7 @@ public class TimerEventDefinitionDetailComposite extends DefaultDetailComposite 
 							event.eUnset(PACKAGE.getTimerEventDefinition_TimeDuration());
 							event.setTimeDate(exp);
 							exp.setBody("");
-							editor.setObject(exp);
+							timeValueEditor.setObject(exp);
 							timerType = TimerType.TIMEDATE;
 						}
 					});
@@ -152,7 +161,7 @@ public class TimerEventDefinitionDetailComposite extends DefaultDetailComposite 
 							event.eUnset(PACKAGE.getTimerEventDefinition_TimeDuration());
 							event.setTimeCycle(exp);
 							exp.setBody("");
-							editor.setObject(exp);
+							timeValueEditor.setObject(exp);
 							timerType = TimerType.TIMECYCLE;
 						}
 					});
@@ -174,7 +183,7 @@ public class TimerEventDefinitionDetailComposite extends DefaultDetailComposite 
 							event.eUnset(PACKAGE.getTimerEventDefinition_TimeCycle());
 							event.setTimeDuration(exp);
 							exp.setBody("");
-							editor.setObject(exp);
+							timeValueEditor.setObject(exp);
 							timerType = TimerType.TIMEDURATION;
 						}
 					});
@@ -182,7 +191,7 @@ public class TimerEventDefinitionDetailComposite extends DefaultDetailComposite 
 			}
 		});
 		
-		editor.createControl(composite, "Value");
+		timeValueEditor.createControl(composite, "Value");
 	}
 
 }

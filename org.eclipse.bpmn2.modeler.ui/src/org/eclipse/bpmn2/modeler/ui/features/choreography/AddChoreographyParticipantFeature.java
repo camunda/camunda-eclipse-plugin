@@ -13,17 +13,17 @@
 
 package org.eclipse.bpmn2.modeler.ui.features.choreography;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Choreography;
 import org.eclipse.bpmn2.ChoreographyTask;
 import org.eclipse.bpmn2.Participant;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -121,49 +121,48 @@ public class AddChoreographyParticipantFeature extends AbstractCustomFeature {
 			PictogramElement pe = pes[0];
 			Object bo = getBusinessObjectForPictogramElement(pe);
 			if (pe instanceof ContainerShape && bo instanceof ChoreographyTask) {
-				try {
-					ModelHandler mh = ModelHandler.getInstance(getDiagram());
+				ContainerShape containerShape = (ContainerShape)pe;
+				ChoreographyTask task = (ChoreographyTask)bo;
+				
+				Participant participant = null;
+				List<Participant> participantList = new ArrayList<Participant>();
+				participant = (Participant) PropertyUtil.createObject(task.eResource(), Bpmn2Package.eINSTANCE.getParticipant());
+				participant.setName("New Participant");
+				
+				participantList.add(participant);
+				TreeIterator<EObject> iter = ModelUtil.getDefinitions(task).eAllContents();
+				while (iter.hasNext()) {
+					EObject obj = iter.next();
+					if (obj instanceof Participant && !task.getParticipantRefs().contains(obj))
+						participantList.add((Participant)obj);
+				}
+				Participant result = participant;
 
-					ContainerShape containerShape = (ContainerShape)pe;
-					ChoreographyTask task = (ChoreographyTask)bo;
-					
-					Participant participant = null;
-					List<Participant> participantList = new ArrayList<Participant>();
-					participant = mh.create(Participant.class);
-					participant.setName("New Participant");
-					
-					participantList.add(participant);
-					TreeIterator<EObject> iter = mh.getDefinitions().eAllContents();
-					while (iter.hasNext()) {
-						EObject obj = iter.next();
-						if (obj instanceof Participant && !task.getParticipantRefs().contains(obj))
-							participantList.add((Participant)obj);
-					}
-					Participant result = participant;
-	
-					boolean doit = true;
-					if (participantList.size()>1) {
-						PopupMenu popupMenu = new PopupMenu(participantList, labelProvider);
-						doit = popupMenu.show(Display.getCurrent().getActiveShell());
-						if (doit) {
-							result = (Participant) popupMenu.getResult();
-						}
-					}
+				boolean doit = true;
+				if (participantList.size()>1) {
+					PopupMenu popupMenu = new PopupMenu(participantList, labelProvider);
+					doit = popupMenu.show(Display.getCurrent().getActiveShell());
 					if (doit) {
-						if (result==participant) { // the new one
-							participant.setName( ModelUtil.toDisplayName(participant.getId()) );
-							Choreography choreography = (Choreography)task.eContainer();
-							choreography.getParticipants().add(result);
-						}
-
-						if (task.getInitiatingParticipantRef() == null) {
-							task.setInitiatingParticipantRef(result);
-						}
-
-						task.getParticipantRefs().add(result);
+						result = (Participant) popupMenu.getResult();
 					}
-				} catch (IOException e) {
-					Activator.logError(e);
+				}
+				if (doit) {
+					if (result==participant) { // the new one
+						participant.setName( ModelUtil.toDisplayName(participant.getId()) );
+						Choreography choreography = (Choreography)task.eContainer();
+						choreography.getParticipants().add(result);
+						Process process = (Process) PropertyUtil.createObject(task.eResource(), Bpmn2Package.eINSTANCE.getProcess());
+						// NOTE: this is needed because it fires the InsertionAdapter, which adds the new Process
+						// to Definitions.rootElements, otherwise the Process would be a dangling object
+						process.setName(participant.getName()+" Process");
+						participant.setProcessRef(process);
+					}
+
+					if (task.getInitiatingParticipantRef() == null) {
+						task.setInitiatingParticipantRef(result);
+					}
+
+					task.getParticipantRefs().add(result);
 				}
 			}
 		}

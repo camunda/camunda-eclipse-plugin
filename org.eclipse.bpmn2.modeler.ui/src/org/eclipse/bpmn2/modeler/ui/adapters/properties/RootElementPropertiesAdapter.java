@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource;
 
 /**
  * @author Bob Brodt
@@ -59,10 +60,12 @@ public class RootElementPropertiesAdapter<T extends RootElement> extends Extende
 		
 		setObjectDescriptor(new ObjectDescriptor<T>(adapterFactory, object) {
 			@Override
-			public T createObject(Object context) {
-				T rootElement = super.createObject(context);
+			public T createObject(Resource resource, Object context) {
+				T rootElement = super.createObject(resource, context);
 				
 				Definitions definitions = ModelUtil.getDefinitions(rootElement);
+				if (definitions==null)
+					definitions = (Definitions) resource.getContents().get(0).eContents().get(0);
 				if (definitions!=null)
 					InsertionAdapter.add(definitions, Bpmn2Package.eINSTANCE.getDefinitions_RootElements(), rootElement);
 				return rootElement;

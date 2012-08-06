@@ -89,6 +89,13 @@ public class InterfacePropertySection extends DefaultPropertySection {
 		}
 
 		@Override
+		public void cleanBindings() {
+			super.cleanBindings();
+			definedInterfacesTable = null;
+			providedInterfacesTable = null;
+		}
+
+		@Override
 		public void createBindings(EObject be) {
 			definedInterfacesTable = new DefinedInterfaceListComposite(this);
 			definedInterfacesTable.bindList(be);
@@ -229,6 +236,8 @@ public class InterfacePropertySection extends DefaultPropertySection {
 					}
 					
 				});
+				dialog.setTitle("Interfaces");
+				dialog.setMessage("Select the Interface provided by this Process");
 				dialog.setAddCancelButton(true);
 				dialog.setHelpAvailable(false);
 				dialog.setInput(new Object());

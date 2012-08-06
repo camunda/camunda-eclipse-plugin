@@ -444,30 +444,32 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 	}
 	
 	private void showDetails(boolean enable) {
-		if (enable) {
-
-			IStructuredSelection selection = (IStructuredSelection)tableViewer.getSelection();
-			if (selection.getFirstElement() instanceof EObject) {
-				EObject o = (EObject)selection.getFirstElement();
-				
-				if (detailComposite!=null)
-					detailComposite.dispose();
-				detailComposite = createDetailComposite(detailSection, o.eClass().getInstanceClass());
-				detailSection.setClient(detailComposite);
-				toolkit.adapt(detailComposite);
-
-//				if (detailSection.getText().isEmpty())
-					detailSection.setText(PropertyUtil.getLabel(o)+" Details");
-				((AbstractDetailComposite)detailComposite).setBusinessObject(o);
-				enable = detailComposite.getChildren().length>0;
-				tableSection.setExpanded(true);
+		if (detailSection!=null) {
+			if (enable) {
+	
+				IStructuredSelection selection = (IStructuredSelection)tableViewer.getSelection();
+				if (selection.getFirstElement() instanceof EObject) {
+					EObject o = (EObject)selection.getFirstElement();
+					
+					if (detailComposite!=null)
+						detailComposite.dispose();
+					detailComposite = createDetailComposite(detailSection, o.eClass().getInstanceClass());
+					detailSection.setClient(detailComposite);
+					toolkit.adapt(detailComposite);
+	
+	//				if (detailSection.getText().isEmpty())
+						detailSection.setText(PropertyUtil.getLabel(o)+" Details");
+					((AbstractDetailComposite)detailComposite).setBusinessObject(o);
+					enable = detailComposite.getChildren().length>0;
+					tableSection.setExpanded(true);
+				}
 			}
+			detailSection.setVisible(enable);
+			detailSection.setExpanded(enable);
+			if (editAction!=null)
+				editAction.setChecked(enable);
+			redrawPage();
 		}
-		detailSection.setVisible(enable);
-		detailSection.setExpanded(enable);
-		if (editAction!=null)
-			editAction.setChecked(enable);
-		redrawPage();
 	}
 	
 	@Override
@@ -567,7 +569,7 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 			else {
 				id = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/20/remove.png");
 			}
-			removeAction = new Action("Remove", id) {
+			removeAction = new Action(removeIsDelete ? "Delete" : "Remove", id) {
 				@Override
 				public void run() {
 					super.run();
@@ -687,16 +689,6 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 
 	    ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
 	    ToolBar toolbar = toolBarManager.createControl(section);
-	    final Cursor handCursor = new Cursor(Display.getCurrent(),SWT.CURSOR_HAND);
-	    toolbar.setCursor(handCursor);
-	    // Cursor needs to be explicitly disposed
-	    toolbar.addDisposeListener(new DisposeListener() {
-	        public void widgetDisposed(DisposeEvent e) {
-	            if ((handCursor != null) && (handCursor.isDisposed() == false)) {
-	                handCursor.dispose();
-	            }
-	        }
-	    });
 	    ImageDescriptor id = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/20/close.png");
 	    toolBarManager.add( new Action("Close", id) {
 			@Override

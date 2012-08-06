@@ -25,6 +25,7 @@ import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource;
 
 /**
  * @author Bob Brodt
@@ -55,7 +56,7 @@ public class InterfacePropertiesAdapter extends ExtendedPropertiesAdapter<Interf
 				}
 				
 	    		@Override
-				public EObject createFeature(Object context, EClass eClass) {
+				public EObject createFeature(Resource resource, Object context, EClass eClass) {
 					final Interface iface = adopt(context);
 
 					EObject impl = ModelUtil.createStringWrapper("");

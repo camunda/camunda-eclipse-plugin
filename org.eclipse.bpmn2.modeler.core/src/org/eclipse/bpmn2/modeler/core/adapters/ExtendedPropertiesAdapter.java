@@ -43,9 +43,9 @@ public class ExtendedPropertiesAdapter<T extends EObject> extends AdapterImpl {
 	public static final String PROPERTY_DESCRIPTOR = "property.descriptor";
 	
 	protected Hashtable<
-		Integer, // feature ID
+	Object, // feature ID
 		Hashtable<String,Object>> // property key and value
-			featureProperties = new Hashtable<Integer, Hashtable<String,Object>>();
+			featureProperties = new Hashtable<Object, Hashtable<String,Object>>();
 	protected Hashtable <
 		String, // property key
 		Object> // value
@@ -108,16 +108,21 @@ public class ExtendedPropertiesAdapter<T extends EObject> extends AdapterImpl {
 	}
 
 	public FeatureDescriptor<T> getFeatureDescriptor(EStructuralFeature feature) {
-		FeatureDescriptor<T> pd = (FeatureDescriptor<T>) getProperty(feature.getFeatureID(),PROPERTY_DESCRIPTOR);
+		FeatureDescriptor<T> pd = (FeatureDescriptor<T>) getProperty(feature,PROPERTY_DESCRIPTOR);
 		if (pd==null) {
 			pd = new FeatureDescriptor<T>(adapterFactory, (T)getTarget(), feature);
-			setProperty(feature.getFeatureID(),PROPERTY_DESCRIPTOR,pd);
+			setProperty(feature,PROPERTY_DESCRIPTOR,pd);
 		}
 		return pd;
 	}
 
 	public void setFeatureDescriptor(EStructuralFeature feature, FeatureDescriptor<T> pd) {
-		setProperty(feature.getFeatureID(),PROPERTY_DESCRIPTOR,pd);
+		Hashtable<String,Object> props = featureProperties.get(feature);
+		if (props==null) {
+			props = new Hashtable<String,Object>();
+			featureProperties.put(feature,props);
+		}
+		props.put(PROPERTY_DESCRIPTOR, pd);
 	}
 
 	public Object getProperty(String key) {
@@ -136,7 +141,12 @@ public class ExtendedPropertiesAdapter<T extends EObject> extends AdapterImpl {
 	}
 
 	public Object getProperty(EStructuralFeature feature, String key) {
-		return getProperty(feature.getFeatureID(), key);
+		Hashtable<String,Object> props = featureProperties.get(feature);
+		if (props==null) {
+			props = new Hashtable<String,Object>();
+			featureProperties.put(feature,props);
+		}
+		return props.get(key);
 	}
 
 	public boolean getBooleanProperty(EStructuralFeature feature, String key) {
@@ -147,7 +157,12 @@ public class ExtendedPropertiesAdapter<T extends EObject> extends AdapterImpl {
 	}
 
 	public void setProperty(EStructuralFeature feature, String key, Object value) {
-		setProperty(feature.getFeatureID(), key, value);
+		Hashtable<String,Object> props = featureProperties.get(feature);
+		if (props==null) {
+			props = new Hashtable<String,Object>();
+			featureProperties.put(feature,props);
+		}
+		props.put(key, value);
 	}
 
 	public Object getProperty(int id, String key) {

@@ -66,8 +66,6 @@ public class ResourceAssignmentExpressionDetailComposite extends ExpressionDetai
 			}
 			exprDetails.setBusinessObject(expr);
 			exprDetails.setTitle("Resource Assignment Expression");
-	
-			PropertyUtil.layoutAllParents(this);
 		}
 	}
 }

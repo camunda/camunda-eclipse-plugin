@@ -89,10 +89,14 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 	}
 
 	@Override
+	public void cleanBindings() {
+		super.cleanBindings();
+		namespacesTable = null;
+	}
+
+	@Override
 	public void createBindings(EObject be) {
 		super.createBindings(be);
-		if (namespacesTable!=null)
-			namespacesTable.dispose();
 		
 		namespacesTable = new NamespaceListComposite(getPropertySection());
 		DefinitionsImpl definitions = (DefinitionsImpl)getBusinessObject();

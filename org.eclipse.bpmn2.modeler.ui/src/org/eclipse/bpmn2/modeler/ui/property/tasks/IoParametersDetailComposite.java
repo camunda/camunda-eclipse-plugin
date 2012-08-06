@@ -45,7 +45,14 @@ public class IoParametersDetailComposite extends AbstractDetailComposite {
 	public IoParametersDetailComposite(AbstractBpmn2PropertySection section) {
 		super(section);
 	}
-	
+
+	@Override
+	public void cleanBindings() {
+		super.cleanBindings();
+		inputTable = null;
+		outputTable = null;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

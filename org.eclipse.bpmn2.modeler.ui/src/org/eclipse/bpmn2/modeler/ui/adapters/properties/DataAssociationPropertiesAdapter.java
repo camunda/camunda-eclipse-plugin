@@ -39,10 +39,12 @@ import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 
@@ -121,7 +123,7 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter<
 		}
 		
 		@Override
-		public EObject createFeature(Object context, EClass eClass) {
+		public EObject createFeature(Resource resource, Object context, EClass eClass) {
 			DataAssociation association = adopt(context);
 			// what kind of object should we create? Property or DataStore?
 			if (eClass==null) {
@@ -132,12 +134,7 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter<
 					eClass = Bpmn2Package.eINSTANCE.getDataStore();
 			}			
 			if (eClass!=null) {
-				try {
-					ModelHandler mh = ModelHandler.getInstance(association);
-					return mh.create(eClass);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				return PropertyUtil.createObject(resource, eClass);
 			}
 			return null;
 		}

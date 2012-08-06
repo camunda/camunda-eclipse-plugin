@@ -12,17 +12,21 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.participant;
 
-import java.io.IOException;
+import java.util.List;
 
+import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.Choreography;
+import org.eclipse.bpmn2.Collaboration;
+import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Participant;
+import org.eclipse.bpmn2.Process;
+import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.di.BPMNDiagram;
-import org.eclipse.bpmn2.modeler.core.Activator;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -42,20 +46,32 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature {
 
 	@Override
     public Object[] create(ICreateContext context) {
-		Participant p = null;
+		Participant participant = null;
 		
-		try {
-	        ModelHandler mh = ModelHandlerLocator.getModelHandler(getDiagram().eResource());
-	        BPMNDiagram bpmnDiagram = BusinessObjectUtil.getFirstElementOfType(context.getTargetContainer(), BPMNDiagram.class);
-	        p = mh.addParticipant(bpmnDiagram);
-	        p.setName("Pool nr " + index++);
-			ModelUtil.setID(p);
-        } catch (IOException e) {
-        	Activator.logError(e);
+        BPMNDiagram bpmnDiagram = BusinessObjectUtil.getFirstElementOfType(context.getTargetContainer(), BPMNDiagram.class);
+        Definitions definitions = ModelUtil.getDefinitions(bpmnDiagram);
+        participant = (Participant) PropertyUtil.createObject(definitions.eResource(), Bpmn2Package.eINSTANCE.getParticipant());
+        participant.setName("Pool nr " + index++);
+        // add the Pool to the first Choreography or Collaboration we find.
+        // TODO: when multipage editor is working, this will be the specific Choreography or
+        // Collaboration that is being rendered on the current page.
+        List<RootElement> rootElements = definitions.getRootElements();
+        for (RootElement element : rootElements) {
+            if (element instanceof Collaboration || element instanceof Choreography) {
+                ((Collaboration)element).getParticipants().add(participant);
+                break;
+            }
         }
+
+        // create a Process for this Participant
+        Process process = (Process) PropertyUtil.createObject(bpmnDiagram.eResource(), Bpmn2Package.eINSTANCE.getProcess());
+        // NOTE: this is needed because it fires the InsertionAdapter, which adds the new Process
+        // to Definitions.rootElements, otherwise the Process would be a dangling object
+        process.setName(participant.getName()+" Process");
+        participant.setProcessRef(process);
         
-        addGraphicalRepresentation(context, p);
-		return new Object[] { p };
+        addGraphicalRepresentation(context, participant);
+		return new Object[] { participant };
     }
 	
 	@Override

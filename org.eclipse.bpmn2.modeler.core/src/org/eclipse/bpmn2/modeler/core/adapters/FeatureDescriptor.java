@@ -222,11 +222,15 @@ public class FeatureDescriptor<T extends EObject> extends ObjectDescriptor<T> {
 		T object = adopt(context);
 		EObject newFeature = null;
 		try {
+			if (context instanceof EClass)
+				eclass = (EClass)context;
 			if (eclass==null)
 				eclass = (EClass)feature.getEType();
 			
 			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(eclass, ExtendedPropertiesAdapter.class);
 			if (adapter!=null) {
+				if (resource==null)
+					resource = object.eResource();
 				newFeature = adapter.getObjectDescriptor().createObject(resource, eclass);
 				object.eAdapters().add(new InsertionAdapter(object, feature, newFeature));
 			}
