@@ -36,12 +36,40 @@ import org.eclipse.graphiti.ui.internal.editor.GFWorkspaceCommandStackImpl;
 public class BPMN2EditorUpdateBehavior extends DefaultUpdateBehavior {
 	
 		private TransactionalEditingDomain editingDomain;
-
+		private ResourceSet resourceSet;
+		private BPMN2Editor mainEditor;
+		
 		/**
 		 * @param diagramEditor
 		 */
 		public BPMN2EditorUpdateBehavior(DiagramEditor diagramEditor) {
 			super(diagramEditor);
+			mainEditor = ((BPMN2Editor)diagramEditor).getMainEditor(); 
+			if (mainEditor!=null) {
+				BPMN2EditorUpdateBehavior updateBehavior = (BPMN2EditorUpdateBehavior)mainEditor.getUpdateBehavior();
+				resourceSet = updateBehavior.resourceSet;
+				editingDomain = updateBehavior.editingDomain;
+			}
+
+		}
+		
+		@Override
+		public void dispose() {
+			super.dispose();
+		}
+		
+		protected void disposeEditingDomain() {
+			if (mainEditor==null)
+				super.disposeEditingDomain();
+		}
+
+		public BPMN2EditorUpdateBehavior(DiagramEditor diagramEditor, ResourceSet rs) {
+			super(diagramEditor);
+			resourceSet = rs;
+		}
+		
+		public ResourceSet getResourceSet() {
+			return resourceSet;
 		}
 		
 		public TransactionalEditingDomain getEditingDomain() {
@@ -55,20 +83,29 @@ public class BPMN2EditorUpdateBehavior extends DefaultUpdateBehavior {
 			if (editingDomain==null) {
 //			TransactionalEditingDomain editingDomain = GraphitiUiInternal.getEmfService().createResourceSetAndEditingDomain();
 				editingDomain = createResourceSetAndEditingDomain();
-				initializeEditingDomain(editingDomain);
 			}
+			if (super.getEditingDomain()==null)
+				initializeEditingDomain(editingDomain);
 		}
 		
 		public TransactionalEditingDomain createResourceSetAndEditingDomain() {
 			// Argh!! This is the ONLY line of code that actually differs (significantly) from
 			// the Graphiti EMF Service. Here we want to substitute our own Bpmn2ModelerResourceSetImpl
 			// instead of using a ResourceSetImpl.
-			final ResourceSet resourceSet = new Bpmn2ModelerResourceSetImpl();
+			boolean newResourceSet = false;
+			if (resourceSet==null) {
+				resourceSet = new Bpmn2ModelerResourceSetImpl();
+				newResourceSet = true;
+			}
+			
 			final IWorkspaceCommandStack workspaceCommandStack = new GFWorkspaceCommandStackImpl(new DefaultOperationHistory());
 		
 			final TransactionalEditingDomainImpl editingDomain = new TransactionalEditingDomainImpl(new ComposedAdapterFactory(
 					ComposedAdapterFactory.Descriptor.Registry.INSTANCE), workspaceCommandStack, resourceSet);
-			WorkspaceEditingDomainFactory.INSTANCE.mapResourceSet(editingDomain);
+			
+			if (newResourceSet)
+				WorkspaceEditingDomainFactory.INSTANCE.mapResourceSet(editingDomain);
+			
 			return editingDomain;
 		}
 

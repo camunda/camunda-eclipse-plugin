@@ -22,11 +22,14 @@ import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BpmnDiFactory;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
+import org.eclipse.dd.di.DiFactory;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -71,6 +74,18 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature {
         participant.setProcessRef(process);
         
         addGraphicalRepresentation(context, participant);
+        
+        bpmnDiagram = BpmnDiFactory.eINSTANCE.createBPMNDiagram();
+        bpmnDiagram.setName(process.getName());
+        definitions.getDiagrams().add(bpmnDiagram);
+		ModelUtil.setID(bpmnDiagram);
+        
+		BPMNPlane plane = BpmnDiFactory.eINSTANCE.createBPMNPlane();
+		bpmnDiagram.setPlane(plane);
+		ModelUtil.setID(plane);
+
+        definitions.getDiagrams().add(bpmnDiagram);
+        
 		return new Object[] { participant };
     }
 	

@@ -13,10 +13,22 @@
 
 package org.eclipse.bpmn2.modeler.ui.editor;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.modeler.ui.wizards.Bpmn2DiagramEditorInput;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.emf.common.command.Command;
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.transaction.NotificationFilter;
+import org.eclipse.emf.transaction.ResourceSetChangeEvent;
+import org.eclipse.emf.transaction.ResourceSetListener;
+import org.eclipse.emf.transaction.RollbackException;
+import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.WorkbenchPartAction;
@@ -36,6 +48,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabFolder2Listener;
 import org.eclipse.swt.custom.CTabFolderEvent;
+import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -45,6 +59,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.MultiPageEditorSite;
 import org.eclipse.ui.part.MultiPageSelectionProvider;
+import org.eclipse.ui.services.IServiceLocator;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
@@ -75,6 +90,7 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 	StructuredTextEditor sourceViewer;
 	CTabFolder tabFolder;
 	int defaultTabHeight;
+	List<IEditorPart> pages = new ArrayList<IEditorPart>();
 	
 	/**
 	 * 
@@ -236,7 +252,7 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 
 	protected void createDesignEditor() {
 		if (designEditor==null) {
-			designEditor = new DesignEditor();
+			designEditor = new DesignEditor(this, true);
 			
 			try {
 				int pageIndex = tabFolder.getItemCount();
@@ -258,12 +274,29 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 //				setPageText(pageIndex,"Design 2");
 				
 				defaultTabHeight = tabFolder.getTabHeight();
-				
+
 				updateTabs();
 			}
 			catch (Exception e) {
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	protected void addDesignPage(BPMNDiagram bpmnDiagram) {
+		DesignEditor newEditor = new DesignEditor(this, false);
+		newEditor.setBPMNDiagram(bpmnDiagram);
+		try {
+			int pageIndex = tabFolder.getItemCount();
+			if (sourceViewer!=null)
+				--pageIndex;
+			addPage(pageIndex, newEditor, designEditor.getEditorInput());
+			setPageText(pageIndex,bpmnDiagram.getName());
+
+			updateTabs();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -288,6 +321,12 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 		}
 	}
 
+	public void addPage(int index, IEditorPart editor, IEditorInput input)
+			throws PartInitException {
+		pages.add(index,editor);
+		super.addPage(index,editor,input);
+	}
+	
 	@Override
 	public void removePage(int pageIndex) {
 		Object page = tabFolder.getItem(pageIndex).getData();
@@ -297,6 +336,7 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 		}
 		super.removePage(pageIndex);
 		updateTabs();
+		pages.remove(pageIndex);
 	}
 
 	public void removeSourceViewer() {
@@ -348,8 +388,40 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 		return activeEditor.isSaveAsAllowed();
 	}
 
-	public class DesignEditor extends BPMN2Editor {
+	@Override
+	public void dispose() {
+		super.dispose();
 		
+		int nPages = pages.size();
+		for (int i=nPages-1; i>=0; --i) {
+			IEditorPart part = pages.get(i);
+			part.dispose();
+		}
+	}
+
+	public class DesignEditor extends BPMN2Editor implements ResourceSetListener {
+		
+		boolean isMainEditor;
+		
+		public DesignEditor(BPMN2MultiPageEditor mpe, boolean isMainEditor) {
+			super(mpe);
+			this.isMainEditor = isMainEditor;
+		}
+		
+		public void dispose() {
+			if (isMainEditor) {
+				getEditingDomain().removeResourceSetListener(this);
+			}
+			super.dispose();
+		}
+		
+		@Override
+		protected void setInput(IEditorInput input) {
+			super.setInput(input);
+			if (isMainEditor)
+				getEditingDomain().addResourceSetListener(this);
+		}
+
 		@Override
 		protected void createActions() {
 			super.createActions();
@@ -397,6 +469,53 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 				}
 			};
 		}
+
+		@Override
+		public NotificationFilter getFilter() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Command transactionAboutToCommit(ResourceSetChangeEvent event)
+				throws RollbackException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void resourceSetChanged(ResourceSetChangeEvent event) {
+			for (Notification n : event.getNotifications()) {
+				if (n.getNewValue() instanceof BPMNPlane && n.getNotifier() instanceof BPMNDiagram) {
+					final BPMNDiagram d = (BPMNDiagram)n.getNotifier();
+					Display.getCurrent().asyncExec( new Runnable() {
+						@Override
+						public void run() {
+							multipageEditor.addDesignPage(d);
+						}
+					});
+					break;
+				}
+			}
+		}
+
+		@Override
+		public boolean isAggregatePrecommitListener() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isPrecommitOnly() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isPostcommitOnly() {
+			// TODO Auto-generated method stub
+			return true;
+		}
 	}
 
 	public class SourceViewer extends StructuredTextEditor {
@@ -429,5 +548,9 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 				actionRegistry = new ActionRegistry();
 			return actionRegistry;
 		}
+	}
+
+	public BPMN2Editor getDesignEditor() {
+		return designEditor;
 	}
 }
