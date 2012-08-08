@@ -86,13 +86,14 @@ import org.w3c.dom.Node;
  * diagrams. Whether or not these types of files are actually deployable and/or executable
  * is another story ;)
  */
-public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IPageChangedListener {
+public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 
 	BPMN2Editor designEditor;
 	StructuredTextEditor sourceViewer;
 	CTabFolder tabFolder;
 	int defaultTabHeight;
-	List<IEditorPart> pages = new ArrayList<IEditorPart>();
+	int activePage = 0;
+	List<BPMNDiagram> pages = new ArrayList<BPMNDiagram>();
 	
 	/**
 	 * 
@@ -209,14 +210,6 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IPageCh
 		return super.getPartName();
 	}
 
-	@Override
-	protected void pageChange(int newPageIndex) {
-		super.pageChange(newPageIndex);
-		if (newPageIndex>0 && newPageIndex==tabFolder.getItemCount()-1) {
-			// TODO: sync source viewer's DOM with model
-		}
-	}
-
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.MultiPageEditorPart#createPages()
 	 */
@@ -249,18 +242,11 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IPageCh
 			
 		});
 		createDesignEditor();
-		
-		addPageChangedListener(this);
-//		createSourceViewer();
-	}
-
-	@Override
-	public void pageChanged(PageChangedEvent event) {
 	}
 
 	protected void createDesignEditor() {
 		if (designEditor==null) {
-			designEditor = new DesignEditor(this, true);
+			designEditor = new DesignEditor(this);
 			
 			try {
 				int pageIndex = tabFolder.getItemCount();
@@ -302,6 +288,7 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IPageCh
 			addPage(pageIndex, designEditor, input);
 			setPageText(pageIndex,bpmnDiagram.getName());
 
+			this.setActivePage(pageIndex);
 			updateTabs();
 		}
 		catch (Exception e) {
@@ -330,10 +317,12 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IPageCh
 		}
 	}
 
-	public void addPage(int index, IEditorPart editor, IEditorInput input)
+	public void addPage(int pageIndex, IEditorPart editor, IEditorInput input)
 			throws PartInitException {
-		pages.add(index,editor);
-		super.addPage(index,editor,input);
+		super.addPage(pageIndex,editor,input);
+		if (editor instanceof BPMN2Editor) {
+			pages.add(pageIndex,((BPMN2Editor)editor).getBpmnDiagram());
+		}
 	}
 	
 	@Override
@@ -345,7 +334,20 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IPageCh
 		}
 		super.removePage(pageIndex);
 		updateTabs();
-		pages.remove(pageIndex);
+		if (page instanceof BPMN2Editor) {
+			pages.add(pageIndex,((BPMN2Editor)page).getBpmnDiagram());
+		}
+	}
+
+	@Override
+	protected void pageChange(int newPageIndex) {
+		super.pageChange(newPageIndex);
+
+		IEditorPart editor = getEditor(newPageIndex);
+		if (editor instanceof BPMN2Editor) {
+			BPMNDiagram bpmnDiagram = pages.get(newPageIndex);
+			((BPMN2Editor)editor).setBpmnDiagram(bpmnDiagram);
+		}
 	}
 
 	public void removeSourceViewer() {
@@ -399,36 +401,75 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IPageCh
 
 	@Override
 	public void dispose() {
-		super.dispose();
-		
-		int nPages = pages.size();
-		for (int i=nPages-1; i>=0; --i) {
-			IEditorPart part = pages.get(i);
-			part.dispose();
-		}
+		designEditor.dispose();
+		if (sourceViewer!=null)
+			sourceViewer.dispose();
 	}
 
-	public class DesignEditor extends BPMN2Editor implements ResourceSetListener {
+	public class DesignEditor extends BPMN2Editor {
 		
-		boolean isMainEditor;
+		BPMN2MultiPageEditor multipageEditor;
+		ResourceSetListener resourceSetListener = null;
 		
-		public DesignEditor(BPMN2MultiPageEditor mpe, boolean isMainEditor) {
-			super(mpe);
-			this.isMainEditor = isMainEditor;
+		public DesignEditor(BPMN2MultiPageEditor mpe) {
+			super();
+			multipageEditor = mpe;
 		}
 		
 		public void dispose() {
-			if (isMainEditor) {
-				getEditingDomain().removeResourceSetListener(this);
-			}
+			getEditingDomain().removeResourceSetListener(resourceSetListener);
+			resourceSetListener = null;
 			super.dispose();
 		}
 		
 		@Override
 		protected void setInput(IEditorInput input) {
 			super.setInput(input);
-			if (isMainEditor)
-				getEditingDomain().addResourceSetListener(this);
+			if (resourceSetListener==null) {
+				resourceSetListener = new ResourceSetListener() {
+					@Override
+					public NotificationFilter getFilter() {
+						return null;
+					}
+
+					@Override
+					public Command transactionAboutToCommit(ResourceSetChangeEvent event) throws RollbackException {
+						return null;
+					}
+
+					@Override
+					public void resourceSetChanged(ResourceSetChangeEvent event) {
+						for (Notification n : event.getNotifications()) {
+							if (n.getNewValue() instanceof BPMNPlane && n.getNotifier() instanceof BPMNDiagram) {
+								final BPMNDiagram d = (BPMNDiagram)n.getNotifier();
+								Display.getCurrent().asyncExec( new Runnable() {
+									@Override
+									public void run() {
+										multipageEditor.addDesignPage(d);
+									}
+								});
+								break;
+							}
+						}
+					}
+
+					@Override
+					public boolean isAggregatePrecommitListener() {
+						return false;
+					}
+
+					@Override
+					public boolean isPrecommitOnly() {
+						return false;
+					}
+
+					@Override
+					public boolean isPostcommitOnly() {
+						return true;
+					}
+				};
+				getEditingDomain().addResourceSetListener(resourceSetListener);
+			}
 		}
 
 		@Override
@@ -477,53 +518,6 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IPageCh
 					manager.add(action);
 				}
 			};
-		}
-
-		@Override
-		public NotificationFilter getFilter() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Command transactionAboutToCommit(ResourceSetChangeEvent event)
-				throws RollbackException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public void resourceSetChanged(ResourceSetChangeEvent event) {
-			for (Notification n : event.getNotifications()) {
-				if (n.getNewValue() instanceof BPMNPlane && n.getNotifier() instanceof BPMNDiagram) {
-					final BPMNDiagram d = (BPMNDiagram)n.getNotifier();
-					Display.getCurrent().asyncExec( new Runnable() {
-						@Override
-						public void run() {
-							multipageEditor.addDesignPage(d);
-						}
-					});
-					break;
-				}
-			}
-		}
-
-		@Override
-		public boolean isAggregatePrecommitListener() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public boolean isPrecommitOnly() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public boolean isPostcommitOnly() {
-			// TODO Auto-generated method stub
-			return true;
 		}
 	}
 

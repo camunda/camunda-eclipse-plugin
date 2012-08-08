@@ -120,8 +120,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 
 	private IFile modelFile;
 	private IFile diagramFile;
-	protected BPMNDiagram bpmnDiagram;
-	protected BPMN2MultiPageEditor multipageEditor;
+	private BPMNDiagram bpmnDiagram;
 	
 	private IFileChangeListener fileChangeListener;
 	private IWorkbenchListener workbenchListener;
@@ -144,10 +143,9 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		public BPMN2Editor getBPMN2Editor() { return BPMN2Editor.this; }
 	}
 
-	public BPMN2Editor(BPMN2MultiPageEditor mpe) {
+	public BPMN2Editor() {
 		super();
 		activeEditor = this;
-		multipageEditor = mpe;
 	}
 
 	/**
@@ -161,10 +159,6 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	
 	public static BPMN2Editor getActiveEditor() {
 		return activeEditor;
-	}
-	
-	public BPMN2MultiPageEditor getMultipageEditor() {
-		return multipageEditor;
 	}
 	
 	private void setActiveEditor(BPMN2Editor editor) {
@@ -195,6 +189,8 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		try {
 			Bpmn2DiagramType diagramType = Bpmn2DiagramType.NONE;
 			String targetNamespace = null;
+			bpmnDiagram = null;
+
 			if (input instanceof IFileEditorInput) {
 				modelFile = ((IFileEditorInput) input).getFile();
 				loadPreferences(modelFile.getProject());
@@ -238,59 +234,9 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		addFileChangeListener();
 	}
 	
-	
-	public BPMN2Editor getMainEditor() {
-		BPMN2Editor bpmnEditor = BPMN2Editor.getActiveEditor(); 
-		if (bpmnEditor!=null && BPMN2Editor.getActiveEditor().getMultipageEditor()!=null) {
-			return BPMN2Editor.getActiveEditor().getMultipageEditor().getDesignEditor();
-		}
-		return null;
-	}
-
 	@Override
 	protected DefaultUpdateBehavior createUpdateBehavior() {
 		return new BPMN2EditorUpdateBehavior(this);
-	}
-	
-	protected DefaultMarkerBehavior createMarkerBehavior() {
-		final BPMN2Editor mainEditor = getMainEditor();
-		if (mainEditor!=null) {
-			return new DefaultMarkerBehavior(this) {
-				public void dispose() {
-					super.dispose(); //diagramEditor.getResourceSet().eAdapters().clear();
-				}
-			};
-		}
-		return super.createMarkerBehavior();
-	}
-	
-	public void editingDomainInitialized() {
-		if (getMainEditor()==null)
-			super.editingDomainInitialized();
-	}
-
-	@Override
-	protected DefaultPersistencyBehavior createPersistencyBehavior() {
-		final BPMN2Editor mainEditor = getMainEditor();
-		if (mainEditor!=null) {
-			return new DefaultPersistencyBehavior(this) {
-
-				@Override
-				public Diagram loadDiagram(URI uri) {
-					// TODO Auto-generated method stub
-					final Diagram oldDiagram = mainEditor.getDiagramTypeProvider().getDiagram();
-					final Diagram diagram = Graphiti.getCreateService().createDiagram(oldDiagram.getDiagramTypeId(), "pool", true);
-					TransactionalEditingDomain domain = getEditingDomain();
-					domain.getCommandStack().execute(new RecordingCommand(domain) {
-						protected void doExecute() {
-							oldDiagram.eResource().getContents().add(diagram);
-						}
-					});
-					return diagram;
-				}
-			};
-		}
-		return super.createPersistencyBehavior();
 	}
 
 	public Bpmn2Preferences getPreferences() {
@@ -432,7 +378,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		String targetNamespace = input.getTargetNamespace();
 
 		if (diagramType != Bpmn2DiagramType.NONE) {
-			BPMNDiagram bpmnDiagram = modelHandler.createDiagramType(diagramType, targetNamespace);
+			bpmnDiagram = modelHandler.createDiagramType(diagramType, targetNamespace);
 			featureProvider.link(diagram, bpmnDiagram);
 			saveModelFile();
 		}
@@ -603,11 +549,6 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		return getEditingDomainListener().getDiagnostics();
 	}
 	
-	public boolean isMainEditor() {
-		return multipageEditor==null
-				|| multipageEditor.getDesignEditor() == this;
-	}
-	
 	@Override
 	public void dispose() {
 		// clear ID mapping tables if no more instances of editor are active
@@ -648,28 +589,52 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		return modelHandler;
 	}
 
-//	public BPMNDiagram getBpmnDiagram() {
-//		if (bpmnDiagram!=null)
-//			return bpmnDiagram;
-//		return getModelHandler().getDefinitions().getDiagrams().get(0);
-//	}
+	public BPMNDiagram getBpmnDiagram() {
+		if (bpmnDiagram!=null)
+			return bpmnDiagram;
+		return getModelHandler().getDefinitions().getDiagrams().get(0);
+	}
 	
-	public void setBpmnDiagram(BPMNDiagram d) {
-		this.bpmnDiagram = d;
-		final Diagram oldDiagram = getDiagramTypeProvider().getDiagram();
-		final Diagram diagram = Graphiti.getCreateService().createDiagram(oldDiagram.getDiagramTypeId(), d.getName(), true);
-		final IFeatureProvider featureProvider = getDiagramTypeProvider().getFeatureProvider();
-		TransactionalEditingDomain domain = getEditingDomain();
-		domain.getCommandStack().execute(new RecordingCommand(domain) {
-			protected void doExecute() {
-				oldDiagram.eResource().getContents().add(diagram);
-				diagram.setActive(true);
-				featureProvider.link(diagram, bpmnDiagram);
+	public void setBpmnDiagram(final BPMNDiagram bpmnDiagram) {
+		// do we need to create a new Diagram or is this already in the model?
+		Diagram oldDiagram = null;
+		Diagram diagram = null;
+		final Resource resource = getDiagramTypeProvider().getDiagram().eResource();
+		for (EObject o : resource.getContents()) {
+			if (o instanceof Diagram) {
+				Diagram d = (Diagram)o;
+				if (BusinessObjectUtil.getFirstElementOfType(d, BPMNDiagram.class) == bpmnDiagram) {
+					oldDiagram = d;
+					break;
+				}
 			}
-		});
-
+		}
+		
+		if (oldDiagram==null) {
+			// create a new one
+			String typeId = getDiagramTypeProvider().getDiagram().getDiagramTypeId();
+			final Diagram newDiagram = Graphiti.getCreateService().createDiagram(typeId, bpmnDiagram.getName(), true);
+			final IFeatureProvider featureProvider = getDiagramTypeProvider().getFeatureProvider();
+			TransactionalEditingDomain domain = getEditingDomain();
+			domain.getCommandStack().execute(new RecordingCommand(domain) {
+				protected void doExecute() {
+					resource.getContents().add(newDiagram);
+					newDiagram.setActive(true);
+					featureProvider.link(newDiagram, bpmnDiagram);
+				}
+			});
+			diagram = newDiagram;
+		}
+		else {
+			// already there
+			diagram = oldDiagram;
+		}
+		
+		// set the new Diagram in the DTP and refresh graphical viewer
 		getDiagramTypeProvider().init(diagram, this);
-		this.getGraphicalViewer().setContents(diagram);
+		refreshContent();
+		// remember this for later
+		this.bpmnDiagram = bpmnDiagram;
 	}
 	
 	@Override
