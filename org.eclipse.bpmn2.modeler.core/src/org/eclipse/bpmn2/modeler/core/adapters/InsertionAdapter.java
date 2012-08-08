@@ -79,7 +79,6 @@ public class InsertionAdapter extends EContentAdapter {
 	}
 
 	public void notifyChanged(Notification notification) {
-		super.notifyChanged(notification);
 		if (notification.getNotifier() == value) {
 			// execute if an attribute in the new value has changed
 			executeIfNeeded(value);
