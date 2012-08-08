@@ -151,11 +151,15 @@ public class AddChoreographyParticipantFeature extends AbstractCustomFeature {
 						participant.setName( ModelUtil.toDisplayName(participant.getId()) );
 						Choreography choreography = (Choreography)task.eContainer();
 						choreography.getParticipants().add(result);
+						/*
+						 Finish this later after we figure out how to deal with multiple BPMNDiagrams and BPMNPlanes
+						 
 						Process process = (Process) PropertyUtil.createObject(task.eResource(), Bpmn2Package.eINSTANCE.getProcess());
 						// NOTE: this is needed because it fires the InsertionAdapter, which adds the new Process
 						// to Definitions.rootElements, otherwise the Process would be a dangling object
 						process.setName(participant.getName()+" Process");
 						participant.setProcessRef(process);
+						*/
 					}
 
 					if (task.getInitiatingParticipantRef() == null) {

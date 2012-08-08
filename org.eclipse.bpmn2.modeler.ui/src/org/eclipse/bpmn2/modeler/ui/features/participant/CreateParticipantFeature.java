@@ -62,14 +62,16 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature {
                 break;
             }
         }
-
+/*
+ Finish this later after we figure out how to deal with multiple BPMNDiagrams and BPMNPlanes
+ 
         // create a Process for this Participant
         Process process = (Process) PropertyUtil.createObject(bpmnDiagram.eResource(), Bpmn2Package.eINSTANCE.getProcess());
         // NOTE: this is needed because it fires the InsertionAdapter, which adds the new Process
         // to Definitions.rootElements, otherwise the Process would be a dangling object
         process.setName(participant.getName()+" Process");
         participant.setProcessRef(process);
-        
+*/        
         addGraphicalRepresentation(context, participant);
 		return new Object[] { participant };
     }
