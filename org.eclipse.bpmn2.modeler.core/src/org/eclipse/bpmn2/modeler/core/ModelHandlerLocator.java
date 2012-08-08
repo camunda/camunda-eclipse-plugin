@@ -31,7 +31,6 @@ public class ModelHandlerLocator {
 		if (eResource==null)
 			return null;
 		URI uri = eResource.getURI();
-		String[] segments = uri.segments();
 
 		return getModelHandler(uri);
 	}
@@ -48,8 +47,10 @@ public class ModelHandlerLocator {
 		diagramMap.put(diagramPath, mh);
 	}
 
-	public static void releaseModel(URI path) {
-		map.remove(path);
+	public static void remove(URI path) {
+		if (map.remove(path)==null) {
+			diagramMap.remove(path);
+		}
 	}
 
 	public static ModelHandler createModelHandler(URI path, final Bpmn2ResourceImpl resource) {
