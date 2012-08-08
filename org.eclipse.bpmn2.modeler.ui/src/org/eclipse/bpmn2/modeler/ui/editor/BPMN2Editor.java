@@ -449,30 +449,30 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 				public void deleted(IPath filePath) {
 					// close the editor if either the dummy diagramfile (in the .bpmn2 folder)
 					// or the model file is deleted
-					if (modelFile.getFullPath().equals(filePath)) {
+					if (modelFile.getFullPath().equals(filePath) || diagramFile.getFullPath().equals(filePath)) {
 						// Close the editor.
 						Display display = getSite().getShell().getDisplay();
 						display.asyncExec(new Runnable() {
 							public void run() {
-								getSite().getPage().closeEditor(BPMN2Editor.this, false);
+								boolean closeEditor = getSite().getPage().closeEditor(BPMN2Editor.this, false);
+								if (!closeEditor){
+									// If close editor fails, try again with explicit editorpart 
+									// of the old file
+									IFile oldFile = ResourcesPlugin.getWorkspace().getRoot().getFile(modelFile.getFullPath());
+									IEditorPart editorPart = ResourceUtil.findEditor(getSite().getPage(), oldFile);
+									getSite().getPage().closeEditor(editorPart, false);
+								}
 							}
 						});
-					}
-					else if (diagramFile.getFullPath().equals(filePath)) {
-						// already handled by Graphiti
 					}
 				}
 				public void moved(IPath oldFilePath, IPath newFilePath) {
 					// handle file move/rename after the fact (i.e. newFile now exists, old file does not)
-					if (modelFile.getFullPath().equals(oldFilePath)) {
+					if (modelFile.getFullPath().equals(oldFilePath) || diagramFile.getFullPath().equals(oldFilePath)) {
 						// same behavior as Graphiti
 						// TODO: if Graphiti behavior changes so that it can handle file rename/move
 						// then we need to change this as well.
 						deleted(oldFilePath);
-					}
-					else if (diagramFile.getFullPath().equals(oldFilePath)) {
-						// Graphiti handles this as a file delete notification and closes the editor.
-						System.out.println("BPMN2Editor diagram file has moved from "+oldFilePath+" to "+newFilePath);
 					}
 				}
 			};
