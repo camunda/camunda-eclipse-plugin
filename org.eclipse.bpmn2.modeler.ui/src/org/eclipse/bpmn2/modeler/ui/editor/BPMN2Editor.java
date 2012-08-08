@@ -207,6 +207,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 				if (input instanceof Bpmn2DiagramEditorInput) {
 					diagramType = ((Bpmn2DiagramEditorInput)input).getInitialDiagramType();
 					targetNamespace = ((Bpmn2DiagramEditorInput)input).getTargetNamespace();
+					bpmnDiagram = ((Bpmn2DiagramEditorInput)input).getBpmnDiagram();
 				}
 				if (bpmnDiagram==null) {
 					// This was incorrectly constructed input, we ditch the old one and make a new and clean one instead
@@ -214,7 +215,8 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 					input = createNewDiagramEditorInput(diagramType, targetNamespace);
 				}
 				else {
-					
+					setBpmnDiagram(bpmnDiagram);
+					return;
 				}
 			}
 		} catch (CoreException e) {
@@ -368,57 +370,53 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 			ResourceSet resourceSet = getEditingDomain().getResourceSet();
 			getTargetRuntime().setResourceSet(resourceSet);
 			
-			if (bpmnDiagram==null) {
-				Bpmn2ResourceImpl bpmnResource = (Bpmn2ResourceImpl) resourceSet.createResource(modelUri,
-						Bpmn2ModelerResourceImpl.BPMN2_CONTENT_TYPE_ID);
-	
-				resourceSet.setURIConverter(new ProxyURIConverterImplExtension());
-				resourceSet.eAdapters().add(editorAdapter = new BPMN2EditorAdapter());
-			
-				modelHandler = ModelHandlerLocator.createModelHandler(modelUri, bpmnResource);
-				ModelHandlerLocator.put(diagramUri, modelHandler);
+			Bpmn2ResourceImpl bpmnResource = (Bpmn2ResourceImpl) resourceSet.createResource(modelUri,
+					Bpmn2ModelerResourceImpl.BPMN2_CONTENT_TYPE_ID);
 
-				try {
-					if (modelFile.exists()) {
-						bpmnResource.load(null);
-					} else {
-						saveModelFile();
-					}
-				} catch (IOException e) {
-					Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage(), e);
-					ErrorUtils.showErrorWithLogging(status);
+			resourceSet.setURIConverter(new ProxyURIConverterImplExtension());
+			resourceSet.eAdapters().add(editorAdapter = new BPMN2EditorAdapter());
+		
+			modelHandler = ModelHandlerLocator.createModelHandler(modelUri, bpmnResource);
+			ModelHandlerLocator.put(diagramUri, modelHandler);
+
+			try {
+				if (modelFile.exists()) {
+					bpmnResource.load(null);
+				} else {
+					saveModelFile();
 				}
-				basicCommandStack.execute(new RecordingCommand(getEditingDomain()) {
-	
-					@Override
-					protected void doExecute() {
-						importDiagram();
-					}
-				});
+			} catch (IOException e) {
+				Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage(), e);
+				ErrorUtils.showErrorWithLogging(status);
 			}
-			else {
-				modelHandler = multipageEditor.designEditor.modelHandler;
-				modelUri = multipageEditor.designEditor.modelUri;
-				diagramFile = multipageEditor.designEditor.diagramFile;
-				diagramUri = multipageEditor.designEditor.diagramUri;
-				
-//				final Diagram oldDiagram = getDiagramTypeProvider().getDiagram();
-//				final Diagram diagram = Graphiti.getCreateService().createDiagram(oldDiagram.getDiagramTypeId(), "pool", true);
-//				getDiagramTypeProvider().init(diagram, this);
-				final Diagram diagram = getDiagramTypeProvider().getDiagram();
-				
-				final IFeatureProvider featureProvider = getDiagramTypeProvider().getFeatureProvider();
-				TransactionalEditingDomain domain = getEditingDomain();
-				basicCommandStack.execute(new RecordingCommand(domain) {
-					
-					@Override
-					protected void doExecute() {
-						diagram.setActive(true);
-						featureProvider.link(diagram, bpmnDiagram);
-//						oldDiagram.eResource().getContents().add(diagram);
-					}
-				});
-			}
+			basicCommandStack.execute(new RecordingCommand(getEditingDomain()) {
+
+				@Override
+				protected void doExecute() {
+					importDiagram();
+				}
+			});
+//				modelHandler = multipageEditor.designEditor.modelHandler;
+//				modelUri = multipageEditor.designEditor.modelUri;
+//				diagramFile = multipageEditor.designEditor.diagramFile;
+//				diagramUri = multipageEditor.designEditor.diagramUri;
+//				
+////				final Diagram oldDiagram = getDiagramTypeProvider().getDiagram();
+////				final Diagram diagram = Graphiti.getCreateService().createDiagram(oldDiagram.getDiagramTypeId(), "pool", true);
+////				getDiagramTypeProvider().init(diagram, this);
+//				final Diagram diagram = getDiagramTypeProvider().getDiagram();
+//				
+//				final IFeatureProvider featureProvider = getDiagramTypeProvider().getFeatureProvider();
+//				TransactionalEditingDomain domain = getEditingDomain();
+//				basicCommandStack.execute(new RecordingCommand(domain) {
+//					
+//					@Override
+//					protected void doExecute() {
+//						diagram.setActive(true);
+//						featureProvider.link(diagram, bpmnDiagram);
+////						oldDiagram.eResource().getContents().add(diagram);
+//					}
+//				});
 		}
 		basicCommandStack.saveIsDone();
 		basicCommandStack.flush();
@@ -650,14 +648,28 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		return modelHandler;
 	}
 
-	public BPMNDiagram getBPMNDiagram() {
-		if (bpmnDiagram!=null)
-			return bpmnDiagram;
-		return getModelHandler().getDefinitions().getDiagrams().get(0);
-	}
+//	public BPMNDiagram getBpmnDiagram() {
+//		if (bpmnDiagram!=null)
+//			return bpmnDiagram;
+//		return getModelHandler().getDefinitions().getDiagrams().get(0);
+//	}
 	
-	public void setBPMNDiagram(BPMNDiagram d) {
+	public void setBpmnDiagram(BPMNDiagram d) {
 		this.bpmnDiagram = d;
+		final Diagram oldDiagram = getDiagramTypeProvider().getDiagram();
+		final Diagram diagram = Graphiti.getCreateService().createDiagram(oldDiagram.getDiagramTypeId(), d.getName(), true);
+		final IFeatureProvider featureProvider = getDiagramTypeProvider().getFeatureProvider();
+		TransactionalEditingDomain domain = getEditingDomain();
+		domain.getCommandStack().execute(new RecordingCommand(domain) {
+			protected void doExecute() {
+				oldDiagram.eResource().getContents().add(diagram);
+				diagram.setActive(true);
+				featureProvider.link(diagram, bpmnDiagram);
+			}
+		});
+
+		getDiagramTypeProvider().init(diagram, this);
+		this.getGraphicalViewer().setContents(diagram);
 	}
 	
 	@Override

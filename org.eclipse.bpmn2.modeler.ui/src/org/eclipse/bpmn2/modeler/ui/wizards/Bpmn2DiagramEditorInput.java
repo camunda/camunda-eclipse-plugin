@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.wizards;
 
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -24,7 +25,8 @@ public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
 	private final TransactionalEditingDomain domain;
 	private Bpmn2DiagramType initialDiagramType = Bpmn2DiagramType.NONE;
 	private String targetNamespace;
-
+	private BPMNDiagram bpmnDiagram;
+	
 	Bpmn2DiagramEditorInput(URI diagramUri, TransactionalEditingDomain domain, String providerId) {
 		super(diagramUri, providerId);
 		this.domain = domain;
@@ -76,6 +78,14 @@ public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
 //			return new Bpmn2TransactionalEditingDomain();
 //		}
 		return super.getAdapter(adapter);
+	}
+
+	public BPMNDiagram getBpmnDiagram() {
+		return bpmnDiagram;
+	}
+
+	public void setBpmnDiagram(BPMNDiagram bpmnDiagram) {
+		this.bpmnDiagram = bpmnDiagram;
 	}
 
 //	public class Bpmn2TransactionalEditingDomain implements TransactionalEditingDomain {

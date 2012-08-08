@@ -37,35 +37,12 @@ public class BPMN2EditorUpdateBehavior extends DefaultUpdateBehavior {
 	
 		private TransactionalEditingDomain editingDomain;
 		private ResourceSet resourceSet;
-		private BPMN2Editor mainEditor;
 		
 		/**
 		 * @param diagramEditor
 		 */
 		public BPMN2EditorUpdateBehavior(DiagramEditor diagramEditor) {
 			super(diagramEditor);
-			mainEditor = ((BPMN2Editor)diagramEditor).getMainEditor(); 
-			if (mainEditor!=null) {
-				BPMN2EditorUpdateBehavior updateBehavior = (BPMN2EditorUpdateBehavior)mainEditor.getUpdateBehavior();
-				resourceSet = updateBehavior.resourceSet;
-				editingDomain = updateBehavior.editingDomain;
-			}
-
-		}
-		
-		@Override
-		public void dispose() {
-			super.dispose();
-		}
-		
-		protected void disposeEditingDomain() {
-			if (mainEditor==null)
-				super.disposeEditingDomain();
-		}
-
-		public BPMN2EditorUpdateBehavior(DiagramEditor diagramEditor, ResourceSet rs) {
-			super(diagramEditor);
-			resourceSet = rs;
 		}
 		
 		public ResourceSet getResourceSet() {

@@ -40,6 +40,8 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.ui.editor.DiagramEditorContextMenuProvider;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.dialogs.IPageChangedListener;
+import org.eclipse.jface.dialogs.PageChangedEvent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -84,7 +86,7 @@ import org.w3c.dom.Node;
  * diagrams. Whether or not these types of files are actually deployable and/or executable
  * is another story ;)
  */
-public class BPMN2MultiPageEditor extends MultiPageEditorPart {
+public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IPageChangedListener {
 
 	BPMN2Editor designEditor;
 	StructuredTextEditor sourceViewer;
@@ -247,7 +249,13 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 			
 		});
 		createDesignEditor();
+		
+		addPageChangedListener(this);
 //		createSourceViewer();
+	}
+
+	@Override
+	public void pageChanged(PageChangedEvent event) {
 	}
 
 	protected void createDesignEditor() {
@@ -284,13 +292,14 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 	}
 	
 	protected void addDesignPage(BPMNDiagram bpmnDiagram) {
-		DesignEditor newEditor = new DesignEditor(this, false);
-		newEditor.setBPMNDiagram(bpmnDiagram);
+		createDesignEditor();
 		try {
 			int pageIndex = tabFolder.getItemCount();
 			if (sourceViewer!=null)
 				--pageIndex;
-			addPage(pageIndex, newEditor, designEditor.getEditorInput());
+			Bpmn2DiagramEditorInput input = (Bpmn2DiagramEditorInput)designEditor.getEditorInput();
+			input.setBpmnDiagram(bpmnDiagram);
+			addPage(pageIndex, designEditor, input);
 			setPageText(pageIndex,bpmnDiagram.getName());
 
 			updateTabs();
