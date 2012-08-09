@@ -16,7 +16,7 @@ import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 
-public abstract class AbstractCreateEventFeature extends AbstractCreateFlowElementFeature<Event> {
+public abstract class AbstractCreateEventFeature<T extends Event> extends AbstractCreateFlowElementFeature<T> {
 	
 	public AbstractCreateEventFeature(IFeatureProvider fp, String name, String description) {
 	    super(fp, name, description);

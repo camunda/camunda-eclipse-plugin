@@ -1,0 +1,108 @@
+diff --git a/org.eclipse.bpmn2.modeler.ui/META-INF/MANIFEST.MF b/org.eclipse.bpmn2.modeler.ui/META-INF/MANIFEST.MF
+index 4886c8e..42b0be6 100644
+--- a/org.eclipse.bpmn2.modeler.ui/META-INF/MANIFEST.MF
++++ b/org.eclipse.bpmn2.modeler.ui/META-INF/MANIFEST.MF
+@@ -53,6 +53,7 @@
+  org.eclipse.bpmn2.modeler.ui.features.participant,
+  org.eclipse.bpmn2.modeler.ui.preferences,
+  org.eclipse.bpmn2.modeler.ui.property,
++ org.eclipse.bpmn2.modeler.ui.property.artifact,
+  org.eclipse.bpmn2.modeler.ui.property.connectors,
+  org.eclipse.bpmn2.modeler.ui.property.diagrams,
+  org.eclipse.bpmn2.modeler.ui.property.dialogs,
+diff --git a/org.eclipse.bpmn2.modeler.ui/plugin.xml b/org.eclipse.bpmn2.modeler.ui/plugin.xml
+index 686cbc5..5010a76 100644
+--- a/org.eclipse.bpmn2.modeler.ui/plugin.xml
++++ b/org.eclipse.bpmn2.modeler.ui/plugin.xml
+@@ -276,6 +276,13 @@
+ 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+ 			label="Task">
+ 		</propertyTab>
++  <propertyTab
++        afterTab="org.eclipse.bpmn2.modeler.task.tab"
++        class="org.eclipse.bpmn2.modeler.ui.property.artifact.TextAnnotationPropertySection"
++        id="org.eclipse.bpmn2.modeler.textAnnotation.tab"
++        label="Text Anotation"
++        type="org.eclipse.bpmn2.TextAnnotation">
++  </propertyTab>
+ 
+ 		<propertyTab
+ 			id="org.eclipse.bpmn2.modeler.scriptTask.tab"
+diff --git a/org.eclipse.bpmn2.modeler.ui/src/org/eclipse/bpmn2/modeler/ui/property/artifact/TextAnnotationPropertiesComposite.java b/org.eclipse.bpmn2.modeler.ui/src/org/eclipse/bpmn2/modeler/ui/property/artifact/TextAnnotationPropertiesComposite.java
+new file mode 100644
+index 0000000..d010cea
+--- /dev/null
++++ b/org.eclipse.bpmn2.modeler.ui/src/org/eclipse/bpmn2/modeler/ui/property/artifact/TextAnnotationPropertiesComposite.java
+@@ -0,0 +1,33 @@
++package org.eclipse.bpmn2.modeler.ui.property.artifact;
++
++import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
++import org.eclipse.bpmn2.modeler.ui.property.DefaultPropertiesComposite;
++import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
++import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
++import org.eclipse.emf.ecore.EObject;
++import org.eclipse.swt.SWT;
++import org.eclipse.swt.widgets.Composite;
++/**
++ * 
++ * @author hien quoc dang
++ *
++ */
++public class TextAnnotationPropertiesComposite extends
++		DefaultPropertiesComposite {
++	public TextAnnotationPropertiesComposite(Composite parent, int style) {
++		super(parent, style);
++	}
++
++	public TextAnnotationPropertiesComposite(AbstractBpmn2PropertySection section) {
++		super(section);
++	}
++	
++	@Override
++	public void createBindings(EObject be) {
++		//bindAttribute(be,"text");
++		ObjectEditor editor = new TextObjectEditor(this,be,be.eClass().getEStructuralFeature("text"));
++		editor.createControl(getAttributesParent(),"Text",SWT.MULTI);
++		//ObjectEditor editor = new TextObjectEditor(this,be,be.eClass().getEStructuralFeature("text"));
++		//editor.createControl(getAttributesParent(),"Text",SWT.);
++	}
++}
+diff --git a/org.eclipse.bpmn2.modeler.ui/src/org/eclipse/bpmn2/modeler/ui/property/artifact/TextAnnotationPropertySection.java b/org.eclipse.bpmn2.modeler.ui/src/org/eclipse/bpmn2/modeler/ui/property/artifact/TextAnnotationPropertySection.java
+new file mode 100644
+index 0000000..93e9d88
+--- /dev/null
++++ b/org.eclipse.bpmn2.modeler.ui/src/org/eclipse/bpmn2/modeler/ui/property/artifact/TextAnnotationPropertySection.java
+@@ -0,0 +1,33 @@
++package org.eclipse.bpmn2.modeler.ui.property.artifact;
++
++import org.eclipse.bpmn2.TextAnnotation;
++import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertiesComposite;
++import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
++import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
++import org.eclipse.emf.ecore.EObject;
++import org.eclipse.graphiti.mm.pictograms.PictogramElement;
++import org.eclipse.graphiti.services.Graphiti;
++import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
++/**
++ * 
++ * @author hien quoc dang
++ *
++ */
++public class TextAnnotationPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants{
++	static {
++		PropertiesCompositeFactory.register(TextAnnotation.class, TextAnnotationPropertiesComposite.class);
++	}
++
++	@Override
++	protected AbstractBpmn2PropertiesComposite createSectionRoot() {
++		return new TextAnnotationPropertiesComposite(this);
++	}
++	
++	@Override
++	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
++		EObject be = (EObject) Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(pe);
++		if (be instanceof TextAnnotation)
++			return be;
++		return null;
++	}
++}

@@ -16,11 +16,13 @@ import java.util.Iterator;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.AdHocSubProcess;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -72,7 +74,7 @@ public class AdHocSubProcessFeatureContainer extends AbstractSubProcessFeatureCo
 		}
 
 		@Override
-		protected AdHocSubProcess createFlowElement(ICreateContext context) {
+		public AdHocSubProcess createBusinessObject(ICreateContext context) {
 			AdHocSubProcess adHocSubProcess = Bpmn2ModelerFactory.create(AdHocSubProcess.class);
 			adHocSubProcess.setName("Ad-Hoc SubProcess");
 			return adHocSubProcess;
@@ -87,8 +89,8 @@ public class AdHocSubProcessFeatureContainer extends AbstractSubProcessFeatureCo
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return AdHocSubProcess.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getAdHocSubProcess();
 		}
 	}
 }

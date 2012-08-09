@@ -12,11 +12,14 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
+import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.SubChoreography;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -69,7 +72,7 @@ public class SubProcessFeatureContainer extends AbstractSubProcessFeatureContain
 		}
 		
 		@Override
-		protected SubProcess createFlowElement(ICreateContext context) {
+		public SubProcess createBusinessObject(ICreateContext context) {
 			SubProcess subProcess = Bpmn2ModelerFactory.create(SubProcess.class);
 			subProcess.setName("SubProcess");
 			subProcess.setTriggeredByEvent(false);
@@ -85,8 +88,8 @@ public class SubProcessFeatureContainer extends AbstractSubProcessFeatureContain
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return SubProcess.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getSubProcess();
 		}
 	}
 }

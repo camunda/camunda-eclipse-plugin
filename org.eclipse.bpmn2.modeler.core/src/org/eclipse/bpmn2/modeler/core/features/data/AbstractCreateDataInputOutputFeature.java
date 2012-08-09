@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.core.features.data;
 import java.io.IOException;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
@@ -23,7 +24,7 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
 
-public abstract class AbstractCreateDataInputOutputFeature extends AbstractBpmn2CreateFeature {
+public abstract class AbstractCreateDataInputOutputFeature<T extends ItemAwareElement> extends AbstractBpmn2CreateFeature<T> {
 
 	public AbstractCreateDataInputOutputFeature(IFeatureProvider fp, String name, String description) {
 		super(fp, name, description);
@@ -36,10 +37,10 @@ public abstract class AbstractCreateDataInputOutputFeature extends AbstractBpmn2
 
 	@Override
 	public Object[] create(ICreateContext context) {
-		BaseElement element = null;
+		T element = createBusinessObject(context);
 		try {
 			ModelHandler handler = ModelHandlerLocator.getModelHandler(getDiagram().eResource());
-			element = add(context.getTargetContainer(), handler);
+			handler.addDataInputOutput(context.getTargetContainer(), element);
 			ModelUtil.setID(element);
 		} catch (IOException e) {
 			Activator.logError(e);
@@ -47,8 +48,6 @@ public abstract class AbstractCreateDataInputOutputFeature extends AbstractBpmn2
 		addGraphicalRepresentation(context, element);
 		return new Object[] { element };
 	}
-
-	public abstract <T extends BaseElement> T add(Object target, ModelHandler handler);
 
 	protected abstract String getStencilImageId();
 

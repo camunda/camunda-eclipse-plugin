@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity.task;
 
+import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.SendTask;
 import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.AbstractCreateTaskFeature;
@@ -19,6 +21,7 @@ import org.eclipse.bpmn2.modeler.core.features.activity.task.AddTaskFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -52,14 +55,14 @@ public class ServiceTaskFeatureContainer extends AbstractTaskFeatureContainer {
 		};
 	}
 
-	public static class CreateServiceTaskFeature extends AbstractCreateTaskFeature {
+	public static class CreateServiceTaskFeature extends AbstractCreateTaskFeature<ServiceTask> {
 
 		public CreateServiceTaskFeature(IFeatureProvider fp) {
 			super(fp, "Service Task", "Task that uses some kind of service");
 		}
 
 		@Override
-		protected Task createFlowElement(ICreateContext context) {
+		public ServiceTask createBusinessObject(ICreateContext context) {
 			ServiceTask task = Bpmn2ModelerFactory.create(ServiceTask.class);
 			task.setName("Service Task");
 			task.setImplementation("##unspecified");
@@ -75,8 +78,8 @@ public class ServiceTaskFeatureContainer extends AbstractTaskFeatureContainer {
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return ServiceTask.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getServiceTask();
 		}
 	}
 }

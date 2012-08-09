@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.data;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Message;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
@@ -28,6 +29,7 @@ import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.modeler.ui.features.LayoutBaseElementTextFeature;
 import org.eclipse.bpmn2.modeler.ui.features.choreography.UpdateChoreographyMessageFlowFeature;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
@@ -38,6 +40,7 @@ import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.features.impl.DefaultMoveShapeFeature;
 import org.eclipse.graphiti.features.impl.DefaultResizeShapeFeature;
@@ -154,17 +157,10 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 		};
 	}
 
-	public static class CreateMessageFeature extends AbstractCreateRootElementFeature {
+	public static class CreateMessageFeature extends AbstractCreateRootElementFeature<Message> {
 
 		public CreateMessageFeature(IFeatureProvider fp) {
 			super(fp, "Message", "Represents the content of a communication between two Participants");
-		}
-
-		@Override
-		public RootElement createRootElement() {
-			Message message = Bpmn2ModelerFactory.create(Message.class);
-			message.setName("Message");
-			return message;
 		}
 
 		@Override
@@ -176,8 +172,15 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return Message.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getMessage();
+		}
+
+		@Override
+		public Message createBusinessObject(ICreateContext context) {
+			Message message = Bpmn2ModelerFactory.create(Message.class);
+			message.setName("Message");
+			return message;
 		}
 	}
 

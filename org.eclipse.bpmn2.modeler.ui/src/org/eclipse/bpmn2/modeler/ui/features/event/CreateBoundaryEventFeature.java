@@ -16,6 +16,7 @@ import java.io.IOException;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BoundaryEvent;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.Activator;
@@ -24,12 +25,13 @@ import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
-public class CreateBoundaryEventFeature extends AbstractBpmn2CreateFeature {
+public class CreateBoundaryEventFeature extends AbstractBpmn2CreateFeature<BoundaryEvent> {
 
 	public CreateBoundaryEventFeature(IFeatureProvider fp) {
 		super(fp, "Boundary Event", "Adds boundary event to activity, defaults to interrupting");
@@ -52,8 +54,7 @@ public class CreateBoundaryEventFeature extends AbstractBpmn2CreateFeature {
 		try {
 			Activity activity = (Activity) getBusinessObjectForPictogramElement(context.getTargetContainer());
 			ModelHandler handler = ModelHandler.getInstance(getDiagram());
-			event = Bpmn2ModelerFactory.create(BoundaryEvent.class);
-//			event.setId(EcoreUtil.generateUUID());
+			event = createBusinessObject(context);
 			event.setAttachedToRef(activity);
 			event.setName("Boundary event");
 			event.setCancelActivity(true); // by default is interrupting
@@ -90,7 +91,13 @@ public class CreateBoundaryEventFeature extends AbstractBpmn2CreateFeature {
 	 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
 	 */
 	@Override
-	public Class getBusinessObjectClass() {
-		return BoundaryEvent.class;
+	public EClass getBusinessObjectClass() {
+		return Bpmn2Package.eINSTANCE.getBoundaryEvent();
+	}
+
+	@Override
+	public BoundaryEvent createBusinessObject(ICreateContext context) {
+		BoundaryEvent event = Bpmn2ModelerFactory.create(BoundaryEvent.class);
+		return event;
 	}
 }

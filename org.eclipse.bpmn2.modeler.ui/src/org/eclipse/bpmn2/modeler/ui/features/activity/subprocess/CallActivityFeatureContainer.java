@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
 import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.CallableElement;
 import org.eclipse.bpmn2.GlobalBusinessRuleTask;
@@ -31,6 +32,7 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Expand;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -147,7 +149,7 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 		}
 		
 		@Override
-		protected CallActivity createFlowElement(ICreateContext context) {
+		public CallActivity createBusinessObject(ICreateContext context) {
 			CallActivity callActivity = Bpmn2ModelerFactory.create(CallActivity.class);
 			callActivity.setName("Call Activity");
 			return callActivity;
@@ -162,8 +164,8 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return CallActivity.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getCallActivity();
 		}
 	}
 

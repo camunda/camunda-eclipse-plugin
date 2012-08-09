@@ -14,6 +14,7 @@ package org.eclipse.bpmn2.modeler.ui.features.event.definitions;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.CompensateEventDefinition;
 import org.eclipse.bpmn2.Event;
@@ -30,6 +31,7 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Compensation;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil.FillStyle;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -97,7 +99,7 @@ public class CompensateEventDefinitionContainer extends AbstractEventDefinitionF
 		return compensateShape;
 	}
 
-	public static class CreateCompensateEventDefinition extends CreateEventDefinition {
+	public static class CreateCompensateEventDefinition extends CreateEventDefinition<CompensateEventDefinition> {
 
 		public CreateCompensateEventDefinition(IFeatureProvider fp) {
 			super(fp, "Compensate Definition", "Adds compensate trigger to event");
@@ -138,7 +140,7 @@ public class CompensateEventDefinitionContainer extends AbstractEventDefinitionF
 		}
 
 		@Override
-		protected EventDefinition createEventDefinition(ICreateContext context) {
+		public CompensateEventDefinition createBusinessObject(ICreateContext context) {
 			return Bpmn2ModelerFactory.create(CompensateEventDefinition.class);
 		}
 
@@ -151,8 +153,8 @@ public class CompensateEventDefinitionContainer extends AbstractEventDefinitionF
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return CompensateEventDefinition.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getCompensateEventDefinition();
 		}
 	}
 }

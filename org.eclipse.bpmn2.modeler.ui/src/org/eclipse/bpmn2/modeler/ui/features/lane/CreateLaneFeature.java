@@ -14,6 +14,8 @@ package org.eclipse.bpmn2.modeler.ui.features.lane;
 
 import java.io.IOException;
 
+import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
@@ -22,10 +24,11 @@ import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
 
-public class CreateLaneFeature extends AbstractBpmn2CreateFeature {
+public class CreateLaneFeature extends AbstractBpmn2CreateFeature<Lane> {
 
 	private static int index = 1;
 
@@ -44,21 +47,7 @@ public class CreateLaneFeature extends AbstractBpmn2CreateFeature {
 
 	@Override
 	public Object[] create(ICreateContext context) {
-		Lane lane = null;
-		try {
-			ModelHandler mh = ModelHandlerLocator.getModelHandler(getDiagram().eResource());
-			Object o = getBusinessObjectForPictogramElement(context.getTargetContainer());
-			if (FeatureSupport.isTargetLane(context)) {
-				Lane targetLane = (Lane) o;
-				lane = mh.createLane(targetLane);
-			} else {
-				lane = mh.createLane(o);
-			}
-			lane.setName("Lane nr " + index++);
-			ModelUtil.setID(lane);
-		} catch (IOException e) {
-			Activator.logError(e);
-		}
+		Lane lane = createBusinessObject(context);
 		addGraphicalRepresentation(context, lane);
 		return new Object[] { lane };
 	}
@@ -77,7 +66,27 @@ public class CreateLaneFeature extends AbstractBpmn2CreateFeature {
 	 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
 	 */
 	@Override
-	public Class getBusinessObjectClass() {
-		return Lane.class;
+	public EClass getBusinessObjectClass() {
+		return Bpmn2Package.eINSTANCE.getLane();
+	}
+
+	@Override
+	public Lane createBusinessObject(ICreateContext context) {
+		Lane lane = null;
+		try {
+			ModelHandler mh = ModelHandlerLocator.getModelHandler(getDiagram().eResource());
+			Object o = getBusinessObjectForPictogramElement(context.getTargetContainer());
+			if (FeatureSupport.isTargetLane(context)) {
+				Lane targetLane = (Lane) o;
+				lane = ModelHandler.createLane(targetLane);
+			} else {
+				lane = mh.createLane(o);
+			}
+			lane.setName("Lane nr " + index++);
+			ModelUtil.setID(lane);
+		} catch (IOException e) {
+			Activator.logError(e);
+		}
+		return lane;
 	}
 }

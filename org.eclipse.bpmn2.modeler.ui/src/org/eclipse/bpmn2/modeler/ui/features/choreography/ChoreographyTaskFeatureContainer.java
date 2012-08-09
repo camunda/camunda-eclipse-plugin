@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.ChoreographyLoopType;
 import org.eclipse.bpmn2.ChoreographyTask;
 import org.eclipse.bpmn2.MessageFlow;
@@ -30,6 +31,7 @@ import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.CollapseSubProcessFeature;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.ExpandSubProcessFeature;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -139,14 +141,6 @@ public class ChoreographyTaskFeatureContainer extends AbstractChoreographyFeatur
 		}
 
 		@Override
-		protected ChoreographyTask createFlowElement(ICreateContext context) {
-			ChoreographyTask task = Bpmn2ModelerFactory.create(ChoreographyTask.class);
-			task.setName("Choreography Task");
-			task.setLoopType(ChoreographyLoopType.NONE);
-			return task;
-		}
-
-		@Override
 		public String getStencilImageId() {
 			return ImageProvider.IMG_16_CHOREOGRAPHY_TASK;
 		}
@@ -155,8 +149,16 @@ public class ChoreographyTaskFeatureContainer extends AbstractChoreographyFeatur
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return ChoreographyTask.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getChoreographyTask();
+		}
+
+		@Override
+		public ChoreographyTask createBusinessObject(ICreateContext context) {
+			ChoreographyTask task = Bpmn2ModelerFactory.create(ChoreographyTask.class);
+			task.setName("Choreography Task");
+			task.setLoopType(ChoreographyLoopType.NONE);
+			return task;
 		}
 	}
 }

@@ -16,7 +16,7 @@ import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 
-public abstract class AbstractCreateGatewayFeature extends AbstractCreateFlowElementFeature<Gateway> {
+public abstract class AbstractCreateGatewayFeature<T extends Gateway> extends AbstractCreateFlowElementFeature<T> {
 
 	public AbstractCreateGatewayFeature(IFeatureProvider fp, String name, String description) {
 		super(fp, name, description);

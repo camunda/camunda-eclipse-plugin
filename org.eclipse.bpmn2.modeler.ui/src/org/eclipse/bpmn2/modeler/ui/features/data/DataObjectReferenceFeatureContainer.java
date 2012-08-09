@@ -12,12 +12,14 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.data;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.DataObjectReference;
 import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.features.data.AddDataFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -60,13 +62,6 @@ public class DataObjectReferenceFeatureContainer extends AbstractDataFeatureCont
 		}
 
 		@Override
-		protected DataObjectReference createFlowElement(ICreateContext context) {
-			DataObjectReference ref = Bpmn2ModelerFactory.create(DataObjectReference.class);
-			ref.setName("Data Object Ref");
-			return ref;
-		}
-
-		@Override
 		public String getStencilImageId() {
 			return ImageProvider.IMG_16_DATA_OBJECT;
 		}
@@ -75,8 +70,15 @@ public class DataObjectReferenceFeatureContainer extends AbstractDataFeatureCont
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return DataObjectReference.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getDataObjectReference();
+		}
+
+		@Override
+		public DataObjectReference createBusinessObject(ICreateContext context) {
+			DataObjectReference ref = Bpmn2ModelerFactory.create(DataObjectReference.class);
+			ref.setName("Data Object Ref");
+			return ref;
 		}
 	}
 }

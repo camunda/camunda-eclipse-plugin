@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.event;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
@@ -21,6 +22,7 @@ import org.eclipse.bpmn2.modeler.core.features.event.AddEventFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -76,14 +78,14 @@ public class EndEventFeatureContainer extends AbstractEventFeatureContainer {
 		return null;
 	}
 	
-	public static class CreateEndEventFeature extends AbstractCreateEventFeature {
+	public static class CreateEndEventFeature extends AbstractCreateEventFeature<EndEvent> {
 
 		public CreateEndEventFeature(IFeatureProvider fp) {
 			super(fp, "End Event", "Indicates the end of a process or choreography");
 		}
 
 		@Override
-		protected Event createFlowElement(ICreateContext context) {
+		public EndEvent createBusinessObject(ICreateContext context) {
 			EndEvent end = Bpmn2ModelerFactory.create(EndEvent.class);
 			return end;
 		}
@@ -97,8 +99,8 @@ public class EndEventFeatureContainer extends AbstractEventFeatureContainer {
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return EndEvent.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getEndEvent();
 		}
 	}
 

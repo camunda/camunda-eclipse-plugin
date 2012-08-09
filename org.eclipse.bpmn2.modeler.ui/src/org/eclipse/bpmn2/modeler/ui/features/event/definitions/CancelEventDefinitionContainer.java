@@ -14,6 +14,7 @@ package org.eclipse.bpmn2.modeler.ui.features.event.definitions;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CancelEventDefinition;
 import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.Event;
@@ -29,6 +30,7 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil.FillStyle;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
@@ -92,7 +94,7 @@ public class CancelEventDefinitionContainer extends AbstractEventDefinitionFeatu
 		return cancelShape;
 	}
 
-	public static class CreateCancelEventDefinition extends CreateEventDefinition {
+	public static class CreateCancelEventDefinition extends CreateEventDefinition<CancelEventDefinition> {
 
 		public CreateCancelEventDefinition(IFeatureProvider fp) {
 			super(fp, "Cancel Definition", "Adds cancel trigger to event");
@@ -119,7 +121,7 @@ public class CancelEventDefinitionContainer extends AbstractEventDefinitionFeatu
 		}
 
 		@Override
-		protected EventDefinition createEventDefinition(ICreateContext context) {
+		public CancelEventDefinition createBusinessObject(ICreateContext context) {
 			CancelEventDefinition definition = Bpmn2ModelerFactory.create(CancelEventDefinition.class);
 			ModelUtil.setID(definition);
 			return definition;
@@ -134,8 +136,8 @@ public class CancelEventDefinitionContainer extends AbstractEventDefinitionFeatu
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return CancelEventDefinition.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getCancelEventDefinition();
 		}
 	}
 }

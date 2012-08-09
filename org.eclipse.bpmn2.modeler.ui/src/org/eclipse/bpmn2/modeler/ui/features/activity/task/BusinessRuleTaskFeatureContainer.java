@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity.task;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.BusinessRuleTask;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.AbstractCreateTaskFeature;
@@ -19,6 +20,7 @@ import org.eclipse.bpmn2.modeler.core.features.activity.task.AddTaskFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -58,14 +60,14 @@ public class BusinessRuleTaskFeatureContainer extends AbstractTaskFeatureContain
 		};
 	}
 
-	public static class CreateBusinessRuleTaskFeature extends AbstractCreateTaskFeature {
+	public static class CreateBusinessRuleTaskFeature extends AbstractCreateTaskFeature<BusinessRuleTask> {
 
 		public CreateBusinessRuleTaskFeature(IFeatureProvider fp) {
 			super(fp, "Business Rule Task", "Task that can use Business Rules Engine");
 		}
 
 		@Override
-		protected Task createFlowElement(ICreateContext context) {
+		public BusinessRuleTask createBusinessObject(ICreateContext context) {
 			BusinessRuleTask task = Bpmn2ModelerFactory.create(BusinessRuleTask.class);
 			task.setName("Business Rule Task");
 			task.setImplementation("##unspecified");
@@ -81,8 +83,8 @@ public class BusinessRuleTaskFeatureContainer extends AbstractTaskFeatureContain
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return BusinessRuleTask.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getBusinessRuleTask();
 		}
 	}
 }

@@ -356,8 +356,10 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	@Override
 	protected PictogramElement[] getPictogramElementsForSelection() {
 		// filter out invisible elements when setting selection
+		PictogramElement[] pictogramElements = super.getPictogramElementsForSelection();
+		if (pictogramElements==null)
+			return null;
 		ArrayList<PictogramElement> visibleList = new ArrayList<PictogramElement>();
-		PictogramElement[] pictogramElements = getSelectedPictogramElements();
 		for (PictogramElement pe : pictogramElements) {
 			if (pe.isVisible())
 				visibleList.add(pe);

@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.data;
 
+import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.data.AbstractCreateDataInputOutputFeature;
@@ -21,9 +23,11 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.mm.algorithms.Polygon;
 
 public class DataInputFeatureContainer extends AbstractDataFeatureContainer {
@@ -60,21 +64,10 @@ public class DataInputFeatureContainer extends AbstractDataFeatureContainer {
 		};
 	}
 
-	public static class CreateDataInputFeature extends AbstractCreateDataInputOutputFeature {
+	public static class CreateDataInputFeature extends AbstractCreateDataInputOutputFeature<DataInput> {
 
 		public CreateDataInputFeature(IFeatureProvider fp) {
 			super(fp, "Data Input", "Declaration that a particular kind of data will be used as input");
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public DataInput add(Object target, ModelHandler handler) {
-			DataInput dataInput = Bpmn2ModelerFactory.create(DataInput.class);
-//			dataInput.setId(EcoreUtil.generateUUID());
-			dataInput.setName("Data Input");
-			handler.addDataInput(target, dataInput);
-			ModelUtil.setID(dataInput);
-			return dataInput;
 		}
 
 		@Override
@@ -86,8 +79,14 @@ public class DataInputFeatureContainer extends AbstractDataFeatureContainer {
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return DataInput.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getDataInput();
+		}
+
+		@Override
+		public DataInput createBusinessObject(ICreateContext context) {
+			DataInput dataInput = Bpmn2ModelerFactory.create(DataInput.class);
+			return dataInput;
 		}
 	}
 }

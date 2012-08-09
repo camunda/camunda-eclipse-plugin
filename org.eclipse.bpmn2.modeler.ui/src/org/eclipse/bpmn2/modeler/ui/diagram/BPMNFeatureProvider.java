@@ -27,7 +27,6 @@ import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.SubProcess;
-import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.features.ConnectionFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.DefaultDeleteBPMNShapeFeature;
@@ -37,6 +36,7 @@ import org.eclipse.bpmn2.modeler.core.features.activity.task.ICustomTaskFeature;
 import org.eclipse.bpmn2.modeler.core.features.bendpoint.AddBendpointFeature;
 import org.eclipse.bpmn2.modeler.core.features.bendpoint.MoveBendpointFeature;
 import org.eclipse.bpmn2.modeler.core.features.bendpoint.RemoveBendpointFeature;
+import org.eclipse.bpmn2.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.eclipse.bpmn2.modeler.core.runtime.CustomTaskDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.FeatureContainerDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
@@ -107,6 +107,7 @@ import org.eclipse.bpmn2.modeler.ui.features.lane.LaneFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.lane.RotateLaneFeature;
 import org.eclipse.bpmn2.modeler.ui.features.participant.ParticipantFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.participant.RotatePoolFeature;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IAddBendpointFeature;
@@ -314,13 +315,13 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 					continue;
 				}
 				AbstractBpmn2CreateFeature acf = (AbstractBpmn2CreateFeature)cf;
-				mapBusinessObjectClassToCreateFeature.put(acf.getBusinessObjectClass(), cf);
+				mapBusinessObjectClassToCreateFeature.put(acf.getBusinessObjectClass().getInstanceClass(), cf);
 			}
 		}
 		for (IFeature cf : createConnectionFeatures) {
-			if (cf instanceof AbstractBpmn2CreateConnectionFeature) {
-				AbstractBpmn2CreateConnectionFeature acf = (AbstractBpmn2CreateConnectionFeature)cf;
-				mapBusinessObjectClassToCreateFeature.put(acf.getBusinessObjectClass(), cf);
+			if (cf instanceof AbstractCreateFlowFeature) {
+				AbstractCreateFlowFeature acf = (AbstractCreateFlowFeature)cf;
+				mapBusinessObjectClassToCreateFeature.put(acf.getBusinessObjectClass().getInstanceClass(), cf);
 			}
 		}
 	}

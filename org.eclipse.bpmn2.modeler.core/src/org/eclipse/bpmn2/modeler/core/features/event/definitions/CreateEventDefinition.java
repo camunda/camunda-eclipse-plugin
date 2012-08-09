@@ -21,7 +21,7 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
 
-public abstract class CreateEventDefinition extends AbstractBpmn2CreateFeature {
+public abstract class CreateEventDefinition<T extends EventDefinition> extends AbstractBpmn2CreateFeature<T> {
 
 	public CreateEventDefinition(IFeatureProvider fp, String name, String description) {
 		super(fp, name, description);
@@ -37,14 +37,12 @@ public abstract class CreateEventDefinition extends AbstractBpmn2CreateFeature {
 	public Object[] create(ICreateContext context) {
 		Event e = (Event) getBusinessObjectForPictogramElement(context.getTargetContainer());
 		List<EventDefinition> eventDefinitions = ModelUtil.getEventDefinitions(e);
-		EventDefinition definition = createEventDefinition(context);
+		EventDefinition definition = createBusinessObject(context);
 		eventDefinitions.add(definition);
 		addGraphicalRepresentation(context, definition);
 		ModelUtil.setID(definition);
 		return new Object[] { definition };
 	}
-
-	protected abstract EventDefinition createEventDefinition(ICreateContext context);
 
 	protected abstract String getStencilImageId();
 

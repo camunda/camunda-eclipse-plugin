@@ -13,8 +13,10 @@
 package org.eclipse.bpmn2.modeler.ui.features.event.definitions;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
+import org.eclipse.bpmn2.TerminateEventDefinition;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.TimerEventDefinition;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.AbstractEventDefinitionFeatureContainer;
@@ -26,6 +28,7 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil.FillStyle;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
@@ -88,7 +91,7 @@ public class TimerEventDefinitionContainer extends AbstractEventDefinitionFeatur
 		return timerShape;
 	}
 
-	public static class CreateTimerEventDefinition extends CreateEventDefinition {
+	public static class CreateTimerEventDefinition extends CreateEventDefinition<TimerEventDefinition> {
 
 		public CreateTimerEventDefinition(IFeatureProvider fp) {
 			super(fp, "Timer Definition", "Adds time condition to event");
@@ -109,7 +112,7 @@ public class TimerEventDefinitionContainer extends AbstractEventDefinitionFeatur
 		}
 
 		@Override
-		protected EventDefinition createEventDefinition(ICreateContext context) {
+		public TimerEventDefinition createBusinessObject(ICreateContext context) {
 			return Bpmn2ModelerFactory.create(TimerEventDefinition.class);
 		}
 
@@ -122,8 +125,8 @@ public class TimerEventDefinitionContainer extends AbstractEventDefinitionFeatur
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return TimerEventDefinition.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getTimerEventDefinition();
 		}
 	}
 }

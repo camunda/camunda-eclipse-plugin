@@ -12,7 +12,9 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.event;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Event;
+import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractCreateEventFeature;
@@ -21,6 +23,7 @@ import org.eclipse.bpmn2.modeler.core.features.event.AddEventFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -75,14 +78,14 @@ public class StartEventFeatureContainer extends AbstractEventFeatureContainer {
 		return updateFeature;
 	}
 
-	public static class CreateStartEventFeature extends AbstractCreateEventFeature {
+	public static class CreateStartEventFeature extends AbstractCreateEventFeature<StartEvent> {
 
 		public CreateStartEventFeature(IFeatureProvider fp) {
 			super(fp, "Start Event", "Indicates the start of a process or choreography");
 		}
 
 		@Override
-		protected Event createFlowElement(ICreateContext context) {
+		public StartEvent createBusinessObject(ICreateContext context) {
 			StartEvent start = Bpmn2ModelerFactory.create(StartEvent.class);
 			start.setIsInterrupting(true);
 			return start;
@@ -97,8 +100,8 @@ public class StartEventFeatureContainer extends AbstractEventFeatureContainer {
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return StartEvent.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getStartEvent();
 		}
 	}
 

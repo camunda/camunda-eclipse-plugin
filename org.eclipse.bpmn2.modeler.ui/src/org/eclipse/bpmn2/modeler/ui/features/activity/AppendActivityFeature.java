@@ -77,7 +77,7 @@ public class AppendActivityFeature extends AbstractAppendNodeNodeFeature<Activit
 	 * @see org.eclipse.bpmn2.modeler.ui.features.AbstractAppendNodeNodeFeature#getBusinessObjectClass()
 	 */
 	@Override
-	public Class getBusinessObjectClass() {
-		return Activity.class;
+	public EClass getBusinessObjectClass() {
+		return Bpmn2Package.eINSTANCE.getActivity();
 	}
 }

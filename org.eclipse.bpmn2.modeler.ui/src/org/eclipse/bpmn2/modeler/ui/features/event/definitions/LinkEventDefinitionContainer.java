@@ -13,6 +13,8 @@
 package org.eclipse.bpmn2.modeler.ui.features.event.definitions;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.EscalationEventDefinition;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.IntermediateCatchEvent;
@@ -27,6 +29,7 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil.FillStyle;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
@@ -91,7 +94,7 @@ public class LinkEventDefinitionContainer extends AbstractEventDefinitionFeature
 		return linkShape;
 	}
 
-	public static class CreateLinkEventDefinition extends CreateEventDefinition {
+	public static class CreateLinkEventDefinition extends CreateEventDefinition<LinkEventDefinition> {
 
 		public CreateLinkEventDefinition(IFeatureProvider fp) {
 			super(fp, "Link Definition", "Adds link trigger to event");
@@ -113,7 +116,7 @@ public class LinkEventDefinitionContainer extends AbstractEventDefinitionFeature
 		}
 
 		@Override
-		protected EventDefinition createEventDefinition(ICreateContext context) {
+		public LinkEventDefinition createBusinessObject(ICreateContext context) {
 			return Bpmn2ModelerFactory.create(LinkEventDefinition.class);
 		}
 
@@ -126,8 +129,8 @@ public class LinkEventDefinitionContainer extends AbstractEventDefinitionFeature
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return LinkEventDefinition.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getLinkEventDefinition();
 		}
 	}
 }

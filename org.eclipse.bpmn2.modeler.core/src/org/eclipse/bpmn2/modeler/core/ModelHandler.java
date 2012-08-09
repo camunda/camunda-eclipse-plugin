@@ -37,6 +37,7 @@ import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.InteractionNode;
+import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.MessageFlow;
@@ -462,14 +463,14 @@ public class ModelHandler {
 		return element;
 	}
 
-	public DataOutput addDataOutput(Object target, DataOutput dataOutput) {
-		getOrCreateIOSpecification(target).getDataOutputs().add(dataOutput);
-		return dataOutput;
-	}
-
-	public DataInput addDataInput(Object target, DataInput dataInput) {
-		getOrCreateIOSpecification(target).getDataInputs().add(dataInput);
-		return dataInput;
+	public ItemAwareElement addDataInputOutput(Object target, ItemAwareElement element) {
+		if (element instanceof DataOutput)
+			getOrCreateIOSpecification(target).getDataOutputs().add((DataOutput)element);
+		else if (element instanceof DataInput)
+			getOrCreateIOSpecification(target).getDataInputs().add((DataInput)element);
+		else
+			return null;
+		return element;
 	}
 
 	public ConversationNode addConversationNode(BPMNDiagram bpmnDiagram, ConversationNode conversationNode) {
@@ -561,11 +562,12 @@ public class ModelHandler {
 		return process;
 	}
 
-	public Lane createLane(Lane targetLane) {
-		Lane lane = create(Lane.class);
+	public static Lane createLane(Lane targetLane) {
+		Resource resource = targetLane.eResource();
+		Lane lane = create(resource, Lane.class);
 
 		if (targetLane.getChildLaneSet() == null) {
-			targetLane.setChildLaneSet(create(LaneSet.class));
+			targetLane.setChildLaneSet(create(resource, LaneSet.class));
 		}
 
 		LaneSet targetLaneSet = targetLane.getChildLaneSet();
@@ -686,7 +688,7 @@ public class ModelHandler {
 	private Collaboration getParticipantContainer(BPMNDiagram bpmnDiagram) {
 		if (bpmnDiagram==null) {
 			// return the first Collaboration or Choreography in the model hierarchy
-			List<RootElement> rootElements = getDefinitions().getRootElements();
+			List<RootElement> rootElements = getDefinitions(resource).getRootElements();
 			for (RootElement element : rootElements) {
 				// yeah, Collaboration and Choreography are both instanceof Collaboration...
 				if (element instanceof Collaboration || element instanceof Choreography) {
@@ -738,6 +740,10 @@ public class ModelHandler {
 	}
 
 	public Definitions getDefinitions() {
+		return getDefinitions(resource);
+	}
+	
+	public static Definitions getDefinitions(Resource resource) {
 		return (Definitions) resource.getContents().get(0).eContents().get(0);
 	}
 

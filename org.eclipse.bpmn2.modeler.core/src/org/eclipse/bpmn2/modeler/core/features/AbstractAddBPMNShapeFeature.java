@@ -326,7 +326,7 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 				for (ICreateConnectionFeature cf : getFeatureProvider().getCreateConnectionFeatures()) {
 					if (cf instanceof AbstractCreateFlowFeature) {
 						AbstractCreateFlowFeature acf = (AbstractCreateFlowFeature) cf;
-						if (acf.getBusinessObjectClass().isAssignableFrom(baseElement.getClass())) {
+						if (acf.getBusinessObjectClass().isInstance(baseElement)) {
 							newConnection = acf.create(ccc);
 							DIUtils.updateDIEdge(newConnection);
 							break;

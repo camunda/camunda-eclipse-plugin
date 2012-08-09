@@ -153,8 +153,7 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 	
 	protected EClass selectNewObjectType(EObject oldObject) {
 		ModelEnablementDescriptor enablements = TargetRuntime.getCurrentRuntime().getModelEnablements(oldObject);
-		String name = getBusinessObjectClass().getSimpleName();
-		EClass newType = (EClass) Bpmn2Package.eINSTANCE.getEClassifier(name);
+		EClass newType = getBusinessObjectClass();
 
 		// build a list of possible subclasses for the popup menu
 		List<EClass> subtypes = new ArrayList<EClass>();
@@ -348,6 +347,6 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 	/**
 	 * @return
 	 */
-	public abstract Class getBusinessObjectClass();
+	public abstract EClass getBusinessObjectClass();
 
 }

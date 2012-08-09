@@ -14,6 +14,7 @@ package org.eclipse.bpmn2.modeler.ui.features.event.definitions;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.ErrorEventDefinition;
 import org.eclipse.bpmn2.Event;
@@ -31,6 +32,7 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil.FillStyle;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -95,7 +97,7 @@ public class ErrorEventDefinitionContainer extends AbstractEventDefinitionFeatur
 		return errorShape;
 	}
 
-	public static class CreateErrorEventDefinition extends CreateEventDefinition {
+	public static class CreateErrorEventDefinition extends CreateEventDefinition<ErrorEventDefinition> {
 
 		public CreateErrorEventDefinition(IFeatureProvider fp) {
 			super(fp, "Error Definition", "Adds error trigger to event");
@@ -136,7 +138,7 @@ public class ErrorEventDefinitionContainer extends AbstractEventDefinitionFeatur
 		}
 
 		@Override
-		protected EventDefinition createEventDefinition(ICreateContext context) {
+		public ErrorEventDefinition createBusinessObject(ICreateContext context) {
 			ErrorEventDefinition definition = Bpmn2ModelerFactory.create(ErrorEventDefinition.class);
 // definition.getErrorRef() is always null - can't add a null to <definitions>
 //		  Event e = (Event) getBusinessObjectForPictogramElement(context.getTargetContainer());
@@ -153,8 +155,8 @@ public class ErrorEventDefinitionContainer extends AbstractEventDefinitionFeatur
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return ErrorEventDefinition.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getErrorEventDefinition();
 		}
 	}
 }

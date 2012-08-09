@@ -12,7 +12,9 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.gateway;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Gateway;
+import org.eclipse.bpmn2.ManualTask;
 import org.eclipse.bpmn2.ParallelGateway;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.features.gateway.AbstractCreateGatewayFeature;
@@ -22,6 +24,7 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Cross;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -50,14 +53,14 @@ public class ParallelGatewayFeatureContainer extends AbstractGatewayFeatureConta
 		};
 	}
 
-	public static class CreateParallelGatewayFeature extends AbstractCreateGatewayFeature {
+	public static class CreateParallelGatewayFeature extends AbstractCreateGatewayFeature<ParallelGateway> {
 
 		public CreateParallelGatewayFeature(IFeatureProvider fp) {
 			super(fp, "Parallel Gateway", "Used to combine or create parallel flows");
 		}
 
 		@Override
-		protected Gateway createFlowElement(ICreateContext context) {
+		public ParallelGateway createBusinessObject(ICreateContext context) {
 			return Bpmn2ModelerFactory.create(ParallelGateway.class);
 		}
 
@@ -70,8 +73,8 @@ public class ParallelGatewayFeatureContainer extends AbstractGatewayFeatureConta
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return ParallelGateway.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getParallelGateway();
 		}
 	}
 }

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.DataStore;
 import org.eclipse.bpmn2.DataStoreReference;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
@@ -32,6 +33,7 @@ import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.modeler.ui.features.LayoutBaseElementTextFeature;
 import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -230,7 +232,24 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 		}
 
 		@Override
-		protected DataStoreReference createFlowElement(ICreateContext context) {
+		public String getStencilImageId() {
+			return ImageProvider.IMG_16_DATA_STORE;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature
+		 * #getFlowElementClass()
+		 */
+		@Override
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getDataStoreReference();
+		}
+
+		@Override
+		public DataStoreReference createBusinessObject(ICreateContext context) {
 			// NOTE: this is slightly different from DataObject/DataObjectReference:
 			// Both DataObject and DataObjectReference instances are contained in some FlowElementContainer
 			// (e.g. a Process) whereas DataStore instances are contained in the root element "Definitions".
@@ -277,23 +296,6 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 				Activator.showErrorWithLogging(e);
 			}
 			return dataStoreReference;
-		}
-
-		@Override
-		public String getStencilImageId() {
-			return ImageProvider.IMG_16_DATA_STORE;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature
-		 * #getFlowElementClass()
-		 */
-		@Override
-		public Class getBusinessObjectClass() {
-			return DataStoreReference.class;
 		}
 	}
 

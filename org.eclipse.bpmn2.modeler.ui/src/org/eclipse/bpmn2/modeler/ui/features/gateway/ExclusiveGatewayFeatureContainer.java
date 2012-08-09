@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.gateway;
 
+import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.EventBasedGateway;
 import org.eclipse.bpmn2.ExclusiveGateway;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.di.BPMNShape;
@@ -23,6 +25,7 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.DiagonalCross;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -55,14 +58,14 @@ public class ExclusiveGatewayFeatureContainer extends AbstractGatewayFeatureCont
 		return new CreateExclusiveGatewayFeature(fp);
 	}
 
-	public static class CreateExclusiveGatewayFeature extends AbstractCreateGatewayFeature {
+	public static class CreateExclusiveGatewayFeature extends AbstractCreateGatewayFeature<ExclusiveGateway> {
 
 		public CreateExclusiveGatewayFeature(IFeatureProvider fp) {
 			super(fp, "Exclusive Gateway", "Exclusive decision and merging");
 		}
 
 		@Override
-		protected Gateway createFlowElement(ICreateContext context) {
+		public ExclusiveGateway createBusinessObject(ICreateContext context) {
 			return Bpmn2ModelerFactory.create(ExclusiveGateway.class);
 		}
 
@@ -75,8 +78,8 @@ public class ExclusiveGatewayFeatureContainer extends AbstractGatewayFeatureCont
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return ExclusiveGateway.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getExclusiveGateway();
 		}
 	}
 }

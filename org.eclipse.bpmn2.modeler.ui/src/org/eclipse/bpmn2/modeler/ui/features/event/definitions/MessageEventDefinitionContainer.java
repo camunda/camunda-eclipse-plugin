@@ -13,7 +13,9 @@
 package org.eclipse.bpmn2.modeler.ui.features.event.definitions;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.EventDefinition;
+import org.eclipse.bpmn2.LinkEventDefinition;
 import org.eclipse.bpmn2.MessageEventDefinition;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.AbstractEventDefinitionFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.CreateEventDefinition;
@@ -25,6 +27,7 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Envelope;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil.FillStyle;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
@@ -92,14 +95,14 @@ public class MessageEventDefinitionContainer extends AbstractEventDefinitionFeat
 		return envelopeShape;
 	}
 
-	public static class CreateMessageEventDefinition extends CreateEventDefinition {
+	public static class CreateMessageEventDefinition extends CreateEventDefinition<MessageEventDefinition> {
 
 		public CreateMessageEventDefinition(IFeatureProvider fp) {
 			super(fp, "Message Definition", "Marks that event expects a message");
 		}
 
 		@Override
-		protected EventDefinition createEventDefinition(ICreateContext context) {
+		public MessageEventDefinition createBusinessObject(ICreateContext context) {
 			return Bpmn2ModelerFactory.create(MessageEventDefinition.class);
 		}
 
@@ -112,8 +115,8 @@ public class MessageEventDefinitionContainer extends AbstractEventDefinitionFeat
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return MessageEventDefinition.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getMessageEventDefinition();
 		}
 	}
 }

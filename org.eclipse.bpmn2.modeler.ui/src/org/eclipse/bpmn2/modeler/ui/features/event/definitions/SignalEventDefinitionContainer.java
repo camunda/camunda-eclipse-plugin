@@ -13,7 +13,9 @@
 package org.eclipse.bpmn2.modeler.ui.features.event.definitions;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.EventDefinition;
+import org.eclipse.bpmn2.MessageEventDefinition;
 import org.eclipse.bpmn2.SignalEventDefinition;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.AbstractEventDefinitionFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.CreateEventDefinition;
@@ -24,6 +26,7 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil.FillStyle;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
@@ -87,14 +90,14 @@ public class SignalEventDefinitionContainer extends AbstractEventDefinitionFeatu
 		return signalShape;
 	}
 
-	public static class CreateSignalEventDefinition extends CreateEventDefinition {
+	public static class CreateSignalEventDefinition extends CreateEventDefinition<SignalEventDefinition> {
 
 		public CreateSignalEventDefinition(IFeatureProvider fp) {
 			super(fp, "Signal Definition", "Adds signal definition to event");
 		}
 
 		@Override
-		protected EventDefinition createEventDefinition(ICreateContext context) {
+		public SignalEventDefinition createBusinessObject(ICreateContext context) {
 			return Bpmn2ModelerFactory.create(SignalEventDefinition.class);
 		}
 
@@ -107,8 +110,8 @@ public class SignalEventDefinitionContainer extends AbstractEventDefinitionFeatu
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return SignalEventDefinition.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getSignalEventDefinition();
 		}
 	}
 }

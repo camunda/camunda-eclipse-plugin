@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.gateway;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.EventBasedGateway;
 import org.eclipse.bpmn2.EventBasedGatewayType;
 import org.eclipse.bpmn2.Gateway;
@@ -23,6 +24,7 @@ import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -83,14 +85,14 @@ public class EventBasedGatewayFeatureContainer extends AbstractGatewayFeatureCon
 		return multiUpdate;
 	}
 
-	public static class CreateEventBasedGatewayFeature extends AbstractCreateGatewayFeature {
+	public static class CreateEventBasedGatewayFeature extends AbstractCreateGatewayFeature<EventBasedGateway> {
 
 		public CreateEventBasedGatewayFeature(IFeatureProvider fp) {
 			super(fp, "Event-Based Gateway", "Represents a branching point in the process");
 		}
 
 		@Override
-		protected Gateway createFlowElement(ICreateContext context) {
+		public EventBasedGateway createBusinessObject(ICreateContext context) {
 			EventBasedGateway gateway = Bpmn2ModelerFactory.create(EventBasedGateway.class);
 			gateway.setInstantiate(false);
 			gateway.setEventGatewayType(EventBasedGatewayType.EXCLUSIVE);
@@ -106,8 +108,8 @@ public class EventBasedGatewayFeatureContainer extends AbstractGatewayFeatureCon
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return EventBasedGateway.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getEventBasedGateway();
 		}
 	}
 }
