@@ -213,6 +213,7 @@ public class DefaultDetailComposite extends AbstractDetailComposite {
 		if (getChildren().length==0) {
 			createMissingPropertiesLabel(be);
 		}
+		redrawPage();
 	}
 	
 	private void createMissingPropertiesLabel(EObject be) {

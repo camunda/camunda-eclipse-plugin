@@ -126,6 +126,7 @@ public class Messages extends NLS {
 	public static String UI_Conversation_long_description;
 	public static String UI_CallConversation_long_description;
 	public static String UI_SubConversation_long_description;
+	public static String UI_TextAnnotation_long_description;
 	
 	
 	

@@ -276,6 +276,14 @@
 			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
 			label="Task">
 		</propertyTab>
+		
+		<propertyTab
+			afterTab="org.eclipse.bpmn2.modeler.task.tab"
+			class="org.eclipse.bpmn2.modeler.ui.property.artifact.TextAnnotationPropertySection"
+			id="org.eclipse.bpmn2.modeler.textAnnotation.tab"
+			label="Text Annotation"
+			type="org.eclipse.bpmn2.TextAnnotation">
+		</propertyTab>
 
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.scriptTask.tab"
