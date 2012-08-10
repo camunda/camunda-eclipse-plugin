@@ -483,6 +483,10 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	public Object getAdapter(Class required) {
 		if (required==ITabDescriptorProvider.class)
 			return tabDescriptorProvider;
+		if (required==TargetRuntime.class)
+			return getTargetRuntime();
+		if (required==Bpmn2Preferences.class)
+			return getPreferences();
 		return super.getAdapter(required);
 	}
 

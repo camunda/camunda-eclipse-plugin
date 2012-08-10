@@ -22,7 +22,6 @@ import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.diagram.BPMNFeatureProvider;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
-import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeature;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -70,7 +69,7 @@ public class PropertyLabelProvider extends LabelProvider {
 					be = bpmnElement;
 				}
 			}
-			return PropertyUtil.getDisplayName(be);
+			return ModelUtil.getDisplayName(be);
 		}
 		PictogramElement pe = BusinessObjectUtil.getPictogramElementForSelection((ISelection)element);
 		if (pe!=null && pe.getGraphicsAlgorithm()!=null) {

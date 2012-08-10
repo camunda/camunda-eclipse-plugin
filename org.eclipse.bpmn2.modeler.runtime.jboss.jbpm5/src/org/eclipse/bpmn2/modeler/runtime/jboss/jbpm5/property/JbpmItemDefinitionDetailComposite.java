@@ -2,13 +2,12 @@ package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.ItemKind;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractBpmn2PropertySection;
+import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ObjectEditor;
+import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.TextObjectEditor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.diagrams.ItemDefinitionDetailComposite;
-import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.SchemaObjectEditor;
-import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
-import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.swt.widgets.Composite;
@@ -33,7 +32,7 @@ public class JbpmItemDefinitionDetailComposite extends ItemDefinitionDetailCompo
 				parent = getAttributesParent();
 			
 			final ItemDefinition def = (ItemDefinition)object;
-			String displayName = PropertyUtil.getLabel(object, reference);
+			String displayName = ModelUtil.getLabel(object, reference);
 			
 			JbpmImportObjectEditor editor = new JbpmImportObjectEditor(this,object,reference);
 			editor.createControl(parent,displayName);

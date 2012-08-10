@@ -43,7 +43,6 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Envelope;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
-import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.EList;
@@ -746,7 +745,7 @@ public class ChoreographyUtil implements ChoreographyProperties {
 			return flow.getMessageRef().getName();
 		} else {
 			String messageName = flow.getMessageRef().getName();
-			String itemDefinitionName = PropertyUtil.getDisplayName(flow.getMessageRef().getItemRef());
+			String itemDefinitionName = ModelUtil.getDisplayName(flow.getMessageRef().getItemRef());
 			String text = itemDefinitionName;
 			if (messageName!=null && !messageName.isEmpty())
 				text += "/" + messageName;
@@ -759,7 +758,7 @@ public class ChoreographyUtil implements ChoreographyProperties {
 				mesg.getItemRef().getStructureRef()==null) {
 			return mesg.getName();
 		} else {
-			String type = "(" + PropertyUtil.getDisplayName(mesg.getItemRef()) +")";
+			String type = "(" + ModelUtil.getDisplayName(mesg.getItemRef()) +")";
 			if (mesg.getName()==null)
 				return type; 
 			return mesg.getName() + type;

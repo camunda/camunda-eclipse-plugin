@@ -14,12 +14,12 @@
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 
 import org.eclipse.bpmn2.CallableElement;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractBpmn2PropertySection;
+import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ObjectEditor;
+import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.TextAndButtonObjectEditor;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.ErrorUtils;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
-import org.eclipse.bpmn2.modeler.ui.property.editors.TextAndButtonObjectEditor;
-import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
@@ -52,7 +52,7 @@ public class JbpmCallActivityDetailComposite extends JbpmActivityDetailComposite
 				if (parent==null)
 					parent = getAttributesParent();
 				
-				String displayName = PropertyUtil.getLabel(object, reference);
+				String displayName = ModelUtil.getLabel(object, reference);
 				ObjectEditor editor = new TextAndButtonObjectEditor(this,object,reference) {
 
 					@Override
@@ -68,7 +68,7 @@ public class JbpmCallActivityDetailComposite extends JbpmActivityDetailComposite
 							
 						};
 						
-						String initialValue = PropertyUtil.getDisplayName(object,feature);
+						String initialValue = ModelUtil.getDisplayName(object,feature);
 						InputDialog dialog = new InputDialog(
 								getShell(),
 								"Called Activity",
@@ -94,14 +94,16 @@ public class JbpmCallActivityDetailComposite extends JbpmActivityDetailComposite
 									object.eSet(feature, ce);
 								}
 							});
-							if (getDiagramEditor().getDiagnostics()!=null) {
-								ErrorUtils.showErrorMessage(getDiagramEditor().getDiagnostics().getMessage());
-							}
-							else {
-								ErrorUtils.showErrorMessage(null);
-								updateText();
-								return true;
-							}
+//							if (getDiagramEditor().getDiagnostics()!=null) {
+//								ErrorUtils.showErrorMessage(getDiagramEditor().getDiagnostics().getMessage());
+//							}
+//							else {
+//								ErrorUtils.showErrorMessage(null);
+//								updateText();
+//								return true;
+//							}
+							updateText();
+							return true;
 						}
 						return false;
 					}

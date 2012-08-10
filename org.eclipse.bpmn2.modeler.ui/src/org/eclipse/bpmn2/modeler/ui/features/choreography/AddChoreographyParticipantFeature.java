@@ -23,7 +23,6 @@ import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
-import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -126,7 +125,7 @@ public class AddChoreographyParticipantFeature extends AbstractCustomFeature {
 				
 				Participant participant = null;
 				List<Participant> participantList = new ArrayList<Participant>();
-				participant = (Participant) PropertyUtil.createObject(task.eResource(), Bpmn2Package.eINSTANCE.getParticipant());
+				participant = (Participant) ModelUtil.createObject(task.eResource(), Bpmn2Package.eINSTANCE.getParticipant());
 				participant.setName("New Participant");
 				
 				participantList.add(participant);

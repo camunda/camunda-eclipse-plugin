@@ -28,7 +28,10 @@ Require-Bundle: org.eclipse.emf.transaction,
  org.eclipse.core.commands,
  org.eclipse.jdt;bundle-version="3.7.1",
  org.eclipse.jdt.core;bundle-version="3.7.1",
- org.eclipse.jdt.launching;bundle-version="3.6.1"
+ org.eclipse.jdt.launching;bundle-version="3.6.1",
+ org.eclipse.ui.views.properties.tabbed;bundle-version="3.5.200",
+ org.eclipse.jface.databinding;bundle-version="1.5.0",
+ org.eclipse.core.databinding;bundle-version="1.4.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.bpmn2.modeler.core,
@@ -48,6 +51,9 @@ Export-Package: org.eclipse.bpmn2.modeler.core,
  org.eclipse.bpmn2.modeler.core.features.gateway,
  org.eclipse.bpmn2.modeler.core.features.lane,
  org.eclipse.bpmn2.modeler.core.features.participant,
+ org.eclipse.bpmn2.modeler.core.merrimac.clad,
+ org.eclipse.bpmn2.modeler.core.merrimac.dialogs,
+ org.eclipse.bpmn2.modeler.core.merrimac.providers,
  org.eclipse.bpmn2.modeler.core.model,
  org.eclipse.bpmn2.modeler.core.preferences,
  org.eclipse.bpmn2.modeler.core.runtime,

@@ -26,7 +26,6 @@ import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
@@ -85,19 +84,19 @@ public class RootElementRefFeatureDescriptor<T extends BaseElement> extends Feat
 			while (iter.hasNext()) {
 				value = iter.next();
 				if (value instanceof RootElement)
-					choices.put(PropertyUtil.getDisplayName(value), value);
+					choices.put(ModelUtil.getDisplayName(value), value);
 			}
 		}
 		else if (value instanceof EObject) {
 			EObject rootElement = (EObject) value;
 			if (rootElement!=null)
-				choices.put(PropertyUtil.getDisplayName(rootElement), rootElement);
+				choices.put(ModelUtil.getDisplayName(rootElement), rootElement);
 		}
 		Definitions definitions = ModelUtil.getDefinitions(object);
 		if (definitions!=null) {
 			for (RootElement re : definitions.getRootElements()) {
 				if (re.eClass() == feature.getEType()) {
-					choices.put(PropertyUtil.getDisplayName(re), re);
+					choices.put(ModelUtil.getDisplayName(re), re);
 				}
 			}
 		}

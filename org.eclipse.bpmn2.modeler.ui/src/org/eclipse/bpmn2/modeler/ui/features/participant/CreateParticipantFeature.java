@@ -26,7 +26,6 @@ import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
-import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
@@ -95,7 +94,7 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 	public Participant createBusinessObject(ICreateContext context) {
         BPMNDiagram bpmnDiagram = BusinessObjectUtil.getFirstElementOfType(context.getTargetContainer(), BPMNDiagram.class);
         Definitions definitions = ModelUtil.getDefinitions(bpmnDiagram);
-        Participant participant = (Participant) PropertyUtil.createObject(definitions.eResource(), Bpmn2Package.eINSTANCE.getParticipant());
+        Participant participant = (Participant) ModelUtil.createObject(definitions.eResource(), Bpmn2Package.eINSTANCE.getParticipant());
         ModelUtil.setID(participant,definitions.eResource());
         participant.setName( ModelUtil.toDisplayName(participant.getId()) );
         return participant;

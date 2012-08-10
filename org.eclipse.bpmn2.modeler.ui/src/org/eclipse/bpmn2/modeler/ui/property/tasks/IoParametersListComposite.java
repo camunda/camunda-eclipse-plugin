@@ -13,10 +13,9 @@ import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.InputSet;
 import org.eclipse.bpmn2.OutputSet;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultListComposite;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.TableColumn;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultListComposite;
-import org.eclipse.bpmn2.modeler.ui.property.TableColumn;
-import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -142,7 +141,7 @@ public class IoParametersListComposite extends DefaultListComposite {
 			}
 			else if (param instanceof DataOutput)
 			{
-				DataOutputAssociation outputAssociation = (DataOutputAssociation) PropertyUtil.createObject(PACKAGE.getDataOutputAssociation());
+				DataOutputAssociation outputAssociation = (DataOutputAssociation) ModelUtil.createObject(PACKAGE.getDataOutputAssociation());
 				//FACTORY.createDataOutputAssociation();
 				activity.getDataOutputAssociations().add(outputAssociation);
 				outputAssociation.getSourceRef().clear();

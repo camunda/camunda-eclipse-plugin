@@ -22,7 +22,6 @@ import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelFactory;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.SchemaImportDialog;
-import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -231,7 +230,7 @@ public class JbpmModelUtil {
 			stringValue = ((ImportType)value).getName();
 		}
 		else if (value instanceof ItemDefinition) {
-			stringValue = PropertyUtil.getDisplayName((ItemDefinition)value);
+			stringValue = ModelUtil.getDisplayName((ItemDefinition)value);
 		}
 		return stringValue;
 	}

@@ -17,16 +17,15 @@ package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractBpmn2PropertySection;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractListComposite;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultDetailComposite.AbstractPropertiesProvider;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.GlobalType;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelFactory;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite;
 import org.eclipse.bpmn2.modeler.ui.property.ExtensionValueListComposite;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultDetailComposite.AbstractPropertiesProvider;
 import org.eclipse.bpmn2.modeler.ui.property.diagrams.DataItemsDetailComposite;
-import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.swt.widgets.Composite;
@@ -112,7 +111,7 @@ public class JbpmDataItemsDetailComposite extends DataItemsDetailComposite {
 						}
 					};
 					globalsTable.bindList(process, ModelPackage.eINSTANCE.getDocumentRoot_Global());
-					globalsTable.setTitle("Globals for "+PropertyUtil.getLongDisplayName(process));
+					globalsTable.setTitle("Globals for "+ModelUtil.getLongDisplayName(process));
 				}
 			}
 		}

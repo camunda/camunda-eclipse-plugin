@@ -16,12 +16,12 @@ import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ThrowEvent;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractListComposite;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.TableColumn;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.TableColumn.CustomComboBoxCellEditor;
 import org.eclipse.bpmn2.modeler.core.utils.ErrorUtils;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite;
-import org.eclipse.bpmn2.modeler.ui.property.TableColumn;
-import org.eclipse.bpmn2.modeler.ui.property.TableColumn.CustomComboBoxCellEditor;
-import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -41,7 +41,7 @@ public class IoParameterMappingColumn extends TableColumn {
 
 	@Override
 	public String getHeaderText() {
-		return PropertyUtil.getLabel(
+		return ModelUtil.getLabel(
 				Bpmn2Package.eINSTANCE.getDataAssociation(),
 				feature.getName().startsWith("dataInput") ?
 					Bpmn2Package.eINSTANCE.getDataAssociation_SourceRef() :
@@ -57,16 +57,16 @@ public class IoParameterMappingColumn extends TableColumn {
 		if (da!=null) {
 			ItemAwareElement target = getTargetElement(da);
 			if (target!=null)
-				text = PropertyUtil.getDisplayName(target);
+				text = ModelUtil.getDisplayName(target);
 			else {
 				if (da.getTransformation()!=null) {
-					text = "Transform: " + PropertyUtil.getDisplayName(da.getTransformation());
+					text = "Transform: " + ModelUtil.getDisplayName(da.getTransformation());
 				}
 				if (!da.getAssignment().isEmpty()) {
 					String text2 = null;
 					for ( Assignment assign : da.getAssignment()) {
 						FormalExpression expr  = getTargetExpression(da, assign);
-						String body = PropertyUtil.getDisplayName(expr);
+						String body = ModelUtil.getDisplayName(expr);
 						if (text2==null)
 							text2 = "Expression: " + body;
 						else

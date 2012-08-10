@@ -29,16 +29,16 @@ import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultDetailComposite;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultListComposite;
-import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
-import org.eclipse.bpmn2.modeler.ui.property.TableColumn;
-import org.eclipse.bpmn2.modeler.ui.property.editors.ComboObjectEditor;
-import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
-import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractBpmn2PropertySection;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractDetailComposite;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractListComposite;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultDetailComposite;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultListComposite;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.PropertiesCompositeFactory;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.TableColumn;
+import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ComboObjectEditor;
+import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ObjectEditor;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.emf.ecore.EClass;
@@ -522,7 +522,7 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 
 						@Override
 						protected void bindReference(Composite parent, EObject object, EReference reference) {
-							String displayName = PropertyUtil.getLabel(object, reference);
+							String displayName = ModelUtil.getLabel(object, reference);
 							ObjectEditor editor = new ComboObjectEditor(this,object,reference);
 							editor.createControl(parent,displayName);
 						}

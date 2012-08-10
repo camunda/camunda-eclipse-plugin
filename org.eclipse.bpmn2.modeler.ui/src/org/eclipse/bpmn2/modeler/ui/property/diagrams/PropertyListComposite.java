@@ -1,12 +1,11 @@
 package org.eclipse.bpmn2.modeler.ui.property.diagrams;
 
 import org.eclipse.bpmn2.Property;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultListComposite;
-import org.eclipse.bpmn2.modeler.ui.property.TableColumn;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite.ListCompositeColumnProvider;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite.ListCompositeColumnProvider;
-import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractBpmn2PropertySection;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultListComposite;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.TableColumn;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractListComposite.ListCompositeColumnProvider;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -29,7 +28,7 @@ public class PropertyListComposite extends DefaultListComposite {
 	@Override
 	public void bindList(EObject theobject, EStructuralFeature thefeature) {
 		super.bindList(theobject, thefeature);
-		PropertyUtil.setLabel(theobject, thefeature, "Variables");
+		ModelUtil.setLabel(theobject, thefeature, "Variables");
 	}
 	
 	public ListCompositeColumnProvider getColumnProvider(EObject object, EStructuralFeature feature) {

@@ -25,6 +25,7 @@ import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
+import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.editor.DiagramEditorContextMenuProvider;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -408,7 +409,7 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 		public Object getAdapter(Class required) {
 			if (required==ActionRegistry.class)
 				return getActionRegistry();
-			if (required==BPMN2Editor.class)
+			if (required==BPMN2Editor.class || required==DiagramEditor.class)
 				return designEditor;
 			return super.getAdapter(required);
 		}

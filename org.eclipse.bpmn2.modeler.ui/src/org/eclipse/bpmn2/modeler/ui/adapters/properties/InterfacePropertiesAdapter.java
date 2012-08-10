@@ -20,7 +20,6 @@ import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -50,7 +49,7 @@ public class InterfacePropertiesAdapter extends ExtendedPropertiesAdapter<Interf
 					if (iface.getImplementationRef()!=null) {
 						String text = ModelUtil.getStringWrapperValue( iface.getImplementationRef() ); // + type;
 						if (text==null)
-							return PropertyUtil.getDisplayName(iface.getImplementationRef());
+							return ModelUtil.getDisplayName(iface.getImplementationRef());
 					}
 					return "";
 				}

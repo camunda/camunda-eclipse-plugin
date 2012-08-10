@@ -23,12 +23,12 @@ import org.eclipse.bpel.wsil.model.inspection.InspectionPackage;
 import org.eclipse.bpel.wsil.model.inspection.Link;
 import org.eclipse.bpel.wsil.model.inspection.TypeOfAbstract;
 import org.eclipse.bpel.wsil.model.inspection.WSILDocument;
+import org.eclipse.bpmn2.modeler.core.merrimac.providers.ColumnTableProvider;
+import org.eclipse.bpmn2.modeler.core.merrimac.providers.TableCursor;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceSetImpl;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.Messages;
-import org.eclipse.bpmn2.modeler.ui.property.providers.ColumnTableProvider;
-import org.eclipse.bpmn2.modeler.ui.property.providers.TableCursor;
 import org.eclipse.bpmn2.modeler.ui.property.providers.WSILContentProvider;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
@@ -553,7 +553,7 @@ public class WSILPreferencePage extends PreferencePage implements IWorkbenchPref
 			ILabelProvider, ICellModifier {
 		
 		/**
-		 * @see org.eclipse.bpel.ui.details.providers.ColumnTableProvider.Column#getHeaderText()
+		 * @see org.eclipse.bpmn2.modeler.core.merrimac.providers.ui.details.providers.ColumnTableProvider.Column#getHeaderText()
 		 */
 		@Override
 		public String getHeaderText() {
@@ -561,7 +561,7 @@ public class WSILPreferencePage extends PreferencePage implements IWorkbenchPref
 		}
 
 		/**
-		 * @see org.eclipse.bpel.ui.details.providers.ColumnTableProvider.Column#getProperty()
+		 * @see org.eclipse.bpmn2.modeler.core.merrimac.providers.ui.details.providers.ColumnTableProvider.Column#getProperty()
 		 */
 		@Override
 		public String getProperty() {
@@ -569,7 +569,7 @@ public class WSILPreferencePage extends PreferencePage implements IWorkbenchPref
 		} 
 
 		/**
-		 * @see org.eclipse.bpel.ui.details.providers.ColumnTableProvider.Column#getInitialWeight()
+		 * @see org.eclipse.bpmn2.modeler.core.merrimac.providers.ui.details.providers.ColumnTableProvider.Column#getInitialWeight()
 		 */
 		@Override
 		public int getInitialWeight() {
@@ -594,7 +594,7 @@ public class WSILPreferencePage extends PreferencePage implements IWorkbenchPref
 		}
 		
 		/**
-		 * @see org.eclipse.bpel.ui.details.providers.ColumnTableProvider.Column#createCellEditor(org.eclipse.swt.widgets.Composite)
+		 * @see org.eclipse.bpmn2.modeler.core.merrimac.providers.ui.details.providers.ColumnTableProvider.Column#createCellEditor(org.eclipse.swt.widgets.Composite)
 		 */
 		@Override
 		public CellEditor createCellEditor (Composite parent) {			
@@ -648,7 +648,7 @@ public class WSILPreferencePage extends PreferencePage implements IWorkbenchPref
 		implements ILabelProvider, ICellModifier {
 		
 		/**
-		 * @see org.eclipse.bpel.ui.details.providers.ColumnTableProvider.Column#getHeaderText()
+		 * @see org.eclipse.bpmn2.modeler.core.merrimac.providers.ui.details.providers.ColumnTableProvider.Column#getHeaderText()
 		 */
 		@Override
 		public String getHeaderText() {
@@ -656,7 +656,7 @@ public class WSILPreferencePage extends PreferencePage implements IWorkbenchPref
 		}
 
 		/**
-		 * @see org.eclipse.bpel.ui.details.providers.ColumnTableProvider.Column#getProperty()
+		 * @see org.eclipse.bpmn2.modeler.core.merrimac.providers.ui.details.providers.ColumnTableProvider.Column#getProperty()
 		 */
 		@Override
 		public String getProperty() {
@@ -665,7 +665,7 @@ public class WSILPreferencePage extends PreferencePage implements IWorkbenchPref
 
 		
 		/** (non-Javadoc)
-		 * @see org.eclipse.bpel.ui.details.providers.ColumnTableProvider.Column#getInitialWeight()
+		 * @see org.eclipse.bpmn2.modeler.core.merrimac.providers.ui.details.providers.ColumnTableProvider.Column#getInitialWeight()
 		 */
 		@Override
 		public int getInitialWeight() {
@@ -684,7 +684,7 @@ public class WSILPreferencePage extends PreferencePage implements IWorkbenchPref
 		}
 		
 		/**
-		 * @see org.eclipse.bpel.ui.details.providers.ColumnTableProvider.Column#createCellEditor(org.eclipse.swt.widgets.Composite)
+		 * @see org.eclipse.bpmn2.modeler.core.merrimac.providers.ui.details.providers.ColumnTableProvider.Column#createCellEditor(org.eclipse.swt.widgets.Composite)
 		 */
 		@Override
 		public CellEditor createCellEditor (Composite parent) {			
@@ -755,7 +755,7 @@ public class WSILPreferencePage extends PreferencePage implements IWorkbenchPref
 			ILabelProvider {
 		
 		/**
-		 * @see org.eclipse.bpel.ui.details.providers.ColumnTableProvider.Column#getHeaderText()
+		 * @see org.eclipse.bpmn2.modeler.core.merrimac.providers.ui.details.providers.ColumnTableProvider.Column#getHeaderText()
 		 */
 		
 		@Override
@@ -765,7 +765,7 @@ public class WSILPreferencePage extends PreferencePage implements IWorkbenchPref
 
 		
 		/**
-		 * @see org.eclipse.bpel.ui.details.providers.ColumnTableProvider.Column#getProperty()
+		 * @see org.eclipse.bpmn2.modeler.core.merrimac.providers.ui.details.providers.ColumnTableProvider.Column#getProperty()
 		 */
 		@Override
 		public String getProperty() {
@@ -773,7 +773,7 @@ public class WSILPreferencePage extends PreferencePage implements IWorkbenchPref
 		}
 
 		/**
-		 * @see org.eclipse.bpel.ui.details.providers.ColumnTableProvider.Column#getInitialWeight()
+		 * @see org.eclipse.bpmn2.modeler.core.merrimac.providers.ui.details.providers.ColumnTableProvider.Column#getInitialWeight()
 		 */
 		@Override
 		public int getInitialWeight() {
@@ -805,7 +805,7 @@ public class WSILPreferencePage extends PreferencePage implements IWorkbenchPref
 			ILabelProvider {
 		
 		/**
-		 * @see org.eclipse.bpel.ui.details.providers.ColumnTableProvider.Column#getHeaderText()
+		 * @see org.eclipse.bpmn2.modeler.core.merrimac.providers.ui.details.providers.ColumnTableProvider.Column#getHeaderText()
 		 */
 		
 		@Override
@@ -815,7 +815,7 @@ public class WSILPreferencePage extends PreferencePage implements IWorkbenchPref
 
 		
 		/**
-		 * @see org.eclipse.bpel.ui.details.providers.ColumnTableProvider.Column#getProperty()
+		 * @see org.eclipse.bpmn2.modeler.core.merrimac.providers.ui.details.providers.ColumnTableProvider.Column#getProperty()
 		 */
 		@Override
 		public String getProperty() {
@@ -823,7 +823,7 @@ public class WSILPreferencePage extends PreferencePage implements IWorkbenchPref
 		}
 
 		/**
-		 * @see org.eclipse.bpel.ui.details.providers.ColumnTableProvider.Column#getInitialWeight()
+		 * @see org.eclipse.bpmn2.modeler.core.merrimac.providers.ui.details.providers.ColumnTableProvider.Column#getInitialWeight()
 		 */
 		@Override
 		public int getInitialWeight() {
