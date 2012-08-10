@@ -121,13 +121,6 @@ public class CancelEventDefinitionContainer extends AbstractEventDefinitionFeatu
 		}
 
 		@Override
-		public CancelEventDefinition createBusinessObject(ICreateContext context) {
-			CancelEventDefinition definition = Bpmn2ModelerFactory.create(CancelEventDefinition.class);
-			ModelUtil.setID(definition);
-			return definition;
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_CANCEL;
 		}

@@ -67,14 +67,6 @@ public class BusinessRuleTaskFeatureContainer extends AbstractTaskFeatureContain
 		}
 
 		@Override
-		public BusinessRuleTask createBusinessObject(ICreateContext context) {
-			BusinessRuleTask task = Bpmn2ModelerFactory.create(BusinessRuleTask.class);
-			task.setName("Business Rule Task");
-			task.setImplementation("##unspecified");
-			return task;
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_BUSINESS_RULE_TASK;
 		}

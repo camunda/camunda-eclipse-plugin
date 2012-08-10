@@ -51,7 +51,7 @@ public class DefaultDialogComposite extends AbstractDialogComposite {
 		ITabDescriptor[] tabDescriptors = getTabDescriptors();
 		int detailsCount = getDetailsCount();
 		
-		if (detailsCount>1) {
+		if (detailsCount>0) {
 			folder = new TabFolder(parent, SWT.NONE);
 			folder.setLayout(new FormLayout());
 			folder.setBackground(parent.getBackground());
@@ -97,7 +97,9 @@ public class DefaultDialogComposite extends AbstractDialogComposite {
 					}
 				}
 			}
+			folder.setLayout(new FormLayout());
 			control = folder;
+			control.setBackground(parent.getBackground());
 		}
 		else if (section!=null) {
 			control = section.createSectionRoot(parent,SWT.NONE);
@@ -106,8 +108,6 @@ public class DefaultDialogComposite extends AbstractDialogComposite {
 			control = PropertiesCompositeFactory.createDialogComposite(getBusinessObjectClass().getInstanceClass(), parent, SWT.NONE);
 		}
 		
-		control.setLayout(new FormLayout());
-		control.setBackground(parent.getBackground());
 	}
 
 	public EClass getBusinessObjectClass() {
@@ -190,7 +190,8 @@ public class DefaultDialogComposite extends AbstractDialogComposite {
 				}
 		
 			});
-			form.reflow(true);
+			if (form!=null)
+				form.reflow(true);
 		}
 	}
 	

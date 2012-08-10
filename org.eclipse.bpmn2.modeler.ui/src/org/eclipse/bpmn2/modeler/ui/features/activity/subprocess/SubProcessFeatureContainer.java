@@ -70,14 +70,6 @@ public class SubProcessFeatureContainer extends AbstractSubProcessFeatureContain
 		public CreateSubProcessFeature(IFeatureProvider fp) {
 			super(fp, "Sub-Process", "Inner activity");
 		}
-		
-		@Override
-		public SubProcess createBusinessObject(ICreateContext context) {
-			SubProcess subProcess = Bpmn2ModelerFactory.create(SubProcess.class);
-			subProcess.setName("SubProcess");
-			subProcess.setTriggeredByEvent(false);
-			return subProcess;
-		}
 
 		@Override
 		protected String getStencilImageId() {

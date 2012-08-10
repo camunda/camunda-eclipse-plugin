@@ -112,11 +112,6 @@ public class TimerEventDefinitionContainer extends AbstractEventDefinitionFeatur
 		}
 
 		@Override
-		public TimerEventDefinition createBusinessObject(ICreateContext context) {
-			return Bpmn2ModelerFactory.create(TimerEventDefinition.class);
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_TIMER;
 		}

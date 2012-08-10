@@ -112,6 +112,7 @@ public class ConversationLinkFeatureContainer extends BaseElementConnectionFeatu
 				Conversation target = getTargetBo(context);
 				bo = mh.createConversationLink(source, target);
 				bo.setName("Conversation Link");
+				putBusinessObject(context, bo);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

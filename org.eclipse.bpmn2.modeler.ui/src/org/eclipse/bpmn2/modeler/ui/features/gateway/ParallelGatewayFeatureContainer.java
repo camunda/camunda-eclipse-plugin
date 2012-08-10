@@ -60,11 +60,6 @@ public class ParallelGatewayFeatureContainer extends AbstractGatewayFeatureConta
 		}
 
 		@Override
-		public ParallelGateway createBusinessObject(ICreateContext context) {
-			return Bpmn2ModelerFactory.create(ParallelGateway.class);
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_PARALLEL_GATEWAY;
 		}

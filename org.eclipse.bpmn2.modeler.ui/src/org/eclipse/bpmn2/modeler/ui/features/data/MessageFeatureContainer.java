@@ -175,13 +175,6 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 		public EClass getBusinessObjectClass() {
 			return Bpmn2Package.eINSTANCE.getMessage();
 		}
-
-		@Override
-		public Message createBusinessObject(ICreateContext context) {
-			Message message = Bpmn2ModelerFactory.create(Message.class);
-			message.setName("Message");
-			return message;
-		}
 	}
 
 	@Override

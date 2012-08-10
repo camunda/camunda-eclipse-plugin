@@ -62,13 +62,6 @@ public class ScriptTaskFeatureContainer extends AbstractTaskFeatureContainer {
 		}
 
 		@Override
-		public ScriptTask createBusinessObject(ICreateContext context) {
-			ScriptTask task = Bpmn2ModelerFactory.create(ScriptTask.class);
-			task.setName("Script Task");
-			return task;
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_SCRIPT_TASK;
 		}

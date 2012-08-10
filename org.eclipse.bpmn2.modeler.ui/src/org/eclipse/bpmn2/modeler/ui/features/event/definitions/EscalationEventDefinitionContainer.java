@@ -127,11 +127,6 @@ public class EscalationEventDefinitionContainer extends AbstractEventDefinitionF
 		}
 
 		@Override
-		public EscalationEventDefinition createBusinessObject(ICreateContext context) {
-			return Bpmn2ModelerFactory.create(EscalationEventDefinition.class);
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_ESCAlATION;
 		}

@@ -184,6 +184,7 @@ public class DataObjectFeatureContainer extends AbstractDataFeatureContainer {
 
 		@Override
 		public FlowElement createBusinessObject(ICreateContext context) {
+			FlowElement bo = null;
 			try {
 				DataObjectReference dataObjectReference = null;
 				DataObject dataObject = null;
@@ -216,20 +217,21 @@ public class DataObjectFeatureContainer extends AbstractDataFeatureContainer {
 					dataObject.setIsCollection(false);
 					dataObject.setName(ModelUtil.toDisplayName(dataObject.getId()));
 					dataObjectReference.setName(dataObject.getName());
-					return dataObject;
+					bo = dataObject;
 				} else {
 					mh.addFlowElement(container,dataObjectReference);
 					ModelUtil.setID(dataObjectReference);
 					dataObjectReference.setName(result.getName() + " Ref");
 					dataObjectReference.setDataObjectRef(result);
 					dataObject = result;
-					return dataObjectReference;
+					bo = dataObjectReference;
 				}
+				putBusinessObject(context, bo);
 
 			} catch (IOException e) {
 				Activator.showErrorWithLogging(e);
 			}
-			return null;
+			return bo;
 		}
 	}
 }

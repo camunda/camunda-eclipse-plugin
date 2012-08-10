@@ -62,14 +62,6 @@ public class ReceiveTaskFeatureContainer extends AbstractTaskFeatureContainer {
 		}
 
 		@Override
-		public ReceiveTask createBusinessObject(ICreateContext context) {
-			ReceiveTask task = Bpmn2ModelerFactory.create(ReceiveTask.class);
-			task.setName("Receive Task");
-			task.setImplementation("##unspecified");
-			return task;
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_RECEIVE_TASK;
 		}

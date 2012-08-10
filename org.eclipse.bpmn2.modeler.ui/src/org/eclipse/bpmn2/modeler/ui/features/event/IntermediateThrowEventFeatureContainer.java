@@ -82,13 +82,6 @@ public class IntermediateThrowEventFeatureContainer extends AbstractEventFeature
 		}
 
 		@Override
-		public IntermediateThrowEvent createBusinessObject(ICreateContext context) {
-			IntermediateThrowEvent event = Bpmn2ModelerFactory.create(IntermediateThrowEvent.class);
-			event.setName("Throw");
-			return event;
-		}
-
-		@Override
 		public String getStencilImageId() {
 			return ImageProvider.IMG_16_INTERMEDIATE_THORW_EVENT;
 		}

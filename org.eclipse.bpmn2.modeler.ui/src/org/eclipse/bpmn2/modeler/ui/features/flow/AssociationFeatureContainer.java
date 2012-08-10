@@ -252,6 +252,8 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 				BaseElement source = getSourceBo(context);
 				BaseElement target = getTargetBo(context);
 				bo = mh.createAssociation(source, target);
+				putBusinessObject(context, bo);
+
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -85,13 +85,6 @@ public class StartEventFeatureContainer extends AbstractEventFeatureContainer {
 		}
 
 		@Override
-		public StartEvent createBusinessObject(ICreateContext context) {
-			StartEvent start = Bpmn2ModelerFactory.create(StartEvent.class);
-			start.setIsInterrupting(true);
-			return start;
-		}
-
-		@Override
 		public String getStencilImageId() {
 			return ImageProvider.IMG_16_START_EVENT;
 		}

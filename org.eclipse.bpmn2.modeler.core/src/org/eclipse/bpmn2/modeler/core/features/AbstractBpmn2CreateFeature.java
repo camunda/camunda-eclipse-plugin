@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ObjectEditingDialog;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
@@ -29,10 +30,12 @@ import org.eclipse.graphiti.IExecutionInfo;
 import org.eclipse.graphiti.features.IFeature;
 import org.eclipse.graphiti.features.IFeatureAndContext;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
 import org.eclipse.graphiti.mm.pictograms.Shape;
+import org.eclipse.graphiti.ui.editor.DiagramEditor;
 
 /**
  * @author Bob Brodt
@@ -110,5 +113,17 @@ public abstract class AbstractBpmn2CreateFeature<T extends BaseElement>
 	}
 
 	public void postExecute(IExecutionInfo executionInfo) {
+		for (IFeatureAndContext fc : executionInfo.getExecutionList()) {
+			IContext context = fc.getContext();
+			if (context instanceof ICreateContext) {
+				ICreateContext cc = (ICreateContext)context;
+				T businessObject = getBusinessObject(cc);
+				if (businessObject!=null) {
+					ObjectEditingDialog dialog =
+							new ObjectEditingDialog((DiagramEditor)getDiagramEditor(), businessObject);
+					dialog.open();
+				}
+			}
+		}
 	}
 }

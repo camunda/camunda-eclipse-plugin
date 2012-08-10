@@ -146,13 +146,6 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 			super(fp, "Call Activity",
 					"Identifies a point in the Process where a global Process or a Global Task is used");
 		}
-		
-		@Override
-		public CallActivity createBusinessObject(ICreateContext context) {
-			CallActivity callActivity = Bpmn2ModelerFactory.create(CallActivity.class);
-			callActivity.setName("Call Activity");
-			return callActivity;
-		}
 
 		@Override
 		public String getStencilImageId() {

@@ -232,7 +232,9 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 		@Override
 		public Task createBusinessObject(ICreateContext context) {
 			EObject target = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(context.getTargetContainer());
-			return (Task)customTaskDescriptor.createObject(target);
+			Task task = (Task)customTaskDescriptor.createObject(target);
+			putBusinessObject(context, task);
+			return task;
 		}
 		
 		@Override

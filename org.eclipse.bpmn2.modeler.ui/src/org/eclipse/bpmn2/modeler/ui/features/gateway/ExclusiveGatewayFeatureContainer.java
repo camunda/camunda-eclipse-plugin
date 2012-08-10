@@ -65,11 +65,6 @@ public class ExclusiveGatewayFeatureContainer extends AbstractGatewayFeatureCont
 		}
 
 		@Override
-		public ExclusiveGateway createBusinessObject(ICreateContext context) {
-			return Bpmn2ModelerFactory.create(ExclusiveGateway.class);
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_EXCLUSIVE_GATEWAY;
 		}

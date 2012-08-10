@@ -69,22 +69,4 @@ public class CreateTextAnnotationFeature extends AbstractBpmn2CreateFeature<Text
 	public EClass getBusinessObjectClass() {
 		return Bpmn2Package.eINSTANCE.getTextAnnotation();
 	}
-
-	@Override
-	public TextAnnotation createBusinessObject(ICreateContext context) {
-		TextAnnotation ta = null;
-
-		try {
-			ModelHandler mh = ModelHandlerLocator.getModelHandler(getDiagram().eResource());
-			ta = Bpmn2ModelerFactory.create(TextAnnotation.class);
-//			ta.setId(EcoreUtil.generateUUID());
-			mh.addArtifact(FeatureSupport.getTargetParticipant(context, mh), ta);
-			ta.setText("Enter your comment here");
-			ModelUtil.setID(ta);
-		} catch (IOException e) {
-			Activator.logError(e);
-		}
-		
-		return ta;
-	}
 }

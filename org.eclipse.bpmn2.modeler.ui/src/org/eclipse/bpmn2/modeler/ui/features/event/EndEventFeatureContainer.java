@@ -85,12 +85,6 @@ public class EndEventFeatureContainer extends AbstractEventFeatureContainer {
 		}
 
 		@Override
-		public EndEvent createBusinessObject(ICreateContext context) {
-			EndEvent end = Bpmn2ModelerFactory.create(EndEvent.class);
-			return end;
-		}
-
-		@Override
 		public String getStencilImageId() {
 			return ImageProvider.IMG_16_END_EVENT;
 		}

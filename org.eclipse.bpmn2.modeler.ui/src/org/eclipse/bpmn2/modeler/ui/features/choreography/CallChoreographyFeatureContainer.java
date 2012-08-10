@@ -74,13 +74,5 @@ public class CallChoreographyFeatureContainer extends AbstractChoreographyFeatur
 		public EClass getBusinessObjectClass() {
 			return Bpmn2Package.eINSTANCE.getCallChoreography();
 		}
-
-		@Override
-		public CallChoreography createBusinessObject(ICreateContext context) {
-			CallChoreography callChoreography = Bpmn2ModelerFactory.create(CallChoreography.class);
-			callChoreography.setName("Call Choreography");
-			callChoreography.setLoopType(ChoreographyLoopType.NONE);
-			return callChoreography;
-		}
 	}
 }

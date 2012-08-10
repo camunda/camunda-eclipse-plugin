@@ -97,11 +97,6 @@ public class SignalEventDefinitionContainer extends AbstractEventDefinitionFeatu
 		}
 
 		@Override
-		public SignalEventDefinition createBusinessObject(ICreateContext context) {
-			return Bpmn2ModelerFactory.create(SignalEventDefinition.class);
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_SIGNAL;
 		}

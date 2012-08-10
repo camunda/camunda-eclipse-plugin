@@ -61,11 +61,6 @@ public class InclusiveGatewayFeatureContainer extends AbstractGatewayFeatureCont
 		}
 
 		@Override
-		public InclusiveGateway createBusinessObject(ICreateContext context) {
-			return Bpmn2ModelerFactory.create(InclusiveGateway.class);
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_INCLUSIVE_GATEWAY;
 		}

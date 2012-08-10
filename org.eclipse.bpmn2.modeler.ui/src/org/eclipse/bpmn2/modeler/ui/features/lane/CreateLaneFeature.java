@@ -72,21 +72,23 @@ public class CreateLaneFeature extends AbstractBpmn2CreateFeature<Lane> {
 
 	@Override
 	public Lane createBusinessObject(ICreateContext context) {
-		Lane lane = null;
+		Lane bo = null;
 		try {
 			ModelHandler mh = ModelHandlerLocator.getModelHandler(getDiagram().eResource());
 			Object o = getBusinessObjectForPictogramElement(context.getTargetContainer());
 			if (FeatureSupport.isTargetLane(context)) {
 				Lane targetLane = (Lane) o;
-				lane = ModelHandler.createLane(targetLane);
+				bo = ModelHandler.createLane(targetLane);
 			} else {
-				lane = mh.createLane(o);
+				bo = mh.createLane(o);
 			}
-			lane.setName("Lane nr " + index++);
-			ModelUtil.setID(lane);
+			bo.setName("Lane nr " + index++);
+			ModelUtil.setID(bo);
+			putBusinessObject(context, bo);
+
 		} catch (IOException e) {
 			Activator.logError(e);
 		}
-		return lane;
+		return bo;
 	}
 }

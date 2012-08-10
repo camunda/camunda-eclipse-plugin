@@ -82,13 +82,6 @@ public class IntermediateCatchEventFeatureContainer extends AbstractEventFeature
 		}
 
 		@Override
-		public IntermediateCatchEvent createBusinessObject(ICreateContext context) {
-			IntermediateCatchEvent event = Bpmn2ModelerFactory.create(IntermediateCatchEvent.class);
-			event.setName("Catch");
-			return event;
-		}
-
-		@Override
 		public String getStencilImageId() {
 			return ImageProvider.IMG_16_INTERMEDIATE_CATCH_EVENT;
 		}

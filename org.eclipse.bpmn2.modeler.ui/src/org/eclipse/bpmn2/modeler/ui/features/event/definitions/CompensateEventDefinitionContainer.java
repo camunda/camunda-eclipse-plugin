@@ -140,11 +140,6 @@ public class CompensateEventDefinitionContainer extends AbstractEventDefinitionF
 		}
 
 		@Override
-		public CompensateEventDefinition createBusinessObject(ICreateContext context) {
-			return Bpmn2ModelerFactory.create(CompensateEventDefinition.class);
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_COMPENSATE;
 		}

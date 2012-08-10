@@ -62,14 +62,6 @@ public class ServiceTaskFeatureContainer extends AbstractTaskFeatureContainer {
 		}
 
 		@Override
-		public ServiceTask createBusinessObject(ICreateContext context) {
-			ServiceTask task = Bpmn2ModelerFactory.create(ServiceTask.class);
-			task.setName("Service Task");
-			task.setImplementation("##unspecified");
-			return task;
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_SERVICE_TASK;
 		}

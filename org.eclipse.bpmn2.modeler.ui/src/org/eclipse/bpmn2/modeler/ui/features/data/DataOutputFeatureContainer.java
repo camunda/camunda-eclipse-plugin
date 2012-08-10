@@ -87,12 +87,5 @@ public class DataOutputFeatureContainer extends AbstractDataFeatureContainer {
 		public EClass getBusinessObjectClass() {
 			return Bpmn2Package.eINSTANCE.getDataOutput();
 		}
-
-		@Override
-		public DataOutput createBusinessObject(ICreateContext context) {
-			DataOutput dataOutput = Bpmn2ModelerFactory.create(DataOutput.class);
-			return dataOutput;
-		}
-
 	}
 }

@@ -138,15 +138,6 @@ public class ErrorEventDefinitionContainer extends AbstractEventDefinitionFeatur
 		}
 
 		@Override
-		public ErrorEventDefinition createBusinessObject(ICreateContext context) {
-			ErrorEventDefinition definition = Bpmn2ModelerFactory.create(ErrorEventDefinition.class);
-// definition.getErrorRef() is always null - can't add a null to <definitions>
-//		  Event e = (Event) getBusinessObjectForPictogramElement(context.getTargetContainer());
-//		  ModelUtil.getDefinitions(e).getRootElements().add(0, definition.getErrorRef());
-		  return definition;
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_ERROR;
 		}

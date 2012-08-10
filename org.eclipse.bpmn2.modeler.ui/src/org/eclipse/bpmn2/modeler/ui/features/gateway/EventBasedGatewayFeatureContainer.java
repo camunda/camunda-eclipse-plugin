@@ -92,14 +92,6 @@ public class EventBasedGatewayFeatureContainer extends AbstractGatewayFeatureCon
 		}
 
 		@Override
-		public EventBasedGateway createBusinessObject(ICreateContext context) {
-			EventBasedGateway gateway = Bpmn2ModelerFactory.create(EventBasedGateway.class);
-			gateway.setInstantiate(false);
-			gateway.setEventGatewayType(EventBasedGatewayType.EXCLUSIVE);
-			return gateway;
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_EVENT_BASED_GATEWAY;
 		}

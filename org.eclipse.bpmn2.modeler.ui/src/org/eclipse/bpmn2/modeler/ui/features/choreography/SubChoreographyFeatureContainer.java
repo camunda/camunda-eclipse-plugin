@@ -82,14 +82,6 @@ public class SubChoreographyFeatureContainer extends AbstractChoreographyFeature
 		}
 
 		@Override
-		public SubChoreography createBusinessObject(ICreateContext context) {
-			SubChoreography subChoreography = Bpmn2ModelerFactory.create(SubChoreography.class);
-			subChoreography.setName("Sub-Choreography");
-			subChoreography.setLoopType(ChoreographyLoopType.NONE);
-			return subChoreography;
-		}
-
-		@Override
 		public String getStencilImageId() {
 			return ImageProvider.IMG_16_CHOREOGRAPHY_TASK;
 		}

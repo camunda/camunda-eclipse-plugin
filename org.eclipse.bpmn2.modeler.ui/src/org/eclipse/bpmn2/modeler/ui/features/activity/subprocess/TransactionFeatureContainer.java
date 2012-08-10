@@ -88,13 +88,6 @@ public class TransactionFeatureContainer extends AbstractSubProcessFeatureContai
 		}
 
 		@Override
-		public Transaction createBusinessObject(ICreateContext context) {
-			Transaction transaction = Bpmn2ModelerFactory.create(Transaction.class);
-			transaction.setName("Transaction");
-			return transaction;
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_TRANSACTION;
 		}

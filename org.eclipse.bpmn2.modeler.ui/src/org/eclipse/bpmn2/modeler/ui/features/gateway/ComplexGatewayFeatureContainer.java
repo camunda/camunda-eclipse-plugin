@@ -58,11 +58,6 @@ public class ComplexGatewayFeatureContainer extends AbstractGatewayFeatureContai
 		}
 
 		@Override
-		public ComplexGateway createBusinessObject(ICreateContext context) {
-			return Bpmn2ModelerFactory.create(ComplexGateway.class);
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_COMPLEX_GATEWAY;
 		}

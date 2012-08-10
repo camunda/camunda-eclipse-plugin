@@ -65,13 +65,6 @@ public class UserTaskFeatureContainer extends AbstractTaskFeatureContainer {
 		}
 
 		@Override
-		public UserTask createBusinessObject(ICreateContext context) {
-			UserTask task = Bpmn2ModelerFactory.create(UserTask.class);
-			task.setName("User Task");
-			return task;
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_USER_TASK;
 		}

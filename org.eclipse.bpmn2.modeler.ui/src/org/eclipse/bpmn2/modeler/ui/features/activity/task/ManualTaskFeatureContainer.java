@@ -63,13 +63,6 @@ public class ManualTaskFeatureContainer extends AbstractTaskFeatureContainer {
 		}
 
 		@Override
-		public ManualTask createBusinessObject(ICreateContext context) {
-			ManualTask task = Bpmn2ModelerFactory.create(ManualTask.class);
-			task.setName("Manual Task");
-			return task;
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_MANUAL_TASK;
 		}

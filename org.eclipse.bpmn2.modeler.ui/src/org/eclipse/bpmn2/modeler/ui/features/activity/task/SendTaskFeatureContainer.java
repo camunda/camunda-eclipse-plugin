@@ -62,14 +62,6 @@ public class SendTaskFeatureContainer extends AbstractTaskFeatureContainer {
 		}
 
 		@Override
-		public SendTask createBusinessObject(ICreateContext context) {
-			SendTask task = Bpmn2ModelerFactory.create(SendTask.class);
-			task.setName("Send Task");
-			task.setImplementation("##unspecified");
-			return task;
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_SEND_TASK;
 		}

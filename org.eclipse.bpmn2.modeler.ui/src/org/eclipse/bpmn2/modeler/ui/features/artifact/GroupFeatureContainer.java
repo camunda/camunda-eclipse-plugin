@@ -152,12 +152,6 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 		public EClass getBusinessObjectClass() {
 			return Bpmn2Package.eINSTANCE.getGroup();
 		}
-
-		@Override
-		public Group createBusinessObject(ICreateContext context) {
-			Group group = Bpmn2ModelerFactory.create(Group.class);
-			return group;
-		}
 	}
 
 	@Override

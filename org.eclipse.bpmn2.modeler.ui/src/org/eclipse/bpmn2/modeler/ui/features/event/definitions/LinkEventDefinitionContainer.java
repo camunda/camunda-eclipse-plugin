@@ -116,11 +116,6 @@ public class LinkEventDefinitionContainer extends AbstractEventDefinitionFeature
 		}
 
 		@Override
-		public LinkEventDefinition createBusinessObject(ICreateContext context) {
-			return Bpmn2ModelerFactory.create(LinkEventDefinition.class);
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_LINK;
 		}

@@ -74,13 +74,6 @@ public class AdHocSubProcessFeatureContainer extends AbstractSubProcessFeatureCo
 		}
 
 		@Override
-		public AdHocSubProcess createBusinessObject(ICreateContext context) {
-			AdHocSubProcess adHocSubProcess = Bpmn2ModelerFactory.create(AdHocSubProcess.class);
-			adHocSubProcess.setName("Ad-Hoc SubProcess");
-			return adHocSubProcess;
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_AD_HOC_SUB_PROCESS;
 		}

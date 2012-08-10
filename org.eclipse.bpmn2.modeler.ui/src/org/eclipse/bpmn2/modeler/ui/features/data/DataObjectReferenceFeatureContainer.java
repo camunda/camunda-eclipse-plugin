@@ -73,12 +73,5 @@ public class DataObjectReferenceFeatureContainer extends AbstractDataFeatureCont
 		public EClass getBusinessObjectClass() {
 			return Bpmn2Package.eINSTANCE.getDataObjectReference();
 		}
-
-		@Override
-		public DataObjectReference createBusinessObject(ICreateContext context) {
-			DataObjectReference ref = Bpmn2ModelerFactory.create(DataObjectReference.class);
-			ref.setName("Data Object Ref");
-			return ref;
-		}
 	}
 }

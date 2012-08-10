@@ -70,6 +70,7 @@ public class CreateBoundaryEventFeature extends AbstractBpmn2CreateFeature<Bound
 			
 			handler.addFlowElement(bo, event);
 			ModelUtil.setID(event);
+		
 		} catch (IOException e) {
 			Activator.logError(e);
 		}
@@ -93,11 +94,5 @@ public class CreateBoundaryEventFeature extends AbstractBpmn2CreateFeature<Bound
 	@Override
 	public EClass getBusinessObjectClass() {
 		return Bpmn2Package.eINSTANCE.getBoundaryEvent();
-	}
-
-	@Override
-	public BoundaryEvent createBusinessObject(ICreateContext context) {
-		BoundaryEvent event = Bpmn2ModelerFactory.create(BoundaryEvent.class);
-		return event;
 	}
 }

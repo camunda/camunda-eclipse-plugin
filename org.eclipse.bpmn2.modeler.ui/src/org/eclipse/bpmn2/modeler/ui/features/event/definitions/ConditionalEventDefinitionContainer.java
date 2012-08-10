@@ -95,11 +95,6 @@ public class ConditionalEventDefinitionContainer extends AbstractEventDefinition
 		}
 
 		@Override
-		public ConditionalEventDefinition createBusinessObject(ICreateContext context) {
-			return Bpmn2ModelerFactory.create(ConditionalEventDefinition.class);
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_CONDITION;
 		}

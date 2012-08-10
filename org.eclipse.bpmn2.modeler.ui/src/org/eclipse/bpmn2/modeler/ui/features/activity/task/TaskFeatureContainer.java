@@ -57,13 +57,6 @@ public class TaskFeatureContainer extends AbstractTaskFeatureContainer {
 			super(fp, "Task", "Create Task");
 		}
 
-//		@Override
-//		public Task createBusinessObject(ICreateContext context) {
-//			Task task = Bpmn2ModelerFactory.create(Task.class);
-//			task.setName("Task Name");
-//			return task;
-//		}
-
 		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_TASK;
@@ -75,22 +68,6 @@ public class TaskFeatureContainer extends AbstractTaskFeatureContainer {
 		@Override
 		public EClass getBusinessObjectClass() {
 			return Bpmn2Package.eINSTANCE.getTask();
-		}
-		
-// the object editing dialog stuff needs to go into the AddFeature, not here in CreateFeature
-		public void postExecute(IExecutionInfo executionInfo) {
-			for (IFeatureAndContext fc : executionInfo.getExecutionList()) {
-				IContext context = fc.getContext();
-				if (context instanceof ICreateContext) {
-					ICreateContext cc = (ICreateContext)context;
-					Task businessObject = getBusinessObject(cc);
-					if (businessObject!=null) {
-						ObjectEditingDialog dialog =
-								new ObjectEditingDialog((BPMN2Editor)getDiagramEditor(), businessObject);
-						dialog.open();
-					}
-				}
-			}
 		}
 	}
 }

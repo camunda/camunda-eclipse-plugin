@@ -80,23 +80,24 @@ public class ObjectEditingDialog extends FormDialog {
 	@Override
 	protected void createFormContent(IManagedForm mform) {
 		super.createFormContent(mform); 
+
 		EClass eclass = object.eClass();
-		FormToolkit toolkit = mform.getToolkit(); 
 		final ScrolledForm form = mform.getForm();
 		form.setExpandHorizontal(true);
 		form.setExpandVertical(true);
 		form.setText(null);
 
 		Composite body = form.getBody();
+		body.setBackground(form.getBackground());
+
 		FormData data = new FormData();
 		data.top = new FormAttachment(0, 0);
 		data.bottom = new FormAttachment(100, 0);
 		data.left = new FormAttachment(0, 0);
 		data.right = new FormAttachment(100, 0);
-		body.setBackground(form.getBackground());
-
 		body.setLayoutData(data);
 		body.setLayout(new FormLayout());
+		
 		dialogContent = PropertiesCompositeFactory.createDialogComposite(
 				eclass.getInstanceClass(), body, SWT.TOP);
 		

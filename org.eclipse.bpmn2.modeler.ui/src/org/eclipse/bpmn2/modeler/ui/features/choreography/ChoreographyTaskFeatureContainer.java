@@ -152,13 +152,5 @@ public class ChoreographyTaskFeatureContainer extends AbstractChoreographyFeatur
 		public EClass getBusinessObjectClass() {
 			return Bpmn2Package.eINSTANCE.getChoreographyTask();
 		}
-
-		@Override
-		public ChoreographyTask createBusinessObject(ICreateContext context) {
-			ChoreographyTask task = Bpmn2ModelerFactory.create(ChoreographyTask.class);
-			task.setName("Choreography Task");
-			task.setLoopType(ChoreographyLoopType.NONE);
-			return task;
-		}
 	}
 }

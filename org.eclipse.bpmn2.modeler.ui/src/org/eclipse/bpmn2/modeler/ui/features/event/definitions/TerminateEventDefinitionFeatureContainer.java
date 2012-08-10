@@ -97,11 +97,6 @@ public class TerminateEventDefinitionFeatureContainer extends AbstractEventDefin
 		}
 
 		@Override
-		public TerminateEventDefinition createBusinessObject(ICreateContext context) {
-			return Bpmn2ModelerFactory.create(TerminateEventDefinition.class);
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_TERMINATE;
 		}

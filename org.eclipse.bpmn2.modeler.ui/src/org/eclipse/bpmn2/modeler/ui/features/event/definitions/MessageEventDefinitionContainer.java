@@ -102,11 +102,6 @@ public class MessageEventDefinitionContainer extends AbstractEventDefinitionFeat
 		}
 
 		@Override
-		public MessageEventDefinition createBusinessObject(ICreateContext context) {
-			return Bpmn2ModelerFactory.create(MessageEventDefinition.class);
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_MESSAGE;
 		}

@@ -258,10 +258,10 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 			// which is the target of the ICreateContext. In addition, if the new DataStoreReference refers
 			// to a new DataStore, one is created and added to Definitions.
 			// 
-			DataStoreReference dataStoreReference = null;
+			DataStoreReference bo = null;
 			try {
 				ModelHandler mh = ModelHandler.getInstance(getDiagram());
-				dataStoreReference = Bpmn2ModelerFactory.create(DataStoreReference.class);
+				bo = Bpmn2ModelerFactory.create(DataStoreReference.class);
 
 				DataStore dataStore = Bpmn2ModelerFactory.create(DataStore.class);
 				dataStore.setName("Create a new Data Store");
@@ -287,15 +287,17 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 					mh.addRootElement(dataStore);
 					ModelUtil.setID(dataStore);
 					dataStore.setName(ModelUtil.toDisplayName(dataStore.getId()));
-					dataStoreReference.setName(dataStore.getName());
+					bo.setName(dataStore.getName());
 				} else
-					dataStoreReference.setName(result.getName() + " Ref");
+					bo.setName(result.getName() + " Ref");
 
-				dataStoreReference.setDataStoreRef(result);
+				bo.setDataStoreRef(result);
+				putBusinessObject(context, bo);
+
 			} catch (IOException e) {
 				Activator.showErrorWithLogging(e);
 			}
-			return dataStoreReference;
+			return bo;
 		}
 	}
 
