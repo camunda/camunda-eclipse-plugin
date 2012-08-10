@@ -12,8 +12,10 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.property;
 
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
 
 public class DefaultPropertySection extends AbstractBpmn2PropertySection {
@@ -22,6 +24,7 @@ public class DefaultPropertySection extends AbstractBpmn2PropertySection {
 	static {
 		PropertiesCompositeFactory.register(EObject.class, DefaultDetailComposite.class);
 		PropertiesCompositeFactory.register(EObject.class, DefaultListComposite.class);
+		PropertiesCompositeFactory.register(EObject.class, DefaultDialogComposite.class);
 	}
 
 	/* (non-Javadoc)
@@ -30,6 +33,11 @@ public class DefaultPropertySection extends AbstractBpmn2PropertySection {
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
 		return new DefaultDetailComposite(this);
+	}
+
+	@Override
+	public AbstractDetailComposite createSectionRoot(Composite parent, int style) {
+		return new DefaultDetailComposite(parent, style);
 	}
 
 	@Override

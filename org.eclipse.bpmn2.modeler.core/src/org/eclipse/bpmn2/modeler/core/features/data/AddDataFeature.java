@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.core.features.data;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
@@ -35,7 +36,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public abstract class AddDataFeature<T extends BaseElement> extends AbstractAddBPMNShapeFeature {
+public abstract class AddDataFeature<T extends ItemAwareElement> extends AbstractAddBPMNShapeFeature<T> {
 
 	public AddDataFeature(IFeatureProvider fp) {
 		super(fp);
@@ -55,7 +56,7 @@ public abstract class AddDataFeature<T extends BaseElement> extends AbstractAddB
 		IGaService gaService = Graphiti.getGaService();
 		IPeService peService = Graphiti.getPeService();
 		@SuppressWarnings("unchecked")
-		T t = (T) context.getNewObject();
+		T t = getBusinessObject(context);
 
 		int width = this.getWidth();
 		int height = this.getHeight();

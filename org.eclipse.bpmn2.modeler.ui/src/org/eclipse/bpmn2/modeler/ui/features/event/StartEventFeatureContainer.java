@@ -56,7 +56,7 @@ public class StartEventFeatureContainer extends AbstractEventFeatureContainer {
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddEventFeature(fp) {
+		return new AddEventFeature<StartEvent>(fp) {
 			@Override
 			protected void hook(ContainerShape container) {
 				Graphiti.getPeService().setPropertyValue(container, INTERRUPTING, Boolean.toString(true));

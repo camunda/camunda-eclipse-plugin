@@ -98,6 +98,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.views.properties.tabbed.ITabDescriptorProvider;
 
 /**
  * 
@@ -119,7 +120,8 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	private IPartListener2 selectionListener;
 	private boolean workbenchShutdown = false;
 	private static BPMN2Editor activeEditor;
-	
+	private static ITabDescriptorProvider tabDescriptorProvider;
+
 	private BPMN2EditingDomainListener editingDomainListener;
 	
 	private Bpmn2Preferences preferences;
@@ -241,6 +243,11 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		return CONTRIBUTOR_ID;
 	}
 
+	public TargetRuntime getTargetRuntime(ITabDescriptorProvider tdp) {
+		tabDescriptorProvider = tdp;
+		return getTargetRuntime();
+	}
+	
 	public TargetRuntime getTargetRuntime() {
 		if (targetRuntime==null)
 			targetRuntime = getPreferences().getRuntime(modelFile);
@@ -472,6 +479,13 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		return getEditingDomainListener().getDiagnostics();
 	}
 	
+	@Override
+	public Object getAdapter(Class required) {
+		if (required==ITabDescriptorProvider.class)
+			return tabDescriptorProvider;
+		return super.getAdapter(required);
+	}
+
 	@Override
 	public void dispose() {
 		// clear ID mapping tables if no more instances of editor are active

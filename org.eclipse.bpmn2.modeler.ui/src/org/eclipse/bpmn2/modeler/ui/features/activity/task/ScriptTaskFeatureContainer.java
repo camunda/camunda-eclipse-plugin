@@ -45,7 +45,7 @@ public class ScriptTaskFeatureContainer extends AbstractTaskFeatureContainer {
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddTaskFeature(fp) {
+		return new AddTaskFeature<ScriptTask>(fp) {
 			@Override
 			protected void decorateActivityRectangle(RoundedRectangle rect) {
 				IGaService service = Graphiti.getGaService();

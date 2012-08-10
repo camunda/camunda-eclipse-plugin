@@ -44,7 +44,7 @@ public class TransactionFeatureContainer extends AbstractSubProcessFeatureContai
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddExpandedSubProcessFeature(fp) {
+		return new AddExpandedActivityFeature<Transaction>(fp) {
 
 			@Override
 			protected void decorateActivityRectangle(RoundedRectangle rect) {

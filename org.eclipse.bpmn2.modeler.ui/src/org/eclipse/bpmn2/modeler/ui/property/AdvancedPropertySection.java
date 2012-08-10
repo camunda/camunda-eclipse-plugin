@@ -24,6 +24,7 @@ import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
 
 public class AdvancedPropertySection extends AbstractBpmn2PropertySection {
@@ -37,7 +38,11 @@ public class AdvancedPropertySection extends AbstractBpmn2PropertySection {
 	protected AbstractDetailComposite createSectionRoot() {
 		return new AdvancedDetailComposite(this);
 	}
-	
+	@Override
+	public AbstractDetailComposite createSectionRoot(Composite parent, int style) {
+		return new AdvancedDetailComposite(parent,style);
+	}
+
 	@Override
 	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
 		EObject be = BusinessObjectUtil.getFirstElementOfType(pe, BaseElement.class,true);
@@ -67,4 +72,5 @@ public class AdvancedPropertySection extends AbstractBpmn2PropertySection {
 			return editor.getPreferences().getShowAdvancedPropertiesTab();
 		return false;
 	}
+
 }

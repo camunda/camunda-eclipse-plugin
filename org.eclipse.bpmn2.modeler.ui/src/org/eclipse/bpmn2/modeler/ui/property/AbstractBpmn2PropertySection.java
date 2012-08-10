@@ -179,6 +179,8 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 	 * @return
 	 */
 	protected abstract AbstractDetailComposite createSectionRoot();
+	
+	public abstract AbstractDetailComposite createSectionRoot(Composite parent, int style);
 
 	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
 		return BusinessObjectUtil.getBusinessObjectForPictogramElement(pe);

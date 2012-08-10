@@ -35,6 +35,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 
@@ -47,7 +48,12 @@ public class JbpmCustomTaskPropertySection extends AbstractBpmn2PropertySection 
 	protected AbstractDetailComposite createSectionRoot() {
 		return new JbpmCustomTaskDetailComposite(this);
 	}
-	
+
+	@Override
+	public AbstractDetailComposite createSectionRoot(Composite parent, int style) {
+		 return new JbpmCustomTaskDetailComposite(parent, style);
+	}
+
 	@Override
 	public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
 		// only show this property section if the selected Task is a "custom task"

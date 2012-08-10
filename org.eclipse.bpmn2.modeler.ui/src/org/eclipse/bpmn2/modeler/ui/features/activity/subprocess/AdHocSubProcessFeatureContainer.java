@@ -48,9 +48,9 @@ public class AdHocSubProcessFeatureContainer extends AbstractSubProcessFeatureCo
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddExpandedSubProcessFeature(fp) {
+		return new AddExpandedActivityFeature<AdHocSubProcess>(fp) {
 			@Override
-			protected void hook(Activity activity, ContainerShape container, IAddContext context, int width, int height) {
+			protected void hook(AdHocSubProcess activity, ContainerShape container, IAddContext context, int width, int height) {
 				super.hook(activity, container, context, width, height);
 				IPeService peService = Graphiti.getPeService();
 				Iterator<Shape> iterator = peService.getAllContainedShapes(container).iterator();

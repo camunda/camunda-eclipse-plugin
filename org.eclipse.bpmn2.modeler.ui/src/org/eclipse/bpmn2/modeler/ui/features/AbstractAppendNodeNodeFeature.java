@@ -219,9 +219,9 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 		
 		ContainerShape containerShape = oldShape.getContainer();
 		if (containerShape!=getDiagram()) {
-			// we are adding a new shape to a container (e.g a SubProcess)
+			// we are adding a new shape to a control (e.g a SubProcess)
 			// so we need to adjust the location to be relative to the
-			// container instead of the diagram
+			// control instead of the diagram
 			loc = layoutService.getLocationRelativeToDiagram(containerShape);
 			xOffset = loc.getX();
 			yOffset = loc.getY();

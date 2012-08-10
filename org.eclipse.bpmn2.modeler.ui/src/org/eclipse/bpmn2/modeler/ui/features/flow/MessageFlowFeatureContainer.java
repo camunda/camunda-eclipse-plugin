@@ -60,7 +60,7 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AbstractAddFlowFeature(fp) {
+		return new AbstractAddFlowFeature<MessageFlow>(fp) {
 
 			@Override
 			protected Polyline createConnectionLine(Connection connection) {

@@ -48,12 +48,13 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class AddChoreographyFeature extends AbstractAddBPMNShapeFeature {
+public class AddChoreographyActivityFeature<T extends ChoreographyActivity>
+	extends AbstractAddBPMNShapeFeature<T> {
 
 	protected final IGaService gaService = Graphiti.getGaService();
 	protected final IPeService peService = Graphiti.getPeService();
 
-	public AddChoreographyFeature(IFeatureProvider fp) {
+	public AddChoreographyActivityFeature(IFeatureProvider fp) {
 		super(fp);
 	}
 
@@ -64,7 +65,7 @@ public class AddChoreographyFeature extends AbstractAddBPMNShapeFeature {
 
 	@Override
 	public PictogramElement add(IAddContext context) {
-		ChoreographyActivity choreography = (ChoreographyActivity) context.getNewObject();
+		T choreography = getBusinessObject(context);
 
 		int width = this.getWidth(context);
 		int height = this.getHeight(context);
@@ -126,7 +127,7 @@ public class AddChoreographyFeature extends AbstractAddBPMNShapeFeature {
 	protected void decorateContainerRect(RoundedRectangle containerRect) {
 	}
 
-	protected void addedFromImport(ChoreographyActivity choreography, ContainerShape choreographyContainer,
+	protected void addedFromImport(T choreography, ContainerShape choreographyContainer,
 			IAddContext context) {
 		ModelHandler mh = null;
 

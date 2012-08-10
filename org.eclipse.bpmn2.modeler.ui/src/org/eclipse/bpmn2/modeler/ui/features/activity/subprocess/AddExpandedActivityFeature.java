@@ -36,14 +36,15 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class AddExpandedSubProcessFeature extends AbstractAddActivityFeature {
+public class AddExpandedActivityFeature<T extends Activity>
+	extends AbstractAddActivityFeature<T> {
 
-	public AddExpandedSubProcessFeature(IFeatureProvider fp) {
+	public AddExpandedActivityFeature(IFeatureProvider fp) {
 		super(fp);
 	}
 
 	@Override
-	protected void hook(Activity activity, ContainerShape container, IAddContext context, int width, int height) {
+	protected void hook(T activity, ContainerShape container, IAddContext context, int width, int height) {
 		super.hook(activity, container, context, width, height);
 		IPeService peService = Graphiti.getPeService();
 		IGaService gaService = Graphiti.getGaService();

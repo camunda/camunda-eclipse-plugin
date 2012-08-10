@@ -79,7 +79,7 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AbstractAddBPMNShapeFeature(fp) {
+		return new AbstractAddBPMNShapeFeature<DataStoreReference>(fp) {
 
 			@Override
 			public boolean canAdd(IAddContext context) {
@@ -90,7 +90,7 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 			public PictogramElement add(IAddContext context) {
 				IGaService gaService = Graphiti.getGaService();
 				IPeService peService = Graphiti.getPeService();
-				DataStoreReference store = (DataStoreReference) context.getNewObject();
+				DataStoreReference store = getBusinessObject(context);
 
 				int width = this.getWidth();
 				int height = this.getHeight();
@@ -122,7 +122,7 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 				Polyline lineTop = gaService.createPolyline(invisibleRect, xy, bend);
 				lineTop.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 
-//				Shape textShape = peService.createShape(container, false);
+//				Shape textShape = peService.createShape(control, false);
 //				peService
 //						.setPropertyValue(textShape, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
 //				Text text = gaService.createDefaultText(getDiagram(), textShape, store.getName());

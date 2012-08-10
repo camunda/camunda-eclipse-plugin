@@ -32,9 +32,10 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class DefaultAddGatewayFeature extends AbstractAddBPMNShapeFeature {
+public class AddGatewayFeature<T extends Gateway>
+	extends AbstractAddBPMNShapeFeature<T> {
 
-	public DefaultAddGatewayFeature(IFeatureProvider fp) {
+	public AddGatewayFeature(IFeatureProvider fp) {
 		super(fp);
 	}
 
@@ -50,7 +51,7 @@ public class DefaultAddGatewayFeature extends AbstractAddBPMNShapeFeature {
 
 	@Override
 	public PictogramElement add(IAddContext context) {
-		Gateway addedGateway = (Gateway) context.getNewObject();
+		T addedGateway = getBusinessObject(context);
 		IGaService gaService = Graphiti.getGaService();
 		IPeService peService = Graphiti.getPeService();
 

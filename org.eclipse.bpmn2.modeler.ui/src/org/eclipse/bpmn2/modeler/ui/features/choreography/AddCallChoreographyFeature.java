@@ -12,13 +12,14 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.choreography;
 
+import org.eclipse.bpmn2.CallChoreography;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
 
-public class AddCallChoreographyFeature extends AddChoreographyFeature {
+public class AddCallChoreographyFeature extends AddChoreographyActivityFeature<CallChoreography> {
 
 	public AddCallChoreographyFeature(IFeatureProvider fp) {
 		super(fp);

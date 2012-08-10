@@ -224,7 +224,7 @@ public class GraphicsUtil {
 		context.putProperty(ContextConstants.LABEL_CONTEXT, true);
 		context.putProperty(ContextConstants.WIDTH, width);
 		context.putProperty(ContextConstants.HEIGHT, height);
-		context.putProperty(ContextConstants.BASE_ELEMENT, context.getNewObject());
+		context.putProperty(ContextConstants.BUSINESS_OBJECT, context.getNewObject());
 	}
 	
 	private static float calculateRatio(float x, float y) {

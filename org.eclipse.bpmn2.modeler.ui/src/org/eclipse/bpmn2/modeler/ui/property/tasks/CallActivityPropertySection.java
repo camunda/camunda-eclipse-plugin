@@ -51,6 +51,11 @@ public class CallActivityPropertySection extends AbstractBpmn2PropertySection im
 	}
 
 	@Override
+	public AbstractDetailComposite createSectionRoot(Composite parent, int style) {
+		return new CallActivityDetailComposite(parent,style);
+	}
+
+	@Override
 	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
 		EObject be = super.getBusinessObjectForPictogramElement(pe);
 		if (be instanceof CallActivity)

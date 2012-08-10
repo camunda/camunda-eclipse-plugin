@@ -68,7 +68,7 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AbstractAddBPMNShapeFeature(fp) {
+		return new AbstractAddBPMNShapeFeature<Message>(fp) {
 
 			@Override
 			public boolean canAdd(IAddContext context) {
@@ -79,7 +79,7 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 			public PictogramElement add(IAddContext context) {
 				IGaService gaService = Graphiti.getGaService();
 				IPeService peService = Graphiti.getPeService();
-				Message msg = (Message) context.getNewObject();
+				Message msg = getBusinessObject(context);
 
 				int width = this.getWidth();
 				int height = this.getHeight();

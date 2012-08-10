@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.core.features.activity.task;
 
 import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.modeler.core.features.activity.AbstractAddActivityFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
@@ -28,7 +29,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class AddTaskFeature extends AbstractAddActivityFeature {
+public class AddTaskFeature<T extends Task> extends AbstractAddActivityFeature<T> {
 
 	public AddTaskFeature(IFeatureProvider fp) {
 		super(fp);
@@ -41,7 +42,7 @@ public class AddTaskFeature extends AbstractAddActivityFeature {
 	}
 
 	@Override
-	protected void hook(Activity activity, ContainerShape container, IAddContext context, int width, int height) {
+	protected void hook(T activity, ContainerShape container, IAddContext context, int width, int height) {
 		IPeService peService = Graphiti.getPeService();
 		IGaService gaService = Graphiti.getGaService();
 

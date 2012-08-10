@@ -18,6 +18,7 @@ import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 
@@ -34,7 +35,12 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 	protected AbstractDetailComposite createSectionRoot() {
 		return new DescriptionPropertyComposite(this);		
 	}
-	
+
+	@Override
+	public AbstractDetailComposite createSectionRoot(Composite parent, int style) {
+		 return new DescriptionPropertyComposite(parent, style);
+	}
+
 	@Override
 	public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
 		// always show this tab
@@ -50,6 +56,10 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 			super(section);
 		}
 		
+		public DescriptionPropertyComposite(Composite parent, int style) {
+			super(parent,style);
+		}
+
 		/*
 		 * (non-Javadoc)
 		 * 

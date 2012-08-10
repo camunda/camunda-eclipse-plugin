@@ -42,7 +42,7 @@ public class DefaultListComposite extends AbstractListComposite {
 			MessageDialog.openError(getShell(), "Internal Error",
 					"Can not create a new " +
 					listItemClass.getName() +
-					" because the list is not a container. " +
+					" because the list is not a control. " +
 					"The default addListItem() method must be implemented."
 			);
 			return null;

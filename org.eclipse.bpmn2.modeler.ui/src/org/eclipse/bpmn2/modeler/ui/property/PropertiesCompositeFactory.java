@@ -42,17 +42,27 @@ public class PropertiesCompositeFactory {
 
 	protected final static Hashtable<TargetRuntime, Hashtable<Class,Class>> detailRegistry = new Hashtable<TargetRuntime,Hashtable<Class,Class>>();
 	protected final static Hashtable<TargetRuntime, Hashtable<Class,Class>> listRegistry = new Hashtable<TargetRuntime,Hashtable<Class,Class>>();
+	protected final static Hashtable<TargetRuntime, Hashtable<Class,Class>> dialogRegistry = new Hashtable<TargetRuntime,Hashtable<Class,Class>>();
 	
 	public static void register(Class eClass, Class composite) {
 		TargetRuntime rt = TargetRuntime.getCurrentRuntime();
-		Hashtable<Class,Class> map = AbstractListComposite.class.isAssignableFrom(composite) ?
-				listRegistry.get(rt) :
-				detailRegistry.get(rt);
+		Hashtable<Class,Class> map = null;
+		if (AbstractListComposite.class.isAssignableFrom(composite))
+			map = listRegistry.get(rt);
+		else if (AbstractDialogComposite.class.isAssignableFrom(composite))
+			map = dialogRegistry.get(rt);
+		else if (AbstractDetailComposite.class.isAssignableFrom(composite))
+			map = detailRegistry.get(rt);
+		else
+			throw new IllegalArgumentException("Unknown Composite type: "+composite.getName());
+		
 		if (map==null) {
 			map = new Hashtable<Class,Class>();
 			if (AbstractListComposite.class.isAssignableFrom(composite))
 				listRegistry.put(rt,map);
-			else
+			else if (AbstractDialogComposite.class.isAssignableFrom(composite))
+				dialogRegistry.put(rt,map);
+			else if (AbstractDetailComposite.class.isAssignableFrom(composite))
 				detailRegistry.put(rt,map);
 		}
 		map.put(eClass, composite);
@@ -62,11 +72,13 @@ public class PropertiesCompositeFactory {
 			Constructor ctor = null;
 			Class ec = composite.getEnclosingClass();
 			if (ec!=null) {
-				ctor = composite.getConstructor(ec,AbstractBpmn2PropertySection.class);
+				if (!AbstractDialogComposite.class.isAssignableFrom(composite))
+					ctor = composite.getConstructor(ec,AbstractBpmn2PropertySection.class);
 				ctor = composite.getConstructor(ec,Composite.class,int.class);
 			}
 			else {
-				ctor = composite.getConstructor(AbstractBpmn2PropertySection.class);
+				if (!(AbstractDialogComposite.class.isAssignableFrom(composite)))
+					ctor = composite.getConstructor(AbstractBpmn2PropertySection.class);
 				ctor = composite.getConstructor(Composite.class,int.class);
 			}
 		} catch (Exception e) {
@@ -122,6 +134,25 @@ public class PropertiesCompositeFactory {
 		return (AbstractListComposite)createComposite(clazz, eClass, parent, style);
 	}
 	
+	////////////////////////////////////////////////////////////////////////////////
+	// Dialog Composite methods
+	////////////////////////////////////////////////////////////////////////////////
+	public static Class findDialogCompositeClass(Class eClass) {
+		TargetRuntime rt = TargetRuntime.getCurrentRuntime();
+		Class composite = findCompositeClass(dialogRegistry.get(rt),eClass);
+		if (composite==null && rt!=TargetRuntime.getDefaultRuntime()) {
+			// fall back to default target runtime
+			rt = TargetRuntime.getDefaultRuntime();
+			composite = findCompositeClass(dialogRegistry.get(rt),eClass);
+		}
+		return composite;
+	}
+	
+	public static AbstractDialogComposite createDialogComposite(Class eClass, Composite parent, int style) {
+		Class clazz = findDialogCompositeClass(eClass);
+		return (AbstractDialogComposite)createComposite(clazz, eClass, parent, style);
+	}
+
 	////////////////////////////////////////////////////////////////////////////////
 	// Common
 	////////////////////////////////////////////////////////////////////////////////
@@ -183,8 +214,14 @@ public class PropertiesCompositeFactory {
 				// allow the composite to be declared in an enclosing class
 				Class ec = clazz.getEnclosingClass();
 				if (ec!=null) {
-					ctor = clazz.getConstructor(ec,Composite.class,int.class);
-					composite = (Composite) ctor.newInstance(null,parent,style);
+					if (AbstractDialogComposite.class.isAssignableFrom(clazz)) {
+						ctor = clazz.getConstructor(ec,Composite.class,int.class);
+						composite = (Composite) ctor.newInstance(null,parent,style);
+					}
+					else {
+						ctor = clazz.getConstructor(ec,Composite.class,int.class);
+						composite = (Composite) ctor.newInstance(null,parent,style);
+					}
 				}
 				else {
 					ctor = clazz.getConstructor(Composite.class,int.class);

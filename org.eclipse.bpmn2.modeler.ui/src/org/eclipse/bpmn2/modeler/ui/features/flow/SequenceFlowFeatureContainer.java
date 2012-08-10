@@ -79,7 +79,7 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AbstractAddFlowFeature(fp) {
+		return new AbstractAddFlowFeature<MessageFlow>(fp) {
 			@Override
 			protected Class<? extends BaseElement> getBoClass() {
 				return SequenceFlow.class;

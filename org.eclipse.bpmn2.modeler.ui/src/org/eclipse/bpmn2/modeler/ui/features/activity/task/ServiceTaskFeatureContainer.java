@@ -45,7 +45,7 @@ public class ServiceTaskFeatureContainer extends AbstractTaskFeatureContainer {
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddTaskFeature(fp) {
+		return new AddTaskFeature<ServiceTask>(fp) {
 			@Override
 			protected void decorateActivityRectangle(RoundedRectangle rect) {
 				IGaService service = Graphiti.getGaService();

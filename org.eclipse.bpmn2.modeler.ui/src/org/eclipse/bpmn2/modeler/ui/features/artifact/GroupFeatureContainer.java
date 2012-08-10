@@ -60,7 +60,7 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AbstractAddBPMNShapeFeature(fp) {
+		return new AbstractAddBPMNShapeFeature<Group>(fp) {
 
 			@Override
 			public boolean canAdd(IAddContext context) {
@@ -71,7 +71,7 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 			public PictogramElement add(IAddContext context) {
 				IGaService gaService = Graphiti.getGaService();
 				IPeService peService = Graphiti.getPeService();
-				Group group = (Group) context.getNewObject();
+				Group group = getBusinessObject(context);
 
 				int width = this.getWidth(context);
 				int height = this.getHeight(context);

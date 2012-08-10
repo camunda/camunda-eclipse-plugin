@@ -73,13 +73,12 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddExpandedSubProcessFeature(fp) {
+		return new AddExpandedActivityFeature<CallActivity>(fp) {
 			@Override
-			protected void hook(Activity activity, ContainerShape container, IAddContext context, int width, int height) {
+			protected void hook(CallActivity activity, ContainerShape container, IAddContext context, int width, int height) {
 				super.hook(activity, container, context, width, height);
-				CallActivity callActivity = (CallActivity) activity;
 				Graphiti.getPeService().setPropertyValue(container, CALL_ACTIVITY_REF_PROPERTY,
-						getCallableElementStringValue(callActivity.getCalledElementRef()));
+						getCallableElementStringValue(activity.getCalledElementRef()));
 			}
 
 			@Override

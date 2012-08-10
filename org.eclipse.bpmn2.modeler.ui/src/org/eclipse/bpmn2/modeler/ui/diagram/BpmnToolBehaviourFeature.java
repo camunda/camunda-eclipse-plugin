@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.modeler.core.Activator;
+import org.eclipse.bpmn2.modeler.core.features.IBpmn2AddFeature;
 import org.eclipse.bpmn2.modeler.core.features.IBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.ActivitySelectionBehavior;
 import org.eclipse.bpmn2.modeler.core.features.event.EventSelectionBehavior;
@@ -385,18 +386,14 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 			IContext context = fc.getContext();
 			IFeature feature = fc.getFeature();
 			if (context instanceof AddContext) {
-				AddContext ac = (AddContext)context;
-				if (ac.getNewObject() instanceof EObject){
-//					System.out.println("    EObject="+((EObject)ac.getNewObject()).eClass().getName());
+				if (feature instanceof IBpmn2AddFeature) {
+					((IBpmn2AddFeature)feature).postExecute(executionInfo);
 				}
-//				MessageDialog.openInformation(editor.getSite().getShell(), "Info", "AddContext "+((EObject)ac.getNewObject()).eClass().getName());
 			}
-			if (context instanceof CreateContext) {
+			else if (context instanceof CreateContext) {
 				if (feature instanceof IBpmn2CreateFeature) {
 					((IBpmn2CreateFeature)feature).postExecute(executionInfo);
 				}
-//				editor.refresh();
-//				MessageDialog.openInformation(editor.getSite().getShell(), "Info", "CreateContext");
 			}
 		}
 	}

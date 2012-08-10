@@ -57,7 +57,7 @@ public class IntermediateThrowEventFeatureContainer extends AbstractEventFeature
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddEventFeature(fp) {
+		return new AddEventFeature<IntermediateThrowEvent>(fp) {
 			@Override
 			protected void decorateEllipse(Ellipse e) {
 				Ellipse circle = GraphicsUtil.createIntermediateEventCircle(e);

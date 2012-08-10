@@ -482,7 +482,7 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 
 		Button button;
 		
-//		button = createRadioButton(container, Messages.SchemaImportDialog_20,
+//		button = createRadioButton(control, Messages.SchemaImportDialog_20,
 //				BID_IMPORT_XML, fImportType == BID_IMPORT_XML);
 //		button.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
 		int buttonCount = 0;
@@ -625,7 +625,7 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 			public void handleEvent(Event event) {
 				IResource resource = fResourceComposite.getSelectedResource();
 				if (resource != null && resource.getType() == IResource.FILE) {
-					// only attempt to load a resource which is not a container
+					// only attempt to load a resource which is not a control
 					attemptLoad((IFile) resource);
 					return;
 				}

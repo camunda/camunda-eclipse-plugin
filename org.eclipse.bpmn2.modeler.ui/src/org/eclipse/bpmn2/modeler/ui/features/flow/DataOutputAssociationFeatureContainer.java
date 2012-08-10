@@ -38,7 +38,7 @@ public class DataOutputAssociationFeatureContainer extends BaseElementConnection
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AbstractAddFlowFeature(fp) {
+		return new AbstractAddFlowFeature<DataOutputAssociation>(fp) {
 
 			@Override
 			protected Polyline createConnectionLine(Connection connection) {

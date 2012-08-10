@@ -42,6 +42,11 @@ public class DataObjectReferencePropertySection extends AbstractBpmn2PropertySec
 	}
 
 	@Override
+	public AbstractDetailComposite createSectionRoot(Composite parent, int style) {
+		return new DataObjectReferenceDetailComposite(parent,style);
+	}
+
+	@Override
 	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
 		EObject bo = super.getBusinessObjectForPictogramElement(pe);
 		if (bo instanceof DataObjectReference) {

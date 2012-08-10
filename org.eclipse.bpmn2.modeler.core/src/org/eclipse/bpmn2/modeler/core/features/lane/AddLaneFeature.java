@@ -45,7 +45,7 @@ import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeCreateService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class AddLaneFeature extends AbstractAddBPMNShapeFeature {
+public class AddLaneFeature extends AbstractAddBPMNShapeFeature<Lane> {
 	
 	public static final int DEFAULT_LANE_WIDTH = 600;
 	public static final int DEFAULT_LANE_HEIGHT = 100;
@@ -56,7 +56,7 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature {
 
 	@Override
 	public boolean canAdd(IAddContext context) {
-		boolean isLane = context.getNewObject() instanceof Lane;
+		boolean isLane = getBusinessObject(context) instanceof Lane;
 		boolean intoDiagram = context.getTargetContainer().equals(getDiagram());
 		boolean intoLane = FeatureSupport.isTargetLane(context);
 		boolean intoParticipant = FeatureSupport.isTargetParticipant(context);
@@ -66,7 +66,7 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature {
 
 	@Override
 	public PictogramElement add(IAddContext context) {
-		Lane lane = (Lane) context.getNewObject();
+		Lane lane = getBusinessObject(context);
 
 		IPeCreateService peCreateService = Graphiti.getPeCreateService();
 		IGaService gaService = Graphiti.getGaService();

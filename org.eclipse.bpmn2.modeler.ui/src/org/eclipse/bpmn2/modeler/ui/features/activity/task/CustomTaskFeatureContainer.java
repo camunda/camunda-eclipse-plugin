@@ -143,8 +143,8 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 		
 		if (fp instanceof BPMNFeatureProvider) {
 			// register this custom modelObject ID with the BPMNFeatureProvider;
-			// this will allow the feature provider to find the correct feature container class
-			// for this custom modelObject, instead of the generic "Task" feature container
+			// this will allow the feature provider to find the correct feature control class
+			// for this custom modelObject, instead of the generic "Task" feature control
 			BPMNFeatureProvider bfp = (BPMNFeatureProvider)fp;
 			try {
 				bfp.addFeatureContainer(this);
@@ -251,7 +251,7 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 		
 	}
 
-	public class AddCustomTaskFeature extends AddTaskFeature {
+	public class AddCustomTaskFeature extends AddTaskFeature<Task> {
 
 		/**
 		 * @param fp

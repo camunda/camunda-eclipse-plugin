@@ -50,7 +50,7 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		int x = context.getX();
 		int y = context.getY();
 		
-		BaseElement baseElement = (BaseElement) context.getProperty(ContextConstants.BASE_ELEMENT);
+		BaseElement baseElement = (BaseElement) context.getProperty(ContextConstants.BUSINESS_OBJECT);
 		
 		final ContainerShape textContainerShape = peService.createContainerShape(getTargetContainer(context), true);
 		gaService.createInvisibleRectangle(textContainerShape);
@@ -85,14 +85,14 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 	}
 	
 	/**
-	 * Get the correct target container, boundary events need special handling, because we need to find a parent,
+	 * Get the correct target control, boundary events need special handling, because we need to find a parent,
 	 * where the label is visible.
 	 * 
 	 * @param context
-	 * @return the target container for the current context
+	 * @return the target control for the current context
 	 */
 	ContainerShape getTargetContainer(IAddContext context) {
-		boolean isBoundary = context.getProperty(ContextConstants.BASE_ELEMENT) instanceof BoundaryEvent;
+		boolean isBoundary = context.getProperty(ContextConstants.BUSINESS_OBJECT) instanceof BoundaryEvent;
 		
 		if ( isBoundary && !isImport(context) ){
 			if (context.getTargetContainer()!=null){

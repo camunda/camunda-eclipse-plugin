@@ -26,7 +26,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class AddConversationFeature extends AbstractAddBPMNShapeFeature {
+public class AddConversationFeature extends AbstractAddBPMNShapeFeature<Conversation> {
 
 	public AddConversationFeature(IFeatureProvider fp) {
 		super(fp);
@@ -41,7 +41,7 @@ public class AddConversationFeature extends AbstractAddBPMNShapeFeature {
 	public PictogramElement add(IAddContext context) {
 		IGaService gaService = Graphiti.getGaService();
 		IPeService peService = Graphiti.getPeService();
-		Conversation c = (Conversation) context.getNewObject();
+		Conversation c = getBusinessObject(context);
 
 		int w = this.getWidth(context);
 		int h = this.getHeight(context);

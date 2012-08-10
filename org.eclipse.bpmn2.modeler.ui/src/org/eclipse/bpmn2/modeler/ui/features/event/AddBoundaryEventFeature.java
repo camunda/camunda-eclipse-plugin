@@ -34,7 +34,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class AddBoundaryEventFeature extends AbstractAddBPMNShapeFeature {
+public class AddBoundaryEventFeature extends AbstractAddBPMNShapeFeature<BoundaryEvent> {
 
 	public static final String BOUNDARY_EVENT_RELATIVE_Y = "boundary.event.relative.y";
 
@@ -47,7 +47,7 @@ public class AddBoundaryEventFeature extends AbstractAddBPMNShapeFeature {
 
 	@Override
 	public boolean canAdd(IAddContext context) {
-		if (!(context.getNewObject() instanceof BoundaryEvent)) {
+		if (!(getBusinessObject(context) instanceof BoundaryEvent)) {
 			return false;
 		}
 
@@ -62,7 +62,7 @@ public class AddBoundaryEventFeature extends AbstractAddBPMNShapeFeature {
 
 	@Override
 	public PictogramElement add(IAddContext context) {
-		BoundaryEvent event = (BoundaryEvent) context.getNewObject();
+		BoundaryEvent event = getBusinessObject(context);
 
 		Object prop = context.getProperty(DIImport.IMPORT_PROPERTY);
 		boolean importing = prop != null && (Boolean) prop;

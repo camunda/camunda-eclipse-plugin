@@ -18,6 +18,7 @@ import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.swt.widgets.Composite;
 
 public class SequenceFlowPropertySection extends AbstractBpmn2PropertySection {
 	
@@ -31,6 +32,11 @@ public class SequenceFlowPropertySection extends AbstractBpmn2PropertySection {
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
 		return new SequenceFlowDetailComposite(this);
+	}
+
+	@Override
+	public AbstractDetailComposite createSectionRoot(Composite parent, int style) {
+		return new SequenceFlowDetailComposite(parent,style);
 	}
 
 	@Override

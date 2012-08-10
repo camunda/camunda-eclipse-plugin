@@ -216,8 +216,8 @@ public class PropertyUtil {
 			try {
 				InsertionAdapter insertionAdapter = AdapterUtil.adapt(object, InsertionAdapter.class);
 				if (insertionAdapter!=null) {
-					// make sure the new object is added to its container first
-					// so that it inherits the container's Resource and EditingDomain
+					// make sure the new object is added to its control first
+					// so that it inherits the control's Resource and EditingDomain
 					// before we try to change its value.
 					insertionAdapter.execute();
 				}

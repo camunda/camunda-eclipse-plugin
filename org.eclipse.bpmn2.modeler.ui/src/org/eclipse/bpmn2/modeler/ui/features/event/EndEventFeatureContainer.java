@@ -48,7 +48,7 @@ public class EndEventFeatureContainer extends AbstractEventFeatureContainer {
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddEventFeature(fp) {
+		return new AddEventFeature<EndEvent>(fp) {
 			@Override
 			protected void decorateEllipse(Ellipse e) {
 				e.setLineWidth(3);

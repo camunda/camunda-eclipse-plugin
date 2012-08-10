@@ -225,7 +225,7 @@ public class BPMN2DiagramCreator {
 	 * Check if the given folder is empty. This is true if it contains no files, or only
 	 * empty folders.
 	 *  
-	 * @param container - folder to check
+	 * @param control - folder to check
 	 * @return true if the folder is empty.
 	 */
 	public static boolean isEmptyFolder(IContainer container) {

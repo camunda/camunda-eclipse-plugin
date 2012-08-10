@@ -26,6 +26,7 @@ import org.eclipse.bpmn2.modeler.ui.property.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.ui.property.data.ConditionalEventDefinitionDetailComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 
 public class CommonEventPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
@@ -46,6 +47,11 @@ public class CommonEventPropertySection extends AbstractBpmn2PropertySection imp
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
 		return new CommonEventDetailComposite(this);
+	}
+
+	@Override
+	public AbstractDetailComposite createSectionRoot(Composite parent, int style) {
+		return new CommonEventDetailComposite(parent,style);
 	}
 
 	@Override

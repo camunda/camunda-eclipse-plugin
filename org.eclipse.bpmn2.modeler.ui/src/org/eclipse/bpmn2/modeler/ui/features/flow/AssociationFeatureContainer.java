@@ -61,7 +61,7 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AbstractAddFlowFeature(fp) {
+		return new AbstractAddFlowFeature<Association>(fp) {
 
 			@Override
 			public PictogramElement add(IAddContext context) {
@@ -103,7 +103,7 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 					AddConnectionContext newContext = new AddConnectionContext(sourceAnchor, targetAnchor);
 					newContext.setSize(ac.getHeight(), ac.getWidth());
 					newContext.setLocation(ac.getX(), ac.getY());
-					newContext.setNewObject(ac.getNewObject());
+					newContext.setNewObject(getBusinessObject(ac));
 					newContext.setTargetConnection(ac.getTargetConnection());
 					newContext.setTargetConnectionDecorator(ac.getTargetConnectionDecorator());
 					newContext.setTargetContainer(ac.getTargetContainer());

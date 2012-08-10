@@ -18,7 +18,7 @@ import org.eclipse.bpmn2.ManualTask;
 import org.eclipse.bpmn2.ParallelGateway;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.features.gateway.AbstractCreateGatewayFeature;
-import org.eclipse.bpmn2.modeler.core.features.gateway.DefaultAddGatewayFeature;
+import org.eclipse.bpmn2.modeler.core.features.gateway.AddGatewayFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Cross;
@@ -45,7 +45,7 @@ public class ParallelGatewayFeatureContainer extends AbstractGatewayFeatureConta
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new DefaultAddGatewayFeature(fp) {
+		return new AddGatewayFeature<ParallelGateway>(fp) {
 			@Override
 			protected void decorateGateway(ContainerShape container, BPMNShape bpmnShape) {
 				GraphicsUtil.createGatewayCross(container);

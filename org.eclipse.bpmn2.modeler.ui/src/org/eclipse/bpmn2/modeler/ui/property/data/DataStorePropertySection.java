@@ -47,6 +47,11 @@ public class DataStorePropertySection extends AbstractBpmn2PropertySection {
 	}
 
 	@Override
+	public AbstractDetailComposite createSectionRoot(Composite parent, int style) {
+		return new DataStoreDetailComposite(parent,style);
+	}
+
+	@Override
 	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
 		EObject bo = super.getBusinessObjectForPictogramElement(pe);
 		if (bo instanceof DataStoreReference) {

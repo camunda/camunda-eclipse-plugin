@@ -16,7 +16,7 @@ import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.ComplexGateway;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.features.gateway.AbstractCreateGatewayFeature;
-import org.eclipse.bpmn2.modeler.core.features.gateway.DefaultAddGatewayFeature;
+import org.eclipse.bpmn2.modeler.core.features.gateway.AddGatewayFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Asterisk;
@@ -43,7 +43,7 @@ public class ComplexGatewayFeatureContainer extends AbstractGatewayFeatureContai
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new DefaultAddGatewayFeature(fp) {
+		return new AddGatewayFeature<ComplexGateway>(fp) {
 			@Override
 			protected void decorateGateway(ContainerShape container, BPMNShape bpmnShape) {
 				GraphicsUtil.createGatewayAsterisk(container);

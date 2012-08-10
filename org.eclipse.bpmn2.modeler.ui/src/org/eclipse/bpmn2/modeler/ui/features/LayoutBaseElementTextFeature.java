@@ -43,12 +43,12 @@ public abstract class LayoutBaseElementTextFeature extends DefaultLayoutBPMNShap
 	public boolean layout(ILayoutContext context) {
 		ContainerShape container = (ContainerShape) context.getPictogramElement();
 
-//		Shape textShape = getShape(container, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
+//		Shape textShape = getShape(control, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
 //		Text textGa = (Text) textShape.getGraphicsAlgorithm();
 //		String text = textGa.getValue() == null ? "" : textGa.getValue();
 //		IDimension size = GraphitiUi.getUiLayoutService().calculateTextSize(text, textGa.getFont());
 
-//		GraphicsAlgorithm parentGa = container.getGraphicsAlgorithm();
+//		GraphicsAlgorithm parentGa = control.getGraphicsAlgorithm();
 
 //		if (size.getWidth() > getMinimumWidth()) {
 //			gaService.setSize(parentGa, parentGa.getWidth(), parentGa.getHeight());

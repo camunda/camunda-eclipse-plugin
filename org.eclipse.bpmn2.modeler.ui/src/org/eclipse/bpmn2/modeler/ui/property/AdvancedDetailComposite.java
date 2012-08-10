@@ -178,6 +178,10 @@ public class AdvancedDetailComposite extends AbstractDetailComposite {
 		sashForm.setWeights(new int[] { 1, 2 });
 	}
 
+	public AdvancedDetailComposite(Composite parent, int style) {
+		super(parent,style);
+	}
+
 	private void saveChildren(Control parent) {
 		myChildren.add(parent);
 		if (parent instanceof Composite) {

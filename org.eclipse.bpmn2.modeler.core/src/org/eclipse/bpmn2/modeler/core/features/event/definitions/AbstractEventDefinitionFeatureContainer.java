@@ -20,7 +20,9 @@ import org.eclipse.bpmn2.IntermediateCatchEvent;
 import org.eclipse.bpmn2.IntermediateThrowEvent;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
+import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.graphiti.IExecutionInfo;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
 import org.eclipse.graphiti.features.IDirectEditingFeature;
@@ -76,7 +78,7 @@ public abstract class AbstractEventDefinitionFeatureContainer extends BaseElemen
 
 	protected abstract Shape drawForBoundary(DecorationAlgorithm algorithm, ContainerShape shape);
 
-	public class AddEventDefinitionFeature extends AbstractAddEventDefinitionFeature {
+	public class AddEventDefinitionFeature extends AbstractAddEventDefinitionFeature<EventDefinition> {
 
 		public AddEventDefinitionFeature(IFeatureProvider fp) {
 			super(fp);

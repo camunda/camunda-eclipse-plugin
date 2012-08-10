@@ -48,7 +48,7 @@ public class ConversationLinkFeatureContainer extends BaseElementConnectionFeatu
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AbstractAddFlowFeature(fp) {
+		return new AbstractAddFlowFeature<ConversationLink>(fp) {
 
 			@Override
 			protected Polyline createConnectionLine(Connection connection) {

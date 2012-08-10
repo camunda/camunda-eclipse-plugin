@@ -64,7 +64,7 @@ public class IoParametersDetailComposite extends AbstractDetailComposite {
 	public void createBindings(final EObject be) {
 		final EStructuralFeature ioSpecificationFeature = be.eClass().getEStructuralFeature("ioSpecification");
 		if (ioSpecificationFeature != null) {
-			// the container parameter must be an Activity or CallableElement (i.e. a Process or GlobalTask)
+			// the control parameter must be an Activity or CallableElement (i.e. a Process or GlobalTask)
 			InputOutputSpecification ioSpecification = (InputOutputSpecification)be.eGet(ioSpecificationFeature);
 			if (ioSpecification==null) {
 				ioSpecification = FACTORY.createInputOutputSpecification();
@@ -82,7 +82,7 @@ public class IoParametersDetailComposite extends AbstractDetailComposite {
 			outputTable.setTitle("Output Parameters");
 		}
 		else {
-			// the container is a ThrowEvent
+			// the control is a ThrowEvent
 		}
 	}
 }

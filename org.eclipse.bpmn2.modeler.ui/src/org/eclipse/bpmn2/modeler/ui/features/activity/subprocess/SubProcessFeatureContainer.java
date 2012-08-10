@@ -43,7 +43,7 @@ public class SubProcessFeatureContainer extends AbstractSubProcessFeatureContain
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddExpandedSubProcessFeature(fp);
+		return new AddExpandedActivityFeature<SubProcess>(fp);
 	}
 
 	@Override
