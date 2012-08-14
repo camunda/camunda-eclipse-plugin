@@ -13,9 +13,11 @@
 package org.eclipse.bpmn2.modeler.ui.features.event.definitions;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
+import org.eclipse.bpmn2.SignalEventDefinition;
 import org.eclipse.bpmn2.TerminateEventDefinition;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.AbstractEventDefinitionFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.event.definitions.CreateEventDefinition;
@@ -26,6 +28,7 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil.FillStyle;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
@@ -76,7 +79,7 @@ public class TerminateEventDefinitionFeatureContainer extends AbstractEventDefin
 		return null; // NOT ALLOWED ACCORDING TO SPEC
 	}
 
-	public static class CreateTerminateEventDefinition extends CreateEventDefinition {
+	public static class CreateTerminateEventDefinition extends CreateEventDefinition<TerminateEventDefinition> {
 
 		public CreateTerminateEventDefinition(IFeatureProvider fp) {
 			super(fp, "Terminate Definition", "Adds terminate trigger to event");
@@ -94,11 +97,6 @@ public class TerminateEventDefinitionFeatureContainer extends AbstractEventDefin
 		}
 
 		@Override
-		protected EventDefinition createEventDefinition(ICreateContext context) {
-			return Bpmn2ModelerFactory.create(TerminateEventDefinition.class);
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_TERMINATE;
 		}
@@ -107,8 +105,8 @@ public class TerminateEventDefinitionFeatureContainer extends AbstractEventDefin
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return TerminateEventDefinition.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getTerminateEventDefinition();
 		}
 	}
 }

@@ -12,11 +12,13 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Transaction;
 import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -42,7 +44,7 @@ public class TransactionFeatureContainer extends AbstractSubProcessFeatureContai
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddExpandedSubProcessFeature(fp) {
+		return new AddExpandedActivityFeature<Transaction>(fp) {
 
 			@Override
 			protected void decorateActivityRectangle(RoundedRectangle rect) {
@@ -86,13 +88,6 @@ public class TransactionFeatureContainer extends AbstractSubProcessFeatureContai
 		}
 
 		@Override
-		protected Transaction createFlowElement(ICreateContext context) {
-			Transaction transaction = Bpmn2ModelerFactory.create(Transaction.class);
-			transaction.setName("Transaction");
-			return transaction;
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_TRANSACTION;
 		}
@@ -101,8 +96,8 @@ public class TransactionFeatureContainer extends AbstractSubProcessFeatureContai
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return Transaction.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getTransaction();
 		}
 	}
 }

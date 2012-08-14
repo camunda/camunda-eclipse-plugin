@@ -14,6 +14,7 @@ package org.eclipse.bpmn2.modeler.ui.features.artifact;
 
 import java.io.IOException;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.TextAnnotation;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
@@ -23,10 +24,11 @@ import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
 
-public class CreateTextAnnotationFeature extends AbstractBpmn2CreateFeature {
+public class CreateTextAnnotationFeature extends AbstractBpmn2CreateFeature<TextAnnotation> {
 
 	public CreateTextAnnotationFeature(IFeatureProvider fp) {
 		super(fp, "Annotation", "Provide additional information");
@@ -43,19 +45,8 @@ public class CreateTextAnnotationFeature extends AbstractBpmn2CreateFeature {
 
 	@Override
 	public Object[] create(ICreateContext context) {
-		TextAnnotation ta = null;
 
-		try {
-			ModelHandler mh = ModelHandlerLocator.getModelHandler(getDiagram().eResource());
-			ta = Bpmn2ModelerFactory.create(TextAnnotation.class);
-//			ta.setId(EcoreUtil.generateUUID());
-			mh.addArtifact(FeatureSupport.getTargetParticipant(context, mh), ta);
-			ta.setText("Enter your comment here");
-			ModelUtil.setID(ta);
-		} catch (IOException e) {
-			Activator.logError(e);
-		}
-
+		TextAnnotation ta = createBusinessObject(context);
 		addGraphicalRepresentation(context, ta);
 
 		return new Object[] { ta };
@@ -75,7 +66,7 @@ public class CreateTextAnnotationFeature extends AbstractBpmn2CreateFeature {
 	 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
 	 */
 	@Override
-	public Class getBusinessObjectClass() {
-		return TextAnnotation.class;
+	public EClass getBusinessObjectClass() {
+		return Bpmn2Package.eINSTANCE.getTextAnnotation();
 	}
 }

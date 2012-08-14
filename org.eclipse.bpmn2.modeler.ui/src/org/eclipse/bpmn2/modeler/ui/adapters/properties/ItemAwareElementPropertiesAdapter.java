@@ -105,7 +105,7 @@ public class ItemAwareElementPropertiesAdapter<T extends ItemAwareElement> exten
 			}
     	);
     	
-    	setProperty(Bpmn2Package.ITEM_AWARE_ELEMENT__DATA_STATE, UI_IS_MULTI_CHOICE, Boolean.TRUE);
+    	setProperty(Bpmn2Package.eINSTANCE.getItemAwareElement_DataState(), UI_IS_MULTI_CHOICE, Boolean.TRUE);
 	}
 
 }

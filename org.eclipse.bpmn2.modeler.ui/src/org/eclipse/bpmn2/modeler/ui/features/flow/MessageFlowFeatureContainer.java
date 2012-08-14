@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.ui.features.flow;
 import java.io.IOException;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.InteractionNode;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.Participant;
@@ -30,6 +31,7 @@ import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.modeler.ui.features.choreography.ChoreographyUtil;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
@@ -37,6 +39,8 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReconnectionFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.ICreateConnectionContext;
+import org.eclipse.graphiti.features.context.ICreateContext;
+import org.eclipse.graphiti.features.context.impl.AddConnectionContext;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.styles.LineStyle;
@@ -56,7 +60,7 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AbstractAddFlowFeature(fp) {
+		return new AbstractAddFlowFeature<MessageFlow>(fp) {
 
 			@Override
 			protected Polyline createConnectionLine(Connection connection) {
@@ -108,7 +112,7 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 		return new ReconnectMessageFlowFeature(fp);
 	}
 	
-	public static class CreateMessageFlowFeature extends AbstractCreateFlowFeature<InteractionNode, InteractionNode> {
+	public static class CreateMessageFlowFeature extends AbstractCreateFlowFeature<MessageFlow, InteractionNode, InteractionNode> {
 
 		public CreateMessageFlowFeature(IFeatureProvider fp) {
 			super(fp, "Message Flow", "Represents message between two participants");
@@ -140,10 +144,21 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 		}
 
 		@Override
-		protected BaseElement createFlow(ModelHandler mh, InteractionNode source, InteractionNode target) {
-			MessageFlow flow = mh.createMessageFlow(source, target);
-			flow.setName("");
-			return flow;
+		public MessageFlow createBusinessObject(ICreateConnectionContext context) {
+			MessageFlow bo = null;
+			try {
+				ModelHandler mh = ModelHandler.getInstance(getDiagram());
+				InteractionNode source = getSourceBo(context);
+				InteractionNode target = getTargetBo(context);
+				bo = mh.createMessageFlow(source, target);
+				bo.setName("");
+				putBusinessObject(context, bo);
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return bo;
 		}
 
 		@Override
@@ -181,8 +196,8 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature#getBusinessObjectClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return MessageFlow.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getMessageFlow();
 		}
 	}
 	

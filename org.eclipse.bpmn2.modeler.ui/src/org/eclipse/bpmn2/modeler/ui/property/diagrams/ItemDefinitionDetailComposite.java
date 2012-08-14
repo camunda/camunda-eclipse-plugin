@@ -2,15 +2,14 @@ package org.eclipse.bpmn2.modeler.ui.property.diagrams;
 
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.ItemKind;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractBpmn2PropertySection;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultDetailComposite;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultDetailComposite.AbstractPropertiesProvider;
+import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ComboObjectEditor;
+import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ObjectEditor;
+import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.TextObjectEditor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultDetailComposite;
-import org.eclipse.bpmn2.modeler.ui.property.DefaultDetailComposite.AbstractPropertiesProvider;
-import org.eclipse.bpmn2.modeler.ui.property.editors.ComboObjectEditor;
-import org.eclipse.bpmn2.modeler.ui.property.editors.ObjectEditor;
 import org.eclipse.bpmn2.modeler.ui.property.editors.SchemaObjectEditor;
-import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
-import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
@@ -60,7 +59,7 @@ public class ItemDefinitionDetailComposite extends DefaultDetailComposite {
 					parent = getAttributesParent();
 				
 				if (label==null)
-					label = PropertyUtil.getLabel(object, attribute);
+					label = ModelUtil.getLabel(object, attribute);
 				
 				ObjectEditor editor = new ComboObjectEditor(this,object,attribute) {
 					protected boolean updateObject(final Object result) {
@@ -91,7 +90,7 @@ public class ItemDefinitionDetailComposite extends DefaultDetailComposite {
 				parent = getAttributesParent();
 			
 			final ItemDefinition def = (ItemDefinition)object;
-			String displayName = PropertyUtil.getLabel(object, reference);
+			String displayName = ModelUtil.getLabel(object, reference);
 			
 			if (def.getItemKind().equals(ItemKind.INFORMATION)) {
 				SchemaObjectEditor editor = new SchemaObjectEditor(this,object,reference);

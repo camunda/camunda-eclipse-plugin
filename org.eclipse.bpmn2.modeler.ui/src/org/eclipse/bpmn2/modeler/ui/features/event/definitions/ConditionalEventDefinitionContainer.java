@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.event.definitions;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.ConditionalEventDefinition;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
@@ -22,6 +23,7 @@ import org.eclipse.bpmn2.modeler.core.features.event.definitions.DecorationAlgor
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
@@ -72,7 +74,7 @@ public class ConditionalEventDefinitionContainer extends AbstractEventDefinition
 		return conditionShape;
 	}
 
-	public static class CreateConditionalEventDefinition extends CreateEventDefinition {
+	public static class CreateConditionalEventDefinition extends CreateEventDefinition<ConditionalEventDefinition> {
 
 		@Override
 		public boolean canCreate(ICreateContext context) {
@@ -93,11 +95,6 @@ public class ConditionalEventDefinitionContainer extends AbstractEventDefinition
 		}
 
 		@Override
-		protected EventDefinition createEventDefinition(ICreateContext context) {
-			return Bpmn2ModelerFactory.create(ConditionalEventDefinition.class);
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_CONDITION;
 		}
@@ -106,8 +103,8 @@ public class ConditionalEventDefinitionContainer extends AbstractEventDefinition
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return ConditionalEventDefinition.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getConditionalEventDefinition();
 		}
 	}
 }

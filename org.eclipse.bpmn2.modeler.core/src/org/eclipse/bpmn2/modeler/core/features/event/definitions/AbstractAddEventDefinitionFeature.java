@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features.event.definitions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
@@ -19,13 +20,20 @@ import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.ThrowEvent;
+import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
+import org.eclipse.bpmn2.modeler.core.features.IBpmn2AddFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil.FillStyle;
+import org.eclipse.graphiti.IExecutionInfo;
+import org.eclipse.graphiti.features.IFeature;
+import org.eclipse.graphiti.features.IFeatureAndContext;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.features.context.IContext;
+import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.impl.AbstractAddShapeFeature;
 import org.eclipse.graphiti.mm.algorithms.Polygon;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -33,7 +41,9 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 
-public abstract class AbstractAddEventDefinitionFeature extends AbstractAddShapeFeature {
+public abstract class AbstractAddEventDefinitionFeature<T extends EventDefinition>
+	extends AbstractAddShapeFeature
+	implements IBpmn2AddFeature<T> {
 
 
 	public AbstractAddEventDefinitionFeature(IFeatureProvider fp) {
@@ -51,7 +61,7 @@ public abstract class AbstractAddEventDefinitionFeature extends AbstractAddShape
 		ContainerShape container = context.getTargetContainer();
 		Event event = (Event) getBusinessObjectForPictogramElement(container);
 
-		draw(event, (EventDefinition)context.getNewObject(), container);
+		draw(event, getBusinessObject(context), container);
 		return null;
 	}
 	
@@ -98,4 +108,32 @@ public abstract class AbstractAddEventDefinitionFeature extends AbstractAddShape
 		StyleUtil.setFillStyle(cross, FillStyle.FILL_STYLE_BACKGROUND);
 		StyleUtil.applyStyle(cross, be);
 	}
+
+	@Override
+	public T getBusinessObject(IAddContext context) {
+		Object businessObject = context.getProperty(ContextConstants.BUSINESS_OBJECT);
+		if (businessObject instanceof EventDefinition)
+			return (T)businessObject;
+		return (T)context.getNewObject();
+	}
+
+	@Override
+	public void putBusinessObject(IAddContext context, T businessObject) {
+		context.putProperty(ContextConstants.BUSINESS_OBJECT, businessObject);
+	}
+
+	@Override
+	public void postExecute(IExecutionInfo executionInfo) {
+		List<PictogramElement> pes = new ArrayList<PictogramElement>();
+		for (IFeatureAndContext fc : executionInfo.getExecutionList()) {
+			IContext context = fc.getContext();
+			IFeature feature = fc.getFeature();
+			if (context instanceof AddContext) {
+				AddContext ac = (AddContext)context;
+				pes.add(ac.getTargetContainer());
+			}
+		}
+		getDiagramEditor().setPictogramElementsForSelection(pes.toArray(new PictogramElement[pes.size()]));
+	}
+	
 }

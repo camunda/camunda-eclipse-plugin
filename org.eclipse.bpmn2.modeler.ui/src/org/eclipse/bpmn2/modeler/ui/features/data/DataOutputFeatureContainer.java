@@ -12,8 +12,14 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.data;
 
+import java.io.IOException;
+
+import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.DataOutput;
+import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.features.data.AbstractCreateDataInputOutputFeature;
 import org.eclipse.bpmn2.modeler.core.features.data.AddDataFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
@@ -21,9 +27,11 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.mm.algorithms.Polygon;
 
 public class DataOutputFeatureContainer extends AbstractDataFeatureContainer {
@@ -61,21 +69,10 @@ public class DataOutputFeatureContainer extends AbstractDataFeatureContainer {
 		};
 	}
 
-	public static class CreateDataOutputFeature extends AbstractCreateDataInputOutputFeature {
+	public static class CreateDataOutputFeature extends AbstractCreateDataInputOutputFeature<DataOutput> {
 
 		public CreateDataOutputFeature(IFeatureProvider fp) {
 			super(fp, "Data Output", "Declaration that a particular kind of data can be produced as output");
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public DataOutput add(Object target, ModelHandler handler) {
-			DataOutput dataOutput = Bpmn2ModelerFactory.create(DataOutput.class);
-//			dataOutput.setId(EcoreUtil.generateUUID());
-			dataOutput.setName("Data Output");
-			handler.addDataOutput(target, dataOutput);
-			ModelUtil.setID(dataOutput);
-			return dataOutput;
 		}
 
 		@Override
@@ -87,9 +84,8 @@ public class DataOutputFeatureContainer extends AbstractDataFeatureContainer {
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return DataOutput.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getDataOutput();
 		}
-
 	}
 }

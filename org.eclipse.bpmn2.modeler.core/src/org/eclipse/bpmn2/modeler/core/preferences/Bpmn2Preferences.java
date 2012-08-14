@@ -24,11 +24,20 @@ import org.eclipse.bpmn2.AdHocSubProcess;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.CallChoreography;
+import org.eclipse.bpmn2.CancelEventDefinition;
+import org.eclipse.bpmn2.Event;
+import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.ExclusiveGateway;
+import org.eclipse.bpmn2.FlowElementsContainer;
+import org.eclipse.bpmn2.Gateway;
+import org.eclipse.bpmn2.InteractionNode;
+import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.SubChoreography;
 import org.eclipse.bpmn2.SubProcess;
+import org.eclipse.bpmn2.Task;
+import org.eclipse.bpmn2.TerminateEventDefinition;
 import org.eclipse.bpmn2.Transaction;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.Activator;
@@ -91,6 +100,22 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	public final static String PREF_CONNECTION_TIMEOUT = "connection.timeout";
 	public final static String PREF_CONNECTION_TIMEOUT_LABEL = "Connection Timeout for resolving remote objects (milliseconds)";
 
+	public final static String PREF_POPUP_CONFIG_DIALOG = "popup.config.dialog";
+	public final static String PREF_POPUP_CONFIG_DIALOG_LABEL = "Display element configuration popup dialog after DND of:";
+	
+	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_TASKS = "popup.config.dialog.for.tasks";
+	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_TASKS_LABEL = "Tasks";
+	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_GATEWAYS = "popup.config.dialog.for.gateways";
+	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_GATEWAYS_LABEL = "Gateways";
+	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_EVENTS = "popup.config.dialog.for.events";
+	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_EVENTS_LABEL = "Events";
+	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_EVENT_DEFS = "popup.config.dialog.for.event.defs";
+	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_EVENT_DEFS_LABEL = "Event Definitions";
+	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_DATA_DEFS = "popup.config.dialog.for.data.defs";
+	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_DATA_DEFS_LABEL = "Data Items";
+	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_CONTAINERS = "popup.config.dialog.for.containers";
+	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_CONTAINERS_LABEL = "Acitivity containers (Pools, SubProcess, Transaction, etc.)";
+
 	private static Hashtable<IProject,Bpmn2Preferences> instances = null;
 	private static IProject activeProject;
 
@@ -117,6 +142,8 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	private BPMNDIAttributeDefault isMessageVisible;
 	private BPMNDIAttributeDefault isMarkerVisible;
 	private String connectionTimeout;
+	private int popupConfigDialog;
+	private boolean popupConfigDialogFor[] = new boolean[6];
 	
 	private HashMap<Class, ShapeStyle> shapeStyles = new HashMap<Class, ShapeStyle>();
 	
@@ -216,6 +243,15 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		globalPreferences.setDefault(PREF_IS_EXPANDED, BPMNDIAttributeDefault.ALWAYS_TRUE.name());
 		globalPreferences.setDefault(PREF_IS_MESSAGE_VISIBLE, BPMNDIAttributeDefault.ALWAYS_TRUE.name());
 		globalPreferences.setDefault(PREF_IS_MARKER_VISIBLE, BPMNDIAttributeDefault.DEFAULT_TRUE.name());
+
+		globalPreferences.setDefault(PREF_POPUP_CONFIG_DIALOG, false); // tri-state checkbox
+		globalPreferences.setDefault(PREF_POPUP_CONFIG_DIALOG_FOR_TASKS, false);
+		globalPreferences.setDefault(PREF_POPUP_CONFIG_DIALOG_FOR_GATEWAYS, false);
+		globalPreferences.setDefault(PREF_POPUP_CONFIG_DIALOG_FOR_EVENTS, false);
+		globalPreferences.setDefault(PREF_POPUP_CONFIG_DIALOG_FOR_EVENT_DEFS, false);
+		globalPreferences.setDefault(PREF_POPUP_CONFIG_DIALOG_FOR_DATA_DEFS, false);
+		globalPreferences.setDefault(PREF_POPUP_CONFIG_DIALOG_FOR_CONTAINERS, false);
+
 		for (Class key : shapeStyles.keySet()) {
 			globalPreferences.setDefault(getShapeStyleId(key), IPreferenceStore.STRING_DEFAULT_DEFAULT);
 		}
@@ -233,6 +269,14 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			projectPreferences.remove(PREF_IS_EXPANDED);
 			projectPreferences.remove(PREF_IS_MESSAGE_VISIBLE);
 			projectPreferences.remove(PREF_IS_MARKER_VISIBLE);
+
+			projectPreferences.remove(PREF_POPUP_CONFIG_DIALOG);
+			projectPreferences.remove(PREF_POPUP_CONFIG_DIALOG_FOR_TASKS);
+			projectPreferences.remove(PREF_POPUP_CONFIG_DIALOG_FOR_GATEWAYS);
+			projectPreferences.remove(PREF_POPUP_CONFIG_DIALOG_FOR_EVENTS);
+			projectPreferences.remove(PREF_POPUP_CONFIG_DIALOG_FOR_EVENT_DEFS);
+			projectPreferences.remove(PREF_POPUP_CONFIG_DIALOG_FOR_DATA_DEFS);
+			projectPreferences.remove(PREF_POPUP_CONFIG_DIALOG_FOR_CONTAINERS);
 			for (Class key : shapeStyles.keySet()) {
 				projectPreferences.remove(getShapeStyleId(key));
 			}
@@ -251,6 +295,14 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		globalPreferences.setToDefault(PREF_IS_EXPANDED);
 		globalPreferences.setToDefault(PREF_IS_MESSAGE_VISIBLE);
 		globalPreferences.setToDefault(PREF_IS_MARKER_VISIBLE);
+
+		globalPreferences.setToDefault(PREF_POPUP_CONFIG_DIALOG);
+		globalPreferences.setToDefault(PREF_POPUP_CONFIG_DIALOG_FOR_TASKS);
+		globalPreferences.setToDefault(PREF_POPUP_CONFIG_DIALOG_FOR_GATEWAYS);
+		globalPreferences.setToDefault(PREF_POPUP_CONFIG_DIALOG_FOR_EVENTS);
+		globalPreferences.setToDefault(PREF_POPUP_CONFIG_DIALOG_FOR_EVENT_DEFS);
+		globalPreferences.setToDefault(PREF_POPUP_CONFIG_DIALOG_FOR_DATA_DEFS);
+		globalPreferences.setToDefault(PREF_POPUP_CONFIG_DIALOG_FOR_CONTAINERS);
 
 		List<Class> keys = new ArrayList<Class>();
 		keys.addAll(shapeStyles.keySet());
@@ -319,6 +371,14 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			isMarkerVisible = getBPMNDIAttributeDefault(PREF_IS_MARKER_VISIBLE, BPMNDIAttributeDefault.USE_DI_VALUE);
 			connectionTimeout = this.getString(PREF_CONNECTION_TIMEOUT, "60000");
 			
+			popupConfigDialog = getInt(PREF_POPUP_CONFIG_DIALOG, 0); // tri-state checkbox
+			popupConfigDialogFor[0] = getBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_TASKS, false);
+			popupConfigDialogFor[1] = getBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_GATEWAYS, false);
+			popupConfigDialogFor[2] = getBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_EVENTS, false);
+			popupConfigDialogFor[3] = getBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_EVENT_DEFS, false);
+			popupConfigDialogFor[4] = getBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_DATA_DEFS, false);
+			popupConfigDialogFor[5] = getBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_CONTAINERS, false);
+
 			loaded = true;
 		}
 	}
@@ -342,6 +402,13 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			
 			setString(PREF_CONNECTION_TIMEOUT, connectionTimeout);
 
+			setInt(PREF_POPUP_CONFIG_DIALOG, popupConfigDialog);
+			setBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_TASKS, popupConfigDialogFor[0]);
+			setBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_GATEWAYS, popupConfigDialogFor[1]);
+			setBoolean(PREF_EXPAND_PROPERTIES, popupConfigDialogFor[2]);
+			setBoolean(PREF_EXPAND_PROPERTIES, popupConfigDialogFor[3]);
+			setBoolean(PREF_EXPAND_PROPERTIES, popupConfigDialogFor[4]);
+			setBoolean(PREF_EXPAND_PROPERTIES, popupConfigDialogFor[5]);
 		}
 		
 		for (Entry<Class, ShapeStyle> entry : shapeStyles.entrySet()) {
@@ -507,6 +574,62 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		overrideGlobalBoolean(PREF_EXPAND_PROPERTIES, expand);
 		expandProperties = expand;
 	}
+	
+	public boolean getShowPopupConfigDialog(Object context) {
+		load();
+		if (popupConfigDialog!=0) {
+			if (context instanceof Task) {
+				return popupConfigDialogFor[0];
+			}
+			if (context instanceof Gateway) {
+				return popupConfigDialogFor[1];
+			}
+			if (context instanceof Event) {
+				return popupConfigDialogFor[2];
+			}
+			if (context instanceof EventDefinition) {
+				if (context instanceof CancelEventDefinition || context instanceof TerminateEventDefinition)
+					return false; // these have no additional attributes
+				return popupConfigDialogFor[3];
+			}
+			if (context instanceof ItemAwareElement) {
+				return popupConfigDialogFor[4];
+			}
+			if (context instanceof InteractionNode || context instanceof FlowElementsContainer) {
+				return popupConfigDialogFor[5];
+			}
+		}
+		return false;
+	}
+	
+	public boolean hasPopupConfigDialog(Object context) {
+		if (context instanceof Task) {
+			return true;
+		}
+		if (context instanceof Gateway) {
+			return true;
+		}
+		if (context instanceof Event) {
+			return true;
+		}
+		if (context instanceof EventDefinition) {
+			if (context instanceof CancelEventDefinition || context instanceof TerminateEventDefinition)
+				return false; // these have no additional attributes
+			return true;
+		}
+		if (context instanceof ItemAwareElement) {
+			return true;
+		}
+		if (context instanceof InteractionNode || context instanceof FlowElementsContainer) {
+			return true;
+		}
+		return false;
+	}
+	
+	public void setShowPopupConfigDialog(Object context, boolean value) {
+		overrideGlobalInt(PREF_POPUP_CONFIG_DIALOG,  value ? 1 : 0);
+		popupConfigDialog = value ? 1 : 0;
+	}
 
 	public boolean isHorizontalDefault() {
 		load();
@@ -606,6 +729,28 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	private void overrideGlobalBoolean(String key, boolean value) {
 		if (value!=globalPreferences.getBoolean(key)) {
 			projectPreferences.putBoolean(key, value);
+			dirty = true;
+		}
+	}
+	
+	public int getInt(String key, int defaultValue) {
+		if (hasProjectPreference(key))
+			return projectPreferences.getInt(key, defaultValue);
+		if (globalPreferences.contains(key))
+			return globalPreferences.getInt(key);
+		return defaultValue;
+	}
+	
+	public void setInt(String key, int value) {
+		if (hasProjectPreference(key))
+			projectPreferences.putInt(key, value);
+		else
+			globalPreferences.setValue(key, value);
+	}
+
+	private void overrideGlobalInt(String key, int value) {
+		if (value!=globalPreferences.getInt(key)) {
+			projectPreferences.putInt(key, value);
 			dirty = true;
 		}
 	}

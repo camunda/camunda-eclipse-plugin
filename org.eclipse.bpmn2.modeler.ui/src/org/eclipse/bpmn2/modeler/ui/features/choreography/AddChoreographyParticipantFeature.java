@@ -23,7 +23,6 @@ import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
-import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -126,7 +125,7 @@ public class AddChoreographyParticipantFeature extends AbstractCustomFeature {
 				
 				Participant participant = null;
 				List<Participant> participantList = new ArrayList<Participant>();
-				participant = (Participant) PropertyUtil.createObject(task.eResource(), Bpmn2Package.eINSTANCE.getParticipant());
+				participant = (Participant) ModelUtil.createObject(task.eResource(), Bpmn2Package.eINSTANCE.getParticipant());
 				participant.setName("New Participant");
 				
 				participantList.add(participant);
@@ -151,11 +150,15 @@ public class AddChoreographyParticipantFeature extends AbstractCustomFeature {
 						participant.setName( ModelUtil.toDisplayName(participant.getId()) );
 						Choreography choreography = (Choreography)task.eContainer();
 						choreography.getParticipants().add(result);
+						/*
+						 Finish this later after we figure out how to deal with multiple BPMNDiagrams and BPMNPlanes
+						 
 						Process process = (Process) PropertyUtil.createObject(task.eResource(), Bpmn2Package.eINSTANCE.getProcess());
 						// NOTE: this is needed because it fires the InsertionAdapter, which adds the new Process
 						// to Definitions.rootElements, otherwise the Process would be a dangling object
 						process.setName(participant.getName()+" Process");
 						participant.setProcessRef(process);
+						*/
 					}
 
 					if (task.getInitiatingParticipantRef() == null) {

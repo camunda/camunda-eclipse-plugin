@@ -13,8 +13,9 @@
 package org.eclipse.bpmn2.modeler.ui.property.data;
 
 import org.eclipse.bpmn2.ConditionalEventDefinition;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractBpmn2PropertySection;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.widgets.Composite;
 
@@ -35,7 +36,14 @@ public class ConditionalEventDefinitionDetailComposite extends ExpressionDetailC
 	public void setBusinessObject(EObject object) {
 		if (object instanceof ConditionalEventDefinition) {
 			ConditionalEventDefinition ced = (ConditionalEventDefinition)object;
-			object = ced.getCondition();
+			if (ced.getCondition()==null) {
+				object = ModelUtil.createFeature(
+						ced,
+						PACKAGE.getConditionalEventDefinition_Condition(),
+						PACKAGE.getFormalExpression());
+			}
+			else
+				object = ced.getCondition();
 		}
 		super.setBusinessObject(object);
 	}

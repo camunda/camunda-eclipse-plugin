@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity.task;
 
+import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.ParallelGateway;
 import org.eclipse.bpmn2.ReceiveTask;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.AbstractCreateTaskFeature;
@@ -19,6 +21,7 @@ import org.eclipse.bpmn2.modeler.core.features.activity.task.AddTaskFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -42,7 +45,7 @@ public class ReceiveTaskFeatureContainer extends AbstractTaskFeatureContainer {
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddTaskFeature(fp) {
+		return new AddTaskFeature<ReceiveTask>(fp) {
 			@Override
 			protected void decorateActivityRectangle(RoundedRectangle rect) {
 				IGaService service = Graphiti.getGaService();
@@ -52,18 +55,10 @@ public class ReceiveTaskFeatureContainer extends AbstractTaskFeatureContainer {
 		};
 	}
 
-	public static class CreateReceiveTaskFeature extends AbstractCreateTaskFeature {
+	public static class CreateReceiveTaskFeature extends AbstractCreateTaskFeature<ReceiveTask> {
 
 		public CreateReceiveTaskFeature(IFeatureProvider fp) {
 			super(fp, "Receive Task", "Task that is completed when a message arrives");
-		}
-
-		@Override
-		protected Task createFlowElement(ICreateContext context) {
-			ReceiveTask task = Bpmn2ModelerFactory.create(ReceiveTask.class);
-			task.setName("Receive Task");
-			task.setImplementation("##unspecified");
-			return task;
 		}
 
 		@Override
@@ -75,8 +70,8 @@ public class ReceiveTaskFeatureContainer extends AbstractTaskFeatureContainer {
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return ReceiveTask.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getReceiveTask();
 		}
 	}
 }

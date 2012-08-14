@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
 import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.CallableElement;
 import org.eclipse.bpmn2.GlobalBusinessRuleTask;
@@ -31,6 +32,7 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Expand;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -71,13 +73,12 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddExpandedSubProcessFeature(fp) {
+		return new AddExpandedActivityFeature<CallActivity>(fp) {
 			@Override
-			protected void hook(Activity activity, ContainerShape container, IAddContext context, int width, int height) {
+			protected void hook(CallActivity activity, ContainerShape container, IAddContext context, int width, int height) {
 				super.hook(activity, container, context, width, height);
-				CallActivity callActivity = (CallActivity) activity;
 				Graphiti.getPeService().setPropertyValue(container, CALL_ACTIVITY_REF_PROPERTY,
-						getCallableElementStringValue(callActivity.getCalledElementRef()));
+						getCallableElementStringValue(activity.getCalledElementRef()));
 			}
 
 			@Override
@@ -145,13 +146,6 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 			super(fp, "Call Activity",
 					"Identifies a point in the Process where a global Process or a Global Task is used");
 		}
-		
-		@Override
-		protected CallActivity createFlowElement(ICreateContext context) {
-			CallActivity callActivity = Bpmn2ModelerFactory.create(CallActivity.class);
-			callActivity.setName("Call Activity");
-			return callActivity;
-		}
 
 		@Override
 		public String getStencilImageId() {
@@ -162,8 +156,8 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return CallActivity.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getCallActivity();
 		}
 	}
 

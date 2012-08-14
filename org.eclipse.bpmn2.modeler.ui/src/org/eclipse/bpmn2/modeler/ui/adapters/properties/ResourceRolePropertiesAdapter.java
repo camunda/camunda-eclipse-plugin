@@ -35,7 +35,7 @@ public class ResourceRolePropertiesAdapter extends ExtendedPropertiesAdapter<Res
 	public ResourceRolePropertiesAdapter(AdapterFactory adapterFactory, ResourceRole object) {
 		super(adapterFactory, object);
 		// ResourceRoles are contained in Process, GlobalTask and Activity
-    	setProperty(Bpmn2Package.RESOURCE_ROLE__RESOURCE_ASSIGNMENT_EXPRESSION, ExtendedPropertiesAdapter.UI_IS_MULTI_CHOICE, Boolean.FALSE);
+    	setProperty(Bpmn2Package.eINSTANCE.getResourceRole_ResourceAssignmentExpression(), ExtendedPropertiesAdapter.UI_IS_MULTI_CHOICE, Boolean.FALSE);
 
     	final EStructuralFeature ref = Bpmn2Package.eINSTANCE.getResourceRole_ResourceAssignmentExpression();
     	setFeatureDescriptor(ref,

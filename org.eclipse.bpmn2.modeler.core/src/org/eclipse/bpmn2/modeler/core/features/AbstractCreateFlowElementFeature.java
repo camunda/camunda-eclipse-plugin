@@ -27,7 +27,7 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
 
-public abstract class AbstractCreateFlowElementFeature<T extends FlowElement> extends AbstractBpmn2CreateFeature {
+public abstract class AbstractCreateFlowElementFeature<T extends FlowElement> extends AbstractBpmn2CreateFeature<T> {
 	
 	public static final String OPTION_DONT_ADD = "DONT_ADD";
 	
@@ -50,7 +50,7 @@ public abstract class AbstractCreateFlowElementFeature<T extends FlowElement> ex
 		T element = null;
 		try {
 			ModelHandler handler = ModelHandler.getInstance(getDiagram());
-			element = createFlowElement(context);
+			element = createBusinessObject(context);
 //			element.setId(EcoreUtil.generateUUID());
 			if (FeatureSupport.isTargetLane(context) && element instanceof FlowNode) {
 				((FlowNode) element).getLanes().add(
@@ -79,6 +79,4 @@ public abstract class AbstractCreateFlowElementFeature<T extends FlowElement> ex
 	public String getCreateLargeImageId() {
 	    return getCreateImageId(); // FIXME
 	}
-
-	protected abstract T createFlowElement(ICreateContext context);
 }

@@ -12,9 +12,14 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.conversation;
 
+import java.io.IOException;
+
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Conversation;
 import org.eclipse.bpmn2.ConversationLink;
+import org.eclipse.bpmn2.InteractionNode;
+import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementConnectionFeatureContainer;
@@ -22,11 +27,14 @@ import org.eclipse.bpmn2.modeler.core.features.flow.AbstractAddFlowFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractReconnectFlowFeature;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReconnectionFeature;
+import org.eclipse.graphiti.features.context.ICreateConnectionContext;
+import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.styles.LineStyle;
 import org.eclipse.graphiti.mm.pictograms.Connection;
@@ -40,7 +48,7 @@ public class ConversationLinkFeatureContainer extends BaseElementConnectionFeatu
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AbstractAddFlowFeature(fp) {
+		return new AbstractAddFlowFeature<ConversationLink>(fp) {
 
 			@Override
 			protected Polyline createConnectionLine(Connection connection) {
@@ -66,7 +74,7 @@ public class ConversationLinkFeatureContainer extends BaseElementConnectionFeatu
 		return new ReconnectConversationLinkFeature(fp);
 	}
 
-	public static class CreateConversationLinkFeature extends AbstractCreateFlowFeature<Participant, Conversation> {
+	public static class CreateConversationLinkFeature extends AbstractCreateFlowFeature<ConversationLink, Participant, Conversation> {
 
 		public CreateConversationLinkFeature(IFeatureProvider fp) {
 			super(fp, "Conversation Link", "Connects Conversation nodes to and from Participants");
@@ -75,13 +83,6 @@ public class ConversationLinkFeatureContainer extends BaseElementConnectionFeatu
 		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_CONVERSATION_LINK;
-		}
-
-		@Override
-		protected BaseElement createFlow(ModelHandler mh, Participant source, Conversation target) {
-			ConversationLink conversationLink = mh.createConversationLink(source, target);
-			conversationLink.setName("Conversation Link");
-			return conversationLink;
 		}
 
 		@Override
@@ -98,8 +99,25 @@ public class ConversationLinkFeatureContainer extends BaseElementConnectionFeatu
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature#getBusinessObjectClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return ConversationLink.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getConversationLink();
+		}
+
+		@Override
+		public ConversationLink createBusinessObject(ICreateConnectionContext context) {
+			ConversationLink bo = null;
+			try {
+				ModelHandler mh = ModelHandler.getInstance(getDiagram());
+				Participant source = getSourceBo(context);
+				Conversation target = getTargetBo(context);
+				bo = mh.createConversationLink(source, target);
+				bo.setName("Conversation Link");
+				putBusinessObject(context, bo);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return bo;
 		}
 	}
 	public static class ReconnectConversationLinkFeature extends AbstractReconnectFlowFeature {

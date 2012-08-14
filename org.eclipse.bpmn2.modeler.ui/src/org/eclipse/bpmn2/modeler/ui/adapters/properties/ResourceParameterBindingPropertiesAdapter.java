@@ -32,10 +32,10 @@ public class ResourceParameterBindingPropertiesAdapter extends ExtendedPropertie
 		super(adapterFactory, object);
 
 		// ResourceParameters are contained in Resource, a root element
-    	setProperty(Bpmn2Package.RESOURCE_PARAMETER_BINDING__PARAMETER_REF, UI_IS_MULTI_CHOICE, Boolean.TRUE);
-    	setProperty(Bpmn2Package.RESOURCE_PARAMETER_BINDING__PARAMETER_REF, UI_CAN_CREATE_NEW, Boolean.FALSE);
-    	setProperty(Bpmn2Package.RESOURCE_PARAMETER_BINDING__PARAMETER_REF, UI_CAN_EDIT, Boolean.FALSE);
-    	setProperty(Bpmn2Package.RESOURCE_PARAMETER_BINDING__PARAMETER_REF, UI_CAN_SET_NULL, Boolean.TRUE);
+    	setProperty(Bpmn2Package.eINSTANCE.getResourceParameterBinding_ParameterRef(), UI_IS_MULTI_CHOICE, Boolean.TRUE);
+    	setProperty(Bpmn2Package.eINSTANCE.getResourceParameterBinding_ParameterRef(), UI_CAN_CREATE_NEW, Boolean.FALSE);
+    	setProperty(Bpmn2Package.eINSTANCE.getResourceParameterBinding_ParameterRef(), UI_CAN_EDIT, Boolean.FALSE);
+    	setProperty(Bpmn2Package.eINSTANCE.getResourceParameterBinding_ParameterRef(), UI_CAN_SET_NULL, Boolean.TRUE);
 	}
 
 }

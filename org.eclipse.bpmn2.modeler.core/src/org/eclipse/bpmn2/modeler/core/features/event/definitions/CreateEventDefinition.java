@@ -17,11 +17,18 @@ import java.util.List;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
+import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ObjectEditingDialog;
+import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.graphiti.IExecutionInfo;
+import org.eclipse.graphiti.features.IFeatureAndContext;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICreateContext;
+import org.eclipse.graphiti.ui.editor.DiagramEditor;
 
-public abstract class CreateEventDefinition extends AbstractBpmn2CreateFeature {
+public abstract class CreateEventDefinition<T extends EventDefinition> extends AbstractBpmn2CreateFeature<T> {
 
 	public CreateEventDefinition(IFeatureProvider fp, String name, String description) {
 		super(fp, name, description);
@@ -37,14 +44,12 @@ public abstract class CreateEventDefinition extends AbstractBpmn2CreateFeature {
 	public Object[] create(ICreateContext context) {
 		Event e = (Event) getBusinessObjectForPictogramElement(context.getTargetContainer());
 		List<EventDefinition> eventDefinitions = ModelUtil.getEventDefinitions(e);
-		EventDefinition definition = createEventDefinition(context);
+		EventDefinition definition = createBusinessObject(context);
 		eventDefinitions.add(definition);
 		addGraphicalRepresentation(context, definition);
 		ModelUtil.setID(definition);
 		return new Object[] { definition };
 	}
-
-	protected abstract EventDefinition createEventDefinition(ICreateContext context);
 
 	protected abstract String getStencilImageId();
 
@@ -57,4 +62,21 @@ public abstract class CreateEventDefinition extends AbstractBpmn2CreateFeature {
 	public String getCreateLargeImageId() {
 		return getStencilImageId(); // FIXME
 	}
+
+//	@Override
+//	public void postExecute(IExecutionInfo executionInfo) {
+//		for (IFeatureAndContext fc : executionInfo.getExecutionList()) {
+//			IContext context = fc.getContext();
+//			if (context instanceof ICreateContext) {
+//				ICreateContext cc = (ICreateContext)context;
+//				T businessObject = getBusinessObject(cc);
+//				Bpmn2Preferences prefs = (Bpmn2Preferences) ((DiagramEditor) getDiagramEditor()).getAdapter(Bpmn2Preferences.class);
+//				if (prefs!=null && prefs.getShowPopupConfigDialog(businessObject)) {
+//					ObjectEditingDialog dialog =
+//							new ObjectEditingDialog((DiagramEditor)getDiagramEditor(), businessObject);
+//					dialog.open();
+//				}
+//			}
+//		}
+//	}
 }

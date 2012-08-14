@@ -12,15 +12,17 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.gateway;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.ComplexGateway;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.features.gateway.AbstractCreateGatewayFeature;
-import org.eclipse.bpmn2.modeler.core.features.gateway.DefaultAddGatewayFeature;
+import org.eclipse.bpmn2.modeler.core.features.gateway.AddGatewayFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Asterisk;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -41,7 +43,7 @@ public class ComplexGatewayFeatureContainer extends AbstractGatewayFeatureContai
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new DefaultAddGatewayFeature(fp) {
+		return new AddGatewayFeature<ComplexGateway>(fp) {
 			@Override
 			protected void decorateGateway(ContainerShape container, BPMNShape bpmnShape) {
 				GraphicsUtil.createGatewayAsterisk(container);
@@ -49,15 +51,10 @@ public class ComplexGatewayFeatureContainer extends AbstractGatewayFeatureContai
 		};
 	}
 
-	public class CreateComplexGatewayFeature extends AbstractCreateGatewayFeature {
+	public class CreateComplexGatewayFeature extends AbstractCreateGatewayFeature<ComplexGateway> {
 
 		public CreateComplexGatewayFeature(IFeatureProvider fp) {
 			super(fp, "Complex Gateway", "Used for modeling complex synchronization behavior");
-		}
-
-		@Override
-		protected ComplexGateway createFlowElement(ICreateContext context) {
-			return Bpmn2ModelerFactory.create(ComplexGateway.class);
 		}
 
 		@Override
@@ -69,8 +66,8 @@ public class ComplexGatewayFeatureContainer extends AbstractGatewayFeatureContai
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return ComplexGateway.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getComplexGateway();
 		}
 	}
 }

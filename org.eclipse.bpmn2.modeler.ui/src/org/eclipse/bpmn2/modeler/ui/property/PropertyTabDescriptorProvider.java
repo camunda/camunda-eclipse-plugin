@@ -39,7 +39,7 @@ public class PropertyTabDescriptorProvider implements ITabDescriptorProvider {
 		TargetRuntime rt = TargetRuntime.getDefaultRuntime();
 		Object bpmn2Editor = part.getAdapter(BPMN2Editor.class);
 		if (bpmn2Editor instanceof BPMN2Editor) {
-			rt = ((BPMN2Editor)bpmn2Editor).getTargetRuntime();
+			rt = ((BPMN2Editor)bpmn2Editor).getTargetRuntime(this);
 		}
 		
 		List<Bpmn2TabDescriptor> desc = rt.getTabDescriptors();

@@ -16,7 +16,7 @@ import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 
-public abstract class AbstractCreateTaskFeature extends AbstractCreateFlowElementFeature<Task> {
+public abstract class AbstractCreateTaskFeature<T extends Task> extends AbstractCreateFlowElementFeature<T> {
 
 	public AbstractCreateTaskFeature(IFeatureProvider fp, String name, String description) {
 	    super(fp, name, description);

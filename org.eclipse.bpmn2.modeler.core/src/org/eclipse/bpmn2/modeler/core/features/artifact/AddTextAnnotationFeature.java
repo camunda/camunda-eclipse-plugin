@@ -31,7 +31,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeCreateService;
 
-public class AddTextAnnotationFeature extends AbstractAddBPMNShapeFeature {
+public class AddTextAnnotationFeature extends AbstractAddBPMNShapeFeature<TextAnnotation> {
 
 	public AddTextAnnotationFeature(IFeatureProvider fp) {
 		super(fp);
@@ -39,7 +39,7 @@ public class AddTextAnnotationFeature extends AbstractAddBPMNShapeFeature {
 
 	@Override
 	public boolean canAdd(IAddContext context) {
-		boolean isAnnotation = context.getNewObject() instanceof TextAnnotation;
+		boolean isAnnotation = getBusinessObject(context) instanceof TextAnnotation;
 		boolean intoDiagram = context.getTargetContainer() instanceof Diagram;
 		boolean intoLane = FeatureSupport.isTargetLane(context) && FeatureSupport.isTargetLaneOnTop(context);
 		boolean intoSubProcess = FeatureSupport.isTargetSubProcess(context);
@@ -50,7 +50,7 @@ public class AddTextAnnotationFeature extends AbstractAddBPMNShapeFeature {
 
 	@Override
 	public PictogramElement add(IAddContext context) {
-		TextAnnotation annotation = (TextAnnotation) context.getNewObject();
+		TextAnnotation annotation = getBusinessObject(context);
 
 		IPeCreateService peCreateService = Graphiti.getPeCreateService();
 		ContainerShape containerShape = peCreateService.createContainerShape(context.getTargetContainer(), true);

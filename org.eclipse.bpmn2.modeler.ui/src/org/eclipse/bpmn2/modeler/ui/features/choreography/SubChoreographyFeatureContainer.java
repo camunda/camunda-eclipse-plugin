@@ -16,13 +16,16 @@ import static org.eclipse.bpmn2.modeler.core.features.choreography.ChoreographyP
 
 import java.util.List;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.ChoreographyLoopType;
+import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.SubChoreography;
 import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.core.features.choreography.LayoutChoreographyFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -79,14 +82,6 @@ public class SubChoreographyFeatureContainer extends AbstractChoreographyFeature
 		}
 
 		@Override
-		protected SubChoreography createFlowElement(ICreateContext context) {
-			SubChoreography subChoreography = Bpmn2ModelerFactory.create(SubChoreography.class);
-			subChoreography.setName("Sub-Choreography");
-			subChoreography.setLoopType(ChoreographyLoopType.NONE);
-			return subChoreography;
-		}
-
-		@Override
 		public String getStencilImageId() {
 			return ImageProvider.IMG_16_CHOREOGRAPHY_TASK;
 		}
@@ -95,8 +90,8 @@ public class SubChoreographyFeatureContainer extends AbstractChoreographyFeature
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return SubChoreography.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getSubChoreography();
 		}
 	}
 }

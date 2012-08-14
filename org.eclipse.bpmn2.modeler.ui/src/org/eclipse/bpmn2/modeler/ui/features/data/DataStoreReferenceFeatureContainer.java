@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.DataStore;
 import org.eclipse.bpmn2.DataStoreReference;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
@@ -32,6 +33,7 @@ import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.modeler.ui.features.LayoutBaseElementTextFeature;
 import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -77,7 +79,7 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AbstractAddBPMNShapeFeature(fp) {
+		return new AbstractAddBPMNShapeFeature<DataStoreReference>(fp) {
 
 			@Override
 			public boolean canAdd(IAddContext context) {
@@ -88,7 +90,7 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 			public PictogramElement add(IAddContext context) {
 				IGaService gaService = Graphiti.getGaService();
 				IPeService peService = Graphiti.getPeService();
-				DataStoreReference store = (DataStoreReference) context.getNewObject();
+				DataStoreReference store = getBusinessObject(context);
 
 				int width = this.getWidth();
 				int height = this.getHeight();
@@ -120,7 +122,7 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 				Polyline lineTop = gaService.createPolyline(invisibleRect, xy, bend);
 				lineTop.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 
-//				Shape textShape = peService.createShape(container, false);
+//				Shape textShape = peService.createShape(control, false);
 //				peService
 //						.setPropertyValue(textShape, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
 //				Text text = gaService.createDefaultText(getDiagram(), textShape, store.getName());
@@ -230,7 +232,24 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 		}
 
 		@Override
-		protected DataStoreReference createFlowElement(ICreateContext context) {
+		public String getStencilImageId() {
+			return ImageProvider.IMG_16_DATA_STORE;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature
+		 * #getFlowElementClass()
+		 */
+		@Override
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getDataStoreReference();
+		}
+
+		@Override
+		public DataStoreReference createBusinessObject(ICreateContext context) {
 			// NOTE: this is slightly different from DataObject/DataObjectReference:
 			// Both DataObject and DataObjectReference instances are contained in some FlowElementContainer
 			// (e.g. a Process) whereas DataStore instances are contained in the root element "Definitions".
@@ -239,10 +258,10 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 			// which is the target of the ICreateContext. In addition, if the new DataStoreReference refers
 			// to a new DataStore, one is created and added to Definitions.
 			// 
-			DataStoreReference dataStoreReference = null;
+			DataStoreReference bo = null;
 			try {
 				ModelHandler mh = ModelHandler.getInstance(getDiagram());
-				dataStoreReference = Bpmn2ModelerFactory.create(DataStoreReference.class);
+				bo = Bpmn2ModelerFactory.create(DataStoreReference.class);
 
 				DataStore dataStore = Bpmn2ModelerFactory.create(DataStore.class);
 				dataStore.setName("Create a new Data Store");
@@ -268,32 +287,17 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 					mh.addRootElement(dataStore);
 					ModelUtil.setID(dataStore);
 					dataStore.setName(ModelUtil.toDisplayName(dataStore.getId()));
-					dataStoreReference.setName(dataStore.getName());
+					bo.setName(dataStore.getName());
 				} else
-					dataStoreReference.setName(result.getName() + " Ref");
+					bo.setName(result.getName() + " Ref");
 
-				dataStoreReference.setDataStoreRef(result);
+				bo.setDataStoreRef(result);
+				putBusinessObject(context, bo);
+
 			} catch (IOException e) {
 				Activator.showErrorWithLogging(e);
 			}
-			return dataStoreReference;
-		}
-
-		@Override
-		public String getStencilImageId() {
-			return ImageProvider.IMG_16_DATA_STORE;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature
-		 * #getFlowElementClass()
-		 */
-		@Override
-		public Class getBusinessObjectClass() {
-			return DataStoreReference.class;
+			return bo;
 		}
 	}
 

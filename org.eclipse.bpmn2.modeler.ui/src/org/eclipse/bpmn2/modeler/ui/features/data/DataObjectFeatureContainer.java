@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.DataObjectReference;
 import org.eclipse.bpmn2.FlowElement;
@@ -32,6 +33,7 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -167,12 +169,22 @@ public class DataObjectFeatureContainer extends AbstractDataFeatureContainer {
 					"Provides information about what activities require to be performed or what they produce");
 		}
 
+		@Override
+		public String getStencilImageId() {
+			return ImageProvider.IMG_16_DATA_OBJECT;
+		}
+
 		/* (non-Javadoc)
-		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#createFlowElement(org.eclipse.graphiti.features.context.ICreateContext)
-		 * @code org.eclipse.bpmn2.modeler.ui.features.data.DataStoreReferenceFeatureContainer
+		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		protected FlowElement createFlowElement(ICreateContext context) {
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getDataObject();
+		}
+
+		@Override
+		public FlowElement createBusinessObject(ICreateContext context) {
+			FlowElement bo = null;
 			try {
 				DataObjectReference dataObjectReference = null;
 				DataObject dataObject = null;
@@ -205,33 +217,21 @@ public class DataObjectFeatureContainer extends AbstractDataFeatureContainer {
 					dataObject.setIsCollection(false);
 					dataObject.setName(ModelUtil.toDisplayName(dataObject.getId()));
 					dataObjectReference.setName(dataObject.getName());
-					return dataObject;
+					bo = dataObject;
 				} else {
 					mh.addFlowElement(container,dataObjectReference);
 					ModelUtil.setID(dataObjectReference);
 					dataObjectReference.setName(result.getName() + " Ref");
 					dataObjectReference.setDataObjectRef(result);
 					dataObject = result;
-					return dataObjectReference;
+					bo = dataObjectReference;
 				}
+				putBusinessObject(context, bo);
 
 			} catch (IOException e) {
 				Activator.showErrorWithLogging(e);
 			}
-			return null;
-		}
-
-		@Override
-		public String getStencilImageId() {
-			return ImageProvider.IMG_16_DATA_OBJECT;
-		}
-
-		/* (non-Javadoc)
-		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
-		 */
-		@Override
-		public Class getBusinessObjectClass() {
-			return DataObject.class;
+			return bo;
 		}
 	}
 }

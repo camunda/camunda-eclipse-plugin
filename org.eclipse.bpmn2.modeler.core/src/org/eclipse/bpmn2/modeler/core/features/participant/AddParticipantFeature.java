@@ -34,7 +34,7 @@ import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeCreateService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class AddParticipantFeature extends AbstractAddBPMNShapeFeature {
+public class AddParticipantFeature extends AbstractAddBPMNShapeFeature<Participant> {
 
 	public static final String MULTIPLICITY = "multiplicity";
 	public static final int DEFAULT_POOL_WIDTH = 600;
@@ -46,14 +46,14 @@ public class AddParticipantFeature extends AbstractAddBPMNShapeFeature {
 
 	@Override
 	public boolean canAdd(IAddContext context) {
-		boolean isParticipant = context.getNewObject() instanceof Participant;
+		boolean isParticipant = getBusinessObject(context) instanceof Participant;
 		boolean addToDiagram = context.getTargetContainer() instanceof Diagram;
 		return isParticipant && addToDiagram;
 	}
 
 	@Override
 	public PictogramElement add(IAddContext context) {
-		Participant participant = (Participant) context.getNewObject();
+		Participant participant = getBusinessObject(context);
 		IGaService gaService = Graphiti.getGaService();
 		IPeService peService = Graphiti.getPeService();
 

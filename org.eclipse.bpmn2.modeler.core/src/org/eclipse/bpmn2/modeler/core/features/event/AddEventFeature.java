@@ -38,7 +38,8 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class AddEventFeature extends AbstractAddBPMNShapeFeature {
+public class AddEventFeature<T extends Event>
+	extends AbstractAddBPMNShapeFeature<T> {
 
 	public static final String EVENT_ELEMENT = "event.graphics.element";
 	public static final String EVENT_CIRCLE = "event.graphics.element.circle";
@@ -59,7 +60,7 @@ public class AddEventFeature extends AbstractAddBPMNShapeFeature {
 
 	@Override
 	public PictogramElement add(IAddContext context) {
-		Event e = (Event) context.getNewObject();
+		T e = getBusinessObject(context);
 
 		IGaService gaService = Graphiti.getGaService();
 		IPeService peService = Graphiti.getPeService();

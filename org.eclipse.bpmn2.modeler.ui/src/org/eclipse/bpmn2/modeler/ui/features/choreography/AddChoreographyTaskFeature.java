@@ -12,12 +12,13 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.choreography;
 
+import org.eclipse.bpmn2.ChoreographyTask;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
 
-public class AddChoreographyTaskFeature extends AddChoreographyFeature {
+public class AddChoreographyTaskFeature extends AddChoreographyActivityFeature<ChoreographyTask> {
 
 	public AddChoreographyTaskFeature(IFeatureProvider fp) {
 		super(fp);

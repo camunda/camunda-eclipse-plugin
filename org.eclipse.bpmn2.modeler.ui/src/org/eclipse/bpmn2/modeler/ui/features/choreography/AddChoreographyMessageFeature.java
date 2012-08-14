@@ -27,7 +27,6 @@ import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
-import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICustomContext;
@@ -179,7 +178,7 @@ public class AddChoreographyMessageFeature extends AbstractCustomFeature {
 						}
 						if (doit) {
 							if (result==message) { // the new one
-								message.setName( PropertyUtil.getDisplayName(message)); // ModelUtil.toDisplayName(message.getId()) );
+								message.setName( ModelUtil.getDisplayName(message)); // ModelUtil.toDisplayName(message.getId()) );
 								
 								mh.getDefinitions().getRootElements().add(result);
 							}

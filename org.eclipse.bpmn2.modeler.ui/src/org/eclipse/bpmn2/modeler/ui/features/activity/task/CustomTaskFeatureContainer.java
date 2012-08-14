@@ -1,5 +1,6 @@
 package org.eclipse.bpmn2.modeler.ui.features.activity.task;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.impl.TaskImpl;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.AbstractCreateTaskFeature;
@@ -8,6 +9,7 @@ import org.eclipse.bpmn2.modeler.core.features.activity.task.ICustomTaskFeature;
 import org.eclipse.bpmn2.modeler.core.runtime.CustomTaskDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.ui.diagram.BPMNFeatureProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -141,8 +143,8 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 		
 		if (fp instanceof BPMNFeatureProvider) {
 			// register this custom modelObject ID with the BPMNFeatureProvider;
-			// this will allow the feature provider to find the correct feature container class
-			// for this custom modelObject, instead of the generic "Task" feature container
+			// this will allow the feature provider to find the correct feature control class
+			// for this custom modelObject, instead of the generic "Task" feature control
 			BPMNFeatureProvider bfp = (BPMNFeatureProvider)fp;
 			try {
 				bfp.addFeatureContainer(this);
@@ -196,7 +198,7 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 	 * PictogramElement. This is necessary because the ID must be associated with the
 	 * PE in to allow our BPMNFeatureProvider to correctly identify the Custom Task.
 	 */
-	public class CreateCustomTaskFeature extends AbstractCreateTaskFeature {
+	public class CreateCustomTaskFeature extends AbstractCreateTaskFeature<Task> {
 
 		public CreateCustomTaskFeature(IFeatureProvider fp, String name, String description) {
 			super(fp, name, description);
@@ -228,9 +230,11 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 		}
 
 		@Override
-		protected Task createFlowElement(ICreateContext context) {
+		public Task createBusinessObject(ICreateContext context) {
 			EObject target = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(context.getTargetContainer());
-			return (Task)customTaskDescriptor.createObject(target);
+			Task task = (Task)customTaskDescriptor.createObject(target);
+			putBusinessObject(context, task);
+			return task;
 		}
 		
 		@Override
@@ -243,13 +247,13 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		public Class<Task> getBusinessObjectClass() {
-			return Task.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getTask();
 		}
 		
 	}
 
-	public class AddCustomTaskFeature extends AddTaskFeature {
+	public class AddCustomTaskFeature extends AddTaskFeature<Task> {
 
 		/**
 		 * @param fp

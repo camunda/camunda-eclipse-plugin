@@ -12,8 +12,13 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.flow;
 
+import java.io.IOException;
+
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.InteractionNode;
+import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementConnectionFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractAddFlowFeature;
@@ -22,6 +27,7 @@ import org.eclipse.bpmn2.modeler.core.features.flow.AbstractReconnectFlowFeature
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
@@ -29,6 +35,7 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReconnectionFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.ICreateConnectionContext;
+import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.context.IReconnectionContext;
 import org.eclipse.graphiti.features.context.impl.AddConnectionContext;
 import org.eclipse.graphiti.features.context.impl.CreateConnectionContext;
@@ -54,7 +61,7 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AbstractAddFlowFeature(fp) {
+		return new AbstractAddFlowFeature<Association>(fp) {
 
 			@Override
 			public PictogramElement add(IAddContext context) {
@@ -96,7 +103,7 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 					AddConnectionContext newContext = new AddConnectionContext(sourceAnchor, targetAnchor);
 					newContext.setSize(ac.getHeight(), ac.getWidth());
 					newContext.setLocation(ac.getX(), ac.getY());
-					newContext.setNewObject(ac.getNewObject());
+					newContext.setNewObject(getBusinessObject(ac));
 					newContext.setTargetConnection(ac.getTargetConnection());
 					newContext.setTargetConnectionDecorator(ac.getTargetConnectionDecorator());
 					newContext.setTargetContainer(ac.getTargetContainer());
@@ -145,7 +152,7 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 		return new ReconnectAssociationFeature(fp);
 	}
 
-	public class CreateAssociationFeature extends AbstractCreateFlowFeature<BaseElement, BaseElement> {
+	public class CreateAssociationFeature extends AbstractCreateFlowFeature<Association, BaseElement, BaseElement> {
 
 		public CreateAssociationFeature(IFeatureProvider fp) {
 			super(fp, "Association", "Associate information with artifacts and flow objects");
@@ -202,11 +209,6 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 		}
 
 		@Override
-		protected BaseElement createFlow(ModelHandler mh, BaseElement source, BaseElement target) {
-			return mh.createAssociation(source, target);
-		}
-
-		@Override
 		protected BaseElement getSourceBo(ICreateConnectionContext context) {
 			Anchor anchor = context.getSourceAnchor();
 			if (anchor != null && anchor.getParent() instanceof Shape) {
@@ -238,8 +240,25 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature#getBusinessObjectClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return Association.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getAssociation();
+		}
+
+		@Override
+		public Association createBusinessObject(ICreateConnectionContext context) {
+			Association bo = null;
+			try {
+				ModelHandler mh = ModelHandler.getInstance(getDiagram());
+				BaseElement source = getSourceBo(context);
+				BaseElement target = getTargetBo(context);
+				bo = mh.createAssociation(source, target);
+				putBusinessObject(context, bo);
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return bo;
 		}
 	}
 	

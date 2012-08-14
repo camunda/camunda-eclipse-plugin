@@ -21,7 +21,7 @@ import org.eclipse.emf.common.notify.AdapterFactory;
  * @author Bob Brodt
  *
  */
-public class CompensateEventDefinitionPropertiesAdapter extends RootElementPropertiesAdapter<CompensateEventDefinition> {
+public class CompensateEventDefinitionPropertiesAdapter extends EventDefinitionPropertiesAdapter<CompensateEventDefinition> {
 
 	/**
 	 * @param adapterFactory
@@ -29,8 +29,8 @@ public class CompensateEventDefinitionPropertiesAdapter extends RootElementPrope
 	 */
 	public CompensateEventDefinitionPropertiesAdapter(AdapterFactory adapterFactory, CompensateEventDefinition object) {
 		super(adapterFactory, object);
-    	setProperty(Bpmn2Package.COMPENSATE_EVENT_DEFINITION__ACTIVITY_REF, UI_CAN_CREATE_NEW, Boolean.FALSE);
-    	setProperty(Bpmn2Package.COMPENSATE_EVENT_DEFINITION__ACTIVITY_REF, UI_CAN_EDIT, Boolean.FALSE);
+    	setProperty(Bpmn2Package.eINSTANCE.getCompensateEventDefinition_ActivityRef(), UI_CAN_CREATE_NEW, Boolean.FALSE);
+    	setProperty(Bpmn2Package.eINSTANCE.getCompensateEventDefinition_ActivityRef(), UI_CAN_EDIT, Boolean.FALSE);
 	}
 
 }

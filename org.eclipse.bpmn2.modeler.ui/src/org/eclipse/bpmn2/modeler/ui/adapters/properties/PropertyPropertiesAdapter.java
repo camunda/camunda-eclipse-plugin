@@ -28,7 +28,6 @@ import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
 import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.MultiInstanceLoopCharacteristicsPropertiesAdapter.LoopCharacteristicsDataInputFeatureDescriptor;
-import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -73,10 +72,10 @@ public class PropertyPropertiesAdapter extends ItemAwareElementPropertiesAdapter
 							break;
 					}
 					else if (container instanceof Activity || container instanceof Process) {
-						text = PropertyUtil.getDisplayName(container) + "/" + text;
+						text = ModelUtil.getDisplayName(container) + "/" + text;
 					}
 					else if (container instanceof CatchEvent || container instanceof ThrowEvent) {
-						text = PropertyUtil.getDisplayName(container) + "/" + text;
+						text = ModelUtil.getDisplayName(container) + "/" + text;
 					}
 					container = container.eContainer();
 				}

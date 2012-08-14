@@ -17,9 +17,10 @@ package org.eclipse.bpmn2.modeler.ui.property.tasks;
 
 import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractBpmn2PropertySection;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractDetailComposite;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractListComposite;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.swt.widgets.Composite;
@@ -64,11 +65,10 @@ public class IoParametersDetailComposite extends AbstractDetailComposite {
 	public void createBindings(final EObject be) {
 		final EStructuralFeature ioSpecificationFeature = be.eClass().getEStructuralFeature("ioSpecification");
 		if (ioSpecificationFeature != null) {
-			// the container parameter must be an Activity or CallableElement (i.e. a Process or GlobalTask)
+			// the control parameter must be an Activity or CallableElement (i.e. a Process or GlobalTask)
 			InputOutputSpecification ioSpecification = (InputOutputSpecification)be.eGet(ioSpecificationFeature);
 			if (ioSpecification==null) {
-				ioSpecification = FACTORY.createInputOutputSpecification();
-				InsertionAdapter.add(be, "ioSpecification", ioSpecification);
+				ioSpecification = (InputOutputSpecification) ModelUtil.createFeature(be,ioSpecificationFeature);
 			}
 
 			EStructuralFeature dataInputsFeature = getFeature(ioSpecification, "dataInputs");
@@ -82,7 +82,7 @@ public class IoParametersDetailComposite extends AbstractDetailComposite {
 			outputTable.setTitle("Output Parameters");
 		}
 		else {
-			// the container is a ThrowEvent
+			// the control is a ThrowEvent
 		}
 	}
 }

@@ -12,14 +12,18 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.flow;
 
+import java.io.IOException;
 import java.util.Iterator;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.ComplexGateway;
 import org.eclipse.bpmn2.ExclusiveGateway;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.InclusiveGateway;
+import org.eclipse.bpmn2.InteractionNode;
+import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
@@ -33,6 +37,7 @@ import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
@@ -42,6 +47,8 @@ import org.eclipse.graphiti.features.IReason;
 import org.eclipse.graphiti.features.IReconnectionFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.features.context.ICreateConnectionContext;
+import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.impl.AbstractUpdateFeature;
 import org.eclipse.graphiti.features.impl.Reason;
@@ -72,7 +79,7 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AbstractAddFlowFeature(fp) {
+		return new AbstractAddFlowFeature<MessageFlow>(fp) {
 			@Override
 			protected Class<? extends BaseElement> getBoClass() {
 				return SequenceFlow.class;
@@ -132,7 +139,7 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 		return null;
 	}
 
-	public static class CreateSequenceFlowFeature extends AbstractCreateFlowFeature<FlowNode, FlowNode> {
+	public static class CreateSequenceFlowFeature extends AbstractCreateFlowFeature<SequenceFlow, FlowNode, FlowNode> {
 
 		public CreateSequenceFlowFeature(IFeatureProvider fp) {
 			super(fp, "Sequence Flow",
@@ -142,13 +149,6 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_SEQUENCE_FLOW;
-		}
-
-		@Override
-		protected BaseElement createFlow(ModelHandler mh, FlowNode source, FlowNode target) {
-			SequenceFlow flow = mh.createSequenceFlow(source, target);
-			flow.setName("");
-			return flow;
 		}
 
 		@Override
@@ -165,8 +165,26 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature#getBusinessObjectClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return SequenceFlow.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getSequenceFlow();
+		}
+
+		@Override
+		public SequenceFlow createBusinessObject(ICreateConnectionContext context) {
+			SequenceFlow bo = null;
+			try {
+				ModelHandler mh = ModelHandler.getInstance(getDiagram());
+				FlowNode source = getSourceBo(context);
+				FlowNode target = getTargetBo(context);
+				bo = mh.createSequenceFlow(source, target);
+				bo.setName("");
+				putBusinessObject(context, bo);
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return bo;
 		}
 	}
 

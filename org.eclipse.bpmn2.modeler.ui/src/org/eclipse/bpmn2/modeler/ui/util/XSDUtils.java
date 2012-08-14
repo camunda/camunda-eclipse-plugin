@@ -759,7 +759,7 @@ public class XSDUtils {
 	 * @param xsdType
 	 * @param returnPrimitiveParents if true, and if type is an anonymous restriction of an xsd primitive 
 	 * type, this method will return the name of the parent primitive type.  If false, restrictions of 
-	 * primitive types will not be treated differently from other types, and their container hierarchy will
+	 * primitive types will not be treated differently from other types, and their control hierarchy will
 	 * be walked, instead of their inheritance hierarchy.  
 	 * @return
 	 */
@@ -769,7 +769,7 @@ public class XSDUtils {
 		
 		
 		
-		// Does type have a name?  If not, walk up the container tree to try and find one
+		// Does type have a name?  If not, walk up the control tree to try and find one
 		if(type.getName() == null || type.getName().length() == 0) {
 			
 			// In the special case where type is a restriction on a primitive type, just return the parent's
@@ -786,7 +786,7 @@ public class XSDUtils {
 				}
 				container = container.eContainer();
 			}
-			// Type doesn't have a name, or a container with a name, nothing useful
+			// Type doesn't have a name, or a control with a name, nothing useful
 			return null;
 		} else
 			return type.getName();

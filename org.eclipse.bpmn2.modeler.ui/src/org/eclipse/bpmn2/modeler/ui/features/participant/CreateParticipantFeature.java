@@ -103,7 +103,19 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature {
 	 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
 	 */
 	@Override
-	public Class getBusinessObjectClass() {
-		return Participant.class;
+	public EClass getBusinessObjectClass() {
+		return Bpmn2Package.eINSTANCE.getParticipant();
+	}
+
+	@Override
+	public Participant createBusinessObject(ICreateContext context) {
+        BPMNDiagram bpmnDiagram = BusinessObjectUtil.getFirstElementOfType(context.getTargetContainer(), BPMNDiagram.class);
+        Definitions definitions = ModelUtil.getDefinitions(bpmnDiagram);
+        Participant bo = (Participant) ModelUtil.createObject(definitions.eResource(), Bpmn2Package.eINSTANCE.getParticipant());
+        ModelUtil.setID(bo,definitions.eResource());
+        bo.setName( ModelUtil.toDisplayName(bo.getId()) );
+		putBusinessObject(context, bo);
+
+        return bo;
 	}
 }

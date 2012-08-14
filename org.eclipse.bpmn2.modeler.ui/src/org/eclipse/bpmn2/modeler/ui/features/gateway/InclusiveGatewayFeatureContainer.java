@@ -12,15 +12,18 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.gateway;
 
+import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.ExclusiveGateway;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.InclusiveGateway;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.features.gateway.AbstractCreateGatewayFeature;
-import org.eclipse.bpmn2.modeler.core.features.gateway.DefaultAddGatewayFeature;
+import org.eclipse.bpmn2.modeler.core.features.gateway.AddGatewayFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -37,7 +40,7 @@ public class InclusiveGatewayFeatureContainer extends AbstractGatewayFeatureCont
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new DefaultAddGatewayFeature(fp) {
+		return new AddGatewayFeature<InclusiveGateway>(fp) {
 			@Override
 			protected void decorateGateway(ContainerShape container, BPMNShape bpmnShape) {
 				Ellipse ellipse = GraphicsUtil.createGatewayOuterCircle(container);
@@ -51,15 +54,10 @@ public class InclusiveGatewayFeatureContainer extends AbstractGatewayFeatureCont
 		return new CreateInclusiveGatewayFeature(fp);
 	}
 
-	public static class CreateInclusiveGatewayFeature extends AbstractCreateGatewayFeature {
+	public static class CreateInclusiveGatewayFeature extends AbstractCreateGatewayFeature<InclusiveGateway> {
 
 		public CreateInclusiveGatewayFeature(IFeatureProvider fp) {
 			super(fp, "Inclusive Gateway", "Used for creating alternative button also parallel paths");
-		}
-
-		@Override
-		protected Gateway createFlowElement(ICreateContext context) {
-			return Bpmn2ModelerFactory.create(InclusiveGateway.class);
 		}
 
 		@Override
@@ -71,8 +69,8 @@ public class InclusiveGatewayFeatureContainer extends AbstractGatewayFeatureCont
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return InclusiveGateway.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getInclusiveGateway();
 		}
 	}
 }

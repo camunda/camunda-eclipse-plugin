@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity.task;
 
+import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.IntermediateThrowEvent;
 import org.eclipse.bpmn2.ManualTask;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.AbstractCreateTaskFeature;
@@ -19,6 +21,7 @@ import org.eclipse.bpmn2.modeler.core.features.activity.task.AddTaskFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -42,7 +45,7 @@ public class ManualTaskFeatureContainer extends AbstractTaskFeatureContainer {
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddTaskFeature(fp) {
+		return new AddTaskFeature<ManualTask>(fp) {
 			@Override
 			protected void decorateActivityRectangle(RoundedRectangle rect) {
 				IGaService service = Graphiti.getGaService();
@@ -52,18 +55,11 @@ public class ManualTaskFeatureContainer extends AbstractTaskFeatureContainer {
 		};
 	}
 
-	public static class CreateManualTaskFeature extends AbstractCreateTaskFeature {
+	public static class CreateManualTaskFeature extends AbstractCreateTaskFeature<ManualTask> {
 
 		public CreateManualTaskFeature(IFeatureProvider fp) {
 			super(fp, "Manual Task",
 					"Task that is expected to perform without the aid of any business process execution engine or any application");
-		}
-
-		@Override
-		protected Task createFlowElement(ICreateContext context) {
-			ManualTask task = Bpmn2ModelerFactory.create(ManualTask.class);
-			task.setName("Manual Task");
-			return task;
 		}
 
 		@Override
@@ -75,8 +71,8 @@ public class ManualTaskFeatureContainer extends AbstractTaskFeatureContainer {
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return ManualTask.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getManualTask();
 		}
 	}
 }

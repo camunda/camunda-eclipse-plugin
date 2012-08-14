@@ -22,6 +22,10 @@ import java.util.List;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterRegistry;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractBpmn2PropertySection;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractDetailComposite;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultDetailComposite;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
@@ -178,6 +182,10 @@ public class AdvancedDetailComposite extends AbstractDetailComposite {
 		sashForm.setWeights(new int[] { 1, 2 });
 	}
 
+	public AdvancedDetailComposite(Composite parent, int style) {
+		super(parent,style);
+	}
+
 	private void saveChildren(Control parent) {
 		myChildren.add(parent);
 		if (parent instanceof Composite) {
@@ -238,7 +246,7 @@ public class AdvancedDetailComposite extends AbstractDetailComposite {
 
 			detailsDetailComposite.setBusinessObject(obj);
 
-			String name = PropertyUtil.getDisplayName(obj);
+			String name = ModelUtil.getDisplayName(obj);
 			detailsSection.setText(name+" Details");
 			detailsSection.setVisible(true);
 
@@ -291,7 +299,7 @@ public class AdvancedDetailComposite extends AbstractDetailComposite {
 			treeViewer.setInput(be);
 		
 		hookPropertySheetPageMenu();
-		treeSection.setText(PropertyUtil.getDisplayName(be));
+		treeSection.setText(ModelUtil.getDisplayName(be));
 
 		detailsSection.setVisible(true);
 	}
@@ -310,7 +318,8 @@ public class AdvancedDetailComposite extends AbstractDetailComposite {
 		Tree tree = treeViewer.getTree();
 		Menu menu = manager.createContextMenu(tree);
 		tree.setMenu(menu);
-		propertySection.tabbedPropertySheetPage.getSite().registerContextMenu("#PropertiesMenu", manager, treeViewer);
+		getPropertySection().getTabbedPropertySheetPage().
+			getSite().registerContextMenu("#PropertiesMenu", manager, treeViewer);
 	}
 
 	protected void buildMenu(MenuManager manager) {

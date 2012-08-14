@@ -24,7 +24,7 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
 
-public abstract class AbstractCreateRootElementFeature extends AbstractBpmn2CreateFeature {
+public abstract class AbstractCreateRootElementFeature<T extends RootElement> extends AbstractBpmn2CreateFeature<T> {
 
 	public AbstractCreateRootElementFeature(IFeatureProvider fp, String name, String description) {
 	    super(fp, name, description);
@@ -41,8 +41,7 @@ public abstract class AbstractCreateRootElementFeature extends AbstractBpmn2Crea
 		
 		try {
 			ModelHandler handler = ModelHandlerLocator.getModelHandler(getDiagram().eResource());
-			element = createRootElement();
-//			element.setId(EcoreUtil.generateUUID());
+			element = createBusinessObject(context);
 			handler.addRootElement(element);
 			ModelUtil.setID(element);
 		} catch (IOException e) {
@@ -52,8 +51,6 @@ public abstract class AbstractCreateRootElementFeature extends AbstractBpmn2Crea
 		addGraphicalRepresentation(context, element);
 		return new Object[] { element };
     }
-	
-	public abstract RootElement createRootElement();
 	
 	protected abstract String getStencilImageId();
 	

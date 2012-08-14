@@ -35,7 +35,8 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public abstract class AbstractAddFlowFeature extends AbstractAddBPMNShapeFeature {
+public abstract class AbstractAddFlowFeature<T extends BaseElement>
+	extends AbstractAddBPMNShapeFeature<T> {
 
 	public AbstractAddFlowFeature(IFeatureProvider fp) {
 		super(fp);
@@ -44,15 +45,18 @@ public abstract class AbstractAddFlowFeature extends AbstractAddBPMNShapeFeature
 	@Override
 	public boolean canAdd(IAddContext context) {
 		return context instanceof IAddConnectionContext
-				&& getBoClass().isAssignableFrom(context.getNewObject().getClass());
+				&& getBoClass().isAssignableFrom(getBusinessObject(context).getClass());
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.graphiti.func.IAdd#add(org.eclipse.graphiti.features.context.IAddContext)
+	 */
 	@Override
 	public PictogramElement add(IAddContext context) {
 		IPeService peService = Graphiti.getPeService();
 		IGaService gaService = Graphiti.getGaService();
 
-		BaseElement element = (BaseElement) context.getNewObject();
+		T element = getBusinessObject(context);
 		IAddConnectionContext addConContext = (IAddConnectionContext) context;
 
 		Connection connection = peService.createFreeFormConnection(getDiagram());

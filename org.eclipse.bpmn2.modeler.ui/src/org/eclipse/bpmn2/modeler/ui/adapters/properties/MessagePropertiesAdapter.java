@@ -14,6 +14,7 @@
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.Error;
 import org.eclipse.bpmn2.Message;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
@@ -21,6 +22,7 @@ import org.eclipse.bpmn2.modeler.ui.features.choreography.ChoreographyUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource;
 
 /**
  * @author Gary Brown
@@ -35,7 +37,7 @@ public class MessagePropertiesAdapter extends RootElementPropertiesAdapter<Messa
 	public MessagePropertiesAdapter(AdapterFactory adapterFactory, Message object) {
 		super(adapterFactory, object);
 		
-    	setObjectDescriptor(new ObjectDescriptor<Message>(adapterFactory, object) {
+    	setObjectDescriptor(new RootElementObjectDescriptor<Message>(adapterFactory, object) {
 			@Override
 			public String getDisplayName(Object context) {
 				final Message mesg = adopt(context);

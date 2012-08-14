@@ -121,7 +121,7 @@ public abstract class AbstractRotateContainerFeature extends AbstractCustomFeatu
 			gaService.setLocationAndSize(ga, y, x, width, height);
 			
 			// TODO: also swap x and y of connection bendpoints: connection bendpoint
-			// coordinates are relative to the diagram not the container figure
+			// coordinates are relative to the diagram not the control figure
 			// (i.e. the Lane in this case)
 			ILocation loc = Graphiti.getLayoutService().getLocationRelativeToDiagram(container.getContainer());
 			for (Anchor a : container.getAnchors()) {

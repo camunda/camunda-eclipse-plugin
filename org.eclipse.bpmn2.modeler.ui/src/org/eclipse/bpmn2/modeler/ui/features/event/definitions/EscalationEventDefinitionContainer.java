@@ -13,6 +13,8 @@
 package org.eclipse.bpmn2.modeler.ui.features.event.definitions;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.ErrorEventDefinition;
 import org.eclipse.bpmn2.EscalationEventDefinition;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
@@ -28,6 +30,7 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil.FillStyle;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -92,7 +95,7 @@ public class EscalationEventDefinitionContainer extends AbstractEventDefinitionF
 		return escalationShape;
 	}
 
-	public static class CreateEscalationEventDefinition extends CreateEventDefinition {
+	public static class CreateEscalationEventDefinition extends CreateEventDefinition<EscalationEventDefinition> {
 
 		public CreateEscalationEventDefinition(IFeatureProvider fp) {
 			super(fp, "Escalation Definition", "Adds escalation trigger to event");
@@ -124,11 +127,6 @@ public class EscalationEventDefinitionContainer extends AbstractEventDefinitionF
 		}
 
 		@Override
-		protected EventDefinition createEventDefinition(ICreateContext context) {
-			return Bpmn2ModelerFactory.create(EscalationEventDefinition.class);
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_ESCAlATION;
 		}
@@ -137,8 +135,8 @@ public class EscalationEventDefinitionContainer extends AbstractEventDefinitionF
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return EscalationEventDefinition.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getEscalationEventDefinition();
 		}
 	}
 }

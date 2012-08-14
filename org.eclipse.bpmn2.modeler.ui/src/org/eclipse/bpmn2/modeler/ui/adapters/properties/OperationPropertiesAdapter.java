@@ -31,7 +31,6 @@ public class OperationPropertiesAdapter extends ExtendedPropertiesAdapter<Operat
 	 */
 	public OperationPropertiesAdapter(AdapterFactory adapterFactory, Operation object) {
 		super(adapterFactory, object);
-
     	EStructuralFeature ref = Bpmn2Package.eINSTANCE.getOperation_InMessageRef();
     	setFeatureDescriptor(ref, new RootElementRefFeatureDescriptor<Operation>(adapterFactory,object,ref));
 

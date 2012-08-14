@@ -17,9 +17,10 @@ import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.PotentialOwner;
 import org.eclipse.bpmn2.ResourceAssignmentExpression;
 import org.eclipse.bpmn2.UserTask;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite;
-import org.eclipse.bpmn2.modeler.ui.property.editors.TextObjectEditor;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractBpmn2PropertySection;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractListComposite;
+import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.TextObjectEditor;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -49,14 +50,18 @@ public class JbpmUserTaskDetailComposite extends JbpmTaskDetailComposite {
 				ResourceAssignmentExpression resourceAssignment = null;
 				FormalExpression expression = null;
 				if (task.getResources().size() == 0) {
-					owner = getDiagramEditor().getModelHandler().createStandby(
-							task, PACKAGE.getActivity_Resources(), PotentialOwner.class);
-					resourceAssignment = getDiagramEditor().getModelHandler().createStandby(
-							owner, PACKAGE.getResourceRole_ResourceAssignmentExpression(),
-							ResourceAssignmentExpression.class);
-					expression = getDiagramEditor().getModelHandler().createStandby(
-							 resourceAssignment, PACKAGE.getResourceAssignmentExpression_Expression(),
-							 FormalExpression.class);
+					owner = (PotentialOwner) ModelUtil.createFeature( 
+							task,
+							PACKAGE.getActivity_Resources(),
+							PACKAGE.getPotentialOwner());
+					resourceAssignment = (ResourceAssignmentExpression) ModelUtil.createFeature( 
+							owner,
+							PACKAGE.getResourceRole_ResourceAssignmentExpression(),
+							PACKAGE.getResourceAssignmentExpression());
+					expression = (FormalExpression) ModelUtil.createFeature( 
+							 resourceAssignment,
+							 PACKAGE.getResourceAssignmentExpression_Expression(),
+							 PACKAGE.getFormalExpression());
 				}
 				else if (task.getResources().get(0) instanceof PotentialOwner){
 					owner = (PotentialOwner)task.getResources().get(0);

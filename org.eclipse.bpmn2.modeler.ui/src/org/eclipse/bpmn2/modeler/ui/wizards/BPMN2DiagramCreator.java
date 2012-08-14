@@ -170,7 +170,6 @@ public class BPMN2DiagramCreator {
 	 * @return an IFile for the model file.
 	 */
 	public static IFile getModelFile(IPath fullPath) {
-		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(fullPath);
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getFile(fullPath).getProject();
 		int matchingSegments = project.getFullPath().matchingFirstSegments(fullPath);
 		int totalSegments = fullPath.segmentCount();
@@ -225,7 +224,7 @@ public class BPMN2DiagramCreator {
 	 * Check if the given folder is empty. This is true if it contains no files, or only
 	 * empty folders.
 	 *  
-	 * @param container - folder to check
+	 * @param control - folder to check
 	 * @return true if the folder is empty.
 	 */
 	public static boolean isEmptyFolder(IContainer container) {

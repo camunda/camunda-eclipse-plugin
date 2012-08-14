@@ -34,7 +34,8 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public abstract class AbstractAddActivityFeature extends AbstractAddBPMNShapeFeature {
+public abstract class AbstractAddActivityFeature<T extends Activity>
+	extends AbstractAddBPMNShapeFeature<T> {
 
 	public static final String ACTIVITY_DECORATOR = "activity-decorator";
 	public static final String IS_ACTIVITY = "activity";
@@ -55,7 +56,7 @@ public abstract class AbstractAddActivityFeature extends AbstractAddBPMNShapeFea
 
 	@Override
 	public PictogramElement add(IAddContext context) {
-		Activity activity = (Activity) context.getNewObject();
+		T activity = getBusinessObject(context);
 
 		IGaService gaService = Graphiti.getGaService();
 		IPeService peService = Graphiti.getPeService();
@@ -120,7 +121,7 @@ public abstract class AbstractAddActivityFeature extends AbstractAddBPMNShapeFea
 	protected void decorateActivityRectangle(RoundedRectangle rect) {
 	}
 
-	protected void hook(Activity activity, ContainerShape container, IAddContext context, int width, int height) {
+	protected void hook(T activity, ContainerShape container, IAddContext context, int width, int height) {
 	}
 
 	protected int getMarkerContainerOffset() {

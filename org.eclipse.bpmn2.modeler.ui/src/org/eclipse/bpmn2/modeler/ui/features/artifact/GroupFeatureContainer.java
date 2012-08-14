@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.ui.features.artifact;
 
 import org.eclipse.bpmn2.Artifact;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Group;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
@@ -25,6 +26,7 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
@@ -58,7 +60,7 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AbstractAddBPMNShapeFeature(fp) {
+		return new AbstractAddBPMNShapeFeature<Group>(fp) {
 
 			@Override
 			public boolean canAdd(IAddContext context) {
@@ -69,7 +71,7 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 			public PictogramElement add(IAddContext context) {
 				IGaService gaService = Graphiti.getGaService();
 				IPeService peService = Graphiti.getPeService();
-				Group group = (Group) context.getNewObject();
+				Group group = getBusinessObject(context);
 
 				int width = this.getWidth(context);
 				int height = this.getHeight(context);
@@ -127,7 +129,7 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 		return new DefaultResizeBPMNShapeFeature(fp);
 	}
 
-	public static class CreateGroupFeature extends AbstractCreateArtifactFeature {
+	public static class CreateGroupFeature extends AbstractCreateArtifactFeature<Group> {
 
 		public CreateGroupFeature(IFeatureProvider fp) {
 			super(fp, "Group", "Visually groups elements");
@@ -139,14 +141,6 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 		}
 
 		@Override
-		public Artifact createArtifact(ICreateContext context) {
-			Group group = Bpmn2ModelerFactory.create(Group.class);
-//			group.setId(EcoreUtil.generateUUID());
-			ModelUtil.setID(group);
-			return group;
-		}
-
-		@Override
 		public String getStencilImageId() {
 			return ImageProvider.IMG_16_GROUP;
 		}
@@ -155,8 +149,8 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return Group.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getGroup();
 		}
 	}
 

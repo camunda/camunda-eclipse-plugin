@@ -153,8 +153,7 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 	
 	protected EClass selectNewObjectType(EObject oldObject) {
 		ModelEnablementDescriptor enablements = TargetRuntime.getCurrentRuntime().getModelEnablements(oldObject);
-		String name = getBusinessObjectClass().getSimpleName();
-		EClass newType = (EClass) Bpmn2Package.eINSTANCE.getEClassifier(name);
+		EClass newType = getBusinessObjectClass();
 
 		// build a list of possible subclasses for the popup menu
 		List<EClass> subtypes = new ArrayList<EClass>();
@@ -220,9 +219,9 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 		
 		ContainerShape containerShape = oldShape.getContainer();
 		if (containerShape!=getDiagram()) {
-			// we are adding a new shape to a container (e.g a SubProcess)
+			// we are adding a new shape to a control (e.g a SubProcess)
 			// so we need to adjust the location to be relative to the
-			// container instead of the diagram
+			// control instead of the diagram
 			loc = layoutService.getLocationRelativeToDiagram(containerShape);
 			xOffset = loc.getX();
 			yOffset = loc.getY();
@@ -348,6 +347,6 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 	/**
 	 * @return
 	 */
-	public abstract Class getBusinessObjectClass();
+	public abstract EClass getBusinessObjectClass();
 
 }

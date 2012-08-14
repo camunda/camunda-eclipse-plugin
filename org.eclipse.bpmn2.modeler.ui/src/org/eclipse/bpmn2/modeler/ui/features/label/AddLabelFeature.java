@@ -9,8 +9,8 @@ import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
-import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.impl.AbstractAddShapeFeature;
@@ -50,14 +50,14 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		int x = context.getX();
 		int y = context.getY();
 		
-		BaseElement baseElement = (BaseElement) context.getProperty(ContextConstants.BASE_ELEMENT);
+		BaseElement baseElement = (BaseElement) context.getProperty(ContextConstants.BUSINESS_OBJECT);
 		
 		final ContainerShape textContainerShape = peService.createContainerShape(getTargetContainer(context), true);
 		gaService.createInvisibleRectangle(textContainerShape);
 		
 		Shape textShape = peService.createShape(textContainerShape, false);
 		peService.setPropertyValue(textShape, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
-		String name = PropertyUtil.getDisplayName(baseElement);
+		String name = ModelUtil.getDisplayName(baseElement);
 		MultiText text = gaService.createDefaultMultiText(getDiagram(), textShape, name);
 		StyleUtil.applyStyle(text, baseElement);
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
@@ -85,14 +85,14 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 	}
 	
 	/**
-	 * Get the correct target container, boundary events need special handling, because we need to find a parent,
+	 * Get the correct target control, boundary events need special handling, because we need to find a parent,
 	 * where the label is visible.
 	 * 
 	 * @param context
-	 * @return the target container for the current context
+	 * @return the target control for the current context
 	 */
 	ContainerShape getTargetContainer(IAddContext context) {
-		boolean isBoundary = context.getProperty(ContextConstants.BASE_ELEMENT) instanceof BoundaryEvent;
+		boolean isBoundary = context.getProperty(ContextConstants.BUSINESS_OBJECT) instanceof BoundaryEvent;
 		
 		if ( isBoundary && !isImport(context) ){
 			if (context.getTargetContainer()!=null){

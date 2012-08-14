@@ -38,8 +38,8 @@ public class JbpmPropertyPropertiesAdapter extends PropertyPropertiesAdapter {
 	 */
 	public JbpmPropertyPropertiesAdapter(AdapterFactory adapterFactory, Property object) {
 		super(adapterFactory, object);
-    	setProperty(Bpmn2Package.PROPERTY__ITEM_SUBJECT_REF, UI_CAN_CREATE_NEW, Boolean.TRUE);
-    	setProperty(Bpmn2Package.PROPERTY__ITEM_SUBJECT_REF, UI_CAN_EDIT, Boolean.FALSE);
+    	setProperty(Bpmn2Package.eINSTANCE.getItemAwareElement_ItemSubjectRef(), UI_CAN_CREATE_NEW, Boolean.TRUE);
+    	setProperty(Bpmn2Package.eINSTANCE.getItemAwareElement_ItemSubjectRef(), UI_CAN_EDIT, Boolean.FALSE);
 
     	EStructuralFeature feature = Bpmn2Package.eINSTANCE.getItemAwareElement_ItemSubjectRef();
     	setFeatureDescriptor(feature,

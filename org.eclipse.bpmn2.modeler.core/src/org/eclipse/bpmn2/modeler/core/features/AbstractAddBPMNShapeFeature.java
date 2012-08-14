@@ -32,6 +32,7 @@ import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.di.DIImport;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractCreateFlowFeature;
+import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ObjectEditingDialog;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
@@ -42,12 +43,15 @@ import org.eclipse.dd.dc.DcFactory;
 import org.eclipse.dd.dc.Point;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.graphiti.IExecutionInfo;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
+import org.eclipse.graphiti.features.IFeatureAndContext;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReconnectionFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ITargetContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.CreateConnectionContext;
@@ -62,8 +66,11 @@ import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.ILayoutService;
+import org.eclipse.graphiti.ui.editor.DiagramEditor;
 
-public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeature {
+public abstract class AbstractAddBPMNShapeFeature<T extends BaseElement>
+	extends AbstractAddShapeFeature
+	implements IBpmn2AddFeature<T> {
 
 	public AbstractAddBPMNShapeFeature(IFeatureProvider fp) {
 		super(fp);
@@ -165,7 +172,7 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 		context.putProperty(ContextConstants.LABEL_CONTEXT, true);
 		context.putProperty(ContextConstants.WIDTH, width);
 		context.putProperty(ContextConstants.HEIGHT, height);
-		context.putProperty(ContextConstants.BASE_ELEMENT, context.getNewObject());
+		context.putProperty(ContextConstants.BUSINESS_OBJECT, getBusinessObject(context));
 	}
 	
 	protected void adjustLocation(IAddContext context, int width, int height) {
@@ -261,7 +268,7 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 			return;
 		}
 		
-		Object newObject = context.getNewObject();
+		Object newObject = getBusinessObject(context);
 		Connection connection = context.getTargetConnection();
 		if (connection!=null) {
 			// determine how to split the line depending on where the new object was dropped:
@@ -326,7 +333,7 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 				for (ICreateConnectionFeature cf : getFeatureProvider().getCreateConnectionFeatures()) {
 					if (cf instanceof AbstractCreateFlowFeature) {
 						AbstractCreateFlowFeature acf = (AbstractCreateFlowFeature) cf;
-						if (acf.getBusinessObjectClass().isAssignableFrom(baseElement.getClass())) {
+						if (acf.getBusinessObjectClass().isInstance(baseElement)) {
 							newConnection = acf.create(ccc);
 							DIUtils.updateDIEdge(newConnection);
 							break;
@@ -369,4 +376,21 @@ public abstract class AbstractAddBPMNShapeFeature extends AbstractAddShapeFeatur
 	
 	public abstract int getHeight();
 	public abstract int getWidth();
+
+	@Override
+	public T getBusinessObject(IAddContext context) {
+		Object businessObject = context.getProperty(ContextConstants.BUSINESS_OBJECT);
+		if (businessObject instanceof BaseElement)
+			return (T)businessObject;
+		return (T)context.getNewObject();
+	}
+
+	@Override
+	public void putBusinessObject(IAddContext context, T businessObject) {
+		context.putProperty(ContextConstants.BUSINESS_OBJECT, businessObject);
+	}
+
+	@Override
+	public void postExecute(IExecutionInfo executionInfo) {
+	}
 }

@@ -12,6 +12,9 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.DefaultResizeBPMNShapeFeature;
@@ -22,6 +25,8 @@ import org.eclipse.bpmn2.modeler.core.features.activity.UpdateActivityLoopAndMul
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractBoundaryEventOperation;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
+import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.CollapseSubProcessFeature;
+import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.ExpandSubProcessFeature;
 import org.eclipse.bpmn2.modeler.ui.features.event.AppendEventFeature;
 import org.eclipse.bpmn2.modeler.ui.features.gateway.AppendGatewayFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
@@ -78,10 +83,14 @@ public abstract class AbstractActivityFeatureContainer extends BaseElementFeatur
 
 	@Override
 	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
-		return new ICustomFeature[] {
-			new AppendActivityFeature(fp),
-			new AppendGatewayFeature(fp),
-			new AppendEventFeature(fp)
-		};
+		ICustomFeature[] superFeatures = super.getCustomFeatures(fp);
+		ICustomFeature[] thisFeatures = new ICustomFeature[3 + superFeatures.length];
+		int i;
+		for (i=0; i<superFeatures.length; ++i)
+			thisFeatures[i] = superFeatures[i];
+		thisFeatures[i++] = new AppendActivityFeature(fp);
+		thisFeatures[i++] = new AppendGatewayFeature(fp);
+		thisFeatures[i++] = new AppendEventFeature(fp);
+		return thisFeatures;
 	}
 }

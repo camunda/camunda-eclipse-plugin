@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.event;
 
+import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.InclusiveGateway;
 import org.eclipse.bpmn2.IntermediateCatchEvent;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractCreateEventFeature;
@@ -22,6 +24,7 @@ import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -54,7 +57,7 @@ public class IntermediateCatchEventFeatureContainer extends AbstractEventFeature
 	
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddEventFeature(fp) {
+		return new AddEventFeature<IntermediateCatchEvent>(fp) {
 			@Override
 			protected void decorateEllipse(Ellipse e) {
 				Ellipse circle = GraphicsUtil.createIntermediateEventCircle(e);
@@ -72,17 +75,10 @@ public class IntermediateCatchEventFeatureContainer extends AbstractEventFeature
 		};
 	}
 
-	public static class CreateIntermediateCatchEventFeature extends AbstractCreateEventFeature {
+	public static class CreateIntermediateCatchEventFeature extends AbstractCreateEventFeature<IntermediateCatchEvent> {
 
 		public CreateIntermediateCatchEventFeature(IFeatureProvider fp) {
 			super(fp, "Catch Event", "Token remains at the event until event trigger will occur");
-		}
-
-		@Override
-		protected IntermediateCatchEvent createFlowElement(ICreateContext context) {
-			IntermediateCatchEvent event = Bpmn2ModelerFactory.create(IntermediateCatchEvent.class);
-			event.setName("Catch");
-			return event;
 		}
 
 		@Override
@@ -94,8 +90,8 @@ public class IntermediateCatchEventFeatureContainer extends AbstractEventFeature
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return IntermediateCatchEvent.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getIntermediateCatchEvent();
 		}
 	}
 	

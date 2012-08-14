@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity.task;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.UserTask;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.AbstractCreateTaskFeature;
@@ -19,6 +20,7 @@ import org.eclipse.bpmn2.modeler.core.features.activity.task.AddTaskFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -42,7 +44,7 @@ public class UserTaskFeatureContainer extends AbstractTaskFeatureContainer {
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddTaskFeature(fp) {
+		return new AddTaskFeature<UserTask>(fp) {
 			@Override
 			protected void decorateActivityRectangle(RoundedRectangle rect) {
 				IGaService service = Graphiti.getGaService();
@@ -52,7 +54,7 @@ public class UserTaskFeatureContainer extends AbstractTaskFeatureContainer {
 		};
 	}
 
-	public static class CreateUserTaskFeature extends AbstractCreateTaskFeature {
+	public static class CreateUserTaskFeature extends AbstractCreateTaskFeature<UserTask> {
 
 		public CreateUserTaskFeature(IFeatureProvider fp) {
 			super(fp, "User Task",
@@ -60,13 +62,6 @@ public class UserTaskFeatureContainer extends AbstractTaskFeatureContainer {
 					+" performer performs the Task with the assistance of a"
 					+" software application and is scheduled through a modelObject"
 					+" list manager of some sort.");
-		}
-
-		@Override
-		protected Task createFlowElement(ICreateContext context) {
-			UserTask task = Bpmn2ModelerFactory.create(UserTask.class);
-			task.setName("User Task");
-			return task;
 		}
 
 		@Override
@@ -78,8 +73,8 @@ public class UserTaskFeatureContainer extends AbstractTaskFeatureContainer {
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return UserTask.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getUserTask();
 		}
 	}
 }

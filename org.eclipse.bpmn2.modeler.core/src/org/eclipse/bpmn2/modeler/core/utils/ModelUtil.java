@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.core.utils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -32,12 +33,15 @@ import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterRegistry;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
+import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.INamespaceMap;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceSetImpl;
+import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
@@ -63,6 +67,10 @@ import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.ui.editor.DiagramEditor;
+import org.eclipse.swt.SWTException;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.xsd.XSDAttributeDeclaration;
 import org.eclipse.xsd.XSDElementDeclaration;
 
@@ -288,13 +296,13 @@ public class ModelUtil {
 		EStructuralFeature feature = obj.eClass().getEStructuralFeature("name");
 		return feature!=null;
 	}
-	
+/*	
 	public static String getLabel(EObject object) {
 		if (object==null)
 			return "";
 		return toDisplayName(object.eClass().getName());
 	}
-	
+*/	
 	public static String toDisplayName(String anyName) {
 		// get rid of the "Impl" java suffix
 		anyName = anyName.replaceAll("Impl$", "");
@@ -584,6 +592,7 @@ public class ModelUtil {
 
 	public static EObject createStringWrapper(String value) {
 		DynamicEObjectImpl de = new DynamicEObjectImpl();
+		de.eSetClass(EcorePackage.eINSTANCE.getEObject());
 		de.eSetProxyURI(URI.createURI(value));
 		return de;
 	}
@@ -857,5 +866,329 @@ public class ModelUtil {
 			dummyObjects.put(eclass, object);
 		}
 		return object;
+	}
+
+	/*
+	 * Various model object and feature UI property methods
+	 */
+	public static String getLabel(Object object) {
+		String label = "";
+		if (object instanceof EObject) {
+			EObject eObject = (EObject)object;
+			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(eObject, ExtendedPropertiesAdapter.class);
+			if (adapter!=null)
+				label = adapter.getObjectDescriptor().getLabel(eObject);
+			else
+				label = toDisplayName( eObject.eClass().getName() );
+		}
+		else
+			label = object.toString();
+		label = label.replaceAll(" Ref$", "");
+		return label;
+	}
+
+	public static void setLabel(EObject object, EStructuralFeature feature, String label) {
+		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
+		if (adapter!=null)
+			adapter.getFeatureDescriptor(feature).setLabel(label);
+	}
+
+	public static String getLabel(EObject object, EStructuralFeature feature) {
+		String label = "";
+		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
+		if (adapter!=null)
+			label = adapter.getFeatureDescriptor(feature).getLabel(object);
+		else
+			label = toDisplayName( feature.getName() );
+		label = label.replaceAll(" Ref$", "");
+		return label;
+	}
+
+	public static String getDisplayName(Object object) {
+		if (object instanceof EObject) {
+			EObject eObject = (EObject)object;
+			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(eObject, ExtendedPropertiesAdapter.class);
+			if (adapter!=null)
+				return adapter.getObjectDescriptor().getDisplayName(eObject);
+			return getLongDisplayName(eObject);
+		}
+		return object==null ? null : object.toString();
+	}
+
+	public static String getDisplayName(EObject object, EStructuralFeature feature) {
+		if (feature==null)
+			return getDisplayName(object);
+		
+		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
+		if (adapter!=null)
+			return adapter.getFeatureDescriptor(feature).getDisplayName(object);
+		return getLongDisplayName(object, feature);
+	}
+
+	public static boolean getIsMultiLine(EObject object, EStructuralFeature feature) {
+		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
+		if (adapter!=null)
+			return adapter.getFeatureDescriptor(feature).isMultiLine(object);
+		return false;
+	}
+
+	public static Hashtable<String, Object> getChoiceOfValues(EObject object, EStructuralFeature feature) {
+		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
+		if (adapter!=null)
+			return adapter.getFeatureDescriptor(feature).getChoiceOfValues(object);
+		return null;
+	}
+
+	public static boolean setValue(TransactionalEditingDomain domain, final EObject object, final EStructuralFeature feature, final Object value) {
+		ExtendedPropertiesAdapter adapter = AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
+		Object oldValue = adapter==null ? object.eGet(feature) : adapter.getFeatureDescriptor(feature).getValue();
+		boolean valueChanged = (value != oldValue);
+		if (value!=null && oldValue!=null)
+			valueChanged = !value.equals(oldValue);
+		
+		if (valueChanged) {
+			try {
+				InsertionAdapter insertionAdapter = AdapterUtil.adapt(value, InsertionAdapter.class);
+				if (insertionAdapter!=null) {
+					// make sure the new object is added to its control first
+					// so that it inherits the control's Resource and EditingDomain
+					// before we try to change its value.
+					insertionAdapter.execute();
+				}
+				
+				if (isEmpty(value)){
+					domain.getCommandStack().execute(new RecordingCommand(domain) {
+						@Override
+						protected void doExecute() {
+							object.eUnset(feature);
+						}
+					});
+				}
+				else if (adapter!=null) { 			// use the Extended Properties adapter if there is one
+					adapter.getFeatureDescriptor(feature).setValue(value);
+				}
+				else {
+					// fallback is to set the new value here using good ol' EObject.eSet()
+					domain.getCommandStack().execute(new RecordingCommand(domain) {
+						@Override
+						protected void doExecute() {
+							object.eSet(feature, value);
+						}
+					});
+				}
+			} catch (Exception e) {
+				ErrorUtils.showErrorMessage(e.getMessage());
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static EObject createObject(Object object) {
+		return createObject(null,object);
+	}
+
+	public static EObject createObject(Resource resource, Object object) {
+		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
+		if (adapter!=null)
+			return adapter.getObjectDescriptor().createObject(resource, object);
+		return null;
+	}
+
+	public static EObject createFeature(EObject object, EStructuralFeature feature) {
+		return createFeature(object, feature, null);
+	}
+
+	public static EObject createFeature(EObject object, EStructuralFeature feature, EClass eclass) {
+		return createFeature(null, object, feature, eclass);
+	}
+
+	public static EObject createFeature(Resource resource, EObject object, EStructuralFeature feature, EClass eclass) {
+		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
+		if (adapter!=null)
+			return adapter.getFeatureDescriptor(feature).createFeature(resource, object, eclass);
+		return null;
+	}
+
+	public static boolean canEdit(EObject object, EStructuralFeature feature) {
+		if (feature.getEType() instanceof EClass) {
+			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
+			if (adapter!=null) {
+				Object result = adapter.getProperty(feature, ExtendedPropertiesAdapter.UI_CAN_EDIT);
+				if (result instanceof Boolean)
+					return ((Boolean)result);
+			}
+			if (feature instanceof EReference) {
+				if (((EReference)feature).isContainment())
+					return true;
+				if (Bpmn2Package.eINSTANCE.getRootElement().isSuperTypeOf((EClass)feature.getEType()))
+					return true;
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean canCreateNew(EObject object, EStructuralFeature feature) {
+		if (feature.getEType() instanceof EClass) {
+			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
+			if (adapter!=null) {
+				Object result = adapter.getProperty(feature, ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW);
+				if (result instanceof Boolean)
+					return ((Boolean)result);
+			}
+			if (feature instanceof EReference) {
+				if (((EReference)feature).isContainment())
+					return true;
+				if (Bpmn2Package.eINSTANCE.getRootElement().isSuperTypeOf((EClass)feature.getEType()))
+					return true;
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean canEditInline(EObject object, EStructuralFeature feature) {
+		if (feature.getEType() instanceof EClass) {
+			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
+			if (adapter!=null) {
+				Object result = adapter.getProperty(feature, ExtendedPropertiesAdapter.UI_CAN_EDIT_INLINE);
+				if (result instanceof Boolean)
+					return ((Boolean)result);
+			}
+		}
+		return false;
+	}
+
+	public static boolean canSetNull(EObject object, EStructuralFeature feature) {
+		if (feature.getEType() instanceof EClass) {
+			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
+			if (adapter!=null) {
+				Object result = adapter.getProperty(feature, ExtendedPropertiesAdapter.UI_CAN_SET_NULL);
+				if (result instanceof Boolean)
+					return ((Boolean)result);
+			}
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isMultiChoice(EObject object, EStructuralFeature feature) {
+		if (feature.getEType() instanceof EClass)
+		{
+			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
+			if (adapter!=null) {
+				Object result = adapter.getProperty(feature, ExtendedPropertiesAdapter.UI_IS_MULTI_CHOICE);
+				if (result instanceof Boolean)
+					return ((Boolean)result);
+			}
+		}
+		return getChoiceOfValues(object,feature) != null;
+	}
+
+	/*
+	 * Fallbacks in case a property provider does not exist
+	 */
+	public static String getLongDisplayName(EObject object) {
+		String objName = null;
+		if (object instanceof BPMNDiagram) {
+			Bpmn2DiagramType type = getDiagramType((BPMNDiagram)object); 
+			if (type == Bpmn2DiagramType.CHOREOGRAPHY) {
+				objName = "Choreography Diagram";
+			}
+			else if (type == Bpmn2DiagramType.COLLABORATION) {
+				objName = "Collaboration Diagram";
+			}
+			else if (type == Bpmn2DiagramType.PROCESS) {
+				objName = "Process Diagram";
+			}
+		}
+		if (objName==null){
+			objName = toDisplayName( object.eClass().getName() );
+		}
+		EStructuralFeature feature = object.eClass().getEStructuralFeature("name");
+		if (feature!=null) {
+			String name = (String)object.eGet(feature);
+			if (name==null || name.isEmpty())
+				name = "Unnamed " + objName;
+			else
+				name = objName + " \"" + name + "\"";
+			return name;
+		}
+		feature = object.eClass().getEStructuralFeature("id");
+		if (feature!=null) {
+			if (object.eGet(feature)!=null)
+				objName = (String)object.eGet(feature);
+		}
+		feature = object.eClass().getEStructuralFeature("qName");
+		if (feature!=null) {
+			Object qName = object.eGet(feature);
+			if (qName!=null) {
+				return qName.toString();
+			}
+		}
+		return objName;
+	}
+
+	public static String getLongDisplayName(EObject object, EStructuralFeature feature) {
+		Object value = object.eGet(feature);
+		if (value==null)
+			return "";
+		return value.toString();
+	}
+
+	public static boolean isEmpty(Object result) {
+		if (result == null)
+			return true;
+		if (result instanceof String)
+			return ((String) result).isEmpty();
+		return false;
+	}
+
+	public static void disposeChildWidgets(Composite parent) {
+		Control[] kids = parent.getChildren();
+		for (Control k : kids) {
+			if (k instanceof Composite) {
+				disposeChildWidgets((Composite)k);
+			}
+			k.dispose();
+		}
+	}
+
+	/**
+	 * Ugly hack to force layout of the entire widget tree of the property sheet page.
+	 * @param parent
+	 */
+	public static void recursivelayout(Composite parent) {
+		Control[] kids = parent.getChildren();
+		for (Control k : kids) {
+			if (k.isDisposed())
+				Activator.logError(new SWTException("Widget is disposed."));
+			if (k instanceof Composite) {
+				recursivelayout((Composite)k);
+				((Composite)k).layout(true);
+			}
+		}
+		parent.layout(true);
+	}
+
+	public static DiagramEditor getEditor(EObject object) {
+		Resource resource = InsertionAdapter.getResource(object);
+		if(resource!=null)
+			return getEditor(resource.getResourceSet());
+		return null;
+	}
+	
+	public static DiagramEditor getEditor(ResourceSet resourceSet) {
+	    Iterator<Adapter> it = resourceSet.eAdapters().iterator();
+	    while (it.hasNext()) {
+	        Object next = it.next();
+	        if (next instanceof DiagramEditorAdapter) {
+	            return ((DiagramEditorAdapter)next).getDiagramEditor();
+	        }
+	    }
+	    return null;
 	}
 }

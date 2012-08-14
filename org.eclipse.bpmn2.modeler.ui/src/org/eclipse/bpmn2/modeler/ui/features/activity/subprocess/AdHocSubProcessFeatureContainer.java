@@ -16,11 +16,13 @@ import java.util.Iterator;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.AdHocSubProcess;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -46,9 +48,9 @@ public class AdHocSubProcessFeatureContainer extends AbstractSubProcessFeatureCo
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddExpandedSubProcessFeature(fp) {
+		return new AddExpandedActivityFeature<AdHocSubProcess>(fp) {
 			@Override
-			protected void hook(Activity activity, ContainerShape container, IAddContext context, int width, int height) {
+			protected void hook(AdHocSubProcess activity, ContainerShape container, IAddContext context, int width, int height) {
 				super.hook(activity, container, context, width, height);
 				IPeService peService = Graphiti.getPeService();
 				Iterator<Shape> iterator = peService.getAllContainedShapes(container).iterator();
@@ -72,13 +74,6 @@ public class AdHocSubProcessFeatureContainer extends AbstractSubProcessFeatureCo
 		}
 
 		@Override
-		protected AdHocSubProcess createFlowElement(ICreateContext context) {
-			AdHocSubProcess adHocSubProcess = Bpmn2ModelerFactory.create(AdHocSubProcess.class);
-			adHocSubProcess.setName("Ad-Hoc SubProcess");
-			return adHocSubProcess;
-		}
-
-		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_AD_HOC_SUB_PROCESS;
 		}
@@ -87,8 +82,8 @@ public class AdHocSubProcessFeatureContainer extends AbstractSubProcessFeatureCo
 		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
-		public Class getBusinessObjectClass() {
-			return AdHocSubProcess.class;
+		public EClass getBusinessObjectClass() {
+			return Bpmn2Package.eINSTANCE.getAdHocSubProcess();
 		}
 	}
 }

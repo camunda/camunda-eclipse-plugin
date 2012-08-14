@@ -16,13 +16,14 @@ import static org.eclipse.bpmn2.modeler.core.features.choreography.ChoreographyP
 
 import java.util.List;
 
+import org.eclipse.bpmn2.SubChoreography;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 
-public class AddSubChoreographyFeature extends AddChoreographyFeature {
+public class AddSubChoreographyFeature extends AddChoreographyActivityFeature<SubChoreography> {
 
 	public AddSubChoreographyFeature(IFeatureProvider fp) {
 		super(fp);

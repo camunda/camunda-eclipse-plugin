@@ -22,7 +22,6 @@ import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelFactory;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.SchemaImportDialog;
-import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -46,7 +45,7 @@ public class JbpmModelUtil {
 	 */
 	public static String showImportDialog(EObject object) {
 		String className = null;
-		Shell shell = BPMN2Editor.getEditor(object).getSite().getShell();
+		Shell shell = ModelUtil.getEditor(object).getSite().getShell();
 		SchemaImportDialog dialog = new SchemaImportDialog(shell, SchemaImportDialog.ALLOW_JAVA);
 		if (dialog.open() == Window.OK) {
 			Object result[] = dialog.getResult();
@@ -79,7 +78,7 @@ public class JbpmModelUtil {
 				else if (processes.size()==1)
 					process = processes.get(0);
 				else {
-					Shell shell = BPMN2Editor.getEditor(object).getSite().getShell();
+					Shell shell = ModelUtil.getEditor(object).getSite().getShell();
 					MessageDialog.openError(shell, "Error", "No processes defined!");
 				}
 			}
@@ -89,7 +88,7 @@ public class JbpmModelUtil {
 		final ImportType newImport = (ImportType)ModelFactory.eINSTANCE.create(ModelPackage.eINSTANCE.getImportType());
 		newImport.setName(className);
 
-		TransactionalEditingDomain domain = BPMN2Editor.getEditor(object).getEditingDomain();
+		TransactionalEditingDomain domain = ModelUtil.getEditor(object).getEditingDomain();
 		domain.getCommandStack().execute(new RecordingCommand(domain) {
 			@Override
 			protected void doExecute() {
@@ -231,7 +230,7 @@ public class JbpmModelUtil {
 			stringValue = ((ImportType)value).getName();
 		}
 		else if (value instanceof ItemDefinition) {
-			stringValue = PropertyUtil.getDisplayName((ItemDefinition)value);
+			stringValue = ModelUtil.getDisplayName((ItemDefinition)value);
 		}
 		return stringValue;
 	}

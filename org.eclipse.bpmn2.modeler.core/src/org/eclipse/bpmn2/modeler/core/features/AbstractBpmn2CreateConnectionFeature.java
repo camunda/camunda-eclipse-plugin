@@ -20,7 +20,9 @@ import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.graphiti.IExecutionInfo;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.IContext;
@@ -34,8 +36,9 @@ import org.eclipse.graphiti.mm.pictograms.Connection;
  * @author Bob Brodt
  *
  */
-public abstract class AbstractBpmn2CreateConnectionFeature extends
-		AbstractCreateConnectionFeature {
+public abstract class AbstractBpmn2CreateConnectionFeature<T extends BaseElement>
+		extends AbstractCreateConnectionFeature
+		implements IBpmn2CreateFeature<T, ICreateConnectionContext> {
 
 	/**
 	 * @param fp
@@ -72,6 +75,9 @@ public abstract class AbstractBpmn2CreateConnectionFeature extends
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.graphiti.features.impl.AbstractFeature#isAvailable(org.eclipse.graphiti.features.context.IContext)
+	 */
 	@Override
 	public boolean isAvailable(IContext context) {
 		Object o = null;
@@ -98,15 +104,27 @@ public abstract class AbstractBpmn2CreateConnectionFeature extends
 			return false;
 		
 		if (o instanceof EObject) {
-			String n = getBusinessObjectClass().getSimpleName();
 			ModelEnablementDescriptor e = TargetRuntime.getCurrentRuntime().getModelEnablements((EObject)o);
-			return e.isEnabled(n);
+			return e.isEnabled(getBusinessObjectClass());
 		}
 		return false;
 	}
 
-	/**
-	 * @return
-	 */
-	public abstract Class getBusinessObjectClass();
+	@Override
+	public String getCreateDescription() {
+		return "Create " + ModelUtil.toDisplayName( getBusinessObjectClass().getName());
+	}
+
+	@SuppressWarnings("unchecked")
+	public T getBusinessObject(ICreateConnectionContext context) {
+		return (T) context.getProperty(ContextConstants.BUSINESS_OBJECT);
+	}
+	
+	public void putBusinessObject(ICreateConnectionContext context, T businessObject) {
+		context.putProperty(ContextConstants.BUSINESS_OBJECT, businessObject);
+	}
+
+	public void postExecute(IExecutionInfo executionInfo) {
+		
+	}
 }

@@ -25,16 +25,17 @@ package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 import java.util.List;
 
 import org.eclipse.bpmn2.Task;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractBpmn2PropertySection;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractDetailComposite;
-import org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 
@@ -47,7 +48,12 @@ public class JbpmCustomTaskPropertySection extends AbstractBpmn2PropertySection 
 	protected AbstractDetailComposite createSectionRoot() {
 		return new JbpmCustomTaskDetailComposite(this);
 	}
-	
+
+	@Override
+	public AbstractDetailComposite createSectionRoot(Composite parent, int style) {
+		 return new JbpmCustomTaskDetailComposite(parent, style);
+	}
+
 	@Override
 	public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
 		// only show this property section if the selected Task is a "custom task"

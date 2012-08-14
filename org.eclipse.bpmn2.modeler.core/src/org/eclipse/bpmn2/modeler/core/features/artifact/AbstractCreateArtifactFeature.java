@@ -23,7 +23,7 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
 
-public abstract class AbstractCreateArtifactFeature extends AbstractBpmn2CreateFeature {
+public abstract class AbstractCreateArtifactFeature<T extends Artifact> extends AbstractBpmn2CreateFeature<T> {
 
 	public AbstractCreateArtifactFeature(IFeatureProvider fp, String name, String description) {
 		super(fp, name, description);
@@ -39,10 +39,10 @@ public abstract class AbstractCreateArtifactFeature extends AbstractBpmn2CreateF
 
 	@Override
 	public Object[] create(ICreateContext context) {
-		Artifact artifact = null;
+		T artifact = null;
 		try {
 			ModelHandler handler = ModelHandler.getInstance(getDiagram());
-			artifact = createArtifact(context);
+			artifact = createBusinessObject(context);
 			handler.addArtifact(FeatureSupport.getTargetParticipant(context, handler), artifact);
 			ModelUtil.setID(artifact);
 		} catch (IOException e) {
@@ -51,8 +51,6 @@ public abstract class AbstractCreateArtifactFeature extends AbstractBpmn2CreateF
 		addGraphicalRepresentation(context, artifact);
 		return new Object[] { artifact };
 	}
-
-	public abstract Artifact createArtifact(ICreateContext context);
 
 	protected abstract String getStencilImageId();
 
