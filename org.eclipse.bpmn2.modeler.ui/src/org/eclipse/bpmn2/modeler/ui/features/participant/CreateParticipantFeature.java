@@ -30,11 +30,14 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.dd.di.DiFactory;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 
-public class CreateParticipantFeature extends AbstractBpmn2CreateFeature {
+public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Participant> {
 	
 	private static int index = 1;
 	
@@ -53,7 +56,7 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature {
 		
         BPMNDiagram bpmnDiagram = BusinessObjectUtil.getFirstElementOfType(context.getTargetContainer(), BPMNDiagram.class);
         Definitions definitions = ModelUtil.getDefinitions(bpmnDiagram);
-        participant = (Participant) PropertyUtil.createObject(definitions.eResource(), Bpmn2Package.eINSTANCE.getParticipant());
+        participant = (Participant) ModelUtil.createObject(definitions.eResource(), Bpmn2Package.eINSTANCE.getParticipant());
         participant.setName("Pool nr " + index++);
         // add the Pool to the first Choreography or Collaboration we find.
         // TODO: when multipage editor is working, this will be the specific Choreography or
@@ -67,7 +70,7 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature {
         }
 
         // create a Process for this Participant
-        Process process = (Process) PropertyUtil.createObject(bpmnDiagram.eResource(), Bpmn2Package.eINSTANCE.getProcess());
+        Process process = (Process) ModelUtil.createObject(bpmnDiagram.eResource(), Bpmn2Package.eINSTANCE.getProcess());
         // NOTE: this is needed because it fires the InsertionAdapter, which adds the new Process
         // to Definitions.rootElements, otherwise the Process would be a dangling object
         process.setName(participant.getName()+" Process");

@@ -513,7 +513,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 			setActiveEditor(null);
 		
 		super.dispose();
-		ModelHandlerLocator.releaseModel(modelUri);
+		ModelHandlerLocator.remove(modelUri);
 		// get rid of temp files and folders, button only if the workbench is being shut down.
 		// when the workbench is restarted, we need to have those temp files around!
 		if (!workbenchShutdown)
