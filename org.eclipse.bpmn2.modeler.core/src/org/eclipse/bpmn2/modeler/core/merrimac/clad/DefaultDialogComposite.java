@@ -7,7 +7,6 @@ import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.runtime.Bpmn2SectionDescriptor;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
@@ -42,9 +41,11 @@ public class DefaultDialogComposite extends AbstractDialogComposite {
 	protected Composite control;
 	protected ITabDescriptor[] tabDescriptors;
 	protected AbstractBpmn2PropertySection section;
+	protected EClass eclass;
 	
-	public DefaultDialogComposite(Composite parent, int style) {
+	public DefaultDialogComposite(Composite parent, EClass eclass, int style) {
 		super(parent, style);
+		this.eclass = eclass;
 		
 		setLayout(new FillLayout());
 		
@@ -105,21 +106,21 @@ public class DefaultDialogComposite extends AbstractDialogComposite {
 			control = section.createSectionRoot(parent,SWT.NONE);
 		}
 		else {
-			control = PropertiesCompositeFactory.createDialogComposite(getBusinessObjectClass().getInstanceClass(), parent, SWT.NONE);
+			control = PropertiesCompositeFactory.createDetailComposite(getBusinessObjectClass().getInstanceClass(), parent, SWT.NONE);
 		}
 		
 	}
 
 	public EClass getBusinessObjectClass() {
-		return EcorePackage.eINSTANCE.getEObject();
+		return eclass;
 	}
 	
 	protected ITabDescriptor[] getTabDescriptors() {
 		if (tabDescriptors==null) {
 			IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService().getActivePart();
-			ISelection sel = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
+			ISelection selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
 			ITabDescriptorProvider tabDescriptorProvider = (ITabDescriptorProvider)part.getAdapter(ITabDescriptorProvider.class);
-			tabDescriptors = tabDescriptorProvider.getTabDescriptors(part,sel);
+			tabDescriptors = tabDescriptorProvider.getTabDescriptors(part,selection);
 		}
 		return tabDescriptors;
 	}
@@ -148,8 +149,13 @@ public class DefaultDialogComposite extends AbstractDialogComposite {
 	@Override
 	public void setBusinessObject(EObject object) {
 		businessObject = object;
-		for (AbstractDetailComposite detail : details) {
-			detail.setBusinessObject(object);
+		if (details!=null && details.size()>0) {
+			for (AbstractDetailComposite detail : details) {
+				detail.setBusinessObject(object);
+			}
+		}
+		else if (control instanceof AbstractDetailComposite) {
+			((AbstractDetailComposite)control).setBusinessObject(object);
 		}
 	}
 	

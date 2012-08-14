@@ -37,8 +37,8 @@ public class CallActivityPropertiesAdapter extends ActivityPropertiesAdapter<Cal
 	public CallActivityPropertiesAdapter(AdapterFactory adapterFactory, CallActivity object) {
 		super(adapterFactory, object);
 
-    	setProperty(Bpmn2Package.CALL_ACTIVITY__CALLED_ELEMENT_REF, ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW, Boolean.TRUE);
     	EStructuralFeature ce = Bpmn2Package.eINSTANCE.getCallActivity_CalledElementRef();
+    	setProperty(ce, UI_CAN_CREATE_NEW, Boolean.TRUE);
     	setFeatureDescriptor(ce,
 			new RootElementRefFeatureDescriptor<CallActivity>(adapterFactory,object,ce) {
 				@Override

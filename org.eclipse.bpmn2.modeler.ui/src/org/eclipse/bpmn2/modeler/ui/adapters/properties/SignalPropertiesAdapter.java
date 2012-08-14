@@ -14,12 +14,14 @@
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.Signal;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource;
 
 /**
  * @author Bob Brodt
@@ -34,7 +36,7 @@ public class SignalPropertiesAdapter extends RootElementPropertiesAdapter<Signal
 	public SignalPropertiesAdapter(AdapterFactory adapterFactory, Signal object) {
 		super(adapterFactory, object);
 		
-    	setObjectDescriptor(new ObjectDescriptor<Signal>(adapterFactory, object) {
+    	setObjectDescriptor(new RootElementObjectDescriptor<Signal>(adapterFactory, object) {
 			@Override
 			public String getDisplayName(Object context) {
 				final Signal signal = adopt(context);

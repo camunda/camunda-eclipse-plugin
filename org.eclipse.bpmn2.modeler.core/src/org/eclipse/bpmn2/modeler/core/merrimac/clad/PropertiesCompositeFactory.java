@@ -18,6 +18,7 @@ import java.util.Hashtable;
 
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.Activator;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -71,14 +72,22 @@ public class PropertiesCompositeFactory {
 			Constructor ctor = null;
 			Class ec = composite.getEnclosingClass();
 			if (ec!=null) {
-				if (!AbstractDialogComposite.class.isAssignableFrom(composite))
+				if (AbstractDialogComposite.class.isAssignableFrom(composite)) {
+					ctor = composite.getConstructor(ec,Composite.class,EClass.class,int.class);
+				}
+				else {
 					ctor = composite.getConstructor(ec,AbstractBpmn2PropertySection.class);
-				ctor = composite.getConstructor(ec,Composite.class,int.class);
+					ctor = composite.getConstructor(ec,Composite.class,int.class);
+				}
 			}
 			else {
-				if (!(AbstractDialogComposite.class.isAssignableFrom(composite)))
+				if (AbstractDialogComposite.class.isAssignableFrom(composite)) {
+					ctor = composite.getConstructor(Composite.class,EClass.class,int.class);
+				}
+				else {
 					ctor = composite.getConstructor(AbstractBpmn2PropertySection.class);
-				ctor = composite.getConstructor(Composite.class,int.class);
+					ctor = composite.getConstructor(Composite.class,int.class);
+				}
 			}
 		} catch (Exception e) {
 			Activator.logError(e);
@@ -147,9 +156,25 @@ public class PropertiesCompositeFactory {
 		return composite;
 	}
 	
-	public static AbstractDialogComposite createDialogComposite(Class eClass, Composite parent, int style) {
-		Class clazz = findDialogCompositeClass(eClass);
-		return (AbstractDialogComposite)createComposite(clazz, eClass, parent, style);
+	public static AbstractDialogComposite createDialogComposite(EClass eClass, Composite parent, int style) {
+		Class clazz = findDialogCompositeClass(eClass.getInstanceClass());
+		Composite composite = null;
+		try {
+			Constructor ctor = null;
+			// allow the composite to be declared in an enclosing class
+			Class ec = clazz.getEnclosingClass();
+			if (ec!=null) {
+				ctor = clazz.getConstructor(ec,Composite.class,EClass.class,int.class);
+				composite = (Composite) ctor.newInstance(null,parent,eClass,style);
+			}
+			else {
+				ctor = clazz.getConstructor(Composite.class,EClass.class,int.class);
+				composite = (Composite) ctor.newInstance(parent,eClass,style);
+			}
+		} catch (Exception e) {
+			logError(eClass.getInstanceClass(),e);
+		}
+		return (AbstractDialogComposite)composite;
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -213,14 +238,8 @@ public class PropertiesCompositeFactory {
 				// allow the composite to be declared in an enclosing class
 				Class ec = clazz.getEnclosingClass();
 				if (ec!=null) {
-					if (AbstractDialogComposite.class.isAssignableFrom(clazz)) {
-						ctor = clazz.getConstructor(ec,Composite.class,int.class);
-						composite = (Composite) ctor.newInstance(null,parent,style);
-					}
-					else {
-						ctor = clazz.getConstructor(ec,Composite.class,int.class);
-						composite = (Composite) ctor.newInstance(null,parent,style);
-					}
+					ctor = clazz.getConstructor(ec,Composite.class,int.class);
+					composite = (Composite) ctor.newInstance(null,parent,style);
 				}
 				else {
 					ctor = clazz.getConstructor(Composite.class,int.class);

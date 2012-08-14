@@ -60,6 +60,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
@@ -131,6 +132,17 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 		cleanBindings();
 		if (businessObject != null) {
 			createBindings(businessObject);
+
+//			Control[] kids = getChildren();
+//			if (kids.length==1 && kids[0]==this.attributesSection) {
+//				attributesSection.setVisible(false);
+//				GridData data = (GridData)attributesSection.getLayoutData();
+//				data.exclude = true;
+//				attributesComposite.setParent(this);
+//				attributesSection.dispose();
+//				attributesSection = null;
+//			}
+
 		}
 	}
 

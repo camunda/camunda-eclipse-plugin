@@ -16,6 +16,8 @@ package org.eclipse.bpmn2.modeler.core.merrimac.dialogs;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 
+import org.eclipse.bpmn2.modeler.core.Activator;
+import org.eclipse.bpmn2.modeler.core.IConstants;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterRegistry;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
@@ -133,7 +135,8 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 			buttons.setLayout(new FillLayout(SWT.HORIZONTAL));
 
 			if (canCreateNew) {
-				Button createButton = getToolkit().createButton(buttons, "Create New...", SWT.PUSH);
+				Button createButton = getToolkit().createButton(buttons, null, SWT.PUSH);
+				createButton.setImage( Activator.getDefault().getImage(IConstants.ICON_ADD_20));
 				createButton.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 						// create a new target object
@@ -144,7 +147,8 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 				});
 			}
 			if (canEdit) {
-				editButton = getToolkit().createButton(buttons, "Edit...", SWT.PUSH);
+				editButton = getToolkit().createButton(buttons, null, SWT.PUSH);
+				editButton.setImage( Activator.getDefault().getImage(IConstants.ICON_EDIT_20));
 				editButton.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 						ISelection selection = comboViewer.getSelection();
@@ -220,7 +224,9 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 				object, feature, value);
 		if ( dialog.open() == Window.OK)
 			return dialog.getNewObject();
-		return null;
+		ISelection selection = comboViewer.getSelection();
+		String firstElement = (String) ((StructuredSelection) selection).getFirstElement();
+		return (EObject) comboViewer.getData(firstElement);
 	}
 
 	@Override

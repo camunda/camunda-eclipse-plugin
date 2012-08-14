@@ -25,6 +25,7 @@ import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeature;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.internal.parts.ContainerShapeEditPart;
 import org.eclipse.graphiti.ui.services.GraphitiUi;
 import org.eclipse.jface.viewers.ISelection;
@@ -41,7 +42,7 @@ public class PropertyLabelProvider extends LabelProvider {
 	@Override
 	public Image getImage(Object element) {
 		EObject be = BusinessObjectUtil.getBusinessObjectForSelection((ISelection)element);
-        BPMN2Editor editor = BPMN2Editor.getEditor( be );
+        DiagramEditor editor = ModelUtil.getEditor( be );
         
         if (editor!=null) {
 		    BPMNFeatureProvider fp = (BPMNFeatureProvider)editor.getDiagramTypeProvider().getFeatureProvider();

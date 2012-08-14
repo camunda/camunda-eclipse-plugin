@@ -30,8 +30,8 @@ public class TaskPropertiesAdapter<T extends Task> extends ActivityPropertiesAda
 	 */
 	public TaskPropertiesAdapter(AdapterFactory adapterFactory, T object) {
 		super(adapterFactory, object);
-    	setProperty(Bpmn2Package.INTERACTION_NODE__INCOMING_CONVERSATION_LINKS, UI_CAN_CREATE_NEW, Boolean.FALSE);
-    	setProperty(Bpmn2Package.INTERACTION_NODE__OUTGOING_CONVERSATION_LINKS, UI_CAN_CREATE_NEW, Boolean.FALSE);
+    	setProperty(Bpmn2Package.eINSTANCE.getInteractionNode_IncomingConversationLinks(), UI_CAN_CREATE_NEW, Boolean.FALSE);
+    	setProperty(Bpmn2Package.eINSTANCE.getInteractionNode_OutgoingConversationLinks(), UI_CAN_CREATE_NEW, Boolean.FALSE);
 	}
 
 }

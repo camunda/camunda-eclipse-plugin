@@ -53,6 +53,7 @@ import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.CreateConnectionContext;
 import org.eclipse.graphiti.features.context.impl.CreateContext;
 import org.eclipse.graphiti.features.context.impl.CustomContext;
+import org.eclipse.graphiti.features.context.impl.UpdateContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
@@ -394,6 +395,11 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 				if (feature instanceof IBpmn2CreateFeature) {
 					((IBpmn2CreateFeature)feature).postExecute(executionInfo);
 				}
+			}
+			else if (context instanceof UpdateContext) {
+				editor.setPictogramElementForSelection(
+						((UpdateContext)context).getPictogramElement());
+				editor.refresh();
 			}
 		}
 	}

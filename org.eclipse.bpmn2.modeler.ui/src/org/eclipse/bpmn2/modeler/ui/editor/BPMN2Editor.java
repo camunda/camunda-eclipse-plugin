@@ -13,12 +13,11 @@
 package org.eclipse.bpmn2.modeler.ui.editor;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.eclipse.bpmn2.modeler.core.Bpmn2TabbedPropertySheetPage;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.ProxyURIConverterImplExtension;
@@ -27,12 +26,12 @@ import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.DiagramEditorAdapter;
 import org.eclipse.bpmn2.modeler.core.utils.ErrorUtils;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
-import org.eclipse.bpmn2.modeler.ui.IFileChangeListener;
 import org.eclipse.bpmn2.modeler.ui.wizards.BPMN2DiagramCreator;
 import org.eclipse.bpmn2.modeler.ui.wizards.Bpmn2DiagramEditorInput;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
@@ -43,14 +42,10 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.command.BasicCommandStack;
-import org.eclipse.emf.common.notify.Adapter;
-import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.BasicDiagnostic;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
@@ -60,10 +55,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain.Lifecycle;
 import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
-import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.emf.workspace.util.WorkspaceSynchronizer;
-import org.eclipse.gef.ContextMenuProvider;
-import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -72,11 +64,8 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IPeService;
 import org.eclipse.graphiti.ui.editor.DefaultUpdateBehavior;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
-import org.eclipse.graphiti.ui.editor.DiagramEditorContextMenuProvider;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.graphiti.ui.internal.editor.GFPaletteRoot;
-import org.eclipse.graphiti.ui.internal.services.GraphitiUiInternal;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
@@ -87,7 +76,6 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPartListener2;
-import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.IWorkbenchPage;
@@ -98,7 +86,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabDescriptorProvider;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 /**
  * 
@@ -127,24 +117,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	private Bpmn2Preferences preferences;
 	private TargetRuntime targetRuntime;
 
-	protected BPMN2EditorAdapter editorAdapter;
-
-	protected class BPMN2EditorAdapter implements Adapter {
-		public Notifier getTarget() { return null; }
-		public void setTarget(Notifier newTarget) { }
-		public boolean isAdapterForType(Object type) { return (type == BPMN2EditorAdapter.class); }
-		public void notifyChanged(Notification notification) { }
-		public BPMN2Editor getBPMN2Editor() { return BPMN2Editor.this; }
-	}
-
-	/**
-	 * Given a ResourceSet, this helper identifies the BPELEditor (if any) that created it
-	 */
-	public static BPMN2Editor getEditor(EObject object) {
-		if (object!=null && object.eResource()!=null)
-			return getEditor(object.eResource().getResourceSet());
-		return null;
-	}
+	protected DiagramEditorAdapter editorAdapter;
 	
 	public static BPMN2Editor getActiveEditor() {
 		return activeEditor;
@@ -158,18 +131,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		}
 	}
 
-	public static BPMN2Editor getEditor(ResourceSet resourceSet) {
-	    Iterator<Adapter> it = resourceSet.eAdapters().iterator();
-	    while (it.hasNext()) {
-	        Object next = it.next();
-	        if (next instanceof BPMN2EditorAdapter) {
-	            return ((BPMN2EditorAdapter)next).getBPMN2Editor();
-	        }
-	    }
-	    return null;
-	}
-	
-	protected BPMN2EditorAdapter getEditorAdapter() {
+	protected DiagramEditorAdapter getEditorAdapter() {
 		return editorAdapter;
 	}
 
@@ -304,7 +266,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 					Bpmn2ModelerResourceImpl.BPMN2_CONTENT_TYPE_ID);
 
 			resourceSet.setURIConverter(new ProxyURIConverterImplExtension());
-			resourceSet.eAdapters().add(editorAdapter = new BPMN2EditorAdapter());
+			resourceSet.eAdapters().add(editorAdapter = new DiagramEditorAdapter(this));
 
 			modelHandler = ModelHandlerLocator.createModelHandler(modelUri, bpmnResource);
 			ModelHandlerLocator.put(diagramUri, modelHandler);
@@ -487,6 +449,9 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 			return getTargetRuntime();
 		if (required==Bpmn2Preferences.class)
 			return getPreferences();
+		if (required == IPropertySheetPage.class) {
+			return new Bpmn2TabbedPropertySheetPage(this);
+		}
 		return super.getAdapter(required);
 	}
 

@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.core.utils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,7 @@ import org.eclipse.bpmn2.modeler.core.adapters.INamespaceMap;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceSetImpl;
+import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
@@ -65,6 +67,7 @@ import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -589,6 +592,7 @@ public class ModelUtil {
 
 	public static EObject createStringWrapper(String value) {
 		DynamicEObjectImpl de = new DynamicEObjectImpl();
+		de.eSetClass(EcorePackage.eINSTANCE.getEObject());
 		de.eSetProxyURI(URI.createURI(value));
 		return de;
 	}
@@ -944,7 +948,7 @@ public class ModelUtil {
 		
 		if (valueChanged) {
 			try {
-				InsertionAdapter insertionAdapter = AdapterUtil.adapt(object, InsertionAdapter.class);
+				InsertionAdapter insertionAdapter = AdapterUtil.adapt(value, InsertionAdapter.class);
 				if (insertionAdapter!=null) {
 					// make sure the new object is added to its control first
 					// so that it inherits the control's Resource and EditingDomain
@@ -1014,6 +1018,33 @@ public class ModelUtil {
 				if (result instanceof Boolean)
 					return ((Boolean)result);
 			}
+			if (feature instanceof EReference) {
+				if (((EReference)feature).isContainment())
+					return true;
+				if (Bpmn2Package.eINSTANCE.getRootElement().isSuperTypeOf((EClass)feature.getEType()))
+					return true;
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean canCreateNew(EObject object, EStructuralFeature feature) {
+		if (feature.getEType() instanceof EClass) {
+			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
+			if (adapter!=null) {
+				Object result = adapter.getProperty(feature, ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW);
+				if (result instanceof Boolean)
+					return ((Boolean)result);
+			}
+			if (feature instanceof EReference) {
+				if (((EReference)feature).isContainment())
+					return true;
+				if (Bpmn2Package.eINSTANCE.getRootElement().isSuperTypeOf((EClass)feature.getEType()))
+					return true;
+				return false;
+			}
 			return true;
 		}
 		return false;
@@ -1027,19 +1058,6 @@ public class ModelUtil {
 				if (result instanceof Boolean)
 					return ((Boolean)result);
 			}
-		}
-		return false;
-	}
-
-	public static boolean canCreateNew(EObject object, EStructuralFeature feature) {
-		if (feature.getEType() instanceof EClass) {
-			ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
-			if (adapter!=null) {
-				Object result = adapter.getProperty(feature, ExtendedPropertiesAdapter.UI_CAN_CREATE_NEW);
-				if (result instanceof Boolean)
-					return ((Boolean)result);
-			}
-			return true;
 		}
 		return false;
 	}
@@ -1154,5 +1172,23 @@ public class ModelUtil {
 			}
 		}
 		parent.layout(true);
+	}
+
+	public static DiagramEditor getEditor(EObject object) {
+		Resource resource = InsertionAdapter.getResource(object);
+		if(resource!=null)
+			return getEditor(resource.getResourceSet());
+		return null;
+	}
+	
+	public static DiagramEditor getEditor(ResourceSet resourceSet) {
+	    Iterator<Adapter> it = resourceSet.eAdapters().iterator();
+	    while (it.hasNext()) {
+	        Object next = it.next();
+	        if (next instanceof DiagramEditorAdapter) {
+	            return ((DiagramEditorAdapter)next).getDiagramEditor();
+	        }
+	    }
+	    return null;
 	}
 }

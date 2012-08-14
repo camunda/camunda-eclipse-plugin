@@ -42,11 +42,11 @@ public class InsertionAdapter extends EContentAdapter {
 	protected EStructuralFeature feature;
 	protected EObject value;
 	
-	public InsertionAdapter(EObject object, EStructuralFeature feature, EObject value) {
+	private InsertionAdapter(EObject object, EStructuralFeature feature, EObject value) {
 		this(null,object,feature,value);
 	}
 
-	public InsertionAdapter(Resource resource, EObject object, EStructuralFeature feature, EObject value) {
+	private InsertionAdapter(Resource resource, EObject object, EStructuralFeature feature, EObject value) {
 		// in order for this to work, the object must be contained in a Resource,
 		// the value must NOT YET be contained in a Resource,
 		// and the value must be an instance of the feature EType.
@@ -62,10 +62,16 @@ public class InsertionAdapter extends EContentAdapter {
 		this.value = value;
 	}
 	
-	public InsertionAdapter(EObject object, String featureName, EObject value) {
+	private InsertionAdapter(EObject object, String featureName, EObject value) {
 		this(object, object.eClass().getEStructuralFeature(featureName), value);
 	}
 	
+	public static EObject add(Resource resource, EObject object, EStructuralFeature feature, EObject value) {
+		value.eAdapters().add(
+				new InsertionAdapter(resource, object, feature, value));
+		return value;
+	}
+
 	public static EObject add(EObject object, EStructuralFeature feature, EObject value) {
 		value.eAdapters().add(
 				new InsertionAdapter(object, feature, value));
@@ -92,9 +98,15 @@ public class InsertionAdapter extends EContentAdapter {
 	@SuppressWarnings("unchecked")
 	public void execute() {
 		// remove this adapter from the value - this adapter is a one-shot deal!
-		object.eAdapters().remove(this);
-		executeIfNeeded(object);
 		value.eAdapters().remove(this);
+		executeIfNeeded(value);
+		if (object!=null) {
+			object.eAdapters().remove(this);
+			executeIfNeeded(object);
+		}
+		else
+			return;
+		
 		// set the value in the object
 		boolean valueChanged = false;
 		final EList<EObject> list = feature.isMany() ? (EList<EObject>)object.eGet(feature) : null;
@@ -189,6 +201,8 @@ public class InsertionAdapter extends EContentAdapter {
 		if (adapter!=null) {
 			return adapter.getResource();
 		}
-		return object.eResource();
+		if (object!=null)
+			return object.eResource();
+		return null;
 	}
 }

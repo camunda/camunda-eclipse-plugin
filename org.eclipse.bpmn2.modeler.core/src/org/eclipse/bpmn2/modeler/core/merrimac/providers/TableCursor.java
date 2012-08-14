@@ -353,7 +353,7 @@ public class TableCursor extends Canvas {
 		gc.setForeground(display.getSystemColor(SWT.COLOR_LIST_SELECTION));
 		gc.fillRectangle(event.x, event.y, event.width, event.height);
 		TableItem item = null;
-		if (row >= 0)
+		if (row >= 0 && row<table.getItemCount())
 			item = table.getItem(row);
 		int x = 0, y = 0;
 		Point size = getSize();
@@ -472,7 +472,7 @@ public class TableCursor extends Canvas {
 
 	public TableItem getRow() {
 		checkWidget();
-		if (table.getItemCount() == 0)
+		if (row<0 || row>=table.getItemCount())
 			return null;
 		return table.getItem(row);
 	}

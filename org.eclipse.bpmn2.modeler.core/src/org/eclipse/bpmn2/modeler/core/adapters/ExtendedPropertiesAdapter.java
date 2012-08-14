@@ -43,9 +43,9 @@ public class ExtendedPropertiesAdapter<T extends EObject> extends AdapterImpl {
 	public static final String PROPERTY_DESCRIPTOR = "property.descriptor";
 	
 	protected Hashtable<
-	Object, // feature ID
+		EStructuralFeature, // feature ID
 		Hashtable<String,Object>> // property key and value
-			featureProperties = new Hashtable<Object, Hashtable<String,Object>>();
+			featureProperties = new Hashtable<EStructuralFeature, Hashtable<String,Object>>();
 	protected Hashtable <
 		String, // property key
 		Object> // value
@@ -161,26 +161,6 @@ public class ExtendedPropertiesAdapter<T extends EObject> extends AdapterImpl {
 		if (props==null) {
 			props = new Hashtable<String,Object>();
 			featureProperties.put(feature,props);
-		}
-		props.put(key, value);
-	}
-
-	public Object getProperty(int id, String key) {
-		Integer idObject = Integer.valueOf(id);
-		Hashtable<String,Object> props = featureProperties.get(idObject);
-		if (props==null) {
-			props = new Hashtable<String,Object>();
-			featureProperties.put(idObject,props);
-		}
-		return props.get(key);
-	}
-
-	public void setProperty(int id, String key, Object value) {
-		Integer idObject = Integer.valueOf(id);
-		Hashtable<String,Object> props = featureProperties.get(idObject);
-		if (props==null) {
-			props = new Hashtable<String,Object>();
-			featureProperties.put(idObject,props);
 		}
 		props.put(key, value);
 	}

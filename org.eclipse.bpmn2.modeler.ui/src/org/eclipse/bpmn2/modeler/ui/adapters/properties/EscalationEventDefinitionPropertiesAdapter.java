@@ -14,29 +14,21 @@
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
 import org.eclipse.bpmn2.Bpmn2Package;
-import org.eclipse.bpmn2.Operation;
-import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
+import org.eclipse.bpmn2.EscalationEventDefinition;
 import org.eclipse.emf.common.notify.AdapterFactory;
-import org.eclipse.emf.ecore.EStructuralFeature;
 
 /**
  * @author Bob Brodt
  *
  */
-public class OperationPropertiesAdapter extends ExtendedPropertiesAdapter<Operation> {
+public class EscalationEventDefinitionPropertiesAdapter extends EventDefinitionPropertiesAdapter<EscalationEventDefinition> {
 
 	/**
 	 * @param adapterFactory
 	 * @param object
 	 */
-	public OperationPropertiesAdapter(AdapterFactory adapterFactory, Operation object) {
+	public EscalationEventDefinitionPropertiesAdapter(AdapterFactory adapterFactory, EscalationEventDefinition object) {
 		super(adapterFactory, object);
-    	EStructuralFeature ref = Bpmn2Package.eINSTANCE.getOperation_InMessageRef();
-    	setFeatureDescriptor(ref, new RootElementRefFeatureDescriptor<Operation>(adapterFactory,object,ref));
-
-    	ref = Bpmn2Package.eINSTANCE.getOperation_OutMessageRef();
-    	setFeatureDescriptor(ref, new RootElementRefFeatureDescriptor<Operation>(adapterFactory,object,ref));
-
 	}
 
 }

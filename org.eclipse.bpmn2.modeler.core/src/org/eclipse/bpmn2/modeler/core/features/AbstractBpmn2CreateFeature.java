@@ -19,6 +19,7 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ObjectEditingDialog;
+import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
@@ -118,7 +119,8 @@ public abstract class AbstractBpmn2CreateFeature<T extends BaseElement>
 			if (context instanceof ICreateContext) {
 				ICreateContext cc = (ICreateContext)context;
 				T businessObject = getBusinessObject(cc);
-				if (businessObject!=null) {
+				Bpmn2Preferences prefs = (Bpmn2Preferences) ((DiagramEditor) getDiagramEditor()).getAdapter(Bpmn2Preferences.class);
+				if (prefs!=null && prefs.getShowPopupConfigDialog(businessObject)) {
 					ObjectEditingDialog dialog =
 							new ObjectEditingDialog((DiagramEditor)getDiagramEditor(), businessObject);
 					dialog.open();

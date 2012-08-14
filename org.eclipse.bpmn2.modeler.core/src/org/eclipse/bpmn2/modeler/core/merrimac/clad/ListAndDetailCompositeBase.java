@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.modeler.core.Activator;
+import org.eclipse.bpmn2.modeler.core.Bpmn2TabbedPropertySheetPage;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
@@ -29,6 +30,11 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.part.IPage;
+import org.eclipse.ui.part.Page;
+import org.eclipse.ui.views.properties.IPropertySourceProvider;
+import org.eclipse.ui.views.properties.PropertySheet;
+import org.eclipse.ui.views.properties.PropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 public class ListAndDetailCompositeBase extends Composite implements ResourceSetListener {
@@ -71,7 +77,6 @@ public class ListAndDetailCompositeBase extends Composite implements ResourceSet
 		}
 		toolkit.adapt(this);
 		toolkit.paintBordersFor(this);
-		addDomainListener();
 	}
 	
 	@Override
@@ -148,6 +153,12 @@ public class ListAndDetailCompositeBase extends Composite implements ResourceSet
 		else if (part instanceof IEditorPart) {
 			diagramEditor = (DiagramEditor) ((IEditorPart)part).getAdapter(DiagramEditor.class);
 		}
+		else if (part instanceof PropertySheet) {
+			TabbedPropertySheetPage page = (TabbedPropertySheetPage) ((PropertySheet)part).getCurrentPage();
+			if (page instanceof Bpmn2TabbedPropertySheetPage) {
+				diagramEditor = ((Bpmn2TabbedPropertySheetPage)page).getDiagramEditor();
+			}
+		}
 		return diagramEditor;
 	}
 	
@@ -167,6 +178,10 @@ public class ListAndDetailCompositeBase extends Composite implements ResourceSet
 	}
 	
 	public void setBusinessObject(EObject object) {
+		getDiagramEditor();
+		if (diagramEditor==null)
+			diagramEditor = ModelUtil.getEditor(object);
+		addDomainListener();
 		getModelEnablement(object);
 		try {
 			modelHandler = ModelHandlerLocator.getModelHandler(

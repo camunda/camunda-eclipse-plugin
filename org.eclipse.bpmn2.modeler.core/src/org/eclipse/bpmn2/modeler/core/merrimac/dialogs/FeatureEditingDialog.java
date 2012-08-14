@@ -13,6 +13,8 @@
 
 package org.eclipse.bpmn2.modeler.core.merrimac.dialogs;
 
+import org.eclipse.bpmn2.modeler.core.Activator;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractDialogComposite;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -21,14 +23,19 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 // TODO: this needs to be a FormDialog
 public class FeatureEditingDialog extends Dialog {
 
+	protected IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 	protected DiagramEditor editor;
 	protected EObject object;
 	protected EStructuralFeature feature;
@@ -60,6 +67,8 @@ public class FeatureEditingDialog extends Dialog {
 		if (title==null)
 			title = "Create New " + ModelUtil.getLabel(newObject);
 		getShell().setText(title);
+		
+		aboutToOpen();
 		return super.open();
 	}
 
@@ -78,13 +87,53 @@ public class FeatureEditingDialog extends Dialog {
 			else
 				cancel = true;
 		}
-		AbstractDialogComposite comp = PropertiesCompositeFactory.createDialogComposite(
+		AbstractDetailComposite comp = PropertiesCompositeFactory.createDetailComposite(
 				eclass.getInstanceClass(), dialogArea, SWT.NONE);
 		comp.setBusinessObject(newObject);
 		
 		return dialogArea;
 	}
 	
+	public void aboutToOpen() {
+		if (newObject!=null) {
+			final EClass eclass = newObject.eClass();
+			Point p = getShell().getSize();
+			int width = preferenceStore.getInt("dialog."+eclass.getName()+".width");
+			if (width==0)
+				width = p.x;
+			int height = preferenceStore.getInt("dialog."+eclass.getName()+".height");
+			if (height==0)
+				height = p.y;
+			getShell().setSize(width,height);
+			
+			p = getShell().getLocation();
+			int x = preferenceStore.getInt("dialog."+eclass.getName()+".x");
+			if (x==0)
+				x = p.x;
+			int y = preferenceStore.getInt("dialog."+eclass.getName()+".y");
+			if (y==0)
+				y = p.y;
+			getShell().setLocation(x,y);
+	
+			getShell().addControlListener(new ControlListener() {
+				public void controlMoved(ControlEvent e)
+				{
+					Point p = getShell().getLocation();
+					preferenceStore.setValue("dialog."+eclass.getName()+".x", p.x);
+					preferenceStore.setValue("dialog."+eclass.getName()+".y", p.y);
+				}
+				
+				public void controlResized(ControlEvent e)
+				{
+					Point p = getShell().getSize();
+					preferenceStore.setValue("dialog."+eclass.getName()+".width", p.x);
+					preferenceStore.setValue("dialog."+eclass.getName()+".height", p.y);
+				}
+		
+			});
+		}
+	}
+
 	@Override
 	protected void cancelPressed() {
 		super.cancelPressed();

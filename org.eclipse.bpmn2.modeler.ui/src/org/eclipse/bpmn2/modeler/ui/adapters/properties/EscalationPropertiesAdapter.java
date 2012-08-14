@@ -13,9 +13,11 @@
 
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
+import org.eclipse.bpmn2.Error;
 import org.eclipse.bpmn2.Escalation;
 import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
 import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.ecore.resource.Resource;
 
 /**
  * @author Bob Brodt
@@ -30,7 +32,7 @@ public class EscalationPropertiesAdapter extends RootElementPropertiesAdapter<Es
 	public EscalationPropertiesAdapter(AdapterFactory adapterFactory, Escalation object) {
 		super(adapterFactory, object);
 		
-    	setObjectDescriptor(new ObjectDescriptor<Escalation>(adapterFactory, object) {
+    	setObjectDescriptor(new RootElementObjectDescriptor<Escalation>(adapterFactory, object) {
 			@Override
 			public String getDisplayName(Object context) {
 				final Escalation escalation = adopt(context);

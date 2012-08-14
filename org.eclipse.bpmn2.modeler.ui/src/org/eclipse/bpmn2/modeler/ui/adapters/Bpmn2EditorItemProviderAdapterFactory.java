@@ -29,14 +29,19 @@ import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataObjectReference;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.Error;
+import org.eclipse.bpmn2.ErrorEventDefinition;
 import org.eclipse.bpmn2.Escalation;
+import org.eclipse.bpmn2.EscalationEventDefinition;
+import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.Import;
 import org.eclipse.bpmn2.Interface;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ItemDefinition;
+import org.eclipse.bpmn2.LinkEventDefinition;
 import org.eclipse.bpmn2.Message;
+import org.eclipse.bpmn2.MessageEventDefinition;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
 import org.eclipse.bpmn2.Operation;
@@ -53,6 +58,7 @@ import org.eclipse.bpmn2.SendTask;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.bpmn2.Signal;
+import org.eclipse.bpmn2.SignalEventDefinition;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterRegistry;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
@@ -72,14 +78,19 @@ import org.eclipse.bpmn2.modeler.ui.adapters.properties.DataAssociationPropertie
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.DataInputPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.DataObjectReferencePropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.DataOutputPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.ErrorEventDefinitionPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ErrorPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.EscalationEventDefinitionPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.EscalationPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.EventDefinitionPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.FlowElementPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.FormalExpressionPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ImportPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.InterfacePropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ItemAwareElementPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ItemDefinitionPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.LinkEventDefinitionPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.MessageEventDefinitionPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.MessageFlowPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.MessagePropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.MultiInstanceLoopCharacteristicsPropertiesAdapter;
@@ -96,6 +107,7 @@ import org.eclipse.bpmn2.modeler.ui.adapters.properties.ScriptTaskPropertiesAdap
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.SendTaskPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.SequenceFlowPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.ServiceTaskPropertiesAdapter;
+import org.eclipse.bpmn2.modeler.ui.adapters.properties.SignalEventDefinitionPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.SignalPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.ui.adapters.properties.TaskPropertiesAdapter;
 import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
@@ -542,5 +554,55 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
 				return adapter;
         	return new ProcessPropertiesAdapter(adapterFactory,object);
 		}
+
+		@Override
+		public ExtendedPropertiesAdapter caseEventDefinition(EventDefinition object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
+			return new EventDefinitionPropertiesAdapter(adapterFactory,object);
+		}
+
+		@Override
+		public ExtendedPropertiesAdapter caseMessageEventDefinition(MessageEventDefinition object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
+        	return new MessageEventDefinitionPropertiesAdapter(adapterFactory,object);
+		}
+///		
+
+		@Override
+		public ExtendedPropertiesAdapter caseSignalEventDefinition(SignalEventDefinition object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
+        	return new SignalEventDefinitionPropertiesAdapter(adapterFactory,object);
+		}
+
+		@Override
+		public ExtendedPropertiesAdapter caseEscalationEventDefinition(EscalationEventDefinition object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
+        	return new EscalationEventDefinitionPropertiesAdapter(adapterFactory,object);
+		}
+
+		@Override
+		public ExtendedPropertiesAdapter caseErrorEventDefinition(ErrorEventDefinition object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
+        	return new ErrorEventDefinitionPropertiesAdapter(adapterFactory,object);
+		}
+
+		@Override
+		public ExtendedPropertiesAdapter caseLinkEventDefinition(LinkEventDefinition object) {
+			ExtendedPropertiesAdapter adapter = getTargetRuntimeAdapter(object);
+			if (adapter!=null)
+				return adapter;
+        	return new LinkEventDefinitionPropertiesAdapter(adapterFactory,object);
+		}
+
     };
 }

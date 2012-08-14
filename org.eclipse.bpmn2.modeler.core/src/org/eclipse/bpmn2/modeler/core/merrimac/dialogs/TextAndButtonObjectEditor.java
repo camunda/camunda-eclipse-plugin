@@ -13,6 +13,8 @@
 
 package org.eclipse.bpmn2.modeler.core.merrimac.dialogs;
 
+import org.eclipse.bpmn2.modeler.core.Activator;
+import org.eclipse.bpmn2.modeler.core.IConstants;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractDetailComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -53,7 +55,8 @@ public abstract class TextAndButtonObjectEditor extends TextObjectEditor {
 		GridData data = (GridData)text.getLayoutData();
 		data.horizontalSpan = 1;
 		
-		button = getToolkit().createButton(composite, "Edit...", SWT.PUSH);
+		button = getToolkit().createButton(composite, null, SWT.PUSH);
+		button.setImage( Activator.getDefault().getImage(IConstants.ICON_EDIT_20));
 		button.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 
 		updateText();

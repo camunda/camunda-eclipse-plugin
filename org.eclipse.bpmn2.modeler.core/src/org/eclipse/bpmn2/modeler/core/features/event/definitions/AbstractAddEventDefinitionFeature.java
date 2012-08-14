@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features.event.definitions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
@@ -27,8 +28,12 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil.FillStyle;
 import org.eclipse.graphiti.IExecutionInfo;
+import org.eclipse.graphiti.features.IFeature;
+import org.eclipse.graphiti.features.IFeatureAndContext;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.features.context.IContext;
+import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.impl.AbstractAddShapeFeature;
 import org.eclipse.graphiti.mm.algorithms.Polygon;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -119,6 +124,16 @@ public abstract class AbstractAddEventDefinitionFeature<T extends EventDefinitio
 
 	@Override
 	public void postExecute(IExecutionInfo executionInfo) {
+		List<PictogramElement> pes = new ArrayList<PictogramElement>();
+		for (IFeatureAndContext fc : executionInfo.getExecutionList()) {
+			IContext context = fc.getContext();
+			IFeature feature = fc.getFeature();
+			if (context instanceof AddContext) {
+				AddContext ac = (AddContext)context;
+				pes.add(ac.getTargetContainer());
+			}
+		}
+		getDiagramEditor().setPictogramElementsForSelection(pes.toArray(new PictogramElement[pes.size()]));
 	}
 	
 }

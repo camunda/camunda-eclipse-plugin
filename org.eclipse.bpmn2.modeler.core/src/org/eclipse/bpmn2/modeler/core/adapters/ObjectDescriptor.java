@@ -241,6 +241,7 @@ public class ObjectDescriptor<T extends EObject> {
 			else
 				newObject.eSet(feature, "New "+ModelUtil.toDisplayName(newObject.eClass().getName()));
 		}
+//		newObject.eAdapters().add( new InsertionAdapter(resource, null, null, newObject));
 		return newObject;
 	}
 }

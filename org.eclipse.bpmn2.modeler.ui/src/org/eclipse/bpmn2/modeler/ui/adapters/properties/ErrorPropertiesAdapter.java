@@ -18,6 +18,7 @@ import org.eclipse.bpmn2.Error;
 import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource;
 
 /**
  * @author Bob Brodt
@@ -32,7 +33,7 @@ public class ErrorPropertiesAdapter extends RootElementPropertiesAdapter<Error> 
 	public ErrorPropertiesAdapter(AdapterFactory adapterFactory, Error object) {
 		super(adapterFactory, object);
 		
-    	setObjectDescriptor(new ObjectDescriptor<Error>(adapterFactory, object) {
+    	setObjectDescriptor(new RootElementObjectDescriptor<Error>(adapterFactory, object) {
 			@Override
 			public String getDisplayName(Object context) {
 				final Error error = adopt(context);

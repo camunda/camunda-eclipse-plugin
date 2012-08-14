@@ -3,6 +3,7 @@ package org.eclipse.bpmn2.modeler.ui.property.diagrams;
 import java.io.IOException;
 
 import org.eclipse.bpmn2.Import;
+import org.eclipse.bpmn2.TimerEventDefinition;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractBpmn2PropertySection;

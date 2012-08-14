@@ -232,7 +232,7 @@ public class FeatureDescriptor<T extends EObject> extends ObjectDescriptor<T> {
 				if (resource==null)
 					resource = object.eResource();
 				newFeature = adapter.getObjectDescriptor().createObject(resource, eclass);
-				object.eAdapters().add(new InsertionAdapter(object, feature, newFeature));
+				InsertionAdapter.add(object, feature, newFeature);
 			}
 			
 		} catch (Exception e) {

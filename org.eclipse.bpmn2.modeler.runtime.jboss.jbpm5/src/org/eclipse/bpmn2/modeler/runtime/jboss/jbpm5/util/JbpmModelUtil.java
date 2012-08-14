@@ -45,7 +45,7 @@ public class JbpmModelUtil {
 	 */
 	public static String showImportDialog(EObject object) {
 		String className = null;
-		Shell shell = BPMN2Editor.getEditor(object).getSite().getShell();
+		Shell shell = ModelUtil.getEditor(object).getSite().getShell();
 		SchemaImportDialog dialog = new SchemaImportDialog(shell, SchemaImportDialog.ALLOW_JAVA);
 		if (dialog.open() == Window.OK) {
 			Object result[] = dialog.getResult();
@@ -78,7 +78,7 @@ public class JbpmModelUtil {
 				else if (processes.size()==1)
 					process = processes.get(0);
 				else {
-					Shell shell = BPMN2Editor.getEditor(object).getSite().getShell();
+					Shell shell = ModelUtil.getEditor(object).getSite().getShell();
 					MessageDialog.openError(shell, "Error", "No processes defined!");
 				}
 			}
@@ -88,7 +88,7 @@ public class JbpmModelUtil {
 		final ImportType newImport = (ImportType)ModelFactory.eINSTANCE.create(ModelPackage.eINSTANCE.getImportType());
 		newImport.setName(className);
 
-		TransactionalEditingDomain domain = BPMN2Editor.getEditor(object).getEditingDomain();
+		TransactionalEditingDomain domain = ModelUtil.getEditor(object).getEditingDomain();
 		domain.getCommandStack().execute(new RecordingCommand(domain) {
 			@Override
 			protected void doExecute() {

@@ -99,7 +99,7 @@ public class ObjectEditingDialog extends FormDialog {
 		body.setLayout(new FormLayout());
 		
 		dialogContent = PropertiesCompositeFactory.createDialogComposite(
-				eclass.getInstanceClass(), body, SWT.TOP);
+				eclass, body, SWT.TOP);
 		
 		data = new FormData();
 		data.top = new FormAttachment(0, 0);

@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.eclipse.bpmn2.modeler.core.Activator;
+import org.eclipse.bpmn2.modeler.core.IConstants;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterRegistry;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -94,7 +96,9 @@ public class FeatureListObjectEditor extends MultivalueObjectEditor {
 //				});
 			}
 			if (canEdit) {
-				Button editButton = getToolkit().createButton(buttons, "Select...", SWT.PUSH);
+				Button editButton = getToolkit().createButton(buttons, null, SWT.PUSH);
+				editButton.setImage( Activator.getDefault().getImage(IConstants.ICON_ADD_20));
+
 				editButton.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 						Hashtable<String,Object> choices = getChoiceOfValues(object,feature);

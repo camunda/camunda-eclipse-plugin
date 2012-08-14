@@ -20,6 +20,7 @@ import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractListComposite;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.swt.widgets.Composite;
@@ -67,8 +68,7 @@ public class IoParametersDetailComposite extends AbstractDetailComposite {
 			// the control parameter must be an Activity or CallableElement (i.e. a Process or GlobalTask)
 			InputOutputSpecification ioSpecification = (InputOutputSpecification)be.eGet(ioSpecificationFeature);
 			if (ioSpecification==null) {
-				ioSpecification = FACTORY.createInputOutputSpecification();
-				InsertionAdapter.add(be, "ioSpecification", ioSpecification);
+				ioSpecification = (InputOutputSpecification) ModelUtil.createFeature(be,ioSpecificationFeature);
 			}
 
 			EStructuralFeature dataInputsFeature = getFeature(ioSpecification, "dataInputs");

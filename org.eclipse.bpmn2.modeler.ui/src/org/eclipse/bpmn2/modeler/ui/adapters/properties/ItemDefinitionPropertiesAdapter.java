@@ -58,7 +58,7 @@ public class ItemDefinitionPropertiesAdapter extends ExtendedPropertiesAdapter<I
 					if (itemDefinition.getStructureRef()!=null) {
 						return ModelUtil.getStringWrapperValue(itemDefinition.getStructureRef());
 					}
-					return ""; //itemDefinition.getId() + " type is undefined";
+					return itemDefinition.getId() + ".type";
 				}
 				
 	    		@Override

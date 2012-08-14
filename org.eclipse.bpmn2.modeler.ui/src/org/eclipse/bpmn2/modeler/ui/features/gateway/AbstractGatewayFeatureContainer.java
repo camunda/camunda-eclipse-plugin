@@ -96,11 +96,15 @@ public abstract class AbstractGatewayFeatureContainer extends BaseElementFeature
 
 	@Override
 	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
-		return new ICustomFeature[] {
-			new AppendActivityFeature(fp),
-			new AppendGatewayFeature(fp),
-			new AppendEventFeature(fp)
-		};
+		ICustomFeature[] superFeatures = super.getCustomFeatures(fp);
+		ICustomFeature[] thisFeatures = new ICustomFeature[3 + superFeatures.length];
+		int i;
+		for (i=0; i<superFeatures.length; ++i)
+			thisFeatures[i] = superFeatures[i];
+		thisFeatures[i++] = new AppendActivityFeature(fp);
+		thisFeatures[i++] = new AppendGatewayFeature(fp);
+		thisFeatures[i++] = new AppendEventFeature(fp);
+		return thisFeatures;
 	}
 
 	private class UpdateAbstractGatewayFeature extends UpdateBaseElementNameFeature {

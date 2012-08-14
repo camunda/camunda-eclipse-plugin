@@ -1,7 +1,11 @@
 package org.eclipse.bpmn2.modeler.ui.preferences;
 
+import java.awt.Checkbox;
+import java.util.Arrays;
+
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
+import org.eclipse.bpmn2.modeler.core.preferences.TristateCheckboxFieldEditor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.ui.Messages;
 import org.eclipse.jface.preference.BooleanFieldEditor;
@@ -12,6 +16,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -119,7 +124,69 @@ public class Bpmn2HomePreferencePage
 				Bpmn2Preferences.PREF_CONNECTION_TIMEOUT_LABEL,
 				getFieldEditorParent());
 		addField(connectionTimeout);
+
+		//////////////////////////////////////////////////////////////////////////////
 		
+		TristateCheckboxFieldEditor popupConfigDialog = new TristateCheckboxFieldEditor(
+				Bpmn2Preferences.PREF_POPUP_CONFIG_DIALOG,
+				Bpmn2Preferences.PREF_POPUP_CONFIG_DIALOG_LABEL,
+				getFieldEditorParent());
+		addField(popupConfigDialog);
+
+		//////////////////////////////////////////////////////////////////////////////
+
+		Composite comp = new Composite(getFieldEditorParent(), SWT.NONE);
+		comp.setLayout(new GridLayout(1,false));
+		GridData gd = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
+		gd.horizontalIndent = 40;
+		comp.setLayoutData(gd);
+
+		TristateCheckboxFieldEditor popupConfigDialogForTasks = new TristateCheckboxFieldEditor(
+				Bpmn2Preferences.PREF_POPUP_CONFIG_DIALOG_FOR_TASKS,
+				Bpmn2Preferences.PREF_POPUP_CONFIG_DIALOG_FOR_TASKS_LABEL,
+				comp);
+		addField(popupConfigDialogForTasks);
+		popupConfigDialog.addField(popupConfigDialogForTasks);
+
+		TristateCheckboxFieldEditor popupConfigDialogForGateways = new TristateCheckboxFieldEditor(
+				Bpmn2Preferences.PREF_POPUP_CONFIG_DIALOG_FOR_GATEWAYS,
+				Bpmn2Preferences.PREF_POPUP_CONFIG_DIALOG_FOR_GATEWAYS_LABEL,
+				comp);
+		addField(popupConfigDialogForGateways);
+		popupConfigDialog.addField(popupConfigDialogForGateways);
+
+		TristateCheckboxFieldEditor popupConfigDialogForEvents = new TristateCheckboxFieldEditor(
+				Bpmn2Preferences.PREF_POPUP_CONFIG_DIALOG_FOR_EVENTS,
+				Bpmn2Preferences.PREF_POPUP_CONFIG_DIALOG_FOR_EVENTS_LABEL,
+				comp);
+		addField(popupConfigDialogForEvents);
+		popupConfigDialog.addField(popupConfigDialogForEvents);
+
+		TristateCheckboxFieldEditor popupConfigDialogForEventDefs = new TristateCheckboxFieldEditor(
+				Bpmn2Preferences.PREF_POPUP_CONFIG_DIALOG_FOR_EVENT_DEFS,
+				Bpmn2Preferences.PREF_POPUP_CONFIG_DIALOG_FOR_EVENT_DEFS_LABEL,
+				comp);
+		addField(popupConfigDialogForEventDefs);
+		popupConfigDialog.addField(popupConfigDialogForEventDefs);
+
+		TristateCheckboxFieldEditor popupConfigDialogForDataDefs = new TristateCheckboxFieldEditor(
+				Bpmn2Preferences.PREF_POPUP_CONFIG_DIALOG_FOR_DATA_DEFS,
+				Bpmn2Preferences.PREF_POPUP_CONFIG_DIALOG_FOR_DATA_DEFS_LABEL,
+				comp);
+		addField(popupConfigDialogForDataDefs);
+		popupConfigDialog.addField(popupConfigDialogForDataDefs);
+
+		TristateCheckboxFieldEditor popupConfigDialogForContainers = new TristateCheckboxFieldEditor(
+				Bpmn2Preferences.PREF_POPUP_CONFIG_DIALOG_FOR_CONTAINERS,
+				Bpmn2Preferences.PREF_POPUP_CONFIG_DIALOG_FOR_CONTAINERS_LABEL,
+				comp);
+		addField(popupConfigDialogForContainers);
+		popupConfigDialog.addField(popupConfigDialogForContainers);
+		
+		
+		popupConfigDialog.updateCheckState();
+
+		//////////////////////////////////////////////////////////////////////////////
 	}
 
 	/* (non-Javadoc)
@@ -133,5 +200,4 @@ public class Bpmn2HomePreferencePage
 		Bpmn2Preferences.getInstance().restoreDefaults(false);
 		super.performDefaults();
 	}
-	
 }

@@ -977,7 +977,7 @@ public class ModelHandler {
 		if (resource==null)
 			resource  = ModelUtil.getResource(object);
 		EObject newObject = create(resource, eClass);
-		newObject.eAdapters().add(new InsertionAdapter(resource, object, feature, newObject));
+		InsertionAdapter.add(resource, object, feature, newObject);
 		return newObject;
 	}
 
@@ -1008,7 +1008,7 @@ public class ModelHandler {
 		if (resource==null)
 			resource  = ModelUtil.getResource(object);
 		T newObject = create(resource, clazz);
-		newObject.eAdapters().add(new InsertionAdapter(resource, object, feature, newObject));
+		InsertionAdapter.add(resource, object, feature, newObject);
 		return newObject;
 	}
 
