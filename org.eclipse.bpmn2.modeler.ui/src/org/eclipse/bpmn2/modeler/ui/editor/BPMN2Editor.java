@@ -443,8 +443,18 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	
 	@Override
 	public Object getAdapter(Class required) {
-		if (required==ITabDescriptorProvider.class)
+		if (required==ITabDescriptorProvider.class) {
+			if (tabDescriptorProvider==null) {
+				IWorkbenchPage page = getEditorSite().getPage();
+				String viewID = "org.eclipse.ui.views.PropertySheet";
+				try {
+					page.showView(viewID, null, IWorkbenchPage.VIEW_CREATE);
+					page.showView(viewID, null,  IWorkbenchPage.VIEW_ACTIVATE);
+				}
+				catch (Exception e) {}
+			}
 			return tabDescriptorProvider;
+		}
 		if (required==TargetRuntime.class)
 			return getTargetRuntime();
 		if (required==Bpmn2Preferences.class)
