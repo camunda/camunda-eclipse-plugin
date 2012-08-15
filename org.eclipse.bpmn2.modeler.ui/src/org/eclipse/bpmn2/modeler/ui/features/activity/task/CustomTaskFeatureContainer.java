@@ -182,11 +182,6 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 		return new AddCustomTaskFeature(fp);
 	}
 	
-	@Override
-	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
-		return null;
-	}
-	
 	/**
 	 * @author bbrodt
 	 *

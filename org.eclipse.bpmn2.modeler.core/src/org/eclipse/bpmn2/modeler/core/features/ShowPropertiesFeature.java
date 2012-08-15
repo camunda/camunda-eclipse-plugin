@@ -15,8 +15,6 @@ import org.eclipse.jface.window.Window;
 
 public class ShowPropertiesFeature extends AbstractCustomFeature {
 
-	private boolean hasDoneChanges = false;
-
 	public ShowPropertiesFeature(IFeatureProvider fp) {
 		super(fp);
 	}
@@ -55,12 +53,7 @@ public class ShowPropertiesFeature extends AbstractCustomFeature {
 		EObject businessObject = BusinessObjectUtil.getBusinessObjectForPictogramElement(pes[0]);
 		ObjectEditingDialog dialog =
 				new ObjectEditingDialog(ed, businessObject);
-		hasDoneChanges = (dialog.open()==Window.OK);
-	}
-
-	@Override
-	public boolean hasDoneChanges() {
-		return hasDoneChanges;
+		dialog.open();
 	}
 
 	@Override

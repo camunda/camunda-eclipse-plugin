@@ -14,8 +14,10 @@
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractDetailComposite;
+import org.eclipse.bpmn2.modeler.ui.property.tasks.TaskDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.tasks.TaskPropertySection;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
 
 /**
@@ -29,6 +31,11 @@ public class JbpmEmptyPropertySection extends TaskPropertySection {
 
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
+		return null;
+	}
+
+	@Override
+	public AbstractDetailComposite createSectionRoot(Composite parent, int style) {
 		return null;
 	}
 

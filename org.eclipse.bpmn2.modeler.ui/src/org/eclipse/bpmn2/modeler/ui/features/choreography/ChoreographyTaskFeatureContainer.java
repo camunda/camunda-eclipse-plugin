@@ -28,8 +28,11 @@ import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
+import org.eclipse.bpmn2.modeler.ui.features.activity.AppendActivityFeature;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.CollapseSubProcessFeature;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.ExpandSubProcessFeature;
+import org.eclipse.bpmn2.modeler.ui.features.event.AppendEventFeature;
+import org.eclipse.bpmn2.modeler.ui.features.gateway.AppendGatewayFeature;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -129,9 +132,13 @@ public class ChoreographyTaskFeatureContainer extends AbstractChoreographyFeatur
 	
 	@Override
 	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
-		return new ICustomFeature[] {
-			new AddChoreographyParticipantFeature(fp)
-		};
+		ICustomFeature[] superFeatures = super.getCustomFeatures(fp);
+		ICustomFeature[] thisFeatures = new ICustomFeature[1 + superFeatures.length];
+		int i;
+		for (i=0; i<superFeatures.length; ++i)
+			thisFeatures[i] = superFeatures[i];
+		thisFeatures[i++] = new AddChoreographyParticipantFeature(fp);
+		return thisFeatures;
 	}
 
 	public static class CreateChoreographyTaskFeature extends AbstractCreateFlowElementFeature<ChoreographyTask> {

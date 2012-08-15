@@ -33,6 +33,7 @@ import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.InteractionNode;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.Lane;
+import org.eclipse.bpmn2.Message;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.SubChoreography;
 import org.eclipse.bpmn2.SubProcess;
@@ -617,10 +618,12 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 				return false; // these have no additional attributes
 			return true;
 		}
-		if (context instanceof ItemAwareElement) {
+		if (context instanceof ItemAwareElement || context instanceof Message) {
 			return true;
 		}
-		if (context instanceof InteractionNode || context instanceof FlowElementsContainer) {
+		if (context instanceof InteractionNode
+				|| context instanceof FlowElementsContainer
+				|| context instanceof CallChoreography) {
 			return true;
 		}
 		return false;

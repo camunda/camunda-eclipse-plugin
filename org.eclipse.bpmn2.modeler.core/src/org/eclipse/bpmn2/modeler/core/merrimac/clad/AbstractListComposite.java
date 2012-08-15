@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.modeler.core.Activator;
-import org.eclipse.bpmn2.modeler.core.merrimac.providers.ColumnTableProvider;
 import org.eclipse.bpmn2.modeler.core.merrimac.providers.TableCursor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.notify.Notification;
@@ -35,12 +34,10 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
@@ -94,12 +91,12 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 	
 	// widgets
 	SashForm sashForm;
-	Section tableSection;
+	protected Section tableSection;
 	protected Section detailSection;
 	
-	Table table;
-	TableViewer tableViewer;
-	AbstractDetailComposite detailComposite;
+	protected Table table;
+	protected TableViewer tableViewer;
+	protected AbstractDetailComposite detailComposite;
 	
 	boolean removeIsDelete = false;
 	Action addAction;
@@ -699,107 +696,5 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 	    toolBarManager.update(true);
 	    section.setTextClient(toolbar);
 	    return section;
-	}
-	
-	public class ListCompositeContentProvider implements IStructuredContentProvider {
-		protected final AbstractListComposite listComposite;
-		protected EObject object;
-		protected EStructuralFeature feature;
-		protected EList<EObject> list;
-		
-		public ListCompositeContentProvider(AbstractListComposite listComposite, EObject object, EStructuralFeature feature, EList<EObject> list) {
-			this.listComposite = listComposite;
-			this.object = object;
-			this.feature = feature;
-			this.list = list;
-		}
-
-		@Override
-		public void dispose() {
-		}
-
-		@Override
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		}
-
-		@Override
-		public Object[] getElements(Object inputElement) {
-			EClass listItemClass = getListItemClass(object,feature);
-			if (listItemClass==null) {
-				// display all items in the list that are subclasses of listItemClass
-				return list.toArray();
-			}
-			else {
-				// we're only interested in display specific EClass instances
-				List<EObject> elements = new ArrayList<EObject>();
-				for (EObject o : list) {
-					EClass ec = o.eClass();
-					if (ec == listItemClass)
-						elements.add(o);
-				}
-				return elements.toArray(new EObject[elements.size()]);
-			}
-		}
-	}
-	
-	public class ListCompositeColumnProvider extends ColumnTableProvider {
-		protected final AbstractListComposite listComposite;
-		protected boolean canModify = true;
-
-		public ListCompositeColumnProvider(AbstractListComposite list) {
-			this(list,false);
-		}
-		
-		public ListCompositeColumnProvider(AbstractListComposite list, boolean canModify) {
-			super();
-			this.canModify = canModify;
-			this.listComposite = list;
-		}
-		
-		/**
-		 * Implement this to select which columns are editable
-		 * @param object - the list object
-		 * @param feature - the feature of the item contained in the list
-		 * @param item - the selected item in the list
-		 * @return true to allow editing
-		 */
-		public boolean canModify(EObject object, EStructuralFeature feature, EObject item) {
-			return canModify;
-		}
-		
-		public TableColumn add(EObject object, EStructuralFeature feature) {
-			return add(object, (EClass)feature.eContainer(), feature);
-		}
-		
-		public TableColumn add(EObject object, EClass eclass, EStructuralFeature feature) {
-			TableColumn tc = null;
-			if (listComposite.getModelEnablement(object).isEnabled(eclass,feature)) {
-				tc = new TableColumn(object, feature);
-				tc.setOwner(listComposite);
-				super.add(tc);
-			}
-			return tc;
-		}
-		
-		public TableColumn add(TableColumn tc) {
-			EStructuralFeature feature = tc.feature;
-			EObject object = tc.object;
-			if (object!=null) {
-				if (listComposite.getModelEnablement(object).isEnabled(object.eClass(),feature)) {
-					tc.setOwner(listComposite);
-					super.add(tc);
-					return tc;
-				}
-			}
-			if (feature!=null) {
-				EClass eclass = (EClass)feature.eContainer();
-				if (listComposite.getModelEnablement(object).isEnabled(eclass,feature)) {
-					tc.setOwner(listComposite);
-					super.add(tc);
-					return tc;
-				}
-			}
-			return tc;
-		}
 	}
 }

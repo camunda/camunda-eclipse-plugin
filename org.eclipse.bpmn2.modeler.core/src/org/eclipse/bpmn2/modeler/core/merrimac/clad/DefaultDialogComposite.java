@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.runtime.Bpmn2SectionDescriptor;
+import org.eclipse.bpmn2.modeler.core.runtime.Bpmn2TabDescriptor;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -12,6 +13,9 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
@@ -31,17 +35,15 @@ import org.eclipse.ui.views.properties.tabbed.ITabDescriptorProvider;
 // TODO: create a tabbed composite that contains all of the sections normally displayed in the tabbed property sheet
 public class DefaultDialogComposite extends AbstractDialogComposite {
 
-	protected static final String DESCRIPTION_SECTION_ID = "org.eclipse.bpmn2.modeler.description.tab.section";
-	protected static final String ADVANCED_SECTION_ID = "org.eclipse.bpmn2.modeler.advanced.tab.section";
 	protected IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 	protected EObject businessObject;
 	protected List<AbstractDetailComposite> details = new ArrayList<AbstractDetailComposite>();
-	protected ScrolledForm form;
 	protected TabFolder folder;
 	protected Composite control;
 	protected ITabDescriptor[] tabDescriptors;
 	protected AbstractBpmn2PropertySection section;
 	protected EClass eclass;
+	private ControlListener dialogListener;
 	
 	public DefaultDialogComposite(Composite parent, EClass eclass, int style) {
 		super(parent, style);
@@ -62,11 +64,9 @@ public class DefaultDialogComposite extends AbstractDialogComposite {
 				for (Object o : td.getSectionDescriptors()) {
 					if (o instanceof Bpmn2SectionDescriptor) {
 						Bpmn2SectionDescriptor sd = (Bpmn2SectionDescriptor)o;
-						if (DESCRIPTION_SECTION_ID.equals(sd.getId()) || ADVANCED_SECTION_ID.equals(sd.getId()))
-							continue;
 			
 						TabItem tab = new TabItem(folder, SWT.NONE);
-						form = new ScrolledForm(folder, SWT.V_SCROLL);
+						ScrolledForm form = new ScrolledForm(folder, SWT.V_SCROLL);
 						form.setBackground(parent.getBackground());
 						FormData data = new FormData();
 						data.top = new FormAttachment(0, 0);
@@ -129,13 +129,16 @@ public class DefaultDialogComposite extends AbstractDialogComposite {
 		int detailsCount = 0;
 		ITabDescriptor[] tabDescriptors = getTabDescriptors();
 		for (ITabDescriptor td : tabDescriptors) {
+			if (td instanceof Bpmn2TabDescriptor && !((Bpmn2TabDescriptor)td).isPopup()) {
+				// exclude this tab if not intended for popup dialog
+				continue;
+			}
+			
 			for (Object o : td.getSectionDescriptors()) {
 				if (o instanceof Bpmn2SectionDescriptor) {
 					Bpmn2SectionDescriptor sd = (Bpmn2SectionDescriptor)o;
-					if (!DESCRIPTION_SECTION_ID.equals(sd.getId()) && !ADVANCED_SECTION_ID.equals(sd.getId())) {
-						section = (AbstractBpmn2PropertySection)sd.getSectionClass();
-						++detailsCount;
-					}
+					section = (AbstractBpmn2PropertySection)sd.getSectionClass();
+					++detailsCount;
 				}
 			}
 		}
@@ -179,8 +182,49 @@ public class DefaultDialogComposite extends AbstractDialogComposite {
 			if (y==0)
 				y = p.y;
 			getShell().setLocation(x,y);
+			addDialogListener();
+			
+			if (folder!=null) {
+				int i = preferenceStore.getInt("dialog."+eclass.getName()+".tab");
+				if (i>=0 && i<folder.getItemCount())
+					folder.setSelection(i);
+				folder.addSelectionListener( new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						int i = folder.getSelectionIndex();
+						preferenceStore.setValue("dialog."+eclass.getName()+".tab", i);
+					}
+				});
+				
+				if (details!=null) {
+					List<TabItem> removed = new ArrayList<TabItem>();
+					for (i=0; i<details.size(); ++i) {
+						AbstractDetailComposite detail = details.get(i);
+						if (detail.getChildren().length==0) {
+							removed.add(folder.getItem(i));
+						}
+					}
+					for (TabItem tab : removed) {
+						tab.dispose();
+					}
+				}
+			}
+		}
+	}
 	
-			getShell().addControlListener(new ControlListener() {
+	public Composite getControl() {
+		return control;
+	}
+	
+	@Override
+	public void dispose() {
+		removeDialogListener();
+		super.dispose();
+	}
+
+	private void addDialogListener() {
+		if (dialogListener==null) {
+			dialogListener = new ControlListener() {
 				public void controlMoved(ControlEvent e)
 				{
 					Point p = getShell().getLocation();
@@ -195,13 +239,15 @@ public class DefaultDialogComposite extends AbstractDialogComposite {
 					preferenceStore.setValue("dialog."+eclass.getName()+".height", p.y);
 				}
 		
-			});
-			if (form!=null)
-				form.reflow(true);
+			};
+			getShell().addControlListener(dialogListener);
 		}
 	}
 	
-	public Composite getControl() {
-		return control;
+	private void removeDialogListener() {
+		if (dialogListener!=null) {
+			getShell().removeControlListener(dialogListener);
+			dialogListener = null;
+		}
 	}
 }

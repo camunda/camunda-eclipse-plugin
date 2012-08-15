@@ -19,9 +19,11 @@ import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.property.connectors.SequenceFlowPropertySection;
+import org.eclipse.bpmn2.modeler.ui.property.tasks.TaskDetailComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
 
 /**
@@ -62,5 +64,9 @@ public class JbpmSequenceFlowPropertySection extends SequenceFlowPropertySection
 	protected AbstractDetailComposite createSectionRoot() {
 		return new JbpmSequenceFlowDetailComposite(this);
 	}
-	
+
+	@Override
+	public AbstractDetailComposite createSectionRoot(Composite parent, int style) {
+		return new JbpmSequenceFlowDetailComposite(parent,style);
+	}
 }

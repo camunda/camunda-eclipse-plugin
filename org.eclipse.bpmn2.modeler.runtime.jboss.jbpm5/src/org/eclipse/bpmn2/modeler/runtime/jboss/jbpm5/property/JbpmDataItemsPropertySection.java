@@ -18,9 +18,9 @@ import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultDetailComposite;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.ListCompositeColumnProvider;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.TableColumn;
-import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractListComposite.ListCompositeColumnProvider;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ComboObjectEditor;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ObjectEditor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -33,6 +33,7 @@ import org.eclipse.bpmn2.modeler.ui.property.diagrams.DataItemsPropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.diagrams.ItemDefinitionListComposite;
 import org.eclipse.bpmn2.modeler.ui.property.diagrams.PropertyListComposite;
 import org.eclipse.bpmn2.modeler.ui.property.dialogs.SchemaImportDialog;
+import org.eclipse.bpmn2.modeler.ui.property.tasks.TaskDetailComposite;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -57,6 +58,11 @@ public class JbpmDataItemsPropertySection extends DataItemsPropertySection {
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
 		return new JbpmDataItemsDetailComposite(this);
+	}
+
+	@Override
+	public AbstractDetailComposite createSectionRoot(Composite parent, int style) {
+		return new JbpmDataItemsDetailComposite(parent,style);
 	}
 
 	public class GlobalTypeDetailComposite extends DefaultDetailComposite {
