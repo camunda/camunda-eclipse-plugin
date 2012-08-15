@@ -190,6 +190,9 @@ public class PropertiesCompositeFactory {
 					if (map.containsKey(iface)) {
 						return map.get(iface);
 					}
+					Class composite = findCompositeClass(map,iface);
+					if (composite!=null)
+						return composite;
 				}
 				// if this is an interface, it won't have a super class,
 				// so check all implemented interfaces

@@ -41,6 +41,7 @@ public class FeatureEditingDialog extends Dialog {
 	protected EStructuralFeature feature;
 	protected EObject newObject;
 	protected boolean cancel = false;
+	protected AbstractDetailComposite dialogContent;
 	
 	public FeatureEditingDialog(DiagramEditor editor, EObject object, EStructuralFeature feature, EObject value) {
 		super(editor.getEditorSite().getShell());
@@ -87,9 +88,9 @@ public class FeatureEditingDialog extends Dialog {
 			else
 				cancel = true;
 		}
-		AbstractDetailComposite comp = PropertiesCompositeFactory.createDetailComposite(
+		dialogContent = PropertiesCompositeFactory.createDetailComposite(
 				eclass.getInstanceClass(), dialogArea, SWT.NONE);
-		comp.setBusinessObject(newObject);
+		dialogContent.setBusinessObject(newObject);
 		
 		return dialogArea;
 	}
@@ -136,8 +137,15 @@ public class FeatureEditingDialog extends Dialog {
 
 	@Override
 	protected void cancelPressed() {
+		dialogContent.dispose();
 		super.cancelPressed();
 		newObject = null;
+	}
+	
+	@Override
+	protected void okPressed() {
+		dialogContent.dispose();
+		super.okPressed();
 	}
 
 	public EObject getNewObject() {

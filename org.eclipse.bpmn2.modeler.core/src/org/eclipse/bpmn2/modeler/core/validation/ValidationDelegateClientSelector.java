@@ -12,11 +12,13 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.validation;
 
+import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.validation.model.IClientSelector;
 
 public class ValidationDelegateClientSelector implements IClientSelector {
 	
 	public boolean selects(Object object) {
-		return true;
+		return object instanceof EObject && ((EObject) object).eResource() instanceof Bpmn2ResourceImpl;
 	}
 }

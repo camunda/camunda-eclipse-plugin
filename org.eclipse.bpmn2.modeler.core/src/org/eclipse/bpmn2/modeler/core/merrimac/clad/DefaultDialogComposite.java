@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.runtime.Bpmn2SectionDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.Bpmn2TabDescriptor;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -15,7 +16,6 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
@@ -61,6 +61,10 @@ public class DefaultDialogComposite extends AbstractDialogComposite {
 			
 			int index = 0;
 			for (ITabDescriptor td : tabDescriptors) {
+				if (td instanceof Bpmn2TabDescriptor && !((Bpmn2TabDescriptor)td).isPopup()) {
+					// exclude this tab if not intended for popup dialog
+					continue;
+				}
 				for (Object o : td.getSectionDescriptors()) {
 					if (o instanceof Bpmn2SectionDescriptor) {
 						Bpmn2SectionDescriptor sd = (Bpmn2SectionDescriptor)o;
@@ -89,7 +93,7 @@ public class DefaultDialogComposite extends AbstractDialogComposite {
 						formBody.setLayoutData(twd);
 						
 						section = (AbstractBpmn2PropertySection)sd.getSectionClass();
-						AbstractDetailComposite detail = getDetails(index++, formBody);
+						AbstractDetailComposite detail = getDetail(section, formBody);
 						detail.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 	
 						tab.setText(td.getLabel());
@@ -145,7 +149,7 @@ public class DefaultDialogComposite extends AbstractDialogComposite {
 		return detailsCount;
 	}
 	
-	protected AbstractDetailComposite getDetails(int index, Composite parent) {
+	protected AbstractDetailComposite getDetail(AbstractBpmn2PropertySection section, Composite parent) {
 		return section.createSectionRoot(parent,SWT.NONE);
 	}
 
@@ -197,16 +201,19 @@ public class DefaultDialogComposite extends AbstractDialogComposite {
 				});
 				
 				if (details!=null) {
-					List<TabItem> removed = new ArrayList<TabItem>();
+					List<TabItem> removedTabs = new ArrayList<TabItem>();
+					List<AbstractDetailComposite> removedDetails = new ArrayList<AbstractDetailComposite>();
 					for (i=0; i<details.size(); ++i) {
 						AbstractDetailComposite detail = details.get(i);
 						if (detail.getChildren().length==0) {
-							removed.add(folder.getItem(i));
+							removedTabs.add(folder.getItem(i));
+							removedDetails.add(detail);
 						}
 					}
-					for (TabItem tab : removed) {
+					for (TabItem tab : removedTabs) {
 						tab.dispose();
 					}
+					details.removeAll(removedDetails);
 				}
 			}
 		}
@@ -219,6 +226,12 @@ public class DefaultDialogComposite extends AbstractDialogComposite {
 	@Override
 	public void dispose() {
 		removeDialogListener();
+		if (details!=null) {
+			for (AbstractDetailComposite detail : details) {
+				detail.dispose();
+			}
+		}
+		control.dispose();
 		super.dispose();
 	}
 
@@ -246,7 +259,10 @@ public class DefaultDialogComposite extends AbstractDialogComposite {
 	
 	private void removeDialogListener() {
 		if (dialogListener!=null) {
-			getShell().removeControlListener(dialogListener);
+			try {
+				getShell().removeControlListener(dialogListener);
+			}
+			catch(Exception e) {}
 			dialogListener = null;
 		}
 	}

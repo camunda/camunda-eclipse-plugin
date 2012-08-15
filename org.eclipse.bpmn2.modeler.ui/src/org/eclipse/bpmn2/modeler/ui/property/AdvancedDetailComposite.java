@@ -26,9 +26,7 @@ import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractBpmn2PropertySection
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultDetailComposite;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.PropertiesCompositeFactory;
-import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.bpmn2.provider.Bpmn2ItemProviderAdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
@@ -41,7 +39,6 @@ import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.ResourceSetChangeEvent;
-import org.eclipse.emf.transaction.ResourceSetListenerImpl;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.ui.services.GraphitiUi;
@@ -75,34 +72,28 @@ import org.eclipse.ui.forms.widgets.Section;
 @SuppressWarnings("unchecked")
 public class AdvancedDetailComposite extends AbstractDetailComposite {
 
-	private EObject be;
 	private TreeViewer treeViewer;
 	private AbstractDetailComposite detailsDetailComposite;
-	private ModelEnablementDescriptor modelEnablement;
-	private TransactionalEditingDomain domain;
-	private DomainListener domainListener;
 	private Section treeSection;
 	private Section detailsSection;
 	private Composite detailsComposite;
 	private Button fullDetails;
 	private HashSet<Control> myChildren = new HashSet<Control>();
-	
-	class DomainListener extends ResourceSetListenerImpl {
-		@Override
-		public void resourceSetChanged(ResourceSetChangeEvent event) {
-			List<Notification> notifications = event.getNotifications();
-			for (Notification notification : notifications) {
-				treeViewer.refresh(notification.getNotifier(), true);
-			}
-		}
-	}
 
 	/**
 	 * @param section
 	 */
 	public AdvancedDetailComposite(AbstractBpmn2PropertySection section) {
 		super(section);
+	}
+	
+	public AdvancedDetailComposite(Composite parent, int style) {
+		super(parent,style);
+	}
 
+	public void initialize() {
+		super.initialize();
+		
 		GridData data;
 		SashForm sashForm = new SashForm(this, SWT.BORDER);
 		sashForm.setSashWidth(5);
@@ -182,10 +173,6 @@ public class AdvancedDetailComposite extends AbstractDetailComposite {
 		sashForm.setWeights(new int[] { 1, 2 });
 	}
 
-	public AdvancedDetailComposite(Composite parent, int style) {
-		super(parent,style);
-	}
-
 	private void saveChildren(Control parent) {
 		myChildren.add(parent);
 		if (parent instanceof Composite) {
@@ -254,30 +241,14 @@ public class AdvancedDetailComposite extends AbstractDetailComposite {
 		}
 	}
 	
-	protected void addDomainListener(BPMN2Editor editor) {
-		removeDomainListener();
-		domain = editor.getEditingDomain();
-		domainListener = new DomainListener();
-		domain.addResourceSetListener(domainListener);
-	}
-
-	protected void removeDomainListener() {
-		if (domain!=null && domainListener!=null) {
-			domain.removeResourceSetListener(domainListener);
-			domainListener = null;
-		}
-	}
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2DetailComposite#createBindings(org.eclipse.emf.ecore.EObject)
 	 */
 	@Override
 	public void createBindings(EObject be) {
 	}
-
-	@Override
-	public void dispose() {
-		super.dispose();
-		removeDomainListener();
+	
+	protected void cleanBindings() {
 	}
 
 	@Override
@@ -318,8 +289,10 @@ public class AdvancedDetailComposite extends AbstractDetailComposite {
 		Tree tree = treeViewer.getTree();
 		Menu menu = manager.createContextMenu(tree);
 		tree.setMenu(menu);
-		getPropertySection().getTabbedPropertySheetPage().
-			getSite().registerContextMenu("#PropertiesMenu", manager, treeViewer);
+		getDiagramEditor().getSite().registerContextMenu("#PropertiesMenu", manager, treeViewer);
+//		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart().getSite().registerContextMenu("#PropertiesMenu", manager, treeViewer);
+//		getPropertySection().getTabbedPropertySheetPage().
+//			getSite().registerContextMenu("#PropertiesMenu", manager, treeViewer);
 	}
 
 	protected void buildMenu(MenuManager manager) {
@@ -340,7 +313,7 @@ public class AdvancedDetailComposite extends AbstractDetailComposite {
 	private void createRootProperties(MenuManager menuManager) {
 		MenuManager manager = new MenuManager("Add Root Property");
 		menuManager.add(manager);
-		createMenuItems(manager, "", be, true);
+		createMenuItems(manager, "", businessObject, true);
 	}
 
 	private void createElementProperties(MenuManager manager, EObject baseElement) {

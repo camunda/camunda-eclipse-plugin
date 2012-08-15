@@ -18,22 +18,16 @@ import org.eclipse.bpmn2.modeler.core.merrimac.clad.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.FormDialog;
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 // TODO: this needs to be a FormDialog
@@ -112,23 +106,18 @@ public class ObjectEditingDialog extends FormDialog {
 
 		dialogContent.setBusinessObject(object);
 	}
-
-//	@Override
-//	protected Control createDialogArea(Composite parent) {
-//		Composite dialogArea = (Composite) super.createDialogArea(parent);
-//		
-//		EClass eclass = object.eClass();
-//		AbstractDialogComposite dialogContent = PropertiesCompositeFactory.createDialogComposite(
-//				eclass.getInstanceClass(), dialogArea, SWT.TOP);
-//		dialogContent.setBusinessObject(object);
-//		
-//		return dialogArea;
-//	}
 	
 	@Override
 	protected void cancelPressed() {
+		dialogContent.dispose();
 		super.cancelPressed();
 		object = null;
+	}
+	
+	@Override
+	protected void okPressed() {
+		dialogContent.dispose();
+		super.okPressed();
 	}
 
 	public EObject getNewObject() {
