@@ -57,10 +57,7 @@ public class ShowPropertiesFeature extends AbstractCustomFeature {
 		EObject businessObject = BusinessObjectUtil.getBusinessObjectForPictogramElement(pes[0]);
 		ObjectEditingDialog dialog =
 				new ObjectEditingDialog(ed, businessObject);
-		if (dialog.open()!=Window.OK) {
-			TransactionalEditingDomainImpl domain = (TransactionalEditingDomainImpl)getDiagramEditor().getEditingDomain();
-			domain.getActiveTransaction().abort(new Status(IStatus.INFO, Activator.PLUGIN_ID, "User Canceled"));
-		}
+		dialog.open();
 	}
 
 	@Override

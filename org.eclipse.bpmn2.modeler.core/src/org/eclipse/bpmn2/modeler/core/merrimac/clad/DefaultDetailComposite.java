@@ -83,19 +83,17 @@ public class DefaultDetailComposite extends AbstractDetailComposite {
 	protected Composite bindFeature(EObject be, EStructuralFeature feature, EClass eItemClass) {
 		Composite composite = null;
 		if (feature!=null) {
-			if (modelEnablement.isEnabled(be.eClass(),feature) || eItemClass!=null) {
-				if (isAttribute(be,feature)) {
-					bindAttribute(getAttributesParent(), be,(EAttribute)feature);
-				}
-				else if (isList(be,feature)) {
-					if (eItemClass==null)
-						composite = bindList(be,feature);
-					else
-						composite = bindList(be,feature, eItemClass);
-				}
-				else if (isReference(be,feature)) {
-					bindReference(getAttributesParent(), be,(EReference)feature);
-				}
+			if (isAttribute(be,feature)) {
+				bindAttribute(getAttributesParent(), be,(EAttribute)feature);
+			}
+			else if (isList(be,feature)) {
+				if (eItemClass==null)
+					composite = bindList(be,feature);
+				else
+					composite = bindList(be,feature, eItemClass);
+			}
+			else if (isReference(be,feature)) {
+				bindReference(getAttributesParent(), be,(EReference)feature);
 			}
 		}
 		return composite;
@@ -121,7 +119,7 @@ public class DefaultDetailComposite extends AbstractDetailComposite {
 			if (eclass==null)
 				eclass = (EClass) getTargetRuntime().getModelDescriptor().getEPackage().getEClassifier(className);
 			if (eclass!=null) {
-				if (!modelEnablement.isEnabled(eclass))
+				if (!isModelObjectEnabled(eclass))
 					return null;
 			}
 		}

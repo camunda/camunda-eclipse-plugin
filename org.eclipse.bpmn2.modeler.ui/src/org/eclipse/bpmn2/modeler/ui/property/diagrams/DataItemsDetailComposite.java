@@ -66,7 +66,7 @@ public class DataItemsDetailComposite extends DefaultDetailComposite {
 	@Override
 	protected AbstractListComposite bindList(EObject object, EStructuralFeature feature, EClass listItemClass) {
 		if (listItemClass!=null && listItemClass.getName().equals("ItemDefinition")) {
-			if (modelEnablement.isEnabled(object.eClass(), feature) || modelEnablement.isEnabled(listItemClass)) {
+			if (isModelObjectEnabled(object.eClass(), feature) || isModelObjectEnabled(listItemClass)) {
 				AbstractListComposite table = super.bindList(object, feature, listItemClass);
 				return table;
 			}

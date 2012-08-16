@@ -282,6 +282,15 @@ public class ModelUtil {
 		return id;
 	}
 
+	public static int getIDNumber(String id) {
+		try {
+			int i = id.lastIndexOf("_");
+			return Integer.parseInt(id.substring(i+1));
+		}
+		catch (Exception e) {
+			return -1;
+		}
+	}
 
 	public static String getName(BaseElement element) {
 		if (element != null) {
@@ -637,17 +646,18 @@ public class ModelUtil {
 			InsertionAdapter insertionAdapter = AdapterUtil.adapt(object, InsertionAdapter.class);
 			if (insertionAdapter!=null)
 				resource = insertionAdapter.getResource();
-			if (resource==null) {
-				EClass eclass = object.eClass();
-				for (EReference ref : eclass.getEAllReferences()) {
-					Object value = object.eGet(ref);
-					if (value instanceof EObject) {
-						resource = getResource((EObject) value);
-						if (resource!=null)
-							return resource;
-					}
-				}
-			}
+			// TODO: can we use any of the referenced objects to find a Resource?
+//			if (resource==null) {
+//				EClass eclass = object.eClass();
+//				for (EReference ref : eclass.getEAllReferences()) {
+//					Object value = object.eGet(ref);
+//					if (value instanceof EObject) {
+//						resource = getResource((EObject) value);
+//						if (resource!=null)
+//							return resource;
+//					}
+//				}
+//			}
 		}
 		return resource;
 	}

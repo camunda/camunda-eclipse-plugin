@@ -26,7 +26,7 @@ public class JbpmItemDefinitionDetailComposite extends ItemDefinitionDetailCompo
 	@Override
 	protected void bindReference(Composite parent, EObject object, EReference reference) {
 		if ("structureRef".equals(reference.getName()) &&
-				modelEnablement.isEnabled(object.eClass(), reference)) {
+				isModelObjectEnabled(object.eClass(), reference)) {
 			
 			if (parent==null)
 				parent = getAttributesParent();

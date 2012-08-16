@@ -36,7 +36,8 @@ public class ListCompositeColumnProvider extends ColumnTableProvider {
 	
 	public TableColumn add(EObject object, EClass eclass, EStructuralFeature feature) {
 		TableColumn tc = null;
-		if (listComposite.getModelEnablement(object).isEnabled(eclass,feature)) {
+		listComposite.getModelEnablement(object);
+		if (listComposite.isModelObjectEnabled(eclass,feature)) {
 			tc = new TableColumn(object, feature);
 			tc.setOwner(listComposite);
 			super.add(tc);
@@ -47,8 +48,9 @@ public class ListCompositeColumnProvider extends ColumnTableProvider {
 	public TableColumn add(TableColumn tc) {
 		EStructuralFeature feature = tc.feature;
 		EObject object = tc.object;
+		listComposite.getModelEnablement(object);
 		if (object!=null) {
-			if (listComposite.getModelEnablement(object).isEnabled(object.eClass(),feature)) {
+			if (listComposite.isModelObjectEnabled(object.eClass(),feature)) {
 				tc.setOwner(listComposite);
 				super.add(tc);
 				return tc;
@@ -56,7 +58,7 @@ public class ListCompositeColumnProvider extends ColumnTableProvider {
 		}
 		if (feature!=null) {
 			EClass eclass = (EClass)feature.eContainer();
-			if (listComposite.getModelEnablement(object).isEnabled(eclass,feature)) {
+			if (listComposite.isModelObjectEnabled(eclass,feature)) {
 				tc.setOwner(listComposite);
 				super.add(tc);
 				return tc;

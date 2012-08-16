@@ -51,14 +51,11 @@ public abstract class AbstractCreateFlowElementFeature<T extends FlowElement> ex
 		try {
 			ModelHandler handler = ModelHandler.getInstance(getDiagram());
 			element = createBusinessObject(context);
-//			element.setId(EcoreUtil.generateUUID());
 			if (FeatureSupport.isTargetLane(context) && element instanceof FlowNode) {
 				((FlowNode) element).getLanes().add(
 						(Lane) getBusinessObjectForPictogramElement(context.getTargetContainer()));
 			}
-
 			handler.addFlowElement(getBusinessObjectForPictogramElement(context.getTargetContainer()), element);
-			ModelUtil.setID(element);
 		} catch (IOException e) {
 			Activator.logError(e);
 		}

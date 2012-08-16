@@ -13,7 +13,9 @@ import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.command.Command;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.NotificationFilter;
 import org.eclipse.emf.transaction.ResourceSetChangeEvent;
 import org.eclipse.emf.transaction.ResourceSetListener;
@@ -39,7 +41,7 @@ public class ListAndDetailCompositeBase extends Composite implements ResourceSet
 	public final static Bpmn2ModelerFactory FACTORY = Bpmn2ModelerFactory.getInstance();
 	protected AbstractBpmn2PropertySection propertySection;
 	protected FormToolkit toolkit;
-	protected ModelEnablementDescriptor modelEnablement;
+	private ModelEnablementDescriptor modelEnablement;
 	protected IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 	protected EObject businessObject;
 	protected int style;
@@ -165,12 +167,32 @@ public class ListAndDetailCompositeBase extends Composite implements ResourceSet
 		return modelEnablement;
 	}
 
+	protected boolean isModelObjectEnabled(String className, String featureName) {
+		return modelEnablement.isEnabled(className, featureName);
+	}
+
+	protected boolean isModelObjectEnabled(EClass eclass, EStructuralFeature feature) {
+		String className = eclass==null ? null : eclass.getName();
+		String featureName = feature==null ? null : feature.getName();
+		return isModelObjectEnabled(className, featureName);
+	}
+
+	protected boolean isModelObjectEnabled(EClass eclass) {
+		return isModelObjectEnabled(eclass,null);
+	}
+
 	public TargetRuntime getTargetRuntime() {
 		return (TargetRuntime) getDiagramEditor().getAdapter(TargetRuntime.class);
 	}
 	
 	public Bpmn2Preferences getPreferences() {
 		return (Bpmn2Preferences) getDiagramEditor().getAdapter(Bpmn2Preferences.class);
+	}
+	
+	@Override
+	public void setData(Object object) {
+		if (object instanceof EObject)
+			setBusinessObject((EObject)object);
 	}
 	
 	public void setBusinessObject(EObject object) {

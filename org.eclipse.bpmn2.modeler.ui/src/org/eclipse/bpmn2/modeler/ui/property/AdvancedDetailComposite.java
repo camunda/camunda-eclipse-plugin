@@ -346,7 +346,7 @@ public class AdvancedDetailComposite extends AbstractDetailComposite {
 				commandValue = (EObject) command.value;
 			
 			if (root) {
-				if (eAllContainments.contains(feature) && modelEnablement.isEnabled(commandValue.eClass())) {
+				if (eAllContainments.contains(feature) && isModelObjectEnabled(commandValue.eClass())) {
 					Object value = baseElement.eGet(feature);
 
 					String name = PropertyUtil.deCamelCase(commandValue.eClass().getName());
@@ -363,8 +363,8 @@ public class AdvancedDetailComposite extends AbstractDetailComposite {
 					items.add(item);
 				}
 			} else {
-				if (eAllContainments.contains(feature) && modelEnablement.isEnabled(baseElement.eClass(), feature) &&
-						 modelEnablement.isEnabled(commandValue.eClass())) {
+				if (eAllContainments.contains(feature) && isModelObjectEnabled(baseElement.eClass(), feature) &&
+						 isModelObjectEnabled(commandValue.eClass())) {
 					Object value = baseElement.eGet(feature);
 
 					String name = PropertyUtil.deCamelCase(commandValue.eClass().getName());

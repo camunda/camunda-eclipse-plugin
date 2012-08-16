@@ -29,6 +29,7 @@ import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ImportType;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelFactory;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.util.JbpmModelUtil;
+import org.eclipse.bpmn2.modeler.ui.property.data.ItemAwareElementDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.diagrams.DataItemsPropertySection;
 import org.eclipse.bpmn2.modeler.ui.property.diagrams.ItemDefinitionListComposite;
 import org.eclipse.bpmn2.modeler.ui.property.diagrams.PropertyListComposite;
@@ -52,6 +53,7 @@ public class JbpmDataItemsPropertySection extends DataItemsPropertySection {
 		// register the DataStoreDetailComposite for rendering DataStore objects
 		PropertiesCompositeFactory.register(GlobalType.class, GlobalTypeDetailComposite.class);
 		PropertiesCompositeFactory.register(ItemDefinition.class, JbpmItemDefinitionDetailComposite.class);
+		PropertiesCompositeFactory.register(Property.class, JbpmPropertyDetailComposite.class);
 		PropertiesCompositeFactory.register(Property.class, JbpmPropertyListComposite.class);
 	}
 
@@ -111,7 +113,13 @@ public class JbpmDataItemsPropertySection extends DataItemsPropertySection {
 		public JbpmPropertyListComposite(Composite parent) {
 			super(parent);
 		}
-		
+
+		protected boolean isModelObjectEnabled(String className, String featureName) {
+			if (featureName!=null && "id".equals(featureName))
+					return true;
+			return super.isModelObjectEnabled(className,featureName);
+		}
+
 		public ListCompositeColumnProvider getColumnProvider(EObject object, EStructuralFeature feature) {
 			if (columnProvider==null) {
 				columnProvider = new ListCompositeColumnProvider(this,true);
@@ -128,6 +136,23 @@ public class JbpmDataItemsPropertySection extends DataItemsPropertySection {
 			prop.setId( prop.getName() );
 			prop.setName(null);
 			return prop;
+		}
+	}
+	
+	public class JbpmPropertyDetailComposite extends ItemAwareElementDetailComposite {
+
+		public JbpmPropertyDetailComposite(AbstractBpmn2PropertySection section) {
+			super(section);
+		}
+
+		public JbpmPropertyDetailComposite(Composite parent, int style) {
+			super(parent, style);
+		}
+
+		protected boolean isModelObjectEnabled(String className, String featureName) {
+			if (featureName!=null && "id".equals(featureName))
+					return true;
+			return super.isModelObjectEnabled(className,featureName);
 		}
 	}
 }

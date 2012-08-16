@@ -22,6 +22,7 @@ import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -45,29 +46,7 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 	@Override
     public Object[] create(ICreateContext context) {
 		Participant participant = createBusinessObject(context);
-        BPMNDiagram bpmnDiagram = BusinessObjectUtil.getFirstElementOfType(context.getTargetContainer(), BPMNDiagram.class);
-        Definitions definitions = ModelUtil.getDefinitions(bpmnDiagram);
-
-        // add the Pool to the first Choreography or Collaboration we find.
-        // TODO: when multipage editor is working, this will be the specific Choreography or
-        // Collaboration that is being rendered on the current page.
-        List<RootElement> rootElements = definitions.getRootElements();
-        for (RootElement element : rootElements) {
-            if (element instanceof Collaboration || element instanceof Choreography) {
-                ((Collaboration)element).getParticipants().add(participant);
-                break;
-            }
-        }
-/*
- Finish this later after we figure out how to deal with multiple BPMNDiagrams and BPMNPlanes
- 
-        // create a Process for this Participant
-        Process process = (Process) PropertyUtil.createObject(bpmnDiagram.eResource(), Bpmn2Package.eINSTANCE.getProcess());
-        // NOTE: this is needed because it fires the InsertionAdapter, which adds the new Process
-        // to Definitions.rootElements, otherwise the Process would be a dangling object
-        process.setName(participant.getName()+" Process");
-        participant.setProcessRef(process);
-*/        
+		participant.setName("Pool "+ModelUtil.getIDNumber(participant.getId()));
         addGraphicalRepresentation(context, participant);
 		return new Object[] { participant };
     }
@@ -88,17 +67,5 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 	@Override
 	public EClass getBusinessObjectClass() {
 		return Bpmn2Package.eINSTANCE.getParticipant();
-	}
-
-	@Override
-	public Participant createBusinessObject(ICreateContext context) {
-        BPMNDiagram bpmnDiagram = BusinessObjectUtil.getFirstElementOfType(context.getTargetContainer(), BPMNDiagram.class);
-        Definitions definitions = ModelUtil.getDefinitions(bpmnDiagram);
-        Participant bo = (Participant) ModelUtil.createObject(definitions.eResource(), Bpmn2Package.eINSTANCE.getParticipant());
-        ModelUtil.setID(bo,definitions.eResource());
-        bo.setName( ModelUtil.toDisplayName(bo.getId()) );
-		putBusinessObject(context, bo);
-
-        return bo;
 	}
 }

@@ -18,6 +18,7 @@ import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
+import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -37,17 +38,9 @@ public abstract class AbstractCreateRootElementFeature<T extends RootElement> ex
 
 	@Override
     public Object[] create(ICreateContext context) {
-		RootElement element = null;
-		
-		try {
-			ModelHandler handler = ModelHandlerLocator.getModelHandler(getDiagram().eResource());
-			element = createBusinessObject(context);
-			handler.addRootElement(element);
-			ModelUtil.setID(element);
-		} catch (IOException e) {
-			Activator.logError(e);
-		}
-
+		RootElement element = createBusinessObject(context);
+		// make sure this thing gets added to the Resource
+		InsertionAdapter.executeIfNeeded(element);
 		addGraphicalRepresentation(context, element);
 		return new Object[] { element };
     }

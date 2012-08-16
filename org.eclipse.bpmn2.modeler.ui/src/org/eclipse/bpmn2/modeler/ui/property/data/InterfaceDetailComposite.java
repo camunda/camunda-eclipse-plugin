@@ -66,7 +66,7 @@ public class InterfaceDetailComposite extends DefaultDetailComposite {
 	@Override
 	protected void bindReference(Composite parent, EObject object, EReference reference) {
 		if ("implementationRef".equals(reference.getName()) &&
-				modelEnablement.isEnabled(object.eClass(), reference)) {
+				isModelObjectEnabled(object.eClass(), reference)) {
 			
 			if (parent==null)
 				parent = getAttributesParent();

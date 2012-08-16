@@ -93,11 +93,11 @@ public class TimerEventDefinitionDetailComposite extends DefaultDetailComposite 
 		timeCycleButton = toolkit.createButton(buttonComposite, "Interval", SWT.RADIO);
 		timeDurationButton = toolkit.createButton(buttonComposite, "Duration", SWT.RADIO);
 		
-		if (!modelEnablement.isEnabled(event.eClass(), PACKAGE.getTimerEventDefinition_TimeDate()))
+		if (!isModelObjectEnabled(event.eClass(), PACKAGE.getTimerEventDefinition_TimeDate()))
 			timeDateButton.setVisible(false);
-		if (!modelEnablement.isEnabled(event.eClass(), PACKAGE.getTimerEventDefinition_TimeCycle()))
+		if (!isModelObjectEnabled(event.eClass(), PACKAGE.getTimerEventDefinition_TimeCycle()))
 			timeCycleButton.setVisible(false);
-		if (!modelEnablement.isEnabled(event.eClass(), PACKAGE.getTimerEventDefinition_TimeDuration()))
+		if (!isModelObjectEnabled(event.eClass(), PACKAGE.getTimerEventDefinition_TimeDuration()))
 			timeDurationButton.setVisible(false);
 		
 		if (event.getTimeDate()!=null) {

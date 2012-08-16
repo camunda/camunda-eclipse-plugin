@@ -53,7 +53,7 @@ public class ItemDefinitionDetailComposite extends DefaultDetailComposite {
 	protected void bindAttribute(Composite parent, EObject object, EAttribute attribute, String label) {
 
 		if ("itemKind".equals(attribute.getName())) {
-			if (modelEnablement.isEnabled(object.eClass(), attribute)) {
+			if (isModelObjectEnabled(object.eClass(), attribute)) {
 
 				if (parent==null)
 					parent = getAttributesParent();
@@ -84,7 +84,7 @@ public class ItemDefinitionDetailComposite extends DefaultDetailComposite {
 	@Override
 	protected void bindReference(Composite parent, EObject object, EReference reference) {
 		if ("structureRef".equals(reference.getName()) &&
-				modelEnablement.isEnabled(object.eClass(), reference)) {
+				isModelObjectEnabled(object.eClass(), reference)) {
 			
 			if (parent==null)
 				parent = getAttributesParent();

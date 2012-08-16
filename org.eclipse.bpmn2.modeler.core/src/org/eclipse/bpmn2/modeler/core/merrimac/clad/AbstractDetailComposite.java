@@ -23,6 +23,8 @@ import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ComboObjectEditor;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.FeatureListObjectEditor;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.IntObjectEditor;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ObjectEditor;
+import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ReadonlyTextObjectEditor;
+import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.TextAndButtonObjectEditor;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.TextObjectEditor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.util.EList;
@@ -121,7 +123,7 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 //				attributesSection.dispose();
 //				attributesSection = null;
 //			}
-
+			redrawPage();
 		}
 	}
 
@@ -155,7 +157,22 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 			attributesComposite = toolkit.createComposite(attributesSection);
 			attributesSection.setClient(attributesComposite);
 			attributesComposite.setLayout(new GridLayout(3,false));
-			attributesSection.setExpanded(true);
+
+			final String prefName = "detail."+businessObject.eClass().getName()+".expanded";
+			attributesSection.addExpansionListener(new IExpansionListener() {
+				
+				@Override
+				public void expansionStateChanging(ExpansionEvent e) {
+				}
+
+				@Override
+				public void expansionStateChanged(ExpansionEvent e) {
+					preferenceStore.setValue(prefName, e.getState());
+					redrawPage();
+				}
+			});
+			boolean expanded = preferenceStore.contains(prefName) ? preferenceStore.getBoolean(prefName) : true;
+			attributesSection.setExpanded(expanded);
 		}
 		return attributesComposite;
 	}
@@ -367,7 +384,7 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 	
 	protected void bindAttribute(Composite parent, EObject object, EAttribute attribute, String label) {
 
-		if (modelEnablement.isEnabled(object.eClass(), attribute)) {
+		if (isModelObjectEnabled(object.eClass(), attribute)) {
 
 			if (parent==null)
 				parent = getAttributesParent();
@@ -429,7 +446,7 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 	}
 	
 	protected void bindReference(Composite parent, EObject object, EReference reference) {
-		if (modelEnablement.isEnabled(object.eClass(), reference)) {
+		if (isModelObjectEnabled(object.eClass(), reference)) {
 			if (parent==null)
 				parent = getAttributesParent();
 			
@@ -474,6 +491,9 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 						editor = new ComboObjectEditor(this,object,reference);
 					}
 				}
+				else if (ModelUtil.canCreateNew(object, reference)) {
+					editor = new ReadonlyTextObjectEditor(this,object,reference);
+				}
 				else {
 					editor = new TextObjectEditor(this,object,reference);
 				}
@@ -512,7 +532,7 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 	protected AbstractListComposite bindList(EObject object, EStructuralFeature feature, EClass listItemClass) {
 
 		AbstractListComposite tableComposite = null;
-		if (modelEnablement.isEnabled(object.eClass(), feature) || modelEnablement.isEnabled(listItemClass)) {
+		if (isModelObjectEnabled(object.eClass(), feature) || isModelObjectEnabled(listItemClass)) {
 			Class clazz = (listItemClass!=null) ?
 					listItemClass.getInstanceClass() :
 					feature.getEType().getInstanceClass();

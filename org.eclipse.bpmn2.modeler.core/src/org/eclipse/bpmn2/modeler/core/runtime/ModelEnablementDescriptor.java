@@ -284,12 +284,19 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 
 	public boolean isEnabled(String className, String featureName) {
 //		System.out.println(className+"."+featureName);
-		if (Bpmn2Preferences.getInstance().getOverrideModelEnablements()) {
+		Bpmn2Preferences prefs = Bpmn2Preferences.getInstance();
+		if ("id".equals(featureName)) {
+			if (!prefs.getShowIdAttribute())
+				return false;
+		}
+		if (prefs.getOverrideModelEnablements()) {
 			String name = className;
 			if (featureName!=null && !featureName.isEmpty())
 				name += "." + featureName;
 			return getToolEnablementPreferences().isEnabled(name);
 		}
+		if (className==null)
+			return true;
 		if (classes.containsKey(className)) { // && isOverride()) {
 			if (featureName!=null && !featureName.isEmpty()) {
 				HashSet<String> features = classes.get(className);

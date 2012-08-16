@@ -48,7 +48,7 @@ public class JbpmCallActivityDetailComposite extends JbpmActivityDetailComposite
 	@Override
 	protected void bindReference(Composite parent, EObject object, EReference reference) {
 		if ("calledElementRef".equals(reference.getName())) {
-			if (modelEnablement.isEnabled(object.eClass(), reference)) {
+			if (isModelObjectEnabled(object.eClass(), reference)) {
 				if (parent==null)
 					parent = getAttributesParent();
 				

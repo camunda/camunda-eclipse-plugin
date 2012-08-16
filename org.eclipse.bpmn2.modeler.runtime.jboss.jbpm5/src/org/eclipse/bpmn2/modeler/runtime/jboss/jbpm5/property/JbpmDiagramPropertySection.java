@@ -13,6 +13,7 @@
 
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractDetailComposite;
@@ -68,6 +69,12 @@ public class JbpmDiagramPropertySection extends DefaultPropertySection {
 			super(parent, style);
 		}
 
+		protected boolean isModelObjectEnabled(String className, String featureName) {
+			if (featureName!=null && "id".equals(featureName))
+					return true;
+			return super.isModelObjectEnabled(className,featureName);
+		}
+
 		TextObjectEditor documentationEditor;
 
 		@Override
@@ -79,7 +86,8 @@ public class JbpmDiagramPropertySection extends DefaultPropertySection {
 		@Override
 		public void createBindings(EObject be) {
 
-			bindAttribute(be,"id");
+			BPMNDiagram bpmnDiagram = (BPMNDiagram)be;
+			bindAttribute(bpmnDiagram.getPlane().getBpmnElement(),"id");
 			bindAttribute(be,"name");
 
 			EAttribute documentation = (EAttribute) be.eClass().getEStructuralFeature("documentation");

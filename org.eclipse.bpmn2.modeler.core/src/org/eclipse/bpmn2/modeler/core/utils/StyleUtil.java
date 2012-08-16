@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.core.utils;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.preferences.ShapeStyle;
 import org.eclipse.emf.common.util.EList;
@@ -95,7 +96,7 @@ public class StyleUtil {
 			IPeService peService = Graphiti.getPeService();
 
 			Diagram diagram = findDiagram(ga);
-			Bpmn2Preferences pref = Bpmn2Preferences.getInstance(be.eResource());
+			Bpmn2Preferences pref = Bpmn2Preferences.getInstance(be);
 			ShapeStyle ss = pref.getShapeStyle(be);
 			IColorConstant foreground = ga instanceof AbstractText ? ss.getTextColor() : ss.getShapeForeground();
 			IColorConstant background = ss.getShapeBackground();
@@ -201,7 +202,7 @@ public class StyleUtil {
 		gradientColoredAreas.setStyleAdaption(IPredefinedRenderingStyle.STYLE_ADAPTATION_DEFAULT);
 		final EList<GradientColoredArea> gcas = gradientColoredAreas.getGradientColor();
 
-		Bpmn2Preferences pref = Bpmn2Preferences.getInstance(be.eResource());
+		Bpmn2Preferences pref = Bpmn2Preferences.getInstance(be);
 		ShapeStyle ss = pref.getShapeStyle(be);
 		IColorConstant c1 = shiftColor(ss.getShapeBackground(), -8);
 		IColorConstant c2 = shiftColor(ss.getShapeBackground(), 64);
@@ -216,7 +217,7 @@ public class StyleUtil {
 		gradientColoredAreas.setStyleAdaption(IPredefinedRenderingStyle.STYLE_ADAPTATION_PRIMARY_SELECTED);
 		final EList<GradientColoredArea> gcas = gradientColoredAreas.getGradientColor();
 
-		Bpmn2Preferences pref = Bpmn2Preferences.getInstance(be.eResource());
+		Bpmn2Preferences pref = Bpmn2Preferences.getInstance(be);
 		ShapeStyle ss = pref.getShapeStyle(be);
 		IColorConstant c1 = shiftColor(ss.getShapePrimarySelectedColor(), -64);
 		IColorConstant c2 = shiftColor(ss.getShapePrimarySelectedColor(), 64);
@@ -232,7 +233,7 @@ public class StyleUtil {
 		gradientColoredAreas.setStyleAdaption(IPredefinedRenderingStyle.STYLE_ADAPTATION_SECONDARY_SELECTED);
 		final EList<GradientColoredArea> gcas = gradientColoredAreas.getGradientColor();
 
-		Bpmn2Preferences pref = Bpmn2Preferences.getInstance(be.eResource());
+		Bpmn2Preferences pref = Bpmn2Preferences.getInstance(be);
 		ShapeStyle ss = pref.getShapeStyle(be);
 		IColorConstant c1 = shiftColor(ss.getShapeSecondarySelectedColor(), -64);
 		IColorConstant c2 = shiftColor(ss.getShapeSecondarySelectedColor(), 64);

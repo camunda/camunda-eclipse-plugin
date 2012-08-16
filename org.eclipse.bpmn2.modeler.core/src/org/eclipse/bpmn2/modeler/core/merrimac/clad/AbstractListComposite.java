@@ -325,6 +325,7 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 		final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
 		final EClass listItemClass = getDefaultListItemClass(businessObject,feature);
 		final String label = ModelUtil.getLabel(listItemClass);
+		final String prefName = "list."+listItemClass.getName()+".expanded";
 		
 		////////////////////////////////////////////////////////////
 		// Collect columns to be displayed and build column provider
@@ -374,7 +375,7 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 	
 					@Override
 					public void expansionStateChanged(ExpansionEvent e) {
-						preferenceStore.setValue("table."+listItemClass.getName()+".expanded", e.getState());
+						preferenceStore.setValue(prefName, e.getState());
 						redrawPage();
 					}
 				});
@@ -434,7 +435,7 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 		TableCursor.create(table, tableViewer);
 		redrawPage();
 		
-		boolean expanded = preferenceStore.getBoolean("table."+listItemClass.getName()+".expanded");
+		boolean expanded = preferenceStore.getBoolean(prefName);
 		if (expanded && tableSection!=null)
 			tableSection.setExpanded(true);
 	}
@@ -496,7 +497,7 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 			for (TableColumn tc : (List<TableColumn>)columnProvider.getColumns()) {
 				if (tc.feature!=null) {
 					if (!"id".equals(tc.feature.getName())) {
-						if (!modelEnablement.isEnabled(listItemClass, tc.feature)) {
+						if (!isModelObjectEnabled(listItemClass, tc.feature)) {
 							removed.add(tc);
 						}
 					}

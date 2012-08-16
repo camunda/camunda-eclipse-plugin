@@ -19,15 +19,10 @@ import org.eclipse.swt.widgets.Composite;
 
 public abstract class AbstractDialogComposite extends Composite {
 	
-	protected Class eclass;
+	protected EClass eclass;
 	
-	public AbstractDialogComposite(Composite parent, int style) {
+	public AbstractDialogComposite(Composite parent, EClass eclass, int style) {
 		super(parent,style);
 		this.eclass = eclass;
 	}
-	
-	public abstract EClass getBusinessObjectClass();
-	public abstract void setBusinessObject(EObject newObject);
-	public abstract Composite getControl();
-	public abstract void aboutToOpen();
 }
