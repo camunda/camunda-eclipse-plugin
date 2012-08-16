@@ -48,6 +48,7 @@ public class CreateLaneFeature extends AbstractBpmn2CreateFeature<Lane> {
 	@Override
 	public Object[] create(ICreateContext context) {
 		Lane lane = createBusinessObject(context);
+		lane.setName("Lane "+ModelUtil.getIDNumber(lane.getId()));
 		addGraphicalRepresentation(context, lane);
 		return new Object[] { lane };
 	}
@@ -82,8 +83,6 @@ public class CreateLaneFeature extends AbstractBpmn2CreateFeature<Lane> {
 			} else {
 				bo = mh.createLane(o);
 			}
-			bo.setName("Lane nr " + index++);
-			ModelUtil.setID(bo);
 			putBusinessObject(context, bo);
 
 		} catch (IOException e) {

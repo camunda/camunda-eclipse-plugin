@@ -44,7 +44,7 @@ public class JbpmUserTaskDetailComposite extends JbpmTaskDetailComposite {
 	@Override
 	protected AbstractListComposite bindList(EObject object, EStructuralFeature feature, EClass listItemClass) {
 		if (feature.getName().equals("resources")) {
-			if (modelEnablement.isEnabled(object.eClass(), feature)) {
+			if (isModelObjectEnabled(object.eClass(), feature)) {
 				UserTask task = (UserTask)object;
 				PotentialOwner owner = null;
 				ResourceAssignmentExpression resourceAssignment = null;

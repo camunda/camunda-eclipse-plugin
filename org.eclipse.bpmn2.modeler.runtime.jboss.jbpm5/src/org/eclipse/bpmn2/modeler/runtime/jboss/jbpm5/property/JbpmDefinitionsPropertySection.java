@@ -15,6 +15,8 @@ package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.diagrams.DefinitionsPropertySection;
+import org.eclipse.bpmn2.modeler.ui.property.tasks.TaskDetailComposite;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Bob Brodt
@@ -27,4 +29,8 @@ public class JbpmDefinitionsPropertySection extends DefinitionsPropertySection {
 		return new JbpmDefinitionsPropertyComposite(this);
 	}
 
+	@Override
+	public AbstractDetailComposite createSectionRoot(Composite parent, int style) {
+		return new JbpmDefinitionsPropertyComposite(parent,style);
+	}
 }

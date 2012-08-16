@@ -215,6 +215,13 @@
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="popup" type="boolean">
+            <annotation>
+               <documentation>
+                  Exclude this Property Tab from popup dialogs if &quot;false&quot;. The default value is &quot;true&quot;. This allows miscellaneous property tabs, such as the Description to be hidden from configuration dialogs.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
@@ -436,7 +443,12 @@ rootFeature/childFeature_1/childFeature_2#0
 
 If set to &quot;false&quot;, the model enablement will not be effective by default. 
 If not set, this value will be treated as &quot;true&quot;.
+
+DEPRECATED: I have no idea what I was thinking here...
                </documentation>
+               <appinfo>
+                  <meta.attribute deprecated="true"/>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>

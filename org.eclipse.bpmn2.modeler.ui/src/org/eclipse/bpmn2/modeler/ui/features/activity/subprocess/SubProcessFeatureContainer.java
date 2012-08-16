@@ -12,9 +12,11 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
+import org.eclipse.bpmn2.AdHocSubProcess;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.SubChoreography;
 import org.eclipse.bpmn2.SubProcess;
+import org.eclipse.bpmn2.Transaction;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
@@ -33,7 +35,8 @@ public class SubProcessFeatureContainer extends AbstractSubProcessFeatureContain
 
 	@Override
 	public boolean canApplyTo(Object o) {
-		return super.canApplyTo(o) && o instanceof SubProcess;
+		return super.canApplyTo(o) && o instanceof SubProcess &&
+				 !(o instanceof AdHocSubProcess ||  o instanceof Transaction);
 	}
 
 	@Override

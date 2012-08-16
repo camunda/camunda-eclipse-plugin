@@ -90,6 +90,12 @@ public class Bpmn2HomePreferencePage
 				getFieldEditorParent());
 		addField(expandProperties);
 
+		BooleanFieldEditor showIds = new BooleanFieldEditor(
+				Bpmn2Preferences.PREF_SHOW_ID_ATTRIBUTE,
+				Bpmn2Preferences.PREF_SHOW_ID_ATTRIBUTE_LABEL,
+				getFieldEditorParent());
+		addField(showIds);
+
 		Group group = new Group(getFieldEditorParent(), SWT.BORDER);
 		group.setLayout(new GridLayout(3,false));
 		group.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));

@@ -19,6 +19,7 @@ import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
+import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -41,7 +42,7 @@ public abstract class AbstractCreateDataInputOutputFeature<T extends ItemAwareEl
 		try {
 			ModelHandler handler = ModelHandlerLocator.getModelHandler(getDiagram().eResource());
 			handler.addDataInputOutput(context.getTargetContainer(), element);
-			ModelUtil.setID(element);
+			InsertionAdapter.executeIfNeeded(element);
 		} catch (IOException e) {
 			Activator.logError(e);
 		}

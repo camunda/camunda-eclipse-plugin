@@ -72,11 +72,6 @@ public class EndEventFeatureContainer extends AbstractEventFeatureContainer {
 		updateFeature.addUpdateFeature(new UpdateEndEventFeature(fp));
 		return updateFeature;
 	}
-
-	@Override
-	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
-		return null;
-	}
 	
 	public static class CreateEndEventFeature extends AbstractCreateEventFeature<EndEvent> {
 

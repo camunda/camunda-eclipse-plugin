@@ -139,7 +139,7 @@ public class ActivityDetailComposite extends DefaultDetailComposite {
 				noneButton.setSelection(true);
 				
 				addStandardLoopButton = toolkit.createButton(buttonComposite, "Standard", SWT.RADIO);
-				if (!modelEnablement.isEnabled(PACKAGE.getStandardLoopCharacteristics()))
+				if (!isModelObjectEnabled(PACKAGE.getStandardLoopCharacteristics()))
 					addStandardLoopButton.setVisible(false);
 				addStandardLoopButton.addSelectionListener(new SelectionAdapter() {
 					
@@ -161,7 +161,7 @@ public class ActivityDetailComposite extends DefaultDetailComposite {
 				});
 	
 				addMultiLoopButton = toolkit.createButton(buttonComposite, "Multi-Instance", SWT.RADIO);
-				if (!modelEnablement.isEnabled(PACKAGE.getMultiInstanceLoopCharacteristics()))
+				if (!isModelObjectEnabled(PACKAGE.getMultiInstanceLoopCharacteristics()))
 					addMultiLoopButton.setVisible(false);
 				addMultiLoopButton.addSelectionListener(new SelectionAdapter() {
 					

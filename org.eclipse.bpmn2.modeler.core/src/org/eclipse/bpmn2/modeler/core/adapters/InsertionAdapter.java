@@ -20,10 +20,12 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EContentAdapter;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
@@ -85,9 +87,9 @@ public class InsertionAdapter extends EContentAdapter {
 	}
 
 	public void notifyChanged(Notification notification) {
-		if (notification.getNotifier() == value) {
+		if (notification.getNotifier() == value && !(notification.getOldValue() instanceof InsertionAdapter)) {
 			// execute if an attribute in the new value has changed
-			executeIfNeeded(value);
+			execute();
 		}
 		else if (notification.getNotifier()==object && notification.getNewValue()==value) {
 			// if the new value has been added to the object, we can remove this adapter
@@ -95,17 +97,45 @@ public class InsertionAdapter extends EContentAdapter {
 		}
 	}
 
+	private void executeChildren(List list) {
+		for (Object o : list) {
+			if (o instanceof List) {
+				executeChildren((List)o);
+			}
+			else if (o instanceof EObject) {
+				executeChildren((EObject)o);
+			}
+		}
+	}
+	
+	private void executeChildren(EObject value) {
+		// allow other adapters to execute first
+		for (EStructuralFeature f : value.eClass().getEAllStructuralFeatures()) {
+			try {
+				Object v = value.eGet(f);
+				if (v instanceof List) {
+					executeChildren((List)v);
+				}
+				else if (v instanceof EObject) {
+					executeIfNeeded((EObject)v);
+				}
+			}
+			catch (Exception e) {
+				// some getters may throw exceptions - ignore those
+			}
+		}
+		executeIfNeeded(value);
+	}
+	
 	@SuppressWarnings("unchecked")
 	public void execute() {
+		// if the object into which this value is being added has other adapters execute those first
+		executeIfNeeded(object);
+		
 		// remove this adapter from the value - this adapter is a one-shot deal!
 		value.eAdapters().remove(this);
-		executeIfNeeded(value);
-		if (object!=null) {
-			object.eAdapters().remove(this);
-			executeIfNeeded(object);
-		}
-		else
-			return;
+		// if there are any EObjects contained or referenced by this value, execute those adapters first
+		executeChildren(value);
 		
 		// set the value in the object
 		boolean valueChanged = false;

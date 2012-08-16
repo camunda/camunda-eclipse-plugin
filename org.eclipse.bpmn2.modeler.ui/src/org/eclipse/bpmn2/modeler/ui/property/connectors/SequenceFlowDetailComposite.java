@@ -145,7 +145,7 @@ public class SequenceFlowDetailComposite extends ExpressionDetailComposite {
 		EObject obj = sf.getSourceRef();
 		if (obj!=null) {
 			EStructuralFeature feature = obj.eClass().getEStructuralFeature("default");
-			if (feature==null || !modelEnablement.isEnabled(obj.eClass(),feature)) {
+			if (feature==null || !isModelObjectEnabled(obj.eClass(),feature)) {
 				return false;
 			}
 		}

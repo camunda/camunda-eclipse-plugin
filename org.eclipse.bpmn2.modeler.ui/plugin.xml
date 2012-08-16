@@ -144,6 +144,7 @@
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.description.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.DescriptionPropertySection"
+			popup="false"
 			label="Description">
 		</propertyTab>
 
@@ -151,6 +152,7 @@
 			id="org.eclipse.bpmn2.modeler.main.tab"
 			class="org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultPropertySection"
 			afterTab="org.eclipse.bpmn2.modeler.description.tab"
+			popup="false"
 			label="Basic">
 		</propertyTab>
 
@@ -392,6 +394,7 @@
 			id="org.eclipse.bpmn2.modeler.advanced.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.AdvancedPropertySection"
 			afterTab="org.eclipse.bpmn2.modeler.main.tab"
+			popup="false"
 			label="Advanced">
 		</propertyTab>
 

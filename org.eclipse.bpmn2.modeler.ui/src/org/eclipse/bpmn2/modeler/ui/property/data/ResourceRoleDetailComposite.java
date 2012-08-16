@@ -66,7 +66,7 @@ public class ResourceRoleDetailComposite extends DefaultDetailComposite {
 	@Override
 	protected void bindReference(Composite parent, EObject object, EReference reference) {
 		if ("resourceAssignmentExpression".equals(reference.getName()) &&
-				modelEnablement.isEnabled(object.eClass(), reference)) {
+				isModelObjectEnabled(object.eClass(), reference)) {
 			
 			ResourceAssignmentExpressionDetailComposite composite =
 					new ResourceAssignmentExpressionDetailComposite(this, SWT.NONE);

@@ -18,6 +18,7 @@ import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.features.DefaultDeleteBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
@@ -31,7 +32,7 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IDeleteContext;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
-public class DeleteParticipantFeature extends AbstractDefaultDeleteFeature {
+public class DeleteParticipantFeature extends DefaultDeleteBPMNShapeFeature {
 
 	public DeleteParticipantFeature(IFeatureProvider fp) {
 		super(fp);
@@ -42,9 +43,7 @@ public class DeleteParticipantFeature extends AbstractDefaultDeleteFeature {
 		Participant participant = BusinessObjectUtil.getFirstElementOfType(context.getPictogramElement(), Participant.class);
 		Process process = participant.getProcessRef();
 		if (process!=null) {
-			Definitions definitions = ModelUtil.getDefinitions(participant);
-			definitions.getRootElements().remove(process);
-			EcoreUtil.delete(process);
+			deleteBusinessObject(process);
 		}
 		super.delete(context);
 	}

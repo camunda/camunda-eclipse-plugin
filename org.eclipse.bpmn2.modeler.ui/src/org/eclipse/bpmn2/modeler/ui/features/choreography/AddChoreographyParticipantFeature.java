@@ -126,7 +126,9 @@ public class AddChoreographyParticipantFeature extends AbstractCustomFeature {
 				Participant participant = null;
 				List<Participant> participantList = new ArrayList<Participant>();
 				participant = (Participant) ModelUtil.createObject(task.eResource(), Bpmn2Package.eINSTANCE.getParticipant());
+				participant.eSetDeliver(false);
 				participant.setName("New Participant");
+				participant.eSetDeliver(true);
 				
 				participantList.add(participant);
 				TreeIterator<EObject> iter = ModelUtil.getDefinitions(task).eAllContents();

@@ -71,9 +71,11 @@ public class RootElementPropertiesAdapter<T extends RootElement> extends Extende
 		public T createObject(Resource resource, Object context) {
 			T rootElement = super.createObject(resource, context);
 			
-			Definitions definitions = ModelUtil.getDefinitions(rootElement);
-			if (definitions==null)
+			Definitions definitions = null;
+			if (resource!=null)
 				definitions = (Definitions) resource.getContents().get(0).eContents().get(0);
+			else
+				definitions = ModelUtil.getDefinitions(rootElement);
 			if (definitions!=null)
 				InsertionAdapter.add(definitions, Bpmn2Package.eINSTANCE.getDefinitions_RootElements(), rootElement);
 			return rootElement;

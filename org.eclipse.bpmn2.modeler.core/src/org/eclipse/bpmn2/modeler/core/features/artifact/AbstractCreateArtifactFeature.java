@@ -17,6 +17,7 @@ import java.io.IOException;
 import org.eclipse.bpmn2.Artifact;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -44,7 +45,7 @@ public abstract class AbstractCreateArtifactFeature<T extends Artifact> extends 
 			ModelHandler handler = ModelHandler.getInstance(getDiagram());
 			artifact = createBusinessObject(context);
 			handler.addArtifact(FeatureSupport.getTargetParticipant(context, handler), artifact);
-			ModelUtil.setID(artifact);
+			InsertionAdapter.executeIfNeeded(artifact);
 		} catch (IOException e) {
 			Activator.logError(e);
 		}

@@ -13,26 +13,20 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.merrimac.clad;
 
-import java.io.IOException;
 import java.math.BigInteger;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Stack;
 
-import org.eclipse.bpmn2.Bpmn2Package;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.BooleanObjectEditor;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ComboObjectEditor;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.FeatureListObjectEditor;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.IntObjectEditor;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ObjectEditor;
+import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ReadonlyTextObjectEditor;
+import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.TextAndButtonObjectEditor;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.TextObjectEditor;
-import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
-import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -43,16 +37,7 @@ import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
-import org.eclipse.emf.transaction.NotificationFilter;
-import org.eclipse.emf.transaction.RecordingCommand;
-import org.eclipse.emf.transaction.ResourceSetChangeEvent;
 import org.eclipse.emf.transaction.ResourceSetListener;
-import org.eclipse.emf.transaction.RollbackException;
-import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Font;
@@ -60,16 +45,12 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.events.IExpansionListener;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 
 /**
@@ -142,7 +123,7 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 //				attributesSection.dispose();
 //				attributesSection = null;
 //			}
-
+			redrawPage();
 		}
 	}
 
@@ -176,7 +157,22 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 			attributesComposite = toolkit.createComposite(attributesSection);
 			attributesSection.setClient(attributesComposite);
 			attributesComposite.setLayout(new GridLayout(3,false));
-			attributesSection.setExpanded(true);
+
+			final String prefName = "detail."+businessObject.eClass().getName()+".expanded";
+			attributesSection.addExpansionListener(new IExpansionListener() {
+				
+				@Override
+				public void expansionStateChanging(ExpansionEvent e) {
+				}
+
+				@Override
+				public void expansionStateChanged(ExpansionEvent e) {
+					preferenceStore.setValue(prefName, e.getState());
+					redrawPage();
+				}
+			});
+			boolean expanded = preferenceStore.contains(prefName) ? preferenceStore.getBoolean(prefName) : true;
+			attributesSection.setExpanded(expanded);
 		}
 		return attributesComposite;
 	}
@@ -388,7 +384,7 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 	
 	protected void bindAttribute(Composite parent, EObject object, EAttribute attribute, String label) {
 
-		if (modelEnablement.isEnabled(object.eClass(), attribute)) {
+		if (isModelObjectEnabled(object.eClass(), attribute)) {
 
 			if (parent==null)
 				parent = getAttributesParent();
@@ -450,7 +446,7 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 	}
 	
 	protected void bindReference(Composite parent, EObject object, EReference reference) {
-		if (modelEnablement.isEnabled(object.eClass(), reference)) {
+		if (isModelObjectEnabled(object.eClass(), reference)) {
 			if (parent==null)
 				parent = getAttributesParent();
 			
@@ -495,6 +491,9 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 						editor = new ComboObjectEditor(this,object,reference);
 					}
 				}
+				else if (ModelUtil.canCreateNew(object, reference)) {
+					editor = new ReadonlyTextObjectEditor(this,object,reference);
+				}
 				else {
 					editor = new TextObjectEditor(this,object,reference);
 				}
@@ -533,7 +532,7 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 	protected AbstractListComposite bindList(EObject object, EStructuralFeature feature, EClass listItemClass) {
 
 		AbstractListComposite tableComposite = null;
-		if (modelEnablement.isEnabled(object.eClass(), feature) || modelEnablement.isEnabled(listItemClass)) {
+		if (isModelObjectEnabled(object.eClass(), feature) || isModelObjectEnabled(listItemClass)) {
 			Class clazz = (listItemClass!=null) ?
 					listItemClass.getInstanceClass() :
 					feature.getEType().getInstanceClass();

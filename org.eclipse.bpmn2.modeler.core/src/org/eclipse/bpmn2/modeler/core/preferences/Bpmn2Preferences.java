@@ -33,6 +33,7 @@ import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.InteractionNode;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.Lane;
+import org.eclipse.bpmn2.Message;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.SubChoreography;
 import org.eclipse.bpmn2.SubProcess;
@@ -41,6 +42,7 @@ import org.eclipse.bpmn2.TerminateEventDefinition;
 import org.eclipse.bpmn2.Transaction;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.Activator;
+import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.core.internal.resources.ProjectPreferences;
 import org.eclipse.core.resources.IFile;
@@ -116,6 +118,9 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_CONTAINERS = "popup.config.dialog.for.containers";
 	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_CONTAINERS_LABEL = "Acitivity containers (Pools, SubProcess, Transaction, etc.)";
 
+	public final static String PREF_SHOW_ID_ATTRIBUTE = "show.id.attribute";
+	public final static String PREF_SHOW_ID_ATTRIBUTE_LABEL = "Show ID attribute for BPMN2 Elements";
+
 	private static Hashtable<IProject,Bpmn2Preferences> instances = null;
 	private static IProject activeProject;
 
@@ -137,6 +142,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	private boolean overrideModelEnablements;
 	private boolean expandProperties;
 	private boolean showDescriptions;
+	private boolean showIdAttribute;
 	private BPMNDIAttributeDefault isHorizontal;
 	private BPMNDIAttributeDefault isExpanded;
 	private BPMNDIAttributeDefault isMessageVisible;
@@ -144,7 +150,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	private String connectionTimeout;
 	private int popupConfigDialog;
 	private boolean popupConfigDialogFor[] = new boolean[6];
-	
+
 	private HashMap<Class, ShapeStyle> shapeStyles = new HashMap<Class, ShapeStyle>();
 	
 	// TODO: stuff like colors, fonts, etc.
@@ -184,6 +190,10 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	 * @param resource
 	 * @return project preferences
 	 */
+	public static Bpmn2Preferences getInstance(EObject object) {
+		return getInstance(InsertionAdapter.getResource(object));
+	}
+	
 	public static Bpmn2Preferences getInstance(Resource resource) {
 		return getInstance(resource.getURI());
 	}
@@ -364,6 +374,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			targetRuntime = TargetRuntime.getRuntime(id);
 			showAdvancedPropertiesTab = getBoolean(PREF_SHOW_ADVANCED_PROPERTIES, false);
 			showDescriptions = getBoolean(PREF_SHOW_DESCRIPTIONS, false);
+			showIdAttribute = getBoolean(PREF_SHOW_ID_ATTRIBUTE, false);
 			expandProperties = getBoolean(PREF_EXPAND_PROPERTIES, false);
 			isHorizontal = getBPMNDIAttributeDefault(PREF_IS_HORIZONTAL, BPMNDIAttributeDefault.USE_DI_VALUE);
 			isExpanded = getBPMNDIAttributeDefault(PREF_IS_EXPANDED, BPMNDIAttributeDefault.USE_DI_VALUE);
@@ -379,6 +390,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			popupConfigDialogFor[4] = getBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_DATA_DEFS, false);
 			popupConfigDialogFor[5] = getBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_CONTAINERS, false);
 
+
 			loaded = true;
 		}
 	}
@@ -393,6 +405,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			setString(PREF_TARGET_RUNTIME,targetRuntime.getId());
 			setBoolean(PREF_SHOW_ADVANCED_PROPERTIES, showAdvancedPropertiesTab);
 			setBoolean(PREF_SHOW_DESCRIPTIONS, showDescriptions);
+			setBoolean(PREF_SHOW_ID_ATTRIBUTE, showIdAttribute);
 			setBoolean(PREF_EXPAND_PROPERTIES, expandProperties);
 			setBPMNDIAttributeDefault(PREF_IS_HORIZONTAL, isHorizontal);
 
@@ -555,6 +568,16 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		showDescriptions = show;
 	}
 	
+	public boolean getShowIdAttribute() {
+		load();
+		return showIdAttribute;
+	}
+	
+	public void setShowIdAttribute(boolean show) {
+		overrideGlobalBoolean(PREF_SHOW_ID_ATTRIBUTE, show);
+		showIdAttribute = show;
+	}
+
 	public boolean getOverrideModelEnablements() {
 		load();
 		return overrideModelEnablements;
@@ -617,10 +640,12 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 				return false; // these have no additional attributes
 			return true;
 		}
-		if (context instanceof ItemAwareElement) {
+		if (context instanceof ItemAwareElement || context instanceof Message) {
 			return true;
 		}
-		if (context instanceof InteractionNode || context instanceof FlowElementsContainer) {
+		if (context instanceof InteractionNode
+				|| context instanceof FlowElementsContainer
+				|| context instanceof CallChoreography) {
 			return true;
 		}
 		return false;

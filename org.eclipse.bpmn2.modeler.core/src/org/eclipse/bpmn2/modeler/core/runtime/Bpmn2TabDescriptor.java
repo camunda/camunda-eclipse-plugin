@@ -30,7 +30,8 @@ public class Bpmn2TabDescriptor extends AbstractTabDescriptor {
 	protected String replaceTab = null;
 	protected boolean indented = false;
 	protected Image image = null;
-	
+	protected boolean popup = true;
+
 	public Bpmn2TabDescriptor(IConfigurationElement e) {
 		id = e.getAttribute("id");
 		category = e.getAttribute("category");
@@ -41,6 +42,9 @@ public class Bpmn2TabDescriptor extends AbstractTabDescriptor {
 		replaceTab = e.getAttribute("replaceTab");
 		String s = e.getAttribute("indented");
 		indented = s!=null && s.trim().equalsIgnoreCase("true");
+		s = e.getAttribute("popup");
+		if (s!=null && s.trim().equalsIgnoreCase("false"))
+			popup = false;
 	}
 	
 	public Bpmn2TabDescriptor(String id, String category, String label) {
@@ -64,6 +68,14 @@ public class Bpmn2TabDescriptor extends AbstractTabDescriptor {
 	@Override
 	public String getLabel() {
 		return label;
+	}
+	
+	public boolean isPopup() {
+		return popup;
+	}
+
+	public void setPopup(boolean popup) {
+		this.popup = popup;
 	}
 
 	@Override

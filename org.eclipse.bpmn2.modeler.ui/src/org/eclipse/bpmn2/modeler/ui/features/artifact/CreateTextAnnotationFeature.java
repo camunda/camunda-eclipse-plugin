@@ -19,6 +19,7 @@ import org.eclipse.bpmn2.TextAnnotation;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
+import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
@@ -47,6 +48,8 @@ public class CreateTextAnnotationFeature extends AbstractBpmn2CreateFeature<Text
 	public Object[] create(ICreateContext context) {
 
 		TextAnnotation ta = createBusinessObject(context);
+		// make sure this thing gets added to the Resource
+		InsertionAdapter.executeIfNeeded(ta);
 		addGraphicalRepresentation(context, ta);
 
 		return new Object[] { ta };

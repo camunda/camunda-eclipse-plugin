@@ -18,8 +18,10 @@ import org.eclipse.bpmn2.ScriptTask;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.ui.property.tasks.TaskDetailComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
 
 /**
@@ -40,5 +42,10 @@ public class JbpmScriptTaskPropertySection extends JbpmTaskPropertySection {
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
 		return new JbpmScriptTaskDetailComposite(this);
+	}
+
+	@Override
+	public AbstractDetailComposite createSectionRoot(Composite parent, int style) {
+		return new JbpmScriptTaskDetailComposite(parent,style);
 	}
 }

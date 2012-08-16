@@ -17,6 +17,8 @@ import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.ui.property.events.CommonEventPropertySection;
+import org.eclipse.bpmn2.modeler.ui.property.tasks.TaskDetailComposite;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Bob Brodt
@@ -30,5 +32,10 @@ public class JbpmCommonEventPropertySection extends CommonEventPropertySection {
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
 		return new JbpmCommonEventDetailComposite(this);
+	}
+
+	@Override
+	public AbstractDetailComposite createSectionRoot(Composite parent, int style) {
+		return new JbpmCommonEventDetailComposite(parent,style);
 	}
 }

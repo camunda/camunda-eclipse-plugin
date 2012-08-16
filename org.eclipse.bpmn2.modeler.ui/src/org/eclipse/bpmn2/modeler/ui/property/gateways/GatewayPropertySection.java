@@ -12,12 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.property.gateways;
 
-import org.eclipse.bpmn2.ComplexGateway;
-import org.eclipse.bpmn2.EventBasedGateway;
-import org.eclipse.bpmn2.ExclusiveGateway;
 import org.eclipse.bpmn2.Gateway;
-import org.eclipse.bpmn2.InclusiveGateway;
-import org.eclipse.bpmn2.ParallelGateway;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.PropertiesCompositeFactory;
@@ -29,11 +24,6 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 public class GatewayPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
 	static {
 		PropertiesCompositeFactory.register(Gateway.class, GatewayDetailComposite.class);
-		PropertiesCompositeFactory.register(ComplexGateway.class, GatewayDetailComposite.class);
-		PropertiesCompositeFactory.register(EventBasedGateway.class, GatewayDetailComposite.class);
-		PropertiesCompositeFactory.register(ExclusiveGateway.class, GatewayDetailComposite.class);
-		PropertiesCompositeFactory.register(InclusiveGateway.class, GatewayDetailComposite.class);
-		PropertiesCompositeFactory.register(ParallelGateway.class, GatewayDetailComposite.class);
 	}
 
 	/* (non-Javadoc)

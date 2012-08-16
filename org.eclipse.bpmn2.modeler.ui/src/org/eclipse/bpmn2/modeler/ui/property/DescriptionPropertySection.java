@@ -18,7 +18,9 @@ import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
@@ -73,27 +75,16 @@ public class DescriptionPropertySection extends AbstractBpmn2PropertySection imp
 		public void createBindings(EObject be) {
 
 			bindDescription(be);
-			
-			// temporarily enable these for this tab only!
-//			boolean idEnabled = modelEnablement.isEnabled(be.eClass().getName(), "id");
-			boolean nameEnabled = modelEnablement.isEnabled(be.eClass().getName(), "name");
-//			boolean documentationEnabled = modelEnablement.isEnabled(be.eClass().getName(), "documentation");
-			
-//			modelEnablement.setEnabled(be.eClass().getName(), "id", true);
-			modelEnablement.setEnabled(be.eClass().getName(), "name", true);
-//			modelEnablement.setEnabled(be.eClass().getName(), "documentation", true);
-
 			bindAttribute(be,"id");
 			bindAttribute(be,"name");
 			bindList(be, "documentation");
-
-//			if (!idEnabled)
-//				modelEnablement.setEnabled(be.eClass().getName(), "id", false);
-			if (!nameEnabled)
-				modelEnablement.setEnabled(be.eClass().getName(), "name", false);
-//			if (!documentationEnabled)
-//				modelEnablement.setEnabled(be.eClass().getName(), "documentation", false);
 			redrawPage();
+		}
+
+		protected boolean isModelObjectEnabled(String className, String featureName) {
+			if (featureName!=null && "name".equals(featureName))
+					return true;
+			return super.isModelObjectEnabled(className,featureName);
 		}
 		
 		protected void bindDescription(EObject be) {
