@@ -12,19 +12,9 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.participant;
 
-import java.util.List;
-
 import org.eclipse.bpmn2.Bpmn2Package;
-import org.eclipse.bpmn2.Choreography;
-import org.eclipse.bpmn2.Collaboration;
-import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Participant;
-import org.eclipse.bpmn2.Process;
-import org.eclipse.bpmn2.RootElement;
-import org.eclipse.bpmn2.di.BPMNDiagram;
-import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
-import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.emf.ecore.EClass;

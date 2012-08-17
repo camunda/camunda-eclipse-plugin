@@ -42,7 +42,6 @@ import org.eclipse.bpmn2.TerminateEventDefinition;
 import org.eclipse.bpmn2.Transaction;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.Activator;
-import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.core.internal.resources.ProjectPreferences;
 import org.eclipse.core.resources.IFile;
@@ -60,7 +59,6 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -191,7 +189,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	 * @return project preferences
 	 */
 	public static Bpmn2Preferences getInstance(EObject object) {
-		return getInstance(InsertionAdapter.getResource(object));
+		return getInstance(object.eResource());
 	}
 	
 	public static Bpmn2Preferences getInstance(Resource resource) {

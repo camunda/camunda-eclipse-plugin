@@ -42,7 +42,13 @@ public class PropertyTabDescriptorProvider implements ITabDescriptorProvider {
 			rt = ((BPMN2Editor)bpmn2Editor).getTargetRuntime(this);
 		}
 		
-		List<Bpmn2TabDescriptor> desc = rt.getTabDescriptors();
+		List<Bpmn2TabDescriptor> desc = null;
+		if (rt!=TargetRuntime.getDefaultRuntime()) {
+			desc = TargetRuntime.getDefaultRuntime().getTabDescriptors();
+			desc.addAll(rt.getTabDescriptors());
+		}
+		else
+			desc = rt.getTabDescriptors();
 		
 		// do tab replacement
 		ArrayList<Bpmn2TabDescriptor> replaced = new ArrayList<Bpmn2TabDescriptor>();
@@ -53,18 +59,19 @@ public class PropertyTabDescriptorProvider implements ITabDescriptorProvider {
 				// tab replacement is only done if the replacement tab has section descriptors
 				// that want the replacement to happen.
 				for (String id : replacements) {
-					boolean replace = false;
 					for (Bpmn2SectionDescriptor s : (List<Bpmn2SectionDescriptor>) d.getSectionDescriptors()) {
 						// ask the section if it wants to replace this tab
-						replace = s.doReplaceTab(id, part, selection);
-						if (replace)
-							break;
-					}
-					if (replace) {
-						// replace the tab whose ID is specified as "replaceTab" in this tab.
-						Bpmn2TabDescriptor replacedTab = TargetRuntime.findTabDescriptor(id);
-						if (replacedTab!=null)
-							replaced.add(replacedTab);
+						if (s.doReplaceTab(id, part, selection)) {
+							// replace the tab whose ID is specified as "replaceTab" in this tab.
+							Bpmn2TabDescriptor replacedTab = TargetRuntime.findTabDescriptor(id);
+							if (replacedTab!=null) {
+								replaced.add(replacedTab);
+								int i = desc.indexOf(replacedTab);
+								if (i>=0) {
+									desc.set(i, d);
+								}
+							}
+						}
 					}
 				}
 			}
@@ -72,6 +79,16 @@ public class PropertyTabDescriptorProvider implements ITabDescriptorProvider {
 		if (replaced.size()>0)
 			desc.removeAll(replaced);
 
+		for (int i=desc.size()-1; i>=0; --i) {
+			Bpmn2TabDescriptor d = desc.get(i);
+			for (int j=i-1; j>=0; --j) {
+				if (desc.get(j)==d) {
+					desc.remove(i);
+					break;
+				}
+			}
+		}
+		
 		// remove empty tabs
 		// also move the advanced tab to end of list
 		ArrayList<Bpmn2TabDescriptor> emptyTabs = new ArrayList<Bpmn2TabDescriptor>();

@@ -33,6 +33,8 @@ public abstract class AbstractCreateFlowFeature<
 		TARGET extends EObject>
 	extends AbstractBpmn2CreateConnectionFeature<CONNECTION> {
 
+	protected boolean changesDone = false;
+	
 	public AbstractCreateFlowFeature(IFeatureProvider fp, String name, String description) {
 		super(fp, name, description);
 	}
@@ -53,6 +55,7 @@ public abstract class AbstractCreateFlowFeature<
 		addContext.setNewObject(bo);
 		Connection connection = (Connection) getFeatureProvider().addIfPossible(addContext);
 		ModelUtil.setID(bo);
+		changesDone = true;
 		return connection;
 	}
 
@@ -90,4 +93,9 @@ public abstract class AbstractCreateFlowFeature<
 	protected abstract Class<SOURCE> getSourceClass();
 
 	protected abstract Class<TARGET> getTargetClass();
+
+	@Override
+	public boolean hasDoneChanges() {
+		return changesDone;
+	}
 }

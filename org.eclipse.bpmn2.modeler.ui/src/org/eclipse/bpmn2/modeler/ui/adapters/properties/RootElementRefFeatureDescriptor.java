@@ -17,14 +17,11 @@ import java.util.Hashtable;
 import java.util.Iterator;
 
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
-import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
-import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.util.EList;
@@ -69,7 +66,7 @@ public class RootElementRefFeatureDescriptor<T extends BaseElement> extends Feat
 		Definitions definitions = ModelUtil.getDefinitions(object);
 		if (definitions==null)
 			definitions = (Definitions) resource.getContents().get(0).eContents().get(0);
-		InsertionAdapter.add(definitions, Bpmn2Package.eINSTANCE.getDefinitions_RootElements(), rootElement);
+		definitions.getRootElements().add((RootElement)rootElement);
 		return rootElement;
 	}
 	

@@ -73,6 +73,8 @@ import org.eclipse.swt.widgets.Display;
  */
 public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends AbstractCustomFeature {
 	
+	private boolean changesDone = false;;
+	
 	// label provider for the popup menu that displays allowable Activity subclasses
 	private static ILabelProvider labelProvider = new ILabelProvider() {
 
@@ -143,6 +145,7 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 						ContainerShape newShape = createNewShape(mh, oldShape, newType);
 						// ...and connect this shape to the new one with a SequenceFlow
 						createNewConnection(mh, oldShape, newShape);
+						changesDone = true;
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -349,4 +352,8 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 	 */
 	public abstract EClass getBusinessObjectClass();
 
+	@Override
+	public boolean hasDoneChanges() {
+		return changesDone;
+	}
 }

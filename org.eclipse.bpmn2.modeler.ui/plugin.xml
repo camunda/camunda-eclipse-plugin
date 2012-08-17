@@ -149,18 +149,10 @@
 		</propertyTab>
 
 		<propertyTab
-			id="org.eclipse.bpmn2.modeler.main.tab"
-			class="org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultPropertySection"
-			afterTab="org.eclipse.bpmn2.modeler.description.tab"
-			popup="false"
-			label="Basic">
-		</propertyTab>
-
-		<propertyTab
 			id="org.eclipse.bpmn2.modeler.process.diagram.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.diagrams.ProcessDiagramPropertySection"
 			type="org.eclipse.bpmn2.di.BPMNDiagram"
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Process">
 		</propertyTab>
 
@@ -183,35 +175,35 @@
 			id="org.eclipse.bpmn2.modeler.dataitems.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.diagrams.DataItemsPropertySection"
 			type="org.eclipse.bpmn2.di.BPMNDiagram"
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Data Items">
 		</propertyTab>
 
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.datastore.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.data.DataStorePropertySection"
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Data Store">
 		</propertyTab>
 
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.datastoreref.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.data.DataStoreReferencePropertySection"
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Reference">
 		</propertyTab>
 
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.dataobject.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.data.DataObjectPropertySection"
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Data Object">
 		</propertyTab>
 
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.dataobjectref.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.data.DataObjectReferencePropertySection"
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Reference">
 		</propertyTab>
 
@@ -219,7 +211,7 @@
 			id="org.eclipse.bpmn2.modeler.sequenceflow.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.connectors.SequenceFlowPropertySection"
 			type="org.eclipse.bpmn2.SequenceFlow"
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Sequence Flow">
 		</propertyTab>
 
@@ -227,7 +219,7 @@
 			id="org.eclipse.bpmn2.modeler.messageFlow.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.connectors.MessageFlowPropertySection"
 			type="org.eclipse.bpmn2.MessageFlow"
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Message Flow">
 		</propertyTab>
 
@@ -235,7 +227,7 @@
 			id="org.eclipse.bpmn2.modeler.message.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.data.MessagePropertySection"
 			type="org.eclipse.bpmn2.Message"
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Message">
 		</propertyTab>
 
@@ -243,7 +235,7 @@
 			id="org.eclipse.bpmn2.modeler.assocation.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.connectors.AssociationPropertySection"
 			type="org.eclipse.bpmn2.Association"
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Assocation">
 		</propertyTab>
 
@@ -251,7 +243,7 @@
 			id="org.eclipse.bpmn2.modeler.conversationLink.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.connectors.ConversationLinkPropertySection"
 			type="org.eclipse.bpmn2.ConversationLink"
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Conversation Link">
 		</propertyTab>
 
@@ -259,7 +251,7 @@
 			id="org.eclipse.bpmn2.modeler.conversation.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.connectors.ConversationPropertySection"
 			type="org.eclipse.bpmn2.Conversation"
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Conversation">
 		</propertyTab>
 
@@ -267,7 +259,7 @@
 			id="org.eclipse.bpmn2.modeler.commonEvent.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.events.CommonEventPropertySection"
 			type="org.eclipse.bpmn2.Event"
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Event">
 		</propertyTab>
 
@@ -275,7 +267,7 @@
 			id="org.eclipse.bpmn2.modeler.task.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.tasks.TaskPropertySection"
 			type="org.eclipse.bpmn2.Task"
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Task">
 		</propertyTab>
 		
@@ -323,7 +315,7 @@
 			id="org.eclipse.bpmn2.modeler.receiveTask.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.tasks.ReceiveTaskPropertySection"
 			type="org.eclipse.bpmn2.ReceiveTask"
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Receive Task">
 		</propertyTab>
 
@@ -331,7 +323,7 @@
 			id="org.eclipse.bpmn2.modeler.businessRuleTask.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.tasks.BusinessRuleTaskPropertySection"
 			type="org.eclipse.bpmn2.BusinessRuleTask"
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Business Rule Task">
 		</propertyTab>
 
@@ -339,7 +331,7 @@
 			id="org.eclipse.bpmn2.modeler.choreographyTask.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.tasks.ChoreographyTaskPropertySection"
 			type="org.eclipse.bpmn2.ChoreographyTask"
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Choreography Task">
 		</propertyTab>
 
@@ -347,7 +339,7 @@
 			id="org.eclipse.bpmn2.modeler.callActivity.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.tasks.CallActivityPropertySection"
 			type="org.eclipse.bpmn2.ChoreographyTask"
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Call Activity">
 		</propertyTab>
 
@@ -355,7 +347,7 @@
 			id="org.eclipse.bpmn2.modeler.subProcess.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.tasks.SubProcessPropertySection"
 			type="org.eclipse.bpmn2.ChoreographyTask"
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Sub Process">
 		</propertyTab>
 
@@ -386,14 +378,14 @@
 			id="org.eclipse.bpmn2.modeler.gateway.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.gateways.GatewayPropertySection"
 			type="org.eclipse.bpmn2.Gateway"
-			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Gateway">
 		</propertyTab>
 
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.advanced.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.AdvancedPropertySection"
-			afterTab="org.eclipse.bpmn2.modeler.main.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			popup="false"
 			label="Advanced">
 		</propertyTab>

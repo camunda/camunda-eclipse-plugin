@@ -13,15 +13,13 @@
 
 package org.eclipse.bpmn2.modeler.core.merrimac.dialogs;
 
-import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
-import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
-import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
+import org.eclipse.bpmn2.modeler.core.merrimac.IConstants;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.core.utils.ErrorUtils;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.edit.provider.INotifyChangedListener;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
@@ -40,28 +38,46 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * 
  * @author Bob Brodt
  */
-public abstract class ObjectEditor {
+public abstract class ObjectEditor implements INotifyChangedListener {
 	protected EObject object;
 	protected EStructuralFeature feature;
 	protected AbstractDetailComposite parent;
 	private Label label;
+	protected int style;
 	
-	public ObjectEditor(AbstractDetailComposite parent, EObject object, EStructuralFeature feature) {
+	public ObjectEditor(AbstractDetailComposite parent, EObject object, EStructuralFeature feature, int style) {
 		this.parent = parent;
 		this.object = object;
 		this.feature = feature;
+		this.style = style;
 	}
 	
-	public abstract Control createControl(Composite composite, String label, int style);
+	public ObjectEditor(AbstractDetailComposite parent, EObject object, EStructuralFeature feature) {
+		this(parent, object, feature, SWT.NONE);
+	}
+	
+	protected abstract Control createControl(Composite composite, String label, int style);
 	
 	public Control createControl(Composite composite, String label) {
-		return createControl(composite,label,SWT.NONE);
+		Control c = createControl(composite,label,style);
+		c.setData(IConstants.NOTIFY_CHANGE_LISTENER_KEY, this);
+		return c; 
 	}
 	
 	public Control createControl(String label) {
-		return createControl(parent,label,SWT.NONE);
+		Control c = createControl(parent,label,style);
+		c.setData(IConstants.NOTIFY_CHANGE_LISTENER_KEY, this);
+		return c; 
 	}
 	
+	public EStructuralFeature getFeature() {
+		return feature;
+	}
+
+	public EObject getObject() {
+		return object;
+	}
+
 	public void setObject(EObject object) {
 		this.object = object;
 	}

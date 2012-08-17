@@ -489,7 +489,7 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 					propertyComposite.setVisible(true);
 					((GridData)propertyComposite.getLayoutData()).exclude = false;
 				}
-
+				
 				if (propertyDetailsComposite==null) {
 					propertyDetailsComposite = new DefaultDetailComposite(propertyComposite,SWT.NONE) {
 
@@ -531,6 +531,8 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 					};
 					propertyDetailsComposite.setBusinessObject(association);
 					propertyDetailsComposite.setTitle("Properties");
+					// Oy vey! Fix this!
+					getParent().getParent().getParent().getParent().getParent().layout();
 				}
 			}
 			else {
@@ -578,10 +580,12 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 				// create a new Transformation FormalExpression
 				FormalExpression transformation = association.getTransformation();
 				if (!updatingWidgets && transformation==null) {
-					transformation = modelHandler.createStandby(
-							association,
-							PACKAGE.getDataAssociation_Transformation(),
-							FormalExpression.class);
+					transformation = FACTORY.createFormalExpression();
+					InsertionAdapter.add(association, PACKAGE.getDataAssociation_Transformation(), transformation);
+//					transformation = modelHandler.createStandby(
+//							association,
+//							PACKAGE.getDataAssociation_Transformation(),
+//							FormalExpression.class);
 				}
 				if (transformationDetailsComposite==null) {
 					transformationDetailsComposite = PropertiesCompositeFactory.createDetailComposite(
@@ -589,6 +593,7 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 				}
 				transformationDetailsComposite.setBusinessObject(transformation);
 				transformationDetailsComposite.setTitle("Transformation");
+				transformationDetailsComposite.redrawPage();
 	
 			}
 			else {
@@ -660,6 +665,7 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 				}
 				expressionDetailsComposite.setBusinessObject(expression);//association.getexpression());
 				expressionDetailsComposite.setTitle("Expression");
+				expressionDetailsComposite.redrawPage();
 			}
 			else {
 				if (expressionComposite!=null) {
@@ -697,10 +703,12 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 				// create a new Transformation FormalExpression
 				FormalExpression transformation = association.getTransformation();
 				if (!updatingWidgets && transformation==null) {
-					transformation = modelHandler.createStandby(
-							association,
-							PACKAGE.getDataAssociation_Transformation(),
-							FormalExpression.class);
+					transformation = FACTORY.createFormalExpression();
+					InsertionAdapter.add(association, PACKAGE.getDataAssociation_Transformation(), transformation);
+//					transformation = modelHandler.createStandby(
+//							association,
+//							PACKAGE.getDataAssociation_Transformation(),
+//							FormalExpression.class);
 				}
 	
 				if (transformationDetailsComposite==null) {
@@ -709,6 +717,7 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 				}
 				transformationDetailsComposite.setBusinessObject(transformation);//association.getTransformation());
 				transformationDetailsComposite.setTitle("Transformation");
+				transformationDetailsComposite.redrawPage();
 				
 				if (assignmentsTable!=null)
 					assignmentsTable.dispose();

@@ -17,7 +17,6 @@ import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Interface;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
-import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -59,7 +58,7 @@ public class InterfacePropertiesAdapter extends ExtendedPropertiesAdapter<Interf
 					final Interface iface = adopt(context);
 
 					EObject impl = ModelUtil.createStringWrapper("");
-					InsertionAdapter.add(iface, ref, impl);
+					iface.setImplementationRef(impl);
 					return impl;
 	    		}
 

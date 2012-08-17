@@ -54,7 +54,6 @@ import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.di.BpmnDiFactory;
 import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.bpmn2.di.ParticipantBandKind;
-import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
@@ -74,7 +73,6 @@ import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -941,17 +939,9 @@ public class ModelHandler {
 	public EObject create(EClass eClass) {
 		return create(this.resource, eClass);
 	}
-	
-	public <T extends EObject> T createStandby(EObject object, EStructuralFeature feature, EClass eClass) {
-		return (T) createStandby(this.resource, object, feature, eClass);
-	}
 
 	public <T extends EObject> T create(Class<T> clazz) {
 		return (T) create(this.resource, clazz);
-	}
-	
-	public <T extends EObject> T createStandby(EObject object, EStructuralFeature feature, Class<T> clazz) {
-		return createStandby(this.resource, object, feature, clazz);
 	}
 
 	public void initialize(EObject newObject) {
@@ -970,14 +960,6 @@ public class ModelHandler {
 			eClass = Bpmn2Package.eINSTANCE.getFormalExpression();
 		newObject = factory.create(eClass);
 		initialize(resource, newObject);
-		return newObject;
-	}
-	
-	public static EObject createStandby(Resource resource, EObject object, EStructuralFeature feature, EClass eClass) {
-		if (resource==null)
-			resource  = ModelUtil.getResource(object);
-		EObject newObject = create(resource, eClass);
-		InsertionAdapter.add(resource, object, feature, newObject);
 		return newObject;
 	}
 
@@ -1002,14 +984,6 @@ public class ModelHandler {
 		}
 
 		return (T)newObject;
-	}
-	
-	public static <T extends EObject> T createStandby(Resource resource, EObject object, EStructuralFeature feature, Class<T> clazz) {
-		if (resource==null)
-			resource  = ModelUtil.getResource(object);
-		T newObject = create(resource, clazz);
-		InsertionAdapter.add(resource, object, feature, newObject);
-		return newObject;
 	}
 
 	public static void initialize(Resource resource, EObject newObject) {

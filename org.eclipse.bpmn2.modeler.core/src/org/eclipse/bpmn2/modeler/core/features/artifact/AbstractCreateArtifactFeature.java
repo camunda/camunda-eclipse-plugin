@@ -17,10 +17,8 @@ import java.io.IOException;
 import org.eclipse.bpmn2.Artifact;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
-import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
 
@@ -40,15 +38,7 @@ public abstract class AbstractCreateArtifactFeature<T extends Artifact> extends 
 
 	@Override
 	public Object[] create(ICreateContext context) {
-		T artifact = null;
-		try {
-			ModelHandler handler = ModelHandler.getInstance(getDiagram());
-			artifact = createBusinessObject(context);
-			handler.addArtifact(FeatureSupport.getTargetParticipant(context, handler), artifact);
-			InsertionAdapter.executeIfNeeded(artifact);
-		} catch (IOException e) {
-			Activator.logError(e);
-		}
+		T artifact = createBusinessObject(context);
 		addGraphicalRepresentation(context, artifact);
 		return new Object[] { artifact };
 	}
@@ -63,5 +53,18 @@ public abstract class AbstractCreateArtifactFeature<T extends Artifact> extends 
 	@Override
 	public String getCreateLargeImageId() {
 		return getStencilImageId();
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public T createBusinessObject(ICreateContext context) {
+		T artifact = null;
+		try {
+			artifact = super.createBusinessObject(context);
+			ModelHandler handler = ModelHandler.getInstance(getDiagram());
+			handler.addArtifact(FeatureSupport.getTargetParticipant(context, handler), artifact);
+		} catch (IOException e) {
+			Activator.logError(e);
+		}
+		return artifact;
 	}
 }
