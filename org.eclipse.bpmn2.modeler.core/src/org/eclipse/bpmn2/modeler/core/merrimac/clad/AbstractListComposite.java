@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.modeler.core.Activator;
+import org.eclipse.bpmn2.modeler.core.merrimac.IConstants;
 import org.eclipse.bpmn2.modeler.core.merrimac.providers.TableCursor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.notify.Notification;
@@ -28,6 +29,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
+import org.eclipse.emf.edit.provider.INotifyChangedListener;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.ResourceSetChangeEvent;
 import org.eclipse.jface.action.Action;
@@ -68,7 +70,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  * @author Bob Brodt
  *
  */
-public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
+public abstract class AbstractListComposite extends ListAndDetailCompositeBase implements INotifyChangedListener {
 	
 	public static final int HIDE_TITLE = 1 << 18; // Hide section title - useful if this is the only thing in the PropertySheetTab
 	public static final int ADD_BUTTON = 1 << 19; // show "Add" button
@@ -200,6 +202,10 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 					if (a1!=nameAttribute)
 						columnProvider.add(object, listItemClass, a1);
 				}
+			}
+			if (columnProvider.getColumns().size()==0) {
+				feature = listItemClass.getEStructuralFeature("id");
+				columnProvider.addRaw(object, feature);
 			}
 		}
 		return columnProvider;
@@ -408,8 +414,11 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 		tableViewer.addPostSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				boolean enable = !event.getSelection().isEmpty();
-				if ((style & SHOW_DETAILS)!=0 && (style & EDIT_BUTTON)==0) {
-					showDetails(enable);
+				if ((style & SHOW_DETAILS)!=0) {
+					if (detailSection!=null && detailSection.isVisible())
+						showDetails(true);
+					else if ((style & EDIT_BUTTON)==0)
+						showDetails(true);
 				}
 				if (removeAction!=null)
 					removeAction.setEnabled(enable);
@@ -465,21 +474,11 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 			detailSection.setExpanded(enable);
 			if (editAction!=null)
 				editAction.setChecked(enable);
-			redrawPage();
-		}
-	}
-	
-	@Override
-	public void resourceSetChanged(ResourceSetChangeEvent event) {
-		List<Notification> notifications = event.getNotifications();
-		try {
+
 			final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
-			for (Notification notification : notifications) {
-				tableViewer.setInput(list);
-			}
-		}
-		catch (Exception e) {
-			// silently ignore :-o
+			tableViewer.setInput(list);
+
+			redrawPage();
 		}
 	}
 	
@@ -581,9 +580,9 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 							else
 								item = removeListItem(businessObject,feature,i);
 							
+							final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
+							tableViewer.setInput(list);
 							if (item!=null) {
-								final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
-								tableViewer.setInput(list);
 								if (i>=list.size())
 									i = list.size() - 1;
 								if (i>=0)
@@ -674,6 +673,10 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 		
 	    toolBarManager.update(true);
 	    section.setTextClient(toolbar);
+	    
+	    // hook a resource change listener to this Table Control
+	    table.setData(IConstants.NOTIFY_CHANGE_LISTENER_KEY,this);
+	    
 	    return section;
 	}
 	
@@ -697,5 +700,14 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase {
 	    toolBarManager.update(true);
 	    section.setTextClient(toolbar);
 	    return section;
+	}
+
+	@Override
+	public void notifyChanged(Notification notification) {
+		if (this.businessObject == notification.getNotifier() &&
+				this.feature == notification.getFeature()) {
+			final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
+			tableViewer.setInput(list);
+		}
 	}
 }

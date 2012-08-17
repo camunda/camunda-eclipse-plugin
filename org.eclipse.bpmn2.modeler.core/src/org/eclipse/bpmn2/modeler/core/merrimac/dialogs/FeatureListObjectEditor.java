@@ -22,6 +22,7 @@ import org.eclipse.bpmn2.modeler.core.IConstants;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterRegistry;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -50,6 +51,10 @@ import org.eclipse.swt.widgets.Text;
  */
 public class FeatureListObjectEditor extends MultivalueObjectEditor {
 
+	Text text;
+	List<EObject> references;
+	Button editButton;
+	
 	/**
 	 * @param parent
 	 * @param object
@@ -66,12 +71,11 @@ public class FeatureListObjectEditor extends MultivalueObjectEditor {
 	public Control createControl(Composite composite, String label, int style) {
 		createLabel(composite, label);
 
-		final Text text = getToolkit().createText(composite, "");
+		text = getToolkit().createText(composite, "");
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
-		Object eGet = object.eGet(feature);
-		final List<EObject> refs = (List<EObject>) eGet;
-		updateTextField(refs, text);
+		references = (List<EObject>) object.eGet(feature);
+		updateTextField();
 
 		boolean canEdit = ModelUtil.canEdit(object,feature);
 		boolean canCreateNew = ModelUtil.canCreateNew(object,feature);
@@ -89,14 +93,14 @@ public class FeatureListObjectEditor extends MultivalueObjectEditor {
 //						// create a new target object
 //						FeatureEditingDialog dialog = new FeatureEditingDialog(getDiagramEditor(), object, feature, null);							
 //						if ( dialog.open() == Window.OK) {
-//							updateObject(refs, dialog.getNewObject());
-//							updateTextField(refs, text);
+//							updateObject(references, dialog.getNewObject());
+//							updateTextField(references, text);
 //						}
 //					}
 //				});
 			}
 			if (canEdit) {
-				Button editButton = getToolkit().createButton(buttons, null, SWT.PUSH);
+				editButton = getToolkit().createButton(buttons, null, SWT.PUSH);
 				editButton.setImage( Activator.getDefault().getImage(IConstants.ICON_ADD_20));
 
 				editButton.addSelectionListener(new SelectionAdapter() {
@@ -121,8 +125,8 @@ public class FeatureListObjectEditor extends MultivalueObjectEditor {
 						};
 
 						if (featureEditorDialog.open() == Window.OK) {
-							updateEObject(refs, (EList<EObject>) featureEditorDialog.getResult());
-							updateTextField(refs, text);
+							updateEObject((EList<EObject>) featureEditorDialog.getResult());
+							updateTextField();
 						}
 					}
 				});
@@ -132,37 +136,45 @@ public class FeatureListObjectEditor extends MultivalueObjectEditor {
 		return text;
 	}
 
-	private void updateEObject(final List<EObject> refs, final EList<EObject> result) {
+	private void updateEObject(final EList<EObject> result) {
 		TransactionalEditingDomain domain = getDiagramEditor().getEditingDomain();
 		domain.getCommandStack().execute(new RecordingCommand(domain) {
 			@Override
 			protected void doExecute() {
 
 				if (result == null) {
-					refs.clear();
+					references.clear();
 					return;
 				}
-				refs.retainAll(result);
+				references.retainAll(result);
 				for (EObject di : result) {
-					if (!refs.contains(di)) {
-						refs.add(di);
+					if (!references.contains(di)) {
+						references.add(di);
 					}
 				}
 			}
 		});
 	}
 
-	private void updateTextField(final List<EObject> refs, Text text) {
+	private void updateTextField() {
 		String listText = "";
-		if (refs != null) {
-			for (int i = 0; i < refs.size() - 1; i++) {
-				listText += AdapterRegistry.getLabelProvider().getText(refs.get(i)) + ", ";
+		if (references != null) {
+			for (int i = 0; i < references.size() - 1; i++) {
+				listText += AdapterRegistry.getLabelProvider().getText(references.get(i)) + ", ";
 			}
-			if (refs.size() > 0) {
-				listText += AdapterRegistry.getLabelProvider().getText(refs.get(refs.size() - 1));
+			if (references.size() > 0) {
+				listText += AdapterRegistry.getLabelProvider().getText(references.get(references.size() - 1));
 			}
 		}
 
 		text.setText(listText);
+	}
+	
+	@Override
+	public void notifyChanged(Notification notification) {
+		if (this.object == notification.getNotifier() &&
+				this.feature == notification.getFeature()) {
+			updateTextField();
+		}
 	}
 }

@@ -23,6 +23,7 @@ import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EObjectEList;
@@ -292,5 +293,16 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 		Combo combo = comboViewer.getCombo();
 		
 		return comboViewer;
+	}
+	
+	@Override
+	public void notifyChanged(Notification notification) {
+		for (String item : comboViewer.getCombo().getItems()) {
+			Object o = comboViewer.getData(item);
+			if (o == notification.getNotifier()) {
+				fillCombo();
+				break;
+			}
+		}
 	}
 }

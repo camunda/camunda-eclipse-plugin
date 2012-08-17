@@ -66,4 +66,14 @@ public class ListCompositeColumnProvider extends ColumnTableProvider {
 		}
 		return tc;
 	}
+	
+	public TableColumn addRaw(EObject object, EStructuralFeature feature) {
+		return addRaw(new TableColumn(object, feature));
+	}
+	
+	public TableColumn addRaw(TableColumn tc) {
+		tc.setOwner(listComposite);
+		super.add(tc);
+		return tc;
+	}
 }

@@ -13,7 +13,6 @@
 
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -30,11 +29,9 @@ import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.Property;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
-import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -184,7 +181,6 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter<
 					property = Bpmn2ModelerFactory.create(Property.class);
 					ExtendedPropertiesAdapter<Property> adapter = AdapterUtil.adapt(property, ExtendedPropertiesAdapter.class);
 					adapter.getObjectDescriptor().setDisplayName((String)value);
-					InsertionAdapter.add(container, containerFeature, property);
 				}
 				value = property;
 			}

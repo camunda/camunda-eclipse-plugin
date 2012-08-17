@@ -982,7 +982,11 @@ public class ModelUtil {
 					domain.getCommandStack().execute(new RecordingCommand(domain) {
 						@Override
 						protected void doExecute() {
-							object.eSet(feature, value);
+							if (object.eGet(feature) instanceof List) {
+								((List)object.eGet(feature)).add(value);
+							}
+							else
+								object.eSet(feature, value);
 						}
 					});
 				}

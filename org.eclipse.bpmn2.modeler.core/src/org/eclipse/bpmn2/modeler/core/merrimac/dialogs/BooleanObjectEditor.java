@@ -18,6 +18,7 @@ import org.eclipse.bpmn2.modeler.core.utils.ErrorUtils;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.IValueChangeListener;
 import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -99,4 +100,11 @@ public class BooleanObjectEditor extends ObjectEditor {
 		return button;
 	}
 
+	@Override
+	public void notifyChanged(Notification notification) {
+		if (this.object == notification.getNotifier() &&
+				this.feature == notification.getFeature()) {
+			button.setSelection((Boolean) object.eGet(feature));
+		}
+	}
 }

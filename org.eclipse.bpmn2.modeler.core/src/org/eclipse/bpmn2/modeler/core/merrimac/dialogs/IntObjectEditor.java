@@ -21,6 +21,7 @@ import org.eclipse.bpmn2.modeler.core.utils.ErrorUtils;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.IValueChangeListener;
 import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -41,6 +42,8 @@ import org.eclipse.swt.widgets.Text;
  */
 public class IntObjectEditor extends ObjectEditor {
 
+	Text text;
+	
 	/**
 	 * @param parent
 	 * @param object
@@ -57,7 +60,7 @@ public class IntObjectEditor extends ObjectEditor {
 	public Control createControl(Composite composite, String label, int style) {
 		createLabel(composite,label);
 
-		final Text text = getToolkit().createText(composite, "");
+		text = getToolkit().createText(composite, "");
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		text.addVerifyListener(new VerifyListener() {
 
@@ -80,10 +83,7 @@ public class IntObjectEditor extends ObjectEditor {
 			}
 		});
 
-		Object eGet = object.eGet(feature);
-		if (eGet != null) {
-			text.setText(eGet.toString());
-		}
+		updateText();
 
 		IObservableValue textObserveTextObserveWidget = SWTObservables.observeText(text, SWT.Modify);
 		textObserveTextObserveWidget.addValueChangeListener(new IValueChangeListener() {
@@ -140,5 +140,21 @@ public class IntObjectEditor extends ObjectEditor {
 
 		return text;
 	}
-
+	
+	private void updateText() {
+		Object value = object.eGet(feature);
+		if (value==null)
+			value = "";
+		if (!text.getText().equals(value)) {
+			text.setText(value.toString());
+		}
+	}
+	
+	@Override
+	public void notifyChanged(Notification notification) {
+		if (this.object == notification.getNotifier() &&
+				this.feature == notification.getFeature()) {
+			updateText();
+		}
+	}
 }

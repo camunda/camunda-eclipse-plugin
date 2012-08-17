@@ -1,21 +1,27 @@
 package org.eclipse.bpmn2.modeler.core.merrimac.clad;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.Bpmn2TabbedPropertySheetPage;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
+import org.eclipse.bpmn2.modeler.core.merrimac.IConstants;
+import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ObjectEditor;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.command.Command;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.edit.provider.INotifyChangedListener;
 import org.eclipse.emf.transaction.NotificationFilter;
 import org.eclipse.emf.transaction.ResourceSetChangeEvent;
 import org.eclipse.emf.transaction.ResourceSetListener;
@@ -27,6 +33,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPart;
@@ -112,7 +119,7 @@ public class ListAndDetailCompositeBase extends Composite implements ResourceSet
 		return null;
 	}
 
-	protected void redrawPage() {
+	public void redrawPage() {
 		if (getPropertySection()!=null) {
 			getParent().layout();
 			getPropertySection().layout();
@@ -227,9 +234,56 @@ public class ListAndDetailCompositeBase extends Composite implements ResourceSet
 		return null;
 	}
 
+	private void getAllChildWidgets(Composite parent, List<Control>kids) {
+		if (parent!=null && !parent.isDisposed()) {
+			Control[] cs = parent.getChildren();
+			for (Control c : cs) {
+				if (c instanceof Composite) {
+					getAllChildWidgets((Composite)c,kids);
+				}
+				if (!c.isDisposed())
+					kids.add(c);
+			}
+		}
+	}
+	
 	@Override
 	public void resourceSetChanged(ResourceSetChangeEvent event) {
-//		setBusinessObject(getBusinessObject());
+		final List<Notification> notifications = new ArrayList<Notification>();
+		for (Notification n : event.getNotifications()) {
+			int et = n.getEventType();
+			if (et==Notification.SET
+					|| et==Notification.UNSET
+					|| et==Notification.ADD
+					|| et==Notification.ADD_MANY
+					|| et==Notification.CREATE
+					|| et==Notification.REMOVE
+					|| et==Notification.REMOVE_MANY) {
+
+				notifications.add(n);
+			}
+		}
+		// run this in the UI thread
+		Display.getDefault().asyncExec( new Runnable() {
+			public void run() {
+				List<Control>kids = new ArrayList<Control>();
+				Composite parent = ListAndDetailCompositeBase.this.getParent();
+				AbstractBpmn2PropertySection section = ListAndDetailCompositeBase.this.getPropertySection();
+				if (section!=null && section.getTabbedPropertySheetPage()!=null) {
+					parent = (Composite)section.getTabbedPropertySheetPage().getControl();
+				}
+				getAllChildWidgets(parent, kids);
+				for (Notification n : notifications) {
+					for (Control c : kids) {
+						INotifyChangedListener listener = (INotifyChangedListener)c.getData(
+								IConstants.NOTIFY_CHANGE_LISTENER_KEY);
+						if (listener!=null) {
+							listener.notifyChanged(n);
+						}
+					}
+				}
+			}
+		});
 	}
 
 	@Override

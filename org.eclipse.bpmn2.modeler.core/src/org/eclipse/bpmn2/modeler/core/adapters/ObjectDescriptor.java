@@ -229,7 +229,7 @@ public class ObjectDescriptor<T extends EObject> {
 		T newObject = (T) eClass.getEPackage().getEFactoryInstance().create(eClass);
 		
 		if (resource==null)
-			resource = InsertionAdapter.getResource(object);
+			resource = object.eResource();
 		
 		// if the object has an "id", assign it now.
 		String id = ModelUtil.setID(newObject,resource);
@@ -241,7 +241,6 @@ public class ObjectDescriptor<T extends EObject> {
 			else
 				newObject.eSet(feature, "New "+ModelUtil.toDisplayName(newObject.eClass().getName()));
 		}
-//		newObject.eAdapters().add( new InsertionAdapter(resource, null, null, newObject));
 		return newObject;
 	}
 }

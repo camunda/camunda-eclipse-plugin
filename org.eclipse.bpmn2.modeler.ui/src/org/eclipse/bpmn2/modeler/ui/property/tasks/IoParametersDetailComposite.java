@@ -69,6 +69,7 @@ public class IoParametersDetailComposite extends AbstractDetailComposite {
 			InputOutputSpecification ioSpecification = (InputOutputSpecification)be.eGet(ioSpecificationFeature);
 			if (ioSpecification==null) {
 				ioSpecification = (InputOutputSpecification) ModelUtil.createFeature(be,ioSpecificationFeature);
+				InsertionAdapter.add(be, ioSpecificationFeature, ioSpecification);
 			}
 
 			EStructuralFeature dataInputsFeature = getFeature(ioSpecification, "dataInputs");

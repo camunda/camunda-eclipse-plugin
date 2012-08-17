@@ -22,7 +22,6 @@ import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
-import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -65,7 +64,7 @@ public class ItemDefinitionPropertiesAdapter extends ExtendedPropertiesAdapter<I
 				public EObject createFeature(Resource resource, Object context, EClass eClass) {
 					final ItemDefinition itemDefinition = adopt(context);
 					EObject structureRef = ModelUtil.createStringWrapper("");
-					InsertionAdapter.add(itemDefinition, ref, structureRef);
+					itemDefinition.setStructureRef(ref);
 					return structureRef;
 	    		}
 

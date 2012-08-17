@@ -24,7 +24,6 @@ import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.FeatureListObjectEditor;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.IntObjectEditor;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ObjectEditor;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ReadonlyTextObjectEditor;
-import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.TextAndButtonObjectEditor;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.TextObjectEditor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.util.EList;
@@ -401,8 +400,8 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 				int style = SWT.NONE;
 				if (ModelUtil.getIsMultiLine(object,attribute))
 					style |= SWT.MULTI;
-				ObjectEditor editor = new TextObjectEditor(this,object,attribute);
-				editor.createControl(parent,label,style);
+				ObjectEditor editor = new TextObjectEditor(this,object,attribute,style);
+				editor.createControl(parent,label);
 			} else if (boolean.class.equals(eTypeClass)) {
 				ObjectEditor editor = new BooleanObjectEditor(this,object,attribute);
 				editor.createControl(parent,label);

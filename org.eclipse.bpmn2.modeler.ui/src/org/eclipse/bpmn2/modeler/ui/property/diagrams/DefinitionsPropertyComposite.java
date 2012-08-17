@@ -200,11 +200,11 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 								return false;
 							}
 						};
-						editor.createControl(parent,"Prefix",SWT.NONE);
+						editor.createControl(parent,"Prefix");
 					}
 					else {
 						ObjectEditor editor = new TextObjectEditor(this,businessObject,attribute);
-						editor.createControl(parent,"Namespace",SWT.NONE);
+						editor.createControl(parent,"Namespace");
 					}
 				}
 			};

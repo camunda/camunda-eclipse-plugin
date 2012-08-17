@@ -12,18 +12,10 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features.data;
 
-import java.io.IOException;
-
 import org.eclipse.bpmn2.RootElement;
-import org.eclipse.bpmn2.modeler.core.Activator;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
-import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
-import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
-import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
 
 public abstract class AbstractCreateRootElementFeature<T extends RootElement> extends AbstractBpmn2CreateFeature<T> {
 
@@ -39,8 +31,6 @@ public abstract class AbstractCreateRootElementFeature<T extends RootElement> ex
 	@Override
     public Object[] create(ICreateContext context) {
 		RootElement element = createBusinessObject(context);
-		// make sure this thing gets added to the Resource
-		InsertionAdapter.executeIfNeeded(element);
 		addGraphicalRepresentation(context, element);
 		return new Object[] { element };
     }

@@ -19,6 +19,7 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.IValueChangeListener;
 import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.jface.databinding.swt.SWTObservables;
@@ -45,6 +46,10 @@ public class TextObjectEditor extends ObjectEditor {
 	 */
 	public TextObjectEditor(AbstractDetailComposite parent, EObject object, EStructuralFeature feature) {
 		super(parent, object, feature);
+	}
+
+	public TextObjectEditor(AbstractDetailComposite parent, EObject object, EStructuralFeature feature, int style) {
+		super(parent, object, feature, style);
 	}
 
 	/* (non-Javadoc)
@@ -122,15 +127,18 @@ public class TextObjectEditor extends ObjectEditor {
 	 * @param value - new value for the text field
 	 */
 	protected void updateText() {
-		int pos = text.getCaretPosition();
-		setText(getText());
-		text.setSelection(pos, pos);
+		if (!text.getText().equals(getText())) {
+			int pos = text.getCaretPosition();
+			setText(getText());
+			text.setSelection(pos, pos);
+		}
 	}
 	
 	protected void setText(String value) {
 		if (value==null)
 			value = "";
-		text.setText(value);
+		if (!value.equals(text.getText()))
+				text.setText(value);
 	}
 	
 	/**
@@ -146,5 +154,13 @@ public class TextObjectEditor extends ObjectEditor {
 	 */
 	protected String getText() {
 		return ModelUtil.getDisplayName(object, feature);
+	}
+
+	@Override
+	public void notifyChanged(Notification notification) {
+		if (this.object == notification.getNotifier() &&
+				this.feature == notification.getFeature()) {
+			updateText();
+		}
 	}
 }

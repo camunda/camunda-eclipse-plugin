@@ -25,7 +25,6 @@ import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
-import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -79,10 +78,7 @@ public class ParticipantPropertiesAdapter extends ExtendedPropertiesAdapter<Part
 		        List<RootElement> rootElements = definitions.getRootElements();
 		        for (RootElement element : rootElements) {
 		            if (element instanceof Collaboration || element instanceof Choreography) {
-						InsertionAdapter.add(
-								(Collaboration)element,
-								Bpmn2Package.eINSTANCE.getCollaboration_Participants(),
-								participant);
+		            	((Collaboration)element).getParticipants().add(participant);
 		                break;
 		            }
 		        }

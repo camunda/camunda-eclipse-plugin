@@ -44,6 +44,8 @@ import org.eclipse.swt.widgets.Display;
  *
  */
 public class AddChoreographyMessageFeature extends AbstractCustomFeature {
+
+	private boolean changesDone = false;
 	
 	private static ILabelProvider labelProvider = new ILabelProvider() {
 
@@ -168,15 +170,15 @@ public class AddChoreographyMessageFeature extends AbstractCustomFeature {
 
 						Message result = message;
 		
-						boolean doit = true;
+						changesDone = true;
 						if (messageList.size()>1) {
 							PopupMenu popupMenu = new PopupMenu(messageList, labelProvider);
-							doit = popupMenu.show(Display.getCurrent().getActiveShell());
-							if (doit) {
+							changesDone = popupMenu.show(Display.getCurrent().getActiveShell());
+							if (changesDone) {
 								result = (Message) popupMenu.getResult();
 							}
 						}
-						if (doit) {
+						if (changesDone) {
 							if (result==message) { // the new one
 								message.setName( ModelUtil.getDisplayName(message)); // ModelUtil.toDisplayName(message.getId()) );
 								
@@ -208,4 +210,8 @@ public class AddChoreographyMessageFeature extends AbstractCustomFeature {
 		}
 	}
 
+	@Override
+	public boolean hasDoneChanges() {
+		return changesDone;
+	}
 }

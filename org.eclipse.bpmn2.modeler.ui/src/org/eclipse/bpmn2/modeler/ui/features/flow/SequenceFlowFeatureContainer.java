@@ -179,7 +179,6 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 				bo = mh.createSequenceFlow(source, target);
 				bo.setName("");
 				putBusinessObject(context, bo);
-
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
