@@ -23,6 +23,10 @@ import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.ParticipantMultiplicity;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
+import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BpmnDiFactory;
+import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
@@ -61,8 +65,10 @@ public class ParticipantPropertiesAdapter extends ExtendedPropertiesAdapter<Part
 				Definitions definitions = null;
 				if (resource!=null)
 					definitions = (Definitions) resource.getContents().get(0).eContents().get(0);
-				else
+				else {
 					definitions = ModelUtil.getDefinitions(participant);
+					resource = definitions.eResource();
+				}
 
 		        // create a Process for this Participant
 		        Process process = (Process) ModelUtil.createObject(resource, Bpmn2Package.eINSTANCE.getProcess());
@@ -86,6 +92,17 @@ public class ParticipantPropertiesAdapter extends ExtendedPropertiesAdapter<Part
 		                break;
 		            }
 		        }
+				
+		        BPMNDiagram bpmnDiagram = BpmnDiFactory.eINSTANCE.createBPMNDiagram();
+				ModelUtil.setID(bpmnDiagram, resource);
+		        bpmnDiagram.setName(process.getName());
+		        
+				BPMNPlane plane = BpmnDiFactory.eINSTANCE.createBPMNPlane();
+				ModelUtil.setID(plane, resource);
+				InsertionAdapter.add(bpmnDiagram, BpmnDiPackage.eINSTANCE.getBPMNDiagram_Plane(), plane);
+				InsertionAdapter.add(plane, BpmnDiPackage.eINSTANCE.getBPMNPlane_BpmnElement(), process);
+				InsertionAdapter.add(definitions, Bpmn2Package.eINSTANCE.getDefinitions_Diagrams(), bpmnDiagram);
+				InsertionAdapter.add(bpmnDiagram, Bpmn2Package.eINSTANCE.getDefinitions_Diagrams(), definitions);
 		        
 		        process.eSetDeliver(true);
 				participant.eSetDeliver(true);

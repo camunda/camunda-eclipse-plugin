@@ -134,6 +134,20 @@ public class InsertionAdapter extends EContentAdapter {
 		
 		// remove this adapter from the value - this adapter is a one-shot deal!
 		value.eAdapters().remove(this);
+		try {
+			Object o = object.eGet(feature);
+		}
+		catch (Exception e1) {
+			try {
+				Object o = value.eGet(feature);
+				// this is the inverse add of object into value
+				o = value;
+				value = object;
+				object = (EObject)o;
+			}
+			catch (Exception e2) {
+			}
+		}
 		// if there are any EObjects contained or referenced by this value, execute those adapters first
 		executeChildren(value);
 		
@@ -210,6 +224,7 @@ public class InsertionAdapter extends EContentAdapter {
 				allAdapters.add((InsertionAdapter)adapter);
 			}
 		}
+		value.eAdapters().removeAll(allAdapters);
 		for (InsertionAdapter adapter : allAdapters)
 			adapter.execute();
 	}
