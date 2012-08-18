@@ -14,6 +14,7 @@ package org.eclipse.bpmn2.modeler.ui.editor;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -71,6 +72,7 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.TransactionalEditingDomain.Lifecycle;
 import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
 import org.eclipse.emf.workspace.util.WorkspaceSynchronizer;
+import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -89,6 +91,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -137,6 +140,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	
 	private Bpmn2Preferences preferences;
 	private TargetRuntime targetRuntime;
+	private Hashtable<BPMNDiagram, GraphicalViewer> mapDiagramToViewer = new Hashtable<BPMNDiagram, GraphicalViewer>();
 
 	protected DiagramEditorAdapter editorAdapter;
 	
@@ -183,7 +187,9 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 					input = createNewDiagramEditorInput(diagramType, targetNamespace);
 				}
 				else {
-					setBpmnDiagram(bpmnDiagram);
+					BPMNDiagram d = bpmnDiagram;
+					bpmnDiagram = null;
+					setBpmnDiagram(d);
 					return;
 				}
 			}
@@ -535,12 +541,21 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	}
 
 	public BPMNDiagram getBpmnDiagram() {
-		if (bpmnDiagram!=null)
-			return bpmnDiagram;
-		return getModelHandler().getDefinitions().getDiagrams().get(0);
+		if (bpmnDiagram==null)
+			bpmnDiagram = getModelHandler().getDefinitions().getDiagrams().get(0);
+
+		if (bpmnDiagram!=null) {
+			GraphicalViewer viewer = getGraphicalViewer();
+			mapDiagramToViewer.put(bpmnDiagram, viewer);
+		}
+		return bpmnDiagram;
 	}
 	
 	public void setBpmnDiagram(final BPMNDiagram bpmnDiagram) {
+		if (this.bpmnDiagram == bpmnDiagram)
+			return;
+		
+		GraphicalViewer viewer = mapDiagramToViewer.get(bpmnDiagram);
 		// do we need to create a new Diagram or is this already in the model?
 		Diagram oldDiagram = null;
 		Diagram diagram = null;
@@ -576,7 +591,12 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		}
 		
 		// set the new Diagram in the DTP and refresh graphical viewer
+		getRefreshBehavior().initRefresh();
+		setPictogramElementsForSelection(null);
 		getDiagramTypeProvider().init(diagram, this);
+		if (viewer!=null)
+			setGraphicalViewer(viewer);
+		
 		refreshContent();
 		// remember this for later
 		this.bpmnDiagram = bpmnDiagram;

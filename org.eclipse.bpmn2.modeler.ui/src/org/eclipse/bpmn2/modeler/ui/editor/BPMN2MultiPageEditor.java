@@ -24,6 +24,7 @@ import org.eclipse.bpmn2.modeler.ui.wizards.Bpmn2DiagramEditorInput;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.transaction.NotificationFilter;
 import org.eclipse.emf.transaction.ResourceSetChangeEvent;
 import org.eclipse.emf.transaction.ResourceSetListener;
@@ -52,6 +53,7 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabFolder2Listener;
 import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -278,9 +280,21 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 		}
 	}
 	
+	protected void setActivePage(int pageIndex) {
+		activePage = pageIndex;
+		super.setActivePage(pageIndex);
+	}
+	
 	protected void addDesignPage(BPMNDiagram bpmnDiagram) {
 		createDesignEditor();
 		try {
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					designEditor.setPictogramElementsForSelection(null);
+					designEditor.refresh();
+				}
+			});
+			
 			int pageIndex = tabFolder.getItemCount();
 			if (sourceViewer!=null)
 				--pageIndex;
@@ -336,7 +350,7 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 		super.removePage(pageIndex);
 		updateTabs();
 		if (page instanceof BPMN2Editor) {
-			pages.add(pageIndex,((BPMN2Editor)page).getBpmnDiagram());
+			pages.remove(pageIndex);
 		}
 	}
 

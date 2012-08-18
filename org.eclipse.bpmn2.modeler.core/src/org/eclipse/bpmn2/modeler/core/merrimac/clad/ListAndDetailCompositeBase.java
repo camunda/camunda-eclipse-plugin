@@ -267,7 +267,7 @@ public class ListAndDetailCompositeBase extends Composite implements ResourceSet
 		Display.getDefault().asyncExec( new Runnable() {
 			public void run() {
 				List<Control>kids = new ArrayList<Control>();
-				Composite parent = ListAndDetailCompositeBase.this.getParent();
+				Composite parent = ListAndDetailCompositeBase.this;//.getParent();
 				AbstractBpmn2PropertySection section = ListAndDetailCompositeBase.this.getPropertySection();
 				if (section!=null && section.getTabbedPropertySheetPage()!=null) {
 					parent = (Composite)section.getTabbedPropertySheetPage().getControl();

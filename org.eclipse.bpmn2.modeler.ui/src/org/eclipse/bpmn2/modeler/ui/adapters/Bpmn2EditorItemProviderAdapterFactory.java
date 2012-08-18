@@ -122,7 +122,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
- * This class adds a name-value map to the Bpmn2ItemProviderAdapterFactory.
+ * This class adds a name-value mapDiagramToViewer to the Bpmn2ItemProviderAdapterFactory.
  * This allows for additional customization of the UI.
  */
 public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdapterFactory {

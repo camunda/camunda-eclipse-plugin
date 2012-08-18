@@ -29,6 +29,7 @@ import org.eclipse.bpmn2.di.BpmnDiFactory;
 import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
+import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -59,7 +60,6 @@ public class ParticipantPropertiesAdapter extends ExtendedPropertiesAdapter<Part
 			@Override
 			public Participant createObject(Resource resource, Object context) {
 				Participant participant = super.createObject(resource, context);
-				participant.eSetDeliver(false);
 				
 				Definitions definitions = null;
 				if (resource!=null)
@@ -75,7 +75,6 @@ public class ParticipantPropertiesAdapter extends ExtendedPropertiesAdapter<Part
 		        
 		        // NOTE: this is needed because it fires the InsertionAdapter, which adds the new Process
 		        // to Definitions.rootElements, otherwise the Process would be a dangling object
-		        process.eSetDeliver(false);
 		        process.setName(participant.getName()+" Process");
 
 		        // add the Participant to the first Choreography or Collaboration we find.
@@ -92,17 +91,15 @@ public class ParticipantPropertiesAdapter extends ExtendedPropertiesAdapter<Part
 		        BPMNDiagram bpmnDiagram = BpmnDiFactory.eINSTANCE.createBPMNDiagram();
 				ModelUtil.setID(bpmnDiagram, resource);
 		        bpmnDiagram.setName(process.getName());
+
+		        definitions.getDiagrams().add(bpmnDiagram);
 		        
 				BPMNPlane plane = BpmnDiFactory.eINSTANCE.createBPMNPlane();
 				ModelUtil.setID(plane, resource);
-				InsertionAdapter.add(bpmnDiagram, BpmnDiPackage.eINSTANCE.getBPMNDiagram_Plane(), plane);
-				InsertionAdapter.add(plane, BpmnDiPackage.eINSTANCE.getBPMNPlane_BpmnElement(), process);
-				InsertionAdapter.add(definitions, Bpmn2Package.eINSTANCE.getDefinitions_Diagrams(), bpmnDiagram);
-				InsertionAdapter.add(bpmnDiagram, Bpmn2Package.eINSTANCE.getDefinitions_Diagrams(), definitions);
-		        
-		        process.eSetDeliver(true);
-				participant.eSetDeliver(true);
+				plane.setBpmnElement(process);
 
+				bpmnDiagram.setPlane(plane);
+		        
 				return participant;
 			}
 			
