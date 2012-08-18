@@ -18,7 +18,9 @@ import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractListComposite;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultDetailComposite;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultListComposite;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultPropertySection;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.ListCompositeColumnProvider;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.PropertiesCompositeFactory;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.TableColumn;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.util.EList;
@@ -143,6 +145,16 @@ public class InterfacePropertySection extends DefaultPropertySection {
 			EList<EObject> list = (EList<EObject>)object.eGet(feature);
 			list.add(iface);
 			return iface;
+		}
+		
+		@Override
+		public ListCompositeColumnProvider getColumnProvider(EObject object, EStructuralFeature feature) {
+			if (columnProvider==null) {
+				columnProvider = new ListCompositeColumnProvider(this, false);
+				columnProvider.add(new TableColumn(object, Bpmn2Package.eINSTANCE.getInterface_Name()));
+				columnProvider.add(new TableColumn(object,Bpmn2Package.eINSTANCE.getInterface_ImplementationRef()));
+			}
+			return columnProvider;
 		}
 	}
 	

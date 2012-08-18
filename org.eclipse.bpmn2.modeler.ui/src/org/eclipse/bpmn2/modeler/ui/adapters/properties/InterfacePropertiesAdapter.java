@@ -49,6 +49,7 @@ public class InterfacePropertiesAdapter extends ExtendedPropertiesAdapter<Interf
 						String text = ModelUtil.getStringWrapperValue( iface.getImplementationRef() ); // + type;
 						if (text==null)
 							return ModelUtil.getDisplayName(iface.getImplementationRef());
+						return text;
 					}
 					return "";
 				}

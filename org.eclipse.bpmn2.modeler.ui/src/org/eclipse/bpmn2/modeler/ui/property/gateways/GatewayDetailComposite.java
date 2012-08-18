@@ -199,7 +199,7 @@ public class GatewayDetailComposite extends DefaultDetailComposite {
 		 * 3 = true/false if this sequence flow is the default for the gateway
 		 */
 		public SequenceFlowListColumn(EObject gateway, int columnIndex) {
-			super(gateway, null);
+			super(gateway, (EStructuralFeature)null);
 			this.columnIndex = columnIndex;
 		}
 		

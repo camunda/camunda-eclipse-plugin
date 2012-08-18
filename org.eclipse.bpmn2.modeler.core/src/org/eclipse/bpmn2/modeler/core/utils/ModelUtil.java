@@ -958,12 +958,11 @@ public class ModelUtil {
 		
 		if (valueChanged) {
 			try {
-				InsertionAdapter insertionAdapter = AdapterUtil.adapt(value, InsertionAdapter.class);
-				if (insertionAdapter!=null) {
+				if (value instanceof EObject) {
 					// make sure the new object is added to its control first
 					// so that it inherits the control's Resource and EditingDomain
 					// before we try to change its value.
-					insertionAdapter.execute();
+					InsertionAdapter.executeIfNeeded((EObject)value);
 				}
 				
 				if (isEmpty(value)){

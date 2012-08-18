@@ -36,6 +36,7 @@ public class TableColumn extends ColumnTableProvider.Column implements ILabelPro
 	// The column cell editor
 	protected CellEditor cellEditor = null;
 	protected boolean editable = true;
+	protected String headerText = null;
 
 	public TableColumn(EObject o, EStructuralFeature f) {
 		this(null,o,f);
@@ -46,6 +47,16 @@ public class TableColumn extends ColumnTableProvider.Column implements ILabelPro
 		object = o;
 		feature = f;
 	}
+
+	public TableColumn(EObject o, String f) {
+		this(null,o,f);
+	}
+
+	public TableColumn(AbstractListComposite abstractListComposite, EObject o, String f) {
+		this.listComposite = abstractListComposite;
+		object = o;
+		feature = o.eClass().getEStructuralFeature(f);
+	}
 	
 	public void setOwner(AbstractListComposite abstractListComposite) {
 		this.listComposite = abstractListComposite;
@@ -55,8 +66,15 @@ public class TableColumn extends ColumnTableProvider.Column implements ILabelPro
 		tableViewer = t;
 	}
 	
+	public void setHeaderText(String text) {
+		headerText = text;
+	}
+	
 	@Override
 	public String getHeaderText() {
+		if (headerText!=null)
+			return headerText;
+		
 		String text = "";
 		if (feature!=null) {
 			if (feature.eContainer() instanceof EClass) {

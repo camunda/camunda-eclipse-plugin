@@ -582,6 +582,7 @@ public class ModelHandler {
 		FlowElementsContainer container = getFlowElementContainer(target);
 		if (container.getLaneSets().isEmpty()) {
 			LaneSet laneSet = create(LaneSet.class);
+			laneSet.setName("Lane Set "+ModelUtil.getIDNumber( laneSet.getId() ));
 			container.getLaneSets().add(laneSet);
 		}
 		container.getLaneSets().get(0).getLanes().add(lane);

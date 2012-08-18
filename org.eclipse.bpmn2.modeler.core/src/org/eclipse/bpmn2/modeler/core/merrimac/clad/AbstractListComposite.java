@@ -14,6 +14,7 @@
 package org.eclipse.bpmn2.modeler.core.merrimac.clad;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.bpmn2.modeler.core.Activator;
@@ -22,11 +23,13 @@ import org.eclipse.bpmn2.modeler.core.merrimac.providers.TableCursor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.emf.edit.provider.INotifyChangedListener;
@@ -702,12 +705,71 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase i
 	    return section;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void notifyChanged(Notification notification) {
-		if (this.businessObject == notification.getNotifier() &&
-				this.feature == notification.getFeature()) {
-			final EList<EObject> list = (EList<EObject>)businessObject.eGet(feature);
-			tableViewer.setInput(list);
+		EList<EObject> table = (EList<EObject>)businessObject.eGet(feature);
+		Object n = notification.getNotifier();
+		if (table.contains(n)) {
+			tableViewer.setInput(table);
+			return; // quick exit before the exhaustive search that follows
 		}
+		if (n instanceof EObject) {
+			HashSet<Object> visited = new HashSet<Object>(); 
+			if (refreshIfNeededRecursive((EObject)n, table, visited))
+				return;
+		}
+	}
+	
+	@SuppressWarnings("rawtypes")
+	private boolean refreshIfNeededRecursive(EObject value, EList<EObject> table, HashSet<Object> visited) {
+		for (EStructuralFeature f : value.eClass().getEAllStructuralFeatures()) {
+			try {
+				Object v = value.eGet(f);
+				if (!visited.contains(v)) {
+					visited.add(v);
+					if (v instanceof List) {
+						if (!((List)v).isEmpty())
+							if (refreshIfNeededRecursive((List)v, table, visited))
+								return true;
+					}
+					else if (v instanceof EObject) {
+						if (refreshIfNeeded((EObject)v, table))
+							return true;
+					}
+				}
+			}
+			catch (Exception e) {
+				// some getters may throw exceptions - ignore those
+			}
+		}
+		return refreshIfNeeded(value, table);
+	}
+
+	static int count = 0;
+	@SuppressWarnings("rawtypes")
+	private boolean refreshIfNeededRecursive(List list, EList<EObject> table, HashSet<Object> visited) {
+		for (Object v : list) {
+			if (!visited.contains(v)) {
+				visited.add(v);
+				if (v instanceof List) {
+					if (refreshIfNeededRecursive((List)v, table, visited))
+						return true;
+				}
+				else if (v instanceof EObject) {
+					if (refreshIfNeededRecursive((EObject)v, table, visited))
+						return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private boolean refreshIfNeeded(EObject value, EList<EObject> table) {
+		if (table.contains(value)) {
+			tableViewer.setInput(table);
+			return true;
+		}
+		return false;
 	}
 }
