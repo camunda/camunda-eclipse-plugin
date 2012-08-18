@@ -25,6 +25,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 public class MessagePropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
 	static {
 		PropertiesCompositeFactory.register(Message.class, MessageDetailComposite.class);
+		PropertiesCompositeFactory.register(Message.class, MessageListComposite.class);
 		PropertiesCompositeFactory.register(Property.class, ItemAwareElementDetailComposite.class);
 	}
 

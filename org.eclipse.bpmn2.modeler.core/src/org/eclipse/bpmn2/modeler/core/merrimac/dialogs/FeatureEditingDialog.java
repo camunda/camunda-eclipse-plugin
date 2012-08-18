@@ -18,10 +18,14 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
+import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.emf.transaction.RecordingCommand;
 
 public class FeatureEditingDialog extends ObjectEditingDialog {
 
@@ -42,7 +46,7 @@ public class FeatureEditingDialog extends ObjectEditingDialog {
 			ModelSubclassSelectionDialog dialog = new ModelSubclassSelectionDialog(editor, object, feature);
 			if (dialog.open()==Window.OK){
 				eclass = (EClass)dialog.getResult()[0];
-				newObject = ModelUtil.createFeature(object, feature, eclass);
+				newObject = createNewObject(object, feature, eclass);
 			}
 			else
 				cancel = true;
@@ -51,6 +55,23 @@ public class FeatureEditingDialog extends ObjectEditingDialog {
 				eclass.getInstanceClass(), parent, SWT.NONE);
 		
 		return content;
+	}
+	
+	protected EObject createNewObject(final EObject object, final EStructuralFeature feature, final EClass eclass) {
+		final EObject[] result = new EObject[1];
+		final TransactionalEditingDomain domain = (TransactionalEditingDomainImpl)editor.getEditingDomain();
+		if (domain!=null) {
+			domain.getCommandStack().execute(new RecordingCommand(domain) {
+				@Override
+				protected void doExecute() {
+					result[0] = ModelUtil.createFeature(object, feature, eclass);
+				}
+			});
+		}
+		else {
+			result[0] = ModelUtil.createFeature(object, feature, eclass);
+		}
+		return result[0];
 	}
 	
 	public void aboutToOpen() {

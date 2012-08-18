@@ -241,12 +241,20 @@ public class ListAndDetailCompositeBase extends Composite implements ResourceSet
 				if (c instanceof Composite) {
 					getAllChildWidgets((Composite)c,kids);
 				}
-				if (!c.isDisposed())
-					kids.add(c);
+				if (!c.isDisposed() &&
+					c.getData(IConstants.NOTIFY_CHANGE_LISTENER_KEY) instanceof INotifyChangedListener) {
+						kids.add(c);
+				}
 			}
 		}
 	}
 	
+	// TODO: Figure out a broader method of detecting model changes.
+	// This listener is only called AFTER a transaction has committed,
+	// it will not receive notification of model changes inside a txn.
+	// So, while this works in the Property Sheet pages, things like
+	// the ObjectEditingDialog (which makes changes in the current txn)
+	// will not cause other widgets in the dialog to be notified.
 	@Override
 	public void resourceSetChanged(ResourceSetChangeEvent event) {
 		final List<Notification> notifications = new ArrayList<Notification>();
@@ -267,7 +275,7 @@ public class ListAndDetailCompositeBase extends Composite implements ResourceSet
 		Display.getDefault().asyncExec( new Runnable() {
 			public void run() {
 				List<Control>kids = new ArrayList<Control>();
-				Composite parent = ListAndDetailCompositeBase.this.getParent();
+				Composite parent = ListAndDetailCompositeBase.this;
 				AbstractBpmn2PropertySection section = ListAndDetailCompositeBase.this.getPropertySection();
 				if (section!=null && section.getTabbedPropertySheetPage()!=null) {
 					parent = (Composite)section.getTabbedPropertySheetPage().getControl();

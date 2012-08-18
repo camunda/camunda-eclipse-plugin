@@ -254,7 +254,7 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 			int columnIndex;
 			
 			public NamespacesTableColumn(EObject object, int columnIndex) {
-				super(object,null);
+				super(object,(EStructuralFeature)null);
 				this.columnIndex = columnIndex;
 			}
 
@@ -296,7 +296,7 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 				columnProvider = new ListCompositeColumnProvider(this);
 				
 				// add a namespace prefix column that does NOT come from the Import object
-				TableColumn tableColumn = new TableColumn(object,null) {
+				TableColumn tableColumn = new TableColumn(object,(EStructuralFeature)null) {
 					@Override
 					public String getHeaderText() {
 						return "Namespace Prefix";

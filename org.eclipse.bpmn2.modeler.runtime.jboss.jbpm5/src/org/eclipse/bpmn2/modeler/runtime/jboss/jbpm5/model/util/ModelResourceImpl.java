@@ -25,8 +25,10 @@ import java.util.Map;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.CallableElement;
+import org.eclipse.bpmn2.Interface;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
@@ -225,13 +227,18 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 		
 		@Override
 		protected void setValueFromId(EObject object, EReference eReference, String ids) {
-			// the CalledElementRef in CallActivity is just an ID. This means we need
-			// to create a CallableElement which is simply a proxy, not a real object.
 			if (object instanceof CallActivity) {
+				// the CalledElementRef in CallActivity is just an ID. This means we need
+				// to create a CallableElement which is simply a proxy, not a real object.
 				CallActivity ca = (CallActivity)object;
 				CallableElement ce = Bpmn2ModelerFactory.create(CallableElement.class);
 				((InternalEObject)ce).eSetProxyURI(URI.createURI(ids));
 				ca.setCalledElementRef(ce);
+			}
+			else if (object instanceof Interface && eReference==Bpmn2Package.eINSTANCE.getInterface_ImplementationRef()) {
+				// the Interface.implementationRef is yet again just a string
+				Interface iface = (Interface)object;
+				iface.setImplementationRef( ModelUtil.createStringWrapper(ids) );
 			}
 			else
 				super.setValueFromId(object, eReference, ids);

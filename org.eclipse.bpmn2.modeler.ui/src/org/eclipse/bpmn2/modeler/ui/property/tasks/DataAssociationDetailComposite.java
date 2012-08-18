@@ -81,7 +81,7 @@ import org.eclipse.ui.forms.widgets.Section;
  *    o Copy the Data Association “sourceRef” value into the “targetRef.” Only one
  *      sourceRef parameter is allowed in this case.					
  */
-public class DataAssociationDetailComposite extends DefaultDetailComposite implements IResourceChangeListener {
+public class DataAssociationDetailComposite extends DefaultDetailComposite {
 	
 	public enum MapType {
 		None,
@@ -282,13 +282,20 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 		}
 		return MapType.None;
 	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
-	 */
-	@Override
-	public void resourceChanged(IResourceChangeEvent event) {
-//		updateWidgets();
+	
+	private void redrawParent() {
+		// this DetailComposite should be sitting in a SashForm created
+		// by a ListComposite. layout this thing first
+		layout();
+		// and then search for the DetailComposite that contains the list 
+		Composite parent = getParent();
+		while (parent!=null) {
+			parent = parent.getParent();
+			if (parent instanceof AbstractDetailComposite) {
+				parent.layout();
+				break;
+			}
+		}
 	}
 
 	private void updateWidgets() {
@@ -407,7 +414,7 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 						showAdvancedMappingWidgets(false);
 
 						showPropertyWidgets(true);
-						redrawPage();
+						redrawParent();
 					}
 				}
 			});
@@ -426,7 +433,7 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 						showAdvancedMappingWidgets(false);
 
 						showTransformationWidgets(true);
-						redrawPage();
+						redrawParent();
 					}
 				}
 			});
@@ -445,7 +452,7 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 						showAdvancedMappingWidgets(false);
 
 						showExpressionWidgets(true);
-						redrawPage();
+						redrawParent();
 					}
 				}
 			});
@@ -464,7 +471,7 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 						showExpressionWidgets(false);
 						
 						showAdvancedMappingWidgets(true);
-						redrawPage();
+						redrawParent();
 					}
 				}
 			});
@@ -531,8 +538,6 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 					};
 					propertyDetailsComposite.setBusinessObject(association);
 					propertyDetailsComposite.setTitle("Properties");
-					// Oy vey! Fix this!
-					getParent().getParent().getParent().getParent().getParent().layout();
 				}
 			}
 			else {
@@ -593,7 +598,7 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 				}
 				transformationDetailsComposite.setBusinessObject(transformation);
 				transformationDetailsComposite.setTitle("Transformation");
-				transformationDetailsComposite.redrawPage();
+//				transformationDetailsComposite.redrawPage();
 	
 			}
 			else {
@@ -665,7 +670,7 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 				}
 				expressionDetailsComposite.setBusinessObject(expression);//association.getexpression());
 				expressionDetailsComposite.setTitle("Expression");
-				expressionDetailsComposite.redrawPage();
+//				expressionDetailsComposite.redrawPage();
 			}
 			else {
 				if (expressionComposite!=null) {
@@ -717,7 +722,7 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite imple
 				}
 				transformationDetailsComposite.setBusinessObject(transformation);//association.getTransformation());
 				transformationDetailsComposite.setTitle("Transformation");
-				transformationDetailsComposite.redrawPage();
+//				transformationDetailsComposite.redrawPage();
 				
 				if (assignmentsTable!=null)
 					assignmentsTable.dispose();
