@@ -18,6 +18,8 @@ import java.util.Hashtable;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.modeler.ui.wizards.Bpmn2DiagramEditorInput;
@@ -84,19 +86,19 @@ import org.w3c.dom.Node;
  * "view only".
  * 
  * Future versions will support multiple diagrams per .bpmn file with the ability to add
- * and remove pages containing different diagram types. It should be possible for the user
+ * and remove bpmnDiagrams containing different diagram types. It should be possible for the user
  * to create a single file that contains a mix of Process, Collaboration and Choreography
  * diagrams. Whether or not these types of files are actually deployable and/or executable
  * is another story ;)
  */
 public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 
-	BPMN2Editor designEditor;
+	DesignEditor designEditor;
 	StructuredTextEditor sourceViewer;
 	CTabFolder tabFolder;
 	int defaultTabHeight;
 	int activePage = 0;
-	List<BPMNDiagram> pages = new ArrayList<BPMNDiagram>();
+	List<BPMNDiagram> bpmnDiagrams = new ArrayList<BPMNDiagram>();
 	
 	/**
 	 * 
@@ -195,6 +197,10 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 				}
 				
 				return pictogramElement;
+			}
+			
+			public void dispose() {
+				System.out.println("MultiPageEditor PartSite dispose");
 			}
 		};
 	}
@@ -301,6 +307,9 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 			Bpmn2DiagramEditorInput input = (Bpmn2DiagramEditorInput)designEditor.getEditorInput();
 			input.setBpmnDiagram(bpmnDiagram);
 			addPage(pageIndex, designEditor, input);
+			CTabItem oldItem = tabFolder.getItem(pageIndex-1);
+			CTabItem newItem = tabFolder.getItem(pageIndex);
+			newItem.setControl( oldItem.getControl() );
 			setPageText(pageIndex,bpmnDiagram.getName());
 
 			this.setActivePage(pageIndex);
@@ -308,6 +317,19 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	protected void removeDesignPage(BPMNDiagram bpmnDiagram) {
+		int pageIndex = bpmnDiagrams.indexOf(bpmnDiagram);
+		if (pageIndex>0) {
+			IEditorPart editor = getEditor(pageIndex);
+			if (editor instanceof DesignEditor) {
+				((DesignEditor)editor).disposeBpmnDiagram(bpmnDiagram);
+			}
+			CTabItem item = tabFolder.getItem(pageIndex);
+			item.setControl(null);
+			removePage(pageIndex);
 		}
 	}
 	
@@ -335,22 +357,22 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 	public void addPage(int pageIndex, IEditorPart editor, IEditorInput input)
 			throws PartInitException {
 		super.addPage(pageIndex,editor,input);
-		if (editor instanceof BPMN2Editor) {
-			pages.add(pageIndex,((BPMN2Editor)editor).getBpmnDiagram());
+		if (editor instanceof DesignEditor) {
+			bpmnDiagrams.add(pageIndex,((DesignEditor)editor).getBpmnDiagram());
 		}
 	}
 	
 	@Override
 	public void removePage(int pageIndex) {
 		Object page = tabFolder.getItem(pageIndex).getData();
-		if (page instanceof EditorPart) {
-			// make sure the editor gets disposed - neither CTabFolder nor super does this for us!
-			((EditorPart)page).dispose();
-		}
+//		if (page instanceof EditorPart && pageIndex==0) {
+//			// make sure the editor gets disposed - neither CTabFolder nor super does this for us!
+//			((EditorPart)page).dispose();
+//		}
 		super.removePage(pageIndex);
 		updateTabs();
-		if (page instanceof BPMN2Editor) {
-			pages.remove(pageIndex);
+		if (page instanceof DesignEditor) {
+			bpmnDiagrams.remove(pageIndex);
 		}
 	}
 
@@ -359,9 +381,9 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 		super.pageChange(newPageIndex);
 
 		IEditorPart editor = getEditor(newPageIndex);
-		if (editor instanceof BPMN2Editor) {
-			BPMNDiagram bpmnDiagram = pages.get(newPageIndex);
-			((BPMN2Editor)editor).setBpmnDiagram(bpmnDiagram);
+		if (editor instanceof DesignEditor) {
+			BPMNDiagram bpmnDiagram = bpmnDiagrams.get(newPageIndex);
+			((DesignEditor)editor).setBpmnDiagram(bpmnDiagram);
 		}
 	}
 
@@ -425,16 +447,26 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 		
 		BPMN2MultiPageEditor multipageEditor;
 		ResourceSetListener resourceSetListener = null;
+		private BPMNDiagram disposedBpmnDiagram = null;
 		
 		public DesignEditor(BPMN2MultiPageEditor mpe) {
 			super();
 			multipageEditor = mpe;
 		}
 		
+		public void disposeBpmnDiagram(BPMNDiagram bpmnDiagram) {
+			this.disposedBpmnDiagram = bpmnDiagram;
+		}
+
 		public void dispose() {
-			getEditingDomain().removeResourceSetListener(resourceSetListener);
-			resourceSetListener = null;
-			super.dispose();
+			if (disposedBpmnDiagram==null) {
+				getEditingDomain().removeResourceSetListener(resourceSetListener);
+				resourceSetListener = null;
+				super.dispose();
+			}
+			else {
+				disposedBpmnDiagram = null;
+			}
 		}
 		
 		@Override
@@ -455,15 +487,62 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 					@Override
 					public void resourceSetChanged(ResourceSetChangeEvent event) {
 						for (Notification n : event.getNotifications()) {
-							if (n.getNewValue() instanceof BPMNPlane && n.getNotifier() instanceof BPMNDiagram) {
-								final BPMNDiagram d = (BPMNDiagram)n.getNotifier();
-								Display.getCurrent().asyncExec( new Runnable() {
-									@Override
-									public void run() {
-										multipageEditor.addDesignPage(d);
-									}
-								});
-								break;
+							int et = n.getEventType();
+							Object notifier = n.getNotifier();
+							Object newValue = n.getNewValue(); 
+							Object oldValue = n.getOldValue();
+							Object feature = n.getFeature();
+							
+							if (et==Notification.ADD || et==Notification.REMOVE) {
+								System.out.print("event: "+et+"\t");
+								if (notifier instanceof EObject) {
+									System.out.print("notifier: $"+((EObject)notifier).eClass().getName());
+								}
+								else
+									System.out.print("notifier: "+notifier);
+							}
+							
+							if (et==Notification.ADD) {
+								if (newValue instanceof EObject) {
+									System.out.println("\t\tvalue:    "+((EObject)newValue).eClass().getName());
+								}
+								else
+									System.out.println("\t\tvalue:    "+newValue);
+								
+								if (   notifier instanceof Definitions
+									&& newValue instanceof BPMNDiagram
+									&& feature == Bpmn2Package.eINSTANCE.getDefinitions_Diagrams())
+								{
+									final BPMNDiagram bpmnDiagram = (BPMNDiagram)newValue;
+									Display.getCurrent().asyncExec( new Runnable() {
+										@Override
+										public void run() {
+											multipageEditor.addDesignPage(bpmnDiagram);
+										}
+									});
+									break;
+								}
+							}
+							else if (et==Notification.REMOVE) {
+								if (oldValue instanceof EObject) {
+									System.out.println("\t\tvalue:    "+((EObject)oldValue).eClass().getName());
+								}
+								else
+									System.out.println("\t\tvalue:    "+oldValue);
+
+								if (   notifier instanceof Definitions
+									&& oldValue instanceof BPMNDiagram
+									&& feature == Bpmn2Package.eINSTANCE.getDefinitions_Diagrams())
+								{
+									final BPMNDiagram bpmnDiagram = (BPMNDiagram)oldValue;
+									Display.getCurrent().asyncExec( new Runnable() {
+										@Override
+										public void run() {
+											multipageEditor.removeDesignPage(bpmnDiagram);
+										}
+									});
+									break;
+								}								
 							}
 						}
 					}
@@ -568,7 +647,7 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 		}
 	}
 
-	public BPMN2Editor getDesignEditor() {
+	public DesignEditor getDesignEditor() {
 		return designEditor;
 	}
 }

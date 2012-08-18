@@ -539,7 +539,12 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	public ModelHandler getModelHandler() {
 		return modelHandler;
 	}
-
+	
+	public void createPartControl(Composite parent) {
+		if (getGraphicalViewer()==null)
+			super.createPartControl(parent);
+	}
+	
 	public BPMNDiagram getBpmnDiagram() {
 		if (bpmnDiagram==null)
 			bpmnDiagram = getModelHandler().getDefinitions().getDiagrams().get(0);
@@ -552,8 +557,8 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	}
 	
 	public void setBpmnDiagram(final BPMNDiagram bpmnDiagram) {
-		if (this.bpmnDiagram == bpmnDiagram)
-			return;
+//		if (this.bpmnDiagram == bpmnDiagram)
+//			return;
 		
 		GraphicalViewer viewer = mapDiagramToViewer.get(bpmnDiagram);
 		// do we need to create a new Diagram or is this already in the model?
@@ -594,12 +599,16 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		getRefreshBehavior().initRefresh();
 		setPictogramElementsForSelection(null);
 		getDiagramTypeProvider().init(diagram, this);
-		if (viewer!=null)
-			setGraphicalViewer(viewer);
+//		if (viewer!=null)
+//			setGraphicalViewer(viewer);
+		getGraphicalViewer().setContents(diagram);
 		
 		refreshContent();
 		// remember this for later
 		this.bpmnDiagram = bpmnDiagram;
+	}
+	
+	public void disposeBpmnDiagram(BPMNDiagram bpmnDiagram) {
 	}
 	
 	@Override

@@ -185,7 +185,9 @@ public class ListAndDetailCompositeBase extends Composite implements ResourceSet
 	}
 
 	protected boolean isModelObjectEnabled(EClass eclass) {
-		return isModelObjectEnabled(eclass,null);
+		if (eclass!=null)
+			return isModelObjectEnabled(eclass,null);
+		return true;
 	}
 
 	public TargetRuntime getTargetRuntime() {
