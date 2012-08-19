@@ -20,8 +20,11 @@ import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractBpmn2PropertySection;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractListComposite;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultDetailComposite.AbstractPropertiesProvider;
 import org.eclipse.bpmn2.modeler.ui.property.events.CommonEventDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.events.EventDefinitionsListComposite;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -49,34 +52,31 @@ public class JbpmCommonEventDetailComposite extends CommonEventDetailComposite {
 	}
 
 	@Override
-	public void cleanBindings() {
-		super.cleanBindings();
-		eventsTable = null;
-	}
+	protected AbstractListComposite bindList(EObject object, EStructuralFeature feature, EClass listItemClass) {
+		if ("eventDefinitions".equals(feature.getName())) {
+			eventsTable = new EventDefinitionsListComposite(this, (Event)object) {
 
-	@Override
-	public void createBindings(EObject be) {
-		super.createBindings(be);
-		eventsTable = new EventDefinitionsListComposite(this, (Event)be) {
-
-			@Override
-			protected EObject addListItem(EObject object, EStructuralFeature feature) {
-				List<EventDefinition> eventDefinitions = null;
-				if (event instanceof ThrowEvent)
-					eventDefinitions = ((ThrowEvent)event).getEventDefinitions();
-				else if  (event instanceof CatchEvent)
-					eventDefinitions = ((CatchEvent)event).getEventDefinitions();
-					
-				if (eventDefinitions.size()>0) {
-					MessageDialog.openError(getShell(), "Not Supported",
-						"Can not add more than one Event Definition"
-					);
-					return null;
+				@Override
+				protected EObject addListItem(EObject object, EStructuralFeature feature) {
+					List<EventDefinition> eventDefinitions = null;
+					if (event instanceof ThrowEvent)
+						eventDefinitions = ((ThrowEvent)event).getEventDefinitions();
+					else if  (event instanceof CatchEvent)
+						eventDefinitions = ((CatchEvent)event).getEventDefinitions();
+						
+					if (eventDefinitions.size()>0) {
+						MessageDialog.openError(getShell(), "Not Supported",
+							"Can not add more than one Event Definition"
+						);
+						return null;
+					}
+					return super.addListItem(object, feature);
 				}
-				return super.addListItem(object, feature);
-			}
-		};
-		eventsTable.bindList(be, getFeature(be, "eventDefinitions"));
-		eventsTable.setTitle("Event Definitions");
+			};
+			eventsTable.bindList(object, feature);
+			eventsTable.setTitle("Event Definitions");
+			return eventsTable;
+		}
+		return super.bindList(object, feature, listItemClass);
 	}
 }
