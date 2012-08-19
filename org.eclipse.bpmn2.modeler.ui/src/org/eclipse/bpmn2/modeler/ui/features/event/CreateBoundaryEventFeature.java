@@ -50,13 +50,20 @@ public class CreateBoundaryEventFeature extends AbstractBpmn2CreateFeature<Bound
 
 	@Override
 	public Object[] create(ICreateContext context) {
+		BoundaryEvent event = createBusinessObject(context);
+		addGraphicalRepresentation(context, event);
+		return new Object[] { event };
+	}
+	
+	@Override
+	public BoundaryEvent createBusinessObject(ICreateContext context) {
 		BoundaryEvent event = null;
 		try {
 			Activity activity = (Activity) getBusinessObjectForPictogramElement(context.getTargetContainer());
 			ModelHandler handler = ModelHandler.getInstance(getDiagram());
-			event = createBusinessObject(context);
+			event = super.createBusinessObject(context);
 			event.setAttachedToRef(activity);
-			event.setName("Boundary event");
+			event.setName("");
 			event.setCancelActivity(true); // by default is interrupting
 			Object bo = getBusinessObjectForPictogramElement(context.getTargetContainer());
 			
@@ -74,8 +81,7 @@ public class CreateBoundaryEventFeature extends AbstractBpmn2CreateFeature<Bound
 		} catch (IOException e) {
 			Activator.logError(e);
 		}
-		addGraphicalRepresentation(context, event);
-		return new Object[] { event };
+		return event;
 	}
 
 	@Override

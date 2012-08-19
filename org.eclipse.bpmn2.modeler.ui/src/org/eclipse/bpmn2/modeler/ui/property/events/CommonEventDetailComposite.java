@@ -23,10 +23,14 @@ import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractDetailComposite;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractListComposite;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultDetailComposite;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultDetailComposite.AbstractPropertiesProvider;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.swt.widgets.Composite;
 
-public class CommonEventDetailComposite extends AbstractDetailComposite {
+public class CommonEventDetailComposite extends DefaultDetailComposite {
 
 	protected AbstractListComposite inputTable;
 	protected AbstractListComposite outputTable;
@@ -51,48 +55,59 @@ public class CommonEventDetailComposite extends AbstractDetailComposite {
 		eventsTable = null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2DetailComposite
-	 * #createBindings(org.eclipse.emf.ecore.EObject)
-	 */
 	@Override
-	public void createBindings(EObject be) {
-		
-		// Attributes
-		if (be instanceof StartEvent) {
-			bindAttribute(be,"isInterrupting");
+	public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
+		if (propertiesProvider==null) {
+			propertiesProvider = new AbstractPropertiesProvider(object) {
+				String[] properties = new String[] {
+						"isInterrupting",
+						"parallelMultiple",
+						"cancelActivity",
+						"eventDefinitions",
+						"dataInputs",
+						"dataOutputs",
+						"properties"
+				};
+				
+				@Override
+				public String[] getProperties() {
+					return properties; 
+				}
+			};
 		}
-		if (be instanceof CatchEvent) {
-			bindAttribute(be,"parallelMultiple");
-		}
-		if (be instanceof BoundaryEvent) {
-			bindAttribute(be,"cancelActivity");
-		}
-		
-		// Lists
-		if (be instanceof Event) {
-			bindList(be,"properties");
-		}
-		if (be instanceof CatchEvent || be instanceof ThrowEvent) {
-			eventsTable = new EventDefinitionsListComposite(this, (Event)be);
-			eventsTable.bindList(be, getFeature(be, "eventDefinitions"));
-			eventsTable.setTitle("Event Definitions");
-
-			if (be instanceof ThrowEvent) {
-				ThrowEvent throwEvent = (ThrowEvent)be;
-				inputTable = new DataInputsListComposite(this, throwEvent);
-				inputTable.bindList(be, getFeature(throwEvent, "dataInputs"));
-				inputTable.setTitle("Input Parameters");
-			}
-			else if (be instanceof CatchEvent) {
-				CatchEvent catchEvent = (CatchEvent)be;
-				outputTable = new DataOutputsListComposite(this, catchEvent);
-				outputTable.bindList(catchEvent, getFeature(catchEvent, "dataOutputs"));
-				outputTable.setTitle("Output Parameters");
-			}
-		}
+		return propertiesProvider;
 	}
+
+	@Override
+	protected AbstractListComposite bindList(EObject object, EStructuralFeature feature, EClass listItemClass) {
+		if (object instanceof CatchEvent || object instanceof ThrowEvent) {
+			if ("eventDefinitions".equals(feature.getName())) {
+				eventsTable = new EventDefinitionsListComposite(this, (Event)object);
+				eventsTable.bindList(object, feature);
+				eventsTable.setTitle("Event Definitions");
+				return eventsTable;
+			}
+			if ("dataInputs".equals(feature.getName())) {
+				if (object instanceof ThrowEvent) {
+					ThrowEvent throwEvent = (ThrowEvent)object;
+					inputTable = new DataInputsListComposite(this, throwEvent);
+					inputTable.bindList(object, feature);
+					inputTable.setTitle("Input Parameters");
+					return inputTable;
+				}
+			}
+			if ("dataOutputs".equals(feature.getName())) {
+				if (object instanceof CatchEvent) {
+					CatchEvent catchEvent = (CatchEvent)object;
+					outputTable = new DataOutputsListComposite(this, catchEvent);
+					outputTable.bindList(catchEvent, feature);
+					outputTable.setTitle("Output Parameters");
+					return outputTable;
+				}
+			}
+			return null;
+		}
+		return super.bindList(object, feature, listItemClass);
+	}
+	
 }

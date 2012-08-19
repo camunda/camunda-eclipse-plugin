@@ -29,6 +29,7 @@ import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.features.ConnectionFeatureContainer;
+import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.bpmn2.modeler.core.features.DefaultDeleteBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.DefaultRemoveBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.FeatureContainer;
@@ -341,11 +342,15 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 		
 		EObject object = getApplyObject(context);
 		if (object!=null) {
-			BPMN2Editor editor = (BPMN2Editor)getDiagramTypeProvider().getDiagramEditor();;
-			TargetRuntime rt = editor.getTargetRuntime();
-			FeatureContainerDescriptor fcd = rt.getFeatureContainer(object.eClass());
-			if (fcd!=null)
-				return fcd.getFeatureContainer();
+			if (context.getProperty(ContextConstants.LABEL_CONTEXT) == null
+					|| !((Boolean) context.getProperty(ContextConstants.LABEL_CONTEXT)))
+			{
+				BPMN2Editor editor = (BPMN2Editor)getDiagramTypeProvider().getDiagramEditor();;
+				TargetRuntime rt = editor.getTargetRuntime();
+				FeatureContainerDescriptor fcd = rt.getFeatureContainer(object.eClass());
+				if (fcd!=null)
+					return fcd.getFeatureContainer();
+			}
 		}
 		
 		Object id = CustomTaskFeatureContainer.getId(context); 

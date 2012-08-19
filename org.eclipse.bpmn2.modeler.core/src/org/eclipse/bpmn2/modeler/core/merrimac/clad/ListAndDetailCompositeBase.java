@@ -278,9 +278,13 @@ public class ListAndDetailCompositeBase extends Composite implements ResourceSet
 			public void run() {
 				List<Control>kids = new ArrayList<Control>();
 				Composite parent = ListAndDetailCompositeBase.this;
-				AbstractBpmn2PropertySection section = ListAndDetailCompositeBase.this.getPropertySection();
-				if (section!=null && section.getTabbedPropertySheetPage()!=null) {
-					parent = (Composite)section.getTabbedPropertySheetPage().getControl();
+				try {
+					AbstractBpmn2PropertySection section = ListAndDetailCompositeBase.this.getPropertySection();
+					if (section!=null && section.getTabbedPropertySheetPage()!=null) {
+						parent = (Composite)section.getTabbedPropertySheetPage().getControl();
+					}
+				}
+				catch (Exception e) {
 				}
 				getAllChildWidgets(parent, kids);
 				for (Notification n : notifications) {
