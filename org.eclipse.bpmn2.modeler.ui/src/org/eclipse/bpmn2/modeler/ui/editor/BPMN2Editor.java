@@ -73,6 +73,7 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain.Lifecycle;
 import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
 import org.eclipse.emf.workspace.util.WorkspaceSynchronizer;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -140,7 +141,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	
 	private Bpmn2Preferences preferences;
 	private TargetRuntime targetRuntime;
-	private Hashtable<BPMNDiagram, GraphicalViewer> mapDiagramToViewer = new Hashtable<BPMNDiagram, GraphicalViewer>();
+//	private Hashtable<BPMNDiagram, GraphicalViewer> mapDiagramToViewer = new Hashtable<BPMNDiagram, GraphicalViewer>();
 
 	protected DiagramEditorAdapter editorAdapter;
 	
@@ -549,37 +550,42 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		if (bpmnDiagram==null)
 			bpmnDiagram = getModelHandler().getDefinitions().getDiagrams().get(0);
 
-		if (bpmnDiagram!=null) {
-			GraphicalViewer viewer = getGraphicalViewer();
-			mapDiagramToViewer.put(bpmnDiagram, viewer);
-		}
+//		if (bpmnDiagram!=null) {
+//			GraphicalViewer viewer = getGraphicalViewer();
+//			mapDiagramToViewer.put(bpmnDiagram, viewer);
+//		}
 		return bpmnDiagram;
 	}
 	
 	public void setBpmnDiagram(final BPMNDiagram bpmnDiagram) {
-//		if (this.bpmnDiagram == bpmnDiagram)
-//			return;
+		IDiagramTypeProvider dtp = getDiagramTypeProvider();
 		
-		GraphicalViewer viewer = mapDiagramToViewer.get(bpmnDiagram);
 		// do we need to create a new Diagram or is this already in the model?
 		Diagram oldDiagram = null;
 		Diagram diagram = null;
-		final Resource resource = getDiagramTypeProvider().getDiagram().eResource();
-		for (EObject o : resource.getContents()) {
-			if (o instanceof Diagram) {
-				Diagram d = (Diagram)o;
-				if (BusinessObjectUtil.getFirstElementOfType(d, BPMNDiagram.class) == bpmnDiagram) {
-					oldDiagram = d;
-					break;
+		ResourceSet resourceSet = getResourceSet();
+		if (resourceSet!=null) {
+			for (Resource r : resourceSet.getResources()) {
+				for (EObject o : r.getContents()) {
+					if (o instanceof Diagram) {
+						Diagram d = (Diagram)o;
+						if (BusinessObjectUtil.getFirstElementOfType(d, BPMNDiagram.class) == bpmnDiagram) {
+							oldDiagram = d;
+							break;
+						}
+					}
 				}
+				if (oldDiagram!=null)
+					break;
 			}
 		}
 		
 		if (oldDiagram==null) {
 			// create a new one
-			String typeId = getDiagramTypeProvider().getDiagram().getDiagramTypeId();
+			String typeId = dtp.getDiagram().getDiagramTypeId();
 			final Diagram newDiagram = Graphiti.getCreateService().createDiagram(typeId, bpmnDiagram.getName(), true);
-			final IFeatureProvider featureProvider = getDiagramTypeProvider().getFeatureProvider();
+			final IFeatureProvider featureProvider = dtp.getFeatureProvider();
+			final Resource resource = dtp.getDiagram().eResource();
 			TransactionalEditingDomain domain = getEditingDomain();
 			domain.getCommandStack().execute(new RecordingCommand(domain) {
 				protected void doExecute() {
@@ -598,7 +604,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		// set the new Diagram in the DTP and refresh graphical viewer
 		getRefreshBehavior().initRefresh();
 		setPictogramElementsForSelection(null);
-		getDiagramTypeProvider().init(diagram, this);
+		dtp.init(diagram, this);
 //		if (viewer!=null)
 //			setGraphicalViewer(viewer);
 		getGraphicalViewer().setContents(diagram);

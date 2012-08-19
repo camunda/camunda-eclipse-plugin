@@ -22,6 +22,7 @@ import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.modeler.ui.util.PropertyUtil;
 import org.eclipse.bpmn2.modeler.ui.wizards.Bpmn2DiagramEditorInput;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.command.Command;
@@ -55,11 +56,13 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabFolder2Listener;
 import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
@@ -314,6 +317,8 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 
 			this.setActivePage(pageIndex);
 			updateTabs();
+			
+//			dumpTabWidgets();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -323,13 +328,21 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 	protected void removeDesignPage(BPMNDiagram bpmnDiagram) {
 		int pageIndex = bpmnDiagrams.indexOf(bpmnDiagram);
 		if (pageIndex>0) {
+			// go back to "Design" page - the only page that can't be removed
+			setActivePage(0);
+			
 			IEditorPart editor = getEditor(pageIndex);
 			if (editor instanceof DesignEditor) {
 				((DesignEditor)editor).disposeBpmnDiagram(bpmnDiagram);
 			}
-			CTabItem item = tabFolder.getItem(pageIndex);
-			item.setControl(null);
+			
+			// need to manage this ourselves so that the CTabFolder doesn't
+			// dispose our editor site (a child of the CTabItem.control)
+			tabFolder.getItem(pageIndex).setControl(null);
+			
 			removePage(pageIndex);
+			
+			tabFolder.getSelection().getControl().setVisible(true);
 		}
 	}
 	
