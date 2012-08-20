@@ -150,6 +150,8 @@ public class ImageProvider extends AbstractImageProvider {
 	public static final String IMG_16_ADD_PARTICIPANT = PREFIX + "addparticipant" + dot16;
 	public static final String IMG_16_ADD_MESSAGE = PREFIX + "addmessage" + dot16;
 	public static final String IMG_16_ROTATE = PREFIX + "rotate" + dot16;
+	public static final String IMG_16_WHITEBOX = PREFIX + "whitebox" + dot16;
+	public static final String IMG_16_BLACKBOX = PREFIX + "blackbox" + dot16;
 
 	public final String IMG_16_PROPERTIES = "org.eclipse.bpmn2.modeler.icons." + "properties" + dot16; //$NON-NLS-1$
 
@@ -215,6 +217,9 @@ public class ImageProvider extends AbstractImageProvider {
 		addImageFilePath(IMG_16_ADD_MESSAGE, ICONS_16 + "addmessage.png");
 		addImageFilePath(IMG_16_ROTATE, ICONS_16 + "rotate.png");
 		addImageFilePath(IMG_16_PROPERTIES, ICONS_16 + "properties.png");
+
+		addImageFilePath(IMG_16_WHITEBOX, ICONS_16 + "whitebox.png");
+		addImageFilePath(IMG_16_BLACKBOX, ICONS_16 + "blackbox.png");
 	}
 
 }

@@ -70,16 +70,17 @@ public class ParticipantPropertiesAdapter extends ExtendedPropertiesAdapter<Part
 				}
 
 		        // create a Process for this Participant
-		        Process process = (Process) ModelUtil.createObject(resource, Bpmn2Package.eINSTANCE.getProcess());
-		        participant.setProcessRef(process);
+//		        Process process = (Process) ModelUtil.createObject(resource, Bpmn2Package.eINSTANCE.getProcess());
+//		        participant.setProcessRef(process);
 		        
 		        // NOTE: this is needed because it fires the InsertionAdapter, which adds the new Process
 		        // to Definitions.rootElements, otherwise the Process would be a dangling object
-		        process.setName(participant.getName()+" Process");
+//		        process.setName(participant.getName()+" Process");
 
 		        // add the Participant to the first Choreography or Collaboration we find.
-		        // TODO: when multipage editor is working, this will be the specific Choreography or
-		        // Collaboration that is being rendered on the current page.
+		        // TODO: when (and if) multipage editor allows additional Choreography or
+		        // Collaboration diagrams to be created, this will be the specific diagram
+		        // that is being rendered on the current page.
 		        List<RootElement> rootElements = definitions.getRootElements();
 		        for (RootElement element : rootElements) {
 		            if (element instanceof Collaboration || element instanceof Choreography) {
@@ -87,18 +88,18 @@ public class ParticipantPropertiesAdapter extends ExtendedPropertiesAdapter<Part
 		                break;
 		            }
 		        }
-				
-		        BPMNDiagram bpmnDiagram = BpmnDiFactory.eINSTANCE.createBPMNDiagram();
-				ModelUtil.setID(bpmnDiagram, resource);
-		        bpmnDiagram.setName(process.getName());
-
-		        definitions.getDiagrams().add(bpmnDiagram);
-		        
-				BPMNPlane plane = BpmnDiFactory.eINSTANCE.createBPMNPlane();
-				ModelUtil.setID(plane, resource);
-				plane.setBpmnElement(process);
-
-				bpmnDiagram.setPlane(plane);
+//				
+//		        BPMNDiagram bpmnDiagram = BpmnDiFactory.eINSTANCE.createBPMNDiagram();
+//				ModelUtil.setID(bpmnDiagram, resource);
+//		        bpmnDiagram.setName(process.getName());
+//
+//		        definitions.getDiagrams().add(bpmnDiagram);
+//		        
+//				BPMNPlane plane = BpmnDiFactory.eINSTANCE.createBPMNPlane();
+//				ModelUtil.setID(plane, resource);
+//				plane.setBpmnElement(process);
+//
+//				bpmnDiagram.setPlane(plane);
 		        
 				return participant;
 			}

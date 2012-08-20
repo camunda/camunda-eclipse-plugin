@@ -14,19 +14,16 @@ package org.eclipse.bpmn2.modeler.ui.editor;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNDiagram;
-import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.modeler.core.Bpmn2TabbedPropertySheetPage;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.ProxyURIConverterImplExtension;
 import org.eclipse.bpmn2.modeler.core.di.DIImport;
+import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
@@ -47,48 +44,30 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.command.BasicCommandStack;
-import org.eclipse.emf.common.command.Command;
-import org.eclipse.emf.common.command.CommandStack;
-import org.eclipse.emf.common.notify.Adapter;
-import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.BasicDiagnostic;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.transaction.NotificationFilter;
 import org.eclipse.emf.transaction.RecordingCommand;
-import org.eclipse.emf.transaction.ResourceSetChangeEvent;
-import org.eclipse.emf.transaction.ResourceSetListener;
-import org.eclipse.emf.transaction.RollbackException;
-import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.TransactionalEditingDomain.Lifecycle;
 import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
 import org.eclipse.emf.workspace.util.WorkspaceSynchronizer;
-import org.eclipse.gef.GraphicalViewer;
-import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IPeService;
-import org.eclipse.graphiti.ui.editor.DefaultMarkerBehavior;
-import org.eclipse.graphiti.ui.editor.DefaultPaletteBehavior;
-import org.eclipse.graphiti.ui.editor.DefaultPersistencyBehavior;
-import org.eclipse.graphiti.ui.editor.DefaultRefreshBehavior;
 import org.eclipse.graphiti.ui.editor.DefaultUpdateBehavior;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.graphiti.ui.internal.editor.GFPaletteRoot;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
@@ -112,7 +91,6 @@ import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabDescriptorProvider;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 /**
  * 
@@ -129,7 +107,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 
 	private IFile modelFile;
 	private IFile diagramFile;
-	private BPMNDiagram bpmnDiagram;
+	protected BPMNDiagram bpmnDiagram;
 	
 	private IWorkbenchListener workbenchListener;
 	private IPartListener2 selectionListener;
@@ -144,6 +122,11 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 //	private Hashtable<BPMNDiagram, GraphicalViewer> mapDiagramToViewer = new Hashtable<BPMNDiagram, GraphicalViewer>();
 
 	protected DiagramEditorAdapter editorAdapter;
+	protected BPMN2MultiPageEditor multipageEditor;
+	
+	public BPMN2Editor(BPMN2MultiPageEditor mpe) {
+		multipageEditor = mpe;
+	}
 	
 	public static BPMN2Editor getActiveEditor() {
 		return activeEditor;
@@ -157,6 +140,10 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		}
 	}
 
+	public BPMN2MultiPageEditor getMultipageEditor() {
+		return multipageEditor;
+	}
+	
 	protected DiagramEditorAdapter getEditorAdapter() {
 		return editorAdapter;
 	}
@@ -345,11 +332,9 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 			saveModelFile();
 		}
 		
-		DIImport di = new DIImport();
-		di.setDiagram(diagram);
-		di.setDomain(getEditingDomain());
+		DIImport di = new DIImport(this);
 		di.setModelHandler(modelHandler);
-		di.setFeatureProvider(featureProvider);
+
 		di.generateFromDI();
 
 		// this needs to happen AFTER the diagram has been imported because we need
@@ -411,7 +396,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 					IWorkbenchPart part = partRef.getPart(false);
 					if (part instanceof BPMN2MultiPageEditor) {
 						BPMN2MultiPageEditor mpe = (BPMN2MultiPageEditor)part;
-						setActiveEditor(mpe.designEditor);
+						setActiveEditor(mpe.getDesignEditor());
 					}
 				}
 
@@ -542,8 +527,16 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	}
 	
 	public void createPartControl(Composite parent) {
-		if (getGraphicalViewer()==null)
+		if (getGraphicalViewer()==null) {
 			super.createPartControl(parent);
+			
+			// create additional editor tabs for BPMNDiagrams in the parent MultiPageEditor
+			final List<BPMNDiagram> bpmnDiagrams = modelHandler.getAll(BPMNDiagram.class);
+			for (int i=1; i<bpmnDiagrams.size(); ++i) {
+				BPMNDiagram bpmnDiagram = bpmnDiagrams.get(i);
+				multipageEditor.addDesignPage(bpmnDiagram);
+			}
+		}
 	}
 	
 	public BPMNDiagram getBpmnDiagram() {
@@ -558,63 +551,25 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	}
 	
 	public void setBpmnDiagram(final BPMNDiagram bpmnDiagram) {
-		IDiagramTypeProvider dtp = getDiagramTypeProvider();
+
+		// create a new Graphiti Diagram if needed
+		Diagram diagram = DIUtils.getOrCreateDiagram(this, bpmnDiagram);
 		
-		// do we need to create a new Diagram or is this already in the model?
-		Diagram oldDiagram = null;
-		Diagram diagram = null;
-		ResourceSet resourceSet = getResourceSet();
-		if (resourceSet!=null) {
-			for (Resource r : resourceSet.getResources()) {
-				for (EObject o : r.getContents()) {
-					if (o instanceof Diagram) {
-						Diagram d = (Diagram)o;
-						if (BusinessObjectUtil.getFirstElementOfType(d, BPMNDiagram.class) == bpmnDiagram) {
-							oldDiagram = d;
-							break;
-						}
-					}
-				}
-				if (oldDiagram!=null)
-					break;
-			}
-		}
-		
-		if (oldDiagram==null) {
-			// create a new one
-			String typeId = dtp.getDiagram().getDiagramTypeId();
-			final Diagram newDiagram = Graphiti.getCreateService().createDiagram(typeId, bpmnDiagram.getName(), true);
-			final IFeatureProvider featureProvider = dtp.getFeatureProvider();
-			final Resource resource = dtp.getDiagram().eResource();
-			TransactionalEditingDomain domain = getEditingDomain();
-			domain.getCommandStack().execute(new RecordingCommand(domain) {
-				protected void doExecute() {
-					resource.getContents().add(newDiagram);
-					newDiagram.setActive(true);
-					featureProvider.link(newDiagram, bpmnDiagram);
-				}
-			});
-			diagram = newDiagram;
-		}
-		else {
-			// already there
-			diagram = oldDiagram;
-		}
-		
-		// set the new Diagram in the DTP and refresh graphical viewer
+		// Tell the DTP about the new Diagram
 		getRefreshBehavior().initRefresh();
 		setPictogramElementsForSelection(null);
-		dtp.init(diagram, this);
+		getDiagramTypeProvider().init(diagram, this);
+		
 //		if (viewer!=null)
 //			setGraphicalViewer(viewer);
+		
+		// set Diagram as contents for the graphical viewer and refresh
 		getGraphicalViewer().setContents(diagram);
 		
 		refreshContent();
+		
 		// remember this for later
 		this.bpmnDiagram = bpmnDiagram;
-	}
-	
-	public void disposeBpmnDiagram(BPMNDiagram bpmnDiagram) {
 	}
 	
 	@Override

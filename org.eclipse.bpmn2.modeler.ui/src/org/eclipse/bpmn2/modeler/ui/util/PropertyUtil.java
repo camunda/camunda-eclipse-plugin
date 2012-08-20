@@ -39,13 +39,13 @@ public class PropertyUtil {
 			System.err.println(name+" disposed!");
 			return;
 		}
-		if (control instanceof Composite) {
-			((Composite)control).layout(true);
-		}
-		control.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-		Point sz = control.getSize();
-		if (sz.x==0 || sz.y==0)
-			System.err.println(name+" zero size!");
+//		if (control instanceof Composite) {
+//			((Composite)control).layout(true);
+//		}
+//		control.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+//		Point sz = control.getSize();
+//		if (sz.x==0 || sz.y==0)
+//			System.err.println(name+" zero size!");
 	}
 
 	public static void dump(Composite parent, String comment) {
@@ -68,7 +68,9 @@ public class PropertyUtil {
 		for (Control k : kids) {
 			for (int i=0; i<indent; ++i)
 				System.out.print("|");
-			System.out.print(" "+k);
+			System.out.print(" "+k+" layoutData="+k.getLayoutData());
+			if (k instanceof Composite)
+				System.out.print(" layout="+((Composite)k).getLayout());
 			check(k);
 			
 			if (k instanceof Label) {

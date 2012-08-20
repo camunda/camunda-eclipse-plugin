@@ -80,12 +80,14 @@ import org.eclipse.graphiti.mm.pictograms.impl.FreeFormConnectionImpl;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
+import org.eclipse.graphiti.ui.editor.DiagramEditor;
 
 @SuppressWarnings("restriction")
 public class DIImport {
 
 	public static final String IMPORT_PROPERTY = DIImport.class.getSimpleName().concat(".import");
 
+	private DiagramEditor editor;
 	private Diagram diagram;
 	private TransactionalEditingDomain domain;
 	private ModelHandler modelHandler;
@@ -94,20 +96,28 @@ public class DIImport {
 	private final IPeService peService = Graphiti.getPeService();
 	private final IGaService gaService = Graphiti.getGaService();
 
+	public DIImport(DiagramEditor editor) {
+		this.editor = editor;
+		domain = editor.getEditingDomain();
+		featureProvider = editor.getDiagramTypeProvider().getFeatureProvider();
+	}
+	
 	/**
 	 * Look for model diagram interchange information and generate all shapes for the diagrams.
 	 * 
 	 * NB! Currently only first found diagram is generated.
 	 */
 	public void generateFromDI() {
-		final List<BPMNDiagram> diagrams = modelHandler.getAll(BPMNDiagram.class);
+		final List<BPMNDiagram> bpmnDiagrams = modelHandler.getAll(BPMNDiagram.class);
 		
 		elements = new HashMap<BaseElement, PictogramElement>();
 		domain.getCommandStack().execute(new RecordingCommand(domain) {
 			@Override
 			protected void doExecute() {
 
-				if (diagrams.size() == 0) {
+				diagram = editor.getDiagramTypeProvider().getDiagram();
+				
+				if (bpmnDiagrams.size() == 0) {
 					BPMNPlane plane = BpmnDiFactory.eINSTANCE.createBPMNPlane();
 					plane.setBpmnElement(modelHandler.getOrCreateProcess(modelHandler.getInternalParticipant()));
 
@@ -115,8 +125,8 @@ public class DIImport {
 					d.setPlane(plane);
 
 					modelHandler.getDefinitions().getDiagrams().add(d);
-					featureProvider.link(diagram, d);
 				}
+				featureProvider.link(diagram, bpmnDiagrams.get(0));
 
 				// First: add all IDs to our ID mapping table
 				Definitions definitions = modelHandler.getDefinitions();
@@ -125,8 +135,11 @@ public class DIImport {
 					ModelUtil.addID( iter.next() );
 				}
 				
-				for (BPMNDiagram d : diagrams) {
-					featureProvider.link(diagram, d);
+				// do the import
+				for (BPMNDiagram d : bpmnDiagrams) {
+					diagram = DIUtils.getOrCreateDiagram(editor,d);
+					editor.getDiagramTypeProvider().init(diagram, editor);
+
 					BPMNPlane plane = d.getPlane();
 					if (plane.getBpmnElement() == null) {
 						plane.setBpmnElement(modelHandler.getOrCreateProcess(modelHandler.getInternalParticipant()));
@@ -138,8 +151,6 @@ public class DIImport {
 					importConnections(ownedElement);
 
 //					relayoutLanes(ownedElement);
-					// FIXME: we don't really want to leave, but we also don't want all diagrams mixed together
-					break;
 				}
 				
 				layoutAll();
@@ -177,21 +188,8 @@ public class DIImport {
 		}
 	}
 
-	public void setDiagram(Diagram diagram) {
-		this.diagram = diagram;
-	}
-
-	public void setDomain(TransactionalEditingDomain editingDomain) {
-		this.domain = editingDomain;
-
-	}
-
 	public void setModelHandler(ModelHandler modelHandler) {
 		this.modelHandler = modelHandler;
-	}
-
-	public void setFeatureProvider(IFeatureProvider featureProvider) {
-		this.featureProvider = featureProvider;
 	}
 	
 	/**
@@ -392,7 +390,9 @@ public class DIImport {
 			PictogramElement newContainer = addFeature.add(context);
 			featureProvider.link(newContainer, new Object[] { bpmnElement, shape });
 			if (bpmnElement instanceof Participant) {
-				elements.put(((Participant) bpmnElement).getProcessRef(), newContainer);
+				// TODO: figure out why this was put here initially;
+				// participant bands are already handled separately
+//				elements.put(((Participant) bpmnElement).getProcessRef(), newContainer);
 			}
 			else if (bpmnElement instanceof ChoreographyActivity) {
 				ChoreographyActivity ca = (ChoreographyActivity)bpmnElement;

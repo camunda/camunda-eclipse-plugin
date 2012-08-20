@@ -33,8 +33,14 @@ import org.eclipse.dd.dc.Point;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.datatypes.ILocation;
+import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
@@ -45,8 +51,10 @@ import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.PictogramLink;
 import org.eclipse.graphiti.mm.pictograms.Shape;
+import org.eclipse.graphiti.platform.IDiagramEditor;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.ILayoutService;
+import org.eclipse.graphiti.ui.editor.DiagramEditor;
 
 public class DIUtils {
 
@@ -200,5 +208,74 @@ public class DIUtils {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Return the Graphiti Diagram for the given BPMNDiagram. If one does not exist, create it.
+	 * 
+	 * @param editor
+	 * @param bpmnDiagram
+	 * @return
+	 */
+	public static Diagram getOrCreateDiagram(final IDiagramEditor editor, final BPMNDiagram bpmnDiagram) {
+		// do we need to create a new Diagram or is this already in the model?
+		Diagram diagram = findDiagram(editor, bpmnDiagram);
+		if (diagram!=null) {
+			// already exists
+			return diagram;
+		}
+
+		// create a new one
+		IDiagramTypeProvider dtp = editor.getDiagramTypeProvider();
+		String typeId = dtp.getDiagram().getDiagramTypeId();
+		final Diagram newDiagram = Graphiti.getCreateService().createDiagram(typeId, bpmnDiagram.getName(), true);
+		final IFeatureProvider featureProvider = dtp.getFeatureProvider();
+		final Resource resource = dtp.getDiagram().eResource();
+		TransactionalEditingDomain domain = editor.getEditingDomain();
+		domain.getCommandStack().execute(new RecordingCommand(domain) {
+			protected void doExecute() {
+				resource.getContents().add(newDiagram);
+				newDiagram.setActive(true);
+				featureProvider.link(newDiagram, bpmnDiagram);
+			}
+		});
+		return newDiagram;
+	}
+	
+	/**
+	 * Find the Graphiti Diagram that corresponds to the given BPMNDiagram object.
+	 * 
+	 * @param editor
+	 * @param bpmnDiagram
+	 * @return
+	 */
+	public static Diagram findDiagram(final IDiagramEditor editor, final BPMNDiagram bpmnDiagram) {
+		ResourceSet resourceSet = editor.getResourceSet();
+		if (resourceSet!=null) {
+			for (Resource r : resourceSet.getResources()) {
+				for (EObject o : r.getContents()) {
+					if (o instanceof Diagram) {
+						Diagram diagram = (Diagram)o;
+						if (BusinessObjectUtil.getFirstElementOfType(diagram, BPMNDiagram.class) == bpmnDiagram) {
+							return diagram;
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	public static void deleteDiagram(final IDiagramEditor editor, final BPMNDiagram bpmnDiagram) {
+		Diagram diagram = DIUtils.findDiagram(editor, bpmnDiagram);
+		if (diagram!=null) {
+			int n = diagram.getPictogramLinks().size();
+			for (int i=n-1; i>=0; --i) {
+				PictogramLink link = diagram.getPictogramLinks().remove(i);
+				EcoreUtil.delete(link);
+			}
+			EcoreUtil.delete(diagram);
+			EcoreUtil.delete(bpmnDiagram);
+		}	
 	}
 }
