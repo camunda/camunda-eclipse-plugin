@@ -9,6 +9,8 @@ import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.URI;
@@ -29,13 +31,30 @@ import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.events.TraverseListener;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IWorkbenchPart;
 
 public class DesignEditor extends BPMN2Editor {
 	
 	protected ResourceSetListener resourceSetListener = null;
 	private BPMNDiagram bpmnDiagramDeleted = null;
 	protected boolean debug;
+	protected CTabFolder tabFolder;
+	private int defaultTabHeight;
 
 	public DesignEditor(BPMN2MultiPageEditor bpmn2MultiPageEditor, BPMN2MultiPageEditor mpe) {
 		super(mpe);
@@ -74,7 +93,95 @@ public class DesignEditor extends BPMN2Editor {
 		}
 		super.setPartName(partName);
     }
-    
+	
+	@Override
+	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+		super.selectionChanged(part, selection);
+		EObject bo = BusinessObjectUtil.getBusinessObjectForSelection(selection);
+		if (bo != null) {
+			tabFolder.setSelection(0);
+	
+			tabFolder.setLayoutDeferred(true);
+			for (int i=tabFolder.getItemCount()-1; i>0; --i) {
+				tabFolder.getItem(i).setControl(null);
+				tabFolder.getItem(i).dispose();
+			}
+	
+			if (!(bo instanceof BPMNDiagram)) {
+				if (tabFolder.getItemCount()==1) {
+					CTabFolder tf = tabFolder;
+			
+					Composite subPlanePage = new Composite(tf, SWT.NONE);
+					subPlanePage.setLayout(new FillLayout());
+					Label label = new Label(subPlanePage, SWT.BORDER);
+					CTabItem item = new CTabItem(tf, SWT.NONE);
+					item.setControl(subPlanePage);
+					item.setText(ModelUtil.getDisplayName(bo)+" Plane");
+					item.setData(label);
+				}
+	
+				CTabItem item = tabFolder.getItem(1);
+				Label label = (Label)item.getData();
+				label.setText("Selected object: "
+						+ModelUtil.getDisplayName(bo)+"\n"
+						+"If the object contained BPMNPlanes, the activities in each Plane would be displayed as a new tab at the bottom of the page.");
+			}
+			
+			tabFolder.setLayoutDeferred(false);
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					updateTabs();
+				}
+			});
+		}					
+	}
+	
+	public void createPartControl(Composite parent) {
+		if (getGraphicalViewer()==null) {
+			tabFolder = new CTabFolder(parent, SWT.BOTTOM);
+			tabFolder.addSelectionListener(new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent e) {
+					int newPageIndex = tabFolder.indexOf((CTabItem) e.item);
+					CTabItem item = tabFolder.getItem(1);
+				}
+			});
+			tabFolder.addTraverseListener(new TraverseListener() { 
+				// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=199499 : Switching tabs by Ctrl+PageUp/PageDown must not be caught on the inner tab set
+				public void keyTraversed(TraverseEvent e) {
+					switch (e.detail) {
+						case SWT.TRAVERSE_PAGE_NEXT:
+						case SWT.TRAVERSE_PAGE_PREVIOUS:
+							int detail = e.detail;
+							e.doit = true;
+							e.detail = SWT.TRAVERSE_NONE;
+							Control control = tabFolder.getParent();
+							control.traverse(detail, new Event());
+					}
+				}
+			});
+			defaultTabHeight = 3 * tabFolder.getTabHeight() / 4;
+
+			Composite topPlanePage = new Composite(tabFolder, SWT.NONE);
+			topPlanePage.setLayout(new FillLayout());
+			CTabItem item = new CTabItem(tabFolder, SWT.NONE, 0);
+			item.setText("Diagram Plane");
+			item.setControl(topPlanePage);
+
+			super.createPartControl(topPlanePage);
+		}
+	}
+	
+	public void updateTabs() {
+		if (!tabFolder.isLayoutDeferred()) {
+			if (tabFolder.getItemCount()==1) {
+				tabFolder.setTabHeight(0);
+			}
+			else
+				tabFolder.setTabHeight(defaultTabHeight);
+		}
+		tabFolder.layout();
+	}
+	
 	@Override
 	protected void createActions() {
 		super.createActions();

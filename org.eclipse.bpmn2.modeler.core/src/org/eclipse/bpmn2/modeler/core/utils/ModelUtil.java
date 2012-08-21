@@ -522,6 +522,20 @@ public class ModelUtil {
 		return Bpmn2DiagramType.NONE;
 	}
 	
+	public static String getDiagramTypeName(BPMNDiagram object) {
+		Bpmn2DiagramType type = getDiagramType((BPMNDiagram)object); 
+		if (type == Bpmn2DiagramType.CHOREOGRAPHY) {
+			return "Choreography Diagram";
+		}
+		else if (type == Bpmn2DiagramType.COLLABORATION) {
+			return "Collaboration Diagram";
+		}
+		else if (type == Bpmn2DiagramType.PROCESS) {
+			return "Process Diagram";
+		}
+		return "Unknown Diagram Type";
+	}
+	
 	public static List<EStructuralFeature> getAnyAttributes(EObject object) {
 		List<EStructuralFeature> list = new ArrayList<EStructuralFeature>();
 		EStructuralFeature anyAttribute = ((EObject)object).eClass().getEStructuralFeature("anyAttribute");

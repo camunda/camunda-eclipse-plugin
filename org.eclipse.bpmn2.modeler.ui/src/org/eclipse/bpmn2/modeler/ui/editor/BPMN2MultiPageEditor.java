@@ -17,8 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.wizards.Bpmn2DiagramEditorInput;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabFolder2Listener;
 import org.eclipse.swt.custom.CTabFolderEvent;
@@ -125,6 +127,8 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 			public void run() {
 				setActivePage(0);
 				tabFolder.setLayoutDeferred(false);
+				tabFolder.setTabPosition(SWT.TOP);
+				updateTabs();
 			}
 		});
 	}
@@ -139,7 +143,7 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 					--pageIndex;
 				addPage(pageIndex, designEditor, BPMN2MultiPageEditor.this.getEditorInput());
 				defaultTabHeight = tabFolder.getTabHeight();
-				setPageText(pageIndex,"Design");
+				setPageText(pageIndex,ModelUtil.getDiagramTypeName( designEditor.getBpmnDiagram() ));
 
 				defaultTabHeight = tabFolder.getTabHeight();
 
@@ -316,6 +320,10 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 				tabFolder.setTabHeight(defaultTabHeight);
 		}
 		tabFolder.layout();
+	}
+	
+	public CTabFolder getTabFolder() {
+		return tabFolder;
 	}
 	
 	/* (non-Javadoc)
