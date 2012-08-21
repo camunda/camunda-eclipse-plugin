@@ -39,6 +39,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -62,6 +64,7 @@ import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IPeService;
+import org.eclipse.graphiti.ui.editor.DefaultPersistencyBehavior;
 import org.eclipse.graphiti.ui.editor.DefaultUpdateBehavior;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
@@ -88,7 +91,6 @@ import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabDescriptorProvider;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 /**
  * 
@@ -108,6 +110,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	
 	private IWorkbenchListener workbenchListener;
 	private IPartListener2 selectionListener;
+    private IResourceChangeListener resourceChangeListener;
 	private boolean workbenchShutdown = false;
 	private static BPMN2Editor activeEditor;
 	private static ITabDescriptorProvider tabDescriptorProvider;
@@ -173,13 +176,19 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		
 		super.init(site, input);
 		addSelectionListener();
+		addResourceChangeListener();
 	}
 	
 	@Override
 	protected DefaultUpdateBehavior createUpdateBehavior() {
 		return new BPMN2EditorUpdateBehavior(this);
 	}
-
+	
+    @Override
+    protected DefaultPersistencyBehavior createPersistencyBehavior() {
+    	return new BPMN2PersistencyBehavior(this);
+    }
+    
 	public Bpmn2Preferences getPreferences() {
 		if (preferences==null) {
 			assert(modelFile!=null);
@@ -414,6 +423,20 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		}
 	}
 
+	private void addResourceChangeListener() {
+		if (resourceChangeListener==null) {
+			resourceChangeListener = new BPMN2ResourceChangeListener(this);
+	        modelFile.getWorkspace().addResourceChangeListener(resourceChangeListener, IResourceChangeEvent.POST_BUILD);
+		}
+	}
+	
+	private void removeResourceChangeListener() {
+		if (resourceChangeListener!=null) {
+	        modelFile.getWorkspace().removeResourceChangeListener(resourceChangeListener);
+			resourceChangeListener = null;
+		}
+	}
+	
 	public void setEditorTitle(final String title) {
 		Display display = getSite().getShell().getDisplay();
 		display.asyncExec(new Runnable() {
@@ -489,6 +512,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		if (!workbenchShutdown)
 			BPMN2DiagramCreator.dispose(diagramFile);
 		removeWorkbenchListener();
+		removeResourceChangeListener();
 		getPreferences().dispose();
 	}
 

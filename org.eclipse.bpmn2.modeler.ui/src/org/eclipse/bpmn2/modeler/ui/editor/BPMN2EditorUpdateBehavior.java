@@ -14,6 +14,7 @@
 package org.eclipse.bpmn2.modeler.ui.editor;
 
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceSetImpl;
+import org.eclipse.bpmn2.modeler.core.validation.ValidationStatusAdapterFactory;
 import org.eclipse.core.commands.operations.DefaultOperationHistory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.common.util.URI;
@@ -86,6 +87,10 @@ public class BPMN2EditorUpdateBehavior extends DefaultUpdateBehavior {
 		// we want first crack at these notifications!
 		workspaceSynchronizer = new WorkspaceSynchronizer(getEditingDomain(),
 				new BPMN2EditorWorkspaceSynchronizerDelegate(diagramEditor));
+		
+        // add the adapter factory for tracking validation status
+        ResourceSet resourceSet = domain.getResourceSet();
+        resourceSet.getAdapterFactories().add(new ValidationStatusAdapterFactory());
 		
 		super.initializeEditingDomain(domain);
 	}

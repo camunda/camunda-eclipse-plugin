@@ -74,7 +74,7 @@
 			</constraint>
 			<constraint
 			        lang="OCL"
-			         severity="CANCEL"
+			         severity="WARNING"
 			         mode="Live"
 			         name="UniqueId"
 			         id="org.eclipse.bpmn2.modeler.core.validation.BaseElement.id"
@@ -108,4 +108,46 @@
 		</listener>
 	</extension>
 
+  <extension
+        id="projectValidator"
+        name="BPMN 2.0 Project Validator"
+        point="org.eclipse.wst.validation.validatorV2">
+     <validator
+           class="org.eclipse.bpmn2.modeler.core.validation.BPMN2ProjectValidator"
+           markerId="org.eclipse.bpmn2.modeler.core.problemMarker">
+        <include>
+           <rules>
+              <contentType
+                    exactMatch="true"
+                    id="org.eclipse.bpmn2.content-type.xml">
+              </contentType>
+              <file
+                    caseSensitive="true"
+                    name="bpmn2.xml"
+                    type="file">
+              </file>
+           </rules>
+        </include>
+        <exclude>
+           <rules>
+              <file
+                    caseSensitive="true"
+                    name="bpmn2.xml.diagram"
+                    type="file">
+              </file>
+           </rules>
+        </exclude>
+     </validator>
+  </extension>
+  <extension
+        id="org.eclipse.bpmn2.modeler.core.problemMarker"
+        name="BPMN 2.0 Modeler"
+        point="org.eclipse.core.resources.markers">
+     <persistent
+           value="true">
+     </persistent>
+     <super
+           type="org.eclipse.emf.validation.problem">
+     </super>
+  </extension>
 </plugin>

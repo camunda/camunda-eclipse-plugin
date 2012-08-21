@@ -52,7 +52,11 @@ public class ErrorUtils {
 			public void run() {
 				IWorkbench wb = PlatformUI.getWorkbench();
 				IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
+				if (win==null)
+					return;
 				IWorkbenchPage page = win.getActivePage();
+				if (page==null)
+					return;
 				IWorkbenchPart part = page.getActivePart();
 				if (part==null)
 					return;

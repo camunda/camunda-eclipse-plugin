@@ -43,9 +43,7 @@ public class ProblemsReporter implements IValidationListener {
 
 			
 			for (IStatus s : results) {
-				if (s.getSeverity() == IStatus.CANCEL | s.getSeverity() == IStatus.ERROR) {
-					ErrorUtils.showErrorMessage(s.getMessage());
-				}
+				ErrorUtils.showErrorMessage(s.getMessage());
 //	            // there is at least one result
 //	            Resource resource = results.get(0).getTarget().eResource();
 //				if (s.getSeverity() == IStatus.WARNING) {

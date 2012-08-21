@@ -24,6 +24,7 @@ import org.eclipse.bpmn2.modeler.core.runtime.CustomTaskDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.bpmn2.modeler.core.validation.ValidationStatusAdapter;
 import org.eclipse.bpmn2.modeler.ui.FeatureMap;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
@@ -32,9 +33,11 @@ import org.eclipse.bpmn2.modeler.ui.features.choreography.ChoreographySelectionB
 import org.eclipse.bpmn2.modeler.ui.features.choreography.ChoreographyUtil;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.graphiti.IExecutionInfo;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
@@ -68,10 +71,14 @@ import org.eclipse.graphiti.palette.IPaletteCompartmentEntry;
 import org.eclipse.graphiti.palette.impl.ConnectionCreationToolEntry;
 import org.eclipse.graphiti.palette.impl.ObjectCreationToolEntry;
 import org.eclipse.graphiti.palette.impl.PaletteCompartmentEntry;
+import org.eclipse.graphiti.platform.IPlatformImageConstants;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.tb.ContextButtonEntry;
 import org.eclipse.graphiti.tb.DefaultToolBehaviorProvider;
 import org.eclipse.graphiti.tb.IContextButtonPadData;
+import org.eclipse.graphiti.tb.IDecorator;
+import org.eclipse.graphiti.tb.IImageDecorator;
+import org.eclipse.graphiti.tb.ImageDecorator;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.jface.dialogs.MessageDialog;
 
@@ -421,4 +428,44 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 		return super.getChopboxAnchorArea(pe);
 	}
 
+    @Override
+    public IDecorator[] getDecorators(PictogramElement pe) {
+        List<IDecorator> decorators = new ArrayList<IDecorator>();
+        IFeatureProvider featureProvider = getFeatureProvider();
+        Object bo = featureProvider.getBusinessObjectForPictogramElement(pe);
+        if (bo!=null) {
+	        ValidationStatusAdapter statusAdapter = (ValidationStatusAdapter) EcoreUtil.getRegisteredAdapter((EObject) bo,
+	                ValidationStatusAdapter.class);
+	        if (statusAdapter != null) {
+	            final IImageDecorator decorator;
+	            final IStatus status = statusAdapter.getValidationStatus();
+	            switch (status.getSeverity()) {
+	            case IStatus.INFO:
+	                decorator = new ImageDecorator(IPlatformImageConstants.IMG_ECLIPSE_INFORMATION_TSK);
+	                break;
+	            case IStatus.WARNING:
+	                decorator = new ImageDecorator(IPlatformImageConstants.IMG_ECLIPSE_WARNING_TSK);
+	                break;
+	            case IStatus.ERROR:
+	                decorator = new ImageDecorator(IPlatformImageConstants.IMG_ECLIPSE_ERROR_TSK);
+	                break;
+	            default:
+	                decorator = null;
+	                break;
+	            }
+	            if (decorator != null) {
+	                GraphicsAlgorithm ga = getSelectionBorder(pe);
+	                if (ga == null) {
+	                    ga = pe.getGraphicsAlgorithm();
+	                }
+	                decorator.setX(ga.getWidth() - 10);
+	                decorator.setY(ga.getHeight() - 10);
+	                decorator.setMessage(status.getMessage());
+	                decorators.add(decorator);
+	            }
+	        }
+        }
+        
+        return decorators.toArray(new IDecorator[decorators.size()]);
+    }
 }
