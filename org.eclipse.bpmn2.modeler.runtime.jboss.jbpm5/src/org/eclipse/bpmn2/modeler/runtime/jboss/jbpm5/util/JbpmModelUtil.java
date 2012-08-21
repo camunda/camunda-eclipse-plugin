@@ -159,7 +159,7 @@ public class JbpmModelUtil {
 	 * 4. the list of ItemDefinitions in the root elements.
 	 * 
 	 * @param object - a context EObject used to search for ItemDefinitions, Globals and Imports
-	 * @return a mapDiagramToViewer of Strings and Objects representing the various data types
+	 * @return a map of Strings and Objects representing the various data types
 	 */
 	public static Hashtable<String, Object> collectAllDataTypes(EObject object) {
 
@@ -210,9 +210,9 @@ public class JbpmModelUtil {
 	
 	/**
 	 * This method returns a string representation for a "data type". This is intended to
-	 * be used to interpret the various objects in the mapDiagramToViewer returned by collectAllDataTypes().
+	 * be used to interpret the various objects in the map returned by collectAllDataTypes().
 	 * 
-	 * @param value - one of the Object values in the mapDiagramToViewer returned by collectAllDataTypes().
+	 * @param value - one of the Object values in the map returned by collectAllDataTypes().
 	 * @return a string representation of the data type
 	 */
 	public static String getDataType(Object value) {
@@ -237,13 +237,13 @@ public class JbpmModelUtil {
 	
 	/**
 	 * This method returns an ItemDefinition object for a "data type". This is intended to
-	 * be used to interpret the various objects in the mapDiagramToViewer returned by collectAllDataTypes().
+	 * be used to interpret the various objects in the map returned by collectAllDataTypes().
 	 * 
 	 * NOTE: This method will create an ItemDefinition if it does not already exist.
 	 * 
 	 * @param businessObject - a context EObject used to search for ItemDefinitions, and to create
 	 *                 new ItemDefinitions if necessary.
-	 * @param value - one of the Object values in the mapDiagramToViewer returned by collectAllDataTypes().
+	 * @param value - one of the Object values in the map returned by collectAllDataTypes().
 	 * @return an ItemDefinition for the data type
 	 */
 	public static ItemDefinition getDataType(EObject context, Object value) {
