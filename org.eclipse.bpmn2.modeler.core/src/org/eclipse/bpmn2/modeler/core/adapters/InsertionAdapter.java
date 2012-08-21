@@ -20,14 +20,13 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EContentAdapter;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
+import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
 import org.eclipse.emf.transaction.util.TransactionUtil;
 
 /**
@@ -206,14 +205,18 @@ public class InsertionAdapter extends EContentAdapter {
 	}
 	
 	private TransactionalEditingDomain getEditingDomain() {
+		// If a transaction is already active, we want to run this
+		// inside that transaction instead of creating a new one.
 		if (resource==null) {
-			return
-				(object.eResource()==null) ?
-				null : 
-				TransactionUtil.getEditingDomain(object.eResource());
+			resource = getResource(object);
+			if (resource==null)
+				return null;
 		}
-		else
-			return TransactionUtil.getEditingDomain(resource);
+		TransactionalEditingDomainImpl domain = (TransactionalEditingDomainImpl)
+				TransactionUtil.getEditingDomain(resource);
+		if (domain.getActiveTransaction().isActive())
+			return null;
+		return domain;
 	}
 	
 	public static void executeIfNeeded(EObject value) {
@@ -224,6 +227,7 @@ public class InsertionAdapter extends EContentAdapter {
 				allAdapters.add((InsertionAdapter)adapter);
 			}
 		}
+		value.eAdapters().removeAll(allAdapters);
 		for (InsertionAdapter adapter : allAdapters)
 			adapter.execute();
 	}

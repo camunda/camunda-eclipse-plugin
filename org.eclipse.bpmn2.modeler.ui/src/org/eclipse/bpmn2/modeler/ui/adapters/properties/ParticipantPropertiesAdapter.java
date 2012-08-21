@@ -23,8 +23,13 @@ import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.ParticipantMultiplicity;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
+import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BpmnDiFactory;
+import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
+import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -55,26 +60,27 @@ public class ParticipantPropertiesAdapter extends ExtendedPropertiesAdapter<Part
 			@Override
 			public Participant createObject(Resource resource, Object context) {
 				Participant participant = super.createObject(resource, context);
-				participant.eSetDeliver(false);
 				
 				Definitions definitions = null;
 				if (resource!=null)
 					definitions = (Definitions) resource.getContents().get(0).eContents().get(0);
-				else
+				else {
 					definitions = ModelUtil.getDefinitions(participant);
+					resource = definitions.eResource();
+				}
 
 		        // create a Process for this Participant
-		        Process process = (Process) ModelUtil.createObject(resource, Bpmn2Package.eINSTANCE.getProcess());
-		        participant.setProcessRef(process);
+//		        Process process = (Process) ModelUtil.createObject(resource, Bpmn2Package.eINSTANCE.getProcess());
+//		        participant.setProcessRef(process);
 		        
 		        // NOTE: this is needed because it fires the InsertionAdapter, which adds the new Process
 		        // to Definitions.rootElements, otherwise the Process would be a dangling object
-		        process.eSetDeliver(false);
-		        process.setName(participant.getName()+" Process");
+//		        process.setName(participant.getName()+" Process");
 
 		        // add the Participant to the first Choreography or Collaboration we find.
-		        // TODO: when multipage editor is working, this will be the specific Choreography or
-		        // Collaboration that is being rendered on the current page.
+		        // TODO: when (and if) multipage editor allows additional Choreography or
+		        // Collaboration diagrams to be created, this will be the specific diagram
+		        // that is being rendered on the current page.
 		        List<RootElement> rootElements = definitions.getRootElements();
 		        for (RootElement element : rootElements) {
 		            if (element instanceof Collaboration || element instanceof Choreography) {
@@ -82,10 +88,19 @@ public class ParticipantPropertiesAdapter extends ExtendedPropertiesAdapter<Part
 		                break;
 		            }
 		        }
+//				
+//		        BPMNDiagram bpmnDiagram = BpmnDiFactory.eINSTANCE.createBPMNDiagram();
+//				ModelUtil.setID(bpmnDiagram, resource);
+//		        bpmnDiagram.setName(process.getName());
+//
+//		        definitions.getDiagrams().add(bpmnDiagram);
+//		        
+//				BPMNPlane plane = BpmnDiFactory.eINSTANCE.createBPMNPlane();
+//				ModelUtil.setID(plane, resource);
+//				plane.setBpmnElement(process);
+//
+//				bpmnDiagram.setPlane(plane);
 		        
-		        process.eSetDeliver(true);
-				participant.eSetDeliver(true);
-
 				return participant;
 			}
 			

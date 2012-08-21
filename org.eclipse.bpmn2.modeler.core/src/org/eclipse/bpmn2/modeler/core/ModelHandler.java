@@ -255,19 +255,19 @@ public class ModelHandler {
 					Collaboration collaboration = createCollaboration();
 					collaboration.setName(name+" Collaboration");
 
-					Process initiatingProcess = createProcess();
-					initiatingProcess.setName(name+" Initiating Process");
+//					Process initiatingProcess = createProcess();
+//					initiatingProcess.setName(name+" Initiating Process");
 					
 					Participant initiatingParticipant = create(Participant.class);
 					initiatingParticipant.setName("Initiating Pool");
-					initiatingParticipant.setProcessRef(initiatingProcess);
+//					initiatingParticipant.setProcessRef(initiatingProcess);
 					
-					Process nonInitiatingProcess = createProcess();
-					nonInitiatingProcess.setName(name+" Non-initiating Process");
+//					Process nonInitiatingProcess = createProcess();
+//					nonInitiatingProcess.setName(name+" Non-initiating Process");
 					
 					Participant nonInitiatingParticipant = create(Participant.class);
 					nonInitiatingParticipant.setName("Non-initiating Pool");
-					nonInitiatingParticipant.setProcessRef(nonInitiatingProcess);
+//					nonInitiatingParticipant.setProcessRef(nonInitiatingProcess);
 					
 					collaboration.getParticipants().add(initiatingParticipant);
 					collaboration.getParticipants().add(nonInitiatingParticipant);
@@ -352,16 +352,16 @@ public class ModelHandler {
 					Participant initiatingParticipant = create(Participant.class);
 					initiatingParticipant.setName(name+" Initiating Participant");
 
-					Process initiatingProcess = createProcess();
-					initiatingProcess.setName(name+" Initiating Process");
-					initiatingParticipant.setProcessRef(initiatingProcess);
+//					Process initiatingProcess = createProcess();
+//					initiatingProcess.setName(name+" Initiating Process");
+//					initiatingParticipant.setProcessRef(initiatingProcess);
 					
 					Participant nonInitiatingParticipant = create(Participant.class);
 					nonInitiatingParticipant.setName(name+" Non-initiating Participant");
 
-					Process nonInitiatingProcess = createProcess();
-					nonInitiatingProcess.setName(name+" Non-initiating Process");
-					nonInitiatingParticipant.setProcessRef(nonInitiatingProcess);
+//					Process nonInitiatingProcess = createProcess();
+//					nonInitiatingProcess.setName(name+" Non-initiating Process");
+//					nonInitiatingParticipant.setProcessRef(nonInitiatingProcess);
 					
 					choreography.getParticipants().add(initiatingParticipant);
 					choreography.getParticipants().add(nonInitiatingParticipant);
@@ -904,7 +904,13 @@ public class ModelHandler {
 
 		List<BPMNDiagram> diagrams = getAll(BPMNDiagram.class);
 		for (BPMNDiagram d : diagrams) {
-			List<DiagramElement> planeElement = d.getPlane().getPlaneElement();
+			// Process elements correspond to BPMNPlane DI elements
+			BPMNPlane plane = d.getPlane();
+			BaseElement be = plane.getBpmnElement();
+			if (be!=null && id.equals(be.getId()))
+				return plane;
+			
+			List<DiagramElement> planeElement = plane.getPlaneElement();
 			
 			for (DiagramElement elem : planeElement) {
 				if (elem instanceof BPMNShape && ((BPMNShape) elem).getBpmnElement() != null &&
