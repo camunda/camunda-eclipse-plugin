@@ -28,6 +28,7 @@ package org.eclipse.bpmn2.modeler.core.model;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -87,6 +88,7 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 	public static final String BPMN2_CONTENT_TYPE_ID = "org.eclipse.bpmn2.content-type.xml";
 	protected BpmnXmlHelper xmlHelper;
 	protected QNameURIHandler uriHandler;
+	public HashMap xmlNameToFeatureMap = new HashMap();
 
 	/**
 	 * Creates an instance of the resource.
@@ -103,6 +105,13 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
         this.getDefaultLoadOptions().put(XMLResource.OPTION_URI_HANDLER, uriHandler);
         this.getDefaultLoadOptions().put(XMLResource.OPTION_DEFER_IDREF_RESOLUTION, true);
         this.getDefaultSaveOptions().put(XMLResource.OPTION_URI_HANDLER, uriHandler);
+
+        // some interesting things to play with:
+//        this.getDefaultLoadOptions().put(XMLResource.OPTION_LAX_FEATURE_PROCESSING, true);
+//        this.getDefaultLoadOptions().put(XMLResource.OPTION_LAX_WILDCARD_PROCESSING, true);
+//        this.getDefaultLoadOptions().put(XMLResource.OPTION_RECORD_UNKNOWN_FEATURE, true);
+//        this.getDefaultLoadOptions().put(XMLResource.OPTION_ANY_TYPE, BpmnDiPackage.eINSTANCE.getBPMNPlane());
+        this.getDefaultLoadOptions().put(XMLResource.OPTION_USE_XML_NAME_TO_FEATURE_MAP, xmlNameToFeatureMap);
 
         // only necessary if this resource will not be added to a ResourceSet instantly
         this.eAdapters().add(oppositeReferenceAdapter);

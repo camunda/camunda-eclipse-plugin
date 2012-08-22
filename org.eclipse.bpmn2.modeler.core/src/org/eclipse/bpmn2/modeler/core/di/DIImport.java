@@ -211,8 +211,17 @@ public class DIImport {
 					shapeQueue.offer(diShape);
 				}
 			}
+			else if (diagramElement instanceof BPMNPlane) {
+				List<DiagramElement> oe = ((BPMNPlane)diagramElement).getPlaneElement();
+				processShapes(shapeQueue);
+				importShapes(oe);
+				importConnections(oe);
+			}
 		}
-		
+		processShapes(shapeQueue);
+	}
+	
+	private void processShapes(Queue<BPMNShape> shapeQueue) {
 		// Process Queue
 		// First pass tries to find the missing BPMNShape container
 		// Second pass synthesizes missing containers 

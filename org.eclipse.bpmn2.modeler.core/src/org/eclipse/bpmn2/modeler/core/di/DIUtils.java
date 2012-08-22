@@ -196,15 +196,23 @@ public class DIUtils {
 		for (BPMNDiagram d : diagrams) {
 			BPMNPlane plane = d.getPlane();
 			List<DiagramElement> planeElements = plane.getPlaneElement();
-			for (DiagramElement de : planeElements) {
-				if (de instanceof BPMNShape) {
-					if (bpmnElement == ((BPMNShape)de).getBpmnElement())
-						return de;
-				}
-				if (de instanceof BPMNEdge) {
-					if (bpmnElement == ((BPMNEdge)de).getBpmnElement())
-						return de;
-				}
+			return findPlaneElement(planeElements, bpmnElement);
+		}
+		return null;
+	}
+
+	public static DiagramElement findPlaneElement(List<DiagramElement> planeElements, BaseElement bpmnElement) {
+		for (DiagramElement de : planeElements) {
+			if (de instanceof BPMNShape) {
+				if (bpmnElement == ((BPMNShape)de).getBpmnElement())
+					return de;
+			}
+			if (de instanceof BPMNEdge) {
+				if (bpmnElement == ((BPMNEdge)de).getBpmnElement())
+					return de;
+			}
+			else if (de instanceof BPMNPlane) {
+				return findPlaneElement(((BPMNPlane)de).getPlaneElement(), bpmnElement);
 			}
 		}
 		return null;

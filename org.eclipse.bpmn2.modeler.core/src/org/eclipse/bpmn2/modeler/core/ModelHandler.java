@@ -15,6 +15,8 @@ package org.eclipse.bpmn2.modeler.core;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.bpmn2.Artifact;
 import org.eclipse.bpmn2.Association;
@@ -75,6 +77,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.util.BasicFeatureMap;
+import org.eclipse.emf.ecore.xml.type.AnyType;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
@@ -785,6 +789,15 @@ public class ModelHandler {
 	void loadResource() {
 		try {
 			resource.load(null);
+			Map<EObject, AnyType> xmap = resource.getEObjectToExtensionMap();
+			for (Entry<EObject, AnyType> entry : xmap.entrySet()) {
+				EObject o = entry.getKey();
+				System.out.println(o);
+				BasicFeatureMap fm = (BasicFeatureMap) entry.getValue().getMixed();
+				for (org.eclipse.emf.ecore.util.FeatureMap.Entry e : fm) {
+					System.out.println("feature:"+e.getEStructuralFeature().getName());
+				}
+			}
 		} catch (IOException e) {
 			Activator.logError(e);
 		}
@@ -911,20 +924,26 @@ public class ModelHandler {
 				return plane;
 			
 			List<DiagramElement> planeElement = plane.getPlaneElement();
-			
-			for (DiagramElement elem : planeElement) {
-				if (elem instanceof BPMNShape && ((BPMNShape) elem).getBpmnElement() != null &&
-						id.equals(((BPMNShape) elem).getBpmnElement().getId())) {
-					return (elem);
-				} else if (elem instanceof BPMNEdge &&
-						id.equals(((BPMNEdge) elem).getBpmnElement().getId())) {
-					return (elem);
-				}
-			}
+			return findDIElement(planeElement, id);
 		}
 		return null;
 	}
 
+	public DiagramElement findDIElement(List<DiagramElement> planeElements, String id) {
+		for (DiagramElement elem : planeElements) {
+			if (elem instanceof BPMNShape && ((BPMNShape) elem).getBpmnElement() != null &&
+					id.equals(((BPMNShape) elem).getBpmnElement().getId())) {
+				return elem;
+			} else if (elem instanceof BPMNEdge &&
+					id.equals(((BPMNEdge) elem).getBpmnElement().getId())) {
+				return elem;
+			} else if (elem instanceof BPMNPlane) {
+				return findDIElement(((BPMNPlane)elem).getPlaneElement(), id);
+			}
+		}
+		return null;
+	}
+	
 	public BaseElement findElement(String id) {
 		if (id==null || id.isEmpty())
 			return null;
