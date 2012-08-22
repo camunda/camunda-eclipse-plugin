@@ -34,7 +34,7 @@ public class ProblemsReporter implements IValidationListener {
     	ErrorUtils.showErrorMessage("");
     	
         if (event.matches(IStatus.WARNING | IStatus.ERROR | IStatus.CANCEL)) {
-            // fabricate a multi-status for the MarkerUtil to consume
+            // fabricate a multi-errorList for the MarkerUtil to consume
             List<IConstraintStatus> results = event.getValidationResults();
             MultiStatus multi = new MultiStatus(
                   Activator.getDefault().PLUGIN_ID, 1,

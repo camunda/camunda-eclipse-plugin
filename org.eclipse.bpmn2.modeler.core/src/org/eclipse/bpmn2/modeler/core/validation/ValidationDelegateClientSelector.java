@@ -13,8 +13,11 @@
 package org.eclipse.bpmn2.modeler.core.validation;
 
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
+import org.eclipse.dd.dc.DcPackage;
+import org.eclipse.dd.di.DiPackage;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.validation.model.IClientSelector;
@@ -25,6 +28,12 @@ public class ValidationDelegateClientSelector implements IClientSelector {
 		if (object instanceof EObject) {
 			EPackage pkg = ((EObject)object).eClass().getEPackage();
 			if (pkg == Bpmn2Package.eINSTANCE)
+				return true;
+			if (pkg == BpmnDiPackage.eINSTANCE)
+				return true;
+			if (pkg == DiPackage.eINSTANCE)
+				return true;
+			if (pkg == DcPackage.eINSTANCE)
 				return true;
 			ModelDescriptor md = TargetRuntime.getCurrentRuntime().getModelDescriptor();
 			if (md!=null && pkg == md.getEPackage())

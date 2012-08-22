@@ -203,7 +203,7 @@ public class TableColumn extends ColumnTableProvider.Column implements ILabelPro
 		
 		boolean result = ModelUtil.setValue(getEditingDomain(), object, feature, value);
 //		if (result==false || getDiagramEditor().getDiagnostics()!=null) {
-//			// revert the change and display error status message.
+//			// revert the change and display error errorList message.
 //			ErrorUtils.showErrorMessage(getDiagramEditor().getDiagnostics().getMessage());
 //		}
 //		else {

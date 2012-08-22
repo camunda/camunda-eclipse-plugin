@@ -42,6 +42,7 @@ import org.eclipse.bpmn2.modeler.core.runtime.CustomTaskDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.FeatureContainerDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.validation.ValidateModelFeature;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.features.activity.AppendActivityFeature;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.AdHocSubProcessFeatureContainer;
@@ -541,6 +542,7 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 			}
 		}
 		
+//		list.add(new ValidateModelFeature(this));
 		return list.toArray(new ICustomFeature[list.size()]);
 	}
 

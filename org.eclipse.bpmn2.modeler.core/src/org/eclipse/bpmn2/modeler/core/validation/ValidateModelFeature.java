@@ -17,6 +17,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.validation.model.EvaluationMode;
 import org.eclipse.emf.validation.model.IConstraintStatus;
@@ -26,6 +27,7 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.services.Graphiti;
 
 /**
  * ValidateModelFeature
@@ -51,7 +53,7 @@ public class ValidateModelFeature extends AbstractCustomFeature {
 
     @Override
     public String getName() {
-        return "Validate";
+        return "Validate the selected object";
     }
 
     @Override
@@ -63,10 +65,15 @@ public class ValidateModelFeature extends AbstractCustomFeature {
     public void execute(ICustomContext context) {
         Set<EObject> selectedBOs = new LinkedHashSet<EObject>();
         List<? extends PictogramElement> elements = Collections.singletonList(getDiagram());
-        // if (context.getPictogramElements() != null &&
-        // context.getPictogramElements().length > 0) {
-        // elements = Arrays.asList(context.getPictogramElements());
-        // }
+         if (context.getPictogramElements() != null &&
+        		 context.getPictogramElements().length > 0) {
+        	 for (PictogramElement pe : context.getPictogramElements()) {
+        		 EObject[] bos = Graphiti.getLinkService().getAllBusinessObjectsForLinkedPictogramElement(pe);
+        		 for (EObject bo : bos) {
+        			 selectedBOs.add(bo);
+        		 }
+        	 }
+         }
 
         for (PictogramElement element : elements) {
             Object bo = getBusinessObjectForPictogramElement(element);

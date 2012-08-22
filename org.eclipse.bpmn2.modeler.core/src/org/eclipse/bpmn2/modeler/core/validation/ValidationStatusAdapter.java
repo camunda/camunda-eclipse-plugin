@@ -23,7 +23,7 @@ import org.eclipse.emf.common.notify.impl.AdapterImpl;
  * ValidationStatusAdapter
  * 
  * <p/>
- * An adapter for holding validation status associated with an EObject.
+ * An adapter for holding validation errorList associated with an EObject.
  */
 public class ValidationStatusAdapter extends AdapterImpl {
 
@@ -35,7 +35,7 @@ public class ValidationStatusAdapter extends AdapterImpl {
     }
 
     /**
-     * @return the validation status for the target object.
+     * @return the validation errorList for the target object.
      */
     public IStatus getValidationStatus() {
         switch (_validationStatus.size()) {
@@ -48,14 +48,14 @@ public class ValidationStatusAdapter extends AdapterImpl {
     }
 
     /**
-     * Clears the status associated with the target.
+     * Clears the errorList associated with the target.
      */
     public void clearValidationStatus() {
         _validationStatus.clear();
     }
 
     /**
-     * @param status the status to add/associate with the target.
+     * @param errorList the errorList to add/associate with the target.
      */
     public void addValidationStatus(IStatus status) {
         _validationStatus.add(status);

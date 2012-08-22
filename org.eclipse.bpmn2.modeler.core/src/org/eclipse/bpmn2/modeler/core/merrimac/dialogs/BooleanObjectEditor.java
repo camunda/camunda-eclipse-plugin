@@ -74,7 +74,7 @@ public class BooleanObjectEditor extends ObjectEditor {
 					});
 					
 //					if (getDiagramEditor().getDiagnostics()!=null) {
-//						// revert the change and display error status message.
+//						// revert the change and display error errorList message.
 //						button.setSelection((Boolean) object.eGet(feature));
 //						ErrorUtils.showErrorMessage(getDiagramEditor().getDiagnostics().getMessage());
 //					}

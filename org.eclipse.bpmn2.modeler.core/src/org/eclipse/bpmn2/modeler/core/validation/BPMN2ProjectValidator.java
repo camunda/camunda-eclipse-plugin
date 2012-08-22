@@ -58,7 +58,7 @@ public class BPMN2ProjectValidator extends AbstractValidator {
         ResourceSet rs = new ResourceSetImpl();
         Resource resource = rs.createResource(
                 URI.createPlatformResourceURI(event.getResource().getFullPath().toString(), false),
-                "org.switchyard.tools.ui.editor.content-type.xml");
+                "org.eclipse.bpmn2.content-type.xml");
         try {
             resource.load(null);
         } catch (IOException e) {
@@ -66,7 +66,7 @@ public class BPMN2ProjectValidator extends AbstractValidator {
         }
         ValidationResult result = new ValidationResult();
         if (resource.getContents().isEmpty()) {
-            ValidatorMessage message = ValidatorMessage.create("Invalid switchyard.xml file", event.getResource());
+            ValidatorMessage message = ValidatorMessage.create("Invalid bpmn2 file", event.getResource());
             message.setType(BPMN2_MARKER_ID);
             result.add(message);
         } else {

@@ -18,7 +18,7 @@ import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
  * ValidationStatusAdapterFactory
  * 
  * <p/>
- * Adds a validation status holder to an EObject.
+ * Adds a validation errorList holder to an EObject.
  */
 public class ValidationStatusAdapterFactory extends AdapterFactoryImpl {
 

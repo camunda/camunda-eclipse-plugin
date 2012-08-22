@@ -37,6 +37,7 @@ import org.eclipse.bpmn2.modeler.ui.wizards.Bpmn2DiagramEditorInput;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -52,6 +53,7 @@ import org.eclipse.emf.common.util.BasicDiagnostic;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EValidator;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -87,6 +89,7 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SaveAsDialog;
+import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
@@ -96,7 +99,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabDescriptorProvider;
  * 
  */
 @SuppressWarnings("restriction")
-public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListener {
+public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListener, IGotoMarker {
 
 	public static final String EDITOR_ID = "org.eclipse.bpmn2.modeler.ui.bpmn2editor";
 	public static final String CONTRIBUTOR_ID = "org.eclipse.bpmn2.modeler.ui.PropertyContributor";
@@ -363,6 +366,29 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		}
 	}
 	
+    @Override
+    public void gotoMarker(IMarker marker) {
+        final EObject target = getTargetObject(marker);
+        if (target == null) {
+            return;
+        }
+        final PictogramElement pe = getDiagramTypeProvider().getFeatureProvider().getPictogramElementForBusinessObject(
+                target);
+        if (pe == null) {
+            return;
+        }
+        selectPictogramElements(new PictogramElement[] {pe });
+    }
+
+    private EObject getTargetObject(IMarker marker) {
+        final String uriString = marker.getAttribute(EValidator.URI_ATTRIBUTE, null);
+        final URI uri = uriString == null ? null : URI.createURI(uriString);
+        if (uri == null) {
+            return null;
+        }
+        return getEditingDomain().getResourceSet().getEObject(uri, false);
+    }
+
 	private void removeWorkbenchListener()
 	{
 		if (workbenchListener!=null) {

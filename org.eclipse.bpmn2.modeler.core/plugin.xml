@@ -25,7 +25,7 @@
                   lang="Java"
                   class="org.eclipse.bpmn2.modeler.core.validation.ValidIdConstraint"
                   severity="CANCEL"
-                  mode="Live"
+                  mode="Batch"
                   name="Valid IDs"
                   id="org.eclipse.bpmn2.modeler.core.validation.ValidId"
                   statusCode="1">
@@ -86,6 +86,32 @@
 						self.id->notEmpty() implies bpmn2::BaseElement.allInstances()->select(s | s.id = self.id)->size() <= 1
 					]]>
 			</constraint>
+			<constraint
+					class="org.eclipse.bpmn2.modeler.core.validation.Bpmn2BatchValidationConstraint"
+					id="org.eclipse.bpmn2.modeler.core.validation/general"
+					isEnabledByDefault="true"
+					lang="Java"
+					mode="Batch"
+					name="General Diagram Validation"
+					severity="ERROR"
+					statusCode="1">
+				<message>
+				    General Error "{0}"
+				</message>
+				<description>
+				    General Error
+				</description>
+				<target
+				   class="BPMNDiagram">
+				</target>
+				<target
+				   class="Definitions">
+				</target>
+				<target
+				   class="BaseElement">
+				</target>
+			</constraint>
+ 
          </constraints>
       </constraintProvider>
    </extension>
