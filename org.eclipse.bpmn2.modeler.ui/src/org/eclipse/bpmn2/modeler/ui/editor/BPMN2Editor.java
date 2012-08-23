@@ -13,7 +13,11 @@
 package org.eclipse.bpmn2.modeler.ui.editor;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNDiagram;
@@ -31,17 +35,23 @@ import org.eclipse.bpmn2.modeler.core.utils.ErrorUtils;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
+import org.eclipse.bpmn2.modeler.core.validation.BPMN2ProjectValidator;
+import org.eclipse.bpmn2.modeler.core.validation.BPMN2ValidationStatusLoader;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.wizards.BPMN2DiagramCreator;
 import org.eclipse.bpmn2.modeler.ui.wizards.Bpmn2DiagramEditorInput;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
@@ -50,11 +60,16 @@ import org.eclipse.emf.common.util.BasicDiagnostic;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EValidator;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain.Lifecycle;
 import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
+import org.eclipse.emf.validation.model.EvaluationMode;
+import org.eclipse.emf.validation.service.IBatchValidator;
+import org.eclipse.emf.validation.service.ModelValidationService;
+import org.eclipse.emf.validation.service.ValidationEvent;
 import org.eclipse.emf.workspace.util.WorkspaceSynchronizer;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
@@ -62,10 +77,12 @@ import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IPeService;
+import org.eclipse.graphiti.ui.editor.DefaultPersistencyBehavior;
 import org.eclipse.graphiti.ui.editor.DefaultUpdateBehavior;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.graphiti.ui.internal.editor.GFPaletteRoot;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
@@ -84,17 +101,19 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SaveAsDialog;
+import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.progress.IProgressService;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabDescriptorProvider;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.eclipse.wst.validation.ValidationState;
 
 /**
  * 
  */
 @SuppressWarnings("restriction")
-public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListener {
+public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListener, IGotoMarker {
 
 	public static final String EDITOR_ID = "org.eclipse.bpmn2.modeler.ui.bpmn2editor";
 	public static final String CONTRIBUTOR_ID = "org.eclipse.bpmn2.modeler.ui.PropertyContributor";
@@ -108,6 +127,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	
 	private IWorkbenchListener workbenchListener;
 	private IPartListener2 selectionListener;
+    private IResourceChangeListener resourceChangeListener;
 	private boolean workbenchShutdown = false;
 	private static BPMN2Editor activeEditor;
 	private static ITabDescriptorProvider tabDescriptorProvider;
@@ -173,13 +193,19 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		
 		super.init(site, input);
 		addSelectionListener();
+		addResourceChangeListener();
 	}
 	
 	@Override
 	protected DefaultUpdateBehavior createUpdateBehavior() {
 		return new BPMN2EditorUpdateBehavior(this);
 	}
-
+	
+    @Override
+    protected DefaultPersistencyBehavior createPersistencyBehavior() {
+    	return new BPMN2PersistencyBehavior(this);
+    }
+    
 	public Bpmn2Preferences getPreferences() {
 		if (preferences==null) {
 			assert(modelFile!=null);
@@ -291,6 +317,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		}
 		basicCommandStack.saveIsDone();
 		basicCommandStack.flush();
+		loadMarkers();
 	}
 	
 	private void importDiagram() {
@@ -354,6 +381,42 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		}
 	}
 	
+    @Override
+    public void gotoMarker(IMarker marker) {
+        final EObject target = getTargetObject(marker);
+        if (target == null) {
+            return;
+        }
+        final PictogramElement pe = getDiagramTypeProvider().getFeatureProvider().getPictogramElementForBusinessObject(
+                target);
+        if (pe == null) {
+            return;
+        }
+        selectPictogramElements(new PictogramElement[] {pe });
+    }
+
+    private void loadMarkers() {
+        // read in the markers
+        BPMN2ValidationStatusLoader vsl = new BPMN2ValidationStatusLoader(this);
+
+        try {
+            vsl.load(Arrays.asList(getModelFile().findMarkers(
+            		BPMN2ProjectValidator.BPMN2_MARKER_ID, true, IResource.DEPTH_ZERO)));
+        } catch (CoreException e) {
+            Activator.logStatus(e.getStatus());
+        }
+
+    }
+    
+    private EObject getTargetObject(IMarker marker) {
+        final String uriString = marker.getAttribute(EValidator.URI_ATTRIBUTE, null);
+        final URI uri = uriString == null ? null : URI.createURI(uriString);
+        if (uri == null) {
+            return null;
+        }
+        return getEditingDomain().getResourceSet().getEObject(uri, false);
+    }
+
 	private void removeWorkbenchListener()
 	{
 		if (workbenchListener!=null) {
@@ -414,6 +477,20 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		}
 	}
 
+	private void addResourceChangeListener() {
+		if (resourceChangeListener==null) {
+			resourceChangeListener = new BPMN2ResourceChangeListener(this);
+	        modelFile.getWorkspace().addResourceChangeListener(resourceChangeListener, IResourceChangeEvent.POST_BUILD);
+		}
+	}
+	
+	private void removeResourceChangeListener() {
+		if (resourceChangeListener!=null) {
+	        modelFile.getWorkspace().removeResourceChangeListener(resourceChangeListener);
+			resourceChangeListener = null;
+		}
+	}
+	
 	public void setEditorTitle(final String title) {
 		Display display = getSite().getShell().getDisplay();
 		display.asyncExec(new Runnable() {
@@ -489,6 +566,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		if (!workbenchShutdown)
 			BPMN2DiagramCreator.dispose(diagramFile);
 		removeWorkbenchListener();
+		removeResourceChangeListener();
 		getPreferences().dispose();
 	}
 
@@ -502,6 +580,16 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	
 	public ModelHandler getModelHandler() {
 		return modelHandler;
+	}
+
+	@Override
+	public void doSave(IProgressMonitor monitor) {
+		super.doSave(monitor);
+
+		Resource resource = getResourceSet().getResource(modelUri, false);
+		
+		if (BPMN2ProjectValidator.validateOnSave(resource, monitor))
+			loadMarkers();
 	}
 
 	@Override

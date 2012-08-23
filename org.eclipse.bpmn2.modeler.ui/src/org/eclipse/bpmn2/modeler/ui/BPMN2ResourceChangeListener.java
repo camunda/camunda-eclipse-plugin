@@ -32,7 +32,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * @author Bob Brodt
- *
+ * @deprecated
  */
 public class BPMN2ResourceChangeListener implements IResourceChangeListener {
 

@@ -16,6 +16,7 @@ package org.eclipse.bpmn2.modeler.ui.editor;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.ui.actions.ActionRegistry;
@@ -41,6 +42,8 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
@@ -70,7 +73,7 @@ import org.w3c.dom.Node;
  * diagrams. Whether or not these types of files are actually deployable and/or executable
  * is another story ;)
  */
-public class BPMN2MultiPageEditor extends MultiPageEditorPart {
+public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IGotoMarker {
 
 	BPMN2Editor designEditor;
 	StructuredTextEditor sourceViewer;
@@ -191,6 +194,19 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 			return designEditor.getPartName();
 		return super.getPartName();
 	}
+
+    /**
+     * Method declared on IEditorPart.
+     * 
+     * @param marker Marker to look for
+     */
+    @Override
+    public void gotoMarker(IMarker marker) {
+        if (getActivePage() < 0) {
+            setActivePage(0);
+        }
+        IDE.gotoMarker(getEditor(getActivePage()), marker);
+    }
 
 	@Override
 	protected void pageChange(int newPageIndex) {
