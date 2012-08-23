@@ -431,41 +431,46 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
     @Override
     public IDecorator[] getDecorators(PictogramElement pe) {
         List<IDecorator> decorators = new ArrayList<IDecorator>();
-        IFeatureProvider featureProvider = getFeatureProvider();
-        Object bo = featureProvider.getBusinessObjectForPictogramElement(pe);
-        if (bo!=null) {
-	        ValidationStatusAdapter statusAdapter = (ValidationStatusAdapter) EcoreUtil.getRegisteredAdapter((EObject) bo,
-	                ValidationStatusAdapter.class);
-	        if (statusAdapter != null) {
-	            final IImageDecorator decorator;
-	            final IStatus status = statusAdapter.getValidationStatus();
-	            switch (status.getSeverity()) {
-	            case IStatus.INFO:
-	                decorator = new ImageDecorator(IPlatformImageConstants.IMG_ECLIPSE_INFORMATION_TSK);
-	                break;
-	            case IStatus.WARNING:
-	                decorator = new ImageDecorator(IPlatformImageConstants.IMG_ECLIPSE_WARNING_TSK);
-	                break;
-	            case IStatus.ERROR:
-	                decorator = new ImageDecorator(IPlatformImageConstants.IMG_ECLIPSE_ERROR_TSK);
-	                break;
-	            default:
-	                decorator = null;
-	                break;
-	            }
-	            if (decorator != null) {
-	                GraphicsAlgorithm ga = getSelectionBorder(pe);
-	                if (ga == null) {
-	                    ga = pe.getGraphicsAlgorithm();
-	                }
-	                decorator.setX(ga.getWidth() - 10);
-	                decorator.setY(ga.getHeight() - 10);
-	                decorator.setMessage(status.getMessage());
-	                decorators.add(decorator);
-	            }
+
+        // labels should not be decorated
+		String labelProperty = Graphiti.getPeService().getPropertyValue(pe, GraphicsUtil.LABEL_PROPERTY);
+		if (!Boolean.parseBoolean(labelProperty)) {
+	        IFeatureProvider featureProvider = getFeatureProvider();
+	        Object bo = featureProvider.getBusinessObjectForPictogramElement(pe);
+	        if (bo!=null) {
+		        ValidationStatusAdapter statusAdapter = (ValidationStatusAdapter) EcoreUtil.getRegisteredAdapter((EObject) bo,
+		                ValidationStatusAdapter.class);
+		        if (statusAdapter != null) {
+		            final IImageDecorator decorator;
+		            final IStatus status = statusAdapter.getValidationStatus();
+		            switch (status.getSeverity()) {
+		            case IStatus.INFO:
+		                decorator = new ImageDecorator(IPlatformImageConstants.IMG_ECLIPSE_INFORMATION_TSK);
+		                break;
+		            case IStatus.WARNING:
+		                decorator = new ImageDecorator(IPlatformImageConstants.IMG_ECLIPSE_WARNING_TSK);
+		                break;
+		            case IStatus.ERROR:
+		                decorator = new ImageDecorator(IPlatformImageConstants.IMG_ECLIPSE_ERROR_TSK);
+		                break;
+		            default:
+		                decorator = null;
+		                break;
+		            }
+		            if (decorator != null) {
+		                GraphicsAlgorithm ga = getSelectionBorder(pe);
+		                if (ga == null) {
+		                    ga = pe.getGraphicsAlgorithm();
+		                }
+		                decorator.setX(ga.getWidth() - 10);
+		                decorator.setY(ga.getHeight() - 10);
+		                decorator.setMessage(status.getMessage());
+		                decorators.add(decorator);
+		            }
+		        }
 	        }
-        }
-        
+		}
+		
         return decorators.toArray(new IDecorator[decorators.size()]);
     }
 }

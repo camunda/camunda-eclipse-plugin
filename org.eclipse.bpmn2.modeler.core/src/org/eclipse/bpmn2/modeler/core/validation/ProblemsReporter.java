@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.emf.validation.marker.MarkerUtil;
+import org.eclipse.emf.validation.model.EvaluationMode;
 import org.eclipse.emf.validation.model.IConstraintStatus;
 import org.eclipse.emf.validation.service.IValidationListener;
 import org.eclipse.emf.validation.service.ValidationEvent;
@@ -32,34 +33,22 @@ import org.eclipse.emf.validation.service.ValidationEvent;
 public class ProblemsReporter implements IValidationListener {
     public void validationOccurred(ValidationEvent event) {
     	ErrorUtils.showErrorMessage("");
-    	
-        if (event.matches(IStatus.WARNING | IStatus.ERROR | IStatus.CANCEL)) {
-            // fabricate a multi-errorList for the MarkerUtil to consume
-            List<IConstraintStatus> results = event.getValidationResults();
-            MultiStatus multi = new MultiStatus(
-                  Activator.getDefault().PLUGIN_ID, 1,
-                  (IStatus[]) results.toArray(new IStatus[results.size()]),
-                  "OCL validation errors found", null);
-
-			
-			for (IStatus s : results) {
-				ErrorUtils.showErrorMessage(s.getMessage());
-//	            // there is at least one result
-//	            Resource resource = results.get(0).getTarget().eResource();
-//				if (s.getSeverity() == IStatus.WARNING) {
-//					if (resource != null) {
-//						resource.getWarnings().add(new ValidationDiagnostic(s, resource));	
-//					}
-//				}
-			}
-			
-            try {
-                // create problem markers on the appropriate resources
-                MarkerUtil.createMarkers(multi);
-            } catch (CoreException e) {
-                // creation of problem markers failed for some reason
-                Activator.getDefault().getLog().log(e.getStatus());
-            }
-        }
-    }    
+    	// only report Live validation events here
+    	// Batch validation is done by the WST project validator during building.
+    	if (event.getEvaluationMode() == EvaluationMode.LIVE) {
+	        if (event.matches(IStatus.WARNING | IStatus.ERROR | IStatus.CANCEL)) {
+	            // fabricate a multi-errorList for the MarkerUtil to consume
+	            List<IConstraintStatus> results = event.getValidationResults();
+	            MultiStatus multi = new MultiStatus(
+	                  Activator.getDefault().PLUGIN_ID, 1,
+	                  (IStatus[]) results.toArray(new IStatus[results.size()]),
+	                  "OCL validation errors found", null);
+	
+				
+				for (IStatus s : results) {
+					ErrorUtils.showErrorMessage(s.getMessage());
+				}
+	        }
+	    }
+    }
 }

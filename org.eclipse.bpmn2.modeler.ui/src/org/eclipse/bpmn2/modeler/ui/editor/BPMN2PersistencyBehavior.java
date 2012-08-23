@@ -24,17 +24,7 @@ public class BPMN2PersistencyBehavior extends DefaultPersistencyBehavior {
     public Diagram loadDiagram(URI modelUri) {
     	Diagram diagram = super.loadDiagram(modelUri);
 
-        // read in the markers
-        BPMN2ValidationStatusLoader vsl = new BPMN2ValidationStatusLoader(editor);
-
-        try {
-            vsl.load(Arrays.asList(editor.getModelFile().findMarkers(
-            		BPMN2ProjectValidator.BPMN2_MARKER_ID, true, IResource.DEPTH_ZERO)));
-        } catch (CoreException e) {
-            Activator.logStatus(e.getStatus());
-        }
-
-        return diagram;
+    	return diagram;
     }
 
 }

@@ -87,16 +87,16 @@
 					]]>
 			</constraint>
 			<constraint
-					class="org.eclipse.bpmn2.modeler.core.validation.Bpmn2BatchValidationConstraint"
-					id="org.eclipse.bpmn2.modeler.core.validation/general"
+					class="org.eclipse.bpmn2.modeler.core.validation.BPMN2BatchValidationConstraint"
+					id="org.eclipse.bpmn2.modeler.core.validation.basic"
 					isEnabledByDefault="true"
 					lang="Java"
 					mode="Batch"
-					name="General Diagram Validation"
+					name="Basic Diagram Validation"
 					severity="ERROR"
 					statusCode="1">
 				<message>
-				    General Error "{0}"
+				    {0}
 				</message>
 				<description>
 				    General Error
@@ -165,6 +165,7 @@
         </exclude>
      </validator>
   </extension>
+  
   <extension
         id="org.eclipse.bpmn2.modeler.core.problemMarker"
         name="BPMN 2.0 Modeler"

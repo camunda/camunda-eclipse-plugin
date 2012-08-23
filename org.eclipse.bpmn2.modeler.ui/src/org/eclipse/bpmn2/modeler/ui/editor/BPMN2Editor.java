@@ -13,7 +13,11 @@
 package org.eclipse.bpmn2.modeler.ui.editor;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNDiagram;
@@ -31,6 +35,8 @@ import org.eclipse.bpmn2.modeler.core.utils.ErrorUtils;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
+import org.eclipse.bpmn2.modeler.core.validation.BPMN2ProjectValidator;
+import org.eclipse.bpmn2.modeler.core.validation.BPMN2ValidationStatusLoader;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.wizards.BPMN2DiagramCreator;
 import org.eclipse.bpmn2.modeler.ui.wizards.Bpmn2DiagramEditorInput;
@@ -45,6 +51,7 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
@@ -59,6 +66,10 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain.Lifecycle;
 import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
+import org.eclipse.emf.validation.model.EvaluationMode;
+import org.eclipse.emf.validation.service.IBatchValidator;
+import org.eclipse.emf.validation.service.ModelValidationService;
+import org.eclipse.emf.validation.service.ValidationEvent;
 import org.eclipse.emf.workspace.util.WorkspaceSynchronizer;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
@@ -71,6 +82,7 @@ import org.eclipse.graphiti.ui.editor.DefaultUpdateBehavior;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.graphiti.ui.internal.editor.GFPaletteRoot;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
@@ -92,8 +104,10 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.progress.IProgressService;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabDescriptorProvider;
+import org.eclipse.wst.validation.ValidationState;
 
 /**
  * 
@@ -303,6 +317,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		}
 		basicCommandStack.saveIsDone();
 		basicCommandStack.flush();
+		loadMarkers();
 	}
 	
 	private void importDiagram() {
@@ -380,6 +395,19 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
         selectPictogramElements(new PictogramElement[] {pe });
     }
 
+    private void loadMarkers() {
+        // read in the markers
+        BPMN2ValidationStatusLoader vsl = new BPMN2ValidationStatusLoader(this);
+
+        try {
+            vsl.load(Arrays.asList(getModelFile().findMarkers(
+            		BPMN2ProjectValidator.BPMN2_MARKER_ID, true, IResource.DEPTH_ZERO)));
+        } catch (CoreException e) {
+            Activator.logStatus(e.getStatus());
+        }
+
+    }
+    
     private EObject getTargetObject(IMarker marker) {
         final String uriString = marker.getAttribute(EValidator.URI_ATTRIBUTE, null);
         final URI uri = uriString == null ? null : URI.createURI(uriString);
@@ -552,6 +580,16 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	
 	public ModelHandler getModelHandler() {
 		return modelHandler;
+	}
+
+	@Override
+	public void doSave(IProgressMonitor monitor) {
+		super.doSave(monitor);
+
+		Resource resource = getResourceSet().getResource(modelUri, false);
+		
+		if (BPMN2ProjectValidator.validateOnSave(resource, monitor))
+			loadMarkers();
 	}
 
 	@Override
