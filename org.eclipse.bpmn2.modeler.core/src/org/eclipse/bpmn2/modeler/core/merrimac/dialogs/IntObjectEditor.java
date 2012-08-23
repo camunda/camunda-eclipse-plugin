@@ -116,7 +116,7 @@ public class IntObjectEditor extends ObjectEditor {
 				};
 				getDiagramEditor().getEditingDomain().getCommandStack().execute(command);
 //				if (getDiagramEditor().getDiagnostics()!=null) {
-//					// revert the change and display error status message.
+//					// revert the change and display error errorList message.
 //					text.setText((String) object.eGet(feature));
 //					ErrorUtils.showErrorMessage(getDiagramEditor().getDiagnostics().getMessage());
 //				}

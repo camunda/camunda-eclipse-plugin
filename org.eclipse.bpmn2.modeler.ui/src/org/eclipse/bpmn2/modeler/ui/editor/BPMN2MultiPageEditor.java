@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.wizards.Bpmn2DiagramEditorInput;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -30,9 +31,17 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.ide.IGotoMarker;
+import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.MultiPageEditorSite;
+import org.eclipse.ui.part.MultiPageSelectionProvider;
+import org.eclipse.wst.sse.ui.StructuredTextEditor;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * This class implements a multi-page version of the BPMN2 Modeler (BPMN2Editor class).
@@ -48,12 +57,12 @@ import org.eclipse.ui.part.MultiPageEditorSite;
  * "view only".
  * 
  * Future versions will support multiple diagrams per .bpmn file with the ability to add
- * and remove bpmnDiagrams containing different diagram types. It should be possible for the user
+ * and remove pages containing different diagram types. It should be possible for the user
  * to create a single file that contains a mix of Process, Collaboration and Choreography
  * diagrams. Whether or not these types of files are actually deployable and/or executable
  * is another story ;)
  */
-public class BPMN2MultiPageEditor extends MultiPageEditorPart {
+public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IGotoMarker {
 
 	DesignEditor designEditor;
 	SourceViewer sourceViewer;
@@ -86,6 +95,18 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart {
 		return super.getPartName();
 	}
 
+    /**
+     * Method declared on IEditorPart.
+     * 
+     * @param marker Marker to look for
+     */
+    @Override
+    public void gotoMarker(IMarker marker) {
+        if (getActivePage() < 0) {
+            setActivePage(0);
+        }
+        IDE.gotoMarker(getEditor(getActivePage()), marker);
+    }
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.MultiPageEditorPart#createPages()
 	 */
