@@ -87,11 +87,6 @@ public class BPMN2EditorUpdateBehavior extends DefaultUpdateBehavior {
 		// we want first crack at these notifications!
 		workspaceSynchronizer = new WorkspaceSynchronizer(getEditingDomain(),
 				new BPMN2EditorWorkspaceSynchronizerDelegate(diagramEditor));
-		
-        // add the adapter factory for tracking validation errorList
-        ResourceSet resourceSet = domain.getResourceSet();
-        resourceSet.getAdapterFactories().add(new ValidationStatusAdapterFactory());
-		
 		super.initializeEditingDomain(domain);
 	}
 	

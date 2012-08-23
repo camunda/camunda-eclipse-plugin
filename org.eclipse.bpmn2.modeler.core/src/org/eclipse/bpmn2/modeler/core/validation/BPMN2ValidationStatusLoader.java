@@ -13,6 +13,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EValidator;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.edit.ui.util.EditUIMarkerHelper;
 import org.eclipse.emf.validation.marker.MarkerUtil;
@@ -42,6 +43,15 @@ public class BPMN2ValidationStatusLoader {
             }
             ValidationStatusAdapter statusAdapter = (ValidationStatusAdapter) EcoreUtil.getRegisteredAdapter(
                     markedObject, ValidationStatusAdapter.class);
+    		
+            // add the adapter factory for tracking validation errors
+            if (statusAdapter==null) {
+	            ResourceSet resourceSet = editor.getEditingDomain().getResourceSet();
+	            resourceSet.getAdapterFactories().add(new ValidationStatusAdapterFactory());
+	            statusAdapter = (ValidationStatusAdapter) EcoreUtil.getRegisteredAdapter(
+	                    markedObject, ValidationStatusAdapter.class);
+            }
+
             statusAdapter.addValidationStatus(convertMarker(marker, markedObject));
             touched.add(markedObject);
         }
