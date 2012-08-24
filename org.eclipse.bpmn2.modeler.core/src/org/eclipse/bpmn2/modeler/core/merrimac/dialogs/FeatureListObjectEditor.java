@@ -174,6 +174,7 @@ public class FeatureListObjectEditor extends MultivalueObjectEditor {
 	public void notifyChanged(Notification notification) {
 		if (this.object == notification.getNotifier() &&
 				this.feature == notification.getFeature()) {
+			super.notifyChanged(notification);
 			updateTextField();
 		}
 	}

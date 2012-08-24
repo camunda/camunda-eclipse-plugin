@@ -236,7 +236,7 @@ public class ListAndDetailCompositeBase extends Composite implements ResourceSet
 		return null;
 	}
 
-	private void getAllChildWidgets(Composite parent, List<Control>kids) {
+	protected void getAllChildWidgets(Composite parent, List<Control>kids) {
 		if (parent!=null && !parent.isDisposed()) {
 			Control[] cs = parent.getChildren();
 			for (Control c : cs) {

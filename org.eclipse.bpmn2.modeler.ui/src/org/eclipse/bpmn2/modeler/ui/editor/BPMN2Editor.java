@@ -93,6 +93,8 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPartListener2;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.IWorkbenchPage;
@@ -104,8 +106,10 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.part.IPage;
 import org.eclipse.ui.progress.IProgressService;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
+import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.ITabDescriptorProvider;
 import org.eclipse.wst.validation.ValidationState;
 
@@ -405,7 +409,23 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
         } catch (CoreException e) {
             Activator.logStatus(e.getStatus());
         }
-
+        
+		IWorkbenchPage page = getEditorSite().getPage();
+		String viewID = "org.eclipse.ui.views.PropertySheet";
+		try {
+			IViewReference[] views = page.getViewReferences();
+			for (IViewReference v : views) {
+				if (viewID.equals(v.getId())) {
+					PropertySheet ps = (PropertySheet)v.getView(true);
+					IPage pp = ps.getCurrentPage();
+					if (pp instanceof Bpmn2TabbedPropertySheetPage) {
+						((Bpmn2TabbedPropertySheetPage)pp).refresh();
+					}
+				}
+			}
+		}
+		catch (Exception e) {
+		}
     }
     
     private EObject getTargetObject(IMarker marker) {

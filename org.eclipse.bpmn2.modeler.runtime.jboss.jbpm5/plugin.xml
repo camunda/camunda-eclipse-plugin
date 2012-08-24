@@ -1215,4 +1215,124 @@
     </imageProvider>
  </extension>
 	
+ <extension
+         point="org.eclipse.emf.validation.constraintProviders">
+      <category
+            name="jBPM Constraints"
+            id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5"/>
+      <constraintProvider cache="true">
+         <package namespaceUri="http://www.omg.org/spec/BPMN/20100524/MODEL-XMI"/>
+         <constraints categories="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5">
+            <constraint
+                  lang="Java"
+                  class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.ProcessConstraint"
+                  severity="ERROR"
+                  mode="Batch"
+                  name="Process Validation"
+                  id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.Process"
+                  statusCode="1">
+               <description>
+                  Process Name, ID and Package Name validation.
+               </description>
+               <message>
+                  {0}
+               </message>
+               <target class="Process"/>
+            </constraint>
+            <constraint
+                  lang="Java"
+                  class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.BusinessRuleTaskConstraint"
+                  severity="ERROR"
+                  mode="Batch"
+                  name="Business Rule Task Validation"
+                  id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.BusinessRuleTask"
+                  statusCode="1">
+               <description>
+                  Business Rule Task validation.
+               </description>
+               <message>
+                  {0}
+               </message>
+               <target class="BusinessRuleTask"/>
+            </constraint>
+            <constraint
+                  lang="Java"
+                  class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.UserTaskConstraint"
+                  severity="WARNING"
+                  mode="Batch"
+                  name="User Task Validation"
+                  id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.UserTask"
+                  statusCode="1">
+               <description>
+                  User Task validation.
+               </description>
+               <message>
+                  {0}
+               </message>
+               <target class="UserTask"/>
+            </constraint>
+            <constraint
+                  lang="Java"
+                  class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.TaskConstraint"
+                  severity="WARNING"
+                  mode="Batch"
+                  name="Task Validation"
+                  id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.Task"
+                  statusCode="1">
+               <description>
+                  Task validation.
+               </description>
+               <message>
+                  {0}
+               </message>
+               <target class="Task"/>
+            </constraint>
+            <constraint
+                  lang="Java"
+                  class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.GatewayConstraint"
+                  severity="WARNING"
+                  mode="Batch"
+                  name="Gateway Validation"
+                  id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.Gateway"
+                  statusCode="1">
+               <description>
+                  Gateway validation.
+               </description>
+               <message>
+                  {0}
+               </message>
+               <target class="Gateway"/>
+            </constraint>
+            <constraint
+                  lang="Java"
+                  class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.CallActivityConstraint"
+                  severity="WARNING"
+                  mode="Batch"
+                  name="CallActivity Validation"
+                  id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.CallActivity"
+                  statusCode="1">
+               <description>
+                  CallActivity validation.
+               </description>
+               <message>
+                  {0}
+               </message>
+               <target class="CallActivity"/>
+            </constraint>
+         </constraints>
+      </constraintProvider>
+   </extension>
+
+   <extension
+         point="org.eclipse.emf.validation.constraintBindings">
+      <clientContext
+            default="false"
+            id="org.eclipse.bpmn2.modeler.core.validationContext">
+         <selector class="org.eclipse.bpmn2.modeler.core.validation.ValidationDelegateClientSelector"/>
+      </clientContext>
+      <binding
+            context="org.eclipse.bpmn2.modeler.core.validationContext"
+            category="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5"/>
+   </extension>
+	
 </plugin>

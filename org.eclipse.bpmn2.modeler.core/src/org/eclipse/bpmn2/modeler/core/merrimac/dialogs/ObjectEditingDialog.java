@@ -99,6 +99,8 @@ public class ObjectEditingDialog extends FormDialog {
 		data.right = new FormAttachment(100, 0);
 		dialogContent.setLayoutData(data);
 
+		getShell().setSize(600,400);
+		
 		form.setContent(body);
 	}
 	

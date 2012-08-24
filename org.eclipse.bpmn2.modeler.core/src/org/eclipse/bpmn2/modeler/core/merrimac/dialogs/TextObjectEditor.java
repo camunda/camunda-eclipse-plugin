@@ -158,6 +158,7 @@ public class TextObjectEditor extends ObjectEditor {
 
 	@Override
 	public void notifyChanged(Notification notification) {
+		super.notifyChanged(notification);
 		if (this.object == notification.getNotifier() &&
 				this.feature == notification.getFeature()) {
 			updateText();

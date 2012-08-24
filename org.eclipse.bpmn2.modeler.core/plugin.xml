@@ -88,28 +88,33 @@
 			</constraint>
 			<constraint
 					class="org.eclipse.bpmn2.modeler.core.validation.BPMN2BatchValidationConstraint"
-					id="org.eclipse.bpmn2.modeler.core.validation.basic"
+					id="org.eclipse.bpmn2.modeler.core.validation.error"
 					isEnabledByDefault="true"
 					lang="Java"
 					mode="Batch"
-					name="Basic Diagram Validation"
+					name="Errors"
 					severity="ERROR"
 					statusCode="1">
-				<message>
-				    {0}
-				</message>
-				<description>
-				    General Error
-				</description>
-				<target
-				   class="BPMNDiagram">
-				</target>
-				<target
-				   class="Definitions">
-				</target>
-				<target
-				   class="BaseElement">
-				</target>
+				<message>{0}</message>
+				<description>Diagram Validation Errors</description>
+				<target class="BPMNDiagram"/>
+				<target class="Definitions"/>
+				<target class="BaseElement"/>
+			</constraint>
+ 			<constraint
+					class="org.eclipse.bpmn2.modeler.core.validation.BPMN2BatchValidationConstraint"
+					id="org.eclipse.bpmn2.modeler.core.validation.warning"
+					isEnabledByDefault="true"
+					lang="Java"
+					mode="Batch"
+					name="Warnings"
+					severity="WARNING"
+					statusCode="1">
+				<message>{0}</message>
+				<description>Diagram Validation Warnings</description>
+				<target class="BPMNDiagram"/>
+				<target class="Definitions"/>
+				<target class="BaseElement"/>
 			</constraint>
  
          </constraints>

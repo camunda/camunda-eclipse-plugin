@@ -549,6 +549,43 @@ public class ModelUtil {
 		return list;
 	}
 	
+	public static EStructuralFeature getAnyAttribute(EObject object, String name) {
+		EStructuralFeature anyAttribute = ((EObject)object).eClass().getEStructuralFeature("anyAttribute");
+		if (anyAttribute!=null && object.eGet(anyAttribute) instanceof BasicFeatureMap) {
+			BasicFeatureMap map = (BasicFeatureMap)object.eGet(anyAttribute);
+			for (Entry entry : map) {
+				EStructuralFeature feature = entry.getEStructuralFeature();
+				if (feature.getName().equals(name))
+					return feature;
+			}
+		}
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static EStructuralFeature addAnyAttribute(EObject childObject, String name, Object value) {
+		return addAnyAttribute(childObject, childObject.eClass().getEPackage().getNsURI(), name, value);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static EStructuralFeature addAnyAttribute(EObject childObject, String namespace, String name, Object value) {
+		EStructuralFeature anyAttribute = childObject.eClass().getEStructuralFeature(Bpmn2Package.BASE_ELEMENT__ANY_ATTRIBUTE);
+		List<BasicFeatureMap.Entry> anyMap = (List<BasicFeatureMap.Entry>)childObject.eGet(anyAttribute);
+		for (BasicFeatureMap.Entry fe : anyMap) {
+			if (fe.getEStructuralFeature() instanceof EAttributeImpl) {
+				EAttributeImpl a = (EAttributeImpl) fe.getEStructuralFeature();
+				if (namespace.equals(a.getExtendedMetaData().getNamespace()) && name.equals(a.getName())) {
+					return a;
+				}
+			}
+		}
+		
+		// this featuremap can only hold attributes, not elements
+		EStructuralFeature attr = ExtendedMetaData.INSTANCE.demandFeature(namespace, name, false);
+		anyMap.add( FeatureMapUtil.createEntry(attr, value) );
+		return attr;
+	}
+
 	public static EAttribute createDynamicAttribute(EPackage pkg, EObject object, String name, String type) {
 		EClass docRoot = ExtendedMetaData.INSTANCE.getDocumentRoot(pkg);
 		for (EStructuralFeature f : docRoot.getEStructuralFeatures()) {
@@ -592,25 +629,6 @@ public class ModelUtil {
 		ExtendedMetaData.INSTANCE.setNamespace(ref, pkg.getNsURI());
 
 		return ref;
-	}
-
-	@SuppressWarnings("unchecked")
-	public static EStructuralFeature addAnyAttribute(EObject childObject, String namespace, String name, Object value) {
-		EStructuralFeature anyAttribute = childObject.eClass().getEStructuralFeature(Bpmn2Package.BASE_ELEMENT__ANY_ATTRIBUTE);
-		List<BasicFeatureMap.Entry> anyMap = (List<BasicFeatureMap.Entry>)childObject.eGet(anyAttribute);
-		for (BasicFeatureMap.Entry fe : anyMap) {
-			if (fe.getEStructuralFeature() instanceof EAttributeImpl) {
-				EAttributeImpl a = (EAttributeImpl) fe.getEStructuralFeature();
-				if (namespace.equals(a.getExtendedMetaData().getNamespace()) && name.equals(a.getName())) {
-					return a;
-				}
-			}
-		}
-		
-		// this featuremap can only hold attributes, not elements
-		EStructuralFeature attr = ExtendedMetaData.INSTANCE.demandFeature(namespace, name, false);
-		anyMap.add( FeatureMapUtil.createEntry(attr, value) );
-		return attr;
 	}
 
 	public static EObject createStringWrapper(String value) {
@@ -979,7 +997,7 @@ public class ModelUtil {
 					InsertionAdapter.executeIfNeeded((EObject)value);
 				}
 				
-				if (isEmpty(value)){
+				if (value==null){ // DO NOT use isEmpty() because this erases an object's anyAttribute feature!
 					domain.getCommandStack().execute(new RecordingCommand(domain) {
 						@Override
 						protected void doExecute() {

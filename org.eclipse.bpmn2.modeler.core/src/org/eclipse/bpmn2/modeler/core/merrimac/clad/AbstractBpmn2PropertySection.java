@@ -219,6 +219,7 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 						if (parent.isLayoutDeferred())
 							parent.setLayoutDeferred(false);
 					}
+					sectionRoot.refresh();
 				}
 			}
 		}
