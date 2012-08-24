@@ -38,7 +38,6 @@ import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.validation.BPMN2ProjectValidator;
 import org.eclipse.bpmn2.modeler.core.validation.BPMN2ValidationStatusLoader;
 import org.eclipse.bpmn2.modeler.ui.Activator;
-import org.eclipse.bpmn2.modeler.ui.BPMN2ResourceChangeListener;
 import org.eclipse.bpmn2.modeler.ui.wizards.BPMN2DiagramCreator;
 import org.eclipse.bpmn2.modeler.ui.wizards.Bpmn2DiagramEditorInput;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
@@ -132,7 +131,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	
 	private IWorkbenchListener workbenchListener;
 	private IPartListener2 selectionListener;
-    private IResourceChangeListener resourceChangeListener;
+    private IResourceChangeListener markerChangeListener;
 	private boolean workbenchShutdown = false;
 	private static BPMN2Editor activeEditor;
 	private static ITabDescriptorProvider tabDescriptorProvider;
@@ -198,7 +197,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		
 		super.init(site, input);
 		addSelectionListener();
-		addResourceChangeListener();
+		addMarkerChangeListener();
 	}
 	
 	@Override
@@ -498,17 +497,17 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		}
 	}
 
-	private void addResourceChangeListener() {
-		if (resourceChangeListener==null) {
-			resourceChangeListener = new BPMN2ResourceChangeListener(this);
-	        modelFile.getWorkspace().addResourceChangeListener(resourceChangeListener, IResourceChangeEvent.POST_BUILD);
+	private void addMarkerChangeListener() {
+		if (markerChangeListener==null) {
+			markerChangeListener = new BPMN2MarkerChangeListener(this);
+	        modelFile.getWorkspace().addResourceChangeListener(markerChangeListener, IResourceChangeEvent.POST_BUILD);
 		}
 	}
 	
-	private void removeResourceChangeListener() {
-		if (resourceChangeListener!=null) {
-	        modelFile.getWorkspace().removeResourceChangeListener(resourceChangeListener);
-			resourceChangeListener = null;
+	private void removeMarkerChangeListener() {
+		if (markerChangeListener!=null) {
+	        modelFile.getWorkspace().removeResourceChangeListener(markerChangeListener);
+			markerChangeListener = null;
 		}
 	}
 	
@@ -587,7 +586,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		if (!workbenchShutdown)
 			BPMN2DiagramCreator.dispose(diagramFile);
 		removeWorkbenchListener();
-		removeResourceChangeListener();
+		removeMarkerChangeListener();
 		getPreferences().dispose();
 	}
 

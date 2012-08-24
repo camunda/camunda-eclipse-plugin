@@ -1,4 +1,4 @@
-package org.eclipse.bpmn2.modeler.ui;
+package org.eclipse.bpmn2.modeler.ui.editor;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -8,7 +8,6 @@ import java.util.Set;
 
 import org.eclipse.bpmn2.modeler.core.validation.BPMN2ValidationStatusLoader;
 import org.eclipse.bpmn2.modeler.core.validation.ValidationStatusAdapter;
-import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -20,11 +19,11 @@ import org.eclipse.emf.ecore.EValidator;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
-public class BPMN2ResourceChangeListener implements IResourceChangeListener {
+public class BPMN2MarkerChangeListener implements IResourceChangeListener {
 	
 	BPMN2Editor editor;
 	
-	public BPMN2ResourceChangeListener(BPMN2Editor editor) {
+	public BPMN2MarkerChangeListener(BPMN2Editor editor) {
 		this.editor = editor;
 	}
 
