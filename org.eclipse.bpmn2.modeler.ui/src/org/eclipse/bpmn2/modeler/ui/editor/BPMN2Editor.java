@@ -683,7 +683,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		if (BPMN2ProjectValidator.validateOnSave(resource, monitor))
 			loadMarkers();
 	}
-	
+
 	@Override
 	public boolean isSaveAsAllowed() {
 		return true;
