@@ -13,6 +13,11 @@ package org.eclipse.bpmn2.modeler.core.validation;
 import java.io.IOException;
 
 import org.eclipse.bpmn2.modeler.core.Activator;
+import org.eclipse.bpmn2.modeler.core.ProxyURIConverterImplExtension;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceSetImpl;
+import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
+import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.core.resources.IBuildConfiguration;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -50,17 +55,27 @@ public class BPMN2ProjectValidator extends AbstractValidator {
 
     /** ID for BPMN2 specific problem markers. */
     public static final String BPMN2_MARKER_ID = "org.eclipse.bpmn2.modeler.core.problemMarker";
+	private Bpmn2Preferences preferences;
+	private TargetRuntime targetRuntime;
+	private IFile modelFile;
 
     @Override
     public ValidationResult validate(ValidationEvent event, ValidationState state, IProgressMonitor monitor) {
-        if ((event.getKind() & IResourceDelta.REMOVED) != 0 || event.getResource().isDerived(IResource.CHECK_ANCESTORS)) {
+    	IResource file = event.getResource();
+        if ((event.getKind() & IResourceDelta.REMOVED) != 0 
+        		|| file.isDerived(IResource.CHECK_ANCESTORS)
+        		|| !(file instanceof IFile)) {
             return new ValidationResult();
         }
+    	modelFile = (IFile) file;
 
-        ResourceSet rs = new ResourceSetImpl();
-        Resource resource = rs.createResource(
-                URI.createPlatformResourceURI(event.getResource().getFullPath().toString(), false),
-                "org.eclipse.bpmn2.content-type.xml");
+        ResourceSet rs = new Bpmn2ModelerResourceSetImpl();
+		getTargetRuntime().setResourceSet(rs);
+		rs.setURIConverter(new ProxyURIConverterImplExtension());
+
+		Resource resource = rs.createResource(
+                URI.createPlatformResourceURI(modelFile.getFullPath().toString(), false),
+                Bpmn2ModelerResourceImpl.BPMN2_CONTENT_TYPE_ID);
         try {
             resource.load(null);
         } catch (IOException e) {
@@ -68,12 +83,12 @@ public class BPMN2ProjectValidator extends AbstractValidator {
         }
         ValidationResult result = new ValidationResult();
         if (resource.getContents().isEmpty()) {
-            ValidatorMessage message = ValidatorMessage.create("Invalid bpmn2 file", event.getResource());
+            ValidatorMessage message = ValidatorMessage.create("Invalid bpmn2 file", modelFile);
             message.setType(BPMN2_MARKER_ID);
             result.add(message);
         } else {
             IBatchValidator validator = ModelValidationService.getInstance().newValidator(EvaluationMode.BATCH);
-            processStatus(validator.validate(resource.getContents(), monitor), event.getResource(), result);
+            processStatus(validator.validate(resource.getContents(), monitor), modelFile, result);
         }
         return result;
     }
@@ -83,32 +98,35 @@ public class BPMN2ProjectValidator extends AbstractValidator {
 		boolean needValidation = false;
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceDescription description = workspace.getDescription();
+		resource.getURI().toFileString();
+		String pathString = resource.getURI().toPlatformString(true);
+		IPath path = Path.fromOSString(pathString);
+		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+		IProject project = file.getProject();
+
 		if (!description.isAutoBuilding()) {
 			needValidation = true;
 		}
 		if (!needValidation) {
-			resource.getURI().toFileString();
-			String pathString = resource.getURI().toPlatformString(true);
-			IPath path = Path.fromOSString(pathString);
-			IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
-			IProject project = file.getProject();
 			if (project!=null) {
 				try {
+					// TODO: if there is no project builder, force validation
 					IBuildConfiguration config = project.getActiveBuildConfig();
 					if (config==null || config.getName()==null || config.getName().isEmpty())
 						needValidation = true;
-					IBuildConfiguration[] configs = project.getBuildConfigs();
-					for (IBuildConfiguration c : configs) {
-						System.out.println(c.getName());
-					}
 				} catch (CoreException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		}
 		
 		if (needValidation) {
+	        try {
+	            project.deleteMarkers(BPMN2_MARKER_ID, false, IProject.DEPTH_INFINITE);
+	        } catch (CoreException e) {
+	            Activator.getDefault().getLog().log(e.getStatus());
+	        }
+			
 	        IBatchValidator validator = ModelValidationService.getInstance().newValidator(EvaluationMode.BATCH);
 	        IStatus status = validator.validate(resource.getContents(), monitor);
 	    	try {
@@ -157,7 +175,8 @@ public class BPMN2ProjectValidator extends AbstractValidator {
                     relatedUris.append(EcoreUtil.getURI(eobject).toString()).append(" ");
                 }
                 relatedUris.deleteCharAt(relatedUris.length() - 1);
-                message.setAttribute(EValidator.RELATED_URIS_ATTRIBUTE, relatedUris.toString());
+                String uris = relatedUris.toString();
+                message.setAttribute(EValidator.RELATED_URIS_ATTRIBUTE, uris);
             }
         }
 
@@ -175,6 +194,26 @@ public class BPMN2ProjectValidator extends AbstractValidator {
             Activator.getDefault().getLog().log(e.getStatus());
         }
     }
+	
+    protected TargetRuntime getTargetRuntime() {
+		if (targetRuntime==null)
+			targetRuntime = getPreferences().getRuntime(modelFile);
+		return targetRuntime;
+	}
+
+    protected Bpmn2Preferences getPreferences() {
+		if (preferences==null) {
+			assert(modelFile!=null);
+			IProject project = modelFile.getProject();
+			loadPreferences(project);
+		}
+		return preferences;
+	}
+	
+    protected void loadPreferences(IProject project) {
+		preferences = Bpmn2Preferences.getInstance(project);
+		preferences.load();
+	}
 
     public static class MarkerConfigurator implements IMarkerConfigurator {
 

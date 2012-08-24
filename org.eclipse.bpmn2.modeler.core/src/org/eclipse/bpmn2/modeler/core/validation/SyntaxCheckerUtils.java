@@ -2,11 +2,10 @@ package org.eclipse.bpmn2.modeler.core.validation;
 
 public class SyntaxCheckerUtils {
 	public static final boolean isNCName(String name) {
-		int nameLength = name.length();
-
-		if (nameLength == 0) {
+		if (name==null || name.isEmpty())
 			return false;
-		}
+		
+		int nameLength = name.length();
 
 		// Check first character
 		char c = name.charAt(0);

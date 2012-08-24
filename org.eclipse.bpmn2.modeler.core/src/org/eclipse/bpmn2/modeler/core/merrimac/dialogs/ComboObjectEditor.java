@@ -297,6 +297,7 @@ public class ComboObjectEditor extends MultivalueObjectEditor {
 	
 	@Override
 	public void notifyChanged(Notification notification) {
+		super.notifyChanged(notification);
 		for (String item : comboViewer.getCombo().getItems()) {
 			Object o = comboViewer.getData(item);
 			if (o == notification.getNotifier()) {

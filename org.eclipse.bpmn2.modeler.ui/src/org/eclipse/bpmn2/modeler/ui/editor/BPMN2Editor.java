@@ -96,6 +96,8 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPartListener2;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.IWorkbenchPage;
@@ -107,8 +109,10 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.part.IPage;
 import org.eclipse.ui.progress.IProgressService;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
+import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.ITabDescriptorProvider;
 import org.eclipse.wst.validation.ValidationState;
 
@@ -131,7 +135,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	
 	private IWorkbenchListener workbenchListener;
 	private IPartListener2 selectionListener;
-    private IResourceChangeListener resourceChangeListener;
+    private IResourceChangeListener markerChangeListener;
 	private boolean workbenchShutdown = false;
 	private static BPMN2Editor activeEditor;
 	private static ITabDescriptorProvider tabDescriptorProvider;
@@ -221,7 +225,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		
 		super.init(site, input);
 		addSelectionListener();
-		addResourceChangeListener();
+		addMarkerChangeListener();
 	}
 	
 	@Override
@@ -431,7 +435,23 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
         } catch (CoreException e) {
             Activator.logStatus(e.getStatus());
         }
-
+        
+		IWorkbenchPage page = getEditorSite().getPage();
+		String viewID = "org.eclipse.ui.views.PropertySheet";
+		try {
+			IViewReference[] views = page.getViewReferences();
+			for (IViewReference v : views) {
+				if (viewID.equals(v.getId())) {
+					PropertySheet ps = (PropertySheet)v.getView(true);
+					IPage pp = ps.getCurrentPage();
+					if (pp instanceof Bpmn2TabbedPropertySheetPage) {
+						((Bpmn2TabbedPropertySheetPage)pp).refresh();
+					}
+				}
+			}
+		}
+		catch (Exception e) {
+		}
     }
     
     private EObject getTargetObject(IMarker marker) {
@@ -503,17 +523,17 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		}
 	}
 
-	private void addResourceChangeListener() {
-		if (resourceChangeListener==null) {
-			resourceChangeListener = new BPMN2ResourceChangeListener(this);
-	        modelFile.getWorkspace().addResourceChangeListener(resourceChangeListener, IResourceChangeEvent.POST_BUILD);
+	private void addMarkerChangeListener() {
+		if (markerChangeListener==null) {
+			markerChangeListener = new BPMN2MarkerChangeListener(this);
+	        modelFile.getWorkspace().addResourceChangeListener(markerChangeListener, IResourceChangeEvent.POST_BUILD);
 		}
 	}
 	
-	private void removeResourceChangeListener() {
-		if (resourceChangeListener!=null) {
-	        modelFile.getWorkspace().removeResourceChangeListener(resourceChangeListener);
-			resourceChangeListener = null;
+	private void removeMarkerChangeListener() {
+		if (markerChangeListener!=null) {
+	        modelFile.getWorkspace().removeResourceChangeListener(markerChangeListener);
+			markerChangeListener = null;
 		}
 	}
 	
@@ -592,7 +612,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		if (!workbenchShutdown)
 			BPMN2DiagramCreator.dispose(diagramFile);
 		removeWorkbenchListener();
-		removeResourceChangeListener();
+		removeMarkerChangeListener();
 		getPreferences().dispose();
 	}
 

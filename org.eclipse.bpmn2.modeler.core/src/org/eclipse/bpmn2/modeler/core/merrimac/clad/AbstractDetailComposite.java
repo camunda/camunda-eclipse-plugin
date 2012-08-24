@@ -14,10 +14,13 @@
 package org.eclipse.bpmn2.modeler.core.merrimac.clad;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
+import org.eclipse.bpmn2.modeler.core.merrimac.IConstants;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.BooleanObjectEditor;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ComboObjectEditor;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.FeatureListObjectEditor;
@@ -26,16 +29,21 @@ import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ObjectEditor;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ReadonlyTextObjectEditor;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.TextObjectEditor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.EcorePackage;
+import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
+import org.eclipse.emf.edit.provider.INotifyChangedListener;
 import org.eclipse.emf.transaction.ResourceSetListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -44,13 +52,14 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.events.IExpansionListener;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Section;
-
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
  * This is a base class for all Property Sheet Sections. The Composite is used to render
@@ -591,5 +600,31 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 		public int size() {
 			return objectStack.size();
 		}
+	}
+
+	public void refresh() {
+		Display.getDefault().asyncExec( new Runnable() {
+			public void run() {
+				List<Control>kids = new ArrayList<Control>();
+				Composite parent = AbstractDetailComposite.this;
+				try {
+					AbstractBpmn2PropertySection section = AbstractDetailComposite.this.getPropertySection();
+					if (section!=null && section.getTabbedPropertySheetPage()!=null) {
+						parent = (Composite)section.getTabbedPropertySheetPage().getControl();
+					}
+				}
+				catch (Exception e) {
+				}
+				Notification n = new ENotificationImpl(null, Notification.SET, -1, 0, 0);
+				getAllChildWidgets(parent, kids);
+				for (Control c : kids) {
+					INotifyChangedListener listener = (INotifyChangedListener)c.getData(
+							IConstants.NOTIFY_CHANGE_LISTENER_KEY);
+					if (listener!=null) {
+						listener.notifyChanged(n);
+					}
+				}
+			}
+		});
 	}
 }

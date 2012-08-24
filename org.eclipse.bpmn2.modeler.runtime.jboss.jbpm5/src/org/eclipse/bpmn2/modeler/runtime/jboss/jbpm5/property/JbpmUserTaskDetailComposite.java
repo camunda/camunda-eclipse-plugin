@@ -14,9 +14,11 @@
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property;
 
 import org.eclipse.bpmn2.FormalExpression;
+import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.PotentialOwner;
 import org.eclipse.bpmn2.ResourceAssignmentExpression;
 import org.eclipse.bpmn2.UserTask;
+import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractListComposite;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.TextObjectEditor;
@@ -50,18 +52,14 @@ public class JbpmUserTaskDetailComposite extends JbpmTaskDetailComposite {
 				ResourceAssignmentExpression resourceAssignment = null;
 				FormalExpression expression = null;
 				if (task.getResources().size() == 0) {
-					owner = (PotentialOwner) ModelUtil.createFeature( 
-							task,
-							PACKAGE.getActivity_Resources(),
-							PACKAGE.getPotentialOwner());
-					resourceAssignment = (ResourceAssignmentExpression) ModelUtil.createFeature( 
-							owner,
-							PACKAGE.getResourceRole_ResourceAssignmentExpression(),
-							PACKAGE.getResourceAssignmentExpression());
-					expression = (FormalExpression) ModelUtil.createFeature( 
-							 resourceAssignment,
-							 PACKAGE.getResourceAssignmentExpression_Expression(),
-							 PACKAGE.getFormalExpression());
+					owner = FACTORY.createPotentialOwner();
+					InsertionAdapter.add(task, PACKAGE.getActivity_Resources(), owner);
+					
+					resourceAssignment = FACTORY.createResourceAssignmentExpression(); 
+					InsertionAdapter.add(owner, PACKAGE.getResourceRole_ResourceAssignmentExpression(), resourceAssignment);
+					
+					expression = FACTORY.createFormalExpression(); 
+					InsertionAdapter.add(resourceAssignment, PACKAGE.getResourceAssignmentExpression_Expression(), expression);
 				}
 				else if (task.getResources().get(0) instanceof PotentialOwner){
 					owner = (PotentialOwner)task.getResources().get(0);

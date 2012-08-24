@@ -27,7 +27,11 @@ import org.eclipse.emf.common.notify.impl.AdapterImpl;
  */
 public class ValidationStatusAdapter extends AdapterImpl {
 
-    private List<IStatus> _validationStatus = new ArrayList<IStatus>();
+    public ValidationStatusAdapter() {
+		super();
+	}
+
+	private List<IStatus> _validationStatus = new ArrayList<IStatus>();
 
     @Override
     public boolean isAdapterForType(Object type) {
