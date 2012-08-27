@@ -118,6 +118,8 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 
 	public final static String PREF_SHOW_ID_ATTRIBUTE = "show.id.attribute";
 	public final static String PREF_SHOW_ID_ATTRIBUTE_LABEL = "Show ID attribute for BPMN2 Elements";
+	public final static String PREF_CHECK_PROJECT_NATURE = "check.project.nature";
+	public final static String PREF_CHECK_PROJECT_NATURE_LABEL = "Check if project is configured for BPMN2 Project Nature";
 
 	private static Hashtable<IProject,Bpmn2Preferences> instances = null;
 	private static IProject activeProject;
@@ -141,6 +143,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	private boolean expandProperties;
 	private boolean showDescriptions;
 	private boolean showIdAttribute;
+	private boolean checkProjectNature;
 	private BPMNDIAttributeDefault isHorizontal;
 	private BPMNDIAttributeDefault isExpanded;
 	private BPMNDIAttributeDefault isMessageVisible;
@@ -272,6 +275,8 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			projectPreferences.remove(PREF_TARGET_RUNTIME);
 			projectPreferences.remove(PREF_SHOW_ADVANCED_PROPERTIES);
 			projectPreferences.remove(PREF_SHOW_DESCRIPTIONS);
+			projectPreferences.remove(PREF_SHOW_ID_ATTRIBUTE);
+			projectPreferences.remove(PREF_CHECK_PROJECT_NATURE);
 			projectPreferences.remove(PREF_EXPAND_PROPERTIES);
 			projectPreferences.remove(PREF_IS_HORIZONTAL);
 			projectPreferences.remove(PREF_IS_EXPANDED);
@@ -298,6 +303,8 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		globalPreferences.setToDefault(PREF_TARGET_RUNTIME);
 		globalPreferences.setToDefault(PREF_SHOW_ADVANCED_PROPERTIES);
 		globalPreferences.setToDefault(PREF_SHOW_DESCRIPTIONS);
+		globalPreferences.setToDefault(PREF_SHOW_ID_ATTRIBUTE);
+		globalPreferences.setToDefault(PREF_CHECK_PROJECT_NATURE);
 		globalPreferences.setToDefault(PREF_EXPAND_PROPERTIES);
 		globalPreferences.setToDefault(PREF_IS_HORIZONTAL);
 		globalPreferences.setToDefault(PREF_IS_EXPANDED);
@@ -373,6 +380,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			showAdvancedPropertiesTab = getBoolean(PREF_SHOW_ADVANCED_PROPERTIES, false);
 			showDescriptions = getBoolean(PREF_SHOW_DESCRIPTIONS, false);
 			showIdAttribute = getBoolean(PREF_SHOW_ID_ATTRIBUTE, false);
+			checkProjectNature = getBoolean(PREF_CHECK_PROJECT_NATURE, true);
 			expandProperties = getBoolean(PREF_EXPAND_PROPERTIES, false);
 			isHorizontal = getBPMNDIAttributeDefault(PREF_IS_HORIZONTAL, BPMNDIAttributeDefault.USE_DI_VALUE);
 			isExpanded = getBPMNDIAttributeDefault(PREF_IS_EXPANDED, BPMNDIAttributeDefault.USE_DI_VALUE);
@@ -404,6 +412,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			setBoolean(PREF_SHOW_ADVANCED_PROPERTIES, showAdvancedPropertiesTab);
 			setBoolean(PREF_SHOW_DESCRIPTIONS, showDescriptions);
 			setBoolean(PREF_SHOW_ID_ATTRIBUTE, showIdAttribute);
+			setBoolean(PREF_CHECK_PROJECT_NATURE, checkProjectNature);
 			setBoolean(PREF_EXPAND_PROPERTIES, expandProperties);
 			setBPMNDIAttributeDefault(PREF_IS_HORIZONTAL, isHorizontal);
 
@@ -574,6 +583,16 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	public void setShowIdAttribute(boolean show) {
 		overrideGlobalBoolean(PREF_SHOW_ID_ATTRIBUTE, show);
 		showIdAttribute = show;
+	}
+	
+	public boolean getCheckProjectNature() {
+		load();
+		return checkProjectNature;
+	}
+	
+	public void setCheckProjectNature(boolean show) {
+		overrideGlobalBoolean(PREF_CHECK_PROJECT_NATURE, show);
+		checkProjectNature = show;
 	}
 
 	public boolean getOverrideModelEnablements() {
