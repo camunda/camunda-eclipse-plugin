@@ -14,14 +14,16 @@ import java.io.IOException;
 
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ProxyURIConverterImplExtension;
+import org.eclipse.bpmn2.modeler.core.builder.BPMN2Nature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceSetImpl;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
-import org.eclipse.core.resources.IBuildConfiguration;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspace;
@@ -32,23 +34,31 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EValidator;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.emf.validation.marker.IMarkerConfigurator;
 import org.eclipse.emf.validation.marker.MarkerUtil;
 import org.eclipse.emf.validation.model.EvaluationMode;
 import org.eclipse.emf.validation.model.IConstraintStatus;
 import org.eclipse.emf.validation.service.IBatchValidator;
 import org.eclipse.emf.validation.service.ModelValidationService;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.MessageDialogWithToggle;
+import org.eclipse.jface.window.Window;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.validation.AbstractValidator;
 import org.eclipse.wst.validation.ValidationEvent;
+import org.eclipse.wst.validation.ValidationFramework;
 import org.eclipse.wst.validation.ValidationResult;
 import org.eclipse.wst.validation.ValidationState;
+import org.eclipse.wst.validation.Validator;
 import org.eclipse.wst.validation.ValidatorMessage;
 
 public class BPMN2ProjectValidator extends AbstractValidator {
@@ -68,6 +78,12 @@ public class BPMN2ProjectValidator extends AbstractValidator {
             return new ValidationResult();
         }
     	modelFile = (IFile) file;
+    	try {
+			modelFile.deleteMarkers(BPMN2_MARKER_ID, false, IProject.DEPTH_INFINITE);
+		} catch (CoreException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
         ResourceSet rs = new Bpmn2ModelerResourceSetImpl();
 		getTargetRuntime().setResourceSet(rs);
@@ -93,27 +109,94 @@ public class BPMN2ProjectValidator extends AbstractValidator {
         return result;
     }
     
+    public static void validate(IResource resource, IProgressMonitor monitor) {
+		if (isBPMN2File(resource)) {
+			Validator[] validators = ValidationFramework.getDefault().getValidatorsFor(resource);
+			for (Validator v : validators) {
+				if (BPMN2ProjectValidator.class.getName().equals(v.getValidatorClassname())) {
+					v.validate(resource, IResourceDelta.CHANGED, null, monitor);
+					break;
+				}
+			}
+		}
+    }
+    
+    public static void validate(IResourceDelta delta, IProgressMonitor monitor) {
+		IResource resource = delta.getResource();
+		if (isBPMN2File(resource)) {
+			Validator[] validators = ValidationFramework.getDefault().getValidatorsFor(resource);
+			for (Validator v : validators) {
+				if (BPMN2ProjectValidator.class.getName().equals(v.getValidatorClassname())) {
+					v.validate(resource, delta.getKind(), null, monitor);
+					break;
+				}
+			}
+		}
+    }
+
+    public static boolean isBPMN2File(IResource resource) {
+    	if (resource instanceof IFile) {
+	    	try {
+	    		IContentDescription cd = ((IFile)resource).getContentDescription();
+	    		if (cd!=null) {
+					return Bpmn2ModelerResourceImpl.BPMN2_CONTENT_TYPE_ID.equals(
+							cd.getContentType().getId());
+	    		}
+			} catch (Exception e) {
+			}
+    	}
+    	return false;
+    }
+    
 	public static boolean validateOnSave(Resource resource, IProgressMonitor monitor) {
 
 		boolean needValidation = false;
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IWorkspaceDescription description = workspace.getDescription();
-		resource.getURI().toFileString();
 		String pathString = resource.getURI().toPlatformString(true);
 		IPath path = Path.fromOSString(pathString);
 		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 		IProject project = file.getProject();
 
-		if (!description.isAutoBuilding()) {
-			needValidation = true;
-		}
 		if (!needValidation) {
 			if (project!=null) {
 				try {
-					// TODO: if there is no project builder, force validation
-					IBuildConfiguration config = project.getActiveBuildConfig();
-					if (config==null || config.getName()==null || config.getName().isEmpty())
+					IProjectNature nature = project.getNature(BPMN2Nature.NATURE_ID);
+					if (nature==null) {
+						Bpmn2Preferences preferences = Bpmn2Preferences.getInstance(project);
+						if (preferences.getCheckProjectNature()) {
+							Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+							String title = "Configure BPMN2 Project Nature";
+							String message = "The project '"+
+									project.getName()+
+									"' has not been configured with the BPMN2 Project Nature.\n\n"+
+									"Adding the BPMN2 Project Nature will cause all BPMN2 files in this project"+
+									"to be validated automatically whenever the project is built.\n\n"+
+									"Do you want to add this Nature to the Project now?";
+							MessageDialogWithToggle result = MessageDialogWithToggle.open(
+									MessageDialog.QUESTION,
+									shell,
+									title,
+									message,
+									"Don't ask me again", // toggle message
+									false, // toggle state
+									null, // pref store
+									null, // pref key
+									SWT.NONE);
+							if (result.getReturnCode() == IDialogConstants.YES_ID) {
+								IProjectDescription description = project.getDescription();
+								String[] natures = description.getNatureIds();
+								String[] newNatures = new String[natures.length + 1];
+								System.arraycopy(natures, 0, newNatures, 0, natures.length);
+								newNatures[natures.length] = BPMN2Nature.NATURE_ID;
+								description.setNatureIds(newNatures);
+								project.setDescription(description, null);
+							}
+							if (result.getToggleState()) {
+								// don't ask again
+								preferences.setCheckProjectNature(false);
+							}
+						}
 						needValidation = true;
+					}
 				} catch (CoreException e) {
 					e.printStackTrace();
 				}
@@ -121,20 +204,8 @@ public class BPMN2ProjectValidator extends AbstractValidator {
 		}
 		
 		if (needValidation) {
-	        try {
-	            project.deleteMarkers(BPMN2_MARKER_ID, false, IProject.DEPTH_INFINITE);
-	        } catch (CoreException e) {
-	            Activator.getDefault().getLog().log(e.getStatus());
-	        }
-			
-	        IBatchValidator validator = ModelValidationService.getInstance().newValidator(EvaluationMode.BATCH);
-	        IStatus status = validator.validate(resource.getContents(), monitor);
-	    	try {
-				MarkerUtil.createMarkers(status, BPMN2_MARKER_ID, new MarkerConfigurator());
-				return true;
-			} catch (CoreException e) {
-				e.printStackTrace();
-			}
+			validate(file, monitor);
+			return true;
 		}
 		
     	return false;
@@ -214,22 +285,4 @@ public class BPMN2ProjectValidator extends AbstractValidator {
 		preferences = Bpmn2Preferences.getInstance(project);
 		preferences.load();
 	}
-
-    public static class MarkerConfigurator implements IMarkerConfigurator {
-
-		@Override
-		public void appendMarkerConfiguration(IMarker marker, IConstraintStatus status) throws CoreException {
-            marker.setAttribute(EValidator.URI_ATTRIBUTE, EcoreUtil.getURI(status.getTarget()).toString());
-            marker.setAttribute(MarkerUtil.RULE_ATTRIBUTE, status.getConstraint().getDescriptor().getId());
-            if (status.getResultLocus().size() > 0) {
-                StringBuffer relatedUris = new StringBuffer();
-                for (EObject eobject : status.getResultLocus()) {
-                    relatedUris.append(EcoreUtil.getURI(eobject).toString()).append(" ");
-                }
-                relatedUris.deleteCharAt(relatedUris.length() - 1);
-                marker.setAttribute(EValidator.RELATED_URIS_ATTRIBUTE, relatedUris.toString());
-            }
-		}
-    	
-    }
 }
