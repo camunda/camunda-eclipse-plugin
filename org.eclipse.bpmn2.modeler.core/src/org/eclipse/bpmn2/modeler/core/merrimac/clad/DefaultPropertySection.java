@@ -20,13 +20,6 @@ import org.eclipse.ui.IWorkbenchPart;
 
 public class DefaultPropertySection extends AbstractBpmn2PropertySection {
 
-	// Register the Default List and Detail Composites as fallback for rendering EObject
-	static {
-		PropertiesCompositeFactory.register(EObject.class, DefaultDetailComposite.class);
-		PropertiesCompositeFactory.register(EObject.class, DefaultListComposite.class);
-		PropertiesCompositeFactory.register(EObject.class, DefaultDialogComposite.class);
-	}
-
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
 	 */

@@ -1,11 +1,17 @@
 package org.eclipse.bpmn2.modeler.ui.editor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.Choreography;
+import org.eclipse.bpmn2.Collaboration;
 import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.Participant;
+import org.eclipse.bpmn2.Process;
+import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
@@ -53,6 +59,8 @@ public class DesignEditor extends BPMN2Editor {
 	protected ResourceSetListener resourceSetListener = null;
 	private BPMNDiagram bpmnDiagramDeleted = null;
 	protected boolean debug;
+	// the container that holds the tabFolder
+	protected Composite container;
 	protected CTabFolder tabFolder;
 	private int defaultTabHeight;
 
@@ -94,46 +102,61 @@ public class DesignEditor extends BPMN2Editor {
 		super.setPartName(partName);
     }
 	
-	@Override
-	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		super.selectionChanged(part, selection);
-		EObject bo = BusinessObjectUtil.getBusinessObjectForSelection(selection);
-		if (bo != null) {
-			tabFolder.setSelection(0);
-	
-			tabFolder.setLayoutDeferred(true);
-			for (int i=tabFolder.getItemCount()-1; i>0; --i) {
-				tabFolder.getItem(i).setControl(null);
-				tabFolder.getItem(i).dispose();
-			}
-	
-			if (!(bo instanceof BPMNDiagram)) {
-				if (tabFolder.getItemCount()==1) {
-					CTabFolder tf = tabFolder;
-			
-					Composite subPlanePage = new Composite(tf, SWT.NONE);
-					subPlanePage.setLayout(new FillLayout());
-					Label label = new Label(subPlanePage, SWT.BORDER);
-					CTabItem item = new CTabItem(tf, SWT.NONE);
-					item.setControl(subPlanePage);
-					item.setText(ModelUtil.getDisplayName(bo)+" Plane");
-					item.setData(label);
+	public void pageChange(BPMNDiagram bpmnDiagram) {
+		super.setBpmnDiagram(bpmnDiagram);
+		reloadTabs();
+	}
+
+	private void reloadTabs() {
+		BPMNDiagram bpmnDiagram = getBpmnDiagram();
+		List<BPMNDiagram> bpmnDiagrams = new ArrayList<BPMNDiagram>();
+		
+		BaseElement bpmnElement = bpmnDiagram.getPlane().getBpmnElement();
+		List<FlowElement> flowElements = null;
+		if (bpmnElement instanceof Process) {
+			flowElements = ((Process)bpmnElement).getFlowElements();
+		}
+		else if (bpmnElement instanceof Collaboration) {
+			((Collaboration)bpmnElement).getParticipants();
+		}
+		else if (bpmnElement instanceof Choreography) {
+			flowElements = ((Choreography)bpmnElement).getFlowElements();
+		}
+		if (flowElements != null) {
+			for (FlowElement fe : flowElements) {
+				BPMNDiagram bd = DIUtils.findBPMNDiagram(this, fe);
+				if (bd!=null) {
+					bpmnDiagrams.add(bd);
 				}
-	
-				CTabItem item = tabFolder.getItem(1);
-				Label label = (Label)item.getData();
-				label.setText("Selected object: "
-						+ModelUtil.getDisplayName(bo)+"\n"
-						+"If the object contained BPMNPlanes, the activities in each Plane would be displayed as a new tab at the bottom of the page.");
+			}
+		}
+		
+		tabFolder.setLayoutDeferred(true);
+		for (int i=tabFolder.getItemCount()-1; i>0; --i) {
+			tabFolder.getItem(i).setControl(null);
+			tabFolder.getItem(i).dispose();
+		}
+
+		if (bpmnDiagrams.size()>0) {
+			for (BPMNDiagram bd : bpmnDiagrams) {
+				CTabItem item = new CTabItem(tabFolder, SWT.NONE);
+				item.setControl(container);
+				BaseElement be = bd.getPlane().getBpmnElement();
+				item.setText(ModelUtil.getDisplayName(be));
+				item.setData(bd);
 			}
 			
-			tabFolder.setLayoutDeferred(false);
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					updateTabs();
-				}
-			});
-		}					
+		}
+		tabFolder.setSelection(0);
+		tabFolder.getItem(0).getControl().setVisible(true);
+		tabFolder.getItem(0).setData(bpmnDiagram);
+		tabFolder.setLayoutDeferred(false);
+		
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				updateTabs();
+			}
+		});
 	}
 	
 	public void createPartControl(Composite parent) {
@@ -141,8 +164,11 @@ public class DesignEditor extends BPMN2Editor {
 			tabFolder = new CTabFolder(parent, SWT.BOTTOM);
 			tabFolder.addSelectionListener(new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
-					int newPageIndex = tabFolder.indexOf((CTabItem) e.item);
-					CTabItem item = tabFolder.getItem(1);
+					int pageIndex = tabFolder.indexOf((CTabItem) e.item);
+					CTabItem item = tabFolder.getItem(pageIndex);
+					BPMNDiagram bd = (BPMNDiagram) item.getData();
+					setBpmnDiagram(bd);
+					item.getControl().setVisible(true);
 				}
 			});
 			tabFolder.addTraverseListener(new TraverseListener() { 
@@ -159,26 +185,36 @@ public class DesignEditor extends BPMN2Editor {
 					}
 				}
 			});
-			defaultTabHeight = 3 * tabFolder.getTabHeight() / 4;
+			defaultTabHeight = tabFolder.getTabHeight();
 
-			Composite topPlanePage = new Composite(tabFolder, SWT.NONE);
-			topPlanePage.setLayout(new FillLayout());
+			container = new Composite(tabFolder, SWT.NONE);
+			container.setLayout(new FillLayout());
 			CTabItem item = new CTabItem(tabFolder, SWT.NONE, 0);
-			item.setText("Diagram Plane");
-			item.setControl(topPlanePage);
+			item.setText("Diagram");
+			item.setControl(container);
+			item.setData(getBpmnDiagram());
 
-			super.createPartControl(topPlanePage);
+			super.createPartControl(container);
+			
+			
+			// create additional editor tabs for BPMNDiagrams in the parent MultiPageEditor
+			final List<BPMNDiagram> bpmnDiagrams = getModelHandler().getAll(BPMNDiagram.class);
+			for (int i=1; i<bpmnDiagrams.size(); ++i) {
+				BPMNDiagram bpmnDiagram = bpmnDiagrams.get(i);
+				if (bpmnDiagram.getPlane().getBpmnElement() instanceof RootElement)
+					multipageEditor.addDesignPage(bpmnDiagram);
+			}
 		}
 	}
 	
 	public void updateTabs() {
-		if (!tabFolder.isLayoutDeferred()) {
+//		if (!tabFolder.isLayoutDeferred()) {
 			if (tabFolder.getItemCount()==1) {
 				tabFolder.setTabHeight(0);
 			}
 			else
 				tabFolder.setTabHeight(defaultTabHeight);
-		}
+//		}
 		tabFolder.layout();
 	}
 	
@@ -339,7 +375,11 @@ public class DesignEditor extends BPMN2Editor {
 							&& newValue instanceof BPMNDiagram
 							&& feature == Bpmn2Package.eINSTANCE.getDefinitions_Diagrams()) {
 						final BPMNDiagram bpmnDiagram = (BPMNDiagram) newValue;
-						multipageEditor.addDesignPage(bpmnDiagram);
+						BaseElement bpmnElement = bpmnDiagram.getPlane().getBpmnElement();
+						if (bpmnElement instanceof RootElement)
+							multipageEditor.addDesignPage(bpmnDiagram);
+						else
+							reloadTabs();
 						break;
 					}
 				} else if (et == Notification.REMOVE) {
@@ -354,7 +394,11 @@ public class DesignEditor extends BPMN2Editor {
 							&& oldValue instanceof BPMNDiagram
 							&& feature == Bpmn2Package.eINSTANCE.getDefinitions_Diagrams()) {
 						final BPMNDiagram bpmnDiagram = (BPMNDiagram) oldValue;
-						multipageEditor.removeDesignPage(bpmnDiagram);
+						BaseElement bpmnElement = bpmnDiagram.getPlane().getBpmnElement();
+						if (bpmnElement instanceof RootElement)
+							multipageEditor.removeDesignPage(bpmnDiagram);
+						else
+							reloadTabs();
 						break;
 					}
 				}
@@ -376,5 +420,4 @@ public class DesignEditor extends BPMN2Editor {
 			return true;
 		}
 	}
-
 }

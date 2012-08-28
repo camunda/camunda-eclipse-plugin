@@ -484,16 +484,27 @@ public class DIImport {
 
 		// find a correct container element
 		List<Lane> lanes = node.getLanes();
-		if ((node.eContainer() instanceof SubProcess || (node.eContainer() instanceof Process || node.eContainer() instanceof SubChoreography)
-				&& lanes.isEmpty())) {
+		EObject parent = node.eContainer();
+		if (	(parent instanceof SubProcess
+				|| parent instanceof Process
+				|| parent instanceof SubChoreography)
+				&& lanes.isEmpty()
+		) {
 			ContainerShape containerShape = (ContainerShape) elements.get(node.eContainer());
 			if (containerShape != null) {
-				target = containerShape;
-				ILocation loc = Graphiti.getPeLayoutService().getLocationRelativeToDiagram(target);
-				x -= loc.getX();
-				y -= loc.getY();
+				// add the FlowNode to its parent SubProcess, Process or SubChoreography
+				// but only if the node is on the same BPMNDiagram as its parent container
+				BPMNDiagram parentDiagram = DIUtils.findBPMNDiagram(editor, (BaseElement)parent);
+				BPMNDiagram childDiagram = DIUtils.findBPMNDiagram(editor, node);
+				if (parentDiagram == childDiagram) {
+					target = containerShape;
+					ILocation loc = Graphiti.getPeLayoutService().getLocationRelativeToDiagram(target);
+					x -= loc.getX();
+					y -= loc.getY();
+				}
 			}
-		} else if (!lanes.isEmpty()) {
+		}
+		else if (!lanes.isEmpty()) {
 			for (Lane lane : lanes) {
 				target = (ContainerShape) elements.get(lane);
 				ILocation loc = Graphiti.getPeLayoutService().getLocationRelativeToDiagram(target);

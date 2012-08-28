@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNPlane;
@@ -27,11 +29,13 @@ import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.DcFactory;
 import org.eclipse.dd.dc.Point;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -286,4 +290,28 @@ public class DIUtils {
 			EcoreUtil.delete(bpmnDiagram);
 		}	
 	}
+	
+	public static BPMNDiagram findBPMNDiagram(final IDiagramEditor editor, final BaseElement baseElement) {
+		ResourceSet resourceSet = editor.getResourceSet();
+		if (resourceSet!=null) {
+			for (Resource r : resourceSet.getResources()) {
+				if (r instanceof Bpmn2Resource) {
+					for (EObject o : r.getContents()) {
+						if (o instanceof DocumentRoot) {
+							DocumentRoot root = (DocumentRoot)o;
+							Definitions defs = root.getDefinitions();
+							for (BPMNDiagram d : defs.getDiagrams()) {
+								BPMNDiagram bpmnDiagram = (BPMNDiagram)d;
+								BaseElement bpmnElement = bpmnDiagram.getPlane().getBpmnElement();
+								if (bpmnElement == baseElement)
+									return bpmnDiagram;
+							}
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+
 }

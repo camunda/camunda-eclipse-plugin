@@ -320,7 +320,7 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IGotoMa
 		IEditorPart editor = getEditor(newPageIndex);
 		if (editor instanceof DesignEditor) {
 			BPMNDiagram bpmnDiagram = bpmnDiagrams.get(newPageIndex);
-			((DesignEditor)editor).setBpmnDiagram(bpmnDiagram);
+			((DesignEditor)editor).pageChange(bpmnDiagram);
 		}
 	}
 

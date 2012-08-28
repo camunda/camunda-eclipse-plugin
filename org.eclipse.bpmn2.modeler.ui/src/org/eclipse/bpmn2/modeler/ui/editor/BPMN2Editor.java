@@ -28,6 +28,10 @@ import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.ProxyURIConverterImplExtension;
 import org.eclipse.bpmn2.modeler.core.di.DIImport;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultDetailComposite;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultDialogComposite;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultListComposite;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
@@ -121,6 +125,13 @@ import org.eclipse.wst.validation.ValidationState;
  */
 @SuppressWarnings("restriction")
 public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListener, IGotoMarker {
+
+	// Register the Default List and Detail Composites as fallback for rendering EObject
+	static {
+		PropertiesCompositeFactory.register(EObject.class, DefaultDetailComposite.class);
+		PropertiesCompositeFactory.register(EObject.class, DefaultListComposite.class);
+		PropertiesCompositeFactory.register(EObject.class, DefaultDialogComposite.class);
+	}
 
 	public static final String EDITOR_ID = "org.eclipse.bpmn2.modeler.ui.bpmn2editor";
 	public static final String CONTRIBUTOR_ID = "org.eclipse.bpmn2.modeler.ui.PropertyContributor";
@@ -631,13 +642,6 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	public void createPartControl(Composite parent) {
 		if (getGraphicalViewer()==null) {
 			super.createPartControl(parent);
-			
-			// create additional editor tabs for BPMNDiagrams in the parent MultiPageEditor
-			final List<BPMNDiagram> bpmnDiagrams = modelHandler.getAll(BPMNDiagram.class);
-			for (int i=1; i<bpmnDiagrams.size(); ++i) {
-				BPMNDiagram bpmnDiagram = bpmnDiagrams.get(i);
-				multipageEditor.addDesignPage(bpmnDiagram);
-			}
 		}
 	}
 	
@@ -653,18 +657,13 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	}
 	
 	public void setBpmnDiagram(final BPMNDiagram bpmnDiagram) {
-
 		// create a new Graphiti Diagram if needed
 		Diagram diagram = DIUtils.getOrCreateDiagram(this, bpmnDiagram);
 		
 		// Tell the DTP about the new Diagram
+		getDiagramTypeProvider().resourceReloaded(diagram);
 		getRefreshBehavior().initRefresh();
 		setPictogramElementsForSelection(null);
-		getDiagramTypeProvider().init(diagram, this);
-		
-//		if (viewer!=null)
-//			setGraphicalViewer(viewer);
-		
 		// set Diagram as contents for the graphical viewer and refresh
 		getGraphicalViewer().setContents(diagram);
 		
@@ -745,8 +744,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	}
 
 	public void closeEditor() {
-		Display display = getSite().getShell().getDisplay();
-		display.asyncExec(new Runnable() {
+		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				boolean closed = getSite().getPage().closeEditor(BPMN2Editor.this, false);
 				if (!closed){

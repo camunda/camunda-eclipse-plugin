@@ -3,7 +3,9 @@ package org.eclipse.bpmn2.modeler.ui.editor;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
@@ -44,6 +46,15 @@ public class DesignEditorSite extends MultiPageEditorSite {
 	protected void handlePostSelectionChanged(SelectionChangedEvent event) {
 		ISelectionProvider parentProvider = getMultiPageEditor().getSite()
 				.getSelectionProvider();
+		// make sure the selected PictogramElement is still on the same Diagram as the
+		// one currently being displayed - this event can happen after a page switch.
+		Diagram currentDiagram = bpmn2Editor.getDiagramTypeProvider().getDiagram();
+		PictogramElement pe = BusinessObjectUtil.getPictogramElementForSelection(event.getSelection());
+		Diagram peDiagram = Graphiti.getPeService().getDiagramForPictogramElement(pe);
+		
+		if (currentDiagram != peDiagram)
+			return;
+		
 		if (parentProvider instanceof MultiPageSelectionProvider) {
 			SelectionChangedEvent newEvent = getNewEvent(parentProvider, event);
 			MultiPageSelectionProvider prov = (MultiPageSelectionProvider) parentProvider;
