@@ -25,8 +25,8 @@ import org.eclipse.bpmn2.modeler.core.features.activity.UpdateActivityLoopAndMul
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractBoundaryEventOperation;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
-import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.CollapseSubProcessFeature;
-import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.ExpandSubProcessFeature;
+import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.CollapseFlowNodeFeature;
+import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.ExpandFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.ui.features.event.AppendEventFeature;
 import org.eclipse.bpmn2.modeler.ui.features.gateway.AppendGatewayFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;

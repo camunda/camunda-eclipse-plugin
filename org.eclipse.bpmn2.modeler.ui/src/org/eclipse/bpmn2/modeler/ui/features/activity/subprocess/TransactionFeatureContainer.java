@@ -14,6 +14,7 @@ package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Transaction;
+import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
@@ -28,7 +29,7 @@ import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 
-public class TransactionFeatureContainer extends AbstractSubProcessFeatureContainer {
+public class TransactionFeatureContainer extends AbstractExpandableActivityFeatureContainer {
 
 	private static final int offset = 3;
 
@@ -44,7 +45,7 @@ public class TransactionFeatureContainer extends AbstractSubProcessFeatureContai
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddExpandedActivityFeature<Transaction>(fp) {
+		return new AddExpandableActivityFeature<Transaction>(fp) {
 
 			@Override
 			protected void decorateActivityRectangle(RoundedRectangle rect) {
@@ -64,8 +65,16 @@ public class TransactionFeatureContainer extends AbstractSubProcessFeatureContai
 	}
 
 	@Override
+	public MultiUpdateFeature getUpdateFeature(IFeatureProvider fp) {
+		MultiUpdateFeature multiUpdate = super.getUpdateFeature(fp);
+		UpdateExpandableActivityFeature updateFeature = new UpdateExpandableActivityFeature(fp);
+		multiUpdate.addUpdateFeature(updateFeature);
+		return multiUpdate;
+	}
+
+	@Override
 	public ILayoutFeature getLayoutFeature(IFeatureProvider fp) {
-		return new LayoutSubProcessFeature(fp) {
+		return new LayoutExpandableActivityFeature(fp) {
 			@Override
 			protected void layoutInRectangle(RoundedRectangle rect) {
 				IGaService gaService = Graphiti.getGaService();
@@ -84,7 +93,7 @@ public class TransactionFeatureContainer extends AbstractSubProcessFeatureContai
 
 		public CreateTransactionFeature(IFeatureProvider fp) {
 			super(fp, "Transaction",
-					"Specialized description of sub-process that will have behavior controlled by transaction protocol");
+					"Specialized sub-process that will have behavior controlled by transaction protocol");
 		}
 
 		@Override

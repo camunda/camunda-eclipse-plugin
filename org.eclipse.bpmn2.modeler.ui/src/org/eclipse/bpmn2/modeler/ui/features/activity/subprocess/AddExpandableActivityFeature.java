@@ -36,10 +36,10 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class AddExpandedActivityFeature<T extends Activity>
+public class AddExpandableActivityFeature<T extends Activity>
 	extends AbstractAddActivityFeature<T> {
 
-	public AddExpandedActivityFeature(IFeatureProvider fp) {
+	public AddExpandableActivityFeature(IFeatureProvider fp) {
 		super(fp);
 	}
 

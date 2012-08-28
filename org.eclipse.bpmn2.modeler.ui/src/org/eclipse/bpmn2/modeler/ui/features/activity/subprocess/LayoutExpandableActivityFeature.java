@@ -27,9 +27,9 @@ import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
-public class LayoutSubProcessFeature extends LayoutActivityFeature {
+public class LayoutExpandableActivityFeature extends LayoutActivityFeature {
 
-	public LayoutSubProcessFeature(IFeatureProvider fp) {
+	public LayoutExpandableActivityFeature(IFeatureProvider fp) {
 		super(fp);
 	}
 

@@ -12,9 +12,10 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
-import org.eclipse.bpmn2.SubProcess;
+import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
+import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
@@ -26,26 +27,27 @@ import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
-// NOT USED YET
-public class ExpandSubProcessFeature extends AbstractCustomFeature {
+public class CollapseFlowNodeFeature extends AbstractCustomFeature {
 
-	public ExpandSubProcessFeature(IFeatureProvider fp) {
-	    super(fp);
-    }
-	
+	public CollapseFlowNodeFeature(IFeatureProvider fp) {
+		super(fp);
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public String getName() {
-	    return "Expand";
+		return "Collapse"; //$NON-NLS-1$
 	}
-	
+
 	@Override
 	public String getDescription() {
-	    return "Expand the Sub-Process and show contents";
+
+		return "Collapse the Activity and hide contents"; //$NON-NLS-1$
 	}
 
 	@Override
 	public String getImageId() {
-		return ImageProvider.IMG_16_EXPAND;
+		return ImageProvider.IMG_16_COLLAPSE;
 	}
 
 	@Override
@@ -59,13 +61,12 @@ public class ExpandSubProcessFeature extends AbstractCustomFeature {
 		PictogramElement[] pes = context.getPictogramElements();
 		if (pes != null && pes.length == 1) {
 			Object bo = getBusinessObjectForPictogramElement(pes[0]);
-			if (bo instanceof SubProcess) {
+			if (AbstractExpandableActivityFeatureContainer.isExpandableElement(bo)) {
 				try {
-					BPMNShape bpmnShape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement((SubProcess)bo);
-					if (!bpmnShape.isIsExpanded())
+					BPMNShape bpmnShape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement((FlowNode)bo);
+					if (bpmnShape.isIsExpanded())
 						ret = true;
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -79,31 +80,32 @@ public class ExpandSubProcessFeature extends AbstractCustomFeature {
 		if (pes != null && pes.length == 1) {
 			PictogramElement pe0 = pes[0];
 			Object bo = getBusinessObjectForPictogramElement(pe0);
-			if (pe0 instanceof ContainerShape && bo instanceof SubProcess) {
+			if (pe0 instanceof ContainerShape && bo instanceof FlowNode) {
 				ContainerShape containerShape = (ContainerShape)pe0;
-				SubProcess subProcess = (SubProcess)bo;
+				FlowNode flowNode = (FlowNode)bo;
 				try {
-					BPMNShape bpmnShape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(subProcess);
-					if (!bpmnShape.isIsExpanded()) {
+					BPMNShape bpmnShape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(flowNode);
+					if (bpmnShape.isIsExpanded()) {
 						
-						// SubProcess is collapsed - resize to minimum size such that all children are visible
-						// NOTE: children tasks will be set visible in LayoutSubProcessFeature
+						// SubProcess is collapsed - resize to standard modelObject size
+						// NOTE: children tasks will be set not-visible in LayoutExpandableActivityFeature
+						
+						bpmnShape.setIsExpanded(false);
 
-						bpmnShape.setIsExpanded(true);
-						
 						GraphicsAlgorithm ga = containerShape.getGraphicsAlgorithm();
 						ResizeShapeContext resizeContext = new ResizeShapeContext(containerShape);
 						IResizeShapeFeature resizeFeature = getFeatureProvider().getResizeShapeFeature(resizeContext);
 						int oldWidth = ga.getWidth();
 						int oldHeight = ga.getHeight();
-						ResizeSubProcessFeature.SizeCalculator newSize = new ResizeSubProcessFeature.SizeCalculator(containerShape);
-						int newWidth = newSize.getWidth();
-						int newHeight = newSize.getHeight();
+						int newWidth = GraphicsUtil.getActivitySize(getDiagram()).getWidth();
+						int newHeight = GraphicsUtil.getActivitySize(getDiagram()).getHeight();
 						resizeContext.setX(ga.getX() + oldWidth/2 - newWidth/2);
 						resizeContext.setY(ga.getY() + oldHeight/2 - newHeight/2);
 						resizeContext.setWidth(newWidth);
 						resizeContext.setHeight(newHeight);
 						resizeFeature.resizeShape(resizeContext);
+						
+						getDiagramEditor().selectPictogramElements(new PictogramElement[] {});
 					}
 					
 				} catch (Exception e) {

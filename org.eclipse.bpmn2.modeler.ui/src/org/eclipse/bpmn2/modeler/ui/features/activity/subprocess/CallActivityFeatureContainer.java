@@ -55,7 +55,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class CallActivityFeatureContainer extends AbstractSubProcessFeatureContainer {
+public class CallActivityFeatureContainer extends AbstractExpandableActivityFeatureContainer {
 
 	private static final int MARKER_OFFSET = 4;
 	private static final String CALL_ACTIVITY_REF_PROPERTY = "call.activity.ref";
@@ -73,7 +73,7 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddExpandedActivityFeature<CallActivity>(fp) {
+		return new AddExpandableActivityFeature<CallActivity>(fp) {
 			@Override
 			protected void hook(CallActivity activity, ContainerShape container, IAddContext context, int width, int height) {
 				super.hook(activity, container, context, width, height);
@@ -105,7 +105,7 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 
 	@Override
 	public ILayoutFeature getLayoutFeature(IFeatureProvider fp) {
-		return new LayoutActivityFeature(fp) {
+		return new LayoutExpandableActivityFeature(fp) {
 			protected int getMarkerContainerOffset() {
 				return MARKER_OFFSET;
 			}
@@ -144,7 +144,7 @@ public class CallActivityFeatureContainer extends AbstractSubProcessFeatureConta
 		
 		public CreateCallActivityFeature(IFeatureProvider fp) {
 			super(fp, "Call Activity",
-					"Identifies a point in the Process where a global Process or a Global Task is used");
+					"Identifies a point in the Process where a global Process or a Global Task is called");
 		}
 
 		@Override

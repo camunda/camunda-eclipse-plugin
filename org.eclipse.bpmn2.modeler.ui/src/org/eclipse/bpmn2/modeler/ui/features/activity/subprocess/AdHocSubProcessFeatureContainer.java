@@ -17,6 +17,7 @@ import java.util.Iterator;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.AdHocSubProcess;
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
@@ -34,7 +35,7 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IPeService;
 
-public class AdHocSubProcessFeatureContainer extends AbstractSubProcessFeatureContainer {
+public class AdHocSubProcessFeatureContainer extends AbstractExpandableActivityFeatureContainer {
 
 	@Override
 	public boolean canApplyTo(Object o) {
@@ -48,7 +49,7 @@ public class AdHocSubProcessFeatureContainer extends AbstractSubProcessFeatureCo
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddExpandedActivityFeature<AdHocSubProcess>(fp) {
+		return new AddExpandableActivityFeature<AdHocSubProcess>(fp) {
 			@Override
 			protected void hook(AdHocSubProcess activity, ContainerShape container, IAddContext context, int width, int height) {
 				super.hook(activity, container, context, width, height);
@@ -66,11 +67,19 @@ public class AdHocSubProcessFeatureContainer extends AbstractSubProcessFeatureCo
 		};
 	}
 
+	@Override
+	public MultiUpdateFeature getUpdateFeature(IFeatureProvider fp) {
+		MultiUpdateFeature multiUpdate = super.getUpdateFeature(fp);
+		UpdateExpandableActivityFeature updateFeature = new UpdateExpandableActivityFeature(fp);
+		multiUpdate.addUpdateFeature(updateFeature);
+		return multiUpdate;
+	}
+
 	public static class CreateAdHocSubProcessFeature extends AbstractCreateExpandableFlowNodeFeature<AdHocSubProcess> {
 
 		public CreateAdHocSubProcessFeature(IFeatureProvider fp) {
 			super(fp, "Ad-Hoc Sub-Process",
-					"A specialized description of Sub-Process that is a group of Activities that have no REQUIRED sequence relationships");
+					"A specialized sub-process in which the Activities have no required sequence relationships");
 		}
 
 		@Override

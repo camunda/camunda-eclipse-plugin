@@ -35,16 +35,16 @@ import org.eclipse.graphiti.mm.algorithms.styles.LineStyle;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.services.Graphiti;
 
-public class UpdateSubProcessFeature extends AbstractUpdateFeature {
+public class UpdateExpandableActivityFeature extends AbstractUpdateFeature {
 
-	public UpdateSubProcessFeature(IFeatureProvider fp) {
+	public UpdateExpandableActivityFeature(IFeatureProvider fp) {
 		super(fp);
 	}
 
 	@Override
 	public boolean canUpdate(IUpdateContext context) {
 		Object bo = getBusinessObjectForPictogramElement(context.getPictogramElement());
-		return bo != null && bo instanceof SubProcess;
+		return AbstractExpandableActivityFeatureContainer.isExpandableElement(bo);
 	}
 
 	@Override

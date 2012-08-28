@@ -36,8 +36,19 @@ public class SubProcessDetailComposite extends ActivityDetailComposite {
 		if (propertiesProvider==null) {
 			propertiesProvider = new AbstractPropertiesProvider(object) {
 				String[] properties = new String[] {
+						"anyAttribute",
+						"calledElementRef", // only used in CallActivity
+						"startQuantity",
+						"completionQuantity",
+						"completionCondition",
+						"isForCompensation",
 						"triggeredByEvent",
+						"cancelRemainingInstances",
 						"loopCharacteristics",
+						"boundaryEventDefs",
+						"method",
+						"ordering",
+						"protocol",
 						"properties",
 				};
 				

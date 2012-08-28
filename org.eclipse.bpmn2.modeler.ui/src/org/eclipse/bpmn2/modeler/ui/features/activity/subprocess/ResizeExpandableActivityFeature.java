@@ -28,10 +28,10 @@ import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 
-public class ResizeSubProcessFeature extends DefaultResizeBPMNShapeFeature {
+public class ResizeExpandableActivityFeature extends DefaultResizeBPMNShapeFeature {
 	public final static int MARGIN = 20;
 	
-	public ResizeSubProcessFeature(IFeatureProvider fp) {
+	public ResizeExpandableActivityFeature(IFeatureProvider fp) {
 		super(fp);
 	}
 	
