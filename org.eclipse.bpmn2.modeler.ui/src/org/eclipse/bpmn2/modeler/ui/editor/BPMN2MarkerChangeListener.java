@@ -6,6 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.bpmn2.modeler.core.Bpmn2TabbedPropertySheetPage;
 import org.eclipse.bpmn2.modeler.core.validation.BPMN2ValidationStatusLoader;
 import org.eclipse.bpmn2.modeler.core.validation.ValidationStatusAdapter;
 import org.eclipse.core.resources.IMarker;
@@ -18,6 +19,10 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EValidator;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.part.IPage;
+import org.eclipse.ui.views.properties.PropertySheet;
 
 public class BPMN2MarkerChangeListener implements IResourceChangeListener {
 	
@@ -76,13 +81,27 @@ public class BPMN2MarkerChangeListener implements IResourceChangeListener {
         updatedObjects.addAll(vsl.load(newMarkers));
         editor.getEditorSite().getShell().getDisplay().asyncExec(new Runnable() {
             public void run() {
-                for (EObject eobject : updatedObjects) {
-                    PictogramElement pe = editor.getDiagramTypeProvider().getFeatureProvider()
-                            .getPictogramElementForBusinessObject(eobject);
-                    if (pe != null) {
-                    	editor.getRefreshBehavior().refreshRenderingDecorators(pe);
-                    }
-                }
+            	// Refresh editor's graphical viewer...
+                editor.refresh();
+
+                // ...and property pages in case there are errors that
+                // do not appear as figure decorators on the canvas
+        		IWorkbenchPage page = editor.getEditorSite().getPage();
+        		String viewID = "org.eclipse.ui.views.PropertySheet";
+        		try {
+        			IViewReference[] views = page.getViewReferences();
+        			for (IViewReference v : views) {
+        				if (viewID.equals(v.getId())) {
+        					PropertySheet ps = (PropertySheet)v.getView(true);
+        					IPage pp = ps.getCurrentPage();
+        					if (pp instanceof Bpmn2TabbedPropertySheetPage) {
+        						((Bpmn2TabbedPropertySheetPage)pp).refresh();
+        					}
+        				}
+        			}
+        		}
+        		catch (Exception e) {
+        		}
             }
         });
     }

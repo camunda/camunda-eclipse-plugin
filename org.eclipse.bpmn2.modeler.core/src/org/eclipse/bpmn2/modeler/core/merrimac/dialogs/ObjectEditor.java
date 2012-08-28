@@ -20,6 +20,7 @@ import org.eclipse.bpmn2.modeler.core.utils.ErrorUtils;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.validation.ValidationStatusAdapter;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -115,7 +116,6 @@ public abstract class ObjectEditor implements INotifyChangedListener {
 	protected Label createLabel(Composite parent, String name) {
 		label = getToolkit().createLabel(parent, name);
 		label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		decoration = new ControlDecoration(label, SWT.TOP | SWT.LEFT);
 		updateLabelDecorator();
 		return label;
 	}
@@ -174,14 +174,19 @@ public abstract class ObjectEditor implements INotifyChangedListener {
         }
         
         if (applies) {
+        	if (decoration==null) {
+        		decoration = new ControlDecoration(label, SWT.TOP | SWT.LEFT);
+        	}
         	decoration.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(image));
         	decoration.show();
         	decoration.setDescriptionText(text);
         }
         else {
-        	decoration.setImage(null);
-        	decoration.setDescriptionText(null);
-        	decoration.hide();
+        	if (decoration!=null) {
+        		decoration.hide();
+        		decoration.dispose();
+        		decoration = null;
+        	}
         }
 	}
 	
@@ -195,7 +200,6 @@ public abstract class ObjectEditor implements INotifyChangedListener {
 					" with value '"+ModelUtil.getDisplayName(result)+"'");
 			return false;
 		}
-		updateLabelDecorator();
 		return true;
 	}
 

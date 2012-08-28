@@ -446,23 +446,6 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
         } catch (CoreException e) {
             Activator.logStatus(e.getStatus());
         }
-        
-		IWorkbenchPage page = getEditorSite().getPage();
-		String viewID = "org.eclipse.ui.views.PropertySheet";
-		try {
-			IViewReference[] views = page.getViewReferences();
-			for (IViewReference v : views) {
-				if (viewID.equals(v.getId())) {
-					PropertySheet ps = (PropertySheet)v.getView(true);
-					IPage pp = ps.getCurrentPage();
-					if (pp instanceof Bpmn2TabbedPropertySheetPage) {
-						((Bpmn2TabbedPropertySheetPage)pp).refresh();
-					}
-				}
-			}
-		}
-		catch (Exception e) {
-		}
     }
     
     private EObject getTargetObject(IMarker marker) {
@@ -678,9 +661,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		super.doSave(monitor);
 
 		Resource resource = getResourceSet().getResource(modelUri, false);
-		
-		if (BPMN2ProjectValidator.validateOnSave(resource, monitor))
-			loadMarkers();
+		BPMN2ProjectValidator.validateOnSave(resource, monitor);
 	}
 
 	@Override

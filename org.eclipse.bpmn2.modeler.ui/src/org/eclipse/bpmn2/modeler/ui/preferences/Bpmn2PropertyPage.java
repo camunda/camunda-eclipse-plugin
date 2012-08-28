@@ -36,7 +36,6 @@ public class Bpmn2PropertyPage extends PropertyPage {
 	private Combo cboRuntimes;
 	private Button btnShowAdvancedProperties;
 	private Button btnShowDescriptions;
-	private Button btnExpandProperties;
 	private Button btnCheckProjectNature;
 	private BPMNDIAttributeDefaultCombo cboIsHorizontal;
 	private BPMNDIAttributeDefaultCombo cboIsExpanded;
@@ -71,10 +70,6 @@ public class Bpmn2PropertyPage extends PropertyPage {
 		btnShowDescriptions = new Button(container, SWT.CHECK);
 		btnShowDescriptions.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
 		btnShowDescriptions.setText(Bpmn2Preferences.PREF_SHOW_DESCRIPTIONS_LABEL);
-
-		btnExpandProperties = new Button(container, SWT.CHECK);
-		btnExpandProperties.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
-		btnExpandProperties.setText(Bpmn2Preferences.PREF_EXPAND_PROPERTIES_LABEL);
 
 		btnCheckProjectNature = new Button(container, SWT.CHECK);
 		btnCheckProjectNature.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
@@ -126,7 +121,6 @@ public class Bpmn2PropertyPage extends PropertyPage {
 	private void initData() {
 		btnShowAdvancedProperties.setSelection( prefs.getShowAdvancedPropertiesTab() );
 		btnShowDescriptions.setSelection( prefs.getShowDescriptions() );
-		btnExpandProperties.setSelection( prefs.getExpandProperties() );
 		btnCheckProjectNature.setSelection( prefs.getCheckProjectNature() );
 		cboIsHorizontal.setValue(prefs.getIsHorizontal());
 		cboIsExpanded.setValue( prefs.getIsExpanded() );
@@ -167,7 +161,6 @@ public class Bpmn2PropertyPage extends PropertyPage {
 		
 		prefs.setShowAdvancedPropertiesTab(btnShowAdvancedProperties.getSelection());
 		prefs.setShowDescriptions(btnShowDescriptions.getSelection());
-		prefs.setExpandProperties(btnExpandProperties.getSelection());
 		prefs.setCheckProjectNature(btnCheckProjectNature.getSelection());
 		prefs.setIsHorizontal(cboIsHorizontal.getValue());
 		prefs.setIsExpanded(cboIsExpanded.getValue());

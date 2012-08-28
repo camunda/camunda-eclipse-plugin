@@ -460,53 +460,21 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 			
 			String displayName = ModelUtil.getLabel(object, reference);
 
-			if (getPreferences().getExpandProperties()) {
-				AbstractDetailComposite composite = null;
-				if (getPropertySection()!=null) {
-					composite = PropertiesCompositeFactory.createDetailComposite(
-						reference.getEReferenceType().getInstanceClass(), propertySection);
-				}
-				else {
-					composite = PropertiesCompositeFactory.createDetailComposite(
-						reference.getEReferenceType().getInstanceClass(), parent, SWT.NONE);
-				}
-				
-				if (composite!=null) {
-					EObject value = (EObject)object.eGet(reference);
-					if (value==null) {
-						value = modelHandler.create((EClass)reference.getEType());
-						InsertionAdapter.add(object, reference, value);
-					}
-					composite.setBusinessObject(value);
-					composite.setTitle( ModelUtil.getLabel(object,reference) + " Details");
-				}
-				else {
-					Label label = createLabel(
-							parent,
-							"Internal error: cannot display properties for "+
-							displayName+
-							" because the property page does not exist.");
-					label.setLayoutData(new GridData(SWT.FILL,SWT.TOP,true,false,3,1));
+			ObjectEditor editor;
+			if (ModelUtil.isMultiChoice(object, reference)) {
+				if (reference.isMany()) {
+					editor = new FeatureListObjectEditor(this,object,reference);
+				} else {
+					editor = new ComboObjectEditor(this,object,reference);
 				}
 			}
-			else
-			{
-				ObjectEditor editor;
-				if (ModelUtil.isMultiChoice(object, reference)) {
-					if (reference.isMany()) {
-						editor = new FeatureListObjectEditor(this,object,reference);
-					} else {
-						editor = new ComboObjectEditor(this,object,reference);
-					}
-				}
-				else if (ModelUtil.canCreateNew(object, reference)) {
-					editor = new ReadonlyTextObjectEditor(this,object,reference);
-				}
-				else {
-					editor = new TextObjectEditor(this,object,reference);
-				}
-				editor.createControl(parent,displayName);
+			else if (ModelUtil.canCreateNew(object, reference)) {
+				editor = new ReadonlyTextObjectEditor(this,object,reference);
 			}
+			else {
+				editor = new TextObjectEditor(this,object,reference);
+			}
+			editor.createControl(parent,displayName);
 		}
 	}
 	
