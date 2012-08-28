@@ -28,7 +28,7 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 
-public class SubProcessFeatureContainer extends AbstractSubProcessFeatureContainer {
+public class SubProcessFeatureContainer extends AbstractExpandableActivityFeatureContainer {
 
 	public static final String TRIGGERED_BY_EVENT = "triggered-by-event-key";
 	public static final String IS_EXPANDED = "is-expanded-key";
@@ -46,26 +46,15 @@ public class SubProcessFeatureContainer extends AbstractSubProcessFeatureContain
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddExpandedActivityFeature<SubProcess>(fp);
+		return new AddExpandableActivityFeature<SubProcess>(fp);
 	}
 
 	@Override
 	public MultiUpdateFeature getUpdateFeature(IFeatureProvider fp) {
 		MultiUpdateFeature multiUpdate = super.getUpdateFeature(fp);
-		UpdateSubProcessFeature updateSubProcessFeature = new UpdateSubProcessFeature(fp);
-		multiUpdate.addUpdateFeature(updateSubProcessFeature);
+		UpdateExpandableActivityFeature updateFeature = new UpdateExpandableActivityFeature(fp);
+		multiUpdate.addUpdateFeature(updateFeature);
 		return multiUpdate;
-	}
-	
-	@Override
-	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
-		ICustomFeature[] superFeatures = super.getCustomFeatures(fp);
-		ICustomFeature[] thisFeatures = new ICustomFeature[2 + superFeatures.length];
-		thisFeatures[0] = new ExpandSubProcessFeature(fp);
-		thisFeatures[1] = new CollapseSubProcessFeature(fp);
-		for (int i=0; i<superFeatures.length; ++i)
-			thisFeatures[2+i] = superFeatures[i];
-		return thisFeatures;
 	}
 
 	public static class CreateSubProcessFeature extends AbstractCreateExpandableFlowNodeFeature<SubProcess> {
