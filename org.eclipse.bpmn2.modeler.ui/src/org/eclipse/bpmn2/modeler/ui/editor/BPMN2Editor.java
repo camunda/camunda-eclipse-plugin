@@ -665,8 +665,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	}
 
 	public void closeEditor() {
-		Display display = getSite().getShell().getDisplay();
-		display.asyncExec(new Runnable() {
+		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				boolean closed = getSite().getPage().closeEditor(BPMN2Editor.this, false);
 				if (!closed){
