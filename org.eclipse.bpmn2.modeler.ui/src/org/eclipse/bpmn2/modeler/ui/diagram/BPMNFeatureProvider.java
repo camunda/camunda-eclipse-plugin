@@ -501,8 +501,17 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 				ICustomFeature[] cfa = ctf.getCustomFeatures(this);
 				if (cfa!=null) {
 					for (ICustomFeature cf : cfa) {
-						if (cf.isAvailable(context))
-							list.add(cf);
+						if (cf.isAvailable(context)) {
+							boolean found = false;
+							for (ICustomFeature cfl : list) {
+								if (cfl.getClass() == cf.getClass()) {
+									found = true;
+									break;
+								}
+							}
+							if (!found)
+								list.add(cf);
+						}
 					}
 				}
 			}
@@ -513,7 +522,15 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 				ICustomFeature[] cfa = fc.getCustomFeatures(this);
 				if (cfa!=null) {
 					for (ICustomFeature cf : cfa) {
-						list.add(cf);
+						boolean found = false;
+						for (ICustomFeature cfl : list) {
+							if (cfl.getClass() == cf.getClass()) {
+								found = true;
+								break;
+							}
+						}
+						if (!found)
+							list.add(cf);
 					}
 				}
 			}
