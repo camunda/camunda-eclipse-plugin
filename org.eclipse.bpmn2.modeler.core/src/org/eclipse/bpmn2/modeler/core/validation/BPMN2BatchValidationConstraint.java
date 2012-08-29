@@ -1,11 +1,9 @@
 package org.eclipse.bpmn2.modeler.core.validation;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
-import org.eclipse.bpmn2.BusinessRuleTask;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.CompensateEventDefinition;
@@ -13,26 +11,22 @@ import org.eclipse.bpmn2.ComplexGateway;
 import org.eclipse.bpmn2.ConditionalEventDefinition;
 import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.Definitions;
-import org.eclipse.bpmn2.Error;
-import org.eclipse.bpmn2.Escalation;
-import org.eclipse.bpmn2.ItemDefinition;
-import org.eclipse.bpmn2.Message;
-import org.eclipse.bpmn2.Resource;
-import org.eclipse.bpmn2.Signal;
-import org.eclipse.bpmn2.DataStore;
 import org.eclipse.bpmn2.EndEvent;
+import org.eclipse.bpmn2.Error;
 import org.eclipse.bpmn2.ErrorEventDefinition;
+import org.eclipse.bpmn2.Escalation;
 import org.eclipse.bpmn2.EscalationEventDefinition;
 import org.eclipse.bpmn2.EventBasedGateway;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.ExclusiveGateway;
-import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.GatewayDirection;
 import org.eclipse.bpmn2.InclusiveGateway;
+import org.eclipse.bpmn2.ItemDefinition;
+import org.eclipse.bpmn2.Message;
 import org.eclipse.bpmn2.MessageEventDefinition;
 import org.eclipse.bpmn2.ParallelGateway;
 import org.eclipse.bpmn2.Process;
@@ -40,16 +34,14 @@ import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.ScriptTask;
 import org.eclipse.bpmn2.SendTask;
 import org.eclipse.bpmn2.SequenceFlow;
+import org.eclipse.bpmn2.Signal;
 import org.eclipse.bpmn2.SignalEventDefinition;
 import org.eclipse.bpmn2.StartEvent;
-import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.TimerEventDefinition;
-import org.eclipse.bpmn2.UserTask;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.validation.AbstractModelConstraint;
 import org.eclipse.emf.validation.EMFEventType;
 import org.eclipse.emf.validation.IValidationContext;
@@ -360,9 +352,10 @@ public class BPMN2BatchValidationConstraint extends AbstractModelConstraint {
 					}
 				}
 				if (gw instanceof InclusiveGateway) {
-					if (gw.getGatewayDirection().getValue() != GatewayDirection.DIVERGING.getValue()) {
+					if (gw.getGatewayDirection().getValue() != GatewayDirection.DIVERGING.getValue()
+							&& gw.getGatewayDirection().getValue() != GatewayDirection.CONVERGING.getValue()) {
 						return ctx.createFailureStatus(
-								"Invalid Gateway direction for Inclusive Gateway. It should be 'Diverging'");
+								"Invalid Gateway direction for Inclusive Gateway. It should be 'Converging' or 'Diverging'");
 					}
 				}
 				if (gw instanceof ComplexGateway) {

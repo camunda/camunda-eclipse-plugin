@@ -11,8 +11,12 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.EValidator;
+import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.edit.ui.util.EditUIMarkerHelper;
@@ -52,7 +56,28 @@ public class BPMN2ValidationStatusLoader {
 	                    markedObject, ValidationStatusAdapter.class);
             }
 
-            statusAdapter.addValidationStatus(convertMarker(marker, markedObject));
+            // convert the problem marker to an IStatus suitable for the validation status adapter
+            IStatus status = convertMarker(marker, markedObject);
+
+            // also add an adapter to each affected EObject in the result locus
+            if (status instanceof ConstraintStatus) {
+            	ConstraintStatus cs = (ConstraintStatus) status;
+            	for (EObject result : cs.getResultLocus()) {
+            		// CAUTION: the result locus WILL contain references to object
+            		// features (EStructuralFeatures) that identify the feature in
+            		// error for the Property Sheets. We don't want to add a validation
+            		// status adapter to these EObjects.
+            		EPackage pkg = result.eClass().getEPackage();
+            		if (pkg != EcorePackage.eINSTANCE) {
+            			ValidationStatusAdapter sa = (ValidationStatusAdapter) EcoreUtil.getRegisteredAdapter(
+                            result, ValidationStatusAdapter.class);
+            			sa.addValidationStatus(status);
+            			touched.add(result);
+            		}
+            	}
+            }
+            
+            statusAdapter.addValidationStatus(status);
             touched.add(markedObject);
         }
         return touched;
