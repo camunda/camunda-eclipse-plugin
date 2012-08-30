@@ -2,12 +2,14 @@ package org.eclipse.bpmn2.modeler.ui.features.choreography;
 
 import java.io.IOException;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.IConstants;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
+import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ObjectEditingDialog;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
@@ -31,12 +33,12 @@ public class ShowDiagramPageFeature extends AbstractCustomFeature {
 
 	@Override
 	public String getName() {
-		return "Show Properties";
+		return "Show Diagram";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Display a Property configuration popup dialog for the selected item";
+		return "Switch to the Diagram Page that contains the details of this activity";
 	}
 
 	@Override
@@ -45,20 +47,16 @@ public class ShowDiagramPageFeature extends AbstractCustomFeature {
 		if (pes != null && pes.length == 1) {
 			PictogramElement pe = pes[0];
 			Object bo = getBusinessObjectForPictogramElement(pe);
+			BaseElement baseElement = null;
 			if (bo instanceof Participant) {
 				Participant participant = (Participant)bo;
-				Process process = participant.getProcessRef();
-				if (process!=null) {
-					try {
-						ModelHandler mh = ModelHandlerLocator.getModelHandler(participant.eResource());
-						DiagramElement de = mh.findDIElement(process);
-						return de!=null;
-					}
-					catch (Exception e){
-					}
-				}
-				return true;
+				baseElement = participant.getProcessRef();
 			}
+			else if (bo instanceof BaseElement) {
+				baseElement = (BaseElement)bo;
+			}
+			
+			return DIUtils.findBPMNDiagram(getDiagramEditor(), baseElement) != null;
 		}
 		return false;
 	}
@@ -74,26 +72,18 @@ public class ShowDiagramPageFeature extends AbstractCustomFeature {
 		if (pes != null && pes.length == 1) {
 			PictogramElement pe = pes[0];
 			Object bo = getBusinessObjectForPictogramElement(pe);
+			BaseElement baseElement = null;
 			if (bo instanceof Participant) {
 				Participant participant = (Participant)bo;
-				Process process = participant.getProcessRef();
-				if (process!=null) {
-					// go to the diagram page for this process if one exists
-					ModelHandler mh;
-					try {
-						mh = ModelHandlerLocator.getModelHandler(participant.eResource());
-						DiagramElement de = mh.findDIElement(process);
-						if (de.eContainer() instanceof BPMNDiagram) {
-							BPMNDiagram bpmnDiagram = (BPMNDiagram)de.eContainer();
-							BPMN2MultiPageEditor mpe = ((BPMN2Editor)getDiagramEditor()).getMultipageEditor();
-							mpe.showDesignPage(bpmnDiagram);
-							return;
-						}
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
+				baseElement = participant.getProcessRef();
+			}
+			else if (bo instanceof BaseElement) {
+				baseElement = (BaseElement)bo;
+			}
+			BPMNDiagram bpmnDiagram = DIUtils.findBPMNDiagram(getDiagramEditor(), baseElement);
+			if (bpmnDiagram!=null) {
+				BPMN2MultiPageEditor mpe = ((BPMN2Editor)getDiagramEditor()).getMultipageEditor();
+				mpe.showDesignPage(bpmnDiagram);
 			}
 		}
 	}

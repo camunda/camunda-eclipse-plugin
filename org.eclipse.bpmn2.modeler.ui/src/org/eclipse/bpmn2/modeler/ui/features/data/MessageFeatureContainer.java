@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.ui.features.data;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Message;
 import org.eclipse.bpmn2.RootElement;
+import org.eclipse.bpmn2.modeler.core.di.DIImport;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
@@ -96,7 +97,8 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 				peService.createChopboxAnchor(container);
 				AnchorUtil.addFixedPointAnchors(container, invisibleRect);
 
-				createDIShape(container, msg);
+				boolean isImport = context.getProperty(DIImport.IMPORT_PROPERTY) != null;
+				createDIShape(container, msg, !isImport);
 				layoutPictogramElement(container);
 				
 				this.prepareAddContext(context, width, height);

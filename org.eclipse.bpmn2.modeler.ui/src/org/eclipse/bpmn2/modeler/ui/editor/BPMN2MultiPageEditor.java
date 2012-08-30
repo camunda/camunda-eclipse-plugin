@@ -218,6 +218,9 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IGotoMa
 				}
 			});
 		}
+		else {
+			designEditor.showDesignPage(bpmnDiagram);
+		}
 	}
 	
 	protected void removeDesignPage(final BPMNDiagram bpmnDiagram) {
@@ -302,10 +305,6 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IGotoMa
 	@Override
 	public void removePage(int pageIndex) {
 		Object page = tabFolder.getItem(pageIndex).getData();
-//		if (page instanceof EditorPart && pageIndex==0) {
-//			// make sure the editor gets disposed - neither CTabFolder nor super does this for us!
-//			((EditorPart)page).dispose();
-//		}
 		super.removePage(pageIndex);
 		updateTabs();
 		if (page instanceof DesignEditor) {
@@ -330,6 +329,13 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IGotoMa
 	
 	public CTabItem getTabItem(int pageIndex) {
 		return tabFolder.getItem(pageIndex);
+	}
+	
+	public BPMNDiagram getBpmnDiagram(int i) {
+		if (i>=0 && i<bpmnDiagrams.size()) {
+			return bpmnDiagrams.get(i);
+		}
+		return null;
 	}
 	
 	private void updateTabs() {

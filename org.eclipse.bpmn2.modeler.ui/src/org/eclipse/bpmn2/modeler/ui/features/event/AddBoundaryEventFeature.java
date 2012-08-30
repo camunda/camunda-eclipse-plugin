@@ -64,10 +64,9 @@ public class AddBoundaryEventFeature extends AbstractAddBPMNShapeFeature<Boundar
 	public PictogramElement add(IAddContext context) {
 		BoundaryEvent event = getBusinessObject(context);
 
-		Object prop = context.getProperty(DIImport.IMPORT_PROPERTY);
-		boolean importing = prop != null && (Boolean) prop;
+		boolean isImport = context.getProperty(DIImport.IMPORT_PROPERTY) != null;
 		// FIXME: what's going on here?
-		ContainerShape target = importing ? context.getTargetContainer() : (ContainerShape) context
+		ContainerShape target = isImport ? context.getTargetContainer() : (ContainerShape) context
 		        .getTargetContainer().eContainer();
 
 		ContainerShape containerShape = peService.createContainerShape(target, true);
@@ -77,7 +76,7 @@ public class AddBoundaryEventFeature extends AbstractAddBPMNShapeFeature<Boundar
 		int gatewayWidth = this.getWidth(context);
 		int gatewayHeight = this.getHeight();
 
-		if (importing) { // if loading from DI then place according to context
+		if (isImport) { // if loading from DI then place according to context
 			gaService.setLocationAndSize(ellipse, context.getX(), context.getY(), gatewayWidth, gatewayHeight);
 		} else { // otherwise place it in the center of shape for user to adjust it
 			GraphicsAlgorithm ga = context.getTargetContainer().getGraphicsAlgorithm();
@@ -88,7 +87,7 @@ public class AddBoundaryEventFeature extends AbstractAddBPMNShapeFeature<Boundar
 
 		Ellipse circle = GraphicsUtil.createIntermediateEventCircle(ellipse);
 		circle.setStyle(StyleUtil.getStyleForClass(getDiagram()));
-		createDIShape(containerShape, event);
+		createDIShape(containerShape, event, !isImport);
 
 		ChopboxAnchor anchor = peService.createChopboxAnchor(containerShape);
 		anchor.setReferencedGraphicsAlgorithm(ellipse);

@@ -76,8 +76,8 @@ public class AddChoreographyActivityFeature<T extends ChoreographyActivity>
 		StyleUtil.applyStyle(containerRect, choreography);
 		decorateContainerRect(containerRect);
 
-		Object importProperty = context.getProperty(DIImport.IMPORT_PROPERTY);
-		if (importProperty != null && (Boolean) importProperty) {
+		boolean isImport = context.getProperty(DIImport.IMPORT_PROPERTY) != null;
+		if (isImport) {
 			addedFromImport(choreography, choreographyContainer, context);
 		}
 
@@ -118,7 +118,7 @@ public class AddChoreographyActivityFeature<T extends ChoreographyActivity>
 		}
 
 		peService.createChopboxAnchor(choreographyContainer);
-		createDIShape(choreographyContainer, choreography);
+		createDIShape(choreographyContainer, choreography, !isImport);
 		AnchorUtil.addFixedPointAnchors(choreographyContainer, containerRect);
 		ChoreographyUtil.drawMessageLinks(getFeatureProvider(),choreographyContainer);
 		return choreographyContainer;
@@ -161,7 +161,7 @@ public class AddChoreographyActivityFeature<T extends ChoreographyActivity>
 			ParticipantBandKind bandKind = bpmnShape.getParticipantBandKind();
 			ContainerShape createdShape = ChoreographyUtil.createParticipantBandContainerShape(bandKind,
 					choreographyContainer, bpmnShape, isShowNames());
-			createDIShape(createdShape, bpmnShape.getBpmnElement(), bpmnShape);
+			createDIShape(createdShape, bpmnShape.getBpmnElement(), bpmnShape, false);
 			Participant p = (Participant) bpmnShape.getBpmnElement();
 			if (p.getParticipantMultiplicity() != null && p.getParticipantMultiplicity().getMaximum() > 1) {
 				drawMultiplicityMarkers(createdShape);

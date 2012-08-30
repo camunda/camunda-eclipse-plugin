@@ -14,6 +14,7 @@ package org.eclipse.bpmn2.modeler.core.features.data;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.ItemAwareElement;
+import org.eclipse.bpmn2.modeler.core.di.DIImport;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
@@ -103,7 +104,8 @@ public abstract class AddDataFeature<T extends ItemAwareElement> extends Abstrac
 		
 		peService.createChopboxAnchor(container);
 		AnchorUtil.addFixedPointAnchors(container, invisibleRect);
-		createDIShape(container, t);
+		boolean isImport = context.getProperty(DIImport.IMPORT_PROPERTY) != null;
+		createDIShape(container, t, !isImport);
 		layoutPictogramElement(container);
 		
 		this.prepareAddContext(context, width, height);

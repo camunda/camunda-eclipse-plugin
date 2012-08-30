@@ -292,19 +292,21 @@ public class DIUtils {
 	}
 	
 	public static BPMNDiagram findBPMNDiagram(final IDiagramEditor editor, final BaseElement baseElement) {
-		ResourceSet resourceSet = editor.getResourceSet();
-		if (resourceSet!=null) {
-			for (Resource r : resourceSet.getResources()) {
-				if (r instanceof Bpmn2Resource) {
-					for (EObject o : r.getContents()) {
-						if (o instanceof DocumentRoot) {
-							DocumentRoot root = (DocumentRoot)o;
-							Definitions defs = root.getDefinitions();
-							for (BPMNDiagram d : defs.getDiagrams()) {
-								BPMNDiagram bpmnDiagram = (BPMNDiagram)d;
-								BaseElement bpmnElement = bpmnDiagram.getPlane().getBpmnElement();
-								if (bpmnElement == baseElement)
-									return bpmnDiagram;
+		if (baseElement!=null) {
+			ResourceSet resourceSet = editor.getResourceSet();
+			if (resourceSet!=null) {
+				for (Resource r : resourceSet.getResources()) {
+					if (r instanceof Bpmn2Resource) {
+						for (EObject o : r.getContents()) {
+							if (o instanceof DocumentRoot) {
+								DocumentRoot root = (DocumentRoot)o;
+								Definitions defs = root.getDefinitions();
+								for (BPMNDiagram d : defs.getDiagrams()) {
+									BPMNDiagram bpmnDiagram = (BPMNDiagram)d;
+									BaseElement bpmnElement = bpmnDiagram.getPlane().getBpmnElement();
+									if (bpmnElement == baseElement)
+										return bpmnDiagram;
+								}
 							}
 						}
 					}

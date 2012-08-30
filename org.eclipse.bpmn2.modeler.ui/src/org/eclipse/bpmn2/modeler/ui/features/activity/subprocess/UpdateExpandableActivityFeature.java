@@ -33,6 +33,7 @@ import org.eclipse.graphiti.mm.Property;
 import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.LineStyle;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 
 public class UpdateExpandableActivityFeature extends AbstractUpdateFeature {
@@ -49,12 +50,11 @@ public class UpdateExpandableActivityFeature extends AbstractUpdateFeature {
 
 	@Override
 	public IReason updateNeeded(IUpdateContext context) {
-		Property triggerProperty = Graphiti.getPeService().getProperty(context.getPictogramElement(),
-		        TRIGGERED_BY_EVENT);
-		Property expandedProperty = Graphiti.getPeService().getProperty(context.getPictogramElement(),
-		        IS_EXPANDED);
+		PictogramElement pe = context.getPictogramElement();
+		Property triggerProperty = Graphiti.getPeService().getProperty(pe,TRIGGERED_BY_EVENT);
+		Property expandedProperty = Graphiti.getPeService().getProperty(pe,IS_EXPANDED);
 		
-		SubProcess process = (SubProcess) getBusinessObjectForPictogramElement(context.getPictogramElement());
+		SubProcess process = (SubProcess) getBusinessObjectForPictogramElement(pe);
 		try {
 			BPMNShape bpmnShape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(process);
 			if (expandedProperty != null && Boolean.parseBoolean(expandedProperty.getValue()) != bpmnShape.isIsExpanded()) {
@@ -74,25 +74,24 @@ public class UpdateExpandableActivityFeature extends AbstractUpdateFeature {
 
 	@Override
 	public boolean update(IUpdateContext context) {
-		SubProcess process = (SubProcess) getBusinessObjectForPictogramElement(context.getPictogramElement());
-		ContainerShape container = (ContainerShape) context.getPictogramElement();
+		PictogramElement pe = context.getPictogramElement();
+		SubProcess process = (SubProcess) getBusinessObjectForPictogramElement(pe);
+		ContainerShape container = (ContainerShape) pe;
 		ContainerShape markerContainer = (ContainerShape) GraphicsUtil.getShape(container,
 				GraphicsUtil.ACTIVITY_MARKER_CONTAINER);
 		boolean isExpanded = false;
 		
 		try {
 			BPMNShape bpmnShape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(process);
-			isExpanded =bpmnShape.isIsExpanded();
+			isExpanded = bpmnShape.isIsExpanded();
 		} catch (IOException e) {
 			throw new IllegalStateException("Could not get DI shape for subprocess:"+process);
 		}
-		Graphiti.getPeService().setPropertyValue(context.getPictogramElement(), TRIGGERED_BY_EVENT,
-		        Boolean.toString(process.isTriggeredByEvent()));
-		Graphiti.getPeService().setPropertyValue(context.getPictogramElement(), IS_EXPANDED,
-		        Boolean.toString(isExpanded));
+		Graphiti.getPeService().setPropertyValue(pe, TRIGGERED_BY_EVENT, Boolean.toString(process.isTriggeredByEvent()));
+		Graphiti.getPeService().setPropertyValue(pe, IS_EXPANDED, Boolean.toString(isExpanded));
 
 		RoundedRectangle rectangle = (RoundedRectangle) Graphiti.getPeService()
-		        .getAllContainedPictogramElements(context.getPictogramElement()).iterator().next()
+		        .getAllContainedPictogramElements(pe).iterator().next()
 		        .getGraphicsAlgorithm();
 		LineStyle lineStyle = process.isTriggeredByEvent() ? LineStyle.DOT : LineStyle.SOLID;
 		rectangle.setLineStyle(lineStyle);

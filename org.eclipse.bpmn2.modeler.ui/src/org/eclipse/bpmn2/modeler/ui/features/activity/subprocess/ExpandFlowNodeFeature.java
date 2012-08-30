@@ -12,35 +12,47 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
+import static org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.SubProcessFeatureContainer.IS_EXPANDED;
+
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.bpmn2.modeler.ui.features.choreography.ShowDiagramPageFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
+import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.context.impl.ResizeShapeContext;
+import org.eclipse.graphiti.features.context.impl.UpdateContext;
 import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.services.Graphiti;
 
 // NOT USED YET
-public class ExpandFlowNodeFeature extends AbstractCustomFeature {
+public class ExpandFlowNodeFeature extends ShowDiagramPageFeature {
 
+	private final static String NAME = "Expand";
+	private final static String DESCRIPTION = "Expand the Activity and show contents";
+	
+	private String name = NAME;
+	private String description = DESCRIPTION;
+	
 	public ExpandFlowNodeFeature(IFeatureProvider fp) {
 	    super(fp);
     }
 	
 	@Override
 	public String getName() {
-	    return "Expand";
+	    return name;
 	}
 	
 	@Override
 	public String getDescription() {
-	    return "Expand the Activity and show contents";
+	    return description;
 	}
 
 	@Override
@@ -55,6 +67,16 @@ public class ExpandFlowNodeFeature extends AbstractCustomFeature {
 
 	@Override
 	public boolean canExecute(ICustomContext context) {
+		if (super.canExecute(context)) {
+			name = super.getName();
+			description = super.getDescription();
+			return true;
+		}
+		else {
+			name = NAME;
+			description = DESCRIPTION;
+		}
+		
 		boolean ret = false;
 		PictogramElement[] pes = context.getPictogramElements();
 		if (pes != null && pes.length == 1) {
@@ -75,6 +97,11 @@ public class ExpandFlowNodeFeature extends AbstractCustomFeature {
 
 	@Override
 	public void execute(ICustomContext context) {
+		if (super.canExecute(context)) {
+			super.execute(context);
+			return;
+		}
+		
 		PictogramElement[] pes = context.getPictogramElements();
 		if (pes != null && pes.length == 1) {
 			PictogramElement pe0 = pes[0];
@@ -90,7 +117,7 @@ public class ExpandFlowNodeFeature extends AbstractCustomFeature {
 						// NOTE: children tasks will be set visible in LayoutExpandableActivityFeature
 
 						bpmnShape.setIsExpanded(true);
-						
+
 						GraphicsAlgorithm ga = containerShape.getGraphicsAlgorithm();
 						ResizeShapeContext resizeContext = new ResizeShapeContext(containerShape);
 						IResizeShapeFeature resizeFeature = getFeatureProvider().getResizeShapeFeature(resizeContext);
@@ -104,6 +131,11 @@ public class ExpandFlowNodeFeature extends AbstractCustomFeature {
 						resizeContext.setWidth(newWidth);
 						resizeContext.setHeight(newHeight);
 						resizeFeature.resizeShape(resizeContext);
+						
+						UpdateContext updateContext = new UpdateContext(containerShape);
+						IUpdateFeature updateFeature = getFeatureProvider().getUpdateFeature(updateContext);
+						if (updateFeature.updateNeeded(updateContext).toBoolean())
+							updateFeature.update(updateContext);
 					}
 					
 				} catch (Exception e) {

@@ -77,7 +77,7 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature<Lane> {
 		StyleUtil.applyStyle(rect, lane);
 		
 		boolean isImport = context.getProperty(DIImport.IMPORT_PROPERTY) != null;
-		BPMNShape bpmnShape = createDIShape(containerShape, lane);
+		BPMNShape bpmnShape = createDIShape(containerShape, lane, !isImport);
 		
 		if (FeatureSupport.isTargetLane(context)) {
 			Lane targetLane = FeatureSupport.getTargetLane(context);

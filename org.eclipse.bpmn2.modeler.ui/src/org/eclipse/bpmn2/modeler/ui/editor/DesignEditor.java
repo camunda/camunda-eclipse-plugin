@@ -21,6 +21,7 @@ import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.transaction.NotificationFilter;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -166,9 +167,8 @@ public class DesignEditor extends BPMN2Editor {
 				public void widgetSelected(SelectionEvent e) {
 					int pageIndex = tabFolder.indexOf((CTabItem) e.item);
 					CTabItem item = tabFolder.getItem(pageIndex);
-					BPMNDiagram bd = (BPMNDiagram) item.getData();
-					setBpmnDiagram(bd);
-					item.getControl().setVisible(true);
+					BPMNDiagram bpmnDiagram = (BPMNDiagram) item.getData();
+					showDesignPage(bpmnDiagram);
 				}
 			});
 			tabFolder.addTraverseListener(new TraverseListener() { 
@@ -203,6 +203,16 @@ public class DesignEditor extends BPMN2Editor {
 				BPMNDiagram bpmnDiagram = bpmnDiagrams.get(i);
 				if (bpmnDiagram.getPlane().getBpmnElement() instanceof RootElement)
 					multipageEditor.addDesignPage(bpmnDiagram);
+			}
+		}
+	}
+	
+	public void showDesignPage(final BPMNDiagram bpmnDiagram) {
+		for (CTabItem item : tabFolder.getItems()) {
+			if (item.getData() == bpmnDiagram) {
+				setBpmnDiagram(bpmnDiagram);
+				tabFolder.setSelection(item);
+				item.getControl().setVisible(true);
 			}
 		}
 	}
@@ -354,7 +364,7 @@ public class DesignEditor extends BPMN2Editor {
 				Object feature = n.getFeature();
 
 				if (debug) {
-					if (et == Notification.ADD || et == Notification.REMOVE) {
+					if (et == Notification.ADD || et == Notification.REMOVE || et == Notification.SET) {
 						System.out.print("event: " + et + "\t");
 						if (notifier instanceof EObject) {
 							System.out.print("notifier: $" + ((EObject) notifier).eClass().getName());
@@ -400,6 +410,27 @@ public class DesignEditor extends BPMN2Editor {
 						else
 							reloadTabs();
 						break;
+					}
+				} else if (et == Notification.SET) {
+					// check if we need to change the tab names
+					if (n.getFeature() instanceof EStructuralFeature &&
+							((EStructuralFeature)n.getFeature()).getName().equals("name")) {
+						for (int i=1; i<tabFolder.getItemCount(); ++i) {
+							CTabItem item = tabFolder.getItem(i);
+							BPMNDiagram bpmnDiagram = (BPMNDiagram)item.getData();
+							if (bpmnDiagram!=null) {
+								if (bpmnDiagram==notifier || bpmnDiagram.getPlane().getBpmnElement() == notifier) {
+									item.setText(n.getNewStringValue());
+								}
+							}
+						}
+						for (int i=0; i<multipageEditor.getPageCount(); ++i) {
+							BPMNDiagram bpmnDiagram = multipageEditor.getBpmnDiagram(i);
+							if (bpmnDiagram == notifier) {
+								CTabItem item = multipageEditor.getTabItem(i);
+								item.setText(n.getNewStringValue());
+							}
+						}
 					}
 				}
 			}
