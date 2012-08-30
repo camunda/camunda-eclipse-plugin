@@ -89,12 +89,12 @@ public abstract class AbstractAddActivityFeature<T extends Activity>
 		decorateActivityRectangle(rect);
 		peService.setPropertyValue(rectShape, IS_ACTIVITY, Boolean.toString(true));
 
-		ContainerShape markerContainer = peService.createContainerShape(containerShape, false);
-		Rectangle markerInvisibleRect = gaService.createInvisibleRectangle(markerContainer);
-		int h = 10;
-		y = height - h - 3 - getMarkerContainerOffset();
-		gaService.setLocationAndSize(markerInvisibleRect, 0, y, invisibleRect.getWidth(), h);
-		peService.setPropertyValue(markerContainer, GraphicsUtil.ACTIVITY_MARKER_CONTAINER, Boolean.toString(true));
+//		ContainerShape markerContainer = peService.createContainerShape(containerShape, false);
+//		Rectangle markerInvisibleRect = gaService.createInvisibleRectangle(markerContainer);
+//		int h = 10;
+//		y = height - h - 3 - getMarkerContainerOffset();
+//		gaService.setLocationAndSize(markerInvisibleRect, 0, y, invisibleRect.getWidth(), h);
+//		peService.setPropertyValue(markerContainer, GraphicsUtil.ACTIVITY_MARKER_CONTAINER, Boolean.toString(true));
 
 		hook(activity, containerShape, context, width, height); // hook for subclasses to inject extra code
 

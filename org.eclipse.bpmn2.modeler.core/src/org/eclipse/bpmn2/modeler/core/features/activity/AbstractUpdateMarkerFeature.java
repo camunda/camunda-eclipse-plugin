@@ -59,34 +59,11 @@ public abstract class AbstractUpdateMarkerFeature<T extends FlowElement> extends
 		ContainerShape container = (ContainerShape) context.getPictogramElement();
 		T element = (T) getBusinessObjectForPictogramElement(context.getPictogramElement());
 
-		ContainerShape markerContainer = null;
-		if (isMarkerContainer(container))
-			markerContainer = container;
-		Iterator<Shape> iterator = peService.getAllContainedShapes(container).iterator();
-		while (iterator.hasNext()) {
-			Shape shape = (Shape) iterator.next();
-			if (isMarkerContainer(shape)) {
-				markerContainer = (ContainerShape) shape;
-				break;
-			}
-		}
-		
+		ContainerShape markerContainer = GraphicsUtil.getActivityMarkerContainer(container);
 		doUpdate(element, markerContainer);
 		peService.setPropertyValue(container, getPropertyKey(), convertPropertyToString(element));
 		return true;
     }
-	
-	private boolean isMarkerContainer(Shape shape) {
-		String property = Graphiti.getPeService().getPropertyValue(shape, GraphicsUtil.ACTIVITY_MARKER_CONTAINER);
-		if(property != null && new Boolean(property)) {
-			return shape instanceof ContainerShape;
-		}
-		property = Graphiti.getPeService().getPropertyValue(shape, GraphicsUtil.EVENT_MARKER_CONTAINER);
-		if(property != null && new Boolean(property)) {
-			return shape instanceof ContainerShape;
-		}
-		return false;
-	}
 	
 	protected abstract String getPropertyKey();
 	

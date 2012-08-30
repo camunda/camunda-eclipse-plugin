@@ -64,25 +64,26 @@ public class UpdateActivityLoopAndMultiInstanceMarkerFeature extends AbstractUpd
 
 	@Override
 	protected void doUpdate(Activity activity, ContainerShape markerContainer) {
-		GraphicsUtil.clearActivityMarker(markerContainer, GraphicsUtil.ACTIVITY_MARKER_LOOP_CHARACTERISTIC);
 		switch (getLoopCharacteristicsValue(activity)) {
 		case LOOP:
-			Loop loop = GraphicsUtil.createActivityMarkerStandardLoop(markerContainer);
-			loop.circle.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-			loop.arrow.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+			GraphicsUtil.showActivityMarker(markerContainer, GraphicsUtil.ACTIVITY_MARKER_LC_STANDARD);
+			GraphicsUtil.hideActivityMarker(markerContainer, GraphicsUtil.ACTIVITY_MARKER_LC_MULTI_PARALLEL);
+			GraphicsUtil.hideActivityMarker(markerContainer, GraphicsUtil.ACTIVITY_MARKER_LC_MULTI_SEQUENTIAL);
 			break;
 		case MULTI_PARALLEL:
-			MultiInstance multiParallel = GraphicsUtil.createActivityMarkerMultiParallel(markerContainer);
-			multiParallel.line1.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-			multiParallel.line2.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-			multiParallel.line3.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+			GraphicsUtil.hideActivityMarker(markerContainer, GraphicsUtil.ACTIVITY_MARKER_LC_STANDARD);
+			GraphicsUtil.showActivityMarker(markerContainer, GraphicsUtil.ACTIVITY_MARKER_LC_MULTI_PARALLEL);
+			GraphicsUtil.hideActivityMarker(markerContainer, GraphicsUtil.ACTIVITY_MARKER_LC_MULTI_SEQUENTIAL);
 			break;
 		case MULTI_SEQUENTIAL:
-			MultiInstance multiSeq = GraphicsUtil.createActivityMarkerMultiSequential(markerContainer);
-			multiSeq.line1.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-			multiSeq.line2.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-			multiSeq.line3.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+			GraphicsUtil.hideActivityMarker(markerContainer, GraphicsUtil.ACTIVITY_MARKER_LC_STANDARD);
+			GraphicsUtil.hideActivityMarker(markerContainer, GraphicsUtil.ACTIVITY_MARKER_LC_MULTI_PARALLEL);
+			GraphicsUtil.showActivityMarker(markerContainer, GraphicsUtil.ACTIVITY_MARKER_LC_MULTI_SEQUENTIAL);
 			break;
+		default:
+			GraphicsUtil.hideActivityMarker(markerContainer, GraphicsUtil.ACTIVITY_MARKER_LC_STANDARD);
+			GraphicsUtil.hideActivityMarker(markerContainer, GraphicsUtil.ACTIVITY_MARKER_LC_MULTI_PARALLEL);
+			GraphicsUtil.hideActivityMarker(markerContainer, GraphicsUtil.ACTIVITY_MARKER_LC_MULTI_SEQUENTIAL);
 		}
 	}
 

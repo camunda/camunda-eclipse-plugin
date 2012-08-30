@@ -40,11 +40,9 @@ public class UpdateActivityCompensateMarkerFeature extends AbstractUpdateMarkerF
 	@Override
 	protected void doUpdate(Activity activity, ContainerShape markerContainer) {
 		if (activity.isIsForCompensation()) {
-			Compensation compensation = GraphicsUtil.createActivityMarkerCompensate(markerContainer);
-			compensation.arrow1.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-			compensation.arrow2.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+			GraphicsUtil.showActivityMarker(markerContainer, GraphicsUtil.ACTIVITY_MARKER_COMPENSATE);
 		} else {
-			GraphicsUtil.clearActivityMarker(markerContainer, GraphicsUtil.ACTIVITY_MARKER_COMPENSATE);
+			GraphicsUtil.hideActivityMarker(markerContainer, GraphicsUtil.ACTIVITY_MARKER_COMPENSATE);
 		}
 	}
 	
