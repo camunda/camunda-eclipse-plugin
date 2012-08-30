@@ -28,6 +28,7 @@ package org.eclipse.bpmn2.modeler.core.model;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -54,8 +55,11 @@ import org.eclipse.bpmn2.util.QNameURIHandler;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.dd.dc.Bounds;
+import org.eclipse.dd.dc.DcFactory;
 import org.eclipse.dd.dc.DcPackage;
 import org.eclipse.dd.dc.Point;
+import org.eclipse.dd.dc.impl.PointImpl;
+import org.eclipse.dd.di.DiFactory;
 import org.eclipse.dd.di.DiPackage;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.EList;
@@ -87,6 +91,7 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 	public static final String BPMN2_CONTENT_TYPE_ID = "org.eclipse.bpmn2.content-type.xml";
 	protected BpmnXmlHelper xmlHelper;
 	protected QNameURIHandler uriHandler;
+	public HashMap xmlNameToFeatureMap = new HashMap();
 
 	/**
 	 * Creates an instance of the resource.
@@ -103,6 +108,13 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
         this.getDefaultLoadOptions().put(XMLResource.OPTION_URI_HANDLER, uriHandler);
         this.getDefaultLoadOptions().put(XMLResource.OPTION_DEFER_IDREF_RESOLUTION, true);
         this.getDefaultSaveOptions().put(XMLResource.OPTION_URI_HANDLER, uriHandler);
+
+        // some interesting things to play with:
+//        this.getDefaultLoadOptions().put(XMLResource.OPTION_LAX_FEATURE_PROCESSING, true);
+//        this.getDefaultLoadOptions().put(XMLResource.OPTION_LAX_WILDCARD_PROCESSING, true);
+//        this.getDefaultLoadOptions().put(XMLResource.OPTION_RECORD_UNKNOWN_FEATURE, true);
+//        this.getDefaultLoadOptions().put(XMLResource.OPTION_ANY_TYPE, BpmnDiPackage.eINSTANCE.getBPMNPlane());
+        this.getDefaultLoadOptions().put(XMLResource.OPTION_USE_XML_NAME_TO_FEATURE_MAP, xmlNameToFeatureMap);
 
         // only necessary if this resource will not be added to a ResourceSet instantly
         this.eAdapters().add(oppositeReferenceAdapter);
@@ -345,31 +357,10 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 			float oldX = 0, oldY = 0;
 			List<Point> oldPoints = null;
 			
-			if (o instanceof BPMNShape) {
-				Bounds b = ((BPMNShape)o).getBounds();
-				if (minX<0) {
-					oldX = b.getX();
-					b.setX(oldX - minX);
-				}
-				if (minY<0) {
-					oldY = b.getY();
-					b.setY(oldY - minY);
-				}
-			}
-			else if (o instanceof BPMNEdge) {
-				List<Point> points = ((BPMNEdge)o).getWaypoint();
-				oldPoints = new ArrayList<Point>();
-				oldPoints.addAll(points);
-				for (Point p : points) {
-					if (minX<0)
-						p.setX( p.getX() - minX);
-					if (minY<0)
-						p.setY( p.getY() - minY);
-				}
-			}
-			else if (o instanceof BPMNLabel) {
-				Bounds b = ((BPMNLabel)o).getBounds();
-				if (b!=null) {
+			if (minX<0 || minY<0) {
+				if (o instanceof BPMNShape) {
+					Bounds b = ((BPMNShape)o).getBounds();
+					b.eSetDeliver(false);
 					if (minX<0) {
 						oldX = b.getX();
 						b.setX(oldX - minX);
@@ -379,42 +370,75 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 						b.setY(oldY - minY);
 					}
 				}
+				else if (o instanceof BPMNEdge) {
+					List<Point> points = ((BPMNEdge)o).getWaypoint();
+					oldPoints = new ArrayList<Point>();
+					for (Point p : points) {
+						p.eSetDeliver(false);
+						Point oldPoint = DcFactory.eINSTANCE.createPoint();
+						oldPoint.setX(p.getX());
+						oldPoint.setY(p.getY());
+						oldPoints.add(oldPoint);
+						if (minX<0)
+							p.setX( p.getX() - minX);
+						if (minY<0)
+							p.setY( p.getY() - minY);
+					}
+				}
+				else if (o instanceof BPMNLabel) {
+					Bounds b = ((BPMNLabel)o).getBounds();
+					if (b!=null) {
+						b.eSetDeliver(false);
+						if (minX<0) {
+							oldX = b.getX();
+							b.setX(oldX - minX);
+						}
+						if (minY<0) {
+							oldY = b.getY();
+							b.setY(oldY - minY);
+						}
+					}
+				}
 			}
-
+			
 			super.saveElement(o, f);
 			
-			if (o instanceof BPMNShape) {
-				Bounds b = ((BPMNShape)o).getBounds();
-				if (minX<0) {
-					b.setX(oldX);
-				}
-				if (minY<0) {
-					b.setY(oldY);
-				}
-			}
-			else if (o instanceof BPMNEdge) {
-				List<Point> points = ((BPMNEdge)o).getWaypoint();
-				int index = 0;
-				for (Point p : points) {
-					if (minX<0)
-						p.setX(oldPoints.get(index).getX());
-					if (minY<0)
-						p.setY(oldPoints.get(index).getY());
-					++index;
-				}
-			}
-			else if (o instanceof BPMNLabel) {
-				Bounds b = ((BPMNLabel)o).getBounds();
-				if (b!=null) {
+			if (minX<0 || minY<0) {
+				if (o instanceof BPMNShape) {
+					Bounds b = ((BPMNShape)o).getBounds();
 					if (minX<0) {
 						b.setX(oldX);
 					}
 					if (minY<0) {
 						b.setY(oldY);
 					}
+					b.eSetDeliver(true);
+				}
+				else if (o instanceof BPMNEdge) {
+					List<Point> points = ((BPMNEdge)o).getWaypoint();
+					int index = 0;
+					for (Point p : points) {
+						if (minX<0)
+							p.setX(oldPoints.get(index).getX());
+						if (minY<0)
+							p.setY(oldPoints.get(index).getY());
+						p.eSetDeliver(true);
+						++index;
+					}
+				}
+				else if (o instanceof BPMNLabel) {
+					Bounds b = ((BPMNLabel)o).getBounds();
+					if (b!=null) {
+						if (minX<0) {
+							b.setX(oldX);
+						}
+						if (minY<0) {
+							b.setY(oldY);
+						}
+						b.eSetDeliver(true);
+					}
 				}
 			}
-			
 		}
 
 		@Override

@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNPlane;
@@ -27,14 +29,22 @@ import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.DcFactory;
 import org.eclipse.dd.dc.Point;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.datatypes.ILocation;
+import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
@@ -45,8 +55,10 @@ import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.PictogramLink;
 import org.eclipse.graphiti.mm.pictograms.Shape;
+import org.eclipse.graphiti.platform.IDiagramEditor;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.ILayoutService;
+import org.eclipse.graphiti.ui.editor.DiagramEditor;
 
 public class DIUtils {
 
@@ -188,17 +200,120 @@ public class DIUtils {
 		for (BPMNDiagram d : diagrams) {
 			BPMNPlane plane = d.getPlane();
 			List<DiagramElement> planeElements = plane.getPlaneElement();
-			for (DiagramElement de : planeElements) {
-				if (de instanceof BPMNShape) {
-					if (bpmnElement == ((BPMNShape)de).getBpmnElement())
-						return de;
-				}
-				if (de instanceof BPMNEdge) {
-					if (bpmnElement == ((BPMNEdge)de).getBpmnElement())
-						return de;
+			return findPlaneElement(planeElements, bpmnElement);
+		}
+		return null;
+	}
+
+	public static DiagramElement findPlaneElement(List<DiagramElement> planeElements, BaseElement bpmnElement) {
+		for (DiagramElement de : planeElements) {
+			if (de instanceof BPMNShape) {
+				if (bpmnElement == ((BPMNShape)de).getBpmnElement())
+					return de;
+			}
+			if (de instanceof BPMNEdge) {
+				if (bpmnElement == ((BPMNEdge)de).getBpmnElement())
+					return de;
+			}
+			else if (de instanceof BPMNPlane) {
+				return findPlaneElement(((BPMNPlane)de).getPlaneElement(), bpmnElement);
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Return the Graphiti Diagram for the given BPMNDiagram. If one does not exist, create it.
+	 * 
+	 * @param editor
+	 * @param bpmnDiagram
+	 * @return
+	 */
+	public static Diagram getOrCreateDiagram(final IDiagramEditor editor, final BPMNDiagram bpmnDiagram) {
+		// do we need to create a new Diagram or is this already in the model?
+		Diagram diagram = findDiagram(editor, bpmnDiagram);
+		if (diagram!=null) {
+			// already exists
+			return diagram;
+		}
+
+		// create a new one
+		IDiagramTypeProvider dtp = editor.getDiagramTypeProvider();
+		String typeId = dtp.getDiagram().getDiagramTypeId();
+		final Diagram newDiagram = Graphiti.getCreateService().createDiagram(typeId, bpmnDiagram.getName(), true);
+		final IFeatureProvider featureProvider = dtp.getFeatureProvider();
+		final Resource resource = dtp.getDiagram().eResource();
+		TransactionalEditingDomain domain = editor.getEditingDomain();
+		domain.getCommandStack().execute(new RecordingCommand(domain) {
+			protected void doExecute() {
+				resource.getContents().add(newDiagram);
+				newDiagram.setActive(true);
+				featureProvider.link(newDiagram, bpmnDiagram);
+			}
+		});
+		return newDiagram;
+	}
+	
+	/**
+	 * Find the Graphiti Diagram that corresponds to the given BPMNDiagram object.
+	 * 
+	 * @param editor
+	 * @param bpmnDiagram
+	 * @return
+	 */
+	public static Diagram findDiagram(final IDiagramEditor editor, final BPMNDiagram bpmnDiagram) {
+		ResourceSet resourceSet = editor.getResourceSet();
+		if (resourceSet!=null) {
+			for (Resource r : resourceSet.getResources()) {
+				for (EObject o : r.getContents()) {
+					if (o instanceof Diagram) {
+						Diagram diagram = (Diagram)o;
+						if (BusinessObjectUtil.getFirstElementOfType(diagram, BPMNDiagram.class) == bpmnDiagram) {
+							return diagram;
+						}
+					}
 				}
 			}
 		}
 		return null;
 	}
+	
+	public static void deleteDiagram(final IDiagramEditor editor, final BPMNDiagram bpmnDiagram) {
+		Diagram diagram = DIUtils.findDiagram(editor, bpmnDiagram);
+		if (diagram!=null) {
+			int n = diagram.getPictogramLinks().size();
+			for (int i=n-1; i>=0; --i) {
+				PictogramLink link = diagram.getPictogramLinks().remove(i);
+				EcoreUtil.delete(link);
+			}
+			EcoreUtil.delete(diagram);
+			EcoreUtil.delete(bpmnDiagram);
+		}	
+	}
+	
+	public static BPMNDiagram findBPMNDiagram(final IDiagramEditor editor, final BaseElement baseElement) {
+		if (baseElement!=null) {
+			ResourceSet resourceSet = editor.getResourceSet();
+			if (resourceSet!=null) {
+				for (Resource r : resourceSet.getResources()) {
+					if (r instanceof Bpmn2Resource) {
+						for (EObject o : r.getContents()) {
+							if (o instanceof DocumentRoot) {
+								DocumentRoot root = (DocumentRoot)o;
+								Definitions defs = root.getDefinitions();
+								for (BPMNDiagram d : defs.getDiagrams()) {
+									BPMNDiagram bpmnDiagram = (BPMNDiagram)d;
+									BaseElement bpmnElement = bpmnDiagram.getPlane().getBpmnElement();
+									if (bpmnElement == baseElement)
+										return bpmnDiagram;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+
 }

@@ -85,11 +85,11 @@ public abstract class AbstractAddBPMNShapeFeature<T extends BaseElement>
 		return null;
 	}
 	
-	protected BPMNShape createDIShape(Shape gShape, BaseElement elem) {
-		return createDIShape(gShape, elem, findDIShape(elem));
+	protected BPMNShape createDIShape(Shape gShape, BaseElement elem, boolean applyDefaults) {
+		return createDIShape(gShape, elem, findDIShape(elem), applyDefaults);
 	}
 
-	protected BPMNShape createDIShape(Shape shape, BaseElement elem, BPMNShape bpmnShape) {
+	protected BPMNShape createDIShape(Shape shape, BaseElement elem, BPMNShape bpmnShape, boolean applyDefaults) {
 		ILocation loc = Graphiti.getLayoutService().getLocationRelativeToDiagram(shape);
 		if (bpmnShape == null) {
 			int x = loc.getX();
@@ -100,8 +100,9 @@ public abstract class AbstractAddBPMNShapeFeature<T extends BaseElement>
 		}
 		else {
 			link(shape, new Object[] { elem, bpmnShape });
-			Bpmn2Preferences.getInstance(bpmnShape.eResource()).applyBPMNDIDefaults(bpmnShape, null);
 		}
+		if (applyDefaults)
+			Bpmn2Preferences.getInstance(bpmnShape.eResource()).applyBPMNDIDefaults(bpmnShape, null);
 		return bpmnShape;
 	}
 

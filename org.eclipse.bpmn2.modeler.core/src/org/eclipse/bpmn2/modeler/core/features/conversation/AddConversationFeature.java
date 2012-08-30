@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.core.features.conversation;
 
 import org.eclipse.bpmn2.Conversation;
+import org.eclipse.bpmn2.modeler.core.di.DIImport;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
@@ -60,7 +61,8 @@ public class AddConversationFeature extends AbstractAddBPMNShapeFeature<Conversa
 		AnchorUtil.addFixedPointAnchors(containerShape, rect);
 
 		link(containerShape, c);
-		createDIShape(containerShape, c);
+		boolean isImport = context.getProperty(DIImport.IMPORT_PROPERTY) != null;
+		createDIShape(containerShape, c, !isImport);
 		return containerShape;
 	}
 

@@ -18,13 +18,16 @@ import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
+import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.context.impl.ResizeShapeContext;
+import org.eclipse.graphiti.features.context.impl.UpdateContext;
 import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.services.Graphiti;
 
 // NOT USED YET
 public class ExpandFlowNodeFeature extends AbstractCustomFeature {
@@ -90,7 +93,7 @@ public class ExpandFlowNodeFeature extends AbstractCustomFeature {
 						// NOTE: children tasks will be set visible in LayoutExpandableActivityFeature
 
 						bpmnShape.setIsExpanded(true);
-						
+
 						GraphicsAlgorithm ga = containerShape.getGraphicsAlgorithm();
 						ResizeShapeContext resizeContext = new ResizeShapeContext(containerShape);
 						IResizeShapeFeature resizeFeature = getFeatureProvider().getResizeShapeFeature(resizeContext);
@@ -104,6 +107,11 @@ public class ExpandFlowNodeFeature extends AbstractCustomFeature {
 						resizeContext.setWidth(newWidth);
 						resizeContext.setHeight(newHeight);
 						resizeFeature.resizeShape(resizeContext);
+						
+						UpdateContext updateContext = new UpdateContext(containerShape);
+						IUpdateFeature updateFeature = getFeatureProvider().getUpdateFeature(updateContext);
+						if (updateFeature.updateNeeded(updateContext).toBoolean())
+							updateFeature.update(updateContext);
 					}
 					
 				} catch (Exception e) {

@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
+import static org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.SubProcessFeatureContainer.IS_EXPANDED;
+
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
@@ -19,13 +21,16 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
+import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.context.impl.ResizeShapeContext;
+import org.eclipse.graphiti.features.context.impl.UpdateContext;
 import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.services.Graphiti;
 
 public class CollapseFlowNodeFeature extends AbstractCustomFeature {
 
@@ -104,6 +109,11 @@ public class CollapseFlowNodeFeature extends AbstractCustomFeature {
 						resizeContext.setWidth(newWidth);
 						resizeContext.setHeight(newHeight);
 						resizeFeature.resizeShape(resizeContext);
+						
+						UpdateContext updateContext = new UpdateContext(containerShape);
+						IUpdateFeature updateFeature = getFeatureProvider().getUpdateFeature(updateContext);
+						if (updateFeature.updateNeeded(updateContext).toBoolean())
+							updateFeature.update(updateContext);
 						
 						getDiagramEditor().selectPictogramElements(new PictogramElement[] {});
 					}
