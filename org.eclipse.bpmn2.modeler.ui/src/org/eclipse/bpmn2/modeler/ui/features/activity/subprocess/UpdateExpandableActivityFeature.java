@@ -77,8 +77,6 @@ public class UpdateExpandableActivityFeature extends AbstractUpdateFeature {
 		PictogramElement pe = context.getPictogramElement();
 		SubProcess process = (SubProcess) getBusinessObjectForPictogramElement(pe);
 		ContainerShape container = (ContainerShape) pe;
-		ContainerShape markerContainer = (ContainerShape) GraphicsUtil.getShape(container,
-				GraphicsUtil.ACTIVITY_MARKER_CONTAINER);
 		boolean isExpanded = false;
 		
 		try {
@@ -98,14 +96,10 @@ public class UpdateExpandableActivityFeature extends AbstractUpdateFeature {
 
 		if(!isExpanded){
 			FeatureSupport.setContainerChildrenVisible(container, false);
-			
-			Expand expand = GraphicsUtil.createActivityMarkerExpand(markerContainer);
-			expand.rect.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-			expand.horizontal.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-			expand.vertical.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+			GraphicsUtil.showActivityMarker(container, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
 		}else{
-			GraphicsUtil.clearActivityMarker(markerContainer, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
 			FeatureSupport.setContainerChildrenVisible(container, true);
+			GraphicsUtil.hideActivityMarker(container, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
 		}
 		
 		return true;

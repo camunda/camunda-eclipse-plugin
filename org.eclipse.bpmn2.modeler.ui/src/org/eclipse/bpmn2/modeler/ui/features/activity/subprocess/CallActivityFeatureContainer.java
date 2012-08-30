@@ -198,19 +198,17 @@ public class CallActivityFeatureContainer extends AbstractExpandableActivityFeat
 			CallActivity callActivity = BusinessObjectUtil.getFirstElementOfType(context.getPictogramElement(),
 					CallActivity.class);
 
-			ContainerShape markerContainer = (ContainerShape) GraphicsUtil.getShapeForProperty(container,
-					GraphicsUtil.ACTIVITY_MARKER_CONTAINER);
-			Shape globalTaskShape = GraphicsUtil.getShapeForProperty(container, GLOBAL_TASK_SHAPE_PROPERTY);
+			Shape globalTaskShape = GraphicsUtil.getContainedShape(container, GLOBAL_TASK_SHAPE_PROPERTY);
 
 			if (callActivity.getCalledElementRef() == null) {
-				GraphicsUtil.clearActivityMarker(markerContainer, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
+				GraphicsUtil.hideActivityMarker(container, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
 				if (globalTaskShape != null) {
 					peService.deletePictogramElement(globalTaskShape);
 				}
 			}
 
 			else if (callActivity.getCalledElementRef() instanceof GlobalTask) {
-				GraphicsUtil.clearActivityMarker(markerContainer, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
+				GraphicsUtil.hideActivityMarker(container, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
 				GlobalTask t = (GlobalTask) callActivity.getCalledElementRef();
 				if (globalTaskShape == null) {
 					globalTaskShape = peService.createShape(container, false);
@@ -227,10 +225,7 @@ public class CallActivityFeatureContainer extends AbstractExpandableActivityFeat
 				if (globalTaskShape != null) {
 					peService.deletePictogramElement(globalTaskShape);
 				}
-				Expand expand = GraphicsUtil.createActivityMarkerExpand(markerContainer);
-				expand.rect.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-				expand.horizontal.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-				expand.vertical.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+				GraphicsUtil.showActivityMarker(container, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
 			}
 
 			peService.setPropertyValue(container, CALL_ACTIVITY_REF_PROPERTY,

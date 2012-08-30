@@ -24,7 +24,6 @@ import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.features.activity.AbstractAddActivityFeature;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
-import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Expand;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
@@ -76,14 +75,11 @@ public class AddExpandableActivityFeature<T extends Activity>
 //		text.setFont(gaService.manageFont(getDiagram(), GaServiceImpl.DEFAULT_FONT, 8, false, true));
 		link(textShape, activity);
 		
-		ContainerShape markerContainer = (ContainerShape) GraphicsUtil.getShape(container,
-				GraphicsUtil.ACTIVITY_MARKER_CONTAINER);
-		
 		if (!isExpanded){
-			Expand expand = GraphicsUtil.createActivityMarkerExpand(markerContainer);
-			expand.rect.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-			expand.horizontal.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-			expand.vertical.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+			GraphicsUtil.showActivityMarker(container, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
+		}
+		else {
+			GraphicsUtil.hideActivityMarker(container, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
 		}
 	}
 

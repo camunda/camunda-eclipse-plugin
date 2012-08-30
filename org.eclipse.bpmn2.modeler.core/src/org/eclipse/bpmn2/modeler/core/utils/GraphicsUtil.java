@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.bpmn2.EventDefinition;
@@ -33,6 +34,7 @@ import org.eclipse.graphiti.mm.algorithms.Image;
 import org.eclipse.graphiti.mm.algorithms.Polygon;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
+import org.eclipse.graphiti.mm.algorithms.styles.Color;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -43,6 +45,7 @@ import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.ILayoutService;
 import org.eclipse.graphiti.services.IPeService;
 import org.eclipse.graphiti.ui.services.GraphitiUi;
+import org.eclipse.graphiti.util.IColorConstant;
 
 public class GraphicsUtil {
 
@@ -239,7 +242,7 @@ public class GraphicsUtil {
 		return shape.getGraphicsAlgorithm().getWidth();
 	}
 	
-	public static Shape getShape(ContainerShape container, String propertyKey) {
+	public static Shape getContainedShape(ContainerShape container, String propertyKey) {
 		IPeService peService = Graphiti.getPeService();
 		Iterator<Shape> iterator = peService.getAllContainedShapes(container).iterator();
 		while (iterator.hasNext()) {
@@ -250,6 +253,20 @@ public class GraphicsUtil {
 			}
 		}
 		return null;
+	}
+	
+	public static List<PictogramElement> getContainedPictogramElements(PictogramElement container, String propertyKey) {
+		List<PictogramElement> pictogramElements = new ArrayList<PictogramElement>();
+		IPeService peService = Graphiti.getPeService();
+		Iterator<PictogramElement> iterator = peService.getAllContainedPictogramElements(container).iterator();
+		while (iterator.hasNext()) {
+			PictogramElement pe = iterator.next();
+			String property = peService.getPropertyValue(pe, propertyKey);
+			if (property != null && new Boolean(property)) {
+				pictogramElements.add(pe);
+			}
+		}
+		return pictogramElements;
 	}
 
 //	private static final int[] GATEWAY = { 0, GATEWAY_RADIUS, GATEWAY_RADIUS, 0, 2 * GATEWAY_RADIUS, GATEWAY_RADIUS,
@@ -486,13 +503,8 @@ public class GraphicsUtil {
 	}
 
 	public static void clearGateway(PictogramElement element) {
-		Iterator<PictogramElement> iterator = peService.getAllContainedPictogramElements(element).iterator();
-		while (iterator.hasNext()) {
-			PictogramElement childElement = iterator.next();
-			boolean deletable = Boolean.parseBoolean(peService.getPropertyValue(childElement, DELETABLE_PROPERTY));
-			if (deletable) {
-				peService.deletePictogramElement(childElement);
-			}
+		for (PictogramElement pe : getContainedPictogramElements(element, DELETABLE_PROPERTY)) {
+			peService.deletePictogramElement(pe);
 		}
 	}
 
@@ -793,22 +805,28 @@ public class GraphicsUtil {
 	public static final int MARKER_WIDTH = 10;
 	public static final int MARKER_HEIGHT = 10;
 
-	public static final String ACTIVITY_MARKER_CONTAINER = "activity.marker.container";
+	private static final String ACTIVITY_MARKER_CONTAINER = "activity.marker.container";
 	public static final String ACTIVITY_MARKER_COMPENSATE = "activity.marker.compensate";
-	public static final String ACTIVITY_MARKER_LOOP_CHARACTERISTIC = "activity.marker.loop.characteristic";
+	public static final String ACTIVITY_MARKER_LC_STANDARD = "activity.marker.lc.standard";
+	public static final String ACTIVITY_MARKER_LC_MULTI_SEQUENTIAL = "activity.marker.lc.multi.sequential";
+	public static final String ACTIVITY_MARKER_LC_MULTI_PARALLEL = "activity.marker.lc.multi.parallel";
 	public static final String ACTIVITY_MARKER_AD_HOC = "activity.marker.adhoc";
 	public static final String ACTIVITY_MARKER_EXPAND = "activity.marker.expand";
+	public static final String ACTIVITY_MARKER_OFFSET = "activity.marker.offset";
 	public static final String EVENT_MARKER_CONTAINER = "event.marker.container";
 
-	public static Compensation createActivityMarkerCompensate(ContainerShape markerContainer) {
+	private static GraphicsAlgorithmContainer createActivityMarkerCompensate(ContainerShape markerContainer) {
 		GraphicsAlgorithmContainer algorithmContainer = createActivityMarkerGaContainer(markerContainer,
 		        ACTIVITY_MARKER_COMPENSATE);
-		return createCompensation(algorithmContainer, MARKER_WIDTH, MARKER_HEIGHT);
+		Compensation compensation = createCompensation(algorithmContainer, MARKER_WIDTH, MARKER_HEIGHT);
+		compensation.arrow1.setForeground(manageColor(markerContainer, StyleUtil.CLASS_FOREGROUND));
+		compensation.arrow2.setForeground(manageColor(markerContainer, StyleUtil.CLASS_FOREGROUND));
+		return algorithmContainer;
 	}
 
-	public static Loop createActivityMarkerStandardLoop(ContainerShape markerContainer) {
+	private static GraphicsAlgorithmContainer createActivityMarkerStandardLoop(ContainerShape markerContainer) {
 		GraphicsAlgorithmContainer algorithmContainer = createActivityMarkerGaContainer(markerContainer,
-		        ACTIVITY_MARKER_LOOP_CHARACTERISTIC);
+				ACTIVITY_MARKER_LC_STANDARD);
 
 		int[] xy = { 8, 10, 10, 5, 5, 0, 0, 5, 3, 10 };
 		int[] bend = { 0, 0, 3, 4, 4, 4, 4, 3, 3, 0 };
@@ -817,38 +835,48 @@ public class GraphicsUtil {
 		Loop loop = new Loop();
 		loop.circle = circle;
 		loop.arrow = gaService.createPolyline(algorithmContainer, new int[] { 5, 5, 5, 10, 0, 10 });
-		return loop;
+		loop.circle.setForeground(manageColor(markerContainer, StyleUtil.CLASS_FOREGROUND));
+		loop.arrow.setForeground(manageColor(markerContainer, StyleUtil.CLASS_FOREGROUND));
+		return algorithmContainer;
 	}
 
-	public static MultiInstance createActivityMarkerMultiParallel(ContainerShape markerContainer) {
+	private static GraphicsAlgorithmContainer createActivityMarkerMultiParallel(ContainerShape markerContainer) {
 		GraphicsAlgorithmContainer algorithmContainer = createActivityMarkerGaContainer(markerContainer,
-		        ACTIVITY_MARKER_LOOP_CHARACTERISTIC);
+				ACTIVITY_MARKER_LC_MULTI_PARALLEL);
 		MultiInstance multiInstance = new MultiInstance();
 		multiInstance.line1 = gaService.createPolyline(algorithmContainer, new int[] { 2, 0, 2, MARKER_HEIGHT });
 		multiInstance.line2 = gaService.createPolyline(algorithmContainer, new int[] { 5, 0, 5, MARKER_HEIGHT });
 		multiInstance.line3 = gaService.createPolyline(algorithmContainer, new int[] { 8, 0, 8, MARKER_HEIGHT });
-		return multiInstance;
+		multiInstance.line1.setForeground(manageColor(markerContainer, StyleUtil.CLASS_FOREGROUND));
+		multiInstance.line2.setForeground(manageColor(markerContainer, StyleUtil.CLASS_FOREGROUND));
+		multiInstance.line3.setForeground(manageColor(markerContainer, StyleUtil.CLASS_FOREGROUND));
+		return algorithmContainer;
 	}
 
-	public static MultiInstance createActivityMarkerMultiSequential(ContainerShape markerContainer) {
+	private static GraphicsAlgorithmContainer createActivityMarkerMultiSequential(ContainerShape markerContainer) {
 		GraphicsAlgorithmContainer algorithmContainer = createActivityMarkerGaContainer(markerContainer,
-		        ACTIVITY_MARKER_LOOP_CHARACTERISTIC);
+		        ACTIVITY_MARKER_LC_MULTI_SEQUENTIAL);
 		MultiInstance multiInstance = new MultiInstance();
 		multiInstance.line1 = gaService.createPolyline(algorithmContainer, new int[] { 0, 2, MARKER_WIDTH, 2 });
 		multiInstance.line2 = gaService.createPolyline(algorithmContainer, new int[] { 0, 5, MARKER_WIDTH, 5 });
 		multiInstance.line3 = gaService.createPolyline(algorithmContainer, new int[] { 0, 8, MARKER_WIDTH, 8 });
-		return multiInstance;
+		multiInstance.line1.setForeground(manageColor(markerContainer, StyleUtil.CLASS_FOREGROUND));
+		multiInstance.line2.setForeground(manageColor(markerContainer, StyleUtil.CLASS_FOREGROUND));
+		multiInstance.line3.setForeground(manageColor(markerContainer, StyleUtil.CLASS_FOREGROUND));
+		return algorithmContainer;
 	}
 
-	public static Polyline createActivityMarkerAdHoc(ContainerShape markerContainer) {
+	private static GraphicsAlgorithmContainer createActivityMarkerAdHoc(ContainerShape markerContainer) {
 		GraphicsAlgorithmContainer algorithmContainer = createActivityMarkerGaContainer(markerContainer,
 		        ACTIVITY_MARKER_AD_HOC);
 		int[] xy = { 0, 8, 3, 2, 7, 8, 10, 2 };
 		int[] bend = { 0, 3, 3, 3, 3, 3, 3, 0 };
-		return gaService.createPolyline(algorithmContainer, xy, bend);
+		Polyline tilde = gaService.createPolyline(algorithmContainer, xy, bend);
+		tilde.setForeground(manageColor(markerContainer, StyleUtil.CLASS_FOREGROUND));
+		return algorithmContainer;
 	}
 
-	public static Expand createActivityMarkerExpand(ContainerShape markerContainer) {
+	private static GraphicsAlgorithmContainer createActivityMarkerExpand(ContainerShape markerContainer) {
 		GraphicsAlgorithmContainer algorithmContainer = createActivityMarkerGaContainer(markerContainer,
 		        ACTIVITY_MARKER_EXPAND);
 
@@ -860,35 +888,118 @@ public class GraphicsUtil {
 		expand.rect = rect;
 		expand.horizontal = gaService.createPolyline(algorithmContainer, new int[] { 0, 5, 10, 5 });
 		expand.vertical = gaService.createPolyline(algorithmContainer, new int[] { 5, 0, 5, 10 });
-		return expand;
+		expand.rect.setForeground(manageColor(markerContainer, StyleUtil.CLASS_FOREGROUND));
+		expand.horizontal.setForeground(manageColor(markerContainer, StyleUtil.CLASS_FOREGROUND));
+		expand.vertical.setForeground(manageColor(markerContainer, StyleUtil.CLASS_FOREGROUND));
+		return algorithmContainer;
 	}
 
-	public static void clearActivityMarker(ContainerShape markerContainer, String property) {
+	
+	public static ContainerShape getActivityMarkerContainer(ContainerShape container) {
+		String property = peService.getPropertyValue(container, ACTIVITY_MARKER_CONTAINER);
+		if (property != null && new Boolean(property)) {
+			return container;
+		}
+		return (ContainerShape) getContainedShape(container, ACTIVITY_MARKER_CONTAINER);
+	}
 
-		int totalWidth = 0;
-		int parentW = ((ContainerShape) markerContainer.eContainer()).getGraphicsAlgorithm().getWidth();
-		int lastX = -1;
+	private static ContainerShape createActivityMarkerContainer(ContainerShape container) {
+		
+		ContainerShape markerContainer = getActivityMarkerContainer(container);
+		if (markerContainer==null) {
+			// need to create a marker container first
+			markerContainer = peService.createContainerShape(container, false);
+			Rectangle markerInvisibleRect = gaService.createInvisibleRectangle(markerContainer);
+			GraphicsAlgorithm ga = container.getGraphicsAlgorithm();
+			int x = ga.getWidth() / 2;
+			int y = ga.getHeight() - 10;
+			int w = 50;
+			int h = 10;
+			gaService.setLocationAndSize(markerInvisibleRect, x, y, w, h);
+			peService.setPropertyValue(markerContainer, GraphicsUtil.ACTIVITY_MARKER_CONTAINER, Boolean.toString(true));
 
-		Iterator<Shape> iterator = peService.getAllContainedShapes(markerContainer).iterator();
-		while (iterator.hasNext()) {
-			Shape shape = iterator.next();
-			String value = peService.getPropertyValue(shape, property);
-			GraphicsAlgorithm ga = shape.getGraphicsAlgorithm();
-			if (value != null && new Boolean(value)) {
-				lastX = ga.getX();
-				peService.deletePictogramElement(shape);
-			} else {
-				totalWidth += ga.getWidth();
-				if (lastX != -1) {
-					gaService.setLocation(ga, lastX, ga.getY(), true);
-					lastX = ga.getX() + ga.getWidth();
-				}
+			createActivityMarkerCompensate(markerContainer);
+			createActivityMarkerStandardLoop(markerContainer);
+			createActivityMarkerMultiParallel(markerContainer);
+			createActivityMarkerMultiSequential(markerContainer);
+			createActivityMarkerAdHoc(markerContainer);
+			createActivityMarkerExpand(markerContainer);
+			
+			// make them all invisible
+			Iterator<Shape> iterator = peService.getAllContainedShapes(markerContainer).iterator();
+			while (iterator.hasNext()) {
+				Shape shape = iterator.next();
+				shape.setVisible(false);
 			}
 		}
+		return markerContainer;
+	}
 
-		totalWidth = totalWidth == 0 ? 10 : totalWidth;
-		GraphicsAlgorithm ga = markerContainer.getGraphicsAlgorithm();
-		gaService.setLocationAndSize(ga, (parentW / 2) - (totalWidth / 2), ga.getY(), totalWidth, MARKER_HEIGHT);
+	public static void setActivityMarkerOffest(ContainerShape container, int offset) {
+		peService.setPropertyValue(container, GraphicsUtil.ACTIVITY_MARKER_OFFSET, Integer.toString(offset));
+	}
+
+	public static int getActivityMarkerOffest(ContainerShape container) {
+		int offset = 0;
+		String s = peService.getPropertyValue(container, GraphicsUtil.ACTIVITY_MARKER_OFFSET);
+		if (s!=null) {
+			try {
+				offset = Integer.parseInt(s);
+			}
+			catch (Exception e) {
+			}
+		}
+		return offset;
+	}
+	
+	public static void layoutActivityMarkerContainer(ContainerShape container) {
+
+		ContainerShape markerContainer = getActivityMarkerContainer(container);
+		if (markerContainer!=null) {
+			int lastX = 0;
+			Iterator<Shape> iterator = peService.getAllContainedShapes(markerContainer).iterator();
+			while (iterator.hasNext()) {
+				Shape marker = iterator.next();
+				if (marker.isVisible()) {
+					GraphicsAlgorithm ga = marker.getGraphicsAlgorithm();
+					gaService.setLocation(ga, lastX, 0);
+					lastX += ga.getWidth() + 3;
+				}
+			}
+			
+			GraphicsAlgorithm parentGa = container.getGraphicsAlgorithm();
+			GraphicsAlgorithm ga = markerContainer.getGraphicsAlgorithm();
+			int newWidth = parentGa.getWidth();
+			int newHeight = parentGa.getHeight();
+			int x = (newWidth / 2) - (lastX / 2);
+			int y = newHeight - 13 - getActivityMarkerOffest(container);
+			gaService.setLocation(ga, x, y);
+		}
+	}
+	
+	public static void showActivityMarker(ContainerShape container, String property) {
+
+		ContainerShape markerContainer = getActivityMarkerContainer(container);
+		if (markerContainer==null) {
+			markerContainer = createActivityMarkerContainer(container);
+		}
+		GraphicsUtil.getContainedShape(markerContainer, property).setVisible(true);
+		layoutActivityMarkerContainer(container);
+	}
+	
+	public static void hideActivityMarker(ContainerShape container, String property) {
+
+		ContainerShape markerContainer = getActivityMarkerContainer(container);
+		if (markerContainer==null) {
+			markerContainer = createActivityMarkerContainer(container);
+		}
+		GraphicsUtil.getContainedShape(markerContainer, property).setVisible(false);
+		layoutActivityMarkerContainer(container);
+	}
+	
+	private static Color manageColor(PictogramElement pe, IColorConstant colorConstant) {
+		Diagram diagram = Graphiti.getPeService().getDiagramForPictogramElement(pe);
+		return Graphiti.getGaService().manageColor(diagram, colorConstant);
 	}
 
 	private static GraphicsAlgorithmContainer createActivityMarkerGaContainer(ContainerShape markerContainer,
@@ -904,9 +1015,11 @@ public class GraphicsUtil {
 		Iterator<Shape> iterator = peService.getAllContainedShapes(markerContainer).iterator();
 		while (iterator.hasNext()) {
 			Shape containedShape = (Shape) iterator.next();
-			GraphicsAlgorithm containedGa = containedShape.getGraphicsAlgorithm();
-			totalWidth += containedGa.getWidth();
-			lastX = containedGa.getX() + containedGa.getWidth();
+			if (containedShape.isVisible()) {
+				GraphicsAlgorithm containedGa = containedShape.getGraphicsAlgorithm();
+				totalWidth += containedGa.getWidth();
+				lastX = containedGa.getX() + containedGa.getWidth();
+			}
 		}
 
 		gaService.setLocationAndSize(ga, (parentW / 2) - (totalWidth / 2), parentH-MARKER_WIDTH, totalWidth, MARKER_HEIGHT);
@@ -1055,18 +1168,5 @@ public class GraphicsUtil {
 			return false;
 		}
 		return true;
-	}
-
-	public static Shape getShapeForProperty(ContainerShape container, String propertyKey) {
-		IPeService peService = Graphiti.getPeService();
-		Iterator<Shape> iterator = peService.getAllContainedShapes(container).iterator();
-		while (iterator.hasNext()) {
-			Shape shape = iterator.next();
-			String property = peService.getPropertyValue(shape, propertyKey);
-			if (property != null && new Boolean(property)) {
-				return shape;
-			}
-		}
-		return null;
 	}
 }

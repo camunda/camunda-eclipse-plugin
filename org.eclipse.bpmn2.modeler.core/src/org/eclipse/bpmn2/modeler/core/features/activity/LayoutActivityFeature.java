@@ -51,24 +51,27 @@ public class LayoutActivityFeature extends DefaultLayoutBPMNShapeFeature {
 	public boolean layout(ILayoutContext context) {
 		ContainerShape containerShape = (ContainerShape) context.getPictogramElement();
 		GraphicsAlgorithm parentGa = containerShape.getGraphicsAlgorithm();
+		int newWidth = parentGa.getWidth();
+		int newHeight = parentGa.getHeight();
 
+		GraphicsUtil.setActivityMarkerOffest(containerShape, getMarkerContainerOffset());
+		GraphicsUtil.layoutActivityMarkerContainer(containerShape);
+		
 		Iterator<Shape> iterator = Graphiti.getPeService().getAllContainedShapes(containerShape).iterator();
 		while (iterator.hasNext()) {
 			Shape shape = iterator.next();
 			GraphicsAlgorithm ga = shape.getGraphicsAlgorithm();
 			IGaService gaService = Graphiti.getGaService();
 
-			int newWidth = parentGa.getWidth();
-			int newHeight = parentGa.getHeight();
 
-			String markerProperty = Graphiti.getPeService().getPropertyValue(shape,
-					GraphicsUtil.ACTIVITY_MARKER_CONTAINER);
-			if (markerProperty != null && new Boolean(markerProperty)) {
-				int x = (newWidth / 2) - (ga.getWidth() / 2);
-				int y = newHeight - ga.getHeight() - 3 - getMarkerContainerOffset();
-				gaService.setLocation(ga, x, y);
-				continue;
-			}
+//			String markerProperty = Graphiti.getPeService().getPropertyValue(shape,
+//					GraphicsUtil.ACTIVITY_MARKER_CONTAINER);
+//			if (markerProperty != null && new Boolean(markerProperty)) {
+//				int x = (newWidth / 2) - (ga.getWidth() / 2);
+//				int y = newHeight - ga.getHeight() - 3 - getMarkerContainerOffset();
+//				gaService.setLocation(ga, x, y);
+//				continue;
+//			}
 
 			Shape rectShape = FeatureSupport.getShape(containerShape, IS_ACTIVITY, Boolean.toString(true));
 			gaService.setSize(rectShape.getGraphicsAlgorithm(), newWidth, newHeight);

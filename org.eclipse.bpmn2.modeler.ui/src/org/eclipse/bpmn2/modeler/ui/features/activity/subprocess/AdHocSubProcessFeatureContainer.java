@@ -53,16 +53,7 @@ public class AdHocSubProcessFeatureContainer extends AbstractExpandableActivityF
 			@Override
 			protected void hook(AdHocSubProcess activity, ContainerShape container, IAddContext context, int width, int height) {
 				super.hook(activity, container, context, width, height);
-				IPeService peService = Graphiti.getPeService();
-				Iterator<Shape> iterator = peService.getAllContainedShapes(container).iterator();
-				while (iterator.hasNext()) {
-					Shape shape = iterator.next();
-					String property = peService.getPropertyValue(shape, GraphicsUtil.ACTIVITY_MARKER_CONTAINER);
-					if (property != null && new Boolean(property)) {
-						Polyline tilde = GraphicsUtil.createActivityMarkerAdHoc((ContainerShape) shape);
-						tilde.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-					}
-				}
+				GraphicsUtil.showActivityMarker(container, GraphicsUtil.ACTIVITY_MARKER_AD_HOC);
 			}
 		};
 	}
