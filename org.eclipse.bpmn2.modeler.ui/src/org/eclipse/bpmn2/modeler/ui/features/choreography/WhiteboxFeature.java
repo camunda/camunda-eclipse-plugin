@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.CallActivity;
+import org.eclipse.bpmn2.CallableElement;
 import org.eclipse.bpmn2.Choreography;
 import org.eclipse.bpmn2.ChoreographyTask;
 import org.eclipse.bpmn2.Collaboration;
@@ -32,6 +34,7 @@ import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BpmnDiFactory;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
+import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
@@ -69,7 +72,7 @@ public class WhiteboxFeature extends AbstractCustomFeature {
 	
 	@Override
 	public String getDescription() {
-	    return "Create a new Diagram for this Participant";
+	    return "Create a new Diagram for this Participant or CallActivity";
 	}
 
 	@Override
@@ -87,21 +90,27 @@ public class WhiteboxFeature extends AbstractCustomFeature {
 		PictogramElement[] pes = context.getPictogramElements();
 		if (pes != null && pes.length == 1) {
 			PictogramElement pe = pes[0];
+			Process process = null;
 			Object bo = getBusinessObjectForPictogramElement(pe);
 			if (bo instanceof Participant) {
-				Participant participant = (Participant)bo;
-				Process process = participant.getProcessRef();
-				if (process!=null) {
-					try {
-						ModelHandler mh = ModelHandlerLocator.getModelHandler(participant.eResource());
-						DiagramElement de = mh.findDIElement(process);
-						return de==null;
-					}
-					catch (Exception e){
-					}
-				}
-				return true;
+				process = ((Participant)bo).getProcessRef();
 			}
+			else if (bo instanceof CallActivity) {
+				CallableElement ce = ((CallActivity)bo).getCalledElementRef();
+				if (ce instanceof Process)
+					process = (Process)ce;
+			}
+			
+			if (process!=null) {
+				try {
+					ModelHandler mh = ModelHandlerLocator.getModelHandler(process.eResource());
+					DiagramElement de = mh.findDIElement(process);
+					return de==null;
+				}
+				catch (Exception e){
+				}
+			}
+			return true;
 		}
 		return false;
 	}
@@ -111,50 +120,36 @@ public class WhiteboxFeature extends AbstractCustomFeature {
 	 */
 	@Override
 	public void execute(ICustomContext context) {
-		PictogramElement[] pes = context.getPictogramElements();
-		if (pes != null && pes.length == 1) {
-			PictogramElement pe = pes[0];
-			Object bo = getBusinessObjectForPictogramElement(pe);
-			if (bo instanceof Participant) {
-				Participant participant = (Participant)bo;
-				Definitions definitions = ModelUtil.getDefinitions(participant);
-				Resource resource = definitions.eResource();
-				Process process = participant.getProcessRef();
+		PictogramElement pe = context.getPictogramElements()[0];
+		Object bo = getBusinessObjectForPictogramElement(pe);
+		if (bo instanceof Participant) {
+			Participant participant = (Participant)bo;
+			Definitions definitions = ModelUtil.getDefinitions(participant);
+			Resource resource = definitions.eResource();
+			Process process = participant.getProcessRef();
 
-				if (process==null) {
-			        // create a Process for this Participant
-			        process = (Process) ModelUtil.createObject(resource, Bpmn2Package.eINSTANCE.getProcess());
-			        participant.setProcessRef(process);
-			        
-			        // NOTE: this is needed because it fires the InsertionAdapter, which adds the new Process
-			        // to Definitions.rootElements, otherwise the Process would be a dangling object
-			        process.setName("Process for "+participant.getName());
-				}
-				
-		        // add the Participant to the first Choreography or Collaboration we find.
-		        // TODO: when (and if) multipage editor allows additional Choreography or
-		        // Collaboration diagrams to be created, this will be the specific diagram
-		        // that is being rendered on the current page.
-		        List<RootElement> rootElements = definitions.getRootElements();
-		        for (RootElement element : rootElements) {
-		            if (element instanceof Collaboration || element instanceof Choreography) {
-		            	((Collaboration)element).getParticipants().add(participant);
-		                break;
-		            }
-		        }
-				
-		        BPMNDiagram bpmnDiagram = BpmnDiFactory.eINSTANCE.createBPMNDiagram();
-				ModelUtil.setID(bpmnDiagram, resource);
-		        bpmnDiagram.setName(process.getName());
-
-		        definitions.getDiagrams().add(bpmnDiagram);
+			if (process==null) {
+		        // create a Process for this Participant
+		        process = (Process) ModelUtil.createObject(resource, Bpmn2Package.eINSTANCE.getProcess());
+		        participant.setProcessRef(process);
 		        
-				BPMNPlane plane = BpmnDiFactory.eINSTANCE.createBPMNPlane();
-				ModelUtil.setID(plane, resource);
-				plane.setBpmnElement(process);
-
-				bpmnDiagram.setPlane(plane);
+		        // NOTE: this is needed because it fires the InsertionAdapter, which adds the new Process
+		        // to Definitions.rootElements, otherwise the Process would be a dangling object
+		        process.setName("Process for "+participant.getName());
 			}
+			
+	        // add the Participant to the first Choreography or Collaboration we find.
+	        // TODO: when (and if) multipage editor allows additional Choreography or
+	        // Collaboration diagrams to be created, this will be the specific diagram
+	        // that is being rendered on the current page.
+	        List<RootElement> rootElements = definitions.getRootElements();
+	        for (RootElement element : rootElements) {
+	            if (element instanceof Collaboration || element instanceof Choreography) {
+	            	((Collaboration)element).getParticipants().add(participant);
+	                break;
+	            }
+	        }
+			DIUtils.createBPMNDiagram(definitions, process);
 		}
 	}
 }

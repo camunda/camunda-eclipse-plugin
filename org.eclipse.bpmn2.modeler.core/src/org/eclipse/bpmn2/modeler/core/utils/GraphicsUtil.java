@@ -1169,4 +1169,8 @@ public class GraphicsUtil {
 		}
 		return true;
 	}
+	
+	public static Color clone(Color c) {
+		return c;
+	}
 }
