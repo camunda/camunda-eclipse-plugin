@@ -12,6 +12,9 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.event;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.Event;
@@ -22,6 +25,7 @@ import org.eclipse.bpmn2.modeler.core.features.event.AddEventFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.bpmn2.modeler.ui.features.AbstractAppendNodeNodeFeature;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -111,5 +115,17 @@ public class EndEventFeatureContainer extends AbstractEventFeatureContainer {
 		protected String getPropertyKey() {
 			return END_EVENT_MARKER;
 		}
+	}
+
+	@Override
+	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
+		ICustomFeature[] superFeatures = super.getCustomFeatures(fp);
+		List<ICustomFeature> thisFeatures = new ArrayList<ICustomFeature>();
+		int i;
+		for (ICustomFeature f : superFeatures) {
+			if (!(f instanceof AbstractAppendNodeNodeFeature))
+			thisFeatures.add(f);
+		}
+		return thisFeatures.toArray( new ICustomFeature[thisFeatures.size()] );
 	}
 }
