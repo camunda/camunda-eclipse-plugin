@@ -13,41 +13,23 @@
 
 package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.Bpmn2Package;
-import org.eclipse.bpmn2.Choreography;
-import org.eclipse.bpmn2.ChoreographyTask;
-import org.eclipse.bpmn2.Collaboration;
 import org.eclipse.bpmn2.Definitions;
-import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowElementsContainer;
-import org.eclipse.bpmn2.Message;
-import org.eclipse.bpmn2.MessageFlow;
-import org.eclipse.bpmn2.Participant;
-import org.eclipse.bpmn2.Process;
-import org.eclipse.bpmn2.RootElement;
-import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNDiagram;
-import org.eclipse.bpmn2.di.BPMNEdge;
-import org.eclipse.bpmn2.di.BPMNLabel;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.bpmn2.di.BpmnDiFactory;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICustomContext;
@@ -62,12 +44,6 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.PictogramLink;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.ui.editor.DiagramEditor;
-import org.eclipse.graphiti.ui.internal.util.ui.PopupMenu;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Bob Brodt
@@ -124,7 +100,6 @@ public class PullupFeature extends AbstractCustomFeature {
 		// a ContainerShape for an expandable activity
 		PictogramElement pe = context.getPictogramElements()[0];
 		FlowElementsContainer container = (FlowElementsContainer)getBusinessObjectForPictogramElement(pe);
-		Definitions definitions = ModelUtil.getDefinitions(container);
 		
 		// find out which BPMNPlane this sub process lives in - this will be the new home
 		// for the DI elements in the existing BPMNDiagram.
@@ -148,30 +123,13 @@ public class PullupFeature extends AbstractCustomFeature {
 			if (p instanceof ContainerShape) {
 				if (BusinessObjectUtil.getFirstElementOfType(p, BPMNShape.class)!=null) {
 					// this is it!
-					List <EObject> moved = new ArrayList<EObject>();
-					for (Shape shape : oldDiagram.getChildren()) {
-						TreeIterator<EObject> iter = shape.eAllContents();
-						while (iter.hasNext()) {
-							EObject o = iter.next();
-							if (o instanceof PictogramLink || o instanceof Color || o instanceof Font || o instanceof Style)
-								moved.add(o);
-						}
-					}
-					for (Connection connection : oldDiagram.getConnections()) {
-						TreeIterator<EObject> iter = connection.eAllContents();
-						while (iter.hasNext()) {
-							EObject o = iter.next();
-							if (o instanceof PictogramLink || o instanceof Color || o instanceof Font || o instanceof Style)
-								moved.add(o);
-						}
-					}
 					((ContainerShape)p).getChildren().addAll( oldDiagram.getChildren() );
 					newDiagram.getConnections().addAll( oldDiagram.getConnections() );
 					
-					oldDiagram.getPictogramLinks().removeAll(moved);
-					oldDiagram.getColors().removeAll(moved);
-					oldDiagram.getFonts().removeAll(moved);
-					oldDiagram.getStyles().removeAll(moved);
+					newDiagram.getPictogramLinks().addAll(oldDiagram.getPictogramLinks());
+					newDiagram.getColors().addAll(oldDiagram.getColors());
+					newDiagram.getFonts().addAll(oldDiagram.getFonts());
+					newDiagram.getStyles().addAll(oldDiagram.getStyles());
 					
 					break;
 				}

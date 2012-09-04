@@ -13,47 +13,26 @@
 
 package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.Bpmn2Package;
-import org.eclipse.bpmn2.CallActivity;
-import org.eclipse.bpmn2.CallChoreography;
-import org.eclipse.bpmn2.CallableElement;
-import org.eclipse.bpmn2.Choreography;
-import org.eclipse.bpmn2.ChoreographyTask;
-import org.eclipse.bpmn2.Collaboration;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowElementsContainer;
-import org.eclipse.bpmn2.Message;
-import org.eclipse.bpmn2.MessageFlow;
-import org.eclipse.bpmn2.Participant;
-import org.eclipse.bpmn2.Process;
-import org.eclipse.bpmn2.RootElement;
-import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.bpmn2.di.BpmnDiFactory;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
-import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ModelSubclassSelectionDialog;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.TreeIterator;
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICustomContext;
@@ -62,19 +41,11 @@ import org.eclipse.graphiti.mm.algorithms.styles.Color;
 import org.eclipse.graphiti.mm.algorithms.styles.Font;
 import org.eclipse.graphiti.mm.algorithms.styles.Style;
 import org.eclipse.graphiti.mm.pictograms.Connection;
-import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.PictogramLink;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.ui.editor.DiagramEditor;
-import org.eclipse.graphiti.ui.internal.util.ui.PopupMenu;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.window.Window;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Bob Brodt
@@ -170,8 +141,22 @@ public class PushdownFeature extends AbstractCustomFeature {
 					TreeIterator<EObject> iter = pictogramElement.eAllContents();
 					while (iter.hasNext()) {
 						EObject o = iter.next();
-						if (o instanceof PictogramLink || o instanceof Color || o instanceof Font || o instanceof Style)
+						if (o instanceof PictogramLink) {
+							newDiagram.getPictogramLinks().add((PictogramLink)o);
 							moved.add(o);
+						}
+						else if (o instanceof Color) {
+							newDiagram.getColors().add((Color)o);
+							moved.add(o);
+						}
+						else if (o instanceof Font) {
+							newDiagram.getFonts().add((Font)o);
+							moved.add(o);
+						}
+						else if (o instanceof Style) {
+							newDiagram.getStyles().add((Style)o);
+							moved.add(o);
+						}
 					}
 				}
 			}

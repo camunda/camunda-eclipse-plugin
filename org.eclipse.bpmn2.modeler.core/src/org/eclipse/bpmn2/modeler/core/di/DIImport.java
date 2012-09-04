@@ -502,6 +502,10 @@ public class DIImport {
 					x -= loc.getX();
 					y -= loc.getY();
 				}
+				else if (parentDiagram!=null) {
+					Diagram d = DIUtils.findDiagram(editor, parentDiagram);
+					target = d;
+				}
 			}
 		}
 		else if (!lanes.isEmpty()) {

@@ -12,6 +12,7 @@ import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
+import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
@@ -19,6 +20,7 @@ import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -104,10 +106,27 @@ public class DesignEditor extends BPMN2Editor {
     }
 	
 	public void pageChange(BPMNDiagram bpmnDiagram) {
-		super.setBpmnDiagram(bpmnDiagram);
+		setBpmnDiagram(bpmnDiagram);
 		reloadTabs();
+		tabFolder.setSelection(0);
+		tabFolder.getItem(0).getControl().setVisible(true);
+		tabFolder.getItem(0).setData(bpmnDiagram);
 	}
-
+	
+	protected void addDesignPage(final BPMNDiagram bpmnDiagram) {
+		setBpmnDiagram( (BPMNDiagram)tabFolder.getItem(0).getData() );
+		reloadTabs();
+		showDesignPage(bpmnDiagram);
+	}
+	
+	protected void removeDesignPage(final BPMNDiagram bpmnDiagram) {
+		CTabItem currentItem = tabFolder.getSelection();
+		BPMNDiagram currentBpmnDiagram = (BPMNDiagram)currentItem.getData();
+		setBpmnDiagram( (BPMNDiagram)tabFolder.getItem(0).getData() );
+		reloadTabs();
+		showDesignPage(currentBpmnDiagram);
+	}
+	
 	private void reloadTabs() {
 		BPMNDiagram bpmnDiagram = getBpmnDiagram();
 		List<BPMNDiagram> bpmnDiagrams = new ArrayList<BPMNDiagram>();
@@ -126,8 +145,17 @@ public class DesignEditor extends BPMN2Editor {
 		if (flowElements != null) {
 			for (FlowElement fe : flowElements) {
 				BPMNDiagram bd = DIUtils.findBPMNDiagram(this, fe);
-				if (bd!=null) {
+				if (bd!=null)
 					bpmnDiagrams.add(bd);
+				TreeIterator<EObject> iter = fe.eAllContents();
+				while (iter.hasNext()) {
+					EObject o = iter.next();
+					if (o instanceof BaseElement) {
+						bd = DIUtils.findBPMNDiagram(this, (BaseElement)o);
+						if (bd!=null) {
+							bpmnDiagrams.add(bd);
+						}
+					}
 				}
 			}
 		}
@@ -148,9 +176,6 @@ public class DesignEditor extends BPMN2Editor {
 			}
 			
 		}
-		tabFolder.setSelection(0);
-		tabFolder.getItem(0).getControl().setVisible(true);
-		tabFolder.getItem(0).setData(bpmnDiagram);
 		tabFolder.setLayoutDeferred(false);
 		
 		Display.getDefault().asyncExec(new Runnable() {
@@ -213,6 +238,7 @@ public class DesignEditor extends BPMN2Editor {
 				setBpmnDiagram(bpmnDiagram);
 				tabFolder.setSelection(item);
 				item.getControl().setVisible(true);
+				break;
 			}
 		}
 	}
@@ -389,7 +415,7 @@ public class DesignEditor extends BPMN2Editor {
 						if (bpmnElement instanceof RootElement)
 							multipageEditor.addDesignPage(bpmnDiagram);
 						else
-							reloadTabs();
+							addDesignPage(bpmnDiagram);
 						break;
 					}
 				} else if (et == Notification.REMOVE) {
@@ -408,7 +434,7 @@ public class DesignEditor extends BPMN2Editor {
 						if (bpmnElement instanceof RootElement)
 							multipageEditor.removeDesignPage(bpmnDiagram);
 						else
-							reloadTabs();
+							removeDesignPage(bpmnDiagram);
 						break;
 					}
 				} else if (et == Notification.SET) {
