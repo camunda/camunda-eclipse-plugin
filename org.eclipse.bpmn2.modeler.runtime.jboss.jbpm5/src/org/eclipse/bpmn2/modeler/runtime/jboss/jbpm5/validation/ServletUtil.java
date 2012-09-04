@@ -1,5 +1,6 @@
 package org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ServletUtil {
@@ -14,7 +15,7 @@ public class ServletUtil {
 
 	public static List<String> getAllProcessesInPackage(String packageName, IDiagramProfile profile) {
 		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<String>();
 	}
 
 	public static String getProcessSourceContent(String packageName, String p, IDiagramProfile profile) {
