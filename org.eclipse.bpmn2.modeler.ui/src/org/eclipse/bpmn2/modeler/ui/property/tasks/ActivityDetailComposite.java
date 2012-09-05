@@ -73,6 +73,7 @@ public class ActivityDetailComposite extends DefaultDetailComposite {
 				String[] properties = new String[] {
 						"anyAttribute",
 						"calledElementRef", // only used in CallActivity
+						"calledChoreographyRef", // only used in CallChoreography
 						"completionQuantity",
 						"startQuantity",
 						"isForCompensation",

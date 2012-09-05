@@ -97,17 +97,11 @@ public class DataStorePropertySection extends AbstractBpmn2PropertySection {
 			else if (object instanceof DataStore) {
 				if (propertiesProvider == null) {
 					propertiesProvider = new AbstractPropertiesProvider(object) {
-						String[] properties = new String[] { "id", "name", "capacity", "isUnlimited", "itemSubjectRef" };
-						String[] children = new String[] { "dataState" };
+						String[] properties = new String[] { "id", "name", "capacity", "isUnlimited", "itemSubjectRef", "dataState" };
 						
 						@Override
 						public String[] getProperties() {
 							return properties;
-						}
-						
-						@Override
-						public String[] getChildren(String name) {
-							return children;
 						}
 					};
 				}
@@ -116,17 +110,11 @@ public class DataStorePropertySection extends AbstractBpmn2PropertySection {
 			else if (object instanceof DataStoreReference) {
 				if (dataStoreReferencePropertiesProvider == null) {
 					dataStoreReferencePropertiesProvider = new AbstractPropertiesProvider(object) {
-						String[] properties = new String[] { "id", "name" };
-						String[] children = new String[] { "dataStoreRef" , "dataState" };
+						String[] properties = new String[] { "id", "name", "dataStoreRef" , "dataState" };
 	
 						@Override
 						public String[] getProperties() {
 							return properties; 
-						}
-						
-						@Override
-						public String[] getChildren(String name) {
-							return children;
 						}
 					};
 			

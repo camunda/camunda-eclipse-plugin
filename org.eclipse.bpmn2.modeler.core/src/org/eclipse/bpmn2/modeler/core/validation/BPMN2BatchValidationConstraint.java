@@ -383,10 +383,6 @@ public class BPMN2BatchValidationConstraint extends AbstractModelConstraint {
 			if (!warnings) {
 				if (dao.getName() == null || dao.getName().length() < 1) {
 					return ctx.createFailureStatus("Data Object has no name");
-				} else {
-					if (containsWhiteSpace(dao.getName())) {
-						return ctx.createFailureStatus("Data Object name contains whitespace");
-					}
 				}
 			}
 		}

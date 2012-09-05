@@ -59,6 +59,11 @@ public class ModelSubclassSelectionDialog extends ListDialog {
 		
 		ModelEnablementDescriptor modelEnablement = getTargetRuntime().getModelEnablements(object);
 		items = new ArrayList<EClass>();
+		if (listItemClass!=null
+				&& !listItemClass.isAbstract()
+				&& !listItemClass.isInterface()
+				&& modelEnablement.isEnabled(listItemClass))
+			items.add(listItemClass);
 				
 		for (EClassifier eclassifier : Bpmn2Package.eINSTANCE.getEClassifiers()) {
 			if (eclassifier instanceof EClass) {

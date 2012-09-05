@@ -1030,6 +1030,8 @@ public class ModelUtil {
 	}
 
 	public static EObject createObject(Object object) {
+		if (object instanceof EObject)
+			return createObject(((EObject)object).eResource(),object);
 		return createObject(null,object);
 	}
 
@@ -1045,7 +1047,7 @@ public class ModelUtil {
 	}
 
 	public static EObject createFeature(EObject object, EStructuralFeature feature, EClass eclass) {
-		return createFeature(null, object, feature, eclass);
+		return createFeature(object.eResource(), object, feature, eclass);
 	}
 
 	public static EObject createFeature(Resource resource, EObject object, EStructuralFeature feature, EClass eclass) {

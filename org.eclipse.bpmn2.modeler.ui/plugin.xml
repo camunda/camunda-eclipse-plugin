@@ -338,9 +338,17 @@
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.callActivity.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.tasks.CallActivityPropertySection"
-			type="org.eclipse.bpmn2.ChoreographyTask"
+			type="org.eclipse.bpmn2.CallActivity"
 			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Call Activity">
+		</propertyTab>
+
+		<propertyTab
+			id="org.eclipse.bpmn2.modeler.callChoreography.tab"
+			class="org.eclipse.bpmn2.modeler.ui.property.tasks.CallChoreographyPropertySection"
+			type="org.eclipse.bpmn2.CallChoreography"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
+			label="Call Choreography">
 		</propertyTab>
 
 		<propertyTab
@@ -413,6 +421,13 @@
 			<enable object="Task"/>
 			<enable object="UserTask"/>
 
+			<enable object="GlobalTask"/>
+			<enable object="GlobalBusinessRuleTask"/>
+			<enable object="GlobalManualTask"/>
+			<enable object="GlobalScriptTask"/>
+			<enable object="GlobalUserTask"/>
+			<enable object="Task"/>
+
 			<!-- connections -->
 			<enable object="SequenceFlow"/>
 			<enable object="Association"/>
@@ -460,6 +475,10 @@
 			<enable object="MultiInstanceLoopCharacteristics"/>
 			<enable object="Lane"/>
 			<enable object="LaneSet"/>
+			
+			<!-- this is intended to be a baseclass for global tasks and Process -->
+			<disable object="CallableElement"/>
+			<enable object="CallActivity" feature="calledElementRef"/>
 			
 			<disable object="MessageFlow"/>
 			<disable object="ConversationLink"/>

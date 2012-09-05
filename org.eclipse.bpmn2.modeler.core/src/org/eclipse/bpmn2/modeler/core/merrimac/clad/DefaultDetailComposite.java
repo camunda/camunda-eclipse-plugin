@@ -190,13 +190,6 @@ public class DefaultDetailComposite extends AbstractDetailComposite {
 			}
 		}
 		
-		properties = provider.getChildren(null);
-		if (properties!=null) {
-			for (String a : properties) {
-				bindChild(be,a);
-			}
-		}
-		
 		if (getAttributesParent().getChildren().length==0) {
 			// yech! ugly hack to hide the Attributes TWISTIE section if it's empty
 			if (attributesComposite!=null) {
@@ -238,9 +231,5 @@ public class DefaultDetailComposite extends AbstractDetailComposite {
 		}
 
 		public abstract String[] getProperties();
-
-		public String[] getChildren(String name) {
-			return null;
-		}
 	}
 }

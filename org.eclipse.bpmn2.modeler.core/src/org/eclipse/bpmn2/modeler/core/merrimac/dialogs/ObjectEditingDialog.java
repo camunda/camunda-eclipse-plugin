@@ -98,10 +98,9 @@ public class ObjectEditingDialog extends FormDialog {
 		data.left = new FormAttachment(0, 0);
 		data.right = new FormAttachment(100, 0);
 		dialogContent.setLayoutData(data);
-
-		getShell().setSize(600,400);
 		
 		form.setContent(body);
+		getShell().pack();
 	}
 	
 	protected Composite createDialogContent(Composite parent) {
@@ -163,6 +162,7 @@ public class ObjectEditingDialog extends FormDialog {
 		if (title==null)
 			title = "Create New " + ModelUtil.getLabel(object);
 		getShell().setText(title);
+		getShell().setSize(600,400);
 
 		addControlListener();
 		aboutToOpen();
