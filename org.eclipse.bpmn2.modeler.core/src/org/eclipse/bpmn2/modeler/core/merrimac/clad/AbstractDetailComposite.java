@@ -82,8 +82,6 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 	protected Section attributesSection = null;
 	protected Composite attributesComposite = null;
 	protected Font descriptionFont = null;
-	
-	protected ChildObjectStack objectStack = new ChildObjectStack();
 
 	/**
 	 * Constructor for embedding this composite in an AbstractBpmn2PropertySection.
@@ -155,11 +153,7 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 		
 		if (attributesSection==null || attributesSection.isDisposed()) {
 
-			if (objectStack.peek()==businessObject)
-				attributesSection = createSection(objectStack.getAttributesParent(), "Attributes");
-			else
-				attributesSection = createSubSection(objectStack.getAttributesParent(),
-						ModelUtil.getLabel(objectStack.peek()) + " Attributes");
+			attributesSection = createSection(this, "Attributes");
 			
 			attributesSection.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, true, 3, 1));
 			attributesComposite = toolkit.createComposite(attributesSection);
@@ -477,21 +471,6 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 			editor.createControl(parent,displayName);
 		}
 	}
-	
-	protected void bindChild(final EObject object, String name) {
-		final EStructuralFeature feature = ((EObject)object).eClass().getEStructuralFeature(name);
-		if (feature instanceof EReference) {
-			Object value = object.eGet(feature);
-			if (value==null) {
-				value = ModelUtil.createFeature(object, feature);
-			}
-			if (value instanceof EObject) {
-				objectStack.push((EObject)value);
-				createBindings((EObject)value);
-				objectStack.pop();
-			}
-		}
-	}
 
 	protected AbstractListComposite bindList(EObject object, String name) {
 		EStructuralFeature feature = getFeature(object,name);
@@ -523,51 +502,6 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 			tableComposite.bindList(object, feature);
 		}
 		return tableComposite;
-	}
-	
-	public class ChildObjectStack {
-		private Stack<EObject> objectStack = new Stack<EObject>();
-		private Stack<Composite> attributesCompositeStack = new Stack<Composite>();
-		private Stack<Section> attributesSectionStack = new Stack<Section>();
-		
-		public void push(EObject object) {
-			attributesCompositeStack.push(AbstractDetailComposite.this.getAttributesParent());
-			attributesComposite = null;
-			attributesSectionStack.push(attributesSection);
-			attributesSection = null;
-			objectStack.push(object);
-		}
-		
-		public EObject pop() {
-			if (objectStack.size()>0) {
-				attributesComposite = attributesCompositeStack.pop();
-				
-				return objectStack.pop();
-			}
-			return null;
-		}
-		
-		public EObject peek() {
-			if (objectStack.size()>0) {
-				return objectStack.peek();
-			}
-			return AbstractDetailComposite.this.businessObject;
-		}
-		
-		public Composite getAttributesParent() {
-			if (objectStack.size()>0) {
-				return attributesCompositeStack.peek();
-			}
-			return AbstractDetailComposite.this;
-		}
-		
-		public EObject get(int i) {
-			return objectStack.get(i);
-		}
-		
-		public int size() {
-			return objectStack.size();
-		}
 	}
 
 	public void refresh() {

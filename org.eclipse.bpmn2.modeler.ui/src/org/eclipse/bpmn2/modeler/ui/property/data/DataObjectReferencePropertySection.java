@@ -89,17 +89,11 @@ public class DataObjectReferencePropertySection extends AbstractBpmn2PropertySec
 			else if (object instanceof DataObjectReference) {
 				if (dataObjectReferencePropertiesProvider == null) {
 					dataObjectReferencePropertiesProvider = new AbstractPropertiesProvider(object) {
-						String[] properties = new String[] { "id", "name" };
-						String[] children = new String[] { "dataState" };
+						String[] properties = new String[] { "id", "name", "dataState" };
 	
 						@Override
 						public String[] getProperties() {
 							return properties; 
-						}
-						
-						@Override
-						public String[] getChildren(String name) {
-							return children;
 						}
 					};
 			

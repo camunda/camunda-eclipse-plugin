@@ -121,17 +121,11 @@ public class DataObjectPropertySection extends AbstractBpmn2PropertySection {
 			else if (object instanceof DataObject) {
 				if (propertiesProvider == null) {
 					propertiesProvider = new AbstractPropertiesProvider(object) {
-						String[] properties = new String[] { "id", "name", "isCollection", "itemSubjectRef" };
-						String[] children = new String[] { "dataState" };
+						String[] properties = new String[] { "id", "name", "isCollection", "itemSubjectRef", "dataState" };
 						
 						@Override
 						public String[] getProperties() {
 							return properties;
-						}
-						
-						@Override
-						public String[] getChildren(String name) {
-							return children;
 						}
 					};
 				}
@@ -140,17 +134,11 @@ public class DataObjectPropertySection extends AbstractBpmn2PropertySection {
 			else if (object instanceof DataObjectReference) {
 				if (dataObjectReferencePropertiesProvider == null) {
 					dataObjectReferencePropertiesProvider = new AbstractPropertiesProvider(object) {
-						String[] properties = new String[] { "id", "name" };
-						String[] children = new String[] { "dataObjectRef" , "dataState" };
+						String[] properties = new String[] { "id", "name", "dataObjectRef" , "dataState" };
 	
 						@Override
 						public String[] getProperties() {
 							return properties; 
-						}
-						
-						@Override
-						public String[] getChildren(String name) {
-							return children;
 						}
 					};
 			
