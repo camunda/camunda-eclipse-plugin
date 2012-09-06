@@ -79,6 +79,7 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 						"rootElements#Escalation",
 						"rootElements#Signal",
 						"rootElements#CorrelationProperty",
+						"rootElements#Category",
 				};
 				
 				@Override

@@ -91,6 +91,7 @@ public class AddChoreographyActivityFeature<T extends ChoreographyActivity>
 //		text.setFont(gaService.manageFont(getDiagram(), GaServiceImpl.DEFAULT_FONT, 8, false, true));
 		setTextLocation(choreographyContainer, text, width, height);
 		peService.setPropertyValue(nameShape, ChoreographyProperties.CHOREOGRAPHY_NAME, Boolean.toString(true));
+		GraphicsUtil.hideActivityMarker(choreographyContainer, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
 
 		// use it when property editor supports enums
 		// ContainerShape markerShape = peService.createContainerShape(choreographyContainer, false);

@@ -491,7 +491,7 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 			Class clazz = (listItemClass!=null) ?
 					listItemClass.getInstanceClass() :
 					feature.getEType().getInstanceClass();
-			if (getPropertySection()!=null) {
+			if (propertySection!=null) {
 				tableComposite = PropertiesCompositeFactory.createListComposite(clazz, propertySection);
 			}
 			else {

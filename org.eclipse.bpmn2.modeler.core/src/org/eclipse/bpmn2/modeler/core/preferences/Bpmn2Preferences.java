@@ -25,6 +25,7 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.CallChoreography;
 import org.eclipse.bpmn2.CancelEventDefinition;
+import org.eclipse.bpmn2.ChoreographyActivity;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.ExclusiveGateway;
@@ -600,7 +601,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	public boolean getShowPopupConfigDialog(Object context) {
 		load();
 		if (popupConfigDialog!=0) {
-			if (context instanceof Task) {
+			if (context instanceof Task || context instanceof ChoreographyActivity) {
 				return popupConfigDialogFor[0];
 			}
 			if (context instanceof Gateway) {
@@ -614,7 +615,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 					return false; // these have no additional attributes
 				return popupConfigDialogFor[3];
 			}
-			if (context instanceof ItemAwareElement) {
+			if (context instanceof ItemAwareElement || context instanceof Message) {
 				return popupConfigDialogFor[4];
 			}
 			if (context instanceof InteractionNode || context instanceof FlowElementsContainer) {

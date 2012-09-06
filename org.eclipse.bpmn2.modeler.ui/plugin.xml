@@ -354,9 +354,17 @@
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.subProcess.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.tasks.SubProcessPropertySection"
-			type="org.eclipse.bpmn2.ChoreographyTask"
+			type="org.eclipse.bpmn2.SubProcess"
 			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Sub Process">
+		</propertyTab>
+
+		<propertyTab
+			id="org.eclipse.bpmn2.modeler.subChoreography.tab"
+			class="org.eclipse.bpmn2.modeler.ui.property.tasks.SubChoreographyPropertySection"
+			type="org.eclipse.bpmn2.SubChoreography"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
+			label="Sub Choreography">
 		</propertyTab>
 
 		<propertyTab
@@ -384,6 +392,14 @@
 -->
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.gateway.tab"
+			class="org.eclipse.bpmn2.modeler.ui.property.artifact.GroupPropertySection"
+			type="org.eclipse.bpmn2.Group"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
+			label="Group">
+		</propertyTab>
+
+		<propertyTab
+			id="org.eclipse.bpmn2.modeler.group.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.gateways.GatewayPropertySection"
 			type="org.eclipse.bpmn2.Gateway"
 			afterTab="org.eclipse.bpmn2.modeler.description.tab"
@@ -438,6 +454,8 @@
 			<enable object="IntermediateCatchEvent"/>
 			<enable object="IntermediateThrowEvent"/>
 			<enable object="Escalation"/>
+			<enable object="CatchEvent"/>
+			<enable object="ThrowEvent"/>
 			<enable object="BoundaryEvent"/>
 			<enable object="Signal"/>
 			<enable object="Error"/>
@@ -469,6 +487,9 @@
 			<enable object="DataStoreReference"/>
 			<enable object="DataObjectReference"/>
 			<enable object="Group"/>
+			<enable object="Category"/>
+			<enable object="CategoryValue"/>
+			<enable object="TextAnnotation"/>
 			<enable object="ExtensionAttributeValue"/>
 			<enable object="ExtensionAttributeDefinition"/>
 			<enable object="StandardLoopCharacteristics"/>
@@ -476,7 +497,8 @@
 			<enable object="Lane"/>
 			<enable object="LaneSet"/>
 			
-			<!-- this is intended to be a baseclass for global tasks and Process -->
+			<!-- this is intended to be a baseclass for global tasks and Process and -->
+			<!-- should NOT be a valid selection in ModelSubclassSelectionDialog -->
 			<disable object="CallableElement"/>
 			<enable object="CallActivity" feature="calledElementRef"/>
 			
