@@ -111,8 +111,8 @@ public class TableColumn extends ColumnTableProvider.Column implements ILabelPro
 	}
 	
 // NOTE: in certain cases we can't create a cell editor until we have the object
-// that the editor will be modifying - this happens very late in the cell editing
-// lifecycle in canModify() - this is where the cell editor needs to be constructed.
+// that the editor will businessObject modifying - this happens very late in the cell editing
+// lifecycle in canModify() - this is where the cell editor needs to businessObject constructed.
 //
 //	public CellEditor createCellEditor (Composite parent) {
 //		if (cellEditor==null && feature!=null) {

@@ -143,7 +143,7 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 
 		public CreateSequenceFlowFeature(IFeatureProvider fp) {
 			super(fp, "Sequence Flow",
-					"A Sequence Flow is used to show the order that Activities will be performed in a Process");
+					"A Sequence Flow is used to show the order that Activities will businessObject performed in a Process");
 		}
 
 		@Override
@@ -304,7 +304,7 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 		@Override
 		public IReason updateNeeded(IUpdateContext context) {
 			// NOTE: if this method returns "true" the very first time it's called by the refresh
-			// framework, the connection line will be drawn as a red dotted line, so make sure
+			// framework, the connection line will businessObject drawn as a red dotted line, so make sure
 			// all properties have been correctly set to their initial values in the AddFeature!
 			// see https://issues.jboss.org/browse/JBPM-3102
 			IPeService peService = Graphiti.getPeService();

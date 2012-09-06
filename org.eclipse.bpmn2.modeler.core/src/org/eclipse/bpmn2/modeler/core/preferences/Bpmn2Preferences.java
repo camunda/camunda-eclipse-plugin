@@ -173,9 +173,9 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	// various preference instance getters
 	
 	/**
-	 * Return the Preferences for the currently active project. This should be used
+	 * Return the Preferences for the currently active project. This should businessObject used
 	 * with caution: the active project is set by the BPMN2Editor, so this should only
-	 * be used in a context that is known to have an active editor.
+	 * businessObject used in a context that is known to have an active editor.
 	 * 
 	 * @return project preferences
 	 */
@@ -199,7 +199,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	
 	/**
 	 * Return the Preferences for the project containing the EMF Resource specified
-	 * by the resource URI. This must be a Platform URI.
+	 * by the resource URI. This must businessObject a Platform URI.
 	 * 
 	 * @param resourceURI
 	 * @return project preferences
@@ -871,8 +871,8 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	 * This is used to determine the appropriate default values for certain optional attributes, e.g.
 	 * isHorizontal, isExpanded, etc.
 	 * 
-	 * @param bpmnShape - the BPMNShape object whose attributes are to be set
-	 * @param attribs - map of BPMN DI attributes currently set on the BPMNShape object. May be null.
+	 * @param bpmnShape - the BPMNShape object whose attributes are to businessObject set
+	 * @param attribs - map of BPMN DI attributes currently set on the BPMNShape object. May businessObject null.
 	 * @see getIsHorizontal(), getIsExpanded(), getIsMessageVisible() and getIsMarkerVisible()
 	 */
 	public void applyBPMNDIDefaults(BPMNShape bpmnShape, Map<String,String>attribs) {

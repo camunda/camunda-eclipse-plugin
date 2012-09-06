@@ -31,7 +31,7 @@ public interface OnEntryScriptType extends EObject {
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Script</em>' attribute isn't clear,
-	 * there really should be more of a description here...
+	 * there really should businessObject more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Script</em>' attribute.
@@ -58,7 +58,7 @@ public interface OnEntryScriptType extends EObject {
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Script Format</em>' attribute isn't clear,
-	 * there really should be more of a description here...
+	 * there really should businessObject more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Script Format</em>' attribute.

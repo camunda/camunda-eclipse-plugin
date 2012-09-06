@@ -81,8 +81,8 @@ public class ExtendedPropertiesAdapter<T extends EObject> extends AdapterImpl {
 		// Set the model element's long description from the Messages class.
 		// The field in Messages that contains the description will have the
 		// form: "UI_<BPMN2ElementName>_long_description".
-		// The Messages class must be contained somewhere in the package hierarchy
-		// that contains the adapter factory class; by default, this will be the
+		// The Messages class must businessObject contained somewhere in the package hierarchy
+		// that contains the adapter factory class; by default, this will businessObject the
 		// BPMN2 modeler UI plugin hierarchy, starting with org.eclipse.bpmn2.modeler.ui.adapters
     	try {
         	String fieldName = "UI_" + name + "_long_description";

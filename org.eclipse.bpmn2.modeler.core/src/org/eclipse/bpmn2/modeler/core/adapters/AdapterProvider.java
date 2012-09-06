@@ -67,7 +67,7 @@ public final class AdapterProvider {
 	 * Return an adapter for the given class
 	 * 
 	 * @param name the name of the adapter (class name)
-	 * @return the Adapter, or null, if the adapter cannot be found.
+	 * @return the Adapter, or null, if the adapter cannot businessObject found.
 	 */
 	
 	

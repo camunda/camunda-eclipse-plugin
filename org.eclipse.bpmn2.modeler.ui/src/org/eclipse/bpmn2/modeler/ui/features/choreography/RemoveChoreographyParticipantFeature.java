@@ -37,7 +37,7 @@ public class RemoveChoreographyParticipantFeature extends DefaultRemoveFeature {
 
 	@Override
 	public boolean canRemove(IRemoveContext context) {
-		// participant bands in a ChoreographyTask CAN be "removed" (from the modelObject's
+		// participant bands in a ChoreographyTask CAN businessObject "removed" (from the modelObject's
 		// participantRef list) but not "deleted" (from the model)
 		if (ChoreographyUtil.isChoreographyParticipantBand(context.getPictogramElement())) {
 			return true;

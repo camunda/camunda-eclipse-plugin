@@ -895,7 +895,7 @@ public class GraphicsUtil {
 	}
 
 	
-	public static ContainerShape getActivityMarkerContainer(ContainerShape container) {
+	private static ContainerShape getActivityMarkerContainer(ContainerShape container) {
 		String property = peService.getPropertyValue(container, ACTIVITY_MARKER_CONTAINER);
 		if (property != null && new Boolean(property)) {
 			return container;

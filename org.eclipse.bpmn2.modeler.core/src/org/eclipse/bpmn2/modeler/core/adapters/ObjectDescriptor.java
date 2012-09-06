@@ -132,7 +132,7 @@ public class ObjectDescriptor<T extends EObject> {
 			// compare feature values of both EObjects:
 			// this should take care of most of the BPMN2 elements
 			for (EStructuralFeature f : object.eClass().getEAllStructuralFeatures()) {
-				// IDs are allowed to be different
+				// IDs are allowed to businessObject different
 				if ("id".equals(f.getName()))
 					continue;
 				Object v1 = ((T)obj).eGet(f);

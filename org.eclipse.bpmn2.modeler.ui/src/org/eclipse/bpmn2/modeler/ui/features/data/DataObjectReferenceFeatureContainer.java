@@ -58,7 +58,7 @@ public class DataObjectReferenceFeatureContainer extends AbstractDataFeatureCont
 
 		public CreateDataObjectReferenceFeature(IFeatureProvider fp) {
 			super(fp, "Data Object Ref",
-					"Provides ref information about what activities require to be performed or what they produce");
+					"Provides ref information about what activities require to businessObject performed or what they produce");
 		}
 
 		@Override

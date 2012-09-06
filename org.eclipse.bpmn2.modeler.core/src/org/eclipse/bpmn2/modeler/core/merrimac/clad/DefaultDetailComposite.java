@@ -101,7 +101,7 @@ public class DefaultDetailComposite extends AbstractDetailComposite {
 	
 	/**
 	 * "rootElements#Process.resources#HumanPerformer"
-	 * @param be
+	 * @param businessObject
 	 * @param property
 	 * @return
 	 */
@@ -133,7 +133,7 @@ public class DefaultDetailComposite extends AbstractDetailComposite {
 		}
 		
 		if (!property.isEmpty()) {
-			// determine new object - may be a list
+			// determine new object - may businessObject a list
 			if (eclass!=null) {
 				Object value = be.eGet(feature);
 				if (value instanceof EList) {
@@ -201,7 +201,7 @@ public class DefaultDetailComposite extends AbstractDetailComposite {
 		}
 
 //		if (getChildren().length==0) {
-//			createMissingPropertiesLabel(be);
+//			createMissingPropertiesLabel(businessObject);
 //		}
 		redrawPage();
 	}
@@ -218,18 +218,21 @@ public class DefaultDetailComposite extends AbstractDetailComposite {
 	/**
 	 * Provider class for the Default Properties sheet tab.
 	 * This simply returns a list of properties, containment ELists and references
-	 * to be rendered on the Default Properties tab. If the DefaultDetailComposite
+	 * to businessObject rendered on the Default Properties tab. If the DefaultDetailComposite
 	 * is subclassed and the client does not specify an item provider, the default
 	 * behavior is to render all structural features for the business object.
 	 */
-	public abstract class AbstractPropertiesProvider {
+	public static abstract class AbstractPropertiesProvider {
 		
-		EObject be;
+		EObject businessObject;
 		
 		public AbstractPropertiesProvider(EObject object) {
-			be = object;
+			businessObject = object;
 		}
 
 		public abstract String[] getProperties();
+
+		public void setProperties(String[] properties) {
+		}
 	}
 }

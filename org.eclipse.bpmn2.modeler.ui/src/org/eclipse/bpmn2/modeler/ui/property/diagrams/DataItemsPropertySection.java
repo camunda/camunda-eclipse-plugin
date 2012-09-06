@@ -16,13 +16,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
 public class DataItemsPropertySection extends DefaultPropertySection {
-	
-	static {
-		PropertiesCompositeFactory.register(ItemDefinition.class, ItemDefinitionDetailComposite.class);
-		PropertiesCompositeFactory.register(ItemDefinition.class, ItemDefinitionListComposite.class);
-		PropertiesCompositeFactory.register(Property.class, PropertyListComposite.class);
-		PropertiesCompositeFactory.register(ResourceRole.class, ResourceRoleListComposite.class);
-	}
 
 	public DataItemsPropertySection() {
 	}
@@ -36,7 +29,7 @@ public class DataItemsPropertySection extends DefaultPropertySection {
 	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
 		EObject be = super.getBusinessObjectForPictogramElement(pe);
 		if (be instanceof BPMNDiagram) {
-//			EList<EObject> contents = be.eResource().getContents();
+//			EList<EObject> contents = businessObject.eResource().getContents();
 //			if (!contents.isEmpty() && contents.get(0) instanceof DocumentRoot) {
 //				return contents.get(0);
 //			}

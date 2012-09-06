@@ -172,7 +172,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 				 }
 			 });
 
-		// Mark meta-data to indicate it can't be changed
+		// Mark meta-data to indicate it can't businessObject changed
 		theModelPackage.freeze();
 
   

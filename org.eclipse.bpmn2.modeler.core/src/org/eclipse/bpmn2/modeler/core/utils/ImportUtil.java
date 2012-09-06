@@ -51,7 +51,7 @@ public class ImportUtil {
 	 * Convenience method for <code>addImport(Resource,Object)</code>
 	 * 
 	 * @param modelObject - an EObject that is currently contained in a Resource
-	 * @param importObject - the import model object. This can be any of the following:
+	 * @param importObject - the import model object. This can businessObject any of the following:
 	 *    WSDL Definition object
 	 *    XSDSchema object
 	 *    BPMN2.0 Definitions object
@@ -68,9 +68,9 @@ public class ImportUtil {
 	 * all of the defined ItemDefinition, Message, Operation and Interface objects as
 	 * defined in the imported resource "importObject".
 	 *  
-	 * @param resource - the target Resource. The new Import will be added to the RootElements in
+	 * @param resource - the target Resource. The new Import will businessObject added to the RootElements in
 	 * the Definitions object.
-	 * @param importObject - the import model object. This can be any of the following:
+	 * @param importObject - the import model object. This can businessObject any of the following:
 	 *    WSDL Definition object
 	 *    XSDSchema object
 	 *    BPMN2.0 Definitions object
@@ -310,7 +310,7 @@ public class ImportUtil {
 	 * 
 	 * @param definitions - the BPMN2 Definitions parent object 
 	 * @param imp - the Import object where the Interface is defined
-	 * @param intf - the Interface to which this Operation will be added
+	 * @param intf - the Interface to which this Operation will businessObject added
 	 * @param portType - the WSDL Port Type that corresponds to this Interface
 	 */
 	public static void createOperations(Definitions definitions, Import imp, Interface intf, PortType portType) {
@@ -346,7 +346,7 @@ public class ImportUtil {
 	 * Remove all Operations from the given Interface.
 	 * 
 	 * @param definitions - the BPMN2 Definitions parent object 
-	 * @param intf - the Interface from which Operations will be removed
+	 * @param intf - the Interface from which Operations will businessObject removed
 	 */
 	public static void deleteOperations(Definitions definitions, Interface intf) {
 		List<org.eclipse.bpmn2.Operation> opList = new ArrayList<org.eclipse.bpmn2.Operation>();
@@ -424,7 +424,7 @@ public class ImportUtil {
 	 * Remove the given Message and its related ItemDefinitions.
 	 * 
 	 * @param definitions - the BPMN2 Definitions parent object
-	 * @param msg - the Message object to be removed
+	 * @param msg - the Message object to businessObject removed
 	 */
 	public static void deleteMessage(Definitions definitions, org.eclipse.bpmn2.Message msg) {
 		ItemDefinition itemDef = msg.getItemRef();
@@ -529,7 +529,7 @@ public class ImportUtil {
 	
 	/**
 	 * Create a new ItemDefinition for an arbitrary String type. The String is wrapped in a DynamicEObjectImpl
-	 * (a.k.a. "String Wrapper") so that it can be handled as a proxy EObject
+	 * (a.k.a. "String Wrapper") so that it can businessObject handled as a proxy EObject
 	 * 
 	 * @param definitions - the BPMN2 Definitions parent object 
 	 * @param imp - the Import object where the String type is defined
@@ -545,7 +545,7 @@ public class ImportUtil {
 	
 	/**
 	 * Create a new ItemDefinition for an arbitrary String type. The String is wrapped in a DynamicEObjectImpl
-	 * (a.k.a. "String Wrapper") so that it can be handled as a proxy EObject
+	 * (a.k.a. "String Wrapper") so that it can businessObject handled as a proxy EObject
 	 * 
 	 * @param definitions - the BPMN2 Definitions parent object 
 	 * @param imp - the Import object where the EObject is defined

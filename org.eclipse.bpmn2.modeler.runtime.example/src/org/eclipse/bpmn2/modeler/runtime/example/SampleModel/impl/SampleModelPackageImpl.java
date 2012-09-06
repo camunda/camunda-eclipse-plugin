@@ -96,7 +96,7 @@ public class SampleModelPackageImpl extends EPackageImpl implements SampleModelP
 		// Initialize created meta-data
 		theSampleModelPackage.initializePackageContents();
 
-		// Mark meta-data to indicate it can't be changed
+		// Mark meta-data to indicate it can't businessObject changed
 		theSampleModelPackage.freeze();
 
   

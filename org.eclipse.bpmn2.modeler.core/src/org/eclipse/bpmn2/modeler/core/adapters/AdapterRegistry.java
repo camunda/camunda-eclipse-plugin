@@ -37,7 +37,7 @@ import org.eclipse.emf.edit.provider.resource.ResourceItemProviderAdapterFactory
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 
 /**
- * This is the one place where EMF object adapters can be registered. 
+ * This is the one place where EMF object adapters can businessObject registered. 
  * 
  * @author Michal Chmielewski (michal.chmielewski@oracle.com)
  * @date Jul 23, 2007
@@ -320,7 +320,7 @@ public class AdapterRegistry {
 	 * Create an adapter for the given target of the given type. 
 	 * In addition, pass a context object to the adapter(s) of the target. 
 	 * 
-	 * The idea is that some adapters can be stateful and depend not only 
+	 * The idea is that some adapters can businessObject stateful and depend not only 
 	 * on the objects that they wrap, but also on some other context that is needed
 	 * to completely and correctly implement the interface for which the adaptor is
 	 * needed.

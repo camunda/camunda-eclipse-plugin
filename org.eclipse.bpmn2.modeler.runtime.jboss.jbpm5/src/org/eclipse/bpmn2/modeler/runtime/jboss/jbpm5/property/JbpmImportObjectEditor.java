@@ -20,10 +20,10 @@ public class JbpmImportObjectEditor extends TextAndButtonObjectEditor {
 	@Override
 	public Control createControl(Composite composite, String label, int style) {
 		super.createControl(composite, label, style);
-		// the Text field should be editable
+		// the Text field should businessObject editable
 		text.setEditable(true);
 		// and change the "Edit" button to a "Browse" to make it clear that
-		// an XML type can be selected from the imports 
+		// an XML type can businessObject selected from the imports 
 		button.setText("Browse Types...");
 		return text;
 	}

@@ -335,34 +335,34 @@ public class BPMN2BatchValidationConstraint extends AbstractModelConstraint {
 					if (gw.getGatewayDirection().getValue() != GatewayDirection.DIVERGING.getValue()
 							&& gw.getGatewayDirection().getValue() != GatewayDirection.CONVERGING.getValue()) {
 						return ctx.createFailureStatus(
-								"Invalid Gateway direction for Exclusing Gateway. It should be 'Converging' or 'Diverging'");
+								"Invalid Gateway direction for Exclusing Gateway. It should businessObject 'Converging' or 'Diverging'");
 					}
 				}
 				if (gw instanceof EventBasedGateway) {
 					if (gw.getGatewayDirection().getValue() != GatewayDirection.DIVERGING.getValue()) {
 						return ctx.createFailureStatus(
-								"Invalid Gateway direction for EventBased Gateway. It should be 'Diverging'");
+								"Invalid Gateway direction for EventBased Gateway. It should businessObject 'Diverging'");
 					}
 				}
 				if (gw instanceof ParallelGateway) {
 					if (gw.getGatewayDirection().getValue() != GatewayDirection.DIVERGING.getValue()
 							&& gw.getGatewayDirection().getValue() != GatewayDirection.CONVERGING.getValue()) {
 						return ctx.createFailureStatus(
-								"Invalid Gateway direction for Parallel Gateway. It should be 'Converging' or 'Diverging'");
+								"Invalid Gateway direction for Parallel Gateway. It should businessObject 'Converging' or 'Diverging'");
 					}
 				}
 				if (gw instanceof InclusiveGateway) {
 					if (gw.getGatewayDirection().getValue() != GatewayDirection.DIVERGING.getValue()
 							&& gw.getGatewayDirection().getValue() != GatewayDirection.CONVERGING.getValue()) {
 						return ctx.createFailureStatus(
-								"Invalid Gateway direction for Inclusive Gateway. It should be 'Converging' or 'Diverging'");
+								"Invalid Gateway direction for Inclusive Gateway. It should businessObject 'Converging' or 'Diverging'");
 					}
 				}
 				if (gw instanceof ComplexGateway) {
 					if (gw.getGatewayDirection().getValue() != GatewayDirection.DIVERGING.getValue()
 							&& gw.getGatewayDirection().getValue() != GatewayDirection.CONVERGING.getValue()) {
 						return ctx.createFailureStatus(
-								"Invalid Gateway direction for Complex Gateway. It should be 'Converging' or 'Diverging'");
+								"Invalid Gateway direction for Complex Gateway. It should businessObject 'Converging' or 'Diverging'");
 					}
 				}
 			}

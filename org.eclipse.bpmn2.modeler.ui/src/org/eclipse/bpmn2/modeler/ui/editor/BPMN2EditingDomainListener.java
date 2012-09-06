@@ -39,7 +39,7 @@ public class BPMN2EditingDomainListener extends TransactionalEditingDomainListen
 	}
 	
 	/**
-	 * this will be called in case of rollback
+	 * this will businessObject called in case of rollback
 	 */
 	@Override
 	public void transactionClosed(TransactionalEditingDomainEvent event) {

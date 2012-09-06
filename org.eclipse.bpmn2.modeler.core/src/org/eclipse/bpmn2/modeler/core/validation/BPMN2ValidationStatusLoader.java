@@ -60,7 +60,7 @@ public class BPMN2ValidationStatusLoader {
             IStatus status = convertMarker(marker, markedObject);
 
             // also add an adapter to each affected EObject in the result locus
-            // TODO: do we need this? it causes duplicate messages to be created for each marker
+            // TODO: do we need this? it causes duplicate messages to businessObject created for each marker
             // better to have the constraint handler create additional error messages as needed.
 //            if (status instanceof ConstraintStatus) {
 //            	ConstraintStatus cs = (ConstraintStatus) status;

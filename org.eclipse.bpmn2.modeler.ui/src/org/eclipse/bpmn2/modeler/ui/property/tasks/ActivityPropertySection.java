@@ -13,9 +13,10 @@
 
 package org.eclipse.bpmn2.modeler.ui.property.tasks;
 
-import org.eclipse.bpmn2.SubChoreography;
+import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractDetailComposite;
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultPropertySection;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.PropertiesCompositeFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -26,28 +27,25 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
  * @author Bob Brodt
  *
  */
-public class SubChoreographyPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
-	static {
-		PropertiesCompositeFactory.register(SubChoreography.class, SubChoreographyDetailComposite.class);
-	}
+public class ActivityPropertySection extends DefaultPropertySection {
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
 	 */
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {
-		return new SubChoreographyDetailComposite(this);
+		return new ActivityDetailComposite(this);
 	}
 
 	@Override
 	public AbstractDetailComposite createSectionRoot(Composite parent, int style) {
-		return new SubChoreographyDetailComposite(parent,style);
+		return new ActivityDetailComposite(parent,style);
 	}
 
 	@Override
 	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
 		EObject be = super.getBusinessObjectForPictogramElement(pe);
-		if (be instanceof SubChoreography)
+		if (appliesToClass!=null && appliesToClass.isInstance(be))
 			return be;
 		return null;
 	}

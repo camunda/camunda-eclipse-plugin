@@ -29,9 +29,6 @@ import org.eclipse.swt.widgets.Composite;
  *
  */
 public class DataObjectReferencePropertySection extends AbstractBpmn2PropertySection {
-	static {
-		PropertiesCompositeFactory.register(DataObjectReference.class, DataObjectReferenceDetailComposite.class);
-	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()

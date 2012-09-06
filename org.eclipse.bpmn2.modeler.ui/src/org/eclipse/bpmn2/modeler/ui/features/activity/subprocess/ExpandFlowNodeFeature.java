@@ -90,7 +90,7 @@ public class ExpandFlowNodeFeature extends AbstractCustomFeature {
 					if (!bpmnShape.isIsExpanded()) {
 						
 						// SubProcess is collapsed - resize to minimum size such that all children are visible
-						// NOTE: children tasks will be set visible in LayoutExpandableActivityFeature
+						// NOTE: children tasks will businessObject set visible in LayoutExpandableActivityFeature
 
 						bpmnShape.setIsExpanded(true);
 

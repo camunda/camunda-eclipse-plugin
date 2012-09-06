@@ -132,7 +132,7 @@ public class ColumnTableProvider extends TableProvider {
 	}
 	
 	/**
-	 * Returns a particular column's property.  For some subclasses, this may be more
+	 * Returns a particular column's property.  For some subclasses, this may businessObject more
 	 * efficient than using getColumnProperties().
 	 */
 	@Override

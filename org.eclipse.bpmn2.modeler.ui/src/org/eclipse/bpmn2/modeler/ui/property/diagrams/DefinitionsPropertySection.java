@@ -18,11 +18,6 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.swt.widgets.Composite;
 
 public class DefinitionsPropertySection extends AbstractBpmn2PropertySection {
-
-	static {
-		PropertiesCompositeFactory.register(Import.class, ImportDetailComposite.class);
-		PropertiesCompositeFactory.register(Category.class, CategoryDetailComposite.class);
-	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()

@@ -115,12 +115,12 @@ public class Bpmn2ModelerResourceSetImpl extends ResourceSetImpl implements IRes
 	 * indicated by the last argument. The "kind" parameter is the extension 
 	 * without the . of the resource.
 	 * 
-	 * This forces the right resource to be loaded even if the URI of the resource
+	 * This forces the right resource to businessObject loaded even if the URI of the resource
 	 * is "wrong".
 	 * 
 	 * @param uri the URI of the resource.
 	 * @param loadOnDemand load on demand
-	 * @param kind the resource kind. It has to be of the form "*.wsdl", or "*.xsd", or "*.bpmn"
+	 * @param kind the resource kind. It has to businessObject of the form "*.wsdl", or "*.xsd", or "*.bpmn"
 	 * @return the loaded resource. 
 	 */
 	
@@ -316,7 +316,7 @@ public class Bpmn2ModelerResourceSetImpl extends ResourceSetImpl implements IRes
 			
 			// TODO: Temporary hack
 			// Actually we should remove all resources from the resourceSet,
-			// but for some reasons bpmn files can't be removed now
+			// but for some reasons bpmn files can't businessObject removed now
 			// Bugzilla 320545:
 			if (isBPMN2File(resource)){
 				continue;

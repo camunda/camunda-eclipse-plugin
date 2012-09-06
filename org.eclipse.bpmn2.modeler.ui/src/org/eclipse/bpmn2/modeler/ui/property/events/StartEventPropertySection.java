@@ -22,9 +22,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 
 public class StartEventPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
-	static {
-		PropertiesCompositeFactory.register(StartEvent.class, StartEventDetailComposite.class);
-	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()

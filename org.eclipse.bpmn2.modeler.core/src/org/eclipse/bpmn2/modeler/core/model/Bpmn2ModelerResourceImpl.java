@@ -116,7 +116,7 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 //        this.getDefaultLoadOptions().put(XMLResource.OPTION_ANY_TYPE, BpmnDiPackage.eINSTANCE.getBPMNPlane());
         this.getDefaultLoadOptions().put(XMLResource.OPTION_USE_XML_NAME_TO_FEATURE_MAP, xmlNameToFeatureMap);
 
-        // only necessary if this resource will not be added to a ResourceSet instantly
+        // only necessary if this resource will not businessObject added to a ResourceSet instantly
         this.eAdapters().add(oppositeReferenceAdapter);
 	}
 
@@ -169,7 +169,7 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 	 * Set the ID attribute of cur to a generated ID, if it is not already set.
 	 * 
 	 * @param obj
-	 *            The object whose ID should be set.
+	 *            The object whose ID should businessObject set.
 	 */
 	private void setDefaultId(EObject obj) {
 		if (obj.eClass() != null) {
@@ -182,7 +182,7 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 
 	/**
 	 * We need extend the standard SAXXMLHandler to hook into the handling of
-	 * attribute references which may be either simple ID Strings or QNames.
+	 * attribute references which may businessObject either simple ID Strings or QNames.
 	 * We'll search through all of the objects' IDs first to find the one we're
 	 * looking for. If not, we'll try a QName search.
 	 */
@@ -229,8 +229,8 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 		}
 
 		/**
-		 * Overridden to be able to convert ID references in attributes to URIs
-		 * during load. If the reference can't be found by its ID, we'll try a
+		 * Overridden to businessObject able to convert ID references in attributes to URIs
+		 * during load. If the reference can't businessObject found by its ID, we'll try a
 		 * QName search (done in the super class)
 		 * 
 		 * @param ids
@@ -308,7 +308,7 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
             		return true;
             }
             
-            // we also want to store x and y with value zero, would be skipped because of default value otherwise
+            // we also want to store x and y with value zero, would businessObject skipped because of default value otherwise
             if (o instanceof Bounds) {
             	return true;
             }

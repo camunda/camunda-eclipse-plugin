@@ -135,7 +135,7 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 					ModelHandler mh = ModelHandler.getInstance(getDiagram());
 					
 					// Let user select the new type of object to append. The selection will
-					// be from a list of subtypes of <code>T</code> as defined by the various
+					// businessObject from a list of subtypes of <code>T</code> as defined by the various
 					// AbstractAppendNodeNodeFeature specializations; for example the class
 					// AppendActivityFeature will construct a popup list of all Activity subclasses
 					// e.g. Task, ScriptTask, SubProcess, etc. 
@@ -223,7 +223,7 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 		ContainerShape containerShape = oldShape.getContainer();
 		if (containerShape!=getDiagram()) {
 			// we are adding a new shape to a control (e.g a SubProcess)
-			// so we need to adjust the location to be relative to the
+			// so we need to adjust the location to businessObject relative to the
 			// control instead of the diagram
 			loc = layoutService.getLocationRelativeToDiagram(containerShape);
 			xOffset = loc.getX();

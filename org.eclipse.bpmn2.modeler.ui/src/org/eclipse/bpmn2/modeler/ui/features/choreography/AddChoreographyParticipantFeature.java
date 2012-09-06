@@ -160,7 +160,7 @@ public class AddChoreographyParticipantFeature extends AbstractCustomFeature {
 						 
 						Process process = (Process) PropertyUtil.createObject(task.eResource(), Bpmn2Package.eINSTANCE.getProcess());
 						// NOTE: this is needed because it fires the InsertionAdapter, which adds the new Process
-						// to Definitions.rootElements, otherwise the Process would be a dangling object
+						// to Definitions.rootElements, otherwise the Process would businessObject a dangling object
 						process.setName(participant.getName()+" Process");
 						participant.setProcessRef(process);
 						*/

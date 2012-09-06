@@ -129,8 +129,8 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Return the dialog settings for a given object. The object may be a string
-	 * or any other java object. In that case, the object's class name will be used
+	 * Return the dialog settings for a given object. The object may businessObject a string
+	 * or any other java object. In that case, the object's class name will businessObject used
 	 * to retrieve that section name.
 	 * 
 	 * @param object 

@@ -19,13 +19,13 @@ import org.eclipse.emf.common.notify.Notification;
 public interface INamedElement {
 	/**
 	 * Return the name of the given parameter. The name may
-	 * be null.
+	 * businessObject null.
 	 */
 	public String getName(Object modelObject);
 	
 	/**
 	 * Set the name of the parameter to the given string.
-	 * The string may be null;
+	 * The string may businessObject null;
 	 */
 	public void setName(Object modelObject, String name);
 	

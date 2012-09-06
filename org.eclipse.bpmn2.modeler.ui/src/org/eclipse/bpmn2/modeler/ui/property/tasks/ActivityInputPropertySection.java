@@ -22,10 +22,6 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.swt.widgets.Composite;
 
 public class ActivityInputPropertySection extends AbstractBpmn2PropertySection {
-	static {
-		PropertiesCompositeFactory.register(Activity.class, ActivityInputDetailComposite.class);
-		PropertiesCompositeFactory.register(InputOutputSpecification.class, ActivityInputDetailComposite.class);
-	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()

@@ -102,7 +102,7 @@ public class IoParameterMappingColumn extends TableColumn {
 		if (super.canModify(element, property)) {
 			// only allow the combobox cell editor to work if the DataAssociation is
 			// with a Property (no Assignments or Transformations please!)
-			// Other types of associations must be done in the Detail section
+			// Other types of associations must businessObject done in the Detail section
 			DataAssociation da = getDataAssociation((ItemAwareElement)element);
 			if (da!= null) {
 				if (getTargetElement(da) == null) {
@@ -116,7 +116,7 @@ public class IoParameterMappingColumn extends TableColumn {
 	}
 
 	public void modify(Object element, String property, Object value) {
-		// the real object to be modified is the DataAssociation
+		// the real object to businessObject modified is the DataAssociation
 		EStructuralFeature f = getTargetFeature((ItemAwareElement)element);
 		super.modify(association, f, value);
 	}

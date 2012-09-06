@@ -22,9 +22,6 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.swt.widgets.Composite;
 
 public class TaskPropertySection extends AbstractBpmn2PropertySection {
-	static {
-		PropertiesCompositeFactory.register(Task.class, TaskDetailComposite.class);
-	}
 
 	public TaskPropertySection() {
 		super();

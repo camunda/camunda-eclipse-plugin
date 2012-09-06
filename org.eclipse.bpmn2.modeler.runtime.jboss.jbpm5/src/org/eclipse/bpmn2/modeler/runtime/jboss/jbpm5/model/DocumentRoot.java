@@ -40,7 +40,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Global</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
+	 * there really should businessObject more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Global</em>' containment reference.
@@ -67,7 +67,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Import Type</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
+	 * there really should businessObject more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Import Type</em>' containment reference.
@@ -94,7 +94,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>On Entry Script</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
+	 * there really should businessObject more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>On Entry Script</em>' containment reference.
@@ -121,7 +121,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>On Exit Script</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
+	 * there really should businessObject more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>On Exit Script</em>' containment reference.
@@ -148,7 +148,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Package Name</em>' attribute isn't clear,
-	 * there really should be more of a description here...
+	 * there really should businessObject more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Package Name</em>' attribute.
@@ -175,7 +175,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Priority</em>' attribute isn't clear,
-	 * there really should be more of a description here...
+	 * there really should businessObject more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Priority</em>' attribute.
@@ -202,7 +202,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Rule Flow Group</em>' attribute isn't clear,
-	 * there really should be more of a description here...
+	 * there really should businessObject more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Rule Flow Group</em>' attribute.
@@ -229,7 +229,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Task Name</em>' attribute isn't clear,
-	 * there really should be more of a description here...
+	 * there really should businessObject more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Task Name</em>' attribute.
@@ -256,7 +256,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Version</em>' attribute isn't clear,
-	 * there really should be more of a description here...
+	 * there really should businessObject more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Version</em>' attribute.
@@ -283,7 +283,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Wait For Completion</em>' attribute isn't clear,
-	 * there really should be more of a description here...
+	 * there really should businessObject more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Wait For Completion</em>' attribute.
@@ -309,7 +309,7 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Independent</em>' attribute isn't clear,
-	 * there really should be more of a description here...
+	 * there really should businessObject more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Independent</em>' attribute.

@@ -309,7 +309,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 						rt.modelDescriptor = getDefaultRuntime().getModelDescriptor(); 
 					}
 					// add customTask and modelExtension features to modelEnablements
-					// these are enabled by default and can't be disabled.
+					// these are enabled by default and can't businessObject disabled.
 					for (ModelEnablementDescriptor me : rt.getModelEnablements()) {
 						for (ModelExtensionDescriptor med : rt.getModelExtensions()) {
 							for (Property p : med.getProperties()) {
@@ -477,7 +477,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 			if (className.equals(ped.type))
 				return ped;
 			// well, that didn't work...
-			// The "type" name should be the BPMN2 element's interface definition;
+			// The "type" name should businessObject the BPMN2 element's interface definition;
 			// if it's an implementation class name, try to convert it to its
 			// interface name.
 			className = className.replaceFirst("\\.impl\\.", ".");
@@ -507,7 +507,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 			if (className.equals(fcd.type))
 				return fcd;
 			// well, that didn't work...
-			// The "type" name should be the BPMN2 element's interface definition;
+			// The "type" name should businessObject the BPMN2 element's interface definition;
 			// if it's an implementation class name, try to convert it to its
 			// interface name.
 			className = className.replaceFirst("\\.impl\\.", ".");

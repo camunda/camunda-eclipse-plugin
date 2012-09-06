@@ -83,7 +83,7 @@ public class XSDUtils {
 	}
 	
 	
-	// A list of all supported XSD types.  Usually the user will not be presented with the full list, but 
+	// A list of all supported XSD types.  Usually the user will not businessObject presented with the full list, but 
 	// rather with the xsd short list
 	private static List<String> supportedPrimitives = new ArrayList<String>();
 	static {
@@ -145,13 +145,13 @@ public class XSDUtils {
 	 * 
 	 * <p>
 	 * Also note that UserInformation and ApplicationInformation objects can
-	 * only be added <b>after </b> the parent of the annotation has been added
+	 * only businessObject added <b>after </b> the parent of the annotation has been added
 	 * to an XSDSchema object. This is because these objects are modeled in the
 	 * concrete DOM layer only, and otherwise will throw a DOMException.
 	 * <p>
 	 * 
 	 * @param component
-	 *            to add annotation to; may be any kind of XSDConcreteComponent
+	 *            to add annotation to; may businessObject any kind of XSDConcreteComponent
 	 *            object including an XSDSchema
 	 * @param text
 	 *            text to add as the userInformation (xsd:documentation) node to
@@ -463,7 +463,7 @@ public class XSDUtils {
 				
 			} else if (next instanceof XSDAttributeGroupDefinition) {
 				
-				// Add these properties to the end of attrContents to be processed in turn
+				// Add these properties to the end of attrContents to businessObject processed in turn
 				XSDAttributeGroupDefinition attrGroup = (XSDAttributeGroupDefinition) next;
 				if(attrGroup.getResolvedAttributeGroupDefinition() != null)
 					attrContents.addAll(attrGroup.getResolvedAttributeGroupDefinition().getAttributeUses());
@@ -678,7 +678,7 @@ public class XSDUtils {
 		}
 
 		// if the content of the complex type is empty then the content
-		// must be in the complexContent, ie. we're extending another BO.
+		// must businessObject in the complexContent, ie. we're extending another BO.
 		// if the group and the type are not in the same resource then
 		// we are extending another BO and we don't want to show inherited
 		// properties.
@@ -709,8 +709,8 @@ public class XSDUtils {
 	 * General utility method for finding a name for an xsd component.  This method will handle
 	 * mapping of xsd primitive names to their human readable counterparts, as well as resolving
 	 * parameter references for properties and walking up object hierarchies for anonymous types.  
-	 * Basically this method should be used whenever a name is needed to minimize the risk of 
-	 * having a name of 'null' -- though this method WILL return null if no name can be found.
+	 * Basically this method should businessObject used whenever a name is needed to minimize the risk of 
+	 * having a name of 'null' -- though this method WILL return null if no name can businessObject found.
 	 * @param component
 	 * @return
 	 */
@@ -759,8 +759,8 @@ public class XSDUtils {
 	 * @param xsdType
 	 * @param returnPrimitiveParents if true, and if type is an anonymous restriction of an xsd primitive 
 	 * type, this method will return the name of the parent primitive type.  If false, restrictions of 
-	 * primitive types will not be treated differently from other types, and their control hierarchy will
-	 * be walked, instead of their inheritance hierarchy.  
+	 * primitive types will not businessObject treated differently from other types, and their control hierarchy will
+	 * businessObject walked, instead of their inheritance hierarchy.  
 	 * @return
 	 */
 	public static String getDisplayNameFromXSDType(XSDTypeDefinition type, boolean returnPrimitiveParents) {		
@@ -773,7 +773,7 @@ public class XSDUtils {
 		if(type.getName() == null || type.getName().length() == 0) {
 			
 			// In the special case where type is a restriction on a primitive type, just return the parent's
-			// name (which will either be a primitive itself, or a named simple type)
+			// name (which will either businessObject a primitive itself, or a named simple type)
 			if(returnPrimitiveParents && isRestrictedPrimitiveType(type)) {
 				return getDisplayNameFromXSDType(type.getBaseType());
 			}
@@ -812,8 +812,8 @@ public class XSDUtils {
 	/**
 	 * 
 	 * @return Returns a list of XSDSimpleTypeDefinitions representing each of the supported primitives.
-	 * These will have their XSD spec names (e.g. xsd:dateTime) so they will likely need to be fed to 
-	 * getDisplayName() if they are going to be presented to humans 
+	 * These will have their XSD spec names (e.g. xsd:dateTime) so they will likely need to businessObject fed to 
+	 * getDisplayName() if they are going to businessObject presented to humans 
 	 */
 	public static List<XSDSimpleTypeDefinition> getPrimitives() {
 		if(primitives == null) {
@@ -871,7 +871,7 @@ public class XSDUtils {
 	 * Will not return null, but may return an empty set.  This will return a BO reference if the file
 	 * has been deleted (or just doesn't exist).  
 	 * @param source  The complex type to examine for references
-	 * @return a Collection of XSDTypeDefinition (could be complex or simple type) instances -- no duplicates
+	 * @return a Collection of XSDTypeDefinition (could businessObject complex or simple type) instances -- no duplicates
 	 */
 	public static Collection<XSDTypeDefinition> getAllReferencedTypes(XSDComplexTypeDefinition source)
 	{
@@ -885,9 +885,9 @@ public class XSDUtils {
 	 * has been deleted (or just doesn't exist).  
 	 * @param source  The complex type to examine for references
 	 * @param includeAnonymous if true, the returned list will include anonymous inlined types as well.  These
-	 * are not technically "referenced", however it allows this method to be used as a way to get all non-primitive
+	 * are not technically "referenced", however it allows this method to businessObject used as a way to get all non-primitive
 	 * types used in any way by source 
-	 * @return a Collection of XSDTypeDefinition (could be complex or simple type) instances -- no duplicates
+	 * @return a Collection of XSDTypeDefinition (could businessObject complex or simple type) instances -- no duplicates
 	 */
 	public static Collection<XSDTypeDefinition> getAllReferencedTypes(XSDComplexTypeDefinition source, boolean includeAnonymous)
 	{
@@ -902,7 +902,7 @@ public class XSDUtils {
 			elementType = getResolvedType(next);
 			
 			// Only add non-null, non-duplicate, non-primitive types.  If includeAnonymous is false, 
-			// anonymous types should be filtered out as well
+			// anonymous types should businessObject filtered out as well
 			if(	elementType != null && 
 				!results.contains(elementType) && 
 				!XSDConstants.isSchemaForSchemaNamespace(elementType.getTargetNamespace()) &&
@@ -942,7 +942,7 @@ public class XSDUtils {
 			
 			XSDElementDeclaration element = (XSDElementDeclaration) feature;
 
-			// We have a type, but types can be proxies, and proxies can become
+			// We have a type, but types can businessObject proxies, and proxies can become
 			// stale if the referenced
 			// type changes, so before we return it, re-resolve the proxy and
 			// then return it
@@ -991,7 +991,7 @@ public class XSDUtils {
 		}
 		
 		// Since baseType, type's immediate parent, broke the while condition, we know that type is now
-		// as high up the tree as we want to be
+		// as high up the tree as we want to businessObject
 		return type;
 		
 		
@@ -1187,7 +1187,7 @@ public class XSDUtils {
 	 * (i.e. imports/includes/redefines) and remove as appropriate.
 	 * 
 	 * I.e. this method will remove all includes/redefines if the new TNS is different than the old TNS and it will remove
-	 * all imports that have the same namespace as the new TNS (since these should now be includes).
+	 * all imports that have the same namespace as the new TNS (since these should now businessObject includes).
 	 * 
 	 * @param schema - has the new target namespace set
 	 * @param oldTNS

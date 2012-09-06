@@ -72,7 +72,7 @@ public class DataOutputFeatureContainer extends AbstractDataFeatureContainer {
 	public static class CreateDataOutputFeature extends AbstractCreateDataInputOutputFeature<DataOutput> {
 
 		public CreateDataOutputFeature(IFeatureProvider fp) {
-			super(fp, "Data Output", "Declaration that a particular kind of data can be produced as output");
+			super(fp, "Data Output", "Declaration that a particular kind of data can businessObject produced as output");
 		}
 
 		@Override

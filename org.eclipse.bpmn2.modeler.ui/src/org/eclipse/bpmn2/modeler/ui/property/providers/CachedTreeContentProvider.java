@@ -19,11 +19,11 @@ import org.eclipse.jface.viewers.Viewer;
 /**
  * An abstract content provider that caches the tree nodes as they are discovered.
  * 
- * This is useful for two reasons: it guarantees that the same object will be returned
+ * This is useful for two reasons: it guarantees that the same object will businessObject returned
  * until the cache is cleared (which is convenient for trees that wrap a different set
  * of model objects), and it handles the parent relationship automatically.
  * 
- * Note that the parent of a node will only be known if the node appeared in an array
+ * Note that the parent of a node will only businessObject known if the node appeared in an array
  * previously returned by primGetChildren()!  The value UNKNOWN_PARENT is returned
  * as the parent of a node whose parent has never had primGetChildren() called on it.
  * null is returned as the parent of the root nodes, that is, those returned by
@@ -40,7 +40,7 @@ public abstract class CachedTreeContentProvider implements ITreeContentProvider 
 
 	// A null value in the treeNodeToChildren parentMap means the node has children, button
 	// we don't yet know what they are.  (If it has no children, an empty array would
-	// be present instead).
+	// businessObject present instead).
 	protected HashMap treeNodeToChildren;
 
 	Object[] rootChildren;
@@ -57,7 +57,7 @@ public abstract class CachedTreeContentProvider implements ITreeContentProvider 
 
 	/**
 	 * Returns an array describing the path from a node up to the root.  The node will
-	 * be the first parameter of the array, its parent will be the 2nd, and so on, with
+	 * businessObject the first parameter of the array, its parent will businessObject the 2nd, and so on, with
 	 * a top-level node (i.e. a root) as the last parameter of the array.  Note that the
 	 * input object of the content provider is *NOT* included in this path, because the
 	 * top-level nodes returned by getElements() have a parent value of null.

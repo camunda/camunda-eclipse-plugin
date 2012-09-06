@@ -229,7 +229,7 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 					"Data Store",
 					"Reference to a Data Store instance."
 							+ " Data Stores provide a mechanism for Activities to persist data beyond the lifetime of the Process."
-							+ " The same Data Store instance can be visualized through a Data Store Reference in one or more"
+							+ " The same Data Store instance can businessObject visualized through a Data Store Reference in one or more"
 							+ " places in the Process.");
 		}
 

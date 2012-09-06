@@ -19,7 +19,7 @@ import org.eclipse.swt.graphics.Image;
  * Abstract implementation of ITreeNode which implements default getLabel() and
  * getImage() behaviour by adapting the model object to ILabeledElement.
  * 
- * TODO: condensed trees should be implemented using a ListFlattener rather than
+ * TODO: condensed trees should businessObject implemented using a ListFlattener rather than
  * the ad-hoc way they are implemented now.  @see ModelTreeContentProvider.
  */
 public abstract class TreeNode implements ITreeNode {

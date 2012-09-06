@@ -28,11 +28,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
 
 public class IoParametersPropertySection extends AbstractBpmn2PropertySection {
-	static {
-		PropertiesCompositeFactory.register(InputOutputSpecification.class, IoParametersDetailComposite.class);
-		PropertiesCompositeFactory.register(DataInput.class, DataAssociationDetailComposite.class);
-		PropertiesCompositeFactory.register(DataOutput.class, DataAssociationDetailComposite.class);
-	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()

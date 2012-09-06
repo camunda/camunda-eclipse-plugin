@@ -37,11 +37,6 @@ import org.eclipse.swt.widgets.Composite;
 
 public class ActivityDetailComposite extends DefaultDetailComposite {
 
-	static {
-		PropertiesCompositeFactory.register(StandardLoopCharacteristics.class, StandardLoopCharacteristicsDetailComposite.class);
-		PropertiesCompositeFactory.register(MultiInstanceLoopCharacteristics.class, MultiInstanceLoopCharacteristicsDetailComposite.class);
-	}
-
 	private Button addStandardLoopButton;
 	private Button addMultiLoopButton;
 	private Button removeLoopButton;
@@ -74,13 +69,18 @@ public class ActivityDetailComposite extends DefaultDetailComposite {
 						"anyAttribute",
 						"calledElementRef", // only used in CallActivity
 						"calledChoreographyRef", // only used in CallChoreography
-						"completionQuantity",
 						"startQuantity",
+						"completionQuantity",
+						"completionCondition",
 						"isForCompensation",
+						"triggeredByEvent",
+						"cancelRemainingInstances",
 						"loopCharacteristics",
-						"boundaryEventDefs",
 						"properties",
 						"resources",
+						"method",
+						"ordering",
+						"protocol",
 				};
 				
 				@Override

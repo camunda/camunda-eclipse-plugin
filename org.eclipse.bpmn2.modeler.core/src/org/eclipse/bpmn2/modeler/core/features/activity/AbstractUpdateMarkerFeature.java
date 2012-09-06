@@ -59,8 +59,7 @@ public abstract class AbstractUpdateMarkerFeature<T extends FlowElement> extends
 		ContainerShape container = (ContainerShape) context.getPictogramElement();
 		T element = (T) getBusinessObjectForPictogramElement(context.getPictogramElement());
 
-		ContainerShape markerContainer = GraphicsUtil.getActivityMarkerContainer(container);
-		doUpdate(element, markerContainer);
+		doUpdate(element, container);
 		peService.setPropertyValue(container, getPropertyKey(), convertPropertyToString(element));
 		return true;
     }

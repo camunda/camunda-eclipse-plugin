@@ -124,7 +124,7 @@ public class DataAssociationPropertiesAdapter extends ExtendedPropertiesAdapter<
 			// what kind of object should we create? Property or DataStore?
 			if (eClass==null) {
 				if (ModelUtil.findNearestAncestor(association, new Class[] {Process.class, Event.class}) != null)
-					// nearest ancestor is a Process or Event, so new object will be a Property
+					// nearest ancestor is a Process or Event, so new object will businessObject a Property
 					eClass = Bpmn2Package.eINSTANCE.getProperty();
 				else if(ModelUtil.findNearestAncestor(association, new Class[] {DocumentRoot.class}) != null)
 					eClass = Bpmn2Package.eINSTANCE.getDataStore();

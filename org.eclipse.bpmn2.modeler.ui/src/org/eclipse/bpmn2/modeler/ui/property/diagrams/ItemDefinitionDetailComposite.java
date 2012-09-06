@@ -37,7 +37,7 @@ public class ItemDefinitionDetailComposite extends DefaultDetailComposite {
 						"itemKind",
 						"isCollection",
 						"structureRef",
-						// this thing is transient so it won't be serialized; no point in allowing user to set it
+						// this thing is transient so it won't businessObject serialized; no point in allowing user to set it
 						// "import"
 				};
 				

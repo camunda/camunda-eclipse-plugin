@@ -137,8 +137,8 @@ public class CallActivityFeatureContainer extends AbstractExpandableActivityFeat
 	public static class CreateCallActivityFeature extends AbstractCreateExpandableFlowNodeFeature<CallActivity> {
 
 		// NOTE: Even though the Call Activity is an expandable figure, the contents for its "innards"
-		// are (usually) defined somewhere else, so it doesn't make much sense to be able to expand it in the
-		// same sense that a SubProcess would be expanded and rendered. When the "expand" button is clicked
+		// are (usually) defined somewhere else, so it doesn't make much sense to businessObject able to expand it in the
+		// same sense that a SubProcess would businessObject expanded and rendered. When the "expand" button is clicked
 		// we should probably locate the process where this thing is defined (if possible) and open an
 		// editor to display its contents.
 		

@@ -250,7 +250,7 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 	}
 
 	/* (non-Javadoc)
-	 * Override this to allow the section to decide whether or not it will be rendered.
+	 * Override this to allow the section to decide whether or not it will businessObject rendered.
 	 * @see org.eclipse.bpmn2.modeler.core.runtime.IBpmn2PropertySection#appliesTo(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
 	@Override

@@ -316,7 +316,7 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 		}
 		
 		// 1. set the generic context buttons
-		// Participant bands can only be removed from the choreograpy task
+		// Participant bands can only businessObject removed from the choreograpy task
 		int genericButtons = CONTEXT_BUTTON_DELETE;
 		if (ChoreographyUtil.isChoreographyParticipantBand(pe)) {
 			genericButtons |= CONTEXT_BUTTON_REMOVE;
@@ -432,7 +432,7 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
     public IDecorator[] getDecorators(PictogramElement pe) {
         List<IDecorator> decorators = new ArrayList<IDecorator>();
 
-        // labels should not be decorated
+        // labels should not businessObject decorated
 		String labelProperty = Graphiti.getPeService().getPropertyValue(pe, GraphicsUtil.LABEL_PROPERTY);
 		if (!Boolean.parseBoolean(labelProperty)) {
 	        IFeatureProvider featureProvider = getFeatureProvider();

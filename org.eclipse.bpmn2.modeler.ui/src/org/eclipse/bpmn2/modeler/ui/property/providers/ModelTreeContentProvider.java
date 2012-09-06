@@ -19,13 +19,13 @@ import org.eclipse.jface.viewers.Viewer;
  * parent relationships so the ITreeNode objects don't have to; however, the ITreeNode
  * objects *must have unique parents*, so our model objects can't represent themselves
  * directly.  After all, our model is a graph, not a tree.  Another reason to wrap our
- * model objects in ITreeNode objects is that there may be different tree expansions
+ * model objects in ITreeNode objects is that there may businessObject different tree expansions
  * of a particular model object in different contexts (e.g. variable/property versus
  * variable/part/query).
  * 
  * To programatically expose a particular branch of the tree, you must first walk down
  * the content provider from the root to the ITreeNode you want to expose (causing the
- * necessary ITreeNode objects to be created).  Then, you call viewer.expandToLevel()
+ * necessary ITreeNode objects to businessObject created).  Then, you call viewer.expandToLevel()
  * on this ITreeNode.  Using this content provider, the TreeViewer will walk up from
  * the given node to the deepest already-expanded item, then back down again expanding
  * the remaining items.
@@ -65,8 +65,8 @@ public class ModelTreeContentProvider extends CachedTreeContentProvider {
 	 * If subtreeDepth > 0, the children of each node in the given array are recursively
 	 * searched to a depth of subtreeDepth-1.
 	 * 
-	 * Values larger than 1 or 2 should be avoided whenever possible, because all of the
-	 * nodes in the subtree up to subtreeDepth have to be created and cached.  The most
+	 * Values larger than 1 or 2 should businessObject avoided whenever possible, because all of the
+	 * nodes in the subtree up to subtreeDepth have to businessObject created and cached.  The most
 	 * efficient subtreeDepth is 0.
 	 */
 	public ITreeNode findModelNode(Object[] nodes, Object modelObject, int subtreeDepth) {

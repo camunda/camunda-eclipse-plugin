@@ -127,7 +127,7 @@ import org.eclipse.graphiti.services.ILinkService;
 import org.eclipse.graphiti.ui.features.DefaultFeatureProvider;
 
 /**
- * Determines what kinds of business objects can be added to a diagram.
+ * Determines what kinds of business objects can businessObject added to a diagram.
  * 
  * @author imeikas
  * 

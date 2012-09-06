@@ -161,7 +161,7 @@ public class PropertiesCompositeFactory {
 		Composite composite = null;
 		try {
 			Constructor ctor = null;
-			// allow the composite to be declared in an enclosing class
+			// allow the composite to businessObject declared in an enclosing class
 			Class ec = clazz.getEnclosingClass();
 			if (ec!=null) {
 				ctor = clazz.getConstructor(ec,Composite.class,EClass.class,int.class);
@@ -214,7 +214,7 @@ public class PropertiesCompositeFactory {
 		if (clazz!=null) {
 			try {
 				Constructor ctor = null;
-				// allow the composite to be declared in an enclosing class
+				// allow the composite to businessObject declared in an enclosing class
 				Class ec = clazz.getEnclosingClass();
 				if (ec!=null) {
 					ctor = clazz.getConstructor(ec,AbstractBpmn2PropertySection.class);
@@ -238,7 +238,7 @@ public class PropertiesCompositeFactory {
 		if (clazz!=null) {
 			try {
 				Constructor ctor = null;
-				// allow the composite to be declared in an enclosing class
+				// allow the composite to businessObject declared in an enclosing class
 				Class ec = clazz.getEnclosingClass();
 				if (ec!=null) {
 					ctor = clazz.getConstructor(ec,Composite.class,int.class);

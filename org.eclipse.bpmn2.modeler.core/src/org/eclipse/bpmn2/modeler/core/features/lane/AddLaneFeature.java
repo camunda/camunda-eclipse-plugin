@@ -149,7 +149,7 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature<Lane> {
 		}
 		
 		peService.sendToBack(containerShape);
-		if (context.getTargetContainer().getContainer() != null) { // only children may be sent back
+		if (context.getTargetContainer().getContainer() != null) { // only children may businessObject sent back
 			peService.sendToBack(context.getTargetContainer());
 		}
 		
