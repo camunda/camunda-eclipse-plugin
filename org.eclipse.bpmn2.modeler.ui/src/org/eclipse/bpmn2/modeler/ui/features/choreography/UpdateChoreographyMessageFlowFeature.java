@@ -38,6 +38,7 @@ import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.impl.AbstractUpdateFeature;
 import org.eclipse.graphiti.features.impl.Reason;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.ILinkService;
@@ -109,6 +110,7 @@ public class UpdateChoreographyMessageFlowFeature extends AbstractUpdateFeature 
 	@Override
 	public boolean update(IUpdateContext context) {
 		PictogramElement pe = context.getPictogramElement();
+		Diagram diagram = Graphiti.getPeService().getDiagramForPictogramElement(pe);
 		BaseElement be = BusinessObjectUtil.getFirstElementOfType(pe,BaseElement.class);
 		if (be instanceof ChoreographyTask) {
 			return update((ContainerShape)pe, (ChoreographyTask)be);
@@ -123,7 +125,7 @@ public class UpdateChoreographyMessageFlowFeature extends AbstractUpdateFeature 
 					ChoreographyTask choreographyTask = (ChoreographyTask)eo;
 					for (MessageFlow mf : choreographyTask.getMessageFlowRef()) {
 						if (mf.getMessageRef()==be) {
-							for (PictogramElement cs : linkService.getPictogramElements(getDiagram(), choreographyTask)) {
+							for (PictogramElement cs : linkService.getPictogramElements(diagram, choreographyTask)) {
 								if (cs instanceof ContainerShape) {
 									if (update((ContainerShape)cs, choreographyTask))
 										++result;

@@ -173,9 +173,9 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 		public SequenceFlow createBusinessObject(ICreateConnectionContext context) {
 			SequenceFlow bo = null;
 			try {
-				ModelHandler mh = ModelHandler.getInstance(getDiagram());
 				FlowNode source = getSourceBo(context);
 				FlowNode target = getTargetBo(context);
+				ModelHandler mh = ModelHandler.getInstance(source);
 				bo = mh.createSequenceFlow(source, target);
 				bo.setName("");
 				putBusinessObject(context, bo);
