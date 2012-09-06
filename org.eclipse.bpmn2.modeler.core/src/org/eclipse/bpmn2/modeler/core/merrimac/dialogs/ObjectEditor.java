@@ -45,7 +45,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * Base class for EObject feature editors. All subclasses must render the given object's feature,
- * which may businessObject either an attribute, a reference to an EObject, or a list of EObject references.
+ * which may be either an attribute, a reference to an EObject, or a list of EObject references.
  * Subclasses must also provide means to populate the display widgets from the feature and save
  * modifications to the feature made in the display widget.
  * 

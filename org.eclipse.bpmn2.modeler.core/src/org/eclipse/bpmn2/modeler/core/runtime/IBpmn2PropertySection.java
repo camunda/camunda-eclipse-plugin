@@ -22,7 +22,7 @@ public interface IBpmn2PropertySection {
 	 * 
 	 * @param part - the BPMN2Editor part
 	 * @param selection - the currently selected BPMN2 element
-	 * @return true if the element is enabled and should businessObject displayed in the property section
+	 * @return true if the element is enabled and should be displayed in the property section
 	 */
 	public boolean appliesTo(IWorkbenchPart part, ISelection selection);
 
@@ -30,10 +30,10 @@ public interface IBpmn2PropertySection {
 	 * Asks the Property Section implementation if tab replacement should businessObject
 	 * processed for the given editor selection.
 	 * 
-	 * @param id - ID of the tab to businessObject replaced
+	 * @param id - ID of the tab to be replaced
 	 * @param part - the BPMN2 Editor
 	 * @param selection - the selected object in the editor canvas
-	 * @return true if the tab replacement should businessObject done.
+	 * @return true if the tab replacement should be done.
 	 */
 	public boolean doReplaceTab(String id, IWorkbenchPart part, ISelection selection);
 }

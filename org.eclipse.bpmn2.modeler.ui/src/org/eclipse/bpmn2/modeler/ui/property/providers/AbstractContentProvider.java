@@ -39,7 +39,7 @@ public abstract class AbstractContentProvider implements IStructuredContentProvi
 	
 	
 	/**
-	 * Provide the elements to businessObject shown from this content provider.
+	 * Provide the elements to be shown from this content provider.
 	 * The generic implementation creates a list, then calls collectElements, and
 	 * subsequently returns the array created from the list or the empty array if no 
 	 * elements are collected. 
@@ -63,11 +63,11 @@ public abstract class AbstractContentProvider implements IStructuredContentProvi
 	
 	
 	/**
-	 * Collect the elements to businessObject returned by this provider. 
+	 * Collect the elements to be returned by this provider. 
 	 * Subclasses will override this method.
 	 * 
 	 * @param input the object to provide elements from (input)
-	 * @param list the list in which the elements are to businessObject inserted.
+	 * @param list the list in which the elements are to be inserted.
 	 */
 	
 	public void collectElements (Object input, List<Object> list) {

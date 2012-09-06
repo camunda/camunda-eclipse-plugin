@@ -76,7 +76,7 @@ import org.eclipse.xsd.XSDElementDeclaration;
 
 public class ModelUtil {
 
-	// TODO: need to determine whether IDs need to businessObject unique within a Resource or ResourceSet - see getKey()
+	// TODO: need to determine whether IDs need to be unique within a Resource or ResourceSet - see getKey()
 	
 	// Map of EMF resource sets to ID mapping tables. The ID mapping tables map a BPMN2 element ID string to the EObject.
 	// The EObject is not used anywhere (yet!) just a placeholder to allow use of a HashMap for fast lookups of the ID string.
@@ -90,7 +90,7 @@ public class ModelUtil {
 	protected static Hashtable<EClass,EObject> dummyObjects = new Hashtable<EClass,EObject>();
 
 	/**
-	 * Clear the IDs hashmap for the given EMF Resource. This should businessObject called
+	 * Clear the IDs hashmap for the given EMF Resource. This should be called
 	 * when the editor is disposed to avoid unnecessary growth of the IDs table.
 	 * 
 	 * @param res - the EMF Resource that was used to generate the ID strings.
@@ -158,12 +158,12 @@ public class ModelUtil {
 	}
 
 	/**
-	 * Generate an ID string for a given BPMN2 object that will (eventually!) businessObject added to the given Resource.
+	 * Generate an ID string for a given BPMN2 object that will (eventually!) be added to the given Resource.
 	 * 
-	 * CAUTION: IDs for objects that have already been deleted WILL businessObject reused.
+	 * CAUTION: IDs for objects that have already been deleted WILL be reused.
 	 * 
 	 * @param obj - the BPMN2 object
-	 * @param res - the Resource to which the object will businessObject added
+	 * @param res - the Resource to which the object will be added
 	 * @return the ID string
 	 */
 	private static String generateID(EObject obj, Resource res) {
@@ -197,7 +197,7 @@ public class ModelUtil {
 	}
 	
 	/**
-	 * Add an ID string to the ID mapping table(s). This must businessObject used during model import
+	 * Add an ID string to the ID mapping table(s). This must be used during model import
 	 * to add existing BPMN2 element IDs to the table so we don't generate duplicates.
 	 * 
 	 * @param obj - the BPMN2 object
@@ -220,7 +220,7 @@ public class ModelUtil {
 	}
 	
 	/**
-	 * Add an ID string to the ID mapping table(s). This must businessObject used during model import
+	 * Add an ID string to the ID mapping table(s). This must be used during model import
 	 * to add existing BPMN2 element IDs to the table so we don't generate duplicates.
 	 * 
 	 * @param obj - the BPMN2 object
@@ -253,7 +253,7 @@ public class ModelUtil {
 
 	/**
 	 * Generate a unique ID for the given BPMN2 element and set it.
-	 * This should only businessObject used during object construction AFTER an object has
+	 * This should only be used during object construction AFTER an object has
 	 * already been added to a Resource.
 	 * 
 	 * @param obj - the BPMN2 object
@@ -264,11 +264,11 @@ public class ModelUtil {
 
 	/**
 	 * Generate a unique ID for the given BPMN2 element and set it.
-	 * This should businessObject used during object construction if the object has NOT YET
+	 * This should be used during object construction if the object has NOT YET
 	 * been added to a Resource.
 	 * 
 	 * @param obj - the BPMN2 object
-	 * @param res - the Resource to which the object will businessObject added
+	 * @param res - the Resource to which the object will be added
 	 */
 	public static String setID(EObject obj, Resource res) {
 		String id = null;
@@ -349,7 +349,7 @@ public class ModelUtil {
 	/**
 	 * Checks if an event has a specific event definition type defined
 	 * 
-	 * @param event the event to businessObject checked
+	 * @param event the event to be checked
 	 * @param clazz the class of the event definition to 
 	 * @return true if the event definition is defined for this event instance, false otherwise
 	 */
@@ -379,7 +379,7 @@ public class ModelUtil {
 	}
 
 	/**
-	 * This is a slightly hacked resource set that we will businessObject using for to solve
+	 * This is a slightly hacked resource set that we will be using for to solve
 	 * the problem of loading the right resources from URLs that betray no
 	 * information on the type of the resource.
 	 * 
@@ -407,7 +407,7 @@ public class ModelUtil {
 	}
 
 	/**
-	 * Return the resource set that we should businessObject using to load "specific" type
+	 * Return the resource set that we should be using to load "specific" type
 	 * of resources. The "slightlyHacked" resource set is kept in the load
 	 * options map.
 	 * 
@@ -440,7 +440,7 @@ public class ModelUtil {
 
 		if (eObject == null) {
 			throw new NullPointerException(
-					"eObject cannot businessObject null in getNamespaceMap()");
+					"eObject cannot be null in getNamespaceMap()");
 		}
 
 		INamespaceMap<String, String> nsMap = null;
@@ -456,7 +456,7 @@ public class ModelUtil {
 		
 		if (nsMap == null) {
 			throw new IllegalStateException(
-					"INamespaceMap cannot businessObject attached to an eObject");
+					"INamespaceMap cannot be attached to an eObject");
 		}
 
 		return nsMap;

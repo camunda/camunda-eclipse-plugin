@@ -111,7 +111,7 @@ public class BPMN2DiagramCreator {
 
 	/**
 	 * Construct a temporary folder based on the given path. The folder is constructed
-	 * in the project root and its name will businessObject the same as the given path's file extension.
+	 * in the project root and its name will be the same as the given path's file extension.
 	 *
 	 * @param fullPath - path of the actual BPMN2 model file
 	 * @return an IFolder for the temporary folder.
@@ -139,7 +139,7 @@ public class BPMN2DiagramCreator {
 	}
 
 	/**
-	 * Return the temporary file to businessObject used as editor input. Conceptually, this is the
+	 * Return the temporary file to be used as editor input. Conceptually, this is the
 	 * "diagramFile" mentioned here which is just a placeholder for use by Graphiti
 	 * as the DiagramEditorInput file.
 	 * 
@@ -151,7 +151,7 @@ public class BPMN2DiagramCreator {
 		IPath path = fullPath.removeFileExtension().addFileExtension(TEMPFILE_EXTENSION);
 		IFile tempFile = folder.getFile(path.lastSegment());
 
-		// We don't need anything from that file and to businessObject sure there are no side effects we delete the file
+		// We don't need anything from that file and to be sure there are no side effects we delete the file
 		if (tempFile.exists()) {
 			try {
 				tempFile.delete(true, null);
@@ -202,7 +202,7 @@ public class BPMN2DiagramCreator {
 	
 	/**
 	 * Delete the temporary diagram file. If the containing folder hierarchy is empty,
-	 * it will also businessObject deleted.
+	 * it will also be deleted.
 	 * 
 	 * @param file - the temporary diagram file.
 	 */

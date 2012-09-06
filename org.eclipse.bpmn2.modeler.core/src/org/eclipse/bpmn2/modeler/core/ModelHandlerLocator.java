@@ -78,7 +78,7 @@ public class ModelHandlerLocator {
 			}
 		} catch (IllegalStateException e) {
 
-			// Workspace is not initialized so we must businessObject running tests!
+			// Workspace is not initialized so we must be running tests!
 			if (!resource.isLoaded()) {
 				handler.loadResource();
 			}

@@ -48,7 +48,7 @@ public class AdapterUtil {
 	 * Create an adapter for the given target of the given type. 
 	 * In addition, pass a context object to the adapter(s) of the target. 
 	 * 
-	 * The idea is that some adapters can businessObject stateful and depend not only 
+	 * The idea is that some adapters can be stateful and depend not only 
 	 * on the objects that they wrap, button also on some other context that is needed
 	 * to completely and correctly implement the interface for which the adaptor is
 	 * needed.

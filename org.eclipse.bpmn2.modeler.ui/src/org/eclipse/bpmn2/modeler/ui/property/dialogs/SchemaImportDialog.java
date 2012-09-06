@@ -275,7 +275,7 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 	 * 
 	 * @param parent
 	 *            the parent composite to use
-	 * @return the composite it created to businessObject used in the dialog area.
+	 * @return the composite it created to be used in the dialog area.
 	 */
 
 	@Override
@@ -685,7 +685,7 @@ public class SchemaImportDialog extends SelectionStatusDialog {
        				/* for the time being, only filter 3 levels deep 
        				 * since link references within WSIL are rare at 
        				 * this time.  when adoption of WSIL directories
-       				 * take off, this needs to businessObject rehashed */ 
+       				 * take off, this needs to be rehashed */ 
        				fWSILTreeViewer.expandToLevel(3);
        			}
        			fWSILTreeViewer.refresh();

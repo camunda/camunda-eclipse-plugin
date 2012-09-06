@@ -20,7 +20,7 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * A label provider for objects which adapt to the ILabeledElement interface.
- * This can businessObject used as a "generic" label provider for details pages, etc.
+ * This can be used as a "generic" label provider for details pages, etc.
  */
 
 

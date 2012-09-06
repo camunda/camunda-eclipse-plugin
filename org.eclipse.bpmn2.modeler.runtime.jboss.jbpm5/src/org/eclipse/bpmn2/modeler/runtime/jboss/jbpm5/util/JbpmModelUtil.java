@@ -40,7 +40,7 @@ public class JbpmModelUtil {
 	 * will also create a corresponding ItemDefinition for the newly imported java type.
 	 * 
 	 * @param object - a context EObject used to search for the Process in which the new
-	 *                 ImportType will businessObject created.
+	 *                 ImportType will be created.
 	 * @return an ImportType object if it was created, null if the user canceled the import dialog.
 	 */
 	public static String showImportDialog(EObject object) {
@@ -130,11 +130,11 @@ public class JbpmModelUtil {
 //						ModelUtil.addExtensionAttributeValue(itemDef, feature, ref);
 						// Nope, don't need this! The ItemDefinition needs to stick around, otherwise the data types
 						// for process variables and globals would disappear. Besides, jBPM allows data types
-						// (a.k.a. ItemDefinitions) to businessObject defined as sort of "forward references" without actual
+						// (a.k.a. ItemDefinitions) to be defined as sort of "forward references" without actual
 						// knowledge of the physicial structure of the data type - these get resolved (somehow,
 						// through FM maybe?) at runtime.
 						// As a side note: if a type is unknown (i.e. there is no "import") then the structure
-						// will businessObject unknown in java scripts (FormalExpressions).
+						// will be unknown in java scripts (FormalExpressions).
 			
 						// add the ItemDefinition to the root elements
 						definitions.getRootElements().add(itemDef);
@@ -210,7 +210,7 @@ public class JbpmModelUtil {
 	
 	/**
 	 * This method returns a string representation for a "data type". This is intended to
-	 * businessObject used to interpret the various objects in the map returned by collectAllDataTypes().
+	 * be used to interpret the various objects in the map returned by collectAllDataTypes().
 	 * 
 	 * @param value - one of the Object values in the map returned by collectAllDataTypes().
 	 * @return a string representation of the data type
@@ -237,11 +237,11 @@ public class JbpmModelUtil {
 	
 	/**
 	 * This method returns an ItemDefinition object for a "data type". This is intended to
-	 * businessObject used to interpret the various objects in the map returned by collectAllDataTypes().
+	 * be used to interpret the various objects in the map returned by collectAllDataTypes().
 	 * 
 	 * NOTE: This method will create an ItemDefinition if it does not already exist.
 	 * 
-	 * @param businessObject - a context EObject used to search for ItemDefinitions, and to create
+	 * @param be - a context EObject used to search for ItemDefinitions, and to create
 	 *                 new ItemDefinitions if necessary.
 	 * @param value - one of the Object values in the map returned by collectAllDataTypes().
 	 * @return an ItemDefinition for the data type

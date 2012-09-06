@@ -49,7 +49,7 @@ public class ModelValidator extends EObjectValidator {
 	public static final String DIAGNOSTIC_SOURCE = "org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model";
 
 	/**
-	 * A constant with a fixed name that can businessObject used as the base value for additional hand written constants.
+	 * A constant with a fixed name that can be used as the base value for additional hand written constants.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -57,7 +57,7 @@ public class ModelValidator extends EObjectValidator {
 	private static final int GENERATED_DIAGNOSTIC_CODE_COUNT = 0;
 
 	/**
-	 * A constant with a fixed name that can businessObject used as the base value for additional hand written constants in a derived class.
+	 * A constant with a fixed name that can be used as the base value for additional hand written constants in a derived class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -263,7 +263,7 @@ public class ModelValidator extends EObjectValidator {
 	}
 
 	/**
-	 * Returns the resource locator that will businessObject used to fetch messages for this validator's diagnostics.
+	 * Returns the resource locator that will be used to fetch messages for this validator's diagnostics.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated

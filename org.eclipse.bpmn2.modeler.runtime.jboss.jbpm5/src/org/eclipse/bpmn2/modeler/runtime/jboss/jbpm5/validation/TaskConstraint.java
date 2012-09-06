@@ -39,7 +39,7 @@ public class TaskConstraint extends AbstractModelConstraint {
 							if (entry.getName() != null && entry.getName().equals("costpertimeunit")) {
 								Float f = new Float(entry.getValue());
 								if (f.floatValue() < 0) {
-									ctx.createFailureStatus("Cost per Time Unit value must businessObject positive");
+									ctx.createFailureStatus("Cost per Time Unit value must be positive");
 								}
 							}
 							if (entry.getName() != null && entry.getName().equals("distributiontype")) {
@@ -49,7 +49,7 @@ public class TaskConstraint extends AbstractModelConstraint {
 							if (entry.getName() != null && entry.getName().equals("duration")) {
 								Float f = new Float(entry.getValue());
 								if (f.floatValue() < 0) {
-									ctx.createFailureStatus("Duration value must businessObject positive");
+									ctx.createFailureStatus("Duration value must be positive");
 								}
 								foundDuration = true;
 							}
@@ -59,13 +59,13 @@ public class TaskConstraint extends AbstractModelConstraint {
 							if (entry.getName() != null && entry.getName().equals("workinghours")) {
 								Float f = new Float(entry.getValue());
 								if (f.floatValue() < 0) {
-									ctx.createFailureStatus("Working Hours value must businessObject positive");
+									ctx.createFailureStatus("Working Hours value must be positive");
 								}
 							}
 							if (entry.getName() != null && entry.getName().equals("range")) {
 								Float f = new Float(entry.getValue());
 								if (f.floatValue() < 0) {
-									ctx.createFailureStatus("Range value must businessObject positive");
+									ctx.createFailureStatus("Range value must be positive");
 								}
 								foundRange = true;
 							}

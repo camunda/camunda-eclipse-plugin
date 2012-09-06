@@ -41,7 +41,7 @@ public class GatewayConstraint extends AbstractModelConstraint {
 										Integer i = new Integer(entry.getValue());
 										if (i < 0) {
 											ctx.addResult(sf);
-											ctx.createFailureStatus("Probability value must businessObject positive.");
+											ctx.createFailureStatus("Probability value must be positive.");
 										} else {
 											sum += i;
 										}
@@ -57,7 +57,7 @@ public class GatewayConstraint extends AbstractModelConstraint {
 					}
 				}
 				if (sum != 100) {
-					ctx.createFailureStatus("The sum of probability values of all outgoing Sequence Flows must businessObject equal 100.");
+					ctx.createFailureStatus("The sum of probability values of all outgoing Sequence Flows must be equal 100.");
 				}
 			}
 		}

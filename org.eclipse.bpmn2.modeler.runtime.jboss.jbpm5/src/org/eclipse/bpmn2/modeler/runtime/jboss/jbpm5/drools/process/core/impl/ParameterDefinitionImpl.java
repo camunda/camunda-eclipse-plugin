@@ -42,7 +42,7 @@ public class ParameterDefinitionImpl implements ParameterDefinition, Serializabl
     
     public void setName(String name) {
         if (name == null) {
-            throw new IllegalArgumentException("Name cannot businessObject null");
+            throw new IllegalArgumentException("Name cannot be null");
         }
         this.name = name;
     }
@@ -53,7 +53,7 @@ public class ParameterDefinitionImpl implements ParameterDefinition, Serializabl
     
     public void setType(DataType type) {
         if (type == null) {
-            throw new IllegalArgumentException("Data type cannot businessObject null");
+            throw new IllegalArgumentException("Data type cannot be null");
         }
         this.type = type;
     }

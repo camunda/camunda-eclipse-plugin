@@ -74,12 +74,12 @@ public class ParticipantPropertiesAdapter extends ExtendedPropertiesAdapter<Part
 //		        participant.setProcessRef(process);
 		        
 		        // NOTE: this is needed because it fires the InsertionAdapter, which adds the new Process
-		        // to Definitions.rootElements, otherwise the Process would businessObject a dangling object
+		        // to Definitions.rootElements, otherwise the Process would be a dangling object
 //		        process.setName(participant.getName()+" Process");
 
 		        // add the Participant to the first Choreography or Collaboration we find.
 		        // TODO: when (and if) multipage editor allows additional Choreography or
-		        // Collaboration diagrams to businessObject created, this will businessObject the specific diagram
+		        // Collaboration diagrams to be created, this will be the specific diagram
 		        // that is being rendered on the current page.
 		        List<RootElement> rootElements = definitions.getRootElements();
 		        for (RootElement element : rootElements) {

@@ -48,9 +48,9 @@ public class InsertionAdapter extends EContentAdapter {
 	}
 
 	private InsertionAdapter(Resource resource, EObject object, EStructuralFeature feature, EObject value) {
-		// in order for this to work, the object must businessObject contained in a Resource,
-		// the value must NOT YET businessObject contained in a Resource,
-		// and the value must businessObject an instance of the feature EType.
+		// in order for this to work, the object must be contained in a Resource,
+		// the value must NOT YET be contained in a Resource,
+		// and the value must be an instance of the feature EType.
 //		assert(object.eResource()!=null);
 //		assert(value.eResource()==null);
 //		assert(feature.getEType().isInstance(value));
@@ -167,8 +167,8 @@ public class InsertionAdapter extends EContentAdapter {
 					list.add(value);
 				// assign the value's ID if it has one:
 				// because of changes made by cascading InsertionAdapters,
-				// the object could now businessObject contained in a resource and hence
-				// the setID() will need to businessObject executed on the command stack.
+				// the object could now be contained in a resource and hence
+				// the setID() will need to be executed on the command stack.
 				domain = getEditingDomain();
 				if (domain==null) {
 					ModelUtil.setID(value);

@@ -181,7 +181,7 @@ public class DefinitionsPropertyComposite extends DefaultDetailComposite  {
 							@Override
 							protected boolean updateObject(final Object result) {
 								// we can't just change the key because the map that contains it
-								// needs to businessObject updated, so remove old key, then add new.
+								// needs to be updated, so remove old key, then add new.
 								if (result instanceof String && !((String)result).isEmpty() ) {
 									final Map.Entry<String, String> entry = (Map.Entry<String, String>)object;
 									final String oldKey = entry.getKey();

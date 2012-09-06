@@ -134,7 +134,7 @@ public class TableCursor extends Canvas {
 	}
 	
 	/**
-	 * Creates a table cursor that can businessObject used to navigate tables for keyboard accessibility
+	 * Creates a table cursor that can be used to navigate tables for keyboard accessibility
 	 * @param table
 	 * @param tableViewer
 	 * @return
@@ -234,7 +234,7 @@ public class TableCursor extends Canvas {
 			column.addListener(SWT.Resize, resizeListener);
 		}
 		
-		// reset the row and column to businessObject a valid one
+		// reset the row and column to be a valid one
 		//boolean repaint = false;
 		if (row >= table.getItemCount()) {
 			row = table.getItemCount()-1;

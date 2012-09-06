@@ -203,7 +203,7 @@ public abstract class AbstractAddBPMNShapeFeature<T extends BaseElement>
 				double b = y0 - m * x0;
 				int y2 = (int)(m * x + b);
 				// because of roundoff errors when the slope is nearly vertical, the
-				// adjusted y may businessObject way off; in this case, adjust the x coordinate instead
+				// adjusted y may be way off; in this case, adjust the x coordinate instead
 				if (Math.abs(m) > 100) {
 					x = (int)((y - b) / m);
 				}
@@ -274,7 +274,7 @@ public abstract class AbstractAddBPMNShapeFeature<T extends BaseElement>
 		if (connection!=null) {
 			// determine how to split the line depending on where the new object was dropped:
 			// the longer segment will remain the original connection, and a new connection
-			// will businessObject created for the shorter segment
+			// will be created for the shorter segment
 			ILayoutService layoutService = Graphiti.getLayoutService();
 			Anchor a0 = connection.getStart();
 			Anchor a1 = connection.getEnd();
@@ -358,7 +358,7 @@ public abstract class AbstractAddBPMNShapeFeature<T extends BaseElement>
 
 	protected boolean isHorizontal(ITargetContext context) {
 		if (context.getProperty(DIImport.IMPORT_PROPERTY) == null) {
-			// not importing - set isHorizontal to businessObject the same as parent Pool
+			// not importing - set isHorizontal to be the same as parent Pool
 			if (FeatureSupport.isTargetParticipant(context)) {
 				Participant targetParticipant = FeatureSupport.getTargetParticipant(context);
 				BPMNShape participantShape = findDIShape(targetParticipant);

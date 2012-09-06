@@ -53,7 +53,7 @@ public class AbstractAdapter implements Adapter {
 
 	
 	/**
-	 * Return the target. This will always businessObject null in case the 
+	 * Return the target. This will always be null in case the 
 	 * adapter is stateless.
 	 * 
 	 * @return the target
@@ -101,7 +101,7 @@ public class AbstractAdapter implements Adapter {
 			clazz = (Class) type;
 			return clazz.isInstance(this);
 		}
-		// what else could it businessObject ?
+		// what else could it be ?
 		return false;
 	}
 	
@@ -131,8 +131,8 @@ public class AbstractAdapter implements Adapter {
 	 * some interfaces we cannot control (like IContentProposal).
 	 *  
 	 * @param <T> The type class
-	 * @param obj the object which might businessObject the adapted target
-	 * @param clazz the class that the target must businessObject an instance of. 
+	 * @param obj the object which might be the adapted target
+	 * @param clazz the class that the target must be an instance of. 
 	 * @return the target object
 	 */
 	

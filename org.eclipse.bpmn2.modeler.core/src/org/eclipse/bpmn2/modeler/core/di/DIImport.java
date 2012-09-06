@@ -165,7 +165,7 @@ public class DIImport {
 //			BPMNPlane plane = d.getPlane();
 //			for (DiagramElement de : plane.getPlaneElement()) {
 //				if (de instanceof BPMNShape) {
-//					BaseElement businessObject = ((BPMNShape) de).getBpmnElement();
+//					BaseElement be = ((BPMNShape) de).getBpmnElement();
 //					PictogramElement pe = elements.get(businessObject);
 //					if (pe instanceof Shape ) {
 //						Graphiti.getPeService().sendToFront((Shape)pe);

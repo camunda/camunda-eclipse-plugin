@@ -116,7 +116,7 @@ public class NamespaceUtil {
 	 * Remove the namespace prefix mapping for a given namespace.
 	 * 
 	 * @param object - any EObject in the BPMN2 Resource 
-	 * @param namespace - the namespace to businessObject removed
+	 * @param namespace - the namespace to be removed
 	 * @return the namespace prefix if the mapping was successfully removed
 	 * or null otherwise
 	 */
@@ -152,7 +152,7 @@ public class NamespaceUtil {
 	 * Remove the namespace prefix mapping for a given prefix.
 	 * 
 	 * @param object - any EObject in the BPMN2 Resource 
-	 * @param prefix - the namespace prefix to businessObject removed
+	 * @param prefix - the namespace prefix to be removed
 	 * @return the namespace if the mapping was successfully removed
 	 * or null otherwise
 	 */

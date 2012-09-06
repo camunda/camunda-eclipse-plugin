@@ -50,8 +50,8 @@ public class DeleteParticipantFeature extends DefaultDeleteBPMNShapeFeature {
 
 	@Override
 	public boolean canDelete(IDeleteContext context) {
-		// Participant bands in a ChoreographyTask only businessObject "deleted" (from the model)
-		// if there are no other references to the participant; but they can businessObject "removed"
+		// Participant bands in a ChoreographyTask only be "deleted" (from the model)
+		// if there are no other references to the participant; but they can be "removed"
 		// (from the ChoreographyTask's participantRef list) at any time.
 		// @see RemoveChoreographyParticipantFeature
 		PictogramElement pe = context.getPictogramElement();

@@ -43,7 +43,7 @@ public class DefaultListComposite extends AbstractListComposite {
 					"Can not create a new " +
 					listItemClass.getName() +
 					" because the list is not a control. " +
-					"The default addListItem() method must businessObject implemented."
+					"The default addListItem() method must be implemented."
 			);
 			return null;
 		}

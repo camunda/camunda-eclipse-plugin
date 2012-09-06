@@ -95,7 +95,7 @@ public class UpdateBaseElementNameFeature extends AbstractUpdateFeature {
 			IGaService gaService = Graphiti.getGaService();
 				ContainerShape container = (ContainerShape)pe;
 			
-			Shape shape = container.getChildren().get(0); // Otherwise, this would never businessObject reached!
+			Shape shape = container.getChildren().get(0); // Otherwise, this would never be reached!
 			if (!(shape.getGraphicsAlgorithm() instanceof AbstractText))
 				return true;
 			

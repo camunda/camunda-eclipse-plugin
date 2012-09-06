@@ -53,7 +53,7 @@ public class FaultAdapter extends AbstractStatefulAdapter implements ILabeledEle
 	}
 
 	public String getDescription() {
-		// TODO Temporary returns null, then should businessObject updated
+		// TODO Temporary returns null, then should be updated
 		return null;
 	}
 

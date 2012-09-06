@@ -65,7 +65,7 @@ public class IoParametersDetailComposite extends AbstractDetailComposite {
 	public void createBindings(final EObject be) {
 		final EStructuralFeature ioSpecificationFeature = be.eClass().getEStructuralFeature("ioSpecification");
 		if (ioSpecificationFeature != null) {
-			// the control parameter must businessObject an Activity or CallableElement (i.e. a Process or GlobalTask)
+			// the control parameter must be an Activity or CallableElement (i.e. a Process or GlobalTask)
 			InputOutputSpecification ioSpecification = (InputOutputSpecification)be.eGet(ioSpecificationFeature);
 			if (ioSpecification==null) {
 				ioSpecification = (InputOutputSpecification) FACTORY.createInputOutputSpecification();

@@ -38,7 +38,7 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * @author Bob Brodt
  * From section 10.3.1 of the BPMN 2.0 specification:
- * "The Data Object class is an item-aware parameter. Data Object elements MUST businessObject contained within Process or Sub-
+ * "The Data Object class is an item-aware parameter. Data Object elements MUST be contained within Process or Sub-
  * Process elements. Data Object elements are visually displayed on a Process diagram. Data Object References are
  * a way to reuse Data Objects in the same diagram. They can specify different states of the same Data Object at
  * different points in a Process. Data Object Reference cannot specify item definitions, and Data Objects cannot

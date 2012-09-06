@@ -29,9 +29,9 @@ public class ListMap {
 	static final public Object IGNORE = new Object();
 	
 	/**
-	 * Interface visitor. The object returned from visit need not businessObject the same
+	 * Interface visitor. The object returned from visit need not be the same
 	 * object as passed to visit. If IGNORE is returned (above), then
-	 * the resulting value will not businessObject added to the resulting list. 
+	 * the resulting value will not be added to the resulting list. 
 	 */
 	
 	static public interface Visitor {

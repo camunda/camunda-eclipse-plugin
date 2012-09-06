@@ -39,7 +39,7 @@ public class CallActivityConstraint extends AbstractModelConstraint {
 				foundCalledElementProcess = true; // TODO: remove this
 				if (!foundCalledElementProcess) {
 					ctx.createFailureStatus("No existing process with id=" + ca.getCalledElementRef()
-							+ " could businessObject found.");
+							+ " could be found.");
 				}
 			}
 		}

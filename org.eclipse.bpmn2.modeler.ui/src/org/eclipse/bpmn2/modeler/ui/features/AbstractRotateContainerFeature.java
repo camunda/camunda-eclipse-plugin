@@ -73,7 +73,7 @@ public abstract class AbstractRotateContainerFeature extends AbstractCustomFeatu
 			if (pe instanceof ContainerShape && (bo instanceof Participant || bo instanceof Lane)) {
 				Object parent = getBusinessObjectForPictogramElement(((ContainerShape)pe).getContainer());
 				if (parent instanceof BPMNDiagram) {
-					// only the top-level Lane or Pool can businessObject rotated - all other
+					// only the top-level Lane or Pool can be rotated - all other
 					// child Lanes must have the same orientation as their ancestor.
 					return true;
 				}

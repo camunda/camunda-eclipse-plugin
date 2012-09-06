@@ -57,7 +57,7 @@ public abstract class EditBeanDialog<T> extends Dialog {
             super.okPressed();
         } catch (IllegalArgumentException e) {
             showError(e.getMessage());
-            // value could not businessObject set, ignoring ok
+            // value could not be set, ignoring ok
         }
     }
     

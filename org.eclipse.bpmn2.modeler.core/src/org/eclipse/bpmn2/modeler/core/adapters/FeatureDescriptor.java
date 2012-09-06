@@ -134,7 +134,7 @@ public class FeatureDescriptor<T extends EObject> extends ObjectDescriptor<T> {
 	/**
 	 * Returns a list of name-value pairs for display in a combo box or selection list.
 	 * The String is what gets displayed in the selection list, while the Object is
-	 * implementation-specific: this can businessObject a reference to an element, string or whatever.
+	 * implementation-specific: this can be a reference to an element, string or whatever.
 	 * The implementation is responsible for interpreting this value by overriding the
 	 * setValue() method, and must update the object feature accordingly.
 	 * 
@@ -245,8 +245,8 @@ public class FeatureDescriptor<T extends EObject> extends ObjectDescriptor<T> {
 		return newFeature;
 	}
 
-	// NOTE: getValue() and setValue() must businessObject symmetrical; that is, setValue()
-	// must businessObject able to handle the object type returned by getValue(), although
+	// NOTE: getValue() and setValue() must be symmetrical; that is, setValue()
+	// must be able to handle the object type returned by getValue(), although
 	// setValue() may also know how to convert from other types, e.g. String,
 	// Integer, etc.
 	public Object getValue() {

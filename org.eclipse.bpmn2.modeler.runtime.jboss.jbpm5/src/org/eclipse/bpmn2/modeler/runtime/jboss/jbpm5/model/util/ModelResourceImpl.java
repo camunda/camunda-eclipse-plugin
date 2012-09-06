@@ -125,7 +125,7 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 
 	/**
      * We need extend the standard SAXXMLHandler to hook into the handling of attribute references
-     * which may businessObject either simple ID Strings or QNames. We'll search through all of the objects'
+     * which may be either simple ID Strings or QNames. We'll search through all of the objects'
      * IDs first to find the one we're looking for. If not, we'll try a QName search.
      */
     protected static class ModelXmlHandler extends Bpmn2ModelerXmlHandler {
@@ -164,7 +164,7 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 			// ugly hack for https://bugs.eclipse.org/bugs/show_bug.cgi?id=355686
 			// Remove the "type" attribute from the feature parentMap if there is one.
 			// The XSI type will have already been used to construct the EObject,
-			// so any "type" in the feature parentMap will businessObject a duplicate which will
+			// so any "type" in the feature parentMap will be a duplicate which will
 			// cause problems during parsing.
 			// See also getXSIType()
 			EObject childObject = objects.peekEObject();

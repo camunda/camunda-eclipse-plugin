@@ -62,7 +62,7 @@ public class UserTaskConstraint extends AbstractModelConstraint {
 							if (entry.getName() != null && entry.getName().equals("staffavailability")) {
 								Float f = new Float(entry.getValue());
 								if (f.floatValue() < 0) {
-									ctx.createFailureStatus("Staff Availability value must businessObject positive");
+									ctx.createFailureStatus("Staff Availability value must be positive");
 								}
 								foundStaffAvailability = true;
 							}

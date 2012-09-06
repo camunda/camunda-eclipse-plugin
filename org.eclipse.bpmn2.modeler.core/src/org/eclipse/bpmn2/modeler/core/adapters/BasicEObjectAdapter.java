@@ -167,7 +167,7 @@ implements IProperty<String, Object>, INamespaceMap<String, String> {
 		//
 		if (getTarget() instanceof WSDLElement) {
 			Element element = ((WSDLElement) getTarget()).getElement();
-			// Element could businessObject null (for instance, on load)
+			// Element could be null (for instance, on load)
 			if (element != null) {
 				String attr = key.equals("") ? "xmlns" : "xmlns:" + key;
 				// We only need to update attribute if something really has been changed
@@ -210,7 +210,7 @@ implements IProperty<String, Object>, INamespaceMap<String, String> {
 
 		if (getTarget() instanceof WSDLElement) {
 			Element element = ((WSDLElement) getTarget()).getElement();
-			// Element could businessObject null (for instance, on load)
+			// Element could be null (for instance, on load)
 			if (element != null) {
 				element.removeAttributeNS(XSDConstants.XMLNS_URI_2000, key.toString());
 			}

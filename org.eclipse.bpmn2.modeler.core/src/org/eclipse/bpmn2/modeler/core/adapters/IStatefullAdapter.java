@@ -11,7 +11,7 @@
 package org.eclipse.bpmn2.modeler.core.adapters;
 
 /**
- * If an adapter implements this interface, it is assumed to businessObject statefull.
+ * If an adapter implements this interface, it is assumed to be statefull.
  * The AdapterProvider helper class will always return new instances of
  * such adapter classes.
  * 

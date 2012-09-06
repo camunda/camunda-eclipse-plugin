@@ -126,10 +126,10 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 	 * extension point contribution to org.eclipse.bpmn2.modeler.rutime.
 	 * This will register the Custom Task with the BPMN Feature Provider.
 	 * 
-	 * @param fp - Feature Provider (must businessObject a BPMNFeatureProvider)
+	 * @param fp - Feature Provider (must be a BPMNFeatureProvider)
 	 * @param id - the modelObject ID string.
 	 * @throws Exception
-	 *    Custom Task ID can not businessObject null
+	 *    Custom Task ID can not be null
 	 *    The Feature Provider is invalid (not a BPMNFeatureProvider)
 	 *    Attempt to add a Custom Feature with a duplicate ID {id}
 	 */
@@ -137,7 +137,7 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 		
 		// "id" is a required parameter in the extension point.
 		if (id==null || id.isEmpty()) {
-			throw new Exception("Custom Task ID can not businessObject null");
+			throw new Exception("Custom Task ID can not be null");
 		}
 		this.id = id;
 		
@@ -190,7 +190,7 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 	 * 
 	 * The Task creation process copies the modelObject ID string into the Graphiti create
 	 * context during the construction phase, then migrates that ID into the created
-	 * PictogramElement. This is necessary because the ID must businessObject associated with the
+	 * PictogramElement. This is necessary because the ID must be associated with the
 	 * PE in to allow our BPMNFeatureProvider to correctly identify the Custom Task.
 	 */
 	public class CreateCustomTaskFeature extends AbstractCreateTaskFeature<Task> {

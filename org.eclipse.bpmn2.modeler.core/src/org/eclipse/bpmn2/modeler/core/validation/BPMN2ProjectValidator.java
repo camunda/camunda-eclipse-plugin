@@ -169,7 +169,7 @@ public class BPMN2ProjectValidator extends AbstractValidator {
 									project.getName()+
 									"' has not been configured with the BPMN2 Project Nature.\n\n"+
 									"Adding the BPMN2 Project Nature will cause all BPMN2 files in this project"+
-									"to businessObject validated automatically whenever the project is built.\n\n"+
+									"to be validated automatically whenever the project is built.\n\n"+
 									"Do you want to add this Nature to the Project now?";
 							MessageDialogWithToggle result = MessageDialogWithToggle.open(
 									MessageDialog.QUESTION,

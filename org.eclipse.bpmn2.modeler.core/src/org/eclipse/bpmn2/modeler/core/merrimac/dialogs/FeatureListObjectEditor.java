@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * EObject Reference List Editor.
- * This class implements an EObject reference list editor. The feature must businessObject an EList of EObject references.
+ * This class implements an EObject reference list editor. The feature must be an EList of EObject references.
  * The list is rendered in a single-line text field with an "Edit" button to the right. Clicking the edit button
  * displays an EMF FeatureEditorDialog, which allows adding, removing and reordering of available object references.
  * 

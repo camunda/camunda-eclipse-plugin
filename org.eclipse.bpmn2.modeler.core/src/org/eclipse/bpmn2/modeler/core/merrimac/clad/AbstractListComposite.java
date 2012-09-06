@@ -179,7 +179,7 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase i
 					// are there any actual "anyAttribute" instances we can look at
 					// to get the feature names and types from?
 					// TODO: enhance the table to dynamically allow creation of new
-					// columns which will businessObject added to the "anyAttributes"
+					// columns which will be added to the "anyAttributes"
 					for (EObject instance : list) {
 						if (listItemClass.isInstance(instance)) {
 							Object o = instance.eGet(a1);
@@ -219,7 +219,7 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase i
 	}
 	
 	/**
-	 * Override this to create your own Details section. This composite will businessObject displayed
+	 * Override this to create your own Details section. This composite will be displayed
 	 * in a twistie section whenever the user selects an item from the table. The section
 	 * is automatically hidden when the table is collapsed.
 	 * 
@@ -239,7 +239,7 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase i
 	 * Add a new list item. 
 	 * @param object
 	 * @param feature
-	 * @return the new item to businessObject added to the list, or null if item creation failed
+	 * @return the new item to be added to the list, or null if item creation failed
 	 */
 	abstract protected EObject addListItem(EObject object, EStructuralFeature feature);
 
@@ -337,7 +337,7 @@ public abstract class AbstractListComposite extends ListAndDetailCompositeBase i
 		final String prefName = "list."+listItemClass.getName()+".expanded";
 		
 		////////////////////////////////////////////////////////////
-		// Collect columns to businessObject displayed and build column provider
+		// Collect columns to be displayed and build column provider
 		////////////////////////////////////////////////////////////
 		if (createColumnProvider(businessObject, feature) <= 0)
 			return;

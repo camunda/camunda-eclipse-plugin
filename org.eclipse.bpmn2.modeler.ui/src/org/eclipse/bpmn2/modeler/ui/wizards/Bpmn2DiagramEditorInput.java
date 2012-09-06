@@ -53,7 +53,7 @@ public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
 			return true;
 		}
 
-		// Eclipse makes FileEditorInputs for files to businessObject opened. Here we check if the file is actually the same
+		// Eclipse makes FileEditorInputs for files to be opened. Here we check if the file is actually the same
 		// as the DiagramEditorInput uses. This is for preventing opening new editors for the same file.
 		if (obj instanceof FileEditorInput) {
 

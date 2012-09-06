@@ -60,15 +60,15 @@ import org.w3c.dom.Node;
  * point in plugin.xml (see comments there).
  * 
  * This is still in the experimental phase and currently only supports a single diagram
- * per .bpmn file. An optional second page, which displays the XML source, can businessObject created
+ * per .bpmn file. An optional second page, which displays the XML source, can be created
  * from the context menu. The source view is not yet synchronized to the design view and
  * can only show the XML as of the last "Save" i.e. the current state of the file on disk,
- * not the in-memory model. Design/Source view synchronization will businessObject implemented in a
- * future version, but direct editing of the XML will not businessObject supported - it will remain
+ * not the in-memory model. Design/Source view synchronization will be implemented in a
+ * future version, but direct editing of the XML will not be supported - it will remain
  * "view only".
  * 
  * Future versions will support multiple diagrams per .bpmn file with the ability to add
- * and remove pages containing different diagram types. It should businessObject possible for the user
+ * and remove pages containing different diagram types. It should be possible for the user
  * to create a single file that contains a mix of Process, Collaboration and Choreography
  * diagrams. Whether or not these types of files are actually deployable and/or executable
  * is another story ;)
@@ -263,11 +263,11 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IGotoMa
 				defaultTabHeight = tabFolder.getTabHeight();
 				setPageText(pageIndex,"Design");
 
-				// TODO: it should businessObject possible to create additional instances of the BPMN2Editor
+				// TODO: it should be possible to create additional instances of the BPMN2Editor
 				// that use the same IEditorInput as the original, but work within different
 				// BPMNPlane objects within the same model.
-				// Likewise, it should businessObject possible to remove a page, which causes the associated
-				// BPMNPlane to businessObject removed from the model. The last page may not businessObject removed because
+				// Likewise, it should be possible to remove a page, which causes the associated
+				// BPMNPlane to be removed from the model. The last page may not be removed because
 				// this would invalidate the bpmn file.
 //				++pageIndex;
 //				DesignEditor designEditor2 = new DesignEditor();
@@ -317,7 +317,7 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IGotoMa
 	}
 
 	public void removeSourceViewer() {
-		// there will only businessObject one source page and it will always businessObject the last page in the tab folder
+		// there will only be one source page and it will always be the last page in the tab folder
 		if (sourceViewer!=null) {
 			int pageIndex = tabFolder.getItemCount() - 1;
 			if (pageIndex>0)

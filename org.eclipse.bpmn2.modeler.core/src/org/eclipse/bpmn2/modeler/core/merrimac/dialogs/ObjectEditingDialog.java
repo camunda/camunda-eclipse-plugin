@@ -203,7 +203,7 @@ public class ObjectEditingDialog extends FormDialog {
 	/**
 	 * Return state of the "abortOnCancel transaction on cancel" flag
 	 * 
-	 * @return true if the current transaction will businessObject aborted if the dialog is canceled.
+	 * @return true if the current transaction will be aborted if the dialog is canceled.
 	 */
 	public boolean isAbortOnCancel() {
 		return abortOnCancel;

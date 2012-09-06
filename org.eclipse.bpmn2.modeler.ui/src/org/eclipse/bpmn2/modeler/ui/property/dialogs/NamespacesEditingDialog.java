@@ -51,7 +51,7 @@ public class NamespacesEditingDialog extends InputDialog {
 				@Override
 				public String isValid(String newText) {
 					if (newText==null || newText.isEmpty())
-						return "Prefix can not businessObject empty";
+						return "Prefix can not be empty";
 					if (newText.equals(prefix))
 						return null;
 					if (map.containsKey(newText))
@@ -104,7 +104,7 @@ public class NamespacesEditingDialog extends InputDialog {
 				String msg = null;
 				String ns = namespaceText.getText();
 				if (ns==null || ns.isEmpty())
-					msg = "Namespace can not businessObject empty";
+					msg = "Namespace can not be empty";
 				try {
 					URI uri = URI.createURI(ns);
 				}

@@ -85,7 +85,7 @@ public class Bpmn2SectionDescriptor extends AbstractSectionDescriptor {
 		@Override
 		public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
 			
-			// should we delegate to the section to determine whether it should businessObject included in this tab?
+			// should we delegate to the section to determine whether it should be included in this tab?
 			if (sectionClass instanceof IBpmn2PropertySection) {
 				return ((IBpmn2PropertySection)sectionClass).appliesTo(part, selection);
 			}

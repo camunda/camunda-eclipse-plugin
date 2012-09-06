@@ -27,7 +27,7 @@ public interface ITreeNode {
 	public String getLabel();
 
 	/**
-	 * Returns the suffix which should businessObject appended to the label.  This is useful to
+	 * Returns the suffix which should be appended to the label.  This is useful to
 	 * show the label of a condensed node in condensed trees.
 	 */
 	public String getLabelSuffix();

@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Item;
  * Grouping related behaviours by column type (instead of grouping them by the
  * behaviour type) will hopefully make maintenance of table code easier.
  * 
- * IMPORTANT: The dispose() method of each registered label provider will businessObject called
+ * IMPORTANT: The dispose() method of each registered label provider will be called
  * when the TableProvider is disposed.  If this is undesirable, clients can avoid it by
  * unregistering the property before the TableProvider is disposed.   
  */
@@ -55,7 +55,7 @@ public class TableProvider implements ITableLabelProvider, ICellModifier  {
 	}
 
 	/**
-	 * This method should businessObject called with the properties being used for each column of
+	 * This method should be called with the properties being used for each column of
 	 * the Table.  If a TableViewer is used, these are the same values passed to the
 	 * TableViewer's setColumnProperties() method.  However, you must still call both
 	 * methods because TableProvider doesn't know about the table viewer.
@@ -75,7 +75,7 @@ public class TableProvider implements ITableLabelProvider, ICellModifier  {
 	}
 	
 	/**
-	 * Returns a particular column's property.  For some subclasses, this may businessObject more
+	 * Returns a particular column's property.  For some subclasses, this may be more
 	 * efficient than using getColumnProperties().
 	 */
 	public String getColumnProperty(int index) {
@@ -102,8 +102,8 @@ public class TableProvider implements ITableLabelProvider, ICellModifier  {
 	 * Unregister the old label provider and cell modifier for the given property.
 	 * 
 	 * @param property property to register.
-	 * @param lp label provider to use for the property.  Must businessObject an ILabelProvider or IBaseLabelProvider.
-	 * @param cm ICellModifier to use for the property.  May businessObject null.
+	 * @param lp label provider to use for the property.  Must be an ILabelProvider or IBaseLabelProvider.
+	 * @param cm ICellModifier to use for the property.  May be null.
 	 */
 	public void register(String property, IBaseLabelProvider lp, ICellModifier cm) {
 		unregister(property);

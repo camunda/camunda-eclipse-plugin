@@ -61,7 +61,7 @@ public class GatewayDetailComposite extends DefaultDetailComposite {
 			propertiesProvider = new AbstractPropertiesProvider(object) {
 				// lump all the gateway properties into one composite
 				// if a gateway doesn't have one of the attributes listed here,
-				// it simply won't businessObject displayed.
+				// it simply won't be displayed.
 				String[] properties = new String[] {
 						"gatewayDirection",
 						"instantiate",

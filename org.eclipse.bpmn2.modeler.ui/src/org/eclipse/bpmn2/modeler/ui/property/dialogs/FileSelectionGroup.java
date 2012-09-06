@@ -154,7 +154,7 @@ public class FileSelectionGroup extends Composite {
 
 		if (viewerFileFilter != null)
 			treeViewer.addFilter(viewerFileFilter);
-		// This has to businessObject done after the viewer has been laid out
+		// This has to be done after the viewer has been laid out
 		treeViewer.setInput(ResourcesPlugin.getWorkspace());
 	}
 	/**

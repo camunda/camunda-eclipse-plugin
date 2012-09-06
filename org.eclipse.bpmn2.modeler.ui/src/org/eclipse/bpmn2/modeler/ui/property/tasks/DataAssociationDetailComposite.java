@@ -61,9 +61,9 @@ import org.eclipse.ui.forms.widgets.Section;
  * This class renders the property sheet tab for Data I/O Associations (a.k.a. parameter mappings)
  * defined in Activities and ThrowEvents.
  * 
- * The DataInput/OutputAssociation can businessObject used to associate an ItemAwareElement
+ * The DataInput/OutputAssociation can be used to associate an ItemAwareElement
  * parameter with a DataInput/Output contained in an Activity. The source of such
- * a DataAssociation can businessObject every ItemAwareElement accessible in the
+ * a DataAssociation can be every ItemAwareElement accessible in the
  * current scope, e.g., a Data Object, a Property, or an Expression.
  * 
  * The execution of any Data Associations MUST follow these semantics:
@@ -73,7 +73,7 @@ import org.eclipse.ui.forms.widgets.Section;
  *  o For each “assignment” parameter specified:
  *    o Evaluate the Assignment’s “from” expression and obtain the *source value*.
  *    o Evaluate the Assignment’s “to” expression and obtain the *target parameter*.
- *      The *target parameter* can businessObject any parameter in the context or a sub-parameter of
+ *      The *target parameter* can be any parameter in the context or a sub-parameter of
  *      it (e.g., a DataObject or a sub-parameter of it).
  *    o Copy the *source value* to the *target parameter*.
  *  o If no “transformation” Expression nor any “assignment” elements are defined
@@ -284,7 +284,7 @@ public class DataAssociationDetailComposite extends DefaultDetailComposite {
 	}
 	
 	private void redrawParent() {
-		// this DetailComposite should businessObject sitting in a SashForm created
+		// this DetailComposite should be sitting in a SashForm created
 		// by a ListComposite. layout this thing first
 		layout();
 		// and then search for the DetailComposite that contains the list 

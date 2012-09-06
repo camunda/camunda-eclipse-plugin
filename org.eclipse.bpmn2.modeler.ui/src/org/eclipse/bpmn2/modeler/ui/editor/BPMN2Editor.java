@@ -352,8 +352,8 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		setActiveEditor(this);
 		
 		// allow the runtime extension to construct custom tasks and whatever else it needs
-		// custom tasks should businessObject added to the current target runtime's custom tasks list
-		// where they will businessObject picked up by the toolpalette refresh.
+		// custom tasks should be added to the current target runtime's custom tasks list
+		// where they will be picked up by the toolpalette refresh.
 		getTargetRuntime().getRuntimeExtension().initialize();
 		
 		super.init(site, input);
@@ -506,7 +506,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		di.generateFromDI();
 
 		// this needs to happen AFTER the diagram has been imported because we need
-		// to businessObject able to determine the diagram type from the file's contents in order
+		// to be able to determine the diagram type from the file's contents in order
 		// to build the right tool palette for the target runtime and model enablements.
 		GFPaletteRoot pr = (GFPaletteRoot)getPaletteRoot();
 		pr.updatePaletteEntries();

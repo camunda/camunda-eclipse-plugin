@@ -247,7 +247,7 @@ public class BPMN2DiagramWizardPage2 extends WizardPage {
 		String fileName = getFileName();
 
 		if (getContainerName().length() == 0) {
-			updateStatus("Folder must businessObject specified");
+			updateStatus("Folder must be specified");
 			return;
 		}
 		if (diagramContainer == null || (diagramContainer.getType() & (IResource.PROJECT | IResource.FOLDER)) == 0) {
@@ -255,22 +255,22 @@ public class BPMN2DiagramWizardPage2 extends WizardPage {
 			return;
 		}
 		if (!diagramContainer.isAccessible()) {
-			updateStatus("Project must businessObject writable");
+			updateStatus("Project must be writable");
 			return;
 		}
 		if (fileName.length() == 0) {
-			updateStatus("Name must businessObject specified");
+			updateStatus("Name must be specified");
 			return;
 		}
 		if (fileName.replace('\\', '/').indexOf('/', 1) > 0) {
-			updateStatus("Name must businessObject valid");
+			updateStatus("Name must be valid");
 			return;
 		}
 		int dotLoc = fileName.lastIndexOf('.');
 		if (dotLoc != -1) {
 			String ext = fileName.substring(dotLoc + 1);
 			if (ext.equalsIgnoreCase("bpmn") == false && ext.equalsIgnoreCase("bpmn2") == false) {
-				updateStatus("File extension must businessObject \"bpmn\" or \"bpmn2\"");
+				updateStatus("File extension must be \"bpmn\" or \"bpmn2\"");
 				return;
 			}
 		}
@@ -300,7 +300,7 @@ public class BPMN2DiagramWizardPage2 extends WizardPage {
 					return true;
 				}
 				else
-					setErrorMessage("A Target Namespace must businessObject specified");
+					setErrorMessage("A Target Namespace must be specified");
 			}
 			else
 				setErrorMessage("The file "+filename+" already exists in this project");

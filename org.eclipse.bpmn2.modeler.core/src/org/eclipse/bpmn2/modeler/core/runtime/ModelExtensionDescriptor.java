@@ -282,7 +282,7 @@ public class ModelExtensionDescriptor extends BaseRuntimeDescriptor {
 	}
 	
 	/**
-	 * Populate the given EObject with a list of values which must businessObject Property objects.
+	 * Populate the given EObject with a list of values which must be Property objects.
 	 * 
 	 * @param object - the object to initialize
 	 * @param values - list of Property values
@@ -403,7 +403,7 @@ public class ModelExtensionDescriptor extends BaseRuntimeDescriptor {
 			// from the give Property's characteristics
 			Class type = EAttribute.class;
 			// if the Property has a "ref" or if its value is a Property
-			// then this must businessObject an EReference
+			// then this must be an EReference
 			if (property.ref!=null || firstValue instanceof Property)
 				type = EReference.class;
 			// get the feature from the runtime package or from Bpmn2Package,

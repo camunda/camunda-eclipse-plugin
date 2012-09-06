@@ -153,7 +153,7 @@ public class ModelHandler {
 
 					Process process = createProcess();
 					process.setName(name+" Process");
-					// the Process ID should businessObject the same as the resource name
+					// the Process ID should be the same as the resource name
 					String filename = resource.getURI().lastSegment();
 					if (filename.contains("."))
 						filename = filename.split("\\.")[0];
@@ -433,7 +433,7 @@ public class ModelHandler {
 	 * @param target
 	 *            object that this element is being added to
 	 * @param elem
-	 *            flow element to businessObject added
+	 *            flow element to be added
 	 * @return
 	 */
 	public <T extends FlowElement> T addFlowElement(Object target, T elem) {
@@ -447,7 +447,7 @@ public class ModelHandler {
 	 * @param target
 	 *            object that this artifact is being added to
 	 * @param artifact
-	 *            artifact to businessObject added
+	 *            artifact to be added
 	 * @return
 	 */
 	public <T extends Artifact> T addArtifact(Object target, T artifact) {
@@ -810,7 +810,7 @@ public class ModelHandler {
 			if (be != null && be instanceof FlowElementsContainer) {
 				return (FlowElementsContainer)be;
 			}
-			else { // somebody did not understand the BPMNPlane (seems to businessObject common), try adding to the first process
+			else { // somebody did not understand the BPMNPlane (seems to be common), try adding to the first process
 				return getAll(Process.class).get(0);
 			}
 		}
