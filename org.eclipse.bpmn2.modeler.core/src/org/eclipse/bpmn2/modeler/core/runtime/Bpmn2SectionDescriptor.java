@@ -14,6 +14,7 @@ package org.eclipse.bpmn2.modeler.core.runtime;
 
 import java.util.List;
 
+import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultPropertySection;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.emf.ecore.EObject;
@@ -39,14 +40,26 @@ public class Bpmn2SectionDescriptor extends AbstractSectionDescriptor {
 			id = tab + ".section";
 
 			try {
-				sectionClass = (AbstractPropertySection) e.createExecutableExtension("class");
+				String className = e.getAttribute("class");
+				if ("default".equals(className)) {
+					sectionClass = new DefaultPropertySection();
+					String[] properties = e.getAttribute("features").split(" ");
+					((DefaultPropertySection)sectionClass).setProperties(properties);
+				}
+				else {
+					sectionClass = (AbstractPropertySection) e.createExecutableExtension("class");
+				}
 				filter = e.getAttribute("filter");
 				if (filter==null || filter.isEmpty())
 					filter = "org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter";
 				enablesFor = e.getAttribute("enablesFor");
 				String type = e.getAttribute("type");
-				if (type!=null && !type.isEmpty())
+				if (type!=null && !type.isEmpty()) {
 					appliesToClass = Class.forName(type);
+					if (sectionClass instanceof DefaultPropertySection) {
+						((DefaultPropertySection)sectionClass).setAppliesTo(appliesToClass);
+					}
+				}
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}

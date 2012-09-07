@@ -206,4 +206,8 @@ public class Activator extends AbstractUIPlugin {
 	public Image getImage(String id) {
 		return getImageRegistry().get(id);
 	}
+	
+    public ImageDescriptor getImageDescriptor(String id) {
+		return getImageRegistry().getDescriptor(id);
+    }
 }

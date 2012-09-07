@@ -27,7 +27,7 @@ public interface IBpmn2PropertySection {
 	public boolean appliesTo(IWorkbenchPart part, ISelection selection);
 
 	/**
-	 * Asks the Property Section implementation if tab replacement should be
+	 * Asks the Property Section implementation if tab replacement should businessObject
 	 * processed for the given editor selection.
 	 * 
 	 * @param id - ID of the tab to be replaced

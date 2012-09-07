@@ -12,36 +12,42 @@
  ******************************************************************************/
 
 
-package org.eclipse.bpmn2.modeler.ui.property.tasks;
+package org.eclipse.bpmn2.modeler.ui.property.artifact;
 
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.AbstractBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultDetailComposite;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.widgets.Composite;
 
-public class UserTaskDetailComposite extends DefaultDetailComposite {
+public class CategoryDetailComposite extends DefaultDetailComposite {
 
-	public UserTaskDetailComposite(Composite parent, int style) {
+	public CategoryDetailComposite(Composite parent, int style) {
 		super(parent, style);
 	}
 
 	/**
 	 * @param section
 	 */
-	public UserTaskDetailComposite(AbstractBpmn2PropertySection section) {
+	public CategoryDetailComposite(AbstractBpmn2PropertySection section) {
 		super(section);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2DetailComposite
-	 * #createBindings(org.eclipse.emf.ecore.EObject)
-	 */
 	@Override
-	public void createBindings(EObject be) {
-		bindAttribute(be,"implementation");
-		bindList(be, "renderings");
+	public AbstractPropertiesProvider getPropertiesProvider(EObject object) {
+		if (propertiesProvider==null) {
+			propertiesProvider = new AbstractPropertiesProvider(object) {
+				String[] properties = new String[] {
+						"anyAttribute",
+						"name",
+						"categoryValue",
+				};
+				
+				@Override
+				public String[] getProperties() {
+					return properties; 
+				}
+			};
+		}
+		return propertiesProvider;
 	}
 }

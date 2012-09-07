@@ -268,6 +268,13 @@ public class DIUtils {
 	public static Diagram findDiagram(final IDiagramEditor editor, final BPMNDiagram bpmnDiagram) {
 		ResourceSet resourceSet = editor.getResourceSet();
 		if (resourceSet!=null) {
+			return findDiagram(resourceSet, bpmnDiagram);
+		}
+		return null;
+	}
+	
+	public static Diagram findDiagram(ResourceSet resourceSet, final BPMNDiagram bpmnDiagram) {
+		if (resourceSet!=null) {
 			for (Resource r : resourceSet.getResources()) {
 				for (EObject o : r.getContents()) {
 					if (o instanceof Diagram) {

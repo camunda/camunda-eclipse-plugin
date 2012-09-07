@@ -32,11 +32,6 @@ import org.eclipse.swt.widgets.Composite;
  *
  */
 public class DataStorePropertySection extends AbstractBpmn2PropertySection {
-
-	static {
-		// register the DataStoreDetailComposite for rendering DataStore objects
-		PropertiesCompositeFactory.register(DataStore.class, DataStoreDetailComposite.class);
-	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()

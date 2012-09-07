@@ -101,7 +101,7 @@ public class DefaultDetailComposite extends AbstractDetailComposite {
 	
 	/**
 	 * "rootElements#Process.resources#HumanPerformer"
-	 * @param be
+	 * @param businessObject
 	 * @param property
 	 * @return
 	 */
@@ -201,7 +201,7 @@ public class DefaultDetailComposite extends AbstractDetailComposite {
 		}
 
 //		if (getChildren().length==0) {
-//			createMissingPropertiesLabel(be);
+//			createMissingPropertiesLabel(businessObject);
 //		}
 		redrawPage();
 	}
@@ -222,14 +222,17 @@ public class DefaultDetailComposite extends AbstractDetailComposite {
 	 * is subclassed and the client does not specify an item provider, the default
 	 * behavior is to render all structural features for the business object.
 	 */
-	public abstract class AbstractPropertiesProvider {
+	public static abstract class AbstractPropertiesProvider {
 		
-		EObject be;
+		EObject businessObject;
 		
 		public AbstractPropertiesProvider(EObject object) {
-			be = object;
+			businessObject = object;
 		}
 
 		public abstract String[] getProperties();
+
+		public void setProperties(String[] properties) {
+		}
 	}
 }

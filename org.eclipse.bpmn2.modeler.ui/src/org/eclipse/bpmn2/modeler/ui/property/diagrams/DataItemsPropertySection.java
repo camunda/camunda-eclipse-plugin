@@ -16,13 +16,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
 public class DataItemsPropertySection extends DefaultPropertySection {
-	
-	static {
-		PropertiesCompositeFactory.register(ItemDefinition.class, ItemDefinitionDetailComposite.class);
-		PropertiesCompositeFactory.register(ItemDefinition.class, ItemDefinitionListComposite.class);
-		PropertiesCompositeFactory.register(Property.class, PropertyListComposite.class);
-		PropertiesCompositeFactory.register(ResourceRole.class, ResourceRoleListComposite.class);
-	}
 
 	public DataItemsPropertySection() {
 	}

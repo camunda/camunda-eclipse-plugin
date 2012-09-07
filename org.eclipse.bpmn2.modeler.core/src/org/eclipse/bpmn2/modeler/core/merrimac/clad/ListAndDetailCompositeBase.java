@@ -115,7 +115,7 @@ public class ListAndDetailCompositeBase extends Composite implements ResourceSet
 		while (parent!=null && !(parent instanceof ListAndDetailCompositeBase))
 			parent = parent.getParent();
 		if (parent instanceof ListAndDetailCompositeBase)
-			return propertySection = ((ListAndDetailCompositeBase)parent).getPropertySection();
+			return ((ListAndDetailCompositeBase)parent).getPropertySection();
 		return null;
 	}
 
@@ -145,7 +145,7 @@ public class ListAndDetailCompositeBase extends Composite implements ResourceSet
 		if (diagramEditor!=null)
 			return diagramEditor;
 		if (getPropertySection()!=null)
-			return (DiagramEditor)propertySection.getDiagramEditor();
+			return (DiagramEditor)getPropertySection().getDiagramEditor();
 		Composite parent = getParent();
 		while (parent!=null && !(parent instanceof ListAndDetailCompositeBase))
 			parent = parent.getParent();

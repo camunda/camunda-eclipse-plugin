@@ -15,9 +15,6 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
  *
  */
 public class TextAnnotationPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants{
-	static {
-		PropertiesCompositeFactory.register(TextAnnotation.class, TextAnnotationDetailComposite.class);
-	}
 
 	@Override
 	protected AbstractDetailComposite createSectionRoot() {

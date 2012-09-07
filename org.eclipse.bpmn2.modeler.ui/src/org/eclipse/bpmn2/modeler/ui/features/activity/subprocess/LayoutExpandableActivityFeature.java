@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
+import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.di.BPMNShape;
@@ -52,9 +53,9 @@ public class LayoutExpandableActivityFeature extends LayoutActivityFeature {
 	@Override
 	public boolean layout(ILayoutContext context) {
 		ContainerShape containerShape = (ContainerShape) context.getPictogramElement();
-		SubProcess subProcess = BusinessObjectUtil.getFirstElementOfType(containerShape, SubProcess.class);
+		Activity activity = BusinessObjectUtil.getFirstElementOfType(containerShape, Activity.class);
 		try {
-			BPMNShape shape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(subProcess);
+			BPMNShape shape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(activity);
 			
 			if (shape.isIsExpanded()) {
 				

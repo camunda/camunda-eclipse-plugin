@@ -47,19 +47,6 @@ import org.eclipse.swt.widgets.Composite;
  * Object Reference State> ]."
  */
 public class DataObjectPropertySection extends AbstractBpmn2PropertySection {
-
-	static {
-		PropertiesCompositeFactory.register(DataObject.class, DataObjectDetailComposite.class);
-		PropertiesCompositeFactory.register(DataObjectReference.class, DataObjectDetailComposite.class);
-		PropertiesCompositeFactory.register(Assignment.class, DataAssignmentDetailComposite.class);
-		PropertiesCompositeFactory.register(Expression.class, ExpressionDetailComposite.class);
-		PropertiesCompositeFactory.register(FormalExpression.class, ExpressionDetailComposite.class);
-		PropertiesCompositeFactory.register(ResourceAssignmentExpression.class, ResourceAssignmentExpressionDetailComposite.class);
-		PropertiesCompositeFactory.register(ResourceParameterBinding.class, ResourceParameterBindingDetailComposite.class);
-		PropertiesCompositeFactory.register(PotentialOwner.class, ResourceRoleDetailComposite.class);
-		PropertiesCompositeFactory.register(HumanPerformer.class, ResourceRoleDetailComposite.class);
-		PropertiesCompositeFactory.register(Performer.class, ResourceRoleDetailComposite.class);
-	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()

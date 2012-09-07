@@ -40,7 +40,7 @@ public abstract class MultivalueObjectEditor extends ObjectEditor {
 	/**
 	 * Create the list of name/value pairs from the feature domain. The name string is
 	 * intended to be used for display in the editor widget, and the value is the corresponding
-	 * feature value. If the values are null, then the name string is assumed to also be
+	 * feature value. If the values are null, then the name string is assumed to also businessObject
 	 * the feature value.
 	 * 
 	 * The default implementation simply uses the EMF edit provider adapter to construct a valid

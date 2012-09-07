@@ -12,9 +12,6 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.swt.widgets.Composite;
 
 public class ProcessDiagramPropertySection extends AbstractBpmn2PropertySection {
-	static {
-		PropertiesCompositeFactory.register(Process.class, ProcessDiagramPropertyComposite.class);
-	}
 
 	/*
 	 * (non-Javadoc)

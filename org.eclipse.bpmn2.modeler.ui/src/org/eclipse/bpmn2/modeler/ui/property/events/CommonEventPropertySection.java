@@ -39,25 +39,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 
 public class CommonEventPropertySection extends AbstractBpmn2PropertySection implements ITabbedPropertyConstants {
-	static {
-		PropertiesCompositeFactory.register(Event.class, CommonEventDetailComposite.class);
-		PropertiesCompositeFactory.register(StartEvent.class, StartEventDetailComposite.class);
-		PropertiesCompositeFactory.register(EndEvent.class, EndEventDetailComposite.class);
-		PropertiesCompositeFactory.register(CatchEvent.class, CatchEventDetailComposite.class);
-		PropertiesCompositeFactory.register(ThrowEvent.class, ThrowEventDetailComposite.class);
-		PropertiesCompositeFactory.register(BoundaryEvent.class, BoundaryEventDetailComposite.class);
-		PropertiesCompositeFactory.register(TimerEventDefinition.class, TimerEventDefinitionDetailComposite.class);
-		PropertiesCompositeFactory.register(ConditionalEventDefinition.class, ConditionalEventDefinitionDetailComposite.class);
-
-		PropertiesCompositeFactory.register(CompensateEventDefinition.class, EventDefinitionDialogComposite.class);
-		PropertiesCompositeFactory.register(ConditionalEventDefinition.class, EventDefinitionDialogComposite.class);
-		PropertiesCompositeFactory.register(ErrorEventDefinition.class, EventDefinitionDialogComposite.class);
-		PropertiesCompositeFactory.register(EscalationEventDefinition.class, EventDefinitionDialogComposite.class);
-		PropertiesCompositeFactory.register(LinkEventDefinition.class, EventDefinitionDialogComposite.class);
-		PropertiesCompositeFactory.register(MessageEventDefinition.class, EventDefinitionDialogComposite.class);
-		PropertiesCompositeFactory.register(SignalEventDefinition.class, EventDefinitionDialogComposite.class);
-		PropertiesCompositeFactory.register(TimerEventDefinition.class, EventDefinitionDialogComposite.class);
-	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()

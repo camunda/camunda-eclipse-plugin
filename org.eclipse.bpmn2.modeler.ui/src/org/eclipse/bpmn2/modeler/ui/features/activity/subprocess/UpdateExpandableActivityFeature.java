@@ -33,6 +33,7 @@ import org.eclipse.graphiti.mm.Property;
 import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.LineStyle;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 
@@ -56,7 +57,7 @@ public class UpdateExpandableActivityFeature extends AbstractUpdateFeature {
 		
 		SubProcess process = (SubProcess) getBusinessObjectForPictogramElement(pe);
 		try {
-			BPMNShape bpmnShape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(process);
+			BPMNShape bpmnShape = (BPMNShape) ModelHandlerLocator.getModelHandler(process.eResource()).findDIElement(process);
 			if (expandedProperty != null && Boolean.parseBoolean(expandedProperty.getValue()) != bpmnShape.isIsExpanded()) {
 				return Reason.createTrueReason("Expanded property changed");
 			}
@@ -80,7 +81,7 @@ public class UpdateExpandableActivityFeature extends AbstractUpdateFeature {
 		boolean isExpanded = false;
 		
 		try {
-			BPMNShape bpmnShape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(process);
+			BPMNShape bpmnShape = (BPMNShape) ModelHandlerLocator.getModelHandler(process.eResource()).findDIElement(process);
 			isExpanded = bpmnShape.isIsExpanded();
 		} catch (IOException e) {
 			throw new IllegalStateException("Could not get DI shape for subprocess:"+process);

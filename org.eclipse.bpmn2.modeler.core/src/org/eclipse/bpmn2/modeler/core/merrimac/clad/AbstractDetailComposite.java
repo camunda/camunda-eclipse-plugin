@@ -108,7 +108,7 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 	 * This method is called by the property sheet tab section to update the UI
 	 * after a new selection is made. Updating consists of a full teardown of the
 	 * widget tree and then rebuilding it for the newly selected EObject. Since the
-	 * same composite MAY be used for different EObject types, the widgets may be
+	 * same composite MAY be used for different EObject types, the widgets may businessObject
 	 * completely different, hence the need for teardown and setup for each new selection.
 	 * 
 	 * @param object
@@ -491,7 +491,7 @@ public abstract class AbstractDetailComposite extends ListAndDetailCompositeBase
 			Class clazz = (listItemClass!=null) ?
 					listItemClass.getInstanceClass() :
 					feature.getEType().getInstanceClass();
-			if (getPropertySection()!=null) {
+			if (propertySection!=null) {
 				tableComposite = PropertiesCompositeFactory.createListComposite(clazz, propertySection);
 			}
 			else {

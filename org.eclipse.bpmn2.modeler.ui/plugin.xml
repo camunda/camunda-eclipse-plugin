@@ -217,7 +217,8 @@
 
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.messageFlow.tab"
-			class="org.eclipse.bpmn2.modeler.ui.property.connectors.MessageFlowPropertySection"
+			class="default"
+			features="messageRef"
 			type="org.eclipse.bpmn2.MessageFlow"
 			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Message Flow">
@@ -225,7 +226,8 @@
 
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.message.tab"
-			class="org.eclipse.bpmn2.modeler.ui.property.data.MessagePropertySection"
+			class="default"
+			features="itemRef"
 			type="org.eclipse.bpmn2.Message"
 			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Message">
@@ -233,23 +235,17 @@
 
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.assocation.tab"
-			class="org.eclipse.bpmn2.modeler.ui.property.connectors.AssociationPropertySection"
+			class="default"
+			features="associationDirection"
 			type="org.eclipse.bpmn2.Association"
 			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Assocation">
 		</propertyTab>
 
 		<propertyTab
-			id="org.eclipse.bpmn2.modeler.conversationLink.tab"
-			class="org.eclipse.bpmn2.modeler.ui.property.connectors.ConversationLinkPropertySection"
-			type="org.eclipse.bpmn2.ConversationLink"
-			afterTab="org.eclipse.bpmn2.modeler.description.tab"
-			label="Conversation Link">
-		</propertyTab>
-
-		<propertyTab
 			id="org.eclipse.bpmn2.modeler.conversation.tab"
-			class="org.eclipse.bpmn2.modeler.ui.property.connectors.ConversationPropertySection"
+			class="default"
+			features="correlationKeys"
 			type="org.eclipse.bpmn2.Conversation"
 			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Conversation">
@@ -262,6 +258,14 @@
 			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Event">
 		</propertyTab>
+		
+		<propertyTab
+			afterTab="org.eclipse.bpmn2.modeler.task.tab"
+			class="org.eclipse.bpmn2.modeler.ui.property.artifact.TextAnnotationPropertySection"
+			id="org.eclipse.bpmn2.modeler.textAnnotation.tab"
+			type="org.eclipse.bpmn2.TextAnnotation"
+			label="Text Annotation">
+		</propertyTab>
 
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.task.tab"
@@ -269,14 +273,6 @@
 			type="org.eclipse.bpmn2.Task"
 			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Task">
-		</propertyTab>
-		
-		<propertyTab
-			afterTab="org.eclipse.bpmn2.modeler.task.tab"
-			class="org.eclipse.bpmn2.modeler.ui.property.artifact.TextAnnotationPropertySection"
-			id="org.eclipse.bpmn2.modeler.textAnnotation.tab"
-			label="Text Annotation"
-			type="org.eclipse.bpmn2.TextAnnotation">
 		</propertyTab>
 
 		<propertyTab
@@ -289,7 +285,8 @@
 
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.serviceTask.tab"
-			class="org.eclipse.bpmn2.modeler.ui.property.tasks.ServiceTaskPropertySection"
+			class="default"
+			features="implementation operationRef"
 			type="org.eclipse.bpmn2.ServiceTask"
 			afterTab="org.eclipse.bpmn2.modeler.task.tab"
 			label="Service Task">
@@ -297,7 +294,8 @@
 
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.userTask.tab"
-			class="org.eclipse.bpmn2.modeler.ui.property.tasks.UserTaskPropertySection"
+			class="default"
+			features="implementation renderings"
 			type="org.eclipse.bpmn2.UserTask"
 			afterTab="org.eclipse.bpmn2.modeler.task.tab"
 			label="User Task">
@@ -305,7 +303,8 @@
 
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.sendTask.tab"
-			class="org.eclipse.bpmn2.modeler.ui.property.tasks.SendTaskPropertySection"
+			class="default"
+			features="implementation messageRef operationRef"
 			type="org.eclipse.bpmn2.SendTask"
 			afterTab="org.eclipse.bpmn2.modeler.task.tab"
 			label="Send Task">
@@ -313,7 +312,8 @@
 
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.receiveTask.tab"
-			class="org.eclipse.bpmn2.modeler.ui.property.tasks.ReceiveTaskPropertySection"
+			class="default"
+			features="implementation instantiate messageRef operationRef"
 			type="org.eclipse.bpmn2.ReceiveTask"
 			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Receive Task">
@@ -321,7 +321,8 @@
 
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.businessRuleTask.tab"
-			class="org.eclipse.bpmn2.modeler.ui.property.tasks.BusinessRuleTaskPropertySection"
+			class="default"
+			features="anyAttribute implementation"
 			type="org.eclipse.bpmn2.BusinessRuleTask"
 			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Business Rule Task">
@@ -329,7 +330,8 @@
 
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.choreographyTask.tab"
-			class="org.eclipse.bpmn2.modeler.ui.property.tasks.ChoreographyTaskPropertySection"
+			class="default"
+			features="loopType initiatingParticipantRef correlationKeys messageFlowRef"
 			type="org.eclipse.bpmn2.ChoreographyTask"
 			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Choreography Task">
@@ -337,7 +339,7 @@
 
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.callActivity.tab"
-			class="org.eclipse.bpmn2.modeler.ui.property.tasks.CallActivityPropertySection"
+			class="org.eclipse.bpmn2.modeler.ui.property.tasks.ActivityPropertySection"
 			type="org.eclipse.bpmn2.CallActivity"
 			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Call Activity">
@@ -345,7 +347,7 @@
 
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.callChoreography.tab"
-			class="org.eclipse.bpmn2.modeler.ui.property.tasks.CallChoreographyPropertySection"
+			class="org.eclipse.bpmn2.modeler.ui.property.tasks.ActivityPropertySection"
 			type="org.eclipse.bpmn2.CallChoreography"
 			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Call Choreography">
@@ -353,10 +355,19 @@
 
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.subProcess.tab"
-			class="org.eclipse.bpmn2.modeler.ui.property.tasks.SubProcessPropertySection"
-			type="org.eclipse.bpmn2.ChoreographyTask"
+			class="org.eclipse.bpmn2.modeler.ui.property.tasks.ActivityPropertySection"
+			type="org.eclipse.bpmn2.SubProcess"
 			afterTab="org.eclipse.bpmn2.modeler.description.tab"
 			label="Sub Process">
+		</propertyTab>
+
+		<propertyTab
+			id="org.eclipse.bpmn2.modeler.subChoreography.tab"
+			class="default"
+			features="anyAttribute loopType participantRefs initiatingParticipantRef correlationKeys artifacts"
+			type="org.eclipse.bpmn2.SubChoreography"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
+			label="Sub Choreography">
 		</propertyTab>
 
 		<propertyTab
@@ -365,23 +376,16 @@
 			afterTab="org.eclipse.bpmn2.modeler.task.tab"
 			label="I/O Parameters">
 		</propertyTab>
-<!--
-		<propertyTab
-			id="org.eclipse.bpmn2.modeler.activity.input.tab"
-			class="org.eclipse.bpmn2.modeler.ui.property.tasks.ActivityInputPropertySection"
-			 type="org.eclipse.bpmn2.Activity"
-			afterTab="org.eclipse.bpmn2.modeler.task.tab"
-			label="Inputs/Assignments">
-		</propertyTab>
 
 		<propertyTab
-			id="org.eclipse.bpmn2.modeler.activity.output.tab"
-			class="org.eclipse.bpmn2.modeler.ui.property.tasks.ActivityOutputPropertySection"
-			type="org.eclipse.bpmn2.Activity"
-			afterTab="org.eclipse.bpmn2.modeler.task.tab"
-			label="Outputs/Assignments">
+			id="org.eclipse.bpmn2.modeler.group.tab"
+			class="default"
+			features="anyAttribute categoryValueRef"
+			type="org.eclipse.bpmn2.Group"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
+			label="Group">
 		</propertyTab>
--->
+
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.gateway.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.gateways.GatewayPropertySection"
@@ -438,6 +442,8 @@
 			<enable object="IntermediateCatchEvent"/>
 			<enable object="IntermediateThrowEvent"/>
 			<enable object="Escalation"/>
+			<enable object="CatchEvent"/>
+			<enable object="ThrowEvent"/>
 			<enable object="BoundaryEvent"/>
 			<enable object="Signal"/>
 			<enable object="Error"/>
@@ -469,6 +475,9 @@
 			<enable object="DataStoreReference"/>
 			<enable object="DataObjectReference"/>
 			<enable object="Group"/>
+			<enable object="Category"/>
+			<enable object="CategoryValue"/>
+			<enable object="TextAnnotation"/>
 			<enable object="ExtensionAttributeValue"/>
 			<enable object="ExtensionAttributeDefinition"/>
 			<enable object="StandardLoopCharacteristics"/>
@@ -476,7 +485,8 @@
 			<enable object="Lane"/>
 			<enable object="LaneSet"/>
 			
-			<!-- this is intended to be a baseclass for global tasks and Process -->
+			<!-- this is intended to be a baseclass for global tasks and Process and -->
+			<!-- should NOT be a valid selection in ModelSubclassSelectionDialog -->
 			<disable object="CallableElement"/>
 			<enable object="CallActivity" feature="calledElementRef"/>
 			

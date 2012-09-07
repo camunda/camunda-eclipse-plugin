@@ -21,10 +21,6 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.swt.widgets.Composite;
 
 public class SequenceFlowPropertySection extends AbstractBpmn2PropertySection {
-	
-	static {
-		PropertiesCompositeFactory.register(SequenceFlow.class, SequenceFlowDetailComposite.class);
-	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.bpmn2.modeler.ui.property.AbstractBpmn2PropertySection#createSectionRoot()
