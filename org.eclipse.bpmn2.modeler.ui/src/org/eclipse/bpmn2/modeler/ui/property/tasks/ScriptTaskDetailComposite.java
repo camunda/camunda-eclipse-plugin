@@ -53,7 +53,7 @@ public class ScriptTaskDetailComposite extends DefaultDetailComposite {
 	@Override
 	public void createBindings(EObject be) {
 		bindAttribute(be,"scriptFormat");
-//		bindAttribute(businessObject,"script");
+//		bindAttribute(be,"script");
 		scriptEditor = new TextObjectEditor(this,be,be.eClass().getEStructuralFeature("script"));
 		scriptEditor.createControl(getAttributesParent(),"Script",SWT.MULTI);
 	}

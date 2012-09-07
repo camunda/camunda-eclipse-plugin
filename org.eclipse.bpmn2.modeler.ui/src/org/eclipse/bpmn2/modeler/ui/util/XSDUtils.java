@@ -991,7 +991,7 @@ public class XSDUtils {
 		}
 		
 		// Since baseType, type's immediate parent, broke the while condition, we know that type is now
-		// as high up the tree as we want to businessObject
+		// as high up the tree as we want to be
 		return type;
 		
 		

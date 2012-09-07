@@ -29,7 +29,7 @@ public class DataItemsPropertySection extends DefaultPropertySection {
 	protected EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
 		EObject be = super.getBusinessObjectForPictogramElement(pe);
 		if (be instanceof BPMNDiagram) {
-//			EList<EObject> contents = businessObject.eResource().getContents();
+//			EList<EObject> contents = be.eResource().getContents();
 //			if (!contents.isEmpty() && contents.get(0) instanceof DocumentRoot) {
 //				return contents.get(0);
 //			}

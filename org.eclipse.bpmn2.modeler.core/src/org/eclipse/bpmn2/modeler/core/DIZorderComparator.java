@@ -51,7 +51,7 @@ final class DIZorderComparator implements Comparator<DiagramElement> {
 		boolean aIsPool = isPool(a);
 		boolean bIsPool = isPool(b);
 
-		// Pools must be the first DI elements as pools can only businessObject placed on diagrams.
+		// Pools must be the first DI elements as pools can only be placed on diagrams.
 		if (aIsPool && bIsPool) {
 			return 0;
 		} else if (aIsPool && !bIsPool) {

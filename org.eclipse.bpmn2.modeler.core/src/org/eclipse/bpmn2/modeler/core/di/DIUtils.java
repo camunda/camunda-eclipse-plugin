@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.core.di;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
@@ -47,6 +48,9 @@ import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
+import org.eclipse.graphiti.mm.algorithms.styles.Color;
+import org.eclipse.graphiti.mm.algorithms.styles.Font;
+import org.eclipse.graphiti.mm.algorithms.styles.Style;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -264,6 +268,13 @@ public class DIUtils {
 	public static Diagram findDiagram(final IDiagramEditor editor, final BPMNDiagram bpmnDiagram) {
 		ResourceSet resourceSet = editor.getResourceSet();
 		if (resourceSet!=null) {
+			return findDiagram(resourceSet, bpmnDiagram);
+		}
+		return null;
+	}
+	
+	public static Diagram findDiagram(ResourceSet resourceSet, final BPMNDiagram bpmnDiagram) {
+		if (resourceSet!=null) {
 			for (Resource r : resourceSet.getResources()) {
 				for (EObject o : r.getContents()) {
 					if (o instanceof Diagram) {
@@ -281,11 +292,31 @@ public class DIUtils {
 	public static void deleteDiagram(final IDiagramEditor editor, final BPMNDiagram bpmnDiagram) {
 		Diagram diagram = DIUtils.findDiagram(editor, bpmnDiagram);
 		if (diagram!=null) {
-			int n = diagram.getPictogramLinks().size();
-			for (int i=n-1; i>=0; --i) {
-				PictogramLink link = diagram.getPictogramLinks().remove(i);
-				EcoreUtil.delete(link);
+			List<EObject> list = new ArrayList<EObject>();
+			TreeIterator<EObject> iter = diagram.eAllContents();
+			while (iter.hasNext()) {
+				EObject o = iter.next();
+				if (o instanceof PictogramLink) {
+					((PictogramLink)o).getBusinessObjects().clear();
+					if (!list.contains(o))
+						list.add(o);
+				}
+				else if (o instanceof Color) {
+					if (!list.contains(o))
+						list.add(o);
+				}
+				else if (o instanceof Font) {
+					if (!list.contains(o))
+						list.add(o);
+				}
+				else if (o instanceof Style) {
+					if (!list.contains(o))
+						list.add(o);
+				}
 			}
+			for (EObject o : list)
+				EcoreUtil.delete(o);
+			
 			EcoreUtil.delete(diagram);
 			EcoreUtil.delete(bpmnDiagram);
 		}	
@@ -315,5 +346,24 @@ public class DIUtils {
 		}
 		return null;
 	}
+	
+	public static BPMNDiagram createBPMNDiagram(Definitions definitions, BaseElement container) {
+		
+		Resource resource = definitions.eResource();
+        BPMNDiagram bpmnDiagram = BpmnDiFactory.eINSTANCE.createBPMNDiagram();
+		ModelUtil.setID(bpmnDiagram, resource);
+        bpmnDiagram.setName(ModelUtil.getDisplayName(container));
 
+		BPMNPlane plane = BpmnDiFactory.eINSTANCE.createBPMNPlane();
+		ModelUtil.setID(plane, resource);
+		plane.setBpmnElement(container);
+		
+		bpmnDiagram.setPlane(plane);
+		
+		// this has to happen last because the IResourceChangeListener in the DesignEditor
+		// looks for add/remove to Definitions.diagrams
+        definitions.getDiagrams().add(bpmnDiagram);
+
+		return bpmnDiagram;
+	}
 }

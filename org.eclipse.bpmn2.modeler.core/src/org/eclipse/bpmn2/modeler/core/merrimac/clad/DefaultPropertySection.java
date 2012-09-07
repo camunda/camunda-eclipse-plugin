@@ -78,17 +78,19 @@ public class DefaultPropertySection extends AbstractBpmn2PropertySection {
 			return super.appliesTo(part, selection);
 		
 		PictogramElement pe = BusinessObjectUtil.getPictogramElementForSelection(selection);
-		// this is a special hack to allow selection of connection decorator labels:
-		// the connection decorator does not have a business object linked to it,
-		// but its parent (the connection) does.
-		if (pe.getLink()==null && pe.eContainer() instanceof PictogramElement)
-			pe = (PictogramElement)pe.eContainer();
-
-		// check all linked BusinessObjects for a match
-		if (pe.getLink()!=null) {
-			for (EObject eObj : pe.getLink().getBusinessObjects()){
-				if (appliesToClass.isInstance(eObj)) {
-					return true;
+		if (pe!=null) {
+			// this is a special hack to allow selection of connection decorator labels:
+			// the connection decorator does not have a business object linked to it,
+			// but its parent (the connection) does.
+			if (pe.getLink()==null && pe.eContainer() instanceof PictogramElement)
+				pe = (PictogramElement)pe.eContainer();
+	
+			// check all linked BusinessObjects for a match
+			if (pe.getLink()!=null) {
+				for (EObject eObj : pe.getLink().getBusinessObjects()){
+					if (appliesToClass.isInstance(eObj)) {
+						return true;
+					}
 				}
 			}
 		}

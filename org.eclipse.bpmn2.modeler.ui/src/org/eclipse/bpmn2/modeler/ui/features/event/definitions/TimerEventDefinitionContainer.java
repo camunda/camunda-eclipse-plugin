@@ -87,7 +87,7 @@ public class TimerEventDefinitionContainer extends AbstractEventDefinitionFeatur
 //		IGaService gaService = Graphiti.getGaService();
 //		image.setForeground(gaService.manageColor(diagram, IColorConstant.GREEN));
 //		StyleUtil.setFillStyle(image, FillStyle.FILL_STYLE_NONE);
-//		StyleUtil.applyStyle(image, businessObject);
+//		StyleUtil.applyStyle(image, be);
 		return timerShape;
 	}
 

@@ -886,6 +886,11 @@ public class ModelHandler {
 
 	@SuppressWarnings("unchecked")
 	public <T> List<T> getAll(final Class<T> class1) {
+		return getAll(this.resource, class1);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> List<T> getAll(Resource resource, final Class<T> class1) {
 		ArrayList<T> l = new ArrayList<T>();
 		TreeIterator<EObject> contents = resource.getAllContents();
 		for (; contents.hasNext();) {
@@ -897,12 +902,12 @@ public class ModelHandler {
 		return l;
 	}
 
-	public DiagramElement findDIElement(BaseElement element) {
+	public static DiagramElement findDIElement(BaseElement element) {
 		String id = element.getId();
 		if (id==null || id.isEmpty())
 			return null;
 
-		List<BPMNDiagram> diagrams = getAll(BPMNDiagram.class);
+		List<BPMNDiagram> diagrams = getAll(element.eResource(), BPMNDiagram.class);
 		for (BPMNDiagram d : diagrams) {
 			// Process elements correspond to BPMNPlane DI elements
 			BPMNPlane plane = d.getPlane();
