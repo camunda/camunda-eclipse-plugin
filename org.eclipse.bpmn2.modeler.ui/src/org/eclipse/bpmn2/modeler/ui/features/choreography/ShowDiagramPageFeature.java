@@ -6,7 +6,8 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.di.BPMNDiagram;
-import org.eclipse.bpmn2.modeler.core.IConstants;
+import org.eclipse.bpmn2.modeler.ui.IConstants;
+import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
@@ -56,7 +57,7 @@ public class ShowDiagramPageFeature extends AbstractCustomFeature {
 				baseElement = (BaseElement)bo;
 			}
 			
-			return DIUtils.findBPMNDiagram(getDiagramEditor(), baseElement) != null;
+			return DIUtils.findBPMNDiagram(getDiagramEditor(), baseElement, false) != null;
 		}
 		return false;
 	}
@@ -80,7 +81,7 @@ public class ShowDiagramPageFeature extends AbstractCustomFeature {
 			else if (bo instanceof BaseElement) {
 				baseElement = (BaseElement)bo;
 			}
-			BPMNDiagram bpmnDiagram = DIUtils.findBPMNDiagram(getDiagramEditor(), baseElement);
+			BPMNDiagram bpmnDiagram = DIUtils.findBPMNDiagram(getDiagramEditor(), baseElement, false);
 			if (bpmnDiagram!=null) {
 				BPMN2MultiPageEditor mpe = ((BPMN2Editor)getDiagramEditor()).getMultipageEditor();
 				mpe.showDesignPage(bpmnDiagram);
@@ -90,7 +91,7 @@ public class ShowDiagramPageFeature extends AbstractCustomFeature {
 
 	@Override
 	public String getImageId() {
-		return null; //IConstants.ICON_PROPERTIES_16;
+		return ImageProvider.IMG_16_EXPAND;
 	}
 
 	@Override

@@ -17,15 +17,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.wizards.Bpmn2DiagramEditorInput;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabFolder2Listener;
 import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -138,6 +144,16 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IGotoMa
 			}
 			
 		});
+		tabFolder.addSelectionListener( new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				int pageIndex = tabFolder.getSelectionIndex();
+				if (pageIndex>=0 && pageIndex<bpmnDiagrams.size() && designEditor!=null) {
+					BPMNDiagram bpmnDiagram = bpmnDiagrams.get(pageIndex);
+					designEditor.selectBpmnDiagram(bpmnDiagram);
+				}
+			}
+		});
 		
 		// defer editor layout until all pages have been created
 		tabFolder.setLayoutDeferred(true);
@@ -147,6 +163,7 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IGotoMa
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				setActivePage(0);
+				designEditor.selectBpmnDiagram(bpmnDiagrams.get(0));
 				tabFolder.setLayoutDeferred(false);
 				tabFolder.setTabPosition(SWT.TOP);
 				updateTabs();
@@ -209,14 +226,10 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IGotoMa
 	
 	public void showDesignPage(final BPMNDiagram bpmnDiagram) {
 		final int pageIndex = bpmnDiagrams.indexOf(bpmnDiagram);
-		if (pageIndex>0) {
-			// go back to "Design" page - the only page that can't be removed
-			Display.getCurrent().asyncExec( new Runnable() {
-				@Override
-				public void run() {
-					setActivePage(pageIndex);
-				}
-			});
+		if (pageIndex>=0) {
+			if (getDesignEditor().getBpmnDiagram()!=bpmnDiagram) {
+				setActivePage(pageIndex);
+			}
 		}
 		else {
 			designEditor.showDesignPage(bpmnDiagram);
@@ -320,6 +333,9 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IGotoMa
 		if (editor instanceof DesignEditor) {
 			BPMNDiagram bpmnDiagram = bpmnDiagrams.get(newPageIndex);
 			((DesignEditor)editor).pageChange(bpmnDiagram);
+//			Diagram diagram = DIUtils.findDiagram(designEditor, bpmnDiagram);
+//			if (diagram != null)
+//				designEditor.selectPictogramElements(new PictogramElement[] {(PictogramElement)diagram});
 		}
 	}
 

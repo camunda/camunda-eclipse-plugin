@@ -85,7 +85,7 @@ public class PullupFeature extends AbstractCustomFeature {
 			PictogramElement pe = pes[0];
 			Object bo = getBusinessObjectForPictogramElement(pe);
 			if (bo instanceof FlowElementsContainer) {
-				return DIUtils.findBPMNDiagram(getDiagramEditor(), (BaseElement)bo) != null;
+				return DIUtils.findBPMNDiagram(getDiagramEditor(), (BaseElement)bo, false) != null;
 			}
 		}
 		return false;
@@ -107,7 +107,7 @@ public class PullupFeature extends AbstractCustomFeature {
 		BPMNPlane newPlane = newBpmnDiagram.getPlane();
 		Diagram newDiagram = DIUtils.findDiagram(getDiagramEditor(), newBpmnDiagram);
 		
-		BPMNDiagram oldBpmnDiagram = DIUtils.findBPMNDiagram(getDiagramEditor(), container);
+		BPMNDiagram oldBpmnDiagram = DIUtils.findBPMNDiagram(getDiagramEditor(), container, false);
 		BPMNPlane oldPlane = oldBpmnDiagram.getPlane();
 		Diagram oldDiagram = DIUtils.findDiagram(getDiagramEditor(), oldBpmnDiagram);
 		

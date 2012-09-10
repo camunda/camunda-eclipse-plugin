@@ -494,8 +494,8 @@ public class DIImport {
 			if (containerShape != null) {
 				// add the FlowNode to its parent SubProcess, Process or SubChoreography
 				// but only if the node is on the same BPMNDiagram as its parent container
-				BPMNDiagram parentDiagram = DIUtils.findBPMNDiagram(editor, (BaseElement)parent);
-				BPMNDiagram childDiagram = DIUtils.findBPMNDiagram(editor, node);
+				BPMNDiagram parentDiagram = DIUtils.findBPMNDiagram(editor, (BaseElement)parent, false);
+				BPMNDiagram childDiagram = DIUtils.findBPMNDiagram(editor, node, false);
 				if (parentDiagram == childDiagram) {
 					target = containerShape;
 					ILocation loc = Graphiti.getPeLayoutService().getLocationRelativeToDiagram(target);

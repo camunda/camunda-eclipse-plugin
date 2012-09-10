@@ -322,7 +322,7 @@ public class DIUtils {
 		}	
 	}
 	
-	public static BPMNDiagram findBPMNDiagram(final IDiagramEditor editor, final BaseElement baseElement) {
+	public static BPMNDiagram findBPMNDiagram(final IDiagramEditor editor, final BaseElement baseElement, boolean deep) {
 		if (baseElement!=null) {
 			ResourceSet resourceSet = editor.getResourceSet();
 			if (resourceSet!=null) {
@@ -337,6 +337,18 @@ public class DIUtils {
 									BaseElement bpmnElement = bpmnDiagram.getPlane().getBpmnElement();
 									if (bpmnElement == baseElement)
 										return bpmnDiagram;
+									if (deep) {
+										for (DiagramElement de : bpmnDiagram.getPlane().getPlaneElement()) {
+											if (de instanceof BPMNShape)
+												bpmnElement = ((BPMNShape)de).getBpmnElement();
+											else if (de instanceof BPMNEdge)
+												bpmnElement = ((BPMNEdge)de).getBpmnElement();
+											else
+												continue;
+											if (bpmnElement == baseElement)
+												return bpmnDiagram;
+										}
+									}
 								}
 							}
 						}

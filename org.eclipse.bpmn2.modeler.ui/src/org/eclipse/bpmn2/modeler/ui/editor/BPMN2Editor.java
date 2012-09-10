@@ -294,6 +294,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	private IFile modelFile;
 	private IFile diagramFile;
 	protected BPMNDiagram bpmnDiagram;
+	protected Bpmn2ResourceImpl bpmnResource;
 	
 	private IWorkbenchListener workbenchListener;
 	private IPartListener2 selectionListener;
@@ -479,7 +480,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 			ResourceSet resourceSet = getEditingDomain().getResourceSet();
 			getTargetRuntime().setResourceSet(resourceSet);
 			
-			Bpmn2ResourceImpl bpmnResource = (Bpmn2ResourceImpl) resourceSet.createResource(modelUri,
+			bpmnResource = (Bpmn2ResourceImpl) resourceSet.createResource(modelUri,
 					Bpmn2ModelerResourceImpl.BPMN2_CONTENT_TYPE_ID);
 
 			resourceSet.setURIConverter(new ProxyURIConverterImplExtension());

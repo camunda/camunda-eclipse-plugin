@@ -87,7 +87,7 @@ public class PushdownFeature extends AbstractCustomFeature {
 			PictogramElement pe = pes[0];
 			Object bo = getBusinessObjectForPictogramElement(pe);
 			if (bo instanceof FlowElementsContainer) {
-				return DIUtils.findBPMNDiagram(getDiagramEditor(), (BaseElement)bo) == null;
+				return DIUtils.findBPMNDiagram(getDiagramEditor(), (BaseElement)bo, false) == null;
 			}
 		}
 		return false;

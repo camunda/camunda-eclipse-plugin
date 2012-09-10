@@ -45,6 +45,7 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.actions.ActionFactory;
@@ -96,8 +97,8 @@ public class BPMN2EditorOutlinePage extends ContentOutlinePage implements IPrope
 	private PageBook pageBook;
 
 	// The outline-controls and the thumbnail-control of the pagebook
-	private Control businessModelOutline;
-	private Control interchangeModelOutline;
+	private Tree businessModelOutline;
+	private Tree interchangeModelOutline;
 
 	// and their corresponding editpart factories
 	private EditPartFactory businessModelEditPartFactory;
@@ -163,8 +164,8 @@ public class BPMN2EditorOutlinePage extends ContentOutlinePage implements IPrope
 	@Override
 	public void createControl(Composite parent) {
 		pageBook = new PageBook(parent, SWT.NONE);
-		businessModelOutline = getViewer().createControl(pageBook);
-		interchangeModelOutline = getViewer().createControl(pageBook);
+		businessModelOutline = (Tree)getViewer().createControl(pageBook);
+		interchangeModelOutline = (Tree)getViewer().createControl(pageBook);
 		overview = new Canvas(pageBook, SWT.NONE);
 		createOutlineViewer();
 

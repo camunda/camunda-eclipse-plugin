@@ -12,7 +12,6 @@ import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
-import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
@@ -35,12 +34,15 @@ import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.WorkbenchPartAction;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.ui.editor.DiagramEditorContextMenuProvider;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -53,7 +55,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchPart;
 
@@ -104,8 +105,61 @@ public class DesignEditor extends BPMN2Editor {
 		}
 		super.setPartName(partName);
     }
+
+	private boolean inSelectionChanged = false;
 	
-	public void pageChange(BPMNDiagram bpmnDiagram) {
+	@Override
+	public void selectionChanged(final IWorkbenchPart part, final ISelection selection) {
+		// is the selected EObject in our resource?
+		if (!inSelectionChanged) {
+			try {
+				inSelectionChanged = true;
+				EObject object = BusinessObjectUtil.getBusinessObjectForSelection(selection);
+				if (object!=null && object.eResource() == bpmnResource) {
+					BPMNDiagram newBpmnDiagram = null;
+					if (object instanceof BaseElement) {
+						// select the right diagram page
+						newBpmnDiagram = DIUtils.findBPMNDiagram(this, (BaseElement)object, true);
+					}
+					else if (object instanceof BPMNDiagram) {
+						newBpmnDiagram = (BPMNDiagram)object;
+					}
+					if (newBpmnDiagram!=null && getBpmnDiagram() != newBpmnDiagram) {
+						BPMNDiagram rootBpmnDiagram = newBpmnDiagram;
+						object = newBpmnDiagram.getPlane().getBpmnElement();
+						while (!(object instanceof RootElement)) {
+							// this is a BPMNDiagram that contains a SubProcess, not a RootElement
+							// so find the BPMNDiagram that contains the RootElement which owns
+							// this SubProcess
+							rootBpmnDiagram = DIUtils.findBPMNDiagram(this, (BaseElement)object, true);
+							object = rootBpmnDiagram.getPlane().getBpmnElement();
+						}
+						if (getBpmnDiagram()!=rootBpmnDiagram) {
+							multipageEditor.showDesignPage(rootBpmnDiagram);
+						}
+						if (rootBpmnDiagram != newBpmnDiagram) {
+							final BPMNDiagram d = newBpmnDiagram;
+							Display.getDefault().asyncExec(new Runnable() {
+								public void run() {
+									showDesignPage(d);
+									Object sel = BusinessObjectUtil.getPictogramElementForSelection(selection);
+									if (sel instanceof PictogramElement)
+										DesignEditor.super.selectPictogramElements(new PictogramElement[] {(PictogramElement)sel});
+								}
+							});
+						}
+					}
+				}
+				DesignEditor.super.selectionChanged(part,selection);
+				
+			} catch(Exception e) {
+			} finally {
+				inSelectionChanged = false;
+			}
+		}
+	}
+
+	public void pageChange(final BPMNDiagram bpmnDiagram) {
 		setBpmnDiagram(bpmnDiagram);
 		reloadTabs();
 		tabFolder.setSelection(0);
@@ -113,6 +167,31 @@ public class DesignEditor extends BPMN2Editor {
 		tabFolder.getItem(0).setData(bpmnDiagram);
 	}
 	
+	public void selectBpmnDiagram(BPMNDiagram bpmnDiagram) {
+		Diagram diagram = DIUtils.findDiagram(DesignEditor.this, bpmnDiagram);
+		if (diagram != null)
+			selectPictogramElements(new PictogramElement[] {(PictogramElement)diagram});
+	}
+
+	public void showDesignPage(final BPMNDiagram bpmnDiagram) {
+		CTabItem current = tabFolder.getSelection();
+		if (current!=null && current.getData() == bpmnDiagram) {
+			current.getControl().setVisible(true);
+			return;
+		}
+		showDesignPageInternal(bpmnDiagram);
+	}
+	
+	private void showDesignPageInternal(BPMNDiagram bpmnDiagram) {
+		for (CTabItem item : tabFolder.getItems()) {
+			if (item.getData() == bpmnDiagram) {
+				setBpmnDiagram(bpmnDiagram);
+				tabFolder.setSelection(item);
+				item.getControl().setVisible(true);
+			}
+		}
+	}
+
 	protected void addDesignPage(final BPMNDiagram bpmnDiagram) {
 		setBpmnDiagram( (BPMNDiagram)tabFolder.getItem(0).getData() );
 		reloadTabs();
@@ -144,14 +223,14 @@ public class DesignEditor extends BPMN2Editor {
 		}
 		if (flowElements != null) {
 			for (FlowElement fe : flowElements) {
-				BPMNDiagram bd = DIUtils.findBPMNDiagram(this, fe);
+				BPMNDiagram bd = DIUtils.findBPMNDiagram(this, fe, false);
 				if (bd!=null)
 					bpmnDiagrams.add(bd);
 				TreeIterator<EObject> iter = fe.eAllContents();
 				while (iter.hasNext()) {
 					EObject o = iter.next();
 					if (o instanceof BaseElement) {
-						bd = DIUtils.findBPMNDiagram(this, (BaseElement)o);
+						bd = DIUtils.findBPMNDiagram(this, (BaseElement)o, false);
 						if (bd!=null) {
 							bpmnDiagrams.add(bd);
 						}
@@ -193,7 +272,8 @@ public class DesignEditor extends BPMN2Editor {
 					int pageIndex = tabFolder.indexOf((CTabItem) e.item);
 					CTabItem item = tabFolder.getItem(pageIndex);
 					BPMNDiagram bpmnDiagram = (BPMNDiagram) item.getData();
-					showDesignPage(bpmnDiagram);
+					showDesignPageInternal(bpmnDiagram);
+					selectBpmnDiagram(bpmnDiagram);
 				}
 			});
 			tabFolder.addTraverseListener(new TraverseListener() { 
@@ -228,17 +308,6 @@ public class DesignEditor extends BPMN2Editor {
 				BPMNDiagram bpmnDiagram = bpmnDiagrams.get(i);
 				if (bpmnDiagram.getPlane().getBpmnElement() instanceof RootElement)
 					multipageEditor.addDesignPage(bpmnDiagram);
-			}
-		}
-	}
-	
-	public void showDesignPage(final BPMNDiagram bpmnDiagram) {
-		for (CTabItem item : tabFolder.getItems()) {
-			if (item.getData() == bpmnDiagram) {
-				setBpmnDiagram(bpmnDiagram);
-				tabFolder.setSelection(item);
-				item.getControl().setVisible(true);
-				break;
 			}
 		}
 	}
