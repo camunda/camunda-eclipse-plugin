@@ -14,8 +14,9 @@ package org.eclipse.bpmn2.modeler.core;
 
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
 
 public interface IBpmn2RuntimeExtension {
 
@@ -24,10 +25,10 @@ public interface IBpmn2RuntimeExtension {
 	 * The implementation should check for specific extensions and namespaces that identify
 	 * the file for this runtime.
 	 *  
-	 * @param file
+	 * @param input
 	 * @return true if the file is targeted for this runtime, false if the file is generic BPMN 2.0
 	 */
-	public boolean isContentForRuntime(IFile file);
+	public boolean isContentForRuntime(IEditorInput input);
 	public String getTargetNamespace(Bpmn2DiagramType diagramType);
 	public void initialize();
 	

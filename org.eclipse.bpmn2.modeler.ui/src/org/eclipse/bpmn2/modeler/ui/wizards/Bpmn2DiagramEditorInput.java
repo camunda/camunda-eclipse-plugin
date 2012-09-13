@@ -31,7 +31,7 @@ public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
 		super(diagramUri, providerId);
 		this.domain = domain;
 	}
-
+	
 	public Bpmn2DiagramType getInitialDiagramType() {
 		return initialDiagramType;
 	}
@@ -72,14 +72,6 @@ public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
 		return false;
 	}
 
-	@Override
-	public Object getAdapter(Class adapter) {
-//		if (adapter.equals(TransactionalEditingDomain.class)) {
-//			return new Bpmn2TransactionalEditingDomain();
-//		}
-		return super.getAdapter(adapter);
-	}
-
 	public BPMNDiagram getBpmnDiagram() {
 		return bpmnDiagram;
 	}
@@ -87,8 +79,4 @@ public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
 	public void setBpmnDiagram(BPMNDiagram bpmnDiagram) {
 		this.bpmnDiagram = bpmnDiagram;
 	}
-
-//	public class Bpmn2TransactionalEditingDomain implements TransactionalEditingDomain {
-//		
-//	}
 }

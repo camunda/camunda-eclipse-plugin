@@ -101,7 +101,6 @@ public class DesignEditor extends BPMN2Editor {
 		if (input instanceof DiagramEditorInput) {
 			URI uri = ((DiagramEditorInput)input).getUri();
 			partName = URI.decode(uri.trimFileExtension().lastSegment());
-	
 		}
 		super.setPartName(partName);
     }

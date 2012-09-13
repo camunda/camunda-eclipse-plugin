@@ -40,6 +40,7 @@ import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmCustomTaskFeat
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.wid.WIDException;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.wid.WIDHandler;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.wid.WorkItemDefinition;
+import org.eclipse.bpmn2.modeler.ui.wizards.FileService;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -51,6 +52,8 @@ import org.eclipse.graphiti.ui.internal.GraphitiUIPlugin;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
 import org.xml.sax.InputSource;
 
 @SuppressWarnings("restriction")
@@ -69,9 +72,9 @@ public class JBPM5RuntimeExtension implements IBpmn2RuntimeExtension {
 	 * @see org.eclipse.bpmn2.modeler.core.IBpmn2RuntimeExtension#isContentForRuntime(org.eclipse.core.resources.IFile)
 	 */
 	@Override
-	public boolean isContentForRuntime(IFile file) {
+	public boolean isContentForRuntime(IEditorInput input) {
 		try {
-			InputSource source = new InputSource(file.getContents());
+			InputSource source = new InputSource( FileService.getInputContents(input) );
 			parser = new RootElementParser();
 			parser.parse(source);
 		} catch (AcceptedException e) {

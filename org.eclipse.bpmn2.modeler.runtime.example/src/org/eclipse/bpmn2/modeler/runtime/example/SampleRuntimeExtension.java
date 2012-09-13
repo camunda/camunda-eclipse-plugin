@@ -14,8 +14,9 @@
 package org.eclipse.bpmn2.modeler.runtime.example;
 
 import org.eclipse.bpmn2.modeler.core.IBpmn2RuntimeExtension;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 
@@ -44,7 +45,7 @@ public class SampleRuntimeExtension implements IBpmn2RuntimeExtension {
 	 * @see org.eclipse.bpmn2.modeler.core.IBpmn2RuntimeExtension#isContentForRuntime(org.eclipse.bpmn2.modeler.core.IFile)
 	 */
 	@Override
-	public boolean isContentForRuntime(IFile file) {
+	public boolean isContentForRuntime(IEditorInput input) {
 		// IMPORTANT: The plugin is responsible for inspecting the file contents!
 		// Unless you are absolutely sure that the file is targeted for this runtime
 		// (by, e.g. looking at the targetNamespace or some other feature) then this
@@ -57,5 +58,4 @@ public class SampleRuntimeExtension implements IBpmn2RuntimeExtension {
 			Bpmn2Preferences preferences) {
 		return null;
 	}
-
 }

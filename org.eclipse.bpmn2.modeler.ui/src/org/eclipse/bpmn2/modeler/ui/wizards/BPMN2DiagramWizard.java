@@ -19,6 +19,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
@@ -68,16 +69,8 @@ public class BPMN2DiagramWizard extends Wizard implements INewWizard {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
 					IPath path = container.getFullPath().append(fileName);
-					IFolder folder = null;
-					BPMN2DiagramCreator factory = new BPMN2DiagramCreator();
-
-					folder = BPMN2DiagramCreator.getTempFolder(path);
-
-					factory.setDiagramFile(BPMN2DiagramCreator.getTempFile(path,folder));
-
-					factory.setDiagramFolder(folder);
-
-					factory.createDiagram(page1.getDiagramType(), targetNamespace);
+					URI uri = URI.createPlatformResourceURI(path.toString(), true);
+					BPMN2DiagramCreator.createDiagram(uri, page1.getDiagramType(), targetNamespace);
 
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);

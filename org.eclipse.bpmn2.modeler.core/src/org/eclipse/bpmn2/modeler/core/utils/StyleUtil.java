@@ -95,7 +95,7 @@ public class StyleUtil {
 			IPeService peService = Graphiti.getPeService();
 
 			Diagram diagram = findDiagram(ga);
-			Bpmn2Preferences pref = Bpmn2Preferences.getInstance(diagram);
+			Bpmn2Preferences pref = Bpmn2Preferences.getInstance(be);
 			ShapeStyle ss = pref.getShapeStyle(be);
 			IColorConstant foreground = ga instanceof AbstractText ? ss.getTextColor() : ss.getShapeForeground();
 			IColorConstant background = ss.getShapeBackground();
