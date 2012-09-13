@@ -19,6 +19,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
+import org.eclipse.graphiti.ui.editor.DiagramEditor;
 
 /**
  * @author Bob Brodt
@@ -38,7 +39,7 @@ public class SampleRuntimeExtension implements IBpmn2RuntimeExtension {
 	 * @see org.eclipse.bpmn2.modeler.core.IBpmn2RuntimeExtension#initialize()
 	 */
 	@Override
-	public void initialize() {
+	public void initialize(DiagramEditor editor) {
 	}
 
 	/* (non-Javadoc)

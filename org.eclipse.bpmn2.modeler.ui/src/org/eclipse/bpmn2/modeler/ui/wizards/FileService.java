@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.ui.wizards;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -203,7 +204,14 @@ public class FileService {
 
 	public static InputStream getInputContents(IEditorInput input) {
 		try {
-			if (input instanceof FileEditorInput) {
+			if (input instanceof Bpmn2DiagramEditorInput) {
+				URI uri = getInputUri(input);
+				File file = new File(uri.toFileString());
+				if (file.exists()) {
+					InputStream is = new FileInputStream(file);
+					return is;
+				}
+			} else if (input instanceof FileEditorInput) {
 				return ((FileEditorInput) input).getFile().getContents();
 			} else if (input instanceof IStorageEditorInput) {
 				return ((IStorageEditorInput) input).getStorage().getContents();
@@ -216,7 +224,7 @@ public class FileService {
 		return null;
 	}
 	
-	public static URI getInputUri(IEditorSite site, IEditorInput input) {
+	public static URI getInputUri(IEditorInput input) {
 		if (input instanceof Bpmn2DiagramEditorInput) {
 			URI uri = ((Bpmn2DiagramEditorInput) input).getModelUri();
 			return uri.trimFragment();

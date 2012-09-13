@@ -14,6 +14,7 @@ package org.eclipse.bpmn2.modeler.core;
 
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
+import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -30,7 +31,7 @@ public interface IBpmn2RuntimeExtension {
 	 */
 	public boolean isContentForRuntime(IEditorInput input);
 	public String getTargetNamespace(Bpmn2DiagramType diagramType);
-	public void initialize();
+	public void initialize(DiagramEditor editor);
 	
 	public Composite getPreferencesComposite(Composite parent, Bpmn2Preferences preferences);
 }
