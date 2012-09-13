@@ -59,8 +59,7 @@ public class BPMN2DiagramCreator {
 		TransactionalEditingDomain domain = FileService.createEmfFileForDiagram(diagramUri, diagram, diagramEditor);
 
 		String providerId = GraphitiUi.getExtensionManager().getDiagramTypeProviderId(diagram.getDiagramTypeId());
-		final Bpmn2DiagramEditorInput editorInput = new Bpmn2DiagramEditorInput(EcoreUtil.getURI(diagram), domain,
-				providerId);
+		final Bpmn2DiagramEditorInput editorInput = new Bpmn2DiagramEditorInput(modelUri, diagramUri, domain, providerId);
 		editorInput.setInitialDiagramType(diagramType);
 		editorInput.setTargetNamespace(targetNamespace);
 

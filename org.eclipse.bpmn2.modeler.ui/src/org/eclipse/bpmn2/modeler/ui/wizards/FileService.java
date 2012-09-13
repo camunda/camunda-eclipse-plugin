@@ -217,8 +217,8 @@ public class FileService {
 	}
 	
 	public static URI getInputUri(IEditorSite site, IEditorInput input) {
-		if (input instanceof DiagramEditorInput) {
-			URI uri = ((DiagramEditorInput) input).getUri();
+		if (input instanceof Bpmn2DiagramEditorInput) {
+			URI uri = ((Bpmn2DiagramEditorInput) input).getModelUri();
 			return uri.trimFragment();
 		} else if (input instanceof FileEditorInput) {
 			IPath path =  ((FileEditorInput) input).getFile().getFullPath();

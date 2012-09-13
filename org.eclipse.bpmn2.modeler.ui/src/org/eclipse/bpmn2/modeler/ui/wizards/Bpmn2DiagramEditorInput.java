@@ -26,10 +26,12 @@ public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
 	private Bpmn2DiagramType initialDiagramType = Bpmn2DiagramType.NONE;
 	private String targetNamespace;
 	private BPMNDiagram bpmnDiagram;
+	private URI modelUri;
 	
-	Bpmn2DiagramEditorInput(URI diagramUri, TransactionalEditingDomain domain, String providerId) {
+	Bpmn2DiagramEditorInput(URI modelUri, URI diagramUri, TransactionalEditingDomain domain, String providerId) {
 		super(diagramUri, providerId);
 		this.domain = domain;
+		this.modelUri = modelUri;
 	}
 	
 	public Bpmn2DiagramType getInitialDiagramType() {
@@ -48,6 +50,10 @@ public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
 		this.targetNamespace = targetNamespace;
 	}
 
+	public URI  getModelUri() {
+		return modelUri;
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		boolean superEquals = super.equals(obj);
