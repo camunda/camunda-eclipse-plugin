@@ -125,34 +125,35 @@ public class DIUtils {
 
 			EObject be = BusinessObjectUtil.getFirstElementOfType(connection, BaseElement.class);
 			BPMNEdge edge = (BPMNEdge) modelHandler.findDIElement((BaseElement) be);
-			Point point = DcFactory.eINSTANCE.createPoint();
-
-			List<Point> waypoint = edge.getWaypoint();
-			waypoint.clear();
-
-			ILocation loc;
-			loc = layoutService.getLocationRelativeToDiagram(connection.getStart());
-			point.setX(loc.getX());
-			point.setY(loc.getY());
-			waypoint.add(point);
-
-			if (connection instanceof FreeFormConnection) {
-				FreeFormConnection freeForm = (FreeFormConnection) connection;
-				EList<org.eclipse.graphiti.mm.algorithms.styles.Point> bendpoints = freeForm.getBendpoints();
-				for (org.eclipse.graphiti.mm.algorithms.styles.Point bp : bendpoints) {
-					point = DcFactory.eINSTANCE.createPoint();
-					point.setX(bp.getX());
-					point.setY(bp.getY());
-					waypoint.add(point);
+			if (edge!=null) {
+				Point point = DcFactory.eINSTANCE.createPoint();
+	
+				List<Point> waypoint = edge.getWaypoint();
+				waypoint.clear();
+	
+				ILocation loc;
+				loc = layoutService.getLocationRelativeToDiagram(connection.getStart());
+				point.setX(loc.getX());
+				point.setY(loc.getY());
+				waypoint.add(point);
+	
+				if (connection instanceof FreeFormConnection) {
+					FreeFormConnection freeForm = (FreeFormConnection) connection;
+					EList<org.eclipse.graphiti.mm.algorithms.styles.Point> bendpoints = freeForm.getBendpoints();
+					for (org.eclipse.graphiti.mm.algorithms.styles.Point bp : bendpoints) {
+						point = DcFactory.eINSTANCE.createPoint();
+						point.setX(bp.getX());
+						point.setY(bp.getY());
+						waypoint.add(point);
+					}
 				}
+	
+				point = DcFactory.eINSTANCE.createPoint();
+				loc = layoutService.getLocationRelativeToDiagram(connection.getEnd());
+				point.setX(loc.getX());
+				point.setY(loc.getY());
+				waypoint.add(point);
 			}
-
-			point = DcFactory.eINSTANCE.createPoint();
-			loc = layoutService.getLocationRelativeToDiagram(connection.getEnd());
-			point.setX(loc.getX());
-			point.setY(loc.getY());
-			waypoint.add(point);
-
 		} catch (IOException e) {
 			Activator.logError(e);
 		}
@@ -322,7 +323,7 @@ public class DIUtils {
 		}	
 	}
 	
-	public static BPMNDiagram findBPMNDiagram(final IDiagramEditor editor, final BaseElement baseElement) {
+	public static BPMNDiagram findBPMNDiagram(final IDiagramEditor editor, final BaseElement baseElement, boolean deep) {
 		if (baseElement!=null) {
 			ResourceSet resourceSet = editor.getResourceSet();
 			if (resourceSet!=null) {
@@ -337,6 +338,18 @@ public class DIUtils {
 									BaseElement bpmnElement = bpmnDiagram.getPlane().getBpmnElement();
 									if (bpmnElement == baseElement)
 										return bpmnDiagram;
+									if (deep) {
+										for (DiagramElement de : bpmnDiagram.getPlane().getPlaneElement()) {
+											if (de instanceof BPMNShape)
+												bpmnElement = ((BPMNShape)de).getBpmnElement();
+											else if (de instanceof BPMNEdge)
+												bpmnElement = ((BPMNEdge)de).getBpmnElement();
+											else
+												continue;
+											if (bpmnElement == baseElement)
+												return bpmnDiagram;
+										}
+									}
 								}
 							}
 						}

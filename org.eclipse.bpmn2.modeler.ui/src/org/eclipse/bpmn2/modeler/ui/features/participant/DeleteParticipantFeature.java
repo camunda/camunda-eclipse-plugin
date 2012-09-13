@@ -17,6 +17,8 @@ import java.util.List;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
+import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.DefaultDeleteBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
@@ -41,9 +43,22 @@ public class DeleteParticipantFeature extends DefaultDeleteBPMNShapeFeature {
 	@Override
 	public void delete(IDeleteContext context) {
 		Participant participant = BusinessObjectUtil.getFirstElementOfType(context.getPictogramElement(), Participant.class);
+		Definitions defs = ModelUtil.getDefinitions(participant);
 		Process process = participant.getProcessRef();
 		if (process!=null) {
+			BPMNDiagram bpmnDiagram = null;
+			if (defs!=null) {
+				for (BPMNDiagram d : defs.getDiagrams()) {
+					BPMNPlane plane = d.getPlane();
+					if (plane.getBpmnElement() == process) {
+						bpmnDiagram = d;
+						break;
+					}
+				}
+			}
 			deleteBusinessObject(process);
+			if (bpmnDiagram!=null)
+				deleteBusinessObject(bpmnDiagram);
 		}
 		super.delete(context);
 	}

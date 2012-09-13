@@ -151,6 +151,14 @@ public class BusinessObjectUtil {
 		PictogramElement pe = getPictogramElementForSelection(selection);
 		if (pe!=null)
 			return getFirstElementOfType(pe, EObject.class);
+		if (selection instanceof IStructuredSelection) {
+			Object o = ((IStructuredSelection)selection).getFirstElement();
+			if (o instanceof EditPart) {
+				o = ((EditPart)o).getModel();
+				if (o instanceof EObject)
+					return (EObject)o;
+			}
+		}				
 		return null;
 	}
 

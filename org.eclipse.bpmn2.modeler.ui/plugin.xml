@@ -114,9 +114,6 @@
 			</diagramType>
 			<imageProvider id="org.eclipse.bpmn2.modeler.ui.ImageProvider">
 			</imageProvider>
-   <imageProvider
-         id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.JBPM5ImageProvider">
-   </imageProvider>
 		</diagramTypeProvider>
 	</extension>
 	

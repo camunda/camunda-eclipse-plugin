@@ -30,12 +30,13 @@ public class ModelHandlerLocator {
 	public static ModelHandler getModelHandler(Resource eResource) throws IOException {
 		if (eResource==null)
 			return null;
-		URI uri = eResource.getURI();
+		URI uri = eResource.getURI().trimFragment();
 
 		return getModelHandler(uri);
 	}
 
 	public static ModelHandler getModelHandler(URI path) throws IOException {
+		path = path.trimFragment();
 		ModelHandler modelHandler = map.get(path);
 		if (modelHandler == null) {
 			return diagramMap.get(path);
@@ -44,16 +45,18 @@ public class ModelHandlerLocator {
 	}
 
 	public static void put(URI diagramPath, ModelHandler mh) {
-		diagramMap.put(diagramPath, mh);
+		diagramMap.put(diagramPath.trimFragment(), mh);
 	}
 
 	public static void remove(URI path) {
+		path = path.trimFragment();
 		if (map.remove(path)==null) {
 			diagramMap.remove(path);
 		}
 	}
 
 	public static ModelHandler createModelHandler(URI path, final Bpmn2ResourceImpl resource) {
+		path = path.trimFragment();
 		if (map.containsKey(path)) {
 			return map.get(path);
 		}
@@ -62,6 +65,7 @@ public class ModelHandlerLocator {
 
 	private static ModelHandler createNewModelHandler(URI path, final Bpmn2ResourceImpl resource) {
 		ModelHandler handler = new ModelHandler();
+		path = path.trimFragment();
 		map.put(path, handler);
 		handler.resource = resource;
 

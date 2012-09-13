@@ -268,7 +268,7 @@ public class BPMN2ProjectValidator extends AbstractValidator {
 	
     protected TargetRuntime getTargetRuntime() {
 		if (targetRuntime==null)
-			targetRuntime = getPreferences().getRuntime(modelFile);
+			targetRuntime = getPreferences().getRuntime();
 		return targetRuntime;
 	}
 

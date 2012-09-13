@@ -13,31 +13,26 @@
 
 package org.eclipse.bpmn2.modeler.ui.editor;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.eclipse.bpmn2.modeler.core.di.DIUtils;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.ui.wizards.Bpmn2DiagramEditorInput;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.gef.ContextMenuProvider;
-import org.eclipse.gef.ui.actions.ActionRegistry;
-import org.eclipse.gef.ui.actions.WorkbenchPartAction;
-import org.eclipse.graphiti.dt.IDiagramTypeProvider;
-import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
-import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.ui.editor.DiagramEditor;
-import org.eclipse.graphiti.ui.editor.DiagramEditorContextMenuProvider;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabFolder2Listener;
 import org.eclipse.swt.custom.CTabFolderEvent;
+import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -75,110 +70,21 @@ import org.w3c.dom.Node;
  */
 public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IGotoMarker {
 
-	BPMN2Editor designEditor;
-	StructuredTextEditor sourceViewer;
-	CTabFolder tabFolder;
-	int defaultTabHeight;
+	DesignEditor designEditor;
+	SourceViewer sourceViewer;
+	private CTabFolder tabFolder;
+	private int defaultTabHeight;
+	private List<BPMNDiagram> bpmnDiagrams = new ArrayList<BPMNDiagram>();
 	
-	/**
-	 * 
-	 */
 	public BPMN2MultiPageEditor() {
 		super();
 	}
 
 	@Override
 	protected IEditorSite createSite(IEditorPart editor) {
-		return new MultiPageEditorSite(this, editor) {
-			@Override
-			protected void handleSelectionChanged(SelectionChangedEvent event) {
-				ISelectionProvider parentProvider = getMultiPageEditor().getSite()
-						.getSelectionProvider();
-				if (parentProvider instanceof MultiPageSelectionProvider) {
-					SelectionChangedEvent newEvent = getNewEvent(parentProvider, event);
-					MultiPageSelectionProvider prov = (MultiPageSelectionProvider) parentProvider;
-					prov.fireSelectionChanged(newEvent);
-				}
-			}
-			
-			@Override
-			protected void handlePostSelectionChanged(SelectionChangedEvent event) {
-				ISelectionProvider parentProvider = getMultiPageEditor().getSite()
-						.getSelectionProvider();
-				if (parentProvider instanceof MultiPageSelectionProvider) {
-					SelectionChangedEvent newEvent = getNewEvent(parentProvider, event);
-					MultiPageSelectionProvider prov = (MultiPageSelectionProvider) parentProvider;
-					prov.firePostSelectionChanged(newEvent);
-				}
-			}
-			
-			protected SelectionChangedEvent getNewEvent(ISelectionProvider parentProvider, SelectionChangedEvent event) {
-				ISelection selection = event.getSelection();
-				if (selection instanceof IStructuredSelection) {
-					IStructuredSelection ss = (IStructuredSelection)selection;
-					Object o = ss.getFirstElement();
-					if (o instanceof Node) {
-						selection = getNewSelection((Node)o);
-					}
-				}
-				if (selection!=null)
-					return new SelectionChangedEvent(parentProvider, selection);
-				return event;
-			}
-
-			protected StructuredSelection getNewSelection(Node node) {
-				int type =  node.getNodeType();
-				if (type==1) {
-					// node type = element
-					PictogramElement pe = null;
-					Element elem = (Element)node;
-					String value = elem.getAttribute("bpmnElement");
-					if (value!=null) {
-						pe = findPictogramElement(value);
-					}
-					
-					if (pe==null) {
-						value = elem.getAttribute("id");
-						if (value!=null)
-							pe = findPictogramElement(value);
-					}
-					
-					if (pe!=null) {
-						return new StructuredSelection(pe);
-					}
-					return getNewSelection(node.getParentNode());
-				}
-				else if (type==2) {
-					// node type = attribute
-					// search the attribute's owner
-					Attr attr = (Attr)node;
-					return getNewSelection(attr.getOwnerElement());
-				}
-				else if (type==3) {
-					// node type = text
-					return getNewSelection(node.getParentNode());
-				}
-				return null;
-			}
-			
-			protected PictogramElement findPictogramElement(String id) {
-				PictogramElement pictogramElement = null;
-				if (id!=null) {
-					BaseElement be = designEditor.getModelHandler().findElement(id);
-					List<PictogramElement> pes = Graphiti.getLinkService().getPictogramElements(designEditor.getDiagramTypeProvider().getDiagram(), be);
-					for (PictogramElement pe : pes) {
-						if (pe instanceof ContainerShape) {
-							pictogramElement = pe;
-						}
-						else if (pe instanceof FreeFormConnection) {
-							pictogramElement = pe;
-						}
-					}
-				}
-				
-				return pictogramElement;
-			}
-		};
+		if (editor instanceof DesignEditor)
+			return new DesignEditorSite(this, editor);
+		return new MultiPageEditorSite(this, editor);
 	}
 
 	@Override
@@ -207,15 +113,6 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IGotoMa
         }
         IDE.gotoMarker(getEditor(getActivePage()), marker);
     }
-
-	@Override
-	protected void pageChange(int newPageIndex) {
-		super.pageChange(newPageIndex);
-		if (newPageIndex>0 && newPageIndex==tabFolder.getItemCount()-1) {
-			// TODO: sync source viewer's DOM with model
-		}
-	}
-
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.MultiPageEditorPart#createPages()
 	 */
@@ -247,13 +144,36 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IGotoMa
 			}
 			
 		});
+		tabFolder.addSelectionListener( new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				int pageIndex = tabFolder.getSelectionIndex();
+				if (pageIndex>=0 && pageIndex<bpmnDiagrams.size() && designEditor!=null) {
+					BPMNDiagram bpmnDiagram = bpmnDiagrams.get(pageIndex);
+					designEditor.selectBpmnDiagram(bpmnDiagram);
+				}
+			}
+		});
+		
+		// defer editor layout until all pages have been created
+		tabFolder.setLayoutDeferred(true);
+		
 		createDesignEditor();
-//		createSourceViewer();
+		
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				setActivePage(0);
+				designEditor.selectBpmnDiagram(bpmnDiagrams.get(0));
+				tabFolder.setLayoutDeferred(false);
+				tabFolder.setTabPosition(SWT.TOP);
+				updateTabs();
+			}
+		});
 	}
 
 	protected void createDesignEditor() {
 		if (designEditor==null) {
-			designEditor = new DesignEditor();
+			designEditor = new DesignEditor(this, this);
 			
 			try {
 				int pageIndex = tabFolder.getItemCount();
@@ -261,21 +181,10 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IGotoMa
 					--pageIndex;
 				addPage(pageIndex, designEditor, BPMN2MultiPageEditor.this.getEditorInput());
 				defaultTabHeight = tabFolder.getTabHeight();
-				setPageText(pageIndex,"Design");
+				setPageText(pageIndex,ModelUtil.getDiagramTypeName( designEditor.getBpmnDiagram() ));
 
-				// TODO: it should be possible to create additional instances of the BPMN2Editor
-				// that use the same IEditorInput as the original, but work within different
-				// BPMNPlane objects within the same model.
-				// Likewise, it should be possible to remove a page, which causes the associated
-				// BPMNPlane to be removed from the model. The last page may not be removed because
-				// this would invalidate the bpmn file.
-//				++pageIndex;
-//				DesignEditor designEditor2 = new DesignEditor();
-//				addPage(pageIndex, designEditor2, BPMN2MultiPageEditor.this.getEditorInput());
-//				setPageText(pageIndex,"Design 2");
-				
 				defaultTabHeight = tabFolder.getTabHeight();
-				
+
 				updateTabs();
 			}
 			catch (Exception e) {
@@ -283,10 +192,86 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IGotoMa
 			}
 		}
 	}
+
+	public DesignEditor getDesignEditor() {
+		return designEditor;
+	}
 	
+	protected void addDesignPage(final BPMNDiagram bpmnDiagram) {
+		createDesignEditor();
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					try {
+			
+						int pageIndex = tabFolder.getItemCount();
+						if (sourceViewer!=null)
+							--pageIndex;
+						Bpmn2DiagramEditorInput input = (Bpmn2DiagramEditorInput)designEditor.getEditorInput();
+						input.setBpmnDiagram(bpmnDiagram);
+						addPage(pageIndex, designEditor, input);
+						CTabItem oldItem = tabFolder.getItem(pageIndex-1);
+						CTabItem newItem = tabFolder.getItem(pageIndex);
+						newItem.setControl( oldItem.getControl() );
+						setPageText(pageIndex,bpmnDiagram.getName());
+			
+						setActivePage(pageIndex);
+						updateTabs();
+					}
+					catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
+	}
+	
+	public void showDesignPage(final BPMNDiagram bpmnDiagram) {
+		final int pageIndex = bpmnDiagrams.indexOf(bpmnDiagram);
+		if (pageIndex>=0) {
+			if (getDesignEditor().getBpmnDiagram()!=bpmnDiagram) {
+				setActivePage(pageIndex);
+			}
+		}
+		else {
+			designEditor.showDesignPage(bpmnDiagram);
+		}
+	}
+	
+	protected void removeDesignPage(final BPMNDiagram bpmnDiagram) {
+		final int pageIndex = bpmnDiagrams.indexOf(bpmnDiagram);
+		if (pageIndex>0) {
+			// go back to "Design" page - the only page that can't be removed
+			Display.getCurrent().asyncExec( new Runnable() {
+				@Override
+				public void run() {
+					setActivePage(0);
+					
+					IEditorPart editor = getEditor(pageIndex);
+					if (editor instanceof DesignEditor) {
+						((DesignEditor)editor).deleteBpmnDiagram(bpmnDiagram);
+					}
+					
+					// need to manage this ourselves so that the CTabFolder doesn't
+					// dispose our editor site (a child of the CTabItem.control)
+					tabFolder.getItem(pageIndex).setControl(null);
+					
+					removePage(pageIndex);
+					
+					tabFolder.getSelection().getControl().setVisible(true);
+				}
+			});
+		}
+	}
+
+	public int getDesignPageCount() {
+		int count = getPageCount();
+		if (sourceViewer!=null)
+			--count;
+		return count;
+	}
+
 	protected void createSourceViewer() {
 		if (sourceViewer==null) {
-			sourceViewer = new SourceViewer();
+			sourceViewer = new SourceViewer(this);
 
 			try {
 				int pageIndex = tabFolder.getItemCount();
@@ -295,6 +280,8 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IGotoMa
 				tabFolder.getItem(pageIndex).setShowClose(true);
 				
 				setPageText(pageIndex,"Source");
+				setActivePage(pageIndex);
+
 				updateTabs();
 			}
 			catch (Exception e) {
@@ -304,34 +291,82 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IGotoMa
 			}
 		}
 	}
-
-	@Override
-	public void removePage(int pageIndex) {
-		Object page = tabFolder.getItem(pageIndex).getData();
-		if (page instanceof EditorPart) {
-			// make sure the editor gets disposed - neither CTabFolder nor super does this for us!
-			((EditorPart)page).dispose();
-		}
-		super.removePage(pageIndex);
-		updateTabs();
+	
+	public SourceViewer getSourceViewer() {
+		return sourceViewer;
 	}
 
 	public void removeSourceViewer() {
 		// there will only be one source page and it will always be the last page in the tab folder
 		if (sourceViewer!=null) {
 			int pageIndex = tabFolder.getItemCount() - 1;
-			if (pageIndex>0)
+			if (pageIndex>0) {
 				removePage(pageIndex);
+				sourceViewer = null;
+			}
 		}
 	}
 
-	private void updateTabs() {
-		if (tabFolder.getItemCount()==1) {
-			tabFolder.setTabHeight(0);
+	public void addPage(int pageIndex, IEditorPart editor, IEditorInput input)
+			throws PartInitException {
+		super.addPage(pageIndex,editor,input);
+		if (editor instanceof DesignEditor) {
+			bpmnDiagrams.add(pageIndex,((DesignEditor)editor).getBpmnDiagram());
 		}
-		else
-			tabFolder.setTabHeight(defaultTabHeight);
+	}
+	
+	@Override
+	public void removePage(int pageIndex) {
+		Object page = tabFolder.getItem(pageIndex).getData();
+		super.removePage(pageIndex);
+		updateTabs();
+		if (page instanceof DesignEditor) {
+			bpmnDiagrams.remove(pageIndex);
+		}
+	}
+
+	@Override
+	protected void pageChange(int newPageIndex) {
+		super.pageChange(newPageIndex);
+
+		IEditorPart editor = getEditor(newPageIndex);
+		if (editor instanceof DesignEditor) {
+			BPMNDiagram bpmnDiagram = bpmnDiagrams.get(newPageIndex);
+			((DesignEditor)editor).pageChange(bpmnDiagram);
+//			Diagram diagram = DIUtils.findDiagram(designEditor, bpmnDiagram);
+//			if (diagram != null)
+//				designEditor.selectPictogramElements(new PictogramElement[] {(PictogramElement)diagram});
+		}
+	}
+
+	public int getPageCount() {
+		return tabFolder.getItemCount();
+	}
+	
+	public CTabItem getTabItem(int pageIndex) {
+		return tabFolder.getItem(pageIndex);
+	}
+	
+	public BPMNDiagram getBpmnDiagram(int i) {
+		if (i>=0 && i<bpmnDiagrams.size()) {
+			return bpmnDiagrams.get(i);
+		}
+		return null;
+	}
+	
+	private void updateTabs() {
+		if (!tabFolder.isLayoutDeferred()) {
+			if (tabFolder.getItemCount()==1) {
+				tabFolder.setTabHeight(0);
+			}
+			else
+				tabFolder.setTabHeight(defaultTabHeight);
+		}
 		tabFolder.layout();
+	}
+	
+	public CTabFolder getTabFolder() {
+		return tabFolder;
 	}
 	
 	/* (non-Javadoc)
@@ -365,86 +400,10 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IGotoMa
 		return activeEditor.isSaveAsAllowed();
 	}
 
-	public class DesignEditor extends BPMN2Editor {
-		
-		@Override
-		protected void createActions() {
-			super.createActions();
-			ActionRegistry registry = getActionRegistry();
-			IAction action = new WorkbenchPartAction(designEditor) {
-
-				@Override
-				protected void init() {
-					super.init();
-					setId("show.or.hide.source.view");
-				}
-
-				@Override
-				public String getText() {
-					return sourceViewer==null ? "Show Source View" : "Hide Source View";
-				}
-
-				@Override
-				protected boolean calculateEnabled() {
-					return true;
-				}
-				
-				public void run() {
-					if (sourceViewer==null) {
-						createSourceViewer();
-						setActivePage(tabFolder.getItemCount()-1);
-					}
-					else {
-						removeSourceViewer();
-					}
-				}
-			};
-			registry.registerAction(action);
-		}
-
-		@Override
-		protected ContextMenuProvider createContextMenuProvider() {
-			return new DiagramEditorContextMenuProvider(getGraphicalViewer(), getActionRegistry(), getDiagramTypeProvider()) {
-				@Override
-				public void buildContextMenu(IMenuManager manager) {
-					super.buildContextMenu(manager);
-					IAction action = getActionRegistry().getAction("show.or.hide.source.view");
-					action.setText( action.getText() );
-					manager.add(action);
-				}
-			};
-		}
-	}
-
-	public class SourceViewer extends StructuredTextEditor {
-		
-		ActionRegistry actionRegistry = null;
-		
-		@Override
-		@SuppressWarnings("rawtypes")
-		public Object getAdapter(Class required) {
-			if (required==ActionRegistry.class)
-				return getActionRegistry();
-			if (required==BPMN2Editor.class || required==DiagramEditor.class)
-				return designEditor;
-			return super.getAdapter(required);
-		}
-
-		@Override
-		public boolean isEditable() {
-			return false;
-		}
-
-		@Override
-		public void dispose() {
-			super.dispose();
-			BPMN2MultiPageEditor.this.sourceViewer = null;
-		}
-
-		protected ActionRegistry getActionRegistry() {
-			if (actionRegistry == null)
-				actionRegistry = new ActionRegistry();
-			return actionRegistry;
-		}
+	@Override
+	public void dispose() {
+		designEditor.dispose();
+		if (sourceViewer!=null)
+			sourceViewer.dispose();
 	}
 }

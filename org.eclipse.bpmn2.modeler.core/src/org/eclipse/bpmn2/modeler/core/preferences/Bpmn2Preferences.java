@@ -205,7 +205,10 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	 * @return project preferences
 	 */
 	public static Bpmn2Preferences getInstance(URI resourceURI) {
-		String filename = resourceURI.trimSegments(1).toPlatformString(true);
+		String filename = resourceURI.trimFragment().toPlatformString(true);
+		if (filename==null) {
+			return getInstance();
+		}
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().findMember(filename).getProject();
 		return getInstance(project);
 	}
@@ -349,7 +352,8 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		if (projectPreferences instanceof ProjectPreferences)
 			((ProjectPreferences)projectPreferences).removePreferenceChangeListener(this);
 		globalPreferences.removePropertyChangeListener(this);
-		instances.remove(project);
+		if (project!=null)
+			instances.remove(project);
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 	}
 	
@@ -508,39 +512,6 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		return targetRuntime;
 	}
 
-	/**
-	 * If the project has not been configured for a specific runtime through the "BPMN2"
-	 * project properties page (i.e. the target is "None") then allow the runtime extension
-	 * plug-ins an opportunity to identify the given process file contents as their own.
-	 * 
-	 * If none of the plug-ins respond with "yes, this file is targeted for my runtime",
-	 * then use the "None" as the extension. This will configure the BPMN2 Modeler with
-	 * generic property sheets and other default behavior.
-	 * 
-	 * @param file
-	 * @return
-	 */
-	public TargetRuntime getRuntime(IFile file) {
-		load();
-		
-		if (TargetRuntime.getAllRuntimes() == null) {
-			return TargetRuntime.getDefaultRuntime();
-		}
-
-		if (targetRuntime == TargetRuntime.getDefaultRuntime()) {
-			for (TargetRuntime rt : TargetRuntime.getAllRuntimes()) {
-				if (rt.getRuntimeExtension().isContentForRuntime(file)) {
-					return rt;
-				}
-			}
-		}
-		else
-			return targetRuntime;
-		
-		// if no other plugins have claimed this file, use the Default Target Runtime
-		return TargetRuntime.getDefaultRuntime();
-	}
-	
 	public void setRuntime(TargetRuntime rt) {
 		
 		assert(rt!=null);
