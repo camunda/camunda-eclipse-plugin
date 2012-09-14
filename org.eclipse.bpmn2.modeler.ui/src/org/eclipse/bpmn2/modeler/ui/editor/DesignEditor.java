@@ -17,6 +17,7 @@ import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.ui.wizards.Bpmn2DiagramEditorInput;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.TreeIterator;
@@ -97,12 +98,16 @@ public class DesignEditor extends BPMN2Editor {
 	
 	@Override
     protected void setPartName(String partName) {
-		IEditorInput input = getEditorInput();
-		if (input instanceof DiagramEditorInput) {
-			URI uri = ((DiagramEditorInput)input).getUri();
-			partName = URI.decode(uri.trimFileExtension().lastSegment());
-		}
-		super.setPartName(partName);
+//		IEditorInput input = getEditorInput();
+//		if (input instanceof Bpmn2DiagramEditorInput) {
+//			URI uri = ((Bpmn2DiagramEditorInput)input).getModelUri();
+//			partName = URI.decode(uri.trimFileExtension().lastSegment());
+//		}
+//		else if (input instanceof DiagramEditorInput) {
+//			URI uri = ((DiagramEditorInput)input).getUri();
+//			partName = URI.decode(uri.trimFileExtension().lastSegment());
+//		}
+		super.setPartName(URI.decode(partName));
     }
 
 	private boolean inSelectionChanged = false;

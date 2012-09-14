@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.editor;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -709,13 +710,9 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		}
 	}
 	
-	public void setEditorTitle(final String title) {
-		Display display = getSite().getShell().getDisplay();
-		display.asyncExec(new Runnable() {
-			public void run() {
-				setPartName(title);
-			}
-		});
+	public void refreshTitle() {
+		String name = getEditorInput().getName();
+		setPartName(URI.decode(name));
 	}
 
 	public BPMN2EditingDomainListener getEditingDomainListener() {
@@ -775,6 +772,14 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		for (IWorkbenchPage p : pages) {
 			IEditorReference[] refs = p.getEditorReferences();
 			instances += refs.length;
+		}
+		File diagramFile = new File(diagramUri.toFileString());
+		if (diagramFile.exists()) {
+			try {
+				diagramFile.delete();
+			}
+			catch (Exception e) {
+			}
 		}
 		ModelUtil.clearIDs(modelHandler.getResource(), instances==0);
 		getPreferences().getGlobalPreferences().removePropertyChangeListener(this);
@@ -977,8 +982,6 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 			targetRuntime = null;
 			modelHandler = ModelHandlerLocator.createModelHandler(modelUri, (Bpmn2ResourceImpl)resource);
 			ModelHandlerLocator.put(diagramUri, modelHandler);
-
-			setEditorTitle(modelUri.trimFileExtension().lastSegment());
 		}
 		else if (diagramUri.equals(oldURI)) {
 			ModelHandlerLocator.remove(diagramUri);

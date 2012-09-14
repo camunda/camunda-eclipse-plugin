@@ -206,7 +206,13 @@ public class FileService {
 		try {
 			if (input instanceof Bpmn2DiagramEditorInput) {
 				URI uri = getInputUri(input);
-				File file = new File(uri.toFileString());
+				String fileName = null;
+				if (uri.isFile())
+					fileName = uri.toFileString();
+				else if (uri.isPlatformResource())
+					fileName = uri.toPlatformString(false);
+				
+				File file = new File(fileName);
 				if (file.exists()) {
 					InputStream is = new FileInputStream(file);
 					return is;
@@ -253,7 +259,8 @@ public class FileService {
 	
 	public static String createTempName(String name) {
 		String tempDir = System.getProperty("java.io.tmpdir");
-		return tempDir + name + "." + EcoreUtil.generateUUID();
+		String tempName = tempDir + name + "." + EcoreUtil.generateUUID();
+		return tempName;
 	}
 	
 	public static File createTempFile(String name) {
