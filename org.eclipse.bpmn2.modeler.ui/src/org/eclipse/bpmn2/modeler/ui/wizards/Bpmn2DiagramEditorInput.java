@@ -54,6 +54,22 @@ public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
 		return modelUri;
 	}
 	
+	public String getToolTipText() {
+		return modelUri.toPlatformString(true);
+	}
+	
+	public String getName() {
+		return URI.decode(modelUri.trimFileExtension().lastSegment());
+	}
+	
+	public void updateUri(URI diagramFileUri) {
+		if (diagramFileUri.isPlatformResource()) {
+			modelUri = diagramFileUri;
+		}
+		else
+			super.updateUri(diagramFileUri);
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		boolean superEquals = super.equals(obj);

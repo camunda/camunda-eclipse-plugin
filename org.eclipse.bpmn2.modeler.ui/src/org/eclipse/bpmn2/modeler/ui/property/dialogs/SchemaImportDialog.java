@@ -992,7 +992,7 @@ public class SchemaImportDialog extends SelectionStatusDialog {
 				return URI.createFileURI( path );				
 			
 			case BID_BROWSE_WORKSPACE :
-				return URI.createPlatformResourceURI(path,false);				
+				return URI.createPlatformResourceURI(path,true);				
 			
 			case BID_BROWSE_WSIL :
 				//return URI.createFileURI( path );

@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.ui.wizards;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -203,7 +204,20 @@ public class FileService {
 
 	public static InputStream getInputContents(IEditorInput input) {
 		try {
-			if (input instanceof FileEditorInput) {
+			if (input instanceof Bpmn2DiagramEditorInput) {
+				URI uri = getInputUri(input);
+				String fileName = null;
+				if (uri.isFile())
+					fileName = uri.toFileString();
+				else if (uri.isPlatformResource())
+					fileName = uri.toPlatformString(false);
+				
+				File file = new File(fileName);
+				if (file.exists()) {
+					InputStream is = new FileInputStream(file);
+					return is;
+				}
+			} else if (input instanceof FileEditorInput) {
 				return ((FileEditorInput) input).getFile().getContents();
 			} else if (input instanceof IStorageEditorInput) {
 				return ((IStorageEditorInput) input).getStorage().getContents();
@@ -216,7 +230,7 @@ public class FileService {
 		return null;
 	}
 	
-	public static URI getInputUri(IEditorSite site, IEditorInput input) {
+	public static URI getInputUri(IEditorInput input) {
 		if (input instanceof Bpmn2DiagramEditorInput) {
 			URI uri = ((Bpmn2DiagramEditorInput) input).getModelUri();
 			return uri.trimFragment();
@@ -245,7 +259,8 @@ public class FileService {
 	
 	public static String createTempName(String name) {
 		String tempDir = System.getProperty("java.io.tmpdir");
-		return tempDir + name + "." + EcoreUtil.generateUUID();
+		String tempName = tempDir + name + "." + EcoreUtil.generateUUID();
+		return tempName;
 	}
 	
 	public static File createTempFile(String name) {

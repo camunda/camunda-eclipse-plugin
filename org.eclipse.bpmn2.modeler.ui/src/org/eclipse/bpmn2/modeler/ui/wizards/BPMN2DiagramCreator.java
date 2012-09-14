@@ -52,7 +52,6 @@ public class BPMN2DiagramCreator {
 
 		String modelName = modelUri.trimFragment().trimFileExtension().lastSegment();
 		final Diagram diagram = Graphiti.getPeCreateService().createDiagram("BPMN2", modelName, true);
-		diagram.setName(modelName);
 
 		String diagramName = FileService.createTempName(modelName);
 		URI diagramUri = URI.createFileURI(diagramName);
