@@ -43,16 +43,18 @@ public class AbstractGraphicsTreeEditPart extends AbstractTreeEditPart {
 	@Override
 	public Object getModel() {
 		EObject bpmnModel = (EObject)super.getModel();
-		// the model is actually a BPMN element - convert this
-		// to a PictogramElement for the SelectionSynchronizer
-		for (Diagram diagram : diagramEditPart.getAllDiagrams()) {
-			if (diagram!=null) {
-				List<PictogramElement> pes = Graphiti.getLinkService().getPictogramElements(diagram, bpmnModel);
-				for (PictogramElement pe : pes) {
-					if (pe instanceof ContainerShape)
-						return pe;
-					if (pe instanceof FreeFormConnection)
-						return pe;
+		if (diagramEditPart!=null) {
+			// the model is actually a BPMN element - convert this
+			// to a PictogramElement for the SelectionSynchronizer
+			for (Diagram diagram : diagramEditPart.getAllDiagrams()) {
+				if (diagram!=null) {
+					List<PictogramElement> pes = Graphiti.getLinkService().getPictogramElements(diagram, bpmnModel);
+					for (PictogramElement pe : pes) {
+						if (pe instanceof ContainerShape)
+							return pe;
+						if (pe instanceof FreeFormConnection)
+							return pe;
+					}
 				}
 			}
 		}

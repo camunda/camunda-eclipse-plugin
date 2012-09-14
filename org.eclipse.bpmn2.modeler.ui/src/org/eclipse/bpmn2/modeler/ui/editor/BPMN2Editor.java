@@ -168,6 +168,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain.Lifecycle;
 import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
+import org.eclipse.gef.ui.parts.SelectionSynchronizer;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -753,6 +754,9 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 			return getPreferences();
 		if (required == IPropertySheetPage.class) {
 			return new Bpmn2TabbedPropertySheetPage(this);
+		}
+		if (required == SelectionSynchronizer.class) {
+			return getSelectionSynchronizer();
 		}
 		if (required == IContentOutlinePage.class) {
 			if (getDiagramTypeProvider() != null) {

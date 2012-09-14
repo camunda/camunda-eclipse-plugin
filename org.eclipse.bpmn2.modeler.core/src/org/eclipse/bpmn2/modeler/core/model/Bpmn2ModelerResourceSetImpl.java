@@ -69,12 +69,13 @@ public class Bpmn2ModelerResourceSetImpl extends ResourceSetImpl implements IRes
 	public EObject getEObject(URI uri, boolean loadOnDemand) {
 		EObject o = null;
 		if (uri!=null) {
-			uri.trimFragment();
 			if (uri.fragment()!=null) {
 				setDefaultTimeoutProperties();
 				o = super.getEObject(uri, loadOnDemand);
 				restoreTimeoutProperties();
 			}
+			else
+				o = super.getEObject(uri, loadOnDemand);
 		}
 		return o;
 	}
