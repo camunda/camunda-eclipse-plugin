@@ -32,6 +32,7 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.ModelPackage;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -67,6 +68,51 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 	 */
 	public ModelResourceImpl(URI uri) {
 		super(uri);
+		
+		this.xmlHelper = new Bpmn2ModelerXmlHelper(this) {
+			/* (non-Javadoc)
+			 * @see org.eclipse.emf.ecore.xmi.impl.XMLHelperImpl#getQName(org.eclipse.emf.ecore.EStructuralFeature)
+			 * 
+			 * This gets around the problem of including the "tns" namespace prefix for jBPM extension model elements.
+			 * Normally, extension elements are serialized to XML like this:
+			 * 
+			 *    <bpmn2:extensionElements>
+			 *      <tns:global tns:identifier="globalVar123" tns:type="String"/>
+			 *    </bpmn2:extensionElements>
+			 * 
+			 * Unfortunately the jBPM process engine parser can't handle the prefix for the "identifier" and "type"
+			 * attributes, so we strip them off here. The result now looks like this:
+			 * 
+			 *    <bpmn2:extensionElements>
+			 *      <tns:global identifier="globalVar123" type="String"/>
+			 *    </bpmn2:extensionElements>
+			 * 
+			 * This special serialization is done for the following extension elements:
+			 * 
+			 *  GlobalType
+			 *  ImportType
+			 *  OnEntryScriptType
+			 *  OnExitScriptType
+			 */
+			@Override
+			public String getQName(EStructuralFeature feature)
+			{
+				EObject cc = feature.eContainer();
+				if (cc instanceof EClass) {
+					String name = ((EClass)cc).getName();
+					if ("GlobalType".equals(name)
+							|| "ImportType".equals(name)
+							|| "OnEntryScriptType".equals(name)
+							|| "OnExitScriptType".equals(name)) {
+						return feature.getName();
+					}
+				}
+				return super.getQName(feature);
+			}
+		};
+        this.uriHandler = new FragmentQNameURIHandler(xmlHelper);
+        this.getDefaultLoadOptions().put(XMLResource.OPTION_URI_HANDLER, uriHandler);
+        this.getDefaultSaveOptions().put(XMLResource.OPTION_URI_HANDLER, uriHandler);
 	}
 
 
