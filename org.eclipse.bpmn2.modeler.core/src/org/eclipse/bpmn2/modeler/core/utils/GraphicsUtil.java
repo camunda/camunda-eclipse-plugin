@@ -19,7 +19,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
+import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -1134,6 +1138,16 @@ public class GraphicsUtil {
 			}
 		}
 		return new Size(TASK_DEFAULT_WIDTH, TASK_DEFAULT_HEIGHT);
+	}
+	
+	public static Size getShapeSize(BaseElement be, Diagram diagram) {
+		if (be instanceof Event)
+			return getEventSize(diagram);
+		if (be instanceof Gateway)
+			return getGatewaySize(diagram);
+		if (be instanceof Activity)
+			return getActivitySize(diagram);
+		return null;
 	}
 	
 	public static boolean intersects(Shape shape1, Shape shape2) {

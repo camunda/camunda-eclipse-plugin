@@ -44,10 +44,13 @@ import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.di.BpmnDiFactory;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
+import org.eclipse.bpmn2.modeler.core.preferences.ShapeStyle;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Size;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -67,6 +70,7 @@ import org.eclipse.graphiti.features.context.impl.AddConnectionContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.AreaContext;
 import org.eclipse.graphiti.features.context.impl.LayoutContext;
+import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
@@ -93,6 +97,7 @@ public class DIImport {
 	private ModelHandler modelHandler;
 	private IFeatureProvider featureProvider;
 	private HashMap<BaseElement, PictogramElement> elements;
+	private Bpmn2Preferences preferences;
 	private final IPeService peService = Graphiti.getPeService();
 	private final IGaService gaService = Graphiti.getGaService();
 
@@ -137,6 +142,9 @@ public class DIImport {
 				
 				// do the import
 				for (BPMNDiagram d : bpmnDiagrams) {
+					if (preferences==null)
+						preferences = Bpmn2Preferences.getInstance(d);
+					
 					diagram = DIUtils.getOrCreateDiagram(editor,d);
 					editor.getDiagramTypeProvider().init(diagram, editor);
 
@@ -160,20 +168,20 @@ public class DIImport {
 	}
 	
 	private void layoutAll() {
-//		final List<BPMNDiagram> diagrams = modelHandler.getAll(BPMNDiagram.class);
+		final List<BPMNDiagram> diagrams = modelHandler.getAll(BPMNDiagram.class);
 //		for (BPMNDiagram d : diagrams) {
 //			BPMNPlane plane = d.getPlane();
 //			for (DiagramElement de : plane.getPlaneElement()) {
 //				if (de instanceof BPMNShape) {
 //					BaseElement be = ((BPMNShape) de).getBpmnElement();
-//					PictogramElement pe = elements.get(businessObject);
+//					PictogramElement pe = elements.get(be);
 //					if (pe instanceof Shape ) {
 //						Graphiti.getPeService().sendToFront((Shape)pe);
 //					}
 //				}
 //			}
 //		}
-		
+
 		for (BaseElement be : elements.keySet()) {
 			if (be instanceof SubProcess) { // we need the layout to hide children if collapsed
 				PictogramElement pe = elements.get(be);
@@ -183,6 +191,13 @@ public class DIImport {
 					continue;
 				}
 				if (feature.canLayout(context))
+					feature.layout(context);
+			}
+			else if (be instanceof FlowNode) {
+				PictogramElement pe = elements.get(be);
+				LayoutContext context = new LayoutContext(pe);
+				ILayoutFeature feature = featureProvider.getLayoutFeature(context);
+				if (feature!=null && feature.canLayout(context))
 					feature.layout(context);
 			}
 		}
@@ -368,8 +383,22 @@ public class DIImport {
 
 		context.putProperty(IMPORT_PROPERTY, true);
 		context.setNewObject(bpmnElement);
-
-		context.setSize((int) shape.getBounds().getWidth(), (int) shape.getBounds().getHeight());
+		boolean defaultSize = false;
+		ShapeStyle ss = preferences.getShapeStyle(bpmnElement);
+		if (ss!=null)
+			defaultSize = ss.isDefaultSize();
+		
+		if (defaultSize) {
+			Size size = GraphicsUtil.getShapeSize(bpmnElement,diagram);
+			if (size!=null)
+				context.setSize(size.getWidth(),size.getHeight());
+			else
+				defaultSize = false;
+		}
+		
+		if (!defaultSize) {
+			context.setSize((int) shape.getBounds().getWidth(), (int) shape.getBounds().getHeight());
+		}
 
 		if ( (bpmnElement instanceof SubProcess) && !shape.isIsExpanded()) {
 			context.setSize(GraphicsUtil.getActivitySize(diagram).getWidth(), GraphicsUtil.getActivitySize(diagram).getHeight());
@@ -401,13 +430,14 @@ public class DIImport {
 					if (o instanceof Participant)
 						elements.put((Participant)o, pe);
 				}
-			} else if (bpmnElement instanceof Event) {
-				GraphicsUtil.setEventSize(context.getWidth(), context.getHeight(), diagram);
-			} else if (bpmnElement instanceof Gateway) {
-				GraphicsUtil.setGatewaySize(context.getWidth(), context.getHeight(), diagram);
-			} else if (bpmnElement instanceof Activity && !(bpmnElement instanceof SubProcess)) {
-				GraphicsUtil.setActivitySize(context.getWidth(), context.getHeight(), diagram);
 			}
+//			else if (bpmnElement instanceof Event) {
+//				GraphicsUtil.setEventSize(context.getWidth(), context.getHeight(), diagram);
+//			} else if (bpmnElement instanceof Gateway) {
+//				GraphicsUtil.setGatewaySize(context.getWidth(), context.getHeight(), diagram);
+//			} else if (bpmnElement instanceof Activity && !(bpmnElement instanceof SubProcess)) {
+//				GraphicsUtil.setActivitySize(context.getWidth(), context.getHeight(), diagram);
+//			}
 			
 			elements.put(bpmnElement, newContainer);
 			handleEvents(bpmnElement, newContainer);

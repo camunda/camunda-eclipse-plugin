@@ -38,6 +38,7 @@ public class ShapeStyle {
 	IColorConstant shapeForeground;
 	Font textFont;
 	IColorConstant textColor;
+	boolean defaultSize;
 	boolean dirty;
 
 	public ShapeStyle() {
@@ -62,16 +63,27 @@ public class ShapeStyle {
 		if (font==null || font.isEmpty())
 			font = DEFAULT_FONT_STRING;
 		textFont = stringToFont(font);
+		defaultSize = true;
 	}
 	
 	protected ShapeStyle(String s) {
 		String[] a = s.trim().split(";");
-		shapeBackground = stringToColor(a[0]);
-		shapePrimarySelectedColor = stringToColor(a[1]);
-		shapeSecondarySelectedColor = stringToColor(a[2]);
-		shapeForeground = stringToColor(a[3]);
-		textFont = stringToFont(a[4]);
-		textColor = stringToColor(a[5]);
+		if (a.length>0)
+			shapeBackground = stringToColor(a[0]);
+		if (a.length>1)
+			shapePrimarySelectedColor = stringToColor(a[1]);
+		if (a.length>2)
+			shapeSecondarySelectedColor = stringToColor(a[2]);
+		if (a.length>3)
+			shapeForeground = stringToColor(a[3]);
+		if (a.length>4)
+			textFont = stringToFont(a[4]);
+		if (a.length>5)
+			textColor = stringToColor(a[5]);
+		if (a.length>6)
+			defaultSize = stringToBoolean(a[6]);
+		else
+			defaultSize = true;
 	}
 	
 	public void setDefaultColors(IColorConstant defaultColor) {
@@ -156,6 +168,17 @@ public class ShapeStyle {
 		}
 	}
 	
+	public boolean isDefaultSize() {
+		return defaultSize;
+	}
+	
+	public void setDefaultSize(boolean b) {
+		if (defaultSize != b) {
+			defaultSize = b;
+			setDirty(true);
+		}
+	}
+	
 	public static String colorToString(IColorConstant c) {
 		return new String(
 				String.format("%02X",c.getRed()) +
@@ -179,6 +202,14 @@ public class ShapeStyle {
 				ColorUtil.getGreenFromHex(s),
 				ColorUtil.getBlueFromHex(s)
 				);
+	}
+	
+	public static String booleanToString(boolean b) {
+		return b ? "1" : "0";
+	}
+	
+	public static boolean stringToBoolean(String s) {
+		return "1".equals(s);
 	}
 	
 	public static RGB colorToRGB(IColorConstant c) {
@@ -235,12 +266,13 @@ public class ShapeStyle {
 				colorToString(sp.shapeSecondarySelectedColor) + ";" +
 				colorToString(sp.shapeForeground) + ";" +
 				fontToString(sp.textFont) + ";" +
-				colorToString(sp.textColor)
+				colorToString(sp.textColor) + ";" +
+				booleanToString(sp.defaultSize)
 				);
 	}
 	
 	public static ShapeStyle decode(String s) {
-		if (s==null || s.trim().split(";").length!=6)
+		if (s==null || s.trim().split(";").length<6)
 			return new ShapeStyle();
 		return new ShapeStyle(s);
 	}
@@ -268,6 +300,7 @@ public class ShapeStyle {
 				compare(s1.shapeSecondarySelectedColor, s2.shapeSecondarySelectedColor) ||
 				compare(s1.shapeForeground, s2.shapeForeground) ||
 				compare(s1.textFont, s2.textFont) ||
-				compare(s1.textColor, s2.textColor);
+				compare(s1.textColor, s2.textColor) ||
+				(s1.defaultSize != s2.defaultSize);
 	}
 }

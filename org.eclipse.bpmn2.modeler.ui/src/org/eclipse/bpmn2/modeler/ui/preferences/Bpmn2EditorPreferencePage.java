@@ -71,6 +71,7 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 	ColorControl shapePrimarySelectedColor;
 	ColorControl shapeSecondarySelectedColor;
 	ColorControl shapeForeground;
+	Button defaultSize;
 	FontControl textFont;
 	ColorControl textColor;
 	boolean debug;
@@ -131,7 +132,7 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
         styleEditors.setVisible(false);
 
 		shapeBackground = new ColorControl("&Fill Color:",styleEditors);
-		shapeBackground.addSelectionListener( new SelectionListener() {
+		shapeBackground.addSelectionListener( new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -146,17 +147,18 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 					textColor.setSelectedColor(ss.getTextColor());
 				}
 			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
-    		
     	});
 		shapeForeground = new ColorControl("&Foreground Color:",styleEditors);
 		shapePrimarySelectedColor = new ColorControl("&Selected Color:",styleEditors);
 		shapeSecondarySelectedColor = new ColorControl("&Multi-Selected Color:",styleEditors);
 		textColor = new ColorControl("&Label Color:",styleEditors);
 		textFont = new FontControl("Label &Font:",styleEditors);
+		defaultSize = new Button(styleEditors, SWT.CHECK);
+		defaultSize.setText("Override shape size with default values");
+		GridData gd = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
+		gd.horizontalIndent = 5;
+		gd.verticalIndent = 10;
+		defaultSize.setLayoutData(gd);
 		
 		loadStyleEditors();
 
@@ -170,6 +172,7 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 			ss.setShapePrimarySelectedColor(shapePrimarySelectedColor.getSelectedColor());
 			ss.setShapeSecondarySelectedColor(shapeSecondarySelectedColor.getSelectedColor());
 			ss.setShapeForeground(shapeForeground.getSelectedColor());
+			ss.setDefaultSize(defaultSize.getSelection());
 			ss.setTextFont(textFont.getSelectedFont());
 			ss.setTextColor(textColor.getSelectedColor());
 		}
@@ -208,6 +211,7 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 			shapePrimarySelectedColor.setSelectedColor(ss.getShapePrimarySelectedColor());
 			shapeSecondarySelectedColor.setSelectedColor(ss.getShapeSecondarySelectedColor());
 			shapeForeground.setSelectedColor(ss.getShapeForeground());
+			defaultSize.setSelection(ss.isDefaultSize());
 			textFont.setSelectedFont(ss.getTextFont());
 			textColor.setSelectedColor(ss.getTextColor());
 
@@ -221,6 +225,8 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 			((GridData)shapePrimarySelectedColor.getLayoutData()).exclude = !visible;
 			shapeSecondarySelectedColor.setVisible(visible);
 			((GridData)shapeSecondarySelectedColor.getLayoutData()).exclude = !visible;
+			defaultSize.setVisible(visible);
+			((GridData)defaultSize.getLayoutData()).exclude = !visible;
 			container.layout();
 		}
 	}
