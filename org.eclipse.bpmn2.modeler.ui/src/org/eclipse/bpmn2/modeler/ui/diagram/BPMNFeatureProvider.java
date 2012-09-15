@@ -218,7 +218,7 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 					String newId = ctfc.getId();
 					if (oldId!=null && newId!=null) {
 						if (oldId.equals(newId)) {
-							if (container==fc)
+							if (container.getClass()==fc.getClass())
 								return;
 							canAdd = false;
 							break;
