@@ -156,50 +156,51 @@ public class BPMN2ProjectValidator extends AbstractValidator {
 		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 		IProject project = file.getProject();
 
-		if (!needValidation) {
-			if (project!=null) {
-				try {
-					IProjectNature nature = project.getNature(BPMN2Nature.NATURE_ID);
-					if (nature==null) {
-						Bpmn2Preferences preferences = Bpmn2Preferences.getInstance(project);
-						if (preferences.getCheckProjectNature()) {
-							Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-							String title = "Configure BPMN2 Project Nature";
-							String message = "The project '"+
-									project.getName()+
-									"' has not been configured with the BPMN2 Project Nature.\n\n"+
-									"Adding the BPMN2 Project Nature will cause all BPMN2 files in this project"+
-									"to be validated automatically whenever the project is built.\n\n"+
-									"Do you want to add this Nature to the Project now?";
-							MessageDialogWithToggle result = MessageDialogWithToggle.open(
-									MessageDialog.QUESTION,
-									shell,
-									title,
-									message,
-									"Don't ask me again", // toggle message
-									false, // toggle state
-									null, // pref store
-									null, // pref key
-									SWT.NONE);
-							if (result.getReturnCode() == IDialogConstants.YES_ID) {
-								IProjectDescription description = project.getDescription();
-								String[] natures = description.getNatureIds();
-								String[] newNatures = new String[natures.length + 1];
-								System.arraycopy(natures, 0, newNatures, 0, natures.length);
-								newNatures[natures.length] = BPMN2Nature.NATURE_ID;
-								description.setNatureIds(newNatures);
-								project.setDescription(description, null);
-							}
-							if (result.getToggleState()) {
-								// don't ask again
-								preferences.setCheckProjectNature(false);
-							}
+		if (project!=null) {
+			try {
+				IProjectNature nature = project.getNature(BPMN2Nature.NATURE_ID);
+				if (nature==null) {
+					Bpmn2Preferences preferences = Bpmn2Preferences.getInstance(project);
+					if (preferences.getCheckProjectNature()) {
+						Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+						String title = "Configure BPMN2 Project Nature";
+						String message = "The project '"+
+								project.getName()+
+								"' has not been configured with the BPMN2 Project Nature.\n\n"+
+								"Adding the BPMN2 Project Nature will cause all BPMN2 files in this project "+
+								"to be validated automatically whenever the project is built.\n\n"+
+								"Do you want to add this Nature to the Project now?";
+						MessageDialogWithToggle result = MessageDialogWithToggle.open(
+								MessageDialog.QUESTION,
+								shell,
+								title,
+								message,
+								"Don't ask me again", // toggle message
+								false, // toggle state
+								null, // pref store
+								null, // pref key
+								SWT.NONE);
+						if (result.getReturnCode() == IDialogConstants.YES_ID) {
+							IProjectDescription description = project.getDescription();
+							String[] natures = description.getNatureIds();
+							String[] newNatures = new String[natures.length + 1];
+							System.arraycopy(natures, 0, newNatures, 0, natures.length);
+							newNatures[natures.length] = BPMN2Nature.NATURE_ID;
+							description.setNatureIds(newNatures);
+							project.setDescription(description, null);
+							needValidation = true;
 						}
-						needValidation = true;
+						if (result.getToggleState()) {
+							// don't ask again
+							preferences.setCheckProjectNature(false);
+						}
 					}
-				} catch (CoreException e) {
-					e.printStackTrace();
 				}
+				else
+					needValidation = true;
+
+			} catch (CoreException e) {
+				e.printStackTrace();
 			}
 		}
 		
