@@ -74,7 +74,6 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 	Button defaultSize;
 	FontControl textFont;
 	ColorControl textColor;
-	boolean debug;
 
 	public Bpmn2EditorPreferencePage() {
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
@@ -184,7 +183,7 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 			for (Class c : allElements) {
 				ShapeStyle ss = preferences.getShapeStyle(c);
 				shapeStyles.put(c, ss);
-			if (debug) {
+			if (Activator.getDefault().isDebugging()) {
 				IColorConstant foreground = ss.getShapeForeground();
 				IColorConstant background = ss.getShapeBackground();
 				IColorConstant textColor = ss.getTextColor();

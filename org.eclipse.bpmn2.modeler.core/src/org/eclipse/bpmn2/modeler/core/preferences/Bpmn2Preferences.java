@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.AdHocSubProcess;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.CallActivity;
@@ -102,8 +103,8 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	public final static String PREF_POPUP_CONFIG_DIALOG = "popup.config.dialog";
 	public final static String PREF_POPUP_CONFIG_DIALOG_LABEL = "Display element configuration popup dialog after DND of:";
 	
-	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_TASKS = "popup.config.dialog.for.tasks";
-	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_TASKS_LABEL = "Tasks";
+	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_ACTIVITIES = "popup.config.dialog.for.activities";
+	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_ACTIVITIES_LABEL = "Activities";
 	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_GATEWAYS = "popup.config.dialog.for.gateways";
 	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_GATEWAYS_LABEL = "Gateways";
 	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_EVENTS = "popup.config.dialog.for.events";
@@ -256,7 +257,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		globalPreferences.setDefault(PREF_IS_MARKER_VISIBLE, BPMNDIAttributeDefault.DEFAULT_TRUE.name());
 
 		globalPreferences.setDefault(PREF_POPUP_CONFIG_DIALOG, false); // tri-state checkbox
-		globalPreferences.setDefault(PREF_POPUP_CONFIG_DIALOG_FOR_TASKS, false);
+		globalPreferences.setDefault(PREF_POPUP_CONFIG_DIALOG_FOR_ACTIVITIES, false);
 		globalPreferences.setDefault(PREF_POPUP_CONFIG_DIALOG_FOR_GATEWAYS, false);
 		globalPreferences.setDefault(PREF_POPUP_CONFIG_DIALOG_FOR_EVENTS, false);
 		globalPreferences.setDefault(PREF_POPUP_CONFIG_DIALOG_FOR_EVENT_DEFS, false);
@@ -283,7 +284,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			projectPreferences.remove(PREF_IS_MARKER_VISIBLE);
 
 			projectPreferences.remove(PREF_POPUP_CONFIG_DIALOG);
-			projectPreferences.remove(PREF_POPUP_CONFIG_DIALOG_FOR_TASKS);
+			projectPreferences.remove(PREF_POPUP_CONFIG_DIALOG_FOR_ACTIVITIES);
 			projectPreferences.remove(PREF_POPUP_CONFIG_DIALOG_FOR_GATEWAYS);
 			projectPreferences.remove(PREF_POPUP_CONFIG_DIALOG_FOR_EVENTS);
 			projectPreferences.remove(PREF_POPUP_CONFIG_DIALOG_FOR_EVENT_DEFS);
@@ -310,7 +311,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		globalPreferences.setToDefault(PREF_IS_MARKER_VISIBLE);
 
 		globalPreferences.setToDefault(PREF_POPUP_CONFIG_DIALOG);
-		globalPreferences.setToDefault(PREF_POPUP_CONFIG_DIALOG_FOR_TASKS);
+		globalPreferences.setToDefault(PREF_POPUP_CONFIG_DIALOG_FOR_ACTIVITIES);
 		globalPreferences.setToDefault(PREF_POPUP_CONFIG_DIALOG_FOR_GATEWAYS);
 		globalPreferences.setToDefault(PREF_POPUP_CONFIG_DIALOG_FOR_EVENTS);
 		globalPreferences.setToDefault(PREF_POPUP_CONFIG_DIALOG_FOR_EVENT_DEFS);
@@ -387,7 +388,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			connectionTimeout = this.getString(PREF_CONNECTION_TIMEOUT, "60000");
 			
 			popupConfigDialog = getInt(PREF_POPUP_CONFIG_DIALOG, 0); // tri-state checkbox
-			popupConfigDialogFor[0] = getBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_TASKS, false);
+			popupConfigDialogFor[0] = getBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_ACTIVITIES, false);
 			popupConfigDialogFor[1] = getBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_GATEWAYS, false);
 			popupConfigDialogFor[2] = getBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_EVENTS, false);
 			popupConfigDialogFor[3] = getBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_EVENT_DEFS, false);
@@ -420,7 +421,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			setString(PREF_CONNECTION_TIMEOUT, connectionTimeout);
 
 			setInt(PREF_POPUP_CONFIG_DIALOG, popupConfigDialog);
-			setBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_TASKS, popupConfigDialogFor[0]);
+			setBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_ACTIVITIES, popupConfigDialogFor[0]);
 			setBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_GATEWAYS, popupConfigDialogFor[1]);
 			setBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_EVENTS, popupConfigDialogFor[2]);
 			setBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_EVENT_DEFS, popupConfigDialogFor[3]);
@@ -597,7 +598,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	}
 	
 	public boolean hasPopupConfigDialog(Object context) {
-		if (context instanceof Task) {
+		if (context instanceof Activity) {
 			return true;
 		}
 		if (context instanceof Gateway) {

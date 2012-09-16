@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.features.IBpmn2AddFeature;
 import org.eclipse.bpmn2.modeler.core.features.IBpmn2CreateFeature;
+import org.eclipse.bpmn2.modeler.core.features.ShowPropertiesFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.ActivitySelectionBehavior;
 import org.eclipse.bpmn2.modeler.core.features.event.EventSelectionBehavior;
 import org.eclipse.bpmn2.modeler.core.runtime.CustomTaskDescriptor;
@@ -416,7 +417,8 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 		ICustomFeature[] cf = getFeatureProvider().getCustomFeatures(context);
 		for (int i = 0; i < cf.length; i++) {
 			ICustomFeature iCustomFeature = cf[i];
-			if (iCustomFeature.canExecute(context)) {
+			if (iCustomFeature instanceof ShowPropertiesFeature &&
+					iCustomFeature.canExecute(context)) {
 				return iCustomFeature;
 			}
 		}

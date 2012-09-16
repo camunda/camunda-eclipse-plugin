@@ -1,0 +1,2 @@
+org.eclipse.emf.common.EMFPlugin/debug=false
+org.eclipse.bpmn2.modeler.ui/debug=false

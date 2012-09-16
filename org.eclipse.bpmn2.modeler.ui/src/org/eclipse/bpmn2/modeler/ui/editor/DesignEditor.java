@@ -17,7 +17,7 @@ import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.wizards.Bpmn2DiagramEditorInput;
+import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.TreeIterator;
@@ -38,12 +38,10 @@ import org.eclipse.gef.ui.actions.WorkbenchPartAction;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.ui.editor.DiagramEditorContextMenuProvider;
-import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -63,7 +61,6 @@ public class DesignEditor extends BPMN2Editor {
 	
 	protected ResourceSetListener resourceSetListener = null;
 	private BPMNDiagram bpmnDiagramDeleted = null;
-	protected boolean debug;
 	// the container that holds the tabFolder
 	protected Composite container;
 	protected CTabFolder tabFolder;
@@ -455,6 +452,8 @@ public class DesignEditor extends BPMN2Editor {
 
 		@Override
 		public void resourceSetChanged(ResourceSetChangeEvent event) {
+			boolean debug = Activator.getDefault().isDebugging();
+			
 			for (Notification n : event.getNotifications()) {
 				int et = n.getEventType();
 				Object notifier = n.getNotifier();
