@@ -26,6 +26,7 @@ import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.IContext;
+import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.features.impl.DefaultMoveShapeFeature;
@@ -107,7 +108,18 @@ public class LabelFeatureContainer implements FeatureContainer {
 
 	@Override
 	public IMoveShapeFeature getMoveFeature(IFeatureProvider fp) {
-		return new DefaultMoveShapeFeature(fp);
+		return new DefaultMoveShapeFeature (fp) {
+  		 @Override
+  		public boolean canMoveShape(IMoveShapeContext context) {
+  		   return true;
+  		}
+  		
+  		@Override
+  		protected void postMoveShape(IMoveShapeContext context) {
+  		  super.postMoveShape(context);
+  		}
+  		 
+		};
 	}
 
 	@Override

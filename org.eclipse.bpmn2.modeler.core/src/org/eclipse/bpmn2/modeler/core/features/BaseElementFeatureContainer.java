@@ -72,7 +72,7 @@ public abstract class BaseElementFeatureContainer implements FeatureContainer {
 	@Override
 	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
 		return new ICustomFeature[] {
-			new ShowPropertiesFeature(fp)
+			//new ShowPropertiesFeature(fp)
 		};
 	}
 }

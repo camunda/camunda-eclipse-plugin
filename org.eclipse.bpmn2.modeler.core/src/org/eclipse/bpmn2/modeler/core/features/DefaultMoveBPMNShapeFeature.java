@@ -67,7 +67,6 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 					try{
 						ContainerShape container = (ContainerShape) element;
 						// only align when not selected, the move feature of the label will do the job when selected
-						if (!ModelUtil.isElementSelected(getDiagramEditor().getSelectedPictogramElements(), element)) {
 							GraphicsUtil.alignWithShape(
 									(AbstractText) container.getChildren().get(0).getGraphicsAlgorithm(), 
 									container,
@@ -78,7 +77,6 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 									preShapeX,
 									preShapeY
 							);
-						}
 					}
 					catch(Exception e){
 						new RuntimeException("Composition of label container is not as expected");

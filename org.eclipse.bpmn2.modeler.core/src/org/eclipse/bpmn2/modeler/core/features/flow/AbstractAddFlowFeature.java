@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.core.features.flow;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.di.BPMNLabel;
 import org.eclipse.bpmn2.modeler.core.di.DIImport;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
@@ -21,6 +22,8 @@ import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddConnectionContext;
 import org.eclipse.graphiti.features.context.IAddContext;
@@ -78,6 +81,17 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement>
 		if (ModelUtil.hasName(element)) {
 			ConnectionDecorator labelDecorator = Graphiti.getPeService().createConnectionDecorator(connection, true, 0.5, true);
 			Text text = gaService.createText(labelDecorator, ModelUtil.getName(element));
+		    if (context.getProperty("BPMNLABEL") != null) {
+		      BPMNLabel label = (BPMNLabel) context.getProperty("BPMNLABEL");
+		      gaService.setLocation(text, new Float(label.getBounds().getX()).intValue(), new Float(label.getBounds().getY()).intValue());
+		      label.toString();
+		    }
+		    text.eAdapters().add(new AdapterImpl() {
+		        @Override
+		        public void notifyChanged(Notification msg) {
+		          super.notifyChanged(msg);
+		        }
+		    });
 			peService.setPropertyValue(labelDecorator, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
 			StyleUtil.applyStyle(text, element);
 		}

@@ -367,12 +367,12 @@
 			label="Sub Choreography">
 		</propertyTab>
 
-		<propertyTab
+		<!-- propertyTab
 			id="org.eclipse.bpmn2.modeler.activity.io.tab"
 			class="org.eclipse.bpmn2.modeler.ui.property.tasks.IoParametersPropertySection"
 			afterTab="org.eclipse.bpmn2.modeler.task.tab"
 			label="I/O Parameters">
-		</propertyTab>
+		</propertyTab -->
 
 		<propertyTab
 			id="org.eclipse.bpmn2.modeler.group.tab"
