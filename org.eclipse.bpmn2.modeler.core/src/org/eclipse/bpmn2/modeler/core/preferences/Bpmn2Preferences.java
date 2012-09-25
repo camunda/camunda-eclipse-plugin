@@ -1007,6 +1007,10 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		if (activeProject!=null)
 			return activeProject;
 		
+		if(!PlatformUI.isWorkbenchRunning()) {
+			return null;
+		}
+		
 		IWorkbench workbench = PlatformUI.getWorkbench(); 
 		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 		if (window!=null) {

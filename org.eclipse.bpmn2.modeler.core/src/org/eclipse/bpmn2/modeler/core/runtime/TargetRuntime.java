@@ -37,6 +37,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceFactoryImpl;
+import org.eclipse.ui.PlatformUI;
 
 
 public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
@@ -181,9 +182,11 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 						currentRuntime = getRuntime(e);
 						if (currentRuntime.getId().equals(TargetRuntime.DEFAULT_RUNTIME_ID)) {
 							if (e.getName().equals("propertyTab")) {
-								Bpmn2TabDescriptor td = new Bpmn2TabDescriptor(e);
-								Bpmn2SectionDescriptor sd = new Bpmn2SectionDescriptor(td,e);
-								currentRuntime.getTabs().add(td);
+								if(PlatformUI.isWorkbenchRunning()) {
+									Bpmn2TabDescriptor td = new Bpmn2TabDescriptor(e);
+									Bpmn2SectionDescriptor sd = new Bpmn2SectionDescriptor(td,e);
+									currentRuntime.getTabs().add(td);
+								}
 							}
 							if (e.getName().equals("modelEnablement")) {
 								ModelEnablementDescriptor me;
@@ -221,9 +224,11 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 								// already done
 								continue;
 							}
-							Bpmn2TabDescriptor td = new Bpmn2TabDescriptor(e);
-							Bpmn2SectionDescriptor sd = new Bpmn2SectionDescriptor(td,e);
-							currentRuntime.getTabs().add(td);
+							if(PlatformUI.isWorkbenchRunning()) {
+								Bpmn2TabDescriptor td = new Bpmn2TabDescriptor(e);
+								Bpmn2SectionDescriptor sd = new Bpmn2SectionDescriptor(td,e);
+								currentRuntime.getTabs().add(td);
+							}
 						}
 						else if (e.getName().equals("customTask")) {
 							String id = e.getAttribute("id");
