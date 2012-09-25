@@ -3,7 +3,9 @@ package org.eclipse.bpmn2.modeler.core.test;
 import java.net.URL;
 import java.util.Collections;
 
-import org.eclipse.bpmn2.modeler.runtime.activiti.model.util.ModelResourceFactoryImpl;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceFactoryImpl;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
+import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -37,7 +39,7 @@ public class EcoremodelImporterTests {
 		
 		URI uri = URI.createFileURI("test.bpmn");
 		
-		resource = new ModelResourceFactoryImpl().createResource(uri);
+		resource = new Bpmn2ModelerResourceFactoryImpl().createResource(uri);
 		resource.load(resourceUrl.openStream(), Collections.EMPTY_MAP);
 		
 		
