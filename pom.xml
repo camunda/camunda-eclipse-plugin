@@ -63,6 +63,7 @@
 
 	<modules>
 		<module>org.eclipse.bpmn2.modeler.core</module>
+		<module>org.eclipse.bpmn2.modeler.core.tests</module>
 		<module>org.eclipse.bpmn2.modeler.ui</module>
 		<module>org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5</module>
 		<module>org.eclipse.bpmn2.modeler.feature</module>

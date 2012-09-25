@@ -259,7 +259,13 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 		}
 
 		BPMN2Editor editor = BPMN2Editor.getActiveEditor(); //(BPMN2Editor)getDiagramTypeProvider().getDiagramEditor();;
-		TargetRuntime rt = editor.getTargetRuntime();
+		
+		TargetRuntime rt = null;
+		if(editor != null) {
+			rt = editor.getTargetRuntime();
+		} else {
+			rt = TargetRuntime.getDefaultRuntime();
+		}
 		for (FeatureContainerDescriptor fcd : rt.getFeatureContainers()) {
 			FeatureContainer container = fcd.getFeatureContainer();
 			ICreateFeature createFeature = container.getCreateFeature(this);
