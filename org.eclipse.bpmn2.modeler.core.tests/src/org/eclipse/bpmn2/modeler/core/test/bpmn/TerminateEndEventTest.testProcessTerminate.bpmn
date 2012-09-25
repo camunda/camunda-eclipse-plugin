@@ -31,7 +31,7 @@
     <bpmn2:sequenceFlow id="SequenceFlow_3" sourceRef="preNormalTerminateTask" targetRef="EndEvent_1"/>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1" name="Default Process Diagram">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="process_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="terminateEndEventExample">
       <bpmndi:BPMNShape id="BPMNShape_1" bpmnElement="start">
         <dc:Bounds height="36.0" width="36.0" x="110.0" y="198.0"/>
       </bpmndi:BPMNShape>

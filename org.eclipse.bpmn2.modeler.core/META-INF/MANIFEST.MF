@@ -40,6 +40,7 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.bpmn2.modeler.core,
  org.eclipse.bpmn2.modeler.core.adapters,
  org.eclipse.bpmn2.modeler.core.di,
+ org.eclipse.bpmn2.modeler.core.ecore,
  org.eclipse.bpmn2.modeler.core.features,
  org.eclipse.bpmn2.modeler.core.features.activity,
  org.eclipse.bpmn2.modeler.core.features.activity.task,
