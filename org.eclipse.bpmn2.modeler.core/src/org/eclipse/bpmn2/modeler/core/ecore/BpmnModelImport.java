@@ -94,7 +94,7 @@ public class BpmnModelImport {
 				org.eclipse.bpmn2.Process process = (org.eclipse.bpmn2.Process) rootElement;
 				handleProcess(process);				
 			} else {
-				throw new Bpmn2ImportException("TODO: what is this? " + rootElement);
+				System.out.println("[Warn] not handling " + rootElement);
 			}
 		}
 		
