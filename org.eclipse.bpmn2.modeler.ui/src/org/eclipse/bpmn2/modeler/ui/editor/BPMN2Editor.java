@@ -80,6 +80,9 @@ import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.ProxyURIConverterImplExtension;
 import org.eclipse.bpmn2.modeler.core.di.DIImport;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
+import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ImportException;
+import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
+import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImportCommand;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultDetailComposite;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultDialogComposite;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultListComposite;
@@ -166,6 +169,7 @@ import org.eclipse.emf.ecore.EValidator;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.TransactionalEditingDomain.Lifecycle;
 import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
 import org.eclipse.gef.ui.parts.SelectionSynchronizer;
@@ -173,6 +177,7 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.platform.IDiagramEditor;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IPeService;
 import org.eclipse.graphiti.ui.editor.DefaultPersistencyBehavior;
@@ -554,10 +559,14 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 			saveModelFile();
 		}
 		
-		DIImport di = new DIImport(this);
-		di.setModelHandler(modelHandler);
-
-		di.generateFromDI();
+		IDiagramEditor diagramEditor = getDiagramTypeProvider().getDiagramEditor();
+		TransactionalEditingDomain editingDomain = diagramEditor.getEditingDomain();
+		editingDomain.getCommandStack().execute(new Bpmn2ModelImportCommand(editingDomain, diagramEditor, bpmnResource));
+		
+//		DIImport di = new DIImport(this);
+//		di.setModelHandler(modelHandler);
+//
+//		di.generateFromDI();
 
 		// this needs to happen AFTER the diagram has been imported because we need
 		// to be able to determine the diagram type from the file's contents in order

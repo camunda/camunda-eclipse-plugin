@@ -13,20 +13,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Collaboration;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowElementsContainer;
+import org.eclipse.bpmn2.FlowNode;
+import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.SequenceFlow;
+import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BPMNShape;
+import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.FlowNodeShapeHandler;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
@@ -35,7 +41,12 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.ILayoutFeature;
+import org.eclipse.graphiti.features.context.impl.LayoutContext;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.platform.IDiagramEditor;
 
 /**
  * 
@@ -46,7 +57,6 @@ import org.eclipse.graphiti.mm.pictograms.Diagram;
 public class Bpmn2ModelImport {
 
 	protected IFeatureProvider featureProvider;
-	protected Diagram diagram;
 	protected Bpmn2Resource resource;
 	protected IDiagramTypeProvider diagramTypeProvider;
 	protected Bpmn2Preferences preferences;
@@ -57,14 +67,15 @@ public class Bpmn2ModelImport {
 	// this list collects DI elements that do not reference bpmn model elements. (for instance, lables only)
 	protected List<DiagramElement> nonModelElements = new ArrayList<DiagramElement>();
 	
-
+	// this list collects the created PictogramElements (Graphiti) indexed by bpmn model elements
+	protected HashMap<BaseElement, PictogramElement> pictogramElements = new HashMap<BaseElement, PictogramElement>();
+	
 	public Bpmn2ModelImport(IDiagramTypeProvider diagramTypeProvider, Bpmn2Resource resource) {
 		
 		this.diagramTypeProvider = diagramTypeProvider;
 		this.resource = resource;
 		
 		featureProvider = diagramTypeProvider.getFeatureProvider();
-		diagram = diagramTypeProvider.getDiagram();
 		preferences = Bpmn2Preferences.getInstance(resource);
 
 	}
@@ -95,53 +106,120 @@ public class Bpmn2ModelImport {
 		for (BPMNDiagram bpmnDiagram : diagrams) {
 			handleDIBpmnDiagram(bpmnDiagram);
 		}
+		
+		// TODO: remove link to BPMNDiagram?!
+		Diagram rootDiagram = createRootDiagram(diagrams.get(0));
+		
 		// next, process the BPMN model elements and start building the Graphiti diagram
-		List<RootElement> processes = definitions.getRootElements();
-		for (RootElement rootElement : processes) {
-			if (rootElement instanceof org.eclipse.bpmn2.Process) {
-				org.eclipse.bpmn2.Process process = (org.eclipse.bpmn2.Process) rootElement;
-				handleProcess(process);
+		List<RootElement> rootElements = definitions.getRootElements();
+		List<Process> processes = new ArrayList<Process>();
+		Collaboration collaboration = null;
+		for (RootElement rootElement : rootElements) {
+			
+			if (rootElement instanceof Process) {
+				processes.add((Process) rootElement);
+				
+			} else if(rootElement instanceof Collaboration) {
+				collaboration = (Collaboration) rootElement;
+				handleCollaboration(collaboration, rootDiagram);
+				
 			} else {
 				System.out.println("Unhandled RootElement: "+rootElement);
 			}
 		}
 		
+		if(collaboration == null) {
+			for (Process process : processes) {
+				handleProcess(process, rootDiagram);
+			}
+		}
+		
+		// finally layout all elements
+		performLayout();
+		
+	}
+
+	protected Diagram createRootDiagram(BPMNDiagram bpmnDiagram) {
+		IDiagramEditor diagramEditor = diagramTypeProvider.getDiagramEditor();
+		Diagram diagram = DIUtils.getOrCreateDiagram(diagramEditor,bpmnDiagram);
+		diagramTypeProvider.init(diagram, diagramEditor);
+		return diagram;
+	}
+
+	protected void performLayout() {
+		// finally layout all elements
+		for (Entry<BaseElement, PictogramElement> entry : pictogramElements.entrySet()) {
+			BaseElement baseElement = entry.getKey();
+			PictogramElement pictogramElement = entry.getValue();
+			
+			if (baseElement instanceof SubProcess) {
+				// we need the layout to hide children if collapsed
+				LayoutContext context = new LayoutContext(pictogramElement);
+				ILayoutFeature feature = featureProvider.getLayoutFeature(context);
+				if (feature != null && feature.canLayout(context)) {
+					feature.layout(context);
+				}
+
+			} else if (baseElement instanceof FlowNode) {
+				LayoutContext context = new LayoutContext(pictogramElement);
+				ILayoutFeature feature = featureProvider.getLayoutFeature(context);
+				if (feature != null && feature.canLayout(context)) {
+					feature.layout(context);
+				}
+			}
+			
+		}
 	}
 	
 	// handling of BPMN Model Elements ///////////////////////////////////////////////////////////////
-
-	protected void handleProcess(Process process) {
+	
+	protected void handleCollaboration(Collaboration collaboration, Diagram container) {
 		
+		List<Participant> participants = collaboration.getParticipants();
+		for (Participant participant : participants) {
+			Process process = participant.getProcessRef();
+			handleProcess(process, container);			
+		}
+		
+	}
+
+	protected void handleProcess(Process process, Diagram container) {
+				
 		// handle the children of the process element
-		handleFlowElementsContainer(process);
+		handleFlowElementsContainer(process, container);
 	}
 
 	/**
 	 * processes all {@link FlowElement FlowElements} in a given scope.
 	 * 
 	 * @param scope
+	 * @param container 
 	 */
-	protected void handleFlowElementsContainer(FlowElementsContainer scope) {
+	protected void handleFlowElementsContainer(FlowElementsContainer scope, ContainerShape container) {
 		List<FlowElement> flowElements = scope.getFlowElements();
 
 		// sequence flows are collected in this map and processed after the activities are processed
 		List<SequenceFlow> sequenceFlows = new ArrayList<SequenceFlow>();
 		for (FlowElement flowElement : flowElements) {
+			
 			if (flowElement instanceof SequenceFlow) {
-				sequenceFlows.add((SequenceFlow) flowElement);				
+				sequenceFlows.add((SequenceFlow) flowElement);		
+				
 			} else if(flowElement instanceof Activity) {
-				handleActivity((Activity) flowElement, scope);
+				handleActivity((Activity) flowElement, scope, container);
 			}
 		}
 	}
 
 
-	protected void handleActivity(Activity flowElement, FlowElementsContainer scope) {
+	protected void handleActivity(Activity flowElement, FlowElementsContainer scope, ContainerShape container) {
 		
 		BPMNShape shape = (BPMNShape) diagramElementMap.get(flowElement.getId());
 		
 		FlowNodeShapeHandler flowNodeShapeHandler = new FlowNodeShapeHandler(this);
-		flowNodeShapeHandler.handleShape(flowElement, shape, diagram);
+		PictogramElement pictogramElement = flowNodeShapeHandler.handleShape(flowElement, shape, container);
+		
+		pictogramElements.put(flowElement, pictogramElement);
 		
 	}
 
@@ -214,10 +292,6 @@ public class Bpmn2ModelImport {
 	
 	public IDiagramTypeProvider getDiagramTypeProvider() {
 		return diagramTypeProvider;
-	}
-
-	public Diagram getDiagram() {
-		return diagram;
 	}
 
 	public Bpmn2Resource getResource() {

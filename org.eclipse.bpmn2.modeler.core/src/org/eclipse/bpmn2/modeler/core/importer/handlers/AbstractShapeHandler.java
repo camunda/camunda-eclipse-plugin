@@ -25,7 +25,6 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.AreaContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 
@@ -39,12 +38,10 @@ public abstract class AbstractShapeHandler<T extends BaseElement> {
 	
 	protected Bpmn2ModelImport bpmn2ModelImport;
 	protected IFeatureProvider featureProvider;
-	protected Diagram diagram;
 
 	public AbstractShapeHandler(Bpmn2ModelImport bpmn2ModelImport) {
 		this.bpmn2ModelImport = bpmn2ModelImport;
 		featureProvider = bpmn2ModelImport.getFeatureProvider();
-		diagram = bpmn2ModelImport.getDiagram();
 	}
 	
 	/**
@@ -53,12 +50,6 @@ public abstract class AbstractShapeHandler<T extends BaseElement> {
 	 */
 	public PictogramElement handleShape(T bpmnElement, BPMNShape shape, ContainerShape container) {
 
-		// TODO: WTF is this??
-//		if (shape.getChoreographyActivityShape() != null) {
-//			// FIXME: we currently generate participant bands automatically
-//			return;
-//		}
-		
 		AddContext context = createAddContext(bpmnElement);		
 		IAddFeature addFeature = createAddFeature(context);
 		
@@ -91,34 +82,7 @@ public abstract class AbstractShapeHandler<T extends BaseElement> {
 			
 		}
 			
-			
-//				if (bpmnElement instanceof Participant) {
-					// TODO: figure out why this was put here initially;
-					// participant bands are already handled separately
-	//				elements.put(((Participant) bpmnElement).getProcessRef(), newContainer);
-//				}
-//				else if (bpmnElement instanceof ChoreographyActivity) {
-//					ChoreographyActivity ca = (ChoreographyActivity)bpmnElement;
-//					for (PictogramElement pe : ((ContainerShape)newContainer).getChildren()) {
-//						Object o = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(pe);
-//						if (o instanceof Participant)
-//							elements.put((Participant)o, pe);
-//					}
-//				}
-	//			else if (bpmnElement instanceof Event) {
-	//				GraphicsUtil.setEventSize(context.getWidth(), context.getHeight(), diagram);
-	//			} else if (bpmnElement instanceof Gateway) {
-	//				GraphicsUtil.setGatewaySize(context.getWidth(), context.getHeight(), diagram);
-	//			} else if (bpmnElement instanceof Activity && !(bpmnElement instanceof SubProcess)) {
-	//				GraphicsUtil.setActivitySize(context.getWidth(), context.getHeight(), diagram);
-	//			}
-				
-//				elements.put(bpmnElement, newContainer);
-//				handleEvents(bpmnElement, newContainer);
-//			}
-//		ModelUtil.addID(bpmnElement);
 	}
-
 
 
 	protected void setLocation(AddContext context, ContainerShape container, BPMNShape shape) {
@@ -150,7 +114,7 @@ public abstract class AbstractShapeHandler<T extends BaseElement> {
 		}
 	
 		if (useDefaultSize) {
-			Size size = GraphicsUtil.getShapeSize(bpmnElement, diagram);
+			Size size = GraphicsUtil.getShapeSize(bpmnElement, null);
 			if (size != null) {
 				setDefaultSize(context, size);
 			} else {

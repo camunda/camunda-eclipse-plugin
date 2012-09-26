@@ -43,7 +43,7 @@ public class SubProcessShapeHandler extends AbstractShapeHandler<SubProcess> {
 		
 		if (!shape.isIsExpanded()) {
 			
-			Size activitySize = GraphicsUtil.getActivitySize(diagram);
+			Size activitySize = GraphicsUtil.getActivitySize(null);
 			int width = activitySize.getWidth();
 			int height = activitySize.getHeight();
 			
