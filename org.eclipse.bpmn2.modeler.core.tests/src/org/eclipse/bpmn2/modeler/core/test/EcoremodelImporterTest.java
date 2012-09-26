@@ -9,7 +9,15 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.test;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import junit.framework.Assert;
+
 import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.junit.Test;
 
@@ -23,15 +31,62 @@ public class EcoremodelImporterTest extends AbstractImportBpmnModelTest {
 
 	@Test
 	public void testCmd() {
-
-		createEditingDomain("org/eclipse/bpmn2/modeler/core/test/bpmn/TerminateEndEventTest.testProcessTerminate.bpmn");
-
-		editingDomain.getCommandStack().execute(new AbstractTestCommand(editingDomain, "test.bpmn") {
-			void test(IDiagramTypeProvider diagramTypeProvider) {
-				Bpmn2ModelImport bpmnModelImport = new Bpmn2ModelImport(diagramTypeProvider, resource);
-				bpmnModelImport.execute();
+		importDiagram("org/eclipse/bpmn2/modeler/core/test/bpmn/TerminateEndEventTest.testProcessTerminate.bpmn");
+	}
+	
+	@Test
+	public void shouldBatchOpenDiagrams() {
+		List<String> resourceNames = getDiagramResources();
+		int importedCount = 0;
+		for (String name: resourceNames) {
+			try {
+				importDiagram("org/eclipse/bpmn2/modeler/core/test/bpmn/diagrams/" + name);
+				importedCount++;
+			} catch (Exception e) {
+				System.out.println("Failed to import due to " + e);
+				e.printStackTrace(System.err);
+				System.err.flush();
 			}
-		});
+		}
+		
+		System.out.println("Imported " + importedCount + "/" + resourceNames.size() + " diagrams");
+		Assert.assertEquals(resourceNames.size(), importedCount);
+	}
+
+	private void importDiagram(String resourceName) {
+		System.out.println("Importing " + resourceName);
+		
+		try {
+			TransactionalEditingDomain editingDomain = createEditingDomain(resourceName);
+			editingDomain.getCommandStack().execute(new AbstractTestCommand(editingDomain, "test.bpmn", resource) {
+				void test(IDiagramTypeProvider diagramTypeProvider) {
+					Bpmn2ModelImport bpmnModelImport = new Bpmn2ModelImport(diagramTypeProvider, resource);
+					bpmnModelImport.execute();
+				}
+			});
+			
+			System.out.println("Done.");
+		} finally {
+			disposeEditingDomain();
+		}
+	}
+	
+	private List<String> getDiagramResources() {
+		File directory = new File("src/org/eclipse/bpmn2/modeler/core/test/bpmn/diagrams/");
+		if (!directory.exists()) {
+			return Collections.emptyList();
+		}
+		
+		File[] contents = directory.listFiles();
+		
+		ArrayList<String> names = new ArrayList<String>();
+		for (File f: contents) {
+			if (f.isFile()) {
+				names.add(f.getName());
+			}
+		}
+		
+		return names;
 	}
 
 }

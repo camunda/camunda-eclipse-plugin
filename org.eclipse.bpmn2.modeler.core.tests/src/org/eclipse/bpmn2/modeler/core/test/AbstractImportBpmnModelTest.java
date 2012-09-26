@@ -18,6 +18,7 @@ import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceFactoryImpl;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.junit.After;
@@ -33,7 +34,7 @@ public abstract class AbstractImportBpmnModelTest {
 	protected TransactionalEditingDomain editingDomain;
 	protected Bpmn2ResourceImpl resource;
 
-	public void createEditingDomain(String bpmnResourceName) {
+	public TransactionalEditingDomain createEditingDomain(String bpmnResourceName) {
 		
 		URL resourceUrl = Activator.getBundleContext().getBundle().getResource(bpmnResourceName);
 		URI uri = URI.createFileURI("test.bpmn");
@@ -47,6 +48,8 @@ public abstract class AbstractImportBpmnModelTest {
 			editingDomain = TransactionalEditingDomain.Factory.INSTANCE.createEditingDomain();
 			editingDomain.getResourceSet().getResources().add(resource);
 		}
+		
+		return editingDomain;
 	}
 
 	protected void loadResource(Resource resource2, URL resourceUrl) {
@@ -77,6 +80,8 @@ public abstract class AbstractImportBpmnModelTest {
 	protected void disposeEditingDomain() {
 		if (editingDomain != null) {
 			editingDomain.dispose();
+			editingDomain = null;
+			resource = null;
 		}
 	}
 }

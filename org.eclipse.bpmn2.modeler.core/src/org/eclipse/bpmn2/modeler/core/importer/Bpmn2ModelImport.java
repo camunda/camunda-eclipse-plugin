@@ -27,6 +27,7 @@ import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BPMNShape;
+import org.eclipse.bpmn2.modeler.core.importer.handlers.FlowNodeShapeHandler;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.dd.di.DiagramElement;
@@ -101,7 +102,7 @@ public class Bpmn2ModelImport {
 				org.eclipse.bpmn2.Process process = (org.eclipse.bpmn2.Process) rootElement;
 				handleProcess(process);
 			} else {
-				throw new Bpmn2ImportException("TODO: what is this?");
+				System.out.println("Unhandled RootElement: "+rootElement);
 			}
 		}
 		
@@ -110,9 +111,6 @@ public class Bpmn2ModelImport {
 	// handling of BPMN Model Elements ///////////////////////////////////////////////////////////////
 
 	protected void handleProcess(Process process) {
-		
-		
-		
 		
 		// handle the children of the process element
 		handleFlowElementsContainer(process);
@@ -133,12 +131,17 @@ public class Bpmn2ModelImport {
 				sequenceFlows.add((SequenceFlow) flowElement);				
 			} else if(flowElement instanceof Activity) {
 				handleActivity((Activity) flowElement, scope);
-			} 
+			}
 		}
 	}
 
 
 	protected void handleActivity(Activity flowElement, FlowElementsContainer scope) {
+		
+		BPMNShape shape = (BPMNShape) diagramElementMap.get(flowElement.getId());
+		
+		FlowNodeShapeHandler flowNodeShapeHandler = new FlowNodeShapeHandler(this);
+		flowNodeShapeHandler.handleShape(flowElement, shape, diagram);
 		
 	}
 

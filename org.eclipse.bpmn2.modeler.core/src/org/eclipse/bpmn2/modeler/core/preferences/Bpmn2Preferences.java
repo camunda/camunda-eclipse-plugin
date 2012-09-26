@@ -887,15 +887,19 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		else {
 			if ((be instanceof Participant && !choreographyActivityShapeSet) || be instanceof Lane) {
 				BPMNDIAttributeDefault df = getIsHorizontal();
-				switch(df) {
-				case ALWAYS_TRUE:
+				// Assume horizontal to be the default
+				if (df == null) {
 					bpmnShape.setIsHorizontal(true);
-					break;
-				case ALWAYS_FALSE:
-					bpmnShape.setIsHorizontal(false);
-					break;
+				} else {
+					switch(df) {
+					case ALWAYS_TRUE:
+						bpmnShape.setIsHorizontal(true);
+						break;
+					case ALWAYS_FALSE:
+						bpmnShape.setIsHorizontal(false);
+						break;
+					}
 				}
-
 			}
 		}
 		
