@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.test;
 
-import org.eclipse.bpmn2.modeler.core.ecore.BpmnModelImport;
+import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.junit.Test;
 
@@ -28,7 +28,7 @@ public class EcoremodelImporterTest extends AbstractImportBpmnModelTest {
 
 		editingDomain.getCommandStack().execute(new AbstractTestCommand(editingDomain, "test.bpmn") {
 			void test(IDiagramTypeProvider diagramTypeProvider) {
-				BpmnModelImport bpmnModelImport = new BpmnModelImport(diagramTypeProvider, resource);
+				Bpmn2ModelImport bpmnModelImport = new Bpmn2ModelImport(diagramTypeProvider, resource);
 				bpmnModelImport.execute();
 			}
 		});
