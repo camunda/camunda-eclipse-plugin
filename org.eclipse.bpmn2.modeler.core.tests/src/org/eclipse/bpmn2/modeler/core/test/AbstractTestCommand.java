@@ -1,47 +1,53 @@
 package org.eclipse.bpmn2.modeler.core.test;
 
-import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
+import java.io.IOException;
+
+import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.transaction.RecordingCommand;
-import org.eclipse.emf.transaction.TransactionalEditingDomain;
-import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
-import org.eclipse.graphiti.platform.IDiagramEditor;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.ui.services.GraphitiUi;
 
 public abstract class AbstractTestCommand extends RecordingCommand {
-
-	protected TransactionalEditingDomain editingDomain;
+	
+	protected AbstractImportBpmnModelTest testCase;
 	protected String diagramName;
-
-	protected Diagram diagram;
+	
+	protected Diagram diagram;	
 	protected IDiagramTypeProvider diagramTypeProvider;
-	protected Bpmn2ResourceImpl resource;
+	protected Resource diagramResource;
 
-	public AbstractTestCommand(TransactionalEditingDomain editingDomain,
-			String diagramName, Bpmn2ResourceImpl resource) {
-		super(editingDomain);
-		this.editingDomain = editingDomain;
+	public AbstractTestCommand(AbstractImportBpmnModelTest importBpmnModelTest, String diagramName) {
+		super(importBpmnModelTest.getEditingDomain());
+		testCase = importBpmnModelTest;
 		this.diagramName = diagramName;
-		this.resource = resource;
 	}
 
 	@Override
 	protected void doExecute() {
 
-		diagram = Graphiti.getPeCreateService().createDiagram("BPMN2",
-				diagramName, true);
+		diagram = Graphiti.getPeCreateService().createDiagram("BPMN2", diagramName, true);
+
+		URI uri = null;
+
+		try {
+			uri = URI.createFileURI(testCase.getTempFolder().newFile(diagramName + ".diagram").getAbsolutePath());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 		
-		resource.getContents().add(diagram);
+		ModelHandlerLocator.put(uri, testCase.getModelHandler());
+
+		diagramResource = testCase.getEditingDomain().getResourceSet().createResource(uri);
+		diagramResource.getContents().add(diagram);
 		
 		diagramTypeProvider = GraphitiUi.getExtensionManager().createDiagramTypeProvider(
 				diagram,
 				"org.eclipse.bpmn2.modeler.ui.diagram.MainBPMNDiagramType");
 		
-		IDiagramEditor diagramEditor = diagramTypeProvider.getDiagramEditor();
-
 		test(diagramTypeProvider);
 	}
 

@@ -14,14 +14,17 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Collections;
 
+import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceFactoryImpl;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.junit.After;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * 
@@ -33,6 +36,10 @@ public abstract class AbstractImportBpmnModelTest {
 
 	protected TransactionalEditingDomain editingDomain;
 	protected Bpmn2ResourceImpl resource;
+	protected ModelHandler modelHandler;
+	
+	@Rule
+	public TemporaryFolder tempFolder = new TemporaryFolder();
 
 	public TransactionalEditingDomain createEditingDomain(String bpmnResourceName) {
 		
@@ -41,6 +48,9 @@ public abstract class AbstractImportBpmnModelTest {
 
 		resource = (Bpmn2ResourceImpl) new Bpmn2ModelerResourceFactoryImpl().createResource(uri);
 		loadResource(resource, resourceUrl);
+		
+		// TODO: get rid of evil ModelHandler
+		modelHandler = ModelHandlerLocator.createModelHandler(uri, resource);
 
 		editingDomain = TransactionUtil.getEditingDomain(resource);
 		if (editingDomain == null) {
@@ -83,5 +93,21 @@ public abstract class AbstractImportBpmnModelTest {
 			editingDomain = null;
 			resource = null;
 		}
+	}
+
+	public TransactionalEditingDomain getEditingDomain() {
+		return editingDomain;
+	}
+
+	public Bpmn2ResourceImpl getResource() {
+		return resource;
+	}
+
+	public TemporaryFolder getTempFolder() {
+		return tempFolder;
+	}
+	
+	public ModelHandler getModelHandler() {
+		return modelHandler;
 	}
 }
