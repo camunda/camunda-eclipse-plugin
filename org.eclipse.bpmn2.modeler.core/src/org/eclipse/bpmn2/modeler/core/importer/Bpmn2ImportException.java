@@ -7,7 +7,7 @@
  * camunda services GmbH - initial API and implementation 
  *
  ******************************************************************************/
-package org.eclipse.bpmn2.modeler.core.ecore;
+package org.eclipse.bpmn2.modeler.core.importer;
 
 /**
  * 

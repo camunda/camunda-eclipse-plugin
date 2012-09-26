@@ -88,6 +88,7 @@ import org.eclipse.bpmn2.modeler.ui.features.gateway.ParallelGatewayFeatureConta
 import org.eclipse.bpmn2.modeler.ui.features.label.LabelFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.lane.LaneFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.participant.ParticipantFeatureContainer;
+import org.eclipse.bpmn2.presentation.Bpmn2Editor;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IAddBendpointFeature;
@@ -122,6 +123,7 @@ import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.platform.IDiagramEditor;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.ILinkService;
 import org.eclipse.graphiti.ui.features.DefaultFeatureProvider;
@@ -329,8 +331,14 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 			if (context.getProperty(ContextConstants.LABEL_CONTEXT) == null
 					|| !((Boolean) context.getProperty(ContextConstants.LABEL_CONTEXT)))
 			{
-				BPMN2Editor editor = (BPMN2Editor)getDiagramTypeProvider().getDiagramEditor();;
-				TargetRuntime rt = editor.getTargetRuntime();
+				TargetRuntime rt = null;
+				
+				IDiagramEditor editor = getDiagramTypeProvider().getDiagramEditor();
+				if(editor instanceof BPMN2Editor) {
+					rt = ((BPMN2Editor)editor).getTargetRuntime();
+				} else {
+					rt = TargetRuntime.getDefaultRuntime();
+				}
 				FeatureContainerDescriptor fcd = rt.getFeatureContainer(object.eClass());
 				if (fcd!=null)
 					return fcd.getFeatureContainer();

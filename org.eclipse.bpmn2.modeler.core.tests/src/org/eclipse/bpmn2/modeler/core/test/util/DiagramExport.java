@@ -22,8 +22,11 @@ import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.editparts.LayerManager;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.services.Graphiti;
+import org.eclipse.graphiti.ui.internal.editor.DiagramEditorDummy;
 import org.eclipse.graphiti.ui.internal.editor.GFFigureCanvas;
 import org.eclipse.graphiti.ui.internal.fixed.FixedScaledGraphics;
+import org.eclipse.graphiti.ui.internal.platform.DiagramTypeImpl;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -41,9 +44,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class DiagramExport {
 
-	public static byte[] exportAsPng(IDiagramTypeProvider diagramTypeProvider,
-			Diagram diagram) {
-
+	public static byte[] exportAsPng(IDiagramTypeProvider diagramTypeProvider, Diagram diagram) {
 		return new DiagramExport(diagram).exportAsPngBytes();
 	}
 
@@ -54,8 +55,7 @@ public class DiagramExport {
 	}
 
 	private byte[] exportAsPngBytes() {
-		GraphicalViewer graphicalViewer = BPMN2Editor.getActiveEditor()
-				.getGraphicalViewer();
+		GraphicalViewer graphicalViewer = BPMN2Editor.getActiveEditor().getGraphicalViewer();
 		Image image = getImage(graphicalViewer);
 
 		return toImageBytes(image, SWT.IMAGE_PNG);
