@@ -65,7 +65,6 @@ public class Bpmn2ModelImporterTest extends AbstractImportBpmnModelTest {
 				}
 			});
 			
-			
 			System.out.println("Done.");
 		} finally {
 			disposeEditingDomain();

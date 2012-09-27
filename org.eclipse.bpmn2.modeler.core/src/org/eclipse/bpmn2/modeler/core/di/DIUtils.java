@@ -159,7 +159,7 @@ public class DIUtils {
 		}
 	}
 
-	static void addBendPoint(FreeFormConnection freeForm, Point point) {
+	public static void addBendPoint(FreeFormConnection freeForm, Point point) {
 		freeForm.getBendpoints().add(Graphiti.getGaService().createPoint((int) point.getX(), (int) point.getY()));
 	}
 

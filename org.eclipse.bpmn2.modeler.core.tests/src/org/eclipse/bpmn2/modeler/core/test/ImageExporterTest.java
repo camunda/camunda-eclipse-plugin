@@ -31,9 +31,9 @@ public class ImageExporterTest extends AbstractImportBpmnModelTest {
 	public void testGeneratePng() {
 		TransactionalEditingDomain editingDomain = createEditingDomain("org/eclipse/bpmn2/modeler/core/test/bpmn/TerminateEndEventTest.testProcessTerminate.bpmn");
 		
-		editingDomain.getCommandStack().execute(new AbstractTestCommand(editingDomain, "test.bpmn") {
+		editingDomain.getCommandStack().execute(new AbstractTestCommand(this, "test.bpmn") {
 			void test(IDiagramTypeProvider diagramTypeProvider) {
-				Bpmn2ModelImport bpmn2ModelImport = new Bpmn2ModelImport(diagramTypeProvider);
+				Bpmn2ModelImport bpmn2ModelImport = new Bpmn2ModelImport(diagramTypeProvider, resource);
 				bpmn2ModelImport.execute();
 				
 				byte[] bytes = DiagramExport.exportAsPng(diagramTypeProvider, diagram);
