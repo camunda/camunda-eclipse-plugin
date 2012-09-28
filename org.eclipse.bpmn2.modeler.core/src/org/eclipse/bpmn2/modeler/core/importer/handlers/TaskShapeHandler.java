@@ -36,7 +36,12 @@ public class TaskShapeHandler extends FlowNodeShapeHandler {
 		
 		// remember the bounds of a created task, in order to draw new tasks in the same size
 		if(targetContainer instanceof Diagram) {
-			GraphicsUtil.setActivitySize(context.getWidth(), context.getHeight(), (Diagram) targetContainer);
+			Diagram diagram = (Diagram) targetContainer;
+			
+			int width = context.getWidth();
+			int height = context.getHeight();
+			
+			GraphicsUtil.setActivitySize(width, height, diagram);
 		}
 		
 	}

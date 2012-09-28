@@ -127,6 +127,7 @@ public class Bpmn2ModelImport {
 		List<RootElement> rootElements = definitions.getRootElements();
 		List<Process> processes = new ArrayList<Process>();
 		Collaboration collaboration = null;
+		
 		for (RootElement rootElement : rootElements) {
 			
 			if (rootElement instanceof Process) {
@@ -144,7 +145,7 @@ public class Bpmn2ModelImport {
 				System.out.println("Unhandled RootElement: "+rootElement);
 			}
 		}
-		
+
 		if (collaboration == null) {
 			for (Process process : processes) {
 				handleProcess(process, rootDiagram);
@@ -189,7 +190,7 @@ public class Bpmn2ModelImport {
 	
 	// handling of BPMN Model Elements ///////////////////////////////////////////////////////////////
 	
-	protected void handleCollaboration(Collaboration collaboration, Diagram container) {
+	protected void handleCollaboration(Collaboration collaboration, ContainerShape container) {
 		
 		List<Participant> participants = collaboration.getParticipants();
 		for (Participant participant : participants) {
@@ -197,30 +198,31 @@ public class Bpmn2ModelImport {
 		}
 	}
 
-	private void handleParticipant(Participant participant, Diagram container) {
+	protected void handleParticipant(Participant participant, ContainerShape container) {
 		Process process = participant.getProcessRef();
-		if (process == null) {
-			// TODO: Must check for unresolved proxy
-			throw new Bpmn2ImportException("Participant has no process");
+		
+		if (process == null || process.eIsProxy()) {
+			return;
 		}
+
+		// draw the participant (pool)
+		ParticipantShapeHandler shapeHander = new ParticipantShapeHandler(this);
+		ContainerShape participantContainer = (ContainerShape) handleDiagramElement(participant, container, shapeHander);
 		
-		AbstractShapeHandler<Participant> shapeHandler = new ParticipantShapeHandler(this);
-		
-		DiagramElement diagramElement = getDiagramElement(participant);
-		PictogramElement pictogramElement = shapeHandler.handleDiagramElement(participant, diagramElement, container);
-		pictogramElements.put(participant, pictogramElement);
-		
-		handleProcessInCollaboration(process, participant, container);
+		List<LaneSet> laneSets = process.getLaneSets();
+		if(laneSets.isEmpty()) {
+			handleProcess(process, participantContainer);
+			
+		} else {
+			for (LaneSet laneSet: laneSets) {
+				handleLaneSet(laneSet, process, participantContainer);
+			}
+		}
 	}
 
-	protected void handleProcessInCollaboration(Process process, Participant participant, Diagram container) {
-		List<LaneSet> laneSets = process.getLaneSets();
+	protected void handleProcessInCollaboration(Process process, Participant participant, ContainerShape container) {
 		
-		for (LaneSet laneSet: laneSets) {
-			handleLaneSet(laneSet, process, container);
-		}
 		
-		handleProcess(process, container);
 	}
 	
 	protected void handleLaneSet(LaneSet laneSet, FlowElementsContainer scope, ContainerShape container) {
@@ -229,18 +231,22 @@ public class Bpmn2ModelImport {
 		}
 	}
 
-	private void handleLane(Lane lane, FlowElementsContainer scope, ContainerShape container) {
+	protected void handleLane(Lane lane, FlowElementsContainer scope, ContainerShape container) {
 		AbstractShapeHandler<Lane> shapeHandler = new LaneShapeHandler(this);
 		
 		
 		// TODO: Draw lane the right way
 		DiagramElement diagramElement = getDiagramElement(lane);
-		PictogramElement pictogramElement = shapeHandler.handleDiagramElement(lane, diagramElement, container);
-		pictogramElements.put(lane, pictogramElement);
+		ContainerShape thisContainer = (ContainerShape) shapeHandler.handleDiagramElement(lane, diagramElement, container);
+		pictogramElements.put(lane, thisContainer);
 		
 		LaneSet childLaneSet = lane.getChildLaneSet();
 		if (childLaneSet != null) {
-			handleLaneSet(childLaneSet, scope, container);
+			handleLaneSet(childLaneSet, scope, thisContainer);
+		} else {
+			List<FlowNode> referencedNodes = lane.getFlowNodeRefs();
+			
+			handleFlowElementsContainer(thisContainer, (List)referencedNodes);
 		}
 	}
 
@@ -256,7 +262,7 @@ public class Bpmn2ModelImport {
 	 * @param container 
 	 */
 	protected void handleFlowElementsContainer(FlowElementsContainer scope, ContainerShape container) {
-		handleFlowElementsContainer(scope, container, scope.getFlowElements());
+		handleFlowElementsContainer(container, scope.getFlowElements());
 	}
 	
 	/**
@@ -265,7 +271,7 @@ public class Bpmn2ModelImport {
 	 * @param scope
 	 * @param container 
 	 */
-	protected void handleFlowElementsContainer(FlowElementsContainer scope, ContainerShape container, List<FlowElement> flowElementsToBeDrawn) {
+	protected void handleFlowElementsContainer(ContainerShape container, List<FlowElement> flowElementsToBeDrawn) {
 		
 		// sequence flows are collected in this map and processed after the activities are processed
 		List<SequenceFlow> sequenceFlows = new ArrayList<SequenceFlow>();
@@ -276,22 +282,22 @@ public class Bpmn2ModelImport {
 				sequenceFlows.add((SequenceFlow) flowElement);
 				
 			} else if (flowElement instanceof Gateway) {
-				handleGateway((Gateway) flowElement, scope, container);	
+				handleGateway((Gateway) flowElement, container);	
 			
 			} else if (flowElement instanceof SubProcess) {
-				handleSubProcess((SubProcess) flowElement, scope, container);
+				handleSubProcess((SubProcess) flowElement, container);
 				
 			} else if (flowElement instanceof CallActivity) {
-				handleCallActivity((CallActivity) flowElement, scope, container);
+				handleCallActivity((CallActivity) flowElement, container);
 			
 			} else if (flowElement instanceof Task) {
-				handleTask((Task) flowElement, scope, container);	
+				handleTask((Task) flowElement, container);	
 				
 			} else if (flowElement instanceof Event) {
-				handleEvent((Event) flowElement, scope, container);
+				handleEvent((Event) flowElement, container);
 				
 			} else if (flowElement instanceof Activity) {
-				handleActivity((Activity) flowElement, scope, container);	
+				handleActivity((Activity) flowElement, container);	
 				
 			} else {
 				System.out.println("Not handled: " + flowElement);
@@ -300,48 +306,47 @@ public class Bpmn2ModelImport {
 		
 		// add sequence flows
 		for (SequenceFlow sequenceFlow: sequenceFlows) {
-			handleSequenceFlow(sequenceFlow, scope, container);
+			handleSequenceFlow(sequenceFlow, container);
 		}
 	}
 
 	protected void handleActivity(Activity flowElement,
-			FlowElementsContainer scope, ContainerShape container) {
+			ContainerShape container) {
 		
-		handleDiagramElement(flowElement, scope, container, new FlowNodeShapeHandler(this));
+		handleDiagramElement(flowElement, container, new FlowNodeShapeHandler(this));
 	}
 
-	protected void handleSubProcess(SubProcess subProcess, FlowElementsContainer scope, ContainerShape container) {
+	protected void handleSubProcess(SubProcess subProcess, ContainerShape container) {
 		
 		// draw subprocess shape
-		PictogramElement diagramElement = handleDiagramElement(subProcess, scope, container, new SubProcessShapeHandler(this));
+		PictogramElement diagramElement = handleDiagramElement(subProcess, container, new SubProcessShapeHandler(this));
 		
 		// descend into scope
 		handleFlowElementsContainer(subProcess, (ContainerShape) diagramElement);
 		
 	}
 
-	protected void handleGateway(Gateway flowElement, FlowElementsContainer scope, ContainerShape container) {
-		handleDiagramElement(flowElement, scope, container, new FlowNodeShapeHandler(this));
+	protected void handleGateway(Gateway flowElement, ContainerShape container) {
+		handleDiagramElement(flowElement, container, new FlowNodeShapeHandler(this));
 	}
 
-	protected void handleSequenceFlow(SequenceFlow flowElement, FlowElementsContainer scope, ContainerShape container) {
-		handleDiagramElement(flowElement, scope, container, new SequenceFlowShapeHandler(this));
+	protected void handleSequenceFlow(SequenceFlow flowElement, ContainerShape container) {
+		handleDiagramElement(flowElement, container, new SequenceFlowShapeHandler(this));
 	}
 
-	protected void handleEvent(Event flowElement, FlowElementsContainer scope, ContainerShape container) {
-		handleDiagramElement(flowElement, scope, container, new FlowNodeShapeHandler(this));
+	protected void handleEvent(Event flowElement, ContainerShape container) {
+		handleDiagramElement(flowElement, container, new FlowNodeShapeHandler(this));
 	}
 	
-	protected void handleCallActivity(CallActivity flowElement, FlowElementsContainer scope, ContainerShape container) {
-		handleDiagramElement(flowElement, scope, container, new FlowNodeShapeHandler(this));		
+	protected void handleCallActivity(CallActivity flowElement, ContainerShape container) {
+		handleDiagramElement(flowElement, container, new FlowNodeShapeHandler(this));		
 	}
 
-	protected void handleTask(Task flowElement, FlowElementsContainer scope, ContainerShape container) {
-		handleDiagramElement(flowElement, scope, container, new TaskShapeHandler(this));
+	protected void handleTask(Task flowElement, ContainerShape container) {
+		handleDiagramElement(flowElement, container, new TaskShapeHandler(this));
 	}
 	
-	private <T extends BaseElement> PictogramElement handleDiagramElement(T flowElement,
-			FlowElementsContainer scope, ContainerShape container,
+	public <T extends BaseElement> PictogramElement handleDiagramElement(T flowElement, ContainerShape container,
 			AbstractDiagramElementHandler<T> flowNodeShapeHandler) {
 		
 		DiagramElement diagramElement = getDiagramElement(flowElement);
@@ -370,7 +375,7 @@ public class Bpmn2ModelImport {
 		if(bpmnElement.eIsProxy()) {
 			throw new Bpmn2ImportException("BPMNPlane references unexisting bpmnElement '" + bpmnElement + "'.");
 		} else {
-			diagramElementMap.put(bpmnElement.getId(), plane);
+//			diagramElementMap.put(bpmnElement.getId(), plane);
 		}
 		
 		List<DiagramElement> planeElement = plane.getPlaneElement();

@@ -12,10 +12,8 @@ package org.eclipse.bpmn2.modeler.core.importer.handlers;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.di.BPMNEdge;
-import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.di.DIImport;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
@@ -57,8 +55,7 @@ public abstract class AbstractEdgeHandler<T extends BaseElement> extends Abstrac
 		super(bpmn2ModelImport);
 	}
 	
-	public final PictogramElement handleDiagramElement(T bpmnElement,
-			DiagramElement diagramElement, ContainerShape container) {
+	public final PictogramElement handleDiagramElement(T bpmnElement, DiagramElement diagramElement, ContainerShape container) {
 		
 		if (diagramElement instanceof BPMNEdge) {
 			return handleEdge(bpmnElement, (BPMNEdge) diagramElement, container);
