@@ -7,7 +7,7 @@
  * camunda services GmbH - initial API and implementation 
  *
  ******************************************************************************/
-package org.eclipse.bpmn2.modeler.core.test;
+package org.eclipse.bpmn2.modeler.core.test.importer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +17,7 @@ import java.util.Collections;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceFactoryImpl;
+import org.eclipse.bpmn2.modeler.core.test.Activator;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -32,7 +33,7 @@ import org.junit.rules.TemporaryFolder;
  * @author Daniel Meyer
  *
  */
-public abstract class AbstractImportBpmnModelTest {
+public abstract class AbstractImportBpmn2ModelTest {
 
 	protected TransactionalEditingDomain editingDomain;
 	protected Bpmn2ResourceImpl resource;

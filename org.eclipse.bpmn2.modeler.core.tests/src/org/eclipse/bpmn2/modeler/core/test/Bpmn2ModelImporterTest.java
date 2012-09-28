@@ -17,8 +17,11 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
+import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest;
+import org.eclipse.bpmn2.modeler.core.test.importer.AbstractTestCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -27,7 +30,8 @@ import org.junit.Test;
  * @author Daniel Meyer
  *
  */
-public class Bpmn2ModelImporterTest extends AbstractImportBpmnModelTest {
+@Ignore
+public class Bpmn2ModelImporterTest extends AbstractImportBpmn2ModelTest {
 
 	@Test
 	public void testCmd() {
@@ -59,7 +63,7 @@ public class Bpmn2ModelImporterTest extends AbstractImportBpmnModelTest {
 		try {
 			TransactionalEditingDomain editingDomain = createEditingDomain(resourceName);
 			editingDomain.getCommandStack().execute(new AbstractTestCommand(this, "test.bpmn") {
-				void test(IDiagramTypeProvider diagramTypeProvider) {
+				public void test(IDiagramTypeProvider diagramTypeProvider) {
 					Bpmn2ModelImport bpmnModelImport = new Bpmn2ModelImport(diagramTypeProvider, resource);
 					bpmnModelImport.execute();
 				}

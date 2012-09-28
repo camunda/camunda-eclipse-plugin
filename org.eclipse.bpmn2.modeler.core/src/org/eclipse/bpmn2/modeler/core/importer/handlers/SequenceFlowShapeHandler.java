@@ -36,7 +36,7 @@ public class SequenceFlowShapeHandler extends AbstractEdgeHandler<SequenceFlow> 
 		FlowNode target = bpmnElement.getTargetRef();
 		
 		// FIXME: Should not be neccessary !
-		// addSourceAndTargetToEdge(edge, source, target);
+//		 addSourceAndTargetToEdge(edge, source, target);
 
 		PictogramElement sourcePictogram = getPictogramElement(source);
 		PictogramElement targetPictogram = getPictogramElement(target);
