@@ -245,7 +245,13 @@ public class DIUtils {
 		// create a new one
 		IDiagramTypeProvider dtp = editor.getDiagramTypeProvider();
 		String typeId = dtp.getDiagram().getDiagramTypeId();
-		final Diagram newDiagram = Graphiti.getCreateService().createDiagram(typeId, bpmnDiagram.getName(), true);
+		
+		String name = bpmnDiagram.getName();
+		if(name == null) {
+			name = bpmnDiagram.getId();
+		}
+		
+		final Diagram newDiagram = Graphiti.getCreateService().createDiagram(typeId, name, true);
 		final IFeatureProvider featureProvider = dtp.getFeatureProvider();
 		final Resource resource = dtp.getDiagram().eResource();
 		TransactionalEditingDomain domain = editor.getEditingDomain();

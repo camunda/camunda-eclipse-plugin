@@ -182,7 +182,12 @@ public class Bpmn2ModelImport {
 		List<Participant> participants = collaboration.getParticipants();
 		for (Participant participant : participants) {
 			Process process = participant.getProcessRef();
-			handleProcess(process, container);			
+			if(process != null) {
+				handleProcess(process, container);
+			} else {
+				// TODO: repair diagram? 
+				// throw exception?
+			}
 		}
 		
 	}
