@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.Collaboration;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.DocumentRoot;
@@ -32,6 +33,7 @@ import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.SubProcess;
+import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNPlane;
@@ -43,6 +45,8 @@ import org.eclipse.bpmn2.modeler.core.importer.handlers.FlowNodeShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.LaneShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.ParticipantShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.SequenceFlowShapeHandler;
+import org.eclipse.bpmn2.modeler.core.importer.handlers.SubProcessShapeHandler;
+import org.eclipse.bpmn2.modeler.core.importer.handlers.TaskShapeHandler;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.dd.di.DiagramElement;
@@ -228,6 +232,8 @@ public class Bpmn2ModelImport {
 	private void handleLane(Lane lane, FlowElementsContainer scope, ContainerShape container) {
 		AbstractShapeHandler<Lane> shapeHandler = new LaneShapeHandler(this);
 		
+		
+		// TODO: Draw lane the right way
 		DiagramElement diagramElement = getDiagramElement(lane);
 		PictogramElement pictogramElement = shapeHandler.handleDiagramElement(lane, diagramElement, container);
 		pictogramElements.put(lane, pictogramElement);
@@ -270,13 +276,22 @@ public class Bpmn2ModelImport {
 				sequenceFlows.add((SequenceFlow) flowElement);
 				
 			} else if (flowElement instanceof Gateway) {
-				handleGateway((Gateway) flowElement, container);	
+				handleGateway((Gateway) flowElement, scope, container);	
 			
-			} else if (flowElement instanceof Activity) {
-				handleActivity((Activity) flowElement, container);	
+			} else if (flowElement instanceof SubProcess) {
+				handleSubProcess((SubProcess) flowElement, scope, container);
+				
+			} else if (flowElement instanceof CallActivity) {
+				handleCallActivity((CallActivity) flowElement, scope, container);
 			
+			} else if (flowElement instanceof Task) {
+				handleTask((Task) flowElement, scope, container);	
+				
 			} else if (flowElement instanceof Event) {
-				handleEvent((Event) flowElement, container);
+				handleEvent((Event) flowElement, scope, container);
+				
+			} else if (flowElement instanceof Activity) {
+				handleActivity((Activity) flowElement, scope, container);	
 				
 			} else {
 				System.out.println("Not handled: " + flowElement);
@@ -285,36 +300,56 @@ public class Bpmn2ModelImport {
 		
 		// add sequence flows
 		for (SequenceFlow sequenceFlow: sequenceFlows) {
-			handleSequenceFlow(sequenceFlow, container);
+			handleSequenceFlow(sequenceFlow, scope, container);
 		}
 	}
+
+	protected void handleActivity(Activity flowElement,
+			FlowElementsContainer scope, ContainerShape container) {
+		
+		handleDiagramElement(flowElement, scope, container, new FlowNodeShapeHandler(this));
+	}
+
+	protected void handleSubProcess(SubProcess subProcess, FlowElementsContainer scope, ContainerShape container) {
+		
+		// draw subprocess shape
+		PictogramElement diagramElement = handleDiagramElement(subProcess, scope, container, new SubProcessShapeHandler(this));
+		
+		// descend into scope
+		handleFlowElementsContainer(subProcess, (ContainerShape) diagramElement);
+		
+	}
+
+	protected void handleGateway(Gateway flowElement, FlowElementsContainer scope, ContainerShape container) {
+		handleDiagramElement(flowElement, scope, container, new FlowNodeShapeHandler(this));
+	}
+
+	protected void handleSequenceFlow(SequenceFlow flowElement, FlowElementsContainer scope, ContainerShape container) {
+		handleDiagramElement(flowElement, scope, container, new SequenceFlowShapeHandler(this));
+	}
+
+	protected void handleEvent(Event flowElement, FlowElementsContainer scope, ContainerShape container) {
+		handleDiagramElement(flowElement, scope, container, new FlowNodeShapeHandler(this));
+	}
 	
-	protected ContainerShape handleGateway(Gateway flowElement, ContainerShape container) {
-		handleDiagramElement(flowElement, container, new FlowNodeShapeHandler(this));
-		return container;
+	protected void handleCallActivity(CallActivity flowElement, FlowElementsContainer scope, ContainerShape container) {
+		handleDiagramElement(flowElement, scope, container, new FlowNodeShapeHandler(this));		
 	}
 
-	protected ContainerShape handleSequenceFlow(SequenceFlow flowElement, ContainerShape container) {
-		handleDiagramElement(flowElement, container, new SequenceFlowShapeHandler(this));
-		return container;
-	}
-
-	protected ContainerShape handleEvent(Event flowElement, ContainerShape container) {
-		handleDiagramElement(flowElement, container, new FlowNodeShapeHandler(this));
-		return container;
-	}
-
-	protected ContainerShape handleActivity(Activity flowElement, ContainerShape container) {
-		handleDiagramElement(flowElement, container, new FlowNodeShapeHandler(this));
-		return container;
+	protected void handleTask(Task flowElement, FlowElementsContainer scope, ContainerShape container) {
+		handleDiagramElement(flowElement, scope, container, new TaskShapeHandler(this));
 	}
 	
-	private <T extends BaseElement> void handleDiagramElement(T flowElement, ContainerShape container, AbstractDiagramElementHandler<T> flowNodeShapeHandler) {
+	private <T extends BaseElement> PictogramElement handleDiagramElement(T flowElement,
+			FlowElementsContainer scope, ContainerShape container,
+			AbstractDiagramElementHandler<T> flowNodeShapeHandler) {
 		
 		DiagramElement diagramElement = getDiagramElement(flowElement);
 		PictogramElement pictogramElement = flowNodeShapeHandler.handleDiagramElement(flowElement, diagramElement, container);
 		
 		pictogramElements.put(flowElement, pictogramElement);
+		
+		return pictogramElement;
 	}
 	
 	// handling of DI Elements ///////////////////////////////////////////////////////////////
