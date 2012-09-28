@@ -9,13 +9,13 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.importer.handlers;
 
-import org.eclipse.bpmn2.SubProcess;
+import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
-import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Size;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
 
 /**
  * 
@@ -23,25 +23,20 @@ import org.eclipse.graphiti.mm.pictograms.ContainerShape;
  * @author Daniel Meyer
  * 
  */
-public class SubProcessShapeHandler extends AbstractShapeHandler<SubProcess> {
+public class TaskShapeHandler extends FlowNodeShapeHandler {
 
-	public SubProcessShapeHandler(Bpmn2ModelImport bpmn2ModelImport) {
+	public TaskShapeHandler(Bpmn2ModelImport bpmn2ModelImport) {
 		super(bpmn2ModelImport);
 	}
-
+	
 	@Override
-	protected void setSize(AddContext context, BPMNShape shape, SubProcess bpmnElement, ContainerShape container) {
+	protected void setSize(AddContext context, BPMNShape shape, FlowNode bpmnElement, ContainerShape targetContainer) {
 		
-		if (!shape.isIsExpanded()) {
-			
-			Size activitySize = GraphicsUtil.getActivitySize(null);
-			int width = activitySize.getWidth();
-			int height = activitySize.getHeight();
-			
-			context.setSize(width, height);
-			
-		} else {
-			super.setSize(context, shape, bpmnElement, container);
+		super.setSize(context, shape, bpmnElement, targetContainer);
+		
+		// remember the bounds of a created task, in order to draw new tasks in the same size
+		if(targetContainer instanceof Diagram) {
+			GraphicsUtil.setActivitySize(context.getWidth(), context.getHeight(), (Diagram) targetContainer);
 		}
 		
 	}
