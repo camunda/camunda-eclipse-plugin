@@ -17,6 +17,7 @@ import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractTestCommand;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramExport;
+import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.junit.Ignore;
@@ -32,18 +33,13 @@ import org.junit.Test;
 public class ImageExporterTest extends AbstractImportBpmn2ModelTest {
 
 	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/bpmn/TerminateEndEventTest.testProcessTerminate.bpmn")
 	public void testGeneratePng() {
-		TransactionalEditingDomain editingDomain = createEditingDomain("org/eclipse/bpmn2/modeler/core/test/bpmn/TerminateEndEventTest.testProcessTerminate.bpmn");
+		Bpmn2ModelImport bpmn2ModelImport = new Bpmn2ModelImport(diagramTypeProvider, resource);
+		bpmn2ModelImport.execute();
 		
-		editingDomain.getCommandStack().execute(new AbstractTestCommand(this, "test.bpmn") {
-			public void test(IDiagramTypeProvider diagramTypeProvider) {
-				Bpmn2ModelImport bpmn2ModelImport = new Bpmn2ModelImport(diagramTypeProvider, resource);
-				bpmn2ModelImport.execute();
-				
-				byte[] bytes = DiagramExport.exportAsPng(diagramTypeProvider, diagram);
-				writeToFile("test.png", bytes);
-			}
-		});	
+		byte[] bytes = DiagramExport.exportAsPng(diagramTypeProvider, diagram);
+		writeToFile("test.png", bytes);
 	}
 
 	private void writeToFile(String fileName, byte[] bytes) {

@@ -11,6 +11,8 @@
 package org.eclipse.bpmn2.modeler.core.importer.handlers;
 
 import org.eclipse.bpmn2.FlowNode;
+import org.eclipse.bpmn2.InteractionNode;
+import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
@@ -23,22 +25,24 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
  * @author Nico Rehwaldt
  * @author Daniel Meyer
  */
-public class SequenceFlowShapeHandler extends AbstractEdgeHandler<SequenceFlow> {
+public class MessageFlowShapeHandler extends AbstractEdgeHandler<MessageFlow> {
 
-	public SequenceFlowShapeHandler(Bpmn2ModelImport bpmn2ModelImport) {
+	public MessageFlowShapeHandler(Bpmn2ModelImport bpmn2ModelImport) {
 		super(bpmn2ModelImport);
 	}
 
 	@Override
-	protected PictogramElement handleEdge(SequenceFlow bpmnElement, BPMNEdge edge, ContainerShape container) {
+	protected PictogramElement handleEdge(MessageFlow bpmnElement, BPMNEdge edge, ContainerShape container) {
 		
-		FlowNode source = bpmnElement.getSourceRef();
-		FlowNode target = bpmnElement.getTargetRef();
+		InteractionNode source = bpmnElement.getSourceRef();
+		InteractionNode target = bpmnElement.getTargetRef();
 
-		PictogramElement sourcePictogram = getPictogramElement(source);
-		PictogramElement targetPictogram = getPictogramElement(target);
+//		PictogramElement sourcePictogram = getPictogramElement(source);
+//		PictogramElement targetPictogram = getPictogramElement(target);
 		
-		Connection connection = createConnectionAndSetBendpoints(edge, sourcePictogram, targetPictogram);
-		return connection;
+//		Connection connection = createConnectionAndSetBendpoints(edge, sourcePictogram, targetPictogram);
+//		return connection;
+		
+		return null;
 	}
 }

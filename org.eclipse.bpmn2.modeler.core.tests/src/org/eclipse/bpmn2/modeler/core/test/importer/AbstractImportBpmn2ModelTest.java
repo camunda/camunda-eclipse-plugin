@@ -18,12 +18,14 @@ import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceFactoryImpl;
 import org.eclipse.bpmn2.modeler.core.test.Activator;
+import org.eclipse.bpmn2.modeler.core.test.util.CommandRule;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
-import org.junit.After;
+import org.eclipse.graphiti.dt.IDiagramTypeProvider;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
@@ -39,12 +41,23 @@ public abstract class AbstractImportBpmn2ModelTest {
 	protected Bpmn2ResourceImpl resource;
 	protected ModelHandler modelHandler;
 	
+	protected Diagram diagram;
+	
+	protected IDiagramTypeProvider diagramTypeProvider;
+	
 	@Rule
 	public TemporaryFolder tempFolder = new TemporaryFolder();
 
+	@Rule
+	public CommandRule commandRule = new CommandRule();
+	
 	public TransactionalEditingDomain createEditingDomain(String bpmnResourceName) {
 		
 		URL resourceUrl = Activator.getBundleContext().getBundle().getResource(bpmnResourceName);
+		if (resourceUrl == null) {
+			throw new RuntimeException("Resource " + bpmnResourceName + " not found");
+		}
+		
 		URI uri = URI.createFileURI("test.bpmn");
 
 		resource = (Bpmn2ResourceImpl) new Bpmn2ModelerResourceFactoryImpl().createResource(uri);
@@ -83,19 +96,33 @@ public abstract class AbstractImportBpmn2ModelTest {
 		
 	}
 
-	@After
-	public void tearDownTest() {
-		disposeEditingDomain();
-	}
-
-	protected void disposeEditingDomain() {
+	public void disposeEditingDomain() {
 		if (editingDomain != null) {
 			editingDomain.dispose();
 			editingDomain = null;
 			resource = null;
+			
+			diagram = null;
+			diagramTypeProvider = null;
 		}
 	}
 
+	public void setDiagramTypeProvider(IDiagramTypeProvider diagramTypeProvider) {
+		this.diagramTypeProvider = diagramTypeProvider;
+	}
+	
+	public void setDiagram(Diagram diagram) {
+		this.diagram = diagram;
+	}
+	
+	protected Diagram getDiagram() {
+		return diagram;
+	}
+
+	protected IDiagramTypeProvider getDiagramTypeProvider() {
+		return diagramTypeProvider;
+	}
+	
 	public TransactionalEditingDomain getEditingDomain() {
 		return editingDomain;
 	}

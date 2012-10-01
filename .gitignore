@@ -21,5 +21,6 @@ bin/
 .scala_dependencies
 *.class
 bin/
+test.bpmn.diagram
 
 /lib/specs_2.8.1-1.6.6.jar

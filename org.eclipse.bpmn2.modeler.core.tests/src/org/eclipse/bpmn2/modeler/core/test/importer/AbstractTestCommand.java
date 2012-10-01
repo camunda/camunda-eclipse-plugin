@@ -61,12 +61,8 @@ public abstract class AbstractTestCommand extends RecordingCommand {
 
 		diagramTypeProvider.getFeatureProvider().link(diagram, bpmnDiagram);
 		
-		test(diagramTypeProvider);
+		test(diagramTypeProvider, diagram);
 	}
 
-	public abstract void test(IDiagramTypeProvider diagramTypeProvider2);
-
-	public Diagram getDiagram() {
-		return diagram;
-	}
+	public abstract void test(IDiagramTypeProvider diagramTypeProvider, Diagram diagram);
 }
