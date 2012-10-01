@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="ASCII"?>
+<pi:Diagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:al="http://eclipse.org/graphiti/mm/algorithms" xmlns:pi="http://eclipse.org/graphiti/mm/pictograms" visible="true" gridUnit="10" diagramTypeId="BPMN2" name="org/eclipse/bpmn2/modeler/core/test/importer/messageflow/ImportMessageFlowTest.testImportMessageFlow.bpmn" snapToGrid="true" pictogramLinks="//@link //@children.0/@link //@children.0/@children.1/@link //@children.0/@children.2/@children.0/@link //@children.0/@children.2/@children.1/@link //@children.0/@children.2/@link //@children.1/@link //@children.1/@children.1/@link //@children.1/@children.2/@link //@children.1/@children.3/@link //@connections.0/@link" version="0.9.0">
+  <graphicsAlgorithm xsi:type="al:Rectangle" background="//@colors.1" foreground="//@colors.0" lineWidth="1" transparency="0.0" width="1000" height="1000"/>
+  <link>
+    <businessObjects href="test.bpmn#//@definitions/@diagrams.0"/>
+  </link>
+  <children xsi:type="pi:ContainerShape" visible="true" active="true">
+    <properties key="isHorizontal" value="true"/>
+    <properties key="multiplicity" value="false"/>
+    <graphicsAlgorithm xsi:type="al:Rectangle" foreground="//@colors.2" lineWidth="1" filled="true" transparency="0.0" width="600" height="100" x="290" y="170" style="//@styles.0">
+      <properties key="shape.style" value="true"/>
+    </graphicsAlgorithm>
+    <link>
+      <businessObjects href="test.bpmn#Participant_3"/>
+      <businessObjects href="test.bpmn#BPMNShape_Participant_1"/>
+    </link>
+    <anchors xsi:type="pi:ChopboxAnchor"/>
+    <anchors xsi:type="pi:FixPointAnchor" visible="true" active="true">
+      <properties key="boundary.fixpoint.anchor" value="anchor.top"/>
+      <graphicsAlgorithm xsi:type="al:Rectangle" lineWidth="1" filled="false" lineVisible="false" transparency="0.0"/>
+      <location x="300"/>
+    </anchors>
+    <anchors xsi:type="pi:FixPointAnchor" visible="true" active="true">
+      <properties key="boundary.fixpoint.anchor" value="anchor.right"/>
+      <graphicsAlgorithm xsi:type="al:Rectangle" lineWidth="1" filled="false" lineVisible="false" transparency="0.0"/>
+      <location x="600" y="50"/>
+    </anchors>
+    <anchors xsi:type="pi:FixPointAnchor" visible="true" active="true">
+      <properties key="boundary.fixpoint.anchor" value="anchor.bottom"/>
+      <graphicsAlgorithm xsi:type="al:Rectangle" lineWidth="1" filled="false" lineVisible="false" transparency="0.0"/>
+      <location x="300" y="100"/>
+    </anchors>
+    <anchors xsi:type="pi:FixPointAnchor" visible="true" active="true">
+      <properties key="boundary.fixpoint.anchor" value="anchor.left"/>
+      <graphicsAlgorithm xsi:type="al:Rectangle" lineWidth="1" filled="false" lineVisible="false" transparency="0.0"/>
+      <location y="50"/>
+    </anchors>
+    <children visible="true">
+      <graphicsAlgorithm xsi:type="al:Polyline" foreground="//@colors.2" lineWidth="1" filled="true" transparency="0.0" style="//@styles.0">
+        <properties key="shape.style" value="true"/>
+        <points x="30"/>
+        <points x="30" y="100"/>
+      </graphicsAlgorithm>
+    </children>
+    <children visible="true">
+      <graphicsAlgorithm xsi:type="al:Text" foreground="//@colors.2" lineWidth="1" filled="false" transparency="0.0" width="15" height="100" x="5" font="//@fonts.0" horizontalAlignment="ALIGNMENT_CENTER" angle="-90" value="Pool 3">
+        <properties key="shape.style" value="true"/>
+      </graphicsAlgorithm>
+      <link>
+        <businessObjects href="test.bpmn#Participant_3"/>
+      </link>
+    </children>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <properties key="marker.compensate" value="false"/>
+      <properties key="marker.loop.or.multi" value="null"/>
+      <properties key="activity.marker.offset" value="0"/>
+      <graphicsAlgorithm xsi:type="al:Rectangle" lineWidth="1" filled="false" lineVisible="false" transparency="0.0" width="110" height="50" x="145" y="25"/>
+      <link>
+        <businessObjects href="test.bpmn#UserTask_1"/>
+        <businessObjects href="test.bpmn#BPMNShape_UserTask_1"/>
+      </link>
+      <anchors xsi:type="pi:ChopboxAnchor"/>
+      <anchors xsi:type="pi:FixPointAnchor" visible="true" active="true">
+        <properties key="boundary.fixpoint.anchor" value="anchor.top"/>
+        <graphicsAlgorithm xsi:type="al:Rectangle" lineWidth="1" filled="false" lineVisible="false" transparency="0.0"/>
+        <location x="55"/>
+      </anchors>
+      <anchors xsi:type="pi:FixPointAnchor" visible="true" active="true">
+        <properties key="boundary.fixpoint.anchor" value="anchor.right"/>
+        <graphicsAlgorithm xsi:type="al:Rectangle" lineWidth="1" filled="false" lineVisible="false" transparency="0.0"/>
+        <location x="110" y="25"/>
+      </anchors>
+      <anchors xsi:type="pi:FixPointAnchor" visible="true" active="true" outgoingConnections="//@connections.0">
+        <properties key="boundary.fixpoint.anchor" value="anchor.bottom"/>
+        <graphicsAlgorithm xsi:type="al:Rectangle" lineWidth="1" filled="false" lineVisible="false" transparency="0.0"/>
+        <location x="55" y="50"/>
+      </anchors>
+      <anchors xsi:type="pi:FixPointAnchor" visible="true" active="true">
+        <properties key="boundary.fixpoint.anchor" value="anchor.left"/>
+        <graphicsAlgorithm xsi:type="al:Rectangle" lineWidth="1" filled="false" lineVisible="false" transparency="0.0"/>
+        <location y="25"/>
+      </anchors>
+      <children visible="true">
+        <properties key="activity" value="true"/>
+        <properties key="activity-decorator" value="true"/>
+        <graphicsAlgorithm xsi:type="al:RoundedRectangle" foreground="//@colors.2" lineWidth="1" filled="true" transparency="0.0" width="110" height="50" style="//@styles.1" cornerHeight="5" cornerWidth="5">
+          <properties key="shape.style" value="true"/>
+          <graphicsAlgorithmChildren xsi:type="al:Image" lineWidth="1" transparency="0.0" width="16" height="16" x="2" y="2" id="org.eclipse.bpmn2.modeler.ui.usertask.16" stretchH="false" stretchV="false" proportional="false"/>
+        </graphicsAlgorithm>
+        <link>
+          <businessObjects href="test.bpmn#UserTask_1"/>
+        </link>
+      </children>
+      <children visible="true">
+        <properties key="activity-decorator" value="true"/>
+        <graphicsAlgorithm xsi:type="al:MultiText" foreground="//@colors.2" lineWidth="1" filled="false" transparency="0.0" width="104" height="34" x="3" y="16" font="//@fonts.0" horizontalAlignment="ALIGNMENT_CENTER" verticalAlignment="ALIGNMENT_TOP" value="User Task 1">
+          <properties key="shape.style" value="true"/>
+        </graphicsAlgorithm>
+        <link>
+          <businessObjects href="test.bpmn#UserTask_1"/>
+        </link>
+      </children>
+    </children>
+  </children>
+  <children xsi:type="pi:ContainerShape" visible="true" active="true">
+    <properties key="isHorizontal" value="true"/>
+    <properties key="multiplicity" value="false"/>
+    <graphicsAlgorithm xsi:type="al:Rectangle" foreground="//@colors.2" lineWidth="1" filled="true" transparency="0.0" width="600" height="100" x="290" y="380" style="//@styles.0">
+      <properties key="shape.style" value="true"/>
+    </graphicsAlgorithm>
+    <link>
+      <businessObjects href="test.bpmn#Participant_4"/>
+      <businessObjects href="test.bpmn#BPMNShape_Participant_2"/>
+    </link>
+    <anchors xsi:type="pi:ChopboxAnchor"/>
+    <anchors xsi:type="pi:FixPointAnchor" visible="true" active="true">
+      <properties key="boundary.fixpoint.anchor" value="anchor.top"/>
+      <graphicsAlgorithm xsi:type="al:Rectangle" lineWidth="1" filled="false" lineVisible="false" transparency="0.0"/>
+      <location x="300"/>
+    </anchors>
+    <anchors xsi:type="pi:FixPointAnchor" visible="true" active="true">
+      <properties key="boundary.fixpoint.anchor" value="anchor.right"/>
+      <graphicsAlgorithm xsi:type="al:Rectangle" lineWidth="1" filled="false" lineVisible="false" transparency="0.0"/>
+      <location x="600" y="50"/>
+    </anchors>
+    <anchors xsi:type="pi:FixPointAnchor" visible="true" active="true">
+      <properties key="boundary.fixpoint.anchor" value="anchor.bottom"/>
+      <graphicsAlgorithm xsi:type="al:Rectangle" lineWidth="1" filled="false" lineVisible="false" transparency="0.0"/>
+      <location x="300" y="100"/>
+    </anchors>
+    <anchors xsi:type="pi:FixPointAnchor" visible="true" active="true">
+      <properties key="boundary.fixpoint.anchor" value="anchor.left"/>
+      <graphicsAlgorithm xsi:type="al:Rectangle" lineWidth="1" filled="false" lineVisible="false" transparency="0.0"/>
+      <location y="50"/>
+    </anchors>
+    <children visible="true">
+      <graphicsAlgorithm xsi:type="al:Polyline" foreground="//@colors.2" lineWidth="1" filled="true" transparency="0.0" style="//@styles.0">
+        <properties key="shape.style" value="true"/>
+        <points x="30"/>
+        <points x="30" y="100"/>
+      </graphicsAlgorithm>
+    </children>
+    <children visible="true">
+      <graphicsAlgorithm xsi:type="al:Text" foreground="//@colors.2" lineWidth="1" filled="false" transparency="0.0" width="15" height="100" x="5" font="//@fonts.0" horizontalAlignment="ALIGNMENT_CENTER" angle="-90" value="Pool 4">
+        <properties key="shape.style" value="true"/>
+      </graphicsAlgorithm>
+      <link>
+        <businessObjects href="test.bpmn#Participant_4"/>
+      </link>
+    </children>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <properties key="event.marker.container" value="true"/>
+      <properties key="marker.intermediate.catch.event" value="MessageEventDefinition_1"/>
+      <graphicsAlgorithm xsi:type="al:Rectangle" lineWidth="1" filled="false" lineVisible="false" transparency="0.0" width="36" height="36" x="182" y="32"/>
+      <link>
+        <businessObjects href="test.bpmn#IntermediateCatchEvent_1"/>
+        <businessObjects href="test.bpmn#BPMNShape_IntermediateCatchEvent_1"/>
+      </link>
+      <anchors xsi:type="pi:ChopboxAnchor"/>
+      <anchors xsi:type="pi:FixPointAnchor" visible="true" active="true" incomingConnections="//@connections.0">
+        <properties key="boundary.fixpoint.anchor" value="anchor.top"/>
+        <graphicsAlgorithm xsi:type="al:Rectangle" lineWidth="1" filled="false" lineVisible="false" transparency="0.0"/>
+        <location x="18"/>
+      </anchors>
+      <anchors xsi:type="pi:FixPointAnchor" visible="true" active="true">
+        <properties key="boundary.fixpoint.anchor" value="anchor.right"/>
+        <graphicsAlgorithm xsi:type="al:Rectangle" lineWidth="1" filled="false" lineVisible="false" transparency="0.0"/>
+        <location x="36" y="18"/>
+      </anchors>
+      <anchors xsi:type="pi:FixPointAnchor" visible="true" active="true">
+        <properties key="boundary.fixpoint.anchor" value="anchor.bottom"/>
+        <graphicsAlgorithm xsi:type="al:Rectangle" lineWidth="1" filled="false" lineVisible="false" transparency="0.0"/>
+        <location x="18" y="36"/>
+      </anchors>
+      <anchors xsi:type="pi:FixPointAnchor" visible="true" active="true">
+        <properties key="boundary.fixpoint.anchor" value="anchor.left"/>
+        <graphicsAlgorithm xsi:type="al:Rectangle" lineWidth="1" filled="false" lineVisible="false" transparency="0.0"/>
+        <location y="18"/>
+      </anchors>
+      <children visible="true">
+        <properties key="event.graphics.element" value="event.graphics.element.circle"/>
+        <graphicsAlgorithm xsi:type="al:Ellipse" foreground="//@colors.2" lineWidth="1" filled="true" transparency="0.0" width="36" height="36" style="//@styles.2">
+          <properties key="shape.style" value="true"/>
+          <graphicsAlgorithmChildren xsi:type="al:Ellipse" foreground="//@colors.3" lineWidth="1" filled="false" transparency="0.0" width="28" height="28" x="4" y="4"/>
+        </graphicsAlgorithm>
+      </children>
+    </children>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <properties key="label" value="true"/>
+      <graphicsAlgorithm xsi:type="al:Rectangle" lineWidth="1" filled="false" lineVisible="false" transparency="0.0" width="162" height="20" x="119" y="70"/>
+      <link>
+        <businessObjects href="test.bpmn#IntermediateCatchEvent_1"/>
+      </link>
+      <children visible="true">
+        <properties key="baseelement.text" value="true"/>
+        <graphicsAlgorithm xsi:type="al:MultiText" foreground="//@colors.2" lineWidth="1" filled="false" transparency="0.0" width="161" height="19" font="//@fonts.0" horizontalAlignment="ALIGNMENT_CENTER" verticalAlignment="ALIGNMENT_TOP" value="Intermediate Catch Event 2">
+          <properties key="shape.style" value="true"/>
+        </graphicsAlgorithm>
+      </children>
+    </children>
+  </children>
+  <styles foreground="//@colors.2" filled="true" id="Participant.shape.style">
+    <renderingStyle>
+      <adaptedGradientColoredAreas definedStyleId="Participant.shape.style" gradientType="0">
+        <adaptedGradientColoredAreas styleAdaption="0">
+          <gradientColor>
+            <start locationType="LOCATION_TYPE_ABSOLUTE_START" locationValue="0">
+              <color red="204" green="223" blue="240"/>
+            </start>
+            <end locationType="LOCATION_TYPE_ABSOLUTE_END" locationValue="0">
+              <color red="255" green="255" blue="255"/>
+            </end>
+          </gradientColor>
+        </adaptedGradientColoredAreas>
+        <adaptedGradientColoredAreas styleAdaption="1">
+          <gradientColor>
+            <start locationType="LOCATION_TYPE_ABSOLUTE_START" locationValue="0">
+              <color red="180" green="191" blue="191"/>
+            </start>
+            <end locationType="LOCATION_TYPE_ABSOLUTE_END" locationValue="0">
+              <color red="255" green="255" blue="255"/>
+            </end>
+          </gradientColor>
+        </adaptedGradientColoredAreas>
+        <adaptedGradientColoredAreas styleAdaption="2">
+          <gradientColor>
+            <start locationType="LOCATION_TYPE_ABSOLUTE_START" locationValue="0">
+              <color red="116" green="135" blue="152"/>
+            </start>
+            <end locationType="LOCATION_TYPE_ABSOLUTE_END" locationValue="0">
+              <color red="244" green="255" blue="255"/>
+            </end>
+          </gradientColor>
+        </adaptedGradientColoredAreas>
+      </adaptedGradientColoredAreas>
+    </renderingStyle>
+  </styles>
+  <styles foreground="//@colors.2" filled="true" id="UserTask.shape.style">
+    <renderingStyle>
+      <adaptedGradientColoredAreas definedStyleId="UserTask.shape.style" gradientType="0">
+        <adaptedGradientColoredAreas styleAdaption="0">
+          <gradientColor>
+            <start locationType="LOCATION_TYPE_ABSOLUTE_START" locationValue="0">
+              <color red="204" green="223" blue="240"/>
+            </start>
+            <end locationType="LOCATION_TYPE_ABSOLUTE_END" locationValue="0">
+              <color red="255" green="255" blue="255"/>
+            </end>
+          </gradientColor>
+        </adaptedGradientColoredAreas>
+        <adaptedGradientColoredAreas styleAdaption="1">
+          <gradientColor>
+            <start locationType="LOCATION_TYPE_ABSOLUTE_START" locationValue="0">
+              <color red="180" green="191" blue="191"/>
+            </start>
+            <end locationType="LOCATION_TYPE_ABSOLUTE_END" locationValue="0">
+              <color red="255" green="255" blue="255"/>
+            </end>
+          </gradientColor>
+        </adaptedGradientColoredAreas>
+        <adaptedGradientColoredAreas styleAdaption="2">
+          <gradientColor>
+            <start locationType="LOCATION_TYPE_ABSOLUTE_START" locationValue="0">
+              <color red="116" green="135" blue="152"/>
+            </start>
+            <end locationType="LOCATION_TYPE_ABSOLUTE_END" locationValue="0">
+              <color red="244" green="255" blue="255"/>
+            </end>
+          </gradientColor>
+        </adaptedGradientColoredAreas>
+      </adaptedGradientColoredAreas>
+    </renderingStyle>
+  </styles>
+  <styles foreground="//@colors.2" filled="true" id="IntermediateCatchEvent.shape.style">
+    <renderingStyle>
+      <adaptedGradientColoredAreas definedStyleId="IntermediateCatchEvent.shape.style" gradientType="0">
+        <adaptedGradientColoredAreas styleAdaption="0">
+          <gradientColor>
+            <start locationType="LOCATION_TYPE_ABSOLUTE_START" locationValue="0">
+              <color red="204" green="223" blue="240"/>
+            </start>
+            <end locationType="LOCATION_TYPE_ABSOLUTE_END" locationValue="0">
+              <color red="255" green="255" blue="255"/>
+            </end>
+          </gradientColor>
+        </adaptedGradientColoredAreas>
+        <adaptedGradientColoredAreas styleAdaption="1">
+          <gradientColor>
+            <start locationType="LOCATION_TYPE_ABSOLUTE_START" locationValue="0">
+              <color red="180" green="191" blue="191"/>
+            </start>
+            <end locationType="LOCATION_TYPE_ABSOLUTE_END" locationValue="0">
+              <color red="255" green="255" blue="255"/>
+            </end>
+          </gradientColor>
+        </adaptedGradientColoredAreas>
+        <adaptedGradientColoredAreas styleAdaption="2">
+          <gradientColor>
+            <start locationType="LOCATION_TYPE_ABSOLUTE_START" locationValue="0">
+              <color red="116" green="135" blue="152"/>
+            </start>
+            <end locationType="LOCATION_TYPE_ABSOLUTE_END" locationValue="0">
+              <color red="244" green="255" blue="255"/>
+            </end>
+          </gradientColor>
+        </adaptedGradientColoredAreas>
+      </adaptedGradientColoredAreas>
+    </renderingStyle>
+  </styles>
+  <connections xsi:type="pi:FreeFormConnection" visible="true" active="true" start="//@children.0/@children.2/@anchors.3" end="//@children.1/@children.2/@anchors.1">
+    <graphicsAlgorithm xsi:type="al:Polyline" background="//@colors.2" foreground="//@colors.2" lineWidth="2" lineStyle="DASH" filled="false" transparency="0.0">
+      <properties key="shape.style" value="true"/>
+    </graphicsAlgorithm>
+    <link>
+      <businessObjects href="test.bpmn#MessageFlow_1"/>
+      <businessObjects href="test.bpmn#BPMNEdge_MessageFlow_1"/>
+    </link>
+    <connectionDecorators visible="true" active="true" locationRelative="true" location="0.5">
+      <properties key="baseelement.text" value="true"/>
+      <graphicsAlgorithm xsi:type="al:Text" background="//@colors.2" foreground="//@colors.2" lineWidth="1" filled="false" transparency="0.0" font="//@fonts.0" value="">
+        <properties key="shape.style" value="true"/>
+      </graphicsAlgorithm>
+    </connectionDecorators>
+    <connectionDecorators visible="true" locationRelative="true" location="1.0">
+      <graphicsAlgorithm xsi:type="al:Polygon" background="//@colors.1" foreground="//@colors.2" lineWidth="1" filled="true" transparency="0.0">
+        <properties key="shape.style" value="true"/>
+        <points x="-10" y="5"/>
+        <points/>
+        <points x="-10" y="-5"/>
+        <points x="-10" y="5"/>
+      </graphicsAlgorithm>
+    </connectionDecorators>
+    <connectionDecorators visible="true" locationRelative="true">
+      <graphicsAlgorithm xsi:type="al:Ellipse" background="//@colors.1" foreground="//@colors.2" lineWidth="1" transparency="0.0" width="10" height="10">
+        <properties key="shape.style" value="true"/>
+      </graphicsAlgorithm>
+    </connectionDecorators>
+  </connections>
+  <colors red="227" green="238" blue="249"/>
+  <colors red="255" green="255" blue="255"/>
+  <colors red="84" green="103" blue="120"/>
+  <colors red="116" green="143" blue="165"/>
+  <fonts name="arial" size="10"/>
+  <fonts name="Arial" size="8"/>
+</pi:Diagram>

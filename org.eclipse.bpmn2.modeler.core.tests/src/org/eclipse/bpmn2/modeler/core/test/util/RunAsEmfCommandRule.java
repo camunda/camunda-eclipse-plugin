@@ -1,6 +1,7 @@
 package org.eclipse.bpmn2.modeler.core.test.util;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
 
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractTestCommand;
@@ -11,7 +12,7 @@ import org.junit.rules.MethodRule;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
-public class CommandRule implements MethodRule {
+public class RunAsEmfCommandRule implements MethodRule {
 
 	@Override
 	public Statement apply(final Statement base, final FrameworkMethod method, Object target) {
@@ -43,8 +44,6 @@ public class CommandRule implements MethodRule {
 		private final AbstractImportBpmn2ModelTest testCase;
 		private final String resourceUrl;
 		private final Statement base;
-
-		private Throwable thrownException;
 		
 		private StatementExtension(AbstractImportBpmn2ModelTest testCase, String resourceUrl, Statement base) {
 			this.testCase = testCase;
@@ -57,36 +56,29 @@ public class CommandRule implements MethodRule {
 			try {
 				TransactionalEditingDomain domain = testCase.createEditingDomain(resourceUrl);
 				
-				domain.getCommandStack().execute(new AbstractTestCommand(testCase, "test.bpmn") {
+				AbstractTestCommand command = new AbstractTestCommand(testCase, resourceUrl) {
 					
 					@Override
-					public void test(IDiagramTypeProvider diagramTypeProvider, Diagram diagram) {
+					public void test(IDiagramTypeProvider diagramTypeProvider, Diagram diagram) throws Throwable {
 						testCase.setDiagramTypeProvider(diagramTypeProvider);
 						testCase.setDiagram(diagram);
 						
-						try {
-							base.evaluate();
-						} catch (Throwable e) {
-							setThrownException(e);
-						}
+						base.evaluate();
+						
+						// save diagram
+						diagramResource.save(Collections.emptyMap());
 					}
-				});
+				};
 				
-				Throwable e = getThrownException();
+				domain.getCommandStack().execute(command);
+				
+				Throwable e = command.getRecordedException();
 				if (e != null) {
 					throw e;
 				}
 			} finally {
 				testCase.disposeEditingDomain();
 			}
-		}
-		
-		public void setThrownException(Throwable thrownException) {
-			this.thrownException = thrownException;
-		}
-		
-		public Throwable getThrownException() {
-			return thrownException;
 		}
 	}
 }

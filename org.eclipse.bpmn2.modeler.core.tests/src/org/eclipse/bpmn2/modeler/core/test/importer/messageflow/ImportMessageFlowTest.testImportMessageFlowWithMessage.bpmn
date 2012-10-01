@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="6.2.1" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-2b95971a-803a-48f1-b032-8da66f4e083c" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+   <message id="sid-161D2AD9-30A4-468A-B400-F7AE3451791F"/>
+   <collaboration id="sid-53615cc1-e6da-427b-9936-1a30462bc56e">
+      <extensionElements/>
+      <participant id="sid-46E921E6-2A50-4B3F-9612-896BA1BBAD8B" name="Pool 2" processRef="sid-DDEE517C-1B1C-4C86-A8DA-6ECD236B5BFF">
+      </participant>
+      <participant id="sid-E9A32E85-C0D8-419B-B318-5653FFFB244A" name="Pool 1" processRef="sid-9A475DB1-185B-4DF6-9B94-DBE68D82721E">
+      </participant>
+      <messageFlow id="sid-198E525F-7A1E-455E-A7D9-EC332B693A1E" messageRef="sid-161D2AD9-30A4-468A-B400-F7AE3451791F" sourceRef="sid-0BD63ADF-B5F4-4AB0-89F4-7F47C2FF2E65" targetRef="sid-5138854E-23C7-45FC-B5BA-67AD0B80E8DF">
+      </messageFlow>
+   </collaboration>
+   <process id="sid-9A475DB1-185B-4DF6-9B94-DBE68D82721E" isClosed="false" isExecutable="false" name="Pool 1" processType="None">
+      <extensionElements/>
+      <laneSet id="sid-f05473b1-f931-4a1e-acf4-73758774ddce">
+         <lane id="sid-CFBB84DE-4FDD-43BD-8B7D-9AE97D8CEE27">
+            <flowNodeRef>sid-0BD63ADF-B5F4-4AB0-89F4-7F47C2FF2E65</flowNodeRef>
+         </lane>
+      </laneSet>
+      <task completionQuantity="1" id="sid-0BD63ADF-B5F4-4AB0-89F4-7F47C2FF2E65" isForCompensation="false" startQuantity="1">
+      </task>
+   </process>
+   <process id="sid-DDEE517C-1B1C-4C86-A8DA-6ECD236B5BFF" isClosed="false" isExecutable="false" name="Pool 2" processType="None">
+      <laneSet id="sid-5b7c2474-3e8a-46fa-9f32-090377c800fc">
+         <lane id="sid-4C331986-FAC4-4C76-AAD1-044774E9B85B">
+            <flowNodeRef>sid-5138854E-23C7-45FC-B5BA-67AD0B80E8DF</flowNodeRef>
+         </lane>
+      </laneSet>
+      <intermediateCatchEvent id="sid-5138854E-23C7-45FC-B5BA-67AD0B80E8DF">
+         <messageEventDefinition id="sid-71ead4f2-26e8-4774-96bc-f8d4d77644b4"/>
+      </intermediateCatchEvent>
+   </process>
+   <bpmndi:BPMNDiagram id="sid-db1a48f3-b396-4a7c-bb81-ef59aa8165fa">
+      <bpmndi:BPMNPlane bpmnElement="sid-53615cc1-e6da-427b-9936-1a30462bc56e" id="sid-6561c7d6-ae7e-4bac-a402-bf00c7c2e8f9">
+         <bpmndi:BPMNShape bpmnElement="sid-46E921E6-2A50-4B3F-9612-896BA1BBAD8B" id="sid-46E921E6-2A50-4B3F-9612-896BA1BBAD8B_gui" isHorizontal="true">
+            <omgdc:Bounds height="250.0" width="600.0" x="120.0" y="345.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-E9A32E85-C0D8-419B-B318-5653FFFB244A" id="sid-E9A32E85-C0D8-419B-B318-5653FFFB244A_gui" isHorizontal="true">
+            <omgdc:Bounds height="250.0" width="600.0" x="120.0" y="45.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-CFBB84DE-4FDD-43BD-8B7D-9AE97D8CEE27" id="sid-CFBB84DE-4FDD-43BD-8B7D-9AE97D8CEE27_gui" isHorizontal="true">
+            <omgdc:Bounds height="250.0" width="570.0" x="150.0" y="45.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-0BD63ADF-B5F4-4AB0-89F4-7F47C2FF2E65" id="sid-0BD63ADF-B5F4-4AB0-89F4-7F47C2FF2E65_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="385.0" y="130.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-4C331986-FAC4-4C76-AAD1-044774E9B85B" id="sid-4C331986-FAC4-4C76-AAD1-044774E9B85B_gui" isHorizontal="true">
+            <omgdc:Bounds height="250.0" width="570.0" x="150.0" y="345.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-5138854E-23C7-45FC-B5BA-67AD0B80E8DF" id="sid-5138854E-23C7-45FC-B5BA-67AD0B80E8DF_gui">
+            <omgdc:Bounds height="30.0" width="30.0" x="420.0" y="455.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNEdge bpmnElement="sid-198E525F-7A1E-455E-A7D9-EC332B693A1E" id="sid-198E525F-7A1E-455E-A7D9-EC332B693A1E_gui" messageVisibleKind="initiating">
+            <omgdi:waypoint x="435.0" y="210.0"/>
+            <omgdi:waypoint x="435.0" y="455.0"/>
+         </bpmndi:BPMNEdge>
+      </bpmndi:BPMNPlane>
+   </bpmndi:BPMNDiagram>
+</definitions>

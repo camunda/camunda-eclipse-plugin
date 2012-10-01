@@ -18,7 +18,7 @@ import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceFactoryImpl;
 import org.eclipse.bpmn2.modeler.core.test.Activator;
-import org.eclipse.bpmn2.modeler.core.test.util.CommandRule;
+import org.eclipse.bpmn2.modeler.core.test.util.RunAsEmfCommandRule;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -49,7 +49,7 @@ public abstract class AbstractImportBpmn2ModelTest {
 	public TemporaryFolder tempFolder = new TemporaryFolder();
 
 	@Rule
-	public CommandRule commandRule = new CommandRule();
+	public RunAsEmfCommandRule commandRule = new RunAsEmfCommandRule();
 	
 	public TransactionalEditingDomain createEditingDomain(String bpmnResourceName) {
 		
@@ -82,7 +82,7 @@ public abstract class AbstractImportBpmn2ModelTest {
 		try {
 			inputStream = resourceUrl.openStream();
 			resource.load(inputStream, Collections.EMPTY_MAP);
-		}catch (IOException e) {
+		} catch (IOException e) {
 			throw new RuntimeException("Exception while loading bpmn model", e);
 		} finally {
 			if (inputStream != null) {
