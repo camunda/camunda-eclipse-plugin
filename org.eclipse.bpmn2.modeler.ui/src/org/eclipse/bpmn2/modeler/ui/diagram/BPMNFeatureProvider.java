@@ -76,8 +76,7 @@ import org.eclipse.bpmn2.modeler.ui.features.event.definitions.SignalEventDefini
 import org.eclipse.bpmn2.modeler.ui.features.event.definitions.TerminateEventDefinitionFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.event.definitions.TimerEventDefinitionContainer;
 import org.eclipse.bpmn2.modeler.ui.features.flow.AssociationFeatureContainer;
-import org.eclipse.bpmn2.modeler.ui.features.flow.DataInputAssociationFeatureContainer;
-import org.eclipse.bpmn2.modeler.ui.features.flow.DataOutputAssociationFeatureContainer;
+import org.eclipse.bpmn2.modeler.ui.features.flow.DataAssociationFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.flow.MessageFlowFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.flow.SequenceFlowFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.gateway.ComplexGatewayFeatureContainer;
@@ -192,8 +191,7 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 		containers.add(new AssociationFeatureContainer());
 		containers.add(new ConversationFeatureContainer());
 		containers.add(new ConversationLinkFeatureContainer());
-		containers.add(new DataInputAssociationFeatureContainer());
-		containers.add(new DataOutputAssociationFeatureContainer());
+		containers.add(new DataAssociationFeatureContainer());
 		containers.add(new SubChoreographyFeatureContainer());
 		containers.add(new CallChoreographyFeatureContainer());
 		containers.add(new ParticipantFeatureContainer());
