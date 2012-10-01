@@ -30,6 +30,7 @@ import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.LaneSet;
+import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
@@ -40,7 +41,6 @@ import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.AbstractDiagramElementHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.AbstractShapeHandler;
@@ -48,6 +48,7 @@ import org.eclipse.bpmn2.modeler.core.importer.handlers.ArtifactShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.DatastoreReferenceShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.FlowNodeShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.LaneShapeHandler;
+import org.eclipse.bpmn2.modeler.core.importer.handlers.MessageFlowShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.ParticipantShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.SequenceFlowShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.SubProcessShapeHandler;
@@ -101,7 +102,7 @@ public class Bpmn2ModelImport {
 	public void execute() {
 		EList<EObject> contents = resource.getContents();
 		
-		if(contents.isEmpty()) {
+		if (contents.isEmpty()) {
 			throw new Bpmn2ImportException("No document root");
 		} else {
 			handleDocumentRoot((DocumentRoot) contents.get(0));
@@ -147,13 +148,18 @@ public class Bpmn2ModelImport {
 				handleCollaboration(collaboration, rootDiagram);
 				
 			} else {
-				System.out.println("Unhandled RootElement: "+rootElement);
+				System.out.println("Unhandled RootElement: " + rootElement);
 			}
 		}
 
 		if (collaboration == null) {
 			for (Process process : processes) {
+				List<BaseElement> unhandledElements = new ArrayList<BaseElement>();
 				handleProcess(process, rootDiagram);
+				
+				if (!unhandledElements.isEmpty()) {
+					throw new Bpmn2ImportException("Unhandled elements: " + unhandledElements);
+				}
 			}
 		}
 		
@@ -196,10 +202,13 @@ public class Bpmn2ModelImport {
 	// handling of BPMN Model Elements ///////////////////////////////////////////////////////////////
 	
 	protected void handleCollaboration(Collaboration collaboration, ContainerShape container) {
-		
 		List<Participant> participants = collaboration.getParticipants();
 		for (Participant participant : participants) {
 			handleParticipant(participant, container);
+		}
+		
+		for (MessageFlow messageFlow: collaboration.getMessageFlows()) {
+			handleMessageFlow(messageFlow, container);
 		}
 	}
 
@@ -221,7 +230,7 @@ public class Bpmn2ModelImport {
 		ContainerShape participantContainer = (ContainerShape) handleDiagramElement(participant, container, shapeHander);
 	
 		List<LaneSet> laneSets = process.getLaneSets();
-		if(laneSets.isEmpty()) {			
+		if (laneSets.isEmpty()) {
 			// if there are no lanes, simply draw the process into the pool (including sequence flows)
 			handleProcess(process, participantContainer);			
 		} else {			
@@ -239,8 +248,8 @@ public class Bpmn2ModelImport {
 		for (FlowElement flowElement : flowElements) {
 			if (flowElement instanceof SequenceFlow) {
 				handleSequenceFlow((SequenceFlow) flowElement, participantContainer);				
-			}			
-		}		
+			}
+		}
 	}
 
 	protected void handleLaneSet(LaneSet laneSet, FlowElementsContainer scope, ContainerShape container) {
@@ -275,9 +284,8 @@ public class Bpmn2ModelImport {
 		
 		List<Artifact> artifacts = process.getArtifacts();		
 		handleArtifacts(container, artifacts);
-		
 	}
-		
+	
 	protected void handleArtifacts(ContainerShape container, List<Artifact> artifacts) {
 		for (Artifact artifact : artifacts) {
 			handleArtifact(artifact, container);			
@@ -289,6 +297,7 @@ public class Bpmn2ModelImport {
 	 * 
 	 * @param scope
 	 * @param container 
+	 * @param unhandledElements 
 	 */
 	protected void handleFlowElements(ContainerShape container, List<FlowElement> flowElementsToBeDrawn) {
 		
@@ -308,12 +317,11 @@ public class Bpmn2ModelImport {
 				
 			} else if (flowElement instanceof Event) {
 				handleEvent((Event) flowElement, container);
-										
-			} else if(flowElement instanceof DataStoreReference) {
+				
+			} else if (flowElement instanceof DataStoreReference) {
 				handleDataStoreReference((DataStoreReference) flowElement, container);
 			}
 		}
-		
 	}
 
 	protected void handleActivity(Activity flowElement,
@@ -330,8 +338,8 @@ public class Bpmn2ModelImport {
 		// descend into scope
 		List<FlowElement> flowElements = subProcess.getFlowElements();
 		handleFlowElements(subProcessContainer, flowElements);
-		handleSequenceFlows(subProcessContainer, flowElements);
 		
+		handleSequenceFlows(subProcessContainer, flowElements);
 	}
 	
 	protected void handleArtifact(Artifact artifact, ContainerShape container) {
@@ -342,6 +350,10 @@ public class Bpmn2ModelImport {
 		handleDiagramElement(flowElement, container, new FlowNodeShapeHandler(this));
 	}
 
+	protected void handleMessageFlow(MessageFlow flowElement, ContainerShape container) {
+		handleDiagramElement(flowElement, container, new MessageFlowShapeHandler(this));
+	}
+	
 	protected void handleSequenceFlow(SequenceFlow flowElement, ContainerShape container) {
 		handleDiagramElement(flowElement, container, new SequenceFlowShapeHandler(this));
 	}
@@ -378,8 +390,8 @@ public class Bpmn2ModelImport {
 	protected void handleDIBpmnDiagram(BPMNDiagram bpmnDiagram) {
 		
 		BPMNPlane plane = bpmnDiagram.getPlane();
-		if(plane == null) {
-			throw new Bpmn2ImportException("BPMNDiagram has no BPMNPlane");
+		if (plane == null) {
+			throw new Bpmn2ImportException("BPMNDiagram " + bpmnDiagram + " has no BPMNPlane");
 		} else {
 			handleDIBpmnPlane(plane);
 		}
@@ -388,8 +400,8 @@ public class Bpmn2ModelImport {
 	protected void handleDIBpmnPlane(BPMNPlane plane) {
 		
 		BaseElement bpmnElement = plane.getBpmnElement();
-		if(bpmnElement.eIsProxy()) {
-			throw new Bpmn2ImportException("BPMNPlane references unexisting bpmnElement '" + bpmnElement + "'.");
+		if (bpmnElement.eIsProxy()) {
+			throw new Bpmn2ImportException("BPMNPlane " + plane + " references unexisting bpmnElement '" + bpmnElement + "'.");
 		}
 		
 		List<DiagramElement> planeElement = plane.getPlaneElement();
@@ -412,8 +424,8 @@ public class Bpmn2ModelImport {
 
 	protected void handleDIEdge(BPMNEdge diagramElement) {
 		BaseElement bpmnElement = diagramElement.getBpmnElement();
-		if(bpmnElement.eIsProxy()) {
-		  Activator.logError(new Bpmn2ImportException("BPMNEdge references unexisting bpmnElement '"+bpmnElement+"'."));
+		if (bpmnElement == null || bpmnElement.eIsProxy()) {
+			Activator.logError(new Bpmn2ImportException("BPMNEdge references unexisting bpmnElement '"+bpmnElement+"'."));
 		} else {
 			diagramElementMap.put(bpmnElement.getId(), diagramElement);
 		}
@@ -421,8 +433,8 @@ public class Bpmn2ModelImport {
 
 	protected void handleDIShape(BPMNShape diagramElement) {
 		BaseElement bpmnElement = diagramElement.getBpmnElement();
-		if(bpmnElement.eIsProxy()) {
-		  Activator.logError(new Bpmn2ImportException("BPMNShape references unexisting bpmnElement '"+bpmnElement+"'."));
+		if (bpmnElement == null || bpmnElement.eIsProxy()) {
+			Activator.logError(new Bpmn2ImportException("BPMNShape references unexisting bpmnElement '"+bpmnElement+"'."));
 		} else {
 			diagramElementMap.put(bpmnElement.getId(), diagramElement);
 		}
@@ -462,7 +474,7 @@ public class Bpmn2ModelImport {
 		return preferences;
 	}
 
-	public PictogramElement getPictogramElement(FlowNode node) {
+	public PictogramElement getPictogramElement(BaseElement node) {
 		PictogramElement element = pictogramElements.get(node);
 		if (element == null) {
 			throw new Bpmn2ImportException("Not yet processed: " + node);

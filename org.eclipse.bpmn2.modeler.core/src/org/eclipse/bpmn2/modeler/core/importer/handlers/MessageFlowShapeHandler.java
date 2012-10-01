@@ -10,10 +10,8 @@
 
 package org.eclipse.bpmn2.modeler.core.importer.handlers;
 
-import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.InteractionNode;
 import org.eclipse.bpmn2.MessageFlow;
-import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
 import org.eclipse.graphiti.mm.pictograms.Connection;
@@ -33,16 +31,14 @@ public class MessageFlowShapeHandler extends AbstractEdgeHandler<MessageFlow> {
 
 	@Override
 	protected PictogramElement handleEdge(MessageFlow bpmnElement, BPMNEdge edge, ContainerShape container) {
-		
+
 		InteractionNode source = bpmnElement.getSourceRef();
 		InteractionNode target = bpmnElement.getTargetRef();
+		
+		PictogramElement sourcePictogram = getPictogramElement(source);
+		PictogramElement targetPictogram = getPictogramElement(target);
 
-//		PictogramElement sourcePictogram = getPictogramElement(source);
-//		PictogramElement targetPictogram = getPictogramElement(target);
-		
-//		Connection connection = createConnectionAndSetBendpoints(edge, sourcePictogram, targetPictogram);
-//		return connection;
-		
-		return null;
+		Connection connection = createConnectionAndSetBendpoints(edge, sourcePictogram, targetPictogram);
+		return connection;
 	}
 }

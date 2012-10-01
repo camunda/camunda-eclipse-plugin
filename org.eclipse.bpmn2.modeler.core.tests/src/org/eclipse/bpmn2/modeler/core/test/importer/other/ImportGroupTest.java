@@ -3,7 +3,7 @@ package org.eclipse.bpmn2.modeler.core.test.importer.other;
 import org.eclipse.bpmn2.Group;
 import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest;
-import org.eclipse.bpmn2.modeler.core.test.util.CommandRule;
+import org.eclipse.bpmn2.modeler.core.test.util.RunAsEmfCommandRule;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
