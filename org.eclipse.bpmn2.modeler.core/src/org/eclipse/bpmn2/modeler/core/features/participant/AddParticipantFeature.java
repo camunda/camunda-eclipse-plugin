@@ -73,14 +73,16 @@ public class AddParticipantFeature extends AbstractAddBPMNShapeFeature<Participa
 		BPMNShape bpmnShape = createDIShape(containerShape, participant, !isImport);
 		boolean horz = bpmnShape.isIsHorizontal();
 		FeatureSupport.setHorizontal(containerShape, horz);
-
-		Shape lineShape = peCreateService.createShape(containerShape, false);
-		Polyline line;
-		if (horz)
-			line = gaService.createPolyline(lineShape, new int[] { 30, 0, 30, height });
-		else
-			line = gaService.createPolyline(lineShape, new int[] { 0, 30, width, 30 });
-		StyleUtil.applyStyle(line, participant);
+		
+		if (participant.getProcessRef() != null && participant.getProcessRef().getLaneSets().isEmpty()) {
+      Shape lineShape = peCreateService.createShape(containerShape, false);
+      Polyline line;
+      if (horz)
+        line = gaService.createPolyline(lineShape, new int[] { 30, 0, 30, height });
+      else
+        line = gaService.createPolyline(lineShape, new int[] { 0, 30, width, 30 });
+      StyleUtil.applyStyle(line, participant);
+		}
 
 		Shape textShape = peCreateService.createShape(containerShape, false);
 		Text text = gaService.createText(textShape, participant.getName());

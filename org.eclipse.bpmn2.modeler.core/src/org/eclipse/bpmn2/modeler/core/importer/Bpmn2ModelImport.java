@@ -40,6 +40,7 @@ import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BPMNShape;
+import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.AbstractDiagramElementHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.AbstractShapeHandler;
@@ -412,7 +413,7 @@ public class Bpmn2ModelImport {
 	protected void handleDIEdge(BPMNEdge diagramElement) {
 		BaseElement bpmnElement = diagramElement.getBpmnElement();
 		if(bpmnElement.eIsProxy()) {
-			throw new Bpmn2ImportException("BPMNEdge references unexisting bpmnElement '"+bpmnElement+"'.");
+		  Activator.logError(new Bpmn2ImportException("BPMNEdge references unexisting bpmnElement '"+bpmnElement+"'."));
 		} else {
 			diagramElementMap.put(bpmnElement.getId(), diagramElement);
 		}
@@ -421,7 +422,7 @@ public class Bpmn2ModelImport {
 	protected void handleDIShape(BPMNShape diagramElement) {
 		BaseElement bpmnElement = diagramElement.getBpmnElement();
 		if(bpmnElement.eIsProxy()) {
-			throw new Bpmn2ImportException("BPMNShape references unexisting bpmnElement '"+bpmnElement+"'.");
+		  Activator.logError(new Bpmn2ImportException("BPMNShape references unexisting bpmnElement '"+bpmnElement+"'."));
 		} else {
 			diagramElementMap.put(bpmnElement.getId(), diagramElement);
 		}
