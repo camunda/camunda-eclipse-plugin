@@ -299,9 +299,12 @@ public class Bpmn2ModelImport {
 				handleLaneSet(laneSet, process, participantContainer);
 			}
 			// draw the sequence flows:
-			handleSequenceFlows(participantContainer, process.getFlowElements());		
-		}
-				
+			handleSequenceFlows(participantContainer, process.getFlowElements());
+
+			// draw artifacts (e.g. groups)
+			List<Artifact> artifacts = process.getArtifacts();		
+			handleArtifacts(container, artifacts);
+		}		
 	}
 
 	protected void handleSequenceFlows(ContainerShape participantContainer, List<FlowElement> flowElements) {
@@ -401,9 +404,7 @@ public class Bpmn2ModelImport {
 			} else if (flowElement instanceof DataStoreReference) {
 				handleDataStoreReference((DataStoreReference) flowElement, container);
 				
-			} else {
-				throw new Bpmn2ImportException("Unhandled flow element: " + flowElement);
-			} 
+			}
 		}
 	}
 

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd http://www.omg.org/spec/BPMN/20100524/DI http://www.omg.org/spec/BPMN/20100524/DI-XMI http://www.omg.org/spec/DD/20100524/DC http://www.omg.org/spec/DD/20100524/DC-XMI http://www.omg.org/spec/DD/20100524/DI http://www.omg.org/spec/DD/20100524/DI-XMI" id="sid-aec54e60-d716-4907-ac89-c16db28d5dc1" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="6.1.0" targetNamespace="http://www.signavio.com/bpmn20">
+  <collaboration id="sid-d003cb10-b36b-479f-9473-72242c284860">
+    <participant id="TestLane_1" name="TestLane" processRef="CollaborationDropTest_"/>
+  </collaboration>
+  <process id="CollaborationDropTest_" name="TestLane">
+    <laneSet id="sid-4dd00ff7-1d3b-44c2-9f75-36c211d380f4">
+      <lane id="lane_5"></lane>
+    </laneSet>
+    <group id="Group_1"/>
+  </process>
+  <bpmndi:BPMNDiagram id="sid-90efe89d-5931-4bd9-b5bd-2277f53e6479">
+    <bpmndi:BPMNPlane id="sid-73fa32e5-a3b0-478b-b754-e2c03e72bf56" bpmnElement="sid-d003cb10-b36b-479f-9473-72242c284860">
+      <bpmndi:BPMNShape id="TestLane_1_gui" bpmnElement="TestLane_1" isHorizontal="true">
+        <omgdc:Bounds height="171.0" width="411.0" x="0.0" y="30.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="lane_5_gui" bpmnElement="lane_5" isHorizontal="true">
+        <omgdc:Bounds height="171.0" width="381.0" x="30.0" y="30.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Group_1" bpmnElement="Group_1">
+        <omgdc:Bounds height="231.0" width="241.0" x="440.0" y="30.0"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
