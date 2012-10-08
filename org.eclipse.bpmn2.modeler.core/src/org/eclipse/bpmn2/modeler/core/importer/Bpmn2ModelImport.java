@@ -132,13 +132,14 @@ public class Bpmn2ModelImport {
 		// copied from old DIImport 
 		// iterates over all elements in the diagram -> may be bad but is there another solution?
 		
-		// first: add all IDs to our ID mapping table
+		// add all ids to the mapping table so that they won't be used when 
+		// new ids are generated later
 		TreeIterator<EObject> iter = definitions.eAllContents();
 		while (iter.hasNext()) {
 			ModelUtil.addID(iter.next());
 		}
 		
-		// copied from old DIImport 
+		// end copied from old DIImport 
 		
 		// next, process the BPMN model elements and start building the Graphiti diagram
 		// first check if we display a single process or collaboration
