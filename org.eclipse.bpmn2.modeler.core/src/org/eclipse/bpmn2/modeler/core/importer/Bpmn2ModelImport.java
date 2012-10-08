@@ -163,10 +163,14 @@ public class Bpmn2ModelImport {
 		if (collaboration != null) {
 			// we display a collaboration
 			
+			if (diagrams.isEmpty()) {
+				BPMNDiagram newDiagram = ModelCreator.create(resource, BPMNDiagram.class);
+				diagrams.add(newDiagram);
+			}
+
 			BPMNDiagram element = diagrams.get(0);
 			
 			// create diagram for collaboration
-			System.out.println("#####################################################\n" + element + "################################################");
 			
 			Diagram rootDiagram = createRootDiagram((BPMNDiagram) element);
 			handleCollaboration(collaboration, rootDiagram);
@@ -177,7 +181,6 @@ public class Bpmn2ModelImport {
 			BPMNDiagram element = diagrams.get(0);
 
 			// create diagram for process(es)
-			System.out.println("#####################################################\n" + element + "################################################");
 			
 			Diagram rootDiagram = createRootDiagram((BPMNDiagram) element);
 			

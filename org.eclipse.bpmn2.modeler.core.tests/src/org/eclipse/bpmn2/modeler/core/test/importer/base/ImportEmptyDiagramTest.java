@@ -44,4 +44,18 @@ public class ImportEmptyDiagramTest extends AbstractImportBpmn2ModelTest {
 		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 	}
+	
+	@Test
+	@DiagramResource
+	public void testImportEmptyCollaboration() {
+		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+		importer.execute();
+	}
+	
+	@Test
+	@DiagramResource
+	public void testImportEmptyCollaborationBrokenNoDI() {
+		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+		importer.execute();
+	}
 }
