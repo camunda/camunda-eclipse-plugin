@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.test.importer.base;
 
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ImportException;
 import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
@@ -57,20 +57,24 @@ public class ImportEmptyDiagramTest extends AbstractImportBpmn2ModelTest {
 	@Test
 	@DiagramResource
 	public void testImportEmptyCollaboration() {
-		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
-		importer.execute();
-		
-		EList<Shape> children = diagram.getChildren();
-		Assert.assertEquals(0, children.size());
+		try {
+			Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+			importer.execute();
+			Assert.fail("expected failure");
+		} catch (Bpmn2ImportException e) {
+			// expected failure
+		}
 	}
 	
 	@Test
 	@DiagramResource
 	public void testImportEmptyCollaborationBrokenNoDI() {
-		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
-		importer.execute();
-		
-		EList<Shape> children = diagram.getChildren();
-		Assert.assertEquals(0, children.size());
+		try {
+			Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+			importer.execute();
+			Assert.fail("expected failure");
+		} catch (Bpmn2ImportException e) {
+			// expected failure
+		}
 	}
 }
