@@ -24,3 +24,4 @@ bin/
 test.bpmn.diagram
 
 /lib/specs_2.8.1-1.6.6.jar
+/org.eclipse.bpmn2.modeler.core.tests/*.diagram
