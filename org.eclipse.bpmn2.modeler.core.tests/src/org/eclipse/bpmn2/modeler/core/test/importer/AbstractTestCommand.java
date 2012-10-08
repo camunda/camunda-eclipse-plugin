@@ -1,5 +1,8 @@
 package org.eclipse.bpmn2.modeler.core.test.importer;
 
+import java.util.List;
+
+import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.impl.DocumentRootImpl;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
@@ -49,14 +52,21 @@ public abstract class AbstractTestCommand extends RecordingCommand {
 			diagramTypeProvider = GraphitiUi.getExtensionManager().createDiagramTypeProvider(
 					diagram,
 					"org.eclipse.bpmn2.modeler.ui.diagram.MainBPMNDiagramType");
+
+			diagramTypeProvider.getDiagramEditor().getResourceSet();
 			
 			Bpmn2ResourceImpl resource = testCase.getResource();
-			DocumentRootImpl rootImpl = (DocumentRootImpl) resource.getContents().get(0);
-			BPMNDiagram bpmnDiagram = rootImpl.getDefinitions().getDiagrams().get(0);
 			
-			diagramTypeProvider.getDiagramEditor().getResourceSet();
-	
-			diagramTypeProvider.getFeatureProvider().link(diagram, bpmnDiagram);
+			DocumentRootImpl rootImpl = (DocumentRootImpl) resource.getContents().get(0);
+			Definitions definitions = rootImpl.getDefinitions();
+			if (definitions != null) {
+				List<BPMNDiagram> diagrams = definitions.getDiagrams();
+				
+				if (!diagrams.isEmpty()) {
+					BPMNDiagram bpmnDiagram = diagrams.get(0);
+					diagramTypeProvider.getFeatureProvider().link(diagram, bpmnDiagram);
+				}
+			}
 			
 			test(diagramTypeProvider, diagram);
 			

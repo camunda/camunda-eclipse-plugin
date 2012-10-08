@@ -53,10 +53,13 @@ import org.eclipse.bpmn2.modeler.core.importer.handlers.ParticipantShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.SequenceFlowShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.SubProcessShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.TaskShapeHandler;
+import org.eclipse.bpmn2.modeler.core.importer.util.ModelCreator;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -71,7 +74,6 @@ import org.eclipse.graphiti.platform.IDiagramEditor;
  * 
  * @author Nico Rehwaldt
  * @author Daniel Meyer
- * 
  */
 public class Bpmn2ModelImport {
 
@@ -96,7 +98,6 @@ public class Bpmn2ModelImport {
 		
 		featureProvider = diagramTypeProvider.getFeatureProvider();
 		preferences = Bpmn2Preferences.getInstance(resource);
-
 	}
 	
 	public void execute() {
@@ -112,7 +113,7 @@ public class Bpmn2ModelImport {
 		
 	protected void handleDocumentRoot(DocumentRoot documentRoot) {
 		Definitions definitions = documentRoot.getDefinitions();
-		if(definitions == null) {
+		if (definitions == null) {
 			throw new Bpmn2ImportException("Document Root has no definitions");
 		} else {
 			handleDefinitions(definitions);
@@ -120,22 +121,31 @@ public class Bpmn2ModelImport {
 	}
 
 	protected void handleDefinitions(Definitions definitions) {
-		// first we process the DI diagrams. 
+		
+		// first we process the DI diagrams and associate them with the process elements
 		List<BPMNDiagram> diagrams = definitions.getDiagrams();
 		for (BPMNDiagram bpmnDiagram : diagrams) {
 			handleDIBpmnDiagram(bpmnDiagram);
 		}
 		
-		// TODO: remove link to BPMNDiagram?!
-		Diagram rootDiagram = createRootDiagram(diagrams.get(0));
+		// copied from old DIImport 
+		// iterates over all elements in the diagram -> may be bad but is there another solution?
+		
+		// first: add all IDs to our ID mapping table
+		TreeIterator<EObject> iter = definitions.eAllContents();
+		while (iter.hasNext()) {
+			ModelUtil.addID(iter.next());
+		}
+		
+		// copied from old DIImport 
 		
 		// next, process the BPMN model elements and start building the Graphiti diagram
+		// first check if we display a single process or collaboration
 		List<RootElement> rootElements = definitions.getRootElements();
 		List<Process> processes = new ArrayList<Process>();
 		Collaboration collaboration = null;
 		
-		for (RootElement rootElement : rootElements) {
-			
+		for (RootElement rootElement: rootElements) {
 			if (rootElement instanceof Process) {
 				processes.add((Process) rootElement);
 				
@@ -143,16 +153,33 @@ public class Bpmn2ModelImport {
 				if (collaboration != null) {
 					throw new Bpmn2ImportException("Multiple collaborations not supported");
 				}
-				
 				collaboration = (Collaboration) rootElement;
-				handleCollaboration(collaboration, rootDiagram);
-				
 			} else {
 				System.out.println("Unhandled RootElement: " + rootElement);
 			}
 		}
 
-		if (collaboration == null) {
+		if (collaboration != null) {
+			// we display a collaboration
+			
+			BPMNDiagram element = diagrams.get(0);
+			
+			// create diagram for collaboration
+			System.out.println("#####################################################\n" + element + "################################################");
+			
+			Diagram rootDiagram = createRootDiagram((BPMNDiagram) element);
+			handleCollaboration(collaboration, rootDiagram);
+			
+		} else if (!processes.isEmpty()) {
+			// we display one or more processes
+			
+			BPMNDiagram element = diagrams.get(0);
+
+			// create diagram for process(es)
+			System.out.println("#####################################################\n" + element + "################################################");
+			
+			Diagram rootDiagram = createRootDiagram((BPMNDiagram) element);
+			
 			for (Process process : processes) {
 				List<BaseElement> unhandledElements = new ArrayList<BaseElement>();
 				handleProcess(process, rootDiagram);
@@ -161,10 +188,38 @@ public class Bpmn2ModelImport {
 					throw new Bpmn2ImportException("Unhandled elements: " + unhandledElements);
 				}
 			}
+			
+		} else {
+			// We have no root process or collaboration
+			createNewDiagramAndHandleIt(definitions);
 		}
+		
 		
 		// finally layout all elements
 		performLayout();
+	}
+
+	protected void createNewDiagramAndHandleIt(Definitions definitions) {
+
+		// create process
+		Process process = ModelCreator.create(resource, Process.class);
+		definitions.getRootElements().add(process);
+		
+		// create bpmn di elements
+		BPMNPlane plane = ModelCreator.create(resource, BPMNPlane.class); // BpmnDiFactory.eINSTANCE.createBPMNPlane();
+		plane.setBpmnElement(process);
+		
+		BPMNDiagram bpmnDiagramElement = ModelCreator.create(resource, BPMNDiagram.class);
+		bpmnDiagramElement.setPlane(plane);
+		
+		ModelUtil.setID(plane, resource);
+		ModelUtil.setID(bpmnDiagramElement, resource);
+		
+		definitions.getDiagrams().add(bpmnDiagramElement);
+		
+		// create diagram and handle it
+		Diagram diagram = createRootDiagram((BPMNDiagram) bpmnDiagramElement);
+		featureProvider.link(diagram, bpmnDiagramElement);
 	}
 
 	protected Diagram createRootDiagram(BPMNDiagram bpmnDiagram) {
