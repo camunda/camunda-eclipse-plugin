@@ -21,17 +21,17 @@ import org.junit.Test;
  * @author Nico Rehwaldt
  */
 public class ImportEmptyDiagramTest extends AbstractImportBpmn2ModelTest {
-	
+
+	// This test is supposed to fail as the underlaying ecore cannot be loaded
 	@Test
+	@Ignore
 	@DiagramResource
 	public void testImportNoDefinitions() {
 		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 	}
   
-	// This test is supposed to fail as the underlaying ecore cannot be loaded
 	@Test
-	@Ignore
 	@DiagramResource
 	public void testImportNonProcessRootElements() {
 		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
