@@ -66,7 +66,8 @@ public class RunAsEmfCommandRule implements MethodRule {
 						base.evaluate();
 						
 						// save diagram
-						diagramResource.save(Collections.emptyMap());
+						// TODO: Uncomment when actually doing stuff
+						// diagramResource.save(Collections.emptyMap());
 					}
 				};
 				

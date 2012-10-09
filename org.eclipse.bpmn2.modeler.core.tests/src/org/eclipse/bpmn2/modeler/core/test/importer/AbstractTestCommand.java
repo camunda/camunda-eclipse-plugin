@@ -42,8 +42,6 @@ public abstract class AbstractTestCommand extends RecordingCommand {
 			String fileName = diagramName.replaceAll("/", ".").replaceAll(".bpmn", ".diagram");
 			URI uri = URI.createFileURI(testCase.getTempFolder().newFile(fileName).getAbsolutePath());
 			
-			System.out.println("Using temp folder " + testCase.getTempFolder());
-			
 			ModelHandlerLocator.put(uri, testCase.getModelHandler());
 	
 			diagramResource = testCase.getEditingDomain().getResourceSet().createResource(uri);

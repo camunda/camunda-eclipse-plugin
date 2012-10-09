@@ -288,7 +288,9 @@ public class Bpmn2ModelImport {
 		Process process = participant.getProcessRef();
 		
 		if (process == null || process.eIsProxy()) {
+			// TODO: what is the best behavior here
 			throw new Bpmn2ImportException("No process referenced by participant");
+			// return;
 		}
 		
 		// draw the participant (pool)
@@ -298,7 +300,7 @@ public class Bpmn2ModelImport {
 		List<LaneSet> laneSets = process.getLaneSets();
 		if (laneSets.isEmpty()) {
 			// if there are no lanes, simply draw the process into the pool (including sequence flows)
-			handleProcess(process, participantContainer);			
+			handleProcess(process, participantContainer);
 		} else {
 			//  draw the lanes (possibly nested). The lanes reference the task elements they contain, but not the sequence flows.
 			for (LaneSet laneSet: laneSets) {
@@ -310,7 +312,7 @@ public class Bpmn2ModelImport {
 			// draw artifacts (e.g. groups)
 			List<Artifact> artifacts = process.getArtifacts();		
 			handleArtifacts(container, artifacts);
-		}		
+		}
 	}
 
 	protected void handleSequenceFlows(ContainerShape participantContainer, List<FlowElement> flowElements) {
@@ -322,7 +324,13 @@ public class Bpmn2ModelImport {
 	}
 
 	protected void handleLaneSet(LaneSet laneSet, FlowElementsContainer scope, ContainerShape container) {
-		for (Lane lane: laneSet.getLanes()) {
+		
+		List<Lane> lanes = laneSet.getLanes();
+		if (lanes.isEmpty()) {
+			throw new Bpmn2ImportException("LaneSet with no lanes");
+		}
+		
+		for (Lane lane: lanes) {
 			handleLane(lane, scope, container);
 		}
 	}
@@ -339,7 +347,8 @@ public class Bpmn2ModelImport {
 		if (childLaneSet != null) {
 			handleLaneSet(childLaneSet, scope, thisContainer);
 		} else {
-			List<FlowNode> referencedNodes = lane.getFlowNodeRefs();			
+			List<FlowNode> referencedNodes = lane.getFlowNodeRefs();
+			System.out.println("Handling flow elements \n\t" + referencedNodes + " in lane \n\t " + lane);
 			handleFlowElements(thisContainer, (List)referencedNodes);
 		}
 	}
@@ -506,8 +515,6 @@ public class Bpmn2ModelImport {
 	
 	public <T extends BaseElement> PictogramElement handleDiagramElement(T flowElement, ContainerShape container,
 			AbstractDiagramElementHandler<T> flowNodeShapeHandler) {
-		
-		System.out.println("Handle element: " + flowElement + " in " + container);
 		
 		DiagramElement diagramElement = getDiagramElement(flowElement);
 		PictogramElement pictogramElement = flowNodeShapeHandler.handleDiagramElement(flowElement, diagramElement, container);

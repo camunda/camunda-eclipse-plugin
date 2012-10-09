@@ -53,28 +53,4 @@ public class ImportEmptyDiagramTest extends AbstractImportBpmn2ModelTest {
 		EList<Shape> children = diagram.getChildren();
 		Assert.assertEquals(0, children.size());
 	}
-	
-	@Test
-	@DiagramResource
-	public void testImportEmptyCollaboration() {
-		try {
-			Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
-			importer.execute();
-			Assert.fail("expected failure");
-		} catch (Bpmn2ImportException e) {
-			// expected failure
-		}
-	}
-	
-	@Test
-	@DiagramResource
-	public void testImportEmptyCollaborationBrokenNoDI() {
-		try {
-			Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
-			importer.execute();
-			Assert.fail("expected failure");
-		} catch (Bpmn2ImportException e) {
-			// expected failure
-		}
-	}
 }
