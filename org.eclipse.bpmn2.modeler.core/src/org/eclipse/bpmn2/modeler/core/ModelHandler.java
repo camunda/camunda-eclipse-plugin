@@ -255,19 +255,19 @@ public class ModelHandler {
 					Collaboration collaboration = createCollaboration();
 					collaboration.setName(name+" Collaboration");
 
-//					Process initiatingProcess = createProcess();
-//					initiatingProcess.setName(name+" Initiating Process");
+					Process initiatingProcess = createProcess();
+					initiatingProcess.setName(name+" Initiating Process");
 					
 					Participant initiatingParticipant = create(Participant.class);
 					initiatingParticipant.setName("Initiating Pool");
-//					initiatingParticipant.setProcessRef(initiatingProcess);
+					initiatingParticipant.setProcessRef(initiatingProcess);
 					
-//					Process nonInitiatingProcess = createProcess();
-//					nonInitiatingProcess.setName(name+" Non-initiating Process");
+					Process nonInitiatingProcess = createProcess();
+					nonInitiatingProcess.setName(name+" Non-initiating Process");
 					
 					Participant nonInitiatingParticipant = create(Participant.class);
 					nonInitiatingParticipant.setName("Non-initiating Pool");
-//					nonInitiatingParticipant.setProcessRef(nonInitiatingProcess);
+					nonInitiatingParticipant.setProcessRef(nonInitiatingProcess);
 					
 					collaboration.getParticipants().add(initiatingParticipant);
 					collaboration.getParticipants().add(nonInitiatingParticipant);
