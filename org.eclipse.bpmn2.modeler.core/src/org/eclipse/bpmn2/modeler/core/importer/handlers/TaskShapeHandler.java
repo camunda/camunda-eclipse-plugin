@@ -7,6 +7,7 @@
  * camunda services GmbH - initial API and implementation 
  *
  ******************************************************************************/
+
 package org.eclipse.bpmn2.modeler.core.importer.handlers;
 
 import org.eclipse.bpmn2.FlowNode;
@@ -21,7 +22,6 @@ import org.eclipse.graphiti.mm.pictograms.Diagram;
  * 
  * @author Nico Rehwaldt
  * @author Daniel Meyer
- * 
  */
 public class TaskShapeHandler extends FlowNodeShapeHandler {
 

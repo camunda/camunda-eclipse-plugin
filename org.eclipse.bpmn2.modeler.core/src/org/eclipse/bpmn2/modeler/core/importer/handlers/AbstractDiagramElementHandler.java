@@ -1,6 +1,17 @@
+/******************************************************************************* 
+ * This program is made available under the terms of the 
+ * Eclipse Public License v1.0 which accompanies this distribution, 
+ * and is available at http://www.eclipse.org/legal/epl-v10.html 
+ * 
+ * Contributors: 
+ * camunda services GmbH - initial API and implementation 
+ *
+ ******************************************************************************/
+
 package org.eclipse.bpmn2.modeler.core.importer.handlers;
 
 import org.eclipse.bpmn2.BaseElement;
+
 import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ImportException;
 import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
 import org.eclipse.dd.di.DiagramElement;
@@ -9,6 +20,11 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
+/**
+ * 
+ * @author Nico Rehwaldt
+ * @author Daniel Meyer
+ */
 public abstract class AbstractDiagramElementHandler<T extends BaseElement> {
 	
 	protected Bpmn2ModelImport bpmn2ModelImport;

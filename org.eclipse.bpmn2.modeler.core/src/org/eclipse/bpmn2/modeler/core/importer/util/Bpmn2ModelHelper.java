@@ -23,13 +23,21 @@ import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.PictogramLink;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 
 /**
  * Slim version of {@link ModelHandler}. 
  * 
+ * May not be instantiated / nor does it static contain state of any 
+ * kind to disallow any kind of bad design *gg*.
+ * 
  * @author Nico Rehwaldt
  */
-public class ModelCreator {
+public class Bpmn2ModelHelper {
+	
+	private Bpmn2ModelHelper() {}
 	
 	///////////////////
 	// static methods for EObject creation

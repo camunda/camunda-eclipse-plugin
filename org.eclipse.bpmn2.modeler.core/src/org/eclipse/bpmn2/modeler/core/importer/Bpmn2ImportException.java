@@ -13,7 +13,6 @@ package org.eclipse.bpmn2.modeler.core.importer;
  * 
  * @author Nico Rehwaldt
  * @author Daniel Meyer
- * 
  */
 public class Bpmn2ImportException extends RuntimeException {
 

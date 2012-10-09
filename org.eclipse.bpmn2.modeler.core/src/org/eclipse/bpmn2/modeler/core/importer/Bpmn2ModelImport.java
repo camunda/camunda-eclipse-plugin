@@ -21,6 +21,9 @@ import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.Collaboration;
+import org.eclipse.bpmn2.DataInput;
+import org.eclipse.bpmn2.DataObject;
+import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataStoreReference;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.DocumentRoot;
@@ -29,6 +32,7 @@ import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.Gateway;
+import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.MessageFlow;
@@ -48,6 +52,9 @@ import org.eclipse.bpmn2.modeler.core.importer.handlers.AbstractDiagramElementHa
 import org.eclipse.bpmn2.modeler.core.importer.handlers.AbstractShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.ArtifactShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.AssociationShapeHandler;
+import org.eclipse.bpmn2.modeler.core.importer.handlers.DataInputShapeHandler;
+import org.eclipse.bpmn2.modeler.core.importer.handlers.DataObjectShapeHandler;
+import org.eclipse.bpmn2.modeler.core.importer.handlers.DataOutputShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.DatastoreReferenceShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.FlowNodeShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.LaneShapeHandler;
@@ -56,7 +63,7 @@ import org.eclipse.bpmn2.modeler.core.importer.handlers.ParticipantShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.SequenceFlowShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.SubProcessShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.TaskShapeHandler;
-import org.eclipse.bpmn2.modeler.core.importer.util.ModelCreator;
+import org.eclipse.bpmn2.modeler.core.importer.util.Bpmn2ModelHelper;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
@@ -152,7 +159,6 @@ public class Bpmn2ModelImport {
 		for (RootElement rootElement: rootElements) {
 			if (rootElement instanceof Process) {
 				processes.add((Process) rootElement);
-				
 			} else if (rootElement instanceof Collaboration) {
 				if (collaboration != null) {
 					throw new Bpmn2ImportException("Multiple collaborations not supported");
@@ -193,7 +199,7 @@ public class Bpmn2ModelImport {
 	protected BPMNDiagram getOrCreateDiagram(List<BPMNDiagram> diagrams, Collaboration collaboration, List<Process> processes) {
 
 		if (diagrams.isEmpty()) {
-			BPMNDiagram newDiagram = ModelCreator.create(resource, BPMNDiagram.class);
+			BPMNDiagram newDiagram = Bpmn2ModelHelper.create(resource, BPMNDiagram.class);
 			diagrams.add(newDiagram);
 		}
 
@@ -201,7 +207,7 @@ public class Bpmn2ModelImport {
 		BPMNPlane bpmnPlane = bpmnDiagram.getPlane();
 		
 		if (bpmnPlane == null || bpmnPlane.eIsProxy()) {
-			bpmnPlane = ModelCreator.create(resource, BPMNPlane.class);
+			bpmnPlane = Bpmn2ModelHelper.create(resource, BPMNPlane.class);
 			bpmnDiagram.setPlane(bpmnPlane);
 		}
 		
@@ -211,7 +217,7 @@ public class Bpmn2ModelImport {
 	protected void createDefaultDiagramContents(Definitions definitions) {
 
 		// create process
-		Process process = ModelCreator.create(resource, Process.class);
+		Process process = Bpmn2ModelHelper.create(resource, Process.class);
 		definitions.getRootElements().add(process);
 		
 		// associate process with bpmn plane
@@ -344,9 +350,40 @@ public class Bpmn2ModelImport {
 		List<FlowElement> flowElements = process.getFlowElements();
 		handleFlowElements(container, flowElements);		
 		handleSequenceFlows(container, flowElements);
+
+		InputOutputSpecification inputOutputSpecification = process.getIoSpecification();
+		if (inputOutputSpecification != null) {
+			handleIOSpecification(container, inputOutputSpecification);
+		}
 		
 		List<Artifact> artifacts = process.getArtifacts();		
 		handleArtifacts(container, artifacts);
+	}
+
+	protected void handleIOSpecification(ContainerShape container, InputOutputSpecification inputOutputSpecification) {
+		
+		handleDataInputs(container, inputOutputSpecification.getDataInputs());
+		handleDataOutputs(container, inputOutputSpecification.getDataOutputs());
+	}
+
+	protected void handleDataOutputs(ContainerShape container, List<DataOutput> dataOutputs) {
+		for (DataOutput output: dataOutputs) {
+			handleDataOutput(output, container);
+		}
+	}
+
+	protected void handleDataOutput(DataOutput output, ContainerShape container) {
+		handleDiagramElement(output, container, new DataOutputShapeHandler(this));
+	}
+
+	protected void handleDataInputs(ContainerShape container, List<DataInput> dataInputs) {
+		for (DataInput input: dataInputs) {
+			handleDataInput(input, container);
+		}
+	}
+
+	private void handleDataInput(DataInput input, ContainerShape container) {
+		handleDiagramElement(input, container, new DataInputShapeHandler(this));
 	}
 
 	protected void handleArtifacts(ContainerShape container, List<Artifact> artifacts) {
@@ -384,7 +421,7 @@ public class Bpmn2ModelImport {
 	 */
 	protected void handleFlowElements(ContainerShape container, List<FlowElement> flowElementsToBeDrawn) {
 		
-		for (FlowElement flowElement : flowElementsToBeDrawn) {
+		for (FlowElement flowElement: flowElementsToBeDrawn) {
 			
 		    if (flowElement instanceof Gateway) {
 				handleGateway((Gateway) flowElement, container);	
@@ -401,11 +438,21 @@ public class Bpmn2ModelImport {
 			} else if (flowElement instanceof Event) {
 				handleEvent((Event) flowElement, container);
 				
+			} else if (flowElement instanceof DataObject) {
+				handleDataObject((DataObject) flowElement, container);
+				
 			} else if (flowElement instanceof DataStoreReference) {
 				handleDataStoreReference((DataStoreReference) flowElement, container);
 				
+			} else {
+				System.out.println("Unhandled: " + flowElement);
 			}
 		}
+	}
+
+	private void handleDataObject(DataObject flowElement, ContainerShape container) {
+		
+		handleDiagramElement(flowElement, container, new DataObjectShapeHandler(this));
 	}
 
 	protected void handleActivity(Activity flowElement, ContainerShape container) {
@@ -459,6 +506,8 @@ public class Bpmn2ModelImport {
 	
 	public <T extends BaseElement> PictogramElement handleDiagramElement(T flowElement, ContainerShape container,
 			AbstractDiagramElementHandler<T> flowNodeShapeHandler) {
+		
+		System.out.println("Handle element: " + flowElement + " in " + container);
 		
 		DiagramElement diagramElement = getDiagramElement(flowElement);
 		PictogramElement pictogramElement = flowNodeShapeHandler.handleDiagramElement(flowElement, diagramElement, container);
