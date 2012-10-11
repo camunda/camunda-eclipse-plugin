@@ -35,9 +35,9 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
  * 
  * @author Nico Rehwaldt
  */
-public class Bpmn2ModelHelper {
+public class ModelHelper {
 	
-	private Bpmn2ModelHelper() {}
+	private ModelHelper() {}
 	
 	///////////////////
 	// static methods for EObject creation

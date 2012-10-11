@@ -78,11 +78,9 @@ import org.eclipse.bpmn2.modeler.core.Bpmn2TabbedPropertySheetPage;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.ProxyURIConverterImplExtension;
-import org.eclipse.bpmn2.modeler.core.di.DIImport;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
-import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ImportException;
-import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
 import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImportCommand;
+import org.eclipse.bpmn2.modeler.core.importer.ImportException;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultDetailComposite;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultDialogComposite;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultListComposite;
@@ -99,6 +97,7 @@ import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.validation.BPMN2ProjectValidator;
 import org.eclipse.bpmn2.modeler.core.validation.BPMN2ValidationStatusLoader;
 import org.eclipse.bpmn2.modeler.ui.Activator;
+import org.eclipse.bpmn2.modeler.ui.dialog.ImportModelErrorDialog;
 import org.eclipse.bpmn2.modeler.ui.property.artifact.CategoryDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.artifact.TextAnnotationDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.connectors.MessageFlowDetailComposite;
@@ -185,6 +184,7 @@ import org.eclipse.graphiti.ui.editor.DefaultUpdateBehavior;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.graphiti.ui.internal.editor.GFPaletteRoot;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
@@ -545,10 +545,12 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	}
 	
 	private void importDiagram() {
+		
 		// make sure this guy is active, otherwise it's not selectable
 		Diagram diagram = getDiagramTypeProvider().getDiagram();
 		IFeatureProvider featureProvider = getDiagramTypeProvider().getFeatureProvider();
 		diagram.setActive(true);
+		
 		Bpmn2DiagramEditorInput input = (Bpmn2DiagramEditorInput) getEditorInput();
 		Bpmn2DiagramType diagramType = input.getInitialDiagramType();
 		String targetNamespace = input.getTargetNamespace();
@@ -561,7 +563,13 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		
 		IDiagramEditor diagramEditor = getDiagramTypeProvider().getDiagramEditor();
 		TransactionalEditingDomain editingDomain = diagramEditor.getEditingDomain();
-		editingDomain.getCommandStack().execute(new Bpmn2ModelImportCommand(editingDomain, diagramEditor, bpmnResource));
+		Bpmn2ModelImportCommand command = new Bpmn2ModelImportCommand(editingDomain, diagramEditor, bpmnResource);
+		
+		editingDomain.getCommandStack().execute(command);
+		
+		if (!command.wasSuccessful()) {
+			handleImportError(command.getRecordedException());
+		}
 		
 //		DIImport di = new DIImport(this);
 //		di.setModelHandler(modelHandler);
@@ -573,6 +581,15 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		// to build the right tool palette for the target runtime and model enablements.
 		GFPaletteRoot pr = (GFPaletteRoot)getPaletteRoot();
 		pr.updatePaletteEntries();
+	}
+
+	protected void handleImportError(ImportException exception) {
+		ImportModelErrorDialog dialog = new ImportModelErrorDialog(getSite().getShell());
+		
+		dialog.setException(exception);
+		dialog.open();
+		
+		throw exception;
 	}
 
 	@Override

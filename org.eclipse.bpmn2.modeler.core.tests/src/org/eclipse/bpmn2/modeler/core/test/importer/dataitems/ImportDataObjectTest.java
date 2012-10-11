@@ -7,6 +7,7 @@
  * camunda services GmbH - initial API and implementation 
  *
  ******************************************************************************/
+
 package org.eclipse.bpmn2.modeler.core.test.importer.dataitems;
 
 import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
@@ -30,6 +31,20 @@ public class ImportDataObjectTest extends AbstractImportBpmn2ModelTest {
 	@Test
 	@DiagramResource
 	public void testImportAssociatedDataObject() {
+		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+		importer.execute();
+	}
+	
+	@Test
+	@DiagramResource
+	public void testImportComplexCase() {
+		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+		importer.execute();
+	}
+	
+	@Test
+	@DiagramResource
+	public void testImportDataObjectReferencedFromLane() {
 		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 	}

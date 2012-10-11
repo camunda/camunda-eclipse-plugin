@@ -24,6 +24,8 @@ public class Bpmn2ModelImportCommand extends RecordingCommand {
 
 	protected IDiagramEditor diagramEditor;
 	protected Bpmn2Resource resource;
+	
+	private ImportException recordedException;
 
 	public Bpmn2ModelImportCommand(TransactionalEditingDomain domain, IDiagramEditor diagramEditor, Bpmn2Resource resource) {
 		super(domain);
@@ -33,11 +35,19 @@ public class Bpmn2ModelImportCommand extends RecordingCommand {
 
 	@Override
 	protected void doExecute() {
-		
-		Bpmn2ModelImport bpmn2ModelImport = new Bpmn2ModelImport(diagramEditor.getDiagramTypeProvider(), resource);
-		bpmn2ModelImport.execute();
-		
+		try {
+			Bpmn2ModelImport bpmn2ModelImport = new Bpmn2ModelImport(diagramEditor.getDiagramTypeProvider(), resource);
+			bpmn2ModelImport.execute();
+		} catch (ImportException e) {
+			recordedException = e;
+		}
 	}
-
 	
+	public boolean wasSuccessful() {
+		return recordedException == null;
+	}
+	
+	public ImportException getRecordedException() {
+		return recordedException;
+	}
 }

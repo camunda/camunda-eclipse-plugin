@@ -12,7 +12,9 @@ package org.eclipse.bpmn2.modeler.core.test;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -41,20 +43,34 @@ public class Bpmn2ModelImporterTest extends AbstractImportBpmn2ModelTest {
 	
 	@Test
 	public void shouldBatchOpenDiagrams() {
+		List<String> importedResourceNames = new ArrayList<String>();
+		Map<String, Exception> notImportedResourceNames = new HashMap<String, Exception>();
+		
 		List<String> resourceNames = getDiagramResources();
 		int importedCount = 0;
 		for (String name: resourceNames) {
+			String resourceName = "org/eclipse/bpmn2/modeler/core/test/bpmn/diagrams/" + name;
 			try {
-				importDiagram("org/eclipse/bpmn2/modeler/core/test/bpmn/diagrams/" + name);
+				importDiagram(resourceName);
+				importedResourceNames.add(resourceName);
 				importedCount++;
 			} catch (Exception e) {
-				System.out.println("Failed to import due to " + e);
-				e.printStackTrace(System.err);
-				System.err.flush();
+				notImportedResourceNames.put(resourceName, e);
 			}
 		}
 		
-		System.out.println("Imported " + importedCount + "/" + resourceNames.size() + " diagrams");
+		System.out.println("Imported " + importedCount + "/" + resourceNames.size() + " diagrams: ");
+		for (String imported: importedResourceNames) {
+			System.out.println("\t" + imported);
+		}
+		
+		System.out.println("Failed to import: ");
+		for (Map.Entry<String, Exception> entry: notImportedResourceNames.entrySet()) {
+			Exception exception = entry.getValue();
+			System.out.println("\t" + entry.getKey() + " due to: " + exception);
+			exception.printStackTrace();
+		}
+		
 		Assert.assertEquals(resourceNames.size(), importedCount);
 	}
 

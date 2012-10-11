@@ -10,7 +10,7 @@
 
 package org.eclipse.bpmn2.modeler.core.test.importer.broken;
 
-import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ImportException;
+import org.eclipse.bpmn2.modeler.core.importer.ImportException;
 import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
@@ -32,11 +32,23 @@ public class ImportBrokenModelTest extends AbstractImportBpmn2ModelTest {
 			Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
 			importer.execute();
 			Assert.fail("expected failure");
-		} catch (Bpmn2ImportException e) {
+		} catch (ImportException e) {
 			// expected failure
 		}
 	}
-
+	
+	@Test
+	@DiagramResource
+	public void testImportParticipantReferencingNonExistingProcess() {
+		try {
+			Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+			importer.execute();
+			Assert.fail("expected failure");
+		} catch (ImportException e) {
+			// expected failure
+		}
+	}
+	
 	@Test
 	@DiagramResource
 	public void testImportLaneSetSingleLaneUnreferencedFlowElements1() {
@@ -46,7 +58,7 @@ public class ImportBrokenModelTest extends AbstractImportBpmn2ModelTest {
 			
 			// TODO: Fails because elements __NOT__ referenced in lane get somehow associated
 			Assert.fail("expected failure");
-		} catch (Bpmn2ImportException e) {
+		} catch (ImportException e) {
 			// expected failure
 		}
 	}
@@ -58,7 +70,7 @@ public class ImportBrokenModelTest extends AbstractImportBpmn2ModelTest {
 			Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
 			importer.execute();
 			Assert.fail("expected failure");
-		} catch (Bpmn2ImportException e) {
+		} catch (ImportException e) {
 			// expected failure
 		}
 	}
@@ -70,7 +82,7 @@ public class ImportBrokenModelTest extends AbstractImportBpmn2ModelTest {
 			Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
 			importer.execute();
 			Assert.fail("expected failure");
-		} catch (Bpmn2ImportException e) {
+		} catch (ImportException e) {
 			// expected failure
 		}
 	}

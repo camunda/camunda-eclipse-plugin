@@ -85,6 +85,32 @@ public class ImportCollaborationTest extends AbstractImportBpmn2ModelTest {
 		Shape pool1 = children.get(0);
 		Shape pool2 = children.get(1);
 	}
+
+	@Test
+	@DiagramResource
+	public void testImportCollapsedPool() {
+		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+		importer.execute();
+
+		EList<Shape> children = diagram.getChildren();
+		assertThat(children).hasSize(2);
+		
+		Shape pool1 = children.get(0);
+		Shape pool2 = children.get(1);
+	}
+
+	@Test
+	@DiagramResource
+	public void testImportCollapsedPoolWithProcess() {
+		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+		importer.execute();
+
+		EList<Shape> children = diagram.getChildren();
+		assertThat(children).hasSize(2);
+		
+		Shape pool1 = children.get(0);
+		Shape pool2 = children.get(1);
+	}
 	
 	@Test
 	@DiagramResource

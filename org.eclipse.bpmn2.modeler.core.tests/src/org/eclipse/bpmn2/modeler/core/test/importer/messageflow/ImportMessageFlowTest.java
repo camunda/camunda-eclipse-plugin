@@ -95,6 +95,53 @@ public class ImportMessageFlowTest extends AbstractImportBpmn2ModelTest {
 		
 		Assert.fail("Not supported");
 	}
+
+	@Test
+	@DiagramResource
+	public void testActivityToCollapsedPoolBidirectional() {
+		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+		importer.execute();
+	}
+
+	@Test
+	@DiagramResource
+	public void testActivityToCollapsedPool() {
+		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+		importer.execute();
+	}
+	
+	@Test
+	@DiagramResource
+	public void testCollapsedPoolToActivity() {
+		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+		importer.execute();
+	}
+	
+	@Test
+	@DiagramResource
+	public void testActivityToUncollapsedPool() {
+		try {
+			Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+			importer.execute();
+			
+			Assert.fail("Expected failure");
+		} catch (Exception e) {
+			// expected
+		}
+	}
+
+	@Test
+	@DiagramResource
+	public void testUncollapsedPoolToActivity() {
+		try {
+			Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+			importer.execute();
+			
+			Assert.fail("Expected failure");
+		} catch (Exception e) {
+			// expected
+		}
+	}
 	
 	private boolean containsChildLinkedTo(ContainerShape shape, Class<?> linkedElementCls) {
 		for (Shape child: shape.getChildren()) {

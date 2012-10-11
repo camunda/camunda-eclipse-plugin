@@ -12,7 +12,7 @@ package org.eclipse.bpmn2.modeler.core.importer.handlers;
 
 import org.eclipse.bpmn2.BaseElement;
 
-import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ImportException;
+import org.eclipse.bpmn2.modeler.core.importer.ImportException;
 import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.ecore.EObject;
@@ -42,7 +42,7 @@ public abstract class AbstractDiagramElementHandler<T extends BaseElement> {
 	 * Return a pictogram element for the given flow node.
 	 * 
 	 * @param node
-	 * @throws Bpmn2ImportException if corresponding pictogram element is not yet present
+	 * @throws ImportException if corresponding pictogram element is not yet present
 	 * @return
 	 */
 	protected PictogramElement getPictogramElement(EObject node) {
@@ -50,7 +50,7 @@ public abstract class AbstractDiagramElementHandler<T extends BaseElement> {
 			return bpmn2ModelImport.getPictogramElement((BaseElement) node);
 		} else {
 			// Must be a unresolvable proxy
-			throw new Bpmn2ImportException("Failed to resolve node " + node);
+			throw new ImportException("Failed to resolve node " + node);
 		}
 	}
 
@@ -58,7 +58,7 @@ public abstract class AbstractDiagramElementHandler<T extends BaseElement> {
 	 * 
 	 * @param bpmnElement
 	 * 
-	 * @throws Bpmn2ImportException if corresponding diagram element is not yet present
+	 * @throws ImportException if corresponding diagram element is not yet present
 	 * @return
 	 */
 	protected DiagramElement getDiagramElement(BaseElement bpmnElement) {

@@ -46,7 +46,6 @@ import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.AbstractDiagramElementHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.AbstractShapeHandler;
@@ -63,7 +62,8 @@ import org.eclipse.bpmn2.modeler.core.importer.handlers.ParticipantShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.SequenceFlowShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.SubProcessShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.TaskShapeHandler;
-import org.eclipse.bpmn2.modeler.core.importer.util.Bpmn2ModelHelper;
+import org.eclipse.bpmn2.modeler.core.importer.util.ErrorLogger;
+import org.eclipse.bpmn2.modeler.core.importer.util.ModelHelper;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
@@ -92,14 +92,17 @@ public class Bpmn2ModelImport {
 	protected IDiagramTypeProvider diagramTypeProvider;
 	protected Bpmn2Preferences preferences;
 	
-	// in this map we collect all DiagramElements (BPMN DI) indexed by the IDs of the ProcessElements they reference. 
+	// map collecting all DiagramElements (BPMN DI) indexed by the IDs of the ProcessElements they reference. 
 	protected Map<String, DiagramElement> diagramElementMap = new HashMap<String, DiagramElement>();
 	
-	// this list collects DI elements that do not reference bpmn model elements. (for instance, lables only)
+	// list collecting DI elements that do not reference bpmn model elements. (for instance, labels only)
 	protected List<DiagramElement> nonModelElements = new ArrayList<DiagramElement>();
 	
-	// this list collects the created PictogramElements (Graphiti) indexed by bpmn model elements
+	// list collecting the created PictogramElements (Graphiti) indexed by bpmn model elements
 	protected HashMap<BaseElement, PictogramElement> pictogramElements = new HashMap<BaseElement, PictogramElement>();
+	
+	// list of exceptions classified as warnings which occurred during the import
+	protected List<ImportException> warnings = new ArrayList<ImportException>();
 	
 	public Bpmn2ModelImport(IDiagramTypeProvider diagramTypeProvider, Bpmn2Resource resource) {
 		
@@ -114,17 +117,23 @@ public class Bpmn2ModelImport {
 		EList<EObject> contents = resource.getContents();
 		
 		if (contents.isEmpty()) {
-			throw new Bpmn2ImportException("No document root");
+			throw new InvalidContentException("No document root in resource bundle");
 		} else {
-			handleDocumentRoot((DocumentRoot) contents.get(0));
+			DocumentRoot documentRoot = (DocumentRoot) contents.get(0);
+			handleDocumentRoot(documentRoot);
+			
+			if (contents.size() > 1) {
+				// TODO: is there a possibility for a resource to have multiple DocumentRoots?
+				InvalidContentException exception = new InvalidContentException("Multiple document roots in resource");
+				log(exception);
+			}
 		}
-		// TODO: is there a possibility for a resource to have multiple DocumentRoots?
 	}
 		
 	protected void handleDocumentRoot(DocumentRoot documentRoot) {
 		Definitions definitions = documentRoot.getDefinitions();
 		if (definitions == null) {
-			throw new Bpmn2ImportException("Document Root has no definitions");
+			throw new InvalidContentException("Document Root has no definitions", documentRoot);
 		} else {
 			handleDefinitions(definitions);
 		}
@@ -161,9 +170,11 @@ public class Bpmn2ModelImport {
 				processes.add((Process) rootElement);
 			} else if (rootElement instanceof Collaboration) {
 				if (collaboration != null) {
-					throw new Bpmn2ImportException("Multiple collaborations not supported");
+					UnsupportedFeatureException exception = new UnsupportedFeatureException("Multiple collaborations not supported. Displaying first one only", definitions);
+					log(exception);
+				} else {
+					collaboration = (Collaboration) rootElement;
 				}
-				collaboration = (Collaboration) rootElement;
 			} else {
 				System.out.println("Unhandled RootElement: " + rootElement);
 			}
@@ -178,19 +189,13 @@ public class Bpmn2ModelImport {
 		} else if (!processes.isEmpty()) {
 			// we display one or more processes
 			for (Process process : processes) {
-				List<BaseElement> unhandledElements = new ArrayList<BaseElement>();
 				handleProcess(process, rootDiagram);
-				
-				if (!unhandledElements.isEmpty()) {
-					throw new Bpmn2ImportException("Unhandled elements: " + unhandledElements);
-				}
 			}
 			
 		} else {
 			// We have no root process or collaboration
 			createDefaultDiagramContents(definitions);
 		}
-		
 		
 		// finally layout all elements
 		performLayout();
@@ -199,7 +204,7 @@ public class Bpmn2ModelImport {
 	protected BPMNDiagram getOrCreateDiagram(List<BPMNDiagram> diagrams, Collaboration collaboration, List<Process> processes) {
 
 		if (diagrams.isEmpty()) {
-			BPMNDiagram newDiagram = Bpmn2ModelHelper.create(resource, BPMNDiagram.class);
+			BPMNDiagram newDiagram = ModelHelper.create(resource, BPMNDiagram.class);
 			diagrams.add(newDiagram);
 		}
 
@@ -207,7 +212,7 @@ public class Bpmn2ModelImport {
 		BPMNPlane bpmnPlane = bpmnDiagram.getPlane();
 		
 		if (bpmnPlane == null || bpmnPlane.eIsProxy()) {
-			bpmnPlane = Bpmn2ModelHelper.create(resource, BPMNPlane.class);
+			bpmnPlane = ModelHelper.create(resource, BPMNPlane.class);
 			bpmnDiagram.setPlane(bpmnPlane);
 		}
 		
@@ -217,7 +222,7 @@ public class Bpmn2ModelImport {
 	protected void createDefaultDiagramContents(Definitions definitions) {
 
 		// create process
-		Process process = Bpmn2ModelHelper.create(resource, Process.class);
+		Process process = ModelHelper.create(resource, Process.class);
 		definitions.getRootElements().add(process);
 		
 		// associate process with bpmn plane
@@ -266,7 +271,8 @@ public class Bpmn2ModelImport {
 		List<Participant> participants = collaboration.getParticipants();
 		
 		if (participants.isEmpty()) {
-			throw new Bpmn2ImportException("No participants in collaboration");
+			InvalidContentException exception = new InvalidContentException("No participants in collaboration", collaboration);
+			logAndThrow(exception);
 		}
 		
 		for (Participant participant : participants) {
@@ -285,18 +291,33 @@ public class Bpmn2ModelImport {
 	 * @param container
 	 */
 	protected void handleParticipant(Participant participant, ContainerShape container) {
-		Process process = participant.getProcessRef();
 		
-		if (process == null || process.eIsProxy()) {
-			// TODO: what is the best behavior here
-			throw new Bpmn2ImportException("No process referenced by participant");
-			// return;
+		Process process = participant.getProcessRef();
+		if (process != null) {
+			if (process.eIsProxy()) {
+				throw new ImportException("Invalid process referenced by participant");
+			}
 		}
+		
+		// TODO: process.isIsClosed == !collapsed ?
+		// TODO: or rather bpmnShape.isIsExpanded()
+		
+		// BPMNShape bpmnShape = (BPMNShape) getDiagramElement(participant);
+		// if (process == null || !bpmnShape.isIsExpanded()) {
+		if (process == null) {
+			// collapsed pool
+			handleCollapsedParticipant(participant, container);
+		} else {
+			handleExpandedParticipant(participant, process, container);
+		}
+	}
+
+	protected void handleExpandedParticipant(Participant participant, Process process, ContainerShape container) {
 		
 		// draw the participant (pool)
 		ParticipantShapeHandler shapeHander = new ParticipantShapeHandler(this);
 		ContainerShape participantContainer = (ContainerShape) handleDiagramElement(participant, container, shapeHander);
-	
+		
 		List<LaneSet> laneSets = process.getLaneSets();
 		if (laneSets.isEmpty()) {
 			// if there are no lanes, simply draw the process into the pool (including sequence flows)
@@ -306,13 +327,39 @@ public class Bpmn2ModelImport {
 			for (LaneSet laneSet: laneSets) {
 				handleLaneSet(laneSet, process, participantContainer);
 			}
+			
+			// draw flow elements not referenced from lanes
+			handleUnreferencedFlowElements(container, process.getFlowElements());
+			
 			// draw the sequence flows:
 			handleSequenceFlows(participantContainer, process.getFlowElements());
-
+			
 			// draw artifacts (e.g. groups)
 			List<Artifact> artifacts = process.getArtifacts();		
 			handleArtifacts(container, artifacts);
 		}
+	}
+
+	protected void handleUnreferencedFlowElements(ContainerShape containerShape, List<FlowElement> flowElements) {
+		List<FlowElement> unreferencedFlowElements = new ArrayList<FlowElement>();
+		
+		for (FlowElement e: flowElements) {
+			if (getPictogramElementOrNull(e) == null) {
+				log(new UnmappedElementException("element not assigned to lane", e));
+				unreferencedFlowElements.add(e);
+			}
+		}
+		
+		if (unreferencedFlowElements != null) {
+			// render 
+			handleFlowElements(containerShape, unreferencedFlowElements);
+		}
+	}
+
+	protected void handleCollapsedParticipant(Participant participant, ContainerShape container) {
+		// draw the participant (pool)
+		ParticipantShapeHandler shapeHander = new ParticipantShapeHandler(this);
+		handleDiagramElement(participant, container, shapeHander);
 	}
 
 	protected void handleSequenceFlows(ContainerShape participantContainer, List<FlowElement> flowElements) {
@@ -327,7 +374,7 @@ public class Bpmn2ModelImport {
 		
 		List<Lane> lanes = laneSet.getLanes();
 		if (lanes.isEmpty()) {
-			throw new Bpmn2ImportException("LaneSet with no lanes");
+			throw new InvalidContentException("LaneSet has no lanes specified", laneSet);
 		}
 		
 		for (Lane lane: lanes) {
@@ -348,7 +395,6 @@ public class Bpmn2ModelImport {
 			handleLaneSet(childLaneSet, scope, thisContainer);
 		} else {
 			List<FlowNode> referencedNodes = lane.getFlowNodeRefs();
-			System.out.println("Handling flow elements \n\t" + referencedNodes + " in lane \n\t " + lane);
 			handleFlowElements(thisContainer, (List)referencedNodes);
 		}
 	}
@@ -530,7 +576,7 @@ public class Bpmn2ModelImport {
 		
 		BPMNPlane plane = bpmnDiagram.getPlane();
 		if (plane == null) {
-			throw new Bpmn2ImportException("BPMNDiagram " + bpmnDiagram + " has no BPMNPlane");
+			throw new InvalidContentException("BPMNDiagram has no BPMNPlane", bpmnDiagram);
 		} else {
 			handleDIBpmnPlane(plane);
 		}
@@ -540,7 +586,7 @@ public class Bpmn2ModelImport {
 		
 		BaseElement bpmnElement = plane.getBpmnElement();
 		if (bpmnElement.eIsProxy()) {
-			throw new Bpmn2ImportException("BPMNPlane " + plane + " references unexisting bpmnElement '" + bpmnElement + "'.");
+			throw new UnmappedElementException("BPMNPlane references unexisting bpmnElement", plane);
 		}
 		
 		List<DiagramElement> planeElement = plane.getPlaneElement();
@@ -564,7 +610,8 @@ public class Bpmn2ModelImport {
 	protected void handleDIEdge(BPMNEdge diagramElement) {
 		BaseElement bpmnElement = diagramElement.getBpmnElement();
 		if (bpmnElement == null || bpmnElement.eIsProxy()) {
-			Activator.logError(new Bpmn2ImportException("BPMNEdge references unexisting bpmnElement '"+bpmnElement+"'."));
+			ImportException exception = new UnmappedElementException("BPMNEdge references unexisting bpmnElement", diagramElement);
+			log(exception);
 		} else {
 			linkInDiagramElementMap(diagramElement, bpmnElement);
 		}
@@ -573,7 +620,8 @@ public class Bpmn2ModelImport {
 	protected void handleDIShape(BPMNShape diagramElement) {
 		BaseElement bpmnElement = diagramElement.getBpmnElement();
 		if (bpmnElement == null || bpmnElement.eIsProxy()) {
-			Activator.logError(new Bpmn2ImportException("BPMNShape references unexisting bpmnElement '"+bpmnElement+"'."));
+			ImportException exception = new UnmappedElementException("BPMNEdge references unexisting bpmnElement", diagramElement);
+			log(exception);
 		} else {
 			linkInDiagramElementMap(diagramElement, bpmnElement);
 		}
@@ -588,6 +636,17 @@ public class Bpmn2ModelImport {
 		diagramElementMap.put(bpmnElement.getId(), diagramElement);
 	}
 	
+	// Error logging ////////////////////////////////////////////
+	
+	protected void log(ImportException e) {
+		warnings.add(e);
+		ErrorLogger.log(e);
+	}
+	
+	protected void logAndThrow(ImportException e) throws ImportException {
+		ErrorLogger.logAndThrow(e);
+	}
+	
 	// Getters //////////////////////////////////////////////////
 	
 	public IFeatureProvider getFeatureProvider() {
@@ -597,7 +656,8 @@ public class Bpmn2ModelImport {
 	public DiagramElement getDiagramElement(BaseElement bpmnElement) {
 		DiagramElement element = diagramElementMap.get(bpmnElement.getId());
 		if (element == null) {
-			throw new Bpmn2ImportException("Not yet processed: " + bpmnElement);
+			UnmappedElementException exception = new UnmappedElementException("Diagram element not found", bpmnElement);
+			logAndThrow(exception);
 		}
 		return element;
 	}
@@ -622,10 +682,14 @@ public class Bpmn2ModelImport {
 		return preferences;
 	}
 
+	protected PictogramElement getPictogramElementOrNull(BaseElement node) {
+		return pictogramElements.get(node);
+	}
+	
 	public PictogramElement getPictogramElement(BaseElement node) {
-		PictogramElement element = pictogramElements.get(node);
+		PictogramElement element = getPictogramElementOrNull(node);
 		if (element == null) {
-			throw new Bpmn2ImportException("Not yet processed: " + node);
+			throw new UnmappedElementException("Pictogram element yet processed", node);
 		}
 		
 		return element;
