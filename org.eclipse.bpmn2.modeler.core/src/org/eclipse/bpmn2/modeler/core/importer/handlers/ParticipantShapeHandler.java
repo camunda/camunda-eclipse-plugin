@@ -12,7 +12,7 @@ package org.eclipse.bpmn2.modeler.core.importer.handlers;
 
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
+import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.graphiti.features.context.impl.AddContext;
@@ -25,7 +25,7 @@ import org.eclipse.graphiti.mm.pictograms.ContainerShape;
  */
 public class ParticipantShapeHandler extends AbstractShapeHandler<Participant> {
 
-	public ParticipantShapeHandler(Bpmn2ModelImport bpmn2ModelImport) {
+	public ParticipantShapeHandler(ModelImport bpmn2ModelImport) {
 		super(bpmn2ModelImport);
 	}
 	

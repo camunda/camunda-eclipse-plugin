@@ -13,7 +13,7 @@ package org.eclipse.bpmn2.modeler.core.importer.handlers;
 import org.eclipse.bpmn2.BaseElement;
 
 import org.eclipse.bpmn2.modeler.core.importer.ImportException;
-import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
+import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -27,13 +27,13 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
  */
 public abstract class AbstractDiagramElementHandler<T extends BaseElement> {
 	
-	protected Bpmn2ModelImport bpmn2ModelImport;
+	protected ModelImport modelImport;
 	protected IFeatureProvider featureProvider;
 
-	public AbstractDiagramElementHandler(Bpmn2ModelImport bpmn2ModelImport) {
-		this.bpmn2ModelImport = bpmn2ModelImport;
+	public AbstractDiagramElementHandler(ModelImport modelImport) {
+		this.modelImport = modelImport;
 		
-		featureProvider = bpmn2ModelImport.getFeatureProvider();
+		featureProvider = modelImport.getFeatureProvider();
 	}
 	
 	public abstract PictogramElement handleDiagramElement(T bpmnElement, DiagramElement diagramElement, ContainerShape container);
@@ -47,13 +47,24 @@ public abstract class AbstractDiagramElementHandler<T extends BaseElement> {
 	 */
 	protected PictogramElement getPictogramElement(EObject node) {
 		if (node instanceof BaseElement) {
-			return bpmn2ModelImport.getPictogramElement((BaseElement) node);
+			return modelImport.getPictogramElement((BaseElement) node);
 		} else {
 			// Must be a unresolvable proxy
 			throw new ImportException("Failed to resolve node " + node);
 		}
 	}
-
+	
+	/**
+	 * Return a pictogram element for the given flow node.
+	 * 
+	 * @param node
+	 * @throws ImportException if corresponding pictogram element is not yet present
+	 * @return
+	 */
+	protected PictogramElement getPictogramElementOrNull(EObject node) {
+		return modelImport.getPictogramElementOrNull((BaseElement) node);
+	}
+	
 	/**
 	 * 
 	 * @param bpmnElement
@@ -62,7 +73,7 @@ public abstract class AbstractDiagramElementHandler<T extends BaseElement> {
 	 * @return
 	 */
 	protected DiagramElement getDiagramElement(BaseElement bpmnElement) {
-		return bpmn2ModelImport.getDiagramElement(bpmnElement);
+		return modelImport.getDiagramElement(bpmnElement);
 	}
 	
 	protected void createLink(T bpmnElement, DiagramElement shape, PictogramElement newContainer) {

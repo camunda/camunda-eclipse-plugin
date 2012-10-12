@@ -79,7 +79,7 @@ import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.ProxyURIConverterImplExtension;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
-import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImportCommand;
+import org.eclipse.bpmn2.modeler.core.importer.ModelImportCommand;
 import org.eclipse.bpmn2.modeler.core.importer.ImportException;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultDetailComposite;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultDialogComposite;
@@ -563,7 +563,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		
 		IDiagramEditor diagramEditor = getDiagramTypeProvider().getDiagramEditor();
 		TransactionalEditingDomain editingDomain = diagramEditor.getEditingDomain();
-		Bpmn2ModelImportCommand command = new Bpmn2ModelImportCommand(editingDomain, diagramEditor, bpmnResource);
+		ModelImportCommand command = new ModelImportCommand(editingDomain, diagramEditor, bpmnResource);
 		
 		editingDomain.getCommandStack().execute(command);
 		

@@ -10,8 +10,10 @@
 
 package org.eclipse.bpmn2.modeler.core.test.importer.broken;
 
+import static org.eclipse.bpmn2.modeler.core.test.assertions.Bpmn2ModelAssertions.assertThat;
+
 import org.eclipse.bpmn2.modeler.core.importer.ImportException;
-import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
+import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.junit.Assert;
@@ -27,9 +29,18 @@ public class ImportBrokenModelTest extends AbstractImportBpmn2ModelTest {
 
 	@Test
 	@DiagramResource
-	public void testImportEmptyLaneSet() {
+	public void testEmptyLaneSet() {
+		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		importer.execute();
+		
+		assertThat(importer.getImportWarnings()).isNotEmpty();
+	}
+	
+	@Test
+	@DiagramResource
+	public void testParticipantReferencingNonExistingProcess() {
 		try {
-			Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+			ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 			importer.execute();
 			Assert.fail("expected failure");
 		} catch (ImportException e) {
@@ -39,47 +50,28 @@ public class ImportBrokenModelTest extends AbstractImportBpmn2ModelTest {
 	
 	@Test
 	@DiagramResource
-	public void testImportParticipantReferencingNonExistingProcess() {
-		try {
-			Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
-			importer.execute();
-			Assert.fail("expected failure");
-		} catch (ImportException e) {
-			// expected failure
-		}
-	}
-	
-	@Test
-	@DiagramResource
-	public void testImportLaneSetSingleLaneUnreferencedFlowElements1() {
-		try {
-			Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
-			importer.execute();
-			
-			// TODO: Fails because elements __NOT__ referenced in lane get somehow associated
-			Assert.fail("expected failure");
-		} catch (ImportException e) {
-			// expected failure
-		}
+	public void testLaneSetSingleLaneUnreferencedFlowElements() {
+		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		importer.execute();
+		
+		// TODO: 12-10-2012 nre: test fails because the unreferenced element gets somehow associated with the lane
+		assertThat(importer.getImportWarnings()).isNotEmpty();
 	}
 
 	@Test
 	@DiagramResource
-	public void testImportLaneSetMultipleLanesUnreferencedFlowElements() {
-		try {
-			Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
-			importer.execute();
-			Assert.fail("expected failure");
-		} catch (ImportException e) {
-			// expected failure
-		}
+	public void testLaneSetMultipleLanesUnreferencedFlowElements() {
+		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		importer.execute();
+		
+		assertThat(importer.getImportWarnings()).isNotEmpty();
 	}
 
 	@Test
 	@DiagramResource
-	public void testImportEmptyCollaborationNoDI() {
+	public void testEmptyCollaborationNoDI() {
 		try {
-			Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+			ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 			importer.execute();
 			Assert.fail("expected failure");
 		} catch (ImportException e) {

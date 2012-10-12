@@ -1,7 +1,7 @@
 package org.eclipse.bpmn2.modeler.core.test.importer.dataitems;
 
 import org.eclipse.bpmn2.DataStoreReference;
-import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
+import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.emf.common.util.EList;
@@ -17,7 +17,7 @@ public class ImportDatastoreTest extends AbstractImportBpmn2ModelTest {
 	@DiagramResource
 	public void testImportDatastore() {
 				
-		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 		
 		EList<Shape> children = diagram.getChildren();
@@ -34,5 +34,4 @@ public class ImportDatastoreTest extends AbstractImportBpmn2ModelTest {
 		Assert.assertTrue(businessObject instanceof DataStoreReference);
 		Assert.assertEquals("DataStoreRef_1", ((DataStoreReference)businessObject).getId());
 	}
-
 }

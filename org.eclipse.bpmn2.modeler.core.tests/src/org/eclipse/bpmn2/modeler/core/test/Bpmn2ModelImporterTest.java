@@ -18,7 +18,7 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
-import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
+import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractTestCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
@@ -81,7 +81,7 @@ public class Bpmn2ModelImporterTest extends AbstractImportBpmn2ModelTest {
 			TransactionalEditingDomain editingDomain = createEditingDomain(resourceName);
 			editingDomain.getCommandStack().execute(new AbstractTestCommand(this, "test.bpmn") {
 				public void test(IDiagramTypeProvider diagramTypeProvider, Diagram diagram) {
-					Bpmn2ModelImport bpmnModelImport = new Bpmn2ModelImport(diagramTypeProvider, resource);
+					ModelImport bpmnModelImport = new ModelImport(diagramTypeProvider, resource);
 					bpmnModelImport.execute();
 				}
 			});

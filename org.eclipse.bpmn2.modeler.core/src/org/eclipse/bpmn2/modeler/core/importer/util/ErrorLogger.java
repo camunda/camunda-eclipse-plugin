@@ -11,6 +11,8 @@
 package org.eclipse.bpmn2.modeler.core.importer.util;
 
 import org.eclipse.bpmn2.modeler.core.Activator;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 
 /**
  * Handles error logging in a eclipse agnostic way
@@ -20,11 +22,11 @@ import org.eclipse.bpmn2.modeler.core.Activator;
 public class ErrorLogger {
 
 	public static void log(Exception e) {
-		Activator.logError(e);
+		Activator.logStatus(new Status(IStatus.WARNING, Activator.PLUGIN_ID, e.getMessage(), e));
 	}
 	
 	public static <T extends Exception> void logAndThrow(T e) throws T {
-		log(e);
+		Activator.logError(e);
 		throw e;
 	}
 }

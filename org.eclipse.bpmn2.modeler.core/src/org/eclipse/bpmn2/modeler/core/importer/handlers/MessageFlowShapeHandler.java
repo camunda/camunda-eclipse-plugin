@@ -13,7 +13,7 @@ package org.eclipse.bpmn2.modeler.core.importer.handlers;
 import org.eclipse.bpmn2.InteractionNode;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.di.BPMNEdge;
-import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
+import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -25,7 +25,7 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
  */
 public class MessageFlowShapeHandler extends AbstractEdgeHandler<MessageFlow> {
 
-	public MessageFlowShapeHandler(Bpmn2ModelImport bpmn2ModelImport) {
+	public MessageFlowShapeHandler(ModelImport bpmn2ModelImport) {
 		super(bpmn2ModelImport);
 	}
 

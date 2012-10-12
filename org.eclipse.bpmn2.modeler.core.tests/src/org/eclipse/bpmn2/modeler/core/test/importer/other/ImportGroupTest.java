@@ -5,7 +5,7 @@ import static org.eclipse.bpmn2.modeler.core.test.assertions.Bpmn2ModelAssertion
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import org.eclipse.bpmn2.Group;
-import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
+import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.emf.common.util.EList;
@@ -17,7 +17,7 @@ public class ImportGroupTest extends AbstractImportBpmn2ModelTest {
 	@Test
 	@DiagramResource
 	public void testImportGroup() {
-		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 		
 		EList<Shape> children = diagram.getChildren();
@@ -30,7 +30,7 @@ public class ImportGroupTest extends AbstractImportBpmn2ModelTest {
 	@Test
 	@DiagramResource
 	public void testImportGroupInProcessWithLanes() {
-		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 		
 		EList<Shape> children = diagram.getChildren();

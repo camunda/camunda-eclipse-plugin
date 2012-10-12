@@ -12,7 +12,7 @@ package org.eclipse.bpmn2.modeler.core.importer.handlers;
 
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
+import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -24,7 +24,7 @@ import org.eclipse.graphiti.mm.pictograms.ContainerShape;
  */
 public class LaneShapeHandler extends AbstractShapeHandler<Lane> {
 
-	public LaneShapeHandler(Bpmn2ModelImport bpmn2ModelImport) {
+	public LaneShapeHandler(ModelImport bpmn2ModelImport) {
 		super(bpmn2ModelImport);
 	}
 	

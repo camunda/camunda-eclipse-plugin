@@ -11,7 +11,7 @@
 package org.eclipse.bpmn2.modeler.core.importer.handlers;
 
 import org.eclipse.bpmn2.DataInput;
-import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
+import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 
 /**
  * 
@@ -19,7 +19,7 @@ import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
  */
 public class DataInputShapeHandler extends AbstractShapeHandler<DataInput> {
 
-	public DataInputShapeHandler(Bpmn2ModelImport bpmn2ModelImport) {
+	public DataInputShapeHandler(ModelImport bpmn2ModelImport) {
 		super(bpmn2ModelImport);
 	}
 }

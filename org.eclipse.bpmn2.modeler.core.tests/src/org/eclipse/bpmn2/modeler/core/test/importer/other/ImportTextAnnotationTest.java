@@ -16,7 +16,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.Group;
 import org.eclipse.bpmn2.Participant;
-import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
+import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.TestUtil;
@@ -34,7 +34,7 @@ public class ImportTextAnnotationTest extends AbstractImportBpmn2ModelTest {
 	@Test
 	@DiagramResource
 	public void testAnnotateActivity() {
-		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 
 		assertThat(TestUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
@@ -43,7 +43,7 @@ public class ImportTextAnnotationTest extends AbstractImportBpmn2ModelTest {
 	@Test
 	@DiagramResource
 	public void testAnnotateGateway() {
-		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 
 		assertThat(TestUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
@@ -53,7 +53,7 @@ public class ImportTextAnnotationTest extends AbstractImportBpmn2ModelTest {
 	@Test
 	@DiagramResource
 	public void testAnnotateIntermediateThrowEvent() {
-		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 
 		assertThat(TestUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
@@ -62,7 +62,7 @@ public class ImportTextAnnotationTest extends AbstractImportBpmn2ModelTest {
 	@Test
 	@DiagramResource
 	public void testAnnotateLane() {
-		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 
 		assertThat(TestUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
@@ -71,7 +71,7 @@ public class ImportTextAnnotationTest extends AbstractImportBpmn2ModelTest {
 	@Test
 	@DiagramResource
 	public void testAnnotateNestedLane() {
-		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 
 		assertThat(TestUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
@@ -80,7 +80,7 @@ public class ImportTextAnnotationTest extends AbstractImportBpmn2ModelTest {
 	@Test
 	@DiagramResource
 	public void testAnnotateBoundaryEvent() {
-		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 
 		assertThat(TestUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
@@ -89,7 +89,7 @@ public class ImportTextAnnotationTest extends AbstractImportBpmn2ModelTest {
 	@Test
 	@DiagramResource
 	public void testAnnotatePool() {
-		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 		
 		assertThat(TestUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");

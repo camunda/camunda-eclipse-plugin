@@ -13,7 +13,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
+import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractTestCommand;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramExport;
@@ -35,7 +35,7 @@ public class ImageExporterTest extends AbstractImportBpmn2ModelTest {
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/bpmn/TerminateEndEventTest.testProcessTerminate.bpmn")
 	public void testGeneratePng() {
-		Bpmn2ModelImport bpmn2ModelImport = new Bpmn2ModelImport(diagramTypeProvider, resource);
+		ModelImport bpmn2ModelImport = new ModelImport(diagramTypeProvider, resource);
 		bpmn2ModelImport.execute();
 		
 		byte[] bytes = DiagramExport.exportAsPng(diagramTypeProvider, diagram);

@@ -14,7 +14,7 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.di.DIImport;
-import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
+import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.dd.dc.Bounds;
@@ -35,7 +35,7 @@ import org.eclipse.graphiti.services.Graphiti;
  */
 public abstract class AbstractShapeHandler<T extends BaseElement> extends AbstractDiagramElementHandler<T> {
 	
-	public AbstractShapeHandler(Bpmn2ModelImport bpmn2ModelImport) {
+	public AbstractShapeHandler(ModelImport bpmn2ModelImport) {
 		super(bpmn2ModelImport);
 	}
 

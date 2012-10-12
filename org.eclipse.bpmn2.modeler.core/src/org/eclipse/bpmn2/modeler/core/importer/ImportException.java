@@ -10,6 +10,7 @@
 
 package org.eclipse.bpmn2.modeler.core.importer;
 
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -23,10 +24,6 @@ public class ImportException extends RuntimeException {
 
 	private EObject element;
 
-	public EObject getContextElement() {
-		return element;
-	}
-	
 	public ImportException() {
 		super();
 	}
@@ -41,4 +38,20 @@ public class ImportException extends RuntimeException {
 		super(message);
 	}
 
+	public EObject getContextElement() {
+		return element;
+	}
+	
+	@Override
+	public String getMessage() {
+		if (element != null) {
+			return contextToString() + ": " + super.getMessage();
+		} else {
+			return super.getMessage();
+		}
+	}
+	
+	protected String contextToString() {
+		return element.getClass().getSimpleName().replaceAll("Impl", "") + "#" + ModelUtil.getFeature(element, "id");
+	}
 }

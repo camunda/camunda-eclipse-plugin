@@ -13,7 +13,7 @@ package org.eclipse.bpmn2.modeler.core.importer.handlers;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.di.BPMNEdge;
-import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
+import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -25,7 +25,7 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
  */
 public class SequenceFlowShapeHandler extends AbstractEdgeHandler<SequenceFlow> {
 
-	public SequenceFlowShapeHandler(Bpmn2ModelImport bpmn2ModelImport) {
+	public SequenceFlowShapeHandler(ModelImport bpmn2ModelImport) {
 		super(bpmn2ModelImport);
 	}
 

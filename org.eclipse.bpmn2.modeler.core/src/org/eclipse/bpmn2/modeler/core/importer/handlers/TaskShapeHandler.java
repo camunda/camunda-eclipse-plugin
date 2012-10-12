@@ -12,7 +12,7 @@ package org.eclipse.bpmn2.modeler.core.importer.handlers;
 
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
+import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -25,7 +25,7 @@ import org.eclipse.graphiti.mm.pictograms.Diagram;
  */
 public class TaskShapeHandler extends FlowNodeShapeHandler {
 
-	public TaskShapeHandler(Bpmn2ModelImport bpmn2ModelImport) {
+	public TaskShapeHandler(ModelImport bpmn2ModelImport) {
 		super(bpmn2ModelImport);
 	}
 	

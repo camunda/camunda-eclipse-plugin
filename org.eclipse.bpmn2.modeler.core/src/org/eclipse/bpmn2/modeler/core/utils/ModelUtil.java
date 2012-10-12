@@ -282,6 +282,15 @@ public class ModelUtil {
 		return id;
 	}
 
+	public static String getFeature(EObject obj, String attribute) {
+		EStructuralFeature feature = ((EObject) obj).eClass().getEStructuralFeature(attribute);
+		if (feature != null) {
+			return (String) obj.eGet(feature);
+		} else {
+			return null;
+		}
+	}
+	
 	public static int getIDNumber(String id) {
 		try {
 			int i = id.lastIndexOf("_");

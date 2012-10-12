@@ -76,7 +76,7 @@ public abstract class AbstractImportBpmn2ModelTest {
 		return editingDomain;
 	}
 
-	protected void loadResource(Resource resource2, URL resourceUrl) {
+	protected void loadResource(Resource resource, URL resourceUrl) {
 		InputStream inputStream = null;
 		
 		try {
@@ -93,7 +93,6 @@ public abstract class AbstractImportBpmn2ModelTest {
 				}				
 			}			
 		}
-		
 	}
 
 	public void disposeEditingDomain() {

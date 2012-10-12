@@ -3,7 +3,7 @@ package org.eclipse.bpmn2.modeler.core.test.importer.messageflow;
 import org.eclipse.bpmn2.IntermediateCatchEvent;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.UserTask;
-import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
+import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.emf.common.util.EList;
@@ -22,8 +22,8 @@ public class ImportMessageFlowTest extends AbstractImportBpmn2ModelTest {
 	
 	@Test
 	@DiagramResource
-	public void testImportMessageFlow() {
-		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+	public void testMessageFlow() {
+		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 		
 		EList<Shape> children = diagram.getChildren();
@@ -52,8 +52,8 @@ public class ImportMessageFlowTest extends AbstractImportBpmn2ModelTest {
 
 	@Test
 	@DiagramResource
-	public void testImportMessageFlowWithWayPoints() {
-		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+	public void testMessageFlowWithWayPoints() {
+		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 		
 		EList<Shape> children = diagram.getChildren();
@@ -83,8 +83,8 @@ public class ImportMessageFlowTest extends AbstractImportBpmn2ModelTest {
 	@Test
 	@Ignore
 	@DiagramResource
-	public void testImportMessageFlowWithMessage() {
-		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+	public void testMessageFlowWithMessage() {
+		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 		
 		// Two container shapes (process pools)
@@ -99,48 +99,22 @@ public class ImportMessageFlowTest extends AbstractImportBpmn2ModelTest {
 	@Test
 	@DiagramResource
 	public void testActivityToCollapsedPoolBidirectional() {
-		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 	}
 
 	@Test
 	@DiagramResource
 	public void testActivityToCollapsedPool() {
-		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 	}
 	
 	@Test
 	@DiagramResource
 	public void testCollapsedPoolToActivity() {
-		Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
-	}
-	
-	@Test
-	@DiagramResource
-	public void testActivityToUncollapsedPool() {
-		try {
-			Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
-			importer.execute();
-			
-			Assert.fail("Expected failure");
-		} catch (Exception e) {
-			// expected
-		}
-	}
-
-	@Test
-	@DiagramResource
-	public void testUncollapsedPoolToActivity() {
-		try {
-			Bpmn2ModelImport importer = new Bpmn2ModelImport(diagramTypeProvider, resource);
-			importer.execute();
-			
-			Assert.fail("Expected failure");
-		} catch (Exception e) {
-			// expected
-		}
 	}
 	
 	private boolean containsChildLinkedTo(ContainerShape shape, Class<?> linkedElementCls) {

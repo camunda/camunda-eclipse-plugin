@@ -11,7 +11,7 @@
 package org.eclipse.bpmn2.modeler.core.importer.handlers;
 
 import org.eclipse.bpmn2.DataObject;
-import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
+import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 
 /**
  * 
@@ -19,7 +19,7 @@ import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
  */
 public class DataObjectShapeHandler extends AbstractShapeHandler<DataObject> {
 
-	public DataObjectShapeHandler(Bpmn2ModelImport bpmn2ModelImport) {
+	public DataObjectShapeHandler(ModelImport bpmn2ModelImport) {
 		super(bpmn2ModelImport);
 	}
 }

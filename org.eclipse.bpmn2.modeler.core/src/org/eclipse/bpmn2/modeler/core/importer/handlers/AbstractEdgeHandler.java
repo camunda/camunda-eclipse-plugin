@@ -18,7 +18,7 @@ import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.di.DIImport;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
-import org.eclipse.bpmn2.modeler.core.importer.Bpmn2ModelImport;
+import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -52,8 +52,8 @@ public abstract class AbstractEdgeHandler<T extends BaseElement> extends Abstrac
 	private IPeService peService = Graphiti.getPeService();
 	private IGaService gaService = Graphiti.getGaService();
 	
-	public AbstractEdgeHandler(Bpmn2ModelImport bpmn2ModelImport) {
-		super(bpmn2ModelImport);
+	public AbstractEdgeHandler(ModelImport modelImport) {
+		super(modelImport);
 	}
 	
 	public final PictogramElement handleDiagramElement(T bpmnElement, DiagramElement diagramElement, ContainerShape container) {
