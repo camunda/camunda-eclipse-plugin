@@ -8,7 +8,7 @@
  *
  ******************************************************************************/
 
-package org.eclipse.bpmn2.modeler.core.test.importer.dataitems;
+package org.eclipse.bpmn2.modeler.core.test.importer.scenarios;
 
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest;
@@ -19,25 +19,11 @@ import org.junit.Test;
  * 
  * @author Nico Rehwaldt
  */
-public class ImportDataObjectTest extends AbstractImportBpmn2ModelTest {
-	
+public class ImportScenariosTest extends AbstractImportBpmn2ModelTest {
+
 	@Test
 	@DiagramResource
-	public void testImportDataObject() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
-		importer.execute();
-	}
-	
-	@Test
-	@DiagramResource
-	public void testImportAssociatedDataObject() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
-		importer.execute();
-	}
-	
-	@Test
-	@DiagramResource
-	public void testImportDataObjectReferencedFromLane() {
+	public void testImportComplexCase() {
 		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 	}
