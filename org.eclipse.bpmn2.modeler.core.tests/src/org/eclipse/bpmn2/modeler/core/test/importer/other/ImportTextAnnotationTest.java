@@ -23,6 +23,7 @@ import org.eclipse.bpmn2.modeler.core.test.util.TestUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -93,5 +94,16 @@ public class ImportTextAnnotationTest extends AbstractImportBpmn2ModelTest {
 		importer.execute();
 		
 		assertThat(TestUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
+	}
+	
+	@Test
+	@DiagramResource
+	public void testSimpleAnnotation() {
+		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		importer.execute();
+		
+		assertThat(TestUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
+		
+		Assert.fail("Try to open the assigned diagram in the designer. The TextAnnotation will not be shown!");
 	}
 }
