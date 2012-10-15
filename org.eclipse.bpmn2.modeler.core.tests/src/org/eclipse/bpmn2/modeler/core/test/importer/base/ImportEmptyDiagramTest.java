@@ -33,7 +33,7 @@ public class ImportEmptyDiagramTest extends AbstractImportBpmn2ModelTest {
 		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 	}
-  
+
 	@Test
 	@DiagramResource
 	public void testImportNonProcessRootElements() {

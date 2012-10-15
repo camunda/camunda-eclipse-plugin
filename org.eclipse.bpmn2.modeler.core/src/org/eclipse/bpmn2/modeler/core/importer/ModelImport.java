@@ -311,7 +311,7 @@ public class ModelImport {
 		Process process = participant.getProcessRef();
 		if (process != null) {
 			if (process.eIsProxy()) {
-				throw new ImportException("Invalid process referenced by participant");
+				throw new InvalidContentException("Invalid process referenced by participant", participant);
 			}
 		}
 		
@@ -714,6 +714,14 @@ public class ModelImport {
 	public void log(ImportException e) {
 		warnings.add(e);
 		ErrorLogger.log(e);
+	}
+	
+	/**
+	 * Log without outputting to eclipse console
+	 * @param e
+	 */
+	public void logSilently(ImportException e) {
+		warnings.add(e);
 	}
 	
 	public void logAndThrow(ImportException e) throws ImportException {

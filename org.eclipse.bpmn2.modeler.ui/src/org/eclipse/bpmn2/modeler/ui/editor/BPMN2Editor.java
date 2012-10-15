@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Assignment;
@@ -97,7 +98,7 @@ import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.validation.BPMN2ProjectValidator;
 import org.eclipse.bpmn2.modeler.core.validation.BPMN2ValidationStatusLoader;
 import org.eclipse.bpmn2.modeler.ui.Activator;
-import org.eclipse.bpmn2.modeler.ui.dialog.ImportModelErrorDialog;
+import org.eclipse.bpmn2.modeler.ui.dialog.importer.ModelProblemsDialog;
 import org.eclipse.bpmn2.modeler.ui.property.artifact.CategoryDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.artifact.TextAnnotationDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.connectors.MessageFlowDetailComposite;
@@ -567,8 +568,8 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		
 		editingDomain.getCommandStack().execute(command);
 		
-		if (!command.wasSuccessful()) {
-			handleImportError(command.getRecordedException());
+		if (!command.wasSuccessful() || !command.getRecordedWarnings().isEmpty()) {
+			handleImportErrorAndWarnings(command.getRecordedException(), command.getRecordedWarnings());
 		}
 		
 //		DIImport di = new DIImport(this);
@@ -583,13 +584,17 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		pr.updatePaletteEntries();
 	}
 
-	protected void handleImportError(ImportException exception) {
-		ImportModelErrorDialog dialog = new ImportModelErrorDialog(getSite().getShell());
+	protected void handleImportErrorAndWarnings(ImportException exception, List<ImportException> warnings) {
+		ModelProblemsDialog dialog = new ModelProblemsDialog(getSite().getShell());
 		
 		dialog.setException(exception);
+		dialog.setWarnings(warnings);
+		
 		dialog.open();
 		
-		throw exception;
+		if (exception != null) {
+			throw exception;
+		}
 	}
 
 	@Override

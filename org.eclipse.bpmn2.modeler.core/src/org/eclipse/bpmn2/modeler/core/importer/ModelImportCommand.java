@@ -10,7 +10,10 @@
 
 package org.eclipse.bpmn2.modeler.core.importer;
 
+import java.util.List;
+
 import org.eclipse.bpmn2.util.Bpmn2Resource;
+import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.platform.IDiagramEditor;
@@ -26,6 +29,7 @@ public class ModelImportCommand extends RecordingCommand {
 	protected Bpmn2Resource resource;
 	
 	private ImportException recordedException;
+	private ModelImport modelImport;
 
 	public ModelImportCommand(TransactionalEditingDomain domain, IDiagramEditor diagramEditor, Bpmn2Resource resource) {
 		super(domain);
@@ -36,18 +40,42 @@ public class ModelImportCommand extends RecordingCommand {
 	@Override
 	protected void doExecute() {
 		try {
-			ModelImport bpmn2ModelImport = new ModelImport(diagramEditor.getDiagramTypeProvider(), resource);
-			bpmn2ModelImport.execute();
+			modelImport = new ModelImport(diagramEditor.getDiagramTypeProvider(), resource);
+			
+			logResourceErrors(resource, modelImport);
+			modelImport.execute();
 		} catch (ImportException e) {
 			recordedException = e;
 		}
 	}
 	
+	private void logResourceErrors(Bpmn2Resource resource, ModelImport modelImport) {
+		List<Diagnostic> errors = resource.getErrors();
+		for (Diagnostic diagnostic : errors) {
+			modelImport.logSilently(new ResourceImportException(diagnostic));
+		}
+	}
+
 	public boolean wasSuccessful() {
 		return recordedException == null;
 	}
 	
+	/**
+	 * Return fatal import error if any
+	 * 
+	 * @return
+	 */
 	public ImportException getRecordedException() {
 		return recordedException;
+	}
+	
+
+	/**
+	 * Return import warnings if any
+	 * 
+	 * @return
+	 */
+	public List<ImportException> getRecordedWarnings() {
+		return modelImport.getImportWarnings();
 	}
 }
