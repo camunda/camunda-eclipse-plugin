@@ -104,13 +104,17 @@ public class ModelProblemsDialog extends TitleAreaDialog {
 
 	private void createAuxiliaryInformation(Composite innerComposite) {
 		Label label = new Label(innerComposite, SWT.WRAP);
-		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		GridData gd_label = new GridData(SWT.FILL, SWT.CENTER, true, false);
+		gd_label.widthHint = 420;
+		label.setLayoutData(gd_label);
 		label.setText(DETAILS_NOTES);
 	}
 
 	private void createSupportNotes(Composite parent) {
 		Link link = new Link(parent, SWT.WRAP);
-		link.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		GridData gd_link = new GridData(SWT.FILL, SWT.CENTER, true, false);
+		gd_link.widthHint = 420;
+		link.setLayoutData(gd_link);
 		link.setText(FILE_BUG_REPORTS_NOTES);
 		
 		link.addSelectionListener(new SelectionAdapter() {
@@ -149,7 +153,8 @@ public class ModelProblemsDialog extends TitleAreaDialog {
 		
 		Composite treeColumnComposite = new Composite(parent, SWT.NONE);
 		GridData treeColumnCompositeGridData = new GridData(SWT.FILL, SWT.TOP, true, false);
-		treeColumnCompositeGridData.heightHint = 137;
+		treeColumnCompositeGridData.widthHint = 420;
+		treeColumnCompositeGridData.heightHint = 128;
 		treeColumnComposite.setLayoutData(treeColumnCompositeGridData);
 		
 		TreeColumnLayout treeColumnLayout = new TreeColumnLayout();
@@ -197,7 +202,8 @@ public class ModelProblemsDialog extends TitleAreaDialog {
 
 	private Composite createInnerComposite(Composite outerComposite) {
 		Composite innerComposite = new Composite(outerComposite, SWT.NONE);
-		GridData innerCompositeLayoutData = new GridData(SWT.FILL, SWT.TOP, true, false);
+		GridData innerCompositeLayoutData = new GridData(SWT.FILL, SWT.TOP, false, false);
+		innerCompositeLayoutData.widthHint = 440;
 		innerCompositeLayoutData.minimumHeight = 200;
 		innerComposite.setLayoutData(innerCompositeLayoutData);
 		
@@ -206,6 +212,7 @@ public class ModelProblemsDialog extends TitleAreaDialog {
 		innerCompositeLayout.horizontalSpacing = 0;
 		innerCompositeLayout.marginRight = 5;
 		innerCompositeLayout.marginLeft = 5;
+		
 		innerComposite.setLayout(innerCompositeLayout);
 		return innerComposite;
 	}
