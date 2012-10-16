@@ -23,7 +23,9 @@ import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.AreaContext;
+import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 
@@ -62,6 +64,9 @@ public abstract class AbstractShapeHandler<T extends BaseElement> extends Abstra
 		IAddFeature addFeature = createAddFeature(context);
 		
 		if (addFeature != null) {
+
+			// find the actual container (position wise) for the given parent container
+			container = getActualContainingContainer(shape, container);
 			
 			setSize(context, shape, bpmnElement, container);
 			
@@ -81,6 +86,49 @@ public abstract class AbstractShapeHandler<T extends BaseElement> extends Abstra
 			
 		}
 			
+	}
+
+	protected ContainerShape getActualContainingContainer(BPMNShape shape, ContainerShape container) {
+		
+		while (!isPositionallyContained(shape, container)) {
+			if (container instanceof Diagram) {
+				break;
+			}
+			
+			container = container.getContainer();
+		}
+		
+		return container;
+	}
+
+	private boolean isPositionallyContained(BPMNShape shape, ContainerShape container) {
+		ILocation containerLocation = Graphiti.getPeLayoutService().getLocationRelativeToDiagram(container);
+		
+		GraphicsAlgorithm graphics = container.getGraphicsAlgorithm();
+
+		int containerHeight = graphics.getHeight();
+		int containerWidth = graphics.getWidth();
+		
+		Bounds shapeBounds = shape.getBounds();
+		
+		// truncate shape coordinates 
+		
+		int shapeTopLeftX = (int) shapeBounds.getX();
+		int shapeTopLeftY = (int) shapeBounds.getY();
+		int shapeBottomRightX = (int) (shapeBounds.getX() + shapeBounds.getWidth());
+		int shapeBottomRightY = (int) (shapeBounds.getY() + shapeBounds.getHeight());
+
+		// check if top left and bottom right points of shape are contained in container bounds
+		
+		if (containerLocation.getX() > shapeTopLeftX || 
+			containerLocation.getY() > shapeTopLeftY ||
+			containerLocation.getX() + containerWidth < shapeBottomRightX ||
+			containerLocation.getY() + containerHeight < shapeBottomRightY) {
+			
+			return false;
+		}
+		
+		return true;
 	}
 
 	protected PictogramElement createPictogramElement(T bpmnElement, BPMNShape shape, AddContext context, IAddFeature addFeature) {

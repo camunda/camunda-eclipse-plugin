@@ -38,6 +38,10 @@ public class ImportException extends RuntimeException {
 		super(message);
 	}
 
+	public ImportException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
 	public EObject getContextElement() {
 		return element;
 	}

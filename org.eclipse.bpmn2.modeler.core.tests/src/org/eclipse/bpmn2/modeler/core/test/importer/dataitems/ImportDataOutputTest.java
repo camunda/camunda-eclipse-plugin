@@ -34,7 +34,9 @@ public class ImportDataOutputTest extends AbstractImportBpmn2ModelTest {
 		importer.execute();
 		
 		EList<Shape> children = diagram.getChildren();
-		Assert.assertEquals(1, children.size());
+		
+		// we display data output AND its label
+		Assert.assertEquals(2, children.size());
 		
 		Shape shape = children.get(0);
 		PictogramLink link = shape.getLink();
@@ -45,7 +47,7 @@ public class ImportDataOutputTest extends AbstractImportBpmn2ModelTest {
 		EObject businessObject = businessObjects.get(0);
 		
 		Assert.assertTrue(businessObject instanceof DataOutput);
-		Assert.assertEquals("DataOutput_1", ((Group)businessObject).getId());
+		Assert.assertEquals("DataOutput_1", ((DataOutput)businessObject).getId());
 	}
 	
 	@Test

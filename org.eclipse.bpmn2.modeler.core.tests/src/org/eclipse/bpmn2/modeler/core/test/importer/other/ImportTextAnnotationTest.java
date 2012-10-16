@@ -98,12 +98,13 @@ public class ImportTextAnnotationTest extends AbstractImportBpmn2ModelTest {
 	
 	@Test
 	@DiagramResource
-	public void testSimpleAnnotation() {
+	public void testAnnotationOutsideParticipant() {
 		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 		
 		assertThat(TestUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
 		
-		Assert.fail("Try to open the assigned diagram in the designer. The TextAnnotation will not be shown!");
+		// text annotation directly rendered on diagram
+		assertThat(diagram.getChildren()).hasSize(3);
 	}
 }

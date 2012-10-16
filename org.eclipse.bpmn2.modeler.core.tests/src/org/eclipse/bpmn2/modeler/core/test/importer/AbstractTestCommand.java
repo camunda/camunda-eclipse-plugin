@@ -7,7 +7,9 @@ import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.impl.DocumentRootImpl;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
@@ -55,14 +57,17 @@ public abstract class AbstractTestCommand extends RecordingCommand {
 			
 			Bpmn2ResourceImpl resource = testCase.getResource();
 			
-			DocumentRootImpl rootImpl = (DocumentRootImpl) resource.getContents().get(0);
-			Definitions definitions = rootImpl.getDefinitions();
-			if (definitions != null) {
-				List<BPMNDiagram> diagrams = definitions.getDiagrams();
-				
-				if (!diagrams.isEmpty()) {
-					BPMNDiagram bpmnDiagram = diagrams.get(0);
-					diagramTypeProvider.getFeatureProvider().link(diagram, bpmnDiagram);
+			List<EObject> contents = resource.getContents();
+			if (!contents.isEmpty()) {
+				DocumentRootImpl rootImpl = (DocumentRootImpl) resource.getContents().get(0);
+				Definitions definitions = rootImpl.getDefinitions();
+				if (definitions != null) {
+					List<BPMNDiagram> diagrams = definitions.getDiagrams();
+					
+					if (!diagrams.isEmpty()) {
+						BPMNDiagram bpmnDiagram = diagrams.get(0);
+						diagramTypeProvider.getFeatureProvider().link(diagram, bpmnDiagram);
+					}
 				}
 			}
 			

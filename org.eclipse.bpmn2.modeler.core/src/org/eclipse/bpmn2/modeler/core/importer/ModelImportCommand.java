@@ -10,6 +10,9 @@
 
 package org.eclipse.bpmn2.modeler.core.importer;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
@@ -26,6 +29,7 @@ public class ModelImportCommand extends RecordingCommand {
 	protected Bpmn2Resource resource;
 	
 	private ImportException recordedException;
+	private ModelImport modelImport;
 
 	public ModelImportCommand(TransactionalEditingDomain domain, IDiagramEditor diagramEditor, Bpmn2Resource resource) {
 		super(domain);
@@ -36,18 +40,39 @@ public class ModelImportCommand extends RecordingCommand {
 	@Override
 	protected void doExecute() {
 		try {
-			ModelImport bpmn2ModelImport = new ModelImport(diagramEditor.getDiagramTypeProvider(), resource);
-			bpmn2ModelImport.execute();
+			modelImport = new ModelImport(diagramEditor.getDiagramTypeProvider(), resource);
+			modelImport.execute();
 		} catch (ImportException e) {
 			recordedException = e;
+		} catch (Exception e) {
+			recordedException = new ImportException("Unhandled exception", e);
 		}
 	}
-	
+
 	public boolean wasSuccessful() {
 		return recordedException == null;
 	}
 	
+	/**
+	 * Return fatal import error if any
+	 * 
+	 * @return
+	 */
 	public ImportException getRecordedException() {
 		return recordedException;
+	}
+	
+
+	/**
+	 * Return import warnings if any
+	 * 
+	 * @return
+	 */
+	public List<ImportException> getRecordedWarnings() {
+		if (modelImport != null) {
+			return modelImport.getImportWarnings();
+		} else {
+			return Collections.emptyList();
+		}
 	}
 }

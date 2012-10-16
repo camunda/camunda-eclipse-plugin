@@ -82,8 +82,10 @@ public abstract class AbstractImportBpmn2ModelTest {
 		try {
 			inputStream = resourceUrl.openStream();
 			resource.load(inputStream, Collections.EMPTY_MAP);
+		} catch (Resource.IOWrappedException e) {
+			System.out.println("Exception while loading resource: " + e.getCause());
 		} catch (IOException e) {
-			throw new RuntimeException("Exception while loading bpmn model", e);
+			throw new RuntimeException("Resource could not be loaded", e);
 		} finally {
 			if (inputStream != null) {
 				try {
