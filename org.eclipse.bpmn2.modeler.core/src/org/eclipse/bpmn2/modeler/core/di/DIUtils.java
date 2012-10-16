@@ -21,6 +21,7 @@ import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
+import org.eclipse.bpmn2.di.BPMNLabel;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.di.BpmnDiFactory;
@@ -62,20 +63,26 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.platform.IDiagramEditor;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.ILayoutService;
-import org.eclipse.graphiti.ui.editor.DiagramEditor;
 
 public class DIUtils {
-
+	
+	public static BPMNShape getShape(PictogramElement element) {
+		return BusinessObjectUtil.getFirstElementOfType(element, BPMNShape.class);
+	}
+	
 	public static void updateDIShape(PictogramElement element) {
-		
+		updateDIShape(element, getShape(element));
+	}
+	
+	public static BPMNShape updateDIShape(PictogramElement element, BPMNShape bpmnShape) {
 		PictogramLink link = element.getLink();
+		
 		if (link == null) {
-			return;
+			return null;
 		}
 
-		BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(element, BPMNShape.class);
 		if (bpmnShape == null) {
-			return;
+			return null;
 		}
 
 		ILocation loc = Graphiti.getLayoutService().getLocationRelativeToDiagram((Shape) element);
@@ -88,7 +95,7 @@ public class DIUtils {
 		IDimension size = Graphiti.getGaService().calculateSize(graphicsAlgorithm);
 		bounds.setHeight(size.getHeight());
 		bounds.setWidth(size.getWidth());
-
+		
 		if (element instanceof ContainerShape) {
 			EList<Shape> children = ((ContainerShape) element).getChildren();
 			for (Shape shape : children) {
@@ -99,6 +106,23 @@ public class DIUtils {
 		}
 
 		updateConnections(element);
+		return bpmnShape;
+	}
+	
+	public static void updateDILabel(ContainerShape labelContainer, BPMNShape bpmnShape) {
+		Bounds labelBounds = null;
+		if (bpmnShape.getLabel() != null) {
+			labelBounds = bpmnShape.getLabel().getBounds();
+		} else {
+			BPMNLabel label = BpmnDiFactory.eINSTANCE.createBPMNLabel();
+			labelBounds = DcFactory.eINSTANCE.createBounds();
+			label.setBounds(labelBounds);
+			bpmnShape.setLabel(label);
+		}
+		labelBounds.setX(labelContainer.getGraphicsAlgorithm().getX());
+		labelBounds.setY(labelContainer.getGraphicsAlgorithm().getY());
+		labelBounds.setWidth(labelContainer.getGraphicsAlgorithm().getWidth());
+		labelBounds.setHeight(labelContainer.getGraphicsAlgorithm().getHeight());
 	}
 	
 	public static void updateConnections(PictogramElement element) {

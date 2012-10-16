@@ -1,9 +1,13 @@
 package org.eclipse.bpmn2.modeler.ui.features.label;
 
+import java.util.List;
+
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.FlowElementsContainer;
+import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.di.DIImport;
+import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
@@ -11,6 +15,7 @@ import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.impl.AbstractAddShapeFeature;
@@ -51,6 +56,21 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		int y = context.getY();
 		
 		BaseElement baseElement = (BaseElement) context.getProperty(ContextConstants.BUSINESS_OBJECT);
+		BPMNShape bpmnShape = null;
+		PictogramElement shape = null;
+		
+		List<PictogramElement> picElements = Graphiti.getLinkService().getPictogramElements(getDiagram(), (EObject) baseElement);
+		for (PictogramElement element : picElements){
+			if (bpmnShape == null) {
+				bpmnShape = DIUtils.getShape(element);
+				shape = element;
+			}
+		}
+		
+		if (bpmnShape.getLabel() != null) {
+			x = (int) bpmnShape.getLabel().getBounds().getX();
+			y = (int) (bpmnShape.getLabel().getBounds().getY() - shape.getGraphicsAlgorithm().getHeight());
+		}
 		
 		final ContainerShape textContainerShape = peService.createContainerShape(getTargetContainer(context), true);
 		gaService.createInvisibleRectangle(textContainerShape);
