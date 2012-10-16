@@ -6,6 +6,7 @@ import org.eclipse.bpmn2.UserTask;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
+import org.eclipse.bpmn2.modeler.core.test.util.TestUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.Connection;
@@ -57,6 +58,7 @@ public class ImportMessageFlowTest extends AbstractImportBpmn2ModelTest {
 		importer.execute();
 		
 		EList<Shape> children = diagram.getChildren();
+		System.out.println(TestUtil.toDetailsString(diagram));
 		Assert.assertEquals(2, children.size());
 		
 		// Two container shapes (process pools)

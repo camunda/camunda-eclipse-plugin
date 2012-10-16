@@ -344,6 +344,7 @@ public class ModelImport {
 		if (laneSets.isEmpty()) {
 			// if there are no lanes, simply draw the process into the pool (including sequence flows)
 			handleProcess(process, participantContainer);
+			
 		} else {
 			
 			// handle io specification (data input and output)

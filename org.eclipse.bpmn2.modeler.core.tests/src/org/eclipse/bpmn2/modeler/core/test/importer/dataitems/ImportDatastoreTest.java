@@ -43,28 +43,13 @@ public class ImportDatastoreTest extends AbstractImportBpmn2ModelTest {
 	
 	@Test
 	@DiagramResource
-	public void testImportDatastoreInContextWithPools() {
+	public void testImportDatastoreDrawnOutsideParticipant() {
 		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 		
 		EList<Shape> children = diagram.getChildren();
-		Assert.assertEquals(2, children.size());
 		
-		ContainerShape containerShape = (ContainerShape) children.get(0);
-		children = containerShape.getChildren();
+		// displaying two pools and a data store WITH label
 		Assert.assertEquals(4, children.size());
-		
-		Shape dataStoreRefShape = children.get(2);
-		PictogramLink link = dataStoreRefShape.getLink();
-		
-		Assert.assertNotNull(link);
-		EList<EObject> businessObjects = link.getBusinessObjects();
-		Assert.assertNotNull(businessObjects);
-		EObject businessObject = businessObjects.get(0);
-		
-		Assert.assertTrue(businessObject instanceof DataStoreReference);
-		Assert.assertEquals("DataStoreRef_1", ((DataStoreReference)businessObject).getId());
-		
-		Assert.fail("Try to open the assigned diagram in the designer. The Datastore will not be shown!");
 	}
 }

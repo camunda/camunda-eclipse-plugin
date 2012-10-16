@@ -7,9 +7,6 @@
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1" name="Default Process Diagram">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="process_1">
-      <bpmndi:BPMNShape id="BPMNShape_DataObject_1">
-        <dc:Bounds height="65.0" width="36.0" x="490.0" y="66.0"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_DataInput_1" bpmnElement="DataInput_1">
         <dc:Bounds height="65.0" width="36.0" x="289.0" y="168.0"/>
       </bpmndi:BPMNShape>

@@ -19,8 +19,8 @@ import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.TestUtil;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -34,8 +34,6 @@ public class ImportCollaborationTest extends AbstractImportBpmn2ModelTest {
 	public void testImportNoLanes() {
 		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
-
-		System.out.println(TestUtil.toDetailsString(diagram));
 		
 		EList<Shape> children = diagram.getChildren();
 		assertThat(children).hasSize(2);
@@ -101,9 +99,6 @@ public class ImportCollaborationTest extends AbstractImportBpmn2ModelTest {
 
 		EList<Shape> children = diagram.getChildren();
 		assertThat(children).hasSize(2);
-		
-		Shape pool1 = children.get(0);
-		Shape pool2 = children.get(1);
 	}
 	
 	@Test
@@ -114,9 +109,9 @@ public class ImportCollaborationTest extends AbstractImportBpmn2ModelTest {
 
 		EList<Shape> children = diagram.getChildren();
 		assertThat(children).hasSize(2);
-
-		Shape pool1 = children.get(0);
-		Shape pool2 = children.get(1);
+		
+		ContainerShape pool1 = (ContainerShape) children.get(0);
+		assertThat(pool1.getChildren()).hasSize(3);
 	}
 
 	@Test
