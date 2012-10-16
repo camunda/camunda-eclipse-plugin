@@ -75,6 +75,8 @@ import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
+import org.eclipse.emf.ecore.xmi.XMIException;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.ILayoutFeature;
@@ -83,6 +85,7 @@ import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.platform.IDiagramEditor;
+import org.xml.sax.SAXException;
 
 /**
  * 
@@ -118,6 +121,9 @@ public class ModelImport {
 		
 		featureProvider = diagramTypeProvider.getFeatureProvider();
 		preferences = Bpmn2Preferences.getInstance(resource);
+
+		// log xml loading errors
+		logResourceErrors(resource);
 	}
 	
 	public void execute() {
@@ -183,7 +189,7 @@ public class ModelImport {
 					collaboration = (Collaboration) rootElement;
 				}
 			} else {
-				System.out.println("Unhandled RootElement: " + rootElement);
+				// System.out.println("Unhandled RootElement: " + rootElement);
 			}
 		}
 
@@ -351,7 +357,7 @@ public class ModelImport {
 			// draw flow elements not referenced from lanes
 			List<FlowElement> flowElements = process.getFlowElements();
 			
-			handleUnreferencedFlowElements(container, flowElements);
+			handleUnreferencedFlowElements(participantContainer, flowElements);
 			
 			// draw the sequence flows:
 			handleSequenceFlows(participantContainer, flowElements);
@@ -562,7 +568,7 @@ public class ModelImport {
 				handleDataStoreReference((DataStoreReference) flowElement, container);
 				
 			} else {
-				System.out.println("Unhandled: " + flowElement);
+				// System.out.println("Unhandled: " + flowElement);
 			}
 		    
 		    if (flowElement instanceof Activity) {
@@ -693,7 +699,7 @@ public class ModelImport {
 	protected void handleDIShape(BPMNShape diagramElement) {
 		BaseElement bpmnElement = diagramElement.getBpmnElement();
 		if (bpmnElement == null || bpmnElement.eIsProxy()) {
-			ImportException exception = new UnmappedElementException("BPMNEdge references unexisting bpmnElement", diagramElement);
+			ImportException exception = new UnmappedElementException("BPMNShape references unexisting bpmnElement", diagramElement);
 			log(exception);
 		} else {
 			linkInDiagramElementMap(diagramElement, bpmnElement);
@@ -726,6 +732,27 @@ public class ModelImport {
 	
 	public void logAndThrow(ImportException e) throws ImportException {
 		ErrorLogger.logAndThrow(e);
+	}
+	
+	public void logResourceErrors(Bpmn2Resource resource) {
+		List<Diagnostic> resourceErrors = resource.getErrors();
+		
+		// scan for xml load error
+		for (Diagnostic diagnostic : resourceErrors) {
+			if (diagnostic instanceof XMIException) {
+				XMIException ex = (XMIException) diagnostic;
+				// see if we deal with a xml load error
+				if (ex.getCause() instanceof SAXException) {
+					ImportException e = new ResourceImportException("Failed to load model xml", diagnostic);
+					logAndThrow(e);
+				}
+			}
+		}
+		
+		// log all other warnings
+		for (Diagnostic diagnostic: resourceErrors) {
+			logSilently(new ResourceImportException("Import warning", diagnostic));
+		}
 	}
 	
 	// Getters //////////////////////////////////////////////////

@@ -12,6 +12,7 @@ package org.eclipse.bpmn2.modeler.core.importer;
 
 import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
 
+
 /**
  * 
  * @author Nico Rehwaldt
@@ -19,14 +20,15 @@ import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
 public class ResourceImportException extends ImportException {
 
 	private static final long serialVersionUID = 1L;
+	
 	private Diagnostic diagnostic;
-
-	public ResourceImportException(Diagnostic diagnostic) {
-		super("import warning");
+	
+	public ResourceImportException(String message, Diagnostic diagnostic) {
+		super(message);
 		
 		this.diagnostic = diagnostic;
 	}
-	
+
 	@Override
 	public String getMessage() {
 		return super.getMessage() + " : " + diagnostic.toString();

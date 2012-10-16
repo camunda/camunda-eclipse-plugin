@@ -13,6 +13,7 @@ package org.eclipse.bpmn2.modeler.core.importer.handlers;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.di.BPMNEdge;
+import org.eclipse.bpmn2.modeler.core.importer.InvalidContentException;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -33,8 +34,17 @@ public class SequenceFlowShapeHandler extends AbstractEdgeHandler<SequenceFlow> 
 	protected PictogramElement handleEdge(SequenceFlow bpmnElement, BPMNEdge edge, ContainerShape container) {
 		
 		FlowNode source = bpmnElement.getSourceRef();
+		if (source == null) {
+			InvalidContentException exception = new InvalidContentException("Could not resolve source", bpmnElement);
+			modelImport.logAndThrow(exception);
+		}
+		
 		FlowNode target = bpmnElement.getTargetRef();
-
+		if (target == null) {
+			InvalidContentException exception = new InvalidContentException("Could not resolve target", bpmnElement);
+			modelImport.logAndThrow(exception);
+		}
+		
 		PictogramElement sourcePictogram = getPictogramElement(source);
 		PictogramElement targetPictogram = getPictogramElement(target);
 		

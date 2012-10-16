@@ -10,10 +10,10 @@
 
 package org.eclipse.bpmn2.modeler.core.importer;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.bpmn2.util.Bpmn2Resource;
-import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.platform.IDiagramEditor;
@@ -41,18 +41,11 @@ public class ModelImportCommand extends RecordingCommand {
 	protected void doExecute() {
 		try {
 			modelImport = new ModelImport(diagramEditor.getDiagramTypeProvider(), resource);
-			
-			logResourceErrors(resource, modelImport);
 			modelImport.execute();
 		} catch (ImportException e) {
 			recordedException = e;
-		}
-	}
-	
-	private void logResourceErrors(Bpmn2Resource resource, ModelImport modelImport) {
-		List<Diagnostic> errors = resource.getErrors();
-		for (Diagnostic diagnostic : errors) {
-			modelImport.logSilently(new ResourceImportException(diagnostic));
+		} catch (Exception e) {
+			recordedException = new ImportException("Unhandled exception", e);
 		}
 	}
 
@@ -76,6 +69,10 @@ public class ModelImportCommand extends RecordingCommand {
 	 * @return
 	 */
 	public List<ImportException> getRecordedWarnings() {
-		return modelImport.getImportWarnings();
+		if (modelImport != null) {
+			return modelImport.getImportWarnings();
+		} else {
+			return Collections.emptyList();
+		}
 	}
 }
