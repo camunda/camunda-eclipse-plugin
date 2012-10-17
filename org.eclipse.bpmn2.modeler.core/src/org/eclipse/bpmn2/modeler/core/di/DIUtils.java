@@ -63,6 +63,7 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.platform.IDiagramEditor;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.ILayoutService;
+import org.eclipse.graphiti.services.IPeService;
 
 public class DIUtils {
 	
@@ -119,8 +120,12 @@ public class DIUtils {
 			label.setBounds(labelBounds);
 			bpmnShape.setLabel(label);
 		}
-		labelBounds.setX(labelContainer.getGraphicsAlgorithm().getX());
-		labelBounds.setY(labelContainer.getGraphicsAlgorithm().getY());
+		
+		IPeService peService = Graphiti.getPeService();
+		ILocation location = peService.getLocationRelativeToDiagram(labelContainer);
+		
+		labelBounds.setX(location.getX());
+		labelBounds.setY(location.getY());
 		labelBounds.setWidth(labelContainer.getGraphicsAlgorithm().getWidth());
 		labelBounds.setHeight(labelContainer.getGraphicsAlgorithm().getHeight());
 	}

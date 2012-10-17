@@ -171,11 +171,11 @@ public class GraphicsUtil {
 		return Math.round(Float.valueOf(originalPointValue * ratioValue));
 	}
 	
-	// TODO: Think about line break in the ui...
 	public static int getLabelHeight(AbstractText text) {
 		if (text.getValue() != null && !text.getValue().isEmpty()) {
 			String[] strings = text.getValue().split(LINE_BREAK);
-			return strings.length * 14;
+			IDimension dim = GraphitiUi.getUiLayoutService().calculateTextSize(strings[0], text.getFont());
+			return dim.getHeight() * strings.length;
 		}
 		return 0;
 	}
@@ -195,6 +195,16 @@ public class GraphicsUtil {
 		}
 		return 0;
 	}
+	
+  public static void setLabelPosition(AbstractText text, ContainerShape labelContainer, int x, int y) {
+    final int textHeight = getLabelHeight(text);
+    final int textWidth = getLabelWidth(text);
+
+    IGaService gaService = Graphiti.getGaService();
+
+    gaService.setLocationAndSize(labelContainer.getGraphicsAlgorithm(), x, y, textWidth + SHAPE_PADDING, textHeight + SHAPE_PADDING);
+    gaService.setLocationAndSize(text, 0, 0, textWidth + TEXT_PADDING, textHeight + TEXT_PADDING);
+  }
 	
 	public static void alignWithShape(AbstractText text, ContainerShape labelContainer, 
 			int width,
