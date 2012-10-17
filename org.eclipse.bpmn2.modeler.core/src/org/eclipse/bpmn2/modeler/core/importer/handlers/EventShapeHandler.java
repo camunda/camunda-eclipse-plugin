@@ -47,7 +47,6 @@ public class EventShapeHandler extends FlowNodeShapeHandler {
 	  else {
 	    throw new RuntimeException("Impossible to handle event");
 	  }
-	  //featureProvider.getAddFeature()
 	  ContainerShape eventContainer = (ContainerShape) super.handleShape(bpmnElement, shape, container);
 	  
 	  if (eventDefinitions.size() > 0) {
