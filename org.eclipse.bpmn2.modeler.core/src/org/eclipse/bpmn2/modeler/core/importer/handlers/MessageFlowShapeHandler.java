@@ -13,6 +13,7 @@ package org.eclipse.bpmn2.modeler.core.importer.handlers;
 import org.eclipse.bpmn2.InteractionNode;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.di.BPMNEdge;
+import org.eclipse.bpmn2.modeler.core.importer.InvalidContentException;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -31,9 +32,25 @@ public class MessageFlowShapeHandler extends AbstractEdgeHandler<MessageFlow> {
 
 	@Override
 	protected PictogramElement handleEdge(MessageFlow bpmnElement, BPMNEdge edge, ContainerShape container) {
+		
+		InteractionNode source;
+		InteractionNode target;
+		
+		try {
+			source = bpmnElement.getSourceRef();
+			
+		} catch (ClassCastException e) {
+			modelImport.log(new InvalidContentException("Invalid source referenced, not displaying message flow", bpmnElement));
+			return null;
+		}
 
-		InteractionNode source = bpmnElement.getSourceRef();
-		InteractionNode target = bpmnElement.getTargetRef();
+
+		try {
+			target = bpmnElement.getTargetRef();
+		} catch (ClassCastException e) {
+			modelImport.log(new InvalidContentException("Invalid target referenced, not displaying message flow", bpmnElement));
+			return null;
+		}
 		
 		PictogramElement sourcePictogram = getPictogramElement(source);
 		PictogramElement targetPictogram = getPictogramElement(target);

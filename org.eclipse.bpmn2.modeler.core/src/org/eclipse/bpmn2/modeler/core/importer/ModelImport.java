@@ -642,7 +642,9 @@ public class ModelImport {
 		DiagramElement diagramElement = getDiagramElement(flowElement);
 		PictogramElement pictogramElement = flowNodeShapeHandler.handleDiagramElement(flowElement, diagramElement, container);
 		
-		pictogramElements.put(flowElement, pictogramElement);
+		if (pictogramElement != null) {
+			pictogramElements.put(flowElement, pictogramElement);
+		}
 		
 		return pictogramElement;
 	}

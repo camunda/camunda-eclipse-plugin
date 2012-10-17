@@ -45,7 +45,8 @@ public class ModelImportCommand extends RecordingCommand {
 		} catch (ImportException e) {
 			recordedException = e;
 		} catch (Exception e) {
-			recordedException = new ImportException("Unhandled exception", e);
+			recordedException = new ImportException("Unhandled exception during import", e);
+			modelImport.log(recordedException);
 		}
 	}
 

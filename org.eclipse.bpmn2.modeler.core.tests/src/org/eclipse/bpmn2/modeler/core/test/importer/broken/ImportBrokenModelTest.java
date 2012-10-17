@@ -69,13 +69,19 @@ public class ImportBrokenModelTest extends AbstractImportBpmn2ModelTest {
 
 	@Test
 	@DiagramResource
-	public void testEmptyCollaborationNoDI() {
-		try {
-			ModelImport importer = new ModelImport(diagramTypeProvider, resource);
-			importer.execute();
-			Assert.fail("expected failure");
-		} catch (ImportException e) {
-			// expected failure
-		}
+	public void testCallActivityReferencedByMessageFlow() {
+		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		importer.execute();
+		
+		assertThat(importer.getImportWarnings()).isNotEmpty();
+	}
+
+	@Test
+	@DiagramResource
+	public void testSubProcessReferencedByMessageFlow() {
+		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		importer.execute();
+		
+		assertThat(importer.getImportWarnings()).isNotEmpty();
 	}
 }
