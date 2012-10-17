@@ -1,8 +1,12 @@
 package org.eclipse.bpmn2.modeler.ui.features.label;
 
+import java.util.List;
+
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.FlowElementsContainer;
+import org.eclipse.bpmn2.di.BPMNShape;
+import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.di.DIImport;
 import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
@@ -17,6 +21,7 @@ import org.eclipse.graphiti.features.impl.AbstractAddShapeFeature;
 import org.eclipse.graphiti.mm.algorithms.MultiText;
 import org.eclipse.graphiti.mm.algorithms.styles.Orientation;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
@@ -51,8 +56,11 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		int y = context.getY();
 		
 		BaseElement baseElement = (BaseElement) context.getProperty(ContextConstants.BUSINESS_OBJECT);
+		BPMNShape bpmnShape = (BPMNShape) ModelHandler.findDIElement(baseElement);
 		
-		final ContainerShape textContainerShape = peService.createContainerShape(getTargetContainer(context), true);
+		ContainerShape targetContainer = getTargetContainer(context);
+		
+		final ContainerShape textContainerShape = peService.createContainerShape(targetContainer, true);
 		gaService.createInvisibleRectangle(textContainerShape);
 		
 		Shape textShape = peService.createShape(textContainerShape, false);
@@ -63,18 +71,28 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setVerticalAlignment(Orientation.ALIGNMENT_TOP);
 		
+		this.link(textContainerShape, baseElement);
+		updatePictogramElement(textContainerShape);
+		
+		if (bpmnShape != null && bpmnShape.getLabel() != null) {
+		  x = getRelativeX(targetContainer, (int) bpmnShape.getLabel().getBounds().getX());
+		  y = getRelativeY(targetContainer, (int) bpmnShape.getLabel().getBounds().getY());
+		}
+		
 		// Boundary events get a different add context, so use the context coodinates relative
 		if ( (baseElement instanceof BoundaryEvent) && !isImport(context) ){
 			x = context.getTargetContainer().getGraphicsAlgorithm().getX() + context.getX()-width/2;
 			y = context.getTargetContainer().getGraphicsAlgorithm().getY() + context.getY()-height/2;
 		}
 		
-		GraphicsUtil.alignWithShape(text, textContainerShape, width, height, x, y, 0, 0);
+		if (bpmnShape.getLabel() != null && context.getProperty(DIImport.IMPORT_PROPERTY) != null) {
+		  GraphicsUtil.setLabelPosition(text, textContainerShape, x, y);
+		} else {
+		  GraphicsUtil.alignWithShape(text, textContainerShape, width, height, x, y, 0, 0);
+		}
 		
-		this.link(textContainerShape, baseElement);
 		Graphiti.getPeService().setPropertyValue(textContainerShape, GraphicsUtil.LABEL_PROPERTY, "true");
 		
-		updatePictogramElement(textContainerShape);
 		layoutPictogramElement(textContainerShape);
 		
 		return textContainerShape;
@@ -102,4 +120,22 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		return context.getTargetContainer();
 	}
 
+	private int getRelativeX(ContainerShape targetContainer, int x) {
+	  x -= targetContainer.getGraphicsAlgorithm().getX();
+	  ContainerShape parent = targetContainer.getContainer();
+	  if (parent != null && !(parent instanceof Diagram)) {
+	    return getRelativeX(parent, x);
+	  }
+	  return x;
+	}
+
+	 private int getRelativeY(ContainerShape targetContainer, int y) {
+	    y -= targetContainer.getGraphicsAlgorithm().getY();
+	    ContainerShape parent = targetContainer.getContainer();
+	    if (parent != null && !(parent instanceof Diagram)) {
+	      return getRelativeY(parent, y);
+	    }
+	    return y;
+	 }
+	
 }

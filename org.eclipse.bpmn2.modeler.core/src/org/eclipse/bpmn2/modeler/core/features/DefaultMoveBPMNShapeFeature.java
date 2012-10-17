@@ -54,7 +54,10 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 	
 	@Override
 	protected void postMoveShape(IMoveShapeContext context) {
-		DIUtils.updateDIShape(context.getPictogramElement());
+		PictogramElement shapeElement = context.getPictogramElement();
+		BPMNShape bpmnShape = DIUtils.getShape(context.getPictogramElement());
+		
+		DIUtils.updateDIShape(shapeElement, bpmnShape);
 
 		Shape shape = context.getShape();
 		Object[] node = getAllBusinessObjectsForPictogramElement(shape);
@@ -62,8 +65,12 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 		for (Object object : node) {
 			List<PictogramElement> picElements = Graphiti.getLinkService().getPictogramElements(getDiagram(), (EObject) object);
 			for (PictogramElement element : picElements){
-				if (element!=shape &&
-						Graphiti.getPeService().getPropertyValue(element, GraphicsUtil.LABEL_PROPERTY) != null){
+				boolean isLabel = Graphiti.getPeService().getPropertyValue(element, GraphicsUtil.LABEL_PROPERTY) != null;
+				if (bpmnShape == null) {
+					bpmnShape = DIUtils.getShape(element);
+				}
+				
+				if (element!=shape && isLabel){
 					try{
 						ContainerShape container = (ContainerShape) element;
 						// only align when not selected, the move feature of the label will do the job when selected
@@ -77,10 +84,13 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 									preShapeX,
 									preShapeY
 							);
+						DIUtils.updateDILabel(container, bpmnShape);
 					}
 					catch(Exception e){
 						new RuntimeException("Composition of label container is not as expected");
 					}
+				}else if (isLabel) {
+					DIUtils.updateDILabel((ContainerShape) element, bpmnShape);
 				}
 			}
 			

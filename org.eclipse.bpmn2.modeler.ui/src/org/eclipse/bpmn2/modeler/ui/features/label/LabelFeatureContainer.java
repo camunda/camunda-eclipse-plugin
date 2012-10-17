@@ -10,6 +10,9 @@ import org.eclipse.bpmn2.DataStoreReference;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.Message;
+import org.eclipse.bpmn2.di.BPMNShape;
+import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.bpmn2.modeler.core.features.FeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
@@ -114,10 +117,13 @@ public class LabelFeatureContainer implements FeatureContainer {
   		   return true;
   		}
   		
-  		@Override
-  		protected void postMoveShape(IMoveShapeContext context) {
-  		  super.postMoveShape(context);
-  		}
+      @Override
+      protected void postMoveShape(IMoveShapeContext context) {
+        super.postMoveShape(context);
+        BaseElement base = (BaseElement) context.getShape().getLink().getBusinessObjects().get(0);
+        BPMNShape bpmnShape = (BPMNShape) ModelHandler.findDIElement(base);
+        DIUtils.updateDILabel((ContainerShape) context.getShape(), bpmnShape);
+      }
   		 
 		};
 	}
