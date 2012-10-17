@@ -59,6 +59,7 @@ import org.eclipse.bpmn2.modeler.core.importer.handlers.DataObjectShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.DataOutputAssociationShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.DataOutputShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.DatastoreReferenceShapeHandler;
+import org.eclipse.bpmn2.modeler.core.importer.handlers.EventShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.FlowNodeShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.LaneShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.MessageFlowShapeHandler;
@@ -620,7 +621,7 @@ public class ModelImport {
 	}
 
 	protected void handleEvent(Event flowElement, ContainerShape container) {
-		handleDiagramElement(flowElement, container, new FlowNodeShapeHandler(this));
+		handleDiagramElement(flowElement, container, new EventShapeHandler(this));
 	}
 	
 	protected void handleCallActivity(CallActivity flowElement, ContainerShape container) {
