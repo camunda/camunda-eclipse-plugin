@@ -146,7 +146,7 @@ public class CallActivityFeatureContainer extends AbstractExpandableActivityFeat
 				thisFeatures[0] = superFeatures[i];
 				index = 0;
 			}
-			else {
+			else if(thisFeatures.length < (index+i)) {
 				thisFeatures[index + i] = superFeatures[i];
 			}
 		}

@@ -538,7 +538,7 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 					for (ICustomFeature cf : cfa) {
 						boolean found = false;
 						for (ICustomFeature cfl : list) {
-							if (cfl.getClass() == cf.getClass()) {
+							if (cfl != null && cf != null && cfl.getClass() == cf.getClass()) {
 								found = true;
 								break;
 							}

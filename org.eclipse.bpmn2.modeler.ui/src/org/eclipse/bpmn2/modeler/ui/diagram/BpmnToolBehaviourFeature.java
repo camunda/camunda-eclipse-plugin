@@ -329,7 +329,7 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 		ICustomFeature[] cf = fp.getCustomFeatures(cc);
 		for (int i = 0; i < cf.length; i++) {
 			ICustomFeature iCustomFeature = cf[i];
-			if (iCustomFeature.canExecute(cc)) {
+			if (iCustomFeature != null && iCustomFeature.canExecute(cc)) {
 				ContextButtonEntry button = new ContextButtonEntry(iCustomFeature, cc);
 				button.setText(iCustomFeature.getName()); //$NON-NLS-1$
 				button.setIconId(iCustomFeature.getImageId());
