@@ -27,11 +27,11 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		Shape userTaskShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "UserTask_1");
 		ContainerShape subProcessShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "SubProcess_1");
 		ContainerShape processShape = (ContainerShape) diagram;
+		BaseElement subProcessElement = BusinessObjectUtil.getFirstBaseElement(subProcessShape);
 
 		// first, the usertask is contained in the subprocess
 		assertThat(subProcessShape).hasChild(userTaskShape);
 		assertThat(processShape).doesNotHaveChild(userTaskShape);
-		BaseElement subProcessElement = BusinessObjectUtil.getFirstBaseElement(subProcessShape);
 		assertThat(userTaskShape).hasParentModelElement(subProcessElement);
 
 		// move the usertask out from under the subprocess into the process
@@ -44,6 +44,34 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(subProcessShape).doesNotHaveChild(userTaskShape);
 		assertThat(processShape).hasChild(userTaskShape);
 		assertThat(userTaskShape).hasParentModelElement(subProcessElement.eContainer());
+		
+	}
+	
+	@Test
+	@DiagramResource
+	public void testMoveShapeIntoContainer() {
+		
+		// find shapes
+		Shape userTaskShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "UserTask_1");
+		ContainerShape subProcessShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "SubProcess_1");
+		ContainerShape processShape = (ContainerShape) diagram;
+		BaseElement subProcessElement = BusinessObjectUtil.getFirstBaseElement(subProcessShape);
+
+		// first, the usertask is contained in the process
+		assertThat(subProcessShape).doesNotHaveChild(userTaskShape);
+		assertThat(processShape).hasChild(userTaskShape);
+		assertThat(userTaskShape).hasParentModelElement(subProcessElement.eContainer());
+
+		// move the usertask into the subprocess
+		move(userTaskShape, diagramTypeProvider)
+			.by(0, 300)
+			.toContainer(subProcessShape)
+			.execute();
+		
+		// now the usertask is contained in the subprocess
+		assertThat(subProcessShape).hasChild(userTaskShape);
+		assertThat(processShape).doesNotHaveChild(userTaskShape);		
+		assertThat(userTaskShape).hasParentModelElement(subProcessElement);
 		
 	}
 
