@@ -1,7 +1,10 @@
-package org.eclipse.bpmn2.modeler.core.test.assertions;
+package org.eclipse.bpmn2.modeler.core.test.util.assertions;
 
+import org.eclipse.bpmn2.FlowElementsContainer;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramLink;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.fest.assertions.api.AbstractAssert;
@@ -34,8 +37,22 @@ public abstract class AbstractShapeAssert<S extends AbstractShapeAssert<S, A>, A
 		
 		return myself;
 	}
+	
+	public AbstractShapeAssert<S, A> hasParentModelElement(EObject eObject) {
+		
+		EObject businessObjectForActual = BusinessObjectUtil.getBusinessObjectForPictogramElement(actual);
+		EObject actualContainer = businessObjectForActual.eContainer();
+		
+		Assertions.assertThat(actualContainer).isSameAs(eObject);
+		
+		return myself;
+	}
 
 	public abstract AbstractShapeAssert<S, A> isContainerShape();
 	
 	public abstract AbstractShapeAssert<S, A> hasNoChildren();
+	
+	public abstract AbstractShapeAssert<S, A> hasChild(Shape child);
+	public abstract AbstractShapeAssert<S, A> doesNotHaveChild(Shape child);
+
 }

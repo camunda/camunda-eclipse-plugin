@@ -8,7 +8,7 @@
  *
  ******************************************************************************/
 
-package org.eclipse.bpmn2.modeler.core.test.assertions;
+package org.eclipse.bpmn2.modeler.core.test.util.assertions;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -66,6 +66,17 @@ public class ContainerShapeAssert extends AbstractShapeAssert<ContainerShapeAsse
 	@Override
 	public AbstractShapeAssert<ContainerShapeAssert, ContainerShape> hasNoChildren() {
 		Assertions.assertThat(actual.getChildren()).isEmpty();
+		return myself;
+	}
+	
+	public AbstractShapeAssert<ContainerShapeAssert, ContainerShape> hasChild(Shape child) {
+		Assertions.assertThat(actual.getChildren().contains(child));
+		return myself;
+	}
+
+	@Override
+	public AbstractShapeAssert<ContainerShapeAssert, ContainerShape> doesNotHaveChild(Shape child) {
+		Assertions.assertThat(!actual.getChildren().contains(child));
 		return myself;
 	}
 }

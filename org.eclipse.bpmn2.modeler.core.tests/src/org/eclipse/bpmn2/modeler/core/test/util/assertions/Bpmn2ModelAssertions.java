@@ -1,4 +1,4 @@
-package org.eclipse.bpmn2.modeler.core.test.assertions;
+package org.eclipse.bpmn2.modeler.core.test.util.assertions;
 
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;

@@ -12,7 +12,7 @@ package org.eclipse.bpmn2.modeler.core.test.importer.dataitems;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.Group;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
-import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest;
+import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmnModelTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -25,7 +25,7 @@ import org.junit.Test;
  * 
  * @author Nico Rehwaldt
  */
-public class ImportDataOutputTest extends AbstractImportBpmn2ModelTest {
+public class ImportDataOutputTest extends AbstractImportBpmnModelTest {
 	
 	@Test
 	@DiagramResource

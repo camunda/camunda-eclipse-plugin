@@ -7,7 +7,7 @@
  * camunda services GmbH - initial API and implementation 
  *
  ******************************************************************************/
-package org.eclipse.bpmn2.modeler.core.test;
+package org.eclipse.bpmn2.modeler.core.test.unused;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,8 +19,8 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
-import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest;
-import org.eclipse.bpmn2.modeler.core.test.importer.AbstractTestCommand;
+import org.eclipse.bpmn2.modeler.core.test.AbstractTestCommand;
+import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmnModelTest;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -34,7 +34,7 @@ import org.junit.Test;
  *
  */
 @Ignore
-public class Bpmn2ModelImporterTest extends AbstractImportBpmn2ModelTest {
+public class Bpmn2ModelImporterTest extends AbstractImportBpmnModelTest {
 
 	@Test
 	public void testCmd() {

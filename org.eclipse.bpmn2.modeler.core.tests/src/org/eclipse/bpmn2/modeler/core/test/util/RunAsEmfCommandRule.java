@@ -1,10 +1,9 @@
 package org.eclipse.bpmn2.modeler.core.test.util;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
 
-import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest;
-import org.eclipse.bpmn2.modeler.core.test.importer.AbstractTestCommand;
+import org.eclipse.bpmn2.modeler.core.test.AbstractBpmnEditorTest;
+import org.eclipse.bpmn2.modeler.core.test.AbstractTestCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -19,8 +18,8 @@ public class RunAsEmfCommandRule implements MethodRule {
 
 		DiagramResource resource = method.getAnnotation(DiagramResource.class);
 		
-		if (resource != null && target instanceof AbstractImportBpmn2ModelTest) {
-			final AbstractImportBpmn2ModelTest testCase = (AbstractImportBpmn2ModelTest) target;
+		if (resource != null && target instanceof AbstractBpmnEditorTest) {
+			final AbstractBpmnEditorTest testCase = (AbstractBpmnEditorTest) target;
 			
 			String resourceUrl = getResourceUrl(resource, target, method.getMethod());
 			
@@ -41,11 +40,11 @@ public class RunAsEmfCommandRule implements MethodRule {
 
 	private class StatementExtension extends Statement {
 		
-		private final AbstractImportBpmn2ModelTest testCase;
+		private final AbstractBpmnEditorTest testCase;
 		private final String resourceUrl;
 		private final Statement base;
 		
-		private StatementExtension(AbstractImportBpmn2ModelTest testCase, String resourceUrl, Statement base) {
+		private StatementExtension(AbstractBpmnEditorTest testCase, String resourceUrl, Statement base) {
 			this.testCase = testCase;
 			this.resourceUrl = resourceUrl;
 			this.base = base;

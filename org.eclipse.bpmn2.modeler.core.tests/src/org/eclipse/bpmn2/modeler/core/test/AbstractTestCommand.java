@@ -1,4 +1,4 @@
-package org.eclipse.bpmn2.modeler.core.test.importer;
+package org.eclipse.bpmn2.modeler.core.test;
 
 import java.util.List;
 
@@ -7,7 +7,6 @@ import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.impl.DocumentRootImpl;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -19,7 +18,7 @@ import org.eclipse.graphiti.ui.services.GraphitiUi;
 
 public abstract class AbstractTestCommand extends RecordingCommand {
 	
-	protected AbstractImportBpmn2ModelTest testCase;
+	protected AbstractBpmnEditorTest testCase;
 	protected String diagramName;
 	
 	protected Diagram diagram;	
@@ -28,7 +27,7 @@ public abstract class AbstractTestCommand extends RecordingCommand {
 
 	protected Throwable recordedException;
 	
-	public AbstractTestCommand(AbstractImportBpmn2ModelTest importBpmnModelTest, String diagramName) {
+	public AbstractTestCommand(AbstractBpmnEditorTest importBpmnModelTest, String diagramName) {
 		super(importBpmnModelTest.getEditingDomain());
 		
 		this.testCase = importBpmnModelTest;

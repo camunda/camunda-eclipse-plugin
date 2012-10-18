@@ -10,14 +10,14 @@
 
 package org.eclipse.bpmn2.modeler.core.test.importer.broken;
 
-import static org.eclipse.bpmn2.modeler.core.test.assertions.Bpmn2ModelAssertions.assertThat;
+import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import org.eclipse.bpmn2.modeler.core.importer.ImportException;
 import org.eclipse.bpmn2.modeler.core.importer.InvalidContentException;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.importer.ResourceImportException;
-import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest;
+import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmnModelTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,7 +28,7 @@ import org.junit.Test;
  * @author Daniel Meyer
  *
  */
-public class ImportErrorHandlingTest extends AbstractImportBpmn2ModelTest {
+public class ImportErrorHandlingTest extends AbstractImportBpmnModelTest {
 
 	@Test
 	@DiagramResource
