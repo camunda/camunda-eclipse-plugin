@@ -1,22 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="Definitions_1" targetNamespace="http://activiti.org/bpmn">
-  <bpmn2:collaboration id="Collaboration_1" name="Default Collaboration">
-    <bpmn2:participant id="Participant_1" name="Initiating Pool" processRef="Process_1"/>
-  </bpmn2:collaboration>
-  <bpmn2:process id="Process_1" name="Default Initiating Process">
-   <bpmn2:laneSet id="LaneSet_1">
-         <bpmn2:lane id="Lane_1">
-         </bpmn2:lane>
-      </bpmn2:laneSet>
-  </bpmn2:process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_1" name="Default Collaboration Diagram">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1">
-      <bpmndi:BPMNShape id="BPMNShape_1" bpmnElement="Participant_1" isHorizontal="true">
-<dc:Bounds height="388.24659185877476" width="1202.9761068025962" x="110.0" y="170.4343468355338"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="Lane_1" id="BPMNShape_2" isHorizontal="true">
-<dc:Bounds height="388.24659185877476" width="1172.9761068025962" x="140.0" y="170.4343468355338"/>
-</bpmndi:BPMNShape>
-    </bpmndi:BPMNPlane>
-  </bpmndi:BPMNDiagram>
-</bpmn2:definitions>
+<?xml version="1.0" encoding="UTF-8"?><definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="6.1.0" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-cc4d33a0-1e9e-49a5-9e00-b057132f0ee9" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+   <collaboration id="sid-f0d1cdd5-0a79-42c3-a37a-1fd3ec84b947">
+      <participant id="sid-7BD88080-E847-40D9-9714-C838543CEC18" name="Management Bewerbungsgespräche -&#10; Sachbearbeiter Personal" processRef="sid-35DD95AD-CA27-4826-8E4F-351207D0FA1A"/>
+   </collaboration>
+   <process id="sid-35DD95AD-CA27-4826-8E4F-351207D0FA1A" isClosed="true" isExecutable="false" name="Management Bewerbungsgespräche -&#10; Sachbearbeiter Personal" processType="None">
+      <extensionElements>
+         <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+      </extensionElements>
+      <laneSet id="sid-367234ab-10aa-4525-806e-a8a72e6c2fdb">
+         <lane id="sid-4A0FB2B3-2D67-46F7-ACB3-260FC62E3B5A">
+            <extensionElements>
+               <signavio:signavioMetaData metaKey="bgcolor" metaValue=""/>
+            </extensionElements>
+         </lane>
+      </laneSet>
+   </process>
+   <bpmndi:BPMNDiagram id="sid-80c01980-8c28-474c-8871-c0153434d1f0">
+      <bpmndi:BPMNPlane bpmnElement="sid-f0d1cdd5-0a79-42c3-a37a-1fd3ec84b947" id="sid-d3bbdf5a-90fd-49e0-9a10-968915ccbf80">
+         <bpmndi:BPMNShape bpmnElement="sid-7BD88080-E847-40D9-9714-C838543CEC18" id="sid-7BD88080-E847-40D9-9714-C838543CEC18_gui" isHorizontal="true">
+            <omgdc:Bounds height="478.9471515601299" width="1509.7028533441512" x="1282.332796247655" y="1105.1402360454592"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-4A0FB2B3-2D67-46F7-ACB3-260FC62E3B5A" id="sid-4A0FB2B3-2D67-46F7-ACB3-260FC62E3B5A_gui" isHorizontal="true">
+            <omgdc:Bounds height="478.94715156012984" width="1479.7028533441512" x="1312.332796247655" y="1105.1402360454592"/>
+         </bpmndi:BPMNShape>
+      </bpmndi:BPMNPlane>
+   </bpmndi:BPMNDiagram>
+</definitions>

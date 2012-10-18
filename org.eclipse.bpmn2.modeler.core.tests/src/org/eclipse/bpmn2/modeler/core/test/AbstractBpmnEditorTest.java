@@ -1,13 +1,4 @@
-/******************************************************************************* 
- * This program is made available under the terms of the 
- * Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html 
- * 
- * Contributors: 
- * camunda services GmbH - initial API and implementation 
- *
- ******************************************************************************/
-package org.eclipse.bpmn2.modeler.core.test.importer;
+package org.eclipse.bpmn2.modeler.core.test;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +8,6 @@ import java.util.Collections;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceFactoryImpl;
-import org.eclipse.bpmn2.modeler.core.test.Activator;
 import org.eclipse.bpmn2.modeler.core.test.util.RunAsEmfCommandRule;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.emf.common.util.URI;
@@ -31,11 +21,10 @@ import org.junit.rules.TemporaryFolder;
 
 /**
  * 
- * @author Nico Rehwaldt
  * @author Daniel Meyer
  *
  */
-public abstract class AbstractImportBpmn2ModelTest {
+public abstract class AbstractBpmnEditorTest {
 
 	protected TransactionalEditingDomain editingDomain;
 	protected Bpmn2ResourceImpl resource;

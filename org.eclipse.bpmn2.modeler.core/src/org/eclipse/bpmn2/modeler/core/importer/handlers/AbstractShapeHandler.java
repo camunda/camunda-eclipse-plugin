@@ -115,8 +115,8 @@ public abstract class AbstractShapeHandler<T extends BaseElement> extends Abstra
 		
 		int shapeTopLeftX = (int) shapeBounds.getX();
 		int shapeTopLeftY = (int) shapeBounds.getY();
-		int shapeBottomRightX = (int) (shapeBounds.getX() + shapeBounds.getWidth());
-		int shapeBottomRightY = (int) (shapeBounds.getY() + shapeBounds.getHeight());
+		int shapeBottomRightX = (int) shapeBounds.getX() + (int) shapeBounds.getWidth();
+		int shapeBottomRightY = (int) shapeBounds.getY() + (int) shapeBounds.getHeight();
 
 		// check if top left and bottom right points of shape are contained in container bounds
 		

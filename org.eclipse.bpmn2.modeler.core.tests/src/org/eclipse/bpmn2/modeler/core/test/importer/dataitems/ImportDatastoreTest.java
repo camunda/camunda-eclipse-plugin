@@ -4,7 +4,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 import org.eclipse.bpmn2.DataStoreReference;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
-import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest;
+import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmnModelTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.TestUtil;
 import org.eclipse.emf.common.util.EList;
@@ -15,7 +15,7 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ImportDatastoreTest extends AbstractImportBpmn2ModelTest {
+public class ImportDatastoreTest extends AbstractImportBpmnModelTest {
 	
 	@Test
 	@DiagramResource
@@ -38,7 +38,6 @@ public class ImportDatastoreTest extends AbstractImportBpmn2ModelTest {
 		Assert.assertTrue(businessObject instanceof DataStoreReference);
 		Assert.assertEquals("DataStoreRef_1", ((DataStoreReference)businessObject).getId());
 		
-		System.out.println(TestUtil.toDetailsString(diagram));
 	}
 	
 	@Test

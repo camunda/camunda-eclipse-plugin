@@ -9,10 +9,10 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.test.importer.association.data;
 
-import static org.eclipse.bpmn2.modeler.core.test.assertions.Bpmn2ModelAssertions.assertThat;
+import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
-import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest;
+import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmnModelTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.TestUtil;
 import org.junit.Test;
@@ -21,7 +21,7 @@ import org.junit.Test;
  * 
  * @author Nico Rehwaldt
  */
-public class ImportDataAssociationTest extends AbstractImportBpmn2ModelTest {
+public class ImportDataAssociationTest extends AbstractImportBpmnModelTest {
 	
 	@Test
 	@DiagramResource

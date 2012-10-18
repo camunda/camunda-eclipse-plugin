@@ -1,34 +1,27 @@
 package org.eclipse.bpmn2.modeler.core.test.importer.events;
 
-import static org.eclipse.bpmn2.modeler.core.test.assertions.Bpmn2ModelAssertions.assertThat;
-import static org.eclipse.bpmn2.modeler.core.test.assertions.Bpmn2ModelAssertions.elementOfType;
-import static org.fest.assertions.api.Assertions.assertThat;
-
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.bpmn2.EscalationEventDefinition;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
-import org.eclipse.bpmn2.Group;
 import org.eclipse.bpmn2.MessageEventDefinition;
 import org.eclipse.bpmn2.SignalEventDefinition;
 import org.eclipse.bpmn2.TerminateEventDefinition;
 import org.eclipse.bpmn2.TimerEventDefinition;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
-import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest;
+import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmnModelTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.mm.pictograms.PictogramLink;
 import org.eclipse.graphiti.mm.pictograms.Shape;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 
 
-public class ImportEventDefinitionTest extends AbstractImportBpmn2ModelTest {
+public class ImportEventDefinitionTest extends AbstractImportBpmnModelTest {
 	
 	@Test
 	@DiagramResource

@@ -1,4 +1,4 @@
-package org.eclipse.bpmn2.modeler.core.test.assertions;
+package org.eclipse.bpmn2.modeler.core.test.util.assertions;
 
 import static java.lang.String.format;
 
@@ -40,4 +40,16 @@ public class ShapeAssert extends AbstractShapeAssert<ShapeAssert, Shape>{
 		Assertions.fail(message);
 		return myself;
 	}
+
+	@Override
+	public AbstractShapeAssert<ShapeAssert, Shape> hasChild(Shape child) {
+		return failNoContainerShape();
+	}
+
+	@Override
+	public AbstractShapeAssert<ShapeAssert, Shape> doesNotHaveChild(Shape child) {
+		return failNoContainerShape();
+	}
+	
+	
 }

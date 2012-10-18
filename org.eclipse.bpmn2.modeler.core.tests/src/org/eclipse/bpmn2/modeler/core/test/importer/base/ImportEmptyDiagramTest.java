@@ -11,7 +11,7 @@ package org.eclipse.bpmn2.modeler.core.test.importer.base;
 
 import org.eclipse.bpmn2.modeler.core.importer.InvalidContentException;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
-import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest;
+import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmnModelTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -24,7 +24,7 @@ import static org.junit.Assert.fail;
  * 
  * @author Nico Rehwaldt
  */
-public class ImportEmptyDiagramTest extends AbstractImportBpmn2ModelTest {
+public class ImportEmptyDiagramTest extends AbstractImportBpmnModelTest {
 
 	@Test
 	@DiagramResource

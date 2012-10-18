@@ -13,7 +13,7 @@ package org.eclipse.bpmn2.modeler.core.test.importer.dataitems;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
-import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmn2ModelTest;
+import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmnModelTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.TestUtil;
 import org.junit.Test;
@@ -22,7 +22,7 @@ import org.junit.Test;
  * 
  * @author Nico Rehwaldt
  */
-public class ImportDataObjectTest extends AbstractImportBpmn2ModelTest {
+public class ImportDataObjectTest extends AbstractImportBpmnModelTest {
 	
 	@Test
 	@DiagramResource
