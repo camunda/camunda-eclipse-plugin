@@ -36,7 +36,6 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 
 		// move the usertask out from under the subprocess into the process
 		move(userTaskShape, diagramTypeProvider)
-			.by(0, 300)
 			.toContainer(processShape)
 			.execute();
 		
@@ -64,7 +63,6 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 
 		// move the usertask into the subprocess
 		move(userTaskShape, diagramTypeProvider)
-			.by(0, 300)
 			.toContainer(subProcessShape)
 			.execute();
 		
