@@ -1,9 +1,7 @@
 package org.eclipse.bpmn2.modeler.ui.features.label;
 
-import java.util.List;
-
-import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
@@ -74,7 +72,7 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		this.link(textContainerShape, baseElement);
 		updatePictogramElement(textContainerShape);
 		
-		if (bpmnShape != null && bpmnShape.getLabel() != null) {
+		if (bpmnShape != null && bpmnShape.getLabel() != null && bpmnShape.getLabel().getBounds() != null) {
 		  x = getRelativeX(targetContainer, (int) bpmnShape.getLabel().getBounds().getX());
 		  y = getRelativeY(targetContainer, (int) bpmnShape.getLabel().getBounds().getY());
 		}
