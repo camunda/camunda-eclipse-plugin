@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="def_engine-pool" exporter="Oryx converter by camunda.com" exporterVersion="1.0" targetNamespace="http://activiti.org/bpmn">
+  <collaboration id="c8019143-92df-a7d-1adf-7baa8186e041">
+    <participant id="p_oryx_B40E0555-DC5B-4103-A97D-1A472EEDF145" name="Human Agent" processRef="oryx_B40E0555-DC5B-4103-A97D-1A472EEDF145"/>
+    <participant id="p_oryx_ABC6B959-22B2-40E1-855F-F36395F25B45" name="Process Engine" processRef="oryx_ABC6B959-22B2-40E1-855F-F36395F25B45"/>
+    <messageFlow id="oryx_8941F613-A9D4-41EB-900C-E396E9550D37" sourceRef="oryx_41CF5382-604C-4D8B-AE6B-36A449F365B3" targetRef="oryx_4FDAD8B2-B0A5-4BE9-A101-C2B39D24FB58"/>
+    <messageFlow id="oryx_15318E50-1AC8-44C3-8A74-1392F4BD487C" sourceRef="oryx_4FDAD8B2-B0A5-4BE9-A101-C2B39D24FB58" targetRef="oryx_8E149EA3-158E-4338-AE7A-213C1FED0218"/>
+  </collaboration>
+  <process id="oryx_B40E0555-DC5B-4103-A97D-1A472EEDF145" name="Human Agent">
+    <startEvent id="oryx_8E149EA3-158E-4338-AE7A-213C1FED0218" name="">
+      <outgoing>oryx_B1BC3597-B8F5-484F-BEE6-8B9BE168DE7F</outgoing>
+      <messageEventDefinition id="MessageEventDefinition_1"/>
+    </startEvent>
+    <manualTask id="oryx_54DBEB82-4B51-4508-BEA6-16DC8F3C6148" name="Do Something">
+      <incoming>oryx_B1BC3597-B8F5-484F-BEE6-8B9BE168DE7F</incoming>
+      <outgoing>oryx_B5771458-1955-4BB7-9DB0-C1F8618DCB78</outgoing>
+    </manualTask>
+    <endEvent id="oryx_41CF5382-604C-4D8B-AE6B-36A449F365B3" name="">
+      <incoming>oryx_B5771458-1955-4BB7-9DB0-C1F8618DCB78</incoming>
+      <messageEventDefinition id="MessageEventDefinition_2"/>
+    </endEvent>
+    <sequenceFlow id="oryx_B1BC3597-B8F5-484F-BEE6-8B9BE168DE7F" sourceRef="oryx_8E149EA3-158E-4338-AE7A-213C1FED0218" targetRef="oryx_54DBEB82-4B51-4508-BEA6-16DC8F3C6148"/>
+    <sequenceFlow id="oryx_B5771458-1955-4BB7-9DB0-C1F8618DCB78" sourceRef="oryx_54DBEB82-4B51-4508-BEA6-16DC8F3C6148" targetRef="oryx_41CF5382-604C-4D8B-AE6B-36A449F365B3"/>
+  </process>
+  <process id="oryx_ABC6B959-22B2-40E1-855F-F36395F25B45" name="Process Engine">
+    <startEvent id="oryx_A1BE03FC-4523-4EC9-AE55-6B07BF3765AC" name="Start">
+      <outgoing>oryx_70D77FC7-AF4D-4516-91C9-FA89150D94DB</outgoing>
+    </startEvent>
+    <userTask id="oryx_4FDAD8B2-B0A5-4BE9-A101-C2B39D24FB58" name="Do Something">
+      <incoming>oryx_70D77FC7-AF4D-4516-91C9-FA89150D94DB</incoming>
+      <outgoing>oryx_33126029-B5AA-46C1-8044-9C1F210319C3</outgoing>
+    </userTask>
+    <endEvent id="oryx_B4466653-0C49-4AA6-84F6-690DE4281748" name="End">
+      <incoming>oryx_33126029-B5AA-46C1-8044-9C1F210319C3</incoming>
+    </endEvent>
+    <sequenceFlow id="oryx_70D77FC7-AF4D-4516-91C9-FA89150D94DB" sourceRef="oryx_A1BE03FC-4523-4EC9-AE55-6B07BF3765AC" targetRef="oryx_4FDAD8B2-B0A5-4BE9-A101-C2B39D24FB58"/>
+    <sequenceFlow id="oryx_33126029-B5AA-46C1-8044-9C1F210319C3" sourceRef="oryx_4FDAD8B2-B0A5-4BE9-A101-C2B39D24FB58" targetRef="oryx_B4466653-0C49-4AA6-84F6-690DE4281748"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Collaboration_1" bpmnElement="c8019143-92df-a7d-1adf-7baa8186e041">
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="oryx_8E149EA3-158E-4338-AE7A-213C1FED0218">
+        <omgdc:Bounds height="30.0" width="30.0" x="180.0" y="376.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ManualTask_1" bpmnElement="oryx_54DBEB82-4B51-4508-BEA6-16DC8F3C6148">
+        <omgdc:Bounds height="80.0" width="100.0" x="255.0" y="351.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="oryx_41CF5382-604C-4D8B-AE6B-36A449F365B3">
+        <omgdc:Bounds height="28.0" width="28.0" x="400.0" y="377.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Participant_2" bpmnElement="p_oryx_ABC6B959-22B2-40E1-855F-F36395F25B45" isHorizontal="true">
+        <omgdc:Bounds height="250.0" width="600.0" x="50.0" y="350.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_2" bpmnElement="oryx_A1BE03FC-4523-4EC9-AE55-6B07BF3765AC">
+        <omgdc:Bounds height="30.0" width="30.0" x="195.0" y="460.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_UserTask_1" bpmnElement="oryx_4FDAD8B2-B0A5-4BE9-A101-C2B39D24FB58">
+        <omgdc:Bounds height="80.0" width="100.0" x="260.0" y="435.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_2" bpmnElement="oryx_B4466653-0C49-4AA6-84F6-690DE4281748">
+        <omgdc:Bounds height="28.0" width="28.0" x="405.0" y="461.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_1">
+          <omgdc:Bounds height="22.0" width="29.0" x="440.0" y="734.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="oryx_B1BC3597-B8F5-484F-BEE6-8B9BE168DE7F">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="210.0" y="391.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="255.0" y="391.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="oryx_B5771458-1955-4BB7-9DB0-C1F8618DCB78">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="355.0" y="391.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="400.0" y="391.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_MessageFlow_1" bpmnElement="oryx_8941F613-A9D4-41EB-900C-E396E9550D37">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="428.0" y="391.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="444.0" y="543.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="360.0" y="543.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="280.0" y="656.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="oryx_70D77FC7-AF4D-4516-91C9-FA89150D94DB">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="225.0" y="475.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="260.0" y="475.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_MessageFlow_2" bpmnElement="oryx_15318E50-1AC8-44C3-8A74-1392F4BD487C">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="330.0" y="656.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="310.0" y="542.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="225.0" y="542.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="180.0" y="391.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="oryx_33126029-B5AA-46C1-8044-9C1F210319C3">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="360.0" y="475.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="405.0" y="475.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

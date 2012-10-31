@@ -817,7 +817,9 @@ public class ModelImport {
 	public PictogramElement getPictogramElement(BaseElement node) {
 		PictogramElement element = getPictogramElementOrNull(node);
 		if (element == null) {
-			throw new UnmappedElementException("Pictogram element not yet processed", node);
+			UnmappedElementException exception = new UnmappedElementException("Container or Pictogram element not yet processed, containment might be invalid", node);
+			log(exception);
+			return null;
 		}
 		
 		return element;

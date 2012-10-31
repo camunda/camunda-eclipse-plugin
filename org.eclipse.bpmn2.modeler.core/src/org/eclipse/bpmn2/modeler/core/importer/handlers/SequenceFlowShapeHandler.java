@@ -13,6 +13,7 @@ package org.eclipse.bpmn2.modeler.core.importer.handlers;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.di.BPMNEdge;
+import org.eclipse.bpmn2.modeler.core.importer.ImportException;
 import org.eclipse.bpmn2.modeler.core.importer.InvalidContentException;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.graphiti.mm.pictograms.Connection;
@@ -34,21 +35,28 @@ public class SequenceFlowShapeHandler extends AbstractEdgeHandler<SequenceFlow> 
 	protected PictogramElement handleEdge(SequenceFlow bpmnElement, BPMNEdge edge, ContainerShape container) {
 		
 		FlowNode source = bpmnElement.getSourceRef();
+		PictogramElement sourcePictogram = getPictogramElement(source);
+		
 		if (source == null) {
 			InvalidContentException exception = new InvalidContentException("Could not resolve source", bpmnElement);
-			modelImport.logAndThrow(exception);
+			modelImport.log(exception);
 		}
 		
 		FlowNode target = bpmnElement.getTargetRef();
-		if (target == null) {
-			InvalidContentException exception = new InvalidContentException("Could not resolve target", bpmnElement);
-			modelImport.logAndThrow(exception);
-		}
-		
-		PictogramElement sourcePictogram = getPictogramElement(source);
 		PictogramElement targetPictogram = getPictogramElement(target);
 		
-		Connection connection = createConnectionAndSetBendpoints(edge, sourcePictogram, targetPictogram);
-		return connection;
+		if (target == null) {
+			InvalidContentException exception = new InvalidContentException("Could not resolve target", bpmnElement);
+			modelImport.log(exception);
+		}
+		
+		if (source!= null && target != null && sourcePictogram != null && targetPictogram != null) {
+			Connection connection = createConnectionAndSetBendpoints(edge, sourcePictogram, targetPictogram);
+			return connection;	
+		}else {
+			modelImport.log(new ImportException("Source or target invalid", edge));
+			return null;
+		}
+		
 	}
 }

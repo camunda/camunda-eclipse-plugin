@@ -50,7 +50,7 @@ public class EventShapeHandler extends FlowNodeShapeHandler {
 	  }
 	  ContainerShape eventContainer = (ContainerShape) super.handleShape(bpmnElement, shape, container);
 	  
-	  if (eventDefinitions.size() > 0) {
+	  if (eventContainer!= null && eventDefinitions.size() > 0) {
 	    AddContext addDefinitionContext = createAddContext(eventDefinitions.get(0));
 	    addDefinitionContext.setTargetContainer(eventContainer);
 	    featureProvider.getAddFeature(addDefinitionContext).execute(addDefinitionContext);

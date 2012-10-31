@@ -63,7 +63,7 @@ public abstract class AbstractShapeHandler<T extends BaseElement> extends Abstra
 		AddContext context = createAddContext(bpmnElement);		
 		IAddFeature addFeature = createAddFeature(context);
 		
-		if (addFeature != null) {
+		if (addFeature != null && container != null) { // DI for parent e.g. participant might be missing
 
 			// find the actual container (position wise) for the given parent container
 			container = getActualContainingContainer(shape, container);
