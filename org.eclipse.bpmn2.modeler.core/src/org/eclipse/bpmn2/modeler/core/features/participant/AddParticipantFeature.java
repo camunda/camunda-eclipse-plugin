@@ -74,7 +74,12 @@ public class AddParticipantFeature extends AbstractAddBPMNShapeFeature<Participa
 		boolean horz = bpmnShape.isIsHorizontal();
 		FeatureSupport.setHorizontal(containerShape, horz);
 		
-		if (participant.getProcessRef() != null && participant.getProcessRef().getLaneSets().isEmpty()) {
+		boolean hasLanes = false;
+		if (participant.getProcessRef() != null) {
+			hasLanes = participant.getProcessRef().getLaneSets().isEmpty() ? false : !participant.getProcessRef().getLaneSets().get(0).getLanes().isEmpty();
+		}
+				
+		if (!hasLanes) {
 	      Shape lineShape = peCreateService.createShape(containerShape, false);
 	      Polyline line;
 	      if (horz)
