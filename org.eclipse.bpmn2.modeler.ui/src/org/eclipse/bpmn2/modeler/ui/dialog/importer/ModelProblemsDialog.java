@@ -57,9 +57,9 @@ public class ModelProblemsDialog extends TitleAreaDialog {
 	private static final String FILE_BUG_REPORTS_LINK = "https://app.camunda.com/jira/secure/CreateIssue.jspa?pid=10111&issuetype=1&Create=Create";
 	
 	private static final String FILE_BUG_REPORTS_NOTES = 
-			"If you exported this diagram from another modeling tool " + 
-			"the cause of this problem may be related to that tool export " + 
-			"functionality. If not, please file a <a href=\"" + FILE_BUG_REPORTS_LINK + "\">bug report</a>.";
+			"If you exported this diagram from another modeling tool, " + 
+			"the cause of this problem may be related to " + 
+			"the export functionality of that tool. If not, please file a <a href=\"" + FILE_BUG_REPORTS_LINK + "\">bug report</a>.";
 	
 	private static final String DETAILS_NOTES = 
 			"Refer to the error log for details or use the context menu to copy the stack traces of an issue.";

@@ -641,6 +641,11 @@ public class ModelImport {
 			AbstractDiagramElementHandler<T> flowNodeShapeHandler) {
 		
 		DiagramElement diagramElement = getDiagramElement(flowElement);
+		
+		if (diagramElement == null) {
+			return null;
+		}
+		
 		PictogramElement pictogramElement = flowNodeShapeHandler.handleDiagramElement(flowElement, diagramElement, container);
 		
 		if (pictogramElement != null) {
@@ -766,11 +771,17 @@ public class ModelImport {
 		return featureProvider;
 	}
 	
+	/**
+	 * 
+	 * @param bpmnElement
+	 * @return null if no diagram element was found, a warning will be added in this case
+	 */
 	public DiagramElement getDiagramElement(BaseElement bpmnElement) {
 		DiagramElement element = diagramElementMap.get(bpmnElement.getId());
 		if (element == null) {
-			UnmappedElementException exception = new UnmappedElementException("Diagram element not found", bpmnElement);
-			logAndThrow(exception);
+			UnmappedElementException exception = new UnmappedElementException("Diagram element not found, element will not be shown", bpmnElement);
+			log(exception);
+			return null;
 		}
 		return element;
 	}
