@@ -58,7 +58,7 @@ public class ModelProblemsDialog extends TitleAreaDialog {
 	
 	private static final String FILE_BUG_REPORTS_NOTES = 
 			"If you exported this diagram from another modeling tool " + 
-			"the cause of this problem may be related to that tools export " + 
+			"the cause of this problem may be related to that tool export " + 
 			"functionality. If not, please file a <a href=\"" + FILE_BUG_REPORTS_LINK + "\">bug report</a>.";
 	
 	private static final String DETAILS_NOTES = 
@@ -70,7 +70,7 @@ public class ModelProblemsDialog extends TitleAreaDialog {
 		setShellStyle(SWT.MIN | SWT.TITLE | SWT.PRIMARY_MODAL);
 		setHelpAvailable(false);
 	}
-
+	
 	public void setException(ImportException exception) {
 		this.exception = exception;
 	}
@@ -82,6 +82,9 @@ public class ModelProblemsDialog extends TitleAreaDialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		
+	  // Set the dialog header
+	  getShell().setText("Some problems occured");
+	  
 		// top level composite for the dialog area
 		Composite outerComposite = createOuterComposite(parent);
 		

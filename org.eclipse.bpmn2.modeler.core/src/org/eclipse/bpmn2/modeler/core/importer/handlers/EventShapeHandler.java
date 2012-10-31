@@ -19,6 +19,7 @@ import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
+import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -58,4 +59,10 @@ public class EventShapeHandler extends FlowNodeShapeHandler {
 	  return eventContainer;
 	}
 	
+  @Override
+  protected void setSize(AddContext context, BPMNShape shape, FlowNode bpmnElement, ContainerShape targetContainer) {
+    super.setSize(context, shape, bpmnElement, targetContainer);
+    GraphicsUtil.setEventSize(context.getWidth(), context.getHeight(), getDiagram(targetContainer));
+  }
+
 }

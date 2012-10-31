@@ -12,6 +12,9 @@ package org.eclipse.bpmn2.modeler.core.importer.handlers;
 
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 
 /**
  * 
@@ -23,5 +26,18 @@ public class FlowNodeShapeHandler extends AbstractShapeHandler<FlowNode> {
 	public FlowNodeShapeHandler(ModelImport bpmn2ModelImport) {
 		super(bpmn2ModelImport);
 	}
+	
+  protected Diagram getDiagram(Shape shape) {
+    if (shape instanceof Diagram) {
+      return (Diagram) shape;
+    }
+    ContainerShape parent = shape.getContainer();
+    if (parent != null) {
+      return getDiagram(parent);
+    }
+    return null;
+  }
+	
+	
 
 }
