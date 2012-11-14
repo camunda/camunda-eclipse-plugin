@@ -4,18 +4,21 @@ import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAsse
 import static org.eclipse.bpmn2.modeler.core.test.util.operations.ShapeOperation.move;
 import static org.junit.Assert.assertEquals;
 import junit.framework.Assert;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.ShapeUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
+import org.eclipse.graphiti.services.IPeLayoutService;
 import org.junit.Test;
 
 /**
@@ -142,6 +145,64 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(processShape).doesNotHaveChild(userTaskShape);		
 		assertThat(userTaskShape).hasParentModelElement(subProcessElement);
 		
+	}
+
+	@Test
+	@DiagramResource
+	public void testMoveTaskVerticalLayout() {
+	   Shape taskShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_1");
+	   ContainerShape participantShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "Participant_1");
+	   
+	   FreeFormConnection seq1Connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+	   FreeFormConnection seq2Connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
+	    
+	   assertThat(seq1Connection.getBendpoints()).isEmpty();
+	   assertThat(seq2Connection.getBendpoints()).isEmpty();
+	   
+	   move(taskShape, diagramTypeProvider)
+	    .by(0 , 180)
+	    .toContainer(participantShape)
+	    .execute();
+
+	   
+	   IPeLayoutService peLayout = Graphiti.getPeLayoutService();
+	   
+	   ILocation seq1StartLoc = peLayout.getLocationRelativeToDiagram(seq1Connection.getStart());
+	   assertThat(seq1StartLoc.getX()).isEqualTo(216);
+	   assertThat(seq1StartLoc.getY()).isEqualTo(165);
+	   
+	   ILocation seq1EndLoc = peLayout.getLocationRelativeToDiagram(seq1Connection.getEnd());
+     assertThat(seq1EndLoc.getX()).isEqualTo(320);
+     assertThat(seq1EndLoc.getY()).isEqualTo(345);
+	   
+     assertThat(seq1Connection.getBendpoints().size()).isEqualTo(2);
+     
+     Point seq1FirstPoint = seq1Connection.getBendpoints().get(0);
+     assertThat(seq1FirstPoint.getX()).isEqualTo(372);
+     assertThat(seq1FirstPoint.getY()).isEqualTo(165);
+     
+     Point seq1SecondPoint = seq1Connection.getBendpoints().get(1);
+     assertThat(seq1SecondPoint.getX()).isEqualTo(372);
+     assertThat(seq1SecondPoint.getY()).isEqualTo(345);     
+     
+     ILocation seq2StartLoc = peLayout.getLocationRelativeToDiagram(seq1Connection.getStart());
+     assertThat(seq2StartLoc.getX()).isEqualTo(430);
+     assertThat(seq2StartLoc.getY()).isEqualTo(345);
+     
+     ILocation seq2EndLoc = peLayout.getLocationRelativeToDiagram(seq1Connection.getEnd());
+     assertThat(seq2EndLoc.getX()).isEqualTo(534);
+     assertThat(seq2EndLoc.getY()).isEqualTo(165);
+     
+     assertThat(seq2Connection.getBendpoints().size()).isEqualTo(2);
+     
+     Point seq2FirstPoint = seq2Connection.getBendpoints().get(0);
+     assertThat(seq2FirstPoint.getX()).isEqualTo(482);
+     assertThat(seq2FirstPoint.getY()).isEqualTo(345);
+     
+     Point seq2SecondPoint = seq2Connection.getBendpoints().get(1);
+     assertThat(seq2SecondPoint.getX()).isEqualTo(482);
+     assertThat(seq2SecondPoint.getY()).isEqualTo(165);     
+     
 	}
 
 }
