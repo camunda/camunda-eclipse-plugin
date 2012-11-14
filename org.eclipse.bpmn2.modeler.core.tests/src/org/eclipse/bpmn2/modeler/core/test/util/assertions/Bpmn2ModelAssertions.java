@@ -1,5 +1,6 @@
 package org.eclipse.bpmn2.modeler.core.test.util.assertions;
 
+import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -25,5 +26,9 @@ public class Bpmn2ModelAssertions extends Assertions {
 	
 	public static FreeFormConnectionAssert assertThat(FreeFormConnection connection) {
 		return new FreeFormConnectionAssert(connection);
+	}
+	
+	public static PointAssert assertThat(Point point) {
+		return new PointAssert(point);
 	}
 }
