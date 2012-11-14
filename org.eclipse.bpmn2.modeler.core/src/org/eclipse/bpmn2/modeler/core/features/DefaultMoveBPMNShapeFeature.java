@@ -54,12 +54,21 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 	
 	@Override
 	protected void postMoveShape(IMoveShapeContext context) {
-		PictogramElement shapeElement = context.getPictogramElement();
+		PictogramElement shape = context.getPictogramElement();
 		BPMNShape bpmnShape = DIUtils.getShape(context.getPictogramElement());
 		
-		DIUtils.updateDIShape(shapeElement, bpmnShape);
+		// update di
+		DIUtils.updateDIShape(shape, bpmnShape);
 
-		Shape shape = context.getShape();
+		// move label after the shape has been moved
+		moveLabel(shape, bpmnShape);
+		
+		// perform actual reconnect of edges
+		AnchorUtil.reConnect(shape, getDiagram());
+	}
+
+	private void moveLabel(PictogramElement shape, BPMNShape bpmnShape) {
+		
 		Object[] node = getAllBusinessObjectsForPictogramElement(shape);
 		
 		for (Object object : node) {
@@ -89,15 +98,10 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 					catch(Exception e){
 						new RuntimeException("Composition of label container is not as expected");
 					}
-				}else if (isLabel) {
+				} else if (isLabel) {
 					DIUtils.updateDILabel((ContainerShape) element, bpmnShape);
 				}
 			}
-			
-			if (object instanceof BPMNShape || object instanceof BPMNEdge) {
-				AnchorUtil.reConnect((DiagramElement) object, getDiagram());
-			}
 		}
-		
 	}
 }

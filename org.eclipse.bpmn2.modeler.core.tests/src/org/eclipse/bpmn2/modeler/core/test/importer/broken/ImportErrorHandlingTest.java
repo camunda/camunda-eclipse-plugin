@@ -10,7 +10,7 @@
 
 package org.eclipse.bpmn2.modeler.core.test.importer.broken;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.fest.assertions.api.Assertions.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -22,6 +22,7 @@ import org.eclipse.bpmn2.modeler.core.importer.UnmappedElementException;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmnModelTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.fest.assertions.api.Fail;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Categories.ExcludeCategory;
@@ -96,6 +97,12 @@ public class ImportErrorHandlingTest extends AbstractImportBpmnModelTest {
 		importer.execute();
 		
 		assertThat(importer.getImportWarnings()).isNotEmpty();
+	}
+	
+	@Test
+	@DiagramResource
+	public void testMissingReferenceInDIPlane() throws Exception {
+		fail("WRITE TEST");
 	}
 
 	@Test

@@ -674,7 +674,7 @@ public class ModelImport {
 	protected void handleDIBpmnPlane(BPMNPlane plane) {
 		
 		BaseElement bpmnElement = plane.getBpmnElement();
-		if (bpmnElement.eIsProxy()) {
+		if (bpmnElement == null || bpmnElement.eIsProxy()) {
 			throw new UnmappedElementException("BPMNPlane references unexisting bpmnElement", plane);
 		}
 		

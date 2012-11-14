@@ -21,6 +21,7 @@ import java.util.Map;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.layout.BpmnElementReconnectionContext;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.datatypes.IDimension;
@@ -362,6 +363,24 @@ public class AnchorUtil {
 		return top.anchor;
 	}
 
+	/**
+	 * Reconnect a pictogram element and its edges
+	 * 
+	 * @param element
+	 * @param diagram
+	 */
+	public static void reConnect(PictogramElement element, Diagram diagram) {
+		new BpmnElementReconnectionContext(diagram).reconnect(element);
+	}
+	
+	/**
+	 * 
+	 * @param element
+	 * @param diagram
+	 * 
+	 * @deprecated Use {@link AnchorUtil#reConnect(PictogramElement, Diagram)} instead.
+	 */
+	@Deprecated
 	public static void reConnect(DiagramElement element, Diagram diagram) {
 		try {
 			ModelHandler handler = ModelHandler.getInstance(diagram);
