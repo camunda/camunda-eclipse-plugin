@@ -78,16 +78,24 @@ public abstract class AbstractTestCommand extends RecordingCommand {
 			new File(TEST_DIR).mkdir();
 			File diagramFile = new File (diagramName);
 			
-			FileOutputStream outBefore = new FileOutputStream(new File(TEST_DIR+File.separatorChar+"before."+diagramFile.getName()));
-			
-			resource.save(outBefore, Collections.emptyMap());
-			outBefore.close();
+			try {
+				FileOutputStream outBefore = new FileOutputStream(new File(TEST_DIR+File.separatorChar+"before."+diagramFile.getName()));
+				resource.save(outBefore, Collections.emptyMap());
+				outBefore.close();
+			}catch (Exception e) {
+				// We cant always write models, we have tests with broken models, wich can not be saved
+				// not checking for exception type, because they are somewhat arbitary (e.g. BasicIndexOutofBoundsException)
+			}
 			
 			test(diagramTypeProvider, diagram);
 			
-			FileOutputStream outAfter = new FileOutputStream(new File(TEST_DIR+File.separatorChar+"after."+diagramFile.getName()));
-			resource.save(outAfter, Collections.emptyMap());
-			outAfter.close();
+			try {
+				FileOutputStream outAfter = new FileOutputStream(new File(TEST_DIR+File.separatorChar+"after."+diagramFile.getName()));
+				resource.save(outAfter, Collections.emptyMap());
+				outAfter.close();
+			}catch (Exception e) {
+				// We cant always write models, we have tests with broken models, wich can not be saved, see above
+			}
 			
 		} catch (RuntimeException e) {
 			this.recordedException = e;

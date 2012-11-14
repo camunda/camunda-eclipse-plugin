@@ -132,7 +132,7 @@ public class ModelImport {
 		EList<EObject> contents = resource.getContents();
 		
 		if (contents.isEmpty()) {
-			throw new InvalidContentException("No document root in resource bundle");
+			throw new ResourceImportException("No document root in resource bundle");
 		} else {
 			DocumentRoot documentRoot = (DocumentRoot) contents.get(0);
 			handleDocumentRoot(documentRoot);

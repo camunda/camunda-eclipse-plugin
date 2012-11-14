@@ -24,6 +24,7 @@ import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Categories.ExcludeCategory;
 
 /**
  * 
@@ -33,18 +34,11 @@ import org.junit.Test;
  */
 public class ImportErrorHandlingTest extends AbstractImportBpmnModelTest {
 
-	@Test
+	@Test(expected=ResourceImportException.class)
 	@DiagramResource
 	public void testNoXml() throws Exception {
-		
-		try {
-			ModelImport importer = new ModelImport(diagramTypeProvider, resource);
-			importer.execute();
-			
-			Assert.fail("Expected import exception to be thrown");
-		} catch (ResourceImportException e) {
-			// expected
-		}
+		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		importer.execute();
 	}
 	
 	@Test

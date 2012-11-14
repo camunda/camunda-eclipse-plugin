@@ -23,6 +23,10 @@ public class ResourceImportException extends ImportException {
 	
 	private Diagnostic diagnostic;
 	
+	public ResourceImportException(String message) {
+		super(message);
+	}
+	
 	public ResourceImportException(String message, Diagnostic diagnostic) {
 		super(message);
 		
