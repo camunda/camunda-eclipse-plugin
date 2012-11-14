@@ -3,15 +3,19 @@ package org.eclipse.bpmn2.modeler.core.test.feature.move;
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.eclipse.bpmn2.modeler.core.test.util.operations.ShapeOperation.move;
 import static org.junit.Assert.assertEquals;
+import junit.framework.Assert;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.ShapeUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
+import org.eclipse.graphiti.services.Graphiti;
 import org.junit.Test;
 
 /**
@@ -20,6 +24,14 @@ import org.junit.Test;
  * 
  */
 public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
+	
+	protected void assertPointEqual(Point expected, Point actual) {
+		if (expected.getX() == actual.getX() && expected.getY() == actual.getY()) {
+			
+		}else {
+			Assert.failNotEquals("Points not equal", expected, actual);
+		}
+	}
 	
 	@Test
 	@DiagramResource
@@ -32,19 +44,50 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		.toContainer(laneShape)
 		.execute();
 		
-		// The MoveFlowNodeFeature will call AnchorUtil.reConnect, which will in turn recalculate the
-		// boundary anchors to update them, we need to hook in there
-		
-		// see also DefaultMoveBendPointFeature to see how a bend point is created 
-		
 		FreeFormConnection seq2Connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
+		FreeFormConnection seq3Connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+		FreeFormConnection seq7Connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_7");
 		
-//		org.eclipse.dd.dc.Point point = DcFactory.eINSTANCE.createPoint();
-//		point.setX(10);
-//		point.setY(20);
-//		
-//		DIUtils.addBendPoint(seq2Connection, point);
-		//assertEquals(2, seq2Connection.getBendpoints().size());
+		// check incoming sequence flow
+		assertEquals(2, seq2Connection.getBendpoints().size());
+		
+		// check bendboints coordiantes
+		assertPointEqual(Graphiti.getGaService().createPoint(420, 229), seq2Connection.getBendpoints().get(0));
+		assertPointEqual(Graphiti.getGaService().createPoint(420, 144), seq2Connection.getBendpoints().get(1));
+		
+		// start anchor must be centered on the right side
+		assertEquals(110, ((FixPointAnchor) seq2Connection.getStart()).getLocation().getX());
+		assertEquals(25, ((FixPointAnchor) seq2Connection.getStart()).getLocation().getY());
+
+		// end anchor must be centered on the left side
+		assertEquals(0, ((FixPointAnchor) seq2Connection.getEnd()).getLocation().getX());
+		assertEquals(25, ((FixPointAnchor) seq2Connection.getEnd()).getLocation().getY());
+		
+		//check outgoing sequence flow left
+		assertEquals(2, seq3Connection.getBendpoints().size());
+		
+		assertPointEqual(Graphiti.getGaService().createPoint(511, 144), seq3Connection.getBendpoints().get(0));
+		assertPointEqual(Graphiti.getGaService().createPoint(511, 229), seq3Connection.getBendpoints().get(1));
+
+		// start anchor must be centered on the right side
+		assertEquals(51, ((FixPointAnchor) seq3Connection.getStart()).getLocation().getX());
+		assertEquals(25, ((FixPointAnchor) seq3Connection.getStart()).getLocation().getY());
+		
+		// end anchor must be centered on the left side
+		assertEquals(0, ((FixPointAnchor) seq3Connection.getEnd()).getLocation().getX());
+		assertEquals(25, ((FixPointAnchor) seq3Connection.getEnd()).getLocation().getY());
+		
+		//check outgoing sequence flow bottom
+		assertEquals(1, seq7Connection.getBendpoints().size());
+		assertPointEqual(Graphiti.getGaService().createPoint(473, 330), seq7Connection.getBendpoints().get(0));
+		
+		//start anchor must be centered at the bottom side
+		assertEquals(25, ((FixPointAnchor) seq7Connection.getStart()).getLocation().getX());
+		assertEquals(51, ((FixPointAnchor) seq7Connection.getStart()).getLocation().getY());
+				
+		// end anchor must be centered on the left side
+		assertEquals(0, ((FixPointAnchor) seq7Connection.getEnd()).getLocation().getX());
+		assertEquals(25, ((FixPointAnchor) seq7Connection.getEnd()).getLocation().getY());
 	}
 	
 	@Test
