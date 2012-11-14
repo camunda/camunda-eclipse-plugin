@@ -1,5 +1,8 @@
 package org.eclipse.bpmn2.modeler.core.test;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.bpmn2.Definitions;
@@ -70,7 +73,17 @@ public abstract class AbstractTestCommand extends RecordingCommand {
 				}
 			}
 			
+			FileOutputStream outBefore = new FileOutputStream(new File("testResource_before.bpmn"));
+			diagram.getChildren();
+			resource.save(outBefore, Collections.emptyMap());
+			outBefore.close();
+			
 			test(diagramTypeProvider, diagram);
+			
+			FileOutputStream outAfter = new FileOutputStream(new File("testResource_after.bpmn"));
+			resource.save(outAfter, Collections.emptyMap());
+			outAfter.close();
+			
 			
 		} catch (RuntimeException e) {
 			this.recordedException = e;

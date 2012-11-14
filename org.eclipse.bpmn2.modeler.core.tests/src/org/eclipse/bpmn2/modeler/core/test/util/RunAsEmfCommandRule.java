@@ -1,6 +1,9 @@
 package org.eclipse.bpmn2.modeler.core.test.util;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.lang.reflect.Method;
+import java.util.Collections;
 
 import org.eclipse.bpmn2.modeler.core.test.AbstractBpmnEditorTest;
 import org.eclipse.bpmn2.modeler.core.test.AbstractTestCommand;
@@ -63,10 +66,6 @@ public class RunAsEmfCommandRule implements MethodRule {
 						testCase.setDiagram(diagram);
 						
 						base.evaluate();
-						
-						// save diagram
-						// TODO: Uncomment when actually doing stuff
-						// diagramResource.save(Collections.emptyMap());
 					}
 				};
 				

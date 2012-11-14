@@ -2,6 +2,7 @@ package org.eclipse.bpmn2.modeler.core.test.feature.move;
 
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.eclipse.bpmn2.modeler.core.test.util.operations.ShapeOperation.move;
+import static org.junit.Assert.assertEquals;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
@@ -9,6 +10,7 @@ import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.ShapeUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.junit.Test;
 
@@ -18,7 +20,33 @@ import org.junit.Test;
  * 
  */
 public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
-
+	
+	@Test
+	@DiagramResource
+	public void testMoveGatewayVerticalLayout() {
+		Shape gatewayShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
+		ContainerShape laneShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "Lane_1");
+		
+		move(gatewayShape, diagramTypeProvider)
+		.by(0 , -85)
+		.toContainer(laneShape)
+		.execute();
+		
+		// The MoveFlowNodeFeature will call AnchorUtil.reConnect, which will in turn recalculate the
+		// boundary anchors to update them, we need to hook in there
+		
+		// see also DefaultMoveBendPointFeature to see how a bend point is created 
+		
+		FreeFormConnection seq2Connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
+		
+//		org.eclipse.dd.dc.Point point = DcFactory.eINSTANCE.createPoint();
+//		point.setX(10);
+//		point.setY(20);
+//		
+//		DIUtils.addBendPoint(seq2Connection, point);
+		//assertEquals(2, seq2Connection.getBendpoints().size());
+	}
+	
 	@Test
 	@DiagramResource
 	public void testMoveShapeOutOfContainer() {

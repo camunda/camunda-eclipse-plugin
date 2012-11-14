@@ -33,6 +33,12 @@ public class MoveFlowNodeOperation extends ShapeOperation<MoveShapeContext, Move
 	public MoveFlowNodeOperation by(int x, int y) {
 		context.setDeltaX(x);
 		context.setDeltaY(y);
+		
+		// the delta information is not used in the Graphiti default implementations
+		// context x / y should contain the new coordinates, Graphiti will calculate the delta itself
+		context.setX(context.getShape().getGraphicsAlgorithm().getX()+x);
+		context.setY(context.getShape().getGraphicsAlgorithm().getY()+y);
+		
 		return this;
 	}
 	

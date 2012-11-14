@@ -86,7 +86,7 @@ public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 		}
 		super.postMoveShape(context);
 	}
-
+	
 	private Object getSourceBo(IMoveShapeContext context, ModelHandler handler) {
 		if (context.getSourceContainer().equals(getDiagram()))
 			return handler.getFlowElementContainer(context.getSourceContainer());

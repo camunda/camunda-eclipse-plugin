@@ -372,7 +372,7 @@ public class AnchorUtil {
 					boolean sourceMatches = sourceElement.getId().equals(element.getId());
 					boolean targetMatches = targetElement.getId().equals(element.getId());
 					if (sourceMatches || targetMatches) {
-						updateEdge(bpmnEdge, diagram);
+						//updateEdge(bpmnEdge, diagram);
 					}
 				}
 			}
