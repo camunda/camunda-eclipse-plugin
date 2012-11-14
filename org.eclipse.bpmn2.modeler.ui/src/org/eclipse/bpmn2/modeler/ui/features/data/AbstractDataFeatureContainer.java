@@ -25,6 +25,7 @@ import org.eclipse.graphiti.features.ILayoutFeature;
 import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
+import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.features.impl.DefaultMoveShapeFeature;
 import org.eclipse.graphiti.features.impl.DefaultResizeShapeFeature;
@@ -54,7 +55,12 @@ public abstract class AbstractDataFeatureContainer extends BaseElementFeatureCon
 
 	@Override
 	public IMoveShapeFeature getMoveFeature(IFeatureProvider fp) {
-		return new DefaultMoveBPMNShapeFeature(fp);
+		return new DefaultMoveBPMNShapeFeature(fp) {
+		  @Override
+		  public boolean canMoveShape(IMoveShapeContext context) {
+		    return true;
+		  }
+		};
 	}
 
 	@Override

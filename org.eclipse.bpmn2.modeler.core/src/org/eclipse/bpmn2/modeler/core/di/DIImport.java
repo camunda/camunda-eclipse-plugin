@@ -18,17 +18,17 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.ChoreographyActivity;
 import org.eclipse.bpmn2.ConversationLink;
 import org.eclipse.bpmn2.DataAssociation;
+import org.eclipse.bpmn2.DataInputAssociation;
+import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.FlowNode;
-import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.MessageFlow;
@@ -70,7 +70,6 @@ import org.eclipse.graphiti.features.context.impl.AddConnectionContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.AreaContext;
 import org.eclipse.graphiti.features.context.impl.LayoutContext;
-import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
@@ -583,23 +582,56 @@ public class DIImport {
 			target = ((ConversationLink) bpmnElement).getTargetRef();
 			se = elements.get(source);
 			te = elements.get(target);
-		} else if (bpmnElement instanceof DataAssociation) {
-			// Data Association allows connections for multiple starting points, we don't support it yet
-			List<ItemAwareElement> sourceRef = ((DataAssociation) bpmnElement).getSourceRef();
-			ItemAwareElement targetRef = ((DataAssociation) bpmnElement).getTargetRef();
-			if (sourceRef != null) {
-				source = sourceRef.get(0);
-			}
-			target = targetRef;
-			do {
-				se = elements.get(source);
-				source = source.eContainer();
-			} while (se == null && source.eContainer() != null);
-			do {
-				te = elements.get(target);
-				target = target.eContainer();
-			} while (te == null && target.eContainer() != null);
+		} 
+		else if (bpmnElement instanceof DataInputAssociation) {
+      List<ItemAwareElement> sourceRef = ((DataAssociation) bpmnElement).getSourceRef();
+      ItemAwareElement targetRef = ((DataAssociation) bpmnElement).getTargetRef();
+      
+      if (sourceRef != null) {
+        source = sourceRef.get(0);
+        se = elements.get(source);
+      }
+      
+      if (targetRef == null) {
+        target = bpmnElement.eContainer();
+        te = elements.get(target);
+      }
+      
 		}
+    else if (bpmnElement instanceof DataOutputAssociation) {
+      List<ItemAwareElement> sourceRef = ((DataAssociation) bpmnElement).getSourceRef();
+      ItemAwareElement targetRef = ((DataAssociation) bpmnElement).getTargetRef();
+      
+      if (targetRef != null) {
+        target = targetRef;
+        te = elements.get(target);
+      }
+      
+      if (sourceRef.isEmpty()) {
+        source = bpmnElement.eContainer();
+        se = elements.get(source);
+      }
+      
+    }
+    else if (bpmnElement instanceof DataAssociation) {
+      // Data Association allows connections for multiple starting points, we don't support it yet
+      List<ItemAwareElement> sourceRef = ((DataAssociation) bpmnElement).getSourceRef();
+      ItemAwareElement targetRef = ((DataAssociation) bpmnElement).getTargetRef();
+    
+      if (sourceRef != null) {
+        source = sourceRef.get(0);
+      }
+      
+      target = targetRef;
+      do {
+        se = elements.get(source);
+        source = source.eContainer();
+      } while (se == null && source.eContainer() != null);
+      do {
+        te = elements.get(target);
+        target = target.eContainer();
+      } while (targetRef != null && te == null && target.eContainer() != null);
+    }
 
 		ModelUtil.addID(bpmnElement);
 		

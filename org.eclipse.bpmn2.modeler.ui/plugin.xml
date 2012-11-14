@@ -432,6 +432,7 @@
 			<!-- connections -->
 			<enable object="SequenceFlow"/>
 			<enable object="Association"/>
+			<enable object="DataAssociation"/>
 
 			<!-- events -->
 			<enable object="StartEvent"/>

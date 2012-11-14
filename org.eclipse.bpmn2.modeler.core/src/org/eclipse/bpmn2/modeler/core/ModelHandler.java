@@ -16,18 +16,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Artifact;
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.Choreography;
 import org.eclipse.bpmn2.ChoreographyTask;
 import org.eclipse.bpmn2.Collaboration;
 import org.eclipse.bpmn2.ConditionalEventDefinition;
 import org.eclipse.bpmn2.ConversationLink;
 import org.eclipse.bpmn2.ConversationNode;
+import org.eclipse.bpmn2.DataAssociation;
 import org.eclipse.bpmn2.DataInput;
+import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.DataOutput;
+import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.EndEvent;
@@ -47,6 +52,7 @@ import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.SubProcess;
+import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNPlane;
@@ -646,6 +652,32 @@ public class ModelHandler {
 		association.setTargetRef(target);
 		return association;
 	}
+	
+	 public DataAssociation createDataAssociation(BaseElement source, BaseElement target) {
+	   DataAssociation dataAssocation = null;
+	    if (source instanceof ItemAwareElement) {
+	      dataAssocation = create(DataInputAssociation.class);
+	      dataAssocation.getSourceRef().add((ItemAwareElement) source);
+	      if (target instanceof Activity) {
+	        Activity activity = (Activity) target;
+	        activity.getDataInputAssociations().add((DataInputAssociation) dataAssocation);
+	      } else if (target instanceof ThrowEvent) {
+	        ThrowEvent throwEvent = (ThrowEvent) target;
+	        throwEvent.getDataInputAssociation().add((DataInputAssociation) dataAssocation);
+	      }
+	    } else if (target instanceof ItemAwareElement) {
+	      dataAssocation = create(DataOutputAssociation.class);
+	      dataAssocation.setTargetRef((ItemAwareElement) target);
+	       if (source instanceof Activity) {
+	          Activity activity = (Activity) source;
+	          activity.getDataOutputAssociations().add((DataOutputAssociation) dataAssocation);
+	        } else if (source instanceof CatchEvent) {
+	          CatchEvent throwEvent = (CatchEvent) source;
+	          throwEvent.getDataOutputAssociation().add((DataOutputAssociation) dataAssocation);
+	        }
+	    }
+	    return dataAssocation;
+	  }
 
 	private Collaboration getCollaboration() {
 		final List<RootElement> rootElements = getDefinitions().getRootElements();
