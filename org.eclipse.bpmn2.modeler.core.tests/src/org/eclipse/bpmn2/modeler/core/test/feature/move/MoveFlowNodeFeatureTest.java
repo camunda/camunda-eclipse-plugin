@@ -1,10 +1,9 @@
 package org.eclipse.bpmn2.modeler.core.test.feature.move;
 
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
+
 import static org.eclipse.bpmn2.modeler.core.test.util.operations.ShapeOperation.move;
 import static org.junit.Assert.assertEquals;
-import junit.framework.Assert;
-import static org.fest.assertions.api.Assertions.assertThat;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
@@ -24,17 +23,9 @@ import org.junit.Test;
 /**
  * 
  * @author Daniel Meyer
- * 
+ * @author Nico Rehwaldt
  */
 public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
-	
-	protected void assertPointEqual(Point expected, Point actual) {
-		if (expected.getX() == actual.getX() && expected.getY() == actual.getY()) {
-			
-		}else {
-			Assert.failNotEquals("Points not equal", expected, actual);
-		}
-	}
 	
 	@Test
 	@DiagramResource
@@ -55,8 +46,9 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertEquals(2, seq2Connection.getBendpoints().size());
 		
 		// check bendboints coordiantes
-		assertPointEqual(Graphiti.getGaService().createPoint(420, 229), seq2Connection.getBendpoints().get(0));
-		assertPointEqual(Graphiti.getGaService().createPoint(420, 144), seq2Connection.getBendpoints().get(1));
+		assertThat(seq2Connection.getBendpoints().get(0)).isEqualTo(point(420, 229));
+		
+		assertThat(seq2Connection.getBendpoints().get(1)).isEqualTo(point(420, 144));
 		
 		// start anchor must be centered on the right side
 		assertEquals(110, ((FixPointAnchor) seq2Connection.getStart()).getLocation().getX());
@@ -69,8 +61,8 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		//check outgoing sequence flow left
 		assertEquals(2, seq3Connection.getBendpoints().size());
 		
-		assertPointEqual(Graphiti.getGaService().createPoint(511, 144), seq3Connection.getBendpoints().get(0));
-		assertPointEqual(Graphiti.getGaService().createPoint(511, 229), seq3Connection.getBendpoints().get(1));
+		assertThat(seq3Connection.getBendpoints().get(0)).isEqualTo(point(511, 144));
+		assertThat(seq3Connection.getBendpoints().get(1)).isEqualTo(point(511, 229));
 
 		// start anchor must be centered on the right side
 		assertEquals(51, ((FixPointAnchor) seq3Connection.getStart()).getLocation().getX());
@@ -82,7 +74,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		
 		//check outgoing sequence flow bottom
 		assertEquals(1, seq7Connection.getBendpoints().size());
-		assertPointEqual(Graphiti.getGaService().createPoint(473, 330), seq7Connection.getBendpoints().get(0));
+		assertThat(seq7Connection.getBendpoints().get(0)).isEqualTo(point(473, 330));
 		
 		//start anchor must be centered at the bottom side
 		assertEquals(25, ((FixPointAnchor) seq7Connection.getStart()).getLocation().getX());
@@ -205,4 +197,29 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
      
 	}
 
+	@Test
+	@DiagramResource
+	public void testMoveStartEventVerticalLayoutSequenceFlow() {
+		Shape gatewayShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "StartEvent_1");
+		
+		move(gatewayShape, diagramTypeProvider)
+			.by(0 , 100)
+			.execute();
+		
+		// The MoveFlowNodeFeature will call AnchorUtil.reConnect, which will in turn recalculate the
+		// boundary anchors to update them, we need to hook in there
+		
+		// see also DefaultMoveBendPointFeature to see how a bend point is created 
+		
+		FreeFormConnection connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+		
+		assertThat(connection).hasNoDiagonalEdges();
+		assertThat(connection).hasBendpointCount(2);
+	}
+
+	// helpers /////////////////////////////////////
+	
+	private Point point(int x, int y) {
+		return Graphiti.getGaService().createPoint(x, y);
+	}
 }

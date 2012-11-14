@@ -38,7 +38,7 @@ public abstract class ShapeOperation<C extends IContext, F extends IFeature> {
 	}
 	
 	public static MoveFlowNodeOperation move(Shape shape, IDiagramTypeProvider diagramTypeProvider) {
-		return new MoveFlowNodeOperation(shape, diagramTypeProvider);
+		return new MoveFlowNodeOperation(shape, diagramTypeProvider).toContainer(shape.getContainer());
 	}
 
 }
