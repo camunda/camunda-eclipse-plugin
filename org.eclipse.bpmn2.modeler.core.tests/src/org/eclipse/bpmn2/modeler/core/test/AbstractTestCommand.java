@@ -30,6 +30,8 @@ public abstract class AbstractTestCommand extends RecordingCommand {
 
 	protected Throwable recordedException;
 	
+	private static final String TEST_DIR = "target/test";
+	
 	public AbstractTestCommand(AbstractBpmnEditorTest importBpmnModelTest, String diagramName) {
 		super(importBpmnModelTest.getEditingDomain());
 		
@@ -72,18 +74,20 @@ public abstract class AbstractTestCommand extends RecordingCommand {
 					}
 				}
 			}
+
+			new File(TEST_DIR).mkdir();
+			File diagramFile = new File (diagramName);
 			
-			FileOutputStream outBefore = new FileOutputStream(new File("testResource_before.bpmn"));
-			diagram.getChildren();
+			FileOutputStream outBefore = new FileOutputStream(new File(TEST_DIR+File.separatorChar+"before."+diagramFile.getName()));
+			
 			resource.save(outBefore, Collections.emptyMap());
 			outBefore.close();
 			
 			test(diagramTypeProvider, diagram);
 			
-			FileOutputStream outAfter = new FileOutputStream(new File("testResource_after.bpmn"));
+			FileOutputStream outAfter = new FileOutputStream(new File(TEST_DIR+File.separatorChar+"after."+diagramFile.getName()));
 			resource.save(outAfter, Collections.emptyMap());
 			outAfter.close();
-			
 			
 		} catch (RuntimeException e) {
 			this.recordedException = e;
