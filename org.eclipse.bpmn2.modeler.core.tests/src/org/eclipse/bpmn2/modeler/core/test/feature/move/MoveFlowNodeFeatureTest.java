@@ -2,7 +2,6 @@ package org.eclipse.bpmn2.modeler.core.test.feature.move;
 
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.eclipse.bpmn2.modeler.core.test.util.operations.ShapeOperation.move;
-import static org.junit.Assert.assertEquals;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
@@ -99,6 +98,46 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(processShape).doesNotHaveChild(userTaskShape);		
 		assertThat(userTaskShape).hasParentModelElement(subProcessElement);
 		
+	}
+
+//	@Test
+//	@DiagramResource
+//	public void testMoveStartEventVerticalLayoutSequenceFlow() {
+//		Shape gatewayShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "StartEvent_1");
+//		
+//		move(gatewayShape, diagramTypeProvider)
+//			.by(0 , 100)
+//			.execute();
+//		
+//		// The MoveFlowNodeFeature will call AnchorUtil.reConnect, which will in turn recalculate the
+//		// boundary anchors to update them, we need to hook in there
+//		
+//		// see also DefaultMoveBendPointFeature to see how a bend point is created 
+//		
+//		FreeFormConnection connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+//		
+//		assertThat(connection).hasNoDiagonalEdges();
+//		assertThat(connection).hasBendpoints(2);
+//	}
+
+	@Test
+	@DiagramResource
+	public void testMoveStartEventVerticalLayoutSequenceFlow2() {
+		Shape gatewayShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "StartEvent_1");
+//		
+//		move(gatewayShape, diagramTypeProvider)
+//			.by(0 , 100)
+//			.execute();
+		
+		// The MoveFlowNodeFeature will call AnchorUtil.reConnect, which will in turn recalculate the
+		// boundary anchors to update them, we need to hook in there
+		
+		// see also DefaultMoveBendPointFeature to see how a bend point is created 
+		
+		FreeFormConnection connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+		
+		assertThat(connection).hasNoDiagonalEdges();
+		assertThat(connection).hasBendpointCount(2);
 	}
 
 }
