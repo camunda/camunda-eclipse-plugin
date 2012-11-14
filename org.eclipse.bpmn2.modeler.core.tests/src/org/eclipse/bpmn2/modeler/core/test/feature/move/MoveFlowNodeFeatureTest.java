@@ -12,6 +12,7 @@ import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
+import org.eclipse.graphiti.services.Graphiti;
 import org.junit.Test;
 
 /**
@@ -20,6 +21,64 @@ import org.junit.Test;
  * 
  */
 public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
+	
+
+	@Test
+	@DiagramResource
+	public void testMoveTaskVerticalFindGatewayAnchorThreshold() {         //Shoe
+		Shape taskShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "UserTask_1");
+		ContainerShape laneShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "Lane_1");
+		
+		// Move target shape --> UserTask_1 is lower than upper edge of GateWay_1
+		move(taskShape, diagramTypeProvider)
+		.by(0 , -49)	
+		.toContainer(laneShape)
+		.execute();			
+		
+		FreeFormConnection seq3Connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");	
+		// Get y-Value of sequence start and compare
+		assertEquals(230,Graphiti.getPeLayoutService().getLocationRelativeToDiagram(seq3Connection.getStart()).getY());
+		
+		// Move target shape --> UserTask_1 is equal to upper edge of GateWay_1
+		move(taskShape, diagramTypeProvider)
+		.by(0 , -1)	
+		.toContainer(laneShape)
+		.execute();		
+		
+		seq3Connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+		Shape gatewayShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
+		// Get y-Value of sequence start and compare		
+		assertEquals((230 - (gatewayShape.getGraphicsAlgorithm().getHeight()/2)) ,Graphiti.getPeLayoutService().getLocationRelativeToDiagram(seq3Connection.getStart()).getY());
+	}	
+	
+	@Test
+	@DiagramResource
+	public void testMoveTask2VerticalLayout() {         
+		Shape taskShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "ReceiveTask_1");
+		ContainerShape laneShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "Lane_2");
+		
+		// Move target shape
+		move(taskShape, diagramTypeProvider)
+		.by(0 , 176)
+		.toContainer(laneShape)
+		.execute();
+		
+		// The MoveFlowNodeFeature will call AnchorUtil.reConnect, which will in turn recalculate the
+		// boundary anchors to update them, we need to hook in there
+		
+		// see also DefaultMoveBendPointFeature to see how a bend point is created 
+		
+		// Get bendpoints incoming sequence flow
+		FreeFormConnection seqConnection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_7");
+		// and check
+		assertEquals(1, seqConnection.getBendpoints().size());
+		assertEquals(Graphiti.getPeLayoutService().getLocationRelativeToDiagram(seqConnection.getEnd()).getY(), seqConnection.getBendpoints().get(0).getY());
+
+		// Get bendpoints outgoing sequence flow
+		seqConnection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_8");
+		// and check
+		assertEquals(2, seqConnection.getBendpoints().size());		
+	}
 	
 	@Test
 	@DiagramResource
@@ -44,7 +103,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 //		point.setY(20);
 //		
 //		DIUtils.addBendPoint(seq2Connection, point);
-		//assertEquals(2, seq2Connection.getBendpoints().size());
+		assertEquals(2, seq2Connection.getBendpoints().size());
 	}
 	
 	@Test
