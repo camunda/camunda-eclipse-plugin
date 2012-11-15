@@ -59,18 +59,27 @@ public class ConnectionReconnectionContext {
 		FreeFormConnection freeFormConnection = (FreeFormConnection) connection;
 		
 		double treshold = LayoutUtil.getLayoutTreshold(startShape, endShape);
-		if ( treshold > 0 && !(treshold == 0.0 || treshold == 1.0) && treshold < LayoutUtil.MAGIC_VALUE  ) {
-			Anchor rightAnchor = startShape.getAnchors().get(3);
+		if (treshold == 0.0 || treshold == 1.0) {
+			freeFormConnection.getBendpoints().clear();
+			return;
+		}
+		
+		if ( treshold < 1 && !(treshold == 0.0 || treshold == 1.0) && treshold > LayoutUtil.MAGIC_VALUE  ) {
+			Anchor rightAnchor = startShape.getAnchors().get(2);
 			connection.setStart(rightAnchor);
 
 			ILocation startAnchorLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(connection.getStart());
 			ILocation endAnchorLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(endAnchor);
 			
-			double midX = (endAnchorLocation.getX() - endAnchorLocation.getX()) / 2;
-			double midY = (endAnchorLocation.getY() - endAnchorLocation.getY()) / 2;
+			int midX = ((endAnchorLocation.getX() - startAnchorLocation.getX()) / 2) + startAnchorLocation.getX();
 			
-			Point center = Graphiti.getGaCreateService().createPoint((int)midX, (int)midY);
-			// TODO add points anchor vector center
+			Point firstPoint = Graphiti.getCreateService().createPoint(midX, startAnchorLocation.getY());
+			Point secondPoint = Graphiti.getCreateService().createPoint(midX, endAnchorLocation.getY());
+			
+			freeFormConnection.getBendpoints().clear();
+			
+			freeFormConnection.getBendpoints().add(firstPoint);
+			freeFormConnection.getBendpoints().add(secondPoint);
 		}
 	}
 

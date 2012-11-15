@@ -1,11 +1,11 @@
 package org.eclipse.bpmn2.modeler.core.test.layout.util;
 
-import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
+import static org.fest.assertions.api.Assertions.assertThat;
 
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.ShapeUtil;
-import org.eclipse.bpmn2.modeler.core.utils.LayoutUtil;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.junit.Test;
 
