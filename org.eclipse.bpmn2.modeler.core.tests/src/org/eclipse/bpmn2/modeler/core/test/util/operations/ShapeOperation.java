@@ -12,33 +12,15 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
  * @param <C> The {@link IContext}
  * @param <F> The {@link IFeature}
  */
-public abstract class ShapeOperation<C extends IContext, F extends IFeature> {
+public abstract class ShapeOperation<C extends IContext, F extends IFeature> extends Operation<C, F> {
 	
 	protected final Shape shape;
-	protected final IDiagramTypeProvider diagramTypeProvider;
-	protected C context;
-	protected F feature;
 	
 	public ShapeOperation(Shape shape, IDiagramTypeProvider diagramTypeProvider) {
+		super(diagramTypeProvider);
 		this.shape = shape;
-		this.diagramTypeProvider = diagramTypeProvider;
 		createFeature();
 		createContext();
-	}
-	
-	protected abstract void createContext();
-	protected abstract void createFeature();
-	
-	protected void executeFeature() {
-		diagramTypeProvider.getDiagramEditor().executeFeature(feature, context);
-	}
-	
-	public void execute() {
-		executeFeature();
-	}
-	
-	public static MoveFlowNodeOperation move(Shape shape, IDiagramTypeProvider diagramTypeProvider) {
-		return new MoveFlowNodeOperation(shape, diagramTypeProvider).toContainer(shape.getContainer());
 	}
 
 }

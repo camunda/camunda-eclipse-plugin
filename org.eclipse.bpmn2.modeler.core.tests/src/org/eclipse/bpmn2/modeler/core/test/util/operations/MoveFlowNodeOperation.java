@@ -47,5 +47,8 @@ public class MoveFlowNodeOperation extends ShapeOperation<MoveShapeContext, Move
 		return this;
 	}
 	
+	public static MoveFlowNodeOperation move(Shape shape, IDiagramTypeProvider diagramTypeProvider) {
+		return new MoveFlowNodeOperation(shape, diagramTypeProvider).toContainer(shape.getContainer());
+	}
 	
 }

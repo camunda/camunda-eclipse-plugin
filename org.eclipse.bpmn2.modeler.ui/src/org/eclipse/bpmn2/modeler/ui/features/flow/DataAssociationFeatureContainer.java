@@ -1,10 +1,7 @@
 package org.eclipse.bpmn2.modeler.ui.features.flow;
 
-import java.io.IOException;
-
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.DataAssociation;
 import org.eclipse.bpmn2.DataInputAssociation;
@@ -12,23 +9,19 @@ import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.di.BPMNEdge;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementConnectionFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractAddFlowFeature;
-import org.eclipse.bpmn2.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractReconnectFlowFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
-import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.bpmn2.modeler.ui.features.CreateDataAssociationFeature;
 import org.eclipse.dd.di.DiagramElement;
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReconnectionFeature;
-import org.eclipse.graphiti.features.context.ICreateConnectionContext;
 import org.eclipse.graphiti.features.context.IReconnectionContext;
 import org.eclipse.graphiti.features.context.impl.ReconnectionContext;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
@@ -81,97 +74,6 @@ public class DataAssociationFeatureContainer extends BaseElementConnectionFeatur
       return DataAssociation.class;
     }
     
-  }
-  
-  public class CreateDataAssociationFeature extends AbstractCreateFlowFeature<DataAssociation, BaseElement, BaseElement> {
-
-    public CreateDataAssociationFeature(IFeatureProvider fp) {
-      super(fp, "Data Association", "Associate item aware elements like data objects with activities and events");
-    }
-
-    @Override
-    public boolean canCreate(ICreateConnectionContext context) {
-      BaseElement sourceBo = getSourceBo(context);
-      BaseElement targetBo = getTargetBo(context);
-      if (sourceBo instanceof ItemAwareElement) {
-        if (targetBo instanceof Activity || targetBo instanceof ThrowEvent) {
-          return true;
-        }
-      } else if (targetBo instanceof ItemAwareElement) {
-        if (sourceBo instanceof Activity || sourceBo instanceof CatchEvent) {
-          return true;
-        }
-      }
-      return false;
-    }
-    
-    @Override
-    protected String getStencilImageId() {
-      return ImageProvider.IMG_16_ASSOCIATION;
-    }
-
-    @Override
-    protected Class<BaseElement> getSourceClass() {
-      return BaseElement.class;
-    }
-
-    @Override
-    protected Class<BaseElement> getTargetClass() {
-      return BaseElement.class;
-    }
-
-    @Override
-    protected BaseElement getSourceBo(ICreateConnectionContext context) {
-      Anchor anchor = context.getSourceAnchor();
-      if (anchor != null && anchor.getParent() instanceof Shape) {
-        Shape shape = (Shape) anchor.getParent();
-        Connection conn = AnchorUtil.getConnectionPointOwner(shape);
-        if (conn!=null) {
-          return BusinessObjectUtil.getFirstElementOfType(conn, getTargetClass());
-        }
-        return BusinessObjectUtil.getFirstElementOfType(shape, getTargetClass());
-      }
-      return null;
-    }
-
-    @Override
-    protected BaseElement getTargetBo(ICreateConnectionContext context) {
-      Anchor anchor = context.getTargetAnchor();
-      if (anchor != null && anchor.getParent() instanceof Shape) {
-        Shape shape = (Shape) anchor.getParent();
-        Connection conn = AnchorUtil.getConnectionPointOwner(shape);
-        if (conn!=null) {
-          return BusinessObjectUtil.getFirstElementOfType(conn, getTargetClass());
-        }
-        return BusinessObjectUtil.getFirstElementOfType(shape, getTargetClass());
-      }
-      return null;
-    }
-
-    @Override
-    public DataAssociation createBusinessObject(ICreateConnectionContext context) {
-      DataAssociation bo = null;
-      try {
-        ModelHandler mh = ModelHandler.getInstance(getDiagram());
-        BaseElement source = getSourceBo(context);
-        BaseElement target = getTargetBo(context);
-        bo = mh.createDataAssociation(source, target);
-        putBusinessObject(context, bo);
-
-      } catch (IOException e) {
-      }
-      return bo;
-    }
-    
-    @Override
-    public String getCreateName() {
-        return "Data Association";
-    }
-
-    @Override
-    public EClass getBusinessObjectClass() {
-      return Bpmn2Package.eINSTANCE.getDataAssociation();
-    }
   }
   
   public static class ReconnectDataAssociationFeature extends AbstractReconnectFlowFeature {
