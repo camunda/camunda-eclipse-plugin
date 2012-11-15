@@ -3,13 +3,13 @@ package org.eclipse.bpmn2.modeler.core.layout;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.Gateway;
-import org.eclipse.draw2d.geometry.Vector;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.ILocation;
-import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 
@@ -52,7 +52,26 @@ public class ConnectionReconnectionContext {
 	}
 
 	private void reconnectActivity() {
+		if (!(connection instanceof FreeFormConnection)) {
+			throw new IllegalArgumentException("Unable to reconnection non FreeFormConnection");
+		}
+		
+		FreeFormConnection freeFormConnection = (FreeFormConnection) connection;
+		
+		double treshold = LayoutUtil.getLayoutTreshold(startShape, endShape);
+		if ( treshold > 0 && !(treshold == 0.0 || treshold == 1.0) && treshold < LayoutUtil.MAGIC_VALUE  ) {
+			Anchor rightAnchor = startShape.getAnchors().get(3);
+			connection.setStart(rightAnchor);
 
+			ILocation startAnchorLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(connection.getStart());
+			ILocation endAnchorLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(endAnchor);
+			
+			double midX = (endAnchorLocation.getX() - endAnchorLocation.getX()) / 2;
+			double midY = (endAnchorLocation.getY() - endAnchorLocation.getY()) / 2;
+			
+			Point center = Graphiti.getGaCreateService().createPoint((int)midX, (int)midY);
+			// TODO add points anchor vector center
+		}
 	}
 
 	private void reconnectGateway() {

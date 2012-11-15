@@ -9,6 +9,8 @@ import org.eclipse.graphiti.services.Graphiti;
 
 public class LayoutUtil {
 	
+	public static final double MAGIC_VALUE = 0.682;
+	
 	public static double getLayoutTreshold(Shape startShape, Shape endShape) {
 		
 		Point startShapeCenter = getCenter(startShape);
@@ -17,11 +19,16 @@ public class LayoutUtil {
 		Vector shapeVector = new Vector(endShapeCenter.getX() - startShapeCenter.getX(), endShapeCenter.getY() - startShapeCenter.getY());
 		Vector unitXVector = new Vector (1,0);
 		
-		double dotResult = shapeVector.getDivided(shapeVector.getLength()).getAngle(unitXVector);
-		return dotResult;
+		double product = Math.floor(shapeVector.getDivided(shapeVector.getLength()).getDotProduct(unitXVector) * 1000) / 1000;
+		return product;
 	}
 	
 	private static Point getCenter(Shape shape) {
+		
+		if (shape == null) {
+			throw new NullPointerException("Argument is null");
+		}
+		
 		ILocation shapeLocation = Graphiti.getPeLayoutService().getLocationRelativeToDiagram(shape);
 		GraphicsAlgorithm shapeGa = shape.getGraphicsAlgorithm();
 		Point shapeCenter = Graphiti.getGaService().createPoint(shapeLocation.getX() + shapeGa.getWidth() / 2, shapeLocation.getY() + shapeGa.getHeight() / 2 );

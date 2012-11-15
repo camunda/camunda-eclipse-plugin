@@ -38,5 +38,9 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 		
 		double treshold4 = LayoutUtil.getLayoutTreshold(start2, task1);
 		assertThat(treshold4).isEqualTo(0.668);
+		
+		double treshold5 = LayoutUtil.getLayoutTreshold(task2, start1); // target is top right
+		assertThat(treshold5).isEqualTo(0.69);
+		
 	}
 }
