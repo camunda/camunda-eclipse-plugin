@@ -24,17 +24,19 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 		Shape start2 = ShapeUtil.findShapeByBusinessObjectId(diagram, "StartEvent_2");
 		Shape task2 = ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_2");
 
-		assertThat(LayoutUtil.getLayoutTreshold(start1, task1)).isEqualTo(-100.0);
-		assertThat(LayoutUtil.getLayoutTreshold(task1, start1)).isEqualTo(100.0);
+		assertThat(LayoutUtil.getLayoutTreshold(start1, task1)).isEqualTo(-0.683);
+		assertThat(LayoutUtil.getLayoutTreshold(task1, start1)).isEqualTo(0.682); // 45 degree
 		
 		double treshold1 = LayoutUtil.getLayoutTreshold(start2, task2);
-		assertThat(treshold1).isEqualTo(0.0);
+		assertThat(treshold1).isEqualTo(1.0);
 
 		double treshold2 = LayoutUtil.getLayoutTreshold(task1, task2);
 		assertThat(treshold2).isEqualTo(0.0);
 		
 		double treshold3 = LayoutUtil.getLayoutTreshold(task2, task1);
 		assertThat(treshold3).isEqualTo(0.0);
-
+		
+		double treshold4 = LayoutUtil.getLayoutTreshold(start2, task1);
+		assertThat(treshold4).isEqualTo(0.668);
 	}
 }

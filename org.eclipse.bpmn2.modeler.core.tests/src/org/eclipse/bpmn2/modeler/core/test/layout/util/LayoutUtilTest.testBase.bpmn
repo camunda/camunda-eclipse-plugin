@@ -15,7 +15,7 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_Task_1" bpmnElement="Task_1">
-        <dc:Bounds height="50.0" width="110.0" x="200.0" y="30.0"/>
+        <dc:Bounds height="50.0" width="110.0" x="205.0" y="35.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_StartEvent_2" bpmnElement="StartEvent_2">
         <dc:Bounds height="36.0" width="36.0" x="80.0" y="222.0"/>
@@ -24,7 +24,7 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_Task_2" bpmnElement="Task_2">
-        <dc:Bounds height="50.0" width="110.0" x="190.0" y="215.0"/>
+        <dc:Bounds height="50.0" width="110.0" x="205.0" y="215.0"/>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -17,8 +17,8 @@ public class LayoutUtil {
 		Vector shapeVector = new Vector(endShapeCenter.getX() - startShapeCenter.getX(), endShapeCenter.getY() - startShapeCenter.getY());
 		Vector unitXVector = new Vector (1,0);
 		
-		double angle = shapeVector.getAngle(unitXVector);
-		return angle;
+		double dotResult = shapeVector.getDivided(shapeVector.getLength()).getAngle(unitXVector);
+		return dotResult;
 	}
 	
 	private static Point getCenter(Shape shape) {

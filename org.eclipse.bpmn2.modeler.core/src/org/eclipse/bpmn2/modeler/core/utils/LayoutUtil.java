@@ -17,7 +17,7 @@ public class LayoutUtil {
 		Vector shapeVector = new Vector(endShapeCenter.getX() - startShapeCenter.getX(), endShapeCenter.getY() - startShapeCenter.getY());
 		Vector unitXVector = new Vector (1,0);
 		
-		double product = shapeVector.getDivided(shapeVector.getLength()).getDotProduct(unitXVector);
+		double product = Math.floor( shapeVector.getDivided(shapeVector.getLength()).getDotProduct(unitXVector) * 1000) / 1000;
 		return product;
 	}
 	
