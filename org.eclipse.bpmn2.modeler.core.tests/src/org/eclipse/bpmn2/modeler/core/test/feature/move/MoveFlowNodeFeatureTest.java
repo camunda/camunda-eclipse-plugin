@@ -42,7 +42,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		
 		FreeFormConnection seq3Connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");	
 		// Get y-Value of sequence start and compare
-		assertEquals(230,Graphiti.getPeLayoutService().getLocationRelativeToDiagram(seq3Connection.getStart()).getY());
+		assertEquals(230, Graphiti.getPeLayoutService().getLocationRelativeToDiagram(seq3Connection.getStart()).getY());
 		
 		// Move target shape --> UserTask_1 is equal to upper edge of GateWay_1
 		move(taskShape, diagramTypeProvider)
@@ -53,7 +53,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		seq3Connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
 		Shape gatewayShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
 		// Get y-Value of sequence start and compare		
-		assertEquals((230 - (gatewayShape.getGraphicsAlgorithm().getHeight()/2)) ,Graphiti.getPeLayoutService().getLocationRelativeToDiagram(seq3Connection.getStart()).getY());
+		assertEquals((231 - (gatewayShape.getGraphicsAlgorithm().getHeight()/2)) ,Graphiti.getPeLayoutService().getLocationRelativeToDiagram(seq3Connection.getStart()).getY());
 	}	
 	
 	@Test
@@ -104,9 +104,8 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertEquals(2, seq2Connection.getBendpoints().size());
 		
 		// check bendboints coordiantes
-		assertThat(seq2Connection.getBendpoints().get(0)).isEqualTo(point(420, 229));
-		
-		assertThat(seq2Connection.getBendpoints().get(1)).isEqualTo(point(420, 144));
+		assertThat(seq2Connection.getBendpoints().get(0)).isEqualTo(point(423, 230));
+		assertThat(seq2Connection.getBendpoints().get(1)).isEqualTo(point(423, 145));
 		
 		// start anchor must be centered on the right side
 		assertEquals(110, ((FixPointAnchor) seq2Connection.getStart()).getLocation().getX());
@@ -119,8 +118,8 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		//check outgoing sequence flow left
 		assertEquals(2, seq3Connection.getBendpoints().size());
 		
-		assertThat(seq3Connection.getBendpoints().get(0)).isEqualTo(point(511, 144));
-		assertThat(seq3Connection.getBendpoints().get(1)).isEqualTo(point(511, 229));
+		assertThat(seq3Connection.getBendpoints().get(0)).isEqualTo(point(523, 145));
+		assertThat(seq3Connection.getBendpoints().get(1)).isEqualTo(point(523, 230));
 
 		// start anchor must be centered on the right side
 		assertEquals(51, ((FixPointAnchor) seq3Connection.getStart()).getLocation().getX());
@@ -227,18 +226,18 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(seq1Connection.getBendpoints().size()).isEqualTo(2);
 
 		Point seq1FirstPoint = seq1Connection.getBendpoints().get(0);
-		assertThat(seq1FirstPoint.getX()).isEqualTo(372);
+		assertThat(seq1FirstPoint.getX()).isEqualTo(268);
 		assertThat(seq1FirstPoint.getY()).isEqualTo(165);
 
 		Point seq1SecondPoint = seq1Connection.getBendpoints().get(1);
-		assertThat(seq1SecondPoint.getX()).isEqualTo(372);
+		assertThat(seq1SecondPoint.getX()).isEqualTo(268);
 		assertThat(seq1SecondPoint.getY()).isEqualTo(345);
 
-		ILocation seq2StartLoc = peLayout.getLocationRelativeToDiagram(seq1Connection.getStart());
+		ILocation seq2StartLoc = peLayout.getLocationRelativeToDiagram(seq2Connection.getStart());
 		assertThat(seq2StartLoc.getX()).isEqualTo(430);
 		assertThat(seq2StartLoc.getY()).isEqualTo(345);
 
-		ILocation seq2EndLoc = peLayout.getLocationRelativeToDiagram(seq1Connection.getEnd());
+		ILocation seq2EndLoc = peLayout.getLocationRelativeToDiagram(seq2Connection.getEnd());
 		assertThat(seq2EndLoc.getX()).isEqualTo(534);
 		assertThat(seq2EndLoc.getY()).isEqualTo(165);
 
@@ -310,11 +309,11 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 
 		Point seq2FirstPoint = seq2Connection.getBendpoints().get(0);
 		assertThat(seq2FirstPoint.getX()).isEqualTo(313);
-		assertThat(seq2FirstPoint.getY()).isEqualTo(302);
+		assertThat(seq2FirstPoint.getY()).isEqualTo(303);
 
 		Point seq2SecondPoint = seq2Connection.getBendpoints().get(1);
 		assertThat(seq2SecondPoint.getX()).isEqualTo(368);
-		assertThat(seq2SecondPoint.getY()).isEqualTo(302);
+		assertThat(seq2SecondPoint.getY()).isEqualTo(303);
 
 		ILocation seq3StartLoc = peLayout.getLocationRelativeToDiagram(seq3Connection.getStart());
 		assertThat(seq3StartLoc.getX()).isEqualTo(423);

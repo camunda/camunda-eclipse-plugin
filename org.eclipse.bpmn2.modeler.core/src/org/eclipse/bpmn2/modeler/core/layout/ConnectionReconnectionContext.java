@@ -5,9 +5,6 @@ import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.graphiti.datatypes.ILocation;
-import org.eclipse.graphiti.mm.algorithms.styles.Point;
-import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -17,18 +14,12 @@ public class ConnectionReconnectionContext {
 
 	private Connection connection;
 	
-	private Anchor startAnchor;
-	private Anchor endAnchor;
-	
 	private Shape startShape;
 	private Shape endShape;
 
-	public ConnectionReconnectionContext(Connection connection, Anchor startAnchor, Anchor endAnchor,
-			Shape startShape, Shape endShape) {
+	public ConnectionReconnectionContext(Connection connection, Shape startShape, Shape endShape) {
 		
 		this.connection = connection;
-		this.startAnchor = startAnchor;
-		this.endAnchor = endAnchor;
 		this.startShape = startShape;
 		this.endShape = endShape;
 	}
@@ -36,56 +27,191 @@ public class ConnectionReconnectionContext {
 	public void reconnect() {
 		
 		EObject bpmnElement = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(startShape);
+		
+		if (!(connection instanceof FreeFormConnection)) {
+			throw new IllegalArgumentException("Unable to reconnect non FreeFormConnection");
+		}
+		
+		// TODO if you reconnect the connection manually with a shape, the anchors are not fixpoint anchors anymore,
+		// we need to fix this
+		
+		FreeFormConnection freeFormConnection = (FreeFormConnection) connection;
+		freeFormConnection.getBendpoints().clear();
+		
+		double treshold = LayoutUtil.getLayoutTreshold(startShape, endShape);
+		
 		if (bpmnElement instanceof Activity) {
-			reconnectActivity();
+			reconnectActivity(treshold, freeFormConnection);
 		}else if (bpmnElement instanceof Gateway) {
-			reconnectGateway();
+			reconnectGateway(treshold, freeFormConnection);
 		}else if (bpmnElement instanceof Event) {
-			reconnectEvent();
+			reconnectEvent(treshold, freeFormConnection);
 		}else {
 			throw new LayoutingException("Layouting unsupported BPMN element type");
 		}
 	}
+	
+	private abstract class BaseReconnectStrategy {
+		protected double treshold = 0.0;
+		FreeFormConnection freeFormConnection;
+		
+		BaseReconnectStrategy(double treshold, FreeFormConnection freeFormConnection) {
+			this.freeFormConnection = freeFormConnection;
+			this.treshold = treshold;
+		}
+		
+		protected abstract void addBendPoints();
+		
+	}
+	
+	private class LeftRightReconnectStrategy extends BaseReconnectStrategy{
+		
+		public LeftRightReconnectStrategy(double treshold, FreeFormConnection freeFormConnection) {
+			super(treshold, freeFormConnection);
+		}
+		
+		public boolean execute() {
+			if (LayoutUtil.isLeftToStartShape(startShape, endShape)) {
+				if (!LayoutUtil.anchorEqual(freeFormConnection.getStart(), LayoutUtil.getLeftAnchor(startShape))) {
+					freeFormConnection.setStart(LayoutUtil.getLeftAnchor(startShape));
+				}
+				if (!LayoutUtil.anchorEqual(freeFormConnection.getEnd(), LayoutUtil.getRightAnchor(endShape))) {
+					freeFormConnection.setEnd(LayoutUtil.getRightAnchor(endShape));
+				}
+				addBendPoints();
+				
+				return true;
 
-	private void reconnectEvent() {
-		// TODO Auto-generated method stub
+			} 
+			else if (LayoutUtil.isRightToStartShape(startShape, endShape)) {
+				if (!LayoutUtil.anchorEqual(freeFormConnection.getStart(), LayoutUtil.getRightAnchor(startShape))) {
+					freeFormConnection.setStart(LayoutUtil.getRightAnchor(startShape));
+				}
+				if (!LayoutUtil.anchorEqual(freeFormConnection.getEnd(), LayoutUtil.getLeftAnchor(endShape))) {
+					freeFormConnection.setEnd(LayoutUtil.getLeftAnchor(endShape));
+				}
+				addBendPoints();
+				
+				return true;
+			}
+			return false;
+		}
+		
+		@Override
+		protected void addBendPoints() {
+			if (treshold != 1.0) {
+				LayoutUtil.addVerticalCenteredBendpoints(freeFormConnection);
+			}
+		}
+		
+	}
+	
+	private class AboveBeneathReconnectStrategy extends BaseReconnectStrategy {
+		
+		AboveBeneathReconnectStrategy(double treshold,
+				FreeFormConnection freeFormConnection) {
+			super(treshold, freeFormConnection);
+		}
+
+		public boolean execute() {
+			if (treshold > LayoutUtil.MAGIC_VALUE) {
+				return false;
+			}
+			
+			if (LayoutUtil.isAboveStartShape(startShape, endShape)) {
+				if (!LayoutUtil.anchorEqual(freeFormConnection.getStart(), LayoutUtil.getTopAnchor(startShape))) {
+					freeFormConnection.setStart(LayoutUtil.getTopAnchor(startShape));
+				}
+				
+				if (!LayoutUtil.anchorEqual(freeFormConnection.getEnd(), LayoutUtil.getBottomAnchor(endShape))) {
+					updateAboveEndAnchor();
+				}
+				addBendPoints();
+				
+				return true;
+			}
+			else if (LayoutUtil.isBeneathStartShape(startShape, endShape)) {
+				if (!LayoutUtil.anchorEqual(freeFormConnection.getStart(), LayoutUtil.getBottomAnchor(startShape))) {
+					freeFormConnection.setStart(LayoutUtil.getBottomAnchor(startShape));
+				}
+				if (!LayoutUtil.anchorEqual(freeFormConnection.getEnd(), LayoutUtil.getTopAnchor(endShape))) {
+					updateBeneathEndAnchor();
+				}
+				addBendPoints();
+				
+				return true;
+			}
+			return false;
+		}
+		
+		@Override
+		protected void addBendPoints() {
+			if (treshold != 0.0) {
+				internalAddBendPoints();
+			}
+		}
+		
+		protected void internalAddBendPoints() {
+			LayoutUtil.addHorizontalCenteredBendpoints(freeFormConnection);
+		}
+		
+		protected void updateAboveEndAnchor() {
+			freeFormConnection.setEnd(LayoutUtil.getBottomAnchor(endShape));
+		}
+		
+		protected void updateBeneathEndAnchor() {
+			freeFormConnection.setEnd(LayoutUtil.getTopAnchor(endShape));
+		}
+	}
+	
+	private class SingleBendPointAboveBeneathStrategy extends AboveBeneathReconnectStrategy {
+
+		SingleBendPointAboveBeneathStrategy(double treshold,
+				FreeFormConnection freeFormConnection) {
+			super(treshold, freeFormConnection);
+		}
+		
+		@Override
+		protected void internalAddBendPoints() {
+			LayoutUtil.addRectangularBendpoint(freeFormConnection);
+		}
+		
+		@Override
+		protected void updateAboveEndAnchor() {
+			freeFormConnection.setEnd(LayoutUtil.getLeftAnchor(endShape));
+		}
+		
+		@Override
+		protected void updateBeneathEndAnchor() {
+			freeFormConnection.setEnd(LayoutUtil.getLeftAnchor(endShape));
+		}
+		
+	}
+	
+	private void reconnectAboveFirst(double treshold, FreeFormConnection freeFormConnection) {
+		if(!new AboveBeneathReconnectStrategy(treshold, freeFormConnection).execute()) {
+			new LeftRightReconnectStrategy(treshold, freeFormConnection).execute();
+		}
+	}
+	
+	private void reconnectLeftFirst(double treshold, FreeFormConnection freeFormConnection) {
+		if(!new LeftRightReconnectStrategy(treshold, freeFormConnection).execute()) {
+			new AboveBeneathReconnectStrategy(treshold, freeFormConnection).execute();
+		}
+	}
+	
+	private void reconnectActivity(double treshold, FreeFormConnection freeFormConnection) {
+		reconnectLeftFirst(treshold, freeFormConnection);
 	}
 
-	private void reconnectActivity() {
-		if (!(connection instanceof FreeFormConnection)) {
-			throw new IllegalArgumentException("Unable to reconnection non FreeFormConnection");
-		}
-		
-		FreeFormConnection freeFormConnection = (FreeFormConnection) connection;
-		
-		double treshold = LayoutUtil.getLayoutTreshold(startShape, endShape);
-		if (treshold == 0.0 || treshold == 1.0) {
-			freeFormConnection.getBendpoints().clear();
-			return;
-		}
-		
-		if ( treshold < 1 && !(treshold == 0.0 || treshold == 1.0) && treshold > LayoutUtil.MAGIC_VALUE  ) {
-			Anchor rightAnchor = startShape.getAnchors().get(2);
-			connection.setStart(rightAnchor);
-
-			ILocation startAnchorLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(connection.getStart());
-			ILocation endAnchorLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(endAnchor);
-			
-			int midX = ((endAnchorLocation.getX() - startAnchorLocation.getX()) / 2) + startAnchorLocation.getX();
-			
-			Point firstPoint = Graphiti.getCreateService().createPoint(midX, startAnchorLocation.getY());
-			Point secondPoint = Graphiti.getCreateService().createPoint(midX, endAnchorLocation.getY());
-			
-			freeFormConnection.getBendpoints().clear();
-			
-			freeFormConnection.getBendpoints().add(firstPoint);
-			freeFormConnection.getBendpoints().add(secondPoint);
-		}
+	private void reconnectEvent(double treshold, FreeFormConnection freeFormConnection) {
+		reconnectLeftFirst(treshold, freeFormConnection);
 	}
-
-	private void reconnectGateway() {
-		// TODO Auto-generated method stub
-		
+	
+	private void reconnectGateway(double treshold, FreeFormConnection freeFormConnection) {
+		if(!new SingleBendPointAboveBeneathStrategy(treshold, freeFormConnection).execute()) {
+			new LeftRightReconnectStrategy(treshold, freeFormConnection).execute();
+		}
 	}
 	
 }

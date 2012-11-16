@@ -1,5 +1,9 @@
 package org.eclipse.bpmn2.modeler.core.layout;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
@@ -37,7 +41,8 @@ public class BpmnElementReconnectionContext {
 	}
 	
 	private void reconnectConnections(EList<Connection> connections) {
-		for (Connection c: connections) {
+		List<Connection> tmp = new ArrayList<Connection>(connections);
+		for (Connection c: tmp) {
 			reconnectConnection(c);
 		}
 	}
@@ -45,18 +50,15 @@ public class BpmnElementReconnectionContext {
 	private void reconnectConnection(Connection connection) {
 		
 		// check if new anchor point is neccessary
-		Anchor start = connection.getStart();
-		Anchor end = connection.getEnd();
-
-		AnchorContainer startAnchorContainer = start.getParent();
-		AnchorContainer endAnchorContainer = end.getParent();
+		AnchorContainer startAnchorContainer = connection.getStart().getParent();
+		AnchorContainer endAnchorContainer = connection.getEnd().getParent();
 		
 		if (startAnchorContainer instanceof Shape && endAnchorContainer instanceof Shape) {
-			new ConnectionReconnectionContext(connection, start, end, (Shape) startAnchorContainer, (Shape) endAnchorContainer).reconnect();
+			new ConnectionReconnectionContext(connection, (Shape) startAnchorContainer, (Shape) endAnchorContainer).reconnect();
 		} else {
 			throw new LayoutingException("Cannot handle connection: " + connection);
 		}
 		
-		// add new bendpoints starting from 
+		DIUtils.updateDIEdge(connection);
 	}
 }
