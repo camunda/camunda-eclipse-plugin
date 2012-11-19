@@ -5,6 +5,7 @@ import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
+import org.eclipse.graphiti.mm.pictograms.ChopboxAnchor;
 import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -19,6 +20,12 @@ public class LayoutUtil {
 	
 	public static boolean anchorEqual(Anchor some, Anchor that) {
 		
+		// this case happens, when you reconnect the connection manually with a shape
+		// so in that case it is not equal to the assigned object 'that'
+		if (some instanceof ChopboxAnchor) {
+			return false;
+		}
+
 		if (!(some instanceof FixPointAnchor)) {
 			throw new IllegalArgumentException("Can only compare "+FixPointAnchor.class.getName());
 		}

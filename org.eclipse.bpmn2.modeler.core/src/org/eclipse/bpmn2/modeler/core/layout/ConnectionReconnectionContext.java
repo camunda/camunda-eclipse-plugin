@@ -3,6 +3,7 @@ package org.eclipse.bpmn2.modeler.core.layout;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.Gateway;
+import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.Connection;
@@ -32,9 +33,6 @@ public class ConnectionReconnectionContext {
 			throw new IllegalArgumentException("Unable to reconnect non FreeFormConnection");
 		}
 		
-		// TODO if you reconnect the connection manually with a shape, the anchors are not fixpoint anchors anymore,
-		// we need to fix this
-		
 		FreeFormConnection freeFormConnection = (FreeFormConnection) connection;
 		freeFormConnection.getBendpoints().clear();
 		
@@ -46,6 +44,8 @@ public class ConnectionReconnectionContext {
 			reconnectGateway(treshold, freeFormConnection);
 		}else if (bpmnElement instanceof Event) {
 			reconnectEvent(treshold, freeFormConnection);
+		}else if (bpmnElement instanceof ItemAwareElement) {
+			reconnectItemAwareElement(treshold, freeFormConnection);
 		}else {
 			throw new LayoutingException("Layouting unsupported BPMN element type");
 		}
@@ -114,10 +114,6 @@ public class ConnectionReconnectionContext {
 		}
 
 		public boolean execute() {
-			if (treshold > LayoutUtil.MAGIC_VALUE) {
-				return false;
-			}
-			
 			if (LayoutUtil.isAboveStartShape(startShape, endShape)) {
 				if (!LayoutUtil.anchorEqual(freeFormConnection.getStart(), LayoutUtil.getTopAnchor(startShape))) {
 					freeFormConnection.setStart(LayoutUtil.getTopAnchor(startShape));
@@ -209,9 +205,15 @@ public class ConnectionReconnectionContext {
 	}
 	
 	private void reconnectGateway(double treshold, FreeFormConnection freeFormConnection) {
-		if(!new SingleBendPointAboveBeneathStrategy(treshold, freeFormConnection).execute()) {
+		if (treshold > LayoutUtil.MAGIC_VALUE) {
+			new LeftRightReconnectStrategy(treshold, freeFormConnection).execute();
+		} else if (!new SingleBendPointAboveBeneathStrategy(treshold, freeFormConnection).execute()) {
 			new LeftRightReconnectStrategy(treshold, freeFormConnection).execute();
 		}
+	}
+	
+	private void reconnectItemAwareElement(double treshold, FreeFormConnection freeFormConnection) {
+		reconnectLeftFirst(treshold, freeFormConnection);
 	}
 	
 }
