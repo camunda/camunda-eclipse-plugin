@@ -333,5 +333,42 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(seq3SecondPoint.getX()).isEqualTo(500);
 		assertThat(seq3SecondPoint.getY()).isEqualTo(350);
 	}
+	
+	@Test
+	@DiagramResource
+	public void testMoveTaskWithMessageFlow() {
+		Shape serviceTaskShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "ServiceTask_2");
+		ContainerShape participantShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "Participant_2");
+
+		FreeFormConnection messageFlow = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "MessageFlow_1");
+
+		assertThat(messageFlow.getBendpoints()).isEmpty();
+
+		move(serviceTaskShape, diagramTypeProvider)
+			.by(100, 20)
+			.toContainer(participantShape)
+			.execute();
+		
+		IPeLayoutService peLayout = Graphiti.getPeLayoutService();
+
+		ILocation messageFlowStartLoc = peLayout.getLocationRelativeToDiagram(messageFlow.getStart());
+		assertThat(messageFlowStartLoc.getX()).isEqualTo(445);
+		assertThat(messageFlowStartLoc.getY()).isEqualTo(95);
+
+		ILocation messageFlowEndLoc = peLayout.getLocationRelativeToDiagram(messageFlow.getEnd());
+		assertThat(messageFlowEndLoc.getX()).isEqualTo(345);
+		assertThat(messageFlowEndLoc.getY()).isEqualTo(225);
+		
+		assertThat(messageFlow).hasNoDiagonalEdges();
+		assertThat(messageFlow).hasBendpointCount(2);
+
+		Point seq3FirstPoint = messageFlow.getBendpoints().get(0);
+		assertThat(seq3FirstPoint.getX()).isEqualTo(445);
+		assertThat(seq3FirstPoint.getY()).isEqualTo(160);
+
+		Point seq3SecondPoint = messageFlow.getBendpoints().get(1);
+		assertThat(seq3SecondPoint.getX()).isEqualTo(345);
+		assertThat(seq3SecondPoint.getY()).isEqualTo(160);
+	}
 
 }
