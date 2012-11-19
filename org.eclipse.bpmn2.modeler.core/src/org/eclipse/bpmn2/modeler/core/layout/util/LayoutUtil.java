@@ -1,5 +1,6 @@
 package org.eclipse.bpmn2.modeler.core.layout.util;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.draw2d.geometry.Vector;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
@@ -17,6 +18,58 @@ public class LayoutUtil {
 	 * evolutionary developed value to switch between the AboveBeneath and LeftRight Strategy for gateways 
 	 */
 	public static final double MAGIC_VALUE = 0.81;
+	
+	public enum Sector {
+		TOP_LEFT,
+		LEFT,
+		BOTTOM_LEFT,
+		BOTTOM,
+		BOTTOM_RIGHT,
+		RIGHT,
+		TOP_RIGHT,
+		TOP,
+		UNDEFINED;
+		
+	}
+	
+	private static Sector fromBooleans(boolean left, boolean right, boolean above, boolean beneath) {
+		if (left && above) {
+			return Sector.TOP_LEFT;
+		} else if (left && beneath) {
+			return Sector.BOTTOM_LEFT;
+		} else if (left) {
+			return Sector.LEFT;
+		} else if (right && above) {
+			return Sector.TOP_RIGHT;
+		} else if (right && beneath) {
+			return Sector.BOTTOM_RIGHT;
+		} else if (right) {
+			return Sector.RIGHT;
+		} else if(above) {
+			return Sector.TOP;
+		} else if(beneath) {
+			return Sector.BOTTOM;
+		} else {
+			return Sector.UNDEFINED;
+		}
+	}
+	
+	public static Sector getEndShapeSector(FreeFormConnection connection) {
+		Shape startShape = (Shape) connection.getStart().getParent();
+		Shape endShape = (Shape) connection.getEnd().getParent();
+		
+		boolean left = LayoutUtil.isLeftToStartShape(startShape, endShape); 
+		boolean right = LayoutUtil.isRightToStartShape(startShape, endShape);
+		boolean above = LayoutUtil.isAboveStartShape(startShape, endShape);
+		boolean beneath = LayoutUtil.isBeneathStartShape(startShape, endShape);
+		
+		return fromBooleans(left, right, above, beneath);
+	}
+	
+	public static BaseElement getSourceBaseElement(FreeFormConnection connection) {
+		return (BaseElement) Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(connection.getStart().getParent());	
+	}
+	
 	
 	public static boolean anchorEqual(Anchor some, Anchor that) {
 		
@@ -93,6 +146,18 @@ public class LayoutUtil {
 		Point endShapeLocationPoint = Graphiti.getGaService().createPoint(endShapeLocation.getX() ,endShapeLocation.getY());
 		
 		return getVerticalLayoutTreshold(startShapeBoundary, endShapeLocationPoint) >= 0 ? true : false;
+	}
+
+	/**
+	 * 
+	 * @param connection
+	 * @return negative value if end shape is left to start shape and
+	 * positive if end shape is right to start shape.
+	 */
+	public static double getLayoutTreshold(FreeFormConnection connection) {
+		Point startShapeCenter = getCenter((Shape) connection.getStart().getParent());
+		Point endShapeCenter = getCenter((Shape) connection.getEnd().getParent());
+		return getVerticalLayoutTreshold(startShapeCenter, endShapeCenter);
 	}
 	
 	public static double getLayoutTreshold(Shape startShape, Shape endShape) {

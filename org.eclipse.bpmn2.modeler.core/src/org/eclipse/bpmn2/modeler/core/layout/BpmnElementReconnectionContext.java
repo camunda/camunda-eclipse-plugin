@@ -54,7 +54,7 @@ public class BpmnElementReconnectionContext {
 		AnchorContainer endAnchorContainer = connection.getEnd().getParent();
 		
 		if (startAnchorContainer instanceof Shape && endAnchorContainer instanceof Shape) {
-			new ConnectionReconnectionContext(connection, (Shape) startAnchorContainer, (Shape) endAnchorContainer).reconnect();
+			new ConnectionReconnectionContext(connection).reconnect();
 		} else {
 			throw new LayoutingException("Cannot handle connection: " + connection);
 		}

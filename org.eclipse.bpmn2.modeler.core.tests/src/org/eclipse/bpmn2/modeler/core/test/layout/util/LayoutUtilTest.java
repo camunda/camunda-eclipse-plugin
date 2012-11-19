@@ -5,9 +5,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.ShapeUtil;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.junit.Test;
 
@@ -90,6 +92,41 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 		
 		assertFalse(LayoutUtil.isAboveStartShape(start2, task2));
 		assertFalse(LayoutUtil.isBeneathStartShape(start2, task2));
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testBase.bpmn")
+	public void testZoneDetection () {
+		FreeFormConnection flow2 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
+		assertThat(LayoutUtil.getEndShapeSector(flow2)).isEqualTo(Sector.BOTTOM_RIGHT);
+		
+		FreeFormConnection flow3 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+		assertThat(LayoutUtil.getEndShapeSector(flow3)).isEqualTo(Sector.BOTTOM);
+		
+		FreeFormConnection flow4 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_4");
+		assertThat(LayoutUtil.getEndShapeSector(flow4)).isEqualTo(Sector.BOTTOM_LEFT);
+		
+		FreeFormConnection flow5 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_5");
+		assertThat(LayoutUtil.getEndShapeSector(flow5)).isEqualTo(Sector.LEFT);
+		
+		FreeFormConnection flow6 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_6");
+		assertThat(LayoutUtil.getEndShapeSector(flow6)).isEqualTo(Sector.TOP_LEFT);
+		
+		FreeFormConnection flow7 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_7");
+		assertThat(LayoutUtil.getEndShapeSector(flow7)).isEqualTo(Sector.TOP);
+		
+		FreeFormConnection flow8 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_8");
+		assertThat(LayoutUtil.getEndShapeSector(flow8)).isEqualTo(Sector.TOP_RIGHT);
+		
+		FreeFormConnection flow9 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_9");
+		assertThat(LayoutUtil.getEndShapeSector(flow9)).isEqualTo(Sector.RIGHT);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testBase.bpmn")
+	public void testGetSourceBpmnElement () {
+		FreeFormConnection flow2 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
+		assertThat(LayoutUtil.getSourceBaseElement(flow2).getId()).isEqualTo("StartEvent_11");
 	}
 	
 }
