@@ -80,8 +80,8 @@ import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.ProxyURIConverterImplExtension;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
-import org.eclipse.bpmn2.modeler.core.importer.ModelImportCommand;
 import org.eclipse.bpmn2.modeler.core.importer.ImportException;
+import org.eclipse.bpmn2.modeler.core.importer.ModelImportCommand;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultDetailComposite;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultDialogComposite;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultListComposite;
@@ -185,7 +185,6 @@ import org.eclipse.graphiti.ui.editor.DefaultUpdateBehavior;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.graphiti.ui.internal.editor.GFPaletteRoot;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
@@ -816,27 +815,36 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 			catch (Exception e) {
 			}
 		}
-		ModelUtil.clearIDs(modelHandler.getResource(), instances==0);
-		getPreferences().getGlobalPreferences().removePropertyChangeListener(this);
 		
-		getResourceSet().eAdapters().remove(getEditorAdapter());
-		removeSelectionListener();
-		if (instances==0)
-			setActiveEditor(null);
+		try {
+			ModelUtil.clearIDs(modelHandler.getResource(), instances==0);
+			getPreferences().getGlobalPreferences().removePropertyChangeListener(this);
+			
+			getResourceSet().eAdapters().remove(getEditorAdapter());
+			removeSelectionListener();
+			if (instances==0)
+				setActiveEditor(null);
+		}catch (Exception e) {
+			Activator.logError(e);
+		}
 		
 		super.dispose();
-		ModelHandlerLocator.remove(modelUri);
-		// get rid of temp files and folders, but NOT if the workbench is being shut down.
-		// when the workbench is restarted, we need to have those temp files around!
-		if (!workbenchShutdown) {
-			if (FileService.isTempFile(modelUri)) {
-				FileService.deleteTempFile(modelUri);
+		try {
+			ModelHandlerLocator.remove(modelUri);
+			// get rid of temp files and folders, but NOT if the workbench is being shut down.
+			// when the workbench is restarted, we need to have those temp files around!
+			if (!workbenchShutdown) {
+				if (FileService.isTempFile(modelUri)) {
+					FileService.deleteTempFile(modelUri);
+				}
 			}
-		}
 
-		removeWorkbenchListener();
-		removeMarkerChangeListener();
-		getPreferences().dispose();
+			removeWorkbenchListener();
+			removeMarkerChangeListener();
+			getPreferences().dispose();
+		} catch (Exception e) {
+			Activator.logError(e);
+		}
 	}
 
 	public IPath getModelPath() {

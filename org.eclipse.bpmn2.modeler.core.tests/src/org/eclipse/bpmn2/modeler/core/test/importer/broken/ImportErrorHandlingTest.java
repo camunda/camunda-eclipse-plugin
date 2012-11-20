@@ -102,7 +102,8 @@ public class ImportErrorHandlingTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testMissingReferenceInDIPlane() throws Exception {
-		fail("WRITE TEST");
+		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		importer.execute();
 	}
 
 	@Test
