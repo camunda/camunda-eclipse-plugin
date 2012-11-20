@@ -116,6 +116,12 @@ public class ModelImport {
 	// list of deferred actions
 	protected List<DeferredAction<?>> deferredActions = new ArrayList<DeferredAction<?>>();
 	
+	// the collarboration element  if present in current definitions
+	protected Collaboration collaboration = null;
+	
+	// the process elements found in current definitions
+	protected ArrayList<Process> processes = new ArrayList<Process>();
+	
 	public ModelImport(IDiagramTypeProvider diagramTypeProvider, Bpmn2Resource resource) {
 		
 		this.diagramTypeProvider = diagramTypeProvider;
@@ -155,8 +161,26 @@ public class ModelImport {
 	}
 
 	protected void handleDefinitions(Definitions definitions) {
+		// first we get the root elements
 		
-		// first we process the DI diagrams and associate them with the process elements
+		List<RootElement> rootElements = definitions.getRootElements();
+		
+		for (RootElement rootElement: rootElements) {
+			if (rootElement instanceof Process) {
+				processes.add((Process) rootElement);
+			} else if (rootElement instanceof Collaboration) {
+				if (collaboration != null) {
+					UnsupportedFeatureException exception = new UnsupportedFeatureException("Multiple collaborations not supported. Displaying first one only", definitions);
+					log(exception);
+				} else {
+					collaboration = (Collaboration) rootElement;
+				}
+			} else {
+				// System.out.println("Unhandled RootElement: " + rootElement);
+			}
+		}
+		
+		// next we process the DI diagrams and associate them with the process elements
 		List<BPMNDiagram> diagrams = definitions.getDiagrams();
 		for (BPMNDiagram bpmnDiagram : diagrams) {
 			handleDIBpmnDiagram(bpmnDiagram);
@@ -174,29 +198,11 @@ public class ModelImport {
 		
 		// end copied from old DIImport 
 		
-		// next, process the BPMN model elements and start building the Graphiti diagram
-		// first check if we display a single process or collaboration
-		List<RootElement> rootElements = definitions.getRootElements();
-		List<Process> processes = new ArrayList<Process>();
-		Collaboration collaboration = null;
-		
-		for (RootElement rootElement: rootElements) {
-			if (rootElement instanceof Process) {
-				processes.add((Process) rootElement);
-			} else if (rootElement instanceof Collaboration) {
-				if (collaboration != null) {
-					UnsupportedFeatureException exception = new UnsupportedFeatureException("Multiple collaborations not supported. Displaying first one only", definitions);
-					log(exception);
-				} else {
-					collaboration = (Collaboration) rootElement;
-				}
-			} else {
-				// System.out.println("Unhandled RootElement: " + rootElement);
-			}
-		}
-
 		Diagram rootDiagram = createEditorRootDiagram(diagrams, collaboration, processes);
 		
+		// next, process the BPMN model elements and start building the Graphiti diagram
+		// first check if we display a single process or collaboration
+
 		if (collaboration != null) {
 			// we display a collaboration
 			handleCollaboration(collaboration, rootDiagram);
@@ -675,7 +681,12 @@ public class ModelImport {
 		
 		BaseElement bpmnElement = plane.getBpmnElement();
 		if (bpmnElement == null || bpmnElement.eIsProxy()) {
-			throw new UnmappedElementException("BPMNPlane references unexisting bpmnElement", plane);
+			// if we have a plane with missing bpmnElement, we can make the following assumption
+			if(collaboration == null && processes.size() == 1) {
+				bpmnElement = processes.get(0);
+			}else {
+				throw new UnmappedElementException("BPMNPlane references unexisting bpmnElement", plane);	
+			}
 		}
 		
 		List<DiagramElement> planeElement = plane.getPlaneElement();
