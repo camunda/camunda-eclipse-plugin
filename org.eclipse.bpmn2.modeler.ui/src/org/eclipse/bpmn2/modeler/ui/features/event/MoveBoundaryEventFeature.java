@@ -121,9 +121,11 @@ public class MoveBoundaryEventFeature extends MoveFlowNodeFeature {
 			PositionOnLine newPos = BoundaryEventPositionHelper.getPositionOnLineUsingAbsoluteCoordinates(
 					containerShape, (Shape) activityContainer);
 			BoundaryEventPositionHelper.assignPositionOnLineProperty(containerShape, newPos);
+			Graphiti.getPeService().sendToBack((Shape) activityContainer);
 		}
 		
 		Graphiti.getPeService().sendToFront(context.getShape());
+		
 		
 		super.postMoveShape(context);
 	}

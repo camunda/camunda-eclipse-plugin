@@ -30,6 +30,7 @@ import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.ChopboxAnchor;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
@@ -100,6 +101,8 @@ public class AddBoundaryEventFeature extends AbstractAddBPMNShapeFeature<Boundar
 			PositionOnLine pos = BoundaryEventPositionHelper.getPositionOnLineUsingBPMNShape(containerShape,
 			        activityContainer);
 			BoundaryEventPositionHelper.assignPositionOnLineProperty(containerShape, pos);
+			peService.sendToBack((Shape) foundElem);
+			peService.sendToFront(containerShape);
 		}
 
 		peService.setPropertyValue(containerShape, BOUNDARY_EVENT_CANCEL, Boolean.toString(event.isCancelActivity()));
