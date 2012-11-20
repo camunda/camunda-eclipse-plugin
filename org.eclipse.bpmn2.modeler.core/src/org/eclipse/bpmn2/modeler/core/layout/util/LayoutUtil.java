@@ -1,12 +1,17 @@
 package org.eclipse.bpmn2.modeler.core.layout.util;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.modeler.core.di.DIUtils;
+import org.eclipse.bpmn2.modeler.core.layout.ConnectionReconnectionContext;
+import org.eclipse.bpmn2.modeler.core.layout.LayoutingException;
 import org.eclipse.draw2d.geometry.Vector;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
+import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.ChopboxAnchor;
+import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -242,6 +247,21 @@ public class LayoutUtil {
 		Point point = Graphiti.getCreateService().createPoint(startAnchorLocation.getX(), endAnchorLocation.getY());
 		
 		connection.getBendpoints().add(point);
+	}
+	
+	public static void layoutConnection(Connection connection) {
+		
+		// check if new anchor point is neccessary
+		AnchorContainer startAnchorContainer = connection.getStart().getParent();
+		AnchorContainer endAnchorContainer = connection.getEnd().getParent();
+		
+		if (startAnchorContainer instanceof Shape && endAnchorContainer instanceof Shape) {
+			new ConnectionReconnectionContext(connection).reconnect();
+		} else {
+			throw new LayoutingException("Cannot handle connection: " + connection);
+		}
+		
+		DIUtils.updateDIEdge(connection);
 	}
 	
 }
