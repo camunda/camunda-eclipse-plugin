@@ -1,11 +1,13 @@
 package org.eclipse.bpmn2.modeler.core.layout;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 
 public class BendpointStrategy {
@@ -109,6 +111,72 @@ public class BendpointStrategy {
 			case BOTTOM_RIGHT:
 			case BOTTOM_LEFT:
 				strategy.horizontal();
+				return strategy;
+			}
+		}
+		
+		if (sourceElement instanceof BoundaryEvent) {
+			Sector relativeSectorToRef = LayoutUtil.getBoundaryEventRelativeSector((Shape) strategy.connection.getStart().getParent());
+			
+			switch (relativeSectorToRef) {
+			case BOTTOM:
+			case TOP:
+				strategy.single();
+				return strategy;
+			case TOP_LEFT:
+				switch (sector) {
+				case BOTTOM:
+				case BOTTOM_RIGHT:
+				case RIGHT:
+				case TOP_RIGHT:
+				case TOP_LEFT:
+					strategy.single();
+					break;
+				default:
+					break;
+				}
+				return strategy;
+			case BOTTOM_LEFT:
+				switch (sector) {
+				case TOP:
+				case TOP_RIGHT:
+				case RIGHT:
+				case BOTTOM_RIGHT:
+				case BOTTOM_LEFT:
+					strategy.single();
+					break;
+				default:
+					break;
+				}
+				return strategy;
+			case TOP_RIGHT:
+				switch (sector) {
+				case BOTTOM:
+				case BOTTOM_LEFT:
+				case LEFT:
+				case TOP_LEFT:
+				case TOP_RIGHT:
+					strategy.single();
+					break;
+				default:
+					break;
+				}
+				return strategy;
+			case BOTTOM_RIGHT:
+				switch (sector) {
+				case TOP:
+				case TOP_LEFT:
+				case LEFT:
+				case BOTTOM_LEFT:
+				case BOTTOM_RIGHT:
+					strategy.single();
+					break;
+				default:
+					break;
+				}
+				return strategy;
+			default:
+				break;
 			}
 		}
 		

@@ -1,11 +1,14 @@
 package org.eclipse.bpmn2.modeler.core.layout.util;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.layout.ConnectionReconnectionContext;
 import org.eclipse.bpmn2.modeler.core.layout.LayoutingException;
 import org.eclipse.draw2d.geometry.Vector;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.ILocation;
+import org.eclipse.graphiti.mm.Property;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
@@ -69,6 +72,37 @@ public class LayoutUtil {
 		boolean beneath = LayoutUtil.isBeneathStartShape(startShape, endShape);
 		
 		return fromBooleans(left, right, above, beneath);
+	}
+	
+	public static Sector getBoundaryEventRelativeSector(Shape boundaryEventShape) {
+		EObject element = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(boundaryEventShape);
+		if (!(element instanceof BoundaryEvent)) {
+			throw new IllegalArgumentException("Can only extract relative sector from " + BoundaryEvent.class.getName());
+		}
+		for (Property prop : boundaryEventShape.getProperties()) {
+			if (prop.getKey().equals("boundary.event.relative.pos")) {
+				String value = prop.getValue();
+				
+				if (value.equals("positiononline:XY:TOP_LEFT")) {
+					return Sector.TOP_LEFT;
+				} else if (value.equals("positiononline:Y:TOP")) {
+					return Sector.TOP;
+				} else if (value.equals("positiononline:XY:TOP_RIGHT")) {
+					return Sector.TOP_RIGHT;
+				} else if (value.equals("positiononline:X:RIGHT")) {
+					return Sector.RIGHT;
+				} else if (value.equals("positiononline:XY:BOTTOM_RIGHT")) {
+					return Sector.BOTTOM_RIGHT;
+				} else if (value.equals("positiononline:Y:BOTTOM")) {
+					return Sector.BOTTOM;
+				} else if (value.equals("positiononline:XY:BOTTOM_LEFT")) {
+					return Sector.BOTTOM_LEFT;
+				} else if (value.equals("positiononline:X:LEFT")) {
+					return Sector.LEFT;
+				}
+			}
+		}
+		return Sector.UNDEFINED;
 	}
 	
 	public static BaseElement getSourceBaseElement(FreeFormConnection connection) {

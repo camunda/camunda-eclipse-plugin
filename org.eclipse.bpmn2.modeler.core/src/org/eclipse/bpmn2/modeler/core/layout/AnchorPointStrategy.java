@@ -1,6 +1,7 @@
 package org.eclipse.bpmn2.modeler.core.layout;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
@@ -142,54 +143,152 @@ public class AnchorPointStrategy {
 		}
 	}
 
-	private static AnchorPointStrategy typeSwitch(AnchorPointStrategy strategy, Sector sector, BaseElement sourceElement) {
-		double treshold = LayoutUtil.getLayoutTreshold(strategy.getConnection());
+	private static AnchorPointStrategy typeSwitch(AnchorPointStrategy strategy, Sector targetElementSector, BaseElement sourceElement) {
 		
 		if (sourceElement instanceof Gateway) {
-			switch (sector) {
-			case TOP_RIGHT:
-			case TOP_LEFT:
-				if (treshold <= LayoutUtil.MAGIC_VALUE) {
-					strategy.start.top();
-					return strategy;
-				}
-				
-			case BOTTOM_RIGHT:
-			case BOTTOM_LEFT:
-				if (treshold <= LayoutUtil.MAGIC_VALUE) {
-					strategy.start.bottom();
-					return strategy;
-				}
-			case TOP:
-			case BOTTOM:
-				if (treshold > 0.0) {
-					strategy.end.left();
-				} else {
-					strategy.end.right();
-				}
-				return strategy;
-			}
-			
+			gatewaySwitch(strategy, targetElementSector, (Gateway) sourceElement);
 		}
-		
 		
 		BaseElement flowElement = (BaseElement) Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(strategy.getConnection());	
 		if (flowElement instanceof MessageFlow) {
-			switch (sector) {
-			case TOP_RIGHT:
-			case TOP_LEFT:
-				strategy.start.top();
-				strategy.end.bottom();
-				return strategy;
-			case BOTTOM_RIGHT:
-			case BOTTOM_LEFT:
-				strategy.start.bottom();
-				strategy.end.top();
-				return strategy;
-			}
+			messageFlowSwitch(strategy, targetElementSector, sourceElement);
+		}
+		
+		if (sourceElement instanceof BoundaryEvent) {
+			boundaryEventSwitch(strategy, targetElementSector, (BoundaryEvent) sourceElement);
 		}
 		
 		return strategy;
+	}
+
+	private static void boundaryEventSwitch(AnchorPointStrategy strategy,
+			Sector targetElementSector, BoundaryEvent sourceElement) {
+		Sector relativeSectorToRef = LayoutUtil
+				.getBoundaryEventRelativeSector((Shape) strategy
+						.getConnection().getStart().getParent());
+
+		switch (relativeSectorToRef) {
+		case BOTTOM:
+			strategy.start.bottom();
+			break;
+		case TOP:
+			strategy.start.top();
+			break;
+		case LEFT:
+			strategy.start.left();
+			break;
+		case RIGHT:
+			strategy.start.right();
+			break;
+		case TOP_LEFT:
+			switch (targetElementSector) {
+			case BOTTOM:
+			case BOTTOM_RIGHT:
+				strategy.start.left();
+				break;
+			case RIGHT:
+			case TOP_RIGHT:
+			case TOP_LEFT:
+				strategy.start.top();
+				break;
+			default:
+				break;
+			}
+			break;
+		case BOTTOM_LEFT:
+			switch (targetElementSector) {
+			case TOP:
+			case TOP_RIGHT:
+				strategy.start.left();
+				break;
+			case RIGHT:
+			case BOTTOM_RIGHT:
+			case BOTTOM_LEFT:
+				strategy.start.bottom();
+				break;
+			default:
+				break;
+			}
+			break;
+		case TOP_RIGHT:
+			switch (targetElementSector) {
+			case BOTTOM:
+			case BOTTOM_LEFT:
+				strategy.start.right();
+				break;
+			case LEFT:
+			case TOP_LEFT:
+			case TOP_RIGHT:
+				strategy.start.top();
+				break;
+			default:
+				break;
+			}
+			break;
+		case BOTTOM_RIGHT:
+			switch (targetElementSector) {
+			case TOP:
+			case TOP_LEFT:
+				strategy.start.right();
+				break;
+			case LEFT:
+			case BOTTOM_LEFT:
+			case BOTTOM_RIGHT:
+				strategy.start.bottom();
+				break;
+			default:
+				break;
+			}
+			break;
+		default:
+			break;
+		}
+
+	}
+
+	private static void messageFlowSwitch(AnchorPointStrategy strategy,
+			Sector targetElementSector, BaseElement sourceElement) {
+		switch (targetElementSector) {
+		case TOP_RIGHT:
+		case TOP_LEFT:
+			strategy.start.top();
+			strategy.end.bottom();
+			break;
+		case BOTTOM_RIGHT:
+		case BOTTOM_LEFT:
+			strategy.start.bottom();
+			strategy.end.top();
+			break;
+		}
+	}
+
+	private static void gatewaySwitch(AnchorPointStrategy strategy,
+			Sector targetElementSector, Gateway sourceElement) {
+		double treshold = LayoutUtil.getLayoutTreshold(strategy.getConnection());
+		
+		switch (targetElementSector) {
+		case TOP_RIGHT:
+		case TOP_LEFT:
+			if (treshold <= LayoutUtil.MAGIC_VALUE) {
+				strategy.start.top();
+			}
+			break;
+		case BOTTOM_RIGHT:
+		case BOTTOM_LEFT:
+			if (treshold <= LayoutUtil.MAGIC_VALUE) {
+				strategy.start.bottom();
+			}
+			break;
+		case TOP:
+		case BOTTOM:
+			if (treshold > 0.0) {
+				strategy.end.left();
+			} else {
+				strategy.end.right();
+			}
+			break;
+		}
+
 	}
 
 	public FreeFormConnection getConnection() {
