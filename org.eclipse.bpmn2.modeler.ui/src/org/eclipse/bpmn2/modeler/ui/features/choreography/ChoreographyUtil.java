@@ -165,7 +165,7 @@ public class ChoreographyUtil implements ChoreographyProperties {
 			resizeParticipantBandChildren(container, w);
 			DIUtils.updateDIShape(container);
 			AnchorUtil.relocateFixPointAnchors(container, w, (int) bounds.getHeight());
-			AnchorUtil.reConnect(bpmnShape, diagram);
+			AnchorUtil.reConnect(container, diagram);
 		}
 
 		Collections.reverse(bottom); // start from bottom towards center
@@ -178,7 +178,7 @@ public class ChoreographyUtil implements ChoreographyProperties {
 			resizeParticipantBandChildren(container, w);
 			DIUtils.updateDIShape(container);
 			AnchorUtil.relocateFixPointAnchors(container, w, (int) bounds.getHeight());
-			AnchorUtil.reConnect(bpmnShape, diagram);
+			AnchorUtil.reConnect(container, diagram);
 		}
 	}
 

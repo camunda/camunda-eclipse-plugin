@@ -26,6 +26,7 @@ import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
@@ -325,7 +326,7 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 				
 				// adjust the anchor point to the new shape if necessary
 				DiagramElement shape = mh.findDIElement(newObject);
-				AnchorUtil.reConnect(shape, getDiagram());
+				LayoutUtil.layoutConnection(connection);
 				
 				ILocation newloc0 = layoutService.getLocationRelativeToDiagram(connection.getStart());
 				ILocation newloc1 = layoutService.getLocationRelativeToDiagram(connection.getEnd());

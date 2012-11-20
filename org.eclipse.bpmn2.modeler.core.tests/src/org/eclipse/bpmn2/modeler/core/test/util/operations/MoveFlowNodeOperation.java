@@ -1,11 +1,17 @@
 package org.eclipse.bpmn2.modeler.core.test.util.operations;
 
+import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.modeler.core.features.MoveFlowNodeFeature;
+import org.eclipse.bpmn2.modeler.core.features.activity.MoveActivityFeature;
+import org.eclipse.bpmn2.modeler.ui.features.event.MoveBoundaryEventFeature;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.impl.MoveShapeContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
+import org.eclipse.graphiti.services.Graphiti;
 
 /**
  * 
@@ -27,7 +33,15 @@ public class MoveFlowNodeOperation extends ShapeOperation<MoveShapeContext, Move
 	@Override
 	protected void createFeature() {
 		IFeatureProvider featureProvider = diagramTypeProvider.getFeatureProvider();
-		feature = new MoveFlowNodeFeature(featureProvider);		
+		EObject element = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(shape);
+		if (element instanceof Activity) {
+			feature = new MoveActivityFeature(featureProvider);
+		} else if (element instanceof BoundaryEvent) {
+			feature = new MoveBoundaryEventFeature(featureProvider);
+		} else {
+			feature = new MoveFlowNodeFeature(featureProvider);		
+		}
+		
 	}
 	
 	public MoveFlowNodeOperation by(int x, int y) {

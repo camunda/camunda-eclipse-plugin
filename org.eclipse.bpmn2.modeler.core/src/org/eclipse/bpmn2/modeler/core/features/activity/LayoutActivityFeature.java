@@ -92,7 +92,6 @@ public class LayoutActivityFeature extends DefaultLayoutBPMNShapeFeature {
 		}.doWork(activity, getDiagram());
 
 		DIUtils.updateDIShape(containerShape);
-		layoutConnections(containerShape);
 		
 		if (containerShape.eContainer() instanceof ContainerShape) {
 			PictogramElement pe = (PictogramElement) containerShape.eContainer();

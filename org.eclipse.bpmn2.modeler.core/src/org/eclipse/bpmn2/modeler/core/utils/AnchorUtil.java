@@ -18,11 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.bpmn2.di.BPMNEdge;
-import org.eclipse.bpmn2.modeler.core.Activator;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.layout.BpmnElementReconnectionContext;
-import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.datatypes.ILocation;
@@ -162,7 +158,6 @@ public class AnchorUtil {
 		return gaService.createPoint(loc.getX() + (ga.getWidth() / 2), loc.getY() + (ga.getHeight() / 2));
 	}
 
-	@SuppressWarnings("restriction")
 	public static Tuple<FixPointAnchor, FixPointAnchor> getSourceAndTargetBoundaryAnchors(AnchorContainer source, AnchorContainer target,
 			Connection connection) {
 		Map<AnchorLocation, BoundaryAnchor> sourceBoundaryAnchors = getBoundaryAnchors(source);
@@ -373,110 +368,6 @@ public class AnchorUtil {
 		new BpmnElementReconnectionContext(diagram).reconnect(element);
 	}
 	
-	/**
-	 * 
-	 * @param element
-	 * @param diagram
-	 * 
-	 * @deprecated Use {@link AnchorUtil#reConnect(PictogramElement, Diagram)} instead.
-	 */
-	@Deprecated
-	public static void reConnect(DiagramElement element, Diagram diagram) {
-		try {
-			ModelHandler handler = ModelHandler.getInstance(diagram);
-			for (BPMNEdge bpmnEdge : handler.getAll(BPMNEdge.class)) {
-				DiagramElement sourceElement = bpmnEdge.getSourceElement();
-				DiagramElement targetElement = bpmnEdge.getTargetElement();
-				if (sourceElement != null && targetElement != null) {
-					boolean sourceMatches = sourceElement.getId().equals(element.getId());
-					boolean targetMatches = targetElement.getId().equals(element.getId());
-					if (sourceMatches || targetMatches) {
-						updateEdge(bpmnEdge, diagram);
-					}
-				}
-			}
-		} catch (Exception e) {
-			Activator.logError(e);
-		}
-	}
-	
-	@Deprecated
-	private static void updateEdge(BPMNEdge edge, Diagram diagram) {
-		List<PictogramElement> elements;
-		elements =  Graphiti.getLinkService().getPictogramElements(diagram, edge.getSourceElement());
-		if (elements.size()==0 || !(elements.get(0) instanceof AnchorContainer))
-			return;
-		AnchorContainer source = (AnchorContainer) elements.get(0);
-		
-		elements =  Graphiti.getLinkService().getPictogramElements(diagram, edge.getTargetElement());
-		if (elements.size()==0 || !(elements.get(0) instanceof AnchorContainer))
-			return;
-		AnchorContainer target = (AnchorContainer) elements.get(0);
-		
-		elements = Graphiti.getLinkService().getPictogramElements(diagram, edge);
-		if (elements.size()==0)
-			return;
-		Connection connection = (Connection) elements.get(0);
-		Tuple<FixPointAnchor, FixPointAnchor> anchors = getSourceAndTargetBoundaryAnchors(source, target, connection);
-
-		ILocation loc = peService.getLocationRelativeToDiagram(anchors.getFirst());
-		org.eclipse.dd.dc.Point p = edge.getWaypoint().get(0);
-		p.setX(loc.getX());
-		p.setY(loc.getY());
-
-		loc = peService.getLocationRelativeToDiagram(anchors.getSecond());
-		p = edge.getWaypoint().get(edge.getWaypoint().size() - 1);
-		p.setX(loc.getX());
-		p.setY(loc.getY());
-
-		relocateConnection(source.getAnchors(), anchors, target);
-		deleteEmptyAdHocAnchors(source);
-		deleteEmptyAdHocAnchors(target);
-	}
-
-	private static void relocateConnection(EList<Anchor> anchors, Tuple<FixPointAnchor, FixPointAnchor> newAnchors,
-			AnchorContainer target) {
-
-		List<Connection> connectionsToBeUpdated = new ArrayList<Connection>();
-
-		for (Anchor anchor : anchors) {
-			if (!(anchor instanceof FixPointAnchor)) {
-				continue;
-			}
-
-			for (Connection connection : anchor.getOutgoingConnections()) {
-				if (connection.getEnd().eContainer().equals(target)) {
-					connectionsToBeUpdated.add(connection);
-				}
-			}
-		}
-
-		for (Connection c : connectionsToBeUpdated) {
-			c.setStart(newAnchors.getFirst());
-			c.setEnd(newAnchors.getSecond());
-		}
-	}
-
-	private static void deleteEmptyAdHocAnchors(AnchorContainer target) {
-		List<Integer> indexes = new ArrayList<Integer>();
-
-		for (int i = target.getAnchors().size()-1; i>=0; --i) {
-			Anchor a = target.getAnchors().get(i);
-			if (!(a instanceof FixPointAnchor)) {
-				continue;
-			}
-
-			if (peService.getProperty(a, BOUNDARY_FIXPOINT_ANCHOR) == null && a.getIncomingConnections().isEmpty()
-					&& a.getOutgoingConnections().isEmpty()) {
-				indexes.add(i);
-			}
-		}
-
-		for (int i : indexes) {
-			peService.deletePictogramElement(target.getAnchors().get(i));
-		}
-	}
-
 	public static void addFixedPointAnchors(Shape shape, GraphicsAlgorithm ga) {
 		IDimension size = gaService.calculateSize(ga);
 		int w = size.getWidth();

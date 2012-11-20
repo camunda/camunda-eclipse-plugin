@@ -19,8 +19,8 @@ public abstract class ShapeOperation<C extends IContext, F extends IFeature> ext
 	public ShapeOperation(Shape shape, IDiagramTypeProvider diagramTypeProvider) {
 		super(diagramTypeProvider);
 		this.shape = shape;
-		createFeature();
 		createContext();
+		createFeature();
 	}
 
 }

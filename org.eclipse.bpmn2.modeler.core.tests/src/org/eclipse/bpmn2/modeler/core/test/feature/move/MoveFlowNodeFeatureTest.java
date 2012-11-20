@@ -342,13 +342,66 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(messageFlow).hasNoDiagonalEdges();
 		assertThat(messageFlow).hasBendpointCount(2);
 
-		Point seq3FirstPoint = messageFlow.getBendpoints().get(0);
-		assertThat(seq3FirstPoint.getX()).isEqualTo(445);
-		assertThat(seq3FirstPoint.getY()).isEqualTo(160);
+		Point messageFlow3FirstPoint = messageFlow.getBendpoints().get(0);
+		assertThat(messageFlow3FirstPoint.getX()).isEqualTo(445);
+		assertThat(messageFlow3FirstPoint.getY()).isEqualTo(160);
 
-		Point seq3SecondPoint = messageFlow.getBendpoints().get(1);
-		assertThat(seq3SecondPoint.getX()).isEqualTo(345);
-		assertThat(seq3SecondPoint.getY()).isEqualTo(160);
+		Point messageFlow3SecondPoint = messageFlow.getBendpoints().get(1);
+		assertThat(messageFlow3SecondPoint.getX()).isEqualTo(345);
+		assertThat(messageFlow3SecondPoint.getY()).isEqualTo(160);
+	}
+	
+	@Test
+	@DiagramResource
+	public void testMoveTaskConnectedWithBoundaryEvent() {
+		ContainerShape taskShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_2");
+		
+		FreeFormConnection sequenceFlow = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		
+		assertThat(sequenceFlow).hasBendpointCount(0);
+		
+		move(taskShape, diagramTypeProvider)
+			.by(0, 50)
+			.toContainer(diagram)
+			.execute();
+		
+		assertThat(sequenceFlow).hasNoDiagonalEdges();
+		assertThat(sequenceFlow).hasBendpointCount(1);
+		
+		IPeLayoutService peLayout = Graphiti.getPeLayoutService();
+
+		ILocation sequenceFlowStartLoc = peLayout.getLocationRelativeToDiagram(sequenceFlow.getStart());
+		assertThat(sequenceFlowStartLoc.getX()).isEqualTo(180);
+		assertThat(sequenceFlowStartLoc.getY()).isEqualTo(118);
+
+		ILocation sequenceFlowEndLoc = peLayout.getLocationRelativeToDiagram(sequenceFlow.getEnd());
+		assertThat(sequenceFlowEndLoc.getX()).isEqualTo(315);
+		assertThat(sequenceFlowEndLoc.getY()).isEqualTo(150);
+		
+		Point seq3FirstPoint = sequenceFlow.getBendpoints().get(0);
+		assertThat(seq3FirstPoint.getX()).isEqualTo(180);
+		assertThat(seq3FirstPoint.getY()).isEqualTo(150);
+
+		move(taskShape, diagramTypeProvider)
+			.by(0, -75)
+			.toContainer(diagram)
+			.execute();
+
+		assertThat(sequenceFlow).hasNoDiagonalEdges();
+		assertThat(sequenceFlow).hasBendpointCount(1);
+		
+		sequenceFlowStartLoc = peLayout.getLocationRelativeToDiagram(sequenceFlow.getStart());
+		assertThat(sequenceFlowStartLoc.getX()).isEqualTo(180);
+		assertThat(sequenceFlowStartLoc.getY()).isEqualTo(118);
+
+		sequenceFlowEndLoc = peLayout.getLocationRelativeToDiagram(sequenceFlow.getEnd());
+		assertThat(sequenceFlowEndLoc.getX()).isEqualTo(315);
+		assertThat(sequenceFlowEndLoc.getY()).isEqualTo(75);
+		
+		seq3FirstPoint = sequenceFlow.getBendpoints().get(0);
+		assertThat(seq3FirstPoint.getX()).isEqualTo(180);
+		assertThat(seq3FirstPoint.getY()).isEqualTo(75);
+		
 	}
 
 }

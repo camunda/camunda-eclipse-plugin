@@ -47,6 +47,16 @@
     <bpmn2:sequenceFlow id="SequenceFlow_7" name="" sourceRef="StartEvent_8" targetRef="Task_3"/>
     <bpmn2:sequenceFlow id="SequenceFlow_8" name="" sourceRef="StartEvent_9" targetRef="Task_3"/>
     <bpmn2:sequenceFlow id="SequenceFlow_9" name="" sourceRef="StartEvent_10" targetRef="Task_3"/>
+    <bpmn2:task id="Task_4" name="Task 4"/>
+    <bpmn2:boundaryEvent id="BoundaryEvent_1" name="" attachedToRef="Task_4"/>
+    <bpmn2:boundaryEvent id="BoundaryEvent_2" name="" attachedToRef="Task_4"/>
+    <bpmn2:boundaryEvent id="BoundaryEvent_3" name="" attachedToRef="Task_4"/>
+    <bpmn2:boundaryEvent id="BoundaryEvent_4" name="" attachedToRef="Task_4"/>
+    <bpmn2:task id="Task_5" name="Task 5"/>
+    <bpmn2:boundaryEvent id="BoundaryEvent_5" name="" attachedToRef="Task_5"/>
+    <bpmn2:boundaryEvent id="BoundaryEvent_6" name="" attachedToRef="Task_5"/>
+    <bpmn2:boundaryEvent id="BoundaryEvent_7" name="" attachedToRef="Task_5"/>
+    <bpmn2:boundaryEvent id="BoundaryEvent_8" name="" attachedToRef="Task_5"/>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="testShape">
@@ -151,6 +161,54 @@
         <di:waypoint xsi:type="dc:Point" x="476.0" y="375.0"/>
         <di:waypoint xsi:type="dc:Point" x="550.0" y="375.0"/>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="237.0" y="333.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_2">
+        <dc:Bounds height="36.0" width="36.0" x="287.0" y="343.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_3">
+        <dc:Bounds height="36.0" width="36.0" x="297.0" y="373.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_4">
+        <dc:Bounds height="36.0" width="36.0" x="237.0" y="373.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_5">
+        <dc:Bounds height="36.0" width="36.0" x="187.0" y="373.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_6">
+        <dc:Bounds height="36.0" width="36.0" x="187.0" y="343.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_4" bpmnElement="Task_4">
+        <dc:Bounds height="50.0" width="110.0" x="205.0" y="350.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_7" bpmnElement="BoundaryEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="197.0" y="332.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_8" bpmnElement="BoundaryEvent_2">
+        <dc:Bounds height="36.0" width="36.0" x="287.0" y="342.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_9" bpmnElement="BoundaryEvent_3">
+        <dc:Bounds height="36.0" width="36.0" x="287.0" y="372.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_10" bpmnElement="BoundaryEvent_4">
+        <dc:Bounds height="36.0" width="36.0" x="197.0" y="372.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_5" bpmnElement="Task_5">
+        <dc:Bounds height="50.0" width="110.0" x="205.0" y="452.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_11" bpmnElement="BoundaryEvent_5">
+        <dc:Bounds height="36.0" width="36.0" x="237.0" y="444.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_12" bpmnElement="BoundaryEvent_6">
+        <dc:Bounds height="36.0" width="36.0" x="237.0" y="474.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_13" bpmnElement="BoundaryEvent_7">
+        <dc:Bounds height="36.0" width="36.0" x="297.0" y="454.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_14" bpmnElement="BoundaryEvent_8">
+        <dc:Bounds height="36.0" width="36.0" x="197.0" y="454.0"/>
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
