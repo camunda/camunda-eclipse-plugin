@@ -17,4 +17,10 @@ public class Bpmn2TabbedPropertySheetPage extends TabbedPropertySheetPage {
 	public DiagramEditor getDiagramEditor() {
 		return diagramEditor;
 	}
+	
+	@Override
+	public void resizeScrolledComposite() {
+		// TODO FIX SCROLL SPEED
+		super.resizeScrolledComposite();
+	}
 }
