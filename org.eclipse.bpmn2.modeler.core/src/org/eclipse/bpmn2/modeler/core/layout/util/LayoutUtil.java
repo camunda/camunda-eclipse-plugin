@@ -17,7 +17,7 @@ public class LayoutUtil {
 	/**
 	 * evolutionary developed value to switch between the AboveBeneath and LeftRight Strategy for gateways 
 	 */
-	public static final double MAGIC_VALUE = 0.81;
+	public static final double MAGIC_VALUE = 0.90;
 	
 	public enum Sector {
 		TOP_LEFT,

@@ -27,35 +27,6 @@ import org.junit.Test;
  */
 public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 	
-
-	@Test
-	@DiagramResource
-	public void testMoveTaskVerticalFindGatewayAnchorThreshold() {         //Shoe
-		Shape taskShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "UserTask_1");
-		ContainerShape laneShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "Lane_1");
-		
-		// Move target shape --> UserTask_1 is lower than upper edge of GateWay_1
-		move(taskShape, diagramTypeProvider)
-		.by(0 , -49)	
-		.toContainer(laneShape)
-		.execute();			
-		
-		FreeFormConnection seq3Connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");	
-		// Get y-Value of sequence start and compare
-		assertEquals(230, Graphiti.getPeLayoutService().getLocationRelativeToDiagram(seq3Connection.getStart()).getY());
-		
-		// Move target shape --> UserTask_1 is equal to upper edge of GateWay_1
-		move(taskShape, diagramTypeProvider)
-		.by(0 , -1)	
-		.toContainer(laneShape)
-		.execute();		
-		
-		seq3Connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
-		Shape gatewayShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
-		// Get y-Value of sequence start and compare		
-		assertEquals((231 - (gatewayShape.getGraphicsAlgorithm().getHeight()/2)) ,Graphiti.getPeLayoutService().getLocationRelativeToDiagram(seq3Connection.getStart()).getY());
-	}	
-	
 	@Test
 	@DiagramResource
 	public void testMoveTask2VerticalLayout() {         
@@ -92,7 +63,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		ContainerShape laneShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "Lane_1");
 
 		move(gatewayShape, diagramTypeProvider)
-		.by(0 , -85)
+		.by(0 , -62)
 		.toContainer(laneShape)
 		.execute();
 		
@@ -103,9 +74,15 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		// check incoming sequence flow
 		assertEquals(2, seq2Connection.getBendpoints().size());
 		
+		//check outgoing sequence flow right
+		assertEquals(2, seq3Connection.getBendpoints().size());
+		
+		//check outgoing sequence flow bottom
+		assertEquals(1, seq7Connection.getBendpoints().size());
+		
 		// check bendboints coordiantes
 		assertThat(seq2Connection.getBendpoints().get(0)).isEqualTo(point(423, 230));
-		assertThat(seq2Connection.getBendpoints().get(1)).isEqualTo(point(423, 145));
+		assertThat(seq2Connection.getBendpoints().get(1)).isEqualTo(point(423, 168));
 		
 		// start anchor must be centered on the right side
 		assertEquals(110, ((FixPointAnchor) seq2Connection.getStart()).getLocation().getX());
@@ -115,10 +92,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertEquals(0, ((FixPointAnchor) seq2Connection.getEnd()).getLocation().getX());
 		assertEquals(25, ((FixPointAnchor) seq2Connection.getEnd()).getLocation().getY());
 		
-		//check outgoing sequence flow left
-		assertEquals(2, seq3Connection.getBendpoints().size());
-		
-		assertThat(seq3Connection.getBendpoints().get(0)).isEqualTo(point(523, 145));
+		assertThat(seq3Connection.getBendpoints().get(0)).isEqualTo(point(523, 168));
 		assertThat(seq3Connection.getBendpoints().get(1)).isEqualTo(point(523, 230));
 
 		// start anchor must be centered on the right side
@@ -129,8 +103,6 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertEquals(0, ((FixPointAnchor) seq3Connection.getEnd()).getLocation().getX());
 		assertEquals(25, ((FixPointAnchor) seq3Connection.getEnd()).getLocation().getY());
 		
-		//check outgoing sequence flow bottom
-		assertEquals(1, seq7Connection.getBendpoints().size());
 		assertThat(seq7Connection.getBendpoints().get(0)).isEqualTo(point(473, 330));
 		
 		//start anchor must be centered at the bottom side
@@ -140,6 +112,15 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		// end anchor must be centered on the left side
 		assertEquals(0, ((FixPointAnchor) seq7Connection.getEnd()).getLocation().getX());
 		assertEquals(25, ((FixPointAnchor) seq7Connection.getEnd()).getLocation().getY());
+		
+		// test bendbpoint strategy treshold
+		move(gatewayShape, diagramTypeProvider)
+		.by(0 , -1)
+		.toContainer(laneShape)
+		.execute();
+		
+		//check outgoing sequence flow right
+		assertEquals(1, seq3Connection.getBendpoints().size());
 	}
 
 	@Test
@@ -166,7 +147,6 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(subProcessShape).doesNotHaveChild(userTaskShape);
 		assertThat(processShape).hasChild(userTaskShape);
 		assertThat(userTaskShape).hasParentModelElement(subProcessElement.eContainer());
-
 	}
 
 	@Test
