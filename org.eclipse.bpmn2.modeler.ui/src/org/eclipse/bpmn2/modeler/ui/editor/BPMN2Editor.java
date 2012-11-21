@@ -820,7 +820,9 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		}
 		
 		try {
-			ModelUtil.clearIDs(modelHandler.getResource(), instances==0);
+			if (modelHandler != null) {
+				ModelUtil.clearIDs(modelHandler.getResource(), instances==0);
+			}
 			getPreferences().getGlobalPreferences().removePropertyChangeListener(this);
 			
 			getResourceSet().eAdapters().remove(getEditorAdapter());

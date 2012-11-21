@@ -95,35 +95,26 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 	@Override
 	public IPaletteCompartmentEntry[] getPalette() {
 
-		EList<Resource> resources = getDiagramTypeProvider().getDiagram().eResource().getResourceSet().getResources();
-		IProject project = null;
-		for (Resource resource : resources) {
-			if (resource.getURI().segmentCount() > 1) {
-				String projectName = resource.getURI().segment(1);
-				project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
-				if (project != null) {
-					break;
-				}
-			}
-		}
-
 		BPMN2Editor editor = (BPMN2Editor)getDiagramTypeProvider().getDiagramEditor();
 		Diagram diagram = getDiagramTypeProvider().getDiagram();
 		Object object = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(diagram);
-		modelEnablements = editor.getTargetRuntime().getModelEnablements((EObject)object);
-		featureProvider = (BPMNFeatureProvider)getFeatureProvider();
-		
+
 		List<IPaletteCompartmentEntry> palette = new ArrayList<IPaletteCompartmentEntry>();
 
-		// add compartments from super class
-		createConnectors(palette);
-		createTasksCompartments(palette);
-		createGatewaysCompartments(palette);
-		createEventsCompartments(palette);
-		createEventDefinitionsCompartments(palette);
-		createDataCompartments(palette);
-		createOtherCompartments(palette);
-		createCustomTasks(palette);
+		if (object!=null) {
+			modelEnablements = editor.getTargetRuntime().getModelEnablements((EObject)object);
+			featureProvider = (BPMNFeatureProvider)getFeatureProvider();
+
+			// add compartments from super class
+			createConnectors(palette);
+			createTasksCompartments(palette);
+			createGatewaysCompartments(palette);
+			createEventsCompartments(palette);
+			createEventDefinitionsCompartments(palette);
+			createDataCompartments(palette);
+			createOtherCompartments(palette);
+			createCustomTasks(palette);
+		}
 
 		return palette.toArray(new IPaletteCompartmentEntry[palette.size()]);
 	}
