@@ -317,6 +317,9 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	protected DiagramEditorAdapter editorAdapter;
 	protected BPMN2MultiPageEditor multipageEditor;
 	
+	public BPMN2Editor() {
+	}
+	
 	public BPMN2Editor(BPMN2MultiPageEditor mpe) {
 		multipageEditor = mpe;
 	}

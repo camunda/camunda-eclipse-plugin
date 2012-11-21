@@ -17,7 +17,7 @@
 			class="org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor"
 		-->
 		<editor
-			class="org.eclipse.bpmn2.modeler.ui.editor.BPMN2MultiPageEditor"
+			class="org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor"
 			contributorClass="org.eclipse.graphiti.ui.editor.DiagramEditorActionBarContributor"
 			default="true" extensions="bpmn,bpmn2" icon="icons/bpmn2_editor_16.png"
 			id="org.eclipse.bpmn2.modeler.ui.bpmn2editor" name="Bpmn2 Diagram Editor">
