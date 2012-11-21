@@ -178,4 +178,11 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 		assertThat(LayoutUtil.getBoundaryEventRelativeSector(boundaryEvent8)).isEqualTo(Sector.LEFT);
 	}
 	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testBase.bpmn")
+	public void testGetLength() {
+		FreeFormConnection flow1 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		assertThat(LayoutUtil.getLength(flow1)).isEqualTo(284);
+	}
+	
 }

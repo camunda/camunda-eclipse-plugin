@@ -20,6 +20,8 @@ public class AnchorPointStrategy {
 
 	AnchorPointStrategy start;
 	AnchorPointStrategy end;
+	
+	boolean unchanged = false;
 
 	public AnchorPointStrategy() {
 	}
@@ -32,6 +34,11 @@ public class AnchorPointStrategy {
 
 		this.end = new AnchorPointStrategy();
 		this.end.setConnection(connection);
+	}
+	
+	public AnchorPointStrategy unchanged() {
+		unchanged = true;
+		return this;
 	}
 
 	public AnchorPointStrategy start() {
@@ -63,6 +70,10 @@ public class AnchorPointStrategy {
 	}
 
 	public void execute() {
+		if (unchanged) {
+			return;
+		}
+		
 		start.internalExecute(true);
 		end.internalExecute(false);
 	}
@@ -102,6 +113,11 @@ public class AnchorPointStrategy {
 		BaseElement sourceElement = LayoutUtil.getSourceBaseElement(connection);
 
 		AnchorPointStrategy strategy = new AnchorPointStrategy(connection);
+		
+		if (connection.getBendpoints().size() > 2 || LayoutUtil.getLength(connection) > LayoutUtil.MAGIC_LENGTH){
+			strategy.unchanged();
+			return strategy;
+		}
 
 		sectorSwitch(strategy, sector);
 		typeSwitch(strategy, sector, sourceElement);
@@ -264,7 +280,7 @@ public class AnchorPointStrategy {
 
 	private static void gatewaySwitch(AnchorPointStrategy strategy,
 			Sector targetElementSector, Gateway sourceElement) {
-		double treshold = LayoutUtil.getLayoutTreshold(strategy.getConnection());
+		double treshold = LayoutUtil.getAbsLayoutTreshold(strategy.getConnection());
 		
 		switch (targetElementSector) {
 		case TOP_RIGHT:

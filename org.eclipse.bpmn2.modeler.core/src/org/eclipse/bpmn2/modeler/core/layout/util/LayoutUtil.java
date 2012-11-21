@@ -27,6 +27,12 @@ public class LayoutUtil {
 	 */
 	public static final double MAGIC_VALUE = 0.90;
 	
+	/**
+	 * evolutionary developed value to decide if we should layout a connection, assumption: we suck at layouting long connections
+	 */
+	public static final double MAGIC_LENGTH = 700;
+	
+	
 	public enum Sector {
 		TOP_LEFT,
 		LEFT,
@@ -186,6 +192,10 @@ public class LayoutUtil {
 		
 		return getVerticalLayoutTreshold(startShapeBoundary, endShapeLocationPoint) >= 0 ? true : false;
 	}
+	
+	public static double getAbsLayoutTreshold(FreeFormConnection connection) {
+		return Math.abs(getLayoutTreshold(connection));
+	}
 
 	/**
 	 * 
@@ -296,6 +306,34 @@ public class LayoutUtil {
 		}
 		
 		DIUtils.updateDIEdge(connection);
+	}
+	
+	public static double getLength(FreeFormConnection connection) {
+		double resultLength = 0.0;
+		
+		ILocation startLoc = Graphiti.getLayoutService().getLocationRelativeToDiagram(connection.getStart());
+		ILocation endLoc = Graphiti.getLayoutService().getLocationRelativeToDiagram(connection.getEnd());
+		
+		if (connection.getBendpoints().size() == 0) {
+			return new Vector(endLoc.getX() - startLoc.getX(), endLoc.getY() - startLoc.getY()).getLength();
+		}
+		
+		for (int index = 0; index < connection.getBendpoints().size(); index++) {
+			Point point = connection.getBendpoints().get(index);
+			
+			if (index !=  connection.getBendpoints().size() -1) {
+				Point next = connection.getBendpoints().get(index+1);
+				resultLength += new Vector(next.getX() - point.getX(), next.getY() - point.getY()).getLength();
+			}
+		}
+		
+		Point first = connection.getBendpoints().get(0);
+		Point last = connection.getBendpoints().get(connection.getBendpoints().size()-1);
+		
+		resultLength += new Vector(first.getX() - startLoc.getX(), first.getY() - startLoc.getY()).getLength();
+		resultLength += new Vector(endLoc.getX() - last.getX(), endLoc.getY() - last.getY()).getLength();
+		
+		return resultLength;
 	}
 	
 }
