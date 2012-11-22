@@ -20,8 +20,8 @@ public class ConnectionReconnectionContext {
 		
 		FreeFormConnection freeFormConnection = (FreeFormConnection) connection;
 		
-		AnchorPointStrategy.strategyFor(freeFormConnection).execute();
-		BendpointStrategy.strategyFor(freeFormConnection).execute();
+		LayoutStrategy.build(AnchorPointStrategy.class, freeFormConnection).execute();
+		LayoutStrategy.build(BendpointStrategy.class, freeFormConnection).execute();
 	}
 	
 }

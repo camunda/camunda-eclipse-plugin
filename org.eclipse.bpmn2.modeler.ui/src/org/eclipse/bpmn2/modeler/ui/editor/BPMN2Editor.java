@@ -16,7 +16,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Assignment;
@@ -146,6 +148,7 @@ import org.eclipse.bpmn2.modeler.ui.views.outline.BPMN2EditorOutlinePage;
 import org.eclipse.bpmn2.modeler.ui.wizards.BPMN2DiagramCreator;
 import org.eclipse.bpmn2.modeler.ui.wizards.Bpmn2DiagramEditorInput;
 import org.eclipse.bpmn2.modeler.ui.wizards.FileService;
+import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -161,6 +164,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.command.BasicCommandStack;
+import org.eclipse.emf.common.command.CommandStack;
 import org.eclipse.emf.common.util.BasicDiagnostic;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
@@ -169,6 +173,9 @@ import org.eclipse.emf.ecore.EValidator;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.RollbackException;
+import org.eclipse.emf.transaction.Transaction;
+import org.eclipse.emf.transaction.TransactionalCommandStack;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.TransactionalEditingDomain.Lifecycle;
 import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
@@ -315,13 +322,8 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 //	private Hashtable<BPMNDiagram, GraphicalViewer> mapDiagramToViewer = new Hashtable<BPMNDiagram, GraphicalViewer>();
 
 	protected DiagramEditorAdapter editorAdapter;
-	protected BPMN2MultiPageEditor multipageEditor;
 	
 	public BPMN2Editor() {
-	}
-	
-	public BPMN2Editor(BPMN2MultiPageEditor mpe) {
-		multipageEditor = mpe;
 	}
 	
 	public static BPMN2Editor getActiveEditor() {
@@ -336,10 +338,6 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		}
 	}
 
-	public BPMN2MultiPageEditor getMultipageEditor() {
-		return multipageEditor;
-	}
-	
 	protected DiagramEditorAdapter getEditorAdapter() {
 		return editorAdapter;
 	}
@@ -538,7 +536,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 
 				@Override
 				protected void doExecute() {
-					importDiagram();
+					importDiagram(bpmnResource);
 				}
 			});
 		}
@@ -547,7 +545,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		loadMarkers();
 	}
 	
-	private void importDiagram() {
+	private void importDiagram(Bpmn2Resource resourceToImport) {
 		
 		// make sure this guy is active, otherwise it's not selectable
 		Diagram diagram = getDiagramTypeProvider().getDiagram();
@@ -566,7 +564,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		
 		IDiagramEditor diagramEditor = getDiagramTypeProvider().getDiagramEditor();
 		TransactionalEditingDomain editingDomain = diagramEditor.getEditingDomain();
-		ModelImportCommand command = new ModelImportCommand(editingDomain, diagramEditor, bpmnResource);
+		ModelImportCommand command = new ModelImportCommand(editingDomain, diagramEditor, resourceToImport);
 		
 		editingDomain.getCommandStack().execute(command);
 		
@@ -686,10 +684,6 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 				@Override
 				public void partBroughtToTop(IWorkbenchPartReference partRef) {
 					IWorkbenchPart part = partRef.getPart(false);
-					if (part instanceof BPMN2MultiPageEditor) {
-						BPMN2MultiPageEditor mpe = (BPMN2MultiPageEditor)part;
-						setActiveEditor(mpe.getDesignEditor());
-					}
 				}
 
 				@Override
@@ -1006,7 +1000,40 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	// WorkspaceSynchronizer handlers called from delegate
 	////////////////////////////////////////////////////////////////////////////////
 	
-	public boolean handleResourceChanged(Resource resource) {
+	public boolean handleResourceChanged(final Resource resource) {
+		// FIXME
+		//		try {
+//			getEditingDomain().runExclusive(new Runnable() {
+//				
+//				@Override
+//				public void run() {
+//					importDiagram((Bpmn2Resource) resource);
+//				}
+//			});
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//		TransactionalCommandStack stack = (TransactionalCommandStack) getEditingDomain().getCommandStack();
+//		
+//		Map<String, Object> options = new HashMap<String, Object>();
+//		options.put(Transaction.OPTION_IS_UNDO_REDO_TRANSACTION, true);
+//		
+//		try {
+//			stack.execute(new RecordingCommand(getEditingDomain()) {
+//
+//				@Override
+//				protected void doExecute() {
+//					importDiagram(bpmnResource);
+//				}
+//			}, options);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (RollbackException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
 		return true;
 	}
 

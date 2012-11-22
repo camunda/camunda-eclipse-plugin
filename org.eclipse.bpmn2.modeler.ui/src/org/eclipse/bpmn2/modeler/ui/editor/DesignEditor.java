@@ -9,11 +9,9 @@ import org.eclipse.bpmn2.Choreography;
 import org.eclipse.bpmn2.Collaboration;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.FlowElement;
-import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.di.BPMNDiagram;
-import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -24,23 +22,16 @@ import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.transaction.NotificationFilter;
-import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.ResourceSetChangeEvent;
 import org.eclipse.emf.transaction.ResourceSetListener;
 import org.eclipse.emf.transaction.RollbackException;
-import org.eclipse.emf.transaction.TransactionalEditingDomain;
-import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.gef.ContextMenuProvider;
-import org.eclipse.gef.ui.actions.ActionRegistry;
-import org.eclipse.gef.ui.actions.WorkbenchPartAction;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.ui.editor.DiagramEditorContextMenuProvider;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -66,8 +57,7 @@ public class DesignEditor extends BPMN2Editor {
 	protected CTabFolder tabFolder;
 	private int defaultTabHeight;
 
-	public DesignEditor(BPMN2MultiPageEditor bpmn2MultiPageEditor, BPMN2MultiPageEditor mpe) {
-		super(mpe);
+	public DesignEditor() {
 	}
 
 	public void deleteBpmnDiagram(BPMNDiagram bpmnDiagram) {
@@ -134,9 +124,6 @@ public class DesignEditor extends BPMN2Editor {
 							// this SubProcess
 							rootBpmnDiagram = DIUtils.findBPMNDiagram(this, (BaseElement)object, true);
 							object = rootBpmnDiagram.getPlane().getBpmnElement();
-						}
-						if (getBpmnDiagram()!=rootBpmnDiagram) {
-							multipageEditor.showDesignPage(rootBpmnDiagram);
 						}
 						if (rootBpmnDiagram != newBpmnDiagram) {
 							final BPMNDiagram d = newBpmnDiagram;
@@ -301,15 +288,6 @@ public class DesignEditor extends BPMN2Editor {
 			item.setData(getBpmnDiagram());
 
 			super.createPartControl(container);
-			
-			
-			// create additional editor tabs for BPMNDiagrams in the parent MultiPageEditor
-			final List<BPMNDiagram> bpmnDiagrams = getModelHandler().getAll(BPMNDiagram.class);
-			for (int i=1; i<bpmnDiagrams.size(); ++i) {
-				BPMNDiagram bpmnDiagram = bpmnDiagrams.get(i);
-				if (bpmnDiagram.getPlane().getBpmnElement() instanceof RootElement)
-					multipageEditor.addDesignPage(bpmnDiagram);
-			}
 		}
 	}
 	
@@ -327,94 +305,6 @@ public class DesignEditor extends BPMN2Editor {
 	@Override
 	protected void createActions() {
 		super.createActions();
-		ActionRegistry registry = getActionRegistry();
-		IAction action = new WorkbenchPartAction(multipageEditor.getDesignEditor()) {
-
-			@Override
-			protected void init() {
-				super.init();
-				setId("show.or.hide.source.view");
-			}
-
-			@Override
-			public String getText() {
-				return multipageEditor.getSourceViewer() == null ? "Show Source View" : "Hide Source View";
-			}
-
-			@Override
-			protected boolean calculateEnabled() {
-				return true;
-			}
-
-			public void run() {
-				if (multipageEditor.getSourceViewer() == null) {
-					multipageEditor.createSourceViewer();
-				} else {
-					multipageEditor.removeSourceViewer();
-				}
-			}
-		};
-		registry.registerAction(action);
-
-		action = new WorkbenchPartAction(multipageEditor.getDesignEditor()) {
-
-			@Override
-			protected void init() {
-				super.init();
-				setId("delete.page");
-			}
-
-			@Override
-			public String getText() {
-				int pageIndex = multipageEditor.getActivePage();
-				return "Delete Diagram \"" + multipageEditor.getTabItem(pageIndex).getText() + "\"";
-			}
-
-			@Override
-			public boolean isEnabled() {
-				return calculateEnabled();
-			}
-
-			@Override
-			protected boolean calculateEnabled() {
-				BPMNDiagram bpmnDiagram = getBpmnDiagram();
-				BPMNPlane plane = bpmnDiagram.getPlane();
-				BaseElement process = plane.getBpmnElement();
-				List<Participant> participants = getModelHandler().getAll(Participant.class);
-				for (Participant p : participants) {
-					if (p.getProcessRef() == process)
-						return false;
-				}
-				return true;
-			}
-
-			public void run() {
-				int pageIndex = multipageEditor.getActivePage();
-				boolean result = MessageDialog.openQuestion(getSite().getShell(),
-						"Delete Page",
-						"Are you sure you want to delete the page \""
-						+ multipageEditor.getTabItem(pageIndex).getText()
-						+ "\"?");
-				if (result) {
-					final BPMNDiagram bpmnDiagram = getBpmnDiagram();
-					TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(bpmnDiagram);
-					// removeDesignPage(bpmnDiagram);
-
-					if (domain != null) {
-						domain.getCommandStack().execute(new RecordingCommand(domain) {
-							@Override
-							protected void doExecute() {
-								BPMNPlane plane = bpmnDiagram.getPlane();
-								BaseElement process = plane.getBpmnElement();
-								DIUtils.deleteDiagram(DesignEditor.this, bpmnDiagram);
-								EcoreUtil.delete(process);
-							}
-						});
-					}
-				}
-			}
-		};
-		registry.registerAction(action);
 	}
 
 	@Override
@@ -426,15 +316,6 @@ public class DesignEditor extends BPMN2Editor {
 				IAction action = getActionRegistry().getAction("show.or.hide.source.view");
 				action.setText(action.getText());
 				manager.add(action);
-
-				int pageIndex = multipageEditor.getActivePage();
-				int lastPage = multipageEditor.getDesignPageCount();
-				if (pageIndex > 0 && pageIndex < lastPage) {
-					action = getActionRegistry().getAction("delete.page");
-					action.setText(action.getText());
-					action.setEnabled(action.isEnabled());
-					manager.add(action);
-				}
 			}
 		};
 	}
@@ -484,10 +365,6 @@ public class DesignEditor extends BPMN2Editor {
 							&& feature == Bpmn2Package.eINSTANCE.getDefinitions_Diagrams()) {
 						final BPMNDiagram bpmnDiagram = (BPMNDiagram) newValue;
 						BaseElement bpmnElement = bpmnDiagram.getPlane().getBpmnElement();
-						if (bpmnElement instanceof RootElement)
-							multipageEditor.addDesignPage(bpmnDiagram);
-						else
-							addDesignPage(bpmnDiagram);
 						break;
 					}
 				} else if (et == Notification.REMOVE) {
@@ -503,10 +380,6 @@ public class DesignEditor extends BPMN2Editor {
 							&& feature == Bpmn2Package.eINSTANCE.getDefinitions_Diagrams()) {
 						final BPMNDiagram bpmnDiagram = (BPMNDiagram) oldValue;
 						BaseElement bpmnElement = bpmnDiagram.getPlane().getBpmnElement();
-						if (bpmnElement instanceof RootElement)
-							multipageEditor.removeDesignPage(bpmnDiagram);
-						else
-							removeDesignPage(bpmnDiagram);
 						break;
 					}
 				} else if (et == Notification.SET) {
@@ -520,13 +393,6 @@ public class DesignEditor extends BPMN2Editor {
 								if (bpmnDiagram==notifier || bpmnDiagram.getPlane().getBpmnElement() == notifier) {
 									item.setText(n.getNewStringValue());
 								}
-							}
-						}
-						for (int i=0; i<multipageEditor.getPageCount(); ++i) {
-							BPMNDiagram bpmnDiagram = multipageEditor.getBpmnDiagram(i);
-							if (bpmnDiagram == notifier) {
-								CTabItem item = multipageEditor.getTabItem(i);
-								item.setText(n.getNewStringValue());
 							}
 						}
 					}

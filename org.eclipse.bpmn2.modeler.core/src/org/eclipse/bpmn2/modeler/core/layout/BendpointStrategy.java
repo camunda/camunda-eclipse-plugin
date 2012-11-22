@@ -7,17 +7,15 @@ import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
-import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 
-public class BendpointStrategy {
+public class BendpointStrategy extends LayoutStrategy {
 	
 	private FreeFormConnection connection;
 	
 	private boolean horizontal;
 	private boolean vertical;
 	private boolean single;
-	private boolean unchanged;
 	
 	public BendpointStrategy(FreeFormConnection connection) {
 		this.connection = connection;
@@ -40,16 +38,8 @@ public class BendpointStrategy {
 		return this;
 	}
 	
-	private BendpointStrategy unchanged() {
-		unchanged = true;
-		return this;
-	}
-	
-	public void execute() {
-		if (unchanged) {
-			return;
-		}
-		
+	@Override
+	protected void doExecute() {
 		connection.getBendpoints().clear();
 		
 		double treshold = LayoutUtil.getLayoutTreshold(connection);
@@ -70,25 +60,7 @@ public class BendpointStrategy {
 		}
 	}
 	
-	
-	public static BendpointStrategy strategyFor(FreeFormConnection connection) {
-		Sector sector = LayoutUtil.getEndShapeSector(connection);
-		BendpointStrategy strategy = new BendpointStrategy(connection);
-		
-		BaseElement sourceElement = LayoutUtil.getSourceBaseElement(connection);
-		
-		if (connection.getBendpoints().size() > 2 || LayoutUtil.getLength(connection) > LayoutUtil.MAGIC_LENGTH){
-			strategy.unchanged();
-			return strategy;
-		}
-		
-		sectorSwitch(strategy, sector);
-		typeSwitch(strategy, sector, sourceElement);
-		
-		return strategy;
-	}
-	
-	private static BendpointStrategy sectorSwitch(BendpointStrategy strategy, Sector sector) {
+	protected void sectorSwitch(Sector sector) {
 		switch(sector) {
 		case LEFT:
 		case TOP_LEFT:
@@ -96,54 +68,50 @@ public class BendpointStrategy {
 		case RIGHT:
 		case TOP_RIGHT:
 		case BOTTOM_RIGHT:
-			strategy.vertical();
-			return strategy;
+			this.vertical();
+			break;
 			
 		case TOP:
 		case BOTTOM:
-			strategy.horizontal();
-			return strategy;
+			this.horizontal();
+			break;
 		
 		default: 
 			throw new IllegalArgumentException("Cant define BendpointStrategy for undefined sector");
 		}
 	}
 	
-	private static BendpointStrategy typeSwitch(BendpointStrategy strategy, Sector sector, BaseElement sourceElement) {
+	protected void typeSwitch(Sector sector, BaseElement sourceElement,  BaseElement targetElement) {
 		
-		double treshold = LayoutUtil.getAbsLayoutTreshold(strategy.connection);
+		double treshold = LayoutUtil.getAbsLayoutTreshold(connection);
 		
 		if (sourceElement instanceof Gateway) {
-			gatewaySwitch(strategy, treshold);
+			gatewaySwitch(treshold);
 		}
 		
-		BaseElement flowElement = (BaseElement) Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(strategy.connection);	
+		BaseElement flowElement = (BaseElement) Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(connection);	
 		if (flowElement instanceof MessageFlow) {
-			messageFlowSwitch(strategy, sector);
+			messageFlowSwitch(sector);
 		}
 		
 		if (sourceElement instanceof BoundaryEvent) {
-			boundaryEventSwitch(strategy, sector);
+			boundaryEventSwitch(sector);
 		}
-		
-		return strategy;
 	}
 
-	private static void gatewaySwitch(BendpointStrategy strategy,
-			double treshold) {
+	private void gatewaySwitch(double treshold) {
 		if (treshold <= LayoutUtil.MAGIC_VALUE) {
-			strategy.single();
+			this.single();
 		}
 	}
 
-	private static void boundaryEventSwitch(BendpointStrategy strategy,
-			Sector sector) {
-		Sector relativeSectorToRef = LayoutUtil.getBoundaryEventRelativeSector((Shape) strategy.connection.getStart().getParent());
+	private void boundaryEventSwitch(Sector sector) {
+		Sector relativeSectorToRef = LayoutUtil.getBoundaryEventRelativeSector(LayoutUtil.getStartShape(connection));
 		
 		switch (relativeSectorToRef) {
 		case BOTTOM:
 		case TOP:
-			strategy.single();
+			this.single();
 			break;
 		case TOP_LEFT:
 			switch (sector) {
@@ -152,7 +120,7 @@ public class BendpointStrategy {
 			case RIGHT:
 			case TOP_RIGHT:
 			case TOP_LEFT:
-				strategy.single();
+				this.single();
 				break;
 			default:
 				break;
@@ -165,7 +133,7 @@ public class BendpointStrategy {
 			case RIGHT:
 			case BOTTOM_RIGHT:
 			case BOTTOM_LEFT:
-				strategy.single();
+				this.single();
 				break;
 			default:
 				break;
@@ -178,7 +146,7 @@ public class BendpointStrategy {
 			case LEFT:
 			case TOP_LEFT:
 			case TOP_RIGHT:
-				strategy.single();
+				this.single();
 				break;
 			default:
 				break;
@@ -191,7 +159,7 @@ public class BendpointStrategy {
 			case LEFT:
 			case BOTTOM_LEFT:
 			case BOTTOM_RIGHT:
-				strategy.single();
+				this.single();
 				break;
 			default:
 				break;
@@ -202,14 +170,14 @@ public class BendpointStrategy {
 		}
 	}
 
-	private static void messageFlowSwitch(BendpointStrategy strategy,
-			Sector sector) {
+	private void messageFlowSwitch(Sector sector) {
 		switch (sector) {
 		case TOP_RIGHT:
 		case TOP_LEFT:
 		case BOTTOM_RIGHT:
 		case BOTTOM_LEFT:
-			strategy.horizontal();
+			this.horizontal();
+			break;
 		}
 	}
 

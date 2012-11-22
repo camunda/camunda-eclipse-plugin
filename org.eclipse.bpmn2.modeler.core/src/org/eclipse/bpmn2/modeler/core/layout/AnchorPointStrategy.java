@@ -1,7 +1,9 @@
 package org.eclipse.bpmn2.modeler.core.layout;
 
+import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
+import org.eclipse.bpmn2.DataAssociation;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
@@ -13,9 +15,7 @@ import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 
-public class AnchorPointStrategy {
-	private FreeFormConnection connection;
-	
+public class AnchorPointStrategy extends LayoutStrategy {
 	private AnchorUtil.AnchorLocation location;
 
 	AnchorPointStrategy start;
@@ -36,11 +36,6 @@ public class AnchorPointStrategy {
 		this.end.setConnection(connection);
 	}
 	
-	public AnchorPointStrategy unchanged() {
-		unchanged = true;
-		return this;
-	}
-
 	public AnchorPointStrategy start() {
 		return start;
 	}
@@ -69,11 +64,8 @@ public class AnchorPointStrategy {
 		return this;
 	}
 
-	public void execute() {
-		if (unchanged) {
-			return;
-		}
-		
+	@Override
+	public void doExecute() {
 		start.internalExecute(true);
 		end.internalExecute(false);
 	}
@@ -100,112 +92,85 @@ public class AnchorPointStrategy {
 		return null;
 	}
 
-	protected Shape getStartShape() {
-		return (Shape) getConnection().getStart().getParent();
-	}
-
-	protected Shape getEndShape() {
-		return (Shape) getConnection().getEnd().getParent();
-	}
-
-	public static AnchorPointStrategy strategyFor(FreeFormConnection connection) {
-		Sector sector = LayoutUtil.getEndShapeSector(connection);
-		BaseElement sourceElement = LayoutUtil.getSourceBaseElement(connection);
-
-		AnchorPointStrategy strategy = new AnchorPointStrategy(connection);
-		
-		if (connection.getBendpoints().size() > 2 || LayoutUtil.getLength(connection) > LayoutUtil.MAGIC_LENGTH){
-			strategy.unchanged();
-			return strategy;
-		}
-
-		sectorSwitch(strategy, sector);
-		typeSwitch(strategy, sector, sourceElement);
-
-		return strategy;
-	}
-
-	private static AnchorPointStrategy sectorSwitch(
-			AnchorPointStrategy strategy, Sector sector) {
+	@Override
+	protected void sectorSwitch(Sector sector) {
 		switch (sector) {
 
 		case LEFT:
 		case TOP_LEFT:
 		case BOTTOM_LEFT:
-			strategy.start.left();
-			strategy.end.right();
-			return strategy;
+			start.left();
+			end.right();
+			break;
 
 		case RIGHT:
 		case TOP_RIGHT:
 		case BOTTOM_RIGHT:
-			strategy.start.right();
-			strategy.end.left();
-			return strategy;
+			start.right();
+			end.left();
+			break;
 
 		case TOP:
-			strategy.start.top();
-			strategy.end.bottom();
-			return strategy;
+			start.top();
+			end.bottom();
+			break;
 
 		case BOTTOM:
-			strategy.start.bottom();
-			strategy.end.top();
-			return strategy;
+			start.bottom();
+			end.top();
+			break;
 
 		default:
 			throw new IllegalArgumentException(
 					"Cant define AnchorPointStrategy for undefined sector");
 		}
 	}
-
-	private static AnchorPointStrategy typeSwitch(AnchorPointStrategy strategy, Sector targetElementSector, BaseElement sourceElement) {
+	
+	@Override
+	protected void typeSwitch(Sector targetElementSector, BaseElement sourceElement, BaseElement targetElement) {
 		
 		if (sourceElement instanceof Gateway) {
-			gatewaySwitch(strategy, targetElementSector, (Gateway) sourceElement);
+			gatewaySwitch(targetElementSector, (Gateway) sourceElement);
 		}
 		
-		BaseElement flowElement = (BaseElement) Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(strategy.getConnection());	
+		BaseElement flowElement = (BaseElement) Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(getConnection());	
 		if (flowElement instanceof MessageFlow) {
-			messageFlowSwitch(strategy, targetElementSector, sourceElement);
+			messageFlowSwitch(targetElementSector, sourceElement);
 		}
 		
 		if (sourceElement instanceof BoundaryEvent) {
-			boundaryEventSwitch(strategy, targetElementSector, (BoundaryEvent) sourceElement);
+			boundaryEventSwitch(targetElementSector, (BoundaryEvent) sourceElement);
 		}
 		
-		return strategy;
 	}
 
-	private static void boundaryEventSwitch(AnchorPointStrategy strategy,
-			Sector targetElementSector, BoundaryEvent sourceElement) {
+	private void boundaryEventSwitch(Sector targetElementSector, BoundaryEvent sourceElement) {
 		Sector relativeSectorToRef = LayoutUtil
-				.getBoundaryEventRelativeSector((Shape) strategy
-						.getConnection().getStart().getParent());
+				.getBoundaryEventRelativeSector(LayoutUtil.getStartShape(connection));
 
 		switch (relativeSectorToRef) {
 		case BOTTOM:
-			strategy.start.bottom();
+			start.bottom();
 			break;
 		case TOP:
-			strategy.start.top();
+			start.top();
 			break;
 		case LEFT:
-			strategy.start.left();
+			start.left();
 			break;
 		case RIGHT:
-			strategy.start.right();
+			start.right();
 			break;
 		case TOP_LEFT:
 			switch (targetElementSector) {
 			case BOTTOM:
 			case BOTTOM_RIGHT:
-				strategy.start.left();
+				start.left();
 				break;
 			case RIGHT:
 			case TOP_RIGHT:
 			case TOP_LEFT:
-				strategy.start.top();
+				start.top();
 				break;
 			default:
 				break;
@@ -215,12 +180,12 @@ public class AnchorPointStrategy {
 			switch (targetElementSector) {
 			case TOP:
 			case TOP_RIGHT:
-				strategy.start.left();
+				start.left();
 				break;
 			case RIGHT:
 			case BOTTOM_RIGHT:
 			case BOTTOM_LEFT:
-				strategy.start.bottom();
+				start.bottom();
 				break;
 			default:
 				break;
@@ -230,12 +195,12 @@ public class AnchorPointStrategy {
 			switch (targetElementSector) {
 			case BOTTOM:
 			case BOTTOM_LEFT:
-				strategy.start.right();
+				start.right();
 				break;
 			case LEFT:
 			case TOP_LEFT:
 			case TOP_RIGHT:
-				strategy.start.top();
+				start.top();
 				break;
 			default:
 				break;
@@ -245,12 +210,12 @@ public class AnchorPointStrategy {
 			switch (targetElementSector) {
 			case TOP:
 			case TOP_LEFT:
-				strategy.start.right();
+				start.right();
 				break;
 			case LEFT:
 			case BOTTOM_LEFT:
 			case BOTTOM_RIGHT:
-				strategy.start.bottom();
+				start.bottom();
 				break;
 			default:
 				break;
@@ -262,57 +227,47 @@ public class AnchorPointStrategy {
 
 	}
 
-	private static void messageFlowSwitch(AnchorPointStrategy strategy,
-			Sector targetElementSector, BaseElement sourceElement) {
+	private void messageFlowSwitch(Sector targetElementSector, BaseElement sourceElement) {
 		switch (targetElementSector) {
 		case TOP_RIGHT:
 		case TOP_LEFT:
-			strategy.start.top();
-			strategy.end.bottom();
+			start.top();
+			end.bottom();
 			break;
 		case BOTTOM_RIGHT:
 		case BOTTOM_LEFT:
-			strategy.start.bottom();
-			strategy.end.top();
+			start.bottom();
+			end.top();
 			break;
 		}
 	}
 
-	private static void gatewaySwitch(AnchorPointStrategy strategy,
-			Sector targetElementSector, Gateway sourceElement) {
-		double treshold = LayoutUtil.getAbsLayoutTreshold(strategy.getConnection());
+	private void gatewaySwitch(Sector targetElementSector, Gateway sourceElement) {
+		double treshold = LayoutUtil.getAbsLayoutTreshold(connection);
 		
 		switch (targetElementSector) {
 		case TOP_RIGHT:
 		case TOP_LEFT:
 			if (treshold <= LayoutUtil.MAGIC_VALUE) {
-				strategy.start.top();
+				start.top();
 			}
 			break;
 		case BOTTOM_RIGHT:
 		case BOTTOM_LEFT:
 			if (treshold <= LayoutUtil.MAGIC_VALUE) {
-				strategy.start.bottom();
+				start.bottom();
 			}
 			break;
 		case TOP:
 		case BOTTOM:
 			if (treshold > 0.0) {
-				strategy.end.left();
+				end.left();
 			} else {
-				strategy.end.right();
+				end.right();
 			}
 			break;
 		}
 
-	}
-
-	public FreeFormConnection getConnection() {
-		return connection;
-	}
-
-	public void setConnection(FreeFormConnection connection) {
-		this.connection = connection;
 	}
 
 	public AnchorUtil.AnchorLocation getLocation() {
@@ -322,5 +277,16 @@ public class AnchorPointStrategy {
 	public void setLocation(AnchorUtil.AnchorLocation location) {
 		this.location = location;
 	}
-
+	
+	@Override
+	public LayoutStrategy getSubStrategy(FreeFormConnection connection,
+			BaseElement sourceElement) {
+		
+		if (isConnectionBpmnType(connection, Association.class) || isConnectionBpmnType(connection, DataAssociation.class)) {
+			return new AssocationAnchorPointStrategy(connection);
+		}
+		
+		return super.getSubStrategy(connection, sourceElement);
+	}
+	
 }

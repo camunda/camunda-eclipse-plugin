@@ -43,7 +43,6 @@ public class LayoutUtil {
 		TOP_RIGHT,
 		TOP,
 		UNDEFINED;
-		
 	}
 	
 	private static Sector fromBooleans(boolean left, boolean right, boolean above, boolean beneath) {
@@ -115,6 +114,17 @@ public class LayoutUtil {
 		return (BaseElement) Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(connection.getStart().getParent());	
 	}
 	
+	public static BaseElement getTargetBaseElement(FreeFormConnection connection) {
+		return (BaseElement) Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(connection.getEnd().getParent());	
+	}
+	
+	public static Shape getStartShape (Connection connection) {
+		return (Shape) connection.getStart().getParent();
+	}
+	
+	public static Shape getEndShape (Connection connection) {
+		return (Shape) connection.getStart().getParent();
+	}
 	
 	public static boolean anchorEqual(Anchor some, Anchor that) {
 		

@@ -9,12 +9,12 @@ public class SourceViewer extends StructuredTextEditor {
 	/**
 	 * 
 	 */
-	private final BPMN2MultiPageEditor multiPageEditor;
+	private final BPMN2MultiPageEditor2 multiPageEditor;
 
 	/**
 	 * @param multiPageEditor
 	 */
-	SourceViewer(BPMN2MultiPageEditor multiPageEditor) {
+	SourceViewer(BPMN2MultiPageEditor2 multiPageEditor) {
 		this.multiPageEditor = multiPageEditor;
 	}
 
