@@ -2,6 +2,7 @@ package org.eclipse.bpmn2.modeler.core.layout;
 
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.DataAssociation;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
@@ -38,6 +39,10 @@ public abstract class LayoutStrategy {
 				|| isConnectionBpmnType(connection, DataAssociation.class)) {
 			return false;
 		}
+		
+		if (LayoutUtil.getSourceBaseElement(connection) instanceof BoundaryEvent && connection.getBendpoints().size() > 1) {
+			return false;
+		}
 
 		return true;
 	}
@@ -62,7 +67,10 @@ public abstract class LayoutStrategy {
 			if (subStrategy.appliesTo(connection)) {
 				subStrategy.sectorSwitch(sector);
 				subStrategy.typeSwitch(sector, sourceElement, targetElement);
+			}else {
+				subStrategy.unchanged();
 			}
+			
 			return subStrategy;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
