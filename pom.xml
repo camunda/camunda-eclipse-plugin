@@ -92,7 +92,7 @@
 
 		<repository>
 			<id>eclipse-bpel</id>
-			<url>http://download.eclipse.org/bpel/update-site</url>
+			<url>http://download.eclipse.org/bpel/site</url>
 			<layout>p2</layout>
 			<snapshots>
 				<enabled>true</enabled>
