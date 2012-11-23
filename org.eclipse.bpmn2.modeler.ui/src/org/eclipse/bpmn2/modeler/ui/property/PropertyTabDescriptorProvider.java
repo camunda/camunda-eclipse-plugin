@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultPropertySection;
 import org.eclipse.bpmn2.modeler.core.runtime.Bpmn2SectionDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.Bpmn2TabDescriptor;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.GeneralTabSection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.ISectionDescriptor;
@@ -39,7 +39,7 @@ public class PropertyTabDescriptorProvider implements ITabDescriptorProvider {
 		
 		Bpmn2TabDescriptor generalTab = new Bpmn2TabDescriptor("id", "General", "General");
 		
-		ISectionDescriptor sectionDescriptor = new Bpmn2SectionDescriptor(generalTab, new DefaultPropertySection());
+		ISectionDescriptor sectionDescriptor = new Bpmn2SectionDescriptor(generalTab, new GeneralTabSection());
 		generalTab.setSectionDescriptors(Arrays.asList(new ISectionDescriptor[] {sectionDescriptor}));
 		
 		tabs.add(generalTab);
