@@ -56,7 +56,9 @@ public class GeneralTabSection extends GFPropertySection implements
 	}
 	
 	private void internalRefresh() {
-		parentComposite.getParent().layout();
-		parentComposite.getParent().setFocus(); // otherwise the composite will not properly redrawn, SWT sucks		
+		Composite parent = parentComposite.getParent();
+		parent.layout();
+		
+		parent.redraw(); // otherwise the composite will not properly redrawn, SWT sucks		
 	}
 }
