@@ -15,7 +15,6 @@ import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ObjectEditingDialog;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
-import org.eclipse.bpmn2.modeler.ui.editor.BPMN2MultiPageEditor;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -82,10 +81,6 @@ public class ShowDiagramPageFeature extends AbstractCustomFeature {
 				baseElement = (BaseElement)bo;
 			}
 			BPMNDiagram bpmnDiagram = DIUtils.findBPMNDiagram(getDiagramEditor(), baseElement, false);
-			if (bpmnDiagram!=null) {
-				BPMN2MultiPageEditor mpe = ((BPMN2Editor)getDiagramEditor()).getMultipageEditor();
-				mpe.showDesignPage(bpmnDiagram);
-			}
 		}
 	}
 

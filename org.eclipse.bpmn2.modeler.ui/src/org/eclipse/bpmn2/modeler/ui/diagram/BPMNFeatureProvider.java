@@ -24,6 +24,7 @@ import org.eclipse.bpmn2.modeler.core.features.DefaultRemoveBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.FeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.ICustomTaskFeature;
 import org.eclipse.bpmn2.modeler.core.features.bendpoint.AddBendpointFeature;
+import org.eclipse.bpmn2.modeler.core.features.bendpoint.MoveAnchorFeature;
 import org.eclipse.bpmn2.modeler.core.features.bendpoint.MoveBendpointFeature;
 import org.eclipse.bpmn2.modeler.core.features.bendpoint.RemoveBendpointFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractCreateFlowFeature;
@@ -98,6 +99,7 @@ import org.eclipse.graphiti.features.IDeleteFeature;
 import org.eclipse.graphiti.features.IDirectEditingFeature;
 import org.eclipse.graphiti.features.IFeature;
 import org.eclipse.graphiti.features.ILayoutFeature;
+import org.eclipse.graphiti.features.IMoveAnchorFeature;
 import org.eclipse.graphiti.features.IMoveBendpointFeature;
 import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.IReconnectionFeature;
@@ -112,6 +114,7 @@ import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.context.IDeleteContext;
 import org.eclipse.graphiti.features.context.IDirectEditingContext;
 import org.eclipse.graphiti.features.context.ILayoutContext;
+import org.eclipse.graphiti.features.context.IMoveAnchorContext;
 import org.eclipse.graphiti.features.context.IMoveBendpointContext;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
@@ -457,7 +460,12 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 	public IMoveBendpointFeature getMoveBendpointFeature(IMoveBendpointContext context) {
 		return new MoveBendpointFeature(this);
 	}
-
+	
+	@Override
+	public IMoveAnchorFeature getMoveAnchorFeature(IMoveAnchorContext context) {
+		return new MoveAnchorFeature(this);
+	}
+	
 	@Override
 	public IRemoveBendpointFeature getRemoveBendpointFeature(IRemoveBendpointContext context) {
 		return new RemoveBendpointFeature(this);

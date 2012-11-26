@@ -3,7 +3,9 @@
   <bpmn2:process id="testShape" name="Default Process">
     <bpmn2:startEvent id="StartEvent_1" name="Start Event 1"/>
     <bpmn2:task id="Task_1" name="Task 1"/>
-    <bpmn2:task id="Task_2" name="Task 2"/>
+    <bpmn2:task id="Task_2" name="Task 2">
+      <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
+    </bpmn2:task>
     <bpmn2:startEvent id="StartEvent_2" name="Start Event 2"/>
     <bpmn2:task id="Task_3" name="Task 3">
       <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
@@ -57,6 +59,10 @@
     <bpmn2:boundaryEvent id="BoundaryEvent_6" name="" attachedToRef="Task_5"/>
     <bpmn2:boundaryEvent id="BoundaryEvent_7" name="" attachedToRef="Task_5"/>
     <bpmn2:boundaryEvent id="BoundaryEvent_8" name="" attachedToRef="Task_5"/>
+    <bpmn2:manualTask id="ManualTask_1" name="Manual Task 1">
+      <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
+    </bpmn2:manualTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_1" name="" sourceRef="Task_2" targetRef="ManualTask_1"/>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="testShape">
@@ -183,32 +189,41 @@
         <dc:Bounds height="50.0" width="110.0" x="205.0" y="350.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_7" bpmnElement="BoundaryEvent_1">
-        <dc:Bounds height="36.0" width="36.0" x="197.0" y="332.0"/>
+        <dc:Bounds height="36.0" width="36.0" x="187.0" y="332.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_8" bpmnElement="BoundaryEvent_2">
-        <dc:Bounds height="36.0" width="36.0" x="287.0" y="342.0"/>
+        <dc:Bounds height="36.0" width="36.0" x="297.0" y="332.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_9" bpmnElement="BoundaryEvent_3">
-        <dc:Bounds height="36.0" width="36.0" x="287.0" y="372.0"/>
+        <dc:Bounds height="36.0" width="36.0" x="297.0" y="382.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_10" bpmnElement="BoundaryEvent_4">
-        <dc:Bounds height="36.0" width="36.0" x="197.0" y="372.0"/>
+        <dc:Bounds height="36.0" width="36.0" x="187.0" y="382.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_Task_5" bpmnElement="Task_5">
         <dc:Bounds height="50.0" width="110.0" x="205.0" y="452.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_11" bpmnElement="BoundaryEvent_5">
-        <dc:Bounds height="36.0" width="36.0" x="237.0" y="444.0"/>
+        <dc:Bounds height="36.0" width="36.0" x="237.0" y="434.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_12" bpmnElement="BoundaryEvent_6">
-        <dc:Bounds height="36.0" width="36.0" x="237.0" y="474.0"/>
+        <dc:Bounds height="36.0" width="36.0" x="237.0" y="484.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_13" bpmnElement="BoundaryEvent_7">
         <dc:Bounds height="36.0" width="36.0" x="297.0" y="454.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_14" bpmnElement="BoundaryEvent_8">
-        <dc:Bounds height="36.0" width="36.0" x="197.0" y="454.0"/>
+        <dc:Bounds height="36.0" width="36.0" x="187.0" y="454.0"/>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ManualTask_1" bpmnElement="ManualTask_1">
+        <dc:Bounds height="50.0" width="110.0" x="535.0" y="151.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="SequenceFlow_1" sourceElement="BPMNShape_Task_2" targetElement="BPMNShape_ManualTask_1">
+        <di:waypoint xsi:type="dc:Point" x="315.0" y="240.0"/>
+        <di:waypoint xsi:type="dc:Point" x="425.0" y="240.0"/>
+        <di:waypoint xsi:type="dc:Point" x="425.0" y="176.0"/>
+        <di:waypoint xsi:type="dc:Point" x="535.0" y="176.0"/>
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>

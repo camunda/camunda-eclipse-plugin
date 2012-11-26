@@ -68,7 +68,7 @@ import org.w3c.dom.Node;
  * diagrams. Whether or not these types of files are actually deployable and/or executable
  * is another story ;)
  */
-public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IGotoMarker {
+public class BPMN2MultiPageEditor2 extends MultiPageEditorPart implements IGotoMarker {
 
 	DesignEditor designEditor;
 	SourceViewer sourceViewer;
@@ -76,7 +76,7 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IGotoMa
 	private int defaultTabHeight;
 	private List<BPMNDiagram> bpmnDiagrams = new ArrayList<BPMNDiagram>();
 	
-	public BPMN2MultiPageEditor() {
+	public BPMN2MultiPageEditor2() {
 		super();
 	}
 
@@ -173,13 +173,13 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IGotoMa
 
 	protected void createDesignEditor() {
 		if (designEditor==null) {
-			designEditor = new DesignEditor(this, this);
+			designEditor = new DesignEditor();
 			
 			try {
 				int pageIndex = tabFolder.getItemCount();
 				if (sourceViewer!=null)
 					--pageIndex;
-				addPage(pageIndex, designEditor, BPMN2MultiPageEditor.this.getEditorInput());
+				addPage(pageIndex, designEditor, BPMN2MultiPageEditor2.this.getEditorInput());
 				defaultTabHeight = tabFolder.getTabHeight();
 				setPageText(pageIndex,ModelUtil.getDiagramTypeName( designEditor.getBpmnDiagram() ));
 
@@ -269,28 +269,6 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements IGotoMa
 		return count;
 	}
 
-	protected void createSourceViewer() {
-		if (sourceViewer==null) {
-			sourceViewer = new SourceViewer(this);
-
-			try {
-				int pageIndex = tabFolder.getItemCount();
-				FileEditorInput input = new FileEditorInput(designEditor.getModelFile());
-				addPage(pageIndex, sourceViewer, input);
-				tabFolder.getItem(pageIndex).setShowClose(true);
-				
-				setPageText(pageIndex,"Source");
-				setActivePage(pageIndex);
-
-				updateTabs();
-			}
-			catch (Exception e) {
-				e.printStackTrace();
-				if (sourceViewer!=null)
-					sourceViewer.dispose();
-			}
-		}
-	}
 	
 	public SourceViewer getSourceViewer() {
 		return sourceViewer;

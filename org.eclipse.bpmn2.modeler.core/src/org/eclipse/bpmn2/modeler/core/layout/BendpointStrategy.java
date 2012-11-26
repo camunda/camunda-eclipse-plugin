@@ -7,10 +7,9 @@ import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
-import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 
-public class BendpointStrategy {
+public class BendpointStrategy extends LayoutStrategy {
 	
 	private FreeFormConnection connection;
 	
@@ -39,7 +38,8 @@ public class BendpointStrategy {
 		return this;
 	}
 	
-	public void execute() {
+	@Override
+	protected void doExecute() {
 		connection.getBendpoints().clear();
 		
 		double treshold = LayoutUtil.getLayoutTreshold(connection);
@@ -60,20 +60,7 @@ public class BendpointStrategy {
 		}
 	}
 	
-	
-	public static BendpointStrategy strategyFor(FreeFormConnection connection) {
-		Sector sector = LayoutUtil.getEndShapeSector(connection);
-		BendpointStrategy strategy = new BendpointStrategy(connection);
-		
-		BaseElement sourceElement = LayoutUtil.getSourceBaseElement(connection);
-		
-		sectorSwitch(strategy, sector);
-		typeSwitch(strategy, sector, sourceElement);
-		
-		return strategy;
-	}
-	
-	private static BendpointStrategy sectorSwitch(BendpointStrategy strategy, Sector sector) {
+	protected void sectorSwitch(Sector sector) {
 		switch(sector) {
 		case LEFT:
 		case TOP_LEFT:
@@ -81,106 +68,117 @@ public class BendpointStrategy {
 		case RIGHT:
 		case TOP_RIGHT:
 		case BOTTOM_RIGHT:
-			strategy.vertical();
-			return strategy;
+			this.vertical();
+			break;
 			
 		case TOP:
 		case BOTTOM:
-			strategy.horizontal();
-			return strategy;
+			this.horizontal();
+			break;
 		
 		default: 
 			throw new IllegalArgumentException("Cant define BendpointStrategy for undefined sector");
 		}
 	}
 	
-	private static BendpointStrategy typeSwitch(BendpointStrategy strategy, Sector sector, BaseElement sourceElement) {
+	protected void typeSwitch(Sector sector, BaseElement sourceElement,  BaseElement targetElement) {
 		
-		double treshold = LayoutUtil.getLayoutTreshold(strategy.connection);
+		double treshold = LayoutUtil.getAbsLayoutTreshold(connection);
 		
 		if (sourceElement instanceof Gateway) {
-			if (treshold <= LayoutUtil.MAGIC_VALUE) {
-				strategy.single();
-			}
+			gatewaySwitch(treshold);
 		}
-		BaseElement flowElement = (BaseElement) Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(strategy.connection);	
+		
+		BaseElement flowElement = (BaseElement) Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(connection);	
 		if (flowElement instanceof MessageFlow) {
-			switch (sector) {
-			case TOP_RIGHT:
-			case TOP_LEFT:
-			case BOTTOM_RIGHT:
-			case BOTTOM_LEFT:
-				strategy.horizontal();
-				return strategy;
-			}
+			messageFlowSwitch(sector);
 		}
 		
 		if (sourceElement instanceof BoundaryEvent) {
-			Sector relativeSectorToRef = LayoutUtil.getBoundaryEventRelativeSector((Shape) strategy.connection.getStart().getParent());
-			
-			switch (relativeSectorToRef) {
+			boundaryEventSwitch(sector);
+		}
+	}
+
+	private void gatewaySwitch(double treshold) {
+		if (treshold <= LayoutUtil.MAGIC_VALUE) {
+			this.single();
+		}
+	}
+
+	private void boundaryEventSwitch(Sector sector) {
+		Sector relativeSectorToRef = LayoutUtil.getBoundaryEventRelativeSector(LayoutUtil.getStartShape(connection));
+		
+		switch (relativeSectorToRef) {
+		case BOTTOM:
+		case TOP:
+			this.single();
+			break;
+		case TOP_LEFT:
+			switch (sector) {
 			case BOTTOM:
-			case TOP:
-				strategy.single();
-				return strategy;
-			case TOP_LEFT:
-				switch (sector) {
-				case BOTTOM:
-				case BOTTOM_RIGHT:
-				case RIGHT:
-				case TOP_RIGHT:
-				case TOP_LEFT:
-					strategy.single();
-					break;
-				default:
-					break;
-				}
-				return strategy;
-			case BOTTOM_LEFT:
-				switch (sector) {
-				case TOP:
-				case TOP_RIGHT:
-				case RIGHT:
-				case BOTTOM_RIGHT:
-				case BOTTOM_LEFT:
-					strategy.single();
-					break;
-				default:
-					break;
-				}
-				return strategy;
-			case TOP_RIGHT:
-				switch (sector) {
-				case BOTTOM:
-				case BOTTOM_LEFT:
-				case LEFT:
-				case TOP_LEFT:
-				case TOP_RIGHT:
-					strategy.single();
-					break;
-				default:
-					break;
-				}
-				return strategy;
 			case BOTTOM_RIGHT:
-				switch (sector) {
-				case TOP:
-				case TOP_LEFT:
-				case LEFT:
-				case BOTTOM_LEFT:
-				case BOTTOM_RIGHT:
-					strategy.single();
-					break;
-				default:
-					break;
-				}
-				return strategy;
+			case RIGHT:
+			case TOP_RIGHT:
+			case TOP_LEFT:
+				this.single();
+				break;
 			default:
 				break;
 			}
+			break;
+		case BOTTOM_LEFT:
+			switch (sector) {
+			case TOP:
+			case TOP_RIGHT:
+			case RIGHT:
+			case BOTTOM_RIGHT:
+			case BOTTOM_LEFT:
+				this.single();
+				break;
+			default:
+				break;
+			}
+			break;
+		case TOP_RIGHT:
+			switch (sector) {
+			case BOTTOM:
+			case BOTTOM_LEFT:
+			case LEFT:
+			case TOP_LEFT:
+			case TOP_RIGHT:
+				this.single();
+				break;
+			default:
+				break;
+			}
+			break;
+		case BOTTOM_RIGHT:
+			switch (sector) {
+			case TOP:
+			case TOP_LEFT:
+			case LEFT:
+			case BOTTOM_LEFT:
+			case BOTTOM_RIGHT:
+				this.single();
+				break;
+			default:
+				break;
+			}
+			break;
+		default:
+			break;
 		}
-		
-		return strategy;
+	}
+
+	private void messageFlowSwitch(Sector sector) {
+		switch (sector) {
+		case TOP_RIGHT:
+		case TOP_LEFT:
+		case BOTTOM_RIGHT:
+		case BOTTOM_LEFT:
+			this.horizontal();
+			break;
+		}
 	}
 
 }

@@ -377,6 +377,10 @@ public class AnchorUtil {
 		createAnchor(shape, AnchorLocation.BOTTOM, w / 2, h);
 		createAnchor(shape, AnchorLocation.LEFT, 0, h / 2);
 	}
+	
+	public static void relocateFixPointAnchors(Shape shape) {
+		relocateFixPointAnchors(shape, shape.getGraphicsAlgorithm().getWidth(), shape.getGraphicsAlgorithm().getHeight());
+	}
 
 	public static void relocateFixPointAnchors(Shape shape, int w, int h) {
 		Map<AnchorLocation, BoundaryAnchor> anchors = getBoundaryAnchors(shape);

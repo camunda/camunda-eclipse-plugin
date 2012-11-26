@@ -402,6 +402,66 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(seq3FirstPoint.getX()).isEqualTo(180);
 		assertThat(seq3FirstPoint.getY()).isEqualTo(75);
 		
+		
+		ContainerShape userTaskShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "UserTask_1");
+		FreeFormConnection sequenceFlow2 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
+		
+		assertThat(sequenceFlow2.getBendpoints().size()).isEqualTo(2);
+		
+		move(userTaskShape, diagramTypeProvider)
+		.by(0, -5)
+		.toContainer(diagram)
+		.execute();
+		
+		// dont relayout connections from boundary events with more than one bendpoint
+		assertThat(sequenceFlow2.getBendpoints().size()).isEqualTo(2);
 	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveFlowNodeFeatureTest.testLayoutMaxLength.bpmn")
+	public void testLayoutMaxLengthReached() {
+		Shape gatewayShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "reviewSuccessful_gw");
+		ContainerShape laneShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "Approver");
+		
+		FreeFormConnection before = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "reviewSuccessful");
+		
+		Point beforePoint = point(before.getBendpoints().get(0).getX(), before.getBendpoints().get(0).getY());  
+		
+		// hit the max length, no bendpoints should be added / changed here
+		move(gatewayShape, diagramTypeProvider)
+		.by(0 , 230)
+		.toContainer(laneShape)
+		.execute();
+		
+		FreeFormConnection after = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "reviewSuccessful");
+
+		Point afterPoint = point(after.getBendpoints().get(0).getX(), after.getBendpoints().get(0).getY());  
+
+		assertThat(beforePoint).isEqualTo(afterPoint);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveFlowNodeFeatureTest.testLayoutMaxLength.bpmn")
+	public void testLayoutMaxLengthNotReached() {
+		Shape gatewayShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "reviewSuccessful_gw");
+		ContainerShape laneShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "teamAssistant");
+		
+		FreeFormConnection before = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "reviewSuccessful");
+		
+		Point beforePoint = point(before.getBendpoints().get(0).getX(), before.getBendpoints().get(0).getY());  
+		
+		// dont hit the max length, bendpoints should be changed here
+		move(gatewayShape, diagramTypeProvider)
+		.by(0 , -10)
+		.toContainer(laneShape)
+		.execute();
+		
+		FreeFormConnection after = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "reviewSuccessful");
+
+		Point afterPoint = point(after.getBendpoints().get(0).getX(), after.getBendpoints().get(0).getY());  
+
+		assertThat(beforePoint).isNotEqualTo(afterPoint);
+	}
+	
 
 }

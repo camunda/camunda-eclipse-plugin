@@ -1,18 +1,14 @@
 package org.eclipse.bpmn2.modeler.core.test.layout.util;
 
-import static org.eclipse.bpmn2.modeler.core.test.util.operations.CreateDataAssocationOperation.createDataAssocation;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.ShapeUtil;
-import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.junit.Test;
@@ -22,24 +18,6 @@ import org.junit.Test;
  * @author Nico Rehwaldt
  */
 public class LayoutUtilTest extends AbstractFeatureTest {
-	
-	@Test
-	@DiagramResource
-	public void testInitialLayoutOfConnection() {
-		Shape taskShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_1");
-
-		BaseElement taskElement = BusinessObjectUtil.getFirstBaseElement(taskShape);
-		Task task = (Task) taskElement;
-		
-		Shape dataObjectShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "DataObject_1");
-		
-		createDataAssocation(taskShape, dataObjectShape, diagramTypeProvider)
-			.execute();
-		
-		FreeFormConnection association = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, task.getDataOutputAssociations().get(0).getId());
-		// layouted connection starting in task must have two bendpoints
-		assertThat(association.getBendpoints().size()).isEqualTo(2);
-	}
 	
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testBase.bpmn")
@@ -52,7 +30,6 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 		assertThat(LayoutUtil.getHorizontalLayoutTreshold(LayoutUtil.getCenter(start2), LayoutUtil.getCenter(task1))).isLessThan(0);
 		assertThat(LayoutUtil.getHorizontalLayoutTreshold(LayoutUtil.getCenter(start2), LayoutUtil.getCenter(task2))).isEqualTo(0);
 	}
-
 	
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testBase.bpmn")
@@ -176,6 +153,13 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 		
 		Shape boundaryEvent8 = ShapeUtil.findShapeByBusinessObjectId(diagram, "BoundaryEvent_8");
 		assertThat(LayoutUtil.getBoundaryEventRelativeSector(boundaryEvent8)).isEqualTo(Sector.LEFT);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testBase.bpmn")
+	public void testGetLength() {
+		FreeFormConnection flow1 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		assertThat(LayoutUtil.getLength(flow1)).isEqualTo(284);
 	}
 	
 }
