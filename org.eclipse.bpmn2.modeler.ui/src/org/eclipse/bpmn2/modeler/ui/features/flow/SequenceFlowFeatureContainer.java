@@ -25,20 +25,25 @@ import org.eclipse.bpmn2.InclusiveGateway;
 import org.eclipse.bpmn2.InteractionNode;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.SequenceFlow;
+import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementConnectionFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractAddFlowFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractReconnectFlowFeature;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.dd.dc.Point;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
@@ -49,20 +54,26 @@ import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.ICreateConnectionContext;
 import org.eclipse.graphiti.features.context.ICreateContext;
+import org.eclipse.graphiti.features.context.IMoveAnchorContext;
+import org.eclipse.graphiti.features.context.IReconnectionContext;
 import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.impl.AbstractUpdateFeature;
 import org.eclipse.graphiti.features.impl.Reason;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
+import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Color;
 import org.eclipse.graphiti.mm.algorithms.styles.LineStyle;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
+import org.eclipse.graphiti.ui.internal.services.GraphitiUiInternal;
+import org.eclipse.graphiti.ui.internal.services.impl.GefService;
 import org.eclipse.graphiti.util.IColorConstant;
 
 public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureContainer {
@@ -334,7 +345,6 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 
 		public ReconnectSequenceFlowFeature(IFeatureProvider fp) {
 			super(fp);
-			// TODO Auto-generated constructor stub
 		}
 
 		@Override
@@ -345,6 +355,40 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 		@Override
 		protected Class<? extends EObject> getSourceClass() {
 			return FlowNode.class;
+		}
+		
+		@Override
+		public void postReconnect(IReconnectionContext context) {
+			super.postReconnect(context);
+			
+			for (Connection connection : context.getNewAnchor().getOutgoingConnections()) {
+				updateConnectionDi(context, connection, false);
+			}
+			
+			for (Connection connection : context.getNewAnchor().getIncomingConnections()) {
+				updateConnectionDi(context, connection, true);
+			}
+		}
+
+		private void updateConnectionDi(IReconnectionContext context,
+				Connection connection, final boolean last) {
+			BaseElement element = (BaseElement) BusinessObjectUtil.getFirstElementOfType(connection, BaseElement.class);
+			ModelHandler modelHandler;
+			try {
+				modelHandler = ModelHandlerLocator.getModelHandler(getDiagram().eResource());
+				BPMNEdge edge = (BPMNEdge) modelHandler.findDIElement(element);
+				
+				int waypointIndex = last ? edge.getWaypoint().size()-1 : 0; 
+				
+				org.eclipse.draw2d.geometry.Point newLocation = GraphitiUiInternal.getGefService().getConnectionPointAt(context.getConnection(), 1.0); //context.getTargetLocation();
+
+				Point p = edge.getWaypoint().get(waypointIndex);
+				p.setX(newLocation.x());
+				p.setY(newLocation.y());
+				
+			} catch (Exception e) {
+				Activator.logError(e);
+			}
 		}
 
 	}
