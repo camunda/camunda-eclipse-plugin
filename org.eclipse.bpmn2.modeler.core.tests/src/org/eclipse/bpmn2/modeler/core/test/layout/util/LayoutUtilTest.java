@@ -161,5 +161,4 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 		FreeFormConnection flow1 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
 		assertThat(LayoutUtil.getLength(flow1)).isEqualTo(284);
 	}
-	
 }

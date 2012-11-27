@@ -16,13 +16,10 @@ import java.util.List;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
-import org.eclipse.graphiti.mm.algorithms.styles.impl.PointImpl;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
-import org.eclipse.graphiti.mm.pictograms.impl.AnchorImpl;
-import org.eclipse.graphiti.mm.pictograms.impl.FixPointAnchorImpl;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.services.impl.GaServiceImpl;
 import org.fest.assertions.api.AbstractAssert;
 import org.fest.assertions.api.Assertions;
 
@@ -74,5 +71,12 @@ public class FreeFormConnectionAssert extends AbstractAssert<FreeFormConnectionA
 	private Point getPosition(Anchor anchor) {
 		ILocation location = Graphiti.getPeLayoutService().getLocationRelativeToDiagram(anchor);
 		return Graphiti.getGaCreateService().createPoint(location.getX(), location.getY());
+	}
+
+	public FreeFormConnectionAndShapeAssert anchorPointOn(Shape connectedShape) {
+		
+		FreeFormConnectionAndShapeAssert connectionAndShapeAssert = new FreeFormConnectionAndShapeAssert(this, actual, connectedShape);
+		
+		return connectionAndShapeAssert.exists();
 	}
 }

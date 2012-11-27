@@ -34,36 +34,73 @@ public class LayoutUtil {
 	
 	
 	public enum Sector {
-		TOP_LEFT,
-		LEFT,
-		BOTTOM_LEFT,
-		BOTTOM,
-		BOTTOM_RIGHT,
-		RIGHT,
-		TOP_RIGHT,
-		TOP,
-		UNDEFINED;
-	}
-	
-	private static Sector fromBooleans(boolean left, boolean right, boolean above, boolean beneath) {
-		if (left && above) {
-			return Sector.TOP_LEFT;
-		} else if (left && beneath) {
-			return Sector.BOTTOM_LEFT;
-		} else if (left) {
-			return Sector.LEFT;
-		} else if (right && above) {
-			return Sector.TOP_RIGHT;
-		} else if (right && beneath) {
-			return Sector.BOTTOM_RIGHT;
-		} else if (right) {
-			return Sector.RIGHT;
-		} else if(above) {
-			return Sector.TOP;
-		} else if(beneath) {
-			return Sector.BOTTOM;
-		} else {
-			return Sector.UNDEFINED;
+		
+		TOP_LEFT(true, false, true, false),
+		LEFT(true, false, false, false),
+		BOTTOM_LEFT(true, false, false, true),
+		BOTTOM(false, false, false, true),
+		BOTTOM_RIGHT(false, true, false, true),
+		RIGHT(false, true, false, false),
+		TOP_RIGHT(false, true, true, false),
+		TOP(false, false, true, false),
+		UNDEFINED(false, false, false, false);
+		
+		private boolean left;
+		private boolean right;
+		private boolean above;
+		private boolean beneath;
+
+		private Sector(boolean left, boolean right, boolean above, boolean beneath) {
+			if (left && right) {
+				throw new IllegalArgumentException("Cannot be left and right at the same time");
+			}
+			
+			if (above && beneath) {
+				throw new IllegalArgumentException("Cannot be above and beneath at the same time");
+			}
+			
+			this.left = left;
+			this.right = right;
+			this.above = above;
+			this.beneath = beneath;
+		}
+		
+		public static Sector fromBooleans(boolean left, boolean right, boolean above, boolean beneath) {
+			if (left && above) {
+				return Sector.TOP_LEFT;
+			} else if (left && beneath) {
+				return Sector.BOTTOM_LEFT;
+			} else if (left) {
+				return Sector.LEFT;
+			} else if (right && above) {
+				return Sector.TOP_RIGHT;
+			} else if (right && beneath) {
+				return Sector.BOTTOM_RIGHT;
+			} else if (right) {
+				return Sector.RIGHT;
+			} else if(above) {
+				return Sector.TOP;
+			} else if(beneath) {
+				return Sector.BOTTOM;
+			} else {
+				return Sector.UNDEFINED;
+			}
+		}
+		
+		public boolean isAbove() {
+			return above;
+		}
+		
+		public boolean isBeneath() {
+			return beneath;
+		}
+		
+		public boolean isLeft() {
+			return left;
+		}
+		
+		public boolean isRight() {
+			return right;
 		}
 	}
 	
@@ -76,7 +113,7 @@ public class LayoutUtil {
 		boolean above = LayoutUtil.isAboveStartShape(startShape, endShape);
 		boolean beneath = LayoutUtil.isBeneathStartShape(startShape, endShape);
 		
-		return fromBooleans(left, right, above, beneath);
+		return Sector.fromBooleans(left, right, above, beneath);
 	}
 	
 	public static Sector getBoundaryEventRelativeSector(Shape boundaryEventShape) {
@@ -135,7 +172,7 @@ public class LayoutUtil {
 		}
 
 		if (!(some instanceof FixPointAnchor)) {
-			throw new IllegalArgumentException("Can only compare "+FixPointAnchor.class.getName());
+			throw new IllegalArgumentException("Can only compare " + FixPointAnchor.class.getName());
 		}
 		
 		FixPointAnchor someFixAnchor = (FixPointAnchor) some;
@@ -318,6 +355,54 @@ public class LayoutUtil {
 		DIUtils.updateDIEdge(connection);
 	}
 	
+	/**
+	 * Get the sector in which a specific anchor resides
+	 * relative to the anchors container
+	 * 
+	 * @param anchor
+	 * @return
+	 */
+	public static Sector getAnchorSector(Anchor anchor) {
+		
+		AnchorContainer container = anchor.getParent();
+		if (container == null || !(container instanceof Shape)) {
+			throw new IllegalArgumentException("Need anchor connected to shape");
+		}
+		
+		Shape shape = (Shape) container;
+		
+		ILocation anchorLocation = Graphiti.getPeLayoutService().getLocationRelativeToDiagram(anchor);
+		ILocation shapeLocation = Graphiti.getPeLayoutService().getLocationRelativeToDiagram(shape);
+		
+		return getSector(
+			anchorLocation.getX(), 
+			anchorLocation.getY(), 
+			shapeLocation.getX() + shape.getGraphicsAlgorithm().getWidth() / 2, 
+			shapeLocation.getY() + shape.getGraphicsAlgorithm().getHeight() / 2);
+	}
+	
+	/**
+	 * Returns the sector in which a given point (x) is located in 
+	 * comparision to another point (comp)
+	 * 
+	 * @param px
+	 * @param py
+	 * @param compx
+	 * @param compy
+	 * 
+	 * @return
+	 */
+	public static Sector getSector(int px, int py, int compx, int compy) {
+		
+		boolean above = py < compy;
+		boolean beneath = py > compy;
+		
+		boolean left = px < compx;
+		boolean right = px > compx;
+		
+		return Sector.fromBooleans(left, right, above, beneath);
+	}
+
 	public static double getLength(FreeFormConnection connection) {
 		double resultLength = 0.0;
 		
