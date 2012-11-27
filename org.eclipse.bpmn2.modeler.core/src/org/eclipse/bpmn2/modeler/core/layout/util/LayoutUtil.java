@@ -131,7 +131,12 @@ public class LayoutUtil {
 		// this case happens, when you reconnect the connection manually with a shape
 		// so in that case it is not equal to the assigned object 'that'
 		if (some instanceof ChopboxAnchor) {
-			return false;
+			return some.getIncomingConnections().containsAll(that.getIncomingConnections()) &&
+				   that.getIncomingConnections().containsAll(some.getIncomingConnections()) &&
+				   some.getIncomingConnections().size() == that.getIncomingConnections().size() &&
+				   some.getOutgoingConnections().containsAll(that.getOutgoingConnections()) &&
+				   that.getOutgoingConnections().containsAll(some.getOutgoingConnections()) &&
+				   some.getOutgoingConnections().size() == that.getOutgoingConnections().size();
 		}
 
 		if (!(some instanceof FixPointAnchor)) {
