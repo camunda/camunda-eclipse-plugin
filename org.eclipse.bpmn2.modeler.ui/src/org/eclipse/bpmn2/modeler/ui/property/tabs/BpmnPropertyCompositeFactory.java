@@ -20,10 +20,12 @@ import org.eclipse.bpmn2.modeler.ui.property.tabs.factories.ScriptTaskProperties
 import org.eclipse.bpmn2.modeler.ui.property.tabs.factories.ServiceTaskPropertiesFactory;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.factories.StartEventPropertiesFactory;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.factories.UserTaskPropertiesFactory;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.dd.di.Diagram;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 
 public class BpmnPropertyCompositeFactory {
 	
@@ -66,7 +68,7 @@ public class BpmnPropertyCompositeFactory {
 		return parentComposite;
 	}
 	
-	private Composite createIdField(final BaseElement bo) {
+	private Text createIdField(final BaseElement bo) {
 		return PropertyUtil.createText(section, parentComposite, "Id", Bpmn2Package.eINSTANCE.getBaseElement_Id(), bo);
 	}
 	
@@ -80,7 +82,7 @@ public class BpmnPropertyCompositeFactory {
 		return parentComposite;
 	}
 
-	private Composite createFlowElementComposite(final FlowElement bo) {
+	private Text createFlowElementComposite(final FlowElement bo) {
 		return PropertyUtil.createText(section, parentComposite, "Name", Bpmn2Package.eINSTANCE.getFlowElement_Name(), bo);
 	}
 

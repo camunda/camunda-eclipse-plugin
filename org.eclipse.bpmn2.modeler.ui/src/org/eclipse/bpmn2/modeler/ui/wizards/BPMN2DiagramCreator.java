@@ -39,17 +39,16 @@ import org.eclipse.ui.PlatformUI;
 
 public class BPMN2DiagramCreator {
 
-	private final static String TEMPFILE_EXTENSION = "bpmn2d"; 
-//	private IFolder diagramFolder;
-//	private IFile diagramFile;
-//	private URI uri;
-
 	public static Bpmn2DiagramEditorInput createDiagram(URI uri, Bpmn2DiagramType diagramType, String targetNamespace) throws CoreException {
 		return createDiagram(uri, diagramType, targetNamespace, null);
 	}
 
 	public static Bpmn2DiagramEditorInput createDiagram(URI modelUri, Bpmn2DiagramType diagramType, String targetNamespace, BPMN2Editor diagramEditor) throws CoreException {
 
+		if (modelUri == null) {
+			throw new RuntimeException("Unresolvable model uri; Please clean workspace");
+		}
+		
 		String modelName = modelUri.trimFragment().trimFileExtension().lastSegment();
 		final Diagram diagram = Graphiti.getPeCreateService().createDiagram("BPMN2", modelName, true);
 
@@ -62,7 +61,7 @@ public class BPMN2DiagramCreator {
 		editorInput.setInitialDiagramType(diagramType);
 		editorInput.setTargetNamespace(targetNamespace);
 
-		if (diagramEditor==null) {
+		if (diagramEditor == null) {
 			openEditor(editorInput);
 		}
 
