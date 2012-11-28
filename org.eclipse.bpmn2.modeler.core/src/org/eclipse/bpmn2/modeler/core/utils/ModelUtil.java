@@ -1006,7 +1006,7 @@ public class ModelUtil {
 					InsertionAdapter.executeIfNeeded((EObject)value);
 				}
 				
-				if (value==null){ // DO NOT use isEmpty() because this erases an object's anyAttribute feature!
+				if (value == null) { // DO NOT use isEmpty() because this erases an object's anyAttribute feature!
 					domain.getCommandStack().execute(new RecordingCommand(domain) {
 						@Override
 						protected void doExecute() {
@@ -1024,9 +1024,9 @@ public class ModelUtil {
 						protected void doExecute() {
 							if (object.eGet(feature) instanceof List) {
 								((List)object.eGet(feature)).add(value);
-							}
-							else
+							} else {
 								object.eSet(feature, value);
+							}
 						}
 					});
 				}

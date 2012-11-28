@@ -19,6 +19,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.views.properties.tabbed.AbstractTabDescriptor;
+import org.eclipse.ui.views.properties.tabbed.ISectionDescriptor;
 import org.eclipse.ui.views.properties.tabbed.TabContents;
 
 public class Bpmn2TabDescriptor extends AbstractTabDescriptor {
@@ -31,6 +32,21 @@ public class Bpmn2TabDescriptor extends AbstractTabDescriptor {
 	protected boolean indented = false;
 	protected Image image = null;
 	protected boolean popup = true;
+	private List<ISectionDescriptor> sectionDescriptors;
+	
+	
+	public Bpmn2TabDescriptor(String id, String category, String label, List<ISectionDescriptor> sectionDescriptors) {
+		this(id , category, label);
+		this.sectionDescriptors = sectionDescriptors;
+	}
+	
+	public Bpmn2TabDescriptor(String id, String category, String label) {
+		this.id = id;
+		if (category==null || category.isEmpty() )
+			category = "BPMN2";
+		this.category = category;
+		this.label = label;
+	}
 
 	public Bpmn2TabDescriptor(IConfigurationElement e) {
 		id = e.getAttribute("id");
@@ -45,14 +61,6 @@ public class Bpmn2TabDescriptor extends AbstractTabDescriptor {
 		s = e.getAttribute("popup");
 		if (s!=null && s.trim().equalsIgnoreCase("false"))
 			popup = false;
-	}
-	
-	public Bpmn2TabDescriptor(String id, String category, String label) {
-		this.id = id;
-		if (category==null || category.isEmpty() )
-			category = "BPMN2";
-		this.category = category;
-		this.label = label;
 	}
 	
 	@Override
@@ -100,14 +108,17 @@ public class Bpmn2TabDescriptor extends AbstractTabDescriptor {
 
 	@Override
 	public boolean isSelected() {
-		// TODO Auto-generated method stub
 		return super.isSelected();
 	}
 
 	@Override
 	public void setSectionDescriptors(List sectionDescriptors) {
-		// TODO Auto-generated method stub
-		super.setSectionDescriptors(sectionDescriptors);
+		this.sectionDescriptors = sectionDescriptors;
+	}
+	
+	@Override
+	public List<ISectionDescriptor> getSectionDescriptors() {
+		return sectionDescriptors;
 	}
 
 	@Override

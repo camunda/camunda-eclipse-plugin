@@ -182,6 +182,8 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 						currentRuntime = getRuntime(e);
 						if (currentRuntime.getId().equals(TargetRuntime.DEFAULT_RUNTIME_ID)) {
 							if (e.getName().equals("propertyTab")) {
+
+								// FIXME: CHECK AND REMOTE PERMANENTLY
 								if(PlatformUI.isWorkbenchRunning()) {
 									Bpmn2TabDescriptor td = new Bpmn2TabDescriptor(e);
 									Bpmn2SectionDescriptor sd = new Bpmn2SectionDescriptor(td,e);
@@ -224,6 +226,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 								// already done
 								continue;
 							}
+							// FIXME: CHECK AND REMOTE PERMANENTLY
 							if(PlatformUI.isWorkbenchRunning()) {
 								Bpmn2TabDescriptor td = new Bpmn2TabDescriptor(e);
 								Bpmn2SectionDescriptor sd = new Bpmn2SectionDescriptor(td,e);

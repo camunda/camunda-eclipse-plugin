@@ -351,8 +351,8 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 
 			if (input instanceof IStorageEditorInput) {
 				input = createNewDiagramEditorInput(site, input, diagramType, targetNamespace);
-			}
-			else if (input instanceof DiagramEditorInput) {
+			} else 
+			if (input instanceof DiagramEditorInput) {
 				if (input instanceof Bpmn2DiagramEditorInput) {
 					diagramType = ((Bpmn2DiagramEditorInput)input).getInitialDiagramType();
 					targetNamespace = ((Bpmn2DiagramEditorInput)input).getTargetNamespace();
@@ -369,8 +369,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 					setBpmnDiagram(d);
 					return;
 				}
-			}
-			else {
+			} else {
 				throw new PartInitException("Invalid Editor Input: "
 						+input.getClass().getSimpleName()+" "
 						+input.getName());
@@ -480,7 +479,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 			throws CoreException {
 		
 		modelUri = FileService.getInputUri(input);
-		input = BPMN2DiagramCreator.createDiagram(modelUri, diagramType,targetNamespace,this);
+		input = BPMN2DiagramCreator.createDiagram(modelUri, diagramType, targetNamespace, this);
 		diagramUri = ((Bpmn2DiagramEditorInput)input).getUri();
 
 		return (Bpmn2DiagramEditorInput)input;
@@ -799,17 +798,23 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	public void dispose() {
 		// clear ID mapping tables if no more instances of editor are active
 		int instances = 0;
-		IWorkbenchPage[] pages = getEditorSite().getWorkbenchWindow().getPages();
-		for (IWorkbenchPage p : pages) {
-			IEditorReference[] refs = p.getEditorReferences();
-			instances += refs.length;
+		IEditorSite editorSite = getEditorSite();
+		
+		// need to check != null to deal with errors
+		if (editorSite != null) {
+			IWorkbenchPage[] pages = editorSite.getWorkbenchWindow().getPages();
+			for (IWorkbenchPage p : pages) {
+				IEditorReference[] refs = p.getEditorReferences();
+				instances += refs.length;
+			}
 		}
+		
 		File diagramFile = new File(diagramUri.toFileString());
 		if (diagramFile.exists()) {
 			try {
 				diagramFile.delete();
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
+				Activator.logStatus(new Status(IStatus.WARNING, Activator.PLUGIN_ID, e.getMessage(), e));
 			}
 		}
 		
@@ -823,7 +828,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 			removeSelectionListener();
 			if (instances==0)
 				setActiveEditor(null);
-		}catch (Exception e) {
+		} catch (Exception e) {
 			Activator.logError(e);
 		}
 		

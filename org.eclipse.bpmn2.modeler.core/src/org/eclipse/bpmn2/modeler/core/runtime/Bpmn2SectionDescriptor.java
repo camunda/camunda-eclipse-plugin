@@ -35,6 +35,16 @@ public class Bpmn2SectionDescriptor extends AbstractSectionDescriptor {
 		protected String enablesFor;
 		protected String filter;
 		
+		//////////
+		
+		protected ISection section;
+		protected Bpmn2TabDescriptor bpmn2TabDescriptor;
+		
+		public Bpmn2SectionDescriptor(Bpmn2TabDescriptor bpmn2TabDescriptor, ISection section) {
+			this.bpmn2TabDescriptor = bpmn2TabDescriptor;
+			this.section = section;
+		}
+		
 		public Bpmn2SectionDescriptor(Bpmn2TabDescriptor td, IConfigurationElement e) {
 			tab = td.getId();
 			id = tab + ".section";
@@ -69,12 +79,12 @@ public class Bpmn2SectionDescriptor extends AbstractSectionDescriptor {
 		
 		@Override
 		public String getId() {
-			return id;
+			return bpmn2TabDescriptor.getId() + ".section";
 		}
 
 		@Override
 		public ISection getSectionClass() {
-			return sectionClass;
+			return section;
 		}
 
 		@Override

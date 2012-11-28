@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            class="org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelPackage"
+            genModel="model/ActivitiExtensions.genmodel"
+            uri="http://www.activiti.org">
+      </package>
+   </extension>
+
+	<extension point="org.eclipse.bpmn2.modeler.runtime">
+		<runtime name="camunda fox engine" versions="5.4,5.5,5.6,5.7,5.8"
+			id="org.activiti.runtime.activiti"
+			class="org.eclipse.bpmn2.modeler.runtime.activiti.ActivitiRuntimeExtension"
+			description="BPMN2 Modeler customizations for the Activiti engine">
+		</runtime>
+
+		<model runtimeId="org.activiti.runtime.activiti"
+			uri="http://www.activiti.org"
+			resourceFactory="org.eclipse.bpmn2.modeler.runtime.activiti.model.util.ModelResourceFactoryImpl">
+		</model>
+	</extension>
+
 	<extension point="org.eclipse.ui.newWizards">
 		<!-- <primaryWizard id="org.eclipse.bpmn2.modeler.ui.diagram"> </primaryWizard> -->
 		<wizard category="org.eclipse.bpmn2.wizardCategory"
@@ -556,7 +577,7 @@
 			<enable object="CallConversation"/>
 			<enable object="ConversationLink"/>
 		</modelEnablement>
-
+		
 		<style object="AdHocSubProcess" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
 		<style object="Association" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
 		<style object="BoundaryEvent" foreground="546778" background="D4E7F8" textColor="546778" font="arial,10,-,-"/>
