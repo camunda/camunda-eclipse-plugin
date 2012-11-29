@@ -57,13 +57,29 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 	}
 	
 	@Test
-	@DiagramResource
-	public void testMoveGatewayVerticalLayout() {
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveFlowNodeFeatureTest.testMoveGatewayVerticalLayout.bpmn")
+	public void testMoveGatewayUp80VerticalLayout() {
+		assertMoveUpByWorks(-80);
+	}
+
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveFlowNodeFeatureTest.testMoveGatewayVerticalLayout.bpmn")
+	public void testMoveGatewayUp60VerticalLayout() {
+		assertMoveUpByWorks(-60);
+	}
+
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveFlowNodeFeatureTest.testMoveGatewayVerticalLayout.bpmn")
+	public void testMoveGatewayUp62VerticalLayout() {
+		assertMoveUpByWorks(-62);
+	}
+	
+	private void assertMoveUpByWorks(int moveBy) {
 		Shape gatewayShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
 		ContainerShape laneShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "Lane_1");
 
 		move(gatewayShape, diagramTypeProvider)
-		.by(0 , -62)
+		.by(0 , moveBy)
 		.toContainer(laneShape)
 		.execute();
 		
@@ -122,7 +138,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		//check outgoing sequence flow right
 		assertEquals(1, seq3Connection.getBendpoints().size());
 	}
-
+	
 	@Test
 	@DiagramResource
 	public void testMoveShapeOutOfContainer() {
