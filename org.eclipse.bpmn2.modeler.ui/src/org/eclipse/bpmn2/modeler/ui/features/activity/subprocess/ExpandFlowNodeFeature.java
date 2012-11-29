@@ -17,6 +17,7 @@ import static org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.SubProce
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.modeler.ui.features.choreography.ShowDiagramPageFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -71,28 +72,25 @@ public class ExpandFlowNodeFeature extends ShowDiagramPageFeature {
 			name = super.getName();
 			description = super.getDescription();
 			return true;
-		}
-		else {
+		} else {
 			name = NAME;
 			description = DESCRIPTION;
 		}
 		
-		boolean ret = false;
 		PictogramElement[] pes = context.getPictogramElements();
 		if (pes != null && pes.length == 1) {
-			Object bo = getBusinessObjectForPictogramElement(pes[0]);
-			if (AbstractExpandableActivityFeatureContainer.isExpandableElement(bo)) {
-				try {
-					BPMNShape bpmnShape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement((FlowNode)bo);
-					if (!bpmnShape.isIsExpanded())
-						ret = true;
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			PictogramElement element = pes[0];
+			
+			Object businessObject = getBusinessObjectForPictogramElement(element);
+			if (AbstractExpandableActivityFeatureContainer.isExpandableElement(businessObject)) {
+				BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(element, BPMNShape.class);
+				if (!bpmnShape.isIsExpanded()) {
+					return true;
 				}
 			}
 		}
-		return ret;
+		
+		return false;
 	}
 
 	@Override

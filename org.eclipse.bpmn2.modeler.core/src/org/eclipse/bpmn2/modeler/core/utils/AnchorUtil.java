@@ -512,7 +512,7 @@ public class AnchorUtil {
 			// if the anchor doesn't have a GraphicsAlgorithm, GEF will throw a fit
 			// so create an invisible rectangle for it
 			createService.createInvisibleRectangle(anchor);
-		}		
+		}
 		return (FixPointAnchor)connectionPointShape.getAnchors().get(0);
 	}
 
@@ -542,17 +542,17 @@ public class AnchorUtil {
 		}
 		
 		FixPointAnchor anchor = getConnectionPointAnchor(connectionPointShape);
-		anchor.setLocation( Graphiti.getCreateService().createPoint(CONNECTION_POINT_SIZE / 2,CONNECTION_POINT_SIZE / 2) );
+		anchor.setLocation( Graphiti.getCreateService().createPoint(CONNECTION_POINT_SIZE / 2, CONNECTION_POINT_SIZE / 2) );
 		layoutService.setLocation(
 				anchor.getGraphicsAlgorithm(), 
-				CONNECTION_POINT_SIZE / 2,CONNECTION_POINT_SIZE / 2);
+				CONNECTION_POINT_SIZE / 2, CONNECTION_POINT_SIZE / 2);
 	}
 	
 	public static List<Shape> getConnectionPoints(FreeFormConnection connection) {
 		ArrayList<Shape> list = new ArrayList<Shape>();
 		
 		for (Object o : connection.getLink().getBusinessObjects()) {
-			if ( o instanceof AnchorContainer ) {
+			if (o instanceof AnchorContainer) {
 				AnchorContainer c = (AnchorContainer)o;
 				if (AnchorUtil.isConnectionPoint(c)) {
 					list.add((Shape)c);

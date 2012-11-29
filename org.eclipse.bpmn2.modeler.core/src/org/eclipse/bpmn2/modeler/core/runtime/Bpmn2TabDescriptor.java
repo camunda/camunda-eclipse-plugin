@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.runtime;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -32,7 +33,8 @@ public class Bpmn2TabDescriptor extends AbstractTabDescriptor {
 	protected boolean indented = false;
 	protected Image image = null;
 	protected boolean popup = true;
-	private List<ISectionDescriptor> sectionDescriptors;
+	
+	private List<ISectionDescriptor> sectionDescriptors = new ArrayList<ISectionDescriptor>();
 	
 	
 	public Bpmn2TabDescriptor(String id, String category, String label, List<ISectionDescriptor> sectionDescriptors) {

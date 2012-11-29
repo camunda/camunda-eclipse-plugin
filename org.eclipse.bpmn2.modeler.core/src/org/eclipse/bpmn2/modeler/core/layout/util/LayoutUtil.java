@@ -1,13 +1,26 @@
 package org.eclipse.bpmn2.modeler.core.layout.util;
 
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.location;
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.rectangle;
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.vector;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.layout.ConnectionReconnectionContext;
 import org.eclipse.bpmn2.modeler.core.layout.LayoutingException;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Vector;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.ILocation;
+import org.eclipse.graphiti.datatypes.IRectangle;
+import org.eclipse.graphiti.internal.datatypes.impl.LocationImpl;
+import org.eclipse.graphiti.internal.datatypes.impl.RectangleImpl;
 import org.eclipse.graphiti.mm.Property;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
@@ -19,6 +32,7 @@ import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
+import org.eclipse.graphiti.ui.internal.services.IGefService;
 
 public class LayoutUtil {
 	
@@ -186,6 +200,21 @@ public class LayoutUtil {
 		return someFixAnchor.getLocation().getX() == thatFixAnchor.getLocation().getX() && someFixAnchor.getLocation().getY() == thatFixAnchor.getLocation().getY();
 	}
 	
+	public static List<Anchor> getDefaultAnchors(AnchorContainer container) {
+		ArrayList<Anchor> defaultAnchors = new ArrayList<Anchor>();
+		EList<Anchor> anchors = container.getAnchors();
+		
+		for (int i = 1; i < 5; i++) {
+			if (anchors.size() <= i) {
+				break;
+			}
+			
+			defaultAnchors.add(anchors.get(i));
+		}
+		
+		return defaultAnchors;
+	}
+	
 	public static Anchor getLeftAnchor(Shape shape) {
 		return shape.getAnchors().get(4);
 	}
@@ -202,45 +231,65 @@ public class LayoutUtil {
 		return shape.getAnchors().get(3);
 	}
 	
-	
-	public static boolean isAboveStartShape (Shape startShape, Shape endShape) {
-		ILocation startShapeLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(startShape);
-		ILocation endShapeLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(endShape);
+	/**
+	 * Return true if the given anchor is one of the elements 
+	 * default anchors
+	 * 
+	 * @param anchor
+	 * @return
+	 */
+	public static boolean isDefaultAnchor(Anchor anchor) {
 		
-		Point endShapeBoundary = Graphiti.getGaService().createPoint(endShapeLocation.getX(), endShapeLocation.getY() + endShape.getGraphicsAlgorithm().getHeight());
-		Point startShapeLocationPoint = Graphiti.getGaService().createPoint(startShapeLocation.getX() ,startShapeLocation.getY());
-		
-		return getHorizontalLayoutTreshold(startShapeLocationPoint, endShapeBoundary) > 0 ? false : true;
+		AnchorContainer parent = anchor.getParent();
+		int anchorIndex = parent.getAnchors().indexOf(anchor);
+
+		// NRE: WARNING: default anchor identified by index in anchor 
+		// list (0..4 =  default)
+		// Not my fault :o)
+		if (anchorIndex != -1 && anchorIndex < 4) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
-	
-	public static boolean isBeneathStartShape (Shape startShape, Shape endShape) {
-		ILocation startShapeLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(startShape);
-		ILocation endShapeLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(endShape);
+	public static boolean isAboveStartShape(Shape startShape, Shape endShape) {
+		ILocation startShapeLocation = diagramRelativeLocation(startShape);
+		ILocation endShapeLocation = diagramRelativeLocation(endShape);
 		
-		Point startShapeBoundary = Graphiti.getGaService().createPoint(startShapeLocation.getX(), startShapeLocation.getY() + startShape.getGraphicsAlgorithm().getHeight());
-		Point endShapeLocationPoint = Graphiti.getGaService().createPoint(endShapeLocation.getX() ,endShapeLocation.getY());
+		ILocation endShapeBoundary = location(endShapeLocation.getX(), endShapeLocation.getY() + endShape.getGraphicsAlgorithm().getHeight());
+		ILocation startShapeLocationPoint = location(startShapeLocation.getX() ,startShapeLocation.getY());
+		
+		return getHorizontalLayoutTreshold(startShapeLocationPoint, endShapeBoundary) > 0 ? false : true;
+	}	
+	
+	public static boolean isBeneathStartShape(Shape startShape, Shape endShape) {
+		ILocation startShapeLocation = diagramRelativeLocation(startShape);
+		ILocation endShapeLocation = diagramRelativeLocation(endShape);
+		
+		ILocation startShapeBoundary = location(startShapeLocation.getX(), startShapeLocation.getY() + startShape.getGraphicsAlgorithm().getHeight());
+		ILocation endShapeLocationPoint = location(endShapeLocation.getX() ,endShapeLocation.getY());
 		
 		return getHorizontalLayoutTreshold(startShapeBoundary, endShapeLocationPoint) >= 0 ? true : false;
 	}
 	
 	public static boolean isLeftToStartShape (Shape startShape, Shape endShape) {
-		ILocation startShapeLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(startShape);
-		ILocation endShapeLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(endShape);
+		ILocation startShapeLocation = diagramRelativeLocation(startShape);
+		ILocation endShapeLocation = diagramRelativeLocation(endShape);
 		
-		Point endShapeBoundary = Graphiti.getGaService().createPoint(endShapeLocation.getX() + endShape.getGraphicsAlgorithm().getWidth(), endShapeLocation.getY());
-		Point startShapeLocationPoint = Graphiti.getGaService().createPoint(startShapeLocation.getX() ,startShapeLocation.getY());
+		ILocation endShapeBoundary = location(endShapeLocation.getX() + endShape.getGraphicsAlgorithm().getWidth(), endShapeLocation.getY());
+		ILocation startShapeLocationPoint = location(startShapeLocation.getX() ,startShapeLocation.getY());
 		
 		return getVerticalLayoutTreshold(startShapeLocationPoint, endShapeBoundary) > 0 ? false : true;
 	}
 	
 	
 	public static boolean isRightToStartShape (Shape startShape, Shape endShape) {
-		ILocation startShapeLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(startShape);
-		ILocation endShapeLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(endShape);
+		ILocation startShapeLocation = diagramRelativeLocation(startShape);
+		ILocation endShapeLocation = diagramRelativeLocation(endShape);
 		
-		Point startShapeBoundary = Graphiti.getGaService().createPoint(startShapeLocation.getX() + startShape.getGraphicsAlgorithm().getWidth(), startShapeLocation.getY());
-		Point endShapeLocationPoint = Graphiti.getGaService().createPoint(endShapeLocation.getX() ,endShapeLocation.getY());
+		ILocation startShapeBoundary = location(startShapeLocation.getX() + startShape.getGraphicsAlgorithm().getWidth(), startShapeLocation.getY());
+		ILocation endShapeLocationPoint = location(endShapeLocation.getX() ,endShapeLocation.getY());
 		
 		return getVerticalLayoutTreshold(startShapeBoundary, endShapeLocationPoint) >= 0 ? true : false;
 	}
@@ -256,14 +305,14 @@ public class LayoutUtil {
 	 * positive if end shape is right to start shape.
 	 */
 	public static double getLayoutTreshold(FreeFormConnection connection) {
-		Point startShapeCenter = getCenter((Shape) connection.getStart().getParent());
-		Point endShapeCenter = getCenter((Shape) connection.getEnd().getParent());
+		ILocation startShapeCenter = getCenter((Shape) connection.getStart().getParent());
+		ILocation endShapeCenter = getCenter((Shape) connection.getEnd().getParent());
 		return getVerticalLayoutTreshold(startShapeCenter, endShapeCenter);
 	}
 	
 	public static double getLayoutTreshold(Shape startShape, Shape endShape) {
-		Point startShapeCenter = getCenter(startShape);
-		Point endShapeCenter = getCenter(endShape);
+		ILocation startShapeCenter = getCenter(startShape);
+		ILocation endShapeCenter = getCenter(endShape);
 		return getVerticalLayoutTreshold(startShapeCenter, endShapeCenter);
 	}
 
@@ -274,7 +323,7 @@ public class LayoutUtil {
 	 * @return 1.0 if the points are on the same vertical line, 0.0 if the points are on the same horizontal line,
 	 * sign is negative if end point is above the start point 
 	 */
-	public static double getHorizontalLayoutTreshold(Point start, Point end) {
+	public static double getHorizontalLayoutTreshold(ILocation start, ILocation end) {
 		Vector shapeVector = new Vector(end.getX() - start.getX(), end.getY() - start.getY());
 		Vector unitYVector = new Vector (0, 1);
 		
@@ -289,7 +338,7 @@ public class LayoutUtil {
 	 * @return 1.0 if the points are on the same horizonal line, 0.0 if the points are on the same vertical line,
 	 * sign is negative if end point is left to start point 
 	 */
-	public static double getVerticalLayoutTreshold(Point start, Point end) {
+	public static double getVerticalLayoutTreshold(ILocation start, ILocation end) {
 		Vector shapeVector = new Vector(end.getX() - start.getX(), end.getY() - start.getY());
 		Vector unitXVector = new Vector (1,0);
 		
@@ -297,15 +346,20 @@ public class LayoutUtil {
 		return product;
 	}
 	
-	public static Point getCenter(Shape shape) {
+	public static ILocation getCenter(Shape shape) {
 		
 		if (shape == null) {
 			throw new NullPointerException("Argument is null");
 		}
 		
-		ILocation shapeLocation = Graphiti.getPeLayoutService().getLocationRelativeToDiagram(shape);
-		GraphicsAlgorithm shapeGa = shape.getGraphicsAlgorithm();
-		Point shapeCenter = Graphiti.getGaService().createPoint(shapeLocation.getX() + shapeGa.getWidth() / 2, shapeLocation.getY() + shapeGa.getHeight() / 2 );
+		return getShapeLocationMidpoint(shape);
+	}
+
+	public static ILocation getCenter(IRectangle rectangle) {
+		
+		ILocation shapeCenter = location(
+			rectangle.getX() + rectangle.getWidth() / 2, 
+			rectangle.getY() + rectangle.getHeight() / 2 );
 		
 		return shapeCenter;
 	}
@@ -316,33 +370,33 @@ public class LayoutUtil {
 		
 		int midX = ((endAnchorLocation.getX() - startAnchorLocation.getX()) / 2) + startAnchorLocation.getX();
 		
-		Point firstPoint = Graphiti.getCreateService().createPoint(midX, startAnchorLocation.getY());
-		Point secondPoint = Graphiti.getCreateService().createPoint(midX, endAnchorLocation.getY());
+		ILocation first = location(midX, startAnchorLocation.getY());
+		ILocation second = location(midX, endAnchorLocation.getY());
 		
-		connection.getBendpoints().add(firstPoint);
-		connection.getBendpoints().add(secondPoint);
+		connection.getBendpoints().add(point(first));
+		connection.getBendpoints().add(point(second));
 	}
-	
+
 	public static void addHorizontalCenteredBendpoints(FreeFormConnection connection) {
 		ILocation startAnchorLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(connection.getStart());
 		ILocation endAnchorLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(connection.getEnd());
 		
 		int midY = ((endAnchorLocation.getY() - startAnchorLocation.getY()) / 2) + startAnchorLocation.getY();
 		
-		Point firstPoint = Graphiti.getCreateService().createPoint(startAnchorLocation.getX(), midY);
-		Point secondPoint = Graphiti.getCreateService().createPoint(endAnchorLocation.getX(), midY);
-		
-		connection.getBendpoints().add(firstPoint);
-		connection.getBendpoints().add(secondPoint);
+		ILocation first = location(startAnchorLocation.getX(), midY);
+		ILocation second = location(endAnchorLocation.getX(), midY);
+
+		connection.getBendpoints().add(point(first));
+		connection.getBendpoints().add(point(second));
 	}
 	
 	public static void addRectangularBendpoint(FreeFormConnection connection) {
 		ILocation startAnchorLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(connection.getStart());
 		ILocation endAnchorLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(connection.getEnd());
 
-		Point point = Graphiti.getCreateService().createPoint(startAnchorLocation.getX(), endAnchorLocation.getY());
+		ILocation location = location(startAnchorLocation.getX(), endAnchorLocation.getY());
 		
-		connection.getBendpoints().add(point);
+		connection.getBendpoints().add(point(location));
 	}
 	
 	public static void layoutConnection(Connection connection) {
@@ -376,38 +430,65 @@ public class LayoutUtil {
 		
 		Shape shape = (Shape) container;
 		
-		ILocation anchorLocation = Graphiti.getPeLayoutService().getLocationRelativeToDiagram(anchor);
-		ILocation shapeLocation = Graphiti.getPeLayoutService().getLocationRelativeToDiagram(shape);
+		ILocation anchorLocation = getAnchorLocation(anchor);
+		ILocation shapeLocation = getShapeLocationMidpoint(shape);
 		
 		return getSector(
 			anchorLocation.getX(), 
 			anchorLocation.getY(), 
-			shapeLocation.getX() + shape.getGraphicsAlgorithm().getWidth() / 2, 
-			shapeLocation.getY() + shape.getGraphicsAlgorithm().getHeight() / 2);
+			shapeLocation.getX(), 
+			shapeLocation.getY());
 	}
 	
 	/**
 	 * Returns the sector in which a given point (x) is located in 
 	 * comparision to another point (comp)
 	 * 
-	 * @param px
-	 * @param py
-	 * @param compx
-	 * @param compy
+	 * @param px the X coordinate of the point
+	 * @param py the Y coordinate of the point
+	 * @param rx the X coordinate of the reference point
+	 * @param ry the Y coordinate of the reference point
 	 * 
 	 * @return
 	 */
-	public static Sector getSector(int px, int py, int compx, int compy) {
+	public static Sector getSector(int px, int py, int rx, int ry) {
 		
-		boolean above = py < compy;
-		boolean beneath = py > compy;
+		boolean above = py < ry;
+		boolean beneath = py > ry;
 		
-		boolean left = px < compx;
-		boolean right = px > compx;
+		boolean left = px < rx;
+		boolean right = px > rx;
 		
 		return Sector.fromBooleans(left, right, above, beneath);
 	}
 
+	public static Sector getSector(Point p, Point reference) {
+		return getSector(p.getX(), p.getY(), reference.getX(), reference.getY());
+	}
+	
+	public static Sector getSector(ILocation p, ILocation reference) {
+		return getSector(p.getX(), p.getY(), reference.getX(), reference.getY());
+	}
+	
+	public static IRectangle getAbsoluteRectangle(Shape shape) {
+		ILocation position = getShapeLocation(shape);
+		GraphicsAlgorithm algorithm = shape.getGraphicsAlgorithm();
+		
+		return rectangle(position.getX(), position.getY(), algorithm.getWidth(), algorithm.getHeight());
+	}
+	
+	@SuppressWarnings("restriction")
+	public static ILocation getShapeLocationMidpoint(Shape shape) {
+
+		ILocation location = getShapeLocation(shape);
+
+		GraphicsAlgorithm graphicsAlgorithm = shape.getGraphicsAlgorithm();
+		
+		return new LocationImpl(
+			location.getX() + graphicsAlgorithm.getWidth() / 2, 
+			location.getY() + graphicsAlgorithm.getHeight() / 2);
+	}
+	
 	public static double getLength(FreeFormConnection connection) {
 		double resultLength = 0.0;
 		
@@ -435,5 +516,295 @@ public class LayoutUtil {
 		
 		return resultLength;
 	}
+
+
+	/**
+	 * Returns the first non-anchor reference point for a given connection
+	 * 
+	 * @param anchor
+	 * @param connection
+	 * @return
+	 */
+	public static ILocation getConnectionReferencePoint(ChopboxAnchor anchor, Connection connection) {
+		
+		if (!(connection instanceof FreeFormConnection)) {
+			throw new IllegalArgumentException("Can handle instances of " + FreeFormConnection.class.getName() + " only");
+		}
+		
+		FreeFormConnection ffconnection = (FreeFormConnection) connection;
+
+		EList<Point> bendpoints = ffconnection.getBendpoints();
+		
+		if (ffconnection.getStart().equals(anchor)) {
+			if (bendpoints.isEmpty()) {
+				return getAnchorLocation(ffconnection.getEnd());
+			} else {
+				Point point = bendpoints.get(0);
+				return location(point);
+			}
+		}
+
+		if (ffconnection.getEnd().equals(anchor)) {
+			if (bendpoints.isEmpty()) {
+				return getAnchorLocation(ffconnection.getStart());
+			} else {
+				Point point = bendpoints.get(bendpoints.size() - 1);
+				return location(point);
+			}
+		}
+		
+		throw new IllegalArgumentException("Anchor not connected to connection: " + anchor + " / " + connection);
+	}
 	
+	/**
+	 * DO NOT TOUCH; DO NOT ALTER
+	 * 
+	 * @param rectangle
+	 * @param referencePt
+	 * @return
+	 */
+	public static Sector getChopboxIntersectionSector(IRectangle rectangle, ILocation referencePt) {
+		
+		ILocation centerPt = getCenter(rectangle);
+		
+		Sector directionSector = getSector(referencePt, centerPt);
+		
+		Vector center = vector(centerPt);
+		Vector reference = vector(referencePt);
+		
+		Vector lineVector = center.getSubtracted(reference);
+		
+		double crossProduct;
+		Vector cornerVector;
+		
+		switch (directionSector) {
+		case BOTTOM: 
+			return Sector.BOTTOM;
+		case TOP:
+			return Sector.TOP;
+		case LEFT:
+			return Sector.LEFT;
+		case RIGHT:
+			return Sector.RIGHT;
+		
+		case BOTTOM_LEFT:
+			cornerVector = bottomLeft(rectangle);
+
+			crossProduct = lineVector.getCrossProduct(center.getSubtracted(cornerVector));
+
+			if (crossProduct > 0) {
+				return Sector.BOTTOM;
+			} else
+			if (crossProduct < 0) {
+				return Sector.LEFT;
+			} else {
+				return Sector.BOTTOM_LEFT;
+			}
+		case TOP_LEFT:
+			cornerVector = topLeft(rectangle);
+
+			crossProduct = lineVector.getCrossProduct(center.getSubtracted(cornerVector));
+			
+			if (crossProduct < 0) {
+				return Sector.TOP;
+			} else
+			if (crossProduct > 0) {
+				return Sector.LEFT;
+			} else {
+				return Sector.TOP_LEFT;
+			}
+		case BOTTOM_RIGHT:
+			cornerVector = bottomRight(rectangle);
+
+			crossProduct = lineVector.getCrossProduct(center.getSubtracted(cornerVector));
+			
+			if (crossProduct < 0) {
+				return Sector.BOTTOM;
+			} else
+			if (crossProduct > 0) {
+				return Sector.RIGHT;
+			} else {
+				return Sector.BOTTOM_RIGHT;
+			}
+		case TOP_RIGHT:
+			cornerVector = topRight(rectangle);
+
+			crossProduct = lineVector.getCrossProduct(center.getSubtracted(cornerVector));
+			
+			if (crossProduct > 0) {
+				return Sector.TOP;
+			} else
+			if (crossProduct < 0) {
+				return Sector.RIGHT;
+			} else {
+				return Sector.TOP_RIGHT;
+			}
+		}
+		
+		return Sector.UNDEFINED;
+	}
+
+	public static ILocation getChopboxIntersectionPoint(IRectangle rectangle, int px, int py) {
+		return getChopboxIntersectionPoint(rectangle, location(px, py));
+	}
+	
+	/**
+	 * Returns the absolute location of that anchor
+	 * 
+	 * @param anchor
+	 * @return
+	 */
+	public static ILocation getAnchorLocation(Anchor anchor) {
+		return Graphiti.getPeLayoutService().getLocationRelativeToDiagram(anchor);
+	}
+
+	/**
+	 * Returns the absolute location of a chopbox anchor from the users perspective
+	 * 
+	 * @param anchor
+	 * @param connection
+	 * @return
+	 */
+	public static ILocation getChopboxAnchorLocation(ChopboxAnchor anchor, Connection connection) {
+		GraphicsAlgorithm graphicsAlgorithm = anchor.getParent().getGraphicsAlgorithm();
+	
+		ILocation referencePoint = LayoutUtil.getConnectionReferencePoint((ChopboxAnchor) anchor, connection);
+		IRectangle rectangle = new RectangleImpl(graphicsAlgorithm.getX(), graphicsAlgorithm.getY(), graphicsAlgorithm.getWidth(), graphicsAlgorithm.getHeight());
+		
+		return LayoutUtil.getChopboxIntersectionPoint(rectangle, referencePoint);
+	}
+	
+	/**
+	 * Returns the visible location of an anchor.
+	 * 
+	 * @param anchor
+	 * @return
+	 */
+	public static ILocation getVisibleAnchorLocation(Anchor anchor, Connection connection) {
+		if (anchor instanceof ChopboxAnchor) {
+			return getChopboxAnchorLocation((ChopboxAnchor) anchor, connection);
+		} else {
+			return getAnchorLocation(anchor);
+		}
+	}
+	
+	/**
+	 * DO NOT TOUCH; DO NOT ALTER
+	 * 
+	 * @param rectangle
+	 * @param referencePt
+	 * @return
+	 * 
+	 * @see {@link IGefService#getChopboxLocationOnBox(org.eclipse.draw2d.geometry.Point, Rectangle)}
+	 */
+	public static ILocation getChopboxIntersectionPoint(IRectangle rectangle, ILocation referencePt) {
+		
+		Sector intersectionSection = getChopboxIntersectionSector(rectangle, referencePt);
+		
+		ILocation centerPt = getCenter(rectangle);
+		Vector center = vector(centerPt);
+		
+		Vector intersectionLine = center.getSubtracted(vector(referencePt));
+		
+		Vector adjacentLeg;
+		Vector hypotenuse;
+		
+		double crossProduct;
+		
+		// angle to perform length magic
+		double alpha;
+		
+		switch (intersectionSection) {
+		case TOP_LEFT:
+			return location(topLeft(rectangle));
+		case TOP_RIGHT:
+			return location(topRight(rectangle));
+		case BOTTOM_LEFT: 
+			return location(bottomLeft(rectangle));
+		case BOTTOM_RIGHT:
+			return location(bottomRight(rectangle));
+			
+		case TOP:
+		case BOTTOM: 
+			adjacentLeg = new Vector(0, rectangle.getHeight() / 2);
+			crossProduct = adjacentLeg.getCrossProduct(intersectionLine);
+			
+			// orthogonal to adjacent leg?
+			if (crossProduct == 0) {
+				if (intersectionSection == Sector.TOP) {
+					return location(center.getSubtracted(adjacentLeg));
+				} else {
+					return location(center.getAdded(adjacentLeg));
+				}
+			}
+			// no? get distance by angle
+			else {
+				if (intersectionSection == Sector.TOP) {
+					adjacentLeg = adjacentLeg.getMultiplied(-1.0);
+				}
+				
+				alpha = adjacentLeg.getAngle(intersectionLine);
+				
+				double length = adjacentLeg.getLength() / Math.cos(Math.toRadians(alpha));
+				
+				hypotenuse = intersectionLine.getDivided(intersectionLine.getLength()).getMultiplied(length);
+				return location(center.getAdded(hypotenuse));
+			}
+			
+		case LEFT:
+		case RIGHT:
+			adjacentLeg = new Vector(rectangle.getWidth() / 2, 0);
+			crossProduct = adjacentLeg.getCrossProduct(intersectionLine);
+
+			// orthogonal to adjacent leg?
+			if (crossProduct == 0) {
+				if (intersectionSection == Sector.LEFT) {
+					return location(center.getSubtracted(adjacentLeg));
+				} else {
+					return location(center.getAdded(adjacentLeg));
+				}
+			}
+			// no? get distance by angle
+			else {
+				if (intersectionSection == Sector.LEFT) {
+					adjacentLeg = adjacentLeg.getMultiplied(-1.0);
+				}
+				
+				alpha = adjacentLeg.getAngle(intersectionLine);
+				
+				double length = adjacentLeg.getLength() / Math.cos(Math.toRadians(alpha));
+				
+				hypotenuse = intersectionLine.getDivided(intersectionLine.getLength()).getMultiplied(length);
+				return location(center.getAdded(hypotenuse));
+			}
+		}
+		
+		return null;
+	}
+
+	// private static helpers; do not expose //////////////////////////////
+
+	private static ILocation getShapeLocation(Shape shape) {
+		return Graphiti.getPeLayoutService().getLocationRelativeToDiagram(shape);
+	}
+	
+	private static Vector bottomRight(IRectangle rectangle) {
+		return new Vector(rectangle.getX() + rectangle.getWidth(), rectangle.getY() + rectangle.getHeight());
+	}
+
+	private static Vector topLeft(IRectangle rectangle) {
+		return new Vector(rectangle.getX(), rectangle.getY());
+	}
+
+	private static Vector topRight(IRectangle rectangle) {
+		return new Vector(rectangle.getX() + rectangle.getWidth(), rectangle.getY());
+	}
+
+	private static Vector bottomLeft(IRectangle rectangle) {
+		return new Vector(rectangle.getX(), rectangle.getY() + rectangle.getHeight());
+	}
+
+	private static ILocation diagramRelativeLocation(Shape startShape) {
+		return Graphiti.getLayoutService().getLocationRelativeToDiagram(startShape);
+	}
 }

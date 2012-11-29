@@ -25,9 +25,9 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
  * @author Nico Rehwaldt
  * @author Daniel Meyer
  */
-public class SequenceFlowShapeHandler extends AbstractEdgeHandler<SequenceFlow> {
+public class SequenceFlowHandler extends AbstractEdgeHandler<SequenceFlow> {
 
-	public SequenceFlowShapeHandler(ModelImport bpmn2ModelImport) {
+	public SequenceFlowHandler(ModelImport bpmn2ModelImport) {
 		super(bpmn2ModelImport);
 	}
 

@@ -12,13 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features.bendpoint;
 
-import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.di.BPMNEdge;
-import org.eclipse.bpmn2.modeler.core.Activator;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
-import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
-import org.eclipse.dd.dc.Point;
+import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IMoveAnchorContext;
 import org.eclipse.graphiti.features.impl.DefaultMoveAnchorFeature;
@@ -42,22 +36,7 @@ public class MoveAnchorFeature extends DefaultMoveAnchorFeature {
 		}
 	}
 
-	private void updateConnectionDi(IMoveAnchorContext context,
-			Connection connection, final boolean last) {
-		BaseElement element = (BaseElement) BusinessObjectUtil.getFirstElementOfType(connection, BaseElement.class);
-		ModelHandler modelHandler;
-		try {
-			modelHandler = ModelHandlerLocator.getModelHandler(getDiagram().eResource());
-			BPMNEdge edge = (BPMNEdge) modelHandler.findDIElement(element);
-			
-			int waypointIndex = last ? edge.getWaypoint().size()-1 : 0; 
-			
-			Point p = edge.getWaypoint().get(waypointIndex);
-			p.setX(context.getX());
-			p.setY(context.getY());
-		} catch (Exception e) {
-			Activator.logError(e);
-		}
+	private void updateConnectionDi(IMoveAnchorContext context, Connection connection, final boolean last) {
+		DIUtils.updateDIEdge(connection);
 	}
-
 }

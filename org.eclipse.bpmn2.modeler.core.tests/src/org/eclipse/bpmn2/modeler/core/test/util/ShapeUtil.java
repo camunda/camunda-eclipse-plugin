@@ -12,7 +12,7 @@ public class ShapeUtil {
 
 	public static Shape findShapeByBusinessObjectId(Shape shape, String id) {
 		
-		if(shape.getLink() != null) {
+		if (shape.getLink() != null) {
 			if (findBusinessObjectById(shape.getLink().getBusinessObjects() , id) != null) {
 				return shape;
 			}
@@ -23,7 +23,7 @@ public class ShapeUtil {
 			EList<Shape> children = containerShape.getChildren();
 			for (Shape child : children) {
 				Shape found = findShapeByBusinessObjectId(child, id);
-				if(found != null) {
+				if (found != null) {
 					return found;
 				}
 			}			
@@ -41,7 +41,7 @@ public class ShapeUtil {
 		return null;
 	}
 	
-	protected static BaseElement findBusinessObjectById (EList<EObject> businessObjects, String id) {
+	protected static BaseElement findBusinessObjectById(EList<EObject> businessObjects, String id) {
 		for (EObject eObject : businessObjects) {
 			if(eObject instanceof BaseElement) {
 				BaseElement baseElement = (BaseElement)eObject;

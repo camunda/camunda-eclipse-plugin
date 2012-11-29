@@ -56,15 +56,15 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 	protected void postMoveShape(IMoveShapeContext context) {
 		PictogramElement shape = context.getPictogramElement();
 		BPMNShape bpmnShape = DIUtils.getShape(context.getPictogramElement());
-		
-		// update di
-		DIUtils.updateDIShape(shape, bpmnShape);
 
 		// move label after the shape has been moved
 		moveLabel(shape, bpmnShape);
 		
 		// perform actual reconnect of edges
 		AnchorUtil.reConnect(shape, getDiagram());
+		
+		// update di
+		DIUtils.updateDIShape(shape, bpmnShape);
 	}
 
 	private void moveLabel(PictogramElement shape, BPMNShape bpmnShape) {

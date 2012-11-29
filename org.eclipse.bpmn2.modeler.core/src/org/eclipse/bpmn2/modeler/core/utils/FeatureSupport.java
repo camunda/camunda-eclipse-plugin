@@ -169,18 +169,6 @@ public class FeatureSupport {
 			}
 		}
 	}
-	
-	/**
-	 * Use ModelHandler.getInstance(diagram) instead
-	 * 
-	 * @param diagram
-	 * @return
-	 * @throws IOException
-	 */
-	@Deprecated
-	public static ModelHandler getModelHanderInstance(Diagram diagram) throws IOException {
-		return ModelHandlerLocator.getModelHandler(diagram.eResource());
-	}
 
 	public static void redraw(ContainerShape container) {
 		ContainerShape root = getRootContainer(container);
@@ -190,10 +178,6 @@ public class FeatureSupport {
 	}
 
 	private static void updateDI(ContainerShape root) {
-		Diagram diagram = Graphiti.getPeService().getDiagramForPictogramElement(root);
-
-		Class<?> instanceClass = BusinessObjectUtil.getFirstElementOfType(root, BaseElement.class).eClass()
-				.getInstanceClass();
 		DIUtils.updateDIShape(root);
 	}
 

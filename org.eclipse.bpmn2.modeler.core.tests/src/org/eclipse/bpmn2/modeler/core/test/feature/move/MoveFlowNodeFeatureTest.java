@@ -269,11 +269,6 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(connection).hasBendpointCount(2);
 	}
 
-	// helpers /////////////////////////////////////
-	
-	private Point point(int x, int y) {
-		return Graphiti.getGaService().createPoint(x, y);
-	}
 	@Test
 	@DiagramResource
 	public void testMoveTaskVerticalAndHorizontalLayout() {
@@ -425,9 +420,9 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(sequenceFlow2.getBendpoints().size()).isEqualTo(2);
 		
 		move(userTaskShape, diagramTypeProvider)
-		.by(0, -5)
-		.toContainer(diagram)
-		.execute();
+			.by(0, -5)
+			.toContainer(diagram)
+			.execute();
 		
 		// dont relayout connections from boundary events with more than one bendpoint
 		assertThat(sequenceFlow2.getBendpoints().size()).isEqualTo(2);
@@ -445,9 +440,9 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		
 		// hit the max length, no bendpoints should be added / changed here
 		move(gatewayShape, diagramTypeProvider)
-		.by(0 , 230)
-		.toContainer(laneShape)
-		.execute();
+			.by(0 , 230)
+			.toContainer(laneShape)
+			.execute();
 		
 		FreeFormConnection after = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "reviewSuccessful");
 
@@ -468,9 +463,9 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		
 		// dont hit the max length, bendpoints should be changed here
 		move(gatewayShape, diagramTypeProvider)
-		.by(0 , -10)
-		.toContainer(laneShape)
-		.execute();
+			.by(0 , -10)
+			.toContainer(laneShape)
+			.execute();
 		
 		FreeFormConnection after = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "reviewSuccessful");
 
@@ -479,5 +474,9 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(beforePoint).isNotEqualTo(afterPoint);
 	}
 	
-
+	// helpers /////////////////////////////////////
+	
+	private Point point(int x, int y) {
+		return Graphiti.getGaService().createPoint(x, y);
+	}
 }

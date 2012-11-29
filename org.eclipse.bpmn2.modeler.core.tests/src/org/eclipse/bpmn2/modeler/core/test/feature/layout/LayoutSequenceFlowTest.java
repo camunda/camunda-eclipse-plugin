@@ -2,14 +2,21 @@ package org.eclipse.bpmn2.modeler.core.test.feature.layout;
 
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveFlowNodeOperation.move;
+import static org.eclipse.bpmn2.modeler.core.test.util.operations.ReconnectConnectionEndOperation.reconnect;
+import static org.fest.assertions.api.Assertions.assertThat;
+
+import java.util.Collections;
 
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.ShapeUtil;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
+import org.eclipse.graphiti.mm.pictograms.Anchor;
+import org.eclipse.graphiti.mm.pictograms.ChopboxAnchor;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
+import org.fest.assertions.core.Condition;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -17,10 +24,10 @@ import org.junit.Test;
  * 
  * @author Nico Rehwaldt
  */
-@Ignore
 public class LayoutSequenceFlowTest extends AbstractFeatureTest {
 	
 	@Test
+	@Ignore
 	@DiagramResource
 	public void testMoveCloseBy() {
 		Shape fixedShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_2");
@@ -68,10 +75,16 @@ public class LayoutSequenceFlowTest extends AbstractFeatureTest {
 			.anchorPointOn(movingShape)
 				.isBeneathShape();
 	}
-
-	// helpers /////////////////////////////////////
 	
-	private Point point(int x, int y) {
-		return Graphiti.getGaService().createPoint(x, y);
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/FlowReconnectTest.testManualReconnectSequenceFlow.bpmn")
+	public void testAnchorPlacementAfterImport() {
+		Shape task2 = ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_2");
+		
+		// whenever we import an shape it will have four anchors per default
+		// (0) a chopbox anchor we can use to circle around that shape
+		// (1..4) four custom made anchors on each directin N / E / S / W
+		
+		assertThat(task2.getAnchors().size()).isEqualTo(5); 
 	}
 }

@@ -67,7 +67,7 @@ public abstract class LayoutStrategy {
 			if (subStrategy.appliesTo(connection)) {
 				subStrategy.sectorSwitch(sector);
 				subStrategy.typeSwitch(sector, sourceElement, targetElement);
-			}else {
+			} else {
 				subStrategy.unchanged();
 			}
 			

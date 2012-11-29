@@ -12,7 +12,6 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.di;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,9 +24,7 @@ import org.eclipse.bpmn2.di.BPMNLabel;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.di.BpmnDiFactory;
-import org.eclipse.bpmn2.modeler.core.Activator;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -62,7 +59,6 @@ import org.eclipse.graphiti.mm.pictograms.PictogramLink;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.platform.IDiagramEditor;
 import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.services.ILayoutService;
 import org.eclipse.graphiti.services.IPeService;
 
 public class DIUtils {
@@ -147,44 +143,37 @@ public class DIUtils {
 	}
 
 	public static void updateDIEdge(Connection connection) {
-		try {
-			ILayoutService layoutService = Graphiti.getLayoutService();
-			ModelHandler modelHandler = ModelHandlerLocator.getModelHandler(connection.getLink().getBusinessObjects()
-					.get(0).eResource());
+		
+		BPMNEdge edge = BusinessObjectUtil.getFirstElementOfType(connection, BPMNEdge.class);
+		
+		if (edge != null) {
+			Point point = DcFactory.eINSTANCE.createPoint();
 
-			EObject be = BusinessObjectUtil.getFirstElementOfType(connection, BaseElement.class);
-			BPMNEdge edge = (BPMNEdge) modelHandler.findDIElement((BaseElement) be);
-			if (edge!=null) {
-				Point point = DcFactory.eINSTANCE.createPoint();
-	
-				List<Point> waypoint = edge.getWaypoint();
-				waypoint.clear();
-	
-				ILocation loc;
-				loc = layoutService.getLocationRelativeToDiagram(connection.getStart());
-				point.setX(loc.getX());
-				point.setY(loc.getY());
-				waypoint.add(point);
-	
-				if (connection instanceof FreeFormConnection) {
-					FreeFormConnection freeForm = (FreeFormConnection) connection;
-					EList<org.eclipse.graphiti.mm.algorithms.styles.Point> bendpoints = freeForm.getBendpoints();
-					for (org.eclipse.graphiti.mm.algorithms.styles.Point bp : bendpoints) {
-						point = DcFactory.eINSTANCE.createPoint();
-						point.setX(bp.getX());
-						point.setY(bp.getY());
-						waypoint.add(point);
-					}
+			List<Point> waypoint = edge.getWaypoint();
+			waypoint.clear();
+
+			ILocation loc = LayoutUtil.getVisibleAnchorLocation(connection.getStart(), connection);
+			point.setX(loc.getX());
+			point.setY(loc.getY());
+			waypoint.add(point);
+
+			if (connection instanceof FreeFormConnection) {
+				FreeFormConnection freeForm = (FreeFormConnection) connection;
+				EList<org.eclipse.graphiti.mm.algorithms.styles.Point> bendpoints = freeForm.getBendpoints();
+				for (org.eclipse.graphiti.mm.algorithms.styles.Point bp : bendpoints) {
+					point = DcFactory.eINSTANCE.createPoint();
+					point.setX(bp.getX());
+					point.setY(bp.getY());
+					waypoint.add(point);
 				}
-	
-				point = DcFactory.eINSTANCE.createPoint();
-				loc = layoutService.getLocationRelativeToDiagram(connection.getEnd());
-				point.setX(loc.getX());
-				point.setY(loc.getY());
-				waypoint.add(point);
 			}
-		} catch (IOException e) {
-			Activator.logError(e);
+
+			point = DcFactory.eINSTANCE.createPoint();
+			loc = LayoutUtil.getVisibleAnchorLocation(connection.getEnd(), connection);
+			
+			point.setX(loc.getX());
+			point.setY(loc.getY());
+			waypoint.add(point);
 		}
 	}
 
@@ -200,7 +189,9 @@ public class DIUtils {
 		BPMNShape bpmnShape = null;
 
 		for (EObject eObject : businessObjects) {
+			
 			if (eObject instanceof BPMNDiagram) {
+				
 				BPMNDiagram bpmnDiagram = (BPMNDiagram) eObject;
 
 				bpmnShape = BpmnDiFactory.eINSTANCE.createBPMNShape();

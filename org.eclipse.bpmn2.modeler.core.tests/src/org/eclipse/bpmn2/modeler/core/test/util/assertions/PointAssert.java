@@ -21,8 +21,13 @@ public class PointAssert extends AbstractAssert<PointAssert, Point> {
 	}
 	
 	public PointAssert isEqualTo(Point expected) {
+		
+		if (actual == null) {
+			Assertions.fail(String.format("Expected actual to equal <%s> but was <null>", expected));
+		}
+		
 		if (actual.getX() != expected.getX() || actual.getY() != expected.getY()) {
-			Assertions.fail(String.format("Expected point <%s> to have same position as <%s>", actual, expected));
+			Assertions.fail(String.format("Expected actual to equal <%s> but was <%s>", expected, actual));
 		}
 		
 		return myself;

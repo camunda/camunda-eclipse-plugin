@@ -65,7 +65,7 @@ import org.eclipse.bpmn2.modeler.core.importer.handlers.GatewayShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.LaneShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.MessageFlowShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.ParticipantShapeHandler;
-import org.eclipse.bpmn2.modeler.core.importer.handlers.SequenceFlowShapeHandler;
+import org.eclipse.bpmn2.modeler.core.importer.handlers.SequenceFlowHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.SubProcessShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.TaskShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.util.ErrorLogger;
@@ -624,7 +624,7 @@ public class ModelImport {
 	}
 	
 	protected void handleSequenceFlow(SequenceFlow flowElement, ContainerShape container) {
-		handleDiagramElement(flowElement, container, new SequenceFlowShapeHandler(this));
+		handleDiagramElement(flowElement, container, new SequenceFlowHandler(this));
 	}
 
 	protected void handleEvent(Event flowElement, ContainerShape container) {

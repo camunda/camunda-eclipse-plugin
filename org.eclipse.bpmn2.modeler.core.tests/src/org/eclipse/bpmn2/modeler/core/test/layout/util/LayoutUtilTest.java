@@ -1,6 +1,7 @@
 package org.eclipse.bpmn2.modeler.core.test.layout.util;
 
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.fest.assertions.api.Assertions.fail;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -160,5 +161,11 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 	public void testGetLength() {
 		FreeFormConnection flow1 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
 		assertThat(LayoutUtil.getLength(flow1)).isEqualTo(284);
+	}
+	
+	@Test
+	@DiagramResource
+	public void testConnectionReferencePoint() {
+		fail("Should test LayoutUtil#getConnectionReferencePoint()");
 	}
 }
