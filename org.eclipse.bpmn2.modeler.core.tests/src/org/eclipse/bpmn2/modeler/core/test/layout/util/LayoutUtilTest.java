@@ -10,6 +10,7 @@ import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.ShapeUtil;
+import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.junit.Test;
@@ -27,9 +28,9 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 		Shape start2 = ShapeUtil.findShapeByBusinessObjectId(diagram, "StartEvent_2");
 		Shape task2 = ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_2");
 
-		assertThat(LayoutUtil.getHorizontalLayoutTreshold(LayoutUtil.getCenter(task1), LayoutUtil.getCenter(start2))).isGreaterThan(0);
-		assertThat(LayoutUtil.getHorizontalLayoutTreshold(LayoutUtil.getCenter(start2), LayoutUtil.getCenter(task1))).isLessThan(0);
-		assertThat(LayoutUtil.getHorizontalLayoutTreshold(LayoutUtil.getCenter(start2), LayoutUtil.getCenter(task2))).isEqualTo(0);
+		assertThat(LayoutUtil.getHorizontalLayoutTreshold(LayoutUtil.getShapeCenter(task1), LayoutUtil.getShapeCenter(start2))).isGreaterThan(0);
+		assertThat(LayoutUtil.getHorizontalLayoutTreshold(LayoutUtil.getShapeCenter(start2), LayoutUtil.getShapeCenter(task1))).isLessThan(0);
+		assertThat(LayoutUtil.getHorizontalLayoutTreshold(LayoutUtil.getShapeCenter(start2), LayoutUtil.getShapeCenter(task2))).isEqualTo(0);
 	}
 	
 	@Test
@@ -164,7 +165,45 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 	}
 	
 	@Test
-	@DiagramResource
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testDefaultAnchors.bpmn")
+	public void testTaskDefaultAnchors() throws Exception {
+		Shape task = ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_1");
+		
+		// no specific anchors attached to element
+		// all anchors should be default
+		
+		for (Anchor a: task.getAnchors()) {
+			assertThat(LayoutUtil.isDefaultAnchor(a)).isTrue();
+		}
+	}
+
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testDefaultAnchors.bpmn")
+	public void testEventDefaultAnchors() throws Exception {
+		Shape event = ShapeUtil.findShapeByBusinessObjectId(diagram, "StartEvent_1");
+		
+		// no specific anchors attached to element
+		// all anchors should be default
+		
+		for (Anchor a: event.getAnchors()) {
+			assertThat(LayoutUtil.isDefaultAnchor(a)).isTrue();
+		}
+	}
+
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testDefaultAnchors.bpmn")
+	public void testGatewayDefaultAnchors() throws Exception {
+		Shape gateway = ShapeUtil.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
+
+		// no specific anchors attached to element
+		// all anchors should be default
+		
+		for (Anchor a: gateway.getAnchors()) {
+			assertThat(LayoutUtil.isDefaultAnchor(a)).isTrue();
+		}
+	}
+	
+	@Test
 	public void testConnectionReferencePoint() {
 		fail("Should test LayoutUtil#getConnectionReferencePoint()");
 	}

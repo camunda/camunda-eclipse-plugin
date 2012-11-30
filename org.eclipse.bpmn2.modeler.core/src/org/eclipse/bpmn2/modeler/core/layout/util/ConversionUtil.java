@@ -1,5 +1,7 @@
 package org.eclipse.bpmn2.modeler.core.layout.util;
 
+import org.eclipse.dd.dc.impl.PointImpl;
+import org.eclipse.dd.di.DiFactory;
 import org.eclipse.draw2d.geometry.Vector;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
@@ -35,6 +37,15 @@ public class ConversionUtil {
 	
 	public static Point point(org.eclipse.dd.dc.Point p) {
 		return point((int) Math.round(p.getX()), (int) Math.round(p.getY()));
+	}
+
+	public static org.eclipse.dd.dc.Point diPoint(ILocation l) {
+		org.eclipse.dd.dc.Point p = org.eclipse.dd.dc.DcFactory.eINSTANCE.createPoint();
+		
+		p.setX(l.getX());
+		p.setY(l.getY());
+		
+		return p;
 	}
 	
 	public static Point point(ILocation l) {

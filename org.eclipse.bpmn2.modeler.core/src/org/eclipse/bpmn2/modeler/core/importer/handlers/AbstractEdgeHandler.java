@@ -13,6 +13,7 @@ package org.eclipse.bpmn2.modeler.core.importer.handlers;
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.location;
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.rectangle;
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.*;
 
 import java.util.List;
 
@@ -146,20 +147,33 @@ public abstract class AbstractEdgeHandler<T extends BaseElement> extends Abstrac
 		return createAnchorOnContainer((AnchorContainer) element, waypoints.get(0), waypoints.get(1));
 	}
 
-	private Anchor createAnchorOnContainer(AnchorContainer container, Point elementDockingPoint, Point referencePoint) {
+	private Anchor createAnchorOnContainer(AnchorContainer container, Point containerDockingPoint, Point referencePoint) {
 		
 		verifyCorrectInstance(container, Shape.class);
 		
 		Shape shape = (Shape) container;
 		
+		// ADONIS COMPATIBILITY (!!)
+		
+		// check if point centers anchor container; 
+		// if so assume the usage of a chopbox anchor
+		
+		ILocation containerCenter = LayoutUtil.getShapeLocationMidpoint(shape);
+		if (positionsMatch(containerCenter, containerDockingPoint)) {
+			return LayoutUtil.getCenterAnchor(container);
+		}
+		
+		// end ADONIS COMPATIBILITY (!!)
+		
+		
 		// check if any of the default anchors dock
-		Anchor dockingAnchor = getDefaultAnchorAtPoint(elementDockingPoint, container);
+		Anchor dockingAnchor = getDefaultAnchorAtPoint(containerDockingPoint, container);
 		if (dockingAnchor != null) {
 			return dockingAnchor;
 		}
 		
 		// check if chopbox anchor matches
-		dockingAnchor = getReferencedChopboxAnchor(container, elementDockingPoint, referencePoint);
+		dockingAnchor = getReferencedChopboxAnchor(container, containerDockingPoint, referencePoint);
 		if (dockingAnchor != null) {
 			return dockingAnchor;
 		}
@@ -171,7 +185,7 @@ public abstract class AbstractEdgeHandler<T extends BaseElement> extends Abstrac
 		gaService.setSize(rect, 1, 1);
 		
 		// set anchor location now
-		setAnchorLocation(shape, fixPointAnchor, elementDockingPoint);
+		setAnchorLocation(shape, fixPointAnchor, containerDockingPoint);
 			
 		return fixPointAnchor;
 	}
@@ -187,7 +201,7 @@ public abstract class AbstractEdgeHandler<T extends BaseElement> extends Abstrac
 		ILocation intersectionPoint = LayoutUtil.getChopboxIntersectionPoint(containerRect, referencePointLocation);
 		
 		if (positionsMatch(intersectionPoint, elementDockingPoint)) {
-			return container.getAnchors().get(0);
+			return LayoutUtil.getCenterAnchor(container);
 		} else {
 			return null;
 		}

@@ -214,6 +214,10 @@ public class LayoutUtil {
 		
 		return defaultAnchors;
 	}
+
+	public static Anchor getCenterAnchor(AnchorContainer container) {
+		return container.getAnchors().get(0);
+	}
 	
 	public static Anchor getLeftAnchor(Shape shape) {
 		return shape.getAnchors().get(4);
@@ -246,7 +250,7 @@ public class LayoutUtil {
 		// NRE: WARNING: default anchor identified by index in anchor 
 		// list (0..4 =  default)
 		// Not my fault :o)
-		if (anchorIndex != -1 && anchorIndex < 4) {
+		if (anchorIndex != -1 && anchorIndex <= 4) {
 			return true;
 		} else {
 			return false;
@@ -305,14 +309,14 @@ public class LayoutUtil {
 	 * positive if end shape is right to start shape.
 	 */
 	public static double getLayoutTreshold(FreeFormConnection connection) {
-		ILocation startShapeCenter = getCenter((Shape) connection.getStart().getParent());
-		ILocation endShapeCenter = getCenter((Shape) connection.getEnd().getParent());
+		ILocation startShapeCenter = getShapeCenter((Shape) connection.getStart().getParent());
+		ILocation endShapeCenter = getShapeCenter((Shape) connection.getEnd().getParent());
 		return getVerticalLayoutTreshold(startShapeCenter, endShapeCenter);
 	}
 	
 	public static double getLayoutTreshold(Shape startShape, Shape endShape) {
-		ILocation startShapeCenter = getCenter(startShape);
-		ILocation endShapeCenter = getCenter(endShape);
+		ILocation startShapeCenter = getShapeCenter(startShape);
+		ILocation endShapeCenter = getShapeCenter(endShape);
 		return getVerticalLayoutTreshold(startShapeCenter, endShapeCenter);
 	}
 
@@ -346,7 +350,7 @@ public class LayoutUtil {
 		return product;
 	}
 	
-	public static ILocation getCenter(Shape shape) {
+	public static ILocation getShapeCenter(Shape shape) {
 		
 		if (shape == null) {
 			throw new NullPointerException("Argument is null");
@@ -355,13 +359,60 @@ public class LayoutUtil {
 		return getShapeLocationMidpoint(shape);
 	}
 
-	public static ILocation getCenter(IRectangle rectangle) {
+	public static ILocation getRectangleCenter(IRectangle rectangle) {
 		
-		ILocation shapeCenter = location(
+		ILocation center = location(
 			rectangle.getX() + rectangle.getWidth() / 2, 
 			rectangle.getY() + rectangle.getHeight() / 2 );
 		
-		return shapeCenter;
+		return center;
+	}
+	
+	/**
+	 * Returns true if the given rectangle contains the point.
+	 * 
+	 * Points on the rectangles border are not contained.
+	 * 
+	 * @param rectangle
+	 * @param point
+	 * 
+	 * @return true if the point is contained
+	 */
+	public static boolean isContained(IRectangle rectangle, ILocation point) {
+		return isContained(rectangle, point, 0);
+	}
+	
+	/**
+	 * Returns true if the given rectangle contains the point
+	 * 
+	 * @param rectangle
+	 * @param point
+	 * 
+	 * @param tolerance the tolerance in pixels to check if an element is contained
+	 * 		 			setting that to 1 will make points on the border to be contained, too
+	 * 
+	 * @return true if the point is contained when taking the tolerance into account
+	 */
+	public static boolean isContained(IRectangle rectangle, ILocation point, int tolerance) {
+		
+		// translation of scenario to positive coordinates
+		int dx = Math.min(0, Math.min(rectangle.getX(), point.getX())) * -1;
+		int dy = Math.min(0, Math.min(rectangle.getY(), point.getY())) * -1;
+		
+		int px = point.getX() + dx;
+		int py = point.getY() + dy;
+		
+		int rx1 = rectangle.getX() + dx;
+		int rx2 = rx1 + rectangle.getWidth();
+		
+		int ry1 = rectangle.getY() + dy;
+		int ry2 = ry1 + rectangle.getHeight();
+		
+		return 
+			px + tolerance > rx1 && 
+			px - tolerance < rx2 &&
+			py + tolerance > ry1 &&
+			py - tolerance < ry2;
 	}
 	
 	public static void addVerticalCenteredBendpoints(FreeFormConnection connection) {
@@ -565,7 +616,7 @@ public class LayoutUtil {
 	 */
 	public static Sector getChopboxIntersectionSector(IRectangle rectangle, ILocation referencePt) {
 		
-		ILocation centerPt = getCenter(rectangle);
+		ILocation centerPt = getRectangleCenter(rectangle);
 		
 		Sector directionSector = getSector(referencePt, centerPt);
 		
@@ -578,6 +629,8 @@ public class LayoutUtil {
 		Vector cornerVector;
 		
 		switch (directionSector) {
+		case UNDEFINED:
+			return Sector.UNDEFINED;
 		case BOTTOM: 
 			return Sector.BOTTOM;
 		case TOP:
@@ -641,6 +694,7 @@ public class LayoutUtil {
 			}
 		}
 		
+		// e.g. because it is exactly the center point of the rectangle
 		return Sector.UNDEFINED;
 	}
 
@@ -701,7 +755,7 @@ public class LayoutUtil {
 		
 		Sector intersectionSection = getChopboxIntersectionSector(rectangle, referencePt);
 		
-		ILocation centerPt = getCenter(rectangle);
+		ILocation centerPt = getRectangleCenter(rectangle);
 		Vector center = vector(centerPt);
 		
 		Vector intersectionLine = center.getSubtracted(vector(referencePt));
@@ -777,6 +831,10 @@ public class LayoutUtil {
 				hypotenuse = intersectionLine.getDivided(intersectionLine.getLength()).getMultiplied(length);
 				return location(center.getAdded(hypotenuse));
 			}
+		
+		case UNDEFINED: 
+			// must be the center of the rectangle
+			
 		}
 		
 		return null;

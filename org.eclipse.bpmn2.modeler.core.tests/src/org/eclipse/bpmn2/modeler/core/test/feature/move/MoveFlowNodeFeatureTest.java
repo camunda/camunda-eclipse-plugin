@@ -79,9 +79,9 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		ContainerShape laneShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "Lane_1");
 
 		move(gatewayShape, diagramTypeProvider)
-		.by(0 , moveBy)
-		.toContainer(laneShape)
-		.execute();
+			.by(0 , moveBy)
+			.toContainer(laneShape)
+			.execute();
 		
 		FreeFormConnection seq2Connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
 		FreeFormConnection seq3Connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
@@ -131,9 +131,9 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		
 		// test bendbpoint strategy treshold
 		move(gatewayShape, diagramTypeProvider)
-		.by(0 , -1)
-		.toContainer(laneShape)
-		.execute();
+			.by(0 , -1)
+			.toContainer(laneShape)
+			.execute();
 		
 		//check outgoing sequence flow right
 		assertEquals(1, seq3Connection.getBendpoints().size());

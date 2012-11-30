@@ -10,10 +10,9 @@ public class AbstractFeatureTest extends AbstractBpmnEditorTest {
 
 	@Before
 	public void importModel() {
-		modelImport = new ModelImport(diagramTypeProvider, resource);
-		modelImport.execute();
+		if (resource != null) {
+			modelImport = new ModelImport(diagramTypeProvider, resource);
+			modelImport.execute();
+		}
 	}
-	
-	
-
 }

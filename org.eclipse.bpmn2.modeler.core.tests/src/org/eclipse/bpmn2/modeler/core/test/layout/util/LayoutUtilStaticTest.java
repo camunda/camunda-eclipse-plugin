@@ -1,14 +1,13 @@
 package org.eclipse.bpmn2.modeler.core.test.layout.util;
 
-import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.*;
 
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
-import org.eclipse.graphiti.internal.datatypes.impl.LocationImpl;
-import org.eclipse.graphiti.internal.datatypes.impl.RectangleImpl;
+
 import org.junit.Test;
 
 public class LayoutUtilStaticTest {
@@ -78,14 +77,24 @@ public class LayoutUtilStaticTest {
 		assertThat(LayoutUtil.getChopboxIntersectionPoint(box, location(-8, -2))).isEqualTo(location(-4, -1));
 	}
 	
-	// static helpers //////////////////////////////
+	@Test
+	public void testIsContained() {
+		IRectangle box = rectangle(-50, -25, 100, 50);
+		
+		assertThat(LayoutUtil.isContained(box, location(-50, -25))).isFalse();
+		assertThat(LayoutUtil.isContained(box, location(50, -25))).isFalse();
+		assertThat(LayoutUtil.isContained(box, location(-50, 25))).isFalse();
+		assertThat(LayoutUtil.isContained(box, location(50, 25))).isFalse();
 
- 	public static ILocation location(int x, int y) {
- 		return new LocationImpl(x + 100, y + 100);
- 	}
- 	
- 	@SuppressWarnings("restriction")
-	public static IRectangle rectangle(int x, int y, int width, int height) {
- 		return new RectangleImpl(x + 100, y + 100, width, height);
- 	}
+		assertThat(LayoutUtil.isContained(box, location(-49, -24))).isTrue();
+		assertThat(LayoutUtil.isContained(box, location(49, -24))).isTrue();
+		assertThat(LayoutUtil.isContained(box, location(-49, 24))).isTrue();
+		assertThat(LayoutUtil.isContained(box, location(49, 24))).isTrue();
+
+		// custom tolerance can be set, too
+		assertThat(LayoutUtil.isContained(box, location(-50, -25), 1)).isTrue();
+		assertThat(LayoutUtil.isContained(box, location(50, -25), 1)).isTrue();
+		assertThat(LayoutUtil.isContained(box, location(-50, 25), 1)).isTrue();
+		assertThat(LayoutUtil.isContained(box, location(50, 25), 1)).isTrue();
+	}
 }

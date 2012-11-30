@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+	xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+	xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" 
+	xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+	xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+	id="Definitions_1" 
+	targetNamespace="http://activiti.org/bpmn">
+	
+	<bpmn2:process id="process_2" name="Default Process">
+		<bpmn2:startEvent name="Start Event" id="_16770"
+			parallelMultiple="false">
+			<bpmn2:outgoing>_16951</bpmn2:outgoing>
+		</bpmn2:startEvent>
+		<bpmn2:task name="Task" id="_16773" startQuantity="1"
+			completionQuantity="1" isForCompensation="false">
+			<bpmn2:incoming>_16951</bpmn2:incoming>
+		</bpmn2:task>
+		<bpmn2:sequenceFlow name="" id="_16951" targetRef="_16773"
+			sourceRef="_16770"></bpmn2:sequenceFlow>
+	</bpmn2:process>
+	
+	<bpmndi:BPMNDiagram id="BPMNDiagram_1" name="Default Process Diagram">
+		<bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="process_2">
+			<bpmndi:BPMNShape bpmnElement="_16770" id="DI_16770">
+				<dc:Bounds height="52.0" width="52.0" x="162.0" y="142.0"></dc:Bounds>
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNShape bpmnElement="_16773" id="DI_16773">
+				<dc:Bounds height="56.0" width="105.0" x="249.0" y="141.0"></dc:Bounds>
+			</bpmndi:BPMNShape>
+
+			<bpmndi:BPMNEdge bpmnElement="_16951" id="DI_16951">
+				<di:waypoint x="189.0" y="169.0"></di:waypoint>
+				<di:waypoint x="302.0" y="169.0"></di:waypoint>
+			</bpmndi:BPMNEdge>
+		</bpmndi:BPMNPlane>
+	</bpmndi:BPMNDiagram>
+</bpmn2:definitions>
