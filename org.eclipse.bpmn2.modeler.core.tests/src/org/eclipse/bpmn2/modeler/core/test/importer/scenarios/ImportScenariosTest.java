@@ -27,11 +27,4 @@ public class ImportScenariosTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 	}
-	
-	@Test
-	@DiagramResource
-	public void testImportAdonisCase() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
-		importer.execute();
-	}
 }
