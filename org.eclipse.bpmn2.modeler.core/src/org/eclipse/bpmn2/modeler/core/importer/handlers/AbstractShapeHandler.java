@@ -78,7 +78,7 @@ public abstract class AbstractShapeHandler<T extends BaseElement> extends Abstra
 			
 			return pictogramElement;
 			
-		} else  {
+		} else {
 			Activator.logStatus(new Status(IStatus.WARNING, Activator.PLUGIN_ID, "Element not supported: "
 					+ bpmnElement.eClass().getName()));
 			

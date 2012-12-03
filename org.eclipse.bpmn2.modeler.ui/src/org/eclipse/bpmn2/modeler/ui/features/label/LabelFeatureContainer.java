@@ -111,20 +111,20 @@ public class LabelFeatureContainer implements FeatureContainer {
 
 	@Override
 	public IMoveShapeFeature getMoveFeature(IFeatureProvider fp) {
-		return new DefaultMoveShapeFeature (fp) {
-  		 @Override
-  		public boolean canMoveShape(IMoveShapeContext context) {
-  		   return true;
-  		}
-  		
-      @Override
-      protected void postMoveShape(IMoveShapeContext context) {
-        super.postMoveShape(context);
-        BaseElement base = (BaseElement) context.getShape().getLink().getBusinessObjects().get(0);
-        BPMNShape bpmnShape = (BPMNShape) ModelHandler.findDIElement(base);
-        DIUtils.updateDILabel((ContainerShape) context.getShape(), bpmnShape);
-      }
-  		 
+		return new DefaultMoveShapeFeature(fp) {
+			@Override
+			public boolean canMoveShape(IMoveShapeContext context) {
+				return true;
+			}
+
+			@Override
+			protected void postMoveShape(IMoveShapeContext context) {
+				super.postMoveShape(context);
+				BaseElement base = (BaseElement) context.getShape().getLink().getBusinessObjects().get(0);
+				BPMNShape bpmnShape = (BPMNShape) ModelHandler.findDIElement(base);
+				
+				DIUtils.updateDILabel((ContainerShape) context.getShape(), bpmnShape);
+			}
 		};
 	}
 

@@ -39,8 +39,8 @@ public class AssociationLayoutTest extends AbstractFeatureTest {
 		assertThat(association.getBendpoints().size()).isEqualTo(0);
 		
 		move(dataObjectShape, diagramTypeProvider)
-		.by(0 , 20)
-		.execute();
+			.by(0 , 20)
+			.execute();
 		
 		// should not be layouted after move
 		assertThat(association.getBendpoints().size()).isEqualTo(0);

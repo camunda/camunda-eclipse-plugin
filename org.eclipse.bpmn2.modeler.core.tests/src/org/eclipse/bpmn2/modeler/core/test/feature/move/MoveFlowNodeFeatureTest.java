@@ -35,9 +35,9 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		
 		// Move target shape
 		move(taskShape, diagramTypeProvider)
-		.by(0 , 176)
-		.toContainer(laneShape)
-		.execute();
+			.by(0 , 176)
+			.toContainer(laneShape)
+			.execute();
 		
 		// The MoveFlowNodeFeature will call AnchorUtil.reConnect, which will in turn recalculate the
 		// boundary anchors to update them, we need to hook in there
@@ -46,6 +46,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		
 		// Get bendpoints incoming sequence flow
 		FreeFormConnection seqConnection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_7");
+		
 		// and check
 		assertEquals(1, seqConnection.getBendpoints().size());
 		assertEquals(Graphiti.getPeLayoutService().getLocationRelativeToDiagram(seqConnection.getEnd()).getY(), seqConnection.getBendpoints().get(0).getY());

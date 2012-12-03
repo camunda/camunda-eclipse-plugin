@@ -42,12 +42,12 @@ public class EventShapeHandler extends FlowNodeShapeHandler {
 	  
 	  if (event instanceof CatchEvent) {
 	    eventDefinitions = ((CatchEvent) event).getEventDefinitions();
-	  }else if (event instanceof ThrowEvent){
+	  } else if (event instanceof ThrowEvent) {
 	    eventDefinitions = ((ThrowEvent) event).getEventDefinitions();
+	  } else {
+	    throw new IllegalArgumentException("Impossible to handle event");
 	  }
-	  else {
-	    throw new RuntimeException("Impossible to handle event");
-	  }
+	  
 	  ContainerShape eventContainer = (ContainerShape) super.handleShape(bpmnElement, shape, container);
 	  
 	  if (eventContainer!= null && eventDefinitions.size() > 0) {
