@@ -253,6 +253,8 @@ public class FileService {
 			}
 			catch (Exception e) {
 			}
+		}else if (input instanceof DiagramEditorInput) {
+			return ((DiagramEditorInput) input).getUri();
 		}
 		return null;
 	}

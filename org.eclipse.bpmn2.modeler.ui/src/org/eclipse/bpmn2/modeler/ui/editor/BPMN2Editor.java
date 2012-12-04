@@ -16,9 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Assignment;
@@ -164,7 +162,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.command.BasicCommandStack;
-import org.eclipse.emf.common.command.CommandStack;
 import org.eclipse.emf.common.util.BasicDiagnostic;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
@@ -173,9 +170,6 @@ import org.eclipse.emf.ecore.EValidator;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.transaction.RecordingCommand;
-import org.eclipse.emf.transaction.RollbackException;
-import org.eclipse.emf.transaction.Transaction;
-import org.eclipse.emf.transaction.TransactionalCommandStack;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.TransactionalEditingDomain.Lifecycle;
 import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
@@ -341,34 +335,50 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	protected DiagramEditorAdapter getEditorAdapter() {
 		return editorAdapter;
 	}
-
+	
+	public void initWithDiagramEditorInput(IEditorSite site, DiagramEditorInput input) {
+		Bpmn2DiagramType diagramType = Bpmn2DiagramType.NONE;
+		String targetNamespace = null;
+		bpmnDiagram = null;
+		
+//		if (input instanceof Bpmn2DiagramEditorInput) {
+//			diagramType = ((Bpmn2DiagramEditorInput)input).getInitialDiagramType();
+//			targetNamespace = ((Bpmn2DiagramEditorInput)input).getTargetNamespace();
+//			setBpmnDiagram ((Bpmn2DiagramEditorInput)input).getBpmnDiagram();
+//		}else {
+//			URI uri = ((DiagramEditorInput) input).getUri();
+//			String uriString = uri.trimFragment().toPlatformString(true);
+//			return BPMN2DiagramCreator.getModelFile(new Path(uriString));
+//		}
+		
+//		if (bpmnDiagram==null) {
+//			// This was incorrectly constructed input, we ditch the old one and make a new and clean one instead
+//			// This code path comes in from the New File Wizard
+//			input = createNewDiagramEditorInput(site, input, diagramType, targetNamespace);
+//		}
+//		else {
+//			BPMNDiagram d = bpmnDiagram;
+//			bpmnDiagram = null;
+//			setBpmnDiagram(d);
+//			return;
+//		}
+	}
+	
+	@Override
+	protected DiagramEditorInput convertToDiagramEditorInput(IEditorInput input)
+			throws PartInitException {
+		return super.convertToDiagramEditorInput(input);
+	}
+	
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		try {
-			Bpmn2DiagramType diagramType = Bpmn2DiagramType.NONE;
-			String targetNamespace = null;
-			bpmnDiagram = null;
-
 			if (input instanceof IStorageEditorInput) {
-				input = createNewDiagramEditorInput(site, input, diagramType, targetNamespace);
-			} else 
-			if (input instanceof DiagramEditorInput) {
-				if (input instanceof Bpmn2DiagramEditorInput) {
-					diagramType = ((Bpmn2DiagramEditorInput)input).getInitialDiagramType();
-					targetNamespace = ((Bpmn2DiagramEditorInput)input).getTargetNamespace();
-					bpmnDiagram = ((Bpmn2DiagramEditorInput)input).getBpmnDiagram();
-				}
-				if (bpmnDiagram==null) {
-					// This was incorrectly constructed input, we ditch the old one and make a new and clean one instead
-					// This code path comes in from the New File Wizard
-					input = createNewDiagramEditorInput(site, input, diagramType, targetNamespace);
-				}
-				else {
-					BPMNDiagram d = bpmnDiagram;
-					bpmnDiagram = null;
-					setBpmnDiagram(d);
-					return;
-				}
+				input = createNewDiagramEditorInput(site, input, Bpmn2DiagramType.NONE, null);
+			} 
+			else if (input instanceof DiagramEditorInput) {
+				//initWithDiagramEditorInput(site, (DiagramEditorInput) input);
+				input = createNewDiagramEditorInput(site, input, Bpmn2DiagramType.NONE, null);
 			} else {
 				throw new PartInitException("Invalid Editor Input: "
 						+input.getClass().getSimpleName()+" "
@@ -475,14 +485,18 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	/**
 	 * Beware, creates a new input and changes this editor!
 	 */
-	private Bpmn2DiagramEditorInput createNewDiagramEditorInput(IEditorSite site, IEditorInput input, Bpmn2DiagramType diagramType, String targetNamespace)
-			throws CoreException {
-		
-		modelUri = FileService.getInputUri(input);
-		input = BPMN2DiagramCreator.createDiagram(modelUri, diagramType, targetNamespace, this);
-		diagramUri = ((Bpmn2DiagramEditorInput)input).getUri();
+	private Bpmn2DiagramEditorInput createNewDiagramEditorInput(IEditorSite site, IEditorInput input, Bpmn2DiagramType diagramType, String targetNamespace) {
+		try {
+			modelUri = FileService.getInputUri(input);
+			input = BPMN2DiagramCreator.createDiagram(modelUri, diagramType, targetNamespace, this);
+			diagramUri = ((Bpmn2DiagramEditorInput)input).getUri();
 
-		return (Bpmn2DiagramEditorInput)input;
+			return (Bpmn2DiagramEditorInput)input;
+		}
+		catch (Exception e) {
+			Activator.logError(e);
+			throw new RuntimeException(e);
+		}
 	}
 
 	private void saveModelFile() {
