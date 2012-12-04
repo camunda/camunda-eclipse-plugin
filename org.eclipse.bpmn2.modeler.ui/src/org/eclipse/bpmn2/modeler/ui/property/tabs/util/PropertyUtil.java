@@ -35,6 +35,14 @@ import org.eclipse.swt.widgets.ToolTip;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 
+/**
+ * Using form data here for layouting.
+ * 
+ * To get to know how it works, refer to 
+ * {@link http://www.eclipse.org/articles/article.php?file=Article-Understanding-Layouts/index.html}.
+ * 
+ * @author nico.rehwaldt
+ */
 public class PropertyUtil {
 	
 	public static Text createText(GFPropertySection section, Composite parent, String label, final EStructuralFeature feature, final EObject bo) {
@@ -153,7 +161,7 @@ public class PropertyUtil {
 		FormData data = new FormData();
 		data.left = new FormAttachment(0, 0);
 		data.right = new FormAttachment(control, -ITabbedPropertyConstants.HSPACE);
-		data.top = new FormAttachment(control, 0, SWT.TOP);
+		data.top = new FormAttachment(control, 0, SWT.CENTER);
 		cLabel.setLayoutData(data);
 		
 		return cLabel;
@@ -190,21 +198,19 @@ public class PropertyUtil {
 		
 		setStandardLayout(radioComposite);
 		
-		String value = getStringValue(bo, feature);
-		
-		final Text text = factory.createText(radioComposite, value);
+		final Text text = factory.createText(radioComposite, "");
+		final Button radioButton = factory.createButton(radioComposite, "", SWT.RADIO);
 		
 		FormData textFormData = new FormData();
-		textFormData.left = new FormAttachment(0, 20);
+		textFormData.left = new FormAttachment(0, 15);
 		textFormData.right = new FormAttachment(100, 0);
-
+		
+		FormData radioButtonData = new FormData();
+		radioButtonData.right = new FormAttachment(text, 0);
+		radioButtonData.top = new FormAttachment (text, 0, SWT.CENTER);
+		
 		text.setLayoutData(textFormData);
-
-		final Button radioButton = factory.createButton(radioComposite, "", SWT.RADIO);
-		FormData data = new FormData();
-		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(text, 20);
-		radioButton.setLayoutData(data);
+		radioButton.setLayoutData(radioButtonData);
 		
 		// register with radio group
 		radioGroup.add(radioButton, feature);

@@ -30,8 +30,8 @@ Require-Bundle: org.eclipse.ui.ide,
  org.eclipse.wst.xsd.ui;bundle-version="[1.2.101,2.0.0)",
  org.eclipse.wst.xml.ui;bundle-version="[1.0.400,2.0.0)",
  org.eclipse.jface.text,
- org.eclipse.jdt,
  org.eclipse.jdt.core,
+ org.eclipse.jdt.ui,
  org.eclipse.emf.workspace
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
@@ -71,5 +71,8 @@ Export-Package: org.eclipse.bpmn2.modeler.runtime.activiti,
  org.eclipse.bpmn2.modeler.ui.wizards
 Import-Package: org.eclipse.emf.workspace,
  org.eclipse.emf.workspace.util,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.core.search,
+ org.eclipse.jdt.ui,
  org.eclipse.wst.validation
 

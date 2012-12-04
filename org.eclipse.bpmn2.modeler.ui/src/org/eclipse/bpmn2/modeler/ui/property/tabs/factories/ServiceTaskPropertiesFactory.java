@@ -6,6 +6,7 @@ import java.util.Map;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelPackage;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.swt.Radio;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.swt.Radio.RadioGroup;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.util.ClassChooserDialog;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -13,7 +14,16 @@ import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 public class ServiceTaskPropertiesFactory extends PropertiesFactory {
@@ -59,6 +69,9 @@ public class ServiceTaskPropertiesFactory extends PropertiesFactory {
 			}
 		}
 		
+		Text classText = featureToInputMap.get(features[0]);
+		addBrowseClassButton(classText);
+		
 		radioGroup.addListener(Radio.SELECTION_CHANGED, new Radio.RadioSelectionAdapter<EStructuralFeature>() {
 			
 			@Override
@@ -72,7 +85,52 @@ public class ServiceTaskPropertiesFactory extends PropertiesFactory {
 			}
 		});
 		
-		radioGroup.select(selected);
+		radioGroup.select(selected, true);
+	}
+
+	private void addBrowseClassButton(final Text classText) {
+
+		Composite classComposite = classText.getParent();
+		final Button radioButton = (Button) classComposite.getChildren()[1];
+		
+		final Button btnClassSelect = new Button(classComposite, SWT.NONE);
+		btnClassSelect.setText("Choose Class");
+		btnClassSelect.setEnabled(radioButton.getSelection());
+		
+		// override layout data for text field
+		FormData textFormData = new FormData();
+		textFormData.left = new FormAttachment(0, 15);
+		textFormData.right = new FormAttachment(100, -90);
+		
+		FormData btnSelectLayoutData = new FormData();
+		btnSelectLayoutData.left = new FormAttachment(classText, 0);
+		btnSelectLayoutData.top = new FormAttachment(classText, 0, SWT.CENTER);
+		
+		classText.setLayoutData(textFormData);
+		btnClassSelect.setLayoutData(btnSelectLayoutData);
+		
+		radioButton.addListener(SWT.Selection, new Listener() {
+			
+			@Override
+			public void handleEvent(Event event) {
+				boolean selected = radioButton.getSelection();
+				btnClassSelect.setEnabled(selected);
+			}
+		});
+		
+		btnClassSelect.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent evt) {
+				Shell shell = classText.getShell();
+				ClassChooserDialog dialog = new ClassChooserDialog(shell);
+				
+				// interrupting operation
+				String clsName = dialog.chooseClass();
+				
+				if (clsName != null) {
+					classText.setText(clsName);
+				}
+			}
+		});
 	}
 
 	protected void transactionalHandleTypeChange(EStructuralFeature oldType, EStructuralFeature newType) {

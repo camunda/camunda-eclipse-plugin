@@ -54,12 +54,15 @@ public class Radio {
 		}
 		
 		/**
-		 * Selects the specified new value and returns the old value
+		 * Select the given value.
+		 * May specify that the selection should be propagated using an event.
 		 * 
 		 * @param value
+		 * @param propagateSelection
 		 * @return
 		 */
-		public T select(T value) {
+		public T select(T value, boolean propagateSelection) {
+
 			Button button = null;
 
 			T oldValue = model.getSelection();
@@ -70,12 +73,27 @@ public class Radio {
 				if (button == null) {
 					throw new IllegalArgumentException("No control for value " + value);
 				}
+				
 				button.setSelection(true);
+				
+				if (propagateSelection) {
+					// required in order to propagate the selection change to the buttons
+					button.notifyListeners(SWT.Selection, new Event());
+				}
 			}
 			
 			deselectAllBut(button);
 			
 			return oldValue;
+		}
+		/**
+		 * Selects the specified new value and returns the old value
+		 * 
+		 * @param value
+		 * @return
+		 */
+		public T select(T value) {
+			return select(value, false);
 		}
 		
 		/**
