@@ -721,9 +721,10 @@ public class LayoutUtil {
 	 */
 	public static ILocation getChopboxAnchorLocation(ChopboxAnchor anchor, Connection connection) {
 		GraphicsAlgorithm graphicsAlgorithm = anchor.getParent().getGraphicsAlgorithm();
-	
+		ILocation parentLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram((Shape) anchor.getParent());
+		
 		ILocation referencePoint = LayoutUtil.getConnectionReferencePoint((ChopboxAnchor) anchor, connection);
-		IRectangle rectangle = new RectangleImpl(graphicsAlgorithm.getX(), graphicsAlgorithm.getY(), graphicsAlgorithm.getWidth(), graphicsAlgorithm.getHeight());
+		IRectangle rectangle = new RectangleImpl(parentLocation.getX(), parentLocation.getY(), graphicsAlgorithm.getWidth(), graphicsAlgorithm.getHeight());
 		
 		return LayoutUtil.getChopboxIntersectionPoint(rectangle, referencePoint);
 	}

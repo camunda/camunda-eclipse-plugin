@@ -40,6 +40,7 @@ public class ReconnectConnectionEndOperation extends ConnectionOperation<Reconne
 	public ReconnectConnectionEndOperation toElement(AnchorContainer element) {
 		context.setNewAnchor(Graphiti.getCreateService().createChopboxAnchor(element));
 		context.setTargetPictogramElement(element);
+		context.setReconnectType(ReconnectionContext.RECONNECT_TARGET);
 		
 		if (context.getTargetLocation() == null) {
 			ILocation shapeLocationMidpoint = LayoutUtil.getShapeLocationMidpoint((Shape) element);
