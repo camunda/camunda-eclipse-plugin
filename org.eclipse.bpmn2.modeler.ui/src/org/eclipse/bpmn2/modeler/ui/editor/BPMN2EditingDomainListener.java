@@ -12,24 +12,33 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.editor;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.bpmn2.modeler.ui.Activator;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.BasicDiagnostic;
 import org.eclipse.emf.transaction.ExceptionHandler;
+import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalCommandStack;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.TransactionalEditingDomainEvent;
 import org.eclipse.emf.transaction.TransactionalEditingDomainListenerImpl;
 
 public class BPMN2EditingDomainListener extends TransactionalEditingDomainListenerImpl implements ExceptionHandler {
-	
+
 	protected BPMN2Editor bpmn2Editor;
 	protected BasicDiagnostic diagnostics;
 
 	public BPMN2EditingDomainListener(BPMN2Editor bpmn2Editor) {
-		super();
+		
 		this.bpmn2Editor = bpmn2Editor;
-		TransactionalCommandStack stack = (TransactionalCommandStack) bpmn2Editor.getEditingDomain().getCommandStack();
+
+		TransactionalEditingDomain editingDomain = bpmn2Editor.getEditingDomain();
+		TransactionalCommandStack stack = (TransactionalCommandStack) editingDomain.getCommandStack();
+
 		stack.setExceptionHandler(this);
 	}
 
@@ -37,7 +46,7 @@ public class BPMN2EditingDomainListener extends TransactionalEditingDomainListen
 	public void transactionStarting(TransactionalEditingDomainEvent event) {
 		diagnostics = null;
 	}
-	
+
 	/**
 	 * this will be called in case of rollback
 	 */
@@ -45,7 +54,7 @@ public class BPMN2EditingDomainListener extends TransactionalEditingDomainListen
 	public void transactionClosed(TransactionalEditingDomainEvent event) {
 		super.transactionClosed(event);
 	}
-	
+
 	@Override
 	public void handleException(Exception e) {
 		String source = null;
@@ -53,20 +62,19 @@ public class BPMN2EditingDomainListener extends TransactionalEditingDomainListen
 		String message = e.getMessage();
 		Object[] data = null;
 		StackTraceElement trace[] = e.getStackTrace();
-		if (trace!=null && trace.length>0) {
+		if (trace != null && trace.length > 0) {
 			source = trace[0].getMethodName();
 		}
-		if (diagnostics==null) {
-			diagnostics = new BasicDiagnostic(source,code,message,data);
-		}
-		else
-			diagnostics.add(new BasicDiagnostic(source,code,message,data));
+		if (diagnostics == null) {
+			diagnostics = new BasicDiagnostic(source, code, message, data);
+		} else
+			diagnostics.add(new BasicDiagnostic(source, code, message, data));
 	}
 
 	public BasicDiagnostic getDiagnostics() {
 		return diagnostics;
 	}
-	
+
 	public IMarker createMarker(IResource resource, int severity, String msg) {
 		try {
 			IMarker m = resource.createMarker(IMarker.PROBLEM);
@@ -78,5 +86,56 @@ public class BPMN2EditingDomainListener extends TransactionalEditingDomainListen
 			throw new RuntimeException(e);
 		}
 	}
+
+	// listener stuff //////////////////////////////////////////
+
+	private List<Listener> undoListeners = new ArrayList<Listener>();
+
+	protected void ensureUndoNotifierRegistered()  {
+
+		TransactionalEditingDomain editingDomain = bpmn2Editor.getEditingDomain();
+		TransactionalCommandStack stack = (TransactionalCommandStack) editingDomain.getCommandStack();
+		
+		// chain a undo notifier so that we get notified when an 
+		// undo operation takes place
+		stack.getUndoCommand().chain(new UndoNotifierCommand(editingDomain));
+	}
 	
+	protected void notifyUndoListeners() {
+		for (Listener l : undoListeners) {
+			try {
+				l.handleEvent(-1);
+			} catch (Exception e) {
+				Activator.logError(e);
+			}
+		}
+	}
+
+	public void addUndoListener(Listener listener) {
+		ensureUndoNotifierRegistered();
+		
+		undoListeners.add(listener);
+	}
+	
+	public void removeUndoListener(Listener listener) {
+		undoListeners.remove(listener);
+	}
+
+	public static interface Listener {
+
+		public void handleEvent(int eventType);
+	}
+
+	private class UndoNotifierCommand extends RecordingCommand {
+
+		public UndoNotifierCommand(TransactionalEditingDomain domain) {
+			super(domain);
+		}
+
+		@Override
+		protected void doExecute() {
+			System.out.println("UNDO!");
+			notifyUndoListeners();
+		}
+	}
 }
