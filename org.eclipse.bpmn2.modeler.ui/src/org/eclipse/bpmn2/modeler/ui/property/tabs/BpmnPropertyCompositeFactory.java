@@ -42,8 +42,8 @@ public class BpmnPropertyCompositeFactory {
 			createDiagramComposite((Diagram) bo);
 			return parentComposite;
 		}
-		createIdField((BaseElement) bo);
 		
+		createIdField((BaseElement) bo);
 		
 		if (bo instanceof FlowElement) {
 			createFlowElementComposite((FlowElement) bo);
@@ -63,45 +63,47 @@ public class BpmnPropertyCompositeFactory {
 	}
 	
 	private Composite createDiagramComposite(Diagram bo) {
-		new DiagramPropertiesFactory(parentComposite, section, bo);
+		new DiagramPropertiesFactory(parentComposite, section, bo).create();
 		
 		return parentComposite;
 	}
 	
-	private Text createIdField(final BaseElement bo) {
-		return PropertyUtil.createText(section, parentComposite, "Id", Bpmn2Package.eINSTANCE.getBaseElement_Id(), bo);
-	}
-	
 	private Composite createActivityComposite(Activity bo) {
 		if (!(bo instanceof ManualTask) && !(bo instanceof AdHocSubProcess)) {
-			new ActivityPropertiesFactory(parentComposite, section, bo);
+			new ActivityPropertiesFactory(parentComposite, section, bo).create();
 		}
 		if (bo instanceof CallActivity) {
-			new CallActivityPropertiesFactory(parentComposite, section, bo);
+			new CallActivityPropertiesFactory(parentComposite, section, bo).create();
 		}
 		return parentComposite;
 	}
 
-	private Text createFlowElementComposite(final FlowElement bo) {
-		return PropertyUtil.createText(section, parentComposite, "Name", Bpmn2Package.eINSTANCE.getFlowElement_Name(), bo);
-	}
-
 	private Composite createTaskComposite(Task bo) {
 		if (bo instanceof UserTask) {
-			new UserTaskPropertiesFactory(parentComposite, section, bo);
+			new UserTaskPropertiesFactory(parentComposite, section, bo).create();
 		} else if (bo instanceof ScriptTask) {
-			new ScriptTaskPropertiesFactory(parentComposite, section, bo);
+			new ScriptTaskPropertiesFactory(parentComposite, section, bo).create();
 		} else if (bo instanceof ServiceTask) {
-			new ServiceTaskPropertiesFactory(parentComposite, section, bo);
+			new ServiceTaskPropertiesFactory(parentComposite, section, bo).create();
 		}
 		return parentComposite;
 	}
 	
 	private Composite createEventComposite(Event bo) {
 		if (bo instanceof StartEvent) {
-			new StartEventPropertiesFactory(parentComposite, section, bo);
+			new StartEventPropertiesFactory(parentComposite, section, bo).create();
 		}
 		return parentComposite;
 	}
 	
+	// default fields (ID / Name) ///////////////////////////////////
+	
+	private Text createFlowElementComposite(final FlowElement bo) {
+		return PropertyUtil.createText(section, parentComposite, "Name", Bpmn2Package.eINSTANCE.getFlowElement_Name(), bo);
+	}
+	
+	private Text createIdField(final BaseElement bo) {
+		return PropertyUtil.createText(section, parentComposite, "Id", Bpmn2Package.eINSTANCE.getBaseElement_Id(), bo);
+	}
+
 }

@@ -13,7 +13,7 @@ public class UserTaskPropertiesFactory extends PropertiesFactory {
 		super(parent, section, bo);
 	}
 
-	protected void createControls() {
+	public void create() {
 		
 		PropertyUtil.createText(section, parent, "Assignee", ModelPackage.eINSTANCE.getDocumentRoot_Assignee(), bo);
 		PropertyUtil.createText(section, parent, "Candidate Users", ModelPackage.eINSTANCE.getDocumentRoot_CandidateUsers(), bo);

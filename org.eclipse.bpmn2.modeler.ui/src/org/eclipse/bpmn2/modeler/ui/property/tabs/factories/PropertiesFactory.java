@@ -14,10 +14,8 @@ public abstract class PropertiesFactory {
 		this.section = section;
 		this.bo = bo;
 		this.parent = parent;
-		
-		createControls();
 	}
 
-	protected abstract void createControls();
+	public abstract void create();
 
 }

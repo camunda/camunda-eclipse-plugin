@@ -44,21 +44,26 @@ public class GeneralTabSection extends GFPropertySection implements
 		parentComposite.setLayout(new GridLayout(1, false));
 		parentComposite.setLayoutData(new GridData(SWT.FILL, GridData.CENTER, true, false));
 		
-		internalRefresh();
+		redraw();
 	}
 	
 	@Override
-	public void refresh() {
+	public void refresh() {		
 		rebuildParentComposite();
 		createPropertiesComposite(parentComposite, page);
 
-		internalRefresh(); // otherwise the composite will not properly redrawn after saving some changes, SWT sucks
+		redraw(); // otherwise the composite will not properly redrawn after saving some changes, SWT sucks
 	}
 	
-	private void internalRefresh() {
+	private void redraw() {
 		Composite parent = parentComposite.getParent();
 		parent.layout();
 		
 		parent.redraw(); // otherwise the composite will not properly redrawn, SWT sucks		
+	}
+	
+	@Override
+	public void dispose() {
+		super.dispose();
 	}
 }

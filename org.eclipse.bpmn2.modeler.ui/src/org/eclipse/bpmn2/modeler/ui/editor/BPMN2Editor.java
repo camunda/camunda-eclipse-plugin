@@ -571,11 +571,6 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 			handleImportErrorAndWarnings(command.getRecordedException(), command.getRecordedWarnings());
 		}
 		
-//		DIImport di = new DIImport(this);
-//		di.setModelHandler(modelHandler);
-//
-//		di.generateFromDI();
-
 		// this needs to happen AFTER the diagram has been imported because we need
 		// to be able to determine the diagram type from the file's contents in order
 		// to build the right tool palette for the target runtime and model enablements.
@@ -761,6 +756,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	}
 	
 	@Override
+	@SuppressWarnings("rawtypes") 
 	public Object getAdapter(Class required) {
 		if (required==ITabDescriptorProvider.class) {
 			if (tabDescriptorProvider==null) {
@@ -1089,6 +1085,9 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
+		
+		System.out.println(event);
+		
 		if (event.getProperty().endsWith(Bpmn2Preferences.PREF_SHAPE_STYLE)) {
 			getEditingDomain().getCommandStack().execute(new RecordingCommand(getEditingDomain()) {
 				@Override
@@ -1110,7 +1109,6 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 											StyleUtil.applyStyle(ga, be);
 										}
 									}
-			
 								}
 							}
 						}

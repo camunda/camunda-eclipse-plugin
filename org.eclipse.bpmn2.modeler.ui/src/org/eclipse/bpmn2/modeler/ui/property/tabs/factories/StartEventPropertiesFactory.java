@@ -16,7 +16,7 @@ public class StartEventPropertiesFactory extends PropertiesFactory {
 	}
 
 	@Override
-	protected void createControls() {
+	public void create() {
 		if (!ModelUtil.hasEventDefinition((Event) bo, TimerEventDefinition.class)) {
 			PropertyUtil.createText(section, parent, "Form Key", ModelPackage.eINSTANCE.getDocumentRoot_FormKey(), bo);
 		}

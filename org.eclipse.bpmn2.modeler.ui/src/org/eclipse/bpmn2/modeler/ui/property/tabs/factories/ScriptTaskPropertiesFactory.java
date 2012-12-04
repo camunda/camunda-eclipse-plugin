@@ -13,7 +13,7 @@ public class ScriptTaskPropertiesFactory extends PropertiesFactory {
 	}
 
 	@Override
-	protected void createControls() {
+	public void create() {
 		PropertyUtil.createText(section, parent, "Script Language", Bpmn2Package.eINSTANCE.getScriptTask_ScriptFormat(), bo);
 		
 		PropertyUtil.createMultiText(section, parent, "Script", Bpmn2Package.eINSTANCE.getScriptTask_Script(), bo);
