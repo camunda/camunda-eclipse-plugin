@@ -33,8 +33,8 @@ public class PropertyTabDescriptorProvider implements ITabDescriptorProvider {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public ITabDescriptor[] getTabDescriptors(IWorkbenchPart part,
-			ISelection selection) {
+	public ITabDescriptor[] getTabDescriptors(IWorkbenchPart part, ISelection selection) {
+		
 		List<ITabDescriptor> tabs = new ArrayList<ITabDescriptor>();
 		
 		Bpmn2TabDescriptor generalTab = new Bpmn2TabDescriptor("id", "General", "General");

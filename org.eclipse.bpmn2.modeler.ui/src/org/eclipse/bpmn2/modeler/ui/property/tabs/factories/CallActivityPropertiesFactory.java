@@ -13,7 +13,7 @@ public class CallActivityPropertiesFactory extends PropertiesFactory {
 	}
 
 	@Override
-	protected void createControls() {
+	public void create() {
 		PropertyUtil.createText(section, parent, "Called Element", ModelPackage.eINSTANCE.getCallActivity_CalledElement(), bo);
 	}
 

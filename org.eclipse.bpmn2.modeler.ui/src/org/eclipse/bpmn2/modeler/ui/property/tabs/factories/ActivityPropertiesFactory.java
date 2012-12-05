@@ -11,6 +11,11 @@ import org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.FailedJobRetryTimeCy
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.FoxFactory;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
+import org.eclipse.core.databinding.observable.ChangeEvent;
+import org.eclipse.core.databinding.observable.IChangeListener;
+import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.core.databinding.observable.value.IValueChangeListener;
+import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.FeatureMap;
@@ -20,84 +25,68 @@ import org.eclipse.emf.ecore.xml.type.AnyType;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
+import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
 public class ActivityPropertiesFactory extends PropertiesFactory {
+	
+	private static final EStructuralFeature ASYNC_FEATURE = ModelPackage.eINSTANCE.getDocumentRoot_Async();
 	
 	public ActivityPropertiesFactory(Composite parent, GFPropertySection section, EObject bo) {
 		super(parent, section, bo);
 	}
 
 	@Override
-	protected void createControls() {
-		Composite asyncComposite = PropertyUtil.createStandardComposite(section, parent);
+	public void create() {
 		
-		final EStructuralFeature asyncFeature = ModelPackage.eINSTANCE.getDocumentRoot_Async();
-		boolean async = (Boolean) bo.eGet(asyncFeature);
-		final Button checkbox = PropertyUtil.createSimpleCheckbox(section, asyncComposite, async);
+		boolean async = (Boolean) bo.eGet(ASYNC_FEATURE);
 		
-		PropertyUtil.createLabel(section, asyncComposite, "Asynchronous", checkbox);
+		final Button checkbox = PropertyUtil.createUnboundCheckbox(section, parent, "Asynchronous");
+		final Text retryText = PropertyUtil.createUnboundText(section, parent, "Retry Time Cycle");
 		
-		Composite retryComposite = PropertyUtil.createStandardComposite(section, parent);
 		
-		String retryTimeCycleValue = getRetryTimeCycleValue(bo);
-		final Text retryText = PropertyUtil.createSimpleText(section, retryComposite, retryTimeCycleValue);
+		// initial setup of GUI elements
 		
 		if (!async) {
 			retryText.setEnabled(false);
 		}
+
+		checkbox.setSelection(async);
 		
-		PropertyUtil.createLabel(section, retryComposite, "Retry Time Cycle", retryText);
+		retryText.setText(getRetryTimeCycleValue(bo));
 		
-		checkbox.addListener(SWT.Selection, new Listener() {
-			
+		
+		// observing the checkbox and updating the model
+		
+		final IObservableValue asyncFlag = SWTObservables.observeSelection(checkbox);
+		asyncFlag.addChangeListener(new IChangeListener() {
 			@Override
-			public void handleEvent(Event event) {
-				boolean selection = checkbox.getSelection();
-				if (selection) {
-					retryText.setEnabled(true);
-				} else {
-					deleteRetryTimeCycleType(bo);
-					clearExtensionElements(bo);
+			public void handleChange(ChangeEvent event) {
+				boolean selected = (Boolean) asyncFlag.getValue();
+				retryText.setEnabled(selected);
+
+				if (!selected) {
 					retryText.setText("");
-					retryText.setEnabled(false);
 				}
-				PropertyUtil.setValue(bo, asyncFeature, selection);
 				
+				transactionalToggleAsync(selected);
 			}
 		});
+
+
+		// observing the retry time cycle
 		
-		retryText.addModifyListener(new ModifyListener() {
-			
-			@Override
-			public void modifyText(ModifyEvent arg0) {
-				saveRetryTimeCycleValue(bo, retryText.getText());
-			}
-		});
-		
-	}
-	
-	private void clearExtensionElements(final EObject bo) {
-		TransactionalEditingDomain domain = BPMN2Editor.getActiveEditor().getEditingDomain();
-		domain.getCommandStack().execute(new RecordingCommand(domain) {
+		final IObservableValue retryTimeCycle = SWTObservables.observeText(retryText, SWT.Modify);
+		retryTimeCycle.addValueChangeListener(new IValueChangeListener() {
 
 			@Override
-			protected void doExecute() {
-				List<ExtensionAttributeValue> extensionElements = ModelUtil.getExtensionAttributeValues(bo);
-				if (extensionElements != null && !extensionElements.isEmpty()) {
-					if (extensionElements.get(0).getValue().isEmpty()) {
-						extensionElements.clear();
-					}
-				}
+			public void handleValueChange(final ValueChangeEvent e) {
+				String newValue = (String) e.diff.getNewValue();
+				transactionalUpdateRetryTimeCycle(newValue);
 			}
-			
 		});
 	}
 	
@@ -129,55 +118,107 @@ public class ActivityPropertiesFactory extends PropertiesFactory {
 		}
 		return "";
 	}
-	
-	private void saveRetryTimeCycleValue(final EObject bo, final String retryTimeCycleValue) {
-		TransactionalEditingDomain domain = BPMN2Editor.getActiveEditor().getEditingDomain();
-		domain.getCommandStack().execute(new RecordingCommand(domain) {
 
-			@Override
-			protected void doExecute() {
-				List<ExtensionAttributeValue> extensionElements = ModelUtil.getExtensionAttributeValues(bo);
-				if (retryTimeCycleValue == null || retryTimeCycleValue.trim().isEmpty()) {
-					deleteRetryTimeCycleType(bo);
-					clearExtensionElements(bo);
-					return;
-				}
-				if (extensionElements != null) {
-					if (extensionElements.size() == 0) {
-						extensionElements.add(Bpmn2Factory.eINSTANCE.createExtensionAttributeValue());
-					} else {
-						deleteRetryTimeCycleType(bo);
-					}
-					FailedJobRetryTimeCycleType failed = FoxFactory.eINSTANCE.createFailedJobRetryTimeCycleType();
-					failed.setText(retryTimeCycleValue.trim());
-					extensionElements.get(0).getValue().add(ModelPackage.eINSTANCE.getDocumentRoot_FailedJobRetryTimeCycle(), failed);
-				}
-			}
-			
-		});
+	
+	// invocation of transactional behavior ///////////////
+	
+	private void transactionalUpdateRetryTimeCycle(String newValue) {
+		TransactionalEditingDomain domain = BPMN2Editor.getActiveEditor().getEditingDomain();
+		domain.getCommandStack().execute(new UpdateRetryTimeCycleCommand(domain, newValue));
 	}
 	
-	private void deleteRetryTimeCycleType(final EObject bo) {
+	private void transactionalToggleAsync(boolean async) {
 		TransactionalEditingDomain domain = BPMN2Editor.getActiveEditor().getEditingDomain();
-		domain.getCommandStack().execute(new RecordingCommand(domain) {
-			
-			@Override
-			protected void doExecute() {
-				List<ExtensionAttributeValue> extensionElements = ModelUtil.getExtensionAttributeValues(bo);
-				if (extensionElements != null && extensionElements.size() == 1) {
-					Iterator<Entry> iterator = extensionElements.get(0).getValue().iterator();
-					while (iterator.hasNext()) {
-						EStructuralFeature feature = iterator.next().getEStructuralFeature();
-						if (feature.getName().equals(ModelPackage.eINSTANCE.getDocumentRoot_FailedJobRetryTimeCycle().getName())) {
-							iterator.remove();
-							break;
-						}
-					}
-				}
-				
+		domain.getCommandStack().execute(new ToggleAsyncCommand(domain, async));
+	}
+	
+	
+	// transactional behavior //////////////////////////////
+	
+	private void updateRetryTimeCycle(String retryTimeCycle) { 
+		List<ExtensionAttributeValue> extensionElements = ModelUtil.getExtensionAttributeValues(bo);
+		
+		if (extensionElements != null) {
+			if (extensionElements.isEmpty()) {
+				extensionElements.add(Bpmn2Factory.eINSTANCE.createExtensionAttributeValue());
+			} else {
+				deleteRetryTimeCycle();
 			}
-		});
-	}	
+			
+			FailedJobRetryTimeCycleType failed = FoxFactory.eINSTANCE.createFailedJobRetryTimeCycleType();
+			failed.setText(retryTimeCycle.trim());
+			extensionElements.get(0).getValue().add(ModelPackage.eINSTANCE.getDocumentRoot_FailedJobRetryTimeCycle(), failed);
+		}
+	}
+	
+	private void deleteRetryTimeCycle() {
+		List<ExtensionAttributeValue> extensionElements = ModelUtil.getExtensionAttributeValues(bo);
+		if (extensionElements != null && extensionElements.size() == 1) {
+			Iterator<Entry> iterator = extensionElements.get(0).getValue().iterator();
+			while (iterator.hasNext()) {
+				EStructuralFeature feature = iterator.next().getEStructuralFeature();
+				if (feature.getName().equals(ModelPackage.eINSTANCE.getDocumentRoot_FailedJobRetryTimeCycle().getName())) {
+					iterator.remove();
+					break;
+				}
+			}
+		}
+	}
+	
+	// commands ///////////////////////////////////////////
+	
+	/**
+	 * Command which takes care of updating the retry time cycle
+	 * 
+	 * @author nico.rehwaldt
+	 */
+	private class UpdateRetryTimeCycleCommand extends RecordingCommand {
 
+		private String newValue;
+		
+		public UpdateRetryTimeCycleCommand(TransactionalEditingDomain domain, String newValue) {
+			super(domain);
+			
+			this.newValue = newValue;
+		}
 
+		@Override
+		protected void doExecute() {
+
+			
+			if (newValue == null || newValue.trim().isEmpty()) {
+				deleteRetryTimeCycle();
+			} else {
+				updateRetryTimeCycle(newValue);
+			}
+		}
+	}
+
+	/**
+	 * Command which takes of toggling the async flag of the managed 
+	 * business object. That may lead to the deletion of the
+	 * retry time cycle, too.
+	 * 
+	 * @author nico.rehwaldt
+	 */
+	private class ToggleAsyncCommand extends RecordingCommand {
+		
+		private boolean async;
+
+		public ToggleAsyncCommand(TransactionalEditingDomain domain, boolean async) {
+			super(domain);
+			
+			this.async = async;
+		}
+
+		@Override
+		protected void doExecute() {
+			if (!async) {
+				bo.eUnset(ASYNC_FEATURE);
+				deleteRetryTimeCycle();
+			} else {
+				bo.eSet(ASYNC_FEATURE, async);
+			}
+		}
+	}
 }

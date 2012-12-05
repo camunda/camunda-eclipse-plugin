@@ -13,7 +13,7 @@ public class DiagramPropertiesFactory extends PropertiesFactory {
 	}
 
 	@Override
-	protected void createControls() {
+	public void create() {
 		PropertyUtil.createText(section, parent, "Id", DiPackage.eINSTANCE.getDiagram_Id(), bo);
 		PropertyUtil.createText(section, parent, "Name", DiPackage.eINSTANCE.getDiagram_Name(), bo);
 	}
