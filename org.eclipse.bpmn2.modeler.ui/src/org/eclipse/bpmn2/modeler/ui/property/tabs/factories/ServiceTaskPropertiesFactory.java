@@ -99,12 +99,13 @@ public class ServiceTaskPropertiesFactory extends PropertiesFactory {
 		
 		// override layout data for text field
 		FormData textFormData = new FormData();
-		textFormData.left = new FormAttachment(0, 15);
-		textFormData.right = new FormAttachment(100, -90);
+		textFormData.left = new FormAttachment(0, 25);
+		textFormData.right = new FormAttachment(100, -110);
 		
 		FormData btnSelectLayoutData = new FormData();
 		btnSelectLayoutData.left = new FormAttachment(classText, 0);
 		btnSelectLayoutData.top = new FormAttachment(classText, 0, SWT.CENTER);
+		btnSelectLayoutData.right = new FormAttachment(100, 0);
 		
 		classText.setLayoutData(textFormData);
 		btnClassSelect.setLayoutData(btnSelectLayoutData);

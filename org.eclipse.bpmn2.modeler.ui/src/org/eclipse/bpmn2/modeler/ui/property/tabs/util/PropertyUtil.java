@@ -202,7 +202,7 @@ public class PropertyUtil {
 		final Button radioButton = factory.createButton(radioComposite, "", SWT.RADIO);
 		
 		FormData textFormData = new FormData();
-		textFormData.left = new FormAttachment(0, 15);
+		textFormData.left = new FormAttachment(0, 25);
 		textFormData.right = new FormAttachment(100, 0);
 		
 		FormData radioButtonData = new FormData();
