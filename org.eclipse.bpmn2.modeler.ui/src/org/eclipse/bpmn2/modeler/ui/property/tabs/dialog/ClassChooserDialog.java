@@ -1,4 +1,4 @@
-package org.eclipse.bpmn2.modeler.ui.property.tabs.util;
+package org.eclipse.bpmn2.modeler.ui.property.tabs.dialog;
 
 import java.util.ArrayList;
 import java.util.Arrays;

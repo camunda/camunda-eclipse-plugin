@@ -1,19 +1,13 @@
 package org.eclipse.bpmn2.modeler.ui.property.tabs.util;
 
-import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.BooleanButtonBinding;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.IntegerTextBinding;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.StringTextBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.swt.Radio.RadioGroup;
-import org.eclipse.core.databinding.observable.ChangeEvent;
-import org.eclipse.core.databinding.observable.IChangeListener;
-import org.eclipse.core.databinding.observable.value.IObservableValue;
-import org.eclipse.core.databinding.observable.value.IValueChangeListener;
-import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
-import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.DisposeEvent;
@@ -48,7 +42,7 @@ public class PropertyUtil {
 	public static Text createText(GFPropertySection section, Composite parent, String label, final EStructuralFeature feature, final EObject bo) {
 		Text text = createUnboundText(section, parent, label);
 		
-		addChangeSupport(bo, feature, text);
+		addBinding(text, bo, feature);
 		
 		return text;
 	}
@@ -63,22 +57,51 @@ public class PropertyUtil {
 	
 	public static Text createMultiText(GFPropertySection section, Composite parent, String label, final EStructuralFeature feature, final EObject bo) {
 		Composite composite = createStandardComposite(section, parent);
-
-		String value = getStringValue(bo, feature);
 		
-		Text text = createSimpleMultiText(section, composite, value);
+		Text text = createSimpleMultiText(section, composite, "");
 		
-		addChangeSupport(bo, feature, text);
+		new StringTextBinding(bo, feature, text).establish();
+		
 		createLabel(section, composite, label, text);
 		
 		return text;
 	}
-	
-	protected static Text createSimpleText(GFPropertySection section, Composite parent, String value) {
+
+	protected static Button createSimpleCheckbox(GFPropertySection section, Composite parent) {
 		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
-		final Text text = factory.createText(parent, value); //$NON-NLS-1$
-		setStandardLayout(text);
-		return text;
+		final Button checkbox = factory.createButton(parent, "", SWT.CHECK);
+		setStandardLayout(checkbox);
+		
+		return checkbox;
+	}
+	
+	public static Button createCheckbox(GFPropertySection section, Composite parent, String label, final EStructuralFeature feature, final EObject bo) {
+		Button checkbox = createUnboundCheckbox(section, parent, label);
+		
+		new BooleanButtonBinding(bo, feature, checkbox).establish();
+		
+		return checkbox;
+	}
+	
+	public static Button createUnboundCheckbox(GFPropertySection section, Composite parent, String label) {
+		Composite composite = createStandardComposite(section, parent);
+		
+		Button checkbox = createSimpleCheckbox(section, composite);
+		createLabel(section, composite, label, checkbox);
+		
+		return checkbox;
+	}
+	
+	public static CLabel createLabel(GFPropertySection section, Composite parent, String label, Control control) {
+		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
+		CLabel cLabel = factory.createCLabel(parent, label + ":"); //$NON-NLS-1$
+		FormData data = new FormData();
+		data.left = new FormAttachment(0, 0);
+		data.right = new FormAttachment(control, -ITabbedPropertyConstants.HSPACE);
+		data.top = new FormAttachment(control, 0, SWT.CENTER);
+		cLabel.setLayoutData(data);
+		
+		return cLabel;
 	}
 	
 	public static ToolTip createToolTipFor(Control element, String message) {
@@ -116,65 +139,6 @@ public class PropertyUtil {
         return tip;
 	}
 
-	protected static Text createSimpleMultiText(GFPropertySection section, Composite parent, String value) {
-		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
-		final Text text = factory.createText(parent, value, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.H_SCROLL); //$NON-NLS-1$
-
-		FormData data = new FormData();
-		data.left = new FormAttachment(0, 120);
-		data.right = new FormAttachment(100, 0);
-		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
-		data.height = 106;
-		text.setLayoutData(data);
-		
-		return text;
-	}
-	
-	public static Button createCheckbox(GFPropertySection section, Composite parent, String label, final EStructuralFeature feature, final EObject bo) {
-		Button checkbox = createUnboundCheckbox(section, parent, label);
-		
-		addChangeSupport(bo, feature, checkbox);		
-		
-		return checkbox;
-	}
-	
-	public static Button createUnboundCheckbox(GFPropertySection section, Composite parent, String label) {
-		Composite composite = createStandardComposite(section, parent);
-		
-		Button checkbox = createSimpleCheckbox(section, composite);
-		createLabel(section, composite, label, checkbox);
-		
-		return checkbox;
-	}
-
-	protected static Button createSimpleCheckbox(GFPropertySection section, Composite parent) {
-		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
-		final Button checkbox = factory.createButton(parent, "", SWT.CHECK);
-		setStandardLayout(checkbox);
-		
-		return checkbox;
-	}
-	
-	public static CLabel createLabel(GFPropertySection section, Composite parent, String label, Control control) {
-		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
-		CLabel cLabel = factory.createCLabel(parent, label + ":"); //$NON-NLS-1$
-		FormData data = new FormData();
-		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(control, -ITabbedPropertyConstants.HSPACE);
-		data.top = new FormAttachment(control, 0, SWT.CENTER);
-		cLabel.setLayoutData(data);
-		
-		return cLabel;
-	}
-	
-	private static void setStandardLayout(Control control) {
-		FormData data = new FormData();
-		data.left = new FormAttachment(0, 120);
-		data.right = new FormAttachment(100, 0);
-		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
-		control.setLayoutData(data);
-	}
-
 	public static Composite createStandardComposite(GFPropertySection section, Composite parent) {
 		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
 		Composite composite = factory.createFlatFormComposite(parent);
@@ -202,7 +166,7 @@ public class PropertyUtil {
 		final Button radioButton = factory.createButton(radioComposite, "", SWT.RADIO);
 		
 		FormData textFormData = new FormData();
-		textFormData.left = new FormAttachment(0, 25);
+		textFormData.left = new FormAttachment(0, 15);
 		textFormData.right = new FormAttachment(100, 0);
 		
 		FormData radioButtonData = new FormData();
@@ -224,120 +188,97 @@ public class PropertyUtil {
 			}
 		});
 		
-		addChangeSupport(bo, feature, text);
-		
 		createLabel(section, composite, label, radioComposite);
+		
+		addBinding(text, bo, feature);
 		
 		return text;
 	}
-
-	// property change support //////////////////////////////////////////
 	
-	private static void addChangeSupport(final EObject object, final EStructuralFeature feature, Text text) {
-		text.setText(getStringValue(object, feature));
-		
-		IObservableValue textValue = SWTObservables.observeText(text, SWT.Modify);
-		textValue.addValueChangeListener(new IValueChangeListener() {
+	public static Text createRadioText1(GFPropertySection section, Composite parent, String label, 
+			final EStructuralFeature feature, RadioGroup<EStructuralFeature> radioGroup, final EObject bo) {
 
-			@Override
-			public void handleValueChange(final ValueChangeEvent e) {
-				setValue(object, feature, e.diff.getNewValue());
-			}
-		});
-	}
-	
-	private static void addChangeSupport(final EObject object, final EStructuralFeature feature, final Button checkbox) {
-		checkbox.setSelection(getBooleanValue(object, feature));
+		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
 		
-		final IObservableValue checkboxSelection = SWTObservables.observeSelection(checkbox);
-		checkboxSelection.addChangeListener(new IChangeListener() {
+		final Text text = createText(section, parent, label, feature, bo);
+		Composite radioComposite = text.getParent();
+		
+		final CLabel clabel = (CLabel) radioComposite.getChildren()[1];
+		
+		final Button radioButton = factory.createButton(radioComposite, "", SWT.RADIO);
+
+		FormData textFormData = (FormData) text.getLayoutData();
+		
+		FormData radioButtonData = new FormData();
+		radioButtonData.right = new FormAttachment(text, 0);
+		radioButtonData.top = new FormAttachment (text, 0, SWT.CENTER);
+		radioButtonData.left = textFormData.left;
+		
+		// make space for the radio button
+		textFormData.left = new FormAttachment(0, 120 + 15);
+		
+		FormData labelFormData = (FormData) clabel.getLayoutData();
+		labelFormData.right = new FormAttachment(radioButton, -ITabbedPropertyConstants.HSPACE);
+		labelFormData.top = new FormAttachment(radioButton, 0, SWT.CENTER);
+		
+		radioButton.setLayoutData(radioButtonData);
+		
+		// register with radio group
+		radioGroup.add(radioButton, feature);
+		
+		radioButton.addListener(SWT.Selection, new Listener() {
 			
 			@Override
-			public void handleChange(ChangeEvent event) {
-				setValue(object, feature, checkboxSelection.getValue());
+			public void handleEvent(Event event) {
+				boolean selected = radioButton.getSelection();
+				text.setEnabled(selected);
 			}
 		});
+		
+		return text;
 	}
-
-	/**
-	 * Sets the value of a structural feature of an object to the given value
-	 * 
-	 * @param bo
-	 * @param feature
-	 * @param value
-	 * 
-	 * @return
-	 */
-	public static boolean setValue(EObject bo, EStructuralFeature feature, Object value) {
-		TransactionalEditingDomain domain = BPMN2Editor.getActiveEditor().getEditingDomain();
-		
-		Object newValue = valueConvert(value, feature);
-		
-		return ModelUtil.setValue(domain, bo, feature, newValue);
+	
+	protected static Text createSimpleText(GFPropertySection section, Composite parent, String value) {
+		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
+		final Text text = factory.createText(parent, value); //$NON-NLS-1$
+		setStandardLayout(text);
+		return text;
 	}
+	
+	protected static Text createSimpleMultiText(GFPropertySection section, Composite parent, String value) {
+		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
+		final Text text = factory.createText(parent, value, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.H_SCROLL); //$NON-NLS-1$
 
-	/**
-	 * Convert the given value to its appropriate form (determined by the given feature)
-	 * 
-	 * @param value
-	 * @param feature
-	 * @return
-	 */
-	private static Object valueConvert(Object value, EStructuralFeature feature) {
-		
+		FormData data = new FormData();
+		data.left = new FormAttachment(0, 120);
+		data.right = new FormAttachment(100, 0);
+		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
+		data.height = 106;
+		text.setLayoutData(data);
+		return text;
+	}
+	
+	private static void setStandardLayout(Control control) {
+		FormData data = new FormData();
+		data.left = new FormAttachment(0, 120);
+		data.right = new FormAttachment(100, 0);
+		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
+		control.setLayoutData(data);
+	}
+	
+	
+	// binding ///////////////////////////////////////////
+	
+	private static void addBinding(Text text, EObject bo, EStructuralFeature feature) {
+
 		EClassifier featureType = feature.getEType();
-		if (featureType.isInstance(value)) {
-			return value;
-		}
-		
-		if (value instanceof String) {
-			String str = (String) value;
-			
-			if (str.isEmpty()) {
-				return null;
-			}
-			
-			Class<?> instanceClass = featureType.getInstanceClass();
-			if (instanceClass.equals(int.class) || instanceClass.equals(Integer.class)) {
-				return Integer.parseInt(str, 10);
-			} else 
-			if (instanceClass.equals(long.class) || instanceClass.equals(Long.class)) {
-				return Long.parseLong(str, 10);
-			} else 
-			if (instanceClass.equals(double.class) || instanceClass.equals(Double.class)) {
-				return Double.parseDouble(str);
-			} else 
-			if (instanceClass.equals(float.class) || instanceClass.equals(Float.class)) {
-				return Float.parseFloat(str);
-			}
-		}
-		
-		return value;
-	}
-	
-	private static String getStringValue(EObject object, EStructuralFeature feature) {
-		if (object == null) {
-			throw new IllegalArgumentException("Cant get "+feature+" from EObject null");
-		}
-		
-		Object value = object.eGet(feature);
-		if (value == null) {
-			return "";
-		}
-		
-		if (value instanceof String) {
-			return (String) value;
+
+		Class<?> instanceClass = featureType.getInstanceClass();
+		if (instanceClass.equals(int.class) || instanceClass.equals(Integer.class)) {
+			new IntegerTextBinding(bo, feature, text).establish();
 		} else {
-			return String.valueOf(value);
+			new StringTextBinding(bo, feature, text).establish();
 		}
 	}
 	
-	private static boolean getBooleanValue(EObject object, EStructuralFeature feature) {
-		Object v = object.eGet(feature);
-		if (v == null) {
-			return false;
-		} else {
-			return (Boolean) v;
-		}
-	}
 }

@@ -24,6 +24,9 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import static org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events.*;
+
+
 /**
  * 
  * @author Nico Rehwaldt
@@ -42,7 +45,7 @@ public class Radio {
 		}
 		
 		public void addListener(int eventType, Listener listener) {
-			if (eventType != SELECTION_CHANGED) {
+			if (eventType != RADIO_SELECTION_CHANGED) {
 				throw new IllegalArgumentException("Only supports Radio.SELECTION_CHANGED events");
 			}
 			
@@ -86,6 +89,17 @@ public class Radio {
 			
 			return oldValue;
 		}
+		
+		/**
+		 * Returns the radio control for the given value
+		 * 
+		 * @param value
+		 * @return
+		 */
+		public Button getRadioControl(T value) {
+			return memberMap.get(value);
+		}
+		
 		/**
 		 * Selects the specified new value and returns the old value
 		 * 
@@ -113,11 +127,19 @@ public class Radio {
 						T oldValue = select(value);
 						
 						if (oldValue == null || !oldValue.equals(value)) {
-							notifyListeners(Radio.SELECTION_CHANGED, new SelectionChangedEvent<T>(RadioGroup.this, value, oldValue));
+							notifyListeners(RADIO_SELECTION_CHANGED, new SelectionChangedEvent<T>(RadioGroup.this, value, oldValue));
 						}
 					}
 				}
 			});
+		}
+		
+		/**
+		 * Returns the selection of the radio group
+		 * @return
+		 */
+		public T getSelection() {
+			return model.getSelection();
 		}
 		
 		protected void deselectAllBut(Button radio) {
@@ -132,7 +154,7 @@ public class Radio {
 		}
 
 		protected void notifyListeners(int eventType, SelectionChangedEvent<T> event) {
-			if (eventType != SELECTION_CHANGED) {
+			if (eventType != RADIO_SELECTION_CHANGED) {
 				return;
 			}
 			
@@ -146,9 +168,6 @@ public class Radio {
 			}
 		}
 	}
-
-	// something above SWT.OpenDocument
-	public static int SELECTION_CHANGED = 20001;
 	
 	/**
 	 * Model for a radio group

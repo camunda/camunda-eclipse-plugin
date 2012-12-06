@@ -1,18 +1,21 @@
 package org.eclipse.bpmn2.modeler.ui.property.tabs.factories;
 
+import static org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events.RADIO_SELECTION_CHANGED;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelPackage;
-import org.eclipse.bpmn2.modeler.ui.property.tabs.swt.Radio;
+import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.ModelButtonBinding;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.dialog.ClassChooserDialog;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.swt.Radio.RadioGroup;
-import org.eclipse.bpmn2.modeler.ui.property.tabs.util.ClassChooserDialog;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.swt.Radio.SelectionChangedEvent;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
-import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -26,11 +29,30 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-public class ServiceTaskPropertiesFactory extends PropertiesFactory {
+public class ServiceTaskPropertiesFactory extends AbstractPropertiesFactory {
 
+	private static final String[] TYPE_NAMES = new String[] { 
+		"Class", "Expression", "Expression Delegate" 
+	};
+	
+	private static final EStructuralFeature[] TYPE_FEATURES = new EStructuralFeature[] { 
+		 ModelPackage.eINSTANCE.getDocumentRoot_Class(), 
+		 ModelPackage.eINSTANCE.getDocumentRoot_ActExpression(), 
+		 ModelPackage.eINSTANCE.getDocumentRoot_DelegateExpression()
+	};
+	
+	private static final EStructuralFeature CLASS_FEATURE = TYPE_FEATURES[0];
+	
 	private RadioGroup<EStructuralFeature> radioGroup;
 	private Map<EStructuralFeature, Text> featureToInputMap; 
 	
+	/**
+	 * Creates a new factory from the given arguments
+	 * 
+	 * @param parent
+	 * @param section
+	 * @param bo
+	 */
 	public ServiceTaskPropertiesFactory(Composite parent, GFPropertySection section, EObject bo) {
 		super(parent, section, bo);
 		
@@ -38,54 +60,50 @@ public class ServiceTaskPropertiesFactory extends PropertiesFactory {
 		this.featureToInputMap = new HashMap<EStructuralFeature, Text>(); 
 	}
 
+	/**
+	 * Creates the service task specific controls
+	 */
 	@Override
 	public void create() {
 		PropertyUtil.createText(section, parent, "Result Variable", ModelPackage.eINSTANCE.getDocumentRoot_ResultVariableName(), bo);
 		
 		createServiceTaskTypeControls();
 	}
-
 	
 	private void createServiceTaskTypeControls() {
 		
-		String[] names = new String[] { "Class", "Expression", "Expression Delegate" };
-		EStructuralFeature[] features = new EStructuralFeature[] { 
-			 ModelPackage.eINSTANCE.getDocumentRoot_Class(), 
-			 ModelPackage.eINSTANCE.getDocumentRoot_ActExpression(), 
-			 ModelPackage.eINSTANCE.getDocumentRoot_DelegateExpression()
-		};
-		
 		EStructuralFeature selected = null;
 		
-		for (int i = 0; i < names.length; i++) {
-			String name = names[i];
-			EStructuralFeature feature = features[i];
+		for (int i = 0; i < TYPE_NAMES.length; i++) {
+			String name = TYPE_NAMES[i];
+			final EStructuralFeature feature = TYPE_FEATURES[i];
 			
-			Text text = PropertyUtil.createRadioText(section, parent, name, feature, radioGroup, bo);
+			final Text text = PropertyUtil.createRadioText(section, parent, name, feature, radioGroup, bo);
 			featureToInputMap.put(feature, text);
 			
 			if (bo.eIsSet(feature)) {
 				selected = feature;
 			}
+			
+			Button radioControl = radioGroup.getRadioControl(feature);
+			
+			new ModelRadioBinding(bo, feature, radioControl).establish();
 		}
-		
-		Text classText = featureToInputMap.get(features[0]);
+
+		final Text classText = featureToInputMap.get(CLASS_FEATURE);
 		addBrowseClassButton(classText);
 		
-		radioGroup.addListener(Radio.SELECTION_CHANGED, new Radio.RadioSelectionAdapter<EStructuralFeature>() {
+		radioGroup.select(selected, true);
+		
+		radioGroup.addListener(RADIO_SELECTION_CHANGED, new Listener() {
 			
 			@Override
-			public void radioSelectionChanged(Radio.SelectionChangedEvent<EStructuralFeature> event) {
-				EStructuralFeature oldType = event.getOldSelection();
+			public void handleEvent(Event e) {
+				SelectionChangedEvent<EStructuralFeature> event = (SelectionChangedEvent<EStructuralFeature>) e;
 				
-				Text oldText = featureToInputMap.get(oldType);
-				oldText.setText("");
-				
-				transactionalHandleTypeChange(oldType, event.getNewSelection());
+				transactionalHandleTypeChange(event.getOldSelection(), event.getNewSelection());
 			}
 		});
-		
-		radioGroup.select(selected, true);
 	}
 
 	private void addBrowseClassButton(final Text classText) {
@@ -93,19 +111,20 @@ public class ServiceTaskPropertiesFactory extends PropertiesFactory {
 		Composite classComposite = classText.getParent();
 		final Button radioButton = (Button) classComposite.getChildren()[1];
 		
+		// monkey patching for the win!
+		
 		final Button btnClassSelect = new Button(classComposite, SWT.NONE);
 		btnClassSelect.setText("Choose Class");
 		btnClassSelect.setEnabled(radioButton.getSelection());
 		
-		// override layout data for text field
-		FormData textFormData = new FormData();
-		textFormData.left = new FormAttachment(0, 25);
-		textFormData.right = new FormAttachment(100, -110);
+		// customize layout data for text field
+		FormData textFormData = (FormData) classText.getLayoutData();
+		// make space for button
+		textFormData.right = new FormAttachment(100, -90);
 		
 		FormData btnSelectLayoutData = new FormData();
 		btnSelectLayoutData.left = new FormAttachment(classText, 0);
 		btnSelectLayoutData.top = new FormAttachment(classText, 0, SWT.CENTER);
-		btnSelectLayoutData.right = new FormAttachment(100, 0);
 		
 		classText.setLayoutData(textFormData);
 		btnClassSelect.setLayoutData(btnSelectLayoutData);
@@ -135,10 +154,41 @@ public class ServiceTaskPropertiesFactory extends PropertiesFactory {
 	}
 
 	protected void transactionalHandleTypeChange(EStructuralFeature oldType, EStructuralFeature newType) {
-		TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(bo);
+		TransactionalEditingDomain domain = BPMN2Editor.getActiveEditor().getEditingDomain();
 		domain.getCommandStack().execute(new ToggleFeaturesCommand(domain, bo, oldType, newType));
 	}
 
+	// model radio binding ////////////////////////////////
+	
+
+	private class ModelRadioBinding extends ModelButtonBinding<Boolean> {
+
+		public ModelRadioBinding(EObject model, EStructuralFeature feature, Button control) {
+			super(model, feature, control);
+		}
+
+		@Override
+		public void setViewValue(Boolean value) {
+			control.setSelection(value);
+			control.notifyListeners(SWT.Selection, new Event());
+		}
+
+		@Override
+		public Boolean getViewValue() {
+			return control.getSelection();
+		}
+
+		@Override
+		public Boolean getModelValue() {
+			return model.eIsSet(feature);
+		}
+
+		@Override
+		public void setModelValue(Boolean value) {
+			// do nothing
+		}
+	};
+	
 	// transactional behavior /////////////////////////////
 	
 	private class ToggleFeaturesCommand extends RecordingCommand {
