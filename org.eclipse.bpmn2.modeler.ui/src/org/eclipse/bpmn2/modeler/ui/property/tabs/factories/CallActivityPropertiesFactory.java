@@ -6,15 +6,23 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.widgets.Composite;
 
-public class CallActivityPropertiesFactory extends PropertiesFactory {
+public class CallActivityPropertiesFactory extends AbstractPropertiesFactory {
 
+	private static final String CALLED_ELEMENT = "Called Element";
+	
+	
 	public CallActivityPropertiesFactory(Composite parent, GFPropertySection section, EObject bo) {
 		super(parent, section, bo);
 	}
 
 	@Override
 	public void create() {
-		PropertyUtil.createText(section, parent, "Called Element", ModelPackage.eINSTANCE.getCallActivity_CalledElement(), bo);
+		PropertyUtil.createText(section, parent, CALLED_ELEMENT, ModelPackage.eINSTANCE.getCallActivity_CalledElement(), bo);
+		
+		createAttributesTable();
 	}
 
+	private void createAttributesTable() {
+		
+	}
 }

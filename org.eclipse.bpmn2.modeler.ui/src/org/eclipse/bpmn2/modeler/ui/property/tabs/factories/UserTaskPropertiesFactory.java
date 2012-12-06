@@ -7,7 +7,7 @@ import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
-public class UserTaskPropertiesFactory extends PropertiesFactory {
+public class UserTaskPropertiesFactory extends AbstractPropertiesFactory {
 
 	public UserTaskPropertiesFactory(Composite parent, GFPropertySection section, EObject bo) {
 		super(parent, section, bo);

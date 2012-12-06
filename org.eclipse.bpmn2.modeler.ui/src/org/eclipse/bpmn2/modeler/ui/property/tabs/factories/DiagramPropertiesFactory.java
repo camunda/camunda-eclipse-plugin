@@ -6,7 +6,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.widgets.Composite;
 
-public class DiagramPropertiesFactory extends PropertiesFactory {
+public class DiagramPropertiesFactory extends AbstractPropertiesFactory {
 
 	public DiagramPropertiesFactory(Composite parent, GFPropertySection section, EObject bo) {
 		super(parent, section, bo);

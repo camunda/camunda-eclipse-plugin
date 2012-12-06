@@ -103,7 +103,11 @@ public class BpmnPropertyCompositeFactory {
 	}
 	
 	private Text createIdField(final BaseElement bo) {
-		return PropertyUtil.createText(section, parentComposite, "Id", Bpmn2Package.eINSTANCE.getBaseElement_Id(), bo);
+		Text idText = PropertyUtil.createText(section, parentComposite, "Id", Bpmn2Package.eINSTANCE.getBaseElement_Id(), bo);
+		
+		// FIXME: Id change is not properly propagated
+		idText.setEnabled(false);
+		return idText;
 	}
 
 }

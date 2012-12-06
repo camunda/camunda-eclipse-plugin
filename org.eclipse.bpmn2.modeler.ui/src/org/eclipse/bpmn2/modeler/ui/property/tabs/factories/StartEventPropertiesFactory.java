@@ -9,7 +9,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.widgets.Composite;
 
-public class StartEventPropertiesFactory extends PropertiesFactory {
+public class StartEventPropertiesFactory extends AbstractPropertiesFactory {
 
 	public StartEventPropertiesFactory(Composite parent, GFPropertySection section, EObject bo) {
 		super(parent, section, bo);
