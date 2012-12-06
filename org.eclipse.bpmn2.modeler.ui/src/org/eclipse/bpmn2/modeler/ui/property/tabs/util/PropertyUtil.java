@@ -316,6 +316,9 @@ public class PropertyUtil {
 	}
 	
 	private static String getStringValue(EObject object, EStructuralFeature feature) {
+		if (object == null) {
+			throw new IllegalArgumentException("Cant get "+feature+" from EObject null");
+		}
 		
 		Object value = object.eGet(feature);
 		if (value == null) {

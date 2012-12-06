@@ -536,7 +536,8 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 	
 	public ModelEnablementDescriptor getModelEnablements(EObject object)
 	{
-		return getModelEnablements( ModelUtil.getDiagramType(object) );
+		return getModelEnablements(Bpmn2DiagramType.COLLABORATION);
+		//		return getModelEnablements( ModelUtil.getDiagramType(object) );
 	}
 	
 	public ModelEnablementDescriptor getModelEnablements(Bpmn2DiagramType diagramType)

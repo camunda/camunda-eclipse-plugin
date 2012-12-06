@@ -12,9 +12,16 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.participant;
 
+import java.util.List;
+
+import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.Collaboration;
+import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Participant;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.emf.ecore.EClass;
@@ -35,10 +42,43 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 
 	@Override
     public Object[] create(ICreateContext context) {
-		Participant participant = createBusinessObject(context);
-		participant.setName("Pool "+ModelUtil.getIDNumber(participant.getId()));
-        addGraphicalRepresentation(context, participant);
-		return new Object[] { participant };
+		BPMNDiagram bpmnDiagram = BusinessObjectUtil.getFirstElementOfType(context.getTargetContainer(), BPMNDiagram.class);
+		Definitions definitions = (Definitions) bpmnDiagram.eContainer();
+		
+		List<Collaboration> collaborations = ModelUtil.getAllRootElements( definitions, Collaboration.class);
+		List<org.eclipse.bpmn2.Process> processes = ModelUtil.getAllRootElements( definitions, org.eclipse.bpmn2.Process.class);
+		Participant newParticipant;
+		
+		if (collaborations.isEmpty()) {
+			org.eclipse.bpmn2.Process correspondingProcess;
+			
+			if (processes.size() == 1) {
+				correspondingProcess = processes.get(0);
+			}
+			else {
+				correspondingProcess = Bpmn2Factory.eINSTANCE.createProcess();
+				ModelUtil.setID(correspondingProcess);
+				definitions.getRootElements().add(correspondingProcess);
+			}
+			
+			Collaboration newCollaboration = Bpmn2Factory.eINSTANCE.createCollaboration();
+			ModelUtil.setID(newCollaboration);
+			bpmnDiagram.getPlane().setBpmnElement(newCollaboration);
+			
+			newParticipant = Bpmn2Factory.eINSTANCE.createParticipant();
+			ModelUtil.setID(newParticipant);
+
+			newParticipant.setProcessRef(correspondingProcess);
+			
+			newCollaboration.getParticipants().add(newParticipant);
+			definitions.getRootElements().add(0, newCollaboration);
+		}else {
+			newParticipant = createBusinessObject(context);
+		}
+
+		newParticipant.setName("Pool ");
+		addGraphicalRepresentation(context, newParticipant);
+		return new Object[] { newParticipant };
     }
 	
 	@Override

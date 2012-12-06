@@ -196,8 +196,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPartListener2;
-import org.eclipse.ui.IStorageEditorInput;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -305,7 +303,6 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	private IWorkbenchListener workbenchListener;
 	private IPartListener2 selectionListener;
     private IResourceChangeListener markerChangeListener;
-	private boolean workbenchShutdown = false;
 	private static BPMN2Editor activeEditor;
 	private static ITabDescriptorProvider tabDescriptorProvider;
 
@@ -313,11 +310,11 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	
 	private Bpmn2Preferences preferences;
 	private TargetRuntime targetRuntime;
-//	private Hashtable<BPMNDiagram, GraphicalViewer> mapDiagramToViewer = new Hashtable<BPMNDiagram, GraphicalViewer>();
 
 	protected DiagramEditorAdapter editorAdapter;
 	
 	public BPMN2Editor() {
+		super();
 	}
 	
 	public static BPMN2Editor getActiveEditor() {
@@ -336,66 +333,22 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		return editorAdapter;
 	}
 	
-	public void initWithDiagramEditorInput(IEditorSite site, DiagramEditorInput input) {
-		Bpmn2DiagramType diagramType = Bpmn2DiagramType.NONE;
-		String targetNamespace = null;
-		bpmnDiagram = null;
-		
-//		if (input instanceof Bpmn2DiagramEditorInput) {
-//			diagramType = ((Bpmn2DiagramEditorInput)input).getInitialDiagramType();
-//			targetNamespace = ((Bpmn2DiagramEditorInput)input).getTargetNamespace();
-//			setBpmnDiagram ((Bpmn2DiagramEditorInput)input).getBpmnDiagram();
-//		}else {
-//			URI uri = ((DiagramEditorInput) input).getUri();
-//			String uriString = uri.trimFragment().toPlatformString(true);
-//			return BPMN2DiagramCreator.getModelFile(new Path(uriString));
-//		}
-		
-//		if (bpmnDiagram==null) {
-//			// This was incorrectly constructed input, we ditch the old one and make a new and clean one instead
-//			// This code path comes in from the New File Wizard
-//			input = createNewDiagramEditorInput(site, input, diagramType, targetNamespace);
-//		}
-//		else {
-//			BPMNDiagram d = bpmnDiagram;
-//			bpmnDiagram = null;
-//			setBpmnDiagram(d);
-//			return;
-//		}
-	}
-	
 	@Override
 	protected DiagramEditorInput convertToDiagramEditorInput(IEditorInput input)
 			throws PartInitException {
-		return super.convertToDiagramEditorInput(input);
+		if (input instanceof Bpmn2DiagramEditorInput) {
+			return (Bpmn2DiagramEditorInput) input;
+		} else {
+			return createNewDiagramEditorInput(input, Bpmn2DiagramType.COLLABORATION, null);
+		}
 	}
 	
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
-		try {
-			if (input instanceof IStorageEditorInput) {
-				input = createNewDiagramEditorInput(site, input, Bpmn2DiagramType.NONE, null);
-			} 
-			else if (input instanceof DiagramEditorInput) {
-				//initWithDiagramEditorInput(site, (DiagramEditorInput) input);
-				input = createNewDiagramEditorInput(site, input, Bpmn2DiagramType.NONE, null);
-			} else {
-				throw new PartInitException("Invalid Editor Input: "
-						+input.getClass().getSimpleName()+" "
-						+input.getName());
-			}
-		} catch (Exception e) {
-			Activator.showErrorWithLogging(e);
-			throw new PartInitException(e.getMessage());
-		}
-		
-		// add a listener so we get notified if the workbench is shutting down.
-		// in this case we don't want to delete the temp file!
-		addWorkbenchListener();
+		super.init(site, convertToDiagramEditorInput(input));
+
 		getTargetRuntime(input);
 		setActiveEditor(this);
-		
-		super.init(site, input);
 		
 		addSelectionListener();
 		addMarkerChangeListener();
@@ -485,10 +438,10 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	/**
 	 * Beware, creates a new input and changes this editor!
 	 */
-	private Bpmn2DiagramEditorInput createNewDiagramEditorInput(IEditorSite site, IEditorInput input, Bpmn2DiagramType diagramType, String targetNamespace) {
+	private Bpmn2DiagramEditorInput createNewDiagramEditorInput(IEditorInput input, Bpmn2DiagramType diagramType, String targetNamespace) {
 		try {
 			modelUri = FileService.getInputUri(input);
-			input = BPMN2DiagramCreator.createDiagram(modelUri, diagramType, targetNamespace, this);
+			input = BPMN2DiagramCreator.createDiagramInput(modelUri, diagramType, targetNamespace, this);
 			diagramUri = ((Bpmn2DiagramEditorInput)input).getUri();
 
 			return (Bpmn2DiagramEditorInput)input;
@@ -514,18 +467,22 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		
 		BasicCommandStack basicCommandStack = (BasicCommandStack) getEditingDomain().getCommandStack();
 
-		if (input instanceof DiagramEditorInput) {
+		if (input instanceof Bpmn2DiagramEditorInput) {
+			Bpmn2DiagramEditorInput bpmn2DiagramEditorInput = (Bpmn2DiagramEditorInput) input; 
 			ResourceSet resourceSet = getEditingDomain().getResourceSet();
 			getTargetRuntime().setResourceSet(resourceSet);
 			
-			bpmnResource = (Bpmn2ResourceImpl) resourceSet.createResource(modelUri,
+			/**
+			 * we assume that the input will have the model uri
+			 */
+			bpmnResource = (Bpmn2ResourceImpl) resourceSet.createResource(bpmn2DiagramEditorInput.getModelUri(),
 					Bpmn2ModelerResourceImpl.BPMN2_CONTENT_TYPE_ID);
 
 			resourceSet.setURIConverter(new ProxyURIConverterImplExtension());
 			resourceSet.eAdapters().add(editorAdapter = new DiagramEditorAdapter(this));
 
-			modelHandler = ModelHandlerLocator.createModelHandler(modelUri, bpmnResource);
-			ModelHandlerLocator.put(diagramUri, modelHandler);
+			modelHandler = ModelHandlerLocator.createModelHandler(bpmn2DiagramEditorInput.getModelUri(), bpmnResource);
+			ModelHandlerLocator.put(bpmn2DiagramEditorInput.getDiagramUri(), modelHandler);
 
 			getTargetRuntime(input);
 			setActiveEditor(this);
@@ -568,12 +525,12 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		Bpmn2DiagramEditorInput input = (Bpmn2DiagramEditorInput) getEditorInput();
 		Bpmn2DiagramType diagramType = input.getInitialDiagramType();
 		String targetNamespace = input.getTargetNamespace();
-
-		if (diagramType != Bpmn2DiagramType.NONE) {
-			bpmnDiagram = modelHandler.createDiagramType(diagramType, targetNamespace);
-			featureProvider.link(diagram, bpmnDiagram);
-			saveModelFile();
-		}
+// FIXME delete
+//		if (diagramType != Bpmn2DiagramType.NONE) {
+//			bpmnDiagram = modelHandler.createDiagramType(diagramType, targetNamespace);
+//			featureProvider.link(diagram, bpmnDiagram);
+//			saveModelFile();
+//		}
 		
 		IDiagramEditor diagramEditor = getDiagramTypeProvider().getDiagramEditor();
 		TransactionalEditingDomain editingDomain = diagramEditor.getEditingDomain();
@@ -617,24 +574,6 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 				visibleList.add(pe);
 		}
 		return visibleList.toArray(new PictogramElement[visibleList.size()]);
-	}
-	
-	private void addWorkbenchListener() {
-		if (workbenchListener==null) {
-			workbenchListener = new IWorkbenchListener() {
-				@Override
-				public boolean preShutdown(IWorkbench workbench, boolean forced) {
-					workbenchShutdown = true;
-					return true;
-				}
-
-				@Override
-				public void postShutdown(IWorkbench workbench) {
-				}
-
-			};
-			PlatformUI.getWorkbench().addWorkbenchListener(workbenchListener);
-		}
 	}
 	
     @Override
@@ -810,6 +749,8 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		int instances = 0;
 		IEditorSite editorSite = getEditorSite();
 		
+		Bpmn2DiagramEditorInput diagramEditorInput = (Bpmn2DiagramEditorInput) getEditorInput();
+		
 		// need to check != null to deal with errors
 		if (editorSite != null) {
 			IWorkbenchPage[] pages = editorSite.getWorkbenchWindow().getPages();
@@ -819,7 +760,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 			}
 		}
 		
-		File diagramFile = new File(diagramUri.toFileString());
+		File diagramFile = new File(diagramEditorInput.getDiagramUri().toFileString());
 		if (diagramFile.exists()) {
 			try {
 				diagramFile.delete();
@@ -844,15 +785,8 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		
 		super.dispose();
 		try {
-			ModelHandlerLocator.remove(modelUri);
-			// get rid of temp files and folders, but NOT if the workbench is being shut down.
-			// when the workbench is restarted, we need to have those temp files around!
-			if (!workbenchShutdown) {
-				if (FileService.isTempFile(modelUri)) {
-					FileService.deleteTempFile(modelUri);
-				}
-			}
-
+			ModelHandlerLocator.remove(diagramEditorInput.getModelUri());
+			FileService.deleteTempFile(diagramEditorInput.getModelUri());
 			removeWorkbenchListener();
 			removeMarkerChangeListener();
 			getPreferences().dispose();
@@ -926,13 +860,14 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	public void doSave(IProgressMonitor monitor) {
 		super.doSave(monitor);
 
-		Resource resource = getResourceSet().getResource(modelUri, false);
+		Resource resource = getResourceSet().getResource( ((Bpmn2DiagramEditorInput) getEditorInput()).getModelUri(), false);
 		BPMN2ProjectValidator.validateOnSave(resource, monitor);
 	}
 
 	@Override
 	public boolean isSaveAsAllowed() {
-		return getModelFile()!=null;
+		// FIXME allow save as later, its buggy right now
+		return false;
 	}
 	
 	@Override
@@ -1091,7 +1026,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		// Graphiti understands multipage editors
 		super.selectionChanged(part,selection); // Graphiti's DiagramEditorInternal
 		// but apparently GEF doesn't
-		updateActions(getSelectionActions()); // usually done in GEF's GraphicalEditor
+		//updateActions(getSelectionActions()); // usually done in GEF's GraphicalEditor
 	}
 
 	/* (non-Javadoc)

@@ -486,6 +486,17 @@ public class ModelUtil {
 	
 	public enum Bpmn2DiagramType {
 		NONE, PROCESS, CHOREOGRAPHY, COLLABORATION;
+		
+		/**
+		 * return enum label with first letter uppercase
+		 * 
+		 * @param type
+		 * @return
+		 */
+		public String getLabel () {
+			String label = this.name().toLowerCase();
+			return label.substring(0, 1).toUpperCase() + label.substring(1);
+		}
 	}
 
 	public static Bpmn2DiagramType getDiagramType(String name) {

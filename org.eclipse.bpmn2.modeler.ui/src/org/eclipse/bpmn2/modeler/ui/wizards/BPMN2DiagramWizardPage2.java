@@ -16,7 +16,6 @@ import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
@@ -50,7 +49,6 @@ public class BPMN2DiagramWizardPage2 extends WizardPage {
 	private ISelection selection;
 
 	private IResource diagramContainer;
-	private Bpmn2DiagramType diagramType = Bpmn2DiagramType.NONE;
 
 	/**
 	 * Constructor for SampleNewWizardPage.
@@ -125,9 +123,8 @@ public class BPMN2DiagramWizardPage2 extends WizardPage {
 		setControl(container);
 	}
 
-	private Bpmn2DiagramType getDiagramType() {
-		BPMN2DiagramWizardPage1 page1 = (BPMN2DiagramWizardPage1)getWizard().getPage("wizardPage1");
-		return page1.getDiagramType();
+	public Bpmn2DiagramType getDiagramType() {
+		return Bpmn2DiagramType.COLLABORATION;
 	}
 		
 	/**
@@ -135,38 +132,17 @@ public class BPMN2DiagramWizardPage2 extends WizardPage {
 	 */
 
 	private void updatePageDescription() {
-		BPMN2DiagramWizardPage1 page1 = (BPMN2DiagramWizardPage1)getWizard().getPage("wizardPage1");
-		String descriptionType = "Unknown Diagram Type";
-		switch (page1.getDiagramType()) {
-		case PROCESS:
-			descriptionType = "Process Diagram";
-			break;
-		case COLLABORATION:
-			descriptionType = "Collaboration Diagram";
-			break;
-		case CHOREOGRAPHY:
-			descriptionType = "Choreography Diagram";
-			break;
-		}
-		setDescription("Enter a file name for the new "+descriptionType);
+		setDescription("Enter a file name for the new "+getDiagramType().getLabel());
 	}
 	
 	private void updateFilename() {
-		BPMN2DiagramWizardPage1 page1 = (BPMN2DiagramWizardPage1)getWizard().getPage("wizardPage1");
 		String fileType = "unknown";
 		String filename = fileType+".bpmn";
-		switch (page1.getDiagramType()) {
-		case PROCESS:
-			fileType = "process";
-			break;
-		case COLLABORATION:
-			fileType = "collaboration";
-			break;
-		case CHOREOGRAPHY:
-			fileType = "choreography";
-			break;
-		default:
-			return;
+		
+		switch (getDiagramType()) {
+			default:
+				fileType = "newBpmnDiagram";
+				break;
 		}
 		
 		IContainer container = getFileContainer();

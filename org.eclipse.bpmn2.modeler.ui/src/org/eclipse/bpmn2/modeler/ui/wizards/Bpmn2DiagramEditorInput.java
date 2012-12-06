@@ -18,6 +18,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
+import org.eclipse.ui.IMemento;
 import org.eclipse.ui.part.FileEditorInput;
 
 public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
@@ -29,6 +30,7 @@ public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
 	private URI modelUri;
 	
 	Bpmn2DiagramEditorInput(URI modelUri, URI diagramUri, TransactionalEditingDomain domain, String providerId) {
+		// means : DiagramEditorInput.uri = diagramUri
 		super(diagramUri, providerId);
 		this.domain = domain;
 		this.modelUri = modelUri;
@@ -52,6 +54,14 @@ public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
 
 	public URI  getModelUri() {
 		return modelUri;
+	}
+	
+	/**
+	 * We are using the original URI field to store the graphiti diagram uri
+	 * @return
+	 */
+	public URI  getDiagramUri() {
+		return getUri();
 	}
 	
 	public String getToolTipText() {
@@ -100,5 +110,11 @@ public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
 
 	public void setBpmnDiagram(BPMNDiagram bpmnDiagram) {
 		this.bpmnDiagram = bpmnDiagram;
+	}
+	
+	@Override
+	public void saveState(IMemento memento) {
+		super.saveState(memento);
+		memento.putString(KEY_URI, this.modelUri.toString());
 	}
 }

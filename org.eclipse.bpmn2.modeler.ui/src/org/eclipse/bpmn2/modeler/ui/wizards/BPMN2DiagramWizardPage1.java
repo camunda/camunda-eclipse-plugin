@@ -152,7 +152,7 @@ public class BPMN2DiagramWizardPage1 extends WizardPage implements IConstants {
 		return diagramType != Bpmn2DiagramType.NONE;
 	}
 
-	public Bpmn2DiagramType getDiagramType() {
+	private Bpmn2DiagramType getDiagramType() {
 		return diagramType;
 	}
 }

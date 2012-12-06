@@ -14,7 +14,6 @@ package org.eclipse.bpmn2.modeler.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -30,7 +29,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 
 public class BPMN2DiagramWizard extends Wizard implements INewWizard {
-	private BPMN2DiagramWizardPage1 page1;
 	private BPMN2DiagramWizardPage2 page2;
 	private ISelection selection;
 
@@ -48,8 +46,9 @@ public class BPMN2DiagramWizard extends Wizard implements INewWizard {
 
 	@Override
 	public void addPages() {
-		page1 = new BPMN2DiagramWizardPage1(selection);
-		addPage(page1);
+//		page1 = new BPMN2DiagramWizardPage1(selection);
+//		addPage(page1);
+		
 		page2 = new BPMN2DiagramWizardPage2(selection);
 		addPage(page2);
 	}
@@ -70,7 +69,9 @@ public class BPMN2DiagramWizard extends Wizard implements INewWizard {
 				try {
 					IPath path = container.getFullPath().append(fileName);
 					URI uri = URI.createPlatformResourceURI(path.toString(), true);
-					BPMN2DiagramCreator.createDiagram(uri, page1.getDiagramType(), targetNamespace);
+					
+					BPMN2DiagramCreator.createBpmn2Resource(uri);
+					BPMN2DiagramCreator.createDiagramInput(uri, page2.getDiagramType(), targetNamespace);
 
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
