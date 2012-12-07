@@ -170,7 +170,7 @@ public class ActivityPropertiesFactory extends AbstractPropertiesFactory {
 	}
 
 	private TransactionalEditingDomain getTransactionalEditingDomain() {
-		return BPMN2Editor.getActiveEditor().getEditingDomain();
+		return TransactionUtil.getEditingDomain(bo);
 	}
 	
 	

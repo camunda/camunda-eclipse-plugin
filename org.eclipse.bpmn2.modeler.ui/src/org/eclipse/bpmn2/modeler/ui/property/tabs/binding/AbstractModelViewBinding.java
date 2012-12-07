@@ -64,7 +64,7 @@ public abstract class AbstractModelViewBinding<T, V> {
 	 * @return
 	 */
 	protected TransactionalEditingDomain getTransactionalEditingDomain() {
-		return BPMN2Editor.getActiveEditor().getEditingDomain();
+		return TransactionUtil.getEditingDomain(model);
 	}
 	
 	/**
