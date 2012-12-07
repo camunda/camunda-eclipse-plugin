@@ -13,6 +13,7 @@ import org.eclipse.emf.transaction.ResourceSetChangeEvent;
 import org.eclipse.emf.transaction.ResourceSetListener;
 import org.eclipse.emf.transaction.RollbackException;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
+import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Control;
@@ -81,7 +82,7 @@ public class ModelViewChangeSupport implements ResourceSetListener {
 	// ResourceSetListener API implementation /////////////////
 	
 	protected TransactionalEditingDomain getTransactionalEditingDomain() {
-		return BPMN2Editor.getActiveEditor().getEditingDomain();
+		return TransactionUtil.getEditingDomain(model);
 	}
 
 	@Override

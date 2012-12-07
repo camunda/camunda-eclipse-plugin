@@ -16,6 +16,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
+import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -154,8 +155,12 @@ public class ServiceTaskPropertiesFactory extends AbstractPropertiesFactory {
 	}
 
 	protected void transactionalHandleTypeChange(EStructuralFeature oldType, EStructuralFeature newType) {
-		TransactionalEditingDomain domain = BPMN2Editor.getActiveEditor().getEditingDomain();
+		TransactionalEditingDomain domain = getTransactionalEditingDomain();
 		domain.getCommandStack().execute(new ToggleFeaturesCommand(domain, bo, oldType, newType));
+	}
+
+	private TransactionalEditingDomain getTransactionalEditingDomain() {
+		return TransactionUtil.getEditingDomain(bo);
 	}
 
 	// model radio binding ////////////////////////////////

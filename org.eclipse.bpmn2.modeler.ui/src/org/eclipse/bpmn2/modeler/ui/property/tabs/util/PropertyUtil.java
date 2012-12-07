@@ -39,6 +39,15 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
  */
 public class PropertyUtil {
 	
+	public static final FormData STANDARD_LAYOUT;
+	
+	static {
+		STANDARD_LAYOUT = new FormData();
+		STANDARD_LAYOUT.left = new FormAttachment(0, 120);
+		STANDARD_LAYOUT.right = new FormAttachment(100, 0);
+		STANDARD_LAYOUT.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
+	}
+	
 	public static Text createText(GFPropertySection section, Composite parent, String label, final EStructuralFeature feature, final EObject bo) {
 		Text text = createUnboundText(section, parent, label);
 		
@@ -98,7 +107,7 @@ public class PropertyUtil {
 		FormData data = new FormData();
 		data.left = new FormAttachment(0, 0);
 		data.right = new FormAttachment(control, -ITabbedPropertyConstants.HSPACE);
-		data.top = new FormAttachment(control, 0, SWT.CENTER);
+		data.top = new FormAttachment(control, 0, SWT.TOP);
 		cLabel.setLayoutData(data);
 		
 		return cLabel;

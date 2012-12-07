@@ -835,33 +835,59 @@ public class ModelUtil {
 		return values;
 	}
 	
-	public static <T> List<T> getAllExtensionAttributeValues(EObject object, Class<T> clazz) {
+	/**
+	 * Returns the extension attribute values of a given type from 
+	 * the specified object
+	 * 
+	 * @param object
+	 * @param cls
+	 * 
+	 * @return
+	 */
+	public static <T> List<T> getExtensionAttributeValues(EObject object, Class<T> cls) {
 		List<T> results = new ArrayList<T>();
 		
-		EStructuralFeature evf = object.eClass().getEStructuralFeature("extensionValues");
-		EList<ExtensionAttributeValue> list = (EList<ExtensionAttributeValue>)object.eGet(evf);
-		for (ExtensionAttributeValue eav : list) {
-			FeatureMap fm = eav.getValue();
-			for (Entry e : fm) {
-				EStructuralFeature sf = e.getEStructuralFeature();
-				if (clazz.isInstance(e.getValue())) {
-					results.add((T)e.getValue());
+		EStructuralFeature extensionValuesFeature = object.eClass().getEStructuralFeature("extensionValues");
+		EList<ExtensionAttributeValue> list = (EList<ExtensionAttributeValue>) object.eGet(extensionValuesFeature);
+		
+		for (ExtensionAttributeValue value : list) {
+			FeatureMap featureMap = value.getValue();
+			for (Entry e : featureMap) {
+				Object valueObject = e.getValue();
+				
+				if (cls.isInstance(valueObject)) {
+					results.add((T) valueObject);
 				}
 			}
 		}
+		
 		return results;
 	}
 	
-	public static List<ExtensionAttributeValue> getExtensionAttributeValues(EObject be) {
-		if (be instanceof Participant) {
-			final Participant participant = (Participant) be;
+	public static List<ExtensionAttributeValue> getExtensionAttributeValues(EObject object) {
+		
+		if (object instanceof BPMNDiagram) {
+			BPMNDiagram diagram = (BPMNDiagram) object;
+			BaseElement bpmnElement = diagram.getPlane().getBpmnElement();
+			
+			if (bpmnElement instanceof org.eclipse.bpmn2.Process) {
+				return bpmnElement.getExtensionValues();
+			}
+		} else 
+		
+		if (object instanceof BaseElement) {
+			return ((BaseElement) object).getExtensionValues();
+		} else
+		
+		if (object instanceof Participant) {
+			final Participant participant = (Participant) object;
 			if (participant.getProcessRef() == null) {
 				if (participant.eContainer() instanceof Collaboration) {
 					Collaboration collab = (Collaboration) participant.eContainer();
 					if (collab.eContainer() instanceof Definitions) {
 						final Definitions definitions = getDefinitions(collab);
 						
-						TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(definitions.eResource());
+						TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(object);
 						
 						domain.getCommandStack().execute(new RecordingCommand(domain) {
 							@Override
@@ -871,23 +897,11 @@ public class ModelUtil {
 								definitions.getRootElements().add(process);
 								ModelUtil.setID(process);
 							}
-							
 						});
-						
 					}
 				}
 			}
 			return participant.getProcessRef().getExtensionValues();
-		}
-		if (be instanceof BPMNDiagram) {
-			BPMNDiagram diagram = (BPMNDiagram) be;
-			BaseElement bpmnElement = diagram.getPlane().getBpmnElement();
-			if (bpmnElement instanceof org.eclipse.bpmn2.Process) {
-				return bpmnElement.getExtensionValues();
-			}
-		}
-		if (be instanceof BaseElement) {
-			return ((BaseElement) be).getExtensionValues();
 		}
 
 		return new ArrayList<ExtensionAttributeValue>();

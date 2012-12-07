@@ -302,9 +302,19 @@ public class FileService {
 	}
 	
 	public static void deleteTempFile(URI uri) {
-		File file = new File(uri.toFileString());
-		if (file.exists())
+		if (uri == null) {
+			return;
+		}
+		
+		String fileString = uri.toFileString();
+		if (fileString == null) {
+			return;
+		}
+		
+		File file = new File(fileString);
+		if (file.exists()) {
 			file.delete();
+		}
 	}
 	
 //	public static IFile getFileFromInput(IEditorSite site, IEditorInput input) {
