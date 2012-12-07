@@ -20,6 +20,7 @@ import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Artifact;
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.Choreography;
@@ -838,11 +839,20 @@ public class ModelHandler {
 	        o = BusinessObjectUtil.getFirstElementOfType((Diagram)o, BPMNDiagram.class);
 		}
 		if (o instanceof BPMNDiagram) {
+			BPMNDiagram bpmnDiagram = (BPMNDiagram) o;
+			Definitions definitions = (Definitions) bpmnDiagram.eContainer();
+			
 			BaseElement be = ((BPMNDiagram)o).getPlane().getBpmnElement();
 			if (be != null && be instanceof FlowElementsContainer) {
 				return (FlowElementsContainer)be;
+			} // somebody did not understand the BPMNPlane (seems to be common), try adding to the first process, or create a new one
+			else if (ModelUtil.getAllRootElements(definitions, org.eclipse.bpmn2.Process.class).size() == 0) {
+				org.eclipse.bpmn2.Process newProcess = Bpmn2Factory.eINSTANCE.createProcess();
+				ModelUtil.setID(newProcess);
+				definitions.getRootElements().add(newProcess);
+				return newProcess;
 			}
-			else { // somebody did not understand the BPMNPlane (seems to be common), try adding to the first process
+			else { 
 				return getAll(Process.class).get(0);
 			}
 		}

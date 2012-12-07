@@ -115,6 +115,9 @@ public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
 	@Override
 	public void saveState(IMemento memento) {
 		super.saveState(memento);
+		/**
+		 * We are storing the modelUri in the uri field of the DiagramEditorInput
+		 */
 		memento.putString(KEY_URI, this.modelUri.toString());
 	}
 }

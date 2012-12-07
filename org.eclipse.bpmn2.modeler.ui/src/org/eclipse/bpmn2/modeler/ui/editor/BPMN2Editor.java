@@ -314,7 +314,6 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	protected DiagramEditorAdapter editorAdapter;
 	
 	public BPMN2Editor() {
-		super();
 	}
 	
 	public static BPMN2Editor getActiveEditor() {
@@ -519,18 +518,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		
 		// make sure this guy is active, otherwise it's not selectable
 		Diagram diagram = getDiagramTypeProvider().getDiagram();
-		IFeatureProvider featureProvider = getDiagramTypeProvider().getFeatureProvider();
 		diagram.setActive(true);
-		
-		Bpmn2DiagramEditorInput input = (Bpmn2DiagramEditorInput) getEditorInput();
-		Bpmn2DiagramType diagramType = input.getInitialDiagramType();
-		String targetNamespace = input.getTargetNamespace();
-// FIXME delete
-//		if (diagramType != Bpmn2DiagramType.NONE) {
-//			bpmnDiagram = modelHandler.createDiagramType(diagramType, targetNamespace);
-//			featureProvider.link(diagram, bpmnDiagram);
-//			saveModelFile();
-//		}
 		
 		IDiagramEditor diagramEditor = getDiagramTypeProvider().getDiagramEditor();
 		TransactionalEditingDomain editingDomain = diagramEditor.getEditingDomain();
@@ -613,14 +601,6 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
         return getEditingDomain().getResourceSet().getEObject(uri, false);
     }
 
-	private void removeWorkbenchListener()
-	{
-		if (workbenchListener!=null) {
-			PlatformUI.getWorkbench().removeWorkbenchListener(workbenchListener);
-			workbenchListener = null;
-		}
-	}
-	
 	private void addSelectionListener() {
 		if (selectionListener == null) {
 			IWorkbenchPage page = getSite().getPage();
@@ -786,8 +766,6 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		super.dispose();
 		try {
 			ModelHandlerLocator.remove(diagramEditorInput.getModelUri());
-			FileService.deleteTempFile(diagramEditorInput.getModelUri());
-			removeWorkbenchListener();
 			removeMarkerChangeListener();
 			getPreferences().dispose();
 		} catch (Exception e) {
@@ -1026,7 +1004,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		// Graphiti understands multipage editors
 		super.selectionChanged(part,selection); // Graphiti's DiagramEditorInternal
 		// but apparently GEF doesn't
-		//updateActions(getSelectionActions()); // usually done in GEF's GraphicalEditor
+		updateActions(getSelectionActions()); // usually done in GEF's GraphicalEditor
 	}
 
 	/* (non-Javadoc)
