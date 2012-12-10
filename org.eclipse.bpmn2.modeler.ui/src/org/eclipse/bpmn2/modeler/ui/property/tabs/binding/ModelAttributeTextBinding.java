@@ -19,7 +19,12 @@ public abstract class ModelAttributeTextBinding<V> extends ModelTextBinding<V> {
 	 */
 	@Override
 	public V getModelValue() {
-		return (V) model.eGet(feature);
+		try {
+			return (V) model.eGet(feature);
+		}catch (Exception e) {
+			// FIXME whats causing this
+			throw new IllegalArgumentException("Could not get feature "+ feature +" for "+model, e);
+		}
 	}
 
 	/**
