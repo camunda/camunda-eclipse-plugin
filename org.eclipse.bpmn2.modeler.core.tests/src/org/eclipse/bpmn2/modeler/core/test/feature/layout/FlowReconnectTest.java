@@ -12,7 +12,7 @@ import org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
-import org.eclipse.bpmn2.modeler.core.test.util.ShapeUtil;
+import org.eclipse.bpmn2.modeler.core.test.util.Util;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.dd.dc.Point;
 import org.eclipse.graphiti.datatypes.ILocation;
@@ -30,9 +30,9 @@ public class FlowReconnectTest extends AbstractFeatureTest {
 	@DiagramResource
 	public void testManualReconnectSequenceFlow() {
 		
-		FreeFormConnection connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
+		FreeFormConnection connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
 		
-		Shape task2 = ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_2");
+		Shape task2 = Util.findShapeByBusinessObjectId(diagram, "Task_2");
 		
 		BPMNEdge sequenceFlowBPMNEdge = BusinessObjectUtil.getFirstElementOfType(connection, BPMNEdge.class);
 		
@@ -62,9 +62,9 @@ public class FlowReconnectTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource
 	public void testManualReconnectWithLanes() {
-		Shape serviceTask1 = ShapeUtil.findShapeByBusinessObjectId(diagram, "ServiceTask_1");
-		ContainerShape lane2Shape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "Lane_2");
-		FreeFormConnection connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		Shape serviceTask1 = Util.findShapeByBusinessObjectId(diagram, "ServiceTask_1");
+		ContainerShape lane2Shape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Lane_2");
+		FreeFormConnection connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
 		BPMNEdge sequenceFlowBPMNEdge = BusinessObjectUtil.getFirstElementOfType(connection, BPMNEdge.class);
 		
 		// Move target shape

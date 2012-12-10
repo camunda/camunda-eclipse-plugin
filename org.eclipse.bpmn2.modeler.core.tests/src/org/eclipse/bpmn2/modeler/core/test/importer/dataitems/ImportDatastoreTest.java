@@ -6,7 +6,7 @@ import org.eclipse.bpmn2.DataStoreReference;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmnModelTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
-import org.eclipse.bpmn2.modeler.core.test.util.TestUtil;
+import org.eclipse.bpmn2.modeler.core.test.util.StringUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;

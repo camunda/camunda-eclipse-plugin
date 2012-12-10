@@ -1,5 +1,6 @@
 package org.eclipse.bpmn2.modeler.ui.property.tabs.binding;
 
+import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.util.EAttributeChangeSupport;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.IValueChangeListener;
@@ -60,7 +61,7 @@ public abstract class ModelTextBinding<V> extends ModelViewBinding<Text, V> {
 
 	@Override
 	protected void establishModelViewBinding() {
-		ModelViewChangeSupport.ensureAdded(model, feature, control);
+		EAttributeChangeSupport.ensureAdded(model, feature, control);
 
 		control.addListener(Events.MODEL_CHANGED, new Listener() {
 			

@@ -17,8 +17,8 @@ public class EObjectAttributeTableColumnDescriptor<T extends EObject> extends Ta
 
 	private EStructuralFeature feature;
 
-	public EObjectAttributeTableColumnDescriptor(EStructuralFeature feature, String title, int width) {
-		super(title, width);
+	public EObjectAttributeTableColumnDescriptor(EStructuralFeature feature, String title, int weight) {
+		super(title, weight);
 
 		this.feature = feature;
 	}

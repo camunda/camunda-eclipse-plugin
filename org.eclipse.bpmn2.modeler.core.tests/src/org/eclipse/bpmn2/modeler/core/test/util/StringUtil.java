@@ -14,7 +14,7 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.PictogramLink;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
-public abstract class TestUtil {
+public abstract class StringUtil {
 	
 	public static String toDetailsString(Shape shape) {
 		StringBuilder builder = new StringBuilder();

@@ -39,14 +39,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
  */
 public class PropertyUtil {
 	
-	public static final FormData STANDARD_LAYOUT;
-	
-	static {
-		STANDARD_LAYOUT = new FormData();
-		STANDARD_LAYOUT.left = new FormAttachment(0, 120);
-		STANDARD_LAYOUT.right = new FormAttachment(100, 0);
-		STANDARD_LAYOUT.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
-	}
+	private static final FormData STANDARD_LAYOUT = getStandardLayout();
 	
 	public static Text createText(GFPropertySection section, Composite parent, String label, final EStructuralFeature feature, final EObject bo) {
 		Text text = createUnboundText(section, parent, label);
@@ -203,50 +196,7 @@ public class PropertyUtil {
 		
 		return text;
 	}
-	
-	public static Text createRadioText1(GFPropertySection section, Composite parent, String label, 
-			final EStructuralFeature feature, RadioGroup<EStructuralFeature> radioGroup, final EObject bo) {
-
-		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
 		
-		final Text text = createText(section, parent, label, feature, bo);
-		Composite radioComposite = text.getParent();
-		
-		final CLabel clabel = (CLabel) radioComposite.getChildren()[1];
-		
-		final Button radioButton = factory.createButton(radioComposite, "", SWT.RADIO);
-
-		FormData textFormData = (FormData) text.getLayoutData();
-		
-		FormData radioButtonData = new FormData();
-		radioButtonData.right = new FormAttachment(text, 0);
-		radioButtonData.top = new FormAttachment (text, 0, SWT.CENTER);
-		radioButtonData.left = textFormData.left;
-		
-		// make space for the radio button
-		textFormData.left = new FormAttachment(0, 120 + 15);
-		
-		FormData labelFormData = (FormData) clabel.getLayoutData();
-		labelFormData.right = new FormAttachment(radioButton, -ITabbedPropertyConstants.HSPACE);
-		labelFormData.top = new FormAttachment(radioButton, 0, SWT.CENTER);
-		
-		radioButton.setLayoutData(radioButtonData);
-		
-		// register with radio group
-		radioGroup.add(radioButton, feature);
-		
-		radioButton.addListener(SWT.Selection, new Listener() {
-			
-			@Override
-			public void handleEvent(Event event) {
-				boolean selected = radioButton.getSelection();
-				text.setEnabled(selected);
-			}
-		});
-		
-		return text;
-	}
-	
 	protected static Text createSimpleText(GFPropertySection section, Composite parent, String value) {
 		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
 		final Text text = factory.createText(parent, value); //$NON-NLS-1$
@@ -258,21 +208,15 @@ public class PropertyUtil {
 		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
 		final Text text = factory.createText(parent, value, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.H_SCROLL); //$NON-NLS-1$
 
-		FormData data = new FormData();
-		data.left = new FormAttachment(0, 120);
-		data.right = new FormAttachment(100, 0);
-		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
+		FormData data = getStandardLayout();
+		
 		data.height = 106;
 		text.setLayoutData(data);
 		return text;
 	}
 	
 	private static void setStandardLayout(Control control) {
-		FormData data = new FormData();
-		data.left = new FormAttachment(0, 120);
-		data.right = new FormAttachment(100, 0);
-		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
-		control.setLayoutData(data);
+		control.setLayoutData(getStandardLayout());
 	}
 	
 	
@@ -288,6 +232,15 @@ public class PropertyUtil {
 		} else {
 			new StringTextBinding(bo, feature, text).establish();
 		}
+	}
+
+	public static FormData getStandardLayout() {
+		FormData data = new FormData();
+		data.left = new FormAttachment(0, 120);
+		data.right = new FormAttachment(100, 0);
+		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
+		
+		return data;
 	}
 	
 }

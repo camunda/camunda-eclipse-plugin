@@ -14,7 +14,7 @@ import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAsse
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmnModelTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
-import org.eclipse.bpmn2.modeler.core.test.util.TestUtil;
+import org.eclipse.bpmn2.modeler.core.test.util.StringUtil;
 import org.junit.Test;
 
 /**
@@ -29,7 +29,7 @@ public class ImportAssociationTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 
-		assertThat(TestUtil.toDetailsString(diagram)).contains("AssociationImpl");
+		assertThat(StringUtil.toDetailsString(diagram)).contains("AssociationImpl");
 	}
 	
 	@Test
@@ -38,7 +38,7 @@ public class ImportAssociationTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 
-		assertThat(TestUtil.toDetailsString(diagram)).contains("AssociationImpl");
+		assertThat(StringUtil.toDetailsString(diagram)).contains("AssociationImpl");
 	}
 	
 
@@ -48,7 +48,7 @@ public class ImportAssociationTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 		
-		assertThat(TestUtil.toDetailsString(diagram)).contains("AssociationImpl");
+		assertThat(StringUtil.toDetailsString(diagram)).contains("AssociationImpl");
 	}
 
 	@Test
@@ -57,6 +57,6 @@ public class ImportAssociationTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 
-		assertThat(TestUtil.toDetailsString(diagram)).contains("AssociationImpl");
+		assertThat(StringUtil.toDetailsString(diagram)).contains("AssociationImpl");
 	}
 }

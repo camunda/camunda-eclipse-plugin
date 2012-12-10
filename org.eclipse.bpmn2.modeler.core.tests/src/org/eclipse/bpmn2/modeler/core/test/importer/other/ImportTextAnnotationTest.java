@@ -19,7 +19,7 @@ import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmnModelTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
-import org.eclipse.bpmn2.modeler.core.test.util.TestUtil;
+import org.eclipse.bpmn2.modeler.core.test.util.StringUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -38,7 +38,7 @@ public class ImportTextAnnotationTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 
-		assertThat(TestUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
+		assertThat(StringUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
 	}
 
 	@Test
@@ -47,7 +47,7 @@ public class ImportTextAnnotationTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 
-		assertThat(TestUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
+		assertThat(StringUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
 	}
 	
 
@@ -57,7 +57,7 @@ public class ImportTextAnnotationTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 
-		assertThat(TestUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
+		assertThat(StringUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
 	}
 
 	@Test
@@ -66,7 +66,7 @@ public class ImportTextAnnotationTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 
-		assertThat(TestUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
+		assertThat(StringUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
 	}
 
 	@Test
@@ -75,7 +75,7 @@ public class ImportTextAnnotationTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 
-		assertThat(TestUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
+		assertThat(StringUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
 	}
 
 	@Test
@@ -84,7 +84,7 @@ public class ImportTextAnnotationTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 
-		assertThat(TestUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
+		assertThat(StringUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
 	}
 	
 	@Test
@@ -93,7 +93,7 @@ public class ImportTextAnnotationTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 		
-		assertThat(TestUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
+		assertThat(StringUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
 	}
 	
 	@Test
@@ -102,7 +102,7 @@ public class ImportTextAnnotationTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 		
-		assertThat(TestUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
+		assertThat(StringUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
 		
 		// text annotation directly rendered on diagram
 		assertThat(diagram.getChildren()).hasSize(3);

@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
-import org.eclipse.bpmn2.modeler.core.test.util.ShapeUtil;
+import org.eclipse.bpmn2.modeler.core.test.util.Util;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
@@ -30,8 +30,8 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource
 	public void testMoveTask2VerticalLayout() {         
-		Shape taskShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "ReceiveTask_1");
-		ContainerShape laneShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "Lane_2");
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "ReceiveTask_1");
+		ContainerShape laneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Lane_2");
 		
 		// Move target shape
 		move(taskShape, diagramTypeProvider)
@@ -45,14 +45,14 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		// see also DefaultMoveBendPointFeature to see how a bend point is created 
 		
 		// Get bendpoints incoming sequence flow
-		FreeFormConnection seqConnection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_7");
+		FreeFormConnection seqConnection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_7");
 		
 		// and check
 		assertEquals(1, seqConnection.getBendpoints().size());
 		assertEquals(Graphiti.getPeLayoutService().getLocationRelativeToDiagram(seqConnection.getEnd()).getY(), seqConnection.getBendpoints().get(0).getY());
 
 		// Get bendpoints outgoing sequence flow
-		seqConnection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_8");
+		seqConnection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_8");
 		// and check
 		assertEquals(2, seqConnection.getBendpoints().size());		
 	}
@@ -76,17 +76,17 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 	}
 	
 	private void assertMoveUpByWorks(int moveBy) {
-		Shape gatewayShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
-		ContainerShape laneShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "Lane_1");
+		Shape gatewayShape = Util.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
+		ContainerShape laneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Lane_1");
 
 		move(gatewayShape, diagramTypeProvider)
 			.by(0 , moveBy)
 			.toContainer(laneShape)
 			.execute();
 		
-		FreeFormConnection seq2Connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
-		FreeFormConnection seq3Connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
-		FreeFormConnection seq7Connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_7");
+		FreeFormConnection seq2Connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
+		FreeFormConnection seq3Connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+		FreeFormConnection seq7Connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_7");
 		
 		// check incoming sequence flow
 		assertEquals(2, seq2Connection.getBendpoints().size());
@@ -145,8 +145,8 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 	public void testMoveShapeOutOfContainer() {
 
 		// find shapes
-		Shape userTaskShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "UserTask_1");
-		ContainerShape subProcessShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "SubProcess_1");
+		Shape userTaskShape = Util.findShapeByBusinessObjectId(diagram, "UserTask_1");
+		ContainerShape subProcessShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "SubProcess_1");
 		ContainerShape processShape = (ContainerShape) diagram;
 		BaseElement subProcessElement = BusinessObjectUtil.getFirstBaseElement(subProcessShape);
 
@@ -171,8 +171,8 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 	public void testMoveShapeIntoContainer() {
 
 		// find shapes
-		Shape userTaskShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "UserTask_1");
-		ContainerShape subProcessShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "SubProcess_1");
+		Shape userTaskShape = Util.findShapeByBusinessObjectId(diagram, "UserTask_1");
+		ContainerShape subProcessShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "SubProcess_1");
 		ContainerShape processShape = (ContainerShape) diagram;
 		BaseElement subProcessElement = BusinessObjectUtil.getFirstBaseElement(subProcessShape);
 
@@ -196,11 +196,11 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource
 	public void testMoveTaskVerticalLayout() {
-		Shape taskShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_1");
-		ContainerShape participantShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "Participant_1");
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
+		ContainerShape participantShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Participant_1");
 
-		FreeFormConnection seq1Connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
-		FreeFormConnection seq2Connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
+		FreeFormConnection seq1Connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		FreeFormConnection seq2Connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
 
 		assertThat(seq1Connection.getBendpoints()).isEmpty();
 		assertThat(seq2Connection.getBendpoints()).isEmpty();
@@ -253,7 +253,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource
 	public void testMoveStartEventVerticalLayoutSequenceFlow() {
-		Shape gatewayShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "StartEvent_1");
+		Shape gatewayShape = Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
 		
 		move(gatewayShape, diagramTypeProvider)
 			.by(0 , 100)
@@ -264,7 +264,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		
 		// see also DefaultMoveBendPointFeature to see how a bend point is created 
 		
-		FreeFormConnection connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+		FreeFormConnection connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
 		
 		assertThat(connection).hasNoDiagonalEdges();
 		assertThat(connection).hasBendpointCount(2);
@@ -273,11 +273,11 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource
 	public void testMoveTaskVerticalAndHorizontalLayout() {
-		Shape taskShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_2");
-		ContainerShape participantShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "Participant_1");
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_2");
+		ContainerShape participantShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Participant_1");
 
-		FreeFormConnection seq2Connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
-		FreeFormConnection seq3Connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+		FreeFormConnection seq2Connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
+		FreeFormConnection seq3Connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
 
 		assertThat(seq2Connection.getBendpoints()).isEmpty();
 		assertThat(seq3Connection.getBendpoints()).isEmpty();
@@ -329,10 +329,10 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource
 	public void testMoveTaskWithMessageFlow() {
-		Shape serviceTaskShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "ServiceTask_2");
-		ContainerShape participantShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "Participant_2");
+		Shape serviceTaskShape = Util.findShapeByBusinessObjectId(diagram, "ServiceTask_2");
+		ContainerShape participantShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Participant_2");
 
-		FreeFormConnection messageFlow = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "MessageFlow_1");
+		FreeFormConnection messageFlow = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "MessageFlow_1");
 
 		assertThat(messageFlow.getBendpoints()).isEmpty();
 
@@ -366,9 +366,9 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource
 	public void testMoveTaskConnectedWithBoundaryEvent() {
-		ContainerShape taskShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_2");
+		ContainerShape taskShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Task_2");
 		
-		FreeFormConnection sequenceFlow = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		FreeFormConnection sequenceFlow = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
 		
 		assertThat(sequenceFlow).hasBendpointCount(0);
 		
@@ -415,8 +415,8 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(seq3FirstPoint.getY()).isEqualTo(75);
 		
 		
-		ContainerShape userTaskShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "UserTask_1");
-		FreeFormConnection sequenceFlow2 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
+		ContainerShape userTaskShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "UserTask_1");
+		FreeFormConnection sequenceFlow2 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
 		
 		assertThat(sequenceFlow2.getBendpoints().size()).isEqualTo(2);
 		
@@ -432,10 +432,10 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveFlowNodeFeatureTest.testLayoutMaxLength.bpmn")
 	public void testLayoutMaxLengthReached() {
-		Shape gatewayShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "reviewSuccessful_gw");
-		ContainerShape laneShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "Approver");
+		Shape gatewayShape = Util.findShapeByBusinessObjectId(diagram, "reviewSuccessful_gw");
+		ContainerShape laneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Approver");
 		
-		FreeFormConnection before = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "reviewSuccessful");
+		FreeFormConnection before = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "reviewSuccessful");
 		
 		Point beforePoint = point(before.getBendpoints().get(0).getX(), before.getBendpoints().get(0).getY());  
 		
@@ -445,7 +445,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 			.toContainer(laneShape)
 			.execute();
 		
-		FreeFormConnection after = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "reviewSuccessful");
+		FreeFormConnection after = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "reviewSuccessful");
 
 		Point afterPoint = point(after.getBendpoints().get(0).getX(), after.getBendpoints().get(0).getY());  
 
@@ -455,10 +455,10 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveFlowNodeFeatureTest.testLayoutMaxLength.bpmn")
 	public void testLayoutMaxLengthNotReached() {
-		Shape gatewayShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "reviewSuccessful_gw");
-		ContainerShape laneShape = (ContainerShape) ShapeUtil.findShapeByBusinessObjectId(diagram, "teamAssistant");
+		Shape gatewayShape = Util.findShapeByBusinessObjectId(diagram, "reviewSuccessful_gw");
+		ContainerShape laneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "teamAssistant");
 		
-		FreeFormConnection before = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "reviewSuccessful");
+		FreeFormConnection before = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "reviewSuccessful");
 		
 		Point beforePoint = point(before.getBendpoints().get(0).getX(), before.getBendpoints().get(0).getY());  
 		
@@ -468,7 +468,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 			.toContainer(laneShape)
 			.execute();
 		
-		FreeFormConnection after = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "reviewSuccessful");
+		FreeFormConnection after = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "reviewSuccessful");
 
 		Point afterPoint = point(after.getBendpoints().get(0).getX(), after.getBendpoints().get(0).getY());  
 

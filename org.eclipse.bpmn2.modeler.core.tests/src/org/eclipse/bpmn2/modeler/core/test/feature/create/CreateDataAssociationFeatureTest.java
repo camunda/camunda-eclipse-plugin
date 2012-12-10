@@ -10,8 +10,8 @@ import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
-import org.eclipse.bpmn2.modeler.core.test.util.ShapeUtil;
-import org.eclipse.bpmn2.modeler.core.test.util.TestUtil;
+import org.eclipse.bpmn2.modeler.core.test.util.Util;
+import org.eclipse.bpmn2.modeler.core.test.util.StringUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.junit.Test;
@@ -24,14 +24,14 @@ public class CreateDataAssociationFeatureTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource
 	public void testCreateDataInputAssocation() {
-		Shape taskShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_1");
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
 		
 		BaseElement taskElement = BusinessObjectUtil.getFirstBaseElement(taskShape);
 		assertThat(taskElement).isInstanceOf(Task.class);
 		Task task = (Task) taskElement;
 		assertThat(task.getDataOutputAssociations()).isEmpty();
 		
-		Shape dataObjectShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "DataObject_1");
+		Shape dataObjectShape = Util.findShapeByBusinessObjectId(diagram, "DataObject_1");
 		
 		BaseElement dataObjectElement = BusinessObjectUtil.getFirstBaseElement(dataObjectShape);
 		assertThat(dataObjectElement).isInstanceOf(DataObject.class);
@@ -40,7 +40,7 @@ public class CreateDataAssociationFeatureTest extends AbstractFeatureTest {
 		createDataAssocation(dataObjectShape, taskShape, diagramTypeProvider)
 			.execute();
 
-		assertThat(TestUtil.toDetailsString(diagram)).contains("DataInputAssociationImpl");
+		assertThat(StringUtil.toDetailsString(diagram)).contains("DataInputAssociationImpl");
 		
 		assertThat(task.getDataInputAssociations().size()).isEqualTo(1);
 		
@@ -54,14 +54,14 @@ public class CreateDataAssociationFeatureTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource
 	public void testCreateDataOutputAssocation() {
-		Shape taskShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_1");
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
 
 		BaseElement taskElement = BusinessObjectUtil.getFirstBaseElement(taskShape);
 		assertThat(taskElement).isInstanceOf(Task.class);
 		Task task = (Task) taskElement;
 		assertThat(task.getDataOutputAssociations()).isEmpty();
 		
-		Shape dataObjectShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "DataObject_1");
+		Shape dataObjectShape = Util.findShapeByBusinessObjectId(diagram, "DataObject_1");
 		
 		BaseElement dataObjectElement = BusinessObjectUtil.getFirstBaseElement(dataObjectShape);
 		assertThat(dataObjectElement).isInstanceOf(DataObject.class);
@@ -70,7 +70,7 @@ public class CreateDataAssociationFeatureTest extends AbstractFeatureTest {
 		createDataAssocation(taskShape, dataObjectShape, diagramTypeProvider)
 			.execute();
 
-		assertThat(TestUtil.toDetailsString(diagram)).contains("DataOutputAssociationImpl");
+		assertThat(StringUtil.toDetailsString(diagram)).contains("DataOutputAssociationImpl");
 		
 		assertThat(task.getDataOutputAssociations().size()).isEqualTo(1);
 		
