@@ -7,23 +7,33 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.InType;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelFactory;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelPackage;
-import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
+import org.eclipse.bpmn2.modeler.runtime.activiti.model.OutType;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.util.EObjectChangeSupport;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.util.EObjectChangeSupport.ModelChangedEvent;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.tables.EObjectAttributeTableColumnDescriptor;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.tables.EditableTableDescriptor;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.tables.EditableTableDescriptor.ElementFactory;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.tables.TableColumnDescriptor;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events.RowDeleted;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.transaction.NotificationFilter;
 import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 
 public class CallActivityPropertiesFactory extends AbstractPropertiesFactory {
 
@@ -43,87 +53,191 @@ public class CallActivityPropertiesFactory extends AbstractPropertiesFactory {
 	
 	public CallActivityPropertiesFactory(Composite parent, GFPropertySection section, final EObject bo) {
 		super(parent, section, bo);
-
-		System.out.println(TransactionUtil.getEditingDomain(bo));
-		System.out.println(BPMN2Editor.getActiveEditor().getEditingDomain());
-		
-//		List<InType> values = ModelUtil.getExtensionAttributeValues(bo, InType.class);
-//
-//		if (values.size() == 0) {
-//
-//			final InType type1 = ModelFactory.eINSTANCE.createInType();
-//			type1.setSource("ASDF");
-//			type1.setTarget("ASDF");
-//
-//			final InType type2 = ModelFactory.eINSTANCE.createInType();
-//			type2.setSourceExpression("${foo.bar}");
-//			type2.setTarget("ASDF");
-//
-//			TransactionalEditingDomain editingDomain = TransactionUtil.getEditingDomain(bo);
-//			editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-//
-//				@Override
-//				protected void doExecute() {
-//					ModelUtil.addExtensionAttributeValue(bo, ModelPackage.eINSTANCE.getDocumentRoot_In(), type1);
-//					ModelUtil.addExtensionAttributeValue(bo, ModelPackage.eINSTANCE.getDocumentRoot_In(), type2);
-//				}
-//			});
-//		}
 	}
-
+	
 	@Override
 	public void create() {
 		
 		// FIXME: Add broken callActiviti_CalledElement control
 		
-//		PropertyUtil.createText(section, parent, CALLED_ELEMENT,
-//				ModelPackage.eINSTANCE.getCallActivity_CalledElement(), bo);
+		PropertyUtil.createText(section, parent, CALLED_ELEMENT,
+				ModelPackage.eINSTANCE.getCallActivity_CalledElement(), bo);
 
-		createAttributesTable(section, parent);
+		EClass inTypeCls = ModelPackage.eINSTANCE.getInType();
+		EReference inTypeFeature = ModelPackage.eINSTANCE.getDocumentRoot_In();
+
+		EClass outTypeCls = ModelPackage.eINSTANCE.getOutType();
+		EReference outTypeFeature = ModelPackage.eINSTANCE.getDocumentRoot_Out();
+
+		createMappingsTable(section, parent, InType.class, "Input Mapping", inTypeCls, inTypeFeature, IN_FEATURES);
+		createMappingsTable(section, parent, OutType.class, "Output Mapping", outTypeCls, outTypeFeature, OUT_FEATURES);
 	}
 
-	private void createAttributesTable(GFPropertySection section, Composite parent) {
-
-		Composite composite = PropertyUtil.createStandardComposite(section, parent);
-
-		EditableTableDescriptor<InType> tableDescriptor = new EditableTableDescriptor<InType>() {
+	private <T extends EObject> void createMappingsTable(
+			GFPropertySection section, Composite parent, 
+			final Class<T> cls, String label, 
+			final EClass typeCls, final EStructuralFeature feature, EStructuralFeature[] typeFeatures) {
+		
+		EditableTableDescriptor<T> tableDescriptor = new EditableTableDescriptor<T>();
+		
+		tableDescriptor.setElementFactory(new ElementFactory<T>() {
 			
 			@Override
-			public List<InType> getValues() {
-				List<InType> values = ModelUtil.getExtensionAttributeValues(bo, InType.class);
-				
-				InType addDummy = getAddDummy();
-				if (addDummy != null) {
-					values.add(addDummy);
-				}
-				
-				return values;
+			public T create() {
+				T instance = (T) transactionalCreateType(typeCls, feature);
+				return instance;
 			}
-		};
-		
-		tableDescriptor.setAddDummy(ModelFactory.eINSTANCE.createInType());
+		});
 		
 		List<TableColumnDescriptor> columns = new ArrayList<TableColumnDescriptor>();
 
 		for (int i = 0; i < TABLE_HEADERS.length; i++) {
 			String title = TABLE_HEADERS[i];
-			EStructuralFeature feature = IN_FEATURES[i];
+			EStructuralFeature typeFeature = typeFeatures[i];
 
 			EObjectAttributeTableColumnDescriptor<EObject> descriptor = 
-					new EObjectAttributeTableColumnDescriptor<EObject>(feature, title, 200);
+					new EObjectAttributeTableColumnDescriptor<EObject>(typeFeature, title, 30);
 
 			columns.add(descriptor);
 		}
 		
 		tableDescriptor.setColumns(columns);
-
-		TableViewer viewer = tableDescriptor.createTableViewer(composite);
 		
-		Control control = viewer.getControl();
+		
+		// create table composites ////////////
+		
+		Composite composite = PropertyUtil.createStandardComposite(section, parent);
+		
+		Composite tableComposite = new Composite(composite, SWT.NONE);
+		FormData tableCompositeFormData = PropertyUtil.getStandardLayout();
+		tableCompositeFormData.height = 100;
+		
+		tableComposite.setLayoutData(tableCompositeFormData);
 
-		control.setLayoutData(PropertyUtil.STANDARD_LAYOUT);
 
 		// create label
-		PropertyUtil.createLabel(section, composite, "Input Mapping", control);
+		PropertyUtil.createLabel(section, composite, label, tableComposite);
+		
+		// instantiate table and viewer ////////////
+		
+		final TableViewer viewer = tableDescriptor.createTableViewer(tableComposite);
+		
+		final Table table = viewer.getTable();
+
+		
+		// add listeners /////////////
+		
+		table.addListener(Events.ROW_DELETED, new Listener() {
+
+			@Override
+			public void handleEvent(Event e) {
+				Events.RowDeleted<T> event = (RowDeleted<T>) e;
+				
+				T removedElement = event.getRemovedElement();
+				transactionalRemoveMapping(removedElement);
+			}
+		});
+		
+		EObjectChangeSupport changeSupport = new EObjectChangeSupport(bo, table);
+		changeSupport.setFilter(new ExtensionAttributeChangeFilter(bo, typeCls));
+		changeSupport.register();
+		
+		table.addListener(Events.MODEL_CHANGED, new Listener() {
+
+			@Override
+			public void handleEvent(Event e) {
+				ModelChangedEvent event = (ModelChangedEvent) e;
+				updateViewerContents(viewer, cls);
+			}
+		});
+		
+		// finally update viewer contents
+		updateViewerContents(viewer, cls);
+	}
+	
+	protected <T extends EObject> void updateViewerContents(TableViewer viewer, Class<T> typeCls) {
+		List<T> inTypes = ModelUtil.getExtensionAttributes(bo, typeCls);
+		
+		viewer.setInput(inTypes);
+		viewer.refresh();
+	}
+	
+	protected void transactionalRemoveMapping(final EObject element) {
+		TransactionalEditingDomain editingDomain = TransactionUtil.getEditingDomain(bo);
+		editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+			
+			@Override
+			protected void doExecute() {
+				ModelUtil.removeExtensionAttribute(bo, element);
+			}
+		});
+	}
+	
+	private EObject transactionalCreateType(EClass typeCls, final EStructuralFeature feature) {
+		final EObject instance = ModelFactory.eINSTANCE.create(typeCls);
+		
+		TransactionalEditingDomain editingDomain = TransactionUtil.getEditingDomain(bo);
+		editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+			
+			@Override
+			protected void doExecute() {
+				ModelUtil.addExtensionAttribute(bo, feature, instance);
+			}
+		});
+		
+		return instance;
+	}
+	
+	/**
+	 * Checks for changes in the target objects extension elements
+	 * 
+	 * @author nico.rehwaldt
+	 */
+	private class ExtensionAttributeChangeFilter extends NotificationFilter.Custom {
+
+		private EObject object;
+		private EClass attributeClass;
+
+		public ExtensionAttributeChangeFilter(EObject object, EClass attributeClass) {
+			this.object = object;
+			this.attributeClass = attributeClass;
+		}
+		
+		@Override
+		public boolean matches(Notification notification) {
+			
+			Object notifier = notification.getNotifier();
+			if (notifier instanceof EObject) {
+				EStructuralFeature feature = (EStructuralFeature) notification.getFeature();
+				
+				// perform a simple member check for the notifier
+				// to figure out if we are dealing with relevant data
+				return isMemberOfObject((EObject) notifier);
+			} else {
+				return false;
+			}
+		}
+		
+		private boolean isMemberOfObject(EObject notifier) {
+			EObject container = notifier.eContainer();
+			if (container == null) {
+				return false;
+			} else {
+				// the case in which we currently handle a ExtensionAttributeValue element
+				// object <- extensionAttributeValue
+				if (object.equals(container)) {
+					return true;
+				} else {
+					container = container.eContainer();
+					if (container == null) {
+						return false;
+					} else {
+						// the case in which we currently handle a extension attribute
+						// object <- extensionAttributeValue <- attribute
+						return object.equals(container);
+					}
+				}
+			}
+		}
 	}
 }

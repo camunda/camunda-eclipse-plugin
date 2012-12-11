@@ -9,6 +9,7 @@ import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.ManualTask;
 import org.eclipse.bpmn2.ScriptTask;
+import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.Task;
@@ -16,7 +17,9 @@ import org.eclipse.bpmn2.UserTask;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.factories.ActivityPropertiesFactory;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.factories.CallActivityPropertiesFactory;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.factories.DiagramPropertiesFactory;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.factories.ProcessPropertiesFactory;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.factories.ScriptTaskPropertiesFactory;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.factories.SequenceFlowPropertiesFactory;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.factories.ServiceTaskPropertiesFactory;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.factories.StartEventPropertiesFactory;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.factories.UserTaskPropertiesFactory;
@@ -57,15 +60,29 @@ public class BpmnPropertyCompositeFactory {
 		if (bo instanceof Event) {
 			createEventComposite((Event) bo);
 		}
+		if (bo instanceof SequenceFlow) {
+			createSequenceFlowComposite((SequenceFlow) bo);
+		}
+		if (bo instanceof org.eclipse.bpmn2.Process) {
+			createProcessComposite((org.eclipse.bpmn2.Process) bo);
+		}
 		
 		
 		return parentComposite;
 	}
-	
+
 	private Composite createDiagramComposite(Diagram bo) {
 		new DiagramPropertiesFactory(parentComposite, section, bo).create();
 		
 		return parentComposite;
+	}
+
+	private void createSequenceFlowComposite(SequenceFlow bo) {
+		new SequenceFlowPropertiesFactory(parentComposite, section, bo).create();
+	}
+	
+	private void createProcessComposite(org.eclipse.bpmn2.Process bo) {
+		new ProcessPropertiesFactory(parentComposite, section, bo).create();
 	}
 	
 	private Composite createActivityComposite(Activity bo) {

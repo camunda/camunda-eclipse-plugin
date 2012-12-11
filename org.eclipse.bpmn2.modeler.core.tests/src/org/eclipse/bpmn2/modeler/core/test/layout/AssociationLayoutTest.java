@@ -8,7 +8,7 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
-import org.eclipse.bpmn2.modeler.core.test.util.ShapeUtil;
+import org.eclipse.bpmn2.modeler.core.test.util.Util;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -24,17 +24,17 @@ public class AssociationLayoutTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource
 	public void testDataAssociationHasNoBendboints() {
-		Shape taskShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_1");
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
 
 		BaseElement taskElement = BusinessObjectUtil.getFirstBaseElement(taskShape);
 		Task task = (Task) taskElement;
 		
-		Shape dataObjectShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "DataObject_1");
+		Shape dataObjectShape = Util.findShapeByBusinessObjectId(diagram, "DataObject_1");
 		
 		createDataAssocation(taskShape, dataObjectShape, diagramTypeProvider)
 			.execute();
 		
-		FreeFormConnection association = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, task.getDataOutputAssociations().get(0).getId());
+		FreeFormConnection association = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, task.getDataOutputAssociations().get(0).getId());
 
 		assertThat(association.getBendpoints().size()).isEqualTo(0);
 		

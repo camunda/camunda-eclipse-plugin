@@ -21,9 +21,9 @@ public abstract class ModelAttributeTextBinding<V> extends ModelTextBinding<V> {
 	public V getModelValue() {
 		try {
 			return (V) model.eGet(feature);
-		}catch (Exception e) {
+		} catch (Exception e) {
 			// FIXME whats causing this
-			throw new IllegalArgumentException("Could not get feature "+ feature +" for "+model, e);
+			throw new IllegalArgumentException("Could not get feature "+ feature +" for " + model, e);
 		}
 	}
 

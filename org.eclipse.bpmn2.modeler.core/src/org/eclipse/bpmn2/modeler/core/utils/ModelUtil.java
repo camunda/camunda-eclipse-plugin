@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import org.eclipse.bpmn2.BaseElement;
@@ -844,7 +845,7 @@ public class ModelUtil {
 	 * 
 	 * @return
 	 */
-	public static <T> List<T> getExtensionAttributeValues(EObject object, Class<T> cls) {
+	public static <T> List<T> getExtensionAttributes(EObject object, Class<T> cls) {
 		List<T> results = new ArrayList<T>();
 		
 		EStructuralFeature extensionValuesFeature = object.eClass().getEStructuralFeature("extensionValues");
@@ -854,7 +855,6 @@ public class ModelUtil {
 			FeatureMap featureMap = value.getValue();
 			for (Entry e : featureMap) {
 				Object valueObject = e.getValue();
-				
 				if (cls.isInstance(valueObject)) {
 					results.add((T) valueObject);
 				}
@@ -862,6 +862,29 @@ public class ModelUtil {
 		}
 		
 		return results;
+	}
+	
+	/**
+	 * Removes the extension attribute from the object
+	 * 
+	 * @param object
+	 * @param attributeValue
+	 */
+	public static void removeExtensionAttribute(EObject object, EObject attributeValue) {
+
+		EStructuralFeature extensionValuesFeature = object.eClass().getEStructuralFeature("extensionValues");
+		EList<ExtensionAttributeValue> extensionAttributesList = (EList<ExtensionAttributeValue>) object.eGet(extensionValuesFeature);
+		
+		for (ExtensionAttributeValue extensionAttributes : extensionAttributesList) {
+			FeatureMap featureMap = extensionAttributes.getValue();
+			ListIterator<Entry> iterator = featureMap.listIterator();
+			while (iterator.hasNext()) {
+				Entry e = iterator.next();
+				if (attributeValue.equals(e.getValue())) {
+					iterator.remove();
+				}
+			}
+		}
 	}
 	
 	public static List<ExtensionAttributeValue> getExtensionAttributeValues(EObject object) {
@@ -907,22 +930,23 @@ public class ModelUtil {
 		return new ArrayList<ExtensionAttributeValue>();
 	}
 	
-	public static void addExtensionAttributeValue(EObject object, EStructuralFeature feature, EObject value) {
-		EStructuralFeature evf = object.eClass().getEStructuralFeature("extensionValues");
-		EList<EObject> list = (EList<EObject>)object.eGet(evf);
+	public static void addExtensionAttribute(EObject object, EStructuralFeature feature, EObject value) {
+		EStructuralFeature extensionValuesFeature = object.eClass().getEStructuralFeature("extensionValues");
+		EList<EObject> list = (EList<EObject>) object.eGet(extensionValuesFeature);
 		
-		if (list.size()==0) {
-			ExtensionAttributeValue newItem = Bpmn2ModelerFactory.create(ExtensionAttributeValue.class);
-			FeatureMap map = newItem.getValue();
-			map.add(feature, value);
-			list.add(newItem);
-			ModelUtil.setID(newItem);
+		ExtensionAttributeValue attributeValue = null;
+		
+		if (list.isEmpty()) {
+			attributeValue = Bpmn2ModelerFactory.create(ExtensionAttributeValue.class);
+			
+			ModelUtil.setID(attributeValue);
+			list.add(attributeValue);
+		} else {
+			attributeValue = (ExtensionAttributeValue) list.get(0);
 		}
-		else {
-			ExtensionAttributeValue oldItem = (ExtensionAttributeValue) list.get(0);
-			FeatureMap map = oldItem.getValue();
-			map.add(feature, value);
-		}
+		
+		FeatureMap map = attributeValue.getValue();
+		map.add(feature, value);
 	}
 
 	/**

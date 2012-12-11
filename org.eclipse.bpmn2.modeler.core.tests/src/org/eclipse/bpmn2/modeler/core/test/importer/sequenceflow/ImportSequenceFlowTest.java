@@ -9,7 +9,7 @@ import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmnModelTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
-import org.eclipse.bpmn2.modeler.core.test.util.ShapeUtil;
+import org.eclipse.bpmn2.modeler.core.test.util.Util;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
@@ -28,7 +28,7 @@ public class ImportSequenceFlowTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 		
-		Connection connection = ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+		Connection connection = Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
 		assertThat(connection).isNotNull();
 		
 		SequenceFlow sequenceFlow = BusinessObjectUtil.getFirstElementOfType(connection, SequenceFlow.class);
@@ -41,7 +41,7 @@ public class ImportSequenceFlowTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 
-		Connection connection = ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		Connection connection = Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
 		assertThat(connection).isNotNull();
 	}
 	
@@ -51,8 +51,8 @@ public class ImportSequenceFlowTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 
-		Shape exclusiveGatewayShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
-		Connection defaultFlowShape = ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+		Shape exclusiveGatewayShape = Util.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
+		Connection defaultFlowShape = Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
 		
 		assertThat(defaultFlowShape).isNotNull();
 		assertThat(exclusiveGatewayShape).isNotNull();
@@ -70,9 +70,9 @@ public class ImportSequenceFlowTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 		
-		FreeFormConnection connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
-		Shape startShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_3");
-		Shape endShape = ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_4");
+		FreeFormConnection connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+		Shape startShape = Util.findShapeByBusinessObjectId(diagram, "Task_3");
+		Shape endShape = Util.findShapeByBusinessObjectId(diagram, "Task_4");
 		
 		EList<Anchor> startShapeAnchors = startShape.getAnchors();
 		

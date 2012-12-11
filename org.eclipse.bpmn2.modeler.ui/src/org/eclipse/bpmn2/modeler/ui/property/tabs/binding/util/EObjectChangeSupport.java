@@ -1,13 +1,11 @@
-package org.eclipse.bpmn2.modeler.ui.property.tabs.binding;
+package org.eclipse.bpmn2.modeler.ui.property.tabs.binding.util;
 
 import static org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events.MODEL_CHANGED;
 
-import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.transaction.NotificationFilter;
 import org.eclipse.emf.transaction.ResourceSetChangeEvent;
 import org.eclipse.emf.transaction.ResourceSetListener;
@@ -17,24 +15,22 @@ import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 
-public class ModelViewChangeSupport implements ResourceSetListener {
+public class EObjectChangeSupport implements ResourceSetListener {
 	
-	private EObject model;
-	private EStructuralFeature feature;
-	private Control control;
+	protected EObject model;
+	protected Control control;
 
 	private DisposeListener unregisterListener = new UnregisterResourceListenerListener();
 	
 	private boolean registered = false;
 	
-	public ModelViewChangeSupport(EObject model, EStructuralFeature feature, Control control) {
+	private NotificationFilter notificationFilter;
+
+	public EObjectChangeSupport(EObject model, Control control) {
 		
 		this.model = model;
-		this.feature = feature;
-		
 		this.control = control;
 	}
 	
@@ -75,7 +71,9 @@ public class ModelViewChangeSupport implements ResourceSetListener {
 
 	protected void unregisterEditingDomainListener() {
 		TransactionalEditingDomain transactionalEditingDomain = getTransactionalEditingDomain();
-		transactionalEditingDomain.removeResourceSetListener(this);
+		if (transactionalEditingDomain != null) {
+			transactionalEditingDomain.removeResourceSetListener(this);
+		}
 	}
 	
 
@@ -85,39 +83,47 @@ public class ModelViewChangeSupport implements ResourceSetListener {
 		return TransactionUtil.getEditingDomain(model);
 	}
 
+	public void setFilter(NotificationFilter filter) {
+		this.notificationFilter = filter;
+	}
+	
 	@Override
 	public NotificationFilter getFilter() {
-		return new InstanceSpecificFilter();
+		if (notificationFilter != null) {
+			return notificationFilter;
+		} else {
+			return new InstanceSpecificFilter();
+		}
 	}
 
 	@Override
-	public boolean isAggregatePrecommitListener() {
+	public final boolean isAggregatePrecommitListener() {
 		return false;
 	}
 
 	@Override
-	public boolean isPostcommitOnly() {
+	public final boolean isPostcommitOnly() {
 		return false;
 	}
 
 	@Override
-	public boolean isPrecommitOnly() {
+	public final boolean isPrecommitOnly() {
 		return false;
 	}
 
 	@Override
-	public void resourceSetChanged(final ResourceSetChangeEvent event) {
+	public final void resourceSetChanged(final ResourceSetChangeEvent event) {
 		fireModelChanged(event);
 	}
 
 	@Override
-	public Command transactionAboutToCommit(ResourceSetChangeEvent event) throws RollbackException {
+	public final Command transactionAboutToCommit(ResourceSetChangeEvent event) throws RollbackException {
 		return null;
 	}
 	
 	protected void fireModelChanged(ResourceSetChangeEvent event) {
 		if (!control.isDisposed()) {
-			control.notifyListeners(MODEL_CHANGED, new ModelChangedEvent(model, feature, control, event.getSource()));
+			control.notifyListeners(MODEL_CHANGED, new ModelChangedEvent(model, null, control, event.getSource()));
 		}
 	}
 	
@@ -133,24 +139,10 @@ public class ModelViewChangeSupport implements ResourceSetListener {
 		@Override
 		public boolean matches(Notification notification) {
 
-			Object notificationFeature = notification.getFeature();
 			Object notifier = notification.getNotifier();
 			
-			if (model.equals(notifier) || feature.equals(notificationFeature)) {
+			if (model.equals(notifier)) {
 				return true;
-			}
-			
-			if (notification.getEventType() == Notification.REMOVE) {
-				Object removedValue = notification.getOldValue();
-				
-				if (removedValue instanceof FeatureMap.Entry) {
-					FeatureMap.Entry removed = (FeatureMap.Entry) removedValue;
-					EStructuralFeature removedFeature = removed.getEStructuralFeature();
-					
-					if (feature.equals(removedFeature)) {
-						return true;
-					}
-				}
 			}
 
 			return false;
@@ -214,17 +206,18 @@ public class ModelViewChangeSupport implements ResourceSetListener {
 	 * Adds change support to the given model and makes sure it is only added once.
 	 * 
 	 * @param model
-	 * @param feature
 	 * @param control
 	 */
-	public static void ensureAdded(EObject model, EStructuralFeature feature, Control control) {
-		if (control.getData("ModelViewChangeSupport_KEY") != null) {
+	public static void ensureAdded(EObject model, Control control) {
+		String CHANGE_SUPPORT_KEY = EObjectChangeSupport.class.getName() + "_data" + model.getClass().getName() + model.hashCode();
+		
+		if (control.getData(CHANGE_SUPPORT_KEY) != null) {
 			return;
 		}
 		
-		ModelViewChangeSupport modelViewChangeSupport = new ModelViewChangeSupport(model, feature, control);
+		EObjectChangeSupport modelViewChangeSupport = new EObjectChangeSupport(model, control);
 		modelViewChangeSupport.register();
 		
-		control.setData("ModelViewChangeSupport_KEY", modelViewChangeSupport);
+		control.setData(CHANGE_SUPPORT_KEY, modelViewChangeSupport);
 	}
 }

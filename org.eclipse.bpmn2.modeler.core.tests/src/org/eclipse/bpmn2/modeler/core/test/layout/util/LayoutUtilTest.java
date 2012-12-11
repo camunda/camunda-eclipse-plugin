@@ -9,7 +9,7 @@ import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
-import org.eclipse.bpmn2.modeler.core.test.util.ShapeUtil;
+import org.eclipse.bpmn2.modeler.core.test.util.Util;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -24,9 +24,9 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testBase.bpmn")
 	public void testHorizontalTreshold() {
-		Shape task1 = ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_1");
-		Shape start2 = ShapeUtil.findShapeByBusinessObjectId(diagram, "StartEvent_2");
-		Shape task2 = ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_2");
+		Shape task1 = Util.findShapeByBusinessObjectId(diagram, "Task_1");
+		Shape start2 = Util.findShapeByBusinessObjectId(diagram, "StartEvent_2");
+		Shape task2 = Util.findShapeByBusinessObjectId(diagram, "Task_2");
 
 		assertThat(LayoutUtil.getHorizontalLayoutTreshold(LayoutUtil.getShapeCenter(task1), LayoutUtil.getShapeCenter(start2))).isGreaterThan(0);
 		assertThat(LayoutUtil.getHorizontalLayoutTreshold(LayoutUtil.getShapeCenter(start2), LayoutUtil.getShapeCenter(task1))).isLessThan(0);
@@ -36,11 +36,11 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testBase.bpmn")
 	public void testAssertNoDiagonalEdgesPass() {
-		Shape start1 = ShapeUtil.findShapeByBusinessObjectId(diagram, "StartEvent_1");
-		Shape task1 = ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_1");
+		Shape start1 = Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
+		Shape task1 = Util.findShapeByBusinessObjectId(diagram, "Task_1");
 		
-		Shape start2 = ShapeUtil.findShapeByBusinessObjectId(diagram, "StartEvent_2");
-		Shape task2 = ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_2");
+		Shape start2 = Util.findShapeByBusinessObjectId(diagram, "StartEvent_2");
+		Shape task2 = Util.findShapeByBusinessObjectId(diagram, "Task_2");
 
 		assertThat(LayoutUtil.getLayoutTreshold(start1, task1)).isEqualTo(-0.683);
 		assertThat(LayoutUtil.getLayoutTreshold(task1, start1)).isEqualTo(0.682); // 45 degree
@@ -64,11 +64,11 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testBase.bpmn")
 	public void testLeftRightDetection () {
-		Shape start1 = ShapeUtil.findShapeByBusinessObjectId(diagram, "StartEvent_1");
-		Shape task1 = ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_1");
+		Shape start1 = Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
+		Shape task1 = Util.findShapeByBusinessObjectId(diagram, "Task_1");
 		
-		Shape start2 = ShapeUtil.findShapeByBusinessObjectId(diagram, "StartEvent_2");
-		Shape task2 = ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_2");
+		Shape start2 = Util.findShapeByBusinessObjectId(diagram, "StartEvent_2");
+		Shape task2 = Util.findShapeByBusinessObjectId(diagram, "Task_2");
 		
 		assertTrue(LayoutUtil.isRightToStartShape(start2, task1));
 		assertTrue(LayoutUtil.isLeftToStartShape(start1, task2));
@@ -81,11 +81,11 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testBase.bpmn")
 	public void testAboveBeneathDetection () {
-		Shape start1 = ShapeUtil.findShapeByBusinessObjectId(diagram, "StartEvent_1");
-		Shape task1 = ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_1");
+		Shape start1 = Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
+		Shape task1 = Util.findShapeByBusinessObjectId(diagram, "Task_1");
 		
-		Shape start2 = ShapeUtil.findShapeByBusinessObjectId(diagram, "StartEvent_2");
-		Shape task2 = ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_2");
+		Shape start2 = Util.findShapeByBusinessObjectId(diagram, "StartEvent_2");
+		Shape task2 = Util.findShapeByBusinessObjectId(diagram, "Task_2");
 		
 		assertTrue(LayoutUtil.isAboveStartShape(start2, task1));
 		assertTrue(LayoutUtil.isBeneathStartShape(task1, start1));
@@ -97,77 +97,77 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testBase.bpmn")
 	public void testZoneDetection () {
-		FreeFormConnection flow2 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
+		FreeFormConnection flow2 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
 		assertThat(LayoutUtil.getEndShapeSector(flow2)).isEqualTo(Sector.BOTTOM_RIGHT);
 		
-		FreeFormConnection flow3 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+		FreeFormConnection flow3 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
 		assertThat(LayoutUtil.getEndShapeSector(flow3)).isEqualTo(Sector.BOTTOM);
 		
-		FreeFormConnection flow4 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_4");
+		FreeFormConnection flow4 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_4");
 		assertThat(LayoutUtil.getEndShapeSector(flow4)).isEqualTo(Sector.BOTTOM_LEFT);
 		
-		FreeFormConnection flow5 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_5");
+		FreeFormConnection flow5 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_5");
 		assertThat(LayoutUtil.getEndShapeSector(flow5)).isEqualTo(Sector.LEFT);
 		
-		FreeFormConnection flow6 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_6");
+		FreeFormConnection flow6 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_6");
 		assertThat(LayoutUtil.getEndShapeSector(flow6)).isEqualTo(Sector.TOP_LEFT);
 		
-		FreeFormConnection flow7 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_7");
+		FreeFormConnection flow7 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_7");
 		assertThat(LayoutUtil.getEndShapeSector(flow7)).isEqualTo(Sector.TOP);
 		
-		FreeFormConnection flow8 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_8");
+		FreeFormConnection flow8 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_8");
 		assertThat(LayoutUtil.getEndShapeSector(flow8)).isEqualTo(Sector.TOP_RIGHT);
 		
-		FreeFormConnection flow9 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_9");
+		FreeFormConnection flow9 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_9");
 		assertThat(LayoutUtil.getEndShapeSector(flow9)).isEqualTo(Sector.RIGHT);
 	}
 	
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testBase.bpmn")
 	public void testGetSourceBpmnElement () {
-		FreeFormConnection flow2 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
+		FreeFormConnection flow2 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
 		assertThat(LayoutUtil.getSourceBaseElement(flow2).getId()).isEqualTo("StartEvent_11");
 	}
 	
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testBase.bpmn")
 	public void testGetBoundaryEventRelativeSector() {
-		Shape boundaryEvent1 = ShapeUtil.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
+		Shape boundaryEvent1 = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
 		assertThat(LayoutUtil.getBoundaryEventRelativeSector(boundaryEvent1)).isEqualTo(Sector.TOP_LEFT);
 
-		Shape boundaryEvent2 = ShapeUtil.findShapeByBusinessObjectId(diagram, "BoundaryEvent_2");
+		Shape boundaryEvent2 = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_2");
 		assertThat(LayoutUtil.getBoundaryEventRelativeSector(boundaryEvent2)).isEqualTo(Sector.TOP_RIGHT);
 		
-		Shape boundaryEvent3 = ShapeUtil.findShapeByBusinessObjectId(diagram, "BoundaryEvent_3");
+		Shape boundaryEvent3 = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_3");
 		assertThat(LayoutUtil.getBoundaryEventRelativeSector(boundaryEvent3)).isEqualTo(Sector.BOTTOM_RIGHT);
 		
-		Shape boundaryEvent4 = ShapeUtil.findShapeByBusinessObjectId(diagram, "BoundaryEvent_4");
+		Shape boundaryEvent4 = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_4");
 		assertThat(LayoutUtil.getBoundaryEventRelativeSector(boundaryEvent4)).isEqualTo(Sector.BOTTOM_LEFT);
 		
-		Shape boundaryEvent5 = ShapeUtil.findShapeByBusinessObjectId(diagram, "BoundaryEvent_5");
+		Shape boundaryEvent5 = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_5");
 		assertThat(LayoutUtil.getBoundaryEventRelativeSector(boundaryEvent5)).isEqualTo(Sector.TOP);
 
-		Shape boundaryEvent6 = ShapeUtil.findShapeByBusinessObjectId(diagram, "BoundaryEvent_6");
+		Shape boundaryEvent6 = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_6");
 		assertThat(LayoutUtil.getBoundaryEventRelativeSector(boundaryEvent6)).isEqualTo(Sector.BOTTOM);
 		
-		Shape boundaryEvent7 = ShapeUtil.findShapeByBusinessObjectId(diagram, "BoundaryEvent_7");
+		Shape boundaryEvent7 = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_7");
 		assertThat(LayoutUtil.getBoundaryEventRelativeSector(boundaryEvent7)).isEqualTo(Sector.RIGHT);
 		
-		Shape boundaryEvent8 = ShapeUtil.findShapeByBusinessObjectId(diagram, "BoundaryEvent_8");
+		Shape boundaryEvent8 = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_8");
 		assertThat(LayoutUtil.getBoundaryEventRelativeSector(boundaryEvent8)).isEqualTo(Sector.LEFT);
 	}
 	
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testBase.bpmn")
 	public void testGetLength() {
-		FreeFormConnection flow1 = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		FreeFormConnection flow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
 		assertThat(LayoutUtil.getLength(flow1)).isEqualTo(284);
 	}
 	
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testDefaultAnchors.bpmn")
 	public void testTaskDefaultAnchors() throws Exception {
-		Shape task = ShapeUtil.findShapeByBusinessObjectId(diagram, "Task_1");
+		Shape task = Util.findShapeByBusinessObjectId(diagram, "Task_1");
 		
 		// no specific anchors attached to element
 		// all anchors should be default
@@ -180,7 +180,7 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testDefaultAnchors.bpmn")
 	public void testEventDefaultAnchors() throws Exception {
-		Shape event = ShapeUtil.findShapeByBusinessObjectId(diagram, "StartEvent_1");
+		Shape event = Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
 		
 		// no specific anchors attached to element
 		// all anchors should be default
@@ -193,7 +193,7 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testDefaultAnchors.bpmn")
 	public void testGatewayDefaultAnchors() throws Exception {
-		Shape gateway = ShapeUtil.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
+		Shape gateway = Util.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
 
 		// no specific anchors attached to element
 		// all anchors should be default

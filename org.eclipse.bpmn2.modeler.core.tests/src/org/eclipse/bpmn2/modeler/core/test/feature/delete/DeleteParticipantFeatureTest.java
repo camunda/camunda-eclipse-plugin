@@ -10,7 +10,7 @@ import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
-import org.eclipse.bpmn2.modeler.core.test.util.ShapeUtil;
+import org.eclipse.bpmn2.modeler.core.test.util.Util;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.dd.di.DiagramElement;
@@ -25,7 +25,7 @@ public class DeleteParticipantFeatureTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource
 	public void testDeleteSingleParticipant() {
-		Shape participantShape = ShapeUtil.findShapeByBusinessObjectId(getDiagram(), "_Participant_2");
+		Shape participantShape = Util.findShapeByBusinessObjectId(getDiagram(), "_Participant_2");
 		deleteParticipant(participantShape, diagramTypeProvider).execute();
 		assertThat(ModelUtil.getAllRootElements(getDefinitions(), Collaboration.class)).hasSize(0);
 		
@@ -41,8 +41,8 @@ public class DeleteParticipantFeatureTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource
 	public void testDeleteMultipleParticipants() {
-		Shape participantShape = ShapeUtil.findShapeByBusinessObjectId(getDiagram(), "Participant_4");
-		Shape task2Shape = ShapeUtil.findShapeByBusinessObjectId(getDiagram(), "Task_2");
+		Shape participantShape = Util.findShapeByBusinessObjectId(getDiagram(), "Participant_4");
+		Shape task2Shape = Util.findShapeByBusinessObjectId(getDiagram(), "Task_2");
 		
 		DiagramElement participantDi = DIUtils.findDiagramElement(getDefinitions().getDiagrams(), BusinessObjectUtil.getFirstBaseElement(participantShape));
 		assertThat(participantDi).isNotNull();

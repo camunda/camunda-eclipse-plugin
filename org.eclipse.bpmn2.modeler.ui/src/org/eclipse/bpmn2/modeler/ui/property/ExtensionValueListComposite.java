@@ -54,7 +54,7 @@ public abstract class ExtensionValueListComposite extends DefaultListComposite {
 	
 	@SuppressWarnings("unchecked")
 	protected void addExtensionValue(EObject value) {
-		ModelUtil.addExtensionAttributeValue(businessObject, extensionValueFeature, value);
+		ModelUtil.addExtensionAttribute(businessObject, extensionValueFeature, value);
 	}
 	
 	protected Object removeListItem(EObject object, EStructuralFeature feature, int index) {

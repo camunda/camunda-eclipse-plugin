@@ -103,7 +103,6 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 		this.tabbedPropertySheetPage = aTabbedPropertySheetPage;
 		this.parent = parent;
 		parent.setLayout(new GridLayout(1, false));
-//		editor = DiagramEditor.getActiveEditor();
 	}
 
 	/**
@@ -124,12 +123,6 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 	protected DiagramEditor getDiagramEditor() {
 		return editor;
 	}
-
-//	protected ModelHandler getModelHandler() {
-//		if (editor!=null)
-//			return editor.getModelHandler();
-//		return null;
-//	}
 	
 	/**
 	 * Returns the property section's TabbedPropertySheetPage

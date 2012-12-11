@@ -5,7 +5,7 @@ import static org.fest.assertions.api.Assertions.fail;
 
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
-import org.eclipse.bpmn2.modeler.core.test.util.ShapeUtil;
+import org.eclipse.bpmn2.modeler.core.test.util.Util;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.junit.Test;
 
@@ -18,7 +18,7 @@ public class FreeFormConnectionAssertTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource
 	public void testAssertNoDiagonalEdgesPass() {
-		FreeFormConnection connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+		FreeFormConnection connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
 		assertThat(connection).hasNoDiagonalEdges();
 	}
 	
@@ -26,7 +26,7 @@ public class FreeFormConnectionAssertTest extends AbstractFeatureTest {
 	@DiagramResource
 	public void testAssertNoDiagonalEdgesFail() {
 		
-		FreeFormConnection connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+		FreeFormConnection connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
 		
 		try {
 			assertThat(connection).hasNoDiagonalEdges();
@@ -39,7 +39,7 @@ public class FreeFormConnectionAssertTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource
 	public void testAssertBendpointCountPass() {
-		FreeFormConnection connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+		FreeFormConnection connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
 		
 		assertThat(connection).hasBendpointCount(2);
 
@@ -62,7 +62,7 @@ public class FreeFormConnectionAssertTest extends AbstractFeatureTest {
 	@DiagramResource
 	public void testAssertBendpointCountFail() {
 		
-		FreeFormConnection connection = (FreeFormConnection) ShapeUtil.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+		FreeFormConnection connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
 		
 		try {
 			assertThat(connection).hasBendpointCount(2);

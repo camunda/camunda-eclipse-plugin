@@ -17,7 +17,7 @@ import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmnModelTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
-import org.eclipse.bpmn2.modeler.core.test.util.TestUtil;
+import org.eclipse.bpmn2.modeler.core.test.util.StringUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -126,7 +126,7 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 		assertThat(children).hasSize(2);
 
 		// Assert that unreferenced flow nodes are in the diagram
-		assertThat(TestUtil.toDetailsString(diagram))
+		assertThat(StringUtil.toDetailsString(diagram))
 			.contains("UserTask_2")
 			.contains("EndEvent_1");
 	}
@@ -163,7 +163,7 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 		assertThat(children).hasSize(2);
 		
 		// Assert that unreferenced flow nodes are in the diagram
-		assertThat(TestUtil.toDetailsString(diagram))
+		assertThat(StringUtil.toDetailsString(diagram))
 			.contains("EndEvent_1");
 	}
 }

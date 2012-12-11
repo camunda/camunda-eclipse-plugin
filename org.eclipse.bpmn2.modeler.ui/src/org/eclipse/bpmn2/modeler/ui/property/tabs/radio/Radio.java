@@ -8,7 +8,7 @@
  *
  ******************************************************************************/
 
-package org.eclipse.bpmn2.modeler.ui.property.tabs.swt;
+package org.eclipse.bpmn2.modeler.ui.property.tabs.radio;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -127,7 +127,7 @@ public class Radio {
 						T oldValue = select(value);
 						
 						if (oldValue == null || !oldValue.equals(value)) {
-							notifyListeners(RADIO_SELECTION_CHANGED, new SelectionChangedEvent<T>(RadioGroup.this, value, oldValue));
+							notifyListeners(RADIO_SELECTION_CHANGED, new RadioSelectionChanged<T>(RadioGroup.this, value, oldValue));
 						}
 					}
 				}
@@ -153,7 +153,7 @@ public class Radio {
 			}
 		}
 
-		protected void notifyListeners(int eventType, SelectionChangedEvent<T> event) {
+		protected void notifyListeners(int eventType, RadioSelectionChanged<T> event) {
 			if (eventType != RADIO_SELECTION_CHANGED) {
 				return;
 			}
@@ -192,36 +192,6 @@ public class Radio {
 	}
 	
 	/**
-	 * Radio selection event
-	 * 
-	 * @author nico.rehwaldt
-	 *
-	 * @param <T>
-	 */
-	public static class SelectionChangedEvent<T> extends Event {
-		
-		private static final long serialVersionUID = 1L;
-		
-		private T newSelection;
-		private T oldSelection;
-
-		public SelectionChangedEvent(Object source, T newSelection, T oldSelection) {
-			super();
-			
-			this.newSelection = newSelection;
-			this.oldSelection = oldSelection;
-		}
-		
-		public T getNewSelection() {
-			return newSelection;
-		}
-		
-		public T getOldSelection() {
-			return oldSelection;
-		}
-	}
-	
-	/**
 	 * Radio selection event listener adapter super class
 	 * 
 	 * @author nico.rehwaldt
@@ -232,9 +202,9 @@ public class Radio {
 		
 		@Override
 		public final void handleEvent(Event event) {
-			if (event instanceof SelectionChangedEvent) {
+			if (event instanceof RadioSelectionChanged) {
 				try {
-					SelectionChangedEvent<T> evt = (SelectionChangedEvent<T>) event;
+					RadioSelectionChanged<T> evt = (RadioSelectionChanged<T>) event;
 					radioSelectionChanged(evt);
 				} catch (Exception e) {
 					// ignore
@@ -247,6 +217,6 @@ public class Radio {
 		 * 
 		 * @param event
 		 */
-		public abstract void radioSelectionChanged(SelectionChangedEvent<T> event);
+		public abstract void radioSelectionChanged(RadioSelectionChanged<T> event);
 	}
 }

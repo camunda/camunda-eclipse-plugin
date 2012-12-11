@@ -1,5 +1,6 @@
 package org.eclipse.bpmn2.modeler.ui.property.tabs.binding;
 
+import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.util.EAttributeChangeSupport;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.IValueChangeListener;
@@ -60,7 +61,7 @@ public abstract class ModelTextBinding<V> extends ModelViewBinding<Text, V> {
 
 	@Override
 	protected void establishModelViewBinding() {
-		ModelViewChangeSupport.ensureAdded(model, feature, control);
+		EAttributeChangeSupport.ensureAdded(model, feature, control);
 
 		control.addListener(Events.MODEL_CHANGED, new Listener() {
 			
@@ -75,7 +76,7 @@ public abstract class ModelTextBinding<V> extends ModelViewBinding<Text, V> {
 					; // expected
 				}
 				
-				if (modelValue == null || !modelValue.equals(viewValue)) {
+				if (isChangeWithNullChecks(modelValue, viewValue)) {
 					setViewValue(modelValue);
 				}
 			}
@@ -93,17 +94,9 @@ public abstract class ModelTextBinding<V> extends ModelViewBinding<Text, V> {
 					V viewValue = fromString((String) event.diff.getNewValue());
 					V modelValue = getModelValue();
 					
-					if (viewValue != null) {
-						if (!viewValue.equals(modelValue)) {
-							setModelValue(viewValue);
-						}
-					} else {
-						if (modelValue != null) {
-							// set model value null
-							setModelValue(viewValue);
-						}
+					if (isChangeWithNullChecks(modelValue, viewValue)) {
+						setModelValue(viewValue);
 					}
-					
 				} catch (IllegalArgumentException e) {
 					; // expected
 				}

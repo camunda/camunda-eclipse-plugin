@@ -6,11 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelPackage;
-import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.ModelButtonBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.dialog.ClassChooserDialog;
-import org.eclipse.bpmn2.modeler.ui.property.tabs.swt.Radio.RadioGroup;
-import org.eclipse.bpmn2.modeler.ui.property.tabs.swt.Radio.SelectionChangedEvent;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.radio.Radio.RadioGroup;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events.RadioSelectionChanged;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -100,7 +99,7 @@ public class ServiceTaskPropertiesFactory extends AbstractPropertiesFactory {
 			
 			@Override
 			public void handleEvent(Event e) {
-				SelectionChangedEvent<EStructuralFeature> event = (SelectionChangedEvent<EStructuralFeature>) e;
+				RadioSelectionChanged<EStructuralFeature> event = (RadioSelectionChanged<EStructuralFeature>) e;
 				
 				transactionalHandleTypeChange(event.getOldSelection(), event.getNewSelection());
 			}
