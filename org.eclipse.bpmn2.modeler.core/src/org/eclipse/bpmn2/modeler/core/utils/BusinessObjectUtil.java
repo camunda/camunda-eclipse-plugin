@@ -29,6 +29,7 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.mm.pictograms.PictogramLink;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IPeService;
@@ -77,19 +78,42 @@ public class BusinessObjectUtil {
 
 	@SuppressWarnings("unchecked")
 	public static <T extends EObject> T getFirstElementOfType(PictogramElement elem, Class<T> clazz, boolean searchParents) {
-		if (elem.getLink() == null) {
+		// first check if its a diagram with pictogram links
+		if ( (elem instanceof Diagram) && elem.getLink() == null) {
+			
+			Diagram diagram = (Diagram) elem;
+			for (PictogramLink link : diagram.getPictogramLinks()) {
+				T foundInLink = findInLink(link, clazz);
+				if (foundInLink != null) {
+					return foundInLink;
+				}
+			}
+			
+		}
+		else if (elem.getLink() == null) {
 			if (searchParents) {
 				while (elem!=null && elem.getLink()==null && elem.eContainer() instanceof PictogramElement)
 					elem = (PictogramElement)elem.eContainer();
 			}
 			if (elem==null || elem.getLink() == null)
 				return null;
+		}else {
+			T foundInLink = findInLink(elem.getLink(), clazz);
+			if (foundInLink != null) {
+				return foundInLink;
+			}
 		}
 		// if this is a connection point, look at business objects of the connection
 		if (AnchorUtil.isConnectionPoint(elem)) {
 			elem = AnchorUtil.getConnectionPointOwner((Shape)elem);
 		}
-		EList<EObject> businessObjs = elem.getLink().getBusinessObjects();
+		
+		return null;
+	}
+
+	private static <T extends EObject> T findInLink(PictogramLink pictogramLink,
+			Class<T> clazz) {
+		EList<EObject> businessObjs = pictogramLink.getBusinessObjects();
 		for (EObject eObject : businessObjs) {
 			if (clazz.isInstance(eObject)) {
 				return (T) eObject;

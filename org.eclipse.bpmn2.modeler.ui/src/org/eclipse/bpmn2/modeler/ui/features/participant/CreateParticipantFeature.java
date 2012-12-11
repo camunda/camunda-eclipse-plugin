@@ -43,6 +43,11 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 	@Override
     public Object[] create(ICreateContext context) {
 		BPMNDiagram bpmnDiagram = BusinessObjectUtil.getFirstElementOfType(context.getTargetContainer(), BPMNDiagram.class);
+		
+		if (bpmnDiagram == null) {
+			throw new IllegalStateException("Participant should be in the context of a Graphiti Diagram linked to a BPMNDiagram");
+		}
+		
 		Definitions definitions = (Definitions) bpmnDiagram.eContainer();
 		
 		List<Collaboration> collaborations = ModelUtil.getAllRootElements( definitions, Collaboration.class);

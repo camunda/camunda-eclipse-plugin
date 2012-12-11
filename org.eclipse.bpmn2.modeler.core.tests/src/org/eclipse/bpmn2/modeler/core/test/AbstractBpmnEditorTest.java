@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Collections;
 
+import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.impl.DocumentRootImpl;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceFactoryImpl;
@@ -119,6 +121,10 @@ public abstract class AbstractBpmnEditorTest {
 
 	public Bpmn2ResourceImpl getResource() {
 		return resource;
+	}
+	
+	public Definitions getDefinitions() {
+		return ((DocumentRootImpl) resource.getContents().get(0)).getDefinitions();
 	}
 
 	public TemporaryFolder getTempFolder() {
