@@ -3,8 +3,8 @@ package org.eclipse.bpmn2.modeler.ui.property.tabs.tables;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.bpmn2.modeler.ui.property.tabs.tables.layout.TableColumnLayout2;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.jface.layout.fix.TableColumnLayout2;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;

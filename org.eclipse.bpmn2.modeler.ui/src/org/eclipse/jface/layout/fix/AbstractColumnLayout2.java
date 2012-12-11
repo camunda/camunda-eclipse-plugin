@@ -11,7 +11,7 @@
  *                                               - fix for bug 178280, 184342, 184045, 208014, 214532
  *     Micah Hainline <micah_hainline@yahoo.com> - fix in bug: 208335
  *******************************************************************************/
-package org.eclipse.bpmn2.modeler.ui.property.tabs.tables.layout;
+package org.eclipse.jface.layout.fix;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.layout.AbstractColumnLayout;

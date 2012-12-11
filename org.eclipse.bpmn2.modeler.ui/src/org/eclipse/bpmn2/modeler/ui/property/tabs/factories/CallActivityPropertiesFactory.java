@@ -60,8 +60,8 @@ public class CallActivityPropertiesFactory extends AbstractPropertiesFactory {
 		
 		// FIXME: Add broken callActiviti_CalledElement control
 		
-//		PropertyUtil.createText(section, parent, CALLED_ELEMENT,
-//				ModelPackage.eINSTANCE.getCallActivity_CalledElement(), bo);
+		PropertyUtil.createText(section, parent, CALLED_ELEMENT,
+				ModelPackage.eINSTANCE.getCallActivity_CalledElement(), bo);
 
 		EClass inTypeCls = ModelPackage.eINSTANCE.getInType();
 		EReference inTypeFeature = ModelPackage.eINSTANCE.getDocumentRoot_In();

@@ -11,7 +11,7 @@
  *     IBM Corporation - API refactoring and general maintenance
  *******************************************************************************/
 
-package org.eclipse.bpmn2.modeler.ui.property.tabs.tables.layout;
+package org.eclipse.jface.layout.fix;
 
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnLayoutData;

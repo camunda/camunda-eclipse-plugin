@@ -1,6 +1,6 @@
 package org.eclipse.bpmn2.modeler.ui.property.tabs.tables;
 
-import org.eclipse.bpmn2.modeler.ui.property.tabs.tables.layout.TableColumnLayout2;
+import org.eclipse.jface.layout.fix.TableColumnLayout2;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.EditingSupport;
