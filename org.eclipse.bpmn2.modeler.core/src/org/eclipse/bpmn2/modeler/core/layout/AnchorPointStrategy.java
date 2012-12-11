@@ -122,7 +122,7 @@ public class AnchorPointStrategy extends LayoutStrategy {
 
 		default:
 			throw new IllegalArgumentException(
-					"Cant define AnchorPointStrategy for undefined sector");
+					"Cant define AnchorPointStrategy for undefined sector for connection " + connection);
 		}
 	}
 	

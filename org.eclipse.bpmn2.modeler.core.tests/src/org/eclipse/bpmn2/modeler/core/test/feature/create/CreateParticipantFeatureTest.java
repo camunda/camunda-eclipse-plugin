@@ -15,6 +15,7 @@ import org.eclipse.bpmn2.modeler.core.test.util.ShapeUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.dd.di.DiagramElement;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.junit.Test;
 
@@ -79,7 +80,10 @@ public class CreateParticipantFeatureTest extends AbstractFeatureTest {
 		
 		Shape taskShape = ShapeUtil.findShapeByBusinessObjectId(getDiagram(), "Task_1");
 		DiagramElement taskDi = DIUtils.findDiagramElement(getDefinitions().getDiagrams(), BusinessObjectUtil.getFirstBaseElement(taskShape));
-		
 		assertThat(taskDi).isNotNull();
+
+		// Shapes should be moved into partcipant shape
+		Shape participantShape = getDiagram().getChildren().get(0);
+		assertThat(taskShape.getContainer()).isEqualTo((ContainerShape) participantShape);
 	}
 }

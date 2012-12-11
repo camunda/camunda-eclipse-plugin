@@ -65,7 +65,14 @@ public abstract class LayoutStrategy {
 			T subStrategy = (T) strategyInstance.getSubStrategy(connection, sourceElement);
 			
 			if (subStrategy.appliesTo(connection)) {
-				subStrategy.sectorSwitch(sector);
+				
+				// FIXME what if sector is undefined? Should this be allowed ? skipping sector switch in this case for now 
+				if (sector != Sector.UNDEFINED) {
+					subStrategy.sectorSwitch(sector);
+				}else {
+					org.eclipse.bpmn2.modeler.core.Activator.logError(new IllegalStateException("Dont know how to handle sector for "+connection));
+				}
+				
 				subStrategy.typeSwitch(sector, sourceElement, targetElement);
 			} else {
 				subStrategy.unchanged();

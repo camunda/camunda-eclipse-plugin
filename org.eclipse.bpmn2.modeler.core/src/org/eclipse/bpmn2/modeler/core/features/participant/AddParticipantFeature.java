@@ -73,20 +73,8 @@ public class AddParticipantFeature extends AbstractAddBPMNShapeFeature<Participa
 		boolean horz = bpmnShape.isIsHorizontal();
 		FeatureSupport.setHorizontal(containerShape, horz);
 		
-		boolean hasLanes = false;
-		if (participant.getProcessRef() != null) {
-			hasLanes = participant.getProcessRef().getLaneSets().isEmpty() ? false : !participant.getProcessRef().getLaneSets().get(0).getLanes().isEmpty();
-		}
-				
-		if (!hasLanes) {
-	      Shape lineShape = peCreateService.createShape(containerShape, false);
-	      Polyline line;
-	      if (horz)
-	        line = gaService.createPolyline(lineShape, new int[] { 30, 0, 30, height });
-	      else
-	        line = gaService.createPolyline(lineShape, new int[] { 0, 30, width, 30 });
-	      StyleUtil.applyStyle(line, participant);
-		}
+		drawParticipantLine(participant, gaService, peCreateService,
+				containerShape, width, height, horz);
 
 		Shape textShape = peCreateService.createShape(containerShape, false);
 		Text text = gaService.createText(textShape, participant.getName());
@@ -102,6 +90,25 @@ public class AddParticipantFeature extends AbstractAddBPMNShapeFeature<Participa
 		updatePictogramElement(containerShape);
 		layoutPictogramElement(containerShape);
 		return containerShape;
+	}
+
+	private void drawParticipantLine(Participant participant,
+			IGaService gaService, IPeCreateService peCreateService,
+			ContainerShape containerShape, int width, int height, boolean horz) {
+		boolean hasLanes = false;
+		if (participant.getProcessRef() != null) {
+			hasLanes = participant.getProcessRef().getLaneSets().isEmpty() ? false : !participant.getProcessRef().getLaneSets().get(0).getLanes().isEmpty();
+		}
+				
+		if (!hasLanes) {
+	      Shape lineShape = peCreateService.createShape(containerShape, false);
+	      Polyline line;
+	      if (horz)
+	        line = gaService.createPolyline(lineShape, new int[] { 30, 0, 30, height });
+	      else
+	        line = gaService.createPolyline(lineShape, new int[] { 0, 30, width, 30 });
+	      StyleUtil.applyStyle(line, participant);
+		}
 	}
 
 	@Override
