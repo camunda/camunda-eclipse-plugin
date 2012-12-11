@@ -36,6 +36,12 @@ public class GeneralTabSection extends GFPropertySection implements
 		EObject bo = Graphiti.getLinkService()
 				.getBusinessObjectForLinkedPictogramElement(pe);
 		
+		System.out.println(pe.getLink().getBusinessObjects());
+		
+		System.out.println(pe);
+		System.out.println(bo);
+		System.out.println();
+		
 		// handle case that business object or the pictogram element have been deleted
 		// when multiple objects are selected
 		if (bo == null) {

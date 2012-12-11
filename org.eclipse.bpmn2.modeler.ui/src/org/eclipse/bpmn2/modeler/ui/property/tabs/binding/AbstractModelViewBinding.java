@@ -94,4 +94,36 @@ public abstract class AbstractModelViewBinding<T, V> {
 	protected void establishViewModelBinding() {
 		
 	}
+	
+	/**
+	 * Performs a similarity check on the values.
+	 * Must be null safe.
+	 * 
+	 * @param oldValue
+	 * @param newValue
+	 * 
+	 * @return true if the transition between old and new value is a change
+	 */
+	protected boolean isChangeWithNullChecks(V oldValue, V newValue) {
+		if (oldValue != null && newValue != null) {
+			return isChange(oldValue, newValue);
+		}
+		
+		return oldValue != newValue;
+	}
+	
+	/**
+	 * Provides the comparison between two values, the old and the new
+	 * value. Can be overridden in subclasses to customize that behavior.
+	 * 
+	 * The argumens oldValue and newValue will never be null.
+	 * 
+	 * @param oldValue
+	 * @param newValue
+	 * 
+	 * @return true if the transition between old and new value is a change
+	 */
+	protected boolean isChange(V oldValue, V newValue) {
+		return newValue.equals(oldValue);
+	}
 }

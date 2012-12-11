@@ -8,7 +8,7 @@ import java.util.Map;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelPackage;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.ModelButtonBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.dialog.ClassChooserDialog;
-import org.eclipse.bpmn2.modeler.ui.property.tabs.swt.Radio.RadioGroup;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.radio.Radio.RadioGroup;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events.RadioSelectionChanged;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;

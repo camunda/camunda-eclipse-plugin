@@ -76,7 +76,7 @@ public abstract class ModelTextBinding<V> extends ModelViewBinding<Text, V> {
 					; // expected
 				}
 				
-				if (modelValue == null || !modelValue.equals(viewValue)) {
+				if (isChangeWithNullChecks(modelValue, viewValue)) {
 					setViewValue(modelValue);
 				}
 			}
@@ -94,17 +94,9 @@ public abstract class ModelTextBinding<V> extends ModelViewBinding<Text, V> {
 					V viewValue = fromString((String) event.diff.getNewValue());
 					V modelValue = getModelValue();
 					
-					if (viewValue != null) {
-						if (!viewValue.equals(modelValue)) {
-							setModelValue(viewValue);
-						}
-					} else {
-						if (modelValue != null) {
-							// set model value null
-							setModelValue(viewValue);
-						}
+					if (isChangeWithNullChecks(modelValue, viewValue)) {
+						setModelValue(viewValue);
 					}
-					
 				} catch (IllegalArgumentException e) {
 					; // expected
 				}

@@ -3,7 +3,7 @@ package org.eclipse.bpmn2.modeler.ui.property.tabs.util;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.BooleanButtonBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.IntegerTextBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.StringTextBinding;
-import org.eclipse.bpmn2.modeler.ui.property.tabs.swt.Radio.RadioGroup;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.radio.Radio.RadioGroup;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;

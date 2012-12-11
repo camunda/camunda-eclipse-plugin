@@ -8,7 +8,7 @@
  *
  ******************************************************************************/
 
-package org.eclipse.bpmn2.modeler.ui.property.tabs.swt;
+package org.eclipse.bpmn2.modeler.ui.property.tabs.radio;
 
 import java.util.ArrayList;
 import java.util.HashMap;
