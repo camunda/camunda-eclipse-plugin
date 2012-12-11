@@ -11,7 +11,7 @@ import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
-import org.eclipse.bpmn2.modeler.core.test.util.ShapeUtil;
+import org.eclipse.bpmn2.modeler.core.test.util.Util;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.dd.di.DiagramElement;
@@ -58,7 +58,7 @@ public class CreateParticipantFeatureTest extends AbstractFeatureTest {
 		List<Process> processes = ModelUtil.getAllRootElements(getDefinitions(), org.eclipse.bpmn2.Process.class);
 		assertThat(processes).hasSize(1); // process will be created when the first flow element is added
 		
-		Shape participantShape = ShapeUtil.findShapeByBusinessObjectId(getDiagram(), "Participant_1");
+		Shape participantShape = Util.findShapeByBusinessObjectId(getDiagram(), "Participant_1");
 		DiagramElement participantDi = DIUtils.findDiagramElement(getDefinitions().getDiagrams(), BusinessObjectUtil.getFirstBaseElement(participantShape));
 		assertThat(participantDi).isNotNull();
 	}
@@ -77,7 +77,7 @@ public class CreateParticipantFeatureTest extends AbstractFeatureTest {
 		assertThat(afterProcesses).hasSize(1);
 		assertThat(afterProcesses.get(0)).isEqualTo(process);
 		
-		Shape taskShape = ShapeUtil.findShapeByBusinessObjectId(getDiagram(), "Task_1");
+		Shape taskShape = Util.findShapeByBusinessObjectId(getDiagram(), "Task_1");
 		DiagramElement taskDi = DIUtils.findDiagramElement(getDefinitions().getDiagrams(), BusinessObjectUtil.getFirstBaseElement(taskShape));
 		
 		assertThat(taskDi).isNotNull();

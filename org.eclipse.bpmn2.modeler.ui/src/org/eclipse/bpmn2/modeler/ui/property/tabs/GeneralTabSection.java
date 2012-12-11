@@ -1,5 +1,6 @@
 package org.eclipse.bpmn2.modeler.ui.property.tabs;
 
+import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
@@ -20,18 +21,29 @@ public class GeneralTabSection extends GFPropertySection implements
 	@Override
 	public void createControls(Composite parent,
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+		
 		super.createControls(parent, aTabbedPropertySheetPage);
 		this.parentComposite = parent;
 		this.page = aTabbedPropertySheetPage;
 	}
 	
-	public Composite createPropertiesComposite (Composite parent,
+	public Composite createPropertiesComposite(Composite parent,
 			TabbedPropertySheetPage tabbedPropertySheetPage) {
+		
 		super.createControls(parent, tabbedPropertySheetPage);
 		
 		PictogramElement pe = getSelectedPictogramElement();
-		final EObject bo = Graphiti.getLinkService()
+		EObject bo = Graphiti.getLinkService()
 				.getBusinessObjectForLinkedPictogramElement(pe);
+		
+		// handle case that business object or the pictogram element have been deleted
+		// when multiple objects are selected
+		if (bo == null) {
+			pe = BPMN2Editor.getActiveEditor().getDiagramTypeProvider().getDiagram();
+			
+			bo = Graphiti.getLinkService()
+					.getBusinessObjectForLinkedPictogramElement(pe);
+		}
 		
 		return new BpmnPropertyCompositeFactory(this, parent).createCompositeForBpmnElement(bo);
 	}
@@ -48,7 +60,7 @@ public class GeneralTabSection extends GFPropertySection implements
 	}
 	
 	@Override
-	public void refresh() {		
+	public void refresh() {
 		rebuildParentComposite();
 		createPropertiesComposite(parentComposite, page);
 

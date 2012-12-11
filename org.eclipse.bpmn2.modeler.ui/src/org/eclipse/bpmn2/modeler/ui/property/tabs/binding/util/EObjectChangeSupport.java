@@ -71,7 +71,9 @@ public class EObjectChangeSupport implements ResourceSetListener {
 
 	protected void unregisterEditingDomainListener() {
 		TransactionalEditingDomain transactionalEditingDomain = getTransactionalEditingDomain();
-		transactionalEditingDomain.removeResourceSetListener(this);
+		if (transactionalEditingDomain != null) {
+			transactionalEditingDomain.removeResourceSetListener(this);
+		}
 	}
 	
 
