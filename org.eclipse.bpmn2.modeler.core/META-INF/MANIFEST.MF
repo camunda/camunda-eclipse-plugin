@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: BPMN2 Editor Core
 Bundle-SymbolicName: org.eclipse.bpmn2.modeler.core;singleton:=true
-Bundle-Version: 0.0.1.qualifier
+Bundle-Version: 2.1.0.qualifier
 Bundle-Activator: org.eclipse.bpmn2.modeler.core.Activator
 Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.emf.transaction,
@@ -34,7 +34,11 @@ Require-Bundle: org.eclipse.emf.transaction,
  org.eclipse.core.databinding,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
- org.eclipse.ui
+ org.eclipse.ui,
+ org.eclipse.jface.text,
+ org.eclipse.emf.workspace,
+ org.eclipse.jdt.ui,
+ org.eclipse.bpel.wsil.model
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.bpmn2.modeler.core,
@@ -63,7 +67,11 @@ Export-Package: org.eclipse.bpmn2.modeler.core,
  org.eclipse.bpmn2.modeler.core.preferences,
  org.eclipse.bpmn2.modeler.core.runtime,
  org.eclipse.bpmn2.modeler.core.utils,
- org.eclipse.bpmn2.modeler.core.validation
+ org.eclipse.bpmn2.modeler.core.validation,
+ org.eclipse.bpmn2.modeler.ui.features,
+ org.eclipse.bpmn2.modeler.ui.features.event,
+ org.eclipse.bpmn2.modeler.ui.features.flow,
+ org.eclipse.bpmn2.modeler.ui.features.participant
 Import-Package: org.eclipse.bpel.wsil.model.inspection,
  org.eclipse.graphiti.ui.features,
  org.eclipse.jface.preference,

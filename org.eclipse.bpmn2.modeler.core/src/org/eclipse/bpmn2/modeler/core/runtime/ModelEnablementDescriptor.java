@@ -47,16 +47,10 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 
 	private Boolean override = false;
 	
-	
-	// require a TargetRuntime!
-	private ModelEnablementDescriptor() {
-	}
-	
-	public ModelEnablementDescriptor(TargetRuntime rt) {
-		super(rt);
+	public ModelEnablementDescriptor() {
 		setEnabledAll(true);
 	}
-
+	
 	public void setType(String type) {
 		this.type = type;
 	}
@@ -144,10 +138,6 @@ public class ModelEnablementDescriptor extends BaseRuntimeDescriptor {
 			eClass = (EClass)Bpmn2Package.eINSTANCE.getEClassifier(className);
 		if (eClass==null)
 			eClass = (EClass)BpmnDiPackage.eINSTANCE.getEClassifier(className);
-//		if (eClass==null)
-//			eClass = (EClass)DcPackage.eINSTANCE.getEClassifier(className);
-//		if (eClass==null)
-//			eClass = (EClass)DiPackage.eINSTANCE.getEClassifier(className);
 		return eClass;
 	}
 	

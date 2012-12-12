@@ -1,11 +1,11 @@
 package org.eclipse.bpmn2.modeler.core.test.util.operations;
 
-import org.eclipse.bpmn2.modeler.ui.features.CreateDataAssociationFeature;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateConnectionContext;
 import org.eclipse.graphiti.features.context.impl.CreateConnectionContext;
 import org.eclipse.graphiti.mm.pictograms.Shape;
+import org.eclipse.bpmn2.modeler.ui.features.CreateDataAssociationFeature;
 
 public class CreateDataAssocationOperation extends AssociationOperation<ICreateConnectionContext, CreateDataAssociationFeature> {
 

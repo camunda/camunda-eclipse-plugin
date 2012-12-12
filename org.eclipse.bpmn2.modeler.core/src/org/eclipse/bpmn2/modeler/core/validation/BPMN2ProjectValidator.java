@@ -18,7 +18,6 @@ import org.eclipse.bpmn2.modeler.core.builder.BPMN2Nature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceSetImpl;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
-import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -26,8 +25,6 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -49,7 +46,6 @@ import org.eclipse.emf.validation.service.ModelValidationService;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -66,7 +62,6 @@ public class BPMN2ProjectValidator extends AbstractValidator {
     /** ID for BPMN2 specific problem markers. */
     public static final String BPMN2_MARKER_ID = "org.eclipse.bpmn2.modeler.core.problemMarker";
 	private Bpmn2Preferences preferences;
-	private TargetRuntime targetRuntime;
 	private IFile modelFile;
 
     @Override
@@ -86,7 +81,6 @@ public class BPMN2ProjectValidator extends AbstractValidator {
 		}
 
         ResourceSet rs = new Bpmn2ModelerResourceSetImpl();
-		getTargetRuntime().setResourceSet(rs);
 		rs.setURIConverter(new ProxyURIConverterImplExtension());
 
 		Resource resource = rs.createResource(
@@ -267,12 +261,6 @@ public class BPMN2ProjectValidator extends AbstractValidator {
         }
     }
 	
-    protected TargetRuntime getTargetRuntime() {
-		if (targetRuntime==null)
-			targetRuntime = getPreferences().getRuntime();
-		return targetRuntime;
-	}
-
     protected Bpmn2Preferences getPreferences() {
 		if (preferences==null) {
 			assert(modelFile!=null);

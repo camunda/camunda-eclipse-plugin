@@ -15,7 +15,6 @@ package org.eclipse.bpmn2.modeler.core.runtime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.bpmn2.Bpmn2Package;
@@ -27,19 +26,23 @@ import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
 import org.eclipse.bpmn2.modeler.core.preferences.ShapeStyle;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor.Property;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor.Value;
-import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceFactoryImpl;
 import org.eclipse.ui.PlatformUI;
 
-
+/**
+ * @deprecated We are not using the target runtime concept anymore, 
+ * should be removed everywehere
+ * 
+ * @author drobisch
+ *
+ */
 public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 
 	// extension point ID for Target Runtimes
@@ -194,7 +197,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 								ModelEnablementDescriptor me;
 								String type = e.getAttribute("type");
 								String profile = e.getAttribute("profile");
-								currentRuntime.addModelEnablements(me = new ModelEnablementDescriptor(currentRuntime));
+								currentRuntime.addModelEnablements(me = new ModelEnablementDescriptor());
 								me.setType(type);
 								me.setProfile(profile);
 								
@@ -276,7 +279,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 							ModelEnablementDescriptor me;
 							String type = e.getAttribute("type");
 							String profile = e.getAttribute("profile");
-							currentRuntime.addModelEnablements(me = new ModelEnablementDescriptor(currentRuntime));
+							currentRuntime.addModelEnablements(me = new ModelEnablementDescriptor());
 							me.setType(type);
 							me.setProfile(profile);
 							
@@ -558,14 +561,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 					return me;
 			}
 		}
-		if (this != getDefaultRuntime()) {
-			// fall back to enablements from Default Runtime
-			return getDefaultRuntime().getModelEnablements(diagramType, profile);
-		}
-		
-		if (defaultModelEnablements==null)
-			defaultModelEnablements = new ModelEnablementDescriptor(getDefaultRuntime());
-		return defaultModelEnablements;
+		return new ModelEnablementDescriptor();
 	}
 	
 	public void addModelEnablements(ModelEnablementDescriptor me) {

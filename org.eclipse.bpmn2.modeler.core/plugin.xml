@@ -2,6 +2,99 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="org.eclipse.bpmn2.modeler.runtime" name="BPMN2 Modeler Runtime Specialization" schema="schema/org.eclipse.bpmn2.modeler.runtime.exsd"/>
+   	
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            class="org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelPackage"
+            genModel="model/ActivitiExtensions.genmodel"
+            uri="http://www.activiti.org">
+      </package>
+   </extension>
+   
+   	<extension point="org.eclipse.bpmn2.modeler.runtime">
+		<runtime name="camunda fox engine" versions="5.4,5.5,5.6,5.7,5.8"
+			id="org.activiti.runtime.activiti"
+			class="org.eclipse.bpmn2.modeler.runtime.activiti.ActivitiRuntimeExtension"
+			description="BPMN2 Modeler customizations for the Activiti engine">
+		</runtime>
+
+		<model runtimeId="org.activiti.runtime.activiti"
+			uri="http://www.activiti.org"
+			resourceFactory="org.eclipse.bpmn2.modeler.runtime.activiti.model.util.ModelResourceFactoryImpl">
+		</model>
+	</extension>
+   	
+   	<extension point="org.eclipse.ui.newWizards">
+		<!-- <primaryWizard id="org.eclipse.bpmn2.modeler.ui.diagram"> </primaryWizard> -->
+		<wizard category="org.eclipse.bpmn2.wizardCategory"
+			class="org.eclipse.bpmn2.modeler.ui.wizards.BPMN2DiagramWizard" icon="icons/bpmn2_editor_16.png"
+			id="org.eclipse.bpmn2.modeler.ui.diagram" name="BPMN2 Diagram">
+		</wizard>
+	</extension>
+	
+	<extension point="org.eclipse.ui.editors">
+		<!--
+		The multipage editor is still experimental.
+		To quickly revert back to the original, single page editor
+		simply replace the editor class with this:
+			class="org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor"
+		-->
+		<editor
+			class="org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor"
+			contributorClass="org.eclipse.graphiti.ui.editor.DiagramEditorActionBarContributor"
+			default="true" extensions="bpmn,bpmn2" icon="icons/bpmn2_editor_16.png"
+			id="org.eclipse.bpmn2.modeler.ui.bpmn2editor" name="Bpmn2 Diagram Editor">
+			<contentTypeBinding contentTypeId="org.eclipse.bpmn2.content-type.xml">
+			</contentTypeBinding>
+		</editor>
+	</extension>
+
+	<extension point="org.eclipse.core.contenttype.contentTypes">
+		<content-type base-type="org.eclipse.core.runtime.xml"
+			id="org.eclipse.bpmn2.content-type.xml"
+			name="BPMN2 Modeler File"
+			file-extensions="bpmn,bpmn2,bpmn20,xml"
+			priority="normal">
+			<describer class="org.eclipse.bpmn2.modeler.ui.BPMN2ContentDescriber">
+			</describer>
+		</content-type>
+	</extension>
+   	
+   	<extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+		<propertyContributor
+			contributorId="org.eclipse.bpmn2.modeler.ui.PropertyContributor"
+           labelProvider="org.eclipse.bpmn2.modeler.ui.property.PropertyLabelProvider"
+			tabDescriptorProvider="org.eclipse.bpmn2.modeler.ui.property.PropertyTabDescriptorProvider">
+			<propertyCategory category="BPMN2">
+			</propertyCategory>
+		</propertyContributor>
+	</extension>
+
+	<extension point="org.eclipse.graphiti.ui.diagramTypes">
+		<diagramType description="This is the diagram type for the BMPN2 diagram"
+			id="org.eclipse.bpmn2.modeler.ui.diagram.MainBPMNDiagramType" name="BPMN2 Diagram Type"
+			type="BPMN2">
+		</diagramType>
+	</extension>
+
+	<extension point="org.eclipse.graphiti.ui.diagramTypeProviders">
+		<diagramTypeProvider
+			class="org.eclipse.bpmn2.modeler.ui.diagram.MainBPMNDiagramTypeProvider"
+			description="This is the editor for the BPMN2 diagram"
+			id="org.eclipse.bpmn2.modeler.ui.diagram.MainBPMNDiagramType" name="BPMN2 Editor">
+			<diagramType
+				id="org.eclipse.bpmn2.modeler.ui.diagram.MainBPMNDiagramType">
+			</diagramType>
+			<imageProvider id="org.eclipse.bpmn2.modeler.ui.ImageProvider">
+			</imageProvider>
+		</diagramTypeProvider>
+	</extension>
+	
+	<extension point="org.eclipse.graphiti.ui.imageProviders">
+		<imageProvider class="org.eclipse.bpmn2.modeler.ui.ImageProvider"
+			id="org.eclipse.bpmn2.modeler.ui.ImageProvider">
+		</imageProvider>
+	</extension>
    
 	<!-- EMF Extensions -->
    
@@ -175,7 +268,7 @@
 		</listener>
 	</extension>
 
-  <extension
+  <!-- extension
         id="projectValidator"
         name="BPMN 2.0 Project Validator"
         point="org.eclipse.wst.validation.validatorV2">
@@ -205,7 +298,7 @@
            </rules>
         </exclude>
      </validator>
-  </extension>
+  </extension -->
   
   <extension
         id="org.eclipse.bpmn2.modeler.core.problemMarker"
@@ -218,7 +311,7 @@
            type="org.eclipse.emf.validation.problem">
      </super>
   </extension>
-  <extension
+  <!-- extension
         id="org.eclipse.bpmn2.modeler.core.bpmn2Builder"
         name="BPMN2 Validation Builder"
         point="org.eclipse.core.resources.builders">
@@ -228,8 +321,8 @@
               class="org.eclipse.bpmn2.modeler.core.builder.BPMN2Builder">
         </run>
      </builder>
-  </extension>
-  <extension
+  </extension -->
+  <!-- extension
         id="org.eclipse.bpmn2.modeler.core.bpmn2Nature"
         name="BPMN2 Project Nature"
         point="org.eclipse.core.resources.natures">
@@ -241,7 +334,7 @@
      <builder
            id="org.eclipse.bpmn2.modeler.core.bpmn2Builder">
      </builder>
-  </extension>
+  </extension-->
   <extension
         id="xmlProblem"
         name="XML Problem"
@@ -253,4 +346,5 @@
            value="true">
      </persistent>
   </extension>
+  
 </plugin>

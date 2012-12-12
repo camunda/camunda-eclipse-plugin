@@ -473,17 +473,18 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 				value = globalPreferences.getString(key);
 				if (value.isEmpty()) {
 					//get from TargetRuntime
-					ss = getRuntime().getShapeStyle(clazz);
-					if (ss==null) {
-						if (!TargetRuntime.DEFAULT_RUNTIME_ID.equals(getRuntime().getId())) {
-							// search default runtime
-							ss = TargetRuntime.getDefaultRuntime().getShapeStyle(clazz);
-						}
-						if (ss==null) {
-							// give up
-							ss = new ShapeStyle();
-						}
-					}
+					ss = new ShapeStyle();
+//					ss = getRuntime().getShapeStyle(clazz);
+//					if (ss==null) {
+//						if (!TargetRuntime.DEFAULT_RUNTIME_ID.equals(getRuntime().getId())) {
+//							// search default runtime
+//							ss = TargetRuntime.getDefaultRuntime().getShapeStyle(clazz);
+//						}
+//						if (ss==null) {
+//							// give up
+//							ss = new ShapeStyle();
+//						}
+//					}
 					// don't cache this because we don't want to save it PreferenceStore
 					return ss;
 				}

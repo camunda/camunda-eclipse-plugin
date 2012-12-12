@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- using macros for git, because the ant tasks in jgit suck, no push / commit etc. -->
+
+<project name="Fox Release Management Script" default="release" basedir=".">
+	<macrodef name = "git">
+		<attribute name = "command" />
+		<attribute name = "dir" default = "" />
+		<attribute name="failonerror" default="true"/>
+		<element name = "args" optional = "true" />
+		<sequential>
+			<echo message = "git @{command}" />
+			<exec executable = "git" dir = "@{dir}">
+				<arg value = "@{command}" />
+				<args/>
+			</exec>
+		</sequential>
+	</macrodef>
+	<macrodef name = "git-clone-pull">
+		<attribute name = "repository" />
+		<attribute name = "dest" />
+		<sequential>
+			<git command = "clone">
+				<args>
+					<arg value = "@{repository}" />
+					<arg value = "@{dest}" />
+					<arg value = "--recursive" />
+				</args>
+			</git>
+			<git command = "pull" dir = "@{dest}" />
+		</sequential>
+	</macrodef>
+
+	<!-- ============ Maven macro ============ -->
+	<macrodef name="maven">
+		<attribute name="options" default="" />
+		<attribute name="goals" />
+		<attribute name="basedir" />
+		<attribute name="settingsfile" default="${maven.settings.file}" />
+		<attribute name="maven.repo.local" default="${maven.repo.local}" />
+		<attribute name="resultproperty" default="maven.result" />
+		<element name="args" implicit="true" optional="true" />
+		<sequential>
+			<java classname="org.codehaus.classworlds.Launcher" fork="true"
+            dir="@{basedir}" resultproperty="@{resultproperty}" failonerror="true" timeout="1800000">
+				<jvmarg value="-Xmx512m"/>
+				<jvmarg value="-XX:MaxPermSize=256m"/>
+				<classpath>
+					<fileset dir="${maven.home}/boot">
+						<include name="*.jar" />
+					</fileset>
+					<fileset dir="${maven.home}/lib">
+						<include name="*.jar" />
+					</fileset>
+				</classpath>
+				<sysproperty key="classworlds.conf" value="${maven.home}/bin/m2.conf" />
+				<sysproperty key="maven.home" value="${maven.home}" />
+				<arg line="--settings=@{settingsfile} -Dmaven.repo.local=@{maven.repo.local} --batch-mode @{options} @{goals}" />
+			</java>
+		</sequential>
+	</macrodef>
+
+	<property file="build.properties" />
+	<property name="jvm.options" value="-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8" />
+
+	<property name="checkout.release.path" value="release" />
+
+	<!-- =========== OS properties / conditions =========== -->
+	<condition property="is.windows">
+		<os family="windows"/>
+	</condition>
+
+	<condition property="is.not.windows">
+		<not>
+			<os family="windows"/>
+		</not>
+	</condition>
+
+	<condition property="mvn.executable" value="mvn.bat" else="mvn">
+		<os family="windows"/>
+	</condition>
+
+
+	<!-- ============ Maven Ant stuff ============ -->
+	<target name="mvn.init">
+		<condition property="maven.repo.local" value="${maven.repo.local}" else="${user.home}/.m2/repository">
+			<isset property="maven.repo.local" />
+		</condition>
+		<echo>Using maven.repo.local=${maven.repo.local}</echo>
+		<condition property="maven.settings.file" value="${maven.settings.file}" else="${user.home}/.m2/settings.xml">
+			<isset property="maven.settings.file" />
+		</condition>
+		<echo>Using maven.settings.file=${maven.settings.file}</echo>
+	</target>
+
+	<!-- ============ Release Management Aggregation targets ============ -->
+	<target name="release" depends="checkout,
+									set.release.version,
+									build.release,
+									commit.release.version,
+									create.release.tag,
+									set.dev.version,
+									commit.dev.version,
+									git.push"
+	/>
+	
+	<target name="build.release">
+		<maven basedir="${checkout.release.path}/fox-designer"
+             options="-Pplatform-indigo"
+             goals="clean install"
+             resultproperty="maven.build.result" />
+	</target>
+	
+	<target name="checkout" depends="clean, git.checkout" />
+
+	<!-- ============ Common stuff ============ -->
+	<target name="clean">
+		<delete dir="${checkout.release.path}/fox-designer" />
+	</target>
+
+	<target name="git.checkout">
+		<git-clone-pull repository="${git.url.fox-designer}" dest="${checkout.release.path}/fox-designer" />
+	</target>
+
+	<target name="set.release.version" depends="mvn.init">
+		<maven basedir="${checkout.release.path}/fox-designer"
+             options="-DnewVersion=${release.version} -Pplatform-indigo -e -X"
+             goals="org.eclipse.tycho:tycho-versions-plugin:set-version"
+             resultproperty="maven.build.result" />
+	</target>
+	
+	<target name="commit.release.version">
+		<property name="release.version.commit.message" value="fox designer release: set version to ${release.version}" />
+		<echo>Project: ${release.version} committing...</echo>
+		<git command="commit" dir="${checkout.release.path}/fox-designer">
+			<args>
+				<arg value = "-a" />
+				<arg value = "-m ${release.version.commit.message}" />
+			</args>
+		</git>
+		<echo>Project: ${checkout.release.path}/fox-designer committed.</echo>
+	</target>
+
+	<target name="create.release.tag">
+		<property name="release.commit.message" value="fox designer release: set versions to ${release.version}" />
+		<git command="tag" dir="${checkout.release.path}/fox-designer">
+			<args>
+				<arg value = "-a" />
+				<arg value = "${fox.release.version}" />
+				<arg value = "-m '${release.commit.message}'" />
+			</args>
+		</git>
+		
+		<git command="checkout" dir="${checkout.release.path}/fox-designer">
+			<args>
+				<arg value = "master" />
+			</args>
+		</git>
+	</target>
+
+	<target name="set.dev.version" depends="mvn.init">
+		<maven basedir="${checkout.release.path}/fox-designer"
+             options="-DnewVersion=${development.version} -Pplatform-indigo -e -X"
+             goals="org.eclipse.tycho:tycho-versions-plugin:set-version"
+             resultproperty="maven.build.result" />
+	</target>
+
+	<target name="commit.dev.version">
+		<property name="prepare.next.commit.message" value="Prepare next fox designer release: set developmentVersion to ${development.version}" />
+		<echo>Project: @{project.dir} committing...</echo>
+		<git command="commit" dir="${checkout.release.path}/fox-designer">
+			<args>
+				<arg value = "-a" />
+				<arg value = "-m ${prepare.next.commit.message}" />
+			</args>
+		</git>
+		<echo>Project: ${checkout.release.path}/fox-designer committed.</echo>
+	</target>
+
+	<target name="git.push">
+		<echo>Project: ${checkout.release.path}/fox-designer pushing...</echo>
+		<git command="push" dir="${checkout.release.path}/fox-designer">
+			<args>
+				<arg value = "origin" />
+				<arg value = "master" />
+				<arg value = "--tags" />
+			</args>
+		</git>
+		<echo>Project: ${checkout.release.path}/fox-designer pushed.</echo>
+	</target>
+
+</project>
