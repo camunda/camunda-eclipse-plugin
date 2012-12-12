@@ -55,7 +55,6 @@
 
 	<modules>
 		<module>org.eclipse.bpmn2.modeler.core</module>
-		<module>org.eclipse.bpmn2.modeler.core.tests</module>
 		<module>com.camunda.fox.designer.feature</module>
 		<module>com.camunda.fox.designer.updatesite.feature</module>
 	</modules>
