@@ -98,6 +98,7 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.validation.BPMN2ProjectValidator;
 import org.eclipse.bpmn2.modeler.core.validation.BPMN2ValidationStatusLoader;
+import org.eclipse.bpmn2.modeler.runtime.activiti.model.util.ModelResourceFactoryImpl;
 import org.eclipse.bpmn2.modeler.ui.dialog.importer.ModelProblemsDialog;
 import org.eclipse.bpmn2.modeler.ui.property.artifact.CategoryDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.artifact.TextAnnotationDetailComposite;
@@ -432,6 +433,9 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		if (input instanceof Bpmn2DiagramEditorInput) {
 			Bpmn2DiagramEditorInput bpmn2DiagramEditorInput = (Bpmn2DiagramEditorInput) input; 
 			ResourceSet resourceSet = getEditingDomain().getResourceSet();
+			
+		    resourceSet.getResourceFactoryRegistry().getContentTypeToFactoryMap().put(
+		                Bpmn2ModelerResourceImpl.BPMN2_CONTENT_TYPE_ID, new ModelResourceFactoryImpl());
 			
 			/**
 			 * we assume that the input will have the model uri

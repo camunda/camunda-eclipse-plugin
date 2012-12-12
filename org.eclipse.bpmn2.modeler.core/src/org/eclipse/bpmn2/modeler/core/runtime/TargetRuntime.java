@@ -22,7 +22,6 @@ import org.eclipse.bpmn2.modeler.core.AbstractPropertyChangeListenerProvider;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.IBpmn2RuntimeExtension;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.ICustomTaskFeature;
-import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
 import org.eclipse.bpmn2.modeler.core.preferences.ShapeStyle;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor.Property;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor.Value;
@@ -32,7 +31,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceFactoryImpl;
 import org.eclipse.ui.PlatformUI;
 
@@ -125,11 +123,6 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 		}else{
 			return TargetRuntime.DEFAULT_RUNTIME_ID;
 		}
-	}
-	
-	public void setResourceSet(ResourceSet resourceSet) {
-		resourceSet.getResourceFactoryRegistry().getContentTypeToFactoryMap().put(
-				Bpmn2ModelerResourceImpl.BPMN2_CONTENT_TYPE_ID, modelDescriptor.getResourceFactory());
 	}
 	
 	public static TargetRuntime[] getAllRuntimes() {
