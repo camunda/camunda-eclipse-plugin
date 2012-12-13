@@ -3,31 +3,46 @@ package org.eclipse.bpmn2.modeler.ui.property.tabs.factories;
 import java.util.List;
 
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.ExclusiveGateway;
+import org.eclipse.bpmn2.InclusiveGateway;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.ModelAttributeComboBinding;
-import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.util.EAttributeChangeSupport;
-import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.util.EObjectChangeSupport.ModelChangedEvent;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.change.EAttributeChangeSupport;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.change.EObjectChangeSupport.ModelChangedEvent;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
-import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+/**
+ * Decision gateway specific stuff
+ * 
+ * @author nico.rehwaldt
+ */
 public class DecisionGatewayPropertiesFactory extends AbstractPropertiesFactory {
 
-	private static final EStructuralFeature DEFAULT_FLOW_FEATURE = Bpmn2Package.eINSTANCE.getExclusiveGateway_Default();
 	private static final EStructuralFeature FLOW_NODE_OUTGOING = Bpmn2Package.eINSTANCE.getFlowNode_Outgoing();
+	
+	private final EStructuralFeature DEFAULT_FLOW_FEATURE;
 	
 	public DecisionGatewayPropertiesFactory(Composite parent, GFPropertySection section, EObject bo) {
 		super(parent, section, bo);
+		
+		if (bo instanceof ExclusiveGateway) {
+			DEFAULT_FLOW_FEATURE = Bpmn2Package.eINSTANCE.getExclusiveGateway_Default();
+		} else 
+		if (bo instanceof InclusiveGateway) {
+			DEFAULT_FLOW_FEATURE = Bpmn2Package.eINSTANCE.getInclusiveGateway_Default();
+		} else {
+			throw new IllegalArgumentException("Unsupported argument: " + bo);
+		}
 	}
 
 	@Override
@@ -81,8 +96,6 @@ public class DecisionGatewayPropertiesFactory extends AbstractPropertiesFactory 
 		
 		EObject defaultFlow = (EObject) bo.eGet(DEFAULT_FLOW_FEATURE);
 		
-		boolean contained = defaultFlow != null;
-		
 		dropDown.add("");
 		
 		for (SequenceFlow outgoing: flows) {
@@ -90,27 +103,10 @@ public class DecisionGatewayPropertiesFactory extends AbstractPropertiesFactory 
 			dropDown.add(nodeId);
 			
 			if (outgoing.equals(defaultFlow)) {
-				contained = true;
+				dropDown.select(dropDown.indexOf(nodeId));
 			}
 		}
-		
-		if (!contained) {
-			transactionalDeleteDefaultFlow();
-		}
 	}
-
-
-	private void transactionalDeleteDefaultFlow() {
-		TransactionalEditingDomain editingDomain = TransactionUtil.getEditingDomain(bo);
-		editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-			
-			@Override
-			protected void doExecute() {
-				bo.eUnset(DEFAULT_FLOW_FEATURE);
-			}
-		});
-	}
-
 
 	/**
 	 * Mapping the condition expression to a string
@@ -148,12 +144,7 @@ public class DecisionGatewayPropertiesFactory extends AbstractPropertiesFactory 
 		 */
 		@Override
 		public SequenceFlow getModelValue() {
-			try {
-				return (SequenceFlow) model.eGet(feature);
-			} catch (Exception e) {
-				// FIXME whats causing this
-				throw new IllegalArgumentException("Could not get feature "+ feature +" for " + model, e);
-			}
+			return (SequenceFlow) model.eGet(feature);
 		}
 
 		/**

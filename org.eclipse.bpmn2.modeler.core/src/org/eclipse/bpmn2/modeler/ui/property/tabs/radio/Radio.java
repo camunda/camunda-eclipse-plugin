@@ -10,21 +10,19 @@
 
 package org.eclipse.bpmn2.modeler.ui.property.tabs.radio;
 
+import static org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events.RADIO_SELECTION_CHANGED;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.bpmn2.modeler.core.Activator;
-import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events.RadioSelectionChanged;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-
-import static org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events.*;
 
 
 /**
@@ -153,11 +151,11 @@ public class Radio {
 			}
 		}
 
-		protected void notifyListeners(int eventType, RadioSelectionChanged<T> event) {
+		protected void notifyListeners(int eventType, final RadioSelectionChanged<T> event) {
 			if (eventType != RADIO_SELECTION_CHANGED) {
 				return;
 			}
-			
+
 			for (Listener l : listeners) {
 				try {
 					l.handleEvent(event);

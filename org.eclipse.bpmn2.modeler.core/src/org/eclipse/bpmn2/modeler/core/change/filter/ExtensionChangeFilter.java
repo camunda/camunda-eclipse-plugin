@@ -34,6 +34,13 @@ public class ExtensionChangeFilter extends FeatureChangeFilter {
 			return false;
 		}
 
+		// tracking removal of extension element
+		if (isRemove(notification)) {
+			if (matchesObject(notifierEObj) && isExtensionType(notification.getOldValue())) {
+				return true;
+			}
+		}
+		
 		// we have a extension attribute value
 		// object <- extension
 		if (isExtensionValue(notifierEObj)) {
@@ -64,6 +71,15 @@ public class ExtensionChangeFilter extends FeatureChangeFilter {
 		return false;
 	}
 
+	private boolean isExtensionType(Object o) {
+		if (!(o instanceof EObject)) {
+			return false;
+		}
+	
+		EObject eObject = (EObject) o;
+		return EXTENSION_CLS.equals(eObject.eClass());
+	}
+
 	protected boolean isExtensionFeature(Object featureObj) {
 		return EXTENSION_FEATURE.equals(featureObj);
 	}
@@ -74,7 +90,7 @@ public class ExtensionChangeFilter extends FeatureChangeFilter {
 		}
 
 		EObject o = (EObject) notifierObj;
-		if (EXTENSION_CLS.equals(o.eClass())) {
+		if (isExtensionType(o)) {
 			if (object.equals(o.eContainer())) {
 				return true;
 			}

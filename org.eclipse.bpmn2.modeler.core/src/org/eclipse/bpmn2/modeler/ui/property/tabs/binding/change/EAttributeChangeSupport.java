@@ -1,4 +1,4 @@
-package org.eclipse.bpmn2.modeler.ui.property.tabs.binding.util;
+package org.eclipse.bpmn2.modeler.ui.property.tabs.binding.change;
 
 import static org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events.MODEL_CHANGED;
 
@@ -19,6 +19,14 @@ public class EAttributeChangeSupport extends EObjectChangeSupport {
 		this.filter = new FeatureChangeFilter(object, feature);
 	}
 	
+	@Override
+	protected String getHash() {
+		return 
+			super.getHash() + "_" + 
+			feature.getFeatureID() + "_" + 
+			feature.hashCode();
+	}
+	
 	// ResourceSetListener API implementation /////////////////
 
 	@Override
@@ -33,20 +41,33 @@ public class EAttributeChangeSupport extends EObjectChangeSupport {
 	/**
 	 * Adds change support to the given model and makes sure it is only added once.
 	 * 
-	 * @param model
+	 * @param object
 	 * @param feature
 	 * @param control
 	 */
-	public static void ensureAdded(EObject model, EStructuralFeature feature, Control control) {
-		String CHANGE_SUPPORT_KEY = EAttributeChangeSupport.class.getName() + "_" + model.eClass().getClassifierID() + "_" + feature.getFeatureID() + "_" + model.hashCode() + "_" + feature.hashCode();
+	public static void ensureAdded(EObject object, EStructuralFeature feature, Control control) {
+		EAttributeChangeSupport changeSupport = new EAttributeChangeSupport(object, feature, control);
+		
+		ensureAdded(changeSupport, control);
+	}
+	
+	/**
+	 * Ensure the change support is added to the given model
+	 * 
+	 * @param changeSupport
+	 * @param control
+	 */
+	public static void ensureAdded(EAttributeChangeSupport changeSupport, Control control) {
+
+		String CHANGE_SUPPORT_KEY = changeSupport.getHash();
 		
 		if (control.getData(CHANGE_SUPPORT_KEY) != null) {
+			System.out.println("SKIPPING ADDITION OF change support to " + control + ": ALREADY ADDED");
 			return;
 		}
 		
-		EAttributeChangeSupport modelViewChangeSupport = new EAttributeChangeSupport(model, feature, control);
-		modelViewChangeSupport.register();
+		changeSupport.register();
 		
-		control.setData(CHANGE_SUPPORT_KEY, modelViewChangeSupport);
+		control.setData(CHANGE_SUPPORT_KEY, changeSupport);
 	}
 }

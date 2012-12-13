@@ -18,8 +18,11 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
@@ -79,6 +82,8 @@ public class ServiceTaskPropertiesFactory extends AbstractPropertiesFactory {
 			final EStructuralFeature feature = TYPE_FEATURES[i];
 			
 			final Text text = PropertyUtil.createRadioText(section, parent, name, feature, radioGroup, bo);
+			text.setEnabled(false);
+			
 			featureToInputMap.put(feature, text);
 			
 			if (bo.eIsSet(feature)) {
@@ -93,7 +98,7 @@ public class ServiceTaskPropertiesFactory extends AbstractPropertiesFactory {
 		final Text classText = featureToInputMap.get(CLASS_FEATURE);
 		addBrowseClassButton(classText);
 		
-		radioGroup.select(selected, true);
+//		radioGroup.select(selected, true);
 		
 		radioGroup.addListener(RADIO_SELECTION_CHANGED, new Listener() {
 			
@@ -174,7 +179,10 @@ public class ServiceTaskPropertiesFactory extends AbstractPropertiesFactory {
 		@Override
 		public void setViewValue(Boolean value) {
 			control.setSelection(value);
-			control.notifyListeners(SWT.Selection, new Event());
+			
+			if (value) {
+				control.notifyListeners(SWT.Selection, new Event());
+			}
 		}
 
 		@Override

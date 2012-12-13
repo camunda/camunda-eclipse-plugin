@@ -1,4 +1,4 @@
-package org.eclipse.bpmn2.modeler.ui.property.tabs.binding.util;
+package org.eclipse.bpmn2.modeler.ui.property.tabs.binding.change;
 
 import static org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events.MODEL_CHANGED;
 
@@ -12,6 +12,11 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 
+/**
+ * Notifies a control when the EObject has changed.
+ * 
+ * @author nico.rehwaldt
+ */
 public class EObjectChangeSupport extends AbstractEObjectChangeSupport {
 	
 	protected Control control;
@@ -27,21 +32,36 @@ public class EObjectChangeSupport extends AbstractEObjectChangeSupport {
 	
 	// event registration ///////////////////////////////////////
 	
-	public void unregister() {
+	/**
+	 * Returns a hash which uniquely identifies the change support 
+	 * with its bound control and object.
+	 * 
+	 * @return
+	 */
+	protected String getHash() {
+		return 
+			getClass().getName() + "_" + 
+			object.eClass().getClassifierID() + "_" + 
+			object.hashCode() + "_" + 
+			control.getClass().getName() + "_" + 
+			control.hashCode();
+	}
+	
+	public final void unregister() {
 		unregisterControlDisposeListener();
 		super.unregister();
 	}
 	
-	public void register() {
+	public final void register() {
 		registerControlDisposeListener();
 		super.register();
 	}
 	
-	protected void registerControlDisposeListener() {
+	private void registerControlDisposeListener() {
 		control.addDisposeListener(unregisterListener);
 	}
 	
-	protected void unregisterControlDisposeListener() {
+	private void unregisterControlDisposeListener() {
 		if (!control.isDisposed()) {
 			control.removeDisposeListener(unregisterListener);
 		}
@@ -60,6 +80,12 @@ public class EObjectChangeSupport extends AbstractEObjectChangeSupport {
 		}
 	}
 	
+	/**
+	 * Listener which unregisters the EObject change listener when the 
+	 * control it is attached to is disposed
+	 * 
+	 * @author nico.rehwaldt
+	 */
 	private class UnregisterResourceListenerListener implements DisposeListener {
 
 		@Override
@@ -120,15 +146,16 @@ public class EObjectChangeSupport extends AbstractEObjectChangeSupport {
 	 * @param control
 	 */
 	public static void ensureAdded(EObject model, Control control) {
-		String CHANGE_SUPPORT_KEY = EObjectChangeSupport.class.getName() + "_" + model.eClass().getClassifierID() + "_" + model.hashCode();
+		
+		EObjectChangeSupport changeSupport = new EObjectChangeSupport(model, control);
+		String CHANGE_SUPPORT_KEY = changeSupport.getHash();
 		
 		if (control.getData(CHANGE_SUPPORT_KEY) != null) {
 			return;
 		}
 		
-		EObjectChangeSupport modelViewChangeSupport = new EObjectChangeSupport(model, control);
-		modelViewChangeSupport.register();
+		changeSupport.register();
 		
-		control.setData(CHANGE_SUPPORT_KEY, modelViewChangeSupport);
+		control.setData(CHANGE_SUPPORT_KEY, changeSupport);
 	}
 }

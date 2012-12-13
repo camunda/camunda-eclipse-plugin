@@ -2,6 +2,7 @@ package org.eclipse.bpmn2.modeler.ui.property.tabs.util;
 
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.BooleanButtonBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.IntegerTextBinding;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.ModelTextBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.StringTextBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.radio.Radio.RadioGroup;
 import org.eclipse.emf.ecore.EClassifier;
@@ -21,7 +22,6 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
@@ -239,14 +239,22 @@ public class PropertyUtil {
 	// binding ///////////////////////////////////////////
 	
 	private static void addBinding(Text text, EObject bo, EStructuralFeature feature) {
+		ModelTextBinding<?> binding = getBinding(text, bo, feature);
+		
+		if (binding != null) {
+			binding.establish();
+		}
+	}
+	
+	private static ModelTextBinding<?> getBinding(Text text, EObject bo, EStructuralFeature feature) {
 
 		EClassifier featureType = feature.getEType();
 
 		Class<?> instanceClass = featureType.getInstanceClass();
 		if (instanceClass.equals(int.class) || instanceClass.equals(Integer.class)) {
-			new IntegerTextBinding(bo, feature, text).establish();
+			return new IntegerTextBinding(bo, feature, text);
 		} else {
-			new StringTextBinding(bo, feature, text).establish();
+			return new StringTextBinding(bo, feature, text);
 		}
 	}
 
