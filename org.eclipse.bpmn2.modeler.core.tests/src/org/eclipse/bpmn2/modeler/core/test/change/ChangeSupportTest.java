@@ -28,6 +28,7 @@ import org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.FailedJobRetryTimeCy
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.FoxFactory;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.FoxPackage;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.util.ModelResourceFactoryImpl;
+import org.eclipse.bpmn2.modeler.runtime.activiti.util.AttributeUtil;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -317,6 +318,37 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 		assertThat(listener.getCapturedEvents()).hasSize(1);
 	}
 
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/change/ChangeSupportTest.testBase.bpmn")
+	public void testExtensionElementRemoveAndCleanExtensionAttributeValues() {
+		final Task task1 = findBusinessObjectById(diagram, "Task_1", Task.class);
+		
+		// assert that feature is set
+		assertThat(ExtensionUtil.getExtension(task1, RETRY_CYCLE_FEATURE, "text")).isNotNull();
+		
+		transactionalExecute(new RecordingCommand(editingDomain) {
+
+			@Override
+			protected void doExecute() {
+				ExtensionUtil.removeExtensionByFeature(task1, RETRY_CYCLE_FEATURE);
+			}
+		});
+
+		ExtensionChangeFilter filter = new ExtensionChangeFilter(task1, RETRY_CYCLE_FEATURE);
+		CustomResourceSetListener listener = new CustomResourceSetListener(task1, filter);
+		listener.register();
+
+		transactionalExecute(new RecordingCommand(editingDomain) {
+
+			@Override
+			protected void doExecute() {
+				AttributeUtil.clearEmptyExtensionElements(task1);
+			}
+		});
+		
+		assertThat(listener.getCapturedEvents()).hasSize(1);
+	}
+	
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/change/ChangeSupportTest.testBase.bpmn")
 	public void testExtensionElementUpdate() {
