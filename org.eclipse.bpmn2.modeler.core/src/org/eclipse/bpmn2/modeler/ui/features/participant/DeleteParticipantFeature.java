@@ -98,12 +98,12 @@ public class DeleteParticipantFeature extends DefaultDeleteBPMNShapeFeature {
 					ModelUtil.setID(newDiagram);
 					definitions.getDiagrams().add(newDiagram);
 					
-					link(getDiagram(), newDiagram); // we need to relink, the old diagram is gone
-					
 					BPMNPlane newPlane = BpmnDiFactory.eINSTANCE.createBPMNPlane();
 					ModelUtil.setID(newPlane);
 					newPlane.setBpmnElement(newProcess);
 					newDiagram.setPlane(newPlane);
+					
+					link(getDiagram(), new Object[] { newProcess, newDiagram }); // we need to relink, the old diagram is gone
 				} else {
 					throw new IllegalStateException(
 							"Unable to handle multiple collaborations diagrams.s");

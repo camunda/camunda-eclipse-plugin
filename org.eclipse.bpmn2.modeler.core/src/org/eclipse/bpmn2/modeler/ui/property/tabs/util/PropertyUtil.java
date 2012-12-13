@@ -9,6 +9,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -20,6 +21,7 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
@@ -39,8 +41,6 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
  */
 public class PropertyUtil {
 	
-	private static final FormData STANDARD_LAYOUT = getStandardLayout();
-	
 	public static Text createText(GFPropertySection section, Composite parent, String label, final EStructuralFeature feature, final EObject bo) {
 		Text text = createUnboundText(section, parent, label);
 		
@@ -56,6 +56,14 @@ public class PropertyUtil {
 		createLabel(section, composite, label, text);		
 		return text;
 	}
+
+	public static CCombo createDropDown(GFPropertySection section, Composite parent, String label) {
+		Composite composite = createStandardComposite(section, parent);
+		CCombo comboBox = createSimpleDropDown(section, composite);
+		
+		createLabel(section, composite, label, comboBox);		
+		return comboBox;
+	}
 	
 	public static Text createMultiText(GFPropertySection section, Composite parent, String label, final EStructuralFeature feature, final EObject bo) {
 		Composite composite = createStandardComposite(section, parent);
@@ -69,6 +77,14 @@ public class PropertyUtil {
 		return text;
 	}
 
+	protected static CCombo createSimpleDropDown(GFPropertySection section, Composite parent) {
+		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
+		final CCombo dropDown = factory.createCCombo(parent, SWT.BORDER | SWT.READ_ONLY);
+		setStandardLayout(dropDown);
+		
+		return dropDown;
+	}
+	
 	protected static Button createSimpleCheckbox(GFPropertySection section, Composite parent) {
 		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
 		final Button checkbox = factory.createButton(parent, "", SWT.CHECK);
@@ -242,5 +258,4 @@ public class PropertyUtil {
 		
 		return data;
 	}
-	
 }

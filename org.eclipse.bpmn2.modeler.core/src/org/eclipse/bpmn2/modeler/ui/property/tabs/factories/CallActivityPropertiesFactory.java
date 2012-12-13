@@ -1,5 +1,7 @@
 package org.eclipse.bpmn2.modeler.ui.property.tabs.factories;
 
+import static org.eclipse.bpmn2.modeler.core.utils.ExtensionUtil.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -156,7 +158,7 @@ public class CallActivityPropertiesFactory extends AbstractPropertiesFactory {
 	}
 	
 	protected <T extends EObject> void updateViewerContents(TableViewer viewer, Class<T> typeCls) {
-		List<T> inTypes = ModelUtil.getExtensionAttributes(bo, typeCls);
+		List<T> inTypes = getExtensions(bo, typeCls);
 		
 		viewer.setInput(inTypes);
 		viewer.refresh();
@@ -168,7 +170,7 @@ public class CallActivityPropertiesFactory extends AbstractPropertiesFactory {
 			
 			@Override
 			protected void doExecute() {
-				ModelUtil.removeExtensionAttribute(bo, element);
+				removeExtensionByValue(bo, element);
 			}
 		});
 	}
@@ -181,7 +183,7 @@ public class CallActivityPropertiesFactory extends AbstractPropertiesFactory {
 			
 			@Override
 			protected void doExecute() {
-				ModelUtil.addExtensionAttribute(bo, feature, instance);
+				addExtension(bo, feature, instance);
 			}
 		});
 		

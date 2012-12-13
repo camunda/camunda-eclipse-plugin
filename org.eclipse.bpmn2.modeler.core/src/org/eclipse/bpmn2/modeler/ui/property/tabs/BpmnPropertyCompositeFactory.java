@@ -6,7 +6,10 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.Event;
+import org.eclipse.bpmn2.ExclusiveGateway;
 import org.eclipse.bpmn2.FlowElement;
+import org.eclipse.bpmn2.Gateway;
+import org.eclipse.bpmn2.InclusiveGateway;
 import org.eclipse.bpmn2.ManualTask;
 import org.eclipse.bpmn2.ScriptTask;
 import org.eclipse.bpmn2.SequenceFlow;
@@ -16,6 +19,7 @@ import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.UserTask;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.factories.ActivityPropertiesFactory;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.factories.CallActivityPropertiesFactory;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.factories.DecisionGatewayPropertiesFactory;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.factories.DiagramPropertiesFactory;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.factories.ProcessPropertiesFactory;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.factories.ScriptTaskPropertiesFactory;
@@ -65,10 +69,23 @@ public class BpmnPropertyCompositeFactory {
 		}
 		if (bo instanceof org.eclipse.bpmn2.Process) {
 			createProcessComposite((org.eclipse.bpmn2.Process) bo);
+		}		
+		if (bo instanceof Gateway) {
+			createGatewayComposite((Gateway) bo);
 		}
 		
 		
 		return parentComposite;
+	}
+
+	private void createGatewayComposite(Gateway bo) {
+		if (bo instanceof ExclusiveGateway) {
+			new DecisionGatewayPropertiesFactory(parentComposite, section, bo).create();
+		}
+		
+		if (bo instanceof InclusiveGateway) {
+			new DecisionGatewayPropertiesFactory(parentComposite, section, bo).create();
+		}
 	}
 
 	private Composite createDiagramComposite(Diagram bo) {

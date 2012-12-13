@@ -60,7 +60,7 @@ public abstract class AbstractModelViewBinding<T, V> {
 	/**
 	 * Returns the editing domain for the managed model
 	 * 
-	 * @param model
+	 * @param matchModel
 	 * @return
 	 */
 	protected TransactionalEditingDomain getTransactionalEditingDomain() {

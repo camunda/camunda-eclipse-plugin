@@ -14,7 +14,7 @@ public class ProcessPropertiesFactory extends AbstractPropertiesFactory {
 
 	@Override
 	public void create() {
-		PropertyUtil.createText(section, parent, "Is Executable",
+		PropertyUtil.createCheckbox(section, parent, "Is Executable",
 				Bpmn2Package.eINSTANCE.getProcess_IsExecutable(), bo);
 	}
 }

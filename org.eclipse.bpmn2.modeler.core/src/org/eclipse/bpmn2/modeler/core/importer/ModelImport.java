@@ -72,6 +72,7 @@ import org.eclipse.bpmn2.modeler.core.importer.util.ErrorLogger;
 import org.eclipse.bpmn2.modeler.core.importer.util.ModelHelper;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.EList;
@@ -176,17 +177,16 @@ public class ModelImport {
 					collaboration = (Collaboration) rootElement;
 				}
 			} else {
-				// System.out.println("Unhandled RootElement: " + rootElement);
+				// are there unhandeled root elements?
 			}
 		}
-		
+	 
 		// next we process the DI diagrams and associate them with the process elements
 		List<BPMNDiagram> diagrams = definitions.getDiagrams();
 		for (BPMNDiagram bpmnDiagram : diagrams) {
 			handleDIBpmnDiagram(bpmnDiagram);
 		}
 		
-		// copied from old DIImport 
 		// iterates over all elements in the diagram -> may be bad but is there another solution?
 		
 		// add all ids to the mapping table so that they won't be used when 
@@ -195,10 +195,24 @@ public class ModelImport {
 		while (iter.hasNext()) {
 			ModelUtil.addID(iter.next());
 		}
+
+		// we create the bpmn diagram to work on
+		BPMNDiagram bpmnDiagram = getOrCreateDiagram(diagrams);
 		
-		// end copied from old DIImport 
+		// we have no root process or collaboration
+		// so we are going to create one
+		if (collaboration == null && processes.isEmpty()) {
+			Process defaultProcess = createDefaultDiagramContent(definitions, bpmnDiagram);
+			processes.add(defaultProcess);
+		}
 		
-		Diagram rootDiagram = createEditorRootDiagram(diagrams, collaboration, processes);
+		// at this point we have either a collaboration or 
+		// at minimum one process to work with
+		
+		ensureDiagramLinked(bpmnDiagram, collaboration, processes);
+		
+		// and create the graphiti diagram
+		Diagram rootDiagram = createEditorRootDiagram(bpmnDiagram, collaboration, processes);
 		
 		// next, process the BPMN model elements and start building the Graphiti diagram
 		// first check if we display a single process or collaboration
@@ -206,16 +220,11 @@ public class ModelImport {
 		if (collaboration != null) {
 			// we display a collaboration
 			handleCollaboration(collaboration, rootDiagram);
-			
-		} else if (!processes.isEmpty()) {
+		} else {
 			// we display one or more processes
 			for (Process process : processes) {
 				handleProcess(process, rootDiagram);
 			}
-			
-		} else {
-			// We have no root process or collaboration
-			createDefaultDiagramContents(definitions);
 		}
 		
 		// handle deferred rendering of, e.g. associations and data associations
@@ -231,7 +240,31 @@ public class ModelImport {
 		}
 	}
 
-	protected BPMNDiagram getOrCreateDiagram(List<BPMNDiagram> diagrams, Collaboration collaboration, List<Process> processes) {
+	/**
+	 * Ensure that the plane is properly linked with collaboration or process, respectively.
+	 * 
+	 * @param bpmnDiagram
+	 * @param collaboration
+	 * @param processes
+	 */
+	protected void ensureDiagramLinked(BPMNDiagram bpmnDiagram, Collaboration collaboration, List<Process> processes) {
+		BPMNPlane bpmnPlane = bpmnDiagram.getPlane();
+		
+		BaseElement bpmnElement = bpmnPlane.getBpmnElement();
+		
+		if (collaboration != null) {
+			if (!collaboration.equals(bpmnElement)) {
+				log(new ImportException("BPMNPlane not associated with collaboration"));
+			}
+		} else {
+			Process process = processes.get(0);
+			if (!process.equals(bpmnElement)) {
+				log(new ImportException("BPMNPlane not associated with process"));
+			}
+		}
+	}
+	
+	protected BPMNDiagram getOrCreateDiagram(List<BPMNDiagram> diagrams) {
 
 		if (diagrams.isEmpty()) {
 			BPMNDiagram newDiagram = ModelHelper.create(resource, BPMNDiagram.class);
@@ -249,24 +282,28 @@ public class ModelImport {
 		return bpmnDiagram;
 	}
 
-	protected void createDefaultDiagramContents(Definitions definitions) {
+	protected Process createDefaultDiagramContent(Definitions definitions, BPMNDiagram bpmnDiagram) {
 
 		// create process
 		Process process = ModelHelper.create(resource, Process.class);
 		definitions.getRootElements().add(process);
 		
 		// associate process with bpmn plane
-		definitions.getDiagrams().get(0).getPlane().setBpmnElement(process);
+		bpmnDiagram.getPlane().setBpmnElement(process);
+		
+		return process;
 	}
 
-	protected Diagram createEditorRootDiagram(List<BPMNDiagram> diagrams, Collaboration collaboration, List<Process> processes) {
-		BPMNDiagram bpmnDiagram = getOrCreateDiagram(diagrams, collaboration, processes);
-		
+	protected Diagram createEditorRootDiagram(BPMNDiagram bpmnDiagram, Collaboration collaboration, List<Process> processes) {
 		IDiagramEditor diagramEditor = diagramTypeProvider.getDiagramEditor();
-		Diagram diagram = DIUtils.getOrCreateDiagram(diagramEditor,bpmnDiagram);
+		
+		Diagram diagram = DIUtils.getOrCreateDiagram(diagramEditor, bpmnDiagram);
 		diagramTypeProvider.init(diagram, diagramEditor);
 
-		featureProvider.link(diagram, bpmnDiagram);
+		// link collaboration or only process to diagram
+		BaseElement businessObject = collaboration != null ? collaboration : processes.get(0);
+		
+		featureProvider.link(diagram, new Object[] { businessObject, bpmnDiagram });
 		return diagram;
 	}
 
@@ -332,8 +369,8 @@ public class ModelImport {
 		// TODO: process.isIsClosed == !collapsed ?
 		// TODO: or rather bpmnShape.isIsExpanded()
 		
-		// BPMNShape bpmnShape = (BPMNShape) getDiagramElement(participant);
 		// if (process == null || !bpmnShape.isIsExpanded()) {
+		// BPMNShape bpmnShape = (BPMNShape) getDiagramElement(participant);
 		if (process == null) {
 			// collapsed pool
 			handleCollapsedParticipant(participant, container);
