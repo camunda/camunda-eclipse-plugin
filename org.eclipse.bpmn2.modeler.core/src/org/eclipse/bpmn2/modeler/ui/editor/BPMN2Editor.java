@@ -971,8 +971,6 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		
-		System.out.println(event);
-		
 		if (event.getProperty().endsWith(Bpmn2Preferences.PREF_SHAPE_STYLE)) {
 			getEditingDomain().getCommandStack().execute(new RecordingCommand(getEditingDomain()) {
 				@Override

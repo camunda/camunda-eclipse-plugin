@@ -62,7 +62,7 @@ public class EAttributeChangeSupport extends EObjectChangeSupport {
 		String CHANGE_SUPPORT_KEY = changeSupport.getHash();
 		
 		if (control.getData(CHANGE_SUPPORT_KEY) != null) {
-			System.out.println("SKIPPING ADDITION OF change support to " + control + ": ALREADY ADDED");
+			System.err.println("[EAttributeChangeSupport#ensureAdded] Skip addition of change support to " + control + " (already registered)");
 			return;
 		}
 		

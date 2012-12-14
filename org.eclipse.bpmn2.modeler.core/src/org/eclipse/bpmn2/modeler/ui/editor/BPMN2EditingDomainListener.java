@@ -47,14 +47,6 @@ public class BPMN2EditingDomainListener extends TransactionalEditingDomainListen
 		diagnostics = null;
 	}
 
-	/**
-	 * this will be called in case of rollback
-	 */
-	@Override
-	public void transactionClosed(TransactionalEditingDomainEvent event) {
-		super.transactionClosed(event);
-	}
-
 	@Override
 	public void handleException(Exception e) {
 		String source = null;
@@ -84,58 +76,6 @@ public class BPMN2EditingDomainListener extends TransactionalEditingDomainListen
 			return m;
 		} catch (CoreException e) {
 			throw new RuntimeException(e);
-		}
-	}
-
-	// listener stuff //////////////////////////////////////////
-
-	private List<Listener> undoListeners = new ArrayList<Listener>();
-
-	protected void ensureUndoNotifierRegistered()  {
-
-		TransactionalEditingDomain editingDomain = bpmn2Editor.getEditingDomain();
-		TransactionalCommandStack stack = (TransactionalCommandStack) editingDomain.getCommandStack();
-		
-		// chain a undo notifier so that we get notified when an 
-		// undo operation takes place
-		stack.getUndoCommand().chain(new UndoNotifierCommand(editingDomain));
-	}
-	
-	protected void notifyUndoListeners() {
-		for (Listener l : undoListeners) {
-			try {
-				l.handleEvent(-1);
-			} catch (Exception e) {
-				Activator.logError(e);
-			}
-		}
-	}
-
-	public void addUndoListener(Listener listener) {
-		ensureUndoNotifierRegistered();
-		
-		undoListeners.add(listener);
-	}
-	
-	public void removeUndoListener(Listener listener) {
-		undoListeners.remove(listener);
-	}
-
-	public static interface Listener {
-
-		public void handleEvent(int eventType);
-	}
-
-	private class UndoNotifierCommand extends RecordingCommand {
-
-		public UndoNotifierCommand(TransactionalEditingDomain domain) {
-			super(domain);
-		}
-
-		@Override
-		protected void doExecute() {
-			System.out.println("UNDO!");
-			notifyUndoListeners();
 		}
 	}
 }

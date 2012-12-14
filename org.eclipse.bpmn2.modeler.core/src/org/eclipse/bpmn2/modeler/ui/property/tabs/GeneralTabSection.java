@@ -62,14 +62,10 @@ public class GeneralTabSection extends GFPropertySection implements ITabbedPrope
 	@Override
 	public void setInput(org.eclipse.ui.IWorkbenchPart part, org.eclipse.jface.viewers.ISelection selection) {
 		super.setInput(part, selection);
-		
-		System.out.println("[dbg] GeneralTabSection#setInput() " + selection);
 	}
 	
 	@Override
 	public void refresh() {
-		
-		System.out.println("[dbg] GeneralTabSection#refresh()");
 		rebuildParentComposite();
 		createPropertiesComposite(parentComposite, page);
 
