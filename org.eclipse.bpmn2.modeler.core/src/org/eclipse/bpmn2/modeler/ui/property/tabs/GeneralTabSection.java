@@ -12,8 +12,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-public class GeneralTabSection extends GFPropertySection implements
-		ITabbedPropertyConstants {
+public class GeneralTabSection extends GFPropertySection implements ITabbedPropertyConstants {
 	
 	private Composite parentComposite;
 	private TabbedPropertySheetPage page;
@@ -23,6 +22,7 @@ public class GeneralTabSection extends GFPropertySection implements
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		
 		super.createControls(parent, aTabbedPropertySheetPage);
+		
 		this.parentComposite = parent;
 		this.page = aTabbedPropertySheetPage;
 	}
@@ -60,7 +60,16 @@ public class GeneralTabSection extends GFPropertySection implements
 	}
 	
 	@Override
+	public void setInput(org.eclipse.ui.IWorkbenchPart part, org.eclipse.jface.viewers.ISelection selection) {
+		super.setInput(part, selection);
+		
+		System.out.println("[dbg] GeneralTabSection#setInput() " + selection);
+	}
+	
+	@Override
 	public void refresh() {
+		
+		System.out.println("[dbg] GeneralTabSection#refresh()");
 		rebuildParentComposite();
 		createPropertiesComposite(parentComposite, page);
 

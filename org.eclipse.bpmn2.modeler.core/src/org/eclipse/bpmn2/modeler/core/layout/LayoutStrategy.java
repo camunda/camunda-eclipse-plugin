@@ -22,7 +22,7 @@ public abstract class LayoutStrategy {
 	public void execute() {
 		if (unchanged) {
 			return;
-		}else {
+		} else {
 			doExecute();	
 		}
 	}

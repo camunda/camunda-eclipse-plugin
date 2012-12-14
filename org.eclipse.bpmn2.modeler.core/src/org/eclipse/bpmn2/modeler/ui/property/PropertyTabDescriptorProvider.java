@@ -30,19 +30,17 @@ public class PropertyTabDescriptorProvider implements ITabDescriptorProvider {
 	public PropertyTabDescriptorProvider() {
 		super();
 	}
-
-	@SuppressWarnings("unchecked")
+	
 	@Override
+	@SuppressWarnings("unchecked")
 	public ITabDescriptor[] getTabDescriptors(IWorkbenchPart part, ISelection selection) {
+		ISectionDescriptor sectionDescriptor = new Bpmn2SectionDescriptor("id.section", new GeneralTabSection());
+		Bpmn2TabDescriptor generalTabDescriptor = new Bpmn2TabDescriptor("id", "General", "General");
 		
+		generalTabDescriptor.setSectionDescriptors(Arrays.asList(new ISectionDescriptor[] { sectionDescriptor }));
+
 		List<ITabDescriptor> tabs = new ArrayList<ITabDescriptor>();
-		
-		Bpmn2TabDescriptor generalTab = new Bpmn2TabDescriptor("id", "General", "General");
-		
-		ISectionDescriptor sectionDescriptor = new Bpmn2SectionDescriptor(generalTab, new GeneralTabSection());
-		generalTab.setSectionDescriptors(Arrays.asList(new ISectionDescriptor[] {sectionDescriptor}));
-		
-		tabs.add(generalTab);
+		tabs.add(generalTabDescriptor);
 		
 		return tabs.toArray(new ITabDescriptor[]{});
 	}

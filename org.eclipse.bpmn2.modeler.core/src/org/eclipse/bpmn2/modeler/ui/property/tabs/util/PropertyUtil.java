@@ -43,6 +43,9 @@ public class PropertyUtil {
 	
 	public static Text createText(GFPropertySection section, Composite parent, String label, final EStructuralFeature feature, final EObject bo) {
 		Text text = createUnboundText(section, parent, label);
+
+		System.out.println(bo);
+		System.out.println(feature);
 		
 		addBinding(text, bo, feature);
 		

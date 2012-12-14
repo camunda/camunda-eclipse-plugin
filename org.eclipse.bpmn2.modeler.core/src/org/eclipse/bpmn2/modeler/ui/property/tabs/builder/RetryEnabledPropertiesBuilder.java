@@ -1,9 +1,10 @@
-package org.eclipse.bpmn2.modeler.ui.property.tabs.factories;
+package org.eclipse.bpmn2.modeler.ui.property.tabs.builder;
 
 import static org.eclipse.bpmn2.modeler.core.utils.ExtensionUtil.getExtension;
 import static org.eclipse.bpmn2.modeler.core.utils.ExtensionUtil.removeExtensionByFeature;
 import static org.eclipse.bpmn2.modeler.core.utils.ExtensionUtil.updateExtension;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.change.filter.ExtensionChangeFilter;
 import org.eclipse.bpmn2.modeler.core.change.filter.FeatureChangeFilter;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelPackage;
@@ -26,11 +27,11 @@ import org.eclipse.swt.widgets.Text;
  * 
  * @author nico.rehwaldt
  */
-public class RetryEnabledPropertiesFactory extends AbstractPropertiesFactory {
+public class RetryEnabledPropertiesBuilder extends AbstractPropertiesBuilder<BaseElement> {
 
 	private static final EStructuralFeature RETRY_CYCLE_FEATURE = ModelPackage.eINSTANCE.getDocumentRoot_FailedJobRetryTimeCycle();
 	
-	public RetryEnabledPropertiesFactory(Composite parent, GFPropertySection section, EObject bo) {
+	public RetryEnabledPropertiesBuilder(Composite parent, GFPropertySection section, BaseElement bo) {
 		super(parent, section, bo);
 	}
 

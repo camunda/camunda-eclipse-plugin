@@ -1,5 +1,6 @@
-package org.eclipse.bpmn2.modeler.ui.property.tabs.factories;
+package org.eclipse.bpmn2.modeler.ui.property.tabs.builder;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.widgets.Composite;
@@ -9,13 +10,13 @@ import org.eclipse.swt.widgets.Composite;
  * 
  * @author nico.rehwaldt
  */
-public abstract class AbstractPropertiesFactory {
+public abstract class AbstractPropertiesBuilder<T extends BaseElement> {
 	
 	protected GFPropertySection section;
-	protected EObject bo;
+	protected T bo;
 	protected Composite parent;
 
-	public AbstractPropertiesFactory(Composite parent, GFPropertySection section, EObject bo) {
+	public AbstractPropertiesBuilder(Composite parent, GFPropertySection section, T bo) {
 		this.section = section;
 		this.bo = bo;
 		this.parent = parent;

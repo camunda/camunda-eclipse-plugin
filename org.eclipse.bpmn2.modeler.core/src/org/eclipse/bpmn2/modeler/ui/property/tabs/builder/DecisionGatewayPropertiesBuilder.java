@@ -1,9 +1,10 @@
-package org.eclipse.bpmn2.modeler.ui.property.tabs.factories;
+package org.eclipse.bpmn2.modeler.ui.property.tabs.builder;
 
 import java.util.List;
 
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.ExclusiveGateway;
+import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.InclusiveGateway;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -26,13 +27,13 @@ import org.eclipse.swt.widgets.Listener;
  * 
  * @author nico.rehwaldt
  */
-public class DecisionGatewayPropertiesFactory extends AbstractPropertiesFactory {
+public class DecisionGatewayPropertiesBuilder extends AbstractPropertiesBuilder<Gateway> {
 
 	private static final EStructuralFeature FLOW_NODE_OUTGOING = Bpmn2Package.eINSTANCE.getFlowNode_Outgoing();
 	
 	private final EStructuralFeature DEFAULT_FLOW_FEATURE;
 	
-	public DecisionGatewayPropertiesFactory(Composite parent, GFPropertySection section, EObject bo) {
+	public DecisionGatewayPropertiesBuilder(Composite parent, GFPropertySection section, Gateway bo) {
 		super(parent, section, bo);
 		
 		if (bo instanceof ExclusiveGateway) {
@@ -41,7 +42,7 @@ public class DecisionGatewayPropertiesFactory extends AbstractPropertiesFactory 
 		if (bo instanceof InclusiveGateway) {
 			DEFAULT_FLOW_FEATURE = Bpmn2Package.eINSTANCE.getInclusiveGateway_Default();
 		} else {
-			throw new IllegalArgumentException("Unsupported argument: " + bo);
+			throw new IllegalArgumentException("Unsupported gateway: " + bo);
 		}
 	}
 
