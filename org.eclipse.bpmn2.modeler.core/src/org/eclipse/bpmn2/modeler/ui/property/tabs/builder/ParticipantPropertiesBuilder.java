@@ -21,11 +21,13 @@ public class ParticipantPropertiesBuilder extends AbstractPropertiesBuilder<Part
 	@Override
 	public void create() {
 		Process process = bo.getProcessRef();
-
-		new NamePropertyBuilder(parent, section, process, "Process Name").create();
-		new IdPropertyBuilder(parent, section, process, "Process Id").create();
 		
-		PropertyUtil.createCheckbox(section, parent, "Is Executable",
-				Bpmn2Package.eINSTANCE.getProcess_IsExecutable(), process);
+		if (process != null) {
+			new NamePropertyBuilder(parent, section, process, "Process Name").create();
+			new IdPropertyBuilder(parent, section, process, "Process Id").create();
+			
+			PropertyUtil.createCheckbox(section, parent, "Is Executable",
+					Bpmn2Package.eINSTANCE.getProcess_IsExecutable(), process);
+		}
 	}
 }
