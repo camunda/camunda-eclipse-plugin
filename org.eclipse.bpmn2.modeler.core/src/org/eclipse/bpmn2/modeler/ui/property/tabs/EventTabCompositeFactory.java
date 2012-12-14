@@ -6,6 +6,7 @@ import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.TimerEventDefinition;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.TimerEventDefinitionPropertiesBuilder;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.widgets.Composite;
 
@@ -36,6 +37,6 @@ public class EventTabCompositeFactory extends AbstractTabCompositeFactory<Event>
 	}
 
 	private void createTimerEventComposite(TimerEventDefinition eventDefinition) {
-		
+		new TimerEventDefinitionPropertiesBuilder(parent, section, eventDefinition).create();
 	}
 }

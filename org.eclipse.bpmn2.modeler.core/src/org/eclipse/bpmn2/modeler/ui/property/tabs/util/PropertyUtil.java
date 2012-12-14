@@ -169,8 +169,7 @@ public class PropertyUtil {
 		return createText(section, parent, label, feature, bo);
 	}
 
-	public static Text createRadioText(GFPropertySection section, Composite parent, String label, 
-			final EStructuralFeature feature, RadioGroup<EStructuralFeature> radioGroup, final EObject bo) {
+	public static Text createUnboundRadioText(GFPropertySection section, Composite parent, String label, EStructuralFeature feature, RadioGroup<EStructuralFeature> radioGroup) {
 
 		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
 		
@@ -207,6 +206,14 @@ public class PropertyUtil {
 		});
 		
 		createLabel(section, composite, label, radioComposite);
+		
+		return text;
+	}
+	
+	public static Text createRadioText(GFPropertySection section, Composite parent, String label, 
+			final EStructuralFeature feature, RadioGroup<EStructuralFeature> radioGroup, final EObject bo) {
+
+		Text text = createUnboundRadioText(section, parent, label, feature, radioGroup);
 		
 		addBinding(text, bo, feature);
 		
