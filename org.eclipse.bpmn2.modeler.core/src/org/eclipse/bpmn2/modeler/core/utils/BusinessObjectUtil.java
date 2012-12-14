@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.core.utils;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
@@ -22,6 +23,7 @@ import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.di.BPMNShape;
+import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -163,12 +165,33 @@ public class BusinessObjectUtil {
 		if (editPart != null && editPart.getModel() instanceof PictogramElement) {
 			return (PictogramElement) editPart.getModel();
 		}
+		
+		if (editPart != null && editPart.getModel() instanceof BaseElement) {
+			BaseElement baseElement = (BaseElement) editPart.getModel();
+			return getPictogramForElement(baseElement);
+		}
+		
 		if (selection instanceof IStructuredSelection) {
 			Object o = ((IStructuredSelection)selection).getFirstElement();
 			if (o instanceof PictogramElement)
 				return (PictogramElement)o;
 		}
 		return null;
+	}
+
+	public static PictogramElement getPictogramForElement(
+			EObject element) {
+		List<PictogramElement> pictogramElements = Graphiti.getLinkService().getPictogramElements(BPMN2Editor.getActiveEditor().getDiagramTypeProvider().getDiagram(), element);
+		if (pictogramElements.isEmpty()) {
+			return null;
+		}else {
+			for (PictogramElement pictogramElement : pictogramElements) {
+				if (pictogramElement instanceof ContainerShape) {
+					return pictogramElement;
+				}
+			}
+			return null;
+		}
 	}
 
 	public static EObject getBusinessObjectForSelection(ISelection selection) {

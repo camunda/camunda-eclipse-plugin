@@ -1,19 +1,15 @@
 package org.eclipse.bpmn2.modeler.ui.views.outline;
 
 import java.lang.reflect.Field;
-import java.util.List;
 
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.IConstants;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.gef.editparts.AbstractTreeEditPart;
-import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.graphiti.mm.pictograms.Diagram;
-import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
-import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -35,22 +31,13 @@ public class AbstractGraphicsTreeEditPart extends AbstractTreeEditPart {
 	@Override
 	public Object getModel() {
 		EObject bpmnModel = (EObject)super.getModel();
-		if (diagramEditPart!=null) {
-			// the model is actually a BPMN element - convert this
-			// to a PictogramElement for the SelectionSynchronizer
-			for (Diagram diagram : diagramEditPart.getAllDiagrams()) {
-				if (diagram!=null) {
-					List<PictogramElement> pes = Graphiti.getLinkService().getPictogramElements(diagram, bpmnModel);
-					for (PictogramElement pe : pes) {
-						if (pe instanceof ContainerShape)
-							return pe;
-						if (pe instanceof FreeFormConnection)
-							return pe;
-					}
-				}
-			}
+		PictogramElement pictogramElement = BusinessObjectUtil.getPictogramForElement(bpmnModel);
+		
+		if (pictogramElement == null) {
+			return bpmnModel;
+		}else {
+			return pictogramElement;
 		}
-		return bpmnModel;
 	}
 
 	public Object getBpmnModel() {
