@@ -12,7 +12,6 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.merrimac.clad;
 
-import org.eclipse.bpmn2.modeler.core.runtime.IBpmn2PropertySection;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
@@ -34,7 +33,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-public abstract class AbstractBpmn2PropertySection extends GFPropertySection implements IBpmn2PropertySection {
+public abstract class AbstractBpmn2PropertySection extends GFPropertySection {
 	
 	protected TabbedPropertySheetPage tabbedPropertySheetPage;
 	protected Composite parent;
@@ -240,26 +239,6 @@ public abstract class AbstractBpmn2PropertySection extends GFPropertySection imp
 	@Override
 	public boolean shouldUseExtraSpace() {
 		return true;
-	}
-
-	/* (non-Javadoc)
-	 * Override this to allow the section to decide whether or not it will be rendered.
-	 * @see org.eclipse.bpmn2.modeler.core.runtime.IBpmn2PropertySection#appliesTo(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
-	 */
-	@Override
-	public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
-		editor = (DiagramEditor)part.getAdapter(DiagramEditor.class);
-		if (editor!=null) {
-			PictogramElement pe = BusinessObjectUtil.getPictogramElementForSelection(selection);
-			EObject selectionBO = BusinessObjectUtil.getBusinessObjectForSelection(selection);
-			ModelEnablementDescriptor modelEnablement = getModelEnablement(selection);
-			
-			if (selectionBO!=null && modelEnablement.isEnabled(selectionBO.eClass())) {
-				EObject thisBO = getBusinessObjectForPictogramElement(pe);
-				return thisBO!=null;			
-			}
-		}
-		return false;
 	}
 	
 	protected ModelEnablementDescriptor getModelEnablement(ISelection selection) {

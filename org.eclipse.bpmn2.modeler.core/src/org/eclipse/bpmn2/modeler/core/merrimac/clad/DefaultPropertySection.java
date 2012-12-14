@@ -58,45 +58,6 @@ public class DefaultPropertySection extends AbstractBpmn2PropertySection {
 		propertiesProvider.setProperties(properties);
 	}
 	
-	@Override
-	public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
-//		BPMN2Editor editor = (BPMN2Editor)part;
-//		EObject object = getBusinessObjectForSelection();
-//		DefaultDetailComposite composite = new DefaultDetailComposite();
-//		AbstractPropertiesProvider provider = composite.getPropertiesProvider(object);
-//		ModelEnablementDescriptor modelEnablement = editor.getTargetRuntime().getModelEnablements(object);
-//		String className = object.eClass().getName();
-//		if (modelEnablement.isEnabled(className)) {
-//			String[] properties = provider.getProperties();
-//			for (String featureName : properties) {
-//				if (modelEnablement.isEnabled(className, featureName))
-//					return true;
-//			}
-//		}
-//		return false;
-		if (appliesToClass==null)
-			return super.appliesTo(part, selection);
-		
-		PictogramElement pe = BusinessObjectUtil.getPictogramElementForSelection(selection);
-		if (pe!=null) {
-			// this is a special hack to allow selection of connection decorator labels:
-			// the connection decorator does not have a business object linked to it,
-			// but its parent (the connection) does.
-			if (pe.getLink()==null && pe.eContainer() instanceof PictogramElement)
-				pe = (PictogramElement)pe.eContainer();
-	
-			// check all linked BusinessObjects for a match
-			if (pe.getLink()!=null) {
-				for (EObject eObj : pe.getLink().getBusinessObjects()){
-					if (appliesToClass.isInstance(eObj)) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-	
 	public void setAppliesTo(Class appliesToClass) {
 		this.appliesToClass = appliesToClass;
 	}

@@ -12,13 +12,18 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.property;
 
+import static org.eclipse.bpmn2.modeler.core.utils.SelectionUtil.getSelectedBusinessObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.bpmn2.modeler.core.runtime.Bpmn2SectionDescriptor;
-import org.eclipse.bpmn2.modeler.core.runtime.Bpmn2TabDescriptor;
+import org.eclipse.bpmn2.Event;
+import org.eclipse.bpmn2.modeler.core.property.SectionDescriptor;
+import org.eclipse.bpmn2.modeler.core.property.TabDescriptor;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.EventTabSection;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.GeneralTabSection;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.ISectionDescriptor;
@@ -27,22 +32,36 @@ import org.eclipse.ui.views.properties.tabbed.ITabDescriptorProvider;
 
 public class PropertyTabDescriptorProvider implements ITabDescriptorProvider {
 
-	public PropertyTabDescriptorProvider() {
-		super();
-	}
-	
 	@Override
 	@SuppressWarnings("unchecked")
 	public ITabDescriptor[] getTabDescriptors(IWorkbenchPart part, ISelection selection) {
-		ISectionDescriptor sectionDescriptor = new Bpmn2SectionDescriptor("id.section", new GeneralTabSection());
-		Bpmn2TabDescriptor generalTabDescriptor = new Bpmn2TabDescriptor("id", "General", "General");
-		
-		generalTabDescriptor.setSectionDescriptors(Arrays.asList(new ISectionDescriptor[] { sectionDescriptor }));
-
 		List<ITabDescriptor> tabs = new ArrayList<ITabDescriptor>();
-		tabs.add(generalTabDescriptor);
+		
+		EObject businessObject = getSelectedBusinessObject(selection);
+		if (businessObject != null) {
+			tabs.add(createGeneralTabDescriptor());
+			
+			if (businessObject instanceof Event) {
+				tabs.add(createEventTabDescriptor());
+			}
+		}
 		
 		return tabs.toArray(new ITabDescriptor[]{});
 	}
 
+	private ITabDescriptor createEventTabDescriptor() {
+		TabDescriptor tabDescriptor = new TabDescriptor("eventTab", "Event", "Event");
+		ISectionDescriptor sectionDescriptor = new SectionDescriptor("eventTab.section", new EventTabSection());
+		tabDescriptor.setSectionDescriptors(Arrays.asList(new ISectionDescriptor[] { sectionDescriptor }));
+		
+		return tabDescriptor;
+	}
+
+	private TabDescriptor createGeneralTabDescriptor() {
+		TabDescriptor tabDescriptor = new TabDescriptor("generalTab", "General", "General");
+		ISectionDescriptor sectionDescriptor = new SectionDescriptor("generalTab.section", new GeneralTabSection());
+		
+		tabDescriptor.setSectionDescriptors(Arrays.asList(new ISectionDescriptor[] { sectionDescriptor }));
+		return tabDescriptor;
+	}
 }

@@ -4,20 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.modeler.core.Activator;
-import org.eclipse.bpmn2.modeler.core.runtime.Bpmn2SectionDescriptor;
-import org.eclipse.bpmn2.modeler.core.runtime.Bpmn2TabDescriptor;
-import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.core.property.SectionDescriptor;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -58,13 +52,14 @@ public class DefaultDialogComposite extends AbstractDialogComposite {
 
 			int index = 0;
 			for (ITabDescriptor td : tabDescriptors) {
-				if (td instanceof Bpmn2TabDescriptor && !((Bpmn2TabDescriptor)td).isPopup()) {
-					// exclude this tab if not intended for popup dialog
-					continue;
-				}
+				// FIXME: CLEANUP
+//				if (td instanceof Bpmn2TabDescriptor && !((Bpmn2TabDescriptor)td).isPopup()) {
+//					// exclude this tab if not intended for popup dialog
+//					continue;
+//				}
 				for (Object o : td.getSectionDescriptors()) {
-					if (o instanceof Bpmn2SectionDescriptor) {
-						Bpmn2SectionDescriptor sd = (Bpmn2SectionDescriptor)o;
+					if (o instanceof SectionDescriptor) {
+						SectionDescriptor sd = (SectionDescriptor)o;
 			
 						TabItem tab = new TabItem(folder, SWT.NONE);
 						ScrolledForm form = new ScrolledForm(folder, SWT.V_SCROLL);
@@ -133,14 +128,15 @@ public class DefaultDialogComposite extends AbstractDialogComposite {
 		int detailsCount = 0;
 		ITabDescriptor[] tabDescriptors = getTabDescriptors();
 		for (ITabDescriptor td : tabDescriptors) {
-			if (td instanceof Bpmn2TabDescriptor && !((Bpmn2TabDescriptor)td).isPopup()) {
-				// exclude this tab if not intended for popup dialog
-				continue;
-			}
+			// FIXME: CLEANUP
+//			if (td instanceof Bpmn2TabDescriptor && !((Bpmn2TabDescriptor)td).isPopup()) {
+//				// exclude this tab if not intended for popup dialog
+//				continue;
+//			}
 			
 			for (Object o : td.getSectionDescriptors()) {
-				if (o instanceof Bpmn2SectionDescriptor) {
-					Bpmn2SectionDescriptor sd = (Bpmn2SectionDescriptor)o;
+				if (o instanceof SectionDescriptor) {
+					SectionDescriptor sd = (SectionDescriptor)o;
 					section = (AbstractBpmn2PropertySection)sd.getSectionClass();
 					++detailsCount;
 				}

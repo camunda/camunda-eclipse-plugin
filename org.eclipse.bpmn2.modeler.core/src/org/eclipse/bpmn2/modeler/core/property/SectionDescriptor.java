@@ -10,21 +10,18 @@
  *
  * @author Bob Brodt
  ******************************************************************************/
-package org.eclipse.bpmn2.modeler.core.runtime;
+package org.eclipse.bpmn2.modeler.core.property;
 
 import org.eclipse.jface.viewers.IFilter;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.AbstractSectionDescriptor;
 import org.eclipse.ui.views.properties.tabbed.ISection;
 
-public class Bpmn2SectionDescriptor extends AbstractSectionDescriptor {
+public class SectionDescriptor extends AbstractSectionDescriptor {
 
 		protected String id;
 		protected String tab;
-		
-		protected AbstractPropertySection sectionClass;
 		
 		protected String enablesFor;
 		protected String filter;
@@ -33,7 +30,7 @@ public class Bpmn2SectionDescriptor extends AbstractSectionDescriptor {
 		
 		protected ISection section;
 		
-		public Bpmn2SectionDescriptor(String id, ISection section) {
+		public SectionDescriptor(String id, ISection section) {
 			this.section = section;
 			this.id = id;
 		}
@@ -56,11 +53,6 @@ public class Bpmn2SectionDescriptor extends AbstractSectionDescriptor {
 		@Override
 		public boolean appliesTo(IWorkbenchPart part, ISelection selection) {
 			
-			// should we delegate to the section to determine whether it should be included in this tab?
-			if (sectionClass instanceof IBpmn2PropertySection) {
-				return ((IBpmn2PropertySection)sectionClass).appliesTo(part, selection);
-			}
-			
 			return true;
 		}
 
@@ -78,7 +70,7 @@ public class Bpmn2SectionDescriptor extends AbstractSectionDescriptor {
 		@Override
 		public IFilter getFilter() {
 			return new IFilter() {
-
+				
 				@Override
 				public boolean select(Object toTest) {
 					return false;
@@ -94,10 +86,7 @@ public class Bpmn2SectionDescriptor extends AbstractSectionDescriptor {
 		 * @return
 		 */
 		public boolean doReplaceTab(String replacedId, IWorkbenchPart part, ISelection selection) {
-			if (sectionClass instanceof IBpmn2PropertySection) {
-				return ((IBpmn2PropertySection)sectionClass).doReplaceTab(replacedId, part, selection);
-			}
-			return appliesTo(part,selection);
+			return appliesTo(part, selection);
 		}
 		
 	}

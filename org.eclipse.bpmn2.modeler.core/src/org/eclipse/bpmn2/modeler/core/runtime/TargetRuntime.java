@@ -23,6 +23,7 @@ import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.IBpmn2RuntimeExtension;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.ICustomTaskFeature;
 import org.eclipse.bpmn2.modeler.core.preferences.ShapeStyle;
+import org.eclipse.bpmn2.modeler.core.property.TabDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor.Property;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor.Value;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
@@ -57,7 +58,7 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 	protected String description;
 	private IBpmn2RuntimeExtension runtimeExtension;
 	protected ModelDescriptor modelDescriptor;
-	protected ArrayList<Bpmn2TabDescriptor> tabDescriptors;
+	protected ArrayList<TabDescriptor> tabDescriptors;
 	protected ArrayList<CustomTaskDescriptor> customTasks;
 	protected ArrayList<ModelExtensionDescriptor> modelExtensions;
 	protected ArrayList<ModelEnablementDescriptor> modelEnablements;
@@ -581,46 +582,24 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 		}
 		return new ShapeStyle(ss);
 	}
-
-	private void addAfterTab(ArrayList<Bpmn2TabDescriptor> list, Bpmn2TabDescriptor tab) {
-		
-		getAllRuntimes();
-		String afterTab = tab.getAfterTab();
-		if (afterTab!=null && !afterTab.isEmpty() && !afterTab.equals("top")) {
-			String id = tab.getId();
-			for (TargetRuntime rt : targetRuntimes) {
-				for (Bpmn2TabDescriptor td : rt.getTabs()) {
-					if (tab!=td) {
-						if (td.getId().equals(afterTab) || td.isReplacementForTab(afterTab)) {
-							addAfterTab(list,td);
-							if (rt==this || rt==TargetRuntime.getDefaultRuntime()) {
-								if (!list.contains(td))
-									list.add(td);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
 	
-	private ArrayList<Bpmn2TabDescriptor> getTabs() {
+	private ArrayList<TabDescriptor> getTabs() {
 		if (tabDescriptors==null)
-			tabDescriptors = new ArrayList<Bpmn2TabDescriptor>();
+			tabDescriptors = new ArrayList<TabDescriptor>();
 		return tabDescriptors;
 	}
 
-	public static Bpmn2TabDescriptor findTabDescriptor(String id) {
+	public static TabDescriptor findTabDescriptor(String id) {
 		for (TargetRuntime rt : TargetRuntime.getAllRuntimes()) {
-			Bpmn2TabDescriptor tab = rt.getTabDescriptor(id);
+			TabDescriptor tab = rt.getTabDescriptor(id);
 			if (tab!=null)
 				return tab;
 		}
 		return null;
 	}
 	
-	public Bpmn2TabDescriptor getTabDescriptor(String id) {
-		for (Bpmn2TabDescriptor tab : getTabs()) {
+	public TabDescriptor getTabDescriptor(String id) {
+		for (TabDescriptor tab : getTabs()) {
 			if (tab.getId().equals(id))
 				return tab;
 		}
@@ -630,10 +609,9 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 	/**
 	 * @return
 	 */
-	public ArrayList<Bpmn2TabDescriptor> getTabDescriptors() {
-		ArrayList<Bpmn2TabDescriptor> list = new ArrayList<Bpmn2TabDescriptor>();
-		for (Bpmn2TabDescriptor tab : getTabs()) {
-			addAfterTab(list, tab);
+	public ArrayList<TabDescriptor> getTabDescriptors() {
+		ArrayList<TabDescriptor> list = new ArrayList<TabDescriptor>();
+		for (TabDescriptor tab : getTabs()) {
 			if (!list.contains(tab))
 				list.add(tab);
 		}
