@@ -89,7 +89,6 @@ import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultListComposite;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.PropertiesCompositeFactory;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
-import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.DiagramEditorAdapter;
 import org.eclipse.bpmn2.modeler.core.utils.ErrorUtils;
@@ -144,6 +143,8 @@ import org.eclipse.bpmn2.modeler.ui.property.tasks.ScriptTaskDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.tasks.StandardLoopCharacteristicsDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.property.tasks.TaskDetailComposite;
 import org.eclipse.bpmn2.modeler.ui.views.outline.BPMN2EditorOutlinePage;
+import org.eclipse.bpmn2.modeler.ui.views.outline.BaseElementTreeEditPart;
+import org.eclipse.bpmn2.modeler.ui.views.outline.FlowElementTreeEditPart;
 import org.eclipse.bpmn2.modeler.ui.wizards.BPMN2DiagramCreator;
 import org.eclipse.bpmn2.modeler.ui.wizards.Bpmn2DiagramEditorInput;
 import org.eclipse.bpmn2.modeler.ui.wizards.FileService;
@@ -174,6 +175,7 @@ import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.TransactionalEditingDomain.Lifecycle;
 import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.ui.parts.SelectionSynchronizer;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -196,7 +198,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPartListener2;
-import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
@@ -299,7 +300,6 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	protected BPMNDiagram bpmnDiagram;
 	protected Bpmn2ResourceImpl bpmnResource;
 	
-	private IWorkbenchListener workbenchListener;
 	private IPartListener2 selectionListener;
     private IResourceChangeListener markerChangeListener;
 	private static BPMN2Editor activeEditor;
@@ -308,7 +308,6 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	private BPMN2EditingDomainListener editingDomainListener;
 	
 	private Bpmn2Preferences preferences;
-	private TargetRuntime targetRuntime;
 
 	protected DiagramEditorAdapter editorAdapter;
 	
@@ -940,7 +939,6 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 				preferences.dispose();
 				preferences = null;
 			}
-			targetRuntime = null;
 			modelHandler = ModelHandlerLocator.createModelHandler(modelUri, (Bpmn2ResourceImpl)resource);
 			ModelHandlerLocator.put(diagramUri, modelHandler);
 		}
@@ -959,10 +957,18 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		// Graphiti understands multipage editors
-		super.selectionChanged(part,selection); // Graphiti's DiagramEditorInternal
-		// but apparently GEF doesn't
-		updateActions(getSelectionActions()); // usually done in GEF's GraphicalEditor
+		super.selectionChanged(part, selection);
+		updateActions(getSelectionActions()); // usually done in GEF's
+		
+		final ISelection theSelection = selection;
+		
+		EditPart editPart = BusinessObjectUtil.getEditPartForSelection(selection);
+		Object sel = BusinessObjectUtil
+					.getPictogramElementForSelection(theSelection);
+		if (sel instanceof PictogramElement && (editPart instanceof FlowElementTreeEditPart || editPart instanceof BaseElementTreeEditPart)) {
+			selectPictogramElements(new PictogramElement[] {(PictogramElement) sel});
+		}
+		
 	}
 
 	/* (non-Javadoc)
