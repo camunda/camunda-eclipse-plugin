@@ -82,7 +82,7 @@ public abstract class AbstractTestCommand extends RecordingCommand {
 				FileOutputStream outBefore = new FileOutputStream(new File(TEST_DIR+File.separatorChar+"before."+diagramFile.getName()));
 				resource.save(outBefore, Collections.emptyMap());
 				outBefore.close();
-			}catch (Exception e) {
+			} catch (Exception e) {
 				// We cant always write models, we have tests with broken models, wich can not be saved
 				// not checking for exception type, because they are somewhat arbitary (e.g. BasicIndexOutofBoundsException)
 			}

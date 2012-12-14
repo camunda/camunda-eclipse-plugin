@@ -60,7 +60,7 @@ public abstract class AbstractModelViewBinding<T, V> {
 	/**
 	 * Returns the editing domain for the managed model
 	 * 
-	 * @param model
+	 * @param matchModel
 	 * @return
 	 */
 	protected TransactionalEditingDomain getTransactionalEditingDomain() {
@@ -124,6 +124,6 @@ public abstract class AbstractModelViewBinding<T, V> {
 	 * @return true if the transition between old and new value is a change
 	 */
 	protected boolean isChange(V oldValue, V newValue) {
-		return newValue.equals(oldValue);
+		return !newValue.equals(oldValue);
 	}
 }

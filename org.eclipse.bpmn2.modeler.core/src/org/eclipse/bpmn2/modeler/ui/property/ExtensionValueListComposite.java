@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultListComposite;
 import org.eclipse.bpmn2.modeler.core.merrimac.clad.ListCompositeContentProvider;
+import org.eclipse.bpmn2.modeler.core.utils.ExtensionUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
@@ -54,7 +55,7 @@ public abstract class ExtensionValueListComposite extends DefaultListComposite {
 	
 	@SuppressWarnings("unchecked")
 	protected void addExtensionValue(EObject value) {
-		ModelUtil.addExtensionAttribute(businessObject, extensionValueFeature, value);
+		ExtensionUtil.addExtension(businessObject, extensionValueFeature, value);
 	}
 	
 	protected Object removeListItem(EObject object, EStructuralFeature feature, int index) {

@@ -3,7 +3,7 @@ package org.eclipse.bpmn2.modeler.runtime.activiti.util;
 import java.util.List;
 
 import org.eclipse.bpmn2.ExtensionAttributeValue;
-import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ExtensionUtil;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 
@@ -29,7 +29,7 @@ public class AttributeUtil {
 	 * @param object
 	 */
 	public static void clearEmptyExtensionElements(final EObject object) {
-		List<ExtensionAttributeValue> extensionElements = ModelUtil.getExtensionAttributeValues(object);
+		List<ExtensionAttributeValue> extensionElements = ExtensionUtil.getExtensionAttributeValues(object);
 		if (extensionElements != null && !extensionElements.isEmpty()) {
 			if (extensionElements.get(0).getValue().isEmpty()) {
 				extensionElements.clear();

@@ -12,13 +12,6 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.runtime;
 
-import java.util.List;
-
-import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultPropertySection;
-import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.jface.viewers.IFilter;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
@@ -30,56 +23,24 @@ public class Bpmn2SectionDescriptor extends AbstractSectionDescriptor {
 
 		protected String id;
 		protected String tab;
+		
 		protected AbstractPropertySection sectionClass;
-		protected Class appliesToClass;
+		
 		protected String enablesFor;
 		protected String filter;
 		
 		//////////
 		
 		protected ISection section;
-		protected Bpmn2TabDescriptor bpmn2TabDescriptor;
 		
-		public Bpmn2SectionDescriptor(Bpmn2TabDescriptor bpmn2TabDescriptor, ISection section) {
-			this.bpmn2TabDescriptor = bpmn2TabDescriptor;
+		public Bpmn2SectionDescriptor(String id, ISection section) {
 			this.section = section;
-		}
-		
-		public Bpmn2SectionDescriptor(Bpmn2TabDescriptor td, IConfigurationElement e) {
-			tab = td.getId();
-			id = tab + ".section";
-
-			try {
-				String className = e.getAttribute("class");
-				if ("default".equals(className)) {
-					sectionClass = new DefaultPropertySection();
-					String[] properties = e.getAttribute("features").split(" ");
-					((DefaultPropertySection)sectionClass).setProperties(properties);
-				}
-				else {
-					sectionClass = (AbstractPropertySection) e.createExecutableExtension("class");
-				}
-				filter = e.getAttribute("filter");
-				if (filter==null || filter.isEmpty())
-					filter = "org.eclipse.bpmn2.modeler.ui.property.Bpmn2PropertyFilter";
-				enablesFor = e.getAttribute("enablesFor");
-				String type = e.getAttribute("type");
-				if (type!=null && !type.isEmpty()) {
-					appliesToClass = Class.forName(type);
-					if (sectionClass instanceof DefaultPropertySection) {
-						((DefaultPropertySection)sectionClass).setAppliesTo(appliesToClass);
-					}
-				}
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-			
-			td.getSectionDescriptors().add(this);
+			this.id = id;
 		}
 		
 		@Override
 		public String getId() {
-			return bpmn2TabDescriptor.getId() + ".section";
+			return id;
 		}
 
 		@Override
@@ -100,25 +61,6 @@ public class Bpmn2SectionDescriptor extends AbstractSectionDescriptor {
 				return ((IBpmn2PropertySection)sectionClass).appliesTo(part, selection);
 			}
 			
-			// if an input description was specified, check if the selected business object is of this description. 
-			if (appliesToClass!=null) {
-				PictogramElement pe = BusinessObjectUtil.getPictogramElementForSelection(selection);
-				// this is a special hack to allow selection of connection decorator labels:
-				// the connection decorator does not have a business object linked to it,
-				// but its parent (the connection) does.
-				if (pe.getLink()==null && pe.eContainer() instanceof PictogramElement)
-					pe = (PictogramElement)pe.eContainer();
-
-				// check all linked BusinessObjects for a match
-				if (pe.getLink()!=null) {
-					for (EObject eObj : pe.getLink().getBusinessObjects()){
-						if (appliesToClass.isInstance(eObj)) {
-							return true;
-						}
-					}
-				}
-				return false;
-			}
 			return true;
 		}
 
@@ -143,11 +85,6 @@ public class Bpmn2SectionDescriptor extends AbstractSectionDescriptor {
 				}
 				
 			};
-		}
-
-		@Override
-		public List getInputTypes() {
-			return super.getInputTypes();
 		}
 
 		/**

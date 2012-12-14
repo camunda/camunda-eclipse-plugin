@@ -22,7 +22,7 @@ public abstract class LayoutStrategy {
 	public void execute() {
 		if (unchanged) {
 			return;
-		}else {
+		} else {
 			doExecute();	
 		}
 	}
@@ -69,7 +69,7 @@ public abstract class LayoutStrategy {
 				// FIXME what if sector is undefined? Should this be allowed ? skipping sector switch in this case for now 
 				if (sector != Sector.UNDEFINED) {
 					subStrategy.sectorSwitch(sector);
-				}else {
+				} else {
 					org.eclipse.bpmn2.modeler.core.Activator.logError(new IllegalStateException("Dont know how to handle sector for "+connection));
 				}
 				

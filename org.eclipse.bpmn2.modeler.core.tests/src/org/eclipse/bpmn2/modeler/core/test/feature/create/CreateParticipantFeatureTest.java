@@ -5,6 +5,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 import java.util.List;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Collaboration;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.di.BPMNDiagram;
@@ -16,6 +17,8 @@ import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.junit.Test;
 
@@ -31,9 +34,15 @@ public class CreateParticipantFeatureTest extends AbstractFeatureTest {
 	}
 
 	private void createAndCheckSingleParticipant() {
+
+		assertThat(firstLinkedObject(diagram)).isInstanceOf(Process.class);
+		
 		assertThat(ModelUtil.getAllRootElements(getDefinitions(), Collaboration.class)).hasSize(0);
 		
 		createParticipant(20, 20, 400, 200, getDiagram(), getDiagramTypeProvider()).execute();
+		
+		// make sure diagram is linked to collaboration now
+		assertThat(firstLinkedObject(diagram)).isInstanceOf(Collaboration.class);
 		
 		assertThat(ModelUtil.getAllRootElements(getDefinitions(), Collaboration.class)).hasSize(1);
 		
@@ -85,5 +94,11 @@ public class CreateParticipantFeatureTest extends AbstractFeatureTest {
 		// Shapes should be moved into partcipant shape
 		Shape participantShape = getDiagram().getChildren().get(0);
 		assertThat(taskShape.getContainer()).isEqualTo((ContainerShape) participantShape);
+	}
+
+	// helpers ////////////////////////////////
+	
+	private BaseElement firstLinkedObject(PictogramElement element) {
+		return BusinessObjectUtil.getFirstBaseElement(element);
 	}
 }

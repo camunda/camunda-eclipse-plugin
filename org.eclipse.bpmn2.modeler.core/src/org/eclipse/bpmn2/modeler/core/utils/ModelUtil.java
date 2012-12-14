@@ -21,6 +21,7 @@ import java.util.ListIterator;
 import java.util.Map;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Choreography;
 import org.eclipse.bpmn2.Collaboration;
@@ -32,6 +33,7 @@ import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
+import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.modeler.core.Activator;
@@ -42,6 +44,8 @@ import org.eclipse.bpmn2.modeler.core.adapters.INamespaceMap;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceSetImpl;
+import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelPackage;
+import org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.FailedJobRetryTimeCycleType;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
@@ -64,6 +68,7 @@ import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.emf.ecore.util.FeatureMapUtil;
+import org.eclipse.emf.ecore.xml.type.AnyType;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
@@ -836,119 +841,6 @@ public class ModelUtil {
 		return values;
 	}
 	
-	/**
-	 * Returns the extension attribute values of a given type from 
-	 * the specified object
-	 * 
-	 * @param object
-	 * @param cls
-	 * 
-	 * @return
-	 */
-	public static <T> List<T> getExtensionAttributes(EObject object, Class<T> cls) {
-		List<T> results = new ArrayList<T>();
-		
-		EStructuralFeature extensionValuesFeature = object.eClass().getEStructuralFeature("extensionValues");
-		EList<ExtensionAttributeValue> list = (EList<ExtensionAttributeValue>) object.eGet(extensionValuesFeature);
-		
-		for (ExtensionAttributeValue value : list) {
-			FeatureMap featureMap = value.getValue();
-			for (Entry e : featureMap) {
-				Object valueObject = e.getValue();
-				if (cls.isInstance(valueObject)) {
-					results.add((T) valueObject);
-				}
-			}
-		}
-		
-		return results;
-	}
-	
-	/**
-	 * Removes the extension attribute from the object
-	 * 
-	 * @param object
-	 * @param attributeValue
-	 */
-	public static void removeExtensionAttribute(EObject object, EObject attributeValue) {
-
-		EStructuralFeature extensionValuesFeature = object.eClass().getEStructuralFeature("extensionValues");
-		EList<ExtensionAttributeValue> extensionAttributesList = (EList<ExtensionAttributeValue>) object.eGet(extensionValuesFeature);
-		
-		for (ExtensionAttributeValue extensionAttributes : extensionAttributesList) {
-			FeatureMap featureMap = extensionAttributes.getValue();
-			ListIterator<Entry> iterator = featureMap.listIterator();
-			while (iterator.hasNext()) {
-				Entry e = iterator.next();
-				if (attributeValue.equals(e.getValue())) {
-					iterator.remove();
-				}
-			}
-		}
-	}
-	
-	public static List<ExtensionAttributeValue> getExtensionAttributeValues(EObject object) {
-		
-		if (object instanceof BPMNDiagram) {
-			BPMNDiagram diagram = (BPMNDiagram) object;
-			BaseElement bpmnElement = diagram.getPlane().getBpmnElement();
-			
-			if (bpmnElement instanceof org.eclipse.bpmn2.Process) {
-				return bpmnElement.getExtensionValues();
-			}
-		} else 
-		
-		if (object instanceof BaseElement) {
-			return ((BaseElement) object).getExtensionValues();
-		} else
-		
-		if (object instanceof Participant) {
-			final Participant participant = (Participant) object;
-			if (participant.getProcessRef() == null) {
-				if (participant.eContainer() instanceof Collaboration) {
-					Collaboration collab = (Collaboration) participant.eContainer();
-					if (collab.eContainer() instanceof Definitions) {
-						final Definitions definitions = getDefinitions(collab);
-						
-						TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(object);
-						
-						domain.getCommandStack().execute(new RecordingCommand(domain) {
-							@Override
-							protected void doExecute() {
-								Process process = Bpmn2ModelerFactory.create(Process.class);
-								participant.setProcessRef(process);
-								definitions.getRootElements().add(process);
-								ModelUtil.setID(process);
-							}
-						});
-					}
-				}
-			}
-			return participant.getProcessRef().getExtensionValues();
-		}
-
-		return new ArrayList<ExtensionAttributeValue>();
-	}
-	
-	public static void addExtensionAttribute(EObject object, EStructuralFeature feature, EObject value) {
-		EStructuralFeature extensionValuesFeature = object.eClass().getEStructuralFeature("extensionValues");
-		EList<EObject> list = (EList<EObject>) object.eGet(extensionValuesFeature);
-		
-		ExtensionAttributeValue attributeValue = null;
-		
-		if (list.isEmpty()) {
-			attributeValue = Bpmn2ModelerFactory.create(ExtensionAttributeValue.class);
-			
-			ModelUtil.setID(attributeValue);
-			list.add(attributeValue);
-		} else {
-			attributeValue = (ExtensionAttributeValue) list.get(0);
-		}
-		
-		FeatureMap map = attributeValue.getValue();
-		map.add(feature, value);
-	}
-
 	/**
 	 * Dummy objects are constructed when needed for an ExtendedPropertiesAdapter. The adapter factory
 	 * (@see org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2EditorItemProviderAdapterFactory) knows how to

@@ -9,16 +9,21 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.test.importer.base;
 
+import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Process;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.importer.InvalidContentException;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmnModelTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import static org.junit.Assert.fail;
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.fest.assertions.api.Assertions.fail;
 
 /**
  * 
@@ -54,6 +59,18 @@ public class ImportEmptyDiagramTest extends AbstractImportBpmnModelTest {
 		importer.execute();
 		
 		EList<Shape> children = diagram.getChildren();
-		Assert.assertEquals(0, children.size());
+		assertThat(children).isEmpty();
+		
+		// should create a new process and diagram on the fly
+		BaseElement element = BusinessObjectUtil.getFirstBaseElement(diagram);
+		
+		assertThat(element)
+			.isNotNull()
+			.isInstanceOf(Process.class);
+		
+		BPMNDiagram bpmnDiagram = BusinessObjectUtil.getFirstElementOfType(diagram, BPMNDiagram.class);
+		
+		assertThat(bpmnDiagram)
+			.isNotNull();
 	}
 }

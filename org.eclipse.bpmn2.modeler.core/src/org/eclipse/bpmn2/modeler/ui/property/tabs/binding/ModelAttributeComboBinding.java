@@ -2,6 +2,8 @@ package org.eclipse.bpmn2.modeler.ui.property.tabs.binding;
 
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.change.EAttributeChangeSupport;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events;
+import org.eclipse.core.databinding.observable.ChangeEvent;
+import org.eclipse.core.databinding.observable.IChangeListener;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.IValueChangeListener;
 import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
@@ -9,30 +11,27 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Text;
 
 /**
- * Establishes a simple model to text binding
+ * Binds a model attribute to the input selected in a combo box
  * 
  * @author nico.rehwaldt
+ *
+ * @param <V>
  */
-public abstract class ModelTextBinding<V> extends ModelViewBinding<Text, V> {
+public abstract class ModelAttributeComboBinding<V> extends ModelViewBinding<CCombo, V>{
 
-	public ModelTextBinding(EObject model, EStructuralFeature feature, Text control) {
+	public ModelAttributeComboBinding(EObject model, EStructuralFeature feature, CCombo control) {
 		super(model, feature, control);
 	}
 
 	@Override
 	public void setViewValue(V value) {
 		String str = toString(value);
-		
-		control.setText(str);
-		
-		if (control.isFocusControl()) {
-			control.setSelection(str.length());
-		}
+		control.select(control.indexOf(str));
 	}
 
 	/**
@@ -67,13 +66,13 @@ public abstract class ModelTextBinding<V> extends ModelViewBinding<Text, V> {
 
 	@Override
 	protected void establishModelViewBinding() {
-		ensureChangeSupportAdded();
+		EAttributeChangeSupport.ensureAdded(model, feature, control);
 
 		control.addListener(Events.MODEL_CHANGED, new Listener() {
 			
 			@Override
 			public void handleEvent(Event event) {
-				V modelValue = getModelValue();
+				final V modelValue = getModelValue();
 				V viewValue = null;
 				
 				try {
@@ -88,14 +87,10 @@ public abstract class ModelTextBinding<V> extends ModelViewBinding<Text, V> {
 			}
 		});
 	}
-
-	protected void ensureChangeSupportAdded() {
-		EAttributeChangeSupport.ensureAdded(model, feature, control);
-	}
 	
 	@Override
 	protected void establishViewModelBinding() {
-		IObservableValue textValue = SWTObservables.observeText(control, SWT.Modify);
+		IObservableValue textValue = SWTObservables.observeText(control);
 		textValue.addValueChangeListener(new IValueChangeListener() {
 			
 			@Override

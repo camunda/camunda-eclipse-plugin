@@ -12,14 +12,15 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.participant;
 
-import java.util.List;
-
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Collaboration;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Participant;
+import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -41,7 +42,7 @@ import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Participant> {
-	
+
 	private static final int minWidth = 500;
 	private static final int minHeight = 175;
 	
@@ -62,6 +63,10 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 
 	@Override
     public Object[] create(ICreateContext context) {
+		
+		Diagram diagram = getDiagram();
+		BaseElement rootElement = BusinessObjectUtil.getFirstBaseElement(diagram);
+		
 		BPMNDiagram bpmnDiagram = BusinessObjectUtil.getFirstElementOfType(context.getTargetContainer(), BPMNDiagram.class);
 		
 		if (bpmnDiagram == null) {
@@ -70,27 +75,42 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 		
 		Definitions definitions = (Definitions) bpmnDiagram.eContainer();
 		
-		List<Collaboration> collaborations = ModelUtil.getAllRootElements( definitions, Collaboration.class);
-		List<org.eclipse.bpmn2.Process> processes = ModelUtil.getAllRootElements( definitions, org.eclipse.bpmn2.Process.class);
 		Participant newParticipant;
-		
-		if (collaborations.isEmpty()) { // converting process to collaboration
-			org.eclipse.bpmn2.Process correspondingProcess = getOrCreateCorrespondingProcess(
-					definitions, processes);
-			Collaboration newCollaboration = createCollaboration(definitions);
-			bpmnDiagram.getPlane().setBpmnElement(newCollaboration);
-			newParticipant = createParticipant(correspondingProcess);
-			newCollaboration.getParticipants().add(newParticipant);
+
+		if (rootElement == null) {
 			
-			createGraphitiRepresentation(context, newParticipant);
-		}else {
+			throw new IllegalStateException("Diagram not liked to Process or Collaboration");
+		} else
+			
+		// existing collaboration?
+		if (rootElement instanceof Collaboration) {
+			
 			newParticipant = createBusinessObject(context);
 			addGraphicalRepresentation(context, newParticipant);
+		} else
+
+		// no collaboration
+		// need to add collaboration around process
+		if (rootElement instanceof Process) {
+			
+			Process process = (Process) rootElement;
+			
+			Collaboration newCollaboration = createCollaboration(definitions, bpmnDiagram.getPlane());
+			newParticipant = createParticipant(process, newCollaboration);
+			
+			// link diagram to collaboration and plane
+			link(diagram, new Object[] { newCollaboration, bpmnDiagram });
+			
+			// create graphiti representation
+			createGraphitiRepresentation(context, newParticipant);
+		} else {
+			throw new IllegalStateException("Diagram liked to unrecognized element: " + rootElement);
 		}
 
-		newParticipant.setName("Pool");
+		newParticipant.setName("Pool ");
 		return new Object[] { newParticipant };
     }
+
 
 	private void createGraphitiRepresentation(ICreateContext context,
 			Participant newParticipant) {
@@ -243,33 +263,24 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 		}
 	}
 	
-	private Participant createParticipant(org.eclipse.bpmn2.Process correspondingProcess) {
-		Participant newParticipant = Bpmn2Factory.eINSTANCE.createParticipant();
+	private Participant createParticipant(Process process, Collaboration collaboration) {
+		Participant newParticipant;
+		newParticipant = Bpmn2Factory.eINSTANCE.createParticipant();
 		ModelUtil.setID(newParticipant);
-		newParticipant.setProcessRef(correspondingProcess);
+
+		newParticipant.setProcessRef(process);
+		collaboration.getParticipants().add(newParticipant);
 		return newParticipant;
 	}
 
-	private Collaboration createCollaboration(Definitions definitions) {
+	private Collaboration createCollaboration(Definitions definitions, BPMNPlane bpmnPlane) {
 		Collaboration newCollaboration = Bpmn2Factory.eINSTANCE.createCollaboration();
 		ModelUtil.setID(newCollaboration);
-		definitions.getRootElements().add(0, newCollaboration);
-		return newCollaboration;
-	}
-
-	private org.eclipse.bpmn2.Process getOrCreateCorrespondingProcess(
-			Definitions definitions, List<org.eclipse.bpmn2.Process> processes) {
-		org.eclipse.bpmn2.Process correspondingProcess;
 		
-		if (processes.size() == 1) {
-			correspondingProcess = processes.get(0);
-		}
-		else {
-			correspondingProcess = Bpmn2Factory.eINSTANCE.createProcess();
-			ModelUtil.setID(correspondingProcess);
-			definitions.getRootElements().add(correspondingProcess);
-		}
-		return correspondingProcess;
+		definitions.getRootElements().add(0, newCollaboration);
+		bpmnPlane.setBpmnElement(newCollaboration);
+		
+		return newCollaboration;
 	}
 	
 	@Override

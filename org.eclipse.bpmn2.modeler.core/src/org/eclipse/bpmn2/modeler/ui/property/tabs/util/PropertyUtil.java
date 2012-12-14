@@ -2,6 +2,7 @@ package org.eclipse.bpmn2.modeler.ui.property.tabs.util;
 
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.BooleanButtonBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.IntegerTextBinding;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.ModelTextBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.StringTextBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.radio.Radio.RadioGroup;
 import org.eclipse.emf.ecore.EClassifier;
@@ -9,6 +10,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -39,8 +41,6 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
  */
 public class PropertyUtil {
 	
-	private static final FormData STANDARD_LAYOUT = getStandardLayout();
-	
 	public static Text createText(GFPropertySection section, Composite parent, String label, final EStructuralFeature feature, final EObject bo) {
 		Text text = createUnboundText(section, parent, label);
 		
@@ -56,6 +56,14 @@ public class PropertyUtil {
 		createLabel(section, composite, label, text);		
 		return text;
 	}
+
+	public static CCombo createDropDown(GFPropertySection section, Composite parent, String label) {
+		Composite composite = createStandardComposite(section, parent);
+		CCombo comboBox = createSimpleDropDown(section, composite);
+		
+		createLabel(section, composite, label, comboBox);		
+		return comboBox;
+	}
 	
 	public static Text createMultiText(GFPropertySection section, Composite parent, String label, final EStructuralFeature feature, final EObject bo) {
 		Composite composite = createStandardComposite(section, parent);
@@ -69,6 +77,14 @@ public class PropertyUtil {
 		return text;
 	}
 
+	protected static CCombo createSimpleDropDown(GFPropertySection section, Composite parent) {
+		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
+		final CCombo dropDown = factory.createCCombo(parent, SWT.BORDER | SWT.READ_ONLY);
+		setStandardLayout(dropDown);
+		
+		return dropDown;
+	}
+	
 	protected static Button createSimpleCheckbox(GFPropertySection section, Composite parent) {
 		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
 		final Button checkbox = factory.createButton(parent, "", SWT.CHECK);
@@ -223,14 +239,22 @@ public class PropertyUtil {
 	// binding ///////////////////////////////////////////
 	
 	private static void addBinding(Text text, EObject bo, EStructuralFeature feature) {
+		ModelTextBinding<?> binding = getBinding(text, bo, feature);
+		
+		if (binding != null) {
+			binding.establish();
+		}
+	}
+	
+	private static ModelTextBinding<?> getBinding(Text text, EObject bo, EStructuralFeature feature) {
 
 		EClassifier featureType = feature.getEType();
 
 		Class<?> instanceClass = featureType.getInstanceClass();
 		if (instanceClass.equals(int.class) || instanceClass.equals(Integer.class)) {
-			new IntegerTextBinding(bo, feature, text).establish();
+			return new IntegerTextBinding(bo, feature, text);
 		} else {
-			new StringTextBinding(bo, feature, text).establish();
+			return new StringTextBinding(bo, feature, text);
 		}
 	}
 
@@ -242,5 +266,4 @@ public class PropertyUtil {
 		
 		return data;
 	}
-	
 }

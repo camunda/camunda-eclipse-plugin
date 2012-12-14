@@ -51,7 +51,7 @@ public abstract class AbstractBpmnEditorTest {
 		
 		URI uri = URI.createFileURI("test.bpmn");
 
-		resource = (Bpmn2ResourceImpl) new Bpmn2ModelerResourceFactoryImpl().createResource(uri);
+		resource = createBpmn2Resource(uri);
 		loadResource(resource, resourceUrl);
 		
 		// TODO: get rid of evil ModelHandler
@@ -83,7 +83,7 @@ public abstract class AbstractBpmnEditorTest {
 					inputStream.close();
 				} catch (IOException e) {
 					// ignore
-				}				
+				}
 			}			
 		}
 	}
@@ -133,5 +133,9 @@ public abstract class AbstractBpmnEditorTest {
 	
 	public ModelHandler getModelHandler() {
 		return modelHandler;
+	}
+	
+	protected Bpmn2ResourceImpl createBpmn2Resource(URI uri) {
+		return (Bpmn2ResourceImpl) new Bpmn2ModelerResourceFactoryImpl().createResource(uri);
 	}
 }

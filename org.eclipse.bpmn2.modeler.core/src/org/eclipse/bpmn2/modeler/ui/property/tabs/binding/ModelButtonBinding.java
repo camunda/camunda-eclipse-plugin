@@ -1,6 +1,6 @@
 package org.eclipse.bpmn2.modeler.ui.property.tabs.binding;
 
-import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.util.EAttributeChangeSupport;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.change.EAttributeChangeSupport;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events;
 import org.eclipse.core.databinding.observable.ChangeEvent;
 import org.eclipse.core.databinding.observable.IChangeListener;
@@ -34,7 +34,7 @@ public abstract class ModelButtonBinding<V> extends ModelViewBinding<Button, V> 
 				V modelValue = getModelValue();
 				V viewValue = getViewValue();
 				
-				if (!modelValue.equals(viewValue)) {
+				if (isChangeWithNullChecks(viewValue, modelValue)) {
 					setViewValue(modelValue);
 				}
 			}
@@ -52,15 +52,8 @@ public abstract class ModelButtonBinding<V> extends ModelViewBinding<Button, V> 
 				V viewValue = getViewValue();
 				V modelValue = getModelValue();
 
-				if (viewValue != null) {
-					if (!viewValue.equals(modelValue)) {
-						setModelValue(viewValue);
-					}
-				} else {
-					if (modelValue != null) {
-						// set model value null
-						setModelValue(viewValue);
-					}
+				if (isChangeWithNullChecks(modelValue, viewValue)) {
+					setModelValue(viewValue);
 				}
 			}
 		});

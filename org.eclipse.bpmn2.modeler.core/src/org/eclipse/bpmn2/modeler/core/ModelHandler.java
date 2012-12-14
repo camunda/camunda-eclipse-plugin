@@ -946,9 +946,9 @@ public class ModelHandler {
 
 	public static DiagramElement findDIElement(BaseElement element) {
 		String id = element.getId();
-		if (id==null || id.isEmpty())
+		if (id == null || id.isEmpty())
 			return null;
-
+		
 		List<BPMNDiagram> diagrams = getAll(element.eResource(), BPMNDiagram.class);
 		for (BPMNDiagram d : diagrams) {
 			// Process elements correspond to BPMNPlane DI elements
