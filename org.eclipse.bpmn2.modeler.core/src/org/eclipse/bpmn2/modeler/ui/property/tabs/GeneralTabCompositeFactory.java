@@ -31,6 +31,7 @@ import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.IdPropertyBuilder;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.LanePropertiesBuilder;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.NamePropertyBuilder;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.ParticipantPropertiesBuilder;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.ProcessIdPropertyBuilder;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.ProcessPropertiesBuilder;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.RetryEnabledPropertiesBuilder;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.ScriptTaskPropertiesBuilder;
@@ -38,108 +39,99 @@ import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.SequenceFlowProperties
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.ServiceTaskPropertiesBuilder;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.StartEventPropertiesBuilder;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.UserTaskPropertiesBuilder;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.widgets.Composite;
 
-public class GeneralTabCompositeFactory {
+/**
+ * General tab composite factory
+ * 
+ * @author nico.rehwaldt
+ */
+public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<BaseElement> {
 	
-	private GFPropertySection section;
-	private Composite parentComposite;
-
 	public GeneralTabCompositeFactory(GFPropertySection section, Composite parent) {
-		this.section = section;
-		this.parentComposite = parent;
+		super(section, parent);
 	}
 	
-	public Composite createCompositeForBpmnElement(EObject bo) {
-		if (bo instanceof BaseElement) {
-			createIdField((BaseElement) bo);
-			
-			createNameField((BaseElement) bo);
-		}
+	@Override
+	public Composite createCompositeForBusinessObject(BaseElement businessObject) {
+		createIdField((BaseElement) businessObject);
+		createNameField((BaseElement) businessObject);
 		
-		if (bo instanceof Participant) {
-			Participant participant = (Participant) bo;
+		if (businessObject instanceof Participant) {
+			Participant participant = (Participant) businessObject;
 			createParticipantComposite(participant);
 		}
 		
-		if (bo instanceof IntermediateCatchEvent || bo instanceof BoundaryEvent) {
-			CatchEvent event = (CatchEvent) bo;
-			if (isTimerEvent(event)) {
-				createTimerCatchEventComposite(event);
-			}
+		if (businessObject instanceof Activity) {
+			createActivityComposite((Activity) businessObject);
 		}
 		
-		if (bo instanceof Activity) {
-			createActivityComposite((Activity) bo);
+		if (businessObject instanceof Task) {
+			createTaskComposite((Task) businessObject);
 		}
 		
-		if (bo instanceof Task) {
-			createTaskComposite((Task) bo);
-		}
-		
-		if (bo instanceof Event) {
-			createEventComposite((Event) bo);
+		if (businessObject instanceof Event) {
+			createEventComposite((Event) businessObject);
 		}
 
-		if (bo instanceof SequenceFlow) {
-			createSequenceFlowComposite((SequenceFlow) bo);
+		if (businessObject instanceof SequenceFlow) {
+			createSequenceFlowComposite((SequenceFlow) businessObject);
 		}
 
-		if (bo instanceof Lane) {
-			createLaneComposite((Lane) bo);
+		if (businessObject instanceof Lane) {
+			createLaneComposite((Lane) businessObject);
 		}
 		
-		if (bo instanceof Process) {
-			createProcessComposite((Process) bo);
+		if (businessObject instanceof Process) {
+			createProcessComposite((Process) businessObject);
 		}		
 		
-		if (bo instanceof Gateway) {
-			createGatewayComposite((Gateway) bo);
+		if (businessObject instanceof Gateway) {
+			createGatewayComposite((Gateway) businessObject);
 		}
 		
-		return parentComposite;
+		return parent;
 	}
 
 	private void createParticipantComposite(Participant participant) {
-		new ParticipantPropertiesBuilder(parentComposite, section, participant).create();
+		new ParticipantPropertiesBuilder(parent, section, participant).create();
 	}
 
 	private void createLaneComposite(Lane lane) {
-		new LanePropertiesBuilder(parentComposite, section, lane).create();
+		new LanePropertiesBuilder(parent, section, lane).create();
 	}
 
 	private void createTimerCatchEventComposite(CatchEvent bo) {
-		new RetryEnabledPropertiesBuilder(parentComposite, section, bo).create();
+		new RetryEnabledPropertiesBuilder(parent, section, bo).create();
 	}
 
-	private void createGatewayComposite(Gateway bo) {
-		if (bo instanceof ExclusiveGateway) {
-			new DecisionGatewayPropertiesBuilder(parentComposite, section, bo).create();
+	private void createGatewayComposite(Gateway gateway) {
+		if (gateway instanceof ExclusiveGateway) {
+			new DecisionGatewayPropertiesBuilder(parent, section, gateway).create();
 		}
 		
-		if (bo instanceof InclusiveGateway) {
-			new DecisionGatewayPropertiesBuilder(parentComposite, section, bo).create();
+		if (gateway instanceof InclusiveGateway) {
+			new DecisionGatewayPropertiesBuilder(parent, section, gateway).create();
 		}
 	}
 
-	private void createSequenceFlowComposite(SequenceFlow bo) {
-		new SequenceFlowPropertiesBuilder(parentComposite, section, bo).create();
+	private void createSequenceFlowComposite(SequenceFlow sequenceFlow) {
+		new SequenceFlowPropertiesBuilder(parent, section, sequenceFlow).create();
 	}
 	
-	private void createProcessComposite(Process bo) {
-		new ProcessPropertiesBuilder(parentComposite, section, bo).create();
+	private void createProcessComposite(Process process) {
+		new ProcessPropertiesBuilder(parent, section, process).create();
 	}
 	
-	private Composite createActivityComposite(Activity bo) {
-		if (!(bo instanceof ManualTask) && !(bo instanceof AdHocSubProcess)) {
-			new ActivityPropertiesBuilder(parentComposite, section, bo).create();
+	private void createActivityComposite(Activity activity) {
+		if (!(activity instanceof ManualTask) && !(activity instanceof AdHocSubProcess)) {
+			new ActivityPropertiesBuilder(parent, section, activity).create();
 		}
-		if (bo instanceof CallActivity) {
-			new CallActivityPropertiesBuilder(parentComposite, section, (CallActivity) bo).create();
+		
+		if (activity instanceof CallActivity) {
+			new CallActivityPropertiesBuilder(parent, section, (CallActivity) activity).create();
 		}
-		return parentComposite;
 	}
 
 	private boolean isTimerEvent(CatchEvent e) {
@@ -147,32 +139,40 @@ public class GeneralTabCompositeFactory {
 		return timerEventDefinition != null;
 	}
 	
-	private Composite createTaskComposite(Task bo) {
-		if (bo instanceof UserTask) {
-			new UserTaskPropertiesBuilder(parentComposite, section, (UserTask) bo).create();
-		} else if (bo instanceof ScriptTask) {
-			new ScriptTaskPropertiesBuilder(parentComposite, section, (ScriptTask) bo).create();
-		} else if (bo instanceof ServiceTask) {
-			new ServiceTaskPropertiesBuilder(parentComposite, section, (ServiceTask) bo).create();
+	private void createTaskComposite(Task task) {
+		if (task instanceof UserTask) {
+			new UserTaskPropertiesBuilder(parent, section, (UserTask) task).create();
+		} else if (task instanceof ScriptTask) {
+			new ScriptTaskPropertiesBuilder(parent, section, (ScriptTask) task).create();
+		} else if (task instanceof ServiceTask) {
+			new ServiceTaskPropertiesBuilder(parent, section, (ServiceTask) task).create();
 		}
-		return parentComposite;
 	}
 	
-	private Composite createEventComposite(Event bo) {
-		if (bo instanceof StartEvent) {
-			new StartEventPropertiesBuilder(parentComposite, section, (StartEvent) bo).create();
+	private void createEventComposite(Event event) {
+		if (event instanceof StartEvent) {
+			new StartEventPropertiesBuilder(parent, section, (StartEvent) event).create();
 		}
-		
-		return parentComposite;
+
+		if (event instanceof IntermediateCatchEvent || event instanceof BoundaryEvent) {
+			CatchEvent catchEvent = (CatchEvent) event;
+			if (isTimerEvent(catchEvent)) {
+				createTimerCatchEventComposite(catchEvent);
+			}
+		}
 	}
 	
 	// default fields (ID / Name) ///////////////////////////////////
 	
-	private void createNameField(BaseElement bo) {
-		new NamePropertyBuilder(parentComposite, section, bo).create();
+	private void createNameField(BaseElement baseElement) {
+		new NamePropertyBuilder(parent, section, baseElement).create();
 	}
 	
-	private void createIdField(BaseElement bo) {
-		new IdPropertyBuilder(parentComposite, section, bo).create();
+	private void createIdField(BaseElement baseElement) {
+		if (baseElement instanceof Process) {
+			new ProcessIdPropertyBuilder(parent, section, (Process) baseElement).create();
+		} else {
+			new IdPropertyBuilder(parent, section, baseElement).create();
+		}
 	}
 }
