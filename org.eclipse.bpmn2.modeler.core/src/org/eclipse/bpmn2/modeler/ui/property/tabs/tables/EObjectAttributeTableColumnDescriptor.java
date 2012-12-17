@@ -17,6 +17,8 @@ public class EObjectAttributeTableColumnDescriptor<T extends EObject> extends Ta
 
 	private EStructuralFeature feature;
 
+	private EditingSupportProvider editingSupportProvider;
+	
 	public EObjectAttributeTableColumnDescriptor(EStructuralFeature feature, String title, int weight) {
 		super(title, weight);
 
@@ -47,6 +49,36 @@ public class EObjectAttributeTableColumnDescriptor<T extends EObject> extends Ta
 	
 	@Override
 	public EditingSupport getEditingSupport(TableViewer viewer) {
-		return new EObjectAttributeEditingSupport<EObject>(viewer, feature);
+		if (editingSupportProvider != null) {
+			return editingSupportProvider.getEditingSupport(viewer, feature);
+		} else {
+			return new EObjectAttributeEditingSupport<EObject>(viewer, feature);
+		}
+	}
+
+	/**
+	 * Set a custom editing support provider for this table column descriptor
+	 * 
+	 * @param editingSupportProvider
+	 */
+	public void setEditingSupportProvider(EditingSupportProvider editingSupportProvider) {
+		this.editingSupportProvider = editingSupportProvider;
+	}
+	
+	/**
+	 * Provider of custom editing support for an EObject attribute
+	 * 
+	 * @author nico.rehwaldt
+	 */
+	public static interface EditingSupportProvider {
+		
+		/**
+		 * Provides editing support for the table
+		 * 
+		 * @param viewer
+		 * @param feature
+		 * @return
+		 */
+		public EditingSupport getEditingSupport(TableViewer viewer, EStructuralFeature feature);
 	}
 }

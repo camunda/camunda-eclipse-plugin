@@ -8,6 +8,7 @@ import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelPackage;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.ModelAttributeButtonBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
+import org.eclipse.draw2d.GridData;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
@@ -64,9 +65,8 @@ public class MultiInstancePropertiesBuilder extends AbstractPropertiesBuilder<Ac
 			multiInstancePropertiesComposite.dispose();
 		}
 
-		multiInstancePropertiesComposite = PropertyUtil.createStandardComposite(section, parent);
-		multiInstancePropertiesComposite.setLayout(new GridLayout());
-		
+		multiInstancePropertiesComposite = PropertyUtil.createGridLayoutedComposite(section, parent);
+
 		if (loopCharacteristics != null) {
 			PropertyUtil.createText(section, multiInstancePropertiesComposite, "Loop Cardinality", LOOP_CARDINALITY_FEATURE, loopCharacteristics);
 			PropertyUtil.createCheckbox(section, multiInstancePropertiesComposite, "Is Sequential ", IS_SEQUENCIAL_FEATURE, loopCharacteristics);

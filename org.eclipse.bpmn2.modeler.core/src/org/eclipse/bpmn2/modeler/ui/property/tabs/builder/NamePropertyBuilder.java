@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class NamePropertyBuilder extends AbstractPropertiesBuilder<BaseElement> {
 
-	private final EStructuralFeature NAME_FEATURE;
+	private EStructuralFeature NAME_FEATURE;
 	
 	private String label;
 
@@ -51,7 +51,7 @@ public class NamePropertyBuilder extends AbstractPropertiesBuilder<BaseElement> 
 		if (bo instanceof MessageFlow) {
 			NAME_FEATURE = Bpmn2Package.eINSTANCE.getMessageFlow_Name();
 		} else {
-			throw new IllegalArgumentException("Unsupported base element: " + bo);
+			// Unsupported base element: Do nothing
 		}
 	}
 	
@@ -61,6 +61,8 @@ public class NamePropertyBuilder extends AbstractPropertiesBuilder<BaseElement> 
 	
 	@Override
 	public void create() {
-		PropertyUtil.createText(section, parent, label, NAME_FEATURE, bo);
+		if (NAME_FEATURE != null) {
+			PropertyUtil.createText(section, parent, label, NAME_FEATURE, bo);
+		}
 	}
 }

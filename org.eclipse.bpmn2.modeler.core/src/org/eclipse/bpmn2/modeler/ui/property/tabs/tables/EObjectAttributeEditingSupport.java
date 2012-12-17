@@ -1,7 +1,9 @@
 package org.eclipse.bpmn2.modeler.ui.property.tabs.tables;
 
+import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
@@ -49,22 +51,35 @@ public class EObjectAttributeEditingSupport<T extends EObject> extends EditingSu
 		}
 	}
 
-	private Object getEValue(T element) {
+	protected Object getEValue(T element) {
 		return element.eGet(feature);
 	}
 
 	protected void setValue(T element, String value) {
 
-		if (value == null || value.trim().isEmpty()) {
-			value = null;
+		try {
+			Object val = toEValue(value);
+			
+			TransactionalEditingDomain editingDomain = TransactionUtil.getEditingDomain(element);
+	
+			ModelUtil.setValue(editingDomain, element, feature, val);
+		} catch (IllegalArgumentException e) {
+			// anticipated
+			
+			Activator.logStatus(new Status(Status.WARNING, Activator.PLUGIN_ID, "Could not update model value", e));
 		}
 		
-		TransactionalEditingDomain editingDomain = TransactionUtil.getEditingDomain(element);
-
-		ModelUtil.setValue(editingDomain, element, feature, value);
 		viewer.update(element, null);
 	}
 	
+	protected Object toEValue(String value) {
+		if (value != null && !value.trim().isEmpty()) {
+			return value;
+		} else {
+			return null;
+		}
+	}
+
 	/**
 	 * Provides update events for cell value
 	 */

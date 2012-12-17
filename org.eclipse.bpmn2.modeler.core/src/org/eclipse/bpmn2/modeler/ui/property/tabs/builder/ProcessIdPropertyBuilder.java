@@ -2,7 +2,6 @@ package org.eclipse.bpmn2.modeler.ui.property.tabs.builder;
 
 import java.util.List;
 
-import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -21,7 +20,7 @@ import org.eclipse.swt.widgets.Text;
 public class ProcessIdPropertyBuilder extends IdPropertyBuilder {
 
 	public ProcessIdPropertyBuilder(Composite parent, GFPropertySection section, Process bo, String label) {
-		super(parent, section, bo);
+		super(parent, section, bo, label);
 	}
 	
 	public ProcessIdPropertyBuilder(Composite parent, GFPropertySection section, Process bo) {

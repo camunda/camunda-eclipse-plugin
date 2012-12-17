@@ -1,7 +1,5 @@
 package org.eclipse.bpmn2.modeler.ui.property.tabs.tables;
 
-import java.util.List;
-
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events.RowAdded;
 import org.eclipse.jface.viewers.ColumnViewer;
@@ -19,6 +17,7 @@ import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -26,14 +25,21 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 
 public class EditableTableDescriptor<T> extends TableDescriptor<T> {
-	
+
 	public static enum CellEditingStrategy {
 		SINGLE_CLICK, 
 		DOUBLE_CLICK, 
 		NO_EDIT
 	}
 	
+	public static enum PostAddAction {
+		FOCUS, 
+		EDIT, 
+		NONE
+	}
+	
 	private CellEditingStrategy cellEditingStrategy = CellEditingStrategy.DOUBLE_CLICK;
+	private PostAddAction postAddAction = PostAddAction.FOCUS;
 	
 	private AddStrategy addStrategy;
 	
@@ -53,6 +59,18 @@ public class EditableTableDescriptor<T> extends TableDescriptor<T> {
 		}
 		
 		this.cellEditingStrategy = strategy;
+	}
+	
+	/**
+	 * Sets the strategy to edit the table
+	 * @param strategy
+	 */
+	public void setPostAddAction(PostAddAction postAddAction) {
+		if (postAddAction == null) {
+			throw new IllegalArgumentException("post add action may not be null");
+		}
+		
+		this.postAddAction = postAddAction;
 	}
 	
 	/**
@@ -77,9 +95,8 @@ public class EditableTableDescriptor<T> extends TableDescriptor<T> {
 	 * @param viewer
 	 */
 	protected void addAddCapability(final TableViewer viewer) {
-		if (elementFactory != null) {
-			// adding is done by creating and editing a new object
-			addStrategy = new AddAndEditStrategy<T>(viewer, elementFactory);
+		if (elementFactory != null && addStrategy == null) {
+			addStrategy = createAddStrategy(viewer, elementFactory);
 		}
 		
 		// CARRIAGE RETURN to add a new element
@@ -107,6 +124,17 @@ public class EditableTableDescriptor<T> extends TableDescriptor<T> {
 				}
 			}
 		});
+	}
+
+	protected AddStrategy<T> createAddStrategy(TableViewer viewer, ElementFactory<T> elementFactory) {
+		switch (postAddAction) {
+		case EDIT:
+			return new AddAndEditStrategy<T>(viewer, elementFactory);
+		case FOCUS:
+			return new AddAndFocusStrategy<T>(viewer, elementFactory);
+		default: 
+			return new DefaultAddStrategy<T>(viewer, elementFactory);
+		}
 	}
 
 	/**
@@ -212,12 +240,33 @@ public class EditableTableDescriptor<T> extends TableDescriptor<T> {
 	 * 
 	 * @author nico.rehwaldt
 	 */
-	public static abstract class AddStrategy {
+	public static abstract class AddStrategy<T> {
 		
 		/**
-		 * Perform add operation on the table
+		 * Perform add operation on the table and returns the newly added element
+		 * 
 		 */
-		public abstract void performAdd();
+		public abstract T performAdd();
+	}
+	
+	private static class DefaultAddStrategy<T> extends AddStrategy<T> {
+
+		protected TableViewer viewer;
+		protected ElementFactory<T> factory;
+		
+		public DefaultAddStrategy(TableViewer viewer, ElementFactory<T> factory) {
+			this.viewer = viewer;
+			this.factory = factory;
+		}
+
+		@Override
+		public T performAdd() {
+			T element = factory.create();
+			
+			viewer.getTable().notifyListeners(Events.ROW_ADDED, new RowAdded<T>(element));
+			
+			return element;
+		}
 	}
 	
 	/**
@@ -225,24 +274,52 @@ public class EditableTableDescriptor<T> extends TableDescriptor<T> {
 	 * 
 	 * @author nico.rehwaldt
 	 */
-	private static class AddAndEditStrategy<T> extends AddStrategy {
-
-		private TableViewer viewer;
-		private ElementFactory<T> factory;
+	private static class AddAndEditStrategy<T> extends DefaultAddStrategy<T> {
 		
 		public AddAndEditStrategy(TableViewer viewer, ElementFactory<T> factory) {
-			this.viewer = viewer;
-			this.factory = factory;
+			super(viewer, factory);
 		}
 		
 		@Override
-		public void performAdd() {
-			T element = factory.create();
-			viewer.add(element);
-
-			viewer.getTable().notifyListeners(Events.ROW_ADDED, new RowAdded<T>(element));
-
-			viewer.editElement(element, 0);
+		public T performAdd() {
+			final T element = super.performAdd();
+			
+			Display.getCurrent().asyncExec(new Runnable() {
+				
+				@Override
+				public void run() {
+					viewer.editElement(element, 0);
+				}
+			});
+			
+			return element;
+		}
+	}
+	
+	/**
+	 * Implements adding of an element via focusing the dummy
+	 * 
+	 * @author nico.rehwaldt
+	 */
+	private static class AddAndFocusStrategy<T> extends DefaultAddStrategy<T> {
+		
+		public AddAndFocusStrategy(TableViewer viewer, ElementFactory<T> factory) {
+			super(viewer, factory);
+		}
+		
+		@Override
+		public T performAdd() {
+			final T element = super.performAdd();
+			
+			Display.getCurrent().asyncExec(new Runnable() {
+				
+				@Override
+				public void run() {
+					viewer.setSelection(new StructuredSelection(element), true);
+				}
+			});
+			
+			return element;
 		}
 	}
 	
@@ -279,8 +356,8 @@ public class EditableTableDescriptor<T> extends TableDescriptor<T> {
 		 *            the event triggering the action
 		 * @return <code>true</code> if this event should open the editor
 		 */
-		protected boolean isEditorActivationEvent(
-				ColumnViewerEditorActivationEvent event) {
+		protected boolean isEditorActivationEvent(ColumnViewerEditorActivationEvent event) {
+			
 			boolean singleSelect = ((IStructuredSelection)getViewer().getSelection()).size() == 1;
 			boolean isLeftMouseSelect = event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION && ((MouseEvent)event.sourceEvent).button == 1;
 

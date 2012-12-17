@@ -21,11 +21,14 @@ import java.util.List;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Event;
+import org.eclipse.bpmn2.Gateway;
+import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.modeler.core.property.AbstractTabSection;
 import org.eclipse.bpmn2.modeler.core.property.SectionDescriptor;
 import org.eclipse.bpmn2.modeler.core.property.TabDescriptor;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.DefinitionsTabSection;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.EventTabSection;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.ListenerTabSection;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.GeneralTabSection;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.MultiInstanceTabSection;
 import org.eclipse.emf.ecore.EObject;
@@ -52,13 +55,23 @@ public class PropertyTabDescriptorProvider implements ITabDescriptorProvider {
 				tabs.add(createEventTabDescriptor());
 			}
 			
-			// add definitions tab for changes
+			// add definitions tab for errors, messages and signals
 			if (model instanceof Diagram) {
 				tabs.add(createDefinitionsTabDescriptor());
 			}
 			
+			// add multi instance tabs to activities
 			if (businessObject instanceof Activity) {
 				tabs.add(createMultiInstanceTabDescriptor());
+			}
+			
+			// add execution listener tabs
+			if (businessObject instanceof Activity ||
+				businessObject instanceof Gateway ||
+				businessObject instanceof SequenceFlow || 
+				businessObject instanceof Event) {
+				
+				tabs.add(createExecutionListenerTabDescriptor());
 			}
 		}
 		
@@ -77,9 +90,13 @@ public class PropertyTabDescriptorProvider implements ITabDescriptorProvider {
 	private ITabDescriptor createMultiInstanceTabDescriptor() {
 		return createTabDescriptor("multiInstanceTab", "Multi Instance", new MultiInstanceTabSection());
 	}
-	
+
 	private ITabDescriptor createEventTabDescriptor() {
 		return createTabDescriptor("eventTab", "Event", new EventTabSection());
+	}
+	
+	private ITabDescriptor createExecutionListenerTabDescriptor() {
+		return createTabDescriptor("executionListenerTab", "Listener", new ListenerTabSection());
 	}
 
 	private ITabDescriptor createGeneralTabDescriptor() {

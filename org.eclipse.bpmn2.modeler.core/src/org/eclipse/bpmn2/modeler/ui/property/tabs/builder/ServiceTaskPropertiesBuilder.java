@@ -66,9 +66,9 @@ public class ServiceTaskPropertiesBuilder extends AbstractPropertiesBuilder<Serv
 	 */
 	@Override
 	public void create() {
-		PropertyUtil.createText(section, parent, "Result Variable", ModelPackage.eINSTANCE.getDocumentRoot_ResultVariableName(), bo);
-		
 		createServiceTaskTypeControls();
+		
+		PropertyUtil.createText(section, parent, "Result Variable", ModelPackage.eINSTANCE.getDocumentRoot_ResultVariableName(), bo);	
 	}
 	
 	private void createServiceTaskTypeControls() {

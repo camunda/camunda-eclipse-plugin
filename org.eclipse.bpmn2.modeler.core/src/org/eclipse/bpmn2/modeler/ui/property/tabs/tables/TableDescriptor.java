@@ -3,7 +3,6 @@ package org.eclipse.bpmn2.modeler.ui.property.tabs.tables;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.layout.fix.TableColumnLayout2;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -60,7 +59,6 @@ public abstract class TableDescriptor<T> {
 	
 	public void configureViewer(TableViewer viewer) {
 		viewer.setContentProvider(getContentProvider());
-		
 		configure(viewer.getTable());
 	}
 	
@@ -81,7 +79,7 @@ public abstract class TableDescriptor<T> {
 	 * @param tableDescriptor
 	 * @return
 	 */
-	private static TableViewer createTableViewer(Composite parent, TableDescriptor<?> tableDescriptor) {
+	private TableViewer createTableViewer(Composite parent, TableDescriptor<?> tableDescriptor) {
 		
 		TableColumnLayout2 tableColumnLayout = new TableColumnLayout2();
 		
@@ -104,13 +102,26 @@ public abstract class TableDescriptor<T> {
 	 * @param layout 
 	 * @param tableColumnDescriptors
 	 */
-	private static <T extends EObject> void createColumns(TableViewer viewer,
+	private void createColumns(TableViewer viewer,
 			TableColumnLayout2 layout, List<TableColumnDescriptor> tableColumnDescriptors) {
 
 		for (TableColumnDescriptor descriptor : tableColumnDescriptors) {
-			TableViewerColumn viewerColumn = new TableViewerColumn(viewer, SWT.NONE);
-			
-			descriptor.configureViewer(viewer, viewerColumn, layout);
+			createColumn(viewer, layout, descriptor);
 		}
+	}
+
+	/**
+	 * Create a single column for the viewer embedded in the given layout
+	 * 
+	 * @param viewer
+	 * @param layout
+	 * @param descriptor
+	 */
+	protected TableViewerColumn createColumn(TableViewer viewer, TableColumnLayout2 layout, TableColumnDescriptor descriptor) {
+		TableViewerColumn viewerColumn = new TableViewerColumn(viewer, SWT.NONE);
+		
+		descriptor.configureViewer(viewer, viewerColumn, layout);
+		
+		return viewerColumn;
 	}
 }

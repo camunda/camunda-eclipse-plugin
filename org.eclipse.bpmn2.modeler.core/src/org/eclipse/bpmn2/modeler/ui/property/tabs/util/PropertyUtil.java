@@ -23,6 +23,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -162,6 +163,22 @@ public class PropertyUtil {
 	public static Composite createStandardComposite(GFPropertySection section, Composite parent) {
 		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
 		Composite composite = factory.createFlatFormComposite(parent);
+		
+		composite.setLayoutData(new GridData(SWT.FILL, GridData.CENTER, true, false));
+		return composite;
+	}
+
+	public static Composite createGridLayoutedComposite(GFPropertySection section, Composite parent) {
+		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
+		Composite composite = factory.createFlatFormComposite(parent);
+		
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.marginBottom = -5;
+		gridLayout.marginLeft = -5;
+		gridLayout.marginRight = -5;
+		gridLayout.marginTop = -5;
+		
+		composite.setLayout(gridLayout);
 		
 		composite.setLayoutData(new GridData(SWT.FILL, GridData.CENTER, true, false));
 		return composite;

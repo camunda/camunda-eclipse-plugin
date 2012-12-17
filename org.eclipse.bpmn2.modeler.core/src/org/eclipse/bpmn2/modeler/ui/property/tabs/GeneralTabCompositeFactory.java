@@ -63,12 +63,12 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 			createParticipantComposite(participant);
 		}
 		
-		if (businessObject instanceof Activity) {
-			createActivityComposite((Activity) businessObject);
-		}
-		
 		if (businessObject instanceof Task) {
 			createTaskComposite((Task) businessObject);
+		}
+		
+		if (businessObject instanceof Activity) {
+			createActivityComposite((Activity) businessObject);
 		}
 		
 		if (businessObject instanceof Event) {

@@ -199,7 +199,7 @@ public abstract class AbstractColumnLayout2 extends Layout {
 					recalculate = true;
 					break;
 				}
-				widths[colIndex] = allowedWidth - 20; // MAGIC NUMBER (- 20)
+				widths[colIndex] = allowedWidth - (50 / numberOfWeightColumns); // MAGIC NUMBER (- (50 / numberOfWeightColumns))
 			}
 		} while (recalculate);
 

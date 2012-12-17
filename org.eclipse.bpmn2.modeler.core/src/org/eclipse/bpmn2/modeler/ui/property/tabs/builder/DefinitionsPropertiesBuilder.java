@@ -1,6 +1,5 @@
 package org.eclipse.bpmn2.modeler.ui.property.tabs.builder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.Bpmn2Factory;
@@ -11,34 +10,23 @@ import org.eclipse.bpmn2.Message;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.Signal;
 import org.eclipse.bpmn2.modeler.core.change.filter.ExtensionChangeFilter;
-import org.eclipse.bpmn2.modeler.core.change.filter.FeatureChangeFilter;
 import org.eclipse.bpmn2.modeler.core.change.filter.NestedFeatureChangeFilter;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.change.EObjectChangeSupport;
-import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.change.EObjectChangeSupport.ModelChangedEvent;
-import org.eclipse.bpmn2.modeler.ui.property.tabs.tables.EObjectAttributeTableColumnDescriptor;
-import org.eclipse.bpmn2.modeler.ui.property.tabs.tables.EditableTableDescriptor;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.ContentProvider;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.DeletedRowHandler;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.table.EditableEObjectTableBuilder;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.tables.EditableTableDescriptor.ElementFactory;
-import org.eclipse.bpmn2.modeler.ui.property.tabs.tables.TableColumnDescriptor;
-import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events;
-import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events.RowDeleted;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Table;
 
 public class DefinitionsPropertiesBuilder extends AbstractPropertiesBuilder<Definitions> {
 
@@ -70,98 +58,60 @@ public class DefinitionsPropertiesBuilder extends AbstractPropertiesBuilder<Defi
 		EClass signalCls = Bpmn2Package.eINSTANCE.getSignal();
 		EClass messageCls = Bpmn2Package.eINSTANCE.getMessage();
 		
-
-		createMappingsTable(section, parent, Error.class, "Errors", errorCls, ROOT_ELEMENTS_FEATURE, ERROR_TABLE_HEADERS, ERROR_FEATURES);		
-		createMappingsTable(section, parent, Signal.class, "Signals", signalCls, ROOT_ELEMENTS_FEATURE, SIGNAL_TABLE_HEADERS, SIGNAL_FEATURES);
-		createMappingsTable(section, parent, Message.class, "Messages", messageCls, ROOT_ELEMENTS_FEATURE, MESSAGE_TABLE_HEADERS, MESSAGE_FEATURES);
+		createMappingsTable(section, parent, Error.class, "Errors", errorCls, ROOT_ELEMENTS_FEATURE, ERROR_FEATURES, ERROR_TABLE_HEADERS);
+		createMappingsTable(section, parent, Message.class, "Messages", messageCls, ROOT_ELEMENTS_FEATURE, MESSAGE_FEATURES, MESSAGE_TABLE_HEADERS);
+		createMappingsTable(section, parent, Signal.class, "Signals", signalCls, ROOT_ELEMENTS_FEATURE, SIGNAL_FEATURES, SIGNAL_TABLE_HEADERS);
 	}
 
 	private <T extends EObject> void createMappingsTable(
 			GFPropertySection section, Composite parent, 
-			final Class<T> cls, String label, 
-			final EClass typeCls, final EStructuralFeature feature, String[] featureLabels, EStructuralFeature[] features) {
-		
-		EditableTableDescriptor<T> tableDescriptor = new EditableTableDescriptor<T>();
-		
-		tableDescriptor.setElementFactory(new ElementFactory<T>() {
-			
-			@Override
-			public T create() {
-				T instance = (T) transactionalCreateType(typeCls, feature);
-				return instance;
-			}
-		});
-		
-		List<TableColumnDescriptor> columns = new ArrayList<TableColumnDescriptor>();
+			final Class<T> typeCls, String label, final EClass typeECls, 
+			final EStructuralFeature feature, EStructuralFeature[] columnFeatures, String[] columnLabels) {
 
-		for (int i = 0; i < featureLabels.length; i++) {
-			String title = featureLabels[i];
-			EStructuralFeature typeFeature = features[i];
-
-			EObjectAttributeTableColumnDescriptor<EObject> descriptor = 
-					new EObjectAttributeTableColumnDescriptor<EObject>(typeFeature, title, 30);
-
-			columns.add(descriptor);
-		}
-		
-		tableDescriptor.setColumns(columns);
-		
-		
-		// create table composites ////////////
-		
+		// composite for mappings table
 		Composite composite = PropertyUtil.createStandardComposite(section, parent);
 		
-		Composite tableComposite = new Composite(composite, SWT.NONE);
-		FormData tableCompositeFormData = PropertyUtil.getStandardLayout();
-		tableCompositeFormData.height = 100;
+		ElementFactory<T> elementFactory = new ElementFactory<T>() {
+			@Override
+			public T create() {
+				T instance = (T) transactionalCreateType(typeECls, feature);
+				return instance;
+			}
+		};
+
+		ContentProvider<T> contentProvider = new ContentProvider<T>() {
+
+			@Override
+			public List<T> getContents() {
+				return ModelUtil.getAllRootElements(bo, typeCls);
+			}
+		};
 		
-		tableComposite.setLayoutData(tableCompositeFormData);
+		DeletedRowHandler<T> deleteHandler = new DeletedRowHandler<T>() {
+			@Override
+			public void rowDeleted(T element) {
+				transactionalRemoveMapping(element, feature);
+			}
+		};
+		
+		EditableEObjectTableBuilder<T> builder = new EditableEObjectTableBuilder<T>(section, composite, typeCls);
+		
+		builder
+			.elementFactory(elementFactory)
+			.contentProvider(contentProvider)
+			.columnFeatures(columnFeatures)
+			.columnLabels(columnLabels)
+			.deletedRowHandler(deleteHandler)
+			.model(bo)
+			.changeFilter(new NestedFeatureChangeFilter(bo, feature));
+		
+		final TableViewer viewer = builder.build();
+			
+		// table composite ////////////
+		final Composite tableComposite = viewer.getTable().getParent();
 
 		// create label
 		PropertyUtil.createLabel(section, composite, label, tableComposite);
-		
-		// instantiate table and viewer ////////////
-		
-		final TableViewer viewer = tableDescriptor.createTableViewer(tableComposite);
-		
-		final Table table = viewer.getTable();
-
-		
-		// add listeners /////////////
-		
-		table.addListener(Events.ROW_DELETED, new Listener() {
-
-			@Override
-			public void handleEvent(Event e) {
-				Events.RowDeleted<T> event = (RowDeleted<T>) e;
-				
-				T removedElement = event.getRemovedElement();
-				transactionalRemoveMapping(removedElement, feature);
-			}
-		});
-		
-		EObjectChangeSupport changeSupport = new EObjectChangeSupport(bo, table);
-		changeSupport.setFilter(new NestedFeatureChangeFilter(bo, feature).or(new FeatureChangeFilter(bo, feature)));
-		changeSupport.register();
-		
-		table.addListener(Events.MODEL_CHANGED, new Listener() {
-
-			@Override
-			public void handleEvent(Event e) {
-				ModelChangedEvent event = (ModelChangedEvent) e;
-				updateViewerContents(viewer, cls);
-			}
-		});
-		
-		// finally update viewer contents
-		updateViewerContents(viewer, cls);
-	}
-	
-	protected <T extends EObject> void updateViewerContents(TableViewer viewer, Class<T> typeCls) {
-		List<T> elements = ModelUtil.getAllRootElements(bo, typeCls);
-		
-		viewer.setInput(elements);
-		viewer.refresh();
 	}
 	
 	protected void transactionalRemoveMapping(final EObject element, final EStructuralFeature feature) {
