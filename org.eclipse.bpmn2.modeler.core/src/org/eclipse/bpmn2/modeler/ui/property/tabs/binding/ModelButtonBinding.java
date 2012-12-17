@@ -25,7 +25,7 @@ public abstract class ModelButtonBinding<V> extends ModelViewBinding<Button, V> 
 	
 	@Override
 	protected void establishModelViewBinding() {
-		EAttributeChangeSupport.ensureAdded(model, feature, control);
+		ensureChangeSupportAdded();
 
 		control.addListener(Events.MODEL_CHANGED, new Listener() {
 			
@@ -39,6 +39,10 @@ public abstract class ModelButtonBinding<V> extends ModelViewBinding<Button, V> 
 				}
 			}
 		});
+	}
+
+	protected void ensureChangeSupportAdded() {
+		EAttributeChangeSupport.ensureAdded(model, feature, control);
 	}
 	
 	@Override

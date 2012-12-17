@@ -7,7 +7,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Event;
 
-class ModelRadioBinding extends ModelButtonBinding<Boolean> {
+public class ModelRadioBinding extends ModelButtonBinding<Boolean> {
 
 	public ModelRadioBinding(EObject model, EStructuralFeature feature, Button control) {
 		super(model, feature, control);

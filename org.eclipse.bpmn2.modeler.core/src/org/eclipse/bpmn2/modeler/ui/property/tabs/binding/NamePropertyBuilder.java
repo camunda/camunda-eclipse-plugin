@@ -1,18 +1,14 @@
-package org.eclipse.bpmn2.modeler.ui.property.tabs.builder;
+package org.eclipse.bpmn2.modeler.ui.property.tabs.binding;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallableElement;
 import org.eclipse.bpmn2.Collaboration;
-import org.eclipse.bpmn2.ExclusiveGateway;
 import org.eclipse.bpmn2.FlowElement;
-import org.eclipse.bpmn2.FlowElementsContainer;
-import org.eclipse.bpmn2.InclusiveGateway;
 import org.eclipse.bpmn2.Lane;
-import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.Participant;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.AbstractPropertiesBuilder;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.widgets.Composite;
@@ -47,9 +43,6 @@ public class NamePropertyBuilder extends AbstractPropertiesBuilder<BaseElement> 
 		} else 
 		if (bo instanceof Lane) {
 			NAME_FEATURE = Bpmn2Package.eINSTANCE.getLane_Name();
-		} else
-		if (bo instanceof MessageFlow) {
-			NAME_FEATURE = Bpmn2Package.eINSTANCE.getMessageFlow_Name();
 		} else {
 			throw new IllegalArgumentException("Unsupported base element: " + bo);
 		}

@@ -2,12 +2,10 @@ package org.eclipse.bpmn2.modeler.ui.property.tabs.builder;
 
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.SequenceFlow;
-import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.FormalExpressionTextBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
 
 public class SequenceFlowPropertiesBuilder extends AbstractPropertiesBuilder<SequenceFlow> {
 
@@ -19,9 +17,6 @@ public class SequenceFlowPropertiesBuilder extends AbstractPropertiesBuilder<Seq
 
 	@Override
 	public void create() {
-		Text text = PropertyUtil.createUnboundText(section, parent, "Condition");
-		
-		FormalExpressionTextBinding binding = new FormalExpressionTextBinding(bo, CONDITION_EXPRESSION_FEATURE, text);
-		binding.establish();
+		PropertyUtil.createText(section, parent, "Condition", CONDITION_EXPRESSION_FEATURE, bo);
 	}
 }

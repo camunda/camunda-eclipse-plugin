@@ -27,4 +27,15 @@ public abstract class AbstractPropertiesBuilder<T extends BaseElement> {
 	 */
 	public abstract void create();
 
+	/**
+	 * 
+	 */
+	public void relayout() {
+		if (!parent.isDisposed()) {
+			Composite parentsParent = parent.getParent();
+			
+			parentsParent.layout();
+			parentsParent.redraw();
+		}
+	}
 }

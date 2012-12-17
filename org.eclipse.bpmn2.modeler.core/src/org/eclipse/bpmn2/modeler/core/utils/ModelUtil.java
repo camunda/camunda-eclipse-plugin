@@ -719,6 +719,7 @@ public class ModelUtil {
 		}
 		return resource;
 	}
+	
 	public static Definitions getDefinitions(EObject object) {
 		Resource resource = getResource(object);
 		if (resource!=null) {

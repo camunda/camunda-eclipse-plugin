@@ -1,7 +1,9 @@
 package org.eclipse.bpmn2.modeler.ui.property.tabs.builder;
 
+import java.util.List;
+
+import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.StartEvent;
-import org.eclipse.bpmn2.TimerEventDefinition;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelPackage;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
@@ -16,9 +18,14 @@ public class StartEventPropertiesBuilder extends AbstractPropertiesBuilder<Start
 
 	@Override
 	public void create() {
-		if (!ModelUtil.hasEventDefinition(bo, TimerEventDefinition.class)) {
+		List<EventDefinition> eventDefinitions = ModelUtil.getEventDefinitions(bo);
+		
+		if (!hasDefinitions(eventDefinitions)) {
 			PropertyUtil.createText(section, parent, "Form Key", ModelPackage.eINSTANCE.getDocumentRoot_FormKey(), bo);
 		}
 	}
 
+	private boolean hasDefinitions(List<EventDefinition> eventDefinitions) {
+		return !eventDefinitions.isEmpty();
+	}
 }

@@ -1,18 +1,19 @@
 package org.eclipse.bpmn2.modeler.ui.property.tabs.builder;
 
-import static org.eclipse.bpmn2.modeler.core.utils.ExtensionUtil.addExtension;
-import static org.eclipse.bpmn2.modeler.core.utils.ExtensionUtil.getExtensions;
-import static org.eclipse.bpmn2.modeler.core.utils.ExtensionUtil.removeExtensionByValue;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.bpmn2.CallActivity;
+import org.eclipse.bpmn2.Bpmn2Factory;
+import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.Error;
+import org.eclipse.bpmn2.Message;
+import org.eclipse.bpmn2.RootElement;
+import org.eclipse.bpmn2.Signal;
 import org.eclipse.bpmn2.modeler.core.change.filter.ExtensionChangeFilter;
-import org.eclipse.bpmn2.modeler.runtime.activiti.model.InType;
-import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelFactory;
-import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelPackage;
-import org.eclipse.bpmn2.modeler.runtime.activiti.model.OutType;
+import org.eclipse.bpmn2.modeler.core.change.filter.FeatureChangeFilter;
+import org.eclipse.bpmn2.modeler.core.change.filter.NestedFeatureChangeFilter;
+import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.change.EObjectChangeSupport;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.change.EObjectChangeSupport.ModelChangedEvent;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.tables.EObjectAttributeTableColumnDescriptor;
@@ -22,6 +23,7 @@ import org.eclipse.bpmn2.modeler.ui.property.tabs.tables.TableColumnDescriptor;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events.RowDeleted;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
@@ -38,46 +40,46 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 
-public class CallActivityPropertiesBuilder extends AbstractPropertiesBuilder<CallActivity> {
+public class DefinitionsPropertiesBuilder extends AbstractPropertiesBuilder<Definitions> {
 
-	private static final String CALLED_ELEMENT = "Called Element";
-
-	private static final String[] TABLE_HEADERS = { "source", "sourceExpression", "target" };
-
-	private static final EStructuralFeature[] IN_FEATURES = { 
-		ModelPackage.eINSTANCE.getInType_Source(),
-		ModelPackage.eINSTANCE.getInType_SourceExpression(), 
-		ModelPackage.eINSTANCE.getInType_Target() };
-
-	private static final EStructuralFeature[] OUT_FEATURES = { 
-		ModelPackage.eINSTANCE.getOutType_Source(),
-		ModelPackage.eINSTANCE.getOutType_SourceExpression(), 
-		ModelPackage.eINSTANCE.getOutType_Target() };
-	
-	public CallActivityPropertiesBuilder(Composite parent, GFPropertySection section, CallActivity bo) {
+	public DefinitionsPropertiesBuilder(Composite parent, GFPropertySection section, Definitions bo) {
 		super(parent, section, bo);
 	}
+
+	private static final EStructuralFeature ROOT_ELEMENTS_FEATURE = Bpmn2Package.eINSTANCE.getDefinitions_RootElements();
+	
+	private static final String[] ERROR_TABLE_HEADERS = { "error code", "name" };
+
+	private static final EStructuralFeature[] ERROR_FEATURES = { 
+		Bpmn2Package.eINSTANCE.getError_ErrorCode(),
+		Bpmn2Package.eINSTANCE.getError_Name() };
+	
+	private static final String[] SIGNAL_TABLE_HEADERS = { "name" };
+	
+	private static final EStructuralFeature[] SIGNAL_FEATURES = { 
+		Bpmn2Package.eINSTANCE.getSignal_Name() };
+
+	private static final String[] MESSAGE_TABLE_HEADERS = { "name" };
+	
+	private static final EStructuralFeature[] MESSAGE_FEATURES = { 
+		Bpmn2Package.eINSTANCE.getMessage_Name() };
 	
 	@Override
 	public void create() {
+		EClass errorCls = Bpmn2Package.eINSTANCE.getError();
+		EClass signalCls = Bpmn2Package.eINSTANCE.getSignal();
+		EClass messageCls = Bpmn2Package.eINSTANCE.getMessage();
 		
-		PropertyUtil.createText(section, parent, CALLED_ELEMENT,
-				ModelPackage.eINSTANCE.getCallActivity_CalledElement(), bo);
 
-		EClass inTypeCls = ModelPackage.eINSTANCE.getInType();
-		EReference inTypeFeature = ModelPackage.eINSTANCE.getDocumentRoot_In();
-
-		EClass outTypeCls = ModelPackage.eINSTANCE.getOutType();
-		EReference outTypeFeature = ModelPackage.eINSTANCE.getDocumentRoot_Out();
-
-		createMappingsTable(section, parent, InType.class, "Input Mapping", inTypeCls, inTypeFeature, IN_FEATURES);
-		createMappingsTable(section, parent, OutType.class, "Output Mapping", outTypeCls, outTypeFeature, OUT_FEATURES);
+		createMappingsTable(section, parent, Error.class, "Errors", errorCls, ROOT_ELEMENTS_FEATURE, ERROR_TABLE_HEADERS, ERROR_FEATURES);		
+		createMappingsTable(section, parent, Signal.class, "Signals", signalCls, ROOT_ELEMENTS_FEATURE, SIGNAL_TABLE_HEADERS, SIGNAL_FEATURES);
+		createMappingsTable(section, parent, Message.class, "Messages", messageCls, ROOT_ELEMENTS_FEATURE, MESSAGE_TABLE_HEADERS, MESSAGE_FEATURES);
 	}
 
 	private <T extends EObject> void createMappingsTable(
 			GFPropertySection section, Composite parent, 
 			final Class<T> cls, String label, 
-			final EClass typeCls, final EStructuralFeature feature, EStructuralFeature[] typeFeatures) {
+			final EClass typeCls, final EStructuralFeature feature, String[] featureLabels, EStructuralFeature[] features) {
 		
 		EditableTableDescriptor<T> tableDescriptor = new EditableTableDescriptor<T>();
 		
@@ -92,9 +94,9 @@ public class CallActivityPropertiesBuilder extends AbstractPropertiesBuilder<Cal
 		
 		List<TableColumnDescriptor> columns = new ArrayList<TableColumnDescriptor>();
 
-		for (int i = 0; i < TABLE_HEADERS.length; i++) {
-			String title = TABLE_HEADERS[i];
-			EStructuralFeature typeFeature = typeFeatures[i];
+		for (int i = 0; i < featureLabels.length; i++) {
+			String title = featureLabels[i];
+			EStructuralFeature typeFeature = features[i];
 
 			EObjectAttributeTableColumnDescriptor<EObject> descriptor = 
 					new EObjectAttributeTableColumnDescriptor<EObject>(typeFeature, title, 30);
@@ -115,7 +117,6 @@ public class CallActivityPropertiesBuilder extends AbstractPropertiesBuilder<Cal
 		
 		tableComposite.setLayoutData(tableCompositeFormData);
 
-
 		// create label
 		PropertyUtil.createLabel(section, composite, label, tableComposite);
 		
@@ -135,12 +136,12 @@ public class CallActivityPropertiesBuilder extends AbstractPropertiesBuilder<Cal
 				Events.RowDeleted<T> event = (RowDeleted<T>) e;
 				
 				T removedElement = event.getRemovedElement();
-				transactionalRemoveMapping(removedElement);
+				transactionalRemoveMapping(removedElement, feature);
 			}
 		});
 		
 		EObjectChangeSupport changeSupport = new EObjectChangeSupport(bo, table);
-		changeSupport.setFilter(new ExtensionChangeFilter(bo, feature));
+		changeSupport.setFilter(new NestedFeatureChangeFilter(bo, feature).or(new FeatureChangeFilter(bo, feature)));
 		changeSupport.register();
 		
 		table.addListener(Events.MODEL_CHANGED, new Listener() {
@@ -157,32 +158,36 @@ public class CallActivityPropertiesBuilder extends AbstractPropertiesBuilder<Cal
 	}
 	
 	protected <T extends EObject> void updateViewerContents(TableViewer viewer, Class<T> typeCls) {
-		List<T> inTypes = getExtensions(bo, typeCls);
+		List<T> elements = ModelUtil.getAllRootElements(bo, typeCls);
 		
-		viewer.setInput(inTypes);
+		viewer.setInput(elements);
 		viewer.refresh();
 	}
 	
-	protected void transactionalRemoveMapping(final EObject element) {
+	protected void transactionalRemoveMapping(final EObject element, final EStructuralFeature feature) {
 		TransactionalEditingDomain editingDomain = TransactionUtil.getEditingDomain(bo);
 		editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 			
 			@Override
 			protected void doExecute() {
-				removeExtensionByValue(bo, element);
+				EList<EObject> list = (EList<EObject>) bo.eGet(feature);
+				list.remove(element);
 			}
 		});
 	}
 	
 	private EObject transactionalCreateType(EClass typeCls, final EStructuralFeature feature) {
-		final EObject instance = ModelFactory.eINSTANCE.create(typeCls);
+		final RootElement instance = (RootElement) Bpmn2Factory.eINSTANCE.create(typeCls);
 		
 		TransactionalEditingDomain editingDomain = TransactionUtil.getEditingDomain(bo);
 		editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 			
 			@Override
 			protected void doExecute() {
-				addExtension(bo, feature, instance);
+				ModelUtil.setID(instance);
+				
+				EList<EObject> list = (EList<EObject>) bo.eGet(feature);
+				list.add(instance);
 			}
 		});
 		

@@ -1,6 +1,8 @@
 package org.eclipse.bpmn2.modeler.ui.property.tabs.util;
 
+import org.eclipse.bpmn2.Expression;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.BooleanButtonBinding;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.FormalExpressionTextBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.IntegerTextBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.ModelTextBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.StringTextBinding;
@@ -260,6 +262,9 @@ public class PropertyUtil {
 		Class<?> instanceClass = featureType.getInstanceClass();
 		if (instanceClass.equals(int.class) || instanceClass.equals(Integer.class)) {
 			return new IntegerTextBinding(bo, feature, text);
+		} else
+		if (instanceClass.equals(Expression.class)) {
+			return new FormalExpressionTextBinding(bo, feature, text);
 		} else {
 			return new StringTextBinding(bo, feature, text);
 		}

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelPackage;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.ModelRadioBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.dialog.ClassChooserDialog;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.radio.Radio.RadioGroup;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events.RadioSelectionChanged;

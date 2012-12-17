@@ -8,6 +8,7 @@ import java.util.Map;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.TimerEventDefinition;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.FormalExpressionTextBinding;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.ModelRadioBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.radio.Radio.RadioGroup;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events.RadioSelectionChanged;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
@@ -63,10 +64,8 @@ public class TimerEventDefinitionPropertiesBuilder extends AbstractPropertiesBui
 			String name = TYPE_NAMES[i];
 			final EStructuralFeature feature = TYPE_FEATURES[i];
 			
-			final Text text = PropertyUtil.createUnboundRadioText(section, parent, name, feature, radioGroup);
+			final Text text = PropertyUtil.createRadioText(section, parent, name, feature, radioGroup, bo);
 			text.setEnabled(false);
-			
-			new FormalExpressionTextBinding(bo, feature, text).establish();
 			
 			featureToInputMap.put(feature, text);
 			

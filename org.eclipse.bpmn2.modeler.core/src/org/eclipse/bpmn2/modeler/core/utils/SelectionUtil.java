@@ -42,6 +42,17 @@ public class SelectionUtil {
 	 */
 	public static EObject getSelectedBusinessObject(ISelection selection) {
 		Object model = getSelectedModel(selection);
+		return getSelectedBusinessObject(model);
+	}
+	
+	/**
+	 * Given a diagram element (which may be null), return the associated business object. 
+	 * 
+	 * @param model
+	 * @return
+	 */
+	public static EObject getSelectedBusinessObject(Object model) {
+		
 		if (model != null && model instanceof PictogramElement) {
 			EObject businessObject = BusinessObjectUtil.getBusinessObjectForPictogramElement((PictogramElement) model);
 			return businessObject;
