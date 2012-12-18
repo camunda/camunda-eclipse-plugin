@@ -96,6 +96,7 @@ public class PropertyUtil {
 		return checkbox;
 	}
 	
+//	public static 
 	public static Button createCheckbox(GFPropertySection section, Composite parent, String label, final EStructuralFeature feature, final EObject bo) {
 		Button checkbox = createUnboundCheckbox(section, parent, label);
 		

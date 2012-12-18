@@ -33,15 +33,7 @@ public class TableColumnDescriptor {
 	 * @return
 	 */
 	public ColumnLabelProvider getColumnLabelProvider() {
-		ColumnLabelProvider labelProvider = new ColumnLabelProvider() {
-
-			@Override
-			public String getText(Object element) {
-				return String.valueOf(element);
-			}
-		};
-
-		return labelProvider;
+		return new SimpleLabelProvider();
 	}
 
 	/**

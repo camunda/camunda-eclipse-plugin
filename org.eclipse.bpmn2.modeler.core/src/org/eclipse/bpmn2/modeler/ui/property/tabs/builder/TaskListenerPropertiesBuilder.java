@@ -97,7 +97,7 @@ public class TaskListenerPropertiesBuilder extends AbstractPropertiesBuilder<Use
 			}
 		};
 		
-		final EditingSupportProvider editingSupportProvider = new ListenerEditingSupportProvider(EventType.class, EventType.values());
+		final EditingSupportProvider editingSupportProvider = new DefaultEditingSupportProvider();
 		
 		EditableEObjectTableBuilder<T> builder = new EditableEObjectTableBuilder<T>(section, composite, typeCls);
 		

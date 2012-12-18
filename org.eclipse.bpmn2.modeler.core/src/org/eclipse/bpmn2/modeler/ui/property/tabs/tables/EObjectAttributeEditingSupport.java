@@ -55,7 +55,7 @@ public class EObjectAttributeEditingSupport<T extends EObject> extends EditingSu
 		return element.eGet(feature);
 	}
 
-	protected void setValue(T element, String value) {
+	protected void setValue(T element, Object value) {
 
 		try {
 			Object val = toEValue(value);
@@ -72,12 +72,18 @@ public class EObjectAttributeEditingSupport<T extends EObject> extends EditingSu
 		viewer.update(element, null);
 	}
 	
-	protected Object toEValue(String value) {
-		if (value != null && !value.trim().isEmpty()) {
-			return value;
-		} else {
-			return null;
+	protected Object toEValue(Object value) {
+		if (value instanceof String) {
+			String str = (String) value;
+
+			if (str.trim().isEmpty()) {
+				return null;
+			} else {
+				return str;
+			}
 		}
+		
+		return value;
 	}
 
 	/**
@@ -97,7 +103,7 @@ public class EObjectAttributeEditingSupport<T extends EObject> extends EditingSu
 	
 	@Override
 	protected final void setValue(Object element, Object value) {
-		setValue((T) element, (String) value);
+		setValue((T) element, value);
 	}
 
 	@Override

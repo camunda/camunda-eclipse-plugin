@@ -100,7 +100,7 @@ public class ExecutionListenerPropertiesBuilder extends AbstractPropertiesBuilde
 			}
 		};
 		
-		final EditingSupportProvider editingSupportProvider = new ListenerEditingSupportProvider(EventType1.class, EventType1.values());
+		final EditingSupportProvider editingSupportProvider = new DefaultEditingSupportProvider();
 		
 		EditableEObjectTableBuilder<T> builder = new EditableEObjectTableBuilder<T>(section, composite, typeCls);
 		
