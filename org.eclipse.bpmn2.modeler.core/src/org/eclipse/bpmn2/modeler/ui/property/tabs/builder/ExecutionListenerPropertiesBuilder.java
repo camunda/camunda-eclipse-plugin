@@ -8,8 +8,6 @@ import java.util.List;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.change.filter.ExtensionChangeFilter;
 import org.eclipse.bpmn2.modeler.core.utils.ExtensionUtil;
-import org.eclipse.bpmn2.modeler.runtime.activiti.model.EventType;
-import org.eclipse.bpmn2.modeler.runtime.activiti.model.EventType1;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.ExecutionListenerType;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelFactory;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelPackage;

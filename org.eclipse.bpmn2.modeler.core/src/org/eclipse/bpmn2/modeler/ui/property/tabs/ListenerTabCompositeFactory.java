@@ -1,6 +1,7 @@
 package org.eclipse.bpmn2.modeler.ui.property.tabs;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.UserTask;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.ExecutionListenerPropertiesBuilder;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.TaskListenerPropertiesBuilder;
@@ -20,6 +21,10 @@ public class ListenerTabCompositeFactory extends AbstractTabCompositeFactory<Bas
 	
 	@Override
 	public Composite createCompositeForBusinessObject(BaseElement baseElement) {
+		if (baseElement instanceof Participant) {
+			baseElement = ((Participant) baseElement).getProcessRef();
+		}
+		
 		createExecutionListenerComposite(baseElement);
 		
 		if (baseElement instanceof UserTask) {
@@ -30,7 +35,6 @@ public class ListenerTabCompositeFactory extends AbstractTabCompositeFactory<Bas
 
 	private void createTaskListenerComposite(UserTask userTask) {
 		new TaskListenerPropertiesBuilder(parent, section, userTask).create();
-		
 	}
 
 	private void createExecutionListenerComposite(BaseElement baseElement) {

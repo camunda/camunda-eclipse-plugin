@@ -4,6 +4,7 @@ import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.AdHocSubProcess;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
+import org.eclipse.bpmn2.BusinessRuleTask;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.Event;
@@ -37,6 +38,7 @@ import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.RetryEnabledProperties
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.ScriptTaskPropertiesBuilder;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.SequenceFlowPropertiesBuilder;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.ServiceTaskPropertiesBuilder;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.ServiceTypeControlsPropertiesBuilder;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.StartEventPropertiesBuilder;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.UserTaskPropertiesBuilder;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
@@ -140,11 +142,20 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 	}
 	
 	private void createTaskComposite(Task task) {
+		
+		if (task instanceof ServiceTask || task instanceof BusinessRuleTask) {
+			new ServiceTypeControlsPropertiesBuilder(parent, section, task).create();
+		}
+		
 		if (task instanceof UserTask) {
 			new UserTaskPropertiesBuilder(parent, section, (UserTask) task).create();
-		} else if (task instanceof ScriptTask) {
+		} else
+		
+		if (task instanceof ScriptTask) {
 			new ScriptTaskPropertiesBuilder(parent, section, (ScriptTask) task).create();
-		} else if (task instanceof ServiceTask) {
+		} else
+		
+		if (task instanceof ServiceTask) {
 			new ServiceTaskPropertiesBuilder(parent, section, (ServiceTask) task).create();
 		}
 	}
