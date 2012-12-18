@@ -19,7 +19,7 @@ public class FormalExpressionTextBinding extends ModelAttributeTextBinding<Forma
 
 	@Override
 	protected String toString(FormalExpression value) {
-		if (value == null) {
+		if (value == null || value.getBody() == null) {
 			return "";
 		} else {
 			return value.getBody();

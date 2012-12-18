@@ -5,6 +5,7 @@ import static org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events.RADIO_SELEC
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.TimerEventDefinition;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.FormalExpressionTextBinding;
@@ -120,8 +121,10 @@ public class TimerEventDefinitionPropertiesBuilder extends AbstractPropertiesBui
 		
 		@Override
 		protected void doExecute() {
-			object.eUnset(oldFeature);
-			object.eSet(newFeature, "");
+			if (oldFeature != null) {
+				object.eUnset(oldFeature);
+			}
+			object.eSet(newFeature, Bpmn2Factory.eINSTANCE.createFormalExpression());
 		}
 	}
 }

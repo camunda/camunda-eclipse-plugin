@@ -186,7 +186,9 @@ public class ServiceTaskPropertiesBuilder extends AbstractPropertiesBuilder<Serv
 		
 		@Override
 		protected void doExecute() {
-			object.eUnset(oldFeature);
+			if (oldFeature != null) {
+				object.eUnset(oldFeature);
+			}
 			object.eSet(newFeature, "");
 		}
 	}

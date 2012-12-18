@@ -103,7 +103,6 @@ public class DefaultEditingSupportProvider implements EditingSupportProvider {
 			setValidator(new ICellEditorValidator() {
 				@Override
 				public String isValid(Object value) {
-					System.out.println("IS VALID (" + value + ")");
 					if (!elementStrings.contains(value)) {
 						return "Not in list";
 					} else {
