@@ -1,9 +1,10 @@
 package org.eclipse.bpmn2.modeler.ui.property.tabs.builder;
 
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
 /**
  * Base class for all factories
@@ -29,13 +30,27 @@ public abstract class AbstractPropertiesBuilder<T extends BaseElement> {
 
 	/**
 	 * 
+	 * @param control
 	 */
 	public void relayout() {
 		if (!parent.isDisposed()) {
-			Composite parentsParent = parent.getParent();
-			
-			parentsParent.layout();
-			parentsParent.redraw();
+			relayoutAll(parent);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param parent
+	 * @return
+	 */
+	private Composite relayoutAll(Composite parent) {
+		parent.layout(true);
+		parent.redraw();
+		
+		if (parent instanceof ScrolledComposite) {
+			return parent;
+		} else {	
+			return relayoutAll(parent.getParent());
 		}
 	}
 }
