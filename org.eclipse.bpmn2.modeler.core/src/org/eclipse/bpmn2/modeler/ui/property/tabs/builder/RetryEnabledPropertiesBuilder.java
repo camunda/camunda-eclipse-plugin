@@ -12,6 +12,7 @@ import org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.FailedJobRetryTimeCy
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.FoxFactory;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.ModelTextBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.change.EAttributeChangeSupport;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.util.HelpText;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -43,6 +44,8 @@ public class RetryEnabledPropertiesBuilder extends AbstractPropertiesBuilder<Bas
 	protected Text createRetryCycleText() {
 
 		final Text retryText = PropertyUtil.createUnboundText(section, parent, "Retry Time Cycle");
+
+		PropertyUtil.attachNote(retryText, HelpText.TIME_CYCLE);
 		
 		// observing the checkbox and updating the model
 		

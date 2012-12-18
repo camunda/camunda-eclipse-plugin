@@ -11,6 +11,7 @@ import org.eclipse.bpmn2.modeler.ui.property.tabs.tables.EditableTableDescriptor
 import org.eclipse.bpmn2.modeler.ui.property.tabs.tables.EditableTableDescriptor.ElementFactory;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.tables.TableColumnDescriptor;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.util.HelpText;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events.RowDeleted;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
@@ -254,6 +255,8 @@ public class EObjectTableBuilder<T extends EObject> {
 		
 		tableComposite.setLayoutData(tableCompositeFormData);
 
+		PropertyUtil.attachNote(tableComposite, HelpText.TABLE_HELP);
+		
 		return tableComposite;
 	}
 

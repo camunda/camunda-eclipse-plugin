@@ -12,6 +12,7 @@ import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.FormalExpressionTextBi
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.ModelRadioBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.radio.Radio.RadioGroup;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events.RadioSelectionChanged;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.util.HelpText;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -35,11 +36,17 @@ public class TimerEventDefinitionPropertiesBuilder extends AbstractPropertiesBui
 	private static final String[] TYPE_NAMES = new String[] { 
 		"Date", "Duration", "Cycle" 
 	};
-	
+
 	private static final EStructuralFeature[] TYPE_FEATURES = new EStructuralFeature[] { 
 		 Bpmn2Package.eINSTANCE.getTimerEventDefinition_TimeDate(), 
 		 Bpmn2Package.eINSTANCE.getTimerEventDefinition_TimeDuration(), 
 		 Bpmn2Package.eINSTANCE.getTimerEventDefinition_TimeCycle()
+	};
+	
+	private static final String[] TYPE_HELP_TEXTS = new String[] { 
+		 HelpText.TIME_DATE, 
+		 HelpText.TIME_DURATION, 
+		 HelpText.TIME_CYCLE, 
 	};
 
 	private RadioGroup<EStructuralFeature> radioGroup;
@@ -67,6 +74,8 @@ public class TimerEventDefinitionPropertiesBuilder extends AbstractPropertiesBui
 			
 			final Text text = PropertyUtil.createRadioText(section, parent, name, feature, radioGroup, bo);
 			text.setEnabled(false);
+			
+			PropertyUtil.attachNote(text, TYPE_HELP_TEXTS[i]);
 			
 			featureToInputMap.put(feature, text);
 			
