@@ -72,6 +72,7 @@ public class DefinitionsPropertiesBuilder extends AbstractPropertiesBuilder<Defi
 		Composite composite = PropertyUtil.createStandardComposite(section, parent);
 		
 		ElementFactory<T> elementFactory = new ElementFactory<T>() {
+			
 			@Override
 			public T create() {
 				T instance = (T) transactionalCreateType(typeECls, feature);
@@ -103,7 +104,9 @@ public class DefinitionsPropertiesBuilder extends AbstractPropertiesBuilder<Defi
 			.columnLabels(columnLabels)
 			.deletedRowHandler(deleteHandler)
 			.model(bo)
-			.changeFilter(new NestedFeatureChangeFilter(bo, feature).or(new FeatureChangeFilter(bo, feature)));
+			.changeFilter(
+				new NestedFeatureChangeFilter(bo, feature)
+					.or(new FeatureChangeFilter(bo, feature)));
 		
 		final TableViewer viewer = builder.build();
 			

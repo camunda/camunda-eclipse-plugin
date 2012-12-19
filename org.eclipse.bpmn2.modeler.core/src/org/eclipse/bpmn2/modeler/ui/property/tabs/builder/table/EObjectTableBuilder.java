@@ -223,7 +223,6 @@ public class EObjectTableBuilder<T extends EObject> {
 		List<T> contents = contentProvider.getContents();
 		
 		viewer.setInput(contents);
-		viewer.refresh();
 	}
 	
 	/**

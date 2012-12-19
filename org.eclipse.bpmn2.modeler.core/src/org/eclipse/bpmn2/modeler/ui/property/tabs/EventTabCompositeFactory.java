@@ -8,6 +8,7 @@ import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.MessageEventDefinition;
 import org.eclipse.bpmn2.SignalEventDefinition;
+import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.TimerEventDefinition;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelPackage;
@@ -41,7 +42,7 @@ public class EventTabCompositeFactory extends AbstractTabCompositeFactory<Event>
 		TimerEventDefinition timerDef = getEventDefinition(TimerEventDefinition.class, eventDefinitions);
 		SignalEventDefinition signalDef = getEventDefinition(SignalEventDefinition.class, eventDefinitions);
 		
-		if (errorDef == null) {
+		if (errorDef == null && event instanceof StartEvent) {
 			PropertyUtil.createText(section, parent, "Initiator", ModelPackage.eINSTANCE.getDocumentRoot_Initiator(), event);
 		}
 		

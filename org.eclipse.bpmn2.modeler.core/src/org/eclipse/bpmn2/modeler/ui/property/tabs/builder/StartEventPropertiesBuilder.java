@@ -23,6 +23,8 @@ public class StartEventPropertiesBuilder extends AbstractPropertiesBuilder<Start
 		if (!hasDefinitions(eventDefinitions)) {
 			PropertyUtil.createText(section, parent, "Form Key", ModelPackage.eINSTANCE.getDocumentRoot_FormKey(), bo);
 		}
+		
+		
 	}
 
 	private boolean hasDefinitions(List<EventDefinition> eventDefinitions) {
