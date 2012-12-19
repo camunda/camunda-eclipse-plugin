@@ -1,4 +1,4 @@
-package org.eclipse.bpmn2.modeler.core.test.change;
+package org.eclipse.bpmn2.modeler.core.test.ui.change;
 
 import static org.eclipse.bpmn2.modeler.core.test.util.Util.findBusinessObjectById;
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -64,7 +64,7 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 	// default change support tests ///////////////////////////////////////////
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/change/ChangeSupportTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/ui/change/ChangeSupportTest.testBase.bpmn")
 	public void testListElementAdd() {
 		final Process process1 = findBusinessObjectById(diagram, "Process_1", Process.class);
 
@@ -86,7 +86,7 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 	}
 
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/change/ChangeSupportTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/ui/change/ChangeSupportTest.testBase.bpmn")
 	public void testListElementModify() {
 		final Process process1 = findBusinessObjectById(diagram, "Process_1", Process.class);
 		final SequenceFlow sequenceFlow1 = findBusinessObjectById(diagram, "SequenceFlow_1", SequenceFlow.class);
@@ -112,7 +112,7 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 	}
 
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/change/ChangeSupportTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/ui/change/ChangeSupportTest.testBase.bpmn")
 	public void testListElementRemove() {
 		final Process process1 = findBusinessObjectById(diagram, "Process_1", Process.class);
 		final ServiceTask serviceTask1 = findBusinessObjectById(diagram, "ServiceTask_1", ServiceTask.class);
@@ -137,7 +137,7 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 	}
 
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/change/ChangeSupportTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/ui/change/ChangeSupportTest.testBase.bpmn")
 	public void testAttributeAdd() {
 		final SequenceFlow sequenceFlow1 = findBusinessObjectById(diagram, "SequenceFlow_1", SequenceFlow.class);
 
@@ -160,7 +160,7 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 	}
 
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/change/ChangeSupportTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/ui/change/ChangeSupportTest.testBase.bpmn")
 	public void testAttributeRemove() {
 		final SequenceFlow sequenceFlow2 = findBusinessObjectById(diagram, "SequenceFlow_2", SequenceFlow.class);
 
@@ -183,7 +183,7 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 	}
 
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/change/ChangeSupportTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/ui/change/ChangeSupportTest.testBase.bpmn")
 	public void testAttributeUpdate() {
 		final SequenceFlow sequenceFlow2 = findBusinessObjectById(diagram, "SequenceFlow_2", SequenceFlow.class);
 
@@ -208,7 +208,7 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 	// extension attribute change support ///////////////////////////////
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/change/ChangeSupportTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/ui/change/ChangeSupportTest.testBase.bpmn")
 	public void testExtensionAttributeAdd() {
 		final ServiceTask serviceTask1 = findBusinessObjectById(diagram, "ServiceTask_1", ServiceTask.class);
 
@@ -228,7 +228,7 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 	}
 
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/change/ChangeSupportTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/ui/change/ChangeSupportTest.testBase.bpmn")
 	public void testExtensionAttributeRemove() {
 		final Task task1 = findBusinessObjectById(diagram, "Task_1", Task.class);
 
@@ -251,7 +251,7 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 	}
 
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/change/ChangeSupportTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/ui/change/ChangeSupportTest.testBase.bpmn")
 	public void testExtensionAttributeUpdate() {
 		final Task task1 = findBusinessObjectById(diagram, "Task_1", Task.class);
 
@@ -273,7 +273,7 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 	// extension element change support ///////////////////////////////
 
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/change/ChangeSupportTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/ui/change/ChangeSupportTest.testBase.bpmn")
 	public void testExtensionElementAdd() {
 		final ServiceTask serviceTask1 = findBusinessObjectById(diagram, "ServiceTask_1", ServiceTask.class);
 
@@ -296,7 +296,7 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 	}
 
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/change/ChangeSupportTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/ui/change/ChangeSupportTest.testBase.bpmn")
 	public void testExtensionElementRemove() {
 		final Task task1 = findBusinessObjectById(diagram, "Task_1", Task.class);
 
@@ -319,7 +319,7 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 	}
 
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/change/ChangeSupportTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/ui/change/ChangeSupportTest.testBase.bpmn")
 	public void testExtensionElementRemoveAndCleanExtensionAttributeValues() {
 		final Task task1 = findBusinessObjectById(diagram, "Task_1", Task.class);
 		
@@ -350,7 +350,7 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/change/ChangeSupportTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/ui/change/ChangeSupportTest.testBase.bpmn")
 	public void testExtensionElementUpdate() {
 		final Task task1 = findBusinessObjectById(diagram, "Task_1", Task.class);
 
@@ -392,7 +392,7 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/change/ChangeSupportTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/ui/change/ChangeSupportTest.testBase.bpmn")
 	public void testExtensionElementNestedAttributeUpdate() {
 		final CallActivity callActivity1 = findBusinessObjectById(diagram, "CallActivity_1", CallActivity.class);
 
@@ -418,7 +418,7 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/change/ChangeSupportTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/ui/change/ChangeSupportTest.testBase.bpmn")
 	public void testExtensionElementNestedAttributeUnset() {
 		final CallActivity callActivity1 = findBusinessObjectById(diagram, "CallActivity_1", CallActivity.class);
 
@@ -446,7 +446,7 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 	// nested list change support ///////////////////////////////////////
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/change/ChangeSupportTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/ui/change/ChangeSupportTest.testBase.bpmn")
 	public void testListElementModifyNestedDetect() {
 		final Process process1 = findBusinessObjectById(diagram, "Process_1", Process.class);
 		final SequenceFlow sequenceFlow1 = findBusinessObjectById(diagram, "SequenceFlow_1", SequenceFlow.class);

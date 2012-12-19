@@ -10,7 +10,7 @@ import org.eclipse.bpmn2.Message;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.Signal;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.change.filter.ExtensionChangeFilter;
+import org.eclipse.bpmn2.modeler.ui.change.filter.FeatureChangeFilter;
 import org.eclipse.bpmn2.modeler.ui.change.filter.NestedFeatureChangeFilter;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.ContentProvider;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.DeletedRowHandler;
@@ -103,7 +103,7 @@ public class DefinitionsPropertiesBuilder extends AbstractPropertiesBuilder<Defi
 			.columnLabels(columnLabels)
 			.deletedRowHandler(deleteHandler)
 			.model(bo)
-			.changeFilter(new NestedFeatureChangeFilter(bo, feature));
+			.changeFilter(new NestedFeatureChangeFilter(bo, feature).or(new FeatureChangeFilter(bo, feature)));
 		
 		final TableViewer viewer = builder.build();
 			

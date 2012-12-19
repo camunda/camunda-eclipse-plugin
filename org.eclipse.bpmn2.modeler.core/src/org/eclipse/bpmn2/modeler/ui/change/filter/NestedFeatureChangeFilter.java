@@ -24,8 +24,9 @@ public class NestedFeatureChangeFilter extends AbstractFeatureChangeFilter {
 	@Override
 	public boolean matches(Notification notification) {
 		Object notifierObj = notification.getNotifier();
-
+		
 		List<EObject> results = (List<EObject>) object.eGet(feature);
+		
 		if (results.contains(notifierObj)) {
 			return true;
 		}
