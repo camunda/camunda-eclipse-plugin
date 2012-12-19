@@ -140,6 +140,7 @@ public class AddChoreographyParticipantFeature extends AbstractCustomFeature {
 					if (obj instanceof Participant && !task.getParticipantRefs().contains(obj))
 						participantList.add((Participant)obj);
 				}
+				
 				Participant result = participant;
 
 				changesDone = true;

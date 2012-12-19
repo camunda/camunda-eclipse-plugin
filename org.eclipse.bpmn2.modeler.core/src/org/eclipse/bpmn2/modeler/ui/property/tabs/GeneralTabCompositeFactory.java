@@ -21,6 +21,7 @@ import org.eclipse.bpmn2.ScriptTask;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.bpmn2.StartEvent;
+import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.TimerEventDefinition;
 import org.eclipse.bpmn2.UserTask;
@@ -40,6 +41,7 @@ import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.SequenceFlowProperties
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.ServiceTaskPropertiesBuilder;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.ServiceTypeControlsPropertiesBuilder;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.StartEventPropertiesBuilder;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.SubProcessPropertiesBuilder;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.UserTaskPropertiesBuilder;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.widgets.Composite;
@@ -133,6 +135,10 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 		
 		if (activity instanceof CallActivity) {
 			new CallActivityPropertiesBuilder(parent, section, (CallActivity) activity).create();
+		}
+		
+		if (activity instanceof SubProcess) {
+			new SubProcessPropertiesBuilder(parent, section, (SubProcess) activity).create();
 		}
 	}
 
