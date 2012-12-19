@@ -262,9 +262,11 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 				ModelHandler mh = ModelHandler.getInstance(getDiagram());
 				bo = Bpmn2ModelerFactory.create(DataStoreReference.class);
 
+				ModelUtil.setID(bo);
+				
 				DataStore dataStore = Bpmn2ModelerFactory.create(DataStore.class);
 				dataStore.setName("Create a new Data Store");
-
+				
 				List<DataStore> dataStoreList = new ArrayList<DataStore>();
 				dataStoreList.add(dataStore);
 				TreeIterator<EObject> iter = mh.getDefinitions().eAllContents();
