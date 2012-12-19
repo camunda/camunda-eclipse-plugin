@@ -24,6 +24,7 @@ import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.SequenceFlow;
+import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.modeler.core.property.AbstractTabSection;
 import org.eclipse.bpmn2.modeler.core.property.SectionDescriptor;
 import org.eclipse.bpmn2.modeler.core.property.TabDescriptor;
@@ -73,7 +74,7 @@ public class PropertyTabDescriptorProvider implements ITabDescriptorProvider {
 				businessObject instanceof Event || 
 				businessObject instanceof Process) {
 				
-				tabs.add(createExecutionListenerTabDescriptor());
+				tabs.add(createListenerTabDescriptor());
 			}
 			
 			// for participant, too
@@ -81,7 +82,7 @@ public class PropertyTabDescriptorProvider implements ITabDescriptorProvider {
 				Participant participant = (Participant) businessObject;
 				
 				if (participant.getProcessRef() != null) {
-					tabs.add(createExecutionListenerTabDescriptor());
+					tabs.add(createListenerTabDescriptor());
 				}
 			}
 		}
@@ -106,8 +107,8 @@ public class PropertyTabDescriptorProvider implements ITabDescriptorProvider {
 		return createTabDescriptor("eventTab", "Event", new EventTabSection());
 	}
 	
-	private ITabDescriptor createExecutionListenerTabDescriptor() {
-		return createTabDescriptor("executionListenerTab", "Listener", new ListenerTabSection());
+	private ITabDescriptor createListenerTabDescriptor() {
+		return createTabDescriptor("listenerTab", "Listener", new ListenerTabSection());
 	}
 
 	private ITabDescriptor createGeneralTabDescriptor() {
