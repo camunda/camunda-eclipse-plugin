@@ -7,7 +7,9 @@ import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerEditor;
@@ -155,19 +157,16 @@ public class EditableTableDescriptor<T> extends TableDescriptor<T> {
 		addEntryMenuItem.setEnabled(addStrategy != null);
 		
 		// activation of menu items
-		table.addSelectionListener(new SelectionListener() {
+		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-				ISelection selection = viewer.getSelection();
+			public void selectionChanged(SelectionChangedEvent event) {
+				ISelection selection = event.getSelection();
+				
+				System.out.println("widgetSelected " + selection);
 				
 				deleteEntryMenuItem.setEnabled(!selection.isEmpty());
 				addEntryMenuItem.setEnabled(addStrategy != null);
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				
 			}
 		});
 		
@@ -178,6 +177,7 @@ public class EditableTableDescriptor<T> extends TableDescriptor<T> {
 					Object element = selection.getFirstElement();
 					if (element != null) {
 						viewer.remove(element);
+						viewer.setSelection(new StructuredSelection(new Object[0]), true);
 						
 						table.notifyListeners(Events.ROW_DELETED, new Events.RowDeleted<T>((T) element));
 					}
