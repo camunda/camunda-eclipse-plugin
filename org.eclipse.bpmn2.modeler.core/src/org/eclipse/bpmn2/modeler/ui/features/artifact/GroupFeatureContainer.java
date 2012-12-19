@@ -14,7 +14,7 @@ package org.eclipse.bpmn2.modeler.ui.features.artifact;
 
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Group;
-import org.eclipse.bpmn2.modeler.core.di.DIImport;
+import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
@@ -86,7 +86,7 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 				AnchorUtil.addFixedPointAnchors(container, rect);
 
 				link(container, group);
-				boolean isImport = context.getProperty(DIImport.IMPORT_PROPERTY) != null;
+				boolean isImport = context.getProperty(DIUtils.IMPORT_PROPERTY) != null;
 				createDIShape(container, group, !isImport);
 				return container;
 			}

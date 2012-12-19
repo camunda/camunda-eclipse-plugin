@@ -24,14 +24,9 @@ import org.eclipse.bpmn2.GlobalUserTask;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.modeler.core.features.DefaultResizeBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
-import org.eclipse.bpmn2.modeler.core.features.ShowPropertiesFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
-import org.eclipse.bpmn2.modeler.core.features.activity.LayoutActivityFeature;
-import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
-import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Expand;
-import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
@@ -41,7 +36,6 @@ import org.eclipse.graphiti.features.ILayoutFeature;
 import org.eclipse.graphiti.features.IReason;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
-import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.features.impl.AbstractUpdateFeature;
@@ -142,11 +136,7 @@ public class CallActivityFeatureContainer extends AbstractExpandableActivityFeat
 		ICustomFeature[] thisFeatures = new ICustomFeature[superFeatures.length];
 		int index = 1;
 		for (int i = 0; i < superFeatures.length; ++i) {
-			if (superFeatures[i] instanceof ShowPropertiesFeature) {
-				thisFeatures[0] = superFeatures[i];
-				index = 0;
-			}
-			else if(thisFeatures.length < (index+i)) {
+			if(thisFeatures.length < (index+i)) {
 				thisFeatures[index + i] = superFeatures[i];
 			}
 		}

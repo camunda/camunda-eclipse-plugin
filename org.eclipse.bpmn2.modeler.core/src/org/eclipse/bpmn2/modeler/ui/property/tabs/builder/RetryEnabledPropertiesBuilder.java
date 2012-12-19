@@ -5,11 +5,11 @@ import static org.eclipse.bpmn2.modeler.core.utils.ExtensionUtil.removeExtension
 import static org.eclipse.bpmn2.modeler.core.utils.ExtensionUtil.updateExtension;
 
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.modeler.core.change.filter.ExtensionChangeFilter;
-import org.eclipse.bpmn2.modeler.core.change.filter.FeatureChangeFilter;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelPackage;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.FailedJobRetryTimeCycleType;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.FoxFactory;
+import org.eclipse.bpmn2.modeler.ui.change.filter.ExtensionChangeFilter;
+import org.eclipse.bpmn2.modeler.ui.change.filter.FeatureChangeFilter;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.ModelTextBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.change.EAttributeChangeSupport;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.HelpText;

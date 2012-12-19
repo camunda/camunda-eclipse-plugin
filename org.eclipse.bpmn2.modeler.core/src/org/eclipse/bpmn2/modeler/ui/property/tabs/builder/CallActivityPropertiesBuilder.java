@@ -7,11 +7,11 @@ import static org.eclipse.bpmn2.modeler.core.utils.ExtensionUtil.removeExtension
 import java.util.List;
 
 import org.eclipse.bpmn2.CallActivity;
-import org.eclipse.bpmn2.modeler.core.change.filter.ExtensionChangeFilter;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.InType;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelFactory;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelPackage;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.OutType;
+import org.eclipse.bpmn2.modeler.ui.change.filter.ExtensionChangeFilter;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.ContentProvider;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.DeletedRowHandler;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.table.EditableEObjectTableBuilder;

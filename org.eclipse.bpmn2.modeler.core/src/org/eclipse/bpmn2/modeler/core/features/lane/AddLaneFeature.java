@@ -23,7 +23,7 @@ import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.bpmn2.modeler.core.di.DIImport;
+import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
@@ -76,7 +76,7 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature<Lane> {
 		Rectangle rect = gaService.createRectangle(containerShape);
 		StyleUtil.applyStyle(rect, lane);
 		
-		boolean isImport = context.getProperty(DIImport.IMPORT_PROPERTY) != null;
+		boolean isImport = context.getProperty(DIUtils.IMPORT_PROPERTY) != null;
 		BPMNShape bpmnShape = createDIShape(containerShape, lane, !isImport);
 		
 		if (FeatureSupport.isTargetLane(context)) {
@@ -143,7 +143,7 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature<Lane> {
 		peCreateService.createChopboxAnchor(containerShape);
 		AnchorUtil.addFixedPointAnchors(containerShape, rect);
 
-		if (context.getProperty(DIImport.IMPORT_PROPERTY) == null
+		if (context.getProperty(DIUtils.IMPORT_PROPERTY) == null
 				&& (FeatureSupport.isTargetLane(context) || FeatureSupport.isTargetParticipant(context))) {
 			FeatureSupport.redraw(context.getTargetContainer());
 		}
@@ -218,7 +218,7 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature<Lane> {
 	
 	@Override
 	protected int getHeight(IAddContext context) {
-		if (context.getProperty(DIImport.IMPORT_PROPERTY) == null){
+		if (context.getProperty(DIUtils.IMPORT_PROPERTY) == null){
 			if (context.getTargetContainer() instanceof Diagram) {
 				return getHeight();
 			}
@@ -235,7 +235,7 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature<Lane> {
 	
 	@Override
 	public int getWidth(IAddContext context) {
-		if (context.getProperty(DIImport.IMPORT_PROPERTY) == null){
+		if (context.getProperty(DIUtils.IMPORT_PROPERTY) == null){
 			if (context.getTargetContainer() instanceof Diagram) {
 				return getWidth();
 			}

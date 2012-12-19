@@ -14,7 +14,7 @@ package org.eclipse.bpmn2.modeler.core.features.participant;
 
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.bpmn2.modeler.core.di.DIImport;
+import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
@@ -68,7 +68,7 @@ public class AddParticipantFeature extends AbstractAddBPMNShapeFeature<Participa
 		StyleUtil.applyStyle(rect, participant);
 		gaService.setLocationAndSize(rect, context.getX(), context.getY(), width, height);
 
-		boolean isImport = context.getProperty(DIImport.IMPORT_PROPERTY) != null;
+		boolean isImport = context.getProperty(DIUtils.IMPORT_PROPERTY) != null;
 		BPMNShape bpmnShape = createDIShape(containerShape, participant, !isImport);
 		boolean horz = bpmnShape.isIsHorizontal();
 		FeatureSupport.setHorizontal(containerShape, horz);

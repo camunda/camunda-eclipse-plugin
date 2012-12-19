@@ -14,7 +14,7 @@ package org.eclipse.bpmn2.modeler.core.features.flow;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNLabel;
-import org.eclipse.bpmn2.modeler.core.di.DIImport;
+import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
@@ -64,7 +64,7 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement>
 
 		Connection connection = peService.createFreeFormConnection(getDiagram());
 
-		Object importProp = context.getProperty(DIImport.IMPORT_PROPERTY);
+		Object importProp = context.getProperty(DIUtils.IMPORT_PROPERTY);
 		if (importProp != null && (Boolean) importProp) {
 			connection.setStart(addConContext.getSourceAnchor());
 			connection.setEnd(addConContext.getTargetAnchor());

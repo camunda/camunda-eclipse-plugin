@@ -15,7 +15,7 @@ package org.eclipse.bpmn2.modeler.core.features.gateway;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.bpmn2.modeler.core.di.DIImport;
+import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
@@ -78,7 +78,7 @@ public class AddGatewayFeature<T extends Gateway>
 		StyleUtil.applyStyle(gateway, addedGateway);
 		gaService.setLocationAndSize(gateway, 0, 0, width, height);
 
-		boolean isImport = context.getProperty(DIImport.IMPORT_PROPERTY) != null;
+		boolean isImport = context.getProperty(DIUtils.IMPORT_PROPERTY) != null;
 		BPMNShape bpmnShape = createDIShape(containerShape, addedGateway, !isImport);
 		peService.createChopboxAnchor(containerShape);
 		AnchorUtil.addFixedPointAnchors(containerShape, gateway);

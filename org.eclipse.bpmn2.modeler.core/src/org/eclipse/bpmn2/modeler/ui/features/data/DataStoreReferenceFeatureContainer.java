@@ -21,7 +21,7 @@ import org.eclipse.bpmn2.DataStore;
 import org.eclipse.bpmn2.DataStoreReference;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.di.DIImport;
+import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
@@ -131,7 +131,7 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 
 				peService.createChopboxAnchor(container);
 				AnchorUtil.addFixedPointAnchors(container, invisibleRect);
-				boolean isImport = context.getProperty(DIImport.IMPORT_PROPERTY) != null;
+				boolean isImport = context.getProperty(DIUtils.IMPORT_PROPERTY) != null;
 				createDIShape(container, store, !isImport);
 				layoutPictogramElement(container);
 				

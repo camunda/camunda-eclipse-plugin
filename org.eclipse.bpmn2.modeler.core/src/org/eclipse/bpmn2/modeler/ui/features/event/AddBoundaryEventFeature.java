@@ -16,7 +16,7 @@ import static org.eclipse.bpmn2.modeler.ui.features.event.BoundaryEventFeatureCo
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BoundaryEvent;
-import org.eclipse.bpmn2.modeler.core.di.DIImport;
+import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractUpdateEventFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
@@ -52,7 +52,7 @@ public class AddBoundaryEventFeature extends AbstractAddBPMNShapeFeature<Boundar
 			return false;
 		}
 
-		Object prop = context.getProperty(DIImport.IMPORT_PROPERTY);
+		Object prop = context.getProperty(DIUtils.IMPORT_PROPERTY);
 		if (prop != null && (Boolean) prop) {
 			return true;
 		}
@@ -65,7 +65,7 @@ public class AddBoundaryEventFeature extends AbstractAddBPMNShapeFeature<Boundar
 	public PictogramElement add(IAddContext context) {
 		BoundaryEvent event = getBusinessObject(context);
 
-		boolean isImport = context.getProperty(DIImport.IMPORT_PROPERTY) != null;
+		boolean isImport = context.getProperty(DIUtils.IMPORT_PROPERTY) != null;
 		// FIXME: what's going on here?
 		ContainerShape target = isImport ? context.getTargetContainer() : (ContainerShape) context
 		        .getTargetContainer().eContainer();
