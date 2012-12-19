@@ -13,7 +13,7 @@
 package org.eclipse.bpmn2.modeler.core.features.artifact;
 
 import org.eclipse.bpmn2.TextAnnotation;
-import org.eclipse.bpmn2.modeler.core.di.DIImport;
+import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
@@ -78,7 +78,7 @@ public class AddTextAnnotationFeature extends AbstractAddBPMNShapeFeature<TextAn
 		text.setVerticalAlignment(Orientation.ALIGNMENT_TOP);
 		gaService.setLocationAndSize(text, 5, 5, width - 5, height - 5);
 
-		boolean isImport = context.getProperty(DIImport.IMPORT_PROPERTY) != null;
+		boolean isImport = context.getProperty(DIUtils.IMPORT_PROPERTY) != null;
 		createDIShape(containerShape, annotation, !isImport);
 		link(textShape, annotation);
 

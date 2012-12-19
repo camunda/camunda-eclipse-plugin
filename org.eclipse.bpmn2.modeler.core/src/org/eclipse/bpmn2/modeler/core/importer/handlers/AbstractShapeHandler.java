@@ -13,7 +13,7 @@ package org.eclipse.bpmn2.modeler.core.importer.handlers;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.Activator;
-import org.eclipse.bpmn2.modeler.core.di.DIImport;
+import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -183,7 +183,7 @@ public abstract class AbstractShapeHandler<T extends BaseElement> extends Abstra
 		AddContext context = new AddContext(new AreaContext(), bpmnElement);
 
 		// MUST be set to make the layout mechanisms work
-		context.putProperty(DIImport.IMPORT_PROPERTY, true);
+		context.putProperty(DIUtils.IMPORT_PROPERTY, true);
 		
 		return context;
 	}

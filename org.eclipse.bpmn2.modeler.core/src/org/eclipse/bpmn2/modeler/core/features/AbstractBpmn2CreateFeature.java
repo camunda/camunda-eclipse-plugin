@@ -18,8 +18,6 @@ import java.util.List;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.adapters.AdapterUtil;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
-import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.ObjectEditingDialog;
-import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
@@ -28,15 +26,12 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.graphiti.IExecutionInfo;
-import org.eclipse.graphiti.features.IFeature;
 import org.eclipse.graphiti.features.IFeatureAndContext;
 import org.eclipse.graphiti.features.IFeatureProvider;
-import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
 import org.eclipse.graphiti.mm.pictograms.Shape;
-import org.eclipse.graphiti.ui.editor.DiagramEditor;
 
 /**
  * @author Bob Brodt
@@ -119,12 +114,15 @@ public abstract class AbstractBpmn2CreateFeature<T extends BaseElement>
 			if (context instanceof ICreateContext) {
 				ICreateContext cc = (ICreateContext)context;
 				T businessObject = getBusinessObject(cc);
-				Bpmn2Preferences prefs = (Bpmn2Preferences) ((DiagramEditor) getDiagramEditor()).getAdapter(Bpmn2Preferences.class);
-				if (prefs!=null && prefs.getShowPopupConfigDialog(businessObject)) {
-					ObjectEditingDialog dialog =
-							new ObjectEditingDialog((DiagramEditor)getDiagramEditor(), businessObject);
-					dialog.open();
-				}
+				
+				// FIXME Cleanup
+				
+//				Bpmn2Preferences prefs = (Bpmn2Preferences) ((DiagramEditor) getDiagramEditor()).getAdapter(Bpmn2Preferences.class);
+//				if (prefs!=null && prefs.getShowPopupConfigDialog(businessObject)) {
+//					ObjectEditingDialog dialog =
+//							new ObjectEditingDialog((DiagramEditor)getDiagramEditor(), businessObject);
+//					dialog.open();
+//				}
 			}
 		}
 	}

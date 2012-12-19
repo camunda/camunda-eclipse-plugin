@@ -5,7 +5,7 @@ import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.di.DIImport;
+import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
@@ -83,7 +83,7 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 			y = context.getTargetContainer().getGraphicsAlgorithm().getY() + context.getY()-height/2;
 		}
 		
-		if (bpmnShape.getLabel() != null && context.getProperty(DIImport.IMPORT_PROPERTY) != null) {
+		if (bpmnShape.getLabel() != null && context.getProperty(DIUtils.IMPORT_PROPERTY) != null) {
 		  GraphicsUtil.setLabelPosition(text, textContainerShape, x, y);
 		} else {
 		  GraphicsUtil.alignWithShape(text, textContainerShape, width, height, x, y, 0, 0);
@@ -97,7 +97,7 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 	}
 	
 	private boolean isImport(IAddContext context) {
-		return context.getProperty(DIImport.IMPORT_PROPERTY) == null ? false : (Boolean) context.getProperty(DIImport.IMPORT_PROPERTY);
+		return context.getProperty(DIUtils.IMPORT_PROPERTY) == null ? false : (Boolean) context.getProperty(DIUtils.IMPORT_PROPERTY);
 	}
 	
 	/**

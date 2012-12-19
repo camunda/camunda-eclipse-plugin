@@ -2,7 +2,7 @@ package org.eclipse.bpmn2.modeler.ui.property.tabs.binding.change;
 
 import static org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events.MODEL_CHANGED;
 
-import org.eclipse.bpmn2.modeler.core.change.AbstractEObjectChangeSupport;
+import org.eclipse.bpmn2.modeler.ui.change.AbstractEObjectChangeSupport;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.NotificationFilter;

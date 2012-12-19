@@ -62,6 +62,8 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IPeService;
 
 public class DIUtils {
+
+	public static final String IMPORT_PROPERTY = "di.import";
 	
 	public static BPMNShape getShape(PictogramElement element) {
 		return BusinessObjectUtil.getFirstElementOfType(element, BPMNShape.class);

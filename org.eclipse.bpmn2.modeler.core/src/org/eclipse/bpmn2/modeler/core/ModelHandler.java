@@ -794,25 +794,11 @@ public class ModelHandler {
 	}
 
 	private void saveResource() {
-		fixZOrder();
 		try {
 			resource.save(null);
 		} catch (IOException e) {
 			Activator.logError(e);
 		}
-	}
-
-	private void fixZOrder() {
-		final List<BPMNDiagram> diagrams = getAll(BPMNDiagram.class);
-		for (BPMNDiagram bpmnDiagram : diagrams) {
-			fixZOrder(bpmnDiagram);
-		}
-
-	}
-
-	private void fixZOrder(BPMNDiagram bpmnDiagram) {
-		EList<DiagramElement> elements = (EList<DiagramElement>) bpmnDiagram.getPlane().getPlaneElement();
-		ECollections.sort(elements, new DIZorderComparator());
 	}
 
 	void loadResource() {

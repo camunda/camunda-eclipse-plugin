@@ -17,10 +17,8 @@ import java.util.List;
 
 import org.eclipse.bpmn2.modeler.core.features.IBpmn2AddFeature;
 import org.eclipse.bpmn2.modeler.core.features.IBpmn2CreateFeature;
-import org.eclipse.bpmn2.modeler.core.features.ShowPropertiesFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.ActivitySelectionBehavior;
 import org.eclipse.bpmn2.modeler.core.features.event.EventSelectionBehavior;
-import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.validation.ValidationStatusAdapter;
 import org.eclipse.bpmn2.modeler.ui.FeatureMap;
@@ -43,7 +41,6 @@ import org.eclipse.graphiti.features.IFeatureChecker;
 import org.eclipse.graphiti.features.IFeatureCheckerHolder;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IContext;
-import org.eclipse.graphiti.features.context.IDoubleClickContext;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.CreateConnectionContext;
@@ -357,24 +354,6 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 				editor.refresh();
 			}
 		}
-	}
-
-	@Override
-	public ICustomFeature getDoubleClickFeature(IDoubleClickContext context) {
-		ICustomFeature[] cf = getFeatureProvider().getCustomFeatures(context);
-		for (int i = 0; i < cf.length; i++) {
-			ICustomFeature iCustomFeature = cf[i];
-			if (iCustomFeature instanceof ShowPropertiesFeature &&
-					iCustomFeature.canExecute(context)) {
-				return iCustomFeature;
-			}
-		}
-		return null;
-	}
-
-	@Override
-	public GraphicsAlgorithm getChopboxAnchorArea(PictogramElement pe) {
-		return super.getChopboxAnchorArea(pe);
 	}
 
     @Override

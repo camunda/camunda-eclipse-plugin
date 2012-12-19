@@ -63,8 +63,8 @@
    	<extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
 		<propertyContributor
 			contributorId="org.eclipse.bpmn2.modeler.ui.PropertyContributor"
-           labelProvider="org.eclipse.bpmn2.modeler.ui.property.PropertyLabelProvider"
-			tabDescriptorProvider="org.eclipse.bpmn2.modeler.ui.property.PropertyTabDescriptorProvider">
+           labelProvider="org.eclipse.bpmn2.modeler.ui.property.PropertiesLabelProvider"
+			tabDescriptorProvider="org.eclipse.bpmn2.modeler.ui.property.PropertiesTabDescriptorProvider">
 			<propertyCategory category="BPMN2">
 			</propertyCategory>
 		</propertyContributor>

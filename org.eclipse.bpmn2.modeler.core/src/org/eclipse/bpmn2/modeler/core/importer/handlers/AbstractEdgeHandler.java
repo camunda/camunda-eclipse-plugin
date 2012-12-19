@@ -21,7 +21,6 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.modeler.core.Activator;
-import org.eclipse.bpmn2.modeler.core.di.DIImport;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
@@ -110,7 +109,7 @@ public abstract class AbstractEdgeHandler<T extends BaseElement> extends Abstrac
 		IAddFeature addFeature = featureProvider.getAddFeature(context);
 		if (addFeature != null && addFeature.canAdd(context)) {
 			
-			context.putProperty(DIImport.IMPORT_PROPERTY, true);
+			context.putProperty(DIUtils.IMPORT_PROPERTY, true);
 			Connection connection = (Connection) addFeature.add(context);
 
 			if (connection instanceof FreeFormConnectionImpl) {
