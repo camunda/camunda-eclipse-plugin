@@ -44,12 +44,12 @@ public abstract class AbstractPropertiesBuilder<T extends BaseElement> {
 	 * @return
 	 */
 	private Composite relayoutAll(Composite parent) {
-		parent.layout(true);
+		parent.layout(true, true);
 		parent.redraw();
 		
 		if (parent instanceof ScrolledComposite) {
 			return parent;
-		} else {	
+		} else {
 			return relayoutAll(parent.getParent());
 		}
 	}

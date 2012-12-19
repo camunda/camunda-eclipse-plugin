@@ -810,7 +810,7 @@ public class GraphicsUtil {
 	// ACTIVITY
 
 	public static final int TASK_DEFAULT_WIDTH = 110;
-	public static final int TASK_DEFAULT_HEIGHT = 50;
+	public static final int TASK_DEFAULT_HEIGHT = 90;
 	public static final int TASK_IMAGE_SIZE = 16;
 
 	public static final int SUB_PROCEESS_DEFAULT_WIDTH = 300;
