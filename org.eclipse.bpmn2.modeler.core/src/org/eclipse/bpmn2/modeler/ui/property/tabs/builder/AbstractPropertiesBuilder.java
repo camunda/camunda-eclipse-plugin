@@ -2,9 +2,10 @@ package org.eclipse.bpmn2.modeler.ui.property.tabs.builder;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 
 /**
  * Base class for all factories
@@ -29,28 +30,38 @@ public abstract class AbstractPropertiesBuilder<T extends BaseElement> {
 	public abstract void create();
 
 	/**
-	 * 
-	 * @param control
+	 * Relayout the properties after changes in the
+	 * controls. 
 	 */
 	public void relayout() {
+
+		// General challenge: We want the scroll panel to 
+		// to update after the change in child elements 
+		// The trick to achive this is to send the resize event
+		// to that particular composite.
 		if (!parent.isDisposed()) {
-			relayoutAll(parent);
+			Composite scrollableComposite = getScrollableComposite(parent);
+
+			Event e = new Event();
+			e.type = SWT.Resize;
+			
+			scrollableComposite.notifyListeners(SWT.Resize, e);
+			scrollableComposite.redraw();
 		}
 	}
 	
+	
 	/**
+	 * Returns the layout container directly contained in a scrollable.
 	 * 
 	 * @param parent
 	 * @return
 	 */
-	private Composite relayoutAll(Composite parent) {
-		parent.layout(true, true);
-		parent.redraw();
-		
+	private Composite getScrollableComposite(Composite parent) {
 		if (parent instanceof ScrolledComposite) {
 			return parent;
 		} else {
-			return relayoutAll(parent.getParent());
+			return getScrollableComposite(parent.getParent());
 		}
 	}
 }
