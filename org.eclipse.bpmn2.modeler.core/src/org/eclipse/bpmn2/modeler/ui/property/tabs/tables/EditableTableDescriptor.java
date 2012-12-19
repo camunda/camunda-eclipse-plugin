@@ -162,9 +162,7 @@ public class EditableTableDescriptor<T> extends TableDescriptor<T> {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				ISelection selection = event.getSelection();
-				
-				System.out.println("widgetSelected " + selection);
-				
+
 				deleteEntryMenuItem.setEnabled(!selection.isEmpty());
 				addEntryMenuItem.setEnabled(addStrategy != null);
 			}
