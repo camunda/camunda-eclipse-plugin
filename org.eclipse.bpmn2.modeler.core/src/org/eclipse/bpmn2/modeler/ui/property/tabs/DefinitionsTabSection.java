@@ -15,9 +15,8 @@ public class DefinitionsTabSection extends AbstractTabSection {
 
 	@Override
 	protected Composite createCompositeForObject(Composite parent, EObject businessObject) {
-			
-	Definitions definitions = ModelUtil.getDefinitions(businessObject);
-	new DefinitionsTabCompositeFactory(this, parent).createCompositeForBusinessObject(definitions);
+		Definitions definitions = ModelUtil.getDefinitions(businessObject);
+		new DefinitionsTabCompositeFactory(this, parent).createCompositeForBusinessObject(definitions);
 		
 		return parent;
 	}
