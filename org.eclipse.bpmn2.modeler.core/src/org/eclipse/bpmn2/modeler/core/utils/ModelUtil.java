@@ -879,24 +879,7 @@ public class ModelUtil {
 		label = label.replaceAll(" Ref$", "");
 		return label;
 	}
-
-	public static void setLabel(EObject object, EStructuralFeature feature, String label) {
-		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
-		if (adapter!=null)
-			adapter.getFeatureDescriptor(feature).setLabel(label);
-	}
-
-	public static String getLabel(EObject object, EStructuralFeature feature) {
-		String label = "";
-		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
-		if (adapter!=null)
-			label = adapter.getFeatureDescriptor(feature).getLabel(object);
-		else
-			label = toDisplayName( feature.getName() );
-		label = label.replaceAll(" Ref$", "");
-		return label;
-	}
-
+	
 	public static String getDisplayName(Object object) {
 		if (object instanceof EObject) {
 			EObject eObject = (EObject)object;
