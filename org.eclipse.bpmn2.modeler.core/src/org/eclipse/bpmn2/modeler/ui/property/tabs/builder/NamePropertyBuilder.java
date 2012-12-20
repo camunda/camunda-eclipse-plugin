@@ -8,10 +8,19 @@ import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.Participant;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.StringTextBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
+import org.eclipse.core.databinding.observable.value.IValueChangeListener;
+import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
+import org.eclipse.jface.databinding.swt.ISWTObservableValue;
+import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 
 /**
  * Builder for the name property
@@ -19,6 +28,8 @@ import org.eclipse.swt.widgets.Composite;
  * @author nico.rehwaldt
  */
 public class NamePropertyBuilder extends AbstractPropertiesBuilder<BaseElement> {
+
+	private static final int BOX_HEIGHT = 16;
 
 	private EStructuralFeature NAME_FEATURE;
 	
@@ -58,7 +69,61 @@ public class NamePropertyBuilder extends AbstractPropertiesBuilder<BaseElement> 
 	@Override
 	public void create() {
 		if (NAME_FEATURE != null) {
-			PropertyUtil.createText(section, parent, label, NAME_FEATURE, bo);
+			final Text multiText = createAutoResizingMultiText(section, parent, label, NAME_FEATURE, bo);
 		}
+	}
+
+	private Text createAutoResizingMultiText(GFPropertySection section, final Composite parent, String label,
+			EStructuralFeature feature, BaseElement bo) {
+		
+		Composite composite = PropertyUtil.createStandardComposite(section, parent);
+		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
+		
+		final Text multiText = factory.createText(composite, "", SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.H_SCROLL); //$NON-NLS-1$
+
+		final FormData data = PropertyUtil.getStandardLayout();
+
+		data.height = BOX_HEIGHT;
+		multiText.setLayoutData(data);
+
+		PropertyUtil.createLabel(section, composite, label, multiText);
+		
+		ISWTObservableValue multiTextObservable = SWTObservables.observeText(multiText, SWT.Modify);
+		multiTextObservable.addValueChangeListener(new IValueChangeListener() {
+			
+			@Override
+			public void handleValueChange(ValueChangeEvent event) {
+				
+				String text = (String) event.diff.getNewValue();
+				int crCount = crCount(text);
+				
+				int newHeight = BOX_HEIGHT * (crCount + 1);
+				if (newHeight != data.height) {
+					data.height = newHeight;
+					
+					relayout();
+				}
+			}
+		});
+
+		StringTextBinding stringTextBinding = new StringTextBinding(bo, feature, multiText);
+		stringTextBinding.establish();
+		
+		return multiText;
+	}
+	
+	public int crCount(String s) {
+		int i = -1;
+		int c = 0;
+		
+		do {
+			i = s.indexOf(SWT.CR, i + 1);
+			if (i != -1) {
+				c++;
+			}
+			
+		} while (i != -1);
+		
+		return c;
 	}
 }
