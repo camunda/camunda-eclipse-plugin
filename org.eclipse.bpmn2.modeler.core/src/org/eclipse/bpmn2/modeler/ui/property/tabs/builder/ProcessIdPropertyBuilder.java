@@ -19,12 +19,8 @@ import org.eclipse.swt.widgets.Text;
  */
 public class ProcessIdPropertyBuilder extends IdPropertyBuilder {
 
-	public ProcessIdPropertyBuilder(Composite parent, GFPropertySection section, Process bo, String label) {
-		super(parent, section, bo, label);
-	}
-	
 	public ProcessIdPropertyBuilder(Composite parent, GFPropertySection section, Process bo) {
-		super(parent, section, bo, "Id");
+		super(parent, section, bo, "Process Id");
 	}
 
 	@Override

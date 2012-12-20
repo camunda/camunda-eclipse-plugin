@@ -23,7 +23,7 @@ public class ParticipantPropertiesBuilder extends AbstractPropertiesBuilder<Part
 		if (process != null) { // empty participant must not have a process
 			new NamePropertyBuilder(parent, section, process, "Process Name").create();
 			
-			new ProcessIdPropertyBuilder(parent, section, process, "Process Id").create();
+			new ProcessIdPropertyBuilder(parent, section, process).create();
 			new ProcessPropertiesBuilder(parent, section, process).create();
 		}
 	}
