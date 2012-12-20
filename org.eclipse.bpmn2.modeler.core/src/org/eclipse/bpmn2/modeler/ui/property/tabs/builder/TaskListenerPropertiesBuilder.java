@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class TaskListenerPropertiesBuilder extends AbstractPropertiesBuilder<UserTask> {
 
-	protected static final EStructuralFeature TASK_LISTENER_TYPE_FEATURE = ModelPackage.eINSTANCE.getDocumentRoot_ExecutionListener();
+	protected static final EStructuralFeature TASK_LISTENER_TYPE_FEATURE = ModelPackage.eINSTANCE.getDocumentRoot_TaskListener();
 	
 	private static final EClass TASK_LISTENER_TYPE = ModelPackage.eINSTANCE.getTaskListenerType();
 
