@@ -35,6 +35,8 @@ public class DefinitionReferencePropertyBuilder<T extends RootElement> extends A
 
 	private final Class<T> definitionCls;
 
+	private String note;
+
 	public DefinitionReferencePropertyBuilder(
 			Composite parent, GFPropertySection section, EventDefinition bo, 
 			String label, EStructuralFeature refFeature, Class<T> definitionCls) {
@@ -45,12 +47,17 @@ public class DefinitionReferencePropertyBuilder<T extends RootElement> extends A
 		this.definitionCls = definitionCls;
 		
 		this.label = label;
+		this.note = String.format("%ss can be defined on the Definitions tab", new Object[] { definitionCls.getSimpleName() });
 	}
 	
 	@Override
 	public void create() {
 
 		final CCombo dropDown = PropertyUtil.createDropDown(section, parent, label);
+		
+		if (note != null) {
+			PropertyUtil.attachNote(dropDown, note);
+		}
 		
 		Definitions definitions = ModelUtil.getDefinitions(bo);
 		
