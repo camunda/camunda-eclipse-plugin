@@ -13,7 +13,6 @@
 
 package org.eclipse.bpmn2.modeler.core.adapters;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -21,7 +20,6 @@ import java.util.List;
 
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.RootElement;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EClass;
@@ -70,7 +68,11 @@ public class FeatureDescriptor<T extends EObject> extends ObjectDescriptor<T> {
 	
 	@Override
 	public String getDisplayName(Object context) {
-		if (name==null) {
+		String displayName = "";
+		
+		if (name != null) {
+			displayName = name;
+		} else {
 			String t = null;
 			// derive text from feature's value: default behavior is
 			// to use the "name" attribute if there is one;
@@ -102,9 +104,13 @@ public class FeatureDescriptor<T extends EObject> extends ObjectDescriptor<T> {
 						t = id.toString();
 				}
 			}
-			return t == null ? "" /*ModelUtil.getLabel(object)*/ : t;
+			
+			if (t != null) {
+				displayName = t;
+			}
 		}
-		return name == null ? "" : name;
+		
+		return ModelUtil.beautifyName(displayName);
 	}
 
 	public void setChoiceOfValues(Hashtable<String, Object> choiceOfValues) {

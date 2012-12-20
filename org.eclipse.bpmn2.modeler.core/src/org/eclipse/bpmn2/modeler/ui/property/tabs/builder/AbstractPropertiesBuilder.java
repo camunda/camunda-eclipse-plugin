@@ -40,12 +40,17 @@ public abstract class AbstractPropertiesBuilder<T extends BaseElement> {
 		// The trick to achive this is to send the resize event
 		// to that particular composite.
 		if (!parent.isDisposed()) {
+			
+			parent.getParent().layout();
+			parent.getParent().redraw();
+			
 			Composite scrollableComposite = getScrollableComposite(parent);
 
 			Event e = new Event();
 			e.type = SWT.Resize;
 			
 			scrollableComposite.notifyListeners(SWT.Resize, e);
+			
 			scrollableComposite.redraw();
 		}
 	}

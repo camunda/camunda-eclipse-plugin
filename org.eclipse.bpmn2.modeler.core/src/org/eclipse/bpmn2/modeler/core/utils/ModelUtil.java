@@ -1189,4 +1189,16 @@ public class ModelUtil {
 	    }
 	    return null;
 	}
+
+	/**
+	 * Makes cosmetic changes to names to make them easier visualizable in the 
+	 * user interface
+	 * 
+	 * @param displayName
+	 * @return
+	 */
+	public static String beautifyName(String displayName) {
+		// strip \n from display names
+		return displayName.replaceAll("\n", " ").replaceAll("[\\s]+", " ");
+	}
 }

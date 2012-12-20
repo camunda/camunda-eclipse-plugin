@@ -92,7 +92,10 @@ public class ObjectDescriptor<T extends EObject> {
 			}
 			if (value==null)
 				value = "Unnamed " + text;
-			return (String)value;
+			
+			String displayName = (String) value;
+
+			return ModelUtil.beautifyName(displayName);
 		}
 		return name;
 	}
