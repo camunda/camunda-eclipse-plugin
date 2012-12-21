@@ -28,6 +28,11 @@
 				</args>
 			</git>
 			<git command = "pull" dir = "@{dest}" />
+			<git command = "checkout" dir = "@{dest}">
+				<args>
+					<arg value = "ca-master" />
+				</args>
+			</git>
 		</sequential>
 	</macrodef>
 
