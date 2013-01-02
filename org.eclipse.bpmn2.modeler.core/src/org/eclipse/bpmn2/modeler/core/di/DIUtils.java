@@ -197,20 +197,24 @@ public class DIUtils {
 				BPMNDiagram bpmnDiagram = (BPMNDiagram) eObject;
 
 				bpmnShape = BpmnDiFactory.eINSTANCE.createBPMNShape();
-				bpmnShape.setBpmnElement(elem);
+				
 				Bounds bounds = DcFactory.eINSTANCE.createBounds();
 				bounds.setX(x);
 				bounds.setY(y);
 				bounds.setWidth(w);
 				bounds.setHeight(h);
+				
 				bpmnShape.setBounds(bounds);
-
+				bpmnShape.setBpmnElement(elem);
+				
 				Bpmn2Preferences.getInstance(bpmnDiagram.eResource()).applyBPMNDIDefaults(bpmnShape, null);
 
-				addShape(bpmnShape,bpmnDiagram);
 				ModelUtil.setID(bpmnShape);
+				
+				addShape(bpmnShape, bpmnDiagram);
 
 				fp.link(shape, new Object[] { elem, bpmnShape });
+				
 				break;
 			}
 		}

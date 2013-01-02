@@ -267,7 +267,6 @@ public class AnchorPointStrategy extends LayoutStrategy {
 			}
 			break;
 		}
-
 	}
 
 	public AnchorUtil.AnchorLocation getLocation() {

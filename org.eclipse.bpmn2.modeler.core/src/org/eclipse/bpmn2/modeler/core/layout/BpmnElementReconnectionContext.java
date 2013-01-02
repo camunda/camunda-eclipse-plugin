@@ -3,22 +3,19 @@ package org.eclipse.bpmn2.modeler.core.layout;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.bpmn2.modeler.core.di.DIUtils;
-import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.graphiti.features.context.ILocationContext;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
-import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
-import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
+/**
+ * Reconnection context for bpmn elements (shapes)
+ * 
+ * @author nico.rehwaldt
+ */
 public class BpmnElementReconnectionContext {
-
-
-	public BpmnElementReconnectionContext(Diagram diagram) {
-		
-	}
 
 	public void reconnect(PictogramElement element) {
 		
@@ -41,10 +38,10 @@ public class BpmnElementReconnectionContext {
 		}
 	}
 	
-	private void reconnectConnections(EList<Connection> connections) {
+	private void reconnectConnections(List<Connection> connections) {
 		List<Connection> tmp = new ArrayList<Connection>(connections);
-		for (Connection c: tmp) {
-			LayoutUtil.layoutConnection(c);
+		for (Connection connection: tmp) {
+			ConnectionService.reconnectConnectionAfterMove(connection);
 		}
 	}
 

@@ -10,9 +10,7 @@ import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
-import org.eclipse.bpmn2.modeler.core.di.DIUtils;
-import org.eclipse.bpmn2.modeler.core.layout.ConnectionReconnectionContext;
-import org.eclipse.bpmn2.modeler.core.layout.LayoutingException;
+import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil.AnchorLocation;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Vector;
 import org.eclipse.emf.common.util.EList;
@@ -34,6 +32,11 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.ui.internal.services.IGefService;
 
+/**
+ * Utility dealing with all sorts of layout specific concerns.
+ * 
+ * @author nico.rehwaldt
+ */
 public class LayoutUtil {
 	
 	/**
@@ -135,6 +138,7 @@ public class LayoutUtil {
 		if (!(element instanceof BoundaryEvent)) {
 			throw new IllegalArgumentException("Can only extract relative sector from " + BoundaryEvent.class.getName());
 		}
+		
 		for (Property prop : boundaryEventShape.getProperties()) {
 			if (prop.getKey().equals("boundary.event.relative.pos")) {
 				String value = prop.getValue();
@@ -158,6 +162,7 @@ public class LayoutUtil {
 				}
 			}
 		}
+		
 		return Sector.UNDEFINED;
 	}
 	
@@ -169,11 +174,11 @@ public class LayoutUtil {
 		return (BaseElement) Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(connection.getEnd().getParent());	
 	}
 	
-	public static Shape getStartShape (Connection connection) {
+	public static Shape getStartShape(Connection connection) {
 		return (Shape) connection.getStart().getParent();
 	}
 	
-	public static Shape getEndShape (Connection connection) {
+	public static Shape getEndShape(Connection connection) {
 		return (Shape) connection.getStart().getParent();
 	}
 	
@@ -381,7 +386,7 @@ public class LayoutUtil {
 	public static boolean isContained(IRectangle rectangle, ILocation point) {
 		return isContained(rectangle, point, 0);
 	}
-	
+
 	/**
 	 * Returns true if the given rectangle contains the point
 	 * 
@@ -442,27 +447,12 @@ public class LayoutUtil {
 	}
 	
 	public static void addRectangularBendpoint(FreeFormConnection connection) {
-		ILocation startAnchorLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(connection.getStart());
-		ILocation endAnchorLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(connection.getEnd());
+		ILocation startAnchorLocation = getAnchorLocation(connection.getStart());
+		ILocation endAnchorLocation = getAnchorLocation(connection.getEnd());
 
 		ILocation location = location(startAnchorLocation.getX(), endAnchorLocation.getY());
 		
 		connection.getBendpoints().add(point(location));
-	}
-	
-	public static void layoutConnection(Connection connection) {
-		
-		// check if new anchor point is neccessary
-		AnchorContainer startAnchorContainer = connection.getStart().getParent();
-		AnchorContainer endAnchorContainer = connection.getEnd().getParent();
-		
-		if (startAnchorContainer instanceof Shape && endAnchorContainer instanceof Shape) {
-			new ConnectionReconnectionContext(connection).reconnect();
-		} else {
-			throw new LayoutingException("Cannot handle connection: " + connection);
-		}
-		
-		DIUtils.updateDIEdge(connection);
 	}
 	
 	/**

@@ -27,7 +27,7 @@ public class PointAssert extends AbstractAssert<PointAssert, Point> {
 		}
 		
 		if (actual.getX() != expected.getX() || actual.getY() != expected.getY()) {
-			Assertions.fail(String.format("Expected actual to equal <%s> but was <%s>", expected, actual));
+			Assertions.fail(String.format("Expected actual to equal <Point(%s, %s)> but was <Point(%s, %s)>", expected.getX(), expected.getY(), actual.getX(), actual.getY()));
 		}
 		
 		return myself;

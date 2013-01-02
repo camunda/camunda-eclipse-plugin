@@ -78,7 +78,7 @@ public class StartEventFeatureContainer extends AbstractEventFeatureContainer {
 		return updateFeature;
 	}
 
-	public class CreateStartEventFeature extends AbstractCreateEventFeature<StartEvent> {
+	public static class CreateStartEventFeature extends AbstractCreateEventFeature<StartEvent> {
 
 		public CreateStartEventFeature(IFeatureProvider fp) {
 			super(fp, "Start Event", "Indicates the start of a process or choreography");

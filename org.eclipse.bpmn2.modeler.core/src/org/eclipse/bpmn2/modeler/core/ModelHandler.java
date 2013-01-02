@@ -68,6 +68,7 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.DcFactory;
 import org.eclipse.dd.dc.Point;
@@ -444,6 +445,10 @@ public class ModelHandler {
 	 * @return
 	 */
 	public <T extends FlowElement> T addFlowElement(Object target, T elem) {
+		
+		Assert.isNotNull(target, "Target must not be null");
+		Assert.isNotNull(elem, "Element must not be null");
+		
 		FlowElementsContainer container = getFlowElementContainer(target);
 		container.getFlowElements().add(elem);
 		return elem;

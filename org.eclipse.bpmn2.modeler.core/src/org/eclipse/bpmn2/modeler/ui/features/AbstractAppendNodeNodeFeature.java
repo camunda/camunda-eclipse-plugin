@@ -23,10 +23,9 @@ import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
-import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
+import org.eclipse.bpmn2.modeler.core.layout.ConnectionService;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
@@ -36,7 +35,6 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
 import org.eclipse.bpmn2.modeler.ui.diagram.BPMNFeatureProvider;
-import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
@@ -53,7 +51,6 @@ import org.eclipse.graphiti.features.context.impl.CreateContext;
 import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
-import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
@@ -307,44 +304,10 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 		Connection connection = (Connection)getFeatureProvider().addIfPossible(acc);
 		
 		if (connection instanceof FreeFormConnection) {
-			// avoid diagonal lines by inserting bendpoints (prefer orthogonal layouts)
-			ILayoutService layoutService = Graphiti.getLayoutService();
-			ILocation loc0 = layoutService.getLocationRelativeToDiagram(connection.getStart());
-			ILocation loc1 = layoutService.getLocationRelativeToDiagram(connection.getEnd());
-			if (loc0.getX()!=loc1.getX() && loc0.getY()!=loc1.getY()) {
-				boolean horz = Bpmn2Preferences.getInstance().isHorizontalDefault();
-				FreeFormConnection ff = (FreeFormConnection)connection;
-				Point p;
-				if (horz) {
-					p = Graphiti.getCreateService().createPoint(loc0.getX(), loc1.getY());
-				}
-				else {
-					p = Graphiti.getCreateService().createPoint(loc1.getX(), loc0.getY());
-				}
-				ff.getBendpoints().add(p);
-				DIUtils.updateDIEdge(connection);
-				
-				// adjust the anchor point to the new shape if necessary
-				DiagramElement shape = mh.findDIElement(newObject);
-				LayoutUtil.layoutConnection(connection);
-				
-				ILocation newloc0 = layoutService.getLocationRelativeToDiagram(connection.getStart());
-				ILocation newloc1 = layoutService.getLocationRelativeToDiagram(connection.getEnd());
-				if (!newloc0.equals(loc0) || !newloc1.equals(loc1)) {
-					// the connection's End anchor has changed as a result of inserting the bendpoint
-					// so need to adjust the bendpoint
-					ff.getBendpoints().clear();
-					if (horz) {
-						p = Graphiti.getCreateService().createPoint(newloc0.getX(), newloc1.getY());
-					}
-					else {
-						p = Graphiti.getCreateService().createPoint(newloc1.getX(), newloc0.getY());
-					}
-					ff.getBendpoints().add(p);
-					DIUtils.updateDIEdge(connection);
-				}
-			}
+			// adjust the anchor point to the new shape if necessary
+			ConnectionService.reconnectConnectionAfterCreate(connection);	
 		}
+		
 		return connection;
 	}
 	
