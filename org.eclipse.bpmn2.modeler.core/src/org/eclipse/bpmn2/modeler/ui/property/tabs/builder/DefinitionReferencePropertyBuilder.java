@@ -11,6 +11,7 @@ import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.BaseElementIdComboBind
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.change.EAttributeChangeSupport;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.change.EObjectChangeSupport.ModelChangedEvent;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.util.HelpText;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -47,7 +48,7 @@ public class DefinitionReferencePropertyBuilder<T extends RootElement> extends A
 		this.definitionCls = definitionCls;
 		
 		this.label = label;
-		this.note = String.format("%ss can be defined on the Definitions tab", new Object[] { definitionCls.getSimpleName() });
+		this.note = String.format(HelpText.ELEMENT_DEF_TABLE, new Object[] { definitionCls.getSimpleName() });
 	}
 	
 	@Override

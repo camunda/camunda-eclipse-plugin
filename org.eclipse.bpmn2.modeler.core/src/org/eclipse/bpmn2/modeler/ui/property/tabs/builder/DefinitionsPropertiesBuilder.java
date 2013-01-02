@@ -54,16 +54,27 @@ public class DefinitionsPropertiesBuilder extends AbstractPropertiesBuilder<Defi
 	
 	@Override
 	public void create() {
-		EClass errorCls = Bpmn2Package.eINSTANCE.getError();
-		EClass signalCls = Bpmn2Package.eINSTANCE.getSignal();
+		createErrorMappingsTable();
+		createMessageMappingsTable();
+		createSignalMappingsTable();
+	}
+
+	public void createMessageMappingsTable() {
 		EClass messageCls = Bpmn2Package.eINSTANCE.getMessage();
-		
-		createMappingsTable(section, parent, Error.class, "Errors", errorCls, ROOT_ELEMENTS_FEATURE, ERROR_FEATURES, ERROR_TABLE_HEADERS);
 		createMappingsTable(section, parent, Message.class, "Messages", messageCls, ROOT_ELEMENTS_FEATURE, MESSAGE_FEATURES, MESSAGE_TABLE_HEADERS);
+	}
+
+	public void createSignalMappingsTable() {
+		EClass signalCls = Bpmn2Package.eINSTANCE.getSignal();
 		createMappingsTable(section, parent, Signal.class, "Signals", signalCls, ROOT_ELEMENTS_FEATURE, SIGNAL_FEATURES, SIGNAL_TABLE_HEADERS);
 	}
 
-	private <T extends EObject> void createMappingsTable(
+	public void createErrorMappingsTable() {
+		EClass errorCls = Bpmn2Package.eINSTANCE.getError();
+		createMappingsTable(section, parent, Error.class, "Errors", errorCls, ROOT_ELEMENTS_FEATURE, ERROR_FEATURES, ERROR_TABLE_HEADERS);
+	}
+	
+	protected <T extends EObject> void createMappingsTable(
 			GFPropertySection section, Composite parent, 
 			final Class<T> typeCls, String label, final EClass typeECls, 
 			final EStructuralFeature feature, EStructuralFeature[] columnFeatures, String[] columnLabels) {
