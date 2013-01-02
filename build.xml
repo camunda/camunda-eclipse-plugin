@@ -30,7 +30,7 @@
 			<git command = "pull" dir = "@{dest}" />
 			<git command = "checkout" dir = "@{dest}">
 				<args>
-					<arg value = "ca-master" />
+					<arg value = "master" />
 				</args>
 			</git>
 		</sequential>
