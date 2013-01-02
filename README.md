@@ -12,8 +12,8 @@ Licensed under the Eclipse public license <http://www.eclipse.org/legal/epl-v10.
 Project Structure
 -----------------
 
-`+ org.eclipse.bpmn2.modeler.core -> modeler runtime`
-`+ org.eclipse.bpmn2.modeler.core.tests -> modeler runtime tests`
+    + org.eclipse.bpmn2.modeler.core -> modeler runtime
+    + org.eclipse.bpmn2.modeler.core.tests -> modeler runtime tests
 
 Building
 --------
