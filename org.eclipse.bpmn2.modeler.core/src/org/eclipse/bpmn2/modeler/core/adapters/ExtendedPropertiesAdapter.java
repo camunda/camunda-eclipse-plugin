@@ -60,22 +60,8 @@ public class ExtendedPropertiesAdapter<T extends EObject> extends AdapterImpl {
 
 		String name = "";
 		if (object instanceof BPMNDiagram) {
-			switch(ModelUtil.getDiagramType(object)) {
-			case NONE:
-				name = "UnknownDiagram";
-				break;
-			case PROCESS:
-				name = "ProcessDiagram";
-				break;
-			case CHOREOGRAPHY:
-				name = "ChoreographyDiagram";
-				break;
-			case COLLABORATION:
-				name = "CollaborationDiagram";
-				break;
-			}
-		}
-		else {
+			name = "BPMN 2.0 Diagram";
+		} else {
 			name = object.eClass().getName().replaceAll("Impl$", "");
 		}
 		// Set the model element's long description from the Messages class.

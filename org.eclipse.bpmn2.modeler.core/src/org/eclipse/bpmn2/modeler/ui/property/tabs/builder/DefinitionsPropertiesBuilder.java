@@ -4,11 +4,17 @@ import java.util.List;
 
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Error;
+import org.eclipse.bpmn2.ErrorEventDefinition;
+import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.Message;
+import org.eclipse.bpmn2.MessageEventDefinition;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.Signal;
+import org.eclipse.bpmn2.SignalEventDefinition;
+import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.change.filter.FeatureChangeFilter;
 import org.eclipse.bpmn2.modeler.ui.change.filter.NestedFeatureChangeFilter;
@@ -135,6 +141,10 @@ public class DefinitionsPropertiesBuilder extends AbstractPropertiesBuilder<Defi
 			@Override
 			protected void doExecute() {
 				EList<EObject> list = (EList<EObject>) bo.eGet(feature);
+				
+				// Delete references to deleted element
+				removeDangelingObjectRefs(element);
+				
 				list.remove(element);
 			}
 		});
@@ -156,5 +166,34 @@ public class DefinitionsPropertiesBuilder extends AbstractPropertiesBuilder<Defi
 		});
 		
 		return instance;
+	}
+
+	private void removeDangelingObjectRefs(EObject element) {
+		List<CatchEvent> events = ModelHandler.getAll(bo.eResource(), CatchEvent.class);
+		for (CatchEvent e: events) {
+			List<EventDefinition> eventDefinitions = e.getEventDefinitions();
+			for (EventDefinition def: eventDefinitions) {
+				if (def instanceof MessageEventDefinition) {
+					MessageEventDefinition mdef = (MessageEventDefinition) def;
+					if (element.equals(mdef.getMessageRef())) {
+						mdef.setMessageRef(null);
+					}
+				}
+				
+				if (def instanceof SignalEventDefinition) {
+					SignalEventDefinition sdef = (SignalEventDefinition) def;
+					if (element.equals(sdef.getSignalRef())) {
+						sdef.setSignalRef(null);
+					}
+				}
+				
+				if (def instanceof ErrorEventDefinition) {
+					ErrorEventDefinition edef = (ErrorEventDefinition) def;
+					if (element.equals(edef.getErrorRef())) {
+						edef.setErrorRef(null);
+					}
+				}
+			}
+		}
 	}
 }

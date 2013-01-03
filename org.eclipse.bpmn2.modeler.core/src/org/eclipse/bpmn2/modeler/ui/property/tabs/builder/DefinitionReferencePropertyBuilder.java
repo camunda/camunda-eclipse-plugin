@@ -1,6 +1,5 @@
 package org.eclipse.bpmn2.modeler.ui.property.tabs.builder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.Bpmn2Package;
@@ -16,11 +15,11 @@ import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.change.EObjectChangeSu
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.HelpText;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
@@ -66,6 +65,8 @@ public class DefinitionReferencePropertyBuilder<T extends RootElement> extends A
 			PropertyUtil.attachNote(dropDown, note);
 		}
 		
+		updateDropdownLabels(dropDown);
+		
 		Definitions definitions = ModelUtil.getDefinitions(bo);
 		
 		// register change support
@@ -80,7 +81,11 @@ public class DefinitionReferencePropertyBuilder<T extends RootElement> extends A
 			public void handleEvent(Event e) {
 				ModelChangedEvent event = (ModelChangedEvent) e;
 				if (ROOT_ELEMENTS_FEATURE.equals(event.getFeature())) {
-					updateDropdownLabels(dropDown);
+					Display.getCurrent().asyncExec(new Runnable() {
+						public void run() {
+							updateDropdownLabels(dropDown);
+						}
+					});
 				}
 			}
 		});
@@ -88,8 +93,8 @@ public class DefinitionReferencePropertyBuilder<T extends RootElement> extends A
 		BaseElementIdComboBinding<T> modelViewBinding = new BaseElementIdComboBinding<T>(bo, refFeature, dropDown) {
 
 			@Override
-			protected T getModelById(String id) {
-				return getDefinitionByLabel(id);
+			protected T getModelById(String label) {
+				return getModelByLabel(label);
 			}
 
 			@Override
@@ -103,8 +108,6 @@ public class DefinitionReferencePropertyBuilder<T extends RootElement> extends A
 		};
 		
 		modelViewBinding.establish();
-		
-		updateDropdownLabels(dropDown);
 	}
 
 	/**
@@ -114,7 +117,7 @@ public class DefinitionReferencePropertyBuilder<T extends RootElement> extends A
 	 * @param id
 	 * @return
 	 */
-	private T getDefinitionByLabel(String id) {
+	private T getModelByLabel(String id) {
 		List<T> definitions = getDefinitions();
 		for (T d: definitions) {
 			String nodeId = getDefinitionLabel(d);
@@ -134,26 +137,27 @@ public class DefinitionReferencePropertyBuilder<T extends RootElement> extends A
 	private void updateDropdownLabels(CCombo dropDown) {
 
 		List<T> definitions = getDefinitions();
-		List<String> definitionLabels = new ArrayList<String>();
 		
-		T selectedDefinition = (T) bo.eGet(refFeature);
+		// We need to avoid that the combo box fires a SWT.Modify event 
+		// while updating the drop down labels.
 		
-		definitionLabels.add("");
-		
-		for (T d: definitions) {
-			definitionLabels.add(getDefinitionLabel(d));
-		}
-		
+		// Doing so, we remove all drop down element one by one
 		for (String s: dropDown.getItems()) {
 			dropDown.remove(s);
 		}
 		
-		for (String s: definitionLabels) {
-			dropDown.add(s);
+		// and add the labels again one by one
+		dropDown.add("");
+		
+		for (T d: definitions) {
+			dropDown.add(getDefinitionLabel(d));
 		}
 		
-		if (selectedDefinition != null) {
-			dropDown.setText(getDefinitionLabel(selectedDefinition));
+		T object = (T) bo.eGet(refFeature);
+		if (object != null && definitions.contains(object)) {
+			dropDown.setText(getDefinitionLabel(object));
+		} else {
+			dropDown.setText("");
 		}
 	}
 	
