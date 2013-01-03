@@ -32,8 +32,7 @@ public abstract class LayoutStrategy {
 	protected abstract void doExecute();
 	
 	public boolean appliesTo(FreeFormConnection connection) {
-		if (connection.getBendpoints().size() > 2
-				|| LayoutUtil.getLength(connection) > LayoutUtil.MAGIC_LENGTH) {
+		if (connection.getBendpoints().size() > 2) {
 			
 			return false;
 		}

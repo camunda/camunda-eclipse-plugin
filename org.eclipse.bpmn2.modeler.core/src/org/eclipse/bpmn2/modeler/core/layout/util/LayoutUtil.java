@@ -44,11 +44,6 @@ public class LayoutUtil {
 	 */
 	public static final double MAGIC_VALUE = 0.90;
 	
-	/**
-	 * evolutionary developed value to decide if we should layout a connection, assumption: we suck at layouting long connections
-	 */
-	public static final double MAGIC_LENGTH = 700;
-	
 	
 	public enum Sector {
 		
