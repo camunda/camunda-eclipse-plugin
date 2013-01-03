@@ -16,9 +16,11 @@ import java.io.IOException;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.InteractionNode;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.Participant;
+import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementConnectionFeatureContainer;
@@ -38,9 +40,13 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReconnectionFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.ICreateConnectionContext;
+import org.eclipse.graphiti.features.context.IReconnectionContext;
+import org.eclipse.graphiti.features.context.impl.ReconnectionContext;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.styles.LineStyle;
+import org.eclipse.graphiti.mm.pictograms.Anchor;
+import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
 import org.eclipse.graphiti.services.Graphiti;
@@ -204,6 +210,64 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 			super(fp);
 		}
 
+		@Override
+		public boolean canReconnect(IReconnectionContext context) {
+			if (super.canReconnect(context)) {
+				boolean reconnectSource = ReconnectionContext.RECONNECT_SOURCE.equals(context.getReconnectType());
+
+				Anchor sourceAnchor = reconnectSource ? context.getNewAnchor() : context.getConnection().getStart();
+				Anchor targetAnchor = reconnectSource ? context.getConnection().getEnd() : context.getNewAnchor();
+
+				AnchorContainer sourceContainer = sourceAnchor.getParent();
+				AnchorContainer targetContainer = targetAnchor.getParent();
+
+				InteractionNode sourceElement = (InteractionNode) BusinessObjectUtil.getFirstBaseElement(sourceContainer);
+				InteractionNode targetElement = (InteractionNode) BusinessObjectUtil.getFirstBaseElement(targetContainer);
+				
+				FlowNode nonParticipant;
+				Participant participant;
+				
+				if (sourceElement instanceof Participant && targetElement instanceof Participant) {
+					if (sourceElement.equals(targetElement)) {
+						return false;
+					}
+					
+					Participant sourceParticipant = (Participant) sourceElement;
+					Participant targetParticipant = (Participant) targetElement;
+					
+					return sourceParticipant.getProcessRef() == null && targetParticipant.getProcessRef() == null;
+				} else 
+				if (sourceElement instanceof Participant) {
+					participant = (Participant) sourceElement;
+					nonParticipant = (FlowNode) targetElement;
+					
+					return !getProcess(nonParticipant).equals(participant.getProcessRef());
+				} else
+				if (targetElement instanceof Participant) {
+					participant = (Participant) targetElement;
+					nonParticipant = (FlowNode) sourceElement;
+					
+					return !getProcess(nonParticipant).equals(participant.getProcessRef());
+				} else {
+					Process sourceProcess = getProcess((FlowNode) sourceElement);
+					Process targetProcess = getProcess((FlowNode) targetElement);
+					
+					return sourceProcess != null && !sourceProcess.equals(targetProcess);
+				}
+			} else {
+				return false;
+			}
+		}
+		
+		protected Process getProcess(FlowNode node) {
+			EObject parent = node.eContainer();
+			if (parent instanceof Process) {
+				return (Process) parent;
+			} else {
+				return null;
+			}
+		}
+		
 		@Override
 		protected Class<? extends EObject> getTargetClass() {
 			return InteractionNode.class;
