@@ -7,6 +7,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.ResourceSetChangeEvent;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 
 public class EAttributeChangeSupport extends EObjectChangeSupport {
 	
@@ -30,7 +31,7 @@ public class EAttributeChangeSupport extends EObjectChangeSupport {
 	// ResourceSetListener API implementation /////////////////
 
 	@Override
-	protected void fireModelChanged(ResourceSetChangeEvent event) {
+	protected void fireModelChanged(final ResourceSetChangeEvent event) {
 		if (!control.isDisposed()) {
 			control.notifyListeners(MODEL_CHANGED, new ModelChangedEvent(object, feature, control, event.getSource()));
 		}

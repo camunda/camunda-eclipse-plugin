@@ -123,16 +123,18 @@ public class ExtensionUtil {
 		EStructuralFeature extensionValuesFeature = object.eClass().getEStructuralFeature("extensionValues");
 		EList<EObject> list = (EList<EObject>) object.eGet(extensionValuesFeature);
 		
-		ExtensionAttributeValue attributeValue = null;
+		ExtensionAttributeValue extensionAttributeValue = null;
 		
 		if (list.isEmpty()) {
-			attributeValue = createExtensionAttributeValue();
-			list.add(attributeValue);
+			extensionAttributeValue = createExtensionAttributeValue();
+			list.add(extensionAttributeValue);
+			
+			ModelUtil.setID(extensionAttributeValue);
 		} else {
-			attributeValue = (ExtensionAttributeValue) list.get(0);
+			extensionAttributeValue = (ExtensionAttributeValue) list.get(0);
 		}
 		
-		FeatureMap map = attributeValue.getValue();
+		FeatureMap map = extensionAttributeValue.getValue();
 		map.add(feature, value);
 	}
 	
@@ -255,7 +257,10 @@ public class ExtensionUtil {
 		
 		if (extensionElements != null) {
 			if (extensionElements.isEmpty()) {
-				extensionElements.add(createExtensionAttributeValue());
+				ExtensionAttributeValue extensionAttributeValue = createExtensionAttributeValue();
+				extensionElements.add(extensionAttributeValue);
+
+				ModelUtil.setID(extensionAttributeValue);
 			} else {
 				removeExtensionByFeature(object, feature);
 			}
@@ -265,10 +270,6 @@ public class ExtensionUtil {
 	}
 	
 	protected static ExtensionAttributeValue createExtensionAttributeValue() {
-		ExtensionAttributeValue attributeValue = Bpmn2Factory.eINSTANCE.createExtensionAttributeValue();
-		
-		ModelUtil.setID(attributeValue);
-		
-		return attributeValue;
+		return Bpmn2Factory.eINSTANCE.createExtensionAttributeValue();
 	}
 }

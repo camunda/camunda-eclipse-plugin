@@ -31,7 +31,7 @@ public abstract class ModelAttributeComboBinding<V> extends ModelViewBinding<CCo
 	@Override
 	public void setViewValue(V value) {
 		String str = toString(value);
-		control.select(control.indexOf(str));
+		control.setText(str);
 	}
 
 	/**

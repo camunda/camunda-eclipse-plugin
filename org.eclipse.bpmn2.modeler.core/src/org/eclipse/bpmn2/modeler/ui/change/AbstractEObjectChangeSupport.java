@@ -81,7 +81,7 @@ public abstract class AbstractEObjectChangeSupport implements ResourceSetListene
 
 	@Override
 	public final boolean isPostcommitOnly() {
-		return false;
+		return true;
 	}
 
 	@Override

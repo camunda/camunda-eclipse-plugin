@@ -1,9 +1,7 @@
 package org.eclipse.bpmn2.modeler.ui.property.tabs.tables;
 
-import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
@@ -56,17 +54,12 @@ public class EObjectAttributeEditingSupport<T extends EObject> extends EditingSu
 	}
 
 	protected void setValue(T element, Object value) {
-
-		try {
-			Object val = toEValue(value);
-			
+		Object val = toEValue(value);
+		Object oldVal = getEValue(element);
+		
+		if ((val == null && val != oldVal) || !val.equals(oldVal)) {
 			TransactionalEditingDomain editingDomain = TransactionUtil.getEditingDomain(element);
-	
 			ModelUtil.setValue(editingDomain, element, feature, val);
-		} catch (IllegalArgumentException e) {
-			// anticipated
-			
-			Activator.logStatus(new Status(Status.WARNING, Activator.PLUGIN_ID, "Could not update model value", e));
 		}
 		
 		viewer.update(element, null);
@@ -91,6 +84,10 @@ public class EObjectAttributeEditingSupport<T extends EObject> extends EditingSu
 	 */
 	@Override
 	protected void saveCellEditorValue(CellEditor cellEditor, ViewerCell cell) {
+		if (!cellEditor.isDirty()) {
+			return;
+		}
+		
 		T element = (T) cell.getElement();
 		Object oldValue = getEValue(element);
 		
