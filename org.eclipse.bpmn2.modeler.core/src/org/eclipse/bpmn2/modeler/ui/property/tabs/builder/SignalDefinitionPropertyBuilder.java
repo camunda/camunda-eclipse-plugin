@@ -16,9 +16,10 @@ import org.eclipse.swt.widgets.Composite;
 public class SignalDefinitionPropertyBuilder extends DefinitionReferencePropertyBuilder<Signal> {
 
 	private static final EStructuralFeature SIGNAL_REF_FEATURE = Bpmn2Package.eINSTANCE.getSignalEventDefinition_SignalRef();
+	private static final EStructuralFeature SIGNAL_NAME_FEATURE = Bpmn2Package.eINSTANCE.getSignal_Name();
 
 	public SignalDefinitionPropertyBuilder(Composite parent, GFPropertySection section, SignalEventDefinition bo) {
-		super(parent, section, bo, "Signal", SIGNAL_REF_FEATURE, Signal.class);
+		super(parent, section, bo, "Signal", SIGNAL_REF_FEATURE, SIGNAL_NAME_FEATURE, Signal.class);
 	}
 
 	@Override

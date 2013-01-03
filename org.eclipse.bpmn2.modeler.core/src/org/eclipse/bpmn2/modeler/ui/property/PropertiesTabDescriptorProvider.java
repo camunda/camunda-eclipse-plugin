@@ -55,9 +55,6 @@ public class PropertiesTabDescriptorProvider implements ITabDescriptorProvider {
 			
 			if (businessObject instanceof Event) {
 				tabs.add(createEventTabDescriptor());
-				
-				// show definitions tab, too
-				tabs.add(createDefinitionsTabDescriptor());
 			}
 			
 			// add definitions tab for errors, messages and signals

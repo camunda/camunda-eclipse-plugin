@@ -776,10 +776,10 @@ public class ModelUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> List<T> getAllRootElements(Definitions definitions, final Class<T> class1) {
+	public static <T> List<T> getAllRootElements(Definitions definitions, final Class<T> cls) {
 		ArrayList<T> list = new ArrayList<T>();
 		for (RootElement re : definitions.getRootElements()) {
-			if (class1.isInstance(re)) {
+			if (cls.isInstance(re)) {
 				list.add((T) re);
 			}
 		}

@@ -834,8 +834,8 @@ public class ModelHandler {
 			} // somebody did not understand the BPMNPlane (seems to be common), try adding to the first process, or create a new one
 			else if (ModelUtil.getAllRootElements(definitions, org.eclipse.bpmn2.Process.class).size() == 0) {
 				org.eclipse.bpmn2.Process newProcess = Bpmn2Factory.eINSTANCE.createProcess();
-				ModelUtil.setID(newProcess);
 				definitions.getRootElements().add(newProcess);
+				ModelUtil.setID(newProcess);
 				return newProcess;
 			}
 			else { 

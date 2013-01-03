@@ -21,9 +21,9 @@ public class ParticipantPropertiesBuilder extends AbstractPropertiesBuilder<Part
 		Process process = bo.getProcessRef();
 		
 		if (process != null) { // empty participant must not have a process
+			new ProcessIdPropertyBuilder(parent, section, process).create();
 			new NamePropertyBuilder(parent, section, process, "Process Name").create();
 			
-			new ProcessIdPropertyBuilder(parent, section, process).create();
 			new ProcessPropertiesBuilder(parent, section, process).create();
 		}
 	}

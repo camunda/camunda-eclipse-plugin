@@ -148,10 +148,10 @@ public class DefinitionsPropertiesBuilder extends AbstractPropertiesBuilder<Defi
 			
 			@Override
 			protected void doExecute() {
-				ModelUtil.setID(instance);
-				
 				EList<EObject> list = (EList<EObject>) bo.eGet(feature);
 				list.add(instance);
+
+				ModelUtil.setID(instance);
 			}
 		});
 		
