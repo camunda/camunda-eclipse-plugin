@@ -19,7 +19,6 @@ import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
-import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
@@ -46,7 +45,6 @@ public class DefaultLayoutContext implements LayoutContext {
 		this.connection = connection;
 		
 		initSourceAndTarget(connection.getStart(), connection.getEnd());
-		
 		
 		computeConnectionPoints();
 		
@@ -96,8 +94,8 @@ public class DefaultLayoutContext implements LayoutContext {
 	protected void computeConnectionPoints() {
 		ArrayList<Point> points = new ArrayList<Point>();
 
-		ILocation startLocation = LayoutUtil.getVisibleAnchorLocation(startAnchor, connection);
-		ILocation endLocation = LayoutUtil.getVisibleAnchorLocation(endAnchor, connection);
+		ILocation startLocation = LayoutUtil.getAnchorLocation(startAnchor);
+		ILocation endLocation = LayoutUtil.getAnchorLocation(endAnchor);
 		
 		points.add(point(startLocation));
 		
@@ -165,6 +163,12 @@ public class DefaultLayoutContext implements LayoutContext {
 			return false;
 		}
 		
+		// no fix required for center anchor
+		if (targetShapeAnchor.equals(LayoutUtil.getCenterAnchor(targetShape))) {
+			return true;
+		}
+		
+		// check if fix for boundary anchors is required 
 		Anchor anchor = AnchorUtil.getAnchor(targetShape, anchorLocation(requiredAnchorSector));
 		
 		if (anchor == null) {
