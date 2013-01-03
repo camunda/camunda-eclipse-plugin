@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="sid-db4cdc7b-db5b-4779-9015-543353ae85e7" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="6.1.0" targetNamespace="http://www.signavio.com/bpmn20">
+  <collaboration id="_Collaboration_2">
+    <participant id="_Participant_2" name="Pool " processRef="_Process_2"/>
+    <participant id="Participant_2" name="Pool "/>
+    <messageFlow id="MessageFlow_1" name="" sourceRef="Participant_2" targetRef="Task_1"/>
+  </collaboration>
+  <process id="_Process_2">
+    <task id="Task_1" name="Task 1"/>
+  </process>
+  <bpmndi:BPMNDiagram id="_BPMNDiagram_2">
+    <bpmndi:BPMNPlane id="_BPMNPlane_2" bpmnElement="_Collaboration_2">
+      <bpmndi:BPMNShape id="_BPMNShape_Participant_3" bpmnElement="_Participant_2" isHorizontal="true">
+        <omgdc:Bounds height="175.0" width="500.0" x="170.0" y="110.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Task_2" bpmnElement="Task_1">
+        <omgdc:Bounds height="80.0" width="100.0" x="350.0" y="150.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Participant_4" bpmnElement="Participant_2" isHorizontal="true">
+        <omgdc:Bounds height="100.0" width="500.0" x="320.0" y="450.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_MessageFlow_1" bpmnElement="MessageFlow_1" sourceElement="_BPMNShape_Participant_4" targetElement="_BPMNShape_Task_2">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="570.0" y="450.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="569.0" y="350.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="400.0" y="350.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="400.0" y="230.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

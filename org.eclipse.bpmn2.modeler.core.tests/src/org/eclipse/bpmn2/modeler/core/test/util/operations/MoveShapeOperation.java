@@ -43,4 +43,14 @@ public abstract class MoveShapeOperation<T extends DefaultMoveShapeFeature, V> e
 		context.setTargetContainer(containerShape);
 		return myself;
 	}
+	
+	protected final void assertInstanceOf(Class<?> cls, Object o) {
+		if (o == null) {
+			throw new IllegalArgumentException("Object is null");
+		} 
+		
+		if (!cls.isInstance(o)) {
+			throw new IllegalArgumentException(String.format("Object <%s> is not an instance of <%s>", o, cls.getName()));
+		}
+	}
 }

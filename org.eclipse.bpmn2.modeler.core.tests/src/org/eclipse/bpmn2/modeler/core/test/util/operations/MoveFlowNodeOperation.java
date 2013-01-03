@@ -2,6 +2,7 @@ package org.eclipse.bpmn2.modeler.core.test.util.operations;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BoundaryEvent;
+import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.modeler.core.features.MoveFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.MoveActivityFeature;
 import org.eclipse.bpmn2.modeler.ui.features.event.MoveBoundaryEventFeature;
@@ -26,6 +27,9 @@ public class MoveFlowNodeOperation extends MoveShapeOperation<MoveFlowNodeFeatur
 	protected void createFeature() {
 		IFeatureProvider featureProvider = diagramTypeProvider.getFeatureProvider();
 		EObject element = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(shape);
+		
+		assertInstanceOf(FlowNode.class, element);
+		
 		if (element instanceof Activity) {
 			feature = new MoveActivityFeature(featureProvider);
 		} else if (element instanceof BoundaryEvent) {

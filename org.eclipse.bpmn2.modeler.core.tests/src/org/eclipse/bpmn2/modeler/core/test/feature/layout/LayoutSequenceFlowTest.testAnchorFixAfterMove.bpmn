@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="sid-db4cdc7b-db5b-4779-9015-543353ae85e7" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="6.1.0" targetNamespace="http://www.signavio.com/bpmn20">
+  <collaboration id="sid-48c2972b-06bb-418c-aff7-a4abba948ae4">
+    <participant id="Participant_1" name="Participant 1" processRef="TestProcess"/>
+  </collaboration>
+  <process id="TestProcess" name="Test Process 1" isClosed="true" isExecutable="true">
+    <laneSet id="LaneSet_1">
+      <lane id="Lane_1" name="Lane 1">
+        <flowNodeRef>ExclusiveGateway_1</flowNodeRef>
+        <flowNodeRef>UserTask_1</flowNodeRef>
+      </lane>
+      <lane id="Lane_2" name="Lane 2">
+        <flowNodeRef>UserTask_2</flowNodeRef>
+        <flowNodeRef>ExclusiveGateway_2</flowNodeRef>
+      </lane>
+    </laneSet>
+    <exclusiveGateway id="ExclusiveGateway_1" name="invoice&#xA;approved?" gatewayDirection="Diverging">
+      <incoming>SequenceFlow_4</incoming>
+      <outgoing>SequenceFlow_1</outgoing>
+    </exclusiveGateway>
+    <userTask id="UserTask_2" activiti:assignee="kermit" activiti:formKey="clarifyInvoice" name="review invoice" implementation="webService">
+      <incoming>SequenceFlow_1</incoming>
+      <outgoing>SequenceFlow_3</outgoing>
+    </userTask>
+    <exclusiveGateway id="ExclusiveGateway_2" name="review&#xA;successful?" gatewayDirection="Diverging">
+      <incoming>SequenceFlow_3</incoming>
+      <outgoing>SequenceFlow_2</outgoing>
+    </exclusiveGateway>
+    <sequenceFlow id="SequenceFlow_3" name="" isImmediate="true" sourceRef="UserTask_2" targetRef="ExclusiveGateway_2"/>
+    <sequenceFlow id="SequenceFlow_1" name="no" isImmediate="true" sourceRef="ExclusiveGateway_1" targetRef="UserTask_2">
+      <conditionExpression xsi:type="tFormalExpression" id="sid-b5174263-5d8e-46fd-a65e-583381a47771">${!approved}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="SequenceFlow_2" name="yes" isImmediate="true" sourceRef="ExclusiveGateway_2" targetRef="UserTask_1">
+      <conditionExpression xsi:type="tFormalExpression" id="sid-94452c45-b314-46b1-8313-983cfc7237d4">${clarified.equals('yes')}</conditionExpression>
+    </sequenceFlow>
+    <userTask id="UserTask_1" activiti:assignee="#{approver}" activiti:formKey="UserTask_1" name="approve&#xD;&#xA;invoice" implementation="webService">
+      <incoming>SequenceFlow_2</incoming>
+      <outgoing>SequenceFlow_4</outgoing>
+      <multiInstanceLoopCharacteristics id="MultiInstanceLoopCharacteristics_1" />
+    </userTask>
+    <sequenceFlow id="SequenceFlow_4" name="" isImmediate="true" sourceRef="UserTask_1" targetRef="ExclusiveGateway_1"/>
+  </process>
+  <bpmndi:BPMNDiagram id="sid-a9d7b192-1d3d-4aec-8a4b-de9d9b45684b">
+    <bpmndi:BPMNPlane id="sid-87362870-db23-4840-ad7f-95eb8f4578f1" bpmnElement="sid-48c2972b-06bb-418c-aff7-a4abba948ae4">
+      <bpmndi:BPMNShape id="Participant_1_gui" bpmnElement="Participant_1" isHorizontal="true">
+        <omgdc:Bounds height="351.0" width="1126.0" x="0.0" y="0.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1_gui" bpmnElement="Lane_1" isHorizontal="true">
+        <omgdc:Bounds height="169.0" width="1096.0" x="30.0" y="182.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_2_gui" bpmnElement="Lane_2" isHorizontal="true">
+        <omgdc:Bounds height="183.0" width="1096.0" x="30.0" y="0.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_1_gui" bpmnElement="UserTask_1">
+        <omgdc:Bounds height="80.0" width="100.0" x="350.0" y="224.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1_gui" bpmnElement="ExclusiveGateway_1" isMarkerVisible="true">
+        <omgdc:Bounds height="40.0" width="40.0" x="488.0" y="244.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_2_gui" bpmnElement="UserTask_2">
+        <omgdc:Bounds height="80.0" width="100.0" x="548.0" y="52.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_2_gui" bpmnElement="ExclusiveGateway_2" isMarkerVisible="true">
+        <omgdc:Bounds height="40.0" width="40.0" x="693.0" y="72.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1_gui" bpmnElement="SequenceFlow_1">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="508.0" y="244.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="508.0" y="92.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="548.0" y="92.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_4_gui" bpmnElement="SequenceFlow_4">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="450.0" y="264.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="488.0" y="264.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_3_gui" bpmnElement="SequenceFlow_3">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="648.0" y="92.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="693.0" y="92.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_2_gui" bpmnElement="SequenceFlow_2" sourceElement="ExclusiveGateway_2_gui" targetElement="UserTask_1_gui">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="713.0" y="72.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="712.0" y="21.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="399.0" y="21.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="400.0" y="224.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

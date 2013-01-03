@@ -1,4 +1,4 @@
-package org.eclipse.bpmn2.modeler.core.test.layout;
+package org.eclipse.bpmn2.modeler.core.test.feature.layout;
 
 import static org.eclipse.bpmn2.modeler.core.test.util.operations.CreateDataAssocationOperation.createDataAssocation;
 import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveFlowNodeOperation.move;

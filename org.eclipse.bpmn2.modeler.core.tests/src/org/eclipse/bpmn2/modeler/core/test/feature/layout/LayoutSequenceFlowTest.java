@@ -8,9 +8,12 @@ import static org.fest.assertions.api.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.Util;
+import org.eclipse.bpmn2.modeler.core.test.util.operations.MoveParticipantOperation;
+import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -109,6 +112,40 @@ public class LayoutSequenceFlowTest extends AbstractFeatureTest {
 	}
 
 	@Test
+	@DiagramResource
+	public void testAnchorFixAfterMove() {
+		FreeFormConnection sequenceFlow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
+		
+		Shape exclusiveGateway2Shape = Util.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_2");
+		Shape userTask1Shape = Util.findShapeByBusinessObjectId(diagram, "UserTask_1");
+		
+		move(exclusiveGateway2Shape, getDiagramTypeProvider())
+			.by(20, 10)
+			.execute();
+		
+		assertThat(sequenceFlow1).anchorPointOn(userTask1Shape).isAboveShape();
+	}
+
+	@Test
+	@DiagramResource
+	public void testPoolMessageFlowAnchorFixAfterMove() {
+		FreeFormConnection messageFlow = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "MessageFlow_1");
+		
+//		Shape task1Shape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
+		Shape participant2Shape = Util.findShapeByBusinessObjectId(diagram, "Participant_2");
+		
+		MoveParticipantOperation.move(participant2Shape, getDiagramTypeProvider())
+			.by(20, 10)
+			.execute();
+		
+		System.out.println(LayoutUtil.getAbsoluteRectangle(participant2Shape));
+		
+		System.out.println(getConnectionPoints(messageFlow));
+		
+		assertThat(messageFlow).anchorPointOn(participant2Shape).isAboveShape();
+	}
+	
+	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/LayoutSequenceFlowTest.testBaseHorizontal.bpmn")
 	public void testMoveLayoutedVerticalBreaking() {
 		// given
@@ -180,6 +217,20 @@ public class LayoutSequenceFlowTest extends AbstractFeatureTest {
 		for (Point p: connection.getBendpoints()) {
 			points.add(point(p.getX(), p.getY()));
 		}
+		
+		return points;
+	}
+	
+	protected List<Point> getConnectionPoints(FreeFormConnection connection) {
+		ArrayList<Point> points = new ArrayList<Point>();
+		
+
+		ILocation startAnchorLocation = LayoutUtil.getVisibleAnchorLocation(connection.getStart(), connection);
+		ILocation endAnchorLocation = LayoutUtil.getVisibleAnchorLocation(connection.getEnd(), connection);
+		
+		points.add(point(startAnchorLocation));
+		points.addAll(getBendpoints(connection));
+		points.add(point(endAnchorLocation));
 		
 		return points;
 	}

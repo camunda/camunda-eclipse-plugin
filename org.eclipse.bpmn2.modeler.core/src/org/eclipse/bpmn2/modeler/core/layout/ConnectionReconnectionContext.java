@@ -32,6 +32,8 @@ public class ConnectionReconnectionContext {
 		
 		FreeFormConnection freeFormConnection = (FreeFormConnection) connection;
 		
+		System.out.println("Reconnect " + freeFormConnection);
+		
 		LayoutContext layoutingContext = new DefaultLayoutStrategy().createLayoutingContext(freeFormConnection);
 		
 		boolean layouted = false;

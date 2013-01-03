@@ -142,18 +142,17 @@ public class DefaultLayoutContext implements LayoutContext {
 		if (parts.get(0).needsLayout()) {
 			repaired = repaired && 
 				layoutConnectionParts(parts, true);
-		}
 
-		repaired = repaired && 
-			fixOptimalAnchor(startShape, startAnchor, connectionPoints.get(1));
+			repaired = repaired && 
+				fixOptimalAnchor(startShape, startAnchor, connectionPoints.get(1));
+		}
 		
 		if (parts.get(parts.size() - 1).needsLayout()) {
 			repaired = repaired && layoutConnectionParts(parts, false);
+			
+			repaired = repaired &&
+					fixOptimalAnchor(endShape, endAnchor, connectionPoints.get(connectionPoints.size() - 2));
 		}
-		
-		repaired = repaired &&
-				fixOptimalAnchor(endShape, endAnchor, connectionPoints.get(connectionPoints.size() - 2));
-		
 		
 		return repaired && isConnectionRepaired();
 	}
