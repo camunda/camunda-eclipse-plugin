@@ -18,7 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.bpmn2.modeler.core.layout.BpmnElementReconnectionContext;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.datatypes.ILocation;
@@ -30,6 +29,7 @@ import org.eclipse.graphiti.features.context.IRemoveBendpointContext;
 import org.eclipse.graphiti.features.context.impl.AddBendpointContext;
 import org.eclipse.graphiti.features.context.impl.RemoveBendpointContext;
 import org.eclipse.graphiti.features.context.impl.RemoveContext;
+import org.eclipse.graphiti.mm.Property;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
@@ -152,10 +152,20 @@ public class AnchorUtil {
 		return map;
 	}
 
-	public static Point getCenterPoint(Shape s) {
-		GraphicsAlgorithm ga = s.getGraphicsAlgorithm();
-		ILocation loc = peService.getLocationRelativeToDiagram(s);
-		return gaService.createPoint(loc.getX() + (ga.getWidth() / 2), loc.getY() + (ga.getHeight() / 2));
+	public static Anchor getAnchor(Shape shape, AnchorLocation anchorLocation) {
+
+		EList<Anchor> anchors = shape.getAnchors();
+		for (Anchor a: anchors) {
+			for (Property p: a.getProperties()) {
+				if (BOUNDARY_FIXPOINT_ANCHOR.equals(p.getKey())) {
+					if (AnchorLocation.getLocation(p.getValue()) == anchorLocation) {
+						return a;
+					}
+				}
+			}
+		}
+		
+		return null;
 	}
 
 	public static Tuple<FixPointAnchor, FixPointAnchor> getSourceAndTargetBoundaryAnchors(AnchorContainer source, AnchorContainer target,
@@ -356,16 +366,6 @@ public class AnchorUtil {
 		}
 
 		return top.anchor;
-	}
-
-	/**
-	 * Reconnect a pictogram element and its edges
-	 * 
-	 * @param element
-	 * @param diagram
-	 */
-	public static void reConnect(PictogramElement element, Diagram diagram) {
-		new BpmnElementReconnectionContext(diagram).reconnect(element);
 	}
 	
 	public static void addFixedPointAnchors(Shape shape, GraphicsAlgorithm ga) {

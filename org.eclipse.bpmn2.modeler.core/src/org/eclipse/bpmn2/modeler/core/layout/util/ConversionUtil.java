@@ -1,7 +1,7 @@
 package org.eclipse.bpmn2.modeler.core.layout.util;
 
-import org.eclipse.dd.dc.impl.PointImpl;
-import org.eclipse.dd.di.DiFactory;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
+import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil.AnchorLocation;
 import org.eclipse.draw2d.geometry.Vector;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
@@ -64,6 +64,24 @@ public class ConversionUtil {
 		return new LocationImpl(x, y);
 	}
 	
+	public static AnchorLocation anchorLocation(Sector sector) {
+		switch (sector) {
+		case BOTTOM: 
+			return AnchorLocation.BOTTOM;
+		case TOP_LEFT:
+		case LEFT:
+		case BOTTOM_LEFT:
+			return AnchorLocation.LEFT;
+		case TOP: 
+			return AnchorLocation.TOP;
+		case TOP_RIGHT:
+		case RIGHT:
+		case BOTTOM_RIGHT:
+			return AnchorLocation.RIGHT;
+		}
+		
+		return null;
+	}
 	@SuppressWarnings("restriction")
 	public static IRectangle rectangle(int x, int y, int width, int height) {
 		

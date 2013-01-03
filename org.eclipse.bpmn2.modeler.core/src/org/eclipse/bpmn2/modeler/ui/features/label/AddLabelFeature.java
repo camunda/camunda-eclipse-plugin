@@ -13,6 +13,7 @@ import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.impl.AbstractAddShapeFeature;
@@ -55,6 +56,9 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		
 		BaseElement baseElement = (BaseElement) context.getProperty(ContextConstants.BUSINESS_OBJECT);
 		BPMNShape bpmnShape = (BPMNShape) ModelHandler.findDIElement(baseElement);
+		
+		// bpmn shape must exist
+		Assert.isNotNull(bpmnShape);
 		
 		ContainerShape targetContainer = getTargetContainer(context);
 		

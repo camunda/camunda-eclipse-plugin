@@ -60,17 +60,17 @@ public class ExtensionUtilTest extends AbstractNonTransactionalFeatureTest {
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/change/ChangeSupportTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/core/utils/ExtensionUtilTest.testGetExtensionAttributeValues.bpmn")
 	public void testGetExtensionAttribute() {
-		final Task task1 = findBusinessObjectById(diagram, "Task_1", Task.class);
+		final CallActivity callActivity1 = findBusinessObjectById(diagram, "CallActivity_1", CallActivity.class);
 		
-		Object value = ExtensionUtil.getExtension(task1, RETRY_CYCLE_FEATURE, "text");
+		Object value = ExtensionUtil.getExtension(callActivity1, RETRY_CYCLE_FEATURE, "text");
 		
 		assertThat(value).isEqualTo("R3/PT10S");
 	}
 
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/change/ChangeSupportTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/core/utils/ExtensionUtilTest.testGetExtensionAttributeValues.bpmn")
 	public void testAddExtension() {
 		final ServiceTask serviceTask1 = findBusinessObjectById(diagram, "ServiceTask_1", ServiceTask.class);
 		
@@ -91,11 +91,12 @@ public class ExtensionUtilTest extends AbstractNonTransactionalFeatureTest {
 	}
 
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/change/ChangeSupportTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/core/utils/ExtensionUtilTest.testGetExtensionAttributeValues.bpmn")
 	public void testUpdateExtension() {
-		final Task task1 = findBusinessObjectById(diagram, "Task_1", Task.class);
+		final CallActivity callActivity1 = findBusinessObjectById(diagram, "CallActivity_1", CallActivity.class);
 		
-		Object valueBefore = ExtensionUtil.getExtension(task1, RETRY_CYCLE_FEATURE, "text");
+		Object valueBefore = ExtensionUtil.getExtension(callActivity1, RETRY_CYCLE_FEATURE, "text");
+		
 		assertThat(valueBefore).isEqualTo("R3/PT10S");
 		
 		final FailedJobRetryTimeCycleType retryCycle = foxFactory.createFailedJobRetryTimeCycleType();
@@ -105,11 +106,11 @@ public class ExtensionUtilTest extends AbstractNonTransactionalFeatureTest {
 			
 			@Override
 			protected void doExecute() {
-				ExtensionUtil.updateExtension(task1, RETRY_CYCLE_FEATURE, retryCycle);
+				ExtensionUtil.updateExtension(callActivity1, RETRY_CYCLE_FEATURE, retryCycle);
 			}
 		});
 		
-		Object valueAfter = ExtensionUtil.getExtension(task1, RETRY_CYCLE_FEATURE, "text");
+		Object valueAfter = ExtensionUtil.getExtension(callActivity1, RETRY_CYCLE_FEATURE, "text");
 		
 		assertThat(valueAfter).isEqualTo("R3/PT200000S");
 	}

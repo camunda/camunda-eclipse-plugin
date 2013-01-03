@@ -4,6 +4,7 @@ import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.DataAssociation;
+import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
 import org.eclipse.graphiti.mm.pictograms.Connection;
@@ -12,6 +13,7 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 
 
 public abstract class LayoutStrategy {
+	
 	protected FreeFormConnection connection;
 	protected boolean unchanged;
 
@@ -32,6 +34,7 @@ public abstract class LayoutStrategy {
 	public boolean appliesTo(FreeFormConnection connection) {
 		if (connection.getBendpoints().size() > 2
 				|| LayoutUtil.getLength(connection) > LayoutUtil.MAGIC_LENGTH) {
+			
 			return false;
 		}
 
@@ -60,27 +63,39 @@ public abstract class LayoutStrategy {
 		BaseElement sourceElement = LayoutUtil.getSourceBaseElement(connection);
 		BaseElement targetElement = LayoutUtil.getTargetBaseElement(connection);
 		
-		try {
-			T strategyInstance = strategy.getConstructor(FreeFormConnection.class).newInstance(connection);
-			T subStrategy = (T) strategyInstance.getSubStrategy(connection, sourceElement);
+		T strategyInstance = createStrategy(strategy, connection);
+		T subStrategy = (T) strategyInstance.getSubStrategy(connection, sourceElement);
+		
+		if (subStrategy.appliesTo(connection)) {
 			
-			if (subStrategy.appliesTo(connection)) {
-				
-				// FIXME what if sector is undefined? Should this be allowed ? skipping sector switch in this case for now 
-				if (sector != Sector.UNDEFINED) {
-					subStrategy.sectorSwitch(sector);
-				} else {
-					org.eclipse.bpmn2.modeler.core.Activator.logError(new IllegalStateException("Dont know how to handle sector for "+connection));
-				}
-				
-				subStrategy.typeSwitch(sector, sourceElement, targetElement);
+			// FIXME what if sector is undefined? Should this be allowed ? skipping sector switch in this case for now 
+			if (sector != Sector.UNDEFINED) {
+				subStrategy.sectorSwitch(sector);
 			} else {
-				subStrategy.unchanged();
+				Activator.logError(new IllegalStateException("Dont know how to handle sector for "+connection));
 			}
 			
-			return subStrategy;
+			subStrategy.typeSwitch(sector, sourceElement, targetElement);
+		} else {
+			subStrategy.unchanged();
+		}
+		
+		return subStrategy;
+	}
+
+	/**
+	 * 
+	 * @param strategy
+	 * @param connection
+	 * @return
+	 * 
+	 * @throws IllegalArgumentException if the strategy could not be instantiated
+	 */
+	public static <T> T createStrategy(Class<T> strategy, FreeFormConnection connection) throws IllegalArgumentException {
+		try {
+			return strategy.getConstructor(FreeFormConnection.class).newInstance(connection);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new IllegalArgumentException("Cannot instantiate " + strategy.getName(), e);
 		}
 	}
 	

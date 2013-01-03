@@ -15,6 +15,7 @@ package org.eclipse.bpmn2.modeler.core.features;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
+import org.eclipse.bpmn2.modeler.core.layout.ConnectionService;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
@@ -36,7 +37,7 @@ public class DefaultResizeBPMNShapeFeature extends DefaultResizeShapeFeature {
 			Object[] node = getAllBusinessObjectsForPictogramElement(context.getShape());
 			for (Object object : node) {
 				if (object instanceof BPMNShape || object instanceof BPMNEdge) {
-					AnchorUtil.reConnect(shape, getDiagram());
+					ConnectionService.reconnectShapeAfterResize(shape);
 				}
 			}
 		}

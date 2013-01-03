@@ -1,22 +1,20 @@
 package org.eclipse.bpmn2.modeler.core.test.feature.layout;
 
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveFlowNodeOperation.move;
-import static org.eclipse.bpmn2.modeler.core.test.util.operations.ReconnectConnectionEndOperation.reconnect;
 import static org.fest.assertions.api.Assertions.assertThat;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.Util;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
-import org.eclipse.graphiti.mm.pictograms.Anchor;
-import org.eclipse.graphiti.mm.pictograms.ChopboxAnchor;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
-import org.eclipse.graphiti.services.Graphiti;
-import org.fest.assertions.core.Condition;
+import org.fest.assertions.api.Fail;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -86,5 +84,103 @@ public class LayoutSequenceFlowTest extends AbstractFeatureTest {
 		// (1..4) four custom made anchors on each directin N / E / S / W
 		
 		assertThat(task2.getAnchors().size()).isEqualTo(5); 
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/LayoutSequenceFlowTest.testBaseHorizontal.bpmn")
+	public void testMoveLayoutedHorizontalNonBreaking() {
+		// given
+		
+		FreeFormConnection sequenceFlow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		Shape userTask1 = Util.findShapeByBusinessObjectId(diagram, "UserTask_1");
+		
+		List<Point> oldBendpoints = getBendpoints(sequenceFlow1);
+		
+		// when
+		move(userTask1, getDiagramTypeProvider())
+			.by(10, 0)
+			.execute();
+
+		List<Point> newBendpoints = getBendpoints(sequenceFlow1);
+
+		// then
+		// bendpoints should stay as they are (no change)
+		assertPointsEqual(oldBendpoints, newBendpoints);
+	}
+
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/LayoutSequenceFlowTest.testBaseHorizontal.bpmn")
+	public void testMoveLayoutedVerticalBreaking() {
+		// given
+		
+		FreeFormConnection sequenceFlow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		Shape userTask1 = Util.findShapeByBusinessObjectId(diagram, "UserTask_1");
+		
+		List<Point> oldBendpoints = getBendpoints(sequenceFlow1);
+		
+		// when
+		move(userTask1, getDiagramTypeProvider())
+			.by(0, 10)
+			.execute();
+
+		List<Point> newBendpoints = getBendpoints(sequenceFlow1);
+
+		// then
+		// first bendpoint should stay as it is 
+		// AND 
+		// second bendpoint should be adjusted to new y-position (10)
+
+		assertThat(oldBendpoints.get(0)).isEqualTo(newBendpoints.get(0));
+		
+		Point diffBendpoint1 = diffPoints(oldBendpoints.get(1), newBendpoints.get(1));
+		
+		assertThat(diffBendpoint1).isEqualTo(point(0, -10));
+	}
+	
+	protected Point diffPoints(Point p1, Point p2) {
+		return point(p1.getX() - p2.getX(), p1.getY() - p2.getY());
+	}
+	
+	protected List<Point> diffPointList(List<Point> l1, List<Point> l2) {
+		ArrayList<Point> diff = new ArrayList<Point>();
+		
+		int s = Math.max(l1.size(), l2.size());
+		
+		try {
+			for (int i = 0; i < s; i++) {
+				diff.add(diffPoints(l1.get(i), l2.get(i)));
+			}
+		} catch (IndexOutOfBoundsException e) {
+			Fail.fail(String.format("Expected <%s> and <%s> have same size", new Object[] { l1, l2 }), e);
+		}
+		
+		return diff;
+	}
+	
+	protected boolean isPointListDiffZero(List<Point> diff) {
+		for (Point p: diff) {
+			if (p.getX() != 0 || p.getY() != 0) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	protected void assertPointsEqual(List<Point> l1, List<Point> l2) {
+		List<Point> diff = diffPointList(l1, l2);
+		if (!isPointListDiffZero(diff)) {
+			Fail.fail(String.format("Expected diff between <%s> and <%s> to be zero but was <%s>", l1, l2, diff));
+		}
+	}
+
+	protected List<Point> getBendpoints(FreeFormConnection connection) {
+		ArrayList<Point> points = new ArrayList<Point>();
+		
+		for (Point p: connection.getBendpoints()) {
+			points.add(point(p.getX(), p.getY()));
+		}
+		
+		return points;
 	}
 }

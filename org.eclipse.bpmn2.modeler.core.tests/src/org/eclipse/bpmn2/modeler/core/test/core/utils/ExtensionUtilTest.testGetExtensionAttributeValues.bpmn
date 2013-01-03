@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="_QjrK8UCKEeKND_USOkKSpw" targetNamespace="http://activiti.org/bpmn">
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:fox="http://www.camunda.com/fox" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="_QjrK8UCKEeKND_USOkKSpw" targetNamespace="http://activiti.org/bpmn">
   <bpmn2:process id="Process_1">
-    <bpmn2:callActivity id="CallActivity_1" name="Call Activity 1">
+    <bpmn2:callActivity id="CallActivity_1" activiti:async="true" name="Call Activity 1">
       <bpmn2:extensionElements>
         <activiti:in source="ASDF" target="ASDF"/>
         <activiti:in sourceExpression="${foo.bar}" target="ASDF"/>
+        <fox:failedJobRetryTimeCycle>R3/PT10S</fox:failedJobRetryTimeCycle>
       </bpmn2:extensionElements>
     </bpmn2:callActivity>
-    <bpmn2:task id="Task_1" name="Task 1"/>
+    <bpmn2:task id="Task_1" name="Task 1">
+    </bpmn2:task>
     <bpmn2:serviceTask id="ServiceTask_1" activiti:class="sun.org.mozilla.javascript.internal.JavaScriptException" activiti:resultVariableName="dasads" name="Service Task 1"/>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
