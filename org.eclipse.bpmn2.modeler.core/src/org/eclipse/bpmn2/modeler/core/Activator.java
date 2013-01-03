@@ -16,7 +16,12 @@ import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.eclipse.bpmn2.di.impl.BpmnDiPackageImpl;
+import org.eclipse.bpmn2.impl.Bpmn2PackageImpl;
+import org.eclipse.bpmn2.modeler.core.adapters.AdapterRegistry;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
+import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2EditorDiItemProviderAdapterFactory;
+import org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2EditorItemProviderAdapterFactory;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
@@ -44,20 +49,11 @@ public class Activator extends AbstractUIPlugin {
 	
 	// Adapter Factory registration
 	static {
-//		AdapterRegistry.INSTANCE.registerAdapterFactory(
-//			    WSDLPackage.eINSTANCE, Bpmn2WSDLAdapterFactory.getInstance());
-//		
-//		AdapterRegistry.INSTANCE.registerAdapterFactory(
-//			    XSDPackage.eINSTANCE, Bpmn2XSDAdapterFactory.getInstance());
-//		
-//		AdapterRegistry.INSTANCE.registerAdapterFactory(
-//			    InspectionPackage.eINSTANCE, Bpmn2WSILAdapterFactory.getInstance() );
-//		
-//		// BPMN2 metamodel adapter factories
-//		AdapterRegistry.BPMN2_ADAPTER_FACTORIES.addAdapterFactory(
-//				AdapterRegistry.INSTANCE.registerFactory(Bpmn2PackageImpl.eINSTANCE, new Bpmn2EditorItemProviderAdapterFactory()));
-//		AdapterRegistry.BPMN2_ADAPTER_FACTORIES.addAdapterFactory(
-//				AdapterRegistry.INSTANCE.registerFactory(BpmnDiPackageImpl.eINSTANCE, new Bpmn2EditorDiItemProviderAdapterFactory()));
+		// BPMN2 metamodel adapter factories
+		AdapterRegistry.BPMN2_ADAPTER_FACTORIES.addAdapterFactory(
+				AdapterRegistry.INSTANCE.registerFactory(Bpmn2PackageImpl.eINSTANCE, new Bpmn2EditorItemProviderAdapterFactory()));
+		AdapterRegistry.BPMN2_ADAPTER_FACTORIES.addAdapterFactory(
+				AdapterRegistry.INSTANCE.registerFactory(BpmnDiPackageImpl.eINSTANCE, new Bpmn2EditorDiItemProviderAdapterFactory()));
 	}
 
 	/**
