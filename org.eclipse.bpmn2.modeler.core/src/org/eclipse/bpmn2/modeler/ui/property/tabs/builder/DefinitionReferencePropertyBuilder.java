@@ -162,6 +162,6 @@ public class DefinitionReferencePropertyBuilder<T extends RootElement> extends A
 	}
 	
 	private String getDefinitionLabel(T d) {
-		return d.eGet(nameFeature) + "(" + d.getId() + ")";
+		return d.eGet(nameFeature) + " (" + d.getId() + ")";
 	}
 }
