@@ -14,6 +14,7 @@ import org.eclipse.bpmn2.MessageEventDefinition;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.Signal;
 import org.eclipse.bpmn2.SignalEventDefinition;
+import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.change.filter.FeatureChangeFilter;
@@ -169,29 +170,37 @@ public class DefinitionsPropertiesBuilder extends AbstractPropertiesBuilder<Defi
 	}
 
 	private void removeDangelingObjectRefs(EObject element) {
-		List<CatchEvent> events = ModelHandler.getAll(bo.eResource(), CatchEvent.class);
-		for (CatchEvent e: events) {
-			List<EventDefinition> eventDefinitions = e.getEventDefinitions();
-			for (EventDefinition def: eventDefinitions) {
-				if (def instanceof MessageEventDefinition) {
-					MessageEventDefinition mdef = (MessageEventDefinition) def;
-					if (element.equals(mdef.getMessageRef())) {
-						mdef.setMessageRef(null);
-					}
+		List<CatchEvent> catchEvents = ModelHandler.getAll(bo.eResource(), CatchEvent.class);
+		for (CatchEvent e: catchEvents) {
+			removeDangelingObjectRefs(e.getEventDefinitions(), element);
+		}
+		
+		List<ThrowEvent> throwEvents = ModelHandler.getAll(bo.eResource(), ThrowEvent.class);
+		for (ThrowEvent e: throwEvents) {
+			removeDangelingObjectRefs(e.getEventDefinitions(), element);
+		}
+	}
+
+	private void removeDangelingObjectRefs(List<EventDefinition> eventDefinitions, EObject element) {
+		for (EventDefinition def: eventDefinitions) {
+			if (def instanceof MessageEventDefinition) {
+				MessageEventDefinition mdef = (MessageEventDefinition) def;
+				if (element.equals(mdef.getMessageRef())) {
+					mdef.setMessageRef(null);
 				}
-				
-				if (def instanceof SignalEventDefinition) {
-					SignalEventDefinition sdef = (SignalEventDefinition) def;
-					if (element.equals(sdef.getSignalRef())) {
-						sdef.setSignalRef(null);
-					}
+			}
+			
+			if (def instanceof SignalEventDefinition) {
+				SignalEventDefinition sdef = (SignalEventDefinition) def;
+				if (element.equals(sdef.getSignalRef())) {
+					sdef.setSignalRef(null);
 				}
-				
-				if (def instanceof ErrorEventDefinition) {
-					ErrorEventDefinition edef = (ErrorEventDefinition) def;
-					if (element.equals(edef.getErrorRef())) {
-						edef.setErrorRef(null);
-					}
+			}
+			
+			if (def instanceof ErrorEventDefinition) {
+				ErrorEventDefinition edef = (ErrorEventDefinition) def;
+				if (element.equals(edef.getErrorRef())) {
+					edef.setErrorRef(null);
 				}
 			}
 		}
