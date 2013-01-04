@@ -1,6 +1,6 @@
 package org.eclipse.bpmn2.modeler.core.test.util.operations.test;
 
-import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveFlowNodeOperation.move;
+import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveFlowElementOperation.move;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;

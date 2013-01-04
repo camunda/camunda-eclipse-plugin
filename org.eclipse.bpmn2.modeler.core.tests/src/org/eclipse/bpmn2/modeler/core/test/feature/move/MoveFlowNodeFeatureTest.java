@@ -1,7 +1,7 @@
 package org.eclipse.bpmn2.modeler.core.test.feature.move;
 
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
-import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveFlowNodeOperation.move;
+import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveFlowElementOperation.move;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 

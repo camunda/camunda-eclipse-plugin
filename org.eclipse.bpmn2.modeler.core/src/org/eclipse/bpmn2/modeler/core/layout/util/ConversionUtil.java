@@ -66,17 +66,17 @@ public class ConversionUtil {
 	
 	public static AnchorLocation anchorLocation(Sector sector) {
 		switch (sector) {
-		case BOTTOM: 
-			return AnchorLocation.BOTTOM;
-		case TOP_LEFT:
-		case LEFT:
 		case BOTTOM_LEFT:
-			return AnchorLocation.LEFT;
-		case TOP: 
-			return AnchorLocation.TOP;
-		case TOP_RIGHT:
-		case RIGHT:
+		case BOTTOM: 
 		case BOTTOM_RIGHT:
+			return AnchorLocation.BOTTOM;
+		case LEFT:
+			return AnchorLocation.LEFT;
+		case TOP_LEFT:
+		case TOP: 
+		case TOP_RIGHT:
+			return AnchorLocation.TOP;
+		case RIGHT:
 			return AnchorLocation.RIGHT;
 		}
 		
