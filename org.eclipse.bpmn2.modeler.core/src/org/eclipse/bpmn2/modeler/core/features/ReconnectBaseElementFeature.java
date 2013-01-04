@@ -29,18 +29,6 @@ public class ReconnectBaseElementFeature extends DefaultReconnectionFeature {
 		}
 
 		@Override
-		public boolean canReconnect(IReconnectionContext context) {
-			// TODO Auto-generated method stub
-			return super.canReconnect(context);
-		}
-
-		@Override
-		public void preReconnect(IReconnectionContext context) {
-			// TODO Auto-generated method stub
-			super.preReconnect(context);
-		}
-
-		@Override
 		public void postReconnect(IReconnectionContext context) {
 			super.postReconnect(context);
 
@@ -48,8 +36,7 @@ public class ReconnectBaseElementFeature extends DefaultReconnectionFeature {
 			DiagramElement de = BusinessObjectUtil.getFirstElementOfType(context.getTargetPictogramElement(), DiagramElement.class);
 			if (context.getReconnectType().equals(ReconnectionContext.RECONNECT_TARGET)) {
 				edge.setTargetElement(de);
-			}
-			else {
+			} else {
 				edge.setSourceElement(de);
 			}
 			
@@ -59,8 +46,7 @@ public class ReconnectBaseElementFeature extends DefaultReconnectionFeature {
 				EStructuralFeature feature = flow.eClass().getEStructuralFeature("targetRef");
 				if (feature!=null)
 					flow.eSet(feature, be);
-			}
-			else {
+			} else {
 				EStructuralFeature feature = flow.eClass().getEStructuralFeature("sourceRef");
 				if (feature!=null)
 					flow.eSet(feature, be);
