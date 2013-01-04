@@ -1,7 +1,6 @@
 package org.eclipse.bpmn2.modeler.ui.property.tabs.builder;
 
 import org.eclipse.bpmn2.Bpmn2Package;
-import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;

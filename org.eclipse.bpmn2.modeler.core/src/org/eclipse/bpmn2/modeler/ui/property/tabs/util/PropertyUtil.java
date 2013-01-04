@@ -1,7 +1,5 @@
 package org.eclipse.bpmn2.modeler.ui.property.tabs.util;
 
-import java.awt.Color;
-
 import org.eclipse.bpmn2.Expression;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.BooleanButtonBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.FormalExpressionTextBinding;
@@ -16,7 +14,6 @@ import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusEvent;
@@ -33,9 +30,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolTip;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
@@ -64,7 +58,7 @@ public class PropertyUtil {
 	public static Text createUnboundText(GFPropertySection section, Composite parent, String label) {
 		Composite composite = createStandardComposite(section, parent);
 		Text text = createSimpleText(section, composite, "");
-
+		
 		createLabel(section, composite, label, text);
 		return text;
 	}
@@ -229,15 +223,6 @@ public class PropertyUtil {
 		// register with radio group
 		radioGroup.add(radioButton, feature);
 
-		radioButton.addListener(SWT.Selection, new Listener() {
-
-			@Override
-			public void handleEvent(Event event) {
-				boolean selected = radioButton.getSelection();
-				text.setEnabled(selected);
-			}
-		});
-
 		createLabel(section, composite, label, radioComposite);
 
 		return text;
@@ -248,7 +233,13 @@ public class PropertyUtil {
 
 		Text text = createUnboundRadioText(section, parent, label, feature, radioGroup);
 
-		addBinding(text, bo, feature);
+		ModelTextBinding<?> binding = getBinding(text, bo, feature);
+
+		if (binding != null) {
+			binding.setDisableOnNull(true);
+			binding.setFocusOnNonNull(true);
+			binding.establish();
+		}
 
 		return text;
 	}

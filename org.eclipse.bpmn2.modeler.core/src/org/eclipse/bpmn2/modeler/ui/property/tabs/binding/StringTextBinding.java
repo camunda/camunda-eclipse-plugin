@@ -20,11 +20,11 @@ public class StringTextBinding extends ModelAttributeTextBinding<String> {
 	}
 
 	@Override
-	protected String fromString(String string) {
-		if (string == null || string.trim().isEmpty()) {
+	protected String fromString(String str) {
+		if (str == null || str.trim().isEmpty()) {
 			return null;
 		} else {
-			return string;
+			return str;
 		}
 	}
 }

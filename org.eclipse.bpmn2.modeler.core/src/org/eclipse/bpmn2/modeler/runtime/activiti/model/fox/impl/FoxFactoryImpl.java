@@ -6,14 +6,13 @@
  */
 package org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.impl;
 
-import org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.*;
-
+import org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.FailedJobRetryTimeCycleType;
+import org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.FoxFactory;
+import org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.FoxPackage;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**

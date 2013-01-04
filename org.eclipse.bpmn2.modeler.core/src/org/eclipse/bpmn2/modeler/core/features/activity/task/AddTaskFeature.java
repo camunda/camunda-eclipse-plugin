@@ -12,9 +12,8 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features.activity.task;
 
-import org.eclipse.bpmn2.Activity;
-import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.FlowElementsContainer;
+import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.core.features.activity.AbstractAddActivityFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;

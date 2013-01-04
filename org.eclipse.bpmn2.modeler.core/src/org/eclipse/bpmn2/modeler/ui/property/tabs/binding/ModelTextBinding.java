@@ -2,13 +2,10 @@ package org.eclipse.bpmn2.modeler.ui.property.tabs.binding;
 
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.change.EAttributeChangeSupport;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events;
-import org.eclipse.core.databinding.observable.value.IObservableValue;
-import org.eclipse.core.databinding.observable.value.IValueChangeListener;
-import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.jface.databinding.swt.SWTObservables;
-import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
@@ -20,6 +17,10 @@ import org.eclipse.swt.widgets.Text;
  */
 public abstract class ModelTextBinding<V> extends ModelViewBinding<Text, V> {
 
+	protected boolean disableOnNull = false;
+	protected boolean viewUpdate = false;
+	private boolean focusOnNonNull;
+
 	public ModelTextBinding(EObject model, EStructuralFeature feature, Text control) {
 		super(model, feature, control);
 	}
@@ -27,7 +28,7 @@ public abstract class ModelTextBinding<V> extends ModelViewBinding<Text, V> {
 	@Override
 	public void setViewValue(V value) {
 		String str = toString(value);
-		
+
 		control.setText(str);
 		
 		if (control.isFocusControl()) {
@@ -35,6 +36,18 @@ public abstract class ModelTextBinding<V> extends ModelViewBinding<Text, V> {
 		}
 	}
 
+	protected void updateViewState(V modelValue) {
+		if (disableOnNull) {
+			control.setEnabled(modelValue != null);
+		}
+		
+		if (focusOnNonNull && modelValue != null) {
+			if (!control.isFocusControl()) {
+				control.setFocus();
+			}
+		}
+	}
+	
 	/**
 	 * Returns the current view value or throws an exception if 
 	 * it cannot be parsed
@@ -60,10 +73,10 @@ public abstract class ModelTextBinding<V> extends ModelViewBinding<Text, V> {
 	 * Converts a string representation of a model value to 
 	 * its actual value
 	 * 
-	 * @param string
+	 * @param str
 	 * @return
 	 */
-	protected abstract V fromString(String string);
+	protected abstract V fromString(String str);
 
 	@Override
 	protected void establishModelViewBinding() {
@@ -73,17 +86,28 @@ public abstract class ModelTextBinding<V> extends ModelViewBinding<Text, V> {
 			
 			@Override
 			public void handleEvent(Event event) {
-				V modelValue = getModelValue();
-				V viewValue = null;
+				viewUpdate = true;
 				
 				try {
-					viewValue = getViewValue();
-				} catch (IllegalArgumentException e) {
-					; // expected
-				}
-				
-				if (isChangeWithNullChecks(modelValue, viewValue)) {
-					setViewValue(modelValue);
+					V modelValue = getModelValue();
+					V viewValue = null;
+					
+					try {
+						viewValue = getViewValue();
+					} catch (IllegalArgumentException e) {
+						; // expected
+					}
+
+//					System.out.println(String.format("%s\t%s\t%s\t%s", "text", feature.getName(), "M->V", "?"));
+					
+					if (isChangeWithNullChecks(viewValue, modelValue)) {
+//						System.out.println(String.format("%s\t%s\t%s\t%s -> %s", "text", feature.getName(), "M->V", viewValue, modelValue));
+						setViewValue(modelValue);
+					}
+					
+					updateViewState(modelValue);
+				} finally {
+					viewUpdate = false;
 				}
 			}
 		});
@@ -95,16 +119,21 @@ public abstract class ModelTextBinding<V> extends ModelViewBinding<Text, V> {
 	
 	@Override
 	protected void establishViewModelBinding() {
-		IObservableValue textValue = SWTObservables.observeText(control, SWT.Modify);
-		textValue.addValueChangeListener(new IValueChangeListener() {
+		control.addModifyListener(new ModifyListener() {
 			
 			@Override
-			public void handleValueChange(final ValueChangeEvent event) {
+			public void modifyText(ModifyEvent event) {
+				if (viewUpdate) {
+//					System.out.println(String.format("%s\t%s\t%s", "text", feature.getName(), "skip (update in progress)"));
+					return;
+				}
+				
 				try {
-					V viewValue = fromString((String) event.diff.getNewValue());
+					V viewValue = fromString(control.getText());
 					V modelValue = getModelValue();
 					
 					if (isChangeWithNullChecks(modelValue, viewValue)) {
+//						System.out.println(String.format("%s\t%s\t%s\t%s -> %s", "text", feature.getName(), "V->M", modelValue, viewValue));
 						setModelValue(viewValue);
 					}
 				} catch (IllegalArgumentException e) {
@@ -112,5 +141,13 @@ public abstract class ModelTextBinding<V> extends ModelViewBinding<Text, V> {
 				}
 			}
 		});
+	}
+
+	public void setDisableOnNull(boolean disableOnNull) {
+		this.disableOnNull = disableOnNull;
+	}
+
+	public void setFocusOnNonNull(boolean focusOnNonNull) {
+		this.focusOnNonNull = focusOnNonNull;
 	}
 }

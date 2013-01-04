@@ -11,7 +11,6 @@
 package org.eclipse.bpmn2.modeler.core.importer.handlers;
 
 import org.eclipse.bpmn2.BaseElement;
-
 import org.eclipse.bpmn2.modeler.core.importer.ImportException;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.dd.di.DiagramElement;

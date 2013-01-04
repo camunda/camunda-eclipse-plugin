@@ -7,8 +7,6 @@
 package org.eclipse.bpmn2.modeler.runtime.activiti.model.fox;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.bpmn2.BaseElement;
-
 import org.eclipse.emf.ecore.util.FeatureMap;
 
 /**

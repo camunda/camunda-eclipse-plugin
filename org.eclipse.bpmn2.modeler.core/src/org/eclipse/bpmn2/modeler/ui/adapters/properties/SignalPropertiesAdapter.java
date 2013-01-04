@@ -13,15 +13,8 @@
 
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
-import org.eclipse.bpmn2.Bpmn2Package;
-import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.Signal;
-import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
-import org.eclipse.bpmn2.modeler.core.adapters.ObjectDescriptor;
 import org.eclipse.emf.common.notify.AdapterFactory;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.resource.Resource;
 
 /**
  * @author Bob Brodt

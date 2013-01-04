@@ -9,6 +9,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
@@ -83,8 +85,6 @@ public abstract class AbstractTabSection extends GFPropertySection implements IT
 		
 		Composite oldParent = parent;
 		oldParent.dispose();
-		
-		parent = getWidgetFactory().createFlatFormComposite(parentsParent);
 		
 		parent.setLayout(new GridLayout(1, false));
 		parent.setLayoutData(new GridData(SWT.FILL, GridData.CENTER, true, false));

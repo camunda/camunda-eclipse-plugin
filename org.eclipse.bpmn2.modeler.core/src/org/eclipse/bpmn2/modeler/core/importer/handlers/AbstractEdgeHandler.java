@@ -12,8 +12,6 @@ package org.eclipse.bpmn2.modeler.core.importer.handlers;
 
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.location;
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
-import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.rectangle;
-import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.*;
 
 import java.util.List;
 
@@ -35,7 +33,6 @@ import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.context.impl.AddConnectionContext;
-import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;

@@ -7,25 +7,17 @@
 package org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.impl;
 
 import org.eclipse.bpmn2.Bpmn2Package;
-
 import org.eclipse.bpmn2.di.BpmnDiPackage;
-
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelPackage;
-
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.FailedJobRetryTimeCycleType;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.FoxFactory;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.FoxPackage;
-
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.impl.ModelPackageImpl;
-
 import org.eclipse.dd.dc.DcPackage;
-
 import org.eclipse.dd.di.DiPackage;
-
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
 /**

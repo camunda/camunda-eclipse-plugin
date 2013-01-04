@@ -13,7 +13,6 @@
 
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
-import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.SignalEventDefinition;
 import org.eclipse.emf.common.notify.AdapterFactory;
 

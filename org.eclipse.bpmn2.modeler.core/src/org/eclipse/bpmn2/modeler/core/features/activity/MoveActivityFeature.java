@@ -43,51 +43,15 @@ public class MoveActivityFeature extends MoveFlowNodeFeature {
 		ContainerShape oldContainer = context.getSourceContainer();
 		ContainerShape newContainer = context.getTargetContainer();
 		IPeLayoutService peLayoutService = Graphiti.getPeLayoutService();
-//		Shape shape = context.getShape();
-//		ILocation loc = peService.getLocationRelativeToDiagram(shape);
+		
 		ILocation oldLoc = peLayoutService.getLocationRelativeToDiagram(oldContainer);
 		ILocation newLoc = peLayoutService.getLocationRelativeToDiagram(newContainer);
-//		System.out.println(
-//				(oldContainer==newContainer ? "inside:\n" : "outside:\n")+
-//				"oldContainer:\n" +
-//				"  x="+oldLoc.getX()+"\n"+
-//					"  y="+oldLoc.getY()+"\n"+
-//				"newContainer:\n" +
-//				"  x="+newLoc.getX()+"\n"+
-//					"  y="+newLoc.getY()+"\n"+
-//				"shape:\n" +
-//				"  rel x="+shape.getGraphicsAlgorithm().getX()+"\n"+
-//					"  rel y="+shape.getGraphicsAlgorithm().getY()+"\n"+
-//				"  abs x="+loc.getX()+"\n"+
-//					"  abs y="+loc.getY()+"\n"+
-//				"context:\n" +
-//				"  x="+msc.getX()+"\n"+
-//					"  y="+msc.getY()+"\n"+
-//				"  deltaX="+msc.getDeltaX()+"\n"+
-//					"  deltaY="+msc.getDeltaY()+"\n"+
-//				"\n"
-//		);
 		
 		if (oldContainer!=newContainer) {
 			int x = newLoc.getX() + msc.getX() - oldLoc.getX();
 			int y = newLoc.getY() + msc.getY() - oldLoc.getY();
 			int deltaX = newLoc.getX() + msc.getDeltaX() - oldLoc.getX();
 			int deltaY = newLoc.getY() + msc.getDeltaY() - oldLoc.getY();
-			
-//			System.out.println(
-//					"new context:\n"+
-//					"  x="+( newLoc.getX() + msc.getX() - oldLoc.getX() )+"\n"+
-//								"  y="+msc.getY()+"\n"+
-//					"  deltaX="+( newLoc.getX() + msc.getDeltaX() - oldLoc.getX() )+"\n"+
-//								"  deltaY="+msc.getDeltaY()+"\n"+
-//					"\n"
-//			);
-			
-//			msc.setX(x);
-//			msc.setY(y);
-//			msc.setDeltaX(deltaX);
-//			msc.setDeltaY(deltaY);
-//			msc.setTargetContainer(oldContainer);
 		}
 
 		super.preMoveShape(context);

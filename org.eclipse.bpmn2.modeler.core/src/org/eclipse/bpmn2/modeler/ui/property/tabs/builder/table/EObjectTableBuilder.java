@@ -11,8 +11,8 @@ import org.eclipse.bpmn2.modeler.ui.property.tabs.tables.EditableTableDescriptor
 import org.eclipse.bpmn2.modeler.ui.property.tabs.tables.EditableTableDescriptor.ElementFactory;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.tables.TableColumnDescriptor;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events;
-import org.eclipse.bpmn2.modeler.ui.property.tabs.util.HelpText;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events.RowDeleted;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.util.HelpText;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -23,8 +23,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;

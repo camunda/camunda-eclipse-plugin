@@ -6,7 +6,6 @@
  */
 package org.eclipse.bpmn2.modeler.runtime.activiti.model;
 
-import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.emf.ecore.EObject;
 
 /**

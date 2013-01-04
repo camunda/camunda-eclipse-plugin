@@ -14,9 +14,7 @@
 package org.eclipse.bpmn2.modeler.ui.editor;
 
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceSetImpl;
-import org.eclipse.bpmn2.modeler.core.validation.ValidationStatusAdapterFactory;
 import org.eclipse.core.commands.operations.DefaultOperationHistory;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -25,12 +23,10 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
 import org.eclipse.emf.workspace.IWorkspaceCommandStack;
 import org.eclipse.emf.workspace.WorkspaceEditingDomainFactory;
+import org.eclipse.emf.workspace.util.WorkspaceSynchronizer;
 import org.eclipse.graphiti.ui.editor.DefaultUpdateBehavior;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
-import org.eclipse.graphiti.ui.editor.IDiagramEditorInput;
 import org.eclipse.graphiti.ui.internal.editor.GFWorkspaceCommandStackImpl;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.emf.workspace.util.WorkspaceSynchronizer;
 
 /**
  * This overrides the DefaultUpdateBehavior provider class from Graphiti. This

@@ -8,9 +8,21 @@ package org.eclipse.bpmn2.modeler.runtime.activiti.model.util;
 
 import java.util.Map;
 
-import org.eclipse.bpmn2.modeler.runtime.activiti.model.*;
+import org.eclipse.bpmn2.modeler.runtime.activiti.model.BoundaryEvent;
+import org.eclipse.bpmn2.modeler.runtime.activiti.model.CallActivity;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.DocumentRoot;
+import org.eclipse.bpmn2.modeler.runtime.activiti.model.EventType;
+import org.eclipse.bpmn2.modeler.runtime.activiti.model.EventType1;
+import org.eclipse.bpmn2.modeler.runtime.activiti.model.ExecutionListenerType;
+import org.eclipse.bpmn2.modeler.runtime.activiti.model.FieldType;
+import org.eclipse.bpmn2.modeler.runtime.activiti.model.FormPropertyType;
+import org.eclipse.bpmn2.modeler.runtime.activiti.model.HistoryType;
+import org.eclipse.bpmn2.modeler.runtime.activiti.model.InType;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelPackage;
+import org.eclipse.bpmn2.modeler.runtime.activiti.model.OutType;
+import org.eclipse.bpmn2.modeler.runtime.activiti.model.TaskListenerType;
+import org.eclipse.bpmn2.modeler.runtime.activiti.model.TypeType;
+import org.eclipse.bpmn2.modeler.runtime.activiti.model.ValueType;
 import org.eclipse.emf.common.util.DiagnosticChain;
 import org.eclipse.emf.common.util.ResourceLocator;
 import org.eclipse.emf.ecore.EPackage;

@@ -1,6 +1,5 @@
 package org.eclipse.bpmn2.modeler.core.validation;
 
-import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.ecore.EObject;

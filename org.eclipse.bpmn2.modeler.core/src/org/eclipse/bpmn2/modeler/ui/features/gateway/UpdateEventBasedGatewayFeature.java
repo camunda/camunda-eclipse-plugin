@@ -15,7 +15,6 @@ package org.eclipse.bpmn2.modeler.ui.features.gateway;
 import org.eclipse.bpmn2.EventBasedGateway;
 import org.eclipse.bpmn2.EventBasedGatewayType;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
-import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReason;
 import org.eclipse.graphiti.features.context.IUpdateContext;

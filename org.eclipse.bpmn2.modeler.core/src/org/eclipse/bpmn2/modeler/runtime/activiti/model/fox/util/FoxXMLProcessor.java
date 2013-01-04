@@ -9,11 +9,8 @@ package org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.util;
 import java.util.Map;
 
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.FoxPackage;
-
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.resource.Resource;
-
 import org.eclipse.emf.ecore.xmi.util.XMLProcessor;
 
 /**

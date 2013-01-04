@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.eclipse.bpmn2.di.impl.BpmnDiPackageImpl;
-import org.eclipse.bpmn2.di.provider.BpmnDiItemProviderAdapterFactory;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.core.runtime.IAdapterManager;
 import org.eclipse.core.runtime.Platform;

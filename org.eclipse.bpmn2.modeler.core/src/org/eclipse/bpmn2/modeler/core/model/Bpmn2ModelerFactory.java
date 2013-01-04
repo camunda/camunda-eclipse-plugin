@@ -13,21 +13,14 @@
 
 package org.eclipse.bpmn2.modeler.core.model;
 
-import java.util.Map;
-
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.impl.Bpmn2FactoryImpl;
-import org.eclipse.bpmn2.impl.DocumentRootImpl;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelExtensionDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
-import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EcorePackage;
-import org.eclipse.emf.ecore.impl.EStringToStringMapEntryImpl;
-import org.eclipse.emf.ecore.util.EcoreEMap;
 
 /**
  * This Factory will invoke the super factory to create a "bare bones"

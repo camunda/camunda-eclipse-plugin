@@ -13,9 +13,7 @@ package org.eclipse.bpmn2.modeler.core.importer.handlers;
 import java.util.List;
 
 import org.eclipse.bpmn2.DataInputAssociation;
-import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.ItemAwareElement;
-import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.modeler.core.importer.InvalidContentException;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;

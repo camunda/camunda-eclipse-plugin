@@ -14,7 +14,6 @@ package org.eclipse.bpmn2.modeler.ui.features.lane;
 
 import java.io.IOException;
 
-import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.modeler.core.Activator;

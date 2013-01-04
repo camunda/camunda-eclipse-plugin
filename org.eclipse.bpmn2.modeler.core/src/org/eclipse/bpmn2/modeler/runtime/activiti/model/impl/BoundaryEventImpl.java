@@ -8,7 +8,6 @@ package org.eclipse.bpmn2.modeler.runtime.activiti.model.impl;
 
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.BoundaryEvent;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelPackage;
-
 import org.eclipse.emf.ecore.EClass;
 
 /**

@@ -27,8 +27,8 @@
 package org.eclipse.bpmn2.modeler.core.model;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -58,8 +58,6 @@ import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.DcFactory;
 import org.eclipse.dd.dc.DcPackage;
 import org.eclipse.dd.dc.Point;
-import org.eclipse.dd.dc.impl.PointImpl;
-import org.eclipse.dd.di.DiFactory;
 import org.eclipse.dd.di.DiPackage;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.EList;

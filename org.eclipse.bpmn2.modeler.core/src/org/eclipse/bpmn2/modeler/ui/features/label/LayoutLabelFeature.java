@@ -1,7 +1,5 @@
 package org.eclipse.bpmn2.modeler.ui.features.label;
 
-import org.eclipse.bpmn2.Activity;
-import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;

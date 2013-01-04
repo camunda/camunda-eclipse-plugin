@@ -72,7 +72,6 @@ import org.eclipse.bpmn2.modeler.core.importer.util.ErrorLogger;
 import org.eclipse.bpmn2.modeler.core.importer.util.ModelHelper;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.EList;

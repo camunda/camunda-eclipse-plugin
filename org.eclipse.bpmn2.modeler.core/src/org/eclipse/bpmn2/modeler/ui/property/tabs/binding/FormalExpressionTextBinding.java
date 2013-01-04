@@ -27,13 +27,13 @@ public class FormalExpressionTextBinding extends ModelAttributeTextBinding<Forma
 	}
 
 	@Override
-	protected FormalExpression fromString(String expr) {
-		if (expr == null || expr.isEmpty()) {
+	protected FormalExpression fromString(String str) {
+		if (str == null || str.isEmpty()) {
 			return null;
 		}
 		
 		FormalExpression expression = Bpmn2Factory.eINSTANCE.createFormalExpression();
-		expression.setBody(expr);
+		expression.setBody(str);
 		
 		return expression;
 	}
@@ -43,8 +43,8 @@ public class FormalExpressionTextBinding extends ModelAttributeTextBinding<Forma
 		String oldExpr = oldValue.getBody();
 		String newExpr = newValue.getBody();
 		
-		if (oldExpr != null && newExpr != null) {
-			return !newExpr.equals(oldExpr);
+		if (oldExpr != null) {
+			return !oldExpr.equals(newExpr);
 		} else {
 			return oldExpr != newExpr;
 		}

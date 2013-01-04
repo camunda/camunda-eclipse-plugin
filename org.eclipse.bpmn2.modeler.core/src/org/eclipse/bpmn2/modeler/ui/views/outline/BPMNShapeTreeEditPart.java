@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
 
 public class BPMNShapeTreeEditPart extends AbstractGraphicsTreeEditPart {
 

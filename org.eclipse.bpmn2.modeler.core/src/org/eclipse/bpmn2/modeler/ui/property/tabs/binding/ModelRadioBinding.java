@@ -1,25 +1,25 @@
 package org.eclipse.bpmn2.modeler.ui.property.tabs.binding;
 
-import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.ModelButtonBinding;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.swt.SWT;
+import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
+import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Event;
 
-public class ModelRadioBinding extends ModelButtonBinding<Boolean> {
+public abstract class ModelRadioBinding extends ModelButtonBinding<Boolean> {
 
-	public ModelRadioBinding(EObject model, EStructuralFeature feature, Button control) {
+	private EStructuralFeature[] radioFeatures;
+
+	public ModelRadioBinding(EObject model, EStructuralFeature feature, EStructuralFeature[] typeFeatures, Button control) {
 		super(model, feature, control);
+		
+		this.radioFeatures = typeFeatures;
 	}
 
 	@Override
 	public void setViewValue(Boolean value) {
 		control.setSelection(value);
-		
-		if (value) {
-			control.notifyListeners(SWT.Selection, new Event());
-		}
 	}
 
 	@Override
@@ -34,6 +34,50 @@ public class ModelRadioBinding extends ModelButtonBinding<Boolean> {
 
 	@Override
 	public void setModelValue(Boolean value) {
-		// do nothing
+		transactionalHandleFeatureActivation(value ? feature : null);
+	}
+
+	@Override
+	protected void updateViewState(Boolean modelValue) {
+		control.setSelection(modelValue);
+	}
+	
+	// model radio binding ////////////////////////////////
+
+	protected void transactionalHandleFeatureActivation(EStructuralFeature feature) {
+		TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(model);
+		domain.getCommandStack().execute(new ActivateFeatureCommand(domain, model, radioFeatures, feature));
+	}
+
+	protected abstract void activateFeature(EStructuralFeature feature);
+	
+	private class ActivateFeatureCommand extends RecordingCommand {
+		
+		private EObject object;
+		
+		private EStructuralFeature[] allFeatures;
+		private EStructuralFeature activeFeature;
+		
+		public ActivateFeatureCommand(TransactionalEditingDomain domain, EObject object, EStructuralFeature[] allFeatures, EStructuralFeature activeFeature) {
+			super(domain);
+			
+			this.object = object;
+			
+			this.allFeatures = allFeatures;
+			this.activeFeature = activeFeature;
+		}
+		
+		@Override
+		protected void doExecute() {
+			for (EStructuralFeature radioFeature: allFeatures) {
+				if (!radioFeature.equals(activeFeature)) {
+					object.eUnset(radioFeature);
+				}
+			}
+			
+			if (!getModelValue()) {
+				activateFeature(activeFeature);
+			}
+		}
 	}
 }

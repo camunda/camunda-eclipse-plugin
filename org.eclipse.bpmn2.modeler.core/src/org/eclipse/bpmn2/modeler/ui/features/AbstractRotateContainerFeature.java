@@ -13,13 +13,9 @@
 
 package org.eclipse.bpmn2.modeler.ui.features;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.bpmn2.ChoreographyTask;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.Participant;
-import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;

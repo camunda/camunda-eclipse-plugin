@@ -1,7 +1,5 @@
 package org.eclipse.bpmn2.modeler.ui.property.tabs.builder;
 
-import static org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events.RADIO_SELECTION_CHANGED;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,13 +8,8 @@ import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelPackage;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.ModelRadioBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.dialog.ClassChooserDialog;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.radio.Radio.RadioGroup;
-import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events.RadioSelectionChanged;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.transaction.RecordingCommand;
-import org.eclipse.emf.transaction.TransactionalEditingDomain;
-import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -67,40 +60,27 @@ public class ServiceTypeControlsPropertiesBuilder extends AbstractPropertiesBuil
 	@Override
 	public void create() {
 		
-		EStructuralFeature selected = null;
-		
 		for (int i = 0; i < TYPE_NAMES.length; i++) {
 			String name = TYPE_NAMES[i];
 			final EStructuralFeature feature = TYPE_FEATURES[i];
 			
 			final Text text = PropertyUtil.createRadioText(section, parent, name, feature, radioGroup, bo);
-			text.setEnabled(false);
 			
 			featureToInputMap.put(feature, text);
 			
-			if (bo.eIsSet(feature)) {
-				selected = feature;
-			}
-			
 			Button radioControl = radioGroup.getRadioControl(feature);
 			
-			new ModelRadioBinding(bo, feature, radioControl).establish();
+			ModelRadioBinding modelRadioBinding = new ModelRadioBinding(bo, feature, TYPE_FEATURES, radioControl) { 
+				protected void activateFeature(EStructuralFeature feature) {
+					bo.eSet(feature, "");
+				};
+			};
+			
+			modelRadioBinding.establish();
 		}
 
 		final Text classText = featureToInputMap.get(CLASS_FEATURE);
 		addBrowseClassButton(classText);
-		
-//		radioGroup.select(selected, true);
-		
-		radioGroup.addListener(RADIO_SELECTION_CHANGED, new Listener() {
-			
-			@Override
-			public void handleEvent(Event e) {
-				RadioSelectionChanged<EStructuralFeature> event = (RadioSelectionChanged<EStructuralFeature>) e;
-				
-				transactionalHandleTypeChange(event.getOldSelection(), event.getNewSelection());
-			}
-		});
 	}
 
 	private void addBrowseClassButton(final Text classText) {
@@ -148,42 +128,5 @@ public class ServiceTypeControlsPropertiesBuilder extends AbstractPropertiesBuil
 				}
 			}
 		});
-	}
-
-	protected void transactionalHandleTypeChange(EStructuralFeature oldType, EStructuralFeature newType) {
-		TransactionalEditingDomain domain = getTransactionalEditingDomain();
-		domain.getCommandStack().execute(new ToggleFeaturesCommand(domain, bo, oldType, newType));
-	}
-
-	private TransactionalEditingDomain getTransactionalEditingDomain() {
-		return TransactionUtil.getEditingDomain(bo);
-	}
-
-	// model radio binding ////////////////////////////////
-	
-
-	private class ToggleFeaturesCommand extends RecordingCommand {
-		
-		private EObject object;
-		
-		private EStructuralFeature oldFeature;
-		private EStructuralFeature newFeature;
-		
-		public ToggleFeaturesCommand(TransactionalEditingDomain domain, EObject object, EStructuralFeature oldFeature, EStructuralFeature newFeature) {
-			super(domain);
-			
-			this.object = object;
-			
-			this.oldFeature = oldFeature;
-			this.newFeature = newFeature;
-		}
-		
-		@Override
-		protected void doExecute() {
-			if (oldFeature != null) {
-				object.eUnset(oldFeature);
-			}
-			object.eSet(newFeature, "");
-		}
 	}
 }

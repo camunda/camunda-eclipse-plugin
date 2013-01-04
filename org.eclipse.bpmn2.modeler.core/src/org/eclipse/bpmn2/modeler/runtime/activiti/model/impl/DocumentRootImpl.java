@@ -6,8 +6,6 @@
  */
 package org.eclipse.bpmn2.modeler.runtime.activiti.model.impl;
 
-import java.math.BigInteger;
-
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.DocumentRoot;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.ExecutionListenerType;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.FieldType;

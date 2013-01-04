@@ -13,7 +13,6 @@ import org.eclipse.bpmn2.TimerEventDefinition;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.EventTabCompositeFactory;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
 public class BoundaryEventDefinitionComposite extends AbstractPropertiesBuilder<BoundaryEvent> {

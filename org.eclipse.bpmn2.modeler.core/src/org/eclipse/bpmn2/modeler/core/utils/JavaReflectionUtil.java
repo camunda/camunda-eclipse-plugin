@@ -13,12 +13,6 @@
 
 package org.eclipse.bpmn2.modeler.core.utils;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
 
 /**
  * As the name implies, this is a static class of java reflection utilities

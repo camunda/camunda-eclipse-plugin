@@ -31,7 +31,6 @@ import org.eclipse.bpmn2.Conversation;
 import org.eclipse.bpmn2.DataAssociation;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataObject;
-import org.eclipse.bpmn2.DataObjectReference;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataStoreReference;
 import org.eclipse.bpmn2.EndEvent;

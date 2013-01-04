@@ -7,16 +7,14 @@
 package org.eclipse.bpmn2.modeler.runtime.activiti.model.impl;
 
 import java.util.Collection;
+
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.FormPropertyType;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelPackage;
-
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.ValueType;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;

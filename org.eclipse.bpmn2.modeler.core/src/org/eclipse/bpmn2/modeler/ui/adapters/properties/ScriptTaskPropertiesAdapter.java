@@ -14,7 +14,6 @@
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
 import org.eclipse.bpmn2.Bpmn2Package;
-import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.ScriptTask;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
 import org.eclipse.emf.common.notify.AdapterFactory;

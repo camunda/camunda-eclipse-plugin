@@ -16,8 +16,6 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.CallChoreography;
 import org.eclipse.bpmn2.FlowElementsContainer;
-import org.eclipse.bpmn2.SubChoreography;
-import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.features.AbstractUpdateBaseElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.ui.features.activity.AbstractActivityFeatureContainer;

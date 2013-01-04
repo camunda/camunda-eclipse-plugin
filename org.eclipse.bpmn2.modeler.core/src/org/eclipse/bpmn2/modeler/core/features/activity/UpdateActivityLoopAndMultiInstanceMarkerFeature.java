@@ -17,9 +17,6 @@ import org.eclipse.bpmn2.LoopCharacteristics;
 import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
 import org.eclipse.bpmn2.StandardLoopCharacteristics;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
-import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Loop;
-import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.MultiInstance;
-import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 

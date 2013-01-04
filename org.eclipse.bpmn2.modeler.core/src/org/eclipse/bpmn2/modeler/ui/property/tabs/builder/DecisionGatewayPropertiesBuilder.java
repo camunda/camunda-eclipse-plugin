@@ -3,13 +3,11 @@ package org.eclipse.bpmn2.modeler.ui.property.tabs.builder;
 import java.util.List;
 
 import org.eclipse.bpmn2.Bpmn2Package;
-import org.eclipse.bpmn2.Error;
 import org.eclipse.bpmn2.ExclusiveGateway;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.InclusiveGateway;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.BaseElementIdComboBinding;
-import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.ModelViewBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.change.EAttributeChangeSupport;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.change.EObjectChangeSupport.ModelChangedEvent;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events;

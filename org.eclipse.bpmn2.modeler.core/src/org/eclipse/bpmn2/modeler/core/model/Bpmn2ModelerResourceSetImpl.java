@@ -278,9 +278,7 @@ public class Bpmn2ModelerResourceSetImpl extends ResourceSetImpl implements IRes
 	/**
 	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
 	 */
-	public void resourceChanged (IResourceChangeEvent event) {
-		
-		// System.out.println("IResourceChangeEvent: " + event + "; " + event.getType()  );				
+	public void resourceChanged (IResourceChangeEvent event) {		
 		IResourceDelta[] deltas = event.getDelta().getAffectedChildren( IResourceDelta.CHANGED | IResourceDelta.REMOVED, IResource.FILE );	
 		processDeltas ( deltas );
 	}
@@ -342,7 +340,7 @@ public class Bpmn2ModelerResourceSetImpl extends ResourceSetImpl implements IRes
 		// System.out.println("    ResourceURI: " + uri );		
 		URIConverter theURIConverter = getURIConverter();
 		URI normalizedURI = theURIConverter.normalize(uri);
-				
+		
 		if (uriResourceMap != null) {
 			uriResourceMap.remove(uri);
 			uriResourceMap.remove(normalizedURI);

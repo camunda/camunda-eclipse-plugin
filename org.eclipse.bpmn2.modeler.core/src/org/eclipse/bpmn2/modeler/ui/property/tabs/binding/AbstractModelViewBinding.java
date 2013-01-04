@@ -1,9 +1,10 @@
 package org.eclipse.bpmn2.modeler.ui.property.tabs.binding;
 
-import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * Feature agnostic model view binding
@@ -13,7 +14,7 @@ import org.eclipse.emf.transaction.util.TransactionUtil;
  * @param <T> the control type to bind
  * @param <V> the model value type
  */
-public abstract class AbstractModelViewBinding<T, V> {
+public abstract class AbstractModelViewBinding<T extends Control, V> {
 
 	/**
 	 * The model
@@ -58,6 +59,18 @@ public abstract class AbstractModelViewBinding<T, V> {
 	public abstract void setModelValue(V value);
 	
 	/**
+	 * Called regardless of whether an actual view update took place, 
+	 * the control state can be updated. 
+	 * 
+	 * Subclasses may override this method to perform something useful.
+	 * 
+	 * @param modelValue
+	 */
+	protected void updateViewState(V modelValue) {
+		
+	}
+	
+	/**
 	 * Returns the editing domain for the managed model
 	 * 
 	 * @param matchModel
@@ -72,11 +85,22 @@ public abstract class AbstractModelViewBinding<T, V> {
 	 * 
 	 */
 	public void establish() {
-		// update view value with latest value from model
-		setViewValue(getModelValue());
-		
 		establishModelViewBinding();
 		establishViewModelBinding();
+		
+		Display.getCurrent().asyncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				if (!control.isDisposed()) {
+					// update view value with latest value from model
+					V modelValue = getModelValue();
+					setViewValue(modelValue);
+					
+					updateViewState(modelValue);
+				}
+			}
+		});
 	}
 
 	/**

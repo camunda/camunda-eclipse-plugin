@@ -1,7 +1,7 @@
 package org.eclipse.bpmn2.modeler.core.layout;
 
-import org.eclipse.bpmn2.modeler.core.layout.nnew.LayoutContext;
 import org.eclipse.bpmn2.modeler.core.layout.nnew.DefaultLayoutStrategy;
+import org.eclipse.bpmn2.modeler.core.layout.nnew.LayoutContext;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 
@@ -32,7 +32,7 @@ public class ConnectionReconnectionContext {
 		
 		FreeFormConnection freeFormConnection = (FreeFormConnection) connection;
 		
-		System.out.println("Reconnect " + freeFormConnection);
+//		System.out.println("Reconnect " + freeFormConnection);
 		
 		LayoutContext layoutingContext = new DefaultLayoutStrategy().createLayoutingContext(freeFormConnection);
 		
@@ -40,12 +40,12 @@ public class ConnectionReconnectionContext {
 		
 		if (!forceLayout && layoutingContext.isLayouted()) {
 			layouted = layoutingContext.repair();
-			System.out.println("[layout] repaired ? " + layouted);
+//			System.out.println("[layout] repaired ? " + layouted);
 		}
 		
 		if (!layouted) {
 			layoutingContext.layout();
-			System.out.println("[layout] layouted new");
+//			System.out.println("[layout] layouted new");
 		}
 	}
 

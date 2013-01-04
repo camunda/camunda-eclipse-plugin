@@ -16,10 +16,7 @@ package org.eclipse.bpmn2.modeler.core.runtime;
 import java.lang.reflect.Constructor;
 
 import org.eclipse.bpmn2.modeler.core.Activator;
-import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.features.FeatureContainer;
-import org.eclipse.emf.common.notify.AdapterFactory;
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * @author Bob Brodt

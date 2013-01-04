@@ -13,15 +13,14 @@
 
 package org.eclipse.bpmn2.modeler.ui.adapters.properties;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
 import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
 import org.eclipse.bpmn2.Process;
-import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.eclipse.bpmn2.modeler.core.adapters.FeatureDescriptor;
 import org.eclipse.emf.common.notify.AdapterFactory;

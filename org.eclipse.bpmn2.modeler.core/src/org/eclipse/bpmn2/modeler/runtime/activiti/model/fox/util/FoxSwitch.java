@@ -6,11 +6,10 @@
  */
 package org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.util;
 
-import org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.*;
-
+import org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.FailedJobRetryTimeCycleType;
+import org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.FoxPackage;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.util.Switch;
 
 /**

@@ -12,16 +12,11 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.editor;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.BasicDiagnostic;
 import org.eclipse.emf.transaction.ExceptionHandler;
-import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalCommandStack;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.TransactionalEditingDomainEvent;

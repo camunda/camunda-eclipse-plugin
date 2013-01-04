@@ -33,7 +33,6 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.impl.ResourceFactoryImpl;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @deprecated We are not using the target runtime concept anymore, 
