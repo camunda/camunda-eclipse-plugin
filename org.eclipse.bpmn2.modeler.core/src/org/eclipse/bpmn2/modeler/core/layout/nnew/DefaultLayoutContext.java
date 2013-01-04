@@ -19,6 +19,7 @@ import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
+import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
@@ -40,7 +41,7 @@ public class DefaultLayoutContext implements LayoutContext {
 	private IRectangle endShapeBounds;
 	
 	private List<Point> connectionPoints;
-	
+
 	public DefaultLayoutContext(FreeFormConnection connection) {
 		this.connection = connection;
 		
@@ -137,27 +138,35 @@ public class DefaultLayoutContext implements LayoutContext {
 		List<ConnectionPart> parts = connectionParts;
 
 		boolean repaired = true;
+		ConnectionPartLayoutResult firstPartLayout = null;
+		
 		if (parts.get(0).needsLayout()) {
+			firstPartLayout = layoutConnectionParts(parts, true);
+			
 			repaired = repaired && 
-				layoutConnectionParts(parts, true);
-
-			repaired = repaired && 
-				fixOptimalAnchor(startShape, startAnchor, connectionPoints.get(1));
+					firstPartLayout.partsLayouted;
 		}
 		
+		repaired = repaired && 
+				fixOptimalAnchor(firstPartLayout, startShape, startAnchor, connectionPoints.get(1));
+		
+		ConnectionPartLayoutResult lastPartLayout = null;
+		
 		if (parts.get(parts.size() - 1).needsLayout()) {
-			repaired = repaired && layoutConnectionParts(parts, false);
+			lastPartLayout = layoutConnectionParts(parts, false);
 			
-			repaired = repaired &&
-					fixOptimalAnchor(endShape, endAnchor, connectionPoints.get(connectionPoints.size() - 2));
+			repaired = repaired && lastPartLayout.partsLayouted;
 		}
+		
+		repaired = repaired &&
+				fixOptimalAnchor(lastPartLayout, endShape, endAnchor, connectionPoints.get(connectionPoints.size() - 2));
 		
 		return repaired && isConnectionRepaired();
 	}
 
-	private boolean fixOptimalAnchor(Shape targetShape, Anchor targetShapeAnchor, Point firstBendpoint) {
-		
-		Sector requiredAnchorSector = LayoutUtil.getSector(location(firstBendpoint), LayoutUtil.getShapeCenter(targetShape));
+	private boolean fixOptimalAnchor(ConnectionPartLayoutResult partLayout, Shape targetShape, Anchor targetShapeAnchor, Point firstBendpoint) {
+		SectorAdaption sectorAdaption = adaptVerticalRepairSector(LayoutUtil.getSector(location(firstBendpoint), LayoutUtil.getShapeCenter(targetShape)), partLayout);
+		Sector requiredAnchorSector = sectorAdaption.getResultSector();
 	
 		if (requiredAnchorSector == Sector.UNDEFINED) {
 			return false;
@@ -181,10 +190,104 @@ public class DefaultLayoutContext implements LayoutContext {
 			connection.setStart(anchor);
 		}
 		
+		if (sectorAdaption.adapted) { // we adapted the anchor, we need to update the repair candidate
+			FixPointAnchor fixPointAnchor = (FixPointAnchor) anchor;
+			partLayout.getRepairCandidate().setX(LayoutUtil.getAnchorLocation(fixPointAnchor).getX());
+		}
+		
 		return true;
 	}
+	
+	private class SectorAdaption {
+		final Boolean adapted;
+		final Sector resultSector;
+		
+		public SectorAdaption(Boolean adapted, Sector resultSector) {
+			super();
+			this.adapted = adapted;
+			this.resultSector = resultSector;
+		}
+		
+		public Boolean getAdapted() {
+			return adapted;
+		}
+		public Sector getResultSector() {
+			return resultSector;
+		}
+	}
 
-	protected boolean layoutConnectionParts(List<ConnectionPart> parts, boolean start) {
+	private SectorAdaption adaptVerticalRepairSector(Sector sector, ConnectionPartLayoutResult partLayout) {
+		if (partLayout == null) {
+			return new SectorAdaption(false, sector);
+		}
+		
+		if (partLayout.partsLayouted && partLayout.getDirection() == Direction.VERTICAL) {
+			switch (sector) {
+				case TOP_LEFT:
+				case TOP_RIGHT:
+					return new SectorAdaption(true, sector.TOP);
+				case BOTTOM_LEFT:
+				case BOTTOM_RIGHT:
+					return new SectorAdaption(true, sector.BOTTOM);
+			}
+		}
+
+		return new SectorAdaption(false, sector);
+	}
+	
+	private class ConnectionPartLayoutResult {
+		final private Direction direction;
+		final private Boolean partsLayouted;
+		final private List<ConnectionPart> parts;
+		final private Point repairCandidate;
+		final private Point reference;
+		final private Boolean start;
+		
+		public ConnectionPartLayoutResult(List<ConnectionPart> parts, Boolean start, Boolean partsLayouted) {
+			this.partsLayouted = partsLayouted;
+			this.direction = null;
+			this.parts = parts;
+			this.repairCandidate = null;
+			this.reference = null;
+			this.start = start;
+		}
+		
+		public ConnectionPartLayoutResult(List<ConnectionPart> parts, Boolean start, Boolean partsLayouted, Direction direction, Point repairCandidate, Point reference) {
+			this.direction = direction;
+			this.partsLayouted = partsLayouted;
+			this.parts = parts;
+			this.repairCandidate = repairCandidate;
+			this.reference = reference;
+			this.start = start;
+		}
+		
+		public Direction getDirection() {
+			return direction;
+		}
+		
+		public Boolean getPartsLayouted() {
+			return partsLayouted;
+		}
+		
+		public List<ConnectionPart> getParts() {
+			return parts;
+		}
+		
+		public Point getRepairCandidate() {
+			return repairCandidate;
+		}
+		
+		public Point getReference() {
+			return reference;
+		}
+		
+		public Boolean getStart() {
+			return start;
+		}
+		
+	}
+
+	protected ConnectionPartLayoutResult layoutConnectionParts(List<ConnectionPart> parts, boolean start) {
 		ConnectionPart next;
 		ConnectionPart part;
 		
@@ -197,7 +300,7 @@ public class DefaultLayoutContext implements LayoutContext {
 		}
 
 		if (next.needsLayout()) {
-			return true;
+			return new ConnectionPartLayoutResult(parts, start, true);
 		}
 		
 		Direction direction = part.computeDirection(next);
@@ -214,7 +317,7 @@ public class DefaultLayoutContext implements LayoutContext {
 			break;
 		}
 		
-		return true;
+		return new ConnectionPartLayoutResult(parts, start, true, direction, repairCandidate, reference);
 	}
 
 	protected boolean isConnectionRepaired() {

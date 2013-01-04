@@ -68,6 +68,24 @@ public class FreeFormConnectionAssert extends AbstractAssert<FreeFormConnectionA
 		return myself;
 	}
 	
+	/**
+	 * asserts that there is a bendpoint with the given index and coordinates
+	 *  
+	 * @param bendpointIndex
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public FreeFormConnectionAssert hasBendpoint(int bendpointIndex, int x, int y) {
+		EList<Point> bendpoints = actual.getBendpoints();
+		
+		Point bendpoint = bendpoints.get(bendpointIndex);
+		Assertions.assertThat(bendpoint.getX()).isEqualTo(x);
+		Assertions.assertThat(bendpoint.getY()).isEqualTo(y);
+		
+		return myself;
+	}
+	
 	private Point getPosition(Anchor anchor) {
 		ILocation location = Graphiti.getPeLayoutService().getLocationRelativeToDiagram(anchor);
 		return Graphiti.getGaCreateService().createPoint(location.getX(), location.getY());
