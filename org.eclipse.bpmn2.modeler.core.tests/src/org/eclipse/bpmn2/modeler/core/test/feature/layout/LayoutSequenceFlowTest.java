@@ -88,28 +88,6 @@ public class LayoutSequenceFlowTest extends AbstractFeatureTest {
 		
 		assertThat(task2.getAnchors().size()).isEqualTo(5); 
 	}
-	
-	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/LayoutSequenceFlowTest.testBaseHorizontal.bpmn")
-	public void testMoveLayoutedHorizontalNonBreaking() {
-		// given
-		
-		FreeFormConnection sequenceFlow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
-		Shape userTask1 = Util.findShapeByBusinessObjectId(diagram, "UserTask_1");
-		
-		List<Point> oldBendpoints = getBendpoints(sequenceFlow1);
-		
-		// when
-		move(userTask1, getDiagramTypeProvider())
-			.by(10, 0)
-			.execute();
-
-		List<Point> newBendpoints = getBendpoints(sequenceFlow1);
-
-		// then
-		// bendpoints should stay as they are (no change)
-		assertPointsEqual(oldBendpoints, newBendpoints);
-	}
 
 	@Test
 	@DiagramResource
@@ -149,23 +127,52 @@ public class LayoutSequenceFlowTest extends AbstractFeatureTest {
 	public void testPoolMessageFlowAnchorFixAfterMove() {
 		FreeFormConnection messageFlow = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "MessageFlow_1");
 		
-//		Shape task1Shape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
 		Shape participant2Shape = Util.findShapeByBusinessObjectId(diagram, "Participant_2");
 		
 		MoveParticipantOperation.move(participant2Shape, getDiagramTypeProvider())
 			.by(20, 10)
 			.execute();
 		
-		System.out.println(LayoutUtil.getAbsoluteRectangle(participant2Shape));
-		
-		System.out.println(getConnectionPoints(messageFlow));
-		
 		assertThat(messageFlow).anchorPointOn(participant2Shape).isAboveShape();
 	}
 	
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/LayoutSequenceFlowTest.testBaseHorizontal.bpmn")
-	public void testMoveLayoutedVerticalBreaking() {
+	public void testMoveLayoutedHorizontalNoAdjust() {
+		testMoveNonBreaking(point(10, 0));
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/LayoutSequenceFlowTest.testBaseVertical.bpmn")
+	public void testMoveLayoutedVerticalNoAdjust() {
+		testMoveNonBreaking(point(0, 10));
+	}
+
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/LayoutSequenceFlowTest.testBaseVertical.bpmn")
+	public void testMoveLayoutedHorizontalAdjust() {
+		testMoveBreaking(point(10, 0), point(-10, 0));
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/LayoutSequenceFlowTest.testBaseHorizontal.bpmn")
+	public void testMoveLayoutedVerticalAdjust() {
+		testMoveBreaking(point(0, 10), point(0, -10));
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/LayoutSequenceFlowTest.testBaseVertical.bpmn")
+	public void testMoveLayoutedVerticalBothAdjust() {
+		testMoveBreaking(point(10, 10), point(-10, 0));
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/LayoutSequenceFlowTest.testBaseHorizontal.bpmn")
+	public void testMoveLayoutedHorizontalBothAdjust() {
+		testMoveBreaking(point(10, 10), point(0, -10));
+	}
+	
+	private void testMoveNonBreaking(Point movement) {
 		// given
 		
 		FreeFormConnection sequenceFlow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
@@ -175,7 +182,27 @@ public class LayoutSequenceFlowTest extends AbstractFeatureTest {
 		
 		// when
 		move(userTask1, getDiagramTypeProvider())
-			.by(0, 10)
+			.by(movement.getX(), movement.getY())
+			.execute();
+
+		List<Point> newBendpoints = getBendpoints(sequenceFlow1);
+
+		// then
+		// bendpoints should stay as they are (no change)
+		assertPointsEqual(oldBendpoints, newBendpoints);
+	}
+
+	private void testMoveBreaking(Point movement, Point expectedBendpointCorrection) {
+		// given
+		
+		FreeFormConnection sequenceFlow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		Shape userTask1 = Util.findShapeByBusinessObjectId(diagram, "UserTask_1");
+		
+		List<Point> oldBendpoints = getBendpoints(sequenceFlow1);
+		
+		// when
+		move(userTask1, getDiagramTypeProvider())
+			.by(movement.getX(), movement.getY())
 			.execute();
 
 		List<Point> newBendpoints = getBendpoints(sequenceFlow1);
@@ -183,13 +210,13 @@ public class LayoutSequenceFlowTest extends AbstractFeatureTest {
 		// then
 		// first bendpoint should stay as it is 
 		// AND 
-		// second bendpoint should be adjusted to new y-position (10)
+		// second bendpoint should be adjusted to new position
 
 		assertThat(oldBendpoints.get(0)).isEqualTo(newBendpoints.get(0));
 		
 		Point diffBendpoint1 = diffPoints(oldBendpoints.get(1), newBendpoints.get(1));
 		
-		assertThat(diffBendpoint1).isEqualTo(point(0, -10));
+		assertThat(diffBendpoint1).isEqualTo(expectedBendpointCorrection);
 	}
 	
 	protected Point diffPoints(Point p1, Point p2) {
