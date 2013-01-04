@@ -19,7 +19,7 @@ public abstract class ModelTextBinding<V> extends ModelViewBinding<Text, V> {
 
 	protected boolean disableOnNull = false;
 	protected boolean viewUpdate = false;
-	private boolean focusOnNonNull;
+	private boolean focusOnNonNull = false;
 
 	public ModelTextBinding(EObject model, EStructuralFeature feature, Text control) {
 		super(model, feature, control);

@@ -86,6 +86,8 @@ public abstract class AbstractTabSection extends GFPropertySection implements IT
 		Composite oldParent = parent;
 		oldParent.dispose();
 		
+		parent = getWidgetFactory().createFlatFormComposite(parentsParent);
+		
 		parent.setLayout(new GridLayout(1, false));
 		parent.setLayoutData(new GridData(SWT.FILL, GridData.CENTER, true, false));
 	}
@@ -93,8 +95,9 @@ public abstract class AbstractTabSection extends GFPropertySection implements IT
 	@Override
 	public void refresh() {
 		resetParentComposite();
+		
 		createPropertiesComposite(parent, page);
-
+		
 		redraw(); // otherwise the composite will not properly redrawn after saving some changes, SWT sucks
 	}
 	
