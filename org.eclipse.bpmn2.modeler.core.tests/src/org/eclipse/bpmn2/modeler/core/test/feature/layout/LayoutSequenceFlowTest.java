@@ -125,6 +125,24 @@ public class LayoutSequenceFlowTest extends AbstractFeatureTest {
 		
 		assertThat(sequenceFlow1).anchorPointOn(userTask1Shape).isAboveShape();
 	}
+	
+	/**
+	 * Asserts that HEMERA-3390 is fixed. The Anchor calculation for repaired connection parts was wrong
+	 * when manually moving anchors .
+	 */
+	@Test
+	@DiagramResource
+	public void testManualChopAnchorFixAfterMove() {
+		FreeFormConnection sequenceFlow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		Shape endEvent1Shape = Util.findShapeByBusinessObjectId(diagram, "EndEvent_1");
+		
+		move(endEvent1Shape, getDiagramTypeProvider())
+			.by(20, 0)
+			.execute();
+		
+		assertThat(sequenceFlow1).anchorPointOn(endEvent1Shape).isAboveShape();
+		assertThat(sequenceFlow1).hasBendpoint(1, 488, 308);
+	}
 
 	@Test
 	@DiagramResource
