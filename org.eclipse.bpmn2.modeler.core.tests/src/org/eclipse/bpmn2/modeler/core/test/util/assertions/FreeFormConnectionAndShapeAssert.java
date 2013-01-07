@@ -86,6 +86,16 @@ public class FreeFormConnectionAndShapeAssert extends AbstractAssert<FreeFormCon
 		return myself;
 	}
 
+	public FreeFormConnectionAndShapeAssert isAt(Sector expectedSector) {
+
+		Anchor anchor = getAnchor();
+		Sector sector = getVisibleAnchorSector(anchor);
+
+		assertExpectedSector(sector, expectedSector);
+		
+		return myself;
+	}
+	
 	public FreeFormConnectionAndShapeAssert isBeneathShape() {
 
 		Anchor anchor = getAnchor();

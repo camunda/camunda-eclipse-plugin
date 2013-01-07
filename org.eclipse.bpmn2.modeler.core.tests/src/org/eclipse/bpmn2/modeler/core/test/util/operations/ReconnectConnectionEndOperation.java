@@ -50,7 +50,7 @@ public class ReconnectConnectionEndOperation extends ConnectionOperation<Reconne
 		return this;
 	}
 	
-	public static ReconnectConnectionEndOperation reconnect(Connection connection, IDiagramTypeProvider diagramTypeProvider) {
+	public static ReconnectConnectionEndOperation reconnectEnd(Connection connection, IDiagramTypeProvider diagramTypeProvider) {
 		return new ReconnectConnectionEndOperation(connection, diagramTypeProvider);
 	}
 }

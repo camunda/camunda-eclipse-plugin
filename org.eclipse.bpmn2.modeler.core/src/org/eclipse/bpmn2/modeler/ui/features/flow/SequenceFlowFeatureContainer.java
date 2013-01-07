@@ -17,22 +17,25 @@ import java.util.Iterator;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.ComplexGateway;
+import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.ExclusiveGateway;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.InclusiveGateway;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.SequenceFlow;
+import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementConnectionFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractAddFlowFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractReconnectFlowFeature;
+import org.eclipse.bpmn2.modeler.core.layout.ConnectionService;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
@@ -51,6 +54,7 @@ import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.ICreateConnectionContext;
 import org.eclipse.graphiti.features.context.IReconnectionContext;
 import org.eclipse.graphiti.features.context.IUpdateContext;
+import org.eclipse.graphiti.features.context.impl.ReconnectionContext;
 import org.eclipse.graphiti.features.impl.AbstractUpdateFeature;
 import org.eclipse.graphiti.features.impl.Reason;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
@@ -58,6 +62,7 @@ import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.styles.Color;
 import org.eclipse.graphiti.mm.algorithms.styles.LineStyle;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
+import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -339,6 +344,34 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 		}
 
 		@Override
+		public boolean canReconnect(IReconnectionContext context) {
+			if (!super.canReconnect(context)) {
+				return false;
+			}
+			
+			AnchorContainer anchorContainer = context.getNewAnchor().getParent();
+			BaseElement targetElement = BusinessObjectUtil.getFirstBaseElement(anchorContainer);
+			
+			String reconnectType = context.getReconnectType();
+			
+			if (reconnectType.equals(ReconnectionContext.RECONNECT_TARGET)) {
+				if (targetElement instanceof StartEvent || 
+					targetElement instanceof BoundaryEvent) {
+				
+					return false;
+				}
+			} else
+			if (reconnectType.equals(ReconnectionContext.RECONNECT_SOURCE)) {
+				if (targetElement instanceof EndEvent) {
+				
+					return false;
+				}
+			}
+			
+			return true;
+		}
+		
+		@Override
 		protected Class<? extends EObject> getTargetClass() {
 			return FlowNode.class;
 		}
@@ -352,15 +385,7 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 		public void postReconnect(IReconnectionContext context) {
 			super.postReconnect(context);
 			
-			Anchor newAnchor = context.getNewAnchor();
-			
-			for (Connection connection : newAnchor.getOutgoingConnections()) {
-				DIUtils.updateDIEdge(connection);
-			}
-			
-			for (Connection connection : newAnchor.getIncomingConnections()) {
-				DIUtils.updateDIEdge(connection);
-			}
+			ConnectionService.reconnectConnectionAfterConnectionEndChange(context.getConnection());
 			
 			cleanupOldAnchor(context.getOldAnchor());
 		}
@@ -376,7 +401,12 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 			}
 			
 			if (!LayoutUtil.isDefaultAnchor(oldAnchor)) {
-				oldAnchor.getParent().getAnchors().remove(oldAnchor);
+				
+				if (oldAnchor.getIncomingConnections().isEmpty() && 
+					oldAnchor.getOutgoingConnections().isEmpty()) {
+				
+					oldAnchor.getParent().getAnchors().remove(oldAnchor);
+				}
 			}
 		}
 	}
@@ -385,6 +415,7 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 		if (node instanceof Activity) {
 			return true;
 		}
+		
 		if (node instanceof ExclusiveGateway || node instanceof InclusiveGateway || node instanceof ComplexGateway) {
 			return true;
 		}

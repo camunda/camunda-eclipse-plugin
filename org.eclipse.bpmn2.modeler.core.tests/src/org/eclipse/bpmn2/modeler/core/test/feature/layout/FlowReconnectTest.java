@@ -2,7 +2,7 @@ package org.eclipse.bpmn2.modeler.core.test.feature.layout;
 
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.location;
 import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveFlowElementOperation.move;
-import static org.eclipse.bpmn2.modeler.core.test.util.operations.ReconnectConnectionEndOperation.reconnect;
+import static org.eclipse.bpmn2.modeler.core.test.util.operations.ReconnectConnectionEndOperation.reconnectEnd;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import java.util.List;
@@ -40,7 +40,7 @@ public class FlowReconnectTest extends AbstractFeatureTest {
 		
 		BPMNEdge sequenceFlowBPMNEdge = BusinessObjectUtil.getFirstElementOfType(connection, BPMNEdge.class);
 		
-		reconnect(connection, getDiagramTypeProvider())
+		reconnectEnd(connection, getDiagramTypeProvider())
 			.toElement(task2)
 			.execute();
 		
@@ -77,7 +77,7 @@ public class FlowReconnectTest extends AbstractFeatureTest {
 			.toContainer(lane2Shape)
 			.execute();
 		
-		reconnect(connection, getDiagramTypeProvider())
+		reconnectEnd(connection, getDiagramTypeProvider())
 		.toElement(serviceTask1)
 		.execute();
 		

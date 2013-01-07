@@ -10,15 +10,19 @@ public class ConnectionReconnectionContext {
 	private Connection connection;
 	
 	private boolean forceLayout;
+
+	private boolean relayoutOnRepairFail;
 	
 	public ConnectionReconnectionContext(Connection connection) {
-		this(connection, false);
+		this(connection, false, true);
 	}
 	
-	public ConnectionReconnectionContext(Connection connection, boolean forceLayout) {
+	public ConnectionReconnectionContext(Connection connection, boolean forceLayout, boolean relayoutOnRepairFail) {
 		
 		this.connection = connection;
 		this.forceLayout = forceLayout;
+		
+		this.relayoutOnRepairFail = relayoutOnRepairFail;
 	}
 
 	public void reconnect() {
@@ -41,6 +45,9 @@ public class ConnectionReconnectionContext {
 		if (!forceLayout && layoutingContext.isLayouted()) {
 			layouted = layoutingContext.repair();
 			System.out.println("[layout] repaired ? " + layouted);
+			if (!layouted && !relayoutOnRepairFail) {
+				return;
+			}
 		}
 		
 		if (!layouted) {

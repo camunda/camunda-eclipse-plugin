@@ -23,21 +23,25 @@ public class ConnectionService {
 	}
 
 	public static void reconnectConnectionAfterCreate(Connection connection) {
-		reconnectConnection(connection, true);
+		reconnectConnection(connection, true, true);
 	}
 
 	public static void reconnectConnectionAfterMove(Connection connection) {
-		reconnectConnection(connection, false);
+		reconnectConnection(connection, false, true);
 	}
 	
-	protected static void reconnectConnection(Connection connection, boolean forceLayout) {
+	public static void reconnectConnectionAfterConnectionEndChange(Connection connection) {
+		reconnectConnection(connection, false, false);
+	}
+	
+	protected static void reconnectConnection(Connection connection, boolean forceLayout, boolean relayoutOnRepairFail) {
 	
 		// check if new anchor point is neccessary
 		AnchorContainer startAnchorContainer = connection.getStart().getParent();
 		AnchorContainer endAnchorContainer = connection.getEnd().getParent();
 		
 		if (startAnchorContainer instanceof Shape && endAnchorContainer instanceof Shape) {
-			new ConnectionReconnectionContext(connection, forceLayout).reconnect();
+			new ConnectionReconnectionContext(connection, forceLayout, relayoutOnRepairFail).reconnect();
 		} else {
 			throw new LayoutingException("Cannot handle connection: " + connection);
 		}
