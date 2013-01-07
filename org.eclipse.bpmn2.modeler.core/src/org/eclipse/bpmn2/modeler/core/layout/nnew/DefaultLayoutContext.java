@@ -10,11 +10,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.bpmn2.modeler.core.layout.AnchorPointStrategy;
+import org.eclipse.bpmn2.modeler.core.layout.Docking;
+import org.eclipse.bpmn2.modeler.core.layout.DockingSwitch;
 import org.eclipse.bpmn2.modeler.core.layout.BendpointStrategy;
 import org.eclipse.bpmn2.modeler.core.layout.LayoutStrategy;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
+import org.eclipse.bpmn2.modeler.core.utils.Tuple;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
@@ -47,12 +50,9 @@ public class DefaultLayoutContext implements LayoutContext {
 		
 		initSourceAndTarget(connection.getStart(), connection.getEnd());
 		
-		computeConnectionPoints();
-		
-		// compute connection parts
-		computeConnectionParts();
+		recomputePointsAndParts();
 	}
-	
+
 	private void initSourceAndTarget(Anchor start, Anchor end) {
 		startAnchor = start;
 		endAnchor = end;
@@ -136,160 +136,73 @@ public class DefaultLayoutContext implements LayoutContext {
 	@Override
 	public boolean repair() {
 		List<ConnectionPart> parts = connectionParts;
-
+		
 		boolean repaired = true;
-		ConnectionPartLayoutResult firstPartLayout = null;
 		
 		if (parts.get(0).needsLayout()) {
-			firstPartLayout = layoutConnectionParts(parts, true);
-			
-			repaired = repaired && 
-					firstPartLayout.partsLayouted;
+			repaired = repaired && layoutConnectionParts(parts, true);
 		}
 		
-		repaired = repaired && 
-				fixOptimalAnchor(firstPartLayout, startShape, startAnchor, connectionPoints.get(1));
-		
-		ConnectionPartLayoutResult lastPartLayout = null;
+		repaired = repaired && fixAnchor(startShape, startAnchor, true);
 		
 		if (parts.get(parts.size() - 1).needsLayout()) {
-			lastPartLayout = layoutConnectionParts(parts, false);
-			
-			repaired = repaired && lastPartLayout.partsLayouted;
+			repaired = repaired && layoutConnectionParts(parts, false);
 		}
 		
-		repaired = repaired &&
-				fixOptimalAnchor(lastPartLayout, endShape, endAnchor, connectionPoints.get(connectionPoints.size() - 2));
+		repaired = repaired && fixAnchor(endShape, endAnchor, false);
 		
 		return repaired && isConnectionRepaired();
 	}
 
-	private boolean fixOptimalAnchor(ConnectionPartLayoutResult partLayout, Shape targetShape, Anchor targetShapeAnchor, Point firstBendpoint) {
-		SectorAdaption sectorAdaption = adaptVerticalRepairSector(LayoutUtil.getSector(location(firstBendpoint), LayoutUtil.getShapeCenter(targetShape)), partLayout);
-		Sector requiredAnchorSector = sectorAdaption.getResultSector();
-	
-		if (requiredAnchorSector == Sector.UNDEFINED) {
-			return false;
-		}
+	private boolean fixAnchor(Shape targetShape, Anchor targetShapeAnchor, boolean start) {
+		
+		// TODO: Do not blindly unset custom anchors
+		// instead try to retain them
+		
+		Anchor centerAnchor = LayoutUtil.getCenterAnchor(targetShape);
 		
 		// no fix required for center anchor
-		if (targetShapeAnchor.equals(LayoutUtil.getCenterAnchor(targetShape))) {
+		if (targetShapeAnchor.equals(centerAnchor)) {
 			return true;
 		}
 		
-		// check if fix for boundary anchors is required 
-		Anchor anchor = AnchorUtil.getAnchor(targetShape, anchorLocation(requiredAnchorSector));
-		
-		if (anchor == null) {
-			throw new IllegalStateException("Anchor is null");
-		}
-		
-		if (connection.getEnd().equals(targetShapeAnchor)) {
-			connection.setEnd(anchor);
+		// set center anchor
+			
+		if (start) {
+			setNewStartAnchor(centerAnchor);
 		} else {
-			connection.setStart(anchor);
+			setNewEndAnchor(centerAnchor);
 		}
 		
-		if (sectorAdaption.adapted) { // we adapted the anchor, we need to update the repair candidate
-			FixPointAnchor fixPointAnchor = (FixPointAnchor) anchor;
-			partLayout.getRepairCandidate().setX(LayoutUtil.getAnchorLocation(fixPointAnchor).getX());
-		}
-		
-		return true;
+		return repair();
 	}
 	
-	private class SectorAdaption {
-		final Boolean adapted;
-		final Sector resultSector;
-		
-		public SectorAdaption(Boolean adapted, Sector resultSector) {
-			super();
-			this.adapted = adapted;
-			this.resultSector = resultSector;
-		}
-		
-		public Boolean getAdapted() {
-			return adapted;
-		}
-		public Sector getResultSector() {
-			return resultSector;
-		}
-	}
-
-	private SectorAdaption adaptVerticalRepairSector(Sector sector, ConnectionPartLayoutResult partLayout) {
-		if (partLayout == null) {
-			return new SectorAdaption(false, sector);
-		}
-		
-		if (partLayout.partsLayouted && partLayout.getDirection() == Direction.VERTICAL) {
-			switch (sector) {
-				case TOP_LEFT:
-				case TOP_RIGHT:
-					return new SectorAdaption(true, sector.TOP);
-				case BOTTOM_LEFT:
-				case BOTTOM_RIGHT:
-					return new SectorAdaption(true, sector.BOTTOM);
-			}
-		}
-
-		return new SectorAdaption(false, sector);
+	private void recomputePointsAndParts() {
+		computeConnectionPoints();
+		computeConnectionParts();
 	}
 	
-	private class ConnectionPartLayoutResult {
-		final private Direction direction;
-		final private Boolean partsLayouted;
-		final private List<ConnectionPart> parts;
-		final private Point repairCandidate;
-		final private Point reference;
-		final private Boolean start;
+	private void setNewStartAnchor(Anchor anchor) {
+		this.startAnchor = anchor;
+		this.connection.setStart(anchor);
 		
-		public ConnectionPartLayoutResult(List<ConnectionPart> parts, Boolean start, Boolean partsLayouted) {
-			this.partsLayouted = partsLayouted;
-			this.direction = null;
-			this.parts = parts;
-			this.repairCandidate = null;
-			this.reference = null;
-			this.start = start;
-		}
-		
-		public ConnectionPartLayoutResult(List<ConnectionPart> parts, Boolean start, Boolean partsLayouted, Direction direction, Point repairCandidate, Point reference) {
-			this.direction = direction;
-			this.partsLayouted = partsLayouted;
-			this.parts = parts;
-			this.repairCandidate = repairCandidate;
-			this.reference = reference;
-			this.start = start;
-		}
-		
-		public Direction getDirection() {
-			return direction;
-		}
-		
-		public Boolean getPartsLayouted() {
-			return partsLayouted;
-		}
-		
-		public List<ConnectionPart> getParts() {
-			return parts;
-		}
-		
-		public Point getRepairCandidate() {
-			return repairCandidate;
-		}
-		
-		public Point getReference() {
-			return reference;
-		}
-		
-		public Boolean getStart() {
-			return start;
-		}
-		
+		recomputePointsAndParts();
 	}
 
-	protected ConnectionPartLayoutResult layoutConnectionParts(List<ConnectionPart> parts, boolean start) {
+	private void setNewEndAnchor(Anchor anchor) {
+		this.endAnchor = anchor;
+		this.connection.setEnd(anchor);
+		
+		recomputePointsAndParts();
+	}
+
+	protected boolean layoutConnectionParts(List<ConnectionPart> parts, boolean start) {
 		ConnectionPart next;
 		ConnectionPart part;
+		
+		if (parts.size() < 2) {
+			return false;
+		}
 		
 		if (start) {
 			part = parts.get(0);
@@ -298,9 +211,9 @@ public class DefaultLayoutContext implements LayoutContext {
 			part = parts.get(parts.size() - 1);
 			next = parts.get(parts.size() - 2);
 		}
-
+		
 		if (next.needsLayout()) {
-			return new ConnectionPartLayoutResult(parts, start, true);
+			return false;
 		}
 		
 		Direction direction = part.computeDirection(next);
@@ -317,7 +230,7 @@ public class DefaultLayoutContext implements LayoutContext {
 			break;
 		}
 		
-		return new ConnectionPartLayoutResult(parts, start, true, direction, repairCandidate, reference);
+		return true;
 	}
 
 	protected boolean isConnectionRepaired() {
@@ -342,8 +255,13 @@ public class DefaultLayoutContext implements LayoutContext {
 
 	@Override
 	public void layout() {
-		LayoutStrategy.build(AnchorPointStrategy.class, connection).execute();
-		LayoutStrategy.build(BendpointStrategy.class, connection).execute();
+		AnchorPointStrategy anchorPointStrategy = AnchorPointStrategy.build(AnchorPointStrategy.class, connection, null);
+		Tuple<Docking, Docking> connectionDocking = anchorPointStrategy.execute();
+		
+		// change bendpoints only when anchor points were applied
+		if (connectionDocking != null) {
+			LayoutStrategy.build(BendpointStrategy.class, connection, connectionDocking).execute();
+		}
 	}
 
 	/**

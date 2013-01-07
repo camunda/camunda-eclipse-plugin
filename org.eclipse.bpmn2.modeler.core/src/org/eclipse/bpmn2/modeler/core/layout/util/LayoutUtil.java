@@ -414,39 +414,28 @@ public class LayoutUtil {
 			py - tolerance < ry2;
 	}
 	
-	public static void addVerticalCenteredBendpoints(FreeFormConnection connection) {
-		ILocation startAnchorLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(connection.getStart());
-		ILocation endAnchorLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(connection.getEnd());
+	public static void addVerticalCenteredBendpoints(FreeFormConnection connection, Point start, Point end) {
+		int midX = ((end.getX() - start.getX()) / 2) + start.getX();
 		
-		int midX = ((endAnchorLocation.getX() - startAnchorLocation.getX()) / 2) + startAnchorLocation.getX();
-		
-		ILocation first = location(midX, startAnchorLocation.getY());
-		ILocation second = location(midX, endAnchorLocation.getY());
-		
-		connection.getBendpoints().add(point(first));
-		connection.getBendpoints().add(point(second));
+		Point first = point(midX, start.getY());
+		Point second = point(midX, end.getY());
+
+		connection.getBendpoints().add(first);
+		connection.getBendpoints().add(second);
 	}
 
-	public static void addHorizontalCenteredBendpoints(FreeFormConnection connection) {
-		ILocation startAnchorLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(connection.getStart());
-		ILocation endAnchorLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram(connection.getEnd());
+	public static void addHorizontalCenteredBendpoints(FreeFormConnection connection, Point start, Point end) {
+		int midY = ((end.getY() - start.getY()) / 2) + start.getY();
 		
-		int midY = ((endAnchorLocation.getY() - startAnchorLocation.getY()) / 2) + startAnchorLocation.getY();
-		
-		ILocation first = location(startAnchorLocation.getX(), midY);
-		ILocation second = location(endAnchorLocation.getX(), midY);
+		Point first = point(start.getX(), midY);
+		Point second = point(end.getX(), midY);
 
-		connection.getBendpoints().add(point(first));
-		connection.getBendpoints().add(point(second));
+		connection.getBendpoints().add(first);
+		connection.getBendpoints().add(second);
 	}
 	
-	public static void addRectangularBendpoint(FreeFormConnection connection) {
-		ILocation startAnchorLocation = getAnchorLocation(connection.getStart());
-		ILocation endAnchorLocation = getAnchorLocation(connection.getEnd());
-
-		ILocation location = location(startAnchorLocation.getX(), endAnchorLocation.getY());
-		
-		connection.getBendpoints().add(point(location));
+	public static void addRectangularBendpoint(FreeFormConnection connection, Point start, Point end) {
+		connection.getBendpoints().add(point(start.getX(), end.getY()));
 	}
 	
 	/**
@@ -500,9 +489,36 @@ public class LayoutUtil {
 	public static Sector getSector(Point p, Point reference) {
 		return getSector(p.getX(), p.getY(), reference.getX(), reference.getY());
 	}
-	
+
 	public static Sector getSector(ILocation p, ILocation reference) {
 		return getSector(p.getX(), p.getY(), reference.getX(), reference.getY());
+	}
+	
+	/**
+	 * Get sector of a point with respect to the passed reference.
+	 * 
+	 * @param p
+	 * @param reference
+	 * @return
+	 */
+	public static Sector getSector(ILocation p, IRectangle reference) {
+
+		int px = p.getX();
+		int py = p.getY();
+		
+		int rx = reference.getX();
+		int ry = reference.getY();
+		
+		int rwidth = reference.getWidth();
+		int rheight = reference.getHeight();
+		
+		boolean above = py <= ry;
+		boolean beneath = py >= ry + rheight;
+		
+		boolean left = px <= rx;
+		boolean right = px >= rx + rwidth;
+		
+		return Sector.fromBooleans(left, right, above, beneath);
 	}
 	
 	public static IRectangle getAbsoluteRectangle(Shape shape) {

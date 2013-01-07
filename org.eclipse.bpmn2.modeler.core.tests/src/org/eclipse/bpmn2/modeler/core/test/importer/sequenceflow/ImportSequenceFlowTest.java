@@ -84,10 +84,10 @@ public class ImportSequenceFlowTest extends AbstractImportBpmnModelTest {
 		
 		assertThat(startShapeAnchors.get(0)).isSameAs(connection.getStart());
 		
-		// end however should be a fix point anchor (points directly to the guy)
-		assertThat(connection.getEnd()).isInstanceOf(FixPointAnchor.class);
+		// end should be a chopbox anchor, too (use it in favour of fix point anchor)
+		assertThat(connection.getEnd()).isInstanceOf(ChopboxAnchor.class);
 		
-		Anchor endShapeRightAnchor = LayoutUtil.getLeftAnchor(endShape);
-		assertThat(endShapeRightAnchor).isSameAs(connection.getEnd());
+		Anchor endShapeCenterAnchor = LayoutUtil.getCenterAnchor(endShape);
+		assertThat(endShapeCenterAnchor).isSameAs(connection.getEnd());
 	}
 }

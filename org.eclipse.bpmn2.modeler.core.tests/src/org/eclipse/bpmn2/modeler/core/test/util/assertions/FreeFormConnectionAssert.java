@@ -17,6 +17,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
+import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
@@ -55,7 +56,11 @@ public class FreeFormConnectionAssert extends AbstractAssert<FreeFormConnectionA
 	}
 	
 	private void assertConnectionNotDiagonal(Point p1, Point p2) {
-		if (p1.getX() != p2.getX() && p1.getY() != p2.getY()) {
+		int tolerance = 1;
+		
+		if (Math.abs(p1.getX() - p2.getX()) > tolerance && 
+			Math.abs(p1.getY() - p2.getY()) > tolerance) {
+			
 			Assertions.fail(String.format("Expected points <%s> and <%s> to form a non-diagonal connection", p1, p2));
 		}
 	}
@@ -96,5 +101,16 @@ public class FreeFormConnectionAssert extends AbstractAssert<FreeFormConnectionA
 		FreeFormConnectionAndShapeAssert connectionAndShapeAssert = new FreeFormConnectionAndShapeAssert(this, actual, connectedShape);
 		
 		return connectionAndShapeAssert.exists();
+	}
+
+	public FreeFormConnectionAndShapeAssert anchorPointOn(AnchorContainer container) {
+		
+		Assertions.assertThat(container).isInstanceOf(Shape.class);
+		
+		return anchorPointOn((Shape) container);
+	}
+	
+	public FreeFormConnectionAndShapeAssert anchor(Anchor anchor) {
+		return anchorPointOn(anchor.getParent());
 	}
 }

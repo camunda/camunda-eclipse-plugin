@@ -23,8 +23,12 @@ import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.junit.Test;
 
+/**
+ * Testing layouting after reconnection of flows
+ * 
+ * @author nico.rehwaldt
+ */
 public class FlowReconnectTest extends AbstractFeatureTest {
-
 	
 	@Test
 	@DiagramResource

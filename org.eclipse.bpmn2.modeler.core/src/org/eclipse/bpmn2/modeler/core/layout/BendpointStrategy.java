@@ -6,19 +6,29 @@ import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
+import org.eclipse.bpmn2.modeler.core.utils.Tuple;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.services.Graphiti;
 
-public class BendpointStrategy extends LayoutStrategy {
+public class BendpointStrategy extends LayoutStrategy<Tuple<Docking, Docking>, Void> {
 	
 	private FreeFormConnection connection;
 	
 	private boolean horizontal;
 	private boolean vertical;
 	private boolean single;
+
+	private Docking startDocking;
+	private Docking endDocking;
 	
 	public BendpointStrategy(FreeFormConnection connection) {
 		this.connection = connection;
+	}
+	
+	@Override
+	protected void setContext(Tuple<Docking, Docking> startEndDocking) {
+		this.startDocking = startEndDocking.getFirst();
+		this.endDocking = startEndDocking.getSecond();
 	}
 	
 	public BendpointStrategy horizontal() {
@@ -39,25 +49,31 @@ public class BendpointStrategy extends LayoutStrategy {
 	}
 	
 	@Override
-	protected void doExecute() {
+	protected Void doExecute() {
 		connection.getBendpoints().clear();
 		
 		double treshold = LayoutUtil.getLayoutTreshold(connection);
 		
 		if (single) {
 			if (treshold != 0.0 && treshold != 1.0) {
-				LayoutUtil.addRectangularBendpoint(connection);
+				LayoutUtil.addRectangularBendpoint(connection, startDocking.getPosition(), endDocking.getPosition());
 			}
 		}
-		else if (horizontal) {
+		else
+		
+		if (horizontal) {
 			if (treshold != 0.0) {
-				LayoutUtil.addHorizontalCenteredBendpoints(connection);
+				LayoutUtil.addHorizontalCenteredBendpoints(connection, startDocking.getPosition(), endDocking.getPosition());
 			}
-		} else if (vertical) {
+		} else 
+		
+		if (vertical) {
 			if (treshold != 1.0) {
-				LayoutUtil.addVerticalCenteredBendpoints(connection);
+				LayoutUtil.addVerticalCenteredBendpoints(connection, startDocking.getPosition(), endDocking.getPosition());
 			}
 		}
+		
+		return null;
 	}
 	
 	protected void sectorSwitch(Sector sector) {
@@ -81,7 +97,7 @@ public class BendpointStrategy extends LayoutStrategy {
 		}
 	}
 	
-	protected void typeSwitch(Sector sector, BaseElement sourceElement,  BaseElement targetElement) {
+	protected void typeSwitch(Sector sector, BaseElement sourceElement, BaseElement targetElement) {
 		
 		double treshold = LayoutUtil.getAbsLayoutTreshold(connection);
 		
@@ -106,7 +122,7 @@ public class BendpointStrategy extends LayoutStrategy {
 	}
 
 	private void boundaryEventSwitch(Sector sector) {
-		Sector relativeSectorToRef = LayoutUtil.getBoundaryEventRelativeSector(LayoutUtil.getStartShape(connection));
+		Sector relativeSectorToRef = LayoutUtil.getBoundaryEventRelativeSector(startDocking.getShape());
 		
 		switch (relativeSectorToRef) {
 		case BOTTOM:

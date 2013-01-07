@@ -60,7 +60,7 @@ public class FreeFormConnectionAndShapeAssert extends AbstractAssert<FreeFormCon
 
 	public FreeFormConnectionAndShapeAssert isLeftOfShape() {
 		Anchor anchor = getAnchor();
-		Sector sector = LayoutUtil.getAnchorSector(anchor);
+		Sector sector = getVisibleAnchorSector(anchor);
 		
 		assertExpectedSector(sector, Sector.LEFT, Sector.BOTTOM_LEFT, Sector.TOP_LEFT);
 		
@@ -69,7 +69,7 @@ public class FreeFormConnectionAndShapeAssert extends AbstractAssert<FreeFormCon
 
 	public FreeFormConnectionAndShapeAssert isRightOfShape() {
 		Anchor anchor = getAnchor();
-		Sector sector = LayoutUtil.getAnchorSector(anchor);
+		Sector sector = getVisibleAnchorSector(anchor);
 
 		assertExpectedSector(sector, Sector.RIGHT, Sector.BOTTOM_RIGHT, Sector.TOP_RIGHT);
 		
@@ -79,21 +79,30 @@ public class FreeFormConnectionAndShapeAssert extends AbstractAssert<FreeFormCon
 	public FreeFormConnectionAndShapeAssert isAboveShape() {
 		
 		Anchor anchor = getAnchor();
-		Sector sector = LayoutUtil.getAnchorSector(anchor);
-
+		Sector sector = getVisibleAnchorSector(anchor);
+		
 		assertExpectedSector(sector, Sector.TOP_LEFT, Sector.TOP, Sector.TOP_RIGHT);
 		
 		return myself;
 	}
-	
+
 	public FreeFormConnectionAndShapeAssert isBeneathShape() {
 
 		Anchor anchor = getAnchor();
-		Sector sector = LayoutUtil.getAnchorSector(anchor);
+		Sector sector = getVisibleAnchorSector(anchor);
 
 		assertExpectedSector(sector, Sector.BOTTOM_LEFT, Sector.BOTTOM, Sector.BOTTOM_RIGHT);
 		
 		return myself;
+	}
+	
+	private Sector getVisibleAnchorSector(Anchor anchor) {
+		if (anchor.equals(LayoutUtil.getCenterAnchor(connectedShape))) {
+			ILocation visibleAnchorPosition = LayoutUtil.getVisibleAnchorLocation(anchor, actual);
+			return LayoutUtil.getSector(visibleAnchorPosition, LayoutUtil.getAbsoluteRectangle(connectedShape));
+		} else {
+			return LayoutUtil.getAnchorSector(anchor);
+		}
 	}
 	
 	// private helpers /////////////////////////////////////////////

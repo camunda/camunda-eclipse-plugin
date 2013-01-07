@@ -4,7 +4,6 @@ import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.DataAssociation;
-import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
 import org.eclipse.graphiti.mm.pictograms.Connection;
@@ -12,7 +11,7 @@ import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
 
-public abstract class LayoutStrategy {
+public abstract class LayoutStrategy<C, T> extends Strategy<T> {
 	
 	protected FreeFormConnection connection;
 	protected boolean unchanged;
@@ -21,15 +20,19 @@ public abstract class LayoutStrategy {
 		unchanged = true;
 	}
 	
-	public void execute() {
+	public T execute() {
 		if (unchanged) {
-			return;
+			return null;
 		} else {
-			doExecute();	
+			return doExecute();	
 		}
 	}
 	
-	protected abstract void doExecute();
+	protected void setContext(C context) {
+		
+	}
+	
+	protected abstract T doExecute();
 	
 	public boolean appliesTo(FreeFormConnection connection) {
 		if (connection.getBendpoints().size() > 2) {
@@ -57,12 +60,12 @@ public abstract class LayoutStrategy {
 		return type.isInstance(connection.getLink().getBusinessObjects().get(0));
 	}
 	
-	public static <T extends LayoutStrategy> T build (Class<T> strategy, FreeFormConnection connection) {
+	public static <T extends LayoutStrategy<C, V>, C, V> T build (Class<T> strategy, FreeFormConnection connection, C context) {
 		Sector sector = LayoutUtil.getEndShapeSector(connection);
 		BaseElement sourceElement = LayoutUtil.getSourceBaseElement(connection);
 		BaseElement targetElement = LayoutUtil.getTargetBaseElement(connection);
 		
-		T strategyInstance = createStrategy(strategy, connection);
+		T strategyInstance = createStrategy(strategy, connection, context);
 		T subStrategy = (T) strategyInstance.getSubStrategy(connection, sourceElement);
 		
 		if (subStrategy.appliesTo(connection)) {
@@ -71,7 +74,7 @@ public abstract class LayoutStrategy {
 			if (sector != Sector.UNDEFINED) {
 				subStrategy.sectorSwitch(sector);
 			} else {
-				Activator.logError(new IllegalStateException("Dont know how to handle sector for "+connection));
+				// Activator.logError(new IllegalStateException("Dont know how to handle sector for "+connection));
 			}
 			
 			subStrategy.typeSwitch(sector, sourceElement, targetElement);
@@ -84,21 +87,23 @@ public abstract class LayoutStrategy {
 
 	/**
 	 * 
-	 * @param strategy
+	 * @param strategyCls
 	 * @param connection
 	 * @return
 	 * 
 	 * @throws IllegalArgumentException if the strategy could not be instantiated
 	 */
-	public static <T> T createStrategy(Class<T> strategy, FreeFormConnection connection) throws IllegalArgumentException {
+	public static <T extends LayoutStrategy<C, V>, C, V> T createStrategy(Class<T> strategyCls, FreeFormConnection connection, C context) throws IllegalArgumentException {
 		try {
-			return strategy.getConstructor(FreeFormConnection.class).newInstance(connection);
+			T strategy = strategyCls.getConstructor(FreeFormConnection.class).newInstance(connection);
+			strategy.setContext(context);
+			return strategy;
 		} catch (Exception e) {
-			throw new IllegalArgumentException("Cannot instantiate " + strategy.getName(), e);
+			throw new IllegalArgumentException("Cannot instantiate " + strategyCls.getName(), e);
 		}
 	}
 	
-	public LayoutStrategy getSubStrategy(FreeFormConnection connection, BaseElement sourceElement) {
+	public LayoutStrategy<C, T> getSubStrategy(FreeFormConnection connection, BaseElement sourceElement) {
 		return this;
 	}
 	
@@ -121,10 +126,6 @@ public abstract class LayoutStrategy {
 	
 	public FreeFormConnection getConnection() {
 		return connection;
-	}
-
-	public void setConnection(FreeFormConnection connection) {
-		this.connection = connection;
 	}
 	
 	protected Shape getStartShape() {

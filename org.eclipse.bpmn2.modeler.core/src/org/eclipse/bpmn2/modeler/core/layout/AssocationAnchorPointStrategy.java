@@ -18,8 +18,8 @@ public class AssocationAnchorPointStrategy extends AnchorPointStrategy {
 	}
 	
 	@Override
-	protected void typeSwitch(Sector targetElementSector,
-			BaseElement sourceElement, BaseElement TargetElement) {
+	protected void typeSwitch(Sector targetElementSector, BaseElement sourceElement, BaseElement TargetElement) {
+		
 		switch(targetElementSector) {
 		case TOP_LEFT:
 			start.top();
@@ -62,5 +62,4 @@ public class AssocationAnchorPointStrategy extends AnchorPointStrategy {
 	protected void sectorSwitch(Sector sector) {
 		// disable default sector switch
 	}
-	
 }

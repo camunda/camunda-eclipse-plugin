@@ -7,6 +7,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
@@ -14,6 +15,7 @@ import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.Util;
 import org.eclipse.bpmn2.modeler.core.test.util.operations.MoveParticipantOperation;
 import org.eclipse.graphiti.datatypes.ILocation;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -25,7 +27,7 @@ import org.junit.Test;
  * 
  * @author Nico Rehwaldt
  */
-public class LayoutSequenceFlowTest extends AbstractFeatureTest {
+public class SequenceFlowTest extends AbstractFeatureTest {
 	
 	@Test
 	@Ignore
@@ -122,52 +124,55 @@ public class LayoutSequenceFlowTest extends AbstractFeatureTest {
 		assertThat(sequenceFlow1).hasBendpoint(1, 488, 308);
 	}
 
+	
 	@Test
 	@DiagramResource
-	public void testPoolMessageFlowAnchorFixAfterMove() {
-		FreeFormConnection messageFlow = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "MessageFlow_1");
+	public void testAnchorFixAfterMove_HEMERA_3398() {
+		FreeFormConnection sequenceFlow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		Shape serviceTask1 = Util.findShapeByBusinessObjectId(diagram, "ServiceTask_1");
 		
-		Shape participant2Shape = Util.findShapeByBusinessObjectId(diagram, "Participant_2");
-		
-		MoveParticipantOperation.move(participant2Shape, getDiagramTypeProvider())
-			.by(20, 10)
+		Point movement = point(-11, 1);
+
+		// when
+		move(serviceTask1, getDiagramTypeProvider())
+			.by(movement.getX(), movement.getY())
 			.execute();
 		
-		assertThat(messageFlow).anchorPointOn(participant2Shape).isAboveShape();
+		assertThat(sequenceFlow1).hasNoDiagonalEdges();
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/LayoutSequenceFlowTest.testBaseHorizontal.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/SequenceFlowTest.testBaseHorizontal.bpmn")
 	public void testMoveLayoutedHorizontalNoAdjust() {
 		testMoveNonBreaking(point(10, 0));
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/LayoutSequenceFlowTest.testBaseVertical.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/SequenceFlowTest.testBaseVertical.bpmn")
 	public void testMoveLayoutedVerticalNoAdjust() {
 		testMoveNonBreaking(point(0, 10));
 	}
 
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/LayoutSequenceFlowTest.testBaseVertical.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/SequenceFlowTest.testBaseVertical.bpmn")
 	public void testMoveLayoutedHorizontalAdjust() {
 		testMoveBreaking(point(10, 0), point(-10, 0));
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/LayoutSequenceFlowTest.testBaseHorizontal.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/SequenceFlowTest.testBaseHorizontal.bpmn")
 	public void testMoveLayoutedVerticalAdjust() {
 		testMoveBreaking(point(0, 10), point(0, -10));
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/LayoutSequenceFlowTest.testBaseVertical.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/SequenceFlowTest.testBaseVertical.bpmn")
 	public void testMoveLayoutedVerticalBothAdjust() {
 		testMoveBreaking(point(10, 10), point(-10, 0));
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/LayoutSequenceFlowTest.testBaseHorizontal.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/SequenceFlowTest.testBaseHorizontal.bpmn")
 	public void testMoveLayoutedHorizontalBothAdjust() {
 		testMoveBreaking(point(10, 10), point(0, -10));
 	}

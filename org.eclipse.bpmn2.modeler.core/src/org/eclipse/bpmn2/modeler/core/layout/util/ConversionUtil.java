@@ -66,22 +66,19 @@ public class ConversionUtil {
 	
 	public static AnchorLocation anchorLocation(Sector sector) {
 		switch (sector) {
-		case BOTTOM_LEFT:
 		case BOTTOM: 
-		case BOTTOM_RIGHT:
 			return AnchorLocation.BOTTOM;
 		case LEFT:
 			return AnchorLocation.LEFT;
-		case TOP_LEFT:
 		case TOP: 
-		case TOP_RIGHT:
 			return AnchorLocation.TOP;
 		case RIGHT:
 			return AnchorLocation.RIGHT;
+		default:
+			throw new IllegalArgumentException("No anchor location corresponding to Sector." + sector);
 		}
-		
-		return null;
 	}
+	
 	@SuppressWarnings("restriction")
 	public static IRectangle rectangle(int x, int y, int width, int height) {
 		

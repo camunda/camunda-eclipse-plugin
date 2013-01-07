@@ -19,7 +19,7 @@ import org.junit.Test;
  * @author drobisch
  *
  */
-public class AssociationLayoutTest extends AbstractFeatureTest {
+public class AssociationTest extends AbstractFeatureTest {
 	
 	@Test
 	@DiagramResource

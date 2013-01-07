@@ -160,16 +160,18 @@ public abstract class AbstractEdgeHandler<T extends BaseElement> extends Abstrac
 		}
 		
 		// end ADONIS COMPATIBILITY (!!)
+
+		// check chopbox anchor docking first
+		Anchor dockingAnchor;
 		
-		
-		// check if any of the default anchors dock
-		Anchor dockingAnchor = getDefaultAnchorAtPoint(containerDockingPoint, container);
+		// check if chopbox anchor matches
+		dockingAnchor = getReferencedChopboxAnchor(container, containerDockingPoint, referencePoint);
 		if (dockingAnchor != null) {
 			return dockingAnchor;
 		}
 		
-		// check if chopbox anchor matches
-		dockingAnchor = getReferencedChopboxAnchor(container, containerDockingPoint, referencePoint);
+		// check if any of the default anchors dock
+		dockingAnchor = getDefaultAnchorAtPoint(containerDockingPoint, container);
 		if (dockingAnchor != null) {
 			return dockingAnchor;
 		}

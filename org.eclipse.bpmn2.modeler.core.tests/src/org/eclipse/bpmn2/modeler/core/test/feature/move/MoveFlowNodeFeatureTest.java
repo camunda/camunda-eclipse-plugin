@@ -6,6 +6,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.Util;
@@ -77,6 +78,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 	
 	private void assertMoveUpByWorks(int moveBy) {
 		Shape gatewayShape = Util.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
+		
 		ContainerShape laneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Lane_1");
 
 		move(gatewayShape, diagramTypeProvider)
@@ -89,46 +91,45 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		FreeFormConnection seq7Connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_7");
 		
 		// check incoming sequence flow
-		assertEquals(2, seq2Connection.getBendpoints().size());
+		assertThat(seq2Connection.getBendpoints()).hasSize(2);
 		
 		//check outgoing sequence flow right
-		assertEquals(2, seq3Connection.getBendpoints().size());
+		assertThat(seq3Connection.getBendpoints()).hasSize(2);
 		
 		//check outgoing sequence flow bottom
-		assertEquals(1, seq7Connection.getBendpoints().size());
+		assertThat(seq7Connection.getBendpoints()).hasSize(1);
 		
 		// check bendboints coordiantes
-		assertThat(seq2Connection.getBendpoints().get(0)).isEqualTo(point(423, 230));
-		assertThat(seq2Connection.getBendpoints().get(1)).isEqualTo(point(423, 168));
+		assertThat(seq2Connection.getBendpoints().get(0)).isEqualTo(point(423, 230), 2);
+		assertThat(seq2Connection.getBendpoints().get(1)).isEqualTo(point(423, 168), 2);
+
+		assertThat(seq2Connection).hasNoDiagonalEdges();
 		
 		// start anchor must be centered on the right side
-		assertEquals(110, ((FixPointAnchor) seq2Connection.getStart()).getLocation().getX());
-		assertEquals(25, ((FixPointAnchor) seq2Connection.getStart()).getLocation().getY());
 
-		// end anchor must be centered on the left side
-		assertEquals(0, ((FixPointAnchor) seq2Connection.getEnd()).getLocation().getX());
-		assertEquals(25, ((FixPointAnchor) seq2Connection.getEnd()).getLocation().getY());
+		assertThat(seq2Connection).anchor(seq2Connection.getStart()).isRightOfShape();
 		
-		assertThat(seq3Connection.getBendpoints().get(0)).isEqualTo(point(523, 168));
-		assertThat(seq3Connection.getBendpoints().get(1)).isEqualTo(point(523, 230));
+		// end anchor must be centered on the left side
+		assertThat(seq2Connection).anchor(seq2Connection.getEnd()).isLeftOfShape();
+		
+		assertThat(seq3Connection.getBendpoints().get(0)).isEqualTo(point(523, 168), 2);
+		assertThat(seq3Connection.getBendpoints().get(1)).isEqualTo(point(523, 230), 2);
 
 		// start anchor must be centered on the right side
-		assertEquals(51, ((FixPointAnchor) seq3Connection.getStart()).getLocation().getX());
-		assertEquals(25, ((FixPointAnchor) seq3Connection.getStart()).getLocation().getY());
+
+		assertThat(seq3Connection).anchor(seq3Connection.getStart()).isRightOfShape();
 		
 		// end anchor must be centered on the left side
-		assertEquals(0, ((FixPointAnchor) seq3Connection.getEnd()).getLocation().getX());
-		assertEquals(25, ((FixPointAnchor) seq3Connection.getEnd()).getLocation().getY());
+		assertThat(seq3Connection).anchor(seq3Connection.getEnd()).isLeftOfShape();
 		
 		assertThat(seq7Connection.getBendpoints().get(0)).isEqualTo(point(473, 330));
 		
-		//start anchor must be centered at the bottom side
-		assertEquals(25, ((FixPointAnchor) seq7Connection.getStart()).getLocation().getX());
-		assertEquals(51, ((FixPointAnchor) seq7Connection.getStart()).getLocation().getY());
-				
+		// start anchor must be centered on the right side
+
+		assertThat(seq7Connection).anchor(seq7Connection.getStart()).isBeneathShape();
+		
 		// end anchor must be centered on the left side
-		assertEquals(0, ((FixPointAnchor) seq7Connection.getEnd()).getLocation().getX());
-		assertEquals(25, ((FixPointAnchor) seq7Connection.getEnd()).getLocation().getY());
+		assertThat(seq7Connection).anchor(seq7Connection.getEnd()).isLeftOfShape();
 		
 		// test bendbpoint strategy treshold
 		move(gatewayShape, diagramTypeProvider)
@@ -136,7 +137,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 			.toContainer(laneShape)
 			.execute();
 		
-		//check outgoing sequence flow right
+		// check outgoing sequence flow right
 		assertEquals(1, seq3Connection.getBendpoints().size());
 	}
 	
@@ -212,11 +213,11 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 
 		IPeLayoutService peLayout = Graphiti.getPeLayoutService();
 
-		ILocation seq1StartLoc = peLayout.getLocationRelativeToDiagram(seq1Connection.getStart());
+		ILocation seq1StartLoc = LayoutUtil.getVisibleAnchorLocation(seq1Connection.getStart(), seq1Connection);
 		assertThat(seq1StartLoc.getX()).isEqualTo(216);
 		assertThat(seq1StartLoc.getY()).isEqualTo(165);
 
-		ILocation seq1EndLoc = peLayout.getLocationRelativeToDiagram(seq1Connection.getEnd());
+		ILocation seq1EndLoc = LayoutUtil.getVisibleAnchorLocation(seq1Connection.getEnd(), seq1Connection);
 		assertThat(seq1EndLoc.getX()).isEqualTo(320);
 		assertThat(seq1EndLoc.getY()).isEqualTo(345);
 
@@ -230,11 +231,11 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(seq1SecondPoint.getX()).isEqualTo(268);
 		assertThat(seq1SecondPoint.getY()).isEqualTo(345);
 
-		ILocation seq2StartLoc = peLayout.getLocationRelativeToDiagram(seq2Connection.getStart());
+		ILocation seq2StartLoc = LayoutUtil.getVisibleAnchorLocation(seq2Connection.getStart(), seq2Connection);
 		assertThat(seq2StartLoc.getX()).isEqualTo(430);
 		assertThat(seq2StartLoc.getY()).isEqualTo(345);
 
-		ILocation seq2EndLoc = peLayout.getLocationRelativeToDiagram(seq2Connection.getEnd());
+		ILocation seq2EndLoc = LayoutUtil.getVisibleAnchorLocation(seq2Connection.getEnd(), seq2Connection);
 		assertThat(seq2EndLoc.getX()).isEqualTo(534);
 		assertThat(seq2EndLoc.getY()).isEqualTo(165);
 
@@ -288,12 +289,12 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 			.execute();
 
 		IPeLayoutService peLayout = Graphiti.getPeLayoutService();
-
-		ILocation seq2StartLoc = peLayout.getLocationRelativeToDiagram(seq2Connection.getStart());
+		
+		ILocation seq2StartLoc = LayoutUtil.getVisibleAnchorLocation(seq2Connection.getStart(), seq2Connection);
 		assertThat(seq2StartLoc.getX()).isEqualTo(313);
 		assertThat(seq2StartLoc.getY()).isEqualTo(325);
 
-		ILocation seq2EndLoc = peLayout.getLocationRelativeToDiagram(seq2Connection.getEnd());
+		ILocation seq2EndLoc = LayoutUtil.getVisibleAnchorLocation(seq2Connection.getEnd(), seq2Connection);
 		assertThat(seq2EndLoc.getX()).isEqualTo(368);
 		assertThat(seq2EndLoc.getY()).isEqualTo(280);
 
@@ -307,11 +308,11 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(seq2SecondPoint.getX()).isEqualTo(368);
 		assertThat(seq2SecondPoint.getY()).isEqualTo(303);
 
-		ILocation seq3StartLoc = peLayout.getLocationRelativeToDiagram(seq3Connection.getStart());
+		ILocation seq3StartLoc = LayoutUtil.getVisibleAnchorLocation(seq3Connection.getStart(), seq3Connection);
 		assertThat(seq3StartLoc.getX()).isEqualTo(423);
 		assertThat(seq3StartLoc.getY()).isEqualTo(255);
 
-		ILocation seq3EndLoc = peLayout.getLocationRelativeToDiagram(seq3Connection.getEnd());
+		ILocation seq3EndLoc = LayoutUtil.getVisibleAnchorLocation(seq3Connection.getEnd(), seq3Connection);
 		assertThat(seq3EndLoc.getX()).isEqualTo(578);
 		assertThat(seq3EndLoc.getY()).isEqualTo(350);
 
@@ -340,14 +341,12 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 			.by(100, 20)
 			.toContainer(participantShape)
 			.execute();
-		
-		IPeLayoutService peLayout = Graphiti.getPeLayoutService();
 
-		ILocation messageFlowStartLoc = peLayout.getLocationRelativeToDiagram(messageFlow.getStart());
+		ILocation messageFlowStartLoc = LayoutUtil.getVisibleAnchorLocation(messageFlow.getStart(), messageFlow);
 		assertThat(messageFlowStartLoc.getX()).isEqualTo(445);
 		assertThat(messageFlowStartLoc.getY()).isEqualTo(95);
 
-		ILocation messageFlowEndLoc = peLayout.getLocationRelativeToDiagram(messageFlow.getEnd());
+		ILocation messageFlowEndLoc = LayoutUtil.getVisibleAnchorLocation(messageFlow.getEnd(), messageFlow);
 		assertThat(messageFlowEndLoc.getX()).isEqualTo(345);
 		assertThat(messageFlowEndLoc.getY()).isEqualTo(225);
 		
@@ -382,11 +381,11 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		
 		IPeLayoutService peLayout = Graphiti.getPeLayoutService();
 
-		ILocation sequenceFlowStartLoc = peLayout.getLocationRelativeToDiagram(sequenceFlow.getStart());
+		ILocation sequenceFlowStartLoc = LayoutUtil.getVisibleAnchorLocation(sequenceFlow.getStart(), sequenceFlow);
 		assertThat(sequenceFlowStartLoc.getX()).isEqualTo(180);
 		assertThat(sequenceFlowStartLoc.getY()).isEqualTo(118);
 
-		ILocation sequenceFlowEndLoc = peLayout.getLocationRelativeToDiagram(sequenceFlow.getEnd());
+		ILocation sequenceFlowEndLoc = LayoutUtil.getVisibleAnchorLocation(sequenceFlow.getEnd(), sequenceFlow);
 		assertThat(sequenceFlowEndLoc.getX()).isEqualTo(315);
 		assertThat(sequenceFlowEndLoc.getY()).isEqualTo(150);
 		
@@ -401,12 +400,12 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 
 		assertThat(sequenceFlow).hasNoDiagonalEdges();
 		assertThat(sequenceFlow).hasBendpointCount(1);
-		
-		sequenceFlowStartLoc = peLayout.getLocationRelativeToDiagram(sequenceFlow.getStart());
+
+		sequenceFlowStartLoc = LayoutUtil.getVisibleAnchorLocation(sequenceFlow.getStart(), sequenceFlow);
 		assertThat(sequenceFlowStartLoc.getX()).isEqualTo(180);
 		assertThat(sequenceFlowStartLoc.getY()).isEqualTo(118);
 
-		sequenceFlowEndLoc = peLayout.getLocationRelativeToDiagram(sequenceFlow.getEnd());
+		sequenceFlowEndLoc = LayoutUtil.getVisibleAnchorLocation(sequenceFlow.getEnd(), sequenceFlow);
 		assertThat(sequenceFlowEndLoc.getX()).isEqualTo(315);
 		assertThat(sequenceFlowEndLoc.getY()).isEqualTo(75);
 		

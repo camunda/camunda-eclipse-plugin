@@ -8,88 +8,41 @@ import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
-import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
-import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil.AnchorLocation;
-import org.eclipse.graphiti.mm.pictograms.Anchor;
+import org.eclipse.bpmn2.modeler.core.utils.Tuple;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
-import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 
-public class AnchorPointStrategy extends LayoutStrategy {
-	private AnchorUtil.AnchorLocation location;
+public class AnchorPointStrategy extends LayoutStrategy<Void, Tuple<Docking, Docking>> {
 
-	AnchorPointStrategy start;
-	AnchorPointStrategy end;
-	
-	boolean unchanged = false;
-
-	public AnchorPointStrategy() {
-	}
+	protected DockingSwitch start;
+	protected DockingSwitch end;
 
 	public AnchorPointStrategy(FreeFormConnection connection) {
 		this.connection = connection;
-
-		this.start = new AnchorPointStrategy();
-		this.start.setConnection(connection);
-
-		this.end = new AnchorPointStrategy();
-		this.end.setConnection(connection);
+		
+		this.start = new DockingSwitch(getStartShape());
+		this.end = new DockingSwitch(getEndShape());
 	}
 	
-	public AnchorPointStrategy start() {
+	public DockingSwitch start() {
 		return start;
 	}
 
-	public AnchorPointStrategy end() {
+	public DockingSwitch end() {
 		return end;
 	}
-
-	public AnchorPointStrategy bottom() {
-		setLocation(AnchorLocation.BOTTOM);
-		return this;
-	}
-
-	public AnchorPointStrategy top() {
-		setLocation(AnchorLocation.TOP);
-		return this;
-	}
-
-	public AnchorPointStrategy left() {
-		setLocation(AnchorLocation.LEFT);
-		return this;
-	}
-
-	public AnchorPointStrategy right() {
-		setLocation(AnchorLocation.RIGHT);
-		return this;
-	}
-
+	
 	@Override
-	public void doExecute() {
-		start.internalExecute(true);
-		end.internalExecute(false);
-	}
-
-	protected void internalExecute(boolean isStart) {
-		if (isStart) {
-			getConnection().setStart(getAnchor(getStartShape()));
-		} else {
-			getConnection().setEnd(getAnchor(getEndShape()));
-		}
-	}
-
-	protected Anchor getAnchor(Shape shape) {
-		switch (getLocation()) {
-		case LEFT:
-			return LayoutUtil.getLeftAnchor(shape);
-		case RIGHT:
-			return LayoutUtil.getRightAnchor(shape);
-		case TOP:
-			return LayoutUtil.getTopAnchor(shape);
-		case BOTTOM:
-			return LayoutUtil.getBottomAnchor(shape);
-		}
-		return null;
+	public Tuple<Docking, Docking> doExecute() {
+		Docking startDocking = start.execute();
+		Docking endDocking = end.execute();
+		
+		// apply anchor point selections
+		connection.setStart(startDocking.getAnchor());
+		connection.setEnd(endDocking.getAnchor());
+		
+		// return results
+		return new Tuple<Docking, Docking>(startDocking, endDocking);
 	}
 
 	@Override
@@ -141,13 +94,12 @@ public class AnchorPointStrategy extends LayoutStrategy {
 		if (sourceElement instanceof BoundaryEvent) {
 			boundaryEventSwitch(targetElementSector, (BoundaryEvent) sourceElement);
 		}
-		
 	}
 
 	private void boundaryEventSwitch(Sector targetElementSector, BoundaryEvent sourceElement) {
-		Sector relativeSectorToRef = LayoutUtil
-				.getBoundaryEventRelativeSector(LayoutUtil.getStartShape(connection));
-
+		Sector relativeSectorToRef = 
+			LayoutUtil.getBoundaryEventRelativeSector(LayoutUtil.getStartShape(connection));
+		
 		switch (relativeSectorToRef) {
 		case BOTTOM:
 			start.bottom();
@@ -268,18 +220,9 @@ public class AnchorPointStrategy extends LayoutStrategy {
 			break;
 		}
 	}
-
-	public AnchorUtil.AnchorLocation getLocation() {
-		return location;
-	}
-
-	public void setLocation(AnchorUtil.AnchorLocation location) {
-		this.location = location;
-	}
 	
 	@Override
-	public LayoutStrategy getSubStrategy(FreeFormConnection connection,
-			BaseElement sourceElement) {
+	public LayoutStrategy<Void, Tuple<Docking, Docking>> getSubStrategy(FreeFormConnection connection, BaseElement sourceElement) {
 		
 		if (isConnectionBpmnType(connection, Association.class) || isConnectionBpmnType(connection, DataAssociation.class)) {
 			return new AssocationAnchorPointStrategy(connection);

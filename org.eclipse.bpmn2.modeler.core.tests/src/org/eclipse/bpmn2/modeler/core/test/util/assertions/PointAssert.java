@@ -19,14 +19,18 @@ public class PointAssert extends AbstractAssert<PointAssert, Point> {
 	protected PointAssert(Point actual) {
 		super(actual, PointAssert.class);
 	}
-	
+
 	public PointAssert isEqualTo(Point expected) {
+		return isEqualTo(expected, 0);
+	}
+	
+	public PointAssert isEqualTo(Point expected, int tolerance) {
 		
 		if (actual == null) {
 			Assertions.fail(String.format("Expected actual to equal <%s> but was <null>", expected));
 		}
 		
-		if (actual.getX() != expected.getX() || actual.getY() != expected.getY()) {
+		if (Math.abs(actual.getX() - expected.getX()) > tolerance || Math.abs(actual.getY()- expected.getY()) > tolerance) {
 			Assertions.fail(String.format("Expected actual to equal <Point(%s, %s)> but was <Point(%s, %s)>", expected.getX(), expected.getY(), actual.getX(), actual.getY()));
 		}
 		
