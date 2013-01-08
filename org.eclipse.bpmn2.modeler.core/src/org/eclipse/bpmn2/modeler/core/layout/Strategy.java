@@ -5,7 +5,7 @@ package org.eclipse.bpmn2.modeler.core.layout;
  * 
  * @author nico.rehwaldt
  *
- * @param <T>
+ * @param <T> return type of the strategy
  */
 public abstract class Strategy<T> {
 
