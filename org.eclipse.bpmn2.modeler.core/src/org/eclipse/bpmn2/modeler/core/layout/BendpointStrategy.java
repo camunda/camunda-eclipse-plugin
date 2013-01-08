@@ -98,11 +98,9 @@ public class BendpointStrategy extends LayoutStrategy<Tuple<Docking, Docking>, V
 	}
 	
 	protected void typeSwitch(Sector sector, BaseElement sourceElement, BaseElement targetElement) {
-		
-		double treshold = LayoutUtil.getAbsLayoutTreshold(connection);
-		
+
 		if (sourceElement instanceof Gateway) {
-			gatewaySwitch(treshold);
+			gatewaySwitch(sector);
 		}
 		
 		BaseElement flowElement = (BaseElement) Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(connection);	
@@ -115,7 +113,14 @@ public class BendpointStrategy extends LayoutStrategy<Tuple<Docking, Docking>, V
 		}
 	}
 
-	private void gatewaySwitch(double treshold) {
+	private void gatewaySwitch(Sector sector) {
+		
+		if (sector == Sector.TOP || sector == Sector.BOTTOM) {
+			return;
+		}
+		
+		double treshold = LayoutUtil.getAbsLayoutTreshold(connection);
+		
 		if (treshold <= LayoutUtil.MAGIC_VALUE) {
 			this.single();
 		}

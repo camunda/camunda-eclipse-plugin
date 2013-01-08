@@ -1,5 +1,7 @@
 package org.eclipse.bpmn2.modeler.core.layout;
 
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.location;
+
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
@@ -9,7 +11,10 @@ import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
+import org.eclipse.graphiti.datatypes.ILocation;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 
 public class AnchorPointStrategy extends LayoutStrategy<Void, Tuple<Docking, Docking>> {
@@ -195,6 +200,7 @@ public class AnchorPointStrategy extends LayoutStrategy<Void, Tuple<Docking, Doc
 	}
 
 	private void gatewaySwitch(Sector targetElementSector, Gateway sourceElement) {
+
 		double treshold = LayoutUtil.getAbsLayoutTreshold(connection);
 		
 		switch (targetElementSector) {
@@ -212,6 +218,26 @@ public class AnchorPointStrategy extends LayoutStrategy<Void, Tuple<Docking, Doc
 			break;
 		case TOP:
 		case BOTTOM:
+			// Check if gateway lies directly below or above the connecting shape
+			// in that case choose the connecting sector of that shape as Sector.TOP / Sector.BOTTOM
+			// and later apply the two bendpoint strategy
+			IRectangle startBounds = LayoutUtil.getAbsoluteRectangle((Shape) connection.getStart().getParent());
+			IRectangle endBounds = LayoutUtil.getAbsoluteRectangle((Shape) connection.getEnd().getParent());
+			
+			ILocation midPoint = location(startBounds.getX() + startBounds.getWidth() / 2, endBounds.getY());
+			
+			if (LayoutUtil.isContained(endBounds, midPoint, 13)) {
+				if (targetElementSector == Sector.BOTTOM) {
+					end.top();
+				} else {
+					end.bottom();
+				}
+				
+				// no more left / right thresholding
+				break;
+			}
+			
+			
 			if (treshold > 0.0) {
 				end.left();
 			} else {

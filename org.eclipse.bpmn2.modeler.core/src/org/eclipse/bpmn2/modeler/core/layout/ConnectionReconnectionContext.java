@@ -1,7 +1,9 @@
 package org.eclipse.bpmn2.modeler.core.layout;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.layout.nnew.DefaultLayoutStrategy;
 import org.eclipse.bpmn2.modeler.core.layout.nnew.LayoutContext;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 
@@ -36,7 +38,9 @@ public class ConnectionReconnectionContext {
 		
 		FreeFormConnection freeFormConnection = (FreeFormConnection) connection;
 		
-		System.out.println("Reconnect " + freeFormConnection);
+		BaseElement model = BusinessObjectUtil.getFirstBaseElement(freeFormConnection);
+		
+		System.out.println("Reconnect " + model.getId());
 		
 		LayoutContext layoutingContext = new DefaultLayoutStrategy().createLayoutingContext(freeFormConnection);
 		
