@@ -23,6 +23,8 @@ How to contribute
 * Run / Test
     * Start the Modeler from `org.eclipse.bpmn2.modeler.core` via `Run As -> Eclipse Application`
     * Run the test suite in `org.eclipse.bpmn2.modeler.core.tests` via `Run As -> JUnit Plugin-Tests`
+* Extend the editor **!**
+* Submit a pull request
 
 Modeler Development Dependencies
 --------------------------------
