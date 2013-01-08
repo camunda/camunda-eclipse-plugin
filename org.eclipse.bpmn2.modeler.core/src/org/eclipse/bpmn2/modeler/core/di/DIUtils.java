@@ -155,6 +155,7 @@ public class DIUtils {
 			waypoint.clear();
 
 			ILocation loc = LayoutUtil.getVisibleAnchorLocation(connection.getStart(), connection);
+			
 			point.setX(loc.getX());
 			point.setY(loc.getY());
 			waypoint.add(point);

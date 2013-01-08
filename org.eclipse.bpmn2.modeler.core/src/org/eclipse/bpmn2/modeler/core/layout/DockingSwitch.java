@@ -17,7 +17,7 @@ public class DockingSwitch extends Strategy<Docking> {
 	
 	private Shape dockingShape;
 	
-	private Sector sector;
+	private Sector sector = Sector.UNDEFINED;
 	
 	public DockingSwitch(Shape dockingShape) {
 		this.dockingShape = dockingShape;
@@ -74,7 +74,8 @@ public class DockingSwitch extends Strategy<Docking> {
 			return point(x + width, cy);
 		
 		default:
-			throw new IllegalArgumentException("Cannot handle Sector." + sector);
+			// no valid sector was provided
+			return point(cx, cy);
 		}
 	}
 

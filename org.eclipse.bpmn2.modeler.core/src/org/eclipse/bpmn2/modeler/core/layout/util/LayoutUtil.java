@@ -737,7 +737,14 @@ public class LayoutUtil {
 	 */
 	public static ILocation getVisibleAnchorLocation(Anchor anchor, Connection connection) {
 		if (anchor instanceof ChopboxAnchor) {
-			return getChopboxAnchorLocation((ChopboxAnchor) anchor, connection);
+			ILocation location = getChopboxAnchorLocation((ChopboxAnchor) anchor, connection);
+			
+			// location may become null, when elements overlap
+			if (location == null) {
+				location = getAnchorLocation(anchor);
+			}
+			
+			return location;
 		} else {
 			return getAnchorLocation(anchor);
 		}
