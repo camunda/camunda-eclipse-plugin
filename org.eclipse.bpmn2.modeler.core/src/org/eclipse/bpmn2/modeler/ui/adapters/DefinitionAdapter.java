@@ -29,7 +29,6 @@ public class DefinitionAdapter extends BasicEObjectAdapter implements INamespace
 	 * @param key
 	 *            the namespace to get the reverse mapping for
 	 * @return The reverse mapping of the Namespace to namespace prefixes.
-	 * @see org.eclipse.bpel.model.adapters.INamespaceMap#getReverse(java.lang.Object)
 	 */
 
 	public List<String> getReverse(String key) {

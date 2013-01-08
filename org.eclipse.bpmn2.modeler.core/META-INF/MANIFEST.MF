@@ -23,7 +23,6 @@ Require-Bundle: org.eclipse.emf.transaction,
  javax.wsdl;bundle-version="[1.5.0,1.6.0)";visibility:=reexport,
  org.eclipse.wst.xsd.ui;bundle-version="[1.2.101,2.0.0)",
  org.eclipse.wst.xml.ui;bundle-version="[1.0.400,2.0.0)",
- org.eclipse.jst.j2ee,
  org.eclipse.ui.ide,
  org.eclipse.core.commands,
  org.eclipse.jdt,
@@ -37,8 +36,7 @@ Require-Bundle: org.eclipse.emf.transaction,
  org.eclipse.ui,
  org.eclipse.jface.text,
  org.eclipse.emf.workspace,
- org.eclipse.jdt.ui,
- org.eclipse.bpel.wsil.model
+ org.eclipse.jdt.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.bpmn2.modeler.core;
@@ -337,7 +335,7 @@ Export-Package: org.eclipse.bpmn2.modeler.core;
    org.eclipse.graphiti.features,
    org.eclipse.bpmn2.modeler.core.features,
    org.eclipse.bpmn2.modeler.ui.features"
-Import-Package: org.eclipse.bpel.wsil.model.inspection,
+Import-Package: 
  org.eclipse.graphiti.ui.features,
  org.eclipse.jface.preference,
  org.eclipse.jface.util,

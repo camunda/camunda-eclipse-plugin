@@ -17,10 +17,6 @@ package org.eclipse.bpmn2.modeler.core.adapters;
  */
 public class AbstractStatefulAdapter extends AbstractAdapter implements
 		IStatefullAdapter {
-
-	/**
-	 * @see org.eclipse.bpel.model.adapters.IStatefullAdapter#setTarget(java.lang.Object)
-	 */
 	
 	@Override
 	public void setTarget (Object newTarget) {		
