@@ -9,14 +9,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.modeler.core.layout.AnchorPointStrategy;
 import org.eclipse.bpmn2.modeler.core.layout.Docking;
 import org.eclipse.bpmn2.modeler.core.layout.DockingSwitch;
 import org.eclipse.bpmn2.modeler.core.layout.BendpointStrategy;
 import org.eclipse.bpmn2.modeler.core.layout.LayoutStrategy;
+import org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
@@ -110,9 +113,9 @@ public class DefaultLayoutContext implements LayoutContext {
 		this.connectionPoints = points;
 	}
 	
+	
 	@Override
-	public boolean isLayouted() {
-		
+	public boolean needsRepair() {
 		if (brokenConnectionParts.isEmpty()) {
 			return true;
 		} 
@@ -250,18 +253,34 @@ public class DefaultLayoutContext implements LayoutContext {
 		repaired &= (startShapeBounds.getX() != firstBendpoint.getX() || startShapeBounds.getX() + startShapeBounds.getWidth() != firstBendpoint.getX());
 		repaired &= (startShapeBounds.getY() != firstBendpoint.getY() || startShapeBounds.getY() + startShapeBounds.getHeight() != firstBendpoint.getY());
 		
+		Tuple<Docking, Docking> dockings = getDockings();
+		if (dockings != null && BusinessObjectUtil.getFirstBaseElement(startShape) instanceof BoundaryEvent) {
+			Sector afterRepairSector = LayoutUtil.getSector(ConversionUtil.location(firstBendpoint), LayoutUtil.getAbsoluteRectangle(startShape));
+			repaired &=  afterRepairSector == dockings.getFirst().getSector(); 
+		}
+		
 		return repaired;
 	}
 
 	@Override
 	public void layout() {
+		layoutBendpoints(layoutAnchors());
+	}
+	
+	public Tuple<Docking, Docking> layoutAnchors() {
 		AnchorPointStrategy anchorPointStrategy = AnchorPointStrategy.build(AnchorPointStrategy.class, connection, null);
-		Tuple<Docking, Docking> connectionDocking = anchorPointStrategy.execute();
-		
+		return anchorPointStrategy.execute();
+	}
+	
+	public void layoutBendpoints(Tuple<Docking, Docking> connectionDocking) {
 		// change bendpoints only when anchor points were applied
 		if (connectionDocking != null) {
 			LayoutStrategy.build(BendpointStrategy.class, connection, connectionDocking).execute();
 		}
+	}
+	
+	public Tuple<Docking, Docking> getDockings() {
+		return AnchorPointStrategy.build(AnchorPointStrategy.class, connection, null).getDockings();
 	}
 
 	/**

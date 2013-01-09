@@ -438,6 +438,18 @@ public class LayoutUtil {
 		connection.getBendpoints().add(point(start.getX(), end.getY()));
 	}
 	
+	public static void addTurningBendpointsVertical(FreeFormConnection connection, Point startDockingPos, Point endDockingPos, Point firstBendPoint) {
+		connection.getBendpoints().add(point(startDockingPos.getX(), firstBendPoint.getY()));
+		connection.getBendpoints().add(point(endDockingPos.getX(), firstBendPoint.getY()));
+	}
+	
+	public static void addTurningBendpointsHorizontal(FreeFormConnection connection, Point startDockingPos, Point endDockingPos, Point firstBendPoint) {
+		connection.getBendpoints().add(point(startDockingPos.getX(), firstBendPoint.getY()));
+		
+		Point secondPoint = point(firstBendPoint.getX(), endDockingPos.getY());
+		connection.getBendpoints().add(secondPoint);
+	}
+	
 	/**
 	 * Get the sector in which a specific anchor resides
 	 * relative to the anchors container
@@ -489,7 +501,7 @@ public class LayoutUtil {
 	public static Sector getSector(Point p, Point reference) {
 		return getSector(p.getX(), p.getY(), reference.getX(), reference.getY());
 	}
-
+	
 	public static Sector getSector(ILocation p, ILocation reference) {
 		return getSector(p.getX(), p.getY(), reference.getX(), reference.getY());
 	}

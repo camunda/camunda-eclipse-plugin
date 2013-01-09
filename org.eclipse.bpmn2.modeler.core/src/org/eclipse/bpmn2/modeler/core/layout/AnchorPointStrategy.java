@@ -39,14 +39,20 @@ public class AnchorPointStrategy extends LayoutStrategy<Void, Tuple<Docking, Doc
 	
 	@Override
 	public Tuple<Docking, Docking> doExecute() {
+		Tuple<Docking, Docking> dockings = getDockings();
+		
+		// apply anchor point selections
+		connection.setStart(dockings.getFirst().getAnchor());
+		connection.setEnd(dockings.getSecond().getAnchor());
+		
+		// return results
+		return dockings;
+	}
+	
+	public Tuple<Docking, Docking> getDockings() {
 		Docking startDocking = start.execute();
 		Docking endDocking = end.execute();
 		
-		// apply anchor point selections
-		connection.setStart(startDocking.getAnchor());
-		connection.setEnd(endDocking.getAnchor());
-		
-		// return results
 		return new Tuple<Docking, Docking>(startDocking, endDocking);
 	}
 
@@ -106,73 +112,120 @@ public class AnchorPointStrategy extends LayoutStrategy<Void, Tuple<Docking, Doc
 			LayoutUtil.getBoundaryEventRelativeSector(LayoutUtil.getStartShape(connection));
 		
 		switch (relativeSectorToRef) {
-		case BOTTOM:
-			start.bottom();
-			break;
-		case TOP:
-			start.top();
+		case RIGHT:
+			switch (targetElementSector) {
+			case TOP:
+				start.right();
+				end.bottom();
+				break;
+			case BOTTOM:
+				start.right();
+				end.top();
+				break;
+			case RIGHT:
+				start.right();
+				end.left();
+				break;
+			case BOTTOM_RIGHT:
+				start.right();
+				end.left();
+				break;
+			case TOP_RIGHT:
+				start.right();
+				end.left();
+				break;
+			default:
+				start.right();
+				end.right();
+			}
 			break;
 		case LEFT:
-			start.left();
+			switch (targetElementSector) {
+			case TOP:
+				start.left();
+				end.bottom();
+				break;
+			case BOTTOM:
+				start.left();
+				end.top();
+				break;
+			case LEFT:
+				start.left();
+				end.right();
+				break;
+			case BOTTOM_LEFT:
+				start.left();
+				end.right();
+				break;
+			case TOP_LEFT:
+				start.left();
+				end.right();
+				break;
+			default:
+				start.left();
+				end.left();
+			}
 			break;
-		case RIGHT:
-			start.right();
-			break;
+		case TOP:
+		case TOP_RIGHT:
 		case TOP_LEFT:
 			switch (targetElementSector) {
+			case RIGHT:
+				start.top();
+				end.left();
+				break;
+			case LEFT: 
+				start.top();
+				end.right();
+				break;
 			case BOTTOM:
 			case BOTTOM_RIGHT:
-				start.left();
+			case BOTTOM_LEFT:
+				start.top();
+				end.top();
 				break;
-			case RIGHT:
 			case TOP_RIGHT:
+				start.top();
+				end.left();
+				break;
 			case TOP_LEFT:
 				start.top();
+				end.right();
 				break;
-			default:
-				break;
-			}
-			break;
-		case BOTTOM_LEFT:
-			switch (targetElementSector) {
 			case TOP:
-			case TOP_RIGHT:
-				start.left();
-				break;
-			case RIGHT:
-			case BOTTOM_RIGHT:
-			case BOTTOM_LEFT:
-				start.bottom();
-				break;
-			default:
-				break;
-			}
-			break;
-		case TOP_RIGHT:
-			switch (targetElementSector) {
-			case BOTTOM:
-			case BOTTOM_LEFT:
-				start.right();
-				break;
-			case LEFT:
-			case TOP_LEFT:
-			case TOP_RIGHT:
 				start.top();
+				end.bottom();
 				break;
 			default:
 				break;
 			}
 			break;
+		case BOTTOM:
+		case BOTTOM_LEFT:
 		case BOTTOM_RIGHT:
 			switch (targetElementSector) {
-			case TOP:
-			case TOP_LEFT:
-				start.right();
+			case RIGHT:
+			case LEFT: 
+				start.bottom();
+				end.bottom();
 				break;
-			case LEFT:
-			case BOTTOM_LEFT:
 			case BOTTOM_RIGHT:
 				start.bottom();
+				end.left();
+				break;
+			case BOTTOM_LEFT:
+				start.bottom();
+				end.right();
+				break;
+			case BOTTOM:
+				start.bottom();
+				end.top();
+				break;
+			case TOP:
+			case TOP_RIGHT:
+			case TOP_LEFT:
+				start.bottom();
+				end.bottom();
 				break;
 			default:
 				break;
@@ -181,7 +234,6 @@ public class AnchorPointStrategy extends LayoutStrategy<Void, Tuple<Docking, Doc
 		default:
 			break;
 		}
-
 	}
 
 	private void messageFlowSwitch(Sector targetElementSector, BaseElement sourceElement) {
