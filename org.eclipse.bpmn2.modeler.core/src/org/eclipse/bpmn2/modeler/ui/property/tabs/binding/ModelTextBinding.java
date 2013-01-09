@@ -6,6 +6,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
@@ -98,10 +99,10 @@ public abstract class ModelTextBinding<V> extends ModelViewBinding<Text, V> {
 						; // expected
 					}
 
-//					System.out.println(String.format("%s\t%s\t%s\t%s", "text", feature.getName(), "M->V", "?"));
+					log(String.format("\t%s\t%s\t%s", "text", "M->V", "?"));
 					
 					if (isChangeWithNullChecks(viewValue, modelValue)) {
-//						System.out.println(String.format("%s\t%s\t%s\t%s -> %s", "text", feature.getName(), "M->V", viewValue, modelValue));
+						log(String.format("\t%s\t%s\t%s -> %s", "text", "M->V", viewValue, modelValue));
 						setViewValue(modelValue);
 					}
 					
@@ -124,7 +125,6 @@ public abstract class ModelTextBinding<V> extends ModelViewBinding<Text, V> {
 			@Override
 			public void modifyText(ModifyEvent event) {
 				if (viewUpdate) {
-//					System.out.println(String.format("%s\t%s\t%s", "text", feature.getName(), "skip (update in progress)"));
 					return;
 				}
 				
@@ -133,7 +133,7 @@ public abstract class ModelTextBinding<V> extends ModelViewBinding<Text, V> {
 					V modelValue = getModelValue();
 					
 					if (isChangeWithNullChecks(modelValue, viewValue)) {
-//						System.out.println(String.format("%s\t%s\t%s\t%s -> %s", "text", feature.getName(), "V->M", modelValue, viewValue));
+						log(String.format("\t%s\t%s\t%s -> %s", "text", "V->M", modelValue, viewValue));
 						setModelValue(viewValue);
 					}
 				} catch (IllegalArgumentException e) {

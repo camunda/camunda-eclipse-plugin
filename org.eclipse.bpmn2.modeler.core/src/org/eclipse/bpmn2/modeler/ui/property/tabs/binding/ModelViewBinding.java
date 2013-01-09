@@ -23,4 +23,10 @@ public abstract class ModelViewBinding<T extends Control, V> extends AbstractMod
 		
 		this.feature = feature;
 	}
+
+	protected void log(String msg) {
+		if (LOGGING) {
+			System.out.println(String.format("#binding %s <-> %s.%s %s", control.getClass().getSimpleName(), model.getClass().getSimpleName(), feature.getName(), msg));
+		}
+	}
 }

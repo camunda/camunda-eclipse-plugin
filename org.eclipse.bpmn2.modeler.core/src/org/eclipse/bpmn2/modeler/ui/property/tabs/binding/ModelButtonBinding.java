@@ -4,8 +4,7 @@ import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.change.EAttributeChang
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -33,7 +32,7 @@ public abstract class ModelButtonBinding<V> extends ModelViewBinding<Button, V> 
 				V viewValue = getViewValue();
 				
 				if (isChangeWithNullChecks(viewValue, modelValue)) {
-//					System.out.println(String.format("%s\t%s\t%s\t%s -> %s", "radio", feature.getName(), "M->V", viewValue, modelValue));
+					log(String.format("\t%s\t%s\t%s -> %s", "radio", "M->V", viewValue, modelValue));
 					setViewValue(modelValue);
 				}
 			}
@@ -47,21 +46,17 @@ public abstract class ModelButtonBinding<V> extends ModelViewBinding<Button, V> 
 	@Override
 	protected void establishViewModelBinding() {
 		
-		control.addSelectionListener(new SelectionListener() {
+		control.addListener(SWT.Selection, new Listener() {
 			
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void handleEvent(Event event) {
 				V viewValue = getViewValue();
 				V modelValue = getModelValue();
 	
 				if (isChangeWithNullChecks(modelValue, viewValue)) {
-//					System.out.println(String.format("%s\t%s\t%s\t%s -> %s", "radio", feature.getName(), "V->M", modelValue, viewValue));
+					log(String.format("\t%s\t%s\t%s -> %s", "radio", "V->M", modelValue, viewValue));
 					setModelValue(viewValue);
 				}
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
 			}
 		});
 	}
