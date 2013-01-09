@@ -14,17 +14,19 @@ package org.eclipse.bpmn2.modeler.core.features;
 
 import java.util.List;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.layout.ConnectionService;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.features.impl.DefaultMoveShapeFeature;
 import org.eclipse.graphiti.mm.algorithms.AbstractText;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 
 public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
@@ -51,10 +53,13 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 	@Override
 	protected void postMoveShape(IMoveShapeContext context) {
 		PictogramElement shape = context.getPictogramElement();
-		BPMNShape bpmnShape = DIUtils.getShape(context.getPictogramElement());
-
+		BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(shape, BPMNShape.class);
+		
+		ContainerShape sourceContainer = context.getSourceContainer();
+		ContainerShape targetContainer = context.getTargetContainer();
+		
 		// move label after the shape has been moved
-		moveLabel(shape, bpmnShape);
+		moveLabel(shape, sourceContainer, targetContainer, bpmnShape);
 		
 		ConnectionService.reconnectShapeAfterMove(shape);
 		
@@ -62,41 +67,60 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 		DIUtils.updateDIShape(shape, bpmnShape);
 	}
 
-	private void moveLabel(PictogramElement shape, BPMNShape bpmnShape) {
+	private void moveLabel(PictogramElement shape, ContainerShape sourceContainer, ContainerShape targetContainer, BPMNShape bpmnShape) {
 		
-		Object[] node = getAllBusinessObjectsForPictogramElement(shape);
+		if (bpmnShape == null) {
+			throw new IllegalArgumentException("Argument bpmnShape must not be null");
+		}
+
+		BaseElement bpmnElement = BusinessObjectUtil.getFirstBaseElement(shape);
 		
-		for (Object object : node) {
-			List<PictogramElement> picElements = Graphiti.getLinkService().getPictogramElements(getDiagram(), (EObject) object);
-			for (PictogramElement element : picElements){
-				boolean isLabel = Graphiti.getPeService().getPropertyValue(element, GraphicsUtil.LABEL_PROPERTY) != null;
-				if (bpmnShape == null) {
-					bpmnShape = DIUtils.getShape(element);
-				}
-				
-				if (element!=shape && isLabel){
-					try{
-						ContainerShape container = (ContainerShape) element;
-						// only align when not selected, the move feature of the label will do the job when selected
-							GraphicsUtil.alignWithShape(
-									(AbstractText) container.getChildren().get(0).getGraphicsAlgorithm(), 
-									container,
-									shape.getGraphicsAlgorithm().getWidth(),
-									shape.getGraphicsAlgorithm().getHeight(),
-									shape.getGraphicsAlgorithm().getX(),
-									shape.getGraphicsAlgorithm().getY(),
-									preShapeX,
-									preShapeY
-							);
-						DIUtils.updateDILabel(container, bpmnShape);
-					}
-					catch(Exception e){
-						new RuntimeException("Composition of label container is not as expected");
-					}
-				} else if (isLabel) {
-					DIUtils.updateDILabel((ContainerShape) element, bpmnShape);
-				}
+		PictogramElement label = getLabel(bpmnElement);
+
+		ContainerShape containerShape = (ContainerShape) shape;
+
+		// no label, no work to do
+		if (label == null) {
+			return;
+		}
+		
+		// align shape and label if the label 
+		// lies outside the shape
+		if (shape != label) {
+			containerShape = (ContainerShape) label;
+			
+			// only align when not selected, the move feature of the label will do the job when selected
+			GraphicsUtil.alignWithShape(
+					(AbstractText) containerShape.getChildren().get(0).getGraphicsAlgorithm(), 
+					containerShape,
+					shape.getGraphicsAlgorithm().getWidth(),
+					shape.getGraphicsAlgorithm().getHeight(),
+					shape.getGraphicsAlgorithm().getX(),
+					shape.getGraphicsAlgorithm().getY(),
+					preShapeX,
+					preShapeY);
+			
+			// adjust label container if the connected shapes container changed
+			if (sourceContainer != targetContainer) {
+				sourceContainer.getChildren().remove(label);
+				targetContainer.getChildren().add((Shape) label);
 			}
 		}
+		
+		DIUtils.updateDILabel(containerShape, bpmnShape);
+	}
+
+	protected PictogramElement getLabel(BaseElement bpmnElement) {
+		List<PictogramElement> linkedPictogramElements = Graphiti.getLinkService().getPictogramElements(getDiagram(), bpmnElement);
+		
+		for (PictogramElement element : linkedPictogramElements) {
+			boolean isLabel = Graphiti.getPeService().getPropertyValue(element, GraphicsUtil.LABEL_PROPERTY) != null;
+			
+			if (isLabel) {
+				return element;
+			}
+		}
+		
+		return null;
 	}
 }
