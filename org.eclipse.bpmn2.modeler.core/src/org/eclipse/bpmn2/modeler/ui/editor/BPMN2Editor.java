@@ -150,6 +150,10 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		}
 	}
 
+	public Resource getDiagramResource() {
+		return getDiagramTypeProvider().getDiagram().eResource();
+	}
+	
 	protected DiagramEditorAdapter getEditorAdapter() {
 		return editorAdapter;
 	}

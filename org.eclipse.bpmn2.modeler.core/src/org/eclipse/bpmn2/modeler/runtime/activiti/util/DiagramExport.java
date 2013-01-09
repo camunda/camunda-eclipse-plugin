@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
+import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -73,19 +74,6 @@ public class DiagramExport extends AbstractCustomFeature {
 		super(fp);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.graphiti.features.custom.AbstractCustomFeature#canExecute
-	 * (org.eclipse.graphiti.features.context.ICustomContext)
-	 */
-	@Override
-	public boolean canExecute(ICustomContext context) {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
 	@Override
 
 	public String getDescription() {
@@ -97,53 +85,89 @@ public class DiagramExport extends AbstractCustomFeature {
 		return "&Preview";
 	}
 
-	@SuppressWarnings("restriction")
+	///////////////////////
+	// 
+	// Suffix handling / copied from org.activiti.engine.impl.bpmn.deployer.BpmnDeployer (camunda-engine)
+	// and altered for use in bpmn modeler
+	//
+	///////////////////////
+	
+	protected static final String[] BPMN_RESOURCE_SUFFIXES = new String[] { ".bpmn20", ".bpmn", ".bpmn20.xml" };
+  
+	protected String stripBpmnFileSuffix(String bpmnFileResource) {
+		for (String suffix : BPMN_RESOURCE_SUFFIXES) {
+			if (bpmnFileResource.endsWith(suffix)) {
+				return bpmnFileResource.substring(0, bpmnFileResource.length() - suffix.length());
+			}
+		}
+		return bpmnFileResource;
+	}
 
+	@SuppressWarnings("restriction")
 	public void execute(ICustomContext context) {
-		IFile destination;
-		IDiagramTypeProvider typeProvider = BPMN2Editor.getActiveEditor().getDiagramTypeProvider();
+		
 		try {
-			Resource diagramResource = typeProvider.getDiagram().eResource();
-			String fileName = diagramResource.getURI().lastSegment();
-			
-			int indexOfDot = fileName.lastIndexOf(".");
-			
-			String name = null;
-			
-			if (indexOfDot != -1) {
-				name = fileName.substring(0, indexOfDot);
-			} else {
-				name = fileName;
+			Resource diagramResource = BPMN2Editor.getActiveEditor().getDiagramResource();
+			if (diagramResource == null) {
+				logStatus(Status.WARNING, "Could not export diagram image: Could not determine diagram file", null);
+				return;
 			}
 			
-			destination = createDirectoryResource(
-					diagramResource, folderName)
-					.getFile(new Path(name+".png"));
-		} catch (CoreException e) {
-			throw new RuntimeException(e);
+			IFile diagramImageFile = createDiagramImageFile(diagramResource);
+			if (diagramImageFile == null) {
+				logStatus(Status.WARNING, "Could not export diagram image: Could not determine diagram file", null);
+				return;
+			}
+			
+			// get the graphical Viewer
+			_graphicalViewer = BPMN2Editor.getActiveEditor().getGraphicalViewer();
+			
+			_allFigure = determineRootFigure();
+			// create the image
+			setScaledImage(scale);
+			startSaveAsImageWithoutDialog(_image, diagramImageFile);
+		} catch (Exception e) {
+			logStatus(Status.ERROR, "Could not export diagram image", e);
 		}
-		// get the graphical Viewer
-		_graphicalViewer = BPMN2Editor.getActiveEditor().getGraphicalViewer();
+	}
+
+	private IFile createDiagramImageFile(Resource diagramResource) {
+		String resourceName = diagramResource.getURI().lastSegment();
 		
-		_allFigure = determineRootFigure();
-		// create the image
-		setScaledImage(scale);
-		startSaveAsImageWithoutDialog(_image, destination);
+		// the resource obtained may be a temp file.
+		// that said, eclipse suffixes it with a random string, e.g. mydiagram.bpmn20._1GPVcVmjEeKNldb_3G1Fsw
+		// we need to get rid of that string
+		String diagramFileName = resourceName.substring(0, resourceName.lastIndexOf("."));
+		
+		String pictureFileName = stripBpmnFileSuffix(diagramFileName);
+		
+		return createDirectoryResource(diagramResource, folderName).getFile(new Path(pictureFileName + ".png"));
 	}
 
 	/**
-	 * creates or returns a folder in the root directory of the current project
+	 * Log diagram export status
+	 * 
+	 * @param statusCode
+	 * @param message
+	 * @param error
+	 */
+	private void logStatus(int statusCode, String message, Throwable error) {
+		Activator.logStatus(new Status(statusCode, Activator.PLUGIN_ID, message, error));
+	}
+	
+	/**
+	 * Creates or returns a folder in the root directory of the current project
 	 * (as given by the resource)
 	 * 
 	 * @param diagramResource
 	 *            used only to determine the current project.
 	 * @param folderName
 	 *            name of the (top level) folder in the project.
+	 *            
 	 * @return the folder, which is created if it did not exist.
-	 * @throws CoreException
 	 */
-	private IContainer createDirectoryResource(Resource diagramResource,
-			String folderName) throws CoreException {
+	private IContainer createDirectoryResource(Resource diagramResource, String folderName) {
+		
 	  // this is the "real" resource,
 	  // TODO check for correct type
 	  Resource modelResource = diagramResource.getResourceSet().getResources().get(1);
@@ -164,10 +188,15 @@ public class DiagramExport extends AbstractCustomFeature {
 		// at this point, no resources have been created
 		if (!project.exists()) {
 			return null;
-			// project.create(null);
 		}
-		if (!project.isOpen())
-			project.open(null);
+		
+		if (!project.isOpen()) {
+			try {
+				project.open(null);
+			} catch (CoreException e) {
+				throw new IllegalStateException("Cannot open project", e);
+			}
+		}
 
 		return fileParent;
 	}

@@ -3,6 +3,7 @@ package org.eclipse.bpmn2.modeler.ui.property.tabs.binding;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
+import org.eclipse.emf.validation.internal.modeled.model.validation.Feature;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 
@@ -16,6 +17,11 @@ import org.eclipse.swt.widgets.Display;
  */
 public abstract class AbstractModelViewBinding<T extends Control, V> {
 
+	/**
+	 * Set to true for verbose debug output
+	 */
+	protected static boolean LOGGING = false;
+	
 	/**
 	 * The model
 	 */
@@ -85,22 +91,22 @@ public abstract class AbstractModelViewBinding<T extends Control, V> {
 	 * 
 	 */
 	public void establish() {
+		// update view value with latest value from model
+		V modelValue = getModelValue();
+		setViewValue(modelValue);
+		
+		updateViewState(modelValue);
+		
+		log("establish");
+		
 		establishModelViewBinding();
 		establishViewModelBinding();
-		
-		Display.getCurrent().asyncExec(new Runnable() {
-			
-			@Override
-			public void run() {
-				if (!control.isDisposed()) {
-					// update view value with latest value from model
-					V modelValue = getModelValue();
-					setViewValue(modelValue);
-					
-					updateViewState(modelValue);
-				}
-			}
-		});
+	}
+
+	protected void log(String msg) {
+		if (LOGGING) {
+			System.out.println(String.format("#binding %s <-> %s %s", control.getClass().getSimpleName(), model.getClass().getSimpleName(), msg));
+		}
 	}
 
 	/**

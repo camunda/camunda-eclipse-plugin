@@ -47,9 +47,19 @@ public class ConversionUtil {
 		
 		return p;
 	}
-	
+
 	public static Point point(ILocation l) {
 		return point(l.getX(), l.getY());
+	}
+
+	/**
+	 * Converts a rectangle to a point by returning its x and y coordinates.
+	 * 
+	 * @param r
+	 * @return
+	 */
+	public static Point point(IRectangle r) {
+		return point(r.getX(), r.getY());
 	}
 	
 	public static ILocation location(Point p) {

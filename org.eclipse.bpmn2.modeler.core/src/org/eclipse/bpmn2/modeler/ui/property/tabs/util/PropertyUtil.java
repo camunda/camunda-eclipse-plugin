@@ -46,6 +46,8 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
  */
 public class PropertyUtil {
 
+	private static final int DESCRIPTION_FONT_SIZE = 8;
+
 	public static Text createText(GFPropertySection section, Composite parent, String label,
 			final EStructuralFeature feature, final EObject bo) {
 		Text text = createUnboundText(section, parent, label);
@@ -190,11 +192,6 @@ public class PropertyUtil {
 		return composite;
 	}
 
-	public static Text createTextWithDatePicker(GFPropertySection section, Composite parent, String label,
-			final EStructuralFeature feature, final EObject bo) {
-		return createText(section, parent, label, feature, bo);
-	}
-
 	public static Text createUnboundRadioText(GFPropertySection section, Composite parent, String label,
 			EStructuralFeature feature, RadioGroup<EStructuralFeature> radioGroup) {
 
@@ -207,8 +204,8 @@ public class PropertyUtil {
 		setStandardLayout(radioComposite);
 
 		final Text text = factory.createText(radioComposite, "");
-		final Button radioButton = factory.createButton(radioComposite, "", SWT.RADIO);
-
+		final Button radioButton = factory.createButton(radioComposite, "", SWT.NO_FOCUS | SWT.RADIO);
+		
 		FormData textFormData = new FormData();
 		textFormData.left = new FormAttachment(0, 15);
 		textFormData.right = new FormAttachment(100, 0);
@@ -219,7 +216,7 @@ public class PropertyUtil {
 
 		text.setLayoutData(textFormData);
 		radioButton.setLayoutData(radioButtonData);
-
+		
 		// register with radio group
 		radioGroup.add(radioButton, feature);
 
@@ -227,7 +224,7 @@ public class PropertyUtil {
 
 		return text;
 	}
-
+	
 	public static Text createRadioText(GFPropertySection section, Composite parent, String label,
 			final EStructuralFeature feature, RadioGroup<EStructuralFeature> radioGroup, final EObject bo) {
 
@@ -244,7 +241,7 @@ public class PropertyUtil {
 		return text;
 	}
 
-	protected static Text createSimpleText(GFPropertySection section, Composite parent, String value) {
+	public static Text createSimpleText(GFPropertySection section, Composite parent, String value) {
 		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
 		final Text text = factory.createText(parent, value); //$NON-NLS-1$
 		setStandardLayout(text);
@@ -302,7 +299,11 @@ public class PropertyUtil {
 	public static Text attachNote(Control attachToControl, String note) {
 		Composite parent = attachToControl.getParent();
 		
-		final Text text = new Text(parent, SWT.READ_ONLY | SWT.SINGLE | SWT.WRAP); 
+		final Text text = new Text(parent, SWT.READ_ONLY | SWT.MULTI | SWT.WRAP | SWT.NO_FOCUS); 
+		
+		// if we do this, we won*t be able to copy and paste from the 
+		// text box anymore
+		// text.setEnabled(false);
 		
 		text.setText(note);
 		text.setEditable(false);
@@ -318,7 +319,7 @@ public class PropertyUtil {
 		
 		return text;
 	}
-
+	
 	public static void makeDescription(Control control) {
 
 		Display display = Display.getCurrent();
@@ -328,7 +329,7 @@ public class PropertyUtil {
 		
 		FontData[] fontData = control.getFont().getFontData();
 		for (int i = 0; i < fontData.length; ++i) {
-			fontData[i].setHeight(8);
+			fontData[i].setHeight(DESCRIPTION_FONT_SIZE);
 		}
 
 		final Font newFont = new Font(display, fontData);

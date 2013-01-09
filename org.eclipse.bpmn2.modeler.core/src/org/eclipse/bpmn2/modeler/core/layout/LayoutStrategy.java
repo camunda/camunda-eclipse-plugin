@@ -6,11 +6,19 @@ import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.DataAssociation;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
-
+/**
+ * A layouting strategy
+ * 
+ * @author nico.rehwaldt
+ *
+ * @param <C> context required for the strategy to work
+ * @param <T> return type of the strategy
+ */
 public abstract class LayoutStrategy<C, T> extends Strategy<T> {
 	
 	protected FreeFormConnection connection;
@@ -28,10 +36,19 @@ public abstract class LayoutStrategy<C, T> extends Strategy<T> {
 		}
 	}
 	
+	/**
+	 * May be overriden by subclasses to pass over context
+	 * 
+	 * @param context
+	 */
 	protected void setContext(C context) {
 		
 	}
 	
+	/**
+	 * Perform the execution of the strategy
+	 * @return
+	 */
 	protected abstract T doExecute();
 	
 	public boolean appliesTo(FreeFormConnection connection) {

@@ -47,7 +47,6 @@ implements IProperty<String, Object>, INamespaceMap<String, String> {
 	 * @param key
 	 *            the key
 	 * @return the value
-	 * @see org.eclipse.bpel.model.adapters.IProperty#getProperty(java.lang.Object)
 	 */
 
 	public Object getProperty(String key) {
@@ -78,7 +77,6 @@ implements IProperty<String, Object>, INamespaceMap<String, String> {
 	 * @param key
 	 *            the namespace to get the reverse mapping for
 	 * @return The reverse mapping of the Namespace to namespace prefixes.
-	 * @see org.eclipse.bpel.model.adapters.INamespaceMap#getReverse(java.lang.Object)
 	 */
 
 	public List<String> getReverse(String key) {
