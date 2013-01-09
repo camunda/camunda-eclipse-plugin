@@ -1,4 +1,4 @@
-package org.eclipse.bpmn2.modeler.core.test.feature.layout;
+package org.eclipse.bpmn2.modeler.core.test.layout;
 
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
@@ -25,7 +25,7 @@ import org.junit.Test;
 public class GatewayTest extends AbstractFeatureTest {
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/GatewayTest.testVerticalLayouting.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/GatewayTest.testVerticalLayouting.bpmn")
 	public void testVerticalLayoutingTopTwoBendpoints() {
 
 		Shape task = Util.findShapeByBusinessObjectId(diagram, "Task_1");
@@ -50,7 +50,7 @@ public class GatewayTest extends AbstractFeatureTest {
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/GatewayTest.testVerticalLayouting.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/GatewayTest.testVerticalLayouting.bpmn")
 	public void testVerticalLayoutingTopTwoBendpointsTolerance() {
 
 		Shape task = Util.findShapeByBusinessObjectId(diagram, "Task_1");
@@ -76,7 +76,7 @@ public class GatewayTest extends AbstractFeatureTest {
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/GatewayTest.testVerticalLayouting.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/GatewayTest.testVerticalLayouting.bpmn")
 	public void testVerticalLayoutingTopSingleBendpoint() {
 
 		Shape task = Util.findShapeByBusinessObjectId(diagram, "Task_1");
@@ -101,7 +101,7 @@ public class GatewayTest extends AbstractFeatureTest {
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/GatewayTest.testVerticalLayouting.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/GatewayTest.testVerticalLayouting.bpmn")
 	public void testVerticalLayoutingBottomTwoBendpoints() {
 
 		Shape task = Util.findShapeByBusinessObjectId(diagram, "Task_1");
@@ -126,7 +126,7 @@ public class GatewayTest extends AbstractFeatureTest {
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/GatewayTest.testVerticalLayouting.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/GatewayTest.testVerticalLayouting.bpmn")
 	public void testVerticalLayoutingBottomTwoBendpointsTolerance() {
 
 		Shape task = Util.findShapeByBusinessObjectId(diagram, "Task_1");
@@ -152,7 +152,7 @@ public class GatewayTest extends AbstractFeatureTest {
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/GatewayTest.testVerticalLayouting.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/GatewayTest.testVerticalLayouting.bpmn")
 	public void testVerticalLayoutingBottomSingleBendpoint() {
 
 		Shape task = Util.findShapeByBusinessObjectId(diagram, "Task_1");

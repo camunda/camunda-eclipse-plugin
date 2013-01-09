@@ -1,4 +1,4 @@
-package org.eclipse.bpmn2.modeler.core.test.feature.layout;
+package org.eclipse.bpmn2.modeler.core.test.layout;
 
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
@@ -80,7 +80,7 @@ public class SequenceFlowTest extends AbstractFeatureTest {
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/FlowReconnectTest.testManualReconnectSequenceFlow.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/FlowReconnectTest.testManualReconnectSequenceFlow.bpmn")
 	public void testAnchorPlacementAfterImport() {
 		Shape task2 = Util.findShapeByBusinessObjectId(diagram, "Task_2");
 		
@@ -142,37 +142,37 @@ public class SequenceFlowTest extends AbstractFeatureTest {
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/SequenceFlowTest.testBaseHorizontal.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/SequenceFlowTest.testBaseHorizontal.bpmn")
 	public void testMoveLayoutedHorizontalNoAdjust() {
 		testMoveNonBreaking(point(10, 0));
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/SequenceFlowTest.testBaseVertical.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/SequenceFlowTest.testBaseVertical.bpmn")
 	public void testMoveLayoutedVerticalNoAdjust() {
 		testMoveNonBreaking(point(0, 10));
 	}
 
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/SequenceFlowTest.testBaseVertical.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/SequenceFlowTest.testBaseVertical.bpmn")
 	public void testMoveLayoutedHorizontalAdjust() {
 		testMoveBreaking(point(10, 0), point(-10, 0));
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/SequenceFlowTest.testBaseHorizontal.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/SequenceFlowTest.testBaseHorizontal.bpmn")
 	public void testMoveLayoutedVerticalAdjust() {
 		testMoveBreaking(point(0, 10), point(0, -10));
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/SequenceFlowTest.testBaseVertical.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/SequenceFlowTest.testBaseVertical.bpmn")
 	public void testMoveLayoutedVerticalBothAdjust() {
 		testMoveBreaking(point(10, 10), point(-10, 0));
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/SequenceFlowTest.testBaseHorizontal.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/SequenceFlowTest.testBaseHorizontal.bpmn")
 	public void testMoveLayoutedHorizontalBothAdjust() {
 		testMoveBreaking(point(10, 10), point(0, -10));
 	}

@@ -1,4 +1,4 @@
-package org.eclipse.bpmn2.modeler.core.test.feature.layout;
+package org.eclipse.bpmn2.modeler.core.test.layout;
 
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.location;
 import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveFlowElementOperation.move;

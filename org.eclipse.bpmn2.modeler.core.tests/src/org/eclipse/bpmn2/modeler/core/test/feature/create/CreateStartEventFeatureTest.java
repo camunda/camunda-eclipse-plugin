@@ -58,10 +58,6 @@ public class CreateStartEventFeatureTest extends AbstractFeatureTest {
 		assertThat(bpmnShape)
 			.isNotNull();
 		
-		BPMNLabel bpmnLabel = bpmnShape.getLabel();
-		
-		assertThat(bpmnLabel).isNotNull();
-		
 		assertThat(bpmnShape.getId())
 			.isNotNull();
 	}

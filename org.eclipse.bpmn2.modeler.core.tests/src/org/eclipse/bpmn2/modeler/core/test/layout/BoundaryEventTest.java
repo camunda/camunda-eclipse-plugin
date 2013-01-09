@@ -1,4 +1,4 @@
-package org.eclipse.bpmn2.modeler.core.test.feature.layout;
+package org.eclipse.bpmn2.modeler.core.test.layout;
 
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.eclipse.bpmn2.modeler.core.test.util.operations.ReconnectConnectionEndOperation.reconnectEnd;
@@ -18,7 +18,7 @@ import org.junit.Test;
 public class BoundaryEventTest extends AbstractFeatureTest {
 
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/BoundaryEventTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
 	public void testBottomReconnectingBottomLeft() throws Exception {
 		Shape boundaryEvent1Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
 		FreeFormConnection sequenceFlow5 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_5");
@@ -28,7 +28,7 @@ public class BoundaryEventTest extends AbstractFeatureTest {
 	}
 
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/BoundaryEventTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
 	public void testBottomReconnectingLeft() throws Exception {
 		Shape boundaryEvent1Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
 		FreeFormConnection sequenceFlow5 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_5");
@@ -38,7 +38,7 @@ public class BoundaryEventTest extends AbstractFeatureTest {
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/BoundaryEventTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
 	public void testBottomReconnectingTopRight() throws Exception {
 		Shape boundaryEvent1Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
 		FreeFormConnection sequenceFlow5 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_5");
@@ -50,7 +50,7 @@ public class BoundaryEventTest extends AbstractFeatureTest {
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/BoundaryEventTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
 	public void testRightReconnectingBottom() throws Exception {
 		Shape boundaryEvent1Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_2");
 		FreeFormConnection sequenceFlow5 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_4");
@@ -62,7 +62,7 @@ public class BoundaryEventTest extends AbstractFeatureTest {
 	}
 
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/BoundaryEventTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
 	public void testRightReconnectingRight() throws Exception {
 		Shape boundaryEvent1Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_2");
 		FreeFormConnection sequenceFlow5 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_4");
@@ -72,7 +72,7 @@ public class BoundaryEventTest extends AbstractFeatureTest {
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/layout/BoundaryEventTest.testBase.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
 	public void testRightReconnectingTopLeft() throws Exception {
 		Shape boundaryEvent1Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_2");
 		FreeFormConnection sequenceFlow5 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_4");
