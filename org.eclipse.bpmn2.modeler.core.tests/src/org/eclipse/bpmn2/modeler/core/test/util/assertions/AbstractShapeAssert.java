@@ -1,15 +1,16 @@
 package org.eclipse.bpmn2.modeler.core.test.util.assertions;
 
-import org.eclipse.bpmn2.FlowElementsContainer;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.pictograms.PictogramLink;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.fest.assertions.api.AbstractAssert;
 import org.fest.assertions.api.Assertions;
 import org.fest.assertions.core.Condition;
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 
 public abstract class AbstractShapeAssert<S extends AbstractShapeAssert<S, A>, A extends Shape> extends AbstractAssert<S, A> {
 
@@ -48,6 +49,12 @@ public abstract class AbstractShapeAssert<S extends AbstractShapeAssert<S, A>, A
 		return myself;
 	}
 
+	public AbstractShapeAssert<S, A> isContainedIn(Shape containerShape) {
+		Assertions.assertThat(actual.eContainer()).isEqualTo(containerShape);
+		
+		return myself;
+	}
+	
 	public abstract AbstractShapeAssert<S, A> isContainerShape();
 	
 	public abstract AbstractShapeAssert<S, A> hasNoChildren();
@@ -55,4 +62,8 @@ public abstract class AbstractShapeAssert<S extends AbstractShapeAssert<S, A>, A
 	public abstract AbstractShapeAssert<S, A> hasChild(Shape child);
 	public abstract AbstractShapeAssert<S, A> doesNotHaveChild(Shape child);
 
+	public PointAssert position() {
+		IRectangle absoluteRectangle = LayoutUtil.getAbsoluteRectangle(actual);
+		return new PointAssert(point(absoluteRectangle.getX(), absoluteRectangle.getY()));
+	}
 }

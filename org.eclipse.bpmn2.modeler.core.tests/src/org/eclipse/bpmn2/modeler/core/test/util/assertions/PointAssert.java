@@ -11,6 +11,7 @@
 package org.eclipse.bpmn2.modeler.core.test.util.assertions;
 
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 import org.fest.assertions.api.AbstractAssert;
 import org.fest.assertions.api.Assertions;
 
@@ -20,6 +21,10 @@ public class PointAssert extends AbstractAssert<PointAssert, Point> {
 		super(actual, PointAssert.class);
 	}
 
+	public PointAssert isEqualTo(int x, int y) {
+		return isEqualTo(point(x, y));
+	}
+	
 	public PointAssert isEqualTo(Point expected) {
 		return isEqualTo(expected, 0);
 	}
