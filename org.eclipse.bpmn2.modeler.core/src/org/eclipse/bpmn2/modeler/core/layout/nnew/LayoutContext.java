@@ -13,7 +13,7 @@ public interface LayoutContext {
 	 * 
 	 * @return
 	 */
-	public boolean isLayouted();
+	public boolean needsRepair();
 
 	/**
 	 * Perform a fix operation to repair the

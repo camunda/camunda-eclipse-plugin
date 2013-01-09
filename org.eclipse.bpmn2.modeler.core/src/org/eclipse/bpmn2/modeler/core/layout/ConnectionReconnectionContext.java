@@ -44,17 +44,17 @@ public class ConnectionReconnectionContext {
 		
 		LayoutContext layoutingContext = new DefaultLayoutStrategy().createLayoutingContext(freeFormConnection);
 		
-		boolean layouted = false;
+		boolean repaired = false;
 		
-		if (!forceLayout && layoutingContext.isLayouted()) {
-			layouted = layoutingContext.repair();
-			System.out.println("[layout] repaired ? " + layouted);
-			if (!layouted && !relayoutOnRepairFail) {
+		if (!forceLayout && layoutingContext.needsRepair()) {
+			repaired = layoutingContext.repair();
+			System.out.println("[layout] repaired ? " + repaired);
+			if (!repaired && !relayoutOnRepairFail) {
 				return;
 			}
 		}
 		
-		if (!layouted) {
+		if (!repaired) {
 			layoutingContext.layout();
 			System.out.println("[layout] new");
 		}

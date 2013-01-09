@@ -45,10 +45,6 @@ public abstract class LayoutStrategy<C, T> extends Strategy<T> {
 			return false;
 		}
 		
-		if (LayoutUtil.getSourceBaseElement(connection) instanceof BoundaryEvent && connection.getBendpoints().size() > 1) {
-			return false;
-		}
-
 		return true;
 	}
 	
