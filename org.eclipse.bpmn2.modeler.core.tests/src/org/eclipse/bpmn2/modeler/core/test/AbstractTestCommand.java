@@ -2,6 +2,7 @@ package org.eclipse.bpmn2.modeler.core.test;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,21 +22,36 @@ import org.eclipse.graphiti.ui.services.GraphitiUi;
 
 public abstract class AbstractTestCommand extends RecordingCommand {
 	
-	protected AbstractBpmnEditorTest testCase;
-	protected String diagramName;
 	
 	protected Diagram diagram;	
 	protected IDiagramTypeProvider diagramTypeProvider;
 	protected Resource diagramResource;
 
 	protected Throwable recordedException;
+
+	/**
+	 * Test case executed
+	 */
+	protected AbstractBpmnEditorTest testCase;
+	
+	/**
+	 * Name of the diagram to load
+	 */
+	protected String diagramName;
+	
+	/**
+	 * Name of the executed test
+	 */
+	protected String testName;
 	
 	private static final String TEST_DIR = "target/test";
 	
-	public AbstractTestCommand(AbstractBpmnEditorTest importBpmnModelTest, String diagramName) {
+	public AbstractTestCommand(AbstractBpmnEditorTest importBpmnModelTest, String testName, String diagramName) {
 		super(importBpmnModelTest.getEditingDomain());
 		
 		this.testCase = importBpmnModelTest;
+		this.testName = testName;
+		
 		this.diagramName = diagramName;
 	}
 
@@ -75,27 +91,14 @@ public abstract class AbstractTestCommand extends RecordingCommand {
 				}
 			}
 
-			new File(TEST_DIR).mkdir();
-			File diagramFile = new File (diagramName);
+			File testFileDir = new File(TEST_DIR);
+			testFileDir.mkdir();
 			
-			try {
-				FileOutputStream outBefore = new FileOutputStream(new File(TEST_DIR+File.separatorChar+"before."+diagramFile.getName()));
-				resource.save(outBefore, Collections.emptyMap());
-				outBefore.close();
-			} catch (Exception e) {
-				// We cant always write models, we have tests with broken models, wich can not be saved
-				// not checking for exception type, because they are somewhat arbitary (e.g. BasicIndexOutofBoundsException)
-			}
+			saveTestResource(resource, "before", testFileDir);
 			
 			test(diagramTypeProvider, diagram);
-			
-			try {
-				FileOutputStream outAfter = new FileOutputStream(new File(TEST_DIR+File.separatorChar+"after."+diagramFile.getName()));
-				resource.save(outAfter, Collections.emptyMap());
-				outAfter.close();
-			}catch (Exception e) {
-				// We cant always write models, we have tests with broken models, wich can not be saved, see above
-			}
+
+			saveTestResource(resource, "after", testFileDir);
 			
 		} catch (RuntimeException e) {
 			this.recordedException = e;
@@ -104,6 +107,29 @@ public abstract class AbstractTestCommand extends RecordingCommand {
 		} catch (Throwable e) {
 			this.recordedException = e;
 			throw new RuntimeException(e);
+		}
+	}
+
+	private void saveTestResource(Bpmn2ResourceImpl resource, String suffix, File directory) {
+		String fileName = testCase.getClass().getName() + "." + testName + "." + suffix + ".bpmn";
+		
+		FileOutputStream out = null;
+		
+		try {
+			out = new FileOutputStream(new File(directory, fileName));
+			resource.save(out, Collections.emptyMap());
+			out.close();
+		} catch (Exception e) {
+			// We cant always write models, we have tests with broken models, wich can not be saved
+			// not checking for exception type, because they are somewhat arbitary (e.g. BasicIndexOutofBoundsException)
+			
+			if (out != null) {
+				try {
+					out.close();
+				} catch (IOException ioe) {
+					// cannot handle
+				}
+			}
 		}
 	}
 

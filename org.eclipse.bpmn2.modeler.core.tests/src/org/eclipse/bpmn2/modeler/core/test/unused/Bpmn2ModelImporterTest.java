@@ -79,7 +79,7 @@ public class Bpmn2ModelImporterTest extends AbstractImportBpmnModelTest {
 		
 		try {
 			TransactionalEditingDomain editingDomain = createEditingDomain(resourceName);
-			editingDomain.getCommandStack().execute(new AbstractTestCommand(this, "test.bpmn") {
+			editingDomain.getCommandStack().execute(new AbstractTestCommand(this, "importDiagram", "test.bpmn") {
 				public void test(IDiagramTypeProvider diagramTypeProvider, Diagram diagram) {
 					ModelImport bpmnModelImport = new ModelImport(diagramTypeProvider, resource);
 					bpmnModelImport.execute();

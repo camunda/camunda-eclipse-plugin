@@ -29,7 +29,7 @@ public class RunAsEmfCommandRule implements MethodRule {
 			
 			String resourceUrl = getResourceUrl(resource, target, method.getMethod());
 			
-			return new StatementExtension(testCase, resourceUrl, base, testTransactional);
+			return new StatementExtension(testCase, method, resourceUrl, base, testTransactional);
 		} else {
 			return base;
 		}
@@ -59,6 +59,8 @@ public class RunAsEmfCommandRule implements MethodRule {
 	private class StatementExtension extends Statement {
 		
 		private final AbstractBpmnEditorTest testCase;
+		private FrameworkMethod testMethod;
+		
 		private final String resourceUrl;
 		private final Statement base;
 		
@@ -67,11 +69,12 @@ public class RunAsEmfCommandRule implements MethodRule {
 		 */
 		private boolean testTransactional;
 		
-		private StatementExtension(AbstractBpmnEditorTest testCase, String resourceUrl, Statement base, boolean testTransactional) {
+		private StatementExtension(AbstractBpmnEditorTest testCase, FrameworkMethod testMethod, String resourceUrl, Statement base, boolean testTransactional) {
 			this.testCase = testCase;
 			this.resourceUrl = resourceUrl;
 			this.base = base;
 			
+			this.testMethod = testMethod;
 			this.testTransactional = testTransactional;
 		}
 
@@ -80,7 +83,7 @@ public class RunAsEmfCommandRule implements MethodRule {
 			try {
 				TransactionalEditingDomain domain = testCase.createEditingDomain(resourceUrl);
 				
-				AbstractTestCommand command = new AbstractTestCommand(testCase, resourceUrl) {
+				AbstractTestCommand command = new AbstractTestCommand(testCase, testMethod.getName(), resourceUrl) {
 					
 					@Override
 					public void test(IDiagramTypeProvider diagramTypeProvider, Diagram diagram) throws Throwable {
