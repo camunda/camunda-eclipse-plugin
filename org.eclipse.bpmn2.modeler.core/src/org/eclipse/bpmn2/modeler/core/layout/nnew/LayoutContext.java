@@ -9,11 +9,12 @@ public interface LayoutContext {
 	
 	/**
 	 * Returns true if the connection enclosed in this context is
-	 * already laid out and false to indicate that layouting is needed.
+	 * already laid out and can be repaired and false to indicate that 
+	 * initial layouting is needed.
 	 * 
 	 * @return
 	 */
-	public boolean needsRepair();
+	public boolean isRepairable();
 
 	/**
 	 * Perform a fix operation to repair the

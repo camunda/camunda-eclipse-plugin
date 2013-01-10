@@ -1,6 +1,5 @@
 package org.eclipse.bpmn2.modeler.core.layout.nnew;
 
-import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.anchorLocation;
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.location;
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 
@@ -11,21 +10,18 @@ import java.util.Set;
 
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.modeler.core.layout.AnchorPointStrategy;
-import org.eclipse.bpmn2.modeler.core.layout.Docking;
-import org.eclipse.bpmn2.modeler.core.layout.DockingSwitch;
 import org.eclipse.bpmn2.modeler.core.layout.BendpointStrategy;
+import org.eclipse.bpmn2.modeler.core.layout.Docking;
 import org.eclipse.bpmn2.modeler.core.layout.LayoutStrategy;
 import org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
-import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
-import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
@@ -115,7 +111,7 @@ public class DefaultLayoutContext implements LayoutContext {
 	
 	
 	@Override
-	public boolean needsRepair() {
+	public boolean isRepairable() {
 		if (brokenConnectionParts.isEmpty()) {
 			return true;
 		} 
