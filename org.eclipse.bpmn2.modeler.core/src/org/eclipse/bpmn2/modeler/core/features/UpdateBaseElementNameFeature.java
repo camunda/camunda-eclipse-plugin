@@ -41,11 +41,12 @@ public class UpdateBaseElementNameFeature extends AbstractUpdateFeature {
 
 	@Override
 	public boolean canUpdate(IUpdateContext context) {
-		BaseElement element = (BaseElement) BusinessObjectUtil.getFirstElementOfType(context.getPictogramElement(),
-		        BaseElement.class);
+		BaseElement element = (BaseElement) BusinessObjectUtil.getBusinessObjectForPictogramElement(context.getPictogramElement());
+		
 		if (element == null) {
 			return false;
 		}
+		
 		return ModelUtil.hasName(element);
 	}
 

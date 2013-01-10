@@ -69,7 +69,7 @@ public class AddEventFeature<T extends Event>
 			width = height = Math.min(width, height);
 		}
 		
-		adjustLocation(context,width,height);
+		adjustLocation(context, width, height);
 		
 		int x = context.getX();
 		int y = context.getY();

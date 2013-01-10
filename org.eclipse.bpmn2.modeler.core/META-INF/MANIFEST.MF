@@ -328,6 +328,13 @@ Export-Package: org.eclipse.bpmn2.modeler.core;
    org.eclipse.graphiti.mm.pictograms,
    org.eclipse.bpmn2.modeler.core.features.flow,
    org.eclipse.graphiti.mm.algorithms",
+ org.eclipse.bpmn2.modeler.ui.features.label;
+  uses:="org.eclipse.bpmn2.di,
+   org.eclipse.emf.ecore,
+   org.eclipse.graphiti.features.context,
+   org.eclipse.graphiti.features,
+   org.eclipse.bpmn2.modeler.core.features,
+   org.eclipse.bpmn2.modeler.ui.features",
  org.eclipse.bpmn2.modeler.ui.features.participant;
   uses:="org.eclipse.bpmn2.di,
    org.eclipse.emf.ecore,

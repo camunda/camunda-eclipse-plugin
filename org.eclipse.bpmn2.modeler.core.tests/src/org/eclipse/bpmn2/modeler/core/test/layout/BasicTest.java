@@ -2,7 +2,7 @@ package org.eclipse.bpmn2.modeler.core.test.layout;
 
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
-import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveFlowElementOperation.move;
+import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveElementOperation.move;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
@@ -10,7 +10,7 @@ import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.Util;
-import org.eclipse.bpmn2.modeler.core.test.util.operations.MoveFlowElementOperation;
+import org.eclipse.bpmn2.modeler.core.test.util.operations.MoveElementOperation;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
@@ -37,7 +37,7 @@ public class BasicTest extends AbstractFeatureTest {
 		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_6");
 		
 		// when moving shape above connected shape
-		MoveFlowElementOperation.move(taskShape, getDiagramTypeProvider())
+		MoveElementOperation.move(taskShape, getDiagramTypeProvider())
 			.by(130, -91)
 			.execute();
 		
@@ -56,7 +56,7 @@ public class BasicTest extends AbstractFeatureTest {
 		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_6");
 		
 		// when moving both anchor points above each other
-		MoveFlowElementOperation.move(taskShape, getDiagramTypeProvider())
+		MoveElementOperation.move(taskShape, getDiagramTypeProvider())
 			.by(110, -130)
 			.execute();
 		

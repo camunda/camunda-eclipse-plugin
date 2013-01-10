@@ -13,6 +13,8 @@
               <bpmn2:lane id="Lane_6" name="Lane 6">
                 <bpmn2:flowNodeRef>ExclusiveGateway_1</bpmn2:flowNodeRef>
                 <bpmn2:flowNodeRef>StartEvent_1</bpmn2:flowNodeRef>
+                <bpmn2:flowNodeRef>Task_1</bpmn2:flowNodeRef>
+                <bpmn2:flowNodeRef>BoundaryEvent_1</bpmn2:flowNodeRef>
               </bpmn2:lane>
             </bpmn2:childLaneSet>
           </bpmn2:lane>
@@ -23,6 +25,8 @@
     </bpmn2:laneSet>
     <bpmn2:exclusiveGateway id="ExclusiveGateway_1" name="Exclusive Gateway 1"/>
     <bpmn2:startEvent id="StartEvent_1" name="Start Event 1"/>
+    <bpmn2:task id="Task_1" name="Task 1"/>
+    <bpmn2:boundaryEvent id="BoundaryEvent_1" name="My Name" attachedToRef="Task_1"/>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="_Collaboration_2">
@@ -48,16 +52,22 @@
         <dc:Bounds height="175.0" width="650.0" x="170.0" y="224.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-        <dc:Bounds height="36.0" width="36.0" x="240.0" y="269.0"/>
-        <bpmndi:BPMNLabel>
-          <dc:Bounds height="22.0" width="81.0" x="218.0" y="307.0"/>
+        <dc:Bounds height="36.0" width="36.0" x="250.0" y="269.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_1">
+          <dc:Bounds height="22.0" width="81.0" x="228.0" y="307.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_ExclusiveGateway_2" bpmnElement="ExclusiveGateway_1" isMarkerVisible="true">
-        <dc:Bounds height="50.0" width="50.0" x="350.0" y="262.0"/>
-        <bpmndi:BPMNLabel>
-          <dc:Bounds height="22.0" width="127.0" x="312.0" y="314.0"/>
+        <dc:Bounds height="50.0" width="50.0" x="370.0" y="262.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_2">
+          <dc:Bounds height="22.0" width="127.0" x="332.0" y="314.0"/>
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Task_2" bpmnElement="Task_1">
+        <dc:Bounds height="80.0" width="100.0" x="560.0" y="255.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_BoundaryEvent_2" bpmnElement="BoundaryEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="602.0" y="317.0"/>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

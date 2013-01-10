@@ -24,6 +24,7 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.Gateway;
+import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -1062,6 +1063,54 @@ public class GraphicsUtil {
 		return compensation;
 	}
 
+	/**
+	 * Returns the label of a given shape (connected via the shapes business object)
+	 * in the scope of the given diagram.
+	 * 
+	 * @param shape
+	 * @param diagram
+	 * 
+	 * @return the label shape or null if non was found.
+	 */
+	public static Shape getLabel(Shape shape, Diagram diagram) {
+		return getLabel(BusinessObjectUtil.getFirstBaseElement(shape), diagram);
+	}
+	
+	/**
+	 * Returns the label of the given business object 
+	 * in the scope of the given diagram.
+	 * 
+	 * @param bpmnElement
+	 * @param diagram
+	 * 
+	 * @return the label or null if no label was found
+	 */
+	public static Shape getLabel(BaseElement bpmnElement, Diagram diagram) {
+		if (bpmnElement == null || diagram == null) {
+			throw new IllegalArgumentException("Arguments may not be null");
+		}
+		
+		List<PictogramElement> linkedPictogramElements = Graphiti.getLinkService().getPictogramElements(diagram, bpmnElement);
+		
+		for (PictogramElement element : linkedPictogramElements) {
+			if (isLabel(element)) {
+				return (Shape) element;
+			}
+		}
+		
+		return null;
+	}
+
+	/**
+	 * Returns true if the given pictogram element represents a label.
+	 * 
+	 * @param element
+	 * @return
+	 */
+	public static boolean isLabel(PictogramElement element) {
+		return Graphiti.getPeService().getPropertyValue(element, GraphicsUtil.LABEL_PROPERTY) != null;
+	}
+	
 	/**
 	 * Check if the given Point is with a given distance of the given Location.
 	 * 
