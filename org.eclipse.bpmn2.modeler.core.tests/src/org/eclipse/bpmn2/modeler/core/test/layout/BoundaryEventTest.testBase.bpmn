@@ -41,6 +41,12 @@
     <bpmn2:sequenceFlow id="SequenceFlow_1" name="" sourceRef="BoundaryEvent_4" targetRef="Task_7"/>
     <bpmn2:sequenceFlow id="SequenceFlow_2" name="" sourceRef="BoundaryEvent_5" targetRef="Task_4"/>
     <bpmn2:sequenceFlow id="SequenceFlow_3" name="" sourceRef="BoundaryEvent_3" targetRef="Task_3"/>
+    <bpmn2:task id="Task_12" name="Task 12"/>
+    <bpmn2:task id="Task_13" name="Task 13"/>
+    <bpmn2:task id="Task_11" name="Task 11"/>
+    <bpmn2:task id="Task_14" name="Task 14"/>
+    <bpmn2:task id="Task_15" name="Task 15"/>
+    <bpmn2:task id="Task_16" name="Task 16"/>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
@@ -120,6 +126,24 @@
         <di:waypoint xsi:type="dc:Point" x="542.0" y="140.0"/>
         <di:waypoint xsi:type="dc:Point" x="700.0" y="140.0"/>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_Task_12" bpmnElement="Task_11">
+        <dc:Bounds height="80.0" width="100.0" x="460.0" y="370.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Task_13" bpmnElement="Task_12">
+        <dc:Bounds height="80.0" width="100.0" x="340.0" y="10.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Task_14" bpmnElement="Task_13">
+        <dc:Bounds height="80.0" width="100.0" x="349.0" y="370.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Task_15" bpmnElement="Task_14">
+        <dc:Bounds height="80.0" width="100.0" x="861.0" y="82.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Task_16" bpmnElement="Task_15">
+        <dc:Bounds height="80.0" width="100.0" x="407.0" y="470.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Task_17" bpmnElement="Task_16">
+        <dc:Bounds height="80.0" width="100.0" x="422.0" y="551.0"/>
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
