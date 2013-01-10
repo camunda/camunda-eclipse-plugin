@@ -17,7 +17,6 @@ import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.features.MoveFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractBoundaryEventOperation;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
-import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
@@ -26,7 +25,6 @@ import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.services.IPeLayoutService;
 
 public class MoveActivityFeature extends MoveFlowNodeFeature {
 
@@ -35,19 +33,6 @@ public class MoveActivityFeature extends MoveFlowNodeFeature {
 
 	public MoveActivityFeature(IFeatureProvider fp) {
 		super(fp);
-	}
-
-	@Override
-	protected void preMoveShape(IMoveShapeContext context) {
-		MoveShapeContext msc = (MoveShapeContext)context;
-		ContainerShape oldContainer = context.getSourceContainer();
-		ContainerShape newContainer = context.getTargetContainer();
-		IPeLayoutService peLayoutService = Graphiti.getPeLayoutService();
-		
-		ILocation oldLoc = peLayoutService.getLocationRelativeToDiagram(oldContainer);
-		ILocation newLoc = peLayoutService.getLocationRelativeToDiagram(newContainer);
-
-		super.preMoveShape(context);
 	}
 
 	@Override

@@ -45,7 +45,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(subProcessShape).doesNotHaveChild(userTaskShape);
 		
 		assertThat(processShape).hasChild(userTaskShape);
-		assertThat(userTaskShape).hasParentModelElement(subProcessElement.eContainer());
+		assertThat(userTaskShape).isContainedIn(processShape);
 	}
 
 	@Test

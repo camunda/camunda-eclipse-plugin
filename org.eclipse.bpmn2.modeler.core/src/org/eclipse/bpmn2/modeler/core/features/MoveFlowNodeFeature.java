@@ -23,8 +23,10 @@ import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
+import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 
@@ -59,7 +61,7 @@ public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 			}
 
 			return algorithmContainer.isMoveAllowed(getSourceBo(context, handler), getTargetBo(context, handler));
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new IllegalStateException("Failed to execute #canMoveShape", e);
 		}
 	}
@@ -109,6 +111,7 @@ public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 	}
 
 	class AlgorithmContainer {
+		
 		public Algorithm fromAlgorithm;
 		public Algorithm toAlgorithm;
 

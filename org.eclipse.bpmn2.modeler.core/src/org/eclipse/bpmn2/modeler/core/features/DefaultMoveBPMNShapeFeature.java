@@ -12,9 +12,6 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features;
 
-import java.util.List;
-
-import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.layout.ConnectionService;
@@ -27,7 +24,6 @@ import org.eclipse.graphiti.mm.algorithms.AbstractText;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
-import org.eclipse.graphiti.services.Graphiti;
 
 public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 
