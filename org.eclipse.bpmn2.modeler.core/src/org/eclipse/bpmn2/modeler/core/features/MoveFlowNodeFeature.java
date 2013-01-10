@@ -60,10 +60,8 @@ public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 
 			return algorithmContainer.isMoveAllowed(getSourceBo(context, handler), getTargetBo(context, handler));
 		} catch (IOException e) {
-			Activator.logError(e);
+			throw new IllegalStateException("Failed to execute #canMoveShape", e);
 		}
-
-		return false;
 	}
 
 	protected boolean onMoveAlgorithmNotFound(IMoveShapeContext context) {
@@ -82,8 +80,9 @@ public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 				}
 			}
 		} catch (Exception e) {
-			Activator.logError(e);
+			throw new IllegalStateException("Failed to execute post move", e);
 		}
+		
 		super.postMoveShape(context);
 	}
 	
@@ -152,6 +151,11 @@ public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 		return new AlgorithmContainer(fromAlgorithm, toAlgorithm);
 	}
 
+	/**
+	 * TODO: Refactor or streamline with other stuff.
+	 * 
+	 * @author nico.rehwaldt
+	 */
 	interface Algorithm {
 
 		int TYPE_FROM = 0;
@@ -269,17 +273,24 @@ public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 					return true;
 				if (target instanceof Participant) {
 					Participant p = (Participant) target;
-					if (p.equals(ModelHandler.getInstance(getDiagram()).getInternalParticipant())) {
-						return true;
-					}
+					
 					if (p.getProcessRef() == null) {
 						return true;
 					}
+					
 					if (p.getProcessRef().getLaneSets().isEmpty()) {
 						return true;
 					}
-				}
-				else if (target instanceof FlowElementsContainer) {
+					
+					if (!p.getProcessRef().getLaneSets().isEmpty()) {
+						return false;
+					}
+					
+					if (p.equals(ModelHandler.getInstance(getDiagram()).getInternalParticipant())) {
+						return true;
+					}
+				} else
+				if (target instanceof FlowElementsContainer) {
 					FlowElementsContainer p = (FlowElementsContainer) target;
 					if (p.getLaneSets().isEmpty()) {
 						return true;

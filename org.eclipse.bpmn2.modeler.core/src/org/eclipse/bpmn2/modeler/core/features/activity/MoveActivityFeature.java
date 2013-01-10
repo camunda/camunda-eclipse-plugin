@@ -46,13 +46,6 @@ public class MoveActivityFeature extends MoveFlowNodeFeature {
 		
 		ILocation oldLoc = peLayoutService.getLocationRelativeToDiagram(oldContainer);
 		ILocation newLoc = peLayoutService.getLocationRelativeToDiagram(newContainer);
-		
-		if (oldContainer!=newContainer) {
-			int x = newLoc.getX() + msc.getX() - oldLoc.getX();
-			int y = newLoc.getY() + msc.getY() - oldLoc.getY();
-			int deltaX = newLoc.getX() + msc.getDeltaX() - oldLoc.getX();
-			int deltaY = newLoc.getY() + msc.getDeltaY() - oldLoc.getY();
-		}
 
 		super.preMoveShape(context);
 	}

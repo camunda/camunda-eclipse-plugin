@@ -11,7 +11,6 @@ import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.Message;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.bpmn2.modeler.core.features.FeatureContainer;
@@ -111,21 +110,7 @@ public class LabelFeatureContainer implements FeatureContainer {
 
 	@Override
 	public IMoveShapeFeature getMoveFeature(IFeatureProvider fp) {
-		return new DefaultMoveShapeFeature(fp) {
-			@Override
-			public boolean canMoveShape(IMoveShapeContext context) {
-				return true;
-			}
-
-			@Override
-			protected void postMoveShape(IMoveShapeContext context) {
-				super.postMoveShape(context);
-				BaseElement base = (BaseElement) context.getShape().getLink().getBusinessObjects().get(0);
-				BPMNShape bpmnShape = (BPMNShape) ModelHandler.findDIElement(base);
-				
-				DIUtils.updateDILabel((ContainerShape) context.getShape(), bpmnShape);
-			}
-		};
+		return new MoveLabelFeature(fp);
 	}
 
 	@Override
@@ -141,5 +126,33 @@ public class LabelFeatureContainer implements FeatureContainer {
 	@Override
 	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
 		return null;
+	}
+	
+	public static class MoveLabelFeature extends DefaultMoveShapeFeature {
+		
+		public MoveLabelFeature(IFeatureProvider fp) {
+			super(fp);
+		}
+
+		@Override
+		public boolean canMoveShape(IMoveShapeContext context) {
+			ContainerShape sourceContainer = context.getSourceContainer();
+			ContainerShape targetContainer = context.getTargetContainer();
+			
+			// may not move label to container different from old container
+			// (assumes that old container holds labeled element, too)
+			return sourceContainer == targetContainer;
+		}
+
+		@Override
+		protected void postMoveShape(IMoveShapeContext context) {
+			super.postMoveShape(context);
+			
+			Shape labelShape = context.getShape();
+			
+			BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(labelShape, BPMNShape.class);
+			
+			DIUtils.updateDILabel((ContainerShape) labelShape, bpmnShape);
+		}
 	}
 }

@@ -73,7 +73,7 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setVerticalAlignment(Orientation.ALIGNMENT_TOP);
 		
-		this.link(textContainerShape, baseElement);
+		this.link(textContainerShape, new Object[] { baseElement, bpmnShape });
 		updatePictogramElement(textContainerShape);
 		
 		if (bpmnShape != null && bpmnShape.getLabel() != null && bpmnShape.getLabel().getBounds() != null) {
