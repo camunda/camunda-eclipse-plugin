@@ -273,8 +273,8 @@ public class AnchorPointStrategy extends LayoutStrategy<Void, Tuple<Docking, Doc
 			// Check if gateway lies directly below or above the connecting shape
 			// in that case choose the connecting sector of that shape as Sector.TOP / Sector.BOTTOM
 			// and later apply the two bendpoint strategy
-			IRectangle startBounds = LayoutUtil.getAbsoluteRectangle((Shape) connection.getStart().getParent());
-			IRectangle endBounds = LayoutUtil.getAbsoluteRectangle((Shape) connection.getEnd().getParent());
+			IRectangle startBounds = LayoutUtil.getAbsoluteBounds((Shape) connection.getStart().getParent());
+			IRectangle endBounds = LayoutUtil.getAbsoluteBounds((Shape) connection.getEnd().getParent());
 			
 			ILocation midPoint = location(startBounds.getX() + startBounds.getWidth() / 2, endBounds.getY());
 			

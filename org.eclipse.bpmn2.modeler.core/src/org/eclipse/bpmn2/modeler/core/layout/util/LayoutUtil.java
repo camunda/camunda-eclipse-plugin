@@ -16,7 +16,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
-import org.eclipse.graphiti.internal.datatypes.impl.LocationImpl;
 import org.eclipse.graphiti.internal.datatypes.impl.RectangleImpl;
 import org.eclipse.graphiti.mm.Property;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
@@ -118,7 +117,7 @@ public class LayoutUtil {
 	public static Sector getEndShapeSector(FreeFormConnection connection) {
 		Shape startShape = (Shape) connection.getStart().getParent();
 		Shape endShape = (Shape) connection.getEnd().getParent();
-		
+
 		boolean left = LayoutUtil.isLeftToStartShape(startShape, endShape); 
 		boolean right = LayoutUtil.isRightToStartShape(startShape, endShape);
 		boolean above = LayoutUtil.isAboveStartShape(startShape, endShape);
@@ -533,23 +532,20 @@ public class LayoutUtil {
 		return Sector.fromBooleans(left, right, above, beneath);
 	}
 	
-	public static IRectangle getAbsoluteRectangle(Shape shape) {
-		ILocation position = getShapeLocation(shape);
+	public static IRectangle getAbsoluteBounds(Shape shape) {
+		ILocation position = getLocation(shape);
 		GraphicsAlgorithm algorithm = shape.getGraphicsAlgorithm();
 		
 		return rectangle(position.getX(), position.getY(), algorithm.getWidth(), algorithm.getHeight());
 	}
 	
-	@SuppressWarnings("restriction")
 	public static ILocation getShapeLocationMidpoint(Shape shape) {
 
-		ILocation location = getShapeLocation(shape);
-
-		GraphicsAlgorithm graphicsAlgorithm = shape.getGraphicsAlgorithm();
+		IRectangle bounds = getAbsoluteBounds(shape);
 		
-		return new LocationImpl(
-			location.getX() + graphicsAlgorithm.getWidth() / 2, 
-			location.getY() + graphicsAlgorithm.getHeight() / 2);
+		return location(
+			bounds.getX() + bounds.getWidth() / 2, 
+			bounds.getY() + bounds.getHeight() / 2);
 	}
 	
 	public static double getLength(FreeFormConnection connection) {
@@ -862,7 +858,7 @@ public class LayoutUtil {
 
 	// private static helpers; do not expose //////////////////////////////
 
-	private static ILocation getShapeLocation(Shape shape) {
+	private static ILocation getLocation(Shape shape) {
 		return Graphiti.getPeLayoutService().getLocationRelativeToDiagram(shape);
 	}
 	

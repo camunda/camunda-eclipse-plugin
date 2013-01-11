@@ -35,25 +35,24 @@ public class SequenceFlowHandler extends AbstractEdgeHandler<SequenceFlow> {
 	protected PictogramElement handleEdge(SequenceFlow bpmnElement, BPMNEdge edge, ContainerShape container) {
 		
 		FlowNode source = bpmnElement.getSourceRef();
-		PictogramElement sourcePictogram = getPictogramElement(source);
-		
 		if (source == null) {
 			InvalidContentException exception = new InvalidContentException("Could not resolve source", bpmnElement);
 			modelImport.log(exception);
 		}
-		
+
 		FlowNode target = bpmnElement.getTargetRef();
-		PictogramElement targetPictogram = getPictogramElement(target);
-		
 		if (target == null) {
 			InvalidContentException exception = new InvalidContentException("Could not resolve target", bpmnElement);
 			modelImport.log(exception);
 		}
 		
-		if (source!= null && target != null && sourcePictogram != null && targetPictogram != null) {
+		PictogramElement sourcePictogram = getPictogramElement(source);
+		PictogramElement targetPictogram = getPictogramElement(target);
+		
+		if (source != null && target != null && sourcePictogram != null && targetPictogram != null) {
 			Connection connection = createConnectionAndSetBendpoints(edge, sourcePictogram, targetPictogram);
 			return connection;	
-		}else {
+		} else {
 			modelImport.log(new ImportException("Source or target invalid", edge));
 			return null;
 		}

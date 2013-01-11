@@ -52,7 +52,7 @@ public class DockingSwitch extends Strategy<Docking> {
 
 	protected Point getDockingPosition(Shape dockingShape) {
 		
-		IRectangle dockingBounds = LayoutUtil.getAbsoluteRectangle(dockingShape);
+		IRectangle dockingBounds = LayoutUtil.getAbsoluteBounds(dockingShape);
 		
 		int x = dockingBounds.getX();
 		int y = dockingBounds.getY();

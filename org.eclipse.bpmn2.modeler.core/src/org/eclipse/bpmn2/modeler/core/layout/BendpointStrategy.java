@@ -139,15 +139,20 @@ public class BendpointStrategy extends LayoutStrategy<Tuple<Docking, Docking>, V
 	
 	protected void sectorSwitch(Sector sector) {
 		switch(sector) {
-		case LEFT:
 		case TOP_LEFT:
 		case BOTTOM_LEFT:
-		case RIGHT:
 		case TOP_RIGHT:
 		case BOTTOM_RIGHT:
 			this.vertical();
 			break;
-			
+		
+		// FIXME: Had to change this to none() otherwise 
+		// direct horizontal and vertical layouting do not work anymore
+		case LEFT:
+		case RIGHT:
+			this.none();
+			break;
+		
 		case TOP:
 		case BOTTOM:
 			this.horizontal();

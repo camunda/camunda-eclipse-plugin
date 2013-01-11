@@ -109,7 +109,7 @@ public class FreeFormConnectionAndShapeAssert extends AbstractAssert<FreeFormCon
 	private Sector getVisibleAnchorSector(Anchor anchor) {
 		if (anchor.equals(LayoutUtil.getCenterAnchor(connectedShape))) {
 			ILocation visibleAnchorPosition = LayoutUtil.getVisibleAnchorLocation(anchor, actual);
-			return LayoutUtil.getSector(visibleAnchorPosition, LayoutUtil.getAbsoluteRectangle(connectedShape));
+			return LayoutUtil.getSector(visibleAnchorPosition, LayoutUtil.getAbsoluteBounds(connectedShape));
 		} else {
 			return LayoutUtil.getAnchorSector(anchor);
 		}

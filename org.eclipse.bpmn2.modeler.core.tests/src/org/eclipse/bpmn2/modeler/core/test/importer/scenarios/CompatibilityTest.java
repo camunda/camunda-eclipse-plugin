@@ -15,7 +15,7 @@ public class CompatibilityTest extends AbstractImportBpmnModelTest {
 	
 	@Test
 	@DiagramResource
-	public void testAdonisDiExportCompatibility() {
+	public void testAdonisDiImportCompatibility() {
 		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
 		importer.execute();
 		

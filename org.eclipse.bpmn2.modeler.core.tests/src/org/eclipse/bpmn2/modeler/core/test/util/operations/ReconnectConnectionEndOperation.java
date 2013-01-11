@@ -1,5 +1,6 @@
 package org.eclipse.bpmn2.modeler.core.test.util.operations;
 
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.location;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.ui.features.flow.SequenceFlowFeatureContainer.ReconnectSequenceFlowFeature;
 import org.eclipse.graphiti.datatypes.ILocation;
@@ -31,13 +32,16 @@ public class ReconnectConnectionEndOperation extends ConnectionOperation<Reconne
 		feature = new ReconnectSequenceFlowFeature(featureProvider);
 	}
 	
-	@SuppressWarnings("restriction")
 	public ReconnectConnectionEndOperation withTargetLocation(int x, int y) {
-		context.setTargetLocation(new LocationImpl(x, y));
+		context.setTargetLocation(location(x, y));
 		return this;
 	}
 	
 	public ReconnectConnectionEndOperation toElement(AnchorContainer element) {
+		if (element == null) {
+			throw new IllegalArgumentException("Element may not be null");
+		}
+		
 		context.setNewAnchor(Graphiti.getCreateService().createChopboxAnchor(element));
 		context.setTargetPictogramElement(element);
 		context.setReconnectType(ReconnectionContext.RECONNECT_TARGET);

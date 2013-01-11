@@ -11,6 +11,7 @@ import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.Util;
 import org.eclipse.bpmn2.modeler.core.test.util.operations.MoveElementOperation;
+import org.eclipse.bpmn2.modeler.core.test.util.operations.ReconnectConnectionEndOperation;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
@@ -41,7 +42,7 @@ public class BasicTest extends AbstractFeatureTest {
 		
 		// make sure we can do this (no exception thrown)
 		
-		IRectangle rect = LayoutUtil.getAbsoluteRectangle(taskShape);
+		IRectangle rect = LayoutUtil.getAbsoluteBounds(taskShape);
 		
 		// then movement was executed
 		assertThat(point(rect)).isEqualTo(point(360, 289));
@@ -60,7 +61,7 @@ public class BasicTest extends AbstractFeatureTest {
 		
 		// make sure we can do this (no exception thrown)
 		
-		IRectangle rect = LayoutUtil.getAbsoluteRectangle(taskShape);
+		IRectangle rect = LayoutUtil.getAbsoluteBounds(taskShape);
 		
 		// then movement was executed
 		assertThat(point(rect)).isEqualTo(point(340, 250));
@@ -184,8 +185,37 @@ public class BasicTest extends AbstractFeatureTest {
 	}
 	
 	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BasicTest.testBaseVertical.bpmn")
+	public void testRemoveBendpointsStraightVerticalLine() {
+
+		FreeFormConnection sequenceFlow = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
+
+		// assume
+		// sequence flow is straight line
+		assertThat(sequenceFlow).hasBendpointCount(0);
+		
+		// do and ...
+		move(taskShape, diagramTypeProvider)
+			.by(50, 0)
+			.execute();
+		
+		// undo movement on x-axis
+		move(taskShape, diagramTypeProvider)
+			.by(-50, 0)
+			.execute();
+		
+		// bendpoints should be removed when shape is moved back 
+		// so that connection forms straight line
+		assertThat(sequenceFlow)
+			.hasNoDiagonalEdges()
+			.hasBendpointCount(0);
+	}
+	
+	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BasicTest.testMoveEventVertical.bpmn")
-	public void testRemoveBendpointsStraightLine() {
+	public void testRemoveBendpointsStraightHorizontalLine() {
 
 		FreeFormConnection sequenceFlow = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
 
@@ -200,11 +230,36 @@ public class BasicTest extends AbstractFeatureTest {
 			.by(0, 50)
 			.execute();
 		
-		// undo movement
+		// undo movement on y-axis (vertical)
 		move(taskShape, diagramTypeProvider)
 			.by(0, -50)
 			.execute();
 
+		// bendpoints should be removed when shape is moved back 
+		// so that connection forms straight line
+		assertThat(sequenceFlow)
+			.hasNoDiagonalEdges()
+			.hasBendpointCount(0);
+	}
+
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BasicTest.testMoveEventVertical.bpmn")
+	public void testReconnectStraightLine() {
+
+		FreeFormConnection sequenceFlow = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
+
+		// assume
+		// sequence flow is straight line
+		assertThat(sequenceFlow).hasBendpointCount(0);
+
+		// when moving horizontally
+		move(taskShape, diagramTypeProvider)
+			.by(20, 0)
+			.execute();
+		
 		// bendpoints should be removed when shape is moved back to straight line
 		assertThat(sequenceFlow)
 			.hasNoDiagonalEdges()

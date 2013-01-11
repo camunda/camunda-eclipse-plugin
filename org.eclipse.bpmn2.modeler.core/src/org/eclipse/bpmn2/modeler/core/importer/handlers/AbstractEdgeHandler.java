@@ -109,8 +109,8 @@ public abstract class AbstractEdgeHandler<T extends BaseElement> extends Abstrac
 			context.putProperty(DIUtils.IMPORT_PROPERTY, true);
 			Connection connection = (Connection) addFeature.add(context);
 
-			if (connection instanceof FreeFormConnectionImpl) {
-				FreeFormConnectionImpl freeForm = (FreeFormConnectionImpl) connection;
+			if (connection instanceof FreeFormConnection) {
+				FreeFormConnection freeForm = (FreeFormConnection) connection;
 
 				int last = waypoints.size() - 1;
 
@@ -192,7 +192,7 @@ public abstract class AbstractEdgeHandler<T extends BaseElement> extends Abstrac
 		
 		Shape shape = (Shape) container;
 
-		IRectangle containerRect = LayoutUtil.getAbsoluteRectangle(shape);
+		IRectangle containerRect = LayoutUtil.getAbsoluteBounds(shape);
 		
 		ILocation referencePointLocation = location(referencePoint);
 		

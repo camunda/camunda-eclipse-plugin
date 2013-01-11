@@ -57,7 +57,7 @@ public class FlowReconnectTest extends AbstractFeatureTest {
 		Point lastBeforeLastWp = waypoints.get(2);
 		Point lastWp = waypoints.get(3);
 		
-		IRectangle absoluteRectangle = LayoutUtil.getAbsoluteRectangle(task2);
+		IRectangle absoluteRectangle = LayoutUtil.getAbsoluteBounds(task2);
 		ILocation intersectionPoint = LayoutUtil.getChopboxIntersectionPoint(absoluteRectangle, ConversionUtil.location(lastBeforeLastWp));
 		
 		assertThat(intersectionPoint).isEqualsToByComparingFields(location(lastWp));

@@ -60,8 +60,8 @@ public class DefaultLayoutContext implements LayoutContext {
 		startShape = (Shape) start.getParent();
 		endShape = (Shape) end.getParent();
 
-		startShapeBounds = LayoutUtil.getAbsoluteRectangle(startShape);
-		endShapeBounds = LayoutUtil.getAbsoluteRectangle(endShape);
+		startShapeBounds = LayoutUtil.getAbsoluteBounds(startShape);
+		endShapeBounds = LayoutUtil.getAbsoluteBounds(endShape);
 	}
 
 	protected void computeConnectionParts() {
@@ -259,7 +259,7 @@ public class DefaultLayoutContext implements LayoutContext {
 		
 		Tuple<Docking, Docking> dockings = getDockings();
 		if (dockings != null && BusinessObjectUtil.getFirstBaseElement(startShape) instanceof BoundaryEvent) {
-			Sector afterRepairSector = LayoutUtil.getSector(ConversionUtil.location(firstBendpoint), LayoutUtil.getAbsoluteRectangle(startShape));
+			Sector afterRepairSector = LayoutUtil.getSector(ConversionUtil.location(firstBendpoint), LayoutUtil.getAbsoluteBounds(startShape));
 			repaired &=  afterRepairSector == dockings.getFirst().getSector(); 
 		}
 		
@@ -272,8 +272,7 @@ public class DefaultLayoutContext implements LayoutContext {
 	}
 	
 	public Tuple<Docking, Docking> layoutAnchors() {
-		AnchorPointStrategy anchorPointStrategy = AnchorPointStrategy.build(AnchorPointStrategy.class, connection, null);
-		return anchorPointStrategy.execute();
+		return createAnchorPointStrategy().execute();
 	}
 	
 	public void layoutBendpoints(Tuple<Docking, Docking> connectionDocking) {
@@ -284,9 +283,13 @@ public class DefaultLayoutContext implements LayoutContext {
 	}
 	
 	public Tuple<Docking, Docking> getDockings() {
-		return AnchorPointStrategy.build(AnchorPointStrategy.class, connection, null).getDockings();
+		return createAnchorPointStrategy().getDockings();
 	}
 
+	private AnchorPointStrategy createAnchorPointStrategy() {
+		return AnchorPointStrategy.build(AnchorPointStrategy.class, connection, null);
+	}
+	
 	/**
 	 * Enum indicating the layed out direction of a connection part in a layouted connection
 	 * 

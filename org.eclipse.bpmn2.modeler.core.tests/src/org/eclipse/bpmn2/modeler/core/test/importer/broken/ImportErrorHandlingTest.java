@@ -52,6 +52,7 @@ public class ImportErrorHandlingTest extends AbstractImportBpmnModelTest {
 			
 			Assert.fail("Expected import exception to be thrown");
 		} catch (ImportException e) {
+			assertThatNotUnhandledException(e);
 			// expected
 		}
 	}
@@ -121,5 +122,11 @@ public class ImportErrorHandlingTest extends AbstractImportBpmnModelTest {
 		} catch (InvalidContentException e) {
 			// expected
 		}
+	}
+	
+	protected void assertThatNotUnhandledException(Exception e) {
+		String message = e.getMessage();
+		
+		assertThat(message).doesNotContain("Unhandled exception occured");
 	}
 }

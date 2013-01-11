@@ -1,6 +1,7 @@
 package org.eclipse.bpmn2.modeler.core.test.layout.util;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
+import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -10,6 +11,7 @@ import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.Util;
+import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -60,6 +62,21 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 		
 		double treshold5 = LayoutUtil.getLayoutTreshold(task2, start1); // target is top right
 		assertThat(treshold5).isEqualTo(0.69);
+	}
+
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testBase.bpmn")
+	public void testGetShapeLocationMidPoint() {
+		
+		// <dc:Bounds height="50.0" width="110.0" x="205.0" y="35.0"/>
+		
+		Shape task1 = Util.findShapeByBusinessObjectId(diagram, "Task_1");
+		
+		// when
+		ILocation location = LayoutUtil.getShapeLocationMidpoint(task1);
+		
+		// then
+		assertThat(point(location)).isEqualTo(point(110 / 2 + 205, 50 / 2 + 35));
 	}
 	
 	@Test

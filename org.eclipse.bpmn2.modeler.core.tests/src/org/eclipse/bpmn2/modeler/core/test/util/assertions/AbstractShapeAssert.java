@@ -63,7 +63,7 @@ public abstract class AbstractShapeAssert<S extends AbstractShapeAssert<S, A>, A
 	public abstract AbstractShapeAssert<S, A> doesNotHaveChild(Shape child);
 
 	public PointAssert position() {
-		IRectangle absoluteRectangle = LayoutUtil.getAbsoluteRectangle(actual);
+		IRectangle absoluteRectangle = LayoutUtil.getAbsoluteBounds(actual);
 		return new PointAssert(point(absoluteRectangle.getX(), absoluteRectangle.getY()));
 	}
 }

@@ -33,7 +33,7 @@ public class CreateStartEventFeatureTest extends AbstractFeatureTest {
 		// given
 		Shape laneShape = Util.findShapeByBusinessObjectId(diagram, "Lane_1");
 		
-		IRectangle laneBounds = LayoutUtil.getAbsoluteRectangle(laneShape);
+		IRectangle laneBounds = LayoutUtil.getAbsoluteBounds(laneShape);
 		
 		// when
 		new AddStartEventOperation<StartEvent>(getDiagramTypeProvider())
