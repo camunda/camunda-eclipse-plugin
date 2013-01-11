@@ -39,6 +39,8 @@ Click image to enlarge.
 ### Versions and Update Sites ###
 
 * __Graphiti__ 0.9.0 http://download.eclipse.org/graphiti/updates/0.9.0/
+* __BPMN 2.0 Meta-Model__ 0.7.x http://download.eclipse.org/bpmn2-modeler/bpmn2/site/
+    * Sources [via git](git://git.eclipse.org/gitroot/bpmn2) + workspace import
 
 Project Structure
 -----------------
