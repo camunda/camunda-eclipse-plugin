@@ -1119,12 +1119,37 @@ public class GraphicsUtil {
 	 * @param dist - the maximum distance horizontally and vertically from the given Location
 	 * @return true if the point lies within the rectangular area of the Location.
 	 */
-	public static boolean isPointNear(Point p, ILocation loc, int dist) {
-		int x = p.getX();
-		int y = p.getY();
-		int lx = loc.getX();
-		int ly = loc.getY();
-		return lx-dist <= x && x <= lx+dist && ly-dist <= y && y <= ly+dist;
+	public static boolean isPointNear(Point p1, Point p2, int dist) {
+		int x1 = p1.getX();
+		int y1 = p1.getY();
+		int x2 = p2.getX();
+		int y2 = p2.getY();
+		
+		return Math.abs(x1 - x2) <= dist && Math.abs(y1 - y2) <= dist;
+	}
+	
+	/**
+	 * Check if the given Point is with a given distance of the given Location.
+	 * 
+	 * @param p - the Point to check
+	 * @param loc - the target Location
+	 * @param tolerance - the maximum distance horizontally and vertically from the given Location
+	 * @return true if the point lies within the rectangular area of the Location.
+	 */
+	public static boolean pointsEqual(Point p1, Point p2, int tolerance) {
+		return isPointNear(p1, p2, tolerance);
+	}
+	
+	/**
+	 * Returns true if the arguments have the same coordinates.
+	 * 
+	 * @param p1
+	 * @param p2
+	 * 
+	 * @return
+	 */
+	public static boolean pointsEqual(Point p1, Point p2) {
+		return pointsEqual(p1, p2, 0);
 	}
 
 	public static void setEventSize(int width, int height, Diagram diagram) {

@@ -218,8 +218,8 @@ public abstract class AbstractEdgeHandler<T extends BaseElement> extends Abstrac
 		return null;
 	}
 
-	private boolean positionsMatch(ILocation location, Point point) {
-		return GraphicsUtil.isPointNear(point(point), location, 1);
+	private boolean positionsMatch(ILocation p1, Point p2) {
+		return GraphicsUtil.isPointNear(point(p1), point(p2), 1);
 	}
 	
 	private void verifyCorrectInstance(Object o, Class<?> cls) {

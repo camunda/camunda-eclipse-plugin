@@ -31,8 +31,6 @@ public class BasicTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
 	public void testLayoutOverlappingElements() {
-		Shape boundaryEvent1Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
-		FreeFormConnection sequenceFlow5 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_5");
 		
 		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_6");
 		
@@ -72,7 +70,8 @@ public class BasicTest extends AbstractFeatureTest {
 
 	@Test
 	@DiagramResource
-	public void testMoveTask2VerticalLayout() {         
+	public void testMoveTask2Vertical() {
+		
 		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "ReceiveTask_1");
 		ContainerShape laneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Lane_2");
 		
@@ -96,25 +95,26 @@ public class BasicTest extends AbstractFeatureTest {
 
 		// Get bendpoints outgoing sequence flow
 		seqConnection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_8");
+		
 		// and check
 		assertEquals(2, seqConnection.getBendpoints().size());		
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BasicTest.testMoveGatewayVerticalLayout.bpmn")
-	public void testMoveGatewayUp80VerticalLayout() {
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BasicTest.testMoveGatewayVertical.bpmn")
+	public void testMoveGatewayUp80Vertical() {
 		assertMoveUpByWorks(-80);
 	}
 
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BasicTest.testMoveGatewayVerticalLayout.bpmn")
-	public void testMoveGatewayUp60VerticalLayout() {
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BasicTest.testMoveGatewayVertical.bpmn")
+	public void testMoveGatewayUp60Vertical() {
 		assertMoveUpByWorks(-60);
 	}
 
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BasicTest.testMoveGatewayVerticalLayout.bpmn")
-	public void testMoveGatewayUp62VerticalLayout() {
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BasicTest.testMoveGatewayVertical.bpmn")
+	public void testMoveGatewayUp62Vertical() {
 		assertMoveUpByWorks(-62);
 	}
 	
@@ -182,9 +182,38 @@ public class BasicTest extends AbstractFeatureTest {
 		// check outgoing sequence flow right
 		assertEquals(1, seq3Connection.getBendpoints().size());
 	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BasicTest.testMoveEventVertical.bpmn")
+	public void testRemoveBendpointsStraightLine() {
+
+		FreeFormConnection sequenceFlow = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
+
+		// assume
+		// sequence flow is straight line
+		assertThat(sequenceFlow).hasBendpointCount(0);
+		
+		// do and ...
+		move(taskShape, diagramTypeProvider)
+			.by(0, 50)
+			.execute();
+		
+		// undo movement
+		move(taskShape, diagramTypeProvider)
+			.by(0, -50)
+			.execute();
+
+		// bendpoints should be removed when shape is moved back to straight line
+		assertThat(sequenceFlow)
+			.hasNoDiagonalEdges()
+			.hasBendpointCount(0);
+	}
+	
 	@Test
 	@DiagramResource
-	public void testMoveTaskVerticalLayout() {
+	public void testMoveTaskVertical() {
 		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
 		ContainerShape participantShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Participant_1");
 
@@ -198,8 +227,6 @@ public class BasicTest extends AbstractFeatureTest {
 			.by(0, 180)
 			.toContainer(participantShape)
 			.execute();
-
-		IPeLayoutService peLayout = Graphiti.getPeLayoutService();
 
 		ILocation seq1StartLoc = LayoutUtil.getVisibleAnchorLocation(seq1Connection.getStart(), seq1Connection);
 		assertThat(seq1StartLoc.getX()).isEqualTo(216);
@@ -241,7 +268,7 @@ public class BasicTest extends AbstractFeatureTest {
 
 	@Test
 	@DiagramResource
-	public void testMoveStartEventVerticalLayoutSequenceFlow() {
+	public void testMoveEventVertical() {
 		Shape gatewayShape = Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
 		
 		move(gatewayShape, diagramTypeProvider)
@@ -255,13 +282,14 @@ public class BasicTest extends AbstractFeatureTest {
 		
 		FreeFormConnection connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
 		
-		assertThat(connection).hasNoDiagonalEdges();
-		assertThat(connection).hasBendpointCount(2);
+		assertThat(connection)
+			.hasNoDiagonalEdges()
+			.hasBendpointCount(2);
 	}
 
 	@Test
 	@DiagramResource
-	public void testMoveTaskVerticalAndHorizontalLayout() {
+	public void testMoveTaskVerticalAndHorizontal() {
 		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_2");
 		ContainerShape participantShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Participant_1");
 
@@ -275,8 +303,6 @@ public class BasicTest extends AbstractFeatureTest {
 			.by(-105, -95)
 			.toContainer(participantShape)
 			.execute();
-
-		IPeLayoutService peLayout = Graphiti.getPeLayoutService();
 		
 		ILocation seq2StartLoc = LayoutUtil.getVisibleAnchorLocation(seq2Connection.getStart(), seq2Connection);
 		assertThat(seq2StartLoc.getX()).isEqualTo(313);
@@ -348,72 +374,6 @@ public class BasicTest extends AbstractFeatureTest {
 		Point messageFlow3SecondPoint = messageFlow.getBendpoints().get(1);
 		assertThat(messageFlow3SecondPoint.getX()).isEqualTo(345);
 		assertThat(messageFlow3SecondPoint.getY()).isEqualTo(160);
-	}
-	
-	@Test
-	@DiagramResource
-	public void testMoveTaskConnectedWithBoundaryEvent() {
-		ContainerShape taskShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Task_2");
-		
-		FreeFormConnection sequenceFlow = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
-		
-		assertThat(sequenceFlow).hasBendpointCount(0);
-		
-		move(taskShape, diagramTypeProvider)
-			.by(0, 50)
-			.toContainer(diagram)
-			.execute();
-		
-		assertThat(sequenceFlow).hasNoDiagonalEdges();
-		assertThat(sequenceFlow).hasBendpointCount(1);
-		
-		IPeLayoutService peLayout = Graphiti.getPeLayoutService();
-
-		ILocation sequenceFlowStartLoc = LayoutUtil.getVisibleAnchorLocation(sequenceFlow.getStart(), sequenceFlow);
-		assertThat(sequenceFlowStartLoc.getX()).isEqualTo(180);
-		assertThat(sequenceFlowStartLoc.getY()).isEqualTo(118);
-
-		ILocation sequenceFlowEndLoc = LayoutUtil.getVisibleAnchorLocation(sequenceFlow.getEnd(), sequenceFlow);
-		assertThat(sequenceFlowEndLoc.getX()).isEqualTo(315);
-		assertThat(sequenceFlowEndLoc.getY()).isEqualTo(150);
-		
-		Point seq3FirstPoint = sequenceFlow.getBendpoints().get(0);
-		assertThat(seq3FirstPoint.getX()).isEqualTo(180);
-		assertThat(seq3FirstPoint.getY()).isEqualTo(150);
-
-		move(taskShape, diagramTypeProvider)
-			.by(0, -75)
-			.toContainer(diagram)
-			.execute();
-
-		assertThat(sequenceFlow).hasNoDiagonalEdges();
-		assertThat(sequenceFlow).hasBendpointCount(1);
-
-		sequenceFlowStartLoc = LayoutUtil.getVisibleAnchorLocation(sequenceFlow.getStart(), sequenceFlow);
-		assertThat(sequenceFlowStartLoc.getX()).isEqualTo(180);
-		assertThat(sequenceFlowStartLoc.getY()).isEqualTo(118);
-
-		sequenceFlowEndLoc = LayoutUtil.getVisibleAnchorLocation(sequenceFlow.getEnd(), sequenceFlow);
-		assertThat(sequenceFlowEndLoc.getX()).isEqualTo(315);
-		assertThat(sequenceFlowEndLoc.getY()).isEqualTo(75);
-		
-		seq3FirstPoint = sequenceFlow.getBendpoints().get(0);
-		assertThat(seq3FirstPoint.getX()).isEqualTo(180);
-		assertThat(seq3FirstPoint.getY()).isEqualTo(75);
-		
-		
-		ContainerShape userTaskShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "UserTask_1");
-		FreeFormConnection sequenceFlow2 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
-		
-		assertThat(sequenceFlow2.getBendpoints().size()).isEqualTo(2);
-		
-		move(userTaskShape, diagramTypeProvider)
-			.by(0, -5)
-			.toContainer(diagram)
-			.execute();
-		
-		// dont relayout connections from boundary events with more than one bendpoint
-		assertThat(sequenceFlow2.getBendpoints().size()).isEqualTo(2);
 	}
 	
 	@Test

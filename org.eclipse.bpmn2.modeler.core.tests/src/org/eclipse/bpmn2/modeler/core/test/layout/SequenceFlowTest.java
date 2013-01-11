@@ -83,7 +83,7 @@ public class SequenceFlowTest extends AbstractFeatureTest {
 		
 		// whenever we import an shape it will have four anchors per default
 		// (0) a chopbox anchor we can use to circle around that shape
-		// (1..4) four custom made anchors on each directin N / E / S / W
+		// (1..4) four custom made anchors on each direction N / E / S / W
 		
 		assertThat(task2.getAnchors().size()).isEqualTo(5); 
 	}

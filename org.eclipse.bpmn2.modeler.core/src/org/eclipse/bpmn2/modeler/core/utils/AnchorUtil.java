@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.utils;
 
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -412,18 +414,19 @@ public class AnchorUtil {
 		for (Point p : connection.getBendpoints()) {
 			int px = p.getX();
 			int py = p.getY();
-			if (GraphicsUtil.isPointNear(p, location, 20)) {
+			
+			if (GraphicsUtil.isPointNear(p, point(location), 20)) {
 				bendPoint = p;
 				location.setX(px);
 				location.setY(py);
 			}
 
 			for (Shape s : diagram.getChildren()) {
-				if (isConnectionPointNear(s, location, 0)) {
+				if (isConnectionPointNear(s, point(location), 0)) {
 					// this is the connection point on the target connection line
 					// reuse this connection point if it's "close enough" to
 					// target location otherwise create a new connection point
-					if (isConnectionPointNear(s, location, 20)) {
+					if (isConnectionPointNear(s, point(location), 20)) {
 						bendPoint = p;
 						connectionPointShape = s;
 						location.setX(px);
@@ -578,24 +581,14 @@ public class AnchorUtil {
 		return CONNECTION_POINT.equals(value);
 	}
 
-	public static boolean isConnectionPointNear(PictogramElement pe, ILocation loc, int dist) {
+	public static boolean isConnectionPointNear(PictogramElement pe, Point p, int dist) {
 		if (isConnectionPoint(pe)) {
-			int x = pe.getGraphicsAlgorithm().getX() + CONNECTION_POINT_SIZE / 2;
-			int y = pe.getGraphicsAlgorithm().getY() + CONNECTION_POINT_SIZE / 2;
-			int lx = loc.getX();
-			int ly = loc.getY();
-			return lx-dist <= x && x <= lx+dist && ly-dist <= y && y <= ly+dist;
-		}
-		return false;
-	}
-
-	public static boolean isConnectionPointNear(PictogramElement pe, Point loc, int dist) {
-		if (isConnectionPoint(pe)) {
-			int x = pe.getGraphicsAlgorithm().getX() + CONNECTION_POINT_SIZE / 2;
-			int y = pe.getGraphicsAlgorithm().getY() + CONNECTION_POINT_SIZE / 2;
-			int lx = loc.getX();
-			int ly = loc.getY();
-			return lx-dist <= x && x <= lx+dist && ly-dist <= y && y <= ly+dist;
+			
+			Point p1 = point(
+				pe.getGraphicsAlgorithm().getX() + CONNECTION_POINT_SIZE / 2, 
+				pe.getGraphicsAlgorithm().getY() + CONNECTION_POINT_SIZE / 2);
+			
+			return GraphicsUtil.isPointNear(p1, p, dist);
 		}
 		return false;
 	}
