@@ -36,6 +36,10 @@ Highlighted are plugins which need to be installed in order to resolve add depen
 
 Click image to enlarge.
 
+### Versions and Update Sites ###
+
+* __Graphiti__ 0.9.0 http://download.eclipse.org/graphiti/updates/0.9.0/
+
 Project Structure
 -----------------
 
