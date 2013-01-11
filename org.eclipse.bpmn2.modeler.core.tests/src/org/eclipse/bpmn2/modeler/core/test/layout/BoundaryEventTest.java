@@ -24,7 +24,121 @@ import org.junit.Test;
  * @author Nico Rehwaldt
  */
 public class BoundaryEventTest extends AbstractFeatureTest {
-
+	/////// TOP
+	
+//	@Test
+//	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
+//	public void testTopReconnectingTopLeft() throws Exception {
+//		Shape boundaryEvent1Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
+//		FreeFormConnection sequenceFlow5 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_5");
+//		
+//		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_10");
+//		reconnectConnectionAssertBoundarySector(sequenceFlow5, boundaryEvent1Shape, taskShape, Sector.BOTTOM);
+//		
+//		assertThat(sequenceFlow5).hasBendpointCount(2);
+//		assertThat(sequenceFlow5).hasNoDiagonalEdges();
+//		assertThat(sequenceFlow5).anchorPointOn(taskShape).isAt(Sector.BOTTOM);
+//	}
+//	
+//	@Test
+//	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
+//	public void testBottomReconnectingBottomLeft() throws Exception {
+//		Shape boundaryEvent1Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
+//		FreeFormConnection sequenceFlow5 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_5");
+//		
+//		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_6");
+//		reconnectConnectionAssertBoundarySector(sequenceFlow5, boundaryEvent1Shape, taskShape, Sector.BOTTOM);
+//		
+//		assertThat(sequenceFlow5).hasBendpointCount(1);
+//		assertThat(sequenceFlow5).hasNoDiagonalEdges();
+//		assertThat(sequenceFlow5).anchorPointOn(taskShape).isAt(Sector.RIGHT);
+//	}
+//	
+//	@Test
+//	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
+//	public void testBottomReconnectingBottomRight() throws Exception {
+//		Shape boundaryEvent1Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
+//		FreeFormConnection sequenceFlow5 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_5");
+//		
+//		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_5");
+//		reconnectConnectionAssertBoundarySector(sequenceFlow5, boundaryEvent1Shape, taskShape, Sector.BOTTOM);
+//		
+//		assertThat(sequenceFlow5).hasBendpointCount(1);
+//		assertThat(sequenceFlow5).hasNoDiagonalEdges();
+//		assertThat(sequenceFlow5).anchorPointOn(taskShape).isAt(Sector.LEFT);
+//	}
+//	
+//	@Test
+//	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
+//	public void testBottomReconnectingBottomDirectly() throws Exception {
+//		Shape boundaryEvent1Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
+//		FreeFormConnection sequenceFlow5 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_5");
+//		
+//		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_15");
+//		reconnectConnectionAssertBoundarySector(sequenceFlow5, boundaryEvent1Shape, taskShape, Sector.BOTTOM);
+//		
+//		assertThat(sequenceFlow5).hasBendpointCount(0);
+//		assertThat(sequenceFlow5).hasNoDiagonalEdges();
+//		assertThat(sequenceFlow5).anchorPointOn(taskShape).isAt(Sector.TOP);
+//	}
+//	
+//	@Test
+//	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
+//	public void testBottomReconnectingBottom() throws Exception {
+//		Shape boundaryEvent1Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
+//		FreeFormConnection sequenceFlow5 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_5");
+//		
+//		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_16");
+//		reconnectConnectionAssertBoundarySector(sequenceFlow5, boundaryEvent1Shape, taskShape, Sector.BOTTOM);
+//		
+//		assertThat(sequenceFlow5).hasBendpointCount(2);
+//		assertThat(sequenceFlow5).hasNoDiagonalEdges();
+//		assertThat(sequenceFlow5).anchorPointOn(taskShape).isAt(Sector.TOP);
+//	}
+//
+//	@Test
+//	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
+//	public void testBottomReconnectingLeft() throws Exception {
+//		Shape boundaryEvent1Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
+//		FreeFormConnection sequenceFlow5 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_5");
+//		
+//		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_7");
+//		reconnectConnectionAssertBoundarySector(sequenceFlow5, boundaryEvent1Shape, taskShape, Sector.BOTTOM);
+//	}
+//	
+//	@Test
+//	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
+//	public void testBottomReconnectingTopRight() throws Exception {
+//		Shape boundaryEvent1Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
+//		FreeFormConnection sequenceFlow5 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_5");
+//		
+//		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_4");
+//		reconnectConnectionAssertBoundarySector(sequenceFlow5, boundaryEvent1Shape, taskShape, Sector.BOTTOM);
+//		
+//		assertThat(sequenceFlow5).hasBendpointCount(2);
+//		assertThat(sequenceFlow5).hasNoDiagonalEdges();
+//		assertThat(sequenceFlow5).anchorPointOn(taskShape).isAt(Sector.BOTTOM);
+//	}
+	
+	
+	////// BOTTOM
+	
+	
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
+	public void testBottomReconnectingTopLeft() throws Exception {
+		Shape boundaryEvent1Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
+		FreeFormConnection sequenceFlow5 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_5");
+		
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_10");
+		reconnectConnectionAssertBoundarySector(sequenceFlow5, boundaryEvent1Shape, taskShape, Sector.BOTTOM);
+		
+		assertThat(sequenceFlow5).hasBendpointCount(2);
+		assertThat(sequenceFlow5).hasNoDiagonalEdges();
+		assertThat(sequenceFlow5).anchorPointOn(taskShape).isAt(Sector.BOTTOM);
+	}
+	
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
 	public void testBottomReconnectingBottomLeft() throws Exception {
@@ -33,6 +147,52 @@ public class BoundaryEventTest extends AbstractFeatureTest {
 		
 		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_6");
 		reconnectConnectionAssertBoundarySector(sequenceFlow5, boundaryEvent1Shape, taskShape, Sector.BOTTOM);
+		
+		assertThat(sequenceFlow5).hasBendpointCount(1);
+		assertThat(sequenceFlow5).hasNoDiagonalEdges();
+		assertThat(sequenceFlow5).anchorPointOn(taskShape).isAt(Sector.RIGHT);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
+	public void testBottomReconnectingBottomRight() throws Exception {
+		Shape boundaryEvent1Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
+		FreeFormConnection sequenceFlow5 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_5");
+		
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_5");
+		reconnectConnectionAssertBoundarySector(sequenceFlow5, boundaryEvent1Shape, taskShape, Sector.BOTTOM);
+		
+		assertThat(sequenceFlow5).hasBendpointCount(1);
+		assertThat(sequenceFlow5).hasNoDiagonalEdges();
+		assertThat(sequenceFlow5).anchorPointOn(taskShape).isAt(Sector.LEFT);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
+	public void testBottomReconnectingBottomDirectly() throws Exception {
+		Shape boundaryEvent1Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
+		FreeFormConnection sequenceFlow5 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_5");
+		
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_15");
+		reconnectConnectionAssertBoundarySector(sequenceFlow5, boundaryEvent1Shape, taskShape, Sector.BOTTOM);
+		
+		assertThat(sequenceFlow5).hasBendpointCount(0);
+		assertThat(sequenceFlow5).hasNoDiagonalEdges();
+		assertThat(sequenceFlow5).anchorPointOn(taskShape).isAt(Sector.TOP);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
+	public void testBottomReconnectingBottom() throws Exception {
+		Shape boundaryEvent1Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
+		FreeFormConnection sequenceFlow5 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_5");
+		
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_16");
+		reconnectConnectionAssertBoundarySector(sequenceFlow5, boundaryEvent1Shape, taskShape, Sector.BOTTOM);
+		
+		assertThat(sequenceFlow5).hasBendpointCount(2);
+		assertThat(sequenceFlow5).hasNoDiagonalEdges();
+		assertThat(sequenceFlow5).anchorPointOn(taskShape).isAt(Sector.TOP);
 	}
 
 	@Test
@@ -55,6 +215,8 @@ public class BoundaryEventTest extends AbstractFeatureTest {
 		reconnectConnectionAssertBoundarySector(sequenceFlow5, boundaryEvent1Shape, taskShape, Sector.BOTTOM);
 		
 		assertThat(sequenceFlow5).hasBendpointCount(2);
+		assertThat(sequenceFlow5).hasNoDiagonalEdges();
+		assertThat(sequenceFlow5).anchorPointOn(taskShape).isAt(Sector.BOTTOM);
 	}
 	
 	@Test
@@ -67,6 +229,20 @@ public class BoundaryEventTest extends AbstractFeatureTest {
 		reconnectConnectionAssertBoundarySector(sequenceFlow5, boundaryEvent1Shape, taskShape, Sector.BOTTOM);
 		
 		assertThat(sequenceFlow5).hasBendpointCount(2);
+		assertThat(sequenceFlow5).anchorPointOn(taskShape).isAt(Sector.TOP);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
+	public void testRightReconnectingTop() throws Exception {
+		Shape boundaryEvent1Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_2");
+		FreeFormConnection sequenceFlow5 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_4");
+		
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_14");
+		reconnectConnectionAssertBoundarySector(sequenceFlow5, boundaryEvent1Shape, taskShape, Sector.TOP);
+		
+		assertThat(sequenceFlow5).hasBendpointCount(2);
+		assertThat(sequenceFlow5).anchorPointOn(taskShape).isAt(Sector.BOTTOM);
 	}
 
 	@Test
@@ -76,7 +252,7 @@ public class BoundaryEventTest extends AbstractFeatureTest {
 		FreeFormConnection sequenceFlow5 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_4");
 		
 		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_8");
-		reconnectConnectionAssertBoundarySector(sequenceFlow5, boundaryEvent1Shape, taskShape, Sector.BOTTOM);
+		reconnectConnectionAssertBoundarySector(sequenceFlow5, boundaryEvent1Shape, taskShape, Sector.RIGHT);
 	}
 	
 	@Test
@@ -86,7 +262,148 @@ public class BoundaryEventTest extends AbstractFeatureTest {
 		FreeFormConnection sequenceFlow5 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_4");
 		
 		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_3");
-		reconnectConnectionAssertBoundarySector(sequenceFlow5, boundaryEvent1Shape, taskShape, Sector.BOTTOM);
+		reconnectConnectionAssertBoundarySector(sequenceFlow5, boundaryEvent1Shape, taskShape, Sector.RIGHT);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
+	public void testRightReconnectingTopRight() throws Exception {
+		Shape boundaryEvent1Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_3");
+		FreeFormConnection sequenceFlow3 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+		
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_3");
+		reconnectConnectionAssertBoundarySector(sequenceFlow3, boundaryEvent1Shape, taskShape, Sector.RIGHT);
+		
+		assertThat(sequenceFlow3).hasBendpointCount(2);
+		assertThat(sequenceFlow3).hasNoDiagonalEdges();
+		assertThat(sequenceFlow3).anchorPointOn(taskShape).isAt(Sector.LEFT);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
+	public void testRightReconnectingBottomRight() throws Exception {
+		Shape boundaryEvent1Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_3");
+		FreeFormConnection sequenceFlow3 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+		
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_3");
+		reconnectConnectionAssertBoundarySector(sequenceFlow3, boundaryEvent1Shape, taskShape, Sector.RIGHT);
+		
+		assertThat(sequenceFlow3).hasBendpointCount(2);
+		assertThat(sequenceFlow3).hasNoDiagonalEdges();
+		assertThat(sequenceFlow3).anchorPointOn(taskShape).isAt(Sector.LEFT);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
+	public void testRightReconnectingBottomLeft() throws Exception {
+		Shape boundaryEvent1Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_3");
+		FreeFormConnection sequenceFlow3 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+		
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_13");
+		reconnectConnectionAssertBoundarySector(sequenceFlow3, boundaryEvent1Shape, taskShape, Sector.RIGHT);
+		
+		assertThat(sequenceFlow3).hasBendpointCount(2);
+		assertThat(sequenceFlow3).hasNoDiagonalEdges();
+		assertThat(sequenceFlow3).anchorPointOn(taskShape).isAt(Sector.RIGHT);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
+	public void testLeftReconnectingBottomRight() throws Exception {
+		Shape boundaryEvent4Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_4");
+		FreeFormConnection sequenceFlow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_5");
+		reconnectConnectionAssertBoundarySector(sequenceFlow1, boundaryEvent4Shape, taskShape, Sector.LEFT);
+		
+		assertThat(sequenceFlow1).hasBendpointCount(2);
+		assertThat(sequenceFlow1).hasNoDiagonalEdges();
+		assertThat(sequenceFlow1).anchorPointOn(taskShape).isAt(Sector.LEFT);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
+	public void testLeftReconnectingBottomLeft() throws Exception {
+		Shape boundaryEvent4Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_4");
+		FreeFormConnection sequenceFlow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_6");
+		reconnectConnectionAssertBoundarySector(sequenceFlow1, boundaryEvent4Shape, taskShape, Sector.LEFT);
+		
+		assertThat(sequenceFlow1).hasBendpointCount(2);
+		assertThat(sequenceFlow1).hasNoDiagonalEdges();
+		assertThat(sequenceFlow1).anchorPointOn(taskShape).isAt(Sector.RIGHT);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
+	public void testLeftReconnectingTopLeft() throws Exception {
+		Shape boundaryEvent4Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_4");
+		FreeFormConnection sequenceFlow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_10");
+		reconnectConnectionAssertBoundarySector(sequenceFlow1, boundaryEvent4Shape, taskShape, Sector.LEFT);
+		
+		assertThat(sequenceFlow1).hasBendpointCount(2);
+		assertThat(sequenceFlow1).hasNoDiagonalEdges();
+		assertThat(sequenceFlow1).anchorPointOn(taskShape).isAt(Sector.RIGHT);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
+	public void testLeftReconnectingTopRight() throws Exception {
+		Shape boundaryEvent4Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_4");
+		FreeFormConnection sequenceFlow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_3");
+		reconnectConnectionAssertBoundarySector(sequenceFlow1, boundaryEvent4Shape, taskShape, Sector.LEFT);
+		
+		assertThat(sequenceFlow1).hasBendpointCount(2);
+		assertThat(sequenceFlow1).hasNoDiagonalEdges();
+		assertThat(sequenceFlow1).anchorPointOn(taskShape).isAt(Sector.LEFT);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
+	public void testLeftReconnectingBottom() throws Exception {
+		Shape boundaryEvent4Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_4");
+		FreeFormConnection sequenceFlow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_13");
+		reconnectConnectionAssertBoundarySector(sequenceFlow1, boundaryEvent4Shape, taskShape, Sector.BOTTOM);
+		
+		assertThat(sequenceFlow1).hasBendpointCount(2);
+		assertThat(sequenceFlow1).hasNoDiagonalEdges();
+		assertThat(sequenceFlow1).anchorPointOn(taskShape).isAt(Sector.TOP);
+	}
+	
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
+	public void testLeftReconnectingTop() throws Exception {
+		Shape boundaryEvent4Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_4");
+		FreeFormConnection sequenceFlow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_12");
+		reconnectConnectionAssertBoundarySector(sequenceFlow1, boundaryEvent4Shape, taskShape, Sector.LEFT);
+		
+		assertThat(sequenceFlow1).hasBendpointCount(2);
+		assertThat(sequenceFlow1).hasNoDiagonalEdges();
+		assertThat(sequenceFlow1).anchorPointOn(taskShape).isAt(Sector.BOTTOM);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
+	public void testLeftReconnectingLeft() throws Exception {
+		Shape boundaryEvent4Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_4");
+		FreeFormConnection sequenceFlow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_9");
+		reconnectConnectionAssertBoundarySector(sequenceFlow1, boundaryEvent4Shape, taskShape, Sector.LEFT);
+		
+		assertThat(sequenceFlow1).hasBendpointCount(2);
+		assertThat(sequenceFlow1).hasNoDiagonalEdges();
+		assertThat(sequenceFlow1).anchorPointOn(taskShape).isAt(Sector.RIGHT);
 	}
 	
 	@Test
