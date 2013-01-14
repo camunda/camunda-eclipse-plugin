@@ -19,8 +19,8 @@ public abstract class ConnectionOperation<C extends IContext, F extends IFeature
 	public ConnectionOperation(Connection connection, IDiagramTypeProvider diagramTypeProvider) {
 		super(diagramTypeProvider);
 		this.connection = connection;
-		createContext();
-		createFeature();
+		
+		this.context = createContext();
 	}
 
 }

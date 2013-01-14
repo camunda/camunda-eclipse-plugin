@@ -7,22 +7,19 @@ import org.eclipse.graphiti.features.context.IContext;
 public abstract class Operation<C extends IContext, F extends IFeature> {
 	
 	protected final IDiagramTypeProvider diagramTypeProvider;
+	
 	protected C context;
-	protected F feature;
 
 	public Operation(IDiagramTypeProvider diagramTypeProvider) {
 		this.diagramTypeProvider = diagramTypeProvider;
 	}
 	
-	protected abstract void createContext();
-	protected abstract void createFeature();
+	protected abstract C createContext();
 	
-	protected void executeFeature() {
-		diagramTypeProvider.getDiagramEditor().executeFeature(feature, context);
-	}
+	protected abstract F createFeature(C context);
 	
 	public void execute() {
-		executeFeature();
+		F feature = createFeature(context);
+		diagramTypeProvider.getDiagramEditor().executeFeature(feature, context);
 	}
-	
 }

@@ -55,14 +55,13 @@ public abstract class AddDataFeature<T extends ItemAwareElement> extends Abstrac
 		@SuppressWarnings("unchecked")
 		T t = getBusinessObject(context);
 
-		int width = this.getWidth();
-		int height = this.getHeight();
+		int width = getWidth();
+		int height = getHeight();
 		int e = 10;
-		int textArea = 15;
 		
 		ContainerShape container = peService.createContainerShape(context.getTargetContainer(), true);
 		Rectangle invisibleRect = gaService.createInvisibleRectangle(container);
-		gaService.setLocationAndSize(invisibleRect, context.getX(), context.getY(), width, height + textArea);
+		gaService.setLocationAndSize(invisibleRect, context.getX(), context.getY(), width, height);
 
 		Shape rectShape = peService.createShape(container, false);
 		Polygon rect = gaService.createPolygon(rectShape, new int[] { 0, 0, width - e, 0, width, e, width, height, 0,
@@ -89,14 +88,6 @@ public abstract class AddDataFeature<T extends ItemAwareElement> extends Abstrac
 
 			Graphiti.getPeService().setPropertyValue(container, Properties.COLLECTION_PROPERTY, value);
 		}
-		
-//		Shape textShape = peService.createShape(container, false);
-//		peService.setPropertyValue(textShape, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
-//		Text text = gaService.createDefaultText(getDiagram(), textShape, getName(t));
-//		text.setStyle(StyleUtil.getStyleForText(getDiagram()));
-//		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
-//		text.setVerticalAlignment(Orientation.ALIGNMENT_TOP);
-//		gaService.setLocationAndSize(text, 0, height, width, textArea);
 		
 		peService.createChopboxAnchor(container);
 		AnchorUtil.addFixedPointAnchors(container, invisibleRect);

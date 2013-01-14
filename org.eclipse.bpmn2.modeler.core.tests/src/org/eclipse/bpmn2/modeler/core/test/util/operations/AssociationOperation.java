@@ -12,10 +12,10 @@ public abstract class AssociationOperation<C extends IContext, F extends IFeatur
 	
 	public AssociationOperation(Shape source, Shape target, IDiagramTypeProvider diagramTypeProvider) {
 		super(diagramTypeProvider);
+		
 		this.source = source;
 		this.target = target;
-		createContext();
-		createFeature();
+		
+		this.context = createContext();
 	}
-
 }

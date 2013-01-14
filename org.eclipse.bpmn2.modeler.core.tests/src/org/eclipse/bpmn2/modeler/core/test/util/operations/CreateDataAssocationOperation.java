@@ -14,22 +14,21 @@ public class CreateDataAssocationOperation extends AssociationOperation<ICreateC
 	}
 
 	@Override
-	protected void createContext() {
-		CreateConnectionContext tmpContext = new CreateConnectionContext();
-		tmpContext.setSourceAnchor(source.getAnchors().get(1));
-		tmpContext.setTargetAnchor(target.getAnchors().get(1));
+	protected ICreateConnectionContext createContext() {
+		CreateConnectionContext ctx = new CreateConnectionContext();
+		ctx.setSourceAnchor(source.getAnchors().get(1));
+		ctx.setTargetAnchor(target.getAnchors().get(1));
 		
-		context = tmpContext;
+		return ctx;
 	}
 
 	@Override
-	protected void createFeature() {
+	protected CreateDataAssociationFeature createFeature(ICreateConnectionContext context) {
 		IFeatureProvider featureProvider = diagramTypeProvider.getFeatureProvider();
-		feature = new CreateDataAssociationFeature(featureProvider);	
+		return new CreateDataAssociationFeature(featureProvider);	
 	}
 	
 	public static CreateDataAssocationOperation createDataAssocation(Shape source, Shape target, IDiagramTypeProvider diagramTypeProvider) {
 		return new CreateDataAssocationOperation(source, target, diagramTypeProvider);
 	}
-	
 }
