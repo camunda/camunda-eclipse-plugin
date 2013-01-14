@@ -12,21 +12,16 @@ public class AddStartEventOperation<T extends Event> extends Operation<CreateCon
 	public AddStartEventOperation(IDiagramTypeProvider diagramTypeProvider) {
 		super(diagramTypeProvider);
 		
-		createContext();
-		createFeature();
+		this.context = createContext();
 	}
 
 	public AddStartEventOperation<T> atLocation(int x, int y) {
-		
 		context.setLocation(x, y);
-		
 		return this;
 	}
 	
 	public AddStartEventOperation<T> sized(int width, int height) {
-		
 		context.setSize(width, height);
-		
 		return this;
 	}
 	
@@ -37,19 +32,20 @@ public class AddStartEventOperation<T extends Event> extends Operation<CreateCon
 	}
 	
 	@Override
-	protected void createContext() {
-		context = new CreateContext();
-		
+	protected CreateContext createContext() {
+		CreateContext context = new CreateContext();
 		context.setX(0);
 		context.setY(0);
 		
 		context.setWidth(100);
 		context.setHeight(100);
+		
+		return context;
 	}
 
 	@Override
-	protected void createFeature() {
+	protected CreateStartEventFeature createFeature(CreateContext context) {
 		IFeatureProvider featureProvider = diagramTypeProvider.getFeatureProvider();
-		feature = new CreateStartEventFeature(featureProvider);	
+		return new CreateStartEventFeature(featureProvider);	
 	}
 }

@@ -1,33 +1,37 @@
 package org.eclipse.bpmn2.modeler.core.test.util.operations;
 
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
+import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.context.impl.MoveShapeContext;
 import org.eclipse.graphiti.features.impl.DefaultMoveShapeFeature;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
+import org.fest.assertions.api.Assertions;
 
 /**
  * 
  * @author Daniel Meyer
+ * @author Nico Rehwaldt
  *
  */
-public abstract class MoveShapeOperation<T extends DefaultMoveShapeFeature, V> extends ShapeOperation<MoveShapeContext, T> {
-
-	private V myself;
+public class MoveShapeOperation extends ShapeOperation<MoveShapeContext, IMoveShapeFeature> {
 	
-	public MoveShapeOperation(Shape shape, IDiagramTypeProvider diagramTypeProvider, Class<V> cls) {
+	public MoveShapeOperation(Shape shape, IDiagramTypeProvider diagramTypeProvider) {
 		super(shape, diagramTypeProvider);
-		
-		myself = (V) this;
 	}
 
 	@Override
-	protected void createContext() {
-		context = new MoveShapeContext(shape);
+	protected MoveShapeContext createContext() {
+		MoveShapeContext context = new MoveShapeContext(shape);
+		
 		context.setSourceContainer(shape.getContainer());
+		context.setTargetContainer(shape.getContainer());
+		
+		return context;
 	}
 	
-	public V by(int x, int y) {
+	public MoveShapeOperation by(int x, int y) {
 		context.setDeltaX(x);
 		context.setDeltaY(y);
 		
@@ -36,21 +40,26 @@ public abstract class MoveShapeOperation<T extends DefaultMoveShapeFeature, V> e
 		context.setX(context.getShape().getGraphicsAlgorithm().getX()+x);
 		context.setY(context.getShape().getGraphicsAlgorithm().getY()+y);
 		
-		return myself;
+		return this;
 	}
 	
-	public V toContainer(ContainerShape containerShape) {
+	public MoveShapeOperation toContainer(ContainerShape containerShape) {
 		context.setTargetContainer(containerShape);
-		return myself;
+		return this;
 	}
 	
-	protected final void assertInstanceOf(Class<?> cls, Object o) {
-		if (o == null) {
-			throw new IllegalArgumentException("Object is null");
-		} 
+	@Override
+	protected IMoveShapeFeature createFeature(MoveShapeContext context) {
+		IFeatureProvider featureProvider = diagramTypeProvider.getFeatureProvider();
 		
-		if (!cls.isInstance(o)) {
-			throw new IllegalArgumentException(String.format("Object <%s> is not an instance of <%s>", o, cls.getName()));
-		}
+		IMoveShapeFeature feature = featureProvider.getMoveShapeFeature(context);
+		
+		Assertions.assertThat(feature).as("Move feature").isNotNull();
+		
+		return feature;
+	}
+	
+	public static MoveShapeOperation move(Shape shape, IDiagramTypeProvider diagramTypeProvider) {
+		return new MoveShapeOperation(shape, diagramTypeProvider);
 	}
 }

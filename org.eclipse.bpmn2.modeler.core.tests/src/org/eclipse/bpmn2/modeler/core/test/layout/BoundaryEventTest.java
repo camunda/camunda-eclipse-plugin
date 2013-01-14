@@ -1,7 +1,7 @@
 package org.eclipse.bpmn2.modeler.core.test.layout;
 
+import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveShapeOperation.move;
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
-import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveElementOperation.move;
 import static org.eclipse.bpmn2.modeler.core.test.util.operations.ReconnectConnectionEndOperation.reconnectEnd;
 import static org.fest.assertions.api.Assertions.assertThat;
 

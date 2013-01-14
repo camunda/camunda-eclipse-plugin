@@ -24,27 +24,26 @@ public class CreateParticipantOperation extends Operation<ICreateContext, Create
 		this.width = width;
 		this.height = height;
 		
-		createContext();
-		createFeature();
+		this.context = createContext();
 	}
 
 	@Override
-	protected void createContext() {
-		CreateContext tmpContext = new CreateContext();
+	protected ICreateContext createContext() {
+		CreateContext ctx = new CreateContext();
 		
-		tmpContext.setTargetContainer(targetContainer);
-		tmpContext.setX(x);
-		tmpContext.setY(y);
-		tmpContext.setHeight(height);
-		tmpContext.setWidth(width);
+		ctx.setTargetContainer(targetContainer);
+		ctx.setX(x);
+		ctx.setY(y);
+		ctx.setHeight(height);
+		ctx.setWidth(width);
 		
-		context = tmpContext;
+		return ctx;
 	}
 
 	@Override
-	protected void createFeature() {
+	protected CreateParticipantFeature createFeature(ICreateContext context) {
 		IFeatureProvider featureProvider = diagramTypeProvider.getFeatureProvider();
-		feature = new CreateParticipantFeature(featureProvider);	
+		return new CreateParticipantFeature(featureProvider);	
 	}
 	
 	public static CreateParticipantOperation createParticipant (int x, int y, int width, int height, ContainerShape targetContainer, IDiagramTypeProvider diagramTypeProvider) {

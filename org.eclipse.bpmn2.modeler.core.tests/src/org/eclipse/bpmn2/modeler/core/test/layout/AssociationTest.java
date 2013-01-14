@@ -1,8 +1,8 @@
 package org.eclipse.bpmn2.modeler.core.test.layout;
 
 import static org.eclipse.bpmn2.modeler.core.test.util.operations.CreateDataAssocationOperation.createDataAssocation;
-import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveElementOperation.move;
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveShapeOperation.move;
+import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Task;

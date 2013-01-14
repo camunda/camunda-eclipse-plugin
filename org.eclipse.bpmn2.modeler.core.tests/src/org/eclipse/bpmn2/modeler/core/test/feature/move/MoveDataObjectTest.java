@@ -1,12 +1,12 @@
 package org.eclipse.bpmn2.modeler.core.test.feature.move;
 
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
+import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveShapeOperation.move;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.Util;
-import org.eclipse.bpmn2.modeler.core.test.util.operations.MoveElementOperation;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -40,7 +40,7 @@ public class MoveDataObjectTest extends AbstractFeatureTest {
 		Shape shape = Util.findShapeByBusinessObjectId(diagram, "DataObject_1");
 		Shape label = GraphicsUtil.getLabel(shape, diagram);
 		
-		MoveElementOperation.move(label, diagramTypeProvider)
+		move(label, diagramTypeProvider)
 			.by(0, -20)
 			.toContainer((ContainerShape) shape)
 			.execute();
