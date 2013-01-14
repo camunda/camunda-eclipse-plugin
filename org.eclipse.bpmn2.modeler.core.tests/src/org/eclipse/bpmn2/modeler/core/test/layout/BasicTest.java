@@ -64,7 +64,25 @@ public class BasicTest extends AbstractFeatureTest {
 		assertThat(point(rect)).isEqualTo(point(340, 250));
 	}
 	
+	@Test
+	@DiagramResource
+	public void testLayoutAfterIntermediateEventMove() {
 
+		FreeFormConnection flow3 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+		FreeFormConnection flow8 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_8");
+		
+		Shape eventShape = Util.findShapeByBusinessObjectId(diagram, "IntermediateCatchEvent_1");
+		
+		// when
+		// moving intermediate event
+		move(eventShape, diagramTypeProvider)
+			.by(-5, -30)
+			.execute();
+		
+		// then connection should be layouted
+		assertThat(flow3).hasNoDiagonalEdges();
+		assertThat(flow8).hasNoDiagonalEdges();
+	}
 
 	@Test
 	@DiagramResource
