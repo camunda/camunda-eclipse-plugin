@@ -9,7 +9,8 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.test.importer;
 
-import org.eclipse.bpmn2.modeler.core.test.AbstractBpmnEditorTest;
+import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
+import org.eclipse.bpmn2.modeler.core.test.AbstractEditorTest;
 
 /**
  * 
@@ -17,6 +18,13 @@ import org.eclipse.bpmn2.modeler.core.test.AbstractBpmnEditorTest;
  * @author Daniel Meyer
  *
  */
-public abstract class AbstractImportBpmnModelTest extends AbstractBpmnEditorTest {
+public abstract class AbstractImportBpmnModelTest extends AbstractEditorTest {
 
+	/**
+	 * Creates the model import usable by a test case
+	 * @return
+	 */
+	protected ModelImport createModelImport() {
+		return new ModelImport(diagramTypeProvider, bpmnResource);
+	}
 }

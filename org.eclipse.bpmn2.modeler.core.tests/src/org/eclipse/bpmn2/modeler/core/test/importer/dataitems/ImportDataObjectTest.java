@@ -27,7 +27,7 @@ public class ImportDataObjectTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportDataObject() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		// we display the data object AND its label
@@ -40,14 +40,14 @@ public class ImportDataObjectTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportAssociatedDataObject() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 	}
 	
 	@Test
 	@DiagramResource
 	public void testImportDataObjectReferencedFromLane() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 	}
 }

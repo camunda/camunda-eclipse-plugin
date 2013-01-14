@@ -1,10 +1,12 @@
 package org.eclipse.bpmn2.modeler.core.test.util;
 
+import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-import org.eclipse.bpmn2.modeler.core.test.AbstractBpmnEditorTest;
+import org.eclipse.bpmn2.modeler.core.test.AbstractEditorTest;
 import org.eclipse.bpmn2.modeler.core.test.AbstractTestCommand;
+import org.eclipse.bpmn2.modeler.core.test.util.TestHelper.ModelResources;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -12,8 +14,18 @@ import org.junit.rules.MethodRule;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
-public class RunAsEmfCommandRule implements MethodRule {
-
+/**
+ * A method rule which creates a diagram around a <code>@DiagramResource</code> annotated method.
+ * 
+ * The test invocation will be transactional (ie. inside a EMF transaction) unless the method
+ * is annotated with <code>@NonTransactional</code>. 
+ * 
+ * @author nico.rehwaldt
+ * 
+ * @see NonTransactional
+ * @see DiagramResource
+ */
+public class DiagramResourceRule implements MethodRule {
 	
 	@Override
 	public Statement apply(final Statement base, final FrameworkMethod method, Object target) {
@@ -24,8 +36,8 @@ public class RunAsEmfCommandRule implements MethodRule {
 		
 		DiagramResource resource = method.getAnnotation(DiagramResource.class);
 		
-		if (resource != null && target instanceof AbstractBpmnEditorTest) {
-			final AbstractBpmnEditorTest testCase = (AbstractBpmnEditorTest) target;
+		if (resource != null && target instanceof AbstractEditorTest) {
+			final AbstractEditorTest testCase = (AbstractEditorTest) target;
 			
 			String resourceUrl = getResourceUrl(resource, target, method.getMethod());
 			
@@ -58,40 +70,41 @@ public class RunAsEmfCommandRule implements MethodRule {
 	
 	private class StatementExtension extends Statement {
 		
-		private final AbstractBpmnEditorTest testCase;
-		private FrameworkMethod testMethod;
+		private final AbstractEditorTest testCase;
+		private final FrameworkMethod testMethod;
 		
-		private final String resourceUrl;
-		private final Statement base;
+		private final String diagramUrl;
+		private final Statement baseStatement;
 		
 		/**
 		 * Whether the test itself should be run transactional
 		 */
-		private boolean testTransactional;
+		private boolean transactional;
 		
-		private StatementExtension(AbstractBpmnEditorTest testCase, FrameworkMethod testMethod, String resourceUrl, Statement base, boolean testTransactional) {
+		private StatementExtension(AbstractEditorTest testCase, FrameworkMethod testMethod, String resourceUrl, Statement baseStatement, boolean transactional) {
 			this.testCase = testCase;
-			this.resourceUrl = resourceUrl;
-			this.base = base;
-			
 			this.testMethod = testMethod;
-			this.testTransactional = testTransactional;
+			
+			this.diagramUrl = resourceUrl;
+			this.baseStatement = baseStatement;
+			this.transactional = transactional;
 		}
 
 		@Override
 		public void evaluate() throws Throwable {
+			File tempDir = testCase.getTempFolder().getRoot();
+
+			ModelResources modelResources = TestHelper.createModel(diagramUrl);
+			
 			try {
-				TransactionalEditingDomain domain = testCase.createEditingDomain(resourceUrl);
+				TransactionalEditingDomain domain = modelResources.getEditingDomain();
 				
-				AbstractTestCommand command = new AbstractTestCommand(testCase, testMethod.getName(), resourceUrl) {
+				AbstractTestCommand command = new AbstractTestCommand(testCase, testMethod.getName(), modelResources, tempDir) {
 					
 					@Override
-					public void test(IDiagramTypeProvider diagramTypeProvider, Diagram diagram) throws Throwable {
-						testCase.setDiagramTypeProvider(diagramTypeProvider);
-						testCase.setDiagram(diagram);
-						
-						if (testTransactional) {
-							base.evaluate();
+					public void execute(IDiagramTypeProvider diagramTypeProvider, Diagram diagram) throws Throwable {
+						if (transactional) {
+							baseStatement.evaluate();
 						}
 					}
 				};
@@ -104,11 +117,20 @@ public class RunAsEmfCommandRule implements MethodRule {
 				}
 				
 				// run test in the non-transactional case
-				if (!testTransactional) {
-					base.evaluate();
+				if (!transactional) {
+					baseStatement.evaluate();
 				}
 			} finally {
-				testCase.disposeEditingDomain();
+				testCase.setEditorResources(null);
+				testCase.setModelResources(null);
+				
+				if (modelResources != null) {
+					try {
+						modelResources.getEditingDomain().dispose();
+					} catch (Exception e) {
+						// cannot handle
+					}
+				}
 			}
 		}
 	}

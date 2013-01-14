@@ -26,7 +26,7 @@ public class ImportEventDefinitionTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportEventDefinitions() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 		Set<EventDefinition> eventDefinitions = new HashSet<EventDefinition>();
 		EList<Shape> children = diagram.getChildren();

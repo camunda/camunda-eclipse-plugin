@@ -30,7 +30,7 @@ public class ImportDataOutputTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportDataOutput() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 		
 		EList<Shape> children = diagram.getChildren();
@@ -53,7 +53,7 @@ public class ImportDataOutputTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportAssociatedDataOutput() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 		
 		EList<Shape> children = diagram.getChildren();

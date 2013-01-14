@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions targetNamespace="http://activiti.org/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="_J3U2MVv-EeKvK4bT9NOp4w">
+  <bpmn2:process id="Process_1">
+    <bpmn2:ioSpecification id="InputOutputSpecification_1">
+      <bpmn2:dataInput id="DataInput_1" name="Data Input 1"/>
+      <bpmn2:dataOutput id="DataOutput_1" name="Data Output 1"/>
+    </bpmn2:ioSpecification>
+    <bpmn2:dataObject id="DataObject_1" name="Data Object 1"/>
+    <bpmn2:dataStoreReference id="_DataStoreReference_2" name="Data Store 1" dataStoreRef="DataStore_1"/>
+  </bpmn2:process>
+  <bpmn2:dataStore id="DataStore_1" name="Data Store 1"/>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="_BPMNShape_DataObject_2" bpmnElement="DataObject_1">
+        <dc:Bounds height="65.0" width="36.0" x="80.0" y="48.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="86.0" x="55.0" y="100.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_DataInput_2" bpmnElement="DataInput_1">
+        <dc:Bounds height="65.0" width="36.0" x="190.0" y="48.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="76.0" x="170.0" y="100.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_DataOutput_2" bpmnElement="DataOutput_1">
+        <dc:Bounds height="65.0" width="36.0" x="290.0" y="48.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="87.0" x="265.0" y="100.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_DataStoreReference_2" bpmnElement="_DataStoreReference_2">
+        <dc:Bounds height="50.0" width="50.0" x="386.0" y="48.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="79.0" x="372.0" y="100.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

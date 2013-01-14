@@ -28,7 +28,7 @@ public class ImportDataInputTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportDataInput() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		// we display the data input AND its label
@@ -42,7 +42,7 @@ public class ImportDataInputTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportAssociatedDataInput() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		Fail.fail("INVALID XML ACCORDING TO MATTHIAS!");

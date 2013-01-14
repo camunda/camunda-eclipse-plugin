@@ -10,7 +10,7 @@
 
 package org.eclipse.bpmn2.modeler.core.test.importer.broken;
 
-import static org.fest.assertions.api.Assertions.*;
+import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -22,11 +22,9 @@ import org.eclipse.bpmn2.modeler.core.importer.UnmappedElementException;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmnModelTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.fest.assertions.api.Fail;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.experimental.categories.Categories.ExcludeCategory;
 
 /**
  * 
@@ -39,7 +37,7 @@ public class ImportErrorHandlingTest extends AbstractImportBpmnModelTest {
 	@Test(expected=ResourceImportException.class)
 	@DiagramResource
 	public void testNoXml() throws Exception {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 	}
 	
@@ -47,7 +45,7 @@ public class ImportErrorHandlingTest extends AbstractImportBpmnModelTest {
 	@DiagramResource
 	public void testWrongSequenceFlowReference() throws Exception {
 		try {
-			ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+			ModelImport importer = createModelImport();
 			importer.execute();
 			
 			Assert.fail("Expected import exception to be thrown");
@@ -62,7 +60,7 @@ public class ImportErrorHandlingTest extends AbstractImportBpmnModelTest {
 	// FIXME: Unresolvable reference error is not caught by model import in test case but in real plugin
 	@DiagramResource
 	public void testPartlyWrongSequenceFlowReference() throws Exception {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		assertThat(importer.getImportWarnings()).isNotEmpty();
@@ -71,7 +69,7 @@ public class ImportErrorHandlingTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testMissingDiForParticipant() throws Exception {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 		
 		assertEquals(11, importer.getImportWarnings().size()); // Participant Error + 5 * 2 Referenced Elements in flows
@@ -85,7 +83,7 @@ public class ImportErrorHandlingTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportDataStoreWithoutDi() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 		
 		assertEquals(1, importer.getImportWarnings().size());
@@ -97,7 +95,7 @@ public class ImportErrorHandlingTest extends AbstractImportBpmnModelTest {
 	@DiagramResource
 	public void testLeftOverDiElement() throws Exception {
 
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 		
 		assertThat(importer.getImportWarnings()).isNotEmpty();
@@ -106,7 +104,7 @@ public class ImportErrorHandlingTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testMissingReferenceInDIPlane() throws Exception {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 	}
 
@@ -115,7 +113,7 @@ public class ImportErrorHandlingTest extends AbstractImportBpmnModelTest {
 	public void testNoBpmn20() throws Exception {
 
 		try {
-			ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+			ModelImport importer = createModelImport();
 			importer.execute();
 			
 			Assert.fail("Expected InvalidContentException to be thrown");

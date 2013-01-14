@@ -16,7 +16,7 @@ public class CompatibilityTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testAdonisDiImportCompatibility() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 		
 		FreeFormConnection connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "_16951");

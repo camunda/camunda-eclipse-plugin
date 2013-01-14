@@ -23,7 +23,7 @@ public class ImportMessageFlowTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testMessageFlow() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 		
 		EList<Shape> children = diagram.getChildren();
@@ -53,7 +53,7 @@ public class ImportMessageFlowTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testMessageFlowWithWayPoints() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 		
 		EList<Shape> children = diagram.getChildren();
@@ -84,7 +84,7 @@ public class ImportMessageFlowTest extends AbstractImportBpmnModelTest {
 	@Ignore
 	@DiagramResource
 	public void testMessageFlowWithMessage() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 		
 		// Two container shapes (process pools)
@@ -99,21 +99,21 @@ public class ImportMessageFlowTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testActivityToCollapsedPoolBidirectional() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 	}
 
 	@Test
 	@DiagramResource
 	public void testActivityToCollapsedPool() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 	}
 	
 	@Test
 	@DiagramResource
 	public void testCollapsedPoolToActivity() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 	}
 	

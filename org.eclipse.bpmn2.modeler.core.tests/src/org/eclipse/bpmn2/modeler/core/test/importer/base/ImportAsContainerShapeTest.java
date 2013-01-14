@@ -25,7 +25,7 @@ public class ImportAsContainerShapeTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testElementOutsideContainer() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		// we simulate the following behavior here:
@@ -41,7 +41,7 @@ public class ImportAsContainerShapeTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testElementInsideContainer() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 		
 		// element is drawn inside process
@@ -51,7 +51,7 @@ public class ImportAsContainerShapeTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testLaneInPoolFloatingPointPositioning() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 		
 		// underlaying DI uses floating points to denote coordinates / sizes etc.
@@ -63,7 +63,7 @@ public class ImportAsContainerShapeTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testElementPartlyInsideContainer() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		// we simulate the following behavior here:

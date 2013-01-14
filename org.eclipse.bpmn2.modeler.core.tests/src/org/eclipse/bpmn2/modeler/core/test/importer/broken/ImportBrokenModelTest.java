@@ -31,7 +31,7 @@ public class ImportBrokenModelTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testEmptyLaneSet() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		assertThat(importer.getImportWarnings()).isNotEmpty();
@@ -41,7 +41,7 @@ public class ImportBrokenModelTest extends AbstractImportBpmnModelTest {
 	@DiagramResource
 	public void testParticipantReferencingNonExistingProcess() {
 		try {
-			ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+			ModelImport importer = createModelImport();
 			importer.execute();
 			Assert.fail("expected failure");
 		} catch (ImportException e) {
@@ -53,7 +53,7 @@ public class ImportBrokenModelTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testLaneSetSingleLaneUnreferencedFlowElements() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		// TODO: 12-10-2012 nre: test fails because the unreferenced element
@@ -64,7 +64,7 @@ public class ImportBrokenModelTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testLaneSetMultipleLanesUnreferencedFlowElements() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		assertThat(importer.getImportWarnings()).isNotEmpty();
@@ -73,7 +73,7 @@ public class ImportBrokenModelTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testCallActivityReferencedByMessageFlow() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		assertThat(importer.getImportWarnings()).isNotEmpty();
@@ -82,7 +82,7 @@ public class ImportBrokenModelTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testSubProcessReferencedByMessageFlow() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		assertThat(importer.getImportWarnings()).isNotEmpty();

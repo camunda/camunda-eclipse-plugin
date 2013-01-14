@@ -35,7 +35,7 @@ public class ImportEmptyDiagramTest extends AbstractImportBpmnModelTest {
 	@DiagramResource
 	public void testImportEmptyCollaboration() {
 		try {
-			ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+			ModelImport importer = createModelImport();
 			importer.execute();
 			fail("Expected an exception: No participants in collaboration");
 		} catch (InvalidContentException e) {
@@ -48,14 +48,14 @@ public class ImportEmptyDiagramTest extends AbstractImportBpmnModelTest {
 	@Ignore
 	@DiagramResource
 	public void testImportNoDefinitions() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 	}
 
 	@Test
 	@DiagramResource
 	public void testImportNoRootElements() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 		
 		EList<Shape> children = diagram.getChildren();

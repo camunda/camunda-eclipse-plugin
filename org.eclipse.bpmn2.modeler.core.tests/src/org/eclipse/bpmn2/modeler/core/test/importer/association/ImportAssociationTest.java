@@ -26,7 +26,7 @@ public class ImportAssociationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testAssociateDataStore() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		assertThat(StringUtil.toDetailsString(diagram)).contains("AssociationImpl");
@@ -35,7 +35,7 @@ public class ImportAssociationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testAssociateDataStoreByXPath() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		assertThat(StringUtil.toDetailsString(diagram)).contains("AssociationImpl");
@@ -45,7 +45,7 @@ public class ImportAssociationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testUnresolvedAssociationOnDataStore() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 		
 		assertThat(StringUtil.toDetailsString(diagram)).contains("AssociationImpl");
@@ -54,7 +54,7 @@ public class ImportAssociationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testResolvedAssociationOnDataStore() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		assertThat(StringUtil.toDetailsString(diagram)).contains("AssociationImpl");

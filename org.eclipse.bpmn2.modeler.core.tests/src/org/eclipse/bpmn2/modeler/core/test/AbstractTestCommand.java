@@ -4,101 +4,67 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.List;
 
-import org.eclipse.bpmn2.Definitions;
-import org.eclipse.bpmn2.di.BPMNDiagram;
-import org.eclipse.bpmn2.impl.DocumentRootImpl;
-import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
-import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.bpmn2.modeler.core.test.util.TestHelper;
+import org.eclipse.bpmn2.modeler.core.test.util.TestHelper.EditorResources;
+import org.eclipse.bpmn2.modeler.core.test.util.TestHelper.ModelResources;
+import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
-import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.ui.services.GraphitiUi;
 
 public abstract class AbstractTestCommand extends RecordingCommand {
 	
+	protected ModelResources modelResources;
+	protected EditorResources editorResources;
 	
-	protected Diagram diagram;	
-	protected IDiagramTypeProvider diagramTypeProvider;
-	protected Resource diagramResource;
-
-	protected Throwable recordedException;
+	private Throwable recordedException;
 
 	/**
 	 * Test case executed
 	 */
-	protected AbstractBpmnEditorTest testCase;
-	
-	/**
-	 * Name of the diagram to load
-	 */
-	protected String diagramName;
+	protected AbstractEditorTest testCase;
 	
 	/**
 	 * Name of the executed test
 	 */
 	protected String testName;
 	
+	private File tempDir;
+	
 	private static final String TEST_DIR = "target/test";
 	
-	public AbstractTestCommand(AbstractBpmnEditorTest importBpmnModelTest, String testName, String diagramName) {
-		super(importBpmnModelTest.getEditingDomain());
+	public AbstractTestCommand(AbstractEditorTest testCase, String testName, ModelResources modelResources, File tempDir) {
+		super(modelResources.getEditingDomain());
 		
-		this.testCase = importBpmnModelTest;
+		this.testCase = testCase;
 		this.testName = testName;
-		
-		this.diagramName = diagramName;
+
+		this.tempDir = tempDir;
+		this.modelResources = modelResources;
 	}
 
 	@Override
-	protected void doExecute() {
-
+	protected final void doExecute() {
+		
 		try {
-			diagram = Graphiti.getPeCreateService().createDiagram("BPMN2", diagramName, true);
+			// create editor
+			editorResources = TestHelper.createEditor(modelResources, tempDir);
 
-			String fileName = diagramName.replaceAll("/", ".").replaceAll(".bpmn", ".diagram");
-			URI uri = URI.createFileURI(testCase.getTempFolder().newFile(fileName).getAbsolutePath());
+			// apply resources to test case
+			testCase.setModelResources(modelResources);
+			testCase.setEditorResources(editorResources);
 			
-			ModelHandlerLocator.put(uri, testCase.getModelHandler());
-	
-			diagramResource = testCase.getEditingDomain().getResourceSet().createResource(uri);
-			diagramResource.getContents().add(diagram);
-			
-			diagramTypeProvider = GraphitiUi.getExtensionManager().createDiagramTypeProvider(
-					diagram,
-					"org.eclipse.bpmn2.modeler.ui.diagram.MainBPMNDiagramType");
-
-			diagramTypeProvider.getDiagramEditor().getResourceSet();
-			
-			Bpmn2ResourceImpl resource = testCase.getResource();
-			
-			List<EObject> contents = resource.getContents();
-			if (!contents.isEmpty()) {
-				DocumentRootImpl rootImpl = (DocumentRootImpl) resource.getContents().get(0);
-				Definitions definitions = rootImpl.getDefinitions();
-				if (definitions != null) {
-					List<BPMNDiagram> diagrams = definitions.getDiagrams();
-					
-					if (!diagrams.isEmpty()) {
-						BPMNDiagram bpmnDiagram = diagrams.get(0);
-						diagramTypeProvider.getFeatureProvider().link(diagram, bpmnDiagram);
-					}
-				}
-			}
+			Bpmn2Resource bpmn2Resource = modelResources.getResource();
 
 			File testFileDir = new File(TEST_DIR);
 			testFileDir.mkdir();
 			
-			saveTestResource(resource, "before", testFileDir);
+			saveTestResource(bpmn2Resource, "before", testFileDir);
 			
-			test(diagramTypeProvider, diagram);
-
-			saveTestResource(resource, "after", testFileDir);
+			execute(editorResources.getTypeProvider(), editorResources.getDiagram());
+			
+			saveTestResource(bpmn2Resource, "after", testFileDir);
 			
 		} catch (RuntimeException e) {
 			this.recordedException = e;
@@ -109,8 +75,8 @@ public abstract class AbstractTestCommand extends RecordingCommand {
 			throw new RuntimeException(e);
 		}
 	}
-
-	private void saveTestResource(Bpmn2ResourceImpl resource, String suffix, File directory) {
+	
+	private void saveTestResource(Bpmn2Resource resource, String suffix, File directory) {
 		String fileName = testCase.getClass().getName() + "." + testName + "." + suffix + ".bpmn";
 		
 		FileOutputStream out = null;
@@ -133,8 +99,18 @@ public abstract class AbstractTestCommand extends RecordingCommand {
 		}
 	}
 
-	public abstract void test(IDiagramTypeProvider diagramTypeProvider, Diagram diagram) throws Throwable;
+	/**
+	 * Execute 
+	 * @param diagramTypeProvider
+	 * @param diagram
+	 * @throws Throwable
+	 */
+	public abstract void execute(IDiagramTypeProvider diagramTypeProvider, Diagram diagram) throws Throwable;
 
+	/**
+	 * Returns the exception recorded during command execution
+	 * @return
+	 */
 	public Throwable getRecordedException() {
 		return recordedException;
 	}

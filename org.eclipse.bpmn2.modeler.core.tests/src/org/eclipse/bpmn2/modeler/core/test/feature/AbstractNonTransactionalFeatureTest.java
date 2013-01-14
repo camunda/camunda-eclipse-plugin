@@ -1,7 +1,7 @@
 package org.eclipse.bpmn2.modeler.core.test.feature;
 
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
-import org.eclipse.bpmn2.modeler.core.test.AbstractBpmnEditorTest;
+import org.eclipse.bpmn2.modeler.core.test.AbstractEditorTest;
 import org.eclipse.bpmn2.modeler.core.test.util.NonTransactional;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.junit.Before;
@@ -12,7 +12,7 @@ import org.junit.Before;
  * @author nico.rehwaldt
  */
 @NonTransactional
-public class AbstractNonTransactionalFeatureTest extends AbstractBpmnEditorTest {
+public class AbstractNonTransactionalFeatureTest extends AbstractEditorTest {
 
 	@Before
 	public void before() {
@@ -27,8 +27,8 @@ public class AbstractNonTransactionalFeatureTest extends AbstractBpmnEditorTest 
 	protected ModelImport modelImport;
 
 	protected void importModel() {
-		if (resource != null) {
-			modelImport = new ModelImport(diagramTypeProvider, resource);
+		if (bpmnResource != null) {
+			modelImport = new ModelImport(diagramTypeProvider, bpmnResource);
 			modelImport.execute();
 		}
 	}

@@ -17,7 +17,7 @@ public class ImportGroupTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportGroup() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 		
 		EList<Shape> children = diagram.getChildren();
@@ -30,7 +30,7 @@ public class ImportGroupTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportGroupInProcessWithLanes() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 		
 		EList<Shape> children = diagram.getChildren();

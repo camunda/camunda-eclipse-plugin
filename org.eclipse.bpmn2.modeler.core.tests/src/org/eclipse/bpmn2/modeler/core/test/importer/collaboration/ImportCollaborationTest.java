@@ -32,7 +32,7 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportNoLanes() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 		
 		EList<Shape> children = diagram.getChildren();
@@ -53,7 +53,7 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportNoLanesFlowNodes() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		EList<Shape> children = diagram.getChildren();
@@ -74,7 +74,7 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportNestedLanes() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		EList<Shape> children = diagram.getChildren();
@@ -84,7 +84,7 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportCollapsedPool() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		EList<Shape> children = diagram.getChildren();
@@ -94,7 +94,7 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportCollapsedPoolProcess() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		EList<Shape> children = diagram.getChildren();
@@ -104,7 +104,7 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportNestedLanesFlowNodes() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		EList<Shape> children = diagram.getChildren();
@@ -117,7 +117,7 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportNestedLanesUnreferencedFlowNodes() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 		
 		EList<Shape> children = diagram.getChildren();
@@ -134,7 +134,7 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportLanes() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		EList<Shape> children = diagram.getChildren();
@@ -144,7 +144,7 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportLanesFlowNodes() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 		
 		EList<Shape> children = diagram.getChildren();
@@ -154,7 +154,7 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportLanesUnreferencedFlowNodes() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		EList<Shape> children = diagram.getChildren();

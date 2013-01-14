@@ -26,7 +26,7 @@ public class ImportDataAssociationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testDataAssociationsPool() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		assertThat(StringUtil.toDetailsString(diagram))
@@ -37,7 +37,7 @@ public class ImportDataAssociationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testDataAssociationsSimpleProcess() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		assertThat(StringUtil.toDetailsString(diagram))

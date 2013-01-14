@@ -25,7 +25,7 @@ public class ImportSequenceFlowTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportConditionalFlow() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 		
 		Connection connection = Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
@@ -38,7 +38,7 @@ public class ImportSequenceFlowTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportUnconditionalFlow() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		Connection connection = Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
@@ -48,7 +48,7 @@ public class ImportSequenceFlowTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportDefaultFlow() {
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 
 		Shape exclusiveGatewayShape = Util.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
@@ -67,7 +67,7 @@ public class ImportSequenceFlowTest extends AbstractImportBpmnModelTest {
 	@DiagramResource
 	public void testChopboxAnchorModel() throws Exception {
 
-		ModelImport importer = new ModelImport(diagramTypeProvider, resource);
+		ModelImport importer = createModelImport();
 		importer.execute();
 		
 		FreeFormConnection connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
