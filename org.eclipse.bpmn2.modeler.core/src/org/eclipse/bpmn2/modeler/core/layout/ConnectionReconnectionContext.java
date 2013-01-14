@@ -42,22 +42,25 @@ public class ConnectionReconnectionContext {
 		
 		System.out.println("Reconnect " + model.getId());
 		
-		LayoutContext layoutingContext = new DefaultLayoutStrategy().createLayoutingContext(freeFormConnection);
+		LayoutContext layoutingContext = new DefaultLayoutStrategy().createLayoutingContext(freeFormConnection, relayoutOnRepairFail);
 		
 		boolean repaired = false;
 		
-		if (!forceLayout && layoutingContext.isRepairable()) {
+		if (forceLayout) {
+			layoutingContext.layout();
+			System.out.println("forced layout, no repair");
+		}
+		else if (layoutingContext.isRepairable()) {
 			repaired = layoutingContext.repair();
 			System.out.println("[layout] repaired ? " + repaired);
-			if (!repaired && !relayoutOnRepairFail) {
-				return;
+			if (layoutingContext.needsLayout()) {
+				layoutingContext.layout();
+				System.out.println("layout after repair");
 			}
+		}else {
+			layoutingContext.layout();
 		}
 		
-		if (!repaired) {
-			layoutingContext.layout();
-			System.out.println("[layout] new");
-		}
 	}
 
 	private void assertFreeFormConnection(Connection connection) {

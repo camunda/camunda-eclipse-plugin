@@ -15,7 +15,7 @@ public class DefaultLayoutStrategy {
 	 * @param connection
 	 * @return
 	 */
-	public LayoutContext createLayoutingContext(FreeFormConnection connection) {
-		return new DefaultLayoutContext(connection);
+	public LayoutContext createLayoutingContext(FreeFormConnection connection, boolean relayoutOnRepairFail) {
+		return new DefaultLayoutContext(connection, relayoutOnRepairFail);
 	}
 }

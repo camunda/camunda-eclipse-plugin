@@ -15,6 +15,13 @@ public interface LayoutContext {
 	 * @return
 	 */
 	public boolean isRepairable();
+	
+	/**
+	 * Returns true the context decides to relayout, despite of a possible successful repair
+	 * 
+	 * @return
+	 */
+	public boolean needsLayout();
 
 	/**
 	 * Perform a fix operation to repair the

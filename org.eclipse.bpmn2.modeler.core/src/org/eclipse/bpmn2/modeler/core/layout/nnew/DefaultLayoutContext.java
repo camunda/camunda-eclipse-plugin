@@ -45,8 +45,11 @@ public class DefaultLayoutContext implements LayoutContext {
 	
 	private List<Point> connectionPoints;
 
-	public DefaultLayoutContext(FreeFormConnection connection) {
+	private boolean relayoutOnRepairFail = false;
+
+	public DefaultLayoutContext(FreeFormConnection connection, boolean relayoutOnRepairFail) {
 		this.connection = connection;
+		this.relayoutOnRepairFail = relayoutOnRepairFail;
 		
 		initSourceAndTarget(connection.getStart(), connection.getEnd());
 		
@@ -151,7 +154,7 @@ public class DefaultLayoutContext implements LayoutContext {
 		
 		repaired = repaired && fixAnchor(endShape, endAnchor, false);
 		
-		return repaired && isConnectionRepaired();
+		return repaired;
 	}
 
 	private boolean fixAnchor(Shape targetShape, Anchor targetShapeAnchor, boolean start) {
@@ -240,7 +243,7 @@ public class DefaultLayoutContext implements LayoutContext {
 		return true;
 	}
 
-	protected boolean isConnectionRepaired() {
+	public boolean needsLayout() {
 		
 		boolean repaired = true;
 		
@@ -259,11 +262,13 @@ public class DefaultLayoutContext implements LayoutContext {
 		
 		Tuple<Docking, Docking> dockings = getDockings();
 		if (dockings != null && BusinessObjectUtil.getFirstBaseElement(startShape) instanceof BoundaryEvent) {
-			Sector afterRepairSector = LayoutUtil.getSector(ConversionUtil.location(firstBendpoint), LayoutUtil.getAbsoluteBounds(startShape));
-			repaired &=  afterRepairSector == dockings.getFirst().getSector(); 
+			Sector afterRepairStartSector = LayoutUtil.getSector(ConversionUtil.location(firstBendpoint), LayoutUtil.getAbsoluteBounds(startShape));
+			Sector afterRepairEndSector = LayoutUtil.getSector(ConversionUtil.location(lastBendpoint), LayoutUtil.getAbsoluteBounds(endShape));
+			
+			return !(afterRepairStartSector == dockings.getFirst().getSector() && afterRepairEndSector == dockings.getSecond().getSector());
 		}
 		
-		return repaired;
+		return repaired ? false : relayoutOnRepairFail; 
 	}
 
 	@Override
