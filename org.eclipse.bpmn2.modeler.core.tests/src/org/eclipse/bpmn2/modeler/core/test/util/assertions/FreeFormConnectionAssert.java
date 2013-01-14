@@ -61,7 +61,7 @@ public class FreeFormConnectionAssert extends AbstractAssert<FreeFormConnectionA
 		if (Math.abs(p1.getX() - p2.getX()) > tolerance && 
 			Math.abs(p1.getY() - p2.getY()) > tolerance) {
 			
-			Assertions.fail(String.format("Expected points <%s> and <%s> to form a non-diagonal connection", p1, p2));
+			Assertions.fail(String.format("Expected points <(%s,%s)> and <(%s,%s)> to form a non-diagonal connection", p1.getX(), p1.getY(), p2.getX(), p2.getY()));
 		}
 	}
 
