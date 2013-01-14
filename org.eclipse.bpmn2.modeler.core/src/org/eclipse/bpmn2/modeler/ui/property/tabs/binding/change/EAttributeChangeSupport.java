@@ -58,7 +58,6 @@ public class EAttributeChangeSupport extends EObjectChangeSupport {
 	 * @param control
 	 */
 	public static void ensureAdded(EAttributeChangeSupport changeSupport, Control control) {
-
 		String CHANGE_SUPPORT_KEY = changeSupport.getHash();
 		
 		if (control.getData(CHANGE_SUPPORT_KEY) != null) {

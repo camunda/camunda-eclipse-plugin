@@ -97,6 +97,10 @@ public abstract class AbstractModelViewBinding<T extends Control, V> {
 		
 		updateViewState(modelValue);
 		
+		if (control.isDisposed()) {
+			return;
+		}
+
 		log("establish");
 		
 		establishModelViewBinding();

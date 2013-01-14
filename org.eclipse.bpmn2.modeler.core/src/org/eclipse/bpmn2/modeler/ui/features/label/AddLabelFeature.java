@@ -57,6 +57,8 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		BaseElement baseElement = (BaseElement) context.getProperty(ContextConstants.BUSINESS_OBJECT);
 		BPMNShape bpmnShape = (BPMNShape) ModelHandler.findDIElement(baseElement);
 		
+		boolean customPosition = false;
+		
 		// bpmn shape must exist
 		Assert.isNotNull(bpmnShape);
 		
@@ -79,17 +81,25 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		if (bpmnShape != null && bpmnShape.getLabel() != null && bpmnShape.getLabel().getBounds() != null) {
 		  x = getRelativeX(targetContainer, (int) bpmnShape.getLabel().getBounds().getX());
 		  y = getRelativeY(targetContainer, (int) bpmnShape.getLabel().getBounds().getY());
+		  
+		  // we got actual coordinates from DI
+		  customPosition = true;
+		} else
+		if (!isImport(context)) {
+
+			// Boundary events get a different add context, 
+			// so use the context coordinates relative
+			if (baseElement instanceof BoundaryEvent) {
+				x = context.getTargetContainer().getGraphicsAlgorithm().getX() + context.getX() - width / 2;
+				y = context.getTargetContainer().getGraphicsAlgorithm().getY() + context.getY() - height / 2;
+			}
 		}
 		
-		// Boundary events get a different add context, so use the context coodinates relative
-		if ( (baseElement instanceof BoundaryEvent) && !isImport(context) ){
-			x = context.getTargetContainer().getGraphicsAlgorithm().getX() + context.getX()-width/2;
-			y = context.getTargetContainer().getGraphicsAlgorithm().getY() + context.getY()-height/2;
-		}
-		
-		if (bpmnShape.getLabel() != null && context.getProperty(DIUtils.IMPORT_PROPERTY) != null) {
+		// perform actual positioning of label
+		if (customPosition) {
 		  GraphicsUtil.setLabelPosition(text, textContainerShape, x, y);
 		} else {
+		  // perform alignment with shape if we got no di coordinates
 		  GraphicsUtil.alignWithShape(text, textContainerShape, width, height, x, y, 0, 0);
 		}
 		

@@ -43,6 +43,7 @@ import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.datatypes.ILocation;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
@@ -108,24 +109,29 @@ public class DIUtils {
 		return bpmnShape;
 	}
 	
-	public static void updateDILabel(ContainerShape labelContainer, BPMNShape bpmnShape) {
-		Bounds labelBounds = null;
-		if (bpmnShape.getLabel() != null) {
-			labelBounds = bpmnShape.getLabel().getBounds();
-		} else {
-			BPMNLabel label = BpmnDiFactory.eINSTANCE.createBPMNLabel();
-			labelBounds = DcFactory.eINSTANCE.createBounds();
-			label.setBounds(labelBounds);
-			bpmnShape.setLabel(label);
+	public static void updateDILabel(ContainerShape label, BPMNShape bpmnShape) {
+		Bounds bpmnLabelBounds = null;
+		BPMNLabel bpmnLabel = null;
+		
+		bpmnLabel = bpmnShape.getLabel();
+		if (bpmnLabel == null) {
+			bpmnLabel = BpmnDiFactory.eINSTANCE.createBPMNLabel();
+			bpmnShape.setLabel(bpmnLabel);
+		} 
+		
+		bpmnLabelBounds = bpmnLabel.getBounds();
+		
+		if (bpmnLabelBounds == null) {
+			bpmnLabelBounds = DcFactory.eINSTANCE.createBounds();
+			bpmnLabel.setBounds(bpmnLabelBounds);
 		}
 		
-		IPeService peService = Graphiti.getPeService();
-		ILocation location = peService.getLocationRelativeToDiagram(labelContainer);
+		IRectangle labelBounds = LayoutUtil.getAbsoluteBounds(label);
 		
-		labelBounds.setX(location.getX());
-		labelBounds.setY(location.getY());
-		labelBounds.setWidth(labelContainer.getGraphicsAlgorithm().getWidth());
-		labelBounds.setHeight(labelContainer.getGraphicsAlgorithm().getHeight());
+		bpmnLabelBounds.setX(labelBounds.getX());
+		bpmnLabelBounds.setY(labelBounds.getY());
+		bpmnLabelBounds.setWidth(labelBounds.getWidth());
+		bpmnLabelBounds.setHeight(labelBounds.getHeight());
 	}
 	
 	public static void updateConnections(PictogramElement element) {
