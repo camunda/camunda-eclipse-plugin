@@ -55,6 +55,12 @@ public abstract class AbstractShapeAssert<S extends AbstractShapeAssert<S, A>, A
 		return myself;
 	}
 	
+	public AbstractShapeAssert<S, A> isNotContainedIn(Shape containerShape) {
+		Assertions.assertThat(actual.eContainer()).isNotEqualTo(containerShape);
+		
+		return myself;
+	}
+	
 	public abstract AbstractShapeAssert<S, A> isContainerShape();
 	
 	public abstract AbstractShapeAssert<S, A> hasNoChildren();

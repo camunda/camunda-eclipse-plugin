@@ -73,7 +73,7 @@ public class GraphicsUtil {
 	// TODO: Determine all cases to make a line break! The following implementation are the easy once.
 	private static final String LINE_BREAK = "\n";
 	
-	public static class SizeTemplate{
+	public static class SizeTemplate {
 		
 		private Size eventSize = new Size(GraphicsUtil.EVENT_SIZE, GraphicsUtil.EVENT_SIZE);
 		private Size gatewaySize = new Size(GraphicsUtil.GATEWAY_RADIUS*2, GraphicsUtil.GATEWAY_RADIUS*2);

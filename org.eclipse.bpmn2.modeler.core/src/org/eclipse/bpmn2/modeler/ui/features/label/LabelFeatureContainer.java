@@ -49,7 +49,7 @@ public class LabelFeatureContainer implements FeatureContainer {
 		} else if (context instanceof IPictogramElementContext) {
 			IPictogramElementContext peContext = (IPictogramElementContext) context;
 			BaseElement o = BusinessObjectUtil.getFirstElementOfType(peContext.getPictogramElement(), BaseElement.class);
-			if (o != null && (o instanceof Gateway || o instanceof Event)) {
+			if (o != null && (o instanceof Gateway || o instanceof Event || o instanceof DataObject || o instanceof DataInput || o instanceof DataOutput)) {
 				if (peContext.getPictogramElement() instanceof ContainerShape) {
 					ContainerShape container = (ContainerShape) peContext.getPictogramElement();
 					if (container.getChildren().size() == 1) {

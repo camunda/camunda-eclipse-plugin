@@ -7,7 +7,6 @@ import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.MoveFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.MoveActivityFeature;
-import org.eclipse.bpmn2.modeler.core.test.feature.move.MoveLabelFeatureTest;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.features.event.MoveBoundaryEventFeature;
 import org.eclipse.bpmn2.modeler.ui.features.label.LabelFeatureContainer;

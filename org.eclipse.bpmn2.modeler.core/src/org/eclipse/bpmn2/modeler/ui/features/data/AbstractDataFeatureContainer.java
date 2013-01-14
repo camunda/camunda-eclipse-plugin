@@ -55,6 +55,7 @@ public abstract class AbstractDataFeatureContainer extends BaseElementFeatureCon
 	@Override
 	public IMoveShapeFeature getMoveFeature(IFeatureProvider fp) {
 		return new DefaultMoveBPMNShapeFeature(fp) {
+			
 		  @Override
 		  public boolean canMoveShape(IMoveShapeContext context) {
 		    return true;
