@@ -267,25 +267,16 @@ public class DefaultLayoutContext implements LayoutContext {
 		return repaired ? false : isRelayoutOnRepairFail(); 
 	}
 
-	private boolean onSameAxis(IRectangle bounds1, IRectangle bounds2) {
-
-		boolean onAxis = true;
-		
-		// check from bounds1 perspective
-		
-		// vertical axis
-		// horizontal axis
-		onAxis |= LayoutUtil.isContained(bounds1, location(bounds2.getX() + bounds2.getWidth() / 2, bounds1.getY()));
-		onAxis |= LayoutUtil.isContained(bounds1, location(bounds1.getX(), bounds2.getY() + bounds2.getHeight() / 2));
-		
-		// check from bounds2 perspective
-		
-		// vertical axis
-		// horizontal axis
-		onAxis |= LayoutUtil.isContained(bounds2, location(bounds1.getX() + bounds1.getWidth() / 2, bounds2.getY()));
-		onAxis |= LayoutUtil.isContained(bounds2, location(bounds2.getX(), bounds1.getY() + bounds1.getHeight() / 2));
-		
-		return onAxis;
+	private boolean onSameAxis(IRectangle startShapeBounds, IRectangle endShapeBounds) {
+		switch (LayoutUtil.getEndShapeSector(connection)) {
+			case TOP:
+			case BOTTOM:
+			case LEFT:
+			case RIGHT:
+				return true;
+			default:
+				return false;
+		}
 	}
 
 	protected boolean isRelayoutOnRepairFail() {
