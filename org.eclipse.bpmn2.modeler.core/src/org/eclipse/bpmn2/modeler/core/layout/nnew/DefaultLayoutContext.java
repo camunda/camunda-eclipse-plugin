@@ -257,12 +257,35 @@ public class DefaultLayoutContext implements LayoutContext {
 		repaired &= !LayoutUtil.isContained(startShapeBounds, location(firstBendpoint), 13);
 		repaired &= !LayoutUtil.isContained(endShapeBounds, location(lastBendpoint), 13);
 		
+		repaired &= !onSameAxis(startShapeBounds, endShapeBounds);
+		
 		Tuple<Docking, Docking> dockings = getDockings();
 		if (dockings != null) {
 			repaired &= !needsLayoutByDockings(dockings, firstBendpoint, lastBendpoint);
 		}
 		
 		return repaired ? false : isRelayoutOnRepairFail(); 
+	}
+
+	private boolean onSameAxis(IRectangle bounds1, IRectangle bounds2) {
+
+		boolean onAxis = true;
+		
+		// check from bounds1 perspective
+		
+		// vertical axis
+		// horizontal axis
+		onAxis |= LayoutUtil.isContained(bounds1, location(bounds2.getX() + bounds2.getWidth() / 2, bounds1.getY()));
+		onAxis |= LayoutUtil.isContained(bounds1, location(bounds1.getX(), bounds2.getY() + bounds2.getHeight() / 2));
+		
+		// check from bounds2 perspective
+		
+		// vertical axis
+		// horizontal axis
+		onAxis |= LayoutUtil.isContained(bounds2, location(bounds1.getX() + bounds1.getWidth() / 2, bounds2.getY()));
+		onAxis |= LayoutUtil.isContained(bounds2, location(bounds2.getX(), bounds1.getY() + bounds1.getHeight() / 2));
+		
+		return onAxis;
 	}
 
 	protected boolean isRelayoutOnRepairFail() {
@@ -280,16 +303,6 @@ public class DefaultLayoutContext implements LayoutContext {
 	 * @return
 	 */
 	protected boolean needsLayoutByDockings(Tuple<Docking, Docking> dockings, Point firstBendpoint, Point lastBendpoint) {
-		
-		Docking startDocking = dockings.getFirst();
-		Docking endDocking = dockings.getSecond();
-		
-		if ((startDocking.getSector() == Sector.TOP && endDocking.getSector() == Sector.BOTTOM) ||
-			(startDocking.getSector() == Sector.BOTTOM && endDocking.getSector() == Sector.TOP)) {
-			
-			return true;
-		}
-		
 		return false;
 	}
 
