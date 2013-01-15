@@ -20,10 +20,7 @@ public class BoundaryEventLayoutContext extends DefaultLayoutContext {
 	}
 	
 	@Override
-	protected boolean needsLayoutByDockings(Tuple<Docking, Docking> dockings, Point firstBendpoint, Point lastBendpoint) {
-		Sector afterRepairStartSector = LayoutUtil.getSector(ConversionUtil.location(firstBendpoint), startShapeBounds);
-		Sector afterRepairEndSector = LayoutUtil.getSector(ConversionUtil.location(lastBendpoint), endShapeBounds);
-		
+	protected boolean needsLayoutByDockings(Tuple<Docking, Docking> dockings, Sector afterRepairStartSector, Sector afterRepairEndSector) {
 		return afterRepairStartSector != dockings.getFirst().getSector() || 
 			   afterRepairEndSector != dockings.getSecond().getSector();
 	}

@@ -257,11 +257,12 @@ public class DefaultLayoutContext implements LayoutContext {
 		repaired &= !LayoutUtil.isContained(startShapeBounds, location(firstBendpoint), 13);
 		repaired &= !LayoutUtil.isContained(endShapeBounds, location(lastBendpoint), 13);
 		
-		repaired &= !onSameAxis(startShapeBounds, endShapeBounds);
-		
 		Tuple<Docking, Docking> dockings = getDockings();
 		if (dockings != null) {
-			repaired &= !needsLayoutByDockings(dockings, firstBendpoint, lastBendpoint);
+			Sector afterRepairStartSector = LayoutUtil.getSector(ConversionUtil.location(firstBendpoint), startShapeBounds);
+			Sector afterRepairEndSector = LayoutUtil.getSector(ConversionUtil.location(lastBendpoint), endShapeBounds);
+			
+			repaired &= !needsLayoutByDockings(dockings, afterRepairStartSector, afterRepairEndSector);
 		}
 		
 		return repaired ? false : isRelayoutOnRepairFail(); 
@@ -288,13 +289,15 @@ public class DefaultLayoutContext implements LayoutContext {
 	 * 
 	 * @param dockings
 	 * 
-	 * @param lastBendpoint 
-	 * @param firstBendpoint 
+	 * @param afterRepairEndSector 
+	 * @param afterRepairStartSector 
 	 * 
 	 * @return
 	 */
-	protected boolean needsLayoutByDockings(Tuple<Docking, Docking> dockings, Point firstBendpoint, Point lastBendpoint) {
-		return false;
+	protected boolean needsLayoutByDockings(Tuple<Docking, Docking> dockings, Sector afterRepairStartSector, Sector afterRepairEndSector) {
+		boolean needsLayout = onSameAxis(startShapeBounds, endShapeBounds) && (afterRepairStartSector != dockings.getFirst().getSector() || 
+				   afterRepairEndSector != dockings.getSecond().getSector());
+		return needsLayout;
 	}
 
 	@Override
