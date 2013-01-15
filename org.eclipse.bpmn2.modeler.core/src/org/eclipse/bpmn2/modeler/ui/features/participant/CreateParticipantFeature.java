@@ -78,10 +78,9 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 		Participant newParticipant;
 
 		if (rootElement == null) {
-			
 			throw new IllegalStateException("Diagram not liked to Process or Collaboration");
 		} else
-			
+		
 		// existing collaboration?
 		if (rootElement instanceof Collaboration) {
 			

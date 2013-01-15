@@ -10,6 +10,5 @@ public class AddPoolFeatureTest extends AbstractFeatureTest {
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveFlowNodeFeature.testTaskWithBoundaryEvent.bpmn")
 	public void testAddToNonEmptyProcessWithBoundaryEvent() throws Exception {
 		
-		
 	}
 }
