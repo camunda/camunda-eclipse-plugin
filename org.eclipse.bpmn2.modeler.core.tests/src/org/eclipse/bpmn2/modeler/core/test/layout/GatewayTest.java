@@ -142,6 +142,45 @@ public class GatewayTest extends AbstractFeatureTest {
 			.anchorPointOn(task)
 				.isBeneathShape();
 	}
+
+	@Test
+	@DiagramResource
+	public void testVerticalMoveBetween() {
+
+		Shape task1 = Util.findShapeByBusinessObjectId(diagram, "Task_1");
+		Shape task2 = Util.findShapeByBusinessObjectId(diagram, "Task_2");
+		
+		Shape gateway = Util.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
+
+		FreeFormConnection flow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		FreeFormConnection flow2 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
+		
+		// gateway is positioned to the left of both tasks
+		
+		// when moved by some amount to the right
+		move(gateway, getDiagramTypeProvider())
+			.by(125, 0)
+			.execute();
+		
+		// then 
+		// the two point bendpoint strategy should kick in
+		// on both sides
+		assertThat(flow1)
+			.hasNoDiagonalEdges()
+			
+			.hasBendpointCount(2)
+			
+			.anchorPointOn(task1)
+				.isBeneathShape();
+		
+		assertThat(flow2)
+			.hasNoDiagonalEdges()
+			
+			.hasBendpointCount(2)
+			
+			.anchorPointOn(task2)
+				.isAboveShape();
+	}
 	
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/GatewayTest.testVertical.bpmn")

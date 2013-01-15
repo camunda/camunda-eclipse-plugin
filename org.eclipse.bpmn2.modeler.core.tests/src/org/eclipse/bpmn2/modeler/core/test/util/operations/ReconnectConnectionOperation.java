@@ -13,11 +13,11 @@ import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 
-public class ReconnectConnectionEndOperation extends ConnectionOperation<ReconnectionContext, IReconnectionFeature> {
+public class ReconnectConnectionOperation extends ConnectionOperation<ReconnectionContext, IReconnectionFeature> {
 	
 	private boolean reconnectStart;
 
-	public ReconnectConnectionEndOperation(Connection connection, boolean reconnectStart, IDiagramTypeProvider diagramTypeProvider) {
+	public ReconnectConnectionOperation(Connection connection, boolean reconnectStart, IDiagramTypeProvider diagramTypeProvider) {
 		super(connection, diagramTypeProvider);
 		
 		this.reconnectStart = reconnectStart;
@@ -37,12 +37,12 @@ public class ReconnectConnectionEndOperation extends ConnectionOperation<Reconne
 		return featureProvider.getReconnectionFeature(context);
 	}
 	
-	public ReconnectConnectionEndOperation withTargetLocation(int x, int y) {
+	public ReconnectConnectionOperation withTargetLocation(int x, int y) {
 		context.setTargetLocation(location(x, y));
 		return this;
 	}
 	
-	public ReconnectConnectionEndOperation toElement(AnchorContainer element) {
+	public ReconnectConnectionOperation toElement(AnchorContainer element) {
 		if (element == null) {
 			throw new IllegalArgumentException("Element may not be null");
 		}
@@ -64,11 +64,11 @@ public class ReconnectConnectionEndOperation extends ConnectionOperation<Reconne
 		return this;
 	}
 	
-	public static ReconnectConnectionEndOperation reconnectEnd(Connection connection, IDiagramTypeProvider diagramTypeProvider) {
-		return new ReconnectConnectionEndOperation(connection, false, diagramTypeProvider);
+	public static ReconnectConnectionOperation reconnectEnd(Connection connection, IDiagramTypeProvider diagramTypeProvider) {
+		return new ReconnectConnectionOperation(connection, false, diagramTypeProvider);
 	}
 	
-	public static ReconnectConnectionEndOperation reconnectStart(Connection connection, IDiagramTypeProvider diagramTypeProvider) {
-		return new ReconnectConnectionEndOperation(connection, true, diagramTypeProvider);
+	public static ReconnectConnectionOperation reconnectStart(Connection connection, IDiagramTypeProvider diagramTypeProvider) {
+		return new ReconnectConnectionOperation(connection, true, diagramTypeProvider);
 	}
 }

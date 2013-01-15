@@ -1,9 +1,9 @@
 package org.eclipse.bpmn2.modeler.core.test.layout;
 
-import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveShapeOperation.move;
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
-import static org.eclipse.bpmn2.modeler.core.test.util.operations.ReconnectConnectionEndOperation.reconnectEnd;
+import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveShapeOperation.move;
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.eclipse.bpmn2.modeler.core.test.util.operations.ReconnectConnectionOperation.*;
 
 import org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
@@ -13,6 +13,7 @@ import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.Util;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
+import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -456,6 +457,49 @@ public class BoundaryEventTest extends AbstractFeatureTest {
 	}
 	
 	@Test
+	@DiagramResource
+	public void testMoveConnected() {
+		FreeFormConnection connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		
+		Shape boundaryEventShape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_2");
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
+		
+		move(taskShape, diagramTypeProvider)
+			.by(0, 30)
+			.execute();
+		
+		assertThat(connection)
+			.anchorPointOn(boundaryEventShape)
+				.isBeneathShape();
+		
+		assertThat(connection)
+			.anchorPointOn(taskShape)
+				.isLeftOfShape();
+		
+		assertThat(connection)
+			.hasNoDiagonalEdges();
+	}
+	
+	@Test
+	@DiagramResource
+	public void testReconnectStart() {
+		FreeFormConnection connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		Shape boundaryEventShape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_2");
+		
+		// when reconnecting
+		reconnectStart(connection, diagramTypeProvider)
+			.toElement(boundaryEventShape)
+			.execute();
+		
+		// then
+		// outgoing sequence flow should leave 
+		// boundary event to the bottom
+		assertThat(connection)
+			.anchorPointOn(boundaryEventShape)
+			.isBeneathShape();
+	}
+	
+	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testMoveTaskWithBoundaryEvent.bpmn")
 	public void testMoveTaskWithBoundaryEventRetainsBendpoints() {
 		ContainerShape userTaskShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "UserTask_1");
@@ -487,5 +531,4 @@ public class BoundaryEventTest extends AbstractFeatureTest {
 		
 		assertThat(connection).anchorPointOn(boundaryEvent).isAt(expectedSector);
 	}
-	
 }
