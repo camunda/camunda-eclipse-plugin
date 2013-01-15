@@ -1,14 +1,18 @@
 package org.eclipse.bpmn2.modeler.core.test.feature.move;
 
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveShapeOperation.move;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.Util;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.graphiti.datatypes.IRectangle;
+import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.junit.Test;
@@ -95,6 +99,31 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		Shape labelShape = GraphicsUtil.getLabel(eventShape, getDiagram());
 		
 		assertThat(labelShape).isContainedIn(targetLaneShape);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveFlowNodeFeature.testTaskWithBoundaryEvent.bpmn")
+	public void testMoveTaskWithBoundaryEvent() {
+
+		// given
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "UserTask_1");
+
+		IRectangle boundsBeforeMove = LayoutUtil.getAbsoluteBounds(taskShape);
+		
+		// when moving event to the parents sibling lane
+		move(taskShape, diagramTypeProvider)
+			.by(30, 24)
+			.execute();
+
+		IRectangle boundsAfterMove = LayoutUtil.getAbsoluteBounds(taskShape);
+
+		Point posBeforeMove = point(boundsBeforeMove.getX(), boundsBeforeMove.getY());
+		Point posAfterMove = point(boundsAfterMove.getX(), boundsAfterMove.getY());
+		Point expectedPosAfterMove = point(posBeforeMove.getX() + 30, posBeforeMove.getY() + 24);
+		
+		// then
+		// task should have moved (no NPE)
+		assertThat(posAfterMove).isEqualTo(expectedPosAfterMove);
 	}
 	
 	@Test
