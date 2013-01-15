@@ -40,27 +40,27 @@ public class ConnectionReconnectionContext {
 		
 		BaseElement model = BusinessObjectUtil.getFirstBaseElement(freeFormConnection);
 		
-		System.out.println("Reconnect " + model.getId());
+		System.out.println();
+		System.out.println("[reconnect] " + model.getId());
 		
 		LayoutContext layoutingContext = new DefaultLayoutStrategy().createLayoutingContext(freeFormConnection, relayoutOnRepairFail);
 		
-		boolean repaired = false;
-		
 		if (forceLayout) {
 			layoutingContext.layout();
-			System.out.println("forced layout, no repair");
-		}
-		else if (layoutingContext.isRepairable()) {
-			repaired = layoutingContext.repair();
-			System.out.println("[layout] repaired ? " + repaired);
+			System.out.println("[reconnect] forced layout, no repair");
+		} else
+		
+		if (layoutingContext.isRepairable()) {
+			boolean repaired = layoutingContext.repair();
+			System.out.println("[reconnect] " + (repaired ? "repaired" : "could not repair") + " layout");
 			if (!repaired || layoutingContext.needsLayout()) {
 				layoutingContext.layout();
-				System.out.println("layout after repair");
+				System.out.println("[reconnect] layout repair");
 			}
-		}else {
+		} else {
+			System.out.println("[reconnect] layout only");
 			layoutingContext.layout();
 		}
-		
 	}
 
 	private void assertFreeFormConnection(Connection connection) {
