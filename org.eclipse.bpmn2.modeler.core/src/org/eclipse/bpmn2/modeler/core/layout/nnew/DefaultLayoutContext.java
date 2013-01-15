@@ -27,7 +27,7 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public class DefaultLayoutContext implements LayoutContext {
 
-	private FreeFormConnection connection;
+	protected FreeFormConnection connection;
 
 	private List<ConnectionPart> connectionParts;
 	

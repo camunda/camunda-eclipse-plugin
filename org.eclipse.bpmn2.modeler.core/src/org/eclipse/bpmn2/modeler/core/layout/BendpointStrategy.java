@@ -230,7 +230,7 @@ public class BendpointStrategy extends LayoutStrategy<Tuple<Docking, Docking>, V
 			switch (sector) {
 			case LEFT:
 			case RIGHT:
-				this.singleSrcRelAbove();
+				this.vertical();
 				break;
 			case BOTTOM:
 			case BOTTOM_RIGHT:

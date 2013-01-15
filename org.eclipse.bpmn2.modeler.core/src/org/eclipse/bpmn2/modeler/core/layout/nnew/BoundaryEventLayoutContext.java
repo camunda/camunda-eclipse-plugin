@@ -1,11 +1,8 @@
 package org.eclipse.bpmn2.modeler.core.layout.nnew;
 
 import org.eclipse.bpmn2.modeler.core.layout.Docking;
-import org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil;
-import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
-import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 
 /**

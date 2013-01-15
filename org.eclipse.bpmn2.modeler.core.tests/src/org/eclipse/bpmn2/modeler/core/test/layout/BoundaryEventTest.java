@@ -5,6 +5,7 @@ import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAsse
 import static org.eclipse.bpmn2.modeler.core.test.util.operations.ReconnectConnectionEndOperation.reconnectEnd;
 import static org.fest.assertions.api.Assertions.assertThat;
 
+import org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
@@ -103,8 +104,7 @@ public class BoundaryEventTest extends AbstractFeatureTest {
 		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_20");
 		reconnectConnectionAssertBoundarySector(sequenceFlow2, boundaryEvent5Shape, taskShape, Sector.LEFT);
 		
-		assertThat(sequenceFlow2).hasBendpointCount(0);
-		assertThat(sequenceFlow2).hasNoDiagonalEdges();
+		assertThat(sequenceFlow2).hasBendpointCount(2);
 		assertThat(sequenceFlow2).anchorPointOn(taskShape).isAt(Sector.RIGHT);
 	}
 	
@@ -386,7 +386,6 @@ public class BoundaryEventTest extends AbstractFeatureTest {
 		reconnectConnectionAssertBoundarySector(sequenceFlow1, boundaryEvent4Shape, taskShape, Sector.BOTTOM);
 		
 		assertThat(sequenceFlow1).hasBendpointCount(2);
-		assertThat(sequenceFlow1).hasNoDiagonalEdges();
 		assertThat(sequenceFlow1).anchorPointOn(taskShape).isAt(Sector.TOP);
 	}
 	
@@ -397,11 +396,10 @@ public class BoundaryEventTest extends AbstractFeatureTest {
 		Shape boundaryEvent4Shape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_4");
 		FreeFormConnection sequenceFlow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
 		
-		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_12");
-		reconnectConnectionAssertBoundarySector(sequenceFlow1, boundaryEvent4Shape, taskShape, Sector.LEFT);
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_17");
+		reconnectConnectionAssertBoundarySector(sequenceFlow1, boundaryEvent4Shape, taskShape, Sector.TOP);
 		
 		assertThat(sequenceFlow1).hasBendpointCount(2);
-		assertThat(sequenceFlow1).hasNoDiagonalEdges();
 		assertThat(sequenceFlow1).anchorPointOn(taskShape).isAt(Sector.BOTTOM);
 	}
 	
@@ -454,25 +452,18 @@ public class BoundaryEventTest extends AbstractFeatureTest {
 			.execute();
 
 		assertThat(sequenceFlow).hasNoDiagonalEdges();
-		assertThat(sequenceFlow).hasBendpointCount(1);
-
-		sequenceFlowStartLoc = LayoutUtil.getVisibleAnchorLocation(sequenceFlow.getStart(), sequenceFlow);
-		assertThat(sequenceFlowStartLoc.getX()).isEqualTo(180);
-		assertThat(sequenceFlowStartLoc.getY()).isEqualTo(118);
-
-		sequenceFlowEndLoc = LayoutUtil.getVisibleAnchorLocation(sequenceFlow.getEnd(), sequenceFlow);
-		assertThat(sequenceFlowEndLoc.getX()).isEqualTo(315);
-		assertThat(sequenceFlowEndLoc.getY()).isEqualTo(75);
-		
-		seq3FirstPoint = sequenceFlow.getBendpoints().get(0);
-		assertThat(seq3FirstPoint.getX()).isEqualTo(180);
-		assertThat(seq3FirstPoint.getY()).isEqualTo(75);
-		
-		
+		assertThat(sequenceFlow).hasBendpointCount(2);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testMoveTaskWithBoundaryEvent.bpmn")
+	public void testMoveTaskWithBoundaryEventRetainsBendpoints() {
 		ContainerShape userTaskShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "UserTask_1");
 		FreeFormConnection sequenceFlow2 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
-		
+
 		assertThat(sequenceFlow2.getBendpoints().size()).isEqualTo(2);
+		
+		Point lastPointBefore = ConversionUtil.point(sequenceFlow2.getBendpoints().get(1).getX(), sequenceFlow2.getBendpoints().get(1).getY());
 		
 		move(userTaskShape, diagramTypeProvider)
 			.by(0, -5)
@@ -481,7 +472,12 @@ public class BoundaryEventTest extends AbstractFeatureTest {
 		
 		// dont relayout connections from boundary events with more than one bendpoint
 		assertThat(sequenceFlow2.getBendpoints().size()).isEqualTo(2);
+		
+		Point lastPointAfter = sequenceFlow2.getBendpoints().get(1);
+		assertThat(lastPointAfter.getX()).isEqualTo(lastPointBefore.getX());
+		assertThat(lastPointAfter.getY()).isEqualTo(lastPointBefore.getY());
 	}
+	
 	
 	private void reconnectConnectionAssertBoundarySector(FreeFormConnection connection, Shape boundaryEvent, Shape reconnectionTarget, Sector expectedSector) {
 
