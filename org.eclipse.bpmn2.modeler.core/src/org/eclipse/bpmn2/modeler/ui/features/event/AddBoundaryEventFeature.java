@@ -16,6 +16,7 @@ import static org.eclipse.bpmn2.modeler.ui.features.event.BoundaryEventFeatureCo
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BoundaryEvent;
+import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractUpdateEventFeature;
@@ -88,7 +89,8 @@ public class AddBoundaryEventFeature extends AbstractAddBPMNShapeFeature<Boundar
 
 		Ellipse circle = GraphicsUtil.createIntermediateEventCircle(ellipse);
 		circle.setStyle(StyleUtil.getStyleForClass(getDiagram()));
-		createDIShape(containerShape, event, !isImport);
+		
+		BPMNShape bpmnShape = createDIShape(containerShape, event, !isImport);
 
 		ChopboxAnchor anchor = peService.createChopboxAnchor(containerShape);
 		anchor.setReferencedGraphicsAlgorithm(ellipse);
@@ -111,7 +113,7 @@ public class AddBoundaryEventFeature extends AbstractAddBPMNShapeFeature<Boundar
 				UpdateBoundaryEventFeature.BOUNDARY_EVENT_MARKER,
 				AbstractUpdateEventFeature.getEventDefinitionsValue(event));
 
-		link(containerShape, event);
+		link(containerShape, new Object[] { event, bpmnShape });
 		
 		this.prepareAddContext(context, gatewayWidth, gatewayHeight);
 		this.getFeatureProvider().getAddFeature(context).add(context);
