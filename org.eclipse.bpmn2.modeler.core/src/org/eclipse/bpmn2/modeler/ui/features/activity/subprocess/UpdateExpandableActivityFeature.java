@@ -15,11 +15,9 @@ package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 import static org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.SubProcessFeatureContainer.IS_EXPANDED;
 import static org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.SubProcessFeatureContainer.TRIGGERED_BY_EVENT;
 
-import java.io.IOException;
-
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -53,14 +51,10 @@ public class UpdateExpandableActivityFeature extends AbstractUpdateFeature {
 		Property expandedProperty = Graphiti.getPeService().getProperty(pe,IS_EXPANDED);
 		
 		SubProcess process = (SubProcess) getBusinessObjectForPictogramElement(pe);
-		try {
-			BPMNShape bpmnShape = (BPMNShape) ModelHandlerLocator.getModelHandler(process.eResource()).findDIElement(process);
-			if (expandedProperty != null && Boolean.parseBoolean(expandedProperty.getValue()) != bpmnShape.isIsExpanded()) {
-				return Reason.createTrueReason("Expanded property changed");
-			}
-			
-		} catch (Exception e) {
-			throw new IllegalStateException("Could not get DI shape for subprocess:"+process);
+		
+		BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(pe, BPMNShape.class);
+		if (expandedProperty != null && Boolean.parseBoolean(expandedProperty.getValue()) != bpmnShape.isIsExpanded()) {
+			return Reason.createTrueReason("Expanded property changed");
 		}
 
 		if (triggerProperty != null && Boolean.parseBoolean(triggerProperty.getValue()) != process.isTriggeredByEvent()) {
@@ -75,27 +69,26 @@ public class UpdateExpandableActivityFeature extends AbstractUpdateFeature {
 		PictogramElement pe = context.getPictogramElement();
 		SubProcess process = (SubProcess) getBusinessObjectForPictogramElement(pe);
 		ContainerShape container = (ContainerShape) pe;
+		
 		boolean isExpanded = false;
 		
-		try {
-			BPMNShape bpmnShape = (BPMNShape) ModelHandlerLocator.getModelHandler(process.eResource()).findDIElement(process);
-			isExpanded = bpmnShape.isIsExpanded();
-		} catch (IOException e) {
-			throw new IllegalStateException("Could not get DI shape for subprocess:"+process);
-		}
+		BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(pe, BPMNShape.class);
+		isExpanded = bpmnShape.isIsExpanded();
+		
 		Graphiti.getPeService().setPropertyValue(pe, TRIGGERED_BY_EVENT, Boolean.toString(process.isTriggeredByEvent()));
 		Graphiti.getPeService().setPropertyValue(pe, IS_EXPANDED, Boolean.toString(isExpanded));
 
 		RoundedRectangle rectangle = (RoundedRectangle) Graphiti.getPeService()
 		        .getAllContainedPictogramElements(pe).iterator().next()
 		        .getGraphicsAlgorithm();
+		
 		LineStyle lineStyle = process.isTriggeredByEvent() ? LineStyle.DOT : LineStyle.SOLID;
 		rectangle.setLineStyle(lineStyle);
 
-		if(!isExpanded){
+		if (!isExpanded) {
 			FeatureSupport.setContainerChildrenVisible(container, false);
 			GraphicsUtil.showActivityMarker(container, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
-		}else{
+		} else {
 			FeatureSupport.setContainerChildrenVisible(container, true);
 			GraphicsUtil.hideActivityMarker(container, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
 		}

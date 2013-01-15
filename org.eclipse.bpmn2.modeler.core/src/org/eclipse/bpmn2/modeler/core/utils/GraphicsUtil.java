@@ -970,7 +970,7 @@ public class GraphicsUtil {
 	public static void layoutActivityMarkerContainer(ContainerShape container) {
 
 		ContainerShape markerContainer = getActivityMarkerContainer(container);
-		if (markerContainer!=null) {
+		if (markerContainer != null) {
 			int lastX = 0;
 			Iterator<Shape> iterator = peService.getAllContainedShapes(markerContainer).iterator();
 			while (iterator.hasNext()) {

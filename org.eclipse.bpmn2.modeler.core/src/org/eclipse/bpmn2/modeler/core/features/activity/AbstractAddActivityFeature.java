@@ -104,8 +104,8 @@ public abstract class AbstractAddActivityFeature<T extends Activity>
 		createDIShape(containerShape, activity, !isImport);
 
 		Graphiti.getPeService().setPropertyValue(containerShape, IS_COMPENSATE_PROPERTY, Boolean.toString(false));
-		Graphiti.getPeService().setPropertyValue(containerShape, IS_LOOP_OR_MULTI_INSTANCE,
-		        LoopCharacteristicType.NULL.getName());
+		Graphiti.getPeService().setPropertyValue(containerShape, IS_LOOP_OR_MULTI_INSTANCE, LoopCharacteristicType.NULL.getName());
+		
 		// set a property on the decorators so we can distinguish them from the real children (i.e. tasks, etc.)
 		for (PictogramElement pe : containerShape.getChildren()) {
 			Graphiti.getPeService().setPropertyValue(pe, ACTIVITY_DECORATOR, "true");

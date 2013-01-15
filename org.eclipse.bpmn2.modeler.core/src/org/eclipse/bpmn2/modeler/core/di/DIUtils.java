@@ -27,6 +27,7 @@ import org.eclipse.bpmn2.di.BpmnDiFactory;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.dd.dc.Bounds;
@@ -41,12 +42,10 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
-import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
-import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.styles.Color;
 import org.eclipse.graphiti.mm.algorithms.styles.Font;
 import org.eclipse.graphiti.mm.algorithms.styles.Style;
@@ -60,7 +59,6 @@ import org.eclipse.graphiti.mm.pictograms.PictogramLink;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.platform.IDiagramEditor;
 import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.services.IPeService;
 
 public class DIUtils {
 
@@ -84,17 +82,22 @@ public class DIUtils {
 		if (bpmnShape == null) {
 			return null;
 		}
+		
+		Bounds bounds; 
+		
+		if (isLabel(element)) {
+			bounds = getDiLabelBounds(bpmnShape);
+		} else {	
+			bounds = bpmnShape.getBounds();
+		}
+		
+		IRectangle rect = LayoutUtil.getAbsoluteBounds((Shape) element);
 
-		ILocation loc = Graphiti.getLayoutService().getLocationRelativeToDiagram((Shape) element);
-		Bounds bounds = bpmnShape.getBounds();
-
-		bounds.setX(loc.getX());
-		bounds.setY(loc.getY());
-
-		GraphicsAlgorithm graphicsAlgorithm = element.getGraphicsAlgorithm();
-		IDimension size = Graphiti.getGaService().calculateSize(graphicsAlgorithm);
-		bounds.setHeight(size.getHeight());
-		bounds.setWidth(size.getWidth());
+		bounds.setX(rect.getX());
+		bounds.setY(rect.getY());
+		
+		bounds.setHeight(rect.getHeight());
+		bounds.setWidth(rect.getWidth());
 		
 		if (element instanceof ContainerShape) {
 			EList<Shape> children = ((ContainerShape) element).getChildren();
@@ -106,7 +109,29 @@ public class DIUtils {
 		}
 
 		updateConnections(element);
+		
 		return bpmnShape;
+	}
+
+	private static Bounds getDiLabelBounds(BPMNShape bpmnShape) {
+		BPMNLabel label = bpmnShape.getLabel();
+		
+		if (label == null) {
+			label = BpmnDiFactory.eINSTANCE.createBPMNLabel();
+			bpmnShape.setLabel(label);
+		}
+		
+		Bounds bounds = label.getBounds();
+		if (bounds == null) {
+			bounds = DcFactory.eINSTANCE.createBounds();
+			label.setBounds(bounds);
+		}
+		
+		return bounds;
+	}
+
+	private static boolean isLabel(PictogramElement element) {
+		return Graphiti.getPeService().getPropertyValue(element, GraphicsUtil.LABEL_PROPERTY) != null;
 	}
 	
 	public static void updateDILabel(ContainerShape label, BPMNShape bpmnShape) {
@@ -143,7 +168,6 @@ public class DIUtils {
 				for (Connection connection : connections){
 					updateDIEdge(connection);
 				}
-				connections.size();
 			}
 			
 			anchors.size();

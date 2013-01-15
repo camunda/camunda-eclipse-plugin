@@ -15,14 +15,12 @@ package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 import static org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.SubProcessFeatureContainer.IS_EXPANDED;
 import static org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.SubProcessFeatureContainer.TRIGGERED_BY_EVENT;
 
-import java.io.IOException;
-
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.features.activity.AbstractAddActivityFeature;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -54,15 +52,13 @@ public class AddExpandableActivityFeature<T extends Activity>
 		if (activity instanceof SubProcess) {
 			SubProcess subprocess = (SubProcess) activity;
 			isTriggeredByEvent = subprocess.isTriggeredByEvent();
-			try {
-				BPMNShape bpmnShape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(subprocess);
-				if (bpmnShape != null) {
-					isExpanded = bpmnShape.isIsExpanded();
-				}
-			} catch (IOException e) {
-				throw new IllegalStateException("Could not get DI shape for subprocess:"+subprocess);
+			
+			BPMNShape bpmnShape = (BPMNShape) BusinessObjectUtil.getFirstElementOfType(container, BPMNShape.class);
+			if (bpmnShape != null) {
+				isExpanded = bpmnShape.isIsExpanded();
 			}
 		}
+		
 		peService.setPropertyValue(container, TRIGGERED_BY_EVENT, Boolean.toString(isTriggeredByEvent));
 		peService.setPropertyValue(container, IS_EXPANDED, Boolean.toString(isExpanded));
 
@@ -72,12 +68,12 @@ public class AddExpandableActivityFeature<T extends Activity>
 		StyleUtil.applyStyle(text, activity);
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setVerticalAlignment(Orientation.ALIGNMENT_CENTER);
-//		text.setFont(gaService.manageFont(getDiagram(), GaServiceImpl.DEFAULT_FONT, 8, false, true));
 		link(textShape, activity);
 		
 		if (!isExpanded){
 			GraphicsUtil.showActivityMarker(container, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
 		}
+		
 		else {
 			GraphicsUtil.hideActivityMarker(container, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
 		}

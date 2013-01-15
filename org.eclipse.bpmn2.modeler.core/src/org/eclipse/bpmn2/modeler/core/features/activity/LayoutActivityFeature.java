@@ -14,6 +14,7 @@ package org.eclipse.bpmn2.modeler.core.features.activity;
 
 import static org.eclipse.bpmn2.modeler.core.features.activity.AbstractAddActivityFeature.IS_ACTIVITY;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 import org.eclipse.bpmn2.Activity;
@@ -22,9 +23,11 @@ import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.DefaultLayoutBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractBoundaryEventOperation;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ILayoutContext;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
@@ -49,56 +52,47 @@ public class LayoutActivityFeature extends DefaultLayoutBPMNShapeFeature {
 
 	@Override
 	public boolean layout(ILayoutContext context) {
-		ContainerShape containerShape = (ContainerShape) context.getPictogramElement();
-		GraphicsAlgorithm parentGa = containerShape.getGraphicsAlgorithm();
-		int newWidth = parentGa.getWidth();
-		int newHeight = parentGa.getHeight();
-
-		GraphicsUtil.setActivityMarkerOffest(containerShape, getMarkerContainerOffset());
-		GraphicsUtil.layoutActivityMarkerContainer(containerShape);
+		ContainerShape container = (ContainerShape) context.getPictogramElement();
 		
-		Iterator<Shape> iterator = Graphiti.getPeService().getAllContainedShapes(containerShape).iterator();
-		while (iterator.hasNext()) {
-			Shape shape = iterator.next();
+		IRectangle bounds = LayoutUtil.getAbsoluteBounds(container);
+		
+		int width = bounds.getWidth();
+		int height = bounds.getHeight();
+		
+		GraphicsUtil.setActivityMarkerOffest(container, getMarkerContainerOffset());
+		GraphicsUtil.layoutActivityMarkerContainer(container);
+		
+		Collection<Shape> allContainedShapes = Graphiti.getPeService().getAllContainedShapes(container);
+		for (Shape shape: allContainedShapes) {
 			GraphicsAlgorithm ga = shape.getGraphicsAlgorithm();
 			IGaService gaService = Graphiti.getGaService();
-
-
-//			String markerProperty = Graphiti.getPeService().getPropertyValue(shape,
-//					GraphicsUtil.ACTIVITY_MARKER_CONTAINER);
-//			if (markerProperty != null && new Boolean(markerProperty)) {
-//				int x = (newWidth / 2) - (ga.getWidth() / 2);
-//				int y = newHeight - ga.getHeight() - 3 - getMarkerContainerOffset();
-//				gaService.setLocation(ga, x, y);
-//				continue;
-//			}
-
-			Shape rectShape = FeatureSupport.getShape(containerShape, IS_ACTIVITY, Boolean.toString(true));
-			gaService.setSize(rectShape.getGraphicsAlgorithm(), newWidth, newHeight);
+			
+			Shape rectShape = FeatureSupport.getShape(container, IS_ACTIVITY, Boolean.toString(true));
+			gaService.setSize(rectShape.getGraphicsAlgorithm(), width, height);
 			layoutInRectangle((RoundedRectangle) rectShape.getGraphicsAlgorithm());
 
 			Object[] objects = getAllBusinessObjectsForPictogramElement(shape);
 			for (Object bo : objects) {
-				layoutHook(shape, ga, bo, newWidth, newHeight);
+				layoutHook(shape, ga, bo, width, height);
 			}
 		}
 
-		Activity activity = BusinessObjectUtil.getFirstElementOfType(containerShape, Activity.class);
+		Activity activity = BusinessObjectUtil.getFirstElementOfType(container, Activity.class);
 		new AbstractBoundaryEventOperation() {
 			@Override
 			protected void doWorkInternal(ContainerShape container) {
 				layoutPictogramElement(container);
 			}
 		}.doWork(activity, getDiagram());
-
-		DIUtils.updateDIShape(containerShape);
 		
-		if (containerShape.eContainer() instanceof ContainerShape) {
-			PictogramElement pe = (PictogramElement) containerShape.eContainer();
+		if (container.eContainer() instanceof ContainerShape) {
+			PictogramElement pe = (PictogramElement) container.eContainer();
 			if (BusinessObjectUtil.containsElementOfType(pe, SubProcess.class)) {
 				layoutPictogramElement(pe);
 			}
 		}
+
+		DIUtils.updateDIShape(container);
 		return true;
 	}
 
