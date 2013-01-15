@@ -53,7 +53,7 @@ public class ConnectionReconnectionContext {
 		else if (layoutingContext.isRepairable()) {
 			repaired = layoutingContext.repair();
 			System.out.println("[layout] repaired ? " + repaired);
-			if (layoutingContext.needsLayout()) {
+			if (!repaired || layoutingContext.needsLayout()) {
 				layoutingContext.layout();
 				System.out.println("layout after repair");
 			}

@@ -129,7 +129,7 @@ public class BendpointStrategy extends LayoutStrategy<Tuple<Docking, Docking>, V
 		} 
 		else 
 		if (vertical) {
-			if (treshold != 1.0) {
+			if (treshold != 1.0 && treshold != 0.0) {
 				LayoutUtil.addVerticalCenteredBendpoints(connection, startDocking.getPosition(), endDocking.getPosition());
 			}
 		}
@@ -150,7 +150,7 @@ public class BendpointStrategy extends LayoutStrategy<Tuple<Docking, Docking>, V
 		// direct horizontal and vertical layouting do not work anymore
 		case LEFT:
 		case RIGHT:
-			this.none();
+			this.vertical();
 			break;
 		
 		case TOP:

@@ -122,7 +122,6 @@ public class BoundaryEventTest extends AbstractFeatureTest {
 		assertThat(sequenceFlow2).anchorPointOn(taskShape).isAt(Sector.LEFT);
 	}
 	
-	
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
 	public void testTopReconnectingTopRight() throws Exception {

@@ -40,7 +40,7 @@ public class LayoutUtil {
 	/**
 	 * evolutionary developed value to switch between the AboveBeneath and LeftRight Strategy for gateways 
 	 */
-	public static final double MAGIC_VALUE = 0.90;
+	public static final double MAGIC_VALUE = 0.83;
 	
 	
 	public enum Sector {
@@ -305,6 +305,7 @@ public class LayoutUtil {
 	 * @param connection
 	 * @return negative value if end shape is left to start shape and
 	 * positive if end shape is right to start shape.
+	 * @see #getVerticalLayoutTreshold(ILocation, ILocation)
 	 */
 	public static double getLayoutTreshold(FreeFormConnection connection) {
 		ILocation startShapeCenter = getShapeCenter((Shape) connection.getStart().getParent());
