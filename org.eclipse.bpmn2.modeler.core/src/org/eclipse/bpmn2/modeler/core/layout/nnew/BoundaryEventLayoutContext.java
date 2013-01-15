@@ -18,6 +18,10 @@ public class BoundaryEventLayoutContext extends DefaultLayoutContext {
 	
 	@Override
 	protected boolean needsLayoutByDockings(Tuple<Docking, Docking> dockings, Sector afterRepairStartSector, Sector afterRepairEndSector) {
+		if (connection.getBendpoints().size() > 1) {
+			return false;
+		}
+		
 		return afterRepairStartSector != dockings.getFirst().getSector() || 
 			   afterRepairEndSector != dockings.getSecond().getSector();
 	}
