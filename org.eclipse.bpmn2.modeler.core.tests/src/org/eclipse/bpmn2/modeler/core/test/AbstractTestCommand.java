@@ -64,8 +64,8 @@ public abstract class AbstractTestCommand extends RecordingCommand {
 			
 			execute(editorResources.getTypeProvider(), editorResources.getDiagram());
 			
-			saveTestResource(bpmn2Resource, "after", testFileDir);
-			
+			testCase.setTestResources(TestHelper.createModel(saveTestResource(bpmn2Resource, "after", testFileDir)));
+
 		} catch (RuntimeException e) {
 			this.recordedException = e;
 			throw e;
@@ -76,13 +76,14 @@ public abstract class AbstractTestCommand extends RecordingCommand {
 		}
 	}
 	
-	private void saveTestResource(Bpmn2Resource resource, String suffix, File directory) {
+	private String saveTestResource(Bpmn2Resource resource, String suffix, File directory) {
 		String fileName = testCase.getClass().getName() + "." + testName + "." + suffix + ".bpmn";
 		
 		FileOutputStream out = null;
+		File file = new File(directory, fileName);
 		
 		try {
-			out = new FileOutputStream(new File(directory, fileName));
+			out = new FileOutputStream(file);
 			resource.save(out, Collections.emptyMap());
 			out.close();
 		} catch (Exception e) {
@@ -97,6 +98,7 @@ public abstract class AbstractTestCommand extends RecordingCommand {
 				}
 			}
 		}
+		return file.getPath();
 	}
 
 	/**

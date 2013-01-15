@@ -26,7 +26,6 @@ import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.ui.services.GraphitiUi;
-import org.junit.rules.TemporaryFolder;
 
 public class TestHelper {
 
@@ -37,7 +36,7 @@ public class TestHelper {
 			throw new RuntimeException("Resource " + bpmnDiagramUrl + " not found");
 		}
 
-		URI testResourceUri = URI.createFileURI("target/test.bpmn");
+		URI testResourceUri = URI.createFileURI("target/"+bpmnDiagramUrl);
 		
 		Bpmn2Resource resource = createBpmn2Resource(testResourceUri);
 		populateResource(resource, resourceUrl);
