@@ -17,7 +17,6 @@ import org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
-import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
@@ -40,10 +39,10 @@ public class DefaultLayoutContext implements LayoutContext {
 	private Shape startShape;
 	private Shape endShape;
 	
-	private IRectangle startShapeBounds;
-	private IRectangle endShapeBounds;
+	protected IRectangle startShapeBounds;
+	protected IRectangle endShapeBounds;
 	
-	private List<Point> connectionPoints;
+	protected List<Point> connectionPoints;
 
 	private boolean relayoutOnRepairFail = false;
 
@@ -240,8 +239,8 @@ public class DefaultLayoutContext implements LayoutContext {
 		
 		double treshold = LayoutUtil.getLayoutTreshold(connection);
 		
-		// are connected shapes on the same line?
-		
+		// are connected shapes on the same line
+		// if yes, force relayout
 		if (treshold == 0.0 || treshold == 1.0) {
 			return true;
 		}
@@ -253,23 +252,45 @@ public class DefaultLayoutContext implements LayoutContext {
 		Point firstBendpoint = points.get(1);
 		Point lastBendpoint = points.get(points.size() - 2);
 
+		// are first or last bendpoints moved during repair to close or into one of the shapes
+		// if yes, force relayout
 		repaired &= !LayoutUtil.isContained(startShapeBounds, location(firstBendpoint), 13);
-		
 		repaired &= !LayoutUtil.isContained(endShapeBounds, location(lastBendpoint), 13);
 		
-		// see if anchor point is on start shape bounds
-		repaired &= (startShapeBounds.getX() != firstBendpoint.getX() || startShapeBounds.getX() + startShapeBounds.getWidth() != firstBendpoint.getX());
-		repaired &= (startShapeBounds.getY() != firstBendpoint.getY() || startShapeBounds.getY() + startShapeBounds.getHeight() != firstBendpoint.getY());
-		
 		Tuple<Docking, Docking> dockings = getDockings();
-		if (dockings != null && BusinessObjectUtil.getFirstBaseElement(startShape) instanceof BoundaryEvent) {
-			Sector afterRepairStartSector = LayoutUtil.getSector(ConversionUtil.location(firstBendpoint), LayoutUtil.getAbsoluteBounds(startShape));
-			Sector afterRepairEndSector = LayoutUtil.getSector(ConversionUtil.location(lastBendpoint), LayoutUtil.getAbsoluteBounds(endShape));
-			
-			return !(afterRepairStartSector == dockings.getFirst().getSector() && afterRepairEndSector == dockings.getSecond().getSector());
+		if (dockings != null) {
+			repaired &= !needsLayoutByDockings(dockings, firstBendpoint, lastBendpoint);
 		}
 		
-		return repaired ? false : relayoutOnRepairFail; 
+		return repaired ? false : isRelayoutOnRepairFail(); 
+	}
+
+	protected boolean isRelayoutOnRepairFail() {
+		return relayoutOnRepairFail;
+	}
+
+	/**
+	 * Returns true if the context needs new layout based on the resulting dockings.
+	 * 
+	 * @param dockings
+	 * 
+	 * @param lastBendpoint 
+	 * @param firstBendpoint 
+	 * 
+	 * @return
+	 */
+	protected boolean needsLayoutByDockings(Tuple<Docking, Docking> dockings, Point firstBendpoint, Point lastBendpoint) {
+		
+		Docking startDocking = dockings.getFirst();
+		Docking endDocking = dockings.getSecond();
+		
+		if ((startDocking.getSector() == Sector.TOP && endDocking.getSector() == Sector.BOTTOM) ||
+			(startDocking.getSector() == Sector.BOTTOM && endDocking.getSector() == Sector.TOP)) {
+			
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override
