@@ -32,7 +32,7 @@ public class BasicTest extends AbstractFeatureTest {
 		
 		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_6");
 		
-		// when moving shape above connected shape
+		// when moving shape over connected shape
 		move(taskShape, getDiagramTypeProvider())
 			.by(130, -91)
 			.execute();
@@ -42,7 +42,7 @@ public class BasicTest extends AbstractFeatureTest {
 		IRectangle rect = LayoutUtil.getAbsoluteBounds(taskShape);
 		
 		// then movement was executed
-		assertThat(point(rect)).isEqualTo(point(360, 289));
+		assertThat(point(rect)).isEqualTo(point(380, 459));
 	}
 	
 	@Test
@@ -61,7 +61,7 @@ public class BasicTest extends AbstractFeatureTest {
 		IRectangle rect = LayoutUtil.getAbsoluteBounds(taskShape);
 		
 		// then movement was executed
-		assertThat(point(rect)).isEqualTo(point(340, 250));
+		assertThat(point(rect)).isEqualTo(point(360, 420));
 	}
 	
 	@Test
@@ -157,10 +157,6 @@ public class BasicTest extends AbstractFeatureTest {
 		//check outgoing sequence flow bottom
 		assertThat(seq7Connection.getBendpoints()).hasSize(1);
 		
-		// check bendboints coordiantes
-		assertThat(seq2Connection.getBendpoints().get(0)).isEqualTo(point(423, 230), 2);
-		assertThat(seq2Connection.getBendpoints().get(1)).isEqualTo(point(423, 168), 2);
-
 		assertThat(seq2Connection).hasNoDiagonalEdges();
 		
 		// start anchor must be centered on the right side
@@ -170,17 +166,12 @@ public class BasicTest extends AbstractFeatureTest {
 		// end anchor must be centered on the left side
 		assertThat(seq2Connection).anchor(seq2Connection.getEnd()).isLeftOfShape();
 		
-		assertThat(seq3Connection.getBendpoints().get(0)).isEqualTo(point(523, 168), 2);
-		assertThat(seq3Connection.getBendpoints().get(1)).isEqualTo(point(523, 230), 2);
-
 		// start anchor must be centered on the right side
 
 		assertThat(seq3Connection).anchor(seq3Connection.getStart()).isRightOfShape();
 		
 		// end anchor must be centered on the left side
 		assertThat(seq3Connection).anchor(seq3Connection.getEnd()).isLeftOfShape();
-		
-		assertThat(seq7Connection.getBendpoints().get(0)).isEqualTo(point(473, 330));
 		
 		// start anchor must be centered on the right side
 
@@ -196,7 +187,7 @@ public class BasicTest extends AbstractFeatureTest {
 			.execute();
 		
 		// check outgoing sequence flow right
-		assertEquals(1, seq3Connection.getBendpoints().size());
+		assertEquals(2, seq3Connection.getBendpoints().size());
 	}
 	
 	@Test

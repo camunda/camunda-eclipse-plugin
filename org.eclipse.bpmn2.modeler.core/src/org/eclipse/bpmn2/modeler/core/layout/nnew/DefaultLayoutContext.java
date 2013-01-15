@@ -233,17 +233,18 @@ public class DefaultLayoutContext implements LayoutContext {
 			break;
 		}
 		
-		Point nextRepairCandidate = next.getRepairCandidate(start);
-		
-		// trigger re-layout if two points would overlap
-		if (GraphicsUtil.pointsEqual(repairCandidate, nextRepairCandidate)) {
-			return false;
-		}
-		
 		return true;
 	}
 
 	public boolean needsLayout() {
+		
+		double treshold = LayoutUtil.getLayoutTreshold(connection);
+		
+		// are connected shapes on the same line?
+		
+		if (treshold == 0.0 || treshold == 1.0) {
+			return true;
+		}
 		
 		boolean repaired = true;
 		
