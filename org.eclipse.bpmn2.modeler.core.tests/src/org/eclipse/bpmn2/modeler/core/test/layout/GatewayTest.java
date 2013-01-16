@@ -143,6 +143,13 @@ public class GatewayTest extends AbstractFeatureTest {
 				.isBeneathShape();
 	}
 
+	/**
+	 * Vertical movement of a gateway between two shapes.
+	 * 
+	 * Nice behavior here stands in conflict to {@link BasicTest#testNoRepairOnSameAxis()}.
+	 * 
+	 * @see BasicTest#testNoRepairOnSameAxis()
+	 */
 	@Test
 	@DiagramResource
 	public void testVerticalMoveBetween() {
@@ -164,7 +171,7 @@ public class GatewayTest extends AbstractFeatureTest {
 		
 		// then 
 		// the two point bendpoint strategy should kick in
-		// on both sides
+		// on the upper flow
 		assertThat(flow1)
 			.hasNoDiagonalEdges()
 			
@@ -173,13 +180,16 @@ public class GatewayTest extends AbstractFeatureTest {
 			.anchorPointOn(task1)
 				.isBeneathShape();
 		
+		// on the lower flow however, it should only trigger a 
+		// repair and a 90 degree rotated U will appear
+		// NOTE: Anything else would conflict with BasicTest#testNoRepairOnSameAxis
 		assertThat(flow2)
 			.hasNoDiagonalEdges()
 			
 			.hasBendpointCount(2)
 			
 			.anchorPointOn(task2)
-				.isAboveShape();
+				.isLeftOfShape();
 	}
 	
 	@Test

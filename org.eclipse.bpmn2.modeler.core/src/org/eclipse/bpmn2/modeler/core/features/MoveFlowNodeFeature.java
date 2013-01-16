@@ -283,13 +283,13 @@ public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 					return true;
 				}
 				
-				boolean hasLanes = false;
-				
 				for (LaneSet laneSet: p.getProcessRef().getLaneSets()) {
-					hasLanes &= laneSet.getLanes().isEmpty();
+					if (!laneSet.getLanes().isEmpty()) { 
+						return false;
+					}
 				}
 				
-				return !hasLanes;
+				return true;
 			} else
 			
 			if (target instanceof FlowElementsContainer) {
