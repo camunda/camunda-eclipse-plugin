@@ -60,7 +60,8 @@
 				</classpath>
 				<sysproperty key="classworlds.conf" value="${maven.home}/bin/m2.conf" />
 				<sysproperty key="maven.home" value="${maven.home}" />
-				<arg line="--settings=@{settingsfile} -Dmaven.repo.local=@{maven.repo.local} --batch-mode @{options} @{goals}" />
+				<!-- activate release profile (-Prelease) -->
+				<arg line="--settings=@{settingsfile} -Dmaven.repo.local=@{maven.repo.local} --batch-mode -Prelease @{options} @{goals}" />
 			</java>
 		</sequential>
 	</macrodef>
@@ -111,7 +112,7 @@
 	
 	<target name="build.release">
 		<maven basedir="${checkout.release.path}/fox-designer"
-             options="-Pplatform-indigo -DskipTests"
+             options="-Pplatform-indigo"
              goals="clean install"
              resultproperty="maven.build.result" />
 	</target>

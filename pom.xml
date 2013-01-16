@@ -51,6 +51,16 @@
 				<platform-version>[3.7,3.8)</platform-version>
 			</properties>
 		</profile>
+		
+		<profile>
+			<id>release</id>
+			<modules>
+				<!-- skip tests during release build -->
+				<module>org.eclipse.bpmn2.modeler.core</module>
+				<module>com.camunda.fox.designer.feature</module>
+				<module>com.camunda.fox.designer.updatesite.feature</module>
+			</modules>
+		</profile>
 	</profiles>
 
 	<modules>
