@@ -111,7 +111,7 @@
 	
 	<target name="build.release">
 		<maven basedir="${checkout.release.path}/fox-designer"
-             options="-Pplatform-indigo"
+             options="-Pplatform-indigo -DskipTests"
              goals="clean install"
              resultproperty="maven.build.result" />
 	</target>
