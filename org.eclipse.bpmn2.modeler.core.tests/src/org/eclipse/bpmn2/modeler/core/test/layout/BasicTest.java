@@ -44,6 +44,43 @@ public class BasicTest extends AbstractFeatureTest {
 		// then movement was executed
 		assertThat(point(rect)).isEqualTo(point(380, 459));
 	}
+
+	/**
+	 * Vertical movement of a shape next to another shape should not trigger
+	 * relayout, otherwise complex custom layouting is broken. 
+	 * 
+	 * Nice behavior here stands in conflict to {@link GatewayTest#testVerticalMoveBetween()}.
+	 * 
+	 * @see GatewayTest#testVerticalMoveBetween()
+	 */
+	@Test
+	@DiagramResource
+	public void testNoRepairOnSameAxis() {
+		Shape task1Shape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
+		Shape task2Shape = Util.findShapeByBusinessObjectId(diagram, "Task_2");
+		
+		FreeFormConnection flow = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		
+		// when
+		// moving task1 on same line with task2
+		move(task1Shape, diagramTypeProvider)
+			.by(0, -60)
+			.execute();
+		
+		// bend points should still connect shapes in a 180 degree rotated U
+		
+		assertThat(flow)
+			.hasNoDiagonalEdges()
+			.hasBendpointCount(2);
+		
+		assertThat(flow)
+			.anchorPointOn(task1Shape)
+				.isAboveShape();
+			
+		assertThat(flow)
+			.anchorPointOn(task2Shape)
+				.isAboveShape();
+	}
 	
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")

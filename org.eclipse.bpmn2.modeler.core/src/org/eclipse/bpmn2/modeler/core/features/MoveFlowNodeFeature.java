@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.Lane;
+import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
@@ -271,36 +272,31 @@ public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 
 		@Override
 		public boolean isMoveAllowed(Object source, Object target) {
-			try {
-				if (source==target)
+			if (source == target) {
+				return true;
+			}
+			
+			if (target instanceof Participant) {
+				Participant p = (Participant) target;
+				
+				if (p.getProcessRef() == null) {
 					return true;
-				if (target instanceof Participant) {
-					Participant p = (Participant) target;
-					
-					if (p.getProcessRef() == null) {
-						return true;
-					}
-					
-					if (p.getProcessRef().getLaneSets().isEmpty()) {
-						return true;
-					}
-					
-					if (!p.getProcessRef().getLaneSets().isEmpty()) {
+				}
+				
+				for (LaneSet laneSet: p.getProcessRef().getLaneSets()) {
+					if (!laneSet.getLanes().isEmpty()) { 
 						return false;
 					}
-					
-					if (p.equals(ModelHandler.getInstance(getDiagram()).getInternalParticipant())) {
-						return true;
-					}
-				} else
-				if (target instanceof FlowElementsContainer) {
-					FlowElementsContainer p = (FlowElementsContainer) target;
-					if (p.getLaneSets().isEmpty()) {
-						return true;
-					}
 				}
-			} catch (Exception e) {
-				Activator.logError(e);
+				
+				return true;
+			} else
+			
+			if (target instanceof FlowElementsContainer) {
+				FlowElementsContainer flowElementsContainer = (FlowElementsContainer) target;
+				if (flowElementsContainer.getLaneSets().isEmpty()) {
+					return true;
+				}
 			}
 			return false;
 		}

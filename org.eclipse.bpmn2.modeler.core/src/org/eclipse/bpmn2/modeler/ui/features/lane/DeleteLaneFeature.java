@@ -13,8 +13,11 @@
 
 package org.eclipse.bpmn2.modeler.ui.features.lane;
 
+import org.eclipse.bpmn2.Lane;
+import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.context.IDeleteContext;
@@ -42,8 +45,10 @@ public class DeleteLaneFeature extends AbstractDefaultDeleteFeature {
 		ContainerShape parentContainerShape = laneContainerShape.getContainer();
 		
 		if (parentContainerShape != null) {
+			
 			boolean before = false;
 			ContainerShape neighborContainerShape = FeatureSupport.getLaneAfter(laneContainerShape);
+			
 			if (neighborContainerShape == null) {
 				neighborContainerShape = FeatureSupport.getLaneBefore(laneContainerShape);
 				if (neighborContainerShape == null) {
@@ -53,6 +58,7 @@ public class DeleteLaneFeature extends AbstractDefaultDeleteFeature {
 					before = true;
 				}
 			}
+			
 			boolean isHorizontal = FeatureSupport.isHorizontal(laneContainerShape);
 			GraphicsAlgorithm ga = laneContainerShape.getGraphicsAlgorithm();
 			GraphicsAlgorithm neighborGA = neighborContainerShape.getGraphicsAlgorithm();
@@ -77,5 +83,24 @@ public class DeleteLaneFeature extends AbstractDefaultDeleteFeature {
 			}
 		}
 		super.delete(context);
+	}
+	
+	@Override
+	protected void deleteBusinessObject(Object bo) {
+		
+		// remove lane AND empty lanesets
+		if (bo instanceof Lane) {
+			Lane lane = (Lane) bo;
+			LaneSet laneSet = (LaneSet) lane.eContainer();
+			
+			super.deleteBusinessObject(bo);
+			
+			// delete lane set, too if it has no lanes
+			if (laneSet.getLanes().isEmpty()) {
+				super.deleteBusinessObject(laneSet);
+			}
+		} else {
+			super.deleteBusinessObject(bo);
+		}
 	}
 }

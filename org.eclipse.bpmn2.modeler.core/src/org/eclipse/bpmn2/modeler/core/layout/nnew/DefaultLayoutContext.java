@@ -17,6 +17,7 @@ import org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
@@ -232,18 +233,17 @@ public class DefaultLayoutContext implements LayoutContext {
 			break;
 		}
 		
+		Point nextRepairCandidate = next.getRepairCandidate(start);
+		
+		// trigger re-layout if two points would overlap
+		if (GraphicsUtil.pointsEqual(repairCandidate, nextRepairCandidate)) {
+			return false;
+		}
+		
 		return true;
 	}
 
 	public boolean needsLayout() {
-		
-		double treshold = LayoutUtil.getLayoutTreshold(connection);
-		
-		// are connected shapes on the same line
-		// if yes, force relayout
-		if (treshold == 0.0 || treshold == 1.0) {
-			return true;
-		}
 		
 		boolean repaired = true;
 		
@@ -268,18 +268,6 @@ public class DefaultLayoutContext implements LayoutContext {
 		return repaired ? false : isRelayoutOnRepairFail(); 
 	}
 
-	private boolean onSameAxis(IRectangle startShapeBounds, IRectangle endShapeBounds) {
-		switch (LayoutUtil.getEndShapeSector(connection)) {
-			case TOP:
-			case BOTTOM:
-			case LEFT:
-			case RIGHT:
-				return true;
-			default:
-				return false;
-		}
-	}
-
 	protected boolean isRelayoutOnRepairFail() {
 		return relayoutOnRepairFail;
 	}
@@ -295,9 +283,7 @@ public class DefaultLayoutContext implements LayoutContext {
 	 * @return
 	 */
 	protected boolean needsLayoutByDockings(Tuple<Docking, Docking> dockings, Sector afterRepairStartSector, Sector afterRepairEndSector) {
-		boolean needsLayout = onSameAxis(startShapeBounds, endShapeBounds) && (afterRepairStartSector != dockings.getFirst().getSector() || 
-				   afterRepairEndSector != dockings.getSecond().getSector());
-		return needsLayout;
+		return false;
 	}
 
 	@Override
