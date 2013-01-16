@@ -5,10 +5,11 @@ import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 
-import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.modeler.core.layout.AnchorPointStrategy;
 import org.eclipse.bpmn2.modeler.core.layout.BendpointStrategy;
 import org.eclipse.bpmn2.modeler.core.layout.Docking;
@@ -16,9 +17,9 @@ import org.eclipse.bpmn2.modeler.core.layout.LayoutStrategy;
 import org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
-import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
@@ -46,7 +47,7 @@ public class DefaultLayoutContext implements LayoutContext {
 	protected List<Point> connectionPoints;
 
 	private boolean relayoutOnRepairFail = false;
-
+	
 	public DefaultLayoutContext(FreeFormConnection connection, boolean relayoutOnRepairFail) {
 		this.connection = connection;
 		this.relayoutOnRepairFail = relayoutOnRepairFail;
@@ -118,7 +119,7 @@ public class DefaultLayoutContext implements LayoutContext {
 	public boolean isRepairable() {
 		if (brokenConnectionParts.isEmpty()) {
 			return true;
-		} 
+		}
 		
 		if (connection.getBendpoints().isEmpty()) {
 			
@@ -135,9 +136,31 @@ public class DefaultLayoutContext implements LayoutContext {
 			}
 		}
 	}
+
+	private void removeBendpointsUpTo(Point point, boolean fromStart) {
+		List<Point> bendpoints = connection.getBendpoints();
+		
+		ListIterator<Point> iterator = bendpoints.listIterator(fromStart ? 0 : bendpoints.size());
+		while (fromStart ? iterator.hasNext() : iterator.hasPrevious()) {
+			
+			Point current = fromStart ? iterator.next() : iterator.previous();
+			
+			// remove element
+			iterator.remove();
+			
+			if (current.equals(point)) {
+				// reached last element to delete
+				break;
+			}
+		}
+	}
 	
 	@Override
 	public boolean repair() {
+
+		// check if shape lies on one of the connection points
+		removeOverlappingBendpoints();
+		
 		List<ConnectionPart> parts = connectionParts;
 		
 		boolean repaired = true;
@@ -155,6 +178,35 @@ public class DefaultLayoutContext implements LayoutContext {
 		repaired = repaired && fixAnchor(endShape, endAnchor, false);
 		
 		return repaired;
+	}
+
+	private void removeOverlappingBendpoints() {
+		
+		boolean fromStart = true;
+		Point removeCandidate = null;
+		
+		for (final Point p: connection.getBendpoints()) {
+			if (LayoutUtil.isContained(startShapeBounds, location(p))) {
+				fromStart = true;
+				removeCandidate = p;
+				
+				// continue to search (search for the last overlapping bendpoint)
+			}
+			
+			if (LayoutUtil.isContained(endShapeBounds, location(p))) {
+				
+				fromStart = false;
+				removeCandidate = p;
+				
+				// no more search
+				break;
+			}
+		}
+		
+		if (removeCandidate != null) {
+			removeBendpointsUpTo(removeCandidate, fromStart);
+			recomputePointsAndParts();
+		}
 	}
 
 	private boolean fixAnchor(Shape targetShape, Anchor targetShapeAnchor, boolean start) {
@@ -198,7 +250,7 @@ public class DefaultLayoutContext implements LayoutContext {
 		
 		recomputePointsAndParts();
 	}
-
+	
 	protected boolean layoutConnectionParts(List<ConnectionPart> parts, boolean start) {
 		ConnectionPart next;
 		ConnectionPart part;

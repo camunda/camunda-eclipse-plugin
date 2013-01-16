@@ -6,6 +6,8 @@ import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveShapeOpera
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
@@ -25,7 +27,26 @@ import org.junit.Test;
  * @author nico.rehwaldt
  */
 public class BasicTest extends AbstractFeatureTest {
+	
+	@Test
+	@DiagramResource
+	public void testLayoutManuallyAddedBendpoints() {
 
+		FreeFormConnection flow = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "SendTask_1");
+		
+		List<Point> bendpoints = flow.getBendpoints();
+		
+		move(taskShape, diagramTypeProvider)
+			.by(-130, 0)
+			.execute();
+		
+		Point lastBendpoint = bendpoints.get(bendpoints.size() - 1);
+		IRectangle taskBounds = LayoutUtil.getAbsoluteBounds(taskShape);
+		
+		assertThat(taskBounds).doesNotContain(lastBendpoint);
+	}
+	
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testBase.bpmn")
 	public void testLayoutOverlappingElements() {

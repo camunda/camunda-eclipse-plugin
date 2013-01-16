@@ -24,7 +24,6 @@ import org.junit.Test;
  */
 public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 	
-	
 	@Test
 	@DiagramResource
 	public void testMoveShapeOutOfContainer() {

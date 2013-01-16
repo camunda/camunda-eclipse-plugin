@@ -54,8 +54,8 @@ public class ConnectionReconnectionContext {
 			boolean repaired = layoutingContext.repair();
 			System.out.println("[reconnect] " + (repaired ? "repaired" : "could not repair") + " layout");
 			if (!repaired || layoutingContext.needsLayout()) {
+				System.out.println("[reconnect] layout after repair");
 				layoutingContext.layout();
-				System.out.println("[reconnect] layout repair");
 			}
 		} else {
 			System.out.println("[reconnect] layout only");
