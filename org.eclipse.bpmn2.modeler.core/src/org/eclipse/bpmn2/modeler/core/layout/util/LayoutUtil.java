@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
+import org.eclipse.bpmn2.modeler.core.layout.Docking;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Vector;
 import org.eclipse.emf.common.util.EList;
@@ -438,9 +439,24 @@ public class LayoutUtil {
 		connection.getBendpoints().add(point(start.getX(), end.getY()));
 	}
 	
-	public static void addTurningBendpointsVertical(FreeFormConnection connection, Point startDockingPos, Point endDockingPos, Point firstBendPoint) {
-		connection.getBendpoints().add(point(startDockingPos.getX(), firstBendPoint.getY()));
-		connection.getBendpoints().add(point(endDockingPos.getX(), firstBendPoint.getY()));
+	public static void addTurningBendpointsVertical(FreeFormConnection connection, Docking startDocking, Docking endDocking, boolean up) {
+		Integer startEndDelta = startDocking.getPosition().getY() - endDocking.getPosition().getY();
+		
+		final Integer minDistance = 30;
+		Integer startDistance = minDistance;
+		
+		if (Math.abs(startEndDelta) > minDistance) {
+			startDistance += Math.abs(startEndDelta);
+		}
+		
+		if (up) {
+			startDistance *= -1;
+		}
+		
+		Point firstBendPoint = point(startDocking.getPosition().getX(), startDistance + startDocking.getPosition().getY());
+		
+		connection.getBendpoints().add(firstBendPoint);
+		connection.getBendpoints().add(point(endDocking.getPosition().getX(), firstBendPoint.getY()));
 	}
 	
 	public static void addTurningBendpointsHorizontal(FreeFormConnection connection, Point startDockingPos, Point endDockingPos, Point firstBendPoint) {

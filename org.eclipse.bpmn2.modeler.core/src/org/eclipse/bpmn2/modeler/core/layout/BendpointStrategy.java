@@ -105,15 +105,11 @@ public class BendpointStrategy extends LayoutStrategy<Tuple<Docking, Docking>, V
 		}
 		else
 		if (singleSrcRelAbove) {
-			if (treshold != 0.0 && treshold != 1.0) {
-				LayoutUtil.addTurningBendpointsVertical(connection, startDocking.getPosition(), endDocking.getPosition(), ConversionUtil.point(startDocking.getPosition().getX(), startDocking.getPosition().getY() - relMargin) );
-			}
+			LayoutUtil.addTurningBendpointsVertical(connection, startDocking, endDocking, true);
 		}
 		else
 		if (singleSrcRelBelow) {
-			if (treshold != 0.0 && treshold != 1.0) {
-				LayoutUtil.addTurningBendpointsVertical(connection, startDocking.getPosition(), endDocking.getPosition(), ConversionUtil.point(startDocking.getPosition().getX(), startDocking.getPosition().getY() + relMargin) );
-			}
+			LayoutUtil.addTurningBendpointsVertical(connection, startDocking, endDocking, false);
 		}
 		else
 		if (single) {
@@ -229,8 +225,10 @@ public class BendpointStrategy extends LayoutStrategy<Tuple<Docking, Docking>, V
 		case TOP_LEFT:
 			switch (sector) {
 			case LEFT:
+				this.singleSrcRelAbove();
+				break;
 			case RIGHT:
-				this.vertical();
+				this.singleSrcRelAbove();
 				break;
 			case BOTTOM:
 			case BOTTOM_RIGHT:
@@ -253,6 +251,8 @@ public class BendpointStrategy extends LayoutStrategy<Tuple<Docking, Docking>, V
 		case BOTTOM:
 			switch (sector) {
 			case LEFT:
+				this.singleSrcRelBelow();
+				break;
 			case RIGHT:
 				this.singleSrcRelBelow();
 				break;
