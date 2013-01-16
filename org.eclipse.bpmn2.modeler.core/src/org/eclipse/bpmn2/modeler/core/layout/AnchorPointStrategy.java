@@ -172,11 +172,11 @@ public class AnchorPointStrategy extends LayoutStrategy<Void, Tuple<Docking, Doc
 			switch (targetElementSector) {
 			case RIGHT:
 				start.top();
-				end.left();
+				end.top();
 				break;
 			case LEFT: 
 				start.top();
-				end.right();
+				end.top();
 				break;
 			case BOTTOM:
 			case BOTTOM_RIGHT:
@@ -205,6 +205,9 @@ public class AnchorPointStrategy extends LayoutStrategy<Void, Tuple<Docking, Doc
 		case BOTTOM_RIGHT:
 			switch (targetElementSector) {
 			case RIGHT:
+				start.bottom();
+				end.bottom();
+				break;
 			case LEFT: 
 				start.bottom();
 				end.bottom();

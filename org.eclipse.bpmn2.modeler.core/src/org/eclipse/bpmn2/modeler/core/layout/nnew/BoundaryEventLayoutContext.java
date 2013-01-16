@@ -21,8 +21,12 @@ public class BoundaryEventLayoutContext extends DefaultLayoutContext {
 		if (connection.getBendpoints().size() > 1) {
 			return false;
 		}
+		else if (afterRepairStartSector != dockings.getFirst().getSector() ||  
+			   afterRepairEndSector != dockings.getSecond().getSector()) {
+			return true;
+		}
 		
-		return afterRepairStartSector != dockings.getFirst().getSector() || 
-			   afterRepairEndSector != dockings.getSecond().getSector();
+		return false;
+		
 	}
 }
