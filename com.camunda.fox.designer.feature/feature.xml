@@ -2,7 +2,7 @@
 <feature
       id="com.camunda.fox.designer.feature"
       label="fox designer"
-      version="2.0.7"
+      version="2.1.0.qualifier"
       provider-name="camunda.com">
 
    <copyright>
