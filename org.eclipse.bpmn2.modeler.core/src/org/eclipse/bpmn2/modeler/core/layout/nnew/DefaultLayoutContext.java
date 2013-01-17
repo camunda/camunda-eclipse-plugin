@@ -5,7 +5,6 @@ import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
@@ -19,7 +18,6 @@ import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
@@ -186,7 +184,7 @@ public class DefaultLayoutContext implements LayoutContext {
 		Point removeCandidate = null;
 		
 		for (final Point p: connection.getBendpoints()) {
-			if (LayoutUtil.isContained(startShapeBounds, location(p))) {
+			if (LayoutUtil.isContained(startShapeBounds, location(p), 13)) {
 				fromStart = true;
 				removeCandidate = p;
 				

@@ -15,20 +15,20 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="_Collaboration_2">
       <bpmndi:BPMNShape id="_BPMNShape_Participant_2" bpmnElement="_Participant_2" isHorizontal="true">
-        <dc:Bounds height="175.0" width="500.0" x="50.0" y="50.0"/>
+        <dc:Bounds height="321.0" width="791.0" x="50.0" y="50.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_Task_2" bpmnElement="Task_1">
-        <dc:Bounds height="80.0" width="100.0" x="100.0" y="57.0"/>
+        <dc:Bounds height="80.0" width="100.0" x="100.0" y="80.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_SendTask_2" bpmnElement="SendTask_1">
-        <dc:Bounds height="80.0" width="100.0" x="380.0" y="70.0"/>
+        <dc:Bounds height="80.0" width="100.0" x="520.0" y="70.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="SequenceFlow_1" sourceElement="_BPMNShape_Task_2" targetElement="_BPMNShape_SendTask_2">
-        <di:waypoint xsi:type="dc:Point" x="150.0" y="137.0"/>
-        <di:waypoint xsi:type="dc:Point" x="150.0" y="210.0"/>
-        <di:waypoint xsi:type="dc:Point" x="282.0" y="210.0"/>
-        <di:waypoint xsi:type="dc:Point" x="282.0" y="110.0"/>
-        <di:waypoint xsi:type="dc:Point" x="380.0" y="110.0"/>
+        <di:waypoint xsi:type="dc:Point" x="150.0" y="160.0"/>
+        <di:waypoint xsi:type="dc:Point" x="150.0" y="259.0"/>
+        <di:waypoint xsi:type="dc:Point" x="341.0" y="259.0"/>
+        <di:waypoint xsi:type="dc:Point" x="341.0" y="110.0"/>
+        <di:waypoint xsi:type="dc:Point" x="520.0" y="110.0"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

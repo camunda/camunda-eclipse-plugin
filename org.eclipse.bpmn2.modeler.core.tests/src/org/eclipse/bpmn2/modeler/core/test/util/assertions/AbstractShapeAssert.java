@@ -72,4 +72,10 @@ public abstract class AbstractShapeAssert<S extends AbstractShapeAssert<S, A>, A
 		IRectangle absoluteRectangle = LayoutUtil.getAbsoluteBounds(actual);
 		return new PointAssert(point(absoluteRectangle.getX(), absoluteRectangle.getY()));
 	}
+	
+	public IRectangleAssert bounds() {
+		IRectangle bounds = LayoutUtil.getAbsoluteBounds(actual);
+		
+		return new IRectangleAssert(bounds);
+	}
 }

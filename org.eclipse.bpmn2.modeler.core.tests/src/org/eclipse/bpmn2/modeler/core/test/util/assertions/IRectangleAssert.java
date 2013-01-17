@@ -3,6 +3,8 @@ package org.eclipse.bpmn2.modeler.core.test.util.assertions;
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.location;
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 
+import java.util.List;
+
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
@@ -49,5 +51,14 @@ public class IRectangleAssert extends AbstractAssert<IRectangleAssert, IRectangl
 		private String failMessage(String expectContainment, Point point, IRectangle rect) {
 			
 			return String.format(expectContainment, point.getX(), point.getY(), rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
+		}
+
+		public IRectangleAssert doNotContainAnyOf(List<Point> points) {
+			
+			for (Point p: points) {
+				doesNotContain(p);
+			}
+			
+			return myself;
 		}
 	}

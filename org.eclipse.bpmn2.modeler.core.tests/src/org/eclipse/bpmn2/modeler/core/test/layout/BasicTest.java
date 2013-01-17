@@ -27,24 +27,120 @@ import org.junit.Test;
  * @author nico.rehwaldt
  */
 public class BasicTest extends AbstractFeatureTest {
+
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BasicTest.testRemoveBendpointsBase.bpmn")
+	public void testLayoutRemoveLastUnneccessaryBendpointFromStart() {
+
+		FreeFormConnection flow = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
+		
+		List<Point> bendpoints = flow.getBendpoints();
+		
+		// when
+		// moving shape on first bendpoint
+		move(taskShape, diagramTypeProvider)
+			.by(0, 130)
+			.execute();
+		
+		// then
+		// first bendpoint should have been removed
+		assertThat(bendpoints)
+			.hasSize(2);
+		
+		assertThat(taskShape)
+			.bounds()
+				.doNotContainAnyOf(bendpoints);
+		
+		assertThat(flow)
+			.anchorPointOn(taskShape)
+				.isRightOfShape();
+	}
 	
 	@Test
-	@DiagramResource
-	public void testLayoutManuallyAddedBendpoints() {
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BasicTest.testRemoveBendpointsBase.bpmn")
+	public void testLayoutRemoveMultipleUnneccessaryBendpointsFromStart() {
+
+		FreeFormConnection flow = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
+		
+		List<Point> bendpoints = flow.getBendpoints();
+
+		// when
+		// moving shape on the second of three bendpoints
+		move(taskShape, diagramTypeProvider)
+			.by(150, 130)
+			.execute();
+
+		// then
+		// first two bendpoint should have been removed
+		assertThat(bendpoints)
+			.hasSize(1);
+		
+		assertThat(taskShape)
+			.bounds()
+				.doNotContainAnyOf(bendpoints);
+		
+		assertThat(flow)
+			.anchorPointOn(taskShape)
+				.isAboveShape();
+	}
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BasicTest.testRemoveBendpointsBase.bpmn")
+	public void testLayoutRemoveLastUnneccessaryBendpointFromEnd() {
 
 		FreeFormConnection flow = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
 		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "SendTask_1");
 		
 		List<Point> bendpoints = flow.getBendpoints();
 		
+		// when
+		// moving shape on last bendpoint
 		move(taskShape, diagramTypeProvider)
-			.by(-130, 0)
+			.by(-230, 0)
 			.execute();
 		
-		Point lastBendpoint = bendpoints.get(bendpoints.size() - 1);
-		IRectangle taskBounds = LayoutUtil.getAbsoluteBounds(taskShape);
+		// then
+		// last bendpoint should have been removed
+		assertThat(bendpoints)
+			.hasSize(2);
 		
-		assertThat(taskBounds).doesNotContain(lastBendpoint);
+		assertThat(taskShape)
+			.bounds()
+				.doNotContainAnyOf(bendpoints);
+		
+		assertThat(flow)
+			.anchorPointOn(taskShape)
+				.isBeneathShape();
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BasicTest.testRemoveBendpointsBase.bpmn")
+	public void testLayoutRemoveMultipleUnneccessaryBendpointsFromEnd() {
+
+		FreeFormConnection flow = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "SendTask_1");
+		
+		List<Point> bendpoints = flow.getBendpoints();
+
+		// when
+		// moving shape on the second of three bendpoints
+		move(taskShape, diagramTypeProvider)
+			.by(-230, 170)
+			.execute();
+
+		// then
+		// last two bendpoint should have been removed
+		assertThat(bendpoints)
+			.hasSize(1);
+		
+		assertThat(taskShape)
+			.bounds()
+				.doNotContainAnyOf(bendpoints);
+		
+		assertThat(flow)
+			.anchorPointOn(taskShape)
+				.isLeftOfShape();
 	}
 	
 	@Test
