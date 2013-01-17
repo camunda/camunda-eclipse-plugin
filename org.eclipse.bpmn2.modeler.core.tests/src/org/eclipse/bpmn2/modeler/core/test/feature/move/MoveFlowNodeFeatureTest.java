@@ -15,6 +15,7 @@ import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
+import org.fest.assertions.api.Fail;
 import org.junit.Test;
 
 /**
@@ -50,7 +51,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(processShape).hasChild(userTaskShape);
 		assertThat(userTaskShape).isContainedIn(processShape);
 	}
-
+	
 	@Test
 	@DiagramResource
 	public void testMoveShapeIntoContainer() {
@@ -75,6 +76,30 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(subProcessShape).hasChild(userTaskShape);
 		assertThat(processShape).doesNotHaveChild(userTaskShape);
 		assertThat(userTaskShape).hasParentModelElement(subProcessElement);
+	}
+
+	@Test
+	@DiagramResource
+	public void testMoveOutOfParticipantNotAllowed() {
+
+		// given
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
+		Shape participantShape = Util.findShapeByBusinessObjectId(diagram, "_Participant_3");
+
+		// when 
+		// trying to move the task shape
+		move(taskShape, diagramTypeProvider)
+			.toContainer(diagram)
+			.by(300, 200)
+			.execute();
+		
+		// then 
+		// it should still be contained in participant
+		// (movement not allowed)
+		assertThat(participantShape)
+			.hasChild(taskShape);
+		
+		Fail.fail("WHY IS THIS WORKING?");
 	}
 	
 	@Test

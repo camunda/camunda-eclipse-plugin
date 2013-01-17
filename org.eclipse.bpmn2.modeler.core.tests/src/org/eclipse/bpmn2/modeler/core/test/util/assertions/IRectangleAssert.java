@@ -61,4 +61,8 @@ public class IRectangleAssert extends AbstractAssert<IRectangleAssert, IRectangl
 			
 			return myself;
 		}
+
+		public PointAssert position() {
+			return new PointAssert(point(actual.getX(), actual.getY()));
+		}
 	}

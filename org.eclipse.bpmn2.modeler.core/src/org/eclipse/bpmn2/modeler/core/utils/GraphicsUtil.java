@@ -24,7 +24,6 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.Gateway;
-import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -268,6 +267,10 @@ public class GraphicsUtil {
 			}
 		}
 		return null;
+	}
+	
+	public static Collection<PictogramElement> getContainedShapes(PictogramElement container) {
+		return Graphiti.getPeService().getAllContainedPictogramElements(container);
 	}
 	
 	public static List<PictogramElement> getContainedPictogramElements(PictogramElement container, String propertyKey) {
