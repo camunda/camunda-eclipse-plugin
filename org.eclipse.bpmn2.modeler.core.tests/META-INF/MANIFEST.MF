@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test
 Bundle-SymbolicName: org.eclipse.bpmn2.modeler.core.test
-Bundle-Version: 2.1.0.qualifier
+Bundle-Version: 2.0.7
 Bundle-Activator: org.eclipse.bpmn2.modeler.core.test.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.junit;bundle-version="4.8.2",
