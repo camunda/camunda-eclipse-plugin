@@ -111,7 +111,7 @@
 	
 	<target name="build.release">
 		<maven basedir="${checkout.release.path}/fox-designer"
-             options="-Pplatform-indigo -Dmaven.test.skip=true"
+             options="-Pplatform-indigo -Dmaven.test.skip=true -DskipTests=true -X"
              goals="clean install"
              resultproperty="maven.build.result" />
 	</target>
@@ -129,7 +129,7 @@
 
 	<target name="set.release.version" depends="mvn.init">
 		<maven basedir="${checkout.release.path}/fox-designer"
-             options="-DnewVersion=${release.version} -Pplatform-indigo -e -X"
+             options="-DnewVersion=${release.version} -Pplatform-indigo -e"
              goals="org.eclipse.tycho:tycho-versions-plugin:set-version"
              resultproperty="maven.build.result" />
 	</target>
