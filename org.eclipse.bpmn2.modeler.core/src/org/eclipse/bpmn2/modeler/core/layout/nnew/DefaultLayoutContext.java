@@ -28,10 +28,6 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 public class DefaultLayoutContext implements LayoutContext {
 
 	protected FreeFormConnection connection;
-
-	private List<ConnectionPart> connectionParts;
-	
-	private Set<ConnectionPart> brokenConnectionParts;
 	
 	private Anchor startAnchor;
 	private Anchor endAnchor;
@@ -42,7 +38,11 @@ public class DefaultLayoutContext implements LayoutContext {
 	protected IRectangle startShapeBounds;
 	protected IRectangle endShapeBounds;
 	
+	
 	protected List<Point> connectionPoints;
+
+	private List<ConnectionPart> connectionParts;
+	private Set<ConnectionPart> diagonalConnectionParts;
 
 	private boolean relayoutOnRepairFail = false;
 	
@@ -90,7 +90,7 @@ public class DefaultLayoutContext implements LayoutContext {
 			current = p;
 		}
 		
-		this.brokenConnectionParts = brokenParts;
+		this.diagonalConnectionParts = brokenParts;
 		this.connectionParts = parts;
 	}
 
@@ -112,10 +112,9 @@ public class DefaultLayoutContext implements LayoutContext {
 		this.connectionPoints = points;
 	}
 	
-	
 	@Override
 	public boolean isRepairable() {
-		if (brokenConnectionParts.isEmpty()) {
+		if (diagonalConnectionParts.isEmpty()) {
 			return true;
 		}
 		
@@ -124,40 +123,13 @@ public class DefaultLayoutContext implements LayoutContext {
 			// nothing to repair
 			return false;
 		} else {
-			if (brokenConnectionParts.size() > 1) {
-				
-				// too many broken parts
-				return false;
-			} else {
-				// only one connection part is broken --> layout change
-				return true;
-			}
-		}
-	}
-
-	private void removeBendpointsUpTo(Point point, boolean fromStart) {
-		List<Point> bendpoints = connection.getBendpoints();
-		
-		ListIterator<Point> iterator = bendpoints.listIterator(fromStart ? 0 : bendpoints.size());
-		while (fromStart ? iterator.hasNext() : iterator.hasPrevious()) {
-			
-			Point current = fromStart ? iterator.next() : iterator.previous();
-			
-			// remove element
-			iterator.remove();
-			
-			if (current.equals(point)) {
-				// reached last element to delete
-				break;
-			}
+			// repair only if we have only one diagonal connection
+			return !isManyDiagonal();
 		}
 	}
 	
 	@Override
 	public boolean repair() {
-
-		// check if shape lies on one of the connection points
-		removeOverlappingBendpoints();
 		
 		List<ConnectionPart> parts = connectionParts;
 		
@@ -175,9 +147,18 @@ public class DefaultLayoutContext implements LayoutContext {
 		
 		repaired = repaired && fixAnchor(endShape, endAnchor, false);
 		
+		// recompute so that our layouting check later works
+		recomputePointsAndParts();
+		
 		return repaired;
 	}
-
+	
+	@Override
+	public void prune() {
+		// check if shape lies on one of the connection points
+		removeOverlappingBendpoints();
+	}
+	
 	private void removeOverlappingBendpoints() {
 		
 		boolean fromStart = true;
@@ -206,7 +187,32 @@ public class DefaultLayoutContext implements LayoutContext {
 			recomputePointsAndParts();
 		}
 	}
-
+	
+	private void removeBendpointsUpTo(Point point, boolean fromStart) {
+		List<Point> bendpoints = connection.getBendpoints();
+		
+		System.out.println(
+			String.format(
+				"[reconnect] prune: remove bendpoints %s up to (%s,%s)", 
+				fromStart ? "from start" : "from end", 
+				point.getX(), 
+				point.getY()));
+		
+		ListIterator<Point> iterator = bendpoints.listIterator(fromStart ? 0 : bendpoints.size());
+		while (fromStart ? iterator.hasNext() : iterator.hasPrevious()) {
+			
+			Point current = fromStart ? iterator.next() : iterator.previous();
+			
+			// remove element
+			iterator.remove();
+			
+			if (current.equals(point)) {
+				// reached last element to delete
+				break;
+			}
+		}
+	}
+	
 	private boolean fixAnchor(Shape targetShape, Anchor targetShapeAnchor, boolean start) {
 		
 		// TODO: Do not blindly unset custom anchors
@@ -295,6 +301,10 @@ public class DefaultLayoutContext implements LayoutContext {
 
 	public boolean needsLayout() {
 		
+		if (isManyDiagonal()) {
+			return false;
+		}
+		
 		boolean repaired = true;
 		
 		List<Point> points = connectionPoints;
@@ -318,6 +328,14 @@ public class DefaultLayoutContext implements LayoutContext {
 		return repaired ? false : isRelayoutOnRepairFail(); 
 	}
 
+	/**
+	 * Return whether we have many diagonal connection parts
+	 * @return
+	 */
+	protected boolean isManyDiagonal() {
+		return diagonalConnectionParts.size() > 1;
+	}
+	
 	protected boolean isRelayoutOnRepairFail() {
 		return relayoutOnRepairFail;
 	}

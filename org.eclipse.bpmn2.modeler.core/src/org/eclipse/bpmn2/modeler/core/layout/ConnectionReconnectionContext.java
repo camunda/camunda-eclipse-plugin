@@ -48,18 +48,19 @@ public class ConnectionReconnectionContext {
 		if (forceLayout) {
 			layoutingContext.layout();
 			System.out.println("[reconnect] forced layout, no repair");
-		} else
-		
-		if (layoutingContext.isRepairable()) {
-			boolean repaired = layoutingContext.repair();
-			System.out.println("[reconnect] " + (repaired ? "repaired" : "could not repair") + " layout");
-			if (!repaired || layoutingContext.needsLayout()) {
+		} else {
+			// apply bendpoint removal
+			layoutingContext.prune();
+
+			if (layoutingContext.isRepairable()) {
+				boolean repaired = layoutingContext.repair();
+				System.out.println("[reconnect] " + (repaired ? "repaired" : "could not repair") + " layout");
+			}
+
+			if (layoutingContext.needsLayout()) {
 				System.out.println("[reconnect] layout after repair");
 				layoutingContext.layout();
 			}
-		} else {
-			System.out.println("[reconnect] layout only");
-			layoutingContext.layout();
 		}
 	}
 
@@ -70,5 +71,4 @@ public class ConnectionReconnectionContext {
 			throw new IllegalArgumentException("Unable to reconnect non FreeFormConnections");
 		}
 	}
-	
 }

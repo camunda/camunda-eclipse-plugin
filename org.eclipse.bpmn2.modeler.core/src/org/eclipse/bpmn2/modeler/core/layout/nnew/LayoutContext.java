@@ -36,4 +36,9 @@ public interface LayoutContext {
 	 * Perform a full layout on the connection.
 	 */
 	public void layout();
+
+	/**
+	 * Perform clean up before actual repair starts
+	 */
+	public void prune();
 }
