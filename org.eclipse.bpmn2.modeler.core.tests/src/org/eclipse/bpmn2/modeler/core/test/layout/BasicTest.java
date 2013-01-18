@@ -155,7 +155,7 @@ public class BasicTest extends AbstractFeatureTest {
 		// when
 		// moving shape on first bendpoint
 		move(taskShape, diagramTypeProvider)
-			.by(0, 80)
+			.by(0, 60)
 			.execute();
 		
 		// then

@@ -6,16 +6,7 @@ package org.eclipse.bpmn2.modeler.core.layout.nnew;
  * @author nico.rehwaldt
  */
 public interface LayoutContext {
-	
-	/**
-	 * Returns true if the connection enclosed in this context is
-	 * already laid out and can be repaired and false to indicate that 
-	 * initial layouting is needed.
-	 * 
-	 * @return
-	 */
-	public boolean isRepairable();
-	
+
 	/**
 	 * Returns true the context decides to relayout, despite of a possible successful repair
 	 * 
@@ -36,9 +27,4 @@ public interface LayoutContext {
 	 * Perform a full layout on the connection.
 	 */
 	public void layout();
-
-	/**
-	 * Perform clean up before actual repair starts
-	 */
-	public void prune();
 }

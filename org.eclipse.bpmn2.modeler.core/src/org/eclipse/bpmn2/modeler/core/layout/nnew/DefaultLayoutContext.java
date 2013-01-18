@@ -38,7 +38,6 @@ public class DefaultLayoutContext implements LayoutContext {
 	protected IRectangle startShapeBounds;
 	protected IRectangle endShapeBounds;
 	
-	
 	protected List<Point> connectionPoints;
 
 	private List<ConnectionPart> connectionParts;
@@ -46,13 +45,16 @@ public class DefaultLayoutContext implements LayoutContext {
 
 	private boolean relayoutOnRepairFail = false;
 	
+	/**
+	 * Stores the result of the last repair operation
+	 */
+	private boolean repaired = false;
+	
 	public DefaultLayoutContext(FreeFormConnection connection, boolean relayoutOnRepairFail) {
 		this.connection = connection;
 		this.relayoutOnRepairFail = relayoutOnRepairFail;
 		
 		initSourceAndTarget(connection.getStart(), connection.getEnd());
-		
-		recomputePointsAndParts();
 	}
 
 	private void initSourceAndTarget(Anchor start, Anchor end) {
@@ -112,13 +114,19 @@ public class DefaultLayoutContext implements LayoutContext {
 		this.connectionPoints = points;
 	}
 	
-	@Override
+	/**
+	 * Returns true if the connection enclosed in this context is
+	 * already laid out and can be repaired and false to indicate that 
+	 * initial layouting is needed.
+	 * 
+	 * @return true if the connection is repairable, false otherwise
+	 */
 	public boolean isRepairable() {
 		if (diagonalConnectionParts.isEmpty()) {
 			return true;
 		}
 		
-		if (connection.getBendpoints().isEmpty()) {
+		if (isDirect()) {
 			
 			// nothing to repair
 			return false;
@@ -127,52 +135,96 @@ public class DefaultLayoutContext implements LayoutContext {
 			return !isManyDiagonal();
 		}
 	}
-	
+
 	@Override
 	public boolean repair() {
+		
+		boolean repeatNeeded;
+		
+		do {
+			
+			// recompute so that our layouting check later works
+			recomputePointsAndParts();
+			
+			// apply bendpoint removal
+			prune();
+			
+			if (!isRepairable()) {
+				return false;
+			}
+			
+			// repair bendpoints
+			repeatNeeded = 
+				repairBendpointsAndAnchors() ||
+				isRepeatNeeded();
+			
+		} while (repeatNeeded);
+		
+		return true;
+	}
+
+	protected boolean isRepeatNeeded() {
+		
+		Tuple<Point, Point> bendpoints = getFirstAndLastBendpoints();
+
+		// are first or last bendpoints moved during repair to close or into one of the shapes
+		// if yes, force repeat
+		
+		if (isContained(startShapeBounds, bendpoints.getFirst()) ||
+			isContained(endShapeBounds, bendpoints.getSecond())) {
+			
+			return true;
+		}
+		
+		return false;
+	}
+
+	protected boolean repairBendpointsAndAnchors() {
 		
 		List<ConnectionPart> parts = connectionParts;
 		
 		boolean repaired = true;
 		
 		if (parts.get(0).needsLayout()) {
-			repaired = repaired && layoutConnectionParts(parts, true);
+			repaired &= layoutConnectionParts(parts, true);
 		}
 		
-		repaired = repaired && fixAnchor(startShape, startAnchor, true);
+		repaired &= fixAnchor(startShape, startAnchor, true);
 		
 		if (parts.get(parts.size() - 1).needsLayout()) {
-			repaired = repaired && layoutConnectionParts(parts, false);
+			repaired &= layoutConnectionParts(parts, false);
 		}
 		
-		repaired = repaired && fixAnchor(endShape, endAnchor, false);
+		repaired &= fixAnchor(endShape, endAnchor, false);
 		
-		// recompute so that our layouting check later works
-		recomputePointsAndParts();
+		// save repair success result
+		setRepaired(repaired);
 		
-		return repaired;
+		return !repaired;
 	}
-	
-	@Override
+
+	/**
+	 * Perform clean up before actual repair starts
+	 */
 	public void prune() {
 		// check if shape lies on one of the connection points
 		removeOverlappingBendpoints();
 	}
-	
+
 	private void removeOverlappingBendpoints() {
 		
 		boolean fromStart = true;
 		Point removeCandidate = null;
 		
 		for (final Point p: connection.getBendpoints()) {
-			if (LayoutUtil.isContained(startShapeBounds, location(p), 13)) {
+			if (isContained(startShapeBounds, p)) {
 				fromStart = true;
 				removeCandidate = p;
 				
 				// continue to search (search for the last overlapping bendpoint)
 			}
 			
-			if (LayoutUtil.isContained(endShapeBounds, location(p))) {
+			if (isContained(endShapeBounds, p)) {
 				
 				fromStart = false;
 				removeCandidate = p;
@@ -188,6 +240,10 @@ public class DefaultLayoutContext implements LayoutContext {
 		}
 	}
 	
+	private boolean isContained(IRectangle bounds, Point p) {
+		return LayoutUtil.isContained(bounds, location(p), 13);
+	}
+
 	private void removeBendpointsUpTo(Point point, boolean fromStart) {
 		List<Point> bendpoints = connection.getBendpoints();
 		
@@ -233,7 +289,7 @@ public class DefaultLayoutContext implements LayoutContext {
 			setNewEndAnchor(centerAnchor);
 		}
 		
-		return repair();
+		return false;
 	}
 	
 	private void recomputePointsAndParts() {
@@ -255,6 +311,14 @@ public class DefaultLayoutContext implements LayoutContext {
 		recomputePointsAndParts();
 	}
 	
+	/**
+	 * Layouts connection parts from the given direction.
+	 * 
+	 * @param parts
+	 * @param start
+	 * 
+	 * @return true if the repair operation was successful, false otherwise
+	 */
 	protected boolean layoutConnectionParts(List<ConnectionPart> parts, boolean start) {
 		ConnectionPart next;
 		ConnectionPart part;
@@ -289,43 +353,75 @@ public class DefaultLayoutContext implements LayoutContext {
 			break;
 		}
 		
-		Point nextRepairCandidate = next.getRepairCandidate(start);
-		
-		// trigger re-layout if two points would overlap
-		if (GraphicsUtil.pointsEqual(repairCandidate, nextRepairCandidate)) {
-			return false;
-		}
-		
 		return true;
 	}
 
+	/**
+	 * returns true if the
+	 * 
+	 * @return true if the connection needs relayout, false otherwise
+	 */
 	public boolean needsLayout() {
 		
+		// recompute what is going on
+		recomputePointsAndParts();
+		
+		// we do not want to layout many diagonal (aka custom layouted) connections
 		if (isManyDiagonal()) {
 			return false;
 		}
 		
-		boolean repaired = true;
+		// we do want to layout other non-repairable connections, though
+		if (!isRepaired()) {
+			return isRelayoutOnRepairFail();
+		}
 		
-		List<Point> points = connectionPoints;
+		if (hasOverlappingBendpoints()) {
+			return isRelayoutOnRepairFail();
+		}
 		
-		Point firstBendpoint = points.get(1);
-		Point lastBendpoint = points.get(points.size() - 2);
-
-		// are first or last bendpoints moved during repair to close or into one of the shapes
-		// if yes, force relayout
-		repaired &= !LayoutUtil.isContained(startShapeBounds, location(firstBendpoint), 13);
-		repaired &= !LayoutUtil.isContained(endShapeBounds, location(lastBendpoint), 13);
+		Tuple<Point, Point> bendpoints = getFirstAndLastBendpoints();
 		
 		Tuple<Docking, Docking> dockings = getDockings();
 		if (dockings != null) {
-			Sector afterRepairStartSector = LayoutUtil.getSector(ConversionUtil.location(firstBendpoint), startShapeBounds);
-			Sector afterRepairEndSector = LayoutUtil.getSector(ConversionUtil.location(lastBendpoint), endShapeBounds);
+			Sector afterRepairStartSector = LayoutUtil.getSector(ConversionUtil.location(bendpoints.getFirst()), startShapeBounds);
+			Sector afterRepairEndSector = LayoutUtil.getSector(ConversionUtil.location(bendpoints.getSecond()), endShapeBounds);
 			
-			repaired &= !needsLayoutByDockings(dockings, afterRepairStartSector, afterRepairEndSector);
+			if (needsLayoutByDockings(dockings, afterRepairStartSector, afterRepairEndSector)) {
+				return isRelayoutOnRepairFail();
+			}
 		}
 		
-		return repaired ? false : isRelayoutOnRepairFail(); 
+		return false;
+	}
+
+	/**
+	 * Answer true if the connection has overlapping bendpoints
+	 * 
+	 * @return
+	 */
+	private boolean hasOverlappingBendpoints() {
+		Point last = null;
+		
+		for (Point point: connectionPoints) {
+			if (last != null) {
+				if (GraphicsUtil.pointsEqual(point, last)) {
+					return true;
+				}
+			}
+			
+			last = point;
+		}
+		
+		return false;
+	}
+
+	protected void setRepaired(boolean repaired) {
+		this.repaired = repaired;
+	}
+	
+	protected boolean isRepaired() {
+		return repaired && diagonalConnectionParts.isEmpty();
 	}
 
 	/**
@@ -334,6 +430,10 @@ public class DefaultLayoutContext implements LayoutContext {
 	 */
 	protected boolean isManyDiagonal() {
 		return diagonalConnectionParts.size() > 1;
+	}
+
+	protected boolean isDirect() {
+		return connection.getBendpoints().isEmpty();
 	}
 	
 	protected boolean isRelayoutOnRepairFail() {
@@ -353,7 +453,14 @@ public class DefaultLayoutContext implements LayoutContext {
 	protected boolean needsLayoutByDockings(Tuple<Docking, Docking> dockings, Sector afterRepairStartSector, Sector afterRepairEndSector) {
 		return false;
 	}
-
+	
+	protected Tuple<Point, Point> getFirstAndLastBendpoints() {
+		Point firstBendpoint = connectionPoints.get(1);
+		Point lastBendpoint = connectionPoints.get(connectionPoints.size() - 2);
+		
+		return new Tuple<Point, Point>(firstBendpoint, lastBendpoint);
+	}
+	
 	@Override
 	public void layout() {
 		layoutBendpoints(layoutAnchors());

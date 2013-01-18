@@ -46,19 +46,16 @@ public class ConnectionReconnectionContext {
 		LayoutContext layoutingContext = new DefaultLayoutStrategy().createLayoutingContext(freeFormConnection, relayoutOnRepairFail);
 		
 		if (forceLayout) {
-			layoutingContext.layout();
 			System.out.println("[reconnect] forced layout, no repair");
+			layoutingContext.layout();
 		} else {
-			// apply bendpoint removal
-			layoutingContext.prune();
+			System.out.println("[reconnect] repair");
+			boolean repaired = layoutingContext.repair();
 
-			if (layoutingContext.isRepairable()) {
-				boolean repaired = layoutingContext.repair();
-				System.out.println("[reconnect] " + (repaired ? "repaired" : "could not repair") + " layout");
-			}
-
+			System.out.println("[reconnect] " + (repaired ? "repair success" : "repair failed"));
+			
 			if (layoutingContext.needsLayout()) {
-				System.out.println("[reconnect] layout after repair");
+				System.out.println("[reconnect] repair failed, relayout");
 				layoutingContext.layout();
 			}
 		}
