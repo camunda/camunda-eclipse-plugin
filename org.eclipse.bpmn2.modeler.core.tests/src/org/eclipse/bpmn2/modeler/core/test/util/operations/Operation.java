@@ -18,8 +18,8 @@ public abstract class Operation<C extends IContext, F extends IFeature> {
 	
 	protected abstract F createFeature(C context);
 	
-	public void execute() {
+	public Object execute() {
 		F feature = createFeature(context);
-		diagramTypeProvider.getDiagramEditor().executeFeature(feature, context);
+		return diagramTypeProvider.getDiagramEditor().executeFeature(feature, context);
 	}
 }

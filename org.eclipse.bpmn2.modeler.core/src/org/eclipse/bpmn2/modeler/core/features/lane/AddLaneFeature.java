@@ -61,7 +61,7 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature<Lane> {
 		boolean intoLane = FeatureSupport.isTargetLane(context);
 		boolean intoParticipant = FeatureSupport.isTargetParticipant(context);
 		boolean intoSubprocess = FeatureSupport.isTargetSubProcess(context);
-		return isLane && (intoDiagram || intoLane || intoParticipant || intoSubprocess);
+		return isLane && !intoDiagram && !intoSubprocess && (intoLane || intoParticipant);
 	}
 
 	@Override

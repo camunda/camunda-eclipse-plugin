@@ -86,6 +86,11 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
 		Shape participantShape = Util.findShapeByBusinessObjectId(diagram, "_Participant_3");
 
+		// assume
+		// taks shape is part of participant
+		assertThat(taskShape)
+			.isContainedIn(participantShape);
+		
 		// when 
 		// trying to move the task shape
 		move(taskShape, diagramTypeProvider)
@@ -98,8 +103,6 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		// (movement not allowed)
 		assertThat(participantShape)
 			.hasChild(taskShape);
-		
-		Fail.fail("WHY IS THIS WORKING?");
 	}
 	
 	@Test

@@ -248,13 +248,14 @@ public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 		}
 
 		@Override
-		public boolean canApplyTo(IMoveShapeContext context) {
-			return isSourceParticipant(context);
+		public boolean isMoveAllowed(Object source, Object target) {
+			return false;
 		}
-
+		
 		@Override
-		public void move(FlowNode node, Object source, Object target) {
-			// DO NOTHING HERE
+		public boolean canApplyTo(IMoveShapeContext context) {
+			return context.getSourceContainer() != context.getTargetContainer() && 
+				   isSourceParticipant(context);
 		}
 	}
 

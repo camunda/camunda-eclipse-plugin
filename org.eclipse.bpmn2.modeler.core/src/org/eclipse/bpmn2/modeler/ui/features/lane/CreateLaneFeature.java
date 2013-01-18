@@ -40,8 +40,9 @@ public class CreateLaneFeature extends AbstractBpmn2CreateFeature<Lane> {
 		boolean intoDiagram = context.getTargetContainer().equals(getDiagram());
 		boolean intoLane = FeatureSupport.isTargetLane(context);
 		boolean intoParticipant = FeatureSupport.isTargetParticipant(context);
-		boolean intoSubProcess = FeatureSupport.isTargetSubProcess(context);
-		return intoDiagram || intoLane || intoParticipant || intoSubProcess;
+		boolean intoSubprocess = FeatureSupport.isTargetSubProcess(context);
+		
+		return !intoDiagram && !intoSubprocess && (intoLane || intoParticipant);
 	}
 
 	@Override
