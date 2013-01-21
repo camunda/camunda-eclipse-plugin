@@ -161,8 +161,8 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 			new ScriptTaskPropertiesBuilder(parent, section, (ScriptTask) task).create();
 		} else
 		
-		if (task instanceof ServiceTask) {
-			new ServiceTaskPropertiesBuilder(parent, section, (ServiceTask) task).create();
+		if (task instanceof ServiceTask || task instanceof BusinessRuleTask) {
+			new ServiceTaskPropertiesBuilder(parent, section, task).create();
 		}
 	}
 	
