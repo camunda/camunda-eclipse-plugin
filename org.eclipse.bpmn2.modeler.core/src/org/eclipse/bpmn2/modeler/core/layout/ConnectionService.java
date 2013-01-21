@@ -14,6 +14,8 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
  */
 public class ConnectionService {
 
+	public static final String RECONNECT_AFTER_MOVE = "ConnectionService.RECONNECT_AFTER_MOVE";
+
 	public static void reconnectShapeAfterMove(PictogramElement shape) {
 		new BpmnElementReconnectionContext().reconnect(shape);
 	}

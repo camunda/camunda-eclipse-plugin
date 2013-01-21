@@ -27,6 +27,8 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 
+	public static final String MOVE_BENDPOINTS = "DefaultMoveBPMNShapeFeature.MOVE_BENDPOINTS";
+	
 	int preShapeX;
 	int preShapeY;
 
@@ -34,6 +36,13 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 		super(fp);
 	}
 
+	@Override
+	protected void moveAllBendpoints(IMoveShapeContext context) {
+		if (isMoveBendpoints(context)) {
+			super.moveAllBendpoints(context);
+		}
+	}
+	
 	@Override
 	protected void preMoveShape(IMoveShapeContext context) {
 		super.preMoveShape(context);
@@ -56,11 +65,40 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 
 		// move label after the shape has been moved
 		moveLabel(shape, sourceContainer, targetContainer, bpmnShape);
-
-		ConnectionService.reconnectShapeAfterMove(shape);
-
+		
+		if (isReconnectShapeAfterMove(context)) {
+			ConnectionService.reconnectShapeAfterMove(shape);
+		}
+		
 		// update di
 		DIUtils.updateDIShape(shape, bpmnShape);
+	}
+
+	private boolean isReconnectShapeAfterMove(IMoveShapeContext context) {
+		// contexts may disable reconnect by
+		// setting ConnectionService.RECONNECT_AFTER_MOVE to false
+		
+		Object prop = context.getProperty(ConnectionService.RECONNECT_AFTER_MOVE);
+		if (prop != null) {
+			return Boolean.parseBoolean(prop.toString());
+		}
+		
+		// assume reconnect per default
+		return true;
+	}
+	
+	private boolean isMoveBendpoints(IMoveShapeContext context) {
+		
+		// contexts may disable automatic moving of bendpoints by 
+		// setting DefaultMoveBPMNShapeFeature.MOVE_BENDPOINTS to false
+		
+		Object prop = context.getProperty(DefaultMoveBPMNShapeFeature.MOVE_BENDPOINTS);
+		if (prop != null) {
+			return Boolean.parseBoolean(prop.toString());
+		}
+		
+		// assume move bendpoints per default
+		return true;
 	}
 
 	private void moveLabel(PictogramElement shape, ContainerShape sourceContainer, ContainerShape targetContainer,

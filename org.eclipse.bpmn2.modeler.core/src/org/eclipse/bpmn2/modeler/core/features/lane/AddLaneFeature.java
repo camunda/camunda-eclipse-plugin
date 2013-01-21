@@ -13,8 +13,10 @@
 package org.eclipse.bpmn2.modeler.core.features.lane;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.Lane;
@@ -25,17 +27,26 @@ import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.layout.ConnectionService;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
+import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.ITargetContext;
+import org.eclipse.graphiti.features.context.impl.MoveContext;
+import org.eclipse.graphiti.features.context.impl.MoveShapeContext;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.algorithms.styles.Orientation;
+import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -153,7 +164,56 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature<Lane> {
 			peService.sendToBack(context.getTargetContainer());
 		}
 		
+		compensateShapeMovements(containerShape);
+		
 		return containerShape;
+	}
+
+	private void compensateShapeMovements(ContainerShape shape) {
+		
+		ContainerShape parentShape = shape.getContainer();
+
+		IRectangle shapeBounds = LayoutUtil.getAbsoluteBounds(shape);
+		IRectangle parentShapeBounds = LayoutUtil.getAbsoluteBounds(parentShape);
+		
+		Point boundsDiff = point(parentShapeBounds.getX() - shapeBounds.getX(), parentShapeBounds.getY() - shapeBounds.getY());
+		
+		List<Shape> containedShapes = new ArrayList<Shape>(shape.getChildren());
+		
+		for (PictogramElement e: containedShapes) {
+			if (e instanceof ContainerShape) {
+				ContainerShape c = (ContainerShape) e;
+				
+				IRectangle cBounds = LayoutUtil.getRelativeBounds(c);
+				
+				MoveShapeContext moveCtx = new MoveShapeContext(c);
+				
+				// container
+				moveCtx.setTargetContainer(c.getContainer());
+				moveCtx.setSourceContainer(c.getContainer());
+				
+				// delta
+				moveCtx.setDeltaX(boundsDiff.getX());
+				moveCtx.setDeltaY(boundsDiff.getY());
+				
+				// relative coordinates
+				moveCtx.setX(cBounds.getX() + boundsDiff.getX());
+				moveCtx.setY(cBounds.getY() + boundsDiff.getY());
+				
+				IMoveShapeFeature moveShapeFeature = getFeatureProvider().getMoveShapeFeature(moveCtx);
+				
+				// need to execute can move shape first, 
+				// to initialize the move feature with the correct
+				if (moveShapeFeature.canMoveShape(moveCtx)) {
+
+					moveCtx.putProperty(ConnectionService.RECONNECT_AFTER_MOVE, false);
+					moveCtx.putProperty(DefaultMoveBPMNShapeFeature.MOVE_BENDPOINTS, false);
+					
+					// execute move
+					moveShapeFeature.execute(moveCtx);
+				}
+			}
+		}
 	}
 
 	private void moveFlowNodes(Process targetProcess, Lane lane) {
