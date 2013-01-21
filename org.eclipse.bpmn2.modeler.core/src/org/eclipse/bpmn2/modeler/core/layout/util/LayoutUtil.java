@@ -548,6 +548,13 @@ public class LayoutUtil {
 		
 		return Sector.fromBooleans(left, right, above, beneath);
 	}
+
+	public static IRectangle getRelativeBounds(Shape shape) {
+		GraphicsAlgorithm algorithm = shape.getGraphicsAlgorithm();
+		ILocation position = location(algorithm.getX(), algorithm.getY());
+		
+		return rectangle(position.getX(), position.getY(), algorithm.getWidth(), algorithm.getHeight());
+	}
 	
 	public static IRectangle getAbsoluteBounds(Shape shape) {
 		ILocation position = getLocation(shape);

@@ -485,6 +485,10 @@ public class ModelImport {
 		
 		// TODO: Draw lane the right way
 		DiagramElement diagramElement = getDiagramElement(lane);
+		if (diagramElement == null) {
+			return;
+		}
+		
 		ContainerShape thisContainer = (ContainerShape) shapeHandler.handleDiagramElement(lane, diagramElement, container);
 		pictogramElements.put(lane, thisContainer);
 		
