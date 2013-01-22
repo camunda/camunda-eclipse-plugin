@@ -46,7 +46,7 @@ public class MoveParticipantFeature extends DefaultMoveBPMNShapeFeature {
 	protected void postMoveShape(IMoveShapeContext context) {
 		super.postMoveShape(context);
 		
-		reconnectMessageFlows(context);
+		moveChildren(context);
 		
 		if (ChoreographyUtil.isChoreographyParticipantBand(context.getShape())) {
 			ContainerShape container = context.getTargetContainer();
@@ -124,7 +124,7 @@ public class MoveParticipantFeature extends DefaultMoveBPMNShapeFeature {
 		}
 	}
 
-	private void reconnectMessageFlows(IMoveShapeContext context) {
+	private void moveChildren(IMoveShapeContext context) {
 		ContainerShape participantShape = (ContainerShape) context.getShape();
 		
 		TreeIterator<EObject> allSubShapes = participantShape.eAllContents();

@@ -38,6 +38,7 @@ public class MoveActivityFeature extends MoveFlowNodeFeature {
 	@Override
 	protected void postMoveShape(final IMoveShapeContext context) {
 		super.postMoveShape(context);
+		
 		PictogramElement containerShape = context.getPictogramElement();
 		Activity activity = BusinessObjectUtil.getFirstElementOfType(containerShape, Activity.class);
 		Graphiti.getPeService().sendToFront(context.getShape());

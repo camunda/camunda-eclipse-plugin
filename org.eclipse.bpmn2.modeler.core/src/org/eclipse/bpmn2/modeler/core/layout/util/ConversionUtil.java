@@ -48,6 +48,11 @@ public class ConversionUtil {
 		return p;
 	}
 
+	@SuppressWarnings("restriction")
+	public static IRectangle rect(int x, int y, int width, int height) {
+		return new RectangleImpl(x, y, width, height);
+	}
+	
 	public static Point point(ILocation l) {
 		return point(l.getX(), l.getY());
 	}

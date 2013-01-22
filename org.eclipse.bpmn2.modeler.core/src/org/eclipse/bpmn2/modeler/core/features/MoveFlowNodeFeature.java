@@ -23,8 +23,10 @@ import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -73,17 +75,24 @@ public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 
 	@Override
 	protected void postMoveShape(IMoveShapeContext context) {
+		ModelHandler modelHandler;
+		
 		try {
-			ModelHandler handler = ModelHandler.getInstance(getDiagram());
-			Object[] node = getAllBusinessObjectsForPictogramElement(context.getShape());
-			for (Object object : node) {
-				if (object instanceof FlowNode && !algorithmContainer.isEmpty()) {
-					algorithmContainer.move(((FlowNode) object), getSourceBo(context, handler),
-							getTargetBo(context, handler));
-				}
-			}
+			modelHandler = ModelHandler.getInstance(getDiagram());
 		} catch (Exception e) {
 			throw new IllegalStateException("Failed to execute post move", e);
+		}
+
+		Shape shape = context.getShape();
+		FlowNode flowNode = BusinessObjectUtil.getFirstElementOfType(shape, FlowNode.class);
+		
+		Assert.isNotNull(flowNode);
+		
+		if (!algorithmContainer.isEmpty()) {
+			algorithmContainer.move(
+				flowNode, 
+				getSourceBo(context, modelHandler),
+				getTargetBo(context, modelHandler));
 		}
 		
 		super.postMoveShape(context);

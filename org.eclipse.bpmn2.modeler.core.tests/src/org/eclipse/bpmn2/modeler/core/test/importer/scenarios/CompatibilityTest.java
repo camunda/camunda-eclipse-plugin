@@ -39,7 +39,7 @@ public class CompatibilityTest extends AbstractImportBpmnModelTest {
 		importer.execute();
 		
 		Shape event = Util.findShapeByBusinessObjectId(diagram, "StartEvent_2");
-		Shape label = GraphicsUtil.getLabel(event, diagram);
+		Shape label = GraphicsUtil.getLabelShape(event, diagram);
 		
 		// when moving a bpmn element with a label and no bounds attached
 		// there should be no null pointer exception

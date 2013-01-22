@@ -23,7 +23,7 @@ public class MoveLabelFeatureTest extends AbstractFeatureTest {
 		
 		ContainerShape targetLaneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Lane_3");
 		
-		Shape labelShape = GraphicsUtil.getLabel(gatewayShape, getDiagram());
+		Shape labelShape = GraphicsUtil.getLabelShape(gatewayShape, getDiagram());
 		
 		// when moving label to target container
 		move(labelShape, diagramTypeProvider)
@@ -44,7 +44,7 @@ public class MoveLabelFeatureTest extends AbstractFeatureTest {
 		Shape gatewayShape = Util.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
 		ContainerShape preMoveLaneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Lane_6");
 		
-		Shape labelShape = GraphicsUtil.getLabel(gatewayShape, getDiagram());
+		Shape labelShape = GraphicsUtil.getLabelShape(gatewayShape, getDiagram());
 		
 		// when moving label to target container
 		move(labelShape, diagramTypeProvider)

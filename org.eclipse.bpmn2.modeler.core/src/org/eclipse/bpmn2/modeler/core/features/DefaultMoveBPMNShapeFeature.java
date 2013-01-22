@@ -12,24 +12,26 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features;
 
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.layout.ConnectionService;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.features.impl.DefaultMoveShapeFeature;
 import org.eclipse.graphiti.mm.algorithms.AbstractText;
+import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 
-	int preShapeX;
-	int preShapeY;
-
+	private Point oldShapePosition = null;
+	
 	public DefaultMoveBPMNShapeFeature(IFeatureProvider fp) {
 		super(fp);
 	}
@@ -37,25 +39,21 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 	@Override
 	protected void preMoveShape(IMoveShapeContext context) {
 		super.preMoveShape(context);
-		preShapeX = 0;
-		preShapeX = 0;
 
 		if (context.getShape().getGraphicsAlgorithm() != null) {
-			preShapeX = context.getShape().getGraphicsAlgorithm().getX();
-			preShapeY = context.getShape().getGraphicsAlgorithm().getY();
+			oldShapePosition = point(
+				context.getShape().getGraphicsAlgorithm().getX(), 
+				context.getShape().getGraphicsAlgorithm().getY());
 		}
 	}
 
 	@Override
 	protected void postMoveShape(IMoveShapeContext context) {
-		PictogramElement shape = context.getPictogramElement();
+		Shape shape = (Shape) context.getPictogramElement();
 		BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(shape, BPMNShape.class);
-
-		ContainerShape sourceContainer = context.getSourceContainer();
-		ContainerShape targetContainer = context.getTargetContainer();
-
+		
 		// move label after the shape has been moved
-		moveLabel(shape, sourceContainer, targetContainer, bpmnShape);
+		moveLabel(shape, bpmnShape);
 
 		ConnectionService.reconnectShapeAfterMove(shape);
 
@@ -63,40 +61,37 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 		DIUtils.updateDIShape(shape, bpmnShape);
 	}
 
-	private void moveLabel(PictogramElement shape, ContainerShape sourceContainer, ContainerShape targetContainer,
-			BPMNShape bpmnShape) {
+	private void moveLabel(Shape s, BPMNShape bpmnShape) {
 
+		ContainerShape shape = (ContainerShape) s;
+		
 		if (bpmnShape == null) {
 			throw new IllegalArgumentException("Argument bpmnShape must not be null");
 		}
 
-		Shape label = GraphicsUtil.getLabel((Shape) shape, getDiagram());
-
+		ContainerShape label = GraphicsUtil.getLabelShape(shape, getDiagram());
+		
 		// no label, no work to do
 		if (label == null) {
 			return;
 		}
 
-		ContainerShape containerShape = (ContainerShape) shape;
-
 		// align shape and label if the label
 		// lies outside the shape
 		if (shape != label) {
-			containerShape = (ContainerShape) label;
-
+			AbstractText text = GraphicsUtil.getLabelShapeText(label);
+			
+			IRectangle shapeBounds = LayoutUtil.getRelativeBounds(shape);
+			
 			// only align when not selected, the move feature of the label will
 			// do the job when selected
-			GraphicsUtil.alignWithShape((AbstractText) containerShape.getChildren().get(0).getGraphicsAlgorithm(),
-					containerShape, shape.getGraphicsAlgorithm().getWidth(), shape.getGraphicsAlgorithm().getHeight(),
-					shape.getGraphicsAlgorithm().getX(), shape.getGraphicsAlgorithm().getY(), preShapeX, preShapeY);
-
-			// adjust label container if the connected shapes container changed
-			if (sourceContainer != targetContainer) {
-				sourceContainer.getChildren().remove(label);
-				targetContainer.getChildren().add((Shape) label);
-			}
+			GraphicsUtil.alignWithShape(text, label, shapeBounds.getWidth(), shapeBounds.getHeight(),
+					point(shapeBounds), oldShapePosition);
+			
+			// do not adjust label container 
+			// (labels always on top)
 		}
-
-		DIUtils.updateDILabel(containerShape, bpmnShape);
+		
+		DIUtils.updateDILabel(label, bpmnShape);
 	}
 }

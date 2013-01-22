@@ -20,7 +20,7 @@ import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.ui.diagram.BPMNFeatureProvider;
+import org.eclipse.bpmn2.modeler.ui.diagram.BPMN2FeatureProvider;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeature;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -42,7 +42,7 @@ public class PropertiesLabelProvider extends LabelProvider {
         DiagramEditor editor = ModelUtil.getEditor( be );
         
         if (editor!=null) {
-		    BPMNFeatureProvider fp = (BPMNFeatureProvider)editor.getDiagramTypeProvider().getFeatureProvider();
+		    BPMN2FeatureProvider fp = (BPMN2FeatureProvider)editor.getDiagramTypeProvider().getFeatureProvider();
 			PictogramElement pe = BusinessObjectUtil.getPictogramElementForSelection((ISelection)element);
 		    IFeature cf = fp.getCreateFeatureForPictogramElement(pe);
 			if (cf instanceof AbstractBpmn2CreateFeature) {

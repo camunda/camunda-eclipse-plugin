@@ -20,6 +20,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.rect;
+
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.ChoreographyActivity;
 import org.eclipse.bpmn2.ChoreographyLoopType;
@@ -281,7 +283,10 @@ public class ChoreographyUtil implements ChoreographyProperties {
 			int w = size.getWidth();
 			int h = multiple ? 40 : 20;
 
-			BPMNShape bpmnShape = DIUtils.createDIShape(bandShape, participant, 0, y + h, w, h, fp, diagram);
+			BPMNShape bpmnShape = DIUtils.createDIShape(participant, rect(0, y + h, w, h), diagram);
+			
+			fp.link(bandShape, new Object[] { participant, bpmnShape });
+			
 			bpmnShape.setChoreographyActivityShape(BusinessObjectUtil.getFirstElementOfType(choreographyContainer,
 					BPMNShape.class));
 			bpmnShape.setIsMarkerVisible(multiple);

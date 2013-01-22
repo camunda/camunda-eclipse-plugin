@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.ui.diagram;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.bpmn2.modeler.core.features.IBpmn2AddFeature;
@@ -72,7 +73,7 @@ import org.eclipse.graphiti.tb.ImageDecorator;
 
 public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implements IFeatureCheckerHolder {
 
-	BPMNFeatureProvider featureProvider;
+	BPMN2FeatureProvider featureProvider;
 	
 	public BpmnToolBehaviourFeature(IDiagramTypeProvider diagramTypeProvider) {
 		super(diagramTypeProvider);
@@ -88,7 +89,7 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 		List<IPaletteCompartmentEntry> palette = new ArrayList<IPaletteCompartmentEntry>();
 
 		if (object!=null) {
-			featureProvider = (BPMNFeatureProvider)getFeatureProvider();
+			featureProvider = (BPMN2FeatureProvider)getFeatureProvider();
 
 			// add compartments from super class
 			createConnectors(palette);
@@ -360,45 +361,45 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
     public IDecorator[] getDecorators(PictogramElement pe) {
         List<IDecorator> decorators = new ArrayList<IDecorator>();
 
-        // labels should not be decorated
-		String labelProperty = Graphiti.getPeService().getPropertyValue(pe, GraphicsUtil.LABEL_PROPERTY);
-		if (!Boolean.parseBoolean(labelProperty)) {
-	        IFeatureProvider featureProvider = getFeatureProvider();
-	        Object bo = featureProvider.getBusinessObjectForPictogramElement(pe);
-	        if (bo!=null) {
-		        ValidationStatusAdapter statusAdapter = (ValidationStatusAdapter) EcoreUtil.getRegisteredAdapter((EObject) bo,
-		                ValidationStatusAdapter.class);
-		        if (statusAdapter != null) {
-		            final IImageDecorator decorator;
-		            final IStatus status = statusAdapter.getValidationStatus();
-		            switch (status.getSeverity()) {
-		            case IStatus.INFO:
-		                decorator = new ImageDecorator(IPlatformImageConstants.IMG_ECLIPSE_INFORMATION_TSK);
-		                break;
-		            case IStatus.WARNING:
-		                decorator = new ImageDecorator(IPlatformImageConstants.IMG_ECLIPSE_WARNING_TSK);
-		                break;
-		            case IStatus.ERROR:
-		                decorator = new ImageDecorator(IPlatformImageConstants.IMG_ECLIPSE_ERROR_TSK);
-		                break;
-		            default:
-		                decorator = null;
-		                break;
-		            }
-		            if (decorator != null) {
-		                GraphicsAlgorithm ga = getSelectionBorder(pe);
-		                if (ga == null) {
-		                    ga = pe.getGraphicsAlgorithm();
-		                }
-		                decorator.setX(-5);
-		                decorator.setY(-5);
-		                decorator.setMessage(status.getMessage());
-		                decorators.add(decorator);
-		            }
-		        }
-	        }
+		if (GraphicsUtil.isLabel(pe)) {
+			return new IDecorator[0];
 		}
 		
-        return decorators.toArray(new IDecorator[decorators.size()]);
+        IFeatureProvider featureProvider = getFeatureProvider();
+        Object bo = featureProvider.getBusinessObjectForPictogramElement(pe);
+        if (bo!=null) {
+	        ValidationStatusAdapter statusAdapter = (ValidationStatusAdapter) EcoreUtil.getRegisteredAdapter((EObject) bo,
+	                ValidationStatusAdapter.class);
+	        if (statusAdapter != null) {
+	            final IImageDecorator decorator;
+	            final IStatus status = statusAdapter.getValidationStatus();
+	            switch (status.getSeverity()) {
+	            case IStatus.INFO:
+	                decorator = new ImageDecorator(IPlatformImageConstants.IMG_ECLIPSE_INFORMATION_TSK);
+	                break;
+	            case IStatus.WARNING:
+	                decorator = new ImageDecorator(IPlatformImageConstants.IMG_ECLIPSE_WARNING_TSK);
+	                break;
+	            case IStatus.ERROR:
+	                decorator = new ImageDecorator(IPlatformImageConstants.IMG_ECLIPSE_ERROR_TSK);
+	                break;
+	            default:
+	                decorator = null;
+	                break;
+	            }
+	            if (decorator != null) {
+	                GraphicsAlgorithm ga = getSelectionBorder(pe);
+	                if (ga == null) {
+	                    ga = pe.getGraphicsAlgorithm();
+	                }
+	                decorator.setX(-5);
+	                decorator.setY(-5);
+	                decorator.setMessage(status.getMessage());
+	                decorators.add(decorator);
+	            }
+	        }
+        }
+		
+        return decorators.toArray(new IDecorator[0]);
     }
 }

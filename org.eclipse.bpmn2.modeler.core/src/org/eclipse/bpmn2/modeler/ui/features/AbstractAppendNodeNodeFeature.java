@@ -34,7 +34,7 @@ import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
-import org.eclipse.bpmn2.modeler.ui.diagram.BPMNFeatureProvider;
+import org.eclipse.bpmn2.modeler.ui.diagram.BPMN2FeatureProvider;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
@@ -204,7 +204,7 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 		int width = ga.getWidth();
 		int height = ga.getHeight();
 		
-		BPMNFeatureProvider fp = (BPMNFeatureProvider) getFeatureProvider();
+		BPMN2FeatureProvider fp = (BPMN2FeatureProvider) getFeatureProvider();
 		AbstractCreateFeature createFeature = (AbstractCreateFeature) fp.getCreateFeatureForBusinessObject(newType.getInstanceClass());
 		
 		CreateContext createContext = new CreateContext();

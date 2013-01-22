@@ -31,6 +31,7 @@ import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractCreateFlowFeature;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
@@ -85,83 +86,18 @@ public abstract class AbstractAddBPMNShapeFeature<T extends BaseElement>
 	}
 
 	protected BPMNShape createDIShape(Shape shape, BaseElement elem, BPMNShape bpmnShape, boolean applyDefaults) {
-		ILocation loc = Graphiti.getLayoutService().getLocationRelativeToDiagram(shape);
 		if (bpmnShape == null) {
-			int x = loc.getX();
-			int y = loc.getY();
-			int w = shape.getGraphicsAlgorithm().getWidth();
-			int h = shape.getGraphicsAlgorithm().getHeight();
-			bpmnShape = DIUtils.createDIShape(shape, elem, x, y, w, h, getFeatureProvider(), getDiagram());
+			IRectangle bounds = LayoutUtil.getAbsoluteBounds(shape);
+			bpmnShape = DIUtils.createDIShape(elem, bounds, getDiagram());
 		}
-		else {
-			link(shape, new Object[] { elem, bpmnShape });
-		}
-		if (applyDefaults)
+		
+		link(shape, new Object[] { elem, bpmnShape });
+		
+		if (applyDefaults) {
 			Bpmn2Preferences.getInstance(bpmnShape.eResource()).applyBPMNDIDefaults(bpmnShape, null);
+		}
+		
 		return bpmnShape;
-	}
-
-	protected BPMNEdge createDIEdge(Connection connection, BaseElement conElement) {
-		try {
-			BPMNEdge edge = (BPMNEdge) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(conElement);
-			return createDIEdge(connection, conElement, edge);
-		} catch (IOException e) {
-			Activator.logError(e);
-		}
-		return null;
-	}
-
-	// TODO: move this to DIUtils
-	protected BPMNEdge createDIEdge(Connection connection, BaseElement conElement, BPMNEdge edge) throws IOException {
-		ModelHandler modelHandler = ModelHandlerLocator.getModelHandler(getDiagram().eResource());
-		if (edge == null) {
-			EList<EObject> businessObjects = Graphiti.getLinkService().getLinkForPictogramElement(getDiagram())
-					.getBusinessObjects();
-			for (EObject eObject : businessObjects) {
-				if (eObject instanceof BPMNDiagram) {
-					BPMNDiagram bpmnDiagram = (BPMNDiagram) eObject;
-
-					edge = BpmnDiFactory.eINSTANCE.createBPMNEdge();
-//					edge.setId(EcoreUtil.generateUUID());
-					edge.setBpmnElement(conElement);
-
-					if (conElement instanceof Association) {
-						edge.setSourceElement(modelHandler.findDIElement(
-								((Association) conElement).getSourceRef()));
-						edge.setTargetElement(modelHandler.findDIElement(
-								((Association) conElement).getTargetRef()));
-					} else if (conElement instanceof MessageFlow) {
-						edge.setSourceElement(modelHandler.findDIElement(
-								(BaseElement) ((MessageFlow) conElement).getSourceRef()));
-						edge.setTargetElement(modelHandler.findDIElement(
-								(BaseElement) ((MessageFlow) conElement).getTargetRef()));
-					} else if (conElement instanceof SequenceFlow) {
-						edge.setSourceElement(modelHandler.findDIElement(
-								((SequenceFlow) conElement).getSourceRef()));
-						edge.setTargetElement(modelHandler.findDIElement(
-								((SequenceFlow) conElement).getTargetRef()));
-					}
-
-					ILocation sourceLoc = Graphiti.getPeService().getLocationRelativeToDiagram(connection.getStart());
-					ILocation targetLoc = Graphiti.getPeService().getLocationRelativeToDiagram(connection.getEnd());
-
-					Point point = DcFactory.eINSTANCE.createPoint();
-					point.setX(sourceLoc.getX());
-					point.setY(sourceLoc.getY());
-					edge.getWaypoint().add(point);
-
-					point = DcFactory.eINSTANCE.createPoint();
-					point.setX(targetLoc.getX());
-					point.setY(targetLoc.getY());
-					edge.getWaypoint().add(point);
-
-					DIUtils.addShape(edge, bpmnDiagram);
-					ModelUtil.setID(edge);
-				}
-			}
-		}
-		link(connection, new Object[] { conElement, edge });
-		return edge;
 	}
 	
 	protected void prepareAddContext(IAddContext context, int width, int height) {

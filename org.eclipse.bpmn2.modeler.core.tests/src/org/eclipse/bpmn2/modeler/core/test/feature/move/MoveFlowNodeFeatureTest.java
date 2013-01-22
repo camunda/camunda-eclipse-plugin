@@ -123,7 +123,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(eventShape)
 			.isContainedIn(targetLaneShape);
 		
-		Shape labelShape = GraphicsUtil.getLabel(eventShape, getDiagram());
+		Shape labelShape = GraphicsUtil.getLabelShape(eventShape, getDiagram());
 		
 		assertThat(labelShape).isContainedIn(targetLaneShape);
 	}
@@ -171,7 +171,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(eventShape)
 			.isContainedIn(targetLaneShape);
 		
-		Shape labelShape = GraphicsUtil.getLabel(eventShape, getDiagram());
+		Shape labelShape = GraphicsUtil.getLabelShape(eventShape, getDiagram());
 		
 		assertThat(labelShape).isContainedIn(targetLaneShape);
 	}
@@ -195,7 +195,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 			.isContainedIn(targetLaneShape);
 		
 		
-		Shape labelShape = GraphicsUtil.getLabel(gatewayShape, getDiagram());
+		Shape labelShape = GraphicsUtil.getLabelShape(gatewayShape, getDiagram());
 		
 		assertThat(labelShape).isContainedIn(targetLaneShape);
 	}
@@ -210,7 +210,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		ContainerShape preMoveLaneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Lane_6");
 		ContainerShape targetParticipantShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "_Participant_2");
 		
-		Shape labelShape = GraphicsUtil.getLabel(gatewayShape, getDiagram());
+		Shape labelShape = GraphicsUtil.getLabelShape(gatewayShape, getDiagram());
 		
 		// when gateway event to sibling lane
 		move(gatewayShape, diagramTypeProvider)
@@ -246,7 +246,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(boundaryEventShape)
 			.isContainedIn(targetLaneShape);
 		
-		Shape labelShape = GraphicsUtil.getLabel(boundaryEventShape, getDiagram());
+		Shape labelShape = GraphicsUtil.getLabelShape(boundaryEventShape, getDiagram());
 		
 		assertThat(labelShape).isContainedIn(targetLaneShape);
 	}

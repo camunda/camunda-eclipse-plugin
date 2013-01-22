@@ -78,18 +78,18 @@ public class UpdateBaseElementNameFeature extends AbstractUpdateFeature {
 	@Override
 	public boolean update(IUpdateContext context) {
 		PictogramElement pe = (PictogramElement) context.getPictogramElement();
-		BaseElement element = (BaseElement) BusinessObjectUtil.getFirstElementOfType(context.getPictogramElement(),
-		        BaseElement.class);
+		BaseElement element = (BaseElement) BusinessObjectUtil.getFirstElementOfType(pe, BaseElement.class);
+		
 		Shape textShape = getChildElementOfType(pe, TEXT_ELEMENT, Boolean.toString(true), Shape.class);
-		if (textShape!=null) {
+		if (textShape != null) {
 			AbstractText text = (AbstractText) textShape.getGraphicsAlgorithm();
 			String name = ModelUtil.getName(element);
 			if (name == null) {
 				name = "";
 			}
+			
 			text.setValue(name);
 			layoutPictogramElement(context.getPictogramElement());
-
 		}
 
 		if (pe instanceof ContainerShape) {
