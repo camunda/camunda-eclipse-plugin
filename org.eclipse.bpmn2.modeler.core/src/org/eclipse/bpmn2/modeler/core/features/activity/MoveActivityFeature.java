@@ -12,7 +12,10 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features.activity;
 
+import java.util.List;
+
 import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.features.MoveFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractBoundaryEventOperation;
@@ -24,6 +27,7 @@ import org.eclipse.graphiti.features.context.impl.MoveShapeContext;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 
 public class MoveActivityFeature extends MoveFlowNodeFeature {
@@ -40,12 +44,25 @@ public class MoveActivityFeature extends MoveFlowNodeFeature {
 		super.postMoveShape(context);
 		
 		PictogramElement containerShape = context.getPictogramElement();
-		Activity activity = BusinessObjectUtil.getFirstElementOfType(containerShape, Activity.class);
 		Graphiti.getPeService().sendToFront(context.getShape());
+		
+		moveBoundaryEvents(context);
+		
+		if (containerShape.eContainer() instanceof ContainerShape) {
+			PictogramElement pe = (PictogramElement) containerShape.eContainer();
+			if (BusinessObjectUtil.containsElementOfType(pe, SubProcess.class)) {
+				layoutPictogramElement(pe);
+			}
+		}
+	}
+
+	private void moveBoundaryEvents(final IMoveShapeContext context) {
+
+		Shape activityShape = (Shape) context.getPictogramElement();
 		
 		new AbstractBoundaryEventOperation() {
 			@Override
-			protected void doWorkInternal(ContainerShape container) {
+			protected void applyTo(ContainerShape container) {
 				GraphicsAlgorithm ga = container.getGraphicsAlgorithm();
 
 				MoveShapeContext newContext = new MoveShapeContext(container);
@@ -62,13 +79,6 @@ public class MoveActivityFeature extends MoveFlowNodeFeature {
 					moveFeature.moveShape(newContext);
 				}
 			}
-		}.doWork(activity, getDiagram());
-		
-		if (containerShape.eContainer() instanceof ContainerShape) {
-			PictogramElement pe = (PictogramElement) containerShape.eContainer();
-			if (BusinessObjectUtil.containsElementOfType(pe, SubProcess.class)) {
-				layoutPictogramElement(pe);
-			}
-		}
+		}.execute(activityShape, context.getSourceContainer());
 	}
 }

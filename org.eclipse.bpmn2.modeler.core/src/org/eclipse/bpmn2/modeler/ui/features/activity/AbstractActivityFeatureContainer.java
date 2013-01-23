@@ -32,6 +32,8 @@ import org.eclipse.graphiti.features.context.IDeleteContext;
 import org.eclipse.graphiti.features.context.impl.DeleteContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public abstract class AbstractActivityFeatureContainer extends BaseElementFeatureContainer {
 
@@ -62,15 +64,16 @@ public abstract class AbstractActivityFeatureContainer extends BaseElementFeatur
 		return new AbstractDefaultDeleteFeature(fp) {
 			@Override
 			public void delete(final IDeleteContext context) {
-				Activity activity = BusinessObjectUtil.getFirstElementOfType(context.getPictogramElement(),
-						Activity.class);
+				Shape shape = (Shape) context.getPictogramElement();
+				
 				new AbstractBoundaryEventOperation() {
 					@Override
-					protected void doWorkInternal(ContainerShape container) {
+					protected void applyTo(ContainerShape container) {
 						IDeleteContext delete = new DeleteContext(container);
 						getFeatureProvider().getDeleteFeature(delete).delete(delete);
 					}
-				}.doWork(activity, getDiagram());
+				}.execute(shape);
+				
 				super.delete(context);
 			}
 		};

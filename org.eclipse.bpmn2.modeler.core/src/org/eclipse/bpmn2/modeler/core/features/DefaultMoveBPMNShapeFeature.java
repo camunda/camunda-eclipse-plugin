@@ -13,12 +13,21 @@
 package org.eclipse.bpmn2.modeler.core.features;
 
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
+
+import java.util.Iterator;
+
+import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Lane;
+import org.eclipse.bpmn2.Participant;
+import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNShape;
+import org.eclipse.bpmn2.modeler.core.IConstants;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.layout.ConnectionService;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
@@ -26,11 +35,14 @@ import org.eclipse.graphiti.features.impl.DefaultMoveShapeFeature;
 import org.eclipse.graphiti.mm.algorithms.AbstractText;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 
-	private Point oldShapePosition = null;
+	public static final String SKIP_MOVE_LABEL = "DefaultMoveBPMNShapeFeature.SKIP_MOVE_LABEL";
+	
+	private Point preMovePosition = null;
 	
 	public DefaultMoveBPMNShapeFeature(IFeatureProvider fp) {
 		super(fp);
@@ -40,30 +52,60 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 	protected void preMoveShape(IMoveShapeContext context) {
 		super.preMoveShape(context);
 
-		if (context.getShape().getGraphicsAlgorithm() != null) {
-			oldShapePosition = point(
-				context.getShape().getGraphicsAlgorithm().getX(), 
-				context.getShape().getGraphicsAlgorithm().getY());
-		}
+		Shape shape = context.getShape();
+		
+		preMovePosition = point(LayoutUtil.getAbsoluteBounds(shape));
 	}
 
 	@Override
 	protected void postMoveShape(IMoveShapeContext context) {
 		Shape shape = (Shape) context.getPictogramElement();
+		
 		BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(shape, BPMNShape.class);
 		
-		// move label after the shape has been moved
-		moveLabel(shape, bpmnShape);
-
+		Point movementDiff = getMovementDiff(shape);
+		
+		if (isBpmnContainer(shape)) {
+			moveChildren(context, movementDiff);
+		}
+		
+		if (isMoveLabel(context)) {
+			// move label after the shape has been moved
+			moveLabel(shape, bpmnShape, movementDiff);
+		}
+		
 		ConnectionService.reconnectShapeAfterMove(shape);
 
 		// update di
 		DIUtils.updateDIShape(shape, bpmnShape);
 	}
 
-	private void moveLabel(Shape s, BPMNShape bpmnShape) {
+	private boolean isMoveLabel(IMoveShapeContext context) {
+		return context.getProperty(DefaultMoveBPMNShapeFeature.SKIP_MOVE_LABEL) == null;
+	}
 
-		ContainerShape shape = (ContainerShape) s;
+	/**
+	 * Return true if the shape represents a bpmn container
+	 * 
+	 * @param shape
+	 * @return
+	 */
+	private boolean isBpmnContainer(Shape shape) {
+		BaseElement baseElement = BusinessObjectUtil.getFirstElementOfType(shape, BaseElement.class);
+		
+		return 
+				baseElement instanceof Participant ||
+				baseElement instanceof Lane ||
+				baseElement instanceof SubProcess;
+	}
+
+	private Point getMovementDiff(Shape shape) {
+		IRectangle newBounds = LayoutUtil.getAbsoluteBounds(shape);
+		
+		return point(newBounds.getX() - preMovePosition.getX(), newBounds.getY() - preMovePosition.getY());
+	}
+
+	protected void moveLabel(Shape shape, BPMNShape bpmnShape, Point movementDiff) {
 		
 		if (bpmnShape == null) {
 			throw new IllegalArgumentException("Argument bpmnShape must not be null");
@@ -81,17 +123,74 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 		if (shape != label) {
 			AbstractText text = GraphicsUtil.getLabelShapeText(label);
 			
-			IRectangle shapeBounds = LayoutUtil.getRelativeBounds(shape);
+			IRectangle shapeBounds = LayoutUtil.getAbsoluteBounds(shape);
+			
+			// reconstruct pre movement position from shape bounds (post move) and diff
+			Point preMovePos = point(shapeBounds.getX() - movementDiff.getX(), shapeBounds.getY() - movementDiff.getY());
 			
 			// only align when not selected, the move feature of the label will
 			// do the job when selected
-			GraphicsUtil.alignWithShape(text, label, shapeBounds.getWidth(), shapeBounds.getHeight(),
-					point(shapeBounds), oldShapePosition);
+			if (!isEditorSelection(label)) {
+				GraphicsUtil.alignWithShape(text, label, shapeBounds.getWidth(), shapeBounds.getHeight(),
+						point(shapeBounds), preMovePos);
+				
+				DIUtils.updateDILabel(label, bpmnShape);
+			}
 			
 			// do not adjust label container 
 			// (labels always on top)
 		}
+	}
+
+	/**
+	 * Propagate move to children
+	 * 
+	 * @param context
+	 * @param movementDiff 
+	 */
+	private void moveChildren(IMoveShapeContext context, Point movementDiff) {
+		ContainerShape containerShape = (ContainerShape) context.getShape();
 		
-		DIUtils.updateDILabel(label, bpmnShape);
+		Iterator<EObject> allSubShapes = containerShape.eAllContents();
+		
+		while (allSubShapes.hasNext()) {
+			EObject s = allSubShapes.next();
+			
+			if (s instanceof Shape) {
+				Shape shape = (Shape) s;
+				
+				BaseElement baseElement = BusinessObjectUtil.getFirstElementOfType(shape, BaseElement.class);
+				BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(shape, BPMNShape.class);
+				
+				if (baseElement != null) {
+					// reconnect shape
+					ConnectionService.reconnectShapeAfterMove(shape);
+					
+					if (bpmnShape != null) {
+						// move label
+						moveLabel(shape, bpmnShape, movementDiff);
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Returns true if the given shape is currently selected in the editor
+	 * 
+	 * @param shape
+	 * @return
+	 */
+	private boolean isEditorSelection(ContainerShape shape) {
+		
+		PictogramElement[] selection = getDiagramEditor().getSelectedPictogramElements();
+		
+		for (PictogramElement e: selection) {
+			if (e == shape) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }

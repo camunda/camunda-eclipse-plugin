@@ -57,7 +57,7 @@ public abstract class AbstractCreateFlowElementFeature<T extends FlowElement> ex
 			handler.addFlowElement(getBusinessObjectForPictogramElement(context.getTargetContainer()), element);
 		} catch (IOException e) {
 			Activator.logError(e);
-		}
+		} 
 		if (context.getProperty(OPTION_DONT_ADD) == null) {
 			addGraphicalRepresentation(context, element);
 		}

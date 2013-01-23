@@ -81,7 +81,7 @@ public class AddParticipantFeature extends AbstractAddBPMNShapeFeature<Participa
 		StyleUtil.applyStyle(text, participant);
 		text.setVerticalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
-		link(textShape, participant);
+		link(textShape, new Object[] { participant, bpmnShape });
 
 		peService.setPropertyValue(containerShape, MULTIPLICITY, Boolean.toString(participant.getParticipantMultiplicity()!=null));
 		

@@ -51,5 +51,8 @@ public class ShapeAssert extends AbstractShapeAssert<ShapeAssert, Shape>{
 		return failNoContainerShape();
 	}
 	
-	
+	@Override
+	public AbstractShapeAssert<ShapeAssert, Shape> hasContainerShapeChildCount(int count) {
+		return failNoContainerShape();
+	}
 }

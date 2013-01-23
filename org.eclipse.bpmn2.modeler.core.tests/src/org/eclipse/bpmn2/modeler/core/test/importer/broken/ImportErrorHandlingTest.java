@@ -10,10 +10,11 @@
 
 package org.eclipse.bpmn2.modeler.core.test.importer.broken;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.modeler.core.importer.ImportException;
 import org.eclipse.bpmn2.modeler.core.importer.InvalidContentException;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
@@ -21,7 +22,11 @@ import org.eclipse.bpmn2.modeler.core.importer.ResourceImportException;
 import org.eclipse.bpmn2.modeler.core.importer.UnmappedElementException;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmnModelTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.Shape;
+import org.fest.assertions.core.Condition;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -69,11 +74,22 @@ public class ImportErrorHandlingTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testMissingDiForParticipant() throws Exception {
+		
+		// when importing the stuff
 		ModelImport importer = createModelImport();
 		importer.execute();
 		
-		assertEquals(11, importer.getImportWarnings().size()); // Participant Error + 5 * 2 Referenced Elements in flows
-		assertThat(((ContainerShape) diagram.getChildren().get(0)).getChildren()).hasSize(7);
+		// then
+		// we have 11 warnings
+		assertThat(importer.getImportWarnings()).hasSize(11); 
+		
+		EList<Shape> children = diagram.getChildren();
+		assertThat(children).isNotEmpty();
+		
+		Shape s = children.get(0);
+		assertThat(s)
+			.isLinkedTo(PARTICIPANT)
+			.hasContainerShapeChildCount(3);
 	}
 	
 	/**
@@ -127,4 +143,12 @@ public class ImportErrorHandlingTest extends AbstractImportBpmnModelTest {
 		
 		assertThat(message).doesNotContain("Unhandled exception occured");
 	}
+	
+	private static Condition<EObject> PARTICIPANT = new Condition<EObject>() {
+		
+		@Override
+		public boolean matches(EObject value) {
+			return value instanceof Participant;
+		}
+	};
 }

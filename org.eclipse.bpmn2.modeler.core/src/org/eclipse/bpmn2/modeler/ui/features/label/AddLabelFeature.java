@@ -63,7 +63,7 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		IRectangle containerBounds = LayoutUtil.getAbsoluteBounds(container);
 		
 		int x = context.getX() + containerBounds.getX();
-		int y = context.getY() +  containerBounds.getY();
+		int y = context.getY() + containerBounds.getY();
 		
 		Diagram diagram = getDiagram();
 		
@@ -80,6 +80,7 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		peService.setPropertyValue(textShape, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
 		String name = ModelUtil.getDisplayName(baseElement);
 		MultiText text = gaService.createDefaultMultiText(diagram, textShape, name);
+
 		StyleUtil.applyStyle(text, baseElement);
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setVerticalAlignment(Orientation.ALIGNMENT_TOP);

@@ -41,6 +41,9 @@ public class MoveBoundaryEventFeature extends MoveFlowNodeFeature {
 
 	@Override
 	protected void preMoveShape(IMoveShapeContext context) {
+		
+		super.preMoveShape(context);
+		
 		ContainerShape targetContainer = context.getTargetContainer();
 		Activity activity = BusinessObjectUtil.getFirstElementOfType(targetContainer, Activity.class);
 		Object property = context.getProperty(MoveActivityFeature.ACTIVITY_MOVE_PROPERTY);
@@ -76,7 +79,7 @@ public class MoveBoundaryEventFeature extends MoveFlowNodeFeature {
 		BoundaryEvent event = (BoundaryEvent) context.getShape().getLink().getBusinessObjects().get(0);
 		List<PictogramElement> activityPictogramElements = Graphiti.getLinkService().getPictogramElements(getDiagram(), event.getAttachedToRef());
 		for (PictogramElement activityElement : activityPictogramElements) {
-			if (!singleSelection && ModelUtil.isElementSelected(getDiagramEditor().getSelectedPictogramElements(), activityElement)){
+			if (!singleSelection && ModelUtil.isElementSelected(getDiagramEditor().getSelectedPictogramElements(), activityElement)) {
 				if (!ModelUtil.isElementSelected(getDiagramEditor().getSelectedPictogramElements(), context.getPictogramElement())) {
 					context.putProperty(MoveActivityFeature.SELECTION_MOVE_PROPERTY, false);
 					context.putProperty(MoveActivityFeature.ACTIVITY_MOVE_PROPERTY, true);
@@ -118,14 +121,13 @@ public class MoveBoundaryEventFeature extends MoveFlowNodeFeature {
 			BoundaryEvent event = BusinessObjectUtil.getFirstElementOfType(containerShape, BoundaryEvent.class);
 			PictogramElement activityContainer = BusinessObjectUtil.getFirstBaseElementFromDiagram(getDiagram(),
 					event.getAttachedToRef());
-			PositionOnLine newPos = BoundaryEventPositionHelper.getPositionOnLineUsingAbsoluteCoordinates(
+			PositionOnLine newPos = BoundaryEventPositionHelper.getPositionOnlineUsingAbsoluteCoordinates(
 					containerShape, (Shape) activityContainer);
 			BoundaryEventPositionHelper.assignPositionOnLineProperty(containerShape, newPos);
 			Graphiti.getPeService().sendToBack((Shape) activityContainer);
 		}
 		
 		Graphiti.getPeService().sendToFront(context.getShape());
-		
 		
 		super.postMoveShape(context);
 	}

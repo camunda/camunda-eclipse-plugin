@@ -27,7 +27,9 @@ public class ImportMessageFlowTest extends AbstractImportBpmnModelTest {
 		importer.execute();
 		
 		EList<Shape> children = diagram.getChildren();
-		Assert.assertEquals(2, children.size());
+		
+		// two elements + label
+		Assert.assertEquals(3, children.size());
 		
 		// Two container shapes (process pools)
 		// One element per shape (user task / intermediate catching event
@@ -57,7 +59,9 @@ public class ImportMessageFlowTest extends AbstractImportBpmnModelTest {
 		importer.execute();
 		
 		EList<Shape> children = diagram.getChildren();
-		Assert.assertEquals(2, children.size());
+		
+		// two elements + label
+		Assert.assertEquals(3, children.size());
 		
 		// Two container shapes (process pools)
 		// One element per shape (user task / intermediate catching event

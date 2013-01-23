@@ -15,22 +15,17 @@ import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.junit.Test;
 
-public class MoveLabelFeatureTest extends AbstractFeatureTest {
+public class MoveSubProcessFeatureTest extends AbstractFeatureTest {
 
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveFlowNodeFeature.testMoveBetweenLanes.bpmn")
-	public void testMoveLabelToOtherContainerNotAllowed() {
+	public void testMoveLabelToOtherContainerWorks() {
 
 		// given
 		Shape gatewayShape = Util.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
 
-		ContainerShape sourceLaneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Lane_6");
 		ContainerShape targetLaneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Lane_3");
 		Shape labelShape = GraphicsUtil.getLabelShape(gatewayShape, getDiagram());
-		
-		IRectangle preMoveLabelBounds = LayoutUtil.getAbsoluteBounds(labelShape);
-		
-		Point lanesPosDiff = getShapesPosDiff(sourceLaneShape, targetLaneShape);
 		
 		// assume
 		// label is on diagram
@@ -40,14 +35,13 @@ public class MoveLabelFeatureTest extends AbstractFeatureTest {
 		// moving label to target container
 		move(labelShape, diagramTypeProvider)
 			.toContainer(targetLaneShape)
-			.by(0, 0)
+			.by(30, 30)
 			.execute();
 		
 		// then 
 		// label should have been moved
 		assertThat(labelShape)
-			.isContainedIn(diagram)
-			.movedBy(lanesPosDiff, preMoveLabelBounds);
+			.isContainedIn(diagram);
 	}
 
 	@Test
@@ -108,6 +102,6 @@ public class MoveLabelFeatureTest extends AbstractFeatureTest {
 		IRectangle b1 = LayoutUtil.getAbsoluteBounds(shape1);
 		IRectangle b2 = LayoutUtil.getAbsoluteBounds(shape2);
 		
-		return point(b2.getX() - b1.getX(), b2.getY() - b1.getY());
+		return point(b1.getX() - b2.getX(), b1.getY() - b2.getY());
 	}
 }

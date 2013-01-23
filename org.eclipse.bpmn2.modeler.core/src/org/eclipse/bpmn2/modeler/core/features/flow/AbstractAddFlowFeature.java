@@ -26,6 +26,7 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
+import org.eclipse.dd.dc.Bounds;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IMoveConnectionDecoratorFeature;
@@ -106,7 +107,7 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement>
 			BPMNLabel bpmnLabel = bpmnEdge.getLabel();
 			
 			// move after link if bpmnLabel is given
-			if (bpmnLabel != null) {
+			if (bpmnLabel != null && bpmnLabel.getBounds() != null) {
 				IRectangle decoratorBounds = LayoutUtil.getAbsoluteBounds(labelDecorator);
 
 				int x = (int) bpmnLabel.getBounds().getX() - decoratorBounds.getX();
