@@ -37,6 +37,7 @@ import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
+import org.eclipse.graphiti.services.Graphiti;
 
 public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 
@@ -60,7 +61,9 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 	@Override
 	protected void postMoveShape(IMoveShapeContext context) {
 		Shape shape = (Shape) context.getPictogramElement();
-		
+
+		GraphicsUtil.sendToFront(shape);
+				
 		BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(shape, BPMNShape.class);
 		
 		Point movementDiff = getMovementDiff(shape);
@@ -73,7 +76,7 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 			// move label after the shape has been moved
 			moveLabel(shape, bpmnShape, movementDiff);
 		}
-		
+
 		ConnectionService.reconnectShapeAfterMove(shape);
 
 		// update di
@@ -133,6 +136,8 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 			if (!isEditorSelection(label)) {
 				GraphicsUtil.alignWithShape(text, label, shapeBounds.getWidth(), shapeBounds.getHeight(),
 						point(shapeBounds), preMovePos);
+				
+				GraphicsUtil.sendToFront(label);
 				
 				DIUtils.updateDILabel(label, bpmnShape);
 			}

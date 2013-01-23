@@ -1300,4 +1300,12 @@ public class GraphicsUtil {
 	public static Color clone(Color c) {
 		return c;
 	}
+
+	/**
+	 * Sends the given element to the front
+	 * @param shape
+	 */
+	public static void sendToFront(Shape shape) {
+		Graphiti.getPeService().sendToFront(shape);
+	}
 }
