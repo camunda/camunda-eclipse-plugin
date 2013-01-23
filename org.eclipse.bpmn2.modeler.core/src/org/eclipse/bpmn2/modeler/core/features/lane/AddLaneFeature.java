@@ -83,8 +83,11 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature<Lane> {
 		IGaService gaService = Graphiti.getGaService();
 		IPeService peService = Graphiti.getPeService();
 
-		ContainerShape containerShape = peCreateService.createContainerShape(context.getTargetContainer(), true);
+		ContainerShape targetContainer = context.getTargetContainer();
+		
+		ContainerShape containerShape = peCreateService.createContainerShape(targetContainer, true);
 		Rectangle rect = gaService.createRectangle(containerShape);
+		
 		StyleUtil.applyStyle(rect, lane);
 		
 		boolean isImport = context.getProperty(DIUtils.IMPORT_PROPERTY) != null;
@@ -134,7 +137,7 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature<Lane> {
 					}
 				}
 			}
-			containerShape.setContainer(context.getTargetContainer());
+			containerShape.setContainer(targetContainer);
 		}
 		
 		Shape textShape = peCreateService.createShape(containerShape, false);
@@ -156,12 +159,12 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature<Lane> {
 
 		if (context.getProperty(DIUtils.IMPORT_PROPERTY) == null
 				&& (FeatureSupport.isTargetLane(context) || FeatureSupport.isTargetParticipant(context))) {
-			FeatureSupport.redraw(context.getTargetContainer());
+			FeatureSupport.redraw(targetContainer);
 		}
 		
 		peService.sendToBack(containerShape);
-		if (context.getTargetContainer().getContainer() != null) { // only children may be sent back
-			peService.sendToBack(context.getTargetContainer());
+		if (targetContainer.getContainer() != null) { // only children may be sent back
+			peService.sendToBack(targetContainer);
 		}
 		
 		compensateShapeMovements(containerShape);
@@ -300,7 +303,7 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature<Lane> {
 			if (context.getTargetContainer() instanceof Diagram) {
 				return getWidth();
 			}
-			int width = context.getTargetContainer().getGraphicsAlgorithm().getWidth();
+			int width = context.getTargetContainer().getGraphicsAlgorithm().getWidth() - 30;
 			
 			Bounds bounds = getPreviousBounds(context);
 			if (bounds != null) {
