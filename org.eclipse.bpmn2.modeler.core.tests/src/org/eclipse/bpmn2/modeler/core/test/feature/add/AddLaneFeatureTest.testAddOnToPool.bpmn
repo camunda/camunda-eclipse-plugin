@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions targetNamespace="http://activiti.org/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="_PEIccGCXEeKPjP_0W1PTOA">
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="_PEIccGCXEeKPjP_0W1PTOA" targetNamespace="http://activiti.org/bpmn">
   <bpmn2:collaboration id="_Collaboration_5">
     <bpmn2:participant id="_Participant_5" name="Pool " processRef="Process_1"/>
   </bpmn2:collaboration>
@@ -11,6 +11,7 @@
     <bpmn2:task id="Task_2" name="Task 2">
       <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
     </bpmn2:task>
+    <bpmn2:startEvent id="StartEvent_1" name="Start Event 1"/>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="_Collaboration_5">
@@ -29,6 +30,12 @@
         <di:waypoint xsi:type="dc:Point" x="450.0" y="256.0"/>
         <di:waypoint xsi:type="dc:Point" x="510.0" y="256.0"/>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_4" bpmnElement="StartEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="700.0" y="150.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="81.0" x="678.0" y="188.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>

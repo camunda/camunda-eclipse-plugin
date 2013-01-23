@@ -56,7 +56,7 @@ public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 		try {
 			ModelHandler handler = ModelHandler.getInstance(getDiagram());
 
-			algorithmContainer = getAlgorithmContainer(context);
+			AlgorithmContainer algorithmContainer = getAlgorithmContainer(context);
 
 			if (algorithmContainer.isEmpty()) {
 				return onMoveAlgorithmNotFound(context);
@@ -72,6 +72,14 @@ public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 		return super.canMoveShape(context);
 	}
 
+	@Override
+	protected void preMoveShape(IMoveShapeContext context) {
+		super.preMoveShape(context);
+		
+		// init algorithm container for move operation
+		this.algorithmContainer = getAlgorithmContainer(context);
+	}
+	
 	@Override
 	protected void postMoveShape(IMoveShapeContext context) {
 		ModelHandler modelHandler;

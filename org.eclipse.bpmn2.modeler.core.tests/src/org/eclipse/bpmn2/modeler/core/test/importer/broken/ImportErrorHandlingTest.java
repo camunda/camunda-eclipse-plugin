@@ -11,9 +11,11 @@
 package org.eclipse.bpmn2.modeler.core.test.importer.broken;
 
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
+import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.elementOfType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.bpmn2.Group;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.modeler.core.importer.ImportException;
 import org.eclipse.bpmn2.modeler.core.importer.InvalidContentException;
@@ -88,7 +90,7 @@ public class ImportErrorHandlingTest extends AbstractImportBpmnModelTest {
 		
 		Shape s = children.get(0);
 		assertThat(s)
-			.isLinkedTo(PARTICIPANT)
+			.isLinkedTo(elementOfType(Participant.class))
 			.hasContainerShapeChildCount(3);
 	}
 	
@@ -143,12 +145,4 @@ public class ImportErrorHandlingTest extends AbstractImportBpmnModelTest {
 		
 		assertThat(message).doesNotContain("Unhandled exception occured");
 	}
-	
-	private static Condition<EObject> PARTICIPANT = new Condition<EObject>() {
-		
-		@Override
-		public boolean matches(EObject value) {
-			return value instanceof Participant;
-		}
-	};
 }

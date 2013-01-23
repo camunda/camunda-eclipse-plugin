@@ -21,12 +21,12 @@ import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.bpmn2.modeler.core.IConstants;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.layout.ConnectionService;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -37,18 +37,28 @@ import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
-import org.eclipse.graphiti.services.Graphiti;
+
+import static org.eclipse.bpmn2.modeler.core.utils.ContextUtil.*;
 
 public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 
 	public static final String SKIP_MOVE_LABEL = "DefaultMoveBPMNShapeFeature.SKIP_MOVE_LABEL";
+	public static final String SKIP_MOVE_BENDPOINTS = "DefaultMoveBPMNShapeFeature.SKIP_MOVE_BENDPOINTS";
+	public static final Object SKIP_RECONNECT_AFTER_MOVE = "DefaultMoveBPMNShapeFeature.SKIP_RECONNECT_AFTER_MOVE";
 	
 	private Point preMovePosition = null;
-	
+
 	public DefaultMoveBPMNShapeFeature(IFeatureProvider fp) {
 		super(fp);
 	}
 
+	@Override
+	protected void moveAllBendpoints(IMoveShapeContext context) {
+		if (isMoveBendpoints(context)) {
+			super.moveAllBendpoints(context);
+		}
+	}
+	
 	@Override
 	protected void preMoveShape(IMoveShapeContext context) {
 		super.preMoveShape(context);
@@ -76,15 +86,13 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 			// move label after the shape has been moved
 			moveLabel(shape, bpmnShape, movementDiff);
 		}
-
-		ConnectionService.reconnectShapeAfterMove(shape);
-
+		
+		if (isReconnectShapeAfterMove(context)) {
+			ConnectionService.reconnectShapeAfterMove(shape);
+		}
+		
 		// update di
 		DIUtils.updateDIShape(shape, bpmnShape);
-	}
-
-	private boolean isMoveLabel(IMoveShapeContext context) {
-		return context.getProperty(DefaultMoveBPMNShapeFeature.SKIP_MOVE_LABEL) == null;
 	}
 
 	/**
@@ -101,8 +109,29 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 				baseElement instanceof Lane ||
 				baseElement instanceof SubProcess;
 	}
+	
+	private boolean isReconnectShapeAfterMove(IMoveShapeContext context) {
+		// contexts may disable reconnect by
+		// setting DefaultMoveBPMNShapeFeature.SKIP_RECONNECT_AFTER_MOVE
+		
+		return !is(context, SKIP_RECONNECT_AFTER_MOVE);
+	}
+	
+	private boolean isMoveBendpoints(IMoveShapeContext context) {
+		
+		// contexts may disable automatic moving of bendpoints by 
+		// setting DefaultMoveBPMNShapeFeature.SKIP_MOVE_BENDPOINTs
+		
+		return !is(context, SKIP_MOVE_BENDPOINTS);
+	}
 
+	private boolean isMoveLabel(IMoveShapeContext context) {
+		return !is(context, SKIP_MOVE_LABEL);
+	}
+	
 	private Point getMovementDiff(Shape shape) {
+		Assert.isNotNull(preMovePosition);
+		
 		IRectangle newBounds = LayoutUtil.getAbsoluteBounds(shape);
 		
 		return point(newBounds.getX() - preMovePosition.getX(), newBounds.getY() - preMovePosition.getY());

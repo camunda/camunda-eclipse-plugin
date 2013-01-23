@@ -41,7 +41,6 @@ public class MoveBoundaryEventFeature extends MoveFlowNodeFeature {
 
 	@Override
 	protected void preMoveShape(IMoveShapeContext context) {
-		
 		super.preMoveShape(context);
 		
 		ContainerShape targetContainer = context.getTargetContainer();

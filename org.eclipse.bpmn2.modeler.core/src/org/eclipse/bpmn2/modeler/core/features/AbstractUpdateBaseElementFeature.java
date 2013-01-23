@@ -37,7 +37,7 @@ public abstract class AbstractUpdateBaseElementFeature extends AbstractUpdateFea
 			if (shapeValue==null)
 				shapeValue = "";
 			String businessValue = FeatureSupport.getBusinessValue(context);
-			if (businessValue==null)
+			if (businessValue == null)
 				businessValue = "";
 	
 			boolean updateNeeded = !shapeValue.equals(businessValue);
