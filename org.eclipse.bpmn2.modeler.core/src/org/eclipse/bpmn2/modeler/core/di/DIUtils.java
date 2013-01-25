@@ -77,6 +77,10 @@ public class DIUtils {
 		return BusinessObjectUtil.getFirstElementOfType(element, BPMNShape.class);
 	}
 	
+	public static BPMNEdge getEdge(PictogramElement element) {
+		return BusinessObjectUtil.getFirstElementOfType(element, BPMNEdge.class);
+	}
+	
 	public static void updateDIShape(PictogramElement element) {
 		updateDIShape(element, getShape(element));
 	}
