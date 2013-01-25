@@ -59,12 +59,12 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 		EList<Shape> children = diagram.getChildren();
 		
 		// then
-		// diagram should have 2 participants and 2 labels
+		// diagram should have 2 participants and 2 flow element labels and 4 sequence flow labels 
 		assertThat(diagram)
-			.hasContainerShapeChildCount(4);
+			.hasContainerShapeChildCount(7);
 		
 		Shape pool1 = children.get(0);
-		Shape pool2 = children.get(3);
+		Shape pool2 = children.get(6);
 
 		assertThat(pool1)
 			.isContainerShape()
@@ -114,9 +114,9 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 		EList<Shape> children = diagram.getChildren();
 		
 		// then
-		// diagram should have 2 participants and 3 labels
+		// diagram should have 2 participants and 3 labels and 5 sequence flow labels
 		assertThat(diagram)
-			.hasContainerShapeChildCount(5);
+			.hasContainerShapeChildCount(10);
 		
 		ContainerShape pool1 = (ContainerShape) children.get(0);
 		assertThat(pool1.getChildren()).hasSize(3);
@@ -131,9 +131,9 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 		// Unreferenced nodes are supposed to be drawn on the participant
 		
 		// then
-		// diagram should have 2 participants and 3 labels
+		// diagram should have 2 participants and 3 labels and 5 sequence flow labels
 		assertThat(diagram)
-			.hasContainerShapeChildCount(5);
+			.hasContainerShapeChildCount(10);
 
 		// Assert that unreferenced flow nodes are in the diagram
 		assertThat(StringUtil.toDetailsString(diagram))
@@ -158,9 +158,9 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 		importer.execute();
 
 		// then
-		// diagram should have 2 participants and 3 labels
+		// diagram should have 2 participants and 3 labels and 3 sequence flow labels
 		assertThat(diagram)
-			.hasContainerShapeChildCount(5);
+			.hasContainerShapeChildCount(8);
 	}
 
 	@Test
@@ -170,9 +170,9 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 		importer.execute();
 
 		// then
-		// diagram should have 2 participants and 3 labels
+		// diagram should have 2 participants and 3 labels and 5 sequence flow labels
 		assertThat(diagram)
-			.hasContainerShapeChildCount(5);
+			.hasContainerShapeChildCount(8);
 		
 		// Assert that unreferenced flow nodes are in the diagram
 		assertThat(StringUtil.toDetailsString(diagram))
