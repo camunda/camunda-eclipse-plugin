@@ -143,6 +143,19 @@ public class DIUtils {
 		return Graphiti.getPeService().getPropertyValue(element, GraphicsUtil.LABEL_PROPERTY) != null;
 	}
 	
+	public static void updateDILabel(Shape labelShape) {
+		BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(labelShape, BPMNShape.class);
+		if (bpmnShape != null) {
+			updateDILabel(labelShape, bpmnShape);
+		}
+		
+		BPMNEdge bpmnEdge = BusinessObjectUtil.getFirstElementOfType(labelShape, BPMNEdge.class);
+		if (bpmnEdge != null) {
+			updateDILabel(labelShape, bpmnEdge);
+		}
+	}
+		
+	
 	public static void updateDILabel(Shape label, BPMNEdge bpmnEdge) {
 		Bounds bpmnLabelBounds = null;
 		BPMNLabel bpmnLabel = null;

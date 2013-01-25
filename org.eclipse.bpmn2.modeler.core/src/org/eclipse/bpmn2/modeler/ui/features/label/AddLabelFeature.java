@@ -5,6 +5,7 @@ import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.FlowElementsContainer;
+import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNLabel;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
@@ -18,6 +19,7 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
@@ -57,7 +59,7 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		int height = (Integer) context.getProperty(ContextConstants.HEIGHT);
 		
 		BaseElement baseElement = (BaseElement) context.getProperty(ContextConstants.BUSINESS_OBJECT);
-		BPMNShape bpmnShape = (BPMNShape) ModelHandler.findDIElement(baseElement);
+		DiagramElement bpmnShape = ModelHandler.findDIElement(baseElement);
 		
 		ContainerShape container = context.getTargetContainer();
 		IRectangle containerBounds = LayoutUtil.getAbsoluteBounds(container);
@@ -67,7 +69,7 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		
 		Diagram diagram = getDiagram();
 		
-		boolean customPosition = false;
+		boolean customPosition = context.getProperty(ContextConstants.CUSTOM_POSITION) == null ? false : (boolean) context.getProperty(ContextConstants.CUSTOM_POSITION) ;
 		
 		// bpmn shape must exist
 		Assert.isNotNull(bpmnShape);
@@ -88,10 +90,9 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		peService.sendToFront(textContainerShape);
 		
 		link(textContainerShape, new Object[] { baseElement, bpmnShape });
-		
 		updatePictogramElement(textContainerShape);
 		
-		BPMNLabel bpmnLabel = bpmnShape.getLabel();
+		BPMNLabel bpmnLabel = geBpmnLabel(bpmnShape);
 		
 		if (bpmnLabel != null && bpmnLabel.getBounds() != null) {
 		  x = (int) bpmnLabel.getBounds().getX();
@@ -99,7 +100,8 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		  
 		  // we got actual coordinates from DI
 		  customPosition = true;
-		} else
+		} 
+		else
 		if (!isImport(context)) {
 			// Boundary events get a different add context, 
 			// so use the context coordinates relative
@@ -125,6 +127,17 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		return textContainerShape;
 	}
 	
+	private BPMNLabel geBpmnLabel(DiagramElement diagramElement) {
+		if (diagramElement instanceof BPMNShape) {
+			return ((BPMNShape) diagramElement).getLabel();
+		}
+		
+		if (diagramElement instanceof BPMNEdge) {
+			return ((BPMNEdge) diagramElement).getLabel();
+		}
+		return null;
+	}
+
 	private boolean isImport(IAddContext context) {
 		return context.getProperty(DIUtils.IMPORT_PROPERTY) == null ? false : (Boolean) context.getProperty(DIUtils.IMPORT_PROPERTY);
 	}

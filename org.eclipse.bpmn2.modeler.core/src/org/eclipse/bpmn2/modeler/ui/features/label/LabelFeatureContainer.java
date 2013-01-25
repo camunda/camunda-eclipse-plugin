@@ -12,6 +12,7 @@ import org.eclipse.bpmn2.DataStoreReference;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.Message;
+import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
@@ -55,7 +56,7 @@ public class LabelFeatureContainer implements FeatureContainer {
 		} else if (context instanceof IPictogramElementContext) {
 			IPictogramElementContext peContext = (IPictogramElementContext) context;
 			BaseElement o = BusinessObjectUtil.getFirstElementOfType(peContext.getPictogramElement(), BaseElement.class);
-			if (o != null && (o instanceof Gateway || o instanceof Event || o instanceof DataObject || o instanceof DataInput || o instanceof DataOutput)) {
+			if (o != null && (o instanceof Gateway || o instanceof Event || o instanceof DataObject || o instanceof DataInput || o instanceof DataOutput || o instanceof SequenceFlow)) {
 				if (peContext.getPictogramElement() instanceof ContainerShape) {
 					ContainerShape container = (ContainerShape) peContext.getPictogramElement();
 					if (container.getChildren().size() == 1) {
@@ -81,7 +82,8 @@ public class LabelFeatureContainer implements FeatureContainer {
 				o instanceof DataObject ||
 				o instanceof DataObjectReference ||
 				o instanceof DataStore ||
-				o instanceof DataStoreReference;
+				o instanceof DataStoreReference ||
+				o instanceof SequenceFlow;
 	}
 
 	@Override
@@ -175,12 +177,9 @@ public class LabelFeatureContainer implements FeatureContainer {
 		@Override
 		protected void postMoveShape(IMoveShapeContext context) {
 			super.postMoveShape(context);
-			
 			Shape labelShape = context.getShape();
 			
-			BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(labelShape, BPMNShape.class);
-			
-			DIUtils.updateDILabel((ContainerShape) labelShape, bpmnShape);
+			DIUtils.updateDILabel((ContainerShape) labelShape);
 		}
 	}
 }
