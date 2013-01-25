@@ -58,37 +58,32 @@ public class MoveFromDiagramToParticipantFeature extends MoveLaneFeature {
 	}
 
 	private void modifyModelStructure(IMoveShapeContext context) {
-		try {
-			Participant targetParticipant = (Participant) getBusinessObjectForPictogramElement(context
-					.getTargetContainer());
-			ModelHandler handler = ModelHandler.getInstance(getDiagram());
-			Lane movedLane = getMovedLane(context);
-			handler.moveLane(movedLane, targetParticipant);
-			Participant internalParticipant = handler.getParticipant(getDiagram());
-			LaneSet laneSet = null;
-			for (LaneSet set : internalParticipant.getProcessRef().getLaneSets()) {
-				if (set.getLanes().contains(movedLane)) {
-					laneSet = set;
-					break;
-				}
+		Participant targetParticipant = (Participant) getBusinessObjectForPictogramElement(context
+				.getTargetContainer());
+		ModelHandler handler = ModelHandler.getInstance(getDiagram());
+		Lane movedLane = getMovedLane(context);
+		handler.moveLane(movedLane, targetParticipant);
+		Participant internalParticipant = handler.getParticipant(getDiagram());
+		LaneSet laneSet = null;
+		for (LaneSet set : internalParticipant.getProcessRef().getLaneSets()) {
+			if (set.getLanes().contains(movedLane)) {
+				laneSet = set;
+				break;
 			}
-			if (laneSet != null) {
-				laneSet.getLanes().remove(movedLane);
-				if (laneSet.getLanes().isEmpty()) {
-					internalParticipant.getProcessRef().getLaneSets().remove(laneSet);
-				}
+		}
+		if (laneSet != null) {
+			laneSet.getLanes().remove(movedLane);
+			if (laneSet.getLanes().isEmpty()) {
+				internalParticipant.getProcessRef().getLaneSets().remove(laneSet);
+			}
 
-				Process process = targetParticipant.getProcessRef();
-				if (process.getLaneSets().isEmpty()) {
-					LaneSet claneSet = Bpmn2ModelerFactory.create(LaneSet.class);
-//					claneSet.setId(EcoreUtil.generateUUID());
-					process.getLaneSets().add(claneSet);
-					ModelUtil.setID(claneSet);
-				}
-				process.getLaneSets().get(0).getLanes().add(movedLane);
+			Process process = targetParticipant.getProcessRef();
+			if (process.getLaneSets().isEmpty()) {
+				LaneSet claneSet = Bpmn2ModelerFactory.create(LaneSet.class);
+				process.getLaneSets().add(claneSet);
+				ModelUtil.setID(claneSet);
 			}
-		} catch (IOException e) {
-			Activator.logError(e);
+			process.getLaneSets().get(0).getLanes().add(movedLane);
 		}
 	}
 }

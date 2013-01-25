@@ -91,10 +91,11 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public class ModelHandler {
 
-	Bpmn2ResourceImpl resource;
-	Bpmn2Preferences prefs;
+	private Bpmn2ResourceImpl resource;
+	private Bpmn2Preferences prefs;
 	
-	ModelHandler() {
+	ModelHandler(Bpmn2ResourceImpl resource) {
+		this.resource = resource;
 	}
 
 	void createDefinitionsIfMissing() {
@@ -120,7 +121,7 @@ public class ModelHandler {
 	}
 
 	public Bpmn2Preferences getPreferences() {
-		if (prefs==null)
+		if (prefs == null)
 			prefs = Bpmn2Preferences.getInstance(resource);
 		return prefs;
 	}
@@ -429,11 +430,6 @@ public class ModelHandler {
 		}
 		return bpmnDiagram;
 	}
-	
-	
-	public static ModelHandler getInstance(EObject object) throws IOException {
-		return ModelHandlerLocator.getModelHandler(object.eResource());
-	}
 
 	/**
 	 * @param <T>
@@ -721,26 +717,49 @@ public class ModelHandler {
 		return collaboration;
 	}
 	
-	private Collaboration getParticipantContainer(BPMNDiagram bpmnDiagram) {
-		if (bpmnDiagram==null) {
+	private static Collaboration getParticipantContainer(BPMNDiagram bpmnDiagram) {
+
+		if (bpmnDiagram == null) {
 			// return the first Collaboration or Choreography in the model hierarchy
-			List<RootElement> rootElements = getDefinitions(resource).getRootElements();
+
+			Definitions definitions = getDefinitions(bpmnDiagram);
+			List<RootElement> rootElements = definitions.getRootElements();
+			
 			for (RootElement element : rootElements) {
 				// yeah, Collaboration and Choreography are both instanceof Collaboration...
-				if (element instanceof Collaboration || element instanceof Choreography) {
+				if (element instanceof Collaboration) {
 					return (Collaboration)element;
 				}
 			}
-		}
-		else {
+		} else {
 			BaseElement be = bpmnDiagram.getPlane().getBpmnElement();
-			if (be instanceof Collaboration || be instanceof Choreography) {
+			if (be instanceof Collaboration) {
 				return (Collaboration)be;
 			}
 		}
+		
 		return null;
 	}
-	
+
+	/**
+	 * Returns the {@link Definitions} object for a element.
+	 * 
+	 * @param element
+	 * @return
+	 */
+	private static Definitions getDefinitions(EObject element) {
+		if (element instanceof Definitions) {
+			return (Definitions) element;
+		} else {
+			EObject parent = element.eContainer();
+			if (parent == null) {
+				throw new IllegalArgumentException("Argument <" + element + "> has no parent");
+			} else {
+				return getDefinitions(parent);
+			}
+		}
+	}
+
 	public Choreography createChoreography() {
 		Choreography choreography = create(Choreography.class);
 		getDefinitions().getRootElements().add(choreography);
@@ -934,31 +953,34 @@ public class ModelHandler {
 		return l;
 	}
 
-	public static DiagramElement findDIElement(BaseElement element) {
-		String id = element.getId();
-		if (id == null || id.isEmpty())
-			return null;
+	public static DiagramElement findDIElement(Diagram diagram, BaseElement element) {
+		BPMNDiagram bpmnDiagram = BusinessObjectUtil.getFirstElementOfType(diagram, BPMNDiagram.class);
+		Assert.isNotNull(bpmnDiagram);
 		
-		List<BPMNDiagram> diagrams = getAll(element.eResource(), BPMNDiagram.class);
-		for (BPMNDiagram d : diagrams) {
-			// Process elements correspond to BPMNPlane DI elements
-			BPMNPlane plane = d.getPlane();
-			BaseElement be = plane.getBpmnElement();
-			if (be!=null && id.equals(be.getId()))
-				return plane;
-			
-			List<DiagramElement> planeElement = plane.getPlaneElement();
-			
-			for (DiagramElement elem : planeElement) {
-				if (elem instanceof BPMNShape && ((BPMNShape) elem).getBpmnElement() != null &&
-						id.equals(((BPMNShape) elem).getBpmnElement().getId())) {
-					return (elem);
-				} else if (elem instanceof BPMNEdge &&
-						id.equals(((BPMNEdge) elem).getBpmnElement().getId())) {
-					return (elem);
+		// Process elements correspond to BPMNPlane DI elements
+		BPMNPlane bpmnPlane = bpmnDiagram.getPlane();
+		
+		if (element.equals(bpmnPlane.getBpmnElement())) {
+			return bpmnPlane;
+		}
+		
+		List<DiagramElement> planeElement = bpmnPlane.getPlaneElement();
+		
+		for (DiagramElement diElement : planeElement) {
+			if (diElement instanceof BPMNShape) {
+				BPMNShape shape = (BPMNShape) diElement;
+				if (element.equals(shape.getBpmnElement())) {
+					return diElement;
+				}
+			} else
+			if (diElement instanceof BPMNEdge) {
+				BPMNEdge edge = (BPMNEdge) diElement;
+				if (element.equals(edge.getBpmnElement())) {
+					return diElement;
 				}
 			}
 		}
+		
 		return null;
 	}
 
@@ -1031,30 +1053,70 @@ public class ModelHandler {
 	}
 
 	public static void initialize(Resource resource, EObject newObject) {
-		if (newObject!=null) {
-			if (newObject.eClass().getEPackage() == Bpmn2Package.eINSTANCE) {
-				// Set appropriate default values for the object features here
-				switch (newObject.eClass().getClassifierID()) {
-				case Bpmn2Package.CONDITIONAL_EVENT_DEFINITION:
-					{
-						Expression expr = Bpmn2ModelerFactory.getInstance().createFormalExpression();
-						((ConditionalEventDefinition)newObject).setCondition(expr);
-					}
-					break;
+		
+		Assert.isNotNull(newObject);
+		if (newObject.eClass().getEPackage() == Bpmn2Package.eINSTANCE) {
+			// Set appropriate default values for the object features here
+			switch (newObject.eClass().getClassifierID()) {
+			case Bpmn2Package.CONDITIONAL_EVENT_DEFINITION:
+				{
+					Expression expr = Bpmn2ModelerFactory.getInstance().createFormalExpression();
+					((ConditionalEventDefinition)newObject).setCondition(expr);
 				}
+				break;
 			}
-			
-			// if the object has an "id", assign it now.
-			String id = ModelUtil.setID(newObject,resource);
-			// also set a default name
-//			EStructuralFeature feature = newObject.eClass().getEStructuralFeature("name");
-//			if (feature!=null) {
-//				if (id!=null)
-//					newObject.eSet(feature, ModelUtil.toDisplayName(id));
-//				else
-//					newObject.eSet(feature, "New "+ModelUtil.toDisplayName(newObject.eClass().getName()));
-//			}
 		}
+		
+		// if the object has an "id", assign it now.
+		ModelUtil.setID(newObject,resource);
 	}
 	
+	/**
+	 * Return the model 
+	 * 
+	 * @param e
+	 * @param cls
+	 * @return
+	 */
+	private static <T extends EObject> T getModel(PictogramElement e, Class<T> cls) {
+		return BusinessObjectUtil.getFirstElementOfType(e, cls);
+	}
+	
+	/**
+	 * Return a model handler instance for the given resource
+	 * 
+	 * @param resource
+	 * @return
+	 */
+	public static ModelHandler getInstance(Bpmn2ResourceImpl resource) {
+		return new ModelHandler(resource);
+	}
+	
+	/**
+	 * Return a model handler instance for the given diagram
+	 * 
+	 * @param diagram
+	 * @return
+	 */
+	public static ModelHandler getInstance(Diagram diagram) {
+
+		BPMNDiagram model = getModel(diagram, BPMNDiagram.class);
+		return getInstance(model);
+	}
+
+	/**
+	 * Return model handler instance for the given object
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public static ModelHandler getInstance(EObject object) {
+		
+		Resource resource = object.eResource();
+		if (resource instanceof Bpmn2ResourceImpl) {
+			return new ModelHandler((Bpmn2ResourceImpl) resource);
+		} else {
+			throw new IllegalArgumentException("Model " + object + " not contained in resource of type " + Bpmn2ResourceImpl.class.getName());
+		}
+	}
 }

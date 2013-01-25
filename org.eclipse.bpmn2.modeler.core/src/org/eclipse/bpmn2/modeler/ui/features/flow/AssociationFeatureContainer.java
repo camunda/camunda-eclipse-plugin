@@ -243,18 +243,13 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 
 		@Override
 		public Association createBusinessObject(ICreateConnectionContext context) {
-			Association bo = null;
-			try {
-				ModelHandler mh = ModelHandler.getInstance(getDiagram());
-				BaseElement source = getSourceBo(context);
-				BaseElement target = getTargetBo(context);
-				bo = mh.createAssociation(source, target);
-				putBusinessObject(context, bo);
-
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			ModelHandler mh = ModelHandler.getInstance(getDiagram());
+			
+			BaseElement source = getSourceBo(context);
+			BaseElement target = getTargetBo(context);
+			Association bo = mh.createAssociation(source, target);
+			putBusinessObject(context, bo);
+			
 			return bo;
 		}
 	}

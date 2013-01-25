@@ -88,17 +88,14 @@ public class ItemAwareElementPropertiesAdapter<T extends ItemAwareElement> exten
 				@Override
 				public Hashtable<String, Object> getChoiceOfValues(Object context) {
 					Hashtable<String,Object> choices = new Hashtable<String,Object>();
-					try {
-						List<DataState> states = ModelHandler.getInstance(this.object).getAll(DataState.class);
-						for (DataState s : states) {
-							String label = s.getName();
-							if (label==null || label.isEmpty())
-								label = "ID: " + s.getId();
+					List<DataState> states = ModelHandler.getInstance(this.object).getAll(DataState.class);
+					for (DataState s : states) {
+						String label = s.getName();
+						if (label==null || label.isEmpty())
+							label = "ID: " + s.getId();
 //							else
 //								label += " (ID: " +  s.getId() + ")";
-							choices.put(label,s);
-						}
-					} catch (IOException e) {
+						choices.put(label,s);
 					}
 					return choices;
 				}

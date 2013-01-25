@@ -16,6 +16,7 @@ import static org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.createEventShape
 
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.FlowElementsContainer;
+import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
@@ -88,11 +89,12 @@ public class AddEventFeature<T extends Event>
 		peService.createChopboxAnchor(containerShape);
 		AnchorUtil.addFixedPointAnchors(containerShape, ellipse);
 		boolean isImport = context.getProperty(DIUtils.IMPORT_PROPERTY) != null;
-		createDIShape(containerShape, e, !isImport);
+		
+		BPMNShape bpmnShape = createDIShape(containerShape, e, !isImport);
 		hook(containerShape);
 		
 		splitConnection(context, containerShape);
-		
+	
 		updatePictogramElement(containerShape);
 		layoutPictogramElement(containerShape);
 		

@@ -146,65 +146,61 @@ public class AddChoreographyMessageFeature extends AbstractCustomFeature {
 			PictogramElement pe = pes[0];
 			Object bo = getBusinessObjectForPictogramElement(pe);
 			if (pe instanceof ContainerShape && bo instanceof Participant) {
-				try {
-					ModelHandler mh = ModelHandler.getInstance(getDiagram());
+				ModelHandler mh = ModelHandler.getInstance(getDiagram());
 
-					ContainerShape containerShape = (ContainerShape)pe;
-					Participant participant = (Participant)bo;
+				ContainerShape containerShape = (ContainerShape)pe;
+				Participant participant = (Participant)bo;
+				
+				Object parent = getBusinessObjectForPictogramElement(containerShape.getContainer());
+				if (parent instanceof ChoreographyTask) {
+					ChoreographyTask ct=(ChoreographyTask)parent;
+											
+					Message message = null;
+					List<Message> messageList = new ArrayList<Message>();
+					message = mh.create(Message.class);
+					message.setName(message.getId());
 					
-					Object parent = getBusinessObjectForPictogramElement(containerShape.getContainer());
-					if (parent instanceof ChoreographyTask) {
-						ChoreographyTask ct=(ChoreographyTask)parent;
-												
-						Message message = null;
-						List<Message> messageList = new ArrayList<Message>();
-						message = mh.create(Message.class);
-						message.setName(message.getId());
-						
-						messageList.add(message);
-						for (RootElement re : mh.getDefinitions().getRootElements()) {
-							if (re instanceof Message) {
-								messageList.add((Message)re);
-							}
-						}
-
-						Message result = message;
-		
-						changesDone = true;
-						if (messageList.size()>1) {
-							PopupMenu popupMenu = new PopupMenu(messageList, labelProvider);
-							changesDone = popupMenu.show(Display.getCurrent().getActiveShell());
-							if (changesDone) {
-								result = (Message) popupMenu.getResult();
-							}
-						}
-						if (changesDone) {
-							if (result==message) { // the new one
-								message.setName( ModelUtil.getDisplayName(message)); // ModelUtil.toDisplayName(message.getId()) );
-								
-								mh.getDefinitions().getRootElements().add(result);
-							}
-							
-							java.util.List<Participant> parts=new java.util.ArrayList<Participant>(
-													ct.getParticipantRefs());
-							parts.remove(participant);
-							
-							if (parts.size() == 1) {
-								MessageFlow mf=mh.createMessageFlow(participant, parts.get(0));
-								mf.setName(ModelUtil.toDisplayName(mf.getId()));
-								
-								Choreography choreography = (Choreography)ct.eContainer();
-								choreography.getMessageFlows().add(mf);
-
-								mf.setMessageRef(result);
-								ct.getMessageFlowRef().add(mf);
-							} else {
-								// REPORT ERROR??
-							}
+					messageList.add(message);
+					for (RootElement re : mh.getDefinitions().getRootElements()) {
+						if (re instanceof Message) {
+							messageList.add((Message)re);
 						}
 					}
-				} catch (IOException e) {
-					Activator.logError(e);
+
+					Message result = message;
+	
+					changesDone = true;
+					if (messageList.size()>1) {
+						PopupMenu popupMenu = new PopupMenu(messageList, labelProvider);
+						changesDone = popupMenu.show(Display.getCurrent().getActiveShell());
+						if (changesDone) {
+							result = (Message) popupMenu.getResult();
+						}
+					}
+					if (changesDone) {
+						if (result==message) { // the new one
+							message.setName( ModelUtil.getDisplayName(message)); // ModelUtil.toDisplayName(message.getId()) );
+							
+							mh.getDefinitions().getRootElements().add(result);
+						}
+						
+						java.util.List<Participant> parts=new java.util.ArrayList<Participant>(
+												ct.getParticipantRefs());
+						parts.remove(participant);
+						
+						if (parts.size() == 1) {
+							MessageFlow mf=mh.createMessageFlow(participant, parts.get(0));
+							mf.setName(ModelUtil.toDisplayName(mf.getId()));
+							
+							Choreography choreography = (Choreography)ct.eContainer();
+							choreography.getMessageFlows().add(mf);
+
+							mf.setMessageRef(result);
+							ct.getMessageFlowRef().add(mf);
+						} else {
+							// REPORT ERROR??
+						}
+					}
 				}
 			}
 		}

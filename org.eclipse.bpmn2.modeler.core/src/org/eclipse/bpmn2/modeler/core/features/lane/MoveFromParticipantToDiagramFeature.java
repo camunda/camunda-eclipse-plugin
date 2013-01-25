@@ -48,14 +48,10 @@ public class MoveFromParticipantToDiagramFeature extends MoveLaneFeature {
 		Participant sourceParticipant = (Participant) getBusinessObjectForPictogramElement(context.getSourceContainer());
 		Participant internalParticipant = null;
 
-		try {
-			ModelHandler handler = ModelHandler.getInstance(getDiagram());
-			internalParticipant = handler.getInternalParticipant();
-			handler.moveLane(movedLane, internalParticipant);
-		} catch (IOException e) {
-			Activator.logError(e);
-		}
-
+		ModelHandler handler = ModelHandler.getInstance(getDiagram());
+		internalParticipant = handler.getInternalParticipant();
+		handler.moveLane(movedLane, internalParticipant);
+		
 		LaneSet laneSet = null;
 		for (LaneSet set : sourceParticipant.getProcessRef().getLaneSets()) {
 			if (set.getLanes().contains(movedLane)) {

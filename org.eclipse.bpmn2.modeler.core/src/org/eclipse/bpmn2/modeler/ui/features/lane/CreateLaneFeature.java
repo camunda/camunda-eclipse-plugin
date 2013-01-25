@@ -12,13 +12,9 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.lane;
 
-import java.io.IOException;
-
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Lane;
-import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -74,20 +70,16 @@ public class CreateLaneFeature extends AbstractBpmn2CreateFeature<Lane> {
 	@Override
 	public Lane createBusinessObject(ICreateContext context) {
 		Lane bo = null;
-		try {
-			ModelHandler mh = ModelHandlerLocator.getModelHandler(getDiagram().eResource());
-			Object o = getBusinessObjectForPictogramElement(context.getTargetContainer());
-			if (FeatureSupport.isTargetLane(context)) {
-				Lane targetLane = (Lane) o;
-				bo = ModelHandler.createLane(targetLane);
-			} else {
-				bo = mh.createLane(o);
-			}
-			putBusinessObject(context, bo);
-
-		} catch (IOException e) {
-			Activator.logError(e);
+		ModelHandler mh = ModelHandler.getInstance(getDiagram());
+		Object o = getBusinessObjectForPictogramElement(context.getTargetContainer());
+		if (FeatureSupport.isTargetLane(context)) {
+			Lane targetLane = (Lane) o;
+			bo = ModelHandler.createLane(targetLane);
+		} else {
+			bo = mh.createLane(o);
 		}
+		putBusinessObject(context, bo);
+		
 		return bo;
 	}
 }

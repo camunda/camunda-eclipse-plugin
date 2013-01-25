@@ -148,19 +148,13 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 
 		@Override
 		public MessageFlow createBusinessObject(ICreateConnectionContext context) {
-			MessageFlow bo = null;
-			try {
-				ModelHandler mh = ModelHandler.getInstance(getDiagram());
-				InteractionNode source = getSourceBo(context);
-				InteractionNode target = getTargetBo(context);
-				bo = mh.createMessageFlow(source, target);
-				bo.setName("");
-				putBusinessObject(context, bo);
-
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			ModelHandler mh = ModelHandler.getInstance(getDiagram());
+			InteractionNode source = getSourceBo(context);
+			InteractionNode target = getTargetBo(context);
+			MessageFlow bo = mh.createMessageFlow(source, target);
+			bo.setName("");
+			putBusinessObject(context, bo);
+			
 			return bo;
 		}
 
@@ -178,20 +172,19 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 			if (source == null || target == null) {
 				return true;
 			}
+			
 			boolean different = false;
-			try {
-				ModelHandler handler = ModelHandler.getInstance(getDiagram());
-				Participant sourceParticipant = handler.getParticipant(source);
-				Participant targetParticipant = handler.getParticipant(target);
-				if (sourceParticipant==null) {
-					if (targetParticipant==null)
-						return true;
-					return false;
-				}
-				different = !sourceParticipant.equals(targetParticipant);
-			} catch (IOException e) {
-				Activator.logError(e);
+			
+			ModelHandler handler = ModelHandler.getInstance(getDiagram());
+			Participant sourceParticipant = handler.getParticipant(source);
+			Participant targetParticipant = handler.getParticipant(target);
+			if (sourceParticipant==null) {
+				if (targetParticipant==null)
+					return true;
+				return false;
 			}
+			
+			different = !sourceParticipant.equals(targetParticipant);
 			return different;
 		}
 

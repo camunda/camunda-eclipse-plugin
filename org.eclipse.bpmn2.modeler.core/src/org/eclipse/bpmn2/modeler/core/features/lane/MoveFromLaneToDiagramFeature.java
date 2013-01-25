@@ -12,10 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features.lane;
 
-import java.io.IOException;
-
 import org.eclipse.bpmn2.Lane;
-import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -42,11 +39,8 @@ public class MoveFromLaneToDiagramFeature extends MoveLaneFeature {
 		Lane parentLane = (Lane) getBusinessObjectForPictogramElement(context.getSourceContainer());
 		Lane movedLane = (Lane) getBusinessObjectForPictogramElement(context.getShape());
 		parentLane.getChildLaneSet().getLanes().remove(movedLane);
-		try {
-			ModelHandler mh = ModelHandler.getInstance(getDiagram());
-			mh.laneToTop(movedLane);
-		} catch (IOException e) {
-			Activator.logError(e);
-		}
+		
+		ModelHandler mh = ModelHandler.getInstance(getDiagram());
+		mh.laneToTop(movedLane);
 	}
 }

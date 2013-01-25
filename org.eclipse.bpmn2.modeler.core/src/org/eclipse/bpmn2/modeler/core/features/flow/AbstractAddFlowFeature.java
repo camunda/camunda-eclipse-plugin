@@ -22,6 +22,7 @@ import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
@@ -38,6 +39,7 @@ import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
@@ -68,11 +70,12 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement>
 		T flow = getBusinessObject(context);
 		IAddConnectionContext addConContext = (IAddConnectionContext) context;
 
-		BPMNEdge bpmnEdge = (BPMNEdge) ModelHandler.findDIElement(flow);
-		Connection connection = peService.createFreeFormConnection(getDiagram());
-
-		Object importProp = context.getProperty(DIUtils.IMPORT_PROPERTY);
-		if (importProp != null && (Boolean) importProp) {
+		Diagram diagram = getDiagram();
+		
+		BPMNEdge bpmnEdge = (BPMNEdge) ModelHandler.findDIElement(diagram, flow);
+		Connection connection = peService.createFreeFormConnection(diagram);
+		
+		if (ContextUtil.is(context, DIUtils.IMPORT_PROPERTY)) {
 			connection.setStart(addConContext.getSourceAnchor());
 			connection.setEnd(addConContext.getTargetAnchor());
 		} else {
@@ -86,7 +89,7 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement>
 		}
 
 		if (bpmnEdge == null) {
-			bpmnEdge = DIUtils.createDIEdge(connection, flow, getDiagram());
+			bpmnEdge = DIUtils.createDIEdge(connection, flow, diagram);
 		}
 		
 		// link connection to edge and bpmn element

@@ -57,14 +57,11 @@ public abstract class AbstractCreateArtifactFeature<T extends Artifact> extends 
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public T createBusinessObject(ICreateContext context) {
-		T artifact = null;
-		try {
-			artifact = super.createBusinessObject(context);
-			ModelHandler handler = ModelHandler.getInstance(getDiagram());
-			handler.addArtifact(FeatureSupport.getTargetParticipant(context, handler), artifact);
-		} catch (IOException e) {
-			Activator.logError(e);
-		}
+		T artifact = super.createBusinessObject(context);
+		
+		ModelHandler handler = ModelHandler.getInstance(getDiagram());
+		handler.addArtifact(FeatureSupport.getTargetParticipant(context, handler), artifact);
+		
 		return artifact;
 	}
 }
