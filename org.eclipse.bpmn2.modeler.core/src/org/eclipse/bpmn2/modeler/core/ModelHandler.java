@@ -94,7 +94,7 @@ public class ModelHandler {
 	private Bpmn2ResourceImpl resource;
 	private Bpmn2Preferences prefs;
 	
-	ModelHandler(Bpmn2ResourceImpl resource) {
+	private ModelHandler(Bpmn2ResourceImpl resource) {
 		this.resource = resource;
 	}
 

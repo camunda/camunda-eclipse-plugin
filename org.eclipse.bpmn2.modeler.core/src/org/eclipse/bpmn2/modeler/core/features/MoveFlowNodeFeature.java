@@ -13,9 +13,8 @@
 package org.eclipse.bpmn2.modeler.core.features;
 
 import org.eclipse.bpmn2.FlowNode;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.features.rules.Algorithms;
-import org.eclipse.bpmn2.modeler.core.features.rules.Algorithms.AlgorithmContainer;
+import org.eclipse.bpmn2.modeler.core.features.rules.ModelOperations;
+import org.eclipse.bpmn2.modeler.core.features.rules.ModelOperations.ModelOperation;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -24,7 +23,7 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 
-	private AlgorithmContainer algorithmContainer;
+	private ModelOperation<IMoveShapeContext> moveOperation;
 
 	public MoveFlowNodeFeature(IFeatureProvider fp) {
 		super(fp);
@@ -36,15 +35,13 @@ public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 			return false;
 		}
 
-		ModelHandler handler = ModelHandler.getInstance(getDiagram());
+		ModelOperation<IMoveShapeContext> moveOperation = ModelOperations.getFlowNodeMoveAlgorithms(context);
 
-		AlgorithmContainer algorithmContainer = Algorithms.getFlowNodeMoveAlgorithms(context);
-
-		if (algorithmContainer.isEmpty()) {
+		if (moveOperation.isEmpty()) {
 			return onMoveAlgorithmNotFound(context);
 		}
 
-		return algorithmContainer.isMoveAllowed(getSourceBo(context, handler), getTargetBo(context, handler));
+		return moveOperation.canExecute(context);
 	}
 
 	protected boolean onMoveAlgorithmNotFound(IMoveShapeContext context) {
@@ -56,43 +53,21 @@ public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 		super.preMoveShape(context);
 		
 		// init algorithm container for move operation
-		this.algorithmContainer = Algorithms.getFlowNodeMoveAlgorithms(context);
+		this.moveOperation = ModelOperations.getFlowNodeMoveAlgorithms(context);
 	}
 	
 	@Override
 	protected void postMoveShape(IMoveShapeContext context) {
-		ModelHandler modelHandler;
-		
-		try {
-			modelHandler = ModelHandler.getInstance(getDiagram());
-		} catch (Exception e) {
-			throw new IllegalStateException("Failed to execute post move", e);
-		}
 
 		Shape shape = context.getShape();
 		FlowNode flowNode = BusinessObjectUtil.getFirstElementOfType(shape, FlowNode.class);
 		
 		Assert.isNotNull(flowNode);
 		
-		if (!algorithmContainer.isEmpty()) {
-			algorithmContainer.move(
-				flowNode, 
-				getSourceBo(context, modelHandler),
-				getTargetBo(context, modelHandler));
+		if (!moveOperation.isEmpty()) {
+			moveOperation.execute(context);
 		}
 		
 		super.postMoveShape(context);
-	}
-	
-	private Object getSourceBo(IMoveShapeContext context, ModelHandler handler) {
-		if (context.getSourceContainer().equals(getDiagram()))
-			return handler.getFlowElementContainer(context.getSourceContainer());
-		return getBusinessObjectForPictogramElement(context.getSourceContainer());
-	}
-
-	private Object getTargetBo(IMoveShapeContext context, ModelHandler handler) {
-		if (context.getTargetContainer().equals(getDiagram()))
-			return handler.getFlowElementContainer(context.getTargetContainer());
-		return getBusinessObjectForPictogramElement(context.getTargetContainer());
 	}
 }

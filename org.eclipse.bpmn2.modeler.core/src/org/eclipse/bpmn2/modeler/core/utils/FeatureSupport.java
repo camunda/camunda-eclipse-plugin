@@ -666,7 +666,7 @@ public class FeatureSupport {
 		return isLane(context.getSourceContainer());
 	}
 
-	public static boolean isTargetDiagram(IMoveShapeContext context) {
+	public static boolean isTargetDiagram(ITargetContext context) {
 		return isDiagram(context.getTargetContainer());
 	}
 
