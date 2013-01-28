@@ -669,5 +669,8 @@ public class FeatureSupport {
 	public static boolean isTargetDiagram(ITargetContext context) {
 		return isDiagram(context.getTargetContainer());
 	}
-
+	
+	public static boolean isSourceDiagram(IMoveShapeContext context) {
+		return isDiagram(context.getSourceContainer());
+	}
 }

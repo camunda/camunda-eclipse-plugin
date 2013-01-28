@@ -717,7 +717,7 @@ public class ModelHandler {
 		return collaboration;
 	}
 	
-	private static Collaboration getParticipantContainer(BPMNDiagram bpmnDiagram) {
+	private Collaboration getParticipantContainer(BPMNDiagram bpmnDiagram) {
 
 		if (bpmnDiagram == null) {
 			// return the first Collaboration or Choreography in the model hierarchy
@@ -747,7 +747,10 @@ public class ModelHandler {
 	 * @param element
 	 * @return
 	 */
-	private static Definitions getDefinitions(EObject element) {
+	private Definitions getDefinitions(EObject element) {
+		if (element == null) {
+			return getAll(Definitions.class).get(0);
+		} else
 		if (element instanceof Definitions) {
 			return (Definitions) element;
 		} else {

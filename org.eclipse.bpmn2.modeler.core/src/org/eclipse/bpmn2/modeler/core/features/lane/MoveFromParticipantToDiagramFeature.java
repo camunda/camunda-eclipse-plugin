@@ -34,7 +34,9 @@ public class MoveFromParticipantToDiagramFeature extends MoveLaneFeature {
 
 	@Override
 	public boolean canMoveShape(IMoveShapeContext context) {
-		return true;
+		
+		// FIXME: Disabled for now
+		return false;
 	}
 
 	@Override

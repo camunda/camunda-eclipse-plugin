@@ -68,7 +68,6 @@ public class MoveFromLaneToParticipantFeature extends MoveLaneFeature {
 		Process process = targetParticipant.getProcessRef();
 		if (process.getLaneSets().isEmpty()) {
 			LaneSet createLaneSet = Bpmn2ModelerFactory.create(LaneSet.class);
-//			createLaneSet.setId(EcoreUtil.generateUUID());
 			process.getLaneSets().add(createLaneSet);
 			ModelUtil.setID(createLaneSet);
 		}
