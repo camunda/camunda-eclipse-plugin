@@ -4,6 +4,10 @@ import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAsse
 import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveShapeOperation.move;
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 
+import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.SequenceFlow;
+import org.eclipse.bpmn2.di.BPMNEdge;
+import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
@@ -12,6 +16,7 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.junit.Test;
 
@@ -103,6 +108,52 @@ public class MoveLabelFeatureTest extends AbstractFeatureTest {
 			.isContainedIn(diagram)
 			.movedBy(point(10, 20), preMoveLabelBounds);
 	}
+	
+	@Test
+	@DiagramResource
+	public void testMoveSequenceFlowLabel() {
+
+		// given
+		FreeFormConnection sequenceFlow2 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		SequenceFlow sequenceFlow = (SequenceFlow)sequenceFlow2.getLink().getBusinessObjects().get(0);
+		Shape labelShape = GraphicsUtil.getLabelShape(sequenceFlow, getDiagram());
+		
+		IRectangle preMoveLabelBounds = LayoutUtil.getAbsoluteBounds(labelShape);
+		
+		BPMNEdge flowEdge = DIUtils.getEdge(labelShape);
+		assertThat(flowEdge.getLabel()).isNull();
+		
+		// assume
+		// label is on diagram
+		assertThat(labelShape).isContainedIn(diagram);
+		
+		// when moving label in container
+		move(labelShape, diagramTypeProvider)
+			.by(10, 20)
+			.execute();
+		
+		// then
+		// label should not have changed container
+		assertThat(labelShape)
+			.isContainedIn(diagram)
+			.movedBy(point(10, 20), preMoveLabelBounds);
+		
+		assertThat(flowEdge.getLabel()).isNotNull();
+		assertThat(flowEdge.getLabel().getBounds()).isNotNull();
+		assertThat(flowEdge.getLabel().getBounds().getX()).isEqualTo(preMoveLabelBounds.getX()+10);
+		assertThat(flowEdge.getLabel().getBounds().getY()).isEqualTo(preMoveLabelBounds.getY()+20);
+		
+		// move again
+		move(labelShape, diagramTypeProvider)
+			.by(10, 20)
+			.execute();
+		
+		assertThat(flowEdge.getLabel()).isNotNull();
+		assertThat(flowEdge.getLabel().getBounds()).isNotNull();
+		assertThat(flowEdge.getLabel().getBounds().getX()).isEqualTo(preMoveLabelBounds.getX()+20);
+		assertThat(flowEdge.getLabel().getBounds().getY()).isEqualTo(preMoveLabelBounds.getY()+40);
+	}
+	
 	
 	private static Point getShapesPosDiff(ContainerShape shape1, ContainerShape shape2) {
 		IRectangle b1 = LayoutUtil.getAbsoluteBounds(shape1);

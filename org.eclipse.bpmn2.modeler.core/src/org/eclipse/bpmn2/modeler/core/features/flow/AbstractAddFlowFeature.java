@@ -18,6 +18,7 @@ import org.eclipse.bpmn2.di.BPMNLabel;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
@@ -26,13 +27,17 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
+import org.eclipse.bpmn2.modeler.ui.features.label.AddLabelFeature;
 import org.eclipse.dd.dc.Bounds;
+import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IMoveConnectionDecoratorFeature;
 import org.eclipse.graphiti.features.context.IAddConnectionContext;
 import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.MoveConnectionDecoratorContext;
+import org.eclipse.graphiti.internal.services.impl.PeServiceImpl;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
@@ -91,40 +96,35 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement>
 		
 		// link connection to edge and bpmn element
 		link(connection, new Object[] { flow, bpmnEdge });
-		
-		if (ModelUtil.hasName(flow)) {
-			
-			ConnectionDecorator labelDecorator = Graphiti.getPeService().createConnectionDecorator(connection, true, 0.5, true);
-			Text text = gaService.createText(labelDecorator, ModelUtil.getName(flow));
-			
-			GraphicsUtil.makeLabel(labelDecorator);
-			
-			link(labelDecorator, new Object[] { flow, bpmnEdge });
-			
-			peService.setPropertyValue(labelDecorator, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
-			StyleUtil.applyStyle(text, flow);
-			
-			BPMNLabel bpmnLabel = bpmnEdge.getLabel();
-			
-			// move after link if bpmnLabel is given
-			if (bpmnLabel != null && bpmnLabel.getBounds() != null) {
-				IRectangle decoratorBounds = LayoutUtil.getAbsoluteBounds(labelDecorator);
-
-				int x = (int) bpmnLabel.getBounds().getX() - decoratorBounds.getX();
-				int y = (int) bpmnLabel.getBounds().getY() - decoratorBounds.getY();
-				
-				MoveConnectionDecoratorContext ctx = new MoveConnectionDecoratorContext(labelDecorator, x, y, true);
-				IMoveConnectionDecoratorFeature moveDecoratorFeature = getFeatureProvider().getMoveConnectionDecoratorFeature(ctx);
-				
-				if (moveDecoratorFeature.canExecute(ctx)) {
-					moveDecoratorFeature.execute(ctx);
-				}
-			}
-		}
+		PictogramElement labelShape = null;
 		
 		createConnectionLine(connection);
 		hook(addConContext, connection, flow);
-
+		
+		if (ModelUtil.hasName(flow)) {
+			ILocation midPoint = LayoutUtil.getConnectionMidPoint(connection, bpmnEdge);
+			
+			AddLabelFeature addLabelFeature = new AddLabelFeature(getFeatureProvider());
+			AddContext addLabelContext = new AddContext();
+			addLabelContext.setTargetContainer(getDiagram());
+			addLabelContext.putProperty(ContextConstants.WIDTH, 50);
+			addLabelContext.putProperty(ContextConstants.HEIGHT, 30);
+			addLabelContext.putProperty(ContextConstants.BUSINESS_OBJECT, flow);
+			addLabelContext.putProperty(ContextConstants.CUSTOM_POSITION, true);
+			
+			addLabelContext.setX(midPoint.getX());
+			addLabelContext.setY(midPoint.getY());
+			
+			if (addLabelFeature.canAdd(addLabelContext)) {
+				labelShape = addLabelFeature.add(addLabelContext);
+				GraphicsUtil.makeLabel(labelShape);
+				link(labelShape, new Object[] { flow, bpmnEdge });
+				
+				peService.setPropertyValue(labelShape, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
+				updatePictogramElement(labelShape);
+			}
+		}
+		
 		return connection;
 	}
 	

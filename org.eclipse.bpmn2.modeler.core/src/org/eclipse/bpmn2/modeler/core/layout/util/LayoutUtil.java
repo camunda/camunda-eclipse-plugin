@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
+import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.modeler.core.layout.Docking;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Vector;
@@ -904,5 +905,34 @@ public class LayoutUtil {
 
 	private static ILocation diagramRelativeLocation(Shape startShape) {
 		return Graphiti.getLayoutService().getLocationRelativeToDiagram(startShape);
+	}
+
+	public static ILocation getConnectionMidPoint(Connection connection, BPMNEdge bpmnEdge) {
+		double sumX = 0;
+		double sumY = 0;
+		int count = 0;
+		
+		if (bpmnEdge != null) {
+			if (bpmnEdge.getWaypoint().size() > 2) {
+				count = 0;
+				
+				for (int pointIndex = 1; pointIndex < (bpmnEdge.getWaypoint().size()-1); pointIndex++) {
+					// add twice, put weight on the bendpoints
+					sumX+= bpmnEdge.getWaypoint().get(pointIndex).getX() * 2;
+					sumY+= bpmnEdge.getWaypoint().get(pointIndex).getY() * 2;
+					count+= 2;
+				}
+				
+			}else {
+				count = 2;
+				ILocation startAnchorLocation = LayoutUtil.getAnchorLocation(connection.getStart());
+				ILocation endAnchorLocation = LayoutUtil.getAnchorLocation(connection.getEnd());
+				
+				sumX = startAnchorLocation.getX() + endAnchorLocation.getX();
+				sumY = startAnchorLocation.getY() + endAnchorLocation.getY();
+			}
+		}
+		
+		return ConversionUtil.location((int) sumX /count , (int) sumY / count);
 	}
 }

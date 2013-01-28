@@ -77,6 +77,10 @@ public class DIUtils {
 		return BusinessObjectUtil.getFirstElementOfType(element, BPMNShape.class);
 	}
 	
+	public static BPMNEdge getEdge(PictogramElement element) {
+		return BusinessObjectUtil.getFirstElementOfType(element, BPMNEdge.class);
+	}
+	
 	public static void updateDIShape(PictogramElement element) {
 		updateDIShape(element, getShape(element));
 	}
@@ -142,6 +146,19 @@ public class DIUtils {
 	private static boolean isLabel(PictogramElement element) {
 		return Graphiti.getPeService().getPropertyValue(element, GraphicsUtil.LABEL_PROPERTY) != null;
 	}
+	
+	public static void updateDILabel(Shape labelShape) {
+		BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(labelShape, BPMNShape.class);
+		if (bpmnShape != null) {
+			updateDILabel(labelShape, bpmnShape);
+		}
+		
+		BPMNEdge bpmnEdge = BusinessObjectUtil.getFirstElementOfType(labelShape, BPMNEdge.class);
+		if (bpmnEdge != null) {
+			updateDILabel(labelShape, bpmnEdge);
+		}
+	}
+		
 	
 	public static void updateDILabel(Shape label, BPMNEdge bpmnEdge) {
 		Bounds bpmnLabelBounds = null;
