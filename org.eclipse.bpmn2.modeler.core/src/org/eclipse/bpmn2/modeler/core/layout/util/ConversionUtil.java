@@ -35,6 +35,11 @@ public class ConversionUtil {
 		return Graphiti.getCreateService().createPoint(x, y);
 	}
 	
+	public static Point point(double x, double y) {
+		return Graphiti.getCreateService().createPoint((int)x, (int)y);
+	}
+	
+	
 	public static Point point(org.eclipse.dd.dc.Point p) {
 		return point((int) Math.round(p.getX()), (int) Math.round(p.getY()));
 	}
@@ -78,6 +83,11 @@ public class ConversionUtil {
 	@SuppressWarnings("restriction")
 	public static ILocation location(int x, int y) {
 		return new LocationImpl(x, y);
+	}
+	
+	@SuppressWarnings("restriction")
+	public static ILocation location(double x, double y) {
+		return new LocationImpl((int) x, (int) y);
 	}
 	
 	public static AnchorLocation anchorLocation(Sector sector) {

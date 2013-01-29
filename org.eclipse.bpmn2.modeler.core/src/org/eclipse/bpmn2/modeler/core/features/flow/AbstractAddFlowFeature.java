@@ -20,7 +20,9 @@ import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
+import org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
+import org.eclipse.bpmn2.modeler.core.layout.util.SegmentInfo;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
@@ -40,6 +42,7 @@ import org.eclipse.graphiti.features.context.impl.MoveConnectionDecoratorContext
 import org.eclipse.graphiti.internal.services.impl.PeServiceImpl;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.Text;
+import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
@@ -48,6 +51,7 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
+import org.eclipse.swt.widgets.Layout;
 
 public abstract class AbstractAddFlowFeature<T extends BaseElement>
 	extends AbstractAddBPMNShapeFeature<T> {
@@ -102,13 +106,26 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement>
 		hook(addConContext, connection, flow);
 		
 		if (ModelUtil.hasName(flow)) {
-			ILocation midPoint = LayoutUtil.getConnectionMidPoint(connection, bpmnEdge);
+			SegmentInfo segmentInfo = LayoutUtil.getSegmentInfo(connection, bpmnEdge);
+			ILocation midPoint = LayoutUtil.getConnectionMidPoint(segmentInfo);
+			int width = 50;
+			int height = 30;
+			
+			double labelReferenceLength = LayoutUtil.getRelativeLengthOnSegments(
+				ConversionUtil.point(
+				  LayoutUtil.getRectangleCenter(
+						  ConversionUtil.rectangle(midPoint.getX(), midPoint.getY(), width, height)
+				  )
+				),
+				segmentInfo,
+				width + 15.0
+			);
 			
 			AddLabelFeature addLabelFeature = new AddLabelFeature(getFeatureProvider());
 			AddContext addLabelContext = new AddContext();
 			addLabelContext.setTargetContainer(getDiagram());
-			addLabelContext.putProperty(ContextConstants.WIDTH, 50);
-			addLabelContext.putProperty(ContextConstants.HEIGHT, 30);
+			addLabelContext.putProperty(ContextConstants.WIDTH, width);
+			addLabelContext.putProperty(ContextConstants.HEIGHT, height);
 			addLabelContext.putProperty(ContextConstants.BUSINESS_OBJECT, flow);
 			addLabelContext.putProperty(ContextConstants.CUSTOM_POSITION, true);
 			
@@ -121,6 +138,8 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement>
 				link(labelShape, new Object[] { flow, bpmnEdge });
 				
 				peService.setPropertyValue(labelShape, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
+				peService.setPropertyValue(labelShape, ContextConstants.LABEL_REF_LENGTH, Double.toString(labelReferenceLength));
+				
 				updatePictogramElement(labelShape);
 			}
 		}
