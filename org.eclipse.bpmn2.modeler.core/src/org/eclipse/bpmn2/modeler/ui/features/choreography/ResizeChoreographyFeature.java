@@ -55,7 +55,7 @@ public class ResizeChoreographyFeature extends DefaultResizeBPMNShapeFeature {
 			Tuple<List<ContainerShape>, List<ContainerShape>> topAndBottom = ChoreographyUtil
 					.getTopAndBottomBands(bands);
 			ChoreographyUtil.resizePartipantBandContainerShapes(context.getWidth(), context.getHeight(),
-					topAndBottom.getFirst(), topAndBottom.getSecond(), getDiagram());
+					topAndBottom.getFirst(), topAndBottom.getSecond(), getFeatureProvider());
 		} catch (Exception e) {
 			Activator.logError(e);
 		}

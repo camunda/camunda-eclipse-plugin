@@ -16,6 +16,8 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.modeler.core.layout.Docking;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Vector;
 import org.eclipse.emf.common.util.EList;
@@ -911,7 +913,21 @@ public class LayoutUtil {
 		return Graphiti.getLayoutService().getLocationRelativeToDiagram(startShape);
 	}
 	
-	public static SegmentInfo getSegmentInfo(Connection connection, BPMNEdge bpmnEdge) {
+	public static Point getPointAtLength(Connection connection, double length) {
+		SegmentInfo segmentInfo = getSegmentInfo(connection);
+		
+		return ConversionUtil.point(getRelativeConnectionPoint(segmentInfo, length / segmentInfo.getFullLength()));
+	}
+	
+	public static SegmentInfo getSegmentInfo(Connection connection) {
+		BPMNEdge bpmnEdge = BusinessObjectUtil.getFirstElementOfType(connection, BPMNEdge.class);
+		
+		Assert.isNotNull(bpmnEdge);
+		
+		return getSegmentInfo(bpmnEdge);
+	}
+	
+	public static SegmentInfo getSegmentInfo(BPMNEdge bpmnEdge) {
 		double fullLength = 0;
 		List<Segment> segments = new ArrayList<Segment>();
 		
@@ -963,9 +979,8 @@ public class LayoutUtil {
 		return ConversionUtil.location(midPointSegment.getSegmentStart().getX() + midPointVector.x, midPointSegment.getSegmentStart().getY() + midPointVector.y );
 	}
 
-	public static ILocation getConnectionMidPoint(Connection connection,
-			BPMNEdge bpmnEdge) {
-		return getRelativeConnectionPoint(getSegmentInfo(connection, bpmnEdge), 0.5);
+	public static ILocation getConnectionMidPoint(	BPMNEdge bpmnEdge) {
+		return getRelativeConnectionPoint(getSegmentInfo(bpmnEdge), 0.5);
 	}
 	
 	public static ILocation getConnectionMidPoint(SegmentInfo segmentInfo) {
@@ -1036,6 +1051,19 @@ public class LayoutUtil {
 			
 		}
 		return -1.0;
+	}
+
+	public static void getConnectionLengthAtPoint(Connection connection, Point point) {
+		
+		double labelReferenceLength = LayoutUtil.getRelativeLengthOnSegments(
+			ConversionUtil.point(
+			  LayoutUtil.getRectangleCenter(
+					  ConversionUtil.rectangle(midPoint.getX(), midPoint.getY(), width, height)
+			  )
+			),
+			segmentInfo,
+			width + 15.0
+		);
 	}
 	
 }

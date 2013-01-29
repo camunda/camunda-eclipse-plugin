@@ -14,7 +14,6 @@ package org.eclipse.bpmn2.modeler.core.features.flow;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNEdge;
-import org.eclipse.bpmn2.di.BPMNLabel;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
@@ -30,28 +29,19 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
 import org.eclipse.bpmn2.modeler.ui.features.label.AddLabelFeature;
-import org.eclipse.dd.dc.Bounds;
 import org.eclipse.graphiti.datatypes.ILocation;
-import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
-import org.eclipse.graphiti.features.IMoveConnectionDecoratorFeature;
 import org.eclipse.graphiti.features.context.IAddConnectionContext;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
-import org.eclipse.graphiti.features.context.impl.MoveConnectionDecoratorContext;
-import org.eclipse.graphiti.internal.services.impl.PeServiceImpl;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
-import org.eclipse.graphiti.mm.algorithms.Text;
-import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
-import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
 import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
-import org.eclipse.swt.widgets.Layout;
 
 public abstract class AbstractAddFlowFeature<T extends BaseElement>
 	extends AbstractAddBPMNShapeFeature<T> {
@@ -106,24 +96,23 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement>
 		hook(addConContext, connection, flow);
 		
 		if (ModelUtil.hasName(flow)) {
-			SegmentInfo segmentInfo = LayoutUtil.getSegmentInfo(connection, bpmnEdge);
+
+			/**
+			 * in case of import we might have a label with missing bounds,
+			 * getSegmentInfo will use the BPMNEdge waypoints to calculate the mid point
+			 */
+			SegmentInfo segmentInfo = LayoutUtil.getSegmentInfo(connection);
 			ILocation midPoint = LayoutUtil.getConnectionMidPoint(segmentInfo);
+			
+			LayoutUtil.getConnectionLengthAtPoint(connection, ConversionUtil.point(midPoint.getX() + 10, midPoint.getY() + 10));
+			
 			int width = 50;
 			int height = 30;
-			
-			double labelReferenceLength = LayoutUtil.getRelativeLengthOnSegments(
-				ConversionUtil.point(
-				  LayoutUtil.getRectangleCenter(
-						  ConversionUtil.rectangle(midPoint.getX(), midPoint.getY(), width, height)
-				  )
-				),
-				segmentInfo,
-				width + 15.0
-			);
 			
 			AddLabelFeature addLabelFeature = new AddLabelFeature(getFeatureProvider());
 			AddContext addLabelContext = new AddContext();
 			addLabelContext.setTargetContainer(getDiagram());
+			
 			addLabelContext.putProperty(ContextConstants.WIDTH, width);
 			addLabelContext.putProperty(ContextConstants.HEIGHT, height);
 			addLabelContext.putProperty(ContextConstants.BUSINESS_OBJECT, flow);

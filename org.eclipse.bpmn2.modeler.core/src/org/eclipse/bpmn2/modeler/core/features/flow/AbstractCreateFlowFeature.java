@@ -51,7 +51,7 @@ public abstract class AbstractCreateFlowFeature<
 		addContext.setNewObject(bo);
 		Connection connection = (Connection) getFeatureProvider().addIfPossible(addContext);
 		
-		ConnectionService.reconnectConnectionAfterCreate(connection);
+		ConnectionService.reconnectConnectionAfterCreate(connection, getFeatureProvider());
 		
 		ModelUtil.setID(bo);
 		changesDone = true;

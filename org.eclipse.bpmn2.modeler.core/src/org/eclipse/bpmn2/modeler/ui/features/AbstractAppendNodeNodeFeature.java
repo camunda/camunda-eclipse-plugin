@@ -305,7 +305,7 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 		
 		if (connection instanceof FreeFormConnection) {
 			// adjust the anchor point to the new shape if necessary
-			ConnectionService.reconnectConnectionAfterCreate(connection);	
+			ConnectionService.reconnectConnectionAfterCreate(connection, getFeatureProvider());	
 		}
 		
 		return connection;

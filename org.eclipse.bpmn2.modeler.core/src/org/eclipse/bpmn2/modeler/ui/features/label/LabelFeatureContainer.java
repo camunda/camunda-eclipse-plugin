@@ -20,6 +20,8 @@ import org.eclipse.bpmn2.modeler.core.features.FeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
+import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -154,26 +156,45 @@ public class LabelFeatureContainer implements FeatureContainer {
 			if (!getUserDecision()) {
 				return;
 			}
-			Shape shapeToMove = context.getShape();
+			
+			Shape labelShape = context.getShape();
 
 			ContainerShape targetContainer = context.getTargetContainer();
 			IRectangle bounds = LayoutUtil.getAbsoluteBounds(targetContainer);
 			
-			// context x and y are relative to new target container
-			// we ignore that and have to add the containers position 
-			// to get the new diagram local bounds of the label
-			int x = bounds.getX() + context.getX();
-			int y = bounds.getY() + context.getY();
-
+			int x = context.getX(), y = context.getY();
+			
+			if (!ContextUtil.is(context, ContextConstants.LABEL_ABS_MOV)) {
+				// context x and y are relative to new target container
+				// we ignore that and have to add the containers position 
+				// to get the new diagram local bounds of the label
+				
+				x += bounds.getX();
+				y += bounds.getY();
+			}
+			
 			// always move within the original container
-			if (shapeToMove.getGraphicsAlgorithm() != null) {
-				Graphiti.getGaService().setLocation(shapeToMove.getGraphicsAlgorithm(), x, y,
+			if (labelShape.getGraphicsAlgorithm() != null) {
+				Graphiti.getGaService().setLocation(labelShape.getGraphicsAlgorithm(), x, y,
 						avoidNegativeCoordinates());
 				
-				Graphiti.getPeService().sendToFront(shapeToMove);
+				Graphiti.getPeService().sendToFront(labelShape);
 			}
+			
+			updateLabelProperties(context);
 		}
 		
+		private void updateLabelProperties(IMoveShapeContext context) {
+			
+			Shape labelShape = context.getShape();
+			GraphicsUtil.getLabeledPictogramElement(labelShape, getDiagram());
+			
+			LayoutUtil.getAbsoluteBounds(labelShape);
+			
+			LayoutUtil.getConnectionLengthCloseTo()
+			LayoutUtil.getgetCircleLineIntersectionPoint(linePointA, linePointB, center, radius)
+		}
+
 		@Override
 		protected void postMoveShape(IMoveShapeContext context) {
 			super.postMoveShape(context);

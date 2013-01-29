@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.choreography;
 
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.rect;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,8 +21,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.rect;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.ChoreographyActivity;
@@ -156,7 +156,7 @@ public class ChoreographyUtil implements ChoreographyProperties {
 	}
 
 	public static void resizePartipantBandContainerShapes(int w, int h, List<ContainerShape> top,
-			List<ContainerShape> bottom, Diagram diagram) {
+			List<ContainerShape> bottom, IFeatureProvider featureProvider) {
 
 		int y = 0;
 		for (ContainerShape container : top) {
@@ -168,7 +168,7 @@ public class ChoreographyUtil implements ChoreographyProperties {
 			resizeParticipantBandChildren(container, w);
 			DIUtils.updateDIShape(container);
 			AnchorUtil.relocateFixPointAnchors(container, w, (int) bounds.getHeight());
-			ConnectionService.reconnectContainerAfterMove(container);
+			ConnectionService.reconnectContainerAfterMove(container, featureProvider);
 		}
 
 		Collections.reverse(bottom); // start from bottom towards center
@@ -182,7 +182,7 @@ public class ChoreographyUtil implements ChoreographyProperties {
 			DIUtils.updateDIShape(container);
 			AnchorUtil.relocateFixPointAnchors(container, w, (int) bounds.getHeight());
 			
-			ConnectionService.reconnectContainerAfterMove(container);
+			ConnectionService.reconnectContainerAfterMove(container, featureProvider);
 		}
 	}
 
@@ -304,7 +304,7 @@ public class ChoreographyUtil implements ChoreographyProperties {
 
 		Tuple<List<ContainerShape>, List<ContainerShape>> topAndBottom = getTopAndBottomBands(newContainers);
 		resizePartipantBandContainerShapes(size.getWidth(), size.getHeight(), topAndBottom.getFirst(),
-				topAndBottom.getSecond(), diagram);
+				topAndBottom.getSecond(), fp);
 	}
 
 	private static ContainerShape createTopShape(ContainerShape parent, ContainerShape bandShape, BPMNShape bpmnShape,

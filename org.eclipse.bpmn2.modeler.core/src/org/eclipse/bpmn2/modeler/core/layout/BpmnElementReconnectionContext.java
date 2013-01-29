@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -15,6 +16,13 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
  * @author nico.rehwaldt
  */
 public class BpmnElementReconnectionContext {
+	
+	IFeatureProvider featureProvider;
+	
+	public BpmnElementReconnectionContext(IFeatureProvider featureProvider) {
+		super();
+		this.featureProvider = featureProvider;
+	}
 
 	public void reconnect(PictogramElement element) {
 		
@@ -40,7 +48,7 @@ public class BpmnElementReconnectionContext {
 	private void reconnectConnections(List<Connection> connections) {
 		List<Connection> tmp = new ArrayList<Connection>(connections);
 		for (Connection connection: tmp) {
-			ConnectionService.reconnectConnectionAfterMove(connection);
+			ConnectionService.reconnectConnectionAfterMove(connection, featureProvider);
 		}
 	}
 

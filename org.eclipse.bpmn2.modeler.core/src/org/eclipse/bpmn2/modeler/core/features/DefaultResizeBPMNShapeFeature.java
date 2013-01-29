@@ -37,7 +37,7 @@ public class DefaultResizeBPMNShapeFeature extends DefaultResizeShapeFeature {
 			Object[] node = getAllBusinessObjectsForPictogramElement(context.getShape());
 			for (Object object : node) {
 				if (object instanceof BPMNShape || object instanceof BPMNEdge) {
-					ConnectionService.reconnectShapeAfterResize(shape);
+					ConnectionService.reconnectShapeAfterResize(shape, getFeatureProvider());
 				}
 			}
 		}

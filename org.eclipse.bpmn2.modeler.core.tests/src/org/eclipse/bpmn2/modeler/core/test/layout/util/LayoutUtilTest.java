@@ -83,45 +83,45 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 		assertThat(point(location)).isEqualTo(point(110 / 2 + 205, 50 / 2 + 35));
 	}
 	
-	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testBase.bpmn")
-	public void testGetConnectionMidPoint() {
-		FreeFormConnection flow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
-		BPMNEdge edge = BusinessObjectUtil.getFirstElementOfType(flow1, BPMNEdge.class);
-		
-		ILocation midPoint = LayoutUtil.getConnectionMidPoint(flow1, edge);
-		
-		// measured with screen ruler
-		
-		assertThat(midPoint.getX()).isEqualTo(425);
-		assertThat(midPoint.getY()).isEqualTo(208);
-	}
+//	@Test
+//	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testBase.bpmn")
+//	public void testGetConnectionMidPoint() {
+//		FreeFormConnection flow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+//		BPMNEdge edge = BusinessObjectUtil.getFirstElementOfType(flow1, BPMNEdge.class);
+//		
+//		ILocation midPoint = LayoutUtil.getConnectionMidPoint(flow1, edge);
+//		
+//		// measured with screen ruler
+//		
+//		assertThat(midPoint.getX()).isEqualTo(425);
+//		assertThat(midPoint.getY()).isEqualTo(208);
+//	}
 	
-	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testBase.bpmn")
-	public void testGetSegmentInfo() {
-		FreeFormConnection flow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
-		BPMNEdge edge = BusinessObjectUtil.getFirstElementOfType(flow1, BPMNEdge.class);
-		SegmentInfo segmentInfo = LayoutUtil.getSegmentInfo(flow1, edge);
-		
-		assertThat(segmentInfo.getSegments()).hasSize(3);
-	}
-	
-	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testBase.bpmn")
-	public void testGetRelativeLengthOnSegments() {
-		FreeFormConnection flow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
-		BPMNEdge edge = BusinessObjectUtil.getFirstElementOfType(flow1, BPMNEdge.class);
-		SegmentInfo segmentInfo = LayoutUtil.getSegmentInfo(flow1, edge);
-		
-		ILocation midPoint = LayoutUtil.getConnectionMidPoint(flow1, edge);
-		
-		// check from midpoint with some offset to simulate rectangle width
-		double length = LayoutUtil.getRelativeLengthOnSegments(ConversionUtil.point(midPoint.getX()+15, midPoint.getY()), segmentInfo, 30);
-		
-		// measured with screen ruler 
-		assertThat(length).isEqualTo(143.0);
-	}
+//	@Test
+//	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testBase.bpmn")
+//	public void testGetSegmentInfo() {
+//		FreeFormConnection flow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+//		BPMNEdge edge = BusinessObjectUtil.getFirstElementOfType(flow1, BPMNEdge.class);
+//		SegmentInfo segmentInfo = LayoutUtil.getSegmentInfo(flow1, edge);
+//		
+//		assertThat(segmentInfo.getSegments()).hasSize(3);
+//	}
+//	
+//	@Test
+//	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testBase.bpmn")
+//	public void testGetRelativeLengthOnSegments() {
+//		FreeFormConnection flow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+//		BPMNEdge edge = BusinessObjectUtil.getFirstElementOfType(flow1, BPMNEdge.class);
+//		SegmentInfo segmentInfo = LayoutUtil.getSegmentInfo(flow1, edge);
+//		
+//		ILocation midPoint = LayoutUtil.getConnectionMidPoint(flow1, edge);
+//		
+//		// check from midpoint with some offset to simulate rectangle width
+//		double length = LayoutUtil.getRelativeLengthOnSegments(ConversionUtil.point(midPoint.getX()+15, midPoint.getY()), segmentInfo, 30);
+//		
+//		// measured with screen ruler 
+//		assertThat(length).isEqualTo(143.0);
+//	}
 	
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testBase.bpmn")

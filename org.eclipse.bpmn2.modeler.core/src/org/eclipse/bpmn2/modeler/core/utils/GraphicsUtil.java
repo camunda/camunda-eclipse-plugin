@@ -1067,18 +1067,41 @@ public class GraphicsUtil {
 	}
 
 	/**
-	 * Returns the label of a given shape (connected via the shapes business object)
+	 * Returns the label of a given pictogramElement (connected via the pictogramElements business object)
 	 * in the scope of the given diagram.
 	 * 
-	 * @param shape
+	 * @param pictogramElement
 	 * @param diagram
 	 * 
 	 * @return the label shape or null if non was found.
 	 */
-	public static ContainerShape getLabelShape(Shape shape, Diagram diagram) {
-		return getLabelShape(BusinessObjectUtil.getFirstBaseElement(shape), diagram);
+	public static ContainerShape getLabelShape(PictogramElement pictogramElement, Diagram diagram) {
+		return getLabelShape(BusinessObjectUtil.getFirstBaseElement(pictogramElement), diagram);
+	}
+
+	/**
+	 * Returns the pictogram element labeled with the argument in the scope of a diagram.
+	 * 
+	 * @param labelShape
+	 * @param diagram
+	 * @return
+	 */
+	public static PictogramElement getLabeledPictogramElement(Shape labelShape, Diagram diagram) {
+		return getPictogramElement(BusinessObjectUtil.getFirstBaseElement(labelShape), diagram);
 	}
 	
+	/**
+	 * Returns the non label pictogram element for the given bpmnElement.
+	 * 
+	 * @param bpmnElement
+	 * @param diagram
+	 * 
+	 * @return
+	 */
+	public static PictogramElement getPictogramElement(BaseElement bpmnElement, Diagram diagram) {
+		return getPictogramElement(bpmnElement, diagram, false);
+	}
+
 	/**
 	 * Returns the text of a label shape
 	 * 
@@ -1106,6 +1129,23 @@ public class GraphicsUtil {
 	 * @return the label or null if no label was found
 	 */
 	public static ContainerShape getLabelShape(BaseElement bpmnElement, Diagram diagram) {
+		return (ContainerShape) getPictogramElement(bpmnElement, diagram, true);
+	}
+
+	/**
+	 * Returns the pictogram element linked to the given bpmnElement.
+	 * 
+	 * The argument isLabel specifies whether the label of the element or the element itself should be returned.
+	 * 
+	 * @param bpmnElement
+	 * @param diagram
+	 * @param isLabel
+	 * 
+	 * @return
+	 */
+	private static PictogramElement getPictogramElement(BaseElement bpmnElement,
+			Diagram diagram, boolean isLabel) {
+		
 		if (bpmnElement == null || diagram == null) {
 			throw new IllegalArgumentException("Arguments may not be null");
 		}
@@ -1113,8 +1153,8 @@ public class GraphicsUtil {
 		List<PictogramElement> linkedPictogramElements = Graphiti.getLinkService().getPictogramElements(diagram, bpmnElement);
 		
 		for (PictogramElement element : linkedPictogramElements) {
-			if (isLabel(element)) {
-				return (ContainerShape) element;
+			if (isLabel(element) == isLabel) {
+				return element;
 			}
 		}
 		

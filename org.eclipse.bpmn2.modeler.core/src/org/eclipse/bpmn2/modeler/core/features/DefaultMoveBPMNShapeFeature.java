@@ -88,7 +88,7 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 		}
 		
 		if (isReconnectShapeAfterMove(context)) {
-			ConnectionService.reconnectShapeAfterMove(shape);
+			ConnectionService.reconnectShapeAfterMove(shape, getFeatureProvider());
 		}
 		
 		// update di
@@ -198,7 +198,7 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 				
 				if (baseElement != null) {
 					// reconnect shape
-					ConnectionService.reconnectShapeAfterMove(shape);
+					ConnectionService.reconnectShapeAfterMove(shape, getFeatureProvider());
 					
 					if (bpmnShape != null) {
 						// move label

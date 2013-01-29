@@ -352,7 +352,7 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 		public void postReconnect(IReconnectionContext context) {
 			super.postReconnect(context);
 			
-			ConnectionService.reconnectConnectionAfterConnectionEndChange(context.getConnection());
+			ConnectionService.reconnectConnectionAfterConnectionEndChange(context.getConnection(), getFeatureProvider());
 			
 			cleanupOldAnchor(context.getOldAnchor());
 		}
