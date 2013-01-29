@@ -69,7 +69,7 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		
 		Diagram diagram = getDiagram();
 		
-		boolean customPosition = context.getProperty(ContextConstants.CUSTOM_POSITION) == null ? false : (boolean) context.getProperty(ContextConstants.CUSTOM_POSITION) ;
+		boolean customPosition = context.getProperty(ContextConstants.CUSTOM_POSITION) == null ? false : (Boolean) context.getProperty(ContextConstants.CUSTOM_POSITION) ;
 		
 		// bpmn shape must exist
 		Assert.isNotNull(bpmnShape);

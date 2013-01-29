@@ -200,6 +200,10 @@ public abstract class AbstractAddBPMNShapeFeature<T extends BaseElement>
 			return;
 		}
 		
+		if (true) {
+			return;
+		}
+		
 		Object newObject = getBusinessObject(context);
 		Connection connection = context.getTargetConnection();
 		if (connection!=null) {
