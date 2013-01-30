@@ -15,10 +15,13 @@ package org.eclipse.bpmn2.modeler.core.features;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.modeler.core.features.rules.ModelOperations;
 import org.eclipse.bpmn2.modeler.core.features.rules.ModelOperations.ModelOperation;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
+import org.eclipse.graphiti.features.context.impl.MoveShapeContext;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
