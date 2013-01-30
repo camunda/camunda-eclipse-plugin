@@ -311,15 +311,17 @@ public class BPMN2FeatureProvider extends DefaultFeatureProvider {
 		return null;
 	}
 
-	@Override
-	public ICopyFeature getCopyFeature(ICopyContext context) {
-		return new CopyFeature(this);
-	}
+	//  Copy and paste is not functional yet
 	
-	@Override
-	public IPasteFeature getPasteFeature(IPasteContext context) {
-		return new PasteFeature(this);
-	}
+//	@Override
+//	public ICopyFeature getCopyFeature(ICopyContext context) {
+//		return new CopyFeature(this);
+//	}
+//	
+//	@Override
+//	public IPasteFeature getPasteFeature(IPasteContext context) {
+//		return new PasteFeature(this);
+//	}
 	
 	@Override
 	public IAddFeature getAddFeature(IAddContext context) {
