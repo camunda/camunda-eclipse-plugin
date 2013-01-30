@@ -65,19 +65,15 @@ public class CreateConversationFeature extends AbstractBpmn2CreateFeature<Conver
 
 	@Override
 	public Conversation createBusinessObject(ICreateContext context) {
-		Conversation bo = null;
-		try {
-			bo = Bpmn2ModelerFactory.create(Conversation.class);
-			ModelHandler mh = ModelHandler.getInstance(getDiagram());
-			bo.setName("Conversation");
-	        BPMNDiagram bpmnDiagram = BusinessObjectUtil.getFirstElementOfType(context.getTargetContainer(), BPMNDiagram.class);
-	        mh.addConversationNode(bpmnDiagram,bo);
-			ModelUtil.setID(bo);
-			putBusinessObject(context, bo);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Conversation bo = Bpmn2ModelerFactory.create(Conversation.class);
+		bo.setName("Conversation");
+
+		ModelHandler mh = ModelHandler.getInstance(getDiagram());
+        BPMNDiagram bpmnDiagram = BusinessObjectUtil.getFirstElementOfType(context.getTargetContainer(), BPMNDiagram.class);
+        mh.addConversationNode(bpmnDiagram, bo);
+		ModelUtil.setID(bo);
+		
+		putBusinessObject(context, bo);
 		return bo;
 	}
 }

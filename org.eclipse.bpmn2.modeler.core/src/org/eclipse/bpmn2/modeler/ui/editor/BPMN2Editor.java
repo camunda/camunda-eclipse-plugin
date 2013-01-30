@@ -23,7 +23,6 @@ import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.Bpmn2TabbedPropertySheetPage;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.ProxyURIConverterImplExtension;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.importer.ImportException;
@@ -273,10 +272,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 
 			resourceSet.setURIConverter(new ProxyURIConverterImplExtension());
 			resourceSet.eAdapters().add(editorAdapter = new DiagramEditorAdapter(this));
-
-			modelHandler = ModelHandlerLocator.createModelHandler(bpmn2DiagramEditorInput.getModelUri(), bpmnResource);
-			ModelHandlerLocator.put(bpmn2DiagramEditorInput.getDiagramUri(), modelHandler);
-
+			
 			setActiveEditor(this);
 
 			try {
@@ -550,9 +546,6 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		super.dispose();
 		
 		try {
-			if (diagramEditorInput != null) {
-				ModelHandlerLocator.remove(diagramEditorInput.getModelUri());
-			}
 			removeMarkerChangeListener();
 			getPreferences().dispose();
 		} catch (Exception e) {
@@ -780,20 +773,16 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		resource.setURI(newURI);
 		
 		if (modelUri.equals(oldURI)) {
-			ModelHandlerLocator.remove(modelUri);
 			modelUri = newURI;
-			if (preferences!=null) {
+			
+			if (preferences != null) {
 				preferences.getGlobalPreferences().removePropertyChangeListener(this);
 				preferences.dispose();
 				preferences = null;
 			}
-			modelHandler = ModelHandlerLocator.createModelHandler(modelUri, (Bpmn2ResourceImpl)resource);
-			ModelHandlerLocator.put(diagramUri, modelHandler);
-		}
-		else if (diagramUri.equals(oldURI)) {
-			ModelHandlerLocator.remove(diagramUri);
+		} else
+		if (diagramUri.equals(oldURI)) {
 			diagramUri = newURI;
-			ModelHandlerLocator.put(diagramUri, modelHandler);
 		}
 
 		return true;

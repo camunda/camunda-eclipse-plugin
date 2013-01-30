@@ -92,7 +92,7 @@ public class PullupFeature extends AbstractCustomFeature {
 		
 		// find out which BPMNPlane this sub process lives in - this will be the new home
 		// for the DI elements in the existing BPMNDiagram.
-		BPMNDiagram newBpmnDiagram = (BPMNDiagram)ModelHandler.findDIElement(container).eContainer().eContainer();
+		BPMNDiagram newBpmnDiagram = (BPMNDiagram) ModelHandler.findDIElement(getDiagram(), container).eContainer().eContainer();
 		BPMNPlane newPlane = newBpmnDiagram.getPlane();
 		Diagram newDiagram = DIUtils.findDiagram(getDiagramEditor(), newBpmnDiagram);
 		

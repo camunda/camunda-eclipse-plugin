@@ -10,12 +10,9 @@ import java.util.List;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.impl.DocumentRootImpl;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceFactoryImpl;
 import org.eclipse.bpmn2.modeler.core.test.Activator;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
-import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -41,9 +38,6 @@ public class TestHelper {
 		Bpmn2Resource resource = createBpmn2Resource(testResourceUri);
 		populateResource(resource, resourceUrl);
 		
-		// TODO: get rid of evil ModelHandler
-		createModelHandler(resource, testResourceUri);
-		
 		TransactionalEditingDomain editingDomain = createEditingDomain(resource);
 		
 		return new ModelResources(bpmnDiagramUrl, resource, editingDomain);
@@ -67,11 +61,6 @@ public class TestHelper {
 		String fileName = bpmnDiagramUrl.replaceAll("/", ".").replaceAll(".bpmn", "");
 		URI uri = URI.createFileURI(File.createTempFile(fileName, "diagram", tempDirectory).getAbsolutePath());
 		
-		// TODO: Get rid of model handler all together
-		// register with model handler
-		ModelHandler modelHandler = ModelHandlerLocator.getModelHandler(modelResources.getResource());
-		ModelHandlerLocator.put(uri, modelHandler);
-		
 		Resource resource = modelResources.getResourceSet().createResource(uri);
 		resource.getContents().add(diagram);
 		
@@ -93,6 +82,9 @@ public class TestHelper {
 				
 				if (!diagrams.isEmpty()) {
 					BPMNDiagram bpmnDiagram = diagrams.get(0);
+					
+					// linking is required otherwise the diagram may not be found
+					// in diagram import
 					typeProvider.getFeatureProvider().link(diagram, bpmnDiagram);
 				}
 			}
@@ -110,10 +102,6 @@ public class TestHelper {
 		}
 		
 		return editingDomain;
-	}
-
-	private static ModelHandler createModelHandler(Bpmn2Resource resource, URI testResourceUri) {
-		return ModelHandlerLocator.createModelHandler(testResourceUri, (Bpmn2ResourceImpl) resource);
 	}
 
 	/**

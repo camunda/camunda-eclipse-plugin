@@ -25,7 +25,6 @@ import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
@@ -86,15 +85,11 @@ public class WhiteboxFeature extends AbstractCustomFeature {
 					process = (Process)ce;
 			}
 			
-			if (process!=null) {
-				try {
-					ModelHandler mh = ModelHandlerLocator.getModelHandler(process.eResource());
-					DiagramElement de = mh.findDIElement(process);
-					return de==null;
-				}
-				catch (Exception e){
-				}
+			if (process != null) {
+				DiagramElement de = ModelHandler.findDIElement(getDiagram(), process);
+				return de == null;
 			}
+			
 			return true;
 		}
 		return false;

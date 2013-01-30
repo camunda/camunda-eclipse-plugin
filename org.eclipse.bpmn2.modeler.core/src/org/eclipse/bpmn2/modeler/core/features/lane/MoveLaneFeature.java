@@ -51,7 +51,7 @@ public class MoveLaneFeature extends DefaultMoveBPMNShapeFeature {
 
 	private MoveLaneFeature getStrategy(IMoveShapeContext context) {
 
-		if (context.getSourceContainer().equals(getDiagram())) { // from diagram
+		if (FeatureSupport.isSourceDiagram(context)) { // from diagram
 
 			if (FeatureSupport.isTargetLane(context)) { // to lane
 				return new MoveFromDiagramToLaneFeature(getFeatureProvider());

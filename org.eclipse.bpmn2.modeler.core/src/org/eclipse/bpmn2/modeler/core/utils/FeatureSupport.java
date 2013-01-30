@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.ChoreographyTask;
+import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.Participant;
@@ -34,6 +35,7 @@ import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.context.IContext;
+import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
 import org.eclipse.graphiti.features.context.ITargetContext;
 import org.eclipse.graphiti.mm.algorithms.AbstractText;
@@ -64,6 +66,10 @@ public class FeatureSupport {
 		return isLane(context.getTargetContainer());
 	}
 
+	public static boolean isDiagram(PictogramElement shape) {
+		return BusinessObjectUtil.containsChildElementOfType(shape, Definitions.class);
+	}
+	
 	public static boolean isLane(PictogramElement element) {
 		return BusinessObjectUtil.containsElementOfType(element, Lane.class);
 	}
@@ -651,5 +657,20 @@ public class FeatureSupport {
 		}
 		return result;
 	}
+	
+	public static boolean isSourceParticipant(IMoveShapeContext context) {
+		return isParticipant(context.getSourceContainer());
+	}
 
+	public static boolean isSourceLane(IMoveShapeContext context) {
+		return isLane(context.getSourceContainer());
+	}
+
+	public static boolean isTargetDiagram(ITargetContext context) {
+		return isDiagram(context.getTargetContainer());
+	}
+	
+	public static boolean isSourceDiagram(IMoveShapeContext context) {
+		return isDiagram(context.getSourceContainer());
+	}
 }

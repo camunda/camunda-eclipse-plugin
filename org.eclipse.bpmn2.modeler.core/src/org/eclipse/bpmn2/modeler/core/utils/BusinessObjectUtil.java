@@ -179,8 +179,8 @@ public class BusinessObjectUtil {
 		return null;
 	}
 
-	public static PictogramElement getPictogramForElement(
-			EObject element) {
+	public static PictogramElement getPictogramForElement(EObject element) {
+		
 		List<PictogramElement> pictogramElements = Graphiti.getLinkService().getPictogramElements(BPMN2Editor.getActiveEditor().getDiagramTypeProvider().getDiagram(), element);
 		if (pictogramElements.isEmpty()) {
 			return null;

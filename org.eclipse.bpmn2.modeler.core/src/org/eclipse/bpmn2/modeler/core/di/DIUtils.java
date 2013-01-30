@@ -12,27 +12,20 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.di;
 
-import java.io.IOException;
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.diPoint;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.diPoint;
-
-import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.DocumentRoot;
-import org.eclipse.bpmn2.MessageFlow;
-import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNLabel;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.di.BpmnDiFactory;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
-import org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
@@ -391,7 +384,7 @@ public class DIUtils {
 			for (Resource r : resourceSet.getResources()) {
 				for (EObject o : r.getContents()) {
 					if (o instanceof Diagram) {
-						Diagram diagram = (Diagram)o;
+						Diagram diagram = (Diagram) o;
 						if (BusinessObjectUtil.getFirstElementOfType(diagram, BPMNDiagram.class) == bpmnDiagram) {
 							return diagram;
 						}

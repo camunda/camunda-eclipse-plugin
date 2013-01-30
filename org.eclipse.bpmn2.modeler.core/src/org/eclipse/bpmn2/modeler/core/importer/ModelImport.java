@@ -211,7 +211,7 @@ public class ModelImport {
 		ensureDiagramLinked(bpmnDiagram, collaboration, processes);
 		
 		// and create the graphiti diagram
-		Diagram rootDiagram = createEditorRootDiagram(bpmnDiagram, collaboration, processes);
+		Diagram rootDiagram = createEditorRootDiagram(bpmnDiagram, collaboration, processes, definitions);
 		
 		// next, process the BPMN model elements and start building the Graphiti diagram
 		// first check if we display a single process or collaboration
@@ -293,7 +293,7 @@ public class ModelImport {
 		return process;
 	}
 
-	protected Diagram createEditorRootDiagram(BPMNDiagram bpmnDiagram, Collaboration collaboration, List<Process> processes) {
+	protected Diagram createEditorRootDiagram(BPMNDiagram bpmnDiagram, Collaboration collaboration, List<Process> processes, Definitions definitions) {
 		IDiagramEditor diagramEditor = diagramTypeProvider.getDiagramEditor();
 		
 		Diagram diagram = DIUtils.getOrCreateDiagram(diagramEditor, bpmnDiagram);
@@ -302,7 +302,7 @@ public class ModelImport {
 		// link collaboration or only process to diagram
 		BaseElement businessObject = collaboration != null ? collaboration : processes.get(0);
 		
-		featureProvider.link(diagram, new Object[] { businessObject, bpmnDiagram });
+		featureProvider.link(diagram, new Object[] { businessObject, bpmnDiagram, definitions });
 		return diagram;
 	}
 

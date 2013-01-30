@@ -22,93 +22,92 @@ import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public class CreateDataAssociationFeature extends AbstractCreateFlowFeature<DataAssociation, BaseElement, BaseElement> {
-	
-    public CreateDataAssociationFeature(IFeatureProvider fp) {
-        super(fp, "Data Association", "Associate item aware elements like data objects with activities and events");
-      }
 
-      @Override
-      public boolean canCreate(ICreateConnectionContext context) {
-        BaseElement sourceBo = getSourceBo(context);
-        BaseElement targetBo = getTargetBo(context);
-        if (sourceBo instanceof ItemAwareElement) {
-          if (targetBo instanceof Activity || targetBo instanceof ThrowEvent) {
-            return true;
-          }
-        } else if (targetBo instanceof ItemAwareElement) {
-          if (sourceBo instanceof Activity || sourceBo instanceof CatchEvent) {
-            return true;
-          }
-        }
-        return false;
-      }
-      
-      @Override
-      protected String getStencilImageId() {
-        return ImageProvider.IMG_16_ASSOCIATION;
-      }
+	public CreateDataAssociationFeature(IFeatureProvider fp) {
+		super(fp, "Data Association", "Associate item aware elements like data objects with activities and events");
+	}
 
-      @Override
-      protected Class<BaseElement> getSourceClass() {
-        return BaseElement.class;
-      }
+	@Override
+	public boolean canCreate(ICreateConnectionContext context) {
+		BaseElement sourceBo = getSourceBo(context);
+		BaseElement targetBo = getTargetBo(context);
+		if (sourceBo instanceof ItemAwareElement) {
+			if (targetBo instanceof Activity || targetBo instanceof ThrowEvent) {
+				return true;
+			}
+		} else if (targetBo instanceof ItemAwareElement) {
+			if (sourceBo instanceof Activity || sourceBo instanceof CatchEvent) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-      @Override
-      protected Class<BaseElement> getTargetClass() {
-        return BaseElement.class;
-      }
+	@Override
+	protected String getStencilImageId() {
+		return ImageProvider.IMG_16_ASSOCIATION;
+	}
 
-      @Override
-      protected BaseElement getSourceBo(ICreateConnectionContext context) {
-        Anchor anchor = context.getSourceAnchor();
-        if (anchor != null && anchor.getParent() instanceof Shape) {
-          Shape shape = (Shape) anchor.getParent();
-          Connection conn = AnchorUtil.getConnectionPointOwner(shape);
-          if (conn!=null) {
-            return BusinessObjectUtil.getFirstElementOfType(conn, getTargetClass());
-          }
-          return BusinessObjectUtil.getFirstElementOfType(shape, getTargetClass());
-        }
-        return null;
-      }
+	@Override
+	protected Class<BaseElement> getSourceClass() {
+		return BaseElement.class;
+	}
 
-      @Override
-      protected BaseElement getTargetBo(ICreateConnectionContext context) {
-        Anchor anchor = context.getTargetAnchor();
-        if (anchor != null && anchor.getParent() instanceof Shape) {
-          Shape shape = (Shape) anchor.getParent();
-          Connection conn = AnchorUtil.getConnectionPointOwner(shape);
-          if (conn!=null) {
-            return BusinessObjectUtil.getFirstElementOfType(conn, getTargetClass());
-          }
-          return BusinessObjectUtil.getFirstElementOfType(shape, getTargetClass());
-        }
-        return null;
-      }
+	@Override
+	protected Class<BaseElement> getTargetClass() {
+		return BaseElement.class;
+	}
 
-      @Override
-      public DataAssociation createBusinessObject(ICreateConnectionContext context) {
-        DataAssociation bo = null;
-        try {
-          ModelHandler mh = ModelHandler.getInstance(getDiagram());
-          BaseElement source = getSourceBo(context);
-          BaseElement target = getTargetBo(context);
-          bo = mh.createDataAssociation(source, target);
-          putBusinessObject(context, bo);
+	@Override
+	protected BaseElement getSourceBo(ICreateConnectionContext context) {
+		Anchor anchor = context.getSourceAnchor();
+		if (anchor != null && anchor.getParent() instanceof Shape) {
+			Shape shape = (Shape) anchor.getParent();
+			Connection conn = AnchorUtil.getConnectionPointOwner(shape);
+			if (conn != null) {
+				return BusinessObjectUtil.getFirstElementOfType(conn, getTargetClass());
+			}
+			return BusinessObjectUtil.getFirstElementOfType(shape, getTargetClass());
+		}
+		return null;
+	}
 
-        } catch (IOException e) {
-        }
-        return bo;
-      }
-      
-      @Override
-      public String getCreateName() {
-          return "Data Association";
-      }
+	@Override
+	protected BaseElement getTargetBo(ICreateConnectionContext context) {
+		Anchor anchor = context.getTargetAnchor();
+		if (anchor != null && anchor.getParent() instanceof Shape) {
+			Shape shape = (Shape) anchor.getParent();
+			Connection conn = AnchorUtil.getConnectionPointOwner(shape);
+			if (conn != null) {
+				return BusinessObjectUtil.getFirstElementOfType(conn, getTargetClass());
+			}
+			return BusinessObjectUtil.getFirstElementOfType(shape, getTargetClass());
+		}
+		return null;
+	}
 
-      @Override
-      public EClass getBusinessObjectClass() {
-        return Bpmn2Package.eINSTANCE.getDataAssociation();
-      }
+	@Override
+	public DataAssociation createBusinessObject(ICreateConnectionContext context) {
+		ModelHandler mh = ModelHandler.getInstance(getDiagram());
+		
+		BaseElement source = getSourceBo(context);
+		BaseElement target = getTargetBo(context);
+		
+		DataAssociation bo = mh.createDataAssociation(source, target);
+		
+		putBusinessObject(context, bo);
+		
+		return bo;
+	}
+
+	@Override
+	public String getCreateName() {
+		return "Data Association";
+	}
+
+	@Override
+	public EClass getBusinessObjectClass() {
+		return Bpmn2Package.eINSTANCE.getDataAssociation();
+	}
 
 }

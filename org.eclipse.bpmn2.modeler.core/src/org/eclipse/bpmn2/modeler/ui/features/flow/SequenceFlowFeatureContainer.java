@@ -145,18 +145,12 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 
 		@Override
 		public SequenceFlow createBusinessObject(ICreateConnectionContext context) {
-			SequenceFlow bo = null;
-			try {
-				FlowNode source = getSourceBo(context);
-				FlowNode target = getTargetBo(context);
-				ModelHandler mh = ModelHandler.getInstance(source);
-				bo = mh.createSequenceFlow(source, target);
-				bo.setName("");
-				putBusinessObject(context, bo);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			FlowNode source = getSourceBo(context);
+			FlowNode target = getTargetBo(context);
+			ModelHandler mh = ModelHandler.getInstance(source);
+			SequenceFlow bo = mh.createSequenceFlow(source, target);
+			bo.setName("");
+			putBusinessObject(context, bo);
 			return bo;
 		}
 	}

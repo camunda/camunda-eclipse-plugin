@@ -56,16 +56,16 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		int width = (Integer) context.getProperty(ContextConstants.WIDTH);
 		int height = (Integer) context.getProperty(ContextConstants.HEIGHT);
 		
+		Diagram diagram = getDiagram();
+		
 		BaseElement baseElement = (BaseElement) context.getProperty(ContextConstants.BUSINESS_OBJECT);
-		BPMNShape bpmnShape = (BPMNShape) ModelHandler.findDIElement(baseElement);
+		BPMNShape bpmnShape = (BPMNShape) ModelHandler.findDIElement(diagram, baseElement);
 		
 		ContainerShape container = context.getTargetContainer();
 		IRectangle containerBounds = LayoutUtil.getAbsoluteBounds(container);
 		
 		int x = context.getX() + containerBounds.getX();
 		int y = context.getY() + containerBounds.getY();
-		
-		Diagram diagram = getDiagram();
 		
 		boolean customPosition = false;
 		

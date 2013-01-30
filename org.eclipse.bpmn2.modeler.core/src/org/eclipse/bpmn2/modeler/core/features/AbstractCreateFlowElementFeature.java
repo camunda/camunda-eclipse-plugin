@@ -13,22 +13,21 @@
 package org.eclipse.bpmn2.modeler.core.features;
 
 
-import java.io.IOException;
-
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.Lane;
-import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
+import org.eclipse.bpmn2.modeler.core.features.rules.ModelOperations;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
 
 public abstract class AbstractCreateFlowElementFeature<T extends FlowElement> extends AbstractBpmn2CreateFeature<T> {
 	
-	public static final String OPTION_DONT_ADD = "DONT_ADD";
+	public static final String SKIP_ADD_GRAPHICS = "DONT_ADD";
 	
 	public AbstractCreateFlowElementFeature(IFeatureProvider fp, String name, String description) {
 		super(fp, name, description);
@@ -39,28 +38,26 @@ public abstract class AbstractCreateFlowElementFeature<T extends FlowElement> ex
 		boolean intoDiagram = context.getTargetContainer().equals(getDiagram());
 		boolean intoLane = FeatureSupport.isTargetLane(context) && FeatureSupport.isTargetLaneOnTop(context);
 		boolean intoParticipant = FeatureSupport.isTargetParticipant(context);
-		boolean intoFlowElementContainer = BusinessObjectUtil.containsElementOfType(context.getTargetContainer(),
-				FlowElementsContainer.class);
+		boolean intoFlowElementContainer = BusinessObjectUtil.containsElementOfType(context.getTargetContainer(), FlowElementsContainer.class);
+		
 		return intoDiagram || intoLane || intoParticipant || intoFlowElementContainer;
 	}
 
 	@Override
 	public Object[] create(ICreateContext context) {
-		T element = null;
-		try {
-			ModelHandler handler = ModelHandler.getInstance(getDiagram());
-			element = createBusinessObject(context);
-			if (FeatureSupport.isTargetLane(context) && element instanceof FlowNode) {
-				((FlowNode) element).getLanes().add(
-						(Lane) getBusinessObjectForPictogramElement(context.getTargetContainer()));
-			}
-			handler.addFlowElement(getBusinessObjectForPictogramElement(context.getTargetContainer()), element);
-		} catch (IOException e) {
-			Activator.logError(e);
-		} 
-		if (context.getProperty(OPTION_DONT_ADD) == null) {
+		ModelHandler handler = ModelHandler.getInstance(getDiagram());
+		T element = createBusinessObject(context);
+		if (FeatureSupport.isTargetLane(context) && element instanceof FlowNode) {
+			((FlowNode) element).getLanes().add(
+					(Lane) getBusinessObjectForPictogramElement(context.getTargetContainer()));
+		}
+		
+		handler.addFlowElement(getBusinessObjectForPictogramElement(context.getTargetContainer()), element);
+		
+		if (!ContextUtil.is(context, SKIP_ADD_GRAPHICS)) {
 			addGraphicalRepresentation(context, element);
 		}
+		
 		return new Object[] { element };
 	}
 	

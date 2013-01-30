@@ -62,17 +62,12 @@ public class MoveFromLaneToParticipantFeature extends MoveLaneFeature {
 		Lane movedLane = getMovedLane(context);
 		Participant targetParticipant = (Participant) getBusinessObjectForPictogramElement(context.getTargetContainer());
 
-		try {
-			ModelHandler handler = ModelHandler.getInstance(getDiagram());
-			handler.moveLane(movedLane, targetParticipant);
-		} catch (IOException e) {
-			Activator.logError(e);
-		}
+		ModelHandler handler = ModelHandler.getInstance(getDiagram());
+		handler.moveLane(movedLane, targetParticipant);
 
 		Process process = targetParticipant.getProcessRef();
 		if (process.getLaneSets().isEmpty()) {
 			LaneSet createLaneSet = Bpmn2ModelerFactory.create(LaneSet.class);
-//			createLaneSet.setId(EcoreUtil.generateUUID());
 			process.getLaneSets().add(createLaneSet);
 			ModelUtil.setID(createLaneSet);
 		}

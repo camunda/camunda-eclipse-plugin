@@ -70,15 +70,11 @@ public class MoveFromLaneToLaneFeature extends MoveLaneFeature {
 			ModelUtil.setID(createLaneSet);
 		}
 
-		try {
-			ModelHandler handler = ModelHandler.getInstance(getDiagram());
-			Participant sourceParticipant = handler.getParticipant(sourceLane);
-			Participant targetParticipant = handler.getParticipant(targetLane);
-			if (!sourceParticipant.equals(targetParticipant)) {
-				handler.moveLane(movedLane, sourceParticipant, targetParticipant);
-			}
-		} catch (IOException e) {
-			Activator.logError(e);
+		ModelHandler handler = ModelHandler.getInstance(getDiagram());
+		Participant sourceParticipant = handler.getParticipant(sourceLane);
+		Participant targetParticipant = handler.getParticipant(targetLane);
+		if (!sourceParticipant.equals(targetParticipant)) {
+			handler.moveLane(movedLane, sourceParticipant, targetParticipant);
 		}
 
 		targetLane.getChildLaneSet().getLanes().add(movedLane);
