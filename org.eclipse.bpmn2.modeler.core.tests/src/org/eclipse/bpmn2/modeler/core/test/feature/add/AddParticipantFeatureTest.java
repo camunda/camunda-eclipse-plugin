@@ -15,6 +15,7 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.junit.Test;
 
@@ -99,6 +100,25 @@ public class AddParticipantFeatureTest extends AbstractFeatureTest {
 		IRectangle postMoveEventLabelBounds = LayoutUtil.getAbsoluteBounds(eventLabelShape);
 		
 		assertThat(postMoveEventLabelBounds).isEqualTo(preMoveEventLabelBounds);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddParticipantFeatureTest.testAddPoolRetainsBendpointPositioning.bpmn")
+	public void testAddPoolRetainsBendpointPositioning() throws Exception {
+		FreeFormConnection flow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		
+		// when
+		// adding pool to diagram
+		addPool(diagramTypeProvider)
+			.toContainer(diagram)
+			.execute();
+
+		// then
+		// bendpoint position should be the same
+
+		assertThat(flow1.getBendpoints()).hasSize(2);
+		assertThat(flow1.getBendpoints().get(0)).isEqualTo(373, 288);
+		assertThat(flow1.getBendpoints().get(1)).isEqualTo(373, 390);
 	}
 	
 	@Test

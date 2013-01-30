@@ -31,6 +31,7 @@ import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
@@ -178,8 +179,10 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 			moveShapeContext.setSourceContainer(childShape.getContainer());
 			
 			moveShapeContext.putProperty(DefaultMoveBPMNShapeFeature.SKIP_MOVE_LABEL, true);
+			ContextUtil.set(moveShapeContext, DefaultMoveBPMNShapeFeature.SKIP_MOVE_BENDPOINTS);
 			
 			IMoveShapeFeature moveFeature = getFeatureProvider().getMoveShapeFeature(moveShapeContext);
+			
 			if (moveFeature.canMoveShape(moveShapeContext)) {
 				moveFeature.execute(moveShapeContext);
 			}
