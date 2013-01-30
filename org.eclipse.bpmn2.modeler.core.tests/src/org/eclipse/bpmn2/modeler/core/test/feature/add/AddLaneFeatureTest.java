@@ -17,7 +17,7 @@ import org.junit.Test;
 public class AddLaneFeatureTest extends AbstractFeatureTest {
 	
 	@Test
-	@DiagramResource
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddFeatureTestBase.testAddToDiagram.bpmn")
 	public void testAddOnDiagramNotAllowed() throws Exception {
 
 		// given empty diagram
@@ -35,7 +35,7 @@ public class AddLaneFeatureTest extends AbstractFeatureTest {
 	}
 
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddLaneFeatureTest.testAddOnToPool.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddFeatureTestBase.testAddToNonEmptyParticipant.bpmn")
 	public void testAddOnToParticipantChangesContainer() throws Exception {
 
 		// given participant
@@ -57,7 +57,7 @@ public class AddLaneFeatureTest extends AbstractFeatureTest {
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddLaneFeatureTest.testAddOnToPool.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddFeatureTestBase.testAddToNonEmptyParticipant.bpmn")
 	public void testAddOnToParticipantRetainsContainedEventPosition() throws Exception {
 
 		// given participant
@@ -80,7 +80,7 @@ public class AddLaneFeatureTest extends AbstractFeatureTest {
 	}
 
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddLaneFeatureTest.testAddOnToPool.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddFeatureTestBase.testAddToNonEmptyParticipant.bpmn")
 	public void testAddOnToParticipantRetainsContainedTaskPosition() throws Exception {
 
 		// given participant
@@ -103,7 +103,7 @@ public class AddLaneFeatureTest extends AbstractFeatureTest {
 	}
 
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddLaneFeatureTest.testAddOnToPool.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddFeatureTestBase.testAddToNonEmptyParticipant.bpmn")
 	public void testAddOnToParticipantRetainsContainedLabelPositions() throws Exception {
 
 		// given participant
@@ -128,10 +128,8 @@ public class AddLaneFeatureTest extends AbstractFeatureTest {
 	}
 	
 
-	
-
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddLaneFeatureTest.testAddOnToLane.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddFeatureTestBase.testAddToLane.bpmn")
 	public void testAddOnToLaneChangesContainer() throws Exception {
 
 		// given participant
@@ -153,7 +151,7 @@ public class AddLaneFeatureTest extends AbstractFeatureTest {
 	}
 
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddLaneFeatureTest.testAddOnToLane.bpmn")
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddFeatureTestBase.testAddToLane.bpmn")
 	public void testAddOnToLaneRetainsContainedEventPosition() throws Exception {
 
 		// given participant

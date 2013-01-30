@@ -68,7 +68,7 @@ public class AddParticipantFeature extends AbstractAddBPMNShapeFeature<Participa
 		StyleUtil.applyStyle(rect, participant);
 		gaService.setLocationAndSize(rect, context.getX(), context.getY(), width, height);
 
-		boolean isImport = context.getProperty(DIUtils.IMPORT_PROPERTY) != null;
+		boolean isImport = context.getProperty(DIUtils.IMPORT) != null;
 		BPMNShape bpmnShape = createDIShape(containerShape, participant, !isImport);
 		boolean horz = bpmnShape.isIsHorizontal();
 		FeatureSupport.setHorizontal(containerShape, horz);

@@ -353,6 +353,7 @@ Export-Package: org.eclipse.bpmn2.modeler.core;
    org.eclipse.bpmn2.modeler.core.features.flow,
    org.eclipse.graphiti.features.custom,
    org.eclipse.bpmn2.modeler.core",
+ org.eclipse.bpmn2.modeler.ui.features.data,
  org.eclipse.bpmn2.modeler.ui.features.event;
   uses:="org.eclipse.bpmn2.modeler.core.features.event,
    org.eclipse.graphiti.features,

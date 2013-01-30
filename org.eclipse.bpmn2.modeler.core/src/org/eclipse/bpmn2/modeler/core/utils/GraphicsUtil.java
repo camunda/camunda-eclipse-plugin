@@ -25,6 +25,7 @@ import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.IDimension;
@@ -237,11 +238,19 @@ public class GraphicsUtil {
 				textWidth + TEXT_PADDING, textHeight + TEXT_PADDING);
 	}
 
-	public static void prepareAddContext(IAddContext context, int width, int height) {
+	public static void prepareLabelAddContext(IAddContext context, int width, int height) {
+		prepareLabelAddContext(context, width, height, context.getNewObject());
+	}
+	
+	public static void prepareLabelAddContext(IAddContext context, int width, int height, Object businessObject) {
+		
+		Assert.isNotNull(context);
+		Assert.isNotNull(businessObject);
+		
 		context.putProperty(ContextConstants.LABEL_CONTEXT, true);
 		context.putProperty(ContextConstants.WIDTH, width);
 		context.putProperty(ContextConstants.HEIGHT, height);
-		context.putProperty(ContextConstants.BUSINESS_OBJECT, context.getNewObject());
+		context.putProperty(ContextConstants.BUSINESS_OBJECT, businessObject);
 	}
 	
 	private static float calculateRatio(float x, float y) {

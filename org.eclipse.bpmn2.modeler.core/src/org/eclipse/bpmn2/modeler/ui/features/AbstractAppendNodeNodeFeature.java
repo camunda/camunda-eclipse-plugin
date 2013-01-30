@@ -208,7 +208,7 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 		AbstractCreateFeature createFeature = (AbstractCreateFeature) fp.getCreateFeatureForBusinessObject(newType.getInstanceClass());
 		
 		CreateContext createContext = new CreateContext();
-		createContext.putProperty(AbstractCreateFlowElementFeature.SKIP_ADD_GRAPHICS, "true");
+		createContext.putProperty(AbstractCreateFlowElementFeature.SKIP_ADD_GRAPHICS, true);
 		createContext.setTargetContainer(oldShape.getContainer());
 		
 		FlowElement newObject = null;

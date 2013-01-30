@@ -13,6 +13,7 @@ import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -88,6 +89,8 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		peService.sendToFront(textContainerShape);
 		
 		link(textContainerShape, new Object[] { baseElement, bpmnShape });
+
+		GraphicsUtil.makeLabel(textContainerShape);
 		
 		updatePictogramElement(textContainerShape);
 		
@@ -118,15 +121,13 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		  GraphicsUtil.alignWithShape(text, textContainerShape, width, height, point(x, y), null);
 		}
 		
-		GraphicsUtil.makeLabel(textContainerShape);
-		
 		layoutPictogramElement(textContainerShape);
 		
 		return textContainerShape;
 	}
 	
 	private boolean isImport(IAddContext context) {
-		return context.getProperty(DIUtils.IMPORT_PROPERTY) == null ? false : (Boolean) context.getProperty(DIUtils.IMPORT_PROPERTY);
+		return ContextUtil.is(context, DIUtils.IMPORT);
 	}
 	
 	/**

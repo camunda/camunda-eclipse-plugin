@@ -88,7 +88,7 @@ public class AddEventFeature<T extends Event>
 
 		peService.createChopboxAnchor(containerShape);
 		AnchorUtil.addFixedPointAnchors(containerShape, ellipse);
-		boolean isImport = context.getProperty(DIUtils.IMPORT_PROPERTY) != null;
+		boolean isImport = context.getProperty(DIUtils.IMPORT) != null;
 		
 		BPMNShape bpmnShape = createDIShape(containerShape, e, !isImport);
 		hook(containerShape);

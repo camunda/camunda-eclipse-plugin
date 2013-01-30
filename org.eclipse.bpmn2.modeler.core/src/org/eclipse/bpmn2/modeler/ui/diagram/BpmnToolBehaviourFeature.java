@@ -248,15 +248,14 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 		IContextButtonPadData data = super.getContextButtonPad(context);
 		PictogramElement pe = context.getPictogramElement();
 		IFeatureProvider fp = getFeatureProvider();
-
-		String labelProperty = Graphiti.getPeService().getPropertyValue(pe, GraphicsUtil.LABEL_PROPERTY);
-		if (Boolean.parseBoolean(labelProperty)) {
+		
+		if (GraphicsUtil.isLabel(pe)) {
 			// labels don't have a buttonpad
 			setGenericContextButtons(data, pe, 0);
 			return data;
 		}
 
-		if( pe.getGraphicsAlgorithm()!= null && pe.getGraphicsAlgorithm().getWidth() < 40 ){
+		if (pe.getGraphicsAlgorithm() != null && pe.getGraphicsAlgorithm().getWidth() < 40 ){
 		    ILocation origin = getAbsoluteLocation(pe.getGraphicsAlgorithm());
 		    data.getPadLocation().setRectangle(origin.getX(), origin.getY(), 40, 40);
 		}

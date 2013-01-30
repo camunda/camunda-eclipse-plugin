@@ -18,7 +18,6 @@ import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.features.rules.ModelOperations;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
@@ -26,9 +25,7 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
 
 public abstract class AbstractCreateFlowElementFeature<T extends FlowElement> extends AbstractBpmn2CreateFeature<T> {
-	
-	public static final String SKIP_ADD_GRAPHICS = "DONT_ADD";
-	
+
 	public AbstractCreateFlowElementFeature(IFeatureProvider fp, String name, String description) {
 		super(fp, name, description);
 	}
@@ -54,7 +51,7 @@ public abstract class AbstractCreateFlowElementFeature<T extends FlowElement> ex
 		
 		handler.addFlowElement(getBusinessObjectForPictogramElement(context.getTargetContainer()), element);
 		
-		if (!ContextUtil.is(context, SKIP_ADD_GRAPHICS)) {
+		if (ContextUtil.isNot(context, SKIP_ADD_GRAPHICS)) {
 			addGraphicalRepresentation(context, element);
 		}
 		

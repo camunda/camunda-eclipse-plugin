@@ -53,7 +53,7 @@ public class AddBoundaryEventFeature extends AbstractAddBPMNShapeFeature<Boundar
 			return false;
 		}
 
-		Object prop = context.getProperty(DIUtils.IMPORT_PROPERTY);
+		Object prop = context.getProperty(DIUtils.IMPORT);
 		if (prop != null && (Boolean) prop) {
 			return true;
 		}
@@ -66,7 +66,7 @@ public class AddBoundaryEventFeature extends AbstractAddBPMNShapeFeature<Boundar
 	public PictogramElement add(IAddContext context) {
 		BoundaryEvent event = getBusinessObject(context);
 
-		boolean isImport = context.getProperty(DIUtils.IMPORT_PROPERTY) != null;
+		boolean isImport = context.getProperty(DIUtils.IMPORT) != null;
 		// FIXME: what's going on here?
 		ContainerShape target = isImport ? context.getTargetContainer() : (ContainerShape) context
 		        .getTargetContainer().eContainer();

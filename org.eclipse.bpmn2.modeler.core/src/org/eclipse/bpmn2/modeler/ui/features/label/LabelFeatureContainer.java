@@ -1,7 +1,5 @@
 package org.eclipse.bpmn2.modeler.ui.features.label;
 
-import java.util.Collection;
-
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataObject;
@@ -19,6 +17,8 @@ import org.eclipse.bpmn2.modeler.core.features.FeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
+import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -34,9 +34,9 @@ import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
+import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.features.impl.DefaultMoveShapeFeature;
-import org.eclipse.graphiti.mm.algorithms.AbstractText;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -46,27 +46,21 @@ public class LabelFeatureContainer implements FeatureContainer {
 
 	@Override
 	public Object getApplyObject(IContext context) {
-		if (context.getProperty(ContextConstants.LABEL_CONTEXT) != null
-				&& (Boolean) context.getProperty(ContextConstants.LABEL_CONTEXT) == true) {
-			if (context instanceof IAddContext) {
+		if (context instanceof IAddContext) {
+			if (ContextUtil.is(context, ContextConstants.LABEL_CONTEXT)) {
 				IAddContext addContext = (IAddContext) context;
 				return addContext.getNewObject();
 			}
-		} else if (context instanceof IPictogramElementContext) {
-			IPictogramElementContext peContext = (IPictogramElementContext) context;
-			BaseElement o = BusinessObjectUtil.getFirstElementOfType(peContext.getPictogramElement(), BaseElement.class);
-			if (o != null && (o instanceof Gateway || o instanceof Event || o instanceof DataObject || o instanceof DataInput || o instanceof DataOutput)) {
-				if (peContext.getPictogramElement() instanceof ContainerShape) {
-					ContainerShape container = (ContainerShape) peContext.getPictogramElement();
-					if (container.getChildren().size() == 1) {
-						Shape shape = container.getChildren().get(0);
-						if (shape.getGraphicsAlgorithm() instanceof AbstractText) {
-							return o;
-						}
-					}
-				}
+		} else
+		if (context instanceof IPictogramElementContext) {
+			IPictogramElementContext pictogramElementCtx = (IPictogramElementContext) context;
+			PictogramElement e = pictogramElementCtx.getPictogramElement();
+			
+			if (GraphicsUtil.isLabel(e)) {
+				return BusinessObjectUtil.getFirstElementOfType(e, BaseElement.class);
 			}
 		}
+		
 		return null;
 	}
 
@@ -152,6 +146,7 @@ public class LabelFeatureContainer implements FeatureContainer {
 			if (!getUserDecision()) {
 				return;
 			}
+			
 			Shape shapeToMove = context.getShape();
 
 			ContainerShape targetContainer = context.getTargetContainer();

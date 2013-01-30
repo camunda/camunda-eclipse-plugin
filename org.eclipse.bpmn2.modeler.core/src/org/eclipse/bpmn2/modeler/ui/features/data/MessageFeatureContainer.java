@@ -93,7 +93,7 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 				peService.createChopboxAnchor(container);
 				AnchorUtil.addFixedPointAnchors(container, invisibleRect);
 
-				boolean isImport = context.getProperty(DIUtils.IMPORT_PROPERTY) != null;
+				boolean isImport = context.getProperty(DIUtils.IMPORT) != null;
 				createDIShape(container, msg, !isImport);
 				layoutPictogramElement(container);
 				

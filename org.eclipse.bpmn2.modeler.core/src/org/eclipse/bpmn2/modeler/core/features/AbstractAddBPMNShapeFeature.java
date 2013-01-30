@@ -25,7 +25,9 @@ import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
+import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
 import org.eclipse.graphiti.IExecutionInfo;
 import org.eclipse.graphiti.datatypes.ILocation;
@@ -82,14 +84,11 @@ public abstract class AbstractAddBPMNShapeFeature<T extends BaseElement>
 	}
 	
 	protected void prepareAddContext(IAddContext context, int width, int height) {
-		context.putProperty(ContextConstants.LABEL_CONTEXT, true);
-		context.putProperty(ContextConstants.WIDTH, width);
-		context.putProperty(ContextConstants.HEIGHT, height);
-		context.putProperty(ContextConstants.BUSINESS_OBJECT, getBusinessObject(context));
+		GraphicsUtil.prepareLabelAddContext(context, width, height, getBusinessObject(context));
 	}
 	
 	protected void adjustLocation(IAddContext context, int width, int height) {
-		if (context.getProperty(DIUtils.IMPORT_PROPERTY) != null) {
+		if (ContextUtil.is(context, DIUtils.IMPORT)) {
 			return;
 		}
 		
@@ -177,7 +176,7 @@ public abstract class AbstractAddBPMNShapeFeature<T extends BaseElement>
 	}
 
 	protected void splitConnection(IAddContext context, ContainerShape containerShape) {
-		if (context.getProperty(DIUtils.IMPORT_PROPERTY) != null) {
+		if (ContextUtil.is(context, DIUtils.IMPORT)) {
 			return;
 		}
 		
@@ -273,7 +272,7 @@ public abstract class AbstractAddBPMNShapeFeature<T extends BaseElement>
 	}
 
 	protected boolean isHorizontal(ITargetContext context) {
-		if (context.getProperty(DIUtils.IMPORT_PROPERTY) == null) {
+		if (ContextUtil.isNot(context, DIUtils.IMPORT)) {
 			// not importing - set isHorizontal to be the same as parent Pool
 			if (FeatureSupport.isTargetParticipant(context)) {
 				Participant targetParticipant = FeatureSupport.getTargetParticipant(context);

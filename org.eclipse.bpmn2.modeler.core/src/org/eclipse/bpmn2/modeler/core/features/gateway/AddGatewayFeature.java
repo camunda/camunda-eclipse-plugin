@@ -78,7 +78,7 @@ public class AddGatewayFeature<T extends Gateway>
 		StyleUtil.applyStyle(gateway, addedGateway);
 		gaService.setLocationAndSize(gateway, 0, 0, width, height);
 
-		boolean isImport = context.getProperty(DIUtils.IMPORT_PROPERTY) != null;
+		boolean isImport = context.getProperty(DIUtils.IMPORT) != null;
 		BPMNShape bpmnShape = createDIShape(containerShape, addedGateway, !isImport);
 		peService.createChopboxAnchor(containerShape);
 		AnchorUtil.addFixedPointAnchors(containerShape, gateway);

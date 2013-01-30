@@ -61,7 +61,7 @@ public class AddConversationFeature extends AbstractAddBPMNShapeFeature<Conversa
 		AnchorUtil.addFixedPointAnchors(containerShape, rect);
 
 		link(containerShape, c);
-		boolean isImport = context.getProperty(DIUtils.IMPORT_PROPERTY) != null;
+		boolean isImport = context.getProperty(DIUtils.IMPORT) != null;
 		createDIShape(containerShape, c, !isImport);
 		return containerShape;
 	}

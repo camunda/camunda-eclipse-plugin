@@ -74,7 +74,7 @@ public class AddChoreographyActivityFeature<T extends ChoreographyActivity>
 		StyleUtil.applyStyle(containerRect, choreography);
 		decorateContainerRect(containerRect);
 
-		boolean isImport = context.getProperty(DIUtils.IMPORT_PROPERTY) != null;
+		boolean isImport = context.getProperty(DIUtils.IMPORT) != null;
 		if (isImport) {
 			addedFromImport(choreography, choreographyContainer, context);
 		}

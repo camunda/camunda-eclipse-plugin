@@ -114,7 +114,7 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 		// contexts may disable reconnect by
 		// setting DefaultMoveBPMNShapeFeature.SKIP_RECONNECT_AFTER_MOVE
 		
-		return !is(context, SKIP_RECONNECT_AFTER_MOVE);
+		return isNot(context, SKIP_RECONNECT_AFTER_MOVE);
 	}
 	
 	private boolean isMoveBendpoints(IMoveShapeContext context) {
@@ -122,11 +122,11 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 		// contexts may disable automatic moving of bendpoints by 
 		// setting DefaultMoveBPMNShapeFeature.SKIP_MOVE_BENDPOINTs
 		
-		return !is(context, SKIP_MOVE_BENDPOINTS);
+		return isNot(context, SKIP_MOVE_BENDPOINTS);
 	}
 
 	private boolean isMoveLabel(IMoveShapeContext context) {
-		return !is(context, SKIP_MOVE_LABEL);
+		return isNot(context, SKIP_MOVE_LABEL);
 	}
 	
 	private Point getMovementDiff(Shape shape) {

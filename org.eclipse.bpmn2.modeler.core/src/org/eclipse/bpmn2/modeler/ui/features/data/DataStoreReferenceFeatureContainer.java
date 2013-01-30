@@ -12,23 +12,19 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.data;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.DataStore;
 import org.eclipse.bpmn2.DataStoreReference;
-import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
-import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
-import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
-import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
-import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
+import org.eclipse.bpmn2.modeler.core.features.data.AddDataFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
@@ -38,17 +34,10 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
-import org.eclipse.graphiti.features.IDeleteFeature;
-import org.eclipse.graphiti.features.IDirectEditingFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.ILayoutFeature;
-import org.eclipse.graphiti.features.IMoveShapeFeature;
-import org.eclipse.graphiti.features.IResizeShapeFeature;
-import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.ICreateContext;
-import org.eclipse.graphiti.features.context.IResizeShapeContext;
-import org.eclipse.graphiti.features.impl.DefaultResizeShapeFeature;
 import org.eclipse.graphiti.mm.algorithms.Polygon;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
@@ -63,7 +52,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
-public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContainer {
+public class DataStoreReferenceFeatureContainer extends AbstractDataFeatureContainer {
 
 	@Override
 	public boolean canApplyTo(Object o) {
@@ -77,90 +66,7 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AbstractAddBPMNShapeFeature<DataStoreReference>(fp) {
-
-			@Override
-			public boolean canAdd(IAddContext context) {
-				return true;
-			}
-
-			@Override
-			public PictogramElement add(IAddContext context) {
-				IGaService gaService = Graphiti.getGaService();
-				IPeService peService = Graphiti.getPeService();
-				DataStoreReference store = getBusinessObject(context);
-
-				int width = this.getWidth();
-				int height = this.getHeight();
-
-				ContainerShape container = peService.createContainerShape(context.getTargetContainer(), true);
-				Rectangle invisibleRect = gaService.createInvisibleRectangle(container);
-				gaService.setLocationAndSize(invisibleRect, context.getX(), context.getY(), width, height);
-
-				int whalf = width / 2;
-
-				int[] xy = { 0, 10, whalf, 20, width, 10, width, height - 10, whalf, height, 0, height - 10 };
-				int[] bend = { 0, 0, whalf, whalf, 0, 0, 0, 0, whalf, whalf, 0, 0 };
-				Polygon polygon = gaService.createPolygon(invisibleRect, xy, bend);
-				polygon.setFilled(true);
-				// polygon.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-
-				StyleUtil.applyStyle(polygon, store);
-
-				xy = new int[] { 0, 14, whalf, 24, width, 14 };
-				bend = new int[] { 0, 0, whalf, whalf, 0, 0 };
-				Polyline line1 = gaService.createPolyline(invisibleRect, xy, bend);
-				line1.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-
-				xy = new int[] { 0, 18, whalf, 28, width, 18 };
-				Polyline line2 = gaService.createPolyline(invisibleRect, xy, bend);
-				line2.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-
-				xy = new int[] { 0, 11, whalf, 0, width, 11 };
-				Polyline lineTop = gaService.createPolyline(invisibleRect, xy, bend);
-				lineTop.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-
-//				Shape textShape = peService.createShape(control, false);
-//				peService
-//						.setPropertyValue(textShape, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
-//				Text text = gaService.createDefaultText(getDiagram(), textShape, store.getName());
-//				text.setStyle(StyleUtil.getStyleForText(getDiagram()));
-//				text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
-//				text.setVerticalAlignment(Orientation.ALIGNMENT_TOP);
-//				gaService.setLocationAndSize(text, 0, height, width, textArea);
-
-				peService.createChopboxAnchor(container);
-				AnchorUtil.addFixedPointAnchors(container, invisibleRect);
-				boolean isImport = context.getProperty(DIUtils.IMPORT_PROPERTY) != null;
-				createDIShape(container, store, !isImport);
-				layoutPictogramElement(container);
-				
-				this.prepareAddContext(context, width, height);
-				this.getFeatureProvider().getAddFeature(context).add(context);
-				
-				return container;
-			}
-
-			@Override
-			public int getHeight() {
-				return 50;
-			}
-
-			@Override
-			public int getWidth() {
-				return 50;
-			}
-		};
-	}
-
-	@Override
-	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {
-		return new UpdateBaseElementNameFeature(fp);
-	}
-
-	@Override
-	public IDirectEditingFeature getDirectEditingFeature(IFeatureProvider fp) {
-		return null;
+		return new AddDataStoreReferenceFeature(fp);
 	}
 
 	@Override
@@ -173,27 +79,18 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 			}
 		};
 	}
-
-	@Override
-	public IMoveShapeFeature getMoveFeature(IFeatureProvider fp) {
-		return new DefaultMoveBPMNShapeFeature(fp);
-	}
-
-	@Override
-	public IResizeShapeFeature getResizeFeature(IFeatureProvider fp) {
-		return new DefaultResizeShapeFeature(fp) {
-			@Override
-			public boolean canResizeShape(IResizeShapeContext context) {
-				return false;
-			}
-		};
-	}
-
+	
+	/**
+	 * Create datastore reference feature
+	 * 
+	 * @author nico.rehwaldt
+	 */
 	public static class CreateDataStoreReferenceFeature extends AbstractCreateFlowElementFeature<DataStoreReference> {
 
 		private static ILabelProvider labelProvider = new ILabelProvider() {
 
 			public void removeListener(ILabelProviderListener listener) {
+				
 			}
 
 			public boolean isLabelProperty(Object element, String property) {
@@ -219,7 +116,7 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 			}
 
 		};
-
+		
 		public CreateDataStoreReferenceFeature(IFeatureProvider fp) {
 			super(
 					fp,
@@ -298,9 +195,88 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 			return bo;
 		}
 	}
+	
+	/**
+	 * Add datastore feature
+	 * 
+	 * @author nico.rehwaldt
+	 */
+	public static class AddDataStoreReferenceFeature extends AddDataFeature<DataStoreReference> {
 
-	@Override
-	public IDeleteFeature getDeleteFeature(IFeatureProvider context) {
-		return null;
+		public AddDataStoreReferenceFeature(IFeatureProvider fp) {
+			super(fp);
+		}
+
+		@Override
+		public boolean canAdd(IAddContext context) {
+			return true;
+		}
+
+		@Override
+		public PictogramElement add(IAddContext context) {
+			IGaService gaService = Graphiti.getGaService();
+			IPeService peService = Graphiti.getPeService();
+			DataStoreReference store = getBusinessObject(context);
+
+			int width = this.getWidth();
+			int height = this.getHeight();
+
+			ContainerShape container = peService.createContainerShape(context.getTargetContainer(), true);
+			Rectangle invisibleRect = gaService.createInvisibleRectangle(container);
+			gaService.setLocationAndSize(invisibleRect, context.getX(), context.getY(), width, height);
+
+			int whalf = width / 2;
+
+			int[] xy = { 0, 10, whalf, 20, width, 10, width, height - 10, whalf, height, 0, height - 10 };
+			int[] bend = { 0, 0, whalf, whalf, 0, 0, 0, 0, whalf, whalf, 0, 0 };
+			Polygon polygon = gaService.createPolygon(invisibleRect, xy, bend);
+			polygon.setFilled(true);
+
+			StyleUtil.applyStyle(polygon, store);
+
+			xy = new int[] { 0, 14, whalf, 24, width, 14 };
+			bend = new int[] { 0, 0, whalf, whalf, 0, 0 };
+			Polyline line1 = gaService.createPolyline(invisibleRect, xy, bend);
+			line1.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+
+			xy = new int[] { 0, 18, whalf, 28, width, 18 };
+			Polyline line2 = gaService.createPolyline(invisibleRect, xy, bend);
+			line2.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+
+			xy = new int[] { 0, 11, whalf, 0, width, 11 };
+			Polyline lineTop = gaService.createPolyline(invisibleRect, xy, bend);
+			lineTop.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+			
+			peService.createChopboxAnchor(container);
+			AnchorUtil.addFixedPointAnchors(container, invisibleRect);
+			boolean isImport = ContextUtil.is(context, DIUtils.IMPORT);
+			createDIShape(container, store, !isImport);
+			layoutPictogramElement(container);
+			
+			this.prepareAddContext(context, width, height);
+			this.getFeatureProvider().getAddFeature(context).add(context);
+			
+			return container;
+		}
+
+		@Override
+		public int getHeight() {
+			return 50;
+		}
+
+		@Override
+		public int getWidth() {
+			return 50;
+		}
+
+		@Override
+		protected boolean isSupportCollectionMarkers() {
+			return false;
+		}
+		
+		@Override
+		public String getName(DataStoreReference t) {
+			return t.getName();
+		}
 	}
 }

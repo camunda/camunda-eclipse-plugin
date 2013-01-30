@@ -86,7 +86,7 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 				AnchorUtil.addFixedPointAnchors(container, rect);
 
 				link(container, group);
-				boolean isImport = context.getProperty(DIUtils.IMPORT_PROPERTY) != null;
+				boolean isImport = context.getProperty(DIUtils.IMPORT) != null;
 				createDIShape(container, group, !isImport);
 				return container;
 			}

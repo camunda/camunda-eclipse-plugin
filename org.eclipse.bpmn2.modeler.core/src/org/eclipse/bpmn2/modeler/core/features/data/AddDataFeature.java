@@ -91,7 +91,7 @@ public abstract class AddDataFeature<T extends ItemAwareElement> extends Abstrac
 		
 		peService.createChopboxAnchor(container);
 		AnchorUtil.addFixedPointAnchors(container, invisibleRect);
-		boolean isImport = context.getProperty(DIUtils.IMPORT_PROPERTY) != null;
+		boolean isImport = context.getProperty(DIUtils.IMPORT) != null;
 		createDIShape(container, t, !isImport);
 		layoutPictogramElement(container);
 		

@@ -211,8 +211,9 @@ public class DataObjectFeatureContainer extends AbstractDataFeatureContainer {
 					result = (DataObject) popupMenu.getResult();
 				}
 			}
+			
 			if (result == dataObject) { // the new one
-				mh.addFlowElement(container,dataObject);
+				mh.addFlowElement(container, dataObject);
 				ModelUtil.setID(dataObject);
 				dataObject.setIsCollection(false);
 				dataObject.setName(ModelUtil.toDisplayName(dataObject.getId()));

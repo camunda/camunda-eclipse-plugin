@@ -90,7 +90,7 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature<Lane> {
 		
 		StyleUtil.applyStyle(rect, lane);
 		
-		boolean isImport = context.getProperty(DIUtils.IMPORT_PROPERTY) != null;
+		boolean isImport = context.getProperty(DIUtils.IMPORT) != null;
 		BPMNShape bpmnShape = createDIShape(containerShape, lane, !isImport);
 		
 		if (FeatureSupport.isTargetLane(context)) {
@@ -157,7 +157,7 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature<Lane> {
 		peCreateService.createChopboxAnchor(containerShape);
 		AnchorUtil.addFixedPointAnchors(containerShape, rect);
 
-		if (context.getProperty(DIUtils.IMPORT_PROPERTY) == null
+		if (context.getProperty(DIUtils.IMPORT) == null
 				&& (FeatureSupport.isTargetLane(context) || FeatureSupport.isTargetParticipant(context))) {
 			FeatureSupport.redraw(targetContainer);
 		}
@@ -282,7 +282,7 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature<Lane> {
 	
 	@Override
 	protected int getHeight(IAddContext context) {
-		if (context.getProperty(DIUtils.IMPORT_PROPERTY) == null){
+		if (context.getProperty(DIUtils.IMPORT) == null){
 			if (context.getTargetContainer() instanceof Diagram) {
 				return getHeight();
 			}
@@ -299,7 +299,7 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature<Lane> {
 	
 	@Override
 	public int getWidth(IAddContext context) {
-		if (context.getProperty(DIUtils.IMPORT_PROPERTY) == null){
+		if (context.getProperty(DIUtils.IMPORT) == null){
 			if (context.getTargetContainer() instanceof Diagram) {
 				return getWidth();
 			}

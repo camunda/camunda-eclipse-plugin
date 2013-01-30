@@ -24,6 +24,7 @@ import org.eclipse.bpmn2.modeler.core.features.flow.AbstractAddFlowFeature;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.features.flow.SequenceFlowFeatureContainer.AddSequenceFlowFeature;
 import org.eclipse.core.runtime.IStatus;
@@ -108,7 +109,7 @@ public abstract class AbstractEdgeHandler<T extends BaseElement> extends Abstrac
 		IAddFeature addFeature = featureProvider.getAddFeature(context);
 		if (addFeature != null && addFeature.canAdd(context)) {
 			
-			context.putProperty(DIUtils.IMPORT_PROPERTY, true);
+			ContextUtil.set(context, DIUtils.IMPORT);
 			Connection connection = (Connection) addFeature.add(context);
 
 			if (connection instanceof FreeFormConnection) {
