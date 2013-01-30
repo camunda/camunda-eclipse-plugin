@@ -330,7 +330,7 @@ public class ChoreographyUtil implements ChoreographyProperties {
 			addBandLabel(bandShape, p.getName(), w, h);
 		}
 		Graphiti.getPeCreateService().createChopboxAnchor(bandShape);
-		AnchorUtil.addFixedPointAnchors(bandShape, band);
+		AnchorUtil.addFixedPointAnchors(bandShape);
 		peService.setPropertyValue(bandShape, ChoreographyProperties.BAND, Boolean.toString(true));
 		peService.setPropertyValue(bandShape, ChoreographyProperties.MESSAGE_VISIBLE,
 				Boolean.toString(bpmnShape.isIsMessageVisible()));
@@ -363,7 +363,7 @@ public class ChoreographyUtil implements ChoreographyProperties {
 			addBandLabel(bandShape, p.getName(), w, h);
 		}
 		Graphiti.getPeCreateService().createChopboxAnchor(bandShape);
-		AnchorUtil.addFixedPointAnchors(bandShape, band);
+		AnchorUtil.addFixedPointAnchors(bandShape);
 		peService.setPropertyValue(bandShape, ChoreographyProperties.BAND, Boolean.toString(true));
 		peService.setPropertyValue(bandShape, ChoreographyProperties.MESSAGE_VISIBLE,
 				Boolean.toString(bpmnShape.isIsMessageVisible()));
@@ -396,7 +396,7 @@ public class ChoreographyUtil implements ChoreographyProperties {
 			addBandLabel(bandShape, p.getName(), w, h);
 		}
 		Graphiti.getPeCreateService().createChopboxAnchor(bandShape);
-		AnchorUtil.addFixedPointAnchors(bandShape, band);
+		AnchorUtil.addFixedPointAnchors(bandShape);
 		peService.setPropertyValue(bandShape, ChoreographyProperties.BAND, Boolean.toString(true));
 		peService.setPropertyValue(bandShape, ChoreographyProperties.MESSAGE_VISIBLE,
 				Boolean.toString(bpmnShape.isIsMessageVisible()));
@@ -449,7 +449,8 @@ public class ChoreographyUtil implements ChoreographyProperties {
 		envelopeGa.rect.setBackground(gaService.manageColor(diagram, color));
 		envelopeGa.rect.setForeground(gaService.manageColor(diagram, StyleUtil.CLASS_FOREGROUND));
 		envelopeGa.line.setForeground(gaService.manageColor(diagram, StyleUtil.CLASS_FOREGROUND));
-		AnchorUtil.addFixedPointAnchors(envelope, envelopeGa.rect);
+		
+		AnchorUtil.addFixedPointAnchors(envelope);
 
 		Shape textShape = peService.createShape(envelope, false);
 		Text text = gaService.createDefaultText(diagram, textShape);

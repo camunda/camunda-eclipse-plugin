@@ -23,7 +23,7 @@ import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.features.AbstractAddBpmnShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.layout.ConnectionService;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
@@ -233,7 +233,7 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 			((Lane)oldObject).getFlowNodeRefs().add((FlowNode)newObject);
 		}
 		AddContext ac = new AddContext(new AreaContext(), newObject);
-		AbstractAddBPMNShapeFeature af = (AbstractAddBPMNShapeFeature)getFeatureProvider().getAddFeature(ac);
+		AbstractAddBpmnShapeFeature af = (AbstractAddBpmnShapeFeature)getFeatureProvider().getAddFeature(ac);
 		int w = af.getWidth();
 		int h = af.getHeight();
 		if (horz) {

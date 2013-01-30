@@ -797,10 +797,6 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		super.selectionChanged(part, selection);
 		updateActions(getSelectionActions()); // usually done in GEF's
 		
-		System.out.println("BPMN2Editor#selectionChanged" + selection);
-		
-		new Exception().printStackTrace(System.err);
-		
 		final ISelection theSelection = selection;
 		
 		EditPart editPart = BusinessObjectUtil.getEditPartForSelection(selection);

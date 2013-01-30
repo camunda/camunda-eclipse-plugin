@@ -52,8 +52,9 @@ public class EventBasedGatewayFeatureContainer extends AbstractGatewayFeatureCon
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return new AddGatewayFeature<EventBasedGateway>(fp) {
+			
 			@Override
-			protected void decorateGateway(ContainerShape container, BPMNShape bpmnShape) {
+			protected void decorate(ContainerShape container) {
 				Ellipse outer = GraphicsUtil.createGatewayOuterCircle(container);
 				Ellipse inner = GraphicsUtil.createGatewayInnerCircle(outer);
 				Polygon pentagon = GraphicsUtil.createGatewayPentagon(container);
@@ -61,14 +62,14 @@ public class EventBasedGatewayFeatureContainer extends AbstractGatewayFeatureCon
 			}
 
 			@Override
-			public PictogramElement add(IAddContext context) {
-				PictogramElement element = super.add(context);
-				IPeService service = Graphiti.getPeService();
+			protected void setProperties(IAddContext context, ContainerShape newShape) {
+				super.setProperties(context, newShape);
+
 				EventBasedGateway gateway = getBusinessObject(context);
-				service.setPropertyValue(element, INSTANTIATE_PROPERTY, Boolean.toString(gateway.isInstantiate()));
-				service.setPropertyValue(element, EVENT_GATEWAY_TYPE_PROPERTY,
-						EventBasedGatewayType.EXCLUSIVE.getName());
-				return element;
+				
+				IPeService peService = Graphiti.getPeService();
+				peService.setPropertyValue(newShape, INSTANTIATE_PROPERTY, Boolean.toString(gateway.isInstantiate()));
+				peService.setPropertyValue(newShape, EVENT_GATEWAY_TYPE_PROPERTY, EventBasedGatewayType.EXCLUSIVE.getName());
 			}
 		};
 	}

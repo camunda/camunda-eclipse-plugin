@@ -121,7 +121,7 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 		ContainerShape pool1 = (ContainerShape) children.get(0);
 		assertThat(pool1.getChildren()).hasSize(3);
 	}
-
+	
 	@Test
 	@DiagramResource
 	public void testImportNestedLanesUnreferencedFlowNodes() {

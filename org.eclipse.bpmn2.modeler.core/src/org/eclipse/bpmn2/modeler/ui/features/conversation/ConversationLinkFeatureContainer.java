@@ -12,8 +12,6 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.conversation;
 
-import java.io.IOException;
-
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Conversation;
@@ -54,7 +52,7 @@ public class ConversationLinkFeatureContainer extends BaseElementConnectionFeatu
 			}
 
 			@Override
-			protected Class<? extends BaseElement> getBoClass() {
+			protected Class<? extends BaseElement> getBusinessObjectClass() {
 				return ConversationLink.class;
 			}
 		};

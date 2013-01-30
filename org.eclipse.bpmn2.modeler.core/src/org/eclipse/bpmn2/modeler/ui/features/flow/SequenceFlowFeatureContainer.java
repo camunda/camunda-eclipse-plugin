@@ -12,7 +12,6 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.flow;
 
-import java.io.IOException;
 import java.util.Iterator;
 
 import org.eclipse.bpmn2.Activity;
@@ -24,7 +23,6 @@ import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.ExclusiveGateway;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.InclusiveGateway;
-import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.modeler.core.Activator;
@@ -66,6 +64,7 @@ import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
@@ -439,7 +438,7 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 		}
 
 		@Override
-		protected Class<? extends BaseElement> getBoClass() {
+		protected Class<? extends BaseElement> getBusinessObjectClass() {
 			return SequenceFlow.class;
 		}
 
@@ -466,9 +465,11 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 		}
 
 		@Override
-		protected void hook(IAddContext context, Connection connection, BaseElement element) {
-			setDefaultSequenceFlow(connection);
-			setConditionalSequenceFlow(connection);
+		protected void postAddHook(IAddContext context, FreeFormConnection newConnection) {
+			super.postAddHook(context, newConnection);
+
+			setDefaultSequenceFlow(newConnection);
+			setConditionalSequenceFlow(newConnection);
 		}
 	}
 }

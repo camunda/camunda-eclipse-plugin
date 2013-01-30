@@ -94,7 +94,7 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 			}
 
 			@Override
-			protected Class<? extends BaseElement> getBoClass() {
+			protected Class<? extends BaseElement> getBusinessObjectClass() {
 				return MessageFlow.class;
 			}
 		};

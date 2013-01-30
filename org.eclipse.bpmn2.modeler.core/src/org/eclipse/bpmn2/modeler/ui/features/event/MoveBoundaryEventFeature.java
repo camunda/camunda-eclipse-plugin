@@ -118,7 +118,7 @@ public class MoveBoundaryEventFeature extends MoveFlowNodeFeature {
 		}
 		else {
 			BoundaryEvent event = BusinessObjectUtil.getFirstElementOfType(containerShape, BoundaryEvent.class);
-			PictogramElement activityContainer = BusinessObjectUtil.getFirstBaseElementFromDiagram(getDiagram(),
+			PictogramElement activityContainer = BusinessObjectUtil.getLinkingPictogramElement(getDiagram(),
 					event.getAttachedToRef());
 			PositionOnLine newPos = BoundaryEventPositionHelper.getPositionOnlineUsingAbsoluteCoordinates(
 					containerShape, (Shape) activityContainer);

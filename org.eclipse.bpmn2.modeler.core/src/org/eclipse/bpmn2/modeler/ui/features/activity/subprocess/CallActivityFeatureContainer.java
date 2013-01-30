@@ -70,15 +70,19 @@ public class CallActivityFeatureContainer extends AbstractExpandableActivityFeat
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return new AddExpandableActivityFeature<CallActivity>(fp) {
+			
 			@Override
-			protected void hook(CallActivity activity, ContainerShape container, IAddContext context, int width, int height) {
-				super.hook(activity, container, context, width, height);
-				Graphiti.getPeService().setPropertyValue(container, CALL_ACTIVITY_REF_PROPERTY,
+			protected void setProperties(IAddContext context, ContainerShape newShape) {
+				super.setProperties(context, newShape);
+				
+				CallActivity activity = getBusinessObject(context);
+				
+				Graphiti.getPeService().setPropertyValue(newShape, CALL_ACTIVITY_REF_PROPERTY,
 						getCallableElementStringValue(activity.getCalledElementRef()));
 			}
-
+			
 			@Override
-			protected void decorateActivityRectangle(RoundedRectangle rect) {
+			protected void decorate(RoundedRectangle rect) {
 				rect.setLineWidth(4);
 			}
 
