@@ -12,6 +12,12 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.participant;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.rectangle;
+
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
@@ -22,10 +28,14 @@ import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
+import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.context.ICreateContext;
@@ -40,6 +50,7 @@ import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.Shape;
+import org.eclipse.graphiti.services.Graphiti;
 
 public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Participant> {
 
@@ -111,21 +122,45 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
     }
 
 
-	private void createGraphitiRepresentation(ICreateContext context,
-			Participant newParticipant) {
-		Rectangle bounds = getChildBounds(getDiagram());
+	private void createGraphitiRepresentation(ICreateContext context, Participant newParticipant) {
+		Diagram diagram = getDiagram();
 		
+		IRectangle bounds = getChildBounds(diagram);
 		ContainerShape participantContainer = (ContainerShape) addGraphicalRepresentation(contextFromBounds(context, bounds), newParticipant);
+		
+		IRectangle participantContainerBounds = LayoutUtil.getAbsoluteBounds(participantContainer);
+		
+		Iterator<Shape> childrenIterator = diagram.getChildren().iterator();
+		while (childrenIterator.hasNext()) {
+			Shape c = childrenIterator.next();
+			
+			if (c == participantContainer) {
+				continue;
+			}
+			
+			if (GraphicsUtil.isLabel(c)) {
+				continue;
+			}
+			
+			// we need to move the child shape 
+			// to the newly created participant
+			childrenIterator.remove();
+			
+			participantContainer.getChildren().add(c);
+		}
 
-		getDiagram().getChildren().remove(participantContainer);
-		participantContainer.getChildren().addAll(getDiagram().getChildren());
-		getDiagram().getChildren().add(participantContainer);
-
-		offSetChildrenPosition(bounds, participantContainer);
+		offsetChildrenPosition(bounds, participantContainer);
+		
+		// make sure participant container does not 
+		// hide labels
+		Graphiti.getPeService().sendToBack(participantContainer);
 	}
 
-	private void offSetChildrenPosition(Rectangle bounds, ContainerShape participantContainer) {
-		for (final Shape childShape : participantContainer.getChildren().toArray(new Shape[]{})) { // we convert into an array because the move will cause concurrent modification exceptions in the list
+	private void offsetChildrenPosition(IRectangle bounds, ContainerShape participantContainer) {
+		
+		List<Shape> childShapes = new ArrayList<Shape>(participantContainer.getChildren());
+		
+		for (final Shape childShape : childShapes) {
 			GraphicsAlgorithm childShapeGa = childShape.getGraphicsAlgorithm();
 			
 			if ( (childShapeGa instanceof Polyline) || (childShapeGa instanceof Text) ) {
@@ -142,23 +177,25 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 			moveShapeContext.setTargetContainer(childShape.getContainer());
 			moveShapeContext.setSourceContainer(childShape.getContainer());
 			
+			moveShapeContext.putProperty(DefaultMoveBPMNShapeFeature.SKIP_MOVE_LABEL, true);
+			
 			IMoveShapeFeature moveFeature = getFeatureProvider().getMoveShapeFeature(moveShapeContext);
 			if (moveFeature.canMoveShape(moveShapeContext)) {
 				moveFeature.execute(moveShapeContext);
 			}
-			
 		}
+		
 		LayoutContext layoutContext = new LayoutContext(participantContainer);
 		getFeatureProvider().getLayoutFeature(layoutContext).execute(layoutContext);
 	}
 
-	private CreateContext contextFromBounds(ICreateContext oldContext,
-			Rectangle bounds) {
+	private CreateContext contextFromBounds(ICreateContext oldContext, IRectangle bounds) {
+		
 		CreateContext newContext = new CreateContext();
 		newContext.setTargetConnection(oldContext.getTargetConnection());
 		newContext.setTargetContainer(oldContext.getTargetContainer());
-		newContext.setX(bounds.getX());
-		newContext.setY(bounds.getY());
+		newContext.setX(bounds.getX() - leftMargin);
+		newContext.setY(bounds.getY() - topMargin);
 		newContext.setWidth(bounds.getWidth());
 		newContext.setHeight(bounds.getHeight());
 		return newContext;
@@ -200,12 +237,8 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 		
 	}
 	
-	private Rectangle getChildBounds(Diagram diagram) {
-		Rectangle resultRectangle = AlgorithmsFactory.eINSTANCE.createRectangle();
-		resultRectangle.setX(50);
-		resultRectangle.setY(50);
-		resultRectangle.setWidth(minWidth);
-		resultRectangle.setHeight(minHeight);
+	private IRectangle getChildBounds(Diagram diagram) {
+		IRectangle resultRectangle = rectangle(50, 50, minWidth, minHeight);
 		
 		if (diagram.getChildren().isEmpty()) {
 			return resultRectangle;

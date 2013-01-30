@@ -13,29 +13,40 @@
 package org.eclipse.bpmn2.modeler.core.features.event;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.services.IPeService;
 
 public abstract class AbstractBoundaryEventOperation {
 
-	public void doWork(Activity activity, Diagram diagram) {
-		IPeService peService = Graphiti.getPeService();
-		Collection<PictogramElement> elements = peService.getAllContainedPictogramElements(diagram);
+	public void execute(Shape shape) {
+		execute(shape, shape.getContainer());
+	}
+	
+	public void execute(Shape shape, Shape eventContainer) {
+		
+		Assert.isNotNull(eventContainer);
+		
+		Collection<PictogramElement> elements = Graphiti.getPeService().getAllContainedPictogramElements(eventContainer);
+
+		Activity activity = BusinessObjectUtil.getFirstElementOfType(shape, Activity.class);
+		List<BoundaryEvent> boundaryEvents = activity.getBoundaryEventRefs();
+		
 		for (PictogramElement e : elements) {
 			BoundaryEvent boundaryEvent = BusinessObjectUtil.getFirstElementOfType(e, BoundaryEvent.class);
-			if (boundaryEvent != null && activity.getBoundaryEventRefs().contains(boundaryEvent)) {
+			if (boundaryEvents.contains(boundaryEvent)) {
 				ContainerShape container = (ContainerShape) e;
-				doWorkInternal(container);
+				applyTo(container);
 			}
 		}
 	}
 
-	protected abstract void doWorkInternal(ContainerShape container);
+	protected abstract void applyTo(ContainerShape container);
 }

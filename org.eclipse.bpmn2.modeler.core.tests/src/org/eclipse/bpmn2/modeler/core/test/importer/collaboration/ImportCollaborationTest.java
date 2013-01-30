@@ -57,10 +57,14 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 		importer.execute();
 
 		EList<Shape> children = diagram.getChildren();
-		assertThat(children).hasSize(2);
+		
+		// then
+		// diagram should have 2 participants and 2 labels
+		assertThat(diagram)
+			.hasContainerShapeChildCount(4);
 		
 		Shape pool1 = children.get(0);
-		Shape pool2 = children.get(1);
+		Shape pool2 = children.get(3);
 
 		assertThat(pool1)
 			.isContainerShape()
@@ -108,7 +112,11 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 		importer.execute();
 
 		EList<Shape> children = diagram.getChildren();
-		assertThat(children).hasSize(2);
+		
+		// then
+		// diagram should have 2 participants and 3 labels
+		assertThat(diagram)
+			.hasContainerShapeChildCount(5);
 		
 		ContainerShape pool1 = (ContainerShape) children.get(0);
 		assertThat(pool1.getChildren()).hasSize(3);
@@ -120,10 +128,12 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = createModelImport();
 		importer.execute();
 		
-		EList<Shape> children = diagram.getChildren();
-		
 		// Unreferenced nodes are supposed to be drawn on the participant
-		assertThat(children).hasSize(2);
+		
+		// then
+		// diagram should have 2 participants and 3 labels
+		assertThat(diagram)
+			.hasContainerShapeChildCount(5);
 
 		// Assert that unreferenced flow nodes are in the diagram
 		assertThat(StringUtil.toDetailsString(diagram))
@@ -146,9 +156,11 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 	public void testImportLanesFlowNodes() {
 		ModelImport importer = createModelImport();
 		importer.execute();
-		
-		EList<Shape> children = diagram.getChildren();
-		assertThat(children).hasSize(2);
+
+		// then
+		// diagram should have 2 participants and 3 labels
+		assertThat(diagram)
+			.hasContainerShapeChildCount(5);
 	}
 
 	@Test
@@ -157,10 +169,10 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = createModelImport();
 		importer.execute();
 
-		EList<Shape> children = diagram.getChildren();
-		
-		// Unreferenced nodes are supposed to be drawn on the participant
-		assertThat(children).hasSize(2);
+		// then
+		// diagram should have 2 participants and 3 labels
+		assertThat(diagram)
+			.hasContainerShapeChildCount(5);
 		
 		// Assert that unreferenced flow nodes are in the diagram
 		assertThat(StringUtil.toDetailsString(diagram))

@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.bpmn2.di.BPMNEdge;
+import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.features.ConnectionFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
@@ -27,7 +29,10 @@ import org.eclipse.bpmn2.modeler.core.features.bendpoint.AddBendpointFeature;
 import org.eclipse.bpmn2.modeler.core.features.bendpoint.MoveAnchorFeature;
 import org.eclipse.bpmn2.modeler.core.features.bendpoint.MoveBendpointFeature;
 import org.eclipse.bpmn2.modeler.core.features.bendpoint.RemoveBendpointFeature;
+import org.eclipse.bpmn2.modeler.core.features.copypaste.CopyFeature;
+import org.eclipse.bpmn2.modeler.core.features.copypaste.PasteFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractCreateFlowFeature;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.AdHocSubProcessFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.activity.subprocess.CallActivityFeatureContainer;
@@ -88,6 +93,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IAddBendpointFeature;
 import org.eclipse.graphiti.features.IAddFeature;
+import org.eclipse.graphiti.features.ICopyFeature;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
@@ -96,7 +102,9 @@ import org.eclipse.graphiti.features.IFeature;
 import org.eclipse.graphiti.features.ILayoutFeature;
 import org.eclipse.graphiti.features.IMoveAnchorFeature;
 import org.eclipse.graphiti.features.IMoveBendpointFeature;
+import org.eclipse.graphiti.features.IMoveConnectionDecoratorFeature;
 import org.eclipse.graphiti.features.IMoveShapeFeature;
+import org.eclipse.graphiti.features.IPasteFeature;
 import org.eclipse.graphiti.features.IReconnectionFeature;
 import org.eclipse.graphiti.features.IRemoveBendpointFeature;
 import org.eclipse.graphiti.features.IRemoveFeature;
@@ -105,13 +113,16 @@ import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IAddBendpointContext;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.IContext;
+import org.eclipse.graphiti.features.context.ICopyContext;
 import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.context.IDeleteContext;
 import org.eclipse.graphiti.features.context.IDirectEditingContext;
 import org.eclipse.graphiti.features.context.ILayoutContext;
 import org.eclipse.graphiti.features.context.IMoveAnchorContext;
 import org.eclipse.graphiti.features.context.IMoveBendpointContext;
+import org.eclipse.graphiti.features.context.IMoveConnectionDecoratorContext;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
+import org.eclipse.graphiti.features.context.IPasteContext;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
 import org.eclipse.graphiti.features.context.IReconnectionContext;
 import org.eclipse.graphiti.features.context.IRemoveBendpointContext;
@@ -119,18 +130,17 @@ import org.eclipse.graphiti.features.context.IRemoveContext;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
+import org.eclipse.graphiti.features.impl.DefaultMoveConnectionDecoratorFeature;
+import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.platform.IDiagramEditor;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.ui.features.DefaultFeatureProvider;
 
 /**
- * Determines what kinds of business objects can be added to a diagram.
- * 
- * @author imeikas
  * 
  */
-public class BPMNFeatureProvider extends DefaultFeatureProvider {
+public class BPMN2FeatureProvider extends DefaultFeatureProvider {
 
 	private List<FeatureContainer> containers;
 
@@ -138,7 +148,7 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 
 	private ICreateConnectionFeature[] createConnectionFeatures;
 
-	public BPMNFeatureProvider(IDiagramTypeProvider dtp) {
+	public BPMN2FeatureProvider(IDiagramTypeProvider dtp) {
 		super(dtp);
 
 		containers = new ArrayList<FeatureContainer>();
@@ -302,6 +312,16 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 	}
 
 	@Override
+	public ICopyFeature getCopyFeature(ICopyContext context) {
+		return new CopyFeature(this);
+	}
+	
+	@Override
+	public IPasteFeature getPasteFeature(IPasteContext context) {
+		return new PasteFeature(this);
+	}
+	
+	@Override
 	public IAddFeature getAddFeature(IAddContext context) {
 		FeatureContainer container = getFeatureContainer(context);
 		if (container!=null) {
@@ -459,6 +479,24 @@ public class BPMNFeatureProvider extends DefaultFeatureProvider {
 		}
 
 		return list.toArray(new ICustomFeature[list.size()]);
+	}
+	
+	@Override
+	public IMoveConnectionDecoratorFeature getMoveConnectionDecoratorFeature(IMoveConnectionDecoratorContext context) {
+		return new DefaultMoveConnectionDecoratorFeature(this) {
+			@Override
+			public void moveConnectionDecorator(IMoveConnectionDecoratorContext context) {
+				super.moveConnectionDecorator(context);
+				
+				ConnectionDecorator labelShape = context.getConnectionDecorator();
+				
+				BPMNEdge bpmnEdge = BusinessObjectUtil.getFirstElementOfType(labelShape, BPMNEdge.class);
+				
+				DIUtils.updateDILabel(labelShape, bpmnEdge);
+				
+				System.out.println(LayoutUtil.getAbsoluteBounds(labelShape));
+			}
+		};
 	}
 
 	// TODO: move this to the adapter registry

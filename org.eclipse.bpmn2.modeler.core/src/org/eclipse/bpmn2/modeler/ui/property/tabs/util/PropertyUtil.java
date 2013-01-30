@@ -182,8 +182,8 @@ public class PropertyUtil {
 
 		GridLayout gridLayout = new GridLayout();
 		gridLayout.marginBottom = -5;
-		gridLayout.marginLeft = -5;
 		gridLayout.marginRight = -5;
+		gridLayout.marginLeft = -5;
 		gridLayout.marginTop = -5;
 
 		composite.setLayout(gridLayout);

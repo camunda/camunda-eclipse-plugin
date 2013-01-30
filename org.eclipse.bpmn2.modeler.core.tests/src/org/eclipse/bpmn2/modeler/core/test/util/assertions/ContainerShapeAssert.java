@@ -79,4 +79,23 @@ public class ContainerShapeAssert extends AbstractShapeAssert<ContainerShapeAsse
 		Assertions.assertThat(!actual.getChildren().contains(child));
 		return myself;
 	}
+
+	@Override
+	public AbstractShapeAssert<ContainerShapeAssert, ContainerShape> hasContainerShapeChildCount(int expected) {
+		
+		int actualCount = 0;
+		
+		EList<Shape> children = actual.getChildren();
+		for (Shape s: children) {
+			if (s instanceof ContainerShape) {
+				actualCount++;
+			}
+		}
+		
+		Assertions.assertThat(actualCount)
+			.as(String.format("Expected <%s> container shape children, got <%s>.", expected, actualCount))
+			.isEqualTo(expected);
+		
+		return myself;
+	}
 }

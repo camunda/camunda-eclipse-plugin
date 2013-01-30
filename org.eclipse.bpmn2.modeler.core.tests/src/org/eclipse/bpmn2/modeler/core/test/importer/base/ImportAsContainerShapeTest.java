@@ -45,7 +45,7 @@ public class ImportAsContainerShapeTest extends AbstractImportBpmnModelTest {
 		importer.execute();
 		
 		// element is drawn inside process
-		assertThat(diagram.getChildren()).hasSize(1);
+		assertThat(diagram.getChildren()).hasSize(2);
 	}
 	
 	@Test

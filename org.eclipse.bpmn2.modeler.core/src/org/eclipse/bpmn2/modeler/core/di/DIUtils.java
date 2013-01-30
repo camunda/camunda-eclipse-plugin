@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.di;
 
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.diPoint;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -134,7 +136,27 @@ public class DIUtils {
 		return Graphiti.getPeService().getPropertyValue(element, GraphicsUtil.LABEL_PROPERTY) != null;
 	}
 	
-	public static void updateDILabel(ContainerShape label, BPMNShape bpmnShape) {
+	public static void updateDILabel(Shape label, BPMNEdge bpmnEdge) {
+		Bounds bpmnLabelBounds = null;
+		BPMNLabel bpmnLabel = null;
+		
+		bpmnLabel = bpmnEdge.getLabel();
+		if (bpmnLabel == null) {
+			bpmnLabel = BpmnDiFactory.eINSTANCE.createBPMNLabel();
+			bpmnEdge.setLabel(bpmnLabel);
+		}
+		
+		bpmnLabelBounds = bpmnLabel.getBounds();
+		
+		if (bpmnLabelBounds == null) {
+			bpmnLabelBounds = DcFactory.eINSTANCE.createBounds();
+			bpmnLabel.setBounds(bpmnLabelBounds);
+		}
+		
+		updateDIElementBounds(label, bpmnLabelBounds);
+	}
+	
+	public static void updateDILabel(Shape label, BPMNShape bpmnShape) {
 		Bounds bpmnLabelBounds = null;
 		BPMNLabel bpmnLabel = null;
 		
@@ -151,6 +173,10 @@ public class DIUtils {
 			bpmnLabel.setBounds(bpmnLabelBounds);
 		}
 		
+		updateDIElementBounds(label, bpmnLabelBounds);
+	}
+
+	private static void updateDIElementBounds(Shape label, Bounds bpmnLabelBounds) {
 		IRectangle labelBounds = LayoutUtil.getAbsoluteBounds(label);
 		
 		bpmnLabelBounds.setX(labelBounds.getX());
@@ -210,47 +236,63 @@ public class DIUtils {
 		}
 	}
 
-	public static void addBendPoint(FreeFormConnection freeForm, Point point) {
-		freeForm.getBendpoints().add(Graphiti.getGaService().createPoint((int) point.getX(), (int) point.getY()));
+	public static BPMNEdge createDIEdge(Connection connection, BaseElement connectionElement, Diagram diagram) {
+
+		BPMNDiagram bpmnDiagram = getBPMNDiagram(diagram);
+		
+		Anchor startAnchor = connection.getStart();
+		Anchor endAnchor = connection.getEnd();
+		
+		BPMNShape sourceBpmnShape = BusinessObjectUtil.getFirstElementOfType(startAnchor.getParent(), BPMNShape.class);
+		BPMNShape targetBpmnShape = BusinessObjectUtil.getFirstElementOfType(endAnchor.getParent(), BPMNShape.class);
+
+		BPMNEdge bpmnEdge = BpmnDiFactory.eINSTANCE.createBPMNEdge();
+		bpmnEdge.setBpmnElement(connectionElement);
+
+		bpmnEdge.setSourceElement(sourceBpmnShape);
+		bpmnEdge.setTargetElement(targetBpmnShape);
+
+		ILocation startLocation = Graphiti.getPeService().getLocationRelativeToDiagram(startAnchor);
+		ILocation endLocation = Graphiti.getPeService().getLocationRelativeToDiagram(endAnchor);
+		
+		bpmnEdge.getWaypoint().add(diPoint(startLocation));
+		bpmnEdge.getWaypoint().add(diPoint(endLocation));
+
+		addShape(bpmnEdge, bpmnDiagram);
+		
+		ModelUtil.setID(bpmnEdge);
+		
+		return bpmnEdge;
 	}
+	
+	public static BPMNShape createDIShape(BaseElement elem, IRectangle bounds, Diagram diagram) {
 
-	public static BPMNShape createDIShape(Shape shape, BaseElement elem, int x, int y, int w, int h,
-			IFeatureProvider fp, Diagram diagram) {
-
-		EList<EObject> businessObjects = Graphiti.getLinkService().getLinkForPictogramElement(diagram)
-				.getBusinessObjects();
+		BPMNDiagram bpmnDiagram = getBPMNDiagram(diagram);
+		
 		BPMNShape bpmnShape = null;
 
-		for (EObject eObject : businessObjects) {
-			
-			if (eObject instanceof BPMNDiagram) {
-				
-				BPMNDiagram bpmnDiagram = (BPMNDiagram) eObject;
+		bpmnShape = BpmnDiFactory.eINSTANCE.createBPMNShape();
+		
+		Bounds diBounds = DcFactory.eINSTANCE.createBounds();
+		diBounds.setX(bounds.getX());
+		diBounds.setY(bounds.getY());
+		diBounds.setWidth(bounds.getWidth());
+		diBounds.setHeight(bounds.getHeight());
+		
+		bpmnShape.setBounds(diBounds);
+		bpmnShape.setBpmnElement(elem);
+		
+		Bpmn2Preferences.getInstance(bpmnDiagram.eResource()).applyBPMNDIDefaults(bpmnShape, null);
 
-				bpmnShape = BpmnDiFactory.eINSTANCE.createBPMNShape();
-				
-				Bounds bounds = DcFactory.eINSTANCE.createBounds();
-				bounds.setX(x);
-				bounds.setY(y);
-				bounds.setWidth(w);
-				bounds.setHeight(h);
-				
-				bpmnShape.setBounds(bounds);
-				bpmnShape.setBpmnElement(elem);
-				
-				Bpmn2Preferences.getInstance(bpmnDiagram.eResource()).applyBPMNDIDefaults(bpmnShape, null);
-
-				ModelUtil.setID(bpmnShape);
-				
-				addShape(bpmnShape, bpmnDiagram);
-
-				fp.link(shape, new Object[] { elem, bpmnShape });
-				
-				break;
-			}
-		}
+		ModelUtil.setID(bpmnShape);
+		
+		addShape(bpmnShape, bpmnDiagram);
 
 		return bpmnShape;
+	}
+
+	protected static BPMNDiagram getBPMNDiagram(Diagram diagram) {
+		return BusinessObjectUtil.getFirstElementOfType(diagram, BPMNDiagram.class);
 	}
 
 	public static void addShape(DiagramElement elem, BPMNDiagram bpmnDiagram) {
@@ -342,7 +384,7 @@ public class DIUtils {
 			for (Resource r : resourceSet.getResources()) {
 				for (EObject o : r.getContents()) {
 					if (o instanceof Diagram) {
-						Diagram diagram = (Diagram)o;
+						Diagram diagram = (Diagram) o;
 						if (BusinessObjectUtil.getFirstElementOfType(diagram, BPMNDiagram.class) == bpmnDiagram) {
 							return diagram;
 						}

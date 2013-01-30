@@ -20,7 +20,7 @@ public class MainBPMNDiagramTypeProvider extends AbstractDiagramTypeProvider {
 
 	public MainBPMNDiagramTypeProvider() {
 		super();
-		setFeatureProvider(new BPMNFeatureProvider(this));
+		setFeatureProvider(new BPMN2FeatureProvider(this));
 	}
 
 	@Override

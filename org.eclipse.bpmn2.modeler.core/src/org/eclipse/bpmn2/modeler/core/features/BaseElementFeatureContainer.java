@@ -29,28 +29,13 @@ public abstract class BaseElementFeatureContainer implements FeatureContainer {
 	public Object getApplyObject(IContext context) {
 		if (context instanceof IAddContext) {
 			return ((IAddContext) context).getNewObject();
-// TODO: why is this here? we have already expanded LabelFeatureContainer to handle all of the
-// BPMN elements that have label figures and this test is done there - I believe this was an
-// interim hack before LabelFeatureContainer was added...
-//		} else if (context instanceof IUpdateContext) {
-//			IUpdateContext updateContext = (IUpdateContext) context;
-//			BaseElement o = BusinessObjectUtil.getFirstElementOfType(updateContext.getPictogramElement(), BaseElement.class);
-//			if (o instanceof Gateway || o instanceof Event) {
-//				if (updateContext.getPictogramElement() instanceof ContainerShape) {
-//					ContainerShape container = (ContainerShape) updateContext.getPictogramElement();
-//					if (container.getChildren().size() == 1) {
-//						Shape shape = container.getChildren().get(0);
-//						if (shape.getGraphicsAlgorithm() instanceof AbstractText) {
-//							return null;
-//						}
-//					}
-//				}
-//			}
 		}
+		
 		if (context instanceof IPictogramElementContext) {
 			return BusinessObjectUtil.getFirstElementOfType(
 					(((IPictogramElementContext) context).getPictogramElement()), BaseElement.class);
 		}
+		
 		if (context instanceof ICustomContext) {
 			PictogramElement[] pes = ((ICustomContext) context).getPictogramElements();
 			if (pes.length==1)

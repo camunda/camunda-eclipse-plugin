@@ -14,7 +14,7 @@ package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.bpmn2.modeler.core.ModelHandlerLocator;
+import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.activity.LayoutActivityFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
@@ -51,55 +51,50 @@ public class LayoutExpandableActivityFeature extends LayoutActivityFeature {
 	public boolean layout(ILayoutContext context) {
 		ContainerShape containerShape = (ContainerShape) context.getPictogramElement();
 		Activity activity = BusinessObjectUtil.getFirstElementOfType(containerShape, Activity.class);
-		try {
-			BPMNShape shape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement(activity);
+		
+		BPMNShape shape = (BPMNShape) ModelHandler.findDIElement(getDiagram(), activity);
+		
+		if (shape.isIsExpanded()) {
 			
-			if (shape.isIsExpanded()) {
-				
-				// SubProcess is expanded
-				
-				boolean needResize = false;
-				GraphicsAlgorithm parentGa = containerShape.getGraphicsAlgorithm();
-				
-				for (PictogramElement pe : FeatureSupport.getContainerChildren(containerShape)) {
-					GraphicsAlgorithm ga = pe.getGraphicsAlgorithm();
-					if (ga!=null) {
-						if (ga.getX() < 0 || ga.getY() < 0) {
-							needResize = true;
-							break;
-						}
-						if (ga.getX() + ga.getWidth() > parentGa.getWidth()) {
-							needResize = true;
-							break;
-						}
-						if (ga.getY() + ga.getHeight() > parentGa.getHeight()) {
-							needResize = true;
-							break;
-						}
+			// SubProcess is expanded
+			
+			boolean needResize = false;
+			GraphicsAlgorithm parentGa = containerShape.getGraphicsAlgorithm();
+			
+			for (PictogramElement pe : FeatureSupport.getContainerChildren(containerShape)) {
+				GraphicsAlgorithm ga = pe.getGraphicsAlgorithm();
+				if (ga!=null) {
+					if (ga.getX() < 0 || ga.getY() < 0) {
+						needResize = true;
+						break;
+					}
+					if (ga.getX() + ga.getWidth() > parentGa.getWidth()) {
+						needResize = true;
+						break;
+					}
+					if (ga.getY() + ga.getHeight() > parentGa.getHeight()) {
+						needResize = true;
+						break;
 					}
 				}
-				if (needResize) {
-					ResizeShapeContext resizeContext = new ResizeShapeContext(containerShape);
-					resizeContext.setX(parentGa.getX());
-					resizeContext.setY(parentGa.getY());
-					resizeContext.setWidth(parentGa.getWidth());
-					resizeContext.setHeight(parentGa.getHeight());
-					IResizeShapeFeature resizeFeature = getFeatureProvider().getResizeShapeFeature(resizeContext);
-					resizeFeature.resizeShape(resizeContext);
-				}
-				
-				FeatureSupport.setContainerChildrenVisible(containerShape, true);
 			}
-			else {
-				
-				// SubProcess is collapsed
-				
-				FeatureSupport.setContainerChildrenVisible(containerShape, false);
+			if (needResize) {
+				ResizeShapeContext resizeContext = new ResizeShapeContext(containerShape);
+				resizeContext.setX(parentGa.getX());
+				resizeContext.setY(parentGa.getY());
+				resizeContext.setWidth(parentGa.getWidth());
+				resizeContext.setHeight(parentGa.getHeight());
+				IResizeShapeFeature resizeFeature = getFeatureProvider().getResizeShapeFeature(resizeContext);
+				resizeFeature.resizeShape(resizeContext);
 			}
 			
-		} catch (Exception e) {
-			// It's OK, I've played a programmer before...
-			// e.printStackTrace();
+			FeatureSupport.setContainerChildrenVisible(containerShape, true);
+		}
+		else {
+			
+			// SubProcess is collapsed
+			
+			FeatureSupport.setContainerChildrenVisible(containerShape, false);
 		}
 		
 		return super.layout(context);

@@ -48,6 +48,11 @@ public class ConversionUtil {
 		return p;
 	}
 
+	@SuppressWarnings("restriction")
+	public static IRectangle rect(int x, int y, int width, int height) {
+		return new RectangleImpl(x, y, width, height);
+	}
+	
 	public static Point point(ILocation l) {
 		return point(l.getX(), l.getY());
 	}
@@ -70,6 +75,7 @@ public class ConversionUtil {
 		return location((int) Math.round(p.getX()), (int) Math.round(p.getY()));
 	}
 	
+	@SuppressWarnings("restriction")
 	public static ILocation location(int x, int y) {
 		return new LocationImpl(x, y);
 	}
@@ -89,9 +95,7 @@ public class ConversionUtil {
 		}
 	}
 	
-	@SuppressWarnings("restriction")
 	public static IRectangle rectangle(int x, int y, int width, int height) {
-		
-		return new RectangleImpl(x, y, width, height);
+		return rect(x, y, width, height);
 	}
 }

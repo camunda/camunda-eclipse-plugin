@@ -19,7 +19,6 @@ import static org.eclipse.bpmn2.modeler.core.features.choreography.ChoreographyP
 import static org.eclipse.bpmn2.modeler.core.features.choreography.ChoreographyProperties.TEXT_H;
 import static org.eclipse.bpmn2.modeler.ui.features.choreography.ChoreographyUtil.drawMultiplicityMarkers;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +27,6 @@ import org.eclipse.bpmn2.ChoreographyTask;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.di.ParticipantBandKind;
-import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
@@ -128,16 +126,9 @@ public class AddChoreographyActivityFeature<T extends ChoreographyActivity>
 	protected void decorateContainerRect(RoundedRectangle containerRect) {
 	}
 
-	protected void addedFromImport(T choreography, ContainerShape choreographyContainer,
-			IAddContext context) {
-		ModelHandler mh = null;
-
-		try {
-			mh = ModelHandler.getInstance(getDiagram());
-		} catch (IOException e) {
-			Activator.logError(e);
-			return;
-		}
+	protected void addedFromImport(T choreography, ContainerShape choreographyContainer, IAddContext context) {
+		
+		ModelHandler mh = ModelHandler.getInstance(getDiagram());
 
 		List<Participant> participants = choreography.getParticipantRefs();
 		List<BPMNShape> shapes = mh.getAll(BPMNShape.class);

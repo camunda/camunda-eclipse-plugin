@@ -46,20 +46,18 @@ public class ConnectionReconnectionContext {
 		LayoutContext layoutingContext = new DefaultLayoutStrategy().createLayoutingContext(freeFormConnection, relayoutOnRepairFail);
 		
 		if (forceLayout) {
-			layoutingContext.layout();
 			System.out.println("[reconnect] forced layout, no repair");
-		} else
-		
-		if (layoutingContext.isRepairable()) {
-			boolean repaired = layoutingContext.repair();
-			System.out.println("[reconnect] " + (repaired ? "repaired" : "could not repair") + " layout");
-			if (!repaired || layoutingContext.needsLayout()) {
-				layoutingContext.layout();
-				System.out.println("[reconnect] layout repair");
-			}
-		} else {
-			System.out.println("[reconnect] layout only");
 			layoutingContext.layout();
+		} else {
+			System.out.println("[reconnect] repair");
+			boolean repaired = layoutingContext.repair();
+
+			System.out.println("[reconnect] " + (repaired ? "repair success" : "repair failed"));
+			
+			if (layoutingContext.needsLayout()) {
+				System.out.println("[reconnect] repair failed, relayout");
+				layoutingContext.layout();
+			}
 		}
 	}
 
@@ -70,5 +68,4 @@ public class ConnectionReconnectionContext {
 			throw new IllegalArgumentException("Unable to reconnect non FreeFormConnections");
 		}
 	}
-	
 }

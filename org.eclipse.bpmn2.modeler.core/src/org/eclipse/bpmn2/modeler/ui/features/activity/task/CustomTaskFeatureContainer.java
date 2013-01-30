@@ -8,7 +8,7 @@ import org.eclipse.bpmn2.modeler.core.features.activity.task.AddTaskFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.task.ICustomTaskFeature;
 import org.eclipse.bpmn2.modeler.core.runtime.CustomTaskDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
-import org.eclipse.bpmn2.modeler.ui.diagram.BPMNFeatureProvider;
+import org.eclipse.bpmn2.modeler.ui.diagram.BPMN2FeatureProvider;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IAddFeature;
@@ -138,11 +138,11 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 		}
 		this.id = id;
 		
-		if (fp instanceof BPMNFeatureProvider) {
+		if (fp instanceof BPMN2FeatureProvider) {
 			// register this custom modelObject ID with the BPMNFeatureProvider;
 			// this will allow the feature provider to find the correct feature control class
 			// for this custom modelObject, instead of the generic "Task" feature control
-			BPMNFeatureProvider bfp = (BPMNFeatureProvider)fp;
+			BPMN2FeatureProvider bfp = (BPMN2FeatureProvider)fp;
 			try {
 				bfp.addFeatureContainer(this);
 			} catch (Exception e) {

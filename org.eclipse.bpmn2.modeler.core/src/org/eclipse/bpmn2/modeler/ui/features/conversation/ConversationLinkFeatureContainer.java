@@ -101,18 +101,15 @@ public class ConversationLinkFeatureContainer extends BaseElementConnectionFeatu
 
 		@Override
 		public ConversationLink createBusinessObject(ICreateConnectionContext context) {
-			ConversationLink bo = null;
-			try {
-				ModelHandler mh = ModelHandler.getInstance(getDiagram());
-				Participant source = getSourceBo(context);
-				Conversation target = getTargetBo(context);
-				bo = mh.createConversationLink(source, target);
-				bo.setName("Conversation Link");
-				putBusinessObject(context, bo);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			ModelHandler mh = ModelHandler.getInstance(getDiagram());
+			
+			Participant source = getSourceBo(context);
+			Conversation target = getTargetBo(context);
+			
+			ConversationLink bo = mh.createConversationLink(source, target);
+			bo.setName("Conversation Link");
+			putBusinessObject(context, bo);
+			
 			return bo;
 		}
 	}

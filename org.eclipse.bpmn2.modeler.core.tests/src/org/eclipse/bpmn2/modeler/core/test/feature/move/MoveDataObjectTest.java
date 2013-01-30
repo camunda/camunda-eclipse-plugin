@@ -18,7 +18,7 @@ public class MoveDataObjectTest extends AbstractFeatureTest {
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/AbstractMoveDataItemTest.testBase.bpmn")
 	public void testRetrieveLabel() {
 		Shape shape = Util.findShapeByBusinessObjectId(diagram, "DataObject_1");
-		Shape label = GraphicsUtil.getLabel(shape, diagram);
+		Shape label = GraphicsUtil.getLabelShape(shape, diagram);
 		
 		// then label should be retrievable via the get label utility
 		assertThat(label).isNotNull();
@@ -28,7 +28,7 @@ public class MoveDataObjectTest extends AbstractFeatureTest {
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/AbstractMoveDataItemTest.testBase.bpmn")
 	public void testSameContainer() {
 		Shape shape = Util.findShapeByBusinessObjectId(diagram, "DataObject_1");
-		Shape label = GraphicsUtil.getLabel(shape, diagram);
+		Shape label = GraphicsUtil.getLabelShape(shape, diagram);
 		
 		// label and shape should have same container
 		assertThat(label.eContainer()).isEqualTo(shape.eContainer());
@@ -38,7 +38,7 @@ public class MoveDataObjectTest extends AbstractFeatureTest {
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/AbstractMoveDataItemTest.testBase.bpmn")
 	public void testMoveLabelOnShape() {
 		Shape shape = Util.findShapeByBusinessObjectId(diagram, "DataObject_1");
-		Shape label = GraphicsUtil.getLabel(shape, diagram);
+		Shape label = GraphicsUtil.getLabelShape(shape, diagram);
 		
 		move(label, diagramTypeProvider)
 			.by(0, -20)

@@ -38,7 +38,7 @@ public class AddEventDefinitionOperation extends Operation<AddContext, IAddFeatu
 		return featureProvider.getAddFeature(context);
 	}
 	
-	public static AddEventDefinitionOperation createAddEventDefinitionOperation(IDiagramTypeProvider diagramTypeProvider) {
+	public static AddEventDefinitionOperation addEventDefinition(IDiagramTypeProvider diagramTypeProvider) {
 		return new AddEventDefinitionOperation(diagramTypeProvider);
 	}
 }

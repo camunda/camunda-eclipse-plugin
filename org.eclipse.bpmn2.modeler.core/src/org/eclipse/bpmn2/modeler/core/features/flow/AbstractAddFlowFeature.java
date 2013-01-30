@@ -13,25 +13,33 @@
 package org.eclipse.bpmn2.modeler.core.features.flow;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNLabel;
+import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
+import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
-import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.impl.AdapterImpl;
+import org.eclipse.dd.dc.Bounds;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.IMoveConnectionDecoratorFeature;
 import org.eclipse.graphiti.features.context.IAddConnectionContext;
 import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.features.context.impl.MoveConnectionDecoratorContext;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
@@ -40,7 +48,7 @@ import org.eclipse.graphiti.services.IPeService;
 
 public abstract class AbstractAddFlowFeature<T extends BaseElement>
 	extends AbstractAddBPMNShapeFeature<T> {
-
+	
 	public AbstractAddFlowFeature(IFeatureProvider fp) {
 		super(fp);
 	}
@@ -59,13 +67,15 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement>
 		IPeService peService = Graphiti.getPeService();
 		IGaService gaService = Graphiti.getGaService();
 
-		T element = getBusinessObject(context);
+		T flow = getBusinessObject(context);
 		IAddConnectionContext addConContext = (IAddConnectionContext) context;
 
-		Connection connection = peService.createFreeFormConnection(getDiagram());
-
-		Object importProp = context.getProperty(DIUtils.IMPORT_PROPERTY);
-		if (importProp != null && (Boolean) importProp) {
+		Diagram diagram = getDiagram();
+		
+		BPMNEdge bpmnEdge = (BPMNEdge) ModelHandler.findDIElement(diagram, flow);
+		Connection connection = peService.createFreeFormConnection(diagram);
+		
+		if (ContextUtil.is(context, DIUtils.IMPORT_PROPERTY)) {
 			connection.setStart(addConContext.getSourceAnchor());
 			connection.setEnd(addConContext.getTargetAnchor());
 		} else {
@@ -77,29 +87,46 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement>
 			connection.setStart(anchors.getFirst());
 			connection.setEnd(anchors.getSecond());
 		}
-		
-		if (ModelUtil.hasName(element)) {
-			ConnectionDecorator labelDecorator = Graphiti.getPeService().createConnectionDecorator(connection, true, 0.5, true);
-			Text text = gaService.createText(labelDecorator, ModelUtil.getName(element));
-		    if (context.getProperty("BPMNLABEL") != null) {
-		      BPMNLabel label = (BPMNLabel) context.getProperty("BPMNLABEL");
-		      gaService.setLocation(text, new Float(label.getBounds().getX()).intValue(), new Float(label.getBounds().getY()).intValue());
-		      label.toString();
-		    }
-		    text.eAdapters().add(new AdapterImpl() {
-		        @Override
-		        public void notifyChanged(Notification msg) {
-		          super.notifyChanged(msg);
-		        }
-		    });
-			peService.setPropertyValue(labelDecorator, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
-			StyleUtil.applyStyle(text, element);
-		}
 
-		createDIEdge(connection, element);
+		if (bpmnEdge == null) {
+			bpmnEdge = DIUtils.createDIEdge(connection, flow, diagram);
+		}
+		
+		// link connection to edge and bpmn element
+		link(connection, new Object[] { flow, bpmnEdge });
+		
+		if (ModelUtil.hasName(flow)) {
+			
+			ConnectionDecorator labelDecorator = Graphiti.getPeService().createConnectionDecorator(connection, true, 0.5, true);
+			Text text = gaService.createText(labelDecorator, ModelUtil.getName(flow));
+			
+			GraphicsUtil.makeLabel(labelDecorator);
+			
+			link(labelDecorator, new Object[] { flow, bpmnEdge });
+			
+			peService.setPropertyValue(labelDecorator, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
+			StyleUtil.applyStyle(text, flow);
+			
+			BPMNLabel bpmnLabel = bpmnEdge.getLabel();
+			
+			// move after link if bpmnLabel is given
+			if (bpmnLabel != null && bpmnLabel.getBounds() != null) {
+				IRectangle decoratorBounds = LayoutUtil.getAbsoluteBounds(labelDecorator);
+
+				int x = (int) bpmnLabel.getBounds().getX() - decoratorBounds.getX();
+				int y = (int) bpmnLabel.getBounds().getY() - decoratorBounds.getY();
+				
+				MoveConnectionDecoratorContext ctx = new MoveConnectionDecoratorContext(labelDecorator, x, y, true);
+				IMoveConnectionDecoratorFeature moveDecoratorFeature = getFeatureProvider().getMoveConnectionDecoratorFeature(ctx);
+				
+				if (moveDecoratorFeature.canExecute(ctx)) {
+					moveDecoratorFeature.execute(ctx);
+				}
+			}
+		}
 		
 		createConnectionLine(connection);
-		hook(addConContext, connection, element);
+		hook(addConContext, connection, flow);
 
 		return connection;
 	}

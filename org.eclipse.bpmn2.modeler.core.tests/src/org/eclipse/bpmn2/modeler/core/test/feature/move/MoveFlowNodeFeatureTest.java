@@ -15,6 +15,7 @@ import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
+import org.fest.assertions.api.Fail;
 import org.junit.Test;
 
 /**
@@ -23,7 +24,6 @@ import org.junit.Test;
  * @author Nico Rehwaldt
  */
 public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
-	
 	
 	@Test
 	@DiagramResource
@@ -51,7 +51,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(processShape).hasChild(userTaskShape);
 		assertThat(userTaskShape).isContainedIn(processShape);
 	}
-
+	
 	@Test
 	@DiagramResource
 	public void testMoveShapeIntoContainer() {
@@ -77,6 +77,33 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(processShape).doesNotHaveChild(userTaskShape);
 		assertThat(userTaskShape).hasParentModelElement(subProcessElement);
 	}
+
+	@Test
+	@DiagramResource
+	public void testMoveOutOfParticipantNotAllowed() {
+
+		// given
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
+		Shape participantShape = Util.findShapeByBusinessObjectId(diagram, "_Participant_3");
+
+		// assume
+		// taks shape is part of participant
+		assertThat(taskShape)
+			.isContainedIn(participantShape);
+		
+		// when 
+		// trying to move the task shape
+		move(taskShape, diagramTypeProvider)
+			.toContainer(diagram)
+			.by(300, 200)
+			.execute();
+		
+		// then 
+		// it should still be contained in participant
+		// (movement not allowed)
+		assertThat(participantShape)
+			.hasChild(taskShape);
+	}
 	
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveFlowNodeFeature.testMoveBetweenLanes.bpmn")
@@ -85,6 +112,8 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		// given
 		Shape eventShape = Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
 		ContainerShape targetLaneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Lane_5");
+
+		Shape labelShape = GraphicsUtil.getLabelShape(eventShape, getDiagram());
 		
 		// when moving event to sibling lane
 		move(eventShape, diagramTypeProvider)
@@ -96,9 +125,8 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(eventShape)
 			.isContainedIn(targetLaneShape);
 		
-		Shape labelShape = GraphicsUtil.getLabel(eventShape, getDiagram());
-		
-		assertThat(labelShape).isContainedIn(targetLaneShape);
+		assertThat(labelShape)
+			.isContainedIn(diagram);
 	}
 	
 	@Test
@@ -133,7 +161,9 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		// given
 		Shape eventShape = Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
 		ContainerShape targetLaneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Lane_3");
-
+		
+		Shape labelShape = GraphicsUtil.getLabelShape(eventShape, getDiagram());
+		
 		// when moving event to the parents sibling lane
 		move(eventShape, diagramTypeProvider)
 			.toContainer(targetLaneShape)
@@ -144,9 +174,8 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(eventShape)
 			.isContainedIn(targetLaneShape);
 		
-		Shape labelShape = GraphicsUtil.getLabel(eventShape, getDiagram());
-		
-		assertThat(labelShape).isContainedIn(targetLaneShape);
+		assertThat(labelShape)
+			.isContainedIn(diagram);
 	}
 	
 	@Test
@@ -157,6 +186,8 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		Shape gatewayShape = Util.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
 		ContainerShape targetLaneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Lane_3");
 
+		Shape labelShape = GraphicsUtil.getLabelShape(gatewayShape, getDiagram());
+		
 		// when gateway event to sibling lane
 		move(gatewayShape, diagramTypeProvider)
 			.toContainer(targetLaneShape)
@@ -167,10 +198,8 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(gatewayShape)
 			.isContainedIn(targetLaneShape);
 		
-		
-		Shape labelShape = GraphicsUtil.getLabel(gatewayShape, getDiagram());
-		
-		assertThat(labelShape).isContainedIn(targetLaneShape);
+		assertThat(labelShape)
+			.isContainedIn(diagram);
 	}
 
 	@Test
@@ -183,7 +212,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		ContainerShape preMoveLaneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Lane_6");
 		ContainerShape targetParticipantShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "_Participant_2");
 		
-		Shape labelShape = GraphicsUtil.getLabel(gatewayShape, getDiagram());
+		Shape labelShape = GraphicsUtil.getLabelShape(gatewayShape, getDiagram());
 		
 		// when gateway event to sibling lane
 		move(gatewayShape, diagramTypeProvider)
@@ -196,9 +225,10 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 			.isContainedIn(preMoveLaneShape);
 		
 		// same applies to label
-		assertThat(labelShape).isContainedIn(preMoveLaneShape);
+		assertThat(labelShape)
+			.isContainedIn(diagram);
 	}
-	
+
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveFlowNodeFeature.testMoveBetweenLanes.bpmn")
 	public void testMoveTaskWithBoundaryEventAttachedToSiblingLane() {
@@ -208,6 +238,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		Shape boundaryEventShape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
 		
 		ContainerShape targetLaneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Lane_3");
+		Shape labelShape = GraphicsUtil.getLabelShape(boundaryEventShape, getDiagram());
 		
 		// when moving task to sibling lane
 		move(taskShape, diagramTypeProvider)
@@ -219,8 +250,31 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(boundaryEventShape)
 			.isContainedIn(targetLaneShape);
 		
-		Shape labelShape = GraphicsUtil.getLabel(boundaryEventShape, getDiagram());
+		assertThat(labelShape)
+			.isContainedIn(diagram);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveParticipantFeatureTest.testMoveParticipantBase.bpmn")
+	public void testMoveTaskWithBoundaryEventAttachedMovesLabel() {
 		
-		assertThat(labelShape).isContainedIn(targetLaneShape);
+		// given
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
+		Shape boundaryEventShape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
+
+		Shape labelShape = GraphicsUtil.getLabelShape(boundaryEventShape, diagram);
+		
+		IRectangle preMoveLabelBounds = LayoutUtil.getAbsoluteBounds(labelShape);
+		
+		// when moving task by 20,20
+		move(taskShape, diagramTypeProvider)
+			.by(20, 20)
+			.execute();
+		
+		// then 
+		// label should have been moved accordingly
+		assertThat(labelShape)
+			.isContainedIn(diagram)
+			.movedBy(point(20, 20), preMoveLabelBounds);
 	}
 }

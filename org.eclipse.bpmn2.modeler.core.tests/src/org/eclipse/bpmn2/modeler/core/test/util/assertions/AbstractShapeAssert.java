@@ -5,6 +5,7 @@ import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.IRectangle;
+import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.PictogramLink;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.fest.assertions.api.AbstractAssert;
@@ -67,9 +68,34 @@ public abstract class AbstractShapeAssert<S extends AbstractShapeAssert<S, A>, A
 	
 	public abstract AbstractShapeAssert<S, A> hasChild(Shape child);
 	public abstract AbstractShapeAssert<S, A> doesNotHaveChild(Shape child);
+	
+	public abstract AbstractShapeAssert<S, A> hasContainerShapeChildCount(int count);
 
 	public PointAssert position() {
 		IRectangle absoluteRectangle = LayoutUtil.getAbsoluteBounds(actual);
 		return new PointAssert(point(absoluteRectangle.getX(), absoluteRectangle.getY()));
+	}
+	
+	public IRectangleAssert bounds() {
+		IRectangle bounds = LayoutUtil.getAbsoluteBounds(actual);
+		
+		return new IRectangleAssert(bounds);
+	}
+
+	/**
+	 * Assert that a movement took place
+	 * 
+	 * @param expectedMovement
+	 * @param referenceBounds
+	 * @return
+	 */
+	public AbstractShapeAssert<S, A> movedBy(Point expectedMovement, IRectangle referenceBounds) {
+		IRectangle bounds = LayoutUtil.getAbsoluteBounds(actual);
+		
+		Point diff = point(bounds.getX() - referenceBounds.getX(), bounds.getY() - referenceBounds.getY());
+		
+		Bpmn2ModelAssertions.assertThat(diff).isEqualTo(expectedMovement);
+		
+		return myself;
 	}
 }

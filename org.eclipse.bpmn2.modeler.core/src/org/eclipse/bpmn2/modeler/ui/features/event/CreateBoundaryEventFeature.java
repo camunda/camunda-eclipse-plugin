@@ -57,29 +57,26 @@ public class CreateBoundaryEventFeature extends AbstractBpmn2CreateFeature<Bound
 	@Override
 	public BoundaryEvent createBusinessObject(ICreateContext context) {
 		BoundaryEvent event = null;
-		try {
-			Activity activity = (Activity) getBusinessObjectForPictogramElement(context.getTargetContainer());
-			ModelHandler handler = ModelHandler.getInstance(getDiagram());
-			event = super.createBusinessObject(context);
-			event.setAttachedToRef(activity);
-			event.setName("");
-			event.setCancelActivity(true); // by default is interrupting
-			Object bo = getBusinessObjectForPictogramElement(context.getTargetContainer());
-			
-			if (bo instanceof FlowNode &&  !((FlowNode)bo).getLanes().isEmpty()) {
-				((FlowNode)bo).getLanes().get(0).getFlowNodeRefs().add(event);
-			}
-			
-			if (bo instanceof SubProcess) {
-				bo = getBusinessObjectForPictogramElement((PictogramElement) context.getTargetContainer().eContainer());
-			}
-			
-			handler.addFlowElement(bo, event);
-			ModelUtil.setID(event);
 		
-		} catch (IOException e) {
-			Activator.logError(e);
+		Activity activity = (Activity) getBusinessObjectForPictogramElement(context.getTargetContainer());
+		ModelHandler handler = ModelHandler.getInstance(getDiagram());
+		event = super.createBusinessObject(context);
+		event.setAttachedToRef(activity);
+		event.setName("");
+		event.setCancelActivity(true); // by default is interrupting
+		Object bo = getBusinessObjectForPictogramElement(context.getTargetContainer());
+		
+		if (bo instanceof FlowNode &&  !((FlowNode)bo).getLanes().isEmpty()) {
+			((FlowNode)bo).getLanes().get(0).getFlowNodeRefs().add(event);
 		}
+		
+		if (bo instanceof SubProcess) {
+			bo = getBusinessObjectForPictogramElement((PictogramElement) context.getTargetContainer().eContainer());
+		}
+		
+		handler.addFlowElement(bo, event);
+		ModelUtil.setID(event);
+			
 		return event;
 	}
 

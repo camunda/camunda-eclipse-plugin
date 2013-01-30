@@ -104,7 +104,7 @@ public class BoundaryEventPositionHelper {
 		        (int) activityBounds.getWidth(), (int) activityBounds.getHeight());
 	}
 
-	public static PositionOnLine getPositionOnLineUsingAbsoluteCoordinates(Shape eventShape, Shape activityShape) {
+	public static PositionOnLine getPositionOnlineUsingAbsoluteCoordinates(Shape eventShape, Shape activityShape) {
 		IPeService peService = Graphiti.getPeService();
 		GraphicsAlgorithm eventGa = eventShape.getGraphicsAlgorithm();
 		ILocation eventLoc = peService.getLocationRelativeToDiagram(eventShape);

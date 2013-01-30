@@ -185,52 +185,48 @@ public class DataObjectFeatureContainer extends AbstractDataFeatureContainer {
 		@Override
 		public FlowElement createBusinessObject(ICreateContext context) {
 			FlowElement bo = null;
-			try {
-				DataObjectReference dataObjectReference = null;
-				DataObject dataObject = null;
-				ModelHandler mh = ModelHandler.getInstance(getDiagram());
-				dataObjectReference = Bpmn2ModelerFactory.create(DataObjectReference.class);
-				dataObject = Bpmn2ModelerFactory.create(DataObject.class);
-				dataObject.setName("Create a new Data Object");
-				Object container = getBusinessObjectForPictogramElement(context.getTargetContainer());
 
-				List<DataObject> dataObjectList = new ArrayList<DataObject>();
-				dataObjectList.add(dataObject);
-				TreeIterator<EObject> iter = mh.getDefinitions().eAllContents();
-				while (iter.hasNext()) {
-					EObject obj = iter.next();
-					if (obj instanceof DataObject)
-						dataObjectList.add((DataObject) obj);
-				}
+			DataObjectReference dataObjectReference = null;
+			DataObject dataObject = null;
+			ModelHandler mh = ModelHandler.getInstance(getDiagram());
+			dataObjectReference = Bpmn2ModelerFactory.create(DataObjectReference.class);
+			dataObject = Bpmn2ModelerFactory.create(DataObject.class);
+			dataObject.setName("Create a new Data Object");
+			Object container = getBusinessObjectForPictogramElement(context.getTargetContainer());
 
-				DataObject result = dataObject;
-				if (dataObjectList.size() > 1) {
-					PopupMenu popupMenu = new PopupMenu(dataObjectList, labelProvider);
-					boolean b = popupMenu.show(Display.getCurrent().getActiveShell());
-					if (b) {
-						result = (DataObject) popupMenu.getResult();
-					}
-				}
-				if (result == dataObject) { // the new one
-					mh.addFlowElement(container,dataObject);
-					ModelUtil.setID(dataObject);
-					dataObject.setIsCollection(false);
-					dataObject.setName(ModelUtil.toDisplayName(dataObject.getId()));
-					dataObjectReference.setName(dataObject.getName());
-					bo = dataObject;
-				} else {
-					mh.addFlowElement(container,dataObjectReference);
-					ModelUtil.setID(dataObjectReference);
-					dataObjectReference.setName(result.getName() + " Ref");
-					dataObjectReference.setDataObjectRef(result);
-					dataObject = result;
-					bo = dataObjectReference;
-				}
-				putBusinessObject(context, bo);
-
-			} catch (IOException e) {
-				Activator.showErrorWithLogging(e);
+			List<DataObject> dataObjectList = new ArrayList<DataObject>();
+			dataObjectList.add(dataObject);
+			TreeIterator<EObject> iter = mh.getDefinitions().eAllContents();
+			while (iter.hasNext()) {
+				EObject obj = iter.next();
+				if (obj instanceof DataObject)
+					dataObjectList.add((DataObject) obj);
 			}
+
+			DataObject result = dataObject;
+			if (dataObjectList.size() > 1) {
+				PopupMenu popupMenu = new PopupMenu(dataObjectList, labelProvider);
+				boolean b = popupMenu.show(Display.getCurrent().getActiveShell());
+				if (b) {
+					result = (DataObject) popupMenu.getResult();
+				}
+			}
+			if (result == dataObject) { // the new one
+				mh.addFlowElement(container,dataObject);
+				ModelUtil.setID(dataObject);
+				dataObject.setIsCollection(false);
+				dataObject.setName(ModelUtil.toDisplayName(dataObject.getId()));
+				dataObjectReference.setName(dataObject.getName());
+				bo = dataObject;
+			} else {
+				mh.addFlowElement(container,dataObjectReference);
+				ModelUtil.setID(dataObjectReference);
+				dataObjectReference.setName(result.getName() + " Ref");
+				dataObjectReference.setDataObjectRef(result);
+				dataObject = result;
+				bo = dataObjectReference;
+			}
+			putBusinessObject(context, bo);
 			return bo;
 		}
 	}

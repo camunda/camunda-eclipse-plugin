@@ -177,7 +177,7 @@ public class AnchorUtil {
 
 		if (connection instanceof FreeFormConnection) {
 			EList<Point> bendpoints = ((FreeFormConnection) connection).getBendpoints();
-			if (bendpoints.size() > 0) {
+			if (!bendpoints.isEmpty()) {
 				FixPointAnchor sourceAnchor = getCorrectAnchor(sourceBoundaryAnchors, bendpoints.get(0));
 				FixPointAnchor targetAnchor = getCorrectAnchor(targetBoundaryAnchors,
 						bendpoints.get(bendpoints.size() - 1));
@@ -494,7 +494,7 @@ public class AnchorUtil {
 					}
 				}
 				
-				if (bp!=null) {
+				if (bp != null) {
 					IRemoveBendpointContext removeBpContext = new RemoveBendpointContext(oldTargetConnection, bp);
 					IRemoveBendpointFeature removeBpFeature = fp.getRemoveBendpointFeature(removeBpContext);
 					removeBpFeature.removeBendpoint(removeBpContext);

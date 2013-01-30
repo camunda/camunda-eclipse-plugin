@@ -258,46 +258,43 @@ public class DataStoreReferenceFeatureContainer extends BaseElementFeatureContai
 			// to a new DataStore, one is created and added to Definitions.
 			// 
 			DataStoreReference bo = null;
-			try {
-				ModelHandler mh = ModelHandler.getInstance(getDiagram());
-				bo = Bpmn2ModelerFactory.create(DataStoreReference.class);
+			
+			ModelHandler mh = ModelHandler.getInstance(getDiagram());
+			bo = Bpmn2ModelerFactory.create(DataStoreReference.class);
 
-				ModelUtil.setID(bo);
-				
-				DataStore dataStore = Bpmn2ModelerFactory.create(DataStore.class);
-				dataStore.setName("Create a new Data Store");
-				
-				List<DataStore> dataStoreList = new ArrayList<DataStore>();
-				dataStoreList.add(dataStore);
-				TreeIterator<EObject> iter = mh.getDefinitions().eAllContents();
-				while (iter.hasNext()) {
-					EObject obj = iter.next();
-					if (obj instanceof DataStore)
-						dataStoreList.add((DataStore) obj);
-				}
-
-				DataStore result = dataStore;
-				if (dataStoreList.size() > 1) {
-					PopupMenu popupMenu = new PopupMenu(dataStoreList, labelProvider);
-					boolean b = popupMenu.show(Display.getCurrent().getActiveShell());
-					if (b) {
-						result = (DataStore) popupMenu.getResult();
-					}
-				}
-				if (result == dataStore) { // the new one
-					mh.addRootElement(dataStore);
-					ModelUtil.setID(dataStore);
-					dataStore.setName(ModelUtil.toDisplayName(dataStore.getId()));
-					bo.setName(dataStore.getName());
-				} else
-					bo.setName(result.getName() + " Ref");
-
-				bo.setDataStoreRef(result);
-				putBusinessObject(context, bo);
-
-			} catch (IOException e) {
-				Activator.showErrorWithLogging(e);
+			ModelUtil.setID(bo);
+			
+			DataStore dataStore = Bpmn2ModelerFactory.create(DataStore.class);
+			dataStore.setName("Create a new Data Store");
+			
+			List<DataStore> dataStoreList = new ArrayList<DataStore>();
+			dataStoreList.add(dataStore);
+			TreeIterator<EObject> iter = mh.getDefinitions().eAllContents();
+			while (iter.hasNext()) {
+				EObject obj = iter.next();
+				if (obj instanceof DataStore)
+					dataStoreList.add((DataStore) obj);
 			}
+
+			DataStore result = dataStore;
+			if (dataStoreList.size() > 1) {
+				PopupMenu popupMenu = new PopupMenu(dataStoreList, labelProvider);
+				boolean b = popupMenu.show(Display.getCurrent().getActiveShell());
+				if (b) {
+					result = (DataStore) popupMenu.getResult();
+				}
+			}
+			if (result == dataStore) { // the new one
+				mh.addRootElement(dataStore);
+				ModelUtil.setID(dataStore);
+				dataStore.setName(ModelUtil.toDisplayName(dataStore.getId()));
+				bo.setName(dataStore.getName());
+			} else
+				bo.setName(result.getName() + " Ref");
+
+			bo.setDataStoreRef(result);
+			putBusinessObject(context, bo);
+
 			return bo;
 		}
 	}

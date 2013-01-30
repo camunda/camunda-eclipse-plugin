@@ -24,7 +24,6 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.Gateway;
-import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -210,22 +209,21 @@ public class GraphicsUtil {
 	public static void alignWithShape(AbstractText text, ContainerShape labelContainer, 
 			int width,
 			int height,
-			int shapeX,
-			int shapeY, 
-			int preShapeX, 
-			int preShapeY){
+			Point newPos, 
+			Point oldPos) {
+		
 		final int textHeight = getLabelHeight(text);
 		final int textWidth = getLabelWidth(text);
 		
 		int currentLabelX = labelContainer.getGraphicsAlgorithm().getX();
 		int currentLabelY = labelContainer.getGraphicsAlgorithm().getY();
 		
-		int newShapeX = shapeX - ((textWidth + SHAPE_PADDING) / 2) + width / 2;
-		int newShapeY = shapeY + height + 2;
+		int newShapeX = newPos.getX() - ((textWidth + SHAPE_PADDING) / 2) + width / 2;
+		int newShapeY = newPos.getY() + height + 2;
 
-		if (currentLabelX > 0 && preShapeX > 0){
-			newShapeX = currentLabelX + (shapeX - preShapeX);
-			newShapeY = currentLabelY + (shapeY - preShapeY);
+		if (currentLabelX > 0 && oldPos != null) {
+			newShapeX = currentLabelX + (newPos.getX() - oldPos.getX());
+			newShapeY = currentLabelY + (newPos.getY() - oldPos.getY());
 		}
 		
 		IGaService gaService = Graphiti.getGaService();
@@ -233,6 +231,7 @@ public class GraphicsUtil {
 		gaService.setLocationAndSize(labelContainer.getGraphicsAlgorithm(), 
 				newShapeX , newShapeY ,
 				textWidth + SHAPE_PADDING, textHeight + SHAPE_PADDING);
+		
 		gaService.setLocationAndSize(text, 
 				0, 0,
 				textWidth + TEXT_PADDING, textHeight + TEXT_PADDING);
@@ -268,6 +267,10 @@ public class GraphicsUtil {
 			}
 		}
 		return null;
+	}
+	
+	public static Collection<PictogramElement> getContainedShapes(PictogramElement container) {
+		return Graphiti.getPeService().getAllContainedPictogramElements(container);
 	}
 	
 	public static List<PictogramElement> getContainedPictogramElements(PictogramElement container, String propertyKey) {
@@ -1072,8 +1075,25 @@ public class GraphicsUtil {
 	 * 
 	 * @return the label shape or null if non was found.
 	 */
-	public static Shape getLabel(Shape shape, Diagram diagram) {
-		return getLabel(BusinessObjectUtil.getFirstBaseElement(shape), diagram);
+	public static ContainerShape getLabelShape(Shape shape, Diagram diagram) {
+		return getLabelShape(BusinessObjectUtil.getFirstBaseElement(shape), diagram);
+	}
+	
+	/**
+	 * Returns the text of a label shape
+	 * 
+	 * @param labelShape
+	 * @return
+	 */
+	public static AbstractText getLabelShapeText(Shape labelShape) {
+		
+		if (!(labelShape instanceof ContainerShape)) {
+			throw new IllegalArgumentException("Expected argument to be a container shape");
+		}
+		
+		ContainerShape containerLabelShape = (ContainerShape) labelShape;
+		
+		return (AbstractText) containerLabelShape.getChildren().get(0).getGraphicsAlgorithm();
 	}
 	
 	/**
@@ -1085,7 +1105,7 @@ public class GraphicsUtil {
 	 * 
 	 * @return the label or null if no label was found
 	 */
-	public static Shape getLabel(BaseElement bpmnElement, Diagram diagram) {
+	public static ContainerShape getLabelShape(BaseElement bpmnElement, Diagram diagram) {
 		if (bpmnElement == null || diagram == null) {
 			throw new IllegalArgumentException("Arguments may not be null");
 		}
@@ -1094,7 +1114,7 @@ public class GraphicsUtil {
 		
 		for (PictogramElement element : linkedPictogramElements) {
 			if (isLabel(element)) {
-				return (Shape) element;
+				return (ContainerShape) element;
 			}
 		}
 		
@@ -1109,6 +1129,15 @@ public class GraphicsUtil {
 	 */
 	public static boolean isLabel(PictogramElement element) {
 		return Graphiti.getPeService().getPropertyValue(element, GraphicsUtil.LABEL_PROPERTY) != null;
+	}
+
+	/**
+	 * Sets properties on the given pictogram element which denotes it as a label
+	 *  
+	 * @param textContainerShape
+	 */
+	public static void makeLabel(PictogramElement element) {
+		Graphiti.getPeService().setPropertyValue(element, GraphicsUtil.LABEL_PROPERTY, "true");
 	}
 	
 	/**
@@ -1270,5 +1299,13 @@ public class GraphicsUtil {
 	
 	public static Color clone(Color c) {
 		return c;
+	}
+
+	/**
+	 * Sends the given element to the front
+	 * @param shape
+	 */
+	public static void sendToFront(Shape shape) {
+		Graphiti.getPeService().sendToFront(shape);
 	}
 }

@@ -20,10 +20,12 @@ import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
+import org.eclipse.bpmn2.modeler.core.features.flow.AbstractAddFlowFeature;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.bpmn2.modeler.ui.features.flow.SequenceFlowFeatureContainer.AddSequenceFlowFeature;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.dd.dc.Point;
@@ -42,7 +44,6 @@ import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
-import org.eclipse.graphiti.mm.pictograms.impl.FreeFormConnectionImpl;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
@@ -101,6 +102,7 @@ public abstract class AbstractEdgeHandler<T extends BaseElement> extends Abstrac
 		Anchor targetAnchor = createTargetAnchor(targetElement, waypoints);
 
 		AddConnectionContext context = new AddConnectionContext(sourceAnchor, targetAnchor);
+		
 		context.setNewObject(bpmnEdge.getBpmnElement());
 
 		IAddFeature addFeature = featureProvider.getAddFeature(context);
@@ -116,7 +118,7 @@ public abstract class AbstractEdgeHandler<T extends BaseElement> extends Abstrac
 
 				for (int i = 1; i < last; i++) {
 					Point waypoint = waypoints.get(i);
-					DIUtils.addBendPoint(freeForm, waypoint);
+					addBendPoint(freeForm, waypoint);
 				}
 			}
 			
@@ -127,6 +129,16 @@ public abstract class AbstractEdgeHandler<T extends BaseElement> extends Abstrac
 					+ ((EObject) context.getNewObject()).eClass().getName()));
 		}
 		return null;
+	}
+
+	/**
+	 * Adds a waypoint to the connection
+	 * 
+	 * @param connection
+	 * @param waypoint
+	 */
+	private void addBendPoint(FreeFormConnection connection, Point waypoint) {
+		connection.getBendpoints().add(Graphiti.getGaService().createPoint((int) waypoint.getX(), (int) waypoint.getY()));
 	}
 
 	private Anchor createTargetAnchor(PictogramElement element, List<Point> waypoints) {

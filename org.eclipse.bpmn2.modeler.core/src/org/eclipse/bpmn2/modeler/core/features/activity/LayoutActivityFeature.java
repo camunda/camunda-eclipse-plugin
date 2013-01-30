@@ -15,10 +15,11 @@ package org.eclipse.bpmn2.modeler.core.features.activity;
 import static org.eclipse.bpmn2.modeler.core.features.activity.AbstractAddActivityFeature.IS_ACTIVITY;
 
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.DefaultLayoutBPMNShapeFeature;
@@ -77,13 +78,12 @@ public class LayoutActivityFeature extends DefaultLayoutBPMNShapeFeature {
 			}
 		}
 
-		Activity activity = BusinessObjectUtil.getFirstElementOfType(container, Activity.class);
 		new AbstractBoundaryEventOperation() {
 			@Override
-			protected void doWorkInternal(ContainerShape container) {
+			protected void applyTo(ContainerShape container) {
 				layoutPictogramElement(container);
 			}
-		}.doWork(activity, getDiagram());
+		}.execute(container);
 		
 		if (container.eContainer() instanceof ContainerShape) {
 			PictogramElement pe = (PictogramElement) container.eContainer();

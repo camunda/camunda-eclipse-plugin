@@ -104,7 +104,7 @@ public class PushdownFeature extends AbstractCustomFeature {
 		FlowElementsContainer container = (FlowElementsContainer)getBusinessObjectForPictogramElement(pe);
 		Definitions definitions = ModelUtil.getDefinitions(container);
 
-		BPMNDiagram oldBpmnDiagram = (BPMNDiagram)ModelHandler.findDIElement(container).eContainer().eContainer();
+		BPMNDiagram oldBpmnDiagram = (BPMNDiagram)ModelHandler.findDIElement(getDiagram(), container).eContainer().eContainer();
 		Diagram oldDiagram = DIUtils.findDiagram(getDiagramEditor(), oldBpmnDiagram);
 		
 		// the contents of this expandable element is in the flowElements list 
@@ -114,7 +114,7 @@ public class PushdownFeature extends AbstractCustomFeature {
 		Diagram newDiagram = DIUtils.getOrCreateDiagram(getDiagramEditor(), newBpmnDiagram);
 		
 		for (FlowElement fe : container.getFlowElements()) {
-			DiagramElement de = ModelHandler.findDIElement(fe);
+			DiagramElement de = ModelHandler.findDIElement(getDiagram(), fe);
 			newPlane.getPlaneElement().add(de);
 			
 			List <PictogramElement> pes = Graphiti.getLinkService().getPictogramElements(oldDiagram, fe);

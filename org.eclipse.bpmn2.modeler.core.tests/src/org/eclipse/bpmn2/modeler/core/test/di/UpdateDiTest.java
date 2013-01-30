@@ -1,6 +1,6 @@
 package org.eclipse.bpmn2.modeler.core.test.di;
 
-import static org.eclipse.bpmn2.modeler.core.test.util.operations.AddEventDefinitionOperation.createAddEventDefinitionOperation;
+import static org.eclipse.bpmn2.modeler.core.test.util.operations.AddEventDefinitionOperation.addEventDefinition;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import org.eclipse.bpmn2.Bpmn2Factory;
@@ -40,7 +40,7 @@ public class UpdateDiTest extends AbstractFeatureTest {
 		// when
 		// adding definition to shape
 		
-		createAddEventDefinitionOperation(diagramTypeProvider)
+		addEventDefinition(diagramTypeProvider)
 			.addDefinition(messageEventDefinition)
 			.toEvent(eventShape)
 			.execute();
