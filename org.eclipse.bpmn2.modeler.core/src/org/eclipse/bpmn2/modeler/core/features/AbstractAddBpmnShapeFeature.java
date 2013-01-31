@@ -30,6 +30,7 @@ import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.ITargetContext;
+import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -92,11 +93,13 @@ public abstract class AbstractAddBpmnShapeFeature<T extends BaseElement> extends
 	 */
 	protected IRectangle getAddBounds(IAddContext context) {
 		
+		adjustLocationAndSize(context, getWidth(context), getHeight(context));
+		
 		return rectangle(
 			context.getX(), 
 			context.getY(), 
-			getWidth(context), 
-			getHeight(context));
+			context.getWidth(), 
+			context.getHeight());
 	}
 
 	/**
@@ -109,7 +112,7 @@ public abstract class AbstractAddBpmnShapeFeature<T extends BaseElement> extends
 	 * @return the bpmn shape
 	 */
 	protected BPMNShape createDi(Shape shape, BaseElement baseElement, IAddContext context) {
-		boolean isImport = ContextUtil.is(context, DIUtils.IMPORT);
+		boolean isImport = isImport(context);
 		
 		return createDIShape(shape, baseElement, findDIShape(baseElement), !isImport);
 	}
@@ -230,6 +233,31 @@ public abstract class AbstractAddBpmnShapeFeature<T extends BaseElement> extends
 		}
 	}
 
+	/**
+	 * Adjust the add context location and size 
+	 * 
+	 * @param context
+	 * @param width
+	 * @param height
+	 */
+	protected void adjustLocationAndSize(IAddContext context, int width, int height) {
+		
+		if (isImport(context)) {
+			return;
+		}
+		
+		System.out.println(String.format("Adjust location <%s>", context));
+		
+		int x = context.getX() - width / 2;
+		int y = context.getY() - height / 2;
+		
+		if (context instanceof AddContext) {
+			AddContext addContext = (AddContext) context;
+			addContext.setLocation(x, y);
+			addContext.setSize(width, height);
+		}
+	}
+	
 	protected int getHeight(IAddContext context) {
 		return context.getHeight() > 0 ? context.getHeight() :
 			(isHorizontal(context) ? getDefaultHeight() : getDefaultWidth());
@@ -241,7 +269,7 @@ public abstract class AbstractAddBpmnShapeFeature<T extends BaseElement> extends
 	}
 
 	protected boolean isHorizontal(ITargetContext context) {
-		if (ContextUtil.isNot(context, DIUtils.IMPORT)) {
+		if (!isImport(context)) {
 			// not importing - set isHorizontal to be the same as parent Pool
 			if (FeatureSupport.isTargetParticipant(context)) {
 				Participant targetParticipant = FeatureSupport.getTargetParticipant(context);

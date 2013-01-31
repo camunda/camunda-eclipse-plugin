@@ -17,8 +17,6 @@ import static org.eclipse.bpmn2.modeler.ui.features.event.BoundaryEventFeatureCo
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BoundaryEvent;
-import org.eclipse.bpmn2.CatchEvent;
-import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBpmnShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractUpdateEventFeature;
@@ -85,7 +83,7 @@ public class AddBoundaryEventFeature extends AbstractAddBpmnShapeFeature<Boundar
 	protected IRectangle getAddBounds(IAddContext context) {
 		IRectangle bounds = super.getAddBounds(context);
 		
-		if (ContextUtil.is(context, DIUtils.IMPORT)) {
+		if (isImport(context)) {
 			return bounds;
 		} else {
 			ContainerShape targetContainer = context.getTargetContainer();

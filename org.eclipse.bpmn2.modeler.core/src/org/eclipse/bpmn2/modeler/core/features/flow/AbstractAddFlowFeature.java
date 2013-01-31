@@ -75,7 +75,7 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement> extends Abst
 		BPMNEdge bpmnEdge = (BPMNEdge) ModelHandler.findDIElement(diagram, flow);
 		FreeFormConnection connection = peService.createFreeFormConnection(diagram);
 		
-		if (ContextUtil.is(context, DIUtils.IMPORT)) {
+		if (isImport(context)) {
 			connection.setStart(addConContext.getSourceAnchor());
 			connection.setEnd(addConContext.getTargetAnchor());
 		} else {

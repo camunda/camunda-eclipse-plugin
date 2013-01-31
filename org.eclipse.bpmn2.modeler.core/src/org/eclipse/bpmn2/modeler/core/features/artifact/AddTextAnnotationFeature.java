@@ -48,11 +48,6 @@ public class AddTextAnnotationFeature extends AbstractAddBpmnShapeFeature<TextAn
 		
 		return isAnnotation && (intoDiagram || intoLane || intoSubProcess || intoParticipant);
 	}
-
-	@Override
-	protected IRectangle getAddBounds(IAddContext context) {
-		return rectangle(context.getX(), context.getY(), getWidth(context), getHeight(context));
-	}
 	
 	@Override
 	public int getDefaultHeight() {

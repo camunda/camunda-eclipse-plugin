@@ -107,7 +107,7 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 		
 		BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(newLaneShape, BPMNShape.class);
 		
-		boolean isImport = ContextUtil.is(context, DIUtils.IMPORT);
+		boolean isImport = isImport(context);
 
 		BaseElement targetBaseElement = null;
 		
@@ -305,7 +305,7 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 	
 	@Override
 	protected int getHeight(IAddContext context) {
-		if (ContextUtil.is(context, DIUtils.IMPORT)) {
+		if (isImport(context)) {
 			return context.getHeight();
 		}
 		
@@ -324,7 +324,7 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 	
 	@Override
 	public int getWidth(IAddContext context) {
-		if (ContextUtil.is(context, DIUtils.IMPORT)) {
+		if (isImport(context)) {
 			return context.getWidth();
 		}
 		

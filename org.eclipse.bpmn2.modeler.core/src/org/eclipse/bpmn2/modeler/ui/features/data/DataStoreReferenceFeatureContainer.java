@@ -257,12 +257,12 @@ public class DataStoreReferenceFeatureContainer extends AbstractDataFeatureConta
 
 		@Override
 		public int getDefaultHeight() {
-			return GraphicsUtil.DATA_WIDTH;
+			return 50;
 		}
 
 		@Override
 		public int getDefaultWidth() {
-			return GraphicsUtil.DATA_HEIGHT;
+			return 50;
 		}
 
 		@Override

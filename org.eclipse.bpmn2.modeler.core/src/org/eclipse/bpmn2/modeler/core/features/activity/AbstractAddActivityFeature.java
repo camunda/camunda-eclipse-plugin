@@ -14,16 +14,15 @@ package org.eclipse.bpmn2.modeler.core.features.activity;
 
 import static org.eclipse.bpmn2.modeler.core.features.activity.UpdateActivityCompensateMarkerFeature.IS_COMPENSATE_PROPERTY;
 import static org.eclipse.bpmn2.modeler.core.features.activity.UpdateActivityLoopAndMultiInstanceMarkerFeature.IS_LOOP_OR_MULTI_INSTANCE;
-import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.rectangle;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.modeler.core.features.activity.UpdateActivityLoopAndMultiInstanceMarkerFeature.LoopCharacteristicType;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
-import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -87,32 +86,30 @@ public abstract class AbstractAddActivityFeature<T extends Activity> extends Abs
 	}
 
 	@Override
-	protected IRectangle getAddBounds(IAddContext context) {
-
-		int x, y, width, height;
+	protected void adjustLocationAndSize(IAddContext context, int width, int height) {
+		
+		if (context.getTargetConnection() != null) {
+			adjustLocationForDropOnConnection(context);
+		}
+		
+		super.adjustLocationAndSize(context, width, height);
+		
+		if (isImport(context)) {
+			return;
+		}
 		
 		ContainerShape targetContainer = context.getTargetContainer();
 		IRectangle targetBounds = LayoutUtil.getRelativeBounds(targetContainer);
 
-		width = context.getWidth() > 0 ? context.getWidth() : getDefaultWidth();
-		height = context.getHeight() > 0 ? context.getHeight() : getDefaultHeight();
-		
 		width = Math.min(targetBounds.getWidth(), width);
 		height = Math.min(targetBounds.getHeight(), height);
 		
-		if (context.getTargetConnection() != null) {
-			// adjust x and y coordinates to compensate drop on connection
-			
+		if (context instanceof AddContext) {
+			AddContext addContext = (AddContext) context;
+			addContext.setSize(width, height);
 		}
-		
-		adjustLocation(context, width, height);
-		
-		x = context.getX();
-		y = context.getY();
-		
-		return rectangle(x, y, width, height);
 	}
-	
+
 	/**
 	 * Decorates the graphical element
 	 * 

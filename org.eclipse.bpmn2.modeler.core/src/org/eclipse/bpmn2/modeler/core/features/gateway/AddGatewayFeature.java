@@ -12,8 +12,6 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features.gateway;
 
-import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.rectangle;
-
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.modeler.core.features.activity.AbstractAddFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
@@ -21,6 +19,7 @@ import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.mm.algorithms.Polygon;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -67,12 +66,19 @@ public class AddGatewayFeature<T extends Gateway>
 
 		decorate(newShape);
 	}
-	
+
 	@Override
-	protected IRectangle getAddBounds(IAddContext context) {
+	protected void adjustLocationAndSize(IAddContext context, int width, int height) {
 		
-		int width = this.getWidth(context);
-		int height = this.getHeight(context);
+		if (context.getTargetConnection() != null) {
+			adjustLocationForDropOnConnection(context);
+		}
+		
+		super.adjustLocationAndSize(context, width, height);
+		
+		if (isImport(context)) {
+			return;
+		}
 		
 		// for backward compatibility with older files that included
 		// the label height in the figure height
@@ -80,12 +86,11 @@ public class AddGatewayFeature<T extends Gateway>
 			width = height = Math.min(width, height);
 		}
 		
-		adjustLocation(context, width, height);
-		
-		int x = context.getX();
-		int y = context.getY();
-		
-		return rectangle(x, y, width, height);
+		if (context instanceof AddContext) {
+			AddContext addContext = (AddContext) context;
+			
+			addContext.setSize(width, height);
+		}
 	}
 	
 	protected void decorate(ContainerShape newShape) {
