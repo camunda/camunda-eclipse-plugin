@@ -18,6 +18,7 @@ import org.eclipse.bpmn2.modeler.core.features.activity.AbstractAddActivityFeatu
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.mm.algorithms.MultiText;
@@ -36,35 +37,41 @@ public class AddTaskFeature<T extends Task> extends AbstractAddActivityFeature<T
 
 	@Override
 	public boolean canAdd(IAddContext context) {
-		return super.canAdd(context)
-		        || BusinessObjectUtil.containsElementOfType(context.getTargetContainer(), FlowElementsContainer.class);
+		return super.canAdd(context) || BusinessObjectUtil.containsElementOfType(context.getTargetContainer(), FlowElementsContainer.class);
 	}
 
 	@Override
-	protected void hook(T activity, ContainerShape container, IAddContext context, int width, int height) {
+	protected void postCreateHook(IAddContext context, IRectangle bounds, ContainerShape newShape) {
+		super.postCreateHook(context, bounds, newShape);
+		
+		T activity = getBusinessObject(context);
+		
 		IPeService peService = Graphiti.getPeService();
 		IGaService gaService = Graphiti.getGaService();
 
-		Shape textShape = peService.createShape(container, false);
+		Shape textShape = peService.createShape(newShape, false);
 		MultiText text = gaService.createDefaultMultiText(getDiagram(), textShape, activity.getName());
 		int padding = GraphicsUtil.TASK_IMAGE_SIZE;
-		gaService.setLocationAndSize(text, 0, padding, width, height - padding);
+		gaService.setLocationAndSize(text, 0, padding, bounds.getWidth(), bounds.getHeight() - padding);
 		StyleUtil.applyStyle(text, activity);
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setVerticalAlignment(Orientation.ALIGNMENT_TOP);
-//		text.setFont(gaService.manageFont(getDiagram(), GaServiceImpl.DEFAULT_FONT, 8, false, true));
+		
 		link(textShape, activity);
 	}
 
 	@Override
 	public int getWidth() {
 		return GraphicsUtil.getActivitySize(getDiagram()).getWidth();
-//		return GraphicsUtil.TASK_DEFAULT_WIDTH;
 	}
 
 	@Override
 	public int getHeight() {
 		return GraphicsUtil.getActivitySize(getDiagram()).getHeight();
-//		return GraphicsUtil.TASK_DEFAULT_HEIGHT;
+	}
+
+	@Override
+	protected boolean isCreateExternalLabel() {
+		return false;
 	}
 }

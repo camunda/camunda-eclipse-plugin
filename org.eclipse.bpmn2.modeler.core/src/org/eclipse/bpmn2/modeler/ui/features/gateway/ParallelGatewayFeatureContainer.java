@@ -39,9 +39,11 @@ public class ParallelGatewayFeatureContainer extends AbstractGatewayFeatureConta
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
+		
 		return new AddGatewayFeature<ParallelGateway>(fp) {
 			@Override
-			protected void decorateGateway(ContainerShape container, BPMNShape bpmnShape) {
+			protected void decorate(ContainerShape container) {
+				
 				GraphicsUtil.createGatewayCross(container);
 			}
 		};

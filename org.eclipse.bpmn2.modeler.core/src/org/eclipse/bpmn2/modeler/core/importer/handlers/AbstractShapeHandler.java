@@ -54,12 +54,12 @@ public abstract class AbstractShapeHandler<T extends BaseElement> extends Abstra
 	 * Find a Graphiti feature for given shape and generate necessary diagram elements.
 	 * 
 	 * @param bpmnElement the element to find and create the diagram element for
-	 * @param shape the shape of the diagram element, use in {@link AbstractShapeHandler#createLink(BaseElement, BPMNShape, PictogramElement)}
+	 * @param bpmnShape the shape of the diagram element
 	 * @param container the container element to add visual element to
 	 * 
 	 * @return the generated picture
 	 */
-	public PictogramElement handleShape(T bpmnElement, BPMNShape shape, ContainerShape container) {
+	public PictogramElement handleShape(T bpmnElement, BPMNShape bpmnShape, ContainerShape container) {
 
 		AddContext context = createAddContext(bpmnElement);		
 		IAddFeature addFeature = createAddFeature(context);
@@ -67,15 +67,15 @@ public abstract class AbstractShapeHandler<T extends BaseElement> extends Abstra
 		if (addFeature != null && container != null) { // DI for parent e.g. participant might be missing
 
 			// find the actual container (position wise) for the given parent container
-			container = getActualContainingContainer(shape, container);
+			container = getActualContainingContainer(bpmnShape, container);
 			
-			setSize(context, shape, bpmnElement, container);
+			setSize(context, bpmnShape, bpmnElement, container);
 			
-			setLocation(context, container, shape);
+			setLocation(context, container, bpmnShape);
 			
 			addToTargetContainer(context, container);
 			
-			PictogramElement pictogramElement = createPictogramElement(bpmnElement, shape, context, addFeature);
+			PictogramElement pictogramElement = createPictogramElement(bpmnElement, context, addFeature);
 			
 			return pictogramElement;
 			
@@ -132,15 +132,14 @@ public abstract class AbstractShapeHandler<T extends BaseElement> extends Abstra
 		return true;
 	}
 
-	protected PictogramElement createPictogramElement(T bpmnElement, BPMNShape shape, AddContext context, IAddFeature addFeature) {
+	protected PictogramElement createPictogramElement(T bpmnElement, AddContext context, IAddFeature addFeature) {
 		
 		if (addFeature.canAdd(context)) {
-			PictogramElement newElement = createPictogramElement(context, addFeature);
-			createLink(bpmnElement, shape, newElement);
-			return newElement;
-			
+			return createPictogramElement(context, addFeature);
 		} else { 
-			Activator.logStatus(new Status(IStatus.WARNING, Activator.PLUGIN_ID, "Add feature cannot add context: "+ addFeature));
+			String message = String.format("Add feature <%s> cannot add context <%s>", addFeature.getClass().getName(), context);
+			
+			Activator.logStatus(new Status(IStatus.WARNING, Activator.PLUGIN_ID, message));
 			return null;
 		}
 		

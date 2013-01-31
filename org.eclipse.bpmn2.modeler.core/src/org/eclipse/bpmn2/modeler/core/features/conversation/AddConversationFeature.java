@@ -12,22 +12,22 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features.conversation;
 
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.rectangle;
+
 import org.eclipse.bpmn2.Conversation;
-import org.eclipse.bpmn2.modeler.core.di.DIUtils;
-import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
-import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
+import org.eclipse.bpmn2.modeler.core.features.AbstractAddBpmnShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.mm.algorithms.Polygon;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class AddConversationFeature extends AbstractAddBPMNShapeFeature<Conversation> {
+public class AddConversationFeature extends AbstractAddBpmnShapeFeature<Conversation> {
 
 	public AddConversationFeature(IFeatureProvider fp) {
 		super(fp);
@@ -39,31 +39,29 @@ public class AddConversationFeature extends AbstractAddBPMNShapeFeature<Conversa
 	}
 
 	@Override
-	public PictogramElement add(IAddContext context) {
+	protected ContainerShape createPictogramElement(IAddContext context, IRectangle bounds) {
 		IGaService gaService = Graphiti.getGaService();
 		IPeService peService = Graphiti.getPeService();
-		Conversation c = getBusinessObject(context);
-
-		int w = this.getWidth(context);
-		int h = this.getHeight(context);
-
-		ContainerShape containerShape = peService.createContainerShape(context.getTargetContainer(), true);
-		Rectangle rect = gaService.createInvisibleRectangle(containerShape);
-		gaService.setLocationAndSize(rect, context.getX(), context.getY(), w, h);
+		
+		int w = bounds.getWidth();
+		int h = bounds.getHeight();
+		int x = bounds.getX();
+		int y = bounds.getY();
 
 		int w_5th = w / 5;
+		
+		Conversation conversation = getBusinessObject(context);
+
+		ContainerShape newShape = peService.createContainerShape(context.getTargetContainer(), true);
+		Rectangle rect = gaService.createInvisibleRectangle(newShape);
+		gaService.setLocationAndSize(rect, x, y, w, h);
+
 		int[] xy = { w_5th, 0, w_5th * 4, 0, w, h / 2, w_5th * 4, h, w_5th, h, 0, h / 2 };
 		Polygon hexagon = gaService.createPolygon(rect, xy);
 
-		StyleUtil.applyStyle(hexagon, c);
-
-		peService.createChopboxAnchor(containerShape);
-		AnchorUtil.addFixedPointAnchors(containerShape, rect);
-
-		link(containerShape, c);
-		boolean isImport = context.getProperty(DIUtils.IMPORT) != null;
-		createDIShape(containerShape, c, !isImport);
-		return containerShape;
+		StyleUtil.applyStyle(hexagon, conversation);
+		
+		return newShape;
 	}
 
 	@Override
@@ -74,5 +72,10 @@ public class AddConversationFeature extends AbstractAddBPMNShapeFeature<Conversa
 	@Override
 	public int getWidth() {
 		return 30;
+	}
+
+	@Override
+	protected boolean isCreateExternalLabel() {
+		return false;
 	}
 }

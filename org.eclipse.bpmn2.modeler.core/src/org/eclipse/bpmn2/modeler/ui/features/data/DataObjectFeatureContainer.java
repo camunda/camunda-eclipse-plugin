@@ -69,14 +69,7 @@ public class DataObjectFeatureContainer extends AbstractDataFeatureContainer {
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddDataFeature<DataObject>(fp) {
-
-			@Override
-			public String getName(DataObject t) {
-				return t.getName();
-			}
-
-		};
+		return new AddDataObjectFeature(fp);
 	}
 
 	@Override
@@ -85,6 +78,17 @@ public class DataObjectFeatureContainer extends AbstractDataFeatureContainer {
 		multiUpdate.addUpdateFeature(new UpdateMarkersFeature(fp));
 		multiUpdate.addUpdateFeature(new UpdateBaseElementNameFeature(fp));
 		return multiUpdate;
+	}
+
+	private static class AddDataObjectFeature extends AddDataFeature<DataObject> {
+		private AddDataObjectFeature(IFeatureProvider fp) {
+			super(fp);
+		}
+
+		@Override
+		public String getName(DataObject t) {
+			return t.getName();
+		}
 	}
 
 	private class UpdateMarkersFeature extends AbstractUpdateFeature {

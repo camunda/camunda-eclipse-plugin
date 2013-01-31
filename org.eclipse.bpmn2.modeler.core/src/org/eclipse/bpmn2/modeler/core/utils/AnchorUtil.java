@@ -20,9 +20,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.datatypes.ILocation;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IAddBendpointFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IRemoveBendpointFeature;
@@ -37,6 +39,7 @@ import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
+import org.eclipse.graphiti.mm.pictograms.ChopboxAnchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -370,10 +373,12 @@ public class AnchorUtil {
 		return top.anchor;
 	}
 	
-	public static void addFixedPointAnchors(Shape shape, GraphicsAlgorithm ga) {
-		IDimension size = gaService.calculateSize(ga);
-		int w = size.getWidth();
-		int h = size.getHeight();
+	public static void addFixedPointAnchors(Shape shape) {
+		
+		IRectangle bounds = LayoutUtil.getAbsoluteBounds(shape);
+		int w = bounds.getWidth();
+		int h = bounds.getHeight();
+		
 		createAnchor(shape, AnchorLocation.TOP, w / 2, 0);
 		createAnchor(shape, AnchorLocation.RIGHT, w, h / 2);
 		createAnchor(shape, AnchorLocation.BOTTOM, w / 2, h);
@@ -598,5 +603,14 @@ public class AnchorUtil {
 			return (FreeFormConnection)connectionPointShape.getLink().getBusinessObjects().get(0); 
 		}
 		return null;
+	}
+
+	/**
+	 * Adds a chop box anchor to the given shape.
+	 * 
+	 * @param shape
+	 */
+	public static ChopboxAnchor addChopboxAnchor(ContainerShape shape) {
+		return Graphiti.getPeService().createChopboxAnchor(shape);
 	}
 }

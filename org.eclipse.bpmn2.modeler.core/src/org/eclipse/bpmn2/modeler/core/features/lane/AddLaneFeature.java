@@ -12,11 +12,12 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features.lane;
 
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
+
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.Lane;
@@ -26,13 +27,12 @@ import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
-import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.features.AbstractAddBpmnShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
-import org.eclipse.bpmn2.modeler.core.layout.ConnectionService;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
-import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
-import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.emf.ecore.EObject;
@@ -41,7 +41,6 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.ITargetContext;
-import org.eclipse.graphiti.features.context.impl.MoveContext;
 import org.eclipse.graphiti.features.context.impl.MoveShapeContext;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.algorithms.Text;
@@ -53,10 +52,9 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
-import org.eclipse.graphiti.services.IPeCreateService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class AddLaneFeature extends AbstractAddBPMNShapeFeature<Lane> {
+public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 	
 	public static final int DEFAULT_LANE_WIDTH = 600;
 	public static final int DEFAULT_LANE_HEIGHT = 100;
@@ -68,84 +66,126 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature<Lane> {
 	@Override
 	public boolean canAdd(IAddContext context) {
 		boolean isLane = getBusinessObject(context) instanceof Lane;
-		boolean intoDiagram = context.getTargetContainer().equals(getDiagram());
 		boolean intoLane = FeatureSupport.isTargetLane(context);
 		boolean intoParticipant = FeatureSupport.isTargetParticipant(context);
-		boolean intoSubprocess = FeatureSupport.isTargetSubProcess(context);
-		return isLane && !intoDiagram && !intoSubprocess && (intoLane || intoParticipant);
+		return isLane && (intoLane || intoParticipant);
 	}
 
 	@Override
-	public PictogramElement add(IAddContext context) {
-		Lane lane = getBusinessObject(context);
+	protected ContainerShape createPictogramElement(IAddContext context, IRectangle bounds) {
 
-		IPeCreateService peCreateService = Graphiti.getPeCreateService();
+		// adding a lane is a two step process  
+		// we add the basic shape here and will
+		// add the text + flow elements later in #postAddHook
+		Lane lane = getBusinessObject(context);
+		
 		IGaService gaService = Graphiti.getGaService();
 		IPeService peService = Graphiti.getPeService();
-
-		ContainerShape targetContainer = context.getTargetContainer();
 		
-		ContainerShape containerShape = peCreateService.createContainerShape(targetContainer, true);
-		Rectangle rect = gaService.createRectangle(containerShape);
+		int x = bounds.getX();
+		int y = bounds.getY();
+		int width = bounds.getWidth();
+		int height = bounds.getHeight();
+		
+		ContainerShape newShape = peService.createContainerShape(context.getTargetContainer(), true);
+		Rectangle rect = gaService.createRectangle(newShape);
 		
 		StyleUtil.applyStyle(rect, lane);
 		
-		boolean isImport = context.getProperty(DIUtils.IMPORT) != null;
-		BPMNShape bpmnShape = createDIShape(containerShape, lane, !isImport);
+		gaService.setLocationAndSize(rect, x, y, width, height); 
+		
+		return newShape;
+	}
+	
+	@Override
+	protected void postAddHook(IAddContext context, ContainerShape newLaneShape) {
+		super.postAddHook(context, newLaneShape);
+		
+		Lane lane = getBusinessObject(context);
+
+		IPeService peService = Graphiti.getPeService();
+		
+		BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(newLaneShape, BPMNShape.class);
+		
+		boolean isImport = ContextUtil.is(context, DIUtils.IMPORT);
+
+		BaseElement targetBaseElement = null;
+		
+		// move children of lane or participant target container
+		List<FlowNode> newLaneFlowNodeRefs = lane.getFlowNodeRefs();
 		
 		if (FeatureSupport.isTargetLane(context)) {
 			Lane targetLane = FeatureSupport.getTargetLane(context);
-			if (!isImport) {
-				BPMNShape laneShape = findDIShape(targetLane);
-				if (laneShape!=null)
-					bpmnShape.setIsHorizontal(laneShape.isIsHorizontal());
-			}
-			lane.getFlowNodeRefs().addAll(targetLane.getFlowNodeRefs());
+			targetBaseElement = targetLane;
+			
+			newLaneFlowNodeRefs.addAll(targetLane.getFlowNodeRefs());
 			targetLane.getFlowNodeRefs().clear();
-		}
-		
+		} else
 		if (FeatureSupport.isTargetParticipant(context)) {
 			Participant targetParticipant = FeatureSupport.getTargetParticipant(context);
 			Process targetProcess = targetParticipant.getProcessRef();
-			if (!isImport) {
-				BPMNShape participantShape = findDIShape(targetParticipant);
-				if (participantShape!=null)
-					bpmnShape.setIsHorizontal(participantShape.isIsHorizontal());
-			}
+			targetBaseElement = targetParticipant;
 			
 			if (getNumberOfLanes(context) == 1) { // this is the first lane of the participant, move flow nodes
 				moveFlowNodes(targetProcess, lane);
 			}
+		} else {
+			throw new IllegalArgumentException("May only add lanes on pools or other lanes");
 		}
 
-		boolean horz = bpmnShape.isIsHorizontal();
-		FeatureSupport.setHorizontal(containerShape, horz);
-		
-		int width = this.getWidth(context);
-		int height = this.getHeight(context);
-		
-		gaService.setLocationAndSize(rect, context.getX(), context.getY(), width, height); ///
-		
-		if (FeatureSupport.isTargetLane(context) || FeatureSupport.isTargetParticipant(context)) {
-			for (Shape s : getFlowNodeShapes(context, lane)) {
-				Graphiti.getPeService().sendToFront(s);
-				s.setContainer(containerShape);
-				
-				for (EObject linkedObj : s.getLink().getBusinessObjects()) {
-					if(linkedObj instanceof FlowNode) {
-						lane.getFlowNodeRefs().add((FlowNode) linkedObj);
-					}
-				}
+		// update horizontal flag from parent shape
+		if (!isImport) {
+			BPMNShape targetBpmnShape = findDIShape(targetBaseElement);
+			if (targetBpmnShape != null) {
+				bpmnShape.setIsHorizontal(targetBpmnShape.isIsHorizontal());
 			}
-			containerShape.setContainer(targetContainer);
 		}
 		
-		Shape textShape = peCreateService.createShape(containerShape, false);
+		boolean horizontal = bpmnShape.isIsHorizontal();
+		FeatureSupport.setHorizontal(newLaneShape, horizontal);
+		
+		// move shapes contained in target container
+		for (Shape containedFlowNodeShape : getFlowNodeShapes(context, lane)) {
+			Graphiti.getPeService().sendToFront(containedFlowNodeShape);
+			containedFlowNodeShape.setContainer(newLaneShape);
+		}
+		
+		// add text
+		createLaneLabel(newLaneShape, lane, horizontal);
+
+		ContainerShape newShapeContainer = newLaneShape.getContainer();
+
+		if (!isImport) {
+			FeatureSupport.redraw(newShapeContainer);
+		}
+		
+		peService.sendToBack(newLaneShape);
+		peService.sendToBack(newShapeContainer);
+		
+		compensateShapeMovements(newLaneShape);
+	}
+
+	@Override
+	protected void updateAndLayout(ContainerShape newShape) {
+		// no updating / layouting for lanes
+	}
+	
+	private void createLaneLabel(ContainerShape newShape, Lane lane, boolean horizontal) {
+		
+		IGaService gaService = Graphiti.getGaService();
+		IPeService peService = Graphiti.getPeService();
+		
+		IRectangle newShapeBounds = LayoutUtil.getRelativeBounds(newShape);
+
+		int width = newShapeBounds.getWidth();
+		int height = newShapeBounds.getHeight();
+		
+		Shape textShape = peService.createShape(newShape, false);
 		Text text = gaService.createText(textShape, lane.getName());
 		StyleUtil.applyStyle(text, lane);
 		text.setVerticalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
-		if (horz) {
+		if (horizontal) {
 			text.setAngle(-90);
 			gaService.setLocationAndSize(text, 0, 0, 15, height);
 		} else {
@@ -153,23 +193,6 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature<Lane> {
 		}
 		
 		link(textShape, lane);
-
-		peCreateService.createChopboxAnchor(containerShape);
-		AnchorUtil.addFixedPointAnchors(containerShape, rect);
-
-		if (context.getProperty(DIUtils.IMPORT) == null
-				&& (FeatureSupport.isTargetLane(context) || FeatureSupport.isTargetParticipant(context))) {
-			FeatureSupport.redraw(targetContainer);
-		}
-		
-		peService.sendToBack(containerShape);
-		if (targetContainer.getContainer() != null) { // only children may be sent back
-			peService.sendToBack(targetContainer);
-		}
-		
-		compensateShapeMovements(containerShape);
-		
-		return containerShape;
 	}
 
 	private void compensateShapeMovements(ContainerShape shape) {
@@ -262,7 +285,7 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature<Lane> {
 		return 0;
 	}
 	
-	private Bounds getPreviousBounds(IAddContext context) {
+	private Bounds getPreviouslyAddedLaneBounds(IAddContext context) {
 		EObject bo = (EObject) getBusinessObjectForPictogramElement(context.getTargetContainer());
 		if (bo instanceof Participant) {
 			List<LaneSet> laneSets = ((Participant) bo).getProcessRef().getLaneSets();
@@ -282,36 +305,40 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature<Lane> {
 	
 	@Override
 	protected int getHeight(IAddContext context) {
-		if (context.getProperty(DIUtils.IMPORT) == null){
-			if (context.getTargetContainer() instanceof Diagram) {
-				return getHeight();
-			}
-			int height = context.getTargetContainer().getGraphicsAlgorithm().getHeight();
-			
-			Bounds bounds = getPreviousBounds(context);
-			if (bounds != null) {
-				height = (int) bounds.getHeight();
-			}
-			return height;
+		if (ContextUtil.is(context, DIUtils.IMPORT)) {
+			return context.getHeight();
 		}
-		return context.getHeight();
+		
+		if (context.getTargetContainer() instanceof Diagram) {
+			return getHeight();
+		}
+		int height = context.getTargetContainer().getGraphicsAlgorithm().getHeight();
+		
+		Bounds previousBounds = getPreviouslyAddedLaneBounds(context);
+		if (previousBounds != null) {
+			height = (int) previousBounds.getHeight();
+		}
+		
+		return height;
 	}
 	
 	@Override
 	public int getWidth(IAddContext context) {
-		if (context.getProperty(DIUtils.IMPORT) == null){
-			if (context.getTargetContainer() instanceof Diagram) {
-				return getWidth();
-			}
-			int width = context.getTargetContainer().getGraphicsAlgorithm().getWidth() - 30;
-			
-			Bounds bounds = getPreviousBounds(context);
-			if (bounds != null) {
-				width = (int) bounds.getWidth();
-			}
-			return width;
+		if (ContextUtil.is(context, DIUtils.IMPORT)) {
+			return context.getWidth();
 		}
-		return context.getWidth();
+		
+		if (context.getTargetContainer() instanceof Diagram) {
+			return getWidth();
+		}
+		int width = context.getTargetContainer().getGraphicsAlgorithm().getWidth() - 30;
+		
+		Bounds bounds = getPreviouslyAddedLaneBounds(context);
+		if (bounds != null) {
+			width = (int) bounds.getWidth();
+		}
+		
+		return width;
 	}
 
 	@Override
@@ -322,5 +349,10 @@ public class AddLaneFeature extends AbstractAddBPMNShapeFeature<Lane> {
 	@Override
 	public int getWidth() {
 		return DEFAULT_LANE_WIDTH;
+	}
+	
+	@Override
+	protected boolean isCreateExternalLabel() {
+		return false;
 	}
 }

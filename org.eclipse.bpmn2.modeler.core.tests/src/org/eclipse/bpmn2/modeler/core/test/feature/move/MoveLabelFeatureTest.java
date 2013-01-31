@@ -19,7 +19,7 @@ public class MoveLabelFeatureTest extends AbstractFeatureTest {
 
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveFlowNodeFeature.testMoveBetweenLanes.bpmn")
-	public void testMoveLabelToOtherContainerNotAllowed() {
+	public void testMoveLabelRemainsOnDiagram() {
 
 		// given
 		Shape gatewayShape = Util.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");

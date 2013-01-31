@@ -39,24 +39,30 @@ public class DataInputFeatureContainer extends AbstractDataFeatureContainer {
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddDataFeature<DataInput>(fp) {
-			@Override
-			protected boolean isSupportCollectionMarkers() {
-				return false;
-			}
+		return new AddDataInputFeature(fp);
+	}
 
-			@Override
-			protected void decorate(Polygon p) {
-				Polygon arrow = GraphicsUtil.createDataArrow(p);
-				arrow.setFilled(false);
-				arrow.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-			}
+	public static class AddDataInputFeature extends AddDataFeature<DataInput> {
+		private AddDataInputFeature(IFeatureProvider fp) {
+			super(fp);
+		}
 
-			@Override
-			public String getName(DataInput t) {
-				return t.getName();
-			}
-		};
+		@Override
+		protected boolean isSupportCollectionMarkers() {
+			return false;
+		}
+
+		@Override
+		protected void decorate(Polygon p) {
+			Polygon arrow = GraphicsUtil.createDataArrow(p);
+			arrow.setFilled(false);
+			arrow.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+		}
+
+		@Override
+		public String getName(DataInput t) {
+			return t.getName();
+		}
 	}
 
 	public static class CreateDataInputFeature extends AbstractCreateDataInputOutputFeature<DataInput> {

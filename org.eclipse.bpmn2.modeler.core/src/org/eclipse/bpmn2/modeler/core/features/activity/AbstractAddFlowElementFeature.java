@@ -1,90 +1,68 @@
-/******************************************************************************* 
- * Copyright (c) 2011 Red Hat, Inc. 
- *  All rights reserved. 
- * This program is made available under the terms of the 
- * Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html 
- * 
- * Contributors: 
- * Red Hat, Inc. - initial API and implementation 
- *
- * @author Ivar Meikas
- ******************************************************************************/
-package org.eclipse.bpmn2.modeler.core.features;
+package org.eclipse.bpmn2.modeler.core.features.activity;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.EndEvent;
-import org.eclipse.bpmn2.Lane;
-import org.eclipse.bpmn2.Participant;
+import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.StartEvent;
-import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
+import org.eclipse.bpmn2.modeler.core.features.AbstractAddBpmnShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractCreateFlowFeature;
-import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
-import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
-import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
-import org.eclipse.graphiti.IExecutionInfo;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReconnectionFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
-import org.eclipse.graphiti.features.context.ITargetContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.CreateConnectionContext;
 import org.eclipse.graphiti.features.context.impl.ReconnectionContext;
-import org.eclipse.graphiti.features.impl.AbstractAddShapeFeature;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.ILayoutService;
 
-public abstract class AbstractAddBPMNShapeFeature<T extends BaseElement>
-	extends AbstractAddShapeFeature
-	implements IBpmn2AddFeature<T> {
+/**
+ * Abstract feature for all flow elements.
+ * 
+ * @author nico.rehwaldt
+ *
+ * @param <T>
+ */
+public abstract class AbstractAddFlowElementFeature<T extends FlowElement> extends AbstractAddBpmnShapeFeature<T> {
 
-	public AbstractAddBPMNShapeFeature(IFeatureProvider fp) {
+	public AbstractAddFlowElementFeature(IFeatureProvider fp) {
 		super(fp);
 	}
 
-	protected BPMNShape findDIShape(BaseElement elem) {
-		return (BPMNShape) ModelHandler.findDIElement(getDiagram(), elem);
-
+	@Override
+	public boolean canAdd(IAddContext context) {
+		boolean intoDiagram = context.getTargetContainer().equals(getDiagram());
+		boolean intoLane = FeatureSupport.isTargetLane(context) && FeatureSupport.isTargetLaneOnTop(context);
+		boolean intoParticipant = FeatureSupport.isTargetParticipant(context);
+		boolean intoSubProcess = FeatureSupport.isTargetSubProcess(context);
+		
+		return intoDiagram || intoLane || intoParticipant || intoSubProcess;
 	}
 	
-	protected BPMNShape createDIShape(Shape gShape, BaseElement elem, boolean applyDefaults) {
-		return createDIShape(gShape, elem, findDIShape(elem), applyDefaults);
-	}
+	@Override
+	protected void postAddHook(IAddContext context, ContainerShape newShape) {
+		super.postAddHook(context, newShape);
 
-	protected BPMNShape createDIShape(Shape shape, BaseElement elem, BPMNShape bpmnShape, boolean applyDefaults) {
-		if (bpmnShape == null) {
-			IRectangle bounds = LayoutUtil.getAbsoluteBounds(shape);
-			bpmnShape = DIUtils.createDIShape(elem, bounds, getDiagram());
+		// split connection in case we have a drop on connection
+		if (context.getTargetConnection() != null) {
+			splitConnection(context, newShape);
 		}
-		
-		link(shape, new Object[] { elem, bpmnShape });
-		
-		if (applyDefaults) {
-			Bpmn2Preferences.getInstance(bpmnShape.eResource()).applyBPMNDIDefaults(bpmnShape, null);
-		}
-		
-		return bpmnShape;
-	}
-	
-	protected void prepareAddContext(IAddContext context, int width, int height) {
-		GraphicsUtil.prepareLabelAddContext(context, width, height, getBusinessObject(context));
 	}
 	
 	protected void adjustLocation(IAddContext context, int width, int height) {
@@ -180,10 +158,6 @@ public abstract class AbstractAddBPMNShapeFeature<T extends BaseElement>
 			return;
 		}
 		
-		if (true) {
-			return;
-		}
-		
 		Object newObject = getBusinessObject(context);
 		Connection connection = context.getTargetConnection();
 		if (connection!=null) {
@@ -259,54 +233,5 @@ public abstract class AbstractAddBPMNShapeFeature<T extends BaseElement>
 			}
 			DIUtils.updateDIEdge(connection);
 		}
-	}
-	
-	protected int getHeight(IAddContext context) {
-		return context.getHeight() > 0 ? context.getHeight() :
-			(isHorizontal(context) ? getHeight() : getWidth());
-	}
-	
-	protected int getWidth(IAddContext context) {
-		return context.getWidth() > 0 ? context.getWidth() :
-			(isHorizontal(context) ? getWidth() : getHeight());
-	}
-
-	protected boolean isHorizontal(ITargetContext context) {
-		if (ContextUtil.isNot(context, DIUtils.IMPORT)) {
-			// not importing - set isHorizontal to be the same as parent Pool
-			if (FeatureSupport.isTargetParticipant(context)) {
-				Participant targetParticipant = FeatureSupport.getTargetParticipant(context);
-				BPMNShape participantShape = findDIShape(targetParticipant);
-				if (participantShape!=null)
-					return participantShape.isIsHorizontal();
-			}
-			else if (FeatureSupport.isTargetLane(context)) {
-				Lane targetLane = FeatureSupport.getTargetLane(context);
-				BPMNShape laneShape = findDIShape(targetLane);
-				if (laneShape!=null)
-					return laneShape.isIsHorizontal();
-			}
-		}
-		return Bpmn2Preferences.getInstance().isHorizontalDefault();
-	}
-	
-	public abstract int getHeight();
-	public abstract int getWidth();
-
-	@Override
-	public T getBusinessObject(IAddContext context) {
-		Object businessObject = context.getProperty(ContextConstants.BUSINESS_OBJECT);
-		if (businessObject instanceof BaseElement)
-			return (T)businessObject;
-		return (T)context.getNewObject();
-	}
-
-	@Override
-	public void putBusinessObject(IAddContext context, T businessObject) {
-		context.putProperty(ContextConstants.BUSINESS_OBJECT, businessObject);
-	}
-
-	@Override
-	public void postExecute(IExecutionInfo executionInfo) {
 	}
 }

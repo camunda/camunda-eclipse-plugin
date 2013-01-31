@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.utils;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -128,36 +129,30 @@ public class BusinessObjectUtil {
 		return BusinessObjectUtil.getFirstElementOfType(pe, BaseElement.class);
 	}
 	
-	public static PictogramElement getFirstBaseElementFromDiagram(Diagram diagram, BaseElement e) {
-		PictogramElement foundElem = null;
-
-		IPeService peService = Graphiti.getPeService();
-		Collection<PictogramElement> elements = peService.getAllContainedPictogramElements(diagram);
-		for (PictogramElement pe : elements) {
-			BaseElement be = getFirstElementOfType(pe, e.getClass());
-			if (be != null && be.equals(e)) {
-				foundElem = pe;
-				break;
+	public static PictogramElement getLinkingPictogramElement(Diagram diagram, BaseElement e) {
+		List<EObject> objects = Arrays.asList((EObject) e);
+		List<PictogramElement> pictogramElements = Graphiti.getLinkService().getPictogramElements(diagram, objects, true);
+		
+		for (PictogramElement element : pictogramElements) {
+			if (!GraphicsUtil.isLabel(element)) {
+				return element;
 			}
 		}
 
-		return foundElem;
+		return null;
 	}
 
 	public static PictogramElement getPictogramElementFromDiagram(Diagram diagram, BPMNShape bpmnShape) {
-		PictogramElement foundElem = null;
-
-		IPeService peService = Graphiti.getPeService();
-		Collection<PictogramElement> elements = peService.getAllContainedPictogramElements(diagram);
-		for (PictogramElement pe : elements) {
-			BPMNShape s = getFirstElementOfType(pe, BPMNShape.class);
-			if (s != null && s.equals(bpmnShape)) {
-				foundElem = pe;
-				break;
+		List<EObject> objects = Arrays.asList((EObject) bpmnShape);
+		List<PictogramElement> pictogramElements = Graphiti.getLinkService().getPictogramElements(diagram, objects, true);
+		
+		for (PictogramElement element : pictogramElements) {
+			if (!GraphicsUtil.isLabel(element)) {
+				return element;
 			}
 		}
 
-		return foundElem;
+		return null;
 	}
 
 	public static PictogramElement getPictogramElementForSelection(ISelection selection) {

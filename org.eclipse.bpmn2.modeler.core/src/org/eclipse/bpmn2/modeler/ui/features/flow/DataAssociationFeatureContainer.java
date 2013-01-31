@@ -70,7 +70,7 @@ public class DataAssociationFeatureContainer extends BaseElementConnectionFeatur
     }
     
     @Override
-    protected Class< ? extends BaseElement> getBoClass() {
+    protected Class< ? extends BaseElement> getBusinessObjectClass() {
       return DataAssociation.class;
     }
     

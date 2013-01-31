@@ -41,9 +41,10 @@ public class AdHocSubProcessFeatureContainer extends AbstractExpandableActivityF
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return new AddExpandableActivityFeature<AdHocSubProcess>(fp) {
 			@Override
-			protected void hook(AdHocSubProcess activity, ContainerShape container, IAddContext context, int width, int height) {
-				super.hook(activity, container, context, width, height);
-				GraphicsUtil.showActivityMarker(container, GraphicsUtil.ACTIVITY_MARKER_AD_HOC);
+			protected void postAddHook(IAddContext context, ContainerShape newShape) {
+				super.postAddHook(context, newShape);
+				
+				GraphicsUtil.showActivityMarker(newShape, GraphicsUtil.ACTIVITY_MARKER_AD_HOC);
 			}
 		};
 	}

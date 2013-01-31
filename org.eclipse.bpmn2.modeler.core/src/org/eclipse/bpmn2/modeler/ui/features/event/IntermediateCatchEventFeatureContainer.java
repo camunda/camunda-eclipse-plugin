@@ -18,7 +18,6 @@ import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractCreateEventFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractUpdateEventFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AddEventFeature;
-import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
@@ -27,6 +26,7 @@ import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IUpdateFeature;
+import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.services.Graphiti;
@@ -56,16 +56,19 @@ public class IntermediateCatchEventFeatureContainer extends AbstractEventFeature
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return new AddEventFeature<IntermediateCatchEvent>(fp) {
 			@Override
-			protected void decorateEllipse(Ellipse e) {
+			protected void decorate(Ellipse e) {
 				Ellipse circle = GraphicsUtil.createIntermediateEventCircle(e);
 				circle.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 			}
 
 			@Override
-			protected void hook(ContainerShape container) {
+			protected void setProperties(IAddContext context, ContainerShape newShape) {
+				super.setProperties(context, newShape);
+				
+				IntermediateCatchEvent event = getBusinessObject(context);
+				
 				IPeService peService = Graphiti.getPeService();
-				IntermediateCatchEvent event = BusinessObjectUtil.getFirstElementOfType(container, IntermediateCatchEvent.class);
-				peService.setPropertyValue(container,
+				peService.setPropertyValue(newShape,
 						UpdateIntermediateCatchEventFeature.INTERMEDIATE_CATCH_EVENT_MARKER,
 						AbstractUpdateEventFeature.getEventDefinitionsValue(event));
 			}

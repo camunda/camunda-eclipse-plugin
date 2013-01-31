@@ -43,7 +43,7 @@ public class BusinessRuleTaskFeatureContainer extends AbstractTaskFeatureContain
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return new AddTaskFeature<BusinessRuleTask>(fp) {
 			@Override
-			protected void decorateActivityRectangle(RoundedRectangle rect) {
+			protected void decorate(RoundedRectangle rect) {
 				IGaService service = Graphiti.getGaService();
 				Image img = service.createImage(rect, ImageProvider.IMG_16_BUSINESS_RULE_TASK);
 				service.setLocationAndSize(img, 2, 2, 16, 16);
