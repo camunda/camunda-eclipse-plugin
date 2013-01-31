@@ -103,6 +103,11 @@ public class AddParticipantFeature extends AbstractAddBpmnShapeFeature<Participa
 		peService.setPropertyValue(newShape, MULTIPLICITY, Boolean.toString(participant.getParticipantMultiplicity()!=null));
 	}
 
+	@Override
+	protected void adjustLocationAndSize(IAddContext context, int width, int height) {
+		// do nothing
+	}
+	
 	private void drawParticipantLine(Participant participant, ContainerShape participantShape, int width, int height, boolean horz) {
 		
 		IPeService peService = Graphiti.getPeService();
