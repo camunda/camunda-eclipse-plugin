@@ -12,13 +12,13 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features.artifact;
 
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.rectangle;
+
 import org.eclipse.bpmn2.TextAnnotation;
-import org.eclipse.bpmn2.modeler.core.di.DIUtils;
-import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
-import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
-import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
+import org.eclipse.bpmn2.modeler.core.features.AbstractAddBpmnShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.mm.algorithms.MultiText;
@@ -27,13 +27,12 @@ import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Orientation;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
-import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
-import org.eclipse.graphiti.services.IPeCreateService;
+import org.eclipse.graphiti.services.IPeService;
 
-public class AddTextAnnotationFeature extends AbstractAddBPMNShapeFeature<TextAnnotation> {
+public class AddTextAnnotationFeature extends AbstractAddBpmnShapeFeature<TextAnnotation> {
 
 	public AddTextAnnotationFeature(IFeatureProvider fp) {
 		super(fp);
@@ -51,52 +50,61 @@ public class AddTextAnnotationFeature extends AbstractAddBPMNShapeFeature<TextAn
 	}
 
 	@Override
-	public PictogramElement add(IAddContext context) {
-		TextAnnotation annotation = getBusinessObject(context);
+	protected IRectangle getAddBounds(IAddContext context) {
+		return rectangle(context.getX(), context.getY(), getWidth(context), getHeight(context));
+	}
+	
+	@Override
+	public int getDefaultHeight() {
+		return 100;
+	}
 
-		IPeCreateService peCreateService = Graphiti.getPeCreateService();
-		ContainerShape containerShape = peCreateService.createContainerShape(context.getTargetContainer(), true);
+	@Override
+	public int getDefaultWidth() {
+		return 50;
+	}
+
+	@Override
+	protected ContainerShape createPictogramElement(IAddContext context, IRectangle bounds) {
 
 		IGaService gaService = Graphiti.getGaService();
-
-		int width = this.getWidth(context);
-		int height = this.getHeight(context);
+		IPeService peService = Graphiti.getPeService();
+		
+		int x = bounds.getX();
+		int y = bounds.getY();
+		
+		int width = bounds.getWidth();
+		int height = bounds.getHeight();
+		
 		int commentEdge = 15;
 
-		Rectangle rect = gaService.createInvisibleRectangle(containerShape);
-		gaService.setLocationAndSize(rect, context.getX(), context.getY(), width, height);
+		TextAnnotation textAnnotation = getBusinessObject(context);
+		
+		ContainerShape newShape = peService.createContainerShape(context.getTargetContainer(), true);
+		
+		Rectangle rect = gaService.createInvisibleRectangle(newShape);
+		gaService.setLocationAndSize(rect, x, y, width, height);
 
-		Shape lineShape = peCreateService.createShape(containerShape, false);
+		Shape lineShape = peService.createShape(newShape, false);
 		Polyline line = gaService.createPolyline(lineShape, new int[] { commentEdge, 0, 0, 0, 0, height, commentEdge,
 				height });
 		line.setStyle(StyleUtil.getStyleForClass(getDiagram()));
 		line.setLineWidth(2);
 		gaService.setLocationAndSize(line, 0, 0, commentEdge, height);
 
-		Shape textShape = peCreateService.createShape(containerShape, false);
-		MultiText text = gaService.createDefaultMultiText(getDiagram(), textShape, annotation.getText());
-		StyleUtil.applyStyle(text, annotation);
+		Shape textShape = peService.createShape(newShape, false);
+		MultiText text = gaService.createDefaultMultiText(getDiagram(), textShape, textAnnotation.getText());
+		StyleUtil.applyStyle(text, textAnnotation);
 		text.setVerticalAlignment(Orientation.ALIGNMENT_TOP);
 		gaService.setLocationAndSize(text, 5, 5, width - 5, height - 5);
-
-		boolean isImport = ContextUtil.is(context, DIUtils.IMPORT);
-		createDIShape(containerShape, annotation, !isImport);
-		link(textShape, annotation);
-
-		peCreateService.createChopboxAnchor(containerShape);
-		AnchorUtil.addFixedPointAnchors(containerShape, rect);
 		
-		layoutPictogramElement(containerShape);
-		return containerShape;
+		link(textShape, textAnnotation);
+		
+		return newShape;
 	}
 
 	@Override
-	public int getHeight() {
-		return 100;
-	}
-
-	@Override
-	public int getWidth() {
-		return 50;
+	protected boolean isCreateExternalLabel() {
+		return false;
 	}
 }

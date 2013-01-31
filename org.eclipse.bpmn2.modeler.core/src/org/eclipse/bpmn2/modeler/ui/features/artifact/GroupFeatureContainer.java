@@ -15,7 +15,7 @@ package org.eclipse.bpmn2.modeler.ui.features.artifact;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Group;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
-import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.features.AbstractAddBpmnShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.DefaultResizeBPMNShapeFeature;
@@ -25,6 +25,7 @@ import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
@@ -58,49 +59,7 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AbstractAddBPMNShapeFeature<Group>(fp) {
-
-			@Override
-			public boolean canAdd(IAddContext context) {
-				return true;
-			}
-
-			@Override
-			public PictogramElement add(IAddContext context) {
-				IGaService gaService = Graphiti.getGaService();
-				IPeService peService = Graphiti.getPeService();
-				Group group = getBusinessObject(context);
-
-				int width = this.getWidth(context);
-				int height = this.getHeight(context);
-
-				ContainerShape container = peService.createContainerShape(context.getTargetContainer(), true);
-				RoundedRectangle rect = gaService.createRoundedRectangle(container, 5, 5);
-				rect.setFilled(false);
-				rect.setLineWidth(2);
-				rect.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-				rect.setLineStyle(LineStyle.DASHDOT);
-				gaService.setLocationAndSize(rect, context.getX(), context.getY(), width, height);
-
-				peService.createChopboxAnchor(container);
-				AnchorUtil.addFixedPointAnchors(container, rect);
-
-				link(container, group);
-				boolean isImport = context.getProperty(DIUtils.IMPORT) != null;
-				createDIShape(container, group, !isImport);
-				return container;
-			}
-
-			@Override
-			public int getHeight() {
-				return 400;
-			}
-
-			@Override
-			public int getWidth() {
-				return 400;
-			}
-		};
+		return new AddGroupFeature(fp);
 	}
 
 	@Override
@@ -126,6 +85,53 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 	@Override
 	public IResizeShapeFeature getResizeFeature(IFeatureProvider fp) {
 		return new DefaultResizeBPMNShapeFeature(fp);
+	}
+
+	private final class AddGroupFeature extends AbstractAddBpmnShapeFeature<Group> {
+		private AddGroupFeature(IFeatureProvider fp) {
+			super(fp);
+		}
+
+		@Override
+		public boolean canAdd(IAddContext context) {
+			return true;
+		}
+
+		@Override
+		protected ContainerShape createPictogramElement(IAddContext context, IRectangle bounds) {
+			IGaService gaService = Graphiti.getGaService();
+			IPeService peService = Graphiti.getPeService();
+			
+			int width = bounds.getWidth();
+			int height = bounds.getHeight();
+			int x = bounds.getX();
+			int y = bounds.getY();
+			
+			ContainerShape newShape = peService.createContainerShape(context.getTargetContainer(), true);
+			RoundedRectangle rect = gaService.createRoundedRectangle(newShape, 5, 5);
+			rect.setFilled(false);
+			rect.setLineWidth(2);
+			rect.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
+			rect.setLineStyle(LineStyle.DASHDOT);
+			gaService.setLocationAndSize(rect, x, y, width, height);
+			
+			return newShape;
+		}
+
+		@Override
+		public int getDefaultHeight() {
+			return 400;
+		}
+
+		@Override
+		public int getDefaultWidth() {
+			return 400;
+		}
+
+		@Override
+		protected boolean isCreateExternalLabel() {
+			return false;
+		}
 	}
 
 	public static class CreateGroupFeature extends AbstractCreateArtifactFeature<Group> {

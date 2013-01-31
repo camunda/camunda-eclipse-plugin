@@ -26,6 +26,7 @@ import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReason;
 import org.eclipse.graphiti.features.IUpdateFeature;
+import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.impl.AbstractUpdateFeature;
 import org.eclipse.graphiti.features.impl.Reason;
@@ -53,12 +54,17 @@ public class StartEventFeatureContainer extends AbstractEventFeatureContainer {
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return new AddEventFeature<StartEvent>(fp) {
+			
 			@Override
-			protected void hook(ContainerShape container) {
-				Graphiti.getPeService().setPropertyValue(container, INTERRUPTING, Boolean.toString(true));
+			protected void setProperties(IAddContext context, ContainerShape newShape) {
+				super.setProperties(context, newShape);
+
 				IPeService peService = Graphiti.getPeService();
-				StartEvent event = BusinessObjectUtil.getFirstElementOfType(container, StartEvent.class);
-				peService.setPropertyValue(container,
+
+				StartEvent event = getBusinessObject(context);
+				
+				peService.setPropertyValue(newShape, INTERRUPTING, Boolean.toString(true));
+				peService.setPropertyValue(newShape, 
 						UpdateStartEventFeature.START_EVENT_MARKER,
 						AbstractUpdateEventFeature.getEventDefinitionsValue(event));
 			}

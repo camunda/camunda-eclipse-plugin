@@ -27,6 +27,7 @@ import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IUpdateFeature;
+import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.services.Graphiti;
@@ -56,18 +57,20 @@ public class IntermediateThrowEventFeatureContainer extends AbstractEventFeature
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return new AddEventFeature<IntermediateThrowEvent>(fp) {
 			@Override
-			protected void decorateEllipse(Ellipse e) {
+			protected void decorate(Ellipse e) {
 				Ellipse circle = GraphicsUtil.createIntermediateEventCircle(e);
 				circle.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 			}
 
 			@Override
-			protected void hook(ContainerShape container) {
+			protected void setProperties(IAddContext context, ContainerShape newShape) {
+				super.setProperties(context, newShape);
+				
+				IntermediateThrowEvent throwEvent = getBusinessObject(context);
 				IPeService peService = Graphiti.getPeService();
-				IntermediateThrowEvent event = BusinessObjectUtil.getFirstElementOfType(container, IntermediateThrowEvent.class);
-				peService.setPropertyValue(container,
+				peService.setPropertyValue(newShape,
 						UpdateIntermediateThrowEventFeature.INTERMEDIATE_THROW_EVENT_MARKER,
-						AbstractUpdateEventFeature.getEventDefinitionsValue(event));
+						AbstractUpdateEventFeature.getEventDefinitionsValue(throwEvent));
 			}
 		};
 	}

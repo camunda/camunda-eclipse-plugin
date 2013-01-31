@@ -123,7 +123,6 @@ public abstract class AbstractEdgeHandler<T extends BaseElement> extends Abstrac
 				}
 			}
 			
-			createLink((T) bpmnEdge.getBpmnElement(), bpmnEdge, connection);
 			return connection;
 		} else {
 			Activator.logStatus(new Status(IStatus.WARNING, Activator.PLUGIN_ID, "Unsupported feature "

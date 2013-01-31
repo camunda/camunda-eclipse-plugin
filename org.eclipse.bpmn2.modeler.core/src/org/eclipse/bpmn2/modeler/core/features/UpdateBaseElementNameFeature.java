@@ -18,6 +18,7 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReason;
 import org.eclipse.graphiti.features.context.IUpdateContext;
@@ -94,11 +95,17 @@ public class UpdateBaseElementNameFeature extends AbstractUpdateFeature {
 
 		if (pe instanceof ContainerShape) {
 			IGaService gaService = Graphiti.getGaService();
-				ContainerShape container = (ContainerShape)pe;
+			ContainerShape container = (ContainerShape)pe;
 			
-			Shape shape = container.getChildren().get(0); // Otherwise, this would never be reached!
-			if (!(shape.getGraphicsAlgorithm() instanceof AbstractText))
+			EList<Shape> containerChildren = container.getChildren();
+			if (containerChildren.isEmpty()) {
 				return true;
+			}
+			
+			Shape shape = containerChildren.get(0); // Otherwise, this would never be reached!
+			if (!(shape.getGraphicsAlgorithm() instanceof AbstractText)) {
+				return true;
+			}
 			
 			GraphicsAlgorithm textGA = container.getGraphicsAlgorithm();
 			AbstractText text = (AbstractText) shape.getGraphicsAlgorithm();

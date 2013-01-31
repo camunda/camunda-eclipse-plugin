@@ -25,6 +25,7 @@ import org.eclipse.bpmn2.modeler.core.features.data.AddDataFeature;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
+import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
@@ -32,6 +33,7 @@ import org.eclipse.bpmn2.modeler.ui.features.LayoutBaseElementTextFeature;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -213,17 +215,20 @@ public class DataStoreReferenceFeatureContainer extends AbstractDataFeatureConta
 		}
 
 		@Override
-		public PictogramElement add(IAddContext context) {
+		protected ContainerShape createPictogramElement(IAddContext context, IRectangle bounds) {
 			IGaService gaService = Graphiti.getGaService();
 			IPeService peService = Graphiti.getPeService();
+			
 			DataStoreReference store = getBusinessObject(context);
 
-			int width = this.getWidth();
-			int height = this.getHeight();
-
-			ContainerShape container = peService.createContainerShape(context.getTargetContainer(), true);
-			Rectangle invisibleRect = gaService.createInvisibleRectangle(container);
-			gaService.setLocationAndSize(invisibleRect, context.getX(), context.getY(), width, height);
+			int width = bounds.getWidth();
+			int height = bounds.getHeight();
+			int x = bounds.getX();
+			int y = bounds.getY();
+			
+			ContainerShape newShape = peService.createContainerShape(context.getTargetContainer(), true);
+			Rectangle invisibleRect = gaService.createInvisibleRectangle(newShape);
+			gaService.setLocationAndSize(invisibleRect, x, y, width, height);
 
 			int whalf = width / 2;
 
@@ -247,26 +252,17 @@ public class DataStoreReferenceFeatureContainer extends AbstractDataFeatureConta
 			Polyline lineTop = gaService.createPolyline(invisibleRect, xy, bend);
 			lineTop.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 			
-			peService.createChopboxAnchor(container);
-			AnchorUtil.addFixedPointAnchors(container, invisibleRect);
-			boolean isImport = ContextUtil.is(context, DIUtils.IMPORT);
-			createDIShape(container, store, !isImport);
-			layoutPictogramElement(container);
-			
-			this.prepareAddContext(context, width, height);
-			this.getFeatureProvider().getAddFeature(context).add(context);
-			
-			return container;
+			return newShape;
 		}
 
 		@Override
-		public int getHeight() {
-			return 50;
+		public int getDefaultHeight() {
+			return GraphicsUtil.DATA_WIDTH;
 		}
 
 		@Override
-		public int getWidth() {
-			return 50;
+		public int getDefaultWidth() {
+			return GraphicsUtil.DATA_HEIGHT;
 		}
 
 		@Override

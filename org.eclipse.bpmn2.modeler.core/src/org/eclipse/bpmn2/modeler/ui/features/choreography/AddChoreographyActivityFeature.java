@@ -29,11 +29,12 @@ import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.di.ParticipantBandKind;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
-import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.features.AbstractAddBpmnShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.choreography.ChoreographyProperties;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
@@ -47,7 +48,7 @@ import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
 public class AddChoreographyActivityFeature<T extends ChoreographyActivity>
-	extends AbstractAddBPMNShapeFeature<T> {
+	extends AbstractAddBpmnShapeFeature<T> {
 
 	protected final IGaService gaService = Graphiti.getGaService();
 	protected final IPeService peService = Graphiti.getPeService();
@@ -62,6 +63,7 @@ public class AddChoreographyActivityFeature<T extends ChoreographyActivity>
 	}
 
 	@Override
+	// FIXME: Refactor
 	public PictogramElement add(IAddContext context) {
 		T choreography = getBusinessObject(context);
 
@@ -116,10 +118,11 @@ public class AddChoreographyActivityFeature<T extends ChoreographyActivity>
 					ChoreographyUtil.getMessageRefIds((ChoreographyTask) choreography));
 		}
 
-		peService.createChopboxAnchor(choreographyContainer);
-		createDIShape(choreographyContainer, choreography, !isImport);
-		AnchorUtil.addFixedPointAnchors(choreographyContainer, containerRect);
+		createDi(choreographyContainer, choreography, context);
+		createAnchors(context, choreographyContainer);
+		
 		ChoreographyUtil.drawMessageLinks(getFeatureProvider(),choreographyContainer);
+		
 		return choreographyContainer;
 	}
 
@@ -177,12 +180,22 @@ public class AddChoreographyActivityFeature<T extends ChoreographyActivity>
 	}
 
 	@Override
-	public int getHeight() {
+	public int getDefaultHeight() {
 		return GraphicsUtil.CHOREOGRAPHY_HEIGHT;
 	}
 
 	@Override
-	public int getWidth() {
+	public int getDefaultWidth() {
 		return GraphicsUtil.CHOREOGRAPHY_WIDTH;
+	}
+
+	@Override
+	protected ContainerShape createPictogramElement(IAddContext context, IRectangle bounds) {
+		throw new UnsupportedOperationException("Method is not intended to be called");
+	}
+
+	@Override
+	protected boolean isCreateExternalLabel() {
+		return false;
 	}
 }

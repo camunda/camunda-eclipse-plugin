@@ -23,6 +23,7 @@ import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.mm.algorithms.Text;
@@ -41,11 +42,16 @@ public class AddExpandableActivityFeature<T extends Activity>
 	}
 
 	@Override
-	protected void hook(T activity, ContainerShape container, IAddContext context, int width, int height) {
-		super.hook(activity, container, context, width, height);
+	protected void postCreateHook(IAddContext context, IRectangle newShapeBounds, ContainerShape newShape) {
+		super.postCreateHook(context, newShapeBounds, newShape);
+		
 		IPeService peService = Graphiti.getPeService();
 		IGaService gaService = Graphiti.getGaService();
 
+		T activity = getBusinessObject(context);
+		
+		int width = newShapeBounds.getWidth();
+		
 		boolean isTriggeredByEvent = false;
 		boolean isExpanded = true;
 		
@@ -53,16 +59,16 @@ public class AddExpandableActivityFeature<T extends Activity>
 			SubProcess subprocess = (SubProcess) activity;
 			isTriggeredByEvent = subprocess.isTriggeredByEvent();
 			
-			BPMNShape bpmnShape = (BPMNShape) BusinessObjectUtil.getFirstElementOfType(container, BPMNShape.class);
+			BPMNShape bpmnShape = (BPMNShape) BusinessObjectUtil.getFirstElementOfType(newShape, BPMNShape.class);
 			if (bpmnShape != null) {
 				isExpanded = bpmnShape.isIsExpanded();
 			}
 		}
 		
-		peService.setPropertyValue(container, TRIGGERED_BY_EVENT, Boolean.toString(isTriggeredByEvent));
-		peService.setPropertyValue(container, IS_EXPANDED, Boolean.toString(isExpanded));
+		peService.setPropertyValue(newShape, TRIGGERED_BY_EVENT, Boolean.toString(isTriggeredByEvent));
+		peService.setPropertyValue(newShape, IS_EXPANDED, Boolean.toString(isExpanded));
 
-		Shape textShape = peService.createShape(container, false);
+		Shape textShape = peService.createShape(newShape, false);
 		Text text = gaService.createDefaultText(getDiagram(), textShape, activity.getName());
 		gaService.setLocationAndSize(text, 5, 5, width - 10, 15);
 		StyleUtil.applyStyle(text, activity);
@@ -70,26 +76,29 @@ public class AddExpandableActivityFeature<T extends Activity>
 		text.setVerticalAlignment(Orientation.ALIGNMENT_CENTER);
 		link(textShape, activity);
 		
-		if (!isExpanded){
-			GraphicsUtil.showActivityMarker(container, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
-		}
-		
-		else {
-			GraphicsUtil.hideActivityMarker(container, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
+		if (isExpanded) {
+			GraphicsUtil.hideActivityMarker(newShape, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
+		} else {
+			GraphicsUtil.showActivityMarker(newShape, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
 		}
 	}
 
 	@Override
-	public int getWidth() {
+	public int getDefaultWidth() {
 		if (Bpmn2Preferences.getInstance().isExpandedDefault())
 			return GraphicsUtil.SUB_PROCEESS_DEFAULT_WIDTH;
 		return GraphicsUtil.TASK_DEFAULT_WIDTH;
 	}
 
 	@Override
-	public int getHeight() {
+	public int getDefaultHeight() {
 		if (Bpmn2Preferences.getInstance().isExpandedDefault())
 			return GraphicsUtil.SUB_PROCESS_DEFAULT_HEIGHT;
 		return GraphicsUtil.TASK_DEFAULT_HEIGHT;
+	}
+
+	@Override
+	protected boolean isCreateExternalLabel() {
+		return false;
 	}
 }

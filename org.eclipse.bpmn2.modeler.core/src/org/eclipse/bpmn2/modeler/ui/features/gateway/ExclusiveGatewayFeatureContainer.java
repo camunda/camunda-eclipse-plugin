@@ -17,6 +17,7 @@ import org.eclipse.bpmn2.ExclusiveGateway;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.features.gateway.AbstractCreateGatewayFeature;
 import org.eclipse.bpmn2.modeler.core.features.gateway.AddGatewayFeature;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.emf.ecore.EClass;
@@ -34,21 +35,31 @@ public class ExclusiveGatewayFeatureContainer extends AbstractGatewayFeatureCont
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddGatewayFeature<ExclusiveGateway>(fp) {
-			@Override
-			protected void decorateGateway(ContainerShape container, BPMNShape bpmnShape) {
-				// TODO: handle showExclusiveGatewayMarker property change event in BPMN2Editor
-				// and override the default gateway UpdateFeature to show/hide the "X" marker.
-				if (bpmnShape.isIsMarkerVisible()) {
-					GraphicsUtil.createGatewayDiagonalCross(container);
-				}
-			}
-		};
+		return new AddGatewayFeatureExtension(fp);
 	}
 
 	@Override
 	public ICreateFeature getCreateFeature(IFeatureProvider fp) {
 		return new CreateExclusiveGatewayFeature(fp);
+	}
+
+	public static class AddGatewayFeatureExtension extends AddGatewayFeature<ExclusiveGateway> {
+		
+		private AddGatewayFeatureExtension(IFeatureProvider fp) {
+			super(fp);
+		}
+
+		@Override
+		protected void decorate(ContainerShape container) {
+			
+			BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(container, BPMNShape.class);
+			
+			// TODO: handle showExclusiveGatewayMarker property change event in BPMN2Editor
+			// and override the default gateway UpdateFeature to show/hide the "X" marker.
+			if (bpmnShape.isIsMarkerVisible()) {
+				GraphicsUtil.createGatewayDiagonalCross(container);
+			}
+		}
 	}
 
 	public static class CreateExclusiveGatewayFeature extends AbstractCreateGatewayFeature<ExclusiveGateway> {

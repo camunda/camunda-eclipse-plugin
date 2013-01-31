@@ -14,7 +14,6 @@ package org.eclipse.bpmn2.modeler.ui.features.gateway;
 
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.InclusiveGateway;
-import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.features.gateway.AbstractCreateGatewayFeature;
 import org.eclipse.bpmn2.modeler.core.features.gateway.AddGatewayFeature;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
@@ -35,9 +34,11 @@ public class InclusiveGatewayFeatureContainer extends AbstractGatewayFeatureCont
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
+		
 		return new AddGatewayFeature<InclusiveGateway>(fp) {
+			
 			@Override
-			protected void decorateGateway(ContainerShape container, BPMNShape bpmnShape) {
+			protected void decorate(ContainerShape container) {
 				Ellipse ellipse = GraphicsUtil.createGatewayOuterCircle(container);
 				ellipse.setLineWidth(3);
 			}

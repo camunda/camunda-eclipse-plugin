@@ -14,14 +14,12 @@ package org.eclipse.bpmn2.modeler.ui.features.data;
 
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Message;
-import org.eclipse.bpmn2.modeler.core.di.DIUtils;
-import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.features.AbstractAddBpmnShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.features.data.AbstractCreateRootElementFeature;
-import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil.Envelope;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
@@ -29,6 +27,7 @@ import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.modeler.ui.features.LayoutBaseElementTextFeature;
 import org.eclipse.bpmn2.modeler.ui.features.choreography.UpdateChoreographyMessageFlowFeature;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
@@ -43,7 +42,6 @@ import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.features.impl.DefaultResizeShapeFeature;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
@@ -65,7 +63,7 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AbstractAddBPMNShapeFeature<Message>(fp) {
+		return new AbstractAddBpmnShapeFeature<Message>(fp) {
 
 			@Override
 			public boolean canAdd(IAddContext context) {
@@ -73,44 +71,44 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 			}
 
 			@Override
-			public PictogramElement add(IAddContext context) {
+			protected ContainerShape createPictogramElement(IAddContext context, IRectangle bounds) {
+				
+				Message msg = getBusinessObject(context);
+				
 				IGaService gaService = Graphiti.getGaService();
 				IPeService peService = Graphiti.getPeService();
-				Message msg = getBusinessObject(context);
 
-				int width = this.getWidth();
-				int height = this.getHeight();
-
-				ContainerShape container = peService.createContainerShape(context.getTargetContainer(), true);
-				Rectangle invisibleRect = gaService.createInvisibleRectangle(container);
-				gaService.setLocationAndSize(invisibleRect, context.getX(), context.getY(), width, height);
+				int width = bounds.getWidth();
+				int height = bounds.getHeight();
+				int x = bounds.getX();
+				int y = bounds.getY();
+				
+				ContainerShape newShape = peService.createContainerShape(context.getTargetContainer(), true);
+				Rectangle invisibleRect = gaService.createInvisibleRectangle(newShape);
+				gaService.setLocationAndSize(invisibleRect, x, y, width, height);
 
 				Envelope envelope = GraphicsUtil.createEnvelope(invisibleRect, 0, 0, width, height);
 				envelope.rect.setFilled(true);
 				StyleUtil.applyStyle(envelope.rect, msg);
 				envelope.line.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-
-				peService.createChopboxAnchor(container);
-				AnchorUtil.addFixedPointAnchors(container, invisibleRect);
-
-				boolean isImport = context.getProperty(DIUtils.IMPORT) != null;
-				createDIShape(container, msg, !isImport);
-				layoutPictogramElement(container);
 				
-				this.prepareAddContext(context, width, height);
-				this.getFeatureProvider().getAddFeature(context).add(context);
-				
-				return container;
+				return newShape;
 			}
 
 			@Override
-			public int getHeight() {
+			public int getDefaultHeight() {
 				return ENVELOPE_HEIGHT;
 			}
 
 			@Override
-			public int getWidth() {
+			public int getDefaultWidth() {
 				return ENVELOPE_WIDTH;
+			}
+			
+			@Override
+			protected boolean isCreateExternalLabel() {
+				// TODO Auto-generated method stub
+				return false;
 			}
 		};
 	}

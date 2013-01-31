@@ -20,6 +20,7 @@ import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 
@@ -253,13 +254,13 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 		public AddCustomTaskFeature(IFeatureProvider fp) {
 			super(fp);
 		}
-
+		
 		@Override
-		public PictogramElement add(IAddContext context) {
-			PictogramElement pe = super.add(context);
+		protected void setProperties(IAddContext context, ContainerShape newShape) {
+			super.setProperties(context, newShape);
+
 			// make sure everyone knows that this PE is a custom task
-			Graphiti.getPeService().setPropertyValue(pe,CUSTOM_TASK_ID,getId());
-			return pe;
+			Graphiti.getPeService().setPropertyValue(newShape, CUSTOM_TASK_ID, getId());
 		}
 	}
 }

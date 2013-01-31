@@ -41,7 +41,7 @@ public class ComplexGatewayFeatureContainer extends AbstractGatewayFeatureContai
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return new AddGatewayFeature<ComplexGateway>(fp) {
 			@Override
-			protected void decorateGateway(ContainerShape container, BPMNShape bpmnShape) {
+			protected void decorate(ContainerShape container) {
 				GraphicsUtil.createGatewayAsterisk(container);
 			}
 		};
