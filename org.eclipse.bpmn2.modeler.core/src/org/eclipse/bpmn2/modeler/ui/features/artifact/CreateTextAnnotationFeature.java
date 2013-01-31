@@ -32,8 +32,9 @@ public class CreateTextAnnotationFeature extends AbstractCreateArtifactFeature<T
 		boolean intoDiagram = context.getTargetContainer().equals(getDiagram());
 		boolean intoLane = FeatureSupport.isTargetLane(context) && FeatureSupport.isTargetLaneOnTop(context);
 		boolean intoParticipant = FeatureSupport.isTargetParticipant(context);
+		boolean intoSubprocess = FeatureSupport.isTargetSubProcess(context);
 		
-		return intoDiagram || intoLane || intoParticipant;
+		return intoDiagram || intoLane || intoParticipant || intoSubprocess;
 	}
 
 	@Override
