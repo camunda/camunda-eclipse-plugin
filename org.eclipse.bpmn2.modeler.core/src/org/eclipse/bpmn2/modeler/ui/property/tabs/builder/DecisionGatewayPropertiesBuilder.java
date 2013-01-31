@@ -99,7 +99,13 @@ public class DecisionGatewayPropertiesBuilder extends AbstractPropertiesBuilder<
 	
 	private void updateDropdownLabels(CCombo dropDown) {
 		
-		dropDown.removeAll();
+		// We need to avoid that the combo box fires a SWT.Modify event 
+		// while updating the drop down labels.
+		
+		// Doing so, we remove all drop down element one by one
+		for (String s: dropDown.getItems()) {
+			dropDown.remove(s);
+		}
 		
 		List<SequenceFlow> flows = getSequenceFlows();
 		
