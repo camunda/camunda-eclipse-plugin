@@ -107,12 +107,12 @@ public abstract class AddDataFeature<T extends ItemAwareElement> extends Abstrac
 	}
 
 	@Override
-	public int getHeight() {
+	public int getDefaultHeight() {
 		return GraphicsUtil.DATA_HEIGHT;
 	}
 
 	@Override
-	public int getWidth() {
+	public int getDefaultWidth() {
 		return GraphicsUtil.DATA_WIDTH;
 	}
 

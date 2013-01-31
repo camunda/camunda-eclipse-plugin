@@ -93,12 +93,12 @@ public class AddGatewayFeature<T extends Gateway>
 	}
 
 	@Override
-	public int getHeight() {
+	public int getDefaultHeight() {
 		return GraphicsUtil.getGatewaySize(this.getDiagram()).getHeight();
 	}
 
 	@Override
-	public int getWidth() {
+	public int getDefaultWidth() {
 		return GraphicsUtil.getGatewaySize(this.getDiagram()).getWidth();
 	}
 	

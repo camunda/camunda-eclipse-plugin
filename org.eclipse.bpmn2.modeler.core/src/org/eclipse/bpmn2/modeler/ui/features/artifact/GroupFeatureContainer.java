@@ -119,12 +119,12 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 		}
 
 		@Override
-		public int getHeight() {
+		public int getDefaultHeight() {
 			return 400;
 		}
 
 		@Override
-		public int getWidth() {
+		public int getDefaultWidth() {
 			return 400;
 		}
 

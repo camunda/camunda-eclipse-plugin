@@ -96,12 +96,12 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 			}
 
 			@Override
-			public int getHeight() {
+			public int getDefaultHeight() {
 				return ENVELOPE_HEIGHT;
 			}
 
 			@Override
-			public int getWidth() {
+			public int getDefaultWidth() {
 				return ENVELOPE_WIDTH;
 			}
 			

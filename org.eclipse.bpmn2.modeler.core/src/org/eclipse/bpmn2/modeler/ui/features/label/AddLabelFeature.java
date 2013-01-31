@@ -162,12 +162,12 @@ public class AddLabelFeature extends AbstractAddBpmnShapeFeature<BaseElement> {
 	}
 
 	@Override
-	public int getHeight() {
+	public int getDefaultHeight() {
 		return 0;
 	}
 
 	@Override
-	public int getWidth() {
+	public int getDefaultWidth() {
 		return 0;
 	}
 

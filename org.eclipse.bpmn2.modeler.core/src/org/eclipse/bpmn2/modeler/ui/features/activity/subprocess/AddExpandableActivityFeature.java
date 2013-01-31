@@ -84,14 +84,14 @@ public class AddExpandableActivityFeature<T extends Activity>
 	}
 
 	@Override
-	public int getWidth() {
+	public int getDefaultWidth() {
 		if (Bpmn2Preferences.getInstance().isExpandedDefault())
 			return GraphicsUtil.SUB_PROCEESS_DEFAULT_WIDTH;
 		return GraphicsUtil.TASK_DEFAULT_WIDTH;
 	}
 
 	@Override
-	public int getHeight() {
+	public int getDefaultHeight() {
 		if (Bpmn2Preferences.getInstance().isExpandedDefault())
 			return GraphicsUtil.SUB_PROCESS_DEFAULT_HEIGHT;
 		return GraphicsUtil.TASK_DEFAULT_HEIGHT;

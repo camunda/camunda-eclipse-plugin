@@ -173,7 +173,6 @@ public abstract class AbstractAddBpmnShapeFeature<T extends BaseElement> extends
 		return context;
 	}
 	
-	
 	@Override
 	public PictogramElement add(IAddContext context) {
 		T activity = getBusinessObject(context);
@@ -202,8 +201,7 @@ public abstract class AbstractAddBpmnShapeFeature<T extends BaseElement> extends
 	/**
 	 * Perform an initial update and layouting of the new shape as desired.
 	 * 
-	 * @param newShape 
-	 * 
+	 * @param newShape
 	 */
 	protected void updateAndLayout(ContainerShape newShape) {
 		// update
@@ -234,12 +232,12 @@ public abstract class AbstractAddBpmnShapeFeature<T extends BaseElement> extends
 
 	protected int getHeight(IAddContext context) {
 		return context.getHeight() > 0 ? context.getHeight() :
-			(isHorizontal(context) ? getHeight() : getWidth());
+			(isHorizontal(context) ? getDefaultHeight() : getDefaultWidth());
 	}
 	
 	protected int getWidth(IAddContext context) {
 		return context.getWidth() > 0 ? context.getWidth() :
-			(isHorizontal(context) ? getWidth() : getHeight());
+			(isHorizontal(context) ? getDefaultWidth() : getDefaultHeight());
 	}
 
 	protected boolean isHorizontal(ITargetContext context) {
@@ -248,14 +246,17 @@ public abstract class AbstractAddBpmnShapeFeature<T extends BaseElement> extends
 			if (FeatureSupport.isTargetParticipant(context)) {
 				Participant targetParticipant = FeatureSupport.getTargetParticipant(context);
 				BPMNShape participantShape = findDIShape(targetParticipant);
-				if (participantShape!=null)
+				if (participantShape != null) {
 					return participantShape.isIsHorizontal();
-			}
-			else if (FeatureSupport.isTargetLane(context)) {
+				}
+			} else
+			
+			if (FeatureSupport.isTargetLane(context)) {
 				Lane targetLane = FeatureSupport.getTargetLane(context);
 				BPMNShape laneShape = findDIShape(targetLane);
-				if (laneShape!=null)
+				if (laneShape != null) {
 					return laneShape.isIsHorizontal();
+				}
 			}
 		}
 		return Bpmn2Preferences.getInstance().isHorizontalDefault();
@@ -266,13 +267,13 @@ public abstract class AbstractAddBpmnShapeFeature<T extends BaseElement> extends
 	 * 
 	 * @return
 	 */
-	public abstract int getHeight();
+	public abstract int getDefaultHeight();
 	
 	/**
 	 * Return the default width
 	 * @return
 	 */
-	public abstract int getWidth();
+	public abstract int getDefaultWidth();
 	
 	/**
 	 * Return true if the element should create a label

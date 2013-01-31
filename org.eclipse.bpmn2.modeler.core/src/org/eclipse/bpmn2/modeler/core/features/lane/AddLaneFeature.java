@@ -310,7 +310,7 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 		}
 		
 		if (context.getTargetContainer() instanceof Diagram) {
-			return getHeight();
+			return getDefaultHeight();
 		}
 		int height = context.getTargetContainer().getGraphicsAlgorithm().getHeight();
 		
@@ -329,7 +329,7 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 		}
 		
 		if (context.getTargetContainer() instanceof Diagram) {
-			return getWidth();
+			return getDefaultWidth();
 		}
 		int width = context.getTargetContainer().getGraphicsAlgorithm().getWidth() - 30;
 		
@@ -342,12 +342,12 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 	}
 
 	@Override
-	public int getHeight() {
+	public int getDefaultHeight() {
 		return DEFAULT_LANE_HEIGHT;
 	}
 
 	@Override
-	public int getWidth() {
+	public int getDefaultWidth() {
 		return DEFAULT_LANE_WIDTH;
 	}
 	

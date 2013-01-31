@@ -65,12 +65,12 @@ public class AddConversationFeature extends AbstractAddBpmnShapeFeature<Conversa
 	}
 
 	@Override
-	public int getHeight() {
+	public int getDefaultHeight() {
 		return 30;
 	}
 
 	@Override
-	public int getWidth() {
+	public int getDefaultWidth() {
 		return 30;
 	}
 

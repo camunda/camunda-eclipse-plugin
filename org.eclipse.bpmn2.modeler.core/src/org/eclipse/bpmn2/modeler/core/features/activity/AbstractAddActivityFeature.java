@@ -94,8 +94,8 @@ public abstract class AbstractAddActivityFeature<T extends Activity> extends Abs
 		ContainerShape targetContainer = context.getTargetContainer();
 		IRectangle targetBounds = LayoutUtil.getRelativeBounds(targetContainer);
 
-		width = context.getWidth() > 0 ? context.getWidth() : getWidth();
-		height = context.getHeight() > 0 ? context.getHeight() : getHeight();
+		width = context.getWidth() > 0 ? context.getWidth() : getDefaultWidth();
+		height = context.getHeight() > 0 ? context.getHeight() : getDefaultHeight();
 		
 		width = Math.min(targetBounds.getWidth(), width);
 		height = Math.min(targetBounds.getHeight(), height);
@@ -126,7 +126,7 @@ public abstract class AbstractAddActivityFeature<T extends Activity> extends Abs
 		return 0;
 	}
 
-	public abstract int getWidth();
+	public abstract int getDefaultWidth();
 
-	public abstract int getHeight();
+	public abstract int getDefaultHeight();
 }

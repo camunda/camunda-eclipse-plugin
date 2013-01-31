@@ -55,12 +55,12 @@ public class AddTextAnnotationFeature extends AbstractAddBpmnShapeFeature<TextAn
 	}
 	
 	@Override
-	public int getHeight() {
+	public int getDefaultHeight() {
 		return 100;
 	}
 
 	@Override
-	public int getWidth() {
+	public int getDefaultWidth() {
 		return 50;
 	}
 

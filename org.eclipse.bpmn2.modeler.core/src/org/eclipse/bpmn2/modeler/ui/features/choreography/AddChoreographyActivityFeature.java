@@ -180,12 +180,12 @@ public class AddChoreographyActivityFeature<T extends ChoreographyActivity>
 	}
 
 	@Override
-	public int getHeight() {
+	public int getDefaultHeight() {
 		return GraphicsUtil.CHOREOGRAPHY_HEIGHT;
 	}
 
 	@Override
-	public int getWidth() {
+	public int getDefaultWidth() {
 		return GraphicsUtil.CHOREOGRAPHY_WIDTH;
 	}
 

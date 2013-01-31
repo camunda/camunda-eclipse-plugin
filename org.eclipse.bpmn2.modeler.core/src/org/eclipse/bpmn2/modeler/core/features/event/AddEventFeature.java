@@ -91,12 +91,12 @@ public class AddEventFeature<T extends Event>
 	}
 
 	@Override
-	public int getHeight() {
+	public int getDefaultHeight() {
 		return GraphicsUtil.getEventSize(this.getDiagram()).getHeight();
 	}
 
 	@Override
-	public int getWidth() {
+	public int getDefaultWidth() {
 		return GraphicsUtil.getEventSize(this.getDiagram()).getWidth();
 	}
 
