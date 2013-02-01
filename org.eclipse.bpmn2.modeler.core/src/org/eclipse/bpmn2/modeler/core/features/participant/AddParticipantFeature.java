@@ -104,7 +104,7 @@ public class AddParticipantFeature extends AbstractAddBpmnShapeFeature<Participa
 	}
 
 	@Override
-	protected void adjustLocationAndSize(IAddContext context, int width, int height) {
+	protected void adjustLocation(IAddContext context, int width, int height) {
 		// do nothing
 	}
 	

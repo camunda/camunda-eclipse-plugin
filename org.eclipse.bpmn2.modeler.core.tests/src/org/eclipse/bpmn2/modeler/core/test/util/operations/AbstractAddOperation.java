@@ -38,9 +38,6 @@ public abstract class AbstractAddOperation<T extends IFeature, V extends Abstrac
 		context.setX(0);
 		context.setY(0);
 		
-		context.setWidth(100);
-		context.setHeight(100);
-		
 		return context;
 	}
 
