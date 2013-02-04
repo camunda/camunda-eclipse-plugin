@@ -38,7 +38,7 @@ public class AssociationShapeHandler extends AbstractEdgeHandler<Association> {
 		
 		String errorFormat = "%s reference of %s is null. Edge is not visible (%s)";
 		
-		if (target == null) {
+		if (target == null || source.eIsProxy()) {
 			modelImport.logSilently(new ImportException(
 					String.format(errorFormat,
 						"Target",
@@ -48,7 +48,7 @@ public class AssociationShapeHandler extends AbstractEdgeHandler<Association> {
 			return null;
 		}
 		
-		if (source == null) {
+		if (source == null || source.eIsProxy()) {
 			modelImport.logSilently(new ImportException(
 					String.format(errorFormat,
 						"Source",
