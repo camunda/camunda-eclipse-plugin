@@ -37,9 +37,13 @@ public class ConnectionService {
 	public static void reconnectConnectionAfterMove(Connection connection) {
 		reconnectConnection(connection, false, true);
 	}
+
+	public static void reconnectConnectionAfterConnectionEndChange(Connection connection, boolean forceLayout) {
+		reconnectConnection(connection, forceLayout, false);
+	}
 	
 	public static void reconnectConnectionAfterConnectionEndChange(Connection connection) {
-		reconnectConnection(connection, false, false);
+		reconnectConnectionAfterConnectionEndChange(connection, true);
 	}
 	
 	protected static void reconnectConnection(Connection connection, boolean forceLayout, boolean relayoutOnRepairFail) {

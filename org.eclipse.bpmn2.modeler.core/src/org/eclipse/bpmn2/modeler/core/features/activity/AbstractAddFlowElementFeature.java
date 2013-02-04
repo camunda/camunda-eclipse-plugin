@@ -162,6 +162,9 @@ public abstract class AbstractAddFlowElementFeature<T extends FlowElement> exten
 	 */
 	private void reconnectAfterSplit(ReconnectionContext context) {
 		IReconnectionFeature reconnectionFeature = getFeatureProvider().getReconnectionFeature(context);
+		
+		ContextUtil.set(context, ContextConstants.REPAIR_IF_POSSIBLE);
+		
 		if (reconnectionFeature.canExecute(context)) {
 			reconnectionFeature.reconnect(context);
 		}

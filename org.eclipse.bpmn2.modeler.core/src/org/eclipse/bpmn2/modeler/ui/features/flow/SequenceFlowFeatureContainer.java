@@ -28,6 +28,7 @@ import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementConnectionFeatureContainer;
+import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractAddFlowFeature;
@@ -36,6 +37,7 @@ import org.eclipse.bpmn2.modeler.core.features.flow.AbstractReconnectFlowFeature
 import org.eclipse.bpmn2.modeler.core.layout.ConnectionService;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
@@ -345,7 +347,9 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 		public void postReconnect(IReconnectionContext context) {
 			super.postReconnect(context);
 			
-			ConnectionService.reconnectConnectionAfterConnectionEndChange(context.getConnection());
+			boolean forceReconnect = !ContextUtil.is(context, ContextConstants.REPAIR_IF_POSSIBLE);
+			
+			ConnectionService.reconnectConnectionAfterConnectionEndChange(context.getConnection(), forceReconnect);
 			
 			cleanupOldAnchor(context.getOldAnchor());
 		}
