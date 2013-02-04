@@ -14,6 +14,7 @@ package org.eclipse.bpmn2.modeler.core.features;
 
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 import org.eclipse.bpmn2.BaseElement;
@@ -185,13 +186,12 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 	private void moveChildren(IMoveShapeContext context, Point movementDiff) {
 		ContainerShape containerShape = (ContainerShape) context.getShape();
 		
-		Iterator<EObject> allSubShapes = containerShape.eAllContents();
+		Collection<PictogramElement> allSubShapes = GraphicsUtil.getContainedShapes(containerShape);
 		
-		while (allSubShapes.hasNext()) {
-			EObject s = allSubShapes.next();
+		for (PictogramElement containedShape: allSubShapes) {
 			
-			if (s instanceof Shape) {
-				Shape shape = (Shape) s;
+			if (containedShape instanceof Shape) {
+				Shape shape = (Shape) containedShape;
 				
 				BaseElement baseElement = BusinessObjectUtil.getFirstElementOfType(shape, BaseElement.class);
 				BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(shape, BPMNShape.class);

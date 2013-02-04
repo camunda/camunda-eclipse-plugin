@@ -47,8 +47,9 @@ public class UpdateExpandableActivityFeature extends AbstractUpdateFeature {
 	@Override
 	public IReason updateNeeded(IUpdateContext context) {
 		PictogramElement pe = context.getPictogramElement();
-		Property triggerProperty = Graphiti.getPeService().getProperty(pe,TRIGGERED_BY_EVENT);
-		Property expandedProperty = Graphiti.getPeService().getProperty(pe,IS_EXPANDED);
+		
+		Property triggerProperty = Graphiti.getPeService().getProperty(pe, TRIGGERED_BY_EVENT);
+		Property expandedProperty = Graphiti.getPeService().getProperty(pe, IS_EXPANDED);
 		
 		SubProcess process = (SubProcess) getBusinessObjectForPictogramElement(pe);
 		

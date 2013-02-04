@@ -36,11 +36,10 @@ public class MoveActivityFeature extends MoveFlowNodeFeature {
 	}
 
 	@Override
-	protected void postMoveShape(final IMoveShapeContext context) {
+	protected void postMoveShape(final IMoveShapeContext context) {		
 		super.postMoveShape(context);
 		
 		PictogramElement containerShape = context.getPictogramElement();
-		Graphiti.getPeService().sendToFront(context.getShape());
 		
 		moveBoundaryEvents(context);
 		
@@ -50,6 +49,8 @@ public class MoveActivityFeature extends MoveFlowNodeFeature {
 				layoutPictogramElement(pe);
 			}
 		}
+		
+		
 	}
 
 	private void moveBoundaryEvents(final IMoveShapeContext context) {

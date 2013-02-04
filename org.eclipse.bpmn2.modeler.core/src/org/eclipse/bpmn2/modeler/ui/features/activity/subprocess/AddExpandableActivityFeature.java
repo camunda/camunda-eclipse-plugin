@@ -52,20 +52,17 @@ public class AddExpandableActivityFeature<T extends Activity>
 		
 		int width = newShapeBounds.getWidth();
 		
-		boolean isTriggeredByEvent = false;
 		boolean isExpanded = true;
 		
 		if (activity instanceof SubProcess) {
-			SubProcess subprocess = (SubProcess) activity;
-			isTriggeredByEvent = subprocess.isTriggeredByEvent();
-			
 			BPMNShape bpmnShape = (BPMNShape) BusinessObjectUtil.getFirstElementOfType(newShape, BPMNShape.class);
 			if (bpmnShape != null) {
 				isExpanded = bpmnShape.isIsExpanded();
 			}
 		}
 		
-		peService.setPropertyValue(newShape, TRIGGERED_BY_EVENT, Boolean.toString(isTriggeredByEvent));
+		// set to default value so that update pics up the actual drawing
+		peService.setPropertyValue(newShape, TRIGGERED_BY_EVENT, "false");
 		peService.setPropertyValue(newShape, IS_EXPANDED, Boolean.toString(isExpanded));
 
 		Shape textShape = peService.createShape(newShape, false);

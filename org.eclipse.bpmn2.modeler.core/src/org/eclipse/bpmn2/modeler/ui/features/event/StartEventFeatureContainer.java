@@ -14,6 +14,8 @@ package org.eclipse.bpmn2.modeler.ui.features.event;
 
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.StartEvent;
+import org.eclipse.bpmn2.SubProcess;
+import org.eclipse.bpmn2.modeler.core.features.MoveFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractCreateEventFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractUpdateEventFeature;
@@ -21,12 +23,15 @@ import org.eclipse.bpmn2.modeler.core.features.event.AddEventFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.IReason;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.impl.AbstractUpdateFeature;
 import org.eclipse.graphiti.features.impl.Reason;
@@ -58,12 +63,14 @@ public class StartEventFeatureContainer extends AbstractEventFeatureContainer {
 			@Override
 			protected void setProperties(IAddContext context, ContainerShape newShape) {
 				super.setProperties(context, newShape);
-
+				
 				IPeService peService = Graphiti.getPeService();
 
 				StartEvent event = getBusinessObject(context);
 				
-				peService.setPropertyValue(newShape, INTERRUPTING, Boolean.toString(true));
+				// set to default so that property change is picked up in update
+				// and event is decorated accordingly
+				peService.setPropertyValue(newShape, INTERRUPTING, "true");
 				peService.setPropertyValue(newShape, 
 						UpdateStartEventFeature.START_EVENT_MARKER,
 						AbstractUpdateEventFeature.getEventDefinitionsValue(event));
@@ -71,6 +78,11 @@ public class StartEventFeatureContainer extends AbstractEventFeatureContainer {
 		};
 	}
 
+	@Override
+	public IMoveShapeFeature getMoveFeature(IFeatureProvider fp) {
+		return new StartEventMoveFeature(fp);
+	}
+	
 	@Override
 	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {
 		MultiUpdateFeature updateFeature = new MultiUpdateFeature(fp);
@@ -120,7 +132,41 @@ public class StartEventFeatureContainer extends AbstractEventFeatureContainer {
 		}
 	}
 
-	private class UpdateSubProcessEventFeature extends AbstractUpdateFeature {
+	private static boolean isEventSubprocess(EObject container) {
+		if (container instanceof SubProcess) {
+			SubProcess subProcess = (SubProcess) container;
+			
+			return subProcess.isTriggeredByEvent();
+		}
+		
+		return false;
+	}
+	
+	public static class StartEventMoveFeature extends MoveFlowNodeFeature {
+		
+		public StartEventMoveFeature(IFeatureProvider fp) {
+			super(fp);
+		}
+
+		@Override
+		public boolean canMoveShape(IMoveShapeContext context) {
+			if (!super.canMoveShape(context)) {
+				return false;
+			}
+			
+			// make sure interrupting events 
+			// may not be moved out of target container
+			StartEvent event = (StartEvent) getBusinessObjectForPictogramElement(context.getShape());
+			if (!event.isIsInterrupting() && isEventSubprocess(event.eContainer())) {
+				EObject targetObject = (EObject) getBusinessObjectForPictogramElement(context.getTargetContainer());
+				return isEventSubprocess(targetObject);
+			}
+			
+			return true;
+		}
+	}
+	
+	public static class UpdateSubProcessEventFeature extends AbstractUpdateFeature {
 
 		public UpdateSubProcessEventFeature(IFeatureProvider fp) {
 			super(fp);
