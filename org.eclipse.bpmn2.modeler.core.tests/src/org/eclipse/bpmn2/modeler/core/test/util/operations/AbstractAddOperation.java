@@ -3,6 +3,7 @@ package org.eclipse.bpmn2.modeler.core.test.util.operations;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeature;
 import org.eclipse.graphiti.features.context.impl.CreateContext;
+import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 
@@ -20,6 +21,10 @@ public abstract class AbstractAddOperation<T extends IFeature, V extends Abstrac
 	public V atLocation(int x, int y) {
 		context.setLocation(x, y);
 		return myself;
+	}
+	
+	public V atLocation(Point point) {
+		return atLocation(point.getX(), point.getY());
 	}
 	
 	public V sized(int width, int height) {

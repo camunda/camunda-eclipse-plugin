@@ -89,10 +89,11 @@ public class AddBoundaryEventFeature extends AbstractAddBpmnShapeFeature<Boundar
 			ContainerShape targetContainer = context.getTargetContainer();
 			IRectangle targetBounds = LayoutUtil.getRelativeBounds(targetContainer);
 			
-			// if not importing place it in the center of shape for user to adjust it
+			// if not importing place it where the user dropped it
+			// but make sure we need the parent shape relative positioning
 			return rectangle(
-					targetBounds.getX() + context.getX() + bounds.getWidth(), 
-					targetBounds.getY() + context.getY() + bounds.getWidth(), 
+					targetBounds.getX() + context.getX(), 
+					targetBounds.getY() + context.getY(), 
 					bounds.getWidth(), 
 					bounds.getHeight());
 		}

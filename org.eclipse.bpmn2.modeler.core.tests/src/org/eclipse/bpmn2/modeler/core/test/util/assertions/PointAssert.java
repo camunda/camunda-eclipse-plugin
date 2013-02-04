@@ -36,7 +36,7 @@ public class PointAssert extends AbstractAssert<PointAssert, Point> {
 		}
 		
 		if (pointsEqual(expected, actual, tolerance)) {
-			Assertions.fail(String.format("Expected actual to equal <Point(%s, %s)> but was <Point(%s, %s)>", expected.getX(), expected.getY(), actual.getX(), actual.getY()));
+			Assertions.fail(String.format("Expected actual to equal <(%s, %s)> but was <(%s, %s)>", expected.getX(), expected.getY(), actual.getX(), actual.getY()));
 		}
 		
 		return myself;
