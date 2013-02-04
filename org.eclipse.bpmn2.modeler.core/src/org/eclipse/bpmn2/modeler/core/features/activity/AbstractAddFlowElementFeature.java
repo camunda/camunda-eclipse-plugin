@@ -1,24 +1,36 @@
 package org.eclipse.bpmn2.modeler.core.features.activity;
 
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.location;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBpmnShapeFeature;
+import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.datatypes.ILocation;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReconnectionFeature;
+import org.eclipse.graphiti.features.IRemoveBendpointFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.impl.CreateConnectionContext;
 import org.eclipse.graphiti.features.context.impl.ReconnectionContext;
+import org.eclipse.graphiti.features.context.impl.RemoveBendpointContext;
+import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 
 /**
  * Abstract feature for all flow elements.
@@ -66,11 +78,28 @@ public abstract class AbstractAddFlowElementFeature<T extends FlowElement> exten
 		}
 		
 		Object newObject = getBusinessObject(context);
-		Connection connection = context.getTargetConnection();
+		FreeFormConnection connection = (FreeFormConnection) context.getTargetConnection();
 
 		ReconnectionContext reconnectCtx;
 		
 		Anchor newShapeAnchor = LayoutUtil.getCenterAnchor(newShape);
+		IRectangle newShapeBounds = LayoutUtil.getAbsoluteBounds(newShape);
+		
+		ArrayList<Point> bendpoints = new ArrayList<Point>(connection.getBendpoints());
+		
+		List<Point> secondPartBendpoints = new ArrayList<Point>();
+		boolean afterSplit = false;
+		
+		for (Point bendpoint: bendpoints) {
+			if (LayoutUtil.isContained(newShapeBounds, location(bendpoint))) {
+				afterSplit = true;
+			}
+			
+			if (afterSplit) {
+				secondPartBendpoints.add(bendpoint);
+			}
+		}
+		
 		ILocation newShapeAnchorLocation = LayoutUtil.getAnchorLocation(newShapeAnchor);
 		
 		if (newObject instanceof StartEvent) {
@@ -104,6 +133,8 @@ public abstract class AbstractAddFlowElementFeature<T extends FlowElement> exten
 			createCtx.setTargetPictogramElement(targetAnchor.getParent());
 			createCtx.setTargetLocation(targetAnchorLocation);
 			
+			ContextUtil.set(createCtx, ContextConstants.CONNECTION_BENDPOINTS, secondPartBendpoints);
+			
 			createConnectionAfterSplit(createCtx, Bpmn2Package.eINSTANCE.getSequenceFlow());
 			
 			// reconnect start to newShape
@@ -112,6 +143,15 @@ public abstract class AbstractAddFlowElementFeature<T extends FlowElement> exten
 			reconnectCtx.setTargetPictogramElement(newShape);
 			
 			reconnectAfterSplit(reconnectCtx);
+		}
+	}
+
+	private void removeBendpoint(FreeFormConnection connection, Point point) {
+		RemoveBendpointContext removeCtx = new RemoveBendpointContext(connection, point);
+		IRemoveBendpointFeature removeBendpointFeature = getFeatureProvider().getRemoveBendpointFeature(removeCtx);
+		
+		if (removeBendpointFeature.canExecute(removeCtx)) {
+			removeBendpointFeature.execute(removeCtx);
 		}
 	}
 

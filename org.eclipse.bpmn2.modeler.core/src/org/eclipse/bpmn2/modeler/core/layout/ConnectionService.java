@@ -4,6 +4,7 @@ import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
@@ -23,7 +24,14 @@ public class ConnectionService {
 	}
 
 	public static void reconnectConnectionAfterCreate(Connection connection) {
-		reconnectConnection(connection, true, true);
+		
+		boolean forceLayout = true;
+		if (connection instanceof FreeFormConnection) {
+			// force layout only if no initial bendpoints are set
+			forceLayout = ((FreeFormConnection) connection).getBendpoints().isEmpty();
+		}
+		
+		reconnectConnection(connection, forceLayout, true);
 	}
 
 	public static void reconnectConnectionAfterMove(Connection connection) {
@@ -31,7 +39,7 @@ public class ConnectionService {
 	}
 	
 	public static void reconnectConnectionAfterConnectionEndChange(Connection connection) {
-		reconnectConnection(connection, true, false);
+		reconnectConnection(connection, false, false);
 	}
 	
 	protected static void reconnectConnection(Connection connection, boolean forceLayout, boolean relayoutOnRepairFail) {

@@ -467,7 +467,7 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 		@Override
 		protected void postAddHook(IAddContext context, FreeFormConnection newConnection) {
 			super.postAddHook(context, newConnection);
-
+			
 			setDefaultSequenceFlow(newConnection);
 			setConditionalSequenceFlow(newConnection);
 		}

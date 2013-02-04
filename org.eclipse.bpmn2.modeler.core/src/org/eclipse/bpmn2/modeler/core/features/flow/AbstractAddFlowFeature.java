@@ -12,12 +12,15 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features.flow;
 
+import java.util.List;
+
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNLabel;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBpmnElementFeature;
+import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
@@ -35,6 +38,7 @@ import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.impl.MoveConnectionDecoratorContext;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.Text;
+import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
@@ -75,25 +79,25 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement> extends Abst
 		BPMNEdge bpmnEdge = (BPMNEdge) ModelHandler.findDIElement(diagram, flow);
 		FreeFormConnection connection = peService.createFreeFormConnection(diagram);
 		
-		if (isImport(context)) {
-			connection.setStart(addConContext.getSourceAnchor());
-			connection.setEnd(addConContext.getTargetAnchor());
-		} else {
-			AnchorContainer sourceContainer = (AnchorContainer) addConContext.getSourceAnchor().eContainer();
-			AnchorContainer targetContainer = (AnchorContainer) addConContext.getTargetAnchor().eContainer();
-			Tuple<FixPointAnchor, FixPointAnchor> anchors = AnchorUtil.getSourceAndTargetBoundaryAnchors(
-					sourceContainer, targetContainer, connection);
+		// set anchors
+		connection.setStart(addConContext.getSourceAnchor());
+		connection.setEnd(addConContext.getTargetAnchor());
 
-			connection.setStart(anchors.getFirst());
-			connection.setEnd(anchors.getSecond());
+		// add initial bendpoints
+		List<Point> initialBendpoints = ContextUtil.get(context, ContextConstants.CONNECTION_BENDPOINTS, List.class);
+		if (initialBendpoints != null) {
+			for (Point point : initialBendpoints) {
+				connection.getBendpoints().add(point);
+			}
 		}
-
+		
 		if (bpmnEdge == null) {
 			bpmnEdge = DIUtils.createDIEdge(connection, flow, diagram);
 		}
 		
 		// link connection to edge and bpmn element
 		link(connection, new Object[] { flow, bpmnEdge });
+		
 		
 		if (ModelUtil.hasName(flow)) {
 			

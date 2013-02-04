@@ -12,15 +12,21 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features.flow;
 
+import java.util.List;
+
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature;
+import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.bpmn2.modeler.core.layout.ConnectionService;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateConnectionContext;
 import org.eclipse.graphiti.features.context.impl.AddConnectionContext;
+import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 
 public abstract class AbstractCreateFlowFeature<
@@ -28,7 +34,7 @@ public abstract class AbstractCreateFlowFeature<
 		SOURCE extends EObject,
 		TARGET extends EObject>
 	extends AbstractBpmn2CreateConnectionFeature<CONNECTION> {
-
+	
 	protected boolean changesDone = false;
 	
 	public AbstractCreateFlowFeature(IFeatureProvider fp, String name, String description) {
@@ -49,7 +55,13 @@ public abstract class AbstractCreateFlowFeature<
 				context.getSourceAnchor(),
 				context.getTargetAnchor());
 		addContext.setNewObject(bo);
+		
+		Object bendpoints = ContextUtil.get(context, ContextConstants.CONNECTION_BENDPOINTS);
+		ContextUtil.set(addContext, ContextConstants.CONNECTION_BENDPOINTS, bendpoints);
+		
 		Connection connection = (Connection) getFeatureProvider().addIfPossible(addContext);
+		
+		Assert.isNotNull(connection);
 		
 		ConnectionService.reconnectConnectionAfterCreate(connection);
 		
