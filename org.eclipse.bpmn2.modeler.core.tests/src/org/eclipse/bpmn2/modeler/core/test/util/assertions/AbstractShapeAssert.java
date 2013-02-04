@@ -1,17 +1,25 @@
 package org.eclipse.bpmn2.modeler.core.test.util.assertions;
 
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
+import org.eclipse.graphiti.mm.pictograms.Anchor;
+import org.eclipse.graphiti.mm.pictograms.Connection;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramLink;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.fest.assertions.api.AbstractAssert;
 import org.fest.assertions.api.Assertions;
+import org.fest.assertions.api.Fail;
 import org.fest.assertions.core.Condition;
-import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 
 public abstract class AbstractShapeAssert<S extends AbstractShapeAssert<S, A>, A extends Shape> extends AbstractAssert<S, A> {
 
@@ -97,5 +105,28 @@ public abstract class AbstractShapeAssert<S extends AbstractShapeAssert<S, A>, A
 		Bpmn2ModelAssertions.assertThat(diff).isEqualTo(expectedMovement);
 		
 		return myself;
+	}
+
+	public FreeFormConnectionAssert outgoingConnectionTo(Shape connectionEnd) {
+		
+		List<Connection> matchingConnections = new ArrayList<Connection>();
+		
+		for (Anchor a: actual.getAnchors()) {
+			for (Connection outgoingConnection: a.getOutgoingConnections()) {
+				if (connectionEnd.equals(outgoingConnection.getEnd().getParent())) {
+					matchingConnections.add(outgoingConnection);
+				}
+			}
+		}
+		
+		if (matchingConnections.isEmpty()) {
+			Fail.fail(String.format("Expected <%s> to have outgoing edge to <%s>", actual, connectionEnd));
+		}
+
+		if (matchingConnections.size() > 1) {
+			Fail.fail(String.format("Expected <%s> to have exactly one outgoing edge to <%s> but found (<%s>)", actual, connectionEnd, matchingConnections));
+		}
+			
+		return new FreeFormConnectionAssert((FreeFormConnection) matchingConnections.get(0));
 	}
 }

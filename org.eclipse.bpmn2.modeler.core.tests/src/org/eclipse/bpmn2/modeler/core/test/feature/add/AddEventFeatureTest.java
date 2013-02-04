@@ -1,86 +1,99 @@
 package org.eclipse.bpmn2.modeler.core.test.feature.add;
 
-import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.elementOfType;
-import static org.eclipse.bpmn2.modeler.core.test.util.operations.AddDataObjectOperation.addDataObject;
-import static org.eclipse.bpmn2.modeler.core.test.util.operations.AddDataStoreOperation.addDataStore;
-import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveShapeOperation.move;
+import static org.eclipse.bpmn2.modeler.core.test.util.operations.AddStartEventOperation.addStartEvent;
+import static org.eclipse.bpmn2.modeler.core.test.util.operations.AddEndEventOperation.addEndEvent;
 
-import org.eclipse.bpmn2.DataObject;
-import org.eclipse.bpmn2.DataStore;
-import org.eclipse.bpmn2.DataStoreReference;
-import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.bpmn2.EndEvent;
+import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.Util;
-import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.graphiti.datatypes.IRectangle;
-import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.algorithms.styles.Point;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
-import org.fest.assertions.api.Fail;
 import org.junit.Test;
 
 public class AddEventFeatureTest extends AbstractFeatureTest {
-	
+
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddFeatureTestBase.testAddToDiagram.bpmn")
-	public void testAddToDiagram() throws Exception {
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddFlowElementFeatureTestBase.testSplitConnection.bpmn")
+	public void testAddStartEventToDiagramSplitConnection() throws Exception {
 
-		// given empty diagram
+		// given diagram
+		// with event, task and a label
+		FreeFormConnection targetConnection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		List<Point> preSplitBendpoints = new ArrayList<Point>(targetConnection.getBendpoints());
 
-		Fail.fail("Implement me!");
+		List<Point> expectedAfterSplitBendpoints = preSplitBendpoints.subList(2, preSplitBendpoints.size());
+		
+		Shape preSplitStartShape = (Shape) targetConnection.getStart().getParent();
+		Shape preSplitEndShape = (Shape) targetConnection.getEnd().getParent();
 		
 		// when
 		// element is added to it
-		addDataStore(diagramTypeProvider)
+		addStartEvent(diagramTypeProvider)
+			.toConnection(targetConnection)
+			.atLocation(210, 139)
 			.toContainer(diagram)
 			.execute();
-
-		Shape shape = diagram.getChildren().get(0);
-		Shape labelShape = GraphicsUtil.getLabelShape(shape, diagram);
 		
 		// then
-		// diagram should contain the element and a label
-		assertThat(diagram)
-			.hasContainerShapeChildCount(2);
+		// connection should be reconnected from newly created start shape to end of connection
+		Shape postSplitEndShape = (Shape) targetConnection.getEnd().getParent();
+		Shape postSplitStartShape = (Shape) targetConnection.getStart().getParent();
+
+		assertThat(postSplitStartShape)
+			.isLinkedTo(elementOfType(StartEvent.class))
+			.isNotEqualTo(preSplitStartShape);
 		
-		assertThat(shape)
-			.isLinkedTo(elementOfType(DataStoreReference.class));
+		assertThat(postSplitEndShape)
+			.isEqualTo(preSplitEndShape);
 		
-		assertThat(labelShape)
-			.isNotNull()
-			.isContainedIn(diagram);
+		assertThat(targetConnection)
+			.hasExactBendpoints(expectedAfterSplitBendpoints);
 	}
 	
-	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddFeatureTestBase.testAddToDiagram.bpmn")
-	public void testAddOnToFlow() throws Exception {
 
-		// given empty diagram
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddFlowElementFeatureTestBase.testSplitConnection.bpmn")
+	public void testAddEndEventToDiagramSplitConnection() throws Exception {
+
+		// given diagram
+		// with event, task and a label
+		FreeFormConnection targetConnection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		List<Point> preSplitBendpoints = new ArrayList<Point>(targetConnection.getBendpoints());
+
+		List<Point> expectedBeforeSplitBendpoints = preSplitBendpoints.subList(0, 1);
 		
-		Fail.fail("Implement me!");
+		Shape preSplitStartShape = (Shape) targetConnection.getStart().getParent();
+		Shape preSplitEndShape = (Shape) targetConnection.getEnd().getParent();
 		
 		// when
 		// element is added to it
-		addDataStore(diagramTypeProvider)
+		addEndEvent(diagramTypeProvider)
+			.toConnection(targetConnection)
+			.atLocation(210, 139)
 			.toContainer(diagram)
 			.execute();
-
-		Shape shape = diagram.getChildren().get(0);
-		Shape labelShape = GraphicsUtil.getLabelShape(shape, diagram);
 		
 		// then
-		// diagram should contain the element and a label
-		assertThat(diagram)
-			.hasContainerShapeChildCount(2);
+		// connection should be reconnected from newly created start shape to end of connection
+		Shape postSplitEndShape = (Shape) targetConnection.getEnd().getParent();
+		Shape postSplitStartShape = (Shape) targetConnection.getStart().getParent();
+
+		assertThat(postSplitEndShape)
+			.isLinkedTo(elementOfType(EndEvent.class))
+			.isNotEqualTo(preSplitEndShape);
 		
-		assertThat(shape)
-			.isLinkedTo(elementOfType(DataStoreReference.class));
+		assertThat(postSplitStartShape)
+			.isEqualTo(preSplitStartShape);
 		
-		assertThat(labelShape)
-			.isNotNull()
-			.isContainedIn(diagram);
+		assertThat(targetConnection)
+			.hasExactBendpoints(expectedBeforeSplitBendpoints);
 	}
 }

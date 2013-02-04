@@ -59,29 +59,30 @@ public class ContainerShapeAssert extends AbstractShapeAssert<ContainerShapeAsse
 	}
 
 	@Override
-	public AbstractShapeAssert<ContainerShapeAssert, ContainerShape> isContainerShape() {
+	public ContainerShapeAssert isContainerShape() {
 		return myself;
 	}
 
 	@Override
-	public AbstractShapeAssert<ContainerShapeAssert, ContainerShape> hasNoChildren() {
+	public ContainerShapeAssert hasNoChildren() {
 		Assertions.assertThat(actual.getChildren()).isEmpty();
 		return myself;
 	}
 	
-	public AbstractShapeAssert<ContainerShapeAssert, ContainerShape> hasChild(Shape child) {
+	@Override
+	public ContainerShapeAssert hasChild(Shape child) {
 		Assertions.assertThat(actual.getChildren().contains(child));
 		return myself;
 	}
 
 	@Override
-	public AbstractShapeAssert<ContainerShapeAssert, ContainerShape> doesNotHaveChild(Shape child) {
+	public ContainerShapeAssert doesNotHaveChild(Shape child) {
 		Assertions.assertThat(!actual.getChildren().contains(child));
 		return myself;
 	}
-
+	
 	@Override
-	public AbstractShapeAssert<ContainerShapeAssert, ContainerShape> hasContainerShapeChildCount(int expected) {
+	public ContainerShapeAssert hasContainerShapeChildCount(int expected) {
 		
 		int actualCount = 0;
 		

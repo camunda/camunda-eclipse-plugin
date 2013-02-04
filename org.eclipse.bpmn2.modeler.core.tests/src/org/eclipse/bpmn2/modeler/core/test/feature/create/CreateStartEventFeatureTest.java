@@ -3,6 +3,7 @@ package org.eclipse.bpmn2.modeler.core.test.feature.create;
 
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
+import static org.eclipse.bpmn2.modeler.core.test.util.operations.AddStartEventOperation.addStartEvent;
 
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.di.BPMNLabel;
@@ -36,10 +37,10 @@ public class CreateStartEventFeatureTest extends AbstractFeatureTest {
 		IRectangle laneBounds = LayoutUtil.getAbsoluteBounds(laneShape);
 		
 		// when
-		new AddStartEventOperation<StartEvent>(getDiagramTypeProvider())
+		addStartEvent(getDiagramTypeProvider())
 			.atLocation(40, 20)
 			.sized(36, 36)
-			.inContainer((ContainerShape) laneShape)
+			.toContainer((ContainerShape) laneShape)
 			.execute();
 		
 		// then

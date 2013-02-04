@@ -3,6 +3,7 @@ package org.eclipse.bpmn2.modeler.core.test.util.operations;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeature;
 import org.eclipse.graphiti.features.context.impl.CreateContext;
+import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 
 public abstract class AbstractAddOperation<T extends IFeature, V extends AbstractAddOperation<T, V>> extends Operation<CreateContext, T> {
@@ -23,6 +24,12 @@ public abstract class AbstractAddOperation<T extends IFeature, V extends Abstrac
 	
 	public V sized(int width, int height) {
 		context.setSize(width, height);
+		return myself;
+	}
+	
+	public V toConnection(Connection connection) {
+		context.setTargetConnection(connection);
+		
 		return myself;
 	}
 	

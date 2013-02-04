@@ -505,7 +505,7 @@ public class BPMN2FeatureProvider extends DefaultFeatureProvider {
 		IFeature feature = null;
 		if (be!=null) {
 			Class[] ifs = be.getClass().getInterfaces();
-			for (int i=0; i<ifs.length && feature==null; ++i) {
+			for (int i=0; i < ifs.length && feature==null; ++i) {
 				feature = mapBusinessObjectClassToCreateFeature.get(ifs[i]);
 			}
 		}
