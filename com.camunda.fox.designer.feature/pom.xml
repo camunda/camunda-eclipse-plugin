@@ -4,7 +4,7 @@
   <parent>
     <artifactId>com.camunda.fox.designer.parent</artifactId>
     <groupId>com.camunda.fox.designer</groupId>
-    <version>2.1.0-SNAPSHOT</version>
+    <version>2.0.8</version>
   </parent>
 
   <groupId>com.camunda.fox.designer</groupId>
