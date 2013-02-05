@@ -12,6 +12,7 @@
       <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
     </bpmn2:task>
     <bpmn2:startEvent id="StartEvent_1" name="Start Event 1"/>
+    <bpmn2:boundaryEvent id="BoundaryEvent_1" name="asdf" attachedToRef="Task_1"/>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="_Collaboration_5">
@@ -32,8 +33,14 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_4" bpmnElement="StartEvent_1">
         <dc:Bounds height="36.0" width="36.0" x="700.0" y="150.0"/>
-        <bpmndi:BPMNLabel>
+        <bpmndi:BPMNLabel id="BPMNLabel_1">
           <dc:Bounds height="22.0" width="81.0" x="678.0" y="188.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_BoundaryEvent_3" bpmnElement="BoundaryEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="345.0" y="183.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="360.0" y="224.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>

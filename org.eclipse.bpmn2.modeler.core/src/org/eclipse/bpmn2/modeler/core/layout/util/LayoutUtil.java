@@ -11,13 +11,14 @@ import java.util.List;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.modeler.core.layout.Docking;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Vector;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
-import org.eclipse.graphiti.internal.datatypes.impl.RectangleImpl;
 import org.eclipse.graphiti.mm.Property;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
@@ -42,7 +43,6 @@ public class LayoutUtil {
 	 * evolutionary developed value to switch between the AboveBeneath and LeftRight Strategy for gateways 
 	 */
 	public static final double MAGIC_VALUE = 0.83;
-	
 	
 	public enum Sector {
 		
@@ -309,14 +309,14 @@ public class LayoutUtil {
 	 * @see #getVerticalLayoutTreshold(ILocation, ILocation)
 	 */
 	public static double getLayoutTreshold(FreeFormConnection connection) {
-		ILocation startShapeCenter = getShapeCenter((Shape) connection.getStart().getParent());
-		ILocation endShapeCenter = getShapeCenter((Shape) connection.getEnd().getParent());
+		ILocation startShapeCenter = getAbsoluteShapeCenter((Shape) connection.getStart().getParent());
+		ILocation endShapeCenter = getAbsoluteShapeCenter((Shape) connection.getEnd().getParent());
 		return getVerticalLayoutTreshold(startShapeCenter, endShapeCenter);
 	}
 	
 	public static double getLayoutTreshold(Shape startShape, Shape endShape) {
-		ILocation startShapeCenter = getShapeCenter(startShape);
-		ILocation endShapeCenter = getShapeCenter(endShape);
+		ILocation startShapeCenter = getAbsoluteShapeCenter(startShape);
+		ILocation endShapeCenter = getAbsoluteShapeCenter(endShape);
 		return getVerticalLayoutTreshold(startShapeCenter, endShapeCenter);
 	}
 
@@ -348,15 +348,6 @@ public class LayoutUtil {
 		
 		double product = Math.floor(shapeVector.getDivided(shapeVector.getLength()).getDotProduct(unitXVector) * 1000) / 1000;
 		return product;
-	}
-	
-	public static ILocation getShapeCenter(Shape shape) {
-		
-		if (shape == null) {
-			throw new NullPointerException("Argument is null");
-		}
-		
-		return getShapeLocationMidpoint(shape);
 	}
 
 	public static ILocation getRectangleCenter(IRectangle rectangle) {
@@ -483,7 +474,7 @@ public class LayoutUtil {
 		Shape shape = (Shape) container;
 		
 		ILocation anchorLocation = getAnchorLocation(anchor);
-		ILocation shapeLocation = getShapeLocationMidpoint(shape);
+		ILocation shapeLocation = getAbsoluteShapeCenter(shape);
 		
 		return getSector(
 			anchorLocation.getX(), 
@@ -563,8 +554,9 @@ public class LayoutUtil {
 		return rectangle(position.getX(), position.getY(), algorithm.getWidth(), algorithm.getHeight());
 	}
 	
-	public static ILocation getShapeLocationMidpoint(Shape shape) {
-
+	public static ILocation getAbsoluteShapeCenter(Shape shape) {
+		Assert.isNotNull(shape);
+		
 		IRectangle bounds = getAbsoluteBounds(shape);
 		
 		return location(
@@ -608,7 +600,7 @@ public class LayoutUtil {
 	 * @param connection
 	 * @return
 	 */
-	public static ILocation getConnectionReferencePoint(ChopboxAnchor anchor, Connection connection) {
+	public static ILocation getFirstConnectionWaypoint(ChopboxAnchor anchor, Connection connection) {
 		
 		if (!(connection instanceof FreeFormConnection)) {
 			throw new IllegalArgumentException("Can handle instances of " + FreeFormConnection.class.getName() + " only");
@@ -755,10 +747,29 @@ public class LayoutUtil {
 		GraphicsAlgorithm graphicsAlgorithm = anchor.getParent().getGraphicsAlgorithm();
 		ILocation parentLocation = Graphiti.getLayoutService().getLocationRelativeToDiagram((Shape) anchor.getParent());
 		
-		ILocation referencePoint = LayoutUtil.getConnectionReferencePoint((ChopboxAnchor) anchor, connection);
-		IRectangle rectangle = new RectangleImpl(parentLocation.getX(), parentLocation.getY(), graphicsAlgorithm.getWidth(), graphicsAlgorithm.getHeight());
+		ILocation referencePoint = LayoutUtil.getFirstConnectionWaypoint((ChopboxAnchor) anchor, connection);
+		IRectangle rectangle = rectangle(parentLocation.getX(), parentLocation.getY(), graphicsAlgorithm.getWidth(), graphicsAlgorithm.getHeight());
 		
 		return LayoutUtil.getChopboxIntersectionPoint(rectangle, referencePoint);
+	}
+
+	/**
+	 * Return all connections this anchor container references. 
+	 * 
+	 * @param anchorContainer
+	 * 
+	 * @return
+	 */
+	public static List<Connection> getConnections(AnchorContainer anchorContainer) {
+		List<Connection> allConnections = new ArrayList<Connection>();
+		
+		List<Connection> incomingConnections = Graphiti.getPeService().getIncomingConnections(anchorContainer);
+		List<Connection> outgoingConnections = Graphiti.getPeService().getOutgoingConnections(anchorContainer);
+		
+		allConnections.addAll(incomingConnections);
+		allConnections.addAll(outgoingConnections);
+		
+		return allConnections;
 	}
 	
 	/**
@@ -880,7 +891,26 @@ public class LayoutUtil {
 		return null;
 	}
 
-	// private static helpers; do not expose //////////////////////////////
+	////// connection label specific stuff ////////////////////////////////
+	
+	public static List<Point> getConnectionWaypoints(Connection connection) {
+		Assert.isLegal(connection instanceof FreeFormConnection);
+		
+		FreeFormConnection freeFormConnection = (FreeFormConnection) connection;
+
+		Anchor startAnchor = freeFormConnection.getStart();
+		Anchor endAnchor = freeFormConnection.getEnd();
+		
+		ArrayList<Point> waypoints = new ArrayList<Point>();
+		
+		waypoints.add(point(getVisibleAnchorLocation(startAnchor, freeFormConnection)));
+		waypoints.addAll(freeFormConnection.getBendpoints());
+		waypoints.add(point(getVisibleAnchorLocation(endAnchor, freeFormConnection)));
+		
+		return waypoints;
+	}
+	
+	////// private static helpers; do not expose //////////////////////////
 
 	private static ILocation getLocation(Shape shape) {
 		return Graphiti.getPeLayoutService().getLocationRelativeToDiagram(shape);
@@ -904,5 +934,64 @@ public class LayoutUtil {
 
 	private static ILocation diagramRelativeLocation(Shape startShape) {
 		return Graphiti.getLayoutService().getLocationRelativeToDiagram(startShape);
+	}
+
+	/**
+	 * Return the reference point on a connection for a given point
+	 * 
+	 * @param connection
+	 * @param point
+	 * @return
+	 */
+	public static Point getConnectionReferencePoint(Connection connection, Point point) {
+		List<Point> waypoints = getConnectionWaypoints(connection);
+		
+		return ConnectionUtil.getClosestPointOnConnection(waypoints, point);
+	}
+
+	/**
+	 * Constraints a box with parent relative coordinates in a given parent box
+	 * 
+	 * @param relativeBox
+	 * @param boundingBox
+	 * @param padding
+	 * @return
+	 */
+	public static IRectangle box(IRectangle relativeBox, IDimension boundingBox, int padding) {
+		
+		int x = relativeBox.getX();
+		int y = relativeBox.getY();
+		
+		int width = relativeBox.getWidth();
+		int height = relativeBox.getHeight();
+		
+		int maxWidth = boundingBox.getWidth() - (2 * padding);
+		int maxHeight = boundingBox.getHeight() - (2 * padding);
+
+		if (width > maxWidth) {
+			width = maxWidth;
+		}
+		
+		if (height > maxHeight) {
+			height = maxHeight;
+		}
+		
+		if (x < padding) {
+			x = padding;
+		}
+		
+		if (y < padding) {
+			y = padding;
+		}
+
+		if (x + width > maxWidth + padding) {
+			x = maxWidth + padding - width;
+		}
+		
+		if (y + height > maxHeight + padding) {
+			y = maxHeight + padding - height;
+		}
+		
+		return rectangle(x, y, width, height);
 	}
 }

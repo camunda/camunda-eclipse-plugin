@@ -14,6 +14,7 @@ package org.eclipse.bpmn2.modeler.core.features.bendpoint;
 
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
+import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IMoveBendpointContext;
 import org.eclipse.graphiti.features.impl.DefaultMoveBendpointFeature;
@@ -32,13 +33,24 @@ public class MoveBendpointFeature extends DefaultMoveBendpointFeature {
 		
 		FreeFormConnection connection = context.getConnection();
 		
-		DIUtils.updateDIEdge(connection);
-		
 		// also need to move the connection point if there is one at this bendpoint
 		Shape connectionPointShape = AnchorUtil.getConnectionPointAt(connection, context.getBendpoint());
 		if (connectionPointShape != null)  {
 			AnchorUtil.setConnectionPointLocation(connectionPointShape, context.getX(), context.getY());
 		}
+		
+		repositionLabel(connection);
+
+		updateDi(connection);
+		
 		return moved;
+	}
+
+	protected void repositionLabel(FreeFormConnection connection) {
+		LabelUtil.repositionConnectionLabel(connection, getFeatureProvider());
+	}
+
+	protected void updateDi(FreeFormConnection connection) {
+		DIUtils.updateDI(connection);
 	}
 }

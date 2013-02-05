@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions targetNamespace="http://activiti.org/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="_wUQkUHE1EeKsKe9W4ZxDkw">
+  <bpmn2:process id="Process_1">
+    <bpmn2:inclusiveGateway id="InclusiveGateway_1" name="Inclusive Gateway 1"/>
+    <bpmn2:dataStoreReference id="_DataStoreReference_3" name="Data Store 1" dataStoreRef="DataStore_1"/>
+    <bpmn2:startEvent id="StartEvent_1" name="Start Event 1"/>
+  </bpmn2:process>
+  <bpmn2:dataStore id="DataStore_1" name="Data Store 1"/>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="_BPMNShape_InclusiveGateway_3" bpmnElement="InclusiveGateway_1">
+        <dc:Bounds height="50.0" width="50.0" x="235.0" y="175.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_3" bpmnElement="StartEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="370.0" y="182.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="81.0" x="348.0" y="227.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_DataStoreReference_3" bpmnElement="_DataStoreReference_3">
+        <dc:Bounds height="50.0" width="50.0" x="475.0" y="175.0"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

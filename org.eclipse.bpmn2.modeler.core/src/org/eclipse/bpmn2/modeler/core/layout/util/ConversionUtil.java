@@ -1,5 +1,8 @@
 package org.eclipse.bpmn2.modeler.core.layout.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil.AnchorLocation;
 import org.eclipse.draw2d.geometry.Vector;
@@ -26,6 +29,10 @@ public class ConversionUtil {
 	public static Vector vector(ILocation l) {
 		return new Vector(l.getX(), l.getY());
 	}
+
+	public static Vector vector(double x, double y) {
+		return new Vector(x, y);
+	}
 	
 	public static ILocation location(Vector v) {
 		return location((int) Math.round(v.x), (int) Math.round(v.y));
@@ -33,6 +40,10 @@ public class ConversionUtil {
 
 	public static Point point(int x, int y) {
 		return Graphiti.getCreateService().createPoint(x, y);
+	}
+	
+	public static Point point(Vector vector) {
+		return point((int) Math.round(vector.x), (int) Math.round(vector.y));
 	}
 	
 	public static Point point(org.eclipse.dd.dc.Point p) {
@@ -52,6 +63,7 @@ public class ConversionUtil {
 	public static IRectangle rect(int x, int y, int width, int height) {
 		return new RectangleImpl(x, y, width, height);
 	}
+	
 	
 	public static Point point(ILocation l) {
 		return point(l.getX(), l.getY());
@@ -97,5 +109,20 @@ public class ConversionUtil {
 	
 	public static IRectangle rectangle(int x, int y, int width, int height) {
 		return rect(x, y, width, height);
+	}
+	
+	/**
+	 * Transforms a list of points to a corresponding list of vectors.
+	 * 
+	 * @param points
+	 * @return
+	 */
+	public static List<Vector> asVectors(List<Point> points) {
+		List<Vector> vectors = new ArrayList<Vector>();
+		for (Point point : points) {
+			vectors.add(vector(point));
+		}
+		
+		return vectors;
 	}
 }

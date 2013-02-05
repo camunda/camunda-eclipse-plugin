@@ -25,7 +25,7 @@ import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBpmnShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
-import org.eclipse.bpmn2.modeler.core.layout.ConnectionService;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.runtime.ModelEnablementDescriptor;
 import org.eclipse.bpmn2.modeler.core.runtime.TargetRuntime;
@@ -51,10 +51,10 @@ import org.eclipse.graphiti.features.context.impl.CreateContext;
 import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
+import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
-import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
@@ -287,26 +287,25 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 	}
 	
 	protected Connection createNewConnection(ModelHandler mh, ContainerShape oldShape, ContainerShape newShape) {
-		Tuple<FixPointAnchor, FixPointAnchor> anchors = AnchorUtil.getSourceAndTargetBoundaryAnchors(oldShape, newShape, null);
+		
+		Anchor sourceAnchor = LayoutUtil.getCenterAnchor(oldShape);
+		Anchor targetAnchor = LayoutUtil.getCenterAnchor(newShape);
 
-		CreateConnectionContext ccc = new CreateConnectionContext();
-		ccc.setSourcePictogramElement(oldShape);
-		ccc.setTargetPictogramElement(newShape);
-		ccc.setSourceAnchor(anchors.getFirst());
-		ccc.setTargetAnchor(anchors.getSecond());
-
+		// TODO: Use create features to create connection
+		CreateConnectionContext createConnectionContext = new CreateConnectionContext();
+		createConnectionContext.setSourcePictogramElement(oldShape);
+		createConnectionContext.setTargetPictogramElement(newShape);
+		createConnectionContext.setSourceAnchor(sourceAnchor);
+		createConnectionContext.setTargetAnchor(targetAnchor);
+		
 		FlowNode oldObject = BusinessObjectUtil.getFirstElementOfType(oldShape, FlowNode.class);
 		FlowNode newObject = BusinessObjectUtil.getFirstElementOfType(newShape, FlowNode.class);
 		
-		AddConnectionContext acc = new AddConnectionContext(ccc.getSourceAnchor(), ccc.getTargetAnchor());
+		AddConnectionContext acc = new AddConnectionContext(sourceAnchor, targetAnchor);
 		SequenceFlow flow = mh.createSequenceFlow(oldObject, newObject);
 		acc.setNewObject(flow);
-		Connection connection = (Connection)getFeatureProvider().addIfPossible(acc);
 		
-		if (connection instanceof FreeFormConnection) {
-			// adjust the anchor point to the new shape if necessary
-			ConnectionService.reconnectConnectionAfterCreate(connection);	
-		}
+		Connection connection = (Connection)getFeatureProvider().addIfPossible(acc);
 		
 		return connection;
 	}

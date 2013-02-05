@@ -118,7 +118,7 @@ public class MoveParticipantFeature extends DefaultMoveBPMNShapeFeature {
 			}
 			
 			ChoreographyUtil.resizePartipantBandContainerShapes(width, height,
-					top, bottom, getDiagram());
+					top, bottom, getFeatureProvider());
 		}
 	}
 

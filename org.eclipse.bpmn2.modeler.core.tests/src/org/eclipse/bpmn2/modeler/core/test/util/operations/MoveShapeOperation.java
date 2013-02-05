@@ -1,12 +1,12 @@
 package org.eclipse.bpmn2.modeler.core.test.util.operations;
 
-import java.util.List;
-
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
+
+import java.util.List;
 
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
-import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
@@ -28,7 +28,7 @@ import org.fest.assertions.api.Assertions;
  */
 public class MoveShapeOperation extends ShapeOperation<MoveShapeContext, IMoveShapeFeature> {
 	
-	private Point movement = null;
+	private Point moveBy = null;
 	
 	public MoveShapeOperation(Shape shape, IDiagramTypeProvider diagramTypeProvider) {
 		super(shape, diagramTypeProvider);
@@ -42,12 +42,12 @@ public class MoveShapeOperation extends ShapeOperation<MoveShapeContext, IMoveSh
 	 */
 	private Shape getReferenceContainer(Shape shape) {
 		
-		if (GraphicsUtil.isLabel(shape)) {
+		if (LabelUtil.isLabel(shape)) {
 			EObject businessObject = BusinessObjectUtil.getFirstBaseElement(shape);
 			
 			List<PictogramElement> pictogramElements = Graphiti.getLinkService().getPictogramElements(getDiagram(), businessObject);
 			for (PictogramElement pictogramElement : pictogramElements) {
-				if (!GraphicsUtil.isLabel(pictogramElement)) {
+				if (!LabelUtil.isLabel(pictogramElement)) {
 					return ((Shape) pictogramElement).getContainer();
 				}
 			}
@@ -65,13 +65,30 @@ public class MoveShapeOperation extends ShapeOperation<MoveShapeContext, IMoveSh
 		context.setSourceContainer(shape.getContainer());
 		context.setTargetContainer(shape.getContainer());
 		
+		context.setLocation(0, 0);
+		
 		return context;
 	}
-	
+
 	public MoveShapeOperation by(int x, int y) {
-		this.movement = point(x, y);
+		this.moveBy = point(x, y);
 		
 		return this;
+	}
+	
+	public MoveShapeOperation by(Point point) {
+		this.moveBy = point;
+		
+		return this;
+	}
+	
+	public MoveShapeOperation to(int x, int y) {
+		context.setLocation(x, y);	
+		return this;
+	}
+	
+	public MoveShapeOperation to(Point point) {
+		return to(point.getX(), point.getY());
 	}
 	
 	protected Point getRelativePosition(Shape shape, Shape container) {
@@ -104,12 +121,8 @@ public class MoveShapeOperation extends ShapeOperation<MoveShapeContext, IMoveSh
 		// for labels we need to fake the movement into
 		// a particular shape on target container change
 		// because the label absolute coordinates need to be translated into target shape local ones.
-		// (that is, what Graphiti does, too and we will do it here as well).
+		// (that is what Graphiti does, too and we will do it here as well).
 		if (context.getSourceContainer() != context.getTargetContainer()) {
-			if (movement == null) {
-				movement = point(0, 0);
-			}
-			
 			Shape referenceContainer = getReferenceContainer(shape);
 			
 			relativePosition = getRelativePosition(shape, referenceContainer);
@@ -117,14 +130,14 @@ public class MoveShapeOperation extends ShapeOperation<MoveShapeContext, IMoveSh
 			relativePosition = point(LayoutUtil.getRelativeBounds(shape));
 		}
 		
-		if (movement != null) {
-			context.setDeltaX(movement.getX());
-			context.setDeltaY(movement.getY());
+		if (moveBy != null) {
+			context.setDeltaX(moveBy.getX());
+			context.setDeltaY(moveBy.getY());
 			
 			// the delta information is not used in the Graphiti default implementations
 			// context x / y should contain the new coordinates, Graphiti will calculate the delta itself
-			context.setX(relativePosition.getX() + movement.getX());
-			context.setY(relativePosition.getY() + movement.getY());
+			context.setX(relativePosition.getX() + moveBy.getX());
+			context.setY(relativePosition.getY() + moveBy.getY());
 		}
 	}
 

@@ -15,8 +15,9 @@ package org.eclipse.bpmn2.modeler.core.features.choreography;
 import static org.eclipse.bpmn2.modeler.core.features.choreography.ChoreographyProperties.TEXT_H;
 
 import org.eclipse.bpmn2.ChoreographyActivity;
-import org.eclipse.bpmn2.modeler.core.features.DefaultLayoutBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.features.LayoutBpmnShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ILayoutContext;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
@@ -27,7 +28,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class LayoutChoreographyFeature extends DefaultLayoutBPMNShapeFeature {
+public class LayoutChoreographyFeature extends LayoutBpmnShapeFeature {
 
 	protected IPeService peService = Graphiti.getPeService();
 	protected IGaService gaService = Graphiti.getGaService();
@@ -59,7 +60,7 @@ public class LayoutChoreographyFeature extends DefaultLayoutBPMNShapeFeature {
 			if (property != null && new Boolean(property)) {
 				GraphicsAlgorithm ga = s.getGraphicsAlgorithm();
 				gaService.setSize(ga, newWidth, newHeight);
-				peService.sendToFront(s);
+				GraphicsUtil.sendToFront(s);
 			}
 			// use it when property editor supports enums
 			// property = peService.getPropertyValue(s, ChoreographyProperties.CHOREOGRAPHY_MARKER_SHAPE);

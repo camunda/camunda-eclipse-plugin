@@ -23,27 +23,11 @@ public class ConnectionService {
 		new BpmnElementReconnectionContext().reconnect(shape);
 	}
 
-	public static void reconnectConnectionAfterCreate(Connection connection) {
-		
-		boolean forceLayout = true;
-		if (connection instanceof FreeFormConnection) {
-			// force layout only if no initial bendpoints are set
-			forceLayout = ((FreeFormConnection) connection).getBendpoints().isEmpty();
-		}
-		
-		reconnectConnection(connection, forceLayout, true);
-	}
-
 	public static void reconnectConnectionAfterMove(Connection connection) {
 		reconnectConnection(connection, false, true);
-	}
-
-	public static void reconnectConnectionAfterConnectionEndChange(Connection connection, boolean forceLayout) {
-		reconnectConnection(connection, forceLayout, false);
-	}
-	
-	public static void reconnectConnectionAfterConnectionEndChange(Connection connection) {
-		reconnectConnectionAfterConnectionEndChange(connection, true);
+		
+		// asasdasdsa
+		// TODO: map #reconnectConnectionAfterCreate(Connection connection)
 	}
 	
 	protected static void reconnectConnection(Connection connection, boolean forceLayout, boolean relayoutOnRepairFail) {

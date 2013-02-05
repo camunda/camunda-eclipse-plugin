@@ -307,15 +307,9 @@ public class ModelUtil {
 
 	public static boolean hasName(EObject obj) {
 		EStructuralFeature feature = obj.eClass().getEStructuralFeature("name");
-		return feature!=null;
+		return feature != null;
 	}
-/*	
-	public static String getLabel(EObject object) {
-		if (object==null)
-			return "";
-		return toDisplayName(object.eClass().getName());
-	}
-*/	
+	
 	public static String toDisplayName(String anyName) {
 		// get rid of the "Impl" java suffix
 		anyName = anyName.replaceAll("Impl$", "");

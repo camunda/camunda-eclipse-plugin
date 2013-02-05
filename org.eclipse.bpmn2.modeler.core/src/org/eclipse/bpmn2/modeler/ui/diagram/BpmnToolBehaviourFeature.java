@@ -13,14 +13,13 @@
 package org.eclipse.bpmn2.modeler.ui.diagram;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.bpmn2.modeler.core.features.IBpmn2AddFeature;
 import org.eclipse.bpmn2.modeler.core.features.IBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.ActivitySelectionBehavior;
 import org.eclipse.bpmn2.modeler.core.features.event.EventSelectionBehavior;
-import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.bpmn2.modeler.core.validation.ValidationStatusAdapter;
 import org.eclipse.bpmn2.modeler.ui.FeatureMap;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
@@ -249,7 +248,7 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 		PictogramElement pe = context.getPictogramElement();
 		IFeatureProvider fp = getFeatureProvider();
 		
-		if (GraphicsUtil.isLabel(pe)) {
+		if (LabelUtil.isLabel(pe)) {
 			// labels don't have a buttonpad
 			setGenericContextButtons(data, pe, 0);
 			return data;
@@ -360,7 +359,7 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
     public IDecorator[] getDecorators(PictogramElement pe) {
         List<IDecorator> decorators = new ArrayList<IDecorator>();
 
-		if (GraphicsUtil.isLabel(pe)) {
+		if (LabelUtil.isLabel(pe)) {
 			return new IDecorator[0];
 		}
 		

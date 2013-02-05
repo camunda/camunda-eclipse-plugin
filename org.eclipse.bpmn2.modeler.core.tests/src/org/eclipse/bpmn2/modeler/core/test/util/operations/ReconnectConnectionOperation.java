@@ -57,7 +57,7 @@ public class ReconnectConnectionOperation extends ConnectionOperation<Reconnecti
 		}
 		
 		if (context.getTargetLocation() == null) {
-			ILocation shapeLocationMidpoint = LayoutUtil.getShapeLocationMidpoint((Shape) element);
+			ILocation shapeLocationMidpoint = LayoutUtil.getAbsoluteShapeCenter((Shape) element);
 			context.setTargetLocation(shapeLocationMidpoint);
 		}
 		
