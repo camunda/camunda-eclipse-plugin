@@ -1,23 +1,28 @@
 package org.eclipse.bpmn2.modeler.core.layout.util;
 
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
-import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.rectangle;
-import static org.eclipse.bpmn2.modeler.core.layout.util.Vector.*;
+import static org.eclipse.bpmn2.modeler.core.layout.util.Vector.add;
+import static org.eclipse.bpmn2.modeler.core.layout.util.Vector.asString;
+import static org.eclipse.bpmn2.modeler.core.layout.util.Vector.distance;
+import static org.eclipse.bpmn2.modeler.core.layout.util.Vector.length;
+import static org.eclipse.bpmn2.modeler.core.layout.util.Vector.multiply;
+import static org.eclipse.bpmn2.modeler.core.layout.util.Vector.normalized;
+import static org.eclipse.bpmn2.modeler.core.layout.util.Vector.substract;
+import static org.eclipse.bpmn2.modeler.core.layout.util.Vector.midPoint;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.bpmn2.di.BPMNEdge;
-import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.draw2d.geometry.Vector;
-import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
-import org.eclipse.graphiti.mm.pictograms.Connection;
 
+/**
+ * Utility methods for connections.
+ * 
+ * @author nico.rehwaldt
+ */
 public class ConnectionUtil {
 
 	/**
@@ -57,6 +62,12 @@ public class ConnectionUtil {
 		return null;
 	}
 
+	/**
+	 * Returns the length of a connection defined by its way points. 
+	 * 
+	 * @param waypoints
+	 * @return
+	 */
 	public static double getLength(List<Point> waypoints) {
 
 		assertMinWaypoints(waypoints);
@@ -77,7 +88,13 @@ public class ConnectionUtil {
 		
 		return currentLength;
 	}
-	
+
+	/**
+	 * Returns the mid point on a connection
+	 * 
+	 * @param waypoints
+	 * @return
+	 */
 	public static Point getMidPoint(List<Point> waypoints) {
 		assertMinWaypoints(waypoints);
 		
@@ -85,164 +102,103 @@ public class ConnectionUtil {
 		return getPointAtLength(waypoints, length / 2);
 	}
 	
+	/**
+	 * Returns the mid point on a connection
+	 * 
+	 * @param waypoints
+	 * @return
+	 */
+	public static Point getPointRelativeToLength(List<Point> waypoints, double factor) {
+		assertMinWaypoints(waypoints);
+		
+		double length = getLength(waypoints);
+		return getPointAtLength(waypoints, length * factor);
+	}
+	
+	/**
+	 * Returns the connection length at a given point
+	 * 
+	 * @param waypoints
+	 * @param point
+	 * @return
+	 */
 	public static double getLengthAtPoint(List<Point> waypoints, Point point) {
 		assertMinWaypoints(waypoints);
 		
-	}
-	
-	public static Point getClosestPointOnConnection(List<Point> waypoints, Point point) {
+		Iterator<Point> waypointsIterator = waypoints.iterator();
+		Point last = waypointsIterator.next();
+
+		double currentLength = 0.0;
 		
+		while (waypointsIterator.hasNext()) {
+			
+			Point next = waypointsIterator.next();
+			Point lastToNext = substract(next, last);
+			
+			if (isContainedInSegment(last, next, point)) { 
+				return currentLength + distance(last, point);
+			}
+			
+			currentLength += length(lastToNext);
+		}
+		
+		throw new IllegalArgumentException(String.format("Point <(%s)> not contained on Connection(points=<%s>)", asString(point), asString(waypoints)));
 	}
 	
-	public static Point getPointAtLength(Connection connection, double length) {
-		SegmentInfo segmentInfo = getSegmentInfo(connection);
-
-		return ConversionUtil.point(getRelativeConnectionPoint(segmentInfo, length / segmentInfo.getFullLength()));
-	}
-
-	public static SegmentInfo getSegmentInfo(Connection connection) {
-		BPMNEdge bpmnEdge = BusinessObjectUtil.getFirstElementOfType(connection, BPMNEdge.class);
-
-		Assert.isNotNull(bpmnEdge);
-
-		return getSegmentInfo(bpmnEdge);
-	}
-
-	public static SegmentInfo getSegmentInfo(BPMNEdge bpmnEdge) {
-		double fullLength = 0;
-		List<Segment> segments = new ArrayList<Segment>();
-
-		if (bpmnEdge != null) {
-
-			for (int pointIndex = 0; pointIndex < bpmnEdge.getWaypoint().size() - 1; pointIndex++) {
-				// add twice, put weight on the bendpoints
-				org.eclipse.dd.dc.Point segmentStart = bpmnEdge.getWaypoint().get(pointIndex);
-				org.eclipse.dd.dc.Point segmentEnd = bpmnEdge.getWaypoint().get(pointIndex + 1);
-				Vector segmentVector = new Vector(segmentEnd.getX() - segmentStart.getX(), segmentEnd.getY()
-						- segmentStart.getY());
-				double startLength = fullLength;
-				fullLength += segmentVector.getLength();
-				segments.add(new Segment(ConversionUtil.point(segmentStart.getX(), segmentStart.getY()), ConversionUtil
-						.point(segmentEnd.getX(), segmentEnd.getY()), segmentVector, startLength, fullLength));
-			}
-		}
-
-		return new SegmentInfo(segments, fullLength);
-	}
-
 	/**
-	 * get a point on a connection relative to the connection length
+	 * Returns the closes point to a point on a connection
 	 * 
-	 * @param segmentInfo
-	 *            of the connection
-	 * @param lengthFactor
-	 *            on the connection should between 0.0 and 1.0 , 0.0 is the
-	 *            start of the connection 1.0 is the end, 0.5 is the midpoint
-	 *            with respect to the full connection length
+	 * @param waypoints
+	 * @param point
 	 * 
-	 * @return the point at on the connection at the length defined by the
-	 *         lengthFactor
-	 */
-	public static ILocation getRelativeConnectionPoint(SegmentInfo segmentInfo, double lengthFactor) {
-		double searchLength = segmentInfo.getFullLength() * lengthFactor;
-		Segment midPointSegment = null;
-
-		for (int segmentIndex = 0; segmentIndex < segmentInfo.getSegments().size(); segmentIndex++) {
-			Segment segment = segmentInfo.getSegments().get(segmentIndex);
-
-			if (segment.getAccummulatedLength() > searchLength) {
-				midPointSegment = segmentInfo.getSegments().get(segmentIndex);
-				break;
-			}
-		}
-
-		if (midPointSegment == null) { // must be in last segment
-			midPointSegment = segmentInfo.getSegments().get(segmentInfo.getSegments().size() - 1);
-		}
-
-		double searchFactor = searchLength - midPointSegment.getStartLength();
-		Vector midPointVector = midPointSegment.getVector().getDivided(midPointSegment.getVector().getLength())
-				.getMultiplied(searchFactor);
-
-		return ConversionUtil.location(midPointSegment.getSegmentStart().getX() + midPointVector.x, midPointSegment
-				.getSegmentStart().getY() + midPointVector.y);
-	}
-
-	protected static ILocation getConnectionMidPoint(SegmentInfo segmentInfo) {
-		return getRelativeConnectionPoint(segmentInfo, 0.5);
-	}
-
-	/**
-	 * Returns the circle line intersection points.
-	 * 
-	 * Adapted from {@link http
-	 * ://stackoverflow.com/questions/13053061/circle-line-intersection-points}
-	 * 
-	 * @param linePointA
-	 * @param linePointB
-	 * @param center
-	 * @param radius
 	 * @return
 	 */
-	protected static List<Point> getCircleLineIntersectionPoint(Point linePointA, Point linePointB, Point center,
-			double radius) {
+	public static Point getClosestPointOnConnection(List<Point> waypoints, Point point) {
+		assertMinWaypoints(waypoints);
+		
+		Iterator<Point> waypointsIterator = waypoints.iterator();
+		
+		Point last = waypointsIterator.next();
+		Point closestPoint = last;
+		
+		while (waypointsIterator.hasNext()) {
 
-		double baX = linePointB.getX() - linePointA.getX();
-		double baY = linePointB.getY() - linePointA.getY();
-		double caX = center.getX() - linePointA.getX();
-		double caY = center.getY() - linePointA.getY();
-
-		double a = baX * baX + baY * baY;
-		double bBy2 = baX * caX + baY * caY;
-		double c = caX * caX + caY * caY - radius * radius;
-
-		double pBy2 = bBy2 / a;
-		double q = c / a;
-
-		double disc = pBy2 * pBy2 - q;
-		if (disc < 0) {
-			return Collections.emptyList();
+			Point next = waypointsIterator.next();
+			
+			if (distance(point, closestPoint) > distance(point, next)) {
+				closestPoint = point;
+			}
+			
+			Point pointOnLineSegment = getClosesPointOnLineSegment(last, next, point);
+			
+			if (distance(point, closestPoint) > distance(pointOnLineSegment, point)) {
+				closestPoint = pointOnLineSegment;
+			}
 		}
-		// if disc == 0 ... dealt with later
-		double tmpSqrt = Math.sqrt(disc);
-		double abScalingFactor1 = -pBy2 + tmpSqrt;
-		double abScalingFactor2 = -pBy2 - tmpSqrt;
-
-		Point p1 = ConversionUtil.point(linePointA.getX() - baX * abScalingFactor1, linePointA.getY() - baY
-				* abScalingFactor1);
-		if (disc == 0) { // abScalingFactor1 == abScalingFactor2
-			return Collections.singletonList(p1);
-		}
-		Point p2 = ConversionUtil.point(linePointA.getX() - baX * abScalingFactor2, linePointA.getY() - baY
-				* abScalingFactor2);
-		return Arrays.asList(p1, p2);
+		
+		return closestPoint;
 	}
 
-	protected static double getRelativeLengthOnSegments(Point point, SegmentInfo segmentInfo, double searchRadius) {
-		for (Segment segment : segmentInfo.getSegments()) {
-			List<Point> intersections = getCircleLineIntersectionPoint(segment.getSegmentStart(), segment.getSegmentEnd(), point, new Double(searchRadius));
-
-			if (intersections.isEmpty()) {
-				continue;
-			}
-
-			if (intersections.size() > 1) {
-				Point interSectionsMidpoint = point(
-						Math.abs((intersections.get(0).getX() + intersections.get(1).getX()) / 2),
-						Math.abs((intersections.get(0).getY() + intersections.get(1).getY()) / 2));
-
-				return segment.getStartLength()
-						+ new Vector(interSectionsMidpoint.getX() - segment.getSegmentStart().getX(),
-								interSectionsMidpoint.getY() - segment.getSegmentStart().getY()).getLength();
-
-			} else {
-				return segment.getStartLength() + searchRadius;
-			}
-
+	private static Point getClosesPointOnLineSegment(Point l1, Point l2, Point point) {
+		
+		double radius = Math.min(distance(l1, point), distance(l2, point));
+		List<Point> intersectionPoints = getCircleLineIntersectionPoint(l1, l2, point, radius);
+		
+		if (intersectionPoints.size() == 0) {
+			return intersectionPoints.get(0);
 		}
-		return -1.0;
+		
+		if (intersectionPoints.size() == 2) {
+			Point midPoint = midPoint(intersectionPoints.get(0), intersectionPoints.get(1));
+			
+			if (isContainedInSegment(l2, l2, midPoint)) {
+				return midPoint;
+			}
+		}
+		
+		return null;
 	}
-
+	
 	/**
 	 * Returns true if the reference point is contained on the segment defined by start and end.
 	 * 
@@ -254,19 +210,72 @@ public class ConnectionUtil {
 	 */
 	public static boolean isContainedInSegment(Point segStart, Point segEnd, Point reference) {
 		
+		if (equal(segStart, reference) || equal(segEnd, reference)) {
+			return true;
+		}
+		
 		double startToRefDistance = distance(segStart, reference);
 		Point startToEndVector = substract(segEnd, segStart);
 		
+		Point startToRefVector = multiply(normalized(startToEndVector), startToRefDistance);
 		
+		Point shouldBeRef = add(segStart, startToRefVector);
+		
+		return equal(reference, shouldBeRef);
 	}
 	
-	public static void getConnectionLengthAtPoint(Connection connection, Point point) {
+	/**
+	 * Returns the circle line intersection points.
+	 * 
+	 * Adapted from {@link http://stackoverflow.com/questions/13053061/circle-line-intersection-points}.
+	 * 
+	 * @param l1
+	 * @param l2
+	 * 
+	 * @param circleCenter
+	 * @param circleRadius
+	 * @return
+	 */
+	protected static List<Point> getCircleLineIntersectionPoint(Point l1, Point l2, Point circleCenter, double circleRadius) {
 
-		double labelReferenceLength = LayoutUtil.getRelativeLengthOnSegments(
-				point(LayoutUtil.getRectangleCenter(rectangle(midPoint.getX(), midPoint.getY(), width, height))),
-				segmentInfo, width + 15.0);
+		double baX = l2.getX() - l1.getX();
+		double baY = l2.getY() - l1.getY();
+		double caX = circleCenter.getX() - l1.getX();
+		double caY = circleCenter.getY() - l1.getY();
+
+		double a = baX * baX + baY * baY;
+		double bBy2 = baX * caX + baY * caY;
+		double c = caX * caX + caY * caY - circleRadius * circleRadius;
+
+		double pBy2 = bBy2 / a;
+		double q = c / a;
+
+		double disc = pBy2 * pBy2 - q;
+		if (disc < 0) {
+			return Collections.emptyList();
+		}
+		
+		// if disc == 0 ... dealt with later
+		double tmpSqrt = Math.sqrt(disc);
+		double abScalingFactor1 = -pBy2 + tmpSqrt;
+		double abScalingFactor2 = -pBy2 - tmpSqrt;
+
+		Point p1 = point(l1.getX() - baX * abScalingFactor1, l1.getY() - baY * abScalingFactor1);
+		if (disc == 0) { // abScalingFactor1 == abScalingFactor2
+			return Collections.singletonList(p1);
+		}
+		
+		Point p2 = point(l1.getX() - baX * abScalingFactor2, l1.getY() - baY * abScalingFactor2);
+		
+		return Arrays.asList(p1, p2);
 	}
 
+	////// private utilities /////////////////////////////////////////////////////
+	
+	private static boolean equal(Point a, Point b) {
+		return Vector.equal(a, b, 0.01);
+	}
+	
 	private static void assertMinWaypoints(List<Point> waypoints) {
 		Assert.isLegal(waypoints.size() > 1, "Must have minimum two waypoints");
 	}

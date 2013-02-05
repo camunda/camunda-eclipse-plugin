@@ -2,6 +2,8 @@ package org.eclipse.bpmn2.modeler.core.layout.util;
 
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 
@@ -50,5 +52,41 @@ public class Vector {
 	
 	public static boolean equal(Point a, Point b, double tolerance) {
 		return Math.abs(a.getX() - b.getX()) <= tolerance && Math.abs(a.getY()- b.getY()) <= tolerance;
+	}
+	
+	public static Point midPoint(Point a, Point b) {
+		return divide(add(a, b), 2);
+	}
+	
+	/////// stringify helpers ///////////////////////////////////////////////////////////
+	
+	/**
+	 * Returns a string representation for the given point
+	 * 
+	 * @param point
+	 * @return
+	 */
+	public static String asString(Point point) {
+		return String.format("(%s, %s)", point.getX(), point.getY());
+	}
+	
+	/**
+	 * Returns a string representation for the given list of points
+	 * 
+	 * @param points
+	 * @return
+	 */
+	public static String asString(List<Point> points) {
+		StringBuilder builder = new StringBuilder();
+		for (Point point : points) {
+			
+			if (builder.length() != 0) {
+				builder.append(", ");
+			}
+			
+			builder.append(asString(point));
+		}
+		
+		return "[" + builder.toString() + "]";
 	}
 }
