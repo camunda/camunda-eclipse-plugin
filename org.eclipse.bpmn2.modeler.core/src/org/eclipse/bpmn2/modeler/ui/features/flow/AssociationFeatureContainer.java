@@ -12,8 +12,6 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.flow;
 
-import java.io.IOException;
-
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
@@ -122,18 +120,8 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 			}
 			
 			@Override
-			protected Class<? extends BaseElement> getBoClass() {
+			protected Class<? extends BaseElement> getBusinessObjectClass() {
 				return Association.class;
-			}
-
-			@Override
-			public int getHeight() {
-				return 0;
-			}
-
-			@Override
-			public int getWidth() {
-				return 0;
 			}
 		};
 	}

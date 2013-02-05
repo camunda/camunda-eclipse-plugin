@@ -12,9 +12,13 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features.data;
 
+import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.ItemAwareElement;
+import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
+import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
+import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
 
@@ -36,7 +40,10 @@ public abstract class AbstractCreateDataInputOutputFeature<T extends ItemAwareEl
 		ModelHandler handler = ModelHandler.getInstance(getDiagram());
 		handler.addDataInputOutput(context.getTargetContainer(), element);
 		
-		addGraphicalRepresentation(context, element);
+		if (ContextUtil.isNot(context, SKIP_ADD_GRAPHICS)) {
+			addGraphicalRepresentation(context, element);
+		}
+		
 		return new Object[] { element };
 	}
 

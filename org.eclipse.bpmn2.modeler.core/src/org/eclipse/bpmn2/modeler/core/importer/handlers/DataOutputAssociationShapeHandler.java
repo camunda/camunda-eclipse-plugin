@@ -59,7 +59,10 @@ public class DataOutputAssociationShapeHandler extends DataAssociationShapeHandl
 		PictogramElement targetPictogram = resolvePictogramElement((EObject) targetRef);
 		
 		if (targetPictogram == null) {
-			modelImport.logAndThrow(new UnmappedElementException("Could not resolve", targetRef));
+			// some modelers like Visual Paradigm are doing it wrong, so the target might be in bpmn model
+			// but cant be drawn, we are just warning in this case
+			modelImport.log(new UnmappedElementException("Target of Data Output Association is not drawn, it might be invalid.", targetRef));
+			return null;
 		}
 		
 		Connection connection = createConnectionAndSetBendpoints(edge, sourcePictogram, targetPictogram);

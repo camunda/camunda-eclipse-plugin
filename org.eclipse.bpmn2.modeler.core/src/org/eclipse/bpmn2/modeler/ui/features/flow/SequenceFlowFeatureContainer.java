@@ -12,7 +12,6 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.flow;
 
-import java.io.IOException;
 import java.util.Iterator;
 
 import org.eclipse.bpmn2.Activity;
@@ -24,12 +23,12 @@ import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.ExclusiveGateway;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.InclusiveGateway;
-import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.BaseElementConnectionFeatureContainer;
+import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractAddFlowFeature;
@@ -38,6 +37,7 @@ import org.eclipse.bpmn2.modeler.core.features.flow.AbstractReconnectFlowFeature
 import org.eclipse.bpmn2.modeler.core.layout.ConnectionService;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
@@ -66,6 +66,7 @@ import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
@@ -346,7 +347,9 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 		public void postReconnect(IReconnectionContext context) {
 			super.postReconnect(context);
 			
-			ConnectionService.reconnectConnectionAfterConnectionEndChange(context.getConnection());
+			boolean forceReconnect = !ContextUtil.is(context, ContextConstants.REPAIR_IF_POSSIBLE);
+			
+			ConnectionService.reconnectConnectionAfterConnectionEndChange(context.getConnection(), forceReconnect);
 			
 			cleanupOldAnchor(context.getOldAnchor());
 		}
@@ -439,7 +442,7 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 		}
 
 		@Override
-		protected Class<? extends BaseElement> getBoClass() {
+		protected Class<? extends BaseElement> getBusinessObjectClass() {
 			return SequenceFlow.class;
 		}
 
@@ -466,9 +469,11 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 		}
 
 		@Override
-		protected void hook(IAddContext context, Connection connection, BaseElement element) {
-			setDefaultSequenceFlow(connection);
-			setConditionalSequenceFlow(connection);
+		protected void postAddHook(IAddContext context, FreeFormConnection newConnection) {
+			super.postAddHook(context, newConnection);
+			
+			setDefaultSequenceFlow(newConnection);
+			setConditionalSequenceFlow(newConnection);
 		}
 	}
 }

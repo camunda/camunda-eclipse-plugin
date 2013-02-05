@@ -12,12 +12,15 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features.flow;
 
+import java.util.List;
+
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNLabel;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
-import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.features.AbstractAddBpmnElementFeature;
+import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
@@ -27,7 +30,6 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
-import org.eclipse.dd.dc.Bounds;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IMoveConnectionDecoratorFeature;
@@ -36,18 +38,19 @@ import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.impl.MoveConnectionDecoratorContext;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.Text;
+import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public abstract class AbstractAddFlowFeature<T extends BaseElement>
-	extends AbstractAddBPMNShapeFeature<T> {
+public abstract class AbstractAddFlowFeature<T extends BaseElement> extends AbstractAddBpmnElementFeature<T, FreeFormConnection> {
 	
 	public AbstractAddFlowFeature(IFeatureProvider fp) {
 		super(fp);
@@ -56,7 +59,7 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement>
 	@Override
 	public boolean canAdd(IAddContext context) {
 		return context instanceof IAddConnectionContext
-				&& getBoClass().isAssignableFrom(getBusinessObject(context).getClass());
+				&& getBusinessObjectClass().isAssignableFrom(getBusinessObject(context).getClass());
 	}
 
 	/* (non-Javadoc)
@@ -64,6 +67,7 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement>
 	 */
 	@Override
 	public PictogramElement add(IAddContext context) {
+		
 		IPeService peService = Graphiti.getPeService();
 		IGaService gaService = Graphiti.getGaService();
 
@@ -73,27 +77,27 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement>
 		Diagram diagram = getDiagram();
 		
 		BPMNEdge bpmnEdge = (BPMNEdge) ModelHandler.findDIElement(diagram, flow);
-		Connection connection = peService.createFreeFormConnection(diagram);
+		FreeFormConnection connection = peService.createFreeFormConnection(diagram);
 		
-		if (ContextUtil.is(context, DIUtils.IMPORT_PROPERTY)) {
-			connection.setStart(addConContext.getSourceAnchor());
-			connection.setEnd(addConContext.getTargetAnchor());
-		} else {
-			AnchorContainer sourceContainer = (AnchorContainer) addConContext.getSourceAnchor().eContainer();
-			AnchorContainer targetContainer = (AnchorContainer) addConContext.getTargetAnchor().eContainer();
-			Tuple<FixPointAnchor, FixPointAnchor> anchors = AnchorUtil.getSourceAndTargetBoundaryAnchors(
-					sourceContainer, targetContainer, connection);
+		// set anchors
+		connection.setStart(addConContext.getSourceAnchor());
+		connection.setEnd(addConContext.getTargetAnchor());
 
-			connection.setStart(anchors.getFirst());
-			connection.setEnd(anchors.getSecond());
+		// add initial bendpoints
+		List<Point> initialBendpoints = ContextUtil.get(context, ContextConstants.CONNECTION_BENDPOINTS, List.class);
+		if (initialBendpoints != null) {
+			for (Point point : initialBendpoints) {
+				connection.getBendpoints().add(point);
+			}
 		}
-
+		
 		if (bpmnEdge == null) {
 			bpmnEdge = DIUtils.createDIEdge(connection, flow, diagram);
 		}
 		
 		// link connection to edge and bpmn element
 		link(connection, new Object[] { flow, bpmnEdge });
+		
 		
 		if (ModelUtil.hasName(flow)) {
 			
@@ -126,25 +130,12 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement>
 		}
 		
 		createConnectionLine(connection);
-		hook(addConContext, connection, flow);
+		postAddHook(context, connection);
 
 		return connection;
 	}
-	
-	@Override
-	public int getHeight() {
-		return -1;
-	}
 
-	@Override
-	public int getWidth() {
-		return -1;
-	}
-
-	protected abstract Class<? extends BaseElement> getBoClass();
-
-	protected void hook(IAddContext context, Connection connection, BaseElement element) {
-	}
+	protected abstract Class<? extends BaseElement> getBusinessObjectClass();
 
 	protected Polyline createConnectionLine(Connection connection) {
 		BaseElement be = BusinessObjectUtil.getFirstBaseElement(connection);

@@ -277,28 +277,7 @@ public class BPMN2FeatureProvider extends DefaultFeatureProvider {
 		}
 	}
 	
-	private EObject getApplyObject(IContext context) {
-		if (context instanceof IAddContext) {
-			Object object = ((IAddContext) context).getNewObject();
-			if (object instanceof EObject)
-				return (EObject)object;
-		} else if (context instanceof IPictogramElementContext) {
-			return BusinessObjectUtil.getFirstElementOfType(
-					(((IPictogramElementContext) context).getPictogramElement()), EObject.class);
-		}
-		return null;
-	}
 	public FeatureContainer getFeatureContainer(IContext context) {
-		
-		EObject object = getApplyObject(context);
-		if (object!=null) {
-			if (context.getProperty(ContextConstants.LABEL_CONTEXT) == null
-					|| !((Boolean) context.getProperty(ContextConstants.LABEL_CONTEXT)))
-			{
-				IDiagramEditor editor = getDiagramTypeProvider().getDiagramEditor();
-			}
-		}
-		
 		Object id = CustomTaskFeatureContainer.getId(context); 
 		for (FeatureContainer container : containers) {
 			if (id!=null && !(container instanceof CustomTaskFeatureContainer))
@@ -526,7 +505,7 @@ public class BPMN2FeatureProvider extends DefaultFeatureProvider {
 		IFeature feature = null;
 		if (be!=null) {
 			Class[] ifs = be.getClass().getInterfaces();
-			for (int i=0; i<ifs.length && feature==null; ++i) {
+			for (int i=0; i < ifs.length && feature==null; ++i) {
 				feature = mapBusinessObjectClassToCreateFeature.get(ifs[i]);
 			}
 		}

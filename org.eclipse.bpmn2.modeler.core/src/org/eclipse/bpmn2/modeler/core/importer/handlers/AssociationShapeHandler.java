@@ -15,7 +15,7 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.modeler.core.importer.ImportException;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
-import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.bpmn2.modeler.core.importer.UnmappedElementException;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -38,7 +38,7 @@ public class AssociationShapeHandler extends AbstractEdgeHandler<Association> {
 		
 		String errorFormat = "%s reference of %s is null. Edge is not visible (%s)";
 		
-		if (target == null) {
+		if (target == null || source.eIsProxy()) {
 			modelImport.logSilently(new ImportException(
 					String.format(errorFormat,
 						"Target",
@@ -48,7 +48,7 @@ public class AssociationShapeHandler extends AbstractEdgeHandler<Association> {
 			return null;
 		}
 		
-		if (source == null) {
+		if (source == null || source.eIsProxy()) {
 			modelImport.logSilently(new ImportException(
 					String.format(errorFormat,
 						"Source",
@@ -60,6 +60,19 @@ public class AssociationShapeHandler extends AbstractEdgeHandler<Association> {
 		
 		PictogramElement sourcePictogram = getPictogramElement(source);
 		PictogramElement targetPictogram = getPictogramElement(target);
+		
+		// sometimes we might not be able to get the pictogram elements because di is missing or other issues
+		// caused by other modelers , we give a warning in this case, association will not be visible then
+		// best we can do
+		if (sourcePictogram == null) {
+			modelImport.log(new UnmappedElementException("Source of Association is not drawn, might be invalid.", source));
+			return null;
+		}
+
+		if (targetPictogram == null) {
+			modelImport.log(new UnmappedElementException("Target of Association is not drawn, might be invalid.", target));
+			return null;
+		}
 		
 		Connection connection = createConnectionAndSetBendpoints(edge, sourcePictogram, targetPictogram);
 		return connection;

@@ -343,6 +343,7 @@ Export-Package: org.eclipse.bpmn2.modeler.core;
    org.eclipse.gef",
  org.eclipse.bpmn2.modeler.ui.change;uses:="org.eclipse.emf.ecore,org.eclipse.emf.common.command,org.eclipse.emf.transaction",
  org.eclipse.bpmn2.modeler.ui.change.filter;uses:="org.eclipse.emf.ecore,org.eclipse.emf.transaction,org.eclipse.emf.common.notify",
+ org.eclipse.bpmn2.modeler.ui.diagram,
  org.eclipse.bpmn2.modeler.ui.features;
   uses:="org.eclipse.emf.ecore,
    org.eclipse.bpmn2,
@@ -353,6 +354,7 @@ Export-Package: org.eclipse.bpmn2.modeler.core;
    org.eclipse.bpmn2.modeler.core.features.flow,
    org.eclipse.graphiti.features.custom,
    org.eclipse.bpmn2.modeler.core",
+ org.eclipse.bpmn2.modeler.ui.features.data,
  org.eclipse.bpmn2.modeler.ui.features.event;
   uses:="org.eclipse.bpmn2.modeler.core.features.event,
    org.eclipse.graphiti.features,

@@ -791,7 +791,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	////////////////////////////////////////////////////////////////////////////////
 	// Other handlers
 	////////////////////////////////////////////////////////////////////////////////
-
+	// FIXME sometime the last element will be selected randomly, could be related to this function
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		super.selectionChanged(part, selection);

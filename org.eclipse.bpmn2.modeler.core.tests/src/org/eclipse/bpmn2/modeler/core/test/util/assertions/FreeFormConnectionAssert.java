@@ -10,7 +10,10 @@
 
 package org.eclipse.bpmn2.modeler.core.test.util.assertions;
 
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
@@ -23,6 +26,7 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.fest.assertions.api.AbstractAssert;
 import org.fest.assertions.api.Assertions;
+import org.fest.assertions.api.Fail;
 
 public class FreeFormConnectionAssert extends AbstractAssert<FreeFormConnectionAssert, FreeFormConnection> {
 
@@ -82,11 +86,33 @@ public class FreeFormConnectionAssert extends AbstractAssert<FreeFormConnectionA
 	 * @return
 	 */
 	public FreeFormConnectionAssert hasBendpoint(int bendpointIndex, int x, int y) {
+		return hasBendpoint(bendpointIndex, point(x, y));
+	}
+	
+	/**
+	 * asserts that there is a bendpoint with the given index and coordinates
+	 *  
+	 * @param bendpointIndex
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public FreeFormConnectionAssert hasBendpoint(int bendpointIndex, Point expectedPoint) {
 		EList<Point> bendpoints = actual.getBendpoints();
 		
 		Point bendpoint = bendpoints.get(bendpointIndex);
-		Assertions.assertThat(bendpoint.getX()).isEqualTo(x);
-		Assertions.assertThat(bendpoint.getY()).isEqualTo(y);
+		
+		Bpmn2ModelAssertions.assertThat(bendpoint).isEqualTo(expectedPoint);
+		
+		return myself;
+	}
+	
+	public FreeFormConnectionAssert hasExactBendpoints(List<Point> expectedBendpoints) {
+
+		Assertions
+			.assertThat(toString(actual.getBendpoints()))
+			.as("actual bendpoints")
+			.isEqualTo(toString(expectedBendpoints));
 		
 		return myself;
 	}
@@ -112,5 +138,23 @@ public class FreeFormConnectionAssert extends AbstractAssert<FreeFormConnectionA
 	
 	public FreeFormConnectionAndShapeAssert anchor(Anchor anchor) {
 		return anchorPointOn(anchor.getParent());
+	}
+	
+	private String toString(List<Point> points) {
+		
+		StringBuilder builder = new StringBuilder();
+		builder.append("[");
+		
+		for (Point p: points) {
+			if (builder.length() > 1) {
+				builder.append(", ");
+			}
+			
+			builder.append(String.format("(%s, %s)", p.getX(), p.getY()));
+		}
+		
+		builder.append("]");
+		
+		return builder.toString();
 	}
 }

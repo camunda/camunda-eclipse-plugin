@@ -77,6 +77,34 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		assertThat(processShape).doesNotHaveChild(userTaskShape);
 		assertThat(userTaskShape).hasParentModelElement(subProcessElement);
 	}
+	
+	@Test
+	@DiagramResource
+	public void testMoveAnnotationIntoSubprocess() {
+
+		// find shapes
+		Shape textAnnotationShape = Util.findShapeByBusinessObjectId(diagram, "TextAnnotation_1");
+		ContainerShape subProcessShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "SubProcess_1");
+		ContainerShape processShape = (ContainerShape) diagram;
+		BaseElement subProcessElement = BusinessObjectUtil.getFirstBaseElement(subProcessShape);
+
+		// first, the annotation is contained in the process
+		assertThat(subProcessShape).doesNotHaveChild(textAnnotationShape);
+		assertThat(processShape).hasChild(textAnnotationShape);
+		assertThat(textAnnotationShape).hasParentModelElement(subProcessElement.eContainer());
+
+		// move the annotation into the subprocess
+		move(textAnnotationShape, diagramTypeProvider)
+			.toContainer(subProcessShape)
+			.execute();
+
+		// now the annotation is contained in the subprocess
+		assertThat(subProcessShape).hasChild(textAnnotationShape);
+		assertThat(processShape).doesNotHaveChild(textAnnotationShape);
+		
+		// annotation is still inside the process
+		assertThat(textAnnotationShape).hasParentModelElement(subProcessElement.eContainer());
+	}
 
 	@Test
 	@DiagramResource

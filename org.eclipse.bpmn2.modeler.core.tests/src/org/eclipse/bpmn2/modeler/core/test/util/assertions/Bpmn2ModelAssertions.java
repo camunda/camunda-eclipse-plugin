@@ -9,11 +9,11 @@ import org.fest.assertions.api.Assertions;
 
 public class Bpmn2ModelAssertions extends Assertions {
 
-	public static AbstractShapeAssert<?, ?> assertThat(Shape shape) {
+	public static <S extends AbstractShapeAssert<S, A>, A extends Shape> AbstractShapeAssert<S, A> assertThat(Shape shape) {
 		if (shape instanceof ContainerShape) {
-			return new ContainerShapeAssert((ContainerShape) shape);
+			return (AbstractShapeAssert<S, A>) new ContainerShapeAssert((ContainerShape) shape);
 		} else {
-			return new ShapeAssert(shape);
+			return (AbstractShapeAssert<S, A>) new ShapeAssert(shape);
 		}
 	}
 

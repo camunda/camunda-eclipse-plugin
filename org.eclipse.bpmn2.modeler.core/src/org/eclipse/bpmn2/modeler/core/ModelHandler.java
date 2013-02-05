@@ -850,35 +850,54 @@ public class ModelHandler {
 		if (o instanceof Diagram) {
 	        o = BusinessObjectUtil.getFirstElementOfType((Diagram)o, BPMNDiagram.class);
 		}
-		if (o instanceof BPMNDiagram) {
-			BPMNDiagram bpmnDiagram = (BPMNDiagram) o;
-			Definitions definitions = (Definitions) bpmnDiagram.eContainer();
+		
+		// common case that elements are dropped on the diagram in a collaboration
+		// (e.g. for data objects / data stores)
+		if (o instanceof Collaboration) {
 			
-			BaseElement be = ((BPMNDiagram)o).getPlane().getBpmnElement();
-			if (be != null && be instanceof FlowElementsContainer) {
-				return (FlowElementsContainer)be;
-			} // somebody did not understand the BPMNPlane (seems to be common), try adding to the first process, or create a new one
-			else if (ModelUtil.getAllRootElements(definitions, org.eclipse.bpmn2.Process.class).size() == 0) {
-				org.eclipse.bpmn2.Process newProcess = Bpmn2Factory.eINSTANCE.createProcess();
-				definitions.getRootElements().add(newProcess);
-				ModelUtil.setID(newProcess);
-				return newProcess;
-			}
-			else { 
-				return getAll(Process.class).get(0);
+			// make the object the definitions object
+			// will handle drop on definitions later ...
+			o = ((Collaboration) o).eContainer();
+ 		}
+		
+		if (o instanceof BPMNDiagram) {
+
+			BPMNDiagram bpmnDiagram = (BPMNDiagram) o;
+			BaseElement bpmnElement = bpmnDiagram.getPlane().getBpmnElement();
+			
+			if (bpmnElement instanceof FlowElementsContainer) {
+				return (FlowElementsContainer) bpmnElement;
+			} else {
+				// we have no directly accessible flow elements container;
+				// search the definitions for the next available process...
+				// (later) 
+				o = ((BPMNDiagram) o).eContainer();
 			}
 		}
+		
+		if (o instanceof Definitions) {
+			Definitions definitions = (Definitions) o;
+			
+			// this is the fallback for random additions to the diagram
+			List<Process> processes = getAll(Process.class);
+			if (processes.isEmpty()) {
+				Process process = create(Process.class);
+				definitions.getRootElements().add(process);
+				
+				return process;
+			} else { 
+				return processes.get(0);
+			}
+		}
+		
 		if (o instanceof Participant) {
 			return getOrCreateProcess((Participant) o);
 		}
+		
 		if (o instanceof SubProcess) {
-//			EObject container = (SubProcess)o;
-//			while (!(container instanceof Process) && container.eContainer()!=null) {
-//				container = container.eContainer();
-//			}
-//			return (FlowElementsContainer) container;
 			return (FlowElementsContainer) o;
 		}
+		
 		return findElementOfType(FlowElementsContainer.class, o);
 	}
 

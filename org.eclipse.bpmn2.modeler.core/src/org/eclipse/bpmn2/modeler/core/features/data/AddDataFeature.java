@@ -14,13 +14,14 @@ package org.eclipse.bpmn2.modeler.core.features.data;
 
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
-import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.features.AbstractAddBpmnShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.mm.algorithms.Polygon;
@@ -33,7 +34,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public abstract class AddDataFeature<T extends ItemAwareElement> extends AbstractAddBPMNShapeFeature<T> {
+public abstract class AddDataFeature<T extends ItemAwareElement> extends AbstractAddBpmnShapeFeature<T> {
 
 	public AddDataFeature(IFeatureProvider fp) {
 		super(fp);
@@ -49,21 +50,22 @@ public abstract class AddDataFeature<T extends ItemAwareElement> extends Abstrac
 	}
 
 	@Override
-	public PictogramElement add(IAddContext context) {
+	protected ContainerShape createPictogramElement(IAddContext context, IRectangle bounds) {
 		IGaService gaService = Graphiti.getGaService();
 		IPeService peService = Graphiti.getPeService();
+		
 		@SuppressWarnings("unchecked")
 		T t = getBusinessObject(context);
 
-		int width = getWidth();
-		int height = getHeight();
+		int width = bounds.getWidth();
+		int height = bounds.getHeight();
 		int e = 10;
 		
-		ContainerShape container = peService.createContainerShape(context.getTargetContainer(), true);
-		Rectangle invisibleRect = gaService.createInvisibleRectangle(container);
+		ContainerShape newShape = peService.createContainerShape(context.getTargetContainer(), true);
+		Rectangle invisibleRect = gaService.createInvisibleRectangle(newShape);
 		gaService.setLocationAndSize(invisibleRect, context.getX(), context.getY(), width, height);
 
-		Shape rectShape = peService.createShape(container, false);
+		Shape rectShape = peService.createShape(newShape, false);
 		Polygon rect = gaService.createPolygon(rectShape, new int[] { 0, 0, width - e, 0, width, e, width, height, 0,
 				height });
 		rect.setLineWidth(1);
@@ -77,30 +79,21 @@ public abstract class AddDataFeature<T extends ItemAwareElement> extends Abstrac
 
 		if (isSupportCollectionMarkers()) {
 			int whalf = width / 2;
-			createCollectionShape(container, new int[] { whalf - 2, height - 8, whalf - 2, height });
-			createCollectionShape(container, new int[] { whalf, height - 8, whalf, height });
-			createCollectionShape(container, new int[] { whalf + 2, height - 8, whalf + 2, height });
+			createCollectionShape(newShape, new int[] { whalf - 2, height - 8, whalf - 2, height });
+			createCollectionShape(newShape, new int[] { whalf, height - 8, whalf, height });
+			createCollectionShape(newShape, new int[] { whalf + 2, height - 8, whalf + 2, height });
 
 			String value = "false";
 			EStructuralFeature feature = ((EObject)t).eClass().getEStructuralFeature("isCollection");
 			if (feature!=null && t.eGet(feature)!=null)
 				value = ((Boolean)t.eGet(feature)).toString();
 
-			Graphiti.getPeService().setPropertyValue(container, Properties.COLLECTION_PROPERTY, value);
+			peService.setPropertyValue(newShape, Properties.COLLECTION_PROPERTY, value);
 		}
 		
-		peService.createChopboxAnchor(container);
-		AnchorUtil.addFixedPointAnchors(container, invisibleRect);
-		boolean isImport = context.getProperty(DIUtils.IMPORT_PROPERTY) != null;
-		createDIShape(container, t, !isImport);
-		layoutPictogramElement(container);
-		
-		this.prepareAddContext(context, width, height);
-		this.getFeatureProvider().getAddFeature(context).add(context);
-		
-		return container;
+		return newShape;
 	}
-
+	
 	private Shape createCollectionShape(ContainerShape container, int[] xy) {
 		IPeService peService = Graphiti.getPeService();
 		IGaService gaService = Graphiti.getGaService();
@@ -114,13 +107,18 @@ public abstract class AddDataFeature<T extends ItemAwareElement> extends Abstrac
 	}
 
 	@Override
-	public int getHeight() {
+	public int getDefaultHeight() {
 		return GraphicsUtil.DATA_HEIGHT;
 	}
 
 	@Override
-	public int getWidth() {
+	public int getDefaultWidth() {
 		return GraphicsUtil.DATA_WIDTH;
+	}
+
+	@Override
+	protected boolean isCreateExternalLabel() {
+		return true;
 	}
 	
 	protected void decorate(Polygon p) {

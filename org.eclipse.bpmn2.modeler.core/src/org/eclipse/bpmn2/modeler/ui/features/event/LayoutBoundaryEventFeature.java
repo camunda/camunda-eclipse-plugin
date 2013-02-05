@@ -44,8 +44,15 @@ public class LayoutBoundaryEventFeature extends AbstractLayoutFeature {
 		GraphicsAlgorithm eventGa = element.getGraphicsAlgorithm();
 		BoundaryEvent event = BusinessObjectUtil.getFirstElementOfType(element, BoundaryEvent.class);
 
-		PictogramElement activityContainer = BusinessObjectUtil.getFirstBaseElementFromDiagram(getDiagram(),
+		PictogramElement activityContainer = BusinessObjectUtil.getLinkingPictogramElement(getDiagram(),
 		        event.getAttachedToRef());
+
+		// skip layout in case the container is not yet loaded, 
+		// e.g. during import
+		if (activityContainer == null) {
+			return true;
+		}
+		
 		GraphicsAlgorithm activityGa = activityContainer.getGraphicsAlgorithm();
 
 		PositionOnLine pos = BoundaryEventPositionHelper.getPositionOnLineProperty(element);

@@ -23,7 +23,7 @@ import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.features.AbstractAddBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.features.AbstractAddBpmnShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.layout.ConnectionService;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
@@ -208,7 +208,7 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 		AbstractCreateFeature createFeature = (AbstractCreateFeature) fp.getCreateFeatureForBusinessObject(newType.getInstanceClass());
 		
 		CreateContext createContext = new CreateContext();
-		createContext.putProperty(AbstractCreateFlowElementFeature.SKIP_ADD_GRAPHICS, "true");
+		createContext.putProperty(AbstractCreateFlowElementFeature.SKIP_ADD_GRAPHICS, true);
 		createContext.setTargetContainer(oldShape.getContainer());
 		
 		FlowElement newObject = null;
@@ -233,9 +233,9 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 			((Lane)oldObject).getFlowNodeRefs().add((FlowNode)newObject);
 		}
 		AddContext ac = new AddContext(new AreaContext(), newObject);
-		AbstractAddBPMNShapeFeature af = (AbstractAddBPMNShapeFeature)getFeatureProvider().getAddFeature(ac);
-		int w = af.getWidth();
-		int h = af.getHeight();
+		AbstractAddBpmnShapeFeature af = (AbstractAddBpmnShapeFeature)getFeatureProvider().getAddFeature(ac);
+		int w = af.getDefaultWidth();
+		int h = af.getDefaultHeight();
 		if (horz) {
 			x += width + 50 + w/2;
 			y += height/2;

@@ -1,6 +1,8 @@
 package org.eclipse.bpmn2.modeler.core.test.feature.add;
 
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.rectangle;
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
+import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.elementOfType;
 import static org.eclipse.bpmn2.modeler.core.test.util.operations.AddPoolOperation.addPool;
 import static org.fest.assertions.api.Assertions.assertThat;
 
@@ -15,7 +17,9 @@ import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.junit.Test;
 
 public class AddParticipantFeatureTest extends AbstractFeatureTest {
@@ -102,6 +106,25 @@ public class AddParticipantFeatureTest extends AbstractFeatureTest {
 	}
 	
 	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddParticipantFeatureTest.testAddPoolRetainsBendpointPositioning.bpmn")
+	public void testAddPoolRetainsBendpointPositioning() throws Exception {
+		FreeFormConnection flow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		
+		// when
+		// adding pool to diagram
+		addPool(diagramTypeProvider)
+			.toContainer(diagram)
+			.execute();
+
+		// then
+		// bendpoint position should be the same
+
+		assertThat(flow1.getBendpoints()).hasSize(2);
+		assertThat(flow1.getBendpoints().get(0)).isEqualTo(373, 288);
+		assertThat(flow1.getBendpoints().get(1)).isEqualTo(373, 390);
+	}
+	
+	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddParticipantFeatureTest.testAddPoolRetailsLabelPositioning.bpmn")
 	public void testAddPoolLeavesGatewayLabelOnDiagram() throws Exception {
 		ContainerShape gatewayShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
@@ -154,5 +177,32 @@ public class AddParticipantFeatureTest extends AbstractFeatureTest {
 
 		// but their labels are not
 		assertThat(eventLabelShape).isContainedIn(diagram);
+	}
+	
+
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddFeatureTestBase.testAddToEmptyParticipant.bpmn")
+	public void testAddSecondPoolToDiagramGetsDefaultSize() throws Exception {
+	
+		// given diagram with one participant
+		
+		// when
+		// adding another participant to diagram
+		addPool(diagramTypeProvider)
+			.atLocation(20, 20)
+			.toContainer(diagram)
+			.execute();
+
+		// then
+		Shape secondPoolShape = diagram.getChildren().get(1);
+		
+		// second shape should be a pool
+		assertThat(secondPoolShape)
+			.isLinkedTo(elementOfType(Participant.class));
+		
+		// and it should have the default size
+		assertThat(secondPoolShape)
+			.bounds()
+				.isEqualTo(rectangle(20, 20, 600, 100));
 	}
 }

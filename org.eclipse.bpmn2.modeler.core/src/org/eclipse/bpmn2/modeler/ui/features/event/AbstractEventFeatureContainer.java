@@ -17,6 +17,7 @@ import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.bpmn2.modeler.core.features.DirectEditFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.MoveFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
+import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.eclipse.bpmn2.modeler.ui.features.LayoutBaseElementTextFeature;
@@ -38,10 +39,10 @@ public abstract class AbstractEventFeatureContainer extends BaseElementFeatureCo
 	
 	@Override
 	public Object getApplyObject(IContext context) {
-		if (context.getProperty(ContextConstants.LABEL_CONTEXT) == null
-				|| !((Boolean) context.getProperty(ContextConstants.LABEL_CONTEXT))) {
+		if (ContextUtil.isNot(context, ContextConstants.LABEL_CONTEXT)) {
 			return super.getApplyObject(context);
 		}
+		
 		return null;
 	}
 

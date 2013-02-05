@@ -40,7 +40,9 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 public abstract class AbstractBpmn2CreateFeature<T extends BaseElement>
 		extends AbstractCreateFeature
 		implements IBpmn2CreateFeature<T, ICreateContext> {
-
+	
+	public static final String SKIP_ADD_GRAPHICS = "DONT_ADD";
+	
 	/**
 	 * @param fp
 	 * @param name

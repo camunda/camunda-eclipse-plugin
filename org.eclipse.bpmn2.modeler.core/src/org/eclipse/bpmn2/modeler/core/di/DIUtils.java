@@ -64,7 +64,7 @@ import org.eclipse.graphiti.services.Graphiti;
 
 public class DIUtils {
 
-	public static final String IMPORT_PROPERTY = "di.import";
+	public static final String IMPORT = "DIUtils.import";
 	
 	public static BPMNShape getShape(PictogramElement element) {
 		return BusinessObjectUtil.getFirstElementOfType(element, BPMNShape.class);
@@ -87,7 +87,7 @@ public class DIUtils {
 		
 		Bounds bounds; 
 		
-		if (isLabel(element)) {
+		if (GraphicsUtil.isLabel(element)) {
 			bounds = getDiLabelBounds(bpmnShape);
 		} else {	
 			bounds = bpmnShape.getBounds();
@@ -130,10 +130,6 @@ public class DIUtils {
 		}
 		
 		return bounds;
-	}
-
-	private static boolean isLabel(PictogramElement element) {
-		return Graphiti.getPeService().getPropertyValue(element, GraphicsUtil.LABEL_PROPERTY) != null;
 	}
 	
 	public static void updateDILabel(Shape label, BPMNEdge bpmnEdge) {

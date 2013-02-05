@@ -35,10 +35,18 @@ public class PointAssert extends AbstractAssert<PointAssert, Point> {
 			Assertions.fail(String.format("Expected actual to equal <%s> but was <null>", expected));
 		}
 		
-		if (Math.abs(actual.getX() - expected.getX()) > tolerance || Math.abs(actual.getY()- expected.getY()) > tolerance) {
-			Assertions.fail(String.format("Expected actual to equal <Point(%s, %s)> but was <Point(%s, %s)>", expected.getX(), expected.getY(), actual.getX(), actual.getY()));
+		if (pointsEqual(expected, actual, tolerance)) {
+			Assertions.fail(String.format("Expected actual to equal <(%s, %s)> but was <(%s, %s)>", expected.getX(), expected.getY(), actual.getX(), actual.getY()));
 		}
 		
 		return myself;
+	}
+
+	public static boolean pointsEqual(Point expected, Point actual, int tolerance) {
+		return Math.abs(actual.getX() - expected.getX()) > tolerance || Math.abs(actual.getY()- expected.getY()) > tolerance;
+	}
+	
+	public static boolean pointsEqual(Point expected, Point actual) {
+		return pointsEqual(expected, actual, 0);
 	}
 }

@@ -7,7 +7,7 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.fest.assertions.api.Assertions;
 import org.fest.assertions.core.Condition;
 
-public class ShapeAssert extends AbstractShapeAssert<ShapeAssert, Shape>{
+public class ShapeAssert extends AbstractShapeAssert<ShapeAssert, Shape> {
 
 	public ShapeAssert(Shape actual) {
 		super(actual, ShapeAssert.class);
@@ -24,12 +24,12 @@ public class ShapeAssert extends AbstractShapeAssert<ShapeAssert, Shape>{
 	}
 
 	@Override
-	public AbstractShapeAssert<ShapeAssert, Shape> hasNoChildren() {
+	public ShapeAssert hasNoChildren() {
 		return myself;
 	}
 
 	@Override
-	public AbstractShapeAssert<ShapeAssert, Shape> isContainerShape() {
+	public ShapeAssert isContainerShape() {
 		return failNoContainerShape();
 	}
 	
@@ -42,17 +42,17 @@ public class ShapeAssert extends AbstractShapeAssert<ShapeAssert, Shape>{
 	}
 
 	@Override
-	public AbstractShapeAssert<ShapeAssert, Shape> hasChild(Shape child) {
+	public ShapeAssert hasChild(Shape child) {
 		return failNoContainerShape();
 	}
 
 	@Override
-	public AbstractShapeAssert<ShapeAssert, Shape> doesNotHaveChild(Shape child) {
+	public ShapeAssert doesNotHaveChild(Shape child) {
 		return failNoContainerShape();
 	}
 	
 	@Override
-	public AbstractShapeAssert<ShapeAssert, Shape> hasContainerShapeChildCount(int count) {
+	public ShapeAssert hasContainerShapeChildCount(int count) {
 		return failNoContainerShape();
 	}
 }

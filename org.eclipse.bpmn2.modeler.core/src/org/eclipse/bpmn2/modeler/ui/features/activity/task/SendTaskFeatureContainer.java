@@ -43,7 +43,7 @@ public class SendTaskFeatureContainer extends AbstractTaskFeatureContainer {
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return new AddTaskFeature<SendTask>(fp) {
 			@Override
-			protected void decorateActivityRectangle(RoundedRectangle rect) {
+			protected void decorate(RoundedRectangle rect) {
 				IGaService service = Graphiti.getGaService();
 				Image img = service.createImage(rect, ImageProvider.IMG_16_SEND_TASK);
 				service.setLocationAndSize(img, 2, 2, GraphicsUtil.TASK_IMAGE_SIZE, GraphicsUtil.TASK_IMAGE_SIZE);

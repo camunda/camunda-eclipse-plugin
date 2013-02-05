@@ -22,6 +22,18 @@ public class ContextUtil {
 	}
 	
 	/**
+	 * Queries for the absence of the given flag in the ctx.
+	 * 
+	 * @param ctx
+	 * @param flag
+	 * 
+	 * @return true if the flag is set
+	 */
+	public static boolean isNot(IContext ctx, Object flag) {
+		return !is(ctx, flag);
+	}
+	
+	/**
 	 * Activates the flag on the ctx.
 	 * 
 	 * @param ctx

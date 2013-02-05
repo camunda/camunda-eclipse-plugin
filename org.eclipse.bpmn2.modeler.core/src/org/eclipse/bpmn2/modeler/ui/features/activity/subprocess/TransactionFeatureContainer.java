@@ -46,7 +46,7 @@ public class TransactionFeatureContainer extends AbstractExpandableActivityFeatu
 		return new AddExpandableActivityFeature<Transaction>(fp) {
 
 			@Override
-			protected void decorateActivityRectangle(RoundedRectangle rect) {
+			protected void decorate(RoundedRectangle rect) {
 				IGaService gaService = Graphiti.getGaService();
 				RoundedRectangle innerRect = gaService.createRoundedRectangle(rect, 5, 5);
 				innerRect.setFilled(false);

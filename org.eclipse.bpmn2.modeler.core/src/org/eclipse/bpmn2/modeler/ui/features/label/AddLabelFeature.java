@@ -1,6 +1,10 @@
 package org.eclipse.bpmn2.modeler.ui.features.label;
 
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.rectangle;
+import static org.eclipse.bpmn2.modeler.core.utils.ContextUtil.is;
+import static org.eclipse.bpmn2.modeler.core.utils.ContextUtil.isNot;
+import static org.eclipse.bpmn2.modeler.core.utils.ContextUtil.set;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
@@ -9,6 +13,7 @@ import org.eclipse.bpmn2.di.BPMNLabel;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
+import org.eclipse.bpmn2.modeler.core.features.AbstractAddBpmnShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
@@ -21,7 +26,6 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
-import org.eclipse.graphiti.features.impl.AbstractAddShapeFeature;
 import org.eclipse.graphiti.mm.algorithms.MultiText;
 import org.eclipse.graphiti.mm.algorithms.styles.Orientation;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -32,8 +36,10 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class AddLabelFeature extends AbstractAddShapeFeature {
+public class AddLabelFeature extends AbstractAddBpmnShapeFeature<BaseElement> {
 
+	private static final String CUSTOM_POSITION = "AddLabelFeature.CUSTOM_POSITION";
+	
 	public AddLabelFeature(IFeatureProvider fp) {
 		super(fp);
 	}
@@ -48,35 +54,30 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		return intoDiagram || intoLane || intoParticipant || intoFlowELementContainer;
 	}
 
+	/**
+	 * Creates the label shape
+	 */
 	@Override
-	public PictogramElement add(IAddContext context) {
+	protected ContainerShape createPictogramElement(IAddContext context, IRectangle bounds) {
+
+		BaseElement baseElement = getBusinessObject(context);
+		
 		IGaService gaService = Graphiti.getGaService();
 		IPeService peService = Graphiti.getPeService();
+
+		int x = bounds.getX();
+		int y = bounds.getY();
+		int width = bounds.getWidth();
+		int height = bounds.getHeight();
 		
-		int width = (Integer) context.getProperty(ContextConstants.WIDTH);
-		int height = (Integer) context.getProperty(ContextConstants.HEIGHT);
-		
+		// target is the diagram
 		Diagram diagram = getDiagram();
 		
-		BaseElement baseElement = (BaseElement) context.getProperty(ContextConstants.BUSINESS_OBJECT);
-		BPMNShape bpmnShape = (BPMNShape) ModelHandler.findDIElement(diagram, baseElement);
-		
-		ContainerShape container = context.getTargetContainer();
-		IRectangle containerBounds = LayoutUtil.getAbsoluteBounds(container);
-		
-		int x = context.getX() + containerBounds.getX();
-		int y = context.getY() + containerBounds.getY();
-		
-		boolean customPosition = false;
-		
-		// bpmn shape must exist
-		Assert.isNotNull(bpmnShape);
-		
 		// labels are always added to the diagram
-		ContainerShape textContainerShape = peService.createContainerShape(diagram, true);
-		gaService.createInvisibleRectangle(textContainerShape);
+		ContainerShape newLabelShape = peService.createContainerShape(diagram, true);
+		gaService.createInvisibleRectangle(newLabelShape);
 		
-		Shape textShape = peService.createShape(textContainerShape, false);
+		Shape textShape = peService.createShape(newLabelShape, false);
 		peService.setPropertyValue(textShape, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
 		String name = ModelUtil.getDisplayName(baseElement);
 		MultiText text = gaService.createDefaultMultiText(diagram, textShape, name);
@@ -84,12 +85,58 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		StyleUtil.applyStyle(text, baseElement);
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setVerticalAlignment(Orientation.ALIGNMENT_TOP);
+		
+		GraphicsUtil.makeLabel(newLabelShape);
+		
+		// perform actual positioning of label
+		if (is(context, CUSTOM_POSITION)) {
+		  GraphicsUtil.setLabelPosition(text, newLabelShape, x, y);
+		} else {
+		  // perform alignment with shape if we got no di coordinates
+		  GraphicsUtil.alignWithShape(text, newLabelShape, width, height, point(x, y), null);
+		}
+		
+		BPMNShape bpmnShape = (BPMNShape) ModelHandler.findDIElement(diagram, baseElement);
+		Assert.isNotNull(bpmnShape);
+		
+		link(newLabelShape, new Object[] { baseElement, bpmnShape });
+		
+		return newLabelShape;
+	}
+	
+	@Override
+	protected void postAddHook(IAddContext context, ContainerShape newLabelShape) {
+		super.postAddHook(context, newLabelShape);
+		
+		IPeService peService = Graphiti.getPeService();
+		
+		// send element to front
+		peService.sendToFront(newLabelShape);
+	}
+	
+	@Override
+	protected BPMNShape createDi(Shape shape, BaseElement baseElement, IAddContext context) {
+		
+		// no label di should be created upon add for now
+		return null;
+	}
+	
+	@Override
+	protected IRectangle getAddBounds(IAddContext context) {
 
-		peService.sendToFront(textContainerShape);
+		ContainerShape container = context.getTargetContainer();
+		IRectangle containerBounds = LayoutUtil.getAbsoluteBounds(container);
 		
-		link(textContainerShape, new Object[] { baseElement, bpmnShape });
+		// calculate absolute coordinates from 
+		// designated target container
+		int x = context.getX() + containerBounds.getX();
+		int y = context.getY() + containerBounds.getY();
 		
-		updatePictogramElement(textContainerShape);
+		int width = (Integer) context.getProperty(ContextConstants.WIDTH);
+		int height = (Integer) context.getProperty(ContextConstants.HEIGHT);
+		
+		BaseElement baseElement = getBusinessObject(context);
+		BPMNShape bpmnShape = (BPMNShape) ModelHandler.findDIElement(getDiagram(), baseElement);
 		
 		BPMNLabel bpmnLabel = bpmnShape.getLabel();
 		
@@ -98,9 +145,10 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 		  y = (int) bpmnLabel.getBounds().getY();
 		  
 		  // we got actual coordinates from DI
-		  customPosition = true;
+		  set(context, CUSTOM_POSITION);
 		} else
-		if (!isImport(context)) {
+		if (isNot(context, DIUtils.IMPORT)) {
+			
 			// Boundary events get a different add context, 
 			// so use the context coordinates relative
 			if (baseElement instanceof BoundaryEvent) {
@@ -110,40 +158,22 @@ public class AddLabelFeature extends AbstractAddShapeFeature {
 			}
 		}
 		
-		// perform actual positioning of label
-		if (customPosition) {
-		  GraphicsUtil.setLabelPosition(text, textContainerShape, x, y);
-		} else {
-		  // perform alignment with shape if we got no di coordinates
-		  GraphicsUtil.alignWithShape(text, textContainerShape, width, height, point(x, y), null);
-		}
-		
-		GraphicsUtil.makeLabel(textContainerShape);
-		
-		layoutPictogramElement(textContainerShape);
-		
-		return textContainerShape;
+		return rectangle(x, y, width, height);
 	}
-	
-	private boolean isImport(IAddContext context) {
-		return context.getProperty(DIUtils.IMPORT_PROPERTY) == null ? false : (Boolean) context.getProperty(DIUtils.IMPORT_PROPERTY);
+
+	@Override
+	public int getDefaultHeight() {
+		return 0;
 	}
-	
-	/**
-	 * Get the correct target control, boundary events need special handling, because we need to find a parent,
-	 * where the label is visible.
-	 * 
-	 * @param context
-	 * @return the target control for the current context
-	 */
-	ContainerShape getTargetContainer(IAddContext context) {
-		boolean isBoundary = context.getProperty(ContextConstants.BUSINESS_OBJECT) instanceof BoundaryEvent;
-		
-		if ( isBoundary && !isImport(context) ){
-			if (context.getTargetContainer()!=null){
-				return context.getTargetContainer().getContainer();
-			}
-		}
-		return context.getTargetContainer();
+
+	@Override
+	public int getDefaultWidth() {
+		return 0;
+	}
+
+	@Override
+	protected boolean isCreateExternalLabel() {
+		// we are a label ourself
+		return false;
 	}
 }

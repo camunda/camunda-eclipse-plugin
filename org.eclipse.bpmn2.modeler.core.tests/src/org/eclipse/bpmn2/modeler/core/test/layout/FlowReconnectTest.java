@@ -78,10 +78,10 @@ public class FlowReconnectTest extends AbstractFeatureTest {
 			.execute();
 		
 		reconnectEnd(connection, getDiagramTypeProvider())
-		.toElement(serviceTask1)
-		.execute();
+			.toElement(serviceTask1)
+			.execute();
 		
-		ILocation endAnchorLocation = LayoutUtil.getChopboxAnchorLocation((ChopboxAnchor) connection.getEnd(), connection);
+		ILocation endAnchorLocation = LayoutUtil.getVisibleAnchorLocation(connection.getEnd(), connection);
 		
 		assertThat(endAnchorLocation.getX()).isEqualTo(288);
 		assertThat(endAnchorLocation.getY()).isEqualTo(550);
