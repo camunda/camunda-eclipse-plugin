@@ -101,8 +101,7 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement>
 			 * in case of import we might have a label with missing bounds,
 			 * getSegmentInfo will use the BPMNEdge waypoints to calculate the mid point
 			 */
-			SegmentInfo segmentInfo = LayoutUtil.getSegmentInfo(connection);
-			ILocation midPoint = LayoutUtil.getConnectionMidPoint(segmentInfo);
+			ILocation midPoint = LayoutUtil.getConnectionMidPoint(connection);
 			
 			LayoutUtil.getConnectionLengthAtPoint(connection, ConversionUtil.point(midPoint.getX() + 10, midPoint.getY() + 10));
 			

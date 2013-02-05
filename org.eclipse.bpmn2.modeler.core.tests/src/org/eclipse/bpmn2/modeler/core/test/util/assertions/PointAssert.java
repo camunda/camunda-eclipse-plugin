@@ -10,6 +10,7 @@
 
 package org.eclipse.bpmn2.modeler.core.test.util.assertions;
 
+import org.eclipse.bpmn2.modeler.core.layout.util.Vector;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 import org.fest.assertions.api.AbstractAssert;
@@ -35,7 +36,7 @@ public class PointAssert extends AbstractAssert<PointAssert, Point> {
 			Assertions.fail(String.format("Expected actual to equal <%s> but was <null>", expected));
 		}
 		
-		if (Math.abs(actual.getX() - expected.getX()) > tolerance || Math.abs(actual.getY()- expected.getY()) > tolerance) {
+		if (!Vector.equal(actual, expected, tolerance)) {
 			Assertions.fail(String.format("Expected actual to equal <Point(%s, %s)> but was <Point(%s, %s)>", expected.getX(), expected.getY(), actual.getX(), actual.getY()));
 		}
 		
