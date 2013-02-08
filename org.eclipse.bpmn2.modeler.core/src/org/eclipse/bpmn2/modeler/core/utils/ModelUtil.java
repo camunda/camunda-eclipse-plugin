@@ -277,6 +277,27 @@ public class ModelUtil {
 		}
 		return id;
 	}
+	
+	/**
+	 * Sets the feature with the name "id" to the given value
+	 * 
+	 * @param obj the object with the id
+	 * @param value the new id value
+	 * @return the id value, if the id feature was set
+	 * 
+	 * @throws IllegalArgumentException if the objecrt does not have a id feature
+	 */
+	public static String setID(EObject obj, String value) {
+		EStructuralFeature feature = ((EObject)obj).eClass().getEStructuralFeature("id");
+		if (feature!=null) {
+			obj.eSet(feature, value);
+			addID(obj, value);
+			return value;
+		}
+		else {
+			throw new IllegalArgumentException("Object does not have a id feature : "+obj);
+		}
+	}
 
 	public static String getFeature(EObject obj, String attribute) {
 		EStructuralFeature feature = ((EObject) obj).eClass().getEStructuralFeature(attribute);
