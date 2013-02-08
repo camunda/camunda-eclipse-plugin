@@ -204,12 +204,10 @@ public class ModelUtil {
 			if (value!=null) {
 				addID(obj,(String)value);
 			}
-			else {
-				// TODO: what to do here if the BPMN2 element has an "id" attribute which is not set?
-				// should we generate one and set it?
-				// yup
-				setID(obj);
-			}
+			// what to do here if the BPMN2 element has an "id" attribute which is not set?
+			// should we generate one and set it?
+			// No, because we dont want to add IDs on elements like FormalExpression or other elements
+			// which have a ID feature, but do not have ids by default
 		}
 		
 	}
@@ -272,6 +270,9 @@ public class ModelUtil {
 			if (obj.eGet(feature)==null) {
 				id = generateID(obj,res);
 				obj.eSet(feature, id);
+			}
+			else {
+				id = (String) obj.eGet(feature);
 			}
 		}
 		return id;

@@ -12,21 +12,17 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features.flow;
 
-import java.util.List;
-
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature;
 import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
 import org.eclipse.bpmn2.modeler.core.layout.ConnectionService;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
-import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateConnectionContext;
 import org.eclipse.graphiti.features.context.impl.AddConnectionContext;
-import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 
 public abstract class AbstractCreateFlowFeature<
@@ -65,7 +61,6 @@ public abstract class AbstractCreateFlowFeature<
 		
 		ConnectionService.reconnectConnectionAfterCreate(connection);
 		
-		ModelUtil.setID(bo);
 		changesDone = true;
 		return connection;
 	}

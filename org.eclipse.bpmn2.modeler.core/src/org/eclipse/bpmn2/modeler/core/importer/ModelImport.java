@@ -768,9 +768,9 @@ public class ModelImport {
 	}
 	
 	protected void linkInDiagramElementMap(DiagramElement diagramElement, BaseElement bpmnElement) {
-		// FIXME: otherwise works only if BPMN element has an id
+		// if it does not have a id, it can't be shown
 		if (bpmnElement.getId() == null) {
-			ModelUtil.setID(bpmnElement, resource);
+			return;
 		}
 		
 		diagramElementMap.put(bpmnElement.getId(), diagramElement);
