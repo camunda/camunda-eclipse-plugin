@@ -363,12 +363,13 @@ public class BPMN2FeatureProvider extends DefaultFeatureProvider {
 	@Override
 	public IResizeShapeFeature getResizeShapeFeature(IResizeShapeContext context) {
 		FeatureContainer container = getFeatureContainer(context);
-		if (container!=null) {
+		if (container != null) {
 			IResizeShapeFeature feature = container.getResizeFeature(this);
 			if (feature != null)
 				return feature;
 		}
-		return super.getResizeShapeFeature(context);
+		
+		return null;
 	}
 
 	@Override
