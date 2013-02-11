@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.eclipse.bpmn2.UserTask;
 import org.eclipse.bpmn2.modeler.core.utils.ExtensionUtil;
+import org.eclipse.bpmn2.modeler.runtime.activiti.model.EventType;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelFactory;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelPackage;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.TaskListenerType;
@@ -132,6 +133,12 @@ public class TaskListenerPropertiesBuilder extends AbstractPropertiesBuilder<Use
 	
 	private EObject transactionalCreateType(EClass typeCls, final EStructuralFeature feature) {
 		final EObject instance = ModelFactory.eINSTANCE.create(typeCls);
+		
+		// Explicitly initialize default value
+		if (ModelPackage.eINSTANCE.getTaskListenerType().equals(typeCls)) {
+			TaskListenerType taskListener = (TaskListenerType) instance;
+			taskListener.setEvent(EventType.CREATE);
+		}
 		
 		TransactionalEditingDomain editingDomain = TransactionUtil.getEditingDomain(bo);
 		editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
