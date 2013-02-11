@@ -14,8 +14,7 @@ package org.eclipse.bpmn2.modeler.core.features.flow;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature;
-import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
-import org.eclipse.bpmn2.modeler.core.layout.ConnectionService;
+import org.eclipse.bpmn2.modeler.core.features.PropertyNames;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.core.runtime.Assert;
@@ -52,14 +51,12 @@ public abstract class AbstractCreateFlowFeature<
 				context.getTargetAnchor());
 		addContext.setNewObject(bo);
 		
-		Object bendpoints = ContextUtil.get(context, ContextConstants.CONNECTION_BENDPOINTS);
-		ContextUtil.set(addContext, ContextConstants.CONNECTION_BENDPOINTS, bendpoints);
+		Object bendpoints = ContextUtil.get(context, PropertyNames.CONNECTION_BENDPOINTS);
+		ContextUtil.set(addContext, PropertyNames.CONNECTION_BENDPOINTS, bendpoints);
 		
 		Connection connection = (Connection) getFeatureProvider().addIfPossible(addContext);
 		
 		Assert.isNotNull(connection);
-		
-		ConnectionService.reconnectConnectionAfterCreate(connection);
 		
 		changesDone = true;
 		return connection;

@@ -97,4 +97,24 @@ public class LayoutUtilStaticTest {
 		assertThat(LayoutUtil.isContained(box, location(-50, 25), 1)).isTrue();
 		assertThat(LayoutUtil.isContained(box, location(50, 25), 1)).isTrue();
 	}
+	
+	@Test
+	public void testBox() {
+		IRectangle dimensions = rectangle(-1, -1, 400, 100);
+
+		assertThat(LayoutUtil.box(rectangle(10, 10, 50, 50), dimensions, 10)).isEqualTo(rectangle(10, 10, 50, 50));
+		assertThat(LayoutUtil.box(rectangle(0, 0, 50, 50), dimensions, 10)).isEqualTo(rectangle(10, 10, 50, 50));
+
+		assertThat(LayoutUtil.box(rectangle(340, 10, 50, 50), dimensions, 10)).isEqualTo(rectangle(340, 10, 50, 50));
+		assertThat(LayoutUtil.box(rectangle(390, 0, 50, 50), dimensions, 10)).isEqualTo(rectangle(340, 10, 50, 50));
+
+		assertThat(LayoutUtil.box(rectangle(10, 40, 50, 50), dimensions, 10)).isEqualTo(rectangle(10, 40, 50, 50));
+		assertThat(LayoutUtil.box(rectangle(10, 60, 50, 50), dimensions, 10)).isEqualTo(rectangle(10, 40, 50, 50));
+
+		assertThat(LayoutUtil.box(rectangle(340, 40, 50, 50), dimensions, 10)).isEqualTo(rectangle(340, 40, 50, 50));
+		assertThat(LayoutUtil.box(rectangle(390, 60, 50, 50), dimensions, 10)).isEqualTo(rectangle(340, 40, 50, 50));
+		
+		assertThat(LayoutUtil.box(rectangle(10, 10, 400, 50), dimensions, 10)).isEqualTo(rectangle(10, 10, 380, 50));
+		assertThat(LayoutUtil.box(rectangle(10, 10, 50, 150), dimensions, 10)).isEqualTo(rectangle(10, 10, 50, 80));
+	}
 }

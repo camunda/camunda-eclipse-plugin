@@ -24,7 +24,6 @@ import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
-import org.eclipse.graphiti.services.Graphiti;
 
 public class MoveActivityFeature extends MoveFlowNodeFeature {
 
@@ -37,12 +36,10 @@ public class MoveActivityFeature extends MoveFlowNodeFeature {
 
 	@Override
 	protected void postMoveShape(final IMoveShapeContext context) {
-		super.postMoveShape(context);
 		
 		PictogramElement containerShape = context.getPictogramElement();
-		Graphiti.getPeService().sendToFront(context.getShape());
 		
-		moveBoundaryEvents(context);
+		repositionBoundaryEvents(context);
 		
 		if (containerShape.eContainer() instanceof ContainerShape) {
 			PictogramElement pe = (PictogramElement) containerShape.eContainer();
@@ -50,29 +47,40 @@ public class MoveActivityFeature extends MoveFlowNodeFeature {
 				layoutPictogramElement(pe);
 			}
 		}
+		
+		// perform post move and layout
+		super.postMoveShape(context);
 	}
+	
+	private void repositionBoundaryEvent(ContainerShape container, IMoveShapeContext context) {
 
-	private void moveBoundaryEvents(final IMoveShapeContext context) {
+		GraphicsAlgorithm ga = container.getGraphicsAlgorithm();
+		
+		MoveShapeContext newContext = new MoveShapeContext(container);
+		newContext.setDeltaX(context.getDeltaX());
+		newContext.setDeltaY(context.getDeltaY());
+		newContext.setSourceContainer(context.getSourceContainer());
+		newContext.setTargetContainer(context.getTargetContainer());
+		newContext.setTargetConnection(context.getTargetConnection());
+		newContext.setLocation(ga.getX(), ga.getY());
+		newContext.putProperty(ACTIVITY_MOVE_PROPERTY, true);
 
+		IMoveShapeFeature moveFeature = getFeatureProvider().getMoveShapeFeature(newContext);
+		if (moveFeature.canMoveShape(newContext)) {
+			moveFeature.moveShape(newContext);
+		}
+	}
+	
+	private void repositionBoundaryEvents(final IMoveShapeContext context) {
 		Shape activityShape = (Shape) context.getPictogramElement();
 		
 		new AbstractBoundaryEventOperation() {
 			@Override
-			protected void applyTo(ContainerShape container) {
-				GraphicsAlgorithm ga = container.getGraphicsAlgorithm();
-
-				MoveShapeContext newContext = new MoveShapeContext(container);
-				newContext.setDeltaX(context.getDeltaX());
-				newContext.setDeltaY(context.getDeltaY());
-				newContext.setSourceContainer(context.getSourceContainer());
-				newContext.setTargetContainer(context.getTargetContainer());
-				newContext.setTargetConnection(context.getTargetConnection());
-				newContext.setLocation(ga.getX(), ga.getY());
-				newContext.putProperty(ACTIVITY_MOVE_PROPERTY, true);
-
-				IMoveShapeFeature moveFeature = getFeatureProvider().getMoveShapeFeature(newContext);
-				if (moveFeature.canMoveShape(newContext)) {
-					moveFeature.moveShape(newContext);
+			protected void applyTo(ContainerShape boundaryEventShape) {
+				
+				// move only if it is not moved by itself
+				if (!isEditorSelection(boundaryEventShape)) {
+					repositionBoundaryEvent(boundaryEventShape, context);
 				}
 			}
 		}.execute(activityShape, context.getSourceContainer());

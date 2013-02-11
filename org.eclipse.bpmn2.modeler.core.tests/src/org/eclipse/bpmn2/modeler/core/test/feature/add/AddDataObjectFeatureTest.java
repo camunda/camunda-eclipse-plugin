@@ -1,17 +1,17 @@
 package org.eclipse.bpmn2.modeler.core.test.feature.add;
 
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.elementOfType;
 import static org.eclipse.bpmn2.modeler.core.test.util.operations.AddDataObjectOperation.addDataObject;
 import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveShapeOperation.move;
-import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 
 import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.Util;
-import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -33,7 +33,7 @@ public class AddDataObjectFeatureTest extends AbstractFeatureTest {
 			.execute();
 
 		Shape shape = diagram.getChildren().get(0);
-		Shape labelShape = GraphicsUtil.getLabelShape(shape, diagram);
+		Shape labelShape = LabelUtil.getLabelShape(shape, diagram);
 		
 		// then
 		// diagram should contain the element and a label
@@ -65,7 +65,7 @@ public class AddDataObjectFeatureTest extends AbstractFeatureTest {
 		EList<Shape> children = containerShape.getChildren();
 		
 		Shape shape = children.get(children.size() - 1); // last child should be the store
-		Shape labelShape = GraphicsUtil.getLabelShape(shape, diagram);
+		Shape labelShape = LabelUtil.getLabelShape(shape, diagram);
 		
 		// then
 		// the container should contain the element
@@ -97,7 +97,7 @@ public class AddDataObjectFeatureTest extends AbstractFeatureTest {
 		EList<Shape> children = diagram.getChildren();
 		
 		Shape shape = children.get(children.size() - 1); // last child should be the store
-		Shape labelShape = GraphicsUtil.getLabelShape(shape, diagram);
+		Shape labelShape = LabelUtil.getLabelShape(shape, diagram);
 		
 		// then
 		// the container should contain the element, the pool and the elements label
@@ -129,7 +129,7 @@ public class AddDataObjectFeatureTest extends AbstractFeatureTest {
 		EList<Shape> children = containerShape.getChildren();
 		
 		Shape shape = children.get(children.size() - 1); // last child should be the element
-		Shape labelShape = GraphicsUtil.getLabelShape(shape, diagram);
+		Shape labelShape = LabelUtil.getLabelShape(shape, diagram);
 		
 		IRectangle oldShapeBounds = LayoutUtil.getAbsoluteBounds(labelShape);
 		

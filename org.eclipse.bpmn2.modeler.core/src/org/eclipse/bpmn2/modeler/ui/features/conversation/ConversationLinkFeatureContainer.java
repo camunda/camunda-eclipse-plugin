@@ -18,7 +18,7 @@ import org.eclipse.bpmn2.Conversation;
 import org.eclipse.bpmn2.ConversationLink;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.features.BaseElementConnectionFeatureContainer;
+import org.eclipse.bpmn2.modeler.core.features.container.BaseElementConnectionFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractAddFlowFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractReconnectFlowFeature;

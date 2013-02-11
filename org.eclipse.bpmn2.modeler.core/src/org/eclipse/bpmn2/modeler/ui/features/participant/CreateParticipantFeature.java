@@ -12,11 +12,11 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.participant;
 
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.rectangle;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.rectangle;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Factory;
@@ -29,10 +29,9 @@ import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
-import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
-import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.emf.ecore.EClass;
@@ -41,12 +40,9 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.context.impl.CreateContext;
-import org.eclipse.graphiti.features.context.impl.LayoutContext;
 import org.eclipse.graphiti.features.context.impl.MoveShapeContext;
-import org.eclipse.graphiti.mm.algorithms.AlgorithmsFactory;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
-import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -129,8 +125,6 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 		IRectangle bounds = getChildBounds(diagram);
 		ContainerShape participantContainer = (ContainerShape) addGraphicalRepresentation(contextFromBounds(context, bounds), newParticipant);
 		
-		IRectangle participantContainerBounds = LayoutUtil.getAbsoluteBounds(participantContainer);
-		
 		Iterator<Shape> childrenIterator = diagram.getChildren().iterator();
 		while (childrenIterator.hasNext()) {
 			Shape c = childrenIterator.next();
@@ -139,7 +133,7 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 				continue;
 			}
 			
-			if (GraphicsUtil.isLabel(c)) {
+			if (LabelUtil.isLabel(c)) {
 				continue;
 			}
 			
@@ -177,8 +171,9 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 			moveShapeContext.setY(newY);
 			moveShapeContext.setTargetContainer(childShape.getContainer());
 			moveShapeContext.setSourceContainer(childShape.getContainer());
-			
-			moveShapeContext.putProperty(DefaultMoveBPMNShapeFeature.SKIP_MOVE_LABEL, true);
+
+			ContextUtil.set(moveShapeContext, DefaultMoveBPMNShapeFeature.SKIP_MOVE_LABEL);
+			ContextUtil.set(moveShapeContext, DefaultMoveBPMNShapeFeature.SKIP_REPAIR_CONNECTIONS_AFTER_MOVE);
 			ContextUtil.set(moveShapeContext, DefaultMoveBPMNShapeFeature.SKIP_MOVE_BENDPOINTS);
 			
 			IMoveShapeFeature moveFeature = getFeatureProvider().getMoveShapeFeature(moveShapeContext);
@@ -188,8 +183,8 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 			}
 		}
 		
-		LayoutContext layoutContext = new LayoutContext(participantContainer);
-		getFeatureProvider().getLayoutFeature(layoutContext).execute(layoutContext);
+		// TODO: WHY THIS?
+		layoutPictogramElement(participantContainer);
 	}
 
 	private CreateContext contextFromBounds(ICreateContext oldContext, IRectangle bounds) {
@@ -290,7 +285,7 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 				result.setYMinimum (childShapeGa.getY());
 			}
 			
-			int yPlusHeight = childShapeGa.getY() + childShapeGa.getHeight();
+			int yPlusHeight = childShapeGa.getY() + childShapeGa.getHeight() + 20;
 			
 			if (result.getYMaximum() < yPlusHeight) {
 				result.setYMaximum(yPlusHeight);

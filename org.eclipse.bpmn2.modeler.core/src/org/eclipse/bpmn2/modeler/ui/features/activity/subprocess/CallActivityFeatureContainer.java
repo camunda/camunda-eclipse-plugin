@@ -29,6 +29,7 @@ import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -105,21 +106,7 @@ public class CallActivityFeatureContainer extends AbstractExpandableActivityFeat
 
 	@Override
 	public ILayoutFeature getLayoutFeature(IFeatureProvider fp) {
-		return new LayoutExpandableActivityFeature(fp) {
-			protected int getMarkerContainerOffset() {
-				return MARKER_OFFSET;
-			}
-			
-			@Override
-			protected boolean layoutHook(Shape shape, GraphicsAlgorithm ga, Object bo, int newWidth, int newHeight) {
-				if (bo != null && bo instanceof Activity && ga instanceof Text) {
-					Graphiti.getGaService().setLocationAndSize(ga, 5, 5, newWidth - 10, 15);
-					return true;
-				}
-				return false;
-			}
-			
-		};
+		return new LayoutCallActivityFeature(fp);
 	}
 
 	@Override
@@ -145,6 +132,16 @@ public class CallActivityFeatureContainer extends AbstractExpandableActivityFeat
 			}
 		}
 		return thisFeatures;
+	}
+
+	public static class LayoutCallActivityFeature extends LayoutExpandableActivityFeature {
+		private LayoutCallActivityFeature(IFeatureProvider fp) {
+			super(fp);
+		}
+
+		protected int getMarkerContainerOffset() {
+			return MARKER_OFFSET;
+		}
 	}
 
 	public static class CreateCallActivityFeature extends AbstractCreateExpandableFlowNodeFeature<CallActivity> {

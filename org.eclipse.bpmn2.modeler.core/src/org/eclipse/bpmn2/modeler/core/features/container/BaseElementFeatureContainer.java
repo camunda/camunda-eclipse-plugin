@@ -10,31 +10,44 @@
  *
  * @author Ivar Meikas
  ******************************************************************************/
-package org.eclipse.bpmn2.modeler.core.features;
+package org.eclipse.bpmn2.modeler.core.features.container;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
-import org.eclipse.graphiti.features.IReconnectionFeature;
+import org.eclipse.graphiti.features.ILayoutFeature;
 import org.eclipse.graphiti.features.IRemoveFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.IContext;
+import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
-import org.eclipse.graphiti.features.context.IReconnectionContext;
+import org.eclipse.graphiti.features.custom.ICustomFeature;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
-public abstract class BaseElementConnectionFeatureContainer extends ConnectionFeatureContainer {
+/**
+ * Feature container for all non-connection base elements
+ * 
+ * @author nico.rehwaldt
+ */
+public abstract class BaseElementFeatureContainer implements FeatureContainer {
 
 	@Override
 	public Object getApplyObject(IContext context) {
 		if (context instanceof IAddContext) {
 			return ((IAddContext) context).getNewObject();
-		} else if (context instanceof IPictogramElementContext) {
+		}
+		
+		if (context instanceof IPictogramElementContext) {
 			return BusinessObjectUtil.getFirstElementOfType(
 					(((IPictogramElementContext) context).getPictogramElement()), BaseElement.class);
-		} else if (context instanceof IReconnectionContext) {
-			IReconnectionContext rc = (IReconnectionContext)context;
-			return BusinessObjectUtil.getFirstElementOfType(rc.getConnection(), BaseElement.class);
 		}
+		
+		if (context instanceof ICustomContext) {
+			PictogramElement[] pes = ((ICustomContext) context).getPictogramElements();
+			if (pes.length==1)
+				return BusinessObjectUtil.getFirstElementOfType(pes[0], BaseElement.class);
+		}
+		
 		return null;
 	}
 
@@ -44,12 +57,17 @@ public abstract class BaseElementConnectionFeatureContainer extends ConnectionFe
 	}
 
 	@Override
-	public IReconnectionFeature getReconnectionFeature(IFeatureProvider fp) {
-		return new ReconnectBaseElementFeature(fp);
-	}
-
-	@Override
 	public IRemoveFeature getRemoveFeature(IFeatureProvider fp) {
+		return null;
+	}
+	
+	@Override
+	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
+		return new ICustomFeature[0];
+	}
+	
+	@Override
+	public ILayoutFeature getLayoutFeature(IFeatureProvider fp) {
 		return null;
 	}
 }

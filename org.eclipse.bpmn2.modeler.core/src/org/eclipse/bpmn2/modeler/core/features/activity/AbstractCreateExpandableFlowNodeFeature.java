@@ -24,25 +24,4 @@ public abstract class AbstractCreateExpandableFlowNodeFeature<T extends FlowNode
 			String description) {
 		super(fp, name, description);
 	}
-
-	@Override
-	public Object[] create(ICreateContext context) {
-		Object[] elems = super.create(context);
-		try {
-			
-			// BPMNShape shape = (BPMNShape) ModelHandlerLocator.getModelHandler(getDiagram().eResource()).findDIElement((T)elems[0]);
-			
-			// if the Activity is expandable, set "isExpanded" to true because
-			// this feature will always create an expanded BPMNShape.
-//			EStructuralFeature feature = ((EObject)shape).eClass().getEStructuralFeature("isExpanded");
-//			if (feature!=null)
-//				shape.eSet(feature, Boolean.TRUE);
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return elems;
-	}
-
 }

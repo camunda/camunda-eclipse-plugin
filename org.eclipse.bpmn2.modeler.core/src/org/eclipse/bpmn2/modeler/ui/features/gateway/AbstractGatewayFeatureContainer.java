@@ -12,10 +12,10 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.gateway;
 
-import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
-import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
+import org.eclipse.bpmn2.modeler.core.features.PropertyNames;
 import org.eclipse.bpmn2.modeler.core.features.MoveFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
+import org.eclipse.bpmn2.modeler.core.features.container.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.eclipse.bpmn2.modeler.ui.features.LayoutBaseElementTextFeature;
@@ -44,8 +44,8 @@ public abstract class AbstractGatewayFeatureContainer extends BaseElementFeature
 	
 	@Override
 	public Object getApplyObject(IContext context) {
-		if (context.getProperty(ContextConstants.LABEL_CONTEXT) == null
-				|| !((Boolean) context.getProperty(ContextConstants.LABEL_CONTEXT))) {
+		if (context.getProperty(PropertyNames.LABEL_CONTEXT) == null
+				|| !((Boolean) context.getProperty(PropertyNames.LABEL_CONTEXT))) {
 			return super.getApplyObject(context);
 		}
 		return null;

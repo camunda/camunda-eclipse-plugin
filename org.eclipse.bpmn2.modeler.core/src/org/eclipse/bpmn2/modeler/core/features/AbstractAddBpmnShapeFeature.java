@@ -23,7 +23,6 @@ import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
-import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.graphiti.datatypes.IRectangle;
@@ -166,11 +165,11 @@ public abstract class AbstractAddBpmnShapeFeature<T extends BaseElement> extends
 	 * @param newShapeBounds
 	 * @return
 	 */
-	protected IAddContext getAddLabelContext(IAddContext context, IRectangle newShapeBounds) {
+	protected IAddContext getAddLabelContext(IAddContext context, ContainerShape newShape, IRectangle newShapeBounds) {
 
 		GraphicsUtil.prepareLabelAddContext(context, 
-			newShapeBounds.getWidth(), 
-			newShapeBounds.getHeight(), 
+			newShape, 
+			newShapeBounds, 
 			getBusinessObject(context));
 		
 		return context;
@@ -191,27 +190,46 @@ public abstract class AbstractAddBpmnShapeFeature<T extends BaseElement> extends
 		
 		// allow a post add operation
 		postAddHook(context, newShape, elementBounds);
+
+		// send element to front
+		sendToFront(newShape);
 		
 		// create label
-		createLabel(context, elementBounds);
+		createLabel(context, newShape, elementBounds);
 		
 		// perform update and layouting
-		updateAndLayout(newShape);
+		updateAndLayout(newShape, context);
 		
 		return newShape;
+	}
+
+	protected void sendToFront(ContainerShape newShape) {
+		GraphicsUtil.sendToFront(newShape);
 	}
 
 	/**
 	 * Perform an initial update and layouting of the new shape as desired.
 	 * 
 	 * @param newShape
+	 * @param context 
 	 */
-	protected void updateAndLayout(ContainerShape newShape) {
+	protected void updateAndLayout(ContainerShape newShape, IAddContext context) {
 		// update
 		updatePictogramElement(newShape);
 		
 		// layout
-		layoutPictogramElement(newShape);
+		if (!isImport(context) || isLayoutAfterImport()) {
+			layoutPictogramElement(newShape);
+		}
+	}
+
+	/**
+	 * Return true if layout after import is desired for this feature.
+	 * 
+	 * @return
+	 */
+	protected boolean isLayoutAfterImport() {
+		return true;
 	}
 
 	/**
@@ -222,13 +240,13 @@ public abstract class AbstractAddBpmnShapeFeature<T extends BaseElement> extends
 	 * @param context
 	 * @param newShape
 	 */
-	protected void createLabel(IAddContext context, IRectangle newShapeBounds) {
+	protected void createLabel(IAddContext context, ContainerShape newShape, IRectangle newShapeBounds) {
 		
 		// create label if the add shape feature wishes to do so
 		if (isCreateExternalLabel()) {
-			IAddContext addLabelContext = getAddLabelContext(context, newShapeBounds);
+			IAddContext addLabelContext = getAddLabelContext(context, newShape, newShapeBounds);
 			if (addLabelContext != null) {
-				getFeatureProvider().getAddFeature(context).add(context);
+				getFeatureProvider().getAddFeature(addLabelContext).add(addLabelContext);
 			}
 		}
 	}
@@ -245,8 +263,6 @@ public abstract class AbstractAddBpmnShapeFeature<T extends BaseElement> extends
 		if (isImport(context)) {
 			return;
 		}
-		
-//		System.out.println(String.format("Adjust location <%s>", context));
 		
 		adjustLocation(context, width, height);
 		adjustSize(context, width, height);

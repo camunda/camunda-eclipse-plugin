@@ -1,14 +1,14 @@
 package org.eclipse.bpmn2.modeler.core.test.feature.move;
 
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveShapeOperation.move;
-import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.Util;
-import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -26,7 +26,7 @@ public class MoveLabelFeatureTest extends AbstractFeatureTest {
 
 		ContainerShape sourceLaneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Lane_6");
 		ContainerShape targetLaneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Lane_3");
-		Shape labelShape = GraphicsUtil.getLabelShape(gatewayShape, getDiagram());
+		Shape labelShape = LabelUtil.getLabelShape(gatewayShape, getDiagram());
 		
 		IRectangle preMoveLabelBounds = LayoutUtil.getAbsoluteBounds(labelShape);
 		
@@ -57,7 +57,7 @@ public class MoveLabelFeatureTest extends AbstractFeatureTest {
 		// given
 		Shape gatewayShape = Util.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
 		
-		Shape labelShape = GraphicsUtil.getLabelShape(gatewayShape, getDiagram());
+		Shape labelShape = LabelUtil.getLabelShape(gatewayShape, getDiagram());
 		
 		IRectangle preMoveLabelBounds = LayoutUtil.getAbsoluteBounds(labelShape);
 		
@@ -84,7 +84,7 @@ public class MoveLabelFeatureTest extends AbstractFeatureTest {
 		// given
 		Shape gatewayShape = Util.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
 		
-		Shape labelShape = GraphicsUtil.getLabelShape(gatewayShape, getDiagram());
+		Shape labelShape = LabelUtil.getLabelShape(gatewayShape, getDiagram());
 		
 		IRectangle preMoveLabelBounds = LayoutUtil.getAbsoluteBounds(labelShape);
 		

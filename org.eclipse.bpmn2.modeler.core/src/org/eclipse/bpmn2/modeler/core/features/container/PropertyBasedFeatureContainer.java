@@ -10,44 +10,41 @@
  *
  * @author Ivar Meikas
  ******************************************************************************/
-package org.eclipse.bpmn2.modeler.core.features;
+package org.eclipse.bpmn2.modeler.core.features.container;
 
-import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IRemoveFeature;
-import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.IContext;
-import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
-import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.mm.PropertyContainer;
+import org.eclipse.graphiti.services.Graphiti;
 
-public abstract class BaseElementFeatureContainer implements FeatureContainer {
+public abstract class PropertyBasedFeatureContainer implements FeatureContainer {
 
 	@Override
 	public Object getApplyObject(IContext context) {
-		if (context instanceof IAddContext) {
-			return ((IAddContext) context).getNewObject();
-		}
-		
 		if (context instanceof IPictogramElementContext) {
-			return BusinessObjectUtil.getFirstElementOfType(
-					(((IPictogramElementContext) context).getPictogramElement()), BaseElement.class);
-		}
-		
-		if (context instanceof ICustomContext) {
-			PictogramElement[] pes = ((ICustomContext) context).getPictogramElements();
-			if (pes.length==1)
-				return BusinessObjectUtil.getFirstElementOfType(pes[0], BaseElement.class);
+			return ((IPictogramElementContext) context).getPictogramElement();
 		}
 		return null;
 	}
 
 	@Override
 	public boolean canApplyTo(Object o) {
-		return o instanceof BaseElement;
+		if (!(o instanceof PropertyContainer)) {
+			return false;
+		}
+		String property = Graphiti.getPeService().getPropertyValue((PropertyContainer) o, getPropertyKey());
+		if (property == null) {
+			return false;
+		}
+		return canApplyToProperty(property);
 	}
+
+	protected abstract String getPropertyKey();
+
+	protected abstract boolean canApplyToProperty(String value);
 
 	@Override
 	public IRemoveFeature getRemoveFeature(IFeatureProvider fp) {
@@ -56,8 +53,6 @@ public abstract class BaseElementFeatureContainer implements FeatureContainer {
 	
 	@Override
 	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
-		return new ICustomFeature[] {
-			//new ShowPropertiesFeature(fp)
-		};
+		return null;
 	}
 }

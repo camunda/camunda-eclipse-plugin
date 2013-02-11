@@ -14,9 +14,7 @@ package org.eclipse.bpmn2.modeler.core.features.participant;
 
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBpmnShapeFeature;
-import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
@@ -32,7 +30,6 @@ import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
-import org.eclipse.graphiti.services.IPeCreateService;
 import org.eclipse.graphiti.services.IPeService;
 
 public class AddParticipantFeature extends AbstractAddBpmnShapeFeature<Participant> {
@@ -98,7 +95,8 @@ public class AddParticipantFeature extends AbstractAddBpmnShapeFeature<Participa
 		StyleUtil.applyStyle(text, participant);
 		text.setVerticalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
-		link(textShape, new Object[] { participant, bpmnShape });
+		
+		link(textShape, new Object[] { participant });
 
 		peService.setPropertyValue(newShape, MULTIPLICITY, Boolean.toString(participant.getParticipantMultiplicity()!=null));
 	}

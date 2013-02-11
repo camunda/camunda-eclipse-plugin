@@ -13,16 +13,14 @@
 package org.eclipse.bpmn2.modeler.ui.features;
 
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.modeler.core.features.DefaultLayoutBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.features.LayoutBpmnShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ILayoutContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
-public abstract class LayoutBaseElementTextFeature extends DefaultLayoutBPMNShapeFeature {
-
-//	private static IGaService gaService = Graphiti.getGaService();
+public abstract class LayoutBaseElementTextFeature extends LayoutBpmnShapeFeature {
 
 	public LayoutBaseElementTextFeature(IFeatureProvider fp) {
 		super(fp);
@@ -38,24 +36,7 @@ public abstract class LayoutBaseElementTextFeature extends DefaultLayoutBPMNShap
 	}
 
 	@Override
-	public boolean layout(ILayoutContext context) {
-		ContainerShape container = (ContainerShape) context.getPictogramElement();
-
-//		Shape textShape = getShape(control, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
-//		Text textGa = (Text) textShape.getGraphicsAlgorithm();
-//		String text = textGa.getValue() == null ? "" : textGa.getValue();
-//		IDimension size = GraphitiUi.getUiLayoutService().calculateTextSize(text, textGa.getFont());
-
-//		GraphicsAlgorithm parentGa = control.getGraphicsAlgorithm();
-
-//		if (size.getWidth() > getMinimumWidth()) {
-//			gaService.setSize(parentGa, parentGa.getWidth(), parentGa.getHeight());
-//		} else {
-//			gaService.setSize(parentGa, getMinimumWidth(), parentGa.getHeight());
-//		}
-
-//		gaService.setSize(textGa, size.getWidth() + 3, textGa.getHeight());
-		
+	public boolean layout(ILayoutContext context) {		
 		return super.layout(context);
 	}
 

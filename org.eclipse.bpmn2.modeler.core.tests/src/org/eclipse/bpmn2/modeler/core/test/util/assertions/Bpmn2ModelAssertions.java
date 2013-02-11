@@ -1,5 +1,6 @@
 package org.eclipse.bpmn2.modeler.core.test.util.assertions;
 
+import org.eclipse.draw2d.geometry.Vector;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -32,8 +33,12 @@ public class Bpmn2ModelAssertions extends Assertions {
 	public static PointAssert assertThat(Point point) {
 		return new PointAssert(point);
 	}
-	
+
 	public static IRectangleAssert assertThat(IRectangle rectangle) {
 		return new IRectangleAssert(rectangle);
+	}
+	
+	public static VectorAssert assertThat(Vector vector) {
+		return new VectorAssert(vector);
 	}
 }

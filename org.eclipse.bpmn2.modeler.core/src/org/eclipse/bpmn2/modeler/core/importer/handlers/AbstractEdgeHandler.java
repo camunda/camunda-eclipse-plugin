@@ -13,6 +13,7 @@ package org.eclipse.bpmn2.modeler.core.importer.handlers;
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.location;
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
@@ -20,6 +21,7 @@ import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
+import org.eclipse.bpmn2.modeler.core.features.PropertyNames;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractAddFlowFeature;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
@@ -105,23 +107,15 @@ public abstract class AbstractEdgeHandler<T extends BaseElement> extends Abstrac
 		AddConnectionContext context = new AddConnectionContext(sourceAnchor, targetAnchor);
 		
 		context.setNewObject(bpmnEdge.getBpmnElement());
-
+		List<org.eclipse.graphiti.mm.algorithms.styles.Point> initialBendpoints = getInitialBendpoints(bpmnEdge);
+		
+		ContextUtil.set(context, PropertyNames.CONNECTION_BENDPOINTS, initialBendpoints);
+		
 		IAddFeature addFeature = featureProvider.getAddFeature(context);
 		if (addFeature != null && addFeature.canAdd(context)) {
 			
 			ContextUtil.set(context, DIUtils.IMPORT);
 			Connection connection = (Connection) addFeature.add(context);
-
-			if (connection instanceof FreeFormConnection) {
-				FreeFormConnection freeForm = (FreeFormConnection) connection;
-
-				int last = waypoints.size() - 1;
-
-				for (int i = 1; i < last; i++) {
-					Point waypoint = waypoints.get(i);
-					addBendPoint(freeForm, waypoint);
-				}
-			}
 			
 			return connection;
 		} else {
@@ -131,14 +125,18 @@ public abstract class AbstractEdgeHandler<T extends BaseElement> extends Abstrac
 		return null;
 	}
 
-	/**
-	 * Adds a waypoint to the connection
-	 * 
-	 * @param connection
-	 * @param waypoint
-	 */
-	private void addBendPoint(FreeFormConnection connection, Point waypoint) {
-		connection.getBendpoints().add(Graphiti.getGaService().createPoint((int) waypoint.getX(), (int) waypoint.getY()));
+	private List<org.eclipse.graphiti.mm.algorithms.styles.Point> getInitialBendpoints(BPMNEdge bpmnEdge) {
+		List<org.eclipse.graphiti.mm.algorithms.styles.Point> initialBendpoints = new ArrayList<org.eclipse.graphiti.mm.algorithms.styles.Point>();
+		List<Point> waypoints = bpmnEdge.getWaypoint();
+		
+		int last = waypoints.size() - 1;
+
+		for (int i = 1; i < last; i++) {
+			Point waypoint = waypoints.get(i);
+			initialBendpoints.add(point(waypoint));
+		}
+		
+		return initialBendpoints;
 	}
 
 	private Anchor createTargetAnchor(PictogramElement element, List<Point> waypoints) {
@@ -166,7 +164,7 @@ public abstract class AbstractEdgeHandler<T extends BaseElement> extends Abstrac
 		// check if point centers anchor container; 
 		// if so assume the usage of a chopbox anchor
 		
-		ILocation containerCenter = LayoutUtil.getShapeLocationMidpoint(shape);
+		ILocation containerCenter = LayoutUtil.getAbsoluteShapeCenter(shape);
 		if (positionsMatch(containerCenter, containerDockingPoint)) {
 			return LayoutUtil.getCenterAnchor(container);
 		}

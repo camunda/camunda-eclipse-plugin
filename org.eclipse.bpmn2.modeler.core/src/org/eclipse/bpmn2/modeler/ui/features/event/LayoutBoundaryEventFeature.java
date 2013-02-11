@@ -14,18 +14,20 @@ package org.eclipse.bpmn2.modeler.ui.features.event;
 
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
+import org.eclipse.bpmn2.modeler.core.features.LayoutBpmnShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.features.event.PositionOnLine.LocationType;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ILayoutContext;
-import org.eclipse.graphiti.features.impl.AbstractLayoutFeature;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 
-public class LayoutBoundaryEventFeature extends AbstractLayoutFeature {
+public class LayoutBoundaryEventFeature extends LayoutBpmnShapeFeature {
 
 	public LayoutBoundaryEventFeature(IFeatureProvider fp) {
 		super(fp);
@@ -36,53 +38,49 @@ public class LayoutBoundaryEventFeature extends AbstractLayoutFeature {
 		return true;
 	}
 
-	@Override
-	public boolean layout(ILayoutContext context) {
-		boolean layout = false;
-
-		PictogramElement element = context.getPictogramElement();
-		GraphicsAlgorithm eventGa = element.getGraphicsAlgorithm();
-		BoundaryEvent event = BusinessObjectUtil.getFirstElementOfType(element, BoundaryEvent.class);
-
-		PictogramElement activityContainer = BusinessObjectUtil.getLinkingPictogramElement(getDiagram(),
-		        event.getAttachedToRef());
-
-		// skip layout in case the container is not yet loaded, 
-		// e.g. during import
-		if (activityContainer == null) {
-			return true;
-		}
+	// FIXME: NOT CURRENTLY USED (!)
+	
+	protected void layoutShape(ContainerShape shape) {
+		super.layoutShape(shape);
 		
-		GraphicsAlgorithm activityGa = activityContainer.getGraphicsAlgorithm();
-
-		PositionOnLine pos = BoundaryEventPositionHelper.getPositionOnLineProperty(element);
-
-		switch (pos.getLineType()) {
-		case X:
-			moveX(eventGa, activityGa, pos.getLocationType());
-			layout = true;
-			break;
-		case Y:
-			moveY(eventGa, activityGa, pos.getLocationType());
-			layout = true;
-			break;
-		case XY:
-			moveX(eventGa, activityGa, pos.getLocationType());
-			moveY(eventGa, activityGa, pos.getLocationType());
-			layout = true;
-			break;
-		default:
-			layout = false;
-			break;
-		}
-
-		DIUtils.updateDIShape(element);
-		if (layout) {
-			PositionOnLine newPos = BoundaryEventPositionHelper.getPositionOnlineUsingAbsoluteCoordinates(
-			        (Shape) element, (Shape) activityContainer);
-			BoundaryEventPositionHelper.assignPositionOnLineProperty(element, newPos);
-		}
-		return layout;
+		GraphicsUtil.sendToFront(shape);
+//		
+//		boolean layout = false;
+//
+//		BoundaryEvent event = BusinessObjectUtil.getFirstElementOfType(shape, BoundaryEvent.class);
+//
+//		PictogramElement activityContainer = BusinessObjectUtil.getLinkingPictogramElement(getDiagram(), event.getAttachedToRef());
+//
+//		GraphicsAlgorithm eventGa = shape.getGraphicsAlgorithm();
+//		GraphicsAlgorithm activityGa = activityContainer.getGraphicsAlgorithm();
+//		
+//		PositionOnLine pos = BoundaryEventPositionHelper.getPositionOnLineProperty(shape);
+//
+//		switch (pos.getLineType()) {
+//		case X:
+//			moveX(eventGa, activityGa, pos.getLocationType());
+//			layout = true;
+//			break;
+//		case Y:
+//			moveY(eventGa, activityGa, pos.getLocationType());
+//			layout = true;
+//			break;
+//		case XY:
+//			moveX(eventGa, activityGa, pos.getLocationType());
+//			moveY(eventGa, activityGa, pos.getLocationType());
+//			layout = true;
+//			break;
+//		default:
+//			layout = false;
+//			break;
+//		}
+//
+//		updateDi(shape);
+//		
+//		if (layout) {
+//			PositionOnLine newPos = BoundaryEventPositionHelper.getPositionOnlineUsingAbsoluteCoordinates(shape, (Shape) activityContainer);
+//			BoundaryEventPositionHelper.assignPositionOnLineProperty(shape, newPos);
+//		}
 	}
 
 	private void moveX(GraphicsAlgorithm ga, GraphicsAlgorithm parentGa, LocationType locType) {
