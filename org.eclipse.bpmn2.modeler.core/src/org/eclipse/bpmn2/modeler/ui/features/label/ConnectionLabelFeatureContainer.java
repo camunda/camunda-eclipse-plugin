@@ -1,5 +1,6 @@
 package org.eclipse.bpmn2.modeler.ui.features.label;
 
+import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -11,7 +12,8 @@ public class ConnectionLabelFeatureContainer extends LabelFeatureContainer {
 	@Override
 	public boolean canApplyTo(Object o) {
 		// these all have Label features
-		return o instanceof SequenceFlow;
+		return o instanceof SequenceFlow ||
+			   o instanceof MessageFlow;
 	}
 	
 	@Override
