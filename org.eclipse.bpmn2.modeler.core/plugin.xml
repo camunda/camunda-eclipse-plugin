@@ -168,12 +168,12 @@
 			<constraint
 			        lang="OCL"
 			         severity="WARNING"
-			         mode="Live"
+			         mode="Batch"
 			         name="UniqueId"
 			         id="org.eclipse.bpmn2.modeler.core.validation.BaseElement.id"
-			         statusCode="3" isEnabledByDefault="true">
+			         statusCode="100" isEnabledByDefault="true">
 			      <description>ID needs to be unique.</description>
-			      <message>ID needs to be unqiue.</message>
+			      <message>ID needs to be unqiue. Displayed value will not be saved.</message>
 			      <target class="BaseElement" />
 					<![CDATA[
 						self.id->notEmpty() implies bpmn2::BaseElement.allInstances()->select(s | s.id = self.id)->size() <= 1
