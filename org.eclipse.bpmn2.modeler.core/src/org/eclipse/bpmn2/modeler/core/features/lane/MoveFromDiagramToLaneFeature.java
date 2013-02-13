@@ -21,6 +21,7 @@ import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
+import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -69,7 +70,7 @@ public class MoveFromDiagramToLaneFeature extends MoveLaneFeature {
 		if (getNumberOfLanes(context) == 1) {
 			gaService.setLocationAndSize(laneGa, 15, 0, tga.getWidth() - 15, tga.getHeight());
 			for (Shape s : shapes) {
-				Graphiti.getPeService().sendToFront(s);
+				GraphicsUtil.sendToFront(s);
 				s.setContainer((ContainerShape) context.getShape());
 			}
 		} else {

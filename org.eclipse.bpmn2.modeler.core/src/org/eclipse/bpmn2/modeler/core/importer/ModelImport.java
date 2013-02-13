@@ -308,27 +308,28 @@ public class ModelImport {
 
 	protected void performLayout() {
 		// finally layout all elements
-		for (Entry<BaseElement, PictogramElement> entry : pictogramElements.entrySet()) {
-			BaseElement baseElement = entry.getKey();
-			PictogramElement pictogramElement = entry.getValue();
-			
-			if (baseElement instanceof SubProcess) {
-				// we need the layout to hide children if collapsed
-				LayoutContext context = new LayoutContext(pictogramElement);
-				ILayoutFeature feature = featureProvider.getLayoutFeature(context);
-				if (feature != null && feature.canLayout(context)) {
-					feature.layout(context);
-				}
-
-			} else if (baseElement instanceof FlowNode) {
-				LayoutContext context = new LayoutContext(pictogramElement);
-				ILayoutFeature feature = featureProvider.getLayoutFeature(context);
-				if (feature != null && feature.canLayout(context)) {
-					feature.layout(context);
-				}
-			}
-			
-		}
+		//		for (Entry<BaseElement, PictogramElement> entry : pictogramElements.entrySet()) {
+		//			BaseElement baseElement = entry.getKey();
+		//			PictogramElement pictogramElement = entry.getValue();
+		//			
+		//			if (baseElement instanceof SubProcess) {
+		//				// we need the layout to hide children if collapsed
+		//				LayoutContext context = new LayoutContext(pictogramElement);
+		//				ILayoutFeature feature = featureProvider.getLayoutFeature(context);
+		//				if (feature != null && feature.canLayout(context)) {
+		//					feature.layout(context);
+		//				}
+		//
+		//			} else
+		//			if (baseElement instanceof FlowNode) {
+		//				LayoutContext context = new LayoutContext(pictogramElement);
+		//				ILayoutFeature feature = featureProvider.getLayoutFeature(context);
+		//				if (feature != null && feature.canLayout(context)) {
+		//					feature.layout(context);
+		//				}
+		//			}
+		//			
+		//		}
 	}
 	
 	// handling of BPMN Model Elements ///////////////////////////////////////////////////////////////

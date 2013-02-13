@@ -31,9 +31,9 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 		Shape start2 = Util.findShapeByBusinessObjectId(diagram, "StartEvent_2");
 		Shape task2 = Util.findShapeByBusinessObjectId(diagram, "Task_2");
 
-		assertThat(LayoutUtil.getHorizontalLayoutTreshold(LayoutUtil.getShapeCenter(task1), LayoutUtil.getShapeCenter(start2))).isGreaterThan(0);
-		assertThat(LayoutUtil.getHorizontalLayoutTreshold(LayoutUtil.getShapeCenter(start2), LayoutUtil.getShapeCenter(task1))).isLessThan(0);
-		assertThat(LayoutUtil.getHorizontalLayoutTreshold(LayoutUtil.getShapeCenter(start2), LayoutUtil.getShapeCenter(task2))).isEqualTo(0);
+		assertThat(LayoutUtil.getHorizontalLayoutTreshold(LayoutUtil.getAbsoluteShapeCenter(task1), LayoutUtil.getAbsoluteShapeCenter(start2))).isGreaterThan(0);
+		assertThat(LayoutUtil.getHorizontalLayoutTreshold(LayoutUtil.getAbsoluteShapeCenter(start2), LayoutUtil.getAbsoluteShapeCenter(task1))).isLessThan(0);
+		assertThat(LayoutUtil.getHorizontalLayoutTreshold(LayoutUtil.getAbsoluteShapeCenter(start2), LayoutUtil.getAbsoluteShapeCenter(task2))).isEqualTo(0);
 	}
 	
 	@Test
@@ -73,7 +73,7 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 		Shape task1 = Util.findShapeByBusinessObjectId(diagram, "Task_1");
 		
 		// when
-		ILocation location = LayoutUtil.getShapeLocationMidpoint(task1);
+		ILocation location = LayoutUtil.getAbsoluteShapeCenter(task1);
 		
 		// then
 		assertThat(point(location)).isEqualTo(point(110 / 2 + 205, 50 / 2 + 35));

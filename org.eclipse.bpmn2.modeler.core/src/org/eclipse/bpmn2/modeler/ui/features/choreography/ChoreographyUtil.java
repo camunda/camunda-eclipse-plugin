@@ -36,6 +36,7 @@ import org.eclipse.bpmn2.di.ParticipantBandKind;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.choreography.ChoreographyProperties;
 import org.eclipse.bpmn2.modeler.core.layout.ConnectionService;
+import org.eclipse.bpmn2.modeler.core.layout.util.Layouter;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil.AnchorLocation;
@@ -71,6 +72,7 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
+import org.eclipse.graphiti.ui.internal.platform.DiagramTypeImpl;
 import org.eclipse.graphiti.ui.services.GraphitiUi;
 import org.eclipse.graphiti.util.IColorConstant;
 
@@ -156,7 +158,7 @@ public class ChoreographyUtil implements ChoreographyProperties {
 	}
 
 	public static void resizePartipantBandContainerShapes(int w, int h, List<ContainerShape> top,
-			List<ContainerShape> bottom, Diagram diagram) {
+			List<ContainerShape> bottom, IFeatureProvider featureProvider) {
 
 		int y = 0;
 		for (ContainerShape container : top) {
@@ -168,7 +170,9 @@ public class ChoreographyUtil implements ChoreographyProperties {
 			resizeParticipantBandChildren(container, w);
 			DIUtils.updateDIShape(container);
 			AnchorUtil.relocateFixPointAnchors(container, w, (int) bounds.getHeight());
-			ConnectionService.reconnectContainerAfterMove(container);
+			
+			// layout shape
+			Layouter.layoutShapeAfterMove(container, true, true, featureProvider);
 		}
 
 		Collections.reverse(bottom); // start from bottom towards center
@@ -181,8 +185,9 @@ public class ChoreographyUtil implements ChoreographyProperties {
 			resizeParticipantBandChildren(container, w);
 			DIUtils.updateDIShape(container);
 			AnchorUtil.relocateFixPointAnchors(container, w, (int) bounds.getHeight());
-			
-			ConnectionService.reconnectContainerAfterMove(container);
+
+			// layout shape
+			Layouter.layoutShapeAfterMove(container, true, true, featureProvider);
 		}
 	}
 
@@ -232,10 +237,11 @@ public class ChoreographyUtil implements ChoreographyProperties {
 	}
 
 	public static void updateParticipantReferences(ContainerShape choreographyContainer,
-			List<ContainerShape> currentParticipantContainers, List<Participant> newParticipants, IFeatureProvider fp,
+			List<ContainerShape> currentParticipantContainers, List<Participant> newParticipants, IFeatureProvider featureProvider,
 			boolean showNames) {
 
-		Diagram diagram = peService.getDiagramForShape(choreographyContainer);
+		Diagram diagram = featureProvider.getDiagramTypeProvider().getDiagram();
+		
 		ChoreographyActivity choreography = BusinessObjectUtil.getFirstElementOfType(choreographyContainer,
 				ChoreographyActivity.class);
 
@@ -285,7 +291,7 @@ public class ChoreographyUtil implements ChoreographyProperties {
 
 			BPMNShape bpmnShape = DIUtils.createDIShape(participant, rect(0, y + h, w, h), diagram);
 			
-			fp.link(bandShape, new Object[] { participant, bpmnShape });
+			featureProvider.link(bandShape, new Object[] { participant, bpmnShape });
 			
 			bpmnShape.setChoreographyActivityShape(BusinessObjectUtil.getFirstElementOfType(choreographyContainer,
 					BPMNShape.class));
@@ -303,8 +309,8 @@ public class ChoreographyUtil implements ChoreographyProperties {
 		}
 
 		Tuple<List<ContainerShape>, List<ContainerShape>> topAndBottom = getTopAndBottomBands(newContainers);
-		resizePartipantBandContainerShapes(size.getWidth(), size.getHeight(), topAndBottom.getFirst(),
-				topAndBottom.getSecond(), diagram);
+		resizePartipantBandContainerShapes(
+			size.getWidth(), size.getHeight(), topAndBottom.getFirst(), topAndBottom.getSecond(), featureProvider);
 	}
 
 	private static ContainerShape createTopShape(ContainerShape parent, ContainerShape bandShape, BPMNShape bpmnShape,

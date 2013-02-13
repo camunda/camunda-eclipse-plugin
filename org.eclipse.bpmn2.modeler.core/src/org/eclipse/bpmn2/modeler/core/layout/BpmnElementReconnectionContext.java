@@ -43,5 +43,4 @@ public class BpmnElementReconnectionContext {
 			ConnectionService.reconnectConnectionAfterMove(connection);
 		}
 	}
-
 }

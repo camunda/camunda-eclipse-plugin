@@ -1,14 +1,14 @@
 package org.eclipse.bpmn2.modeler.core.test.feature.move;
 
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveShapeOperation.move;
-import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.Util;
-import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -25,7 +25,7 @@ public class MoveSubProcessFeatureTest extends AbstractFeatureTest {
 		Shape gatewayShape = Util.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
 
 		ContainerShape targetLaneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Lane_3");
-		Shape labelShape = GraphicsUtil.getLabelShape(gatewayShape, getDiagram());
+		Shape labelShape = LabelUtil.getLabelShape(gatewayShape, getDiagram());
 		
 		// assume
 		// label is on diagram
@@ -51,7 +51,7 @@ public class MoveSubProcessFeatureTest extends AbstractFeatureTest {
 		// given
 		Shape gatewayShape = Util.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
 		
-		Shape labelShape = GraphicsUtil.getLabelShape(gatewayShape, getDiagram());
+		Shape labelShape = LabelUtil.getLabelShape(gatewayShape, getDiagram());
 		
 		IRectangle preMoveLabelBounds = LayoutUtil.getAbsoluteBounds(labelShape);
 		
@@ -78,7 +78,7 @@ public class MoveSubProcessFeatureTest extends AbstractFeatureTest {
 		// given
 		Shape gatewayShape = Util.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
 		
-		Shape labelShape = GraphicsUtil.getLabelShape(gatewayShape, getDiagram());
+		Shape labelShape = LabelUtil.getLabelShape(gatewayShape, getDiagram());
 		
 		IRectangle preMoveLabelBounds = LayoutUtil.getAbsoluteBounds(labelShape);
 		
@@ -97,11 +97,124 @@ public class MoveSubProcessFeatureTest extends AbstractFeatureTest {
 			.isContainedIn(diagram)
 			.movedBy(point(10, 20), preMoveLabelBounds);
 	}
-	
-	private static Point getShapesPosDiff(ContainerShape shape1, ContainerShape shape2) {
-		IRectangle b1 = LayoutUtil.getAbsoluteBounds(shape1);
-		IRectangle b2 = LayoutUtil.getAbsoluteBounds(shape2);
+
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveSubProcessFeatureTest.testBase.bpmn")
+	public void testMoveSubProcessMovesContainedEventLabel() {
+
+		// given
+		Shape elementShape = Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
+		Shape elementLabelShape = LabelUtil.getLabelShape(elementShape, getDiagram());
 		
-		return point(b1.getX() - b2.getX(), b1.getY() - b2.getY());
+		IRectangle preMoveLabelBounds = LayoutUtil.getAbsoluteBounds(elementLabelShape);
+		
+		Shape subProcessShape = Util.findShapeByBusinessObjectId(diagram, "SubProcess_1");
+		
+		Point subProcessMovement = point(10, 20);
+		
+		// assume
+		// label is on diagram
+		assertThat(elementLabelShape).isContainedIn(diagram);
+		
+		// when moving label in container
+		move(subProcessShape, diagramTypeProvider)
+			.by(subProcessMovement)
+			.execute();
+		
+		// then
+		// label should not have changed container
+		assertThat(elementLabelShape)
+			.isContainedIn(diagram)
+			.movedBy(subProcessMovement, preMoveLabelBounds);
+	}
+
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveSubProcessFeatureTest.testBase.bpmn")
+	public void testMoveSubProcessMovesContainedDataObjectLabel() {
+
+		// given
+		Shape elementShape = Util.findShapeByBusinessObjectId(diagram, "DataObject_1");
+		Shape elementLabelShape = LabelUtil.getLabelShape(elementShape, getDiagram());
+		
+		IRectangle preMoveLabelBounds = LayoutUtil.getAbsoluteBounds(elementLabelShape);
+		
+		Shape subProcessShape = Util.findShapeByBusinessObjectId(diagram, "SubProcess_2");
+		
+		Point subProcessMovement = point(10, 20);
+		
+		// assume
+		// label is on diagram
+		assertThat(elementLabelShape).isContainedIn(diagram);
+		
+		// when moving label in container
+		move(subProcessShape, diagramTypeProvider)
+			.by(subProcessMovement)
+			.execute();
+		
+		// then
+		// label should not have changed container
+		assertThat(elementLabelShape)
+			.isContainedIn(diagram)
+			.movedBy(subProcessMovement, preMoveLabelBounds);
+	}
+
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveSubProcessFeatureTest.testBase.bpmn")
+	public void testMoveSubProcessMovesContainedDataStoreReferenceLabel() {
+
+		// given
+		Shape elementShape = Util.findShapeByBusinessObjectId(diagram, "_DataStoreReference_3");
+		Shape elementLabelShape = LabelUtil.getLabelShape(elementShape, getDiagram());
+		
+		IRectangle preMoveLabelBounds = LayoutUtil.getAbsoluteBounds(elementLabelShape);
+		
+		Shape subProcessShape = Util.findShapeByBusinessObjectId(diagram, "SubProcess_2");
+		
+		Point subProcessMovement = point(10, 20);
+		
+		// assume
+		// label is on diagram
+		assertThat(elementLabelShape).isContainedIn(diagram);
+		
+		// when moving label in container
+		move(subProcessShape, diagramTypeProvider)
+			.by(subProcessMovement)
+			.execute();
+		
+		// then
+		// label should not have changed container
+		assertThat(elementLabelShape)
+			.isContainedIn(diagram)
+			.movedBy(subProcessMovement, preMoveLabelBounds);
+	}
+
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveSubProcessFeatureTest.testBase.bpmn")
+	public void testMoveSubProcessMovesContainedBoundaryEventLabel() {
+
+		// given
+		Shape elementShape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
+		Shape elementLabelShape = LabelUtil.getLabelShape(elementShape, getDiagram());
+		
+		IRectangle preMoveLabelBounds = LayoutUtil.getAbsoluteBounds(elementLabelShape);
+		
+		Shape subProcessShape = Util.findShapeByBusinessObjectId(diagram, "SubProcess_3");
+		
+		Point subProcessMovement = point(10, 20);
+		
+		// assume
+		// label is on diagram
+		assertThat(elementLabelShape).isContainedIn(diagram);
+		
+		// when moving label in container
+		move(subProcessShape, diagramTypeProvider)
+			.by(subProcessMovement)
+			.execute();
+		
+		// then
+		// label should not have changed container
+		assertThat(elementLabelShape)
+			.isContainedIn(diagram)
+			.movedBy(subProcessMovement, preMoveLabelBounds);
 	}
 }

@@ -113,11 +113,11 @@ public abstract class AbstractBpmn2CreateConnectionFeature<T extends BaseElement
 
 	@SuppressWarnings("unchecked")
 	public T getBusinessObject(ICreateConnectionContext context) {
-		return (T) context.getProperty(ContextConstants.BUSINESS_OBJECT);
+		return (T) context.getProperty(PropertyNames.BUSINESS_OBJECT);
 	}
 	
 	public void putBusinessObject(ICreateConnectionContext context, T businessObject) {
-		context.putProperty(ContextConstants.BUSINESS_OBJECT, businessObject);
+		context.putProperty(PropertyNames.BUSINESS_OBJECT, businessObject);
 	}
 
 	public void postExecute(IExecutionInfo executionInfo) {

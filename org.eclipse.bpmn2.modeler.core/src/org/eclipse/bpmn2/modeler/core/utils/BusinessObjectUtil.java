@@ -13,7 +13,6 @@
 package org.eclipse.bpmn2.modeler.core.utils;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.bpmn2.Association;
@@ -35,7 +34,6 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.PictogramLink;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.services.IPeService;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
@@ -134,7 +132,7 @@ public class BusinessObjectUtil {
 		List<PictogramElement> pictogramElements = Graphiti.getLinkService().getPictogramElements(diagram, objects, true);
 		
 		for (PictogramElement element : pictogramElements) {
-			if (!GraphicsUtil.isLabel(element)) {
+			if (!LabelUtil.isLabel(element)) {
 				return element;
 			}
 		}
@@ -147,7 +145,7 @@ public class BusinessObjectUtil {
 		List<PictogramElement> pictogramElements = Graphiti.getLinkService().getPictogramElements(diagram, objects, true);
 		
 		for (PictogramElement element : pictogramElements) {
-			if (!GraphicsUtil.isLabel(element)) {
+			if (!LabelUtil.isLabel(element)) {
 				return element;
 			}
 		}

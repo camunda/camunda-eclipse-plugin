@@ -13,8 +13,8 @@
 package org.eclipse.bpmn2.modeler.ui.features.conversation;
 
 import org.eclipse.bpmn2.Conversation;
-import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.features.container.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.conversation.AddConversationFeature;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.eclipse.graphiti.features.IAddFeature;

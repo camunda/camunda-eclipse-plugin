@@ -29,7 +29,7 @@ public class LayoutLabelFeature extends AbstractLayoutFeature {
 	public boolean layout(ILayoutContext context) {
 		ContainerShape containerShape = (ContainerShape) context.getPictogramElement();
 		SubProcess subProcess = BusinessObjectUtil.getFirstElementOfType(containerShape, SubProcess.class);
-		if (subProcess!=null) {
+		if (subProcess != null) {
 			BPMNShape shape = (BPMNShape) ModelHandler.findDIElement(getDiagram(), subProcess);
 			
 			if (shape.isIsExpanded()) {

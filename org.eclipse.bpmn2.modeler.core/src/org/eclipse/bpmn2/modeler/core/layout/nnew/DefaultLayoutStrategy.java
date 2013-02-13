@@ -19,7 +19,7 @@ public class DefaultLayoutStrategy {
 	 * @param connection
 	 * @return
 	 */
-	public LayoutContext createLayoutingContext(FreeFormConnection connection, boolean relayoutOnRepairFail) {
+	public LayoutContext createLayoutingContext(FreeFormConnection connection, boolean layoutOnRepairFail) {
 		
 		AnchorContainer anchorContainer = connection.getStart().getParent();
 		
@@ -27,7 +27,7 @@ public class DefaultLayoutStrategy {
 		if (element instanceof BoundaryEvent) {
 			return new BoundaryEventLayoutContext(connection);
 		} else {
-			return new DefaultLayoutContext(connection, relayoutOnRepairFail);
+			return new DefaultLayoutContext(connection, layoutOnRepairFail);
 		}
 	}
 }

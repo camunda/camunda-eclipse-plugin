@@ -12,11 +12,11 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.event;
 
-import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
-import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
+import org.eclipse.bpmn2.modeler.core.features.PropertyNames;
 import org.eclipse.bpmn2.modeler.core.features.DirectEditFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.MoveFlowNodeFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
+import org.eclipse.bpmn2.modeler.core.features.container.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
@@ -39,7 +39,7 @@ public abstract class AbstractEventFeatureContainer extends BaseElementFeatureCo
 	
 	@Override
 	public Object getApplyObject(IContext context) {
-		if (ContextUtil.isNot(context, ContextConstants.LABEL_CONTEXT)) {
+		if (ContextUtil.isNot(context, PropertyNames.LABEL_CONTEXT)) {
 			return super.getApplyObject(context);
 		}
 		
@@ -89,6 +89,7 @@ public abstract class AbstractEventFeatureContainer extends BaseElementFeatureCo
 
 	@Override
 	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
+		
 		ICustomFeature[] superFeatures = super.getCustomFeatures(fp);
 		ICustomFeature[] thisFeatures = new ICustomFeature[3 + superFeatures.length];
 		int i;

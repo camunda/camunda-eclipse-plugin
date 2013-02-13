@@ -49,16 +49,13 @@ public class ResizeChoreographyFeature extends DefaultResizeBPMNShapeFeature {
 
 	@Override
 	public void resizeShape(IResizeShapeContext context) {
-		try {
-			List<ContainerShape> bands = ChoreographyUtil.getParticipantBandContainerShapes((ContainerShape) context
-					.getPictogramElement());
-			Tuple<List<ContainerShape>, List<ContainerShape>> topAndBottom = ChoreographyUtil
-					.getTopAndBottomBands(bands);
-			ChoreographyUtil.resizePartipantBandContainerShapes(context.getWidth(), context.getHeight(),
-					topAndBottom.getFirst(), topAndBottom.getSecond(), getDiagram());
-		} catch (Exception e) {
-			Activator.logError(e);
-		}
+		List<ContainerShape> bands = ChoreographyUtil.getParticipantBandContainerShapes((ContainerShape) context
+				.getPictogramElement());
+		Tuple<List<ContainerShape>, List<ContainerShape>> topAndBottom = ChoreographyUtil
+				.getTopAndBottomBands(bands);
+		ChoreographyUtil.resizePartipantBandContainerShapes(context.getWidth(), context.getHeight(),
+				topAndBottom.getFirst(), topAndBottom.getSecond(), getFeatureProvider());
+		
 		super.resizeShape(context);
 		ChoreographyUtil.moveChoreographyMessageLinks((ContainerShape) context.getPictogramElement());
 	}

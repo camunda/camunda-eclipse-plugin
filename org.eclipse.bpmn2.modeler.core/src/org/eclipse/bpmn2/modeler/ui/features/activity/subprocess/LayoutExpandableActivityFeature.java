@@ -19,6 +19,7 @@ import org.eclipse.bpmn2.modeler.core.features.activity.LayoutActivityFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.context.ILayoutContext;
@@ -37,14 +38,16 @@ public class LayoutExpandableActivityFeature extends LayoutActivityFeature {
 	}
 
 	@Override
-	protected boolean layoutHook(Shape shape, GraphicsAlgorithm ga, Object bo, int newWidth, int newHeight) {
-		if (bo != null && ga instanceof Text) {
-			int padding = GraphicsUtil.TASK_IMAGE_SIZE;
-			int size = ((Text)ga).getFont().getSize();
-			Graphiti.getGaService().setLocationAndSize(ga, 5, 10, newWidth - 10, size);
-			return true;
-		}
-		return false;
+	protected void layoutLabel(ContainerShape container, Shape labelShape, IRectangle bounds) {
+
+		Text text = (Text) labelShape.getGraphicsAlgorithm();
+
+		int padding = 5;
+		
+		int width = bounds.getWidth() - padding;
+		int height = Math.min(GraphicsUtil.getLabelHeight(text), bounds.getHeight() - padding);
+		
+		Graphiti.getGaService().setLocationAndSize(text, padding, padding, width, height);
 	}
 	
 	@Override

@@ -13,13 +13,13 @@
 package org.eclipse.bpmn2.modeler.ui.features.artifact;
 
 import org.eclipse.bpmn2.TextAnnotation;
-import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.DefaultResizeBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.artifact.AddTextAnnotationFeature;
 import org.eclipse.bpmn2.modeler.core.features.artifact.DirectEditTextAnnotationFeature;
 import org.eclipse.bpmn2.modeler.core.features.artifact.LayoutTextAnnotationFeature;
 import org.eclipse.bpmn2.modeler.core.features.artifact.MoveTextAnnotationFeature;
 import org.eclipse.bpmn2.modeler.core.features.artifact.UpdateTextAnnotationFeature;
+import org.eclipse.bpmn2.modeler.core.features.container.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;

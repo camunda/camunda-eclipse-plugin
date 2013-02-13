@@ -13,7 +13,7 @@
 package org.eclipse.bpmn2.modeler.ui.features.event;
 
 import org.eclipse.bpmn2.BoundaryEvent;
-import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
+import org.eclipse.bpmn2.modeler.core.features.container.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;

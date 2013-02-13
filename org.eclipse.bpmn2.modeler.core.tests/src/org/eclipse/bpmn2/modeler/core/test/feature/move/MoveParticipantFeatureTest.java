@@ -8,7 +8,7 @@ import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.Util;
-import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -25,7 +25,7 @@ public class MoveParticipantFeatureTest extends AbstractFeatureTest {
 
 		ContainerShape participantShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Participant_1");
 		
-		Shape labelShape = GraphicsUtil.getLabelShape(flowElementShape, getDiagram());
+		Shape labelShape = LabelUtil.getLabelShape(flowElementShape, getDiagram());
 		
 		IRectangle preMoveLabelBounds = LayoutUtil.getAbsoluteBounds(labelShape);
 		
@@ -55,7 +55,7 @@ public class MoveParticipantFeatureTest extends AbstractFeatureTest {
 
 		ContainerShape participantShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Participant_1");
 		
-		Shape labelShape = GraphicsUtil.getLabelShape(flowElementShape, getDiagram());
+		Shape labelShape = LabelUtil.getLabelShape(flowElementShape, getDiagram());
 		
 		IRectangle preMoveLabelBounds = LayoutUtil.getAbsoluteBounds(labelShape);
 		
@@ -85,7 +85,7 @@ public class MoveParticipantFeatureTest extends AbstractFeatureTest {
 
 		ContainerShape participantShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "_Participant_3");
 		
-		Shape labelShape = GraphicsUtil.getLabelShape(flowElementShape, getDiagram());
+		Shape labelShape = LabelUtil.getLabelShape(flowElementShape, getDiagram());
 		
 		IRectangle preMoveLabelBounds = LayoutUtil.getAbsoluteBounds(labelShape);
 		
@@ -115,7 +115,7 @@ public class MoveParticipantFeatureTest extends AbstractFeatureTest {
 
 		ContainerShape participantShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "_Participant_3");
 		
-		Shape labelShape = GraphicsUtil.getLabelShape(flowElementShape, getDiagram());
+		Shape labelShape = LabelUtil.getLabelShape(flowElementShape, getDiagram());
 		
 		IRectangle preMoveLabelBounds = LayoutUtil.getAbsoluteBounds(labelShape);
 		
@@ -145,7 +145,7 @@ public class MoveParticipantFeatureTest extends AbstractFeatureTest {
 
 		ContainerShape participantShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "_Participant_3");
 		
-		Shape labelShape = GraphicsUtil.getLabelShape(flowElementShape, getDiagram());
+		Shape labelShape = LabelUtil.getLabelShape(flowElementShape, getDiagram());
 		
 		IRectangle preMoveLabelBounds = LayoutUtil.getAbsoluteBounds(labelShape);
 		
@@ -175,7 +175,7 @@ public class MoveParticipantFeatureTest extends AbstractFeatureTest {
 
 		ContainerShape participantShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "_Participant_3");
 		
-		Shape labelShape = GraphicsUtil.getLabelShape(flowElementShape, getDiagram());
+		Shape labelShape = LabelUtil.getLabelShape(flowElementShape, getDiagram());
 		
 		IRectangle preMoveLabelBounds = LayoutUtil.getAbsoluteBounds(labelShape);
 		

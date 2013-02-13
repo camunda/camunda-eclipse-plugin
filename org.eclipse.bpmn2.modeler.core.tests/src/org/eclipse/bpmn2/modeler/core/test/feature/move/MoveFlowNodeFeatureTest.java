@@ -10,12 +10,11 @@ import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.Util;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
-import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
-import org.fest.assertions.api.Fail;
 import org.junit.Test;
 
 /**
@@ -141,7 +140,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		Shape eventShape = Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
 		ContainerShape targetLaneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Lane_5");
 
-		Shape labelShape = GraphicsUtil.getLabelShape(eventShape, getDiagram());
+		Shape labelShape = LabelUtil.getLabelShape(eventShape, getDiagram());
 		
 		// when moving event to sibling lane
 		move(eventShape, diagramTypeProvider)
@@ -163,23 +162,154 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 
 		// given
 		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "UserTask_1");
+		Shape boundaryEventShape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_2");
+		Shape boundaryEventLabelShape = LabelUtil.getLabelShape(boundaryEventShape, diagram);
+		
+		Point movement = point(30, 24);
 
-		IRectangle boundsBeforeMove = LayoutUtil.getAbsoluteBounds(taskShape);
+		IRectangle taskBoundsBeforeMove = LayoutUtil.getAbsoluteBounds(taskShape);
+		IRectangle boundaryBoundsBeforeMove = LayoutUtil.getAbsoluteBounds(boundaryEventShape);
+		
+		IRectangle labelBoundsBeforeMove = LayoutUtil.getAbsoluteBounds(boundaryEventLabelShape);
 		
 		// when moving event to the parents sibling lane
 		move(taskShape, diagramTypeProvider)
-			.by(30, 24)
+			.by(movement)
 			.execute();
-
-		IRectangle boundsAfterMove = LayoutUtil.getAbsoluteBounds(taskShape);
-
-		Point posBeforeMove = point(boundsBeforeMove.getX(), boundsBeforeMove.getY());
-		Point posAfterMove = point(boundsAfterMove.getX(), boundsAfterMove.getY());
-		Point expectedPosAfterMove = point(posBeforeMove.getX() + 30, posBeforeMove.getY() + 24);
 		
 		// then
-		// task should have moved (no NPE)
-		assertThat(posAfterMove).isEqualTo(expectedPosAfterMove);
+		// task should have moved
+		assertThat(taskShape)
+			.movedBy(movement, taskBoundsBeforeMove);
+		
+		// boundary event should have moved
+		assertThat(boundaryEventShape)
+			.movedBy(movement, boundaryBoundsBeforeMove);
+		
+		// label should have been moved
+		assertThat(boundaryEventLabelShape)
+			.movedBy(movement, labelBoundsBeforeMove);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveFlowNodeFeature.testTaskWithBoundaryEvent.bpmn")
+	public void testMoveTaskWithBoundaryEvent2() {
+
+		// given
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "UserTask_1");
+		Shape boundaryEventShape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_2");
+		Shape boundaryEventLabelShape = LabelUtil.getLabelShape(boundaryEventShape, diagram);
+		
+		Point movement = point(-30, 40);
+
+		IRectangle taskBoundsBeforeMove = LayoutUtil.getAbsoluteBounds(taskShape);
+		IRectangle boundaryBoundsBeforeMove = LayoutUtil.getAbsoluteBounds(boundaryEventShape);
+		
+		IRectangle labelBoundsBeforeMove = LayoutUtil.getAbsoluteBounds(boundaryEventLabelShape);
+		
+		// when moving event to the parents sibling lane
+		move(taskShape, diagramTypeProvider)
+			.by(movement)
+			.execute();
+		
+		// then
+		// task should have moved
+		assertThat(taskShape)
+			.movedBy(movement, taskBoundsBeforeMove);
+		
+		// boundary event should have moved
+		assertThat(boundaryEventShape)
+			.movedBy(movement, boundaryBoundsBeforeMove);
+		
+		// label should have been moved
+		assertThat(boundaryEventLabelShape)
+			.movedBy(movement, labelBoundsBeforeMove);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveFlowNodeFeature.testTaskWithBoundaryEvent.bpmn")
+	public void testMoveTaskWithBoundaryEventAfterLabelMove() {
+
+		// given
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "UserTask_1");
+		Shape boundaryEventShape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_2");
+		Shape boundaryEventLabelShape = LabelUtil.getLabelShape(boundaryEventShape, diagram);
+		
+		Point labelMovement = point(20, 30);
+		Point taskMovement = point(-30, 40);
+		Point expectedTotalLabelMovement = point(-10, 70);
+
+		IRectangle taskBoundsBeforeMove = LayoutUtil.getAbsoluteBounds(taskShape);
+		IRectangle boundaryBoundsBeforeMove = LayoutUtil.getAbsoluteBounds(boundaryEventShape);
+		
+		IRectangle labelBoundsBeforeMove = LayoutUtil.getAbsoluteBounds(boundaryEventLabelShape);
+		
+		// when
+		// moving label
+		move(boundaryEventLabelShape, diagramTypeProvider)
+			.by(labelMovement)
+			.execute();
+		
+		// and moving task
+		move(taskShape, diagramTypeProvider)
+			.by(taskMovement)
+			.execute();
+		
+		// then
+		// task should have moved
+		assertThat(taskShape)
+			.movedBy(taskMovement, taskBoundsBeforeMove);
+		
+		// boundary event should have moved
+		assertThat(boundaryEventShape)
+			.movedBy(taskMovement, boundaryBoundsBeforeMove);
+		
+		// label should have been moved by label movement + task movement
+		assertThat(boundaryEventLabelShape)
+			.movedBy(expectedTotalLabelMovement, labelBoundsBeforeMove);
+	}
+	
+	@Test
+	@DiagramResource
+	public void testMoveTaskWithBoundaryEventIntoSubprocess() {
+
+		// given
+		ContainerShape subProcessShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "SubProcess_1");
+		
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "UserTask_1");
+		Shape boundaryEventShape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_2");
+		Shape boundaryEventLabelShape = LabelUtil.getLabelShape(boundaryEventShape, diagram);
+
+		IRectangle subProcessBounds = LayoutUtil.getAbsoluteBounds(subProcessShape);
+		IRectangle taskBounds = LayoutUtil.getAbsoluteBounds(taskShape);
+		
+		Point containerOffset = point(30, 40);
+		Point movement = point(subProcessBounds.getX() - taskBounds.getX() + containerOffset.getX(), subProcessBounds.getY() - taskBounds.getY() + containerOffset.getY());
+		
+		IRectangle taskBoundsBeforeMove = LayoutUtil.getAbsoluteBounds(taskShape);
+		IRectangle boundaryBoundsBeforeMove = LayoutUtil.getAbsoluteBounds(boundaryEventShape);
+		
+		IRectangle labelBoundsBeforeMove = LayoutUtil.getAbsoluteBounds(boundaryEventLabelShape);
+		
+		// when
+		// moving event to the parents sibling lane
+		move(taskShape, diagramTypeProvider)
+			.toContainer(subProcessShape)
+			.to(containerOffset)
+			.execute();
+		
+		// then
+		// task should have moved
+		assertThat(taskShape)
+			.movedBy(movement, taskBoundsBeforeMove);
+		
+//		// boundary event should have moved
+//		assertThat(boundaryEventShape)
+//			.movedBy(movement, boundaryBoundsBeforeMove);
+		
+//		// label should have been moved
+//		assertThat(boundaryEventLabelShape)
+//			.movedBy(movement, labelBoundsBeforeMove);
 	}
 	
 	@Test
@@ -190,7 +320,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		Shape eventShape = Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
 		ContainerShape targetLaneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Lane_3");
 		
-		Shape labelShape = GraphicsUtil.getLabelShape(eventShape, getDiagram());
+		Shape labelShape = LabelUtil.getLabelShape(eventShape, getDiagram());
 		
 		// when moving event to the parents sibling lane
 		move(eventShape, diagramTypeProvider)
@@ -214,7 +344,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		Shape gatewayShape = Util.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
 		ContainerShape targetLaneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Lane_3");
 
-		Shape labelShape = GraphicsUtil.getLabelShape(gatewayShape, getDiagram());
+		Shape labelShape = LabelUtil.getLabelShape(gatewayShape, getDiagram());
 		
 		// when gateway event to sibling lane
 		move(gatewayShape, diagramTypeProvider)
@@ -240,7 +370,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		ContainerShape preMoveLaneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Lane_6");
 		ContainerShape targetParticipantShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "_Participant_2");
 		
-		Shape labelShape = GraphicsUtil.getLabelShape(gatewayShape, getDiagram());
+		Shape labelShape = LabelUtil.getLabelShape(gatewayShape, getDiagram());
 		
 		// when gateway event to sibling lane
 		move(gatewayShape, diagramTypeProvider)
@@ -266,7 +396,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		Shape boundaryEventShape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
 		
 		ContainerShape targetLaneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Lane_3");
-		Shape labelShape = GraphicsUtil.getLabelShape(boundaryEventShape, getDiagram());
+		Shape labelShape = LabelUtil.getLabelShape(boundaryEventShape, getDiagram());
 		
 		// when moving task to sibling lane
 		move(taskShape, diagramTypeProvider)
@@ -283,19 +413,41 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveParticipantFeatureTest.testMoveParticipantBase.bpmn")
-	public void testMoveTaskWithBoundaryEventAttachedMovesLabel() {
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveFlowNodeFeature.testAdjustLabelTestBase.bpmn")
+	public void testMoveGatewayMovesLabel() {
 		
 		// given
-		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
-		Shape boundaryEventShape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
+		Shape gatewayShape = Util.findShapeByBusinessObjectId(diagram, "InclusiveGateway_1");
 
-		Shape labelShape = GraphicsUtil.getLabelShape(boundaryEventShape, diagram);
+		Shape labelShape = LabelUtil.getLabelShape(gatewayShape, diagram);
 		
 		IRectangle preMoveLabelBounds = LayoutUtil.getAbsoluteBounds(labelShape);
 		
 		// when moving task by 20,20
-		move(taskShape, diagramTypeProvider)
+		move(gatewayShape, diagramTypeProvider)
+			.by(20, 20)
+			.execute();
+		
+		// then 
+		// label should have been moved accordingly
+		assertThat(labelShape)
+			.isContainedIn(diagram)
+			.movedBy(point(20, 20), preMoveLabelBounds);
+	}
+
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveFlowNodeFeature.testAdjustLabelTestBase.bpmn")
+	public void testMoveEventMovesLabel() {
+
+		// given
+		Shape eventShape = Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
+
+		Shape labelShape = LabelUtil.getLabelShape(eventShape, diagram);
+		
+		IRectangle preMoveLabelBounds = LayoutUtil.getAbsoluteBounds(labelShape);
+		
+		// when moving task by 20,20
+		move(eventShape, diagramTypeProvider)
 			.by(20, 20)
 			.execute();
 		

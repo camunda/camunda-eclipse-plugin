@@ -26,9 +26,12 @@ import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
 import org.eclipse.graphiti.mm.pictograms.ChopboxAnchor;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -73,10 +76,24 @@ public class AddBoundaryEventFeature extends AbstractAddBpmnShapeFeature<Boundar
 	}
 	
 	@Override
-	protected void updateAndLayout(ContainerShape newShape) {
+	protected void updateAndLayout(ContainerShape newShape, IAddContext context) {
 		
 		// update only
 		updatePictogramElement(newShape);
+	}
+	
+	@Override
+	protected IAddContext getAddLabelContext(IAddContext context, ContainerShape newShape, IRectangle newShapeBounds) {
+		IAddContext addContext = super.getAddLabelContext(context, newShape, newShapeBounds);
+		
+		Assert.isLegal(addContext instanceof AddContext);
+		
+		AddContext addLabelContext = (AddContext) addContext;
+		
+		// set actual target container
+		addLabelContext.setTargetContainer(newShape.getContainer());
+		
+		return addLabelContext;
 	}
 	
 	@Override
@@ -147,7 +164,7 @@ public class AddBoundaryEventFeature extends AbstractAddBpmnShapeFeature<Boundar
 			PositionOnLine pos = BoundaryEventPositionHelper.getPositionOnLineUsingBPMNShape(newShape, activityContainer);
 			BoundaryEventPositionHelper.assignPositionOnLineProperty(newShape, pos);
 			peService.sendToBack((Shape) foundElem);
-			peService.sendToFront(newShape);
+			GraphicsUtil.sendToFront(newShape);
 		}
 	}
 	

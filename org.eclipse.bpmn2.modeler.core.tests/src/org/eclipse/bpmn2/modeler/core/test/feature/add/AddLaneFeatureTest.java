@@ -9,7 +9,7 @@ import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.Util;
-import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.junit.Test;
@@ -104,13 +104,61 @@ public class AddLaneFeatureTest extends AbstractFeatureTest {
 
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddFeatureTestBase.testAddToNonEmptyParticipant.bpmn")
+	public void testAddOnToParticipantRetainsContainedBoundaryEventPosition() throws Exception {
+
+		// given participant
+		ContainerShape containerShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "_Participant_5");
+		ContainerShape childShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
+		
+		IRectangle preMoveShapePosition = LayoutUtil.getAbsoluteBounds(childShape);
+		
+		// when
+		// lane is added to it
+		addLane(diagramTypeProvider)
+			.toContainer(containerShape)
+			.execute();
+		
+		IRectangle postMoveShapePosition = LayoutUtil.getAbsoluteBounds(childShape);
+		
+		// then
+		// contained element pos should be retained
+		assertThat(postMoveShapePosition).isEqualTo(preMoveShapePosition);
+	}
+
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddFeatureTestBase.testAddToNonEmptyParticipant.bpmn")
+	public void testAddOnToParticipantRetainsContainedBoundaryEventLabelPosition() throws Exception {
+
+		// given participant
+		ContainerShape containerShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "_Participant_5");
+		ContainerShape childShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
+		
+		ContainerShape childLabelShape = LabelUtil.getLabelShape(childShape, diagram);
+		
+		IRectangle preMoveShapePosition = LayoutUtil.getAbsoluteBounds(childLabelShape);
+		
+		// when
+		// lane is added to it
+		addLane(diagramTypeProvider)
+			.toContainer(containerShape)
+			.execute();
+		
+		IRectangle postMoveShapePosition = LayoutUtil.getAbsoluteBounds(childLabelShape);
+		
+		// then
+		// contained element pos should be retained
+		assertThat(postMoveShapePosition).isEqualTo(preMoveShapePosition);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddFeatureTestBase.testAddToNonEmptyParticipant.bpmn")
 	public void testAddOnToParticipantRetainsContainedLabelPositions() throws Exception {
 
 		// given participant
 		ContainerShape containerShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "_Participant_5");
 		ContainerShape childShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
 		
-		ContainerShape labelShape = GraphicsUtil.getLabelShape(childShape, diagram);
+		ContainerShape labelShape = LabelUtil.getLabelShape(childShape, diagram);
 		
 		IRectangle preMoveLabelShapePosition = LayoutUtil.getAbsoluteBounds(labelShape);
 		

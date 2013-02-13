@@ -12,10 +12,10 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.choreography;
 
-import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.choreography.LayoutChoreographyFeature;
 import org.eclipse.bpmn2.modeler.core.features.choreography.UpdateChoreographyNameFeature;
+import org.eclipse.bpmn2.modeler.core.features.container.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
 import org.eclipse.graphiti.features.IDirectEditingFeature;
