@@ -41,6 +41,7 @@ import org.eclipse.graphiti.features.IFeatureChecker;
 import org.eclipse.graphiti.features.IFeatureCheckerHolder;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IContext;
+import org.eclipse.graphiti.features.context.IDoubleClickContext;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.CreateConnectionContext;
@@ -399,5 +400,10 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
         }
 		
         return decorators.toArray(new IDecorator[0]);
+    }
+    
+    @Override
+    public ICustomFeature getDoubleClickFeature(IDoubleClickContext context) {
+    	return super.getDoubleClickFeature(context);
     }
 }
