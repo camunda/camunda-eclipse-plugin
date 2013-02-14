@@ -67,13 +67,12 @@ public class ImportAsContainerShapeTest extends AbstractImportBpmnModelTest {
 		importer.execute();
 
 		// we simulate the following behavior here:
-		// * a flow element is contained in a process but drawn outside it
-		// * it may not be drawn in the participant container shape of the 
-		//   process because it would not show the element
-		// * must be drawn in the first outer container (the diagram)
+		// * a flow element is contained in a process but drawn partly outside it
+		// * it must still be in the participant container shape of the 
+		//   process because we want to retain the containment relation 
+		// (think about subprocesses)
 		
-		// element is drawn on diagram along with its label
-		// as it is only partly contained in participant
-		assertThat(diagram.getChildren()).hasSize(3);
+		// element is drawn in participant along with its label
+		assertThat(diagram.getChildren()).hasSize(2);
 	}
 }

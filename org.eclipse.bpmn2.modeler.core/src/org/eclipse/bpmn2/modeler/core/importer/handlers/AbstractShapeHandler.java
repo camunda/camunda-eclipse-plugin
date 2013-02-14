@@ -133,14 +133,14 @@ public abstract class AbstractShapeHandler<T extends BaseElement> extends Abstra
 		// check with margin of 1
 		IRectangle containerRect = ConversionUtil.rectangle(containerLocation.getX()-1, containerLocation.getY()-1, containerWidth +1, containerHeight+1);
 		
-		if (!(LayoutUtil.isContained(containerRect, ConversionUtil.location(shapeTopLeftX, shapeTopLeftY)) ||
+		if (LayoutUtil.isContained(containerRect, ConversionUtil.location(shapeTopLeftX, shapeTopLeftY)) ||
 			LayoutUtil.isContained(containerRect, ConversionUtil.location(shapeBottomRightX, shapeBottomRightY)) ||
 			LayoutUtil.isContained(containerRect, ConversionUtil.location(shapeBottomLeftX, shapeBottomLeftY)) ||
-			LayoutUtil.isContained(containerRect, ConversionUtil.location(shapeTopRightX, shapeTopRightY))) ) {
-			return false;
+			LayoutUtil.isContained(containerRect, ConversionUtil.location(shapeTopRightX, shapeTopRightY)) ) {
+			return true;
 		}
 		
-		return true;
+		return false;
 	}
 
 	protected PictogramElement createPictogramElement(T bpmnElement, AddContext context, IAddFeature addFeature) {
