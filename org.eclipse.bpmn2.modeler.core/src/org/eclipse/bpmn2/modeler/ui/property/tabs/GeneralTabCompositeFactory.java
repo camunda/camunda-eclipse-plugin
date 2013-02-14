@@ -23,6 +23,7 @@ import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.Task;
+import org.eclipse.bpmn2.TextAnnotation;
 import org.eclipse.bpmn2.TimerEventDefinition;
 import org.eclipse.bpmn2.UserTask;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
@@ -42,6 +43,7 @@ import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.ServiceTaskPropertiesB
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.ServiceTypeControlsPropertiesBuilder;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.StartEventPropertiesBuilder;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.SubProcessPropertiesBuilder;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.TextAnnotationPropertiesBuilder;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.builder.UserTaskPropertiesBuilder;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.widgets.Composite;
@@ -81,6 +83,10 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 
 		if (businessObject instanceof SequenceFlow) {
 			createSequenceFlowComposite((SequenceFlow) businessObject);
+		}
+		
+		if (businessObject instanceof TextAnnotation) {
+			createTextAnnotationComposite((TextAnnotation) businessObject);
 		}
 
 		if (businessObject instanceof Lane) {
@@ -122,6 +128,10 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 
 	private void createSequenceFlowComposite(SequenceFlow sequenceFlow) {
 		new SequenceFlowPropertiesBuilder(parent, section, sequenceFlow).create();
+	}
+	
+	private void createTextAnnotationComposite(TextAnnotation annotation) {
+		new TextAnnotationPropertiesBuilder(parent, section, annotation).create();
 	}
 	
 	private void createProcessComposite(Process process) {

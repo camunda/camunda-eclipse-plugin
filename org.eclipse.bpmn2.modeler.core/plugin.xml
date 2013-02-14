@@ -114,6 +114,20 @@
       <constraintProvider cache="true">
          <package namespaceUri="http://www.omg.org/spec/BPMN/20100524/MODEL-XMI"/>
          <constraints categories="org.eclipse.bpmn2.modeler.core.validation">
+         	<constraint
+			        lang="OCL"
+			         severity="WARNING"
+			         mode="Batch"
+			         name="UniqueId"
+			         id="org.eclipse.bpmn2.modeler.core.validation.BaseElement.id"
+			         statusCode="100" isEnabledByDefault="true">
+			      <description>ID needs to be unique.</description>
+			      <message>ID needs to be unqiue. Displayed value will not be saved.</message>
+			      <target class="BaseElement" />
+					<![CDATA[
+						self.id->notEmpty() implies bpmn2::BaseElement.allInstances()->select(s | s.id = self.id)->size() <= 1
+					]]>
+			</constraint>
             <constraint
                   lang="Java"
                   class="org.eclipse.bpmn2.modeler.core.validation.ValidIdConstraint"
@@ -137,7 +151,7 @@
                   </event>
                </target>
             </constraint>
-            <constraint
+            <!-- constraint
 			        lang="OCL"
 			         severity="CANCEL"
 			         mode="Live"
@@ -164,20 +178,6 @@
 			      <![CDATA[
 			         self.outgoing->isEmpty()
 			      ]]>
-			</constraint>
-			<constraint
-			        lang="OCL"
-			         severity="WARNING"
-			         mode="Batch"
-			         name="UniqueId"
-			         id="org.eclipse.bpmn2.modeler.core.validation.BaseElement.id"
-			         statusCode="100" isEnabledByDefault="true">
-			      <description>ID needs to be unique.</description>
-			      <message>ID needs to be unqiue. Displayed value will not be saved.</message>
-			      <target class="BaseElement" />
-					<![CDATA[
-						self.id->notEmpty() implies bpmn2::BaseElement.allInstances()->select(s | s.id = self.id)->size() <= 1
-					]]>
 			</constraint>
 			<constraint
 					class="org.eclipse.bpmn2.modeler.core.validation.BPMN2BatchValidationConstraint"
@@ -244,7 +244,7 @@
 		      <target
 		            class="FormalExpression">
 		      </target>
-		   </constraint>
+		   </constraint-->
 		 
          </constraints>
       </constraintProvider>

@@ -29,7 +29,7 @@ public class DirectEditTextAnnotationFeature extends AbstractDirectEditingFeatur
 
 	@Override
     public int getEditingType() {
-		return TYPE_TEXT;
+		return TYPE_MULTILINETEXT;
     }
 
 	@Override
@@ -53,5 +53,10 @@ public class DirectEditTextAnnotationFeature extends AbstractDirectEditingFeatur
 		Object bo = getBusinessObjectForPictogramElement(pe);
 		GraphicsAlgorithm ga = context.getGraphicsAlgorithm();
 		return bo instanceof TextAnnotation && ga instanceof MultiText;
+	}
+	
+	@Override
+	public boolean stretchFieldToFitText() {
+		return true;
 	}
 }

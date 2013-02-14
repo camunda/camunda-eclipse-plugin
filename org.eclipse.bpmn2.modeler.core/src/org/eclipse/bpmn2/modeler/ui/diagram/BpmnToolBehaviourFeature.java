@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.ui.diagram;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.bpmn2.modeler.core.features.IBpmn2AddFeature;
@@ -35,19 +36,25 @@ import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.FeatureCheckerAdapter;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
+import org.eclipse.graphiti.features.IDirectEditingFeature;
+import org.eclipse.graphiti.features.IDirectEditingInfo;
 import org.eclipse.graphiti.features.IFeature;
 import org.eclipse.graphiti.features.IFeatureAndContext;
 import org.eclipse.graphiti.features.IFeatureChecker;
 import org.eclipse.graphiti.features.IFeatureCheckerHolder;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IContext;
+import org.eclipse.graphiti.features.context.ICustomContext;
+import org.eclipse.graphiti.features.context.IDirectEditingContext;
 import org.eclipse.graphiti.features.context.IDoubleClickContext;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.CreateConnectionContext;
 import org.eclipse.graphiti.features.context.impl.CreateContext;
 import org.eclipse.graphiti.features.context.impl.CustomContext;
+import org.eclipse.graphiti.features.context.impl.DirectEditingContext;
 import org.eclipse.graphiti.features.context.impl.UpdateContext;
+import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
@@ -404,6 +411,28 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
     
     @Override
     public ICustomFeature getDoubleClickFeature(IDoubleClickContext context) {
-    	return super.getDoubleClickFeature(context);
+		return new AbstractCustomFeature(getFeatureProvider()) {
+			
+			@Override
+			public boolean canExecute(ICustomContext context) {
+				// FIXME
+				return true;
+			}
+			
+			@Override
+			public void execute(ICustomContext customContext) {
+				if (Arrays.asList(customContext.getPictogramElements()).isEmpty()) {
+					return;
+				}
+				
+				IDirectEditingInfo directEditingInfo =
+					    getFeatureProvider().getDirectEditingInfo();
+					directEditingInfo.setMainPictogramElement(customContext.getPictogramElements()[0]);
+					directEditingInfo.setPictogramElement(customContext.getPictogramElements()[0]);
+					directEditingInfo.setGraphicsAlgorithm(customContext.getInnerGraphicsAlgorithm());
+					directEditingInfo.setActive(true);
+					getDiagramEditor().refresh();
+			}
+		};
     }
 }

@@ -16,6 +16,7 @@ import org.eclipse.bpmn2.Participant;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IDirectEditingContext;
 import org.eclipse.graphiti.features.impl.AbstractDirectEditingFeature;
+import org.eclipse.graphiti.func.IDirectEditing;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -29,7 +30,7 @@ public class DirectEditParticipantFeature extends AbstractDirectEditingFeature {
 
 	@Override
     public int getEditingType() {
-		return TYPE_TEXT;
+		return IDirectEditing.TYPE_TEXT;
     }
 
 	@Override
@@ -64,4 +65,10 @@ public class DirectEditParticipantFeature extends AbstractDirectEditingFeature {
 		GraphicsAlgorithm ga = context.getGraphicsAlgorithm();
 		return bo instanceof Participant && ga instanceof Text;
 	}
+	
+	@Override
+	public boolean stretchFieldToFitText() {
+		return true;
+	}
+	
 }
