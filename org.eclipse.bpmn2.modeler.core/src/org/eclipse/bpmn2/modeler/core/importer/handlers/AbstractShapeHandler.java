@@ -15,12 +15,15 @@ import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
+import org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.graphiti.datatypes.ILocation;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.AreaContext;
@@ -116,16 +119,24 @@ public abstract class AbstractShapeHandler<T extends BaseElement> extends Abstra
 		
 		int shapeTopLeftX = (int) shapeBounds.getX();
 		int shapeTopLeftY = (int) shapeBounds.getY();
+		
 		int shapeBottomRightX = (int) shapeBounds.getX() + (int) shapeBounds.getWidth();
 		int shapeBottomRightY = (int) shapeBounds.getY() + (int) shapeBounds.getHeight();
-
-		// check if top left and bottom right points of shape are contained in container bounds
 		
-		if (containerLocation.getX() > shapeTopLeftX || 
-			containerLocation.getY() > shapeTopLeftY ||
-			containerLocation.getX() + containerWidth < shapeBottomRightX ||
-			containerLocation.getY() + containerHeight < shapeBottomRightY) {
-			
+		int shapeBottomLeftX = (int) shapeBounds.getX();
+		int shapeBottomLeftY = (int) shapeBounds.getY() + (int) shapeBounds.getHeight();
+
+		int shapeTopRightX = (int) shapeBounds.getX() + (int) shapeBounds.getWidth();
+		int shapeTopRightY = (int) shapeBounds.getY();
+		
+		// check if top left point of shape is contained in container bounds
+		// check with margin of 1
+		IRectangle containerRect = ConversionUtil.rectangle(containerLocation.getX()-1, containerLocation.getY()-1, containerWidth +1, containerHeight+1);
+		
+		if (!(LayoutUtil.isContained(containerRect, ConversionUtil.location(shapeTopLeftX, shapeTopLeftY)) ||
+			LayoutUtil.isContained(containerRect, ConversionUtil.location(shapeBottomRightX, shapeBottomRightY)) ||
+			LayoutUtil.isContained(containerRect, ConversionUtil.location(shapeBottomLeftX, shapeBottomLeftY)) ||
+			LayoutUtil.isContained(containerRect, ConversionUtil.location(shapeTopRightX, shapeTopRightY))) ) {
 			return false;
 		}
 		
@@ -144,7 +155,6 @@ public abstract class AbstractShapeHandler<T extends BaseElement> extends Abstra
 		}
 		
 	}
-
 
 	protected void setLocation(AddContext context, ContainerShape container, BPMNShape shape) {
 		
