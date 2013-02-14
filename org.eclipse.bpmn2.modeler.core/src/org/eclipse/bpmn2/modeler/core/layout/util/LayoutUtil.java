@@ -431,14 +431,7 @@ public class LayoutUtil {
 	}
 	
 	public static void addTurningBendpointsVertical(FreeFormConnection connection, Docking startDocking, Docking endDocking, boolean up) {
-		Integer startEndDelta = startDocking.getPosition().getY() - endDocking.getPosition().getY();
-		
-		final Integer minDistance = 30;
-		Integer startDistance = minDistance;
-		
-		if (Math.abs(startEndDelta) > minDistance) {
-			startDistance += Math.abs(startEndDelta);
-		}
+		Integer startDistance = 30;
 		
 		if (up) {
 			startDistance *= -1;
