@@ -4,6 +4,7 @@ import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.Events;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.jface.viewers.CellEditor;
@@ -57,8 +58,20 @@ public class EObjectAttributeEditingSupport<T extends EObject> extends EditingSu
 		Object val = toEValue(value);
 		Object oldVal = getEValue(element);
 		
-		if ((val == null && val != oldVal) || !val.equals(oldVal)) {
-			TransactionalEditingDomain editingDomain = TransactionUtil.getEditingDomain(element);
+		TransactionalEditingDomain editingDomain = TransactionUtil.getEditingDomain(element);
+		
+		final T elementRef = element;
+		
+		if (val == null) {
+			editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+				
+				@Override
+				protected void doExecute() {
+					elementRef.eUnset(feature);
+				}
+			});
+		}
+		else if ((val != oldVal) || !val.equals(oldVal)) {
 			ModelUtil.setValue(editingDomain, element, feature, val);
 		}
 		

@@ -143,7 +143,7 @@ public class DefaultLayoutContext implements LayoutContext {
 		// FIXME this is for testing purposes since we have 
 		// there are sometimes loops after move of selections
 		
-		int cancelCounter = Integer.MAX_VALUE - 2;
+		int cancelCounter = 0;
 		
 		do {
 			cancelCounter++;
