@@ -17,7 +17,9 @@ import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.CallChoreography;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.modeler.core.features.AbstractUpdateBaseElementFeature;
+import org.eclipse.bpmn2.modeler.core.features.DirectEditFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
+import org.eclipse.bpmn2.modeler.core.features.activity.task.DirectEditActivityFeature;
 import org.eclipse.bpmn2.modeler.ui.features.activity.AbstractActivityFeatureContainer;
 import org.eclipse.graphiti.features.IDirectEditingFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -30,7 +32,7 @@ public abstract class AbstractExpandableActivityFeatureContainer extends Abstrac
 
 	@Override
 	public IDirectEditingFeature getDirectEditingFeature(IFeatureProvider fp) {
-		return null;
+		return new DirectEditActivityFeature(fp);
 	}
 
 	@Override

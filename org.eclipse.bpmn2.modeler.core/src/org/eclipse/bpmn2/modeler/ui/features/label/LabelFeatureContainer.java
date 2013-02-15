@@ -10,6 +10,7 @@ import org.eclipse.bpmn2.DataStoreReference;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.Message;
+import org.eclipse.bpmn2.modeler.core.features.DirectEditFlowElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.PropertyNames;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
 import org.eclipse.bpmn2.modeler.core.features.container.FeatureContainer;
@@ -85,7 +86,7 @@ public class LabelFeatureContainer implements FeatureContainer {
 
 	@Override
 	public IDirectEditingFeature getDirectEditingFeature(IFeatureProvider fp) {
-		return null;
+		return new DirectEditFlowElementFeature(fp);
 	}
 
 	@Override

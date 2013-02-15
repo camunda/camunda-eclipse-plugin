@@ -13,6 +13,7 @@
 package org.eclipse.bpmn2.modeler.core.features;
 
 import org.eclipse.bpmn2.FlowElement;
+import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IDirectEditingContext;
 import org.eclipse.graphiti.features.impl.AbstractDirectEditingFeature;
@@ -47,10 +48,15 @@ public class DirectEditFlowElementFeature extends AbstractDirectEditingFeature {
 	public boolean canDirectEdit(IDirectEditingContext context) {
 		PictogramElement pe = context.getPictogramElement();
 		Object bo = getBusinessObjectForPictogramElement(pe);
-		return bo != null && bo instanceof FlowElement && context.getGraphicsAlgorithm() instanceof Text;
+		return bo != null && bo instanceof FlowElement && (LabelUtil.getLabelShape(pe, getDiagram()) != null);
 	}
 
 	private FlowElement getBusinessObject(IDirectEditingContext context) {
 		return (FlowElement) getBusinessObjectForPictogramElement(context.getPictogramElement());
+	}
+	
+	@Override
+	public boolean stretchFieldToFitText() {
+		return true;
 	}
 }

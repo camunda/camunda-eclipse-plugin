@@ -65,5 +65,9 @@ public class DirectEditLaneFeature extends AbstractDirectEditingFeature {
 		return bo instanceof Lane && ga instanceof Text;
 	}
 	
+	@Override
+	public boolean stretchFieldToFitText() {
+		return true;
+	}
 	
 }

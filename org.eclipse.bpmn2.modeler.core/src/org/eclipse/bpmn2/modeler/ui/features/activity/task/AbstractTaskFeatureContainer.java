@@ -16,7 +16,7 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.features.AbstractUpdateBaseElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.LayoutActivityFeature;
-import org.eclipse.bpmn2.modeler.core.features.activity.task.DirectEditTaskFeature;
+import org.eclipse.bpmn2.modeler.core.features.activity.task.DirectEditActivityFeature;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.features.activity.AbstractActivityFeatureContainer;
 import org.eclipse.graphiti.datatypes.IRectangle;
@@ -49,7 +49,7 @@ public abstract class AbstractTaskFeatureContainer extends AbstractActivityFeatu
 
 	@Override
 	public IDirectEditingFeature getDirectEditingFeature(IFeatureProvider fp) {
-		return new DirectEditTaskFeature(fp);
+		return new DirectEditActivityFeature(fp);
 	}
 
 	@Override
