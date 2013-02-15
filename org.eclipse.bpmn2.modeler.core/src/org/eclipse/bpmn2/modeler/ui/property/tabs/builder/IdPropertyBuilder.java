@@ -39,6 +39,8 @@ public class IdPropertyBuilder extends AbstractPropertiesBuilder<BaseElement> {
 		binding = new ValidatingStringTextBinding(bo, BASE_ELEMENT_ID_FEATURE, idText);
 		// validate unique id
 		binding.addErrorCode(100);
+		binding.addErrorCode(101);
+
 		binding.setMandatory(true);
 		
 		binding.establish();

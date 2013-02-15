@@ -131,11 +131,11 @@
             <constraint
                   lang="Java"
                   class="org.eclipse.bpmn2.modeler.core.validation.ValidIdConstraint"
-                  severity="CANCEL"
+                  severity="WARNING"
                   mode="Batch"
                   name="Valid IDs"
                   id="org.eclipse.bpmn2.modeler.core.validation.ValidId"
-                  statusCode="1">
+                  statusCode="101">
                <description>
                   IDs must be valid.
                </description>
