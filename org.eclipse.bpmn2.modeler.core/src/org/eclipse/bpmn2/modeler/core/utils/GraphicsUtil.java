@@ -865,8 +865,8 @@ public class GraphicsUtil {
 	public static final int TASK_DEFAULT_HEIGHT = 80;
 	public static final int TASK_IMAGE_SIZE = 16;
 
-	public static final int SUB_PROCEESS_DEFAULT_WIDTH = 300;
-	public static final int SUB_PROCESS_DEFAULT_HEIGHT = 300;
+	public static final int SUB_PROCEESS_DEFAULT_WIDTH = 200;
+	public static final int SUB_PROCESS_DEFAULT_HEIGHT = 150;
 
 	public static final int MARKER_WIDTH = 10;
 	public static final int MARKER_HEIGHT = 10;
