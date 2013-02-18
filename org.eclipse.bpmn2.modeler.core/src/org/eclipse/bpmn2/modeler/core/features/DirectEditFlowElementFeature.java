@@ -17,7 +17,6 @@ import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IDirectEditingContext;
 import org.eclipse.graphiti.features.impl.AbstractDirectEditingFeature;
-import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
@@ -29,7 +28,7 @@ public class DirectEditFlowElementFeature extends AbstractDirectEditingFeature {
 
 	@Override
 	public int getEditingType() {
-		return TYPE_TEXT;
+		return TYPE_MULTILINETEXT;
 	}
 
 	@Override

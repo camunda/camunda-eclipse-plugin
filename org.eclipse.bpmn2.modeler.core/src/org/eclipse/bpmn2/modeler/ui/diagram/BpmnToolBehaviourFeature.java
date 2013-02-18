@@ -460,7 +460,7 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider
 				directEditingInfo.setPictogramElement(pe);
 
 				directEditingInfo
-						.setGraphicsAlgorithm(labelShape != null ? labelShape.getGraphicsAlgorithm() : contextPe.getGraphicsAlgorithm());
+						.setGraphicsAlgorithm(labelShape != null ? labelShape.getGraphicsAlgorithm() : customContext.getInnerGraphicsAlgorithm());
 				
 				directEditingInfo.setActive(true);
 				getDiagramEditor().refresh();
