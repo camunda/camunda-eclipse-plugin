@@ -30,7 +30,6 @@ import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.ui.internal.services.IGefService;
 
 /**
  * Utility dealing with all sorts of layout specific concerns.
@@ -431,11 +430,18 @@ public class LayoutUtil {
 	}
 	
 	public static void addTurningBendpointsVertical(FreeFormConnection connection, Docking startDocking, Docking endDocking, boolean up) {
+		int sign = 1;
 		Integer startDistance = 30;
 		
 		if (up) {
-			startDistance *= -1;
+			sign = -1;
 		}
+		
+		startDistance *= sign;
+		
+		int dockingDistance = endDocking.getPosition().getY() - startDocking.getPosition().getY();
+		
+		startDistance += (dockingDistance * sign) > startDistance ? dockingDistance :  0;
 		
 		Point firstBendPoint = point(startDocking.getPosition().getX(), startDistance + startDocking.getPosition().getY());
 		
