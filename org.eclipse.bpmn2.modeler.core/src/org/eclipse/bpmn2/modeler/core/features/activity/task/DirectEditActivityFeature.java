@@ -13,12 +13,12 @@
 package org.eclipse.bpmn2.modeler.core.features.activity.task;
 
 import org.eclipse.bpmn2.Activity;
-import org.eclipse.bpmn2.modeler.core.features.DirectEditFlowElementFeature;
+import org.eclipse.bpmn2.modeler.core.features.DirectEditNamedElementFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IDirectEditingContext;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
-public class DirectEditActivityFeature extends DirectEditFlowElementFeature {
+public class DirectEditActivityFeature extends DirectEditNamedElementFeature {
 
 	public DirectEditActivityFeature(IFeatureProvider fp) {
 		super(fp);
