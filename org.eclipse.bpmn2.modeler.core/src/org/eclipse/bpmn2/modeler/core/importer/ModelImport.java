@@ -420,7 +420,10 @@ public class ModelImport {
 				continue;
 			} else {
 				if (getPictogramElementOrNull(e) == null) {
-					log(new UnmappedElementException("element not assigned to lane", e));
+					if (e instanceof FlowNode) {
+						log(new UnmappedElementException("element not assigned to lane", e));
+					}
+					
 					unreferencedFlowElements.add(e);
 				}
 			}

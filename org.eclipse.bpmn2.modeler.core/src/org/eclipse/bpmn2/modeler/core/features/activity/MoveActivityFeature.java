@@ -12,10 +12,14 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features.activity;
 
+import static org.eclipse.bpmn2.modeler.core.utils.ContextUtil.copyProperties;
+
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.features.MoveFlowNodeFeature;
+import org.eclipse.bpmn2.modeler.core.features.PropertyNames;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractBoundaryEventOperation;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
@@ -65,6 +69,8 @@ public class MoveActivityFeature extends MoveFlowNodeFeature {
 		newContext.setLocation(ga.getX(), ga.getY());
 		newContext.putProperty(ACTIVITY_MOVE_PROPERTY, true);
 
+		copyProperties(context, newContext, MOVE_PROPERTIES);
+		
 		IMoveShapeFeature moveFeature = getFeatureProvider().getMoveShapeFeature(newContext);
 		if (moveFeature.canMoveShape(newContext)) {
 			moveFeature.moveShape(newContext);

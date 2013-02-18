@@ -13,19 +13,16 @@
 package org.eclipse.bpmn2.modeler.core.features;
 
 import static org.eclipse.bpmn2.modeler.core.utils.ContextUtil.isNot;
-import static org.eclipse.bpmn2.modeler.core.utils.ContextUtil.set;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.layout.util.Layouter;
-import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
-import org.eclipse.graphiti.features.context.impl.LayoutContext;
 import org.eclipse.graphiti.features.impl.DefaultMoveShapeFeature;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -35,6 +32,10 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 	public static final String SKIP_MOVE_LABEL = "DefaultMoveBPMNShapeFeature.SKIP_MOVE_LABEL";
 	public static final String SKIP_MOVE_BENDPOINTS = "DefaultMoveBPMNShapeFeature.SKIP_MOVE_BENDPOINTS";
 	public static final String SKIP_REPAIR_CONNECTIONS_AFTER_MOVE = "DefaultMoveBPMNShapeFeature.SKIP_RECONNECT_AFTER_MOVE";
+
+	public static final String[] MOVE_PROPERTIES = {
+		SKIP_MOVE_LABEL, SKIP_MOVE_BENDPOINTS, SKIP_REPAIR_CONNECTIONS_AFTER_MOVE
+	};
 	
 	public DefaultMoveBPMNShapeFeature(IFeatureProvider fp) {
 		super(fp);
@@ -86,16 +87,19 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 		Layouter.layoutShapeAfterMove(shape, isMoveLabel(context), isReconnectShapeAfterMove(context), getFeatureProvider());
 	}
 	
-	private boolean isReconnectShapeAfterMove(IMoveShapeContext context) {
+	protected boolean isReconnectShapeAfterMove(IMoveShapeContext context) {
 		return isNot(context, SKIP_REPAIR_CONNECTIONS_AFTER_MOVE);
 	}
 	
-	private boolean isMoveBendpoints(IMoveShapeContext context) {
+	protected boolean isMoveBendpoints(IMoveShapeContext context) {
 		return isNot(context, SKIP_MOVE_BENDPOINTS);
 	}
 
-	private boolean isMoveLabel(IMoveShapeContext context) {
-		return isNot(context, SKIP_MOVE_LABEL);
+	protected boolean isMoveLabel(IMoveShapeContext context) {
+		Shape label = LabelUtil.getLabelShape(context.getPictogramElement(), getDiagram());
+		
+		// return is move label only if the label exists and is not an editor selection, too.
+		return isNot(context, SKIP_MOVE_LABEL) && !isEditorSelection(label);
 	}
 	
 	/**

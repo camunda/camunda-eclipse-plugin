@@ -26,14 +26,22 @@ public abstract class AbstractLayoutBpmnElementFeature<T extends PictogramElemen
 	
 	@Override
 	public boolean layout(ILayoutContext context) {
+		adjustLabelPosition(context);
+		
+		return true;
+	}
+
+	/**
+	 * Adjust label position if needed
+	 * @param context
+	 */
+	protected void adjustLabelPosition(ILayoutContext context) {
 		T pictogramElement = getLayoutedElement(context);
 		
 		if (isAdjustLabelPosition(context)) {
 			// move label after the element has been moved
 			moveLabel(pictogramElement);
 		}
-		
-		return true;
 	}
 
 	protected boolean isAdjustLabelPosition(ILayoutContext context) {

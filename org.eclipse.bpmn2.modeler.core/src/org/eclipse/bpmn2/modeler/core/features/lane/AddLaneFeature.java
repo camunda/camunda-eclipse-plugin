@@ -35,6 +35,7 @@ import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.dd.dc.Bounds;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -144,17 +145,17 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 		boolean horizontal = bpmnShape.isIsHorizontal();
 		FeatureSupport.setHorizontal(newLaneShape, horizontal);
 		
-		// move shapes contained in target container
-		for (Shape containedFlowNodeShape : getFlowNodeShapes(context, lane)) {
-			GraphicsUtil.sendToFront(containedFlowNodeShape);
-			containedFlowNodeShape.setContainer(newLaneShape);
-		}
-		
 		// add text
 		createLaneLabel(newLaneShape, lane, horizontal);
 
 		ContainerShape newShapeContainer = newLaneShape.getContainer();
-
+		
+		// move shapes contained in target container
+		for (Shape containedFlowNodeShape : getContainedFlowElementShapes(newShapeContainer)) {
+			GraphicsUtil.sendToFront(containedFlowNodeShape);
+			containedFlowNodeShape.setContainer(newLaneShape);
+		}
+		
 		if (!isImport) {
 			FeatureSupport.redraw(newShapeContainer);
 		}
@@ -164,7 +165,7 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 		
 		compensateShapeMovements(newLaneShape);
 	}
-	
+
 	private void createLaneLabel(ContainerShape newShape, Lane lane, boolean horizontal) {
 		
 		IGaService gaService = Graphiti.getGaService();
@@ -258,16 +259,19 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 		}
 	}
 
-	private List<Shape> getFlowNodeShapes(IAddContext context, Lane lane) {
-		List<FlowNode> nodes = lane.getFlowNodeRefs();
-		List<Shape> shapes = new ArrayList<Shape>();
-		for (Shape s : context.getTargetContainer().getChildren()) {
-			Object bo = getBusinessObjectForPictogramElement(s);
-			if (bo != null && nodes.contains(bo)) {
-				shapes.add(s);
+	private List<Shape> getContainedFlowElementShapes(ContainerShape container) {
+
+		List<Shape> flowElementShapes = new ArrayList<Shape>();
+		
+		List<Shape> children = container.getChildren();
+		for (Shape child: children) {
+			BaseElement baseElement = BusinessObjectUtil.getFirstBaseElement(child);
+			if (baseElement instanceof FlowElement) {
+				flowElementShapes.add(child);
 			}
 		}
-		return shapes;
+		
+		return flowElementShapes;
 	}
 
 	private int getNumberOfLanes(ITargetContext context) {
