@@ -77,6 +77,7 @@ public class UpdateBaseElementNameFeature extends AbstractUpdateFeature {
 	}
 
 	@Override
+	// FIXME is this a cool feature, or is it messing up our transactions / undo?
 	public boolean update(IUpdateContext context) {
 		PictogramElement pe = (PictogramElement) context.getPictogramElement();
 		BaseElement element = (BaseElement) BusinessObjectUtil.getFirstElementOfType(pe, BaseElement.class);

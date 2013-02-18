@@ -13,7 +13,7 @@
 package org.eclipse.bpmn2.modeler.core.features.container;
 
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.modeler.core.features.DirectEditFlowElementFeature;
+import org.eclipse.bpmn2.modeler.core.features.DirectEditNamedElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.ReconnectBaseElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.LayoutFlowFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
@@ -47,11 +47,6 @@ public abstract class BaseElementConnectionFeatureContainer extends ConnectionFe
 	@Override
 	public boolean canApplyTo(Object o) {
 		return o instanceof BaseElement;
-	}
-	
-	@Override
-	public IDirectEditingFeature getDirectEditingFeature(IFeatureProvider fp) {
-		return new DirectEditFlowElementFeature(fp);
 	}
 	
 	@Override
