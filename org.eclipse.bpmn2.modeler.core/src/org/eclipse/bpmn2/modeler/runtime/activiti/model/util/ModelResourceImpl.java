@@ -118,8 +118,13 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 			
 			@Override
 			protected boolean shouldSaveFeature(EObject o, EStructuralFeature f) {
-				if (o instanceof Point)
-				{
+				if (f == ModelPackage.eINSTANCE.getExecutionListenerType_Event() ||
+					f == ModelPackage.eINSTANCE.getTaskListenerType_Event()) {
+				
+					return true;
+				}
+				
+				if (o instanceof Point) {
 					return true;
 				}
 				

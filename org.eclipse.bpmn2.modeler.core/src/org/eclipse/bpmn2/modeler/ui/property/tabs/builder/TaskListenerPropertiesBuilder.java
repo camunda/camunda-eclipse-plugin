@@ -134,12 +134,6 @@ public class TaskListenerPropertiesBuilder extends AbstractPropertiesBuilder<Use
 	private EObject transactionalCreateType(EClass typeCls, final EStructuralFeature feature) {
 		final EObject instance = ModelFactory.eINSTANCE.create(typeCls);
 		
-		// Explicitly initialize default value
-		if (ModelPackage.eINSTANCE.getTaskListenerType().equals(typeCls)) {
-			TaskListenerType taskListener = (TaskListenerType) instance;
-			taskListener.setEvent(EventType.CREATE);
-		}
-		
 		TransactionalEditingDomain editingDomain = TransactionUtil.getEditingDomain(bo);
 		editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
 			

@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.bpmn2.ChoreographyActivity;
 import org.eclipse.bpmn2.Lane;
+import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.layout.util.Layouter;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
@@ -158,12 +159,16 @@ public class ResizeParticipantFeature extends DefaultResizeShapeFeature {
 	
 	@Override
 	public void resizeShape(IResizeShapeContext context) {
-		if (BusinessObjectUtil.containsChildElementOfType(context.getPictogramElement(), Lane.class)) {
+		PictogramElement pictogramElement = context.getPictogramElement();
+		
+		if (BusinessObjectUtil.containsChildElementOfType(pictogramElement, Lane.class)) {
 			resizeLaneHeight(context);
 			resizeLaneWidth(context);
 		}
 		
 		super.resizeShape(context);
+		
+		DIUtils.updateDI(pictogramElement);
 	}
 	
 	@Override
