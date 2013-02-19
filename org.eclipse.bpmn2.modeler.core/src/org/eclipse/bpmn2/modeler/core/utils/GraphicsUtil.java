@@ -1339,7 +1339,6 @@ public class GraphicsUtil {
 				if (baseElement != null) {
 					if (baseElement instanceof DataInput || 
 						baseElement instanceof DataOutput || 
-						baseElement instanceof Group ||
 						baseElement instanceof TextAnnotation) {
 						
 						return 8;

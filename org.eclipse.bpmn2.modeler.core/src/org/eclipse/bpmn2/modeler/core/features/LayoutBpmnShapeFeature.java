@@ -179,7 +179,6 @@ public class LayoutBpmnShapeFeature extends AbstractLayoutBpmnElementFeature<Con
 	 * @param connection
 	 */
 	protected void layoutConnection(Connection connection, ILayoutContext context) {
-
 		Layouter.layoutConnectionAfterShapeMove(connection, getFeatureProvider());
 	}
 }
