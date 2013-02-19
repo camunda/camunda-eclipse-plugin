@@ -71,7 +71,7 @@ public class ContainerShapeAssert extends AbstractShapeAssert<ContainerShapeAsse
 	
 	@Override
 	public ContainerShapeAssert hasChild(Shape child) {
-		Assertions.assertThat(actual.getChildren().contains(child));
+		Assertions.assertThat(actual.getChildren().contains(child)).isTrue();
 		return myself;
 	}
 

@@ -541,10 +541,11 @@ public class ModelHandler {
 	}
 	
 	public Process getOrCreateProcess(Participant participant) {
-		if (participant==null) {
+		if (participant == null) {
 			participant = getInternalParticipant();
 		}
-		if (participant!=null && participant.getProcessRef()!=null) {
+		
+		if (participant != null && participant.getProcessRef() != null) {
 			return participant.getProcessRef();
 		}
 		
@@ -559,7 +560,7 @@ public class ModelHandler {
 		if (process == null) {
 			process = create(Process.class);
 			getDefinitions().getRootElements().add(process);
-			if (participant!=null) {
+			if (participant != null) {
 				participant.setProcessRef(process);
 			}
 		}
@@ -879,14 +880,14 @@ public class ModelHandler {
 			Definitions definitions = (Definitions) o;
 			
 			// this is the fallback for random additions to the diagram
-			List<Process> processes = getAll(Process.class);
-			if (processes.isEmpty()) {
-				Process process = create(Process.class);
+			Process process = getFirst(definitions.getRootElements(), Process.class);
+			if (process == null) {
+				process = create(Process.class);
 				definitions.getRootElements().add(process);
 				
 				return process;
 			} else { 
-				return processes.get(0);
+				return process;
 			}
 		}
 		
@@ -957,6 +958,23 @@ public class ModelHandler {
 		return findElementOfType(clazz, ((BaseElement) from).eContainer());
 	}
 
+	/**
+	 * 
+	 * @param elements
+	 * @param cls
+	 * @return
+	 */
+	protected static <T extends BaseElement, V extends BaseElement> T getFirst(List<V> elements, Class<T> cls) {
+		
+		for (BaseElement e : elements) {
+			if (cls.isInstance(e)) {
+				return cls.cast(e);
+			}
+		}
+		
+		return null;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public <T> List<T> getAll(final Class<T> class1) {
 		return getAll(this.resource, class1);

@@ -2,6 +2,7 @@ package org.eclipse.bpmn2.modeler.core.test.importer.dataitems;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.rectangle;
+import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 
 import org.eclipse.bpmn2.DataStoreReference;
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
@@ -12,6 +13,7 @@ import org.eclipse.bpmn2.modeler.core.test.util.Util;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.IRectangle;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramLink;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.junit.Assert;
@@ -41,6 +43,55 @@ public class ImportDatastoreTest extends AbstractImportBpmnModelTest {
 		assertThat(((DataStoreReference)businessObject).getId()).isEqualTo("DataStoreRef_1");
 	}
 
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/importer/dataitems/ImportDataItems.testBaseSubProcess.bpmn")
+	public void testImportOnSubProcess() {
+		
+		// when
+		// importing diagram
+		ModelImport importer = createModelImport();
+		importer.execute();
+
+		ContainerShape subprocessShape = (ContainerShape) Util.findShapeByBusinessObjectId(getDiagram(), "SubProcess_1");
+		Shape dataItemShape = Util.findShapeByBusinessObjectId(getDiagram(), "_DataStoreReference_4");
+		
+		// then
+		assertThat(dataItemShape)
+			.isInFrontOf(subprocessShape);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/importer/dataitems/ImportDataItems.testBaseParticipant.bpmn")
+	public void testImportOnParticipantNoWarning() {
+		
+		// when
+		// importing diagram with datastore on lane
+		ModelImport importer = createModelImport();
+		importer.execute();
+		
+		// then
+		// no import warning should occur
+		assertThat(importer.getImportWarnings())
+			.isEmpty();
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/importer/dataitems/ImportDataItems.testBaseParticipant.bpmn")
+	public void testImportOnParticipant() {
+		
+		// when
+		// importing diagram
+		ModelImport importer = createModelImport();
+		importer.execute();
+
+		ContainerShape laneShape = (ContainerShape) Util.findShapeByBusinessObjectId(getDiagram(), "Lane_1");
+		Shape dataItemShape = Util.findShapeByBusinessObjectId(getDiagram(), "_DataStoreReference_3");
+		
+		// then
+		assertThat(dataItemShape)
+			.isInFrontOf(laneShape);
+	}
+	
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/importer/dataitems/ImportDatastoreTest.testImportDatastore.bpmn")
 	public void testImportDatastoreShouldGetBoundsFromDi() {

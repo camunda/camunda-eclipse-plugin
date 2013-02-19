@@ -4,6 +4,7 @@ import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
@@ -13,6 +14,8 @@ import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramLink;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -90,6 +93,57 @@ public abstract class AbstractShapeAssert<S extends AbstractShapeAssert<S, A>, A
 		return new IRectangleAssert(bounds);
 	}
 
+	/**
+	 * Asserts that two shapes are in front of each other.
+	 * 
+	 * @param other
+	 * @return
+	 */
+	public AbstractShapeAssert<S, A> isInFrontOf(Shape other) {
+		
+		List<ContainerShape> actualParents = getAllParents(actual);
+		List<ContainerShape> otherParents = getAllParents(other);
+		
+		List<ContainerShape> sharedParents = new ArrayList<ContainerShape>(actualParents);
+		
+		// keep only same parents
+		sharedParents.retainAll(otherParents);
+		
+		if (sharedParents.isEmpty()) {
+			Fail.fail(String.format("Expected <%s> and <%s> to have shared parent", actual, other));
+		}
+		
+		ContainerShape sameParent = sharedParents.get(0);
+		Shape actualChild = actualParents.indexOf(sameParent) == 0 ? actual : actualParents.get(actualParents.indexOf(sameParent) - 1);
+		Shape otherChild = otherParents.indexOf(sameParent) == 0 ? other : otherParents.get(otherParents.indexOf(sameParent) - 1);
+		
+		
+		int indexOfActualChild = sameParent.getChildren().indexOf(actualChild);
+		int indexOfOtherChild = sameParent.getChildren().indexOf(otherChild);
+		
+		if (indexOfActualChild < indexOfOtherChild) {
+			Fail.fail(String.format("Expected <%s> or descendant to be in front of <%s> in shared parents <%s> children", actual, other, sameParent));
+		}
+		
+		return myself;
+	}
+	
+	/**
+	 * Get parents of the shape up to the diagram (last element in resulting list).
+	 * 
+	 * @param shape
+	 * @return
+	 */
+	protected List<ContainerShape> getAllParents(Shape shape) {
+		List<ContainerShape> parents = new ArrayList<ContainerShape>();
+		while (!(shape instanceof Diagram)) {
+			shape = shape.getContainer();
+			parents.add((ContainerShape) shape);
+		}
+		
+		return parents;
+	}
+	
 	/**
 	 * Assert that a movement took place
 	 * 

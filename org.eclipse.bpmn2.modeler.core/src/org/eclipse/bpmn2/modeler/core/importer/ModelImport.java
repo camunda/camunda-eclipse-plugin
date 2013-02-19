@@ -132,19 +132,26 @@ public class ModelImport {
 	}
 	
 	public void execute() {
-		EList<EObject> contents = resource.getContents();
+		long time = System.currentTimeMillis();
 		
-		if (contents.isEmpty()) {
-			throw new ResourceImportException("No document root in resource bundle");
-		} else {
-			DocumentRoot documentRoot = (DocumentRoot) contents.get(0);
-			handleDocumentRoot(documentRoot);
+		try {
+			EList<EObject> contents = resource.getContents();
 			
-			if (contents.size() > 1) {
-				// TODO: is there a possibility for a resource to have multiple DocumentRoots?
-				InvalidContentException exception = new InvalidContentException("Multiple document roots in resource");
-				log(exception);
+			if (contents.isEmpty()) {
+				throw new ResourceImportException("No document root in resource bundle");
+			} else {
+				DocumentRoot documentRoot = (DocumentRoot) contents.get(0);
+				handleDocumentRoot(documentRoot);
+				
+				if (contents.size() > 1) {
+					// TODO: is there a possibility for a resource to have multiple DocumentRoots?
+					InvalidContentException exception = new InvalidContentException("Multiple document roots in resource");
+					log(exception);
+				}
 			}
+		} finally {
+			time = System.currentTimeMillis() - time;
+			// System.out.println(String.format("Bpmn2Editor import model in %sms", time));
 		}
 	}
 		
@@ -304,29 +311,7 @@ public class ModelImport {
 	}
 
 	protected void performLayout() {
-		// finally layout all elements
-		//		for (Entry<BaseElement, PictogramElement> entry : pictogramElements.entrySet()) {
-		//			BaseElement baseElement = entry.getKey();
-		//			PictogramElement pictogramElement = entry.getValue();
-		//			
-		//			if (baseElement instanceof SubProcess) {
-		//				// we need the layout to hide children if collapsed
-		//				LayoutContext context = new LayoutContext(pictogramElement);
-		//				ILayoutFeature feature = featureProvider.getLayoutFeature(context);
-		//				if (feature != null && feature.canLayout(context)) {
-		//					feature.layout(context);
-		//				}
-		//
-		//			} else
-		//			if (baseElement instanceof FlowNode) {
-		//				LayoutContext context = new LayoutContext(pictogramElement);
-		//				ILayoutFeature feature = featureProvider.getLayoutFeature(context);
-		//				if (feature != null && feature.canLayout(context)) {
-		//					feature.layout(context);
-		//				}
-		//			}
-		//			
-		//		}
+		// do nothing
 	}
 	
 	// handling of BPMN Model Elements ///////////////////////////////////////////////////////////////
@@ -389,9 +374,6 @@ public class ModelImport {
 			
 		} else {
 			
-			// handle io specification (data input and output)
-			handleInputOutputSpecification(process, participantContainer);
-			
 			//  draw the lanes (possibly nested). The lanes reference the task elements they contain, but not the sequence flows.
 			for (LaneSet laneSet: laneSets) {
 				handleLaneSet(laneSet, process, participantContainer);
@@ -401,6 +383,9 @@ public class ModelImport {
 			List<FlowElement> flowElements = process.getFlowElements();
 			
 			handleUnreferencedFlowElements(participantContainer, flowElements);
+			
+			// handle io specification (data input and output)
+			handleInputOutputSpecification(process, participantContainer);
 			
 			// draw the sequence flows:
 			handleSequenceFlows(participantContainer, flowElements);
@@ -504,14 +489,14 @@ public class ModelImport {
 
 	protected void handleProcess(Process process, ContainerShape container) {
 		
-		// data store, data input, data output
-		handleInputOutputSpecification(process, container);
-		
 		// handle direct children of the process element (not displaying lanes)
 		List<FlowElement> flowElements = process.getFlowElements();
 		handleFlowElements(container, flowElements);
 		
 		handleSequenceFlows(container, flowElements);
+
+		// data store, data input, data output
+		handleInputOutputSpecification(process, container);
 		
 		// e.g. groups, text annotation, ...
 		List<Artifact> artifacts = process.getArtifacts();		

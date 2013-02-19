@@ -21,6 +21,7 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowNode;
+import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.Participant;
@@ -35,7 +36,6 @@ import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.dd.dc.Bounds;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -48,7 +48,6 @@ import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.algorithms.styles.Orientation;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
@@ -151,7 +150,7 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 		ContainerShape newShapeContainer = newLaneShape.getContainer();
 		
 		// move shapes contained in target container
-		for (Shape containedFlowNodeShape : getContainedFlowElementShapes(newShapeContainer)) {
+		for (Shape containedFlowNodeShape : getContainedBaseElementShapes(newShapeContainer)) {
 			GraphicsUtil.sendToFront(containedFlowNodeShape);
 			containedFlowNodeShape.setContainer(newLaneShape);
 		}
@@ -259,14 +258,14 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 		}
 	}
 
-	private List<Shape> getContainedFlowElementShapes(ContainerShape container) {
+	private List<Shape> getContainedBaseElementShapes(ContainerShape container) {
 
 		List<Shape> flowElementShapes = new ArrayList<Shape>();
 		
 		List<Shape> children = container.getChildren();
 		for (Shape child: children) {
 			BaseElement baseElement = BusinessObjectUtil.getFirstBaseElement(child);
-			if (baseElement instanceof FlowElement) {
+			if (baseElement instanceof FlowElement || baseElement instanceof ItemAwareElement) {
 				flowElementShapes.add(child);
 			}
 		}

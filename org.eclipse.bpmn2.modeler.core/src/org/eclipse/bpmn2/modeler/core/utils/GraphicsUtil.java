@@ -12,8 +12,12 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.utils;
 
+import java.io.DataInput;
+import java.io.DataOutput;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +28,8 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.Gateway;
+import org.eclipse.bpmn2.Group;
+import org.eclipse.bpmn2.TextAnnotation;
 import org.eclipse.bpmn2.modeler.core.features.PropertyNames;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.util.EList;
@@ -1307,9 +1313,42 @@ public class GraphicsUtil {
 		
 		List<Shape> detachedChildren = new ArrayList<Shape>(children);
 		
-		for (Shape child: detachedChildren) {
-			if (LabelUtil.isLabel(child)) {
-				Graphiti.getPeService().sendToFront(child);
+		// resort shapes according to visibility rules
+		Collections.sort(detachedChildren, new VisibilityComparator());
+		
+		for (Shape s: detachedChildren) {
+			Graphiti.getPeService().sendToFront(s);
+		}
+	}
+	
+	private static class VisibilityComparator implements Comparator<Shape> {
+
+		@Override
+		public int compare(Shape s1, Shape s2) {
+			Integer i1 = getVisibilityIndex(s1);
+			Integer i2 = getVisibilityIndex(s2);
+			
+			return i1.compareTo(i2);
+		}
+		
+		protected int getVisibilityIndex(Shape shape) {
+			if (LabelUtil.isLabel(shape)) {
+				return 10;
+			} else {
+				BaseElement baseElement = BusinessObjectUtil.getFirstBaseElement(shape);
+				if (baseElement != null) {
+					if (baseElement instanceof DataInput || 
+						baseElement instanceof DataOutput || 
+						baseElement instanceof Group ||
+						baseElement instanceof TextAnnotation) {
+						
+						return 8;
+					} else {
+						return 2;
+					}
+				} else {
+					return 0;
+				}
 			}
 		}
 	}

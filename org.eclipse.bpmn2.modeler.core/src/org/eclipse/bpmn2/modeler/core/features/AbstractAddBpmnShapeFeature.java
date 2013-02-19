@@ -211,7 +211,7 @@ public abstract class AbstractAddBpmnShapeFeature<T extends BaseElement> extends
 	 * Perform an initial update and layouting of the new shape as desired.
 	 * 
 	 * @param newShape
-	 * @param context 
+	 * @param context
 	 */
 	protected void updateAndLayout(ContainerShape newShape, IAddContext context) {
 		// update
