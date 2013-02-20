@@ -29,6 +29,7 @@
 	- missleading import warning removed
 		([0396380b](https://github.com/camunda/bpmn2-modeler/commit/0396380bdc99dd977e67f1cbb8336792d7a38e61))
 	- editor opens with current import result, even if unrecoverable error occurs
+		([0c519c18](https://github.com/camunda/bpmn2-modeler/commit/0c519c184247ea3b4a74b9e4729d1c5fbc312976]))
 - **move:** connections get moved on multi element move
 	([f4bd3428](https://github.com/camunda/bpmn2-modeler/commit/f4bd3428acead69d4cf9047c15ead8de07fd3ac8))
 
