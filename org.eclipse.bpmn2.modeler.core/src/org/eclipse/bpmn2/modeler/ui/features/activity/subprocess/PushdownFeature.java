@@ -27,7 +27,7 @@ import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
-import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.dd.di.DiagramElement;
@@ -126,7 +126,7 @@ public class PushdownFeature extends AbstractCustomFeature {
 						newDiagram.getChildren().add((Shape)p);
 						pictogramElement = p;
 					}
-					else if (GraphicsUtil.isLabel(p)) {
+					else if (LabelUtil.isLabel(p)) {
 						newDiagram.getChildren().add((Shape)p);
 						pictogramElement = p;
 					}

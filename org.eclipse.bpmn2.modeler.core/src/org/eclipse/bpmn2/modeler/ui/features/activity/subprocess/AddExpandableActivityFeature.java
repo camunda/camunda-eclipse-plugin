@@ -82,7 +82,7 @@ public class AddExpandableActivityFeature<T extends Activity>
 			GraphicsUtil.showActivityMarker(newShape, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
 		}
 	}
-
+	
 	@Override
 	public int getDefaultWidth() {
 		if (Bpmn2Preferences.getInstance().isExpandedDefault())

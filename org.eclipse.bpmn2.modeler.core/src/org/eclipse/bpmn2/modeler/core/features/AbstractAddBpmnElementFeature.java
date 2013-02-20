@@ -57,7 +57,7 @@ public abstract class AbstractAddBpmnElementFeature<T extends BaseElement, V ext
 	
 	@Override
 	public T getBusinessObject(IAddContext context) {
-		Object businessObject = context.getProperty(ContextConstants.BUSINESS_OBJECT);
+		Object businessObject = context.getProperty(PropertyNames.BUSINESS_OBJECT);
 		if (businessObject instanceof BaseElement)
 			return (T)businessObject;
 		return (T)context.getNewObject();
@@ -65,7 +65,7 @@ public abstract class AbstractAddBpmnElementFeature<T extends BaseElement, V ext
 
 	@Override
 	public void putBusinessObject(IAddContext context, T businessObject) {
-		context.putProperty(ContextConstants.BUSINESS_OBJECT, businessObject);
+		context.putProperty(PropertyNames.BUSINESS_OBJECT, businessObject);
 	}
 
 	@Override

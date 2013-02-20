@@ -13,8 +13,8 @@
 package org.eclipse.bpmn2.modeler.ui.features.participant;
 
 import org.eclipse.bpmn2.Participant;
-import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
+import org.eclipse.bpmn2.modeler.core.features.container.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.participant.AddParticipantFeature;
 import org.eclipse.bpmn2.modeler.core.features.participant.DirectEditParticipantFeature;
 import org.eclipse.bpmn2.modeler.core.features.participant.LayoutParticipantFeature;

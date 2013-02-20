@@ -12,12 +12,12 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity;
 
-import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.DefaultResizeBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.MoveActivityFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.UpdateActivityCompensateMarkerFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.UpdateActivityLoopAndMultiInstanceMarkerFeature;
+import org.eclipse.bpmn2.modeler.core.features.container.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractBoundaryEventOperation;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.eclipse.bpmn2.modeler.ui.features.event.AppendEventFeature;
@@ -26,6 +26,7 @@ import org.eclipse.graphiti.features.IDeleteFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
+import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IDeleteContext;
 import org.eclipse.graphiti.features.context.impl.DeleteContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
@@ -36,14 +37,15 @@ public abstract class AbstractActivityFeatureContainer extends BaseElementFeatur
 
 	@Override
 	public MultiUpdateFeature getUpdateFeature(IFeatureProvider fp) {
-		UpdateActivityCompensateMarkerFeature compensateMarkerUpdateFeature = new UpdateActivityCompensateMarkerFeature(
-				fp);
-		UpdateActivityLoopAndMultiInstanceMarkerFeature loopAndMultiInstanceUpdateFeature = new UpdateActivityLoopAndMultiInstanceMarkerFeature(
-				fp);
-		MultiUpdateFeature multiUpdate = new MultiUpdateFeature(fp);
-		multiUpdate.addUpdateFeature(compensateMarkerUpdateFeature);
-		multiUpdate.addUpdateFeature(loopAndMultiInstanceUpdateFeature);
-		return multiUpdate;
+		
+		UpdateActivityCompensateMarkerFeature compensateMarkerUpdateFeature = new UpdateActivityCompensateMarkerFeature(fp);
+		UpdateActivityLoopAndMultiInstanceMarkerFeature loopAndMultiInstanceUpdateFeature = new UpdateActivityLoopAndMultiInstanceMarkerFeature(fp);
+		
+		MultiUpdateFeature updateFeature = new MultiUpdateFeature(fp);
+		updateFeature.addUpdateFeature(compensateMarkerUpdateFeature);
+		updateFeature.addUpdateFeature(loopAndMultiInstanceUpdateFeature);
+		
+		return updateFeature;
 	}
 
 	@Override

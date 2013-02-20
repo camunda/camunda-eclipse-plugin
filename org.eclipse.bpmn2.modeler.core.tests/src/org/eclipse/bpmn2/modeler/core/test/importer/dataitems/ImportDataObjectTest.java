@@ -11,6 +11,7 @@
 package org.eclipse.bpmn2.modeler.core.test.importer.dataitems;
 
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.rectangle;
+import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
@@ -20,6 +21,7 @@ import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.StringUtil;
 import org.eclipse.bpmn2.modeler.core.test.util.Util;
 import org.eclipse.graphiti.datatypes.IRectangle;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.junit.Test;
 
@@ -42,6 +44,40 @@ public class ImportDataObjectTest extends AbstractImportBpmnModelTest {
 			.contains("DataObjectImpl");
 	}
 
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/importer/dataitems/ImportDataItems.testBaseSubProcess.bpmn")
+	public void testImportOnSubProcess() {
+		
+		// when
+		// importing diagram
+		ModelImport importer = createModelImport();
+		importer.execute();
+
+		ContainerShape subprocessShape = (ContainerShape) Util.findShapeByBusinessObjectId(getDiagram(), "SubProcess_1");
+		Shape dataItemShape = Util.findShapeByBusinessObjectId(getDiagram(), "DataObject_1");
+
+		// then
+		assertThat(dataItemShape)
+			.isInFrontOf(subprocessShape);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/importer/dataitems/ImportDataItems.testBaseParticipant.bpmn")
+	public void testImportOnParticipant() {
+		
+		// when
+		// importing diagram
+		ModelImport importer = createModelImport();
+		importer.execute();
+
+		ContainerShape laneShape = (ContainerShape) Util.findShapeByBusinessObjectId(getDiagram(), "Lane_1");
+		Shape dataItemShape = Util.findShapeByBusinessObjectId(getDiagram(), "DataObject_1");
+
+		// then
+		assertThat(dataItemShape)
+			.isInFrontOf(laneShape);
+	}
+	
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/importer/dataitems/ImportDataObjectTest.testImportDataObject.bpmn")
 	public void testImportDataObjectShouldGetBoundsFromDi() {

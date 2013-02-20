@@ -103,11 +103,11 @@ public abstract class AbstractBpmn2CreateFeature<T extends BaseElement>
 	
 	@SuppressWarnings("unchecked")
 	public T getBusinessObject(ICreateContext context) {
-		return (T) context.getProperty(ContextConstants.BUSINESS_OBJECT);
+		return (T) context.getProperty(PropertyNames.BUSINESS_OBJECT);
 	}
 	
 	public void putBusinessObject(ICreateContext context, T businessObject) {
-		context.putProperty(ContextConstants.BUSINESS_OBJECT, businessObject);
+		context.putProperty(PropertyNames.BUSINESS_OBJECT, businessObject);
 	}
 
 	public void postExecute(IExecutionInfo executionInfo) {

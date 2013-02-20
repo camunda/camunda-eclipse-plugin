@@ -7,7 +7,7 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.swt.widgets.Text;
 
 public abstract class ModelAttributeTextBinding<V> extends ModelTextBinding<V> {
-
+	
 	public ModelAttributeTextBinding(EObject model, EStructuralFeature feature, Text control) {
 		super(model, feature, control);
 	}

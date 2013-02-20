@@ -12,34 +12,24 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features.activity;
 
-import static org.eclipse.bpmn2.modeler.core.features.activity.AbstractAddActivityFeature.IS_ACTIVITY;
-
-import java.util.Collection;
-import java.util.List;
+import static org.eclipse.bpmn2.modeler.core.features.activity.AbstractAddActivityFeature.ACTIVITY_RECT;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.BoundaryEvent;
-import org.eclipse.bpmn2.SubProcess;
-import org.eclipse.bpmn2.modeler.core.di.DIUtils;
-import org.eclipse.bpmn2.modeler.core.features.DefaultLayoutBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.features.LayoutBpmnShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractBoundaryEventOperation;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
-import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ILayoutContext;
-import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
-import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
+import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.services.IGaService;
 
-public class LayoutActivityFeature extends DefaultLayoutBPMNShapeFeature {
+public class LayoutActivityFeature extends LayoutBpmnShapeFeature {
 
 	public LayoutActivityFeature(IFeatureProvider fp) {
 		super(fp);
@@ -52,58 +42,79 @@ public class LayoutActivityFeature extends DefaultLayoutBPMNShapeFeature {
 	}
 
 	@Override
-	public boolean layout(ILayoutContext context) {
-		ContainerShape container = (ContainerShape) context.getPictogramElement();
+	protected void layoutShape(ContainerShape container) {
+
+		super.layoutShape(container);
 		
-		IRectangle bounds = LayoutUtil.getAbsoluteBounds(container);
-		
-		int width = bounds.getWidth();
-		int height = bounds.getHeight();
+		IRectangle bounds = LayoutUtil.getRelativeBounds(container);
 		
 		GraphicsUtil.setActivityMarkerOffest(container, getMarkerContainerOffset());
 		GraphicsUtil.layoutActivityMarkerContainer(container);
 		
-		Collection<Shape> allContainedShapes = Graphiti.getPeService().getAllContainedShapes(container);
-		for (Shape shape: allContainedShapes) {
-			GraphicsAlgorithm ga = shape.getGraphicsAlgorithm();
-			IGaService gaService = Graphiti.getGaService();
-			
-			Shape rectShape = FeatureSupport.getShape(container, IS_ACTIVITY, Boolean.toString(true));
-			gaService.setSize(rectShape.getGraphicsAlgorithm(), width, height);
-			layoutInRectangle((RoundedRectangle) rectShape.getGraphicsAlgorithm());
-
-			Object[] objects = getAllBusinessObjectsForPictogramElement(shape);
-			for (Object bo : objects) {
-				layoutHook(shape, ga, bo, width, height);
-			}
-		}
-
+		layoutActivity(container, bounds);
+	}
+	
+	@Override
+	protected void postLayoutShapeAndChildren(ContainerShape shape, final ILayoutContext context) {
+		
 		new AbstractBoundaryEventOperation() {
 			@Override
-			protected void applyTo(ContainerShape container) {
-				layoutPictogramElement(container);
+			protected void applyTo(ContainerShape boundaryShape) {
+				layoutChild(context, boundaryShape);
 			}
-		}.execute(container);
-		
-		if (container.eContainer() instanceof ContainerShape) {
-			PictogramElement pe = (PictogramElement) container.eContainer();
-			if (BusinessObjectUtil.containsElementOfType(pe, SubProcess.class)) {
-				layoutPictogramElement(pe);
+		}.execute(shape);
+	}
+	
+	protected void layoutActivity(ContainerShape container, IRectangle bounds) {
+		for (Shape childShape: container.getChildren()) {
+			
+			if (isRect(childShape)) {
+				layoutActivityRectangle(container, childShape, bounds);
+			}
+			
+			if (isLabel(childShape)) {
+				layoutLabel(container, childShape, bounds);
 			}
 		}
+	}
+	
+	protected boolean isRect(Shape childShape) {
+		return Graphiti.getPeService().getPropertyValue(childShape, ACTIVITY_RECT) != null;
 
-		DIUtils.updateDIShape(container);
-		return true;
+	}
+	/**
+	 * Return true if the given shape is a label
+	 * 
+	 * @param subShape
+	 * @return
+	 */
+	protected boolean isLabel(Shape subShape) {
+		return getBusinessObjectForPictogramElement(subShape) != null && subShape.getGraphicsAlgorithm() instanceof Text;
 	}
 
+	/**
+	 * Layout the label
+	 * 
+	 * @param container
+	 * @param labelShape
+	 * @param bounds 
+	 */
+	protected void layoutLabel(ContainerShape container, Shape labelShape, IRectangle bounds) {
+		
+	}
+
+	/**
+	 * Layout the activity rectangle shape
+	 * 
+	 * @param activityRectangle
+	 * 
+	 * @param bounds 
+	 */
+	protected void layoutActivityRectangle(ContainerShape container, Shape activityRectangle, IRectangle bounds) {
+		GraphicsUtil.setSize(activityRectangle, bounds.getWidth(), bounds.getHeight());
+	}
+	
 	protected int getMarkerContainerOffset() {
 		return 0;
-	}
-
-	protected void layoutInRectangle(RoundedRectangle rect) {
-	}
-
-	protected boolean layoutHook(Shape shape, GraphicsAlgorithm ga, Object bo, int newWidth, int newHeight) {
-		return false;
 	}
 }

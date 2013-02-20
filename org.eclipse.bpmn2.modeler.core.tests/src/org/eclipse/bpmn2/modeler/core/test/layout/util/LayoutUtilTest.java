@@ -6,6 +6,10 @@ import static org.fest.assertions.api.Assertions.fail;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
@@ -13,6 +17,7 @@ import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.Util;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
+import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.junit.Ignore;
@@ -31,9 +36,9 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 		Shape start2 = Util.findShapeByBusinessObjectId(diagram, "StartEvent_2");
 		Shape task2 = Util.findShapeByBusinessObjectId(diagram, "Task_2");
 
-		assertThat(LayoutUtil.getHorizontalLayoutTreshold(LayoutUtil.getShapeCenter(task1), LayoutUtil.getShapeCenter(start2))).isGreaterThan(0);
-		assertThat(LayoutUtil.getHorizontalLayoutTreshold(LayoutUtil.getShapeCenter(start2), LayoutUtil.getShapeCenter(task1))).isLessThan(0);
-		assertThat(LayoutUtil.getHorizontalLayoutTreshold(LayoutUtil.getShapeCenter(start2), LayoutUtil.getShapeCenter(task2))).isEqualTo(0);
+		assertThat(LayoutUtil.getHorizontalLayoutTreshold(LayoutUtil.getAbsoluteShapeCenter(task1), LayoutUtil.getAbsoluteShapeCenter(start2))).isGreaterThan(0);
+		assertThat(LayoutUtil.getHorizontalLayoutTreshold(LayoutUtil.getAbsoluteShapeCenter(start2), LayoutUtil.getAbsoluteShapeCenter(task1))).isLessThan(0);
+		assertThat(LayoutUtil.getHorizontalLayoutTreshold(LayoutUtil.getAbsoluteShapeCenter(start2), LayoutUtil.getAbsoluteShapeCenter(task2))).isEqualTo(0);
 	}
 	
 	@Test
@@ -73,7 +78,7 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 		Shape task1 = Util.findShapeByBusinessObjectId(diagram, "Task_1");
 		
 		// when
-		ILocation location = LayoutUtil.getShapeLocationMidpoint(task1);
+		ILocation location = LayoutUtil.getAbsoluteShapeCenter(task1);
 		
 		// then
 		assertThat(point(location)).isEqualTo(point(110 / 2 + 205, 50 / 2 + 35));
@@ -220,10 +225,65 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 			assertThat(LayoutUtil.isDefaultAnchor(a)).isTrue();
 		}
 	}
+
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testSharedConnections.bpmn")
+	public void testGetSharedConnectionIncomming() throws Exception {
+		
+		// given
+		Shape s1 = Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
+		Shape s2 = Util.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
+
+		// when
+		Set<Connection> sharedConnections = LayoutUtil.getSharedConnections(s1, Arrays.asList(s2));
+		
+		// then
+		assertThat(sharedConnections).hasSize(1);
+	}
 	
 	@Test
-	@Ignore
-	public void testConnectionReferencePoint() {
-		fail("Should test LayoutUtil#getConnectionReferencePoint()");
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testSharedConnections.bpmn")
+	public void testGetSharedConnectionOutgoing() throws Exception {
+		
+		// given
+		Shape s1 = Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
+		Shape s2 = Util.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
+
+		// when
+		Set<Connection> sharedConnections = LayoutUtil.getSharedConnections(s2, Arrays.asList(s1));
+		
+		// then
+		assertThat(sharedConnections).hasSize(1);
+	}
+
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testSharedConnections.bpmn")
+	public void testGetSharedConnectionSelfReferencing() throws Exception {
+		
+		// given
+		Shape s1 = Util.findShapeByBusinessObjectId(diagram, "Task_1");
+
+		// when
+		Set<Connection> sharedConnections = LayoutUtil.getSharedConnections(s1, Arrays.asList(s1));
+		
+		// then
+		assertThat(sharedConnections).hasSize(1);
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testSharedConnections.bpmn")
+	public void testGetSharedConnectionOutgoingMultiple() throws Exception {
+		
+		// given
+		Shape s1 = Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
+		Shape s2 = Util.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
+		Shape s3 = Util.findShapeByBusinessObjectId(diagram, "EndEvent_2");
+		Shape s4 = Util.findShapeByBusinessObjectId(diagram, "UserTask_1");
+
+		// when
+		Set<Connection> sharedConnections = LayoutUtil.getSharedConnections(s2, Arrays.asList(s1, s3, s4));
+		
+		// then
+		assertThat(sharedConnections).hasSize(2);
 	}
 }

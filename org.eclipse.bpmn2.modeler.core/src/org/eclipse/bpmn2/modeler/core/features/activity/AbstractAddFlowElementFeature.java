@@ -1,6 +1,7 @@
 package org.eclipse.bpmn2.modeler.core.features.activity;
 
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.location;
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBpmnShapeFeature;
-import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
+import org.eclipse.bpmn2.modeler.core.features.PropertyNames;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
@@ -23,6 +24,7 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReconnectionFeature;
 import org.eclipse.graphiti.features.IRemoveBendpointFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.CreateConnectionContext;
 import org.eclipse.graphiti.features.context.impl.ReconnectionContext;
 import org.eclipse.graphiti.features.context.impl.RemoveBendpointContext;
@@ -67,6 +69,16 @@ public abstract class AbstractAddFlowElementFeature<T extends FlowElement> exten
 	
 	protected void adjustLocationForDropOnConnection(IAddContext context) {
 		Connection connection = context.getTargetConnection();
+		
+		if (context instanceof AddContext) {
+
+			AddContext addContext = (AddContext) context;
+			
+			Point point = point(context.getX(), context.getY());
+			Point connectionReferencePoint = LayoutUtil.getConnectionReferencePoint(connection, point);
+			
+			addContext.setLocation(connectionReferencePoint.getX(), connectionReferencePoint.getY());
+		}
 		
 		// no adjustment done right now
 	}
@@ -133,7 +145,7 @@ public abstract class AbstractAddFlowElementFeature<T extends FlowElement> exten
 			createCtx.setTargetPictogramElement(targetAnchor.getParent());
 			createCtx.setTargetLocation(targetAnchorLocation);
 			
-			ContextUtil.set(createCtx, ContextConstants.CONNECTION_BENDPOINTS, secondPartBendpoints);
+			ContextUtil.set(createCtx, PropertyNames.CONNECTION_BENDPOINTS, secondPartBendpoints);
 			
 			createConnectionAfterSplit(createCtx, Bpmn2Package.eINSTANCE.getSequenceFlow());
 			
@@ -163,7 +175,7 @@ public abstract class AbstractAddFlowElementFeature<T extends FlowElement> exten
 	private void reconnectAfterSplit(ReconnectionContext context) {
 		IReconnectionFeature reconnectionFeature = getFeatureProvider().getReconnectionFeature(context);
 		
-		ContextUtil.set(context, ContextConstants.REPAIR_IF_POSSIBLE);
+		ContextUtil.set(context, PropertyNames.REPAIR_IF_POSSIBLE);
 		
 		if (reconnectionFeature.canExecute(context)) {
 			reconnectionFeature.reconnect(context);

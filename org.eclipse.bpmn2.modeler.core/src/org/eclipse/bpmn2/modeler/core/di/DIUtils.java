@@ -30,6 +30,7 @@ import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.dd.dc.Bounds;
@@ -69,6 +70,20 @@ public class DIUtils {
 	public static BPMNShape getShape(PictogramElement element) {
 		return BusinessObjectUtil.getFirstElementOfType(element, BPMNShape.class);
 	}
+
+	/**
+	 * Update the di of the given pictogram element
+	 * 
+	 * @param pictogramElement
+	 */
+	public static void updateDI(PictogramElement pictogramElement) {
+		
+		if (pictogramElement instanceof Shape) {
+			updateDIShape(pictogramElement);
+		} else {
+			updateDIEdge((Connection) pictogramElement);
+		}
+	}
 	
 	public static void updateDIShape(PictogramElement element) {
 		updateDIShape(element, getShape(element));
@@ -87,7 +102,7 @@ public class DIUtils {
 		
 		Bounds bounds; 
 		
-		if (GraphicsUtil.isLabel(element)) {
+		if (LabelUtil.isLabel(element)) {
 			bounds = getDiLabelBounds(bpmnShape);
 		} else {	
 			bounds = bpmnShape.getBounds();

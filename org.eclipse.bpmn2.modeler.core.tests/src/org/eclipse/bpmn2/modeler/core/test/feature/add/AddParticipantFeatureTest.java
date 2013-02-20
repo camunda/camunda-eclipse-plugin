@@ -13,7 +13,7 @@ import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.Util;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
-import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -22,6 +22,10 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.junit.Test;
 
+/**
+ * 
+ * @author nico.rehwaldt
+ */
 public class AddParticipantFeatureTest extends AbstractFeatureTest {
 
 	@Test
@@ -87,7 +91,7 @@ public class AddParticipantFeatureTest extends AbstractFeatureTest {
 	public void testAddPoolRetailsEventLabelPositioning() throws Exception {
 		ContainerShape eventShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
 
-		ContainerShape eventLabelShape = GraphicsUtil.getLabelShape(eventShape, diagram);
+		ContainerShape eventLabelShape = LabelUtil.getLabelShape(eventShape, diagram);
 
 		IRectangle preMoveEventLabelBounds = LayoutUtil.getAbsoluteBounds(eventLabelShape);
 		
@@ -129,7 +133,7 @@ public class AddParticipantFeatureTest extends AbstractFeatureTest {
 	public void testAddPoolLeavesGatewayLabelOnDiagram() throws Exception {
 		ContainerShape gatewayShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "ExclusiveGateway_1");
 		
-		ContainerShape gatewayLabelShape = GraphicsUtil.getLabelShape(gatewayShape, diagram);
+		ContainerShape gatewayLabelShape = LabelUtil.getLabelShape(gatewayShape, diagram);
 
 		// assume task is contained in diagram
 		assertThat(gatewayShape)
@@ -156,7 +160,7 @@ public class AddParticipantFeatureTest extends AbstractFeatureTest {
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/add/AddParticipantFeatureTest.testAddPoolRetailsLabelPositioning.bpmn")
 	public void testAddPoolLeavesEventLabelOnDiagram() throws Exception {
 		ContainerShape eventShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
-		ContainerShape eventLabelShape = GraphicsUtil.getLabelShape(eventShape, diagram);
+		ContainerShape eventLabelShape = LabelUtil.getLabelShape(eventShape, diagram);
 		
 		// assume task is contained in diagram
 		assertThat(eventShape)

@@ -3,9 +3,7 @@ package org.eclipse.bpmn2.modeler.ui.property.tabs.binding;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
-import org.eclipse.emf.validation.internal.modeled.model.validation.Feature;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * Feature agnostic model view binding

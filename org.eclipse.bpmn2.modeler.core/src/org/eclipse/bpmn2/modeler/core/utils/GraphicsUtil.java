@@ -12,8 +12,12 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.utils;
 
+import java.io.DataInput;
+import java.io.DataOutput;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -24,13 +28,17 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.Gateway;
-import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
+import org.eclipse.bpmn2.Group;
+import org.eclipse.bpmn2.TextAnnotation;
+import org.eclipse.bpmn2.modeler.core.features.PropertyNames;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.datatypes.ILocation;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.mm.GraphicsAlgorithmContainer;
 import org.eclipse.graphiti.mm.algorithms.AbstractText;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
@@ -41,6 +49,7 @@ import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Color;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
+import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -196,17 +205,25 @@ public class GraphicsUtil {
 		}
 		return 0;
 	}
-	
-  public static void setLabelPosition(AbstractText text, ContainerShape labelContainer, int x, int y) {
-    final int textHeight = getLabelHeight(text);
-    final int textWidth = getLabelWidth(text);
 
-    IGaService gaService = Graphiti.getGaService();
+	public static void setLabelPosition(AbstractText text, ContainerShape labelContainer, int x, int y) {
+		final int textHeight = getLabelHeight(text);
+		final int textWidth = getLabelWidth(text);
 
-    gaService.setLocationAndSize(labelContainer.getGraphicsAlgorithm(), x, y, textWidth + SHAPE_PADDING, textHeight + SHAPE_PADDING);
-    gaService.setLocationAndSize(text, 0, 0, textWidth + TEXT_PADDING, textHeight + TEXT_PADDING);
-  }
+		IGaService gaService = Graphiti.getGaService();
+
+		GraphicsAlgorithm labelContainerGa = labelContainer.getGraphicsAlgorithm();
+		
+		gaService.setLocationAndSize(labelContainerGa, 
+			x - (textWidth + SHAPE_PADDING) / 2, 
+			y, 
+			textWidth + SHAPE_PADDING, 
+			textHeight + SHAPE_PADDING);
+		
+		gaService.setLocationAndSize(text, 0, 0, textWidth + TEXT_PADDING, textHeight + TEXT_PADDING);
+	}
 	
+	// FIXME: CLEANUP
 	public static void alignWithShape(AbstractText text, ContainerShape labelContainer, 
 			int width,
 			int height,
@@ -237,20 +254,48 @@ public class GraphicsUtil {
 				0, 0,
 				textWidth + TEXT_PADDING, textHeight + TEXT_PADDING);
 	}
-
-	public static void prepareLabelAddContext(IAddContext context, int width, int height) {
-		prepareLabelAddContext(context, width, height, context.getNewObject());
-	}
 	
-	public static void prepareLabelAddContext(IAddContext context, int width, int height, Object businessObject) {
+	public static void prepareLabelAddContext(IAddContext context, ContainerShape shape, IRectangle newShapeBounds, Object businessObject) {
 		
 		Assert.isNotNull(context);
 		Assert.isNotNull(businessObject);
+
+		Assert.isLegal(context instanceof AddContext);
 		
-		context.putProperty(ContextConstants.LABEL_CONTEXT, true);
-		context.putProperty(ContextConstants.WIDTH, width);
-		context.putProperty(ContextConstants.HEIGHT, height);
-		context.putProperty(ContextConstants.BUSINESS_OBJECT, businessObject);
+		AddContext addContext = (AddContext) context;
+
+		int x = newShapeBounds.getX() + newShapeBounds.getWidth() / 2;
+		int y = newShapeBounds.getY() + newShapeBounds.getHeight() + 5;
+	
+		// prepare add context with (x, y) coordinates pointing to the label top middle anchor
+		// as the max size, we specify the shape bounds
+		addContext.setLocation(x, y);
+		addContext.setSize(newShapeBounds.getWidth(), newShapeBounds.getHeight());
+		
+		context.putProperty(PropertyNames.LABEL_CONTEXT, true);
+		context.putProperty(PropertyNames.BUSINESS_OBJECT, businessObject);
+	}
+
+	public static void prepareConnectionLabelAddContext(IAddContext context, Connection connection, Object businessObject) {
+		Assert.isNotNull(context);
+		Assert.isNotNull(businessObject);
+
+		Assert.isLegal(context instanceof AddContext);
+		
+		AddContext addContext = (AddContext) context;
+		
+		Point defaultPosition = ConnectionLabelUtil.getDefaultLabelPosition(connection);
+		
+		addContext.setLocation(
+			defaultPosition.getX(), 
+			defaultPosition.getY());
+		
+		addContext.setTargetContainer(connection.getParent());
+		
+		addContext.setNewObject(businessObject);
+		
+		context.putProperty(PropertyNames.LABEL_CONTEXT, true);
+		context.putProperty(PropertyNames.BUSINESS_OBJECT, businessObject);
 	}
 	
 	private static float calculateRatio(float x, float y) {
@@ -826,8 +871,8 @@ public class GraphicsUtil {
 	public static final int TASK_DEFAULT_HEIGHT = 80;
 	public static final int TASK_IMAGE_SIZE = 16;
 
-	public static final int SUB_PROCEESS_DEFAULT_WIDTH = 300;
-	public static final int SUB_PROCESS_DEFAULT_HEIGHT = 300;
+	public static final int SUB_PROCEESS_DEFAULT_WIDTH = 200;
+	public static final int SUB_PROCESS_DEFAULT_HEIGHT = 150;
 
 	public static final int MARKER_WIDTH = 10;
 	public static final int MARKER_HEIGHT = 10;
@@ -1076,80 +1121,6 @@ public class GraphicsUtil {
 	}
 
 	/**
-	 * Returns the label of a given shape (connected via the shapes business object)
-	 * in the scope of the given diagram.
-	 * 
-	 * @param shape
-	 * @param diagram
-	 * 
-	 * @return the label shape or null if non was found.
-	 */
-	public static ContainerShape getLabelShape(Shape shape, Diagram diagram) {
-		return getLabelShape(BusinessObjectUtil.getFirstBaseElement(shape), diagram);
-	}
-	
-	/**
-	 * Returns the text of a label shape
-	 * 
-	 * @param labelShape
-	 * @return
-	 */
-	public static AbstractText getLabelShapeText(Shape labelShape) {
-		
-		if (!(labelShape instanceof ContainerShape)) {
-			throw new IllegalArgumentException("Expected argument to be a container shape");
-		}
-		
-		ContainerShape containerLabelShape = (ContainerShape) labelShape;
-		
-		return (AbstractText) containerLabelShape.getChildren().get(0).getGraphicsAlgorithm();
-	}
-	
-	/**
-	 * Returns the label of the given business object 
-	 * in the scope of the given diagram.
-	 * 
-	 * @param bpmnElement
-	 * @param diagram
-	 * 
-	 * @return the label or null if no label was found
-	 */
-	public static ContainerShape getLabelShape(BaseElement bpmnElement, Diagram diagram) {
-		if (bpmnElement == null || diagram == null) {
-			throw new IllegalArgumentException("Arguments may not be null");
-		}
-		
-		List<PictogramElement> linkedPictogramElements = Graphiti.getLinkService().getPictogramElements(diagram, bpmnElement);
-		
-		for (PictogramElement element : linkedPictogramElements) {
-			if (isLabel(element)) {
-				return (ContainerShape) element;
-			}
-		}
-		
-		return null;
-	}
-
-	/**
-	 * Returns true if the given pictogram element represents a label.
-	 * 
-	 * @param element
-	 * @return
-	 */
-	public static boolean isLabel(PictogramElement element) {
-		return Graphiti.getPeService().getPropertyValue(element, GraphicsUtil.LABEL_PROPERTY) != null;
-	}
-
-	/**
-	 * Sets properties on the given pictogram element which denotes it as a label
-	 *  
-	 * @param textContainerShape
-	 */
-	public static void makeLabel(PictogramElement element) {
-		Graphiti.getPeService().setPropertyValue(element, GraphicsUtil.LABEL_PROPERTY, "true");
-	}
-	
-	/**
 	 * Check if the given Point is with a given distance of the given Location.
 	 * 
 	 * @param p - the Point to check
@@ -1311,10 +1282,73 @@ public class GraphicsUtil {
 	}
 
 	/**
-	 * Sends the given element to the front
+	 * Sets the size of an element
+	 * 
+	 * @param shape
+	 * @param width
+	 * @param height
+	 */
+	public static void setSize(Shape shape, int width, int height) {
+		Graphiti.getGaService().setSize(shape.getGraphicsAlgorithm(), width, height);
+	}
+	
+	/**
+	 * Sends a shape to the front
+	 * 
 	 * @param shape
 	 */
 	public static void sendToFront(Shape shape) {
+
+		// send to front
 		Graphiti.getPeService().sendToFront(shape);
+
+		// labels may be moved to front
+		if (LabelUtil.isLabel(shape)) {
+			return;
+		}
+		
+		// all other shapes must be re-arranged behind the labels
+		ContainerShape container = shape.getContainer();
+		EList<Shape> children = container.getChildren();
+		
+		List<Shape> detachedChildren = new ArrayList<Shape>(children);
+		
+		// resort shapes according to visibility rules
+		Collections.sort(detachedChildren, new VisibilityComparator());
+		
+		for (Shape s: detachedChildren) {
+			Graphiti.getPeService().sendToFront(s);
+		}
+	}
+	
+	private static class VisibilityComparator implements Comparator<Shape> {
+
+		@Override
+		public int compare(Shape s1, Shape s2) {
+			Integer i1 = getVisibilityIndex(s1);
+			Integer i2 = getVisibilityIndex(s2);
+			
+			return i1.compareTo(i2);
+		}
+		
+		protected int getVisibilityIndex(Shape shape) {
+			if (LabelUtil.isLabel(shape)) {
+				return 10;
+			} else {
+				BaseElement baseElement = BusinessObjectUtil.getFirstBaseElement(shape);
+				if (baseElement != null) {
+					if (baseElement instanceof DataInput || 
+						baseElement instanceof DataOutput || 
+						baseElement instanceof TextAnnotation) {
+						
+						return 8;
+					} else {
+						return 2;
+					}
+				} else {
+					return 0;
+				}
+			}
+		}
 	}
 }

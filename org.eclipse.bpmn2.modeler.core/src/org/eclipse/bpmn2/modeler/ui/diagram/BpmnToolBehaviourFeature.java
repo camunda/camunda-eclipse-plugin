@@ -13,14 +13,14 @@
 package org.eclipse.bpmn2.modeler.ui.diagram;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.bpmn2.modeler.core.features.IBpmn2AddFeature;
 import org.eclipse.bpmn2.modeler.core.features.IBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.ActivitySelectionBehavior;
 import org.eclipse.bpmn2.modeler.core.features.event.EventSelectionBehavior;
-import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.bpmn2.modeler.core.validation.ValidationStatusAdapter;
 import org.eclipse.bpmn2.modeler.ui.FeatureMap;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
@@ -36,19 +36,24 @@ import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.FeatureCheckerAdapter;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
+import org.eclipse.graphiti.features.IDirectEditingInfo;
 import org.eclipse.graphiti.features.IFeature;
 import org.eclipse.graphiti.features.IFeatureAndContext;
 import org.eclipse.graphiti.features.IFeatureChecker;
 import org.eclipse.graphiti.features.IFeatureCheckerHolder;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IContext;
+import org.eclipse.graphiti.features.context.ICustomContext;
+import org.eclipse.graphiti.features.context.IDoubleClickContext;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.CreateConnectionContext;
 import org.eclipse.graphiti.features.context.impl.CreateContext;
 import org.eclipse.graphiti.features.context.impl.CustomContext;
 import org.eclipse.graphiti.features.context.impl.UpdateContext;
+import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
+import org.eclipse.graphiti.mm.algorithms.AbstractText;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.Text;
@@ -71,10 +76,11 @@ import org.eclipse.graphiti.tb.IDecorator;
 import org.eclipse.graphiti.tb.IImageDecorator;
 import org.eclipse.graphiti.tb.ImageDecorator;
 
-public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implements IFeatureCheckerHolder {
+public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider
+		implements IFeatureCheckerHolder {
 
 	BPMN2FeatureProvider featureProvider;
-	
+
 	public BpmnToolBehaviourFeature(IDiagramTypeProvider diagramTypeProvider) {
 		super(diagramTypeProvider);
 	}
@@ -82,14 +88,16 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 	@Override
 	public IPaletteCompartmentEntry[] getPalette() {
 
-		BPMN2Editor editor = (BPMN2Editor)getDiagramTypeProvider().getDiagramEditor();
+		BPMN2Editor editor = (BPMN2Editor) getDiagramTypeProvider()
+				.getDiagramEditor();
 		Diagram diagram = getDiagramTypeProvider().getDiagram();
-		Object object = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(diagram);
+		Object object = Graphiti.getLinkService()
+				.getBusinessObjectForLinkedPictogramElement(diagram);
 
 		List<IPaletteCompartmentEntry> palette = new ArrayList<IPaletteCompartmentEntry>();
 
-		if (object!=null) {
-			featureProvider = (BPMN2FeatureProvider)getFeatureProvider();
+		if (object != null) {
+			featureProvider = (BPMN2FeatureProvider) getFeatureProvider();
 
 			// add compartments from super class
 			createConnectors(palette);
@@ -105,85 +113,96 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 	}
 
 	private void createEventsCompartments(List<IPaletteCompartmentEntry> palette) {
-		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry("Events", null);
+		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry(
+				"Events", null);
 
 		createEntries(FeatureMap.EVENTS, compartmentEntry);
 
-		if (compartmentEntry.getToolEntries().size()>0)
+		if (compartmentEntry.getToolEntries().size() > 0)
 			palette.add(compartmentEntry);
 	}
 
 	private void createOtherCompartments(List<IPaletteCompartmentEntry> palette) {
-		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry("Other", null);
+		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry(
+				"Other", null);
 		compartmentEntry.setInitiallyOpen(false);
 
 		createEntries(FeatureMap.OTHER, compartmentEntry);
 
-		if (compartmentEntry.getToolEntries().size()>0)
+		if (compartmentEntry.getToolEntries().size() > 0)
 			palette.add(compartmentEntry);
 	}
 
 	private void createDataCompartments(List<IPaletteCompartmentEntry> palette) {
-		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry("Data Items", null);
+		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry(
+				"Data Items", null);
 		compartmentEntry.setInitiallyOpen(false);
 
 		createEntries(FeatureMap.DATA, compartmentEntry);
 
-		if (compartmentEntry.getToolEntries().size()>0)
+		if (compartmentEntry.getToolEntries().size() > 0)
 			palette.add(compartmentEntry);
 	}
 
-	private void createEventDefinitionsCompartments(List<IPaletteCompartmentEntry> palette) {
-		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry("Event Definitions", null);
+	private void createEventDefinitionsCompartments(
+			List<IPaletteCompartmentEntry> palette) {
+		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry(
+				"Event Definitions", null);
 		compartmentEntry.setInitiallyOpen(false);
 
 		createEntries(FeatureMap.EVENT_DEFINITIONS, compartmentEntry);
 
-		if (compartmentEntry.getToolEntries().size()>0)
+		if (compartmentEntry.getToolEntries().size() > 0)
 			palette.add(compartmentEntry);
 	}
 
-	private void createGatewaysCompartments(List<IPaletteCompartmentEntry> palette) {
-		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry("Gateways", null);
+	private void createGatewaysCompartments(
+			List<IPaletteCompartmentEntry> palette) {
+		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry(
+				"Gateways", null);
 
 		createEntries(FeatureMap.GATEWAYS, compartmentEntry);
 
-		if (compartmentEntry.getToolEntries().size()>0)
+		if (compartmentEntry.getToolEntries().size() > 0)
 			palette.add(compartmentEntry);
 	}
 
 	private void createTasksCompartments(List<IPaletteCompartmentEntry> palette) {
-		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry("Tasks", null);
+		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry(
+				"Tasks", null);
 
 		createEntries(FeatureMap.TASKS, compartmentEntry);
 
-		if (compartmentEntry.getToolEntries().size()>0)
+		if (compartmentEntry.getToolEntries().size() > 0)
 			palette.add(compartmentEntry);
 	}
 
 	private void createConnectors(List<IPaletteCompartmentEntry> palette) {
-		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry("Connectors", null);
+		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry(
+				"Connectors", null);
 
 		createEntries(FeatureMap.CONNECTORS, compartmentEntry);
 
-		if (compartmentEntry.getToolEntries().size()>0)
+		if (compartmentEntry.getToolEntries().size() > 0)
 			palette.add(compartmentEntry);
 	}
 
-	private void createEntries(List<Class> neededEntries, PaletteCompartmentEntry compartmentEntry) {
+	private void createEntries(List<Class> neededEntries,
+			PaletteCompartmentEntry compartmentEntry) {
 		for (Class c : neededEntries) {
-			IFeature feature = featureProvider.getCreateFeatureForBusinessObject(c);
+			IFeature feature = featureProvider
+					.getCreateFeatureForBusinessObject(c);
 			if (feature instanceof ICreateFeature) {
-				ICreateFeature cf = (ICreateFeature)feature;
-				ObjectCreationToolEntry objectCreationToolEntry = new ObjectCreationToolEntry(cf.getCreateName(),
-					cf.getCreateDescription(), cf.getCreateImageId(), cf.getCreateLargeImageId(), cf);
+				ICreateFeature cf = (ICreateFeature) feature;
+				ObjectCreationToolEntry objectCreationToolEntry = new ObjectCreationToolEntry(
+						cf.getCreateName(), cf.getCreateDescription(),
+						cf.getCreateImageId(), cf.getCreateLargeImageId(), cf);
 				compartmentEntry.addToolEntry(objectCreationToolEntry);
-			}
-			else if (feature instanceof ICreateConnectionFeature) {
-				ICreateConnectionFeature cf = (ICreateConnectionFeature)feature;
+			} else if (feature instanceof ICreateConnectionFeature) {
+				ICreateConnectionFeature cf = (ICreateConnectionFeature) feature;
 				ConnectionCreationToolEntry connectionCreationToolEntry = new ConnectionCreationToolEntry(
-						cf.getCreateName(), cf.getCreateDescription(), cf.getCreateImageId(),
-						cf.getCreateLargeImageId());
+						cf.getCreateName(), cf.getCreateDescription(),
+						cf.getCreateImageId(), cf.getCreateLargeImageId());
 				connectionCreationToolEntry.addCreateConnectionFeature(cf);
 				compartmentEntry.addToolEntry(connectionCreationToolEntry);
 			}
@@ -225,41 +244,43 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 			return EventSelectionBehavior.getSelectionBorder(pe);
 		} else if (ChoreographySelectionBehavior.canApplyTo(pe)) {
 			return ChoreographySelectionBehavior.getSelectionBorder(pe);
-		}
-		else if (pe instanceof ContainerShape) {
-			if (((ContainerShape)pe).getChildren().size()>0) {
-				GraphicsAlgorithm ga = ((ContainerShape)pe).getChildren().get(0).getGraphicsAlgorithm();
+		} else if (pe instanceof ContainerShape) {
+			if (((ContainerShape) pe).getChildren().size() > 0) {
+				GraphicsAlgorithm ga = ((ContainerShape) pe).getChildren()
+						.get(0).getGraphicsAlgorithm();
 				if (!(ga instanceof Text) && !(ga instanceof Polyline))
 					return ga;
-				ga = ((ContainerShape)pe).getGraphicsAlgorithm();
-				if (ga.getGraphicsAlgorithmChildren().size()>0)
+				ga = ((ContainerShape) pe).getGraphicsAlgorithm();
+				if (ga.getGraphicsAlgorithmChildren().size() > 0)
 					return ga.getGraphicsAlgorithmChildren().get(0);
 				return ga;
 			}
-		}
-		else if (pe instanceof Shape) {
-			return ((Shape)pe).getGraphicsAlgorithm();
+		} else if (pe instanceof Shape) {
+			return ((Shape) pe).getGraphicsAlgorithm();
 		}
 		return super.getSelectionBorder(pe);
 	}
 
 	@Override
-	public IContextButtonPadData getContextButtonPad(IPictogramElementContext context) {
+	public IContextButtonPadData getContextButtonPad(
+			IPictogramElementContext context) {
 		IContextButtonPadData data = super.getContextButtonPad(context);
 		PictogramElement pe = context.getPictogramElement();
 		IFeatureProvider fp = getFeatureProvider();
-		
-		if (GraphicsUtil.isLabel(pe)) {
+
+		if (LabelUtil.isLabel(pe)) {
 			// labels don't have a buttonpad
 			setGenericContextButtons(data, pe, 0);
 			return data;
 		}
 
-		if (pe.getGraphicsAlgorithm() != null && pe.getGraphicsAlgorithm().getWidth() < 40 ){
-		    ILocation origin = getAbsoluteLocation(pe.getGraphicsAlgorithm());
-		    data.getPadLocation().setRectangle(origin.getX(), origin.getY(), 40, 40);
+		if (pe.getGraphicsAlgorithm() != null
+				&& pe.getGraphicsAlgorithm().getWidth() < 40) {
+			ILocation origin = getAbsoluteLocation(pe.getGraphicsAlgorithm());
+			data.getPadLocation().setRectangle(origin.getX(), origin.getY(),
+					40, 40);
 		}
-		
+
 		// 1. set the generic context buttons
 		// Participant bands can only be removed from the choreograpy task
 		int genericButtons = CONTEXT_BUTTON_DELETE;
@@ -274,11 +295,12 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 		for (int i = 0; i < cf.length; i++) {
 			ICustomFeature iCustomFeature = cf[i];
 			if (iCustomFeature != null && iCustomFeature.canExecute(cc)) {
-				ContextButtonEntry button = new ContextButtonEntry(iCustomFeature, cc);
+				ContextButtonEntry button = new ContextButtonEntry(
+						iCustomFeature, cc);
 				button.setText(iCustomFeature.getName()); //$NON-NLS-1$
 				button.setIconId(iCustomFeature.getImageId());
 				button.setDescription(iCustomFeature.getDescription());
-				
+
 				data.getDomainSpecificContextButtons().add(button);
 			}
 		}
@@ -294,7 +316,8 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 			anchor = (Anchor) pe;
 		} else if (pe instanceof AnchorContainer) {
 			// assume, that our shapes always have chopbox anchors
-			anchor = Graphiti.getPeService().getChopboxAnchor((AnchorContainer) pe);
+			anchor = Graphiti.getPeService().getChopboxAnchor(
+					(AnchorContainer) pe);
 		}
 		ccc.setSourceAnchor(anchor);
 
@@ -311,20 +334,21 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 				names.add(feature.getCreateName());
 			}
 		}
-		
-		// 3.c. build a reasonable description for the context button action 
-		for (int i=0; i<names.size(); ++i) {
-			if (description==null)
+
+		// 3.c. build a reasonable description for the context button action
+		for (int i = 0; i < names.size(); ++i) {
+			if (description == null)
 				description = "Click and drag to create a\n";
 			description += names.get(i);
-			if (i+2 == names.size())
+			if (i + 2 == names.size())
 				description += " or ";
-			else if (i+1 < names.size())
+			else if (i + 1 < names.size())
 				description += ", ";
 		}
 		button.setDescription(description);
 
-		// 3.d. add context button, button only if it contains at least one feature
+		// 3.d. add context button, button only if it contains at least one
+		// feature
 		if (button.getDragAndDropFeatures().size() > 0) {
 			data.getDomainSpecificContextButtons().add(button);
 		}
@@ -334,71 +358,113 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider implem
 
 	@Override
 	public void postExecute(IExecutionInfo executionInfo) {
-		BPMN2Editor editor = (BPMN2Editor)getDiagramTypeProvider().getDiagramEditor();
+		BPMN2Editor editor = (BPMN2Editor) getDiagramTypeProvider()
+				.getDiagramEditor();
 		for (IFeatureAndContext fc : executionInfo.getExecutionList()) {
 			IContext context = fc.getContext();
 			IFeature feature = fc.getFeature();
 			if (context instanceof AddContext) {
 				if (feature instanceof IBpmn2AddFeature) {
-					((IBpmn2AddFeature)feature).postExecute(executionInfo);
+					((IBpmn2AddFeature) feature).postExecute(executionInfo);
 				}
-			}
-			else if (context instanceof CreateContext) {
+			} else if (context instanceof CreateContext) {
 				if (feature instanceof IBpmn2CreateFeature) {
-					((IBpmn2CreateFeature)feature).postExecute(executionInfo);
+					((IBpmn2CreateFeature) feature).postExecute(executionInfo);
 				}
-			}
-			else if (context instanceof UpdateContext) {
-				editor.setPictogramElementForSelection(
-						((UpdateContext)context).getPictogramElement());
+			} else if (context instanceof UpdateContext) {
+				editor.setPictogramElementForSelection(((UpdateContext) context)
+						.getPictogramElement());
 				editor.refresh();
 			}
 		}
 	}
 
-    @Override
-    public IDecorator[] getDecorators(PictogramElement pe) {
-        List<IDecorator> decorators = new ArrayList<IDecorator>();
+	@Override
+	public IDecorator[] getDecorators(PictogramElement pe) {
+		List<IDecorator> decorators = new ArrayList<IDecorator>();
 
-		if (GraphicsUtil.isLabel(pe)) {
+		if (LabelUtil.isLabel(pe)) {
 			return new IDecorator[0];
 		}
-		
-        IFeatureProvider featureProvider = getFeatureProvider();
-        Object bo = featureProvider.getBusinessObjectForPictogramElement(pe);
-        if (bo!=null) {
-	        ValidationStatusAdapter statusAdapter = (ValidationStatusAdapter) EcoreUtil.getRegisteredAdapter((EObject) bo,
-	                ValidationStatusAdapter.class);
-	        if (statusAdapter != null) {
-	            final IImageDecorator decorator;
-	            final IStatus status = statusAdapter.getValidationStatus();
-	            switch (status.getSeverity()) {
-	            case IStatus.INFO:
-	                decorator = new ImageDecorator(IPlatformImageConstants.IMG_ECLIPSE_INFORMATION_TSK);
-	                break;
-	            case IStatus.WARNING:
-	                decorator = new ImageDecorator(IPlatformImageConstants.IMG_ECLIPSE_WARNING_TSK);
-	                break;
-	            case IStatus.ERROR:
-	                decorator = new ImageDecorator(IPlatformImageConstants.IMG_ECLIPSE_ERROR_TSK);
-	                break;
-	            default:
-	                decorator = null;
-	                break;
-	            }
-	            if (decorator != null) {
-	                GraphicsAlgorithm ga = getSelectionBorder(pe);
-	                if (ga == null) {
-	                    ga = pe.getGraphicsAlgorithm();
-	                }
-	                decorator.setX(-5);
-	                decorator.setY(-5);
-	                decorator.setMessage(status.getMessage());
-	                decorators.add(decorator);
-	            }
-	        }
-        }
-		
-        return decorators.toArray(new IDecorator[0]);
-    }
+
+		IFeatureProvider featureProvider = getFeatureProvider();
+		Object bo = featureProvider.getBusinessObjectForPictogramElement(pe);
+		if (bo != null) {
+			ValidationStatusAdapter statusAdapter = (ValidationStatusAdapter) EcoreUtil
+					.getRegisteredAdapter((EObject) bo,
+							ValidationStatusAdapter.class);
+			if (statusAdapter != null) {
+				final IImageDecorator decorator;
+				final IStatus status = statusAdapter.getValidationStatus();
+				switch (status.getSeverity()) {
+				case IStatus.INFO:
+					decorator = new ImageDecorator(
+							IPlatformImageConstants.IMG_ECLIPSE_INFORMATION_TSK);
+					break;
+				case IStatus.WARNING:
+					decorator = new ImageDecorator(
+							IPlatformImageConstants.IMG_ECLIPSE_WARNING_TSK);
+					break;
+				case IStatus.ERROR:
+					decorator = new ImageDecorator(
+							IPlatformImageConstants.IMG_ECLIPSE_ERROR_TSK);
+					break;
+				default:
+					decorator = null;
+					break;
+				}
+				if (decorator != null) {
+					GraphicsAlgorithm ga = getSelectionBorder(pe);
+					if (ga == null) {
+						ga = pe.getGraphicsAlgorithm();
+					}
+					decorator.setX(-5);
+					decorator.setY(-5);
+					decorator.setMessage(status.getMessage());
+					decorators.add(decorator);
+				}
+			}
+		}
+
+		return decorators.toArray(new IDecorator[0]);
+	}
+
+	@Override
+	public ICustomFeature getDoubleClickFeature(IDoubleClickContext context) {
+		return new AbstractCustomFeature(getFeatureProvider()) {
+
+			@Override
+			public boolean canExecute(ICustomContext context) {
+				// FIXME
+				return true;
+			}
+
+			@Override
+			public void execute(ICustomContext customContext) {
+				if (Arrays.asList(customContext.getPictogramElements())
+						.isEmpty()) {
+					return;
+				}
+				
+				PictogramElement contextPe = customContext.getPictogramElements()[0];
+				
+				ContainerShape labelShape = LabelUtil.getLabelShape(contextPe,
+						getDiagram());
+				
+				PictogramElement pe = (labelShape == null) ? contextPe : labelShape;
+				
+				IDirectEditingInfo directEditingInfo = getFeatureProvider()
+						.getDirectEditingInfo();
+				
+				directEditingInfo.setMainPictogramElement(pe);
+				directEditingInfo.setPictogramElement(pe);
+
+				directEditingInfo
+						.setGraphicsAlgorithm(labelShape != null ? labelShape.getGraphicsAlgorithm() : customContext.getInnerGraphicsAlgorithm());
+				
+				directEditingInfo.setActive(true);
+				getDiagramEditor().refresh();
+			}
+		};
+	}
 }

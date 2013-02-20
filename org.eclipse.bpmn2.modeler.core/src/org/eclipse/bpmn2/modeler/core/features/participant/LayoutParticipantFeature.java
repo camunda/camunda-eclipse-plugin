@@ -17,7 +17,7 @@ import java.util.Iterator;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
-import org.eclipse.bpmn2.modeler.core.features.DefaultLayoutBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.features.LayoutBpmnShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.graphiti.datatypes.IDimension;
@@ -32,7 +32,7 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 
-public class LayoutParticipantFeature extends DefaultLayoutBPMNShapeFeature {
+public class LayoutParticipantFeature extends LayoutBpmnShapeFeature {
 
 	public LayoutParticipantFeature(IFeatureProvider fp) {
 		super(fp);
@@ -45,8 +45,8 @@ public class LayoutParticipantFeature extends DefaultLayoutBPMNShapeFeature {
 	}
 
 	@Override
-	public boolean layout(ILayoutContext context) {
-		ContainerShape containerShape = (ContainerShape) context.getPictogramElement();
+	protected void layoutShape(ContainerShape containerShape) {
+		super.layoutShape(containerShape);
 
 		GraphicsAlgorithm containerGa = containerShape.getGraphicsAlgorithm();
 		IGaService gaService = Graphiti.getGaService();
@@ -89,14 +89,12 @@ public class LayoutParticipantFeature extends DefaultLayoutBPMNShapeFeature {
 
 		Shape shape = FeatureSupport.getShape(containerShape, UpdateParticipantMultiplicityFeature.MULTIPLICITY_MARKER,
 				Boolean.toString(true));
+		
 		if (shape != null) {
 			GraphicsAlgorithm ga = shape.getGraphicsAlgorithm();
 			int x = (containerGa.getWidth() / 2) - 10;
 			int y = containerGa.getHeight() - 20;
 			gaService.setLocation(ga, x, y);
 		}
-
-		DIUtils.updateDIShape(containerShape);
-		return super.layout(context);
 	}
 }

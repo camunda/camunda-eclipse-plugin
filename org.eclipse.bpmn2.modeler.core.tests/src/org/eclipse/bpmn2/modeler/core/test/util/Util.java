@@ -3,6 +3,7 @@ package org.eclipse.bpmn2.modeler.core.test.util;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.Connection;
@@ -28,8 +29,13 @@ public class Util {
 	
 	public static Shape findShapeByBusinessObjectId(Shape shape, String id) {
 		
+		if (LabelUtil.isLabel(shape)) {
+			return null;
+		}
+		
 		if (shape.getLink() != null) {
-			if (findBusinessObjectById(shape.getLink().getBusinessObjects() , id) != null) {
+			BaseElement baseElement = findBusinessObjectById(shape.getLink().getBusinessObjects() , id);
+			if (baseElement != null) {
 				return shape;
 			}
 		}

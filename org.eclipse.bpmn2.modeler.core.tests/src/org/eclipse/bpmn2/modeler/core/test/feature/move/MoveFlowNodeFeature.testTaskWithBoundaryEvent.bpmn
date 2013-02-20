@@ -5,7 +5,7 @@
       <bpmn2:dataInput id="DataInput_1" name="Data Input 1"/>
     </bpmn2:ioSpecification>
     <bpmn2:userTask id="UserTask_1" name="User Task 1"/>
-    <bpmn2:boundaryEvent id="BoundaryEvent_2" name="" attachedToRef="UserTask_1"/>
+    <bpmn2:boundaryEvent id="BoundaryEvent_2" name="My label" attachedToRef="UserTask_1"/>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">

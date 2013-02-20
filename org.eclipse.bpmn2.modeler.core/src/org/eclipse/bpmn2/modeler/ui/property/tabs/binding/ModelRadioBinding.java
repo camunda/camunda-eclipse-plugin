@@ -77,6 +77,8 @@ public abstract class ModelRadioBinding extends ModelButtonBinding<Boolean> {
 			
 			if (!getModelValue()) {
 				activateFeature(activeFeature);
+			}else {
+				object.eUnset(activeFeature);
 			}
 		}
 	}

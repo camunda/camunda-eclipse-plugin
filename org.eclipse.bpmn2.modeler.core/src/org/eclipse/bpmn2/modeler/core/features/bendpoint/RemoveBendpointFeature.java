@@ -14,6 +14,8 @@ package org.eclipse.bpmn2.modeler.core.features.bendpoint;
 
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ConnectionLabelUtil;
+import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IRemoveBendpointContext;
 import org.eclipse.graphiti.features.impl.DefaultRemoveBendpointFeature;
@@ -41,6 +43,16 @@ public class RemoveBendpointFeature extends DefaultRemoveBendpointFeature {
 	    
 		FreeFormConnection connection = context.getConnection();
 
-		DIUtils.updateDIEdge(connection);
+		repositionLabel(connection);
+
+		updateDi(connection);
+	}
+
+	protected void repositionLabel(FreeFormConnection connection) {
+		LabelUtil.repositionConnectionLabel(connection, getFeatureProvider());
+	}
+
+	protected void updateDi(FreeFormConnection connection) {
+		DIUtils.updateDI(connection);
 	}
 }

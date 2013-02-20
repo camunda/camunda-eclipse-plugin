@@ -64,6 +64,10 @@ public class DefaultEditingSupportProvider implements EditingSupportProvider {
 					@Override
 					protected Object toEValue(Object value) {
 						if (value instanceof String) {
+							if ((((String) value).trim()).isEmpty()) {
+								return null;
+							}
+							
 							return factory.createFromString((EDataType) eType, (String) value);
 						} else {
 							return value;

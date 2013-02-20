@@ -21,36 +21,46 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IReconnectionContext;
 import org.eclipse.graphiti.features.context.impl.ReconnectionContext;
 import org.eclipse.graphiti.features.impl.DefaultReconnectionFeature;
+import org.eclipse.graphiti.mm.pictograms.Connection;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
 public class ReconnectBaseElementFeature extends DefaultReconnectionFeature {
 
-		public ReconnectBaseElementFeature(IFeatureProvider fp) {
-			super(fp);
+	public ReconnectBaseElementFeature(IFeatureProvider fp) {
+		super(fp);
+	}
+
+	@Override
+	public void postReconnect(IReconnectionContext context) {
+		super.postReconnect(context);
+
+		String reconnectType = context.getReconnectType();
+		
+		Connection connection = context.getConnection();
+		PictogramElement targetPictogramElement = context.getTargetPictogramElement();
+		
+		BPMNEdge bpmnEdge = BusinessObjectUtil.getFirstElementOfType(connection, BPMNEdge.class);
+		
+		DiagramElement diagramElement = BusinessObjectUtil.getFirstElementOfType(targetPictogramElement, DiagramElement.class);
+		if (reconnectType.equals(ReconnectionContext.RECONNECT_TARGET)) {
+			bpmnEdge.setTargetElement(diagramElement);
+		} else {
+			bpmnEdge.setSourceElement(diagramElement);
 		}
 
-		@Override
-		public void postReconnect(IReconnectionContext context) {
-			super.postReconnect(context);
-
-			BPMNEdge edge = BusinessObjectUtil.getFirstElementOfType(context.getConnection(), BPMNEdge.class);
-			DiagramElement de = BusinessObjectUtil.getFirstElementOfType(context.getTargetPictogramElement(), DiagramElement.class);
-			if (context.getReconnectType().equals(ReconnectionContext.RECONNECT_TARGET)) {
-				edge.setTargetElement(de);
-			} else {
-				edge.setSourceElement(de);
-			}
-			
-			BaseElement flow = BusinessObjectUtil.getFirstElementOfType(context.getConnection(), BaseElement.class);
-			BaseElement be = BusinessObjectUtil.getFirstElementOfType(context.getTargetPictogramElement(), BaseElement.class);
-			if (context.getReconnectType().equals(ReconnectionContext.RECONNECT_TARGET)) {
-				EStructuralFeature feature = flow.eClass().getEStructuralFeature("targetRef");
-				if (feature!=null)
-					flow.eSet(feature, be);
-			} else {
-				EStructuralFeature feature = flow.eClass().getEStructuralFeature("sourceRef");
-				if (feature!=null)
-					flow.eSet(feature, be);
-			}
+		BaseElement flow = BusinessObjectUtil.getFirstElementOfType(connection, BaseElement.class);
+		BaseElement be = BusinessObjectUtil.getFirstElementOfType(targetPictogramElement, BaseElement.class);
+		if (reconnectType.equals(ReconnectionContext.RECONNECT_TARGET)) {
+			EStructuralFeature feature = flow.eClass().getEStructuralFeature("targetRef");
+			if (feature != null)
+				flow.eSet(feature, be);
+		} else {
+			EStructuralFeature feature = flow.eClass().getEStructuralFeature("sourceRef");
+			if (feature != null)
+				flow.eSet(feature, be);
 		}
 		
+		// layout if possible
+		layoutPictogramElement(connection);
 	}
+}

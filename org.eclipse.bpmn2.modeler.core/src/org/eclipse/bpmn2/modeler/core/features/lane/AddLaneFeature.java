@@ -18,21 +18,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowNode;
+import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBpmnShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
-import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
+import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.emf.ecore.EObject;
@@ -47,7 +48,6 @@ import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.algorithms.styles.Orientation;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
@@ -144,17 +144,17 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 		boolean horizontal = bpmnShape.isIsHorizontal();
 		FeatureSupport.setHorizontal(newLaneShape, horizontal);
 		
-		// move shapes contained in target container
-		for (Shape containedFlowNodeShape : getFlowNodeShapes(context, lane)) {
-			Graphiti.getPeService().sendToFront(containedFlowNodeShape);
-			containedFlowNodeShape.setContainer(newLaneShape);
-		}
-		
 		// add text
 		createLaneLabel(newLaneShape, lane, horizontal);
 
 		ContainerShape newShapeContainer = newLaneShape.getContainer();
-
+		
+		// move shapes contained in target container
+		for (Shape containedFlowNodeShape : getContainedBaseElementShapes(newShapeContainer)) {
+			GraphicsUtil.sendToFront(containedFlowNodeShape);
+			containedFlowNodeShape.setContainer(newLaneShape);
+		}
+		
 		if (!isImport) {
 			FeatureSupport.redraw(newShapeContainer);
 		}
@@ -165,11 +165,6 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 		compensateShapeMovements(newLaneShape);
 	}
 
-	@Override
-	protected void updateAndLayout(ContainerShape newShape) {
-		// no updating / layouting for lanes
-	}
-	
 	private void createLaneLabel(ContainerShape newShape, Lane lane, boolean horizontal) {
 		
 		IGaService gaService = Graphiti.getGaService();
@@ -208,7 +203,14 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 		
 		for (PictogramElement e: containedShapes) {
 			if (e instanceof ContainerShape) {
+				
 				ContainerShape c = (ContainerShape) e;
+				BaseElement baseElement = BusinessObjectUtil.getFirstElementOfType(c, BaseElement.class);
+				
+				if (baseElement instanceof BoundaryEvent) {
+					// boundary event will be moved by the element it is attached to
+					continue;
+				}
 				
 				IRectangle cBounds = LayoutUtil.getRelativeBounds(c);
 				
@@ -226,7 +228,7 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 				moveContext.setX(cBounds.getX() + boundsDiff.getX());
 				moveContext.setY(cBounds.getY() + boundsDiff.getY());
 
-				moveContext.putProperty(DefaultMoveBPMNShapeFeature.SKIP_RECONNECT_AFTER_MOVE, false);
+				moveContext.putProperty(DefaultMoveBPMNShapeFeature.SKIP_REPAIR_CONNECTIONS_AFTER_MOVE, false);
 				moveContext.putProperty(DefaultMoveBPMNShapeFeature.SKIP_MOVE_BENDPOINTS, true);
 				moveContext.putProperty(DefaultMoveBPMNShapeFeature.SKIP_MOVE_LABEL, true);
 				
@@ -243,6 +245,11 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 		}
 	}
 
+	@Override
+	protected boolean isLayoutAfterImport() {
+		return false;
+	}
+	
 	private void moveFlowNodes(Process targetProcess, Lane lane) {
 		for (FlowElement element : targetProcess.getFlowElements()) {
 			if (element instanceof FlowNode) {
@@ -251,16 +258,19 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 		}
 	}
 
-	private List<Shape> getFlowNodeShapes(IAddContext context, Lane lane) {
-		List<FlowNode> nodes = lane.getFlowNodeRefs();
-		List<Shape> shapes = new ArrayList<Shape>();
-		for (Shape s : context.getTargetContainer().getChildren()) {
-			Object bo = getBusinessObjectForPictogramElement(s);
-			if (bo != null && nodes.contains(bo)) {
-				shapes.add(s);
+	private List<Shape> getContainedBaseElementShapes(ContainerShape container) {
+
+		List<Shape> flowElementShapes = new ArrayList<Shape>();
+		
+		List<Shape> children = container.getChildren();
+		for (Shape child: children) {
+			BaseElement baseElement = BusinessObjectUtil.getFirstBaseElement(child);
+			if (baseElement instanceof FlowElement || baseElement instanceof ItemAwareElement) {
+				flowElementShapes.add(child);
 			}
 		}
-		return shapes;
+		
+		return flowElementShapes;
 	}
 
 	private int getNumberOfLanes(ITargetContext context) {
@@ -271,13 +281,13 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 			return lane.getChildLaneSet().getLanes().size();
 		} else if (bo instanceof Participant) {
 			List<LaneSet> laneSets = ((Participant) bo).getProcessRef().getLaneSets();
-			if (laneSets.size() > 0) {
+			if (!laneSets.isEmpty()) {
 				return laneSets.get(0).getLanes().size();
 			}
 			return laneSets.size();
 		} else if (bo instanceof SubProcess) {
 			List<LaneSet> laneSets = ((SubProcess) bo).getLaneSets();
-			if (laneSets.size() > 0) {
+			if (!laneSets.isEmpty()) {
 				return laneSets.get(0).getLanes().size();
 			}
 			return laneSets.size();
@@ -291,7 +301,7 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 			List<LaneSet> laneSets = ((Participant) bo).getProcessRef().getLaneSets();
 			List<Lane> lanes = null;
 			
-			if (laneSets.size() > 0 && laneSets.get(0).getLanes().size() > 1) {
+			if (!laneSets.isEmpty() && laneSets.get(0).getLanes().size() > 1) {
 				lanes = laneSets.get(0).getLanes();
 				Lane lane = lanes.get(lanes.size() - 2); // get the lane created before, current lane is already included
 				BPMNShape laneShape = findDIShape(lane);
@@ -309,9 +319,6 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 			return context.getHeight();
 		}
 		
-		if (context.getTargetContainer() instanceof Diagram) {
-			return getDefaultHeight();
-		}
 		int height = context.getTargetContainer().getGraphicsAlgorithm().getHeight();
 		
 		Bounds previousBounds = getPreviouslyAddedLaneBounds(context);
@@ -328,9 +335,6 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 			return context.getWidth();
 		}
 		
-		if (context.getTargetContainer() instanceof Diagram) {
-			return getDefaultWidth();
-		}
 		int width = context.getTargetContainer().getGraphicsAlgorithm().getWidth() - 30;
 		
 		Bounds bounds = getPreviouslyAddedLaneBounds(context);

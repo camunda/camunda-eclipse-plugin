@@ -13,7 +13,7 @@
 package org.eclipse.bpmn2.modeler.ui.features.lane;
 
 import org.eclipse.bpmn2.Lane;
-import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
+import org.eclipse.bpmn2.modeler.core.features.container.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.lane.AddLaneFeature;
 import org.eclipse.bpmn2.modeler.core.features.lane.DirectEditLaneFeature;
 import org.eclipse.bpmn2.modeler.core.features.lane.LayoutLaneFeature;

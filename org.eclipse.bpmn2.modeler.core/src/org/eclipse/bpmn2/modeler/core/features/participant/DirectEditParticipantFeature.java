@@ -16,6 +16,7 @@ import org.eclipse.bpmn2.Participant;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IDirectEditingContext;
 import org.eclipse.graphiti.features.impl.AbstractDirectEditingFeature;
+import org.eclipse.graphiti.func.IDirectEditing;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -29,7 +30,7 @@ public class DirectEditParticipantFeature extends AbstractDirectEditingFeature {
 
 	@Override
     public int getEditingType() {
-		return TYPE_TEXT;
+		return IDirectEditing.TYPE_TEXT;
     }
 
 	@Override
@@ -48,20 +49,16 @@ public class DirectEditParticipantFeature extends AbstractDirectEditingFeature {
     }
 	
 	@Override
-	public String checkValueValid(String value, IDirectEditingContext context) {
-		if (value.length() < 1) {
-			return "Please enter any text as Pool name.";
-		} else if (value.contains("\n")) {
-			return "Line breakes are not allowed in Pool names.";
-		}
-		return null;
-	}
-
-	@Override
 	public boolean canDirectEdit(IDirectEditingContext context) {
 		PictogramElement pe = context.getPictogramElement();
 		Object bo = getBusinessObjectForPictogramElement(pe);
 		GraphicsAlgorithm ga = context.getGraphicsAlgorithm();
 		return bo instanceof Participant && ga instanceof Text;
 	}
+	
+	@Override
+	public boolean stretchFieldToFitText() {
+		return true;
+	}
+	
 }

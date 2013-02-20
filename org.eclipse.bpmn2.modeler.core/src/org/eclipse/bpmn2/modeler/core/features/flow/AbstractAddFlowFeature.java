@@ -12,38 +12,34 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features.flow;
 
+import static org.eclipse.bpmn2.modeler.core.utils.ContextUtil.set;
+
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNEdge;
-import org.eclipse.bpmn2.di.BPMNLabel;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBpmnElementFeature;
-import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
-import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
-import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
-import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
+import org.eclipse.bpmn2.modeler.core.features.PropertyNames;
+import org.eclipse.bpmn2.modeler.core.layout.ConnectionService;
+import org.eclipse.bpmn2.modeler.core.layout.util.Layouter;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ConnectionLabelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
-import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
-import org.eclipse.bpmn2.modeler.core.utils.Tuple;
-import org.eclipse.graphiti.datatypes.IRectangle;
+import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
-import org.eclipse.graphiti.features.IMoveConnectionDecoratorFeature;
 import org.eclipse.graphiti.features.context.IAddConnectionContext;
 import org.eclipse.graphiti.features.context.IAddContext;
-import org.eclipse.graphiti.features.context.impl.MoveConnectionDecoratorContext;
+import org.eclipse.graphiti.features.context.ILayoutContext;
+import org.eclipse.graphiti.features.context.impl.AddContext;
+import org.eclipse.graphiti.features.context.impl.LayoutContext;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
-import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
-import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
-import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
-import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
@@ -66,13 +62,13 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement> extends Abst
 	 * @see org.eclipse.graphiti.func.IAdd#add(org.eclipse.graphiti.features.context.IAddContext)
 	 */
 	@Override
-	public PictogramElement add(IAddContext context) {
+	public PictogramElement add(IAddContext ctx) {
 		
 		IPeService peService = Graphiti.getPeService();
 		IGaService gaService = Graphiti.getGaService();
 
-		T flow = getBusinessObject(context);
-		IAddConnectionContext addConContext = (IAddConnectionContext) context;
+		T flow = getBusinessObject(ctx);
+		IAddConnectionContext addContext = (IAddConnectionContext) ctx;
 
 		Diagram diagram = getDiagram();
 		
@@ -80,11 +76,11 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement> extends Abst
 		FreeFormConnection connection = peService.createFreeFormConnection(diagram);
 		
 		// set anchors
-		connection.setStart(addConContext.getSourceAnchor());
-		connection.setEnd(addConContext.getTargetAnchor());
+		connection.setStart(addContext.getSourceAnchor());
+		connection.setEnd(addContext.getTargetAnchor());
 
 		// add initial bendpoints
-		List<Point> initialBendpoints = ContextUtil.get(context, ContextConstants.CONNECTION_BENDPOINTS, List.class);
+		List<Point> initialBendpoints = ContextUtil.get(ctx, PropertyNames.CONNECTION_BENDPOINTS, List.class);
 		if (initialBendpoints != null) {
 			for (Point point : initialBendpoints) {
 				connection.getBendpoints().add(point);
@@ -98,41 +94,22 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement> extends Abst
 		// link connection to edge and bpmn element
 		link(connection, new Object[] { flow, bpmnEdge });
 		
+		createConnectionLine(connection);
 		
-		if (ModelUtil.hasName(flow)) {
-			
-			ConnectionDecorator labelDecorator = Graphiti.getPeService().createConnectionDecorator(connection, true, 0.5, true);
-			Text text = gaService.createText(labelDecorator, ModelUtil.getName(flow));
-			
-			GraphicsUtil.makeLabel(labelDecorator);
-			
-			link(labelDecorator, new Object[] { flow, bpmnEdge });
-			
-			peService.setPropertyValue(labelDecorator, UpdateBaseElementNameFeature.TEXT_ELEMENT, Boolean.toString(true));
-			StyleUtil.applyStyle(text, flow);
-			
-			BPMNLabel bpmnLabel = bpmnEdge.getLabel();
-			
-			// move after link if bpmnLabel is given
-			if (bpmnLabel != null && bpmnLabel.getBounds() != null) {
-				IRectangle decoratorBounds = LayoutUtil.getAbsoluteBounds(labelDecorator);
-
-				int x = (int) bpmnLabel.getBounds().getX() - decoratorBounds.getX();
-				int y = (int) bpmnLabel.getBounds().getY() - decoratorBounds.getY();
-				
-				MoveConnectionDecoratorContext ctx = new MoveConnectionDecoratorContext(labelDecorator, x, y, true);
-				IMoveConnectionDecoratorFeature moveDecoratorFeature = getFeatureProvider().getMoveConnectionDecoratorFeature(ctx);
-				
-				if (moveDecoratorFeature.canExecute(ctx)) {
-					moveDecoratorFeature.execute(ctx);
-				}
-			}
+		postAddHook(ctx, connection);
+		
+		if (!isImport(addContext)) {
+			layoutAfterCreate(connection, addContext);
 		}
 		
-		createConnectionLine(connection);
-		postAddHook(context, connection);
-
+		// create label if needed
+		createLabel(addContext, connection);
+		
 		return connection;
+	}
+
+	protected void layoutAfterCreate(FreeFormConnection connection, IAddConnectionContext addContext) {
+		Layouter.layoutAfterCreate(connection, getFeatureProvider());
 	}
 
 	protected abstract Class<? extends BaseElement> getBusinessObjectClass();
@@ -143,5 +120,52 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement> extends Abst
 		StyleUtil.applyStyle(connectionLine, be);
 
 		return connectionLine;
+	}
+
+	/**
+	 * Creates a label for the newly created shape if any.
+	 * 
+	 * May be overridden by subclasses to perform actual actions.
+	 * 
+	 * @param context
+	 * @param newShape
+	 */
+	protected void createLabel(IAddContext context, Connection connection) {
+		
+		// create label if the add shape feature wishes to do so
+		if (isCreateExternalLabel()) {
+			IAddContext addLabelContext = getAddLabelContext(context, connection);
+			if (addLabelContext != null) {
+				IAddFeature addFeature = getFeatureProvider().getAddFeature(addLabelContext);
+				if (addFeature.canAdd(addLabelContext)) {
+					addFeature.add(addLabelContext);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Return a label add context for the given context and shape bounds.
+	 * 
+	 * @param context
+	 * @param newShapeBounds
+	 * @return
+	 */
+	protected IAddContext getAddLabelContext(IAddContext context, Connection connection) {
+		AddContext labelAddContext = new AddContext();
+		
+		if (isImport(context)) {
+			set(labelAddContext, DIUtils.IMPORT);
+		}
+		
+		Object newObject = context.getNewObject();
+		
+		GraphicsUtil.prepareConnectionLabelAddContext(labelAddContext, connection, newObject);
+		
+		return labelAddContext;
+	}
+	
+	protected boolean isCreateExternalLabel() {
+		return false;
 	}
 }

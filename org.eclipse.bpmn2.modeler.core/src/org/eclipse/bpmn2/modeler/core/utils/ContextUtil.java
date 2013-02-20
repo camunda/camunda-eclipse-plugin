@@ -1,6 +1,8 @@
 package org.eclipse.bpmn2.modeler.core.utils;
 
 import org.eclipse.graphiti.features.context.IContext;
+import org.eclipse.graphiti.features.context.ILayoutContext;
+import org.eclipse.graphiti.features.context.impl.LayoutContext;
 
 /**
  * Utility to query a {@link IContext} for flags an properties. 
@@ -88,5 +90,19 @@ public class ContextUtil {
 		}
 		
 		return null;
+	}
+
+	/**
+	 * Copy properties from one context to the other
+	 * 
+	 * @param source
+	 * @param target
+	 * 
+	 * @param propertyNames
+	 */
+	public static void copyProperties(IContext source, IContext target, String ... propertyNames) {
+		for (String s: propertyNames) {
+			target.putProperty(s, source.getProperty(s));
+		}
 	}
 }

@@ -19,11 +19,15 @@ import org.eclipse.bpmn2.modeler.core.features.activity.AbstractCreateExpandable
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.ILayoutFeature;
+import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 
@@ -72,19 +76,30 @@ public class TransactionFeatureContainer extends AbstractExpandableActivityFeatu
 
 	@Override
 	public ILayoutFeature getLayoutFeature(IFeatureProvider fp) {
-		return new LayoutExpandableActivityFeature(fp) {
-			@Override
-			protected void layoutInRectangle(RoundedRectangle rect) {
-				IGaService gaService = Graphiti.getGaService();
-				RoundedRectangle innerRect = (RoundedRectangle) rect.getGraphicsAlgorithmChildren().get(0);
-				gaService.setSize(innerRect, rect.getWidth() - 6, rect.getHeight() - 6);
-			}
+		return new LayoutTransactionFeature(fp);
+	}
 
-			@Override
-			protected int getMarkerContainerOffset() {
-				return offset;
-			}
-		};
+	public static class LayoutTransactionFeature extends LayoutExpandableActivityFeature {
+		
+		public LayoutTransactionFeature(IFeatureProvider fp) {
+			super(fp);
+		}
+
+		@Override
+		protected void layoutActivityRectangle(ContainerShape container, Shape activityRectangle, IRectangle bounds) {
+			super.layoutActivityRectangle(container, activityRectangle, bounds);
+
+			// update inner rectangle, too
+			GraphicsAlgorithm rectangleGa = activityRectangle.getGraphicsAlgorithm();
+			
+			RoundedRectangle innerRect = (RoundedRectangle) rectangleGa.getGraphicsAlgorithmChildren().get(0);
+			Graphiti.getGaService().setSize(innerRect, rectangleGa.getWidth() - 6, rectangleGa.getHeight() - 6);
+		}
+
+		@Override
+		protected int getMarkerContainerOffset() {
+			return offset;
+		}
 	}
 
 	public static class CreateTransactionFeature extends AbstractCreateExpandableFlowNodeFeature<Transaction> {

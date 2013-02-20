@@ -105,7 +105,7 @@ public class ModelUtil {
 	 * @param obj - the BPMN2 object
 	 * @return name string
 	 */
-	private static String getObjectName(EObject obj) {
+	public static String getObjectName(EObject obj) {
 		String name;
 		EStructuralFeature feature = ((EObject)obj).eClass().getEStructuralFeature("bpmnElement");
 		if (feature!=null && obj.eGet(feature)!=null) {
@@ -204,12 +204,10 @@ public class ModelUtil {
 			if (value!=null) {
 				addID(obj,(String)value);
 			}
-			else {
-				// TODO: what to do here if the BPMN2 element has an "id" attribute which is not set?
-				// should we generate one and set it?
-				// yup
-				setID(obj);
-			}
+			// what to do here if the BPMN2 element has an "id" attribute which is not set?
+			// should we generate one and set it?
+			// No, because we dont want to add IDs on elements like FormalExpression or other elements
+			// which have a ID feature, but do not have ids by default
 		}
 		
 	}
@@ -273,8 +271,32 @@ public class ModelUtil {
 				id = generateID(obj,res);
 				obj.eSet(feature, id);
 			}
+			else {
+				id = (String) obj.eGet(feature);
+			}
 		}
 		return id;
+	}
+	
+	/**
+	 * Sets the feature with the name "id" to the given value
+	 * 
+	 * @param obj the object with the id
+	 * @param value the new id value
+	 * @return the id value, if the id feature was set
+	 * 
+	 * @throws IllegalArgumentException if the object does not have a id feature
+	 */
+	public static String setID(EObject obj, String value) {
+		EStructuralFeature feature = ((EObject)obj).eClass().getEStructuralFeature("id");
+		if (feature!=null) {
+			obj.eSet(feature, value);
+			addID(obj, value);
+			return value;
+		}
+		else {
+			throw new IllegalArgumentException("Object does not have a id feature : "+obj);
+		}
 	}
 
 	public static String getFeature(EObject obj, String attribute) {
@@ -307,15 +329,9 @@ public class ModelUtil {
 
 	public static boolean hasName(EObject obj) {
 		EStructuralFeature feature = obj.eClass().getEStructuralFeature("name");
-		return feature!=null;
+		return feature != null;
 	}
-/*	
-	public static String getLabel(EObject object) {
-		if (object==null)
-			return "";
-		return toDisplayName(object.eClass().getName());
-	}
-*/	
+	
 	public static String toDisplayName(String anyName) {
 		// get rid of the "Impl" java suffix
 		anyName = anyName.replaceAll("Impl$", "");
@@ -903,53 +919,74 @@ public class ModelUtil {
 			return adapter.getFeatureDescriptor(feature).getChoiceOfValues(object);
 		return null;
 	}
+	
+	private static void executeUpdateCommand(TransactionalEditingDomain domain, RecordingCommand command) {
+		domain.getCommandStack().execute(command);
+	}
 
-	public static boolean setValue(TransactionalEditingDomain domain, final EObject object, final EStructuralFeature feature, final Object value) {
-		ExtendedPropertiesAdapter adapter = AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
-		Object oldValue = adapter==null ? object.eGet(feature) : adapter.getFeatureDescriptor(feature).getValue();
-		boolean valueChanged = (value != oldValue);
-		if (value!=null && oldValue!=null)
-			valueChanged = !value.equals(oldValue);
-		
-		if (valueChanged) {
-			try {
-				if (value instanceof EObject) {
-					// make sure the new object is added to its control first
-					// so that it inherits the control's Resource and EditingDomain
-					// before we try to change its value.
-					InsertionAdapter.executeIfNeeded((EObject)value);
+	public static void setValue(final TransactionalEditingDomain domain, final EObject object, final EStructuralFeature feature, final Object value) {
+		executeUpdateCommand(domain, getUpdateCommand(domain, object, feature, value));
+	}
+	
+	private static RecordingCommand getUpdateCommand(final TransactionalEditingDomain domain, final EObject object, final EStructuralFeature feature, final Object value) {
+		switch (feature.getFeatureID()) {
+		case Bpmn2Package.BASE_ELEMENT__ID:
+			return getDefaultUpdateCommand(domain, object, feature, value);
+		default:
+			return getDefaultUpdateCommand(domain, object, feature, value);
+		}
+	}
+
+	public static RecordingCommand getDefaultUpdateCommand(final TransactionalEditingDomain domain, final EObject object, final EStructuralFeature feature, final Object value) {
+		return new RecordingCommand(domain) {
+			@Override
+			protected void doExecute() {
+				ExtendedPropertiesAdapter adapter = AdapterUtil.adapt(object, ExtendedPropertiesAdapter.class);
+				Object oldValue = adapter==null ? object.eGet(feature) : adapter.getFeatureDescriptor(feature).getValue();
+				boolean valueChanged = (value != oldValue);
+				if (value!=null && oldValue!=null)
+					valueChanged = !value.equals(oldValue);
+				
+				if (valueChanged) {
+					try {
+						if (value instanceof EObject) {
+							// make sure the new object is added to its control first
+							// so that it inherits the control's Resource and EditingDomain
+							// before we try to change its value.
+							InsertionAdapter.executeIfNeeded((EObject)value);
+						}
+						
+						if (value == null) { // DO NOT use isEmpty() because this erases an object's anyAttribute feature!
+							domain.getCommandStack().execute(new RecordingCommand(domain) {
+								@Override
+								protected void doExecute() {
+									object.eUnset(feature);
+								}
+							});
+						}
+						else if (adapter!=null) { 			// use the Extended Properties adapter if there is one
+							adapter.getFeatureDescriptor(feature).setValue(value);
+						}
+						else {
+							// fallback is to set the new value here using good ol' EObject.eSet()
+							domain.getCommandStack().execute(new RecordingCommand(domain) {
+								@Override
+								protected void doExecute() {
+									if (object.eGet(feature) instanceof List) {
+										((List)object.eGet(feature)).add(value);
+									} else {
+										object.eSet(feature, value);
+									}
+								}
+							});
+						}
+					} catch (Exception e) {
+						ErrorUtils.showErrorMessage(e.getMessage());
+					}
 				}
 				
-				if (value == null) { // DO NOT use isEmpty() because this erases an object's anyAttribute feature!
-					domain.getCommandStack().execute(new RecordingCommand(domain) {
-						@Override
-						protected void doExecute() {
-							object.eUnset(feature);
-						}
-					});
-				}
-				else if (adapter!=null) { 			// use the Extended Properties adapter if there is one
-					adapter.getFeatureDescriptor(feature).setValue(value);
-				}
-				else {
-					// fallback is to set the new value here using good ol' EObject.eSet()
-					domain.getCommandStack().execute(new RecordingCommand(domain) {
-						@Override
-						protected void doExecute() {
-							if (object.eGet(feature) instanceof List) {
-								((List)object.eGet(feature)).add(value);
-							} else {
-								object.eSet(feature, value);
-							}
-						}
-					});
-				}
-			} catch (Exception e) {
-				ErrorUtils.showErrorMessage(e.getMessage());
-				return false;
 			}
-		}
-		return true;
+		};
 	}
 
 	public static EObject createObject(Object object) {

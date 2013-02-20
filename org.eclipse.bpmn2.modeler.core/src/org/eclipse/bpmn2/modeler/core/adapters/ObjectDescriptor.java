@@ -239,10 +239,7 @@ public class ObjectDescriptor<T extends EObject> {
 		// also set a default name
 		EStructuralFeature feature = newObject.eClass().getEStructuralFeature("name");
 		if (feature!=null) {
-			if (id!=null)
-				newObject.eSet(feature, ModelUtil.toDisplayName(id));
-			else
-				newObject.eSet(feature, "New "+ModelUtil.toDisplayName(newObject.eClass().getName()));
+			newObject.eSet(feature, ""+ModelUtil.toDisplayName(newObject.eClass().getName()));
 		}
 		return newObject;
 	}

@@ -2,6 +2,7 @@ package org.eclipse.bpmn2.modeler.ui.property.tabs.builder;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.binding.ValidatingStringTextBinding;
 import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
@@ -19,6 +20,8 @@ public class IdPropertyBuilder extends AbstractPropertiesBuilder<BaseElement> {
 	
 	protected String label;
 
+	private ValidatingStringTextBinding binding;
+
 	public IdPropertyBuilder(Composite parent, GFPropertySection section, BaseElement bo, String label) {
 		super(parent, section, bo);
 		
@@ -31,9 +34,17 @@ public class IdPropertyBuilder extends AbstractPropertiesBuilder<BaseElement> {
 
 	@Override
 	public void create() {
-		Text idText = PropertyUtil.createText(section, parent, label, BASE_ELEMENT_ID_FEATURE, bo);
+		final Text idText = PropertyUtil.createUnboundText(section, parent, label);
+		
+		binding = new ValidatingStringTextBinding(bo, BASE_ELEMENT_ID_FEATURE, idText);
+		// validate unique id
+		binding.addErrorCode(100);
+		binding.addErrorCode(101);
 
-		// FIXME: Id change is not properly propagated
-		idText.setEnabled(false);
+		binding.setMandatory(true);
+		
+		binding.establish();
 	}
+
+	
 }

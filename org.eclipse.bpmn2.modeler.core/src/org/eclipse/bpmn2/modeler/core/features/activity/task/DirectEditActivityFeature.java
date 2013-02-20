@@ -12,23 +12,28 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features.activity.task;
 
-import org.eclipse.bpmn2.modeler.core.features.DirectEditFlowElementFeature;
+import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.modeler.core.features.DirectEditNamedElementFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IDirectEditingContext;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
-public class DirectEditTaskFeature extends DirectEditFlowElementFeature {
+public class DirectEditActivityFeature extends DirectEditNamedElementFeature {
 
-	public DirectEditTaskFeature(IFeatureProvider fp) {
+	public DirectEditActivityFeature(IFeatureProvider fp) {
 		super(fp);
+	}
+	
+	@Override
+	public int getEditingType() {
+		return TYPE_MULTILINETEXT;
 	}
 
 	@Override
-	public String checkValueValid(String value, IDirectEditingContext context) {
-		if (value.length() < 1) {
-			return "Please enter any text as Task name.";
-		} else if (value.contains("\n")) {
-			return "Line breakes are not allowed in Task names.";
-		}
-		return null;
+	public boolean canDirectEdit(IDirectEditingContext context) {
+		PictogramElement pe = context.getPictogramElement();
+		Object bo = getBusinessObjectForPictogramElement(pe);
+		return bo != null && bo instanceof Activity;
 	}
+	
 }

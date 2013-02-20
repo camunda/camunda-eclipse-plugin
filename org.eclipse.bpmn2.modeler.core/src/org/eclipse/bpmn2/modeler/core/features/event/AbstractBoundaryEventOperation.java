@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -41,9 +42,9 @@ public abstract class AbstractBoundaryEventOperation {
 		
 		for (PictogramElement e : elements) {
 			BoundaryEvent boundaryEvent = BusinessObjectUtil.getFirstElementOfType(e, BoundaryEvent.class);
-			if (boundaryEvents.contains(boundaryEvent)) {
-				ContainerShape container = (ContainerShape) e;
-				applyTo(container);
+			if (boundaryEvents.contains(boundaryEvent) && !LabelUtil.isLabel(e)) {
+				ContainerShape boundaryShape = (ContainerShape) e;
+				applyTo(boundaryShape);
 			}
 		}
 	}

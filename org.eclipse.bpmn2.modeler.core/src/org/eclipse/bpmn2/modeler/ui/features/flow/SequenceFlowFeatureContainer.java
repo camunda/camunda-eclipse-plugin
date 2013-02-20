@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.flow;
 
+import static org.eclipse.bpmn2.modeler.core.utils.ContextUtil.is;
+
 import java.util.Iterator;
 
 import org.eclipse.bpmn2.Activity;
@@ -27,17 +29,18 @@ import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
-import org.eclipse.bpmn2.modeler.core.features.BaseElementConnectionFeatureContainer;
-import org.eclipse.bpmn2.modeler.core.features.ContextConstants;
+import org.eclipse.bpmn2.modeler.core.features.DirectEditNamedConnectionFeature;
+import org.eclipse.bpmn2.modeler.core.features.DirectEditNamedElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
+import org.eclipse.bpmn2.modeler.core.features.PropertyNames;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
+import org.eclipse.bpmn2.modeler.core.features.container.BaseElementConnectionFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractAddFlowFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.eclipse.bpmn2.modeler.core.features.flow.AbstractReconnectFlowFeature;
-import org.eclipse.bpmn2.modeler.core.layout.ConnectionService;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
+import org.eclipse.bpmn2.modeler.core.layout.util.Layouter;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
-import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
@@ -46,12 +49,14 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
+import org.eclipse.graphiti.features.IDirectEditingFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReason;
 import org.eclipse.graphiti.features.IReconnectionFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.ICreateConnectionContext;
+import org.eclipse.graphiti.features.context.IPictogramElementContext;
 import org.eclipse.graphiti.features.context.IReconnectionContext;
 import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.context.impl.ReconnectionContext;
@@ -93,6 +98,11 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 	@Override
 	public ICreateConnectionFeature getCreateConnectionFeature(IFeatureProvider fp) {
 		return new CreateSequenceFlowFeature(fp);
+	}
+	
+	@Override
+	public IDirectEditingFeature getDirectEditingFeature(IFeatureProvider fp) {
+		return new DirectEditNamedConnectionFeature(fp);
 	}
 
 	@Override
@@ -197,7 +207,23 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 
 	}
 	
-	public static class UpdateDefaultSequenceFlowFeature extends AbstractUpdateFeature {
+	public abstract static class UpdateSequenceFlowFeature extends AbstractUpdateFeature {
+		
+		public UpdateSequenceFlowFeature(IFeatureProvider fp) {
+			super(fp);
+		}
+
+		protected SequenceFlow getBusinessObject(IPictogramElementContext context) {
+			return BusinessObjectUtil.getFirstElementOfType(context.getPictogramElement(), SequenceFlow.class);
+		}
+		
+		@Override
+		public boolean canUpdate(IUpdateContext context) {
+			return getBusinessObject(context) != null;
+		}
+	}
+	
+	public static class UpdateDefaultSequenceFlowFeature extends UpdateSequenceFlowFeature {
 
 		public UpdateDefaultSequenceFlowFeature(IFeatureProvider fp) {
 			super(fp);
@@ -205,10 +231,13 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 
 		@Override
 		public boolean canUpdate(IUpdateContext context) {
-			SequenceFlow flow = BusinessObjectUtil.getFirstElementOfType(context.getPictogramElement(),
-					SequenceFlow.class);
-			boolean canUpdate = flow != null && isDefaultAttributeSupported(flow.getSourceRef());
-			return canUpdate;
+			if (!super.canUpdate(context)) {
+				return false;
+			}
+			
+			SequenceFlow flow = getBusinessObject(context);
+			
+			return isDefaultAttributeSupported(flow.getSourceRef());
 		}
 
 		@Override
@@ -347,9 +376,7 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 		public void postReconnect(IReconnectionContext context) {
 			super.postReconnect(context);
 			
-			boolean forceReconnect = !ContextUtil.is(context, ContextConstants.REPAIR_IF_POSSIBLE);
-			
-			ConnectionService.reconnectConnectionAfterConnectionEndChange(context.getConnection(), forceReconnect);
+			layoutAfterConnectionEndChange(context.getConnection(), context);
 			
 			cleanupOldAnchor(context.getOldAnchor());
 		}
@@ -372,6 +399,16 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 					oldAnchor.getParent().getAnchors().remove(oldAnchor);
 				}
 			}
+		}
+
+		protected void layoutAfterConnectionEndChange(Connection connection, IReconnectionContext context) {
+			boolean forceLayout = isForceRelayout(context);
+			
+			Layouter.layoutConnectionAfterReconnect(connection, forceLayout, getFeatureProvider());
+		}
+
+		protected boolean isForceRelayout(IReconnectionContext context) {
+			return !is(context, PropertyNames.REPAIR_IF_POSSIBLE);
 		}
 	}
 
@@ -474,6 +511,11 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 			
 			setDefaultSequenceFlow(newConnection);
 			setConditionalSequenceFlow(newConnection);
+		}
+		
+		@Override
+		protected boolean isCreateExternalLabel() {
+			return true;
 		}
 	}
 }

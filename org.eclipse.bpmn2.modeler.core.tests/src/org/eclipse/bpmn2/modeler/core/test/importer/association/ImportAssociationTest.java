@@ -31,16 +31,6 @@ public class ImportAssociationTest extends AbstractImportBpmnModelTest {
 
 		assertThat(StringUtil.toDetailsString(diagram)).contains("AssociationImpl");
 	}
-	
-	@Test
-	@DiagramResource
-	public void testAssociateDataStoreByXPath() {
-		ModelImport importer = createModelImport();
-		importer.execute();
-
-		assertThat(StringUtil.toDetailsString(diagram)).contains("AssociationImpl");
-	}
-	
 
 	@Test
 	@DiagramResource

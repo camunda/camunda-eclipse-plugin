@@ -17,9 +17,10 @@ import org.eclipse.bpmn2.Collaboration;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.Participant;
-import org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.features.DirectEditNamedElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.UpdateBaseElementNameFeature;
+import org.eclipse.bpmn2.modeler.core.features.container.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
@@ -45,7 +46,7 @@ public abstract class AbstractDataFeatureContainer extends BaseElementFeatureCon
 
 	@Override
 	public IDirectEditingFeature getDirectEditingFeature(IFeatureProvider fp) {
-		return null;
+		return new DirectEditNamedElementFeature(fp);
 	}
 
 	@Override

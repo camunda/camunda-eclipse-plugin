@@ -13,23 +13,24 @@
 package org.eclipse.bpmn2.modeler.ui.features.activity.task;
 
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.core.features.AbstractUpdateBaseElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.LayoutActivityFeature;
-import org.eclipse.bpmn2.modeler.core.features.activity.task.DirectEditTaskFeature;
+import org.eclipse.bpmn2.modeler.core.features.activity.task.DirectEditActivityFeature;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.ui.features.activity.AbstractActivityFeatureContainer;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IDirectEditingFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.ILayoutFeature;
 import org.eclipse.graphiti.features.context.IUpdateContext;
-import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
-import org.eclipse.graphiti.mm.algorithms.MultiText;
+import org.eclipse.graphiti.mm.algorithms.Text;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 
 public abstract class AbstractTaskFeatureContainer extends AbstractActivityFeatureContainer {
+
 
 	@Override
 	public MultiUpdateFeature getUpdateFeature(IFeatureProvider fp) {
@@ -48,21 +49,26 @@ public abstract class AbstractTaskFeatureContainer extends AbstractActivityFeatu
 
 	@Override
 	public IDirectEditingFeature getDirectEditingFeature(IFeatureProvider fp) {
-		return new DirectEditTaskFeature(fp);
+		return new DirectEditActivityFeature(fp);
 	}
 
 	@Override
 	public ILayoutFeature getLayoutFeature(IFeatureProvider fp) {
-		return new LayoutActivityFeature(fp) {
-			@Override
-			protected boolean layoutHook(Shape shape, GraphicsAlgorithm ga, Object bo, int newWidth, int newHeight) {
-				if (bo != null && bo instanceof Task && ga instanceof MultiText) {
-					int padding = GraphicsUtil.TASK_IMAGE_SIZE;
-					Graphiti.getGaService().setLocationAndSize(ga, 3, padding, newWidth - 6, newHeight - padding);
-					return true;
-				}
-				return false;
-			}
-		};
+		return new LayoutTaskFeature(fp);
+	}
+	
+	public static class LayoutTaskFeature extends LayoutActivityFeature {
+		
+		private LayoutTaskFeature(IFeatureProvider fp) {
+			super(fp);
+		}
+		
+		@Override
+		protected void layoutLabel(ContainerShape container, Shape labelShape, IRectangle bounds) {
+			Text text = (Text) labelShape.getGraphicsAlgorithm();
+			
+			int padding = GraphicsUtil.TASK_IMAGE_SIZE;
+			Graphiti.getGaService().setLocationAndSize(text, 3, padding, bounds.getWidth() - 6, bounds.getHeight() - padding);
+		}
 	}
 }

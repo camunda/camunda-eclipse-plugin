@@ -308,10 +308,17 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		TransactionalEditingDomain editingDomain = diagramEditor.getEditingDomain();
 		ModelImportCommand command = new ModelImportCommand(editingDomain, diagramEditor, resourceToImport);
 		
-		editingDomain.getCommandStack().execute(command);
-		
-		if (!command.wasSuccessful() || !command.getRecordedWarnings().isEmpty()) {
-			handleImportErrorAndWarnings(command.getRecordedException(), command.getRecordedWarnings());
+		try {
+			editingDomain.getCommandStack().execute(command);
+			
+			if (!command.wasSuccessful() || !command.getRecordedWarnings().isEmpty()) {
+				handleImportErrorAndWarnings(command.getRecordedException(), command.getRecordedWarnings());
+			}
+		} catch (Exception e) {
+			// if we got here, there was an exception in the import on emf model level
+			// we dont want to die now because this will produce NPEs in the
+			// creation of the editor, so we swallow this exception -> much better user experience
+			Activator.logError(e);
 		}
 		
 		// this needs to happen AFTER the diagram has been imported because we need

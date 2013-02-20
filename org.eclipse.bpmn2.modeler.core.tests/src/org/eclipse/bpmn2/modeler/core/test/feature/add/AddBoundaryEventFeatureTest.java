@@ -1,7 +1,6 @@
 package org.eclipse.bpmn2.modeler.core.test.feature.add;
 
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
-import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.rectangle;
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.elementOfType;
 import static org.eclipse.bpmn2.modeler.core.test.util.operations.AddBoundaryEventOperation.addBoundaryEvent;
@@ -12,6 +11,7 @@ import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.Util;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
@@ -38,6 +38,10 @@ public class AddBoundaryEventFeatureTest extends AbstractFeatureTest {
 				shapeBounds.getX() + boundaryAttachPosition.getX() - EVENT_WIDTH / 2, 
 				shapeBounds.getY() + boundaryAttachPosition.getY() - EVENT_HEIGHT / 2);
 		
+		Point expectedBoundaryLabelPosition = point(
+				expectedBoundaryPosition.getX() + EVENT_WIDTH / 2, 
+				expectedBoundaryPosition.getY() + EVENT_HEIGHT + 5);
+		
 		// when
 		// element is added to it
 		addBoundaryEvent(diagramTypeProvider)
@@ -59,6 +63,13 @@ public class AddBoundaryEventFeatureTest extends AbstractFeatureTest {
 		// and positioned correctly
 		assertThat(point(boundaryBounds))
 			.isEqualTo(expectedBoundaryPosition);
+		
+		// and label is positioned correctly, too
+		Shape boundaryLabelShape = LabelUtil.getLabelShape(createdShape, getDiagram());
+		Point labelPosition = LabelUtil.getLabelPosition(boundaryLabelShape);
+		
+		assertThat(labelPosition)
+			.isEqualTo(expectedBoundaryLabelPosition);
 	}
 	
 
@@ -78,6 +89,10 @@ public class AddBoundaryEventFeatureTest extends AbstractFeatureTest {
 		Point expectedBoundaryPosition = point(
 				shapeBounds.getX() + boundaryAttachPosition.getX() - EVENT_WIDTH / 2, 
 				shapeBounds.getY() + boundaryAttachPosition.getY() - EVENT_HEIGHT / 2);
+
+		Point expectedBoundaryLabelPosition = point(
+				expectedBoundaryPosition.getX() + EVENT_WIDTH / 2, 
+				expectedBoundaryPosition.getY() + EVENT_HEIGHT + 5);
 		
 		// when
 		// element is added to it
@@ -100,5 +115,12 @@ public class AddBoundaryEventFeatureTest extends AbstractFeatureTest {
 		// and positioned correctly
 		assertThat(point(boundaryBounds))
 			.isEqualTo(expectedBoundaryPosition);
+		
+		// and label is positioned correctly, too
+		Shape boundaryLabelShape = LabelUtil.getLabelShape(createdShape, getDiagram());
+		Point labelPosition = LabelUtil.getLabelPosition(boundaryLabelShape);
+		
+		assertThat(labelPosition)
+			.isEqualTo(expectedBoundaryLabelPosition);
 	}
 }

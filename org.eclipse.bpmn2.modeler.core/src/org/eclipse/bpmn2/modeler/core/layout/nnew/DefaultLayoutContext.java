@@ -140,8 +140,17 @@ public class DefaultLayoutContext implements LayoutContext {
 	public boolean repair() {
 		
 		boolean repeatNeeded;
+		// FIXME this is for testing purposes since we have 
+		// there are sometimes loops after move of selections
+		
+		int cancelCounter = 0;
 		
 		do {
+			cancelCounter++;
+			
+			if (cancelCounter == Integer.MAX_VALUE) {
+				break;
+			}
 			
 			// recompute so that our layouting check later works
 			recomputePointsAndParts();

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Artifact;
@@ -81,8 +80,6 @@ import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
 import org.eclipse.emf.ecore.xmi.XMIException;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
-import org.eclipse.graphiti.features.ILayoutFeature;
-import org.eclipse.graphiti.features.context.impl.LayoutContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -135,19 +132,26 @@ public class ModelImport {
 	}
 	
 	public void execute() {
-		EList<EObject> contents = resource.getContents();
+		long time = System.currentTimeMillis();
 		
-		if (contents.isEmpty()) {
-			throw new ResourceImportException("No document root in resource bundle");
-		} else {
-			DocumentRoot documentRoot = (DocumentRoot) contents.get(0);
-			handleDocumentRoot(documentRoot);
+		try {
+			EList<EObject> contents = resource.getContents();
 			
-			if (contents.size() > 1) {
-				// TODO: is there a possibility for a resource to have multiple DocumentRoots?
-				InvalidContentException exception = new InvalidContentException("Multiple document roots in resource");
-				log(exception);
+			if (contents.isEmpty()) {
+				throw new ResourceImportException("No document root in resource bundle");
+			} else {
+				DocumentRoot documentRoot = (DocumentRoot) contents.get(0);
+				handleDocumentRoot(documentRoot);
+				
+				if (contents.size() > 1) {
+					// TODO: is there a possibility for a resource to have multiple DocumentRoots?
+					InvalidContentException exception = new InvalidContentException("Multiple document roots in resource");
+					log(exception);
+				}
 			}
+		} finally {
+			time = System.currentTimeMillis() - time;
+			// System.out.println(String.format("Bpmn2Editor import model in %sms", time));
 		}
 	}
 		
@@ -307,28 +311,7 @@ public class ModelImport {
 	}
 
 	protected void performLayout() {
-		// finally layout all elements
-		for (Entry<BaseElement, PictogramElement> entry : pictogramElements.entrySet()) {
-			BaseElement baseElement = entry.getKey();
-			PictogramElement pictogramElement = entry.getValue();
-			
-			if (baseElement instanceof SubProcess) {
-				// we need the layout to hide children if collapsed
-				LayoutContext context = new LayoutContext(pictogramElement);
-				ILayoutFeature feature = featureProvider.getLayoutFeature(context);
-				if (feature != null && feature.canLayout(context)) {
-					feature.layout(context);
-				}
-
-			} else if (baseElement instanceof FlowNode) {
-				LayoutContext context = new LayoutContext(pictogramElement);
-				ILayoutFeature feature = featureProvider.getLayoutFeature(context);
-				if (feature != null && feature.canLayout(context)) {
-					feature.layout(context);
-				}
-			}
-			
-		}
+		// do nothing
 	}
 	
 	// handling of BPMN Model Elements ///////////////////////////////////////////////////////////////
@@ -391,9 +374,6 @@ public class ModelImport {
 			
 		} else {
 			
-			// handle io specification (data input and output)
-			handleInputOutputSpecification(process, participantContainer);
-			
 			//  draw the lanes (possibly nested). The lanes reference the task elements they contain, but not the sequence flows.
 			for (LaneSet laneSet: laneSets) {
 				handleLaneSet(laneSet, process, participantContainer);
@@ -403,6 +383,9 @@ public class ModelImport {
 			List<FlowElement> flowElements = process.getFlowElements();
 			
 			handleUnreferencedFlowElements(participantContainer, flowElements);
+			
+			// handle io specification (data input and output)
+			handleInputOutputSpecification(process, participantContainer);
 			
 			// draw the sequence flows:
 			handleSequenceFlows(participantContainer, flowElements);
@@ -422,7 +405,10 @@ public class ModelImport {
 				continue;
 			} else {
 				if (getPictogramElementOrNull(e) == null) {
-					log(new UnmappedElementException("element not assigned to lane", e));
+					if (e instanceof FlowNode) {
+						log(new UnmappedElementException("element not assigned to lane", e));
+					}
+					
 					unreferencedFlowElements.add(e);
 				}
 			}
@@ -503,14 +489,14 @@ public class ModelImport {
 
 	protected void handleProcess(Process process, ContainerShape container) {
 		
-		// data store, data input, data output
-		handleInputOutputSpecification(process, container);
-		
 		// handle direct children of the process element (not displaying lanes)
 		List<FlowElement> flowElements = process.getFlowElements();
 		handleFlowElements(container, flowElements);
 		
 		handleSequenceFlows(container, flowElements);
+
+		// data store, data input, data output
+		handleInputOutputSpecification(process, container);
 		
 		// e.g. groups, text annotation, ...
 		List<Artifact> artifacts = process.getArtifacts();		
@@ -768,9 +754,9 @@ public class ModelImport {
 	}
 	
 	protected void linkInDiagramElementMap(DiagramElement diagramElement, BaseElement bpmnElement) {
-		// FIXME: otherwise works only if BPMN element has an id
+		// if it does not have a id, it can't be shown
 		if (bpmnElement.getId() == null) {
-			ModelUtil.setID(bpmnElement, resource);
+			return;
 		}
 		
 		diagramElementMap.put(bpmnElement.getId(), diagramElement);

@@ -300,6 +300,10 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 		
         @Override
         protected boolean shouldSaveFeature(EObject o, EStructuralFeature f) {
+        	if (f == Bpmn2Package.eINSTANCE.getProcess_IsExecutable()) {
+        		return true;
+        	}
+        	
             if (o instanceof BPMNShape && f==BpmnDiPackage.eINSTANCE.getBPMNShape_IsHorizontal()) {
             	BPMNShape s = (BPMNShape)o;
             	if (s.getBpmnElement() instanceof Lane || s.getBpmnElement() instanceof Participant)

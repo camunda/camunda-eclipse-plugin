@@ -12,219 +12,262 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.features;
 
-import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
+import static org.eclipse.bpmn2.modeler.core.utils.ContextUtil.isNot;
 
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.Lane;
-import org.eclipse.bpmn2.Participant;
-import org.eclipse.bpmn2.SubProcess;
-import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
-import org.eclipse.bpmn2.modeler.core.layout.ConnectionService;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
-import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.layout.util.Layouter;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.emf.ecore.EObject;
+import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.features.impl.DefaultMoveShapeFeature;
-import org.eclipse.graphiti.mm.algorithms.AbstractText;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
+import org.eclipse.graphiti.mm.pictograms.Anchor;
+import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
+import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
-
-import static org.eclipse.bpmn2.modeler.core.utils.ContextUtil.*;
+import org.eclipse.graphiti.services.Graphiti;
 
 public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 
 	public static final String SKIP_MOVE_LABEL = "DefaultMoveBPMNShapeFeature.SKIP_MOVE_LABEL";
 	public static final String SKIP_MOVE_BENDPOINTS = "DefaultMoveBPMNShapeFeature.SKIP_MOVE_BENDPOINTS";
-	public static final Object SKIP_RECONNECT_AFTER_MOVE = "DefaultMoveBPMNShapeFeature.SKIP_RECONNECT_AFTER_MOVE";
-	
-	private Point preMovePosition = null;
+	public static final String SKIP_REPAIR_CONNECTIONS_AFTER_MOVE = "DefaultMoveBPMNShapeFeature.SKIP_RECONNECT_AFTER_MOVE";
 
+	public static final String[] MOVE_PROPERTIES = {
+		SKIP_MOVE_LABEL, SKIP_MOVE_BENDPOINTS, 
+		SKIP_REPAIR_CONNECTIONS_AFTER_MOVE
+	};
+
+	protected IRectangle preMoveBounds;
+	
 	public DefaultMoveBPMNShapeFeature(IFeatureProvider fp) {
 		super(fp);
 	}
 
 	@Override
-	protected void moveAllBendpoints(IMoveShapeContext context) {
-		if (isMoveBendpoints(context)) {
-			super.moveAllBendpoints(context);
-		}
-	}
-	
-	@Override
 	protected void preMoveShape(IMoveShapeContext context) {
 		super.preMoveShape(context);
-
+		
 		Shape shape = context.getShape();
 		
-		preMovePosition = point(LayoutUtil.getAbsoluteBounds(shape));
-	}
-
-	@Override
-	protected void postMoveShape(IMoveShapeContext context) {
-		Shape shape = (Shape) context.getPictogramElement();
-
-		GraphicsUtil.sendToFront(shape);
-				
-		BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(shape, BPMNShape.class);
-		
-		Point movementDiff = getMovementDiff(shape);
-		
-		if (isBpmnContainer(shape)) {
-			moveChildren(context, movementDiff);
-		}
-		
-		if (isMoveLabel(context)) {
-			// move label after the shape has been moved
-			moveLabel(shape, bpmnShape, movementDiff);
-		}
-		
-		if (isReconnectShapeAfterMove(context)) {
-			ConnectionService.reconnectShapeAfterMove(shape);
-		}
-		
-		// update di
-		DIUtils.updateDIShape(shape, bpmnShape);
+		preMoveBounds = LayoutUtil.getAbsoluteBounds(shape);
 	}
 
 	/**
-	 * Return true if the shape represents a bpmn container
-	 * 
-	 * @param shape
-	 * @return
+	 * Reorganizing the moving of bendpoints after internal moving the shape.
 	 */
-	private boolean isBpmnContainer(Shape shape) {
-		BaseElement baseElement = BusinessObjectUtil.getFirstElementOfType(shape, BaseElement.class);
-		
-		return 
-				baseElement instanceof Participant ||
-				baseElement instanceof Lane ||
-				baseElement instanceof SubProcess;
+	@Override
+	public final void moveShape(IMoveShapeContext context) {
+		preMoveShape(context);
+		internalMove(context);
+		moveAllBendpoints(context);
+		postMoveShape(context);
 	}
 	
-	private boolean isReconnectShapeAfterMove(IMoveShapeContext context) {
-		// contexts may disable reconnect by
-		// setting DefaultMoveBPMNShapeFeature.SKIP_RECONNECT_AFTER_MOVE
-		
-		return isNot(context, SKIP_RECONNECT_AFTER_MOVE);
-	}
-	
-	private boolean isMoveBendpoints(IMoveShapeContext context) {
-		
-		// contexts may disable automatic moving of bendpoints by 
-		// setting DefaultMoveBPMNShapeFeature.SKIP_MOVE_BENDPOINTs
-		
-		return isNot(context, SKIP_MOVE_BENDPOINTS);
-	}
+	@Override
+	protected void moveAllBendpoints(IMoveShapeContext context) {
 
-	private boolean isMoveLabel(IMoveShapeContext context) {
-		return isNot(context, SKIP_MOVE_LABEL);
-	}
-	
-	private Point getMovementDiff(Shape shape) {
-		Assert.isNotNull(preMovePosition);
-		
-		IRectangle newBounds = LayoutUtil.getAbsoluteBounds(shape);
-		
-		return point(newBounds.getX() - preMovePosition.getX(), newBounds.getY() - preMovePosition.getY());
-	}
-
-	protected void moveLabel(Shape shape, BPMNShape bpmnShape, Point movementDiff) {
-		
-		if (bpmnShape == null) {
-			throw new IllegalArgumentException("Argument bpmnShape must not be null");
-		}
-
-		ContainerShape label = GraphicsUtil.getLabelShape(shape, getDiagram());
-		
-		// no label, no work to do
-		if (label == null) {
+		if (!isMoveBendpoints(context)) {
 			return;
 		}
-
-		// align shape and label if the label
-		// lies outside the shape
-		if (shape != label) {
-			AbstractText text = GraphicsUtil.getLabelShapeText(label);
-			
-			IRectangle shapeBounds = LayoutUtil.getAbsoluteBounds(shape);
-			
-			// reconstruct pre movement position from shape bounds (post move) and diff
-			Point preMovePos = point(shapeBounds.getX() - movementDiff.getX(), shapeBounds.getY() - movementDiff.getY());
-			
-			// only align when not selected, the move feature of the label will
-			// do the job when selected
-			if (!isEditorSelection(label)) {
-				GraphicsUtil.alignWithShape(text, label, shapeBounds.getWidth(), shapeBounds.getHeight(),
-						point(shapeBounds), preMovePos);
-				
-				GraphicsUtil.sendToFront(label);
-				
-				DIUtils.updateDILabel(label, bpmnShape);
-			}
-			
-			// do not adjust label container 
-			// (labels always on top)
-		}
-	}
-
-	/**
-	 * Propagate move to children
-	 * 
-	 * @param context
-	 * @param movementDiff 
-	 */
-	private void moveChildren(IMoveShapeContext context, Point movementDiff) {
-		ContainerShape containerShape = (ContainerShape) context.getShape();
 		
-		Iterator<EObject> allSubShapes = containerShape.eAllContents();
+		Shape shape = context.getShape();
 		
-		while (allSubShapes.hasNext()) {
-			EObject s = allSubShapes.next();
+		Set<Connection> connectionsToMove = new HashSet<Connection>();
+		
+		// move only container connections
+		connectionsToMove.addAll(calculateContainerConnections(context));
+		
+		// move selected connections, i.e.
+		// connections that are in between two selected (and thus moved) shapes
+		Set<Connection> selectedConnections = calculateSelectedConnections(context);
+		
+		connectionsToMove.addAll(selectedConnections);
+		
+		IRectangle postMoveBounds = LayoutUtil.getAbsoluteBounds(shape);
+		
+		int deltaX = (postMoveBounds.getX() - preMoveBounds.getX());
+		int deltaY = (postMoveBounds.getY() - preMoveBounds.getY());
+		
+		for (Connection connection: connectionsToMove) {
 			
-			if (s instanceof Shape) {
-				Shape shape = (Shape) s;
-				
-				BaseElement baseElement = BusinessObjectUtil.getFirstElementOfType(shape, BaseElement.class);
-				BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(shape, BPMNShape.class);
-				
-				if (baseElement != null) {
-					// reconnect shape
-					ConnectionService.reconnectShapeAfterMove(shape);
-					
-					if (bpmnShape != null) {
-						// move label
-						moveLabel(shape, bpmnShape, movementDiff);
-					}
+			if (connection instanceof FreeFormConnection) {
+				// move only connections part of container connections
+				// or connections this shape is the start shape at
+				AnchorContainer startAnchorContainer = connection.getStart().getParent();
+				if (startAnchorContainer.equals(shape) || !selectedConnections.contains(connection)) {
+					moveConnectionBendpoints((FreeFormConnection) connection, deltaX, deltaY);
 				}
 			}
 		}
 	}
+
+	@Override
+	protected void postMoveShape(IMoveShapeContext context) {
+		Shape shape = context.getShape();
+
+		sendToFront(shape);
+		
+		// layout shape after move 
+		// (i.e. reconnect, move children, labels...)
+		layout(shape, context);
+
+		// update di
+		updateDi(shape);
+	}
+	
+	protected void moveConnectionBendpoints(FreeFormConnection connection, int deltaX, int deltaY) {
+		List<Point> points = connection.getBendpoints();
+		for (int i = 0; i < points.size(); i++) {
+			Point point = points.get(i);
+			int oldX = point.getX();
+			int oldY = point.getY();
+			points.set(i, Graphiti.getGaCreateService().createPoint(oldX + deltaX, oldY + deltaY));
+		}
+	}
 	
 	/**
-	 * Returns true if the given shape is currently selected in the editor
+	 * Return the list of selected connections in the given context
 	 * 
 	 * @param shape
+	 * @param context
+	 */
+	private Set<Connection> calculateSelectedConnections(IMoveShapeContext context) {
+		
+		Shape shape = context.getShape();
+		
+		return LayoutUtil.getSharedConnections(shape, getEditorSelection());
+	}
+	
+	/**
+	 * Returns all connections contained in a given container shape.
+	 * 
+	 * @param context
 	 * @return
 	 */
-	private boolean isEditorSelection(ContainerShape shape) {
+	private Set<FreeFormConnection> calculateContainerConnections(IMoveShapeContext context) {
+
+		Shape shapeToMove = context.getShape();
 		
-		PictogramElement[] selection = getDiagramEditor().getSelectedPictogramElements();
-		
-		for (PictogramElement e: selection) {
-			if (e == shape) {
-				return true;
+		if (!(shapeToMove instanceof ContainerShape)) {
+			return Collections.emptySet();
+		}
+
+		Set<FreeFormConnection> containerConnections = new HashSet<FreeFormConnection>();
+
+		List<Anchor> anchorsFrom = getAnchors(shapeToMove);
+		List<Anchor> anchorsTo = new ArrayList<Anchor>(anchorsFrom);
+
+		for (Anchor anchorFrom : anchorsFrom) {
+
+			Collection<Connection> outgoingConnections = anchorFrom.getOutgoingConnections();
+
+			for (Connection connection : outgoingConnections) {
+				for (Anchor anchorTo : anchorsTo) {
+
+					Collection<Connection> incomingConnections = anchorTo.getIncomingConnections();
+					if (incomingConnections.contains(connection)) {
+						if (connection instanceof FreeFormConnection) {
+							containerConnections.add((FreeFormConnection) connection);
+						}
+					}
+				}
 			}
 		}
 		
-		return false;
+		return containerConnections;
+	}
+
+	private List<Anchor> getAnchors(Shape theShape) {
+		List<Anchor> ret = new ArrayList<Anchor>();
+		ret.addAll(theShape.getAnchors());
+
+		if (theShape instanceof ContainerShape) {
+			ContainerShape containerShape = (ContainerShape) theShape;
+			List<Shape> children = containerShape.getChildren();
+			for (Shape shape : children) {
+				if (shape instanceof ContainerShape) {
+					ret.addAll(getAnchors((ContainerShape) shape));
+				} else {
+					ret.addAll(shape.getAnchors());
+				}
+			}
+		}
+		return ret;
+	}
+	
+	/**
+	 * Sends the element to the front after it has been moved
+	 * @param shape
+	 */
+	protected void sendToFront(Shape shape) {
+		GraphicsUtil.sendToFront(shape);
+	}
+
+	/**
+	 * Update di after move
+	 * @param shape
+	 */
+	protected void updateDi(Shape shape) {
+		DIUtils.updateDI(shape);
+	}
+
+	/**
+	 * Perform layout after the shape has been moved
+	 * 
+	 * @param shape
+	 */
+	protected void layout(Shape shape, IMoveShapeContext context) {
+		Layouter.layoutShapeAfterMove(shape, isMoveLabel(context), isRepairConnectionsAfterMove(context), getFeatureProvider());
+	}
+	
+	protected boolean isRepairConnectionsAfterMove(IMoveShapeContext context) {
+		return isNot(context, SKIP_REPAIR_CONNECTIONS_AFTER_MOVE);
+	}
+	
+	protected boolean isMoveBendpoints(IMoveShapeContext context) {
+		return isNot(context, SKIP_MOVE_BENDPOINTS);
+	}
+
+	protected boolean isMoveLabel(IMoveShapeContext context) {
+		Shape label = LabelUtil.getLabelShape(context.getPictogramElement(), getDiagram());
+		
+		// return is move label only if the label exists and is not an editor selection, too.
+		return isNot(context, SKIP_MOVE_LABEL) && !isEditorSelection(label);
+	}
+
+	/**
+	 * Returns true if the given shape is currently selected in the editor
+	 * 
+	 * @param pictogramElement
+	 * @return
+	 */
+	protected boolean isEditorSelection(PictogramElement pictogramElement) {
+		List<PictogramElement> selection = getEditorSelection();
+		return selection.contains(pictogramElement);
+	}
+
+	/**
+	 * Return the editor selection
+	 * 
+	 * @return
+	 */
+	protected List<PictogramElement> getEditorSelection() {
+		return Arrays.asList(getDiagramEditor().getSelectedPictogramElements());
 	}
 }
