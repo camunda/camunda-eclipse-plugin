@@ -32,22 +32,26 @@
 
 ## Bug Fixes
 
-- Fix boundary attached to activity has an offset
-	([0d670f77](https://github.com/camunda/bpmn2-modeler/commit/0d670f77ec19edd8586fe39e7295a5a342294198))
-- Task and execution listener defaults get saved 
-	([0d670f77](https://github.com/camunda/bpmn2-modeler/commit/0d670f77ec19edd8586fe39e7295a5a342294198))
-- Fix subprocess containment bug
+- **subprocess:** fix containment bug
 	([14746f6d](https://github.com/camunda/bpmn2-modeler/commit/14746f6d32a69d3d6649ae829a3e03345e935114))
-- Fix change service task type keeps empty attribute 
-	([c6be5745](https://github.com/camunda/bpmn2-modeler/commit/c6be57452042d0bc4482e8401c1df15fdb1d44d1))
-- DI information is properly saved when participant gets resized 
-	([63e7c2bba](https://github.com/camunda/bpmn2-modeler/commit/63e7c2bbaf0fbdeb9c66292d5fcf8044c9154221))
-- Fix adding lanes hiding elements on pool 
+
+- **xml export:**
+	- remove empty attribute after service task type change 
+	  ([c6be5745](https://github.com/camunda/bpmn2-modeler/commit/c6be57452042d0bc4482e8401c1df15fdb1d44d1))
+  - di information is properly saved when participant gets resized 
+	  ([63e7c2bba](https://github.com/camunda/bpmn2-modeler/commit/63e7c2bbaf0fbdeb9c66292d5fcf8044c9154221))
+  - task and execution listener defaults get saved 
+	  ([0d670f77](https://github.com/camunda/bpmn2-modeler/commit/0d670f77ec19edd8586fe39e7295a5a342294198))
+
+- **lane:** fix adding hides elements on pool 
 	([0396380b](https://github.com/camunda/bpmn2-modeler/commit/0396380bdc99dd977e67f1cbb8336792d7a38e61), 
 	[539b8282](https://github.com/camunda/bpmn2-modeler/commit/539b828229727f936c4feddbb8c4bc819e414264))
-- Fix boundary event connection layouting 
-	([70b1559b](https://github.com/camunda/bpmn2-modeler/commit/70b1559bbc0e9989ef938d096b8fd4151cd4bf65))
-- Label offset gets properly updated after multi element move 
+- **boundary event:**
+	- connection layouting 
+	  ([70b1559b](https://github.com/camunda/bpmn2-modeler/commit/70b1559bbc0e9989ef938d096b8fd4151cd4bf65))
+  - fix offset when attached to activity
+	  ([0d670f77](https://github.com/camunda/bpmn2-modeler/commit/0d670f77ec19edd8586fe39e7295a5a342294198))
+- **label:** offset gets properly updated after multi element move 
 	([1227790e](https://github.com/camunda/bpmn2-modeler/commit/1227790ecd418de9454d85de81d5c302b3a1cfd2))
-- Fix id generated twice 
+- **id:** fix id generated twice 
 	([5ebb1cae](https://github.com/camunda/bpmn2-modeler/commit/5ebb1cae1465dba81cdcfcd80428b36d7fa079c0))
