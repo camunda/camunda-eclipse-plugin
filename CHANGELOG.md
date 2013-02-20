@@ -21,7 +21,7 @@
 
 ## Improvements
 
-- **xml export:** isExecutable in saved xml is "false" per default
+- **export:** isExecutable in saved xml is "false" per default
 	([794c6e4e](https://github.com/camunda/bpmn2-modeler/commit/794c6e4ecfa230b288050a12a498d4ab1ffa4512))
 - **visual:** default size of subprocess decreased
 	([25d5cc73](https://github.com/camunda/bpmn2-modeler/commit/25d5cc73efac5e58e1d0b1d8c61ae90b9d0e9b2f))
@@ -34,15 +34,13 @@
 
 - **subprocess:** fix containment bug
 	([14746f6d](https://github.com/camunda/bpmn2-modeler/commit/14746f6d32a69d3d6649ae829a3e03345e935114))
-
-- **xml export:**
+- **export:**
 	- remove empty attribute after service task type change 
 	  ([c6be5745](https://github.com/camunda/bpmn2-modeler/commit/c6be57452042d0bc4482e8401c1df15fdb1d44d1))
   - di information is properly saved when participant gets resized 
 	  ([63e7c2bba](https://github.com/camunda/bpmn2-modeler/commit/63e7c2bbaf0fbdeb9c66292d5fcf8044c9154221))
   - task and execution listener defaults get saved 
 	  ([0d670f77](https://github.com/camunda/bpmn2-modeler/commit/0d670f77ec19edd8586fe39e7295a5a342294198))
-
 - **lane:** fix adding hides elements on pool 
 	([0396380b](https://github.com/camunda/bpmn2-modeler/commit/0396380bdc99dd977e67f1cbb8336792d7a38e61), 
 	[539b8282](https://github.com/camunda/bpmn2-modeler/commit/539b828229727f936c4feddbb8c4bc819e414264))
