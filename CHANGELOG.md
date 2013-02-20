@@ -25,8 +25,10 @@
 	([794c6e4e](https://github.com/camunda/bpmn2-modeler/commit/794c6e4ecfa230b288050a12a498d4ab1ffa4512))
 - **visual:** default size of subprocess decreased
 	([25d5cc73](https://github.com/camunda/bpmn2-modeler/commit/25d5cc73efac5e58e1d0b1d8c61ae90b9d0e9b2f))
-- **import:** missleading import warning removed
-	([0396380b](https://github.com/camunda/bpmn2-modeler/commit/0396380bdc99dd977e67f1cbb8336792d7a38e61))
+- **import:**
+	- missleading import warning removed
+		([0396380b](https://github.com/camunda/bpmn2-modeler/commit/0396380bdc99dd977e67f1cbb8336792d7a38e61))
+	- editor opens with current import result, even if unrecoverable error occurs
 - **move:** connections get moved on multi element move
 	([f4bd3428](https://github.com/camunda/bpmn2-modeler/commit/f4bd3428acead69d4cf9047c15ead8de07fd3ac8))
 
