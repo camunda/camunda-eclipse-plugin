@@ -107,30 +107,45 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 		for (Connection connection: connectionsToMove) {
 			
 			if (connection instanceof FreeFormConnection) {
+				boolean move = true;
+				
+				if (selectedConnections.contains(connection)) {
+					List<PictogramElement> editorSelection = getEditorSelection();
+					
+					PictogramElement lastInSelection = getLastInSelection(
+							editorSelection, 
+							connection.getStart().getParent(), 
+							connection.getEnd().getParent());
+					
+					// move if moved shape is last in selection
+					move = (lastInSelection == shape);
+				}
+				
 				// move only connections part of container connections
-				// or connections this shape is the start shape at
-				AnchorContainer startAnchorContainer = connection.getStart().getParent();
-				if (startAnchorContainer.equals(shape) || !selectedConnections.contains(connection)) {
+				// after start and end shape have already been moved
+				// and thus layouting on the connection can safely be performed
+				if (move) {
 					moveConnectionBendpoints((FreeFormConnection) connection, deltaX, deltaY);
+					Layouter.layoutConnectionAfterShapeMove(connection, getFeatureProvider());
 				}
 			}
 		}
 	}
-
-	@Override
-	protected void postMoveShape(IMoveShapeContext context) {
-		Shape shape = context.getShape();
-
-		sendToFront(shape);
-		
-		// layout shape after move 
-		// (i.e. reconnect, move children, labels...)
-		layout(shape, context);
-
-		// update di
-		updateDi(shape);
-	}
 	
+	private <T, E extends T> T getLastInSelection(List<T> editorSelection, E ... elements) {
+
+		int idx = -1;
+		for (E e: elements) {
+			idx = Math.max(idx, editorSelection.indexOf(e));
+		}
+		
+		if (idx == -1) {
+			return null;
+		} else {
+			return editorSelection.get(idx);
+		}
+	}
+
 	protected void moveConnectionBendpoints(FreeFormConnection connection, int deltaX, int deltaY) {
 		List<Point> points = connection.getBendpoints();
 		for (int i = 0; i < points.size(); i++) {
@@ -140,7 +155,7 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 			points.set(i, Graphiti.getGaCreateService().createPoint(oldX + deltaX, oldY + deltaY));
 		}
 	}
-	
+
 	/**
 	 * Return the list of selected connections in the given context
 	 * 
@@ -148,7 +163,6 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 	 * @param context
 	 */
 	private Set<Connection> calculateSelectedConnections(IMoveShapeContext context) {
-		
 		Shape shape = context.getShape();
 		
 		return LayoutUtil.getSharedConnections(shape, getEditorSelection());
@@ -162,53 +176,27 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 	 */
 	private Set<FreeFormConnection> calculateContainerConnections(IMoveShapeContext context) {
 
-		Shape shapeToMove = context.getShape();
+		Shape shape = context.getShape();
 		
-		if (!(shapeToMove instanceof ContainerShape)) {
+		if (!(shape instanceof ContainerShape)) {
 			return Collections.emptySet();
 		}
 
-		Set<FreeFormConnection> containerConnections = new HashSet<FreeFormConnection>();
-
-		List<Anchor> anchorsFrom = getAnchors(shapeToMove);
-		List<Anchor> anchorsTo = new ArrayList<Anchor>(anchorsFrom);
-
-		for (Anchor anchorFrom : anchorsFrom) {
-
-			Collection<Connection> outgoingConnections = anchorFrom.getOutgoingConnections();
-
-			for (Connection connection : outgoingConnections) {
-				for (Anchor anchorTo : anchorsTo) {
-
-					Collection<Connection> incomingConnections = anchorTo.getIncomingConnections();
-					if (incomingConnections.contains(connection)) {
-						if (connection instanceof FreeFormConnection) {
-							containerConnections.add((FreeFormConnection) connection);
-						}
-					}
-				}
-			}
-		}
-		
-		return containerConnections;
+		return LayoutUtil.getContainerConnections((ContainerShape) shape);
 	}
+	
+	@Override
+	protected void postMoveShape(IMoveShapeContext context) {
+		Shape shape = context.getShape();
 
-	private List<Anchor> getAnchors(Shape theShape) {
-		List<Anchor> ret = new ArrayList<Anchor>();
-		ret.addAll(theShape.getAnchors());
+		sendToFront(shape);
+		
+		// layout shape after move 
+		// (i.e. reconnect, move children, labels...)
+		layout(shape, context);
 
-		if (theShape instanceof ContainerShape) {
-			ContainerShape containerShape = (ContainerShape) theShape;
-			List<Shape> children = containerShape.getChildren();
-			for (Shape shape : children) {
-				if (shape instanceof ContainerShape) {
-					ret.addAll(getAnchors((ContainerShape) shape));
-				} else {
-					ret.addAll(shape.getAnchors());
-				}
-			}
-		}
-		return ret;
+		// update di
+		updateDi(shape);
 	}
 	
 	/**

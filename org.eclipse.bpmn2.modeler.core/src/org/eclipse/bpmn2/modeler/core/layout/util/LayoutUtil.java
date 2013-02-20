@@ -6,6 +6,7 @@ import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.rectangl
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.vector;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,6 +29,7 @@ import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.ChopboxAnchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -1022,5 +1024,92 @@ public class LayoutUtil {
 		}
 		
 		return rectangle(x, y, width, height);
+	}
+	
+	/**
+	 * Return all the anchors contained in the shape 
+	 * and its children.
+	 * 
+	 * @param shape
+	 * @return
+	 */
+	public static List<Anchor> getContainerAnchors(Shape shape) {
+		return getContainerAnchors(shape, false);
+	}
+	
+	/**
+	 * Return all the anchors contained in the shape 
+	 * and its children.
+	 * 
+	 * @param shape
+	 * @param containment true if only anchors by children should be returned
+	 * @return
+	 */
+	public static List<Anchor> getContainerAnchors(Shape shape, boolean containment) {
+		List<Anchor> ret = new ArrayList<Anchor>();
+		
+		if (!containment) {
+			ret.addAll(shape.getAnchors());
+		}
+		
+		if (shape instanceof ContainerShape) {
+			ContainerShape containerShape = (ContainerShape) shape;
+			List<Shape> children = containerShape.getChildren();
+			for (Shape child : children) {
+				if (child instanceof ContainerShape) {
+					ret.addAll(getContainerAnchors((ContainerShape) child, false));
+				} else {
+					ret.addAll(child.getAnchors());
+				}
+			}
+		}
+		return ret;
+	}
+	
+	/**
+	 * Returns all connections contained in this shape, as they connect the shape or
+	 * child shapes to each other. 
+	 * 
+	 * @param shape
+	 * @param containment true if only connections between child shapes should be returned
+	 * 
+	 * @return
+	 */
+	public static Set<FreeFormConnection> getContainerConnections(ContainerShape shape, boolean containment) {
+
+		Set<FreeFormConnection> containerConnections = new HashSet<FreeFormConnection>();
+
+		List<Anchor> anchorsFrom = getContainerAnchors(shape, containment);
+		List<Anchor> anchorsTo = new ArrayList<Anchor>(anchorsFrom);
+
+		for (Anchor anchorFrom : anchorsFrom) {
+
+			Collection<Connection> outgoingConnections = anchorFrom.getOutgoingConnections();
+
+			for (Connection connection : outgoingConnections) {
+				for (Anchor anchorTo : anchorsTo) {
+
+					Collection<Connection> incomingConnections = anchorTo.getIncomingConnections();
+					if (incomingConnections.contains(connection)) {
+						if (connection instanceof FreeFormConnection) {
+							containerConnections.add((FreeFormConnection) connection);
+						}
+					}
+				}
+			}
+		}
+		
+		return containerConnections;
+	}
+	
+	/**
+	 * Returns all connections contained in this shape, as they connect the shape or
+	 * child shapes to each other. 
+	 * 
+	 * @param shape
+	 * @return
+	 */
+	public static Set<FreeFormConnection> getContainerConnections(ContainerShape shape) {
+		return getContainerConnections(shape, false);
 	}
 }
