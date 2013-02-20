@@ -15,7 +15,7 @@ package org.eclipse.bpmn2.modeler.core.features.container;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.features.DirectEditNamedElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.ReconnectBaseElementFeature;
-import org.eclipse.bpmn2.modeler.core.features.flow.LayoutFlowFeature;
+import org.eclipse.bpmn2.modeler.core.features.flow.LayoutConnectionFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.graphiti.features.IDirectEditingFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -61,6 +61,6 @@ public abstract class BaseElementConnectionFeatureContainer extends ConnectionFe
 	
 	@Override
 	public ILayoutFeature getLayoutFeature(IFeatureProvider fp) {
-		return new LayoutFlowFeature(fp);
+		return new LayoutConnectionFeature(fp);
 	}
 }

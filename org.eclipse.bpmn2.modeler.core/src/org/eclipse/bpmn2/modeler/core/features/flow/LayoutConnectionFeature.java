@@ -19,9 +19,9 @@ import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
  * 
  * @author nico.rehwaldt
  */
-public class LayoutFlowFeature extends AbstractLayoutBpmnElementFeature<FreeFormConnection> implements ILayoutFeature {
+public class LayoutConnectionFeature extends AbstractLayoutBpmnElementFeature<FreeFormConnection> implements ILayoutFeature {
 
-	public LayoutFlowFeature(IFeatureProvider fp) {
+	public LayoutConnectionFeature(IFeatureProvider fp) {
 		super(fp);
 	}
 	

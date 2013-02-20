@@ -14,18 +14,33 @@ package org.eclipse.bpmn2.modeler.core.features;
 
 import static org.eclipse.bpmn2.modeler.core.utils.ContextUtil.isNot;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.Layouter;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.features.impl.DefaultMoveShapeFeature;
+import org.eclipse.graphiti.mm.algorithms.styles.Point;
+import org.eclipse.graphiti.mm.pictograms.Anchor;
+import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
+import org.eclipse.graphiti.mm.pictograms.Connection;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
+import org.eclipse.graphiti.services.Graphiti;
 
 public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 
@@ -34,34 +49,168 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 	public static final String SKIP_REPAIR_CONNECTIONS_AFTER_MOVE = "DefaultMoveBPMNShapeFeature.SKIP_RECONNECT_AFTER_MOVE";
 
 	public static final String[] MOVE_PROPERTIES = {
-		SKIP_MOVE_LABEL, SKIP_MOVE_BENDPOINTS, SKIP_REPAIR_CONNECTIONS_AFTER_MOVE
+		SKIP_MOVE_LABEL, SKIP_MOVE_BENDPOINTS, 
+		SKIP_REPAIR_CONNECTIONS_AFTER_MOVE
 	};
+
+	protected IRectangle preMoveBounds;
 	
 	public DefaultMoveBPMNShapeFeature(IFeatureProvider fp) {
 		super(fp);
 	}
 
 	@Override
+	protected void preMoveShape(IMoveShapeContext context) {
+		super.preMoveShape(context);
+		
+		Shape shape = context.getShape();
+		
+		preMoveBounds = LayoutUtil.getAbsoluteBounds(shape);
+	}
+
+	/**
+	 * Reorganizing the moving of bendpoints after internal moving the shape.
+	 */
+	@Override
+	public final void moveShape(IMoveShapeContext context) {
+		preMoveShape(context);
+		internalMove(context);
+		moveAllBendpoints(context);
+		postMoveShape(context);
+	}
+	
+	@Override
 	protected void moveAllBendpoints(IMoveShapeContext context) {
-		if (isMoveBendpoints(context)) {
-			super.moveAllBendpoints(context);
+
+		if (!isMoveBendpoints(context)) {
+			return;
+		}
+		
+		Shape shape = context.getShape();
+		
+		Set<Connection> connectionsToMove = new HashSet<Connection>();
+		
+		// move only container connections
+		connectionsToMove.addAll(calculateContainerConnections(context));
+		
+		// move selected connections, i.e.
+		// connections that are in between two selected (and thus moved) shapes
+		Set<Connection> selectedConnections = calculateSelectedConnections(context);
+		
+		connectionsToMove.addAll(selectedConnections);
+		
+		IRectangle postMoveBounds = LayoutUtil.getAbsoluteBounds(shape);
+		
+		int deltaX = (postMoveBounds.getX() - preMoveBounds.getX());
+		int deltaY = (postMoveBounds.getY() - preMoveBounds.getY());
+		
+		for (Connection connection: connectionsToMove) {
+			
+			if (connection instanceof FreeFormConnection) {
+				// move only connections part of container connections
+				// or connections this shape is the start shape at
+				AnchorContainer startAnchorContainer = connection.getStart().getParent();
+				if (startAnchorContainer.equals(shape) || !selectedConnections.contains(connection)) {
+					moveConnectionBendpoints((FreeFormConnection) connection, deltaX, deltaY);
+				}
+			}
 		}
 	}
 
 	@Override
 	protected void postMoveShape(IMoveShapeContext context) {
-		Shape shape = (Shape) context.getPictogramElement();
+		Shape shape = context.getShape();
 
 		sendToFront(shape);
 		
 		// layout shape after move 
-		// (ie. reconnect, move children, labels...)
+		// (i.e. reconnect, move children, labels...)
 		layout(shape, context);
 
 		// update di
 		updateDi(shape);
 	}
+	
+	protected void moveConnectionBendpoints(FreeFormConnection connection, int deltaX, int deltaY) {
+		List<Point> points = connection.getBendpoints();
+		for (int i = 0; i < points.size(); i++) {
+			Point point = points.get(i);
+			int oldX = point.getX();
+			int oldY = point.getY();
+			points.set(i, Graphiti.getGaCreateService().createPoint(oldX + deltaX, oldY + deltaY));
+		}
+	}
+	
+	/**
+	 * Return the list of selected connections in the given context
+	 * 
+	 * @param shape
+	 * @param context
+	 */
+	private Set<Connection> calculateSelectedConnections(IMoveShapeContext context) {
+		
+		Shape shape = context.getShape();
+		
+		return LayoutUtil.getSharedConnections(shape, getEditorSelection());
+	}
+	
+	/**
+	 * Returns all connections contained in a given container shape.
+	 * 
+	 * @param context
+	 * @return
+	 */
+	private Set<FreeFormConnection> calculateContainerConnections(IMoveShapeContext context) {
 
+		Shape shapeToMove = context.getShape();
+		
+		if (!(shapeToMove instanceof ContainerShape)) {
+			return Collections.emptySet();
+		}
+
+		Set<FreeFormConnection> containerConnections = new HashSet<FreeFormConnection>();
+
+		List<Anchor> anchorsFrom = getAnchors(shapeToMove);
+		List<Anchor> anchorsTo = new ArrayList<Anchor>(anchorsFrom);
+
+		for (Anchor anchorFrom : anchorsFrom) {
+
+			Collection<Connection> outgoingConnections = anchorFrom.getOutgoingConnections();
+
+			for (Connection connection : outgoingConnections) {
+				for (Anchor anchorTo : anchorsTo) {
+
+					Collection<Connection> incomingConnections = anchorTo.getIncomingConnections();
+					if (incomingConnections.contains(connection)) {
+						if (connection instanceof FreeFormConnection) {
+							containerConnections.add((FreeFormConnection) connection);
+						}
+					}
+				}
+			}
+		}
+		
+		return containerConnections;
+	}
+
+	private List<Anchor> getAnchors(Shape theShape) {
+		List<Anchor> ret = new ArrayList<Anchor>();
+		ret.addAll(theShape.getAnchors());
+
+		if (theShape instanceof ContainerShape) {
+			ContainerShape containerShape = (ContainerShape) theShape;
+			List<Shape> children = containerShape.getChildren();
+			for (Shape shape : children) {
+				if (shape instanceof ContainerShape) {
+					ret.addAll(getAnchors((ContainerShape) shape));
+				} else {
+					ret.addAll(shape.getAnchors());
+				}
+			}
+		}
+		return ret;
+	}
+	
 	/**
 	 * Sends the element to the front after it has been moved
 	 * @param shape
@@ -84,10 +233,10 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 	 * @param shape
 	 */
 	protected void layout(Shape shape, IMoveShapeContext context) {
-		Layouter.layoutShapeAfterMove(shape, isMoveLabel(context), isReconnectShapeAfterMove(context), getFeatureProvider());
+		Layouter.layoutShapeAfterMove(shape, isMoveLabel(context), isRepairConnectionsAfterMove(context), getFeatureProvider());
 	}
 	
-	protected boolean isReconnectShapeAfterMove(IMoveShapeContext context) {
+	protected boolean isRepairConnectionsAfterMove(IMoveShapeContext context) {
 		return isNot(context, SKIP_REPAIR_CONNECTIONS_AFTER_MOVE);
 	}
 	
@@ -101,16 +250,24 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 		// return is move label only if the label exists and is not an editor selection, too.
 		return isNot(context, SKIP_MOVE_LABEL) && !isEditorSelection(label);
 	}
-	
+
 	/**
-	 * Return true if the given shape is currently connected in the editor.
+	 * Returns true if the given shape is currently selected in the editor
 	 * 
-	 * @param shape
+	 * @param pictogramElement
 	 * @return
 	 */
-	protected boolean isEditorSelection(Shape shape) {
-		List<PictogramElement> selection = Arrays.asList(getDiagramEditor().getSelectedPictogramElements());
-		
-		return selection.contains(shape);
+	protected boolean isEditorSelection(PictogramElement pictogramElement) {
+		List<PictogramElement> selection = getEditorSelection();
+		return selection.contains(pictogramElement);
+	}
+
+	/**
+	 * Return the editor selection
+	 * 
+	 * @return
+	 */
+	protected List<PictogramElement> getEditorSelection() {
+		return Arrays.asList(getDiagramEditor().getSelectedPictogramElements());
 	}
 }

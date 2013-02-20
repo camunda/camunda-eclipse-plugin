@@ -2,6 +2,9 @@ package org.eclipse.bpmn2.modeler.core.features;
 
 import static org.eclipse.bpmn2.modeler.core.utils.ContextUtil.is;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
@@ -12,6 +15,7 @@ import org.eclipse.graphiti.features.context.ILayoutContext;
 import org.eclipse.graphiti.features.impl.AbstractLayoutFeature;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 
 /**
  * Default layout feature for all graphical elements
@@ -74,18 +78,19 @@ public abstract class AbstractLayoutBpmnElementFeature<T extends PictogramElemen
 	 * @return
 	 */
 	protected boolean isEditorSelection(PictogramElement pictogramElement) {
-		
-		PictogramElement[] selection = getDiagramEditor().getSelectedPictogramElements();
-		
-		for (PictogramElement e: selection) {
-			if (e == pictogramElement) {
-				return true;
-			}
-		}
-		
-		return false;
+		List<PictogramElement> selection = getEditorSelection();
+		return selection.contains(pictogramElement);
 	}
 
+	/**
+	 * Return the editor selection
+	 * 
+	 * @return
+	 */
+	protected List<PictogramElement> getEditorSelection() {
+		return Arrays.asList(getDiagramEditor().getSelectedPictogramElements());
+	}
+	
 	protected void updateDi(PictogramElement pictogramElement) {
 		DIUtils.updateDI(pictogramElement);
 	}

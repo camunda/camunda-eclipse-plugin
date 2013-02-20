@@ -5,6 +5,7 @@ import static org.eclipse.bpmn2.modeler.core.utils.ContextUtil.is;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
@@ -166,7 +167,15 @@ public class LayoutBpmnShapeFeature extends AbstractLayoutBpmnElementFeature<Con
 	protected void repairConnections(ILayoutContext context) {
 		ContainerShape shape = getLayoutedElement(context);
 		
-		List<Connection> connections = LayoutUtil.getConnections(shape);
+		Set<Connection> connections = LayoutUtil.getConnections(shape);
+		
+		Set<Connection> sharedConnections = LayoutUtil.getSharedConnections(shape, getEditorSelection());
+		
+		// we do not repair shared connections between multiple
+		// selected elements in order to not screw them up
+		// depending on the order in which layout features on
+		// the shapes are executed
+		connections.removeAll(sharedConnections);
 		
 		for (Connection connection : connections) {
 			layoutConnection(connection, context);

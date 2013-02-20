@@ -6,7 +6,9 @@ import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.rectangl
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.vector;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
@@ -28,8 +30,10 @@ import org.eclipse.graphiti.mm.pictograms.ChopboxAnchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
+import org.eclipse.graphiti.ui.internal.services.IGefService;
 
 /**
  * Utility dealing with all sorts of layout specific concerns.
@@ -759,16 +763,8 @@ public class LayoutUtil {
 	 * 
 	 * @return
 	 */
-	public static List<Connection> getConnections(AnchorContainer anchorContainer) {
-		List<Connection> allConnections = new ArrayList<Connection>();
-		
-		List<Connection> incomingConnections = Graphiti.getPeService().getIncomingConnections(anchorContainer);
-		List<Connection> outgoingConnections = Graphiti.getPeService().getOutgoingConnections(anchorContainer);
-		
-		allConnections.addAll(incomingConnections);
-		allConnections.addAll(outgoingConnections);
-		
-		return allConnections;
+	public static Set<Connection> getConnections(AnchorContainer anchorContainer) {
+		return new HashSet<Connection>(Graphiti.getPeService().getAllConnections(anchorContainer));
 	}
 	
 	/**
@@ -948,6 +944,40 @@ public class LayoutUtil {
 		return ConnectionUtil.getClosestPointOnConnection(waypoints, point);
 	}
 
+	/**
+	 * Returns the list of shared connections between a shape and a number of other shapes
+	 * 
+	 * @param shape
+	 * @param others
+	 * @return
+	 */
+	public static <T extends PictogramElement> Set<Connection> getSharedConnections(Shape shape, List<T> others) {
+		
+		HashSet<PictogramElement> otherShapes = new HashSet<PictogramElement>(others);
+		
+		Set<Connection> sharedConnections = new HashSet<Connection>();
+
+		Set<Connection> shapeConnections = getConnections(shape);
+		
+		for (Connection connection : shapeConnections) {
+			
+			AnchorContainer startContainer = connection.getStart().getParent();
+			AnchorContainer endContainer = connection.getEnd().getParent();
+			
+			if (startContainer == shape && 
+				endContainer == shape) {
+				sharedConnections.add(connection);
+			} else 
+			if ((startContainer == shape && otherShapes.contains(endContainer)) || 
+				(endContainer == shape && otherShapes.contains(startContainer))) {
+				
+				sharedConnections.add(connection);
+			}
+		}
+		
+		return sharedConnections;
+	}
+	
 	/**
 	 * Constraints a box with parent relative coordinates in a given parent box
 	 * 
