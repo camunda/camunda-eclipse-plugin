@@ -56,3 +56,8 @@
 	([1227790e](https://github.com/camunda/bpmn2-modeler/commit/1227790ecd418de9454d85de81d5c302b3a1cfd2))
 - **id:** fix id generated twice 
 	([5ebb1cae](https://github.com/camunda/bpmn2-modeler/commit/5ebb1cae1465dba81cdcfcd80428b36d7fa079c0))
+
+## Know Issues
+
+- **property panel** enter in text field will trigger focus on first control in tab (most often the id field)
+  occurs only in eclipse juno 4.2, is fixed in eclipse kepler 4.3
