@@ -9,6 +9,7 @@ import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
 import org.eclipse.graphiti.datatypes.IRectangle;
+import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -47,5 +48,12 @@ public class BoundaryEventLayoutContext extends DefaultLayoutContext {
 		
 		IRectangle attachedTo = LayoutUtil.getAbsoluteBounds((Shape) attachedToElement);
 		return attachedTo;
+	}
+	
+	@Override
+	protected boolean isRepeatNeeded() {
+		Tuple<Point, Point> bendpoints = getFirstAndLastBendpoints();
+		return super.isRepeatNeeded() && (isContained(startShapeBounds, bendpoints.getFirst()) ||
+		 isContained(endShapeBounds, bendpoints.getSecond()));
 	}
 }

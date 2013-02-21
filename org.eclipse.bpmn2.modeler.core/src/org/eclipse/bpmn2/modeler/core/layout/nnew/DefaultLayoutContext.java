@@ -179,8 +179,8 @@ public class DefaultLayoutContext implements LayoutContext {
 		// are first or last bendpoints moved during repair to close or into one of the shapes
 		// if yes, force repeat
 		
-		if (isContained(startShapeBounds, bendpoints.getFirst()) ||
-			isContained(endShapeBounds, bendpoints.getSecond())) {
+		if (isContained(getOverlapStartBounds(), bendpoints.getFirst()) ||
+			isContained(getOverlapEndBounds(), bendpoints.getSecond())) {
 			
 			return true;
 		}
@@ -257,7 +257,7 @@ public class DefaultLayoutContext implements LayoutContext {
 		return startShapeBounds;
 	}
 
-	private boolean isContained(IRectangle bounds, Point p) {
+	protected boolean isContained(IRectangle bounds, Point p) {
 		return LayoutUtil.isContained(bounds, location(p), 13);
 	}
 
