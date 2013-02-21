@@ -67,7 +67,7 @@ public class MultiInstancePropertiesBuilder extends AbstractPropertiesBuilder<Ac
 
 		if (loopCharacteristics != null) {
 			PropertyUtil.createText(section, multiInstancePropertiesComposite, "Loop Cardinality", LOOP_CARDINALITY_FEATURE, loopCharacteristics);
-			PropertyUtil.createCheckbox(section, multiInstancePropertiesComposite, "Is Sequential ", IS_SEQUENCIAL_FEATURE, loopCharacteristics);
+			PropertyUtil.createCheckbox(section, multiInstancePropertiesComposite, "Is Sequential", IS_SEQUENCIAL_FEATURE, loopCharacteristics);
 			
 			PropertyUtil.createText(section, multiInstancePropertiesComposite, "Collection", COLLECTION_FEATURE, loopCharacteristics);
 			PropertyUtil.createText(section, multiInstancePropertiesComposite, "Element Variable", ELEMENT_VARIABLE_FEATURE, loopCharacteristics);
