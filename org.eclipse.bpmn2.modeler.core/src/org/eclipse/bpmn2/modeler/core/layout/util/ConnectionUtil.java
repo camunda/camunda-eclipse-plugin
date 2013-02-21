@@ -13,6 +13,7 @@ import static org.eclipse.bpmn2.modeler.core.layout.util.VectorUtil.normalized;
 import static org.eclipse.bpmn2.modeler.core.layout.util.VectorUtil.substract;
 import static org.eclipse.bpmn2.modeler.core.utils.PictogramElementPropertyUtil.set;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -163,6 +164,42 @@ public class ConnectionUtil {
 		}
 		
 		throw new IllegalArgumentException(String.format("Point <%s> not contained part of Connection(points=<%s>)", asString(pointAsVector), asString(connectionVectors)));
+	}
+	
+	public static List<Point> getPointsTo(List<Point> waypoints, Point point) {
+
+		List<Point> pointsTo = new ArrayList<Point>();
+
+		point = getClosestPointOnConnection(waypoints, point);
+		
+		List<Vector> connectionVectors = asVectors(waypoints);
+		Vector pointAsVector = vector(point);
+
+		Iterator<Point> waypointsIterator = waypoints.iterator();
+		Iterator<Vector> connectionVectorsIterator = connectionVectors.iterator();
+		
+		Vector last = connectionVectorsIterator.next();
+		Point lastWaypoint = waypointsIterator.next();
+		
+		pointsTo.add(lastWaypoint);
+		
+		while (connectionVectorsIterator.hasNext()) {
+			
+			Vector next = connectionVectorsIterator.next();
+			
+			// keep waypoints iterator in sync
+			// for access of original waypoint
+			Point nextWaypoint = waypointsIterator.next();
+			
+			if (isContainedInSegment(last, next, pointAsVector)) { 
+				break;
+			}
+
+			pointsTo.add(nextWaypoint);
+			last = next;
+		}
+		
+		return pointsTo;
 	}
 	
 	/**

@@ -568,35 +568,6 @@ public class LayoutUtil {
 			bounds.getX() + bounds.getWidth() / 2, 
 			bounds.getY() + bounds.getHeight() / 2);
 	}
-	
-	public static double getLength(FreeFormConnection connection) {
-		double resultLength = 0.0;
-		
-		ILocation startLoc = Graphiti.getLayoutService().getLocationRelativeToDiagram(connection.getStart());
-		ILocation endLoc = Graphiti.getLayoutService().getLocationRelativeToDiagram(connection.getEnd());
-		
-		if (connection.getBendpoints().size() == 0) {
-			return new Vector(endLoc.getX() - startLoc.getX(), endLoc.getY() - startLoc.getY()).getLength();
-		}
-		
-		for (int index = 0; index < connection.getBendpoints().size(); index++) {
-			Point point = connection.getBendpoints().get(index);
-			
-			if (index !=  connection.getBendpoints().size() -1) {
-				Point next = connection.getBendpoints().get(index+1);
-				resultLength += new Vector(next.getX() - point.getX(), next.getY() - point.getY()).getLength();
-			}
-		}
-		
-		Point first = connection.getBendpoints().get(0);
-		Point last = connection.getBendpoints().get(connection.getBendpoints().size()-1);
-		
-		resultLength += new Vector(first.getX() - startLoc.getX(), first.getY() - startLoc.getY()).getLength();
-		resultLength += new Vector(endLoc.getX() - last.getX(), endLoc.getY() - last.getY()).getLength();
-		
-		return resultLength;
-	}
-
 
 	/**
 	 * Returns the first non-anchor reference point for a given connection
@@ -933,6 +904,14 @@ public class LayoutUtil {
 		return Graphiti.getLayoutService().getLocationRelativeToDiagram(startShape);
 	}
 
+	public static List<Point> getConnectionBendpointsTo(FreeFormConnection connection, Point pointOnLine) {
+		List<Point> waypoints = getConnectionWaypoints(connection);
+		
+		List<Point> strippedWaypoints = ConnectionUtil.getPointsTo(waypoints, pointOnLine);
+		
+		return strippedWaypoints;
+	}
+	
 	/**
 	 * Return the reference point on a connection for a given point
 	 * 
