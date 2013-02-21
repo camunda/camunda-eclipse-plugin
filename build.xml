@@ -135,7 +135,7 @@
 	</target>
 	
 	<target name="commit.release.version">
-		<property name="release.version.commit.message" value="fox designer release: set version to ${release.version}" />
+		<property name="release.version.commit.message" value="chore(release): set dev version to ${release.version}" />
 		<echo>Project: ${release.version} committing...</echo>
 		<git command="commit" dir="${checkout.release.path}/fox-designer">
 			<args>
@@ -147,7 +147,7 @@
 	</target>
 
 	<target name="create.release.tag">
-		<property name="release.commit.message" value="fox designer release: set versions to ${release.version}" />
+		<property name="release.commit.message" value="chore(release): tag release version ${release.version}" />
 		<git command="tag" dir="${checkout.release.path}/fox-designer">
 			<args>
 				<arg value = "-a" />

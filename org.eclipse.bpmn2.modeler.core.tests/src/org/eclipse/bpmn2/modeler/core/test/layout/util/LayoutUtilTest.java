@@ -181,13 +181,6 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 	}
 	
 	@Test
-	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testBase.bpmn")
-	public void testGetLength() {
-		FreeFormConnection flow1 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
-		assertThat(LayoutUtil.getLength(flow1)).isEqualTo(394);
-	}
-	
-	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testDefaultAnchors.bpmn")
 	public void testTaskDefaultAnchors() throws Exception {
 		Shape task = Util.findShapeByBusinessObjectId(diagram, "Task_1");

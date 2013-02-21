@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.bpmn2.ChoreographyActivity;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
+import org.eclipse.bpmn2.modeler.core.features.DefaultResizeBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.layout.util.Layouter;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
@@ -26,13 +27,12 @@ import org.eclipse.graphiti.features.IReason;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.features.context.impl.ResizeShapeContext;
-import org.eclipse.graphiti.features.impl.DefaultResizeShapeFeature;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
-public class ResizeParticipantFeature extends DefaultResizeShapeFeature {
+public class ResizeParticipantFeature extends DefaultResizeBPMNShapeFeature {
 
 	public static final String POOL_RESIZE_PROPERTY = "pool.resize";
 	public static final String RESIZE_FIRST_LANE = "resize.first.lane";
@@ -158,25 +158,14 @@ public class ResizeParticipantFeature extends DefaultResizeShapeFeature {
 	}
 	
 	@Override
-	public void resizeShape(IResizeShapeContext context) {
-		PictogramElement pictogramElement = context.getPictogramElement();
+	protected void preResize(IResizeShapeContext context) {
+		super.preResize(context);
 		
-		if (BusinessObjectUtil.containsChildElementOfType(pictogramElement, Lane.class)) {
+		Shape shape = context.getShape();
+		
+		if (BusinessObjectUtil.containsChildElementOfType(shape, Lane.class)) {
 			resizeLaneHeight(context);
 			resizeLaneWidth(context);
-		}
-		
-		super.resizeShape(context);
-		
-		DIUtils.updateDI(pictogramElement);
-	}
-	
-	@Override
-	protected IReason layoutPictogramElement(PictogramElement pe) {
-		if (pe instanceof Shape) {
-			return Layouter.layoutShapeAfterResize((Shape) pe, getFeatureProvider());
-		} else {
-			return super.layoutPictogramElement(pe);
 		}
 	}
 }
