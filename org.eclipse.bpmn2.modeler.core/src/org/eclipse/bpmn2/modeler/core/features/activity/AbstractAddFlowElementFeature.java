@@ -74,10 +74,22 @@ public abstract class AbstractAddFlowElementFeature<T extends FlowElement> exten
 
 			AddContext addContext = (AddContext) context;
 			
-			Point point = point(context.getX(), context.getY());
+			ContainerShape targetContainer = context.getTargetContainer();
+			IRectangle targetContainerBounds = LayoutUtil.getAbsoluteBounds(targetContainer);
+			
+			int targetX = targetContainerBounds.getX();
+			int targetY = targetContainerBounds.getY();
+			
+			// x / y is relative to target container
+			
+			Point point = point(context.getX() + targetX, context.getY() + targetY);
 			Point connectionReferencePoint = LayoutUtil.getConnectionReferencePoint(connection, point);
 			
-			addContext.setLocation(connectionReferencePoint.getX(), connectionReferencePoint.getY());
+			// translate to target container relative bounds
+			int x = connectionReferencePoint.getX() - targetX;
+			int y = connectionReferencePoint.getY() - targetY;
+			
+			addContext.setLocation(x, y);
 		}
 		
 		// no adjustment done right now
@@ -95,24 +107,21 @@ public abstract class AbstractAddFlowElementFeature<T extends FlowElement> exten
 		ReconnectionContext reconnectCtx;
 		
 		Anchor newShapeAnchor = LayoutUtil.getCenterAnchor(newShape);
-		IRectangle newShapeBounds = LayoutUtil.getAbsoluteBounds(newShape);
+		Point splitPoint = point(LayoutUtil.getAbsoluteShapeCenter(newShape));
 		
-		ArrayList<Point> bendpoints = new ArrayList<Point>(connection.getBendpoints());
-		
-		List<Point> secondPartBendpoints = new ArrayList<Point>();
-		boolean afterSplit = false;
-		
-		for (Point bendpoint: bendpoints) {
-			if (LayoutUtil.isContained(newShapeBounds, location(bendpoint))) {
-				afterSplit = true;
-			}
-			
-			if (afterSplit) {
-				secondPartBendpoints.add(bendpoint);
-			}
-		}
+		List<Point> bendpointsBeforeSplit = LayoutUtil.getConnectionBendpointsTo(connection, splitPoint);
+		List<Point> bendpoints = connection.getBendpoints();
+
+		List<Point> secondPartBendpoints = new ArrayList<Point>(bendpoints);
+		secondPartBendpoints.removeAll(bendpointsBeforeSplit);
 		
 		ILocation newShapeAnchorLocation = LayoutUtil.getAnchorLocation(newShapeAnchor);
+		
+		if (newObject instanceof StartEvent) {
+			bendpoints.removeAll(bendpointsBeforeSplit);
+		} else {
+			bendpoints.retainAll(bendpointsBeforeSplit);
+		}
 		
 		if (newObject instanceof StartEvent) {
 			
@@ -166,7 +175,7 @@ public abstract class AbstractAddFlowElementFeature<T extends FlowElement> exten
 			removeBendpointFeature.execute(removeCtx);
 		}
 	}
-
+	
 	/**
 	 * Execute reconnect after split
 	 * 
