@@ -522,6 +522,27 @@ public class BoundaryEventTest extends AbstractFeatureTest {
 		assertThat(lastPointAfter.getY()).isEqualTo(lastPointBefore.getY());
 	}
 	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/BoundaryEventTest.testMoveTaskWithBoundaryEvent.bpmn")
+	public void testMoveTaskWithBoundaryEventLayoutsOnOverlap() {
+		ContainerShape taskShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Task_3");
+		Shape boundaryEventShape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_2");
+		FreeFormConnection sequenceFlow2 = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
+
+		assertThat(sequenceFlow2.getBendpoints().size()).isEqualTo(2);
+		
+		move(taskShape, diagramTypeProvider)
+			.by(0, 170)
+			.toContainer(diagram)
+			.execute();
+		
+		assertThat(sequenceFlow2.getBendpoints().size()).isEqualTo(1);
+
+		assertThat(sequenceFlow2)
+		.anchorPointOn(boundaryEventShape)
+		.isBeneathShape();
+	}
+	
 	
 	private void reconnectConnectionAssertBoundarySector(FreeFormConnection connection, Shape boundaryEvent, Shape reconnectionTarget, Sector expectedSector) {
 
