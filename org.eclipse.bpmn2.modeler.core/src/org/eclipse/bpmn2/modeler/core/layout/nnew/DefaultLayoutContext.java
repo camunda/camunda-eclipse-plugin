@@ -32,8 +32,8 @@ public class DefaultLayoutContext implements LayoutContext {
 	private Anchor startAnchor;
 	private Anchor endAnchor;
 	
-	private Shape startShape;
-	private Shape endShape;
+	protected Shape startShape;
+	protected Shape endShape;
 	
 	protected IRectangle startShapeBounds;
 	protected IRectangle endShapeBounds;
@@ -226,14 +226,14 @@ public class DefaultLayoutContext implements LayoutContext {
 		Point removeCandidate = null;
 		
 		for (final Point p: connection.getBendpoints()) {
-			if (isContained(startShapeBounds, p)) {
+			if (isContained(getOverlapStartBounds(), p)) {
 				fromStart = true;
 				removeCandidate = p;
 				
 				// continue to search (search for the last overlapping bendpoint)
 			}
 			
-			if (isContained(endShapeBounds, p)) {
+			if (isContained(getOverlapEndBounds(), p)) {
 				
 				fromStart = false;
 				removeCandidate = p;
@@ -249,6 +249,14 @@ public class DefaultLayoutContext implements LayoutContext {
 		}
 	}
 	
+	protected IRectangle getOverlapEndBounds() {
+		return endShapeBounds;
+	}
+
+	protected IRectangle getOverlapStartBounds() {
+		return startShapeBounds;
+	}
+
 	private boolean isContained(IRectangle bounds, Point p) {
 		return LayoutUtil.isContained(bounds, location(p), 13);
 	}
