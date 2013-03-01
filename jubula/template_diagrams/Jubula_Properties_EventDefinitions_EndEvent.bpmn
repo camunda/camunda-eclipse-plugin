@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions targetNamespace="http://activiti.org/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="_mtWCMEkZEeK3vNH2bSaj3g">
+  <bpmn2:process id="Process_1">
+    <bpmn2:endEvent id="EndEvent_1" name="End Event 1">
+      <bpmn2:signalEventDefinition id="SignalEventDefinition_1"/>
+    </bpmn2:endEvent>
+    <bpmn2:endEvent id="EndEvent_2" name="End Event 2">
+      <bpmn2:messageEventDefinition id="MessageEventDefinition_1"/>
+    </bpmn2:endEvent>
+    <bpmn2:endEvent id="EndEvent_3" name="End Event 3">
+      <bpmn2:escalationEventDefinition id="EscalationEventDefinition_1"/>
+    </bpmn2:endEvent>
+    <bpmn2:endEvent id="EndEvent_4" name="End Event 4">
+      <bpmn2:compensateEventDefinition id="CompensateEventDefinition_1"/>
+    </bpmn2:endEvent>
+    <bpmn2:endEvent id="EndEvent_5" name="End Event 5">
+      <bpmn2:errorEventDefinition id="ErrorEventDefinition_1"/>
+    </bpmn2:endEvent>
+    <bpmn2:endEvent id="EndEvent_6" name="End Event 6">
+      <bpmn2:cancelEventDefinition id="CancelEventDefinition_1"/>
+    </bpmn2:endEvent>
+    <bpmn2:endEvent id="EndEvent_7" name="End Event 7">
+      <bpmn2:terminateEventDefinition id="TerminateEventDefinition_1"/>
+    </bpmn2:endEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="EndEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="82.0" y="32.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_2" bpmnElement="EndEvent_2">
+        <dc:Bounds height="36.0" width="36.0" x="82.0" y="112.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_3" bpmnElement="EndEvent_3">
+        <dc:Bounds height="36.0" width="36.0" x="82.0" y="182.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_4" bpmnElement="EndEvent_4">
+        <dc:Bounds height="36.0" width="36.0" x="82.0" y="242.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_5" bpmnElement="EndEvent_5">
+        <dc:Bounds height="36.0" width="36.0" x="82.0" y="312.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_6" bpmnElement="EndEvent_6">
+        <dc:Bounds height="36.0" width="36.0" x="82.0" y="382.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_7" bpmnElement="EndEvent_7">
+        <dc:Bounds height="36.0" width="36.0" x="82.0" y="462.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_8">
+        <dc:Bounds height="36.0" width="36.0" x="82.0" y="532.0"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

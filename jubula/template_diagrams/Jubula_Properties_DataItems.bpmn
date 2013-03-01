@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions targetNamespace="http://activiti.org/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="_0oRvgEVJEeKCtP1ClJDFAw">
+  <bpmn2:process id="Process_1">
+    <bpmn2:ioSpecification id="InputOutputSpecification_1">
+      <bpmn2:dataInput id="DataInput_1" name="Data Input 1"/>
+      <bpmn2:dataOutput id="DataOutput_1" name="Data Output 1"/>
+    </bpmn2:ioSpecification>
+    <bpmn2:dataObject id="DataObject_1" name="Data Object 1"/>
+    <bpmn2:dataStoreReference name="Data Store 2" dataStoreRef="DataStore_2"/>
+  </bpmn2:process>
+  <bpmn2:dataStore id="DataStore_2" name="Data Store 2"/>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="BPMNShape_DataObject_1" bpmnElement="DataObject_1">
+        <dc:Bounds height="65.0" width="36.0" x="100.0" y="50.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_DataStoreReference_2" bpmnElement="#//@definitions/@rootElements.0/@flowElements.1">
+        <dc:Bounds height="50.0" width="50.0" x="93.0" y="160.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_DataInput_1" bpmnElement="DataInput_1">
+        <dc:Bounds height="65.0" width="36.0" x="100.0" y="259.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="76.0" x="80.0" y="311.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_DataOutput_1" bpmnElement="DataOutput_1">
+        <dc:Bounds height="65.0" width="36.0" x="100.0" y="380.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="87.0" x="75.0" y="432.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
