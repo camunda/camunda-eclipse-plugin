@@ -47,6 +47,6 @@ Project Structure
 
     + org.eclipse.bpmn2.modeler.core -> modeler runtime
     + org.eclipse.bpmn2.modeler.core.tests -> modeler runtime tests
-    + Jubula -> GUI test
+    + org.eclipse.bpmn2.modeler.core.tests.functional -> functional GUI tests (jubula)
 
 [1]: https://github.com/camunda/bpmn2-modeler

@@ -22,7 +22,10 @@ Setup the AUT
 As we are using absolute coordinates for our tests you have to adjust the Eclipse perspective of the AUT. 
 In the folder `org.eclipse.e4.workbench` we provide a suitable Eclipse perspective called `Jubula Test`.
 Replace the folder `org.eclipse.e4.workbench` in the AUT's `workspace/.metadata/.plugins` and use the `Jubula Test` perspective `Window --> Open Perspectiv --> Jubula Test`.
-Please note that the perspective is modified for a screen resolution of 1366x768 pixel.
+
+Please note that the perspective is modified for a screen resolution of 1366x768 pixel. If you are using a different resolution adjust the AUT's Properties Panel according to the following screen shot.
+
+(https://raw.github.com/camunda/bpmn2-modeler/develop/jubula/documentation/images/Eclipse_perspective.png)
 
 
 Import template diagrams
