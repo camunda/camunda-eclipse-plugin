@@ -1,5 +1,3 @@
-The version of the jubula project file will be incremented with every sprint. 
-
 VERSION 1.5 (2013-02-20)
 ========================
 
@@ -9,6 +7,7 @@ Features
 * Basic Interaction 
 	* Test New Diagram Wizard
 	* Test Auto PNG Save
+	
 
 * Properties Panel Tests
 	* Tasks
