@@ -25,8 +25,7 @@ Replace the folder `org.eclipse.e4.workbench` in the AUT's `workspace/.metadata/
 
 Please note that the perspective is modified for a screen resolution of 1366x768 pixel. If you are using a different resolution adjust the AUT's Properties Panel according to the following screen shot.
 
-(https://raw.github.com/camunda/bpmn2-modeler/develop/org.eclipse.bpmn2.modeler.core.tests.functional/documentation/images/Eclipse_perspective.png)
-
+![AUT workbench perspective](https://raw.github.com/camunda/bpmn2-modeler/develop/org.eclipse.bpmn2.modeler.core.tests.functional/documentation/images/Eclipse_perspective.png)
 
 Import template diagrams
 ------------------------
