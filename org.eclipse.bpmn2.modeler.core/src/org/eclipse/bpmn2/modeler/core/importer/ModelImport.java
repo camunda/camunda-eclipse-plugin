@@ -301,6 +301,8 @@ public class ModelImport {
 		IDiagramEditor diagramEditor = diagramTypeProvider.getDiagramEditor();
 		
 		Diagram diagram = DIUtils.getOrCreateDiagram(diagramEditor, bpmnDiagram);
+		diagram.setGridUnit(0);
+		
 		diagramTypeProvider.init(diagram, diagramEditor);
 
 		// link collaboration or only process to diagram
