@@ -20,6 +20,10 @@ import org.eclipse.bpmn2.modeler.core.features.IBpmn2AddFeature;
 import org.eclipse.bpmn2.modeler.core.features.IBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.ActivitySelectionBehavior;
 import org.eclipse.bpmn2.modeler.core.features.event.EventSelectionBehavior;
+import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.bpmn2.modeler.core.validation.ValidationStatusAdapter;
 import org.eclipse.bpmn2.modeler.ui.FeatureMap;
@@ -467,4 +471,14 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider
 			}
 		};
 	}
+	
+	public PictogramElement getSelection(PictogramElement originalPe,
+			PictogramElement[] oldSelection) {
+		if (FeatureSupport.isScrollShape(originalPe)) {
+			// click on scrollshape should select the diagram element
+			return getDiagramTypeProvider().getDiagram();
+		}
+		return super.getSelection(originalPe, oldSelection);
+	}
+	
 }

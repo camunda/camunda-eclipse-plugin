@@ -29,7 +29,6 @@ import org.eclipse.bpmn2.di.BpmnDiFactory;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
-import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
@@ -126,8 +125,14 @@ public class DIUtils {
 		}
 
 		updateConnections(element);
+		updateScrollShape(element, rect);
 		
 		return bpmnShape;
+	}
+
+	private static void updateScrollShape(PictogramElement element,
+			IRectangle rect) {
+		LayoutUtil.updateScrollShape(element, rect);
 	}
 
 	private static Bounds getDiLabelBounds(BPMNShape bpmnShape) {
@@ -194,6 +199,8 @@ public class DIUtils {
 		bpmnLabelBounds.setY(labelBounds.getY());
 		bpmnLabelBounds.setWidth(labelBounds.getWidth());
 		bpmnLabelBounds.setHeight(labelBounds.getHeight());
+		
+		updateScrollShape(label, labelBounds);
 	}
 	
 	public static void updateConnections(PictogramElement element) {

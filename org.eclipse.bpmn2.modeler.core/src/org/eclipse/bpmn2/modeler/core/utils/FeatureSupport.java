@@ -30,6 +30,7 @@ import org.eclipse.bpmn2.TextAnnotation;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
+import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
@@ -67,7 +68,17 @@ public class FeatureSupport {
 	}
 
 	public static boolean isDiagram(PictogramElement shape) {
-		return BusinessObjectUtil.containsChildElementOfType(shape, Definitions.class);
+		Definitions definitions = BusinessObjectUtil.getFirstElementOfType(shape, Definitions.class);
+		
+		if (definitions!=null) {
+			return true;
+		}
+		
+		return BusinessObjectUtil.containsChildElementOfType(shape, Definitions.class) || isScrollShape(shape);
+	}
+	
+	public static boolean isScrollShape(PictogramElement shape) {
+		return (Graphiti.getPeService().getPropertyValue(shape, ModelImport.SCROLL_SHAPE) != null);
 	}
 	
 	public static boolean isLane(PictogramElement element) {

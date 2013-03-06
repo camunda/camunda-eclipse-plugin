@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.importer;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -69,21 +70,35 @@ import org.eclipse.bpmn2.modeler.core.importer.handlers.SubProcessShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.handlers.TaskShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.util.ErrorLogger;
 import org.eclipse.bpmn2.modeler.core.importer.util.ModelHelper;
+import org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
+import org.eclipse.bpmn2.modeler.core.preferences.ShapeStyle;
+import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
+import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
+import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
+import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
 import org.eclipse.emf.ecore.xmi.XMIException;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.platform.IDiagramEditor;
+import org.eclipse.graphiti.services.Graphiti;
+import org.eclipse.graphiti.services.IGaService;
+import org.eclipse.graphiti.services.IPeService;
 import org.xml.sax.SAXException;
 
 /**
@@ -93,6 +108,7 @@ import org.xml.sax.SAXException;
  */
 public class ModelImport {
 
+	public static final String SCROLL_SHAPE = "scroll.shape";
 	protected IFeatureProvider featureProvider;
 	protected Bpmn2Resource resource;
 	protected IDiagramTypeProvider diagramTypeProvider;
@@ -118,6 +134,8 @@ public class ModelImport {
 	
 	// the process elements found in current definitions
 	protected ArrayList<Process> processes = new ArrayList<Process>();
+	
+	IRectangle importBounds = ConversionUtil.rect(0, 0, 0, 0); 
 	
 	public ModelImport(IDiagramTypeProvider diagramTypeProvider, Bpmn2Resource resource) {
 		
@@ -235,6 +253,34 @@ public class ModelImport {
 		
 		// finally layout all elements
 		performLayout();
+		
+		addScrollShape(rootDiagram);
+	}
+
+	private void addScrollShape(Diagram rootDiagram) {
+		IGaService gaService = Graphiti.getGaService();
+		IPeService peService = Graphiti.getPeService();
+		
+		Shape scrollShape = peService.createContainerShape(rootDiagram, true);
+		featureProvider.link(rootDiagram, scrollShape);
+		
+		Rectangle scrollRect = gaService.createRectangle(scrollShape);
+		
+		scrollRect.setX(importBounds.getX());
+		scrollRect.setY(importBounds.getY());
+		scrollRect.setWidth(importBounds.getWidth() + LayoutUtil.SCROLL_PADDING);
+		scrollRect.setHeight(importBounds.getHeight() + LayoutUtil.SCROLL_PADDING);
+		
+		//scrollRect.setBackground(gaService.manageColor(diagram, ShapeStyle.DEFAULT_COLOR));
+		//scrollRect.setForeground(gaService.manageColor(diagram, ShapeStyle.DEFAULT_COLOR));
+		
+		scrollRect.setFilled(false);
+		scrollRect.setTransparency(1.0);
+		
+		scrollShape.setGraphicsAlgorithm(scrollRect);
+		peService.sendToBack(scrollShape);
+		
+		peService.setPropertyValue(scrollShape, SCROLL_SHAPE, Boolean.TRUE.toString());
 	}
 
 	protected void handleDeferredActions() {
@@ -309,6 +355,7 @@ public class ModelImport {
 		BaseElement businessObject = collaboration != null ? collaboration : processes.get(0);
 		
 		featureProvider.link(diagram, new Object[] { businessObject, bpmnDiagram, definitions });
+
 		return diagram;
 	}
 
@@ -752,6 +799,15 @@ public class ModelImport {
 			log(exception);
 		} else {
 			linkInDiagramElementMap(diagramElement, bpmnElement);
+			Bounds bounds = diagramElement.getBounds();
+			if (bounds != null) {
+				importBounds.setRectangle(
+					(int) Math.min(bounds.getX(), importBounds.getX()), 
+					(int) Math.min(bounds.getY(), importBounds.getY()),
+					(int) Math.max(bounds.getX() + bounds.getWidth(), importBounds.getWidth()),
+					(int) Math.max(bounds.getY() + bounds.getHeight(), importBounds.getHeight())
+				);
+			}
 		}
 	}
 	
