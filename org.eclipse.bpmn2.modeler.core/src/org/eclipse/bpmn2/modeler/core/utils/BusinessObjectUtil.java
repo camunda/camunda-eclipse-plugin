@@ -248,8 +248,10 @@ public class BusinessObjectUtil {
 			if (container instanceof Diagram) {
 				return (Diagram) container;
 			}
+			container = container.getContainer();
 		}
 		
 		return null;
 	}
+	
 }
