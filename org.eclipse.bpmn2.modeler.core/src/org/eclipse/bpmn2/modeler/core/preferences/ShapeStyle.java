@@ -30,7 +30,7 @@ import org.eclipse.swt.graphics.RGB;
  */
 public class ShapeStyle {
 
-	public static IColorConstant DEFAULT_COLOR = new ColorConstant(212, 231, 248);
+	public static IColorConstant DEFAULT_COLOR = new ColorConstant(255, 255, 255);
 	public static String DEFAULT_FONT_STRING = "arial,10,-,-";
 	IColorConstant shapeBackground;
 	IColorConstant shapePrimarySelectedColor;
@@ -88,10 +88,10 @@ public class ShapeStyle {
 	
 	public void setDefaultColors(IColorConstant defaultColor) {
 		setShapeBackground(defaultColor);
-		setShapePrimarySelectedColor(StyleUtil.shiftColor(defaultColor, 32));
-		setShapeSecondarySelectedColor(StyleUtil.shiftColor(defaultColor, -32));
-		setShapeForeground(StyleUtil.shiftColor(defaultColor, -128));
-		setTextColor(StyleUtil.shiftColor(defaultColor, -128));
+		setShapePrimarySelectedColor(StyleUtil.shiftColor(defaultColor, 16));
+		setShapeSecondarySelectedColor(StyleUtil.shiftColor(defaultColor, -16));
+		setShapeForeground(StyleUtil.shiftColor(defaultColor, -255));
+		setTextColor(StyleUtil.shiftColor(defaultColor, -255));
 	}
 	
 	public boolean isDirty() {

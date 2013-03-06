@@ -49,8 +49,8 @@ public class StyleUtil {
 		FILL_STYLE_DEFAULT,
 		FILL_STYLE_INVERT };
 	
-	public static final IColorConstant CLASS_FOREGROUND = new ColorConstant(116, 143, 165);
-	public static final IColorConstant CLASS_BACKGROUND = new ColorConstant(220, 233, 255);
+	public static final IColorConstant CLASS_FOREGROUND = new ColorConstant(0, 0, 0);
+	public static final IColorConstant CLASS_BACKGROUND = new ColorConstant(255, 255, 255);
 	
 	public static Style getStyleForClass(Diagram diagram) {
 		Style s = findStyle(diagram, CLASS_ID);
