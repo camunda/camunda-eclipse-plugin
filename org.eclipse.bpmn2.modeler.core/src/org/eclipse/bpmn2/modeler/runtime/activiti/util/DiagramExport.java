@@ -5,6 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 import org.eclipse.bpmn2.modeler.core.Activator;
+import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
+import org.eclipse.bpmn2.modeler.runtime.activiti.model.util.ModelResourceImpl;
 import org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -26,6 +28,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.GraphicalViewer;
@@ -52,23 +55,9 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 public class DiagramExport extends AbstractCustomFeature {
 	
 	// initial values
-	protected GraphicalViewer _graphicalViewer;
-	protected final String folderName = "";
-	protected final String fileName = "preview.jpg";
 	protected final double scale = 1.0;
 
-	/**
-	 * <code>_allFigure</code> represents a figure that contains all printable
-	 * layers
-	 */
-	protected IFigure _allFigure;
 	protected boolean _insideInternalModify = false;
-
-	// selected values
-	/**
-	 * Image corresponding to the whole diagram (scaled version)
-	 */
-	private Image _image;
 
 	public DiagramExport(IFeatureProvider fp) {
 		super(fp);
@@ -77,7 +66,7 @@ public class DiagramExport extends AbstractCustomFeature {
 	@Override
 
 	public String getDescription() {
-		return "Export preview to " + folderName + "/" + fileName;
+		return "Export Diagram image";
 	}
 
 	@Override
@@ -103,45 +92,83 @@ public class DiagramExport extends AbstractCustomFeature {
 		return bpmnFileResource;
 	}
 
-	@SuppressWarnings("restriction")
 	public void execute(ICustomContext context) {
 		
-		try {
-			Resource diagramResource = BPMN2Editor.getActiveEditor().getDiagramResource();
-			if (diagramResource == null) {
-				logStatus(Status.WARNING, "Could not export diagram image: Could not determine diagram file", null);
-				return;
-			}
-			
-			IFile diagramImageFile = createDiagramImageFile(diagramResource);
-			if (diagramImageFile == null) {
-				logStatus(Status.WARNING, "Could not export diagram image: Could not determine diagram file", null);
-				return;
-			}
-			
-			// get the graphical Viewer
-			_graphicalViewer = BPMN2Editor.getActiveEditor().getGraphicalViewer();
-			
-			_allFigure = determineRootFigure();
-			// create the image
-			setScaledImage(scale);
-			startSaveAsImageWithoutDialog(_image, diagramImageFile);
-		} catch (Exception e) {
-			logStatus(Status.ERROR, "Could not export diagram image", e);
+		Resource diagramResource = getDiagramResoure();
+		if (diagramResource == null) {
+			logStatus(Status.WARNING, "Could not export diagram image: Could not determine diagram resource", null);
+			return;
 		}
+		
+		IFile diagramImageFile = createDiagramImageFile(diagramResource);
+		if (diagramImageFile == null) {
+			logStatus(Status.WARNING, "Could not export diagram image: Could not determine diagram file", null);
+			return;
+		}
+		
+		// get the graphical Viewer
+		GraphicalViewer graphicalViewer = BPMN2Editor.getActiveEditor().getGraphicalViewer();
+		
+		IFigure allFigure = determineRootFigure(graphicalViewer);
+		
+		// create the image
+		Image image = null;
+		try {
+			image = createScaledImage(scale, allFigure, graphicalViewer);
+			startSaveAsImageWithoutDialog(image, diagramImageFile);
+		} finally {
+			cleanUp(image);
+		}
+	}
+	
+	private Resource getDiagramResoure() {
+		
+		Resource resource;
+		
+		// we may not always get the actual model resource
+		// but in most cases a temp file
+		
+		IFeatureProvider featureProvider = getFeatureProvider();
+		if (featureProvider != null) {
+			resource = featureProvider.getDiagramTypeProvider().getDiagram().eResource();
+		} else {
+			resource = BPMN2Editor.getActiveEditor().getDiagramResource();
+		}
+		
+		if (isModelResource(resource)) {
+			return resource;
+		} else {
+			ResourceSet resourceSet = resource.getResourceSet();
+			if (resourceSet != null) {
+				for (Resource r : resourceSet.getResources()) {
+					if (isModelResource(r)) {
+						return r;
+					}
+				}
+			}
+			
+			return null;
+		}
+	}
+	
+	private boolean isModelResource(Resource resource) {
+		return (resource instanceof Bpmn2ModelerResourceImpl);
 	}
 
 	private IFile createDiagramImageFile(Resource diagramResource) {
-		String resourceName = diagramResource.getURI().lastSegment();
+		// get rid of uri encoded parts in a resource, e.g. spaces
+		// we get rid of the encoding here
+		String resourceName = decodeUri(diagramResource.getURI().lastSegment());
 		
-		// the resource obtained may be a temp file.
-		// that said, eclipse suffixes it with a random string, e.g. mydiagram.bpmn20._1GPVcVmjEeKNldb_3G1Fsw
-		// we need to get rid of that string
-		String diagramFileName = resourceName.substring(0, resourceName.lastIndexOf("."));
+		String pictureFileName = stripBpmnFileSuffix(resourceName);
 		
-		String pictureFileName = stripBpmnFileSuffix(diagramFileName);
-		
-		return createDirectoryResource(diagramResource, folderName).getFile(new Path(pictureFileName + ".png"));
+		return createDirectoryResource(diagramResource, "").getFile(new Path(pictureFileName + ".png"));
+	}
+
+	private String decodeUri(String uri) {
+		// decode uri and include handling of %20 (white space)
+		// because eclipse emf utilities cannot do it
+		return URI.decode(uri).replaceAll("%20", " ");
 	}
 
 	/**
@@ -246,9 +273,9 @@ public class DiagramExport extends AbstractCustomFeature {
 			});
 			
 		} catch (Exception e) {
-			String message = "Can not save image: "; //$NON-NLS-1$
+			String message = "Cannot save image: "; //$NON-NLS-1$
 			MessageDialog.openError(shell,
-					"Can not save image", message + e.getMessage()); //$NON-NLS-1$
+					"Cannot save image", message + e.getMessage()); //$NON-NLS-1$
 		}
 	}
 
@@ -292,14 +319,14 @@ public class DiagramExport extends AbstractCustomFeature {
 	}
 
 	@SuppressWarnings("restriction")
-	private IFigure determineRootFigure() {
+	private IFigure determineRootFigure(GraphicalViewer graphicalViewer) {
 		// Code snipped copied from AbstractFigureSelectionDialog
-		org.eclipse.swt.widgets.Control control = _graphicalViewer.getControl();
+		org.eclipse.swt.widgets.Control control = graphicalViewer.getControl();
 		if (control instanceof GFFigureCanvas) {
 			GFFigureCanvas canvas = (GFFigureCanvas) control;
 			canvas.regainSpace();
 		}
-		EditPart rootEditPart = _graphicalViewer.getRootEditPart();
+		EditPart rootEditPart = graphicalViewer.getRootEditPart();
 		if (!(rootEditPart instanceof GraphicalEditPart))
 			return null;
 		// determine _allFigure
@@ -312,66 +339,88 @@ public class DiagramExport extends AbstractCustomFeature {
 	}
 
 	// Code snipped copied from AbstractFigureSelectionDialog
-	public void setScaledImage(double scaleFactor) {
-		cleanUp();
-		_image = null;
+	public Image createScaledImage(double scaleFactor, IFigure figure, GraphicalViewer graphicalViewer) {
 		double upperBoundPixels = 3000.0d;
-		initScaledImage(scaleFactor, upperBoundPixels);
+		return createScaledImage(scaleFactor, upperBoundPixels, figure, graphicalViewer);
 	}
 
 	@SuppressWarnings("restriction")
-	private void initScaledImage(double scaleFactor, double upperBoundPixels) {
-		GC gc = null;
+	private Image createScaledImage(double scaleFactor, double maxPixels, final IFigure figure, GraphicalViewer graphicalViewer) {
+		
+		
 		// if the scale factor is too high, the operating system will
 		// not be able to provide a handle,
 		// because the Image would require too much space. "no more
 		// Handles"-Exception or "out of Memory" Error
 		// will be thrown
-		if (scaleFactor * _allFigure.getBounds().width > upperBoundPixels
-				|| scaleFactor * _allFigure.getBounds().height > upperBoundPixels) {
-			scaleFactor = Math.min(upperBoundPixels
-					/ _allFigure.getBounds().width, upperBoundPixels
-					/ _allFigure.getBounds().height);
+		if (scaleFactor * figure.getBounds().width > maxPixels
+				|| scaleFactor * figure.getBounds().height > maxPixels) {
+			scaleFactor = Math.min(maxPixels
+					/ figure.getBounds().width, maxPixels
+					/ figure.getBounds().height);
 		}
-		_image = new Image(Display.getDefault(),
-				(int) (_allFigure.getBounds().width * scaleFactor),
-				(int) (scaleFactor * _allFigure.getBounds().height));
-		gc = new GC(_image);
+		
+		Image image = null;
+		GC gc = null;
 		Graphics graphics = null;
-		if (scaleFactor != 1.0) {
-			FixedScaledGraphics fsg = new FixedScaledGraphics(new SWTGraphics(
-					gc));
-			fsg.scale(scaleFactor);
-			graphics = fsg;
-		} else {
-			graphics = new SWTGraphics(gc);
-		}
-		/* move all figures into the positive region */
-		EditPart contents = _graphicalViewer.getContents();
-		if (contents instanceof GraphicalEditPart) {
-			IFigure contentsFigure = ((GraphicalEditPart) contents).getFigure();
-			Rectangle contentBounds = contentsFigure.getBounds();
-			graphics.translate(-contentBounds.x, -contentBounds.y);
-		}
-		final Graphics syncGaphics = graphics;
 		
-		Display.getDefault().syncExec( new Runnable() {  public void run() { 
-			_allFigure.paint(syncGaphics);
-		} });
+		try {
+			image = new Image(Display.getDefault(),
+					(int) (figure.getBounds().width * scaleFactor),
+					(int) (scaleFactor * figure.getBounds().height));
+			
+			gc = new GC(image);
+			
+			if (scaleFactor != 1.0) {
+				FixedScaledGraphics fsg = new FixedScaledGraphics(new SWTGraphics(gc));
+				fsg.scale(scaleFactor);
+				graphics = fsg;
+			} else {
+				graphics = new SWTGraphics(gc);
+			}
+			
+			/* move all figures into the positive region */
+			EditPart contents = graphicalViewer.getContents();
+			if (contents instanceof GraphicalEditPart) {
+				IFigure contentsFigure = ((GraphicalEditPart) contents).getFigure();
+				Rectangle contentBounds = contentsFigure.getBounds();
+				graphics.translate(-contentBounds.x, -contentBounds.y);
+			}
+			final Graphics syncGaphics = graphics;
+			
+			Display.getDefault().syncExec(new Runnable() {  
+				public void run() { 
+					figure.paint(syncGaphics);
+				}
+			});
+		} finally {
+			try {
+				if (gc != null) {
+					gc.dispose();
+				}
+			} catch (Exception e) {
+				; // cannot handle
+			}
+			
+			try {
+				if (graphics != null) {
+					graphics.dispose();
+				}
+			} catch (Exception e) {
+				; // cannot handle
+			}
+		}
 		
-		if (gc != null)
-			gc.dispose();
-		if (graphics != null)
-			graphics.dispose();
+		return image;
 	}
 
-	public Image getScaledImage() {
-		return _image;
+	public void cleanUp(Image image) {
+		try {
+			if (image != null) {
+				image.dispose();
+			}
+		} catch (Exception e) {
+			; // cannot handle
+		}
 	}
-
-	public void cleanUp() {
-		if (_image != null)
-			_image.dispose();
-	}
-
 }

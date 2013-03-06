@@ -53,7 +53,7 @@ public class ActivitiRuntimeExtension implements IBpmn2RuntimeExtension {
 	@Override
   public boolean isContentForRuntime(IEditorInput input) {
     try {
-      InputSource source = new InputSource( FileService.getInputContents(input) );
+      InputSource source = new InputSource(FileService.getInputContents(input) );
       parser = new RootElementParser();
       parser.parse(source);
     } catch (AcceptedException e) {

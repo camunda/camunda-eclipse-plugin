@@ -22,12 +22,11 @@ import org.eclipse.ui.IEditorInput;
 public class DefaultBpmn2RuntimeExtension implements IBpmn2RuntimeExtension {
 
 	public DefaultBpmn2RuntimeExtension() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	@Override
 	public boolean isContentForRuntime(IEditorInput input) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -50,7 +49,7 @@ public class DefaultBpmn2RuntimeExtension implements IBpmn2RuntimeExtension {
 
 	@Override
 	public void initialize(DiagramEditor editor) {
-		// TODO Auto-generated method stub
+		
 	}
 
 	@Override

@@ -158,8 +158,8 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	}
 	
 	@Override
-	protected DiagramEditorInput convertToDiagramEditorInput(IEditorInput input)
-			throws PartInitException {
+	protected DiagramEditorInput convertToDiagramEditorInput(IEditorInput input) throws PartInitException {
+		
 		if (input instanceof Bpmn2DiagramEditorInput) {
 			return (Bpmn2DiagramEditorInput) input;
 		} else {
@@ -226,7 +226,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	}
 
 	/**
-	 * Beware, creates a new input and changes this editor!
+	 * Beware, creates a new input and changes this editor
 	 */
 	private Bpmn2DiagramEditorInput createNewDiagramEditorInput(IEditorInput input, Bpmn2DiagramType diagramType, String targetNamespace) {
 		try {
@@ -235,8 +235,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 			diagramUri = ((Bpmn2DiagramEditorInput)input).getUri();
 
 			return (Bpmn2DiagramEditorInput)input;
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			Activator.logError(e);
 			throw new RuntimeException(e);
 		}
@@ -324,7 +323,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 		// this needs to happen AFTER the diagram has been imported because we need
 		// to be able to determine the diagram type from the file's contents in order
 		// to build the right tool palette for the target runtime and model enablements.
-		GFPaletteRoot pr = (GFPaletteRoot)getPaletteRoot();
+		GFPaletteRoot pr = (GFPaletteRoot) getPaletteRoot();
 		pr.updatePaletteEntries();
 	}
 
@@ -370,7 +369,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
     }
 
     private void loadMarkers() {
-    	if (getModelFile()!=null) {
+    	if (getModelFile() != null) {
 	        // read in the markers
 	        BPMN2ValidationStatusLoader vsl = new BPMN2ValidationStatusLoader(this);
 	
@@ -612,7 +611,7 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	}
 	
 	public BPMNDiagram getBpmnDiagram() {
-		if (bpmnDiagram==null)
+		if (bpmnDiagram == null)
 			bpmnDiagram = getModelHandler().getDefinitions().getDiagrams().get(0);
 
 //		if (bpmnDiagram!=null) {

@@ -30,6 +30,7 @@ import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.Documentation;
 import org.eclipse.bpmn2.Error;
 import org.eclipse.bpmn2.FormalExpression;
+import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerResourceImpl;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.runtime.activiti.ActivitiRuntimeExtension;
@@ -37,6 +38,8 @@ import org.eclipse.bpmn2.modeler.runtime.activiti.model.ModelPackage;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.FailedJobRetryTimeCycleType;
 import org.eclipse.bpmn2.modeler.runtime.activiti.model.fox.FoxPackage;
 import org.eclipse.bpmn2.modeler.runtime.activiti.util.DiagramExport;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.Point;
 import org.eclipse.emf.common.util.URI;
@@ -96,13 +99,13 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
     @Override
 	protected XMLSave createXMLSave() {
     	try {
-    		boolean diagramToggle = Bpmn2Preferences.getInstance().getBoolean(ActivitiRuntimeExtension.PREF_TOGGLE_DIAGRAM_GENERATION, true);
-    		if (diagramToggle) {
+    		if (isGenerateDiagramImage()) {
     			new DiagramExport(null).execute(null);
     		}
-    	}catch (Exception e) {
-    		Logger.getLogger(ModelResourceImpl.class.getName()).log(Level.INFO, e.getMessage());
+    	} catch (Exception e) {
+    		Activator.logStatus(new Status(IStatus.WARNING, Activator.PLUGIN_ID, "Failed to generate diagram", e));
     	}
+    	
 		return new Bpmn2ModelerXMLSave(createXMLHelper()) {
 			
 			private boolean needTargetNamespace = true;
@@ -169,6 +172,10 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 				super.addNamespaceDeclarations();
 			}
 		};
+	}
+
+	private boolean isGenerateDiagramImage() {
+		return Bpmn2Preferences.getInstance().getBoolean(ActivitiRuntimeExtension.PREF_TOGGLE_DIAGRAM_GENERATION, true);
 	}
 
 	/**

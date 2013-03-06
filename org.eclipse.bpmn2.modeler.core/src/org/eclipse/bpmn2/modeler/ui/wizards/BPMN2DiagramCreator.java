@@ -73,27 +73,6 @@ public class BPMN2DiagramCreator {
 		editorInput.setInitialDiagramType(diagramType);
 		editorInput.setTargetNamespace(targetNamespace);
 
-		if (diagramEditor == null) {
-			openEditor(editorInput);
-		}
-
 		return editorInput;
-	}
-
-	private static void openEditor(final DiagramEditorInput editorInput) {
-		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-							.openEditor(editorInput, BPMN2Editor.EDITOR_ID);
-
-				} catch (PartInitException e) {
-					String error = "Error while opening diagram editor";
-					IStatus status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, error, e);
-					ErrorUtils.showErrorWithLogging(status);
-				}
-			}
-		});
 	}
 }

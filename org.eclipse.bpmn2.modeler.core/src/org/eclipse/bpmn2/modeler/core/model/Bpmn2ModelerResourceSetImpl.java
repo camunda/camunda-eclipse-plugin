@@ -335,16 +335,13 @@ public class Bpmn2ModelerResourceSetImpl extends ResourceSetImpl implements IRes
 	 * @param file
 	 */
 	public void resourceChanged (IFile file) {
-		// System.out.println("ResourceChanged: " + file  );
-		URI uri = URI.createPlatformResourceURI( file.getFullPath().toString() ) ;		
-		// System.out.println("    ResourceURI: " + uri );		
+		URI uri = URI.createPlatformResourceURI( file.getFullPath().toString(), false) ;		
 		URIConverter theURIConverter = getURIConverter();
 		URI normalizedURI = theURIConverter.normalize(uri);
 		
 		if (uriResourceMap != null) {
 			uriResourceMap.remove(uri);
 			uriResourceMap.remove(normalizedURI);
-			// System.out.println("Removed from Map: " + map );
 		}
 				
 		List<Resource> resourceList = getResources();
@@ -355,7 +352,6 @@ public class Bpmn2ModelerResourceSetImpl extends ResourceSetImpl implements IRes
 		for(Resource r : new ArrayList<Resource>(resourceList) )  {
 			if (uri.equals(r.getURI()) || normalizedURI.equals(r.getURI() )) {
 				resources.remove(r);
-				// System.out.println("Removed from List: " + r );				
 			}
 		}
 	}

@@ -251,10 +251,6 @@ public class FileService {
 		return tempName;
 	}
 	
-	public static File createTempFile(String name) {
-		return createTempFile(name,null);
-	}
-	
 	public static File createTempFile(String name, InputStream istream) {
 		File tempFile = null;
 		try {
@@ -280,91 +276,4 @@ public class FileService {
 		}
 		return tempFile;
 	}
-	
-	public static boolean isTempFile(URI uri) {
-		String tempDir = System.getProperty("java.io.tmpdir");
-		String uriDir = uri.trimFragment().trimSegments(1).devicePath();
-		return tempDir!=null && tempDir.compareToIgnoreCase(uriDir)==0;
-	}
-	
-	public static void deleteTempFile(URI uri) {
-		if (uri == null) {
-			return;
-		}
-		
-		String fileString = uri.toFileString();
-		if (fileString == null) {
-			return;
-		}
-		
-		File file = new File(fileString);
-		if (file.exists()) {
-			file.delete();
-		}
-	}
-	
-//	public static IFile getFileFromInput(IEditorSite site, IEditorInput input) {
-//		if (input instanceof DiagramEditorInput) {
-//			URI uri = ((DiagramEditorInput) input).getUri();
-//			String uriString = uri.trimFragment().toPlatformString(true);
-//			return BPMN2DiagramCreator.getModelFile(new Path(uriString));
-//		} else if (input instanceof FileEditorInput) {
-//			return ((FileEditorInput) input).getFile();
-//		} else if (input instanceof IStorageEditorInput) {
-//			IStorageEditorInput sei = (IStorageEditorInput) input;
-//
-//			try {
-//				String name = sei.getStorage().getName();
-//				InputStream istream = sei.getStorage().getContents();
-//
-//				// Object sel = site.getPage().getSelection();
-//				File tempFile = File.createTempFile(name, ".bpmn");
-//				OutputStream ostream = new FileOutputStream(tempFile);
-//
-//				int read = 0;
-//				byte[] bytes = new byte[1024];
-//
-//				while ((read = istream.read(bytes)) != -1) {
-//					ostream.write(bytes, 0, read);
-//				}
-//
-//				istream.close();
-//				ostream.flush();
-//				ostream.close();
-//
-//				IProject project = createTempProject();
-//				IPath location = new Path(tempFile.getAbsolutePath());
-//				IFile workspaceFile = project.getFile(location.lastSegment());
-//				workspaceFile.createLink(location, IResource.NONE, null);
-//				return workspaceFile;
-//				// return new FileEditorInput(workspaceFile);
-//			} catch (Exception e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-//
-//		return null;
-//	}
-//	
-//	public static IProject getTempProject() {
-//		IWorkspace ws = ResourcesPlugin.getWorkspace();
-//		IProject project = ws.getRoot().getProject(".bpmn2.modeler.temp");
-//		return project;
-//	}
-//	
-//	public static IProject createTempProject() {
-//		try {
-//			IProject project = getTempProject();
-//			if (!project.exists())
-//				project.create(null);
-//			if (!project.isOpen())
-//				project.open(null);
-//			return project;
-//		}
-//		catch (Exception e) {
-//			Activator.logError(e);
-//		}
-//		return null;
-//	}
 }

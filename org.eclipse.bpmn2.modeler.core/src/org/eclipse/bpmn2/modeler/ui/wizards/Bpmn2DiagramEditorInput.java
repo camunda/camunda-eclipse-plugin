@@ -101,6 +101,11 @@ public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
 			}
 
 		}
+		
+		if (obj instanceof Bpmn2DiagramEditorInput) {
+			return ((Bpmn2DiagramEditorInput) obj).getDiagramUri().equals(getDiagramUri());
+		}
+		
 		return false;
 	}
 
