@@ -28,9 +28,9 @@ public class ImportDatastoreTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = createModelImport();
 		importer.execute();
 		
-		EList<Shape> children = diagram.getChildren();
-		assertThat(children).hasSize(2);
+		assertThat(diagram).hasContainerShapeChildCount(2);
 		
+		EList<Shape> children = getDiagram().getChildren();
 		Shape shape = children.get(0);
 		PictogramLink link = shape.getLink();
 		
@@ -115,9 +115,7 @@ public class ImportDatastoreTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = createModelImport();
 		importer.execute();
 		
-		EList<Shape> children = diagram.getChildren();
-		
 		// displaying two pools and a data store WITH label
-		assertThat(children).hasSize(4);
+		assertThat(diagram).hasContainerShapeChildCount(4);
 	}
 }

@@ -106,7 +106,7 @@ public class ImportErrorHandlingTest extends AbstractImportBpmnModelTest {
 		
 		assertEquals(1, importer.getImportWarnings().size());
 		assertTrue(importer.getImportWarnings().get(0) instanceof UnmappedElementException);
-		assertThat(diagram.getChildren()).hasSize(1);
+		assertThat(diagram).hasContainerShapeChildCount(1);
 	}
 	
 	@Test

@@ -36,7 +36,7 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 		importer.execute();
 		
 		EList<Shape> children = diagram.getChildren();
-		assertThat(children).hasSize(2);
+		assertThat(diagram).hasContainerShapeChildCount(2);
 		
 		Shape pool1 = children.get(0);
 		Shape pool2 = children.get(1);
@@ -82,8 +82,7 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = createModelImport();
 		importer.execute();
 
-		EList<Shape> children = diagram.getChildren();
-		assertThat(children).hasSize(2);
+		assertThat(diagram).hasContainerShapeChildCount(2);
 	}
 
 	@Test
@@ -92,8 +91,7 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = createModelImport();
 		importer.execute();
 
-		EList<Shape> children = diagram.getChildren();
-		assertThat(children).hasSize(2);
+		assertThat(diagram).hasContainerShapeChildCount(2);
 	}
 
 	@Test
@@ -102,8 +100,7 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = createModelImport();
 		importer.execute();
 
-		EList<Shape> children = diagram.getChildren();
-		assertThat(children).hasSize(2);
+		assertThat(diagram).hasContainerShapeChildCount(2);
 	}
 	
 	@Test
@@ -148,8 +145,7 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = createModelImport();
 		importer.execute();
 
-		EList<Shape> children = diagram.getChildren();
-		assertThat(children).hasSize(2);
+		assertThat(diagram).hasContainerShapeChildCount(2);
 	}
 	
 	@Test

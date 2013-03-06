@@ -14,6 +14,8 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.PictogramLink;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.mm.pictograms.impl.FreeFormConnectionImpl;
+
+import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -29,7 +31,7 @@ public class ImportMessageFlowTest extends AbstractImportBpmnModelTest {
 		EList<Shape> children = diagram.getChildren();
 		
 		// two elements + label + msg flow label
-		Assert.assertEquals(4, children.size());
+		assertThat(diagram).hasContainerShapeChildCount(4);
 		
 		// Two container shapes (process pools)
 		// One element per shape (user task / intermediate catching event
@@ -61,7 +63,7 @@ public class ImportMessageFlowTest extends AbstractImportBpmnModelTest {
 		EList<Shape> children = diagram.getChildren();
 		
 		// two elements + label + msg flow label
-		Assert.assertEquals(4, children.size());
+		assertThat(diagram).hasContainerShapeChildCount(4);
 		
 		// Two container shapes (process pools)
 		// One element per shape (user task / intermediate catching event

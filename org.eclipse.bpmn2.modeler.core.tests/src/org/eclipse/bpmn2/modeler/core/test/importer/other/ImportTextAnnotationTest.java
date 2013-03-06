@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.test.importer.other;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmnModelTest;
@@ -96,6 +96,6 @@ public class ImportTextAnnotationTest extends AbstractImportBpmnModelTest {
 		assertThat(StringUtil.toDetailsString(diagram)).contains("TextAnnotationImpl");
 		
 		// text annotation directly rendered on diagram
-		assertThat(diagram.getChildren()).hasSize(3);
+		assertThat(diagram).hasContainerShapeChildCount(3);
 	}
 }

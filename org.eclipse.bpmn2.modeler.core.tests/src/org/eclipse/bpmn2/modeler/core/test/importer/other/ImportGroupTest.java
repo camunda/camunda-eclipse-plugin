@@ -21,7 +21,7 @@ public class ImportGroupTest extends AbstractImportBpmnModelTest {
 		importer.execute();
 		
 		EList<Shape> children = diagram.getChildren();
-		assertThat(children).hasSize(1);
+		assertThat(diagram).hasContainerShapeChildCount(1);
 		
 		Shape shape = children.get(0);
 		assertThat(shape).isLinkedTo(elementOfType(Group.class).identifiedBy("Group_1"));
@@ -34,7 +34,7 @@ public class ImportGroupTest extends AbstractImportBpmnModelTest {
 		importer.execute();
 		
 		EList<Shape> children = diagram.getChildren();
-		assertThat(children).hasSize(2);
+		assertThat(diagram).hasContainerShapeChildCount(2);
 		
 		Shape shape = children.get(1);
 		assertThat(shape).isLinkedTo(elementOfType(Group.class).identifiedBy("Group_1"));

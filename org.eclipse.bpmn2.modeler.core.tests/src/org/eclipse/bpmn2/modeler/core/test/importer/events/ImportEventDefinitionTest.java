@@ -32,7 +32,7 @@ public class ImportEventDefinitionTest extends AbstractImportBpmnModelTest {
 		EList<Shape> children = diagram.getChildren();
 		for (Shape child : children) {
 		  PictogramLink link = child.getLink();
-		  if (link.getBusinessObjects().size() > 0 && link.getBusinessObjects().get(0) instanceof Event) {
+		  if (link != null && link.getBusinessObjects().size() > 0 && link.getBusinessObjects().get(0) instanceof Event) {
 		    eventDefinitions.addAll(ModelUtil.getEventDefinitions((Event) link.getBusinessObjects().get(0)));
 		  }
 		}

@@ -10,6 +10,7 @@
 
 package org.eclipse.bpmn2.modeler.core.test.util.assertions;
 
+import org.eclipse.bpmn2.modeler.core.utils.ScrollUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -65,6 +66,7 @@ public class ContainerShapeAssert extends AbstractShapeAssert<ContainerShapeAsse
 
 	@Override
 	public ContainerShapeAssert hasNoChildren() {
+		actual.getChildren().remove(ScrollUtil.getScrollShape(actual));
 		Assertions.assertThat(actual.getChildren()).isEmpty();
 		return myself;
 	}
@@ -83,10 +85,12 @@ public class ContainerShapeAssert extends AbstractShapeAssert<ContainerShapeAsse
 	
 	@Override
 	public ContainerShapeAssert hasContainerShapeChildCount(int expected) {
+		actual.getChildren().remove(ScrollUtil.getScrollShape(actual));
 		
 		int actualCount = 0;
 		
 		EList<Shape> children = actual.getChildren();
+		
 		for (Shape s: children) {
 			if (s instanceof ContainerShape) {
 				actualCount++;
