@@ -31,6 +31,7 @@ import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ScrollUtil;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.DcFactory;
@@ -132,7 +133,7 @@ public class DIUtils {
 
 	private static void updateScrollShape(PictogramElement element,
 			IRectangle rect) {
-		LayoutUtil.updateScrollShape(element, rect);
+		ScrollUtil.updateScrollShape(element, rect);
 	}
 
 	private static Bounds getDiLabelBounds(BPMNShape bpmnShape) {

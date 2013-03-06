@@ -137,10 +137,6 @@ public class ModelOperations {
 		}
 		
 		private BaseElement getBusinessObject(PictogramElement e) {
-			if (FeatureSupport.isScrollShape(e)) {
-				e =  BusinessObjectUtil.getDiagram((Shape) e);
-			}
-			
 			return BusinessObjectUtil.getFirstElementOfType(e, BaseElement.class);
 		}
 		

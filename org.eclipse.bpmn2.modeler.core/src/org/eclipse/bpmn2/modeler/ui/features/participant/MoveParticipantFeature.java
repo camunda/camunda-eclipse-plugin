@@ -18,7 +18,6 @@ import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.di.ParticipantBandKind;
 import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
-import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.Tuple;
 import org.eclipse.bpmn2.modeler.ui.features.choreography.ChoreographyUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -33,7 +32,7 @@ public class MoveParticipantFeature extends DefaultMoveBPMNShapeFeature {
 
 	@Override
 	public boolean canMoveShape(IMoveShapeContext context) {
-		return FeatureSupport.isDiagram(context.getTargetContainer());
+		return super.canMoveShape(context);
 	}
 
 	@Override

@@ -14,7 +14,6 @@ import java.util.Set;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.modeler.core.layout.Docking;
-import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Vector;
@@ -48,8 +47,6 @@ public class LayoutUtil {
 	 * evolutionary developed value to switch between the AboveBeneath and LeftRight Strategy for gateways 
 	 */
 	public static final double MAGIC_VALUE = 0.83;
-	public static final int SCROLL_PADDING = 200;
-	
 	public enum Sector {
 		
 		TOP_LEFT(true, false, true, false),
@@ -1091,17 +1088,5 @@ public class LayoutUtil {
 	 */
 	public static Set<FreeFormConnection> getContainerConnections(ContainerShape shape) {
 		return getContainerConnections(shape, false);
-	}
-	
-	public static ContainerShape getScrollShape(Shape shape) {
-		return BusinessObjectUtil.getFirstElementOfType(BusinessObjectUtil.getDiagram(shape), ContainerShape.class);
-	}
-
-	public static void updateScrollShape(PictogramElement element,
-			IRectangle rect) {
-		ContainerShape scrollShape = getScrollShape((Shape) element);
-		
-		scrollShape.getGraphicsAlgorithm().setWidth(Math.max(rect.getX() + rect.getWidth() + SCROLL_PADDING, scrollShape.getGraphicsAlgorithm().getX() + scrollShape.getGraphicsAlgorithm().getWidth()));
-		scrollShape.getGraphicsAlgorithm().setHeight(Math.max(rect.getY() + rect.getHeight() + SCROLL_PADDING, scrollShape.getGraphicsAlgorithm().getY() + scrollShape.getGraphicsAlgorithm().getHeight()));
 	}
 }

@@ -467,14 +467,4 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider
 			}
 		};
 	}
-	
-	public PictogramElement getSelection(PictogramElement originalPe,
-			PictogramElement[] oldSelection) {
-		if (FeatureSupport.isScrollShape(originalPe)) {
-			// click on scrollshape should select the diagram element
-			return getDiagramTypeProvider().getDiagram();
-		}
-		return super.getSelection(originalPe, oldSelection);
-	}
-	
 }

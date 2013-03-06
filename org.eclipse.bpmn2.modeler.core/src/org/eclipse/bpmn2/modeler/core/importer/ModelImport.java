@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.importer;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -71,14 +70,9 @@ import org.eclipse.bpmn2.modeler.core.importer.handlers.TaskShapeHandler;
 import org.eclipse.bpmn2.modeler.core.importer.util.ErrorLogger;
 import org.eclipse.bpmn2.modeler.core.importer.util.ModelHelper;
 import org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil;
-import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.preferences.Bpmn2Preferences;
-import org.eclipse.bpmn2.modeler.core.preferences.ShapeStyle;
-import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
-import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
-import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
-import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ScrollUtil;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.di.DiagramElement;
@@ -108,7 +102,6 @@ import org.xml.sax.SAXException;
  */
 public class ModelImport {
 
-	public static final String SCROLL_SHAPE = "scroll.shape";
 	protected IFeatureProvider featureProvider;
 	protected Bpmn2Resource resource;
 	protected IDiagramTypeProvider diagramTypeProvider;
@@ -256,31 +249,24 @@ public class ModelImport {
 		
 		addScrollShape(rootDiagram);
 	}
-
+	
 	private void addScrollShape(Diagram rootDiagram) {
 		IGaService gaService = Graphiti.getGaService();
 		IPeService peService = Graphiti.getPeService();
 		
 		Shape scrollShape = peService.createContainerShape(rootDiagram, true);
-		featureProvider.link(rootDiagram, scrollShape);
+		rootDiagram.getLink().getBusinessObjects().add(new ScrollUtil.ScrollShapeHolder(scrollShape));
 		
 		Rectangle scrollRect = gaService.createRectangle(scrollShape);
 		
-		scrollRect.setX(importBounds.getX());
-		scrollRect.setY(importBounds.getY());
-		scrollRect.setWidth(importBounds.getWidth() + LayoutUtil.SCROLL_PADDING);
-		scrollRect.setHeight(importBounds.getHeight() + LayoutUtil.SCROLL_PADDING);
+		scrollRect.setX(importBounds.getWidth() + ScrollUtil.SCROLL_PADDING);
+		scrollRect.setY(importBounds.getHeight() +  ScrollUtil.SCROLL_PADDING);
 		
-		//scrollRect.setBackground(gaService.manageColor(diagram, ShapeStyle.DEFAULT_COLOR));
-		//scrollRect.setForeground(gaService.manageColor(diagram, ShapeStyle.DEFAULT_COLOR));
+		scrollRect.setWidth(1);
+		scrollRect.setHeight(1);
 		
 		scrollRect.setFilled(false);
 		scrollRect.setTransparency(1.0);
-		
-		scrollShape.setGraphicsAlgorithm(scrollRect);
-		peService.sendToBack(scrollShape);
-		
-		peService.setPropertyValue(scrollShape, SCROLL_SHAPE, Boolean.TRUE.toString());
 	}
 
 	protected void handleDeferredActions() {
