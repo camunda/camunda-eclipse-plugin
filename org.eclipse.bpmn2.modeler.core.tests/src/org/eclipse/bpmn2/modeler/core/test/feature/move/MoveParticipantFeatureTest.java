@@ -195,4 +195,32 @@ public class MoveParticipantFeatureTest extends AbstractFeatureTest {
 			.isContainedIn(diagram)
 			.movedBy(point(20, 20), preMoveLabelBounds);
 	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/ParticipantTaskConnectedBoundaryEvent.testBase.bpmn")
+	public void testMoveParticipantWithConnectedBoundaryEvent() {
+
+		// given
+		Shape boundaryShape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
+
+		ContainerShape participantShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "_Participant_3");
+		
+		IRectangle preMoveBoundaryBounds = LayoutUtil.getAbsoluteBounds(boundaryShape);
+		
+		// assume
+		// label is on diagram
+		assertThat(boundaryShape).isContainedIn(participantShape);
+		
+		// when
+		// moving participant
+		move(participantShape, diagramTypeProvider)
+			.by(20, 20)
+			.execute();
+		
+		// then 
+		// label should have been moved accordingly
+		assertThat(boundaryShape)
+			.isContainedIn(participantShape)
+			.movedBy(point(20, 20), preMoveBoundaryBounds);
+	}
 }

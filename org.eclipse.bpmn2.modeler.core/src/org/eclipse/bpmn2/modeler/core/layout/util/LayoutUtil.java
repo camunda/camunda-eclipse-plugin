@@ -30,6 +30,7 @@ import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.ChopboxAnchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -1043,6 +1044,16 @@ public class LayoutUtil {
 			}
 		}
 		return ret;
+	}
+	
+	/**
+	 * Returns the diagram for a given shape.
+	 * 
+	 * @param shape
+	 * @return
+	 */
+	public static Diagram getDiagram(Shape shape) {
+		return Graphiti.getPeService().getDiagramForShape(shape);
 	}
 	
 	/**

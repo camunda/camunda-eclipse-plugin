@@ -7,6 +7,7 @@ import org.eclipse.bpmn2.modeler.core.features.AbstractLayoutBpmnElementFeature;
 import org.eclipse.bpmn2.modeler.core.features.PropertyNames;
 import org.eclipse.bpmn2.modeler.core.layout.nnew.DefaultLayoutStrategy;
 import org.eclipse.bpmn2.modeler.core.layout.nnew.LayoutContext;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;

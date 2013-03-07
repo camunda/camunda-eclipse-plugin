@@ -236,20 +236,4 @@ public class BusinessObjectUtil {
 				be == DataOutputAssociation.class ||
 				be == Conversation.class;
 	}
-
-	public static Diagram getDiagram(Shape startShape) {
-		if (startShape instanceof Diagram) {
-			return (Diagram) startShape;
-		}
-		
-		Shape container = startShape.getContainer();
-		
-		while (container != null) {
-			if (container instanceof Diagram) {
-				return (Diagram) container;
-			}
-		}
-		
-		return null;
-	}
 }

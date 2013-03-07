@@ -34,7 +34,7 @@ public class ResizeShapeOperation extends Operation<ResizeShapeContext, IResizeF
 
 	public Operation<ResizeShapeContext, IResizeFeature> fromTopLeftBy(Point amount) {
 
-		IRectangle participantShapeBounds = LayoutUtil.getAbsoluteBounds(context.getShape());
+		IRectangle participantShapeBounds = LayoutUtil.getRelativeBounds(context.getShape());
 		IRectangle postResizeRectangle = rectangle(participantShapeBounds.getX() + amount.getX(), participantShapeBounds.getY() + amount.getY(), participantShapeBounds.getWidth() - amount.getX(), participantShapeBounds.getHeight() - amount.getY());
 		
 		return to(postResizeRectangle);

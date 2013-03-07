@@ -27,6 +27,8 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public class DefaultLayoutContext implements LayoutContext {
 
+	private static final int MAX_REPAIR_TRIES = 5;
+	
 	protected FreeFormConnection connection;
 	
 	private Anchor startAnchor;
@@ -148,7 +150,8 @@ public class DefaultLayoutContext implements LayoutContext {
 		do {
 			cancelCounter++;
 			
-			if (cancelCounter == Integer.MAX_VALUE) {
+			if (cancelCounter > MAX_REPAIR_TRIES) {
+				System.out.println("[layout connection] cancel count reached: breaking repair loop");
 				break;
 			}
 			
@@ -179,8 +182,8 @@ public class DefaultLayoutContext implements LayoutContext {
 		// are first or last bendpoints moved during repair to close or into one of the shapes
 		// if yes, force repeat
 		
-		if (isContained(getOverlapStartBounds(), bendpoints.getFirst()) ||
-			isContained(getOverlapEndBounds(), bendpoints.getSecond())) {
+		if (overlapsWithStartShape(bendpoints.getFirst()) ||
+			overlapsWithEndShape(bendpoints.getSecond())) {
 			
 			return true;
 		}
@@ -226,14 +229,14 @@ public class DefaultLayoutContext implements LayoutContext {
 		Point removeCandidate = null;
 		
 		for (final Point p: connection.getBendpoints()) {
-			if (isContained(getOverlapStartBounds(), p)) {
+			if (overlapsWithStartShape(p)) {
 				fromStart = true;
 				removeCandidate = p;
 				
 				// continue to search (search for the last overlapping bendpoint)
 			}
 			
-			if (isContained(getOverlapEndBounds(), p)) {
+			if (overlapsWithEndShape(p)) {
 				
 				fromStart = false;
 				removeCandidate = p;
@@ -249,12 +252,12 @@ public class DefaultLayoutContext implements LayoutContext {
 		}
 	}
 	
-	protected IRectangle getOverlapEndBounds() {
-		return endShapeBounds;
+	protected boolean overlapsWithStartShape(Point p) {
+		return isContained(startShapeBounds, p);
 	}
-
-	protected IRectangle getOverlapStartBounds() {
-		return startShapeBounds;
+	
+	protected boolean overlapsWithEndShape(Point p) {
+		return isContained(endShapeBounds, p);
 	}
 
 	protected boolean isContained(IRectangle bounds, Point p) {

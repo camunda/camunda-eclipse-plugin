@@ -192,6 +192,28 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 	}
 	
 	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/ParticipantTaskConnectedBoundaryEvent.testBase.bpmn")
+	public void testMoveTaskIncomingBoundaryEventFlow() {
+
+		// given
+		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
+		
+		Point movement = point(30, 24);
+
+		IRectangle taskBoundsBeforeMove = LayoutUtil.getAbsoluteBounds(taskShape);
+		
+		// when moving event to the parents sibling lane
+		move(taskShape, diagramTypeProvider)
+			.by(movement)
+			.execute();
+		
+		// then
+		// task should have moved
+		assertThat(taskShape)
+			.movedBy(movement, taskBoundsBeforeMove);
+	}
+	
+	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveFlowNodeFeature.testTaskWithBoundaryEvent.bpmn")
 	public void testMoveTaskWithBoundaryEvent2() {
 
@@ -278,7 +300,6 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		
 		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "UserTask_1");
 		Shape boundaryEventShape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_2");
-		Shape boundaryEventLabelShape = LabelUtil.getLabelShape(boundaryEventShape, diagram);
 
 		IRectangle subProcessBounds = LayoutUtil.getAbsoluteBounds(subProcessShape);
 		IRectangle taskBounds = LayoutUtil.getAbsoluteBounds(taskShape);
@@ -287,9 +308,6 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		Point movement = point(subProcessBounds.getX() - taskBounds.getX() + containerOffset.getX(), subProcessBounds.getY() - taskBounds.getY() + containerOffset.getY());
 		
 		IRectangle taskBoundsBeforeMove = LayoutUtil.getAbsoluteBounds(taskShape);
-		IRectangle boundaryBoundsBeforeMove = LayoutUtil.getAbsoluteBounds(boundaryEventShape);
-		
-		IRectangle labelBoundsBeforeMove = LayoutUtil.getAbsoluteBounds(boundaryEventLabelShape);
 		
 		// when
 		// moving event to the parents sibling lane
@@ -302,14 +320,6 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		// task should have moved
 		assertThat(taskShape)
 			.movedBy(movement, taskBoundsBeforeMove);
-		
-//		// boundary event should have moved
-//		assertThat(boundaryEventShape)
-//			.movedBy(movement, boundaryBoundsBeforeMove);
-		
-//		// label should have been moved
-//		assertThat(boundaryEventLabelShape)
-//			.movedBy(movement, labelBoundsBeforeMove);
 	}
 	
 	@Test
