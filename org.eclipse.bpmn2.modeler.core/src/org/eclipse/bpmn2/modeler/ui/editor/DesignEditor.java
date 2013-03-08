@@ -85,15 +85,6 @@ public class DesignEditor extends BPMN2Editor {
 	
 	@Override
     protected void setPartName(String partName) {
-//		IEditorInput input = getEditorInput();
-//		if (input instanceof Bpmn2DiagramEditorInput) {
-//			URI uri = ((Bpmn2DiagramEditorInput)input).getModelUri();
-//			partName = URI.decode(uri.trimFileExtension().lastSegment());
-//		}
-//		else if (input instanceof DiagramEditorInput) {
-//			URI uri = ((DiagramEditorInput)input).getUri();
-//			partName = URI.decode(uri.trimFileExtension().lastSegment());
-//		}
 		super.setPartName(URI.decode(partName));
     }
 

@@ -156,28 +156,28 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testBase.bpmn")
 	public void testGetBoundaryEventRelativeSector() {
 		Shape boundaryEvent1 = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
-		assertThat(LayoutUtil.getBoundaryEventRelativeSector(boundaryEvent1)).isEqualTo(Sector.TOP_LEFT);
+		assertThat(LayoutUtil.getBoundaryRelativeSector(boundaryEvent1)).isEqualTo(Sector.TOP_LEFT);
 
 		Shape boundaryEvent2 = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_2");
-		assertThat(LayoutUtil.getBoundaryEventRelativeSector(boundaryEvent2)).isEqualTo(Sector.TOP_RIGHT);
+		assertThat(LayoutUtil.getBoundaryRelativeSector(boundaryEvent2)).isEqualTo(Sector.TOP_RIGHT);
 		
 		Shape boundaryEvent3 = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_3");
-		assertThat(LayoutUtil.getBoundaryEventRelativeSector(boundaryEvent3)).isEqualTo(Sector.BOTTOM_RIGHT);
+		assertThat(LayoutUtil.getBoundaryRelativeSector(boundaryEvent3)).isEqualTo(Sector.BOTTOM_RIGHT);
 		
 		Shape boundaryEvent4 = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_4");
-		assertThat(LayoutUtil.getBoundaryEventRelativeSector(boundaryEvent4)).isEqualTo(Sector.BOTTOM_LEFT);
+		assertThat(LayoutUtil.getBoundaryRelativeSector(boundaryEvent4)).isEqualTo(Sector.BOTTOM_LEFT);
 		
 		Shape boundaryEvent5 = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_5");
-		assertThat(LayoutUtil.getBoundaryEventRelativeSector(boundaryEvent5)).isEqualTo(Sector.TOP);
+		assertThat(LayoutUtil.getBoundaryRelativeSector(boundaryEvent5)).isEqualTo(Sector.TOP);
 
 		Shape boundaryEvent6 = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_6");
-		assertThat(LayoutUtil.getBoundaryEventRelativeSector(boundaryEvent6)).isEqualTo(Sector.BOTTOM);
+		assertThat(LayoutUtil.getBoundaryRelativeSector(boundaryEvent6)).isEqualTo(Sector.BOTTOM);
 		
 		Shape boundaryEvent7 = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_7");
-		assertThat(LayoutUtil.getBoundaryEventRelativeSector(boundaryEvent7)).isEqualTo(Sector.RIGHT);
+		assertThat(LayoutUtil.getBoundaryRelativeSector(boundaryEvent7)).isEqualTo(Sector.RIGHT);
 		
 		Shape boundaryEvent8 = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_8");
-		assertThat(LayoutUtil.getBoundaryEventRelativeSector(boundaryEvent8)).isEqualTo(Sector.LEFT);
+		assertThat(LayoutUtil.getBoundaryRelativeSector(boundaryEvent8)).isEqualTo(Sector.LEFT);
 	}
 	
 	@Test

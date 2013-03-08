@@ -58,7 +58,8 @@ public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 		if (context.getTargetConnection() != null) {
 			
 			// target x/y does not show the mouse cursor but the point on the connection
-			// we need to correct that before proceeding
+			// we need to correct that before proceeding and simulate a drop of
+			// the shape on the given point
 			
 			if (context instanceof MoveShapeContext) {
 				MoveShapeContext moveContext = (MoveShapeContext) context;

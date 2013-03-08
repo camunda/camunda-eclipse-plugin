@@ -31,7 +31,7 @@ public class AbstractGraphicsTreeEditPart extends AbstractTreeEditPart {
 	@Override
 	public Object getModel() {
 		EObject bpmnModel = (EObject)super.getModel();
-		PictogramElement pictogramElement = BusinessObjectUtil.getPictogramForElement(bpmnModel);
+		PictogramElement pictogramElement = BusinessObjectUtil.getLinkingPictogramElement(bpmnModel);
 		
 		if (pictogramElement == null) {
 			return bpmnModel;

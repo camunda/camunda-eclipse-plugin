@@ -12,22 +12,21 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.event;
 
-import java.io.IOException;
-
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.SubProcess;
-import org.eclipse.bpmn2.modeler.core.Activator;
 import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
+import org.eclipse.bpmn2.modeler.core.layout.util.BoundaryEventUtil;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
-import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
 public class CreateBoundaryEventFeature extends AbstractBpmn2CreateFeature<BoundaryEvent> {
@@ -39,12 +38,13 @@ public class CreateBoundaryEventFeature extends AbstractBpmn2CreateFeature<Bound
 	@Override
 	public boolean canCreate(ICreateContext context) {
 		Object o = getBusinessObjectForPictogramElement(context.getTargetContainer());
-		if (o == null || !(o instanceof Activity)) {
+		if (!(o instanceof Activity)) {
 			return false;
 		}
 
-		GraphicsAlgorithm ga = context.getTargetContainer().getGraphicsAlgorithm();
-		return BoundaryEventPositionHelper.canCreateEventAt(context, ga, 10);
+		IRectangle bounds = LayoutUtil.getRelativeBounds(context.getTargetContainer());
+		
+		return BoundaryEventUtil.canCreateEventAt(context.getX(), context.getY(), bounds);
 	}
 
 	@Override

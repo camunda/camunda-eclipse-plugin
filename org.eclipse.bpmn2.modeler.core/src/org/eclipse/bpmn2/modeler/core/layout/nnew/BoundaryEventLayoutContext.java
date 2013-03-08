@@ -58,7 +58,7 @@ public class BoundaryEventLayoutContext extends DefaultLayoutContext {
 	protected boolean overlapsAttachedShape(Point point, Shape boundaryShape) {
 		BoundaryEvent boundaryEvent = (BoundaryEvent) BusinessObjectUtil.getBusinessObjectForPictogramElement(boundaryShape);
 		Diagram diagram = LayoutUtil.getDiagram(boundaryShape);
-		PictogramElement attachedToElement = BusinessObjectUtil.getLinkingPictogramElement(diagram, boundaryEvent.getAttachedToRef());
+		PictogramElement attachedToElement = BusinessObjectUtil.getLinkingPictogramElement(boundaryEvent.getAttachedToRef(), diagram);
 		
 		IRectangle attachedToBounds = LayoutUtil.getAbsoluteBounds((Shape) attachedToElement);
 		

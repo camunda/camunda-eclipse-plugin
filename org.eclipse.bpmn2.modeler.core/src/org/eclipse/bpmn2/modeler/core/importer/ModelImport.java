@@ -18,6 +18,7 @@ import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Artifact;
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.Collaboration;
 import org.eclipse.bpmn2.DataInput;
@@ -581,8 +582,13 @@ public class ModelImport {
 	 */
 	protected void handleFlowElements(ContainerShape container, List<FlowElement> flowElementsToBeDrawn) {
 		
+		List<BoundaryEvent> boundaryEvents = new ArrayList<BoundaryEvent>();
+		
 		for (FlowElement flowElement: flowElementsToBeDrawn) {
 			
+			if (flowElement instanceof BoundaryEvent) {
+				boundaryEvents.add((BoundaryEvent) flowElement);
+			} else
 		    if (flowElement instanceof Gateway) {
 				handleGateway((Gateway) flowElement, container);
 				
@@ -614,6 +620,11 @@ public class ModelImport {
 				handleDataInputAssociations(activity.getDataInputAssociations(), container);
 				handleDataOutputAssociations(activity.getDataOutputAssociations(), container);
 		    }
+		}
+		
+		// handle boundary events last
+		for (BoundaryEvent boundaryEvent: boundaryEvents) {
+			handleEvent(boundaryEvent, container);
 		}
 	}
 

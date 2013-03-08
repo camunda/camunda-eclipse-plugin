@@ -89,7 +89,6 @@ public class BusinessObjectUtil {
 					return foundInLink;
 				}
 			}
-			
 		}
 		else if (elem.getLink() == null) {
 			if (searchParents) {
@@ -126,32 +125,6 @@ public class BusinessObjectUtil {
 	public static BaseElement getFirstBaseElement(PictogramElement pe) {
 		return BusinessObjectUtil.getFirstElementOfType(pe, BaseElement.class);
 	}
-	
-	public static PictogramElement getLinkingPictogramElement(Diagram diagram, BaseElement e) {
-		List<EObject> objects = Arrays.asList((EObject) e);
-		List<PictogramElement> pictogramElements = Graphiti.getLinkService().getPictogramElements(diagram, objects, true);
-		
-		for (PictogramElement element : pictogramElements) {
-			if (!LabelUtil.isLabel(element)) {
-				return element;
-			}
-		}
-
-		return null;
-	}
-
-	public static PictogramElement getPictogramElementFromDiagram(Diagram diagram, BPMNShape bpmnShape) {
-		List<EObject> objects = Arrays.asList((EObject) bpmnShape);
-		List<PictogramElement> pictogramElements = Graphiti.getLinkService().getPictogramElements(diagram, objects, true);
-		
-		for (PictogramElement element : pictogramElements) {
-			if (!LabelUtil.isLabel(element)) {
-				return element;
-			}
-		}
-
-		return null;
-	}
 
 	public static PictogramElement getPictogramElementForSelection(ISelection selection) {
 		EditPart editPart = getEditPartForSelection(selection);
@@ -161,7 +134,7 @@ public class BusinessObjectUtil {
 		
 		if (editPart != null && editPart.getModel() instanceof BaseElement) {
 			BaseElement baseElement = (BaseElement) editPart.getModel();
-			return getPictogramForElement(baseElement);
+			return getLinkingPictogramElement(baseElement);
 		}
 		
 		if (selection instanceof IStructuredSelection) {
@@ -172,15 +145,35 @@ public class BusinessObjectUtil {
 		return null;
 	}
 
-	public static PictogramElement getPictogramForElement(EObject element) {
+	/**
+	 * Returns the pictogram element for a given element
+	 * 
+	 * The diagram is obtained via the active editor. 
+	 * 
+	 * @param businessObject
+	 * @return
+	 */
+	public static PictogramElement getLinkingPictogramElement(EObject businessObject) {
+		Diagram diagram = BPMN2Editor.getActiveEditor().getDiagramTypeProvider().getDiagram();
+		return getLinkingPictogramElement(businessObject, diagram);
+	}
+	
+	/**
+	 * Returns the pictogram element for a given element
+	 * 
+	 * @param diagram
+	 * @param businessObject
+	 * @return
+	 */
+	public static PictogramElement getLinkingPictogramElement(EObject businessObject, Diagram diagram) {
 		
-		List<PictogramElement> pictogramElements = Graphiti.getLinkService().getPictogramElements(BPMN2Editor.getActiveEditor().getDiagramTypeProvider().getDiagram(), element);
+		List<PictogramElement> pictogramElements = Graphiti.getLinkService().getPictogramElements(diagram, businessObject);
 		if (pictogramElements.isEmpty()) {
 			return null;
-		}else {
-			for (PictogramElement pictogramElement : pictogramElements) {
-				if (pictogramElement instanceof ContainerShape) {
-					return pictogramElement;
+		} else {
+			for (PictogramElement element : pictogramElements) {
+				if (element instanceof ContainerShape && !LabelUtil.isLabel(element)) {
+					return element;
 				}
 			}
 			return null;
@@ -205,8 +198,9 @@ public class BusinessObjectUtil {
 	public static EObject getBusinessObjectForPictogramElement(PictogramElement pe) {
 		if (pe!=null) {
 			Object be = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(pe);
-			if (be instanceof EObject)
+			if (be instanceof EObject) {
 				return (EObject) be;
+			}
 		}
 		return null;
 	}
@@ -227,7 +221,7 @@ public class BusinessObjectUtil {
 		return null;
 	}
 	
-	public static boolean isConnection(Class be) {
+	public static boolean isConnection(Class<?> be) {
 		return
 				be == SequenceFlow.class ||
 				be == Association.class ||

@@ -7,6 +7,8 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
+import junit.framework.AssertionFailedError;
+
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.impl.DocumentRootImpl;
@@ -30,10 +32,10 @@ public class TestHelper {
 			
 		URL resourceUrl = Activator.getBundleContext().getBundle().getResource(bpmnDiagramUrl);
 		if (resourceUrl == null) {
-			throw new RuntimeException("Resource " + bpmnDiagramUrl + " not found");
+			throw new AssertionFailedError("Resource " + bpmnDiagramUrl + " not found");
 		}
 
-		URI testResourceUri = URI.createFileURI("target/"+bpmnDiagramUrl);
+		URI testResourceUri = URI.createFileURI("target/" + bpmnDiagramUrl);
 		
 		Bpmn2Resource resource = createBpmn2Resource(testResourceUri);
 		populateResource(resource, resourceUrl);

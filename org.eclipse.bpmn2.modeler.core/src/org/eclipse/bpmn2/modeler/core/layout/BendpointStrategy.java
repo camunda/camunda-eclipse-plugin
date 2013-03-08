@@ -189,7 +189,7 @@ public class BendpointStrategy extends LayoutStrategy<Tuple<Docking, Docking>, V
 	}
 
 	private void boundaryEventSwitch(Sector sector) {
-		Sector relativeSectorToRef = LayoutUtil.getBoundaryEventRelativeSector(startDocking.getShape());
+		Sector relativeSectorToRef = LayoutUtil.getBoundaryRelativeSector(startDocking.getShape());
 		
 		switch (relativeSectorToRef) {
 		case RIGHT:

@@ -14,6 +14,7 @@ import java.util.Set;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.modeler.core.layout.Docking;
+import org.eclipse.bpmn2.modeler.ui.features.event.BoundaryAttachment;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Vector;
@@ -133,37 +134,13 @@ public class LayoutUtil {
 		return Sector.fromBooleans(left, right, above, beneath);
 	}
 	
-	public static Sector getBoundaryEventRelativeSector(Shape boundaryEventShape) {
-		EObject element = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(boundaryEventShape);
-		if (!(element instanceof BoundaryEvent)) {
-			throw new IllegalArgumentException("Can only extract relative sector from " + BoundaryEvent.class.getName());
+	public static Sector getBoundaryRelativeSector(Shape boundaryShape) {
+		BoundaryAttachment attachment = BoundaryEventUtil.getStoredBoundaryAttachment(boundaryShape);
+		if (attachment == null) {
+			throw new IllegalArgumentException(String.format("Shape %s has no attachment", boundaryShape));
 		}
 		
-		for (Property prop : boundaryEventShape.getProperties()) {
-			if (prop.getKey().equals("boundary.event.relative.pos")) {
-				String value = prop.getValue();
-				
-				if (value.equals("positiononline:XY:TOP_LEFT")) {
-					return Sector.TOP_LEFT;
-				} else if (value.equals("positiononline:Y:TOP")) {
-					return Sector.TOP;
-				} else if (value.equals("positiononline:XY:TOP_RIGHT")) {
-					return Sector.TOP_RIGHT;
-				} else if (value.equals("positiononline:X:RIGHT")) {
-					return Sector.RIGHT;
-				} else if (value.equals("positiononline:XY:BOTTOM_RIGHT")) {
-					return Sector.BOTTOM_RIGHT;
-				} else if (value.equals("positiononline:Y:BOTTOM")) {
-					return Sector.BOTTOM;
-				} else if (value.equals("positiononline:XY:BOTTOM_LEFT")) {
-					return Sector.BOTTOM_LEFT;
-				} else if (value.equals("positiononline:X:LEFT")) {
-					return Sector.LEFT;
-				}
-			}
-		}
-		
-		return Sector.UNDEFINED;
+		return attachment.getSector();
 	}
 	
 	public static BaseElement getSourceBaseElement(FreeFormConnection connection) {
@@ -1090,6 +1067,50 @@ public class LayoutUtil {
 		}
 		
 		return containerConnections;
+	}
+	
+	/**
+	 * 
+	 * @param boundaryBounds
+	 * @param rectangle
+	 * @param tolerance
+	 * 
+	 * @return
+	 */
+	public static ILocation snapToBounds(ILocation boundaryBounds, IRectangle rectangle, int tolerance) {
+
+		int x = boundaryBounds.getX();
+		int y = boundaryBounds.getY();
+
+		int x1 = rectangle.getX();
+		int x2 = x1 + rectangle.getWidth();
+		
+		int y1 = rectangle.getY();
+		int y2 = y1 + rectangle.getHeight();
+
+		int dx1 = Math.abs(x - x1);
+		int dx2 = Math.abs(x - x2);
+		
+		int dy1 = Math.abs(y - y1);
+		int dy2 = Math.abs(y - y2);
+		
+		if (dx1 <= tolerance) {
+			x = x1;
+		}
+		
+		if (dx2 <= tolerance) {
+			x = x2;
+		}
+		
+		if (dy1 <= tolerance) {
+			y = y1;
+		}
+		
+		if (dy2 <= tolerance) {
+			y = y2;
+		}
+		
+		return location(x, y);
 	}
 	
 	/**

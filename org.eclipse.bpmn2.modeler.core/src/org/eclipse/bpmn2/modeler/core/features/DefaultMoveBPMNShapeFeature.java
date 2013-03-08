@@ -20,11 +20,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.Layouter;
+import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
@@ -62,12 +65,31 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 		
 		preMoveBounds = LayoutUtil.getAbsoluteBounds(shape);
 	}
-
+	
+	/**
+	 * Returns the business object handled by this move feature.
+	 * 
+	 * @param context
+	 * @return
+	 */
+	protected <T extends EObject> T getBusinessObject(PictogramElement element, Class<T> cls) {
+		return BusinessObjectUtil.getFirstElementOfType(element, cls);
+	}
+	
+	/**
+	 * Returns the business object for a given pictogram element
+	 * @param pictogramElement
+	 * @return
+	 */
+	protected BaseElement getBusinessObject(PictogramElement pictogramElement) {
+		return (BaseElement) getBusinessObjectForPictogramElement(pictogramElement);
+	}
+	
 	/**
 	 * Reorganizing the moving of bendpoints after internal moving the shape.
 	 */
 	@Override
-	public final void moveShape(IMoveShapeContext context) {
+	public void moveShape(IMoveShapeContext context) {
 		preMoveShape(context);
 		internalMove(context);
 		moveAllBendpoints(context);

@@ -28,11 +28,9 @@ import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
-import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.features.impl.DefaultResizeShapeFeature;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
-import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
@@ -62,9 +60,11 @@ public class DefaultResizeBPMNShapeFeature extends DefaultResizeShapeFeature {
 		
 		updateDi(shape);
 		
+		postResize(context);
+		
 		layout(shape, context);
 	}
-
+	
 	/**
 	 * Perform a pre resize operation
 	 * 
@@ -76,6 +76,15 @@ public class DefaultResizeBPMNShapeFeature extends DefaultResizeShapeFeature {
 		Shape shape = context.getShape();
 		
 		preResizeBounds = LayoutUtil.getAbsoluteBounds(shape);
+	}
+
+	/**
+	 * Perform an operation after the resize has finished
+	 * 
+	 * @param context
+	 */
+	protected void postResize(IResizeShapeContext context) {
+		
 	}
 	
 	/**

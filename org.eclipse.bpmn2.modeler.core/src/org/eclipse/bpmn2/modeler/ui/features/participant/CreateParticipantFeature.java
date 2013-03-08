@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Collaboration;
@@ -29,11 +30,13 @@ import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.features.activity.MoveActivityFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
+import org.eclipse.bpmn2.modeler.ui.features.event.MoveBoundaryEventFeature;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -156,16 +159,16 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 		List<Shape> childShapes = new ArrayList<Shape>(participantContainer.getChildren());
 		
 		for (final Shape childShape : childShapes) {
-			GraphicsAlgorithm childShapeGa = childShape.getGraphicsAlgorithm();
+			GraphicsAlgorithm ga = childShape.getGraphicsAlgorithm();
 			
-			if ( (childShapeGa instanceof Polyline) || (childShapeGa instanceof Text) ) {
+			if (!(childShape instanceof ContainerShape)) {
 				continue;
 			}
 			
 			MoveShapeContext moveShapeContext = new MoveShapeContext(childShape);
 			
-			int newX = childShapeGa.getX() - bounds.getX() + leftMargin;
-			int newY = childShapeGa.getY() - bounds.getY() + topMargin;
+			int newX = ga.getX() - bounds.getX() + leftMargin;
+			int newY = ga.getY() - bounds.getY() + topMargin;
 			
 			moveShapeContext.setX(newX);
 			moveShapeContext.setY(newY);
@@ -176,6 +179,11 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 			ContextUtil.set(moveShapeContext, DefaultMoveBPMNShapeFeature.SKIP_REPAIR_CONNECTIONS_AFTER_MOVE);
 			ContextUtil.set(moveShapeContext, DefaultMoveBPMNShapeFeature.SKIP_MOVE_BENDPOINTS);
 			
+			// make sure boundary events behave as if moved with the activity and
+			// activities do not move their boundary events (because they move themselves)
+			ContextUtil.set(moveShapeContext, MoveActivityFeature.SKIP_MOVE_BOUNDARY_EVENTS);
+			ContextUtil.set(moveShapeContext, MoveBoundaryEventFeature.MOVE_WITH_ACTIVITY);
+			
 			IMoveShapeFeature moveFeature = getFeatureProvider().getMoveShapeFeature(moveShapeContext);
 			
 			if (moveFeature.canMoveShape(moveShapeContext)) {
@@ -183,7 +191,6 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 			}
 		}
 		
-		// TODO: WHY THIS?
 		layoutPictogramElement(participantContainer);
 	}
 

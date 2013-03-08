@@ -17,11 +17,10 @@ import org.fest.assertions.data.Offset;
 import org.junit.Test;
 
 /**
- * Test resize of an untyped task
  * 
  * @author nico.rehwaldt
  */
-public class ResizeTaskFeatureTest extends AbstractFeatureTest {
+public class ResizeSubprocessFeatureTest extends AbstractFeatureTest {
 
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/ParticipantTaskConnectedBoundaryEvent.testBase.bpmn")
@@ -49,7 +48,7 @@ public class ResizeTaskFeatureTest extends AbstractFeatureTest {
 	public void testEnlargeTopLeftMovesBoundaryEvent() {
 		
 		// given
-		Shape boundaryShape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_2");
+		Shape boundaryShape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
 		Shape taskShape = BoundaryEventUtil.getAttachedToShape(boundaryShape, diagram);
 		
 		BoundaryAttachment preResizeAttachment = BoundaryEventUtil.getAttachment(boundaryShape, diagram);
@@ -73,7 +72,7 @@ public class ResizeTaskFeatureTest extends AbstractFeatureTest {
 	public void testShrinkTopLeftMovesBoundaryEvent() {
 
 		// given
-		Shape boundaryShape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_2");
+		Shape boundaryShape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
 		Shape taskShape = BoundaryEventUtil.getAttachedToShape(boundaryShape, diagram);
 		
 		BoundaryAttachment preResizeAttachment = BoundaryEventUtil.getAttachment(boundaryShape, diagram);
@@ -98,7 +97,7 @@ public class ResizeTaskFeatureTest extends AbstractFeatureTest {
 	public void testEnlargeBottomRightMovesBoundaryEvent() {
 		
 		// given
-		Shape boundaryShape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_2");
+		Shape boundaryShape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
 		Shape taskShape = BoundaryEventUtil.getAttachedToShape(boundaryShape, diagram);
 		
 		BoundaryAttachment preResizeAttachment = BoundaryEventUtil.getAttachment(boundaryShape, diagram);
@@ -122,7 +121,7 @@ public class ResizeTaskFeatureTest extends AbstractFeatureTest {
 	public void testShrinkBottomRightMovesBoundaryEvent() {
 
 		// given
-		Shape boundaryShape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_2");
+		Shape boundaryShape = Util.findShapeByBusinessObjectId(diagram, "BoundaryEvent_1");
 		Shape taskShape = BoundaryEventUtil.getAttachedToShape(boundaryShape, diagram);
 		
 		BoundaryAttachment preResizeAttachment = BoundaryEventUtil.getAttachment(boundaryShape, diagram);

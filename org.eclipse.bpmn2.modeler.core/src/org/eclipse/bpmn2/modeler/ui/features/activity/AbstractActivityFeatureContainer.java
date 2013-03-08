@@ -12,16 +12,19 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity;
 
-import org.eclipse.bpmn2.modeler.core.features.DefaultResizeBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.MultiUpdateFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.MoveActivityFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.UpdateActivityCompensateMarkerFeature;
 import org.eclipse.bpmn2.modeler.core.features.activity.UpdateActivityLoopAndMultiInstanceMarkerFeature;
 import org.eclipse.bpmn2.modeler.core.features.container.BaseElementFeatureContainer;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractBoundaryEventOperation;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
+import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.bpmn2.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.eclipse.bpmn2.modeler.ui.features.event.AppendEventFeature;
+import org.eclipse.bpmn2.modeler.ui.features.event.BoundaryAttachment;
 import org.eclipse.bpmn2.modeler.ui.features.gateway.AppendGatewayFeature;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IDeleteFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IMoveShapeFeature;
@@ -50,7 +53,7 @@ public abstract class AbstractActivityFeatureContainer extends BaseElementFeatur
 
 	@Override
 	public IResizeShapeFeature getResizeFeature(IFeatureProvider fp) {
-		return new DefaultResizeBPMNShapeFeature(fp);
+		return new ResizeActivityFeature(fp);
 	}
 
 	@Override
@@ -90,4 +93,5 @@ public abstract class AbstractActivityFeatureContainer extends BaseElementFeatur
 		thisFeatures[i++] = new AppendEventFeature(fp);
 		return thisFeatures;
 	}
+
 }

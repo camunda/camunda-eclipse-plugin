@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil.AnchorLocation;
 import org.eclipse.draw2d.geometry.Vector;
+import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.internal.datatypes.impl.LocationImpl;
@@ -106,9 +107,13 @@ public class ConversionUtil {
 			throw new IllegalArgumentException("No anchor location corresponding to Sector." + sector);
 		}
 	}
-	
+
 	public static IRectangle rectangle(int x, int y, int width, int height) {
 		return rect(x, y, width, height);
+	}
+	
+	public static IRectangle rectangle(int x, int y, IDimension dimension) {
+		return rect(x, y, dimension.getWidth(), dimension.getHeight());
 	}
 	
 	/**

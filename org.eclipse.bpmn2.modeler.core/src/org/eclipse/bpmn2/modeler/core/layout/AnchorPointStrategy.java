@@ -109,7 +109,7 @@ public class AnchorPointStrategy extends LayoutStrategy<Void, Tuple<Docking, Doc
 
 	private void boundaryEventSwitch(Sector targetElementSector, BoundaryEvent sourceElement) {
 		Sector relativeSectorToRef = 
-			LayoutUtil.getBoundaryEventRelativeSector(LayoutUtil.getStartShape(connection));
+			LayoutUtil.getBoundaryRelativeSector(LayoutUtil.getStartShape(connection));
 		
 		switch (relativeSectorToRef) {
 		case RIGHT:

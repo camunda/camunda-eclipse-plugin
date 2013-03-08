@@ -276,10 +276,11 @@ public abstract class AbstractAddBpmnShapeFeature<T extends BaseElement> extends
 	}
 
 	protected void adjustLocation(IAddContext context, int width, int height) {
-		int x = context.getX() - width / 2;
-		int y = context.getY() - height / 2;
 		
 		if (context instanceof AddContext) {
+			int x = context.getX() - width / 2;
+			int y = context.getY() - height / 2;
+		
 			AddContext addContext = (AddContext) context;
 			addContext.setLocation(x, y);
 		}

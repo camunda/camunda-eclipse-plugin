@@ -1,8 +1,6 @@
 package org.eclipse.bpmn2.modeler.core.utils;
 
 import org.eclipse.graphiti.features.context.IContext;
-import org.eclipse.graphiti.features.context.ILayoutContext;
-import org.eclipse.graphiti.features.context.impl.LayoutContext;
 
 /**
  * Utility to query a {@link IContext} for flags an properties. 
@@ -17,10 +15,12 @@ public class ContextUtil {
 	 * @param ctx
 	 * @param flag
 	 * 
-	 * @return true if the flag is set
+	 * @return true if the flag is set or in case of a boolean equals true
 	 */
 	public static boolean is(IContext ctx, Object flag) {
-		return get(ctx, flag) != null;
+		Object object = get(ctx, flag);
+		
+		return object != null && (object instanceof Boolean ? ((Boolean) object) : false);
 	}
 	
 	/**

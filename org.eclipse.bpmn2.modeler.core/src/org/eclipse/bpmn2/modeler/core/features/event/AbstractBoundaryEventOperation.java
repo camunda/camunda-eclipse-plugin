@@ -25,6 +25,11 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 
+/**
+ * Operation to be executed on all boundary events of a given shape
+ * 
+ * @author nico.rehwaldt
+ */
 public abstract class AbstractBoundaryEventOperation {
 
 	public void execute(Shape shape) {
@@ -49,5 +54,5 @@ public abstract class AbstractBoundaryEventOperation {
 		}
 	}
 
-	protected abstract void applyTo(ContainerShape container);
+	protected abstract void applyTo(ContainerShape boundaryShape);
 }

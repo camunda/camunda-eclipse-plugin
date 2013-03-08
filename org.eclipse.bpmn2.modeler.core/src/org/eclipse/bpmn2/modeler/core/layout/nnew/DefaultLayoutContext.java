@@ -501,7 +501,7 @@ public class DefaultLayoutContext implements LayoutContext {
 		return createAnchorPointStrategy().getDockings();
 	}
 
-	private AnchorPointStrategy createAnchorPointStrategy() {
+	protected AnchorPointStrategy createAnchorPointStrategy() {
 		return AnchorPointStrategy.build(AnchorPointStrategy.class, connection, null);
 	}
 	

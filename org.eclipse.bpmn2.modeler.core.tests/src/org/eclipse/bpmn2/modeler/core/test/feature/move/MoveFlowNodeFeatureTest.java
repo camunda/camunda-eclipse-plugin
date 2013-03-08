@@ -5,6 +5,9 @@ import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAsse
 import static org.eclipse.bpmn2.modeler.core.test.util.operations.MoveShapeOperation.move;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.BoundaryEvent;
+import org.eclipse.bpmn2.Lane;
+import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
@@ -399,7 +402,7 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 
 	@Test
 	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/feature/move/MoveFlowNodeFeature.testMoveBetweenLanes.bpmn")
-	public void testMoveTaskWithBoundaryEventAttachedToSiblingLane() {
+	public void testMoveTaskWithBoundaryEventToSiblingLane() {
 		
 		// given
 		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
@@ -407,6 +410,10 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		
 		ContainerShape targetLaneShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "Lane_3");
 		Shape labelShape = LabelUtil.getLabelShape(boundaryEventShape, getDiagram());
+
+		Task task = BusinessObjectUtil.getFirstElementOfType(taskShape, Task.class);
+		BoundaryEvent event = BusinessObjectUtil.getFirstElementOfType(boundaryEventShape, BoundaryEvent.class);
+		Lane targetLane = BusinessObjectUtil.getFirstElementOfType(targetLaneShape, Lane.class);
 		
 		// when moving task to sibling lane
 		move(taskShape, diagramTypeProvider)
@@ -420,6 +427,10 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 		
 		assertThat(labelShape)
 			.isContainedIn(diagram);
+		
+		// and make sure the business object connections have changed accordingly
+		assertThat(targetLane.getFlowNodeRefs())
+			.contains(task, event);
 	}
 	
 	@Test

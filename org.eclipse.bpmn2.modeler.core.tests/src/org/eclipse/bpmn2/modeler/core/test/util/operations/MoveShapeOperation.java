@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.IRectangle;
@@ -86,6 +87,16 @@ public class MoveShapeOperation extends ShapeOperation<MoveShapeContext, IMoveSh
 		context.setLocation(x, y);	
 		return this;
 	}
+
+	public MoveShapeOperation centerTo(Point point) {
+		return centerTo(point.getX(), point.getY());
+	}
+	
+	public MoveShapeOperation centerTo(int x, int y) {
+		IRectangle bounds = LayoutUtil.getAbsoluteBounds(context.getShape());
+		
+		return to(x - bounds.getWidth() / 2, y - bounds.getHeight() / 2);
+	}
 	
 	public MoveShapeOperation to(Point point) {
 		return to(point.getX(), point.getY());
@@ -102,6 +113,12 @@ public class MoveShapeOperation extends ShapeOperation<MoveShapeContext, IMoveSh
 
 	public MoveShapeOperation toContainer(ContainerShape containerShape) {
 		context.setTargetContainer(containerShape);
+		return this;
+	}
+	
+	public MoveShapeOperation withFlag(Object flag) {
+		ContextUtil.set(context, flag);
+		
 		return this;
 	}
 	

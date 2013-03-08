@@ -13,26 +13,25 @@
 package org.eclipse.bpmn2.modeler.core.features.activity;
 
 import static org.eclipse.bpmn2.modeler.core.utils.ContextUtil.copyProperties;
+import static org.eclipse.bpmn2.modeler.core.utils.ContextUtil.isNot;
 
-import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.modeler.core.features.MoveFlowNodeFeature;
-import org.eclipse.bpmn2.modeler.core.features.PropertyNames;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractBoundaryEventOperation;
-import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
-import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.features.context.impl.MoveShapeContext;
-import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public class MoveActivityFeature extends MoveFlowNodeFeature {
 
 	public static final String ACTIVITY_MOVE_PROPERTY = "activity.move";
 	public static final String SELECTION_MOVE_PROPERTY = "selection.move";
+	
+	public static final String SKIP_MOVE_BOUNDARY_EVENTS = "MoveActivityFeature.SKIP_MOVE_BOUNDARY_EVENTS";
 
 	public MoveActivityFeature(IFeatureProvider fp) {
 		super(fp);
@@ -40,35 +39,35 @@ public class MoveActivityFeature extends MoveFlowNodeFeature {
 
 	@Override
 	protected void postMoveShape(final IMoveShapeContext context) {
-		
-		PictogramElement containerShape = context.getPictogramElement();
-		
-		repositionBoundaryEvents(context);
-		
-		if (containerShape.eContainer() instanceof ContainerShape) {
-			PictogramElement pe = (PictogramElement) containerShape.eContainer();
-			if (BusinessObjectUtil.containsElementOfType(pe, SubProcess.class)) {
-				layoutPictogramElement(pe);
-			}
+
+		if (isMoveBoundaryEvents(context)) {
+			repositionBoundaryEvents(context);
 		}
 		
 		// perform post move and layout
 		super.postMoveShape(context);
 	}
 	
-	private void repositionBoundaryEvent(ContainerShape container, IMoveShapeContext context) {
+	protected boolean isMoveBoundaryEvents(IMoveShapeContext context) {
+		return isNot(context, SKIP_MOVE_BOUNDARY_EVENTS);
+	}
 
-		GraphicsAlgorithm ga = container.getGraphicsAlgorithm();
+	private void repositionBoundaryEvent(ContainerShape boundaryShape, IMoveShapeContext context) {
+
+		IRectangle boundaryBounds = LayoutUtil.getRelativeBounds(boundaryShape);
 		
-		MoveShapeContext newContext = new MoveShapeContext(container);
-		newContext.setDeltaX(context.getDeltaX());
-		newContext.setDeltaY(context.getDeltaY());
+		MoveShapeContext newContext = new MoveShapeContext(boundaryShape);
+		
+		int dx = context.getDeltaX();
+		int dy = context.getDeltaY();
+		
+		newContext.setLocation(boundaryBounds.getX() + dx, boundaryBounds.getY() + dy);
+		
 		newContext.setSourceContainer(context.getSourceContainer());
 		newContext.setTargetContainer(context.getTargetContainer());
-		newContext.setTargetConnection(context.getTargetConnection());
-		newContext.setLocation(ga.getX(), ga.getY());
+		
 		newContext.putProperty(ACTIVITY_MOVE_PROPERTY, true);
-
+		
 		copyProperties(context, newContext, MOVE_PROPERTIES);
 		
 		IMoveShapeFeature moveFeature = getFeatureProvider().getMoveShapeFeature(newContext);

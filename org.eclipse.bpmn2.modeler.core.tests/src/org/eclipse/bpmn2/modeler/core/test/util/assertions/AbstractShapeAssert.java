@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
@@ -22,6 +24,7 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.fest.assertions.api.AbstractAssert;
 import org.fest.assertions.api.Assertions;
 import org.fest.assertions.api.Fail;
+import org.fest.assertions.api.ObjectAssert;
 import org.fest.assertions.core.Condition;
 
 public abstract class AbstractShapeAssert<S extends AbstractShapeAssert<S, A>, A extends Shape> extends AbstractAssert<S, A> {
@@ -182,5 +185,12 @@ public abstract class AbstractShapeAssert<S extends AbstractShapeAssert<S, A>, A
 		}
 			
 		return new FreeFormConnectionAssert((FreeFormConnection) matchingConnections.get(0));
+	}
+
+	public PointAssert midPoint() {
+		IRectangle absoluteRectangle = LayoutUtil.getAbsoluteBounds(actual);
+		ILocation midPoint = LayoutUtil.getRectangleCenter(absoluteRectangle);
+		
+		return new PointAssert(point(midPoint));
 	}
 }

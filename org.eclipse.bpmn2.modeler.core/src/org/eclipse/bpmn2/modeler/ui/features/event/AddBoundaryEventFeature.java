@@ -12,7 +12,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.event;
 
-import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.rectangle;
+import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.*;
 import static org.eclipse.bpmn2.modeler.ui.features.event.BoundaryEventFeatureContainer.BOUNDARY_EVENT_CANCEL;
 
 import org.eclipse.bpmn2.Activity;
@@ -20,14 +20,14 @@ import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.modeler.core.di.DIUtils;
 import org.eclipse.bpmn2.modeler.core.features.AbstractAddBpmnShapeFeature;
 import org.eclipse.bpmn2.modeler.core.features.event.AbstractUpdateEventFeature;
+import org.eclipse.bpmn2.modeler.core.layout.util.BoundaryEventUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.AnchorUtil;
-import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.StyleUtil;
-import org.eclipse.bpmn2.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
@@ -35,8 +35,6 @@ import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
 import org.eclipse.graphiti.mm.pictograms.ChopboxAnchor;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.graphiti.mm.pictograms.PictogramElement;
-import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
@@ -97,23 +95,21 @@ public class AddBoundaryEventFeature extends AbstractAddBpmnShapeFeature<Boundar
 	}
 	
 	@Override
-	protected IRectangle getAddBounds(IAddContext context) {
-		IRectangle bounds = super.getAddBounds(context);
+	protected void adjustLocation(IAddContext context, int width, int height) {
 		
-		if (isImport(context)) {
-			return bounds;
-		} else {
+		// snap to line upon add
+		if (context instanceof AddContext) {
+			AddContext addContext = (AddContext) context;
+			
 			ContainerShape targetContainer = context.getTargetContainer();
 			IRectangle targetBounds = LayoutUtil.getRelativeBounds(targetContainer);
 			
-			// if not importing place it where the user dropped it
-			// but make sure we need the parent shape relative positioning
-			return rectangle(
-					targetBounds.getX() + context.getX(), 
-					targetBounds.getY() + context.getY(), 
-					bounds.getWidth(), 
-					bounds.getHeight());
+			ILocation snapBounds = BoundaryEventUtil.snapToBounds(addContext.getX(), addContext.getY(), targetBounds);
+			
+			addContext.setLocation(snapBounds.getX(), snapBounds.getY());
 		}
+		
+		super.adjustLocation(context, width, height);
 	}
 	
 	@Override
@@ -148,24 +144,14 @@ public class AddBoundaryEventFeature extends AbstractAddBpmnShapeFeature<Boundar
 	}
 
 	@Override
-	protected void postAddHook(IAddContext context, ContainerShape newShape) {
-		super.postAddHook(context, newShape);
-		
-		IPeService peService = Graphiti.getPeService();
-		
-		BoundaryEvent event = getBusinessObject(context);
+	protected void postAddHook(IAddContext context, ContainerShape boundaryShape) {
+		super.postAddHook(context, boundaryShape);
 
 		// send boundary event to front and element it is attached to to the back.
 		
-		Activity activity = event.getAttachedToRef();
-		PictogramElement foundElem = BusinessObjectUtil.getLinkingPictogramElement(getDiagram(), activity);
-		if (foundElem != null && foundElem instanceof ContainerShape) {
-			ContainerShape activityContainer = (ContainerShape) foundElem;
-			PositionOnLine pos = BoundaryEventPositionHelper.getPositionOnLineUsingBPMNShape(newShape, activityContainer);
-			BoundaryEventPositionHelper.assignPositionOnLineProperty(newShape, pos);
-			peService.sendToBack((Shape) foundElem);
-			GraphicsUtil.sendToFront(newShape);
-		}
+		BoundaryEventUtil.updateBoundaryAttachment(boundaryShape, getDiagram());
+		
+		GraphicsUtil.sendToFront(boundaryShape);
 	}
 	
 	@Override

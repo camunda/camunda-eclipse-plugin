@@ -34,13 +34,15 @@ public class AddBoundaryEventFeatureTest extends AbstractFeatureTest {
 		IRectangle shapeBounds = LayoutUtil.getAbsoluteBounds(taskShape);
 		
 		Point boundaryAttachPosition = point(60, 70); // relative positioning
-		Point expectedBoundaryPosition = point(
-				shapeBounds.getX() + boundaryAttachPosition.getX() - EVENT_WIDTH / 2, 
-				shapeBounds.getY() + boundaryAttachPosition.getY() - EVENT_HEIGHT / 2);
+		Point expectedBoundaryMidpoint = point(
+				shapeBounds.getX() + boundaryAttachPosition.getX(), 
+				shapeBounds.getY() + 80); // snapping
+		
+		// default label is 3 * 3 px wide
 		
 		Point expectedBoundaryLabelPosition = point(
-				expectedBoundaryPosition.getX() + EVENT_WIDTH / 2, 
-				expectedBoundaryPosition.getY() + EVENT_HEIGHT + 5);
+				expectedBoundaryMidpoint.getX() - 3, 
+				expectedBoundaryMidpoint.getY() + EVENT_HEIGHT / 2 + 5); 
 		
 		// when
 		// element is added to it
@@ -56,20 +58,16 @@ public class AddBoundaryEventFeatureTest extends AbstractFeatureTest {
 
 		// shape should have been created
 		assertThat(createdShape)
-			.isLinkedTo(elementOfType(BoundaryEvent.class));
-		
-		IRectangle boundaryBounds = LayoutUtil.getAbsoluteBounds(createdShape);
-
-		// and positioned correctly
-		assertThat(point(boundaryBounds))
-			.isEqualTo(expectedBoundaryPosition);
+			.isLinkedTo(elementOfType(BoundaryEvent.class))
+			.midPoint()
+				.isEqualTo(expectedBoundaryMidpoint);
 		
 		// and label is positioned correctly, too
 		Shape boundaryLabelShape = LabelUtil.getLabelShape(createdShape, getDiagram());
-		Point labelPosition = LabelUtil.getLabelPosition(boundaryLabelShape);
 		
-		assertThat(labelPosition)
-			.isEqualTo(expectedBoundaryLabelPosition);
+		assertThat(boundaryLabelShape)
+			.position()
+				.isEqualTo(expectedBoundaryLabelPosition);
 	}
 	
 
@@ -86,13 +84,15 @@ public class AddBoundaryEventFeatureTest extends AbstractFeatureTest {
 		IRectangle shapeBounds = LayoutUtil.getAbsoluteBounds(subprocessShape);
 		
 		Point boundaryAttachPosition = point(230, 290); // relative positioning
-		Point expectedBoundaryPosition = point(
-				shapeBounds.getX() + boundaryAttachPosition.getX() - EVENT_WIDTH / 2, 
-				shapeBounds.getY() + boundaryAttachPosition.getY() - EVENT_HEIGHT / 2);
-
+		Point expectedBoundaryMidpoint = point(
+				shapeBounds.getX() + boundaryAttachPosition.getX(), 
+				shapeBounds.getY() + 300); // snapping
+		
+		// default label is 3 * 3 px wide
+		
 		Point expectedBoundaryLabelPosition = point(
-				expectedBoundaryPosition.getX() + EVENT_WIDTH / 2, 
-				expectedBoundaryPosition.getY() + EVENT_HEIGHT + 5);
+				expectedBoundaryMidpoint.getX() - 3, 
+				expectedBoundaryMidpoint.getY() + EVENT_HEIGHT / 2 + 5);
 		
 		// when
 		// element is added to it
@@ -108,19 +108,15 @@ public class AddBoundaryEventFeatureTest extends AbstractFeatureTest {
 		
 		// shape should have been created
 		assertThat(createdShape)
-			.isLinkedTo(elementOfType(BoundaryEvent.class));
-
-		IRectangle boundaryBounds = LayoutUtil.getAbsoluteBounds(createdShape);
-		
-		// and positioned correctly
-		assertThat(point(boundaryBounds))
-			.isEqualTo(expectedBoundaryPosition);
+			.isLinkedTo(elementOfType(BoundaryEvent.class))
+			.midPoint()
+				.isEqualTo(expectedBoundaryMidpoint);
 		
 		// and label is positioned correctly, too
 		Shape boundaryLabelShape = LabelUtil.getLabelShape(createdShape, getDiagram());
-		Point labelPosition = LabelUtil.getLabelPosition(boundaryLabelShape);
 		
-		assertThat(labelPosition)
-			.isEqualTo(expectedBoundaryLabelPosition);
+		assertThat(boundaryLabelShape)
+			.position()
+				.isEqualTo(expectedBoundaryLabelPosition);
 	}
 }

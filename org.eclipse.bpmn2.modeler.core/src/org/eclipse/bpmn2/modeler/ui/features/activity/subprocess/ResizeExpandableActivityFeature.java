@@ -12,13 +12,12 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.activity.subprocess;
 
-import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.bpmn2.modeler.core.ModelHandler;
 import org.eclipse.bpmn2.modeler.core.features.DefaultResizeBPMNShapeFeature;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
+import org.eclipse.bpmn2.modeler.ui.features.activity.ResizeActivityFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.features.context.impl.ResizeShapeContext;
@@ -27,7 +26,8 @@ import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 
-public class ResizeExpandableActivityFeature extends DefaultResizeBPMNShapeFeature {
+public class ResizeExpandableActivityFeature extends ResizeActivityFeature {
+	
 	public final static int MARGIN = 20;
 	
 	public ResizeExpandableActivityFeature(IFeatureProvider fp) {
@@ -39,12 +39,10 @@ public class ResizeExpandableActivityFeature extends DefaultResizeBPMNShapeFeatu
 
 		ResizeShapeContext resizeShapeContext = (ResizeShapeContext)context;
 
-		ContainerShape containerShape = (ContainerShape) context.getPictogramElement();
-		Activity activity = BusinessObjectUtil.getFirstElementOfType(containerShape, Activity.class);
+		ContainerShape containerShape = (ContainerShape) context.getShape();
+		BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(containerShape, BPMNShape.class);
 		
-		BPMNShape shape = (BPMNShape) ModelHandler.findDIElement(getDiagram(), activity);
-		
-		if (shape.isIsExpanded()) {
+		if (bpmnShape.isIsExpanded()) {
 
 			// SubProcess is expanded
 			

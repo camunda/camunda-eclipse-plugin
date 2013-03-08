@@ -32,9 +32,4 @@ public class MoveTextAnnotationFeature extends DefaultMoveBPMNShapeFeature {
 		
 		return intoDiagram || intoLane || intoParticipant || intoSubprocess;
 	}
-
-	@Override
-	protected void internalMove(IMoveShapeContext context) {
-		super.internalMove(context);
-	}
 }
