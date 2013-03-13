@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="org.eclipse.bpmn2.modeler.runtime" name="BPMN2 Modeler Runtime Specialization" schema="schema/org.eclipse.bpmn2.modeler.runtime.exsd"/>
+   	
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            class="org.camunda.bpm.modeler.runtime.activiti.model.ModelPackage"
+            genModel="model/ActivitiExtensions.genmodel"
+            uri="http://www.activiti.org">
+      </package>
+   </extension>
+   
+   	<extension point="org.eclipse.bpmn2.modeler.runtime">
+		<runtime name="camunda fox engine" versions="5.4,5.5,5.6,5.7,5.8"
+			id="org.activiti.runtime.activiti"
+			class="org.camunda.bpm.modeler.runtime.activiti.ActivitiRuntimeExtension"
+			description="BPMN2 Modeler customizations for the Activiti engine">
+		</runtime>
+
+		<model runtimeId="org.activiti.runtime.activiti"
+			uri="http://www.activiti.org"
+			resourceFactory="org.camunda.bpm.modeler.runtime.activiti.model.util.ModelResourceFactoryImpl">
+		</model>
+	</extension>
+   	
+   	<extension point="org.eclipse.ui.newWizards">
+		<!-- <primaryWizard id="org.eclipse.bpmn2.modeler.ui.diagram"> </primaryWizard> -->
+		<wizard category="org.eclipse.bpmn2.wizardCategory"
+			class="org.camunda.bpm.modeler.ui.wizards.BPMN2DiagramWizard" icon="icons/bpmn2_editor_16.png"
+			id="org.eclipse.bpmn2.modeler.ui.diagram" name="BPMN2 Diagram">
+		</wizard>
+	</extension>
+	
+	<extension point="org.eclipse.ui.editors">
+		<!--
+		The multipage editor is still experimental.
+		To quickly revert back to the original, single page editor
+		simply replace the editor class with this:
+			class="org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor"
+		-->
+		<editor
+			class="org.camunda.bpm.modeler.ui.editor.BPMN2Editor"
+			contributorClass="org.eclipse.graphiti.ui.editor.DiagramEditorActionBarContributor"
+			default="true" extensions="bpmn,bpmn2" icon="icons/bpmn2_editor_16.png"
+			id="org.eclipse.bpmn2.modeler.ui.bpmn2editor" name="Bpmn2 Diagram Editor">
+			<contentTypeBinding contentTypeId="org.eclipse.bpmn2.content-type.xml">
+			</contentTypeBinding>
+		</editor>
+	</extension>
+
+	<extension point="org.eclipse.core.contenttype.contentTypes">
+		<content-type base-type="org.eclipse.core.runtime.xml"
+			id="org.eclipse.bpmn2.content-type.xml"
+			name="BPMN2 Modeler File"
+			file-extensions="bpmn,bpmn2,bpmn20,xml"
+			priority="normal">
+			<describer class="org.camunda.bpm.modeler.ui.BPMN2ContentDescriber">
+			</describer>
+		</content-type>
+	</extension>
+   	
+   	<extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+		<propertyContributor
+			contributorId="org.eclipse.bpmn2.modeler.ui.PropertyContributor"
+           labelProvider="org.camunda.bpm.modeler.ui.property.PropertiesLabelProvider"
+			tabDescriptorProvider="org.camunda.bpm.modeler.ui.property.PropertiesTabDescriptorProvider">
+			<propertyCategory category="BPMN2">
+			</propertyCategory>
+		</propertyContributor>
+	</extension>
+
+	<extension point="org.eclipse.graphiti.ui.diagramTypes">
+		<diagramType description="This is the diagram type for the BMPN2 diagram"
+			id="org.eclipse.bpmn2.modeler.ui.diagram.MainBPMNDiagramType" name="BPMN2 Diagram Type"
+			type="BPMN2">
+		</diagramType>
+	</extension>
+
+	<extension point="org.eclipse.graphiti.ui.diagramTypeProviders">
+		<diagramTypeProvider
+			class="org.camunda.bpm.modeler.ui.diagram.MainBPMNDiagramTypeProvider"
+			description="This is the editor for the BPMN2 diagram"
+			id="org.eclipse.bpmn2.modeler.ui.diagram.MainBPMNDiagramType" name="BPMN2 Editor">
+			<diagramType
+				id="org.eclipse.bpmn2.modeler.ui.diagram.MainBPMNDiagramType">
+			</diagramType>
+			<imageProvider id="org.eclipse.bpmn2.modeler.ui.ImageProvider">
+			</imageProvider>
+		</diagramTypeProvider>
+	</extension>
+	
+	<extension point="org.eclipse.graphiti.ui.imageProviders">
+		<imageProvider class="org.camunda.bpm.modeler.ui.ImageProvider"
+			id="org.eclipse.bpmn2.modeler.ui.ImageProvider">
+		</imageProvider>
+	</extension>
+   
+	<!-- EMF Extensions -->
+   
+	<extension
+		point="org.eclipse.emf.ecore.factory_override">
+		<factory
+			class="org.camunda.bpm.modeler.core.model.Bpmn2ModelerFactory"
+			uri="http://www.omg.org/spec/BPMN/20100524/MODEL-XMI">
+		</factory>
+	</extension>
+
+   <extension
+         point="org.eclipse.emf.validation.constraintProviders">
+      <category
+            name="Core BPMN 2.0 Constraints"
+            id="org.eclipse.bpmn2.modeler.core.validation"/>
+      <constraintProvider cache="true">
+         <package namespaceUri="http://www.omg.org/spec/BPMN/20100524/MODEL-XMI"/>
+         <constraints categories="org.eclipse.bpmn2.modeler.core.validation">
+         	<constraint
+			        lang="OCL"
+			         severity="WARNING"
+			         mode="Batch"
+			         name="UniqueId"
+			         id="org.eclipse.bpmn2.modeler.core.validation.BaseElement.id"
+			         statusCode="100" isEnabledByDefault="true">
+			      <description>ID needs to be unique.</description>
+			      <message>ID needs to be unqiue. Displayed value will not be saved.</message>
+			      <target class="BaseElement" />
+					<![CDATA[
+						self.id->notEmpty() implies bpmn2::BaseElement.allInstances()->select(s | s.id = self.id)->size() <= 1
+					]]>
+			</constraint>
+            <constraint
+                  lang="Java"
+                  class="org.camunda.bpm.modeler.core.validation.ValidIdConstraint"
+                  severity="WARNING"
+                  mode="Batch"
+                  name="Valid IDs"
+                  id="org.eclipse.bpmn2.modeler.core.validation.ValidId"
+                  statusCode="101">
+               <description>
+                  IDs must be valid.
+               </description>
+               <message>
+                  The {0} ID must be a valid ID.
+               </message>
+               <target class="BaseElement">
+                  <event name="Set">
+                     <feature name="id"/>
+                  </event>
+                  <event name="Unset">
+                     <feature name="id"/>
+                  </event>
+               </target>
+            </constraint>
+            <!-- constraint
+			        lang="OCL"
+			         severity="CANCEL"
+			         mode="Live"
+			         name="StartEventIncoming"
+			         id="org.eclipse.bpmn2.modeler.core.validation.StartEvent.incoming"
+			         statusCode="2" isEnabledByDefault="true">
+			      <description>Start Event must not have incoming flows</description>
+			      <message>Start Event must not have incoming sequence flows.</message>
+			      <target class="StartEvent" />
+			      <![CDATA[
+			      	self.incoming->isEmpty()
+			      ]]>
+			</constraint>
+			<constraint
+			        lang="OCL"
+			         severity="CANCEL"
+			         mode="Live"
+			         name="EndEventOutgoing"
+			         id="org.eclipse.bpmn2.modeler.core.validation.EndEvent.outgoing"
+			         statusCode="3" isEnabledByDefault="true">
+			      <description>End Event must not have outgoing flows</description>
+			      <message>End Event must not have outgoing sequence flows.</message>
+			      <target class="EndEvent" />
+			      <![CDATA[
+			         self.outgoing->isEmpty()
+			      ]]>
+			</constraint>
+			<constraint
+					class="org.eclipse.bpmn2.modeler.core.validation.BPMN2BatchValidationConstraint"
+					id="org.eclipse.bpmn2.modeler.core.validation.error"
+					isEnabledByDefault="true"
+					lang="Java"
+					mode="Batch"
+					name="Errors"
+					severity="ERROR"
+					statusCode="1">
+				<message>{0}</message>
+				<description>Diagram Validation Errors</description>
+				<target class="BPMNDiagram"/>
+				<target class="Definitions"/>
+				<target class="BaseElement"/>
+			</constraint>
+ 			<constraint
+					class="org.eclipse.bpmn2.modeler.core.validation.BPMN2BatchValidationConstraint"
+					id="org.eclipse.bpmn2.modeler.core.validation.warning"
+					isEnabledByDefault="true"
+					lang="Java"
+					mode="Batch"
+					name="Warnings"
+					severity="WARNING"
+					statusCode="1">
+				<message>{0}</message>
+				<description>Diagram Validation Warnings</description>
+				<target class="BPMNDiagram"/>
+				<target class="Definitions"/>
+				<target class="BaseElement"/>
+			</constraint>
+		    <constraint
+		         class="org.eclipse.bpmn2.modeler.core.validation.TaskNameNotEmpty"
+		         id="org.eclipse.bpmn2.modeler.core.validation.TaskEmptyNameConstraint"
+		         lang="java"
+		         mode="Batch"
+		         name="TaskEmptyNameConstraint"
+		         severity="ERROR"
+		         statusCode="1">
+		      <message>
+		         The {0} Name must not be empty
+		      </message>
+		      <description>
+		         Name must not be empty
+		      </description>
+		      <target
+		            class="Task">
+		      </target>
+		   </constraint>
+		   <constraint
+		         class="org.eclipse.bpmn2.modeler.core.validation.FormalExpressionConstraint"
+		         id="org.eclipse.bpmn2.modeler.core.validation.FormalExpressionConstraint"
+		         lang="java"
+		         mode="Batch"
+		         name="FormalExpressionConstraint"
+		         severity="ERROR"
+		         statusCode="1">
+		      <message>
+		         Expression and Language must not be blank
+		      </message>
+		      <description>
+		         Expression and Language must not be blank
+		      </description>
+		      <target
+		            class="FormalExpression">
+		      </target>
+		   </constraint-->
+		 
+         </constraints>
+      </constraintProvider>
+   </extension>
+
+   <extension
+         point="org.eclipse.emf.validation.constraintBindings">
+      <clientContext
+            default="false"
+            id="org.eclipse.bpmn2.modeler.core.validationContext">
+         <selector class="org.camunda.bpm.modeler.core.validation.ValidationDelegateClientSelector"/>
+      </clientContext>
+      <binding
+            context="org.eclipse.bpmn2.modeler.core.validationContext"
+            category="org.eclipse.bpmn2.modeler.core.validation"/>
+   </extension>
+	
+	<extension point="org.eclipse.emf.validation.validationListeners">
+		<listener class="org.camunda.bpm.modeler.core.validation.ProblemsReporter">
+			<clientContext id="org.eclipse.bpmn2.modeler.core.validationContext"/>
+		</listener>
+	</extension>
+
+  <!-- extension
+        id="projectValidator"
+        name="BPMN 2.0 Project Validator"
+        point="org.eclipse.wst.validation.validatorV2">
+     <validator
+           class="org.eclipse.bpmn2.modeler.core.validation.BPMN2ProjectValidator"
+           markerId="org.eclipse.bpmn2.modeler.core.problemMarker">
+        <include>
+           <rules>
+              <contentType
+                    exactMatch="true"
+                    id="org.eclipse.bpmn2.content-type.xml">
+              </contentType>
+              <file
+                    caseSensitive="true"
+                    name="bpmn2.xml"
+                    type="file">
+              </file>
+           </rules>
+        </include>
+        <exclude>
+           <rules>
+              <file
+                    caseSensitive="true"
+                    name="bpmn2.xml.diagram"
+                    type="file">
+              </file>
+           </rules>
+        </exclude>
+     </validator>
+  </extension -->
+  
+  <extension
+        id="org.eclipse.bpmn2.modeler.core.problemMarker"
+        name="BPMN 2.0 Modeler"
+        point="org.eclipse.core.resources.markers">
+     <persistent
+           value="true">
+     </persistent>
+     <super
+           type="org.eclipse.emf.validation.problem">
+     </super>
+  </extension>
+  <!-- extension
+        id="org.eclipse.bpmn2.modeler.core.bpmn2Builder"
+        name="BPMN2 Validation Builder"
+        point="org.eclipse.core.resources.builders">
+     <builder
+           hasNature="true">
+        <run
+              class="org.eclipse.bpmn2.modeler.core.builder.BPMN2Builder">
+        </run>
+     </builder>
+  </extension -->
+  <!-- extension
+        id="org.eclipse.bpmn2.modeler.core.bpmn2Nature"
+        name="BPMN2 Project Nature"
+        point="org.eclipse.core.resources.natures">
+     <runtime>
+        <run
+              class="org.eclipse.bpmn2.modeler.core.builder.BPMN2Nature">
+        </run>
+     </runtime>
+     <builder
+           id="org.eclipse.bpmn2.modeler.core.bpmn2Builder">
+     </builder>
+  </extension-->
+  <extension
+        id="xmlProblem"
+        name="XML Problem"
+        point="org.eclipse.core.resources.markers">
+     <super
+           type="org.eclipse.core.resources.problemmarker">
+     </super>
+     <persistent
+           value="true">
+     </persistent>
+  </extension>
+  
+</plugin>

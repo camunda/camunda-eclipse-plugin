@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1" targetNamespace="http://sample.bpmn2.org/bpmn2/sample/process">
+  <bpmn2:process id="ImportGroupTest" name="Default Process">
+    <bpmn2:group id="Group_1"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram name="Default Process Diagram">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ImportGroupTest">
+      <bpmndi:BPMNShape id="BPMNShape_Group_1" bpmnElement="Group_1">
+        <dc:Bounds height="161.0" width="231.0" x="210.0" y="210.0"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

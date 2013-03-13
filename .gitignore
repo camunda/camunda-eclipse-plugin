@@ -24,6 +24,6 @@ bin/
 test.bpmn.diagram
 
 /lib/specs_2.8.1-1.6.6.jar
-/org.eclipse.bpmn2.modeler.core.tests/*.diagram
-/org.eclipse.bpmn2.modeler.core.tests/*.png
-/org.eclipse.bpmn2.modeler.core.tests/src/org/eclipse/bpmn2/modeler/core/test/nonexport/
+/org.camunda.bpm.modeler.tests/*.diagram
+/org.camunda.bpm.modeler.tests/*.png
+/org.camunda.bpm.modeler.tests/src/org/camunda/bpm/modeler/test/nonexport/

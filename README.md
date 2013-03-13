@@ -19,10 +19,10 @@ How to contribute
 * Resolve project dependencies (see below)
 * Examine the sources
     * `org.eclipse.bpmn2.modeler.core` contains the modeler
-    * `org.eclipse.bpmn2.modeler.core.tests` contains the modeler test suite
+    * `org.camunda.bpm.modeler.tests` contains the modeler test suite
 * Run / Test
     * Start the Modeler from `org.eclipse.bpmn2.modeler.core` via `Run As -> Eclipse Application`
-    * Run the test suite in `org.eclipse.bpmn2.modeler.core.tests` via `Run As -> JUnit Plugin-Tests`
+    * Run the test suite in `org.camunda.bpm.modeler.tests` via `Run As -> JUnit Plugin-Tests`
 * Extend the editor **!**
 * Submit a pull request
 
@@ -46,7 +46,7 @@ Project Structure
 -----------------
 
     + org.eclipse.bpmn2.modeler.core -> modeler runtime
-    + org.eclipse.bpmn2.modeler.core.tests -> modeler runtime tests
-    + org.eclipse.bpmn2.modeler.core.tests.functional -> functional GUI tests (jubula)
+    + org.camunda.bpm.modeler.tests -> modeler runtime tests
+    + org.camunda.bpm.modeler.tests.functional -> functional GUI tests (jubula)
 
 [1]: https://github.com/camunda/bpmn2-modeler
