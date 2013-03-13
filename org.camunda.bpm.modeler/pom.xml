@@ -7,9 +7,8 @@
     <version>2.1.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.eclipse.bpmn2.modeler</groupId>
-  <artifactId>org.eclipse.bpmn2.modeler.core</artifactId>
+  <artifactId>org.camunda.bpm.modeler</artifactId>
   <packaging>eclipse-plugin</packaging>
-  <name>BPMN2 Modeler Core</name>
-  <description>Common Core functionality for BPMN2 Modeler</description>
+  <name>camunda modeler core</name>
+  <description>core functionality for the camunda modeler</description>
 </project>

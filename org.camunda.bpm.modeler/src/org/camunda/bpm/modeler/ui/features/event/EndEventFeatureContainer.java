@@ -90,7 +90,7 @@ public class EndEventFeatureContainer extends AbstractEventFeatureContainer {
 		}
 
 		/* (non-Javadoc)
-		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
+		 * @see org.camunda.bpm.modeler.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
 		public EClass getBusinessObjectClass() {
@@ -110,7 +110,7 @@ public class EndEventFeatureContainer extends AbstractEventFeatureContainer {
 		}
 
 		/* (non-Javadoc)
-		 * @see org.eclipse.bpmn2.modeler.core.features.activity.AbstractUpdateMarkerFeature#getPropertyKey()
+		 * @see org.camunda.bpm.modeler.features.activity.AbstractUpdateMarkerFeature#getPropertyKey()
 		 */
 		@Override
 		protected String getPropertyKey() {

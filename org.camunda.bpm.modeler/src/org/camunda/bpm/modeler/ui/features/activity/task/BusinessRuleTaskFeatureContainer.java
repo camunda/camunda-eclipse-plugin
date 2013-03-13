@@ -60,7 +60,7 @@ public class BusinessRuleTaskFeatureContainer extends AbstractTaskFeatureContain
 	public static class CreateBusinessRuleTaskFeature extends AbstractCreateTaskFeature<BusinessRuleTask> {
 
 		public CreateBusinessRuleTaskFeature(IFeatureProvider fp) {
-			super(fp, "Business Rule Task", "Task that can use Business Rules Engine");
+			super(fp, "Business Rule Task", "Task that can use Business Rules activiti");
 		}
 
 		@Override
@@ -69,7 +69,7 @@ public class BusinessRuleTaskFeatureContainer extends AbstractTaskFeatureContain
 		}
 
 		/* (non-Javadoc)
-		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
+		 * @see org.camunda.bpm.modeler.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
 		public EClass getBusinessObjectClass() {

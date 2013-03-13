@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.camunda.bpm.modeler.core.Activator;
 import org.camunda.bpm.modeler.core.utils.ErrorUtils;
-import org.camunda.bpm.modeler.runtime.activiti.model.ModelPackage;
+import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IContainer;

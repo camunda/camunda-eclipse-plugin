@@ -60,7 +60,7 @@ import org.eclipse.wst.validation.ValidatorMessage;
 public class BPMN2ProjectValidator extends AbstractValidator {
 
     /** ID for BPMN2 specific problem markers. */
-    public static final String BPMN2_MARKER_ID = "org.eclipse.bpmn2.modeler.core.problemMarker";
+    public static final String BPMN2_MARKER_ID = "org.camunda.bpm.modeler.problemMarker";
 	private Bpmn2Preferences preferences;
 	private IFile modelFile;
 

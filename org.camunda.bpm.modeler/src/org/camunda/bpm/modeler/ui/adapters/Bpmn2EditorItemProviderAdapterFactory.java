@@ -164,9 +164,9 @@ public class Bpmn2EditorItemProviderAdapterFactory extends Bpmn2ItemProviderAdap
          * for use by the adapter. This could cause problems if the adapter is used for anything other
          * than providing simple static information (labels, etc.)
          *  
-         * For an example usage of this, see the org.eclipse.bpmn2.modeler.ui.util.PropertyUtil#getLabel(Object)
+         * For an example usage of this, see the org.camunda.bpm.modeler.ui.util.PropertyUtil#getLabel(Object)
          * call in the List Composite, to fetch section titles and table column headers from the adapter:
-         * @see org.eclipse.bpmn2.modeler.ui.property.AbstractListComposite#bindList(EObject,EStructuralFeature)
+         * @see org.camunda.bpm.modeler.ui.property.AbstractListComposite#bindList(EObject,EStructuralFeature)
          * 
          * If no adapter is found for the given EObject, a generic one is constructed and returned.
          */

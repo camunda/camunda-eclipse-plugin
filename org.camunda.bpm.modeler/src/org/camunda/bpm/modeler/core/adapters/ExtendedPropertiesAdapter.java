@@ -68,7 +68,7 @@ public class ExtendedPropertiesAdapter<T extends EObject> extends AdapterImpl {
 		// form: "UI_<BPMN2ElementName>_long_description".
 		// The Messages class must be contained somewhere in the package hierarchy
 		// that contains the adapter factory class; by default, this will be the
-		// BPMN2 modeler UI plugin hierarchy, starting with org.eclipse.bpmn2.modeler.ui.adapters
+		// BPMN2 modeler UI plugin hierarchy, starting with org.camunda.bpm.modeler.ui.adapters
     	try {
         	String fieldName = "UI_" + name + "_long_description";
         	Class messages = JavaReflectionUtil.findClass(adapterFactory, "Messages");

@@ -4,9 +4,9 @@ import static org.camunda.bpm.modeler.core.utils.ExtensionUtil.getExtension;
 import static org.camunda.bpm.modeler.core.utils.ExtensionUtil.removeExtensionByFeature;
 import static org.camunda.bpm.modeler.core.utils.ExtensionUtil.updateExtension;
 
-import org.camunda.bpm.modeler.runtime.activiti.model.ModelPackage;
-import org.camunda.bpm.modeler.runtime.activiti.model.fox.FailedJobRetryTimeCycleType;
-import org.camunda.bpm.modeler.runtime.activiti.model.fox.FoxFactory;
+import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
+import org.camunda.bpm.modeler.runtime.engine.model.fox.FailedJobRetryTimeCycleType;
+import org.camunda.bpm.modeler.runtime.engine.model.fox.FoxFactory;
 import org.camunda.bpm.modeler.ui.change.filter.ExtensionChangeFilter;
 import org.camunda.bpm.modeler.ui.change.filter.FeatureChangeFilter;
 import org.camunda.bpm.modeler.ui.property.tabs.binding.ModelTextBinding;

@@ -18,10 +18,10 @@ How to contribute
 * Import sources into Eclipse Indigo or Juno via `Import -> Existing maven projects`
 * Resolve project dependencies (see below)
 * Examine the sources
-    * `org.eclipse.bpmn2.modeler.core` contains the modeler
+    * `org.camunda.bpm.modeler` contains the modeler
     * `org.camunda.bpm.modeler.tests` contains the modeler test suite
 * Run / Test
-    * Start the Modeler from `org.eclipse.bpmn2.modeler.core` via `Run As -> Eclipse Application`
+    * Start the Modeler from `org.camunda.bpm.modeler` via `Run As -> Eclipse Application`
     * Run the test suite in `org.camunda.bpm.modeler.tests` via `Run As -> JUnit Plugin-Tests`
 * Extend the editor **!**
 * Submit a pull request
@@ -45,7 +45,7 @@ Click image to enlarge.
 Project Structure
 -----------------
 
-    + org.eclipse.bpmn2.modeler.core -> modeler runtime
+    + org.camunda.bpm.modeler -> modeler runtime
     + org.camunda.bpm.modeler.tests -> modeler runtime tests
     + org.camunda.bpm.modeler.tests.functional -> functional GUI tests (jubula)
 

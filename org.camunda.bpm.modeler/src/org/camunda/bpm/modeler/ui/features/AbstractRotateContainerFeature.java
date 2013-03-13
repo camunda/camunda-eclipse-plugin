@@ -111,7 +111,7 @@ public abstract class AbstractRotateContainerFeature extends AbstractCustomFeatu
 			FeatureSupport.setHorizontal(container, horz);
 		}
 		else {
-			// Activities and other child figures only change location, not size
+			// activities and other child figures only change location, not size
 			// so simply swap x and y as a first cut.
 			// TODO: replace this with auto layout algorithm, TBD later
 			gaService.setLocationAndSize(ga, y, x, width, height);

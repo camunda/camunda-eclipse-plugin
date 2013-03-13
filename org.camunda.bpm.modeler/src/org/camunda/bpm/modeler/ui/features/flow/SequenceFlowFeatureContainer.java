@@ -128,7 +128,7 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 
 		public CreateSequenceFlowFeature(IFeatureProvider fp) {
 			super(fp, "Sequence Flow",
-					"A Sequence Flow is used to show the order that Activities will be performed in a Process");
+					"A Sequence Flow is used to show the order that activities will be performed in a Process");
 		}
 
 		@Override
@@ -147,7 +147,7 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 		}
 
 		/* (non-Javadoc)
-		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature#getBusinessObjectClass()
+		 * @see org.camunda.bpm.modeler.features.AbstractBpmn2CreateConnectionFeature#getBusinessObjectClass()
 		 */
 		@Override
 		public EClass getBusinessObjectClass() {

@@ -49,7 +49,7 @@ public class AppendGatewayFeature extends AbstractAppendNodeNodeFeature<Gateway>
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.bpmn2.modeler.ui.features.AbstractAppendNodeNodeFeature#getBusinessObjectClass()
+	 * @see org.camunda.bpm.modeler.ui.features.AbstractAppendNodeNodeFeature#getBusinessObjectClass()
 	 */
 	@Override
 	public EClass getBusinessObjectClass() {

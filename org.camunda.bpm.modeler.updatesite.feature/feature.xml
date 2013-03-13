@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipse.bpmn2.modeler.updatesite.feature"
-      label="fox designer update site"
+      id="org.camunda.bpm.modeler.updatesite.feature"
+      label="camunda modeler update site"
       version="2.1.0.qualifier"
-      provider-name="camunda.com">
+      provider-name="camunda.org">
 
    <description url="http://www.example.com/description">
       Copyright (c) 2011 Red Hat, Inc.
@@ -13,19 +13,20 @@ Eclipse Public License v1.0 which accompanies this distribution,
 and is available at http://www.eclipse.org/legal/epl-v10.html
 Contributors:
 Red Hat, Inc. - initial API and implementation
-Author: Ivar Meikas
+camunda.org
+Authors: Ivar Meikas, Bob Brodt, Nico Rehwaldt, Andreas Drobisch
    </description>
 
    <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
+   .
    </copyright>
 
    <license url="http://www.example.com/license">
-      [Enter License Description here.]
+   .
    </license>
 
    <includes
-         id="org.eclipse.bpmn2.modeler.feature"
+         id="org.camunda.bpm.modeler.feature"
          version="0.0.0"/>
 
 </feature>

@@ -155,7 +155,7 @@ public class ImageProvider extends AbstractImageProvider {
 	public static final String IMG_16_PUSHDOWN = PREFIX + "pushdown" + dot16;
 	public static final String IMG_16_PULLUP = PREFIX + "pullup" + dot16;
 
-	public final String IMG_16_PROPERTIES = "org.eclipse.bpmn2.modeler.icons." + "properties" + dot16; //$NON-NLS-1$
+	public final String IMG_16_PROPERTIES = "org.camunda.bpm.modeler.icons." + "properties" + dot16; //$NON-NLS-1$
 
 	@Override
 	protected void addAvailableImages() {

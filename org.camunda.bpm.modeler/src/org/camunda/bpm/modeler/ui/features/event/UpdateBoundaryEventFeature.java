@@ -70,7 +70,7 @@ public class UpdateBoundaryEventFeature extends AbstractUpdateEventFeature {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.bpmn2.modeler.core.features.activity.AbstractUpdateMarkerFeature#getPropertyKey()
+	 * @see org.camunda.bpm.modeler.features.activity.AbstractUpdateMarkerFeature#getPropertyKey()
 	 */
 	@Override
 	protected String getPropertyKey() {

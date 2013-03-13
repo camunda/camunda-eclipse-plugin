@@ -35,7 +35,7 @@ import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.camunda.bpm.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.camunda.bpm.modeler.core.validation.BPMN2ProjectValidator;
 import org.camunda.bpm.modeler.core.validation.BPMN2ValidationStatusLoader;
-import org.camunda.bpm.modeler.runtime.activiti.model.util.ModelResourceFactoryImpl;
+import org.camunda.bpm.modeler.runtime.engine.model.util.ModelResourceFactoryImpl;
 import org.camunda.bpm.modeler.ui.dialog.importer.ModelProblemsDialog;
 import org.camunda.bpm.modeler.ui.views.outline.BPMN2EditorOutlinePage;
 import org.camunda.bpm.modeler.ui.views.outline.BaseElementTreeEditPart;
@@ -113,8 +113,8 @@ import org.eclipse.ui.views.properties.tabbed.ITabDescriptorProvider;
 @SuppressWarnings("restriction")
 public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListener, IGotoMarker {
 
-	public static final String EDITOR_ID = "org.eclipse.bpmn2.modeler.ui.bpmn2editor";
-	public static final String CONTRIBUTOR_ID = "org.eclipse.bpmn2.modeler.ui.PropertyContributor";
+	public static final String EDITOR_ID = "org.camunda.bpm.modeler.ui.bpmn2editor";
+	public static final String CONTRIBUTOR_ID = "org.camunda.bpm.modeler.ui.PropertyContributor";
 
 	private ModelHandler modelHandler;
 	private URI modelUri;

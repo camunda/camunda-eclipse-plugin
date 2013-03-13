@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.bpmn2.modeler.core" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.camunda.bpm.modeler" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.eclipse.bpmn2.modeler.core" id="org.eclipse.bpmn2.modeler.runtime" name="Runtime Specialization"/>
+         <meta.schema plugin="org.camunda.bpm.modeler" id="org.camunda.bpm.modeler.runtime" name="Runtime Specialization"/>
       </appinfo>
       <documentation>
          Provides customization of the BPMN2 Modeler for third-party runtimes.
@@ -91,7 +91,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.bpmn2.modeler.core.IBpmn2RuntimeExtension"/>
+                  <meta.attribute kind="java" basedOn=":org.camunda.bpm.modeler.IBpmn2RuntimeExtension"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -286,7 +286,7 @@
                   The Graphiti Feature Container that provides create, add and update functionality in the editor for this Custom Task.
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn="org.eclipse.bpmn2.modeler.ui.features.activity.task.CustomTaskFeatureContainer:"/>
+                  <meta.attribute kind="java" basedOn="org.camunda.bpm.modeler.ui.features.activity.task.CustomTaskFeatureContainer:"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -539,7 +539,7 @@ If &quot;object&quot; has the value &quot;default&quot;, then this refers to a d
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  The class that implements the property extension adapter, i.e. extends the org.eclipse.bpmn2.modeler.core.adapters.ExtendedPropertiesAdapter class.
+                  The class that implements the property extension adapter, i.e. extends the org.camunda.bpm.modeler.adapters.ExtendedPropertiesAdapter class.
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn="org.eclipse.graphiti.ui.platform.GFPropertySection:"/>
@@ -574,7 +574,7 @@ If &quot;object&quot; has the value &quot;default&quot;, then this refers to a d
                   The class that implements the Graphiti Feature Container class. The class must implement the BPMN2 Code Feature Container interface.
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.bpmn2.modeler.core.features.FeatureContainer"/>
+                  <meta.attribute kind="java" basedOn=":org.camunda.bpm.modeler.features.FeatureContainer"/>
                </appinfo>
             </annotation>
          </attribute>

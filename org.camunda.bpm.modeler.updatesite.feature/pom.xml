@@ -10,8 +10,8 @@
   <groupId>org.camunda.bpm.modeler</groupId>
   <artifactId>org.camunda.bpm.modeler.updatesite.feature</artifactId>
   <packaging>eclipse-update-site</packaging>
-  <name>fox designer Update Site</name>
-  <description>Update Site feature for fox designer</description>
+  <name>camunda modeler update site</name>
+  <description>Update Site feature for camunda modeler</description>
   <properties>
 	<maven.antrun.plugin.version>1.3</maven.antrun.plugin.version>
   </properties>

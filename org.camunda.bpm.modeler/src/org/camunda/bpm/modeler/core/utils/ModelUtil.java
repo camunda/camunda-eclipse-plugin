@@ -849,7 +849,7 @@ public class ModelUtil {
 	
 	/**
 	 * Dummy objects are constructed when needed for an ExtendedPropertiesAdapter. The adapter factory
-	 * (@see org.eclipse.bpmn2.modeler.ui.adapters.Bpmn2EditorItemProviderAdapterFactory) knows how to
+	 * (@see org.camunda.bpm.modeler.ui.adapters.Bpmn2EditorItemProviderAdapterFactory) knows how to
 	 * construct an ExtendedPropertiesAdapter from an EClass, however the adapter itself needs an EObject.
 	 * This method constructs and caches these dummy objects as they are needed.
 	 * 

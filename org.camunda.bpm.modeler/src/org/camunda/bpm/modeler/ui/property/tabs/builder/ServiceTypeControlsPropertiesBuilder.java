@@ -3,7 +3,7 @@ package org.camunda.bpm.modeler.ui.property.tabs.builder;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.camunda.bpm.modeler.runtime.activiti.model.ModelPackage;
+import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.ui.property.tabs.binding.ModelRadioBinding;
 import org.camunda.bpm.modeler.ui.property.tabs.dialog.ClassChooserDialog;
 import org.camunda.bpm.modeler.ui.property.tabs.radio.Radio.RadioGroup;

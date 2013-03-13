@@ -57,7 +57,7 @@ public class BPMN2ModelView extends ViewPart {
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String ID = "org.eclipse.bpmn2.modeler.ui.views.BPMN2ModelView";
+	public static final String ID = "org.camunda.bpm.modeler.ui.views.BPMN2ModelView";
 
 	private TreeViewer viewer;
 	private ISelectionListener listener;
@@ -86,7 +86,7 @@ public class BPMN2ModelView extends ViewPart {
 		getSite().getPage().addSelectionListener(listener);
 
 		// Create the help context id for the viewer's control
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "org.eclipse.bpmn2.modeler.ui.viewer");
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "org.camunda.bpm.modeler.ui.viewer");
 	}
 
 	@Override

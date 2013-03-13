@@ -137,8 +137,8 @@ public class Bpmn2HomePreferencePage
 		comp.setLayoutData(gd);
 
 		TristateCheckboxFieldEditor popupConfigDialogForTasks = new TristateCheckboxFieldEditor(
-				Bpmn2Preferences.PREF_POPUP_CONFIG_DIALOG_FOR_ACTIVITIES,
-				Bpmn2Preferences.PREF_POPUP_CONFIG_DIALOG_FOR_ACTIVITIES_LABEL,
+				Bpmn2Preferences.PREF_POPUP_CONFIG_DIALOG_FOR_activitiES,
+				Bpmn2Preferences.PREF_POPUP_CONFIG_DIALOG_FOR_activitiES_LABEL,
 				comp);
 		addField(popupConfigDialogForTasks);
 		popupConfigDialog.addField(popupConfigDialogForTasks);

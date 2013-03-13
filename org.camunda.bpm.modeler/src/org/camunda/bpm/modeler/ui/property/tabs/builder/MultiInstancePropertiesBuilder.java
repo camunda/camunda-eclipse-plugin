@@ -1,6 +1,6 @@
 package org.camunda.bpm.modeler.ui.property.tabs.builder;
 
-import org.camunda.bpm.modeler.runtime.activiti.model.ModelPackage;
+import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.ui.property.tabs.binding.ModelAttributeButtonBinding;
 import org.camunda.bpm.modeler.ui.property.tabs.util.Events;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;

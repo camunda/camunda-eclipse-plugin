@@ -54,7 +54,7 @@ public class ScriptTaskFeatureContainer extends AbstractTaskFeatureContainer {
 	public static class CreateScriptTaskFeature extends AbstractCreateTaskFeature<ScriptTask> {
 
 		public CreateScriptTaskFeature(IFeatureProvider fp) {
-			super(fp, "Script Task", "Task executed by a business process engine");
+			super(fp, "Script Task", "Task executed by a business process activiti");
 		}
 
 		@Override
@@ -63,7 +63,7 @@ public class ScriptTaskFeatureContainer extends AbstractTaskFeatureContainer {
 		}
 
 		/* (non-Javadoc)
-		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
+		 * @see org.camunda.bpm.modeler.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
 		public EClass getBusinessObjectClass() {

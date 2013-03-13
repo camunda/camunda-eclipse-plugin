@@ -6,10 +6,10 @@ import static org.camunda.bpm.modeler.core.utils.ExtensionUtil.removeExtensionBy
 
 import java.util.List;
 
-import org.camunda.bpm.modeler.runtime.activiti.model.InType;
-import org.camunda.bpm.modeler.runtime.activiti.model.ModelFactory;
-import org.camunda.bpm.modeler.runtime.activiti.model.ModelPackage;
-import org.camunda.bpm.modeler.runtime.activiti.model.OutType;
+import org.camunda.bpm.modeler.runtime.engine.model.InType;
+import org.camunda.bpm.modeler.runtime.engine.model.ModelFactory;
+import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
+import org.camunda.bpm.modeler.runtime.engine.model.OutType;
 import org.camunda.bpm.modeler.ui.change.filter.ExtensionChangeFilter;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EditableEObjectTableBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.ContentProvider;

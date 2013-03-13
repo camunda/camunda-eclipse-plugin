@@ -124,7 +124,7 @@ public class DataStoreReferenceFeatureContainer extends AbstractDataFeatureConta
 					fp,
 					"Data Store",
 					"Reference to a Data Store instance."
-							+ " Data Stores provide a mechanism for Activities to persist data beyond the lifetime of the Process."
+							+ " Data Stores provide a mechanism for activities to persist data beyond the lifetime of the Process."
 							+ " The same Data Store instance can be visualized through a Data Store Reference in one or more"
 							+ " places in the Process.");
 		}
@@ -138,7 +138,7 @@ public class DataStoreReferenceFeatureContainer extends AbstractDataFeatureConta
 		 * (non-Javadoc)
 		 * 
 		 * @see
-		 * org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature
+		 * org.camunda.bpm.modeler.features.AbstractCreateFlowElementFeature
 		 * #getFlowElementClass()
 		 */
 		@Override

@@ -72,8 +72,8 @@ public class BPMN2DiagramWizardPage1 extends WizardPage implements IConstants {
 		data.widthHint = labelWidth;
 		processLabel.setLayoutData(data);
 		processLabel.setText(
-				"A Process describes a sequence or flow of Activities in an organization" +
-				" with the objective of carrying out work. A Process contains Activities,"+
+				"A Process describes a sequence or flow of activities in an organization" +
+				" with the objective of carrying out work. A Process contains activities,"+
 				" Events, Gateways, and Sequence Flows that define its execution semantics.");
 
 		final Button collaborationButton = new Button(container, SWT.RADIO | SWT.PUSH);

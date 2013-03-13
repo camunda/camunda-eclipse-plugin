@@ -2,7 +2,7 @@
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="model" nsURI="http://activiti.org/bpmn" nsPrefix="activiti">
   <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-    <details key="documentation" value="This XML Schema defines and documents BPMN 2.0 extension elements and attributes introduced by Activiti."/>
+    <details key="documentation" value="This XML Schema defines and documents BPMN 2.0 extension elements and attributes introduced by activiti."/>
   </eAnnotations>
   <eClassifiers xsi:type="ecore:EClass" name="DocumentRoot" eSuperTypes="../../org.eclipse.bpmn2/model/BPMN20.ecore#//DocumentRoot">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
@@ -49,7 +49,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="in" upperBound="-2" eType="#//InType"
         volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Element to specify Data Input in Activiti Shortcuts (compare to DataInputAssociation in BPMN)"/>
+        <details key="documentation" value="Element to specify Data Input in activiti Shortcuts (compare to DataInputAssociation in BPMN)"/>
       </eAnnotations>
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
@@ -60,7 +60,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="out" upperBound="-2" eType="#//OutType"
         volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Element to specify Data Output in Activiti Shortcuts (compare to DataOutputAssociation in BPMN)"/>
+        <details key="documentation" value="Element to specify Data Output in activiti Shortcuts (compare to DataOutputAssociation in BPMN)"/>
       </eAnnotations>
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
@@ -112,7 +112,7 @@
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="class" eType="#//ClassType">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Service Task attribute for specifying a fully qualified Java classname. The Java class must implement either org.activiti.engine.delegate.JavaDelegate or org.activiti.engine.impl.pvm.delegate.ActivityBehavior"/>
+        <details key="documentation" value="Service Task attribute for specifying a fully qualified Java classname. The Java class must implement either org.activiti.activiti.delegate.JavaDelegate or org.activiti.activiti.impl.pvm.delegate.ActivityBehavior"/>
       </eAnnotations>
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="attribute"/>
@@ -162,7 +162,7 @@
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="formHandlerClass" eType="#//FormHandlerClassType">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Attribute on a startEvent or userTask. Allows to specify a custom class that will be called during the parsing of the form information. Thus way, it is possible to use custom forms and form handling. This class must implement the org.activiti.engine.inpl.form.FormHamdler/StartFormHandler/taskFormHandler interface (specific interface depending on the activity)."/>
+        <details key="documentation" value="Attribute on a startEvent or userTask. Allows to specify a custom class that will be called during the parsing of the form information. Thus way, it is possible to use custom forms and form handling. This class must implement the org.activiti.activiti.inpl.form.FormHamdler/StartFormHandler/taskFormHandler interface (specific interface depending on the activity)."/>
       </eAnnotations>
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="attribute"/>
@@ -172,7 +172,7 @@
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="formKey" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Attribute used on a startEvent or a userTask. The value can be anything. The default form support in Activiti assumes that this is a reference to a form html file inside the deployment of the process definition. But this key can also be something completely different, in case of external form resolving.&#xA;      "/>
+        <details key="documentation" value="Attribute used on a startEvent or a userTask. The value can be anything. The default form support in activiti assumes that this is a reference to a form html file inside the deployment of the process definition. But this key can also be something completely different, in case of external form resolving.&#xA;      "/>
       </eAnnotations>
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="attribute"/>
@@ -183,7 +183,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="history" eType="#//HistoryType"
         unsettable="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Attribute on the process element. Allows to set the history level for this specific process definition differently from the history level set in the process engine configuration."/>
+        <details key="documentation" value="Attribute on the process element. Allows to set the history level for this specific process definition differently from the history level set in the process activiti configuration."/>
       </eAnnotations>
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="attribute"/>
@@ -329,7 +329,7 @@
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="class" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="An implementation of the org.activiti.engine.impl.pvm.delegate.ExecutionListener interface that will be called when the event occurs."/>
+        <details key="documentation" value="An implementation of the org.activiti.activiti.impl.pvm.delegate.ExecutionListener interface that will be called when the event occurs."/>
       </eAnnotations>
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="attribute"/>
@@ -610,7 +610,7 @@
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="class" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="An implementation of the org.activiti.engine.impl.pvm.delegate.TaskListener interface that will be called when the task event occurs."/>
+        <details key="documentation" value="An implementation of the org.activiti.activiti.impl.pvm.delegate.TaskListener interface that will be called when the task event occurs."/>
       </eAnnotations>
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="attribute"/>

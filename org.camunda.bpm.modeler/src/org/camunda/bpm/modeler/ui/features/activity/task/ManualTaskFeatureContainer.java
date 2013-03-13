@@ -55,7 +55,7 @@ public class ManualTaskFeatureContainer extends AbstractTaskFeatureContainer {
 
 		public CreateManualTaskFeature(IFeatureProvider fp) {
 			super(fp, "Manual Task",
-					"Task that is expected to perform without the aid of any business process execution engine or any application");
+					"Task that is expected to perform without the aid of any business process execution activiti or any application");
 		}
 
 		@Override
@@ -64,7 +64,7 @@ public class ManualTaskFeatureContainer extends AbstractTaskFeatureContainer {
 		}
 
 		/* (non-Javadoc)
-		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
+		 * @see org.camunda.bpm.modeler.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
 		public EClass getBusinessObjectClass() {

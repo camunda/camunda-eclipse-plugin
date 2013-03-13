@@ -33,7 +33,7 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 	 * Determine if the context applies to this modelObject and return the Task object. Return null otherwise.
 	 * @param context - the Graphiti context.
 	 * 
-	 * @see org.eclipse.bpmn2.modeler.core.features.BaseElementFeatureContainer#getApplyObject(org.eclipse.graphiti.features.context.IContext)
+	 * @see org.camunda.bpm.modeler.features.BaseElementFeatureContainer#getApplyObject(org.eclipse.graphiti.features.context.IContext)
 	 */
 	@Override
 	public Object getApplyObject(IContext context) {
@@ -53,7 +53,7 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.bpmn2.modeler.core.features.activity.task.ICustomTaskFeature#setId(java.lang.String)
+	 * @see org.camunda.bpm.modeler.features.activity.task.ICustomTaskFeature#setId(java.lang.String)
 	 */
 	@Override
 	public void setId(String id) {
@@ -121,7 +121,7 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 	
 	/**
 	 * Set this modelObject's ID string. The ID is defined in the plugin's
-	 * extension point contribution to org.eclipse.bpmn2.modeler.rutime.
+	 * extension point contribution to org.camunda.bpm.modeler.rutime.
 	 * This will register the Custom Task with the BPMN Feature Provider.
 	 * 
 	 * @param fp - Feature Provider (must be a BPMNFeatureProvider)
@@ -155,7 +155,7 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.eclipse.bpmn2.modeler.ui.features.activity.task.ICustomTaskFeatureContainer#getId()
+	 * @see org.camunda.bpm.modeler.ui.features.activity.task.ICustomTaskFeatureContainer#getId()
 	 */
 	@Override
 	public String getId() {
@@ -163,7 +163,7 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.bpmn2.modeler.ui.features.activity.task.ICustomTaskFeatureContainer#setCustomTaskDescriptor(org.eclipse.bpmn2.modeler.core.preferences.TargetRuntime.CustomTaskDescriptor)
+	 * @see org.camunda.bpm.modeler.ui.features.activity.task.ICustomTaskFeatureContainer#setCustomTaskDescriptor(org.camunda.bpm.modeler.preferences.TargetRuntime.CustomTaskDescriptor)
 	 */
 	@Override
 	public void setCustomTaskDescriptor(CustomTaskDescriptor customTaskDescriptor) {
@@ -237,7 +237,7 @@ public class CustomTaskFeatureContainer extends TaskFeatureContainer implements 
 		}
 
 		/* (non-Javadoc)
-		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
+		 * @see org.camunda.bpm.modeler.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
 		public EClass getBusinessObjectClass() {

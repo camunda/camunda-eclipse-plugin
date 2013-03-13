@@ -12,7 +12,7 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.core.runtime;
 
-import org.camunda.bpm.modeler.runtime.activiti.model.ModelPackage;
+import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.eclipse.emf.ecore.EPackage;
 
 public class BaseRuntimeDescriptor {

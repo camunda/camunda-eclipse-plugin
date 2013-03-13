@@ -204,7 +204,7 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 		}
 
 		/* (non-Javadoc)
-		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateConnectionFeature#getBusinessObjectClass()
+		 * @see org.camunda.bpm.modeler.features.AbstractBpmn2CreateConnectionFeature#getBusinessObjectClass()
 		 */
 		@Override
 		public EClass getBusinessObjectClass() {

@@ -98,7 +98,7 @@ public class ConditionalEventDefinitionContainer extends AbstractEventDefinition
 		}
 
 		/* (non-Javadoc)
-		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
+		 * @see org.camunda.bpm.modeler.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
 		 */
 		@Override
 		public EClass getBusinessObjectClass() {

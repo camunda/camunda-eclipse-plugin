@@ -5,7 +5,7 @@
   </dataStore>
   <message id="foxMessage_en" name="foxMessage_en"/>
   <collaboration id="collaboration_3">
-    <participant id="Process_Engine_1" name="invoice receipt (fox)" processRef="fox-invoice_en"/>
+    <participant id="Process_activiti_1" name="invoice receipt (fox)" processRef="fox-invoice_en"/>
   </collaboration>
   <process id="fox-invoice_en" name="invoice receipt (fox)" isExecutable="true">
     <laneSet id="laneSet_5">
@@ -90,7 +90,7 @@
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_73">
     <bpmndi:BPMNPlane id="BPMNPlane_73" bpmnElement="collaboration_3">
-      <bpmndi:BPMNShape id="Process_Engine_1_gui" bpmnElement="Process_Engine_1" isHorizontal="true">
+      <bpmndi:BPMNShape id="Process_activiti_1_gui" bpmnElement="Process_activiti_1" isHorizontal="true">
         <omgdc:Bounds height="488.0" width="1126.0" x="0.0" y="0.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Freigebender_105_gui" bpmnElement="Approver" isHorizontal="true">

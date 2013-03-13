@@ -22,7 +22,7 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 
 
-	private static String BUNDLE_NAME = "org.eclipse.bpmn2.modeler.ui.messages"; //$NON-NLS-1$
+	private static String BUNDLE_NAME = "org.camunda.bpm.modeler.ui.messages"; //$NON-NLS-1$
 	
 	public static String SchemaImportDialog_0;
 	public static String SchemaImportDialog_1;

@@ -68,7 +68,7 @@ public class TestHelper {
 		
 		IDiagramTypeProvider typeProvider = GraphitiUi.getExtensionManager().createDiagramTypeProvider(
 				diagram,
-				"org.eclipse.bpmn2.modeler.ui.diagram.MainBPMNDiagramType");
+				"org.camunda.bpm.modeler.ui.diagram.MainBPMNDiagramType");
 
 		// required to eagerly initialize this one
 		typeProvider.getDiagramEditor().getResourceSet();

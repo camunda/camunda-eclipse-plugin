@@ -88,7 +88,7 @@ public class ToolEnablementPreferences {
 	public static ToolEnablementPreferences getPreferences(IProject project) {
 		IEclipsePreferences rootNode = Platform.getPreferencesService().getRootNode();
 		Preferences prefs = rootNode.node(ProjectScope.SCOPE).node(project.getName())
-				.node("org.eclipse.bpmn2.modeler.tools");
+				.node("org.camunda.bpm.modeler.tools");
 		return new ToolEnablementPreferences(prefs);
 	}
 

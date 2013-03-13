@@ -23,8 +23,8 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class BPMN2Builder extends IncrementalProjectBuilder {
 
-	public static final String BUILDER_ID = "org.eclipse.bpmn2.modeler.core.bpmn2Builder";
-	private static final String MARKER_TYPE = "org.eclipse.bpmn2.modeler.core.xmlProblem";
+	public static final String BUILDER_ID = "org.camunda.bpm.modeler.bpmn2Builder";
+	private static final String MARKER_TYPE = "org.camunda.bpm.modeler.xmlProblem";
 	private SAXParserFactory parserFactory;
 
 	

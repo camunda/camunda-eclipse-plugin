@@ -48,8 +48,8 @@ import org.eclipse.emf.validation.IValidationContext;
 
 public class BPMN2BatchValidationConstraint extends AbstractModelConstraint {
 
-	public final static String ERROR_ID = "org.eclipse.bpmn2.modeler.core.validation.error";
-	public final static String WARNING_ID = "org.eclipse.bpmn2.modeler.core.validation.warning";
+	public final static String ERROR_ID = "org.camunda.bpm.modeler.validation.error";
+	public final static String WARNING_ID = "org.camunda.bpm.modeler.validation.warning";
 	
 	private boolean warnings = false;
 	

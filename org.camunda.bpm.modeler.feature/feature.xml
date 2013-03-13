@@ -20,7 +20,7 @@ Red Hat, Inc. - initial API and implementation
    </license>
 
    <plugin
-         id="org.eclipse.bpmn2.modeler.core"
+         id="org.camunda.bpm.modeler"
          download-size="0"
          install-size="0"
          version="0.0.0"

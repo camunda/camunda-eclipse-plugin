@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <description url="http://fox.camunda.com/designer">
+   <description url="http://camunda.org/modeler">
 	fox designer
    </description>
    <copyright url="http://www.example.com/copyright">
@@ -11,14 +11,15 @@ Eclipse Public License v1.0 which accompanies this distribution,
 and is available at http://www.eclipse.org/legal/epl-v10.html
 Contributors:
 Red Hat, Inc. - initial API and implementation
-Author: Ivar Meikas
+camunda.org
+Authors: Ivar Meikas, Bob Brodt, Nico Rehwaldt, Andreas Drobisch
    </copyright>
    <feature url="features/org.camunda.bpm.modeler.feature_0.0.0.jar" id="org.camunda.bpm.modeler.feature" version="0.0.0" patch="false">
-      <category name="fox"/>
+      <category name="camunda"/>
    </feature>
-   <category-def name="fox" label="fox designer">
+   <category-def name="camunda" label="camunda modeler">
       <description>
-        fox designer
+        camunda modeler
       </description>
    </category-def>
 </site>

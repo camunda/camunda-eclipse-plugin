@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="org.eclipse.bpmn2.modeler.runtime" name="BPMN2 Modeler Runtime Specialization" schema="schema/org.eclipse.bpmn2.modeler.runtime.exsd"/>
+   <extension-point id="org.camunda.bpm.modeler.runtime" name="BPMN2 Modeler Runtime Specialization" schema="schema/org.camunda.bpm.modeler.runtime.exsd"/>
    	
    <extension point="org.eclipse.emf.ecore.generated_package">
       <package
-            class="org.camunda.bpm.modeler.runtime.activiti.model.ModelPackage"
-            genModel="model/ActivitiExtensions.genmodel"
+            class="org.camunda.bpm.modeler.runtime.engine.model.ModelPackage"
+            genModel="model/activitiExtensions.genmodel"
             uri="http://www.activiti.org">
       </package>
    </extension>
    
-   	<extension point="org.eclipse.bpmn2.modeler.runtime">
-		<runtime name="camunda fox engine" versions="5.4,5.5,5.6,5.7,5.8"
-			id="org.activiti.runtime.activiti"
-			class="org.camunda.bpm.modeler.runtime.activiti.ActivitiRuntimeExtension"
-			description="BPMN2 Modeler customizations for the Activiti engine">
+   	<extension point="org.camunda.bpm.modeler.runtime">
+		<runtime name="camunda fox activiti" versions="5.4,5.5,5.6,5.7,5.8"
+			id="org.activiti.runtime.engine"
+			class="org.camunda.bpm.modeler.runtime.engine.ActivitiRuntimeExtension"
+			description="camunda modeler customizations for the activiti runtime">
 		</runtime>
 
-		<model runtimeId="org.activiti.runtime.activiti"
+		<model runtimeId="org.activiti.runtime.engine"
 			uri="http://www.activiti.org"
-			resourceFactory="org.camunda.bpm.modeler.runtime.activiti.model.util.ModelResourceFactoryImpl">
+			resourceFactory="org.camunda.bpm.modeler.runtime.engine.model.util.ModelResourceFactoryImpl">
 		</model>
 	</extension>
    	
    	<extension point="org.eclipse.ui.newWizards">
-		<!-- <primaryWizard id="org.eclipse.bpmn2.modeler.ui.diagram"> </primaryWizard> -->
+		<!-- <primaryWizard id="org.camunda.bpm.modeler.ui.diagram"> </primaryWizard> -->
 		<wizard category="org.eclipse.bpmn2.wizardCategory"
 			class="org.camunda.bpm.modeler.ui.wizards.BPMN2DiagramWizard" icon="icons/bpmn2_editor_16.png"
-			id="org.eclipse.bpmn2.modeler.ui.diagram" name="BPMN2 Diagram">
+			id="org.camunda.bpm.modeler.ui.diagram" name="BPMN 2.0 Diagram">
 		</wizard>
 	</extension>
 	
@@ -37,13 +37,13 @@
 		The multipage editor is still experimental.
 		To quickly revert back to the original, single page editor
 		simply replace the editor class with this:
-			class="org.eclipse.bpmn2.modeler.ui.editor.BPMN2Editor"
+			class="org.camunda.bpm.modeler.ui.editor.BPMN2Editor"
 		-->
 		<editor
 			class="org.camunda.bpm.modeler.ui.editor.BPMN2Editor"
 			contributorClass="org.eclipse.graphiti.ui.editor.DiagramEditorActionBarContributor"
 			default="true" extensions="bpmn,bpmn2" icon="icons/bpmn2_editor_16.png"
-			id="org.eclipse.bpmn2.modeler.ui.bpmn2editor" name="Bpmn2 Diagram Editor">
+			id="org.camunda.bpm.modeler.ui.bpmn2editor" name="Bpmn2 Diagram Editor">
 			<contentTypeBinding contentTypeId="org.eclipse.bpmn2.content-type.xml">
 			</contentTypeBinding>
 		</editor>
@@ -52,7 +52,7 @@
 	<extension point="org.eclipse.core.contenttype.contentTypes">
 		<content-type base-type="org.eclipse.core.runtime.xml"
 			id="org.eclipse.bpmn2.content-type.xml"
-			name="BPMN2 Modeler File"
+			name="BPMN 2.0 file"
 			file-extensions="bpmn,bpmn2,bpmn20,xml"
 			priority="normal">
 			<describer class="org.camunda.bpm.modeler.ui.BPMN2ContentDescriber">
@@ -62,17 +62,17 @@
    	
    	<extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
 		<propertyContributor
-			contributorId="org.eclipse.bpmn2.modeler.ui.PropertyContributor"
+			contributorId="org.camunda.bpm.modeler.ui.PropertyContributor"
            labelProvider="org.camunda.bpm.modeler.ui.property.PropertiesLabelProvider"
 			tabDescriptorProvider="org.camunda.bpm.modeler.ui.property.PropertiesTabDescriptorProvider">
-			<propertyCategory category="BPMN2">
+			<propertyCategory category="BPMN">
 			</propertyCategory>
 		</propertyContributor>
 	</extension>
 
 	<extension point="org.eclipse.graphiti.ui.diagramTypes">
 		<diagramType description="This is the diagram type for the BMPN2 diagram"
-			id="org.eclipse.bpmn2.modeler.ui.diagram.MainBPMNDiagramType" name="BPMN2 Diagram Type"
+			id="org.camunda.bpm.modeler.ui.diagram.MainBPMNDiagramType" name="BPMN2 Diagram Type"
 			type="BPMN2">
 		</diagramType>
 	</extension>
@@ -81,18 +81,18 @@
 		<diagramTypeProvider
 			class="org.camunda.bpm.modeler.ui.diagram.MainBPMNDiagramTypeProvider"
 			description="This is the editor for the BPMN2 diagram"
-			id="org.eclipse.bpmn2.modeler.ui.diagram.MainBPMNDiagramType" name="BPMN2 Editor">
+			id="org.camunda.bpm.modeler.ui.diagram.MainBPMNDiagramType" name="BPMN2 Editor">
 			<diagramType
-				id="org.eclipse.bpmn2.modeler.ui.diagram.MainBPMNDiagramType">
+				id="org.camunda.bpm.modeler.ui.diagram.MainBPMNDiagramType">
 			</diagramType>
-			<imageProvider id="org.eclipse.bpmn2.modeler.ui.ImageProvider">
+			<imageProvider id="org.camunda.bpm.modeler.ui.ImageProvider">
 			</imageProvider>
 		</diagramTypeProvider>
 	</extension>
 	
 	<extension point="org.eclipse.graphiti.ui.imageProviders">
 		<imageProvider class="org.camunda.bpm.modeler.ui.ImageProvider"
-			id="org.eclipse.bpmn2.modeler.ui.ImageProvider">
+			id="org.camunda.bpm.modeler.ui.ImageProvider">
 		</imageProvider>
 	</extension>
    
@@ -110,16 +110,16 @@
          point="org.eclipse.emf.validation.constraintProviders">
       <category
             name="Core BPMN 2.0 Constraints"
-            id="org.eclipse.bpmn2.modeler.core.validation"/>
+            id="org.camunda.bpm.modeler.validation"/>
       <constraintProvider cache="true">
          <package namespaceUri="http://www.omg.org/spec/BPMN/20100524/MODEL-XMI"/>
-         <constraints categories="org.eclipse.bpmn2.modeler.core.validation">
+         <constraints categories="org.camunda.bpm.modeler.validation">
          	<constraint
 			        lang="OCL"
 			         severity="WARNING"
 			         mode="Batch"
 			         name="UniqueId"
-			         id="org.eclipse.bpmn2.modeler.core.validation.BaseElement.id"
+			         id="org.camunda.bpm.modeler.validation.BaseElement.id"
 			         statusCode="100" isEnabledByDefault="true">
 			      <description>ID needs to be unique.</description>
 			      <message>ID needs to be unqiue. Displayed value will not be saved.</message>
@@ -134,7 +134,7 @@
                   severity="WARNING"
                   mode="Batch"
                   name="Valid IDs"
-                  id="org.eclipse.bpmn2.modeler.core.validation.ValidId"
+                  id="org.camunda.bpm.modeler.validation.ValidId"
                   statusCode="101">
                <description>
                   IDs must be valid.
@@ -156,7 +156,7 @@
 			         severity="CANCEL"
 			         mode="Live"
 			         name="StartEventIncoming"
-			         id="org.eclipse.bpmn2.modeler.core.validation.StartEvent.incoming"
+			         id="org.camunda.bpm.modeler.validation.StartEvent.incoming"
 			         statusCode="2" isEnabledByDefault="true">
 			      <description>Start Event must not have incoming flows</description>
 			      <message>Start Event must not have incoming sequence flows.</message>
@@ -170,7 +170,7 @@
 			         severity="CANCEL"
 			         mode="Live"
 			         name="EndEventOutgoing"
-			         id="org.eclipse.bpmn2.modeler.core.validation.EndEvent.outgoing"
+			         id="org.camunda.bpm.modeler.validation.EndEvent.outgoing"
 			         statusCode="3" isEnabledByDefault="true">
 			      <description>End Event must not have outgoing flows</description>
 			      <message>End Event must not have outgoing sequence flows.</message>
@@ -180,8 +180,8 @@
 			      ]]>
 			</constraint>
 			<constraint
-					class="org.eclipse.bpmn2.modeler.core.validation.BPMN2BatchValidationConstraint"
-					id="org.eclipse.bpmn2.modeler.core.validation.error"
+					class="org.camunda.bpm.modeler.validation.BPMN2BatchValidationConstraint"
+					id="org.camunda.bpm.modeler.validation.error"
 					isEnabledByDefault="true"
 					lang="Java"
 					mode="Batch"
@@ -195,8 +195,8 @@
 				<target class="BaseElement"/>
 			</constraint>
  			<constraint
-					class="org.eclipse.bpmn2.modeler.core.validation.BPMN2BatchValidationConstraint"
-					id="org.eclipse.bpmn2.modeler.core.validation.warning"
+					class="org.camunda.bpm.modeler.validation.BPMN2BatchValidationConstraint"
+					id="org.camunda.bpm.modeler.validation.warning"
 					isEnabledByDefault="true"
 					lang="Java"
 					mode="Batch"
@@ -210,8 +210,8 @@
 				<target class="BaseElement"/>
 			</constraint>
 		    <constraint
-		         class="org.eclipse.bpmn2.modeler.core.validation.TaskNameNotEmpty"
-		         id="org.eclipse.bpmn2.modeler.core.validation.TaskEmptyNameConstraint"
+		         class="org.camunda.bpm.modeler.validation.TaskNameNotEmpty"
+		         id="org.camunda.bpm.modeler.validation.TaskEmptyNameConstraint"
 		         lang="java"
 		         mode="Batch"
 		         name="TaskEmptyNameConstraint"
@@ -228,8 +228,8 @@
 		      </target>
 		   </constraint>
 		   <constraint
-		         class="org.eclipse.bpmn2.modeler.core.validation.FormalExpressionConstraint"
-		         id="org.eclipse.bpmn2.modeler.core.validation.FormalExpressionConstraint"
+		         class="org.camunda.bpm.modeler.validation.FormalExpressionConstraint"
+		         id="org.camunda.bpm.modeler.validation.FormalExpressionConstraint"
 		         lang="java"
 		         mode="Batch"
 		         name="FormalExpressionConstraint"
@@ -254,17 +254,17 @@
          point="org.eclipse.emf.validation.constraintBindings">
       <clientContext
             default="false"
-            id="org.eclipse.bpmn2.modeler.core.validationContext">
+            id="org.camunda.bpm.modeler.validationContext">
          <selector class="org.camunda.bpm.modeler.core.validation.ValidationDelegateClientSelector"/>
       </clientContext>
       <binding
-            context="org.eclipse.bpmn2.modeler.core.validationContext"
-            category="org.eclipse.bpmn2.modeler.core.validation"/>
+            context="org.camunda.bpm.modeler.validationContext"
+            category="org.camunda.bpm.modeler.validation"/>
    </extension>
 	
 	<extension point="org.eclipse.emf.validation.validationListeners">
 		<listener class="org.camunda.bpm.modeler.core.validation.ProblemsReporter">
-			<clientContext id="org.eclipse.bpmn2.modeler.core.validationContext"/>
+			<clientContext id="org.camunda.bpm.modeler.validationContext"/>
 		</listener>
 	</extension>
 
@@ -273,8 +273,8 @@
         name="BPMN 2.0 Project Validator"
         point="org.eclipse.wst.validation.validatorV2">
      <validator
-           class="org.eclipse.bpmn2.modeler.core.validation.BPMN2ProjectValidator"
-           markerId="org.eclipse.bpmn2.modeler.core.problemMarker">
+           class="org.camunda.bpm.modeler.validation.BPMN2ProjectValidator"
+           markerId="org.camunda.bpm.modeler.problemMarker">
         <include>
            <rules>
               <contentType
@@ -301,7 +301,7 @@
   </extension -->
   
   <extension
-        id="org.eclipse.bpmn2.modeler.core.problemMarker"
+        id="org.camunda.bpm.modeler.problemMarker"
         name="BPMN 2.0 Modeler"
         point="org.eclipse.core.resources.markers">
      <persistent
@@ -312,27 +312,27 @@
      </super>
   </extension>
   <!-- extension
-        id="org.eclipse.bpmn2.modeler.core.bpmn2Builder"
+        id="org.camunda.bpm.modeler.bpmn2Builder"
         name="BPMN2 Validation Builder"
         point="org.eclipse.core.resources.builders">
      <builder
            hasNature="true">
         <run
-              class="org.eclipse.bpmn2.modeler.core.builder.BPMN2Builder">
+              class="org.camunda.bpm.modeler.builder.BPMN2Builder">
         </run>
      </builder>
   </extension -->
   <!-- extension
-        id="org.eclipse.bpmn2.modeler.core.bpmn2Nature"
+        id="org.camunda.bpm.modeler.bpmn2Nature"
         name="BPMN2 Project Nature"
         point="org.eclipse.core.resources.natures">
      <runtime>
         <run
-              class="org.eclipse.bpmn2.modeler.core.builder.BPMN2Nature">
+              class="org.camunda.bpm.modeler.builder.BPMN2Nature">
         </run>
      </runtime>
      <builder
-           id="org.eclipse.bpmn2.modeler.core.bpmn2Builder">
+           id="org.camunda.bpm.modeler.bpmn2Builder">
      </builder>
   </extension-->
   <extension

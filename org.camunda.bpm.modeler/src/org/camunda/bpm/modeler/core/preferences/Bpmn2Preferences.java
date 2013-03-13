@@ -75,7 +75,7 @@ import org.osgi.service.prefs.Preferences;
 
 @SuppressWarnings("restriction")
 public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyChangeListener, IResourceChangeListener {
-	public final static String PROJECT_PREFERENCES_ID = "org.eclipse.bpmn2.modeler";
+	public final static String PROJECT_PREFERENCES_ID = "org.camunda.bpm.modeler";
 	public final static String PREF_TARGET_RUNTIME = "target.runtime";
 	public final static String PREF_TARGET_RUNTIME_LABEL = "Target &Runtime";
 	public final static String PREF_SHOW_ADVANCED_PROPERTIES = "show.advanced.properties";
@@ -102,8 +102,8 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	public final static String PREF_POPUP_CONFIG_DIALOG = "popup.config.dialog";
 	public final static String PREF_POPUP_CONFIG_DIALOG_LABEL = "Display element configuration popup dialog after DND of:";
 	
-	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_ACTIVITIES = "popup.config.dialog.for.activities";
-	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_ACTIVITIES_LABEL = "Activities";
+	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_activitiES = "popup.config.dialog.for.activities";
+	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_activitiES_LABEL = "activities";
 	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_GATEWAYS = "popup.config.dialog.for.gateways";
 	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_GATEWAYS_LABEL = "Gateways";
 	public final static String PREF_POPUP_CONFIG_DIALOG_FOR_EVENTS = "popup.config.dialog.for.events";
@@ -256,7 +256,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		globalPreferences.setDefault(PREF_IS_MARKER_VISIBLE, BPMNDIAttributeDefault.DEFAULT_TRUE.name());
 
 		globalPreferences.setDefault(PREF_POPUP_CONFIG_DIALOG, false); // tri-state checkbox
-		globalPreferences.setDefault(PREF_POPUP_CONFIG_DIALOG_FOR_ACTIVITIES, false);
+		globalPreferences.setDefault(PREF_POPUP_CONFIG_DIALOG_FOR_activitiES, false);
 		globalPreferences.setDefault(PREF_POPUP_CONFIG_DIALOG_FOR_GATEWAYS, false);
 		globalPreferences.setDefault(PREF_POPUP_CONFIG_DIALOG_FOR_EVENTS, false);
 		globalPreferences.setDefault(PREF_POPUP_CONFIG_DIALOG_FOR_EVENT_DEFS, false);
@@ -283,7 +283,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			projectPreferences.remove(PREF_IS_MARKER_VISIBLE);
 
 			projectPreferences.remove(PREF_POPUP_CONFIG_DIALOG);
-			projectPreferences.remove(PREF_POPUP_CONFIG_DIALOG_FOR_ACTIVITIES);
+			projectPreferences.remove(PREF_POPUP_CONFIG_DIALOG_FOR_activitiES);
 			projectPreferences.remove(PREF_POPUP_CONFIG_DIALOG_FOR_GATEWAYS);
 			projectPreferences.remove(PREF_POPUP_CONFIG_DIALOG_FOR_EVENTS);
 			projectPreferences.remove(PREF_POPUP_CONFIG_DIALOG_FOR_EVENT_DEFS);
@@ -310,7 +310,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		globalPreferences.setToDefault(PREF_IS_MARKER_VISIBLE);
 
 		globalPreferences.setToDefault(PREF_POPUP_CONFIG_DIALOG);
-		globalPreferences.setToDefault(PREF_POPUP_CONFIG_DIALOG_FOR_ACTIVITIES);
+		globalPreferences.setToDefault(PREF_POPUP_CONFIG_DIALOG_FOR_activitiES);
 		globalPreferences.setToDefault(PREF_POPUP_CONFIG_DIALOG_FOR_GATEWAYS);
 		globalPreferences.setToDefault(PREF_POPUP_CONFIG_DIALOG_FOR_EVENTS);
 		globalPreferences.setToDefault(PREF_POPUP_CONFIG_DIALOG_FOR_EVENT_DEFS);
@@ -387,7 +387,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			connectionTimeout = this.getString(PREF_CONNECTION_TIMEOUT, "60000");
 			
 			popupConfigDialog = getInt(PREF_POPUP_CONFIG_DIALOG, 0); // tri-state checkbox
-			popupConfigDialogFor[0] = getBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_ACTIVITIES, false);
+			popupConfigDialogFor[0] = getBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_activitiES, false);
 			popupConfigDialogFor[1] = getBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_GATEWAYS, false);
 			popupConfigDialogFor[2] = getBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_EVENTS, false);
 			popupConfigDialogFor[3] = getBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_EVENT_DEFS, false);
@@ -420,7 +420,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			setString(PREF_CONNECTION_TIMEOUT, connectionTimeout);
 
 			setInt(PREF_POPUP_CONFIG_DIALOG, popupConfigDialog);
-			setBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_ACTIVITIES, popupConfigDialogFor[0]);
+			setBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_activitiES, popupConfigDialogFor[0]);
 			setBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_GATEWAYS, popupConfigDialogFor[1]);
 			setBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_EVENTS, popupConfigDialogFor[2]);
 			setBoolean(PREF_POPUP_CONFIG_DIALOG_FOR_EVENT_DEFS, popupConfigDialogFor[3]);

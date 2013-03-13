@@ -61,7 +61,7 @@ public class AdHocSubProcessFeatureContainer extends AbstractExpandableActivityF
 
 		public CreateAdHocSubProcessFeature(IFeatureProvider fp) {
 			super(fp, "Ad-Hoc Sub-Process",
-					"A specialized sub-process in which the Activities have no required sequence relationships");
+					"A specialized sub-process in which the activities have no required sequence relationships");
 		}
 
 		@Override
@@ -70,7 +70,7 @@ public class AdHocSubProcessFeatureContainer extends AbstractExpandableActivityF
 		}
 
 		/* (non-Javadoc)
-		 * @see org.eclipse.bpmn2.modeler.core.features.AbstractCreateFlowElementFeature#getFlowElementClass()
+		 * @see org.camunda.bpm.modeler.features.AbstractCreateFlowElementFeature#getFlowElementClass()
 		 */
 		@Override
 		public EClass getBusinessObjectClass() {

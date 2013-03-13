@@ -46,7 +46,7 @@ public abstract class AbstractUpdateEventFeature extends AbstractUpdateMarkerFea
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.bpmn2.modeler.core.features.activity.AbstractUpdateMarkerFeature#isPropertyChanged(org.eclipse.bpmn2.FlowElement, java.lang.String)
+	 * @see org.camunda.bpm.modeler.features.activity.AbstractUpdateMarkerFeature#isPropertyChanged(org.eclipse.bpmn2.FlowElement, java.lang.String)
 	 */
 	@Override
 	protected boolean isPropertyChanged(Event element, String propertyValue) {
@@ -54,7 +54,7 @@ public abstract class AbstractUpdateEventFeature extends AbstractUpdateMarkerFea
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.bpmn2.modeler.core.features.activity.AbstractUpdateMarkerFeature#doUpdate(org.eclipse.bpmn2.FlowElement, org.eclipse.graphiti.mm.pictograms.ContainerShape)
+	 * @see org.camunda.bpm.modeler.features.activity.AbstractUpdateMarkerFeature#doUpdate(org.eclipse.bpmn2.FlowElement, org.eclipse.graphiti.mm.pictograms.ContainerShape)
 	 */
 	@Override
 	protected void doUpdate(Event event, ContainerShape container) {
@@ -101,7 +101,7 @@ public abstract class AbstractUpdateEventFeature extends AbstractUpdateMarkerFea
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.bpmn2.modeler.core.features.activity.AbstractUpdateMarkerFeature#convertPropertyToString(org.eclipse.bpmn2.FlowElement)
+	 * @see org.camunda.bpm.modeler.features.activity.AbstractUpdateMarkerFeature#convertPropertyToString(org.eclipse.bpmn2.FlowElement)
 	 */
 	@Override
 	protected String convertPropertyToString(Event element) {

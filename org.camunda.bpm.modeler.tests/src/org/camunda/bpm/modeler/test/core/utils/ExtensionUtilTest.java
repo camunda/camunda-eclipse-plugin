@@ -6,12 +6,12 @@ import static org.fest.assertions.api.Assertions.assertThat;
 import java.util.List;
 
 import org.camunda.bpm.modeler.core.utils.ExtensionUtil;
-import org.camunda.bpm.modeler.runtime.activiti.model.ModelFactory;
-import org.camunda.bpm.modeler.runtime.activiti.model.ModelPackage;
-import org.camunda.bpm.modeler.runtime.activiti.model.fox.FailedJobRetryTimeCycleType;
-import org.camunda.bpm.modeler.runtime.activiti.model.fox.FoxFactory;
-import org.camunda.bpm.modeler.runtime.activiti.model.fox.FoxPackage;
-import org.camunda.bpm.modeler.runtime.activiti.model.util.ModelResourceFactoryImpl;
+import org.camunda.bpm.modeler.runtime.engine.model.ModelFactory;
+import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
+import org.camunda.bpm.modeler.runtime.engine.model.fox.FailedJobRetryTimeCycleType;
+import org.camunda.bpm.modeler.runtime.engine.model.fox.FoxFactory;
+import org.camunda.bpm.modeler.runtime.engine.model.fox.FoxPackage;
+import org.camunda.bpm.modeler.runtime.engine.model.util.ModelResourceFactoryImpl;
 import org.camunda.bpm.modeler.test.feature.AbstractNonTransactionalFeatureTest;
 import org.camunda.bpm.modeler.test.util.DiagramResource;
 import org.camunda.bpm.modeler.test.util.Util;

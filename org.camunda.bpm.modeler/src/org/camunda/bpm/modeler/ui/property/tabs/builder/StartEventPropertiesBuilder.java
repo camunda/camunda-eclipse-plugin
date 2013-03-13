@@ -3,7 +3,7 @@ package org.camunda.bpm.modeler.ui.property.tabs.builder;
 import java.util.List;
 
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
-import org.camunda.bpm.modeler.runtime.activiti.model.ModelPackage;
+import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.EventDefinition;
