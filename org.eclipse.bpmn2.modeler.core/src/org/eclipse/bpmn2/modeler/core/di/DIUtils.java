@@ -126,14 +126,8 @@ public class DIUtils {
 		}
 
 		updateConnections(element);
-		updateScrollShape(element, rect);
 		
 		return bpmnShape;
-	}
-
-	private static void updateScrollShape(PictogramElement element,
-			IRectangle rect) {
-		ScrollUtil.updateScrollShape(element, rect);
 	}
 
 	private static Bounds getDiLabelBounds(BPMNShape bpmnShape) {
@@ -200,8 +194,6 @@ public class DIUtils {
 		bpmnLabelBounds.setY(labelBounds.getY());
 		bpmnLabelBounds.setWidth(labelBounds.getWidth());
 		bpmnLabelBounds.setHeight(labelBounds.getHeight());
-		
-		updateScrollShape(label, labelBounds);
 	}
 	
 	public static void updateConnections(PictogramElement element) {

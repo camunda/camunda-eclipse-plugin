@@ -14,6 +14,7 @@ import java.util.Set;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.modeler.core.layout.Docking;
+import org.eclipse.bpmn2.modeler.core.utils.ScrollUtil;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Vector;
@@ -47,6 +48,42 @@ public class LayoutUtil {
 	 * evolutionary developed value to switch between the AboveBeneath and LeftRight Strategy for gateways 
 	 */
 	public static final double MAGIC_VALUE = 0.83;
+	
+	public static class BoundsCompareResult {
+		Integer XMinimum = 0; 
+		Integer XMaximum = 0;
+		Integer YMinimum = 0;
+		Integer YMaximum = 0;
+		
+		public BoundsCompareResult() {
+		}
+		
+		public Integer getXMinimum() {
+			return XMinimum;
+		}
+		public void setXMinimum(Integer xMinimum) {
+			XMinimum = xMinimum;
+		}
+		public Integer getXMaximum() {
+			return XMaximum;
+		}
+		public void setXMaximum(Integer xMaximum) {
+			XMaximum = xMaximum;
+		}
+		public Integer getYMinimum() {
+			return YMinimum;
+		}
+		public void setYMinimum(Integer yMinimum) {
+			YMinimum = yMinimum;
+		}
+		public Integer getYMaximum() {
+			return YMaximum;
+		}
+		public void setYMaximum(Integer yMaximum) {
+			YMaximum = yMaximum;
+		}
+	}
+	
 	public enum Sector {
 		
 		TOP_LEFT(true, false, true, false),
@@ -565,6 +602,75 @@ public class LayoutUtil {
 		return location(
 			bounds.getX() + bounds.getWidth() / 2, 
 			bounds.getY() + bounds.getHeight() / 2);
+	}
+	
+	public static IRectangle getBounds(ContainerShape containerShape) {
+		return getBounds(containerShape, 0, 0 ,0 ,0);
+	}
+	
+	public static IRectangle getBounds(ContainerShape containerShape, int minWidth, int minHeight, int xpadding, int ypadding) {
+		
+		IRectangle resultRectangle = rectangle(1, 1, minWidth, minHeight);
+		
+		if (containerShape.getChildren().isEmpty()) {
+			return resultRectangle;
+		}
+
+		GraphicsAlgorithm firstChildGa = containerShape.getChildren().get(0).getGraphicsAlgorithm();
+		BoundsCompareResult compareResult = new BoundsCompareResult();
+		
+		if (firstChildGa != null) {
+			compareResult.setXMinimum(firstChildGa.getX());
+			compareResult.setXMaximum(firstChildGa.getX() + firstChildGa.getWidth());
+			compareResult.setYMinimum(firstChildGa.getY());
+			compareResult.setYMaximum(firstChildGa.getY() + firstChildGa.getHeight());
+		}
+		
+		Shape scrollShape = ScrollUtil.getScrollShape(containerShape);
+		
+		for (Shape childShape : containerShape.getChildren()) {
+			// scrollshape is assumed to be invisible
+			if (childShape.equals(scrollShape)) {
+				continue;
+			}
+			compareAndUpdateResultMax(childShape, compareResult);
+		}
+		
+		Integer newWidth = compareResult.getXMaximum() - compareResult.getXMinimum() + xpadding;
+		Integer newHeight = compareResult.getYMaximum() - compareResult.getYMinimum() + ypadding;
+		
+		resultRectangle.setX(compareResult.getXMinimum() - xpadding);
+		resultRectangle.setY(compareResult.getYMinimum() - ypadding);
+		resultRectangle.setWidth(newWidth > minWidth ? newWidth : minWidth);
+		resultRectangle.setHeight(newHeight > minHeight ? newHeight : minHeight);
+		
+		return resultRectangle;
+	}
+	
+	public static void compareAndUpdateResultMax(Shape childShape, BoundsCompareResult result) {
+		GraphicsAlgorithm childShapeGa = childShape.getGraphicsAlgorithm();
+		if (childShapeGa != null) {
+			
+			if (result.getXMinimum() > childShapeGa.getX()) {
+				result.setXMinimum(childShapeGa.getX());
+			}
+			
+			int xPlusWidth = childShapeGa.getX() + childShapeGa.getWidth();
+			
+			if (result.getXMaximum() < xPlusWidth) {
+				result.setXMaximum(xPlusWidth);
+			}
+			
+			if (result.getYMinimum() > childShapeGa.getY()) {
+				result.setYMinimum (childShapeGa.getY());
+			}
+			
+			int yPlusHeight = childShapeGa.getY() + childShapeGa.getHeight();
+			
+			if (result.getYMaximum() < yPlusHeight) {
+				result.setYMaximum(yPlusHeight);
+			}
+		}
 	}
 
 	/**

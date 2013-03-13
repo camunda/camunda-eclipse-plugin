@@ -12,8 +12,6 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.ui.features.participant;
 
-import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.rectangle;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -29,10 +27,12 @@ import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.eclipse.bpmn2.modeler.core.features.DefaultMoveBPMNShapeFeature;
+import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ContextUtil;
 import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ScrollUtil.ScrollShapeHolder;
 import org.eclipse.bpmn2.modeler.ui.ImageProvider;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.datatypes.IRectangle;
@@ -105,8 +105,13 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 			Collaboration newCollaboration = createCollaboration(definitions, bpmnDiagram.getPlane());
 			newParticipant = createParticipant(process, newCollaboration);
 			
+			ScrollShapeHolder scrollShapeHolder = BusinessObjectUtil.getFirstElementOfType(diagram, ScrollShapeHolder.class);
+			
 			// link diagram to collaboration and plane
 			link(diagram, new Object[] { newCollaboration, bpmnDiagram });
+
+			// relink scroll shape
+			diagram.getLink().getBusinessObjects().add(scrollShapeHolder);
 			
 			// create graphiti representation
 			createGraphitiRepresentation(context, newParticipant);
@@ -122,7 +127,7 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 	private void createGraphitiRepresentation(ICreateContext context, Participant newParticipant) {
 		Diagram diagram = getDiagram();
 		
-		IRectangle bounds = getChildBounds(diagram);
+		IRectangle bounds = LayoutUtil.getBounds(diagram, minWidth, minHeight, xpadding, ypadding);
 		ContainerShape participantContainer = (ContainerShape) addGraphicalRepresentation(contextFromBounds(context, bounds), newParticipant);
 		
 		Iterator<Shape> childrenIterator = diagram.getChildren().iterator();
@@ -197,100 +202,6 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 		newContext.setWidth(bounds.getWidth());
 		newContext.setHeight(bounds.getHeight());
 		return newContext;
-	}
-	
-	private class BoundsCompareResult {
-		Integer XMinimum = 0; 
-		Integer XMaximum = 0;
-		Integer YMinimum = 0;
-		Integer YMaximum = 0;
-		
-		public BoundsCompareResult() {
-		}
-		
-		public Integer getXMinimum() {
-			return XMinimum;
-		}
-		public void setXMinimum(Integer xMinimum) {
-			XMinimum = xMinimum;
-		}
-		public Integer getXMaximum() {
-			return XMaximum;
-		}
-		public void setXMaximum(Integer xMaximum) {
-			XMaximum = xMaximum;
-		}
-		public Integer getYMinimum() {
-			return YMinimum;
-		}
-		public void setYMinimum(Integer yMinimum) {
-			YMinimum = yMinimum;
-		}
-		public Integer getYMaximum() {
-			return YMaximum;
-		}
-		public void setYMaximum(Integer yMaximum) {
-			YMaximum = yMaximum;
-		}
-		
-	}
-	
-	private IRectangle getChildBounds(Diagram diagram) {
-		IRectangle resultRectangle = rectangle(50, 50, minWidth, minHeight);
-		
-		if (diagram.getChildren().isEmpty()) {
-			return resultRectangle;
-		}
-
-		GraphicsAlgorithm firstChildGa = diagram.getChildren().get(0).getGraphicsAlgorithm();
-		BoundsCompareResult compareResult = new BoundsCompareResult();
-		
-		if (firstChildGa != null) {
-			compareResult.setXMinimum(firstChildGa.getX());
-			compareResult.setXMaximum(firstChildGa.getX() + firstChildGa.getWidth());
-			compareResult.setYMinimum(firstChildGa.getY());
-			compareResult.setYMaximum(firstChildGa.getY() + firstChildGa.getHeight());
-		}
-		
-		for (Shape childShape : diagram.getChildren()) {
-			compareAndUpdateMax(childShape, compareResult);
-		}
-		
-		Integer newWidth = compareResult.getXMaximum() - compareResult.getXMinimum() + xpadding;
-		Integer newHeight = compareResult.getYMaximum() - compareResult.getYMinimum() + ypadding;
-		
-		resultRectangle.setX(compareResult.getXMinimum());
-		resultRectangle.setY(compareResult.getYMinimum());
-		resultRectangle.setWidth(newWidth > minWidth ? newWidth : minWidth);
-		resultRectangle.setHeight(newHeight > minHeight ? newHeight : minHeight);
-		
-		return resultRectangle;
-	}
-	
-	private void compareAndUpdateMax(Shape childShape, BoundsCompareResult result) {
-		GraphicsAlgorithm childShapeGa = childShape.getGraphicsAlgorithm();
-		if (childShapeGa != null) {
-			
-			if (result.getXMinimum() > childShapeGa.getX()) {
-				result.setXMinimum(childShapeGa.getX());
-			}
-			
-			int xPlusWidth = childShapeGa.getX() + childShapeGa.getWidth();
-			
-			if (result.getXMaximum() < xPlusWidth) {
-				result.setXMaximum(xPlusWidth);
-			}
-			
-			if (result.getYMinimum() > childShapeGa.getY()) {
-				result.setYMinimum (childShapeGa.getY());
-			}
-			
-			int yPlusHeight = childShapeGa.getY() + childShapeGa.getHeight() + 20;
-			
-			if (result.getYMaximum() < yPlusHeight) {
-				result.setYMaximum(yPlusHeight);
-			}
-		}
 	}
 	
 	private Participant createParticipant(Process process, Collaboration collaboration) {
