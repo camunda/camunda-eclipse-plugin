@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.eclipse.bpmn2.modeler.feature</name>
+	<name>org.camunda.bpm.modeler.feature</name>
 	<comment></comment>
 	<projects>
 	</projects>
