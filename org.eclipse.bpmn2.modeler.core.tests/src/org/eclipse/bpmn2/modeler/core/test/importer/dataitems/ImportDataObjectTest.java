@@ -38,7 +38,7 @@ public class ImportDataObjectTest extends AbstractImportBpmnModelTest {
 		importer.execute();
 
 		// we display the data object AND its label
-		assertThat(diagram.getChildren()).hasSize(2);
+		assertThat(diagram).hasContainerShapeChildCount(2);
 		
 		assertThat(StringUtil.toDetailsString(diagram))
 			.contains("DataObjectImpl");

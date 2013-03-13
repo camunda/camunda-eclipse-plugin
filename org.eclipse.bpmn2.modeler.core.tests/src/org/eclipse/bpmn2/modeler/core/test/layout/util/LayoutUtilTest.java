@@ -2,25 +2,26 @@ package org.eclipse.bpmn2.modeler.core.test.layout.util;
 
 import static org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil.point;
 import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
-import static org.fest.assertions.api.Assertions.fail;
+import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
+import org.eclipse.bpmn2.modeler.core.layout.util.ConversionUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.bpmn2.modeler.core.layout.util.LayoutUtil.Sector;
 import org.eclipse.bpmn2.modeler.core.test.feature.AbstractFeatureTest;
 import org.eclipse.bpmn2.modeler.core.test.util.DiagramResource;
 import org.eclipse.bpmn2.modeler.core.test.util.Util;
 import org.eclipse.graphiti.datatypes.ILocation;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -278,5 +279,44 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 		
 		// then
 		assertThat(sharedConnections).hasSize(2);
+	}
+	
+	@Test
+	@DiagramResource
+	public void testContainerBoundsInCollaboration() {
+		// given
+		Diagram diagramUnderTest = diagram;
+		
+		// when
+		IRectangle diagramBounds = LayoutUtil.getBounds(diagramUnderTest, 0, 0, 0, 0);
+		
+		// then
+		assertThat(diagramBounds).isEqualTo(ConversionUtil.rect(230, 236, 503, 416));
+	}
+	
+	@Test
+	@DiagramResource("org/eclipse/bpmn2/modeler/core/test/layout/util/LayoutUtilTest.testContainerBoundsInCollaboration.bpmn")
+	public void testContainerBoundsWithPadding() {
+		// given
+		Diagram diagramUnderTest = diagram;
+		
+		// when
+		IRectangle diagramBounds = LayoutUtil.getBounds(diagramUnderTest, 0, 0, 100, 100);
+		
+		// then
+		assertThat(diagramBounds).isEqualTo(ConversionUtil.rect(130, 136, 603, 516));
+	}
+	
+	@Test
+	@DiagramResource
+	public void testContainerBoundsInProcess() {
+		// given
+		Diagram diagramUnderTest = diagram;
+		
+		// when
+		IRectangle diagramBounds = LayoutUtil.getBounds(diagramUnderTest, 0, 0, 0, 0);
+		
+		// then
+		assertThat(diagramBounds).isEqualTo(ConversionUtil.rect(288, 276, 408, 80));
 	}
 }

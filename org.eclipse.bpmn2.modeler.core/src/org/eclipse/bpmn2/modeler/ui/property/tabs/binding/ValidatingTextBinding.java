@@ -41,14 +41,21 @@ public abstract class ValidatingTextBinding<V> extends
 		FieldDecoration errorFieldIndicator = FieldDecorationRegistry
 				.getDefault().getFieldDecoration(
 						FieldDecorationRegistry.DEC_ERROR);
+		try {
+			errorDecoration.setImage(errorFieldIndicator.getImage());
+			errorDecoration.hide();
 
-		errorDecoration.setImage(errorFieldIndicator.getImage());
-		errorDecoration.hide();
-
-		this.toolTip = new DefaultToolTip(control,
-				SWT.BALLOON | SWT.ICON_ERROR, true);
-		toolTip.setHideDelay(2000);
+			this.toolTip = new DefaultToolTip(control,
+					SWT.BALLOON | SWT.ICON_ERROR, true);
+			toolTip.setHideDelay(2000);
+		}
+		catch (Exception e) { 
+			// FIXME
+			// errorDecoration.setImage(errorFieldIndicator.getImage())
+			// is causing "Graphic disposed" message sometimes
+		}
 	}
+
 
 	public void addErrorCode(Integer errorCode) {
 		checkedErrorCodes.add(errorCode);

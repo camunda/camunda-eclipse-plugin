@@ -27,6 +27,7 @@ import org.eclipse.bpmn2.modeler.core.layout.util.Layouter;
 import org.eclipse.bpmn2.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.modeler.core.utils.LabelUtil;
+import org.eclipse.bpmn2.modeler.core.utils.ScrollUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -214,6 +215,8 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 
 		// update di
 		updateDi(shape);
+		
+		ScrollUtil.updateScrollShape(getDiagram());
 	}
 	
 	/**

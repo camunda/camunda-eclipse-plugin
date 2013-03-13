@@ -24,7 +24,7 @@ public class AddLaneFeatureTest extends AbstractFeatureTest {
 		
 		// when
 		// lane is added to it
-		addLane(diagramTypeProvider)
+		Object lane = addLane(diagramTypeProvider)
 			.toContainer(diagram)
 			.execute();
 		

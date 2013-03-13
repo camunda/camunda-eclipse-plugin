@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.eclipse.bpmn2.modeler.core.test.importer.base;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.eclipse.bpmn2.modeler.core.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 
 import org.eclipse.bpmn2.modeler.core.importer.ModelImport;
 import org.eclipse.bpmn2.modeler.core.test.importer.AbstractImportBpmnModelTest;
@@ -35,7 +35,7 @@ public class ImportAsContainerShapeTest extends AbstractImportBpmnModelTest {
 		// * must be drawn in the first outer container (the diagram)
 		
 		// element is drawn on diagram along with its label
-		assertThat(diagram.getChildren()).hasSize(3);
+		assertThat(diagram).hasContainerShapeChildCount(3);
 	}
 	
 	@Test
@@ -45,7 +45,7 @@ public class ImportAsContainerShapeTest extends AbstractImportBpmnModelTest {
 		importer.execute();
 		
 		// element is drawn inside process
-		assertThat(diagram.getChildren()).hasSize(2);
+		assertThat(diagram).hasContainerShapeChildCount(2);
 	}
 	
 	@Test
@@ -57,7 +57,7 @@ public class ImportAsContainerShapeTest extends AbstractImportBpmnModelTest {
 		// underlaying DI uses floating points to denote coordinates / sizes etc.
 		
 		// element is drawn inside process
-		assertThat(diagram.getChildren()).hasSize(1);
+		assertThat(diagram).hasContainerShapeChildCount(1);
 	}
 	
 	@Test
@@ -73,6 +73,6 @@ public class ImportAsContainerShapeTest extends AbstractImportBpmnModelTest {
 		// (think about subprocesses)
 		
 		// element is drawn in participant along with its label
-		assertThat(diagram.getChildren()).hasSize(2);
+		assertThat(diagram).hasContainerShapeChildCount(2);
 	}
 }

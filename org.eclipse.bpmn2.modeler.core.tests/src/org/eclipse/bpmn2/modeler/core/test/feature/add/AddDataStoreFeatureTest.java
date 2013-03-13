@@ -33,7 +33,7 @@ public class AddDataStoreFeatureTest extends AbstractFeatureTest {
 			.toContainer(diagram)
 			.execute();
 
-		Shape shape = diagram.getChildren().get(0);
+		Shape shape = diagram.getChildren().get(1);
 		Shape labelShape = LabelUtil.getLabelShape(shape, diagram);
 		
 		// then

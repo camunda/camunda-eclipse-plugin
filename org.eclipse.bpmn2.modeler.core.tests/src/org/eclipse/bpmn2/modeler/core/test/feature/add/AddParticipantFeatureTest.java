@@ -198,7 +198,7 @@ public class AddParticipantFeatureTest extends AbstractFeatureTest {
 			.execute();
 
 		// then
-		Shape secondPoolShape = diagram.getChildren().get(1);
+		Shape secondPoolShape = diagram.getChildren().get(2);
 		
 		// second shape should be a pool
 		assertThat(secondPoolShape)

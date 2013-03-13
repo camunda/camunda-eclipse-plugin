@@ -67,6 +67,12 @@ public class FeatureSupport {
 	}
 
 	public static boolean isDiagram(PictogramElement shape) {
+		Definitions definitions = BusinessObjectUtil.getFirstElementOfType(shape, Definitions.class);
+		
+		if (definitions!=null) {
+			return true;
+		}
+		
 		return BusinessObjectUtil.containsChildElementOfType(shape, Definitions.class);
 	}
 	

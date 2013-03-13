@@ -35,7 +35,7 @@ public class ImportDataInputTest extends AbstractImportBpmnModelTest {
 		importer.execute();
 
 		// we display the data input AND its label
-		assertThat(diagram.getChildren()).hasSize(2);
+		assertThat(diagram).hasContainerShapeChildCount(2);
 		
 		assertThat(StringUtil.toDetailsString(diagram))
 			.contains("DataInput");
