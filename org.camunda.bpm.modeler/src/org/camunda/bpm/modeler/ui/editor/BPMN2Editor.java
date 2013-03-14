@@ -31,8 +31,9 @@ import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.DiagramEditorAdapter;
 import org.camunda.bpm.modeler.core.utils.ErrorUtils;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
-import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.camunda.bpm.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
+import org.camunda.bpm.modeler.core.utils.ScrollUtil;
+import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.camunda.bpm.modeler.core.validation.BPMN2ProjectValidator;
 import org.camunda.bpm.modeler.core.validation.BPMN2ValidationStatusLoader;
 import org.camunda.bpm.modeler.runtime.engine.model.util.ModelResourceFactoryImpl;
@@ -73,6 +74,7 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.TransactionalEditingDomain.Lifecycle;
 import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
 import org.eclipse.gef.EditPart;
+import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.ui.parts.SelectionSynchronizer;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -88,6 +90,8 @@ import org.eclipse.graphiti.ui.internal.editor.GFPaletteRoot;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -108,9 +112,9 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabDescriptorProvider;
 
 /**
- * 
+ * The BPMN 2 diagram editor
+ * @author nico.rehwaldt
  */
-@SuppressWarnings("restriction")
 public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListener, IGotoMarker {
 
 	public static final String EDITOR_ID = "org.camunda.bpm.modeler.ui.bpmn2editor";
@@ -393,42 +397,10 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 
 	private void addSelectionListener() {
 		if (selectionListener == null) {
-			IWorkbenchPage page = getSite().getPage();
-			selectionListener = new IPartListener2() {
-				public void partActivated(IWorkbenchPartReference partRef) {
-				}
-
-				@Override
-				public void partBroughtToTop(IWorkbenchPartReference partRef) {
-					IWorkbenchPart part = partRef.getPart(false);
-				}
-
-				@Override
-				public void partClosed(IWorkbenchPartReference partRef) {
-				}
-
-				@Override
-				public void partDeactivated(IWorkbenchPartReference partRef) {
-				}
-
-				@Override
-				public void partOpened(IWorkbenchPartReference partRef) {
-				}
-
-				@Override
-				public void partHidden(IWorkbenchPartReference partRef) {
-				}
-
-				@Override
-				public void partVisible(IWorkbenchPartReference partRef) {
-				}
-
-				@Override
-				public void partInputChanged(IWorkbenchPartReference partRef) {
-				}
-			};
-			page.addPartListener(selectionListener);
+			
 		}
+		
+		// no selection listener registered
 	}
 
 	private void removeSelectionListener()
@@ -797,21 +769,29 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 	////////////////////////////////////////////////////////////////////////////////
 	// Other handlers
 	////////////////////////////////////////////////////////////////////////////////
+	
 	// FIXME sometime the last element will be selected randomly, could be related to this function
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		super.selectionChanged(part, selection);
-		updateActions(getSelectionActions()); // usually done in GEF's
 		
-		final ISelection theSelection = selection;
+		// make sure we are not able to select the scroll filter
 		
-		EditPart editPart = BusinessObjectUtil.getEditPartForSelection(selection);
-		Object sel = BusinessObjectUtil
-					.getPictogramElementForSelection(theSelection);
-		if (sel instanceof PictogramElement && (editPart instanceof FlowElementTreeEditPart || editPart instanceof BaseElementTreeEditPart)) {
-			selectPictogramElements(new PictogramElement[] {(PictogramElement) sel});
+		final ScrollFilteredSelection scrollFiltered = filterScrollElement(selection);
+		if (scrollFiltered != null) {
+			fixScrollFilteredSelection(selection, scrollFiltered);
+			return;
 		}
 		
+		super.selectionChanged(part, selection);
+		
+		updateActions(getSelectionActions()); // usually done in GEF
+		
+		EditPart editPart = BusinessObjectUtil.getEditPartForSelection(selection);
+		Object pictogramElement = BusinessObjectUtil.getPictogramElementForSelection(selection);
+		
+		if (pictogramElement instanceof PictogramElement && (editPart instanceof FlowElementTreeEditPart || editPart instanceof BaseElementTreeEditPart)) {
+			selectPictogramElements(new PictogramElement[] { (PictogramElement) pictogramElement });
+		}
 	}
 
 	/* (non-Javadoc)
@@ -847,6 +827,131 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 					}
 				}
 			});
+		}
+	}
+	
+	//// Scroll fix related stuff ////////////////////////////////////////////
+	
+	private void fixScrollFilteredSelection(ISelection selection, ScrollFilteredSelection scrollFiltered) {
+		
+		final GraphicalViewer graphicalViewer = getGraphicalViewer();
+		IStructuredSelection newSelection = scrollFiltered.getSelection();
+		EditPart scrollEditPart = scrollFiltered.getScrollEditPart();
+		
+		boolean async = false;
+		
+		if (selection instanceof IStructuredSelection) {
+			// if first selected element equals scroll edit part update
+			// fire the updated selection asynchronously to allow the 
+			// property panel to pick the change up
+			async = ((IStructuredSelection) selection).getFirstElement().equals(scrollEditPart);
+		}
+		
+		graphicalViewer.deselect(scrollEditPart);
+		
+		if (newSelection.isEmpty()) {
+			Object diagramEditPart = graphicalViewer.getEditPartRegistry().get(getDiagramTypeProvider().getDiagram());
+			
+			List<?> selectedEditParts = graphicalViewer.getSelectedEditParts();
+			if (selectedEditParts.contains(diagramEditPart)) {
+				return;
+			}
+			
+			newSelection = new StructuredSelection(diagramEditPart);
+		}
+
+		final ISelection refreshSelection = newSelection;
+		
+		if (async) {
+			// set the new selection
+			Display.getDefault().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					graphicalViewer.setSelection(refreshSelection);
+				}
+			});
+		} else {
+			graphicalViewer.setSelection(refreshSelection);
+		}
+	}
+	
+	/**
+	 * Returns the list of filtered elements if the scroll shape was contained in the 
+	 * selection. Returns null otherwise (no filtering required).
+	 * 
+	 * @param selection
+	 * @return
+	 */
+	private ScrollFilteredSelection filterScrollElement(ISelection selection) {
+		if (selection instanceof IStructuredSelection) {
+			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+			
+			boolean foundScrollShape = false;
+			
+			ScrollFilteredSelection filteredSelection = new ScrollFilteredSelection();
+
+			for (Object o : structuredSelection.toArray()) {
+				if (o instanceof EditPart) {
+					EditPart editPart = (EditPart) o;
+					PictogramElement element = BusinessObjectUtil.getPictogramElementForEditPart(editPart);
+					if (element != null) {
+						if (ScrollUtil.isScrollShape(element)) {
+							foundScrollShape = true;
+							
+							filteredSelection.setScrollElement(editPart, element);
+							
+							// do not add scroll shape
+							continue;
+						}
+
+						filteredSelection.add(editPart, element);
+					}
+				}
+			}
+			
+			if (foundScrollShape) {
+				return filteredSelection;
+			} else {
+				return null;
+			}
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Helper for filtering the scroll shape from an editor selection.
+	 * 
+	 * @author nico.rehwaldt
+	 */
+	private static class ScrollFilteredSelection {
+		
+		private ArrayList<EditPart> editParts;
+		private ArrayList<PictogramElement> pictogramElements;
+		
+		private EditPart scrollEditPart;
+
+		public ScrollFilteredSelection() {
+			
+			this.editParts = new ArrayList<EditPart>();
+			this.pictogramElements = new ArrayList<PictogramElement>();
+		}
+		
+		public void add(EditPart editPart, PictogramElement pictogramElement) {
+			this.editParts.add(editPart);
+			this.pictogramElements.add(pictogramElement);
+		}
+		
+		public void setScrollElement(EditPart editPart, PictogramElement pictogramElement) {
+			this.scrollEditPart = editPart;
+		}
+		
+		public EditPart getScrollEditPart() {
+			return scrollEditPart;
+		}
+		
+		public IStructuredSelection getSelection() {
+			return new StructuredSelection(editParts.toArray());
 		}
 	}
 }

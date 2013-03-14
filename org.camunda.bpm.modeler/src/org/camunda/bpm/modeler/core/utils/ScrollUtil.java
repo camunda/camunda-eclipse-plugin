@@ -6,6 +6,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 
@@ -55,6 +56,7 @@ public class ScrollUtil {
 	}
 
 	public static final int SCROLL_PADDING = 150;
+	public static final String SCROLL_SHAPE_MARKER = "ScrollUtil.SCROLL_SHAPE_MARKER";
 
 	public static Shape getScrollShape(Shape shape) {
 		ScrollShapeHolder holder = BusinessObjectUtil.getFirstElementOfType(LayoutUtil.getDiagram(shape), ScrollShapeHolder.class);
@@ -164,6 +166,17 @@ public class ScrollUtil {
 		
 		scrollRect.setFilled(false);
 		scrollRect.setTransparency(1.0);
+		
+		Graphiti.getPeService().setPropertyValue(scrollShape, SCROLL_SHAPE_MARKER, "true");
 	}
 	
+	/**
+	 * Returns true if the given element is the scroll shape
+	 * 
+	 * @param e
+	 * @return
+	 */
+	public static boolean isScrollShape(PictogramElement e) {
+		return Graphiti.getPeService().getPropertyValue(e, SCROLL_SHAPE_MARKER) != null;
+	}
 }
