@@ -32,7 +32,7 @@ Modeler Development Dependencies
 The following shows a screenshot of an Eclipse Indigo installation with the required plugins installed.
 Highlighted are plugins which need to be installed in order to resolve add dependencies. 
 
-![Development Requirements](https://raw.github.com/camunda/bpmn2-modeler/develop/documentation/images/development-requirements.png)
+![Development Requirements](https://raw.github.com/camunda/camunda-modeler/develop/documentation/images/development-requirements.png)
 
 Click image to enlarge.
 
@@ -49,4 +49,4 @@ Project Structure
     + org.camunda.bpm.modeler.tests -> modeler runtime tests
     + org.camunda.bpm.modeler.tests.functional -> functional GUI tests (jubula)
 
-[1]: https://github.com/camunda/bpmn2-modeler
+[1]: https://github.com/camunda/camunda-modeler
