@@ -124,22 +124,43 @@ public class BusinessObjectUtil {
 		return BusinessObjectUtil.getFirstElementOfType(pe, BaseElement.class);
 	}
 
-	public static PictogramElement getPictogramElementForSelection(ISelection selection) {
-		EditPart editPart = getEditPartForSelection(selection);
-		if (editPart != null && editPart.getModel() instanceof PictogramElement) {
-			return (PictogramElement) editPart.getModel();
+	public static PictogramElement getPictogramElementForEditPart(EditPart editPart) {
+		if (editPart == null) {
+			return null;
 		}
 		
-		if (editPart != null && editPart.getModel() instanceof BaseElement) {
-			BaseElement baseElement = (BaseElement) editPart.getModel();
+		Object model = editPart.getModel();
+		if (model == null) {
+			return null;
+		}
+		
+		if (model instanceof PictogramElement) {
+			return (PictogramElement) model;
+		}
+		
+		if (model instanceof BaseElement) {
+			BaseElement baseElement = (BaseElement) model;
 			return getLinkingPictogramElement(baseElement);
 		}
 		
-		if (selection instanceof IStructuredSelection) {
-			Object o = ((IStructuredSelection)selection).getFirstElement();
-			if (o instanceof PictogramElement)
-				return (PictogramElement)o;
+		return null;
+	}
+	
+	public static PictogramElement getPictogramElementForSelection(ISelection selection) {
+		EditPart editPart = getEditPartForSelection(selection);
+		
+		PictogramElement element = getPictogramElementForEditPart(editPart);
+		if (element != null) {
+			return element;
 		}
+		
+		if (selection instanceof IStructuredSelection) {
+			Object o = ((IStructuredSelection) selection).getFirstElement();
+			if (o instanceof PictogramElement) {
+				return (PictogramElement) o;
+			}
+		}
+		
 		return null;
 	}
 
@@ -204,10 +225,14 @@ public class BusinessObjectUtil {
 	}
 
 	public static EditPart getEditPartForSelection(ISelection selection) {
-		if (selection instanceof IStructuredSelection &&
-				((IStructuredSelection) selection).isEmpty()==false) {
 		
-			Object firstElement = ((IStructuredSelection) selection).getFirstElement();
+		if (selection instanceof IStructuredSelection) {
+			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+			if (structuredSelection.isEmpty()) {
+				return null;
+			}
+			
+			Object firstElement = structuredSelection.getFirstElement();
 			EditPart editPart = null;
 			if (firstElement instanceof EditPart) {
 				editPart = (EditPart) firstElement;
@@ -216,6 +241,7 @@ public class BusinessObjectUtil {
 			}
 			return editPart;
 		}
+		
 		return null;
 	}
 	

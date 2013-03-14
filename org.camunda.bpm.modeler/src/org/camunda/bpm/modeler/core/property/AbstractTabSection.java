@@ -33,8 +33,7 @@ public abstract class AbstractTabSection extends GFPropertySection implements IT
 		this.page = page;
 	}
 	
-	public Composite createPropertiesComposite(Composite parent,
-			TabbedPropertySheetPage tabbedPropertySheetPage) {
+	public Composite createPropertiesComposite(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
 		
 		super.createControls(parent, tabbedPropertySheetPage);
 		
