@@ -6,7 +6,7 @@
          <meta.schema plugin="org.camunda.bpm.modeler" id="org.camunda.bpm.modeler.runtime" name="Runtime Specialization"/>
       </appinfo>
       <documentation>
-         Provides customization of the BPMN2 Modeler for third-party runtimes.
+         Provides customization of the camunda modeler for third-party runtimes.
       </documentation>
    </annotation>
 
