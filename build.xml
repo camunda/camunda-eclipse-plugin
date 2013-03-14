@@ -2,7 +2,7 @@
 
 <!-- using macros for git, because the ant tasks in jgit suck, no push / commit etc. -->
 
-<project name="Fox Release Management Script" default="release" basedir=".">
+<project name="Release Script" default="release" basedir=".">
 	<macrodef name = "git">
 		<attribute name = "command" />
 		<attribute name = "dir" default = "" />
@@ -110,7 +110,7 @@
 	/>
 	
 	<target name="build.release">
-		<maven basedir="${checkout.release.path}/fox-designer"
+		<maven basedir="${checkout.release.path}/${checkout.dir}"
              options="-Pplatform-indigo -Dmaven.test.skip=true -DskipTests=true -X"
              goals="clean install"
              resultproperty="maven.build.result" />
@@ -120,15 +120,15 @@
 
 	<!-- ============ Common stuff ============ -->
 	<target name="clean">
-		<delete dir="${checkout.release.path}/fox-designer" />
+		<delete dir="${checkout.release.path}/${checkout.dir}" />
 	</target>
 
 	<target name="git.checkout">
-		<git-clone-pull repository="${git.url.fox-designer}" dest="${checkout.release.path}/fox-designer" />
+		<git-clone-pull repository="${git.url}" dest="${checkout.release.path}/${checkout.dir}" />
 	</target>
 
 	<target name="set.release.version" depends="mvn.init">
-		<maven basedir="${checkout.release.path}/fox-designer"
+		<maven basedir="${checkout.release.path}/${checkout.dir}"
              options="-DnewVersion=${release.version} -Pplatform-indigo -e"
              goals="org.eclipse.tycho:tycho-versions-plugin:set-version"
              resultproperty="maven.build.result" />
@@ -137,26 +137,26 @@
 	<target name="commit.release.version">
 		<property name="release.version.commit.message" value="chore(release): set dev version to ${release.version}" />
 		<echo>Project: ${release.version} committing...</echo>
-		<git command="commit" dir="${checkout.release.path}/fox-designer">
+		<git command="commit" dir="${checkout.release.path}/${checkout.dir}">
 			<args>
 				<arg value = "-a" />
 				<arg value = "-m ${release.version.commit.message}" />
 			</args>
 		</git>
-		<echo>Project: ${checkout.release.path}/fox-designer committed.</echo>
+		<echo>Project: ${checkout.release.path}/${checkout.dir} committed.</echo>
 	</target>
 
 	<target name="create.release.tag">
 		<property name="release.commit.message" value="chore(release): tag release version ${release.version}" />
-		<git command="tag" dir="${checkout.release.path}/fox-designer">
+		<git command="tag" dir="${checkout.release.path}/${checkout.dir}">
 			<args>
 				<arg value = "-a" />
-				<arg value = "${fox.release.version}" />
+				<arg value = "${camunda.release.version}" />
 				<arg value = "-m '${release.commit.message}'" />
 			</args>
 		</git>
 		
-		<git command="checkout" dir="${checkout.release.path}/fox-designer">
+		<git command="checkout" dir="${checkout.release.path}/${checkout.dir}">
 			<args>
 				<arg value = "master" />
 			</args>
@@ -164,34 +164,34 @@
 	</target>
 
 	<target name="set.dev.version" depends="mvn.init">
-		<maven basedir="${checkout.release.path}/fox-designer"
+		<maven basedir="${checkout.release.path}/${checkout.dir}"
              options="-DnewVersion=${development.version} -Pplatform-indigo -e -X"
              goals="org.eclipse.tycho:tycho-versions-plugin:set-version"
              resultproperty="maven.build.result" />
 	</target>
 
 	<target name="commit.dev.version">
-		<property name="prepare.next.commit.message" value="Prepare next fox designer release: set developmentVersion to ${development.version}" />
+		<property name="prepare.next.commit.message" value="chore(release): prepare next release: set developmentVersion to ${development.version}" />
 		<echo>Project: @{project.dir} committing...</echo>
-		<git command="commit" dir="${checkout.release.path}/fox-designer">
+		<git command="commit" dir="${checkout.release.path}/${checkout.dir}">
 			<args>
 				<arg value = "-a" />
 				<arg value = "-m ${prepare.next.commit.message}" />
 			</args>
 		</git>
-		<echo>Project: ${checkout.release.path}/fox-designer committed.</echo>
+		<echo>Project: ${checkout.release.path}/${checkout.dir} committed.</echo>
 	</target>
 
 	<target name="git.push">
-		<echo>Project: ${checkout.release.path}/fox-designer pushing...</echo>
-		<git command="push" dir="${checkout.release.path}/fox-designer">
+		<echo>Project: ${checkout.release.path}/${checkout.dir} pushing...</echo>
+		<git command="push" dir="${checkout.release.path}/${checkout.dir}">
 			<args>
 				<arg value = "origin" />
 				<arg value = "master" />
 				<arg value = "--tags" />
 			</args>
 		</git>
-		<echo>Project: ${checkout.release.path}/fox-designer pushed.</echo>
+		<echo>Project: ${checkout.release.path}/${checkout.dir} pushed.</echo>
 	</target>
 
 </project>
