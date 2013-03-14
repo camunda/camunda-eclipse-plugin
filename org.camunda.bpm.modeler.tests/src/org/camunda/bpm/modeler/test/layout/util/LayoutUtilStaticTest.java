@@ -1,13 +1,12 @@
 package org.camunda.bpm.modeler.test.layout.util;
 
+import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.location;
+import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.*;
 
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
-import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
-
 import org.junit.Test;
 
 public class LayoutUtilStaticTest {

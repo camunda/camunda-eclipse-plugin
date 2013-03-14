@@ -263,7 +263,7 @@ public class ModelImport {
 	}
 	
 	protected Shape addScrollShape() {
-		return ScrollUtil.addScrollShape(rootDiagram, importBounds);
+		return ScrollUtil.addScrollShape(rootDiagram, importBounds, false, 0, 0);
 	}
 	
 	protected void handleDeferredActions() {

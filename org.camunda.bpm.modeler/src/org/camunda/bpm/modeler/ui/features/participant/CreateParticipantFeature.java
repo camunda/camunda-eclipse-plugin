@@ -24,7 +24,7 @@ import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.ContextUtil;
 import org.camunda.bpm.modeler.core.utils.LabelUtil;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
-import org.camunda.bpm.modeler.core.utils.ScrollUtil.ScrollShapeHolder;
+import org.camunda.bpm.modeler.core.utils.ScrollUtil;
 import org.camunda.bpm.modeler.ui.ImageProvider;
 import org.camunda.bpm.modeler.ui.features.event.MoveBoundaryEventFeature;
 import org.eclipse.bpmn2.BaseElement;
@@ -54,8 +54,8 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 	private static final int minWidth = 500;
 	private static final int minHeight = 175;
 	
-	private static final int xpadding = 70;
-	private static final int ypadding = 40;
+	private static final int xpadding = 80;
+	private static final int ypadding = 50;
 	
 	private static final int topMargin = 40;
 	private static final int leftMargin = 40;
@@ -105,20 +105,17 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 			Collaboration newCollaboration = createCollaboration(definitions, bpmnDiagram.getPlane());
 			newParticipant = createParticipant(process, newCollaboration);
 			
-			ScrollShapeHolder scrollShapeHolder = BusinessObjectUtil.getFirstElementOfType(diagram, ScrollShapeHolder.class);
-			
 			// link diagram to collaboration and plane
 			link(diagram, new Object[] { newCollaboration, bpmnDiagram });
-
-			// relink scroll shape
-			diagram.getLink().getBusinessObjects().add(scrollShapeHolder);
 			
 			// create graphiti representation
 			createGraphitiRepresentation(context, newParticipant);
 		} else {
 			throw new IllegalStateException("Diagram liked to unrecognized element: " + rootElement);
 		}
-
+		
+		ScrollUtil.addScrollShape(getDiagram());
+		
 		newParticipant.setName("Pool ");
 		return new Object[] { newParticipant };
     }
@@ -159,8 +156,14 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 	private void offsetChildrenPosition(IRectangle bounds, ContainerShape participantContainer) {
 		
 		List<Shape> childShapes = new ArrayList<Shape>(participantContainer.getChildren());
+		Shape scrollShape = ScrollUtil.getScrollShape(getDiagram());
 		
 		for (final Shape childShape : childShapes) {
+			// dont move scrollshape into participant
+			if (childShape.equals(scrollShape)) {
+				continue;
+			}
+			
 			GraphicsAlgorithm ga = childShape.getGraphicsAlgorithm();
 			
 			if (!(childShape instanceof ContainerShape)) {
@@ -205,6 +208,7 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 		newContext.setY(bounds.getY() - topMargin);
 		newContext.setWidth(bounds.getWidth());
 		newContext.setHeight(bounds.getHeight());
+		
 		return newContext;
 	}
 	
