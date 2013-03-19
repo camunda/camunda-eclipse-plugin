@@ -6,7 +6,6 @@ import org.camunda.bpm.modeler.core.features.AbstractLayoutBpmnElementFeature;
 import org.camunda.bpm.modeler.core.features.PropertyNames;
 import org.camunda.bpm.modeler.core.layout.nnew.DefaultLayoutStrategy;
 import org.camunda.bpm.modeler.core.layout.nnew.LayoutContext;
-import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.LabelUtil;
 import org.eclipse.bpmn2.BaseElement;
