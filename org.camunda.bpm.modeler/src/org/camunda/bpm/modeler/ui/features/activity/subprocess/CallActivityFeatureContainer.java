@@ -18,6 +18,7 @@ import org.camunda.bpm.modeler.core.features.activity.AbstractCreateExpandableFl
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.features.activity.ResizeActivityFeature;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallActivity;
@@ -118,7 +119,7 @@ public class CallActivityFeatureContainer extends AbstractExpandableActivityFeat
 	
 	@Override
 	public IResizeShapeFeature getResizeFeature(IFeatureProvider fp) {
-		return new DefaultResizeBPMNShapeFeature(fp);
+		return new ResizeActivityFeature(fp);
 	}
 	
 	@Override
