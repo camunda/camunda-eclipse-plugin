@@ -592,15 +592,12 @@ public class LayoutUtil {
 			return resultRectangle;
 		}
 
-		GraphicsAlgorithm firstChildGa = containerShape.getChildren().get(0).getGraphicsAlgorithm();
 		BoundsCompareResult compareResult = new BoundsCompareResult();
 		
-		if (firstChildGa != null) {
-			compareResult.setXMinimum(firstChildGa.getX());
-			compareResult.setXMaximum(firstChildGa.getX() + firstChildGa.getWidth());
-			compareResult.setYMinimum(firstChildGa.getY());
-			compareResult.setYMaximum(firstChildGa.getY() + firstChildGa.getHeight());
-		}
+		compareResult.setXMinimum(Integer.MAX_VALUE);
+		compareResult.setXMaximum(0);
+		compareResult.setYMinimum(Integer.MAX_VALUE);
+		compareResult.setYMaximum(0);
 		
 		Shape scrollShape = ScrollUtil.getScrollShape(containerShape);
 		

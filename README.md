@@ -1,7 +1,9 @@
 BPMN 2.0 Modeler for Eclipse
 ============================
 
-&copy; 2011, 2012 camunda services GmbH
+![Screenshot](https://raw.github.com/camunda/camunda-modeler/develop/documentation/images/shot.png)
+
+&copy; 2013 camunda services GmbH
 
 
 Licensing

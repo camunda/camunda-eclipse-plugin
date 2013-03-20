@@ -1,18 +1,14 @@
 package org.camunda.bpm.modeler.core.utils;
 
-import org.camunda.bpm.modeler.core.layout.util.ConversionUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
-import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.services.IGaService;
-import org.eclipse.graphiti.services.IPeService;
 
 public class ScrollUtil {
 	
@@ -28,6 +24,9 @@ public class ScrollUtil {
 	public static class ScrollShapeHolder extends EObjectImpl {
 		Shape scrollShape;
 
+		public ScrollShapeHolder() {
+		}
+		
 		public ScrollShapeHolder(Shape scrollShape) {
 			super();
 			this.scrollShape = scrollShape;
@@ -35,6 +34,10 @@ public class ScrollUtil {
 		
 		public Shape getScrollShape() {
 			return scrollShape;
+		}
+		
+		public void setScrollShape(Shape scrollShape) {
+			this.scrollShape = scrollShape;
 		}
 		
 		/**
@@ -62,47 +65,101 @@ public class ScrollUtil {
 		}
 		return null;
 	}
-
-	public static ILocation updateScrollShape(PictogramElement element) {
-		Shape scrollShape = getScrollShape((Shape) element);
-
-		// during model import there might be updates also, scrollshape is null
-		// then
-		if (scrollShape == null) {
-			return null;
+	
+	/**
+	 * update the scroll shape in the current diagram
+	 * 
+	 * @param diagram
+	 * @return
+	 */
+	public static Shape updateScrollShape(Diagram diagram) {
+		Shape scrollShape = getScrollShape(diagram);
+		
+		int xpos = 0;
+		int ypos = 0;
+		
+		if (scrollShape != null && scrollShape.eContainer() != null) {
+			xpos = scrollShape.getGraphicsAlgorithm().getX();
+			ypos = scrollShape.getGraphicsAlgorithm().getY();
+		}else {
+			scrollShape = createScrollShape(diagram, getHolder(diagram));
 		}
-
-		int scrollShapeX = scrollShape.getGraphicsAlgorithm().getX();
-		int scrollShapeY = scrollShape.getGraphicsAlgorithm().getY();
 		
-		// reset scroll shape before getting bounds, otherwise it will always scroll beacuse of the padding
-		scrollShape.getGraphicsAlgorithm().setX(0);
-		scrollShape.getGraphicsAlgorithm().setY(0);
+		IRectangle bounds = LayoutUtil.getBounds(diagram);
 		
-		IRectangle rect = LayoutUtil.getBounds(LayoutUtil.getDiagram((Shape) element), 0, 0, 0, 0);
+		updateScrollRect(bounds, xpos, ypos, scrollShape, bounds.getX(), bounds.getY());
 		
-		int newX = Math.max(rect.getX() + rect.getWidth() + SCROLL_PADDING, scrollShapeX);
-		int newY = Math.max(rect.getY() + rect.getHeight() + SCROLL_PADDING, scrollShapeY);
-		
-		scrollShape.getGraphicsAlgorithm().setX(newX);
-		scrollShape.getGraphicsAlgorithm().setY(newY);
-		
-		return ConversionUtil.location(newX, newY);
+		return scrollShape;
 	}
 	
-	public static Shape addScrollShape(Diagram rootDiagram, IRectangle importBounds) {
-		IGaService gaService = Graphiti.getGaService();
-		IPeService peService = Graphiti.getPeService();
+	public static Shape addScrollShape(Diagram rootDiagram) {
+		return addScrollShape(rootDiagram, null, true, 0, 0);
+	}	
+	
+	/**
+	 * Create a scroll shape on the diagram
+	 * 
+	 * @param rootDiagram the diagram to create the scrollshape in 
+	 * @param bounds the bounds to consider for the scrollshape padding, may be null, the bounds are calculated in this case
+	 * @param boundsOffset flag to decide if we should offset the scrollshape by the bounds position
+	 * @param minX the minimal x position of the scrollshape
+	 * @param minY the minimal y position of the scrollshape
+	 * @return the scroll shape
+	 */
+	public static Shape addScrollShape(Diagram rootDiagram, IRectangle bounds, boolean boundsOffset, int minX, int minY) {
+		ScrollShapeHolder holder = getHolder(rootDiagram);
 		
-		Shape scrollShape = peService.createContainerShape(rootDiagram, true);
+		if (bounds == null) {
+			bounds = LayoutUtil.getBounds(rootDiagram);
+		}
 		
-		ScrollShapeHolder holder = new ScrollUtil.ScrollShapeHolder(scrollShape);
-		rootDiagram.getLink().getBusinessObjects().add(holder);
+		Shape scrollShape = createScrollShape(rootDiagram, holder);
 		
-		Rectangle scrollRect = gaService.createRectangle(scrollShape);
+		int xoffset = 0;
+		int yoffset = 0;
 		
-		scrollRect.setX(importBounds.getWidth() + ScrollUtil.SCROLL_PADDING);
-		scrollRect.setY(importBounds.getHeight() +  ScrollUtil.SCROLL_PADDING);
+		if (boundsOffset) {
+			xoffset = bounds.getX();
+			yoffset = bounds.getY();
+		}
+		
+		updateScrollRect(bounds, minX, minY, scrollShape, xoffset,
+				yoffset);
+		
+		return scrollShape;
+	}
+
+	private static ScrollShapeHolder getHolder(Diagram rootDiagram) {
+		ScrollShapeHolder holder = BusinessObjectUtil.getFirstElementOfType(LayoutUtil.getDiagram(rootDiagram), ScrollShapeHolder.class);
+		
+		if (holder == null) {
+			holder = new ScrollUtil.ScrollShapeHolder();
+			rootDiagram.getLink().getBusinessObjects().add(holder);
+		}
+		
+		return holder;
+	}
+
+	private static Shape createScrollShape(Diagram rootDiagram, ScrollShapeHolder holder) {
+		if (holder.getScrollShape() == null) {
+			Shape scrollShape = Graphiti.getPeService().createContainerShape(rootDiagram, true);
+			holder.setScrollShape(scrollShape);
+		}
+		return holder.getScrollShape();
+	}
+
+	private static void updateScrollRect(IRectangle bounds, int xpos, int ypos, Shape scrollShape, int xoffset, int yoffset) {
+		Rectangle scrollRect = (Rectangle) scrollShape.getGraphicsAlgorithm();
+		
+		if (scrollRect == null) {
+			scrollRect =  Graphiti.getGaService().createRectangle(scrollShape);
+		}
+		
+		xpos = Math.max(xoffset + bounds.getWidth() + ScrollUtil.SCROLL_PADDING , xpos);
+		ypos = Math.max(yoffset + bounds.getHeight() + ScrollUtil.SCROLL_PADDING , ypos);
+		
+		scrollRect.setX(xpos);
+		scrollRect.setY(ypos);
 		
 		scrollRect.setWidth(1);
 		scrollRect.setHeight(1);
@@ -110,8 +167,7 @@ public class ScrollUtil {
 		scrollRect.setFilled(false);
 		scrollRect.setTransparency(1.0);
 		
-		peService.setPropertyValue(scrollShape, SCROLL_SHAPE_MARKER, "true");
-		return scrollShape;
+		Graphiti.getPeService().setPropertyValue(scrollShape, SCROLL_SHAPE_MARKER, "true");
 	}
 	
 	/**
