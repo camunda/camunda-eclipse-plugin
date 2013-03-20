@@ -22,9 +22,10 @@ Features
 Resources
 ---------------
 
-* [Download](http://camunda.org/download.html) / [Eclipse Plugin Update Site](http://camunda.org/release/camunda-modeler/update-sites/latest/site/)
-* [User Forum](https://groups.google.com/forum/#!forum/camunda-bpm-users)
-* [Development Forum](https://groups.google.com/forum/#!forum/camunda-bpm-dev)
+* [Download](http://camunda.org/download.html) / [Update site](http://camunda.org/release/camunda-modeler/update-sites/latest/site/)
+* [User forum](https://groups.google.com/forum/#!forum/camunda-bpm-users)
+* [Development forum](https://groups.google.com/forum/#!forum/camunda-bpm-dev)
+* [Issue tracker](https://github.com/camunda/camunda-modeler/issues)
 
 How to contribute
 ------------------------
@@ -70,6 +71,6 @@ Project Structure
 Licensing
 -------------
 
-Licensed under the Eclipse public license <http://www.eclipse.org/legal/epl-v10.html>. 
+[Eclipse Public License](http://www.eclipse.org/legal/epl-v10.html)
 
 [1]: https://github.com/camunda/camunda-modeler
