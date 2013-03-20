@@ -30,7 +30,7 @@ Resources
 Contribute
 --------------
 
-If you would like to work on the modeler, please read our [contribution guidelines](https://github.com/camunda/camunda-modeler/blob/develop/CONTRIBUTE.md).
+If you would like to work on the modeler, please read our [contribution guidelines](https://github.com/camunda/camunda-modeler/blob/develop/CONTRIBUTING.md).
 
 Licensing
 -------------
