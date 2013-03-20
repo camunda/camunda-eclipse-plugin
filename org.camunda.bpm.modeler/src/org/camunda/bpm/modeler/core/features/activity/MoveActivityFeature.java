@@ -21,6 +21,7 @@ import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IMoveShapeFeature;
+import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.features.context.impl.MoveShapeContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -37,6 +38,11 @@ public class MoveActivityFeature extends MoveFlowNodeFeature {
 		super(fp);
 	}
 
+	@Override
+	public boolean canMoveShape(IMoveShapeContext context) {
+		return context.getTargetConnection() == null && super.canMoveShape(context);
+	}
+	
 	@Override
 	protected void postMoveShape(final IMoveShapeContext context) {
 
