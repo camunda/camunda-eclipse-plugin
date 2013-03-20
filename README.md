@@ -1,18 +1,33 @@
-BPMN 2.0 Modeler for Eclipse
-============================
+Camunda Modeler
+==============
+
+The camunda modeler is a BPMN 2.0 modeling plugin for Eclipse which focuses on seamless modeling of Process and Collaboration diagrams.
+It is part of the [camunda BPM](http://camunda.org) software stack.
 
 ![Screenshot](https://raw.github.com/camunda/camunda-modeler/develop/documentation/images/shot.png)
 
-&copy; 2013 camunda services GmbH
+Features
+------------
 
+* Native BPMN 2.0 support
+  * Reads and writes BPMN 2.0 diagram files
+  * Shows import warnings and errors
+  * Stores diagram information in DI
+* Layouting
+  * Advanced connection layouting (manhattan connection)
+* Property Tabs
+  * For BPMN 2.0 properties
+  * For [camunda engine](http://camunda.org/implement.html) and [Activiti](http://activiti.org) extensions
 
-Licensing
----------
+Resources
+---------------
 
-Licensed under the Eclipse public license <http://www.eclipse.org/legal/epl-v10.html>. 
+* [Download](http://camunda.org/download.html) / [Eclipse Plugin Update Site](http://camunda.org/release/camunda-modeler/update-sites/latest/site/)
+* [User Forum](https://groups.google.com/forum/#!forum/camunda-bpm-users)
+* [Development Forum](https://groups.google.com/forum/#!forum/camunda-bpm-dev)
 
 How to contribute
------------------
+------------------------
 
 * Fork the modeler sources
 * Checkout the `develop` branch
@@ -50,5 +65,11 @@ Project Structure
     + org.camunda.bpm.modeler -> modeler runtime
     + org.camunda.bpm.modeler.tests -> modeler runtime tests
     + org.camunda.bpm.modeler.tests.functional -> functional GUI tests (jubula)
+
+
+Licensing
+-------------
+
+Licensed under the Eclipse public license <http://www.eclipse.org/legal/epl-v10.html>. 
 
 [1]: https://github.com/camunda/camunda-modeler
