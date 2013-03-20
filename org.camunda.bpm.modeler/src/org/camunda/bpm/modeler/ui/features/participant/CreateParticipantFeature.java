@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.participant;
 
+import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -54,11 +56,11 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 	private static final int minWidth = 500;
 	private static final int minHeight = 175;
 	
-	private static final int xpadding = 80;
-	private static final int ypadding = 50;
+	private static final int paddingX = 50;
+	private static final int paddingY = 50;
 	
-	private static final int topMargin = 40;
-	private static final int leftMargin = 40;
+	private static final int marginY = 40;
+	private static final int marginX = 40;
 	
 	public CreateParticipantFeature(IFeatureProvider fp) {
 	    super(fp, "Pool", "Container for partitioning a set of activities");
@@ -116,7 +118,7 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 		
 		ScrollUtil.addScrollShape(getDiagram());
 		
-		newParticipant.setName("Pool ");
+		newParticipant.setName("Pool");
 		return new Object[] { newParticipant };
     }
 
@@ -124,7 +126,13 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 	private void createGraphitiRepresentation(ICreateContext context, Participant newParticipant) {
 		Diagram diagram = getDiagram();
 		
-		IRectangle bounds = LayoutUtil.getBounds(diagram, minWidth, minHeight, xpadding, ypadding);
+		IRectangle bounds = LayoutUtil.getChildrenBBox(diagram, null, paddingX, paddingY);
+		
+		// in case we have no children
+		if (bounds == null) {
+			bounds = rectangle(context.getX(), context.getY(), minWidth, minHeight);
+		}
+		
 		ContainerShape participantContainer = (ContainerShape) addGraphicalRepresentation(contextFromBounds(context, bounds), newParticipant);
 		
 		Iterator<Shape> childrenIterator = diagram.getChildren().iterator();
@@ -172,8 +180,8 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 			
 			MoveShapeContext moveShapeContext = new MoveShapeContext(childShape);
 			
-			int newX = ga.getX() - bounds.getX() + leftMargin;
-			int newY = ga.getY() - bounds.getY() + topMargin;
+			int newX = ga.getX() - bounds.getX() + marginX;
+			int newY = ga.getY() - bounds.getY() + marginY;
 			
 			moveShapeContext.setX(newX);
 			moveShapeContext.setY(newY);
@@ -204,10 +212,11 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 		CreateContext newContext = new CreateContext();
 		newContext.setTargetConnection(oldContext.getTargetConnection());
 		newContext.setTargetContainer(oldContext.getTargetContainer());
-		newContext.setX(bounds.getX() - leftMargin);
-		newContext.setY(bounds.getY() - topMargin);
-		newContext.setWidth(bounds.getWidth());
-		newContext.setHeight(bounds.getHeight());
+		
+		newContext.setX(bounds.getX() - marginX);
+		newContext.setY(bounds.getY() - marginY);
+		newContext.setWidth(bounds.getWidth() + marginX);
+		newContext.setHeight(bounds.getHeight() + marginY);
 		
 		return newContext;
 	}

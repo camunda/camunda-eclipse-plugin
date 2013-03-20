@@ -12,12 +12,15 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.activity.subprocess;
 
-import org.camunda.bpm.modeler.core.features.DefaultResizeBPMNShapeFeature;
+import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
+
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.ui.features.activity.ResizeActivityFeature;
 import org.eclipse.bpmn2.di.BPMNShape;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.features.context.impl.ResizeShapeContext;
@@ -35,100 +38,54 @@ public class ResizeExpandableActivityFeature extends ResizeActivityFeature {
 	}
 	
 	@Override
+	public boolean canResizeShape(IResizeShapeContext context) {
+		ContainerShape containerShape = (ContainerShape) context.getShape();
+		BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(containerShape, BPMNShape.class);
+		
+		// can only resize non-expanded containers
+		if (!bpmnShape.isIsExpanded()) {
+			return false;
+		}
+	
+		boolean contained = true;
+		
+		// see if we are before the actual resize operation
+		if (context.getDirection() != IResizeShapeContext.DIRECTION_UNSPECIFIED) {
+			
+			IRectangle preResizeBounds = LayoutUtil.getRelativeBounds(containerShape);
+	
+			// check if children still fit into element
+			IRectangle childrenBBox = LayoutUtil.getChildrenBBox(containerShape, null, 0, 0);
+			if (childrenBBox != null) {
+				
+				IRectangle postResizeBounds = rectangle(
+					context.getX() - preResizeBounds.getX(), 
+					context.getY() - preResizeBounds.getY(), 
+					context.getWidth(), 
+					context.getHeight());
+				
+				contained = LayoutUtil.isContained(childrenBBox, postResizeBounds);
+			}
+		}
+		
+		return contained && super.canResizeShape(context);
+	}
+	
+	@Override
+	protected boolean isCompensateMovementOnChildren() {
+		return true;
+	}
+	
+	@Override
 	public void resizeShape(IResizeShapeContext context) {
-
-		ResizeShapeContext resizeShapeContext = (ResizeShapeContext)context;
+		ResizeShapeContext resizeShapeContext = (ResizeShapeContext) context;
 
 		ContainerShape containerShape = (ContainerShape) context.getShape();
 		BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(containerShape, BPMNShape.class);
 		
 		if (bpmnShape.isIsExpanded()) {
 
-			// SubProcess is expanded
-			
-			GraphicsAlgorithm parentGa = containerShape.getGraphicsAlgorithm();
-			int newWidth = resizeShapeContext.getWidth();
-			int newHeight = resizeShapeContext.getHeight();
-			SizeCalculator sizeCalc = new SizeCalculator(containerShape);
-			int shiftX = sizeCalc.shiftX;
-			int shiftY = sizeCalc.shiftY;
-			int minWidth = sizeCalc.minWidth;
-			int minHeight = sizeCalc.minHeight;
-			
-			if (shiftX < 0) {
-				for (PictogramElement pe : FeatureSupport.getContainerChildren(containerShape)) {
-					GraphicsAlgorithm childGa = pe.getGraphicsAlgorithm();
-					if (childGa!=null) {
-						int x = childGa.getX() - shiftX + MARGIN;
-						childGa.setX(x);
-					}
-				}
-				resizeShapeContext.setX(resizeShapeContext.getX() + shiftX - MARGIN);
-				shiftX = MARGIN;
-			}
-			
-			if (shiftY < 0) {
-				for (PictogramElement pe : FeatureSupport.getContainerChildren(containerShape)) {
-					GraphicsAlgorithm childGa = pe.getGraphicsAlgorithm();
-					if (childGa!=null) {
-						int y = childGa.getY() - shiftY + MARGIN;
-						childGa.setY(y);
-					}
-				}
-				resizeShapeContext.setY(resizeShapeContext.getY() + shiftY - MARGIN);
-				shiftX = MARGIN;
-			}
-
-			if (shiftX < MARGIN)
-				shiftX = MARGIN;
-			if (shiftY < MARGIN)
-				shiftY = MARGIN;
-			minWidth += 2 * MARGIN;
-			minHeight += 2 * MARGIN;
-
-			if (newWidth < minWidth) {
-				parentGa.setWidth(minWidth);
-			}
-			if (newWidth < shiftX + minWidth) {
-				int shift = shiftX + minWidth - newWidth;
-				if (shift>shiftX-MARGIN) {
-					shift = shiftX-MARGIN;
-				}
-				if (shift>0) {
-					for (PictogramElement pe : FeatureSupport.getContainerChildren(containerShape)) {
-						GraphicsAlgorithm childGa = pe.getGraphicsAlgorithm();
-						if (childGa!=null) {
-							int x = childGa.getX() - shift;
-							childGa.setX(x);
-						}
-					}
-				}
-			}
-			if (newHeight < minHeight) {
-				parentGa.setHeight(minHeight);
-			}
-			if (newHeight < shiftY + minHeight) {
-				int shift = shiftY + minHeight - newHeight;
-				if (shift>shiftY-MARGIN) {
-					shift = shiftY-MARGIN;
-				}
-				if (shift>0) {
-					for (PictogramElement pe : FeatureSupport.getContainerChildren(containerShape)) {
-						GraphicsAlgorithm childGa = pe.getGraphicsAlgorithm();
-						if (childGa!=null) {
-							int y = childGa.getY() - shift;
-							childGa.setY(y);
-						}
-					}
-				}
-			}
-			
-			if (resizeShapeContext.getWidth() < minWidth)
-				resizeShapeContext.setWidth(minWidth);
-			if (resizeShapeContext.getHeight() < minHeight)
-				resizeShapeContext.setHeight(minHeight);
-		}
-		else {
+		} else {
 			
 			// SubProcess is collapsed
 			
@@ -147,77 +104,5 @@ public class ResizeExpandableActivityFeature extends ResizeActivityFeature {
 		Graphiti.getPeService().sendToBack(containerShape);
 		
 		super.resizeShape(context);
-	}
-	
-	public static class SizeCalculator {
-		
-		int shiftX;
-		int shiftY;
-		int minWidth;
-		int minHeight;
-		ContainerShape containerShape;
-		
-		public SizeCalculator(ContainerShape containerShape) {
-			setShape(containerShape);
-		}
-		
-		public void setShape(ContainerShape containerShape) {
-			this.containerShape = containerShape;
-			calculate();
-		}
-		
-		private void calculate() {
-			int minX = Integer.MAX_VALUE;
-			int minY = Integer.MAX_VALUE;
-			minWidth = 0;
-			minHeight = 0;
-
-			for (PictogramElement pe : FeatureSupport.getContainerChildren(containerShape)) {
-				GraphicsAlgorithm ga = pe.getGraphicsAlgorithm();
-				if (ga!=null) {
-					int x = ga.getX();
-					int y = ga.getY();
-					if (x < minX)
-						minX = x;
-					if (y < minY)
-						minY = y;
-				}
-			}
-			
-			shiftX = minX;
-			shiftY = minY;
-			
-			for (PictogramElement pe : FeatureSupport.getContainerChildren(containerShape)) {
-				GraphicsAlgorithm ga = pe.getGraphicsAlgorithm();
-				if (ga!=null) {
-					int w = ga.getX() - minX + ga.getWidth();
-					int h = ga.getY() - minY + ga.getHeight();
-					if (w > minWidth)
-						minWidth = w;
-					if (h > minHeight)
-						minHeight = h;
-				}
-			}
-			if (minWidth<=0)
-				minWidth = GraphicsUtil.TASK_DEFAULT_WIDTH;
-			if (minHeight<=0)
-				minHeight = GraphicsUtil.TASK_DEFAULT_HEIGHT;
-		}
-
-		public int getShiftX() {
-			return shiftX;
-		}
-
-		public int getShiftY() {
-			return shiftY;
-		}
-		
-		public int getWidth() {
-			return minWidth;
-		}
-		
-		public int getHeight() {
-			return minHeight;
-		}
 	}
 }

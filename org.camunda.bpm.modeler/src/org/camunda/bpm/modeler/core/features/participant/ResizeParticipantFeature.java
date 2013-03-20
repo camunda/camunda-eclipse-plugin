@@ -14,16 +14,13 @@ package org.camunda.bpm.modeler.core.features.participant;
 
 import java.util.List;
 
-import org.camunda.bpm.modeler.core.di.DIUtils;
 import org.camunda.bpm.modeler.core.features.DefaultResizeBPMNShapeFeature;
-import org.camunda.bpm.modeler.core.layout.util.Layouter;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.ChoreographyActivity;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeatureProvider;
-import org.eclipse.graphiti.features.IReason;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.features.context.impl.ResizeShapeContext;

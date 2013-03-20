@@ -9,6 +9,7 @@ import org.eclipse.draw2d.geometry.Vector;
 import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
+import org.eclipse.graphiti.internal.datatypes.impl.DimensionImpl;
 import org.eclipse.graphiti.internal.datatypes.impl.LocationImpl;
 import org.eclipse.graphiti.internal.datatypes.impl.RectangleImpl;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
@@ -34,9 +35,14 @@ public class ConversionUtil {
 	public static Vector vector(double x, double y) {
 		return new Vector(x, y);
 	}
-	
+
 	public static ILocation location(Vector v) {
 		return location((int) Math.round(v.x), (int) Math.round(v.y));
+	}
+
+	@SuppressWarnings("restriction")
+	public static IDimension dimension(int width, int height) {
+		return new DimensionImpl(width, height);
 	}
 
 	public static Point point(int x, int y) {

@@ -43,7 +43,7 @@ public class ScrollUtilTest extends AbstractFeatureTest {
 			.by(movement)
 			.execute();
 		
-		IRectangle diagramBounds = LayoutUtil.getBounds(diagramUnderTest, 0, 0, 0, 0);
+		IRectangle diagramBounds = LayoutUtil.getChildrenBBox(diagramUnderTest);
 		
 		assertThat(diagramBounds).isEqualTo(ConversionUtil.rect(288, 298, 408, 258));
 		assertThat(scrollShape).position().isEqualTo(846, 706);
@@ -62,7 +62,6 @@ public class ScrollUtilTest extends AbstractFeatureTest {
 		Shape scrollShape = ScrollUtil.getScrollShape(diagramUnderTest);
 		
 		// then
-		assertThat(scrollShape).position().isEqualTo(957, 617);
+		assertThat(scrollShape).position().isEqualTo(896, 556);
 	}
-	
 }
