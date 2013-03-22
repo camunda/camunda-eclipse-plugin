@@ -35,7 +35,6 @@ import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.ui.internal.services.IGefService;
 
 /**
  * Utility dealing with all sorts of layout specific concerns.
@@ -580,73 +579,179 @@ public class LayoutUtil {
 			bounds.getY() + bounds.getHeight() / 2);
 	}
 	
-	public static IRectangle getBounds(ContainerShape containerShape) {
-		return getBounds(containerShape, 0, 0 ,0 ,0);
-	}
+	//// bounding box computation logic ////////////////////////////////////////////
 	
-	public static IRectangle getBounds(ContainerShape containerShape, int minWidth, int minHeight, int xpadding, int ypadding) {
-		
-		IRectangle resultRectangle = rectangle(1, 1, minWidth, minHeight);
-		
-		if (containerShape.getChildren().isEmpty()) {
-			return resultRectangle;
-		}
+	/**
+	 * Get the bounding box of the containers children.
+	 * 
+	 * @param container
+	 * @return
+	 */
+	public static IRectangle getChildrenBBox(ContainerShape container) {
+		return getChildrenBBox(container, null, 0, 0);
+	}
 
-		BoundsCompareResult compareResult = new BoundsCompareResult();
+	/**
+	 * Get the bounding box of the containers children with the given minimal dimension and as well as y padding.
+	 * 
+	 * @param container
+	 * @param minDimensions
+	 * @param paddingX
+	 * @param paddingY
+	 * 
+	 * @return the bounding box, relative to the shapes coordinate system.
+	 */
+	public static IRectangle getChildrenBBox(ContainerShape container, IRectangle minBBox, int paddingX, int paddingY) {
+		return getBBox(container.getChildren(), minBBox, paddingX, paddingY);
+	}
+
+	/**
+	 * Get the bounding box of the given shapes, as relative coordinates.
+	 * 
+	 * @param shapes
+	 * @return
+	 */
+	public static IRectangle getBBox(List<Shape> shapes, IRectangle minBBox, int paddingX, int paddingY) {
 		
-		compareResult.setXMinimum(Integer.MAX_VALUE);
-		compareResult.setXMaximum(0);
-		compareResult.setYMinimum(Integer.MAX_VALUE);
-		compareResult.setYMaximum(0);
+		BBox bbox = new BBox(minBBox, paddingX, paddingY);
 		
-		Shape scrollShape = ScrollUtil.getScrollShape(containerShape);
-		
-		for (Shape childShape : containerShape.getChildren()) {
-			// scrollshape is assumed to be invisible
-			if (childShape.equals(scrollShape)) {
+		for (Shape s: shapes) {
+
+			// only include shapes with a graphical representation
+			if (s.getGraphicsAlgorithm() == null) {
 				continue;
 			}
 			
-			compareAndUpdateResultMax(childShape, compareResult);
+			// never include scroll shape
+			if (ScrollUtil.isScrollShape(s)) {
+				continue;
+			}
+			
+			if (s instanceof ContainerShape) {
+				IRectangle shapeBounds = getRelativeBounds(s);
+				bbox.addBounds(shapeBounds);
+			}
 		}
 		
-		Integer newWidth = compareResult.getXMaximum() - compareResult.getXMinimum() + xpadding;
-		Integer newHeight = compareResult.getYMaximum() - compareResult.getYMinimum() + ypadding;
-		
-		resultRectangle.setX(compareResult.getXMinimum() - xpadding);
-		resultRectangle.setY(compareResult.getYMinimum() - ypadding);
-		resultRectangle.setWidth(newWidth > minWidth ? newWidth : minWidth);
-		resultRectangle.setHeight(newHeight > minHeight ? newHeight : minHeight);
-		
-		return resultRectangle;
+		return bbox.getBounds();
 	}
 	
-	public static void compareAndUpdateResultMax(Shape childShape, BoundsCompareResult result) {
-		GraphicsAlgorithm childShapeGa = childShape.getGraphicsAlgorithm();
-		if (childShapeGa != null) {
+
+	
+	/**
+	 * Bounding box computation utility.
+	 * 
+	 * @author nico.rehwaldt
+	 */
+	public static class BBox {
+
+		private int x1 = -1;
+		private int y1 = -1;
+		
+		private int x2 = -1;
+		private int y2 = -1;
+		
+		private int paddingX = 0;
+		private int paddingY = 0;
+		
+		/**
+		 * Create a BBox without initial bounds.
+		 * 
+		 * @param paddingX
+		 * @param paddingY
+		 */
+		public BBox(int paddingX, int paddingY) {
+			this.paddingX = paddingX;
+			this.paddingY = paddingY;
+		}
+
+		/**
+		 * Create a new BBox with the specified initial bounds and a x and y padding.
+		 * 
+		 * The padding is not applied to the initial bounds.
+		 * 
+		 * @param initialBounds
+		 * 
+		 * @param paddingX
+		 * @param paddingY
+		 */
+		public BBox(IRectangle initialBounds, int paddingX, int paddingY) {
 			
-			if (result.getXMinimum() > childShapeGa.getX()) {
-				result.setXMinimum(childShapeGa.getX());
+			if (initialBounds != null) {
+				this.x1 = getX1(initialBounds);
+				this.y1 = getY1(initialBounds);
+				
+				this.x2 = getX2(initialBounds);
+				this.y2 = getY2(initialBounds);
 			}
 			
-			int xPlusWidth = childShapeGa.getX() + childShapeGa.getWidth();
+			this.paddingX = paddingX;
+			this.paddingY = paddingY;
+		}
+		
+		protected int getX1(IRectangle rect) {
+			return Math.max(0, rect.getX() - paddingX);
+		}
+		
+		protected int getX2(IRectangle rect) {
+			// make sure y1 does never get negative
+			return rect.getX() + rect.getWidth() + paddingX;
+		}
+		
+		protected int getY1(IRectangle rect) {
+			// make sure y1 does never get negative
+			return Math.max(0, rect.getY() - paddingY);
+		}
+		
+		protected int getY2(IRectangle rect) {
+			return rect.getY() + rect.getHeight() + paddingY;
+		}
+		
+		public void addBounds(IRectangle bounds) {
+
+			int ax1 = getX1(bounds);
+			int ax2 = getX2(bounds);
 			
-			if (result.getXMaximum() < xPlusWidth) {
-				result.setXMaximum(xPlusWidth);
-			}
+			int ay1 = getY1(bounds);
+			int ay2 = getY2(bounds);
 			
-			if (result.getYMinimum() > childShapeGa.getY()) {
-				result.setYMinimum (childShapeGa.getY());
-			}
-			
-			int yPlusHeight = childShapeGa.getY() + childShapeGa.getHeight();
-			
-			if (result.getYMaximum() < yPlusHeight) {
-				result.setYMaximum(yPlusHeight);
+			if (!isInitialized()) {
+				this.x1 = ax1;
+				this.x2 = ax2;
+				this.y1 = ay1;
+				this.y2 = ay2;
+			} else {
+				this.x1 = Math.min(ax1, this.x1);
+				this.x2 = Math.max(ax2, this.x2);
+				this.y1 = Math.min(ay1, this.y1);
+				this.y2 = Math.max(ay2, this.y2);
 			}
 		}
-	}
 
+		/**
+		 * Return true if this bbox is initialized with bounds.
+		 * 
+		 * @return
+		 */
+		public boolean isInitialized() {
+			return this.x1 != -1;
+		}
+
+		/**
+		 * Returns the final bounding box or null if the bounding box 
+		 * has not yet been initialized.
+		 * 
+		 * @return
+		 */
+		public IRectangle getBounds() {
+			if (!isInitialized()) {
+				return null;
+			}
+			
+			return rectangle(x1, y1, x2 - x1, y2 - y1);
+		}
+	}
+	
 	/**
 	 * Returns the first non-anchor reference point for a given connection
 	 * 
@@ -1035,6 +1140,27 @@ public class LayoutUtil {
 		}
 		
 		return sharedConnections;
+	}
+	
+	public static boolean isContained(IRectangle rect, IRectangle container) {
+		return isContained(rect, container, 0);
+	}
+	
+	public static boolean isContained(IRectangle rect, IRectangle container, int padding) {
+		
+		int rx1 = rect.getX() - padding;
+		int ry1 = rect.getY() - padding;
+
+		int rx2 = rect.getX() + rect.getWidth() + padding;
+		int ry2 = rect.getY() + rect.getHeight() + padding;
+
+		int cx1 = container.getX();
+		int cy1 = container.getY();
+
+		int cx2 = container.getX() + container.getWidth();
+		int cy2 = container.getY() + container.getHeight();
+		
+		return rx1 > cx1 && rx2 < cx2 && ry1 > cy1 && ry2 < cy2;
 	}
 	
 	/**

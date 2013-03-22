@@ -44,8 +44,9 @@ public abstract class BaseElementFeatureContainer implements FeatureContainer {
 		
 		if (context instanceof ICustomContext) {
 			PictogramElement[] pes = ((ICustomContext) context).getPictogramElements();
-			if (pes.length==1)
+			if (pes.length == 1) {
 				return BusinessObjectUtil.getFirstElementOfType(pes[0], BaseElement.class);
+			}
 		}
 		
 		return null;

@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.core.features;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -23,12 +24,17 @@ import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.layout.util.Layouter;
 import org.camunda.bpm.modeler.core.utils.AnchorUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
+import org.camunda.bpm.modeler.core.utils.ContextUtil;
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.dd.di.DiagramElement;
+import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
+import org.eclipse.graphiti.features.context.impl.MoveShapeContext;
 import org.eclipse.graphiti.features.impl.DefaultResizeShapeFeature;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Connection;
@@ -54,8 +60,13 @@ public class DefaultResizeBPMNShapeFeature extends DefaultResizeShapeFeature {
 		
 		Shape shape = context.getShape();
 		
-		moveAllBendpoints(context);
-		
+		// either adjust the children to the old position
+		// or adjust the bendpoint movement
+		if (isCompensateMovementOnChildren()) {
+			moveChildShapes(context);
+		} else {
+			moveAllBendpoints(context);
+		}
 		relocateAnchors(shape, context);
 		
 		updateDi(shape);
@@ -64,7 +75,11 @@ public class DefaultResizeBPMNShapeFeature extends DefaultResizeShapeFeature {
 		
 		layout(shape, context);
 	}
-	
+
+	protected boolean isCompensateMovementOnChildren() {
+		return false;
+	}
+
 	/**
 	 * Perform a pre resize operation
 	 * 
@@ -87,6 +102,61 @@ public class DefaultResizeBPMNShapeFeature extends DefaultResizeShapeFeature {
 		
 	}
 	
+
+	/**
+	 * Move child shapes during a resize operation.
+	 * 
+	 * @param context
+	 */
+	protected void moveChildShapes(IResizeShapeContext context) {
+		
+		Shape shape = context.getShape();
+		
+		IRectangle postResizeBounds = LayoutUtil.getAbsoluteBounds(shape);
+		
+		if (postResizeBounds.getX() == preResizeBounds.getX() &&
+			postResizeBounds.getY() == preResizeBounds.getY()) {
+			
+			// no resize from top left
+			// no need to adjust bendpoints
+			return;
+		}
+		
+		int deltaX = (postResizeBounds.getX() - preResizeBounds.getX());
+		int deltaY = (postResizeBounds.getY() - preResizeBounds.getY());
+		
+		if (shape instanceof ContainerShape) {
+			moveChildren((ContainerShape) shape, deltaX, deltaY);
+		}
+	}
+	
+	protected void moveChildren(ContainerShape shape, int deltaX, int deltaY) {
+		
+		List<Shape> children = new ArrayList<Shape>(shape.getChildren());
+		for (Shape child : children) {
+			if (child instanceof ContainerShape) {
+				BaseElement be = BusinessObjectUtil.getFirstBaseElement(child);
+				if (be != null) {
+					
+					ILocation location = LayoutUtil.getRelativeBounds(child);
+					
+					MoveShapeContext moveContext = new MoveShapeContext(child);
+					moveContext.setLocation(location.getX() - deltaX, location.getY() - deltaY);
+					moveContext.setSourceContainer(shape);
+					moveContext.setTargetContainer(shape);
+
+					ContextUtil.set(moveContext, DefaultMoveBPMNShapeFeature.SKIP_REPAIR_CONNECTIONS_AFTER_MOVE);
+					ContextUtil.set(moveContext, DefaultMoveBPMNShapeFeature.SKIP_MOVE_BENDPOINTS);
+					
+					IMoveShapeFeature moveShapeFeature = getFeatureProvider().getMoveShapeFeature(moveContext);
+					if (moveShapeFeature.canExecute(moveContext)) {
+						moveShapeFeature.execute(moveContext);
+					}
+				}
+			}
+		}
+	}
+
 	/**
 	 * Move bendpoints after the resize operation took place
 	 * @param context

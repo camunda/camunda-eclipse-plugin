@@ -168,6 +168,26 @@ public class LayoutConnectionFeatureTest extends AbstractFeatureTest {
 			.movedBy(point(0, 20), preMoveLabelBounds);
 	}
 	
+	@Test
+	@DiagramResource
+	public void testBendpointCloseByLayouting() {
+		
+		// given
+		Shape shape = Util.findShapeByBusinessObjectId(diagram, "UserTask_1");
+		
+		FreeFormConnection connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_1");
+		
+		// when
+		move(shape, diagramTypeProvider)
+			.by(-20, -10)
+			.execute();
+		
+		// then
+		// old layout should be repaired
+		assertThat(connection)
+			.hasNoDiagonalEdges();
+	}
+	
 	/**
 	 * Return the feature provider for use in layouting tests
 	 * 

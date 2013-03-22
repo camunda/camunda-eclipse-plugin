@@ -116,4 +116,43 @@ public class LayoutUtilStaticTest {
 		assertThat(LayoutUtil.box(rectangle(10, 10, 400, 50), dimensions, 10)).isEqualTo(rectangle(10, 10, 380, 50));
 		assertThat(LayoutUtil.box(rectangle(10, 10, 50, 150), dimensions, 10)).isEqualTo(rectangle(10, 10, 50, 80));
 	}
+
+	@Test
+	public void testBBox() {
+		LayoutUtil.BBox bbox = new LayoutUtil.BBox(10, 10);
+		
+		// bbox bounds is null unless initialized
+		assertThat(bbox.getBounds()).isNull();
+		
+		// when
+		// adding first bounds
+		bbox.addBounds(rectangle(10, 10, 50, 50));
+		
+		// then
+		// bounds should be first bounds + padding
+		assertThat(bbox.getBounds()).isEqualTo(rectangle(0, 0, 70, 70));
+		
+		// when
+		// adding second bounds
+		bbox.addBounds(rectangle(40, 40, 30, 30));
+
+		assertThat(bbox.getBounds()).isEqualTo(rectangle(0, 0, 80, 80));
+	}
+	
+	@Test
+	public void testBBoxRemainsPositive() {
+		LayoutUtil.BBox bbox = new LayoutUtil.BBox(50, 50);
+		
+		// bbox bounds is null unless initialized
+		assertThat(bbox.getBounds()).isNull();
+		
+		// when
+		// adding first bounds
+		bbox.addBounds(rectangle(10, 10, 50, 50));
+		
+		// then
+		// bounds should be first bounds + padding
+		// but with 0/0 as minimum top left coordinates (no negative coords)
+		assertThat(bbox.getBounds()).isEqualTo(rectangle(0, 0, 110, 110));
+	}
 }

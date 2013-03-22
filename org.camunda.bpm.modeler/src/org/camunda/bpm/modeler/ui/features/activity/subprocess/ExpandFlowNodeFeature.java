@@ -13,11 +13,14 @@
 package org.camunda.bpm.modeler.ui.features.activity.subprocess;
 
 import org.camunda.bpm.modeler.core.ModelHandler;
+import org.camunda.bpm.modeler.core.layout.util.ConversionUtil;
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.ui.ImageProvider;
 import org.camunda.bpm.modeler.ui.features.choreography.ShowDiagramPageFeature;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.di.BPMNShape;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
@@ -116,11 +119,17 @@ public class ExpandFlowNodeFeature extends ShowDiagramPageFeature {
 					IResizeShapeFeature resizeFeature = getFeatureProvider().getResizeShapeFeature(resizeContext);
 					int oldWidth = ga.getWidth();
 					int oldHeight = ga.getHeight();
-					ResizeExpandableActivityFeature.SizeCalculator newSize = new ResizeExpandableActivityFeature.SizeCalculator(containerShape);
-					int newWidth = newSize.getWidth();
-					int newHeight = newSize.getHeight();
-					resizeContext.setX(ga.getX() + oldWidth/2 - newWidth/2);
-					resizeContext.setY(ga.getY() + oldHeight/2 - newHeight/2);
+					
+					IRectangle bounds = LayoutUtil.getChildrenBBox(containerShape, null, 10, 10);
+					if (bounds == null) {
+						bounds = ConversionUtil.rectangle(0, 0, 300, 200);
+					}
+					
+					int newWidth = bounds.getWidth() + bounds.getX();
+					int newHeight = bounds.getHeight() + bounds.getY();
+					
+					resizeContext.setX(ga.getX() + oldWidth / 2 - newWidth / 2);
+					resizeContext.setY(ga.getY() + oldHeight / 2 - newHeight / 2);
 					resizeContext.setWidth(newWidth);
 					resizeContext.setHeight(newHeight);
 					resizeFeature.resizeShape(resizeContext);

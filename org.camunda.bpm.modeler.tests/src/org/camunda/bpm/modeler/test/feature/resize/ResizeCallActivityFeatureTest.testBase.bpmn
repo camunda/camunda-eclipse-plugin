@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="__F8poJE3EeK1VOoBHGotUg" targetNamespace="http://activiti.org/bpmn">
+  <bpmn2:process id="_Process_2" isExecutable="false">
+    <bpmn2:boundaryEvent id="BoundaryEvent_2" name="" attachedToRef="CallActivity_1"/>
+    <bpmn2:callActivity id="CallActivity_1" name="Call Activity"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_BPMNDiagram_2">
+    <bpmndi:BPMNPlane id="_BPMNPlane_2" bpmnElement="_Process_2">
+      <bpmndi:BPMNShape id="_BPMNShape_CallActivity_2" bpmnElement="CallActivity_1" isExpanded="true">
+        <dc:Bounds height="80.0" width="115.0" x="144.0" y="45.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_BoundaryEvent_3" bpmnElement="BoundaryEvent_2">
+        <dc:Bounds height="36.0" width="36.0" x="208.0" y="107.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="223.0" y="148.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
