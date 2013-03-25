@@ -1,6 +1,7 @@
 package org.camunda.bpm.modeler.test.feature.resize;
 
 import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.point;
+import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
 import static org.camunda.bpm.modeler.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.camunda.bpm.modeler.test.util.operations.ResizeShapeOperation.resize;
 
@@ -140,6 +141,33 @@ public class ResizeSubprocessFeatureTest extends AbstractFeatureTest {
 		assertThatAttachmentsSame(postResizeAttachment, preResizeAttachment);
 	}
 
+	@Test
+	@DiagramResource
+	public void testEnlargeTooSmall() {
+
+		// given
+		Shape subProcessShape = Util.findShapeByBusinessObjectId(diagram, "SubProcess_1");
+		
+		IRectangle preResizeBounds = LayoutUtil.getAbsoluteBounds(subProcessShape);
+		Point resizeAmount = point(-10, -30);
+		
+		IRectangle expectedPostResizeBounds = rectangle(
+				preResizeBounds.getX() + resizeAmount.getX(), 
+				preResizeBounds.getY() + resizeAmount.getY(), 
+				preResizeBounds.getWidth() - resizeAmount.getX(), 
+				preResizeBounds.getHeight() - resizeAmount.getY()); 
+		
+		// when
+		resize(subProcessShape, getDiagramTypeProvider())
+			.fromTopLeftBy(resizeAmount)
+			.execute();
+		
+		IRectangle postResizeBounds = LayoutUtil.getAbsoluteBounds(subProcessShape);
+		
+		// then
+		assertThat(postResizeBounds).isEqualTo(expectedPostResizeBounds);
+	}
+	
 	private void assertThatAttachmentsSame(BoundaryAttachment actual, BoundaryAttachment expected) {
 		assertThat(actual.getSector())
 			.isEqualTo(expected.getSector());

@@ -22,6 +22,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
+import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
@@ -137,11 +138,11 @@ public class LayoutUtil {
 			}
 		}
 		
-		public boolean isAbove() {
+		public boolean isTop() {
 			return above;
 		}
 		
-		public boolean isBeneath() {
+		public boolean isBottom() {
 			return beneath;
 		}
 		
@@ -151,6 +152,37 @@ public class LayoutUtil {
 		
 		public boolean isRight() {
 			return right;
+		}
+
+		/**
+		 * Creates a sector from a direction const in 
+		 * {@link IResizeShapeContext}. 
+		 * 
+		 * @param resizeDirection
+		 * @return
+		 */
+		public static Sector fromResizeDirection(int resizeDirection) {
+			
+			switch (resizeDirection) {
+			case IResizeShapeContext.DIRECTION_EAST:
+				return RIGHT;
+			case IResizeShapeContext.DIRECTION_WEST:
+				return LEFT;
+			case IResizeShapeContext.DIRECTION_NORTH_WEST:
+				return TOP_LEFT;
+			case IResizeShapeContext.DIRECTION_NORTH:
+				return TOP;
+			case IResizeShapeContext.DIRECTION_NORTH_EAST:
+				return TOP_RIGHT;
+			case IResizeShapeContext.DIRECTION_SOUTH_WEST:
+				return BOTTOM_LEFT;
+			case IResizeShapeContext.DIRECTION_SOUTH:
+				return BOTTOM;
+			case IResizeShapeContext.DIRECTION_SOUTH_EAST:
+				return BOTTOM_RIGHT;
+			default:
+				return UNDEFINED;
+			}
 		}
 	}
 	
@@ -1141,18 +1173,60 @@ public class LayoutUtil {
 		
 		return sharedConnections;
 	}
-	
-	public static boolean isContained(IRectangle rect, IRectangle container) {
-		return isContained(rect, container, 0);
+
+	public static boolean isContained(IRectangle rectangle, IRectangle container) {
+		return isContained(rectangle, container, 0);
 	}
 	
-	public static boolean isContained(IRectangle rect, IRectangle container, int padding) {
+	/**
+	 * Checks the containment of rectangle in container with respect to a given sector.
+	 * 
+	 * @param rectangle
+	 * @param container
+	 * @param checkSector
+	 * @return
+	 */
+	public static boolean isContained(IRectangle rectangle, IRectangle container, Sector checkSector) {
+		return isContained(rectangle, container, 0, checkSector);
+	}
+	
+	/**
+	 * Checks the containment of rectangle in container with respect to a given sector and padding.
+	 * 
+	 * @param rectangle
+	 * @param container
+	 * @param padding
+	 * @param checkSector
+	 * @return
+	 */
+	public static boolean isContained(IRectangle rectangle, IRectangle container, int padding, Sector checkSector) {
 		
-		int rx1 = rect.getX() - padding;
-		int ry1 = rect.getY() - padding;
+		int rx1 = rectangle.getX() - padding;
+		int ry1 = rectangle.getY() - padding;
 
-		int rx2 = rect.getX() + rect.getWidth() + padding;
-		int ry2 = rect.getY() + rect.getHeight() + padding;
+		int rx2 = rectangle.getX() + rectangle.getWidth() + padding;
+		int ry2 = rectangle.getY() + rectangle.getHeight() + padding;
+
+		int cx1 = container.getX();
+		int cy1 = container.getY();
+
+		int cx2 = container.getX() + container.getWidth();
+		int cy2 = container.getY() + container.getHeight();
+		
+		return 
+			(!checkSector.isLeft() || rx1 > cx1) && 
+			(!checkSector.isRight() || rx2 < cx2) && 
+			(!checkSector.isTop() || ry1 > cy1) && 
+			(!checkSector.isBottom() || ry2 < cy2);
+	}
+	
+	public static boolean isContained(IRectangle rectangle, IRectangle container, int padding) {
+		
+		int rx1 = rectangle.getX() - padding;
+		int ry1 = rectangle.getY() - padding;
+
+		int rx2 = rectangle.getX() + rectangle.getWidth() + padding;
+		int ry2 = rectangle.getY() + rectangle.getHeight() + padding;
 
 		int cx1 = container.getX();
 		int cy1 = container.getY();
