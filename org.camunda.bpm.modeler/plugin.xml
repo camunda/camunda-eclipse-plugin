@@ -25,13 +25,32 @@
 	</extension>
    	
    	<extension point="org.eclipse.ui.newWizards">
+   		<!-- This defines a new category for our wizard -->
+   	    <category
+          id="camunda.modeler" 
+          name="camunda modeler"> 
+   		</category>
 		<!-- <primaryWizard id="org.camunda.bpm.modeler.ui.diagram"> </primaryWizard> -->
-		<wizard category="org.eclipse.bpmn2.wizardCategory"
-			class="org.camunda.bpm.modeler.ui.wizards.BPMN2DiagramWizard" icon="icons/bpmn2_editor_16.png"
-			id="org.camunda.bpm.modeler.ui.diagram" name="BPMN 2.0 Diagram">
+		<wizard
+        category="camunda.modeler"
+        class="org.camunda.bpm.modeler.ui.wizards.BPMN2DiagramWizard"
+        finalPerspective="org.eclipse.jdt.ui.JavaPerspective"
+        icon="icons/bpmn2_editor_16.png"
+        id="org.camunda.bpm.modeler.ui.diagram"
+        name="BPMN 2.0 Diagram">
 		</wizard>
 	</extension>
 	
+	<!--extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <newWizardShortcut
+               id="org.camunda.bpm.modeler.ui.diagram">
+         </newWizardShortcut>
+      </perspectiveExtension>
+    </extension -->
+    
 	<extension point="org.eclipse.ui.editors">
 		<!--
 		The multipage editor is still experimental.
@@ -345,6 +364,19 @@
      <persistent
            value="true">
      </persistent>
+  </extension>
+  <extension
+        point="org.eclipse.ui.navigator.navigatorContent">
+     <!-- 
+     	the common wizard will make sure that we can alway access the BPMN wizard
+     	new menuGroupId is chosen freely and will ensure a sub menu in the "New" dropdown is created
+     --> 
+     <commonWizard
+           menuGroupId="camunda.modeler"
+           type="new"
+           wizardId="org.camunda.bpm.modeler.ui.diagram">
+        <enablement>true</enablement>
+     </commonWizard>
   </extension>
   
 </plugin>
