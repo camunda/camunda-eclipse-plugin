@@ -5,7 +5,7 @@ import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.impl.CreateContext;
 
-public class AddLaneOperation extends AbstractAddOperation<CreateLaneFeature, AddLaneOperation> {
+public class AddLaneOperation extends AbstractAddShapeOperation<CreateLaneFeature, AddLaneOperation> {
 
 	public AddLaneOperation(IDiagramTypeProvider diagramTypeProvider) {
 		super(diagramTypeProvider, AddLaneOperation.class);

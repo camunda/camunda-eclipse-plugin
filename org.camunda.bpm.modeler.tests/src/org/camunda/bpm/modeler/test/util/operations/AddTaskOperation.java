@@ -7,7 +7,7 @@ import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeature;
 import org.eclipse.graphiti.features.context.impl.CreateContext;
 
-public class AddTaskOperation extends AbstractAddOperation<AbstractCreateTaskFeature<?>, AddTaskOperation> {
+public class AddTaskOperation extends AbstractAddShapeOperation<AbstractCreateTaskFeature<?>, AddTaskOperation> {
 
 	private Class<?> taskCls = Task.class;
 	

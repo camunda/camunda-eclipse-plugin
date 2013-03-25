@@ -12,7 +12,7 @@ import org.eclipse.graphiti.features.context.impl.CreateContext;
  * @author nico.rehwaldt
  *
  */
-public class AddSubProcessOperation extends AbstractAddOperation<CreateSubProcessFeature, AddSubProcessOperation> {
+public class AddSubProcessOperation extends AbstractAddShapeOperation<CreateSubProcessFeature, AddSubProcessOperation> {
 
 	public AddSubProcessOperation(IDiagramTypeProvider diagramTypeProvider) {
 		super(diagramTypeProvider, AddSubProcessOperation.class);

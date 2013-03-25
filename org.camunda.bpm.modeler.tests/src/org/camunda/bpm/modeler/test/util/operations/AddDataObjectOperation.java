@@ -5,7 +5,7 @@ import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.impl.CreateContext;
 
-public class AddDataObjectOperation extends AbstractAddOperation<CreateDataObjectFeature, AddDataObjectOperation> {
+public class AddDataObjectOperation extends AbstractAddShapeOperation<CreateDataObjectFeature, AddDataObjectOperation> {
 
 	public AddDataObjectOperation(IDiagramTypeProvider diagramTypeProvider) {
 		super(diagramTypeProvider, AddDataObjectOperation.class);
