@@ -150,6 +150,16 @@ public class BPMN2DiagramWizard extends Wizard implements INewWizard {
 				try {
 					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 							.openEditor(editorInput, BPMN2Editor.EDITOR_ID);
+					/**
+					 * open the properties view or bring it to the top, so the use can start modeling immediately
+					 */
+					IViewPart propSheet = activePage.findView(IPageLayout.ID_PROP_SHEET);
+					
+					if (propSheet != null) { 
+						activePage.bringToTop(propSheet); 
+					} else {
+						activePage.showView(IPageLayout.ID_PROP_SHEET);
+					}
 
 				} catch (PartInitException e) {
 					String error = "Error while opening diagram editor";
