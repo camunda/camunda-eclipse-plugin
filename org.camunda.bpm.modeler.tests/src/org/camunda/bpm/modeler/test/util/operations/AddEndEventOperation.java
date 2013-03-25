@@ -7,7 +7,7 @@ import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeature;
 import org.eclipse.graphiti.features.context.impl.CreateContext;
 
-public class AddEndEventOperation extends AbstractAddOperation<CreateEndEventFeature, AddEndEventOperation> {
+public class AddEndEventOperation extends AbstractAddShapeOperation<CreateEndEventFeature, AddEndEventOperation> {
 
 	public AddEndEventOperation(IDiagramTypeProvider diagramTypeProvider) {
 		super(diagramTypeProvider, AddEndEventOperation.class);

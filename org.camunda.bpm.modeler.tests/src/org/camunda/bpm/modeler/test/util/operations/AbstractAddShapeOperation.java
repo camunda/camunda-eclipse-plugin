@@ -7,11 +7,11 @@ import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 
-public abstract class AbstractAddOperation<T extends IFeature, V extends AbstractAddOperation<T, V>> extends Operation<CreateContext, T> {
+public abstract class AbstractAddShapeOperation<T extends IFeature, V extends AbstractAddShapeOperation<T, V>> extends Operation<CreateContext, T> {
 
 	protected final V myself;
 	
-	public AbstractAddOperation(IDiagramTypeProvider diagramTypeProvider, Class<V> cls) {
+	public AbstractAddShapeOperation(IDiagramTypeProvider diagramTypeProvider, Class<V> cls) {
 		super(diagramTypeProvider);
 		
 		this.context = createContext();

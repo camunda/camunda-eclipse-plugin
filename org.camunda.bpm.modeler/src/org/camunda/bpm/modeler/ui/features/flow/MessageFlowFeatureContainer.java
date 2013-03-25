@@ -158,7 +158,8 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 		public boolean canCreate(ICreateConnectionContext context) {
 			if (ChoreographyUtil.isChoreographyParticipantBand(context.getSourcePictogramElement()))
 				return false;
-			if (context.getTargetPictogramElement()!=null) {
+			
+			if (context.getTargetPictogramElement() != null) {
 				if (ChoreographyUtil.isChoreographyParticipantBand(context.getTargetPictogramElement()))
 					return false;
 			}

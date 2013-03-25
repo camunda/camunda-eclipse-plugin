@@ -5,7 +5,7 @@ import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.impl.CreateContext;
 
-public class AddDataStoreOperation extends AbstractAddOperation<CreateDataStoreReferenceFeature, AddDataStoreOperation> {
+public class AddDataStoreOperation extends AbstractAddShapeOperation<CreateDataStoreReferenceFeature, AddDataStoreOperation> {
 
 	public AddDataStoreOperation(IDiagramTypeProvider diagramTypeProvider) {
 		super(diagramTypeProvider, AddDataStoreOperation.class);
