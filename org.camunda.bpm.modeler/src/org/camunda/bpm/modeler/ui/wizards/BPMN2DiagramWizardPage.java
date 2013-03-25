@@ -12,7 +12,6 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.wizards;
 
-import org.camunda.bpm.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -38,7 +37,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 
-public class BPMN2DiagramWizardPage2 extends WizardPage {
+public class BPMN2DiagramWizardPage extends WizardPage {
 	private Text containerText;
 
 	private Text fileText;
@@ -52,9 +51,9 @@ public class BPMN2DiagramWizardPage2 extends WizardPage {
 	 * 
 	 * @param pageName
 	 */
-	public BPMN2DiagramWizardPage2(ISelection selection) {
+	public BPMN2DiagramWizardPage(ISelection selection) {
 		super("wizardPage2");
-		setTitle("BPMN2 Diagram File");
+		setTitle("BPMN 2.0 Diagram File");
 		setDescription("Select file name.");
 		this.selection = selection;
 	}
@@ -108,27 +107,17 @@ public class BPMN2DiagramWizardPage2 extends WizardPage {
 		setControl(container);
 	}
 
-	public Bpmn2DiagramType getDiagramType() {
-		return Bpmn2DiagramType.COLLABORATION;
-	}
-		
 	/**
 	 * Tests if the current workbench selection is a suitable diagramContainer to use.
 	 */
 
 	private void updatePageDescription() {
-		setDescription("Enter a file name for the new "+getDiagramType().getLabel());
+		setDescription("Enter a file name for the new diagram");
 	}
 	
 	private void updateFilename() {
-		String fileType = "unknown";
+		String fileType = "newDiagram";
 		String filename = fileType+".bpmn";
-		
-		switch (getDiagramType()) {
-			default:
-				fileType = "newBpmnDiagram";
-				break;
-		}
 		
 		IContainer container = getFileContainer();
 		if (container!=null) {
