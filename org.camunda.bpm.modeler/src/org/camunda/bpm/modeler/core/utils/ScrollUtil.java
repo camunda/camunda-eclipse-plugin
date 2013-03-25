@@ -49,11 +49,6 @@ public class ScrollUtil {
 			return true;
 		}
 		
-		@Override
-		public URI eProxyURI() {
-			return URI.createURI("scrollshape");
-		}
-		
 	}
 
 	public static final int SCROLL_PADDING = 150;
@@ -139,6 +134,7 @@ public class ScrollUtil {
 		if (holder == null) {
 			holder = new ScrollUtil.ScrollShapeHolder();
 			rootDiagram.getLink().getBusinessObjects().add(holder);
+			rootDiagram.eResource().getContents().add(holder);
 		}
 		
 		return holder;
