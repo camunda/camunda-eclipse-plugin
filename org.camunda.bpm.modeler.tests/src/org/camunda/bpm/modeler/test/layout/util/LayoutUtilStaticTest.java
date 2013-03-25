@@ -138,24 +138,6 @@ public class LayoutUtilStaticTest {
 
 		assertThat(bbox.getBounds()).isEqualTo(rectangle(0, 0, 80, 80));
 	}
-	
-	@Test
-	public void testBBoxRemainsPositive() {
-		LayoutUtil.BBox bbox = new LayoutUtil.BBox(50, 50);
-		
-		// bbox bounds is null unless initialized
-		assertThat(bbox.getBounds()).isNull();
-		
-		// when
-		// adding first bounds
-		bbox.addBounds(rectangle(10, 10, 50, 50));
-		
-		// then
-		// bounds should be first bounds + padding
-		// but with 0/0 as minimum top left coordinates (no negative coords)
-		assertThat(bbox.getBounds()).isEqualTo(rectangle(0, 0, 110, 110));
-	}
-	
 
 	@Test
 	public void testIsContainedRectangle() {

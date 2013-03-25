@@ -684,11 +684,11 @@ public class LayoutUtil {
 	 */
 	public static class BBox {
 
-		private int x1 = -1;
-		private int y1 = -1;
+		private Integer x1 = null;
+		private Integer y1 = null;
 		
-		private int x2 = -1;
-		private int y2 = -1;
+		private Integer x2 = null;
+		private Integer y2 = null;
 		
 		private int paddingX = 0;
 		private int paddingY = 0;
@@ -729,17 +729,15 @@ public class LayoutUtil {
 		}
 		
 		protected int getX1(IRectangle rect) {
-			return Math.max(0, rect.getX() - paddingX);
+			return rect.getX() - paddingX;
 		}
 		
 		protected int getX2(IRectangle rect) {
-			// make sure y1 does never get negative
 			return rect.getX() + rect.getWidth() + paddingX;
 		}
 		
 		protected int getY1(IRectangle rect) {
-			// make sure y1 does never get negative
-			return Math.max(0, rect.getY() - paddingY);
+			return rect.getY() - paddingY;
 		}
 		
 		protected int getY2(IRectangle rect) {
@@ -773,7 +771,7 @@ public class LayoutUtil {
 		 * @return
 		 */
 		public boolean isInitialized() {
-			return this.x1 != -1;
+			return this.x1 != null;
 		}
 
 		/**

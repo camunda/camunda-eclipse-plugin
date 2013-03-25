@@ -142,14 +142,14 @@ public class ResizeSubprocessFeatureTest extends AbstractFeatureTest {
 	}
 
 	@Test
-	@DiagramResource
-	public void testEnlargeTooSmall() {
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeSubprocessFeatureTest.testTooSmall.bpmn")
+	public void testEnlargeTooSmallTopLeft() {
 
 		// given
 		Shape subProcessShape = Util.findShapeByBusinessObjectId(diagram, "SubProcess_1");
 		
 		IRectangle preResizeBounds = LayoutUtil.getAbsoluteBounds(subProcessShape);
-		Point resizeAmount = point(-10, -30);
+		Point resizeAmount = point(-20, 0);
 		
 		IRectangle expectedPostResizeBounds = rectangle(
 				preResizeBounds.getX() + resizeAmount.getX(), 
@@ -160,6 +160,33 @@ public class ResizeSubprocessFeatureTest extends AbstractFeatureTest {
 		// when
 		resize(subProcessShape, getDiagramTypeProvider())
 			.fromTopLeftBy(resizeAmount)
+			.execute();
+		
+		IRectangle postResizeBounds = LayoutUtil.getAbsoluteBounds(subProcessShape);
+		
+		// then
+		assertThat(postResizeBounds).isEqualTo(expectedPostResizeBounds);
+	}
+	
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeSubprocessFeatureTest.testTooSmall.bpmn")
+	public void testEnlargeTooSmallBottomRight() {
+
+		// given
+		Shape subProcessShape = Util.findShapeByBusinessObjectId(diagram, "SubProcess_1");
+		
+		IRectangle preResizeBounds = LayoutUtil.getAbsoluteBounds(subProcessShape);
+		Point resizeAmount = point(30, 10);
+		
+		IRectangle expectedPostResizeBounds = rectangle(
+				preResizeBounds.getX(), 
+				preResizeBounds.getY(), 
+				preResizeBounds.getWidth() + resizeAmount.getX(), 
+				preResizeBounds.getHeight() + resizeAmount.getY()); 
+		
+		// when
+		resize(subProcessShape, getDiagramTypeProvider())
+			.fromBottomRightBy(resizeAmount)
 			.execute();
 		
 		IRectangle postResizeBounds = LayoutUtil.getAbsoluteBounds(subProcessShape);

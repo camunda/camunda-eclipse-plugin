@@ -17,18 +17,12 @@ import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
-import org.camunda.bpm.modeler.core.utils.FeatureSupport;
-import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.ui.features.activity.ResizeActivityFeature;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
-import org.eclipse.graphiti.features.context.impl.ResizeShapeContext;
-import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.graphiti.mm.pictograms.PictogramElement;
-import org.eclipse.graphiti.services.Graphiti;
 
 public class ResizeExpandableActivityFeature extends ResizeActivityFeature {
 	
@@ -77,35 +71,5 @@ public class ResizeExpandableActivityFeature extends ResizeActivityFeature {
 	@Override
 	protected boolean isCompensateMovementOnChildren() {
 		return true;
-	}
-	
-	@Override
-	public void resizeShape(IResizeShapeContext context) {
-		ResizeShapeContext resizeShapeContext = (ResizeShapeContext) context;
-
-		ContainerShape containerShape = (ContainerShape) context.getShape();
-		BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(containerShape, BPMNShape.class);
-		
-		if (bpmnShape.isIsExpanded()) {
-
-		} else {
-			
-			// SubProcess is collapsed
-			
-			for (PictogramElement pe : FeatureSupport.getContainerDecorators(containerShape)) {
-				GraphicsAlgorithm childGa = pe.getGraphicsAlgorithm();
-				if (childGa!=null) {
-					childGa.setWidth(GraphicsUtil.getActivitySize(getDiagram()).getWidth());
-					childGa.setHeight(GraphicsUtil.getActivitySize(getDiagram()).getHeight());
-				}
-			}
-			
-			resizeShapeContext.setWidth(GraphicsUtil.getActivitySize(getDiagram()).getWidth());
-			resizeShapeContext.setHeight(GraphicsUtil.getActivitySize(getDiagram()).getHeight());
-		}
-		
-		Graphiti.getPeService().sendToBack(containerShape);
-		
-		super.resizeShape(context);
 	}
 }
