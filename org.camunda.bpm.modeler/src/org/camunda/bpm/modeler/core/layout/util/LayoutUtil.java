@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.camunda.bpm.modeler.core.layout.Docking;
+import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.ScrollUtil;
 import org.camunda.bpm.modeler.ui.features.event.BoundaryAttachment;
 import org.eclipse.bpmn2.BaseElement;
@@ -656,6 +657,12 @@ public class LayoutUtil {
 			
 			// never include scroll shape
 			if (ScrollUtil.isScrollShape(s)) {
+				continue;
+			}
+			
+			// do not include non bpmn containers
+			// (marker containers, etc...)
+			if (s.getLink() == null) {
 				continue;
 			}
 			

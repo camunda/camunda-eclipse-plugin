@@ -32,7 +32,7 @@ import org.eclipse.graphiti.services.Graphiti;
 
 public class ResizeExpandableActivityFeature extends ResizeActivityFeature {
 	
-	public final static int MARGIN = 20;
+	public final static int PADDING = 5;
 	
 	public ResizeExpandableActivityFeature(IFeatureProvider fp) {
 		super(fp);
@@ -57,7 +57,7 @@ public class ResizeExpandableActivityFeature extends ResizeActivityFeature {
 			IRectangle preResizeBounds = LayoutUtil.getRelativeBounds(containerShape);
 	
 			// check if children still fit into element
-			IRectangle childrenBBox = LayoutUtil.getChildrenBBox(containerShape, null, 0, 0);
+			IRectangle childrenBBox = LayoutUtil.getChildrenBBox(containerShape, null, PADDING, PADDING);
 			if (childrenBBox != null) {
 				
 				IRectangle postResizeBounds = rectangle(
