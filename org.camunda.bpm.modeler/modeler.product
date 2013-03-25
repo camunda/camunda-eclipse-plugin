@@ -41,7 +41,6 @@
       <plugin id="org.camunda.bpm.modeler"/>
       <plugin id="org.eclipse.bpmn2"/>
       <plugin id="org.eclipse.bpmn2.edit"/>
-      <plugin id="org.eclipse.bpmn2.editor"/>
       <plugin id="org.eclipse.compare"/>
       <plugin id="org.eclipse.compare.core"/>
       <plugin id="org.eclipse.core.commands"/>
