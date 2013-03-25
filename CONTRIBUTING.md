@@ -1,8 +1,9 @@
 How to contribute
 =================
 
-* Fork the modeler project
+* Fork the project
 * [Setup the development environment](#development-setup)
+* [Inspect the project structure](#project-structure)
 * Write some code
 * Submit a pull request
 
@@ -20,22 +21,21 @@ Development Setup
     * Start the Modeler from `org.camunda.bpm.modeler` via `Run As -> Eclipse Application`
     * Run the test suite in `org.camunda.bpm.modeler.tests` via `Run As -> JUnit Plugin-Tests`
 
-Development Dependencies
-------------------------
+### Project Dependencies
 
 The following shows a screenshot of an Eclipse Indigo installation with the required plugins installed.
 Highlighted are plugins which need to be installed in order to resolve add dependencies. 
 
 ![Development Requirements](https://raw.github.com/camunda/camunda-modeler/develop/documentation/images/development-requirements.png)
 
-### Versions and Update Sites ###
+### Versions and Update Sites
 
 * __Graphiti__ 0.9.1 http://download.eclipse.org/graphiti/updates/0.9.1/
 * __BPMN 2.0 Meta-Model__ 0.7.x http://download.eclipse.org/bpmn2-modeler/bpmn2/site/
     * Sources [via git](git://git.eclipse.org/gitroot/bpmn2) + workspace import
 
 Project Structure
------------------
+-----------------------
 
     + org.camunda.bpm.modeler -> modeler runtime
     + org.camunda.bpm.modeler.tests -> modeler runtime tests
