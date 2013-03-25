@@ -15,6 +15,7 @@ package org.camunda.bpm.modeler.ui.features.activity.subprocess;
 import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
 
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
@@ -50,7 +51,8 @@ public class ResizeExpandableActivityFeature extends ResizeActivityFeature {
 		boolean contained = true;
 		
 		// see if we are before the actual resize operation
-		if (context.getDirection() != IResizeShapeContext.DIRECTION_UNSPECIFIED) {
+		int resizeDirection = context.getDirection();
+		if (resizeDirection != IResizeShapeContext.DIRECTION_UNSPECIFIED) {
 			
 			IRectangle preResizeBounds = LayoutUtil.getRelativeBounds(containerShape);
 	
@@ -64,7 +66,8 @@ public class ResizeExpandableActivityFeature extends ResizeActivityFeature {
 					context.getWidth(), 
 					context.getHeight());
 				
-				contained = LayoutUtil.isContained(childrenBBox, postResizeBounds);
+				Sector direction = Sector.fromResizeDirection(resizeDirection);
+				contained = LayoutUtil.isContained(childrenBBox, postResizeBounds, direction);
 			}
 		}
 		
