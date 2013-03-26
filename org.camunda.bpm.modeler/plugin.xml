@@ -28,29 +28,19 @@
    		<!-- This defines a new category for our wizard -->
    	    <category
           id="camunda.modeler" 
-          name="camunda modeler"> 
+          name="BPMN"> 
    		</category>
 		<!-- <primaryWizard id="org.camunda.bpm.modeler.ui.diagram"> </primaryWizard> -->
 		<wizard
         category="camunda.modeler"
         class="org.camunda.bpm.modeler.ui.wizards.BPMN2DiagramWizard"
-        finalPerspective="org.eclipse.jdt.ui.JavaPerspective"
         icon="icons/bpmn2_editor_16.png"
         id="org.camunda.bpm.modeler.ui.diagram"
-        name="BPMN 2.0 Diagram">
+        name="BPMN 2.0 Diagram"
+        preferredPerspectives="org.eclipse.jdt.ui.JavaPerspective">
 		</wizard>
 	</extension>
 	
-	<!--extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="org.eclipse.jdt.ui.JavaPerspective">
-         <newWizardShortcut
-               id="org.camunda.bpm.modeler.ui.diagram">
-         </newWizardShortcut>
-      </perspectiveExtension>
-    </extension -->
-    
 	<extension point="org.eclipse.ui.editors">
 		<!--
 		The multipage editor is still experimental.
@@ -375,8 +365,14 @@
            menuGroupId="camunda.modeler"
            type="new"
            wizardId="org.camunda.bpm.modeler.ui.diagram">
-        <enablement>true</enablement>
+           <enablement>
+            <or>
+				<instanceof value="org.eclipse.jdt.core.IPackageFragment"/>
+				<instanceof value="org.eclipse.core.resources.IFolder" />
+				<instanceof value="org.eclipse.core.resources.IProject" />
+			</or>         
+         </enablement>
      </commonWizard>
   </extension>
-  
+
 </plugin>
