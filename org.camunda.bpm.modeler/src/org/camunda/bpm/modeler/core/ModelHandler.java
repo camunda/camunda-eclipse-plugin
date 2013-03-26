@@ -403,7 +403,7 @@ public class ModelHandler {
 					bounds.setX(100);
 					bounds.setY(100);
 					bounds.setWidth(GraphicsUtil.CHOREOGRAPHY_WIDTH);
-					bounds.setHeight(GraphicsUtil.PARTICIPANT_BAND_HEIGHT);
+					bounds.setHeight(GraphicsUtil.CHOREOGRAPHY_PARTICIPANT_BAND_HEIGHT);
 					participantShape.setBounds(bounds);
 					plane.getPlaneElement().add(participantShape);
 					getPreferences().applyBPMNDIDefaults(participantShape, null);
@@ -415,9 +415,9 @@ public class ModelHandler {
 					participantShape.setParticipantBandKind(ParticipantBandKind.BOTTOM_NON_INITIATING);
 					bounds = DcFactory.eINSTANCE.createBounds();
 					bounds.setX(100);
-					bounds.setY(100 + GraphicsUtil.CHOREOGRAPHY_HEIGHT - GraphicsUtil.PARTICIPANT_BAND_HEIGHT);
+					bounds.setY(100 + GraphicsUtil.CHOREOGRAPHY_HEIGHT - GraphicsUtil.CHOREOGRAPHY_PARTICIPANT_BAND_HEIGHT);
 					bounds.setWidth(GraphicsUtil.CHOREOGRAPHY_WIDTH);
-					bounds.setHeight(GraphicsUtil.PARTICIPANT_BAND_HEIGHT);
+					bounds.setHeight(GraphicsUtil.CHOREOGRAPHY_PARTICIPANT_BAND_HEIGHT);
 					participantShape.setBounds(bounds);
 					plane.getPlaneElement().add(participantShape);
 					getPreferences().applyBPMNDIDefaults(participantShape, null);

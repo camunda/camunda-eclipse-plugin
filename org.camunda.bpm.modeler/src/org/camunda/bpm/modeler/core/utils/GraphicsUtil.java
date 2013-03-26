@@ -73,7 +73,10 @@ public class GraphicsUtil {
 
 	public static int CHOREOGRAPHY_WIDTH = 150;
 	public static int CHOREOGRAPHY_HEIGHT = 150;
-	public static int PARTICIPANT_BAND_HEIGHT = 20;
+
+	public static int CHOREOGRAPHY_PARTICIPANT_BAND_HEIGHT = 20;
+	
+	public static int PARTICIPANT_LABEL_OFFSET = 30;
 
 	public static final int SHAPE_PADDING = 6;
 	public static final int TEXT_PADDING = 5;

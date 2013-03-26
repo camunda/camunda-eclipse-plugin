@@ -16,6 +16,9 @@ import static org.camunda.bpm.modeler.core.features.activity.AbstractAddActivity
 
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -76,6 +79,53 @@ public class FeatureSupport {
 		return BusinessObjectUtil.containsChildElementOfType(shape, Definitions.class);
 	}
 	
+	/**
+	 * Returns the list of top level lanes in the correct order.
+	 *  
+	 * @param rootShape
+	 * @return
+	 */
+	public static List<Shape> getTopLevelLanes(ContainerShape rootShape) {
+		
+		// get direct child lanes
+		List<Shape> directChildLanes = FeatureSupport.getChildrenLinkedToType(rootShape, Lane.class);
+		if (directChildLanes.isEmpty()) {
+			if (BusinessObjectUtil.containsChildElementOfType(rootShape, Lane.class)) {
+				return Arrays.asList((Shape) rootShape);
+			} else {
+				return Collections.emptyList();
+			}
+		}
+		
+		// sort from top to bottom
+		Collections.sort(directChildLanes, new Comparator<Shape>() {
+			@Override
+			public int compare(Shape a, Shape b) {
+				int ya = a.getGraphicsAlgorithm().getY();
+				int yb = b.getGraphicsAlgorithm().getY();
+				
+				return ((Integer) ya).compareTo(yb);
+			}
+		});
+		
+		List<Shape> result = new ArrayList<Shape>(directChildLanes);
+		
+		// recurse into nested child lanes
+		for (Shape laneShape: directChildLanes) {
+
+			if (laneShape instanceof ContainerShape) {
+				List<Shape> nestedLanes = getTopLevelLanes((ContainerShape) laneShape);
+				if (!nestedLanes.isEmpty()) {
+					int laneIndex = result.indexOf(laneShape);
+					result.remove(laneIndex);
+					result.addAll(laneIndex, nestedLanes);
+				}
+			}
+		}
+		
+		return result;
+	}
+
 	public static boolean isLane(PictogramElement element) {
 		return BusinessObjectUtil.containsElementOfType(element, Lane.class);
 	}
@@ -494,8 +544,8 @@ public class FeatureSupport {
 	}
 	
 	/**
-	 * Returns a list of {@link PictogramElement}s which contains an element to the
-	 * assigned businessObjectClazz, i.e. the list contains {@link PictogramElement}s
+	 * Returns a list of {@link Shape}s which contains an element to the
+	 * assigned businessObjectClazz, i.e. the list contains {@link Shape}s
 	 * which meet the following constraint:<br>
 	 * <code>
 	 * 	foreach child of root:<br>
@@ -505,9 +555,8 @@ public class FeatureSupport {
 	 * @param businessObjectClazz
 	 * @return
 	 */
-	@SuppressWarnings("rawtypes")
-	public static List<PictogramElement> getChildsOfBusinessObjectType(ContainerShape root, Class businessObjectClazz) {
-		List<PictogramElement> result = new ArrayList<PictogramElement>();
+	public static List<Shape> getChildrenLinkedToType(ContainerShape root, Class<?> businessObjectClazz) {
+		List<Shape> result = new ArrayList<Shape>();
 		for (Shape currentShape : root.getChildren()) {
 			if (BusinessObjectUtil.containsChildElementOfType(currentShape, businessObjectClazz)) {
 				result.add(currentShape);
@@ -516,22 +565,52 @@ public class FeatureSupport {
 		return result;
 	}
 	
+	public static Shape getNestedLastLaneInContainer(ContainerShape root) {
+		
+		Shape lane = getLastLaneInContainer(root);
+		Shape nested = lane;
+		
+		while (nested != null) {
+			nested = getLastLaneInContainer((ContainerShape) lane);
+			if (nested != null) {
+				lane = nested;
+			}
+		}
+		
+		return lane;
+	}
+
+	public static Shape getNestedFirstLaneInContainer(ContainerShape root) {
+		
+		Shape lane = getFirstLaneInContainer(root);
+		Shape nested = lane;
+		
+		while (nested != null) {
+			nested = getFirstLaneInContainer((ContainerShape) lane);
+			if (nested != null) {
+				lane = nested;
+			}
+		}
+		
+		return lane;
+	}
+	
 	public static Shape getFirstLaneInContainer(ContainerShape root) {
-		List<PictogramElement> laneShapes = getChildsOfBusinessObjectType(root, Lane.class);
+		List<Shape> laneShapes = getChildrenLinkedToType(root, Lane.class);
 		if (!laneShapes.isEmpty()) {
-			Iterator<PictogramElement> iterator = laneShapes.iterator();
-			PictogramElement result = iterator.next();
+			Iterator<Shape> iterator = laneShapes.iterator();
+			Shape result = iterator.next();
 			GraphicsAlgorithm ga = result.getGraphicsAlgorithm();
 			if (isHorizontal(root)) {
 				while (iterator.hasNext()) {
-					PictogramElement currentShape = iterator.next();
+					Shape currentShape = iterator.next();
 					if (currentShape.getGraphicsAlgorithm().getY() < ga.getY()) {
 						result = currentShape;
 					}
 				}
 			} else {
 				while (iterator.hasNext()) {
-					PictogramElement currentShape = iterator.next();
+					Shape currentShape = iterator.next();
 					if (currentShape.getGraphicsAlgorithm().getX() < ga.getX()) {
 						result = currentShape;
 					}
@@ -543,21 +622,21 @@ public class FeatureSupport {
 	}
 	
 	public static Shape getLastLaneInContainer(ContainerShape root) {
-		List<PictogramElement> laneShapes = getChildsOfBusinessObjectType(root, Lane.class);
+		List<Shape> laneShapes = getChildrenLinkedToType(root, Lane.class);
 		if (!laneShapes.isEmpty()) {
-			Iterator<PictogramElement> iterator = laneShapes.iterator();
-			PictogramElement result = iterator.next();
+			Iterator<Shape> iterator = laneShapes.iterator();
+			Shape result = iterator.next();
 			GraphicsAlgorithm ga = result.getGraphicsAlgorithm();
 			if (isHorizontal(root)) {
 				while (iterator.hasNext()) {
-					PictogramElement currentShape = iterator.next();
+					Shape currentShape = iterator.next();
 					if (currentShape.getGraphicsAlgorithm().getY() > ga.getY()) {
 						result = currentShape;
 					}
 				}
 			} else {
 				while (iterator.hasNext()) {
-					PictogramElement currentShape = iterator.next();
+					Shape currentShape = iterator.next();
 					if (currentShape.getGraphicsAlgorithm().getX() > ga.getX()) {
 						result = currentShape;
 					}
@@ -584,7 +663,7 @@ public class FeatureSupport {
 		boolean isHorizontal = isHorizontal(container);
 		
 		ContainerShape result = null;
-		for (PictogramElement picElem : getChildsOfBusinessObjectType(parentContainerShape, Lane.class)) {
+		for (PictogramElement picElem : getChildrenLinkedToType(parentContainerShape, Lane.class)) {
 			if (picElem instanceof ContainerShape && !picElem.equals(container)) {
 				ContainerShape currentContainerShape = (ContainerShape) picElem;
 				GraphicsAlgorithm currentGA = currentContainerShape.getGraphicsAlgorithm();
@@ -632,7 +711,7 @@ public class FeatureSupport {
 		boolean isHorizontal = isHorizontal(container);
 		
 		ContainerShape result = null;
-		for (PictogramElement picElem : getChildsOfBusinessObjectType(parentContainerShape, Lane.class)) {
+		for (PictogramElement picElem : getChildrenLinkedToType(parentContainerShape, Lane.class)) {
 			if (picElem instanceof ContainerShape && !picElem.equals(container)) {
 				ContainerShape currentContainerShape = (ContainerShape) picElem;
 				GraphicsAlgorithm currentGA = currentContainerShape.getGraphicsAlgorithm();

@@ -12,14 +12,24 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.core.features.participant;
 
+import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
+
 import java.util.List;
 
 import org.camunda.bpm.modeler.core.features.DefaultResizeBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.features.lane.ResizeLaneSetFeature;
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
+import org.camunda.bpm.modeler.core.layout.util.CollaborationResizeSupport;
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.BBox;
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
+import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.ChoreographyActivity;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
@@ -29,7 +39,7 @@ import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
-public class ResizeParticipantFeature extends DefaultResizeBPMNShapeFeature {
+public class ResizeParticipantFeature extends ResizeLaneSetFeature {
 
 	public static final String POOL_RESIZE_PROPERTY = "pool.resize";
 	public static final String RESIZE_FIRST_LANE = "resize.first.lane";
@@ -49,7 +59,7 @@ public class ResizeParticipantFeature extends DefaultResizeBPMNShapeFeature {
 		}
 		return super.canResizeShape(context);
 	}
-	
+
 	private void resizeLaneHeight(IResizeShapeContext context) {
 		ContainerShape participantShape = (ContainerShape) context.getShape();
 		GraphicsAlgorithm ga = participantShape.getGraphicsAlgorithm();
@@ -126,8 +136,8 @@ public class ResizeParticipantFeature extends DefaultResizeBPMNShapeFeature {
 		
 		if ((dWidth != 0 && FeatureSupport.isHorizontal(participantShape)) ||
 				(dHeight != 0 && !FeatureSupport.isHorizontal(participantShape))) {
-			List<PictogramElement> childrenShapes = FeatureSupport.getChildsOfBusinessObjectType(participantShape, Lane.class);
-			for (PictogramElement currentPicElem : childrenShapes) {
+			List<Shape> childrenShapes = FeatureSupport.getChildrenLinkedToType(participantShape, Lane.class);
+			for (Shape currentPicElem : childrenShapes) {
 				if (currentPicElem instanceof ContainerShape) {
 					ContainerShape currentContainerShape = (ContainerShape) currentPicElem; 
 					GraphicsAlgorithm laneGA = currentContainerShape.getGraphicsAlgorithm();

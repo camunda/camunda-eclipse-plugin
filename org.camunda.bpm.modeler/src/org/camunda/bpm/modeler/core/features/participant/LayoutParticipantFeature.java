@@ -18,6 +18,7 @@ import org.camunda.bpm.modeler.core.di.DIUtils;
 import org.camunda.bpm.modeler.core.features.LayoutBpmnShapeFeature;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
+import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.graphiti.datatypes.IDimension;
@@ -66,12 +67,17 @@ public class LayoutParticipantFeature extends LayoutBpmnShapeFeature {
 				Point p0 = line.getPoints().get(0);
 				Point p1 = line.getPoints().get(1);
 				if (horz) {
-					p0.setX(30); p0.setY(0);
-					p1.setX(30); p1.setY(containerHeight);
+					p0.setX(GraphicsUtil.PARTICIPANT_LABEL_OFFSET); 
+					p0.setY(0);
+					
+					p1.setX(GraphicsUtil.PARTICIPANT_LABEL_OFFSET);
+					p1.setY(containerHeight);
 				}
 				else {
-					p0.setX(0); p0.setY(30);
-					p1.setX(containerWidth); p1.setY(30);
+					p0.setX(0); 
+					p0.setY(GraphicsUtil.PARTICIPANT_LABEL_OFFSET);
+					p1.setX(containerWidth);
+					p1.setY(GraphicsUtil.PARTICIPANT_LABEL_OFFSET);
 				}
 			} else if (ga instanceof Text) {
 				if (horz) {

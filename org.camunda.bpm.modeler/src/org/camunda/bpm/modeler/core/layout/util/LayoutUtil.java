@@ -99,40 +99,40 @@ public class LayoutUtil {
 		
 		private boolean left;
 		private boolean right;
-		private boolean above;
-		private boolean beneath;
+		private boolean top;
+		private boolean bottom;
 
-		private Sector(boolean left, boolean right, boolean above, boolean beneath) {
+		private Sector(boolean left, boolean right, boolean above, boolean bottom) {
 			if (left && right) {
 				throw new IllegalArgumentException("Cannot be left and right at the same time");
 			}
 			
-			if (above && beneath) {
-				throw new IllegalArgumentException("Cannot be above and beneath at the same time");
+			if (above && bottom) {
+				throw new IllegalArgumentException("Cannot be top and bottom at the same time");
 			}
 			
 			this.left = left;
 			this.right = right;
-			this.above = above;
-			this.beneath = beneath;
+			this.top = above;
+			this.bottom = bottom;
 		}
 		
-		public static Sector fromBooleans(boolean left, boolean right, boolean above, boolean beneath) {
-			if (left && above) {
+		public static Sector fromBooleans(boolean left, boolean right, boolean top, boolean bottom) {
+			if (left && top) {
 				return Sector.TOP_LEFT;
-			} else if (left && beneath) {
+			} else if (left && bottom) {
 				return Sector.BOTTOM_LEFT;
 			} else if (left) {
 				return Sector.LEFT;
-			} else if (right && above) {
+			} else if (right && top) {
 				return Sector.TOP_RIGHT;
-			} else if (right && beneath) {
+			} else if (right && bottom) {
 				return Sector.BOTTOM_RIGHT;
 			} else if (right) {
 				return Sector.RIGHT;
-			} else if(above) {
+			} else if(top) {
 				return Sector.TOP;
-			} else if(beneath) {
+			} else if(bottom) {
 				return Sector.BOTTOM;
 			} else {
 				return Sector.UNDEFINED;
@@ -140,11 +140,11 @@ public class LayoutUtil {
 		}
 		
 		public boolean isTop() {
-			return above;
+			return top;
 		}
 		
 		public boolean isBottom() {
-			return beneath;
+			return bottom;
 		}
 		
 		public boolean isLeft() {
@@ -155,6 +155,15 @@ public class LayoutUtil {
 			return right;
 		}
 
+		/**
+		 * Returns the inverted sector for myself.
+		 * 
+		 * @return
+		 */
+		public Sector inverted() {
+			return fromBooleans(!left, !right, !top, !bottom);
+		}
+		
 		/**
 		 * Creates a sector from a direction const in 
 		 * {@link IResizeShapeContext}. 
@@ -183,6 +192,34 @@ public class LayoutUtil {
 				return BOTTOM_RIGHT;
 			default:
 				return UNDEFINED;
+			}
+		}
+
+		/**
+		 * Translate the sector to a resize direction.
+		 * 
+		 * @return
+		 */
+		public int toResizeDirection() {
+			switch (this) {
+			case RIGHT:
+				return IResizeShapeContext.DIRECTION_EAST;
+			case LEFT:
+				return IResizeShapeContext.DIRECTION_WEST;
+			case TOP_LEFT: 
+				return IResizeShapeContext.DIRECTION_NORTH_WEST;
+			case TOP:
+				return IResizeShapeContext.DIRECTION_NORTH;
+			case TOP_RIGHT: 
+				return IResizeShapeContext.DIRECTION_NORTH_EAST;
+			case BOTTOM_LEFT: 
+				return IResizeShapeContext.DIRECTION_SOUTH_WEST;
+			case BOTTOM:
+				return IResizeShapeContext.DIRECTION_SOUTH;
+			case BOTTOM_RIGHT:
+				return IResizeShapeContext.DIRECTION_SOUTH_EAST;
+			default:
+				return IResizeShapeContext.DIRECTION_UNSPECIFIED;
 			}
 		}
 	}

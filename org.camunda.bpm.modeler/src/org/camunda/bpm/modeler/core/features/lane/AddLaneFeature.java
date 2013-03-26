@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.camunda.bpm.modeler.core.features.AbstractAddBpmnShapeFeature;
 import org.camunda.bpm.modeler.core.features.DefaultMoveBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.features.participant.AddParticipantFeature;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
@@ -335,7 +336,7 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 			return context.getWidth();
 		}
 		
-		int width = context.getTargetContainer().getGraphicsAlgorithm().getWidth() - 30;
+		int width = context.getTargetContainer().getGraphicsAlgorithm().getWidth() - GraphicsUtil.PARTICIPANT_LABEL_OFFSET;
 		
 		Bounds bounds = getPreviouslyAddedLaneBounds(context);
 		if (bounds != null) {

@@ -15,6 +15,7 @@ package org.camunda.bpm.modeler.core.features.participant;
 import org.camunda.bpm.modeler.core.features.AbstractAddBpmnShapeFeature;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
+import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.di.BPMNShape;
@@ -84,11 +85,8 @@ public class AddParticipantFeature extends AbstractAddBpmnShapeFeature<Participa
 		int height = newShapeBounds.getHeight();
 		
 		BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(newShape, BPMNShape.class);
-		
-		boolean horizontal = bpmnShape.isIsHorizontal();
-		FeatureSupport.setHorizontal(newShape, horizontal);
-		
-		drawParticipantLine(participant, newShape, width, height, horizontal);
+				
+		drawParticipantLine(participant, newShape, width, height);
 
 		Shape textShape = peService.createShape(newShape, false);
 		Text text = gaService.createText(textShape, participant.getName());
@@ -106,7 +104,7 @@ public class AddParticipantFeature extends AbstractAddBpmnShapeFeature<Participa
 		// do nothing
 	}
 	
-	private void drawParticipantLine(Participant participant, ContainerShape participantShape, int width, int height, boolean horz) {
+	private void drawParticipantLine(Participant participant, ContainerShape participantShape, int width, int height) {
 		
 		IPeService peService = Graphiti.getPeService();
 		IGaService gaService = Graphiti.getGaService();
@@ -118,11 +116,7 @@ public class AddParticipantFeature extends AbstractAddBpmnShapeFeature<Participa
 				
 		if (!hasLanes) {
 	      Shape lineShape = peService.createShape(participantShape, false);
-	      Polyline line;
-	      if (horz)
-	        line = gaService.createPolyline(lineShape, new int[] { 30, 0, 30, height });
-	      else
-	        line = gaService.createPolyline(lineShape, new int[] { 0, 30, width, 30 });
+	      Polyline line = gaService.createPolyline(lineShape, new int[] { GraphicsUtil.PARTICIPANT_LABEL_OFFSET, 0, GraphicsUtil.PARTICIPANT_LABEL_OFFSET, height });
 	      StyleUtil.applyStyle(line, participant);
 		}
 	}

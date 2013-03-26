@@ -12,21 +12,19 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.activity.subprocess;
 
-import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
-
-import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
-import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.ui.features.activity.ResizeActivityFeature;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 
+/**
+ * Expandable activities resize feature.
+ * 
+ * @author nico.rehwaldt
+ */
 public class ResizeExpandableActivityFeature extends ResizeActivityFeature {
-	
-	public final static int PADDING = 5;
 	
 	public ResizeExpandableActivityFeature(IFeatureProvider fp) {
 		super(fp);
@@ -41,35 +39,7 @@ public class ResizeExpandableActivityFeature extends ResizeActivityFeature {
 		if (!bpmnShape.isIsExpanded()) {
 			return false;
 		}
-	
-		boolean contained = true;
 		
-		// see if we are before the actual resize operation
-		int resizeDirection = context.getDirection();
-		if (resizeDirection != IResizeShapeContext.DIRECTION_UNSPECIFIED) {
-			
-			IRectangle preResizeBounds = LayoutUtil.getRelativeBounds(containerShape);
-	
-			// check if children still fit into element
-			IRectangle childrenBBox = LayoutUtil.getChildrenBBox(containerShape, null, PADDING, PADDING);
-			if (childrenBBox != null) {
-				
-				IRectangle postResizeBounds = rectangle(
-					context.getX() - preResizeBounds.getX(), 
-					context.getY() - preResizeBounds.getY(), 
-					context.getWidth(), 
-					context.getHeight());
-				
-				Sector direction = Sector.fromResizeDirection(resizeDirection);
-				contained = LayoutUtil.isContained(childrenBBox, postResizeBounds, direction);
-			}
-		}
-		
-		return contained && super.canResizeShape(context);
-	}
-	
-	@Override
-	protected boolean isCompensateMovementOnChildren() {
-		return true;
+		return super.canResizeShape(context);
 	}
 }

@@ -12,9 +12,9 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.core.features.lane;
 
-import org.camunda.bpm.modeler.core.features.DefaultResizeBPMNShapeFeature;
+
 import org.camunda.bpm.modeler.core.features.participant.ResizeParticipantFeature;
-import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -26,7 +26,12 @@ import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 
-public class ResizeLaneFeature extends DefaultResizeBPMNShapeFeature {
+/**
+ * Resize lane feature
+ *  
+ * @author nico.rehwaldt
+ */
+public class ResizeLaneFeature extends ResizeLaneSetFeature {
 
 	public static final String LANE_RESIZE_PROPERTY = "lane.resize";
 
@@ -36,52 +41,15 @@ public class ResizeLaneFeature extends DefaultResizeBPMNShapeFeature {
 
 	@Override
 	public boolean canResizeShape(IResizeShapeContext context) {
-		boolean isLane = FeatureSupport.isLane(context.getPictogramElement());
-		if (!isLane) {
+		
+		Sector sector = Sector.fromResizeDirection(context.getDirection());
+		if (sector.isLeft() || sector.isRight()) {
 			return false;
 		}
-
-		boolean isParentLane = FeatureSupport.isLane(((ContainerShape) context
-				.getPictogramElement()).getContainer());
-		if (!isParentLane) {
-			return true;
-		}
-
-		if (context.getHeight() == -1 && context.getWidth() == -1) {
-			return true;
-		}
-
-		GraphicsAlgorithm ga = ((ContainerShape) context.getPictogramElement())
-				.getGraphicsAlgorithm();
-
-		int i = compare(ga.getHeight(), ga.getWidth(), context.getHeight(),
-				context.getWidth());
-
-		Lane lane = (Lane) BusinessObjectUtil.getFirstElementOfType(
-				context.getPictogramElement(), Lane.class);
-
-		if (i < 0 && lane.getFlowNodeRefs().size() == 0) {
-			return true;
-		}
-
-		if (i > 0) {
-			return true;
-		}
-
-		return true;
+	
+		return super.canResizeShape(context);
 	}
-
-	private int compare(int heightBefore, int widthBefore, int heightAfter,
-			int widthAfter) {
-		if (heightAfter > heightBefore || widthAfter > widthBefore) {
-			return 1;
-		}
-		if (heightAfter < heightBefore || widthAfter < widthBefore) {
-			return -1;
-		}
-		return 0;
-	}
-
+	
 	private void resizeHeight(IResizeShapeContext context) {
 		ContainerShape laneContainerShape = (ContainerShape) context.getShape();
 		GraphicsAlgorithm ga = laneContainerShape.getGraphicsAlgorithm();
@@ -165,7 +133,7 @@ public class ResizeLaneFeature extends DefaultResizeBPMNShapeFeature {
 				} else {
 					Graphiti.getGaService().setHeight(ga, context.getHeight());
 				}
-				for (PictogramElement currentChild : FeatureSupport.getChildsOfBusinessObjectType(laneContainerShape, Lane.class)) {
+				for (PictogramElement currentChild : FeatureSupport.getChildrenLinkedToType(laneContainerShape, Lane.class)) {
 					if (currentChild instanceof ContainerShape) {
 						ContainerShape currentContainer = (ContainerShape) currentChild;
 						GraphicsAlgorithm currentGA = currentChild.getGraphicsAlgorithm();
@@ -214,7 +182,7 @@ public class ResizeLaneFeature extends DefaultResizeBPMNShapeFeature {
 							Graphiti.getGaService().setHeight(rootGA, rootGA.getHeight() + dHeight);
 						}
 					}
-					for (PictogramElement currentChild : FeatureSupport.getChildsOfBusinessObjectType(container, Lane.class)) {
+					for (PictogramElement currentChild : FeatureSupport.getChildrenLinkedToType(container, Lane.class)) {
 						if (currentChild instanceof ContainerShape) {
 							ContainerShape currentContainer = (ContainerShape) currentChild;
 							GraphicsAlgorithm currentGA = currentChild.getGraphicsAlgorithm();
@@ -238,6 +206,7 @@ public class ResizeLaneFeature extends DefaultResizeBPMNShapeFeature {
 
 	@Override
 	public void resizeShape(IResizeShapeContext context) {
+		super.resizeShape(context);
 		resizeHeight(context);
 		resizeWidth(context);
 	}

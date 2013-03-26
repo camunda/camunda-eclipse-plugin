@@ -12,6 +12,10 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.core.features;
 
+import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
+import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.point;
+import static org.camunda.bpm.modeler.core.layout.util.RectangleUtil.translate;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,6 +26,7 @@ import java.util.Set;
 import org.camunda.bpm.modeler.core.di.DIUtils;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.layout.util.Layouter;
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
 import org.camunda.bpm.modeler.core.utils.AnchorUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.ContextUtil;
@@ -45,14 +50,58 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 
+/**
+ * 
+ * @author nico.rehwaldt
+ */
 public class DefaultResizeBPMNShapeFeature extends DefaultResizeShapeFeature {
 
+	public final static int PADDING = 5;
+	
 	private IRectangle preResizeBounds;
 
 	public DefaultResizeBPMNShapeFeature(IFeatureProvider fp) {
 		super(fp);
 	}
 
+	/**
+	 * Returns true if the resize operation is permitted
+	 * 
+	 * @param context
+	 */
+	@Override
+	public boolean canResizeShape(IResizeShapeContext context) {
+
+		boolean minBoundsContained = true;
+		
+		int resizeDirection = context.getDirection();
+
+		// see if we are before the actual resize operation because no resize 
+		// has been carried out yet.
+		
+		// when actually resizing, check the minimum bounds of the shape
+		// and allow the resize operation if the post resize bounds would contain
+		// the minimum bounds
+		if (resizeDirection != IResizeShapeContext.DIRECTION_UNSPECIFIED) {
+			
+			// check if children still fit into element
+			IRectangle minimumBounds = getMinimumBounds(context);
+			if (minimumBounds != null) {
+				
+				IRectangle postResizeBounds = rectangle(
+					context.getX(), 
+					context.getY(), 
+					context.getWidth(), 
+					context.getHeight());
+				
+				Sector direction = Sector.fromResizeDirection(resizeDirection);
+				minBoundsContained = LayoutUtil.isContained(minimumBounds, postResizeBounds, -1, direction);
+			}
+		}
+		
+		return minBoundsContained && super.canResizeShape(context);
+	}
+	
 	@Override
 	public void resizeShape(IResizeShapeContext context) {
 		preResize(context);
@@ -61,13 +110,10 @@ public class DefaultResizeBPMNShapeFeature extends DefaultResizeShapeFeature {
 		
 		Shape shape = context.getShape();
 		
-		// either adjust the children to the old position
-		// or adjust the bendpoint movement
-		if (isCompensateMovementOnChildren()) {
-			moveChildShapes(context);
-		} else {
-			moveAllBendpoints(context);
-		}
+		// move child shapes to compensate the in-parent-movement
+		// results in a visually fixed position for the children
+		moveChildShapes(context);
+		
 		relocateAnchors(shape, context);
 		
 		updateDi(shape);
@@ -77,10 +123,27 @@ public class DefaultResizeBPMNShapeFeature extends DefaultResizeShapeFeature {
 		layout(shape, context);
 	}
 
-	protected boolean isCompensateMovementOnChildren() {
-		return false;
+	/**
+	 * Get minimum resize bounds for this shape
+	 * 
+	 * @param context
+	 * @return
+	 */
+	protected IRectangle getMinimumBounds(IResizeShapeContext context) {
+		
+		ContainerShape containerShape = (ContainerShape) context.getShape();
+		
+		IRectangle containerRelativeBounds = LayoutUtil.getRelativeBounds(containerShape);
+		
+		IRectangle childrenBBox = LayoutUtil.getChildrenBBox(containerShape, null, PADDING, PADDING);
+		
+		if (childrenBBox != null) {
+			return translate(childrenBBox, point(containerRelativeBounds));
+		} else {
+			return null;
+		}
 	}
-
+	
 	/**
 	 * Perform a pre resize operation
 	 * 
@@ -162,6 +225,7 @@ public class DefaultResizeBPMNShapeFeature extends DefaultResizeShapeFeature {
 	 * Move bendpoints after the resize operation took place
 	 * @param context
 	 */
+	@Deprecated
 	protected void moveAllBendpoints(IResizeShapeContext context) {
 		
 		Shape shape = context.getShape();
@@ -192,7 +256,8 @@ public class DefaultResizeBPMNShapeFeature extends DefaultResizeShapeFeature {
 			}
 		}
 	}
-	
+
+	@Deprecated
 	protected void moveConnectionBendpoints(FreeFormConnection connection, int deltaX, int deltaY) {
 		List<Point> points = connection.getBendpoints();
 		for (int i = 0; i < points.size(); i++) {
@@ -209,6 +274,7 @@ public class DefaultResizeBPMNShapeFeature extends DefaultResizeShapeFeature {
 	 * @param context
 	 * @return
 	 */
+	@Deprecated
 	private Set<FreeFormConnection> calculateContainerConnections(IResizeShapeContext context) {
 
 		Shape shape = context.getShape();
