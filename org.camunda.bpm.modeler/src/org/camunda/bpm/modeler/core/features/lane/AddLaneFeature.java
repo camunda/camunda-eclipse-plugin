@@ -182,9 +182,9 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
 		if (horizontal) {
 			text.setAngle(-90);
-			gaService.setLocationAndSize(text, 0, 0, 15, height);
+			gaService.setLocationAndSize(text, 5, 0, 15, height);
 		} else {
-			gaService.setLocationAndSize(text, 0, 0, width, 15);
+			gaService.setLocationAndSize(text, 0, 5, width, 15);
 		}
 		
 		link(textShape, lane);
