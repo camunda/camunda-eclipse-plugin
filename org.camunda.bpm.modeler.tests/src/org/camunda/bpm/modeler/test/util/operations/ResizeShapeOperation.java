@@ -24,10 +24,11 @@ public class ResizeShapeOperation extends Operation<ResizeShapeContext, IResizeF
 		this.context = createContext(shape);
 	}
 
-	public ResizeShapeOperation to(IRectangle bounds) {
+	public ResizeShapeOperation to(IRectangle bounds, int direction) {
 
 		context.setLocation(bounds.getX(), bounds.getY());
 		context.setSize(bounds.getWidth(), bounds.getHeight());
+		context.setDirection(direction);
 		
 		return this;
 	}
@@ -37,7 +38,7 @@ public class ResizeShapeOperation extends Operation<ResizeShapeContext, IResizeF
 		IRectangle participantShapeBounds = LayoutUtil.getRelativeBounds(context.getShape());
 		IRectangle postResizeRectangle = rectangle(participantShapeBounds.getX() + amount.getX(), participantShapeBounds.getY() + amount.getY(), participantShapeBounds.getWidth() - amount.getX(), participantShapeBounds.getHeight() - amount.getY());
 		
-		return to(postResizeRectangle);
+		return to(postResizeRectangle, IResizeShapeContext.DIRECTION_NORTH_WEST);
 	}
 
 	public Operation<ResizeShapeContext, IResizeFeature> fromTopRightBy(Point amount) {
@@ -45,7 +46,7 @@ public class ResizeShapeOperation extends Operation<ResizeShapeContext, IResizeF
 		IRectangle participantShapeBounds = LayoutUtil.getRelativeBounds(context.getShape());
 		IRectangle postResizeRectangle = rectangle(participantShapeBounds.getX(), participantShapeBounds.getY() + amount.getY(), participantShapeBounds.getWidth() + amount.getX(), participantShapeBounds.getHeight() - amount.getY());
 		
-		return to(postResizeRectangle);
+		return to(postResizeRectangle, IResizeShapeContext.DIRECTION_NORTH_EAST);
 	}
 	
 	public Operation<ResizeShapeContext, IResizeFeature> fromBottomRightBy(Point amount) {
@@ -53,7 +54,7 @@ public class ResizeShapeOperation extends Operation<ResizeShapeContext, IResizeF
 		IRectangle participantShapeBounds = LayoutUtil.getRelativeBounds(context.getShape());
 		IRectangle postResizeRectangle = rectangle(participantShapeBounds.getX(), participantShapeBounds.getY(), participantShapeBounds.getWidth() + amount.getX(), participantShapeBounds.getHeight() + amount.getY());
 		
-		return to(postResizeRectangle);
+		return to(postResizeRectangle, IResizeShapeContext.DIRECTION_SOUTH_EAST);
 	}
 
 	public Operation<ResizeShapeContext, IResizeFeature> fromBottomLeftBy(Point amount) {
@@ -61,7 +62,7 @@ public class ResizeShapeOperation extends Operation<ResizeShapeContext, IResizeF
 		IRectangle participantShapeBounds = LayoutUtil.getRelativeBounds(context.getShape());
 		IRectangle postResizeRectangle = rectangle(participantShapeBounds.getX(), participantShapeBounds.getY() + amount.getY(), participantShapeBounds.getWidth() + amount.getX(), participantShapeBounds.getHeight() - amount.getY());
 		
-		return to(postResizeRectangle);
+		return to(postResizeRectangle, IResizeShapeContext.DIRECTION_SOUTH_WEST);
 	}
 	
 	protected ResizeShapeContext createContext(Shape shape) {

@@ -7,7 +7,7 @@ import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeature;
 import org.eclipse.graphiti.features.context.impl.CreateContext;
 
-public class AddBoundaryEventOperation extends AbstractAddOperation<CreateBoundaryEventFeature, AddBoundaryEventOperation> {
+public class AddBoundaryEventOperation extends AbstractAddShapeOperation<CreateBoundaryEventFeature, AddBoundaryEventOperation> {
 
 	public AddBoundaryEventOperation(IDiagramTypeProvider diagramTypeProvider) {
 		super(diagramTypeProvider, AddBoundaryEventOperation.class);

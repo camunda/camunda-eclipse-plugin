@@ -25,6 +25,7 @@ import org.camunda.bpm.modeler.core.layout.util.Layouter;
 import org.camunda.bpm.modeler.core.utils.AnchorUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.ContextUtil;
+import org.camunda.bpm.modeler.core.utils.ScrollUtil;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNShape;
@@ -99,7 +100,7 @@ public class DefaultResizeBPMNShapeFeature extends DefaultResizeShapeFeature {
 	 * @param context
 	 */
 	protected void postResize(IResizeShapeContext context) {
-		
+		ScrollUtil.updateScrollShape(getDiagram());
 	}
 	
 

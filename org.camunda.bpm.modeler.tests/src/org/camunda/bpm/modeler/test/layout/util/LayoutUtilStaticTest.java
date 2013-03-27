@@ -155,4 +155,52 @@ public class LayoutUtilStaticTest {
 		// but with 0/0 as minimum top left coordinates (no negative coords)
 		assertThat(bbox.getBounds()).isEqualTo(rectangle(0, 0, 110, 110));
 	}
+	
+
+	@Test
+	public void testIsContainedRectangle() {
+		IRectangle box = rectangle(-50, -25, 100, 50);
+
+		// contain
+		assertThat(LayoutUtil.isContained(rectangle(-49, -24, 98, 48), box)).isTrue();
+		// no left contain
+		assertThat(LayoutUtil.isContained(rectangle(-51, -24, 98, 48), box)).isFalse();
+		// no top contain
+		assertThat(LayoutUtil.isContained(rectangle(-49, -26, 98, 48), box)).isFalse();
+		// no right contain
+		assertThat(LayoutUtil.isContained(rectangle(-49, -24, 101, 48), box)).isFalse();
+		// no bottom contain
+		assertThat(LayoutUtil.isContained(rectangle(-49, -24, 98, 51), box)).isFalse();
+		
+		// equal != contained
+		assertThat(LayoutUtil.isContained(box, box)).isFalse();
+
+		// equal == contained with tolerance 1
+		assertThat(LayoutUtil.isContained(box, box, -1)).isTrue();
+	}
+	
+	@Test
+	public void testIsContainedSectorRectangle() {
+		IRectangle box = rectangle(-50, -25, 100, 50);
+
+		// no left contain
+		assertThat(LayoutUtil.isContained(rectangle(-51, -24, 98, 48), box, Sector.LEFT)).isFalse();
+		// but contain with different sector check
+		assertThat(LayoutUtil.isContained(rectangle(-51, -24, 98, 48), box, Sector.RIGHT)).isTrue();
+		
+		// no top contain
+		assertThat(LayoutUtil.isContained(rectangle(-49, -26, 98, 48), box, Sector.TOP)).isFalse();
+		// but contain with different sector check
+		assertThat(LayoutUtil.isContained(rectangle(-49, -26, 98, 48), box, Sector.BOTTOM)).isTrue();
+		
+		// no right contain
+		assertThat(LayoutUtil.isContained(rectangle(-49, -24, 101, 48), box, Sector.RIGHT)).isFalse();
+		// but contain with different sector check
+		assertThat(LayoutUtil.isContained(rectangle(-49, -24, 101, 48), box, Sector.LEFT)).isTrue();
+		
+		// no bottom contain
+		assertThat(LayoutUtil.isContained(rectangle(-49, -24, 98, 51), box, Sector.BOTTOM)).isFalse();
+		// but contain with different sector check
+		assertThat(LayoutUtil.isContained(rectangle(-49, -24, 98, 51), box, Sector.TOP)).isTrue();
+	}
 }

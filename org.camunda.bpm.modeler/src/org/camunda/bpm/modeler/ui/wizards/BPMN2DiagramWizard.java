@@ -12,42 +12,22 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.wizards;
 
-import java.io.InputStream;
-import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
 
 import org.camunda.bpm.modeler.core.Activator;
 import org.camunda.bpm.modeler.core.utils.ErrorUtils;
+import org.camunda.bpm.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.ui.editor.BPMN2Editor;
-import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFileState;
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IPathVariableManager;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceProxy;
-import org.eclipse.core.resources.IResourceProxyVisitor;
-import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourceAttributes;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.content.IContentDescription;
-import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
@@ -55,15 +35,17 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.INewWizard;
+import org.eclipse.ui.IPageLayout;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.activities.WorkbenchActivityHelper;
 import org.eclipse.ui.part.FileEditorInput;
 
 public class BPMN2DiagramWizard extends Wizard implements INewWizard {
-	private BPMN2DiagramWizardPage2 page2;
+	private BPMN2DiagramWizardPage page2;
 	private ISelection selection;
 
 	/**
@@ -80,7 +62,7 @@ public class BPMN2DiagramWizard extends Wizard implements INewWizard {
 
 	@Override
 	public void addPages() {
-		page2 = new BPMN2DiagramWizardPage2(selection);
+		page2 = new BPMN2DiagramWizardPage(selection);
 		addPage(page2);
 	}
 
@@ -102,7 +84,7 @@ public class BPMN2DiagramWizard extends Wizard implements INewWizard {
 					
 					// create the diagram
 					BPMN2DiagramCreator.createBpmn2Resource(uri);
-					BPMN2DiagramCreator.createDiagramInput(uri, page2.getDiagramType(), ModelPackage.eNS_URI);
+					BPMN2DiagramCreator.createDiagramInput(uri, Bpmn2DiagramType.COLLABORATION, ModelPackage.eNS_URI);
 					
 					// and locate + open it as a file editor input
 					// to prevent opening it twice upon double click in workspace
@@ -112,7 +94,6 @@ public class BPMN2DiagramWizard extends Wizard implements INewWizard {
 					IFile diagramFile = workspace.getRoot().getFileForLocation(absPath);
 					
 					openEditor(new FileEditorInput(diagramFile));
-					
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
 				} finally {
@@ -148,8 +129,19 @@ public class BPMN2DiagramWizard extends Wizard implements INewWizard {
 			@Override
 			public void run() {
 				try {
-					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-							.openEditor(editorInput, BPMN2Editor.EDITOR_ID);
+					IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+					activePage.openEditor(editorInput, BPMN2Editor.EDITOR_ID);
+					
+					/**
+					 * open the properties view or bring it to the top, so the use can start modeling immediately
+					 */
+					IViewPart propSheet = activePage.findView(IPageLayout.ID_PROP_SHEET);
+					
+					if (propSheet != null) { 
+						activePage.bringToTop(propSheet); 
+					} else {
+						activePage.showView(IPageLayout.ID_PROP_SHEET);
+					}
 
 				} catch (PartInitException e) {
 					String error = "Error while opening diagram editor";

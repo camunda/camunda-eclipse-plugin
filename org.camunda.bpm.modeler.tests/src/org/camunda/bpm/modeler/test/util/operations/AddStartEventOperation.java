@@ -7,7 +7,7 @@ import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeature;
 import org.eclipse.graphiti.features.context.impl.CreateContext;
 
-public class AddStartEventOperation extends AbstractAddOperation<CreateStartEventFeature, AddStartEventOperation> {
+public class AddStartEventOperation extends AbstractAddShapeOperation<CreateStartEventFeature, AddStartEventOperation> {
 
 	public AddStartEventOperation(IDiagramTypeProvider diagramTypeProvider) {
 		super(diagramTypeProvider, AddStartEventOperation.class);

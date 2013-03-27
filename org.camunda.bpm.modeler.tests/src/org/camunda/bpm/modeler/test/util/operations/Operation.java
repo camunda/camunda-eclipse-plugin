@@ -5,6 +5,14 @@ import org.eclipse.graphiti.features.IFeature;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 
+/**
+ * Abstract model operation to mimic behavior during test runs.
+ * 
+ * @author nico.rehwaldt
+ *
+ * @param <C>
+ * @param <F>
+ */
 public abstract class Operation<C extends IContext, F extends IFeature> {
 	
 	protected final IDiagramTypeProvider diagramTypeProvider;
@@ -25,6 +33,11 @@ public abstract class Operation<C extends IContext, F extends IFeature> {
 	
 	public Object execute() {
 		F feature = createFeature(context);
+		
+		if (feature == null) {
+			return null;
+		}
+		
 		return diagramTypeProvider.getDiagramEditor().executeFeature(feature, context);
 	}
 }
