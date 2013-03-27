@@ -15,7 +15,7 @@ Import the project xml file _bpmn2_modeler.xml_ via `Test --> Import --> Browse 
 
 Building the AUT
 ----------------
-Create a RCP application of the BPMN 2.0 Modeler (for more information please read the [RCP manual](https://github.com/camunda/camunda-modeler/blob/develop/CONTRIBUTING.md).  
+Create a RCP application of the BPMN 2.0 Modeler (for more information please read the [RCP manual](https://github.com/camunda/camunda-modeler/blob/develop/org.camunda.bpm.modeler.tests.functional/documentation/RCP_manual.md).  
 Alternatively you can download a preconfigured RCP application [here](https://fox.camunda.com/download/bpmn2_modeler_rcp.zip).
 
 
@@ -42,7 +42,7 @@ Replace the folder _workbench.xmi_ in the AUT's and use the _Jubula Test_ perspe
 
 Please note that the perspective is modified for a screen resolution of 1366x768 pixel. If you are using a different resolution adjust the AUT's Properties Panel according to the following screen shot.
 
-![AUT workbench perspective](https://raw.github.com/camunda/bpmn2-modeler/develop/org.camunda.bpm.modeler.tests.functional/documentation/images/Eclipse_perspective.png)
+![AUT workbench perspective](https://github.com/camunda/camunda-modeler/blob/develop/org.camunda.bpm.modeler.tests.functional/documentation/images/Eclipse_perspective.png "Workbench Perspective")
 
 ###Test project and template diagrams
 The folder _template diagrams_ provides all necessary diagrams to run the Jubula tests. Create a new _Java Project_ with your AUT and import the template diagrams. 
