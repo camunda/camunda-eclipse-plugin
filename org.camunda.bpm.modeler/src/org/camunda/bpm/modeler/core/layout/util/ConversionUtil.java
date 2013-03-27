@@ -45,6 +45,11 @@ public class ConversionUtil {
 		return new DimensionImpl(width, height);
 	}
 
+	@SuppressWarnings("restriction")
+	public static IDimension dimension(Point point) {
+		return new DimensionImpl(point.getX(), point.getY());
+	}
+	
 	public static Point point(int x, int y) {
 		return Graphiti.getCreateService().createPoint(x, y);
 	}

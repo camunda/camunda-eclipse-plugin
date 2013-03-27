@@ -4,6 +4,11 @@ import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.point;
 import static org.camunda.bpm.modeler.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.camunda.bpm.modeler.test.util.operations.ResizeShapeOperation.resize;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.layout.util.RectangleUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
@@ -16,6 +21,7 @@ import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IResizeFeature;
 import org.eclipse.graphiti.features.context.impl.ResizeShapeContext;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.junit.Test;
 
@@ -129,7 +135,7 @@ public class ResizeParticipantFeatureTest extends AbstractResizeFeatureTest {
 		// y = 80 makes participant too small
 		assertNoResize("Participant_2", point(0, 80), Sector.TOP_LEFT);
 	}
-
+	
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
 	public void testResizeParticipantComplexBottom() {
@@ -139,5 +145,55 @@ public class ResizeParticipantFeatureTest extends AbstractResizeFeatureTest {
 		
 		// y = 50 makes participant too small
 		assertNoResize("Participant_1", point(0, -50), Sector.BOTTOM_LEFT);
+	}
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
+	public void testResizeParticipantComplexLeft() {
+
+		// x = 10 is allowed
+		assertResize("Participant_2", point(10, 0), Sector.LEFT);
+		
+		// x = 20 would collide (lane 4)
+		assertNoResize("Participant_2", point(20, 0), Sector.LEFT);
+	}
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
+	public void testResizeParticipantComplexRight() {
+
+		// y = 40 is allowed
+		assertResize("Participant_2", point(-40, 0), Sector.RIGHT);
+		
+		// y = 50 would collide (lane 1)
+		assertNoResize("Participant_2", point(-50, 0), Sector.RIGHT);
+	}
+	
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
+	public void testShrinkParticipantAdjustsFlowElementsAndBendpoints() {
+		
+		assertResizeRetainsChildPositionsAndFlowLayout("_Participant_3", point(0, 50), Sector.TOP_LEFT, Arrays.asList("StartEvent_1"), Arrays.asList("SequenceFlow_1"));
+	}
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
+	public void testEnlargeParticipantAdjustsFlowElementsAndBendpoints() {
+
+		assertResizeRetainsChildPositionsAndFlowLayout("_Participant_3", point(0, -50), Sector.TOP_LEFT, Arrays.asList("StartEvent_1"), Arrays.asList("SequenceFlow_1"));
+	}
+	
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
+	public void testShrinkParticipantWithLaneAdjustsFlowElementsAndBendpoints() {
+		
+		assertResizeRetainsChildPositionsAndFlowLayout("Participant_4", point(0, 20), Sector.TOP_LEFT, Arrays.asList("Task_4"), Arrays.asList("SequenceFlow_4"));
+	}
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
+	public void testEnlargeParticipantWithlaneAdjustsFlowElementsAndBendpoints() {
+
+		assertResizeRetainsChildPositionsAndFlowLayout("Participant_4", point(0, -20), Sector.TOP_LEFT, Arrays.asList("Task_4"), Arrays.asList("SequenceFlow_4"));
 	}
 }

@@ -45,8 +45,13 @@
       <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
     </bpmn2:task>
     <bpmn2:sequenceFlow id="SequenceFlow_2" sourceRef="Task_2" targetRef="EndEvent_1"/>
-    <bpmn2:task id="Task_3" name="Task"/>
-    <bpmn2:endEvent id="EndEvent_2" name="End Event"/>
+    <bpmn2:task id="Task_3" name="Task">
+      <bpmn2:outgoing>SequenceFlow_6</bpmn2:outgoing>
+    </bpmn2:task>
+    <bpmn2:endEvent id="EndEvent_2" name="End Event">
+      <bpmn2:incoming>SequenceFlow_6</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_6" name="" sourceRef="Task_3" targetRef="EndEvent_2"/>
   </bpmn2:process>
   <bpmn2:process id="Process_3" isExecutable="false">
     <bpmn2:laneSet id="LaneSet_4" name="Lane Set 4">
@@ -57,12 +62,17 @@
   <bpmn2:process id="Process_4" isExecutable="false">
     <bpmn2:laneSet id="LaneSet_5" name="Lane Set 5">
       <bpmn2:lane id="Lane_8" name="Lane 8">
-        <bpmn2:flowNodeRef>Task_5</bpmn2:flowNodeRef>
         <bpmn2:flowNodeRef>Task_4</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>EndEvent_4</bpmn2:flowNodeRef>
       </bpmn2:lane>
     </bpmn2:laneSet>
-    <bpmn2:task id="Task_5" name="Task"/>
-    <bpmn2:task id="Task_4" name="Task"/>
+    <bpmn2:task id="Task_4" name="Task">
+      <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
+    </bpmn2:task>
+    <bpmn2:endEvent id="EndEvent_4" name="End Event">
+      <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_4" name="" sourceRef="Task_4" targetRef="EndEvent_4"/>
   </bpmn2:process>
   <bpmn2:process id="Process_5" isExecutable="false">
     <bpmn2:laneSet id="LaneSet_6" name="Lane Set 6">
@@ -75,8 +85,13 @@
         </bpmn2:childLaneSet>
       </bpmn2:lane>
     </bpmn2:laneSet>
-    <bpmn2:task id="Task_6" name="Task"/>
-    <bpmn2:endEvent id="EndEvent_3" name="End Event"/>
+    <bpmn2:task id="Task_6" name="Task">
+      <bpmn2:outgoing>SequenceFlow_5</bpmn2:outgoing>
+    </bpmn2:task>
+    <bpmn2:endEvent id="EndEvent_3" name="End Event">
+      <bpmn2:incoming>SequenceFlow_5</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_5" name="" sourceRef="Task_6" targetRef="EndEvent_3"/>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="_Collaboration_3">
@@ -162,23 +177,23 @@
       <bpmndi:BPMNShape id="_BPMNShape_Task_12" bpmnElement="Task_4">
         <dc:Bounds height="80.0" width="100.0" x="407.0" y="1413.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_BPMNShape_Task_13" bpmnElement="Task_5">
+      <bpmndi:BPMNShape id="_BPMNShape_Task_13">
         <dc:Bounds height="80.0" width="100.0" x="635.0" y="1413.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_Lane_16" bpmnElement="Lane_8" isHorizontal="true">
         <dc:Bounds height="145.0" width="511.0" x="305.0" y="1380.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_Participant_9" bpmnElement="Participant_5" isHorizontal="true">
-        <dc:Bounds height="121.0" width="540.0" x="276.0" y="1560.0"/>
+        <dc:Bounds height="122.0" width="540.0" x="276.0" y="1560.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_Lane_17" bpmnElement="Lane_9" isHorizontal="true">
-        <dc:Bounds height="121.0" width="510.0" x="306.0" y="1560.0"/>
+        <dc:Bounds height="122.0" width="510.0" x="306.0" y="1560.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_Lane_18" bpmnElement="Lane_10" isHorizontal="true">
-        <dc:Bounds height="121.0" width="480.0" x="336.0" y="1560.0"/>
+        <dc:Bounds height="122.0" width="480.0" x="336.0" y="1560.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_Task_14" bpmnElement="Task_6">
-        <dc:Bounds height="80.0" width="100.0" x="432.0" y="1581.0"/>
+        <dc:Bounds height="80.0" width="100.0" x="408.0" y="1596.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_EndEvent_4" bpmnElement="EndEvent_3">
         <dc:Bounds height="36.0" width="36.0" x="708.0" y="1603.0"/>
