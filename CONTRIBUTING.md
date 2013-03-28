@@ -28,6 +28,15 @@ Highlighted are plugins which need to be installed in order to resolve add depen
 
 ![Development Requirements](https://raw.github.com/camunda/camunda-modeler/develop/documentation/images/development-requirements.png)
 
+To avoid any problems install the plugins in the following order:
+1. EMF plugins
+2. Graphiti plugin
+3. BPMN2 plugin
+4. Eclipse plugins
+5. Maven plugin
+
+The Tycho plugin will be installed automatically.
+
 ### Versions and Update Sites
 
 * __Graphiti__ 0.9.1 http://download.eclipse.org/graphiti/updates/0.9.1/
