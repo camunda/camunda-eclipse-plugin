@@ -204,11 +204,11 @@ public class FeatureSupport {
 		Point delta = diff.getResizeDelta();
 		
 		if (direction.isTop() || direction.isBottom()) { 
-			recursiveResizeChildrenVertically(container, direction.isTop(), delta.getY());
+			recursiveResizeChildrenVertically(container, direction.isTop(), delta.getY(), featureProvider);
 		}
 
 		if (direction.isLeft() || direction.isRight()) {
-			recursiveResizeChildrenHorizontally(container, direction.isLeft(), delta.getX());
+			recursiveResizeChildrenHorizontally(container, direction.isLeft(), delta.getX(), featureProvider);
 		}
 	}
 	
@@ -228,17 +228,21 @@ public class FeatureSupport {
 		}
 	}
 
-	private static void recursiveResizeChildrenHorizontally(ContainerShape container, boolean left, int dx) {
+	private static void recursiveResizeChildrenHorizontally(ContainerShape container, boolean left, int dx, IFeatureProvider featureProvider) {
 		
 		List<Shape> childLanes = getChildLanes(container);
 		if (childLanes.isEmpty()) {
+			if (left) {
+				moveChildren(container, point(-dx, 0), featureProvider);
+			}
+			
 			return;
 		}
 		
 		for (Shape childLane: childLanes) {
 			
 			// recurse into children
-			recursiveResizeChildrenHorizontally((ContainerShape) childLane, left, dx);
+			recursiveResizeChildrenHorizontally((ContainerShape) childLane, left, dx, featureProvider);
 			
 			GraphicsAlgorithm childLaneGA = childLane.getGraphicsAlgorithm();
 			
@@ -252,36 +256,42 @@ public class FeatureSupport {
 		}
 	}
 
-	private static void recursiveResizeChildrenVertically(ContainerShape container, boolean fromTop, int dy) {
+	private static void recursiveResizeChildrenVertically(ContainerShape container, boolean top, int dy, IFeatureProvider featureProvider) {
 		
 		List<Shape> childLanes = getChildLanes(container);
 		if (childLanes.isEmpty()) {
+			if (top) {
+				moveChildren(container, point(0, -dy), featureProvider);
+			}
+			
 			return;
 		}
 			
 		Shape resizeCandidate = null;
-		if (fromTop) {
+		if (top) {
 			resizeCandidate = childLanes.get(0);
 		} else {
 			resizeCandidate = childLanes.get(childLanes.size() - 1);
 		}
 		
-		recursiveResizeChildrenVertically((ContainerShape) resizeCandidate, fromTop, dy);
+		recursiveResizeChildrenVertically((ContainerShape) resizeCandidate, top, dy, featureProvider);
 		
 		GraphicsAlgorithm resizeGA = resizeCandidate.getGraphicsAlgorithm();
-		int newHeight = resizeGA.getHeight() + (fromTop ? dy * -1 : dy);
+		int newHeight = resizeGA.getHeight() + (top ? -dy : dy);
 		
 		Graphiti.getGaService().setHeight(resizeGA, newHeight);
 		
+		int m = 0;
 		int y = 0;
 		
 		for (Shape childLane: childLanes) {
 			GraphicsAlgorithm childLaneGA = childLane.getGraphicsAlgorithm();
 			
-			Graphiti.getGaService().setLocation(childLaneGA, childLaneGA.getX(), y);
+			Graphiti.getGaService().setLocation(childLaneGA, childLaneGA.getX(), y - m);
 			
 			// to avoid a double border lanes have -1px margin bottom
-			y += childLaneGA.getHeight() - 1;
+			y += childLaneGA.getHeight() - m;
+			m = 1;
 		}
 	}
 
@@ -998,5 +1008,33 @@ public class FeatureSupport {
 		});
 		
 		return childLanes;
+	}
+
+	public static void eachLaneExecute(ContainerShape container, LaneSetOperation operation) {
+		
+		ContainerShape root = getRootContainer(container);
+		
+		recursiveEachLaneExecute(root, operation);
+	}
+	
+	private static void recursiveEachLaneExecute(ContainerShape container, LaneSetOperation operation) {
+		
+		List<Shape> lanes = getChildLanes(container);
+		
+		operation.execute(container);
+		
+		for (Shape lane : lanes) {
+			recursiveEachLaneExecute((ContainerShape) lane, operation);
+		}
+	}
+
+	public interface LaneSetOperation {
+		
+		/**
+		 * Executes an operation for all lanes in a lane set
+		 * 
+		 * @param lane
+		 */
+		public void execute(Shape lane);
 	}
 }

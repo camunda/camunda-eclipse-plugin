@@ -5,14 +5,15 @@ import static org.camunda.bpm.modeler.core.layout.util.RectangleUtil.resizeDiff;
 import static org.camunda.bpm.modeler.core.layout.util.RectangleUtil.translate;
 
 import java.util.List;
-import java.util.Map;
 
+import org.camunda.bpm.modeler.core.di.DIUtils;
 import org.camunda.bpm.modeler.core.features.DefaultResizeBPMNShapeFeature;
 import org.camunda.bpm.modeler.core.layout.util.CollaborationResizeSupport;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
 import org.camunda.bpm.modeler.core.layout.util.RectangleUtil.ResizeDiff;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
+import org.camunda.bpm.modeler.core.utils.FeatureSupport.LaneSetOperation;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
@@ -27,8 +28,6 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 public abstract class ResizeLaneSetFeature extends DefaultResizeBPMNShapeFeature {
 
 	private List<Shape> visibleLaneShapes;
-	
-	private Map<Shape, IRectangle> preResizePositionMap;
 
 	public ResizeLaneSetFeature(IFeatureProvider fp) {
 		super(fp);
@@ -72,22 +71,36 @@ public abstract class ResizeLaneSetFeature extends DefaultResizeBPMNShapeFeature
 		
 		ContainerShape container = (ContainerShape) context.getShape();
 		ResizeDiff resizeDiff = resizeDiff(LayoutUtil.getRelativeBounds(container), getPostResizeBounds(context));
-
-		// preResizePositionMap = FeatureSupport.buildFlowElementPositionMap(FeatureSupport.getRootContainer(container));
 		
 		FeatureSupport.recursiveResizeChildren(container, resizeDiff, getFeatureProvider());
 	}
 	
 	@Override
-	protected void postResize(IResizeShapeContext context) {
-		super.postResize(context);
+	protected void updateDi(Shape shape) {
+		
+		FeatureSupport.eachLaneExecute((ContainerShape) shape, new LaneSetOperation() {
+			
+			@Override
+			public void execute(Shape lane) {
+				DIUtils.updateDIShape(lane);
+			}
+		});
+	}
+	
+	@Override
+	protected void internalResize(IResizeShapeContext context) {
+		super.internalResize(context);
 
 		ContainerShape container = (ContainerShape) context.getShape();
 		
 		FeatureSupport.resizeLaneSet(container);
+	}
+	
+	@Override
+	protected void postResize(IResizeShapeContext context) {
+		
+		super.postResize(context);
 		
 //		FeatureSupport.redrawLaneSet(container);
-		
-		// FeatureSupport.restoreFlowElementPositions(container, preResizePositionMap, getFeatureProvider());
 	}
 }
