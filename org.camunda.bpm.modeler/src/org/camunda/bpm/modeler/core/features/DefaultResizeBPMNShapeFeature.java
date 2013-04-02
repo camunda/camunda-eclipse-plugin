@@ -30,6 +30,7 @@ import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
 import org.camunda.bpm.modeler.core.utils.AnchorUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.ContextUtil;
+import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.camunda.bpm.modeler.core.utils.ScrollUtil;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNEdge;
@@ -57,7 +58,7 @@ import org.eclipse.graphiti.services.Graphiti;
 public class DefaultResizeBPMNShapeFeature extends DefaultResizeShapeFeature {
 
 	public final static int PADDING = 5;
-	
+
 	private IRectangle preResizeBounds;
 
 	public DefaultResizeBPMNShapeFeature(IFeatureProvider fp) {
@@ -88,11 +89,7 @@ public class DefaultResizeBPMNShapeFeature extends DefaultResizeShapeFeature {
 			IRectangle minimumBounds = getMinimumBounds(context);
 			if (minimumBounds != null) {
 				
-				IRectangle postResizeBounds = rectangle(
-					context.getX(), 
-					context.getY(), 
-					context.getWidth(), 
-					context.getHeight());
+				IRectangle postResizeBounds = getPostResizeBounds(context);
 				
 				Sector direction = Sector.fromResizeDirection(resizeDirection);
 				minBoundsContained = LayoutUtil.isContained(minimumBounds, postResizeBounds, -1, direction);
@@ -101,12 +98,30 @@ public class DefaultResizeBPMNShapeFeature extends DefaultResizeShapeFeature {
 		
 		return minBoundsContained && super.canResizeShape(context);
 	}
+
+	public IRectangle getPreResizeBounds() {
+		return preResizeBounds;
+	}
+	
+	/**
+	 * Returns the bounds after resize as indicated in the given context
+	 * 
+	 * @param context
+	 * @return
+	 */
+	protected IRectangle getPostResizeBounds(IResizeShapeContext context) {
+		return rectangle(
+			context.getX(), 
+			context.getY(), 
+			context.getWidth(), 
+			context.getHeight());
+	}
 	
 	@Override
 	public void resizeShape(IResizeShapeContext context) {
 		preResize(context);
 		
-		super.resizeShape(context);
+		internalResize(context);
 		
 		Shape shape = context.getShape();
 		
@@ -121,6 +136,18 @@ public class DefaultResizeBPMNShapeFeature extends DefaultResizeShapeFeature {
 		postResize(context);
 		
 		layout(shape, context);
+	}
+
+	protected void internalResize(IResizeShapeContext context) {
+		Shape shape = context.getShape();
+		int x = context.getX();
+		int y = context.getY();
+		int width = context.getWidth();
+		int height = context.getHeight();
+
+		if (shape.getGraphicsAlgorithm() != null) {
+			Graphiti.getGaService().setLocationAndSize(shape.getGraphicsAlgorithm(), x, y, width, height);
+		}
 	}
 
 	/**
@@ -176,49 +203,25 @@ public class DefaultResizeBPMNShapeFeature extends DefaultResizeShapeFeature {
 		
 		Shape shape = context.getShape();
 		
+
+		if (!(shape instanceof ContainerShape)) {
+			return;
+		}
+		
 		IRectangle postResizeBounds = LayoutUtil.getAbsoluteBounds(shape);
 		
 		if (postResizeBounds.getX() == preResizeBounds.getX() &&
 			postResizeBounds.getY() == preResizeBounds.getY()) {
 			
 			// no resize from top left
-			// no need to adjust bendpoints
+			// no need to adjust bendpoints / children positions
 			return;
 		}
 		
-		int deltaX = (postResizeBounds.getX() - preResizeBounds.getX());
-		int deltaY = (postResizeBounds.getY() - preResizeBounds.getY());
+		int deltaX = preResizeBounds.getX() - postResizeBounds.getX();
+		int deltaY = preResizeBounds.getY() - postResizeBounds.getY();
 		
-		if (shape instanceof ContainerShape) {
-			moveChildren((ContainerShape) shape, deltaX, deltaY);
-		}
-	}
-	
-	protected void moveChildren(ContainerShape shape, int deltaX, int deltaY) {
-		
-		List<Shape> children = new ArrayList<Shape>(shape.getChildren());
-		for (Shape child : children) {
-			if (child instanceof ContainerShape) {
-				BaseElement be = BusinessObjectUtil.getFirstBaseElement(child);
-				if (be != null) {
-					
-					ILocation location = LayoutUtil.getRelativeBounds(child);
-					
-					MoveShapeContext moveContext = new MoveShapeContext(child);
-					moveContext.setLocation(location.getX() - deltaX, location.getY() - deltaY);
-					moveContext.setSourceContainer(shape);
-					moveContext.setTargetContainer(shape);
-
-					ContextUtil.set(moveContext, DefaultMoveBPMNShapeFeature.SKIP_REPAIR_CONNECTIONS_AFTER_MOVE);
-					ContextUtil.set(moveContext, DefaultMoveBPMNShapeFeature.SKIP_MOVE_BENDPOINTS);
-					
-					IMoveShapeFeature moveShapeFeature = getFeatureProvider().getMoveShapeFeature(moveContext);
-					if (moveShapeFeature.canExecute(moveContext)) {
-						moveShapeFeature.execute(moveContext);
-					}
-				}
-			}
-		}
+		FeatureSupport.moveChildren((ContainerShape) shape, point(deltaX, deltaY), getFeatureProvider());
 	}
 
 	/**

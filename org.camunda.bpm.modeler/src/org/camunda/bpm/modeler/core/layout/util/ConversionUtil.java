@@ -12,6 +12,7 @@ import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.internal.datatypes.impl.DimensionImpl;
 import org.eclipse.graphiti.internal.datatypes.impl.LocationImpl;
 import org.eclipse.graphiti.internal.datatypes.impl.RectangleImpl;
+import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.services.Graphiti;
 
@@ -125,6 +126,10 @@ public class ConversionUtil {
 	
 	public static IRectangle rectangle(int x, int y, IDimension dimension) {
 		return rect(x, y, dimension.getWidth(), dimension.getHeight());
+	}
+	
+	public static IRectangle rectangle(GraphicsAlgorithm graphicsAlgorithm) {
+		return rect(graphicsAlgorithm.getX(), graphicsAlgorithm.getY(), graphicsAlgorithm.getWidth(), graphicsAlgorithm.getHeight());
 	}
 	
 	/**

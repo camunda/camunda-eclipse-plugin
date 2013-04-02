@@ -5,23 +5,14 @@ import static org.camunda.bpm.modeler.test.util.assertions.Bpmn2ModelAssertions.
 import static org.camunda.bpm.modeler.test.util.operations.ResizeShapeOperation.resize;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
-import org.camunda.bpm.modeler.core.layout.util.RectangleUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
 import org.camunda.bpm.modeler.core.utils.LabelUtil;
 import org.camunda.bpm.modeler.test.util.DiagramResource;
 import org.camunda.bpm.modeler.test.util.Util;
-import org.camunda.bpm.modeler.test.util.operations.Operation;
-import org.camunda.bpm.modeler.test.util.operations.ResizeShapeOperation;
 import org.eclipse.graphiti.datatypes.IRectangle;
-import org.eclipse.graphiti.features.IResizeFeature;
-import org.eclipse.graphiti.features.context.impl.ResizeShapeContext;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
-import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.junit.Test;
 

@@ -1,7 +1,6 @@
 package org.camunda.bpm.modeler.core.layout.util;
 
 import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
-import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.point;
 import static org.camunda.bpm.modeler.core.layout.util.RectangleUtil.translate;
 
 import java.util.List;
@@ -11,7 +10,6 @@ import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.BBox;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.eclipse.graphiti.datatypes.IRectangle;
-import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -30,14 +28,10 @@ public class CollaborationResizeSupport {
 	 * @param context
 	 * @return
 	 */
-	public static IRectangle getResizeBBox(ContainerShape containerShape, List<Shape> laneShapes, IResizeShapeContext context) {
+	public static IRectangle getRelativeResizeBBox(ContainerShape containerShape, List<Shape> laneShapes, Sector sector) {
 
 		// construct a bounding box by the contents of visible lanes
 		// and taking a minimal size of each lane into account
-		
-		IRectangle containerBounds = LayoutUtil.getRelativeBounds(containerShape);
-		
-		Sector sector = Sector.fromResizeDirection(context.getDirection());
 		
 		BBox resizeBBox = new BBox(null, DefaultResizeBPMNShapeFeature.PADDING, DefaultResizeBPMNShapeFeature.PADDING);
 		
@@ -67,9 +61,7 @@ public class CollaborationResizeSupport {
 			}
 		}
 		
-		IRectangle relativeBounds = resizeBBox.getBounds();
-		
-		return translate(relativeBounds, point(containerBounds));
+		return resizeBBox.getBounds();
 	}
 
 	/**

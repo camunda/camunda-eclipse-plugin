@@ -12,95 +12,36 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.core.features.participant;
 
-import java.util.Iterator;
-
-import org.camunda.bpm.modeler.core.di.DIUtils;
-import org.camunda.bpm.modeler.core.features.LayoutBpmnShapeFeature;
-import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
-import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
-import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.Participant;
-import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.features.IFeatureProvider;
-import org.eclipse.graphiti.features.context.ILayoutContext;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
-import org.eclipse.graphiti.mm.algorithms.Polyline;
-import org.eclipse.graphiti.mm.algorithms.Text;
-import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.services.IGaService;
 
-public class LayoutParticipantFeature extends LayoutBpmnShapeFeature {
+/**
+ * Layout feature for participants
+ * 
+ * @author nico.rehwaldt
+ */
+public class LayoutParticipantFeature extends LayoutLaneSetFeature {
 
 	public LayoutParticipantFeature(IFeatureProvider fp) {
 		super(fp);
 	}
 
 	@Override
-	public boolean canLayout(ILayoutContext context) {
-		Object bo = BusinessObjectUtil.getFirstElementOfType(context.getPictogramElement(), BaseElement.class);
-		return bo != null && bo instanceof Participant;
-	}
-
-	@Override
-	protected void layoutShape(ContainerShape containerShape) {
-		super.layoutShape(containerShape);
-
+	protected void updateMarkers(ContainerShape containerShape) {
 		GraphicsAlgorithm containerGa = containerShape.getGraphicsAlgorithm();
-		IGaService gaService = Graphiti.getGaService();
 
-		boolean horz = FeatureSupport.isHorizontal(containerShape);
-		
-		int containerHeight = containerGa.getHeight();
-		int containerWidth = containerGa.getWidth();
-		Iterator<Shape> iterator = containerShape.getChildren().iterator();
-		while (iterator.hasNext()) {
-			Shape shape = iterator.next();
-			GraphicsAlgorithm ga = shape.getGraphicsAlgorithm();
-			IDimension size = gaService.calculateSize(ga);
-			
-			if (ga instanceof Polyline) {
-				Polyline line = (Polyline) ga;
-				Point p0 = line.getPoints().get(0);
-				Point p1 = line.getPoints().get(1);
-				if (horz) {
-					p0.setX(GraphicsUtil.PARTICIPANT_LABEL_OFFSET); 
-					p0.setY(0);
-					
-					p1.setX(GraphicsUtil.PARTICIPANT_LABEL_OFFSET);
-					p1.setY(containerHeight);
-				}
-				else {
-					p0.setX(0); 
-					p0.setY(GraphicsUtil.PARTICIPANT_LABEL_OFFSET);
-					p1.setX(containerWidth);
-					p1.setY(GraphicsUtil.PARTICIPANT_LABEL_OFFSET);
-				}
-			} else if (ga instanceof Text) {
-				if (horz) {
-					Text text = (Text)ga;
-					text.setAngle(-90);
-					gaService.setLocationAndSize(ga, 5, 0, 15, containerHeight);
-				}
-				else {
-					Text text = (Text)ga;
-					text.setAngle(0);
-					gaService.setLocationAndSize(ga, 0, 5, containerWidth, 15);
-				}
-			}
-		}
-
-		Shape shape = FeatureSupport.getShape(containerShape, UpdateParticipantMultiplicityFeature.MULTIPLICITY_MARKER,
-				Boolean.toString(true));
+		Shape shape = FeatureSupport.getShape(containerShape, UpdateParticipantMultiplicityFeature.MULTIPLICITY_MARKER, Boolean.toString(true));
 		
 		if (shape != null) {
 			GraphicsAlgorithm ga = shape.getGraphicsAlgorithm();
 			int x = (containerGa.getWidth() / 2) - 10;
 			int y = containerGa.getHeight() - 20;
-			gaService.setLocation(ga, x, y);
+			
+			Graphiti.getGaService().setLocation(ga, x, y);
 		}
 	}
 }

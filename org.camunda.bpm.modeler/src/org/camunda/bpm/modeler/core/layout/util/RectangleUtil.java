@@ -48,6 +48,10 @@ public class RectangleUtil {
 		}
 	}
 
+	public static IRectangle resize(IRectangle rect, ResizeDiff diff) {
+		return resize(rect, diff.getResizeDelta(), diff.getResizeDirection());
+	}
+
 	public static IRectangle resize(IRectangle rect, Point delta, Sector direction) {
 		
 		int dx = delta.getX();
@@ -167,5 +171,21 @@ public class RectangleUtil {
 	 */
 	public static IRectangle translate(IRectangle rect, Point xyTranslation) {
 		return translate(rect, rectangle(xyTranslation.getX(), xyTranslation.getY(), 0, 0));
+	}
+	
+	/**
+	 * Returns true if both rectangles equal each other
+	 * 
+	 * @param rect1
+	 * @param rect2
+	 * 
+	 * @return
+	 */
+	public static boolean rectanglesEqual(IRectangle rect1, IRectangle rect2) {
+		return 
+			rect1.getX() == rect2.getX() && 
+			rect1.getY() == rect2.getY() && 
+			rect1.getWidth() == rect2.getWidth() && 
+			rect1.getHeight() == rect2.getHeight();
 	}
 }

@@ -1,10 +1,17 @@
 package org.camunda.bpm.modeler.core.features.lane;
 
+import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.point;
+import static org.camunda.bpm.modeler.core.layout.util.RectangleUtil.resizeDiff;
+import static org.camunda.bpm.modeler.core.layout.util.RectangleUtil.translate;
+
 import java.util.List;
+import java.util.Map;
 
 import org.camunda.bpm.modeler.core.features.DefaultResizeBPMNShapeFeature;
 import org.camunda.bpm.modeler.core.layout.util.CollaborationResizeSupport;
-import org.camunda.bpm.modeler.core.utils.ContextUtil;
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
+import org.camunda.bpm.modeler.core.layout.util.RectangleUtil.ResizeDiff;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -17,11 +24,11 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
  * 
  * @author nico.rehwaldt
  */
-public class ResizeLaneSetFeature extends DefaultResizeBPMNShapeFeature {
+public abstract class ResizeLaneSetFeature extends DefaultResizeBPMNShapeFeature {
 
-	private static final String PROGRAMATIC_RESIZE = "DefaultResizeBPMNShapeFeature.PROGRAMATIC_RESIZE";
-	
 	private List<Shape> visibleLaneShapes;
+	
+	private Map<Shape, IRectangle> preResizePositionMap;
 
 	public ResizeLaneSetFeature(IFeatureProvider fp) {
 		super(fp);
@@ -29,20 +36,20 @@ public class ResizeLaneSetFeature extends DefaultResizeBPMNShapeFeature {
 
 	@Override
 	protected IRectangle getMinimumBounds(IResizeShapeContext context) {
-	
-		// all resizing is allowed if we are triggering the resize
-		// programmaticaly (because we know what we are doing
-		if (isProgramaticResize(context)) {
-			return null;
-		}
-		
 		ContainerShape containerShape = (ContainerShape) context.getShape();
 		
-		return CollaborationResizeSupport.getResizeBBox(containerShape, getVisibleLanes(containerShape), context);
+		IRectangle containerBounds = LayoutUtil.getRelativeBounds(containerShape);
+		
+		Sector sector = Sector.fromResizeDirection(context.getDirection());
+		
+		IRectangle relativeBounds = CollaborationResizeSupport.getRelativeResizeBBox(containerShape, getVisibleLanes(containerShape), sector);
+
+		return translate(relativeBounds, point(containerBounds));
 	}
 	
-	protected boolean isProgramaticResize(IResizeShapeContext context) {
-		return ContextUtil.is(context, PROGRAMATIC_RESIZE);
+	protected void moveChildShapes(IResizeShapeContext context) {
+		// do not move children; feature support will do the job
+		return;
 	}
 	
 	/**
@@ -58,5 +65,29 @@ public class ResizeLaneSetFeature extends DefaultResizeBPMNShapeFeature {
 		
 		return visibleLaneShapes;
 	}
+	
+	@Override
+	protected void preResize(IResizeShapeContext context) {
+		super.preResize(context);
+		
+		ContainerShape container = (ContainerShape) context.getShape();
+		ResizeDiff resizeDiff = resizeDiff(LayoutUtil.getRelativeBounds(container), getPostResizeBounds(context));
 
+		// preResizePositionMap = FeatureSupport.buildFlowElementPositionMap(FeatureSupport.getRootContainer(container));
+		
+		FeatureSupport.recursiveResizeChildren(container, resizeDiff, getFeatureProvider());
+	}
+	
+	@Override
+	protected void postResize(IResizeShapeContext context) {
+		super.postResize(context);
+
+		ContainerShape container = (ContainerShape) context.getShape();
+		
+		FeatureSupport.resizeLaneSet(container);
+		
+//		FeatureSupport.redrawLaneSet(container);
+		
+		// FeatureSupport.restoreFlowElementPositions(container, preResizePositionMap, getFeatureProvider());
+	}
 }

@@ -13,17 +13,24 @@
 package org.camunda.bpm.modeler.core.utils;
 
 import static org.camunda.bpm.modeler.core.features.activity.AbstractAddActivityFeature.ACTIVITY_DECORATOR;
+import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.point;
+import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.di.DIUtils;
+import org.camunda.bpm.modeler.core.features.DefaultMoveBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.BBox;
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
+import org.camunda.bpm.modeler.core.layout.util.RectangleUtil.ResizeDiff;
 import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.ChoreographyTask;
@@ -36,11 +43,18 @@ import org.eclipse.bpmn2.TextAnnotation;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.graphiti.datatypes.ILocation;
+import org.eclipse.graphiti.datatypes.IRectangle;
+import org.eclipse.graphiti.features.IFeature;
+import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
 import org.eclipse.graphiti.features.context.ITargetContext;
+import org.eclipse.graphiti.features.context.impl.MoveShapeContext;
 import org.eclipse.graphiti.mm.algorithms.AbstractText;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
@@ -59,6 +73,7 @@ import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
 public class FeatureSupport {
+	
 	public static final String IS_HORIZONTAL_PROPERTY = "isHorizontal";
 
 	public static boolean isTargetSubProcess(ITargetContext context) {
@@ -79,53 +94,6 @@ public class FeatureSupport {
 		return BusinessObjectUtil.containsChildElementOfType(shape, Definitions.class);
 	}
 	
-	/**
-	 * Returns the list of top level lanes in the correct order.
-	 *  
-	 * @param rootShape
-	 * @return
-	 */
-	public static List<Shape> getTopLevelLanes(ContainerShape rootShape) {
-		
-		// get direct child lanes
-		List<Shape> directChildLanes = FeatureSupport.getChildrenLinkedToType(rootShape, Lane.class);
-		if (directChildLanes.isEmpty()) {
-			if (BusinessObjectUtil.containsChildElementOfType(rootShape, Lane.class)) {
-				return Arrays.asList((Shape) rootShape);
-			} else {
-				return Collections.emptyList();
-			}
-		}
-		
-		// sort from top to bottom
-		Collections.sort(directChildLanes, new Comparator<Shape>() {
-			@Override
-			public int compare(Shape a, Shape b) {
-				int ya = a.getGraphicsAlgorithm().getY();
-				int yb = b.getGraphicsAlgorithm().getY();
-				
-				return ((Integer) ya).compareTo(yb);
-			}
-		});
-		
-		List<Shape> result = new ArrayList<Shape>(directChildLanes);
-		
-		// recurse into nested child lanes
-		for (Shape laneShape: directChildLanes) {
-
-			if (laneShape instanceof ContainerShape) {
-				List<Shape> nestedLanes = getTopLevelLanes((ContainerShape) laneShape);
-				if (!nestedLanes.isEmpty()) {
-					int laneIndex = result.indexOf(laneShape);
-					result.remove(laneIndex);
-					result.addAll(laneIndex, nestedLanes);
-				}
-			}
-		}
-		
-		return result;
-	}
-
 	public static boolean isLane(PictogramElement element) {
 		return BusinessObjectUtil.containsElementOfType(element, Lane.class);
 	}
@@ -230,9 +198,180 @@ public class FeatureSupport {
 		}
 	}
 
-	public static void redraw(ContainerShape container) {
+	public static void recursiveResizeChildren(ContainerShape container, ResizeDiff diff, IFeatureProvider featureProvider) {
+
+		Sector direction = diff.getResizeDirection();
+		Point delta = diff.getResizeDelta();
+		
+		if (direction.isTop() || direction.isBottom()) { 
+			recursiveResizeChildrenVertically(container, direction.isTop(), delta.getY());
+		}
+
+		if (direction.isLeft() || direction.isRight()) {
+			recursiveResizeChildrenHorizontally(container, direction.isLeft(), delta.getX());
+		}
+	}
+	
+	public static void restoreFlowElementPositions(ContainerShape container, Map<Shape, IRectangle> preMoveBounds, IFeatureProvider featureProvider) {
+		
+		for (Map.Entry<Shape, IRectangle> entry : preMoveBounds.entrySet()) {
+			
+			Shape shape = entry.getKey();
+			
+			Point preMovePosition = point(entry.getValue());
+			Point postMovePosition = point(LayoutUtil.getAbsoluteBounds(shape));
+			
+			int dx = preMovePosition.getX() - postMovePosition.getX();
+			int dy = preMovePosition.getY() - postMovePosition.getY();
+			
+			moveShapeNoLayout(shape, point(dx, dy), featureProvider);
+		}
+	}
+
+	private static void recursiveResizeChildrenHorizontally(ContainerShape container, boolean left, int dx) {
+		
+		List<Shape> childLanes = getChildLanes(container);
+		if (childLanes.isEmpty()) {
+			return;
+		}
+		
+		for (Shape childLane: childLanes) {
+			
+			// recurse into children
+			recursiveResizeChildrenHorizontally((ContainerShape) childLane, left, dx);
+			
+			GraphicsAlgorithm childLaneGA = childLane.getGraphicsAlgorithm();
+			
+			int x = GraphicsUtil.PARTICIPANT_LABEL_OFFSET;
+			int y = childLaneGA.getY();
+			
+			int newWidth = childLaneGA.getWidth() + (left ? -1 * dx : dx);
+
+			Graphiti.getGaService().setWidth(childLaneGA, newWidth);
+			Graphiti.getGaService().setLocation(childLaneGA, x, y);
+		}
+	}
+
+	private static void recursiveResizeChildrenVertically(ContainerShape container, boolean fromTop, int dy) {
+		
+		List<Shape> childLanes = getChildLanes(container);
+		if (childLanes.isEmpty()) {
+			return;
+		}
+			
+		Shape resizeCandidate = null;
+		if (fromTop) {
+			resizeCandidate = childLanes.get(0);
+		} else {
+			resizeCandidate = childLanes.get(childLanes.size() - 1);
+		}
+		
+		recursiveResizeChildrenVertically((ContainerShape) resizeCandidate, fromTop, dy);
+		
+		GraphicsAlgorithm resizeGA = resizeCandidate.getGraphicsAlgorithm();
+		int newHeight = resizeGA.getHeight() + (fromTop ? dy * -1 : dy);
+		
+		Graphiti.getGaService().setHeight(resizeGA, newHeight);
+		
+		int y = 0;
+		
+		for (Shape childLane: childLanes) {
+			GraphicsAlgorithm childLaneGA = childLane.getGraphicsAlgorithm();
+			
+			Graphiti.getGaService().setLocation(childLaneGA, childLaneGA.getX(), y);
+			
+			// to avoid a double border lanes have -1px margin bottom
+			y += childLaneGA.getHeight() - 1;
+		}
+	}
+
+	public static Map<Shape, IRectangle> buildFlowElementPositionMap(ContainerShape container) {
+		
+		HashMap<Shape, IRectangle> positionMap = new HashMap<Shape, IRectangle>();
+		
+		TreeIterator<EObject> contents = container.eAllContents();
+		
+		while (contents.hasNext()) {
+			EObject element = contents.next();
+			if (!isBpmn20Shape(element)) {
+				continue;
+			}
+			
+			ContainerShape shape = (ContainerShape) element;
+			
+			if (!isParticipant(shape) && !isLane(shape)) {
+				positionMap.put(shape, LayoutUtil.getAbsoluteBounds(shape));
+			}
+		}
+		
+		return positionMap;
+	}
+
+	public static void resizeLaneSet(ContainerShape container) {
+		
+		ContainerShape parentContainer = container.getContainer();
+		
+		if (!isParticipant(parentContainer) && !isLane(parentContainer)) {
+			// we have reached the top of a participant / lane nesting
+			return;
+		}
+		
+		int topResize = 0;
+		
+		List<Shape> childLanes = getChildLanes(parentContainer);
+		
+		GraphicsAlgorithm containerGa = container.getGraphicsAlgorithm();
+		
+		Shape sibling;
+		GraphicsAlgorithm siblingGA;
+		
+		int idx = childLanes.indexOf(container);
+		
+		if (idx == 0) {
+			topResize = containerGa.getY();
+		}
+		
+		if (idx > 0) {
+			
+			// check for top resize
+			
+			sibling = childLanes.get(idx - 1);
+			siblingGA = sibling.getGraphicsAlgorithm();
+			
+			// compensate 1px margin
+			if (siblingGA.getY() + siblingGA.getHeight() != containerGa.getY() + 1) {
+				topResize = containerGa.getY() - (siblingGA.getY() + siblingGA.getHeight());
+			}
+		}
+		
+		int m = 0; // mystical m
+		int y = 0;
+		
+		for (Shape shape : childLanes) {
+			GraphicsAlgorithm shapeGA = shape.getGraphicsAlgorithm();
+			
+			Graphiti.getGaService().setLocation(shapeGA, GraphicsUtil.PARTICIPANT_LABEL_OFFSET, y - m);
+
+			// to avoid a double border lanes have -1px margin bottom
+			y += shapeGA.getHeight() - m;
+			m = 1;
+		}
+		
+		GraphicsAlgorithm parentGa = parentContainer.getGraphicsAlgorithm();
+		
+		if (topResize != 0) {
+			Graphiti.getGaService().setLocation(parentGa, parentGa.getX(), parentGa.getY() + topResize);
+		}
+		
+		Graphiti.getGaService().setHeight(parentGa, y);
+		
+		// recurse into parent container
+		resizeLaneSet(parentContainer);
+	}
+	
+	public static void redrawLaneSet(ContainerShape container) {
 		ContainerShape root = getRootContainer(container);
-		resizeRecursively(root);
+		resizeRecursively(root, container);
 		postResizeFixLenghts(root);
 		updateDI(root);
 	}
@@ -250,7 +389,8 @@ public class FeatureSupport {
 		return container;
 	}
 
-	private static Dimension resize(ContainerShape container) {
+	private static IRectangle resize(ContainerShape container) {
+		
 		EObject elem = BusinessObjectUtil.getFirstElementOfType(container, BaseElement.class);
 		IGaService service = Graphiti.getGaService();
 		int height = 0;
@@ -296,7 +436,7 @@ public class FeatureSupport {
 
 		if (horz) {
 			if (height == 0) {
-				return new Dimension(ga.getWidth(), ga.getHeight());
+				return rectangle(ga.getX(), ga.getY(), ga.getWidth(), ga.getHeight());
 			} else {
 				int newWidth = width + 30;
 				int newHeight = height + 1;
@@ -317,12 +457,12 @@ public class FeatureSupport {
 					}
 				}
 	
-				return new Dimension(newWidth, newHeight);
+				return rectangle(ga.getX(), ga.getY(), newWidth, newHeight);
 			}
 		}
 		else {
 			if (width == 0) {
-				return new Dimension(ga.getWidth(), ga.getHeight());
+				return rectangle(ga.getX(), ga.getY(), ga.getWidth(), ga.getHeight());
 			} else {
 				int newWidth = width + 1;
 				int newHeight = height + 30;
@@ -343,30 +483,32 @@ public class FeatureSupport {
 					}
 				}
 	
-				return new Dimension(newWidth, newHeight);
+				return rectangle(ga.getX(), ga.getY(), newWidth, newHeight);
 			}
 		}
 	}
 	
-	private static Dimension resizeRecursively(ContainerShape root) {
+	private static IRectangle resizeRecursively(ContainerShape root, ContainerShape resizedShape) {
+		
 		BaseElement elem = BusinessObjectUtil.getFirstElementOfType(root, BaseElement.class);
-		List<Dimension> dimensions = new ArrayList<Dimension>();
 		IGaService service = Graphiti.getGaService();
 		int foundContainers = 0;
 		boolean horz = isHorizontal(root);
 
+		BBox allBounds = new BBox(null, 0, 0);
+		
 		for (Shape s : root.getChildren()) {
 			Object bo = BusinessObjectUtil.getFirstElementOfType(s, BaseElement.class);
 			if (checkForResize(elem, s, bo)) {
 				foundContainers += 1;
-				Dimension d = resizeRecursively((ContainerShape) s);
-				if (d != null) {
-					dimensions.add(d);
+				IRectangle bounds = resizeRecursively((ContainerShape) s, resizedShape);
+				if (bounds != null) {
+					allBounds.addBounds(bounds);
 				}
 			}
 		}
 
-		if (dimensions.isEmpty()) {
+		if (foundContainers == 0) {
 			GraphicsAlgorithm ga = root.getGraphicsAlgorithm();
 			for (Shape s : root.getChildren()) {
 				GraphicsAlgorithm childGa = s.getGraphicsAlgorithm();
@@ -395,14 +537,10 @@ public class FeatureSupport {
 					}
 				}
 			}
-			return new Dimension(ga.getWidth(), ga.getHeight());
-		}
-
-		if (foundContainers > 0) {
+			return rectangle(ga.getX(), ga.getY(), ga.getWidth(), ga.getHeight());
+		} else {
 			return resize(root);
 		}
-
-		return getMaxDimension(horz, dimensions);
 	}
 
 	/**
@@ -421,30 +559,8 @@ public class FeatureSupport {
 		return !bo.equals(currentBo);
 	}
 
-	private static Dimension getMaxDimension(boolean horz, List<Dimension> dimensions) {
-		if (dimensions.isEmpty()) {
-			return null;
-		}
-		int height = 0;
-		int width = 0;
-
-		if (horz) {
-			for (Dimension d : dimensions) {
-				height += d.height;
-				if (d.width > width) {
-					width = d.width;
-				}
-			}
-		}
-		else {
-			for (Dimension d : dimensions) {
-				width += d.width;
-				if (d.height > height) {
-					height = d.height;
-				}
-			}
-		}
-		return new Dimension(width, height);
+	private static IRectangle getBounds(BBox boundingBox) {
+		return boundingBox.getBounds();
 	}
 
 	private static void postResizeFixLenghts(ContainerShape root) {
@@ -757,5 +873,130 @@ public class FeatureSupport {
 	
 	public static boolean isSourceDiagram(IMoveShapeContext context) {
 		return isDiagram(context.getSourceContainer());
+	}
+
+	/**
+	 * Move all children in the given container by delta to compensate the container movement
+	 * 
+	 * @param container
+	 * @param delta
+	 * @param featureProvider
+	 */
+	public static void moveChildren(ContainerShape container, Point delta, IFeatureProvider featureProvider) {
+		moveShapes(new ArrayList<Shape>(container.getChildren()), delta, featureProvider);
+	}
+
+	public static void moveShapes(ArrayList<Shape> shapes, Point delta, IFeatureProvider featureProvider) {
+		for (Shape shape : shapes) {
+		
+			if (!isBpmn20Shape(shape)) {
+				continue;
+			}
+			
+			moveShapeNoLayout(shape, delta, featureProvider);
+		}
+	}
+	
+	private static void moveShapeNoLayout(Shape shape, Point delta, IFeatureProvider featureProvider) {
+
+		ILocation location = LayoutUtil.getRelativeBounds(shape);
+		
+		MoveShapeContext moveContext = new MoveShapeContext(shape);
+		moveContext.setLocation(location.getX() + delta.getX(), location.getY() + delta.getY());
+		moveContext.setSourceContainer(shape.getContainer());
+		moveContext.setTargetContainer(shape.getContainer());
+		
+		ContextUtil.set(moveContext, DefaultMoveBPMNShapeFeature.SKIP_REPAIR_CONNECTIONS_AFTER_MOVE);
+		ContextUtil.set(moveContext, DefaultMoveBPMNShapeFeature.SKIP_MOVE_BENDPOINTS);
+		
+		IMoveShapeFeature moveShapeFeature = featureProvider.getMoveShapeFeature(moveContext);
+		
+		executeFeature(moveShapeFeature, moveContext);
+	}
+
+	public static boolean isBpmn20Shape(EObject element) {
+		if (element instanceof ContainerShape) {
+			BaseElement be = BusinessObjectUtil.getFirstBaseElement((Shape) element);
+			return be != null;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Execute the given feature (null save) with the given context.
+	 * 
+	 * @param feature
+	 * @param context
+	 * 
+	 * @throws IllegalArgumentException if the feature is null or it does not execute in the given context.
+	 */
+	public static void executeFeature(IFeature feature, IContext context) {
+
+		if (feature == null) {
+			throw new IllegalArgumentException(String.format("No executable feature for context %s", context));
+		}
+		
+		if (feature.canExecute(context)) {
+			feature.execute(context);
+		} else {
+			throw new IllegalArgumentException(String.format("Failed to execute move feature %s", feature));
+		}
+	}
+	
+	/**
+	 * Returns the list of top level lanes in the correct order.
+	 *  
+	 * @param rootShape
+	 * @return
+	 */
+	public static List<Shape> getTopLevelLanes(ContainerShape rootShape) {
+		
+		// get direct child lanes
+		List<Shape> directChildLanes = getChildLanes(rootShape);
+		
+		List<Shape> result = new ArrayList<Shape>(directChildLanes);
+		
+		// recurse into nested child lanes
+		for (Shape laneShape: directChildLanes) {
+
+			if (laneShape instanceof ContainerShape) {
+				List<Shape> nestedLanes = getTopLevelLanes((ContainerShape) laneShape);
+				if (!nestedLanes.isEmpty()) {
+					int laneIndex = result.indexOf(laneShape);
+					result.remove(laneIndex);
+					result.addAll(laneIndex, nestedLanes);
+				}
+			}
+		}
+		
+		return result;
+	}
+
+	/**
+	 * Get a list of ordered child lanes in the given root shape.
+	 * 
+	 * @param rootShape
+	 * @return
+	 */
+	public static List<Shape> getChildLanes(ContainerShape rootShape) {
+		
+		List<Shape> childLanes = FeatureSupport.getChildrenLinkedToType(rootShape, Lane.class);
+		if (childLanes.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
+		// sort from top to bottom
+		Collections.sort(childLanes, new Comparator<Shape>() {
+			@Override
+			public int compare(Shape a, Shape b) {
+				int ya = a.getGraphicsAlgorithm().getY();
+				int yb = b.getGraphicsAlgorithm().getY();
+				
+				return ((Integer) ya).compareTo(yb);
+			}
+		});
+		
+		return childLanes;
 	}
 }

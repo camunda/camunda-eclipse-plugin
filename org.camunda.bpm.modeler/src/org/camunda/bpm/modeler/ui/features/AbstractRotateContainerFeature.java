@@ -88,7 +88,7 @@ public abstract class AbstractRotateContainerFeature extends AbstractCustomFeatu
 			ContainerShape container = (ContainerShape)pes[0];
 			boolean horz = FeatureSupport.isHorizontal(container);
 			changeOrientation(container, !horz);
-			FeatureSupport.redraw(container);
+			FeatureSupport.redrawLaneSet(container);
 		}
 	}
 

@@ -157,7 +157,7 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 		}
 		
 		if (!isImport) {
-			FeatureSupport.redraw(newShapeContainer);
+			FeatureSupport.redrawLaneSet(newShapeContainer);
 		}
 		
 		peService.sendToBack(newLaneShape);
