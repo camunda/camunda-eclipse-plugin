@@ -40,6 +40,7 @@ import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IMoveShapeFeature;
+import org.eclipse.graphiti.features.IReason;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.features.context.impl.MoveShapeContext;
 import org.eclipse.graphiti.features.impl.DefaultResizeShapeFeature;
@@ -296,13 +297,17 @@ public class DefaultResizeBPMNShapeFeature extends DefaultResizeShapeFeature {
 	 * @param context
 	 */
 	protected void layout(Shape shape, IResizeShapeContext context) {
+		internalLayout(shape);
+	}
+	
+	protected void internalLayout(Shape shape) {
 		DiagramElement diagramElement = BusinessObjectUtil.getFirstElementOfType(shape, DiagramElement.class);
 
 		if (diagramElement instanceof BPMNShape || diagramElement instanceof BPMNEdge) {
 			Layouter.layoutShapeAfterResize(shape, getFeatureProvider());
 		}
 	}
-
+	
 	/**
 	 * Relocate anchors after the shape has been resized
 	 * 

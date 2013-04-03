@@ -95,6 +95,17 @@ public abstract class ResizeLaneSetFeature extends DefaultResizeBPMNShapeFeature
 		
 		FeatureSupport.resizeLaneSet(container);
 	}
+
+	@Override
+	protected void layout(Shape shape, IResizeShapeContext context) {
+		FeatureSupport.eachLaneExecute((ContainerShape) shape, new LaneSetOperation() {
+			
+			@Override
+			public void execute(Shape lane) {
+				internalLayout(lane);
+			}
+		});
+	}
 	
 	@Override
 	protected void postResize(IResizeShapeContext context) {
