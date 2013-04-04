@@ -288,7 +288,7 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 		Diagram diagramUnderTest = diagram;
 		
 		// when
-		IRectangle diagramBounds = LayoutUtil.getBounds(diagramUnderTest, 0, 0, 0, 0);
+		IRectangle diagramBounds = LayoutUtil.getChildrenBBox(diagramUnderTest, null, 0, 0);
 		
 		// then
 		assertThat(diagramBounds).isEqualTo(ConversionUtil.rect(230, 236, 503, 416));
@@ -301,10 +301,11 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 		Diagram diagramUnderTest = diagram;
 		
 		// when
-		IRectangle diagramBounds = LayoutUtil.getBounds(diagramUnderTest, 0, 0, 100, 100);
+		IRectangle diagramBounds = LayoutUtil.getChildrenBBox(diagramUnderTest, null, 100, 100);
 		
 		// then
-		assertThat(diagramBounds).isEqualTo(ConversionUtil.rect(130, 136, 603, 516));
+		// bounding box should be elements bbox + 100 px (each site)
+		assertThat(diagramBounds).isEqualTo(ConversionUtil.rect(130, 136, 703, 616));
 	}
 	
 	@Test
@@ -314,7 +315,7 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 		Diagram diagramUnderTest = diagram;
 		
 		// when
-		IRectangle diagramBounds = LayoutUtil.getBounds(diagramUnderTest, 0, 0, 0, 0);
+		IRectangle diagramBounds = LayoutUtil.getChildrenBBox(diagramUnderTest, null, 0, 0);
 		
 		// then
 		assertThat(diagramBounds).isEqualTo(ConversionUtil.rect(288, 276, 408, 80));

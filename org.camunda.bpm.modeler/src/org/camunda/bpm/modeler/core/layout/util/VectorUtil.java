@@ -1,6 +1,5 @@
 package org.camunda.bpm.modeler.core.layout.util;
 
-import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.asVectors;
 import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.vector;
 
 import java.util.List;

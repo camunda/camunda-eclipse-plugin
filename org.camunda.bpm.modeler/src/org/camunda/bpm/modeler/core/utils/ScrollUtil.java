@@ -1,5 +1,6 @@
 package org.camunda.bpm.modeler.core.utils;
 
+import org.camunda.bpm.modeler.core.layout.util.ConversionUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
@@ -48,11 +49,6 @@ public class ScrollUtil {
 			return true;
 		}
 		
-		@Override
-		public URI eProxyURI() {
-			return URI.createURI("scrollshape");
-		}
-		
 	}
 
 	public static final int SCROLL_PADDING = 150;
@@ -81,11 +77,11 @@ public class ScrollUtil {
 		if (scrollShape != null && scrollShape.eContainer() != null) {
 			xpos = scrollShape.getGraphicsAlgorithm().getX();
 			ypos = scrollShape.getGraphicsAlgorithm().getY();
-		}else {
+		} else {
 			scrollShape = createScrollShape(diagram, getHolder(diagram));
 		}
 		
-		IRectangle bounds = LayoutUtil.getBounds(diagram);
+		IRectangle bounds = LayoutUtil.getChildrenBBox(diagram);
 		
 		updateScrollRect(bounds, xpos, ypos, scrollShape, bounds.getX(), bounds.getY());
 		
@@ -110,7 +106,10 @@ public class ScrollUtil {
 		ScrollShapeHolder holder = getHolder(rootDiagram);
 		
 		if (bounds == null) {
-			bounds = LayoutUtil.getBounds(rootDiagram);
+			bounds = LayoutUtil.getChildrenBBox(rootDiagram);
+			if (bounds == null) {
+				bounds = ConversionUtil.rectangle(0, 0, 0, 0);
+			}
 		}
 		
 		Shape scrollShape = createScrollShape(rootDiagram, holder);
@@ -135,6 +134,7 @@ public class ScrollUtil {
 		if (holder == null) {
 			holder = new ScrollUtil.ScrollShapeHolder();
 			rootDiagram.getLink().getBusinessObjects().add(holder);
+			rootDiagram.eResource().getContents().add(holder);
 		}
 		
 		return holder;

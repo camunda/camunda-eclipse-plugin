@@ -1,12 +1,14 @@
 package org.camunda.bpm.modeler.test.feature.resize;
 
 import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.point;
+import static org.camunda.bpm.modeler.core.layout.util.RectangleUtil.resize;
 import static org.camunda.bpm.modeler.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.camunda.bpm.modeler.test.util.operations.ResizeShapeOperation.resize;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 import org.camunda.bpm.modeler.core.layout.util.BoundaryEventUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
-import org.camunda.bpm.modeler.test.feature.AbstractFeatureTest;
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
 import org.camunda.bpm.modeler.test.util.DiagramResource;
 import org.camunda.bpm.modeler.test.util.Util;
 import org.camunda.bpm.modeler.ui.features.event.BoundaryAttachment;
@@ -20,7 +22,7 @@ import org.junit.Test;
  * 
  * @author nico.rehwaldt
  */
-public class ResizeSubprocessFeatureTest extends AbstractFeatureTest {
+public class ResizeSubprocessFeatureTest extends AbstractResizeFeatureTest {
 
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/feature/move/ParticipantTaskConnectedBoundaryEvent.testBase.bpmn")
@@ -140,6 +142,20 @@ public class ResizeSubprocessFeatureTest extends AbstractFeatureTest {
 		assertThatAttachmentsSame(postResizeAttachment, preResizeAttachment);
 	}
 
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeSubprocessFeatureTest.testTooSmall.bpmn")
+	public void testEnlargeTooSmallTopLeft() {
+		
+		assertResize("SubProcess_1", point(-20, 0), Sector.TOP_LEFT);
+	}
+	
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeSubprocessFeatureTest.testTooSmall.bpmn")
+	public void testEnlargeTooSmallBottomRight() {
+
+		assertResize("SubProcess_1", point(30, 10), Sector.BOTTOM_RIGHT);
+	}
+	
 	private void assertThatAttachmentsSame(BoundaryAttachment actual, BoundaryAttachment expected) {
 		assertThat(actual.getSector())
 			.isEqualTo(expected.getSector());

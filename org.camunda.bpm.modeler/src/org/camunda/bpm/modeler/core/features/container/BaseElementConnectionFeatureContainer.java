@@ -12,12 +12,10 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.core.features.container;
 
-import org.camunda.bpm.modeler.core.features.DirectEditNamedElementFeature;
 import org.camunda.bpm.modeler.core.features.ReconnectBaseElementFeature;
 import org.camunda.bpm.modeler.core.features.flow.LayoutConnectionFeature;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.graphiti.features.IDirectEditingFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.ILayoutFeature;
 import org.eclipse.graphiti.features.IReconnectionFeature;

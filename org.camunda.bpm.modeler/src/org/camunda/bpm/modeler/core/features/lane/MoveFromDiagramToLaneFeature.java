@@ -77,7 +77,7 @@ public class MoveFromDiagramToLaneFeature extends MoveLaneFeature {
 			gaService.setLocationAndSize(laneGa, 15, tga.getHeight() - 1, tga.getWidth() - 15, laneGa.getHeight() + 1);
 		}
 
-		FeatureSupport.redraw(context.getTargetContainer());
+		FeatureSupport.redrawLaneSet(context.getTargetContainer());
 	}
 
 	private void modifyModelStructure(Lane targetLane, Lane lane) {

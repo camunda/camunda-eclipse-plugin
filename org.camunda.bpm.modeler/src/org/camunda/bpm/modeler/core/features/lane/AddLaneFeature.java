@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.camunda.bpm.modeler.core.features.AbstractAddBpmnShapeFeature;
 import org.camunda.bpm.modeler.core.features.DefaultMoveBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.features.participant.AddParticipantFeature;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
@@ -156,7 +157,7 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 		}
 		
 		if (!isImport) {
-			FeatureSupport.redraw(newShapeContainer);
+			FeatureSupport.redrawLaneSet(newShapeContainer);
 		}
 		
 		peService.sendToBack(newLaneShape);
@@ -182,9 +183,9 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
 		if (horizontal) {
 			text.setAngle(-90);
-			gaService.setLocationAndSize(text, 0, 0, 15, height);
+			gaService.setLocationAndSize(text, 5, 0, 15, height);
 		} else {
-			gaService.setLocationAndSize(text, 0, 0, width, 15);
+			gaService.setLocationAndSize(text, 0, 5, width, 15);
 		}
 		
 		link(textShape, lane);
@@ -335,7 +336,7 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 			return context.getWidth();
 		}
 		
-		int width = context.getTargetContainer().getGraphicsAlgorithm().getWidth() - 30;
+		int width = context.getTargetContainer().getGraphicsAlgorithm().getWidth() - GraphicsUtil.PARTICIPANT_LABEL_OFFSET;
 		
 		Bounds bounds = getPreviouslyAddedLaneBounds(context);
 		if (bounds != null) {

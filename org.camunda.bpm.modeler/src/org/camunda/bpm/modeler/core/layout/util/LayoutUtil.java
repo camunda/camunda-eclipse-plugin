@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.camunda.bpm.modeler.core.layout.Docking;
+import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.ScrollUtil;
 import org.camunda.bpm.modeler.ui.features.event.BoundaryAttachment;
 import org.eclipse.bpmn2.BaseElement;
@@ -22,6 +23,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
+import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
@@ -35,7 +37,6 @@ import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.ui.internal.services.IGefService;
 
 /**
  * Utility dealing with all sorts of layout specific concerns.
@@ -98,52 +99,52 @@ public class LayoutUtil {
 		
 		private boolean left;
 		private boolean right;
-		private boolean above;
-		private boolean beneath;
+		private boolean top;
+		private boolean bottom;
 
-		private Sector(boolean left, boolean right, boolean above, boolean beneath) {
+		private Sector(boolean left, boolean right, boolean above, boolean bottom) {
 			if (left && right) {
 				throw new IllegalArgumentException("Cannot be left and right at the same time");
 			}
 			
-			if (above && beneath) {
-				throw new IllegalArgumentException("Cannot be above and beneath at the same time");
+			if (above && bottom) {
+				throw new IllegalArgumentException("Cannot be top and bottom at the same time");
 			}
 			
 			this.left = left;
 			this.right = right;
-			this.above = above;
-			this.beneath = beneath;
+			this.top = above;
+			this.bottom = bottom;
 		}
 		
-		public static Sector fromBooleans(boolean left, boolean right, boolean above, boolean beneath) {
-			if (left && above) {
+		public static Sector fromBooleans(boolean left, boolean right, boolean top, boolean bottom) {
+			if (left && top) {
 				return Sector.TOP_LEFT;
-			} else if (left && beneath) {
+			} else if (left && bottom) {
 				return Sector.BOTTOM_LEFT;
 			} else if (left) {
 				return Sector.LEFT;
-			} else if (right && above) {
+			} else if (right && top) {
 				return Sector.TOP_RIGHT;
-			} else if (right && beneath) {
+			} else if (right && bottom) {
 				return Sector.BOTTOM_RIGHT;
 			} else if (right) {
 				return Sector.RIGHT;
-			} else if(above) {
+			} else if(top) {
 				return Sector.TOP;
-			} else if(beneath) {
+			} else if(bottom) {
 				return Sector.BOTTOM;
 			} else {
 				return Sector.UNDEFINED;
 			}
 		}
 		
-		public boolean isAbove() {
-			return above;
+		public boolean isTop() {
+			return top;
 		}
 		
-		public boolean isBeneath() {
-			return beneath;
+		public boolean isBottom() {
+			return bottom;
 		}
 		
 		public boolean isLeft() {
@@ -152,6 +153,74 @@ public class LayoutUtil {
 		
 		public boolean isRight() {
 			return right;
+		}
+
+		/**
+		 * Returns the inverted sector for myself.
+		 * 
+		 * @return
+		 */
+		public Sector inverted() {
+			return fromBooleans(!left, !right, !top, !bottom);
+		}
+		
+		/**
+		 * Creates a sector from a direction const in 
+		 * {@link IResizeShapeContext}. 
+		 * 
+		 * @param resizeDirection
+		 * @return
+		 */
+		public static Sector fromResizeDirection(int resizeDirection) {
+			
+			switch (resizeDirection) {
+			case IResizeShapeContext.DIRECTION_EAST:
+				return RIGHT;
+			case IResizeShapeContext.DIRECTION_WEST:
+				return LEFT;
+			case IResizeShapeContext.DIRECTION_NORTH_WEST:
+				return TOP_LEFT;
+			case IResizeShapeContext.DIRECTION_NORTH:
+				return TOP;
+			case IResizeShapeContext.DIRECTION_NORTH_EAST:
+				return TOP_RIGHT;
+			case IResizeShapeContext.DIRECTION_SOUTH_WEST:
+				return BOTTOM_LEFT;
+			case IResizeShapeContext.DIRECTION_SOUTH:
+				return BOTTOM;
+			case IResizeShapeContext.DIRECTION_SOUTH_EAST:
+				return BOTTOM_RIGHT;
+			default:
+				return UNDEFINED;
+			}
+		}
+
+		/**
+		 * Translate the sector to a resize direction.
+		 * 
+		 * @return
+		 */
+		public int toResizeDirection() {
+			switch (this) {
+			case RIGHT:
+				return IResizeShapeContext.DIRECTION_EAST;
+			case LEFT:
+				return IResizeShapeContext.DIRECTION_WEST;
+			case TOP_LEFT: 
+				return IResizeShapeContext.DIRECTION_NORTH_WEST;
+			case TOP:
+				return IResizeShapeContext.DIRECTION_NORTH;
+			case TOP_RIGHT: 
+				return IResizeShapeContext.DIRECTION_NORTH_EAST;
+			case BOTTOM_LEFT: 
+				return IResizeShapeContext.DIRECTION_SOUTH_WEST;
+			case BOTTOM:
+				return IResizeShapeContext.DIRECTION_SOUTH;
+			case BOTTOM_RIGHT:
+				return IResizeShapeContext.DIRECTION_SOUTH_EAST;
+			default:
+				return IResizeShapeContext.DIRECTION_UNSPECIFIED;
+			}
 		}
 	}
 	
@@ -580,73 +649,183 @@ public class LayoutUtil {
 			bounds.getY() + bounds.getHeight() / 2);
 	}
 	
-	public static IRectangle getBounds(ContainerShape containerShape) {
-		return getBounds(containerShape, 0, 0 ,0 ,0);
-	}
+	//// bounding box computation logic ////////////////////////////////////////////
 	
-	public static IRectangle getBounds(ContainerShape containerShape, int minWidth, int minHeight, int xpadding, int ypadding) {
-		
-		IRectangle resultRectangle = rectangle(1, 1, minWidth, minHeight);
-		
-		if (containerShape.getChildren().isEmpty()) {
-			return resultRectangle;
-		}
+	/**
+	 * Get the bounding box of the containers children.
+	 * 
+	 * @param container
+	 * @return
+	 */
+	public static IRectangle getChildrenBBox(ContainerShape container) {
+		return getChildrenBBox(container, null, 0, 0);
+	}
 
-		BoundsCompareResult compareResult = new BoundsCompareResult();
+	/**
+	 * Get the bounding box of the containers children with the given minimal dimension and as well as y padding.
+	 * 
+	 * @param container
+	 * @param minDimensions
+	 * @param paddingX
+	 * @param paddingY
+	 * 
+	 * @return the bounding box, relative to the shapes coordinate system.
+	 */
+	public static IRectangle getChildrenBBox(ContainerShape container, IRectangle minBBox, int paddingX, int paddingY) {
+		return getBBox(container.getChildren(), minBBox, paddingX, paddingY);
+	}
+
+	/**
+	 * Get the bounding box of the given shapes, as relative coordinates.
+	 * 
+	 * @param shapes
+	 * @return
+	 */
+	public static IRectangle getBBox(List<Shape> shapes, IRectangle minBBox, int paddingX, int paddingY) {
 		
-		compareResult.setXMinimum(Integer.MAX_VALUE);
-		compareResult.setXMaximum(0);
-		compareResult.setYMinimum(Integer.MAX_VALUE);
-		compareResult.setYMaximum(0);
+		BBox bbox = new BBox(minBBox, paddingX, paddingY);
 		
-		Shape scrollShape = ScrollUtil.getScrollShape(containerShape);
-		
-		for (Shape childShape : containerShape.getChildren()) {
-			// scrollshape is assumed to be invisible
-			if (childShape.equals(scrollShape)) {
+		for (Shape s: shapes) {
+
+			// only include shapes with a graphical representation
+			if (s.getGraphicsAlgorithm() == null) {
 				continue;
 			}
 			
-			compareAndUpdateResultMax(childShape, compareResult);
+			// never include scroll shape
+			if (ScrollUtil.isScrollShape(s)) {
+				continue;
+			}
+			
+			// do not include non bpmn containers
+			// (marker containers, etc...)
+			if (s.getLink() == null) {
+				continue;
+			}
+			
+			if (s instanceof ContainerShape) {
+				IRectangle shapeBounds = getRelativeBounds(s);
+				bbox.addBounds(shapeBounds);
+			}
 		}
 		
-		Integer newWidth = compareResult.getXMaximum() - compareResult.getXMinimum() + xpadding;
-		Integer newHeight = compareResult.getYMaximum() - compareResult.getYMinimum() + ypadding;
-		
-		resultRectangle.setX(compareResult.getXMinimum() - xpadding);
-		resultRectangle.setY(compareResult.getYMinimum() - ypadding);
-		resultRectangle.setWidth(newWidth > minWidth ? newWidth : minWidth);
-		resultRectangle.setHeight(newHeight > minHeight ? newHeight : minHeight);
-		
-		return resultRectangle;
+		return bbox.getBounds();
 	}
 	
-	public static void compareAndUpdateResultMax(Shape childShape, BoundsCompareResult result) {
-		GraphicsAlgorithm childShapeGa = childShape.getGraphicsAlgorithm();
-		if (childShapeGa != null) {
+
+	
+	/**
+	 * Bounding box computation utility.
+	 * 
+	 * @author nico.rehwaldt
+	 */
+	public static class BBox {
+
+		private Integer x1 = null;
+		private Integer y1 = null;
+		
+		private Integer x2 = null;
+		private Integer y2 = null;
+		
+		private int paddingX = 0;
+		private int paddingY = 0;
+		
+		/**
+		 * Create a BBox without initial bounds.
+		 * 
+		 * @param paddingX
+		 * @param paddingY
+		 */
+		public BBox(int paddingX, int paddingY) {
+			this.paddingX = paddingX;
+			this.paddingY = paddingY;
+		}
+
+		/**
+		 * Create a new BBox with the specified initial bounds and a x and y padding.
+		 * 
+		 * The padding is not applied to the initial bounds.
+		 * 
+		 * @param initialBounds
+		 * 
+		 * @param paddingX
+		 * @param paddingY
+		 */
+		public BBox(IRectangle initialBounds, int paddingX, int paddingY) {
 			
-			if (result.getXMinimum() > childShapeGa.getX()) {
-				result.setXMinimum(childShapeGa.getX());
+			if (initialBounds != null) {
+				this.x1 = getX1(initialBounds);
+				this.y1 = getY1(initialBounds);
+				
+				this.x2 = getX2(initialBounds);
+				this.y2 = getY2(initialBounds);
 			}
 			
-			int xPlusWidth = childShapeGa.getX() + childShapeGa.getWidth();
+			this.paddingX = paddingX;
+			this.paddingY = paddingY;
+		}
+		
+		protected int getX1(IRectangle rect) {
+			return rect.getX() - paddingX;
+		}
+		
+		protected int getX2(IRectangle rect) {
+			return rect.getX() + rect.getWidth() + paddingX;
+		}
+		
+		protected int getY1(IRectangle rect) {
+			return rect.getY() - paddingY;
+		}
+		
+		protected int getY2(IRectangle rect) {
+			return rect.getY() + rect.getHeight() + paddingY;
+		}
+		
+		public void addBounds(IRectangle bounds) {
+
+			int ax1 = getX1(bounds);
+			int ax2 = getX2(bounds);
 			
-			if (result.getXMaximum() < xPlusWidth) {
-				result.setXMaximum(xPlusWidth);
-			}
+			int ay1 = getY1(bounds);
+			int ay2 = getY2(bounds);
 			
-			if (result.getYMinimum() > childShapeGa.getY()) {
-				result.setYMinimum (childShapeGa.getY());
-			}
-			
-			int yPlusHeight = childShapeGa.getY() + childShapeGa.getHeight();
-			
-			if (result.getYMaximum() < yPlusHeight) {
-				result.setYMaximum(yPlusHeight);
+			if (!isInitialized()) {
+				this.x1 = ax1;
+				this.x2 = ax2;
+				this.y1 = ay1;
+				this.y2 = ay2;
+			} else {
+				this.x1 = Math.min(ax1, this.x1);
+				this.x2 = Math.max(ax2, this.x2);
+				this.y1 = Math.min(ay1, this.y1);
+				this.y2 = Math.max(ay2, this.y2);
 			}
 		}
-	}
 
+		/**
+		 * Return true if this bbox is initialized with bounds.
+		 * 
+		 * @return
+		 */
+		public boolean isInitialized() {
+			return this.x1 != null;
+		}
+
+		/**
+		 * Returns the final bounding box or null if the bounding box 
+		 * has not yet been initialized.
+		 * 
+		 * @return
+		 */
+		public IRectangle getBounds() {
+			if (!isInitialized()) {
+				return null;
+			}
+			
+			return rectangle(x1, y1, x2 - x1, y2 - y1);
+		}
+	}
+	
 	/**
 	 * Returns the first non-anchor reference point for a given connection
 	 * 
@@ -1035,6 +1214,69 @@ public class LayoutUtil {
 		}
 		
 		return sharedConnections;
+	}
+
+	public static boolean isContained(IRectangle rectangle, IRectangle container) {
+		return isContained(rectangle, container, 0);
+	}
+	
+	/**
+	 * Checks the containment of rectangle in container with respect to a given sector.
+	 * 
+	 * @param rectangle
+	 * @param container
+	 * @param checkSector
+	 * @return
+	 */
+	public static boolean isContained(IRectangle rectangle, IRectangle container, Sector checkSector) {
+		return isContained(rectangle, container, 0, checkSector);
+	}
+	
+	/**
+	 * Checks the containment of rectangle in container with respect to a given sector and padding.
+	 * 
+	 * @param rectangle
+	 * @param container
+	 * @param padding
+	 * @param checkSector
+	 * @return
+	 */
+	public static boolean isContained(IRectangle rectangle, IRectangle container, int padding, Sector checkSector) {
+		
+		int rx1 = rectangle.getX() - padding;
+		int ry1 = rectangle.getY() - padding;
+
+		int rx2 = rectangle.getX() + rectangle.getWidth() + padding;
+		int ry2 = rectangle.getY() + rectangle.getHeight() + padding;
+
+		int cx1 = container.getX();
+		int cy1 = container.getY();
+
+		int cx2 = container.getX() + container.getWidth();
+		int cy2 = container.getY() + container.getHeight();
+		
+		return 
+			(!checkSector.isLeft() || rx1 > cx1) && 
+			(!checkSector.isRight() || rx2 < cx2) && 
+			(!checkSector.isTop() || ry1 > cy1) && 
+			(!checkSector.isBottom() || ry2 < cy2);
+	}
+	
+	public static boolean isContained(IRectangle rectangle, IRectangle container, int padding) {
+		
+		int rx1 = rectangle.getX() - padding;
+		int ry1 = rectangle.getY() - padding;
+
+		int rx2 = rectangle.getX() + rectangle.getWidth() + padding;
+		int ry2 = rectangle.getY() + rectangle.getHeight() + padding;
+
+		int cx1 = container.getX();
+		int cy1 = container.getY();
+
+		int cx2 = container.getX() + container.getWidth();
+		int cy2 = container.getY() + container.getHeight();
+		
+		return rx1 > cx1 && rx2 < cx2 && ry1 > cy1 && ry2 < cy2;
 	}
 	
 	/**

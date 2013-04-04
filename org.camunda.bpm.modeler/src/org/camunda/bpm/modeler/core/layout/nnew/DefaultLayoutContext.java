@@ -47,6 +47,9 @@ public class DefaultLayoutContext implements LayoutContext {
 
 	private boolean relayoutOnRepairFail = false;
 	
+	// will be set to true if evaluated
+	private Boolean manyDiagonal = null;
+	
 	/**
 	 * Stores the result of the last repair operation
 	 */
@@ -315,6 +318,9 @@ public class DefaultLayoutContext implements LayoutContext {
 	private void recomputePointsAndParts() {
 		computeConnectionPoints();
 		computeConnectionParts();
+		
+		// cache many diagonal state
+		cacheIsManyDiagonal();
 	}
 	
 	private void setNewStartAnchor(Anchor anchor) {
@@ -449,9 +455,22 @@ public class DefaultLayoutContext implements LayoutContext {
 	 * @return
 	 */
 	protected boolean isManyDiagonal() {
-		return diagonalConnectionParts.size() > 1;
+		return manyDiagonal;
 	}
 
+	/**
+	 * Cache is many diagonal property of the connection.
+	 */
+	protected void cacheIsManyDiagonal() {
+		
+		// cache manyDiagonal state from first evaluation to prevent
+		// pruning the connection bendpoints and leaving the connection in a
+		// not layoutable state
+		if (manyDiagonal == null) {
+			manyDiagonal = diagonalConnectionParts.size() > 1;
+		}
+	}
+	
 	protected boolean isDirect() {
 		return connection.getBendpoints().isEmpty();
 	}

@@ -79,12 +79,16 @@ public class BoundaryEventUtil {
 	}
 
 	private static boolean canMoveEvent(ILocation boundaryLocation, IRectangle parentRect) {
-		return canAttach(boundaryLocation, parentRect);
+		return canAttach(boundaryLocation, parentRect, 10, 20);
 	}
 
+	private static boolean canAttach(ILocation boundaryLocation, IRectangle parentRect, int outerPadding, int innerPadding) {
+		return LayoutUtil.isContained(parentRect, boundaryLocation, outerPadding) && 
+			   !LayoutUtil.isContained(parentRect, boundaryLocation, -1 * innerPadding);
+	}
+	
 	private static boolean canAttach(ILocation boundaryLocation, IRectangle parentRect) {
-		return LayoutUtil.isContained(parentRect, boundaryLocation, EVENT_OUTER_PADDING) && 
-			   !LayoutUtil.isContained(parentRect, boundaryLocation, -1 * EVENT_INNER_PADDING);
+		return canAttach(boundaryLocation, parentRect, EVENT_OUTER_PADDING, EVENT_INNER_PADDING);
 	}
 
 	// SNAPPING //////////////////////////////////////////////////
@@ -103,7 +107,7 @@ public class BoundaryEventUtil {
 	 */
 	public static ILocation snapToBounds(int x, int y, IRectangle targetBounds) {
 		ILocation relativeLocation = location(x + targetBounds.getX(), y + targetBounds.getY());
-		return LayoutUtil.snapToBounds(relativeLocation, targetBounds, EVENT_INNER_PADDING);
+		return LayoutUtil.snapToBounds(relativeLocation, targetBounds, 20);
 	}
 	
 	// BOUNDARY ATTACHMENT ////////////////////////////////////////////////

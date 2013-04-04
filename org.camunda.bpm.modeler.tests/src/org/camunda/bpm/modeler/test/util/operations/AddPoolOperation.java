@@ -5,7 +5,7 @@ import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.impl.CreateContext;
 
-public class AddPoolOperation extends AbstractAddOperation<CreateParticipantFeature, AddPoolOperation> {
+public class AddPoolOperation extends AbstractAddShapeOperation<CreateParticipantFeature, AddPoolOperation> {
 
 	public AddPoolOperation(IDiagramTypeProvider diagramTypeProvider) {
 		super(diagramTypeProvider, AddPoolOperation.class);

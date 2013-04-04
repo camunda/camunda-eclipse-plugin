@@ -1,12 +1,11 @@
 package org.camunda.bpm.modeler.test.util.operations;
 
-import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
-
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
+import org.camunda.bpm.modeler.core.layout.util.RectangleUtil;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IResizeFeature;
-import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.features.context.impl.ResizeShapeContext;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -24,44 +23,37 @@ public class ResizeShapeOperation extends Operation<ResizeShapeContext, IResizeF
 		this.context = createContext(shape);
 	}
 
-	public ResizeShapeOperation to(IRectangle bounds) {
+	public ResizeShapeOperation to(IRectangle bounds, int direction) {
 
 		context.setLocation(bounds.getX(), bounds.getY());
 		context.setSize(bounds.getWidth(), bounds.getHeight());
+		context.setDirection(direction);
 		
 		return this;
 	}
 
-	public Operation<ResizeShapeContext, IResizeFeature> fromTopLeftBy(Point amount) {
+	public Operation<ResizeShapeContext, IResizeFeature> by(Point resizeDelta, Sector resizeDirection) {
 
-		IRectangle participantShapeBounds = LayoutUtil.getRelativeBounds(context.getShape());
-		IRectangle postResizeRectangle = rectangle(participantShapeBounds.getX() + amount.getX(), participantShapeBounds.getY() + amount.getY(), participantShapeBounds.getWidth() - amount.getX(), participantShapeBounds.getHeight() - amount.getY());
+		IRectangle shapeBounds = LayoutUtil.getRelativeBounds(context.getShape());
+		IRectangle postResizeRectangle = RectangleUtil.resize(shapeBounds, resizeDelta, resizeDirection);
 		
-		return to(postResizeRectangle);
+		return to(postResizeRectangle, resizeDirection.toResizeDirection());
+	}
+	
+	public Operation<ResizeShapeContext, IResizeFeature> fromTopLeftBy(Point amount) {
+		return by(amount, Sector.TOP_LEFT);
 	}
 
 	public Operation<ResizeShapeContext, IResizeFeature> fromTopRightBy(Point amount) {
-
-		IRectangle participantShapeBounds = LayoutUtil.getRelativeBounds(context.getShape());
-		IRectangle postResizeRectangle = rectangle(participantShapeBounds.getX(), participantShapeBounds.getY() + amount.getY(), participantShapeBounds.getWidth() + amount.getX(), participantShapeBounds.getHeight() - amount.getY());
-		
-		return to(postResizeRectangle);
+		return by(amount, Sector.TOP_RIGHT);
 	}
 	
 	public Operation<ResizeShapeContext, IResizeFeature> fromBottomRightBy(Point amount) {
-
-		IRectangle participantShapeBounds = LayoutUtil.getRelativeBounds(context.getShape());
-		IRectangle postResizeRectangle = rectangle(participantShapeBounds.getX(), participantShapeBounds.getY(), participantShapeBounds.getWidth() + amount.getX(), participantShapeBounds.getHeight() + amount.getY());
-		
-		return to(postResizeRectangle);
+		return by(amount, Sector.BOTTOM_RIGHT);
 	}
 
 	public Operation<ResizeShapeContext, IResizeFeature> fromBottomLeftBy(Point amount) {
-
-		IRectangle participantShapeBounds = LayoutUtil.getRelativeBounds(context.getShape());
-		IRectangle postResizeRectangle = rectangle(participantShapeBounds.getX(), participantShapeBounds.getY() + amount.getY(), participantShapeBounds.getWidth() + amount.getX(), participantShapeBounds.getHeight() - amount.getY());
-		
-		return to(postResizeRectangle);
+		return by(amount, Sector.BOTTOM_LEFT);
 	}
 	
 	protected ResizeShapeContext createContext(Shape shape) {

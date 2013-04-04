@@ -48,6 +48,8 @@ import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
@@ -138,8 +140,17 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 
 		@Override
 		public boolean canStartConnection(ICreateConnectionContext context) {
-			if (ChoreographyUtil.isChoreographyParticipantBand(context.getSourcePictogramElement()))
+			PictogramElement sourceElement = context.getSourcePictogramElement();
+			if (ChoreographyUtil.isChoreographyParticipantBand(sourceElement)) {
 				return false;
+			}
+
+			Diagram diagram = getDiagram();
+			
+			if (diagram.equals(sourceElement)) {
+				return false;
+			}
+			
 			return true;
 		}
 
@@ -147,7 +158,8 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 		public boolean canCreate(ICreateConnectionContext context) {
 			if (ChoreographyUtil.isChoreographyParticipantBand(context.getSourcePictogramElement()))
 				return false;
-			if (context.getTargetPictogramElement()!=null) {
+			
+			if (context.getTargetPictogramElement() != null) {
 				if (ChoreographyUtil.isChoreographyParticipantBand(context.getTargetPictogramElement()))
 					return false;
 			}

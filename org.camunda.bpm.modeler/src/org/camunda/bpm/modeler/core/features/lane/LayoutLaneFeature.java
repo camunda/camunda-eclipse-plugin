@@ -12,29 +12,17 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.core.features.lane;
 
-import org.camunda.bpm.modeler.core.di.DIUtils;
-import org.camunda.bpm.modeler.core.features.LayoutBpmnShapeFeature;
-import org.camunda.bpm.modeler.core.utils.FeatureSupport;
+import org.camunda.bpm.modeler.core.features.participant.LayoutLaneSetFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
-import org.eclipse.graphiti.features.context.ILayoutContext;
-import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 
-public class LayoutLaneFeature extends LayoutBpmnShapeFeature {
+/**
+ * Layout feature for lanes
+ * 
+ * @author nico.rehwaldt
+ */
+public class LayoutLaneFeature extends LayoutLaneSetFeature {
 
 	public LayoutLaneFeature(IFeatureProvider fp) {
 		super(fp);
-	}
-
-	@Override
-	public boolean canLayout(ILayoutContext context) {
-		return FeatureSupport.isLane(context.getPictogramElement());
-	}
-
-	@Override
-	public boolean layout(ILayoutContext context) {
-		FeatureSupport.redraw((ContainerShape) context.getPictogramElement());
-		DIUtils.updateDIShape(context.getPictogramElement());
-		
-		return super.layout(context);
 	}
 }

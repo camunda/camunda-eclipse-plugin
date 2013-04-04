@@ -12,9 +12,6 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.core.features.lane;
 
-import java.io.IOException;
-
-import org.camunda.bpm.modeler.core.Activator;
 import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.model.Bpmn2ModelerFactory;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
@@ -58,8 +55,8 @@ public class MoveFromLaneToLaneFeature extends MoveLaneFeature {
 
 		modifyModelStructure(sourceLane, targetLane, movedLane);
 
-		FeatureSupport.redraw(context.getSourceContainer());
-		FeatureSupport.redraw(context.getTargetContainer());
+		FeatureSupport.redrawLaneSet(context.getSourceContainer());
+		FeatureSupport.redrawLaneSet(context.getTargetContainer());
 	}
 
 	private void modifyModelStructure(Lane sourceLane, Lane targetLane, Lane movedLane) {
