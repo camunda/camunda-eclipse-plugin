@@ -77,7 +77,7 @@ public class MoveFromDiagramToLaneFeature extends MoveLaneFeature {
 			gaService.setLocationAndSize(laneGa, 15, tga.getHeight() - 1, tga.getWidth() - 15, laneGa.getHeight() + 1);
 		}
 
-		FeatureSupport.redrawLaneSet(context.getTargetContainer());
+		FeatureSupport.redrawLaneSet(context.getTargetContainer(), getFeatureProvider());
 	}
 
 	private void modifyModelStructure(Lane targetLane, Lane lane) {
@@ -94,7 +94,6 @@ public class MoveFromDiagramToLaneFeature extends MoveLaneFeature {
 
 		if (targetLane.getChildLaneSet() == null) {
 			LaneSet createLaneSet = Bpmn2ModelerFactory.create(LaneSet.class);
-//			createLaneSet.setId(EcoreUtil.generateUUID());
 			targetLane.setChildLaneSet(createLaneSet);
 			ModelUtil.setID(createLaneSet);
 		}
