@@ -41,8 +41,6 @@ import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.TextAnnotation;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.emf.common.util.ECollections;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.ILocation;
@@ -415,8 +413,7 @@ public class FeatureSupport {
 			height = container.getGraphicsAlgorithm().getHeight() - 30;
 		}
 
-		EList<Shape> children = container.getChildren();
-		ECollections.sort(children, new SiblingLaneComparator());
+		List<Shape> children = getChildLanes(container);
 		for (Shape s : children) {
 			Object bo = BusinessObjectUtil.getFirstElementOfType(s, BaseElement.class);
 			if (bo != null && (bo instanceof Lane || bo instanceof Participant) && !bo.equals(elem)) {
