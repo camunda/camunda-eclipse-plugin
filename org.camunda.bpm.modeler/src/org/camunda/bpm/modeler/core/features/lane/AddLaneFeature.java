@@ -112,34 +112,35 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 		BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(newLaneShape, BPMNShape.class);
 		
 		BaseElement targetBaseElement = null;
-		
-		// move children of lane or participant target container
-		List<FlowNode> newLaneFlowNodeRefs = lane.getFlowNodeRefs();
-		
-		if (FeatureSupport.isTargetLane(context)) {
-			Lane targetLane = FeatureSupport.getTargetLane(context);
-			targetBaseElement = targetLane;
-			
-			newLaneFlowNodeRefs.addAll(targetLane.getFlowNodeRefs());
-			targetLane.getFlowNodeRefs().clear();
-		} else
-		if (FeatureSupport.isTargetParticipant(context)) {
-			Participant targetParticipant = FeatureSupport.getTargetParticipant(context);
-			Process targetProcess = targetParticipant.getProcessRef();
-			targetBaseElement = targetParticipant;
-			
-			List<Shape> laneShapes = FeatureSupport.getChildLanes(newLaneShape.getContainer());
-			
-			// if this is the first lane of the participant, move flow nodes
-			if (laneShapes.size() == 1) {
-				moveFlowNodes(targetProcess, lane);
-			}
-		} else {
-			throw new IllegalArgumentException("May only add lanes on pools or other lanes");
-		}
 
-		// update horizontal flag from parent shape
 		if (!isImport(context)) {
+			
+			// move children of lane or participant target container
+			List<FlowNode> newLaneFlowNodeRefs = lane.getFlowNodeRefs();
+			
+			if (FeatureSupport.isTargetLane(context)) {
+				Lane targetLane = FeatureSupport.getTargetLane(context);
+				targetBaseElement = targetLane;
+				
+				newLaneFlowNodeRefs.addAll(targetLane.getFlowNodeRefs());
+				targetLane.getFlowNodeRefs().clear();
+			} else
+			if (FeatureSupport.isTargetParticipant(context)) {
+				Participant targetParticipant = FeatureSupport.getTargetParticipant(context);
+				Process targetProcess = targetParticipant.getProcessRef();
+				targetBaseElement = targetParticipant;
+				
+				List<Shape> laneShapes = FeatureSupport.getChildLanes(newLaneShape.getContainer());
+				
+				// if this is the first lane of the participant, move flow nodes
+				if (laneShapes.size() == 1) {
+					moveFlowNodes(targetProcess, lane);
+				}
+			} else {
+				throw new IllegalArgumentException("May only add lanes on pools or other lanes");
+			}
+
+			// update horizontal flag from parent shape
 			BPMNShape targetBpmnShape = findDIShape(targetBaseElement);
 			if (targetBpmnShape != null) {
 				bpmnShape.setIsHorizontal(targetBpmnShape.isIsHorizontal());
