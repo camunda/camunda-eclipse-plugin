@@ -6,13 +6,12 @@ import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
 import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.vector;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.camunda.bpm.modeler.core.layout.Docking;
-import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.ScrollUtil;
 import org.camunda.bpm.modeler.ui.features.event.BoundaryAttachment;
 import org.eclipse.bpmn2.BaseElement;
@@ -39,7 +38,7 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 
 /**
- * Utility dealing with all sorts of layout specific concerns.
+ * Utility dealing with all sorts of layout specific concerns
  * 
  * @author nico.rehwaldt
  */
@@ -49,41 +48,6 @@ public class LayoutUtil {
 	 * evolutionary developed value to switch between the AboveBeneath and LeftRight Strategy for gateways 
 	 */
 	public static final double MAGIC_VALUE = 0.83;
-	
-	public static class BoundsCompareResult {
-		Integer XMinimum = 0; 
-		Integer XMaximum = 0;
-		Integer YMinimum = 0;
-		Integer YMaximum = 0;
-		
-		public BoundsCompareResult() {
-		}
-		
-		public Integer getXMinimum() {
-			return XMinimum;
-		}
-		public void setXMinimum(Integer xMinimum) {
-			XMinimum = xMinimum;
-		}
-		public Integer getXMaximum() {
-			return XMaximum;
-		}
-		public void setXMaximum(Integer xMaximum) {
-			XMaximum = xMaximum;
-		}
-		public Integer getYMinimum() {
-			return YMinimum;
-		}
-		public void setYMinimum(Integer yMinimum) {
-			YMinimum = yMinimum;
-		}
-		public Integer getYMaximum() {
-			return YMaximum;
-		}
-		public void setYMaximum(Integer yMaximum) {
-			YMaximum = yMaximum;
-		}
-	}
 	
 	public enum Sector {
 		
@@ -221,6 +185,118 @@ public class LayoutUtil {
 			default:
 				return IResizeShapeContext.DIRECTION_UNSPECIFIED;
 			}
+		}
+	}
+
+	/**
+	 * Bounding box computation utility
+	 * 
+	 * @author nico.rehwaldt
+	 */
+	public static class BBox {
+
+		private Integer x1 = null;
+		private Integer y1 = null;
+		
+		private Integer x2 = null;
+		private Integer y2 = null;
+		
+		private int paddingX = 0;
+		private int paddingY = 0;
+		
+		/**
+		 * Create a BBox without initial bounds.
+		 * 
+		 * @param paddingX
+		 * @param paddingY
+		 */
+		public BBox(int paddingX, int paddingY) {
+			this.paddingX = paddingX;
+			this.paddingY = paddingY;
+		}
+
+		/**
+		 * Create a new BBox with the specified initial bounds and a x and y padding.
+		 * 
+		 * The padding is not applied to the initial bounds.
+		 * 
+		 * @param initialBounds
+		 * 
+		 * @param paddingX
+		 * @param paddingY
+		 */
+		public BBox(IRectangle initialBounds, int paddingX, int paddingY) {
+			
+			if (initialBounds != null) {
+				this.x1 = getX1(initialBounds);
+				this.y1 = getY1(initialBounds);
+				
+				this.x2 = getX2(initialBounds);
+				this.y2 = getY2(initialBounds);
+			}
+			
+			this.paddingX = paddingX;
+			this.paddingY = paddingY;
+		}
+		
+		protected int getX1(IRectangle rect) {
+			return rect.getX() - paddingX;
+		}
+		
+		protected int getX2(IRectangle rect) {
+			return rect.getX() + rect.getWidth() + paddingX;
+		}
+		
+		protected int getY1(IRectangle rect) {
+			return rect.getY() - paddingY;
+		}
+		
+		protected int getY2(IRectangle rect) {
+			return rect.getY() + rect.getHeight() + paddingY;
+		}
+		
+		public void addBounds(IRectangle bounds) {
+
+			int ax1 = getX1(bounds);
+			int ax2 = getX2(bounds);
+			
+			int ay1 = getY1(bounds);
+			int ay2 = getY2(bounds);
+			
+			if (!isInitialized()) {
+				this.x1 = ax1;
+				this.x2 = ax2;
+				this.y1 = ay1;
+				this.y2 = ay2;
+			} else {
+				this.x1 = Math.min(ax1, this.x1);
+				this.x2 = Math.max(ax2, this.x2);
+				this.y1 = Math.min(ay1, this.y1);
+				this.y2 = Math.max(ay2, this.y2);
+			}
+		}
+
+		/**
+		 * Return true if this bbox is initialized with bounds.
+		 * 
+		 * @return
+		 */
+		public boolean isInitialized() {
+			return this.x1 != null;
+		}
+
+		/**
+		 * Returns the final bounding box or null if the bounding box 
+		 * has not yet been initialized.
+		 * 
+		 * @return
+		 */
+		public IRectangle getBounds() {
+			if (!isInitialized()) {
+				return null;
+			}
+			
+			return rectangle(x1, y1, x2 - x1, y2 - y1);
 		}
 	}
 	
@@ -639,6 +715,12 @@ public class LayoutUtil {
 		return rectangle(position.getX(), position.getY(), algorithm.getWidth(), algorithm.getHeight());
 	}
 	
+	public static IRectangle getResizedAbsoluteBounds(Shape shape, Point resizeDelta, Sector resizeDirection) {
+		
+		IRectangle preResizeBounds = LayoutUtil.getAbsoluteBounds(shape);
+		return RectangleUtil.resize(preResizeBounds, resizeDelta, resizeDirection);
+	}
+	
 	public static ILocation getAbsoluteShapeCenter(Shape shape) {
 		Assert.isNotNull(shape);
 		
@@ -710,120 +792,6 @@ public class LayoutUtil {
 		}
 		
 		return bbox.getBounds();
-	}
-	
-
-	
-	/**
-	 * Bounding box computation utility.
-	 * 
-	 * @author nico.rehwaldt
-	 */
-	public static class BBox {
-
-		private Integer x1 = null;
-		private Integer y1 = null;
-		
-		private Integer x2 = null;
-		private Integer y2 = null;
-		
-		private int paddingX = 0;
-		private int paddingY = 0;
-		
-		/**
-		 * Create a BBox without initial bounds.
-		 * 
-		 * @param paddingX
-		 * @param paddingY
-		 */
-		public BBox(int paddingX, int paddingY) {
-			this.paddingX = paddingX;
-			this.paddingY = paddingY;
-		}
-
-		/**
-		 * Create a new BBox with the specified initial bounds and a x and y padding.
-		 * 
-		 * The padding is not applied to the initial bounds.
-		 * 
-		 * @param initialBounds
-		 * 
-		 * @param paddingX
-		 * @param paddingY
-		 */
-		public BBox(IRectangle initialBounds, int paddingX, int paddingY) {
-			
-			if (initialBounds != null) {
-				this.x1 = getX1(initialBounds);
-				this.y1 = getY1(initialBounds);
-				
-				this.x2 = getX2(initialBounds);
-				this.y2 = getY2(initialBounds);
-			}
-			
-			this.paddingX = paddingX;
-			this.paddingY = paddingY;
-		}
-		
-		protected int getX1(IRectangle rect) {
-			return rect.getX() - paddingX;
-		}
-		
-		protected int getX2(IRectangle rect) {
-			return rect.getX() + rect.getWidth() + paddingX;
-		}
-		
-		protected int getY1(IRectangle rect) {
-			return rect.getY() - paddingY;
-		}
-		
-		protected int getY2(IRectangle rect) {
-			return rect.getY() + rect.getHeight() + paddingY;
-		}
-		
-		public void addBounds(IRectangle bounds) {
-
-			int ax1 = getX1(bounds);
-			int ax2 = getX2(bounds);
-			
-			int ay1 = getY1(bounds);
-			int ay2 = getY2(bounds);
-			
-			if (!isInitialized()) {
-				this.x1 = ax1;
-				this.x2 = ax2;
-				this.y1 = ay1;
-				this.y2 = ay2;
-			} else {
-				this.x1 = Math.min(ax1, this.x1);
-				this.x2 = Math.max(ax2, this.x2);
-				this.y1 = Math.min(ay1, this.y1);
-				this.y2 = Math.max(ay2, this.y2);
-			}
-		}
-
-		/**
-		 * Return true if this bbox is initialized with bounds.
-		 * 
-		 * @return
-		 */
-		public boolean isInitialized() {
-			return this.x1 != null;
-		}
-
-		/**
-		 * Returns the final bounding box or null if the bounding box 
-		 * has not yet been initialized.
-		 * 
-		 * @return
-		 */
-		public IRectangle getBounds() {
-			if (!isInitialized()) {
-				return null;
-			}
-			
-			return rectangle(x1, y1, x2 - x1, y2 - y1);
-		}
 	}
 	
 	/**
@@ -1341,13 +1309,13 @@ public class LayoutUtil {
 	 * and its children.
 	 * 
 	 * @param shape
-	 * @param containment true if only anchors by children should be returned
+	 * @param nestedOnly true if only anchors by children should be returned
 	 * @return
 	 */
-	public static List<Anchor> getContainerAnchors(Shape shape, boolean containment) {
+	public static List<Anchor> getContainerAnchors(Shape shape, boolean nestedOnly) {
 		List<Anchor> ret = new ArrayList<Anchor>();
 		
-		if (!containment) {
+		if (!nestedOnly) {
 			ret.addAll(shape.getAnchors());
 		}
 		
@@ -1380,35 +1348,80 @@ public class LayoutUtil {
 	 * child shapes to each other. 
 	 * 
 	 * @param shape
-	 * @param containment true if only connections between child shapes should be returned
+	 * @param nestedOnly true if only connections between child shapes should be returned
 	 * 
 	 * @return
 	 */
-	public static Set<FreeFormConnection> getContainerConnections(ContainerShape shape, boolean containment) {
+	public static Set<Connection> getContainerConnections(ContainerShape shape, boolean nestedOnly) {
 
-		Set<FreeFormConnection> containerConnections = new HashSet<FreeFormConnection>();
+		return getContainerConnections(shape, nestedOnly, true);
+	}
+	
+	/**
+	 * Returns all connections contained in this shape, as they connect the shape or
+	 * child shapes to each other. 
+	 * 
+	 * @param shape
+	 * @param nestedOnly true if only connections between child shapes should be returned
+	 * @param containedOnly true if only connections starting AND ending in the container should be returned
+	 * 
+	 * @return
+	 */
+	public static Set<Connection> getContainerConnections(ContainerShape shape, boolean nestedOnly, boolean containedOnly) {
 
-		List<Anchor> anchorsFrom = getContainerAnchors(shape, containment);
-		List<Anchor> anchorsTo = new ArrayList<Anchor>(anchorsFrom);
+		List<Anchor> anchors = getContainerAnchors(shape, nestedOnly);
 
-		for (Anchor anchorFrom : anchorsFrom) {
-
-			Collection<Connection> outgoingConnections = anchorFrom.getOutgoingConnections();
-
-			for (Connection connection : outgoingConnections) {
-				for (Anchor anchorTo : anchorsTo) {
-
-					Collection<Connection> incomingConnections = anchorTo.getIncomingConnections();
-					if (incomingConnections.contains(connection)) {
-						if (connection instanceof FreeFormConnection) {
-							containerConnections.add((FreeFormConnection) connection);
-						}
-					}
-				}
-			}
+		Set<Connection> incomingConnections = getIncomingConnections(anchors);
+		Set<Connection> outgoingConnections = getOutgoingConnections(anchors);
+		
+		if (containedOnly) {
+			incomingConnections.retainAll(outgoingConnections);
+		} else {
+			incomingConnections.addAll(outgoingConnections);
 		}
 		
-		return containerConnections;
+		return incomingConnections;
+	}
+	
+	/**
+	 * Returns all connections contained in this shape, as they connect the shape or
+	 * child shapes to each other. 
+	 * 
+	 * @param shape
+	 * @return
+	 */
+	public static Set<Connection> getContainerConnections(ContainerShape shape) {
+		return getContainerConnections(shape, false);
+	}
+	
+	/**
+	 * Incoming connections for a list of anchors
+	 * 
+	 * @param anchors
+	 * @return
+	 */
+	private static Set<Connection> getIncomingConnections(List<Anchor> anchors) {
+		HashSet<Connection> connections = new HashSet<Connection>();
+		for (Anchor anchor: anchors) {
+			connections.addAll(anchor.getIncomingConnections());
+		}
+		
+		return connections;
+	}
+
+	/**
+	 * Incoming connections for a list of anchors
+	 * 
+	 * @param anchors
+	 * @return
+	 */
+	private static Set<Connection> getOutgoingConnections(List<Anchor> anchors) {
+		HashSet<Connection> connections = new HashSet<Connection>();
+		for (Anchor anchor: anchors) {
+			connections.addAll(anchor.getOutgoingConnections());
+		}
+		
+		return connections;
 	}
 	
 	/**
@@ -1453,16 +1466,5 @@ public class LayoutUtil {
 		}
 		
 		return location(x, y);
-	}
-	
-	/**
-	 * Returns all connections contained in this shape, as they connect the shape or
-	 * child shapes to each other. 
-	 * 
-	 * @param shape
-	 * @return
-	 */
-	public static Set<FreeFormConnection> getContainerConnections(ContainerShape shape) {
-		return getContainerConnections(shape, false);
 	}
 }

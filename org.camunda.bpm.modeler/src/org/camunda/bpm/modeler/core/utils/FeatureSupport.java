@@ -387,8 +387,6 @@ public class FeatureSupport {
 		
 		updateLaneSetDi(container);
 		layoutLaneSet(container, featureProvider);
-		
-		// postResizeFixLenghts(container);
 	}
 
 	public static void layoutLaneSet(ContainerShape container, final IFeatureProvider featureProvider) {
@@ -718,6 +716,7 @@ public class FeatureSupport {
 		
 		ContextUtil.set(moveContext, DefaultMoveBPMNShapeFeature.SKIP_REPAIR_CONNECTIONS_AFTER_MOVE);
 		ContextUtil.set(moveContext, DefaultMoveBPMNShapeFeature.SKIP_MOVE_BENDPOINTS);
+		ContextUtil.set(moveContext, DefaultMoveBPMNShapeFeature.AUTOMATIC_MOVE);
 		
 		IMoveShapeFeature moveShapeFeature = featureProvider.getMoveShapeFeature(moveContext);
 		

@@ -76,23 +76,21 @@ public class DefaultResizeBPMNShapeFeature extends DefaultResizeShapeFeature {
 
 		boolean minBoundsContained = true;
 		
-		int resizeDirection = context.getDirection();
-
+		Sector direction = Sector.fromResizeDirection(context.getDirection());
+		
 		// see if we are before the actual resize operation because no resize 
 		// has been carried out yet.
 		
 		// when actually resizing, check the minimum bounds of the shape
 		// and allow the resize operation if the post resize bounds would contain
 		// the minimum bounds
-		if (resizeDirection != IResizeShapeContext.DIRECTION_UNSPECIFIED) {
+		if (direction != Sector.UNDEFINED) {
 			
 			// check if children still fit into element
 			IRectangle minimumBounds = getMinimumBounds(context);
 			if (minimumBounds != null) {
 				
 				IRectangle postResizeBounds = getPostResizeBounds(context);
-				
-				Sector direction = Sector.fromResizeDirection(resizeDirection);
 				minBoundsContained = LayoutUtil.isContained(minimumBounds, postResizeBounds, -1, direction);
 			}
 		}
@@ -279,7 +277,7 @@ public class DefaultResizeBPMNShapeFeature extends DefaultResizeShapeFeature {
 	 * @return
 	 */
 	@Deprecated
-	private Set<FreeFormConnection> calculateContainerConnections(IResizeShapeContext context) {
+	private Set<Connection> calculateContainerConnections(IResizeShapeContext context) {
 
 		Shape shape = context.getShape();
 		

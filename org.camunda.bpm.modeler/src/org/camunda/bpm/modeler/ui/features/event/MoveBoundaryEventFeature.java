@@ -36,7 +36,7 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public class MoveBoundaryEventFeature extends DefaultMoveBPMNShapeFeature {
 
-	public static final String MOVE_WITH_ACTIVITY = "MoveBoundaryEventFeature.MOVE_WITH_ACTIVITY";
+	public static final String MOVE_WITH_ACTIVITY = AUTOMATIC_MOVE;
 	
 	public MoveBoundaryEventFeature(IFeatureProvider fp) {
 		super(fp);

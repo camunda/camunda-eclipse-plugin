@@ -47,11 +47,18 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 	public static final String SKIP_MOVE_BENDPOINTS = "DefaultMoveBPMNShapeFeature.SKIP_MOVE_BENDPOINTS";
 	public static final String SKIP_REPAIR_CONNECTIONS_AFTER_MOVE = "DefaultMoveBPMNShapeFeature.SKIP_RECONNECT_AFTER_MOVE";
 
-	public static final String[] MOVE_PROPERTIES = {
-		SKIP_MOVE_LABEL, SKIP_MOVE_BENDPOINTS, 
-		SKIP_REPAIR_CONNECTIONS_AFTER_MOVE
-	};
+	/**
+	 * Indicating that a move operation is carried out automatically
+	 */
+	public static final String AUTOMATIC_MOVE = "DefaultMoveBPMNShapeFeature.AUTOMATIC_MOVE";
 
+	public static final String[] MOVE_PROPERTIES = {
+		SKIP_MOVE_LABEL, 
+		SKIP_MOVE_BENDPOINTS, 
+		SKIP_REPAIR_CONNECTIONS_AFTER_MOVE,
+		AUTOMATIC_MOVE
+	};
+	
 	protected IRectangle preMoveBounds;
 	
 	public DefaultMoveBPMNShapeFeature(IFeatureProvider fp) {
@@ -192,7 +199,7 @@ public class DefaultMoveBPMNShapeFeature extends DefaultMoveShapeFeature {
 	 * @param context
 	 * @return
 	 */
-	private Set<FreeFormConnection> calculateContainerConnections(IMoveShapeContext context) {
+	private Set<Connection> calculateContainerConnections(IMoveShapeContext context) {
 
 		Shape shape = context.getShape();
 		

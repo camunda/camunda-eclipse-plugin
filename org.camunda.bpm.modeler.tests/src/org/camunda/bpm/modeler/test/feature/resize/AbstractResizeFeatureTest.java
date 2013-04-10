@@ -45,20 +45,24 @@ public class AbstractResizeFeatureTest extends AbstractFeatureTest {
 	}
 	
 	protected void assertResize(String shapeId, Point resizeDelta, Sector resizeDirection) {
+		assertResize(shapeId, resizeDelta, resizeDelta, resizeDirection);
+	}
+	
+	protected void assertResize(String shapeId, Point resizeDelta, Point expectedResizeDelta, Sector resizeDirection) {
 
 		// given
-		Shape participantShape = Util.findShapeByBusinessObjectId(diagram, shapeId);
+		Shape shape = Util.findShapeByBusinessObjectId(diagram, shapeId);
 		
-		IRectangle preResizeBounds = LayoutUtil.getAbsoluteBounds(participantShape);
-		IRectangle expectedPostResizeBounds = RectangleUtil.resize(preResizeBounds, resizeDelta, resizeDirection);
+		IRectangle preResizeBounds = LayoutUtil.getAbsoluteBounds(shape);
+		IRectangle expectedPostResizeBounds = RectangleUtil.resize(preResizeBounds, expectedResizeDelta, resizeDirection);
 		
 		// when
-		resize(participantShape, getDiagramTypeProvider())
+		resize(shape, getDiagramTypeProvider())
 			.by(resizeDelta, resizeDirection)
 			.execute();
 		
 		// then
-		assertThat(participantShape)
+		assertThat(shape)
 			.bounds()
 				.isEqualTo(expectedPostResizeBounds);
 	}
