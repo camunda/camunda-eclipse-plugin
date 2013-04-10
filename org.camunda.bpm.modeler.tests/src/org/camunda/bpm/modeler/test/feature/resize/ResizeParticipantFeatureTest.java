@@ -74,7 +74,7 @@ public class ResizeParticipantFeatureTest extends AbstractResizeFeatureTest {
 	
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
-	public void testResizeParticipantTop() {
+	public void testResizeTop() {
 
 		// y = 50 is allowed
 		assertResize("Participant_1", point(0, 50), Sector.TOP_LEFT);
@@ -85,7 +85,7 @@ public class ResizeParticipantFeatureTest extends AbstractResizeFeatureTest {
 
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
-	public void testResizeParticipantBottom() {
+	public void testResizeBottom() {
 
 		// y = 50 is allowed
 		assertResize("Participant_1", point(0, -50), Sector.BOTTOM_LEFT);
@@ -96,7 +96,7 @@ public class ResizeParticipantFeatureTest extends AbstractResizeFeatureTest {
 	
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
-	public void testResizeParticipantWithFlowElementsTop() {
+	public void testResizeWithFlowElementsTop() {
 
 		// y = 50 is allowed
 		assertResize("_Participant_3", point(0, 50), Sector.TOP_LEFT);
@@ -107,7 +107,7 @@ public class ResizeParticipantFeatureTest extends AbstractResizeFeatureTest {
 
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
-	public void testResizeParticipantWithFlowElementsBottom() {
+	public void testResizeWithFlowElementsBottom() {
 
 		// y = 50 is allowed
 		assertResize("_Participant_3", point(0, -50), Sector.BOTTOM_LEFT);
@@ -118,7 +118,7 @@ public class ResizeParticipantFeatureTest extends AbstractResizeFeatureTest {
 	
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
-	public void testResizeParticipantComplexTop() {
+	public void testResizeComplexTop() {
 
 		// y = 70 is allowed
 		assertResize("Participant_2", point(0, 70), Sector.TOP_LEFT);
@@ -129,7 +129,7 @@ public class ResizeParticipantFeatureTest extends AbstractResizeFeatureTest {
 	
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
-	public void testResizeParticipantComplexBottom() {
+	public void testResizeComplexBottom() {
 
 		// y = 40 is allowed
 		assertResize("Participant_1", point(0, -40), Sector.BOTTOM_LEFT);
@@ -140,7 +140,7 @@ public class ResizeParticipantFeatureTest extends AbstractResizeFeatureTest {
 
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
-	public void testResizeParticipantComplexLeft() {
+	public void testResizeComplexLeft() {
 
 		// x = 10 is allowed
 		assertResize("Participant_2", point(10, 0), Sector.LEFT);
@@ -151,7 +151,7 @@ public class ResizeParticipantFeatureTest extends AbstractResizeFeatureTest {
 
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
-	public void testResizeParticipantComplexRight() {
+	public void testResizeComplexRight() {
 
 		// y = 40 is allowed
 		assertResize("Participant_2", point(-40, 0), Sector.RIGHT);
@@ -162,28 +162,28 @@ public class ResizeParticipantFeatureTest extends AbstractResizeFeatureTest {
 	
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
-	public void testShrinkParticipantAdjustsFlowElementsAndBendpoints() {
+	public void testShrinkAdjustsFlowElementsAndBendpoints() {
 		
 		assertResizeRetainsChildPositionsAndFlowLayout("_Participant_3", point(0, 50), Sector.TOP_LEFT, Arrays.asList("StartEvent_1"), Arrays.asList("SequenceFlow_1"));
 	}
 
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
-	public void testEnlargeParticipantAdjustsFlowElementsAndBendpoints() {
+	public void testEnlargeAdjustsFlowElementsAndBendpoints() {
 
 		assertResizeRetainsChildPositionsAndFlowLayout("_Participant_3", point(0, -50), Sector.TOP_LEFT, Arrays.asList("StartEvent_1"), Arrays.asList("SequenceFlow_1"));
 	}
 	
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
-	public void testShrinkParticipantWithLaneAdjustsFlowElementsAndBendpoints() {
+	public void testShrinkWithLaneAdjustsFlowElementsAndBendpoints() {
 		
 		assertResizeRetainsChildPositionsAndFlowLayout("Participant_4", point(0, 20), Sector.TOP_LEFT, Arrays.asList("Task_4"), Arrays.asList("SequenceFlow_4"));
 	}
 
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
-	public void testEnlargeParticipantWithlaneAdjustsFlowElementsAndBendpoints() {
+	public void testEnlargeWithlaneAdjustsFlowElementsAndBendpoints() {
 
 		assertResizeRetainsChildPositionsAndFlowLayout("Participant_4", point(0, -20), Sector.TOP_LEFT, Arrays.asList("Task_4"), Arrays.asList("SequenceFlow_4"));
 	}

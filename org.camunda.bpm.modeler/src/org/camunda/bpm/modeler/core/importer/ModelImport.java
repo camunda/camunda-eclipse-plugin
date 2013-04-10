@@ -39,6 +39,7 @@ import org.camunda.bpm.modeler.core.importer.util.ModelHelper;
 import org.camunda.bpm.modeler.core.layout.util.ConversionUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
+import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.core.utils.ScrollUtil;
 import org.eclipse.bpmn2.Activity;
@@ -445,11 +446,9 @@ public class ModelImport {
 				}
 			}
 		}
-		
-		if (unreferencedFlowElements != null) {
-			// render 
-			handleFlowElements(containerShape, unreferencedFlowElements);
-		}
+	
+		// render 
+		handleFlowElements(containerShape, unreferencedFlowElements);
 	}
 
 	protected void handleCollapsedParticipant(Participant participant, ContainerShape container) {
@@ -617,6 +616,7 @@ public class ModelImport {
 			
 			if (flowElement instanceof BoundaryEvent) {
 				boundaryEvents.add((BoundaryEvent) flowElement);
+				
 			} else
 		    if (flowElement instanceof Gateway) {
 				handleGateway((Gateway) flowElement, container);

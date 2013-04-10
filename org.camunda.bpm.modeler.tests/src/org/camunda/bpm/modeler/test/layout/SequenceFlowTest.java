@@ -26,16 +26,15 @@ import org.junit.Test;
 public class SequenceFlowTest extends AbstractFeatureTest {
 	
 	@Test
-	@Ignore
-	@DiagramResource
-	public void testMoveCloseBy() {
+	@DiagramResource("org/camunda/bpm/modeler/test/layout/SequenceFlowTest.testMoveCloseBy.bpmn")
+	public void testMoveCloseByRetainTwoBendpoints() {
 		Shape fixedShape = Util.findShapeByBusinessObjectId(diagram, "Task_2");
 		Shape movingShape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
 		
 		// when being moved close to the other task up to a given distance (45)
 		// connection should still be | -> |
 		move(movingShape, diagramTypeProvider)
-			.by(-30, 0)
+			.by(-20, 0)
 			.execute();
 		
 		// edge task_2 right x-pos 535
@@ -44,6 +43,8 @@ public class SequenceFlowTest extends AbstractFeatureTest {
 		
 		FreeFormConnection connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
 		
+		// then
+		// connection layout should remain the same
 		assertThat(connection).hasNoDiagonalEdges();
 		assertThat(connection).hasBendpointCount(2);
 		
@@ -53,26 +54,68 @@ public class SequenceFlowTest extends AbstractFeatureTest {
 				.end()
 			.anchorPointOn(movingShape)
 				.isLeftOfShape();
+	}
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/layout/SequenceFlowTest.testMoveCloseBy.bpmn")
+	public void testMoveCloseByOneBendpoint() {
+		Shape fixedShape = Util.findShapeByBusinessObjectId(diagram, "Task_2");
+		Shape movingShape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
+		
+		FreeFormConnection connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
 		
 		// when being moved even closer
+
+		move(movingShape, diagramTypeProvider)
+			.by(-30, 0)
+			.execute();
+		
+		// then
+		// connection should change to 
+		// ---
+		// ____
+		//     |
+		//     v
+		// ---
+		assertThat(connection).hasNoDiagonalEdges();
+		assertThat(connection).hasBendpointCount(1);
+		
+		assertThat(connection)
+			.anchorPointOn(fixedShape)
+				.isRightOfShape()
+				.end()
+			.anchorPointOn(movingShape)
+				.isAboveShape();
+	}
+	
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/layout/SequenceFlowTest.testMoveCloseBy.bpmn")
+	public void testMoveCloseBySwitchToVertical() {
+		Shape fixedShape = Util.findShapeByBusinessObjectId(diagram, "Task_2");
+		Shape movingShape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
+		
+		FreeFormConnection connection = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_2");
+	
+		// when being moved even closer
+		move(movingShape, diagramTypeProvider)
+			.by(-125, 0)
+			.execute();
+
+		// then
 		// connection should change to 
 		// ---
 		//  |
 		//  v
 		// ---
-		move(movingShape, diagramTypeProvider)
-			.by(-10, 0)
-			.execute();
-		
 		assertThat(connection).hasNoDiagonalEdges();
 		assertThat(connection).hasBendpointCount(2);
 		
 		assertThat(connection)
 			.anchorPointOn(fixedShape)
-				.isAboveShape()
+				.isBeneathShape()
 				.end()
 			.anchorPointOn(movingShape)
-				.isBeneathShape();
+				.isAboveShape();
 	}
 	
 	@Test

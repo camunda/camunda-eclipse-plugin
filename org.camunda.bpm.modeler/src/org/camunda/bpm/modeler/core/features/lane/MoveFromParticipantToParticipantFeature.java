@@ -56,8 +56,8 @@ public class MoveFromParticipantToParticipantFeature extends MoveLaneFeature {
 	@Override
 	protected void internalMove(IMoveShapeContext context) {
 		modifyModelStructure(context);
-		FeatureSupport.redrawLaneSet(context.getSourceContainer());
-		FeatureSupport.redrawLaneSet(context.getTargetContainer());
+		FeatureSupport.redrawLaneSet(context.getSourceContainer(), getFeatureProvider());
+		FeatureSupport.redrawLaneSet(context.getTargetContainer(), getFeatureProvider());
 	}
 
 	private void modifyModelStructure(IMoveShapeContext context) {

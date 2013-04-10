@@ -49,15 +49,12 @@ public class ImportBrokenModelTest extends AbstractImportBpmnModelTest {
 		}
 	}
 
-	@Ignore // See: HEMERA-2988
 	@Test
 	@DiagramResource
 	public void testLaneSetSingleLaneUnreferencedFlowElements() {
 		ModelImport importer = createModelImport();
 		importer.execute();
 
-		// TODO: 12-10-2012 nre: test fails because the unreferenced element
-		// gets somehow associated with the lane
 		assertThat(importer.getImportWarnings()).isNotEmpty();
 	}
 
@@ -66,7 +63,7 @@ public class ImportBrokenModelTest extends AbstractImportBpmnModelTest {
 	public void testLaneSetMultipleLanesUnreferencedFlowElements() {
 		ModelImport importer = createModelImport();
 		importer.execute();
-
+		
 		assertThat(importer.getImportWarnings()).isNotEmpty();
 	}
 
