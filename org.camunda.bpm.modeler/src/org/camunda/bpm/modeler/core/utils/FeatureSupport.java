@@ -14,6 +14,7 @@ package org.camunda.bpm.modeler.core.utils;
 
 import static org.camunda.bpm.modeler.core.features.activity.AbstractAddActivityFeature.ACTIVITY_DECORATOR;
 import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.point;
+import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.vector;
 import static org.camunda.bpm.modeler.core.utils.ContextUtil.set;
 
 import java.util.ArrayList;
@@ -29,8 +30,10 @@ import org.camunda.bpm.modeler.core.di.DIUtils;
 import org.camunda.bpm.modeler.core.features.DefaultMoveBPMNShapeFeature;
 import org.camunda.bpm.modeler.core.features.PropertyNames;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.BendpointContainment;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
 import org.camunda.bpm.modeler.core.layout.util.RectangleUtil.ResizeDiff;
+import org.camunda.bpm.modeler.core.layout.util.VectorUtil;
 import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.ChoreographyTask;
@@ -41,6 +44,7 @@ import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.TextAnnotation;
 import org.eclipse.bpmn2.di.BPMNShape;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.ILocation;
@@ -64,6 +68,7 @@ import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
@@ -264,7 +269,7 @@ public class FeatureSupport {
 			
 			return;
 		}
-			
+		
 		Shape resizeCandidate = null;
 		if (top) {
 			resizeCandidate = childLanes.get(0);
@@ -360,14 +365,59 @@ public class FeatureSupport {
 		int m = 0; // mystical m
 		int y = 0;
 		
+		ILocation preMovePos = null;
+		ILocation postMovePos = null;
+		
+		Point moveDiff = null;
+		
+		BendpointContainment containment = null;
+		
+		int curIdx = 0;
+		boolean needBendpointAdjust = false;
+		
 		for (Shape shape : childLanes) {
+			
 			GraphicsAlgorithm shapeGA = shape.getGraphicsAlgorithm();
+			
+			needBendpointAdjust = (topResize != 0 && curIdx < idx) || (topResize == 0 && curIdx > idx);
+			
+			// bendpoint adjustment
+			// step #1: remember pre move position of lanes
+			if (needBendpointAdjust) {
+				preMovePos = LayoutUtil.getAbsoluteBounds(shape);
+				containment = LayoutUtil.getContainerBendpoints((ContainerShape) shape);
+			}
 			
 			Graphiti.getGaService().setLocation(shapeGA, GraphicsUtil.PARTICIPANT_LABEL_OFFSET, y - m);
 
 			// to avoid a double border lanes have -1px margin bottom
 			y += shapeGA.getHeight() - m;
 			m = 1;
+			
+			// bendpoint adjustment
+			// step #2: perform adjustment based on 
+			//          relative container movement 
+			if (needBendpointAdjust) {
+				postMovePos = LayoutUtil.getAbsoluteBounds(shape);
+				
+				if (topResize != 0) {
+					moveDiff = point(0, topResize);
+				} else {
+					moveDiff = point(VectorUtil.substract(vector(postMovePos), vector(preMovePos)));
+				}
+				
+				if (moveDiff.getX() != 0 || moveDiff.getY() != 0) {
+
+					for (Map.Entry<Point, FreeFormConnection> entry : containment) {
+						Point point = entry.getKey();
+						
+						point.setX(point.getX() + moveDiff.getX());
+						point.setY(point.getY() + moveDiff.getY());
+					}
+				}
+			}
+			
+			curIdx++;
 		}
 		
 		GraphicsAlgorithm parentGa = parentContainer.getGraphicsAlgorithm();

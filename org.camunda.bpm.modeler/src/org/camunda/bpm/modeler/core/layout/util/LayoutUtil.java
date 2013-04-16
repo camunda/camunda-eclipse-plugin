@@ -6,9 +6,12 @@ import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
 import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.vector;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.camunda.bpm.modeler.core.layout.Docking;
@@ -1381,6 +1384,67 @@ public class LayoutUtil {
 		}
 		
 		return incomingConnections;
+	}
+	
+	/**
+	 * Stores bendpoint containments
+	 * 
+	 * @author nico.rehwaldt
+	 */
+	public static class BendpointContainment implements Iterable<Map.Entry<Point, FreeFormConnection>> {
+		
+		private List<Point> containedPoints;
+		
+		private Map<Point, FreeFormConnection> pointToConnectionMap;
+		
+		public BendpointContainment() {
+			containedPoints = new ArrayList<Point>();
+			pointToConnectionMap = new HashMap<Point, FreeFormConnection>();
+		}
+		
+		public void add(Point point, FreeFormConnection connection) {
+			containedPoints.add(point);
+			pointToConnectionMap.put(point, connection);
+		}
+		
+		public List<Point> getContainedPoints() {
+			return containedPoints;
+		}
+		
+		public Connection getConnectionForPoint(Point point) {
+			return pointToConnectionMap.get(point);
+		}
+
+		@Override
+		public Iterator<Entry<Point, FreeFormConnection>> iterator() {
+			return pointToConnectionMap.entrySet().iterator();
+		}
+	}
+	
+	public static BendpointContainment getContainerBendpoints(ContainerShape shape) {
+		
+		IRectangle bounds = getAbsoluteBounds(shape);
+		
+		Set<Connection> connections = getContainerConnections(shape, true, false);
+		
+		BendpointContainment containment = new BendpointContainment();
+		
+		for (Connection connection: connections) {
+			if (connection instanceof FreeFormConnection) {
+				FreeFormConnection ffc = (FreeFormConnection) connection;
+				
+				List<Point> bendpoints = ffc.getBendpoints();
+				
+				for (Point bendpoint: bendpoints) {
+					
+					if (LayoutUtil.isContained(bounds, location(bendpoint))) {
+						containment.add(bendpoint, ffc);
+					}
+				}
+			}
+		}
+		
+		return containment;
 	}
 	
 	/**
