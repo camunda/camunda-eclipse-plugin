@@ -5,6 +5,7 @@ import static org.camunda.bpm.modeler.test.util.assertions.Bpmn2ModelAssertions.
 import static org.camunda.bpm.modeler.test.util.operations.ResizeShapeOperation.resize;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
@@ -187,4 +188,11 @@ public class ResizeParticipantFeatureTest extends AbstractResizeFeatureTest {
 
 		assertResizeRetainsChildPositionsAndFlowLayout("Participant_4", point(0, -20), Sector.TOP_LEFT, Arrays.asList("Task_4"), Arrays.asList("SequenceFlow_4"));
 	}
+	
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
+	public void testEnlargeLaneWithlaneAdjustsFlowElementsAndBendpoints() {
+
+		assertResizeRetainsChildPositionsAndFlowLayout("Lane_4", point(0, 20), Sector.BOTTOM, Collections.<String>emptyList(), Arrays.asList("SequenceFlow_3"));
+	}	
 }
