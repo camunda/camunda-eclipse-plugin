@@ -3,18 +3,21 @@ package org.camunda.bpm.modeler.test.layout.util;
 import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.point;
 import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rect;
 import static org.camunda.bpm.modeler.test.util.assertions.Bpmn2ModelAssertions.assertThat;
+import static org.camunda.bpm.modeler.test.util.operations.AddLaneOperation.addLane;
 import static org.camunda.bpm.modeler.test.util.operations.CreateParticipantOperation.createParticipant;
 import static org.camunda.bpm.modeler.test.util.operations.MoveShapeOperation.move;
 import static org.camunda.bpm.modeler.test.util.operations.ResizeShapeOperation.resize;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
+import org.camunda.bpm.modeler.core.utils.LabelUtil;
 import org.camunda.bpm.modeler.core.utils.ScrollUtil;
 import org.camunda.bpm.modeler.test.feature.AbstractFeatureTest;
 import org.camunda.bpm.modeler.test.util.DiagramResource;
 import org.camunda.bpm.modeler.test.util.Util;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.junit.Test;
@@ -93,6 +96,25 @@ public class ScrollUtilTest extends AbstractFeatureTest {
 		
 		assertThat(participantBounds.getX() + participantBounds.getWidth() + ScrollUtil.SCROLL_PADDING).isEqualTo(expectedPoint.getX());
 		assertThat(participantBounds.getY() + participantBounds.getHeight() + ScrollUtil.SCROLL_PADDING).isEqualTo(expectedPoint.getY());
+	}
+	
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/add/AddFeatureTestBase.testAddToNonEmptyParticipant.bpmn")
+	public void testScrollShapeAfterLaneAdd() {
+		// given participant
+		ContainerShape containerShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "_Participant_5");
+		
+		// when
+		// lane is added to it
+		addLane(diagramTypeProvider)
+			.toContainer(containerShape)
+			.execute();
+		
+		// then
+		Shape scrollShape = ScrollUtil.getScrollShape(diagram);	
+		IRectangle participantBounds = LayoutUtil.getAbsoluteBounds(containerShape);
+		
+		assertThat(scrollShape).position().isEqualTo(participantBounds.getX() + participantBounds.getWidth() +  ScrollUtil.SCROLL_PADDING, participantBounds.getY() + participantBounds.getHeight() +  ScrollUtil.SCROLL_PADDING);
 	}
 	
 }

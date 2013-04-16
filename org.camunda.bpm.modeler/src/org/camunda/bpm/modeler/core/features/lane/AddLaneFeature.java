@@ -19,32 +19,25 @@ import java.util.List;
 
 import org.camunda.bpm.modeler.core.features.AbstractAddBpmnShapeFeature;
 import org.camunda.bpm.modeler.core.features.DefaultMoveBPMNShapeFeature;
-import org.camunda.bpm.modeler.core.features.participant.AddParticipantFeature;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
+import org.camunda.bpm.modeler.core.utils.ScrollUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
-import org.camunda.bpm.modeler.ui.features.label.AddShapeLabelFeature;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.Lane;
-import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
-import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.dd.dc.Bounds;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
-import org.eclipse.graphiti.features.context.ITargetContext;
-import org.eclipse.graphiti.features.context.impl.AddConnectionContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.MoveShapeContext;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
@@ -169,6 +162,8 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 		if (!isImport(context)) {
 			FeatureSupport.redrawLaneSet(newLaneShape, getFeatureProvider());
 		}
+		
+		ScrollUtil.updateScrollShape(getDiagram());
 	}
 
 	private void createLaneLabel(ContainerShape newShape, Lane lane, boolean horizontal) {
