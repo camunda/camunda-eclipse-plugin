@@ -180,6 +180,13 @@ public class ResizeLaneFeatureTest extends AbstractResizeFeatureTest {
 
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
+	public void testShrinkWithLaneAdjustsFlowElementsAndBendpoints2() {
+		
+		assertResizeRetainsChildPositionsAndFlowLayout("Lane_5", point(0, 5), Sector.TOP_LEFT, Arrays.asList("Task_3"), Arrays.asList("SequenceFlow_3", "SequenceFlow_6"));
+	}	
+	
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
 	public void testEnlargeWithLaneAdjustsFlowElementsAndBendpoints() {
 
 		assertResizeRetainsChildPositionsAndFlowLayout("Lane_11", point(0, -20), Sector.TOP_LEFT, Arrays.asList("Task_5"), Arrays.asList("SequenceFlow_7"));
