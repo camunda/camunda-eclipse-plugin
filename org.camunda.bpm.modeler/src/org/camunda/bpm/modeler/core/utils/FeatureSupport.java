@@ -372,14 +372,14 @@ public class FeatureSupport {
 		
 		BendpointContainment containment = null;
 		
-		int curIdx = 0;
+		int lanes = 0;
 		boolean needBendpointAdjust = false;
 		
 		for (Shape shape : childLanes) {
 			
 			GraphicsAlgorithm shapeGA = shape.getGraphicsAlgorithm();
 			
-			needBendpointAdjust = (topResize != 0 && curIdx < idx) || (topResize == 0 && curIdx > idx);
+			needBendpointAdjust = (topResize != 0 && lanes < idx) || (topResize == 0 && lanes > idx);
 			
 			// bendpoint adjustment
 			// step #1: remember pre move position of lanes
@@ -417,13 +417,17 @@ public class FeatureSupport {
 				}
 			}
 			
-			curIdx++;
+			lanes++;
 		}
 		
 		GraphicsAlgorithm parentGa = parentContainer.getGraphicsAlgorithm();
 		
 		if (topResize != 0) {
-			Graphiti.getGaService().setLocation(parentGa, parentGa.getX(), parentGa.getY() + topResize);
+			// again, compensate 1px (disable double border)
+			// but only if we have more than one lane and the top lane has not been resized
+			
+			int antiDblBorderCompensate = (lanes > 1 && idx != 0 ? 1 : 0);
+			Graphiti.getGaService().setLocation(parentGa, parentGa.getX(), parentGa.getY() + topResize + antiDblBorderCompensate);
 		}
 		
 		Graphiti.getGaService().setHeight(parentGa, y);

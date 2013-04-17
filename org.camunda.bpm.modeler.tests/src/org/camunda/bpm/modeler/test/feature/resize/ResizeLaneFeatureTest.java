@@ -5,14 +5,19 @@ import static org.camunda.bpm.modeler.test.util.assertions.Bpmn2ModelAssertions.
 import static org.camunda.bpm.modeler.test.util.operations.ResizeShapeOperation.resize;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.layout.util.RectangleUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
+import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.camunda.bpm.modeler.test.util.DiagramResource;
 import org.camunda.bpm.modeler.test.util.Util;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.junit.Test;
 
@@ -177,13 +182,6 @@ public class ResizeLaneFeatureTest extends AbstractResizeFeatureTest {
 		
 		assertResizeRetainsChildPositionsAndFlowLayout("Lane_11", point(0, 20), Sector.TOP_LEFT, Arrays.asList("Task_5"), Arrays.asList("SequenceFlow_7"));
 	}
-
-	@Test
-	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
-	public void testShrinkWithLaneAdjustsFlowElementsAndBendpoints2() {
-		
-		assertResizeRetainsChildPositionsAndFlowLayout("Lane_5", point(0, 5), Sector.TOP_LEFT, Arrays.asList("Task_3"), Arrays.asList("SequenceFlow_3", "SequenceFlow_6"));
-	}	
 	
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
@@ -197,5 +195,47 @@ public class ResizeLaneFeatureTest extends AbstractResizeFeatureTest {
 	public void testEnlargeLaneAdjustsLowerLaneBendpoints() {
 
 		assertResizeRetainsChildPositionsAndFlowLayout("Lane_3", point(0, 20), Sector.TOP_LEFT, Arrays.asList("Task_3"), Arrays.asList("SequenceFlow_3"));
+	}
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
+	public void testShrinkTopIntermediateLaneRetainsParticipantBottomPosition() {
+		
+		assertResizeTopRetainsParticipantBottomPosition("Lane_3", point(0, 5));
+	}
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
+	public void testShrinkTopMiddleLaneRetainsParticipantBottomPosition() {
+		
+		assertResizeTopRetainsParticipantBottomPosition("Lane_3", point(0, 5));
+	}
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
+	public void testShrinkTop3LevelNestedLaneRetainsParticipantBottomPosition() {
+		
+		assertResizeTopRetainsParticipantBottomPosition("Lane_4", point(0, 5));
+	}
+	
+	private void assertResizeTopRetainsParticipantBottomPosition(String resizeTargetId, Point resizeAmount) {
+
+		// given
+		Shape resizeTarget = Util.findShapeByBusinessObjectId(diagram, resizeTargetId);
+		Shape rootContainer = FeatureSupport.getRootContainer((ContainerShape) resizeTarget);
+		
+		
+		IRectangle preResizeRootContainerBounds = LayoutUtil.getAbsoluteBounds(rootContainer);
+		
+		// when
+		resize(resizeTarget, getDiagramTypeProvider())
+			.by(resizeAmount, Sector.TOP)
+			.execute();
+
+		// then
+		IRectangle postResizeRootContainerBounds = LayoutUtil.getAbsoluteBounds(rootContainer);
+		
+		assertThat(postResizeRootContainerBounds.getY() + postResizeRootContainerBounds.getHeight())
+			.isEqualTo(preResizeRootContainerBounds.getY() + preResizeRootContainerBounds.getHeight());
 	}
 }
