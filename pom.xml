@@ -56,7 +56,7 @@
 
 	<modules>
 		<module>org.camunda.bpm.modeler</module>
-		<!--module>org.camunda.bpm.modeler.tests</module-->
+		<module>org.camunda.bpm.modeler.tests</module>
 		<module>org.camunda.bpm.modeler.feature</module>
 		<module>org.camunda.bpm.modeler.updatesite.feature</module>
 	</modules>
