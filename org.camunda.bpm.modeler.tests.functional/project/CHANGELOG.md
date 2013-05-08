@@ -1,3 +1,11 @@
+VERSION 1.8 (2013-05-08)
+========================
+
+Features
+--------
+* Jenkins Test Autamtion
+	* Add new AUT configuration for automated Jenkins test
+
 VERSION 1.7 (2013-05-05)
 ========================
 
