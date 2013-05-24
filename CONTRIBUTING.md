@@ -7,7 +7,7 @@
  * [Setup modeler projects](#setup-modeler-projects)
 * [Inspect the project structure](#project-structure)
 * Write some code
-* Submit a pull request
+* Submit a pull request. [Contribution guidelines](https://github.com/camunda/camunda.org/blob/master/COMMIT_MESSAGES.md)
 
 ## Setup Eclipse IDE
 
@@ -91,6 +91,7 @@ To avoid any problems install the plugins in the following order:
 * Checkout the `develop` branch
 * Make sure you have the `m2eclipse` plugin installed in your Eclipse
 * Import sources into Eclipse Indigo or Juno via `Import -> Existing maven projects`
+* Apply the camunda bpm [formatter templates](https://github.com/camunda/camunda-bpm-platform/tree/master/settings/eclipse)
 * If you have already installed the [required project plugins](#install-project-plugins) no error should occur. 
 * [Examine the sources](#project-structure)
 * Run / Test
