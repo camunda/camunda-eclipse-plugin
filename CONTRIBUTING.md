@@ -57,7 +57,7 @@ To avoid any problems install the plugins in the following order:
 * Open the eclipse marketplace
  * search for `maven`
  * install `Maven integration for Eclipse`
-* Open Window -> Preferences -> Maven -> Discovery -> Open Catalog
+* Open `Window -> Preferences -> Maven -> Discovery -> Open Catalog`
  * search for `tycho`
  * install `Tycho Configurator`
 * Optional: Add `http://winterwell.com/software/updatesite/` and 
@@ -80,7 +80,7 @@ To avoid any problems install the plugins in the following order:
 * Open the eclipse marketplace
  * search for `maven`
  * install `Maven integration for Eclipse`
-* Open Window -> Preferences -> Maven -> Discovery -> Open Catalog
+* Open `Window -> Preferences -> Maven -> Discovery -> Open Catalog`
  * search for `tycho`
  * install `Tycho Configurator`
 * Optional: Add `http://winterwell.com/software/updatesite/` and 
