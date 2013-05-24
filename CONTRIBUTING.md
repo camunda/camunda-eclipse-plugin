@@ -36,11 +36,9 @@ To avoid any problems install the plugins in the following order:
 4. Eclipse plugins
 5. Maven plugin
 
-#### Walk Through
+#### Installation "Walk through" 
 
-This walk through should help to install the required 
-
-* Open Help > Install new software ...
+* Open `Help > Install new software ...`
 * Choose `Indigo - http://download.eclipse.org/releases/indigo`
 * Open category `Modeling` and install:
  * `EMF - Eclipse Modeling Framework SDK` - 2.7.2.v20120130-0943
@@ -55,10 +53,10 @@ This walk through should help to install the required
  * `Eclipse Web Developer Tools` - 3.3.2.v201111030500-7O7IFj6EMjB7yO1Xs_G1kMtQeOye6HTXFWve95_R
  * `Eclipse Java EE Developer Tools` - 3.3.2.v201111030500-7b7II1YFSK2WIuPRDEnExPV-RvTn
 * Open the eclipse marketplace
- * search for maven
+ * search for `maven`
  * install `Maven integration for Eclipse`
 * Open Window -> Preferences -> Maven -> Discovery -> Open Catalog
- * Search for `tycho`
+ * search for `tycho`
  * install `Tycho Configurator`
 * Optional: Add `http://winterwell.com/software/updatesite/` and 
  * install `MarkDown Editor`
