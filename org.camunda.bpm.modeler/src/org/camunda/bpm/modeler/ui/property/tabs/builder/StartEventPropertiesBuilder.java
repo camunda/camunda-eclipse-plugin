@@ -23,9 +23,7 @@ public class StartEventPropertiesBuilder extends AbstractPropertiesBuilder<Start
 	public void create() {
 		List<EventDefinition> eventDefinitions = ModelUtil.getEventDefinitions(bo);
 		
-		if (!hasDefinitions(eventDefinitions)) {
-			PropertyUtil.createText(section, parent, "Form Key", ModelPackage.eINSTANCE.getDocumentRoot_FormKey(), bo);
-		}
+		PropertyUtil.createText(section, parent, "Form Key", ModelPackage.eINSTANCE.getDocumentRoot_FormKey(), bo);
 		
 		if (isContainedInEventSubProcess(bo)) {
 			PropertyUtil.createCheckbox(section, parent, "Interrupting", Bpmn2Package.eINSTANCE.getStartEvent_IsInterrupting(), bo);
