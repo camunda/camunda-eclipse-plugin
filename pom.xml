@@ -70,8 +70,7 @@
 
 		<repository>
 			<id>eclipse-bpmn2</id>
-			<!--  TODO: change this when BPMN2 metamodel finds a premanent home -->
-			<url>http://download.eclipse.org/bpmn2-modeler/bpmn2/site</url>
+			<url>http://download.eclipse.org/modeling/mdt/bpmn2/updates/milestones/S20130423/</url>
 			<layout>p2</layout>
 			<snapshots>
 				<enabled>true</enabled>
