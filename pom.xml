@@ -52,6 +52,7 @@
 				<platform-version>[3.7,3.8)</platform-version>
 			</properties>
 		</profile>
+		
 	</profiles>
 
 	<modules>
@@ -94,7 +95,7 @@
 
 		<repository>
 			<id>eclipse-graphiti</id>
-			<url>http://download.eclipse.org/graphiti/updates/0.9.0</url>
+			<url>http://archive.eclipse.org/graphiti/updates/0.9.0/</url>
 			<layout>p2</layout>
 			<snapshots>
 				<enabled>true</enabled>
