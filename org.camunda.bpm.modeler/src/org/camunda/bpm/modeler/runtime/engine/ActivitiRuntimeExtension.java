@@ -38,9 +38,8 @@ import org.xml.sax.InputSource;
 public class ActivitiRuntimeExtension implements IBpmn2RuntimeExtension {
 
 	public static final String PREF_TOGGLE_DIAGRAM_GENERATION = "TOGGLE_DIAGRAM_GENERATION";
-	private static final String BPMN2_NAMESPACE = "http://www.omg.org/spec/BPMN/20100524/MODEL"; //$NON-NLS-1$
-	private static final String activiti_NAMESPACE = "http://www.activiti.org";
-	private static final String ROOT_ELEMENT = "definitions"; //$NON-NLS-1$
+	public static final String ENGINE_NAMESPACE = "http://www.activiti.org";
+	private static final String ROOT_ELEMENT = "definitions";
 	
 	private RootElementParser parser;
 
@@ -79,7 +78,7 @@ public class ActivitiRuntimeExtension implements IBpmn2RuntimeExtension {
 	        while (e.hasMoreElements()) {
 	          String prefix = (String)e.nextElement();
 	          String namespace = fNamespaceContext.getURI(prefix);
-	          if (activiti_NAMESPACE.equals(namespace))
+	          if (ENGINE_NAMESPACE.equals(namespace))
 	            throw new AcceptedException(qName.localpart);
 	        }
 	        throw new RejectedException();

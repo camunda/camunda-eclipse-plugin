@@ -114,7 +114,7 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 			protected void saveTypeAttribute(EClass eClass) {
 				// we skip this xsi:type attributes for activiti namespace,
 				// because the schema is not know to activiti -> parser errors
-				if (!eClass.getEPackage().getNsPrefix().equals("activiti")){
+				if (!eClass.getEPackage().getNsURI().equals(ActivitiRuntimeExtension.ENGINE_NAMESPACE)){
 					super.saveTypeAttribute(eClass);
 				}
 			}

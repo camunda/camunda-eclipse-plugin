@@ -55,7 +55,7 @@ public interface ModelPackage extends EPackage {
 	 * <!-- end-user-doc -->
    * @generated
    */
-	String eNS_PREFIX = "activiti";
+	String eNS_PREFIX = "camunda";
 
 	/**
    * The singleton instance of the package.

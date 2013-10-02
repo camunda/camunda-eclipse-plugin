@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:fox="http://www.camunda.com/fox" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="_-sqjcER2EeK_SrMU0nntKQ">
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:fox="http://www.camunda.com/fox" xmlns:camunda="http://activiti.org/bpmn" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="_-sqjcER2EeK_SrMU0nntKQ">
   <bpmn2:process id="Process_1">
     <bpmn2:serviceTask id="ServiceTask_1" name="Service Task 1">
       <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
     </bpmn2:serviceTask>
     <bpmn2:sequenceFlow id="SequenceFlow_1" sourceRef="ServiceTask_1" targetRef="CallActivity_1"/>
-    <bpmn2:callActivity xsi:type="activiti:tCallActivity" id="CallActivity_1" name="Call Activity 1">
+    <bpmn2:callActivity xsi:type="camunda:tCallActivity" id="CallActivity_1" name="Call Activity 1">
       <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
     </bpmn2:callActivity>
-    <bpmn2:task id="Task_1" activiti:async="true" name="Task 1">
+    <bpmn2:task id="Task_1" camunda:async="true" name="Task 1">
       <bpmn2:extensionElements>
         <fox:failedJobRetryTimeCycle>R3/PT10S</fox:failedJobRetryTimeCycle>
       </bpmn2:extensionElements>
