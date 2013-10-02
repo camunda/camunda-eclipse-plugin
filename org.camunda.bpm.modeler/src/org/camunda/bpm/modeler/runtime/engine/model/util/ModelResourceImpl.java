@@ -111,10 +111,9 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 			private boolean needTargetNamespace = true;
 			
 			@Override
-			protected void saveTypeAttribute(EClass eClass) {
-				// we skip this xsi:type attributes for activiti namespace,
-				// because the schema is not know to activiti -> parser errors
-				if (!eClass.getEPackage().getNsURI().equals(ActivitiRuntimeExtension.ENGINE_NAMESPACE)){
+			protected void saveTypeAttribute(EClass eClass) {			  
+				if (!eClass.getEPackage().getNsPrefix().equals("activiti") &&
+				    !eClass.getEPackage().getNsPrefix().equals("camunda")){
 					super.saveTypeAttribute(eClass);
 				}
 			}
