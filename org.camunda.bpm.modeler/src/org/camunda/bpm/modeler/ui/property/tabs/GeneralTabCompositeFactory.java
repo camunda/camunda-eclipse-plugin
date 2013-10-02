@@ -37,6 +37,7 @@ import org.eclipse.bpmn2.ManualTask;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.ScriptTask;
+import org.eclipse.bpmn2.SendTask;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.bpmn2.StartEvent;
@@ -159,7 +160,7 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 	
 	private void createTaskComposite(Task task) {
 		
-		if (task instanceof ServiceTask || task instanceof BusinessRuleTask) {
+		if (task instanceof ServiceTask || task instanceof BusinessRuleTask || task instanceof SendTask) {
 			new ServiceTypeControlsPropertiesBuilder(parent, section, task).create();
 		}
 		
@@ -171,7 +172,7 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 			new ScriptTaskPropertiesBuilder(parent, section, (ScriptTask) task).create();
 		} else
 		
-		if (task instanceof ServiceTask || task instanceof BusinessRuleTask) {
+		if (task instanceof ServiceTask || task instanceof BusinessRuleTask || task instanceof SendTask) {
 			new ServiceTaskPropertiesBuilder(parent, section, task).create();
 		}
 	}
