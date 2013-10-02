@@ -16,7 +16,7 @@
 
 	<licenses>
 		<license>
-			<name>commercial</name>
+			<name>Eclipse Public License</name>
 		</license>
 	</licenses>
 
@@ -52,7 +52,7 @@
 				<platform-version>[3.7,3.8)</platform-version>
 			</properties>
 		</profile>
-		
+
 	</profiles>
 
 	<modules>
@@ -133,7 +133,7 @@
 
 	<pluginRepositories>
 		<pluginRepository>
-			<!-- need maven-findbugs-2.3.2-SNAPSHOT, see http://jira.codehaus.org/browse/MFINDBUGS-122 
+			<!-- need maven-findbugs-2.3.2-SNAPSHOT, see http://jira.codehaus.org/browse/MFINDBUGS-122
 				remove this when this version is released -->
 			<id>codehaus.snapshots</id>
 			<url>http://snapshots.repository.codehaus.org/</url>
@@ -169,7 +169,7 @@
 					</configuration>
 				</plugin>
 				<plugin>
-					<!-- TODO remove workaround when https://issues.sonatype.org/browse/TYCHO-473 
+					<!-- TODO remove workaround when https://issues.sonatype.org/browse/TYCHO-473
 						is fixed -->
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>maven-osgi-source-plugin</artifactId>
