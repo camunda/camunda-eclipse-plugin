@@ -2,12 +2,18 @@ package org.camunda.bpm.modeler.ui.property.tabs.builder;
 
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
-import org.eclipse.bpmn2.Task;
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.widgets.Composite;
 
-public class ServiceTaskPropertiesBuilder extends AbstractPropertiesBuilder<Task> {
+/**
+ * 
+ * <p>Builds for a task and a throwing message event the controls to set a result
+ * variable.</p>
+ * 
+ */
+public class ServiceTaskPropertiesBuilder extends AbstractPropertiesBuilder<BaseElement> {
 
 	/**
 	 * Creates a new factory from the given arguments
@@ -16,7 +22,7 @@ public class ServiceTaskPropertiesBuilder extends AbstractPropertiesBuilder<Task
 	 * @param section
 	 * @param bo
 	 */
-	public ServiceTaskPropertiesBuilder(Composite parent, GFPropertySection section, Task bo) {
+	public ServiceTaskPropertiesBuilder(Composite parent, GFPropertySection section, BaseElement bo) {
 		super(parent, section, bo);
 	}
 

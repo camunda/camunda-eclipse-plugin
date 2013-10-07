@@ -26,14 +26,17 @@ import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.BusinessRuleTask;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.CatchEvent;
+import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.ExclusiveGateway;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.InclusiveGateway;
 import org.eclipse.bpmn2.IntermediateCatchEvent;
+import org.eclipse.bpmn2.IntermediateThrowEvent;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.ManualTask;
+import org.eclipse.bpmn2.MessageEventDefinition;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.ScriptTask;
@@ -188,6 +191,15 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 				createTimerCatchEventComposite(catchEvent);
 			}
 		}
+		
+		if (event instanceof IntermediateThrowEvent || event instanceof EndEvent) {
+			EventDefinition messageEventDefinition = ModelUtil.getEventDefinition(event, MessageEventDefinition.class);
+			if (messageEventDefinition != null) {
+				new ServiceTypeControlsPropertiesBuilder(parent, section, messageEventDefinition).create();
+				new ServiceTaskPropertiesBuilder(parent, section, messageEventDefinition).create();
+				new ActivityPropertiesBuilder(parent, section, messageEventDefinition).create();
+			}
+		}		
 	}
 	
 	// default fields (ID / Name) ///////////////////////////////////
