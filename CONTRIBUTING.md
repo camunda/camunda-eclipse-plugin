@@ -46,7 +46,7 @@ To avoid any problems install the plugins in the following order:
  * `EMF - Eclipse Modeling Framework SDK` - 2.7.2.v20120130-0943
  * `EMF Validation Framework SDK` - 1.5.0.v20110502-1600-67O-96SGR55YJeZPedcQnghI6uFA
  * `Graphiti SDK (Incubation)` - 0.8.2.v20120215-0845
-* Add the Graphiti Update Site: `http://download.eclipse.org/graphiti/updates/0.9.1/`
+* Add the Graphiti Update Site: `http://download.eclipse.org/graphiti/updates/0.9.2/`
  * Search for updates to bring Graphiti to the required version
 * Add the BPMN 2.0 Update Site: `http://download.eclipse.org/modeling/mdt/bpmn2/updates/milestones/S20130423/` 
  * install `BPMN2 Project Feature` - 0.7.0.201304230617
