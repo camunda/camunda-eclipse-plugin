@@ -163,6 +163,14 @@ public class ResizeParticipantFeatureTest extends AbstractResizeFeatureTest {
 	
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
+	public void testResizeParticipantContainingSubprocess() {
+
+		// y = 50 is allowed
+		assertResize("Participant_7", point(50, 50), Sector.BOTTOM_RIGHT);
+	}
+	
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/resize/ResizeParticipantFeatureTest.testBase.bpmn")
 	public void testShrinkAdjustsFlowElementsAndBendpoints() {
 		
 		assertResizeRetainsChildPositionsAndFlowLayout("_Participant_3", point(0, 50), Sector.TOP_LEFT, Arrays.asList("StartEvent_1"), Arrays.asList("SequenceFlow_1"));

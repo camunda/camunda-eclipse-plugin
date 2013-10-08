@@ -77,7 +77,7 @@ public abstract class ResizeLaneSetFeature extends DefaultResizeBPMNShapeFeature
 	
 	@Override
 	protected void updateDi(Shape shape) {
-		FeatureSupport.layoutLaneSet((ContainerShape) shape, getFeatureProvider());
+		FeatureSupport.redrawLaneSet((ContainerShape) shape, getFeatureProvider());
 	}
 	
 	@Override

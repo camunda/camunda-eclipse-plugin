@@ -8,6 +8,7 @@
     <bpmn2:participant id="Participant_4" name="Pool" processRef="Process_4"/>
     <bpmn2:participant id="Participant_5" name="Pool" processRef="Process_5"/>
     <bpmn2:participant id="Participant_6" name="Pool" processRef="Process_6"/>
+    <bpmn2:participant id="Participant_7" name="Pool" processRef="Process_7"/>
   </bpmn2:collaboration>
   <bpmn2:process id="Process_1" isExecutable="false">
     <bpmn2:startEvent id="StartEvent_1" name="Start Event">
@@ -120,6 +121,20 @@
     <bpmn2:endEvent id="EndEvent_5" name="End Event">
       <bpmn2:incoming>SequenceFlow_7</bpmn2:incoming>
     </bpmn2:endEvent>
+  </bpmn2:process>
+  <bpmn2:process id="Process_7" isExecutable="false">
+    <bpmn2:startEvent id="StartEvent_2" name="Start Event">
+      <bpmn2:outgoing>SequenceFlow_8</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:subProcess id="SubProcess_1" name="Sub Process">
+      <bpmn2:incoming>SequenceFlow_8</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_9</bpmn2:outgoing>
+    </bpmn2:subProcess>
+    <bpmn2:sequenceFlow id="SequenceFlow_8" sourceRef="StartEvent_2" targetRef="SubProcess_1"/>
+    <bpmn2:endEvent id="EndEvent_6" name="End Event">
+      <bpmn2:incoming>SequenceFlow_9</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_9" sourceRef="SubProcess_1" targetRef="EndEvent_6"/>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="_Collaboration_3">
@@ -307,6 +322,38 @@
       <bpmndi:BPMNShape id="_BPMNShape_Lane_22" bpmnElement="Lane_14" isHorizontal="true">
         <dc:Bounds height="100.0" width="481.0" x="335.0" y="1860.0"/>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Participant_11" bpmnElement="Participant_7" isHorizontal="true">
+        <dc:Bounds height="250.0" width="540.0" x="276.0" y="2112.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_3" bpmnElement="StartEvent_2">
+        <dc:Bounds height="36.0" width="36.0" x="337.0" y="2216.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="70.0" x="320.0" y="2257.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_SubProcess_2" bpmnElement="SubProcess_1" isExpanded="true">
+        <dc:Bounds height="150.0" width="200.0" x="423.0" y="2159.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_8" bpmnElement="SequenceFlow_8" sourceElement="_BPMNShape_StartEvent_3" targetElement="_BPMNShape_SubProcess_2">
+        <di:waypoint xsi:type="dc:Point" x="373.0" y="2234.0"/>
+        <di:waypoint xsi:type="dc:Point" x="423.0" y="2234.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="398.0" y="2234.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_EndEvent_10" bpmnElement="EndEvent_6">
+        <dc:Bounds height="36.0" width="36.0" x="673.0" y="2216.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="65.0" x="659.0" y="2257.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_9" bpmnElement="SequenceFlow_9" sourceElement="_BPMNShape_SubProcess_2" targetElement="_BPMNShape_EndEvent_10">
+        <di:waypoint xsi:type="dc:Point" x="623.0" y="2234.0"/>
+        <di:waypoint xsi:type="dc:Point" x="673.0" y="2234.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="648.0" y="2234.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
