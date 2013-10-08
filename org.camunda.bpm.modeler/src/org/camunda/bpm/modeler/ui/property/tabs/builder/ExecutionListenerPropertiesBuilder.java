@@ -17,6 +17,7 @@ import org.camunda.bpm.modeler.ui.property.tabs.tables.EObjectAttributeTableColu
 import org.camunda.bpm.modeler.ui.property.tabs.tables.EditableTableDescriptor.ElementFactory;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -98,7 +99,13 @@ public class ExecutionListenerPropertiesBuilder extends AbstractPropertiesBuilde
 			}
 		};
 		
-		final EditingSupportProvider editingSupportProvider = new DefaultEditingSupportProvider();
+		EditingSupportProvider editingSupportProvider = null;
+		
+		if (bo instanceof SequenceFlow) {
+			editingSupportProvider = new DefaultEditingSupportProvider();
+		} else {
+			editingSupportProvider = new NotTransitionElementEditingSupportProvider();
+		}
 		
 		EditableEObjectTableBuilder<T> builder = new EditableEObjectTableBuilder<T>(section, composite, typeCls);
 		
