@@ -27,137 +27,137 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  */
 public class CallActivityImpl extends org.eclipse.bpmn2.impl.CallActivityImpl implements CallActivity {
 	/**
-   * The default value of the '{@link #getCalledElement() <em>Called Element</em>}' attribute.
-   * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getCalledElement() <em>Called Element</em>}' attribute.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-   * @see #getCalledElement()
-   * @generated
-   * @ordered
-   */
+	 * @see #getCalledElement()
+	 * @generated
+	 * @ordered
+	 */
 	protected static final String CALLED_ELEMENT_EDEFAULT = null;
 
 	/**
-   * The cached value of the '{@link #getCalledElement() <em>Called Element</em>}' attribute.
-   * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getCalledElement() <em>Called Element</em>}' attribute.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-   * @see #getCalledElement()
-   * @generated
-   * @ordered
-   */
+	 * @see #getCalledElement()
+	 * @generated
+	 * @ordered
+	 */
 	protected String calledElement = CALLED_ELEMENT_EDEFAULT;
 
 	/**
-   * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-   * @generated
-   */
+	 * @generated
+	 */
 	protected CallActivityImpl() {
-    super();
-  }
+		super();
+	}
 
 	/**
-   * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-   * @generated
-   */
+	 * @generated
+	 */
 	@Override
 	protected EClass eStaticClass() {
-    return ModelPackage.Literals.CALL_ACTIVITY;
-  }
+		return ModelPackage.Literals.CALL_ACTIVITY;
+	}
 
 	/**
-   * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-   * @generated
-   */
+	 * @generated
+	 */
 	public String getCalledElement() {
-    return calledElement;
-  }
+		return calledElement;
+	}
 
 	/**
-   * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-   * @generated
-   */
+	 * @generated
+	 */
 	public void setCalledElement(String newCalledElement) {
-    String oldCalledElement = calledElement;
-    calledElement = newCalledElement;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.CALL_ACTIVITY__CALLED_ELEMENT, oldCalledElement, calledElement));
-  }
+		String oldCalledElement = calledElement;
+		calledElement = newCalledElement;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.CALL_ACTIVITY__CALLED_ELEMENT, oldCalledElement, calledElement));
+	}
 
 	/**
-   * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-   * @generated
-   */
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
-    switch (featureID) {
-      case ModelPackage.CALL_ACTIVITY__CALLED_ELEMENT:
-        return getCalledElement();
-    }
-    return super.eGet(featureID, resolve, coreType);
-  }
+		switch (featureID) {
+			case ModelPackage.CALL_ACTIVITY__CALLED_ELEMENT:
+				return getCalledElement();
+		}
+		return super.eGet(featureID, resolve, coreType);
+	}
 
 	/**
-   * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-   * @generated
-   */
+	 * @generated
+	 */
 	@Override
 	public void eSet(int featureID, Object newValue) {
-    switch (featureID) {
-      case ModelPackage.CALL_ACTIVITY__CALLED_ELEMENT:
-        setCalledElement((String)newValue);
-        return;
-    }
-    super.eSet(featureID, newValue);
-  }
+		switch (featureID) {
+			case ModelPackage.CALL_ACTIVITY__CALLED_ELEMENT:
+				setCalledElement((String)newValue);
+				return;
+		}
+		super.eSet(featureID, newValue);
+	}
 
 	/**
-   * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-   * @generated
-   */
+	 * @generated
+	 */
 	@Override
 	public void eUnset(int featureID) {
-    switch (featureID) {
-      case ModelPackage.CALL_ACTIVITY__CALLED_ELEMENT:
-        setCalledElement(CALLED_ELEMENT_EDEFAULT);
-        return;
-    }
-    super.eUnset(featureID);
-  }
+		switch (featureID) {
+			case ModelPackage.CALL_ACTIVITY__CALLED_ELEMENT:
+				setCalledElement(CALLED_ELEMENT_EDEFAULT);
+				return;
+		}
+		super.eUnset(featureID);
+	}
 
 	/**
-   * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-   * @generated
-   */
+	 * @generated
+	 */
 	@Override
 	public boolean eIsSet(int featureID) {
-    switch (featureID) {
-      case ModelPackage.CALL_ACTIVITY__CALLED_ELEMENT:
-        return CALLED_ELEMENT_EDEFAULT == null ? calledElement != null : !CALLED_ELEMENT_EDEFAULT.equals(calledElement);
-    }
-    return super.eIsSet(featureID);
-  }
+		switch (featureID) {
+			case ModelPackage.CALL_ACTIVITY__CALLED_ELEMENT:
+				return CALLED_ELEMENT_EDEFAULT == null ? calledElement != null : !CALLED_ELEMENT_EDEFAULT.equals(calledElement);
+		}
+		return super.eIsSet(featureID);
+	}
 
 	/**
-   * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-   * @generated
-   */
+	 * @generated
+	 */
 	@Override
 	public String toString() {
-    if (eIsProxy()) return super.toString();
+		if (eIsProxy()) return super.toString();
 
-    StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (calledElement: ");
-    result.append(calledElement);
-    result.append(')');
-    return result.toString();
-  }
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (calledElement: ");
+		result.append(calledElement);
+		result.append(')');
+		return result.toString();
+	}
 
 } //CallActivityImpl

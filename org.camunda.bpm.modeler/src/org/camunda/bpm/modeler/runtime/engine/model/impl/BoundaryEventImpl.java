@@ -21,22 +21,22 @@ import org.eclipse.emf.ecore.EClass;
  */
 public class BoundaryEventImpl extends org.eclipse.bpmn2.impl.BoundaryEventImpl implements BoundaryEvent {
 	/**
-   * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-   * @generated
-   */
+	 * @generated
+	 */
 	protected BoundaryEventImpl() {
-    super();
-  }
+		super();
+	}
 
 	/**
-   * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-   * @generated
-   */
+	 * @generated
+	 */
 	@Override
 	protected EClass eStaticClass() {
-    return ModelPackage.Literals.BOUNDARY_EVENT;
-  }
+		return ModelPackage.Literals.BOUNDARY_EVENT;
+	}
 
 } //BoundaryEventImpl

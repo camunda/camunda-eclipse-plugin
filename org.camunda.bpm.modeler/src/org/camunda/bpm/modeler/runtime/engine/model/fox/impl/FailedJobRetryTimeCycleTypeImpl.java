@@ -33,55 +33,55 @@ import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
  */
 public class FailedJobRetryTimeCycleTypeImpl extends EObjectImpl implements FailedJobRetryTimeCycleType {
 	/**
-   * The cached value of the '{@link #getMixed() <em>Mixed</em>}' attribute list.
-   * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getMixed() <em>Mixed</em>}' attribute list.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-   * @see #getMixed()
-   * @generated
-   * @ordered
-   */
+	 * @see #getMixed()
+	 * @generated
+	 * @ordered
+	 */
 	protected FeatureMap mixed;
 
 	/**
-   * The default value of the '{@link #getText() <em>Text</em>}' attribute.
-   * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getText() <em>Text</em>}' attribute.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-   * @see #getText()
-   * @generated
-   * @ordered
-   */
+	 * @see #getText()
+	 * @generated
+	 * @ordered
+	 */
 	protected static final String TEXT_EDEFAULT = null;
 
 	/**
-   * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-   * @generated
-   */
+	 * @generated
+	 */
 	protected FailedJobRetryTimeCycleTypeImpl() {
-    super();
-  }
+		super();
+	}
 
 	/**
-   * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-   * @generated
-   */
+	 * @generated
+	 */
 	@Override
 	protected EClass eStaticClass() {
-    return FoxPackage.Literals.FAILED_JOB_RETRY_TIME_CYCLE_TYPE;
-  }
+		return FoxPackage.Literals.FAILED_JOB_RETRY_TIME_CYCLE_TYPE;
+	}
 
 	/**
-   * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-   * @generated
-   */
+	 * @generated
+	 */
 	public FeatureMap getMixed() {
-    if (mixed == null) {
-      mixed = new BasicFeatureMap(this, FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED);
-    }
-    return mixed;
-  }
+		if (mixed == null) {
+			mixed = new BasicFeatureMap(this, FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED);
+		}
+		return mixed;
+	}
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -119,102 +119,102 @@ public class FailedJobRetryTimeCycleTypeImpl extends EObjectImpl implements Fail
 	}
 
 	/**
-   * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-   * @generated
-   */
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-    switch (featureID) {
-      case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED:
-        return ((InternalEList<?>)getMixed()).basicRemove(otherEnd, msgs);
-    }
-    return super.eInverseRemove(otherEnd, featureID, msgs);
-  }
+		switch (featureID) {
+			case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED:
+				return ((InternalEList<?>)getMixed()).basicRemove(otherEnd, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
+	}
 
 	/**
-   * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-   * @generated
-   */
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
-    switch (featureID) {
-      case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED:
-        if (coreType) return getMixed();
-        return ((FeatureMap.Internal)getMixed()).getWrapper();
-      case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__TEXT:
-        return getText();
-    }
-    return super.eGet(featureID, resolve, coreType);
-  }
+		switch (featureID) {
+			case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED:
+				if (coreType) return getMixed();
+				return ((FeatureMap.Internal)getMixed()).getWrapper();
+			case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__TEXT:
+				return getText();
+		}
+		return super.eGet(featureID, resolve, coreType);
+	}
 
 	/**
-   * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-   * @generated
-   */
+	 * @generated
+	 */
 	@Override
 	public void eSet(int featureID, Object newValue) {
-    switch (featureID) {
-      case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED:
-        ((FeatureMap.Internal)getMixed()).set(newValue);
-        return;
-      case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__TEXT:
-        setText((String)newValue);
-        return;
-    }
-    super.eSet(featureID, newValue);
-  }
+		switch (featureID) {
+			case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED:
+				((FeatureMap.Internal)getMixed()).set(newValue);
+				return;
+			case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__TEXT:
+				setText((String)newValue);
+				return;
+		}
+		super.eSet(featureID, newValue);
+	}
 
 	/**
-   * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-   * @generated
-   */
+	 * @generated
+	 */
 	@Override
 	public void eUnset(int featureID) {
-    switch (featureID) {
-      case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED:
-        getMixed().clear();
-        return;
-      case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__TEXT:
-        setText(TEXT_EDEFAULT);
-        return;
-    }
-    super.eUnset(featureID);
-  }
+		switch (featureID) {
+			case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED:
+				getMixed().clear();
+				return;
+			case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__TEXT:
+				setText(TEXT_EDEFAULT);
+				return;
+		}
+		super.eUnset(featureID);
+	}
 
 	/**
-   * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-   * @generated
-   */
+	 * @generated
+	 */
 	@Override
 	public boolean eIsSet(int featureID) {
-    switch (featureID) {
-      case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED:
-        return mixed != null && !mixed.isEmpty();
-      case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__TEXT:
-        return TEXT_EDEFAULT == null ? getText() != null : !TEXT_EDEFAULT.equals(getText());
-    }
-    return super.eIsSet(featureID);
-  }
+		switch (featureID) {
+			case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED:
+				return mixed != null && !mixed.isEmpty();
+			case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__TEXT:
+				return TEXT_EDEFAULT == null ? getText() != null : !TEXT_EDEFAULT.equals(getText());
+		}
+		return super.eIsSet(featureID);
+	}
 
 	/**
-   * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-   * @generated
-   */
+	 * @generated
+	 */
 	@Override
 	public String toString() {
-    if (eIsProxy()) return super.toString();
+		if (eIsProxy()) return super.toString();
 
-    StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (mixed: ");
-    result.append(mixed);
-    result.append(')');
-    return result.toString();
-  }
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (mixed: ");
+		result.append(mixed);
+		result.append(')');
+		return result.toString();
+	}
 
 } //FailedJobRetryTimeCycleTypeImpl
