@@ -4,6 +4,7 @@ import org.eclipse.dd.dc.Bounds;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.fest.assertions.api.AbstractAssert;
 import org.fest.assertions.api.Assertions;
+import org.fest.assertions.api.FloatAssert;
 
 public class BoundsAssert extends AbstractAssert<BoundsAssert, Bounds> {
 
@@ -35,5 +36,20 @@ public class BoundsAssert extends AbstractAssert<BoundsAssert, Bounds> {
 		return myself;
 	}
 	
+	public FloatAssert x() {
+		return Assertions.assertThat(actual.getX());
+	}
 
+	public FloatAssert y() {
+		return Assertions.assertThat(actual.getY());
+	}
+	
+	public FloatAssert width() {
+		return Assertions.assertThat(actual.getWidth());
+	}
+	
+	public FloatAssert height() {
+		return Assertions.assertThat(actual.getHeight());
+	}
+	
 }
