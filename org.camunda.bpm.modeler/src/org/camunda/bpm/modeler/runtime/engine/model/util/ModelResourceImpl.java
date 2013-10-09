@@ -55,9 +55,11 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.XMLSave;
 import org.eclipse.emf.ecore.xmi.impl.XMLLoadImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMLString;
+import org.eclipse.emf.ecore.xml.type.AnyType;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
+import org.omg.CORBA.Any;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
@@ -111,9 +113,14 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 			private boolean needTargetNamespace = true;
 			
 			@Override
-			protected void saveTypeAttribute(EClass eClass) {			  
+			protected void saveTypeAttribute(EClass eClass) {
 				if (!eClass.getEPackage().getNsPrefix().equals("activiti") &&
-				    !eClass.getEPackage().getNsPrefix().equals("camunda")){
+				    !eClass.getEPackage().getNsPrefix().equals("camunda") &&
+				    
+				    // prevent that 'xsi:type="xsd:anyType"' will be added to 
+				    // an element which type is "AnyTypeImpl"
+				    !eClass.getEPackage().getNsPrefix().equals("ecore.xml.type")) {
+					
 					super.saveTypeAttribute(eClass);
 				}
 			}
