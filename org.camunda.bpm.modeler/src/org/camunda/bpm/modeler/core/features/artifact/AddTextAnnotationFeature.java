@@ -51,7 +51,7 @@ public class AddTextAnnotationFeature extends AbstractAddBpmnShapeFeature<TextAn
 	
 	@Override
 	public int getDefaultHeight() {
-		return 100;
+		return 50;
 	}
 
 	@Override

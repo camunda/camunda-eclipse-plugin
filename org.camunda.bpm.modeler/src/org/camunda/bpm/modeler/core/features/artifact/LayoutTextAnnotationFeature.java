@@ -1,6 +1,6 @@
 /******************************************************************************* 
  * Copyright (c) 2011 Red Hat, Inc. 
- *  All rights reserved. 
+ *  All rights rd. 
  * This program is made available under the terms of the 
  * Eclipse Public License v1.0 which accompanies this distribution, 
  * and is available at http://www.eclipse.org/legal/epl-v10.html 
@@ -54,13 +54,13 @@ public class LayoutTextAnnotationFeature extends LayoutBpmnShapeFeature {
 		GraphicsAlgorithm ga = containerShape.getGraphicsAlgorithm();
 		IGaService gaService = Graphiti.getGaService();
 
-		if (ga.getWidth() < 100) {
-			ga.setWidth(100);
+		if (ga.getWidth() < 50) {
+			ga.setWidth(50);
 			changed = true;
 		}
 
-		if (ga.getHeight() < 50) {
-			ga.setHeight(50);
+		if (ga.getHeight() < 30) {
+			ga.setHeight(30);
 			changed = true;
 		}
 

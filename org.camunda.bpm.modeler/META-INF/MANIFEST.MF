@@ -356,6 +356,7 @@ Export-Package: org.camunda.bpm.modeler.core;
    org.eclipse.graphiti.features.custom,
    org.camunda.bpm.modeler",
  org.camunda.bpm.modeler.ui.features.activity.subprocess,
+ org.camunda.bpm.modeler.ui.features.artifact,
  org.camunda.bpm.modeler.ui.features.data,
  org.camunda.bpm.modeler.ui.features.event;
   uses:="org.camunda.bpm.modeler.features.event,
