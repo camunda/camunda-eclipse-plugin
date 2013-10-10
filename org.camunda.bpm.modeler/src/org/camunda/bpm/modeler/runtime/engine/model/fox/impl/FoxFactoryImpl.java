@@ -1,19 +1,15 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package org.camunda.bpm.modeler.runtime.engine.model.fox.impl;
 
 import org.camunda.bpm.modeler.runtime.engine.model.fox.*;
-import org.camunda.bpm.modeler.runtime.engine.model.fox.FailedJobRetryTimeCycleType;
-import org.camunda.bpm.modeler.runtime.engine.model.fox.FoxFactory;
-import org.camunda.bpm.modeler.runtime.engine.model.fox.FoxPackage;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
+
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
+
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**
@@ -23,13 +19,13 @@ import org.eclipse.emf.ecore.plugin.EcorePlugin;
  * @generated
  */
 public class FoxFactoryImpl extends EFactoryImpl implements FoxFactory {
-	/**
+  /**
 	 * Creates the default factory implementation.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static FoxFactory init() {
+  public static FoxFactory init() {
 		try {
 			FoxFactory theFoxFactory = (FoxFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.camunda.com/fox"); 
 			if (theFoxFactory != null) {
@@ -42,23 +38,23 @@ public class FoxFactoryImpl extends EFactoryImpl implements FoxFactory {
 		return new FoxFactoryImpl();
 	}
 
-	/**
+  /**
 	 * Creates an instance of the factory.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FoxFactoryImpl() {
+  public FoxFactoryImpl() {
 		super();
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public EObject create(EClass eClass) {
+  @Override
+  public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
 			case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE: return createFailedJobRetryTimeCycleType();
 			default:
@@ -66,33 +62,33 @@ public class FoxFactoryImpl extends EFactoryImpl implements FoxFactory {
 		}
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FailedJobRetryTimeCycleType createFailedJobRetryTimeCycleType() {
+  public FailedJobRetryTimeCycleType createFailedJobRetryTimeCycleType() {
 		FailedJobRetryTimeCycleTypeImpl failedJobRetryTimeCycleType = new FailedJobRetryTimeCycleTypeImpl();
 		return failedJobRetryTimeCycleType;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FoxPackage getFoxPackage() {
+  public FoxPackage getFoxPackage() {
 		return (FoxPackage)getEPackage();
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @deprecated
 	 * @generated
 	 */
-	@Deprecated
-	public static FoxPackage getPackage() {
+  @Deprecated
+  public static FoxPackage getPackage() {
 		return FoxPackage.eINSTANCE;
 	}
 

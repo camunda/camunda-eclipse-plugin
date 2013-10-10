@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package org.camunda.bpm.modeler.runtime.engine.model.impl;
 
@@ -16,12 +12,17 @@ import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.runtime.engine.model.OutType;
 import org.camunda.bpm.modeler.runtime.engine.model.TaskListenerType;
 import org.camunda.bpm.modeler.runtime.engine.model.TypeType;
+
 import org.camunda.bpm.modeler.runtime.engine.model.fox.FailedJobRetryTimeCycleType;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
+
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+
 import org.eclipse.emf.ecore.util.FeatureMap;
 
 /**
@@ -62,758 +63,790 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * @generated
  */
 public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl implements DocumentRoot {
-	/**
+  /**
 	 * The default value of the '{@link #getAssignee() <em>Assignee</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getAssignee()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String ASSIGNEE_EDEFAULT = null;
-	/**
+  protected static final String ASSIGNEE_EDEFAULT = null;
+
+  /**
 	 * The cached value of the '{@link #getAssignee() <em>Assignee</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getAssignee()
 	 * @generated
 	 * @ordered
 	 */
-	protected String assignee = ASSIGNEE_EDEFAULT;
+  protected String assignee = ASSIGNEE_EDEFAULT;
 
-	/**
+  /**
 	 * The default value of the '{@link #getCandidateGroups() <em>Candidate Groups</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getCandidateGroups()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String CANDIDATE_GROUPS_EDEFAULT = null;
-	/**
+  protected static final String CANDIDATE_GROUPS_EDEFAULT = null;
+
+  /**
 	 * The cached value of the '{@link #getCandidateGroups() <em>Candidate Groups</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getCandidateGroups()
 	 * @generated
 	 * @ordered
 	 */
-	protected String candidateGroups = CANDIDATE_GROUPS_EDEFAULT;
-	/**
+  protected String candidateGroups = CANDIDATE_GROUPS_EDEFAULT;
+
+  /**
 	 * The default value of the '{@link #getCandidateUsers() <em>Candidate Users</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getCandidateUsers()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String CANDIDATE_USERS_EDEFAULT = null;
-	/**
+  protected static final String CANDIDATE_USERS_EDEFAULT = null;
+
+  /**
 	 * The cached value of the '{@link #getCandidateUsers() <em>Candidate Users</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getCandidateUsers()
 	 * @generated
 	 * @ordered
 	 */
-	protected String candidateUsers = CANDIDATE_USERS_EDEFAULT;
-	/**
+  protected String candidateUsers = CANDIDATE_USERS_EDEFAULT;
+
+  /**
 	 * The default value of the '{@link #getClass_() <em>Class</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getClass_()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String CLASS_EDEFAULT = null;
-	/**
+  protected static final String CLASS_EDEFAULT = null;
+
+  /**
 	 * The cached value of the '{@link #getClass_() <em>Class</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getClass_()
 	 * @generated
 	 * @ordered
 	 */
-	protected String class_ = CLASS_EDEFAULT;
-	/**
+  protected String class_ = CLASS_EDEFAULT;
+
+  /**
 	 * The default value of the '{@link #getCollection() <em>Collection</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getCollection()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String COLLECTION_EDEFAULT = null;
-	/**
+  protected static final String COLLECTION_EDEFAULT = null;
+
+  /**
 	 * The cached value of the '{@link #getCollection() <em>Collection</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getCollection()
 	 * @generated
 	 * @ordered
 	 */
-	protected String collection = COLLECTION_EDEFAULT;
-	/**
+  protected String collection = COLLECTION_EDEFAULT;
+
+  /**
 	 * The default value of the '{@link #getDelegateExpression() <em>Delegate Expression</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getDelegateExpression()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final Object DELEGATE_EXPRESSION_EDEFAULT = null;
-	/**
+  protected static final Object DELEGATE_EXPRESSION_EDEFAULT = null;
+
+  /**
 	 * The cached value of the '{@link #getDelegateExpression() <em>Delegate Expression</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getDelegateExpression()
 	 * @generated
 	 * @ordered
 	 */
-	protected Object delegateExpression = DELEGATE_EXPRESSION_EDEFAULT;
-	/**
+  protected Object delegateExpression = DELEGATE_EXPRESSION_EDEFAULT;
+
+  /**
 	 * The default value of the '{@link #getDueDate() <em>Due Date</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getDueDate()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String DUE_DATE_EDEFAULT = null;
-	/**
+  protected static final String DUE_DATE_EDEFAULT = null;
+
+  /**
 	 * The cached value of the '{@link #getDueDate() <em>Due Date</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getDueDate()
 	 * @generated
 	 * @ordered
 	 */
-	protected String dueDate = DUE_DATE_EDEFAULT;
-	/**
+  protected String dueDate = DUE_DATE_EDEFAULT;
+
+  /**
 	 * The default value of the '{@link #getElementVariable() <em>Element Variable</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getElementVariable()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String ELEMENT_VARIABLE_EDEFAULT = null;
-	/**
+  protected static final String ELEMENT_VARIABLE_EDEFAULT = null;
+
+  /**
 	 * The cached value of the '{@link #getElementVariable() <em>Element Variable</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getElementVariable()
 	 * @generated
 	 * @ordered
 	 */
-	protected String elementVariable = ELEMENT_VARIABLE_EDEFAULT;
-	/**
+  protected String elementVariable = ELEMENT_VARIABLE_EDEFAULT;
+
+  /**
 	 * The default value of the '{@link #getFormHandlerClass() <em>Form Handler Class</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getFormHandlerClass()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String FORM_HANDLER_CLASS_EDEFAULT = null;
-	/**
+  protected static final String FORM_HANDLER_CLASS_EDEFAULT = null;
+
+  /**
 	 * The cached value of the '{@link #getFormHandlerClass() <em>Form Handler Class</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getFormHandlerClass()
 	 * @generated
 	 * @ordered
 	 */
-	protected String formHandlerClass = FORM_HANDLER_CLASS_EDEFAULT;
-	/**
+  protected String formHandlerClass = FORM_HANDLER_CLASS_EDEFAULT;
+
+  /**
 	 * The default value of the '{@link #getFormKey() <em>Form Key</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getFormKey()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String FORM_KEY_EDEFAULT = null;
-	/**
+  protected static final String FORM_KEY_EDEFAULT = null;
+
+  /**
 	 * The cached value of the '{@link #getFormKey() <em>Form Key</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getFormKey()
 	 * @generated
 	 * @ordered
 	 */
-	protected String formKey = FORM_KEY_EDEFAULT;
-	/**
+  protected String formKey = FORM_KEY_EDEFAULT;
+
+  /**
 	 * The default value of the '{@link #getHistory() <em>History</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getHistory()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final HistoryType HISTORY_EDEFAULT = HistoryType.NONE;
-	/**
+  protected static final HistoryType HISTORY_EDEFAULT = HistoryType.NONE;
+
+  /**
 	 * The cached value of the '{@link #getHistory() <em>History</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getHistory()
 	 * @generated
 	 * @ordered
 	 */
-	protected HistoryType history = HISTORY_EDEFAULT;
-	/**
+  protected HistoryType history = HISTORY_EDEFAULT;
+
+  /**
 	 * This is true if the History attribute has been set.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	protected boolean historyESet;
-	/**
+  protected boolean historyESet;
+
+  /**
 	 * The default value of the '{@link #getInitiator() <em>Initiator</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getInitiator()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String INITIATOR_EDEFAULT = null;
-	/**
+  protected static final String INITIATOR_EDEFAULT = null;
+
+  /**
 	 * The cached value of the '{@link #getInitiator() <em>Initiator</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getInitiator()
 	 * @generated
 	 * @ordered
 	 */
-	protected String initiator = INITIATOR_EDEFAULT;
-	/**
+  protected String initiator = INITIATOR_EDEFAULT;
+
+  /**
 	 * The default value of the '{@link #getResultVariable() <em>Result Variable</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getResultVariable()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String RESULT_VARIABLE_EDEFAULT = null;
-	/**
+  protected static final String RESULT_VARIABLE_EDEFAULT = null;
+
+  /**
 	 * The cached value of the '{@link #getResultVariable() <em>Result Variable</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getResultVariable()
 	 * @generated
 	 * @ordered
 	 */
-	protected String resultVariable = RESULT_VARIABLE_EDEFAULT;
-	/**
+  protected String resultVariable = RESULT_VARIABLE_EDEFAULT;
+
+  /**
 	 * The default value of the '{@link #getType() <em>Type</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getType()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final TypeType TYPE_EDEFAULT = TypeType.MAIL;
-	/**
+  protected static final TypeType TYPE_EDEFAULT = TypeType.MAIL;
+
+  /**
 	 * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getType()
 	 * @generated
 	 * @ordered
 	 */
-	protected TypeType type = TYPE_EDEFAULT;
-	/**
+  protected TypeType type = TYPE_EDEFAULT;
+
+  /**
 	 * This is true if the Type attribute has been set.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	protected boolean typeESet;
+  protected boolean typeESet;
 
-	/**
+  /**
 	 * The default value of the '{@link #isAsync() <em>Async</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #isAsync()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final boolean ASYNC_EDEFAULT = false;
-	/**
+  protected static final boolean ASYNC_EDEFAULT = false;
+
+  /**
 	 * The cached value of the '{@link #isAsync() <em>Async</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #isAsync()
 	 * @generated
 	 * @ordered
 	 */
-	protected boolean async = ASYNC_EDEFAULT;
+  protected boolean async = ASYNC_EDEFAULT;
 
-	/**
+  /**
 	 * The default value of the '{@link #getActExpression() <em>Act Expression</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getActExpression()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String ACT_EXPRESSION_EDEFAULT = null;
-	/**
+  protected static final String ACT_EXPRESSION_EDEFAULT = null;
+
+  /**
 	 * The cached value of the '{@link #getActExpression() <em>Act Expression</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getActExpression()
 	 * @generated
 	 * @ordered
 	 */
-	protected String actExpression = ACT_EXPRESSION_EDEFAULT;
+  protected String actExpression = ACT_EXPRESSION_EDEFAULT;
 
-	/**
+  /**
 	 * The default value of the '{@link #getPriority() <em>Priority</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getPriority()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String PRIORITY_EDEFAULT = "";
-	/**
+  protected static final String PRIORITY_EDEFAULT = "";
+
+  /**
 	 * The cached value of the '{@link #getPriority() <em>Priority</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getPriority()
 	 * @generated
 	 * @ordered
 	 */
-	protected String priority = PRIORITY_EDEFAULT;
+  protected String priority = PRIORITY_EDEFAULT;
 
-	/**
+  /**
 	 * The default value of the '{@link #getResultVariableName() <em>Result Variable Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getResultVariableName()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String RESULT_VARIABLE_NAME_EDEFAULT = null;
-	/**
+  protected static final String RESULT_VARIABLE_NAME_EDEFAULT = null;
+
+  /**
 	 * The cached value of the '{@link #getResultVariableName() <em>Result Variable Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getResultVariableName()
 	 * @generated
 	 * @ordered
 	 */
-	protected String resultVariableName = RESULT_VARIABLE_NAME_EDEFAULT;
+  protected String resultVariableName = RESULT_VARIABLE_NAME_EDEFAULT;
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected DocumentRootImpl() {
+  protected DocumentRootImpl() {
 		super();
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	protected EClass eStaticClass() {
+  @Override
+  protected EClass eStaticClass() {
 		return ModelPackage.Literals.DOCUMENT_ROOT;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ExecutionListenerType getExecutionListener() {
+  public ExecutionListenerType getExecutionListener() {
 		return (ExecutionListenerType)getMixed().get(ModelPackage.Literals.DOCUMENT_ROOT__EXECUTION_LISTENER, true);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetExecutionListener(ExecutionListenerType newExecutionListener, NotificationChain msgs) {
+  public NotificationChain basicSetExecutionListener(ExecutionListenerType newExecutionListener, NotificationChain msgs) {
 		return ((FeatureMap.Internal)getMixed()).basicAdd(ModelPackage.Literals.DOCUMENT_ROOT__EXECUTION_LISTENER, newExecutionListener, msgs);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setExecutionListener(ExecutionListenerType newExecutionListener) {
+  public void setExecutionListener(ExecutionListenerType newExecutionListener) {
 		((FeatureMap.Internal)getMixed()).set(ModelPackage.Literals.DOCUMENT_ROOT__EXECUTION_LISTENER, newExecutionListener);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FieldType getField() {
+  public FieldType getField() {
 		return (FieldType)getMixed().get(ModelPackage.Literals.DOCUMENT_ROOT__FIELD, true);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetField(FieldType newField, NotificationChain msgs) {
+  public NotificationChain basicSetField(FieldType newField, NotificationChain msgs) {
 		return ((FeatureMap.Internal)getMixed()).basicAdd(ModelPackage.Literals.DOCUMENT_ROOT__FIELD, newField, msgs);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setField(FieldType newField) {
+  public void setField(FieldType newField) {
 		((FeatureMap.Internal)getMixed()).set(ModelPackage.Literals.DOCUMENT_ROOT__FIELD, newField);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FormPropertyType getFormProperty() {
+  public FormPropertyType getFormProperty() {
 		return (FormPropertyType)getMixed().get(ModelPackage.Literals.DOCUMENT_ROOT__FORM_PROPERTY, true);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetFormProperty(FormPropertyType newFormProperty, NotificationChain msgs) {
+  public NotificationChain basicSetFormProperty(FormPropertyType newFormProperty, NotificationChain msgs) {
 		return ((FeatureMap.Internal)getMixed()).basicAdd(ModelPackage.Literals.DOCUMENT_ROOT__FORM_PROPERTY, newFormProperty, msgs);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setFormProperty(FormPropertyType newFormProperty) {
+  public void setFormProperty(FormPropertyType newFormProperty) {
 		((FeatureMap.Internal)getMixed()).set(ModelPackage.Literals.DOCUMENT_ROOT__FORM_PROPERTY, newFormProperty);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public InType getIn() {
+  public InType getIn() {
 		return (InType)getMixed().get(ModelPackage.Literals.DOCUMENT_ROOT__IN, true);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetIn(InType newIn, NotificationChain msgs) {
+  public NotificationChain basicSetIn(InType newIn, NotificationChain msgs) {
 		return ((FeatureMap.Internal)getMixed()).basicAdd(ModelPackage.Literals.DOCUMENT_ROOT__IN, newIn, msgs);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setIn(InType newIn) {
+  public void setIn(InType newIn) {
 		((FeatureMap.Internal)getMixed()).set(ModelPackage.Literals.DOCUMENT_ROOT__IN, newIn);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public OutType getOut() {
+  public OutType getOut() {
 		return (OutType)getMixed().get(ModelPackage.Literals.DOCUMENT_ROOT__OUT, true);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetOut(OutType newOut, NotificationChain msgs) {
+  public NotificationChain basicSetOut(OutType newOut, NotificationChain msgs) {
 		return ((FeatureMap.Internal)getMixed()).basicAdd(ModelPackage.Literals.DOCUMENT_ROOT__OUT, newOut, msgs);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setOut(OutType newOut) {
+  public void setOut(OutType newOut) {
 		((FeatureMap.Internal)getMixed()).set(ModelPackage.Literals.DOCUMENT_ROOT__OUT, newOut);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public TaskListenerType getTaskListener() {
+  public TaskListenerType getTaskListener() {
 		return (TaskListenerType)getMixed().get(ModelPackage.Literals.DOCUMENT_ROOT__TASK_LISTENER, true);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetTaskListener(TaskListenerType newTaskListener, NotificationChain msgs) {
+  public NotificationChain basicSetTaskListener(TaskListenerType newTaskListener, NotificationChain msgs) {
 		return ((FeatureMap.Internal)getMixed()).basicAdd(ModelPackage.Literals.DOCUMENT_ROOT__TASK_LISTENER, newTaskListener, msgs);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setTaskListener(TaskListenerType newTaskListener) {
+  public void setTaskListener(TaskListenerType newTaskListener) {
 		((FeatureMap.Internal)getMixed()).set(ModelPackage.Literals.DOCUMENT_ROOT__TASK_LISTENER, newTaskListener);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getAssignee() {
+  public String getAssignee() {
 		return assignee;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setAssignee(String newAssignee) {
+  public void setAssignee(String newAssignee) {
 		String oldAssignee = assignee;
 		assignee = newAssignee;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__ASSIGNEE, oldAssignee, assignee));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getCandidateGroups() {
+  public String getCandidateGroups() {
 		return candidateGroups;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setCandidateGroups(String newCandidateGroups) {
+  public void setCandidateGroups(String newCandidateGroups) {
 		String oldCandidateGroups = candidateGroups;
 		candidateGroups = newCandidateGroups;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__CANDIDATE_GROUPS, oldCandidateGroups, candidateGroups));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getCandidateUsers() {
+  public String getCandidateUsers() {
 		return candidateUsers;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setCandidateUsers(String newCandidateUsers) {
+  public void setCandidateUsers(String newCandidateUsers) {
 		String oldCandidateUsers = candidateUsers;
 		candidateUsers = newCandidateUsers;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__CANDIDATE_USERS, oldCandidateUsers, candidateUsers));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getClass_() {
+  public String getClass_() {
 		return class_;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setClass(String newClass) {
+  public void setClass(String newClass) {
 		String oldClass = class_;
 		class_ = newClass;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__CLASS, oldClass, class_));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getCollection() {
+  public String getCollection() {
 		return collection;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setCollection(String newCollection) {
+  public void setCollection(String newCollection) {
 		String oldCollection = collection;
 		collection = newCollection;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__COLLECTION, oldCollection, collection));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object getDelegateExpression() {
+  public Object getDelegateExpression() {
 		return delegateExpression;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setDelegateExpression(Object newDelegateExpression) {
+  public void setDelegateExpression(Object newDelegateExpression) {
 		Object oldDelegateExpression = delegateExpression;
 		delegateExpression = newDelegateExpression;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__DELEGATE_EXPRESSION, oldDelegateExpression, delegateExpression));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getDueDate() {
+  public String getDueDate() {
 		return dueDate;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setDueDate(String newDueDate) {
+  public void setDueDate(String newDueDate) {
 		String oldDueDate = dueDate;
 		dueDate = newDueDate;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__DUE_DATE, oldDueDate, dueDate));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getElementVariable() {
+  public String getElementVariable() {
 		return elementVariable;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setElementVariable(String newElementVariable) {
+  public void setElementVariable(String newElementVariable) {
 		String oldElementVariable = elementVariable;
 		elementVariable = newElementVariable;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__ELEMENT_VARIABLE, oldElementVariable, elementVariable));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getFormHandlerClass() {
+  public String getFormHandlerClass() {
 		return formHandlerClass;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setFormHandlerClass(String newFormHandlerClass) {
+  public void setFormHandlerClass(String newFormHandlerClass) {
 		String oldFormHandlerClass = formHandlerClass;
 		formHandlerClass = newFormHandlerClass;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__FORM_HANDLER_CLASS, oldFormHandlerClass, formHandlerClass));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getFormKey() {
+  public String getFormKey() {
 		return formKey;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setFormKey(String newFormKey) {
+  public void setFormKey(String newFormKey) {
 		String oldFormKey = formKey;
 		formKey = newFormKey;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__FORM_KEY, oldFormKey, formKey));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public HistoryType getHistory() {
+  public HistoryType getHistory() {
 		return history;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setHistory(HistoryType newHistory) {
+  public void setHistory(HistoryType newHistory) {
 		HistoryType oldHistory = history;
 		history = newHistory == null ? HISTORY_EDEFAULT : newHistory;
 		boolean oldHistoryESet = historyESet;
@@ -822,12 +855,12 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__HISTORY, oldHistory, history, !oldHistoryESet));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void unsetHistory() {
+  public void unsetHistory() {
 		HistoryType oldHistory = history;
 		boolean oldHistoryESet = historyESet;
 		history = HISTORY_EDEFAULT;
@@ -836,72 +869,72 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 			eNotify(new ENotificationImpl(this, Notification.UNSET, ModelPackage.DOCUMENT_ROOT__HISTORY, oldHistory, HISTORY_EDEFAULT, oldHistoryESet));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean isSetHistory() {
+  public boolean isSetHistory() {
 		return historyESet;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getInitiator() {
+  public String getInitiator() {
 		return initiator;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setInitiator(String newInitiator) {
+  public void setInitiator(String newInitiator) {
 		String oldInitiator = initiator;
 		initiator = newInitiator;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__INITIATOR, oldInitiator, initiator));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getResultVariable() {
+  public String getResultVariable() {
 		return resultVariable;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setResultVariable(String newResultVariable) {
+  public void setResultVariable(String newResultVariable) {
 		String oldResultVariable = resultVariable;
 		resultVariable = newResultVariable;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__RESULT_VARIABLE, oldResultVariable, resultVariable));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public TypeType getType() {
+  public TypeType getType() {
 		return type;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setType(TypeType newType) {
+  public void setType(TypeType newType) {
 		TypeType oldType = type;
 		type = newType == null ? TYPE_EDEFAULT : newType;
 		boolean oldTypeESet = typeESet;
@@ -910,12 +943,12 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__TYPE, oldType, type, !oldTypeESet));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void unsetType() {
+  public void unsetType() {
 		TypeType oldType = type;
 		boolean oldTypeESet = typeESet;
 		type = TYPE_EDEFAULT;
@@ -924,133 +957,133 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 			eNotify(new ENotificationImpl(this, Notification.UNSET, ModelPackage.DOCUMENT_ROOT__TYPE, oldType, TYPE_EDEFAULT, oldTypeESet));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean isSetType() {
+  public boolean isSetType() {
 		return typeESet;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean isAsync() {
+  public boolean isAsync() {
 		return async;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setAsync(boolean newAsync) {
+  public void setAsync(boolean newAsync) {
 		boolean oldAsync = async;
 		async = newAsync;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__ASYNC, oldAsync, async));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getActExpression() {
+  public String getActExpression() {
 		return actExpression;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setActExpression(String newActExpression) {
+  public void setActExpression(String newActExpression) {
 		String oldActExpression = actExpression;
 		actExpression = newActExpression;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__ACT_EXPRESSION, oldActExpression, actExpression));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getPriority() {
+  public String getPriority() {
 		return priority;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setPriority(String newPriority) {
+  public void setPriority(String newPriority) {
 		String oldPriority = priority;
 		priority = newPriority;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__PRIORITY, oldPriority, priority));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getResultVariableName() {
+  public String getResultVariableName() {
 		return resultVariableName;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setResultVariableName(String newResultVariableName) {
+  public void setResultVariableName(String newResultVariableName) {
 		String oldResultVariableName = resultVariableName;
 		resultVariableName = newResultVariableName;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__RESULT_VARIABLE_NAME, oldResultVariableName, resultVariableName));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FailedJobRetryTimeCycleType getFailedJobRetryTimeCycle() {
+  public FailedJobRetryTimeCycleType getFailedJobRetryTimeCycle() {
 		return (FailedJobRetryTimeCycleType)getMixed().get(ModelPackage.Literals.DOCUMENT_ROOT__FAILED_JOB_RETRY_TIME_CYCLE, true);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetFailedJobRetryTimeCycle(FailedJobRetryTimeCycleType newFailedJobRetryTimeCycle, NotificationChain msgs) {
+  public NotificationChain basicSetFailedJobRetryTimeCycle(FailedJobRetryTimeCycleType newFailedJobRetryTimeCycle, NotificationChain msgs) {
 		return ((FeatureMap.Internal)getMixed()).basicAdd(ModelPackage.Literals.DOCUMENT_ROOT__FAILED_JOB_RETRY_TIME_CYCLE, newFailedJobRetryTimeCycle, msgs);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setFailedJobRetryTimeCycle(FailedJobRetryTimeCycleType newFailedJobRetryTimeCycle) {
+  public void setFailedJobRetryTimeCycle(FailedJobRetryTimeCycleType newFailedJobRetryTimeCycle) {
 		((FeatureMap.Internal)getMixed()).set(ModelPackage.Literals.DOCUMENT_ROOT__FAILED_JOB_RETRY_TIME_CYCLE, newFailedJobRetryTimeCycle);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+  @Override
+  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case ModelPackage.DOCUMENT_ROOT__EXECUTION_LISTENER:
 				return basicSetExecutionListener(null, msgs);
@@ -1070,13 +1103,13 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+  @Override
+  public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case ModelPackage.DOCUMENT_ROOT__EXECUTION_LISTENER:
 				return getExecutionListener();
@@ -1132,13 +1165,13 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 		return super.eGet(featureID, resolve, coreType);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public void eSet(int featureID, Object newValue) {
+  @Override
+  public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case ModelPackage.DOCUMENT_ROOT__EXECUTION_LISTENER:
 				setExecutionListener((ExecutionListenerType)newValue);
@@ -1219,13 +1252,13 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 		super.eSet(featureID, newValue);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public void eUnset(int featureID) {
+  @Override
+  public void eUnset(int featureID) {
 		switch (featureID) {
 			case ModelPackage.DOCUMENT_ROOT__EXECUTION_LISTENER:
 				setExecutionListener((ExecutionListenerType)null);
@@ -1306,13 +1339,13 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 		super.eUnset(featureID);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public boolean eIsSet(int featureID) {
+  @Override
+  public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case ModelPackage.DOCUMENT_ROOT__EXECUTION_LISTENER:
 				return getExecutionListener() != null;
@@ -1368,13 +1401,13 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 		return super.eIsSet(featureID);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public String toString() {
+  @Override
+  public String toString() {
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());

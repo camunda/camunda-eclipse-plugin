@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package org.camunda.bpm.modeler.runtime.engine.model.impl;
 
@@ -12,13 +8,18 @@ import org.camunda.bpm.modeler.runtime.engine.model.EventType;
 import org.camunda.bpm.modeler.runtime.engine.model.FieldType;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.runtime.engine.model.TaskListenerType;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
+
 import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
+
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
+
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.InternalEList;
@@ -42,202 +43,202 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * @generated
  */
 public class TaskListenerTypeImpl extends EObjectImpl implements TaskListenerType {
-	/**
+  /**
 	 * The cached value of the '{@link #getGroup() <em>Group</em>}' attribute list.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getGroup()
 	 * @generated
 	 * @ordered
 	 */
-	protected FeatureMap group;
+  protected FeatureMap group;
 
-	/**
+  /**
 	 * The default value of the '{@link #getClass_() <em>Class</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getClass_()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String CLASS_EDEFAULT = null;
+  protected static final String CLASS_EDEFAULT = null;
 
-	/**
+  /**
 	 * The cached value of the '{@link #getClass_() <em>Class</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getClass_()
 	 * @generated
 	 * @ordered
 	 */
-	protected String class_ = CLASS_EDEFAULT;
+  protected String class_ = CLASS_EDEFAULT;
 
-	/**
+  /**
 	 * The default value of the '{@link #getDelegateExpression() <em>Delegate Expression</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getDelegateExpression()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String DELEGATE_EXPRESSION_EDEFAULT = null;
+  protected static final String DELEGATE_EXPRESSION_EDEFAULT = null;
 
-	/**
+  /**
 	 * The cached value of the '{@link #getDelegateExpression() <em>Delegate Expression</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getDelegateExpression()
 	 * @generated
 	 * @ordered
 	 */
-	protected String delegateExpression = DELEGATE_EXPRESSION_EDEFAULT;
+  protected String delegateExpression = DELEGATE_EXPRESSION_EDEFAULT;
 
-	/**
+  /**
 	 * The default value of the '{@link #getEvent() <em>Event</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getEvent()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final EventType EVENT_EDEFAULT = EventType.CREATE;
+  protected static final EventType EVENT_EDEFAULT = EventType.CREATE;
 
-	/**
+  /**
 	 * The cached value of the '{@link #getEvent() <em>Event</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getEvent()
 	 * @generated
 	 * @ordered
 	 */
-	protected EventType event = EVENT_EDEFAULT;
+  protected EventType event = EVENT_EDEFAULT;
 
-	/**
+  /**
 	 * This is true if the Event attribute has been set.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	protected boolean eventESet;
+  protected boolean eventESet;
 
-	/**
+  /**
 	 * The default value of the '{@link #getExpression() <em>Expression</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getExpression()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String EXPRESSION_EDEFAULT = null;
+  protected static final String EXPRESSION_EDEFAULT = null;
 
-	/**
+  /**
 	 * The cached value of the '{@link #getExpression() <em>Expression</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getExpression()
 	 * @generated
 	 * @ordered
 	 */
-	protected String expression = EXPRESSION_EDEFAULT;
+  protected String expression = EXPRESSION_EDEFAULT;
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected TaskListenerTypeImpl() {
+  protected TaskListenerTypeImpl() {
 		super();
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	protected EClass eStaticClass() {
+  @Override
+  protected EClass eStaticClass() {
 		return ModelPackage.Literals.TASK_LISTENER_TYPE;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FeatureMap getGroup() {
+  public FeatureMap getGroup() {
 		if (group == null) {
 			group = new BasicFeatureMap(this, ModelPackage.TASK_LISTENER_TYPE__GROUP);
 		}
 		return group;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<FieldType> getField() {
+  public EList<FieldType> getField() {
 		return getGroup().list(ModelPackage.Literals.TASK_LISTENER_TYPE__FIELD);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getClass_() {
+  public String getClass_() {
 		return class_;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setClass(String newClass) {
+  public void setClass(String newClass) {
 		String oldClass = class_;
 		class_ = newClass;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TASK_LISTENER_TYPE__CLASS, oldClass, class_));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getDelegateExpression() {
+  public String getDelegateExpression() {
 		return delegateExpression;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setDelegateExpression(String newDelegateExpression) {
+  public void setDelegateExpression(String newDelegateExpression) {
 		String oldDelegateExpression = delegateExpression;
 		delegateExpression = newDelegateExpression;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TASK_LISTENER_TYPE__DELEGATE_EXPRESSION, oldDelegateExpression, delegateExpression));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EventType getEvent() {
+  public EventType getEvent() {
 		return event;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setEvent(EventType newEvent) {
+  public void setEvent(EventType newEvent) {
 		EventType oldEvent = event;
 		event = newEvent == null ? EVENT_EDEFAULT : newEvent;
 		boolean oldEventESet = eventESet;
@@ -246,12 +247,12 @@ public class TaskListenerTypeImpl extends EObjectImpl implements TaskListenerTyp
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TASK_LISTENER_TYPE__EVENT, oldEvent, event, !oldEventESet));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void unsetEvent() {
+  public void unsetEvent() {
 		EventType oldEvent = event;
 		boolean oldEventESet = eventESet;
 		event = EVENT_EDEFAULT;
@@ -260,43 +261,43 @@ public class TaskListenerTypeImpl extends EObjectImpl implements TaskListenerTyp
 			eNotify(new ENotificationImpl(this, Notification.UNSET, ModelPackage.TASK_LISTENER_TYPE__EVENT, oldEvent, EVENT_EDEFAULT, oldEventESet));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean isSetEvent() {
+  public boolean isSetEvent() {
 		return eventESet;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getExpression() {
+  public String getExpression() {
 		return expression;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setExpression(String newExpression) {
+  public void setExpression(String newExpression) {
 		String oldExpression = expression;
 		expression = newExpression;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TASK_LISTENER_TYPE__EXPRESSION, oldExpression, expression));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+  @Override
+  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case ModelPackage.TASK_LISTENER_TYPE__GROUP:
 				return ((InternalEList<?>)getGroup()).basicRemove(otherEnd, msgs);
@@ -306,13 +307,13 @@ public class TaskListenerTypeImpl extends EObjectImpl implements TaskListenerTyp
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+  @Override
+  public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case ModelPackage.TASK_LISTENER_TYPE__GROUP:
 				if (coreType) return getGroup();
@@ -331,14 +332,14 @@ public class TaskListenerTypeImpl extends EObjectImpl implements TaskListenerTyp
 		return super.eGet(featureID, resolve, coreType);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public void eSet(int featureID, Object newValue) {
+  @SuppressWarnings("unchecked")
+  @Override
+  public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case ModelPackage.TASK_LISTENER_TYPE__GROUP:
 				((FeatureMap.Internal)getGroup()).set(newValue);
@@ -363,13 +364,13 @@ public class TaskListenerTypeImpl extends EObjectImpl implements TaskListenerTyp
 		super.eSet(featureID, newValue);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public void eUnset(int featureID) {
+  @Override
+  public void eUnset(int featureID) {
 		switch (featureID) {
 			case ModelPackage.TASK_LISTENER_TYPE__GROUP:
 				getGroup().clear();
@@ -393,13 +394,13 @@ public class TaskListenerTypeImpl extends EObjectImpl implements TaskListenerTyp
 		super.eUnset(featureID);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public boolean eIsSet(int featureID) {
+  @Override
+  public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case ModelPackage.TASK_LISTENER_TYPE__GROUP:
 				return group != null && !group.isEmpty();
@@ -417,13 +418,13 @@ public class TaskListenerTypeImpl extends EObjectImpl implements TaskListenerTyp
 		return super.eIsSet(featureID);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public String toString() {
+  @Override
+  public String toString() {
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());

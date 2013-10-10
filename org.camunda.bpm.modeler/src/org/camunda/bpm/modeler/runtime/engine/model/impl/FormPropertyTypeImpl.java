@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package org.camunda.bpm.modeler.runtime.engine.model.impl;
 
@@ -11,13 +7,18 @@ import java.util.Collection;
 import org.camunda.bpm.modeler.runtime.engine.model.FormPropertyType;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.runtime.engine.model.ValueType;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
+
 import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
+
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
+
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -46,217 +47,217 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * @generated
  */
 public class FormPropertyTypeImpl extends EObjectImpl implements FormPropertyType {
-	/**
+  /**
 	 * The cached value of the '{@link #getValue() <em>Value</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getValue()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<ValueType> value;
+  protected EList<ValueType> value;
 
-	/**
+  /**
 	 * The default value of the '{@link #getDatePattern() <em>Date Pattern</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getDatePattern()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String DATE_PATTERN_EDEFAULT = null;
+  protected static final String DATE_PATTERN_EDEFAULT = null;
 
-	/**
+  /**
 	 * The cached value of the '{@link #getDatePattern() <em>Date Pattern</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getDatePattern()
 	 * @generated
 	 * @ordered
 	 */
-	protected String datePattern = DATE_PATTERN_EDEFAULT;
+  protected String datePattern = DATE_PATTERN_EDEFAULT;
 
-	/**
+  /**
 	 * The default value of the '{@link #getExpression() <em>Expression</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getExpression()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String EXPRESSION_EDEFAULT = null;
+  protected static final String EXPRESSION_EDEFAULT = null;
 
-	/**
+  /**
 	 * The cached value of the '{@link #getExpression() <em>Expression</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getExpression()
 	 * @generated
 	 * @ordered
 	 */
-	protected String expression = EXPRESSION_EDEFAULT;
+  protected String expression = EXPRESSION_EDEFAULT;
 
-	/**
+  /**
 	 * The default value of the '{@link #getId() <em>Id</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getId()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String ID_EDEFAULT = null;
+  protected static final String ID_EDEFAULT = null;
 
-	/**
+  /**
 	 * The cached value of the '{@link #getId() <em>Id</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getId()
 	 * @generated
 	 * @ordered
 	 */
-	protected String id = ID_EDEFAULT;
+  protected String id = ID_EDEFAULT;
 
-	/**
+  /**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getName()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String NAME_EDEFAULT = null;
+  protected static final String NAME_EDEFAULT = null;
 
-	/**
+  /**
 	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getName()
 	 * @generated
 	 * @ordered
 	 */
-	protected String name = NAME_EDEFAULT;
+  protected String name = NAME_EDEFAULT;
 
-	/**
+  /**
 	 * The default value of the '{@link #getReadable() <em>Readable</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getReadable()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String READABLE_EDEFAULT = null;
+  protected static final String READABLE_EDEFAULT = null;
 
-	/**
+  /**
 	 * The cached value of the '{@link #getReadable() <em>Readable</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getReadable()
 	 * @generated
 	 * @ordered
 	 */
-	protected String readable = READABLE_EDEFAULT;
+  protected String readable = READABLE_EDEFAULT;
 
-	/**
+  /**
 	 * The default value of the '{@link #getRequired() <em>Required</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getRequired()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String REQUIRED_EDEFAULT = null;
+  protected static final String REQUIRED_EDEFAULT = null;
 
-	/**
+  /**
 	 * The cached value of the '{@link #getRequired() <em>Required</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getRequired()
 	 * @generated
 	 * @ordered
 	 */
-	protected String required = REQUIRED_EDEFAULT;
+  protected String required = REQUIRED_EDEFAULT;
 
-	/**
+  /**
 	 * The default value of the '{@link #getType() <em>Type</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getType()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String TYPE_EDEFAULT = null;
+  protected static final String TYPE_EDEFAULT = null;
 
-	/**
+  /**
 	 * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getType()
 	 * @generated
 	 * @ordered
 	 */
-	protected String type = TYPE_EDEFAULT;
+  protected String type = TYPE_EDEFAULT;
 
-	/**
+  /**
 	 * The default value of the '{@link #getValue1() <em>Value1</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getValue1()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String VALUE1_EDEFAULT = null;
+  protected static final String VALUE1_EDEFAULT = null;
 
-	/**
+  /**
 	 * The cached value of the '{@link #getValue1() <em>Value1</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getValue1()
 	 * @generated
 	 * @ordered
 	 */
-	protected String value1 = VALUE1_EDEFAULT;
+  protected String value1 = VALUE1_EDEFAULT;
 
-	/**
+  /**
 	 * The default value of the '{@link #getVariable() <em>Variable</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getVariable()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String VARIABLE_EDEFAULT = null;
+  protected static final String VARIABLE_EDEFAULT = null;
 
-	/**
+  /**
 	 * The cached value of the '{@link #getVariable() <em>Variable</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getVariable()
 	 * @generated
 	 * @ordered
 	 */
-	protected String variable = VARIABLE_EDEFAULT;
+  protected String variable = VARIABLE_EDEFAULT;
 
-	/**
+  /**
 	 * The default value of the '{@link #getWritable() <em>Writable</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getWritable()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String WRITABLE_EDEFAULT = null;
+  protected static final String WRITABLE_EDEFAULT = null;
 
-	/**
+  /**
 	 * The cached value of the '{@link #getWritable() <em>Writable</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getWritable()
 	 * @generated
 	 * @ordered
 	 */
-	protected String writable = WRITABLE_EDEFAULT;
+  protected String writable = WRITABLE_EDEFAULT;
 
-	/**
+  /**
 	 * The default value of the '{@link #getDefault() <em>Default</em>}' attribute.
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -278,246 +279,246 @@ public class FormPropertyTypeImpl extends EObjectImpl implements FormPropertyTyp
 
   /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected FormPropertyTypeImpl() {
+  protected FormPropertyTypeImpl() {
 		super();
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	protected EClass eStaticClass() {
+  @Override
+  protected EClass eStaticClass() {
 		return ModelPackage.Literals.FORM_PROPERTY_TYPE;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<ValueType> getValue() {
+  public EList<ValueType> getValue() {
 		if (value == null) {
 			value = new EObjectContainmentEList<ValueType>(ValueType.class, this, ModelPackage.FORM_PROPERTY_TYPE__VALUE);
 		}
 		return value;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getDatePattern() {
+  public String getDatePattern() {
 		return datePattern;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setDatePattern(String newDatePattern) {
+  public void setDatePattern(String newDatePattern) {
 		String oldDatePattern = datePattern;
 		datePattern = newDatePattern;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.FORM_PROPERTY_TYPE__DATE_PATTERN, oldDatePattern, datePattern));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getExpression() {
+  public String getExpression() {
 		return expression;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setExpression(String newExpression) {
+  public void setExpression(String newExpression) {
 		String oldExpression = expression;
 		expression = newExpression;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.FORM_PROPERTY_TYPE__EXPRESSION, oldExpression, expression));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getId() {
+  public String getId() {
 		return id;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setId(String newId) {
+  public void setId(String newId) {
 		String oldId = id;
 		id = newId;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.FORM_PROPERTY_TYPE__ID, oldId, id));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getName() {
+  public String getName() {
 		return name;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setName(String newName) {
+  public void setName(String newName) {
 		String oldName = name;
 		name = newName;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.FORM_PROPERTY_TYPE__NAME, oldName, name));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getReadable() {
+  public String getReadable() {
 		return readable;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setReadable(String newReadable) {
+  public void setReadable(String newReadable) {
 		String oldReadable = readable;
 		readable = newReadable;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.FORM_PROPERTY_TYPE__READABLE, oldReadable, readable));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getRequired() {
+  public String getRequired() {
 		return required;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setRequired(String newRequired) {
+  public void setRequired(String newRequired) {
 		String oldRequired = required;
 		required = newRequired;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.FORM_PROPERTY_TYPE__REQUIRED, oldRequired, required));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getType() {
+  public String getType() {
 		return type;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setType(String newType) {
+  public void setType(String newType) {
 		String oldType = type;
 		type = newType;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.FORM_PROPERTY_TYPE__TYPE, oldType, type));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getValue1() {
+  public String getValue1() {
 		return value1;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setValue1(String newValue1) {
+  public void setValue1(String newValue1) {
 		String oldValue1 = value1;
 		value1 = newValue1;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.FORM_PROPERTY_TYPE__VALUE1, oldValue1, value1));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getVariable() {
+  public String getVariable() {
 		return variable;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setVariable(String newVariable) {
+  public void setVariable(String newVariable) {
 		String oldVariable = variable;
 		variable = newVariable;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.FORM_PROPERTY_TYPE__VARIABLE, oldVariable, variable));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getWritable() {
+  public String getWritable() {
 		return writable;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setWritable(String newWritable) {
+  public void setWritable(String newWritable) {
 		String oldWritable = writable;
 		writable = newWritable;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.FORM_PROPERTY_TYPE__WRITABLE, oldWritable, writable));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
@@ -540,11 +541,11 @@ public class FormPropertyTypeImpl extends EObjectImpl implements FormPropertyTyp
 
   /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+  @Override
+  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case ModelPackage.FORM_PROPERTY_TYPE__VALUE:
 				return ((InternalEList<?>)getValue()).basicRemove(otherEnd, msgs);
@@ -552,13 +553,13 @@ public class FormPropertyTypeImpl extends EObjectImpl implements FormPropertyTyp
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+  @Override
+  public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case ModelPackage.FORM_PROPERTY_TYPE__VALUE:
 				return getValue();
@@ -588,14 +589,14 @@ public class FormPropertyTypeImpl extends EObjectImpl implements FormPropertyTyp
 		return super.eGet(featureID, resolve, coreType);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public void eSet(int featureID, Object newValue) {
+  @SuppressWarnings("unchecked")
+  @Override
+  public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case ModelPackage.FORM_PROPERTY_TYPE__VALUE:
 				getValue().clear();
@@ -638,13 +639,13 @@ public class FormPropertyTypeImpl extends EObjectImpl implements FormPropertyTyp
 		super.eSet(featureID, newValue);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public void eUnset(int featureID) {
+  @Override
+  public void eUnset(int featureID) {
 		switch (featureID) {
 			case ModelPackage.FORM_PROPERTY_TYPE__VALUE:
 				getValue().clear();
@@ -686,13 +687,13 @@ public class FormPropertyTypeImpl extends EObjectImpl implements FormPropertyTyp
 		super.eUnset(featureID);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public boolean eIsSet(int featureID) {
+  @Override
+  public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case ModelPackage.FORM_PROPERTY_TYPE__VALUE:
 				return value != null && !value.isEmpty();
@@ -722,13 +723,13 @@ public class FormPropertyTypeImpl extends EObjectImpl implements FormPropertyTyp
 		return super.eIsSet(featureID);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public String toString() {
+  @Override
+  public String toString() {
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());

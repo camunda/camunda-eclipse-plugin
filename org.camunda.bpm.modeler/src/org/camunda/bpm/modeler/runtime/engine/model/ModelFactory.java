@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package org.camunda.bpm.modeler.runtime.engine.model;
 
@@ -17,111 +13,111 @@ import org.eclipse.emf.ecore.EFactory;
  * @generated
  */
 public interface ModelFactory extends EFactory {
-	/**
+  /**
 	 * The singleton instance of the factory.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	ModelFactory eINSTANCE = org.camunda.bpm.modeler.runtime.engine.model.impl.ModelFactoryImpl.init();
+  ModelFactory eINSTANCE = org.camunda.bpm.modeler.runtime.engine.model.impl.ModelFactoryImpl.init();
 
-	/**
+  /**
 	 * Returns a new object of class '<em>Document Root</em>'.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @return a new object of class '<em>Document Root</em>'.
 	 * @generated
 	 */
-	DocumentRoot createDocumentRoot();
+  DocumentRoot createDocumentRoot();
 
-	/**
+  /**
 	 * Returns a new object of class '<em>Execution Listener Type</em>'.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @return a new object of class '<em>Execution Listener Type</em>'.
 	 * @generated
 	 */
-	ExecutionListenerType createExecutionListenerType();
+  ExecutionListenerType createExecutionListenerType();
 
-	/**
+  /**
 	 * Returns a new object of class '<em>Field Type</em>'.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @return a new object of class '<em>Field Type</em>'.
 	 * @generated
 	 */
-	FieldType createFieldType();
+  FieldType createFieldType();
 
-	/**
+  /**
 	 * Returns a new object of class '<em>Form Property Type</em>'.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @return a new object of class '<em>Form Property Type</em>'.
 	 * @generated
 	 */
-	FormPropertyType createFormPropertyType();
+  FormPropertyType createFormPropertyType();
 
-	/**
+  /**
 	 * Returns a new object of class '<em>In Type</em>'.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @return a new object of class '<em>In Type</em>'.
 	 * @generated
 	 */
-	InType createInType();
+  InType createInType();
 
-	/**
+  /**
 	 * Returns a new object of class '<em>Out Type</em>'.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @return a new object of class '<em>Out Type</em>'.
 	 * @generated
 	 */
-	OutType createOutType();
+  OutType createOutType();
 
-	/**
+  /**
 	 * Returns a new object of class '<em>Task Listener Type</em>'.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @return a new object of class '<em>Task Listener Type</em>'.
 	 * @generated
 	 */
-	TaskListenerType createTaskListenerType();
+  TaskListenerType createTaskListenerType();
 
-	/**
+  /**
 	 * Returns a new object of class '<em>Call Activity</em>'.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @return a new object of class '<em>Call Activity</em>'.
 	 * @generated
 	 */
-	CallActivity createCallActivity();
+  CallActivity createCallActivity();
 
-	/**
+  /**
 	 * Returns a new object of class '<em>Boundary Event</em>'.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @return a new object of class '<em>Boundary Event</em>'.
 	 * @generated
 	 */
-	BoundaryEvent createBoundaryEvent();
+  BoundaryEvent createBoundaryEvent();
 
-	/**
+  /**
 	 * Returns a new object of class '<em>Value Type</em>'.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @return a new object of class '<em>Value Type</em>'.
 	 * @generated
 	 */
-	ValueType createValueType();
+  ValueType createValueType();
 
-	/**
+  /**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @return the package supported by this factory.
 	 * @generated
 	 */
-	ModelPackage getModelPackage();
+  ModelPackage getModelPackage();
 
 } //ModelFactory
