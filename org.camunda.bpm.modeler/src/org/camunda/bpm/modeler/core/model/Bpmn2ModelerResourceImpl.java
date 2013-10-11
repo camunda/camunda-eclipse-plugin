@@ -478,6 +478,32 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 				}
 
 				EStructuralFeature[] featureList = listFeatures(cls);
+
+				// reorder extensionValues and documentation feature
+				int extensionValuesFeaturePosition = -1;
+				// get the position of extensionValues feature
+				for (int i = 0; i < featureList.length; i++) {
+					EStructuralFeature feature = featureList[i];
+					if (feature.getName().equals("extensionValues")) {
+						extensionValuesFeaturePosition = i;
+						break;
+					}
+				}
+				if (extensionValuesFeaturePosition > -1) {
+					// get the extensionValues feature
+					EStructuralFeature extensionValuesFeature = featureList[extensionValuesFeaturePosition];
+					// get the next feature, assuming that the documentation feature is always
+					// the next feature
+					EStructuralFeature nextFeature = featureList[extensionValuesFeaturePosition + 1];
+					
+					if (nextFeature != null && nextFeature.getName().equals("documentation")) {
+						// if the next feature is not null and has the name "documentation",
+						// then reorder them
+						featureList[extensionValuesFeaturePosition] = nextFeature;
+						featureList[extensionValuesFeaturePosition + 1] = extensionValuesFeature;
+					}
+				}
+				
 				if (c == null) {
 					classes[index] = cls;
 					features[index] = featureList;
@@ -502,7 +528,7 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 			 * Feature list for Process provided by eclipse.bpmn2: -
 			 * extensionDefinitions (0) - id (1) - anyAttribute (2) - name (3) -
 			 * definitionalCollaborationRef (4) - isClosed (5) - isExecutable
-			 * (6) - processType (7) - extensionValues (8) - documentation (9) -
+			 * (6) - processType (7) - documentation (8) - extensionValues (9) - 
 			 * supportedInterfaceRefs (10) - ioSpecification (11) - ioBinding
 			 * (12) - laneSets (13) - flowElements (14) - auditing (15) -
 			 * monitoring (16) - properties (17) - artifacts (18) - resources
