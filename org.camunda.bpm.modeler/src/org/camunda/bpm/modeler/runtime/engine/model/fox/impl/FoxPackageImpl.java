@@ -1,23 +1,27 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package org.camunda.bpm.modeler.runtime.engine.model.fox.impl;
 
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
+
 import org.camunda.bpm.modeler.runtime.engine.model.fox.FailedJobRetryTimeCycleType;
 import org.camunda.bpm.modeler.runtime.engine.model.fox.FoxFactory;
 import org.camunda.bpm.modeler.runtime.engine.model.fox.FoxPackage;
+
 import org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl;
+
 import org.eclipse.bpmn2.Bpmn2Package;
+
 import org.eclipse.bpmn2.di.BpmnDiPackage;
+
 import org.eclipse.dd.dc.DcPackage;
+
 import org.eclipse.dd.di.DiPackage;
+
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
+
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
 /**
@@ -27,14 +31,14 @@ import org.eclipse.emf.ecore.impl.EPackageImpl;
  * @generated
  */
 public class FoxPackageImpl extends EPackageImpl implements FoxPackage {
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass failedJobRetryTimeCycleTypeEClass = null;
+  private EClass failedJobRetryTimeCycleTypeEClass = null;
 
-	/**
+  /**
 	 * Creates an instance of the model <b>Package</b>, registered with
 	 * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the package
 	 * package URI value.
@@ -43,36 +47,36 @@ public class FoxPackageImpl extends EPackageImpl implements FoxPackage {
 	 * initialization of the package, or returns the registered package,
 	 * if one already exists.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see org.eclipse.emf.ecore.EPackage.Registry
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.fox.FoxPackage#eNS_URI
 	 * @see #init()
 	 * @generated
 	 */
-	private FoxPackageImpl() {
+  private FoxPackageImpl() {
 		super(eNS_URI, FoxFactory.eINSTANCE);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private static boolean isInited = false;
+  private static boolean isInited = false;
 
-	/**
+  /**
 	 * Creates, registers, and initializes the <b>Package</b> for this model, and for any others upon which it depends.
 	 * 
 	 * <p>This method is used to initialize {@link FoxPackage#eINSTANCE} when that field is accessed.
 	 * Clients should not invoke it directly. Instead, they should simply access that field to obtain the package.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #eNS_URI
 	 * @see #createPackageContents()
 	 * @see #initializePackageContents()
 	 * @generated
 	 */
-	public static FoxPackage init() {
+  public static FoxPackage init() {
 		if (isInited) return (FoxPackage)EPackage.Registry.INSTANCE.getEPackage(FoxPackage.eNS_URI);
 
 		// Obtain or create and register package
@@ -106,57 +110,57 @@ public class FoxPackageImpl extends EPackageImpl implements FoxPackage {
 		return theFoxPackage;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getFailedJobRetryTimeCycleType() {
+  public EClass getFailedJobRetryTimeCycleType() {
 		return failedJobRetryTimeCycleTypeEClass;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getFailedJobRetryTimeCycleType_Mixed() {
+  public EAttribute getFailedJobRetryTimeCycleType_Mixed() {
 		return (EAttribute)failedJobRetryTimeCycleTypeEClass.getEStructuralFeatures().get(0);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getFailedJobRetryTimeCycleType_Text() {
+  public EAttribute getFailedJobRetryTimeCycleType_Text() {
 		return (EAttribute)failedJobRetryTimeCycleTypeEClass.getEStructuralFeatures().get(1);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FoxFactory getFoxFactory() {
+  public FoxFactory getFoxFactory() {
 		return (FoxFactory)getEFactoryInstance();
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private boolean isCreated = false;
+  private boolean isCreated = false;
 
-	/**
+  /**
 	 * Creates the meta-model objects for the package.  This method is
 	 * guarded to have no affect on any invocation but its first.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void createPackageContents() {
+  public void createPackageContents() {
 		if (isCreated) return;
 		isCreated = true;
 
@@ -166,21 +170,21 @@ public class FoxPackageImpl extends EPackageImpl implements FoxPackage {
 		createEAttribute(failedJobRetryTimeCycleTypeEClass, FAILED_JOB_RETRY_TIME_CYCLE_TYPE__TEXT);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private boolean isInitialized = false;
+  private boolean isInitialized = false;
 
-	/**
+  /**
 	 * Complete the initialization of the package and its meta-model.  This
 	 * method is guarded to have no affect on any invocation but its first.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void initializePackageContents() {
+  public void initializePackageContents() {
 		if (isInitialized) return;
 		isInitialized = true;
 
@@ -205,13 +209,13 @@ public class FoxPackageImpl extends EPackageImpl implements FoxPackage {
 		createExtendedMetaDataAnnotations();
 	}
 
-	/**
+  /**
 	 * Initializes the annotations for <b>http:///org/eclipse/emf/ecore/util/ExtendedMetaData</b>.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void createExtendedMetaDataAnnotations() {
+  protected void createExtendedMetaDataAnnotations() {
 		String source = "http:///org/eclipse/emf/ecore/util/ExtendedMetaData";		
 		addAnnotation
 		  (failedJobRetryTimeCycleTypeEClass, 

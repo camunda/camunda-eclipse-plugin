@@ -26,10 +26,10 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface ValueType extends EObject {
-	/**
+  /**
 	 * Returns the value of the '<em><b>Id</b></em>' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
 	 * Defines the internal value for the form property value.
 	 * <!-- end-model-doc -->
@@ -40,22 +40,22 @@ public interface ValueType extends EObject {
 	 *        extendedMetaData="kind='attribute' name='id'"
 	 * @generated
 	 */
-	String getId();
+  String getId();
 
-	/**
+  /**
 	 * Sets the value of the '{@link org.camunda.bpm.modeler.runtime.engine.model.ValueType#getId <em>Id</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Id</em>' attribute.
 	 * @see #getId()
 	 * @generated
 	 */
-	void setId(String value);
+  void setId(String value);
 
-	/**
+  /**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
 	 * Defines the display label for the form property value.
 	 * <!-- end-model-doc -->
@@ -66,16 +66,16 @@ public interface ValueType extends EObject {
 	 *        extendedMetaData="kind='attribute' name='name'"
 	 * @generated
 	 */
-	String getName();
+  String getName();
 
-	/**
+  /**
 	 * Sets the value of the '{@link org.camunda.bpm.modeler.runtime.engine.model.ValueType#getName <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Name</em>' attribute.
 	 * @see #getName()
 	 * @generated
 	 */
-	void setName(String value);
+  void setName(String value);
 
 } // ValueType

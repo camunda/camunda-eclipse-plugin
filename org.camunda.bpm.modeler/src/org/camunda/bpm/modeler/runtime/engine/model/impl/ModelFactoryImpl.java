@@ -1,34 +1,18 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package org.camunda.bpm.modeler.runtime.engine.model.impl;
 
 import org.camunda.bpm.modeler.runtime.engine.model.*;
-import org.camunda.bpm.modeler.runtime.engine.model.BoundaryEvent;
-import org.camunda.bpm.modeler.runtime.engine.model.CallActivity;
-import org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot;
-import org.camunda.bpm.modeler.runtime.engine.model.EventType;
-import org.camunda.bpm.modeler.runtime.engine.model.EventType1;
-import org.camunda.bpm.modeler.runtime.engine.model.ExecutionListenerType;
-import org.camunda.bpm.modeler.runtime.engine.model.FieldType;
-import org.camunda.bpm.modeler.runtime.engine.model.FormPropertyType;
-import org.camunda.bpm.modeler.runtime.engine.model.HistoryType;
-import org.camunda.bpm.modeler.runtime.engine.model.InType;
-import org.camunda.bpm.modeler.runtime.engine.model.ModelFactory;
-import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
-import org.camunda.bpm.modeler.runtime.engine.model.OutType;
-import org.camunda.bpm.modeler.runtime.engine.model.TaskListenerType;
-import org.camunda.bpm.modeler.runtime.engine.model.TypeType;
-import org.camunda.bpm.modeler.runtime.engine.model.ValueType;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
+
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
+
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
+
 import org.eclipse.emf.ecore.xml.type.XMLTypeFactory;
 import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 
@@ -39,13 +23,13 @@ import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
  * @generated
  */
 public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
-	/**
+  /**
 	 * Creates the default factory implementation.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static ModelFactory init() {
+  public static ModelFactory init() {
 		try {
 			ModelFactory theModelFactory = (ModelFactory)EPackage.Registry.INSTANCE.getEFactory("http://activiti.org/bpmn"); 
 			if (theModelFactory != null) {
@@ -58,23 +42,23 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
 		return new ModelFactoryImpl();
 	}
 
-	/**
+  /**
 	 * Creates an instance of the factory.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ModelFactoryImpl() {
+  public ModelFactoryImpl() {
 		super();
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public EObject create(EClass eClass) {
+  @Override
+  public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
 			case ModelPackage.DOCUMENT_ROOT: return createDocumentRoot();
 			case ModelPackage.EXECUTION_LISTENER_TYPE: return createExecutionListenerType();
@@ -91,13 +75,13 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
 		}
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public Object createFromString(EDataType eDataType, String initialValue) {
+  @Override
+  public Object createFromString(EDataType eDataType, String initialValue) {
 		switch (eDataType.getClassifierID()) {
 			case ModelPackage.EVENT_TYPE:
 				return createEventTypeFromString(eDataType, initialValue);
@@ -126,13 +110,13 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
 		}
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public String convertToString(EDataType eDataType, Object instanceValue) {
+  @Override
+  public String convertToString(EDataType eDataType, Object instanceValue) {
 		switch (eDataType.getClassifierID()) {
 			case ModelPackage.EVENT_TYPE:
 				return convertEventTypeToString(eDataType, instanceValue);
@@ -161,329 +145,329 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
 		}
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DocumentRoot createDocumentRoot() {
+  public DocumentRoot createDocumentRoot() {
 		DocumentRootImpl documentRoot = new DocumentRootImpl();
 		return documentRoot;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ExecutionListenerType createExecutionListenerType() {
+  public ExecutionListenerType createExecutionListenerType() {
 		ExecutionListenerTypeImpl executionListenerType = new ExecutionListenerTypeImpl();
 		return executionListenerType;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FieldType createFieldType() {
+  public FieldType createFieldType() {
 		FieldTypeImpl fieldType = new FieldTypeImpl();
 		return fieldType;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FormPropertyType createFormPropertyType() {
+  public FormPropertyType createFormPropertyType() {
 		FormPropertyTypeImpl formPropertyType = new FormPropertyTypeImpl();
 		return formPropertyType;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public InType createInType() {
+  public InType createInType() {
 		InTypeImpl inType = new InTypeImpl();
 		return inType;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public OutType createOutType() {
+  public OutType createOutType() {
 		OutTypeImpl outType = new OutTypeImpl();
 		return outType;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public TaskListenerType createTaskListenerType() {
+  public TaskListenerType createTaskListenerType() {
 		TaskListenerTypeImpl taskListenerType = new TaskListenerTypeImpl();
 		return taskListenerType;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public CallActivity createCallActivity() {
+  public CallActivity createCallActivity() {
 		CallActivityImpl callActivity = new CallActivityImpl();
 		return callActivity;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BoundaryEvent createBoundaryEvent() {
+  public BoundaryEvent createBoundaryEvent() {
 		BoundaryEventImpl boundaryEvent = new BoundaryEventImpl();
 		return boundaryEvent;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ValueType createValueType() {
+  public ValueType createValueType() {
 		ValueTypeImpl valueType = new ValueTypeImpl();
 		return valueType;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EventType createEventTypeFromString(EDataType eDataType, String initialValue) {
+  public EventType createEventTypeFromString(EDataType eDataType, String initialValue) {
 		EventType result = EventType.get(initialValue);
 		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
 		return result;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertEventTypeToString(EDataType eDataType, Object instanceValue) {
+  public String convertEventTypeToString(EDataType eDataType, Object instanceValue) {
 		return instanceValue == null ? null : instanceValue.toString();
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EventType1 createEventType1FromString(EDataType eDataType, String initialValue) {
+  public EventType1 createEventType1FromString(EDataType eDataType, String initialValue) {
 		EventType1 result = EventType1.get(initialValue);
 		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
 		return result;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertEventType1ToString(EDataType eDataType, Object instanceValue) {
+  public String convertEventType1ToString(EDataType eDataType, Object instanceValue) {
 		return instanceValue == null ? null : instanceValue.toString();
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public HistoryType createHistoryTypeFromString(EDataType eDataType, String initialValue) {
+  public HistoryType createHistoryTypeFromString(EDataType eDataType, String initialValue) {
 		HistoryType result = HistoryType.get(initialValue);
 		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
 		return result;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertHistoryTypeToString(EDataType eDataType, Object instanceValue) {
+  public String convertHistoryTypeToString(EDataType eDataType, Object instanceValue) {
 		return instanceValue == null ? null : instanceValue.toString();
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public TypeType createTypeTypeFromString(EDataType eDataType, String initialValue) {
+  public TypeType createTypeTypeFromString(EDataType eDataType, String initialValue) {
 		TypeType result = TypeType.get(initialValue);
 		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
 		return result;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertTypeTypeToString(EDataType eDataType, Object instanceValue) {
+  public String convertTypeTypeToString(EDataType eDataType, Object instanceValue) {
 		return instanceValue == null ? null : instanceValue.toString();
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String createClassTypeFromString(EDataType eDataType, String initialValue) {
+  public String createClassTypeFromString(EDataType eDataType, String initialValue) {
 		return (String)XMLTypeFactory.eINSTANCE.createFromString(XMLTypePackage.Literals.STRING, initialValue);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertClassTypeToString(EDataType eDataType, Object instanceValue) {
+  public String convertClassTypeToString(EDataType eDataType, Object instanceValue) {
 		return XMLTypeFactory.eINSTANCE.convertToString(XMLTypePackage.Literals.STRING, instanceValue);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EventType createEventTypeObjectFromString(EDataType eDataType, String initialValue) {
+  public EventType createEventTypeObjectFromString(EDataType eDataType, String initialValue) {
 		return createEventTypeFromString(ModelPackage.Literals.EVENT_TYPE, initialValue);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertEventTypeObjectToString(EDataType eDataType, Object instanceValue) {
+  public String convertEventTypeObjectToString(EDataType eDataType, Object instanceValue) {
 		return convertEventTypeToString(ModelPackage.Literals.EVENT_TYPE, instanceValue);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EventType1 createEventTypeObject1FromString(EDataType eDataType, String initialValue) {
+  public EventType1 createEventTypeObject1FromString(EDataType eDataType, String initialValue) {
 		return createEventType1FromString(ModelPackage.Literals.EVENT_TYPE1, initialValue);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertEventTypeObject1ToString(EDataType eDataType, Object instanceValue) {
+  public String convertEventTypeObject1ToString(EDataType eDataType, Object instanceValue) {
 		return convertEventType1ToString(ModelPackage.Literals.EVENT_TYPE1, instanceValue);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String createFormHandlerClassTypeFromString(EDataType eDataType, String initialValue) {
+  public String createFormHandlerClassTypeFromString(EDataType eDataType, String initialValue) {
 		return (String)XMLTypeFactory.eINSTANCE.createFromString(XMLTypePackage.Literals.STRING, initialValue);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertFormHandlerClassTypeToString(EDataType eDataType, Object instanceValue) {
+  public String convertFormHandlerClassTypeToString(EDataType eDataType, Object instanceValue) {
 		return XMLTypeFactory.eINSTANCE.convertToString(XMLTypePackage.Literals.STRING, instanceValue);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public HistoryType createHistoryTypeObjectFromString(EDataType eDataType, String initialValue) {
+  public HistoryType createHistoryTypeObjectFromString(EDataType eDataType, String initialValue) {
 		return createHistoryTypeFromString(ModelPackage.Literals.HISTORY_TYPE, initialValue);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertHistoryTypeObjectToString(EDataType eDataType, Object instanceValue) {
+  public String convertHistoryTypeObjectToString(EDataType eDataType, Object instanceValue) {
 		return convertHistoryTypeToString(ModelPackage.Literals.HISTORY_TYPE, instanceValue);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String createTExpressionFromString(EDataType eDataType, String initialValue) {
+  public String createTExpressionFromString(EDataType eDataType, String initialValue) {
 		return (String)XMLTypeFactory.eINSTANCE.createFromString(XMLTypePackage.Literals.STRING, initialValue);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertTExpressionToString(EDataType eDataType, Object instanceValue) {
+  public String convertTExpressionToString(EDataType eDataType, Object instanceValue) {
 		return XMLTypeFactory.eINSTANCE.convertToString(XMLTypePackage.Literals.STRING, instanceValue);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public TypeType createTypeTypeObjectFromString(EDataType eDataType, String initialValue) {
+  public TypeType createTypeTypeObjectFromString(EDataType eDataType, String initialValue) {
 		return createTypeTypeFromString(ModelPackage.Literals.TYPE_TYPE, initialValue);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertTypeTypeObjectToString(EDataType eDataType, Object instanceValue) {
+  public String convertTypeTypeObjectToString(EDataType eDataType, Object instanceValue) {
 		return convertTypeTypeToString(ModelPackage.Literals.TYPE_TYPE, instanceValue);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ModelPackage getModelPackage() {
+  public ModelPackage getModelPackage() {
 		return (ModelPackage)getEPackage();
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @deprecated
 	 * @generated
 	 */
-	@Deprecated
-	public static ModelPackage getPackage() {
+  @Deprecated
+  public static ModelPackage getPackage() {
 		return ModelPackage.eINSTANCE;
 	}
 

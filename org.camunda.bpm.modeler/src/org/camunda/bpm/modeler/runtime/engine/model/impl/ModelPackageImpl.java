@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package org.camunda.bpm.modeler.runtime.engine.model.impl;
 
@@ -22,13 +18,21 @@ import org.camunda.bpm.modeler.runtime.engine.model.OutType;
 import org.camunda.bpm.modeler.runtime.engine.model.TaskListenerType;
 import org.camunda.bpm.modeler.runtime.engine.model.TypeType;
 import org.camunda.bpm.modeler.runtime.engine.model.ValueType;
+
 import org.camunda.bpm.modeler.runtime.engine.model.fox.FoxPackage;
+
 import org.camunda.bpm.modeler.runtime.engine.model.fox.impl.FoxPackageImpl;
+
 import org.camunda.bpm.modeler.runtime.engine.model.util.ModelValidator;
+
 import org.eclipse.bpmn2.Bpmn2Package;
+
 import org.eclipse.bpmn2.di.BpmnDiPackage;
+
 import org.eclipse.dd.dc.DcPackage;
+
 import org.eclipse.dd.di.DiPackage;
+
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
@@ -36,7 +40,9 @@ import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EValidator;
+
 import org.eclipse.emf.ecore.impl.EPackageImpl;
+
 import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 
 /**
@@ -46,138 +52,154 @@ import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
  * @generated
  */
 public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass documentRootEClass = null;
+  private EClass documentRootEClass = null;
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass executionListenerTypeEClass = null;
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass fieldTypeEClass = null;
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass formPropertyTypeEClass = null;
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass inTypeEClass = null;
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass outTypeEClass = null;
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass taskListenerTypeEClass = null;
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass callActivityEClass = null;
+  private EClass executionListenerTypeEClass = null;
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass boundaryEventEClass = null;
+  private EClass fieldTypeEClass = null;
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass valueTypeEClass = null;
+  private EClass formPropertyTypeEClass = null;
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EEnum eventTypeEEnum = null;
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EEnum eventType1EEnum = null;
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EEnum historyTypeEEnum = null;
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EEnum typeTypeEEnum = null;
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EDataType classTypeEDataType = null;
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EDataType eventTypeObjectEDataType = null;
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EDataType eventTypeObject1EDataType = null;
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EDataType formHandlerClassTypeEDataType = null;
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EDataType historyTypeObjectEDataType = null;
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EDataType tExpressionEDataType = null;
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EDataType typeTypeObjectEDataType = null;
+  private EClass inTypeEClass = null;
 
-	/**
+  /**
+	 * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+	 * @generated
+	 */
+  private EClass outTypeEClass = null;
+
+  /**
+	 * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+	 * @generated
+	 */
+  private EClass taskListenerTypeEClass = null;
+
+  /**
+	 * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+	 * @generated
+	 */
+  private EClass callActivityEClass = null;
+
+  /**
+	 * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+	 * @generated
+	 */
+  private EClass boundaryEventEClass = null;
+
+  /**
+	 * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+	 * @generated
+	 */
+  private EClass valueTypeEClass = null;
+
+  /**
+	 * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+	 * @generated
+	 */
+  private EEnum eventTypeEEnum = null;
+
+  /**
+	 * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+	 * @generated
+	 */
+  private EEnum eventType1EEnum = null;
+
+  /**
+	 * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+	 * @generated
+	 */
+  private EEnum historyTypeEEnum = null;
+
+  /**
+	 * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+	 * @generated
+	 */
+  private EEnum typeTypeEEnum = null;
+
+  /**
+	 * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+	 * @generated
+	 */
+  private EDataType classTypeEDataType = null;
+
+  /**
+	 * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+	 * @generated
+	 */
+  private EDataType eventTypeObjectEDataType = null;
+
+  /**
+	 * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+	 * @generated
+	 */
+  private EDataType eventTypeObject1EDataType = null;
+
+  /**
+	 * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+	 * @generated
+	 */
+  private EDataType formHandlerClassTypeEDataType = null;
+
+  /**
+	 * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+	 * @generated
+	 */
+  private EDataType historyTypeObjectEDataType = null;
+
+  /**
+	 * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+	 * @generated
+	 */
+  private EDataType tExpressionEDataType = null;
+
+  /**
+	 * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+	 * @generated
+	 */
+  private EDataType typeTypeObjectEDataType = null;
+
+  /**
 	 * Creates an instance of the model <b>Package</b>, registered with
 	 * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the package
 	 * package URI value.
@@ -186,36 +208,36 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * initialization of the package, or returns the registered package,
 	 * if one already exists.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see org.eclipse.emf.ecore.EPackage.Registry
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.ModelPackage#eNS_URI
 	 * @see #init()
 	 * @generated
 	 */
-	private ModelPackageImpl() {
+  private ModelPackageImpl() {
 		super(eNS_URI, ModelFactory.eINSTANCE);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private static boolean isInited = false;
+  private static boolean isInited = false;
 
-	/**
+  /**
 	 * Creates, registers, and initializes the <b>Package</b> for this model, and for any others upon which it depends.
 	 * 
 	 * <p>This method is used to initialize {@link ModelPackage#eINSTANCE} when that field is accessed.
 	 * Clients should not invoke it directly. Instead, they should simply access that field to obtain the package.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #eNS_URI
 	 * @see #createPackageContents()
 	 * @see #initializePackageContents()
 	 * @generated
 	 */
-	public static ModelPackage init() {
+  public static ModelPackage init() {
 		if (isInited) return (ModelPackage)EPackage.Registry.INSTANCE.getEPackage(ModelPackage.eNS_URI);
 
 		// Obtain or create and register package
@@ -259,466 +281,466 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		return theModelPackage;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getDocumentRoot() {
+  public EClass getDocumentRoot() {
 		return documentRootEClass;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_ExecutionListener() {
+  public EReference getDocumentRoot_ExecutionListener() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(0);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_Field() {
+  public EReference getDocumentRoot_Field() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(1);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_FormProperty() {
+  public EReference getDocumentRoot_FormProperty() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(2);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_In() {
+  public EReference getDocumentRoot_In() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(3);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_Out() {
+  public EReference getDocumentRoot_Out() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(4);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_TaskListener() {
+  public EReference getDocumentRoot_TaskListener() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(5);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDocumentRoot_Assignee() {
+  public EAttribute getDocumentRoot_Assignee() {
 		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(6);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDocumentRoot_CandidateGroups() {
+  public EAttribute getDocumentRoot_CandidateGroups() {
 		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(7);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDocumentRoot_CandidateUsers() {
+  public EAttribute getDocumentRoot_CandidateUsers() {
 		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(8);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDocumentRoot_Class() {
+  public EAttribute getDocumentRoot_Class() {
 		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(9);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDocumentRoot_Collection() {
+  public EAttribute getDocumentRoot_Collection() {
 		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(10);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDocumentRoot_DelegateExpression() {
+  public EAttribute getDocumentRoot_DelegateExpression() {
 		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(11);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDocumentRoot_DueDate() {
+  public EAttribute getDocumentRoot_DueDate() {
 		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(12);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDocumentRoot_ElementVariable() {
+  public EAttribute getDocumentRoot_ElementVariable() {
 		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(13);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDocumentRoot_FormHandlerClass() {
+  public EAttribute getDocumentRoot_FormHandlerClass() {
 		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(14);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDocumentRoot_FormKey() {
+  public EAttribute getDocumentRoot_FormKey() {
 		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(15);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDocumentRoot_History() {
+  public EAttribute getDocumentRoot_History() {
 		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(16);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDocumentRoot_Initiator() {
+  public EAttribute getDocumentRoot_Initiator() {
 		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(17);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDocumentRoot_ResultVariable() {
+  public EAttribute getDocumentRoot_ResultVariable() {
 		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(18);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDocumentRoot_Type() {
+  public EAttribute getDocumentRoot_Type() {
 		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(19);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDocumentRoot_Async() {
+  public EAttribute getDocumentRoot_Async() {
 		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(20);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDocumentRoot_ActExpression() {
+  public EAttribute getDocumentRoot_ActExpression() {
 		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(21);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDocumentRoot_Priority() {
+  public EAttribute getDocumentRoot_Priority() {
 		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(22);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDocumentRoot_ResultVariableName() {
+  public EAttribute getDocumentRoot_ResultVariableName() {
 		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(23);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDocumentRoot_FailedJobRetryTimeCycle() {
+  public EReference getDocumentRoot_FailedJobRetryTimeCycle() {
 		return (EReference)documentRootEClass.getEStructuralFeatures().get(24);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getExecutionListenerType() {
+  public EClass getExecutionListenerType() {
 		return executionListenerTypeEClass;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getExecutionListenerType_Group() {
+  public EAttribute getExecutionListenerType_Group() {
 		return (EAttribute)executionListenerTypeEClass.getEStructuralFeatures().get(0);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getExecutionListenerType_Field() {
+  public EReference getExecutionListenerType_Field() {
 		return (EReference)executionListenerTypeEClass.getEStructuralFeatures().get(1);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getExecutionListenerType_Class() {
+  public EAttribute getExecutionListenerType_Class() {
 		return (EAttribute)executionListenerTypeEClass.getEStructuralFeatures().get(2);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getExecutionListenerType_DelegateExpression() {
+  public EAttribute getExecutionListenerType_DelegateExpression() {
 		return (EAttribute)executionListenerTypeEClass.getEStructuralFeatures().get(3);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getExecutionListenerType_Event() {
+  public EAttribute getExecutionListenerType_Event() {
 		return (EAttribute)executionListenerTypeEClass.getEStructuralFeatures().get(4);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getExecutionListenerType_Expression() {
+  public EAttribute getExecutionListenerType_Expression() {
 		return (EAttribute)executionListenerTypeEClass.getEStructuralFeatures().get(5);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getFieldType() {
+  public EClass getFieldType() {
 		return fieldTypeEClass;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getFieldType_String() {
+  public EAttribute getFieldType_String() {
 		return (EAttribute)fieldTypeEClass.getEStructuralFeatures().get(0);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getFieldType_Expression() {
+  public EAttribute getFieldType_Expression() {
 		return (EAttribute)fieldTypeEClass.getEStructuralFeatures().get(1);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getFieldType_Expression1() {
+  public EAttribute getFieldType_Expression1() {
 		return (EAttribute)fieldTypeEClass.getEStructuralFeatures().get(2);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getFieldType_Name() {
+  public EAttribute getFieldType_Name() {
 		return (EAttribute)fieldTypeEClass.getEStructuralFeatures().get(3);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getFieldType_StringValue() {
+  public EAttribute getFieldType_StringValue() {
 		return (EAttribute)fieldTypeEClass.getEStructuralFeatures().get(4);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getFormPropertyType() {
+  public EClass getFormPropertyType() {
 		return formPropertyTypeEClass;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getFormPropertyType_Value() {
+  public EReference getFormPropertyType_Value() {
 		return (EReference)formPropertyTypeEClass.getEStructuralFeatures().get(0);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getFormPropertyType_DatePattern() {
+  public EAttribute getFormPropertyType_DatePattern() {
 		return (EAttribute)formPropertyTypeEClass.getEStructuralFeatures().get(1);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getFormPropertyType_Expression() {
+  public EAttribute getFormPropertyType_Expression() {
 		return (EAttribute)formPropertyTypeEClass.getEStructuralFeatures().get(2);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getFormPropertyType_Id() {
+  public EAttribute getFormPropertyType_Id() {
 		return (EAttribute)formPropertyTypeEClass.getEStructuralFeatures().get(3);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getFormPropertyType_Name() {
+  public EAttribute getFormPropertyType_Name() {
 		return (EAttribute)formPropertyTypeEClass.getEStructuralFeatures().get(4);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getFormPropertyType_Readable() {
+  public EAttribute getFormPropertyType_Readable() {
 		return (EAttribute)formPropertyTypeEClass.getEStructuralFeatures().get(5);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getFormPropertyType_Required() {
+  public EAttribute getFormPropertyType_Required() {
 		return (EAttribute)formPropertyTypeEClass.getEStructuralFeatures().get(6);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getFormPropertyType_Type() {
+  public EAttribute getFormPropertyType_Type() {
 		return (EAttribute)formPropertyTypeEClass.getEStructuralFeatures().get(7);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getFormPropertyType_Value1() {
+  public EAttribute getFormPropertyType_Value1() {
 		return (EAttribute)formPropertyTypeEClass.getEStructuralFeatures().get(8);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getFormPropertyType_Variable() {
+  public EAttribute getFormPropertyType_Variable() {
 		return (EAttribute)formPropertyTypeEClass.getEStructuralFeatures().get(9);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getFormPropertyType_Writable() {
+  public EAttribute getFormPropertyType_Writable() {
 		return (EAttribute)formPropertyTypeEClass.getEStructuralFeatures().get(10);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
@@ -729,316 +751,361 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
   /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getInType() {
+  public EClass getInType() {
 		return inTypeEClass;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getInType_Source() {
+  public EAttribute getInType_Source() {
 		return (EAttribute)inTypeEClass.getEStructuralFeatures().get(0);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getInType_SourceExpression() {
+  public EAttribute getInType_SourceExpression() {
 		return (EAttribute)inTypeEClass.getEStructuralFeatures().get(1);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getInType_Target() {
+  public EAttribute getInType_Target() {
 		return (EAttribute)inTypeEClass.getEStructuralFeatures().get(2);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getOutType() {
+  public EAttribute getInType_Variables() {
+		return (EAttribute)inTypeEClass.getEStructuralFeatures().get(3);
+	}
+
+  /**
+	 * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+	 * @generated
+	 */
+  public EAttribute getInType_BusinessKey() {
+		return (EAttribute)inTypeEClass.getEStructuralFeatures().get(4);
+	}
+
+  /**
+	 * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+	 * @generated
+	 */
+  public EClass getOutType() {
 		return outTypeEClass;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getOutType_Source() {
+  public EAttribute getOutType_Source() {
 		return (EAttribute)outTypeEClass.getEStructuralFeatures().get(0);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getOutType_SourceExpression() {
+  public EAttribute getOutType_SourceExpression() {
 		return (EAttribute)outTypeEClass.getEStructuralFeatures().get(1);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getOutType_Target() {
+  public EAttribute getOutType_Target() {
 		return (EAttribute)outTypeEClass.getEStructuralFeatures().get(2);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getTaskListenerType() {
+  public EAttribute getOutType_Variables() {
+		return (EAttribute)outTypeEClass.getEStructuralFeatures().get(3);
+	}
+
+  /**
+	 * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+	 * @generated
+	 */
+  public EClass getTaskListenerType() {
 		return taskListenerTypeEClass;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getTaskListenerType_Group() {
+  public EAttribute getTaskListenerType_Group() {
 		return (EAttribute)taskListenerTypeEClass.getEStructuralFeatures().get(0);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getTaskListenerType_Field() {
+  public EReference getTaskListenerType_Field() {
 		return (EReference)taskListenerTypeEClass.getEStructuralFeatures().get(1);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getTaskListenerType_Class() {
+  public EAttribute getTaskListenerType_Class() {
 		return (EAttribute)taskListenerTypeEClass.getEStructuralFeatures().get(2);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getTaskListenerType_DelegateExpression() {
+  public EAttribute getTaskListenerType_DelegateExpression() {
 		return (EAttribute)taskListenerTypeEClass.getEStructuralFeatures().get(3);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getTaskListenerType_Event() {
+  public EAttribute getTaskListenerType_Event() {
 		return (EAttribute)taskListenerTypeEClass.getEStructuralFeatures().get(4);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getTaskListenerType_Expression() {
+  public EAttribute getTaskListenerType_Expression() {
 		return (EAttribute)taskListenerTypeEClass.getEStructuralFeatures().get(5);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getCallActivity() {
+  public EClass getCallActivity() {
 		return callActivityEClass;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getCallActivity_CalledElement() {
+  public EAttribute getCallActivity_CalledElement() {
 		return (EAttribute)callActivityEClass.getEStructuralFeatures().get(0);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getBoundaryEvent() {
+  public EAttribute getCallActivity_CalledElementBinding() {
+		return (EAttribute)callActivityEClass.getEStructuralFeatures().get(1);
+	}
+
+  /**
+	 * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+	 * @generated
+	 */
+  public EAttribute getCallActivity_CalledElementVersion() {
+		return (EAttribute)callActivityEClass.getEStructuralFeatures().get(2);
+	}
+
+  /**
+	 * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+	 * @generated
+	 */
+  public EClass getBoundaryEvent() {
 		return boundaryEventEClass;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getValueType() {
+  public EClass getValueType() {
 		return valueTypeEClass;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getValueType_Id() {
+  public EAttribute getValueType_Id() {
 		return (EAttribute)valueTypeEClass.getEStructuralFeatures().get(0);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getValueType_Name() {
+  public EAttribute getValueType_Name() {
 		return (EAttribute)valueTypeEClass.getEStructuralFeatures().get(1);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EEnum getEventType() {
+  public EEnum getEventType() {
 		return eventTypeEEnum;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EEnum getEventType1() {
+  public EEnum getEventType1() {
 		return eventType1EEnum;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EEnum getHistoryType() {
+  public EEnum getHistoryType() {
 		return historyTypeEEnum;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EEnum getTypeType() {
+  public EEnum getTypeType() {
 		return typeTypeEEnum;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EDataType getClassType() {
+  public EDataType getClassType() {
 		return classTypeEDataType;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EDataType getEventTypeObject() {
+  public EDataType getEventTypeObject() {
 		return eventTypeObjectEDataType;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EDataType getEventTypeObject1() {
+  public EDataType getEventTypeObject1() {
 		return eventTypeObject1EDataType;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EDataType getFormHandlerClassType() {
+  public EDataType getFormHandlerClassType() {
 		return formHandlerClassTypeEDataType;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EDataType getHistoryTypeObject() {
+  public EDataType getHistoryTypeObject() {
 		return historyTypeObjectEDataType;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EDataType getTExpression() {
+  public EDataType getTExpression() {
 		return tExpressionEDataType;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EDataType getTypeTypeObject() {
+  public EDataType getTypeTypeObject() {
 		return typeTypeObjectEDataType;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ModelFactory getModelFactory() {
+  public ModelFactory getModelFactory() {
 		return (ModelFactory)getEFactoryInstance();
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private boolean isCreated = false;
+  private boolean isCreated = false;
 
-	/**
+  /**
 	 * Creates the meta-model objects for the package.  This method is
 	 * guarded to have no affect on any invocation but its first.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void createPackageContents() {
+  public void createPackageContents() {
 		if (isCreated) return;
 		isCreated = true;
 
@@ -1103,11 +1170,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		createEAttribute(inTypeEClass, IN_TYPE__SOURCE);
 		createEAttribute(inTypeEClass, IN_TYPE__SOURCE_EXPRESSION);
 		createEAttribute(inTypeEClass, IN_TYPE__TARGET);
+		createEAttribute(inTypeEClass, IN_TYPE__VARIABLES);
+		createEAttribute(inTypeEClass, IN_TYPE__BUSINESS_KEY);
 
 		outTypeEClass = createEClass(OUT_TYPE);
 		createEAttribute(outTypeEClass, OUT_TYPE__SOURCE);
 		createEAttribute(outTypeEClass, OUT_TYPE__SOURCE_EXPRESSION);
 		createEAttribute(outTypeEClass, OUT_TYPE__TARGET);
+		createEAttribute(outTypeEClass, OUT_TYPE__VARIABLES);
 
 		taskListenerTypeEClass = createEClass(TASK_LISTENER_TYPE);
 		createEAttribute(taskListenerTypeEClass, TASK_LISTENER_TYPE__GROUP);
@@ -1119,6 +1189,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
 		callActivityEClass = createEClass(CALL_ACTIVITY);
 		createEAttribute(callActivityEClass, CALL_ACTIVITY__CALLED_ELEMENT);
+		createEAttribute(callActivityEClass, CALL_ACTIVITY__CALLED_ELEMENT_BINDING);
+		createEAttribute(callActivityEClass, CALL_ACTIVITY__CALLED_ELEMENT_VERSION);
 
 		boundaryEventEClass = createEClass(BOUNDARY_EVENT);
 
@@ -1142,21 +1214,21 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		typeTypeObjectEDataType = createEDataType(TYPE_TYPE_OBJECT);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private boolean isInitialized = false;
+  private boolean isInitialized = false;
 
-	/**
+  /**
 	 * Complete the initialization of the package and its meta-model.  This
 	 * method is guarded to have no affect on any invocation but its first.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void initializePackageContents() {
+  public void initializePackageContents() {
 		if (isInitialized) return;
 		isInitialized = true;
 
@@ -1242,12 +1314,15 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		initEClass(inTypeEClass, InType.class, "InType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getInType_Source(), ecorePackage.getEString(), "source", null, 0, 1, InType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getInType_SourceExpression(), this.getTExpression(), "sourceExpression", null, 0, 1, InType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getInType_Target(), ecorePackage.getEString(), "target", null, 1, 1, InType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getInType_Target(), ecorePackage.getEString(), "target", null, 0, 1, InType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getInType_Variables(), ecorePackage.getEString(), "variables", null, 0, 1, InType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getInType_BusinessKey(), this.getTExpression(), "businessKey", null, 0, 1, InType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(outTypeEClass, OutType.class, "OutType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getOutType_Source(), ecorePackage.getEString(), "source", null, 0, 1, OutType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getOutType_SourceExpression(), this.getTExpression(), "sourceExpression", null, 0, 1, OutType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getOutType_Target(), ecorePackage.getEString(), "target", null, 1, 1, OutType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getOutType_Variables(), ecorePackage.getEString(), "variables", null, 0, 1, OutType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(taskListenerTypeEClass, TaskListenerType.class, "TaskListenerType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getTaskListenerType_Group(), ecorePackage.getEFeatureMapEntry(), "group", null, 0, -1, TaskListenerType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1259,6 +1334,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
 		initEClass(callActivityEClass, CallActivity.class, "CallActivity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getCallActivity_CalledElement(), ecorePackage.getEString(), "calledElement", null, 0, 1, CallActivity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getCallActivity_CalledElementBinding(), ecorePackage.getEString(), "calledElementBinding", "latest", 0, 1, CallActivity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getCallActivity_CalledElementVersion(), theXMLTypePackage.getIntObject(), "calledElementVersion", null, 0, 1, CallActivity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(boundaryEventEClass, BoundaryEvent.class, "BoundaryEvent", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -1303,13 +1380,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		createExtendedMetaDataAnnotations();
 	}
 
-	/**
+  /**
 	 * Initializes the annotations for <b>http:///org/eclipse/emf/ecore/util/ExtendedMetaData</b>.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void createExtendedMetaDataAnnotations() {
+  protected void createExtendedMetaDataAnnotations() {
 		String source = "http:///org/eclipse/emf/ecore/util/ExtendedMetaData";			
 		addAnnotation
 		  (documentRootEClass, 
@@ -1783,6 +1860,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "name", "target"
 		   });		
 		addAnnotation
+		  (getInType_Variables(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "variables"
+		   });		
+		addAnnotation
+		  (getInType_BusinessKey(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "businessKey"
+		   });		
+		addAnnotation
 		  (outTypeEClass, 
 		   source, 
 		   new String[] {
@@ -1809,6 +1900,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "target"
+		   });		
+		addAnnotation
+		  (getOutType_Variables(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "variables"
 		   });		
 		addAnnotation
 		  (taskListenerTypeEClass, 
@@ -1894,6 +1992,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "calledElement"
+		   });		
+		addAnnotation
+		  (getCallActivity_CalledElementBinding(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "calledElementBinding"
+		   });		
+		addAnnotation
+		  (getCallActivity_CalledElementVersion(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "calledElementVersion"
 		   });		
 		addAnnotation
 		  (valueTypeEClass, 

@@ -1,15 +1,14 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package org.camunda.bpm.modeler.runtime.engine.model.impl;
 
 import org.camunda.bpm.modeler.runtime.engine.model.FieldType;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
+
 import org.eclipse.emf.common.notify.Notification;
+
 import org.eclipse.emf.ecore.EClass;
+
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
@@ -31,237 +30,237 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * @generated
  */
 public class FieldTypeImpl extends EObjectImpl implements FieldType {
-	/**
+  /**
 	 * The default value of the '{@link #getString() <em>String</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getString()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String STRING_EDEFAULT = null;
+  protected static final String STRING_EDEFAULT = null;
 
-	/**
+  /**
 	 * The cached value of the '{@link #getString() <em>String</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getString()
 	 * @generated
 	 * @ordered
 	 */
-	protected String string = STRING_EDEFAULT;
+  protected String string = STRING_EDEFAULT;
 
-	/**
+  /**
 	 * The default value of the '{@link #getExpression() <em>Expression</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getExpression()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String EXPRESSION_EDEFAULT = null;
+  protected static final String EXPRESSION_EDEFAULT = null;
 
-	/**
+  /**
 	 * The cached value of the '{@link #getExpression() <em>Expression</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getExpression()
 	 * @generated
 	 * @ordered
 	 */
-	protected String expression = EXPRESSION_EDEFAULT;
+  protected String expression = EXPRESSION_EDEFAULT;
 
-	/**
+  /**
 	 * The default value of the '{@link #getExpression1() <em>Expression1</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getExpression1()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String EXPRESSION1_EDEFAULT = null;
+  protected static final String EXPRESSION1_EDEFAULT = null;
 
-	/**
+  /**
 	 * The cached value of the '{@link #getExpression1() <em>Expression1</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getExpression1()
 	 * @generated
 	 * @ordered
 	 */
-	protected String expression1 = EXPRESSION1_EDEFAULT;
+  protected String expression1 = EXPRESSION1_EDEFAULT;
 
-	/**
+  /**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getName()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String NAME_EDEFAULT = null;
+  protected static final String NAME_EDEFAULT = null;
 
-	/**
+  /**
 	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getName()
 	 * @generated
 	 * @ordered
 	 */
-	protected String name = NAME_EDEFAULT;
+  protected String name = NAME_EDEFAULT;
 
-	/**
+  /**
 	 * The default value of the '{@link #getStringValue() <em>String Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getStringValue()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String STRING_VALUE_EDEFAULT = null;
+  protected static final String STRING_VALUE_EDEFAULT = null;
 
-	/**
+  /**
 	 * The cached value of the '{@link #getStringValue() <em>String Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @see #getStringValue()
 	 * @generated
 	 * @ordered
 	 */
-	protected String stringValue = STRING_VALUE_EDEFAULT;
+  protected String stringValue = STRING_VALUE_EDEFAULT;
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected FieldTypeImpl() {
+  protected FieldTypeImpl() {
 		super();
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	protected EClass eStaticClass() {
+  @Override
+  protected EClass eStaticClass() {
 		return ModelPackage.Literals.FIELD_TYPE;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getString() {
+  public String getString() {
 		return string;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setString(String newString) {
+  public void setString(String newString) {
 		String oldString = string;
 		string = newString;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.FIELD_TYPE__STRING, oldString, string));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getExpression() {
+  public String getExpression() {
 		return expression;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setExpression(String newExpression) {
+  public void setExpression(String newExpression) {
 		String oldExpression = expression;
 		expression = newExpression;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.FIELD_TYPE__EXPRESSION, oldExpression, expression));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getExpression1() {
+  public String getExpression1() {
 		return expression1;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setExpression1(String newExpression1) {
+  public void setExpression1(String newExpression1) {
 		String oldExpression1 = expression1;
 		expression1 = newExpression1;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.FIELD_TYPE__EXPRESSION1, oldExpression1, expression1));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getName() {
+  public String getName() {
 		return name;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setName(String newName) {
+  public void setName(String newName) {
 		String oldName = name;
 		name = newName;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.FIELD_TYPE__NAME, oldName, name));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getStringValue() {
+  public String getStringValue() {
 		return stringValue;
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setStringValue(String newStringValue) {
+  public void setStringValue(String newStringValue) {
 		String oldStringValue = stringValue;
 		stringValue = newStringValue;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.FIELD_TYPE__STRING_VALUE, oldStringValue, stringValue));
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+  @Override
+  public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case ModelPackage.FIELD_TYPE__STRING:
 				return getString();
@@ -277,13 +276,13 @@ public class FieldTypeImpl extends EObjectImpl implements FieldType {
 		return super.eGet(featureID, resolve, coreType);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public void eSet(int featureID, Object newValue) {
+  @Override
+  public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case ModelPackage.FIELD_TYPE__STRING:
 				setString((String)newValue);
@@ -304,13 +303,13 @@ public class FieldTypeImpl extends EObjectImpl implements FieldType {
 		super.eSet(featureID, newValue);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public void eUnset(int featureID) {
+  @Override
+  public void eUnset(int featureID) {
 		switch (featureID) {
 			case ModelPackage.FIELD_TYPE__STRING:
 				setString(STRING_EDEFAULT);
@@ -331,13 +330,13 @@ public class FieldTypeImpl extends EObjectImpl implements FieldType {
 		super.eUnset(featureID);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public boolean eIsSet(int featureID) {
+  @Override
+  public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case ModelPackage.FIELD_TYPE__STRING:
 				return STRING_EDEFAULT == null ? string != null : !STRING_EDEFAULT.equals(string);
@@ -353,13 +352,13 @@ public class FieldTypeImpl extends EObjectImpl implements FieldType {
 		return super.eIsSet(featureID);
 	}
 
-	/**
+  /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+   * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public String toString() {
+  @Override
+  public String toString() {
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
