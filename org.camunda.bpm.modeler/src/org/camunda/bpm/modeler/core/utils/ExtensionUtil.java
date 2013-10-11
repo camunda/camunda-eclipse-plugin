@@ -34,7 +34,7 @@ public class ExtensionUtil {
 
 	/**
 	 * Given an object, the feature and the feature attribute name, return the
-	 * feature attributes value if the the attribute exists.
+	 * feature attributes value if the attribute exists.
 	 * 
 	 * @param object
 	 * @param feature
@@ -55,13 +55,13 @@ public class ExtensionUtil {
 				FeatureMapUtil.FeatureEList<?> featureList = (FeatureMapUtil.FeatureEList<?>) featureObject;
 				
 				for (Object o: featureList) {
-  				EObject eFeatureObject = (EObject) o;
-  				EList<EStructuralFeature> features = eFeatureObject.eClass().getEAllStructuralFeatures();
-  				for (EStructuralFeature f: features) {
-  					if (attributeName.equals(f.getName()) && eFeatureObject.eGet(f) != null) {
-  						return eFeatureObject.eGet(f);
-  					}
-  				}
+	  				EObject eFeatureObject = (EObject) o;
+	  				EList<EStructuralFeature> features = eFeatureObject.eClass().getEAllStructuralFeatures();
+	  				for (EStructuralFeature f: features) {
+	  					if (attributeName.equals(f.getName()) && eFeatureObject.eGet(f) != null) {
+	  						return eFeatureObject.eGet(f);
+	  					}
+	  				}
 				}
 			}
 			
