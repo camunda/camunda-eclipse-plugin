@@ -4,6 +4,7 @@ import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.ActivityPropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.CallActivityPropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.DecisionGatewayPropertiesBuilder;
+import org.camunda.bpm.modeler.ui.property.tabs.builder.DocumentationPropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.IdPropertyBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.LanePropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.NamePropertyBuilder;
@@ -105,6 +106,8 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 			createGatewayComposite((Gateway) businessObject);
 		}
 		
+		createDocumentationField((BaseElement) businessObject);
+		
 		return parent;
 	}
 
@@ -202,7 +205,7 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 		}		
 	}
 	
-	// default fields (ID / Name) ///////////////////////////////////
+	// default fields (ID / Name/ Documentation) ///////////////////////////////////
 	
 	private void createNameField(BaseElement baseElement) {
 		new NamePropertyBuilder(parent, section, baseElement).create();
@@ -214,5 +217,9 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 		} else {
 			new IdPropertyBuilder(parent, section, baseElement).create();
 		}
+	}
+	
+	private void createDocumentationField(BaseElement baseElement) {
+		new DocumentationPropertiesBuilder(parent, section, baseElement).create();
 	}
 }
