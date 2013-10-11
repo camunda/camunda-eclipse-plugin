@@ -4,6 +4,7 @@ import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
+import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
 import org.camunda.bpm.modeler.test.AbstractEditorTest;
 import org.camunda.bpm.modeler.test.AbstractTestCommand;
 import org.camunda.bpm.modeler.test.util.TestHelper.ModelResources;

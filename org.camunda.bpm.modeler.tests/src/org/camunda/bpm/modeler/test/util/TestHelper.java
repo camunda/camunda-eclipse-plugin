@@ -10,6 +10,7 @@ import java.util.List;
 import junit.framework.AssertionFailedError;
 
 import org.camunda.bpm.modeler.core.model.Bpmn2ModelerResourceFactoryImpl;
+import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
 import org.camunda.bpm.modeler.test.Activator;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.di.BPMNDiagram;
@@ -25,7 +26,9 @@ import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.ui.services.GraphitiUi;
+import org.junit.Ignore;
 
+@Ignore
 public class TestHelper {
 
 	public static ModelResources createModel(String bpmnDiagramUrl) {
