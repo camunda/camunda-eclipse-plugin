@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collections;
 
+import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
 import org.camunda.bpm.modeler.test.util.TestHelper;
 import org.camunda.bpm.modeler.test.util.TestHelper.EditorResources;
 import org.camunda.bpm.modeler.test.util.TestHelper.ModelResources;
@@ -48,6 +49,10 @@ public abstract class AbstractTestCommand extends RecordingCommand {
 	protected final void doExecute() {
 		
 		try {
+			
+			// initialize bpmn 2 preferences
+			Bpmn2Preferences.getInstance(modelResources.getResource()).load();
+			
 			// create editor
 			editorResources = TestHelper.createEditor(modelResources, tempDir);
 
@@ -65,7 +70,6 @@ public abstract class AbstractTestCommand extends RecordingCommand {
 			execute(editorResources.getTypeProvider(), editorResources.getDiagram());
 			
 			testCase.setTestResources(TestHelper.createModel(saveTestResource(bpmn2Resource, "after", testFileDir)));
-
 		} catch (RuntimeException e) {
 			this.recordedException = e;
 			throw e;

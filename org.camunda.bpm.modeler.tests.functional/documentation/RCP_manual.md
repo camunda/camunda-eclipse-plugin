@@ -46,7 +46,7 @@ The RCP application in this tutorial is build with Eclipse Juno.
 ![Product Export](https://raw.github.com/camunda/camunda-modeler/develop/org.camunda.bpm.modeler.tests.functional/documentation/images/Jubula_RCP_Product_Export.png)
 
 ----------------
-* In the product Overview you have the possibility to test the application. Please not that your RCP can be used although the test failed, so try to run the exported RCP product.  
+* In the product Overview you have the possibility to test the application. Please note that your RCP can be used although the test failed, so try to run the exported RCP product.  
 
 ###Configure your AUT
 After you have build the RCP application you have to provide access for Jubula to control the AUT.

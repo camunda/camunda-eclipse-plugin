@@ -8,7 +8,7 @@ import org.camunda.bpm.modeler.ui.property.tabs.binding.ModelRadioBinding;
 import org.camunda.bpm.modeler.ui.property.tabs.dialog.ClassChooserDialog;
 import org.camunda.bpm.modeler.ui.property.tabs.radio.Radio.RadioGroup;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
-import org.eclipse.bpmn2.Task;
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.SWT;
@@ -23,7 +23,13 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-public class ServiceTypeControlsPropertiesBuilder extends AbstractPropertiesBuilder<Task> {
+/**
+ * 
+ * <p>Builds for a task and a throwing message event the controls to set either a class,
+ * an expression or an expression delegate.</p>
+ * 
+ */
+public class ServiceTypeControlsPropertiesBuilder extends AbstractPropertiesBuilder<BaseElement> {
 
 	private static final String[] TYPE_NAMES = new String[] { 
 		"Class", "Expression", "Expression Delegate" 
@@ -47,7 +53,7 @@ public class ServiceTypeControlsPropertiesBuilder extends AbstractPropertiesBuil
 	 * @param section
 	 * @param bo
 	 */
-	public ServiceTypeControlsPropertiesBuilder(Composite parent, GFPropertySection section, Task bo) {
+	public ServiceTypeControlsPropertiesBuilder(Composite parent, GFPropertySection section, BaseElement bo) {
 		super(parent, section, bo);
 		
 		this.radioGroup = new RadioGroup<EStructuralFeature>();

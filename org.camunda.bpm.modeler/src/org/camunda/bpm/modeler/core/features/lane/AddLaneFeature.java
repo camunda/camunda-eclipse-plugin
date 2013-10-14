@@ -19,11 +19,11 @@ import java.util.List;
 
 import org.camunda.bpm.modeler.core.features.AbstractAddBpmnShapeFeature;
 import org.camunda.bpm.modeler.core.features.DefaultMoveBPMNShapeFeature;
-import org.camunda.bpm.modeler.core.features.participant.AddParticipantFeature;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
+import org.camunda.bpm.modeler.core.utils.ScrollUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
@@ -31,18 +31,14 @@ import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.Lane;
-import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
-import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.dd.dc.Bounds;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
-import org.eclipse.graphiti.features.context.ITargetContext;
+import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.MoveShapeContext;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.algorithms.Text;
@@ -71,7 +67,7 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 		boolean intoParticipant = FeatureSupport.isTargetParticipant(context);
 		return isLane && (intoLane || intoParticipant);
 	}
-
+	
 	@Override
 	protected ContainerShape createPictogramElement(IAddContext context, IRectangle bounds) {
 
@@ -108,34 +104,36 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 		
 		BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(newLaneShape, BPMNShape.class);
 		
-		boolean isImport = isImport(context);
-
 		BaseElement targetBaseElement = null;
-		
-		// move children of lane or participant target container
-		List<FlowNode> newLaneFlowNodeRefs = lane.getFlowNodeRefs();
-		
-		if (FeatureSupport.isTargetLane(context)) {
-			Lane targetLane = FeatureSupport.getTargetLane(context);
-			targetBaseElement = targetLane;
-			
-			newLaneFlowNodeRefs.addAll(targetLane.getFlowNodeRefs());
-			targetLane.getFlowNodeRefs().clear();
-		} else
-		if (FeatureSupport.isTargetParticipant(context)) {
-			Participant targetParticipant = FeatureSupport.getTargetParticipant(context);
-			Process targetProcess = targetParticipant.getProcessRef();
-			targetBaseElement = targetParticipant;
-			
-			if (getNumberOfLanes(context) == 1) { // this is the first lane of the participant, move flow nodes
-				moveFlowNodes(targetProcess, lane);
-			}
-		} else {
-			throw new IllegalArgumentException("May only add lanes on pools or other lanes");
-		}
 
-		// update horizontal flag from parent shape
-		if (!isImport) {
+		if (!isImport(context)) {
+			
+			// move children of lane or participant target container
+			List<FlowNode> newLaneFlowNodeRefs = lane.getFlowNodeRefs();
+			
+			if (FeatureSupport.isTargetLane(context)) {
+				Lane targetLane = FeatureSupport.getTargetLane(context);
+				targetBaseElement = targetLane;
+				
+				newLaneFlowNodeRefs.addAll(targetLane.getFlowNodeRefs());
+				targetLane.getFlowNodeRefs().clear();
+			} else
+			if (FeatureSupport.isTargetParticipant(context)) {
+				Participant targetParticipant = FeatureSupport.getTargetParticipant(context);
+				Process targetProcess = targetParticipant.getProcessRef();
+				targetBaseElement = targetParticipant;
+				
+				List<Shape> laneShapes = FeatureSupport.getChildLanes(newLaneShape.getContainer());
+				
+				// if this is the first lane of the participant, move flow nodes
+				if (laneShapes.size() == 1) {
+					moveFlowNodes(targetProcess, lane);
+				}
+			} else {
+				throw new IllegalArgumentException("May only add lanes on pools or other lanes");
+			}
+
+			// update horizontal flag from parent shape
 			BPMNShape targetBpmnShape = findDIShape(targetBaseElement);
 			if (targetBpmnShape != null) {
 				bpmnShape.setIsHorizontal(targetBpmnShape.isIsHorizontal());
@@ -156,14 +154,16 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 			containedFlowNodeShape.setContainer(newLaneShape);
 		}
 		
-		if (!isImport) {
-			FeatureSupport.redrawLaneSet(newShapeContainer);
-		}
-		
 		peService.sendToBack(newLaneShape);
 		peService.sendToBack(newShapeContainer);
 		
 		compensateShapeMovements(newLaneShape);
+				
+		if (!isImport(context)) {
+			FeatureSupport.redrawLaneSet(newLaneShape, getFeatureProvider());
+		}
+		
+		ScrollUtil.updateScrollShape(getDiagram());
 	}
 
 	private void createLaneLabel(ContainerShape newShape, Lane lane, boolean horizontal) {
@@ -248,7 +248,7 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 
 	@Override
 	protected boolean isLayoutAfterImport() {
-		return false;
+		return true;
 	}
 	
 	private void moveFlowNodes(Process targetProcess, Lane lane) {
@@ -274,43 +274,32 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 		return flowElementShapes;
 	}
 
-	private int getNumberOfLanes(ITargetContext context) {
-		ContainerShape targetContainer = context.getTargetContainer();
-		Object bo = getBusinessObjectForPictogramElement(targetContainer);
-		if (bo instanceof Lane) {
-			Lane lane = (Lane) bo;
-			return lane.getChildLaneSet().getLanes().size();
-		} else if (bo instanceof Participant) {
-			List<LaneSet> laneSets = ((Participant) bo).getProcessRef().getLaneSets();
-			if (!laneSets.isEmpty()) {
-				return laneSets.get(0).getLanes().size();
+	@Override
+	protected void adjustLocation(IAddContext context, int width, int height) {
+		
+		if (context instanceof AddContext) {
+			AddContext addContext = (AddContext) context;
+			
+			int x = GraphicsUtil.PARTICIPANT_LABEL_OFFSET;
+
+			List<Shape> childLanes = FeatureSupport.getChildLanes(context.getTargetContainer());
+			int y = context.getY();
+			
+			if (childLanes.isEmpty()) {
+				y = 0;
 			}
-			return laneSets.size();
-		} else if (bo instanceof SubProcess) {
-			List<LaneSet> laneSets = ((SubProcess) bo).getLaneSets();
-			if (!laneSets.isEmpty()) {
-				return laneSets.get(0).getLanes().size();
-			}
-			return laneSets.size();
+			
+			addContext.setLocation(x, y);
 		}
-		return 0;
 	}
 	
-	private Bounds getPreviouslyAddedLaneBounds(IAddContext context) {
-		EObject bo = (EObject) getBusinessObjectForPictogramElement(context.getTargetContainer());
-		if (bo instanceof Participant) {
-			List<LaneSet> laneSets = ((Participant) bo).getProcessRef().getLaneSets();
-			List<Lane> lanes = null;
-			
-			if (!laneSets.isEmpty() && laneSets.get(0).getLanes().size() > 1) {
-				lanes = laneSets.get(0).getLanes();
-				Lane lane = lanes.get(lanes.size() - 2); // get the lane created before, current lane is already included
-				BPMNShape laneShape = findDIShape(lane);
-				Bounds bounds = laneShape.getBounds();
-				return bounds;
-			}
+	private IRectangle getPreviouslyAddedLaneBounds(ContainerShape targetContainer) {
+		List<Shape> childLanes = FeatureSupport.getChildLanes(targetContainer);
+		if (childLanes.isEmpty()) {
+			return null;
 		}
-		return null;
+		
+		return LayoutUtil.getRelativeBounds(childLanes.get(childLanes.size() - 1));
 	}
 	
 	
@@ -319,10 +308,17 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 		if (isImport(context)) {
 			return context.getHeight();
 		}
+
+		ContainerShape targetContainer = context.getTargetContainer();
 		
-		int height = context.getTargetContainer().getGraphicsAlgorithm().getHeight();
+		int height = targetContainer.getGraphicsAlgorithm().getHeight();
 		
-		Bounds previousBounds = getPreviouslyAddedLaneBounds(context);
+		int numberOfLanes = FeatureSupport.getChildLanes(targetContainer).size();
+		if (numberOfLanes > 0) {
+			height /= numberOfLanes;
+		}
+		
+		IRectangle previousBounds = getPreviouslyAddedLaneBounds(targetContainer);
 		if (previousBounds != null) {
 			height = (int) previousBounds.getHeight();
 		}
@@ -335,10 +331,12 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 		if (isImport(context)) {
 			return context.getWidth();
 		}
+
+		ContainerShape targetContainer = context.getTargetContainer();
 		
-		int width = context.getTargetContainer().getGraphicsAlgorithm().getWidth() - GraphicsUtil.PARTICIPANT_LABEL_OFFSET;
+		int width = targetContainer.getGraphicsAlgorithm().getWidth() - GraphicsUtil.PARTICIPANT_LABEL_OFFSET;
 		
-		Bounds bounds = getPreviouslyAddedLaneBounds(context);
+		IRectangle bounds = getPreviouslyAddedLaneBounds(targetContainer);
 		if (bounds != null) {
 			width = (int) bounds.getWidth();
 		}

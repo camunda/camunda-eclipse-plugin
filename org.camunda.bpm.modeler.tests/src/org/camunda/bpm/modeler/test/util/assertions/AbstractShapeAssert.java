@@ -4,11 +4,9 @@ import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.point;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
-import org.eclipse.bpmn2.Activity;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.ILocation;
@@ -24,7 +22,6 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.fest.assertions.api.AbstractAssert;
 import org.fest.assertions.api.Assertions;
 import org.fest.assertions.api.Fail;
-import org.fest.assertions.api.ObjectAssert;
 import org.fest.assertions.core.Condition;
 
 public abstract class AbstractShapeAssert<S extends AbstractShapeAssert<S, A>, A extends Shape> extends AbstractAssert<S, A> {

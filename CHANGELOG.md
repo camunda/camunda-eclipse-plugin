@@ -5,7 +5,8 @@
 
 - **canvas:**
   - add correct event subprocess shapes / fix update handling
-    ([1ebde976](https://github.com/camunda/camunda-modeler/commit/1ebde976dc2e94be39955bca9485c5c36f5c6181))
+    ([a00e54d6](https://github.com/camunda/camunda-modeler/commit/a00e54d6c0502d173436b2859e7093857d00402d),
+    [551aaec1](https://github.com/camunda/camunda-modeler/commit/551aaec1a2141ab1bb330f8f628f77591fe60420))
   - switch to black and white colors 
     ([920afee2](https://github.com/camunda/camunda-modeler/commit/920afee20b19daa30c2f12cd5a3edff930da5971), 
     [c1fadef0](https://github.com/camunda/camunda-modeler/commit/c1fadef01d8e8b0737049a1e75c44e690fc490a4))
@@ -27,7 +28,10 @@
   - add reposition upon attached shape resize
 - **property panels:**
   - add trigger by event flag
-    ([1ebde976](https://github.com/camunda/camunda-modeler/commit/1ebde976dc2e94be39955bca9485c5c36f5c6181))
+    ([a00e54d6](https://github.com/camunda/camunda-modeler/commit/a00e54d6c0502d173436b2859e7093857d00402d),
+    [551aaec1](https://github.com/camunda/camunda-modeler/commit/551aaec1a2141ab1bb330f8f628f77591fe60420))
+  - add interrupting flag to start event in event subprocess
+    ([551aaec1](https://github.com/camunda/camunda-modeler/commit/551aaec1a2141ab1bb330f8f628f77591fe60420))
 - **code structure:**
   - rename / unify package and artifact names
     ([a4fa62e7](https://github.com/camunda/camunda-modeler/commit/a4fa62e7791c5ed36791deb66a9d6dcc35e9e1d8),

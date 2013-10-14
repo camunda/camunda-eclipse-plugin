@@ -67,6 +67,10 @@
 			<describer class="org.camunda.bpm.modeler.ui.BPMN2ContentDescriber">
 			</describer>
 		</content-type>
+  <file-association
+        content-type="org.eclipse.core.runtime.xml"
+        file-extensions="bpmn,bpmn2">
+  </file-association>
 	</extension>
    	
    	<extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">

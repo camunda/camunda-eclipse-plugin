@@ -88,7 +88,7 @@ public class DefaultEditingSupportProvider implements EditingSupportProvider {
 	 *
 	 * @param <T>
 	 */
-	private static class DropDownListCellEditor<T> extends ComboBoxCellEditor {
+	protected static class DropDownListCellEditor<T> extends ComboBoxCellEditor {
 
 		private ILabelProvider labelProvider = new SimpleLabelProvider();
 		
@@ -100,7 +100,7 @@ public class DefaultEditingSupportProvider implements EditingSupportProvider {
 			super(parent, new String[0]);
 			
 			this.elements = elements;
-			this.elementStrings = elementsToString(elements);
+			this.elementStrings = elementsToString(this.elements);
 			
 			setItems(elementStrings.toArray(new String[0]));
 			

@@ -13,6 +13,7 @@ import org.camunda.bpm.modeler.test.util.DiagramResource;
 import org.camunda.bpm.modeler.test.util.Util;
 import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.StartEvent;
+import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -96,4 +97,30 @@ public class AddEventFeatureTest extends AbstractFeatureTest {
 		assertThat(targetConnection)
 			.hasExactBendpoints(expectedBeforeSplitBendpoints);
 	}
+	
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/add/AddFlowElementFeatureTestBase.testLocation.bpmn")
+	public void testAddToDiagramOutsideTheDiagram() throws Exception {
+
+		// when
+		// element is added to it
+		addEndEvent(diagramTypeProvider)
+			.atLocation(133, 1299)
+			.toContainer(diagram)
+			.execute();
+		
+		// get the added task
+		BPMNShape addedEvent = (BPMNShape) Util.findBpmnShapeByBusinessObjectId(diagram, "EndEvent_2");
+		
+		// then
+		assertThat(addedEvent)
+			.bounds()
+			.x()
+				.isEqualTo(133 - 18);
+
+		assertThat(addedEvent)
+			.bounds()
+			.y()
+				.isEqualTo(1299 - 18);
+	}	
 }

@@ -50,4 +50,6 @@ public class CompatibilityTest extends AbstractImportBpmnModelTest {
 			.by(20, 100)
 			.execute();
 	}
+	
 }
+

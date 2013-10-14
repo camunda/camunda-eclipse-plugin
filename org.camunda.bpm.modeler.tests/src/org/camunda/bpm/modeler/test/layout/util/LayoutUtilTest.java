@@ -7,21 +7,26 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import org.camunda.bpm.modeler.core.layout.util.ConversionUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.BendpointContainment;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
 import org.camunda.bpm.modeler.test.feature.AbstractFeatureTest;
 import org.camunda.bpm.modeler.test.util.DiagramResource;
 import org.camunda.bpm.modeler.test.util.Util;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
+import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
+import org.fest.assertions.core.Condition;
 import org.junit.Test;
 
 /**
@@ -319,5 +324,59 @@ public class LayoutUtilTest extends AbstractFeatureTest {
 		
 		// then
 		assertThat(diagramBounds).isEqualTo(ConversionUtil.rect(288, 276, 408, 80));
+	}
+	
+	@Test
+	@DiagramResource
+	public void testGetContainerBendpoints() {
+
+		assertBendpointContainment("Lane_1", Arrays.asList(point(393, 109), point(393, 89)));
+
+		assertBendpointContainment("Lane_2", Arrays.asList(point(239, 206), point(275, 206), point(495, 246), point(495, 281), point(185, 279), point(185, 324)));
+
+		assertBendpointContainment("SubProcess_1", Arrays.asList(point(495, 246), point(495, 281)));
+		
+		assertBendpointContainment("Lane_3", Arrays.asList(point(300, 427), point(300, 546), point(430, 546), point(430, 418)));
+		
+		assertBendpointContainment("Lane_4", Arrays.asList(point(300, 427), point(430, 418)));
+		assertBendpointContainment("Lane_5", Arrays.asList(point(300, 546), point(430, 546)));
+	}
+	
+	public void assertBendpointContainment(String containerId, List<Point> bendpoints) {
+
+		// given
+		ContainerShape shape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, containerId);
+		
+		// when
+		BendpointContainment containment = LayoutUtil.getContainerBendpoints(shape);
+		
+		// then
+		List<Point> containedPoints = containment.getContainedPoints();
+		
+		// should have correct size
+		assertThat(containedPoints).hasSize(bendpoints.size());
+		
+		// should contain all specified points
+		for (final Point point: bendpoints) {
+			assertThat(containedPoints).areExactly(1, equalTo(point));
+		}
+	}
+	
+	/**
+	 * Equal to matcher for points
+	 * 
+	 * @param point
+	 * 
+	 * @return
+	 */
+	private static Condition<? super Point> equalTo(final Point point) {
+		
+		return new Condition<Point>() {
+			
+			@Override
+			public boolean matches(Point p) {
+				return p.getX() == point.getX() && p.getY() == point.getY();
+			}
+		}.as(String.format("equal to <%s>", point));
 	}
 }

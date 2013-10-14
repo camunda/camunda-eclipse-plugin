@@ -55,8 +55,8 @@ public class MoveFromLaneToLaneFeature extends MoveLaneFeature {
 
 		modifyModelStructure(sourceLane, targetLane, movedLane);
 
-		FeatureSupport.redrawLaneSet(context.getSourceContainer());
-		FeatureSupport.redrawLaneSet(context.getTargetContainer());
+		FeatureSupport.redrawLaneSet(context.getSourceContainer(), getFeatureProvider());
+		FeatureSupport.redrawLaneSet(context.getTargetContainer(), getFeatureProvider());
 	}
 
 	private void modifyModelStructure(Lane sourceLane, Lane targetLane, Lane movedLane) {

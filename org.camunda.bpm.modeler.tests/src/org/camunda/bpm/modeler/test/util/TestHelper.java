@@ -9,8 +9,9 @@ import java.util.List;
 
 import junit.framework.AssertionFailedError;
 
-import org.camunda.bpm.modeler.core.model.Bpmn2ModelerResourceFactoryImpl;
+import org.camunda.bpm.modeler.runtime.engine.model.util.ModelResourceFactoryImpl;
 import org.camunda.bpm.modeler.test.Activator;
+import org.camunda.bpm.modeler.test.core.utils.ExceptionCapturingCommand;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.impl.DocumentRootImpl;
@@ -25,7 +26,9 @@ import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.ui.services.GraphitiUi;
+import org.junit.Ignore;
 
+@Ignore
 public class TestHelper {
 
 	public static ModelResources createModel(String bpmnDiagramUrl) {
@@ -113,7 +116,7 @@ public class TestHelper {
 	 * @return
 	 */
 	private static Bpmn2Resource createBpmn2Resource(URI uri) {
-		return (Bpmn2Resource) new Bpmn2ModelerResourceFactoryImpl().createResource(uri);
+		return (Bpmn2Resource) new ModelResourceFactoryImpl().createResource(uri);
 	}
 
 	/**
@@ -142,7 +145,46 @@ public class TestHelper {
 			}
 		}
 	}
+	
+	/**
+	 * Executes a model operation encapsulated in the given {@link Runnable} in the transactional 
+	 * scope of the given {@link TransactionalEditingDomain}. 
+	 * 
+	 * Throws a {@link TransactionalExecutionException} if the execution threw an exception.
+	 * 
+	 * @param editingDomain
+	 * @param runnable
+	 * 
+	 * @throws TransactionalExecutionException if the transactional execution resulted in an error
+	 */
+	public static void transactionalExecute(TransactionalEditingDomain editingDomain, Runnable runnable) throws TransactionalExecutionException {
+		
+		ExceptionCapturingCommand command = new ExceptionCapturingCommand(editingDomain, runnable);
+		editingDomain.getCommandStack().execute(command);
 
+		if (command.failedWithException()) {
+			throw new TransactionalExecutionException(command.getCapturedException());
+		}
+	}
+
+	/**
+	 * Executes a model operation encapsulated in the given {@link Runnable} in the transactional 
+	 * scope of the given {@link ModelResources}. 
+	 * 
+	 * Throws a {@link TransactionalExecutionException} if the execution threw an exception.
+	 * 
+	 * @param resources
+	 * @param runnable
+	 * 
+	 * @throws TransactionalExecutionException if the transactional execution resulted in an error
+	 * 
+	 * @see Util#transactionalExecute(TransactionalEditingDomain, Runnable)
+	 */
+	public static void transactionalExecute(ModelResources resources, Runnable runnable) throws TransactionalExecutionException {
+		TransactionalEditingDomain editingDomain = resources.getEditingDomain();
+		transactionalExecute(editingDomain, runnable);
+	}
+	
 	public static final class ModelResources {
 
 		private final String url;

@@ -72,19 +72,12 @@ public abstract class ResizeLaneSetFeature extends DefaultResizeBPMNShapeFeature
 		ContainerShape container = (ContainerShape) context.getShape();
 		ResizeDiff resizeDiff = resizeDiff(LayoutUtil.getRelativeBounds(container), getPostResizeBounds(context));
 		
-		FeatureSupport.recursiveResizeChildren(container, resizeDiff, getFeatureProvider());
+		FeatureSupport.resizeChildren(container, resizeDiff, getFeatureProvider());
 	}
 	
 	@Override
 	protected void updateDi(Shape shape) {
-		
-		FeatureSupport.eachLaneExecute((ContainerShape) shape, new LaneSetOperation() {
-			
-			@Override
-			public void execute(Shape lane) {
-				DIUtils.updateDIShape(lane);
-			}
-		});
+		FeatureSupport.redrawLaneSet((ContainerShape) shape, getFeatureProvider());
 	}
 	
 	@Override
@@ -98,7 +91,10 @@ public abstract class ResizeLaneSetFeature extends DefaultResizeBPMNShapeFeature
 
 	@Override
 	protected void layout(Shape shape, IResizeShapeContext context) {
-		FeatureSupport.eachLaneExecute((ContainerShape) shape, new LaneSetOperation() {
+		
+		ContainerShape rootContainer = FeatureSupport.getRootContainer((ContainerShape) shape);
+		
+		FeatureSupport.eachLaneExecute(rootContainer, new LaneSetOperation() {
 			
 			@Override
 			public void execute(Shape lane) {

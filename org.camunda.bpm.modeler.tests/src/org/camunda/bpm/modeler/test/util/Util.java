@@ -4,6 +4,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 import org.camunda.bpm.modeler.core.utils.LabelUtil;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.Connection;
@@ -54,6 +55,33 @@ public class Util {
 		return null;
 	}
 	
+	public static BPMNShape findBpmnShapeByBusinessObjectId(Shape shape, String id) {
+		
+		if (LabelUtil.isLabel(shape)) {
+			return null;
+		}
+		
+		if (shape.getLink() != null) {
+			BPMNShape bpmnShape = findBpmnShapeById(shape.getLink().getBusinessObjects() , id);
+			if (bpmnShape != null) {
+				return bpmnShape;
+			}
+		}
+		
+		if (shape instanceof ContainerShape) {
+			ContainerShape containerShape = (ContainerShape) shape;
+			EList<Shape> children = containerShape.getChildren();
+			for (Shape child : children) {
+				BPMNShape found = findBpmnShapeByBusinessObjectId(child, id);
+				if (found != null) {
+					return found;
+				}
+			}			
+		}
+		
+		return null;
+	}
+	
 	public static Connection findConnectionByBusinessObjectId(Diagram diagram, String id) {
 		for (Connection con : diagram.getConnections() ) {
 			if (findBusinessObjectById(con.getLink().getBusinessObjects() , id) != null) {
@@ -69,6 +97,18 @@ public class Util {
 				BaseElement baseElement = (BaseElement)eObject;
 				if (baseElement.getId() != null && baseElement.getId().equals(id)) {
 					return baseElement;
+				}
+			}
+		}
+		return null;
+	}
+	
+	protected static BPMNShape findBpmnShapeById(EList<EObject> businessObjects, String id) {
+		for (EObject eObject : businessObjects) {
+			if (eObject instanceof BPMNShape) {
+				BPMNShape bpmnShape = (BPMNShape) eObject;
+				if (bpmnShape.getBpmnElement().getId() != null && bpmnShape.getBpmnElement().getId().equals(id)) {
+					return bpmnShape;
 				}
 			}
 		}

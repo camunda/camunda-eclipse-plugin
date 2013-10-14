@@ -14,10 +14,8 @@ package org.camunda.bpm.modeler.core.features.activity;
 
 import static org.camunda.bpm.modeler.core.features.activity.UpdateActivityCompensateMarkerFeature.IS_COMPENSATE_PROPERTY;
 import static org.camunda.bpm.modeler.core.features.activity.UpdateActivityLoopAndMultiInstanceMarkerFeature.IS_LOOP_OR_MULTI_INSTANCE;
-import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
 
 import org.camunda.bpm.modeler.core.features.activity.UpdateActivityLoopAndMultiInstanceMarkerFeature.LoopCharacteristicType;
-import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.graphiti.datatypes.IRectangle;
@@ -94,27 +92,18 @@ public abstract class AbstractAddActivityFeature<T extends Activity> extends Abs
 		}
 		
 		super.adjustLocationAndSize(context, width, height);
-
+		
 		if (isImport(context)) {
 			return;
 		}
-
+		
 		if (context instanceof AddContext) {
-
 			AddContext addContext = (AddContext) context;
 			
-			ContainerShape targetContainer = context.getTargetContainer();
-			IRectangle targetBounds = LayoutUtil.getRelativeBounds(targetContainer);
-			
-			IRectangle box = LayoutUtil.box(rectangle(context.getX(), context.getY(), width, height), targetBounds, 10);
-			
-			addContext.setX(box.getX());
-			addContext.setY(box.getY());
-			addContext.setWidth(box.getWidth());
-			addContext.setHeight(box.getHeight());
+			addContext.setSize(width, height);
 		}
-	}
-
+	}	
+	
 	/**
 	 * Decorates the graphical element
 	 * 

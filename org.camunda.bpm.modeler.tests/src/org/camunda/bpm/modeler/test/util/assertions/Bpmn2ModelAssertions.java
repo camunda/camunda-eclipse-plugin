@@ -1,5 +1,6 @@
 package org.camunda.bpm.modeler.test.util.assertions;
 
+import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.draw2d.geometry.Vector;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
@@ -40,5 +41,9 @@ public class Bpmn2ModelAssertions extends Assertions {
 	
 	public static VectorAssert assertThat(Vector vector) {
 		return new VectorAssert(vector);
+	}
+	
+	public static BpmnShapeAssert assertThat(BPMNShape bpmnShape) {
+		return new BpmnShapeAssert(bpmnShape);
 	}
 }

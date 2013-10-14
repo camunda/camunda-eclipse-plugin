@@ -4,6 +4,7 @@ import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.ActivityPropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.CallActivityPropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.DecisionGatewayPropertiesBuilder;
+import org.camunda.bpm.modeler.ui.property.tabs.builder.DocumentationPropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.IdPropertyBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.LanePropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.NamePropertyBuilder;
@@ -26,17 +27,21 @@ import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.BusinessRuleTask;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.CatchEvent;
+import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.ExclusiveGateway;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.InclusiveGateway;
 import org.eclipse.bpmn2.IntermediateCatchEvent;
+import org.eclipse.bpmn2.IntermediateThrowEvent;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.ManualTask;
+import org.eclipse.bpmn2.MessageEventDefinition;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.ScriptTask;
+import org.eclipse.bpmn2.SendTask;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.bpmn2.StartEvent;
@@ -101,6 +106,8 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 			createGatewayComposite((Gateway) businessObject);
 		}
 		
+		createDocumentationField((BaseElement) businessObject);
+		
 		return parent;
 	}
 
@@ -159,7 +166,7 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 	
 	private void createTaskComposite(Task task) {
 		
-		if (task instanceof ServiceTask || task instanceof BusinessRuleTask) {
+		if (task instanceof ServiceTask || task instanceof BusinessRuleTask || task instanceof SendTask) {
 			new ServiceTypeControlsPropertiesBuilder(parent, section, task).create();
 		}
 		
@@ -171,7 +178,7 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 			new ScriptTaskPropertiesBuilder(parent, section, (ScriptTask) task).create();
 		} else
 		
-		if (task instanceof ServiceTask || task instanceof BusinessRuleTask) {
+		if (task instanceof ServiceTask || task instanceof BusinessRuleTask || task instanceof SendTask) {
 			new ServiceTaskPropertiesBuilder(parent, section, task).create();
 		}
 	}
@@ -187,9 +194,18 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 				createTimerCatchEventComposite(catchEvent);
 			}
 		}
+		
+		if (event instanceof IntermediateThrowEvent || event instanceof EndEvent) {
+			EventDefinition messageEventDefinition = ModelUtil.getEventDefinition(event, MessageEventDefinition.class);
+			if (messageEventDefinition != null) {
+				new ServiceTypeControlsPropertiesBuilder(parent, section, messageEventDefinition).create();
+				new ServiceTaskPropertiesBuilder(parent, section, messageEventDefinition).create();
+				new ActivityPropertiesBuilder(parent, section, messageEventDefinition).create();
+			}
+		}		
 	}
 	
-	// default fields (ID / Name) ///////////////////////////////////
+	// default fields (ID / Name/ Documentation) ///////////////////////////////////
 	
 	private void createNameField(BaseElement baseElement) {
 		new NamePropertyBuilder(parent, section, baseElement).create();
@@ -201,5 +217,9 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 		} else {
 			new IdPropertyBuilder(parent, section, baseElement).create();
 		}
+	}
+	
+	private void createDocumentationField(BaseElement baseElement) {
+		new DocumentationPropertiesBuilder(parent, section, baseElement).create();
 	}
 }

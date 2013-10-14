@@ -66,17 +66,16 @@ public class ModelResourceFactoryImpl extends Bpmn2ModelerResourceFactoryImpl {
         	}
         	
         	@Override
-        	public EStructuralFeature getAttribute(EClass eClass, String namespace, String name)
-        	  {
-        		List<EStructuralFeature> classAttributes = getAttributes(eClass);
-        		for (Iterator<EStructuralFeature> iterator = classAttributes.iterator(); iterator.hasNext();) {
+        	public EStructuralFeature getAttribute(EClass eClass, String namespace, String name) {
+				List<EStructuralFeature> classAttributes = getAttributes(eClass);
+				for (Iterator<EStructuralFeature> iterator = classAttributes.iterator(); iterator.hasNext();) {
 					EStructuralFeature eStructuralFeature = iterator.next();
-					if(name.equals(getName(eStructuralFeature))){
+					if (name.equals(getName(eStructuralFeature))) {
 						return eStructuralFeature;
 					}
 				}
-        		return super.getAttribute(eClass, namespace, name);
-        	  }
+				return super.getAttribute(eClass, namespace, name);
+			}
         };
         
         result.getDefaultSaveOptions().put(XMLResource.OPTION_EXTENDED_META_DATA, extendedMetadata);

@@ -12,6 +12,7 @@ import org.camunda.bpm.modeler.test.feature.AbstractFeatureTest;
 import org.camunda.bpm.modeler.test.util.DiagramResource;
 import org.camunda.bpm.modeler.test.util.Util;
 import org.eclipse.bpmn2.Task;
+import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -112,4 +113,30 @@ public class AddTaskFeatureTest extends AbstractFeatureTest {
 			.outgoingConnectionTo(preSplitConnectionEnd)
 				.hasExactBendpoints(expectedAfterSplitBendpoints);
 	}
+	
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/add/AddFlowElementFeatureTestBase.testLocation.bpmn")
+	public void testAddToDiagramOutsideTheDiagram() throws Exception {
+
+		// when
+		// element is added to it
+		addTask(diagramTypeProvider)
+			.atLocation(133, 1299)
+			.toContainer(diagram)
+			.execute();
+		
+		// get the added task
+		BPMNShape addedTask = (BPMNShape) Util.findBpmnShapeByBusinessObjectId(diagram, "Task_1");
+		
+		// then
+		assertThat(addedTask)
+			.bounds()
+			.x()
+				.isEqualTo(133 - 50);
+
+		assertThat(addedTask)
+			.bounds()
+			.y()
+				.isEqualTo(1299 - 40);
+	}	
 }

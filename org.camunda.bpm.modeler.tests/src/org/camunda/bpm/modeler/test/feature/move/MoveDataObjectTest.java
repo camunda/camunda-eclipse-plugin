@@ -17,7 +17,7 @@ public class MoveDataObjectTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/feature/move/AbstractMoveDataItemTest.testBase.bpmn")
 	public void testRetrieveLabel() {
-		Shape shape = Util.findShapeByBusinessObjectId(diagram, "DataObject_1");
+		Shape shape = Util.findShapeByBusinessObjectId(diagram, "DataObjectReference_1");
 		Shape label = LabelUtil.getLabelShape(shape, diagram);
 		
 		// then label should be retrievable via the get label utility
@@ -27,7 +27,7 @@ public class MoveDataObjectTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/feature/move/AbstractMoveDataItemTest.testBase.bpmn")
 	public void testSameContainer() {
-		Shape shape = Util.findShapeByBusinessObjectId(diagram, "DataObject_1");
+		Shape shape = Util.findShapeByBusinessObjectId(diagram, "DataObjectReference_1");
 		Shape label = LabelUtil.getLabelShape(shape, diagram);
 		
 		// label and shape should have same container
@@ -37,7 +37,7 @@ public class MoveDataObjectTest extends AbstractFeatureTest {
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/feature/move/AbstractMoveDataItemTest.testBase.bpmn")
 	public void testMoveLabelOnShape() {
-		Shape shape = Util.findShapeByBusinessObjectId(diagram, "DataObject_1");
+		Shape shape = Util.findShapeByBusinessObjectId(diagram, "DataObjectReference_1");
 		Shape label = LabelUtil.getLabelShape(shape, diagram);
 		
 		move(label, diagramTypeProvider)

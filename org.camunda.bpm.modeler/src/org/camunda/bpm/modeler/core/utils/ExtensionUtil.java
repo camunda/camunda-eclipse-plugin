@@ -34,7 +34,7 @@ public class ExtensionUtil {
 
 	/**
 	 * Given an object, the feature and the feature attribute name, return the
-	 * feature attributes value if the the attribute exists.
+	 * feature attributes value if the attribute exists.
 	 * 
 	 * @param object
 	 * @param feature
@@ -53,14 +53,15 @@ public class ExtensionUtil {
 			
 			if (featureObject instanceof FeatureMapUtil.FeatureEList<?>) {
 				FeatureMapUtil.FeatureEList<?> featureList = (FeatureMapUtil.FeatureEList<?>) featureObject;
-				if (featureList.size() == 1) {
-					EObject eFeatureObject = (EObject) featureList.get(0);
-					EList<EStructuralFeature> features = eFeatureObject.eClass().getEAllStructuralFeatures();
-					for (EStructuralFeature f: features) {
-						if (attributeName.equals(f.getName())) {
-							return eFeatureObject.eGet(f);
-						}
-					}
+				
+				for (Object o: featureList) {
+	  				EObject eFeatureObject = (EObject) o;
+	  				EList<EStructuralFeature> features = eFeatureObject.eClass().getEAllStructuralFeatures();
+	  				for (EStructuralFeature f: features) {
+	  					if (attributeName.equals(f.getName()) && eFeatureObject.eGet(f) != null) {
+	  						return eFeatureObject.eGet(f);
+	  					}
+	  				}
 				}
 			}
 			
@@ -172,8 +173,12 @@ public class ExtensionUtil {
 		EStructuralFeature extensionValuesFeature = object.eClass().getEStructuralFeature("extensionValues");
 		EList<ExtensionAttributeValue> extensionAttributesList = (EList<ExtensionAttributeValue>) object.eGet(extensionValuesFeature);
 		
-		for (ExtensionAttributeValue extensionAttributes : extensionAttributesList) {
+ 		for (ExtensionAttributeValue extensionAttributes : extensionAttributesList) {
 			FeatureMap featureMap = extensionAttributes.getValue();
+      if (featureMap != null && featureMap.size() == 1) {
+        object.eUnset(extensionValuesFeature);
+        break;
+      }
 			ListIterator<Entry> iterator = featureMap.listIterator();
 			while (iterator.hasNext()) {
 				Entry e = iterator.next();
@@ -184,6 +189,38 @@ public class ExtensionUtil {
 		}
 	}
 	
+	
+	 /**
+   * Removes the extension with the given containmentFeature, valueFeature and rawValue from the object
+   * 
+   * @param object
+   * @param containmentFeature
+   * @param valueFeature
+   * @param rawValue
+   */
+  public static void removeExtensionByValue(EObject object, EStructuralFeature containmentFeature, EStructuralFeature valueFeature, Object rawValue) {
+    EStructuralFeature extensionValuesFeature = object.eClass().getEStructuralFeature("extensionValues");
+    EList<ExtensionAttributeValue> extensionAttributesList = (EList<ExtensionAttributeValue>) object.eGet(extensionValuesFeature);
+    
+    for (ExtensionAttributeValue extensionAttributes : extensionAttributesList) {
+      FeatureMap featureMap = extensionAttributes.getValue();
+      if (featureMap != null && featureMap.size() == 1) {
+        object.eUnset(extensionValuesFeature);
+        break;
+      }
+      ListIterator<Entry> iterator = featureMap.listIterator();
+      while (iterator.hasNext()) {
+        Entry e = iterator.next();
+        if (e.getEStructuralFeature().equals(containmentFeature)) {
+          EObject eObject = (EObject)e.getValue();
+          if (eObject.eGet(valueFeature) != null && eObject.eGet(valueFeature).equals(rawValue)) {
+            iterator.remove();
+          }
+        }
+      }
+    }
+  }
+  
 	/**
 	 * This method is evil as it may open a transaction (!!!)
 	 * @param object
@@ -272,4 +309,5 @@ public class ExtensionUtil {
 	protected static ExtensionAttributeValue createExtensionAttributeValue() {
 		return Bpmn2Factory.eINSTANCE.createExtensionAttributeValue();
 	}
+	
 }

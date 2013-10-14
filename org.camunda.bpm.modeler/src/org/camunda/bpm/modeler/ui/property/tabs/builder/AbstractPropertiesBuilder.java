@@ -37,7 +37,7 @@ public abstract class AbstractPropertiesBuilder<T extends BaseElement> {
 
 		// General challenge: We want the scroll panel to 
 		// to update after the change in child elements 
-		// The trick to achive this is to send the resize event
+		// The trick to achieve this is to send the resize event
 		// to that particular composite.
 		if (!parent.isDisposed()) {
 			

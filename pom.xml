@@ -16,7 +16,7 @@
 
 	<licenses>
 		<license>
-			<name>commercial</name>
+			<name>Eclipse Public License</name>
 		</license>
 	</licenses>
 
@@ -52,11 +52,12 @@
 				<platform-version>[3.7,3.8)</platform-version>
 			</properties>
 		</profile>
+
 	</profiles>
 
 	<modules>
 		<module>org.camunda.bpm.modeler</module>
-		<!--module>org.camunda.bpm.modeler.tests</module-->
+		<module>org.camunda.bpm.modeler.tests</module>
 		<module>org.camunda.bpm.modeler.feature</module>
 		<module>org.camunda.bpm.modeler.updatesite.feature</module>
 	</modules>
@@ -70,8 +71,7 @@
 
 		<repository>
 			<id>eclipse-bpmn2</id>
-			<!--  TODO: change this when BPMN2 metamodel finds a premanent home -->
-			<url>http://download.eclipse.org/bpmn2-modeler/bpmn2/site</url>
+			<url>http://download.eclipse.org/modeling/mdt/bpmn2/updates/milestones/S20130423/</url>
 			<layout>p2</layout>
 			<snapshots>
 				<enabled>true</enabled>
@@ -95,7 +95,7 @@
 
 		<repository>
 			<id>eclipse-graphiti</id>
-			<url>http://download.eclipse.org/graphiti/updates/0.9.0</url>
+			<url>http://archive.eclipse.org/graphiti/updates/0.9.0/</url>
 			<layout>p2</layout>
 			<snapshots>
 				<enabled>true</enabled>
@@ -133,7 +133,7 @@
 
 	<pluginRepositories>
 		<pluginRepository>
-			<!-- need maven-findbugs-2.3.2-SNAPSHOT, see http://jira.codehaus.org/browse/MFINDBUGS-122 
+			<!-- need maven-findbugs-2.3.2-SNAPSHOT, see http://jira.codehaus.org/browse/MFINDBUGS-122
 				remove this when this version is released -->
 			<id>codehaus.snapshots</id>
 			<url>http://snapshots.repository.codehaus.org/</url>
@@ -169,7 +169,7 @@
 					</configuration>
 				</plugin>
 				<plugin>
-					<!-- TODO remove workaround when https://issues.sonatype.org/browse/TYCHO-473 
+					<!-- TODO remove workaround when https://issues.sonatype.org/browse/TYCHO-473
 						is fixed -->
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>maven-osgi-source-plugin</artifactId>

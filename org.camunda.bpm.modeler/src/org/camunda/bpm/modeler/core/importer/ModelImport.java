@@ -21,6 +21,7 @@ import org.camunda.bpm.modeler.core.importer.handlers.ArtifactShapeHandler;
 import org.camunda.bpm.modeler.core.importer.handlers.AssociationShapeHandler;
 import org.camunda.bpm.modeler.core.importer.handlers.DataInputAssociationShapeHandler;
 import org.camunda.bpm.modeler.core.importer.handlers.DataInputShapeHandler;
+import org.camunda.bpm.modeler.core.importer.handlers.DataObjectReferenceShapeHandler;
 import org.camunda.bpm.modeler.core.importer.handlers.DataObjectShapeHandler;
 import org.camunda.bpm.modeler.core.importer.handlers.DataOutputAssociationShapeHandler;
 import org.camunda.bpm.modeler.core.importer.handlers.DataOutputShapeHandler;
@@ -37,20 +38,23 @@ import org.camunda.bpm.modeler.core.importer.handlers.TaskShapeHandler;
 import org.camunda.bpm.modeler.core.importer.util.ErrorLogger;
 import org.camunda.bpm.modeler.core.importer.util.ModelHelper;
 import org.camunda.bpm.modeler.core.layout.util.ConversionUtil;
-import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.core.utils.ScrollUtil;
+import org.camunda.bpm.modeler.core.utils.transform.Transformer;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Artifact;
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
+import org.eclipse.bpmn2.Bpmn2Factory;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.Collaboration;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.DataObject;
+import org.eclipse.bpmn2.DataObjectReference;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.DataStoreReference;
@@ -374,10 +378,8 @@ public class ModelImport {
 	protected void handleParticipant(Participant participant, ContainerShape container) {
 		
 		Process process = participant.getProcessRef();
-		if (process != null) {
-			if (process.eIsProxy()) {
-				throw new InvalidContentException("Invalid process referenced by participant", participant);
-			}
+		if (process != null && process.eIsProxy()) {
+			throw new InvalidContentException("Invalid process referenced by participant", participant);
 		}
 		
 		// TODO: process.isIsClosed == !collapsed ?
@@ -445,11 +447,9 @@ public class ModelImport {
 				}
 			}
 		}
-		
-		if (unreferencedFlowElements != null) {
-			// render 
-			handleFlowElements(containerShape, unreferencedFlowElements);
-		}
+	
+		// render 
+		handleFlowElements(containerShape, unreferencedFlowElements);
 	}
 
 	protected void handleCollapsedParticipant(Participant participant, ContainerShape container) {
@@ -610,15 +610,20 @@ public class ModelImport {
 	 * @param flowElementsToBeDrawn
 	 */
 	protected void handleFlowElements(ContainerShape container, List<FlowElement> flowElementsToBeDrawn) {
-		
+
 		List<BoundaryEvent> boundaryEvents = new ArrayList<BoundaryEvent>();
+		List<DataObject> dataObjects = new ArrayList<DataObject>();
 		
 		for (FlowElement flowElement: flowElementsToBeDrawn) {
 			
 			if (flowElement instanceof BoundaryEvent) {
+				// defer handling of boundary events
+				// until the elements they are attached to are
+				// rendered
 				boundaryEvents.add((BoundaryEvent) flowElement);
+				
 			} else
-		    if (flowElement instanceof Gateway) {
+			if (flowElement instanceof Gateway) {
 				handleGateway((Gateway) flowElement, container);
 				
 			} else if (flowElement instanceof SubProcess) {
@@ -633,22 +638,34 @@ public class ModelImport {
 			} else if (flowElement instanceof Event) {
 				handleEvent((Event) flowElement, container);
 				
-			} else if (flowElement instanceof DataObject) {
-				handleDataObject((DataObject) flowElement, container);
+			} else if (flowElement instanceof DataObjectReference) {
+				handleDataObjectReference((DataObjectReference) flowElement, container);
+			} else
+			if (flowElement instanceof DataObject) {
+				// handle dataobjects because they may need 
+				// conversion to dataObjecReferences
+				dataObjects.add((DataObject) flowElement);
 				
 			} else if (flowElement instanceof DataStoreReference) {
 				handleDataStoreReference((DataStoreReference) flowElement, container);
 				
 			} else {
-				// System.out.println("Unhandled: " + flowElement);
+				// yea, unhandled element
 			}
-		    
-		    if (flowElement instanceof Activity) {
-		    	Activity activity = (Activity) flowElement;
-		    	
+			
+	    if (flowElement instanceof Activity) {
+				Activity activity = (Activity) flowElement;
+				
 				handleDataInputAssociations(activity.getDataInputAssociations(), container);
 				handleDataOutputAssociations(activity.getDataOutputAssociations(), container);
-		    }
+			}
+		}
+		
+		for (DataObject dataObject: dataObjects) {
+			// legacy import for data object as flow element
+			// (should be data object reference instead)
+			// we did that wrong in the old camunda modeler days
+			handleDataObject(dataObject, container);
 		}
 		
 		// handle boundary events last
@@ -657,9 +674,46 @@ public class ModelImport {
 		}
 	}
 
-	private void handleDataObject(DataObject flowElement, ContainerShape container) {
+	private void handleDataObjectReference(DataObjectReference flowElement, ContainerShape container) {
 		
-		handleDiagramElement(flowElement, container, new DataObjectShapeHandler(this));
+		handleDiagramElement(flowElement, container, new DataObjectReferenceShapeHandler(this));
+	}
+
+	private void handleDataObject(DataObject dataObject, ContainerShape container) {
+
+		// import only data objects for which actual DI data exists 
+		// (all others must have been referenced by dataObjectReferences)
+		
+		if (getDiagramElementMap().get(dataObject.getId()) != null) {
+			
+			DataObjectReference dataObjectReference = Bpmn2Factory.eINSTANCE.createDataObjectReference();
+
+			Transformer transformer = new Transformer(dataObject);
+
+			dataObjectReference.setName(dataObject.getName());
+
+			// assign id to newly created reference
+			ModelUtil.setID(dataObjectReference, dataObject.eResource());
+			
+			// swap pointers for data object reference
+			transformer.swapCrossReferences(dataObjectReference);
+			
+			// link to original data object
+			dataObjectReference.setDataObjectRef(dataObject);
+			
+			// add reference as dataObject sibling to resource
+			List<EObject> flowElements = (List<EObject>) dataObject.eContainer().eGet(Bpmn2Package.eINSTANCE.getFlowElementsContainer_FlowElements());
+			flowElements.add(dataObjectReference);
+			
+			// update di
+			DiagramElement bpmnShape = getDiagramElementMap().remove(dataObject.getId());
+			getDiagramElementMap().put(dataObjectReference.getId(), bpmnShape);
+			
+			log(new AutomaticConversionWarning("DataObjectReference has been inserted for DataObject", dataObject, dataObjectReference));
+			
+			// render data object reference instead
+			handleDataObjectReference(dataObjectReference, container);
+		}
 	}
 
 	protected void handleSubProcess(SubProcess subProcess, ContainerShape container) {

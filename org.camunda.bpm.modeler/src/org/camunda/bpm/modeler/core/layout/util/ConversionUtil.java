@@ -24,9 +24,13 @@ import org.eclipse.graphiti.services.Graphiti;
  *
  */
 public class ConversionUtil {
-	
+
 	public static Vector vector(Point point) {
 		return new Vector(point.getX(), point.getY());
+	}
+
+	public static Vector vector(IRectangle rectangle) {
+		return new Vector(rectangle.getX(), rectangle.getY());
 	}
 
 	public static Vector vector(ILocation l) {

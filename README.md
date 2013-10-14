@@ -22,15 +22,16 @@ Features
 Resources
 ---------------
 
+* [Changelog](CHANGELOG.md)
 * [Download](http://camunda.org/download.html) / [Update site](http://camunda.org/release/camunda-modeler/update-sites/latest/site/)
 * [User forum](https://groups.google.com/forum/#!forum/camunda-bpm-users)
 * [Development forum](https://groups.google.com/forum/#!forum/camunda-bpm-dev)
-* [Issue tracker](https://github.com/camunda/camunda-modeler/issues)
+* [Issue tracker](https://app.camunda.com/jira)
 
 Contribute
 --------------
 
-If you would like to work on the modeler, please read our [contribution guidelines](https://github.com/camunda/camunda-modeler/blob/develop/CONTRIBUTING.md).
+If you would like to work on the modeler, please read our [contribution guidelines](CONTRIBUTING.md).
 
 Licensing
 -------------

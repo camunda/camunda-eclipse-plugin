@@ -16,14 +16,10 @@ import java.util.List;
 
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
-import org.camunda.bpm.modeler.test.layout.util.LayoutUtilTest;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
-import org.eclipse.graphiti.mm.pictograms.impl.AnchorImpl;
-import org.eclipse.graphiti.services.Graphiti;
 import org.fest.assertions.api.AbstractAssert;
 import static org.fest.assertions.api.Assertions.*;
 

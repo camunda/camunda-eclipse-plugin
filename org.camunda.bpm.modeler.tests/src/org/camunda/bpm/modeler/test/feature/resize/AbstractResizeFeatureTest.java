@@ -12,6 +12,7 @@ import org.camunda.bpm.modeler.core.layout.util.RectangleUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
 import org.camunda.bpm.modeler.test.feature.AbstractFeatureTest;
 import org.camunda.bpm.modeler.test.util.Util;
+import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
@@ -30,6 +31,7 @@ public class AbstractResizeFeatureTest extends AbstractFeatureTest {
 
 		// given
 		Shape participantShape = Util.findShapeByBusinessObjectId(diagram, shapeId);
+		BPMNShape bpmnShape = Util.findBpmnShapeByBusinessObjectId(diagram, shapeId);
 		
 		IRectangle preResizeBounds = LayoutUtil.getAbsoluteBounds(participantShape);
 		
@@ -42,25 +44,39 @@ public class AbstractResizeFeatureTest extends AbstractFeatureTest {
 		assertThat(participantShape)
 			.bounds()
 				.isEqualTo(preResizeBounds);
+
+		assertThat(bpmnShape)
+		.bounds()
+			.isEqualTo(preResizeBounds);
 	}
 	
 	protected void assertResize(String shapeId, Point resizeDelta, Sector resizeDirection) {
+		assertResize(shapeId, resizeDelta, resizeDelta, resizeDirection);
+	}
+	
+	protected void assertResize(String shapeId, Point resizeDelta, Point expectedResizeDelta, Sector resizeDirection) {
 
 		// given
-		Shape participantShape = Util.findShapeByBusinessObjectId(diagram, shapeId);
+		Shape shape = Util.findShapeByBusinessObjectId(diagram, shapeId);
+		BPMNShape bpmnShape = Util.findBpmnShapeByBusinessObjectId(diagram, shapeId);
 		
-		IRectangle preResizeBounds = LayoutUtil.getAbsoluteBounds(participantShape);
-		IRectangle expectedPostResizeBounds = RectangleUtil.resize(preResizeBounds, resizeDelta, resizeDirection);
+		IRectangle preResizeBounds = LayoutUtil.getAbsoluteBounds(shape);
+		IRectangle expectedPostResizeBounds = RectangleUtil.resize(preResizeBounds, expectedResizeDelta, resizeDirection);
 		
 		// when
-		resize(participantShape, getDiagramTypeProvider())
+		resize(shape, getDiagramTypeProvider())
 			.by(resizeDelta, resizeDirection)
 			.execute();
 		
 		// then
-		assertThat(participantShape)
+		assertThat(shape)
 			.bounds()
 				.isEqualTo(expectedPostResizeBounds);
+		
+		assertThat(bpmnShape)
+			.bounds()
+				.isEqualTo(expectedPostResizeBounds);
+		
 	}
 
 	/**

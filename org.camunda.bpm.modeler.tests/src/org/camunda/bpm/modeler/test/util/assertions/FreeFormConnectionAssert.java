@@ -13,7 +13,6 @@ package org.camunda.bpm.modeler.test.util.assertions;
 import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.point;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
@@ -26,7 +25,6 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.fest.assertions.api.AbstractAssert;
 import org.fest.assertions.api.Assertions;
-import org.fest.assertions.api.Fail;
 
 public class FreeFormConnectionAssert extends AbstractAssert<FreeFormConnectionAssert, FreeFormConnection> {
 
