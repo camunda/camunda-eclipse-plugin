@@ -54,7 +54,7 @@ public class Transformer {
 	 * Transforms the target object into an {@link EObject} with the given 
 	 * type.
 	 * 
-	 * Problems occuring during the transformation are logged in the {@link CopyProblemLog} 
+	 * Problems occurring during the transformation are logged in the {@link CopyProblemLog} 
 	 * and may be queried via {@link #getRecordedWarnings()}.
 	 * 
 	 * @param newCls
@@ -101,7 +101,7 @@ public class Transformer {
 	 * Copies the target with all (compatible) properties to 
 	 * a new {@link EObject} with the given {@link EClass}.
 	 * 
-	 * Problems occuring during the copy operation are logged in 
+	 * Problems occurring during the copy operation are logged in 
 	 * the {@link CopyProblemLog} and may be queried via 
 	 * {@link #getRecordedWarnings()}.
 	 * 
