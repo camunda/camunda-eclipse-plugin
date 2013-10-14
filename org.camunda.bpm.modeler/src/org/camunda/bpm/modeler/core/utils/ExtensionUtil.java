@@ -172,13 +172,13 @@ public class ExtensionUtil {
 
 		EStructuralFeature extensionValuesFeature = object.eClass().getEStructuralFeature("extensionValues");
 		EList<ExtensionAttributeValue> extensionAttributesList = (EList<ExtensionAttributeValue>) object.eGet(extensionValuesFeature);
-		
- 		for (ExtensionAttributeValue extensionAttributes : extensionAttributesList) {
+
+		for (ExtensionAttributeValue extensionAttributes : extensionAttributesList) {
 			FeatureMap featureMap = extensionAttributes.getValue();
-      if (featureMap != null && featureMap.size() == 1) {
-        object.eUnset(extensionValuesFeature);
-        break;
-      }
+			if (featureMap != null && featureMap.size() == 1) {
+				object.eUnset(extensionValuesFeature);
+				break;
+			}
 			ListIterator<Entry> iterator = featureMap.listIterator();
 			while (iterator.hasNext()) {
 				Entry e = iterator.next();
@@ -190,36 +190,37 @@ public class ExtensionUtil {
 	}
 	
 	
-	 /**
-   * Removes the extension with the given containmentFeature, valueFeature and rawValue from the object
-   * 
-   * @param object
-   * @param containmentFeature
-   * @param valueFeature
-   * @param rawValue
-   */
-  public static void removeExtensionByValue(EObject object, EStructuralFeature containmentFeature, EStructuralFeature valueFeature, Object rawValue) {
-    EStructuralFeature extensionValuesFeature = object.eClass().getEStructuralFeature("extensionValues");
-    EList<ExtensionAttributeValue> extensionAttributesList = (EList<ExtensionAttributeValue>) object.eGet(extensionValuesFeature);
-    
-    for (ExtensionAttributeValue extensionAttributes : extensionAttributesList) {
-      FeatureMap featureMap = extensionAttributes.getValue();
-      if (featureMap != null && featureMap.size() == 1) {
-        object.eUnset(extensionValuesFeature);
-        break;
-      }
-      ListIterator<Entry> iterator = featureMap.listIterator();
-      while (iterator.hasNext()) {
-        Entry e = iterator.next();
-        if (e.getEStructuralFeature().equals(containmentFeature)) {
-          EObject eObject = (EObject)e.getValue();
-          if (eObject.eGet(valueFeature) != null && eObject.eGet(valueFeature).equals(rawValue)) {
-            iterator.remove();
-          }
-        }
-      }
-    }
-  }
+	/**
+	 * Removes the extension with the given containmentFeature, valueFeature and
+	 * rawValue from the object
+	 * 
+	 * @param object
+	 * @param containmentFeature
+	 * @param valueFeature
+	 * @param rawValue
+	 */
+	public static void removeExtensionByValue(EObject object, EStructuralFeature containmentFeature, EStructuralFeature valueFeature, Object rawValue) {
+		EStructuralFeature extensionValuesFeature = object.eClass().getEStructuralFeature("extensionValues");
+		EList<ExtensionAttributeValue> extensionAttributesList = (EList<ExtensionAttributeValue>) object.eGet(extensionValuesFeature);
+
+		for (ExtensionAttributeValue extensionAttributes : extensionAttributesList) {
+			FeatureMap featureMap = extensionAttributes.getValue();
+			if (featureMap != null && featureMap.size() == 1) {
+				object.eUnset(extensionValuesFeature);
+				break;
+			}
+			ListIterator<Entry> iterator = featureMap.listIterator();
+			while (iterator.hasNext()) {
+				Entry e = iterator.next();
+				if (e.getEStructuralFeature().equals(containmentFeature)) {
+					EObject eObject = (EObject) e.getValue();
+					if (eObject.eGet(valueFeature) != null && eObject.eGet(valueFeature).equals(rawValue)) {
+						iterator.remove();
+					}
+				}
+			}
+		}
+	}
   
 	/**
 	 * This method is evil as it may open a transaction (!!!)

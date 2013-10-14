@@ -33,7 +33,7 @@ public class HelpText {
 	public static final String CALL_ACTIVITY_ALL_VARIABLES_OUT = String.format(
 	    "Pass all process variables from subprocess to mainprocess. See for more information <a href=\"%s\">user guide</a>.", CALL_ACTIVITY_VARIABLES_GUIDE);
 	
-  public static final String CALL_ACTIVITY_BUSINESS_KEY = String.format(
-      "Pass business key from mainprocess to subprocess. See for more information <a href=\"%s\">user guide</a>.", CALL_ACTIVITY_BUSINESS_KEY_GUIDE);
+	public static final String CALL_ACTIVITY_BUSINESS_KEY = String.format(
+        "Pass business key from mainprocess to subprocess. See for more information <a href=\"%s\">user guide</a>.", CALL_ACTIVITY_BUSINESS_KEY_GUIDE);
 	
 }
