@@ -26,7 +26,6 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.graphiti.IExecutionInfo;
-import org.eclipse.graphiti.features.IFeatureAndContext;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICreateContext;
@@ -109,23 +108,9 @@ public abstract class AbstractBpmn2CreateFeature<T extends BaseElement>
 	public void putBusinessObject(ICreateContext context, T businessObject) {
 		context.putProperty(PropertyNames.BUSINESS_OBJECT, businessObject);
 	}
-
+	
+	@Override
 	public void postExecute(IExecutionInfo executionInfo) {
-		for (IFeatureAndContext fc : executionInfo.getExecutionList()) {
-			IContext context = fc.getContext();
-			if (context instanceof ICreateContext) {
-				ICreateContext cc = (ICreateContext)context;
-				T businessObject = getBusinessObject(cc);
-				
-				// FIXME Cleanup
-				
-//				Bpmn2Preferences prefs = (Bpmn2Preferences) ((DiagramEditor) getDiagramEditor()).getAdapter(Bpmn2Preferences.class);
-//				if (prefs!=null && prefs.getShowPopupConfigDialog(businessObject)) {
-//					ObjectEditingDialog dialog =
-//							new ObjectEditingDialog((DiagramEditor)getDiagramEditor(), businessObject);
-//					dialog.open();
-//				}
-			}
-		}
+		
 	}
 }

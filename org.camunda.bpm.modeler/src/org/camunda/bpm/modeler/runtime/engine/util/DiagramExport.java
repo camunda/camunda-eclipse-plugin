@@ -132,7 +132,12 @@ public class DiagramExport extends AbstractCustomFeature {
 		if (featureProvider != null) {
 			resource = featureProvider.getDiagramTypeProvider().getDiagram().eResource();
 		} else {
-			resource = BPMN2Editor.getActiveEditor().getDiagramResource();
+			BPMN2Editor editor = BPMN2Editor.getActiveEditor();
+			if (editor == null) {
+				return null;
+			}
+			
+			resource = editor.getDiagramResource();
 		}
 		
 		if (isModelResource(resource)) {

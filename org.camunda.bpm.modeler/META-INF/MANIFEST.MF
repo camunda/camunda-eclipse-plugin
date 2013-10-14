@@ -267,6 +267,7 @@ Export-Package: org.camunda.bpm.modeler.core;
    org.eclipse.graphiti.mm,
    org.eclipse.swt.widgets,
    org.eclipse.graphiti.mm.algorithms",
+ org.camunda.bpm.modeler.core.utils.transform,
  org.camunda.bpm.modeler.core.validation;
   uses:="org.eclipse.emf.ecore.resource,
    org.eclipse.core.runtime,

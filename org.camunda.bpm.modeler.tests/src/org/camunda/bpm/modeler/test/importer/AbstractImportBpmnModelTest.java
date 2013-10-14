@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.test.importer;
 
+import static org.fest.assertions.api.Assertions.assertThat;
+
 import org.camunda.bpm.modeler.core.importer.ModelImport;
 import org.camunda.bpm.modeler.test.AbstractEditorTest;
 
@@ -26,5 +28,25 @@ public abstract class AbstractImportBpmnModelTest extends AbstractEditorTest {
 	 */
 	protected ModelImport createModelImport() {
 		return new ModelImport(diagramTypeProvider, bpmnResource);
+	}
+	
+	/**
+	 * Import diagram and raise an {@link AssertionError} if warnings are found.
+	 * 
+	 * @return
+	 */
+	protected ModelImport importDiagram() {
+		ModelImport importer = importDiagramIgnoreWarnings();
+		
+		assertThat(importer.getImportWarnings()).as("Import warnings").isEmpty();
+		
+		return importer;
+	}
+	
+	protected ModelImport importDiagramIgnoreWarnings() {
+		ModelImport importer = createModelImport();
+		importer.execute();
+		
+		return importer;
 	}
 }

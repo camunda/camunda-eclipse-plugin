@@ -56,6 +56,6 @@ public class ImportException extends RuntimeException {
 	}
 	
 	protected String contextToString() {
-		return element.getClass().getSimpleName().replaceAll("Impl", "") + "#" + ModelUtil.getFeature(element, "id");
+		return "Element " + ModelUtil.getFeature(element, "id");
 	}
 }

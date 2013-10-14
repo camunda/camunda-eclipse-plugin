@@ -3,7 +3,6 @@ package org.camunda.bpm.modeler.test.importer.events;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.camunda.bpm.modeler.core.importer.ModelImport;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.test.importer.AbstractImportBpmnModelTest;
 import org.camunda.bpm.modeler.test.util.DiagramResource;
@@ -26,8 +25,10 @@ public class ImportEventDefinitionTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportEventDefinitions() {
-		ModelImport importer = createModelImport();
-		importer.execute();
+		// when
+		importDiagram();
+		
+		// then
 		Set<EventDefinition> eventDefinitions = new HashSet<EventDefinition>();
 		EList<Shape> children = diagram.getChildren();
 		for (Shape child : children) {

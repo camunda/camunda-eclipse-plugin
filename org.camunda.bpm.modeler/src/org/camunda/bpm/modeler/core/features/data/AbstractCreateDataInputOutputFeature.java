@@ -15,10 +15,7 @@ package org.camunda.bpm.modeler.core.features.data;
 import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.camunda.bpm.modeler.core.utils.ContextUtil;
-import org.camunda.bpm.modeler.core.utils.FeatureSupport;
-import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.ItemAwareElement;
-import org.eclipse.bpmn2.Lane;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateContext;
 
