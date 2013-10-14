@@ -6,11 +6,9 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.LabelUtil;
-import org.camunda.bpm.modeler.test.feature.AbstractFeatureTest;
+import org.camunda.bpm.modeler.test.importer.AbstractImportBpmnModelTest;
 import org.camunda.bpm.modeler.test.util.DiagramResource;
 import org.camunda.bpm.modeler.test.util.Util;
-import org.eclipse.graphiti.datatypes.ILocation;
-import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -22,18 +20,18 @@ import org.junit.Test;
  * 
  * @author nico.rehwaldt
  */
-public class ImportLabelTest extends AbstractFeatureTest {
+public class ImportLabelTest extends AbstractImportBpmnModelTest {
 
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/importer/label/ImportLabelTest.testBase.bpmn")
 	public void testImportLabelWithDiBounds() {
-		
+
 		// given
 		Point expectedPosition = point(150, 190);
 		String elementId = "StartEvent_1";
-		
+
 		// when
-		// import happened
+		importDiagram();
 		
 		// then
 		assertHasLabelFlowElementLabelWithPosition(elementId, expectedPosition);
@@ -46,9 +44,9 @@ public class ImportLabelTest extends AbstractFeatureTest {
 		// given
 		Point expectedPosition = point(350, 180);
 		String elementId = "InclusiveGateway_1";
-		
+
 		// when
-		// import happened
+		importDiagram();
 		
 		// then
 		assertHasLabelFlowElementLabelWithPosition(elementId, expectedPosition);
@@ -61,9 +59,9 @@ public class ImportLabelTest extends AbstractFeatureTest {
 		// given
 		Point expectedPosition = point(500, 175);
 		String elementId = "_DataStoreReference_3";
-		
+
 		// when
-		// import happened
+		importDiagram();
 		
 		// then
 		assertHasLabelFlowElementLabelWithPosition(elementId, expectedPosition);
@@ -75,10 +73,10 @@ public class ImportLabelTest extends AbstractFeatureTest {
 		
 		// given
 		Point expectedPosition = point(678, 260);
-		String elementId = "DataObject_1";
-		
+		String elementId = "DataObjectReference_1";
+
 		// when
-		// import happened
+		importDiagram();
 		
 		// then
 		assertHasLabelFlowElementLabelWithPosition(elementId, expectedPosition);
@@ -91,9 +89,9 @@ public class ImportLabelTest extends AbstractFeatureTest {
 		// given
 		Point expectedPosition = point(798, 225);
 		String elementId = "DataOutput_1";
-		
+
 		// when
-		// import happened
+		importDiagram();
 		
 		// then
 		assertHasLabelFlowElementLabelWithPosition(elementId, expectedPosition);
@@ -106,9 +104,9 @@ public class ImportLabelTest extends AbstractFeatureTest {
 		// given
 		Point expectedPosition = point(166, 370);
 		String elementId = "BoundaryEvent_1";
-		
+
 		// when
-		// import happened
+		importDiagram();
 		
 		// then
 		assertHasLabelFlowElementLabelWithPosition(elementId, expectedPosition);
@@ -121,9 +119,9 @@ public class ImportLabelTest extends AbstractFeatureTest {
 		// given
 		Point expectedPosition = point(338, 371);
 		String elementId = "BoundaryEvent_2";
-		
+
 		// when
-		// import happened
+		importDiagram();
 		
 		// then
 		assertHasLabelFlowElementLabelWithPosition(elementId, expectedPosition);
@@ -136,9 +134,9 @@ public class ImportLabelTest extends AbstractFeatureTest {
 		// given
 		Point expectedPosition = point(818, 371);
 		String elementId = "BoundaryEvent_3";
-		
+
 		// when
-		// import happened
+		importDiagram();
 		
 		// then
 		assertHasLabelFlowElementLabelWithPosition(elementId, expectedPosition);
@@ -151,9 +149,9 @@ public class ImportLabelTest extends AbstractFeatureTest {
 		// given
 		Point expectedPosition = point(716, 288);
 		String elementId = "SequenceFlow_2";
-		
+
 		// when
-		// import happened
+		importDiagram();
 		
 		// then
 		assertSequenceFlowLabelWithPosition(elementId, expectedPosition);
@@ -166,9 +164,9 @@ public class ImportLabelTest extends AbstractFeatureTest {
 		// given
 		Point expectedPosition = point(423, 220);
 		String elementId = "SequenceFlow_1";
-		
+
 		// when
-		// import happened
+		importDiagram();
 		
 		// then
 		assertSequenceFlowLabelWithPosition(elementId, expectedPosition);

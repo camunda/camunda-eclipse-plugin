@@ -5,13 +5,13 @@
       <bpmn2:dataInput id="DataInput_1" name="Data Input 1"/>
       <bpmn2:dataOutput id="DataOutput_1" name="Data Output 1"/>
     </bpmn2:ioSpecification>
-    <bpmn2:dataObject id="DataObject_1" name="Data Object 1"/>
+    <bpmn2:dataObjectReference id="DataObjectReference_1" name="Data Object 1"/>
     <bpmn2:dataStoreReference id="_DataStoreReference_2" name="Data Store 1" dataStoreRef="DataStore_1"/>
   </bpmn2:process>
   <bpmn2:dataStore id="DataStore_1" name="Data Store 1"/>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
-      <bpmndi:BPMNShape id="_BPMNShape_DataObject_2" bpmnElement="DataObject_1">
+      <bpmndi:BPMNShape id="_BPMNShape_DataObject_2" bpmnElement="DataObjectReference_1">
         <dc:Bounds height="65.0" width="36.0" x="80.0" y="48.0"/>
         <bpmndi:BPMNLabel>
           <dc:Bounds height="22.0" width="86.0" x="55.0" y="100.0"/>

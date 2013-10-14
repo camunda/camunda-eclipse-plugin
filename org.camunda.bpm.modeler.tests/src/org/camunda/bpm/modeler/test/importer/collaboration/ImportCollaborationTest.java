@@ -13,7 +13,6 @@ import static org.camunda.bpm.modeler.test.util.assertions.Bpmn2ModelAssertions.
 import static org.camunda.bpm.modeler.test.util.assertions.Bpmn2ModelAssertions.elementOfType;
 import static org.fest.assertions.api.Assertions.assertThat;
 
-import org.camunda.bpm.modeler.core.importer.ModelImport;
 import org.camunda.bpm.modeler.test.importer.AbstractImportBpmnModelTest;
 import org.camunda.bpm.modeler.test.util.DiagramResource;
 import org.camunda.bpm.modeler.test.util.StringUtil;
@@ -32,8 +31,8 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportNoLanes() {
-		ModelImport importer = createModelImport();
-		importer.execute();
+		// when
+		importDiagram();
 		
 		EList<Shape> children = diagram.getChildren();
 		assertThat(diagram).hasContainerShapeChildCount(2);
@@ -53,8 +52,8 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportNoLanesFlowNodes() {
-		ModelImport importer = createModelImport();
-		importer.execute();
+		// when
+		importDiagram();
 
 		EList<Shape> children = diagram.getChildren();
 		
@@ -79,8 +78,8 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportNestedLanes() {
-		ModelImport importer = createModelImport();
-		importer.execute();
+		// when
+		importDiagram();
 
 		assertThat(diagram).hasContainerShapeChildCount(2);
 	}
@@ -88,8 +87,8 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportCollapsedPool() {
-		ModelImport importer = createModelImport();
-		importer.execute();
+		// when
+		importDiagram();
 
 		assertThat(diagram).hasContainerShapeChildCount(2);
 	}
@@ -97,8 +96,8 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportCollapsedPoolProcess() {
-		ModelImport importer = createModelImport();
-		importer.execute();
+		// when
+		importDiagram();
 
 		assertThat(diagram).hasContainerShapeChildCount(2);
 	}
@@ -106,8 +105,8 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportNestedLanesFlowNodes() {
-		ModelImport importer = createModelImport();
-		importer.execute();
+		// when
+		importDiagram();
 
 		EList<Shape> children = diagram.getChildren();
 		
@@ -123,8 +122,8 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportNestedLanesUnreferencedFlowNodes() {
-		ModelImport importer = createModelImport();
-		importer.execute();
+		// when
+		importDiagramIgnoreWarnings();
 		
 		// Unreferenced nodes are supposed to be drawn on the participant
 		
@@ -142,8 +141,8 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportLanes() {
-		ModelImport importer = createModelImport();
-		importer.execute();
+		// when
+		importDiagram();
 
 		assertThat(diagram).hasContainerShapeChildCount(2);
 	}
@@ -151,8 +150,8 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportLanesFlowNodes() {
-		ModelImport importer = createModelImport();
-		importer.execute();
+		// when
+		importDiagram();
 
 		// then
 		// diagram should have 2 participants + 3 shape labels + 3 sequence flow labels
@@ -163,8 +162,8 @@ public class ImportCollaborationTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportLanesUnreferencedFlowNodes() {
-		ModelImport importer = createModelImport();
-		importer.execute();
+		// when
+		importDiagramIgnoreWarnings();
 
 		// then
 		// diagram should have 2 participants + 3 shape labels + 3 sequence flow labels

@@ -70,7 +70,6 @@ public abstract class AbstractTestCommand extends RecordingCommand {
 			execute(editorResources.getTypeProvider(), editorResources.getDiagram());
 			
 			testCase.setTestResources(TestHelper.createModel(saveTestResource(bpmn2Resource, "after", testFileDir)));
-
 		} catch (RuntimeException e) {
 			this.recordedException = e;
 			throw e;

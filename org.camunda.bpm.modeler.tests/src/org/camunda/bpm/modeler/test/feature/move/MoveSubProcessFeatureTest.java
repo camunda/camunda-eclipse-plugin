@@ -133,7 +133,7 @@ public class MoveSubProcessFeatureTest extends AbstractFeatureTest {
 	public void testMoveSubProcessMovesContainedDataObjectLabel() {
 
 		// given
-		Shape elementShape = Util.findShapeByBusinessObjectId(diagram, "DataObject_1");
+		Shape elementShape = Util.findShapeByBusinessObjectId(diagram, "DataObjectReference_1");
 		Shape elementLabelShape = LabelUtil.getLabelShape(elementShape, getDiagram());
 		
 		IRectangle preMoveLabelBounds = LayoutUtil.getAbsoluteBounds(elementLabelShape);

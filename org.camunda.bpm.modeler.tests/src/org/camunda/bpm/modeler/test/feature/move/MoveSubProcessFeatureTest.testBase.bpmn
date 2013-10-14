@@ -5,7 +5,7 @@
       <bpmn2:startEvent id="StartEvent_1" name="Start Event 1"/>
     </bpmn2:subProcess>
     <bpmn2:subProcess id="SubProcess_2" name="Sub Process 2">
-      <bpmn2:dataObject id="DataObject_1" name="Data Object 1"/>
+      <bpmn2:dataObjectReference id="DataObjectReference_1" name="Data Object 1"/>
       <bpmn2:dataStoreReference id="_DataStoreReference_3" name="Data Store 1" dataStoreRef="DataStore_1"/>
     </bpmn2:subProcess>
     <bpmn2:subProcess id="SubProcess_3" name="Sub Process 3">
@@ -28,7 +28,7 @@
       <bpmndi:BPMNShape id="_BPMNShape_SubProcess_6" bpmnElement="SubProcess_2" isExpanded="true">
         <dc:Bounds height="300.0" width="300.0" x="488.0" y="60.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_BPMNShape_DataObject_3" bpmnElement="DataObject_1">
+      <bpmndi:BPMNShape id="_BPMNShape_DataObjectReference_1" bpmnElement="DataObjectReference_1">
         <dc:Bounds height="50.0" width="36.0" x="578.0" y="160.0"/>
         <bpmndi:BPMNLabel>
           <dc:Bounds height="22.0" width="86.0" x="553.0" y="215.0"/>

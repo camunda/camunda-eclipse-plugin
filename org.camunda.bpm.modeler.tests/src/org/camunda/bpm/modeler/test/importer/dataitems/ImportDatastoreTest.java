@@ -1,10 +1,9 @@
 package org.camunda.bpm.modeler.test.importer.dataitems;
 
-import static org.fest.assertions.api.Assertions.assertThat;
 import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
 import static org.camunda.bpm.modeler.test.util.assertions.Bpmn2ModelAssertions.assertThat;
+import static org.fest.assertions.api.Assertions.assertThat;
 
-import org.camunda.bpm.modeler.core.importer.ModelImport;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.test.importer.AbstractImportBpmnModelTest;
 import org.camunda.bpm.modeler.test.util.DiagramResource;
@@ -24,10 +23,11 @@ public class ImportDatastoreTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportDatastore() {
-				
-		ModelImport importer = createModelImport();
-		importer.execute();
+
+		// when
+		importDiagram();
 		
+		// then
 		assertThat(diagram).hasContainerShapeChildCount(2);
 		
 		EList<Shape> children = getDiagram().getChildren();
@@ -48,10 +48,8 @@ public class ImportDatastoreTest extends AbstractImportBpmnModelTest {
 	public void testImportOnSubProcess() {
 		
 		// when
-		// importing diagram
-		ModelImport importer = createModelImport();
-		importer.execute();
-
+		importDiagram();
+		
 		ContainerShape subprocessShape = (ContainerShape) Util.findShapeByBusinessObjectId(getDiagram(), "SubProcess_1");
 		Shape dataItemShape = Util.findShapeByBusinessObjectId(getDiagram(), "_DataStoreReference_4");
 		
@@ -63,16 +61,13 @@ public class ImportDatastoreTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/importer/dataitems/ImportDataItems.testBaseParticipant.bpmn")
 	public void testImportOnParticipantNoWarning() {
-		
+
 		// when
-		// importing diagram with datastore on lane
-		ModelImport importer = createModelImport();
-		importer.execute();
+		importDiagram();
+		// on lane
 		
 		// then
 		// no import warning should occur
-		assertThat(importer.getImportWarnings())
-			.isEmpty();
 	}
 	
 	@Test
@@ -80,9 +75,7 @@ public class ImportDatastoreTest extends AbstractImportBpmnModelTest {
 	public void testImportOnParticipant() {
 		
 		// when
-		// importing diagram
-		ModelImport importer = createModelImport();
-		importer.execute();
+		importDiagram();
 
 		ContainerShape laneShape = (ContainerShape) Util.findShapeByBusinessObjectId(getDiagram(), "Lane_1");
 		Shape dataItemShape = Util.findShapeByBusinessObjectId(getDiagram(), "_DataStoreReference_3");
@@ -100,8 +93,7 @@ public class ImportDatastoreTest extends AbstractImportBpmnModelTest {
 		IRectangle expectedBounds = rectangle(310, 210, 50, 50);
 
 		// when
-		ModelImport importer = createModelImport();
-		importer.execute();
+		importDiagram();
 		
 		Shape dataStoreShape = Util.findShapeByBusinessObjectId(diagram, "DataStoreRef_1");
 		IRectangle dataStoreBounds = LayoutUtil.getAbsoluteBounds(dataStoreShape);
@@ -112,9 +104,10 @@ public class ImportDatastoreTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportDatastoreDrawnOutsideParticipant() {
-		ModelImport importer = createModelImport();
-		importer.execute();
+		// when
+		importDiagram();
 		
+		// then
 		// displaying two pools and a data store WITH label
 		assertThat(diagram).hasContainerShapeChildCount(4);
 	}

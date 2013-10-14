@@ -209,10 +209,10 @@ public class BPMN2FeatureProvider extends DefaultFeatureProvider {
 		boolean canAdd = true;
 		
 		for (FeatureContainer container : containers) {
-				if (container.getClass().isInstance(fc)) {
-					canAdd = false;
-					break;
-				}
+			if (container.getClass().isInstance(fc)) {
+				canAdd = false;
+				break;
+			}
 		}
 		if (canAdd) {
 			containers.add(fc);

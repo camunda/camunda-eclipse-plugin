@@ -29,35 +29,49 @@ import org.junit.Test;
  * 
  * @author Nico Rehwaldt
  */
-public class ImportDataObjectTest extends AbstractImportBpmnModelTest {
+public class ImportDataObjectReferenceTest extends AbstractImportBpmnModelTest {
 	
 	@Test
 	@DiagramResource
-	public void testImportDataObject() {
-		ModelImport importer = createModelImport();
-		importer.execute();
+	public void testImport() {
+		
+		// when
+		importDiagram();
 
-		// we display the data object AND its label
+		// we display the two data object references and their labels
+		assertThat(diagram).hasContainerShapeChildCount(4);
+		
+		assertThat(StringUtil.toDetailsString(diagram))
+			.contains("DataObjectReferenceImpl");
+	}
+	
+	@Test
+	@DiagramResource
+	public void testImportNoDataObject() {
+		
+		// when
+		importDiagram();
+
+		// we display the data object reference AND its label
 		assertThat(diagram).hasContainerShapeChildCount(2);
 		
 		assertThat(StringUtil.toDetailsString(diagram))
-			.contains("DataObjectImpl");
+			.contains("DataObjectReferenceImpl");
 	}
-
+	
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/importer/dataitems/ImportDataItems.testBaseSubProcess.bpmn")
 	public void testImportOnSubProcess() {
-		
+
 		// when
-		// importing diagram
-		ModelImport importer = createModelImport();
-		importer.execute();
+		importDiagram();
 
 		ContainerShape subprocessShape = (ContainerShape) Util.findShapeByBusinessObjectId(getDiagram(), "SubProcess_1");
-		Shape dataItemShape = Util.findShapeByBusinessObjectId(getDiagram(), "DataObject_1");
+		Shape dataItemShape = Util.findShapeByBusinessObjectId(getDiagram(), "DataObjectReference_1");
 
 		// then
 		assertThat(dataItemShape)
+			.isNotNull()
 			.isInFrontOf(subprocessShape);
 	}
 	
@@ -66,30 +80,31 @@ public class ImportDataObjectTest extends AbstractImportBpmnModelTest {
 	public void testImportOnParticipant() {
 		
 		// when
-		// importing diagram
-		ModelImport importer = createModelImport();
-		importer.execute();
+		importDiagram();
 
 		ContainerShape laneShape = (ContainerShape) Util.findShapeByBusinessObjectId(getDiagram(), "Lane_1");
-		Shape dataItemShape = Util.findShapeByBusinessObjectId(getDiagram(), "DataObject_1");
+		Shape dataItemShape = Util.findShapeByBusinessObjectId(getDiagram(), "DataObjectReference_1");
 
 		// then
 		assertThat(dataItemShape)
+			.isNotNull()
 			.isInFrontOf(laneShape);
 	}
 	
 	@Test
-	@DiagramResource("org/camunda/bpm/modeler/test/importer/dataitems/ImportDataObjectTest.testImportDataObject.bpmn")
-	public void testImportDataObjectShouldGetBoundsFromDi() {
+	@DiagramResource("org/camunda/bpm/modeler/test/importer/dataitems/ImportDataObjectReferenceTest.testImport.bpmn")
+	public void testImportBoundsFromDi() {
 		
 		// given 
 		IRectangle expectedBounds = rectangle(490, 66, 36, 65);
 
 		// when
-		ModelImport importer = createModelImport();
-		importer.execute();
+		importDiagram();
 		
-		Shape dataObjectShape = Util.findShapeByBusinessObjectId(diagram, "DataObject_1");
+		Shape dataObjectShape = Util.findShapeByBusinessObjectId(diagram, "_DataObjectReference_2");
+		
+		assertThat(dataObjectShape).isNotNull();
+		
 		IRectangle dataStoreBounds = LayoutUtil.getAbsoluteBounds(dataObjectShape);
 		
 		assertThat(dataStoreBounds).isEqualTo(expectedBounds);
@@ -97,15 +112,15 @@ public class ImportDataObjectTest extends AbstractImportBpmnModelTest {
 	
 	@Test
 	@DiagramResource
-	public void testImportAssociatedDataObject() {
-		ModelImport importer = createModelImport();
-		importer.execute();
+	public void testImportAssociated() {
+		// when
+		importDiagram();
 	}
 	
 	@Test
 	@DiagramResource
-	public void testImportDataObjectReferencedFromLane() {
-		ModelImport importer = createModelImport();
-		importer.execute();
+	public void testImportReferencedFromLane() {
+		// when
+		importDiagram();
 	}
 }

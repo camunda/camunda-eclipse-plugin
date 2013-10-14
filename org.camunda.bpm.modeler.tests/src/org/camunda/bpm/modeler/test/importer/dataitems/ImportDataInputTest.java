@@ -10,8 +10,8 @@
 package org.camunda.bpm.modeler.test.importer.dataitems;
 
 import static org.camunda.bpm.modeler.test.util.assertions.Bpmn2ModelAssertions.assertThat;
+import static org.fest.assertions.api.Assertions.assertThat;
 
-import org.camunda.bpm.modeler.core.importer.ModelImport;
 import org.camunda.bpm.modeler.test.importer.AbstractImportBpmnModelTest;
 import org.camunda.bpm.modeler.test.util.DiagramResource;
 import org.camunda.bpm.modeler.test.util.StringUtil;
@@ -31,8 +31,9 @@ public class ImportDataInputTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportDataInput() {
-		ModelImport importer = createModelImport();
-		importer.execute();
+		
+		// when
+		importDiagram();
 
 		// we display the data input AND its label
 		assertThat(diagram).hasContainerShapeChildCount(2);
@@ -46,9 +47,7 @@ public class ImportDataInputTest extends AbstractImportBpmnModelTest {
 	public void testImportOnSubProcess() {
 		
 		// when
-		// importing diagram
-		ModelImport importer = createModelImport();
-		importer.execute();
+		importDiagram();
 
 		ContainerShape subprocessShape = (ContainerShape) Util.findShapeByBusinessObjectId(getDiagram(), "SubProcess_1");
 		Shape dataItemShape = Util.findShapeByBusinessObjectId(getDiagram(), "DataInput_1");
@@ -61,11 +60,9 @@ public class ImportDataInputTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/importer/dataitems/ImportDataItems.testBaseParticipant.bpmn")
 	public void testImportOnParticipant() {
-		
+
 		// when
-		// importing diagram
-		ModelImport importer = createModelImport();
-		importer.execute();
+		importDiagram();
 
 		ContainerShape laneShape = (ContainerShape) Util.findShapeByBusinessObjectId(getDiagram(), "Lane_1");
 		Shape dataItemShape = Util.findShapeByBusinessObjectId(getDiagram(), "DataInput_1");
@@ -79,8 +76,9 @@ public class ImportDataInputTest extends AbstractImportBpmnModelTest {
 	@Test
 	@DiagramResource
 	public void testImportAssociatedDataInput() {
-		ModelImport importer = createModelImport();
-		importer.execute();
+		
+		// when
+		importDiagram();
 
 		Fail.fail("INVALID XML ACCORDING TO MATTHIAS!");
 		
