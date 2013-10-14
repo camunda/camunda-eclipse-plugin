@@ -7,11 +7,13 @@ import static org.camunda.bpm.modeler.test.util.operations.AddDataObjectOperatio
 import static org.camunda.bpm.modeler.test.util.operations.MoveShapeOperation.move;
 
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
+import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.LabelUtil;
 import org.camunda.bpm.modeler.test.feature.AbstractFeatureTest;
 import org.camunda.bpm.modeler.test.util.DiagramResource;
 import org.camunda.bpm.modeler.test.util.Util;
 import org.eclipse.bpmn2.DataObject;
+import org.eclipse.bpmn2.DataObjectReference;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -39,15 +41,48 @@ public class AddDataObjectFeatureTest extends AbstractFeatureTest {
 		// diagram should contain the element and a label
 		assertThat(diagram)
 			.hasContainerShapeChildCount(2);
+
+		DataObjectReference dataObjectReference = BusinessObjectUtil.getFirstElementOfType(shape, DataObjectReference.class);
 		
-		assertThat(shape)
-			.isLinkedTo(elementOfType(DataObject.class));
+		assertThat(dataObjectReference).isNotNull();
+		assertThat(dataObjectReference.getDataObjectRef()).isNull();
 		
 		assertThat(labelShape)
 			.isNotNull()
 			.isContainedIn(diagram);
 	}
 
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/add/AddFeatureTestBase.testAddToDiagram.bpmn")
+	public void testAddToDiagramReferencingNewDataObject() throws Exception {
+
+		// given empty diagram
+		
+		// when
+		// element is added to it
+		addDataObject(diagramTypeProvider)
+			.withDataObject()
+			.toContainer(diagram)
+			.execute();
+
+		Shape shape = diagram.getChildren().get(1);
+		Shape labelShape = LabelUtil.getLabelShape(shape, diagram);
+		
+		// then
+		// diagram should contain the element and a label
+		assertThat(diagram)
+			.hasContainerShapeChildCount(2);
+		
+		DataObjectReference dataObjectReference = BusinessObjectUtil.getFirstElementOfType(shape, DataObjectReference.class);
+		
+		assertThat(dataObjectReference).isNotNull();
+		assertThat(dataObjectReference.getDataObjectRef()).isNotNull();
+		
+		assertThat(labelShape)
+			.isNotNull()
+			.isContainedIn(diagram);
+	}
+	
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/feature/add/AddFeatureTestBase.testAddToEmptyParticipant.bpmn")
 	public void testAddToParticipant() throws Exception {
@@ -73,7 +108,7 @@ public class AddDataObjectFeatureTest extends AbstractFeatureTest {
 			.hasContainerShapeChildCount(2);
 		
 		assertThat(shape)
-			.isLinkedTo(elementOfType(DataObject.class));
+			.isLinkedTo(elementOfType(DataObjectReference.class));
 		
 		// and the label should be contained in the diagram
 		assertThat(labelShape)
@@ -105,7 +140,7 @@ public class AddDataObjectFeatureTest extends AbstractFeatureTest {
 			.hasContainerShapeChildCount(3);
 		
 		assertThat(shape)
-			.isLinkedTo(elementOfType(DataObject.class));
+			.isLinkedTo(elementOfType(DataObjectReference.class));
 		
 		// and the label should be contained in the diagram
 		assertThat(labelShape)

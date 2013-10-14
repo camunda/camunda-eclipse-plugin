@@ -29,10 +29,9 @@ public class AssociationTest extends AbstractFeatureTest {
 		BaseElement taskElement = BusinessObjectUtil.getFirstBaseElement(taskShape);
 		Task task = (Task) taskElement;
 		
-		Shape dataObjectShape = Util.findShapeByBusinessObjectId(diagram, "DataObject_1");
+		Shape dataObjectShape = Util.findShapeByBusinessObjectId(diagram, "DataObjectReference_1");
 		
-		createDataAssocation(taskShape, dataObjectShape, diagramTypeProvider)
-			.execute();
+		createDataAssocation(taskShape, dataObjectShape, diagramTypeProvider).execute();
 		
 		FreeFormConnection association = (FreeFormConnection) Util.findConnectionByBusinessObjectId(diagram, task.getDataOutputAssociations().get(0).getId());
 

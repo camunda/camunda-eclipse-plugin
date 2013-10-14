@@ -11,6 +11,7 @@ import org.camunda.bpm.modeler.test.util.Util;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.DataObject;
+import org.eclipse.bpmn2.DataObjectReference;
 import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -31,11 +32,11 @@ public class CreateDataAssociationFeatureTest extends AbstractFeatureTest {
 		Task task = (Task) taskElement;
 		assertThat(task.getDataOutputAssociations()).isEmpty();
 		
-		Shape dataObjectShape = Util.findShapeByBusinessObjectId(diagram, "DataObject_1");
+		Shape dataObjectShape = Util.findShapeByBusinessObjectId(diagram, "DataObjectReference_1");
 		
 		BaseElement dataObjectElement = BusinessObjectUtil.getFirstBaseElement(dataObjectShape);
-		assertThat(dataObjectElement).isInstanceOf(DataObject.class);
-		DataObject dataObject = (DataObject) dataObjectElement;
+		assertThat(dataObjectElement).isInstanceOf(DataObjectReference.class);
+		DataObjectReference dataObjectReference = (DataObjectReference) dataObjectElement;
 		
 		createDataAssocation(dataObjectShape, taskShape, diagramTypeProvider)
 			.execute();
@@ -48,7 +49,7 @@ public class CreateDataAssociationFeatureTest extends AbstractFeatureTest {
 		
 		
 		assertThat(dataInputAssocation.getSourceRef().size()).isEqualTo(1);
-		assertThat(dataInputAssocation.getSourceRef().get(0)).isEqualTo(dataObject);
+		assertThat(dataInputAssocation.getSourceRef().get(0)).isEqualTo(dataObjectReference);
 	}
 
 	@Test
@@ -61,11 +62,11 @@ public class CreateDataAssociationFeatureTest extends AbstractFeatureTest {
 		Task task = (Task) taskElement;
 		assertThat(task.getDataOutputAssociations()).isEmpty();
 		
-		Shape dataObjectShape = Util.findShapeByBusinessObjectId(diagram, "DataObject_1");
+		Shape dataObjectShape = Util.findShapeByBusinessObjectId(diagram, "DataObjectReference_1");
 		
 		BaseElement dataObjectElement = BusinessObjectUtil.getFirstBaseElement(dataObjectShape);
-		assertThat(dataObjectElement).isInstanceOf(DataObject.class);
-		DataObject dataObject = (DataObject) dataObjectElement;
+		assertThat(dataObjectElement).isInstanceOf(DataObjectReference.class);
+		DataObjectReference dataObjectReference = (DataObjectReference) dataObjectElement;
 		
 		createDataAssocation(taskShape, dataObjectShape, diagramTypeProvider)
 			.execute();
@@ -77,7 +78,7 @@ public class CreateDataAssociationFeatureTest extends AbstractFeatureTest {
 		DataOutputAssociation dataOutputAssocation = task.getDataOutputAssociations().get(0);
 		
 		
-		assertThat(dataOutputAssocation.getTargetRef()).isEqualTo(dataObject);
+		assertThat(dataOutputAssocation.getTargetRef()).isEqualTo(dataObjectReference);
 	}
 	
 }
