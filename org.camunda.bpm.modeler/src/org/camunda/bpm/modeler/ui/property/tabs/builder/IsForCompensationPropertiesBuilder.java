@@ -29,7 +29,7 @@ public class IsForCompensationPropertiesBuilder extends AbstractPropertiesBuilde
 	@Override
 	public void create() {
 		
-		final Button checkbox = PropertyUtil.createUnboundCheckbox(section, parent, "Is For Compensation");
+		final Button checkbox = PropertyUtil.createUnboundCheckbox(section, parent, "For Compensation");
 		
 		new IsForCompensationFlagButtonBinding(bo, IS_FOR_COMPENSATION_FEATURE, checkbox).establish();
 	}
