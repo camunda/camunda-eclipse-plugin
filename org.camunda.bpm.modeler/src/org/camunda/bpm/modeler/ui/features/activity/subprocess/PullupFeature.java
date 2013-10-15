@@ -74,7 +74,7 @@ public class PullupFeature extends AbstractCustomFeature {
 			PictogramElement pe = pes[0];
 			Object bo = getBusinessObjectForPictogramElement(pe);
 			if (bo instanceof FlowElementsContainer) {
-				return DIUtils.findBPMNDiagram(getDiagramEditor(), (BaseElement)bo, false) != null;
+				return DIUtils.findBPMNDiagram(getDiagramBehavior().getDiagramContainer(), (BaseElement)bo, false) != null;
 			}
 		}
 		return false;
@@ -94,11 +94,11 @@ public class PullupFeature extends AbstractCustomFeature {
 		// for the DI elements in the existing BPMNDiagram.
 		BPMNDiagram newBpmnDiagram = (BPMNDiagram) ModelHandler.findDIElement(getDiagram(), container).eContainer().eContainer();
 		BPMNPlane newPlane = newBpmnDiagram.getPlane();
-		Diagram newDiagram = DIUtils.findDiagram(getDiagramEditor(), newBpmnDiagram);
+		Diagram newDiagram = DIUtils.findDiagram(getDiagramBehavior().getDiagramContainer(), newBpmnDiagram);
 		
-		BPMNDiagram oldBpmnDiagram = DIUtils.findBPMNDiagram(getDiagramEditor(), container, false);
+		BPMNDiagram oldBpmnDiagram = DIUtils.findBPMNDiagram(getDiagramBehavior().getDiagramContainer(), container, false);
 		BPMNPlane oldPlane = oldBpmnDiagram.getPlane();
-		Diagram oldDiagram = DIUtils.findDiagram(getDiagramEditor(), oldBpmnDiagram);
+		Diagram oldDiagram = DIUtils.findDiagram(getDiagramBehavior().getDiagramContainer(), oldBpmnDiagram);
 		
 		// copy the elements into the same plane as the sub process
 		while (oldPlane.getPlaneElement().size()>0) {
@@ -126,7 +126,7 @@ public class PullupFeature extends AbstractCustomFeature {
 		}
 		
 		// get rid of the old BPMNDiagram
-		DIUtils.deleteDiagram(getDiagramEditor(), oldBpmnDiagram);
+		DIUtils.deleteDiagram(getDiagramBehavior().getDiagramContainer(), oldBpmnDiagram);
 		
 		// now expand the sub process
 		ExpandFlowNodeFeature expandFeature = new ExpandFlowNodeFeature(getFeatureProvider());

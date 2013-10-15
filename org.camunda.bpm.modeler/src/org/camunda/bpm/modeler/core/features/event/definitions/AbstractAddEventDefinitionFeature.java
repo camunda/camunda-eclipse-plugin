@@ -139,7 +139,7 @@ public abstract class AbstractAddEventDefinitionFeature<T extends EventDefinitio
 				pes.add(ac.getTargetContainer());
 			}
 		}
-		getDiagramEditor().setPictogramElementsForSelection(pes.toArray(new PictogramElement[pes.size()]));
+		getDiagramBehavior().getDiagramContainer().setPictogramElementsForSelection(pes.toArray(new PictogramElement[pes.size()]));
 	}
 	
 }

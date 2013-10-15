@@ -38,6 +38,6 @@ public abstract class Operation<C extends IContext, F extends IFeature> {
 			return null;
 		}
 		
-		return diagramTypeProvider.getDiagramEditor().executeFeature(feature, context);
+		return diagramTypeProvider.getDiagramBehavior().executeFeature(feature, context);
 	}
 }

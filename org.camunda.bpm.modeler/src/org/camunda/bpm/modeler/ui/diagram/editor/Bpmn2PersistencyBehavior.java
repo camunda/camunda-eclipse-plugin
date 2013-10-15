@@ -9,15 +9,12 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.ui.editor.DefaultPersistencyBehavior;
-import org.eclipse.graphiti.ui.editor.DiagramEditor;
+import org.eclipse.graphiti.ui.editor.DiagramBehavior;
 
 public class Bpmn2PersistencyBehavior extends DefaultPersistencyBehavior {
 
-	Bpmn2Editor editor;
-
-	public Bpmn2PersistencyBehavior(DiagramEditor diagramEditor) {
-		super(diagramEditor);
-		editor = (Bpmn2Editor) diagramEditor;
+	public Bpmn2PersistencyBehavior(DiagramBehavior diagramBehavior) {
+		super(diagramBehavior);
 	}
 
 	@Override
@@ -37,7 +34,7 @@ public class Bpmn2PersistencyBehavior extends DefaultPersistencyBehavior {
 		// Use CDATA to escape characters like '<' etc.
 		saveOption.put(XMLResource.OPTION_ESCAPE_USING_CDATA, Boolean.TRUE);
 
-		EList<Resource> resources = diagramEditor.getEditingDomain().getResourceSet().getResources();
+		EList<Resource> resources = diagramBehavior.getEditingDomain().getResourceSet().getResources();
 		final Map<Resource, Map<?, ?>> saveOptions = new HashMap<Resource, Map<?, ?>>();
 		for (Resource resource : resources) {
 			saveOptions.put(resource, saveOption);

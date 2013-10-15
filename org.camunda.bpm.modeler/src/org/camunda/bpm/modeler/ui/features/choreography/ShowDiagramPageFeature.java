@@ -43,7 +43,7 @@ public class ShowDiagramPageFeature extends AbstractCustomFeature {
 				baseElement = (BaseElement)bo;
 			}
 			
-			return DIUtils.findBPMNDiagram(getDiagramEditor(), baseElement, false) != null;
+			return DIUtils.findBPMNDiagram(getDiagramBehavior().getDiagramContainer(), baseElement, false) != null;
 		}
 		return false;
 	}
@@ -67,7 +67,7 @@ public class ShowDiagramPageFeature extends AbstractCustomFeature {
 			else if (bo instanceof BaseElement) {
 				baseElement = (BaseElement)bo;
 			}
-			BPMNDiagram bpmnDiagram = DIUtils.findBPMNDiagram(getDiagramEditor(), baseElement, false);
+			DIUtils.findBPMNDiagram(getDiagramBehavior().getDiagramContainer(), baseElement, false);
 		}
 	}
 

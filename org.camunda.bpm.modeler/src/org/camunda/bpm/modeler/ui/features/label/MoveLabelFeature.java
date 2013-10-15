@@ -78,7 +78,7 @@ public class MoveLabelFeature extends DefaultMoveShapeFeature {
 	 * @return
 	 */
 	protected boolean isEditorSelection(PictogramElement pictogramElement) {
-		List<PictogramElement> selection = Arrays.asList(getDiagramEditor().getSelectedPictogramElements());
+		List<PictogramElement> selection = Arrays.asList(getDiagramBehavior().getDiagramContainer().getSelectedPictogramElements());
 		
 		return selection.contains(pictogramElement);
 	}

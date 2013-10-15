@@ -78,11 +78,10 @@ import org.eclipse.gef.ui.parts.SelectionSynchronizer;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
-import org.eclipse.graphiti.platform.IDiagramEditor;
+import org.eclipse.graphiti.platform.IDiagramContainer;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IPeService;
-import org.eclipse.graphiti.ui.editor.DefaultPersistencyBehavior;
-import org.eclipse.graphiti.ui.editor.DefaultUpdateBehavior;
+import org.eclipse.graphiti.ui.editor.DiagramBehavior;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.graphiti.ui.internal.editor.GFPaletteRoot;
@@ -172,8 +171,7 @@ public class Bpmn2Editor extends DiagramEditor implements IPropertyChangeListene
 
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
-		super.init(site, convertToDiagramEditorInput(input));
-
+		super.init(site, input);
 		setActiveEditor(this);
 
 		addSelectionListener();
@@ -196,13 +194,8 @@ public class Bpmn2Editor extends DiagramEditor implements IPropertyChangeListene
 	}
 
 	@Override
-	protected DefaultUpdateBehavior createUpdateBehavior() {
-		return new Bpmn2EditorUpdateBehavior(this);
-	}
-
-	@Override
-	protected DefaultPersistencyBehavior createPersistencyBehavior() {
-		return new Bpmn2PersistencyBehavior(this);
+	protected DiagramBehavior createDiagramBehavior() {
+		return new Bpmn2DiagramBehavior(this);
 	}
 
 	public Bpmn2Preferences getPreferences() {
@@ -253,6 +246,11 @@ public class Bpmn2Editor extends DiagramEditor implements IPropertyChangeListene
 
 	@Override
 	protected void setInput(IEditorInput input) {
+		
+		if (!(input instanceof Bpmn2DiagramEditorInput)) {
+			input = createNewDiagramEditorInput(input, Bpmn2DiagramType.COLLABORATION, null);
+		}
+		
 		super.setInput(input);
 
 		// Hook a transaction exception handler so we can get diagnostics about EMF
@@ -307,11 +305,12 @@ public class Bpmn2Editor extends DiagramEditor implements IPropertyChangeListene
 		// make sure this guy is active, otherwise it's not selectable
 		Diagram diagram = getDiagramTypeProvider().getDiagram();
 		diagram.setActive(true);
-
-		IDiagramEditor diagramEditor = getDiagramTypeProvider().getDiagramEditor();
-		TransactionalEditingDomain editingDomain = diagramEditor.getEditingDomain();
-		ModelImportCommand command = new ModelImportCommand(editingDomain, diagramEditor, resourceToImport);
-
+		
+		IDiagramContainer diagramContainer = getDiagramBehavior().getDiagramContainer();
+		TransactionalEditingDomain editingDomain = getDiagramBehavior().getEditingDomain();
+		
+		ModelImportCommand command = new ModelImportCommand(editingDomain, diagramContainer, resourceToImport);
+		
 		try {
 			editingDomain.getCommandStack().execute(command);
 
@@ -348,33 +347,19 @@ public class Bpmn2Editor extends DiagramEditor implements IPropertyChangeListene
 		}
 	}
 
-	@Override
-	protected PictogramElement[] getPictogramElementsForSelection() {
-		// filter out invisible elements when setting selection
-		PictogramElement[] pictogramElements = super.getPictogramElementsForSelection();
-		if (pictogramElements == null)
-			return null;
-		ArrayList<PictogramElement> visibleList = new ArrayList<PictogramElement>();
-		for (PictogramElement pe : pictogramElements) {
-			if (pe.isVisible())
-				visibleList.add(pe);
-		}
-		return visibleList.toArray(new PictogramElement[visibleList.size()]);
-	}
-
-	@Override
-	public void gotoMarker(IMarker marker) {
-		final EObject target = getTargetObject(marker);
-		if (target == null) {
-			return;
-		}
-		final PictogramElement pe = getDiagramTypeProvider().getFeatureProvider().getPictogramElementForBusinessObject(
-				target);
-		if (pe == null) {
-			return;
-		}
-		selectPictogramElements(new PictogramElement[] { pe });
-	}
+    @Override
+    public void gotoMarker(IMarker marker) {
+        final EObject target = getTargetObject(marker);
+        if (target == null) {
+            return;
+        }
+        final PictogramElement pe = getDiagramTypeProvider().getFeatureProvider().getPictogramElementForBusinessObject(
+                target);
+        if (pe == null) {
+            return;
+        }
+        selectPictogramElements(new PictogramElement[] {pe });
+    }
 
 	private void loadMarkers() {
 		if (getModelFile() != null) {
@@ -446,6 +431,7 @@ public class Bpmn2Editor extends DiagramEditor implements IPropertyChangeListene
 			Lifecycle domainLifeCycle = (Lifecycle) editingDomain.getAdapter(Lifecycle.class);
 			domainLifeCycle.addTransactionalEditingDomainListener(editingDomainListener);
 		}
+		
 		return editingDomainListener;
 	}
 
@@ -515,8 +501,9 @@ public class Bpmn2Editor extends DiagramEditor implements IPropertyChangeListene
 				ModelUtil.clearIDs(modelHandler.getResource(), instances == 0);
 			}
 			getPreferences().getGlobalPreferences().removePropertyChangeListener(this);
-
-			getResourceSet().eAdapters().remove(getEditorAdapter());
+			
+			getDiagramBehavior().getEditingDomain().getResourceSet().eAdapters().remove(getEditorAdapter());
+			
 			removeSelectionListener();
 			if (instances == 0) {
 				setActiveEditor(null);
@@ -603,13 +590,12 @@ public class Bpmn2Editor extends DiagramEditor implements IPropertyChangeListene
 
 		// Tell the DTP about the new Diagram
 		getDiagramTypeProvider().resourceReloaded(diagram);
-		getRefreshBehavior().initRefresh();
+		getDiagramBehavior().getRefreshBehavior().initRefresh();
 		setPictogramElementsForSelection(null);
 		// set Diagram as contents for the graphical viewer and refresh
 		getGraphicalViewer().setContents(diagram);
-
-		refreshContent();
-
+		
+		getDiagramBehavior().refreshContent();
 		// remember this for later
 		this.bpmnDiagram = bpmnDiagram;
 	}
@@ -618,10 +604,8 @@ public class Bpmn2Editor extends DiagramEditor implements IPropertyChangeListene
 	public void doSave(IProgressMonitor monitor) {
 		super.doSave(monitor);
 
-		Resource resource = getResourceSet().getResource(((Bpmn2DiagramEditorInput) getEditorInput()).getModelUri(), false);
-		
-		// TODO uncomment to perform validation
-		// BPMN2ProjectValidator.validateOnSave(resource, monitor);
+		Resource resource = getDiagramBehavior().getEditingDomain().getResourceSet().getResource( ((Bpmn2DiagramEditorInput) getEditorInput()).getModelUri(), false);
+//		BPMN2ProjectValidator.validateOnSave(resource, monitor);
 	}
 
 	@Override

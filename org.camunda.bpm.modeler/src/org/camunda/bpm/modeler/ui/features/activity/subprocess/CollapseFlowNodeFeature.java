@@ -111,7 +111,7 @@ public class CollapseFlowNodeFeature extends AbstractCustomFeature {
 					if (updateFeature.updateNeeded(updateContext).toBoolean())
 						updateFeature.update(updateContext);
 					
-					getDiagramEditor().selectPictogramElements(new PictogramElement[] {});
+					getDiagramBehavior().getDiagramContainer().selectPictogramElements(new PictogramElement[] {});
 				}
 			}
 		}

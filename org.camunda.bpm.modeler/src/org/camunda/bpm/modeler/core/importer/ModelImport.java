@@ -96,7 +96,8 @@ import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
-import org.eclipse.graphiti.platform.IDiagramEditor;
+import org.eclipse.graphiti.platform.IDiagramBehavior;
+import org.eclipse.graphiti.platform.IDiagramContainer;
 import org.xml.sax.SAXException;
 
 /**
@@ -333,12 +334,13 @@ public class ModelImport {
 	}
 
 	protected Diagram createEditorRootDiagram(BPMNDiagram bpmnDiagram, Collaboration collaboration, List<Process> processes, Definitions definitions) {
-		IDiagramEditor diagramEditor = diagramTypeProvider.getDiagramEditor();
+		IDiagramBehavior diagramBehavior = diagramTypeProvider.getDiagramBehavior();
+		IDiagramContainer diagramContainer = diagramBehavior.getDiagramContainer();
 		
-		Diagram diagram = DIUtils.getOrCreateDiagram(diagramEditor, bpmnDiagram);
+		Diagram diagram = DIUtils.getOrCreateDiagram(diagramContainer, bpmnDiagram);
 		diagram.setGridUnit(0);
 		
-		diagramTypeProvider.init(diagram, diagramEditor);
+		diagramTypeProvider.init(diagram, diagramBehavior);
 
 		// link collaboration or only process to diagram
 		BaseElement businessObject = collaboration != null ? collaboration : processes.get(0);

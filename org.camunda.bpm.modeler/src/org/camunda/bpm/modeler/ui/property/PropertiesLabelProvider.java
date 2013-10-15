@@ -45,8 +45,7 @@ public class PropertiesLabelProvider extends LabelProvider {
 			if (cf instanceof AbstractBpmn2CreateFeature) {
 				return Images.getById(((AbstractBpmn2CreateFeature<?>) cf).getCreateImageId());
 			}
-		}
-		
+        }
 		return super.getImage(element);
 	}
 

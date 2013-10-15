@@ -87,7 +87,7 @@ public abstract class AbstractBpmn2LayoutElementFeature<T extends PictogramEleme
 	 * @return
 	 */
 	protected List<PictogramElement> getEditorSelection() {
-		return Arrays.asList(getDiagramEditor().getSelectedPictogramElements());
+		return Arrays.asList(getDiagramBehavior().getDiagramContainer().getSelectedPictogramElements());
 	}
 	
 	protected void updateDi(PictogramElement pictogramElement) {

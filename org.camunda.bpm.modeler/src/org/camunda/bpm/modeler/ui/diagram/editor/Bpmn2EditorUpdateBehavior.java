@@ -25,7 +25,7 @@ import org.eclipse.emf.workspace.IWorkspaceCommandStack;
 import org.eclipse.emf.workspace.WorkspaceEditingDomainFactory;
 import org.eclipse.emf.workspace.util.WorkspaceSynchronizer;
 import org.eclipse.graphiti.ui.editor.DefaultUpdateBehavior;
-import org.eclipse.graphiti.ui.editor.DiagramEditor;
+import org.eclipse.graphiti.ui.editor.DiagramBehavior;
 import org.eclipse.graphiti.ui.internal.editor.GFWorkspaceCommandStackImpl;
 
 /**
@@ -43,12 +43,12 @@ public class Bpmn2EditorUpdateBehavior extends DefaultUpdateBehavior {
 	private WorkspaceSynchronizer workspaceSynchronizer;
 
 	/**
-	 * @param diagramEditor
+	 * @param diagramBehavior
 	 */
-	public Bpmn2EditorUpdateBehavior(DiagramEditor diagramEditor) {
-		super(diagramEditor);
+	public Bpmn2EditorUpdateBehavior(DiagramBehavior diagramBehavior) {
+		super(diagramBehavior);
 	}
-
+	
 	public TransactionalEditingDomain getEditingDomain() {
 		if (editingDomain == null)
 			createEditingDomain();
@@ -82,7 +82,7 @@ public class Bpmn2EditorUpdateBehavior extends DefaultUpdateBehavior {
 	protected void initializeEditingDomain(TransactionalEditingDomain domain) {
 		// we want first crack at these notifications!
 		workspaceSynchronizer = new WorkspaceSynchronizer(getEditingDomain(),
-				new BPMN2EditorWorkspaceSynchronizerDelegate(diagramEditor));
+				new BPMN2EditorWorkspaceSynchronizerDelegate(diagramBehavior));
 		super.initializeEditingDomain(domain);
 	}
 	
@@ -99,8 +99,8 @@ public class Bpmn2EditorUpdateBehavior extends DefaultUpdateBehavior {
 		 * The DiagramEditorBehavior reacts on a setResourceChanged(true) if he gets
 		 * activated.
 		 */
-		public BPMN2EditorWorkspaceSynchronizerDelegate(DiagramEditor diagramEditor) {
-			this.bpmnEditor = (Bpmn2Editor)diagramEditor;
+		public BPMN2EditorWorkspaceSynchronizerDelegate(DiagramBehavior diagramBehavior) {
+			this.bpmnEditor = (Bpmn2Editor)diagramBehavior.getDiagramContainer();
 		}
 
 		public void dispose() { 
