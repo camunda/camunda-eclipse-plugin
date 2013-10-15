@@ -6,6 +6,7 @@ import org.camunda.bpm.modeler.ui.property.tabs.builder.CallActivityPropertiesBu
 import org.camunda.bpm.modeler.ui.property.tabs.builder.DecisionGatewayPropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.DocumentationPropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.IdPropertyBuilder;
+import org.camunda.bpm.modeler.ui.property.tabs.builder.IsForCompensationPropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.LanePropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.NamePropertyBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.ParticipantPropertiesBuilder;
@@ -157,6 +158,8 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 		if (activity instanceof SubProcess) {
 			new SubProcessPropertiesBuilder(parent, section, (SubProcess) activity).create();
 		}
+
+		createIsForCompensationFlag(activity);
 	}
 
 	private boolean isTimerEvent(CatchEvent e) {
@@ -221,5 +224,9 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 	
 	private void createDocumentationField(BaseElement baseElement) {
 		new DocumentationPropertiesBuilder(parent, section, baseElement).create();
+	}
+
+	private void createIsForCompensationFlag(BaseElement baseElement) {
+		new IsForCompensationPropertiesBuilder(parent, section, baseElement).create();
 	}
 }

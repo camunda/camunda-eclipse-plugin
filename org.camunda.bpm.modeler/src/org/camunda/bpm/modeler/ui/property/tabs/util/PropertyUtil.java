@@ -6,6 +6,7 @@ import org.camunda.bpm.modeler.ui.property.tabs.binding.IntegerTextBinding;
 import org.camunda.bpm.modeler.ui.property.tabs.binding.ModelTextBinding;
 import org.camunda.bpm.modeler.ui.property.tabs.binding.StringTextBinding;
 import org.camunda.bpm.modeler.ui.property.tabs.radio.Radio.RadioGroup;
+import org.camunda.bpm.modeler.ui.util.Browser;
 import org.eclipse.bpmn2.Expression;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
@@ -18,6 +19,8 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
@@ -30,6 +33,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolTip;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
@@ -341,5 +345,31 @@ public class PropertyUtil {
 				newFont.dispose();
 			}
 		});
+	}
+	
+	public static void attachNoteWithLink(GFPropertySection section, Control attachToControl, String note) {
+		Composite parent = attachToControl.getParent();
+
+		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
+
+		Link link = new Link(parent, SWT.NO_BACKGROUND | SWT.NO_FOCUS);
+		link.setText(note);
+
+		factory.adapt(link, false, false);
+
+		link.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Browser.open(e.text);
+			}
+		});
+
+		FormData helpTextFormData = new FormData();
+		helpTextFormData.left = new FormAttachment(attachToControl, 0, SWT.LEFT);
+		helpTextFormData.right = new FormAttachment(attachToControl, 0, SWT.RIGHT);
+		helpTextFormData.top = new FormAttachment(attachToControl, 0, SWT.BOTTOM);
+
+		link.setLayoutData(helpTextFormData);
+
 	}
 }
