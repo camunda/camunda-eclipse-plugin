@@ -26,12 +26,8 @@ import org.eclipse.emf.transaction.NotificationFilter;
 import org.eclipse.emf.transaction.ResourceSetChangeEvent;
 import org.eclipse.emf.transaction.ResourceSetListener;
 import org.eclipse.emf.transaction.RollbackException;
-import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
-import org.eclipse.graphiti.ui.editor.DiagramEditorContextMenuProvider;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -296,19 +292,6 @@ public class DesignEditor extends Bpmn2Editor {
 	@Override
 	protected void createActions() {
 		super.createActions();
-	}
-
-	@Override
-	protected ContextMenuProvider createContextMenuProvider() {
-		return new DiagramEditorContextMenuProvider(getGraphicalViewer(), getActionRegistry(), getDiagramTypeProvider()) {
-			@Override
-			public void buildContextMenu(IMenuManager manager) {
-				super.buildContextMenu(manager);
-				IAction action = getActionRegistry().getAction("show.or.hide.source.view");
-				action.setText(action.getText());
-				manager.add(action);
-			}
-		};
 	}
 
 	public class AddRemoveDiagramListener implements ResourceSetListener {

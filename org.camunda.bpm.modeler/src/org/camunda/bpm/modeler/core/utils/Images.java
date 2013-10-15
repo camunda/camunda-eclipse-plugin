@@ -33,6 +33,7 @@ public class Images {
 	 */
 	public static Image getById(String editorId, String imageId) {
 		IImageService imageService = GraphitiUi.getImageService();
-		return imageService.getImageForId(imageId);
+		return imageService.getImageForId(editorId, imageId);
+		
 	}
 }

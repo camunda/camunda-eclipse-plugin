@@ -22,7 +22,6 @@ import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.LabelUtil;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
-import org.camunda.bpm.modeler.core.utils.ScrollUtil;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.DocumentRoot;
@@ -60,7 +59,7 @@ import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.PictogramLink;
 import org.eclipse.graphiti.mm.pictograms.Shape;
-import org.eclipse.graphiti.platform.IDiagramEditor;
+import org.eclipse.graphiti.platform.IDiagramContainer;
 import org.eclipse.graphiti.services.Graphiti;
 
 public class DIUtils {
@@ -340,20 +339,20 @@ public class DIUtils {
 	/**
 	 * Return the Graphiti Diagram for the given BPMNDiagram. If one does not exist, create it.
 	 * 
-	 * @param editor
+	 * @param container
 	 * @param bpmnDiagram
 	 * @return
 	 */
-	public static Diagram getOrCreateDiagram(final IDiagramEditor editor, final BPMNDiagram bpmnDiagram) {
+	public static Diagram getOrCreateDiagram(final IDiagramContainer container, final BPMNDiagram bpmnDiagram) {
 		// do we need to create a new Diagram or is this already in the model?
-		Diagram diagram = findDiagram(editor, bpmnDiagram);
+		Diagram diagram = findDiagram(container, bpmnDiagram);
 		if (diagram!=null) {
 			// already exists
 			return diagram;
 		}
 
 		// create a new one
-		IDiagramTypeProvider dtp = editor.getDiagramTypeProvider();
+		IDiagramTypeProvider dtp = container.getDiagramTypeProvider();
 		String typeId = dtp.getDiagram().getDiagramTypeId();
 		
 		String name = bpmnDiagram.getName();
@@ -364,7 +363,7 @@ public class DIUtils {
 		final Diagram newDiagram = Graphiti.getCreateService().createDiagram(typeId, name, true);
 		final IFeatureProvider featureProvider = dtp.getFeatureProvider();
 		final Resource resource = dtp.getDiagram().eResource();
-		TransactionalEditingDomain domain = editor.getEditingDomain();
+		TransactionalEditingDomain domain = container.getDiagramBehavior().getEditingDomain();
 		domain.getCommandStack().execute(new RecordingCommand(domain) {
 			protected void doExecute() {
 				resource.getContents().add(newDiagram);
@@ -378,12 +377,12 @@ public class DIUtils {
 	/**
 	 * Find the Graphiti Diagram that corresponds to the given BPMNDiagram object.
 	 * 
-	 * @param editor
+	 * @param container
 	 * @param bpmnDiagram
 	 * @return
 	 */
-	public static Diagram findDiagram(final IDiagramEditor editor, final BPMNDiagram bpmnDiagram) {
-		ResourceSet resourceSet = editor.getEditingDomain().getResourceSet();
+	public static Diagram findDiagram(final IDiagramContainer container, final BPMNDiagram bpmnDiagram) {
+		ResourceSet resourceSet = container.getDiagramBehavior().getEditingDomain().getResourceSet();
 		if (resourceSet!=null) {
 			return findDiagram(resourceSet, bpmnDiagram);
 		}
@@ -406,8 +405,8 @@ public class DIUtils {
 		return null;
 	}
 	
-	public static void deleteDiagram(final IDiagramEditor editor, final BPMNDiagram bpmnDiagram) {
-		Diagram diagram = DIUtils.findDiagram(editor, bpmnDiagram);
+	public static void deleteDiagram(final IDiagramContainer container, final BPMNDiagram bpmnDiagram) {
+		Diagram diagram = DIUtils.findDiagram(container, bpmnDiagram);
 		if (diagram!=null) {
 			List<EObject> list = new ArrayList<EObject>();
 			TreeIterator<EObject> iter = diagram.eAllContents();
@@ -439,9 +438,9 @@ public class DIUtils {
 		}	
 	}
 	
-	public static BPMNDiagram findBPMNDiagram(final IDiagramEditor editor, final BaseElement baseElement, boolean deep) {
+	public static BPMNDiagram findBPMNDiagram(final IDiagramContainer container, final BaseElement baseElement, boolean deep) {
 		if (baseElement!=null) {
-			ResourceSet resourceSet = editor.getResourceSet();
+			ResourceSet resourceSet = container.getDiagramBehavior().getEditingDomain().getResourceSet();
 			if (resourceSet!=null) {
 				for (Resource r : resourceSet.getResources()) {
 					if (r instanceof Bpmn2Resource) {

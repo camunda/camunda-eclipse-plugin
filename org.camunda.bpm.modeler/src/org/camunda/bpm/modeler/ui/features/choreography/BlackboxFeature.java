@@ -114,7 +114,7 @@ public class BlackboxFeature extends AbstractCustomFeature {
 							DiagramElement de = ModelHandler.findDIElement(getDiagram(), process);
 							if (de.eContainer() instanceof BPMNDiagram) {
 								BPMNDiagram bpmnDiagram = (BPMNDiagram)de.eContainer();
-								DIUtils.deleteDiagram(getDiagramEditor(), bpmnDiagram);
+								DIUtils.deleteDiagram(getDiagramBehavior().getDiagramContainer(), bpmnDiagram);
 							}
 							
 							EcoreUtil.delete(process);

@@ -59,7 +59,7 @@ public class FileService {
 
 		ResourceSet resourceSet = null;
 		TransactionalEditingDomain editingDomain = null;
-		if (diagramEditor==null) {
+		if (diagramEditor == null) {
 			// Create a resource set and EditingDomain
 			resourceSet = new Bpmn2ModelerResourceSetImpl();
 			editingDomain = TransactionUtil.getEditingDomain(resourceSet);
@@ -70,7 +70,7 @@ public class FileService {
 		}
 		else {
 			editingDomain = diagramEditor.getEditingDomain();
-			resourceSet = diagramEditor.getResourceSet();
+			resourceSet = diagramEditor.getDiagramBehavior().getEditingDomain().getResourceSet();
 		}
 		
 		// Create a resource for this file.

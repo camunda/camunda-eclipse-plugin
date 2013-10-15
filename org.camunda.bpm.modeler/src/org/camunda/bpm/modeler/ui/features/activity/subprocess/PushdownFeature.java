@@ -87,7 +87,7 @@ public class PushdownFeature extends AbstractCustomFeature {
 			PictogramElement pe = pes[0];
 			Object bo = getBusinessObjectForPictogramElement(pe);
 			if (bo instanceof FlowElementsContainer) {
-				return DIUtils.findBPMNDiagram(getDiagramEditor(), (BaseElement)bo, false) == null;
+				return DIUtils.findBPMNDiagram(getDiagramBehavior().getDiagramContainer(), (BaseElement)bo, false) == null;
 			}
 		}
 		return false;
@@ -105,13 +105,13 @@ public class PushdownFeature extends AbstractCustomFeature {
 		Definitions definitions = ModelUtil.getDefinitions(container);
 
 		BPMNDiagram oldBpmnDiagram = (BPMNDiagram)ModelHandler.findDIElement(getDiagram(), container).eContainer().eContainer();
-		Diagram oldDiagram = DIUtils.findDiagram(getDiagramEditor(), oldBpmnDiagram);
+		Diagram oldDiagram = DIUtils.findDiagram(getDiagramBehavior().getDiagramContainer(), oldBpmnDiagram);
 		
 		// the contents of this expandable element is in the flowElements list 
         BPMNDiagram newBpmnDiagram = DIUtils.createBPMNDiagram(definitions, container);
 		BPMNPlane newPlane = newBpmnDiagram.getPlane();
 
-		Diagram newDiagram = DIUtils.getOrCreateDiagram(getDiagramEditor(), newBpmnDiagram);
+		Diagram newDiagram = DIUtils.getOrCreateDiagram(getDiagramBehavior().getDiagramContainer(), newBpmnDiagram);
 		
 		for (FlowElement fe : container.getFlowElements()) {
 			DiagramElement de = ModelHandler.findDIElement(getDiagram(), fe);

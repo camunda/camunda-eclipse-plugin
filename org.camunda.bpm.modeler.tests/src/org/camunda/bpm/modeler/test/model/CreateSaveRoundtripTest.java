@@ -77,6 +77,6 @@ public class CreateSaveRoundtripTest extends AbstractImportBpmnModelTest {
 	}
 
 	private Set<Resource> saveDiagram() {
-		return GraphitiUiInternal.getEmfService().save(getEditingDomain(), Collections.EMPTY_MAP);
+		return GraphitiUiInternal.getEmfService().save(getEditingDomain());
 	}
 }

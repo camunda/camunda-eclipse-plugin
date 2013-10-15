@@ -80,7 +80,7 @@ public class Bpmn2MarkerChangeListener implements IResourceChangeListener {
 		editor.getEditorSite().getShell().getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				// Refresh editor's graphical viewer...
-				editor.refresh();
+				editor.getDiagramBehavior().refresh();
 
 				// ...and property pages in case there are errors that
 				// do not appear as figure decorators on the canvas
