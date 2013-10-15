@@ -1,3 +1,54 @@
+<a name="2.1.0"></a>
+# 2.1.0 (2013-10-14)
+
+## Features
+
+- **property panels:**
+  - add documentation property CAM-299
+    ([d10d1a8c](https://github.com/camunda/camunda-modeler/commit/d10d1a8c58b088dfdb293c1d8b8d59525a65611b))
+  - add camunda BPM properties for call activity CAM-1052
+    ([e5841aaa](https://github.com/camunda/camunda-modeler/commit/e5841aaa957a2a44852f779453bb168b317c2b50),
+     [e62c94dc](https://github.com/camunda/camunda-modeler/commit/e62c94dc125b71504e563e668edaa97a29d44776))
+     - passing business key to called element
+     - passing all variables (in/out)
+     - calledElementBinding and calledElementVersion
+  - service task engine extensions may be edited on send task CAM-1024 ([19b4def0](https://github.com/camunda/camunda-modeler/commit/19b4def018e709edfadfb31c6fff4013363e80c4))
+  - service task engine extensions may be edited on throwing message events CAM-1025 ([8bec537d](https://github.com/camunda/camunda-modeler/commit/8bec537d0b005327f9811d9d10631b17b612a690))
+  - form key may be edited on all start events ([1eda4db1](https://github.com/camunda/camunda-modeler/commit/1eda4db12e50d364481589e87491f04efee8dce1))
+- **layout:**
+  - adjust bendpoints on lane resize CAM-250 ([f6b712f6](https://github.com/camunda/camunda-modeler/commit/f6b712f643ccea05b398a8cdba0d6fd0dcd35266), [b8185d94](https://github.com/camunda/camunda-modeler/commit/b8185d9408a70f578f66cd2d608edfa693d95c0f), [c0a90244](https://github.com/camunda/camunda-modeler/commit/c0a90244c55ee0bdeebfeb33d19c9bfb952fc18a), [55da161b](https://github.com/camunda/camunda-modeler/commit/55da161be31923dbc9b2d629d9c87a56fecc6bec))
+- **bpmn 2.0 compatibility**
+  - correctly handle dataObjects CAM-207 ([bbbf73c2](https://github.com/camunda/camunda-modeler/commit/bbbf73c238522abc20866fd6dbbdc8208c3e5238))
+
+
+## Improvements
+
+- **text annotation**: adjust default size CAM-1354 ([9fe120b9](https://github.com/camunda/camunda-modeler/commit/9fe120b933c60d99853afe651aeb56ef5634cc16))
+- **export**:
+  - use camunda as engine namespace prefix per default CAM-389
+    ([27908d01](https://github.com/camunda/camunda-modeler/commit/27908d01cc4f0469d6b9f7f007cf9b7f79eec9d2),
+    [33fe5fd9](https://github.com/camunda/camunda-modeler/commit/33fe5fd92e6af37d31acb44bdfa04fcb9dcfe398))
+
+
+## Bug Fixes
+
+- **property panel**:
+  - allow expression for usertask priority CAM-992 ([6e146e37](https://github.com/camunda/camunda-modeler/commit/6e146e371ec186ae11ea657cbe1666e1746861c2))
+  - take event may not be selected for task listeners CAM-1006 ([a8099b4b](https://github.com/camunda/camunda-modeler/commit/a8099b4bb09b62dc61e6dab51b0743ac94a5c39f))
+- **export:**
+  - save documentation elements first CAM-914 ([a95e0177](https://github.com/camunda/camunda-modeler/commit/a95e0177fd43eefcb3ba12f7e147cd888cd75d54))
+  - prevent `xsi:type="xsd:anyType"` attribute creation on extension elements CAM-1341
+    ([0509a62b](https://github.com/camunda/camunda-modeler/commit/0509a62b66acbb3087849466deb59c20bf587d45))
+- **canvas:**
+  - fix initial positioning of tasks CAM-962
+    ([3273e011](https://github.com/camunda/camunda-modeler/commit/3273e011b7c1019170edf3ccc55237d9d6f95fbf),
+     [e82fbc02](https://github.com/camunda/camunda-modeler/commit/e82fbc02d192a003ed939b21f55f65bc6414183d))
+  - correctly update DI after participant resize CAM-574, CAM-893 ([3102c346](https://github.com/camunda/camunda-modeler/commit/3102c346a2b0191cef5b4ad18816481200ed97b5))
+- **layout:**
+  - fix unintended move during participant resize CAM-492 ([7b885931](https://github.com/camunda/camunda-modeler/commit/7b88593185ef0b7dea5bf3f3b9953a4701f23d91))
+  - update scroll shape on lane add ([97712735](https://github.com/camunda/camunda-modeler/commit/9771273563685dd740cbabd7eafe9e6d06d1958f))
+
+
 <a name="2.0.12"></a>
 # 2.0.12 (2013-04-04)
 
