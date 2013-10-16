@@ -136,6 +136,14 @@ public class DataObjectFeatureContainer extends AbstractDataFeatureContainer {
 
 	public static class CreateDataObjectFeature extends AbstractCreateFlowElementFeature<FlowElement> {
 
+		@Override
+		public boolean canCreate(ICreateContext context) {
+			// data objects may be added on diagram, too
+			return 
+				super.canCreate(context) || 
+				getDiagram().equals(context.getTargetContainer());
+		}
+		
 		public static class Option {
 			
 			private String name;

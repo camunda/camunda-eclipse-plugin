@@ -10,13 +10,18 @@ import org.camunda.bpm.modeler.core.importer.ModelImport;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Collaboration;
+import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.Participant;
+import org.eclipse.bpmn2.RootElement;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.IContext;
+import org.eclipse.graphiti.features.context.ICreateContext;
+import org.eclipse.graphiti.features.context.IMoveContext;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -31,7 +36,7 @@ import org.eclipse.graphiti.services.Graphiti;
 public class ModelOperations {
 
 	private static List<MoveAlgorithm> MOVE;
-	private static List<AddAlgorithm> CREATE;
+	private static List<CreateAlgorithm> CREATE;
 
 	static {
 		MOVE = new ArrayList<MoveAlgorithm>();
@@ -40,13 +45,15 @@ public class ModelOperations {
 		MOVE.add(new ToLaneAlgorithm());
 		MOVE.add(new FromParticipantAlgorithm());
 		MOVE.add(new ToParticipantAlgorithm());
+		MOVE.add(new ToDiagramAlgorithm());
 		MOVE.add(new FromFlowElementsContainerAlgorithm());
 		MOVE.add(new ToFlowElementsContainerAlgorithm());
 		
-		CREATE = new ArrayList<AddAlgorithm>();
+		CREATE = new ArrayList<CreateAlgorithm>();
 		
 		CREATE.add(new OnLaneAlgorithm());
 		CREATE.add(new OnParticipantAlgorithm());
+		CREATE.add(new OnDiagramAlgorithm());
 		CREATE.add(new OnFlowElementsContainer());
 	}
 	
@@ -69,7 +76,7 @@ public class ModelOperations {
 		public void execute(T context);
 	}
 
-	public static ModelOperation<IMoveShapeContext> getFlowNodeMoveAlgorithms(IMoveShapeContext context) {
+	public static ModelMoveOperation getFlowNodeMoveOperation(IMoveShapeContext context) {
 		MoveAlgorithm from = null;
 		MoveAlgorithm to = null;
 		
@@ -86,30 +93,77 @@ public class ModelOperations {
 			}
 		}
 
-		return new ModelOperation<IMoveShapeContext>(from, to);
+		return new ModelMoveOperation(from, to);
+	}
+
+	public static ModelCreateOperation getFlowNodeCreateOperation(ICreateContext context) {
+		CreateAlgorithm algorithm = null;
+		
+		for (CreateAlgorithm a : CREATE) {
+			if (a.appliesTo(context)) {
+				algorithm = a;
+				break;
+			}
+		}
+
+		return new ModelCreateOperation(algorithm);
 	}
 	
-	public static class ModelOperation<T extends IContext> {
+	public static class ToModelOperation<T extends IContext> {
 		
-		public Algorithm<T> fromAlgorithm;
-		public Algorithm<T> toAlgorithm;
+		public Algorithm<T> to;
+	
+		public ToModelOperation(Algorithm<T> to) {
+			this.to = to;
+		}
+	
+		public boolean canExecute(T context) {
+			return !isEmpty() && to.canExecute(context);
+		}
+	
+		public void execute(T context) {
+			to.execute(context);
+		}
+	
+		public boolean isEmpty() {
+			return to == null;
+		}
+	}
+	
+	public static class FromToModelOperation<T extends IContext> extends ToModelOperation<T> {
+		
+		public Algorithm<T> from;
 
-		public ModelOperation(Algorithm<T> fromAlgorithm, Algorithm<T> toAlgorithm) {
-			this.fromAlgorithm = fromAlgorithm;
-			this.toAlgorithm = toAlgorithm;
+		public FromToModelOperation(Algorithm<T> from, Algorithm<T> to) {
+			super(to);
+			this.from = from;
 		}
 
 		public boolean canExecute(T context) {
-			return fromAlgorithm.canExecute(context) && toAlgorithm.canExecute(context);
+			return from.canExecute(context) && super.canExecute(context);
 		}
 
 		public void execute(T context) {
-			fromAlgorithm.execute(context);
-			toAlgorithm.execute(context);
+			from.execute(context);
+			super.execute(context);
 		}
 
 		public boolean isEmpty() {
-			return fromAlgorithm == null || toAlgorithm == null;
+			return from == null || super.isEmpty();
+		}
+	}
+	
+	public static class ModelMoveOperation extends FromToModelOperation<IMoveShapeContext> {
+
+		public ModelMoveOperation(Algorithm<IMoveShapeContext> from, Algorithm<IMoveShapeContext> to) {
+			super(from, to);
+		}
+	}
+	
+	public static class ModelCreateOperation extends ToModelOperation<ICreateContext> {
+
+		public ModelCreateOperation(Algorithm<ICreateContext> to) {
+			super(to);
 		}
 	}
 	
@@ -234,8 +288,7 @@ public class ModelOperations {
 
 		@Override
 		public boolean appliesTo(IMoveShapeContext context) {
-			return FeatureSupport.isTargetParticipant(context) || 
-				   FeatureSupport.isTargetDiagram(context);
+			return FeatureSupport.isTargetParticipant(context);
 		}
 
 		@Override
@@ -250,6 +303,26 @@ public class ModelOperations {
 			return canAddToFlowElementsContainer(target);
 		}
 		
+	}
+	
+	static class ToDiagramAlgorithm extends MoveToAlgorithm {
+
+		@Override
+		public boolean appliesTo(IMoveShapeContext context) {
+			return FeatureSupport.isTargetDiagram(context);
+		}
+
+		@Override
+		public boolean canExecute(IMoveShapeContext context) {
+			BaseElement source = getSource(context);
+			BaseElement target = getTarget(context);
+			
+			if (source == target) {
+				return true;
+			}
+			
+			return canAddToFlowElementsContainer(target);
+		}
 	}
 
 	static class FromFlowElementsContainerAlgorithm extends MoveFromAlgorithm {
@@ -277,72 +350,95 @@ public class ModelOperations {
 	
 	//// create algorithms /////////////////////////////////////////
 	
-	abstract static class AddAlgorithm implements Algorithm<IAddContext>  {
-		
+	abstract static class CreateAlgorithm implements Algorithm<ICreateContext>  {
 	}
 	
-	abstract static class DefaultAddAlgorithm extends AddAlgorithm {
+	abstract static class DefaultCreateAlgorithm extends CreateAlgorithm {
 		
 		@Override
-		public boolean canExecute(IAddContext context) {
-			return false;
-		}
-		
-		@Override
-		public void execute(IAddContext context) {
-			
+		public void execute(ICreateContext context) {
+			// do nothing
 		}
 		
 		private BaseElement getBusinessObject(PictogramElement e) {
 			return BusinessObjectUtil.getFirstElementOfType(e, BaseElement.class);
 		}
 		
-		protected BaseElement getTarget(IAddContext context) {
+		protected BaseElement getTarget(ICreateContext context) {
 			return getBusinessObject(context.getTargetContainer());
-		}
-		
-		protected BaseElement getElement(IAddContext context) {
-			return (BaseElement) context.getNewObject();
 		}
 	}
 	
-	static class OnLaneAlgorithm extends DefaultAddAlgorithm {
+	static class OnLaneAlgorithm extends DefaultCreateAlgorithm {
 
 		@Override
-		public boolean appliesTo(IAddContext context) {
+		public boolean appliesTo(ICreateContext context) {
 			return FeatureSupport.isTargetLane(context);
 		}
 		
 		@Override
-		public boolean canExecute(IAddContext context) {
+		public boolean canExecute(ICreateContext context) {
 			return canAddToLane((Lane) getTarget(context));
 		}
 	}
 
-	static class OnParticipantAlgorithm extends DefaultAddAlgorithm {
+	static class OnParticipantAlgorithm extends DefaultCreateAlgorithm {
 
 		@Override
-		public boolean appliesTo(IAddContext context) {
-			return FeatureSupport.isTargetParticipant(context) || 
-				   FeatureSupport.isTargetDiagram(context);
+		public boolean appliesTo(ICreateContext context) {
+			return FeatureSupport.isTargetParticipant(context);
 		}
 		
 		@Override
-		public boolean canExecute(IAddContext context) {
-			return canAddToFlowElementsContainer((Lane) getTarget(context));
+		public boolean canExecute(ICreateContext context) {
+			return canAddToFlowElementsContainer((Participant) getTarget(context));
 		}
 	}
 	
-	static class OnFlowElementsContainer extends DefaultAddAlgorithm {
+	static class OnDiagramAlgorithm extends DefaultCreateAlgorithm {
+
 		@Override
-		public boolean appliesTo(IAddContext context) {
+		public boolean appliesTo(ICreateContext context) {
+			return FeatureSupport.isTargetDiagram(context);
+		}
+		
+		@Override
+		public boolean canExecute(ICreateContext context) {
+			BaseElement target = getTarget(context);
+			return canAddToFlowElementsContainer(target);
+		}
+	}
+	
+	static class OnFlowElementsContainer extends DefaultCreateAlgorithm {
+		
+		@Override
+		public boolean appliesTo(ICreateContext context) {
 			Object bo = getBusinessObjectForPictogramElement(context.getTargetContainer());
 			return bo != null && bo instanceof FlowElementsContainer;
+		}
+		
+		@Override
+		public boolean canExecute(ICreateContext context) {
+			return true;
 		}
 	}
 	
 	static boolean canAddToLane(Lane lane) {
 		return lane.getChildLaneSet() == null || lane.getChildLaneSet().getLanes().isEmpty();
+	}
+	
+
+	static boolean canAddToDiagram(Diagram target) {
+		
+		Definitions definitions = BusinessObjectUtil.getFirstElementOfType(target, Definitions.class);
+		
+		for (RootElement e: definitions.getRootElements()) {
+			if (e instanceof Collaboration) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 	static boolean canAddToFlowElementsContainer(BaseElement target) {

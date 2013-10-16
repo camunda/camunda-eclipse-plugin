@@ -14,6 +14,7 @@ import org.camunda.bpm.modeler.test.util.DiagramResource;
 import org.camunda.bpm.modeler.test.util.Util;
 import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.DataObjectReference;
+import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -46,6 +47,7 @@ public class AddDataObjectFeatureTest extends AbstractFeatureTest {
 		
 		assertThat(dataObjectReference).isNotNull();
 		assertThat(dataObjectReference.getDataObjectRef()).isNull();
+		assertThat(dataObjectReference.eContainer()).isEqualTo(BusinessObjectUtil.getFirstElementOfType(diagram, FlowElementsContainer.class));
 		
 		assertThat(labelShape)
 			.isNotNull()

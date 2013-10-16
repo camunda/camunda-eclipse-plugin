@@ -13,7 +13,7 @@
 package org.camunda.bpm.modeler.core.features;
 
 import org.camunda.bpm.modeler.core.features.rules.ModelOperations;
-import org.camunda.bpm.modeler.core.features.rules.ModelOperations.ModelOperation;
+import org.camunda.bpm.modeler.core.features.rules.ModelOperations.ModelMoveOperation;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.FlowNode;
@@ -26,7 +26,7 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 
-	private ModelOperation<IMoveShapeContext> moveOperation;
+	private ModelMoveOperation moveOperation;
 
 	public MoveFlowNodeFeature(IFeatureProvider fp) {
 		super(fp);
@@ -38,7 +38,7 @@ public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 			return false;
 		}
 
-		ModelOperation<IMoveShapeContext> moveOperation = ModelOperations.getFlowNodeMoveAlgorithms(context);
+		ModelMoveOperation moveOperation = ModelOperations.getFlowNodeMoveOperation(context);
 
 		if (moveOperation.isEmpty()) {
 			return onMoveAlgorithmNotFound(context);
@@ -74,7 +74,7 @@ public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
 		}
 		
 		// init algorithm container for move operation
-		this.moveOperation = ModelOperations.getFlowNodeMoveAlgorithms(context);
+		this.moveOperation = ModelOperations.getFlowNodeMoveOperation(context);
 	}
 	
 	@Override

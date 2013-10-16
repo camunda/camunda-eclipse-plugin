@@ -268,8 +268,7 @@ public class MoveBoundaryEventFeatureTest extends AbstractFeatureTest {
 			.isContainedIn(targetParticipantShape);
 		
 		// participant is linked to process now
-		assertThat(targetParticipant.getProcessRef())
-			.isNotNull();
+		assertThat(targetParticipant.getProcessRef()).isNotNull();
 		
 		// boundary event should have been updated to new participant
 		assertThat(boundaryEvent.eContainer())

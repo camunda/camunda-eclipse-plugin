@@ -7,8 +7,10 @@ import static org.camunda.bpm.modeler.test.util.operations.MoveShapeOperation.mo
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.LabelUtil;
+import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.test.feature.AbstractFeatureTest;
 import org.camunda.bpm.modeler.test.util.DiagramResource;
+import org.camunda.bpm.modeler.test.util.StringUtil;
 import org.camunda.bpm.modeler.test.util.Util;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
@@ -47,6 +49,8 @@ public class MoveFlowNodeFeatureTest extends AbstractFeatureTest {
 			.toContainer(processShape)
 			.execute();
 
+		StringUtil.toDetailsString(subProcessShape);
+		
 		// now the usertask is contained in the process
 		assertThat(subProcessShape).doesNotHaveChild(userTaskShape);
 		

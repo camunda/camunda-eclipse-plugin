@@ -14,11 +14,13 @@ package org.camunda.bpm.modeler.core.features;
 
 
 import org.camunda.bpm.modeler.core.ModelHandler;
-import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
+import org.camunda.bpm.modeler.core.di.DIUtils;
+import org.camunda.bpm.modeler.core.features.rules.ModelOperations;
+import org.camunda.bpm.modeler.core.features.rules.ModelOperations.ModelCreateOperation;
+import org.camunda.bpm.modeler.core.importer.ModelImport;
 import org.camunda.bpm.modeler.core.utils.ContextUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.FlowElement;
-import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -32,12 +34,8 @@ public abstract class AbstractCreateFlowElementFeature<T extends FlowElement> ex
 
 	@Override
 	public boolean canCreate(ICreateContext context) {
-		boolean intoDiagram = context.getTargetContainer().equals(getDiagram());
-		boolean intoLane = FeatureSupport.isTargetLane(context) && FeatureSupport.isTargetLaneOnTop(context);
-		boolean intoParticipant = FeatureSupport.isTargetParticipant(context);
-		boolean intoFlowElementContainer = BusinessObjectUtil.containsElementOfType(context.getTargetContainer(), FlowElementsContainer.class);
-		
-		return intoDiagram || intoLane || intoParticipant || intoFlowElementContainer;
+		ModelCreateOperation operation = ModelOperations.getFlowNodeCreateOperation(context);
+		return operation.canExecute(context);
 	}
 
 	@Override
