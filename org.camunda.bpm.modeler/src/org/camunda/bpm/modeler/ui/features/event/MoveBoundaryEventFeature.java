@@ -17,7 +17,7 @@ import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.location;
 import org.camunda.bpm.modeler.core.features.DefaultMoveBPMNShapeFeature;
 import org.camunda.bpm.modeler.core.features.activity.MoveActivityFeature;
 import org.camunda.bpm.modeler.core.features.rules.ModelOperations;
-import org.camunda.bpm.modeler.core.features.rules.ModelOperations.ModelOperation;
+import org.camunda.bpm.modeler.core.features.rules.ModelOperations.ModelMoveOperation;
 import org.camunda.bpm.modeler.core.layout.util.BoundaryEventUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
@@ -189,7 +189,7 @@ public class MoveBoundaryEventFeature extends DefaultMoveBPMNShapeFeature {
 		
 		// perform move of the business object
 		// in between containers
-		ModelOperation<IMoveShapeContext> moveOperation = ModelOperations.getFlowNodeMoveAlgorithms(context);
+		ModelMoveOperation moveOperation = ModelOperations.getFlowNodeMoveOperation(context);
 		if (!moveOperation.isEmpty()) {
 			moveOperation.execute(context);
 		}

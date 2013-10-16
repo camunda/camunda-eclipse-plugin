@@ -88,7 +88,15 @@ public class DataStoreReferenceFeatureContainer extends AbstractDataFeatureConta
 	 * @author nico.rehwaldt
 	 */
 	public static class CreateDataStoreReferenceFeature extends AbstractCreateFlowElementFeature<DataStoreReference> {
-
+		
+		@Override
+		public boolean canCreate(ICreateContext context) {
+			// data store references may be added on diagram, too
+			return 
+				super.canCreate(context) || 
+				getDiagram().equals(context.getTargetContainer());
+		}
+		
 		private static ILabelProvider labelProvider = new ILabelProvider() {
 
 			public void removeListener(ILabelProviderListener listener) {
