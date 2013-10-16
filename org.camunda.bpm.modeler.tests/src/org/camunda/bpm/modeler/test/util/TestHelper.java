@@ -73,9 +73,6 @@ public class TestHelper {
 				diagram,
 				"org.camunda.bpm.modeler.ui.diagram.MainBPMNDiagramType");
 
-		// required to eagerly initialize this one
-		typeProvider.getDiagramEditor().getResourceSet();
-		
 		Bpmn2Resource modelResource = modelResources.getResource();
 		
 		List<EObject> contents = modelResource.getContents();

@@ -8,6 +8,7 @@ import org.eclipse.bpmn2.CallableElement;
 import org.eclipse.bpmn2.Collaboration;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.Lane;
+import org.eclipse.bpmn2.LinkEventDefinition;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.core.databinding.observable.value.IValueChangeListener;
@@ -34,6 +35,13 @@ public class NamePropertyBuilder extends AbstractPropertiesBuilder<BaseElement> 
 	private EStructuralFeature NAME_FEATURE;
 	
 	private String label;
+	private String helpText;
+
+	public NamePropertyBuilder(Composite parent, GFPropertySection section, BaseElement bo, String label, String helpText) {
+		this(parent, section, bo, label);
+
+		this.helpText = helpText;
+	}
 
 	public NamePropertyBuilder(Composite parent, GFPropertySection section, BaseElement bo, String label) {
 		super(parent, section, bo);
@@ -57,6 +65,9 @@ public class NamePropertyBuilder extends AbstractPropertiesBuilder<BaseElement> 
 		} else
 		if (bo instanceof MessageFlow) {
 			NAME_FEATURE = Bpmn2Package.eINSTANCE.getMessageFlow_Name();
+		} else
+		if (bo instanceof LinkEventDefinition) {
+			NAME_FEATURE = Bpmn2Package.eINSTANCE.getLinkEventDefinition_Name();
 		} else {
 			// Unsupported base element: Do nothing
 		}
@@ -70,6 +81,9 @@ public class NamePropertyBuilder extends AbstractPropertiesBuilder<BaseElement> 
 	public void create() {
 		if (NAME_FEATURE != null) {
 			final Text multiText = createAutoResizingMultiText(section, parent, label, NAME_FEATURE, bo);
+			if (helpText != null) {
+				PropertyUtil.attachNoteWithLink(section, multiText, helpText);
+			}
 		}
 	}
 

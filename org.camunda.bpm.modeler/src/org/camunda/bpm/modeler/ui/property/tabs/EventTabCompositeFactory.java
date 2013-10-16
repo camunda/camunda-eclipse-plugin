@@ -6,14 +6,18 @@ import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.BoundaryEventDefinitionComposite;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.ErrorDefinitionPropertyBuilder;
+import org.camunda.bpm.modeler.ui.property.tabs.builder.IdPropertyBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.MessageDefinitionPropertyBuilder;
+import org.camunda.bpm.modeler.ui.property.tabs.builder.NamePropertyBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.SignalDefinitionPropertyBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.TimerEventDefinitionPropertiesBuilder;
+import org.camunda.bpm.modeler.ui.property.tabs.util.HelpText;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.ErrorEventDefinition;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
+import org.eclipse.bpmn2.LinkEventDefinition;
 import org.eclipse.bpmn2.MessageEventDefinition;
 import org.eclipse.bpmn2.SignalEventDefinition;
 import org.eclipse.bpmn2.StartEvent;
@@ -41,6 +45,7 @@ public class EventTabCompositeFactory extends AbstractTabCompositeFactory<Event>
 		MessageEventDefinition messageDef = getEventDefinition(MessageEventDefinition.class, eventDefinitions);
 		TimerEventDefinition timerDef = getEventDefinition(TimerEventDefinition.class, eventDefinitions);
 		SignalEventDefinition signalDef = getEventDefinition(SignalEventDefinition.class, eventDefinitions);
+		LinkEventDefinition linkDef = getEventDefinition(LinkEventDefinition.class, eventDefinitions);
 		
 		if (errorDef == null && event instanceof StartEvent) {
 			PropertyUtil.createText(section, parent, "Initiator", ModelPackage.eINSTANCE.getDocumentRoot_Initiator(), event);
@@ -60,6 +65,10 @@ public class EventTabCompositeFactory extends AbstractTabCompositeFactory<Event>
 		
 		if (signalDef != null) {
 			createSignalDefinitionComposite(signalDef);
+		}
+
+		if (linkDef != null) {
+			createLinkDefinitionComposite(linkDef);
 		}
 		
 		if (event instanceof BoundaryEvent) {
@@ -96,5 +105,10 @@ public class EventTabCompositeFactory extends AbstractTabCompositeFactory<Event>
 	
 	private void createMessageDefinitionComposite(MessageEventDefinition messageDef) {
 		new MessageDefinitionPropertyBuilder(parent, section, messageDef).create();
+	}
+
+	private void createLinkDefinitionComposite(LinkEventDefinition linkDef) {
+		new IdPropertyBuilder(parent, section, linkDef, "Link Id").create();
+		new NamePropertyBuilder(parent, section, linkDef, "Link Name", HelpText.LINK_EVENT_DEFINITION_NAME).create();
 	}
 }

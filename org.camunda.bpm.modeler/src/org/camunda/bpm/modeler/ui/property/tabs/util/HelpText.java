@@ -21,9 +21,11 @@ public class HelpText {
 	
 	private static final String CALL_ACTIVITY_VARIABLES_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#subprocesses-call-activity-passing-variables";
 	private static final String CALL_ACTIVITY_BUSINESS_KEY_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#subprocesses-call-activity-passing-business-key";
-	
+
+	private static final String LINK_EVENT_DEFINITION_USER_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#events-link-events";
+
 	public static final String ASYNC_FLAG = String.format(
-			"More infomation on asynchronous continuation can be found in the <a href=\"%s\">user guide</a>.", ASYNC_LINK_TO_USER_GUIDE);
+			"More information on asynchronous continuation can be found in the <a href=\"%s\">user guide</a>.", ASYNC_LINK_TO_USER_GUIDE);
 	
 	public static final String CALL_ACTIVITY_CALLED_ELEMENT_VERSION = "Processdefinition version of called process (e.g. \"17\")"; 
 	
@@ -35,5 +37,7 @@ public class HelpText {
 	
 	public static final String CALL_ACTIVITY_BUSINESS_KEY = String.format(
         "Pass business key from mainprocess to subprocess. See for more information <a href=\"%s\">user guide</a>.", CALL_ACTIVITY_BUSINESS_KEY_GUIDE);
-	
+
+	public static final String LINK_EVENT_DEFINITION_NAME = String.format("More information on link event definition can be found in the <a href=\"%s\">user guide</a>.", LINK_EVENT_DEFINITION_USER_GUIDE);
+
 }
