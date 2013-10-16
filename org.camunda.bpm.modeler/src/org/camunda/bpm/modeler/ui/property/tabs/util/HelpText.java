@@ -25,7 +25,7 @@ public class HelpText {
 	private static final String LINK_EVENT_DEFINITION_USER_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#events-link-events";
 
 	public static final String ASYNC_FLAG = String.format(
-			"More infomation on asynchronous continuation can be found in the <a href=\"%s\">user guide</a>.", ASYNC_LINK_TO_USER_GUIDE);
+			"More information on asynchronous continuation can be found in the <a href=\"%s\">user guide</a>.", ASYNC_LINK_TO_USER_GUIDE);
 	
 	public static final String CALL_ACTIVITY_CALLED_ELEMENT_VERSION = "Processdefinition version of called process (e.g. \"17\")"; 
 	
