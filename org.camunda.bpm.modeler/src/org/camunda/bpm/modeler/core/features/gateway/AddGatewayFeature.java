@@ -13,6 +13,7 @@
 package org.camunda.bpm.modeler.core.features.gateway;
 
 import org.camunda.bpm.modeler.core.features.activity.AbstractAddFlowElementFeature;
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.BoxingStrategy;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.Gateway;
@@ -91,6 +92,11 @@ public class AddGatewayFeature<T extends Gateway>
 			
 			addContext.setSize(width, height);
 		}
+	}
+	
+	@Override
+	protected BoxingStrategy getBoxingStrategy(IAddContext context) {
+		return BoxingStrategy.POSITION;
 	}
 	
 	protected void decorate(ContainerShape newShape) {

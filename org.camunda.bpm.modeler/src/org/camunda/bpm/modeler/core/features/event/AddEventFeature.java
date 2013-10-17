@@ -12,10 +12,10 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.core.features.event;
 
-import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
 import static org.camunda.bpm.modeler.core.utils.GraphicsUtil.createEventShape;
 
 import org.camunda.bpm.modeler.core.features.activity.AbstractAddFlowElementFeature;
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.BoxingStrategy;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.Event;
@@ -91,6 +91,11 @@ public class AddEventFeature<T extends Event>
 			
 			addContext.setSize(width, height);
 		}
+	}
+	
+	@Override
+	protected BoxingStrategy getBoxingStrategy(IAddContext context) {
+		return BoxingStrategy.POSITION;
 	}
 	
 	protected void decorate(Ellipse ellipse) {

@@ -1251,6 +1251,17 @@ public class LayoutUtil {
 	}
 	
 	/**
+	 * The strategy for constraining an object into the parent box
+	 * 
+	 * @author Nico Rehwaldt
+	 */
+	public static enum BoxingStrategy {
+		POSITION,
+		POSITION_AND_SIZE,
+		NONE;
+	}
+	
+	/**
 	 * Constraints a box with parent relative coordinates in a given parent box
 	 * 
 	 * @param relativeBox
@@ -1258,7 +1269,7 @@ public class LayoutUtil {
 	 * @param padding
 	 * @return
 	 */
-	public static IRectangle box(IRectangle relativeBox, IDimension boundingBox, int padding) {
+	public static IRectangle box(IRectangle relativeBox, IDimension boundingBox, int padding, BoxingStrategy boxingStrategy) {
 		
 		int x = relativeBox.getX();
 		int y = relativeBox.getY();
@@ -1269,28 +1280,35 @@ public class LayoutUtil {
 		int maxWidth = boundingBox.getWidth() - (2 * padding);
 		int maxHeight = boundingBox.getHeight() - (2 * padding);
 
-		if (width > maxWidth) {
-			width = maxWidth;
-		}
-		
-		if (height > maxHeight) {
-			height = maxHeight;
-		}
-		
-		if (x < padding) {
-			x = padding;
-		}
-		
-		if (y < padding) {
-			y = padding;
-		}
-
-		if (x + width > maxWidth + padding) {
-			x = maxWidth + padding - width;
-		}
-		
-		if (y + height > maxHeight + padding) {
-			y = maxHeight + padding - height;
+		switch (boxingStrategy) {
+		case NONE:
+			break;
+		case POSITION_AND_SIZE:
+			if (width > maxWidth) {
+				width = maxWidth;
+			}
+			
+			if (height > maxHeight) {
+				height = maxHeight;
+			}
+			// intentionally skipped break (POSITION part applies to POSITION_AND_SIZE, too)
+		case POSITION:
+			
+			if (x + width > maxWidth + padding) {
+				x = maxWidth + padding - width;
+			}
+			
+			if (y + height > maxHeight + padding) {
+				y = maxHeight + padding - height;
+			}
+			
+			if (x < padding) {
+				x = padding;
+			}
+			
+			if (y < padding) {
+				y = padding;
+			}
 		}
 		
 		return rectangle(x, y, width, height);

@@ -5,6 +5,7 @@ import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.BoxingStrategy;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.junit.Test;
@@ -101,20 +102,20 @@ public class LayoutUtilStaticTest {
 	public void testBox() {
 		IRectangle dimensions = rectangle(-1, -1, 400, 100);
 
-		assertThat(LayoutUtil.box(rectangle(10, 10, 50, 50), dimensions, 10)).isEqualTo(rectangle(10, 10, 50, 50));
-		assertThat(LayoutUtil.box(rectangle(0, 0, 50, 50), dimensions, 10)).isEqualTo(rectangle(10, 10, 50, 50));
+		assertThat(LayoutUtil.box(rectangle(10, 10, 50, 50), dimensions, 10, BoxingStrategy.POSITION_AND_SIZE)).isEqualTo(rectangle(10, 10, 50, 50));
+		assertThat(LayoutUtil.box(rectangle(0, 0, 50, 50), dimensions, 10, BoxingStrategy.POSITION_AND_SIZE)).isEqualTo(rectangle(10, 10, 50, 50));
 
-		assertThat(LayoutUtil.box(rectangle(340, 10, 50, 50), dimensions, 10)).isEqualTo(rectangle(340, 10, 50, 50));
-		assertThat(LayoutUtil.box(rectangle(390, 0, 50, 50), dimensions, 10)).isEqualTo(rectangle(340, 10, 50, 50));
+		assertThat(LayoutUtil.box(rectangle(340, 10, 50, 50), dimensions, 10, BoxingStrategy.POSITION_AND_SIZE)).isEqualTo(rectangle(340, 10, 50, 50));
+		assertThat(LayoutUtil.box(rectangle(390, 0, 50, 50), dimensions, 10, BoxingStrategy.POSITION_AND_SIZE)).isEqualTo(rectangle(340, 10, 50, 50));
 
-		assertThat(LayoutUtil.box(rectangle(10, 40, 50, 50), dimensions, 10)).isEqualTo(rectangle(10, 40, 50, 50));
-		assertThat(LayoutUtil.box(rectangle(10, 60, 50, 50), dimensions, 10)).isEqualTo(rectangle(10, 40, 50, 50));
+		assertThat(LayoutUtil.box(rectangle(10, 40, 50, 50), dimensions, 10, BoxingStrategy.POSITION_AND_SIZE)).isEqualTo(rectangle(10, 40, 50, 50));
+		assertThat(LayoutUtil.box(rectangle(10, 60, 50, 50), dimensions, 10, BoxingStrategy.POSITION_AND_SIZE)).isEqualTo(rectangle(10, 40, 50, 50));
 
-		assertThat(LayoutUtil.box(rectangle(340, 40, 50, 50), dimensions, 10)).isEqualTo(rectangle(340, 40, 50, 50));
-		assertThat(LayoutUtil.box(rectangle(390, 60, 50, 50), dimensions, 10)).isEqualTo(rectangle(340, 40, 50, 50));
+		assertThat(LayoutUtil.box(rectangle(340, 40, 50, 50), dimensions, 10, BoxingStrategy.POSITION_AND_SIZE)).isEqualTo(rectangle(340, 40, 50, 50));
+		assertThat(LayoutUtil.box(rectangle(390, 60, 50, 50), dimensions, 10, BoxingStrategy.POSITION_AND_SIZE)).isEqualTo(rectangle(340, 40, 50, 50));
 		
-		assertThat(LayoutUtil.box(rectangle(10, 10, 400, 50), dimensions, 10)).isEqualTo(rectangle(10, 10, 380, 50));
-		assertThat(LayoutUtil.box(rectangle(10, 10, 50, 150), dimensions, 10)).isEqualTo(rectangle(10, 10, 50, 80));
+		assertThat(LayoutUtil.box(rectangle(10, 10, 400, 50), dimensions, 10, BoxingStrategy.POSITION_AND_SIZE)).isEqualTo(rectangle(10, 10, 380, 50));
+		assertThat(LayoutUtil.box(rectangle(10, 10, 50, 150), dimensions, 10, BoxingStrategy.POSITION_AND_SIZE)).isEqualTo(rectangle(10, 10, 50, 80));
 	}
 
 	@Test

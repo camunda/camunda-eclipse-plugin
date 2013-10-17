@@ -16,6 +16,7 @@ import static org.camunda.bpm.modeler.core.features.activity.UpdateActivityCompe
 import static org.camunda.bpm.modeler.core.features.activity.UpdateActivityLoopAndMultiInstanceMarkerFeature.IS_LOOP_OR_MULTI_INSTANCE;
 
 import org.camunda.bpm.modeler.core.features.activity.UpdateActivityLoopAndMultiInstanceMarkerFeature.LoopCharacteristicType;
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.BoxingStrategy;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.graphiti.datatypes.IRectangle;
@@ -92,17 +93,12 @@ public abstract class AbstractAddActivityFeature<T extends Activity> extends Abs
 		}
 		
 		super.adjustLocationAndSize(context, width, height);
-		
-		if (isImport(context)) {
-			return;
-		}
-		
-		if (context instanceof AddContext) {
-			AddContext addContext = (AddContext) context;
-			
-			addContext.setSize(width, height);
-		}
-	}	
+	}
+	
+	@Override
+	protected BoxingStrategy getBoxingStrategy(IAddContext context) {
+		return BoxingStrategy.POSITION_AND_SIZE;
+	}
 	
 	/**
 	 * Decorates the graphical element

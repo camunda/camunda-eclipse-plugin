@@ -1,13 +1,17 @@
 package org.camunda.bpm.modeler.test.feature.add;
 
+import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.point;
+import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
 import static org.camunda.bpm.modeler.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.camunda.bpm.modeler.test.util.assertions.Bpmn2ModelAssertions.elementOfType;
 import static org.camunda.bpm.modeler.test.util.operations.AddStartEventOperation.addStartEvent;
+import static org.camunda.bpm.modeler.test.util.operations.AddSubProcessOperation.addSubProcess;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.BoxingStrategy;
 import org.camunda.bpm.modeler.test.feature.AbstractFeatureTest;
 import org.camunda.bpm.modeler.test.util.DiagramResource;
 import org.camunda.bpm.modeler.test.util.Util;
@@ -102,5 +106,317 @@ public class AddStartEventFeatureTest extends AbstractFeatureTest {
 		
 		assertThat(targetConnection)
 			.hasExactBendpoints(expectedAfterSplitBendpoints);
+	}
+	
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/add/AddFlowElementFeatureTestBase.testBox.bpmn")
+	public void testAddStartEventToParticipantAdjustLocationAndRetainSize() {
+		// given
+		Shape participantShape = Util.findShapeByBusinessObjectId(diagram, "Participant_1");
+		
+		IRectangle participantBounds = LayoutUtil.getAbsoluteBounds(participantShape);
+		
+		Point addPosition = point(20, 30);
+		
+		// when
+		addStartEvent(getDiagramTypeProvider())
+			.atLocation(addPosition)
+			.toContainer((ContainerShape) participantShape)
+			.execute();
+		
+		// then
+		IRectangle box = LayoutUtil.box(
+				rectangle(addPosition.getX() - 36 / 2, 
+						  addPosition.getY() - 36 / 2, 36, 36), 
+						  participantBounds, 10, BoxingStrategy.POSITION);
+		
+		Point expectedPosition = point(
+				participantBounds.getX() + 40, 
+				participantBounds.getY() + box.getY());
+		
+		Shape startEventShape = Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
+		
+		assertThat(startEventShape)
+			.isContainedIn(participantShape)
+			.position()
+				.isEqualTo(expectedPosition);
+	
+		assertThat(startEventShape)
+			.bounds()
+			.width()
+				.isEqualTo(36);
+	
+		assertThat(startEventShape)
+			.bounds()
+			.height()
+				.isEqualTo(36);	
+	}
+	
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/add/AddFlowElementFeatureTestBase.testBox.bpmn")
+	public void testAddStartEventToParticipantAdjustLocationAndRetainSize_Cornercase() {
+		// given
+		Shape participantShape = Util.findShapeByBusinessObjectId(diagram, "Participant_1");
+		
+		IRectangle participantBounds = LayoutUtil.getAbsoluteBounds(participantShape);
+		
+		Point addPosition = point(49, 41);
+		
+		// when
+		addStartEvent(getDiagramTypeProvider())
+			.atLocation(addPosition)
+			.toContainer((ContainerShape) participantShape)
+			.execute();
+		
+		// then
+		IRectangle box = LayoutUtil.box(
+				rectangle(addPosition.getX() - 36 / 2, 
+						  addPosition.getY() - 36 / 2, 36, 36), 
+						  participantBounds, 10, BoxingStrategy.POSITION);
+		
+		Point expectedPosition = point(
+				participantBounds.getX() + 40, 
+				participantBounds.getY() + box.getY());
+		
+		Shape startEventShape = Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
+		
+		assertThat(startEventShape)
+			.isContainedIn(participantShape)
+			.position()
+				.isEqualTo(expectedPosition);
+	
+		assertThat(startEventShape)
+			.bounds()
+			.width()
+				.isEqualTo(36);
+	
+		assertThat(startEventShape)
+			.bounds()
+			.height()
+				.isEqualTo(36);	
+	}
+	
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/add/AddFlowElementFeatureTestBase.testBox.bpmn")
+	public void testAddStartEventToSmallParticipantAdjustLocationAndRetainSize() {
+		// given
+		Shape participantShape = Util.findShapeByBusinessObjectId(diagram, "Participant_2");
+		
+		IRectangle participantBounds = LayoutUtil.getAbsoluteBounds(participantShape);
+		
+		Point addPosition = point(20, 30);
+		
+		// when
+		addStartEvent(getDiagramTypeProvider())
+			.atLocation(addPosition)
+			.toContainer((ContainerShape) participantShape)
+			.execute();
+		
+		// then
+		IRectangle box = LayoutUtil.box(
+				rectangle(addPosition.getX() - 36 / 2, 
+						  addPosition.getY() - 36 / 2, 36, 36), 
+						  participantBounds, 10, BoxingStrategy.POSITION);
+		
+		Point expectedPosition = point(
+				participantBounds.getX() + 40, 
+				participantBounds.getY() + box.getY());
+		
+		Shape startEventShape = Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
+		
+		assertThat(startEventShape)
+			.isContainedIn(participantShape)
+			.position()
+				.isEqualTo(expectedPosition);
+	
+		assertThat(startEventShape)
+			.bounds()
+			.width()
+				.isEqualTo(36);
+	
+		assertThat(startEventShape)
+			.bounds()
+			.height()
+				.isEqualTo(36);
+	}
+	
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/add/AddFlowElementFeatureTestBase.testBox.bpmn")
+	public void testAddStartEventToLaneAdjustLocationAndRetainSize() {
+		// given
+		Shape laneShape = Util.findShapeByBusinessObjectId(diagram, "Lane_1");
+		
+		IRectangle laneBounds = LayoutUtil.getAbsoluteBounds(laneShape);
+		
+		Point addPosition = point(20, 30);
+		
+		// when
+		addStartEvent(getDiagramTypeProvider())
+			.atLocation(addPosition)
+			.toContainer((ContainerShape) laneShape)
+			.execute();
+		
+		// then
+		IRectangle box = LayoutUtil.box(
+				rectangle(addPosition.getX() - 36 / 2, 
+						  addPosition.getY() - 36 / 2, 36, 36), 
+						  laneBounds, 10, BoxingStrategy.POSITION);
+		
+		Point expectedPosition = point(
+				laneBounds.getX() + 25, 
+				laneBounds.getY() + box.getY());
+		
+		Shape startEventShape = Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
+		
+		assertThat(startEventShape)
+			.isContainedIn(laneShape)
+			.position()
+				.isEqualTo(expectedPosition);
+	
+		assertThat(startEventShape)
+			.bounds()
+			.width()
+				.isEqualTo(36);
+	
+		assertThat(startEventShape)
+			.bounds()
+			.height()
+				.isEqualTo(36);
+		
+	}
+	
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/add/AddFlowElementFeatureTestBase.testBox.bpmn")
+	public void testAddStartEventToLaneAdjustLocationAndRetainSize_Cornercase() {
+		// given
+		Shape laneShape = Util.findShapeByBusinessObjectId(diagram, "Lane_1");
+		
+		IRectangle laneBounds = LayoutUtil.getAbsoluteBounds(laneShape);
+		
+		Point addPosition = point(44, 30);
+		
+		// when
+		addStartEvent(getDiagramTypeProvider())
+			.atLocation(addPosition)
+			.toContainer((ContainerShape) laneShape)
+			.execute();
+		
+		// then
+		IRectangle box = LayoutUtil.box(
+				rectangle(addPosition.getX() - 36 / 2, 
+						  addPosition.getY() - 36 / 2, 36, 36), 
+						  laneBounds, 10, BoxingStrategy.POSITION);
+		
+		Point expectedPosition = point(
+				laneBounds.getX() + 25, 
+				laneBounds.getY() + box.getY());
+		
+		Shape startEventShape = Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
+		
+		assertThat(startEventShape)
+			.isContainedIn(laneShape)
+			.position()
+				.isEqualTo(expectedPosition);
+	
+		assertThat(startEventShape)
+			.bounds()
+			.width()
+				.isEqualTo(36);
+	
+		assertThat(startEventShape)
+			.bounds()
+			.height()
+				.isEqualTo(36);
+		
+	}
+	
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/add/AddFlowElementFeatureTestBase.testBox.bpmn")
+	public void testAddStartEventToSmallLaneAdjustLocationAndRetainSize() {
+		// given
+		Shape laneShape = Util.findShapeByBusinessObjectId(diagram, "Lane_2");
+		
+		IRectangle laneBounds = LayoutUtil.getAbsoluteBounds(laneShape);
+		
+		Point addPosition = point(20, 30);
+		
+		// when
+		addStartEvent(getDiagramTypeProvider())
+			.atLocation(addPosition)
+			.toContainer((ContainerShape) laneShape)
+			.execute();
+		
+		// then
+		IRectangle box = LayoutUtil.box(
+				rectangle(addPosition.getX() - 36 / 2, 
+						  addPosition.getY() - 36 / 2, 36, 36), 
+						  laneBounds, 10, BoxingStrategy.POSITION);
+		
+		Point expectedPosition = point(
+				laneBounds.getX() + 25, 
+				laneBounds.getY() + box.getY());
+		
+		Shape startEventShape = Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
+		
+		assertThat(startEventShape)
+			.isContainedIn(laneShape)
+			.position()
+				.isEqualTo(expectedPosition);
+	
+		assertThat(startEventShape)
+			.bounds()
+			.width()
+				.isEqualTo(36);
+	
+		assertThat(startEventShape)
+			.bounds()
+			.height()
+				.isEqualTo(36);
+
+	}
+	
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/add/AddFlowElementFeatureTestBase.testBox.bpmn")
+	public void testAddStartEventToSubProcessAdjustLocationAndRetainSize() {
+		// given
+		Shape subProcessShape = Util.findShapeByBusinessObjectId(diagram, "SubProcess_1");
+		
+		IRectangle subProcessBounds = LayoutUtil.getAbsoluteBounds(subProcessShape);
+		
+		Point addPosition = point(10, 10);
+		
+		// when
+		addStartEvent(getDiagramTypeProvider())
+			.atLocation(addPosition)
+			.toContainer((ContainerShape) subProcessShape)
+			.execute();
+		
+		// then
+		IRectangle box = LayoutUtil.box(
+				rectangle(addPosition.getX() - 36 / 2, 
+						  addPosition.getY() - 36 / 2, 36, 36), 
+						  subProcessBounds, 10, BoxingStrategy.POSITION);
+		
+		Point expectedPosition = point(
+				subProcessBounds.getX() + box.getX(), 
+				subProcessBounds.getY() + box.getY());
+		
+		Shape startEventShape = Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
+		
+		assertThat(startEventShape)
+			.isContainedIn(subProcessShape)
+			.position()
+				.isEqualTo(expectedPosition);
+	
+		assertThat(startEventShape)
+			.bounds()
+			.width()
+				.isEqualTo(36);
+		
+		assertThat(startEventShape)
+			.bounds()
+			.height()
+				.isEqualTo(36);
+
 	}
 }

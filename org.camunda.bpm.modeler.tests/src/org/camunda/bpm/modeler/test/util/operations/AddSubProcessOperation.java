@@ -27,7 +27,7 @@ public class AddSubProcessOperation extends AbstractAddShapeOperation<CreateSubP
 		return (CreateSubProcessFeature) createFeature;
 	}
 
-	public static AddSubProcessOperation addTask(IDiagramTypeProvider diagramTypeProvider) {
+	public static AddSubProcessOperation addSubProcess(IDiagramTypeProvider diagramTypeProvider) {
 		return new AddSubProcessOperation(diagramTypeProvider);
 	}
 }

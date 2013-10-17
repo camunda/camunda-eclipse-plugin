@@ -9,7 +9,9 @@ import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.fest.assertions.api.AbstractAssert;
+import org.fest.assertions.api.Assertions;
 import org.fest.assertions.api.Fail;
+import org.fest.assertions.api.IntegerAssert;
 
 public class IRectangleAssert extends AbstractAssert<IRectangleAssert, IRectangle> {
 
@@ -44,8 +46,15 @@ public class IRectangleAssert extends AbstractAssert<IRectangleAssert, IRectangl
 			if (LayoutUtil.isContained(actual, location(point))) {
 				Fail.fail(failMessage(EXPECT_NO_CONTAINMENT, point, actual));
 			}
-			
 			return myself;
+		}
+		
+		public IntegerAssert width() {
+			return Assertions.assertThat(actual.getWidth());
+		}
+		
+		public IntegerAssert height() {
+			return Assertions.assertThat(actual.getHeight());
 		}
 		
 		private String failMessage(String expectContainment, Point point, IRectangle rect) {
