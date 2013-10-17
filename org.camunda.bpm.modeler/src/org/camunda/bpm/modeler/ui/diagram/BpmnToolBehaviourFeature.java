@@ -20,7 +20,6 @@ import org.camunda.bpm.modeler.core.features.IBpmn2AddFeature;
 import org.camunda.bpm.modeler.core.features.IBpmn2CreateFeature;
 import org.camunda.bpm.modeler.core.features.activity.ActivitySelectionBehavior;
 import org.camunda.bpm.modeler.core.features.event.EventSelectionBehavior;
-import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.camunda.bpm.modeler.core.utils.LabelUtil;
 import org.camunda.bpm.modeler.core.validation.ValidationStatusAdapter;
 import org.camunda.bpm.modeler.ui.FeatureMap;

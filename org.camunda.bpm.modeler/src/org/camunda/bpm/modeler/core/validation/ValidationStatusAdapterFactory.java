@@ -22,14 +22,14 @@ import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
  */
 public class ValidationStatusAdapterFactory extends AdapterFactoryImpl {
 
-    @Override
-    public boolean isFactoryForType(Object type) {
-        return type instanceof Class && ValidationStatusAdapter.class.isAssignableFrom((Class<?>) type);
-    }
+	@Override
+	public boolean isFactoryForType(Object type) {
+		return type instanceof Class && ValidationStatusAdapter.class.isAssignableFrom((Class<?>) type);
+	}
 
-    @Override
-    protected Adapter createAdapter(Notifier target) {
-        return new ValidationStatusAdapter();
-    }
+	@Override
+	protected Adapter createAdapter(Notifier target) {
+		return new ValidationStatusAdapter();
+	}
 
 }

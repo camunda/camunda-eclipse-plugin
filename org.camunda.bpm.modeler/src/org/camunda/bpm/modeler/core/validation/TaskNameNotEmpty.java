@@ -9,10 +9,6 @@ import org.eclipse.emf.validation.IValidationContext;
 
 public class TaskNameNotEmpty extends AbstractModelConstraint {
 
-	public TaskNameNotEmpty() {
-		// TODO Auto-generated constructor stub
-	}
-
 	@Override
 	public IStatus validate(IValidationContext ctx) {
 

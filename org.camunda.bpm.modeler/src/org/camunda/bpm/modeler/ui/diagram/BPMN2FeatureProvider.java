@@ -19,7 +19,6 @@ import java.util.List;
 import org.camunda.bpm.modeler.core.di.DIUtils;
 import org.camunda.bpm.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.camunda.bpm.modeler.core.features.DefaultDeleteBPMNShapeFeature;
-import org.camunda.bpm.modeler.core.features.DefaultRemoveBPMNShapeFeature;
 import org.camunda.bpm.modeler.core.features.activity.task.ICustomTaskFeature;
 import org.camunda.bpm.modeler.core.features.bendpoint.AddBendpointFeature;
 import org.camunda.bpm.modeler.core.features.bendpoint.MoveAnchorFeature;
@@ -36,6 +35,7 @@ import org.camunda.bpm.modeler.ui.features.activity.subprocess.SubProcessFeature
 import org.camunda.bpm.modeler.ui.features.activity.subprocess.TransactionFeatureContainer;
 import org.camunda.bpm.modeler.ui.features.activity.task.BusinessRuleTaskFeatureContainer;
 import org.camunda.bpm.modeler.ui.features.activity.task.CustomTaskFeatureContainer;
+import org.camunda.bpm.modeler.ui.features.activity.task.CustomTaskFeatureContainer.CreateCustomTaskFeature;
 import org.camunda.bpm.modeler.ui.features.activity.task.ManualTaskFeatureContainer;
 import org.camunda.bpm.modeler.ui.features.activity.task.ReceiveTaskFeatureContainer;
 import org.camunda.bpm.modeler.ui.features.activity.task.ScriptTaskFeatureContainer;
@@ -43,7 +43,6 @@ import org.camunda.bpm.modeler.ui.features.activity.task.SendTaskFeatureContaine
 import org.camunda.bpm.modeler.ui.features.activity.task.ServiceTaskFeatureContainer;
 import org.camunda.bpm.modeler.ui.features.activity.task.TaskFeatureContainer;
 import org.camunda.bpm.modeler.ui.features.activity.task.UserTaskFeatureContainer;
-import org.camunda.bpm.modeler.ui.features.activity.task.CustomTaskFeatureContainer.CreateCustomTaskFeature;
 import org.camunda.bpm.modeler.ui.features.artifact.GroupFeatureContainer;
 import org.camunda.bpm.modeler.ui.features.artifact.TextAnnotationFeatureContainer;
 import org.camunda.bpm.modeler.ui.features.choreography.CallChoreographyFeatureContainer;
@@ -86,6 +85,7 @@ import org.camunda.bpm.modeler.ui.features.label.ConnectionLabelFeatureContainer
 import org.camunda.bpm.modeler.ui.features.label.LabelFeatureContainer;
 import org.camunda.bpm.modeler.ui.features.lane.LaneFeatureContainer;
 import org.camunda.bpm.modeler.ui.features.participant.ParticipantFeatureContainer;
+import org.camunda.bpm.modeler.ui.features.validation.ValidateDiagramFeature;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
@@ -125,6 +125,7 @@ import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.features.impl.DefaultMoveConnectionDecoratorFeature;
 import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.ui.features.DefaultFeatureProvider;
@@ -420,13 +421,8 @@ public class BPMN2FeatureProvider extends DefaultFeatureProvider {
 
 	@Override
 	public IRemoveFeature getRemoveFeature(IRemoveContext context) {
-		FeatureContainer container = getFeatureContainer(context);
-		if (container!=null) {
-			IRemoveFeature feature = container.getRemoveFeature(this);
-			if (feature != null)
-				return feature;
-		}
-		return new DefaultRemoveBPMNShapeFeature(this);
+		// we do not offer any remove features
+		return null;
 	}
 	
 	@Override
@@ -453,9 +449,18 @@ public class BPMN2FeatureProvider extends DefaultFeatureProvider {
 			}
 		}
 
+		if (isDiagramSelected(context)) {
+			list.add(new ValidateDiagramFeature(this));
+		}
+		
 		return list.toArray(new ICustomFeature[list.size()]);
 	}
 	
+	private boolean isDiagramSelected(ICustomContext context) {
+		PictogramElement[] pictogramElements = context.getPictogramElements();
+		return pictogramElements != null && pictogramElements.length == 1 && pictogramElements[0] instanceof Diagram;
+	}
+
 	@Override
 	public IMoveConnectionDecoratorFeature getMoveConnectionDecoratorFeature(IMoveConnectionDecoratorContext context) {
 		return new DefaultMoveConnectionDecoratorFeature(this) {
