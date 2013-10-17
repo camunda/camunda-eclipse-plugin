@@ -27,6 +27,9 @@ import org.camunda.bpm.modeler.ui.ImageProvider;
 import org.camunda.bpm.modeler.ui.editor.BPMN2Editor;
 import org.camunda.bpm.modeler.ui.features.choreography.ChoreographySelectionBehavior;
 import org.camunda.bpm.modeler.ui.features.choreography.ChoreographyUtil;
+import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
+import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -221,6 +224,26 @@ public class BpmnToolBehaviourFeature extends DefaultToolBehaviorProvider
 				return super.allowCreate();
 			}
 		};
+	}
+
+	@Override
+	public boolean equalsBusinessObjects(Object o1, Object o2) {
+		/** multiInstanceLoopCharacteristics is an extension to an activity
+		  * e.g.
+		  * <bpmn2:serviceTask id="ServiceTask_1" camunda:class="" name="Service Task">
+		  * 	<bpmn2:multiInstanceLoopCharacteristics />
+		  * </bpmn2:serviceTask>
+		  * therefore it is necessary to compare the loopCharacteristics attribute value
+		  * from the service task with the other object
+		  *
+		  */
+		if (o1 instanceof MultiInstanceLoopCharacteristics && o2 instanceof Activity) {
+			if (o1.equals(((Activity) o2).getLoopCharacteristics())) {
+				return true;
+			}
+		}
+
+		return super.equalsBusinessObjects(o1, o2);
 	}
 
 	@Override
