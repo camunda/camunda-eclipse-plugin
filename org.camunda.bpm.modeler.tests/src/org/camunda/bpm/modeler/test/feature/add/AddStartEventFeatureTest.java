@@ -308,7 +308,7 @@ public class AddStartEventFeatureTest extends AbstractFeatureTest {
 						  laneBounds, 10, BoxingStrategy.POSITION);
 		
 		Point expectedPosition = point(
-				laneBounds.getX() + 25, 
+				laneBounds.getX() + 26, 
 				laneBounds.getY() + box.getY());
 		
 		Shape startEventShape = Util.findShapeByBusinessObjectId(diagram, "StartEvent_1");
