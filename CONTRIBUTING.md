@@ -122,5 +122,16 @@ To avoid any problems install the plugins in the following order:
 * org.camunda.bpm.modeler.tests -> modeler runtime tests
 * org.camunda.bpm.modeler.tests.functional -> functional GUI tests (jubula)
 
+## Synchronizing kepler and master branch
+
+changes on master branch will be added to the kepler branch via the following git chain:
+
+```
+git checkout kepler
+git pull 
+git rebase master
+```
+
+This effects a replay of all kepler specific changes on the top of latest master branch changes.
 
 [1]: https://github.com/camunda/camunda-modeler
