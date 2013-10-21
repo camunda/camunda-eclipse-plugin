@@ -13,12 +13,7 @@
 ## Setup Eclipse IDE
 
 This was tested with Eclipse for RCP and RAP Developers (Indigo SR2 and Juno SR2).
-
-### Install system plugins
-
-In this section we install general plugins.
-
-*   Install `EGit` using the Update Site `http://download.eclipse.org/egit/updates-2.3` or Eclipse Marketplace
+For Eclipse Kepler plaese checkout the kepler branch. The installation was tested with Eclipse for Java Developers SR1 32 bit.
 
 ### Install project plugins
 
@@ -87,6 +82,26 @@ To avoid any problems install the plugins in the following order:
 *   Optional: Add `http://winterwell.com/software/updatesite/` and
     *   install `MarkDown Editor`
 
+##### Kepler
+
+*   Open `Help > Install new software ...`
+*		Choose `Kepler - http://download.eclipse.org/releases/kepler`
+*   Open category `Modeling` and install:
+    *   `EMF - Eclipse Modeling Framework SDK` - 2.9.1.v20130902-0605	- org.eclipse.emf.sdk.feature.group	
+    *   `EMF Validation Framework SDK` -1.7.0.201306111341	- org.eclipse.emf.validation.sdk.feature.group
+    *   `Graphiti SDK (Incubation)` - 0.10.1.v20130918-0838	- org.eclipse.graphiti.sdk.feature.feature.group
+*   Add the BPMN 2.0 Update Site: `http://download.eclipse.org/modeling/mdt/bpmn2/updates/milestones/S20130423/`
+    *   install `BPMN2 Project Feature` - 0.7.0.201304230617	- org.eclipse.bpmn2.feature.feature.group
+*		Choose `Kepler - http://download.eclipse.org/releases/kepler`    
+*   Open category `Web, XML, Java EE and OSGi Enterprise Development` and install
+   *   `Eclipse Web Developer Tools` - 3.5.1.v201307171524-7O7QG2NEMkBS3C2az0gQwwALctEj3DZPgTEZceV4	- org.eclipse.wst.web_ui.feature.feature.group
+   *   `Eclipse Java EE Developer Tools` - 3.5.1.v201308281800-7b7KIahFSK2WQtQeBOuHz-QXyUmRm	- org.eclipse.jst.enterprise_ui.feature.feature.group
+*   Open the eclipse marketplace
+    *   search for `maven`
+    *   install `Maven integration for Eclipse`
+*   Open `Window -> Preferences -> Maven -> Discovery -> Open Catalog`
+    *   search for `tycho`
+    *   install `Tycho Configurator`
 
 ## Setup modeler projects
 

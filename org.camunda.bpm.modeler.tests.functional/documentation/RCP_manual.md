@@ -57,3 +57,4 @@ After you have build the RCP application you have to provide access for Jubula t
 ![AUT configuration](https://raw.github.com/camunda/camunda-modeler/develop/org.camunda.bpm.modeler.tests.functional/documentation/images/Jubula_RCP_configINI.png)
 
 
+for Eclipse Kepler add `reference\:file\:org.eclipse.jubula.rc.rcp@start` to the list of osgi.bundles.
