@@ -19,6 +19,7 @@ import java.util.List;
 import org.camunda.bpm.modeler.core.di.DIUtils;
 import org.camunda.bpm.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.camunda.bpm.modeler.core.features.DefaultDeleteBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultRemoveBPMNShapeFeature;
 import org.camunda.bpm.modeler.core.features.activity.task.ICustomTaskFeature;
 import org.camunda.bpm.modeler.core.features.bendpoint.AddBendpointFeature;
 import org.camunda.bpm.modeler.core.features.bendpoint.MoveAnchorFeature;
@@ -421,8 +422,13 @@ public class BPMN2FeatureProvider extends DefaultFeatureProvider {
 
 	@Override
 	public IRemoveFeature getRemoveFeature(IRemoveContext context) {
-		// we do not offer any remove features
-		return null;
+		FeatureContainer container = getFeatureContainer(context);
+		if (container != null) {
+			IRemoveFeature feature = container.getRemoveFeature(this);
+			if (feature != null)
+				return feature;
+		}
+		return new DefaultRemoveBPMNShapeFeature(this);
 	}
 	
 	@Override
