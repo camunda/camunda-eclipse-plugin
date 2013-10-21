@@ -328,7 +328,6 @@ public abstract class AbstractAddBpmnShapeFeature<T extends BaseElement> extends
 				}
 			} else if (FeatureSupport.isLane(targetContainer)) {
 				int offset = 15 + BOX_PADDING;
-				box.setX(offset);
 				if (addContext.getX() <= offset) {
 					box.setX(offset);
 				}
