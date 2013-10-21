@@ -16,10 +16,12 @@ public class Events {
 	public static final int MODEL_CHANGED = 20002;
 
 	public static final int CELL_VALUE_CHANGED = 20003;
-	
+
 	public static final int ROW_DELETED = 20004;
 
 	public static final int ROW_ADDED = 20005;
+
+	public static final int DELETE_ROW = 20006;
 	
 	/**
 	 * Radio selection changed event
@@ -94,7 +96,7 @@ public class Events {
 		}
 		
 	}
-	
+
 	/**
 	 * Event indicating the removal of a row
 	 * 
@@ -103,18 +105,50 @@ public class Events {
 	 * @param <T>
 	 */
 	public static class RowDeleted<T> extends Event {
-		
+
 		private T removedElement;
 
 		public RowDeleted(T removedElement) {
 			this.removedElement = removedElement;
 		}
-		
+
 		public T getRemovedElement() {
 			return removedElement;
 		}
 	}
-	
+
+	/**
+	 * Event indicating that a row is about to be deleted.
+	 *
+	 * Event can be canceled by calling {@link #setRejected()}.
+	 *
+	 * @author nico.rehwaldt
+	 *
+	 * @param <T>
+	 */
+	public static class DeleteRow<T> extends Event {
+
+		private T removedElement;
+
+		private boolean rejected;
+
+		public DeleteRow(T removedElement) {
+			this.removedElement = removedElement;
+		}
+
+		public T getRemovedElement() {
+			return removedElement;
+		}
+
+		public void setRejected() {
+			this.rejected = true;
+		}
+
+		public boolean isRejected() {
+			return rejected;
+		}
+	}
+
 	/**
 	 * Event indicating the addition of a row
 	 * 

@@ -10,9 +10,10 @@ import org.camunda.bpm.modeler.runtime.engine.model.ExecutionListenerType;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelFactory;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.ui.change.filter.ExtensionChangeFilter;
-import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EditableEObjectTableBuilder;
+import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.AbstractDeleteRowHandler;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.ContentProvider;
-import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.DeletedRowHandler;
+import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.DeleteRowHandler;
+import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EditableEObjectTableBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.tables.EObjectAttributeTableColumnDescriptor.EditingSupportProvider;
 import org.camunda.bpm.modeler.ui.property.tabs.tables.EditableTableDescriptor.ElementFactory;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
@@ -92,7 +93,7 @@ public class ExecutionListenerPropertiesBuilder extends AbstractPropertiesBuilde
 			}
 		};
 		
-		DeletedRowHandler<T> deleteHandler = new DeletedRowHandler<T>() {
+		DeleteRowHandler<T> deleteHandler = new AbstractDeleteRowHandler<T>() {
 			@Override
 			public void rowDeleted(T element) {
 				transactionalRemoveMapping(element);
@@ -115,7 +116,7 @@ public class ExecutionListenerPropertiesBuilder extends AbstractPropertiesBuilde
 			.editingSupportProvider(editingSupportProvider)
 			.columnFeatures(columnFeatures)
 			.columnLabels(columnLabels)
-			.deletedRowHandler(deleteHandler)
+			.deleteRowHandler(deleteHandler)
 			.model(bo)
 			.changeFilter(new ExtensionChangeFilter(bo, feature));
 		

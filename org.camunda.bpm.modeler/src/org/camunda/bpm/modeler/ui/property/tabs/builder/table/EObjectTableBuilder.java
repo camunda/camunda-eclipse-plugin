@@ -6,14 +6,15 @@ import java.util.List;
 import org.camunda.bpm.modeler.ui.property.tabs.binding.change.EObjectChangeSupport;
 import org.camunda.bpm.modeler.ui.property.tabs.binding.change.EObjectChangeSupport.ModelChangedEvent;
 import org.camunda.bpm.modeler.ui.property.tabs.tables.EObjectAttributeTableColumnDescriptor;
-import org.camunda.bpm.modeler.ui.property.tabs.tables.EditableTableDescriptor;
-import org.camunda.bpm.modeler.ui.property.tabs.tables.TableColumnDescriptor;
 import org.camunda.bpm.modeler.ui.property.tabs.tables.EObjectAttributeTableColumnDescriptor.EditingSupportProvider;
+import org.camunda.bpm.modeler.ui.property.tabs.tables.EditableTableDescriptor;
 import org.camunda.bpm.modeler.ui.property.tabs.tables.EditableTableDescriptor.ElementFactory;
+import org.camunda.bpm.modeler.ui.property.tabs.tables.TableColumnDescriptor;
 import org.camunda.bpm.modeler.ui.property.tabs.util.Events;
+import org.camunda.bpm.modeler.ui.property.tabs.util.Events.DeleteRow;
+import org.camunda.bpm.modeler.ui.property.tabs.util.Events.RowDeleted;
 import org.camunda.bpm.modeler.ui.property.tabs.util.HelpText;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
-import org.camunda.bpm.modeler.ui.property.tabs.util.Events.RowDeleted;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.NotificationFilter;
@@ -38,7 +39,7 @@ public class EObjectTableBuilder<T extends EObject> {
 	
 	private AddedRowHandler<T> addHandler;
 	
-	private DeletedRowHandler<T> deleteHandler;
+	private DeleteRowHandler<T> deleteRowHandler;
 	private SelectedRowHandler<T> selectHandler;
 
 	protected EStructuralFeature[] columnFeatures;
@@ -59,8 +60,8 @@ public class EObjectTableBuilder<T extends EObject> {
 		this.genericTypeCls = genericTypeCls;
 	}
 	
-	public EObjectTableBuilder<T> deletedRowHandler(DeletedRowHandler<T> deleteHandler) {
-		this.deleteHandler = deleteHandler;
+	public EObjectTableBuilder<T> deleteRowHandler(DeleteRowHandler<T> deleteRowHandler) {
+		this.deleteRowHandler = deleteRowHandler;
 		
 		return this;
 	}
@@ -176,7 +177,23 @@ public class EObjectTableBuilder<T extends EObject> {
 		EObjectChangeSupport changeSupport = new EObjectChangeSupport(model, table);
 		changeSupport.setFilter(changeFilter);
 		changeSupport.register();
-		
+
+		table.addListener(Events.DELETE_ROW, new Listener() {
+			@Override
+			public void handleEvent(Event e) {
+				Events.DeleteRow<T> event = (DeleteRow<T>) e;
+
+				T removedElement = event.getRemovedElement();
+
+				if (deleteRowHandler != null) {
+					boolean canDelete = deleteRowHandler.canDelete(removedElement);
+					if (!canDelete) {
+						event.setRejected();
+					}
+				}
+			}
+		});
+
 		table.addListener(Events.ROW_DELETED, new Listener() {
 
 			@Override
@@ -185,8 +202,8 @@ public class EObjectTableBuilder<T extends EObject> {
 				
 				T removedElement = event.getRemovedElement();
 
-				if (deleteHandler != null) {
-					deleteHandler.rowDeleted(removedElement);
+				if (deleteRowHandler != null) {
+					deleteRowHandler.rowDeleted(removedElement);
 				}
 			}
 		});
@@ -260,11 +277,20 @@ public class EObjectTableBuilder<T extends EObject> {
 	 *
 	 * @param <T>
 	 */
-	public static interface DeletedRowHandler<T> {
-		
+	public static interface DeleteRowHandler<T> {
+
 		public void rowDeleted(T element);
+		public boolean canDelete(T element);
 	}
-	
+
+	public static abstract class AbstractDeleteRowHandler<T> implements DeleteRowHandler<T> {
+
+		@Override
+		public boolean canDelete(T element) {
+			return true;
+		}
+	}
+
 	/**
 	 * Selection handler
 	 * 

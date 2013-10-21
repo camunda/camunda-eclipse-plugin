@@ -20,8 +20,9 @@ import org.camunda.bpm.modeler.ui.property.tabs.binding.IntegerTextBinding;
 import org.camunda.bpm.modeler.ui.property.tabs.binding.ModelAttributeComboBinding;
 import org.camunda.bpm.modeler.ui.property.tabs.binding.ModelExtensionButtonBinding;
 import org.camunda.bpm.modeler.ui.property.tabs.binding.change.EAttributeChangeSupport;
+import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.AbstractDeleteRowHandler;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.ContentProvider;
-import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.DeletedRowHandler;
+import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.DeleteRowHandler;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EditableEObjectTableBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.tables.EditableTableDescriptor.ElementFactory;
 import org.camunda.bpm.modeler.ui.property.tabs.util.Events;
@@ -193,7 +194,7 @@ public class CallActivityPropertiesBuilder extends
 			}
 		};
 
-		DeletedRowHandler<T> deleteHandler = new DeletedRowHandler<T>() {
+		DeleteRowHandler<T> deleteHandler = new AbstractDeleteRowHandler<T>() {
 			@Override
 			public void rowDeleted(T element) {
 				transactionalRemoveMapping(element);
@@ -206,7 +207,7 @@ public class CallActivityPropertiesBuilder extends
 			   .contentProvider(contentProvider)
 			   .columnFeatures(columnFeatures)
 			   .columnLabels(columnLabels)
-			   .deletedRowHandler(deleteHandler)
+			   .deleteRowHandler(deleteHandler)
 			   .model(bo)
 			   .changeFilter(new ExtensionChangeFilter(bo, feature));
 

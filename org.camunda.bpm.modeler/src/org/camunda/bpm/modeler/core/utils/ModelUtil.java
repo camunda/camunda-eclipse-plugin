@@ -34,6 +34,7 @@ import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
+import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
@@ -791,6 +792,17 @@ public class ModelUtil {
 		return list;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public static <T> List<T> getAllFlowElements(Process process, final Class<T> cls) {
+		ArrayList<T> list = new ArrayList<T>();
+		for (FlowElement fe : process.getFlowElements()) {
+			if (cls.isInstance(fe)) {
+				list.add((T) fe);
+			}
+		}
+		return list;
+	}
+
 	public static boolean compare(Object v1, Object v2) {
 		if (v1==null) {
 			if (v2!=null)

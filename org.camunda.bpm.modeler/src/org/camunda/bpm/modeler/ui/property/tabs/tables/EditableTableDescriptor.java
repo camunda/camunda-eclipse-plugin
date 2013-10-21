@@ -1,6 +1,7 @@
 package org.camunda.bpm.modeler.ui.property.tabs.tables;
 
 import org.camunda.bpm.modeler.ui.property.tabs.util.Events;
+import org.camunda.bpm.modeler.ui.property.tabs.util.Events.DeleteRow;
 import org.camunda.bpm.modeler.ui.property.tabs.util.Events.RowAdded;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
@@ -172,15 +173,25 @@ public class EditableTableDescriptor<T> extends TableDescriptor<T> {
 				if (!selection.isEmpty()) {
 					Object element = selection.getFirstElement();
 					if (element != null) {
+
+						DeleteRow<T> deleteEvent = new DeleteRow<T>((T) element);
+
+						// notify listeners that deletion is about to take place
+						table.notifyListeners(Events.DELETE_ROW, deleteEvent);
+
+						if (deleteEvent.isRejected()) {
+							return;
+						}
+
 						viewer.remove(element);
 						viewer.setSelection(new StructuredSelection(new Object[0]), true);
-						
+
 						table.notifyListeners(Events.ROW_DELETED, new Events.RowDeleted<T>((T) element));
 					}
 				}
 			}
 		});
-		
+
 		addEntryMenuItem.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
 				if (addStrategy != null) {

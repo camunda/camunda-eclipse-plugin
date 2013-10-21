@@ -6,14 +6,17 @@ import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.ui.change.filter.FeatureChangeFilter;
 import org.camunda.bpm.modeler.ui.change.filter.NestedFeatureChangeFilter;
-import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EditableEObjectTableBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.ContentProvider;
-import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.DeletedRowHandler;
+import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.DeleteRowHandler;
+import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.AbstractDeleteRowHandler;
+import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EditableEObjectTableBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.tables.EditableTableDescriptor.ElementFactory;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CatchEvent;
+import org.eclipse.bpmn2.DataStore;
+import org.eclipse.bpmn2.DataStoreReference;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Error;
 import org.eclipse.bpmn2.ErrorEventDefinition;
@@ -59,11 +62,17 @@ public class DefinitionsPropertiesBuilder extends AbstractPropertiesBuilder<Defi
 	private static final EStructuralFeature[] MESSAGE_FEATURES = { 
 		Bpmn2Package.eINSTANCE.getMessage_Name() };
 	
+	private static final String[] DATA_STORE_TABLE_HEADERS = { "name" };
+
+	private static final EStructuralFeature[] DATA_STORE_FEATURES = {
+		Bpmn2Package.eINSTANCE.getDataStore_Name() };
+
 	@Override
 	public void create() {
 		createErrorMappingsTable();
 		createMessageMappingsTable();
 		createSignalMappingsTable();
+		createDataStoreMappingsTable();
 	}
 
 	public void createMessageMappingsTable() {
@@ -81,6 +90,11 @@ public class DefinitionsPropertiesBuilder extends AbstractPropertiesBuilder<Defi
 		createMappingsTable(section, parent, Error.class, "Errors", errorCls, ROOT_ELEMENTS_FEATURE, ERROR_FEATURES, ERROR_TABLE_HEADERS);
 	}
 	
+	public void createDataStoreMappingsTable() {
+		EClass dataStoreCls = Bpmn2Package.eINSTANCE.getDataStore();
+		createMappingsTable(section, parent, DataStore.class, "Datastores", dataStoreCls, ROOT_ELEMENTS_FEATURE, DATA_STORE_FEATURES, DATA_STORE_TABLE_HEADERS);
+	}
+
 	protected <T extends EObject> void createMappingsTable(
 			GFPropertySection section, Composite parent, 
 			final Class<T> typeCls, String label, final EClass typeECls, 
@@ -106,7 +120,7 @@ public class DefinitionsPropertiesBuilder extends AbstractPropertiesBuilder<Defi
 			}
 		};
 		
-		DeletedRowHandler<T> deleteHandler = new DeletedRowHandler<T>() {
+		DeleteRowHandler<T> deleteHandler = new AbstractDeleteRowHandler<T>() {
 			@Override
 			public void rowDeleted(T element) {
 				transactionalRemoveMapping(element, feature);
@@ -120,7 +134,7 @@ public class DefinitionsPropertiesBuilder extends AbstractPropertiesBuilder<Defi
 			.contentProvider(contentProvider)
 			.columnFeatures(columnFeatures)
 			.columnLabels(columnLabels)
-			.deletedRowHandler(deleteHandler)
+			.deleteRowHandler(deleteHandler)
 			.model(bo)
 			.changeFilter(
 				new NestedFeatureChangeFilter(bo, feature)
@@ -142,7 +156,7 @@ public class DefinitionsPropertiesBuilder extends AbstractPropertiesBuilder<Defi
 			@Override
 			protected void doExecute() {
 				EList<EObject> list = (EList<EObject>) bo.eGet(feature);
-				
+
 				// Delete references to deleted element
 				removeDangelingObjectRefs(element);
 				
@@ -178,6 +192,13 @@ public class DefinitionsPropertiesBuilder extends AbstractPropertiesBuilder<Defi
 		List<ThrowEvent> throwEvents = ModelHandler.getAll(bo.eResource(), ThrowEvent.class);
 		for (ThrowEvent e: throwEvents) {
 			removeDangelingObjectRefs(e.getEventDefinitions(), element);
+		}
+
+		List<DataStoreReference> dataStoreReferences = ModelHandler.getAll(bo.eResource(), DataStoreReference.class);
+		for (DataStoreReference dataStoreReference : dataStoreReferences) {
+			if (element.equals(dataStoreReference.getDataStoreRef())) {
+				dataStoreReference.setDataStoreRef(null);
+			}
 		}
 	}
 
