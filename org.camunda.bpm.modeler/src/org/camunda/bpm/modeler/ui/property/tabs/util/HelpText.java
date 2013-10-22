@@ -40,4 +40,6 @@ public class HelpText {
 
 	public static final String LINK_EVENT_DEFINITION_NAME = String.format("More information on link event definition can be found in the <a href=\"%s\">user guide</a>.", LINK_EVENT_DEFINITION_USER_GUIDE);
 
+	public static final String STANDARD_LOOP_CHARACTERISTICS_NOTE = "Please note, the loop activity is not supported from the camunda BPM engine.";
+
 }
