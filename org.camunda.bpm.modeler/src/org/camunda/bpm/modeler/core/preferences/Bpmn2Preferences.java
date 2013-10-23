@@ -905,11 +905,13 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		
 		// isExpanded only applies to activity containers (SubProcess, AdHocSubProcess, etc.)
 		if (!isExpandedSet) {
-			if (be instanceof  SubProcess ||
+      if (be instanceof CallActivity) {
+        bpmnShape.setIsExpanded(false);
+        
+      } else if (be instanceof  SubProcess ||
 					be instanceof AdHocSubProcess ||
 					be instanceof Transaction ||
 					be instanceof SubChoreography ||
-					be instanceof CallActivity ||
 					be instanceof CallChoreography) {
 				boolean value = false;
 				BPMNDIAttributeDefault df = getIsExpanded();
@@ -926,11 +928,14 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			}
 		}
 		else {
-			if (be instanceof  SubProcess ||
+		  // for the moment, call activities are always not expanded
+		  if (be instanceof CallActivity) {
+        bpmnShape.setIsExpanded(false);
+		    
+		  } else if (be instanceof  SubProcess ||
 					be instanceof AdHocSubProcess ||
 					be instanceof Transaction ||
 					be instanceof SubChoreography ||
-					be instanceof CallActivity ||
 					be instanceof CallChoreography) {
 				BPMNDIAttributeDefault df = getIsExpanded();
 				switch(df) {
