@@ -2,19 +2,21 @@ package org.camunda.bpm.modeler.ui.property.tabs.builder;
 
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.ui.property.tabs.binding.ModelAttributeButtonBinding;
-import org.camunda.bpm.modeler.ui.property.tabs.util.Events;
+import org.camunda.bpm.modeler.ui.property.tabs.util.HelpText;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.LoopCharacteristics;
+import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 
 /**
  * Builder for the multi instance properties
@@ -40,59 +42,82 @@ public class MultiInstancePropertiesBuilder extends AbstractPropertiesBuilder<Ac
 	
 	@Override
 	public void create() {
+		// multi instance
 		final Button multiInstanceCheckbox = PropertyUtil.createUnboundCheckbox(section, parent, "Is Multi Instance");
 
-		MultiInstanceButtonBinding binding = new MultiInstanceButtonBinding(bo, LOOP_CHARACTERISTICS_FEATURE, multiInstanceCheckbox);
-		binding.establish();
-		
-		multiInstanceCheckbox.addListener(Events.MODEL_CHANGED, new Listener() {
-			
-			@Override
-			public void handleEvent(Event event) {
-				rebuildMultiInstanceProperties();
-			}
+		// standard loop
+		final Button standardLoopCheckbox = PropertyUtil.createUnboundCheckbox(section, parent, "Is Loop");
+		standardLoopCheckbox.setText(HelpText.STANDARD_LOOP_CHARACTERISTICS_NOTE);
+
+		final EClass multiInstanceECls = Bpmn2Package.eINSTANCE.getMultiInstanceLoopCharacteristics();
+		new LoopCharacteristicsButtonBinding(bo, LOOP_CHARACTERISTICS_FEATURE, multiInstanceCheckbox, multiInstanceECls).establish();
+
+		multiInstanceCheckbox.addSelectionListener(new SelectionAdapter() {
+		    @Override
+		    public void widgetSelected(SelectionEvent e) {
+		    		standardLoopCheckbox.setSelection(false);
+		            rebuildProperties();
+		    }
 		});
-		
-		rebuildMultiInstanceProperties();
+
+		final EClass standardLoopECls = Bpmn2Package.eINSTANCE.getStandardLoopCharacteristics();
+		new LoopCharacteristicsButtonBinding(bo, LOOP_CHARACTERISTICS_FEATURE, standardLoopCheckbox, standardLoopECls).establish();
+
+		standardLoopCheckbox.addSelectionListener(new SelectionAdapter() {
+		    @Override
+		    public void widgetSelected(SelectionEvent e) {
+		    	multiInstanceCheckbox.setSelection(false);
+		        rebuildProperties();
+		    }
+		});
+
+		rebuildProperties();
 	}
-	
-	private void rebuildMultiInstanceProperties() {
+
+	private void rebuildProperties() {
 		EObject loopCharacteristics = (EObject) bo.eGet(LOOP_CHARACTERISTICS_FEATURE);
-				
+
 		if (multiInstancePropertiesComposite != null && !multiInstancePropertiesComposite.isDisposed()) {
 			multiInstancePropertiesComposite.dispose();
 		}
 
 		multiInstancePropertiesComposite = PropertyUtil.createGridLayoutedComposite(section, parent);
 
-		if (loopCharacteristics != null) {
+		if (loopCharacteristics != null && loopCharacteristics instanceof MultiInstanceLoopCharacteristics) {
 			PropertyUtil.createText(section, multiInstancePropertiesComposite, "Loop Cardinality", LOOP_CARDINALITY_FEATURE, loopCharacteristics);
 			PropertyUtil.createCheckbox(section, multiInstancePropertiesComposite, "Is Sequential", IS_SEQUENCIAL_FEATURE, loopCharacteristics);
-			
+
 			PropertyUtil.createText(section, multiInstancePropertiesComposite, "Collection", COLLECTION_FEATURE, loopCharacteristics);
 			PropertyUtil.createText(section, multiInstancePropertiesComposite, "Element Variable", ELEMENT_VARIABLE_FEATURE, loopCharacteristics);
-			
+
 			PropertyUtil.createText(section, multiInstancePropertiesComposite, "Completion Condition", COMPLETION_CONDITION_FEATURE, loopCharacteristics);
 		}
 
 		relayout();
 	}
-	
-	private class MultiInstanceButtonBinding extends ModelAttributeButtonBinding<LoopCharacteristics> {
 
-		public MultiInstanceButtonBinding(EObject model, EStructuralFeature feature, Button control) {
+	private class LoopCharacteristicsButtonBinding extends ModelAttributeButtonBinding<LoopCharacteristics> {
+
+		private EClass typeECls;
+
+		public LoopCharacteristicsButtonBinding(EObject model, EStructuralFeature feature, Button control, EClass typeECls) {
 			super(model, feature, control);
+
+			this.typeECls = typeECls;
 		}
-		
+
 		@Override
 		public void setViewValue(LoopCharacteristics value) {
-			control.setSelection(value != null);
+			if (value != null && value.eClass().getName().equals(typeECls.getName())) {
+				control.setSelection(value != null);
+			}
 		}
-		
+
 		@Override
 		public LoopCharacteristics getViewValue() throws IllegalArgumentException {
 			if (control.getSelection()) {
-				return Bpmn2Factory.eINSTANCE.createMultiInstanceLoopCharacteristics();
+				final EObject eObject = Bpmn2Factory.eINSTANCE.create(typeECls);
+				return (LoopCharacteristics) eObject;
 			} else {
 				return null;
 			}
