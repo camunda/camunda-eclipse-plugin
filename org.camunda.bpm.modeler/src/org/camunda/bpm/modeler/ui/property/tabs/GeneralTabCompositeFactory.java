@@ -45,6 +45,7 @@ import org.eclipse.bpmn2.ScriptTask;
 import org.eclipse.bpmn2.SendTask;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.ServiceTask;
+import org.eclipse.bpmn2.SignalEventDefinition;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.Task;
@@ -200,10 +201,14 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 		
 		if (event instanceof IntermediateThrowEvent || event instanceof EndEvent) {
 			EventDefinition messageEventDefinition = ModelUtil.getEventDefinition(event, MessageEventDefinition.class);
+			EventDefinition signalEventDefinition = ModelUtil.getEventDefinition(event, SignalEventDefinition.class);
 			if (messageEventDefinition != null) {
 				new ServiceTypeControlsPropertiesBuilder(parent, section, messageEventDefinition).create();
 				new ServiceTaskPropertiesBuilder(parent, section, messageEventDefinition).create();
 				new ActivityPropertiesBuilder(parent, section, messageEventDefinition).create();
+			}
+			if (signalEventDefinition != null) {
+				new ActivityPropertiesBuilder(parent, section, signalEventDefinition).create();
 			}
 		}		
 	}
