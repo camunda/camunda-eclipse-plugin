@@ -129,6 +129,8 @@ public class CallActivityPropertiesBuilder extends
 					(elementVersionText.getText() == null ||
 					elementVersionText.getText().isEmpty())) {
 					calledElementVersionTextBinding.showError("This value is mandatory. Empty value will not be saved.");
+				} else {
+					calledElementVersionTextBinding.hideError();
 				}
 			}
 		});
