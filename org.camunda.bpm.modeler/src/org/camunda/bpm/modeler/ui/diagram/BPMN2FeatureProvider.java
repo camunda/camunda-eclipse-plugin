@@ -53,7 +53,6 @@ import org.camunda.bpm.modeler.ui.features.choreography.SubChoreographyFeatureCo
 import org.camunda.bpm.modeler.ui.features.conversation.ConversationFeatureContainer;
 import org.camunda.bpm.modeler.ui.features.conversation.ConversationLinkFeatureContainer;
 import org.camunda.bpm.modeler.ui.features.data.DataInputFeatureContainer;
-import org.camunda.bpm.modeler.ui.features.data.DataObjectFeatureContainer;
 import org.camunda.bpm.modeler.ui.features.data.DataObjectReferenceFeatureContainer;
 import org.camunda.bpm.modeler.ui.features.data.DataOutputFeatureContainer;
 import org.camunda.bpm.modeler.ui.features.data.DataStoreReferenceFeatureContainer;
@@ -149,7 +148,6 @@ public class BPMN2FeatureProvider extends DefaultFeatureProvider {
 		containers.add(new LabelFeatureContainer());
 		containers.add(new ConnectionLabelFeatureContainer());
 		containers.add(new GroupFeatureContainer());
-		containers.add(new DataObjectFeatureContainer());
 		containers.add(new DataObjectReferenceFeatureContainer());
 		containers.add(new DataStoreReferenceFeatureContainer());
 		containers.add(new DataInputFeatureContainer());

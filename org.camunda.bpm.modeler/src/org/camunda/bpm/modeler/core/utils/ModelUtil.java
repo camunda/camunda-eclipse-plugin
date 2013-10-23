@@ -35,6 +35,7 @@ import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.FlowElement;
+import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
@@ -779,6 +780,67 @@ public class ModelUtil {
 			}
 		}
 		return list;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> List<T> getAllReachableObjects(EObject be, Class<T> cls) {
+		List<T> result = new ArrayList<T>();
+		
+		if (cls.isInstance(be)) {
+			result.add((T) be);
+		}
+		
+		if (!(be instanceof FlowElementsContainer)) {
+			return result;
+		}
+		
+		FlowElementsContainer container = (FlowElementsContainer) be;
+		for (FlowElement elem : container.getFlowElements()) {
+			
+			List<T> reachableElements = getAllReachableObjects(elem, cls);
+			if (reachableElements != null && !reachableElements.isEmpty()) {
+				result.addAll(reachableElements);
+			}
+			
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Collect all {@link EObject}, where each element of them is a instance of the passed cls,
+	 * from the assigned {@link EObject} be, and his immediate parent and transitive parents.
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> List<T> getAllReachableObjectsIncludingParents(EObject be, Class<T> cls) {
+		List<T> result = new ArrayList<T>();
+		
+		if (be instanceof Participant) {
+			Participant participant = (Participant) be;
+			be = participant.getProcessRef();
+		}
+		
+		EObject parent = be.eContainer();
+		if (parent != null) {
+			List<T> elements = getAllReachableObjectsIncludingParents(parent, cls);
+			if (elements != null && !elements.isEmpty()) {
+				result.addAll(elements);
+			}
+		}
+
+		if (!(be instanceof FlowElementsContainer)) {
+			return result;
+		}
+		
+		FlowElementsContainer container = (FlowElementsContainer) be;
+		
+		for (FlowElement element : container.getFlowElements()) {
+			if (cls.isInstance(element)) {
+				result.add((T) element);
+			}
+		}
+		
+		return result;
 	}
 
 	@SuppressWarnings("unchecked")

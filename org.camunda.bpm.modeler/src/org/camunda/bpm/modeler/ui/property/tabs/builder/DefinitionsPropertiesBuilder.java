@@ -92,7 +92,7 @@ public class DefinitionsPropertiesBuilder extends AbstractPropertiesBuilder<Defi
 	
 	public void createDataStoreMappingsTable() {
 		EClass dataStoreCls = Bpmn2Package.eINSTANCE.getDataStore();
-		createMappingsTable(section, parent, DataStore.class, "Datastores", dataStoreCls, ROOT_ELEMENTS_FEATURE, DATA_STORE_FEATURES, DATA_STORE_TABLE_HEADERS);
+		createMappingsTable(section, parent, DataStore.class, "Data Stores", dataStoreCls, ROOT_ELEMENTS_FEATURE, DATA_STORE_FEATURES, DATA_STORE_TABLE_HEADERS);
 	}
 
 	protected <T extends EObject> void createMappingsTable(

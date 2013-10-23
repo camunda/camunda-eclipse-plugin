@@ -3,7 +3,7 @@ package org.camunda.bpm.modeler.test.feature.add;
 import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.point;
 import static org.camunda.bpm.modeler.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.camunda.bpm.modeler.test.util.assertions.Bpmn2ModelAssertions.elementOfType;
-import static org.camunda.bpm.modeler.test.util.operations.AddDataObjectOperation.addDataObject;
+import static org.camunda.bpm.modeler.test.util.operations.AddDataObjectOperation.addDataObjectReference;
 import static org.camunda.bpm.modeler.test.util.operations.AddDataStoreOperation.addDataStore;
 import static org.camunda.bpm.modeler.test.util.operations.MoveShapeOperation.move;
 
@@ -123,7 +123,7 @@ public class AddDataStoreFeatureTest extends AbstractFeatureTest {
 		// with element freshly added
 		ContainerShape containerShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "_Participant_5");
 		
-		addDataObject(diagramTypeProvider)
+		addDataObjectReference(diagramTypeProvider)
 			.toContainer(containerShape)
 			.execute();
 

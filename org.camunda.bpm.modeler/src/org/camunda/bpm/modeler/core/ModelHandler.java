@@ -38,6 +38,7 @@ import org.eclipse.bpmn2.ConversationNode;
 import org.eclipse.bpmn2.DataAssociation;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
+import org.eclipse.bpmn2.DataObjectReference;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.Definitions;
@@ -505,6 +506,13 @@ public class ModelHandler {
 		}
 	}
 
+	public void moveDataObjectReference(DataObjectReference dataObjectReference, Object source, Object target) {
+		FlowElementsContainer sourceContainer = getFlowElementContainer(source);
+		FlowElementsContainer targetContainer = getFlowElementContainer(target);
+		sourceContainer.getFlowElements().remove(dataObjectReference);
+		targetContainer.getFlowElements().add(dataObjectReference);
+	}
+	
 	public Participant addParticipant(BPMNDiagram bpmnDiagram) {
 		Participant participant = null;
 		Collaboration collaboration = getParticipantContainer(bpmnDiagram);

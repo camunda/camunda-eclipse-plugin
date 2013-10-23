@@ -2,7 +2,6 @@ package org.camunda.bpm.modeler.ui.property.tabs.builder;
 
 import java.util.List;
 
-import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.ui.change.filter.FeatureChangeFilter;
 import org.camunda.bpm.modeler.ui.change.filter.NestedFeatureChangeFilter;
@@ -24,10 +23,18 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
+import org.eclipse.graphiti.dt.IDiagramTypeProvider;
+import org.eclipse.graphiti.features.IDeleteFeature;
+import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.context.IDeleteContext;
+import org.eclipse.graphiti.features.context.impl.DeleteContext;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.services.Graphiti;
+import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.MessageBox;
 
@@ -48,14 +55,14 @@ public class ProcessPropertiesBuilder extends AbstractPropertiesBuilder<Process>
 
 	@Override
 	public void create() {
-		Button isExecutableCheckbox = PropertyUtil.createCheckbox(section, parent, "Is Executable", IS_EXECUTABLE, bo);
-
+		PropertyUtil.createCheckbox(section, parent, "Is Executable", IS_EXECUTABLE, bo);
+		
 		createDataObjectMappingsTable();
 	}
 
 	public void createDataObjectMappingsTable() {
 		EClass dataObjectECls = Bpmn2Package.eINSTANCE.getDataObject();
-		createMappingsTable(section, parent, DataObject.class, "Dataobjects", dataObjectECls, FLOW_ELEMENTS_FEATURE, DATA_OBJECT_FEATURES, DATA_OBJECT_TABLE_HEADERS);
+		createMappingsTable(section, parent, DataObject.class, "Data Objects", dataObjectECls, FLOW_ELEMENTS_FEATURE, DATA_OBJECT_FEATURES, DATA_OBJECT_TABLE_HEADERS);
 	}
 
 	protected <T extends EObject> void createMappingsTable(
@@ -79,7 +86,7 @@ public class ProcessPropertiesBuilder extends AbstractPropertiesBuilder<Process>
 
 			@Override
 			public List<T> getContents() {
-				return ModelUtil.getAllFlowElements(bo, typeCls);
+				return typeCls != DataObject.class ? ModelUtil.getAllFlowElements(bo, typeCls) : ModelUtil.getAllReachableObjects(bo, typeCls);
 			}
 		};
 
@@ -94,7 +101,7 @@ public class ProcessPropertiesBuilder extends AbstractPropertiesBuilder<Process>
 			public boolean canDelete(T element) {
 				// create dialog with ok and cancel button and warning icon
 				MessageBox dialog = new MessageBox(parent.getShell(), SWT.ICON_WARNING | SWT.OK| SWT.CANCEL);
-				dialog.setMessage("Do you really want to delete this data object? If you delete it, the reference of the data object reference element is also deleted!");
+				dialog.setMessage("Do you really want to delete this data object? If you delete it, all data object references referencing this data object will be deleted, too!");
 
 				// open dialog and await user selection
 				int returnCode = dialog.open();
@@ -135,11 +142,13 @@ public class ProcessPropertiesBuilder extends AbstractPropertiesBuilder<Process>
 
 			@Override
 			protected void doExecute() {
-				EList<EObject> list = (EList<EObject>) bo.eGet(feature);
+				// get the right container which contains the data object,
+				// that must be not the process it can be a sub process too
+				EObject container = element.eContainer();
+				EList<EObject> list = (EList<EObject>) container.eGet(feature);
 
-				// Delete references to deleted element
 				removeDangelingObjectRefs(element);
-
+				
 				list.remove(element);
 			}
 		});
@@ -164,10 +173,26 @@ public class ProcessPropertiesBuilder extends AbstractPropertiesBuilder<Process>
 	}
 
 	private void removeDangelingObjectRefs(EObject element) {
-		List<DataObjectReference> dataObjectReferences = ModelHandler.getAll(bo.eResource(), DataObjectReference.class);
+		// get the DiagramEditor to be able to get the feature provider
+		DiagramEditor editor = ModelUtil.getEditor(bo);
+		IDiagramTypeProvider diagramTypeProvider = editor.getDiagramTypeProvider();
+		IFeatureProvider featureProvider = diagramTypeProvider.getFeatureProvider();
+		Diagram diagram = diagramTypeProvider.getDiagram();
+		
+		// get all data object references from the current container
+		// including the children of the container
+		List<DataObjectReference> dataObjectReferences = ModelUtil.getAllReachableObjects(element.eContainer(), DataObjectReference.class);
+		
 		for (DataObjectReference dataObjectReference : dataObjectReferences) {
 			if (element.equals(dataObjectReference.getDataObjectRef())) {
-				dataObjectReference.setDataObjectRef(null);
+				// if the data object reference references the data object to delete,
+				// then create a delete context for the data object reference and delete it
+				// via the right delete feature.
+				PictogramElement pe = Graphiti.getLinkService().getPictogramElements(diagram, dataObjectReference).get(0);
+				IDeleteContext context = new DeleteContext(pe);
+
+				IDeleteFeature deleteFeature = featureProvider.getDeleteFeature(context);
+				deleteFeature.delete(context);
 			}
 		}
 	}

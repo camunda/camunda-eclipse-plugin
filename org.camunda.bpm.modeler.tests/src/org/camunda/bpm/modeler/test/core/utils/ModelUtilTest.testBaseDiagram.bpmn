@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="_opXHgDsPEeOorrPekLmGMA" targetNamespace="http://activiti.org/bpmn">
+  <bpmn2:process id="Process_1" isExecutable="false">
+    <bpmn2:startEvent id="StartEvent_1" name="Start Event">
+      <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_1" sourceRef="StartEvent_1" targetRef="ParallelGateway_1"/>
+    <bpmn2:parallelGateway id="ParallelGateway_1" name="Parallel Gateway">
+      <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_9</bpmn2:outgoing>
+    </bpmn2:parallelGateway>
+    <bpmn2:sequenceFlow id="SequenceFlow_2" sourceRef="ParallelGateway_1" targetRef="Transaction_1"/>
+    <bpmn2:transaction id="Transaction_1" name="Transaction">
+      <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_6</bpmn2:outgoing>
+      <bpmn2:dataObject id="DataObject_2" name="Data Object 2"/>
+      <bpmn2:dataObjectReference id="DataObjectReference_2" name="Data Object 2 Reference" dataObjectRef="DataObject_2"/>
+      <bpmn2:dataObject id="DataObject_3" name="Data Object 3"/>
+      <bpmn2:dataObjectReference id="DataObjectReference_3" name="Data Object 3 Reference" dataObjectRef="DataObject_3"/>
+    </bpmn2:transaction>
+    <bpmn2:sequenceFlow id="SequenceFlow_3" sourceRef="ParallelGateway_1" targetRef="SubProcess_1"/>
+    <bpmn2:subProcess id="SubProcess_1" name="Sub Process">
+      <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_7</bpmn2:outgoing>
+      <bpmn2:dataObject id="DataObject_4" name="Data Object 4"/>
+      <bpmn2:dataObjectReference id="DataObjectReference_4" name="Data Object 4 Reference" dataObjectRef="DataObject_4"/>
+      <bpmn2:dataObject id="DataObject_5" name="Data Object 5"/>
+      <bpmn2:dataObjectReference id="DataObjectReference_5" name="Data Object 5 Reference" dataObjectRef="DataObject_5"/>
+      <bpmn2:dataObject id="DataObject_6" name="Data Object 6"/>
+      <bpmn2:dataObjectReference id="DataObjectReference_6" name="Data Object 6 Reference" dataObjectRef="DataObject_6"/>
+    </bpmn2:subProcess>
+    <bpmn2:sequenceFlow id="SequenceFlow_4" sourceRef="ParallelGateway_1" targetRef="AdHocSubProcess_1"/>
+    <bpmn2:adHocSubProcess id="AdHocSubProcess_1" name="Ad Hoc Sub Process">
+      <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_5</bpmn2:outgoing>
+      <bpmn2:dataObject id="DataObject_1" name="Data Object 1"/>
+      <bpmn2:dataObjectReference id="DataObjectReference_1" name="Data Object 1 Reference" dataObjectRef="DataObject_1"/>
+    </bpmn2:adHocSubProcess>
+    <bpmn2:sequenceFlow id="SequenceFlow_5" sourceRef="AdHocSubProcess_1" targetRef="ParallelGateway_2"/>
+    <bpmn2:parallelGateway id="ParallelGateway_2" name="Parallel Gateway">
+      <bpmn2:incoming>SequenceFlow_5</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_6</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_7</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_10</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_8</bpmn2:outgoing>
+    </bpmn2:parallelGateway>
+    <bpmn2:sequenceFlow id="SequenceFlow_6" name="" sourceRef="Transaction_1" targetRef="ParallelGateway_2"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_7" name="" sourceRef="SubProcess_1" targetRef="ParallelGateway_2"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_8" sourceRef="ParallelGateway_2" targetRef="EndEvent_1"/>
+    <bpmn2:endEvent id="EndEvent_1" name="End Event">
+      <bpmn2:incoming>SequenceFlow_8</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:dataObject id="DataObject_7" name="Data Object 7"/>
+    <bpmn2:dataObjectReference id="DataObjectReference_7" name="Data Object 7 Reference" dataObjectRef="DataObject_7"/>
+    <bpmn2:dataObject id="DataObject_8" name="Data Object 8"/>
+    <bpmn2:dataObjectReference id="DataObjectReference_8" name="Data Object 8 Reference" dataObjectRef="DataObject_8"/>
+    <bpmn2:dataObject id="DataObject_9" name="Data Object 9"/>
+    <bpmn2:dataObjectReference id="DataObjectReference_9" name="Data Object 9 Reference" dataObjectRef="DataObject_9"/>
+    <bpmn2:dataObjectReference id="DataObjectReference_10" name="Data Object 9 Reference" dataObjectRef="DataObject_9"/>
+    <bpmn2:subProcess id="SubProcess_2" name="Sub Process">
+      <bpmn2:incoming>SequenceFlow_9</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_10</bpmn2:outgoing>
+      <bpmn2:dataObjectReference id="DataObjectReference_11" name="Data Object 9 Reference" dataObjectRef="DataObject_9"/>
+      <bpmn2:dataObject id="DataObject_10" name="Data Object 10"/>
+      <bpmn2:dataObjectReference id="DataObjectReference_12" name="Data Object 10 Reference" dataObjectRef="DataObject_10"/>
+      <bpmn2:subProcess id="SubProcess_3" name="Sub Process">
+        <bpmn2:dataObject id="DataObject_11" name="Data Object 11"/>
+        <bpmn2:dataObjectReference id="DataObjectReference_13" name="Data Object 11 Reference" dataObjectRef="DataObject_11"/>
+        <bpmn2:dataObjectReference id="DataObjectReference_14" name="Data Object 10 Reference" dataObjectRef="DataObject_10"/>
+      </bpmn2:subProcess>
+    </bpmn2:subProcess>
+    <bpmn2:sequenceFlow id="SequenceFlow_9" name="" sourceRef="ParallelGateway_1" targetRef="SubProcess_2"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_10" name="" sourceRef="SubProcess_2" targetRef="ParallelGateway_2"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_3" bpmnElement="StartEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="132.0" y="336.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="70.0" x="115.0" y="377.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_ParallelGateway_5" bpmnElement="ParallelGateway_1">
+        <dc:Bounds height="50.0" width="50.0" x="252.0" y="329.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="104.0" x="225.0" y="384.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="SequenceFlow_1" sourceElement="_BPMNShape_StartEvent_3" targetElement="_BPMNShape_ParallelGateway_5">
+        <di:waypoint xsi:type="dc:Point" x="168.0" y="354.0"/>
+        <di:waypoint xsi:type="dc:Point" x="252.0" y="354.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="193.0" y="354.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_Transaction_3" bpmnElement="Transaction_1" isExpanded="true">
+        <dc:Bounds height="214.0" width="325.0" x="432.0" y="247.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="SequenceFlow_2" sourceElement="_BPMNShape_ParallelGateway_5" targetElement="_BPMNShape_Transaction_3">
+        <di:waypoint xsi:type="dc:Point" x="302.0" y="354.0"/>
+        <di:waypoint xsi:type="dc:Point" x="432.0" y="354.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="327.0" y="354.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_SubProcess_3" bpmnElement="SubProcess_1" isExpanded="true">
+        <dc:Bounds height="214.0" width="325.0" x="432.0" y="480.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="SequenceFlow_3" sourceElement="_BPMNShape_ParallelGateway_5" targetElement="_BPMNShape_SubProcess_3">
+        <di:waypoint xsi:type="dc:Point" x="277.0" y="379.0"/>
+        <di:waypoint xsi:type="dc:Point" x="277.0" y="587.0"/>
+        <di:waypoint xsi:type="dc:Point" x="432.0" y="587.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="277.0" y="504.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_AdHocSubProcess_3" bpmnElement="AdHocSubProcess_1" isExpanded="true">
+        <dc:Bounds height="214.0" width="325.0" x="432.0" y="12.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="SequenceFlow_4" sourceElement="_BPMNShape_ParallelGateway_5" targetElement="_BPMNShape_AdHocSubProcess_3">
+        <di:waypoint xsi:type="dc:Point" x="277.0" y="329.0"/>
+        <di:waypoint xsi:type="dc:Point" x="277.0" y="119.0"/>
+        <di:waypoint xsi:type="dc:Point" x="432.0" y="119.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="342.0" y="119.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_ParallelGateway_6" bpmnElement="ParallelGateway_2">
+        <dc:Bounds height="50.0" width="50.0" x="852.0" y="329.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="104.0" x="825.0" y="384.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_5" bpmnElement="SequenceFlow_5" sourceElement="_BPMNShape_AdHocSubProcess_3" targetElement="_BPMNShape_ParallelGateway_6">
+        <di:waypoint xsi:type="dc:Point" x="756.0" y="119.0"/>
+        <di:waypoint xsi:type="dc:Point" x="804.0" y="119.0"/>
+        <di:waypoint xsi:type="dc:Point" x="876.0" y="119.0"/>
+        <di:waypoint xsi:type="dc:Point" x="877.0" y="329.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="782.0" y="119.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_6" bpmnElement="SequenceFlow_6" sourceElement="_BPMNShape_Transaction_3" targetElement="_BPMNShape_ParallelGateway_6">
+        <di:waypoint xsi:type="dc:Point" x="756.0" y="354.0"/>
+        <di:waypoint xsi:type="dc:Point" x="852.0" y="354.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_7" bpmnElement="SequenceFlow_7" sourceElement="_BPMNShape_SubProcess_3" targetElement="_BPMNShape_ParallelGateway_6">
+        <di:waypoint xsi:type="dc:Point" x="756.0" y="587.0"/>
+        <di:waypoint xsi:type="dc:Point" x="804.0" y="587.0"/>
+        <di:waypoint xsi:type="dc:Point" x="877.0" y="587.0"/>
+        <di:waypoint xsi:type="dc:Point" x="877.0" y="379.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="874.0" y="544.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_EndEvent_3" bpmnElement="EndEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="1001.0" y="336.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="65.0" x="987.0" y="377.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_8" bpmnElement="SequenceFlow_8" sourceElement="_BPMNShape_ParallelGateway_6" targetElement="_BPMNShape_EndEvent_3">
+        <di:waypoint xsi:type="dc:Point" x="902.0" y="354.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1001.0" y="354.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="927.0" y="354.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_DataObjectReference_12" bpmnElement="DataObjectReference_1">
+        <dc:Bounds height="50.0" width="36.0" x="576.0" y="84.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="148.0" x="520.0" y="139.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_DataObjectReference_13" bpmnElement="DataObjectReference_2">
+        <dc:Bounds height="50.0" width="36.0" x="504.0" y="288.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="148.0" x="448.0" y="343.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_DataObjectReference_14" bpmnElement="DataObjectReference_3">
+        <dc:Bounds height="50.0" width="36.0" x="636.0" y="312.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="148.0" x="580.0" y="367.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_DataObjectReference_15" bpmnElement="DataObjectReference_4">
+        <dc:Bounds height="50.0" width="36.0" x="504.0" y="516.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="148.0" x="448.0" y="571.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_DataObjectReference_16" bpmnElement="DataObjectReference_5">
+        <dc:Bounds height="50.0" width="36.0" x="660.0" y="516.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="148.0" x="604.0" y="571.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_DataObjectReference_17" bpmnElement="DataObjectReference_6">
+        <dc:Bounds height="50.0" width="36.0" x="577.0" y="600.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="148.0" x="521.0" y="655.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_DataObjectReference_18" bpmnElement="DataObjectReference_7">
+        <dc:Bounds height="50.0" width="36.0" x="952.0" y="24.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="148.0" x="896.0" y="79.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_DataObjectReference_19" bpmnElement="DataObjectReference_8">
+        <dc:Bounds height="50.0" width="36.0" x="952.0" y="139.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="148.0" x="896.0" y="194.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_DataObjectReference_20" bpmnElement="DataObjectReference_9">
+        <dc:Bounds height="50.0" width="36.0" x="952.0" y="417.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="148.0" x="896.0" y="472.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_DataObjectReference_21" bpmnElement="DataObjectReference_10">
+        <dc:Bounds height="50.0" width="36.0" x="952.0" y="516.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="148.0" x="896.0" y="571.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_SubProcess_4" bpmnElement="SubProcess_2" isExpanded="true">
+        <dc:Bounds height="361.0" width="325.0" x="432.0" y="732.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_DataObjectReference_22" bpmnElement="DataObjectReference_11">
+        <dc:Bounds height="50.0" width="36.0" x="504.0" y="780.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="148.0" x="448.0" y="835.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_DataObjectReference_23" bpmnElement="DataObjectReference_12">
+        <dc:Bounds height="50.0" width="36.0" x="660.0" y="780.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="155.0" x="601.0" y="835.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_SubProcess_5" bpmnElement="SubProcess_3" isExpanded="true">
+        <dc:Bounds height="205.0" width="301.0" x="444.0" y="876.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_DataObjectReference_24" bpmnElement="DataObjectReference_13">
+        <dc:Bounds height="50.0" width="36.0" x="504.0" y="924.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="155.0" x="445.0" y="979.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_DataObjectReference_25" bpmnElement="DataObjectReference_14">
+        <dc:Bounds height="50.0" width="36.0" x="636.0" y="948.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="155.0" x="577.0" y="1003.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_9" bpmnElement="SequenceFlow_9" sourceElement="_BPMNShape_ParallelGateway_5" targetElement="_BPMNShape_SubProcess_4">
+        <di:waypoint xsi:type="dc:Point" x="277.0" y="379.0"/>
+        <di:waypoint xsi:type="dc:Point" x="277.0" y="912.0"/>
+        <di:waypoint xsi:type="dc:Point" x="432.0" y="912.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_10" bpmnElement="SequenceFlow_10" sourceElement="_BPMNShape_SubProcess_4" targetElement="_BPMNShape_ParallelGateway_6">
+        <di:waypoint xsi:type="dc:Point" x="756.0" y="912.0"/>
+        <di:waypoint xsi:type="dc:Point" x="804.0" y="912.0"/>
+        <di:waypoint xsi:type="dc:Point" x="877.0" y="912.0"/>
+        <di:waypoint xsi:type="dc:Point" x="877.0" y="379.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="6.0" width="6.0" x="874.0" y="706.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

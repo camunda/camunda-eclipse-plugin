@@ -3,7 +3,7 @@ package org.camunda.bpm.modeler.test.feature.add;
 import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.point;
 import static org.camunda.bpm.modeler.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.camunda.bpm.modeler.test.util.assertions.Bpmn2ModelAssertions.elementOfType;
-import static org.camunda.bpm.modeler.test.util.operations.AddDataObjectOperation.addDataObject;
+import static org.camunda.bpm.modeler.test.util.operations.AddDataObjectOperation.addDataObjectReference;
 import static org.camunda.bpm.modeler.test.util.operations.MoveShapeOperation.move;
 
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
@@ -31,7 +31,7 @@ public class AddDataObjectFeatureTest extends AbstractFeatureTest {
 		
 		// when
 		// element is added to it
-		addDataObject(diagramTypeProvider)
+		addDataObjectReference(diagramTypeProvider)
 			.toContainer(diagram)
 			.execute();
 
@@ -46,7 +46,7 @@ public class AddDataObjectFeatureTest extends AbstractFeatureTest {
 		DataObjectReference dataObjectReference = BusinessObjectUtil.getFirstElementOfType(shape, DataObjectReference.class);
 		
 		assertThat(dataObjectReference).isNotNull();
-		assertThat(dataObjectReference.getDataObjectRef()).isNull();
+		assertThat(dataObjectReference.getDataObjectRef()).isNotNull();
 		assertThat(dataObjectReference.eContainer()).isEqualTo(BusinessObjectUtil.getFirstElementOfType(diagram, FlowElementsContainer.class));
 		
 		assertThat(labelShape)
@@ -62,8 +62,7 @@ public class AddDataObjectFeatureTest extends AbstractFeatureTest {
 		
 		// when
 		// element is added to it
-		addDataObject(diagramTypeProvider)
-			.withDataObject()
+		addDataObjectReference(diagramTypeProvider)
 			.toContainer(diagram)
 			.execute();
 
@@ -95,7 +94,7 @@ public class AddDataObjectFeatureTest extends AbstractFeatureTest {
 		
 		// when
 		// element is added to it
-		addDataObject(diagramTypeProvider)
+		addDataObjectReference(diagramTypeProvider)
 			.toContainer(containerShape)
 			.execute();
 
@@ -127,27 +126,16 @@ public class AddDataObjectFeatureTest extends AbstractFeatureTest {
 		
 		// when
 		// element is added to diagram
-		addDataObject(diagramTypeProvider)
+		addDataObjectReference(diagramTypeProvider)
 			.toContainer(diagram)
 			.execute();
 
-		EList<Shape> children = diagram.getChildren();
-		
-		Shape shape = children.get(children.size() - 1); // last child should be the store
-		Shape labelShape = LabelUtil.getLabelShape(shape, diagram);
-		
 		// then
-		// the container should contain the element, the pool and the elements label
+		// the container should not contain the element, because it is not possible to this element
+		// the diagram if a participant exists
+		
 		assertThat(diagram)
-			.hasContainerShapeChildCount(3);
-		
-		assertThat(shape)
-			.isLinkedTo(elementOfType(DataObjectReference.class));
-		
-		// and the label should be contained in the diagram
-		assertThat(labelShape)
-			.isNotNull()
-			.isContainedIn(diagram);
+			.hasContainerShapeChildCount(1);
 	}
 	
 	@Test
@@ -159,7 +147,7 @@ public class AddDataObjectFeatureTest extends AbstractFeatureTest {
 		// with element freshly added
 		ContainerShape containerShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "_Participant_5");
 		
-		addDataObject(diagramTypeProvider)
+		addDataObjectReference(diagramTypeProvider)
 			.toContainer(containerShape)
 			.execute();
 
