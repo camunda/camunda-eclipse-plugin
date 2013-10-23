@@ -21,6 +21,7 @@ import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.graphiti.datatypes.IRectangle;
@@ -29,6 +30,7 @@ import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.algorithms.styles.Orientation;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
@@ -40,7 +42,7 @@ public class AddExpandableActivityFeature<T extends Activity>
 	public AddExpandableActivityFeature(IFeatureProvider fp) {
 		super(fp);
 	}
-
+	
 	@Override
 	protected void postCreateHook(IAddContext context, IRectangle newShapeBounds, ContainerShape newShape) {
 		super.postCreateHook(context, newShapeBounds, newShape);
@@ -51,19 +53,9 @@ public class AddExpandableActivityFeature<T extends Activity>
 		T activity = getBusinessObject(context);
 		
 		int width = newShapeBounds.getWidth();
-		
-		boolean isExpanded = true;
-		
-		if (activity instanceof SubProcess) {
-			BPMNShape bpmnShape = (BPMNShape) BusinessObjectUtil.getFirstElementOfType(newShape, BPMNShape.class);
-			if (bpmnShape != null) {
-				isExpanded = bpmnShape.isIsExpanded();
-			}
-		}
-		
+				
 		// set to default value so that update pics up the actual drawing
 		peService.setPropertyValue(newShape, TRIGGERED_BY_EVENT, "false");
-		peService.setPropertyValue(newShape, IS_EXPANDED, Boolean.toString(isExpanded));
 
 		Shape textShape = peService.createShape(newShape, false);
 		Text text = gaService.createDefaultText(getDiagram(), textShape, activity.getName());
@@ -72,12 +64,45 @@ public class AddExpandableActivityFeature<T extends Activity>
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setVerticalAlignment(Orientation.ALIGNMENT_CENTER);
 		link(textShape, activity);
-		
-		if (isExpanded) {
-			GraphicsUtil.hideActivityMarker(newShape, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
-		} else {
-			GraphicsUtil.showActivityMarker(newShape, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
-		}
+	
+	}
+	
+	@Override
+	protected void postAddHook(IAddContext context, ContainerShape newShape) {
+	  super.postAddHook(context, newShape);
+
+	  T activity = getBusinessObject(context);
+	  
+    boolean isExpanded = true;
+    
+    if (activity instanceof SubProcess) {
+      BPMNShape bpmnShape = (BPMNShape) BusinessObjectUtil.getFirstElementOfType(newShape, BPMNShape.class);
+      if (bpmnShape != null) {
+        isExpanded = bpmnShape.isIsExpanded();
+      }
+    }
+    
+    if(activity instanceof CallActivity) {
+      BPMNShape bpmnShape = (BPMNShape) BusinessObjectUtil.getFirstElementOfType(newShape, BPMNShape.class);
+      if (bpmnShape != null) {
+        isExpanded = bpmnShape.isIsExpanded();
+      }
+    }
+    
+    IPeService peService = Graphiti.getPeService();
+    peService.setPropertyValue(newShape, IS_EXPANDED, Boolean.toString(isExpanded));
+    
+    if (isExpanded) {
+      GraphicsUtil.hideActivityMarker(newShape, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
+    } else {
+      GraphicsUtil.showActivityMarker(newShape, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
+    }
+    
+    // set a property on the decorators so we can distinguish them from the real children (i.e. tasks, etc.)
+    for (PictogramElement pe : newShape.getChildren()) {
+      Graphiti.getPeService().setPropertyValue(pe, ACTIVITY_DECORATOR, "true");
+    }
+	  
 	}
 	
 	@Override
