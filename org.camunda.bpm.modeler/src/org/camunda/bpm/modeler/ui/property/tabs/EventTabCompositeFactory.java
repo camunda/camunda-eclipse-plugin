@@ -17,11 +17,11 @@ import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.ErrorEventDefinition;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
-import org.eclipse.bpmn2.IntermediateThrowEvent;
 import org.eclipse.bpmn2.LinkEventDefinition;
 import org.eclipse.bpmn2.MessageEventDefinition;
 import org.eclipse.bpmn2.SignalEventDefinition;
 import org.eclipse.bpmn2.StartEvent;
+import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.TimerEventDefinition;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.swt.widgets.Composite;
@@ -56,7 +56,7 @@ public class EventTabCompositeFactory extends AbstractTabCompositeFactory<Event>
 			createTimerDefinitionComposite(timerDef);
 		}
 		
-		if (messageDef != null && !(event instanceof IntermediateThrowEvent)) {
+		if (messageDef != null && !(event instanceof ThrowEvent)) {
 			createMessageDefinitionComposite(messageDef);
 		}
 
