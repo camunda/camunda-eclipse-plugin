@@ -69,40 +69,40 @@ public class AddExpandableActivityFeature<T extends Activity>
 	
 	@Override
 	protected void postAddHook(IAddContext context, ContainerShape newShape) {
-	  super.postAddHook(context, newShape);
+		super.postAddHook(context, newShape);
 
-	  T activity = getBusinessObject(context);
-	  
-    boolean isExpanded = true;
-    
-    if (activity instanceof SubProcess) {
-      BPMNShape bpmnShape = (BPMNShape) BusinessObjectUtil.getFirstElementOfType(newShape, BPMNShape.class);
-      if (bpmnShape != null) {
-        isExpanded = bpmnShape.isIsExpanded();
-      }
-    }
-    
-    if(activity instanceof CallActivity) {
-      BPMNShape bpmnShape = (BPMNShape) BusinessObjectUtil.getFirstElementOfType(newShape, BPMNShape.class);
-      if (bpmnShape != null) {
-        isExpanded = bpmnShape.isIsExpanded();
-      }
-    }
-    
-    IPeService peService = Graphiti.getPeService();
-    peService.setPropertyValue(newShape, IS_EXPANDED, Boolean.toString(isExpanded));
-    
-    if (isExpanded) {
-      GraphicsUtil.hideActivityMarker(newShape, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
-    } else {
-      GraphicsUtil.showActivityMarker(newShape, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
-    }
-    
-    // set a property on the decorators so we can distinguish them from the real children (i.e. tasks, etc.)
-    for (PictogramElement pe : newShape.getChildren()) {
-      Graphiti.getPeService().setPropertyValue(pe, ACTIVITY_DECORATOR, "true");
-    }
-	  
+		T activity = getBusinessObject(context);
+
+		boolean isExpanded = true;
+
+		if (activity instanceof SubProcess) {
+			BPMNShape bpmnShape = (BPMNShape) BusinessObjectUtil.getFirstElementOfType(newShape, BPMNShape.class);
+			if (bpmnShape != null) {
+				isExpanded = bpmnShape.isIsExpanded();
+			}
+		}
+
+		if (activity instanceof CallActivity) {
+			BPMNShape bpmnShape = (BPMNShape) BusinessObjectUtil.getFirstElementOfType(newShape, BPMNShape.class);
+			if (bpmnShape != null) {
+				isExpanded = bpmnShape.isIsExpanded();
+			}
+		}
+
+		IPeService peService = Graphiti.getPeService();
+		peService.setPropertyValue(newShape, IS_EXPANDED, Boolean.toString(isExpanded));
+
+		if (isExpanded) {
+			GraphicsUtil.hideActivityMarker(newShape, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
+		} else {
+			GraphicsUtil.showActivityMarker(newShape, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
+		}
+
+		// set a property on the decorators so we can distinguish them from the
+		// real children (i.e. tasks, etc.)
+		for (PictogramElement pe : newShape.getChildren()) {
+			Graphiti.getPeService().setPropertyValue(pe, ACTIVITY_DECORATOR, "true");
+		}
 	}
 	
 	@Override

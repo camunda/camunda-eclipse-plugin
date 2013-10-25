@@ -21,6 +21,7 @@ import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.camunda.bpm.modeler.ui.features.LayoutBaseElementTextFeature;
 import org.camunda.bpm.modeler.ui.features.activity.AppendActivityFeature;
+import org.camunda.bpm.modeler.ui.features.activity.MorphGatewayFeature;
 import org.camunda.bpm.modeler.ui.features.event.AppendEventFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
 import org.eclipse.graphiti.features.IDirectEditingFeature;
@@ -96,13 +97,14 @@ public abstract class AbstractGatewayFeatureContainer extends BaseElementFeature
 	@Override
 	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
 		ICustomFeature[] superFeatures = super.getCustomFeatures(fp);
-		ICustomFeature[] thisFeatures = new ICustomFeature[3 + superFeatures.length];
+		ICustomFeature[] thisFeatures = new ICustomFeature[4 + superFeatures.length];
 		int i;
 		for (i=0; i<superFeatures.length; ++i)
 			thisFeatures[i] = superFeatures[i];
 		thisFeatures[i++] = new AppendActivityFeature(fp);
 		thisFeatures[i++] = new AppendGatewayFeature(fp);
 		thisFeatures[i++] = new AppendEventFeature(fp);
+		thisFeatures[i++] = new MorphGatewayFeature(fp);
 		return thisFeatures;
 	}
 

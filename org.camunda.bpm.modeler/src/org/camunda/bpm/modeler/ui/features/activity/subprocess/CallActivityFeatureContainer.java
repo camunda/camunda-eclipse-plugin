@@ -12,15 +12,12 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.activity.subprocess;
 
-import org.camunda.bpm.modeler.core.features.DefaultResizeBPMNShapeFeature;
 import org.camunda.bpm.modeler.core.features.MultiUpdateFeature;
 import org.camunda.bpm.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.ui.ImageProvider;
 import org.camunda.bpm.modeler.ui.features.activity.ResizeActivityFeature;
-import org.eclipse.bpmn2.Activity;
-import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.CallableElement;
@@ -30,9 +27,7 @@ import org.eclipse.bpmn2.GlobalScriptTask;
 import org.eclipse.bpmn2.GlobalTask;
 import org.eclipse.bpmn2.GlobalUserTask;
 import org.eclipse.bpmn2.Process;
-import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -40,15 +35,11 @@ import org.eclipse.graphiti.features.ILayoutFeature;
 import org.eclipse.graphiti.features.IReason;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
-import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.context.IUpdateContext;
-import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.features.impl.AbstractUpdateFeature;
 import org.eclipse.graphiti.features.impl.Reason;
-import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Image;
 import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
-import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -125,19 +116,6 @@ public class CallActivityFeatureContainer extends AbstractExpandableActivityFeat
 	public IResizeShapeFeature getResizeFeature(IFeatureProvider fp) {
 		return new ResizeActivityFeature(fp);
 	}
-	
-	@Override
-	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
-		ICustomFeature[] superFeatures = super.getCustomFeatures(fp);
-		ICustomFeature[] thisFeatures = new ICustomFeature[superFeatures.length];
-		int index = 1;
-		for (int i = 0; i < superFeatures.length; ++i) {
-			if(thisFeatures.length < (index+i)) {
-				thisFeatures[index + i] = superFeatures[i];
-			}
-		}
-		return thisFeatures;
-	}
 
 	public static class LayoutCallActivityFeature extends LayoutExpandableActivityFeature {
 		private LayoutCallActivityFeature(IFeatureProvider fp) {
@@ -174,10 +152,7 @@ public class CallActivityFeatureContainer extends AbstractExpandableActivityFeat
 		public EClass getBusinessObjectClass() {
 			return Bpmn2Package.eINSTANCE.getCallActivity();
 		}
-		
-		public void putBusinessObject(ICreateContext context, CallActivity businessObject) {
-		  super.putBusinessObject(context, businessObject);
-		}
+
 	}
 
 	private class UpdateCallActivityFeature extends AbstractUpdateFeature {

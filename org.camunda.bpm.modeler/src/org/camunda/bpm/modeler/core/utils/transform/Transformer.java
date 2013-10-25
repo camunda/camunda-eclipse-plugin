@@ -92,7 +92,13 @@ public class Transformer {
 				multiReference.set(idx, replacement);
 			} else {
 				// update simple ref
-				reference.set(replacement);
+				
+				if (reference.getEStructuralFeature().getEType().isInstance(replacement)) {
+					reference.set(replacement);
+				} else {
+					log.handle(new IgnoredStructuralFeature(target, reference.getEStructuralFeature(), reference, replacement));
+				}
+				
 			}
 		}
 	}
@@ -256,7 +262,7 @@ public class Transformer {
 					} else {
 						EReference eReference = (EReference) eStructuralFeature;
 						if (eReference.isContainment()) {
-							copyContainment(eReference, eObject, copyEObject);
+							moveContainment(eReference, eObject, copyEObject);
 						} else {
 							copyReference(eReference, eObject, copyEObject);
 						}
@@ -267,6 +273,26 @@ public class Transformer {
 			copyProxyURI(eObject, copyEObject);
 
 			return copyEObject;
+		}
+		
+		protected void moveContainment(EReference eReference, EObject eObject, EObject copyEObject) {
+			if (eObject.eIsSet(eReference)) {
+				
+				if (eReference.isMany()) {
+					
+					@SuppressWarnings("unchecked") List<EObject> source = (List<EObject>) eObject.eGet(eReference);
+					@SuppressWarnings("unchecked") List<EObject> target = (List<EObject>) copyEObject.eGet(getTarget(eReference));
+					
+					if (source.isEmpty()) {
+						target.clear();
+					} else {
+						target.addAll(source);
+					}
+				} else {
+					EObject childEObject = (EObject) eObject.eGet(eReference);
+					copyEObject.eSet(getTarget(eReference), childEObject == null ? null : childEObject);
+				}
+			}
 		}
 
 		/**

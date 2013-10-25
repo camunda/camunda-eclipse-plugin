@@ -39,6 +39,7 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 public abstract class AbstractAddBpmnShapeFeature<T extends BaseElement> extends AbstractAddBpmnElementFeature<T, ContainerShape> {
 
 	public static final int BOX_PADDING = 10;
+	public static final String MORPH_ELEMENT_TYPE = "MORPH_ELEMENT_TYPE";
 	
 	public AbstractAddBpmnShapeFeature(IFeatureProvider fp) {
 		super(fp);
@@ -246,6 +247,10 @@ public abstract class AbstractAddBpmnShapeFeature<T extends BaseElement> extends
 	 */
 	protected void createLabel(IAddContext context, ContainerShape newShape, IRectangle newShapeBounds) {
 		
+		if (context.getProperty(MORPH_ELEMENT_TYPE) != null && context.getProperty(MORPH_ELEMENT_TYPE) == Boolean.TRUE) {
+			return;
+		}
+		
 		// create label if the add shape feature wishes to do so
 		if (isCreateExternalLabel()) {
 			IAddContext addLabelContext = getAddLabelContext(context, newShape, newShapeBounds);
@@ -288,9 +293,14 @@ public abstract class AbstractAddBpmnShapeFeature<T extends BaseElement> extends
 		
 		if (context instanceof AddContext) {
 			AddContext addContext = (AddContext) context;
+
+			int x = addContext.getX();
+			int y = addContext.getY();
 			
-			int x = addContext.getX() - width / 2;
-			int y = addContext.getY() - height / 2;
+			if (context.getProperty(MORPH_ELEMENT_TYPE) == null || context.getProperty(MORPH_ELEMENT_TYPE) == Boolean.FALSE) {
+				x = x - width / 2;
+				y = y - height / 2;
+			}
 		
 			addContext.setLocation(x, y);
 		}
