@@ -233,7 +233,7 @@ public class FeatureSupport {
 
 	private static void resizeChildrenHorizontally(ContainerShape container, boolean left, int dx, IFeatureProvider featureProvider) {
 		
-		List<Shape> childLanes = getChildLanes(container);
+		List<ContainerShape> childLanes = getChildLanes(container);
 		if (childLanes.isEmpty()) {
 			if (left) {
 				moveChildren(container, point(-dx, 0), featureProvider);
@@ -261,7 +261,7 @@ public class FeatureSupport {
 
 	private static void resizeChildrenVertically(ContainerShape container, boolean top, int dy, IFeatureProvider featureProvider) {
 		
-		List<Shape> childLanes = getChildLanes(container);
+		List<ContainerShape> childLanes = getChildLanes(container);
 		if (childLanes.isEmpty()) {
 			if (top) {
 				moveChildren(container, point(0, -dy), featureProvider);
@@ -336,7 +336,7 @@ public class FeatureSupport {
 		
 		int topResize = 0;
 		
-		List<Shape> childLanes = getChildLanes(parentContainer);
+		List<ContainerShape> childLanes = getChildLanes(parentContainer);
 		
 		GraphicsAlgorithm containerGa = container.getGraphicsAlgorithm();
 		
@@ -597,22 +597,32 @@ public class FeatureSupport {
 	}
 	
 	/**
-	 * Returns a list of {@link Shape}s which contains an element to the
-	 * assigned businessObjectClazz, i.e. the list contains {@link Shape}s
-	 * which meet the following constraint:<br>
-	 * <code>
-	 * 	foreach child of root:<br>
-	 *  BusinessObjectUtil.containsChildElementOfType(child, businessObjectClazz) == true
-	 * </code>
-	 * @param root
-	 * @param businessObjectClazz
+	 * Returns a list of child {@link Shape}s that are linked to a business
+	 * object of the specified type.
+	 * 
+	 * @param element
+	 * @param cls
 	 * @return
 	 */
-	public static List<Shape> getChildrenLinkedToType(ContainerShape root, Class<?> businessObjectClazz) {
-		List<Shape> result = new ArrayList<Shape>();
-		for (Shape currentShape : root.getChildren()) {
-			if (BusinessObjectUtil.containsChildElementOfType(currentShape, businessObjectClazz)) {
-				result.add(currentShape);
+	public static List<Shape> getChildrenByBusinessObjectType(ContainerShape element, Class<?> businessObjectCls) {
+		return getChildrenTypedByBusinessObjectType(element, Shape.class, businessObjectCls);
+	}
+	
+	/**
+	 * Returns a list of child {@link Shape}s that are linked to a business
+	 * object of the specified type.
+	 * 
+	 * @param element
+	 * @param cls
+	 * @return
+	 */
+	public static <T extends Shape> List<T> getChildrenTypedByBusinessObjectType(ContainerShape element, Class<T> childCls, Class<?> businessObjectCls) {
+		List<T> result = new ArrayList<T>();
+		for (Shape currentShape : element.getChildren()) {
+			if (childCls.isInstance(currentShape) &&
+				BusinessObjectUtil.containsElementOfType(currentShape, businessObjectCls)) {
+				
+				result.add((T) currentShape);
 			}
 		}
 		return result;
@@ -634,7 +644,7 @@ public class FeatureSupport {
 		boolean isHorizontal = isHorizontal(container);
 		
 		ContainerShape result = null;
-		for (PictogramElement picElem : getChildrenLinkedToType(parentContainerShape, Lane.class)) {
+		for (PictogramElement picElem : getChildrenByBusinessObjectType(parentContainerShape, Lane.class)) {
 			if (picElem instanceof ContainerShape && !picElem.equals(container)) {
 				ContainerShape currentContainerShape = (ContainerShape) picElem;
 				GraphicsAlgorithm currentGA = currentContainerShape.getGraphicsAlgorithm();
@@ -682,7 +692,7 @@ public class FeatureSupport {
 		boolean isHorizontal = isHorizontal(container);
 		
 		ContainerShape result = null;
-		for (PictogramElement picElem : getChildrenLinkedToType(parentContainerShape, Lane.class)) {
+		for (PictogramElement picElem : getChildrenByBusinessObjectType(parentContainerShape, Lane.class)) {
 			if (picElem instanceof ContainerShape && !picElem.equals(container)) {
 				ContainerShape currentContainerShape = (ContainerShape) picElem;
 				GraphicsAlgorithm currentGA = currentContainerShape.getGraphicsAlgorithm();
@@ -816,7 +826,7 @@ public class FeatureSupport {
 	public static List<Shape> getTopLevelLanes(ContainerShape rootShape) {
 		
 		// get direct child lanes
-		List<Shape> directChildLanes = getChildLanes(rootShape);
+		List<ContainerShape> directChildLanes = getChildLanes(rootShape);
 		
 		List<Shape> result = new ArrayList<Shape>(directChildLanes);
 		
@@ -839,12 +849,12 @@ public class FeatureSupport {
 	/**
 	 * Get a list of ordered child lanes in the given root shape.
 	 * 
-	 * @param rootShape
+	 * @param container
 	 * @return
 	 */
-	public static List<Shape> getChildLanes(ContainerShape rootShape) {
+	public static List<ContainerShape> getChildLanes(ContainerShape container) {
 		
-		List<Shape> childLanes = FeatureSupport.getChildrenLinkedToType(rootShape, Lane.class);
+		List<ContainerShape> childLanes = FeatureSupport.getChildrenTypedByBusinessObjectType(container, ContainerShape.class, Lane.class);
 		if (childLanes.isEmpty()) {
 			return Collections.emptyList();
 		}
@@ -865,12 +875,12 @@ public class FeatureSupport {
 	
 	public static void eachLaneExecute(ContainerShape container, LaneSetOperation operation) {
 		
-		List<Shape> lanes = getChildLanes(container);
+		List<ContainerShape> lanes = getChildLanes(container);
 		
 		operation.execute(container);
 		
-		for (Shape lane : lanes) {
-			eachLaneExecute((ContainerShape) lane, operation);
+		for (ContainerShape lane : lanes) {
+			eachLaneExecute(lane, operation);
 		}
 	}
 
