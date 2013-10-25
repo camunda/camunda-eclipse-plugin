@@ -17,7 +17,7 @@ public class HelpText {
 	public static final String ELEMENT_DEF_TABLE = "%ss can be defined below";
 
 	private static final String ASYNC_LINK_TO_USER_GUIDE = 
-			"http://docs.camunda.org/latest/guides/user-guide/#process-engine-transactions-in-processes-asynchronous-continutaions";
+			"http://docs.camunda.org/latest/guides/user-guide/#process-engine-transactions-in-processes-asynchronous-continuations";
 	
 	private static final String CALL_ACTIVITY_VARIABLES_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#subprocesses-call-activity-passing-variables";
 	private static final String CALL_ACTIVITY_BUSINESS_KEY_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#subprocesses-call-activity-passing-business-key";
