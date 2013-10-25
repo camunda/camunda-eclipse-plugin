@@ -820,6 +820,10 @@ public class ModelUtil {
 			be = participant.getProcessRef();
 		}
 		
+		if (be == null) {
+			return result;
+		}
+		
 		EObject parent = be.eContainer();
 		if (parent != null) {
 			List<T> elements = getAllReachableObjectsIncludingParents(parent, cls);
