@@ -238,7 +238,6 @@ public class PropertyUtil {
 
 		if (binding != null) {
 			binding.setDisableOnNull(true);
-			binding.setFocusOnNonNull(true);
 			binding.establish();
 		}
 

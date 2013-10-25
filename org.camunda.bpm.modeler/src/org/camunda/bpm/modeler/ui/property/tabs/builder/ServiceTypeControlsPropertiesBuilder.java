@@ -7,6 +7,7 @@ import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.ui.property.tabs.binding.ModelRadioBinding;
 import org.camunda.bpm.modeler.ui.property.tabs.dialog.ClassChooserDialog;
 import org.camunda.bpm.modeler.ui.property.tabs.radio.Radio.RadioGroup;
+import org.camunda.bpm.modeler.ui.property.tabs.util.Events;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -112,7 +113,7 @@ public class ServiceTypeControlsPropertiesBuilder extends AbstractPropertiesBuil
 		classText.setLayoutData(textFormData);
 		btnClassSelect.setLayoutData(btnSelectLayoutData);
 		
-		radioButton.addListener(SWT.Selection, new Listener() {
+		radioButton.addListener(Events.MODEL_CHANGED, new Listener() {
 			
 			@Override
 			public void handleEvent(Event event) {
