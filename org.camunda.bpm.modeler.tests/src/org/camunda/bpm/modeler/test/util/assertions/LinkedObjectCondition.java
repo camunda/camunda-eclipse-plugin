@@ -10,6 +10,7 @@ public class LinkedObjectCondition extends Condition<EObject> {
 
 	protected Class<?> cls;
 	protected String id;
+	private EObject identity;
 	
 	public LinkedObjectCondition identifiedBy(String id) {
 		this.id = id;
@@ -23,15 +24,24 @@ public class LinkedObjectCondition extends Condition<EObject> {
 		return this;
 	}
 
+	public LinkedObjectCondition withIdentity(EObject element) {
+		this.identity = element;
+		return this;
+	}
+	
 	protected Description createDescription() {
 		String description = "";
 		
+		if (identity != null) {
+			description += "with identity " + identity + " ";
+		}
+		
 		if (cls != null) {
-			description += "of type " + cls.getName();
+			description += "of type " + cls.getName() + " ";
 		}
 		
 		if (id != null) {
-			description += " with id " + id;
+			description += "with id " + id;
 		}
 		
 		return new TextDescription(description);
@@ -40,6 +50,12 @@ public class LinkedObjectCondition extends Condition<EObject> {
 	@Override
 	public boolean matches(EObject value) {
 		describedAs(createDescription());
+		
+		if (identity != null) {
+			if (!identity.equals(value)) {
+				return false;
+			}
+		}
 		
 		if (id != null) {
 			if (value instanceof BaseElement) {
@@ -65,5 +81,9 @@ public class LinkedObjectCondition extends Condition<EObject> {
 	
 	public static LinkedObjectCondition elementIdentifiedBy(String id) {
 		return new LinkedObjectCondition().identifiedBy(id);
+	}
+
+	public static LinkedObjectCondition element(EObject element) {
+		return new LinkedObjectCondition().withIdentity(element);
 	}
 }
