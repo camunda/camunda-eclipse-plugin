@@ -869,6 +869,23 @@ public class ModelUtil {
 		return list;
 	}
 
+	/**
+	 * returns the {@link FlowElementsContainer} of the given baseElement
+	 *
+	 * @param baseElement
+	 * @return
+	 */
+	public static FlowElementsContainer getFlowElementsContainer(EObject baseElement) {
+
+		while ((baseElement = baseElement.eContainer()) != null) {
+			if (baseElement instanceof FlowElementsContainer) {
+				return (FlowElementsContainer) baseElement;
+			}
+		}
+
+		return null;
+	}
+
 	public static boolean compare(Object v1, Object v2) {
 		if (v1==null) {
 			if (v2!=null)

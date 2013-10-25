@@ -138,6 +138,18 @@ public class CompensateEventDefinitionContainer extends AbstractEventDefinitionF
 		}
 
 		@Override
+		public Object[] create(ICreateContext context) {
+			Object[] create = super.create(context);
+
+			// set waitForCompletion="true" as default value
+			EObject object = (EObject) create[0];
+			object.eSet(Bpmn2Package.eINSTANCE.getCompensateEventDefinition_WaitForCompletion(), true);
+
+			return create;
+
+		}
+
+		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_COMPENSATE;
 		}

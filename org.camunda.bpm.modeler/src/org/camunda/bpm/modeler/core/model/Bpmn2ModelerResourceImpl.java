@@ -304,12 +304,16 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
         		return true;
         	}
         	
+        	if (f == Bpmn2Package.eINSTANCE.getCompensateEventDefinition_WaitForCompletion()) {
+        		return true;
+        	}
+
             if (o instanceof BPMNShape && f==BpmnDiPackage.eINSTANCE.getBPMNShape_IsHorizontal()) {
             	BPMNShape s = (BPMNShape)o;
             	if (s.getBpmnElement() instanceof Lane || s.getBpmnElement() instanceof Participant)
             		return true;
             }
-            
+
             // we also want to store x and y with value zero, would be skipped because of default value otherwise
             if (o instanceof Bounds) {
             	return true;

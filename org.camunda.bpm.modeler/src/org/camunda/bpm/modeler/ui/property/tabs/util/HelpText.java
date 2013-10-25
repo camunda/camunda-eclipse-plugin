@@ -17,12 +17,14 @@ public class HelpText {
 	public static final String ELEMENT_DEF_TABLE = "%ss can be defined below";
 
 	private static final String ASYNC_LINK_TO_USER_GUIDE = 
-			"http://docs.camunda.org/latest/guides/user-guide/#process-engine-transactions-in-processes-asynchronous-continutaions";
+			"http://docs.camunda.org/latest/guides/user-guide/#process-engine-transactions-in-processes-asynchronous-continuations";
 	
 	private static final String CALL_ACTIVITY_VARIABLES_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#subprocesses-call-activity-passing-variables";
 	private static final String CALL_ACTIVITY_BUSINESS_KEY_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#subprocesses-call-activity-passing-business-key";
 
 	private static final String LINK_EVENT_DEFINITION_USER_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#events-link-events";
+
+	private static final String COMPENSATION_THROWING_EVENT_USER_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#events-cancel-and-compensation-events-compensation-intermediate-throwing-event";
 
 	public static final String ASYNC_FLAG = String.format(
 			"More information on asynchronous continuation can be found in the <a href=\"%s\">user guide</a>.", ASYNC_LINK_TO_USER_GUIDE);
@@ -41,5 +43,9 @@ public class HelpText {
 	public static final String LINK_EVENT_DEFINITION_NAME = String.format("More information on link event definition can be found in the <a href=\"%s\">user guide</a>.", LINK_EVENT_DEFINITION_USER_GUIDE);
 
 	public static final String STANDARD_LOOP_CHARACTERISTICS_NOTE = "Please note, the loop activity is not supported from the camunda BPM engine.";
+
+	public static final String WAIT_FOR_COMPENSATION_NOTE = "Please note, only the default value \"true\" is supported by the camunda BPM engine.";
+
+	public static final String COMPENSATION_THROWING_EVENT = String.format("More information on compensation intermediate throwing event can be found in the <a href=\"%s\">user guide</a>.", COMPENSATION_THROWING_EVENT_USER_GUIDE);
 
 }
