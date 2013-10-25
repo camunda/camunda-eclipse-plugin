@@ -26,26 +26,32 @@ public class HelpText {
 
 	private static final String COMPENSATION_THROWING_EVENT_USER_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#events-cancel-and-compensation-events-compensation-intermediate-throwing-event";
 
+	private static final String MULTI_INSTANCE_USER_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#tasks-task-markers-multiple-instance";
+
+	private static final String IS_LOOP_USER_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#tasks-task-markers-loops";
+
 	public static final String ASYNC_FLAG = String.format(
 			"More information on asynchronous continuation can be found in the <a href=\"%s\">user guide</a>.", ASYNC_LINK_TO_USER_GUIDE);
-	
+
 	public static final String CALL_ACTIVITY_CALLED_ELEMENT_VERSION = "Processdefinition version of called process (e.g. \"17\")"; 
-	
+
 	public static final String CALL_ACTIVITY_ALL_VARIABLES_IN = String.format(
 	    "Pass all process variables from mainprocess to the subprocess. See for more information <a href=\"%s\">user guide</a>.", CALL_ACTIVITY_VARIABLES_GUIDE);
-	
+
 	public static final String CALL_ACTIVITY_ALL_VARIABLES_OUT = String.format(
 	    "Pass all process variables from subprocess to mainprocess. See for more information <a href=\"%s\">user guide</a>.", CALL_ACTIVITY_VARIABLES_GUIDE);
-	
+
 	public static final String CALL_ACTIVITY_BUSINESS_KEY = String.format(
         "Pass business key from mainprocess to subprocess. See for more information <a href=\"%s\">user guide</a>.", CALL_ACTIVITY_BUSINESS_KEY_GUIDE);
 
 	public static final String LINK_EVENT_DEFINITION_NAME = String.format("More information on link event definition can be found in the <a href=\"%s\">user guide</a>.", LINK_EVENT_DEFINITION_USER_GUIDE);
 
-	public static final String STANDARD_LOOP_CHARACTERISTICS_NOTE = "Please note, the loop activity is not supported from the camunda BPM engine.";
+	public static final String STANDARD_LOOP_CHARACTERISTICS_NOTE = String.format("Please note, the loop activity is not supported by the camunda BPM engine. See for more information <a href=\"%s\">user guide</a>.", IS_LOOP_USER_GUIDE);
 
 	public static final String WAIT_FOR_COMPENSATION_NOTE = "Please note, only the default value \"true\" is supported by the camunda BPM engine.";
 
 	public static final String COMPENSATION_THROWING_EVENT = String.format("More information on compensation intermediate throwing event can be found in the <a href=\"%s\">user guide</a>.", COMPENSATION_THROWING_EVENT_USER_GUIDE);
+
+	public static final String MULTI_INSTANCE_CHARACTERISTICS = String.format("Please refer to our <a href=\"%s\">documentation</a> for multi instance.", MULTI_INSTANCE_USER_GUIDE);
 
 }

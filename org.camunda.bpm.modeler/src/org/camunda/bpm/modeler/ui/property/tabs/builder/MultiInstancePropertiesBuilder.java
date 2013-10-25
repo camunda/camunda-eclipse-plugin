@@ -4,6 +4,7 @@ import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.ui.property.tabs.binding.ModelAttributeButtonBinding;
 import org.camunda.bpm.modeler.ui.property.tabs.util.HelpText;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
+import org.camunda.bpm.modeler.ui.util.Browser;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
@@ -13,10 +14,15 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 
 /**
  * Builder for the multi instance properties
@@ -42,12 +48,11 @@ public class MultiInstancePropertiesBuilder extends AbstractPropertiesBuilder<Ac
 	
 	@Override
 	public void create() {
-		// multi instance
-		final Button multiInstanceCheckbox = PropertyUtil.createUnboundCheckbox(section, parent, "Is Multi Instance");
-
 		// standard loop
-		final Button standardLoopCheckbox = PropertyUtil.createUnboundCheckbox(section, parent, "Is Loop");
-		standardLoopCheckbox.setText(HelpText.STANDARD_LOOP_CHARACTERISTICS_NOTE);
+		final Button standardLoopCheckbox = createCheckbox("Is Loop", HelpText.STANDARD_LOOP_CHARACTERISTICS_NOTE);
+
+		// multi instance
+		final Button multiInstanceCheckbox = createCheckbox("Is Multi Instance", HelpText.MULTI_INSTANCE_CHARACTERISTICS);
 
 		final EClass multiInstanceECls = Bpmn2Package.eINSTANCE.getMultiInstanceLoopCharacteristics();
 		new LoopCharacteristicsButtonBinding(bo, LOOP_CHARACTERISTICS_FEATURE, multiInstanceCheckbox, multiInstanceECls).establish();
@@ -72,6 +77,45 @@ public class MultiInstancePropertiesBuilder extends AbstractPropertiesBuilder<Ac
 		});
 
 		rebuildProperties();
+	}
+
+	private Button createCheckbox(String label, String note) {
+		Composite composite = PropertyUtil.createStandardComposite(section, parent);
+
+		Composite asyncComposite = PropertyUtil.createStandardComposite(section, composite);
+		asyncComposite.setLayoutData(PropertyUtil.getStandardLayout());
+
+		// add label
+		PropertyUtil.createLabel(section, composite, label, asyncComposite);
+
+		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
+		final Button checkbox = factory.createButton(asyncComposite, "", SWT.CHECK);
+
+		FormData checkboxFormData = new FormData();
+		checkboxFormData.top = new FormAttachment(0);
+		checkboxFormData.left = new FormAttachment(0);
+
+		checkbox.setLayoutData(checkboxFormData);
+
+		Link link = new Link(asyncComposite, SWT.NO_BACKGROUND | SWT.NO_FOCUS);
+		link.setText(note);
+
+		factory.adapt(link, false, false);
+
+		link.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Browser.open(e.text);
+			}
+		});
+
+		FormData helpTextFormData = new FormData();
+		helpTextFormData.left = new FormAttachment(checkbox, 0);
+		helpTextFormData.right = new FormAttachment(100, 0);
+
+		link.setLayoutData(helpTextFormData);
+
+		return checkbox;
 	}
 
 	private void rebuildProperties() {
