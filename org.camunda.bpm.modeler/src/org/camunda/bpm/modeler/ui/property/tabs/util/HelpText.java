@@ -30,6 +30,8 @@ public class HelpText {
 
 	private static final String IS_LOOP_USER_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#tasks-task-markers-loops";
 
+	private static final String SIGNAL_THROW_EVENT_USER_GUIDE = "http://docs.camunda.org/7.0/api-references/bpmn20/#events-signal-events-signal-intermediate-throwing-event";
+
 	public static final String ASYNC_FLAG = String.format(
 			"More information on asynchronous continuation can be found in the <a href=\"%s\">user guide</a>.", ASYNC_LINK_TO_USER_GUIDE);
 
@@ -53,5 +55,7 @@ public class HelpText {
 	public static final String COMPENSATION_THROWING_EVENT = String.format("More information on compensation intermediate throwing event can be found in the <a href=\"%s\">user guide</a>.", COMPENSATION_THROWING_EVENT_USER_GUIDE);
 
 	public static final String MULTI_INSTANCE_CHARACTERISTICS = String.format("Please refer to our <a href=\"%s\">documentation</a> for multi instance.", MULTI_INSTANCE_USER_GUIDE);
+
+	public static final String SIGNAL_THROW_EVENT_ASYNC_FLAG = String.format("Asynchronous notification of event listener. For more information, refer to our <a href=\"%s\">user guide</a>.", SIGNAL_THROW_EVENT_USER_GUIDE);
 
 }
