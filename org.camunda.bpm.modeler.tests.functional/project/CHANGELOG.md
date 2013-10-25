@@ -1,3 +1,12 @@
+VERSION 2.1 (2013-10-15)
+========================
+
+Features
+--------
+*Synchronize test suite version with modeler build version
+*restructure test cases and libs
+*adjust tests for properties panels
+
 VERSION 1.8 (2013-05-08)
 ========================
 
