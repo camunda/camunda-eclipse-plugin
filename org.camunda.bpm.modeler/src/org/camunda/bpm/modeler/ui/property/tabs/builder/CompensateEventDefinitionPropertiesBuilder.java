@@ -73,7 +73,7 @@ public class CompensateEventDefinitionPropertiesBuilder extends AbstractProperti
 		checkbox.setLayoutData(checkboxFormData);
 
 		Text text = new Text(waitForCompletionComposite, SWT.NO_BACKGROUND | SWT.NO_FOCUS);
-		text.setText(HelpText.WAIT_FOR_COMPENSATION_NOTE);
+		text.setText(HelpText.WAIT_FOR_COMPLETION_NOTE);
 
 		factory.adapt(text, false, false);
 

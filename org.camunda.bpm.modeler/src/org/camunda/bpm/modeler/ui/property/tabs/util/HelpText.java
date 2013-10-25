@@ -48,7 +48,7 @@ public class HelpText {
 
 	public static final String STANDARD_LOOP_CHARACTERISTICS_NOTE = String.format("Please note, the loop activity is not supported by the camunda BPM engine. See for more information <a href=\"%s\">user guide</a>.", IS_LOOP_USER_GUIDE);
 
-	public static final String WAIT_FOR_COMPENSATION_NOTE = "Please note, only the default value \"true\" is supported by the camunda BPM engine.";
+	public static final String WAIT_FOR_COMPLETION_NOTE = "Please note, only the default value \"true\" is supported by the camunda BPM engine.";
 
 	public static final String COMPENSATION_THROWING_EVENT = String.format("More information on compensation intermediate throwing event can be found in the <a href=\"%s\">user guide</a>.", COMPENSATION_THROWING_EVENT_USER_GUIDE);
 
