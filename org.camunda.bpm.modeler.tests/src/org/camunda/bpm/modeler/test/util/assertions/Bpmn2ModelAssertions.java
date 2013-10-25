@@ -2,6 +2,7 @@ package org.camunda.bpm.modeler.test.util.assertions;
 
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.draw2d.geometry.Vector;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -21,6 +22,10 @@ public class Bpmn2ModelAssertions extends Assertions {
 
 	public static LinkedObjectCondition elementOfType(Class<?> cls) {
 		return new LinkedObjectCondition().ofType(cls);
+	}
+
+	public static LinkedObjectCondition element(EObject element) {
+		return new LinkedObjectCondition().withIdentity(element);
 	}
 	
 	public static LinkedObjectCondition elementIdentifiedBy(String id) {

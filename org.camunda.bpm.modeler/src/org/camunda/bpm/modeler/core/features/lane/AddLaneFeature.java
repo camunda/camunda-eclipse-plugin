@@ -123,7 +123,7 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 				Process targetProcess = targetParticipant.getProcessRef();
 				targetBaseElement = targetParticipant;
 				
-				List<Shape> laneShapes = FeatureSupport.getChildLanes(newLaneShape.getContainer());
+				List<ContainerShape> laneShapes = FeatureSupport.getChildLanes(newLaneShape.getContainer());
 				
 				// if this is the first lane of the participant, move flow nodes
 				if (laneShapes.size() == 1) {
@@ -282,7 +282,7 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 			
 			int x = GraphicsUtil.PARTICIPANT_LABEL_OFFSET;
 
-			List<Shape> childLanes = FeatureSupport.getChildLanes(context.getTargetContainer());
+			List<ContainerShape> childLanes = FeatureSupport.getChildLanes(context.getTargetContainer());
 			int y = context.getY();
 			
 			if (childLanes.isEmpty()) {
@@ -294,7 +294,7 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 	}
 	
 	private IRectangle getPreviouslyAddedLaneBounds(ContainerShape targetContainer) {
-		List<Shape> childLanes = FeatureSupport.getChildLanes(targetContainer);
+		List<ContainerShape> childLanes = FeatureSupport.getChildLanes(targetContainer);
 		if (childLanes.isEmpty()) {
 			return null;
 		}

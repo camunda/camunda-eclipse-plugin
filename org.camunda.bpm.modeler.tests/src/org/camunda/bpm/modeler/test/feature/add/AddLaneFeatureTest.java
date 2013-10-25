@@ -5,11 +5,13 @@ import static org.camunda.bpm.modeler.test.util.assertions.Bpmn2ModelAssertions.
 import static org.camunda.bpm.modeler.test.util.operations.AddLaneOperation.addLane;
 
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
+import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.LabelUtil;
 import org.camunda.bpm.modeler.test.feature.AbstractFeatureTest;
 import org.camunda.bpm.modeler.test.util.DiagramResource;
 import org.camunda.bpm.modeler.test.util.Util;
 import org.eclipse.bpmn2.Lane;
+import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.junit.Test;
@@ -53,7 +55,12 @@ public class AddLaneFeatureTest extends AbstractFeatureTest {
 		// then
 		// lane should be a container shape between participant and child shape
 		assertThat(containerShape).hasChild(newChildContainer);
-		assertThat(newChildContainer).isLinkedTo(elementOfType(Lane.class));
+		
+		Lane lane = BusinessObjectUtil.getFirstElementOfType(newChildContainer, Lane.class);
+		assertThat(lane).isNotNull();
+		
+		// and lane should have the event as a new flow node ref
+		assertThat(lane.getFlowNodeRefs()).contains((StartEvent) Util.findBusinessObjectById(containerShape, "StartEvent_1"));
 	}
 	
 	@Test
@@ -195,7 +202,12 @@ public class AddLaneFeatureTest extends AbstractFeatureTest {
 		// then
 		// lane should be a container shape between participant and child shape
 		assertThat(containerShape).hasChild(newChildContainer);
-		assertThat(newChildContainer).isLinkedTo(elementOfType(Lane.class));
+		
+		Lane lane = BusinessObjectUtil.getFirstElementOfType(newChildContainer, Lane.class);
+		assertThat(lane).isNotNull();
+		
+		// and new lane should have the event as a new flow node ref
+		assertThat(lane.getFlowNodeRefs()).contains((StartEvent) Util.findBusinessObjectById(containerShape, "StartEvent_1"));
 	}
 
 	@Test
