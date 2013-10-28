@@ -287,8 +287,8 @@ public class BPMN2Editor extends DiagramEditor implements IPropertyChangeListene
 					saveModelFile();
 				}
 			} catch (IOException e) {
-				Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage(), e);
-				ErrorUtils.showErrorWithLogging(status);
+				Status status = new Status(IStatus.WARNING, Activator.PLUGIN_ID, e.getMessage(), e);
+				Activator.logStatus(status);
 			}
 			basicCommandStack.execute(new RecordingCommand(getEditingDomain()) {
 
