@@ -12,34 +12,30 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.event;
 
-import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.*;
 import static org.camunda.bpm.modeler.ui.features.event.BoundaryEventFeatureContainer.BOUNDARY_EVENT_CANCEL;
 
 import org.camunda.bpm.modeler.core.di.DIUtils;
-import org.camunda.bpm.modeler.core.features.AbstractAddBpmnShapeFeature;
 import org.camunda.bpm.modeler.core.features.event.AbstractUpdateEventFeature;
+import org.camunda.bpm.modeler.core.features.event.AddEventFeature;
 import org.camunda.bpm.modeler.core.layout.util.BoundaryEventUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
-import org.camunda.bpm.modeler.core.utils.AnchorUtil;
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.BoxingStrategy;
 import org.camunda.bpm.modeler.core.utils.ContextUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BoundaryEvent;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
-import org.eclipse.graphiti.mm.pictograms.ChopboxAnchor;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class AddBoundaryEventFeature extends AbstractAddBpmnShapeFeature<BoundaryEvent> {
+public class AddBoundaryEventFeature extends AddEventFeature<BoundaryEvent> {
 
 	public static final String BOUNDARY_EVENT_RELATIVE_Y = "boundary.event.relative.y";
 
@@ -61,37 +57,12 @@ public class AddBoundaryEventFeature extends AbstractAddBpmnShapeFeature<Boundar
 		Object bo = getBusinessObjectForPictogramElement(context.getTargetContainer());
 		return bo != null && bo instanceof Activity;
 	}
-
-	@Override
-	protected void createAnchors(IAddContext context, ContainerShape newShape) {
-
-		// per default, create chopbox anchor and
-		// four fix point anchors on all four sides of the shape (North-East-South-West)
-		ChopboxAnchor addChopboxAnchor = AnchorUtil.addChopboxAnchor(newShape);
-		addChopboxAnchor.setReferencedGraphicsAlgorithm(newShape.getGraphicsAlgorithm());
-		
-		AnchorUtil.addFixedPointAnchors(newShape);
-	}
 	
 	@Override
 	protected void updateAndLayout(ContainerShape newShape, IAddContext context) {
 		
 		// update only
 		updatePictogramElement(newShape);
-	}
-	
-	@Override
-	protected IAddContext getAddLabelContext(IAddContext context, ContainerShape newShape, IRectangle newShapeBounds) {
-		IAddContext addContext = super.getAddLabelContext(context, newShape, newShapeBounds);
-		
-		Assert.isLegal(addContext instanceof AddContext);
-		
-		AddContext addLabelContext = (AddContext) addContext;
-		
-		// set actual target container
-		addLabelContext.setTargetContainer(newShape.getContainer());
-		
-		return addLabelContext;
 	}
 	
 	@Override
@@ -111,44 +82,28 @@ public class AddBoundaryEventFeature extends AbstractAddBpmnShapeFeature<Boundar
 		
 		super.adjustLocation(context, width, height);
 	}
-	
+
 	@Override
-	protected ContainerShape createPictogramElement(IAddContext context, IRectangle bounds) {
-		BoundaryEvent event = getBusinessObject(context);
+	protected void decorate(Ellipse e) {
+		Ellipse circle = GraphicsUtil.createIntermediateEventCircle(e);
+		circle.setStyle(StyleUtil.getStyleForClass(getDiagram()));
+	}
 
-		IGaService gaService = Graphiti.getGaService();
-		IPeService peService = Graphiti.getPeService();
-
-		int x = bounds.getX();
-		int y = bounds.getY();
-		int width = bounds.getWidth();
-		int height = bounds.getHeight();
-		
+	protected ContainerShape getTargetContainer(IAddContext context) {
 		boolean isImport = ContextUtil.is(context, DIUtils.IMPORT);
 		
 		// while it looks as if boundary events are contained in the shape they are attached to
 		// they actually are not. We need to compensate that unless we perform an import
-		ContainerShape newShapeContainer = 
-			isImport ? context.getTargetContainer() : (ContainerShape) context.getTargetContainer().eContainer();
-
-		ContainerShape newShape = peService.createContainerShape(newShapeContainer, true);
-		Ellipse ellipse = gaService.createEllipse(newShape);
-		StyleUtil.applyStyle(ellipse, event);
-
-		gaService.setLocationAndSize(ellipse, x, y, width, height);
-
-		Ellipse circle = GraphicsUtil.createIntermediateEventCircle(ellipse);
-		circle.setStyle(StyleUtil.getStyleForClass(getDiagram()));
-		
-		return newShape;
+		return isImport ? 
+			context.getTargetContainer() : 
+			(ContainerShape) context.getTargetContainer().eContainer();
 	}
-
+	
 	@Override
 	protected void postAddHook(IAddContext context, ContainerShape boundaryShape) {
 		super.postAddHook(context, boundaryShape);
 
 		// send boundary event to front and element it is attached to to the back.
-		
 		BoundaryEventUtil.updateBoundaryAttachment(boundaryShape, getDiagram());
 		
 		GraphicsUtil.sendToFront(boundaryShape);
@@ -170,17 +125,7 @@ public class AddBoundaryEventFeature extends AbstractAddBpmnShapeFeature<Boundar
 	}
 	
 	@Override
-	public int getDefaultHeight() {
-		return GraphicsUtil.getEventSize(getDiagram()).getHeight();
-	}
-
-	@Override
-	public int getDefaultWidth() {
-		return GraphicsUtil.getEventSize(getDiagram()).getWidth();
-	}
-
-	@Override
-	protected boolean isCreateExternalLabel() {
-		return true;
+	protected BoxingStrategy getBoxingStrategy(IAddContext context) {
+		return BoxingStrategy.NONE;
 	}
 }
