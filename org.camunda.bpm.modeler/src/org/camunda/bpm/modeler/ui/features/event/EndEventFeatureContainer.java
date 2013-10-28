@@ -125,7 +125,7 @@ public class EndEventFeatureContainer extends AbstractEventFeatureContainer {
 		int i;
 		for (ICustomFeature f : superFeatures) {
 			if (!(f instanceof AbstractAppendNodeNodeFeature))
-			thisFeatures.add(f);
+				thisFeatures.add(f);
 		}
 		return thisFeatures.toArray( new ICustomFeature[thisFeatures.size()] );
 	}

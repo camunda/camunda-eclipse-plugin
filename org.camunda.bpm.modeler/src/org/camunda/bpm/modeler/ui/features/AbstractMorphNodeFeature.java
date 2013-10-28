@@ -6,8 +6,10 @@ import java.util.List;
 
 import org.camunda.bpm.modeler.core.features.AbstractAddBpmnShapeFeature;
 import org.camunda.bpm.modeler.core.layout.util.ConnectionUtil;
+import org.camunda.bpm.modeler.core.utils.ContextUtil;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.core.utils.transform.Transformer;
+import org.camunda.bpm.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.emf.ecore.EClass;
@@ -37,35 +39,42 @@ import org.eclipse.swt.widgets.Display;
 
 public abstract class AbstractMorphNodeFeature<T extends FlowNode> extends AbstractCustomFeature {
 
-	private boolean changed = false;
+	public static String CREATE_MODE = AbstractMorphNodeFeature.class.getName() + "_CREATE_MODE";
 	
-	// label provider for the popup menu that displays allowable Activity subclasses
-	protected static ILabelProvider labelProvider = new ILabelProvider() {
+	protected boolean changed = false;
+	protected ILabelProvider labelProvider;
+	
+	protected static class LabelProvider implements ILabelProvider {
 
-		public void removeListener(ILabelProviderListener listener) {
-		}
+		@Override
+		public void addListener(ILabelProviderListener arg0) {}
 
-		public boolean isLabelProperty(Object element, String property) {
+		@Override
+		public void dispose() {}
+
+		@Override
+		public boolean isLabelProperty(Object arg0, String arg1) {
 			return false;
 		}
 
-		public void dispose() {
+		@Override
+		public void removeListener(ILabelProviderListener arg0) {}
 
-		}
-
-		public void addListener(ILabelProviderListener listener) {
-
-		}
-
-		public String getText(Object element) {
-			return ModelUtil.toDisplayName(((EClass)element).getName());
-		}
-
-		public Image getImage(Object element) {
+		@Override
+		public Image getImage(Object arg0) {
 			return null;
 		}
 
-	};
+		@Override
+		public String getText(Object arg0) {
+			if (!(arg0 instanceof EClass)) {
+				return "";
+			}
+			EClass cls = (EClass) arg0;
+			return ModelUtil.toDisplayName(cls.getName());
+		}
+		
+	}
 	
 	public AbstractMorphNodeFeature(IFeatureProvider fp) {
 		super(fp);
@@ -94,6 +103,11 @@ public abstract class AbstractMorphNodeFeature<T extends FlowNode> extends Abstr
 	public boolean hasDoneChanges() {
 		return changed;
 	}
+	
+	@Override
+	public String getImageId() {
+		return ImageProvider.IMG_16_CONFIGURE;
+	}
 
 	@Override
 	public void execute(ICustomContext context) {
@@ -108,10 +122,16 @@ public abstract class AbstractMorphNodeFeature<T extends FlowNode> extends Abstr
 			return;
 		}
 		
-		EClass selectedType = selectType(availableTypes);
-			
+		// get selection from context (during tests)
+		EClass selectedType = (EClass) ContextUtil.get(context, CREATE_MODE);
+		
 		if (selectedType == null) {
-			return;
+			
+			selectedType = selectType(availableTypes);
+			
+			if (selectedType == null) {
+				return;
+			}
 		}
 		
 		T newObject = morph(bo, selectedType);
@@ -159,7 +179,7 @@ public abstract class AbstractMorphNodeFeature<T extends FlowNode> extends Abstr
 	}
 	
 	protected EClass selectType(List<EClass> availableCls) {
-		PopupMenu popupMenu = new PopupMenu(availableCls, labelProvider);
+		PopupMenu popupMenu = new PopupMenu(availableCls, getLabelProvider());
 		boolean showPopup = popupMenu.show(Display.getCurrent().getActiveShell());
 		if (showPopup) {
 			return (EClass) popupMenu.getResult();
@@ -259,5 +279,12 @@ public abstract class AbstractMorphNodeFeature<T extends FlowNode> extends Abstr
 		IDeleteContext context = new DeleteContext(pictogramElement);
 		IDeleteFeature deleteFeature = getFeatureProvider().getDeleteFeature(context);
 		deleteFeature.delete(context);		
+	}
+	
+	protected ILabelProvider getLabelProvider() {
+		if (labelProvider == null) {
+			labelProvider = new LabelProvider();
+		}
+		return labelProvider;
 	}
 }
