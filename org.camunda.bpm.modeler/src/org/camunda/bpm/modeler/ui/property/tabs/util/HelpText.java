@@ -30,7 +30,7 @@ public class HelpText {
 
 	private static final String IS_LOOP_USER_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#tasks-task-markers-loops";
 
-	private static final String SIGNAL_THROW_EVENT_USER_GUIDE = "http://docs.camunda.org/7.0/api-references/bpmn20/#events-signal-events-signal-intermediate-throwing-event";
+	private static final String SIGNAL_THROW_EVENT_USER_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#events-signal-events-signal-intermediate-throwing-event";
 
 	public static final String ASYNC_FLAG = String.format(
 			"More information on asynchronous continuation can be found in the <a href=\"%s\">user guide</a>.", ASYNC_LINK_TO_USER_GUIDE);

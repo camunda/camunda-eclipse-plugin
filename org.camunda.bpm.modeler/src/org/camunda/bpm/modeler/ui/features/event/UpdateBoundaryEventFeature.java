@@ -22,6 +22,8 @@ import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.impl.Reason;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
 import org.eclipse.graphiti.mm.algorithms.styles.LineStyle;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 
 public class UpdateBoundaryEventFeature extends AbstractUpdateEventFeature {
@@ -48,15 +50,20 @@ public class UpdateBoundaryEventFeature extends AbstractUpdateEventFeature {
 	@Override
 	public boolean update(IUpdateContext context) {
 		super.update(context);
+
+		ContainerShape shape = (ContainerShape) context.getPictogramElement();
+
+		BoundaryEvent event = (BoundaryEvent) getBusinessObjectForPictogramElement(shape);
 		
-		BoundaryEvent event = (BoundaryEvent) getBusinessObjectForPictogramElement(context.getPictogramElement());
+		boolean cancelActivity = event.isCancelActivity();
+		
+		Graphiti.getPeService().setPropertyValue(shape, BOUNDARY_EVENT_CANCEL, Boolean.toString(cancelActivity));
 
-		Graphiti.getPeService().setPropertyValue(context.getPictogramElement(), BOUNDARY_EVENT_CANCEL,
-		        Boolean.toString(event.isCancelActivity()));
+		Shape child = shape.getChildren().get(0);
 
-		Ellipse ellipse = (Ellipse) context.getPictogramElement().getGraphicsAlgorithm();
+		Ellipse ellipse = (Ellipse) child.getGraphicsAlgorithm();
 		Ellipse innerEllipse = (Ellipse) ellipse.getGraphicsAlgorithmChildren().get(0);
-		LineStyle lineStyle = event.isCancelActivity() ? LineStyle.SOLID : LineStyle.DASH;
+		LineStyle lineStyle = cancelActivity ? LineStyle.SOLID : LineStyle.DASH;
 
 		ellipse.setLineStyle(lineStyle);
 		innerEllipse.setLineStyle(lineStyle);
@@ -69,9 +76,6 @@ public class UpdateBoundaryEventFeature extends AbstractUpdateEventFeature {
 		return getBusinessObjectForPictogramElement(context.getPictogramElement()) instanceof BoundaryEvent;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.camunda.bpm.modeler.features.activity.AbstractUpdateMarkerFeature#getPropertyKey()
-	 */
 	@Override
 	protected String getPropertyKey() {
 		return BOUNDARY_EVENT_MARKER;

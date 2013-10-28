@@ -19,6 +19,7 @@ import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.BoxingStrategy;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.Event;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
@@ -53,7 +54,9 @@ public class AddEventFeature<T extends Event>
 		int width = bounds.getWidth();
 		int height = bounds.getHeight();
 		
-		ContainerShape newShape = peService.createContainerShape(context.getTargetContainer(), true);
+		ContainerShape targetContainer = getTargetContainer(context);
+		
+		ContainerShape newShape = peService.createContainerShape(targetContainer, true);
 		Rectangle invisibleRect = gaService.createInvisibleRectangle(newShape);
 		gaService.setLocationAndSize(invisibleRect, x, y, width, height);
 
@@ -67,6 +70,24 @@ public class AddEventFeature<T extends Event>
 		return newShape;
 	}
 
+	protected ContainerShape getTargetContainer(IAddContext context) {
+		return context.getTargetContainer();
+	}
+	
+	@Override
+	protected IAddContext getAddLabelContext(IAddContext context, ContainerShape newShape, IRectangle newShapeBounds) {
+		IAddContext addContext = super.getAddLabelContext(context, newShape, newShapeBounds);
+		
+		Assert.isLegal(addContext instanceof AddContext);
+		
+		AddContext addLabelContext = (AddContext) addContext;
+		
+		// set actual target container
+		addLabelContext.setTargetContainer(newShape.getContainer());
+		
+		return addLabelContext;
+	}
+	
 	@Override
 	protected void adjustLocationAndSize(IAddContext context, int width, int height) {
 		
