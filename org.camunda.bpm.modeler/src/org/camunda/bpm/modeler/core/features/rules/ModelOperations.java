@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.camunda.bpm.modeler.core.ModelHandler;
-import org.camunda.bpm.modeler.core.importer.ModelImport;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.BaseElement;
@@ -18,15 +17,13 @@ import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.RootElement;
-import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.features.context.IConnectionContext;
 import org.eclipse.graphiti.features.context.IContext;
+import org.eclipse.graphiti.features.context.ICreateConnectionContext;
 import org.eclipse.graphiti.features.context.ICreateContext;
-import org.eclipse.graphiti.features.context.IMoveContext;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
-import org.eclipse.graphiti.mm.pictograms.Shape;
-import org.eclipse.graphiti.services.Graphiti;
 
 /**
  * Container class for operations inside the model
@@ -37,6 +34,7 @@ public class ModelOperations {
 
 	private static List<MoveAlgorithm> MOVE;
 	private static List<CreateAlgorithm> CREATE;
+	private static ArrayList<ConnectAlgorithm> CONNECT;
 
 	static {
 		MOVE = new ArrayList<MoveAlgorithm>();
@@ -55,9 +53,17 @@ public class ModelOperations {
 		CREATE.add(new OnParticipantAlgorithm());
 		CREATE.add(new OnDiagramAlgorithm());
 		CREATE.add(new OnFlowElementsContainer());
+		
+		CONNECT = new ArrayList<ConnectAlgorithm>();
 	}
 	
-	private enum MoveType {
+	/**
+	 * Indicates which side / of a bidirectional directed
+	 * operation a {@link Algorithm} applies to.
+	 * 
+	 * @author nico.rehwaldt
+	 */
+	private enum Side {
 		FROM, 
 		TO
 	};
@@ -108,7 +114,27 @@ public class ModelOperations {
 
 		return new ModelCreateOperation(algorithm);
 	}
-	
+
+	public static ConnectOperation getConnectionCreateOperation(ICreateConnectionContext context) {
+		ConnectAlgorithm from = null;
+		ConnectAlgorithm to = null;
+		
+		for (ConnectAlgorithm algorithm : CONNECT) {
+			if (algorithm.appliesTo(context)) {
+				switch (algorithm.getType()) {
+				case FROM:
+					from = algorithm;
+					break;
+				case TO:
+					to = algorithm;
+					break;
+				}
+			}
+		}
+
+		return new ConnectOperation(from, to);
+	}
+
 	public static class ToModelOperation<T extends IContext> {
 		
 		public Algorithm<T> to;
@@ -167,15 +193,50 @@ public class ModelOperations {
 		}
 	}
 	
+	public static class ConnectOperation extends FromToModelOperation<IConnectionContext> {
+
+		public ConnectOperation(ConnectAlgorithm from, ConnectAlgorithm to) {
+			super(from, to);
+		}
+	}
+	
 	//// algorithm implementations ////////////////////////////////////////////
+
+
+	public abstract static class ConnectAlgorithm implements Algorithm<IConnectionContext> {
+		public abstract Side getType();
+	}
+	
+	public abstract static class DefaultConnectAlgorithm extends ConnectAlgorithm {
+		@Override
+		public void execute(IConnectionContext context) {
+			// should not be called (yet), as execution is implemented in 
+			// add connection features
+			
+			throw new UnsupportedOperationException();
+		}
+	}
+	
+	public abstract static class ConnectFromAlgorithm extends DefaultConnectAlgorithm {
+		@Override
+		public Side getType() {
+			return Side.FROM;
+		}
+	}
+	
+	public abstract static class ConnectToAlgorithm extends DefaultConnectAlgorithm {
+		@Override
+		public Side getType() {
+			return Side.TO;
+		}
+	}
 	
 	abstract static class MoveAlgorithm implements Algorithm<IMoveShapeContext> {
-		public abstract MoveType getType();
+		public abstract Side getType();
 	}
 	
 	abstract static class DefaultMoveAlgorithm extends MoveAlgorithm {
 
-		
 		@Override
 		public boolean canExecute(IMoveShapeContext context) {
 			return true;
@@ -190,7 +251,7 @@ public class ModelOperations {
 			handler.moveFlowNode((FlowNode) element, getSource(context), getTarget(context));
 		}
 		
-		private BaseElement getBusinessObject(PictogramElement e) {
+		protected BaseElement getBusinessObject(PictogramElement e) {
 			return BusinessObjectUtil.getFirstElementOfType(e, BaseElement.class);
 		}
 		
@@ -210,16 +271,16 @@ public class ModelOperations {
 	abstract static class MoveFromAlgorithm extends DefaultMoveAlgorithm {
 
 		@Override
-		public final MoveType getType() {
-			return MoveType.FROM;
+		public final Side getType() {
+			return Side.FROM;
 		}
 	}
 	
 	abstract static class MoveToAlgorithm extends DefaultMoveAlgorithm {
 
 		@Override
-		public final MoveType getType() {
-			return MoveType.TO;
+		public final Side getType() {
+			return Side.TO;
 		}
 	}
 

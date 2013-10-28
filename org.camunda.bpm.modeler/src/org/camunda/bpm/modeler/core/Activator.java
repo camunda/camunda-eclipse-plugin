@@ -16,12 +16,7 @@ import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.camunda.bpm.modeler.core.adapters.AdapterRegistry;
 import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
-import org.camunda.bpm.modeler.ui.adapters.Bpmn2EditorDiItemProviderAdapterFactory;
-import org.camunda.bpm.modeler.ui.adapters.Bpmn2EditorItemProviderAdapterFactory;
-import org.eclipse.bpmn2.di.impl.BpmnDiPackageImpl;
-import org.eclipse.bpmn2.impl.Bpmn2PackageImpl;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
@@ -50,10 +45,7 @@ public class Activator extends AbstractUIPlugin {
 	// Adapter Factory registration
 	static {
 		// BPMN2 metamodel adapter factories
-		AdapterRegistry.BPMN2_ADAPTER_FACTORIES.addAdapterFactory(
-				AdapterRegistry.INSTANCE.registerFactory(Bpmn2PackageImpl.eINSTANCE, new Bpmn2EditorItemProviderAdapterFactory()));
-		AdapterRegistry.BPMN2_ADAPTER_FACTORIES.addAdapterFactory(
-				AdapterRegistry.INSTANCE.registerFactory(BpmnDiPackageImpl.eINSTANCE, new Bpmn2EditorDiItemProviderAdapterFactory()));
+		// AdapterRegistry.BPMN2_ADAPTER_FACTORIES.addAdapterFactory(AdapterRegistry.INSTANCE.registerFactory(Bpmn2PackageImpl.eINSTANCE, someAdapterFactory));
 	}
 
 	/**

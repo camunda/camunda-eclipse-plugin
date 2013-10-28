@@ -15,8 +15,6 @@ package org.camunda.bpm.modeler.core.features;
 
 import java.util.List;
 
-import org.camunda.bpm.modeler.core.adapters.AdapterUtil;
-import org.camunda.bpm.modeler.core.adapters.ExtendedPropertiesAdapter;
 import org.camunda.bpm.modeler.core.runtime.ModelEnablementDescriptor;
 import org.camunda.bpm.modeler.core.runtime.TargetRuntime;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
@@ -51,25 +49,16 @@ public abstract class AbstractBpmn2CreateFeature<T extends BaseElement>
 		super(fp, name, description);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.graphiti.func.ICreate#canCreate(org.eclipse.graphiti.features.context.ICreateContext)
-	 */
 	@Override
 	public boolean canCreate(ICreateContext context) {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.graphiti.func.ICreate#create(org.eclipse.graphiti.features.context.ICreateContext)
-	 */
 	@Override
 	public Object[] create(ICreateContext context) {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.graphiti.features.impl.AbstractFeature#isAvailable(org.eclipse.graphiti.features.context.IContext)
-	 */
 	@Override
 	public boolean isAvailable(IContext context) {
 		List<ModelEnablementDescriptor> enablements = TargetRuntime.getCurrentRuntime().getModelEnablements();
@@ -85,19 +74,32 @@ public abstract class AbstractBpmn2CreateFeature<T extends BaseElement>
 	 */
 	@Override
 	public String getCreateDescription() {
-		return "Create " + ModelUtil.toDisplayName( getBusinessObjectClass().getName());
+		return "Create " + ModelUtil.toDisplayName(getBusinessObjectClass().getName());
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public T createBusinessObject(ICreateContext context) {
 		Shape shape = context.getTargetContainer();
+		
 		EObject container = BusinessObjectUtil.getBusinessObjectForPictogramElement(shape);
 		Resource resource = container.eResource();
-		EClass eclass = getBusinessObjectClass();
-		ExtendedPropertiesAdapter adapter = (ExtendedPropertiesAdapter) AdapterUtil.adapt(eclass, ExtendedPropertiesAdapter.class);
-		T businessObject = (T)adapter.getObjectDescriptor().createObject(resource,eclass);
-		putBusinessObject(context, businessObject);
-		return businessObject;
+		
+		EClass eCls = getBusinessObjectClass();
+		
+		T newObject = (T) eCls.getEPackage().getEFactoryInstance().create(eCls);
+		
+		// assign id to new object
+		ModelUtil.setID(newObject, resource);
+		
+		// assign default name
+//		EStructuralFeature feature = newObject.eClass().getEStructuralFeature("name");
+//		if (feature != null) {
+//			newObject.eSet(feature, ModelUtil.toDisplayName(eCls.getName()));
+//		}
+		
+		putBusinessObject(context, newObject);
+		
+		return newObject;
 	}
 	
 	@SuppressWarnings("unchecked")

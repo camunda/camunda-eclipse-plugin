@@ -15,6 +15,8 @@ package org.camunda.bpm.modeler.ui.diagram;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.camunda.bpm.modeler.core.di.DIUtils;
 import org.camunda.bpm.modeler.core.features.AbstractBpmn2CreateFeature;
@@ -203,7 +205,7 @@ public class BPMN2FeatureProvider extends DefaultFeatureProvider {
 		updateFeatureLists();
 	}
 	
-	HashMap<Class,IFeature> mapBusinessObjectClassToCreateFeature = new HashMap<Class,IFeature>();
+	private HashMap<Class<?>, IFeature> classToCreateFeatureMap = new HashMap<Class<?>, IFeature>();
 
 	public void addFeatureContainer(FeatureContainer fc) throws Exception {
 		boolean canAdd = true;
@@ -222,6 +224,7 @@ public class BPMN2FeatureProvider extends DefaultFeatureProvider {
 			throw new Exception("Attempt to add a Custom Feature with a duplicate ID "+fc.getClass().getName());
 	}
 	
+	@SuppressWarnings("rawtypes")
 	private void updateFeatureLists() {
 		
 		List<ICreateFeature> createFeaturesList = new ArrayList<ICreateFeature>();
@@ -252,20 +255,25 @@ public class BPMN2FeatureProvider extends DefaultFeatureProvider {
 		createConnectionFeatures = createConnectionFeatureList
 				.toArray(new ICreateConnectionFeature[createConnectionFeatureList.size()]);
 		
-		mapBusinessObjectClassToCreateFeature.clear();
+		classToCreateFeatureMap.clear();
+		
 		for (IFeature cf : createFeatures) {
 			if (cf instanceof AbstractBpmn2CreateFeature) {
 				if (cf instanceof CreateCustomTaskFeature) {
 					continue;
 				}
 				AbstractBpmn2CreateFeature acf = (AbstractBpmn2CreateFeature)cf;
-				mapBusinessObjectClassToCreateFeature.put(acf.getBusinessObjectClass().getInstanceClass(), cf);
+				Class<?> instanceCls = acf.getBusinessObjectClass().getInstanceClass();
+				classToCreateFeatureMap.put(instanceCls, cf);
 			}
 		}
+		
 		for (IFeature cf : createConnectionFeatures) {
 			if (cf instanceof AbstractCreateFlowFeature) {
 				AbstractCreateFlowFeature acf = (AbstractCreateFlowFeature)cf;
-				mapBusinessObjectClassToCreateFeature.put(acf.getBusinessObjectClass().getInstanceClass(), cf);
+				
+				Class<?> instanceCls = acf.getBusinessObjectClass().getInstanceClass();
+				classToCreateFeatureMap.put(instanceCls, cf);
 			}
 		}
 	}
@@ -506,16 +514,34 @@ public class BPMN2FeatureProvider extends DefaultFeatureProvider {
 	
 	public IFeature getCreateFeatureForBusinessObject(Object be) {
 		IFeature feature = null;
-		if (be!=null) {
-			Class[] ifs = be.getClass().getInterfaces();
-			for (int i=0; i < ifs.length && feature==null; ++i) {
-				feature = mapBusinessObjectClassToCreateFeature.get(ifs[i]);
+		
+		Class<?>[] interfaceTypes = be.getClass().getInterfaces();
+
+		for (Class<?> cls: interfaceTypes) {
+			feature = getCreateFeatureForBusinessObject(cls);
+			if (feature != null) {
+				break;
 			}
 		}
+		
 		return feature;
 	}
 	
-	public IFeature getCreateFeatureForBusinessObject(Class clazz) {
-		return mapBusinessObjectClassToCreateFeature.get(clazz);
+	public IFeature getCreateFeatureForBusinessObject(Class<?> cls) {
+
+		if (classToCreateFeatureMap.containsKey(cls)) {
+			return classToCreateFeatureMap.get(cls);
+		}
+		
+		for (Entry<Class<?>, IFeature> e : classToCreateFeatureMap.entrySet()) {
+			if (e.getKey().isAssignableFrom(cls)) {
+				
+				// cache the match for later lookup
+				classToCreateFeatureMap.put(cls, e.getValue());
+				return e.getValue();
+			}
+		}
+		
+		return null;
 	}
 }

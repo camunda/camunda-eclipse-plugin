@@ -32,19 +32,20 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Bob Brodt
- *
+ * 
  */
 public class PropertiesLabelProvider extends LabelProvider {
 
 	@Override
 	public Image getImage(Object element) {
-		EObject be = BusinessObjectUtil.getBusinessObjectForSelection((ISelection)element);
-        DiagramEditor editor = ModelUtil.getEditor( be );
-        
-        if (editor!=null) {
-		    BPMN2FeatureProvider fp = (BPMN2FeatureProvider)editor.getDiagramTypeProvider().getFeatureProvider();
-			PictogramElement pe = BusinessObjectUtil.getPictogramElementForSelection((ISelection)element);
-		    IFeature cf = fp.getCreateFeatureForPictogramElement(pe);
+		EObject be = BusinessObjectUtil
+				.getBusinessObjectForSelection((ISelection) element);
+		DiagramEditor editor = ModelUtil.getEditor(be);
+
+		if (editor != null) {
+			BPMN2FeatureProvider fp = (BPMN2FeatureProvider) editor.getDiagramTypeProvider().getFeatureProvider();
+			PictogramElement pe = BusinessObjectUtil.getPictogramElementForSelection((ISelection) element);
+			IFeature cf = fp.getCreateFeatureForPictogramElement(pe);
 			if (cf instanceof AbstractBpmn2CreateFeature) {
 				return GraphitiUi.getImageService().getImageForId(
 						((AbstractBpmn2CreateFeature)cf).getCreateImageId());
@@ -53,25 +54,28 @@ public class PropertiesLabelProvider extends LabelProvider {
 				return GraphitiUi.getImageService().getImageForId(
 						((AbstractCreateFlowFeature)cf).getCreateImageId());
 			}
-        }
+		}
 		return super.getImage(element);
 	}
 
 	@Override
 	public String getText(Object element) {
-		EObject be = BusinessObjectUtil.getBusinessObjectForSelection((ISelection)element);
-		if (be!=null) {
+		EObject be = BusinessObjectUtil
+				.getBusinessObjectForSelection((ISelection) element);
+		if (be != null) {
 			if (be instanceof BPMNDiagram) {
-				BaseElement bpmnElement = ((BPMNDiagram)be).getPlane().getBpmnElement();
+				BaseElement bpmnElement = ((BPMNDiagram) be).getPlane()
+						.getBpmnElement();
 				if (bpmnElement instanceof Process) {
 					be = bpmnElement;
 				}
 			}
 			return ModelUtil.getDisplayName(be);
 		}
-		PictogramElement pe = BusinessObjectUtil.getPictogramElementForSelection((ISelection)element);
-		if (pe!=null && pe.getGraphicsAlgorithm()!=null) {
-			return ModelUtil.getLabel( pe.getGraphicsAlgorithm() );
+		PictogramElement pe = BusinessObjectUtil
+				.getPictogramElementForSelection((ISelection) element);
+		if (pe != null && pe.getGraphicsAlgorithm() != null) {
+			return ModelUtil.getLabel(pe.getGraphicsAlgorithm());
 		}
 		return super.getText(element);
 	}

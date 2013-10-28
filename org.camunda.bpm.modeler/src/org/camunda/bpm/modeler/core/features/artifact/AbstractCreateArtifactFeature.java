@@ -12,9 +12,6 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.core.features.artifact;
 
-import java.io.IOException;
-
-import org.camunda.bpm.modeler.core.Activator;
 import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
