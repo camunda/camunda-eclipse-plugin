@@ -21,7 +21,6 @@ import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.camunda.bpm.modeler.ui.features.LayoutBaseElementTextFeature;
 import org.camunda.bpm.modeler.ui.features.activity.AppendActivityFeature;
-import org.camunda.bpm.modeler.ui.features.activity.MorphGatewayFeature;
 import org.camunda.bpm.modeler.ui.features.event.AppendEventFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
 import org.eclipse.graphiti.features.IDirectEditingFeature;
