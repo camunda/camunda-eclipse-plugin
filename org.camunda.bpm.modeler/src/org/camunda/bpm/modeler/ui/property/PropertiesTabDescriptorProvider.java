@@ -23,6 +23,7 @@ import org.camunda.bpm.modeler.core.property.AbstractTabSection;
 import org.camunda.bpm.modeler.core.property.SectionDescriptor;
 import org.camunda.bpm.modeler.core.property.TabDescriptor;
 import org.camunda.bpm.modeler.ui.property.tabs.DefinitionsTabSection;
+import org.camunda.bpm.modeler.ui.property.tabs.DocumentTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.EventTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.GeneralTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.ListenerTabSection;
@@ -60,6 +61,7 @@ public class PropertiesTabDescriptorProvider implements ITabDescriptorProvider {
 			// add definitions tab for errors, messages and signals
 			if (model instanceof Diagram) {
 				tabs.add(createDefinitionsTabDescriptor());
+				tabs.add(createDocumentTabDescriptor());
 			}
 			
 			// add multi instance tabs to activities
@@ -117,6 +119,10 @@ public class PropertiesTabDescriptorProvider implements ITabDescriptorProvider {
 
 	private ITabDescriptor createDefinitionsTabDescriptor() {
 		return createTabDescriptor("definitionsTab", "Definitions", new DefinitionsTabSection());
+	}
+
+	private ITabDescriptor createDocumentTabDescriptor() {
+		return createTabDescriptor("documentTab", "Document", new DocumentTabSection());
 	}
 
 }

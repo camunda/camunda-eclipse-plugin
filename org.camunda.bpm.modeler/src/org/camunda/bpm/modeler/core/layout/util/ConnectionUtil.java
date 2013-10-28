@@ -11,7 +11,6 @@ import static org.camunda.bpm.modeler.core.layout.util.VectorUtil.midPoint;
 import static org.camunda.bpm.modeler.core.layout.util.VectorUtil.multiply;
 import static org.camunda.bpm.modeler.core.layout.util.VectorUtil.normalized;
 import static org.camunda.bpm.modeler.core.layout.util.VectorUtil.substract;
-import static org.camunda.bpm.modeler.core.utils.PictogramElementPropertyUtil.set;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,11 +18,16 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.camunda.bpm.modeler.core.features.PropertyNames;
+import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.Association;
+import org.eclipse.bpmn2.DataAssociation;
+import org.eclipse.bpmn2.MessageFlow;
+import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.draw2d.geometry.Vector;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
-import org.eclipse.graphiti.mm.pictograms.Shape;
+import org.eclipse.graphiti.mm.pictograms.Connection;
 
 /**
  * Utility methods for connections.
@@ -344,6 +348,22 @@ public class ConnectionUtil {
 		
 		return Arrays.asList(p1, p2);
 	}
+	
+	public static boolean isMessageFlow(Connection connection) {
+		return isConnectionFromType(connection, MessageFlow.class);
+	}
+	
+	public static boolean isSequenceFlow(Connection connection) {
+		return isConnectionFromType(connection, SequenceFlow.class);
+	}
+	
+	public static boolean isAssociation(Connection connection) {
+		return isConnectionFromType(connection, Association.class);
+	}
+	
+	public static boolean isDataAssociation(Connection connection) {
+		return isConnectionFromType(connection, DataAssociation.class);
+	}
 
 	////// private utilities /////////////////////////////////////////////////////
 	
@@ -353,5 +373,15 @@ public class ConnectionUtil {
 	
 	private static void assertMinWaypoints(List<Point> waypoints) {
 		Assert.isLegal(waypoints.size() > 1, "Must have minimum two waypoints");
+	}
+	
+	private static <T> boolean isConnectionFromType(Connection connection, Class<T> cls) {
+		EObject bo = BusinessObjectUtil.getBusinessObjectForPictogramElement(connection);
+		
+		if (bo == null || !cls.isInstance(bo)) {
+			return false;
+		}
+		
+		return true;
 	}
 }

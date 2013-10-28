@@ -84,13 +84,14 @@ public abstract class AbstractActivityFeatureContainer extends BaseElementFeatur
 	@Override
 	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
 		ICustomFeature[] superFeatures = super.getCustomFeatures(fp);
-		ICustomFeature[] thisFeatures = new ICustomFeature[3 + superFeatures.length];
+		ICustomFeature[] thisFeatures = new ICustomFeature[4 + superFeatures.length];
 		int i;
 		for (i=0; i<superFeatures.length; ++i)
 			thisFeatures[i] = superFeatures[i];
 		thisFeatures[i++] = new AppendActivityFeature(fp);
 		thisFeatures[i++] = new AppendGatewayFeature(fp);
 		thisFeatures[i++] = new AppendEventFeature(fp);
+		thisFeatures[i++] = new MorphActivityFeature(fp);
 		return thisFeatures;
 	}
 

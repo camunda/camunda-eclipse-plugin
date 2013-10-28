@@ -16,32 +16,30 @@ import org.junit.Test;
 /**
  * 
  * @author Daniel Meyer
- *
+ * 
  */
 public class AddCallActivityFeatureTest extends AbstractFeatureTest {
-  
-  @Test
-  @DiagramResource("org/camunda/bpm/modeler/test/feature/add/AddFlowElementFeatureTestBase.testBox.bpmn")
-  public void testShapeNotExpanded() throws Exception {
-    
-    // given
-    Shape subProcessShape = Util.findShapeByBusinessObjectId(diagram, "SubProcess_1");
-    
-    Point addPosition = point(10, 10);
-    
-    // when
-    addCallActivity(getDiagramTypeProvider())      
-      .atLocation(addPosition)
-      .toContainer((ContainerShape) subProcessShape)      
-      .execute();
-    
-    // then
-    BPMNShape callActivity = (BPMNShape) Util.findBpmnShapeByBusinessObjectId(diagram, "CallActivity_1");
-    
-    assertThat(callActivity.isIsExpanded())
-      .isFalse();
-    
-  }
 
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/add/AddFlowElementFeatureTestBase.testBox.bpmn")
+	public void testShapeNotExpanded() throws Exception {
+
+		// given
+		Shape subProcessShape = Util.findShapeByBusinessObjectId(diagram, "SubProcess_1");
+
+		Point addPosition = point(10, 10);
+
+		// when
+		addCallActivity(getDiagramTypeProvider())
+			.atLocation(addPosition)
+			.toContainer((ContainerShape) subProcessShape)
+			.execute();
+
+		// then
+		BPMNShape callActivity = (BPMNShape) Util.findBpmnShapeByBusinessObjectId(diagram, "CallActivity_1");
+
+		assertThat(callActivity.isIsExpanded()).isFalse();
+
+	}
 
 }

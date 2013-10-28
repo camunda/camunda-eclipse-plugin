@@ -17,7 +17,6 @@ import org.camunda.bpm.modeler.core.features.MultiUpdateFeature;
 import org.camunda.bpm.modeler.core.features.activity.task.DirectEditActivityFeature;
 import org.camunda.bpm.modeler.ui.features.activity.AbstractActivityFeatureContainer;
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.CallChoreography;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.graphiti.features.IDirectEditingFeature;
@@ -73,7 +72,6 @@ public abstract class AbstractExpandableActivityFeatureContainer extends Abstrac
 	
 	public static boolean isExpandableElement(Object be) {
 		return be instanceof FlowElementsContainer
-				|| be instanceof CallActivity
 				|| be instanceof CallChoreography;
 	}
 }

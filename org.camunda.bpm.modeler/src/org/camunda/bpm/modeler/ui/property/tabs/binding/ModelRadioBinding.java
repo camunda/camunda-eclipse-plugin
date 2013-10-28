@@ -19,7 +19,9 @@ public abstract class ModelRadioBinding extends ModelButtonBinding<Boolean> {
 
 	@Override
 	public void setViewValue(Boolean value) {
-		control.setSelection(value);
+		if (!control.isDisposed()) {
+			control.setSelection(value);
+		}
 	}
 
 	@Override

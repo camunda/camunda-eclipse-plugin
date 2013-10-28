@@ -12,12 +12,18 @@ import org.camunda.bpm.modeler.core.utils.transform.Transformer.IgnoredStructura
 import org.camunda.bpm.modeler.test.util.TestHelper;
 import org.camunda.bpm.modeler.test.util.TestHelper.ModelResources;
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.CallActivity;
+import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.DataObjectReference;
+import org.eclipse.bpmn2.DataOutputAssociation;
+import org.eclipse.bpmn2.ServiceTask;
+import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.fest.assertions.api.Assertions;
 import org.fest.assertions.api.StringAssert;
 import org.junit.Test;
 
@@ -56,6 +62,97 @@ public class TransformerTest {
 			.isNotNull()
 			.isInstanceOf(DataObjectReference.class)
 			.isEqualTo(bpmnShape.getBpmnElement());
+	}
+	
+	@Test
+	public void testMorph_shouldRetainMessageFlows() throws Exception {
+		
+		// given
+		ModelResources resources = TestHelper.createModel("org/camunda/bpm/modeler/test/core/utils/transform/TransformerTest.testMessageFlow.bpmn");
+		Resource resource = resources.getResource();
+		
+		String elementId = "Task_1";
+		
+		final EObject target = resource.getEObject(elementId);
+		final BPMNShape bpmnShape = (BPMNShape) resource.getEObject("_BPMNShape_Task_2");
+		
+		final Transformer transformer = new Transformer(target);
+		
+		// when
+		transactionalExecute(resources, new Runnable() {
+			@Override
+			public void run() {
+				try {
+					transformer.morph(Bpmn2Package.eINSTANCE.getCallActivity());
+				} catch (ClassCastException e) {
+					Assertions.fail("Unexpected excpetion: " + e.getMessage());
+				}
+			}
+		});
+
+		// then
+		List<CopyProblem> warnings = transformer.getRecordedWarnings();
+		
+		assertThat(warnings).hasSize(2);
+		assertThat(warnings.get(0)).isInstanceOf(IgnoredStructuralFeature.class);
+		assertThat(warnings.get(1)).isInstanceOf(IgnoredStructuralFeature.class);
+		
+		EObject morph = resource.getEObject(elementId);
+		
+		assertThat(morph)
+			.isNotNull()
+			.isInstanceOf(CallActivity.class)
+			.isEqualTo(bpmnShape.getBpmnElement());
+	}	
+	
+	@Test
+	public void testMorph_shouldKeepDataAssocations() throws Exception {
+		
+		// given
+		ModelResources resources = TestHelper.createModel("org/camunda/bpm/modeler/test/core/utils/transform/TransformerTest.testDataAssociation.bpmn");
+		Resource resource = resources.getResource();
+		
+		String elementId = "Task_1";
+		
+		final EObject task = resource.getEObject(elementId);
+		final DataInputAssociation dataInputAssocation = (DataInputAssociation) resource.getEObject("DataInputAssociation_1");
+		final DataOutputAssociation dataOutputAssocation = (DataOutputAssociation) resource.getEObject("DataOutputAssociation_1");
+		
+		final BPMNEdge dataInputAssocationShape = (BPMNEdge) resource.getEObject("BPMNEdge_DataInputAssociation_1");
+		final BPMNEdge dataOutputAssocationShape = (BPMNEdge) resource.getEObject("BPMNEdge_DataOutputAssociation_1");
+		
+		final Transformer transformer = new Transformer(task);
+		
+		// when
+		transactionalExecute(resources, new Runnable() {
+			@Override
+			public void run() {
+				transformer.morph(Bpmn2Package.eINSTANCE.getServiceTask());
+			}
+		});
+
+		// then
+		List<CopyProblem> warnings = transformer.getRecordedWarnings();
+
+		assertThat(warnings).isEmpty();
+		
+		EObject morph = resource.getEObject(elementId);
+		
+		assertThat(morph)
+			.isNotNull()
+			.isInstanceOf(ServiceTask.class);
+		
+		assertThat(morph)
+			.isEqualTo(dataInputAssocation.eContainer());
+
+		assertThat(morph)
+			.isEqualTo(dataOutputAssocation.eContainer());
+		
+		assertThat(dataInputAssocation)
+			.isEqualTo((DataInputAssociation) dataInputAssocationShape.getBpmnElement());
+		
+		assertThat(dataOutputAssocation)			
+			.isEqualTo((DataOutputAssociation) dataOutputAssocationShape.getBpmnElement());
 	}
 	
 	@Test
