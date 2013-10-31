@@ -38,15 +38,6 @@ public class CreateTextAnnotationFeature extends AbstractCreateArtifactFeature<T
 	}
 
 	@Override
-	public Object[] create(ICreateContext context) {
-
-		TextAnnotation ta = createBusinessObject(context);
-		addGraphicalRepresentation(context, ta);
-
-		return new Object[] { ta };
-	}
-
-	@Override
 	protected String getStencilImageId() {
 		return ImageProvider.IMG_16_TEXT_ANNOTATION;
 	}

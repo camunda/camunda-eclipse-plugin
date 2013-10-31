@@ -41,39 +41,25 @@ public abstract class AbstractBpmn2CreateConnectionFeature<T extends BaseElement
 	 * @param name
 	 * @param description
 	 */
-	public AbstractBpmn2CreateConnectionFeature(IFeatureProvider fp,
-			String name, String description) {
+	public AbstractBpmn2CreateConnectionFeature(IFeatureProvider fp, String name, String description) {
 		super(fp, name, description);
-		// TODO Auto-generated constructor stub
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.graphiti.func.ICreateConnection#canCreate(org.eclipse.graphiti.features.context.ICreateConnectionContext)
-	 */
 	@Override
 	public boolean canCreate(ICreateConnectionContext context) {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.graphiti.func.ICreateConnection#create(org.eclipse.graphiti.features.context.ICreateConnectionContext)
-	 */
 	@Override
 	public Connection create(ICreateConnectionContext context) {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.graphiti.func.ICreateConnection#canStartConnection(org.eclipse.graphiti.features.context.ICreateConnectionContext)
-	 */
 	@Override
 	public boolean canStartConnection(ICreateConnectionContext context) {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.graphiti.features.impl.AbstractFeature#isAvailable(org.eclipse.graphiti.features.context.IContext)
-	 */
 	@Override
 	public boolean isAvailable(IContext context) {
 		Object o = null;

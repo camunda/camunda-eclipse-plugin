@@ -62,7 +62,6 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 	protected ArrayList<ModelExtensionDescriptor> modelExtensions;
 	protected ArrayList<ModelEnablementDescriptor> modelEnablements;
 	protected ModelEnablementDescriptor defaultModelEnablements;
-	protected ArrayList<PropertyExtensionDescriptor> propertyExtensions;
 	protected ArrayList<FeatureContainerDescriptor> featureContainers;
 	protected HashMap<Class, ShapeStyle> shapeStyles;
 
@@ -177,16 +176,6 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 					if (!e.getName().equals("runtime")) {
 						currentRuntime = getRuntime(e);
 						if (currentRuntime.getId().equals(TargetRuntime.DEFAULT_RUNTIME_ID)) {
-							if (e.getName().equals("propertyTab")) {
-
-								// FIXME: CLEANUP
-								// CHECK AND REMOVE PERMANENTLY
-//								if(PlatformUI.isWorkbenchRunning()) {
-//									Bpmn2TabDescriptor td = new Bpmn2TabDescriptor(e);
-//									Bpmn2SectionDescriptor sd = new Bpmn2SectionDescriptor(td,e);
-//									currentRuntime.getTabs().add(td);
-//								}
-							}
 							if (e.getName().equals("modelEnablement")) {
 								ModelEnablementDescriptor me;
 								String type = e.getAttribute("type");
@@ -223,13 +212,6 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 								// already done
 								continue;
 							}
-							// FIXME: CLEANUP
-							// CHECK AND REMOVE PERMANENTLY
-//							if(PlatformUI.isWorkbenchRunning()) {
-//								Bpmn2TabDescriptor td = new Bpmn2TabDescriptor(e);
-//								Bpmn2SectionDescriptor sd = new Bpmn2SectionDescriptor(td,e);
-//								currentRuntime.getTabs().add(td);
-//							}
 						}
 						else if (e.getName().equals("customTask")) {
 							String id = e.getAttribute("id");
@@ -242,13 +224,6 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 							ct.featureContainer.setId(id);
 							getModelExtensionProperties(ct,e);
 							currentRuntime.addCustomTask(ct);
-						}
-						else if (e.getName().equals("propertyExtension")) {
-							String id = e.getAttribute("id");
-							PropertyExtensionDescriptor pe = new PropertyExtensionDescriptor(currentRuntime);
-							pe.type = e.getAttribute("type");
-							pe.adapterClassName = e.getAttribute("class");
-							currentRuntime.addPropertyExtension(pe);
 						}
 						else if (e.getName().equals("featureContainer")) {
 							String id = e.getAttribute("id");
@@ -462,36 +437,6 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 	public void addModelExtension(ModelExtensionDescriptor me) {
 		me.setRuntime(this);
 		getModelExtensions().add(me);
-	}
-	
-	public ArrayList<PropertyExtensionDescriptor> getPropertyExtensions()
-	{
-		if (propertyExtensions==null) {
-			propertyExtensions = new ArrayList<PropertyExtensionDescriptor>();
-		}
-		return propertyExtensions;
-	}
-	
-	public void addPropertyExtension(PropertyExtensionDescriptor me) {
-		me.setRuntime(this);
-		getPropertyExtensions().add(me);
-	}
-
-	public PropertyExtensionDescriptor getPropertyExtension(Class clazz) {
-		for (PropertyExtensionDescriptor ped : getPropertyExtensions()) {
-			String className = clazz.getName();
-			if (className.equals(ped.type))
-				return ped;
-			// well, that didn't work...
-			// The "type" name should be the BPMN2 element's interface definition;
-			// if it's an implementation class name, try to convert it to its
-			// interface name.
-			className = className.replaceFirst("\\.impl\\.", ".");
-			className = className.replaceFirst("Impl$", "");
-			if (className.equals(ped.type))
-				return ped;
-		}
-		return null;
 	}
 	
 	public ArrayList<FeatureContainerDescriptor> getFeatureContainers()

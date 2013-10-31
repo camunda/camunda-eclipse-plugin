@@ -23,39 +23,5 @@ public class DocumentPropertiesBuilder extends AbstractPropertiesBuilder<Definit
 	@Override
 	public void create() {
 		PropertyUtil.createText(section, parent, "Target Namespace", TARGET_NAMESPACE_FEATURE, bo);
-//		final Text text = PropertyUtil.createUnboundText(section, parent, "Target Namespace");
-//		new TargetNamespaceStringTextBinding(bo, TARGET_NAMESPACE_FEATURE, text).establish();
 	}
-	
-//	/**
-//	 * Binding for the target namespace element
-//	 * 
-//	 * @author kristin.polenz
-//	 */
-//	private class TargetNamespaceStringTextBinding extends StringTextBinding {
-//
-//		public TargetNamespaceStringTextBinding(EObject model,EStructuralFeature feature, Text control) {
-//			super(model, feature, control);
-//		}
-//
-//		@Override
-//		protected String toString(String value) {
-//			if (value == null) {
-//				return "";
-//			} else {
-//				return value;
-//			}
-//		}
-//
-//		@Override
-//		protected String fromString(String str) {
-//			// TODO Auto-generated method stub
-//			return null;
-//		}
-//
-//		@Override
-//		public String getModelValue() {
-//			return (String) model.eContainer().eGet(feature);
-//		}
-//	}
 }

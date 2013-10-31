@@ -72,7 +72,7 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
     }
 
 	@Override
-    public Object[] create(ICreateContext context) {
+	public Object[] create(ICreateContext context) {
 		
 		Diagram diagram = getDiagram();
 		BaseElement rootElement = BusinessObjectUtil.getFirstBaseElement(diagram);
@@ -80,7 +80,7 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 		BPMNDiagram bpmnDiagram = BusinessObjectUtil.getFirstElementOfType(context.getTargetContainer(), BPMNDiagram.class);
 		
 		if (bpmnDiagram == null) {
-			throw new IllegalStateException("Participant should be in the context of a Graphiti Diagram linked to a BPMNDiagram");
+			throw new IllegalStateException("Target container not linked to BPMNDiagram");
 		}
 		
 		Definitions definitions = (Definitions) bpmnDiagram.eContainer();
@@ -93,8 +93,8 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 		
 		// existing collaboration?
 		if (rootElement instanceof Collaboration) {
-			
 			newParticipant = createBusinessObject(context);
+			((Collaboration) rootElement).getParticipants().add(newParticipant);
 			addGraphicalRepresentation(context, newParticipant);
 		} else
 
@@ -120,7 +120,7 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 		
 		newParticipant.setName("Pool");
 		return new Object[] { newParticipant };
-    }
+	}
 
 
 	private void createGraphitiRepresentation(ICreateContext context, Participant newParticipant) {

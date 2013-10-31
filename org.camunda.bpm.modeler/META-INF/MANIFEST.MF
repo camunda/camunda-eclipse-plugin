@@ -61,16 +61,6 @@ Export-Package: org.camunda.bpm.modeler.core;
    org.osgi.framework,
    org.eclipse.swt.widgets,
    org.eclipse.jface.dialogs",
- org.camunda.bpm.modeler.core.adapters;
-  uses:="org.eclipse.emf.ecore.resource,
-   org.eclipse.emf.ecore.util,
-   org.eclipse.core.runtime,
-   org.eclipse.emf.ecore,
-   org.eclipse.emf.common.notify.impl,
-   org.eclipse.emf.edit.ui.provider,
-   org.eclipse.emf.transaction,
-   org.eclipse.emf.edit.provider,
-   org.eclipse.emf.common.notify",
  org.camunda.bpm.modeler.core.di;
   uses:="org.eclipse.emf.ecore.resource,
    org.eclipse.dd.dc,
