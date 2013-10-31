@@ -12,7 +12,6 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.event;
 
-import org.camunda.bpm.modeler.core.features.container.BaseElementFeatureContainer;
 import org.camunda.bpm.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.graphiti.features.IAddFeature;
@@ -27,7 +26,7 @@ import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.features.impl.DefaultResizeShapeFeature;
 
-public class BoundaryEventFeatureContainer extends BaseElementFeatureContainer {
+public class BoundaryEventFeatureContainer extends AbstractEventFeatureContainer {
 
 	public static String BOUNDARY_EVENT_CANCEL = "cancel.activity";
 	public static String BOUNDARY_EVENT_DISTANCE = "boundary.distance";
@@ -81,4 +80,5 @@ public class BoundaryEventFeatureContainer extends BaseElementFeatureContainer {
 	public IDeleteFeature getDeleteFeature(IFeatureProvider fp) {
 		return new AbstractDefaultDeleteFeature(fp);
 	}
+	
 }
