@@ -50,6 +50,7 @@ import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallActivity;
+import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.Collaboration;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
@@ -75,6 +76,7 @@ import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.Task;
+import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNPlane;
@@ -613,63 +615,67 @@ public class ModelImport {
 
 		List<BoundaryEvent> boundaryEvents = new ArrayList<BoundaryEvent>();
 		List<DataObject> dataObjects = new ArrayList<DataObject>();
-		
-		for (FlowElement flowElement: flowElementsToBeDrawn) {
-			
+
+		for (FlowElement flowElement : flowElementsToBeDrawn) {
+
 			if (flowElement instanceof BoundaryEvent) {
 				// defer handling of boundary events
 				// until the elements they are attached to are
 				// rendered
 				boundaryEvents.add((BoundaryEvent) flowElement);
-				
-			} else
-			if (flowElement instanceof Gateway) {
+
+			} else if (flowElement instanceof Gateway) {
 				handleGateway((Gateway) flowElement, container);
-				
+
 			} else if (flowElement instanceof SubProcess) {
 				handleSubProcess((SubProcess) flowElement, container);
-				
+
 			} else if (flowElement instanceof CallActivity) {
 				handleCallActivity((CallActivity) flowElement, container);
-			
+
 			} else if (flowElement instanceof Task) {
-				handleTask((Task) flowElement, container);	
-				
+				handleTask((Task) flowElement, container);
+
 			} else if (flowElement instanceof Event) {
 				handleEvent((Event) flowElement, container);
-				
+
 			} else if (flowElement instanceof DataObjectReference) {
 				handleDataObjectReference((DataObjectReference) flowElement, container);
-			} else
-			if (flowElement instanceof DataObject) {
-				// handle dataobjects because they may need 
+			} else if (flowElement instanceof DataObject) {
+				// handle dataobjects because they may need
 				// conversion to dataObjecReferences
 				dataObjects.add((DataObject) flowElement);
-				
+
 			} else if (flowElement instanceof DataStoreReference) {
 				handleDataStoreReference((DataStoreReference) flowElement, container);
-				
+
 			} else {
-				// yea, unhandled element
+				// yea, unhandled element				
 			}
 			
-	    if (flowElement instanceof Activity) {
+			if (flowElement instanceof Activity) {
 				Activity activity = (Activity) flowElement;
-				
+
 				handleDataInputAssociations(activity.getDataInputAssociations(), container);
 				handleDataOutputAssociations(activity.getDataOutputAssociations(), container);
+			} else if (flowElement instanceof CatchEvent) {
+				CatchEvent catchEvent = (CatchEvent) flowElement;
+				handleDataOutputAssociations(catchEvent.getDataOutputAssociation(), container);
+			} else if (flowElement instanceof ThrowEvent) {
+				ThrowEvent throwEvent = (ThrowEvent) flowElement;
+				handleDataInputAssociations(throwEvent.getDataInputAssociation(), container);				
 			}
 		}
-		
-		for (DataObject dataObject: dataObjects) {
+
+		for (DataObject dataObject : dataObjects) {
 			// legacy import for data object as flow element
 			// (should be data object reference instead)
 			// we did that wrong in the old camunda modeler days
 			handleDataObject(dataObject, container);
 		}
-		
+
 		// handle boundary events last
-		for (BoundaryEvent boundaryEvent: boundaryEvents) {
+		for (BoundaryEvent boundaryEvent : boundaryEvents) {
 			handleEvent(boundaryEvent, container);
 		}
 	}
