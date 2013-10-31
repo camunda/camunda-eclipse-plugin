@@ -96,9 +96,6 @@ public class DataObjectReferenceFeatureContainer extends AbstractDataFeatureCont
 			
 			EObject be = (EObject) getBusinessObjectForPictogramElement(context.getTargetContainer());
 			
-			
-			
-			
 			DataObjectReference reference = (DataObjectReference) elem;
 			
 			DataObject dataObject = reference.getDataObjectRef();

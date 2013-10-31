@@ -83,7 +83,7 @@ public class IntermediateThrowEventFeatureContainer extends AbstractEventFeature
 
 		@Override
 		public String getStencilImageId() {
-			return ImageProvider.IMG_16_INTERMEDIATE_THORW_EVENT;
+			return ImageProvider.IMG_16_INTERMEDIATE_THROW_EVENT;
 		}
 
 		/* (non-Javadoc)

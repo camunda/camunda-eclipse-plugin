@@ -13,6 +13,7 @@ import org.camunda.bpm.modeler.test.util.TestHelper;
 import org.camunda.bpm.modeler.test.util.TestHelper.ModelResources;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallActivity;
+import org.eclipse.bpmn2.CompensateEventDefinition;
 import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.DataObjectReference;
@@ -28,6 +29,38 @@ import org.fest.assertions.api.StringAssert;
 import org.junit.Test;
 
 public class TransformerTest {
+	
+	@Test
+	public void testMorph_shouldMorphFromTimerToCompensate() throws Exception {
+		// given
+		ModelResources resources = TestHelper.createModel("org/camunda/bpm/modeler/test/core/utils/transform/TransformerTest.testEventDefinition.bpmn");
+		Resource resource = resources.getResource();
+		
+		String elementId = "TimerEventDefinition_1";
+		
+		final EObject target = resource.getEObject(elementId);
+
+		final Transformer transformer = new Transformer(target);
+		
+		// when
+		transactionalExecute(resources, new Runnable() {
+			@Override
+			public void run() {
+				transformer.morph(Bpmn2Package.eINSTANCE.getCompensateEventDefinition());
+			}
+		});
+
+		// then
+		List<CopyProblem> warnings = transformer.getRecordedWarnings();
+		
+		assertThat(warnings).hasSize(1);
+		
+		EObject morph = resource.getEObject(elementId);
+		
+		assertThat(morph)
+			.isNotNull()
+			.isInstanceOf(CompensateEventDefinition.class);
+	}
 	
 	@Test
 	public void testMorph_shouldRetainReferences() throws Exception {

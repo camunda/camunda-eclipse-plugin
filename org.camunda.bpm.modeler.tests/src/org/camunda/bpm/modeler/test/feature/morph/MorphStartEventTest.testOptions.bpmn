@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="_WXrLoEFsEeOGupZF-2P0hQ" targetNamespace="http://activiti.org/bpmn">
+  <bpmn2:process id="Process_1" isExecutable="false">
+    <bpmn2:startEvent id="StartEvent_1" name="Start Event"/>
+    <bpmn2:startEvent id="StartEvent_2" name="Start Event">
+      <bpmn2:messageEventDefinition id="MessageEventDefinition_1"/>
+    </bpmn2:startEvent>
+    <bpmn2:startEvent id="StartEvent_3" name="Start Event">
+      <bpmn2:timerEventDefinition id="TimerEventDefinition_1"/>
+    </bpmn2:startEvent>
+    <bpmn2:startEvent id="StartEvent_4" name="Start Event">
+      <bpmn2:signalEventDefinition id="SignalEventDefinition_1"/>
+    </bpmn2:startEvent>
+    <bpmn2:startEvent id="StartEvent_5" name="Start Event">
+      <bpmn2:conditionalEventDefinition id="ConditionalEventDefinition_1"/>
+    </bpmn2:startEvent>
+    <bpmn2:subProcess id="SubProcess_1" name="Sub Process" triggeredByEvent="true">
+      <bpmn2:startEvent id="StartEvent_10" name="Start Event">
+        <bpmn2:conditionalEventDefinition id="ConditionalEventDefinition_2"/>
+      </bpmn2:startEvent>
+      <bpmn2:startEvent id="StartEvent_9" name="Start Event">
+        <bpmn2:signalEventDefinition id="SignalEventDefinition_2"/>
+      </bpmn2:startEvent>
+      <bpmn2:startEvent id="StartEvent_8" name="Start Event">
+        <bpmn2:timerEventDefinition id="TimerEventDefinition_2"/>
+      </bpmn2:startEvent>
+      <bpmn2:startEvent id="StartEvent_7" name="Start Event">
+        <bpmn2:messageEventDefinition id="MessageEventDefinition_2"/>
+      </bpmn2:startEvent>
+      <bpmn2:startEvent id="StartEvent_6" name="Start Event"/>
+      <bpmn2:startEvent id="StartEvent_11" name="Start Event">
+        <bpmn2:escalationEventDefinition id="EscalationEventDefinition_1"/>
+      </bpmn2:startEvent>
+      <bpmn2:startEvent id="StartEvent_12" name="Start Event">
+        <bpmn2:errorEventDefinition id="ErrorEventDefinition_1"/>
+      </bpmn2:startEvent>
+      <bpmn2:startEvent id="StartEvent_13" name="Start Event">
+        <bpmn2:compensateEventDefinition id="CompensateEventDefinition_1"/>
+      </bpmn2:startEvent>
+      <bpmn2:startEvent id="StartEvent_21" name="Start Event">
+        <bpmn2:conditionalEventDefinition id="ConditionalEventDefinition_5"/>
+        <bpmn2:timerEventDefinition id="TimerEventDefinition_5"/>
+      </bpmn2:startEvent>
+    </bpmn2:subProcess>
+    <bpmn2:subProcess id="SubProcess_2" name="Sub Process" triggeredByEvent="true">
+      <bpmn2:startEvent id="StartEvent_14" name="Start Event" isInterrupting="false"/>
+      <bpmn2:startEvent id="StartEvent_15" name="Start Event" isInterrupting="false">
+        <bpmn2:messageEventDefinition id="MessageEventDefinition_3"/>
+      </bpmn2:startEvent>
+      <bpmn2:startEvent id="StartEvent_16" name="Start Event" isInterrupting="false">
+        <bpmn2:timerEventDefinition id="TimerEventDefinition_3"/>
+      </bpmn2:startEvent>
+      <bpmn2:startEvent id="StartEvent_18" name="Start Event" isInterrupting="false">
+        <bpmn2:conditionalEventDefinition id="ConditionalEventDefinition_3"/>
+      </bpmn2:startEvent>
+      <bpmn2:startEvent id="StartEvent_17" name="Start Event" isInterrupting="false">
+        <bpmn2:signalEventDefinition id="SignalEventDefinition_3"/>
+      </bpmn2:startEvent>
+      <bpmn2:startEvent id="StartEvent_19" name="Start Event" isInterrupting="false">
+        <bpmn2:escalationEventDefinition id="EscalationEventDefinition_2"/>
+      </bpmn2:startEvent>
+      <bpmn2:startEvent id="StartEvent_22" name="Start Event">
+        <bpmn2:timerEventDefinition id="TimerEventDefinition_6"/>
+        <bpmn2:conditionalEventDefinition id="ConditionalEventDefinition_6"/>
+      </bpmn2:startEvent>
+    </bpmn2:subProcess>
+    <bpmn2:startEvent id="StartEvent_20" name="Start Event">
+      <bpmn2:conditionalEventDefinition id="ConditionalEventDefinition_4"/>
+      <bpmn2:timerEventDefinition id="TimerEventDefinition_4"/>
+    </bpmn2:startEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_4" bpmnElement="StartEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="88.0" y="39.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_5" bpmnElement="StartEvent_2">
+        <dc:Bounds height="36.0" width="36.0" x="87.0" y="111.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_6" bpmnElement="StartEvent_3">
+        <dc:Bounds height="36.0" width="36.0" x="86.0" y="180.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="70.0" x="69.0" y="221.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_7" bpmnElement="StartEvent_4">
+        <dc:Bounds height="36.0" width="36.0" x="88.0" y="252.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="70.0" x="71.0" y="293.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_8" bpmnElement="StartEvent_5">
+        <dc:Bounds height="36.0" width="36.0" x="86.0" y="324.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="70.0" x="69.0" y="365.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_SubProcess_2" bpmnElement="SubProcess_1" isExpanded="true">
+        <dc:Bounds height="589.0" width="289.0" x="252.0" y="24.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_9" bpmnElement="StartEvent_6">
+        <dc:Bounds height="36.0" width="36.0" x="372.0" y="60.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="70.0" x="355.0" y="101.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_10" bpmnElement="StartEvent_7">
+        <dc:Bounds height="36.0" width="36.0" x="372.0" y="120.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="70.0" x="355.0" y="161.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_11" bpmnElement="StartEvent_8">
+        <dc:Bounds height="36.0" width="36.0" x="372.0" y="192.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="70.0" x="355.0" y="233.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_12" bpmnElement="StartEvent_9">
+        <dc:Bounds height="36.0" width="36.0" x="372.0" y="252.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="70.0" x="355.0" y="293.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_13" bpmnElement="StartEvent_10">
+        <dc:Bounds height="36.0" width="36.0" x="372.0" y="312.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="70.0" x="355.0" y="353.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_14" bpmnElement="StartEvent_11">
+        <dc:Bounds height="36.0" width="36.0" x="372.0" y="372.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="70.0" x="355.0" y="413.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_15" bpmnElement="StartEvent_12">
+        <dc:Bounds height="36.0" width="36.0" x="372.0" y="432.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="70.0" x="355.0" y="473.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_16" bpmnElement="StartEvent_13">
+        <dc:Bounds height="36.0" width="36.0" x="368.0" y="492.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="70.0" x="351.0" y="533.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_SubProcess_3" bpmnElement="SubProcess_2" isExpanded="true">
+        <dc:Bounds height="529.0" width="200.0" x="592.0" y="24.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_17" bpmnElement="StartEvent_14">
+        <dc:Bounds height="36.0" width="36.0" x="672.0" y="60.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="70.0" x="655.0" y="101.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_18" bpmnElement="StartEvent_15">
+        <dc:Bounds height="36.0" width="36.0" x="672.0" y="120.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="70.0" x="655.0" y="161.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_19" bpmnElement="StartEvent_16">
+        <dc:Bounds height="36.0" width="36.0" x="672.0" y="191.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_20" bpmnElement="StartEvent_17">
+        <dc:Bounds height="36.0" width="36.0" x="674.0" y="264.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="70.0" x="657.0" y="305.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_21" bpmnElement="StartEvent_18">
+        <dc:Bounds height="36.0" width="36.0" x="674.0" y="331.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_22" bpmnElement="StartEvent_19">
+        <dc:Bounds height="36.0" width="36.0" x="674.0" y="396.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="70.0" x="657.0" y="437.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_23" bpmnElement="StartEvent_20">
+        <dc:Bounds height="36.0" width="36.0" x="85.0" y="406.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_24" bpmnElement="StartEvent_21">
+        <dc:Bounds height="36.0" width="36.0" x="368.0" y="552.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="70.0" x="351.0" y="593.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_25" bpmnElement="StartEvent_22">
+        <dc:Bounds height="36.0" width="36.0" x="673.0" y="469.0"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

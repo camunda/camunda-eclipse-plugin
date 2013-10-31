@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.camunda.bpm.modeler.core.features.AbstractAddBpmnShapeFeature;
 import org.camunda.bpm.modeler.core.layout.util.ConnectionUtil;
 import org.camunda.bpm.modeler.core.utils.ContextUtil;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
@@ -15,6 +14,7 @@ import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IRemoveFeature;
@@ -32,6 +32,8 @@ import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.ui.internal.util.ui.PopupMenu;
+import org.eclipse.graphiti.ui.services.GraphitiUi;
+import org.eclipse.graphiti.ui.services.IImageService;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
@@ -39,42 +41,11 @@ import org.eclipse.swt.widgets.Display;
 
 public abstract class AbstractMorphNodeFeature<T extends FlowNode> extends AbstractCustomFeature {
 
+	public static String MORPH_ELEMENT = "MORPH_ELEMENT";
 	public static String CREATE_MODE = AbstractMorphNodeFeature.class.getName() + "_CREATE_MODE";
 	
 	protected boolean changed = false;
 	protected ILabelProvider labelProvider;
-	
-	protected static class LabelProvider implements ILabelProvider {
-
-		@Override
-		public void addListener(ILabelProviderListener arg0) {}
-
-		@Override
-		public void dispose() {}
-
-		@Override
-		public boolean isLabelProperty(Object arg0, String arg1) {
-			return false;
-		}
-
-		@Override
-		public void removeListener(ILabelProviderListener arg0) {}
-
-		@Override
-		public Image getImage(Object arg0) {
-			return null;
-		}
-
-		@Override
-		public String getText(Object arg0) {
-			if (!(arg0 instanceof EClass)) {
-				return "";
-			}
-			EClass cls = (EClass) arg0;
-			return ModelUtil.toDisplayName(cls.getName());
-		}
-		
-	}
 	
 	public AbstractMorphNodeFeature(IFeatureProvider fp) {
 		super(fp);
@@ -116,40 +87,40 @@ public abstract class AbstractMorphNodeFeature<T extends FlowNode> extends Abstr
 		
 		EObject bo = (EObject) getBusinessObjectForPictogramElement(oldShape);
 		
-		List<EClass> availableTypes = getAvailableTypes(bo);
+		List<MorphOption> options = getOptions(bo);
 		
-		if (availableTypes.size() < 1) {
+		if (options.size() < 1) {
 			return;
 		}
 		
 		// get selection from context (during tests)
-		EClass selectedType = (EClass) ContextUtil.get(context, CREATE_MODE);
+		MorphOption option = (MorphOption) ContextUtil.get(context, CREATE_MODE);
 		
-		if (selectedType == null) {
+		if (option == null) {
 			
-			selectedType = selectType(availableTypes);
+			option = selectOption(options);
 			
-			if (selectedType == null) {
+			if (option == null) {
 				return;
 			}
 		}
 		
-		T newObject = morph(bo, selectedType);
+		T newObject = morph(bo, option);
 		
-		Shape newShape = createNewShape(oldShape, newObject);
+		Shape newShape = createNewShape(option, oldShape, newObject);
 		
 		reconnect(newObject, oldShape, newShape);
 		
-		removePictogramElement(oldShape);
+		cleanUp(oldShape);
 		changed = true;
 	}
 	
 	public abstract EClass getBusinessObjectClass();
 	
-	protected List<EClass> getAvailableTypes(EObject bo) {
+	public List<MorphOption> getOptions(EObject bo) {
 		EClass newType = getBusinessObjectClass();
 		
-		List<EClass> availableTypes = new ArrayList<EClass>();
+		List<MorphOption> availableTypes = new ArrayList<MorphOption>();
 		
 		List<EClassifier> classifiers = Bpmn2Package.eINSTANCE.getEClassifiers();
 		
@@ -165,7 +136,9 @@ public abstract class AbstractMorphNodeFeature<T extends FlowNode> extends Abstr
 				List<EClass> superTypes = type.getEAllSuperTypes();
 				
 				if (superTypes.contains(newType)) {
-					availableTypes.add(type);
+					String name = ModelUtil.toDisplayName(type.getName());
+					MorphOption option = new MorphOption(name, type);
+					availableTypes.add(option);
 				}
 			}
 		}
@@ -178,23 +151,29 @@ public abstract class AbstractMorphNodeFeature<T extends FlowNode> extends Abstr
 		return Collections.emptyList();
 	}
 	
-	protected EClass selectType(List<EClass> availableCls) {
+	protected MorphOption selectOption(List<MorphOption> availableCls) {
 		PopupMenu popupMenu = new PopupMenu(availableCls, getLabelProvider());
 		boolean showPopup = popupMenu.show(Display.getCurrent().getActiveShell());
 		if (showPopup) {
-			return (EClass) popupMenu.getResult();
+			return (MorphOption) popupMenu.getResult();
 		}
 		
 		return null;
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected T  morph(EObject bo, EClass to) {
-		Transformer transformer = new Transformer(bo);
-		return (T) transformer.morph(to);
+	protected T morph(EObject target, MorphOption option) {
+		EClass newType = option.getNewType();
+		
+		if (!newType.equals(target.eClass())) {
+			Transformer transformer = new Transformer(target);
+			return (T) transformer.morph(newType);
+		}
+		
+		return (T) target;
 	}
 	
-	protected Shape createNewShape(Shape oldShape, T newObject) {
+	protected Shape createNewShape(MorphOption option, Shape oldShape, T newObject) {
 		GraphicsAlgorithm ga = oldShape.getGraphicsAlgorithm();
 		
 		int height = ga.getHeight();
@@ -208,12 +187,17 @@ public abstract class AbstractMorphNodeFeature<T extends FlowNode> extends Abstr
 		
 		AddContext addContext = new AddContext(areaContext, newObject);
 		addContext.setTargetContainer(oldShape.getContainer());
-		addContext.putProperty(AbstractAddBpmnShapeFeature.MORPH_ELEMENT_TYPE, true);
+		addContext.putProperty(AbstractMorphNodeFeature.MORPH_ELEMENT, true);
 		
-		return (Shape) getFeatureProvider().addIfPossible(addContext);		
+		IAddFeature addFeature = getFeatureProvider().getAddFeature(addContext);
+		return (Shape) addFeature.add(addContext);
+	}
+
+	protected void cleanUp(PictogramElement pictogramElement) {
+		removePictogramElement(pictogramElement);
 	}
 	
-	protected void reconnect(EObject bo, Shape oldShape, Shape newShape) {
+	protected final void reconnect(EObject bo, Shape oldShape, Shape newShape) {
 		List<Anchor> oldAnchors = oldShape.getAnchors();
 		List<Anchor> newAnchors = newShape.getAnchors();
 		
@@ -221,9 +205,16 @@ public abstract class AbstractMorphNodeFeature<T extends FlowNode> extends Abstr
 			
 			Anchor oldAnchor = oldAnchors.get(i);
 			Anchor newAnchor = newAnchors.get(i);
+			
+			List<Connection> oldIncomingConnections = oldAnchor.getIncomingConnections();
+			List<Connection> newIncomingConnections = newAnchor.getIncomingConnections();
 
-			swapConnections(bo, oldAnchor.getIncomingConnections(), newAnchor.getIncomingConnections(), true);
-			swapConnections(bo, oldAnchor.getOutgoingConnections(), newAnchor.getOutgoingConnections(), false);
+			swapConnections(bo, oldIncomingConnections, newIncomingConnections, true);
+			
+			List<Connection> oldOutgoingConnections = oldAnchor.getOutgoingConnections();
+			List<Connection> newOutgoingConnections = newAnchor.getOutgoingConnections();
+			
+			swapConnections(bo, oldOutgoingConnections, newOutgoingConnections, false);
 		}		
 	}
 	
@@ -261,21 +252,23 @@ public abstract class AbstractMorphNodeFeature<T extends FlowNode> extends Abstr
 		handleConnection(association, connections);
 	}
 	
-	protected void handleDataAssociation(EObject bo, Connection dataAssocation, List<Connection> connections, boolean incoming) {
-		handleConnection(dataAssocation, connections);
+	protected void handleDataAssociation(EObject bo, Connection dataAssociation, List<Connection> connections, boolean incoming) {
+		handleConnection(dataAssociation, connections);
 	}
 	
-	protected final void handleConnection(Connection dataAssocation, List<Connection> connections) {
-		connections.add(dataAssocation);
+	protected final void handleConnection(Connection connection, List<Connection> connections) {
+		if (!connections.contains(connection)) {
+			connections.add(connection);
+		}
 	}
 	
-	protected void removePictogramElement(PictogramElement pictogramElement) {
+	protected final void removePictogramElement(PictogramElement pictogramElement) {
 		IRemoveContext context = new RemoveContext(pictogramElement);
 		IRemoveFeature removeFeature = getFeatureProvider().getRemoveFeature(context);
 		removeFeature.remove(context);
 	}
 	
-	protected void deletePictogramElement(PictogramElement pictogramElement) {
+	protected final void deletePictogramElement(PictogramElement pictogramElement) {
 		IDeleteContext context = new DeleteContext(pictogramElement);
 		IDeleteFeature deleteFeature = getFeatureProvider().getDeleteFeature(context);
 		deleteFeature.delete(context);		
@@ -286,5 +279,67 @@ public abstract class AbstractMorphNodeFeature<T extends FlowNode> extends Abstr
 			labelProvider = new LabelProvider();
 		}
 		return labelProvider;
+	}
+	
+	protected class LabelProvider implements ILabelProvider {
+		
+		private IImageService imageService;
+		
+		public LabelProvider() {
+			imageService = GraphitiUi.getImageService();
+		}
+
+		@Override
+		public void addListener(ILabelProviderListener arg0) {}
+
+		@Override
+		public void dispose() {}
+
+		@Override
+		public boolean isLabelProperty(Object arg0, String arg1) {
+			return false;
+		}
+
+		@Override
+		public void removeListener(ILabelProviderListener arg0) {}
+
+		@Override
+		public Image getImage(Object arg0) {
+			return null;
+		}
+
+		@Override
+		public String getText(Object arg0) {
+			if (!(arg0 instanceof AbstractMorphNodeFeature.MorphOption)) {
+				return "";
+			}
+			MorphOption option = (MorphOption) arg0;
+			return option.getName();
+		}
+		
+		
+		protected Image getImageForId(String imageId) {
+			return imageService.getImageForId(imageId);
+		}
+	}
+	
+	public static class MorphOption {
+		
+		private String name;
+		private EClass newType;
+		
+		public MorphOption(String name, EClass newType) {
+			this.name = name;
+			this.newType = newType;
+		}
+		
+		public String getName() {
+			return name;
+		}
+		
+		public EClass getNewType() {
+			return newType;
+		}
+		
 	}
 }

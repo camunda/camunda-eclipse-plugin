@@ -276,12 +276,21 @@ public class Transformer {
 		}
 		
 		protected void moveContainment(EReference eReference, EObject eObject, EObject copyEObject) {
+			
 			if (eObject.eIsSet(eReference)) {
+
+				EStructuralFeature eReferenceAttribute = getTarget(copyEObject, eReference);
+				Object childEObject = eObject.eGet(eReference);
+				
+				if (eReferenceAttribute == null) {
+					handleProblem(new IgnoredStructuralFeature(eObject, eReference, childEObject, copyEObject));
+					return;
+				}
 				
 				if (eReference.isMany()) {
 					
-					@SuppressWarnings("unchecked") List<EObject> source = (List<EObject>) eObject.eGet(eReference);
-					@SuppressWarnings("unchecked") List<EObject> target = (List<EObject>) copyEObject.eGet(getTarget(eReference));
+					@SuppressWarnings("unchecked") List<EObject> source = (List<EObject>) childEObject;
+					@SuppressWarnings("unchecked") List<EObject> target = (List<EObject>) copyEObject.eGet(eReferenceAttribute);
 					
 					if (source.isEmpty()) {
 						target.clear();
@@ -289,8 +298,7 @@ public class Transformer {
 						target.addAll(source);
 					}
 				} else {
-					EObject childEObject = (EObject) eObject.eGet(eReference);
-					copyEObject.eSet(getTarget(eReference), childEObject == null ? null : childEObject);
+					copyEObject.eSet(eReferenceAttribute, childEObject);
 				}
 			}
 		}

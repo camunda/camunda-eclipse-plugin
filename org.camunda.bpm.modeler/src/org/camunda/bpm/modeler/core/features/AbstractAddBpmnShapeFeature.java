@@ -22,6 +22,7 @@ import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
 import org.camunda.bpm.modeler.core.utils.AnchorUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
+import org.camunda.bpm.modeler.ui.features.AbstractMorphNodeFeature;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.Participant;
@@ -39,7 +40,6 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 public abstract class AbstractAddBpmnShapeFeature<T extends BaseElement> extends AbstractAddBpmnElementFeature<T, ContainerShape> {
 
 	public static final int BOX_PADDING = 10;
-	public static final String MORPH_ELEMENT_TYPE = "MORPH_ELEMENT_TYPE";
 	
 	public AbstractAddBpmnShapeFeature(IFeatureProvider fp) {
 		super(fp);
@@ -247,7 +247,7 @@ public abstract class AbstractAddBpmnShapeFeature<T extends BaseElement> extends
 	 */
 	protected void createLabel(IAddContext context, ContainerShape newShape, IRectangle newShapeBounds) {
 		
-		if (context.getProperty(MORPH_ELEMENT_TYPE) != null && context.getProperty(MORPH_ELEMENT_TYPE) == Boolean.TRUE) {
+		if (context.getProperty(AbstractMorphNodeFeature.MORPH_ELEMENT) != null && context.getProperty(AbstractMorphNodeFeature.MORPH_ELEMENT) == Boolean.TRUE) {
 			return;
 		}
 		
@@ -297,7 +297,7 @@ public abstract class AbstractAddBpmnShapeFeature<T extends BaseElement> extends
 			int x = addContext.getX();
 			int y = addContext.getY();
 			
-			if (context.getProperty(MORPH_ELEMENT_TYPE) == null || context.getProperty(MORPH_ELEMENT_TYPE) == Boolean.FALSE) {
+			if (context.getProperty(AbstractMorphNodeFeature.MORPH_ELEMENT) == null || context.getProperty(AbstractMorphNodeFeature.MORPH_ELEMENT) == Boolean.FALSE) {
 				x = x - width / 2;
 				y = y - height / 2;
 			}

@@ -25,8 +25,11 @@ import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.IReason;
 import org.eclipse.graphiti.features.IUpdateFeature;
+import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.context.impl.UpdateContext;
+import org.eclipse.graphiti.features.impl.Reason;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
@@ -37,7 +40,10 @@ import org.eclipse.graphiti.services.Graphiti;
  */
 
 public abstract class AbstractUpdateEventFeature extends AbstractUpdateMarkerFeature<Event> {
-
+	
+	public static final String FORCE_UPDATE = "FORCE_UPDATE";
+	
+	
 	/**
 	 * @param fp
 	 */
@@ -45,6 +51,19 @@ public abstract class AbstractUpdateEventFeature extends AbstractUpdateMarkerFea
 		super(fp);
 	}
 
+	@Override
+    public IReason updateNeeded(IUpdateContext context) {
+		if (super.updateNeeded(context).toBoolean()) {
+			return Reason.createTrueReason();
+		}
+		
+		if (context.getProperty(FORCE_UPDATE) != null && context.getProperty(FORCE_UPDATE) == Boolean.TRUE) {
+			return Reason.createTrueReason();
+		}
+		
+		return Reason.createFalseReason();
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.camunda.bpm.modeler.features.activity.AbstractUpdateMarkerFeature#isPropertyChanged(org.eclipse.bpmn2.FlowElement, java.lang.String)
 	 */

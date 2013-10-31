@@ -89,7 +89,7 @@ public class ImageProvider extends AbstractImageProvider {
 	public static final String IMG_16_MESSAGE_FLOW = PREFIX + MessageFlow.class.getSimpleName().toLowerCase() + dot16;
 	public static final String IMG_16_INTERMEDIATE_CATCH_EVENT = PREFIX
 	        + IntermediateCatchEvent.class.getSimpleName().toLowerCase() + dot16;
-	public static final String IMG_16_INTERMEDIATE_THORW_EVENT = PREFIX
+	public static final String IMG_16_INTERMEDIATE_THROW_EVENT = PREFIX
 	        + IntermediateThrowEvent.class.getSimpleName().toLowerCase() + dot16;
 	public static final String IMG_16_COMPLEX_GATEWAY = PREFIX + ComplexGateway.class.getSimpleName().toLowerCase()
 	        + dot16;
@@ -106,15 +106,27 @@ public class ImageProvider extends AbstractImageProvider {
 	public static final String IMG_16_TIMER = PREFIX + TimerEventDefinition.class.getSimpleName().toLowerCase() + dot16;
 	public static final String IMG_16_SIGNAL = PREFIX + SignalEventDefinition.class.getSimpleName().toLowerCase()
 	        + dot16;
+	public static final String IMG_16_SIGNAL_THROW = PREFIX + SignalEventDefinition.class.getSimpleName().toLowerCase()
+	        + "throw" + dot16;
 	public static final String IMG_16_MESSAGE = PREFIX + MessageEventDefinition.class.getSimpleName().toLowerCase()
 	        + dot16;
+	public static final String IMG_16_MESSAGE_THROW = PREFIX + MessageEventDefinition.class.getSimpleName().toLowerCase()
+	        + "throw" + dot16;
 	public static final String IMG_16_ESCAlATION = PREFIX
 	        + EscalationEventDefinition.class.getSimpleName().toLowerCase() + dot16;
+	public static final String IMG_16_ESCAlATION_THROW = PREFIX
+	        + EscalationEventDefinition.class.getSimpleName().toLowerCase() + "throw" + dot16;	
 	public static final String IMG_16_COMPENSATE = PREFIX
 	        + CompensateEventDefinition.class.getSimpleName().toLowerCase() + dot16;
+	public static final String IMG_16_COMPENSATE_THROW = PREFIX
+	        + CompensateEventDefinition.class.getSimpleName().toLowerCase() + "throw" + dot16;
 	public static final String IMG_16_LINK = PREFIX + LinkEventDefinition.class.getSimpleName().toLowerCase() + dot16;
+	public static final String IMG_16_LINK_THROW = PREFIX + LinkEventDefinition.class.getSimpleName().toLowerCase() + "throw" +dot16;
 	public static final String IMG_16_ERROR = PREFIX + ErrorEventDefinition.class.getSimpleName().toLowerCase() + dot16;
+	public static final String IMG_16_ERROR_THROW = PREFIX + ErrorEventDefinition.class.getSimpleName().toLowerCase() + "throw" + dot16;
 	public static final String IMG_16_CANCEL = PREFIX + CancelEventDefinition.class.getSimpleName().toLowerCase()
+	        + dot16;
+	public static final String IMG_16_CANCEL_THROW = PREFIX + CancelEventDefinition.class.getSimpleName().toLowerCase() + "throw"
 	        + dot16;
 	public static final String IMG_16_BOUNDARY_EVENT = PREFIX + BoundaryEvent.class.getSimpleName().toLowerCase()
 	        + dot16;
@@ -173,7 +185,7 @@ public class ImageProvider extends AbstractImageProvider {
 		addImageFilePath(IMG_16_EVENT_BASED_GATEWAY, ICONS_16 + "EventBasedGateway.png");
 		addImageFilePath(IMG_16_MESSAGE_FLOW, ICONS_16 + "MessageFlow.png");
 		addImageFilePath(IMG_16_INTERMEDIATE_CATCH_EVENT, ICONS_16 + "IntermediateThrowEvent.png");
-		addImageFilePath(IMG_16_INTERMEDIATE_THORW_EVENT, ICONS_16 + "IntermediateThrowEvent.png");
+		addImageFilePath(IMG_16_INTERMEDIATE_THROW_EVENT, ICONS_16 + "IntermediateThrowEvent.png");
 		addImageFilePath(IMG_16_COMPLEX_GATEWAY, ICONS_16 + "ComplexGateway.png");
 		addImageFilePath(IMG_16_USER_TASK, ICONS_16 + "UserTask.png");
 		addImageFilePath(IMG_16_MANUAL_TASK, ICONS_16 + "ManualTask.png");
@@ -185,12 +197,19 @@ public class ImageProvider extends AbstractImageProvider {
 		addImageFilePath(IMG_16_CONDITION, ICONS_16 + "Condition.png");
 		addImageFilePath(IMG_16_TIMER, ICONS_16 + "Timer.png");
 		addImageFilePath(IMG_16_SIGNAL, ICONS_16 + "Signal.png");
+		addImageFilePath(IMG_16_SIGNAL_THROW, ICONS_16 + "SignalThrow.png");
 		addImageFilePath(IMG_16_MESSAGE, ICONS_16 + "Message.png");
+		addImageFilePath(IMG_16_MESSAGE_THROW, ICONS_16 + "MessageThrow.png");
 		addImageFilePath(IMG_16_ESCAlATION, ICONS_16 + "Escalation.png");
+		addImageFilePath(IMG_16_ESCAlATION_THROW, ICONS_16 + "EscalationThrow.png");
 		addImageFilePath(IMG_16_COMPENSATE, ICONS_16 + "Compensate.png");
+		addImageFilePath(IMG_16_COMPENSATE_THROW, ICONS_16 + "CompensateThrow.png");
 		addImageFilePath(IMG_16_LINK, ICONS_16 + "Link.png");
+		addImageFilePath(IMG_16_LINK_THROW, ICONS_16 + "LinkThrow.png");
 		addImageFilePath(IMG_16_ERROR, ICONS_16 + "Error.png");
+		addImageFilePath(IMG_16_ERROR_THROW, ICONS_16 + "ErrorThrow.png");
 		addImageFilePath(IMG_16_CANCEL, ICONS_16 + "Cancel.png");
+		addImageFilePath(IMG_16_CANCEL_THROW, ICONS_16 + "CancelThrow.png");
 		addImageFilePath(IMG_16_BOUNDARY_EVENT, ICONS_16 + "BoundaryEvent.png");
 		addImageFilePath(IMG_16_SUB_PROCESS, ICONS_16 + "SubProcess.png");
 		addImageFilePath(IMG_16_AD_HOC_SUB_PROCESS, ICONS_16 + "AdHocSubProcess.png");

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions targetNamespace="http://activiti.org/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="_spbTUECkEeOldL_rsmrygQ">
+  <bpmn2:process id="Process_1" isExecutable="false">
+    <bpmn2:intermediateCatchEvent id="IntermediateCatchEvent_1" name="Intermediate Catch Event">
+      <bpmn2:timerEventDefinition id="TimerEventDefinition_1">
+        <bpmn2:timeDate xsi:type="bpmn2:tFormalExpression">test</bpmn2:timeDate>
+      </bpmn2:timerEventDefinition>
+    </bpmn2:intermediateCatchEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="_BPMNShape_IntermediateCatchEvent_2" bpmnElement="IntermediateCatchEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="332.0" y="70.0"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

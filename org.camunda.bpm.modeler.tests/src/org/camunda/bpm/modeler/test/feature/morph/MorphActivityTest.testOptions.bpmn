@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions targetNamespace="http://activiti.org/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="_lMMQMEFpEeOGupZF-2P0hQ">
+  <bpmn2:process id="Process_1" isExecutable="false">
+    <bpmn2:task id="Task_1" name="Task"/>
+    <bpmn2:manualTask id="ManualTask_1" name="Manual Task"/>
+    <bpmn2:userTask id="UserTask_1" name="User Task"/>
+    <bpmn2:scriptTask id="ScriptTask_1" name="Script Task"/>
+    <bpmn2:businessRuleTask id="BusinessRuleTask_1" name="Business Rule Task"/>
+    <bpmn2:serviceTask id="ServiceTask_1" name="Service Task"/>
+    <bpmn2:sendTask id="SendTask_1" name="Send Task"/>
+    <bpmn2:receiveTask id="ReceiveTask_1" name="Receive Task"/>
+    <bpmn2:callActivity id="CallActivity_1" name="Call Activity"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="_BPMNShape_Task_9" bpmnElement="Task_1">
+        <dc:Bounds height="80.0" width="100.0" x="84.0" y="36.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_ManualTask_3" bpmnElement="ManualTask_1">
+        <dc:Bounds height="80.0" width="100.0" x="84.0" y="144.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_UserTask_3" bpmnElement="UserTask_1">
+        <dc:Bounds height="80.0" width="100.0" x="84.0" y="240.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_ScriptTask_3" bpmnElement="ScriptTask_1">
+        <dc:Bounds height="80.0" width="100.0" x="84.0" y="336.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_BusinessRuleTask_3" bpmnElement="BusinessRuleTask_1">
+        <dc:Bounds height="80.0" width="100.0" x="84.0" y="432.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_ServiceTask_4" bpmnElement="ServiceTask_1">
+        <dc:Bounds height="80.0" width="100.0" x="84.0" y="528.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_SendTask_3" bpmnElement="SendTask_1">
+        <dc:Bounds height="80.0" width="100.0" x="84.0" y="624.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_ReceiveTask_3" bpmnElement="ReceiveTask_1">
+        <dc:Bounds height="80.0" width="100.0" x="84.0" y="720.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_CallActivity_3" bpmnElement="CallActivity_1" isExpanded="true">
+        <dc:Bounds height="80.0" width="100.0" x="84.0" y="816.0"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

@@ -2,6 +2,7 @@ package org.camunda.bpm.modeler.test.util.operations;
 
 import org.camunda.bpm.modeler.core.utils.ContextUtil;
 import org.camunda.bpm.modeler.ui.features.AbstractMorphNodeFeature;
+import org.camunda.bpm.modeler.ui.features.AbstractMorphNodeFeature.MorphOption;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.context.impl.CustomContext;
@@ -30,9 +31,15 @@ public abstract class AbstractMorphFlowNodeOperation<T extends ICustomFeature, V
 	}
 	
 	public V to(EClass newType) {
-		ContextUtil.set(context, AbstractMorphNodeFeature.CREATE_MODE, newType);
+		MorphOption option = new MorphOption(newType.getName(), newType);
+		ContextUtil.set(context, AbstractMorphNodeFeature.CREATE_MODE, option);
 		
 		return myself;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public T getFeature() {
+		return (T) createFeature(context);
 	}
 	
 

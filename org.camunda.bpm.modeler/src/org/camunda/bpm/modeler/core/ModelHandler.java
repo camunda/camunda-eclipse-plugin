@@ -1101,20 +1101,6 @@ public class ModelHandler {
 	}
 
 	public static void initialize(Resource resource, EObject newObject) {
-		
-		Assert.isNotNull(newObject);
-		if (newObject.eClass().getEPackage() == Bpmn2Package.eINSTANCE) {
-			// Set appropriate default values for the object features here
-			switch (newObject.eClass().getClassifierID()) {
-			case Bpmn2Package.CONDITIONAL_EVENT_DEFINITION:
-				{
-					Expression expr = Bpmn2ModelerFactory.getInstance().createFormalExpression();
-					((ConditionalEventDefinition)newObject).setCondition(expr);
-				}
-				break;
-			}
-		}
-		
 		// if the object has an "id", assign it now.
 		ModelUtil.setID(newObject,resource);
 	}

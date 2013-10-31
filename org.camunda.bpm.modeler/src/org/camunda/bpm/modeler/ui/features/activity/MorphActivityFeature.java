@@ -13,8 +13,6 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.pictograms.Connection;
-import org.eclipse.graphiti.ui.services.GraphitiUi;
-import org.eclipse.graphiti.ui.services.IImageService;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.graphics.Image;
 
@@ -22,57 +20,6 @@ public class MorphActivityFeature extends AbstractMorphNodeFeature<Activity> {
 
 	public MorphActivityFeature(IFeatureProvider fp) {
 		super(fp);
-	}
-	
-	protected static class ActivityLabelProvider extends LabelProvider {
-		
-		@Override
-		public Image getImage(Object element) {
-			if (!(element instanceof EClass)) {
-				return null;
-			}
-			
-			IImageService imageService = GraphitiUi.getImageService();
-			EClass cls = (EClass) element;
-			
-			if (cls.equals(Bpmn2Package.eINSTANCE.getTask())) {
-				return imageService.getImageForId(ImageProvider.IMG_16_TASK);
-			}
-			
-			if (cls.equals(Bpmn2Package.eINSTANCE.getManualTask())) {
-				return imageService.getImageForId(ImageProvider.IMG_16_MANUAL_TASK);
-			}
-			
-			if (cls.equals(Bpmn2Package.eINSTANCE.getUserTask())) {
-				return imageService.getImageForId(ImageProvider.IMG_16_USER_TASK);
-			}
-			
-			if (cls.equals(Bpmn2Package.eINSTANCE.getScriptTask())) {
-				return imageService.getImageForId(ImageProvider.IMG_16_SCRIPT_TASK);
-			}
-			
-			if (cls.equals(Bpmn2Package.eINSTANCE.getBusinessRuleTask())) {
-				return imageService.getImageForId(ImageProvider.IMG_16_BUSINESS_RULE_TASK);
-			}
-			
-			if (cls.equals(Bpmn2Package.eINSTANCE.getServiceTask())) {
-				return imageService.getImageForId(ImageProvider.IMG_16_SERVICE_TASK);
-			}
-			
-			if (cls.equals(Bpmn2Package.eINSTANCE.getSendTask())) {
-				return imageService.getImageForId(ImageProvider.IMG_16_SEND_TASK);
-			}
-			
-			if (cls.equals(Bpmn2Package.eINSTANCE.getReceiveTask())) {
-				return imageService.getImageForId(ImageProvider.IMG_16_RECEIVE_TASK);
-			}
-			
-			if (cls.equals(Bpmn2Package.eINSTANCE.getCallActivity())) {
-				return imageService.getImageForId(ImageProvider.IMG_16_CALL_ACTIVITY);
-			}
-			
-			return null;
-		}		
 	}
 	
 	@Override
@@ -112,22 +59,22 @@ public class MorphActivityFeature extends AbstractMorphNodeFeature<Activity> {
 	}
 	
 	@Override
-	protected List<EClass> getAvailableTypes(EObject bo) {
-		List<EClass> availableTypes = super.getAvailableTypes(bo);
+	public List<MorphOption> getOptions(EObject bo) {
+		List<MorphOption> options = super.getOptions(bo);
 		
 		if (bo.eClass().equals(ModelPackage.eINSTANCE.getCallActivity())) {
 			
-			Iterator<EClass> iterator = availableTypes.iterator();
+			Iterator<MorphOption> iterator = options.iterator();
 			while(iterator.hasNext()) {
-				EClass currentCls = iterator.next();
-				if (currentCls.equals(Bpmn2Package.eINSTANCE.getCallActivity())) {
+				MorphOption currentOption = iterator.next();
+				if (currentOption.getNewType().equals(Bpmn2Package.eINSTANCE.getCallActivity())) {
 					iterator.remove();
 					break;
 				}
 			}
 		}
 		
-		return availableTypes;
+		return options;
 	}
 	
 	@Override
@@ -136,5 +83,55 @@ public class MorphActivityFeature extends AbstractMorphNodeFeature<Activity> {
 			labelProvider = new ActivityLabelProvider();
 		}
 		return labelProvider;
+	}
+	
+	protected class ActivityLabelProvider extends LabelProvider {
+		
+		@Override
+		public Image getImage(Object element) {
+			if (!(element instanceof MorphOption)) {
+				return null;
+			}
+			MorphOption option = (MorphOption) element;
+			EClass cls = option.getNewType();
+			
+			if (cls.equals(Bpmn2Package.eINSTANCE.getTask())) {
+				return getImageForId(ImageProvider.IMG_16_TASK);
+			}
+			
+			if (cls.equals(Bpmn2Package.eINSTANCE.getManualTask())) {
+				return getImageForId(ImageProvider.IMG_16_MANUAL_TASK);
+			}
+			
+			if (cls.equals(Bpmn2Package.eINSTANCE.getUserTask())) {
+				return getImageForId(ImageProvider.IMG_16_USER_TASK);
+			}
+			
+			if (cls.equals(Bpmn2Package.eINSTANCE.getScriptTask())) {
+				return getImageForId(ImageProvider.IMG_16_SCRIPT_TASK);
+			}
+			
+			if (cls.equals(Bpmn2Package.eINSTANCE.getBusinessRuleTask())) {
+				return getImageForId(ImageProvider.IMG_16_BUSINESS_RULE_TASK);
+			}
+			
+			if (cls.equals(Bpmn2Package.eINSTANCE.getServiceTask())) {
+				return getImageForId(ImageProvider.IMG_16_SERVICE_TASK);
+			}
+			
+			if (cls.equals(Bpmn2Package.eINSTANCE.getSendTask())) {
+				return getImageForId(ImageProvider.IMG_16_SEND_TASK);
+			}
+			
+			if (cls.equals(Bpmn2Package.eINSTANCE.getReceiveTask())) {
+				return getImageForId(ImageProvider.IMG_16_RECEIVE_TASK);
+			}
+			
+			if (cls.equals(Bpmn2Package.eINSTANCE.getCallActivity())) {
+				return getImageForId(ImageProvider.IMG_16_CALL_ACTIVITY);
+			}
+			
+			return null;
+		}		
 	}
 }
