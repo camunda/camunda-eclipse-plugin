@@ -21,7 +21,7 @@ import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.MessageEventDefinition;
 import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.SequenceFlow;
-import org.eclipse.bpmn2.TimerEventDefinition;
+import org.eclipse.bpmn2.SignalEventDefinition;
 import org.eclipse.bpmn2.Transaction;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -92,7 +92,7 @@ public class MorphEndEventFeatureTest extends AbstractFeatureTest {
 		EndEvent endEvent = (EndEvent) Util.findBusinessObjectById(diagram, "EndEvent_1");
 		Shape endEventShape = Util.findShapeByBusinessObjectId(diagram, "EndEvent_1");
 		
-		EClass newEventDefinitionType = Bpmn2Package.eINSTANCE.getTimerEventDefinition();
+		EClass newEventDefinitionType = Bpmn2Package.eINSTANCE.getSignalEventDefinition();
 		
 		// when
 		morphEndEvent(endEventShape, diagramTypeProvider)
@@ -101,9 +101,9 @@ public class MorphEndEventFeatureTest extends AbstractFeatureTest {
 		
 		// then
 		
-		EventDefinition timer = ModelUtil.getEventDefinition(endEvent, TimerEventDefinition.class);
+		EventDefinition signal = ModelUtil.getEventDefinition(endEvent, SignalEventDefinition.class);
 		
-		assertThat(timer)
+		assertThat(signal)
 			.isNotNull();
 	
 		// check the message flows

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
-import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.test.feature.AbstractFeatureTest;
 import org.camunda.bpm.modeler.test.util.DiagramResource;
 import org.camunda.bpm.modeler.test.util.Util;
