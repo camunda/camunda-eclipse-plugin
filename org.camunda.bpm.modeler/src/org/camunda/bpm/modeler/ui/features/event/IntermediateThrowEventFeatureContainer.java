@@ -28,6 +28,7 @@ import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.services.Graphiti;
@@ -73,6 +74,17 @@ public class IntermediateThrowEventFeatureContainer extends AbstractEventFeature
 						AbstractUpdateEventFeature.getEventDefinitionsValue(throwEvent));
 			}
 		};
+	}
+	
+	@Override
+	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
+		ICustomFeature[] superFeatures = super.getCustomFeatures(fp);
+		ICustomFeature[] thisFeatures = new ICustomFeature[1 + superFeatures.length];
+		int i;
+		for (i=0; i<superFeatures.length; ++i)
+			thisFeatures[i] = superFeatures[i];
+		thisFeatures[i++] = new MorphIntermediateThrowEventFeature(fp);
+		return thisFeatures;
 	}
 
 	public static class CreateIntermediateThrowEventFeature extends AbstractCreateEventFeature<IntermediateThrowEvent> {

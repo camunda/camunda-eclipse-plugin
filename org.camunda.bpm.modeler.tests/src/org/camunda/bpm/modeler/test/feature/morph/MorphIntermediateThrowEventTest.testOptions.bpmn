@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions targetNamespace="http://activiti.org/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="_yuHmUEF4EeOGn6HD133i5Q">
+  <bpmn2:process id="Process_1" isExecutable="false">
+    <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent_1" name="Intermediate Throw Event"/>
+    <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent_2" name="Intermediate Throw Event">
+      <bpmn2:messageEventDefinition id="_MessageEventDefinition_5"/>
+    </bpmn2:intermediateThrowEvent>
+    <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent_3" name="Intermediate Throw Event">
+      <bpmn2:signalEventDefinition id="_SignalEventDefinition_5"/>
+    </bpmn2:intermediateThrowEvent>
+    <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent_4" name="Intermediate Throw Event">
+      <bpmn2:escalationEventDefinition id="_EscalationEventDefinition_3"/>
+    </bpmn2:intermediateThrowEvent>
+    <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent_5" name="Intermediate Throw Event">
+      <bpmn2:compensateEventDefinition id="_CompensateEventDefinition_3" waitForCompletion="false"/>
+    </bpmn2:intermediateThrowEvent>
+    <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent_6" name="Intermediate Throw Event">
+      <bpmn2:linkEventDefinition id="_LinkEventDefinition_3"/>
+    </bpmn2:intermediateThrowEvent>
+    <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent_7" name="Intermediate Throw Event">
+      <bpmn2:messageEventDefinition id="_MessageEventDefinition_6"/>
+      <bpmn2:escalationEventDefinition id="EscalationEventDefinition_1"/>
+    </bpmn2:intermediateThrowEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="_BPMNShape_IntermediateThrowEvent_2" bpmnElement="IntermediateThrowEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="96.0" y="18.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="151.0" x="39.0" y="59.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_IntermediateThrowEvent_3" bpmnElement="IntermediateThrowEvent_2">
+        <dc:Bounds height="36.0" width="36.0" x="92.0" y="96.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_IntermediateThrowEvent_4" bpmnElement="IntermediateThrowEvent_3">
+        <dc:Bounds height="36.0" width="36.0" x="93.0" y="165.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_IntermediateThrowEvent_5" bpmnElement="IntermediateThrowEvent_4">
+        <dc:Bounds height="36.0" width="36.0" x="91.0" y="240.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_IntermediateThrowEvent_6" bpmnElement="IntermediateThrowEvent_5">
+        <dc:Bounds height="36.0" width="36.0" x="80.0" y="303.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_IntermediateThrowEvent_7" bpmnElement="IntermediateThrowEvent_6">
+        <dc:Bounds height="36.0" width="36.0" x="91.0" y="372.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="151.0" x="34.0" y="413.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_IntermediateThrowEvent_8" bpmnElement="IntermediateThrowEvent_7">
+        <dc:Bounds height="36.0" width="36.0" x="93.0" y="438.0"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
