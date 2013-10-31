@@ -12,6 +12,9 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.event;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import org.camunda.bpm.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.graphiti.features.IAddFeature;
@@ -24,6 +27,7 @@ import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
+import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.features.impl.DefaultResizeShapeFeature;
 
 public class BoundaryEventFeatureContainer extends AbstractEventFeatureContainer {
@@ -79,6 +83,20 @@ public class BoundaryEventFeatureContainer extends AbstractEventFeatureContainer
 	@Override
 	public IDeleteFeature getDeleteFeature(IFeatureProvider fp) {
 		return new AbstractDefaultDeleteFeature(fp);
+	}
+	
+	@Override
+	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
+		ICustomFeature[] superFeatures = super.getCustomFeatures(fp);
+		ICustomFeature[] thisFeatures = new ICustomFeature[1 + superFeatures.length];
+
+		int i;
+		for (i = 0; i < superFeatures.length; ++i) {
+			thisFeatures[i] = superFeatures[i];
+		}
+		
+		thisFeatures[i++] = new MorphBoundaryEventFeature(fp);
+		return thisFeatures;
 	}
 	
 }
