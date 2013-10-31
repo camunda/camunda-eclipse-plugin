@@ -122,11 +122,12 @@ public class EndEventFeatureContainer extends AbstractEventFeatureContainer {
 	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
 		ICustomFeature[] superFeatures = super.getCustomFeatures(fp);
 		List<ICustomFeature> thisFeatures = new ArrayList<ICustomFeature>();
-		int i;
 		for (ICustomFeature f : superFeatures) {
 			if (!(f instanceof AbstractAppendNodeNodeFeature))
 				thisFeatures.add(f);
 		}
+		thisFeatures.add(new MorphEndEventFeature(fp));
+		
 		return thisFeatures.toArray( new ICustomFeature[thisFeatures.size()] );
 	}
 }
