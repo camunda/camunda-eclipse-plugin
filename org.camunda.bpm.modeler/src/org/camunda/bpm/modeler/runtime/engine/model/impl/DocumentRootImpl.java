@@ -5,6 +5,7 @@ package org.camunda.bpm.modeler.runtime.engine.model.impl;
 import org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot;
 import org.camunda.bpm.modeler.runtime.engine.model.ExecutionListenerType;
 import org.camunda.bpm.modeler.runtime.engine.model.FieldType;
+import org.camunda.bpm.modeler.runtime.engine.model.FormDataType;
 import org.camunda.bpm.modeler.runtime.engine.model.FormPropertyType;
 import org.camunda.bpm.modeler.runtime.engine.model.HistoryType;
 import org.camunda.bpm.modeler.runtime.engine.model.InType;
@@ -57,6 +58,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.DocumentRootImpl#getPriority <em>Priority</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.DocumentRootImpl#getResultVariableName <em>Result Variable Name</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.DocumentRootImpl#getFailedJobRetryTimeCycle <em>Failed Job Retry Time Cycle</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.DocumentRootImpl#getFormData <em>Form Data</em>}</li>
  * </ul>
  * </p>
  *
@@ -442,6 +444,16 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
   protected String resultVariableName = RESULT_VARIABLE_NAME_EDEFAULT;
 
   /**
+	 * The cached value of the '{@link #getFormData() <em>Form Data</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getFormData()
+	 * @generated
+	 * @ordered
+	 */
+	protected FormDataType formData;
+
+		/**
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
@@ -1079,6 +1091,49 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 
   /**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public FormDataType getFormData() {
+		return formData;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetFormData(FormDataType newFormData, NotificationChain msgs) {
+		FormDataType oldFormData = formData;
+		formData = newFormData;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__FORM_DATA, oldFormData, newFormData);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setFormData(FormDataType newFormData) {
+		if (newFormData != formData) {
+			NotificationChain msgs = null;
+			if (formData != null)
+				msgs = ((InternalEObject)formData).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.DOCUMENT_ROOT__FORM_DATA, null, msgs);
+			if (newFormData != null)
+				msgs = ((InternalEObject)newFormData).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.DOCUMENT_ROOT__FORM_DATA, null, msgs);
+			msgs = basicSetFormData(newFormData, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__FORM_DATA, newFormData, newFormData));
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1099,6 +1154,8 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 				return basicSetTaskListener(null, msgs);
 			case ModelPackage.DOCUMENT_ROOT__FAILED_JOB_RETRY_TIME_CYCLE:
 				return basicSetFailedJobRetryTimeCycle(null, msgs);
+			case ModelPackage.DOCUMENT_ROOT__FORM_DATA:
+				return basicSetFormData(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -1161,6 +1218,8 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 				return getResultVariableName();
 			case ModelPackage.DOCUMENT_ROOT__FAILED_JOB_RETRY_TIME_CYCLE:
 				return getFailedJobRetryTimeCycle();
+			case ModelPackage.DOCUMENT_ROOT__FORM_DATA:
+				return getFormData();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -1247,6 +1306,9 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 				return;
 			case ModelPackage.DOCUMENT_ROOT__FAILED_JOB_RETRY_TIME_CYCLE:
 				setFailedJobRetryTimeCycle((FailedJobRetryTimeCycleType)newValue);
+				return;
+			case ModelPackage.DOCUMENT_ROOT__FORM_DATA:
+				setFormData((FormDataType)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -1335,6 +1397,9 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 			case ModelPackage.DOCUMENT_ROOT__FAILED_JOB_RETRY_TIME_CYCLE:
 				setFailedJobRetryTimeCycle((FailedJobRetryTimeCycleType)null);
 				return;
+			case ModelPackage.DOCUMENT_ROOT__FORM_DATA:
+				setFormData((FormDataType)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -1397,6 +1462,8 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 				return RESULT_VARIABLE_NAME_EDEFAULT == null ? resultVariableName != null : !RESULT_VARIABLE_NAME_EDEFAULT.equals(resultVariableName);
 			case ModelPackage.DOCUMENT_ROOT__FAILED_JOB_RETRY_TIME_CYCLE:
 				return getFailedJobRetryTimeCycle() != null;
+			case ModelPackage.DOCUMENT_ROOT__FORM_DATA:
+				return formData != null;
 		}
 		return super.eIsSet(featureID);
 	}

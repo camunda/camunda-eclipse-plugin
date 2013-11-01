@@ -5,7 +5,7 @@ import java.util.List;
 import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.ui.change.filter.FeatureChangeFilter;
-import org.camunda.bpm.modeler.ui.change.filter.NestedFeatureChangeFilter;
+import org.camunda.bpm.modeler.ui.change.filter.IsManyAttributeAnyChildChangeFilter;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.ContentProvider;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.DeleteRowHandler;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.AbstractDeleteRowHandler;
@@ -137,7 +137,7 @@ public class DefinitionsPropertiesBuilder extends AbstractPropertiesBuilder<Defi
 			.deleteRowHandler(deleteHandler)
 			.model(bo)
 			.changeFilter(
-				new NestedFeatureChangeFilter(bo, feature)
+				new IsManyAttributeAnyChildChangeFilter(bo, feature)
 					.or(new FeatureChangeFilter(bo, feature)));
 		
 		final TableViewer viewer = builder.build();

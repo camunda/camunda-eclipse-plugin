@@ -7,9 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.camunda.bpm.modeler.core.utils.ExtensionUtil;
+import org.camunda.bpm.modeler.runtime.engine.model.ConstraintType;
+import org.camunda.bpm.modeler.runtime.engine.model.FormDataType;
+import org.camunda.bpm.modeler.runtime.engine.model.FormFieldType;
 import org.camunda.bpm.modeler.runtime.engine.model.InType;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelFactory;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
+import org.camunda.bpm.modeler.runtime.engine.model.PropertiesType;
+import org.camunda.bpm.modeler.runtime.engine.model.PropertyType;
+import org.camunda.bpm.modeler.runtime.engine.model.ValidationType;
+import org.camunda.bpm.modeler.runtime.engine.model.ValueType;
 import org.camunda.bpm.modeler.runtime.engine.model.fox.FailedJobRetryTimeCycleType;
 import org.camunda.bpm.modeler.runtime.engine.model.fox.FoxFactory;
 import org.camunda.bpm.modeler.runtime.engine.model.fox.FoxPackage;
@@ -18,9 +25,10 @@ import org.camunda.bpm.modeler.runtime.engine.util.AttributeUtil;
 import org.camunda.bpm.modeler.test.feature.AbstractNonTransactionalFeatureTest;
 import org.camunda.bpm.modeler.test.util.DiagramResource;
 import org.camunda.bpm.modeler.ui.change.AbstractEObjectChangeSupport;
+import org.camunda.bpm.modeler.ui.change.filter.AnyNestedChangeFilter;
 import org.camunda.bpm.modeler.ui.change.filter.ExtensionChangeFilter;
 import org.camunda.bpm.modeler.ui.change.filter.FeatureChangeFilter;
-import org.camunda.bpm.modeler.ui.change.filter.NestedFeatureChangeFilter;
+import org.camunda.bpm.modeler.ui.change.filter.IsManyAttributeAnyChildChangeFilter;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallActivity;
@@ -29,9 +37,12 @@ import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.bpmn2.Task;
+import org.eclipse.bpmn2.UserTask;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.NotificationFilter;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -44,6 +55,9 @@ import org.junit.Test;
  */
 public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 
+	private static final EReference FORM_FIELD_VALIDATION_FEATURE = ModelPackage.eINSTANCE.getFormFieldType_Validation();
+	private static final EReference FORM_FIELD_PROPERTIES_FEATURE = ModelPackage.eINSTANCE.getFormFieldType_Properties();
+	private static final EReference FORM_FIELD_VALUE_FEATURE = ModelPackage.eINSTANCE.getFormFieldType_Value();
 	static final FoxFactory foxFactory = FoxFactory.eINSTANCE;
 	static final FoxPackage foxPackage = FoxPackage.eINSTANCE;
 	
@@ -442,9 +456,208 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 
 		assertThat(listener.getCapturedEvents()).hasSize(1);
 	}
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/ui/change/FormFieldAddChangeSupportTest.bpmn")
+	public void testFormFieldValueElementAdd() {
+		final UserTask userTask = findBusinessObjectById(diagram, "UserTask_1", UserTask.class);
+
+		List<FormDataType> formDataTypeList = ExtensionUtil.getExtensions(userTask, FormDataType.class);
+		assertThat(formDataTypeList).hasSize(1);
+
+		EList<FormFieldType> formFieldList = formDataTypeList.get(0).getFormField();
+		assertThat(formFieldList).hasSize(1);
+		
+		final FormFieldType formFieldType = formFieldList.get(0);
+		assertThat(formFieldType).isNotNull();
+
+		FeatureChangeFilter filter = new FeatureChangeFilter(formFieldType, FORM_FIELD_VALUE_FEATURE);
+		CustomResourceSetListener listener = new CustomResourceSetListener(formFieldType, filter);
+		listener.register();
+
+		transactionalExecute(new RecordingCommand(editingDomain) {
+
+			@Override
+			protected void doExecute() {
+				ValueType formFieldValueType = ModelFactory.eINSTANCE.createValueType();
+				formFieldValueType.setId("test");
+				formFieldValueType.setName("test");
+				formFieldType.getValue().add(formFieldValueType);
+			}
+		});
+
+		assertThat(listener.getCapturedEvents()).hasSize(1);
+	}
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/ui/change/FormFieldEditAndRemoveChangeSupportTest.bpmn")
+	public void testFormFieldValueElementRemove() {
+		final UserTask userTask = findBusinessObjectById(diagram, "UserTask_1", UserTask.class);
+
+		List<FormDataType> formDataTypeList = ExtensionUtil.getExtensions(userTask, FormDataType.class);
+		assertThat(formDataTypeList).hasSize(1);
+
+		EList<FormFieldType> formFieldList = formDataTypeList.get(0).getFormField();
+		assertThat(formFieldList).hasSize(1);
+		
+		final FormFieldType formFieldType = formFieldList.get(0);
+		assertThat(formFieldType).isNotNull();
+
+		FeatureChangeFilter filter = new FeatureChangeFilter(formFieldType, FORM_FIELD_VALUE_FEATURE);
+		CustomResourceSetListener listener = new CustomResourceSetListener(formFieldType, filter);
+		listener.register();
+
+		assertThat(formFieldType.getValue()).hasSize(3);
+
+		transactionalExecute(new RecordingCommand(editingDomain) {
+
+			@Override
+			protected void doExecute() {
+				formFieldType.getValue().remove(0);
+			}
+		});
+
+		assertThat(listener.getCapturedEvents()).hasSize(1);
+	}
 	
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/ui/change/FormFieldAddChangeSupportTest.bpmn")
+	public void testFormFieldPropertiesElementAdd() {
+		final UserTask userTask = findBusinessObjectById(diagram, "UserTask_1", UserTask.class);
+
+		List<FormDataType> formDataTypeList = ExtensionUtil.getExtensions(userTask, FormDataType.class);
+		assertThat(formDataTypeList).hasSize(1);
+
+		EList<FormFieldType> formFieldList = formDataTypeList.get(0).getFormField();
+		assertThat(formFieldList).hasSize(1);
+		
+		final FormFieldType formFieldType = formFieldList.get(0);
+		assertThat(formFieldType).isNotNull();
+		
+		assertThat(formFieldType.getProperties()).isNull();
+
+		FeatureChangeFilter filter = new FeatureChangeFilter(formFieldType, FORM_FIELD_PROPERTIES_FEATURE);
+		CustomResourceSetListener listener = new CustomResourceSetListener(formFieldType, filter);
+		listener.register();
+
+		transactionalExecute(new RecordingCommand(editingDomain) {
+
+			@Override
+			protected void doExecute() {
+				PropertiesType propertiesType = ModelFactory.eINSTANCE.createPropertiesType();
+				PropertyType propertyType = ModelFactory.eINSTANCE.createPropertyType();
+				propertyType.setId("test");
+				propertyType.setValue("test");
+				
+				propertiesType.getProperty().add(propertyType);
+				formFieldType.setProperties(propertiesType);
+			}
+		});
+
+		assertThat(listener.getCapturedEvents()).hasSize(1);
+	}
+	
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/ui/change/FormFieldEditAndRemoveChangeSupportTest.bpmn")
+	public void testFormFieldPropertiesElementRemove() {
+		final UserTask userTask = findBusinessObjectById(diagram, "UserTask_1", UserTask.class);
+
+		List<FormDataType> formDataTypeList = ExtensionUtil.getExtensions(userTask, FormDataType.class);
+		assertThat(formDataTypeList).hasSize(1);
+
+		EList<FormFieldType> formFieldList = formDataTypeList.get(0).getFormField();
+		assertThat(formFieldList).hasSize(1);
+		
+		final FormFieldType formFieldType = formFieldList.get(0);
+		assertThat(formFieldType).isNotNull();		
+
+		assertThat(formFieldType.getProperties()).isNotNull();
+
+		FeatureChangeFilter filter = new FeatureChangeFilter(formFieldType, FORM_FIELD_PROPERTIES_FEATURE);
+		CustomResourceSetListener listener = new CustomResourceSetListener(formFieldType, filter);
+		listener.register();
+
+		transactionalExecute(new RecordingCommand(editingDomain) {
+
+			@Override
+			protected void doExecute() {
+				formFieldType.eUnset(FORM_FIELD_PROPERTIES_FEATURE);
+			}
+		});
+
+		assertThat(listener.getCapturedEvents()).hasSize(1);
+	}	
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/ui/change/FormFieldAddChangeSupportTest.bpmn")
+	public void testFormFieldValidationElementAdd() {
+		final UserTask userTask = findBusinessObjectById(diagram, "UserTask_1", UserTask.class);
+
+		List<FormDataType> formDataTypeList = ExtensionUtil.getExtensions(userTask, FormDataType.class);
+		assertThat(formDataTypeList).hasSize(1);
+
+		EList<FormFieldType> formFieldList = formDataTypeList.get(0).getFormField();
+		assertThat(formFieldList).hasSize(1);
+		
+		final FormFieldType formFieldType = formFieldList.get(0);
+		assertThat(formFieldType).isNotNull();		
+
+		assertThat(formFieldType.getValidation()).isNull();
+
+		FeatureChangeFilter filter = new FeatureChangeFilter(formFieldType, FORM_FIELD_VALIDATION_FEATURE);
+		CustomResourceSetListener listener = new CustomResourceSetListener(formFieldType, filter);
+		listener.register();
+
+		transactionalExecute(new RecordingCommand(editingDomain) {
+
+			@Override
+			protected void doExecute() {
+				ValidationType validationType = ModelFactory.eINSTANCE.createValidationType();
+				ConstraintType constraintType = ModelFactory.eINSTANCE.createConstraintType();
+				constraintType.setName("test");
+				constraintType.setConfig("test");
+				
+				validationType.getConstraint().add(constraintType);
+				formFieldType.setValidation(validationType);
+			}
+		});
+
+		assertThat(listener.getCapturedEvents()).hasSize(1);
+	}
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/ui/change/FormFieldEditAndRemoveChangeSupportTest.bpmn")
+	public void testFormFieldValidationElementRemove() {
+		final UserTask userTask = findBusinessObjectById(diagram, "UserTask_1", UserTask.class);
+
+		List<FormDataType> formDataTypeList = ExtensionUtil.getExtensions(userTask, FormDataType.class);
+		assertThat(formDataTypeList).hasSize(1);
+
+		EList<FormFieldType> formFieldList = formDataTypeList.get(0).getFormField();
+		assertThat(formFieldList).hasSize(1);
+		
+		final FormFieldType formFieldType = formFieldList.get(0);
+		assertThat(formFieldType).isNotNull();		
+
+		assertThat(formFieldType.getValidation()).isNotNull();
+
+		FeatureChangeFilter filter = new FeatureChangeFilter(formFieldType, FORM_FIELD_VALIDATION_FEATURE);
+		CustomResourceSetListener listener = new CustomResourceSetListener(formFieldType, filter);
+		listener.register();
+
+		transactionalExecute(new RecordingCommand(editingDomain) {
+
+			@Override
+			protected void doExecute() {
+				formFieldType.eUnset(FORM_FIELD_VALIDATION_FEATURE);
+			}
+		});
+
+		assertThat(listener.getCapturedEvents()).hasSize(1);
+	}	
+
 	// nested list change support ///////////////////////////////////////
-	
+
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/ui/change/ChangeSupportTest.testBase.bpmn")
 	public void testListElementModifyNestedDetect() {
@@ -453,12 +666,12 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 
 		final Task task1 = findBusinessObjectById(diagram, "Task_1", Task.class);
 
-		NestedFeatureChangeFilter filter = new NestedFeatureChangeFilter(process1, FLOW_ELEMENTS_FEATURE);
-		
+		IsManyAttributeAnyChildChangeFilter filter = new IsManyAttributeAnyChildChangeFilter(process1, FLOW_ELEMENTS_FEATURE);
+
 		CustomResourceSetListener listener = new CustomResourceSetListener(process1, filter);
 		listener.register();
 
-		// check what happenes when other changes connected
+		// check what happens when other changes connected
 		// to flow elements occur
 		transactionalExecute(new RecordingCommand(editingDomain) {
 
@@ -470,7 +683,233 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 
 		assertThat(listener.getCapturedEvents()).hasSize(1);
 	}
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/ui/change/FormFieldEditAndRemoveChangeSupportTest.bpmn")
+	public void testFormFieldValueElementUpdate() {
+		final UserTask userTask = findBusinessObjectById(diagram, "UserTask_1", UserTask.class);
+
+		List<FormDataType> formDataTypeList = ExtensionUtil.getExtensions(userTask, FormDataType.class);
+		assertThat(formDataTypeList).hasSize(1);
+
+		EList<FormFieldType> formFieldList = formDataTypeList.get(0).getFormField();
+		assertThat(formFieldList).hasSize(1);
+		
+		final FormFieldType formFieldType = formFieldList.get(0);
+		assertThat(formFieldType).isNotNull();
+
+		IsManyAttributeAnyChildChangeFilter filter = new IsManyAttributeAnyChildChangeFilter(formFieldType, FORM_FIELD_VALUE_FEATURE);
+		CustomResourceSetListener listener = new CustomResourceSetListener(formFieldType, filter);
+		listener.register();
+
+		assertThat(formFieldType.getValue()).hasSize(3);
+		assertThat(formFieldType.getValue().get(0).getId()).isNotNull();
+
+		transactionalExecute(new RecordingCommand(editingDomain) {
+
+			@Override
+			protected void doExecute() {
+				formFieldType.getValue().get(0).setId("newValue");
+			}
+		});
+
+		assertThat(listener.getCapturedEvents()).hasSize(1);
+	}
 	
+	// any nested change support ///////////////////////////////////////
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/ui/change/FormFieldEditAndRemoveChangeSupportTest.bpmn")
+	public void testFormFieldPropertyElementAdd() {
+		final UserTask userTask = findBusinessObjectById(diagram, "UserTask_1", UserTask.class);
+
+		List<FormDataType> formDataTypeList = ExtensionUtil.getExtensions(userTask, FormDataType.class);
+		assertThat(formDataTypeList).hasSize(1);
+
+		EList<FormFieldType> formFieldList = formDataTypeList.get(0).getFormField();
+		assertThat(formFieldList).hasSize(1);
+		
+		final FormFieldType formFieldType = formFieldList.get(0);
+		assertThat(formFieldType).isNotNull();
+
+		assertThat(formFieldType.getProperties()).isNotNull();
+
+		AnyNestedChangeFilter filter = new AnyNestedChangeFilter(formFieldType, FORM_FIELD_PROPERTIES_FEATURE);
+		CustomResourceSetListener listener = new CustomResourceSetListener(formFieldType, filter);
+		listener.register();
+
+		transactionalExecute(new RecordingCommand(editingDomain) {
+
+			@Override
+			protected void doExecute() {
+				PropertyType propertyType = ModelFactory.eINSTANCE.createPropertyType();
+				propertyType.setId("test");
+				propertyType.setValue("test");
+				formFieldType.getProperties().getProperty().add(propertyType);
+			}
+		});
+
+		assertThat(listener.getCapturedEvents()).hasSize(1);
+	}	
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/ui/change/FormFieldEditAndRemoveChangeSupportTest.bpmn")
+	public void testFormFieldPropertyElementUpdate() {
+		final UserTask userTask = findBusinessObjectById(diagram, "UserTask_1", UserTask.class);
+
+		List<FormDataType> formDataTypeList = ExtensionUtil.getExtensions(userTask, FormDataType.class);
+		assertThat(formDataTypeList).hasSize(1);
+
+		EList<FormFieldType> formFieldList = formDataTypeList.get(0).getFormField();
+		assertThat(formFieldList).hasSize(1);
+		
+		final FormFieldType formFieldType = formFieldList.get(0);
+		assertThat(formFieldType).isNotNull();
+
+		assertThat(formFieldType.getProperties().getProperty().get(0).getId()).isNotNull();
+
+		AnyNestedChangeFilter filter = new AnyNestedChangeFilter(formFieldType, FORM_FIELD_PROPERTIES_FEATURE);
+		CustomResourceSetListener listener = new CustomResourceSetListener(formFieldType, filter);
+		listener.register();
+		
+		transactionalExecute(new RecordingCommand(editingDomain) {
+
+			@Override
+			protected void doExecute() {
+				formFieldType.getProperties().getProperty().get(0).setId("newValue");
+			}
+		});
+
+		assertThat(listener.getCapturedEvents()).hasSize(1);
+	}	
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/ui/change/FormFieldEditAndRemoveChangeSupportTest.bpmn")
+	public void testFormFieldPropertyElementRemove() {
+		final UserTask userTask = findBusinessObjectById(diagram, "UserTask_1", UserTask.class);
+
+		List<FormDataType> formDataTypeList = ExtensionUtil.getExtensions(userTask, FormDataType.class);
+		assertThat(formDataTypeList).hasSize(1);
+
+		EList<FormFieldType> formFieldList = formDataTypeList.get(0).getFormField();
+		assertThat(formFieldList).hasSize(1);
+		
+		final FormFieldType formFieldType = formFieldList.get(0);
+		assertThat(formFieldType).isNotNull();
+		
+		assertThat(formFieldType.getProperties().getProperty()).isNotNull();
+
+		AnyNestedChangeFilter filter = new AnyNestedChangeFilter(formFieldType, FORM_FIELD_PROPERTIES_FEATURE);
+		CustomResourceSetListener listener = new CustomResourceSetListener(formFieldType, filter);
+		listener.register();
+
+		transactionalExecute(new RecordingCommand(editingDomain) {
+
+			@Override
+			protected void doExecute() {
+				formFieldType.getProperties().getProperty().remove(0);
+			}
+		});
+
+		assertThat(listener.getCapturedEvents()).hasSize(1);
+	}
+	
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/ui/change/FormFieldEditAndRemoveChangeSupportTest.bpmn")
+	public void testFormFieldConstraintElementAdd() {
+		final UserTask userTask = findBusinessObjectById(diagram, "UserTask_1", UserTask.class);
+
+		List<FormDataType> formDataTypeList = ExtensionUtil.getExtensions(userTask, FormDataType.class);
+		assertThat(formDataTypeList).hasSize(1);
+
+		EList<FormFieldType> formFieldList = formDataTypeList.get(0).getFormField();
+		assertThat(formFieldList).hasSize(1);
+		
+		final FormFieldType formFieldType = formFieldList.get(0);
+		assertThat(formFieldType).isNotNull();
+
+		assertThat(formFieldType.getValidation()).isNotNull();
+
+		AnyNestedChangeFilter filter = new AnyNestedChangeFilter(formFieldType, FORM_FIELD_VALIDATION_FEATURE);
+		CustomResourceSetListener listener = new CustomResourceSetListener(formFieldType, filter);
+		listener.register();
+
+		transactionalExecute(new RecordingCommand(editingDomain) {
+
+			@Override
+			protected void doExecute() {
+				ConstraintType constraintType = ModelFactory.eINSTANCE.createConstraintType();
+				constraintType.setName("test");
+				constraintType.setConfig("test");
+				formFieldType.getValidation().getConstraint().add(constraintType);
+			}
+		});
+
+		assertThat(listener.getCapturedEvents()).hasSize(1);
+	}	
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/ui/change/FormFieldEditAndRemoveChangeSupportTest.bpmn")
+	public void testFormFieldConstraintElementUpdate() {
+		final UserTask userTask = findBusinessObjectById(diagram, "UserTask_1", UserTask.class);
+
+		List<FormDataType> formDataTypeList = ExtensionUtil.getExtensions(userTask, FormDataType.class);
+		assertThat(formDataTypeList).hasSize(1);
+
+		EList<FormFieldType> formFieldList = formDataTypeList.get(0).getFormField();
+		assertThat(formFieldList).hasSize(1);
+		
+		final FormFieldType formFieldType = formFieldList.get(0);
+		assertThat(formFieldType).isNotNull();
+
+		assertThat(formFieldType.getValidation().getConstraint().get(0).getName()).isNotNull();
+
+		AnyNestedChangeFilter filter = new AnyNestedChangeFilter(formFieldType, FORM_FIELD_VALIDATION_FEATURE);
+		CustomResourceSetListener listener = new CustomResourceSetListener(formFieldType, filter);
+		listener.register();
+		
+		transactionalExecute(new RecordingCommand(editingDomain) {
+
+			@Override
+			protected void doExecute() {
+				formFieldType.getValidation().getConstraint().get(0).setName("newValue");
+			}
+		});
+
+		assertThat(listener.getCapturedEvents()).hasSize(1);
+	}	
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/ui/change/FormFieldEditAndRemoveChangeSupportTest.bpmn")
+	public void testFormFieldConstraintElementRemove() {
+		final UserTask userTask = findBusinessObjectById(diagram, "UserTask_1", UserTask.class);
+
+		List<FormDataType> formDataTypeList = ExtensionUtil.getExtensions(userTask, FormDataType.class);
+		assertThat(formDataTypeList).hasSize(1);
+
+		EList<FormFieldType> formFieldList = formDataTypeList.get(0).getFormField();
+		assertThat(formFieldList).hasSize(1);
+		
+		final FormFieldType formFieldType = formFieldList.get(0);
+		assertThat(formFieldType).isNotNull();
+		
+		assertThat(formFieldType.getValidation().getConstraint()).isNotNull();
+
+		AnyNestedChangeFilter filter = new AnyNestedChangeFilter(formFieldType, FORM_FIELD_VALIDATION_FEATURE);
+		CustomResourceSetListener listener = new CustomResourceSetListener(formFieldType, filter);
+		listener.register();
+
+		transactionalExecute(new RecordingCommand(editingDomain) {
+
+			@Override
+			protected void doExecute() {
+				formFieldType.getValidation().getConstraint().remove(0);
+			}
+		});
+
+		assertThat(listener.getCapturedEvents()).hasSize(1);
+	}	
+
 	// utility classes ////////////////////////////////////////////////////
 	
 	private class CustomResourceSetListener extends AbstractEObjectChangeSupport {

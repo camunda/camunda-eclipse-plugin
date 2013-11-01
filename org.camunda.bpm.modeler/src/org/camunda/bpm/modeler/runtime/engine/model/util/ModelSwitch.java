@@ -12,6 +12,7 @@ import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.InteractionNode;
 
+import org.eclipse.bpmn2.Task;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 
@@ -81,6 +82,20 @@ public class ModelSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case ModelPackage.START_EVENT: {
+				StartEvent startEvent = (StartEvent)theEObject;
+				T result = caseStartEvent(startEvent);
+				if (result == null) result = caseBpmn2_StartEvent(startEvent);
+				if (result == null) result = caseFormDataContainer(startEvent);
+				if (result == null) result = caseCatchEvent(startEvent);
+				if (result == null) result = caseEvent(startEvent);
+				if (result == null) result = caseFlowNode(startEvent);
+				if (result == null) result = caseInteractionNode(startEvent);
+				if (result == null) result = caseFlowElement(startEvent);
+				if (result == null) result = caseBaseElement(startEvent);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case ModelPackage.EXECUTION_LISTENER_TYPE: {
 				ExecutionListenerType executionListenerType = (ExecutionListenerType)theEObject;
 				T result = caseExecutionListenerType(executionListenerType);
@@ -147,6 +162,62 @@ public class ModelSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case ModelPackage.FORM_DATA_TYPE: {
+				FormDataType formDataType = (FormDataType)theEObject;
+				T result = caseFormDataType(formDataType);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case ModelPackage.FORM_FIELD_TYPE: {
+				FormFieldType formFieldType = (FormFieldType)theEObject;
+				T result = caseFormFieldType(formFieldType);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case ModelPackage.PROPERTIES_TYPE: {
+				PropertiesType propertiesType = (PropertiesType)theEObject;
+				T result = casePropertiesType(propertiesType);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case ModelPackage.PROPERTY_TYPE: {
+				PropertyType propertyType = (PropertyType)theEObject;
+				T result = casePropertyType(propertyType);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case ModelPackage.VALIDATION_TYPE: {
+				ValidationType validationType = (ValidationType)theEObject;
+				T result = caseValidationType(validationType);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case ModelPackage.CONSTRAINT_TYPE: {
+				ConstraintType constraintType = (ConstraintType)theEObject;
+				T result = caseConstraintType(constraintType);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case ModelPackage.USER_TASK: {
+				UserTask userTask = (UserTask)theEObject;
+				T result = caseUserTask(userTask);
+				if (result == null) result = caseBpmn2_UserTask(userTask);
+				if (result == null) result = caseFormDataContainer(userTask);
+				if (result == null) result = caseTask(userTask);
+				if (result == null) result = caseActivity(userTask);
+				if (result == null) result = caseInteractionNode(userTask);
+				if (result == null) result = caseFlowNode(userTask);
+				if (result == null) result = caseFlowElement(userTask);
+				if (result == null) result = caseBaseElement(userTask);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case ModelPackage.FORM_DATA_CONTAINER: {
+				FormDataContainer formDataContainer = (FormDataContainer)theEObject;
+				T result = caseFormDataContainer(formDataContainer);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			default: return defaultCase(theEObject);
 		}
 	}
@@ -167,6 +238,21 @@ public class ModelSwitch<T> extends Switch<T> {
 	}
 
   /**
+	 * Returns the result of interpreting the object as an instance of '<em>Start Event</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Start Event</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseStartEvent(StartEvent object) {
+		return null;
+	}
+
+		/**
 	 * Returns the result of interpreting the object as an instance of '<em>Execution Listener Type</em>'.
 	 * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -302,6 +388,126 @@ public class ModelSwitch<T> extends Switch<T> {
 	}
 
   /**
+	 * Returns the result of interpreting the object as an instance of '<em>Form Data Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Form Data Type</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseFormDataType(FormDataType object) {
+		return null;
+	}
+
+		/**
+	 * Returns the result of interpreting the object as an instance of '<em>Form Field Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Form Field Type</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseFormFieldType(FormFieldType object) {
+		return null;
+	}
+
+		/**
+	 * Returns the result of interpreting the object as an instance of '<em>Properties Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Properties Type</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T casePropertiesType(PropertiesType object) {
+		return null;
+	}
+
+		/**
+	 * Returns the result of interpreting the object as an instance of '<em>Property Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Property Type</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T casePropertyType(PropertyType object) {
+		return null;
+	}
+
+		/**
+	 * Returns the result of interpreting the object as an instance of '<em>Validation Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Validation Type</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseValidationType(ValidationType object) {
+		return null;
+	}
+
+		/**
+	 * Returns the result of interpreting the object as an instance of '<em>Constraint Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Constraint Type</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseConstraintType(ConstraintType object) {
+		return null;
+	}
+
+		/**
+	 * Returns the result of interpreting the object as an instance of '<em>User Task</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>User Task</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseUserTask(UserTask object) {
+		return null;
+	}
+
+		/**
+	 * Returns the result of interpreting the object as an instance of '<em>Form Data Container</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Form Data Container</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseFormDataContainer(FormDataContainer object) {
+		return null;
+	}
+
+		/**
 	 * Returns the result of interpreting the object as an instance of '<em>Document Root</em>'.
 	 * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -437,6 +643,21 @@ public class ModelSwitch<T> extends Switch<T> {
 	}
 
   /**
+	 * Returns the result of interpreting the object as an instance of '<em>Start Event</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Start Event</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseBpmn2_StartEvent(org.eclipse.bpmn2.StartEvent object) {
+		return null;
+	}
+
+		/**
 	 * Returns the result of interpreting the object as an instance of '<em>Boundary Event</em>'.
 	 * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -452,6 +673,36 @@ public class ModelSwitch<T> extends Switch<T> {
 	}
 
   /**
+	 * Returns the result of interpreting the object as an instance of '<em>Task</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Task</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseTask(Task object) {
+		return null;
+	}
+
+		/**
+	 * Returns the result of interpreting the object as an instance of '<em>User Task</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>User Task</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseBpmn2_UserTask(org.eclipse.bpmn2.UserTask object) {
+		return null;
+	}
+
+		/**
 	 * Returns the result of interpreting the object as an instance of '<em>EObject</em>'.
 	 * <!-- begin-user-doc -->
    * This implementation returns null;

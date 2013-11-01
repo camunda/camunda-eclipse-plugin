@@ -8,6 +8,8 @@ package org.camunda.bpm.modeler.ui.property.tabs.util;
  */
 public class HelpText {
 
+	public static final String SUPPORTED_VERSION_NOTE = "This feature is supported for version 7.1 and higher.";
+
 	public static final String TABLE_HELP = "Add or remove table entry by right-click";
 	
 	public static final String TIME_DATE = "Date in ISO 8601 format (e.g. \"2011-03-11T12:13:14\")";

@@ -7,7 +7,8 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.FeatureMap;
 
 /**
- * Simple feature change filter
+ * Simple feature change filter that matches addition or removal of a
+ * feature value.
  * 
  * @author nico.rehwaldt
  */

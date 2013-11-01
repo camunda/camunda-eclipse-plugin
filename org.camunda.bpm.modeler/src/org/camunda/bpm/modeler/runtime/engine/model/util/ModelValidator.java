@@ -99,6 +99,8 @@ public class ModelValidator extends EObjectValidator {
 		switch (classifierID) {
 			case ModelPackage.DOCUMENT_ROOT:
 				return validateDocumentRoot((DocumentRoot)value, diagnostics, context);
+			case ModelPackage.START_EVENT:
+				return validateStartEvent((StartEvent)value, diagnostics, context);
 			case ModelPackage.EXECUTION_LISTENER_TYPE:
 				return validateExecutionListenerType((ExecutionListenerType)value, diagnostics, context);
 			case ModelPackage.FIELD_TYPE:
@@ -117,6 +119,22 @@ public class ModelValidator extends EObjectValidator {
 				return validateBoundaryEvent((BoundaryEvent)value, diagnostics, context);
 			case ModelPackage.VALUE_TYPE:
 				return validateValueType((ValueType)value, diagnostics, context);
+			case ModelPackage.FORM_DATA_TYPE:
+				return validateFormDataType((FormDataType)value, diagnostics, context);
+			case ModelPackage.FORM_FIELD_TYPE:
+				return validateFormFieldType((FormFieldType)value, diagnostics, context);
+			case ModelPackage.PROPERTIES_TYPE:
+				return validatePropertiesType((PropertiesType)value, diagnostics, context);
+			case ModelPackage.PROPERTY_TYPE:
+				return validatePropertyType((PropertyType)value, diagnostics, context);
+			case ModelPackage.VALIDATION_TYPE:
+				return validateValidationType((ValidationType)value, diagnostics, context);
+			case ModelPackage.CONSTRAINT_TYPE:
+				return validateConstraintType((ConstraintType)value, diagnostics, context);
+			case ModelPackage.USER_TASK:
+				return validateUserTask((UserTask)value, diagnostics, context);
+			case ModelPackage.FORM_DATA_CONTAINER:
+				return validateFormDataContainer((FormDataContainer)value, diagnostics, context);
 			case ModelPackage.EVENT_TYPE:
 				return validateEventType((EventType)value, diagnostics, context);
 			case ModelPackage.EVENT_TYPE1:
@@ -154,6 +172,15 @@ public class ModelValidator extends EObjectValidator {
 	}
 
   /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validateStartEvent(StartEvent startEvent, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(startEvent, diagnostics, context);
+	}
+
+		/**
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
@@ -235,6 +262,78 @@ public class ModelValidator extends EObjectValidator {
 	}
 
   /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validateFormDataType(FormDataType formDataType, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(formDataType, diagnostics, context);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validateFormFieldType(FormFieldType formFieldType, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(formFieldType, diagnostics, context);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validatePropertiesType(PropertiesType propertiesType, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(propertiesType, diagnostics, context);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validatePropertyType(PropertyType propertyType, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(propertyType, diagnostics, context);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validateValidationType(ValidationType validationType, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(validationType, diagnostics, context);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validateConstraintType(ConstraintType constraintType, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(constraintType, diagnostics, context);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validateUserTask(UserTask userTask, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(userTask, diagnostics, context);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validateFormDataContainer(FormDataContainer formDataContainer, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(formDataContainer, diagnostics, context);
+	}
+
+		/**
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated

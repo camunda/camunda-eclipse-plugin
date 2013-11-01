@@ -25,6 +25,7 @@ import org.camunda.bpm.modeler.core.property.TabDescriptor;
 import org.camunda.bpm.modeler.ui.property.tabs.DefinitionsTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.DocumentTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.EventTabSection;
+import org.camunda.bpm.modeler.ui.property.tabs.FormFieldsTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.GeneralTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.ListenerTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.MultiInstanceTabSection;
@@ -87,6 +88,12 @@ public class PropertiesTabDescriptorProvider implements ITabDescriptorProvider {
 					tabs.add(createListenerTabDescriptor());
 				}
 			}
+
+			// TODO: uncomment when camunda engine release exists to support this feature
+//			if (businessObject instanceof UserTask ||
+//			    businessObject instanceof StartEvent) {
+//				tabs.add(createFormTabDescriptor());
+//			}
 		}
 		
 		return tabs.toArray(new ITabDescriptor[]{});
@@ -125,4 +132,7 @@ public class PropertiesTabDescriptorProvider implements ITabDescriptorProvider {
 		return createTabDescriptor("documentTab", "Document", new DocumentTabSection());
 	}
 
+	private ITabDescriptor createFormTabDescriptor() {
+		return createTabDescriptor("formFieldsTab", "Form Fields", new FormFieldsTabSection());
+	}
 }

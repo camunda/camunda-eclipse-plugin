@@ -1540,15 +1540,241 @@ public interface ModelPackage extends EPackage {
   int DOCUMENT_ROOT__FAILED_JOB_RETRY_TIME_CYCLE = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 24;
 
   /**
+	 * The feature id for the '<em><b>Form Data</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__FORM_DATA = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 25;
+
+		/**
 	 * The number of structural features of the '<em>Document Root</em>' class.
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-  int DOCUMENT_ROOT_FEATURE_COUNT = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 25;
+  int DOCUMENT_ROOT_FEATURE_COUNT = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 26;
 
   /**
+	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.StartEventImpl <em>Start Event</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.StartEventImpl
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getStartEvent()
+	 * @generated
+	 */
+	int START_EVENT = 1;
+
+		/**
+	 * The feature id for the '<em><b>Extension Values</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int START_EVENT__EXTENSION_VALUES = Bpmn2Package.START_EVENT__EXTENSION_VALUES;
+
+		/**
+	 * The feature id for the '<em><b>Documentation</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int START_EVENT__DOCUMENTATION = Bpmn2Package.START_EVENT__DOCUMENTATION;
+
+		/**
+	 * The feature id for the '<em><b>Extension Definitions</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int START_EVENT__EXTENSION_DEFINITIONS = Bpmn2Package.START_EVENT__EXTENSION_DEFINITIONS;
+
+		/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int START_EVENT__ID = Bpmn2Package.START_EVENT__ID;
+
+		/**
+	 * The feature id for the '<em><b>Any Attribute</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int START_EVENT__ANY_ATTRIBUTE = Bpmn2Package.START_EVENT__ANY_ATTRIBUTE;
+
+		/**
+	 * The feature id for the '<em><b>Auditing</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int START_EVENT__AUDITING = Bpmn2Package.START_EVENT__AUDITING;
+
+		/**
+	 * The feature id for the '<em><b>Monitoring</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int START_EVENT__MONITORING = Bpmn2Package.START_EVENT__MONITORING;
+
+		/**
+	 * The feature id for the '<em><b>Category Value Ref</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int START_EVENT__CATEGORY_VALUE_REF = Bpmn2Package.START_EVENT__CATEGORY_VALUE_REF;
+
+		/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int START_EVENT__NAME = Bpmn2Package.START_EVENT__NAME;
+
+		/**
+	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int START_EVENT__INCOMING = Bpmn2Package.START_EVENT__INCOMING;
+
+		/**
+	 * The feature id for the '<em><b>Lanes</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int START_EVENT__LANES = Bpmn2Package.START_EVENT__LANES;
+
+		/**
+	 * The feature id for the '<em><b>Outgoing</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int START_EVENT__OUTGOING = Bpmn2Package.START_EVENT__OUTGOING;
+
+		/**
+	 * The feature id for the '<em><b>Incoming Conversation Links</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int START_EVENT__INCOMING_CONVERSATION_LINKS = Bpmn2Package.START_EVENT__INCOMING_CONVERSATION_LINKS;
+
+		/**
+	 * The feature id for the '<em><b>Outgoing Conversation Links</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int START_EVENT__OUTGOING_CONVERSATION_LINKS = Bpmn2Package.START_EVENT__OUTGOING_CONVERSATION_LINKS;
+
+		/**
+	 * The feature id for the '<em><b>Properties</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int START_EVENT__PROPERTIES = Bpmn2Package.START_EVENT__PROPERTIES;
+
+		/**
+	 * The feature id for the '<em><b>Data Outputs</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int START_EVENT__DATA_OUTPUTS = Bpmn2Package.START_EVENT__DATA_OUTPUTS;
+
+		/**
+	 * The feature id for the '<em><b>Data Output Association</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int START_EVENT__DATA_OUTPUT_ASSOCIATION = Bpmn2Package.START_EVENT__DATA_OUTPUT_ASSOCIATION;
+
+		/**
+	 * The feature id for the '<em><b>Output Set</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int START_EVENT__OUTPUT_SET = Bpmn2Package.START_EVENT__OUTPUT_SET;
+
+		/**
+	 * The feature id for the '<em><b>Event Definitions</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int START_EVENT__EVENT_DEFINITIONS = Bpmn2Package.START_EVENT__EVENT_DEFINITIONS;
+
+		/**
+	 * The feature id for the '<em><b>Event Definition Refs</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int START_EVENT__EVENT_DEFINITION_REFS = Bpmn2Package.START_EVENT__EVENT_DEFINITION_REFS;
+
+		/**
+	 * The feature id for the '<em><b>Parallel Multiple</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int START_EVENT__PARALLEL_MULTIPLE = Bpmn2Package.START_EVENT__PARALLEL_MULTIPLE;
+
+		/**
+	 * The feature id for the '<em><b>Is Interrupting</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int START_EVENT__IS_INTERRUPTING = Bpmn2Package.START_EVENT__IS_INTERRUPTING;
+
+		/**
+	 * The number of structural features of the '<em>Start Event</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int START_EVENT_FEATURE_COUNT = Bpmn2Package.START_EVENT_FEATURE_COUNT + 0;
+
+		/**
 	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.ExecutionListenerTypeImpl <em>Execution Listener Type</em>}' class.
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1556,7 +1782,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getExecutionListenerType()
 	 * @generated
 	 */
-  int EXECUTION_LISTENER_TYPE = 1;
+  int EXECUTION_LISTENER_TYPE = 2;
 
   /**
 	 * The feature id for the '<em><b>Group</b></em>' attribute list.
@@ -1629,7 +1855,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getFieldType()
 	 * @generated
 	 */
-  int FIELD_TYPE = 2;
+  int FIELD_TYPE = 3;
 
   /**
 	 * The feature id for the '<em><b>String</b></em>' attribute.
@@ -1693,7 +1919,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getFormPropertyType()
 	 * @generated
 	 */
-  int FORM_PROPERTY_TYPE = 3;
+  int FORM_PROPERTY_TYPE = 4;
 
   /**
 	 * The feature id for the '<em><b>Value</b></em>' containment reference list.
@@ -1820,7 +2046,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getInType()
 	 * @generated
 	 */
-  int IN_TYPE = 4;
+  int IN_TYPE = 5;
 
   /**
 	 * The feature id for the '<em><b>Source</b></em>' attribute.
@@ -1884,7 +2110,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getOutType()
 	 * @generated
 	 */
-  int OUT_TYPE = 5;
+  int OUT_TYPE = 6;
 
   /**
 	 * The feature id for the '<em><b>Source</b></em>' attribute.
@@ -1939,7 +2165,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getTaskListenerType()
 	 * @generated
 	 */
-  int TASK_LISTENER_TYPE = 6;
+  int TASK_LISTENER_TYPE = 7;
 
   /**
 	 * The feature id for the '<em><b>Group</b></em>' attribute list.
@@ -2012,7 +2238,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getCallActivity()
 	 * @generated
 	 */
-  int CALL_ACTIVITY = 7;
+  int CALL_ACTIVITY = 8;
 
   /**
 	 * The feature id for the '<em><b>Extension Values</b></em>' containment reference list.
@@ -2274,7 +2500,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getBoundaryEvent()
 	 * @generated
 	 */
-  int BOUNDARY_EVENT = 8;
+  int BOUNDARY_EVENT = 9;
 
   /**
 	 * The feature id for the '<em><b>Extension Values</b></em>' containment reference list.
@@ -2500,7 +2726,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getValueType()
 	 * @generated
 	 */
-  int VALUE_TYPE = 9;
+  int VALUE_TYPE = 10;
 
   /**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -2530,6 +2756,527 @@ public interface ModelPackage extends EPackage {
   int VALUE_TYPE_FEATURE_COUNT = 2;
 
   /**
+	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.FormDataTypeImpl <em>Form Data Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.FormDataTypeImpl
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getFormDataType()
+	 * @generated
+	 */
+	int FORM_DATA_TYPE = 11;
+
+		/**
+	 * The feature id for the '<em><b>Form Field</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FORM_DATA_TYPE__FORM_FIELD = 0;
+
+		/**
+	 * The number of structural features of the '<em>Form Data Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FORM_DATA_TYPE_FEATURE_COUNT = 1;
+
+		/**
+	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.FormFieldTypeImpl <em>Form Field Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.FormFieldTypeImpl
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getFormFieldType()
+	 * @generated
+	 */
+	int FORM_FIELD_TYPE = 12;
+
+		/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FORM_FIELD_TYPE__ID = 0;
+
+		/**
+	 * The feature id for the '<em><b>Label</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FORM_FIELD_TYPE__LABEL = 1;
+
+		/**
+	 * The feature id for the '<em><b>Type</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FORM_FIELD_TYPE__TYPE = 2;
+
+		/**
+	 * The feature id for the '<em><b>Default Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FORM_FIELD_TYPE__DEFAULT_VALUE = 3;
+
+		/**
+	 * The feature id for the '<em><b>Properties</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FORM_FIELD_TYPE__PROPERTIES = 4;
+
+		/**
+	 * The feature id for the '<em><b>Validation</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FORM_FIELD_TYPE__VALIDATION = 5;
+
+		/**
+	 * The feature id for the '<em><b>Value</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FORM_FIELD_TYPE__VALUE = 6;
+
+		/**
+	 * The number of structural features of the '<em>Form Field Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FORM_FIELD_TYPE_FEATURE_COUNT = 7;
+
+		/**
+	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.PropertiesTypeImpl <em>Properties Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.PropertiesTypeImpl
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getPropertiesType()
+	 * @generated
+	 */
+	int PROPERTIES_TYPE = 13;
+
+		/**
+	 * The feature id for the '<em><b>Property</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PROPERTIES_TYPE__PROPERTY = 0;
+
+		/**
+	 * The number of structural features of the '<em>Properties Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PROPERTIES_TYPE_FEATURE_COUNT = 1;
+
+		/**
+	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.PropertyTypeImpl <em>Property Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.PropertyTypeImpl
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getPropertyType()
+	 * @generated
+	 */
+	int PROPERTY_TYPE = 14;
+
+		/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PROPERTY_TYPE__ID = 0;
+
+		/**
+	 * The feature id for the '<em><b>Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PROPERTY_TYPE__VALUE = 1;
+
+		/**
+	 * The number of structural features of the '<em>Property Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PROPERTY_TYPE_FEATURE_COUNT = 2;
+
+		/**
+	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.ValidationTypeImpl <em>Validation Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ValidationTypeImpl
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getValidationType()
+	 * @generated
+	 */
+	int VALIDATION_TYPE = 15;
+
+		/**
+	 * The feature id for the '<em><b>Constraint</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int VALIDATION_TYPE__CONSTRAINT = 0;
+
+		/**
+	 * The number of structural features of the '<em>Validation Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int VALIDATION_TYPE_FEATURE_COUNT = 1;
+
+		/**
+	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.ConstraintTypeImpl <em>Constraint Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ConstraintTypeImpl
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getConstraintType()
+	 * @generated
+	 */
+	int CONSTRAINT_TYPE = 16;
+
+		/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONSTRAINT_TYPE__NAME = 0;
+
+		/**
+	 * The feature id for the '<em><b>Config</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONSTRAINT_TYPE__CONFIG = 1;
+
+		/**
+	 * The number of structural features of the '<em>Constraint Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONSTRAINT_TYPE_FEATURE_COUNT = 2;
+
+		/**
+	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.UserTaskImpl <em>User Task</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.UserTaskImpl
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getUserTask()
+	 * @generated
+	 */
+	int USER_TASK = 17;
+
+		/**
+	 * The feature id for the '<em><b>Extension Values</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__EXTENSION_VALUES = Bpmn2Package.USER_TASK__EXTENSION_VALUES;
+
+		/**
+	 * The feature id for the '<em><b>Documentation</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__DOCUMENTATION = Bpmn2Package.USER_TASK__DOCUMENTATION;
+
+		/**
+	 * The feature id for the '<em><b>Extension Definitions</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__EXTENSION_DEFINITIONS = Bpmn2Package.USER_TASK__EXTENSION_DEFINITIONS;
+
+		/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__ID = Bpmn2Package.USER_TASK__ID;
+
+		/**
+	 * The feature id for the '<em><b>Any Attribute</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__ANY_ATTRIBUTE = Bpmn2Package.USER_TASK__ANY_ATTRIBUTE;
+
+		/**
+	 * The feature id for the '<em><b>Auditing</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__AUDITING = Bpmn2Package.USER_TASK__AUDITING;
+
+		/**
+	 * The feature id for the '<em><b>Monitoring</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__MONITORING = Bpmn2Package.USER_TASK__MONITORING;
+
+		/**
+	 * The feature id for the '<em><b>Category Value Ref</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__CATEGORY_VALUE_REF = Bpmn2Package.USER_TASK__CATEGORY_VALUE_REF;
+
+		/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__NAME = Bpmn2Package.USER_TASK__NAME;
+
+		/**
+	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__INCOMING = Bpmn2Package.USER_TASK__INCOMING;
+
+		/**
+	 * The feature id for the '<em><b>Lanes</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__LANES = Bpmn2Package.USER_TASK__LANES;
+
+		/**
+	 * The feature id for the '<em><b>Outgoing</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__OUTGOING = Bpmn2Package.USER_TASK__OUTGOING;
+
+		/**
+	 * The feature id for the '<em><b>Io Specification</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__IO_SPECIFICATION = Bpmn2Package.USER_TASK__IO_SPECIFICATION;
+
+		/**
+	 * The feature id for the '<em><b>Boundary Event Refs</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__BOUNDARY_EVENT_REFS = Bpmn2Package.USER_TASK__BOUNDARY_EVENT_REFS;
+
+		/**
+	 * The feature id for the '<em><b>Properties</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__PROPERTIES = Bpmn2Package.USER_TASK__PROPERTIES;
+
+		/**
+	 * The feature id for the '<em><b>Data Input Associations</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__DATA_INPUT_ASSOCIATIONS = Bpmn2Package.USER_TASK__DATA_INPUT_ASSOCIATIONS;
+
+		/**
+	 * The feature id for the '<em><b>Data Output Associations</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__DATA_OUTPUT_ASSOCIATIONS = Bpmn2Package.USER_TASK__DATA_OUTPUT_ASSOCIATIONS;
+
+		/**
+	 * The feature id for the '<em><b>Resources</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__RESOURCES = Bpmn2Package.USER_TASK__RESOURCES;
+
+		/**
+	 * The feature id for the '<em><b>Loop Characteristics</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__LOOP_CHARACTERISTICS = Bpmn2Package.USER_TASK__LOOP_CHARACTERISTICS;
+
+		/**
+	 * The feature id for the '<em><b>Completion Quantity</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__COMPLETION_QUANTITY = Bpmn2Package.USER_TASK__COMPLETION_QUANTITY;
+
+		/**
+	 * The feature id for the '<em><b>Default</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__DEFAULT = Bpmn2Package.USER_TASK__DEFAULT;
+
+		/**
+	 * The feature id for the '<em><b>Is For Compensation</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__IS_FOR_COMPENSATION = Bpmn2Package.USER_TASK__IS_FOR_COMPENSATION;
+
+		/**
+	 * The feature id for the '<em><b>Start Quantity</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__START_QUANTITY = Bpmn2Package.USER_TASK__START_QUANTITY;
+
+		/**
+	 * The feature id for the '<em><b>Incoming Conversation Links</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__INCOMING_CONVERSATION_LINKS = Bpmn2Package.USER_TASK__INCOMING_CONVERSATION_LINKS;
+
+		/**
+	 * The feature id for the '<em><b>Outgoing Conversation Links</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__OUTGOING_CONVERSATION_LINKS = Bpmn2Package.USER_TASK__OUTGOING_CONVERSATION_LINKS;
+
+		/**
+	 * The feature id for the '<em><b>Renderings</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__RENDERINGS = Bpmn2Package.USER_TASK__RENDERINGS;
+
+		/**
+	 * The feature id for the '<em><b>Implementation</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK__IMPLEMENTATION = Bpmn2Package.USER_TASK__IMPLEMENTATION;
+
+		/**
+	 * The number of structural features of the '<em>User Task</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int USER_TASK_FEATURE_COUNT = Bpmn2Package.USER_TASK_FEATURE_COUNT + 0;
+
+		/**
+	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.FormDataContainerImpl <em>Form Data Container</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.FormDataContainerImpl
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getFormDataContainer()
+	 * @generated
+	 */
+	int FORM_DATA_CONTAINER = 18;
+
+		/**
+	 * The number of structural features of the '<em>Form Data Container</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FORM_DATA_CONTAINER_FEATURE_COUNT = 0;
+
+		/**
 	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.EventType <em>Event Type</em>}' enum.
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2537,7 +3284,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getEventType()
 	 * @generated
 	 */
-  int EVENT_TYPE = 10;
+  int EVENT_TYPE = 19;
 
   /**
 	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.EventType1 <em>Event Type1</em>}' enum.
@@ -2547,7 +3294,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getEventType1()
 	 * @generated
 	 */
-  int EVENT_TYPE1 = 11;
+  int EVENT_TYPE1 = 20;
 
   /**
 	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.HistoryType <em>History Type</em>}' enum.
@@ -2557,7 +3304,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getHistoryType()
 	 * @generated
 	 */
-  int HISTORY_TYPE = 12;
+  int HISTORY_TYPE = 21;
 
   /**
 	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.TypeType <em>Type Type</em>}' enum.
@@ -2567,7 +3314,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getTypeType()
 	 * @generated
 	 */
-  int TYPE_TYPE = 13;
+  int TYPE_TYPE = 22;
 
   /**
 	 * The meta object id for the '<em>Class Type</em>' data type.
@@ -2577,7 +3324,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getClassType()
 	 * @generated
 	 */
-  int CLASS_TYPE = 14;
+  int CLASS_TYPE = 23;
 
   /**
 	 * The meta object id for the '<em>Event Type Object</em>' data type.
@@ -2587,7 +3334,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getEventTypeObject()
 	 * @generated
 	 */
-  int EVENT_TYPE_OBJECT = 15;
+  int EVENT_TYPE_OBJECT = 24;
 
   /**
 	 * The meta object id for the '<em>Event Type Object1</em>' data type.
@@ -2597,7 +3344,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getEventTypeObject1()
 	 * @generated
 	 */
-  int EVENT_TYPE_OBJECT1 = 16;
+  int EVENT_TYPE_OBJECT1 = 25;
 
   /**
 	 * The meta object id for the '<em>Form Handler Class Type</em>' data type.
@@ -2607,7 +3354,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getFormHandlerClassType()
 	 * @generated
 	 */
-  int FORM_HANDLER_CLASS_TYPE = 17;
+  int FORM_HANDLER_CLASS_TYPE = 26;
 
   /**
 	 * The meta object id for the '<em>History Type Object</em>' data type.
@@ -2617,7 +3364,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getHistoryTypeObject()
 	 * @generated
 	 */
-  int HISTORY_TYPE_OBJECT = 18;
+  int HISTORY_TYPE_OBJECT = 27;
 
   /**
 	 * The meta object id for the '<em>TExpression</em>' data type.
@@ -2627,7 +3374,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getTExpression()
 	 * @generated
 	 */
-  int TEXPRESSION = 19;
+  int TEXPRESSION = 28;
 
   /**
 	 * The meta object id for the '<em>Type Type Object</em>' data type.
@@ -2637,7 +3384,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getTypeTypeObject()
 	 * @generated
 	 */
-  int TYPE_TYPE_OBJECT = 20;
+  int TYPE_TYPE_OBJECT = 29;
 
 
   /**
@@ -2926,6 +3673,27 @@ public interface ModelPackage extends EPackage {
   EReference getDocumentRoot_FailedJobRetryTimeCycle();
 
   /**
+	 * Returns the meta object for the containment reference '{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getFormData <em>Form Data</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Form Data</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getFormData()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EReference getDocumentRoot_FormData();
+
+		/**
+	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.StartEvent <em>Start Event</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Start Event</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.StartEvent
+	 * @generated
+	 */
+	EClass getStartEvent();
+
+		/**
 	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.ExecutionListenerType <em>Execution Listener Type</em>}'.
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3489,6 +4257,240 @@ public interface ModelPackage extends EPackage {
   EAttribute getValueType_Name();
 
   /**
+	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.FormDataType <em>Form Data Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Form Data Type</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.FormDataType
+	 * @generated
+	 */
+	EClass getFormDataType();
+
+		/**
+	 * Returns the meta object for the containment reference list '{@link org.camunda.bpm.modeler.runtime.engine.model.FormDataType#getFormField <em>Form Field</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Form Field</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.FormDataType#getFormField()
+	 * @see #getFormDataType()
+	 * @generated
+	 */
+	EReference getFormDataType_FormField();
+
+		/**
+	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.FormFieldType <em>Form Field Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Form Field Type</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.FormFieldType
+	 * @generated
+	 */
+	EClass getFormFieldType();
+
+		/**
+	 * Returns the meta object for the attribute '{@link org.camunda.bpm.modeler.runtime.engine.model.FormFieldType#getId <em>Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Id</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.FormFieldType#getId()
+	 * @see #getFormFieldType()
+	 * @generated
+	 */
+	EAttribute getFormFieldType_Id();
+
+		/**
+	 * Returns the meta object for the attribute '{@link org.camunda.bpm.modeler.runtime.engine.model.FormFieldType#getLabel <em>Label</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Label</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.FormFieldType#getLabel()
+	 * @see #getFormFieldType()
+	 * @generated
+	 */
+	EAttribute getFormFieldType_Label();
+
+		/**
+	 * Returns the meta object for the attribute '{@link org.camunda.bpm.modeler.runtime.engine.model.FormFieldType#getType <em>Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Type</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.FormFieldType#getType()
+	 * @see #getFormFieldType()
+	 * @generated
+	 */
+	EAttribute getFormFieldType_Type();
+
+		/**
+	 * Returns the meta object for the attribute '{@link org.camunda.bpm.modeler.runtime.engine.model.FormFieldType#getDefaultValue <em>Default Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Default Value</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.FormFieldType#getDefaultValue()
+	 * @see #getFormFieldType()
+	 * @generated
+	 */
+	EAttribute getFormFieldType_DefaultValue();
+
+		/**
+	 * Returns the meta object for the containment reference '{@link org.camunda.bpm.modeler.runtime.engine.model.FormFieldType#getProperties <em>Properties</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Properties</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.FormFieldType#getProperties()
+	 * @see #getFormFieldType()
+	 * @generated
+	 */
+	EReference getFormFieldType_Properties();
+
+		/**
+	 * Returns the meta object for the containment reference '{@link org.camunda.bpm.modeler.runtime.engine.model.FormFieldType#getValidation <em>Validation</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Validation</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.FormFieldType#getValidation()
+	 * @see #getFormFieldType()
+	 * @generated
+	 */
+	EReference getFormFieldType_Validation();
+
+		/**
+	 * Returns the meta object for the containment reference list '{@link org.camunda.bpm.modeler.runtime.engine.model.FormFieldType#getValue <em>Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Value</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.FormFieldType#getValue()
+	 * @see #getFormFieldType()
+	 * @generated
+	 */
+	EReference getFormFieldType_Value();
+
+		/**
+	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.PropertiesType <em>Properties Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Properties Type</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.PropertiesType
+	 * @generated
+	 */
+	EClass getPropertiesType();
+
+		/**
+	 * Returns the meta object for the containment reference list '{@link org.camunda.bpm.modeler.runtime.engine.model.PropertiesType#getProperty <em>Property</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Property</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.PropertiesType#getProperty()
+	 * @see #getPropertiesType()
+	 * @generated
+	 */
+	EReference getPropertiesType_Property();
+
+		/**
+	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.PropertyType <em>Property Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Property Type</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.PropertyType
+	 * @generated
+	 */
+	EClass getPropertyType();
+
+		/**
+	 * Returns the meta object for the attribute '{@link org.camunda.bpm.modeler.runtime.engine.model.PropertyType#getId <em>Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Id</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.PropertyType#getId()
+	 * @see #getPropertyType()
+	 * @generated
+	 */
+	EAttribute getPropertyType_Id();
+
+		/**
+	 * Returns the meta object for the attribute '{@link org.camunda.bpm.modeler.runtime.engine.model.PropertyType#getValue <em>Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Value</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.PropertyType#getValue()
+	 * @see #getPropertyType()
+	 * @generated
+	 */
+	EAttribute getPropertyType_Value();
+
+		/**
+	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.ValidationType <em>Validation Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Validation Type</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ValidationType
+	 * @generated
+	 */
+	EClass getValidationType();
+
+		/**
+	 * Returns the meta object for the containment reference list '{@link org.camunda.bpm.modeler.runtime.engine.model.ValidationType#getConstraint <em>Constraint</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Constraint</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ValidationType#getConstraint()
+	 * @see #getValidationType()
+	 * @generated
+	 */
+	EReference getValidationType_Constraint();
+
+		/**
+	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.ConstraintType <em>Constraint Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Constraint Type</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ConstraintType
+	 * @generated
+	 */
+	EClass getConstraintType();
+
+		/**
+	 * Returns the meta object for the attribute '{@link org.camunda.bpm.modeler.runtime.engine.model.ConstraintType#getName <em>Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Name</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ConstraintType#getName()
+	 * @see #getConstraintType()
+	 * @generated
+	 */
+	EAttribute getConstraintType_Name();
+
+		/**
+	 * Returns the meta object for the attribute '{@link org.camunda.bpm.modeler.runtime.engine.model.ConstraintType#getConfig <em>Config</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Config</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ConstraintType#getConfig()
+	 * @see #getConstraintType()
+	 * @generated
+	 */
+	EAttribute getConstraintType_Config();
+
+		/**
+	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.UserTask <em>User Task</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>User Task</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.UserTask
+	 * @generated
+	 */
+	EClass getUserTask();
+
+		/**
+	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.FormDataContainer <em>Form Data Container</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Form Data Container</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.FormDataContainer
+	 * @generated
+	 */
+	EClass getFormDataContainer();
+
+		/**
 	 * Returns the meta object for enum '{@link org.camunda.bpm.modeler.runtime.engine.model.EventType <em>Event Type</em>}'.
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3845,6 +4847,24 @@ public interface ModelPackage extends EPackage {
     EReference DOCUMENT_ROOT__FAILED_JOB_RETRY_TIME_CYCLE = eINSTANCE.getDocumentRoot_FailedJobRetryTimeCycle();
 
     /**
+		 * The meta object literal for the '<em><b>Form Data</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference DOCUMENT_ROOT__FORM_DATA = eINSTANCE.getDocumentRoot_FormData();
+
+				/**
+		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.StartEventImpl <em>Start Event</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.StartEventImpl
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getStartEvent()
+		 * @generated
+		 */
+		EClass START_EVENT = eINSTANCE.getStartEvent();
+
+				/**
 		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.ExecutionListenerTypeImpl <em>Execution Listener Type</em>}' class.
 		 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -4279,6 +5299,198 @@ public interface ModelPackage extends EPackage {
     EAttribute VALUE_TYPE__NAME = eINSTANCE.getValueType_Name();
 
     /**
+		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.FormDataTypeImpl <em>Form Data Type</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.FormDataTypeImpl
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getFormDataType()
+		 * @generated
+		 */
+		EClass FORM_DATA_TYPE = eINSTANCE.getFormDataType();
+
+				/**
+		 * The meta object literal for the '<em><b>Form Field</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference FORM_DATA_TYPE__FORM_FIELD = eINSTANCE.getFormDataType_FormField();
+
+				/**
+		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.FormFieldTypeImpl <em>Form Field Type</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.FormFieldTypeImpl
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getFormFieldType()
+		 * @generated
+		 */
+		EClass FORM_FIELD_TYPE = eINSTANCE.getFormFieldType();
+
+				/**
+		 * The meta object literal for the '<em><b>Id</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute FORM_FIELD_TYPE__ID = eINSTANCE.getFormFieldType_Id();
+
+				/**
+		 * The meta object literal for the '<em><b>Label</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute FORM_FIELD_TYPE__LABEL = eINSTANCE.getFormFieldType_Label();
+
+				/**
+		 * The meta object literal for the '<em><b>Type</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute FORM_FIELD_TYPE__TYPE = eINSTANCE.getFormFieldType_Type();
+
+				/**
+		 * The meta object literal for the '<em><b>Default Value</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute FORM_FIELD_TYPE__DEFAULT_VALUE = eINSTANCE.getFormFieldType_DefaultValue();
+
+				/**
+		 * The meta object literal for the '<em><b>Properties</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference FORM_FIELD_TYPE__PROPERTIES = eINSTANCE.getFormFieldType_Properties();
+
+				/**
+		 * The meta object literal for the '<em><b>Validation</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference FORM_FIELD_TYPE__VALIDATION = eINSTANCE.getFormFieldType_Validation();
+
+				/**
+		 * The meta object literal for the '<em><b>Value</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference FORM_FIELD_TYPE__VALUE = eINSTANCE.getFormFieldType_Value();
+
+				/**
+		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.PropertiesTypeImpl <em>Properties Type</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.PropertiesTypeImpl
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getPropertiesType()
+		 * @generated
+		 */
+		EClass PROPERTIES_TYPE = eINSTANCE.getPropertiesType();
+
+				/**
+		 * The meta object literal for the '<em><b>Property</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference PROPERTIES_TYPE__PROPERTY = eINSTANCE.getPropertiesType_Property();
+
+				/**
+		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.PropertyTypeImpl <em>Property Type</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.PropertyTypeImpl
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getPropertyType()
+		 * @generated
+		 */
+		EClass PROPERTY_TYPE = eINSTANCE.getPropertyType();
+
+				/**
+		 * The meta object literal for the '<em><b>Id</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute PROPERTY_TYPE__ID = eINSTANCE.getPropertyType_Id();
+
+				/**
+		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute PROPERTY_TYPE__VALUE = eINSTANCE.getPropertyType_Value();
+
+				/**
+		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.ValidationTypeImpl <em>Validation Type</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ValidationTypeImpl
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getValidationType()
+		 * @generated
+		 */
+		EClass VALIDATION_TYPE = eINSTANCE.getValidationType();
+
+				/**
+		 * The meta object literal for the '<em><b>Constraint</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference VALIDATION_TYPE__CONSTRAINT = eINSTANCE.getValidationType_Constraint();
+
+				/**
+		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.ConstraintTypeImpl <em>Constraint Type</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ConstraintTypeImpl
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getConstraintType()
+		 * @generated
+		 */
+		EClass CONSTRAINT_TYPE = eINSTANCE.getConstraintType();
+
+				/**
+		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CONSTRAINT_TYPE__NAME = eINSTANCE.getConstraintType_Name();
+
+				/**
+		 * The meta object literal for the '<em><b>Config</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CONSTRAINT_TYPE__CONFIG = eINSTANCE.getConstraintType_Config();
+
+				/**
+		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.UserTaskImpl <em>User Task</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.UserTaskImpl
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getUserTask()
+		 * @generated
+		 */
+		EClass USER_TASK = eINSTANCE.getUserTask();
+
+				/**
+		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.FormDataContainerImpl <em>Form Data Container</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.FormDataContainerImpl
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getFormDataContainer()
+		 * @generated
+		 */
+		EClass FORM_DATA_CONTAINER = eINSTANCE.getFormDataContainer();
+
+				/**
 		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.EventType <em>Event Type</em>}' enum.
 		 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.ui.change.filter.FeatureChangeFilter;
-import org.camunda.bpm.modeler.ui.change.filter.NestedFeatureChangeFilter;
+import org.camunda.bpm.modeler.ui.change.filter.IsManyAttributeAnyChildChangeFilter;
 import org.camunda.bpm.modeler.ui.property.tabs.binding.BaseElementIdComboBinding;
 import org.camunda.bpm.modeler.ui.property.tabs.binding.change.EAttributeChangeSupport;
 import org.camunda.bpm.modeler.ui.property.tabs.binding.change.EObjectChangeSupport.ModelChangedEvent;
@@ -71,7 +71,7 @@ public class DefinitionReferencePropertyBuilder<T extends RootElement> extends A
 		
 		// register change support
 		EAttributeChangeSupport changeSupport = new EAttributeChangeSupport(definitions, ROOT_ELEMENTS_FEATURE, dropDown);
-		changeSupport.setFilter(new FeatureChangeFilter(definitions, ROOT_ELEMENTS_FEATURE).or(new NestedFeatureChangeFilter(definitions, ROOT_ELEMENTS_FEATURE)));
+		changeSupport.setFilter(new FeatureChangeFilter(definitions, ROOT_ELEMENTS_FEATURE).or(new IsManyAttributeAnyChildChangeFilter(definitions, ROOT_ELEMENTS_FEATURE)));
 		
 		changeSupport.register();
 		

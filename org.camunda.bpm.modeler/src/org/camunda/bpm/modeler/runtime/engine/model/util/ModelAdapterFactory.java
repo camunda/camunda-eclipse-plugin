@@ -12,6 +12,7 @@ import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.InteractionNode;
 
+import org.eclipse.bpmn2.Task;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
 
@@ -80,6 +81,10 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
 				return createDocumentRootAdapter();
 			}
 			@Override
+			public Adapter caseStartEvent(StartEvent object) {
+				return createStartEventAdapter();
+			}
+			@Override
 			public Adapter caseExecutionListenerType(ExecutionListenerType object) {
 				return createExecutionListenerTypeAdapter();
 			}
@@ -116,6 +121,38 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
 				return createValueTypeAdapter();
 			}
 			@Override
+			public Adapter caseFormDataType(FormDataType object) {
+				return createFormDataTypeAdapter();
+			}
+			@Override
+			public Adapter caseFormFieldType(FormFieldType object) {
+				return createFormFieldTypeAdapter();
+			}
+			@Override
+			public Adapter casePropertiesType(PropertiesType object) {
+				return createPropertiesTypeAdapter();
+			}
+			@Override
+			public Adapter casePropertyType(PropertyType object) {
+				return createPropertyTypeAdapter();
+			}
+			@Override
+			public Adapter caseValidationType(ValidationType object) {
+				return createValidationTypeAdapter();
+			}
+			@Override
+			public Adapter caseConstraintType(ConstraintType object) {
+				return createConstraintTypeAdapter();
+			}
+			@Override
+			public Adapter caseUserTask(UserTask object) {
+				return createUserTaskAdapter();
+			}
+			@Override
+			public Adapter caseFormDataContainer(FormDataContainer object) {
+				return createFormDataContainerAdapter();
+			}
+			@Override
 			public Adapter caseBpmn2_DocumentRoot(org.eclipse.bpmn2.DocumentRoot object) {
 				return createBpmn2_DocumentRootAdapter();
 			}
@@ -132,14 +169,6 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
 				return createFlowNodeAdapter();
 			}
 			@Override
-			public Adapter caseActivity(Activity object) {
-				return createActivityAdapter();
-			}
-			@Override
-			public Adapter caseBpmn2_CallActivity(org.eclipse.bpmn2.CallActivity object) {
-				return createBpmn2_CallActivityAdapter();
-			}
-			@Override
 			public Adapter caseInteractionNode(InteractionNode object) {
 				return createInteractionNodeAdapter();
 			}
@@ -152,8 +181,28 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
 				return createCatchEventAdapter();
 			}
 			@Override
+			public Adapter caseBpmn2_StartEvent(org.eclipse.bpmn2.StartEvent object) {
+				return createBpmn2_StartEventAdapter();
+			}
+			@Override
+			public Adapter caseActivity(Activity object) {
+				return createActivityAdapter();
+			}
+			@Override
+			public Adapter caseBpmn2_CallActivity(org.eclipse.bpmn2.CallActivity object) {
+				return createBpmn2_CallActivityAdapter();
+			}
+			@Override
 			public Adapter caseBpmn2_BoundaryEvent(org.eclipse.bpmn2.BoundaryEvent object) {
 				return createBpmn2_BoundaryEventAdapter();
+			}
+			@Override
+			public Adapter caseTask(Task object) {
+				return createTaskAdapter();
+			}
+			@Override
+			public Adapter caseBpmn2_UserTask(org.eclipse.bpmn2.UserTask object) {
+				return createBpmn2_UserTaskAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -190,6 +239,20 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
 	}
 
   /**
+	 * Creates a new adapter for an object of class '{@link org.camunda.bpm.modeler.runtime.engine.model.StartEvent <em>Start Event</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.StartEvent
+	 * @generated
+	 */
+	public Adapter createStartEventAdapter() {
+		return null;
+	}
+
+		/**
 	 * Creates a new adapter for an object of class '{@link org.camunda.bpm.modeler.runtime.engine.model.ExecutionListenerType <em>Execution Listener Type</em>}'.
 	 * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -316,6 +379,118 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
 	}
 
   /**
+	 * Creates a new adapter for an object of class '{@link org.camunda.bpm.modeler.runtime.engine.model.FormDataType <em>Form Data Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.FormDataType
+	 * @generated
+	 */
+	public Adapter createFormDataTypeAdapter() {
+		return null;
+	}
+
+		/**
+	 * Creates a new adapter for an object of class '{@link org.camunda.bpm.modeler.runtime.engine.model.FormFieldType <em>Form Field Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.FormFieldType
+	 * @generated
+	 */
+	public Adapter createFormFieldTypeAdapter() {
+		return null;
+	}
+
+		/**
+	 * Creates a new adapter for an object of class '{@link org.camunda.bpm.modeler.runtime.engine.model.PropertiesType <em>Properties Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.PropertiesType
+	 * @generated
+	 */
+	public Adapter createPropertiesTypeAdapter() {
+		return null;
+	}
+
+		/**
+	 * Creates a new adapter for an object of class '{@link org.camunda.bpm.modeler.runtime.engine.model.PropertyType <em>Property Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.PropertyType
+	 * @generated
+	 */
+	public Adapter createPropertyTypeAdapter() {
+		return null;
+	}
+
+		/**
+	 * Creates a new adapter for an object of class '{@link org.camunda.bpm.modeler.runtime.engine.model.ValidationType <em>Validation Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ValidationType
+	 * @generated
+	 */
+	public Adapter createValidationTypeAdapter() {
+		return null;
+	}
+
+		/**
+	 * Creates a new adapter for an object of class '{@link org.camunda.bpm.modeler.runtime.engine.model.ConstraintType <em>Constraint Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ConstraintType
+	 * @generated
+	 */
+	public Adapter createConstraintTypeAdapter() {
+		return null;
+	}
+
+		/**
+	 * Creates a new adapter for an object of class '{@link org.camunda.bpm.modeler.runtime.engine.model.UserTask <em>User Task</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.UserTask
+	 * @generated
+	 */
+	public Adapter createUserTaskAdapter() {
+		return null;
+	}
+
+		/**
+	 * Creates a new adapter for an object of class '{@link org.camunda.bpm.modeler.runtime.engine.model.FormDataContainer <em>Form Data Container</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.FormDataContainer
+	 * @generated
+	 */
+	public Adapter createFormDataContainerAdapter() {
+		return null;
+	}
+
+		/**
 	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.DocumentRoot <em>Document Root</em>}'.
 	 * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -442,6 +617,20 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
 	}
 
   /**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.StartEvent <em>Start Event</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.bpmn2.StartEvent
+	 * @generated
+	 */
+	public Adapter createBpmn2_StartEventAdapter() {
+		return null;
+	}
+
+		/**
 	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.BoundaryEvent <em>Boundary Event</em>}'.
 	 * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -456,6 +645,34 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
 	}
 
   /**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.Task <em>Task</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.bpmn2.Task
+	 * @generated
+	 */
+	public Adapter createTaskAdapter() {
+		return null;
+	}
+
+		/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.UserTask <em>User Task</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.bpmn2.UserTask
+	 * @generated
+	 */
+	public Adapter createBpmn2_UserTaskAdapter() {
+		return null;
+	}
+
+		/**
 	 * Creates a new adapter for the default case.
 	 * <!-- begin-user-doc -->
    * This default implementation returns null.

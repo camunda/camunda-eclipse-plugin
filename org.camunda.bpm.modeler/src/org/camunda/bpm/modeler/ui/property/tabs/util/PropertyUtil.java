@@ -77,6 +77,14 @@ public class PropertyUtil {
 		return comboBox;
 	}
 
+	public static CCombo createDropDown(GFPropertySection section, Composite parent, String label, int style) {
+		Composite composite = createStandardComposite(section, parent);
+		CCombo comboBox = createSimpleDropDown(section, composite, style);
+
+		createLabel(section, composite, label, comboBox);
+		return comboBox;
+	}
+
 	public static Text createMultiText(GFPropertySection section, Composite parent, String label,
 			final EStructuralFeature feature, final EObject bo) {
 		Composite composite = createStandardComposite(section, parent);
@@ -91,8 +99,12 @@ public class PropertyUtil {
 	}
 
 	protected static CCombo createSimpleDropDown(GFPropertySection section, Composite parent) {
+		return createSimpleDropDown(section, parent, SWT.BORDER | SWT.READ_ONLY);
+	}
+
+	protected static CCombo createSimpleDropDown(GFPropertySection section, Composite parent, int style) {
 		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
-		final CCombo dropDown = factory.createCCombo(parent, SWT.BORDER | SWT.READ_ONLY);
+		final CCombo dropDown = factory.createCCombo(parent, style);
 		setStandardLayout(dropDown);
 
 		return dropDown;
@@ -262,7 +274,7 @@ public class PropertyUtil {
 		return text;
 	}
 
-	private static void setStandardLayout(Control control) {
+	public static void setStandardLayout(Control control) {
 		control.setLayoutData(getStandardLayout());
 	}
 
@@ -370,5 +382,30 @@ public class PropertyUtil {
 
 		link.setLayoutData(helpTextFormData);
 
+	}
+
+	/**
+	 * create general note on properties panel tab
+	 * which is not attached to a control
+	 * 
+	 * @param section
+	 * @param parent
+	 * @param note
+	 */
+	public static void createNoteWithLink(GFPropertySection section, Composite parent, String note) {
+		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
+		Composite composite = createStandardComposite(section, parent);
+
+		Link link = new Link(composite, SWT.NO_BACKGROUND | SWT.NO_FOCUS);
+		link.setText(note);
+
+		factory.adapt(link, false, false);
+
+		link.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Browser.open(e.text);
+			}
+		});
 	}
 }

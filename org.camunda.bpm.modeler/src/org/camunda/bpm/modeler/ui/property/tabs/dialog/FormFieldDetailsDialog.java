@@ -1,0 +1,323 @@
+package org.camunda.bpm.modeler.ui.property.tabs.dialog;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.camunda.bpm.modeler.runtime.engine.model.ConstraintType;
+import org.camunda.bpm.modeler.runtime.engine.model.FormFieldType;
+import org.camunda.bpm.modeler.runtime.engine.model.ModelFactory;
+import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
+import org.camunda.bpm.modeler.runtime.engine.model.PropertyType;
+import org.camunda.bpm.modeler.runtime.engine.model.ValueType;
+import org.camunda.bpm.modeler.ui.change.filter.AnyNestedChangeFilter;
+import org.camunda.bpm.modeler.ui.change.filter.FeatureChangeFilter;
+import org.camunda.bpm.modeler.ui.change.filter.IsManyAttributeAnyChildChangeFilter;
+import org.camunda.bpm.modeler.ui.property.tabs.binding.ValidatingStringComboBinding;
+import org.camunda.bpm.modeler.ui.property.tabs.binding.ValidatingStringTextBinding;
+import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.AbstractDeleteRowHandler;
+import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.ContentProvider;
+import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.DeleteRowHandler;
+import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EditableEObjectTableBuilder;
+import org.camunda.bpm.modeler.ui.property.tabs.tables.EditableTableDescriptor.ElementFactory;
+import org.camunda.bpm.modeler.ui.property.tabs.util.Events;
+import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
+import org.eclipse.emf.transaction.util.TransactionUtil;
+import org.eclipse.graphiti.ui.platform.GFPropertySection;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
+
+/**
+ * dialog to add/edit form fields
+ * 
+ * @author kristin.polenz
+ *
+ */
+public class FormFieldDetailsDialog extends Dialog {
+	
+	private static final String[] PROPERTIES_TABLE_HEADERS = { "id", "value"};
+	
+	private static final String[] VALIDATION_TABLE_HEADERS = { "name", "config"};
+	
+	private static final String[] VALUE_TABLE_HEADERS = { "id", "name"};
+	
+	private static final EStructuralFeature[] PROPERTY_FEATURES = {
+		ModelPackage.eINSTANCE.getPropertyType_Id(),
+		ModelPackage.eINSTANCE.getPropertyType_Value() };
+	
+	private static final EStructuralFeature[] CONSTRAINT_FEATURES = {
+		ModelPackage.eINSTANCE.getConstraintType_Name(),
+		ModelPackage.eINSTANCE.getConstraintType_Config() };
+	
+	private static final EStructuralFeature[] VALUE_FEATURES = {
+		ModelPackage.eINSTANCE.getValueType_Id(),
+		ModelPackage.eINSTANCE.getValueType_Name() };
+	
+	private static final EStructuralFeature FORM_FIELD_VALUE = ModelPackage.eINSTANCE.getFormFieldType_Value();
+	
+	private FormFieldType formFieldType;
+	private GFPropertySection section;
+	
+	private Composite valueMappingTableComposite = null;
+	private Composite placeHolderComposite = null;
+	
+	private static final String[] SUPPORTED_TYPES = new String[] {
+		 "string",
+		 "long",
+		 "boolean",
+		 "date",
+		 "enum"
+	};
+	
+	public FormFieldDetailsDialog(GFPropertySection section, Shell parentShell, FormFieldType formFieldType) {
+	    super(parentShell);
+	    
+		this.section = section;
+	    this.formFieldType = formFieldType;
+	}
+
+	@Override
+	protected Control createDialogArea(final Composite parent) {
+		Text idText = PropertyUtil.createUnboundText(section, parent, "Id");
+		ValidatingStringTextBinding idTextbinding = new ValidatingStringTextBinding(formFieldType, ModelPackage.eINSTANCE.getFormFieldType_Id(), idText);
+		idTextbinding.addErrorCode(100);
+		idTextbinding.addErrorCode(101);
+
+		idTextbinding.setMandatory(true);
+		idTextbinding.establish();
+		
+		PropertyUtil.createText(section, parent, "Label", ModelPackage.eINSTANCE.getFormFieldType_Label(), formFieldType);
+		PropertyUtil.createText(section, parent, "Default Value", ModelPackage.eINSTANCE.getFormFieldType_DefaultValue(), formFieldType);
+		
+		// create editable drop down
+		final CCombo dropDown = PropertyUtil.createDropDown(section, parent, "Type", SWT.BORDER);
+		for (int i=0; i<SUPPORTED_TYPES.length; i++) {
+			dropDown.add(SUPPORTED_TYPES[i]);
+		}
+		//new ModelStringComboBinding(formFieldType, ModelPackage.eINSTANCE.getFormFieldType_Type(), dropDown).establish();
+		
+		ValidatingStringComboBinding comboBinding = new ValidatingStringComboBinding(formFieldType, ModelPackage.eINSTANCE.getFormFieldType_Type(), dropDown);
+		comboBinding.addErrorCode(100);
+		comboBinding.addErrorCode(101);
+
+		comboBinding.setMandatory(true);
+		comboBinding.establish();
+		
+		dropDown.addListener(Events.MODEL_CHANGED, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				rebuildValueMappingTable(parent);
+			}
+		});
+		
+		// create place holder composite for value mapping table which is empty
+        placeHolderComposite = PropertyUtil.createGridLayoutedComposite(section, parent);
+        // create mapping table for form field value
+		rebuildValueMappingTable(parent);
+		
+		// create mapping table for form field validation
+		createMappingTable(section, parent, ModelPackage.eINSTANCE.getFormFieldType_Validation(), ConstraintType.class, "Validation", ModelPackage.eINSTANCE.getConstraintType(), 
+			ModelPackage.eINSTANCE.getValidationType_Constraint(), CONSTRAINT_FEATURES, VALIDATION_TABLE_HEADERS);
+		
+		// create mapping table for form field properties
+		createMappingTable(section, parent, ModelPackage.eINSTANCE.getFormFieldType_Properties(), PropertyType.class, "Properties", ModelPackage.eINSTANCE.getPropertyType(), 
+	    		ModelPackage.eINSTANCE.getPropertiesType_Property(), PROPERTY_FEATURES, PROPERTIES_TABLE_HEADERS);
+		
+	    return parent;
+	}
+	  
+	private void rebuildValueMappingTable(Composite parent) {
+		
+		if (valueMappingTableComposite != null && !valueMappingTableComposite.isDisposed()) {
+			valueMappingTableComposite.dispose();
+		}
+		
+		valueMappingTableComposite = PropertyUtil.createGridLayoutedComposite(section, placeHolderComposite);
+
+		String formFieldTypeValue  = (String) formFieldType.eGet(ModelPackage.eINSTANCE.getFormFieldType_Type());
+		if ("enum".equals(formFieldTypeValue)) {
+			createMappingTable(section, valueMappingTableComposite, null, ValueType.class, "Value", ModelPackage.eINSTANCE.getValueType(), FORM_FIELD_VALUE, VALUE_FEATURES, VALUE_TABLE_HEADERS);
+		} 
+		
+		relayout(parent);
+	}
+	  
+	protected <T extends EObject> void createMappingTable(final GFPropertySection section, final Composite parent, final EStructuralFeature containerFeature, 
+		final Class<T> typeCls, String label, final EClass typeECls, final EStructuralFeature feature, EStructuralFeature[] columnFeatures, String[] columnLabels) {
+	
+		// composite for mappings table
+		final Composite composite = PropertyUtil.createStandardComposite(section, parent);
+		
+		final ElementFactory<T> elementFactory = new ElementFactory<T>() {
+			
+			@Override
+			public T create() {
+				return (T) transactionalCreateType(typeECls, feature, containerFeature);
+			}
+		};
+		
+		ContentProvider<T> contentProvider = new ContentProvider<T>() {
+	
+			@Override
+			public List<T> getContents() {
+				if (containerFeature == null) {
+					return (List<T>) formFieldType.eGet(feature);
+				}
+				
+				EObject containerInstance = (EObject) formFieldType.eGet(containerFeature);
+				if (containerInstance != null) {
+					return (List<T>) containerInstance.eGet(feature);
+				}
+				return new ArrayList<T>();
+			}
+		};
+		
+		DeleteRowHandler<T> deleteHandler = new AbstractDeleteRowHandler<T>() {
+			@Override
+			public void rowDeleted(T element) {
+				transactionalRemoveMapping(element, feature, containerFeature);
+			}
+		};
+		
+		EditableEObjectTableBuilder<T> builder = new EditableEObjectTableBuilder<T>(section, composite, typeCls);
+		
+		builder
+			.elementFactory(elementFactory)
+			.contentProvider(contentProvider)
+			.columnFeatures(columnFeatures)
+			.columnLabels(columnLabels)
+			.deleteRowHandler(deleteHandler)
+			.model(formFieldType);
+		
+		if (containerFeature == null) {
+			builder.changeFilter(
+				new FeatureChangeFilter(formFieldType, feature).or(new IsManyAttributeAnyChildChangeFilter(formFieldType, feature)));
+		} else {
+			builder.changeFilter(
+				new FeatureChangeFilter(formFieldType, containerFeature).or(new AnyNestedChangeFilter(formFieldType, containerFeature)));
+		}
+		
+		final TableViewer viewer = builder.build();
+			
+		// table composite ////////////
+		final Composite tableComposite = viewer.getTable().getParent();
+	
+		// create label
+		PropertyUtil.createLabel(section, composite, label, tableComposite);
+	}
+		
+	protected void transactionalRemoveMapping(final EObject element, final EStructuralFeature feature, final EStructuralFeature containerFeature) {
+		TransactionalEditingDomain editingDomain = TransactionUtil.getEditingDomain(formFieldType);
+		editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+			
+			@Override
+			protected void doExecute() {
+				if (containerFeature == null) {
+					EList<EObject> list = (EList<EObject>) formFieldType.eGet(feature);
+					list.remove(element);
+				} else {
+					EObject containerInstance = (EObject) formFieldType.eGet(containerFeature);
+					if (containerInstance != null) {
+						EList<EObject> list = (EList<EObject>) containerInstance.eGet(feature);
+						list.remove(element);
+						
+						if (list.isEmpty()) {
+							formFieldType.eUnset(containerFeature);
+						}
+					}
+				}
+			}
+		});
+	}
+		
+	private EObject transactionalCreateType(EClass typeECls, final EStructuralFeature feature, final EStructuralFeature containerFeature) {
+		
+		final EObject instance = ModelFactory.eINSTANCE.create(typeECls);
+
+		TransactionalEditingDomain editingDomain = TransactionUtil.getEditingDomain(formFieldType);
+		editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+			
+			@Override
+			protected void doExecute() {
+				if (containerFeature == null) {
+					EList<EObject> list = (EList<EObject>) formFieldType.eGet(feature);
+					list.add(instance);
+				} else {
+					EObject containerInstance = (EObject) formFieldType.eGet(containerFeature);
+					if (containerInstance == null) {
+						containerInstance = ModelFactory.eINSTANCE.create(feature.getEContainingClass());
+						formFieldType.eSet(containerFeature, containerInstance);
+					}
+					EList<EObject> list = (EList<EObject>) containerInstance.eGet(feature);
+					list.add(instance);
+				}
+			}
+		});
+		
+		return instance;
+	}
+
+	/**
+	 * Relayout the properties after changes in the
+	 * controls.
+	 * 
+	 */
+	private void relayout(Composite parent) {
+		computeSize();
+
+		parent.layout();
+		parent.redraw();
+	}
+	
+	/**
+	 * Compute shell size after adding/removing
+	 * controls.
+	 * 
+	 */
+	private void computeSize() {
+   		Point size = getShell().computeSize( SWT.DEFAULT, SWT.DEFAULT );
+   		getShell().setSize( size );
+	}
+
+	// overriding some dialog methods for customizing
+	@Override
+	protected void configureShell(final Shell newShell) {
+	   super.configureShell(newShell);
+	   newShell.setText("Details");
+	   
+	   // set the dialog location
+	   Point shellSize = newShell.getSize();
+	   Rectangle screen = newShell.getMonitor().getBounds();
+	   newShell.setLocation((screen.width-shellSize.x), (screen.height-shellSize.y)/2);
+	}
+  
+	@Override
+	protected void setShellStyle(int newShellStyle) {
+		super.setShellStyle(SWT.TITLE);
+	}
+	  
+	@Override
+	protected void createButtonsForButtonBar(Composite parent) {
+		// create OK
+		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+		
+		// compute shell size at the end of the dialog creation
+		computeSize();
+	}
+}
