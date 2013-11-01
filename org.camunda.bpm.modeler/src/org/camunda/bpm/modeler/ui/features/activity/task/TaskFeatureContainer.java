@@ -13,13 +13,11 @@
 package org.camunda.bpm.modeler.ui.features.activity.task;
 
 import org.camunda.bpm.modeler.core.features.activity.task.AbstractCreateTaskFeature;
-import org.camunda.bpm.modeler.core.features.activity.task.AddTaskFeature;
 import org.camunda.bpm.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.impl.TaskImpl;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 
@@ -33,11 +31,6 @@ public class TaskFeatureContainer extends AbstractTaskFeatureContainer {
 	@Override
 	public ICreateFeature getCreateFeature(IFeatureProvider fp) {
 		return new CreateTaskFeature(fp);
-	}
-
-	@Override
-	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddTaskFeature<Task>(fp);
 	}
 
 	public static class CreateTaskFeature extends AbstractCreateTaskFeature<Task> {

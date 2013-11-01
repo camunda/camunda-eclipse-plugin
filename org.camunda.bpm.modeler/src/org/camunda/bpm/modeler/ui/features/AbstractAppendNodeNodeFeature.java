@@ -17,18 +17,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.camunda.bpm.modeler.core.ModelHandler;
-import org.camunda.bpm.modeler.core.features.AbstractAddBpmnShapeFeature;
+import org.camunda.bpm.modeler.core.features.AbstractBpmn2AddShapeFeature;
 import org.camunda.bpm.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
 import org.camunda.bpm.modeler.core.runtime.ModelEnablementDescriptor;
 import org.camunda.bpm.modeler.core.runtime.TargetRuntime;
-import org.camunda.bpm.modeler.core.utils.AnchorUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
-import org.camunda.bpm.modeler.core.utils.Tuple;
-import org.camunda.bpm.modeler.ui.diagram.BPMN2FeatureProvider;
+import org.camunda.bpm.modeler.ui.diagram.BpmnFeatureProvider;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.FlowElement;
@@ -54,7 +52,6 @@ import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
@@ -204,8 +201,8 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 		int width = ga.getWidth();
 		int height = ga.getHeight();
 		
-		BPMN2FeatureProvider fp = (BPMN2FeatureProvider) getFeatureProvider();
-		AbstractCreateFeature createFeature = (AbstractCreateFeature) fp.getCreateFeatureForBusinessObject(newType.getInstanceClass());
+		BpmnFeatureProvider fp = (BpmnFeatureProvider) getFeatureProvider();
+		AbstractCreateFeature createFeature = (AbstractCreateFeature) fp.getCreateFeatureForBusinessObject(newType);
 		
 		CreateContext createContext = new CreateContext();
 		createContext.putProperty(AbstractCreateFlowElementFeature.SKIP_ADD_GRAPHICS, true);
@@ -233,7 +230,7 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 			((Lane)oldObject).getFlowNodeRefs().add((FlowNode)newObject);
 		}
 		AddContext ac = new AddContext(new AreaContext(), newObject);
-		AbstractAddBpmnShapeFeature af = (AbstractAddBpmnShapeFeature)getFeatureProvider().getAddFeature(ac);
+		AbstractBpmn2AddShapeFeature af = (AbstractBpmn2AddShapeFeature)getFeatureProvider().getAddFeature(ac);
 		int w = af.getDefaultWidth();
 		int h = af.getDefaultHeight();
 		if (horz) {

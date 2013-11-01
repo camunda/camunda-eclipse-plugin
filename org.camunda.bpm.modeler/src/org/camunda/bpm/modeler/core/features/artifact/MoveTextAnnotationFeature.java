@@ -12,12 +12,12 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.core.features.artifact;
 
-import org.camunda.bpm.modeler.core.features.DefaultMoveBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2MoveShapeFeature;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
 
-public class MoveTextAnnotationFeature extends DefaultMoveBPMNShapeFeature {
+public class MoveTextAnnotationFeature extends DefaultBpmn2MoveShapeFeature {
 
 	public MoveTextAnnotationFeature(IFeatureProvider fp) {
 		super(fp);

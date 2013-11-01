@@ -57,7 +57,7 @@ public class ConversationLinkFeatureContainer extends BaseElementConnectionFeatu
 			}
 		};
 	}
-
+	
 	@Override
 	public ICreateConnectionFeature getCreateConnectionFeature(IFeatureProvider fp) {
 		return new CreateConversationLinkFeature(fp);

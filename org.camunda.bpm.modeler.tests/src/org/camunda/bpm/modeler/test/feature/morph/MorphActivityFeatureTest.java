@@ -127,7 +127,7 @@ public class MorphActivityFeatureTest extends AbstractFeatureTest {
 		// given
 		Task oldTask = (Task) Util.findBusinessObjectById(diagram, "Task_1");
 		Shape taskShape = Util.findShapeByBusinessObjectId(diagram, "Task_1");
-		EClass newType = Bpmn2Package.eINSTANCE.getCallActivity();
+		EClass newType = ModelPackage.eINSTANCE.getCallActivity();
 		
 		// when
 		morphActivity(taskShape, diagramTypeProvider)

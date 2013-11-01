@@ -47,7 +47,6 @@ public class EventSelectionBehavior {
 		Iterator<Shape> iterator = Graphiti.getPeService().getAllContainedShapes((ContainerShape) element).iterator();
 		GraphicsAlgorithm[] algorithms = new GraphicsAlgorithm[1];
 		algorithms[0] = iterator.next().getGraphicsAlgorithm();
-//		algorithms[1] = iterator.next().getGraphicsAlgorithm();
 		return algorithms;
 	}
 

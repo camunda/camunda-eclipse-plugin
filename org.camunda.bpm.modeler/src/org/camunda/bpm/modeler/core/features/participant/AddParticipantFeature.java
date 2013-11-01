@@ -12,7 +12,7 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.core.features.participant;
 
-import org.camunda.bpm.modeler.core.features.AbstractAddBpmnShapeFeature;
+import org.camunda.bpm.modeler.core.features.AbstractBpmn2AddShapeFeature;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
@@ -33,7 +33,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class AddParticipantFeature extends AbstractAddBpmnShapeFeature<Participant> {
+public class AddParticipantFeature extends AbstractBpmn2AddShapeFeature<Participant> {
 
 	public static final String MULTIPLICITY = "multiplicity";
 

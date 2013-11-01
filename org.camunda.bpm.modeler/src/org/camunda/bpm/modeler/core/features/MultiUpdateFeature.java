@@ -43,7 +43,7 @@ public class MultiUpdateFeature extends AbstractUpdateFeature {
 	@Override
 	public IReason updateNeeded(IUpdateContext context) {
 		for (IUpdateFeature p : features) {
-			if (p.updateNeeded(context).toBoolean()) {
+			if (p.canUpdate(context) && p.updateNeeded(context).toBoolean()) {
 				return Reason.createTrueReason();
 			}
 		}
@@ -55,7 +55,7 @@ public class MultiUpdateFeature extends AbstractUpdateFeature {
 		boolean updated = false;
 
 		for (IUpdateFeature p : features) {
-			if (p.updateNeeded(context).toBoolean() && p.update(context)) {
+			if (p.canUpdate(context) && p.updateNeeded(context).toBoolean() && p.update(context)) {
 				updated = true;
 			}
 		}

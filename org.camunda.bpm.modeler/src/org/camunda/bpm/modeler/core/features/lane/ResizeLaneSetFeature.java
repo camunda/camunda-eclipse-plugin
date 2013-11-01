@@ -7,7 +7,7 @@ import static org.camunda.bpm.modeler.core.layout.util.RectangleUtil.translate;
 import java.util.List;
 
 import org.camunda.bpm.modeler.core.di.DIUtils;
-import org.camunda.bpm.modeler.core.features.DefaultResizeBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2ResizeShapeFeature;
 import org.camunda.bpm.modeler.core.layout.util.CollaborationResizeSupport;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
@@ -25,7 +25,7 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
  * 
  * @author nico.rehwaldt
  */
-public abstract class ResizeLaneSetFeature extends DefaultResizeBPMNShapeFeature {
+public abstract class ResizeLaneSetFeature extends DefaultBpmn2ResizeShapeFeature {
 
 	private List<Shape> visibleLaneShapes;
 

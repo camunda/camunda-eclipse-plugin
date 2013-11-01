@@ -15,14 +15,15 @@ package org.camunda.bpm.modeler.ui.features.choreography;
 import java.util.List;
 import java.util.Map;
 
-import org.camunda.bpm.modeler.core.features.DefaultDeleteBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2DeleteShapeFeature;
+import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.features.choreography.ChoreographyProperties;
 import org.camunda.bpm.modeler.core.features.container.PropertyBasedFeatureContainer;
 import org.camunda.bpm.modeler.core.utils.AnchorUtil;
-import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
-import org.camunda.bpm.modeler.core.utils.Tuple;
 import org.camunda.bpm.modeler.core.utils.AnchorUtil.AnchorLocation;
 import org.camunda.bpm.modeler.core.utils.AnchorUtil.BoundaryAnchor;
+import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
+import org.camunda.bpm.modeler.core.utils.Tuple;
 import org.eclipse.bpmn2.ChoreographyActivity;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.emf.ecore.EObject;
@@ -61,6 +62,11 @@ public class ChoreographyMessageLinkFeatureContainer extends PropertyBasedFeatur
 		return null;
 	}
 
+	@Override
+	public IDecorateFeature getDecorateFeature(IFeatureProvider fp) {
+		return null;
+	}
+	
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return null;
@@ -108,7 +114,7 @@ public class ChoreographyMessageLinkFeatureContainer extends PropertyBasedFeatur
 
 	@Override
 	public IDeleteFeature getDeleteFeature(IFeatureProvider fp) {
-		return new DefaultDeleteBPMNShapeFeature(fp) {
+		return new DefaultBpmn2DeleteShapeFeature(fp) {
 
 			@Override
 			public void delete(IDeleteContext context) {

@@ -15,6 +15,7 @@ package org.camunda.bpm.modeler.core.features;
 
 import java.util.List;
 
+import org.camunda.bpm.modeler.core.features.api.IBpmn2CreateFeature;
 import org.camunda.bpm.modeler.core.runtime.ModelEnablementDescriptor;
 import org.camunda.bpm.modeler.core.runtime.TargetRuntime;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
@@ -77,7 +78,7 @@ public abstract class AbstractBpmn2CreateFeature<T extends BaseElement>
 		return "Create " + ModelUtil.toDisplayName(getBusinessObjectClass().getName());
 	}
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked" })
 	public T createBusinessObject(ICreateContext context) {
 		Shape shape = context.getTargetContainer();
 		
@@ -90,12 +91,6 @@ public abstract class AbstractBpmn2CreateFeature<T extends BaseElement>
 		
 		// assign id to new object
 		ModelUtil.setID(newObject, resource);
-		
-		// assign default name
-//		EStructuralFeature feature = newObject.eClass().getEStructuralFeature("name");
-//		if (feature != null) {
-//			newObject.eSet(feature, ModelUtil.toDisplayName(eCls.getName()));
-//		}
 		
 		putBusinessObject(context, newObject);
 		

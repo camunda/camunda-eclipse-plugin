@@ -64,7 +64,6 @@ public class AddExpandableActivityFeature<T extends Activity>
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
 		text.setVerticalAlignment(Orientation.ALIGNMENT_CENTER);
 		link(textShape, activity);
-	
 	}
 	
 	@Override

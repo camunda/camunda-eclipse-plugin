@@ -6,8 +6,7 @@ import java.io.InputStream;
 
 import org.camunda.bpm.modeler.core.Activator;
 import org.camunda.bpm.modeler.core.model.Bpmn2ModelerResourceImpl;
-import org.camunda.bpm.modeler.runtime.engine.model.util.ModelResourceImpl;
-import org.camunda.bpm.modeler.ui.editor.BPMN2Editor;
+import org.camunda.bpm.modeler.ui.diagram.editor.BpmnEditor;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -34,7 +33,6 @@ import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.editparts.LayerManager;
-import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
@@ -107,7 +105,7 @@ public class DiagramExport extends AbstractCustomFeature {
 		}
 		
 		// get the graphical Viewer
-		GraphicalViewer graphicalViewer = BPMN2Editor.getActiveEditor().getGraphicalViewer();
+		GraphicalViewer graphicalViewer = BpmnEditor.getActiveEditor().getGraphicalViewer();
 		
 		IFigure allFigure = determineRootFigure(graphicalViewer);
 		
@@ -132,7 +130,7 @@ public class DiagramExport extends AbstractCustomFeature {
 		if (featureProvider != null) {
 			resource = featureProvider.getDiagramTypeProvider().getDiagram().eResource();
 		} else {
-			BPMN2Editor editor = BPMN2Editor.getActiveEditor();
+			BpmnEditor editor = BpmnEditor.getActiveEditor();
 			if (editor == null) {
 				return null;
 			}
@@ -260,7 +258,7 @@ public class DiagramExport extends AbstractCustomFeature {
 	 * copied from UiService
 	 */
 	public void startSaveAsImageWithoutDialog(Image im, IFile destination) {
-		final Shell shell = BPMN2Editor.getActiveEditor().getSite().getShell();
+		final Shell shell = BpmnEditor.getActiveEditor().getSite().getShell();
 		try {
 			int imageFormat = SWT.IMAGE_PNG;
 			byte image[] = createImage(im, imageFormat);
@@ -393,7 +391,7 @@ public class DiagramExport extends AbstractCustomFeature {
 			}
 			final Graphics syncGaphics = graphics;
 			
-			Display.getDefault().syncExec(new Runnable() {  
+			Display.getDefault().syncExec(new Runnable() {
 				public void run() { 
 					figure.paint(syncGaphics);
 				}

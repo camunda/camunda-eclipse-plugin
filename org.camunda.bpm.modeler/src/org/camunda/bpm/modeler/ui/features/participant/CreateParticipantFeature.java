@@ -19,7 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.camunda.bpm.modeler.core.features.AbstractBpmn2CreateFeature;
-import org.camunda.bpm.modeler.core.features.DefaultMoveBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2MoveShapeFeature;
 import org.camunda.bpm.modeler.core.features.activity.MoveActivityFeature;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
@@ -188,9 +188,9 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 			moveShapeContext.setTargetContainer(childShape.getContainer());
 			moveShapeContext.setSourceContainer(childShape.getContainer());
 
-			ContextUtil.set(moveShapeContext, DefaultMoveBPMNShapeFeature.SKIP_MOVE_LABEL);
-			ContextUtil.set(moveShapeContext, DefaultMoveBPMNShapeFeature.SKIP_REPAIR_CONNECTIONS_AFTER_MOVE);
-			ContextUtil.set(moveShapeContext, DefaultMoveBPMNShapeFeature.SKIP_MOVE_BENDPOINTS);
+			ContextUtil.set(moveShapeContext, DefaultBpmn2MoveShapeFeature.SKIP_MOVE_LABEL);
+			ContextUtil.set(moveShapeContext, DefaultBpmn2MoveShapeFeature.SKIP_REPAIR_CONNECTIONS_AFTER_MOVE);
+			ContextUtil.set(moveShapeContext, DefaultBpmn2MoveShapeFeature.SKIP_MOVE_BENDPOINTS);
 			
 			// make sure boundary events behave as if moved with the activity and
 			// activities do not move their boundary events (because they move themselves)

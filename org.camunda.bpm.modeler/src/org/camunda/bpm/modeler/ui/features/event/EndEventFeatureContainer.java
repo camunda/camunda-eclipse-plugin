@@ -89,9 +89,6 @@ public class EndEventFeatureContainer extends AbstractEventFeatureContainer {
 			return ImageProvider.IMG_16_END_EVENT;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.camunda.bpm.modeler.features.AbstractCreateFlowElementFeature#getFlowElementClass()
-		 */
 		@Override
 		public EClass getBusinessObjectClass() {
 			return Bpmn2Package.eINSTANCE.getEndEvent();
@@ -123,8 +120,9 @@ public class EndEventFeatureContainer extends AbstractEventFeatureContainer {
 		ICustomFeature[] superFeatures = super.getCustomFeatures(fp);
 		List<ICustomFeature> thisFeatures = new ArrayList<ICustomFeature>();
 		for (ICustomFeature f : superFeatures) {
-			if (!(f instanceof AbstractAppendNodeNodeFeature))
+			if (!(f instanceof AbstractAppendNodeNodeFeature)) {
 				thisFeatures.add(f);
+			}
 		}
 		thisFeatures.add(new MorphEndEventFeature(fp));
 		

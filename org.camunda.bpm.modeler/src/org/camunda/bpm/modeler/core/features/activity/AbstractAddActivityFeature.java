@@ -22,7 +22,6 @@ import org.eclipse.bpmn2.Activity;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
-import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -66,8 +65,6 @@ public abstract class AbstractAddActivityFeature<T extends Activity> extends Abs
 		
 		gaService.setLocationAndSize(rect, 0, 0, bounds.getWidth(), bounds.getHeight());
 		
-		decorate(rect);
-		
 		peService.setPropertyValue(rectShape, ACTIVITY_RECT, Boolean.toString(true));
 		
 		return newShape;
@@ -98,19 +95,6 @@ public abstract class AbstractAddActivityFeature<T extends Activity> extends Abs
 	@Override
 	protected BoxingStrategy getBoxingStrategy(IAddContext context) {
 		return BoxingStrategy.POSITION_AND_SIZE;
-	}
-	
-	/**
-	 * Decorates the graphical element
-	 * 
-	 * @param rect
-	 */
-	protected void decorate(RoundedRectangle rect) {
-		
-	}
-	
-	protected int getMarkerContainerOffset() {
-		return 0;
 	}
 
 	public abstract int getDefaultWidth();

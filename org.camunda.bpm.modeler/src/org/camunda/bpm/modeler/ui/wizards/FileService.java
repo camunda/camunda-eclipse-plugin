@@ -28,7 +28,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.camunda.bpm.modeler.core.model.Bpmn2ModelerResourceSetImpl;
-import org.camunda.bpm.modeler.ui.editor.BPMN2Editor;
+import org.camunda.bpm.modeler.ui.diagram.editor.BpmnEditor;
+import org.camunda.bpm.modeler.ui.diagram.editor.BpmnDiagramEditorInput;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -54,7 +55,7 @@ import org.eclipse.ui.part.FileEditorInput;
 
 public class FileService {
 
-	public static TransactionalEditingDomain createEmfFileForDiagram(URI diagramResourceUri, final Diagram diagram, BPMN2Editor diagramEditor) {
+	public static TransactionalEditingDomain createEmfFileForDiagram(URI diagramResourceUri, final Diagram diagram, BpmnEditor diagramEditor) {
 
 		ResourceSet resourceSet = null;
 		TransactionalEditingDomain editingDomain = null;
@@ -190,7 +191,7 @@ public class FileService {
 
 	public static InputStream getInputContents(IEditorInput input) {
 		try {
-			if (input instanceof Bpmn2DiagramEditorInput) {
+			if (input instanceof BpmnDiagramEditorInput) {
 				URI uri = getInputUri(input);
 				String fileName = null;
 				if (uri.isFile())
@@ -217,8 +218,8 @@ public class FileService {
 	}
 	
 	public static URI getInputUri(IEditorInput input) {
-		if (input instanceof Bpmn2DiagramEditorInput) {
-			URI uri = ((Bpmn2DiagramEditorInput) input).getModelUri();
+		if (input instanceof BpmnDiagramEditorInput) {
+			URI uri = ((BpmnDiagramEditorInput) input).getModelUri();
 			return uri.trimFragment();
 		} else if (input instanceof FileEditorInput) {
 			IPath path =  ((FileEditorInput) input).getFile().getFullPath();

@@ -45,7 +45,7 @@ public abstract class AbstractEventFeatureContainer extends BaseElementFeatureCo
 		
 		return null;
 	}
-
+	
 	@Override
 	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {
 		return new UpdateBaseElementNameFeature(fp);

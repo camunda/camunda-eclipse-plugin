@@ -14,7 +14,7 @@ package org.camunda.bpm.modeler.ui.features.participant;
 
 import java.util.List;
 
-import org.camunda.bpm.modeler.core.features.DefaultMoveBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2MoveShapeFeature;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.Tuple;
 import org.camunda.bpm.modeler.ui.features.choreography.ChoreographyUtil;
@@ -24,7 +24,7 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 
-public class MoveParticipantFeature extends DefaultMoveBPMNShapeFeature {
+public class MoveParticipantFeature extends DefaultBpmn2MoveShapeFeature {
 
 	public MoveParticipantFeature(IFeatureProvider fp) {
 		super(fp);

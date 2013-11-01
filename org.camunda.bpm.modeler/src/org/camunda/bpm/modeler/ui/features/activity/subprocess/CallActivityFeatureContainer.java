@@ -14,8 +14,11 @@ package org.camunda.bpm.modeler.ui.features.activity.subprocess;
 
 import org.camunda.bpm.modeler.core.features.MultiUpdateFeature;
 import org.camunda.bpm.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
+import org.camunda.bpm.modeler.core.features.activity.ActivityDecorateFeature;
+import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
+import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.ui.ImageProvider;
 import org.camunda.bpm.modeler.ui.features.activity.ResizeActivityFeature;
 import org.eclipse.bpmn2.Bpmn2Package;
@@ -64,6 +67,17 @@ public class CallActivityFeatureContainer extends AbstractExpandableActivityFeat
 	}
 
 	@Override
+	public IDecorateFeature getDecorateFeature(IFeatureProvider fp) {
+		return new ActivityDecorateFeature(fp) {
+			
+			@Override
+			protected void decorate(RoundedRectangle decorateContainer) {
+				decorateContainer.setLineWidth(4);
+			}
+		};
+	}
+	
+	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return new AddExpandableActivityFeature<CallActivity>(fp) {
 			
@@ -75,16 +89,6 @@ public class CallActivityFeatureContainer extends AbstractExpandableActivityFeat
 				
 				Graphiti.getPeService().setPropertyValue(newShape, CALL_ACTIVITY_REF_PROPERTY,
 						getCallableElementStringValue(activity.getCalledElementRef()));
-			}
-			
-			@Override
-			protected void decorate(RoundedRectangle rect) {
-				rect.setLineWidth(4);
-			}
-
-			@Override
-			protected int getMarkerContainerOffset() {
-				return MARKER_OFFSET;
 			}
 
 			@Override
@@ -136,8 +140,7 @@ public class CallActivityFeatureContainer extends AbstractExpandableActivityFeat
 		// editor to display its contents.
 		
 		public CreateCallActivityFeature(IFeatureProvider fp) {
-			super(fp, "Call Activity",
-					"Identifies a point in the Process where a global Process or a Global Task is called");
+			super(fp, "Call Activity", "Identifies a point in the Process where a global Process or a Global Task is called");
 		}
 
 		@Override
@@ -145,12 +148,9 @@ public class CallActivityFeatureContainer extends AbstractExpandableActivityFeat
 			return ImageProvider.IMG_16_CALL_ACTIVITY;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.camunda.bpm.modeler.features.AbstractCreateFlowElementFeature#getFlowElementClass()
-		 */
 		@Override
 		public EClass getBusinessObjectClass() {
-			return Bpmn2Package.eINSTANCE.getCallActivity();
+			return ModelPackage.eINSTANCE.getCallActivity();
 		}
 
 	}

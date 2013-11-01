@@ -13,6 +13,7 @@
 package org.camunda.bpm.modeler.core.features.container;
 
 import org.camunda.bpm.modeler.core.features.ReconnectBaseElementFeature;
+import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.features.flow.LayoutConnectionFeature;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.BaseElement;
@@ -52,6 +53,11 @@ public abstract class BaseElementConnectionFeatureContainer extends ConnectionFe
 		return new ReconnectBaseElementFeature(fp);
 	}
 
+	@Override
+	public IDecorateFeature getDecorateFeature(IFeatureProvider fp) {
+		return null;
+	}
+	
 	@Override
 	public IRemoveFeature getRemoveFeature(IFeatureProvider fp) {
 		return null;

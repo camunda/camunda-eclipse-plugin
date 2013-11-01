@@ -37,7 +37,7 @@ public abstract class AbstractExpandableActivityFeatureContainer extends Abstrac
 	public ILayoutFeature getLayoutFeature(IFeatureProvider fp) {
 		return new LayoutExpandableActivityFeature(fp);
 	}
-
+	
 	@Override
 	public MultiUpdateFeature getUpdateFeature(IFeatureProvider fp) {
 		MultiUpdateFeature multiUpdate = super.getUpdateFeature(fp);

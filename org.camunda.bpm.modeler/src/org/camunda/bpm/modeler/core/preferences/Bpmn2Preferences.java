@@ -85,7 +85,10 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	public final static String PREF_OVERRIDE_MODEL_ENABLEMENTS = "override.model.enablements";
 	public final static String PREF_IS_HORIZONTAL = "is.horizontal";
 	public final static String PREF_IS_HORIZONTAL_LABEL = "&Horizontal layout of Pools, Lanes and diagram elements [isHorizontal]";
-	
+
+	public static final String PREF_TOGGLE_DIAGRAM_GENERATION = "TOGGLE_DIAGRAM_GENERATION";
+	public static final String PREF_TOGGLE_DIAGRAM_GENERATION_LABEL = "Generate PNG Diagram Image";
+
 	public final static String PREF_IS_EXPANDED = "is.expanded";
 	public final static String PREF_IS_EXPANDED_LABEL = "Expand activity containers (SubProcess, CallActivity, etc.) [isExpanded]";
 	public final static String PREF_IS_MESSAGE_VISIBLE = "is.message.visible";
@@ -119,7 +122,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	public final static String PREF_SHOW_ID_ATTRIBUTE_LABEL = "Show ID attribute for BPMN2 Elements";
 	public final static String PREF_CHECK_PROJECT_NATURE = "check.project.nature";
 	public final static String PREF_CHECK_PROJECT_NATURE_LABEL = "Check if project is configured for BPMN2 Project Nature";
-
+	
 	private static Hashtable<IProject,Bpmn2Preferences> instances = null;
 	private static IProject activeProject;
 
@@ -152,21 +155,24 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 
 	private HashMap<Class, ShapeStyle> shapeStyles = new HashMap<Class, ShapeStyle>();
 	
-	// TODO: stuff like colors, fonts, etc.
-
 	private Bpmn2Preferences(IProject project) {
 		this.project = project;
-		IEclipsePreferences rootNode = Platform.getPreferencesService()
-				.getRootNode();
+	
+		IEclipsePreferences rootNode = Platform.getPreferencesService().getRootNode();
 		if (project!=null) {
-		projectPreferences = rootNode.node(ProjectScope.SCOPE)
+			projectPreferences = rootNode
+				.node(ProjectScope.SCOPE)
 				.node(project.getName())
 				.node(PROJECT_PREFERENCES_ID);
-		if (projectPreferences instanceof ProjectPreferences)
-			((ProjectPreferences)projectPreferences).addPreferenceChangeListener(this);
-		}		
+		
+			if (projectPreferences instanceof ProjectPreferences) {
+				((ProjectPreferences)projectPreferences).addPreferenceChangeListener(this);
+			}
+		}
+		
 		globalPreferences = Activator.getDefault().getPreferenceStore();
 		globalPreferences.addPropertyChangeListener(this);
+		
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 	}
 

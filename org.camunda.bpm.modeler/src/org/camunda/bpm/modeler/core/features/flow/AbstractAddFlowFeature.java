@@ -18,7 +18,7 @@ import java.util.List;
 
 import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.di.DIUtils;
-import org.camunda.bpm.modeler.core.features.AbstractAddBpmnElementFeature;
+import org.camunda.bpm.modeler.core.features.AbstractBpmn2AddElementFeature;
 import org.camunda.bpm.modeler.core.features.PropertyNames;
 import org.camunda.bpm.modeler.core.layout.ConnectionService;
 import org.camunda.bpm.modeler.core.layout.util.Layouter;
@@ -46,7 +46,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public abstract class AbstractAddFlowFeature<T extends BaseElement> extends AbstractAddBpmnElementFeature<T, FreeFormConnection> {
+public abstract class AbstractAddFlowFeature<T extends BaseElement> extends AbstractBpmn2AddElementFeature<T, FreeFormConnection> {
 	
 	public AbstractAddFlowFeature(IFeatureProvider fp) {
 		super(fp);

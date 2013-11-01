@@ -15,8 +15,8 @@ package org.camunda.bpm.modeler.core.features.event.definitions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.camunda.bpm.modeler.core.features.IBpmn2AddFeature;
 import org.camunda.bpm.modeler.core.features.PropertyNames;
+import org.camunda.bpm.modeler.core.features.api.IBpmn2AddFeature;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;

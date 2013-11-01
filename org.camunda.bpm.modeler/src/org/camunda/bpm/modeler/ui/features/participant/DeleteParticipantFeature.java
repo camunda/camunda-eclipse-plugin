@@ -15,7 +15,7 @@ package org.camunda.bpm.modeler.ui.features.participant;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.camunda.bpm.modeler.core.features.DefaultDeleteBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2DeleteShapeFeature;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.ui.features.choreography.ChoreographyUtil;
@@ -35,7 +35,7 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IDeleteContext;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
-public class DeleteParticipantFeature extends DefaultDeleteBPMNShapeFeature {
+public class DeleteParticipantFeature extends DefaultBpmn2DeleteShapeFeature {
 
 	public DeleteParticipantFeature(IFeatureProvider fp) {
 		super(fp);

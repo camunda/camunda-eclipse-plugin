@@ -2,6 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
 	<extension-point id="org.camunda.bpm.modeler.runtime" name="BPMN2 Modeler Runtime Specialization" schema="schema/org.camunda.bpm.modeler.runtime.exsd"/>
+ <extension-point id="org.camunda.bpm.modeler.plugin.customtask" name="CustomTask" schema="schema/org.camunda.bpm.modeler.plugin.customtask.exsd"/>
 
 	<extension point="org.eclipse.emf.ecore.generated_package">
 		<package
@@ -32,7 +33,7 @@
 		</category>
 		<wizard
 			category="camunda.modeler"
-			class="org.camunda.bpm.modeler.ui.wizards.BPMN2DiagramWizard"
+			class="org.camunda.bpm.modeler.ui.wizards.BpmnDiagramWizard"
 			icon="icons/bpmn2_editor_16.png"
 			id="org.camunda.bpm.modeler.ui.diagram"
 			name="BPMN 2.0 Diagram"
@@ -65,7 +66,7 @@
 	<extension point="org.eclipse.ui.editors">
 
 		<editor
-			class="org.camunda.bpm.modeler.ui.editor.BPMN2Editor"
+			class="org.camunda.bpm.modeler.ui.diagram.editor.BpmnEditor"
 			contributorClass="org.eclipse.graphiti.ui.editor.DiagramEditorActionBarContributor"
 			default="true" extensions="bpmn,bpmn2" icon="icons/bpmn2_editor_16.png"
 			id="org.camunda.bpm.modeler.ui.bpmn2editor" name="Bpmn2 Diagram Editor">
@@ -78,14 +79,10 @@
 		<content-type base-type="org.eclipse.core.runtime.xml"
 			id="org.eclipse.bpmn2.content-type.xml"
 			name="BPMN 2.0 file"
-			file-extensions="bpmn,bpmn2,bpmn20,xml"
-			priority="normal">
-			<describer class="org.camunda.bpm.modeler.ui.BPMN2ContentDescriber">
-			</describer>
+			file-extensions="bpmn,bpmn2,bpmn20,xml" priority="normal">
+			<describer class="org.camunda.bpm.modeler.ui.BpmnContentDescriber"></describer>
 		</content-type>
-		<file-association
-			content-type="org.eclipse.core.runtime.xml"
-			file-extensions="bpmn,bpmn2">
+		<file-association content-type="org.eclipse.core.runtime.xml" file-extensions="bpmn,bpmn2">
 		</file-association>
 	</extension>
 
@@ -101,18 +98,18 @@
 
 	<extension point="org.eclipse.graphiti.ui.diagramTypes">
 		<diagramType description="This is the diagram type for the BMPN2 diagram"
-			id="org.camunda.bpm.modeler.ui.diagram.MainBPMNDiagramType" name="BPMN2 Diagram Type"
+			id="org.camunda.bpm.modeler.ui.diagram.Bpmn2DiagramTypeProvider" name="BPMN2 Diagram Type"
 			type="BPMN2">
 		</diagramType>
 	</extension>
 
 	<extension point="org.eclipse.graphiti.ui.diagramTypeProviders">
 		<diagramTypeProvider
-			class="org.camunda.bpm.modeler.ui.diagram.MainBPMNDiagramTypeProvider"
+			class="org.camunda.bpm.modeler.ui.diagram.Bpmn2DiagramTypeProvider"
 			description="This is the editor for the BPMN2 diagram"
-			id="org.camunda.bpm.modeler.ui.diagram.MainBPMNDiagramType" name="BPMN2 Editor">
+			id="org.camunda.bpm.modeler.ui.diagram.Bpmn2DiagramTypeProvider" name="BPMN2 Editor">
 			<diagramType
-				id="org.camunda.bpm.modeler.ui.diagram.MainBPMNDiagramType">
+				id="org.camunda.bpm.modeler.ui.diagram.Bpmn2DiagramTypeProvider">
 			</diagramType>
 			<imageProvider id="org.camunda.bpm.modeler.ui.ImageProvider">
 			</imageProvider>
@@ -120,8 +117,7 @@
 	</extension>
 
 	<extension point="org.eclipse.graphiti.ui.imageProviders">
-		<imageProvider class="org.camunda.bpm.modeler.ui.ImageProvider"
-			id="org.camunda.bpm.modeler.ui.ImageProvider">
+		<imageProvider class="org.camunda.bpm.modeler.ui.ImageProvider" id="org.camunda.bpm.modeler.ui.ImageProvider">
 		</imageProvider>
 	</extension>
 
@@ -209,7 +205,7 @@
 					]]>
 				</constraint>
 				<constraint
-					class="org.camunda.bpm.modeler.core.validation.BPMN2BatchValidationConstraint"
+					class="org.camunda.bpm.modeler.core.validation.Bpmn2BatchValidationConstraint"
 					id="org.camunda.bpm.modeler.validation.error"
 					isEnabledByDefault="true"
 					lang="Java"
@@ -224,7 +220,7 @@
 					<target class="BaseElement"/>
 				</constraint>
 				<constraint
-					class="org.camunda.bpm.modeler.core.validation.BPMN2BatchValidationConstraint"
+					class="org.camunda.bpm.modeler.core.validation.Bpmn2BatchValidationConstraint"
 					id="org.camunda.bpm.modeler.validation.warning"
 					isEnabledByDefault="true"
 					lang="Java"
@@ -302,7 +298,7 @@
 		name="BPMN 2.0 Project Validator"
 		point="org.eclipse.wst.validation.validatorV2">
 		<validator
-			class="org.camunda.bpm.modeler.core.validation.BPMN2ProjectValidator"
+			class="org.camunda.bpm.modeler.core.validation.Bpmn2ProjectValidator"
 			markerId="org.camunda.bpm.modeler.problemMarker">
 			<include>
 				<rules>

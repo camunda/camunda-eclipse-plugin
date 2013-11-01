@@ -70,7 +70,6 @@ public class MorphGatewayFeature extends AbstractMorphNodeFeature<Gateway> {
 			}
 			
 			return null;
-		}		
+		}
 	}
-
 }

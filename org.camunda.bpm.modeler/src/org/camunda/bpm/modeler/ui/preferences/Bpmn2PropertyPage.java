@@ -14,14 +14,12 @@ package org.camunda.bpm.modeler.ui.preferences;
 
 import org.camunda.bpm.modeler.core.Activator;
 import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
-import org.camunda.bpm.modeler.core.runtime.TargetRuntime;
 import org.camunda.bpm.modeler.ui.Messages;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
@@ -33,15 +31,16 @@ public class Bpmn2PropertyPage extends PropertyPage {
 
 	private Bpmn2Preferences prefs;
 	
-	private Combo cboRuntimes;
 	private Button btnShowAdvancedProperties;
 	private Button btnShowDescriptions;
 	private Button btnCheckProjectNature;
+	
 	private BPMNDIAttributeDefaultCombo cboIsHorizontal;
 	private BPMNDIAttributeDefaultCombo cboIsExpanded;
 	private BPMNDIAttributeDefaultCombo cboIsMessageVisible;
 	private BPMNDIAttributeDefaultCombo cboIsMarkerVisible;
-	private Composite runtimeComposite;
+	
+	private Button btnGeneratePng;
 	
 	public Bpmn2PropertyPage() {
 		super();
@@ -59,9 +58,6 @@ public class Bpmn2PropertyPage extends PropertyPage {
 		Label label = new Label(container, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		label.setText(Bpmn2Preferences.PREF_TARGET_RUNTIME_LABEL);
-		
-		cboRuntimes = new Combo(container, SWT.READ_ONLY);
-		cboRuntimes.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
 		
 		btnShowAdvancedProperties = new Button(container, SWT.CHECK);
 		btnShowAdvancedProperties.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
@@ -93,11 +89,27 @@ public class Bpmn2PropertyPage extends PropertyPage {
 		cboIsMarkerVisible = new BPMNDIAttributeDefaultCombo(group);
 		cboIsMarkerVisible.setText(Bpmn2Preferences.PREF_IS_MARKER_VISIBLE_LABEL);
 		
-		runtimeComposite = prefs.getRuntime().getRuntimeExtension().getPreferencesComposite(container, prefs);
+		createDiagramExportComposite(container);
 
 		initData();
 
 		return container;
+	}
+
+	private Composite createDiagramExportComposite(Composite parent) {
+		Composite composite = new Composite(parent, SWT.NO_SCROLL);
+		GridLayout layout = new GridLayout();
+		layout.marginWidth = 0;
+		layout.marginHeight = 0;
+
+		composite.setLayout(layout);
+		composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
+
+		btnGeneratePng = new Button(composite, SWT.CHECK);
+		btnGeneratePng.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
+		btnGeneratePng.setText(Bpmn2Preferences.PREF_TOGGLE_DIAGRAM_GENERATION_LABEL);
+		
+		return composite;
 	}
 
 	private void restoreDefaults() {
@@ -123,18 +135,11 @@ public class Bpmn2PropertyPage extends PropertyPage {
 		btnShowDescriptions.setSelection( prefs.getShowDescriptions() );
 		btnCheckProjectNature.setSelection( prefs.getCheckProjectNature() );
 		cboIsHorizontal.setValue(prefs.getIsHorizontal());
-		cboIsExpanded.setValue( prefs.getIsExpanded() );
-		cboIsMessageVisible.setValue( prefs.getIsMessageVisible() );
-		cboIsMarkerVisible.setValue( prefs.getIsMarkerVisible() );
+		cboIsExpanded.setValue(prefs.getIsExpanded());
+		cboIsMessageVisible.setValue( prefs.getIsMessageVisible());
+		cboIsMarkerVisible.setValue(prefs.getIsMarkerVisible());
 		
-		TargetRuntime cr = prefs.getRuntime();
-		int i = 0;
-		for (TargetRuntime r : TargetRuntime.getAllRuntimes()) {
-			cboRuntimes.add(r.getName());
-			if (r == cr)
-				cboRuntimes.select(i);
-			++i;
-		}
+		btnGeneratePng.setSelection(prefs.getBoolean(Bpmn2Preferences.PREF_TOGGLE_DIAGRAM_GENERATION, true));
 	}
 
 	@Override
@@ -155,10 +160,6 @@ public class Bpmn2PropertyPage extends PropertyPage {
 	}
 
 	private void updateData() throws BackingStoreException {
-		int i = cboRuntimes.getSelectionIndex();
-		TargetRuntime rt = TargetRuntime.getAllRuntimes()[i];
-		prefs.setRuntime(rt);
-		
 		prefs.setShowAdvancedPropertiesTab(btnShowAdvancedProperties.getSelection());
 		prefs.setShowDescriptions(btnShowDescriptions.getSelection());
 		prefs.setCheckProjectNature(btnCheckProjectNature.getSelection());
@@ -167,6 +168,7 @@ public class Bpmn2PropertyPage extends PropertyPage {
 		prefs.setIsMessageVisible(cboIsMessageVisible.getValue());
 		prefs.setIsMarkerVisible(cboIsMarkerVisible.getValue());
 		
+		prefs.setBoolean(Bpmn2Preferences.PREF_TOGGLE_DIAGRAM_GENERATION, btnGeneratePng.getSelection());
 		prefs.save();
 	}
 }

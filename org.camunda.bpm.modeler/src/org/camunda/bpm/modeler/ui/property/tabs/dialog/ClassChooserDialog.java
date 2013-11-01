@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.camunda.bpm.modeler.core.Activator;
-import org.camunda.bpm.modeler.ui.editor.BPMN2Editor;
+import org.camunda.bpm.modeler.ui.diagram.editor.BpmnEditor;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -64,7 +64,7 @@ public class ClassChooserDialog {
 		String clazz = ((IType) result[0]).getFullyQualifiedName();
 		IJavaProject containerProject = ((IType) result[0]).getJavaProject();
 
-		DiagramEditor diagramEditor = BPMN2Editor.getActiveEditor();
+		DiagramEditor diagramEditor = BpmnEditor.getActiveEditor();
 
 		IProject currentProject = getProjectFromDiagram(diagramEditor.getDiagramTypeProvider().getDiagram());
 		

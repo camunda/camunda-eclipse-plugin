@@ -15,11 +15,14 @@ package org.camunda.bpm.modeler.ui.features.activity.task;
 import org.camunda.bpm.modeler.core.features.AbstractUpdateBaseElementFeature;
 import org.camunda.bpm.modeler.core.features.MultiUpdateFeature;
 import org.camunda.bpm.modeler.core.features.activity.LayoutActivityFeature;
+import org.camunda.bpm.modeler.core.features.activity.task.AddTaskFeature;
 import org.camunda.bpm.modeler.core.features.activity.task.DirectEditActivityFeature;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.ui.features.activity.AbstractActivityFeatureContainer;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.graphiti.datatypes.IRectangle;
+import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.IDirectEditingFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.ILayoutFeature;
@@ -30,7 +33,6 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 
 public abstract class AbstractTaskFeatureContainer extends AbstractActivityFeatureContainer {
-
 
 	@Override
 	public MultiUpdateFeature getUpdateFeature(IFeatureProvider fp) {
@@ -47,6 +49,11 @@ public abstract class AbstractTaskFeatureContainer extends AbstractActivityFeatu
 		return multiUpdate;
 	}
 
+	@Override
+	public IAddFeature getAddFeature(IFeatureProvider fp) {
+		return new AddTaskFeature<ServiceTask>(fp);
+	}
+	
 	@Override
 	public IDirectEditingFeature getDirectEditingFeature(IFeatureProvider fp) {
 		return new DirectEditActivityFeature(fp);

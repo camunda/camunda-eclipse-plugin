@@ -679,14 +679,6 @@ public class ModelUtil {
 		return object == null ? null : object.toString();
 	}
 
-	public static String getDisplayName(EObject object, EStructuralFeature feature) {
-		if (feature == null) {
-			return getDisplayName(object);
-		}
-
-		return getLongDisplayName(object, feature);
-	}
-
 	public static void setValue(TransactionalEditingDomain domain, EObject object, EStructuralFeature feature, Object value) {
 		domain.getCommandStack().execute(getUpdateCommand(domain, object, feature, value));
 	}
@@ -721,8 +713,12 @@ public class ModelUtil {
 		return null;
 	}
 
-	/*
-	 * Fallbacks in case a property provider does not exist
+	/**
+	 * Returns the long display name for an {@link EObject}.
+	 * 
+	 * @param object
+	 * 
+	 * @return
 	 */
 	public static String getLongDisplayName(EObject object) {
 		String objName = null;
@@ -761,14 +757,6 @@ public class ModelUtil {
 			}
 		}
 		return objName;
-	}
-
-	public static String getLongDisplayName(EObject object,
-			EStructuralFeature feature) {
-		Object value = object.eGet(feature);
-		if (value == null)
-			return "";
-		return value.toString();
 	}
 
 	public static DiagramEditor getEditor(EObject object) {

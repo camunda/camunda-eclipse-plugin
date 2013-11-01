@@ -29,7 +29,6 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.Gateway;
-import org.eclipse.bpmn2.Group;
 import org.eclipse.bpmn2.TextAnnotation;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.util.EList;

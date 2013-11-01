@@ -12,11 +12,11 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features;
 
-import org.camunda.bpm.modeler.core.features.DefaultDeleteBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2DeleteShapeFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IDeleteContext;
 
-public class AbstractDefaultDeleteFeature extends DefaultDeleteBPMNShapeFeature {
+public class AbstractDefaultDeleteFeature extends DefaultBpmn2DeleteShapeFeature {
 	public AbstractDefaultDeleteFeature(IFeatureProvider fp) {
 		super(fp);
 	}

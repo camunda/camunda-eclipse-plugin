@@ -5,7 +5,7 @@ import static org.camunda.bpm.modeler.core.layout.util.RectangleUtil.translate;
 
 import java.util.List;
 
-import org.camunda.bpm.modeler.core.features.DefaultResizeBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2ResizeShapeFeature;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.BBox;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.Sector;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
@@ -33,7 +33,7 @@ public class CollaborationResizeSupport {
 		// construct a bounding box by the contents of visible lanes
 		// and taking a minimal size of each lane into account
 		
-		BBox resizeBBox = new BBox(null, DefaultResizeBPMNShapeFeature.PADDING, DefaultResizeBPMNShapeFeature.PADDING);
+		BBox resizeBBox = new BBox(null, DefaultBpmn2ResizeShapeFeature.PADDING, DefaultBpmn2ResizeShapeFeature.PADDING);
 		
 		if (laneShapes.isEmpty()) {
 			

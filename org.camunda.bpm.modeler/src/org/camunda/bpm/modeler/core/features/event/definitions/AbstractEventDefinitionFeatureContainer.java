@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.core.features.event.definitions;
 
+import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.features.container.BaseElementFeatureContainer;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.BoundaryEvent;
@@ -55,7 +56,7 @@ public abstract class AbstractEventDefinitionFeatureContainer extends BaseElemen
 		}
 		return null;
 	}
-
+	
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return new AddEventDefinitionFeature(fp);

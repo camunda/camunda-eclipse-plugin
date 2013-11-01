@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.core.features.container;
 
+import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
+import org.camunda.bpm.modeler.core.features.api.container.IFeatureContainer;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -29,7 +31,7 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
  * 
  * @author nico.rehwaldt
  */
-public abstract class BaseElementFeatureContainer implements FeatureContainer {
+public abstract class BaseElementFeatureContainer implements IFeatureContainer {
 
 	@Override
 	public Object getApplyObject(IContext context) {
@@ -57,6 +59,11 @@ public abstract class BaseElementFeatureContainer implements FeatureContainer {
 		return o instanceof BaseElement;
 	}
 
+	@Override
+	public IDecorateFeature getDecorateFeature(IFeatureProvider fp) {
+		return null;
+	}
+	
 	@Override
 	public IRemoveFeature getRemoveFeature(IFeatureProvider fp) {
 		return null;

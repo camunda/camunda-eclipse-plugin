@@ -12,13 +12,13 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.event;
 
-import org.camunda.bpm.modeler.core.features.LayoutBpmnShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2LayoutShapeFeature;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ILayoutContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 
-public class LayoutBoundaryEventFeature extends LayoutBpmnShapeFeature {
+public class LayoutBoundaryEventFeature extends DefaultBpmn2LayoutShapeFeature {
 
 	public LayoutBoundaryEventFeature(IFeatureProvider fp) {
 		super(fp);

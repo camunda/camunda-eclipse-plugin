@@ -15,7 +15,6 @@ package org.camunda.bpm.modeler.core.features.activity;
 import org.camunda.bpm.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.graphiti.features.IFeatureProvider;
-import org.eclipse.graphiti.features.context.ICreateContext;
 
 public abstract class AbstractCreateExpandableFlowNodeFeature<T extends FlowNode> extends
 		AbstractCreateFlowElementFeature<T> {

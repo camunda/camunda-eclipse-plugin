@@ -42,10 +42,18 @@ public class ShapeStyle {
 	boolean dirty;
 
 	public ShapeStyle() {
-		setDefaultColors(DEFAULT_COLOR);
-		textFont = stringToFont(DEFAULT_FONT_STRING);
+		this(DEFAULT_COLOR, DEFAULT_FONT_STRING);
 	}
 
+	public ShapeStyle(IColorConstant baseColor, String font) {
+		setFont(font);
+		setDefaultColors(baseColor);
+	}
+
+	public ShapeStyle(IColorConstant baseColor) {
+		this(baseColor, DEFAULT_FONT_STRING);
+	}
+	
 	public ShapeStyle(ShapeStyle other) {
 		this(encode(other));
 	}
@@ -92,6 +100,10 @@ public class ShapeStyle {
 		setShapeSecondarySelectedColor(StyleUtil.shiftColor(defaultColor, -16));
 		setShapeForeground(StyleUtil.shiftColor(defaultColor, -255));
 		setTextColor(StyleUtil.shiftColor(defaultColor, -255));
+	}
+
+	public void setFont(String font) {
+		textFont = stringToFont(font);
 	}
 	
 	public boolean isDirty() {

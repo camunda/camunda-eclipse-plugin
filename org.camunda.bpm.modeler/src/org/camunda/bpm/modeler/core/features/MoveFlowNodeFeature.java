@@ -24,7 +24,7 @@ import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.features.context.impl.MoveShapeContext;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
-public class MoveFlowNodeFeature extends DefaultMoveBPMNShapeFeature {
+public class MoveFlowNodeFeature extends DefaultBpmn2MoveShapeFeature {
 
 	private ModelMoveOperation moveOperation;
 

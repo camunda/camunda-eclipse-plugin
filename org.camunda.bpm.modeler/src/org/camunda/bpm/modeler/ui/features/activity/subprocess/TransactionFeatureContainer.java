@@ -14,6 +14,8 @@ package org.camunda.bpm.modeler.ui.features.activity.subprocess;
 
 import org.camunda.bpm.modeler.core.features.MultiUpdateFeature;
 import org.camunda.bpm.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
+import org.camunda.bpm.modeler.core.features.activity.ActivityDecorateFeature;
+import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.camunda.bpm.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.Bpmn2Package;
@@ -46,24 +48,25 @@ public class TransactionFeatureContainer extends AbstractExpandableActivityFeatu
 	}
 
 	@Override
-	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddExpandableActivityFeature<Transaction>(fp) {
+	public IDecorateFeature getDecorateFeature(IFeatureProvider fp) {
+		return new ActivityDecorateFeature(fp) {
 
 			@Override
-			protected void decorate(RoundedRectangle rect) {
+			protected void decorate(RoundedRectangle decorateContainer) {
 				IGaService gaService = Graphiti.getGaService();
-				RoundedRectangle innerRect = gaService.createRoundedRectangle(rect, 5, 5);
+				RoundedRectangle innerRect = gaService.createRoundedRectangle(decorateContainer, 5, 5);
+				
 				innerRect.setFilled(false);
 				innerRect.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-				gaService.setLocationAndSize(innerRect, offset, offset, rect.getWidth() - (2 * offset),
-						rect.getHeight() - (2 * offset));
-			}
-
-			@Override
-			protected int getMarkerContainerOffset() {
-				return offset;
+				
+				gaService.setLocationAndSize(innerRect, offset, offset, decorateContainer.getWidth() - (2 * offset), decorateContainer.getHeight() - (2 * offset));
 			}
 		};
+	}
+	
+	@Override
+	public IAddFeature getAddFeature(IFeatureProvider fp) {
+		return new AddExpandableActivityFeature<Transaction>(fp);
 	}
 
 	@Override

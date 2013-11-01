@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.core.features.container;
 
+import org.camunda.bpm.modeler.core.features.api.container.IFeatureContainer;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IRemoveFeature;
 import org.eclipse.graphiti.features.context.IContext;
@@ -20,7 +21,7 @@ import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.mm.PropertyContainer;
 import org.eclipse.graphiti.services.Graphiti;
 
-public abstract class PropertyBasedFeatureContainer implements FeatureContainer {
+public abstract class PropertyBasedFeatureContainer implements IFeatureContainer {
 
 	@Override
 	public Object getApplyObject(IContext context) {

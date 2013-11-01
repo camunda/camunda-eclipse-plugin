@@ -17,6 +17,7 @@ import static org.camunda.bpm.modeler.core.features.choreography.ChoreographyPro
 import java.util.List;
 
 import org.camunda.bpm.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
+import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.features.choreography.LayoutChoreographyFeature;
 import org.camunda.bpm.modeler.core.utils.Tuple;
 import org.camunda.bpm.modeler.ui.ImageProvider;
@@ -47,7 +48,7 @@ public class SubChoreographyFeatureContainer extends AbstractChoreographyFeature
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return new AddSubChoreographyFeature(fp);
 	}
-
+	
 	@Override
 	public ILayoutFeature getLayoutFeature(IFeatureProvider fp) {
 		return new LayoutChoreographyFeature(fp) {

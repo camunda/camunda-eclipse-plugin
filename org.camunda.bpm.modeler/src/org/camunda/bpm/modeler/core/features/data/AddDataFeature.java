@@ -13,7 +13,7 @@
 package org.camunda.bpm.modeler.core.features.data;
 
 import org.camunda.bpm.modeler.core.di.DIUtils;
-import org.camunda.bpm.modeler.core.features.AbstractAddBpmnShapeFeature;
+import org.camunda.bpm.modeler.core.features.AbstractBpmn2AddShapeFeature;
 import org.camunda.bpm.modeler.core.utils.AnchorUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
@@ -34,7 +34,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public abstract class AddDataFeature<T extends ItemAwareElement> extends AbstractAddBpmnShapeFeature<T> {
+public abstract class AddDataFeature<T extends ItemAwareElement> extends AbstractBpmn2AddShapeFeature<T> {
 
 	public AddDataFeature(IFeatureProvider fp) {
 		super(fp);

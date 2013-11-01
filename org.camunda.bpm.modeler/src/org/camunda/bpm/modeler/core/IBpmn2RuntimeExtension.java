@@ -12,25 +12,7 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.core;
 
-import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
-import org.camunda.bpm.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
-import org.eclipse.graphiti.ui.editor.DiagramEditor;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IEditorInput;
 
 public interface IBpmn2RuntimeExtension {
 
-	/**
-	 * Check if the given input file is specific to the runtime environment.
-	 * The implementation should check for specific extensions and namespaces that identify
-	 * the file for this runtime.
-	 *  
-	 * @param input
-	 * @return true if the file is targeted for this runtime, false if the file is generic BPMN 2.0
-	 */
-	public boolean isContentForRuntime(IEditorInput input);
-	public String getTargetNamespace(Bpmn2DiagramType diagramType);
-	public void initialize(DiagramEditor editor);
-	
-	public Composite getPreferencesComposite(Composite parent, Bpmn2Preferences preferences);
 }

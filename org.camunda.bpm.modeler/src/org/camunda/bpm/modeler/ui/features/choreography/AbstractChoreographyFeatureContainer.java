@@ -13,6 +13,7 @@
 package org.camunda.bpm.modeler.ui.features.choreography;
 
 import org.camunda.bpm.modeler.core.features.MultiUpdateFeature;
+import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.features.choreography.LayoutChoreographyFeature;
 import org.camunda.bpm.modeler.core.features.choreography.UpdateChoreographyNameFeature;
 import org.camunda.bpm.modeler.core.features.container.BaseElementFeatureContainer;
@@ -45,7 +46,7 @@ public abstract class AbstractChoreographyFeatureContainer extends BaseElementFe
 	public ILayoutFeature getLayoutFeature(IFeatureProvider fp) {
 		return new LayoutChoreographyFeature(fp);
 	}
-
+	
 	@Override
 	public IMoveShapeFeature getMoveFeature(IFeatureProvider fp) {
 		return new MoveChoreographyFeature(fp);

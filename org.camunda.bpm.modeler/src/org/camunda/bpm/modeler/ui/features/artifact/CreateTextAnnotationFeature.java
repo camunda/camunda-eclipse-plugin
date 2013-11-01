@@ -42,16 +42,6 @@ public class CreateTextAnnotationFeature extends AbstractCreateArtifactFeature<T
 		return ImageProvider.IMG_16_TEXT_ANNOTATION;
 	}
 
-	@Override
-	public String getCreateImageId() {
-		return ImageProvider.IMG_16_TEXT_ANNOTATION;
-	}
-
-	@Override
-	public String getCreateLargeImageId() {
-		return getCreateImageId(); // FIXME
-	}
-
 	/* (non-Javadoc)
 	 * @see org.camunda.bpm.modeler.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
 	 */
