@@ -22,6 +22,7 @@ import org.eclipse.graphiti.features.context.IReconnectionContext;
 import org.eclipse.graphiti.features.context.impl.ReconnectionContext;
 import org.eclipse.graphiti.features.impl.DefaultReconnectionFeature;
 import org.eclipse.graphiti.mm.pictograms.Connection;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
 public class ReconnectBaseElementFeature extends DefaultReconnectionFeature {
@@ -41,7 +42,13 @@ public class ReconnectBaseElementFeature extends DefaultReconnectionFeature {
 		
 		BPMNEdge bpmnEdge = BusinessObjectUtil.getFirstElementOfType(connection, BPMNEdge.class);
 		
+		FreeFormConnection freeFormConnection = BusinessObjectUtil.getFirstElementOfType(targetPictogramElement, FreeFormConnection.class);
+		if (freeFormConnection != null) {
+			targetPictogramElement = freeFormConnection;
+		}
+			
 		DiagramElement diagramElement = BusinessObjectUtil.getFirstElementOfType(targetPictogramElement, DiagramElement.class);
+		
 		if (reconnectType.equals(ReconnectionContext.RECONNECT_TARGET)) {
 			bpmnEdge.setTargetElement(diagramElement);
 		} else {

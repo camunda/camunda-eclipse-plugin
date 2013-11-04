@@ -19,7 +19,6 @@ import java.util.Iterator;
 import org.camunda.bpm.modeler.core.Activator;
 import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.features.DirectEditNamedConnectionFeature;
-import org.camunda.bpm.modeler.core.features.DirectEditNamedElementFeature;
 import org.camunda.bpm.modeler.core.features.MultiUpdateFeature;
 import org.camunda.bpm.modeler.core.features.PropertyNames;
 import org.camunda.bpm.modeler.core.features.UpdateBaseElementNameFeature;
@@ -27,6 +26,11 @@ import org.camunda.bpm.modeler.core.features.container.BaseElementConnectionFeat
 import org.camunda.bpm.modeler.core.features.flow.AbstractAddFlowFeature;
 import org.camunda.bpm.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.camunda.bpm.modeler.core.features.flow.AbstractReconnectFlowFeature;
+import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations;
+import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.ConnectionType;
+import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.CreateConnectionOperation;
+import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.ReconnectConnectionOperation;
+import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.StartFormCreateConnectionOperation;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.layout.util.Layouter;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
@@ -35,15 +39,12 @@ import org.camunda.bpm.modeler.core.utils.Tuple;
 import org.camunda.bpm.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.ComplexGateway;
-import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.ExclusiveGateway;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.InclusiveGateway;
 import org.eclipse.bpmn2.SequenceFlow;
-import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IAddFeature;
@@ -59,7 +60,6 @@ import org.eclipse.graphiti.features.context.ICreateConnectionContext;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
 import org.eclipse.graphiti.features.context.IReconnectionContext;
 import org.eclipse.graphiti.features.context.IUpdateContext;
-import org.eclipse.graphiti.features.context.impl.ReconnectionContext;
 import org.eclipse.graphiti.features.impl.AbstractUpdateFeature;
 import org.eclipse.graphiti.features.impl.Reason;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
@@ -67,7 +67,6 @@ import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.styles.Color;
 import org.eclipse.graphiti.mm.algorithms.styles.LineStyle;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
-import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -130,7 +129,21 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 			super(fp, "Sequence Flow",
 					"A Sequence Flow is used to show the order that activities will be performed in a Process");
 		}
+		
+		@Override
+		public boolean canStartConnection(ICreateConnectionContext context) {
+			context.putProperty(ConnectionOperations.CONNECTION_TYPE, ConnectionType.SEQUENCE_FLOW);
+			StartFormCreateConnectionOperation operation = ConnectionOperations.getStartFromConnectionCreateOperation(context);
+			return operation.canExecute(context);
+		}
 
+		@Override
+		public boolean canCreate(ICreateConnectionContext context) {
+			context.putProperty(ConnectionOperations.CONNECTION_TYPE, ConnectionType.SEQUENCE_FLOW);
+			CreateConnectionOperation connection = ConnectionOperations.getConnectionCreateOperation(context);
+			return connection.canExecute(context);			
+		}
+		
 		@Override
 		protected String getStencilImageId() {
 			return ImageProvider.IMG_16_SEQUENCE_FLOW;
@@ -336,30 +349,9 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 
 		@Override
 		public boolean canReconnect(IReconnectionContext context) {
-			if (!super.canReconnect(context)) {
-				return false;
-			}
-			
-			AnchorContainer anchorContainer = context.getNewAnchor().getParent();
-			BaseElement targetElement = BusinessObjectUtil.getFirstBaseElement(anchorContainer);
-			
-			String reconnectType = context.getReconnectType();
-			
-			if (reconnectType.equals(ReconnectionContext.RECONNECT_TARGET)) {
-				if (targetElement instanceof StartEvent || 
-					targetElement instanceof BoundaryEvent) {
-				
-					return false;
-				}
-			} else
-			if (reconnectType.equals(ReconnectionContext.RECONNECT_SOURCE)) {
-				if (targetElement instanceof EndEvent) {
-				
-					return false;
-				}
-			}
-			
-			return true;
+			context.putProperty(ConnectionOperations.CONNECTION_TYPE, ConnectionType.SEQUENCE_FLOW);
+			ReconnectConnectionOperation operation = ConnectionOperations.getConnectionReconnectOperation(context);
+			return operation.canExecute(context);
 		}
 		
 		@Override
