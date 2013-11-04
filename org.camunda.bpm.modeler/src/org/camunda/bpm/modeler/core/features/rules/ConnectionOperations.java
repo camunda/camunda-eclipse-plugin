@@ -9,6 +9,8 @@ import org.camunda.bpm.modeler.core.features.rules.RuleOperations.Algorithm;
 import org.camunda.bpm.modeler.core.features.rules.RuleOperations.FromModelOperation;
 import org.camunda.bpm.modeler.core.features.rules.RuleOperations.FromToModelOperation;
 import org.camunda.bpm.modeler.core.features.rules.RuleOperations.Side;
+import org.camunda.bpm.modeler.core.utils.AnchorUtil;
+import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.runtime.engine.model.BoundaryEvent;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BaseElement;
@@ -38,7 +40,9 @@ import org.eclipse.graphiti.features.context.IReconnectionContext;
 import org.eclipse.graphiti.features.context.impl.ReconnectionContext;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
+import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public class ConnectionOperations {
 	
@@ -849,7 +853,20 @@ public class ConnectionOperations {
 	}
 	
 	protected static Object getSourceBusinessObjectFromContext(ICreateConnectionContext context) {
-		return getBusinessObjectForPictogramElement(context.getSourcePictogramElement());
+		if (context.getSourcePictogramElement() != null) {
+			return getBusinessObjectForPictogramElement(context.getSourcePictogramElement());
+		}
+		
+		Anchor anchor = context.getSourceAnchor();
+		if (anchor != null && anchor.getParent() instanceof Shape) {
+			Shape shape = (Shape) anchor.getParent();
+			Connection conn = AnchorUtil.getConnectionPointOwner(shape);
+			if (conn != null) {
+				return BusinessObjectUtil.getFirstElementOfType(conn, BaseElement.class);
+			}
+			return BusinessObjectUtil.getFirstElementOfType(shape, BaseElement.class);
+		}
+		return null;
 	}
 
 	protected static Object getSourceBusinessObjectFromContext(IReconnectionContext context) {
@@ -875,7 +892,20 @@ public class ConnectionOperations {
 	}
 	
 	protected static Object getTargetBusinessObjectFromContext(ICreateConnectionContext context) {
-		return getBusinessObjectForPictogramElement(context.getTargetPictogramElement());
+		if (context.getTargetPictogramElement() != null) {
+			return getBusinessObjectForPictogramElement(context.getTargetPictogramElement());
+		}
+		
+		Anchor anchor = context.getTargetAnchor();
+		if (anchor != null && anchor.getParent() instanceof Shape) {
+			Shape shape = (Shape) anchor.getParent();
+			Connection conn = AnchorUtil.getConnectionPointOwner(shape);
+			if (conn != null) {
+				return BusinessObjectUtil.getFirstElementOfType(conn, BaseElement.class);
+			}
+			return BusinessObjectUtil.getFirstElementOfType(shape, BaseElement.class);
+		}
+		return null;
 	}
 
 	protected static Object getTargetBusinessObjectFromContext(IReconnectionContext context) {
