@@ -833,15 +833,22 @@ public class GraphicsUtil {
 	}
 
 	public static void deleteEventShape(ContainerShape containerShape) {
-		for (PictogramElement shape : containerShape.getChildren()) {
-			if (shape.getLink() != null) {
-				EList<EObject> objects = shape.getLink().getBusinessObjects();
-				if (objects.size()>0 && objects.get(0) instanceof EventDefinition) {
-					peService.deletePictogramElement(shape);
-					break;
-				}
+		for (Shape shape : containerShape.getChildren()) {
+			if (BusinessObjectUtil.getFirstElementOfType(shape, EventDefinition.class) != null) {
+				peService.deletePictogramElement(shape);
+				break;
 			}
 		}
+	}
+
+	public static Shape getEventShape(ContainerShape containerShape) {
+		for (Shape shape : containerShape.getChildren()) {
+			if (BusinessObjectUtil.getFirstElementOfType(shape, EventDefinition.class) != null) {
+				return shape;
+			}
+		}
+		
+		return null;
 	}
 
 	/* OTHER */

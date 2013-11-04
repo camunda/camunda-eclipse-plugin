@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.core.features.event.definitions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
@@ -42,15 +43,19 @@ public abstract class AbstractUpdateEventDefinitionFeature extends AbstractUpdat
 		List<EventDefinition> eventDefinitions = ModelUtil.getEventDefinitions(event);
 		int size = eventDefinitions.size();
 
+		Shape definitionShape;
+		
+		List<Object> businessObjects = new ArrayList<Object>(eventDefinitions);
+		businessObjects.add(0, event);
+		
 		GraphicsUtil.deleteEventShape(container);
-		if (size==1) {
-			Shape addedShape = getDecorationAlgorithm(event).draw(container);
-			link(addedShape, eventDefinitions.get(0));
-		}
-		else if (size > 1) {
-			Shape multipleShape = Graphiti.getPeService().createShape(container, false);
-			drawForEvent(event, multipleShape);
-			link(multipleShape, eventDefinitions.toArray(new EventDefinition[size]));
+		if (size > 1) {
+			definitionShape = Graphiti.getPeService().createShape(container, false);
+			link(definitionShape, businessObjects.toArray());
+			drawForEvent(event, definitionShape);
+		} else {
+			definitionShape = getDecorationAlgorithm(event).draw(container);
+			link(definitionShape, businessObjects.toArray());
 		}
 	}
 

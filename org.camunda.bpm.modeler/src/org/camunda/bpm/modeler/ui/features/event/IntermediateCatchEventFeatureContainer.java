@@ -26,12 +26,8 @@ import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IUpdateFeature;
-import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
-import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.services.IPeService;
 
 public class IntermediateCatchEventFeatureContainer extends AbstractEventFeatureContainer {
 
@@ -60,18 +56,6 @@ public class IntermediateCatchEventFeatureContainer extends AbstractEventFeature
 			protected void decorate(Ellipse e) {
 				Ellipse circle = GraphicsUtil.createIntermediateEventCircle(e);
 				circle.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-			}
-
-			@Override
-			protected void setProperties(IAddContext context, ContainerShape newShape) {
-				super.setProperties(context, newShape);
-				
-				IntermediateCatchEvent event = getBusinessObject(context);
-				
-				IPeService peService = Graphiti.getPeService();
-				peService.setPropertyValue(newShape,
-						UpdateIntermediateCatchEventFeature.INTERMEDIATE_CATCH_EVENT_MARKER,
-						AbstractUpdateEventFeature.getEventDefinitionsValue(event));
 			}
 		};
 	}
@@ -109,21 +93,8 @@ public class IntermediateCatchEventFeatureContainer extends AbstractEventFeature
 	
 	public static class UpdateIntermediateCatchEventFeature extends AbstractUpdateEventFeature {
 
-		public static String INTERMEDIATE_CATCH_EVENT_MARKER = "marker.intermediate.catch.event";
-
-		/**
-		 * @param fp
-		 */
 		public UpdateIntermediateCatchEventFeature(IFeatureProvider fp) {
 			super(fp);
-		}
-
-		/* (non-Javadoc)
-		 * @see org.camunda.bpm.modeler.features.activity.AbstractUpdateMarkerFeature#getPropertyKey()
-		 */
-		@Override
-		protected String getPropertyKey() {
-			return INTERMEDIATE_CATCH_EVENT_MARKER;
 		}
 	}
 }

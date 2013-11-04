@@ -6,9 +6,11 @@ import java.util.List;
 
 import org.camunda.bpm.modeler.core.layout.util.ConnectionUtil;
 import org.camunda.bpm.modeler.core.utils.ContextUtil;
+import org.camunda.bpm.modeler.core.utils.Images;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.core.utils.transform.Transformer;
 import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.diagram.editor.BpmnEditor;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.emf.ecore.EClass;
@@ -32,10 +34,7 @@ import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.ui.internal.util.ui.PopupMenu;
-import org.eclipse.graphiti.ui.services.GraphitiUi;
-import org.eclipse.graphiti.ui.services.IImageService;
 import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
@@ -281,33 +280,8 @@ public abstract class AbstractMorphNodeFeature<T extends FlowNode> extends Abstr
 		return labelProvider;
 	}
 	
-	protected class LabelProvider implements ILabelProvider {
+	protected class LabelProvider extends org.eclipse.jface.viewers.LabelProvider {
 		
-		private IImageService imageService;
-		
-		public LabelProvider() {
-			imageService = GraphitiUi.getImageService();
-		}
-
-		@Override
-		public void addListener(ILabelProviderListener arg0) {}
-
-		@Override
-		public void dispose() {}
-
-		@Override
-		public boolean isLabelProperty(Object arg0, String arg1) {
-			return false;
-		}
-
-		@Override
-		public void removeListener(ILabelProviderListener arg0) {}
-
-		@Override
-		public Image getImage(Object arg0) {
-			return null;
-		}
-
 		@Override
 		public String getText(Object arg0) {
 			if (!(arg0 instanceof AbstractMorphNodeFeature.MorphOption)) {
@@ -317,9 +291,8 @@ public abstract class AbstractMorphNodeFeature<T extends FlowNode> extends Abstr
 			return option.getName();
 		}
 		
-		
 		protected Image getImageForId(String imageId) {
-			return imageService.getImageForId(imageId);
+			return Images.getById(BpmnEditor.EDITOR_ID, imageId);
 		}
 	}
 	

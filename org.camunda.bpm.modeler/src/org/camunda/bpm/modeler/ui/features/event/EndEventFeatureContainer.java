@@ -55,18 +55,6 @@ public class EndEventFeatureContainer extends AbstractEventFeatureContainer {
 			protected void decorate(Ellipse e) {
 				e.setLineWidth(3);
 			}
-			
-			@Override
-			protected void setProperties(IAddContext context, ContainerShape newShape) {
-				super.setProperties(context, newShape);
-				
-				EndEvent endEvent = getBusinessObject(context);
-
-				IPeService peService = Graphiti.getPeService();
-				peService.setPropertyValue(newShape,
-						UpdateEndEventFeature.END_EVENT_MARKER,
-						AbstractUpdateEventFeature.getEventDefinitionsValue(endEvent));
-			}
 		};
 	}
 
@@ -97,21 +85,8 @@ public class EndEventFeatureContainer extends AbstractEventFeatureContainer {
 
 	protected static class UpdateEndEventFeature extends AbstractUpdateEventFeature {
 
-		public static String END_EVENT_MARKER = "marker.end.event";
-
-		/**
-		 * @param fp
-		 */
 		public UpdateEndEventFeature(IFeatureProvider fp) {
 			super(fp);
-		}
-
-		/* (non-Javadoc)
-		 * @see org.camunda.bpm.modeler.features.activity.AbstractUpdateMarkerFeature#getPropertyKey()
-		 */
-		@Override
-		protected String getPropertyKey() {
-			return END_EVENT_MARKER;
 		}
 	}
 

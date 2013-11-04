@@ -70,14 +70,19 @@ public abstract class AbstractAddEventDefinitionFeature<T extends EventDefinitio
 		List<EventDefinition> eventDefinitions = ModelUtil.getEventDefinitions(event);
 		int size = eventDefinitions.size();
 
+		Shape definitionShape;
+		
+		List<Object> businessObjects = new ArrayList<Object>(eventDefinitions);
+		businessObjects.add(0, event);
+		
 		GraphicsUtil.deleteEventShape(container);
 		if (size > 1) {
-			Shape multipleShape = Graphiti.getPeService().createShape(container, false);
-			drawForEvent(event, multipleShape);
-			link(multipleShape, eventDefinitions.toArray(new EventDefinition[size]));
+			definitionShape = Graphiti.getPeService().createShape(container, false);
+			link(definitionShape, businessObjects.toArray());
+			drawForEvent(event, definitionShape);
 		} else {
-			Shape addedShape = getDecorationAlgorithm(event).draw(container);
-			link(addedShape, eventDef);
+			definitionShape = getDecorationAlgorithm(event).draw(container);
+			link(definitionShape, businessObjects.toArray());
 		}
 	}
 

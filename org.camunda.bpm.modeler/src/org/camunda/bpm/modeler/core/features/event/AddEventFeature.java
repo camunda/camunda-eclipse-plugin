@@ -119,6 +119,18 @@ public class AddEventFeature<T extends Event>
 		return BoxingStrategy.POSITION;
 	}
 	
+	@Override
+	protected void setProperties(IAddContext context, ContainerShape newShape) {
+		super.setProperties(context, newShape);
+	
+		Event event = getBusinessObject(context);
+
+		IPeService peService = Graphiti.getPeService();
+		peService.setPropertyValue(newShape,
+				AbstractUpdateEventFeature.EVENT_DEFINITIONS_MARKER,
+				AbstractUpdateEventFeature.getEventDefinitionsValue(event));
+	}
+
 	protected void decorate(Ellipse ellipse) {
 		
 	}

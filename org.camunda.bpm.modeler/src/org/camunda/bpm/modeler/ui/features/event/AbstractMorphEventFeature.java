@@ -166,14 +166,12 @@ public abstract class AbstractMorphEventFeature extends AbstractMorphNodeFeature
 		return newEventDefinition;
 	}
 	
-	
 	@Override
 	protected Shape createNewShape(MorphOption option, Shape oldShape, Event newObject) {
 		// In case of events we do not have to create a new shape for the event,
 		// we only have to trigger the update feature so that the shape of the
 		// event including his children will be updated.
 		IUpdateContext updateContext = new UpdateContext(oldShape);
-		updateContext.putProperty(AbstractUpdateEventFeature.FORCE_UPDATE, true);
 		
 		IUpdateFeature updateFeature = getFeatureProvider().getUpdateFeature(updateContext);
 		updateFeature.update(updateContext);

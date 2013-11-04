@@ -13,7 +13,6 @@
 
 package org.camunda.bpm.modeler.core.features.event;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.camunda.bpm.modeler.core.features.activity.AbstractUpdateMarkerFeature;
@@ -22,8 +21,6 @@ import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReason;
 import org.eclipse.graphiti.features.IUpdateFeature;
@@ -41,8 +38,12 @@ import org.eclipse.graphiti.services.Graphiti;
 
 public abstract class AbstractUpdateEventFeature extends AbstractUpdateMarkerFeature<Event> {
 	
-	public static final String FORCE_UPDATE = "FORCE_UPDATE";
+	public static final String EVENT_DEFINITIONS_MARKER = "EVENT_DEFINITIONS_MARKER";
 	
+	@Override
+	public boolean canUpdate(IUpdateContext context) {
+		return true;
+	}
 	
 	/**
 	 * @param fp
@@ -57,10 +58,6 @@ public abstract class AbstractUpdateEventFeature extends AbstractUpdateMarkerFea
 			return Reason.createTrueReason();
 		}
 		
-		if (context.getProperty(FORCE_UPDATE) != null && context.getProperty(FORCE_UPDATE) == Boolean.TRUE) {
-			return Reason.createTrueReason();
-		}
-		
 		return Reason.createFalseReason();
 	}
 	
@@ -72,9 +69,11 @@ public abstract class AbstractUpdateEventFeature extends AbstractUpdateMarkerFea
 		return !getEventDefinitionsValue(element).equals(propertyValue);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.camunda.bpm.modeler.features.activity.AbstractUpdateMarkerFeature#doUpdate(org.eclipse.bpmn2.FlowElement, org.eclipse.graphiti.mm.pictograms.ContainerShape)
-	 */
+	@Override
+	protected final String getPropertyKey() {
+		return EVENT_DEFINITIONS_MARKER;
+	}
+	
 	@Override
 	protected void doUpdate(Event event, ContainerShape container) {
 		List<EventDefinition> eventDefinitions = ModelUtil.getEventDefinitions(event);
@@ -85,26 +84,15 @@ public abstract class AbstractUpdateEventFeature extends AbstractUpdateMarkerFea
 			EventDefinition eventDefinition = eventDefinitions.get(0);
 
 			// either find the existing Shape that is linked with an EventDefinition...
-			PictogramElement eventDefinitionShape = null;
-			Iterator<PictogramElement> iterator = Graphiti.getPeService().getAllContainedPictogramElements(container).iterator();
-			while (iterator.hasNext()) {
-				PictogramElement pe = iterator.next();
-				if (pe.getLink() != null) {
-					EList<EObject> objects = pe.getLink().getBusinessObjects();
-					if (objects.size()==1 && objects.get(0) instanceof EventDefinition) {
-						eventDefinition = (EventDefinition)objects.get(0);
-						eventDefinitionShape = pe;
-						break;
-					}
-				}
-			}
+			PictogramElement eventDefinitionShape = GraphicsUtil.getEventShape(container);
 			
-			if (eventDefinitionShape==null) {
+			if (eventDefinitionShape == null) {
 				// ...or create a temporary Shape that we can link
 				// with the event definition business object... 
 				eventDefinitionShape = Graphiti.getPeService().createShape(container, true);
 				link(eventDefinitionShape,eventDefinition);
 			}
+			
 			// ...so we can create an UpdateContext...
 			UpdateContext context = new UpdateContext(eventDefinitionShape);
 			// ...to look up the EventDefinitionUpdateFeature
@@ -119,9 +107,6 @@ public abstract class AbstractUpdateEventFeature extends AbstractUpdateMarkerFea
 		
 	}
 
-	/* (non-Javadoc)
-	 * @see org.camunda.bpm.modeler.features.activity.AbstractUpdateMarkerFeature#convertPropertyToString(org.eclipse.bpmn2.FlowElement)
-	 */
 	@Override
 	protected String convertPropertyToString(Event element) {
 		return getEventDefinitionsValue(element);
@@ -133,7 +118,7 @@ public abstract class AbstractUpdateEventFeature extends AbstractUpdateMarkerFea
 		for (EventDefinition ed : eventDefinitions) {
 			if (!result.isEmpty())
 				result += " ";
-			result += ed.getId();
+			result += ed.getClass().getSimpleName() + ":" + ed.getId();
 		}
 		// Parallel Multiple has a different visual than Multiple for Catch Events
 		if (element instanceof CatchEvent) {
