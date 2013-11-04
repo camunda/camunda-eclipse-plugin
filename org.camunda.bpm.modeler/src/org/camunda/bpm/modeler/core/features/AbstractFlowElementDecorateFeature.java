@@ -55,6 +55,7 @@ public class AbstractFlowElementDecorateFeature<T extends GraphicsAlgorithm> ext
 	}
 
 	private void clearDecorations(T decorateContainer) {
+		decorateContainer.setLineWidth(1);
 		decorateContainer.getGraphicsAlgorithmChildren().clear();
 	}
 
