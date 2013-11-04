@@ -19,12 +19,17 @@ import org.camunda.bpm.modeler.core.features.container.BaseElementConnectionFeat
 import org.camunda.bpm.modeler.core.features.flow.AbstractAddFlowFeature;
 import org.camunda.bpm.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.camunda.bpm.modeler.core.features.flow.AbstractReconnectFlowFeature;
+import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations;
+import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.ConnectionType;
+import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.CreateConnectionOperation;
+import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.ReconnectConnectionOperation;
+import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.StartFormCreateConnectionOperation;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.camunda.bpm.modeler.ui.ImageProvider;
-import org.camunda.bpm.modeler.ui.features.choreography.ChoreographyUtil;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.InteractionNode;
 import org.eclipse.bpmn2.MessageFlow;
@@ -38,18 +43,14 @@ import org.eclipse.graphiti.features.IDirectEditingFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReconnectionFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
+import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICreateConnectionContext;
 import org.eclipse.graphiti.features.context.IReconnectionContext;
-import org.eclipse.graphiti.features.context.impl.ReconnectionContext;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.styles.LineStyle;
-import org.eclipse.graphiti.mm.pictograms.Anchor;
-import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
-import org.eclipse.graphiti.mm.pictograms.Diagram;
-import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
@@ -140,32 +141,30 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 
 		@Override
 		public boolean canStartConnection(ICreateConnectionContext context) {
-			PictogramElement sourceElement = context.getSourcePictogramElement();
-			if (ChoreographyUtil.isChoreographyParticipantBand(sourceElement)) {
-				return false;
-			}
-
-			Diagram diagram = getDiagram();
-			
-			if (diagram.equals(sourceElement)) {
-				return false;
-			}
-			
-			return true;
+			context.putProperty(ConnectionOperations.CONNECTION_TYPE, ConnectionType.MESSAGE_FLOW);
+			StartFormCreateConnectionOperation operation = ConnectionOperations.getStartFromConnectionCreateOperation(context);
+			return operation.canExecute(context);
 		}
 
 		@Override
 		public boolean canCreate(ICreateConnectionContext context) {
-			if (ChoreographyUtil.isChoreographyParticipantBand(context.getSourcePictogramElement()))
-				return false;
-			
-			if (context.getTargetPictogramElement() != null) {
-				if (ChoreographyUtil.isChoreographyParticipantBand(context.getTargetPictogramElement()))
-					return false;
+			context.putProperty(ConnectionOperations.CONNECTION_TYPE, ConnectionType.MESSAGE_FLOW);
+			CreateConnectionOperation operation = ConnectionOperations.getConnectionCreateOperation(context);
+			return operation.canExecute(context);
+		}
+		
+		@Override
+		public boolean isAvailable(IContext context) {
+			if (context instanceof ICreateConnectionContext) {
+				ICreateConnectionContext ccc = (ICreateConnectionContext) context;
+				BaseElement o = BusinessObjectUtil.getFirstBaseElement(ccc.getSourcePictogramElement());
+				
+				if (o instanceof EndEvent) {
+					return true;
+				}
 			}
-			InteractionNode source = getSourceBo(context);
-			InteractionNode target = getTargetBo(context);
-			return super.canCreate(context) && isDifferentParticipants(source, target);
+			
+			return super.isAvailable(context);
 		}
 
 		@Override
@@ -195,26 +194,6 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 			return InteractionNode.class;
 		}
 
-		private boolean isDifferentParticipants(InteractionNode source, InteractionNode target) {
-			if (source == null || target == null) {
-				return true;
-			}
-			
-			boolean different = false;
-			
-			ModelHandler handler = ModelHandler.getInstance(getDiagram());
-			Participant sourceParticipant = handler.getParticipant(source);
-			Participant targetParticipant = handler.getParticipant(target);
-			if (sourceParticipant==null) {
-				if (targetParticipant==null)
-					return true;
-				return false;
-			}
-			
-			different = !sourceParticipant.equals(targetParticipant);
-			return different;
-		}
-
 		/* (non-Javadoc)
 		 * @see org.camunda.bpm.modeler.features.AbstractBpmn2CreateConnectionFeature#getBusinessObjectClass()
 		 */
@@ -232,60 +211,9 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 
 		@Override
 		public boolean canReconnect(IReconnectionContext context) {
-			if (super.canReconnect(context)) {
-				boolean reconnectSource = ReconnectionContext.RECONNECT_SOURCE.equals(context.getReconnectType());
-
-				Anchor sourceAnchor = reconnectSource ? context.getNewAnchor() : context.getConnection().getStart();
-				Anchor targetAnchor = reconnectSource ? context.getConnection().getEnd() : context.getNewAnchor();
-
-				AnchorContainer sourceContainer = sourceAnchor.getParent();
-				AnchorContainer targetContainer = targetAnchor.getParent();
-
-				InteractionNode sourceElement = (InteractionNode) BusinessObjectUtil.getFirstBaseElement(sourceContainer);
-				InteractionNode targetElement = (InteractionNode) BusinessObjectUtil.getFirstBaseElement(targetContainer);
-				
-				FlowNode nonParticipant;
-				Participant participant;
-				
-				if (sourceElement instanceof Participant && targetElement instanceof Participant) {
-					if (sourceElement.equals(targetElement)) {
-						return false;
-					}
-					
-					Participant sourceParticipant = (Participant) sourceElement;
-					Participant targetParticipant = (Participant) targetElement;
-					
-					return sourceParticipant.getProcessRef() == null && targetParticipant.getProcessRef() == null;
-				} else 
-				if (sourceElement instanceof Participant) {
-					participant = (Participant) sourceElement;
-					nonParticipant = (FlowNode) targetElement;
-					
-					return !getProcess(nonParticipant).equals(participant.getProcessRef());
-				} else
-				if (targetElement instanceof Participant) {
-					participant = (Participant) targetElement;
-					nonParticipant = (FlowNode) sourceElement;
-					
-					return !getProcess(nonParticipant).equals(participant.getProcessRef());
-				} else {
-					Process sourceProcess = getProcess((FlowNode) sourceElement);
-					Process targetProcess = getProcess((FlowNode) targetElement);
-					
-					return sourceProcess != null && !sourceProcess.equals(targetProcess);
-				}
-			} else {
-				return false;
-			}
-		}
-		
-		protected Process getProcess(FlowNode node) {
-			EObject parent = node.eContainer();
-			if (parent instanceof Process) {
-				return (Process) parent;
-			} else {
-				return null;
-			}
+			context.putProperty(ConnectionOperations.CONNECTION_TYPE, ConnectionType.MESSAGE_FLOW);
+			ReconnectConnectionOperation operation = ConnectionOperations.getConnectionReconnectOperation(context);
+			return operation.canExecute(context);
 		}
 		
 		@Override

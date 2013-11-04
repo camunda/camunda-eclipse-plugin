@@ -12,17 +12,28 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.flow;
 
+import java.util.List;
+
 import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.features.container.BaseElementConnectionFeatureContainer;
 import org.camunda.bpm.modeler.core.features.flow.AbstractAddFlowFeature;
 import org.camunda.bpm.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.camunda.bpm.modeler.core.features.flow.AbstractReconnectFlowFeature;
+import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations;
+import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.ConnectionType;
+import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.CreateConnectionOperation;
+import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.ReconnectConnectionOperation;
+import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.StartFormCreateConnectionOperation;
 import org.camunda.bpm.modeler.core.utils.AnchorUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
+import org.camunda.bpm.modeler.runtime.engine.model.BoundaryEvent;
 import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.eclipse.bpmn2.Artifact;
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.CompensateEventDefinition;
+import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IAddFeature;
@@ -30,6 +41,7 @@ import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReconnectionFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICreateConnectionContext;
 import org.eclipse.graphiti.features.context.IReconnectionContext;
 import org.eclipse.graphiti.features.context.impl.AddConnectionContext;
@@ -40,6 +52,7 @@ import org.eclipse.graphiti.mm.algorithms.styles.LineStyle;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -144,11 +157,49 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 		}
 
 		@Override
-		public boolean canCreate(ICreateConnectionContext context) {
-			if ( context.getTargetPictogramElement() instanceof FreeFormConnection ) {
-				return true;
+		public boolean isAvailable(IContext context) {
+			if (context instanceof ICreateConnectionContext) {
+				ICreateConnectionContext ccc = (ICreateConnectionContext)context;
+				
+				if (ccc.getSourcePictogramElement()!=null) {
+					BaseElement o = BusinessObjectUtil.getFirstElementOfType(ccc.getSourcePictogramElement(), BaseElement.class);
+					
+					if (o instanceof BoundaryEvent) {
+						BoundaryEvent boundaryEvent = (BoundaryEvent) o;
+						List<EventDefinition> eventDefinitions = boundaryEvent.getEventDefinitions();
+						
+						if (!eventDefinitions.isEmpty() && eventDefinitions.size() == 1) {
+							return eventDefinitions.get(0) instanceof CompensateEventDefinition;
+						}
+					}
+					
+					return o instanceof Artifact;
+				}
 			}
-			return super.canCreate(context);
+			
+			return super.isAvailable(context);
+		}
+		
+		@Override
+		public boolean canStartConnection(ICreateConnectionContext context) {
+			if (context.getSourcePictogramElement() instanceof Diagram) {
+				return false;
+			}
+			
+			context.putProperty(ConnectionOperations.CONNECTION_TYPE, ConnectionType.ASSOCIATION);
+			StartFormCreateConnectionOperation operation = ConnectionOperations.getStartFromConnectionCreateOperation(context);
+			return operation.canExecute(context);
+		}
+		
+		@Override
+		public boolean canCreate(ICreateConnectionContext context) {
+			if (context.getTargetPictogramElement() instanceof Diagram) {
+				return false;
+			}
+			
+			context.putProperty(ConnectionOperations.CONNECTION_TYPE, ConnectionType.ASSOCIATION);
+			CreateConnectionOperation operation = ConnectionOperations.getConnectionCreateOperation(context);
+			return operation.canExecute(context);
 		}
 
 		@Override
@@ -251,14 +302,9 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 
 		@Override
 		public boolean canReconnect(IReconnectionContext context) {
-			BaseElement targetElement = BusinessObjectUtil.getFirstElementOfType(context.getTargetPictogramElement(), BaseElement.class);
-			if (targetElement instanceof Association)
-				return false;
-			PictogramElement targetPictogramElement = context.getTargetPictogramElement();
-			if (targetPictogramElement instanceof FreeFormConnection) {
-				return true;
-			}
-			return super.canReconnect(context);
+			context.putProperty(ConnectionOperations.CONNECTION_TYPE, ConnectionType.ASSOCIATION);
+			ReconnectConnectionOperation operation = ConnectionOperations.getConnectionReconnectOperation(context);
+			return operation.canExecute(context);
 		}
 
 		@Override

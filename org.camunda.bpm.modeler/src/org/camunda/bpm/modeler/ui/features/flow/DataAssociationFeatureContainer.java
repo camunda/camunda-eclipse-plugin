@@ -3,6 +3,9 @@ package org.camunda.bpm.modeler.ui.features.flow;
 import org.camunda.bpm.modeler.core.features.container.BaseElementConnectionFeatureContainer;
 import org.camunda.bpm.modeler.core.features.flow.AbstractAddFlowFeature;
 import org.camunda.bpm.modeler.core.features.flow.AbstractReconnectFlowFeature;
+import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations;
+import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.ConnectionType;
+import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.ReconnectConnectionOperation;
 import org.camunda.bpm.modeler.core.utils.AnchorUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
@@ -84,34 +87,9 @@ public class DataAssociationFeatureContainer extends BaseElementConnectionFeatur
 
     @Override
     public boolean canReconnect(IReconnectionContext context) {
-      DataAssociation dataAssociation = BusinessObjectUtil.getFirstElementOfType(context.getConnection(), DataAssociation.class);
-      BaseElement targetElement = BusinessObjectUtil.getFirstElementOfType(context.getTargetPictogramElement(), BaseElement.class);
-      if (dataAssociation instanceof DataInputAssociation) {
-        if (context.getReconnectType().equals(ReconnectionContext.RECONNECT_SOURCE)) {
-          if (targetElement instanceof ItemAwareElement) {
-            return true;
-          }
-        }
-        if (context.getReconnectType().equals(ReconnectionContext.RECONNECT_TARGET)) {
-          if (targetElement instanceof Activity || targetElement instanceof ThrowEvent) {
-            return true;
-          }
-        }
-        return false;
-      }
-      if (dataAssociation instanceof DataOutputAssociation) {
-        if (context.getReconnectType().equals(ReconnectionContext.RECONNECT_SOURCE)) {
-          if (targetElement instanceof Activity || targetElement instanceof CatchEvent) {
-            return true;
-          }
-        }
-        if (context.getReconnectType().equals(ReconnectionContext.RECONNECT_TARGET)) {
-          if (targetElement instanceof ItemAwareElement) {
-            return true;
-          }
-        }
-      }
-      return false;
+		context.putProperty(ConnectionOperations.CONNECTION_TYPE, ConnectionType.DATA_ASSOCIATION);
+		ReconnectConnectionOperation operation = ConnectionOperations.getConnectionReconnectOperation(context);
+		return operation.canExecute(context);
     }
 
     @Override

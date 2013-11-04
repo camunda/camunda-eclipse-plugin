@@ -19,13 +19,11 @@ import java.util.List;
 import org.camunda.bpm.modeler.core.Activator;
 import org.camunda.bpm.modeler.core.di.DIUtils;
 import org.camunda.bpm.modeler.core.features.PropertyNames;
-import org.camunda.bpm.modeler.core.features.flow.AbstractAddFlowFeature;
 import org.camunda.bpm.modeler.core.importer.ModelImport;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.AnchorUtil;
 import org.camunda.bpm.modeler.core.utils.ContextUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
-import org.camunda.bpm.modeler.ui.features.flow.SequenceFlowFeatureContainer.AddSequenceFlowFeature;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.di.BPMNEdge;
@@ -142,15 +140,28 @@ public abstract class AbstractEdgeHandler<T extends BaseElement> extends Abstrac
 	private Anchor createTargetAnchor(PictogramElement element, List<Point> waypoints) {
 		int last = waypoints.size() - 1;
 		
+		if (element instanceof FreeFormConnection) {
+			return createAnchorOnConnection((FreeFormConnection) element, waypoints.get(last));
+		}
+		
 		verifyCorrectInstance(element, AnchorContainer.class);
 		
 		return createAnchorOnContainer((AnchorContainer) element, waypoints.get(last), waypoints.get(last - 1));
 	}
 
 	private Anchor createSourceAnchor(PictogramElement element, List<Point> waypoints) {
+		if (element instanceof FreeFormConnection) {
+			return createAnchorOnConnection((FreeFormConnection) element, waypoints.get(0));
+		}
+		
 		verifyCorrectInstance(element, AnchorContainer.class);
 		
 		return createAnchorOnContainer((AnchorContainer) element, waypoints.get(0), waypoints.get(1));
+	}
+
+	private Anchor createAnchorOnConnection(FreeFormConnection element, Point point) {
+		Shape connectionPointShape = AnchorUtil.createConnectionPoint(featureProvider, element, location(point));
+		return AnchorUtil.getConnectionPointAnchor(connectionPointShape);
 	}
 
 	private Anchor createAnchorOnContainer(AnchorContainer container, Point containerDockingPoint, Point referencePoint) {
@@ -163,7 +174,6 @@ public abstract class AbstractEdgeHandler<T extends BaseElement> extends Abstrac
 		
 		// check if point centers anchor container; 
 		// if so assume the usage of a chopbox anchor
-		
 		ILocation containerCenter = LayoutUtil.getAbsoluteShapeCenter(shape);
 		if (positionsMatch(containerCenter, containerDockingPoint)) {
 			return LayoutUtil.getCenterAnchor(container);
@@ -188,18 +198,17 @@ public abstract class AbstractEdgeHandler<T extends BaseElement> extends Abstrac
 	
 		// create new fix point anchor for the element
 		FixPointAnchor fixPointAnchor = peService.createFixPointAnchor(container);
-		fixPointAnchor.setReferencedGraphicsAlgorithm(shape.getGraphicsAlgorithm());
+		fixPointAnchor.setReferencedGraphicsAlgorithm(container.getGraphicsAlgorithm());
 		Rectangle rect = gaService.createInvisibleRectangle(fixPointAnchor);
 		gaService.setSize(rect, 1, 1);
 		
 		// set anchor location now
-		setAnchorLocation(shape, fixPointAnchor, containerDockingPoint);
+		setAnchorLocation(container, fixPointAnchor, containerDockingPoint);
 			
 		return fixPointAnchor;
 	}
 
 	private Anchor getReferencedChopboxAnchor(AnchorContainer container, Point elementDockingPoint, Point referencePoint) {
-		
 		Shape shape = (Shape) container;
 
 		IRectangle containerRect = LayoutUtil.getAbsoluteBounds(shape);

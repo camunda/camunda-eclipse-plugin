@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Vector;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
@@ -325,11 +326,23 @@ public class LayoutUtil {
 	}
 	
 	public static BaseElement getSourceBaseElement(FreeFormConnection connection) {
-		return (BaseElement) Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(connection.getStart().getParent());	
+		EObject linkedObject = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(connection.getStart().getParent());
+		
+		if (linkedObject instanceof FreeFormConnection) {
+			return (BaseElement) Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement((FreeFormConnection) linkedObject);
+		}
+		
+		return (BaseElement) linkedObject;	
 	}
 	
 	public static BaseElement getTargetBaseElement(FreeFormConnection connection) {
-		return (BaseElement) Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(connection.getEnd().getParent());	
+		EObject linkedObject = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(connection.getEnd().getParent());
+		
+		if (linkedObject instanceof FreeFormConnection) {
+			return (BaseElement) Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement((FreeFormConnection) linkedObject);
+		}
+		
+		return (BaseElement) linkedObject;	
 	}
 	
 	public static Shape getStartShape(Connection connection) {
