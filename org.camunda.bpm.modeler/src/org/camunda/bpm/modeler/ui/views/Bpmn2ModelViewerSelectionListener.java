@@ -13,7 +13,7 @@
 package org.camunda.bpm.modeler.ui.views;
 
 import org.camunda.bpm.modeler.core.ModelHandler;
-import org.camunda.bpm.modeler.ui.diagram.editor.BpmnEditor;
+import org.camunda.bpm.modeler.ui.diagram.editor.Bpmn2Editor;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -23,7 +23,7 @@ import org.eclipse.ui.IWorkbenchPart;
 
 class Bpmn2ModelViewerSelectionListener implements ISelectionListener {
 	private final ViewContentProvider contentProvider;
-	private BpmnEditor editor;
+	private Bpmn2Editor editor;
 	private final TreeViewer viewer;
 
 	public Bpmn2ModelViewerSelectionListener(TreeViewer viewer) {
@@ -34,9 +34,9 @@ class Bpmn2ModelViewerSelectionListener implements ISelectionListener {
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 
-		Object bpmn2Editor = part.getAdapter(BpmnEditor.class);
-		if (bpmn2Editor instanceof BpmnEditor) {
-			editor = (BpmnEditor)bpmn2Editor;
+		Object bpmn2Editor = part.getAdapter(Bpmn2Editor.class);
+		if (bpmn2Editor instanceof Bpmn2Editor) {
+			editor = (Bpmn2Editor)bpmn2Editor;
 			
 			ModelHandler modelHandler = ModelHandler.getInstance(getDiagram());
 			contentProvider.updateModel(modelHandler);

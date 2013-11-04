@@ -1,7 +1,7 @@
 package org.camunda.bpm.modeler.ui.features.validation;
 
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
-import org.camunda.bpm.modeler.core.validation.BpmnProjectValidator;
+import org.camunda.bpm.modeler.core.validation.Bpmn2ProjectValidator;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -39,6 +39,6 @@ public class ValidateDiagramFeature extends AbstractCustomFeature {
 		EObject modelObject = BusinessObjectUtil.getBusinessObjectForPictogramElement(getDiagram());
 		Resource resource = modelObject.eResource();
 		
-		BpmnProjectValidator.validateResource(resource, new NullProgressMonitor());
+		Bpmn2ProjectValidator.validateResource(resource, new NullProgressMonitor());
 	}
 }

@@ -18,7 +18,7 @@ import org.camunda.bpm.modeler.core.Activator;
 import org.camunda.bpm.modeler.core.utils.ErrorUtils;
 import org.camunda.bpm.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
-import org.camunda.bpm.modeler.ui.diagram.editor.BpmnEditor;
+import org.camunda.bpm.modeler.ui.diagram.editor.Bpmn2Editor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
@@ -44,14 +44,14 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 
-public class BpmnDiagramWizard extends Wizard implements INewWizard {
-	private BpmnDiagramWizardPage page2;
+public class Bpmn2DiagramWizard extends Wizard implements INewWizard {
+	private Bpmn2DiagramWizardPage page2;
 	private ISelection selection;
 
 	/**
 	 * Constructor for BPMN2DiagramWizard.
 	 */
-	public BpmnDiagramWizard() {
+	public Bpmn2DiagramWizard() {
 		super();
 		setNeedsProgressMonitor(true);
 	}
@@ -62,7 +62,7 @@ public class BpmnDiagramWizard extends Wizard implements INewWizard {
 
 	@Override
 	public void addPages() {
-		page2 = new BpmnDiagramWizardPage(selection);
+		page2 = new Bpmn2DiagramWizardPage(selection);
 		addPage(page2);
 	}
 
@@ -83,8 +83,8 @@ public class BpmnDiagramWizard extends Wizard implements INewWizard {
 					URI uri = URI.createPlatformResourceURI(path.toString(), true);
 					
 					// create the diagram
-					BpmnDiagramCreator.createBpmn2Resource(uri);
-					BpmnDiagramCreator.createDiagramInput(uri, Bpmn2DiagramType.COLLABORATION, ModelPackage.eNS_URI);
+					Bpmn2DiagramCreator.createBpmn2Resource(uri);
+					Bpmn2DiagramCreator.createDiagramInput(uri, Bpmn2DiagramType.COLLABORATION, ModelPackage.eNS_URI);
 					
 					// and locate + open it as a file editor input
 					// to prevent opening it twice upon double click in workspace
@@ -130,7 +130,7 @@ public class BpmnDiagramWizard extends Wizard implements INewWizard {
 			public void run() {
 				try {
 					IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-					activePage.openEditor(editorInput, BpmnEditor.EDITOR_ID);
+					activePage.openEditor(editorInput, Bpmn2Editor.EDITOR_ID);
 					
 					/**
 					 * open the properties view or bring it to the top, so the use can start modeling immediately

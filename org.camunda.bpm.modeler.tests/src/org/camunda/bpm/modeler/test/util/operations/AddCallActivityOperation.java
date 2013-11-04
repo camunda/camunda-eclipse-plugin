@@ -1,6 +1,6 @@
 package org.camunda.bpm.modeler.test.util.operations;
 
-import org.camunda.bpm.modeler.ui.diagram.BpmnFeatureProvider;
+import org.camunda.bpm.modeler.ui.diagram.Bpmn2FeatureProvider;
 import org.camunda.bpm.modeler.ui.features.activity.subprocess.CallActivityFeatureContainer.CreateCallActivityFeature;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
@@ -23,7 +23,7 @@ public class AddCallActivityOperation extends AbstractAddShapeOperation<CreateCa
 	@Override
 	protected CreateCallActivityFeature createFeature(CreateContext context) {
 
-		BpmnFeatureProvider featureProvider = (BpmnFeatureProvider) diagramTypeProvider.getFeatureProvider();
+		Bpmn2FeatureProvider featureProvider = (Bpmn2FeatureProvider) diagramTypeProvider.getFeatureProvider();
 		IFeature createFeature = featureProvider.getCreateFeatureForBusinessObject(Bpmn2Package.eINSTANCE.getCallActivity());
 
 		return (CreateCallActivityFeature) createFeature;

@@ -21,7 +21,7 @@ import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.part.FileEditorInput;
 
-public final class BpmnDiagramEditorInput extends DiagramEditorInput {
+public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
 
 	private final TransactionalEditingDomain domain;
 	private Bpmn2DiagramType initialDiagramType = Bpmn2DiagramType.NONE;
@@ -29,7 +29,7 @@ public final class BpmnDiagramEditorInput extends DiagramEditorInput {
 	private BPMNDiagram bpmnDiagram;
 	private URI modelUri;
 	
-	public BpmnDiagramEditorInput(URI modelUri, URI diagramUri, TransactionalEditingDomain domain, String providerId) {
+	public Bpmn2DiagramEditorInput(URI modelUri, URI diagramUri, TransactionalEditingDomain domain, String providerId) {
 		// means : DiagramEditorInput.uri = diagramUri
 		super(diagramUri, providerId);
 		this.domain = domain;
@@ -102,8 +102,8 @@ public final class BpmnDiagramEditorInput extends DiagramEditorInput {
 
 		}
 		
-		if (obj instanceof BpmnDiagramEditorInput) {
-			return ((BpmnDiagramEditorInput) obj).getDiagramUri().equals(getDiagramUri());
+		if (obj instanceof Bpmn2DiagramEditorInput) {
+			return ((Bpmn2DiagramEditorInput) obj).getDiagramUri().equals(getDiagramUri());
 		}
 		
 		return false;

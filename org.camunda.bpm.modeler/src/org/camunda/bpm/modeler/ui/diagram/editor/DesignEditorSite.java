@@ -24,11 +24,11 @@ import org.w3c.dom.Node;
 
 public class DesignEditorSite extends MultiPageEditorSite {
 
-	final BpmnEditor bpmn2Editor;
+	final Bpmn2Editor bpmn2Editor;
 	
 	public DesignEditorSite(MultiPageEditorPart multiPageEditor, IEditorPart editor) {
 		super(multiPageEditor, editor);
-		this.bpmn2Editor = (BpmnEditor) editor;
+		this.bpmn2Editor = (Bpmn2Editor) editor;
 	}
 
 	@Override

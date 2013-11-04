@@ -1,7 +1,7 @@
 package org.camunda.bpm.modeler.test.util.operations;
 
 import org.camunda.bpm.modeler.core.features.activity.task.AbstractCreateTaskFeature;
-import org.camunda.bpm.modeler.ui.diagram.BpmnFeatureProvider;
+import org.camunda.bpm.modeler.ui.diagram.Bpmn2FeatureProvider;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.emf.ecore.EClass;
@@ -25,7 +25,7 @@ public class AddTaskOperation extends AbstractAddShapeOperation<AbstractCreateTa
 	@Override
 	protected AbstractCreateTaskFeature<?> createFeature(CreateContext context) {
 		
-		BpmnFeatureProvider featureProvider = (BpmnFeatureProvider) diagramTypeProvider.getFeatureProvider();
+		Bpmn2FeatureProvider featureProvider = (Bpmn2FeatureProvider) diagramTypeProvider.getFeatureProvider();
 		IFeature createFeature = featureProvider
 				.getCreateFeatureForBusinessObject((EClass) Bpmn2Package.eINSTANCE.getEClassifier(taskCls.getSimpleName()));
 		

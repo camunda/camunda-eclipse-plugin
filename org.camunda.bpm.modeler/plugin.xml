@@ -33,7 +33,7 @@
 		</category>
 		<wizard
 			category="camunda.modeler"
-			class="org.camunda.bpm.modeler.ui.wizards.BpmnDiagramWizard"
+			class="org.camunda.bpm.modeler.ui.wizards.Bpmn2DiagramWizard"
 			icon="icons/bpmn2_editor_16.png"
 			id="org.camunda.bpm.modeler.ui.diagram"
 			name="BPMN 2.0 Diagram"
@@ -66,7 +66,7 @@
 	<extension point="org.eclipse.ui.editors">
 
 		<editor
-			class="org.camunda.bpm.modeler.ui.diagram.editor.BpmnEditor"
+			class="org.camunda.bpm.modeler.ui.diagram.editor.Bpmn2Editor"
 			contributorClass="org.eclipse.graphiti.ui.editor.DiagramEditorActionBarContributor"
 			default="true" extensions="bpmn,bpmn2" icon="icons/bpmn2_editor_16.png"
 			id="org.camunda.bpm.modeler.ui.bpmn2editor" name="Bpmn2 Diagram Editor">
@@ -80,7 +80,7 @@
 			id="org.eclipse.bpmn2.content-type.xml"
 			name="BPMN 2.0 file"
 			file-extensions="bpmn,bpmn2,bpmn20,xml" priority="normal">
-			<describer class="org.camunda.bpm.modeler.ui.BpmnContentDescriber"></describer>
+			<describer class="org.camunda.bpm.modeler.ui.Bpmn2ContentDescriber"></describer>
 		</content-type>
 		<file-association content-type="org.eclipse.core.runtime.xml" file-extensions="bpmn,bpmn2">
 		</file-association>

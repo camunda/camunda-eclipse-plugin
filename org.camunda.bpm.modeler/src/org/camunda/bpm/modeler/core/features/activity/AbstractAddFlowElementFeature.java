@@ -13,7 +13,7 @@ import org.camunda.bpm.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.ContextUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
-import org.camunda.bpm.modeler.ui.diagram.BpmnFeatureProvider;
+import org.camunda.bpm.modeler.ui.diagram.Bpmn2FeatureProvider;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.FlowElement;
@@ -73,7 +73,7 @@ public abstract class AbstractAddFlowElementFeature<T extends FlowElement> exten
 	protected void decorate(IAddContext context, ContainerShape newShape) {
 		super.decorate(context, newShape);
 		
-		BpmnFeatureProvider featureProvider = (BpmnFeatureProvider) getFeatureProvider();
+		Bpmn2FeatureProvider featureProvider = (Bpmn2FeatureProvider) getFeatureProvider();
 		
 		DecorateContext decorateContext = new DecorateContext(newShape);
 		IDecorateFeature decorateFeature = featureProvider.getDecorateFeature(decorateContext);

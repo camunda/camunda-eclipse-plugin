@@ -37,7 +37,7 @@ import org.eclipse.ui.part.ViewPart;
  * between views in order to ensure that objects of the same description are presented in the same way everywhere.
  * <p>
  */
-public class BpmnModelView extends ViewPart {
+public class Bpmn2ModelView extends ViewPart {
 
 	private final class BpmnModelDragSourceLisener extends DragSourceAdapter {
 		@Override
@@ -56,7 +56,7 @@ public class BpmnModelView extends ViewPart {
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String ID = BpmnModelView.class.getName();
+	public static final String ID = Bpmn2ModelView.class.getName();
 
 	private TreeViewer viewer;
 	private ISelectionListener listener;
@@ -64,7 +64,7 @@ public class BpmnModelView extends ViewPart {
 	/**
 	 * The constructor.
 	 */
-	public BpmnModelView() {
+	public Bpmn2ModelView() {
 	}
 
 	/**

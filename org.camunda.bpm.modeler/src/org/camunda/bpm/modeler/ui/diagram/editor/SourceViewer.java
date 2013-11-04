@@ -9,12 +9,12 @@ public class SourceViewer extends StructuredTextEditor {
 	/**
 	 * 
 	 */
-	private final BpmnMultiPageEditor2 multiPageEditor;
+	private final Bpmn2MultiPageEditor2 multiPageEditor;
 
 	/**
 	 * @param multiPageEditor
 	 */
-	SourceViewer(BpmnMultiPageEditor2 multiPageEditor) {
+	SourceViewer(Bpmn2MultiPageEditor2 multiPageEditor) {
 		this.multiPageEditor = multiPageEditor;
 	}
 
@@ -25,7 +25,7 @@ public class SourceViewer extends StructuredTextEditor {
 	public Object getAdapter(Class required) {
 		if (required==ActionRegistry.class)
 			return getActionRegistry();
-		if (required==BpmnEditor.class || required==DiagramEditor.class)
+		if (required==Bpmn2Editor.class || required==DiagramEditor.class)
 			return multiPageEditor.getDesignEditor();
 		return super.getAdapter(required);
 	}

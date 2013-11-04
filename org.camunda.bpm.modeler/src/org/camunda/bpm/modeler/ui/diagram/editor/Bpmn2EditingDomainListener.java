@@ -22,12 +22,12 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.TransactionalEditingDomainEvent;
 import org.eclipse.emf.transaction.TransactionalEditingDomainListenerImpl;
 
-public class BpmnEditingDomainListener extends TransactionalEditingDomainListenerImpl implements ExceptionHandler {
+public class Bpmn2EditingDomainListener extends TransactionalEditingDomainListenerImpl implements ExceptionHandler {
 
-	protected BpmnEditor bpmn2Editor;
+	protected Bpmn2Editor bpmn2Editor;
 	protected BasicDiagnostic diagnostics;
 
-	public BpmnEditingDomainListener(BpmnEditor bpmn2Editor) {
+	public Bpmn2EditingDomainListener(Bpmn2Editor bpmn2Editor) {
 		
 		this.bpmn2Editor = bpmn2Editor;
 

@@ -6,7 +6,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 
-public class BpmnNature implements IProjectNature {
+public class Bpmn2Nature implements IProjectNature {
 
 	/**
 	 * ID of this project nature
@@ -25,7 +25,7 @@ public class BpmnNature implements IProjectNature {
 		ICommand[] commands = desc.getBuildSpec();
 
 		for (int i = 0; i < commands.length; ++i) {
-			if (commands[i].getBuilderName().equals(BpmnBuilder.BUILDER_ID)) {
+			if (commands[i].getBuilderName().equals(Bpmn2Builder.BUILDER_ID)) {
 				return;
 			}
 		}
@@ -33,7 +33,7 @@ public class BpmnNature implements IProjectNature {
 		ICommand[] newCommands = new ICommand[commands.length + 1];
 		System.arraycopy(commands, 0, newCommands, 0, commands.length);
 		ICommand command = desc.newCommand();
-		command.setBuilderName(BpmnBuilder.BUILDER_ID);
+		command.setBuilderName(Bpmn2Builder.BUILDER_ID);
 		newCommands[newCommands.length - 1] = command;
 		desc.setBuildSpec(newCommands);
 		project.setDescription(desc, null);
@@ -48,7 +48,7 @@ public class BpmnNature implements IProjectNature {
 		IProjectDescription description = getProject().getDescription();
 		ICommand[] commands = description.getBuildSpec();
 		for (int i = 0; i < commands.length; ++i) {
-			if (commands[i].getBuilderName().equals(BpmnBuilder.BUILDER_ID)) {
+			if (commands[i].getBuilderName().equals(Bpmn2Builder.BUILDER_ID)) {
 				ICommand[] newCommands = new ICommand[commands.length - 1];
 				System.arraycopy(commands, 0, newCommands, 0, i);
 				System.arraycopy(commands, i + 1, newCommands, i,

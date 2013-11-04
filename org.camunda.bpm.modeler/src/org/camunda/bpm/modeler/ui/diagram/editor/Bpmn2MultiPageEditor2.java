@@ -56,7 +56,7 @@ import org.eclipse.ui.part.MultiPageEditorSite;
  * diagrams. Whether or not these types of files are actually deployable and/or executable
  * is another story ;)
  */
-public class BpmnMultiPageEditor2 extends MultiPageEditorPart implements IGotoMarker {
+public class Bpmn2MultiPageEditor2 extends MultiPageEditorPart implements IGotoMarker {
 
 	DesignEditor designEditor;
 	SourceViewer sourceViewer;
@@ -64,7 +64,7 @@ public class BpmnMultiPageEditor2 extends MultiPageEditorPart implements IGotoMa
 	private int defaultTabHeight;
 	private List<BPMNDiagram> bpmnDiagrams = new ArrayList<BPMNDiagram>();
 	
-	public BpmnMultiPageEditor2() {
+	public Bpmn2MultiPageEditor2() {
 		super();
 	}
 
@@ -167,7 +167,7 @@ public class BpmnMultiPageEditor2 extends MultiPageEditorPart implements IGotoMa
 				int pageIndex = tabFolder.getItemCount();
 				if (sourceViewer!=null)
 					--pageIndex;
-				addPage(pageIndex, designEditor, BpmnMultiPageEditor2.this.getEditorInput());
+				addPage(pageIndex, designEditor, Bpmn2MultiPageEditor2.this.getEditorInput());
 				defaultTabHeight = tabFolder.getTabHeight();
 				setPageText(pageIndex,ModelUtil.getDiagramTypeName( designEditor.getBpmnDiagram() ));
 
@@ -194,7 +194,7 @@ public class BpmnMultiPageEditor2 extends MultiPageEditorPart implements IGotoMa
 						int pageIndex = tabFolder.getItemCount();
 						if (sourceViewer!=null)
 							--pageIndex;
-						BpmnDiagramEditorInput input = (BpmnDiagramEditorInput)designEditor.getEditorInput();
+						Bpmn2DiagramEditorInput input = (Bpmn2DiagramEditorInput)designEditor.getEditorInput();
 						input.setBpmnDiagram(bpmnDiagram);
 						addPage(pageIndex, designEditor, input);
 						CTabItem oldItem = tabFolder.getItem(pageIndex-1);

@@ -49,9 +49,9 @@ public class DiagramTreeEditPart extends AbstractGraphicsTreeEditPart {
 		BPMNDiagram bpmnDiagram = (BPMNDiagram) getLinkedBPMNDiagram(diagram);
 		if (bpmnDiagram!=null) {
 			Definitions definitions = (Definitions)bpmnDiagram.eContainer();
-			if (id == BpmnEditorOutlinePage.ID_BUSINESS_MODEL_OUTLINE)
+			if (id == Bpmn2EditorOutlinePage.ID_BUSINESS_MODEL_OUTLINE)
 				retList.addAll(definitions.getRootElements());
-			else if (id == BpmnEditorOutlinePage.ID_INTERCHANGE_MODEL_OUTLINE)
+			else if (id == Bpmn2EditorOutlinePage.ID_INTERCHANGE_MODEL_OUTLINE)
 				retList.addAll(definitions.getDiagrams());
 			
 			// build a list of all Graphiti Diagrams - these will be needed by other

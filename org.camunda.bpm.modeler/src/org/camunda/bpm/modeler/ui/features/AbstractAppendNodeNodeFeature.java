@@ -26,7 +26,7 @@ import org.camunda.bpm.modeler.core.runtime.TargetRuntime;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
-import org.camunda.bpm.modeler.ui.diagram.BpmnFeatureProvider;
+import org.camunda.bpm.modeler.ui.diagram.Bpmn2FeatureProvider;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.FlowElement;
@@ -201,7 +201,7 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 		int width = ga.getWidth();
 		int height = ga.getHeight();
 		
-		BpmnFeatureProvider fp = (BpmnFeatureProvider) getFeatureProvider();
+		Bpmn2FeatureProvider fp = (Bpmn2FeatureProvider) getFeatureProvider();
 		AbstractCreateFeature createFeature = (AbstractCreateFeature) fp.getCreateFeatureForBusinessObject(newType);
 		
 		CreateContext createContext = new CreateContext();

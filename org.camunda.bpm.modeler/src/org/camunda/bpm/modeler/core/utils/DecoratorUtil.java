@@ -5,7 +5,7 @@ import org.camunda.bpm.modeler.core.features.DefaultBpmn2DecorateFeature;
 import org.camunda.bpm.modeler.core.features.UpdateDecorationFeature;
 import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.features.api.container.IFeatureContainer;
-import org.camunda.bpm.modeler.ui.diagram.BpmnFeatureProvider;
+import org.camunda.bpm.modeler.ui.diagram.Bpmn2FeatureProvider;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
@@ -35,9 +35,9 @@ public class DecoratorUtil {
 	 */
 	public static IFeatureContainer getMatchingFeatureContainer(IFeatureProvider featureProvider, IPictogramElementContext context) {
 		
-		Assert.isLegal(featureProvider instanceof BpmnFeatureProvider);
+		Assert.isLegal(featureProvider instanceof Bpmn2FeatureProvider);
 		
-		BpmnFeatureProvider bpmn2featureProvider = (BpmnFeatureProvider) featureProvider;
+		Bpmn2FeatureProvider bpmn2featureProvider = (Bpmn2FeatureProvider) featureProvider;
 		return bpmn2featureProvider.getFeatureContainer(context);
 	}
 	
@@ -72,9 +72,9 @@ public class DecoratorUtil {
 	 * @param featureProvider
 	 */
 	public static void decorate(PictogramElement pictogramElement, IFeatureProvider featureProvider) {
-		Assert.isLegal(featureProvider instanceof BpmnFeatureProvider);
+		Assert.isLegal(featureProvider instanceof Bpmn2FeatureProvider);
 		
-		BpmnFeatureProvider bpmn2featureProvider = (BpmnFeatureProvider) featureProvider;
+		Bpmn2FeatureProvider bpmn2featureProvider = (Bpmn2FeatureProvider) featureProvider;
 		
 		DecorateContext context = new DecorateContext(pictogramElement);
 		

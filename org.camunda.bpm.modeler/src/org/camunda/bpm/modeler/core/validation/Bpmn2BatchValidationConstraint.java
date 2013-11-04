@@ -46,14 +46,14 @@ import org.eclipse.emf.validation.AbstractModelConstraint;
 import org.eclipse.emf.validation.EMFEventType;
 import org.eclipse.emf.validation.IValidationContext;
 
-public class BpmnBatchValidationConstraint extends AbstractModelConstraint {
+public class Bpmn2BatchValidationConstraint extends AbstractModelConstraint {
 
 	public final static String ERROR_ID = "org.camunda.bpm.modeler.validation.error";
 	public final static String WARNING_ID = "org.camunda.bpm.modeler.validation.warning";
 	
 	private boolean warnings = false;
 	
-	public BpmnBatchValidationConstraint() {
+	public Bpmn2BatchValidationConstraint() {
 	}
 
 	@Override

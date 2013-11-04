@@ -60,7 +60,7 @@ import org.eclipse.ui.part.PageBook;
 // The generic outline uses internal functionality of Graphiti. For concrete
 // tool implementations this should not be necessary
 @SuppressWarnings("restriction")
-public class BpmnEditorOutlinePage extends ContentOutlinePage implements IPropertyListener {
+public class Bpmn2EditorOutlinePage extends ContentOutlinePage implements IPropertyListener {
 
 	// The IDs to identify the outline and the thunbnail
 	public static final int ID_BUSINESS_MODEL_OUTLINE = 0;
@@ -114,7 +114,7 @@ public class BpmnEditorOutlinePage extends ContentOutlinePage implements IProper
 	 *            the attached diagram editor
 	 * @since 0.9
 	 */
-	public BpmnEditorOutlinePage(DiagramEditor diagramEditor) {
+	public Bpmn2EditorOutlinePage(DiagramEditor diagramEditor) {
 		super(new TreeViewer());
 		graphicalViewer = diagramEditor.getGraphicalViewer();
 		actionRegistry = (ActionRegistry) diagramEditor.getAdapter(ActionRegistry.class);

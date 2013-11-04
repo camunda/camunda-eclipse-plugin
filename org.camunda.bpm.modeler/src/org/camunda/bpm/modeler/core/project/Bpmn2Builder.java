@@ -6,7 +6,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.camunda.bpm.modeler.core.validation.BpmnProjectValidator;
+import org.camunda.bpm.modeler.core.validation.Bpmn2ProjectValidator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -21,7 +21,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
-public class BpmnBuilder extends IncrementalProjectBuilder {
+public class Bpmn2Builder extends IncrementalProjectBuilder {
 
 	public static final String BUILDER_ID = "org.camunda.bpm.modeler.bpmn2Builder";
 	private static final String MARKER_TYPE = "org.camunda.bpm.modeler.xmlProblem";
@@ -103,11 +103,11 @@ public class BpmnBuilder extends IncrementalProjectBuilder {
 	}
 
 	void validate(IResourceDelta delta, IProgressMonitor monitor) {
-		BpmnProjectValidator.validate(delta, monitor);
+		Bpmn2ProjectValidator.validate(delta, monitor);
 	}
 
 	void validate(IResource resource, IProgressMonitor monitor) {
-		BpmnProjectValidator.validate(resource, monitor);
+		Bpmn2ProjectValidator.validate(resource, monitor);
 	}
 
 	protected void fullBuild(final IProgressMonitor monitor)
@@ -133,7 +133,7 @@ public class BpmnBuilder extends IncrementalProjectBuilder {
 		}
 
 		private void addMarker(SAXParseException e, int severity) {
-			BpmnBuilder.this.addMarker(file, e.getMessage(), e
+			Bpmn2Builder.this.addMarker(file, e.getMessage(), e
 					.getLineNumber(), severity);
 		}
 
@@ -176,7 +176,7 @@ public class BpmnBuilder extends IncrementalProjectBuilder {
 	 * @deprecated
 	 */
 	void checkXML(IResource resource) {
-		if (BpmnProjectValidator.isBPMN2File(resource)) {
+		if (Bpmn2ProjectValidator.isBPMN2File(resource)) {
 			IFile file = (IFile) resource;
 			deleteMarkers(file);
 			XMLErrorHandler reporter = new XMLErrorHandler(file);

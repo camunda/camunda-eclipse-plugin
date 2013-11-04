@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 
-public class BpmnDiagramWizardPage extends WizardPage {
+public class Bpmn2DiagramWizardPage extends WizardPage {
 	private Text containerText;
 
 	private Text fileText;
@@ -51,7 +51,7 @@ public class BpmnDiagramWizardPage extends WizardPage {
 	 * 
 	 * @param pageName
 	 */
-	public BpmnDiagramWizardPage(ISelection selection) {
+	public Bpmn2DiagramWizardPage(ISelection selection) {
 		super("wizardPage2");
 		setTitle("BPMN 2.0 Diagram File");
 		setDescription("Select file name.");

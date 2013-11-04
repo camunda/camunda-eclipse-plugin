@@ -13,15 +13,15 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
-public class BpmnMultiPageEditor extends MultiPageEditorPart {
+public class Bpmn2MultiPageEditor extends MultiPageEditorPart {
 	
-	BpmnEditor bpmn2Editor;
+	Bpmn2Editor bpmn2Editor;
 	private CTabFolder tabFolder;
 	private IEditorInput theEditorInput;
 	
-	public BpmnEditor getBpmn2Editor() {
+	public Bpmn2Editor getBpmn2Editor() {
 		if (bpmn2Editor == null) {
-			bpmn2Editor = new BpmnEditor();
+			bpmn2Editor = new Bpmn2Editor();
 		}
 		return bpmn2Editor;
 	}
@@ -32,7 +32,7 @@ public class BpmnMultiPageEditor extends MultiPageEditorPart {
 		return super.getAdapter(required);
 	}
 	
-	public BpmnMultiPageEditor() {
+	public Bpmn2MultiPageEditor() {
 	}
 	
 	@Override

@@ -16,8 +16,8 @@ import java.io.IOException;
 
 import org.camunda.bpm.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
-import org.camunda.bpm.modeler.ui.diagram.editor.BpmnDiagramEditorInput;
-import org.camunda.bpm.modeler.ui.diagram.editor.BpmnEditor;
+import org.camunda.bpm.modeler.ui.diagram.editor.Bpmn2DiagramEditorInput;
+import org.camunda.bpm.modeler.ui.diagram.editor.Bpmn2Editor;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.bpmn2.util.Bpmn2ResourceFactoryImpl;
@@ -28,7 +28,7 @@ import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.ui.services.GraphitiUi;
 
-public class BpmnDiagramCreator {
+public class Bpmn2DiagramCreator {
 	
 	public static Bpmn2Resource createBpmn2Resource(URI uri) {
 		Definitions definitions = createDefinitions(uri);
@@ -50,11 +50,11 @@ public class BpmnDiagramCreator {
 		return definitions;
 	}
 	
-	public static BpmnDiagramEditorInput createDiagramInput(URI uri, Bpmn2DiagramType diagramType, String targetNamespace) throws CoreException {
+	public static Bpmn2DiagramEditorInput createDiagramInput(URI uri, Bpmn2DiagramType diagramType, String targetNamespace) throws CoreException {
 		return createDiagramInput(uri, diagramType, targetNamespace, null);
 	}
 
-	public static BpmnDiagramEditorInput createDiagramInput(URI modelUri, Bpmn2DiagramType diagramType, String targetNamespace, BpmnEditor diagramEditor) throws CoreException {
+	public static Bpmn2DiagramEditorInput createDiagramInput(URI modelUri, Bpmn2DiagramType diagramType, String targetNamespace, Bpmn2Editor diagramEditor) throws CoreException {
 
 		if (modelUri == null) {
 			throw new RuntimeException("Unresolvable model uri; Please clean workspace");
@@ -68,7 +68,7 @@ public class BpmnDiagramCreator {
 		TransactionalEditingDomain domain = FileService.createEmfFileForDiagram(diagramUri, diagram, diagramEditor);
 
 		String providerId = GraphitiUi.getExtensionManager().getDiagramTypeProviderId(diagram.getDiagramTypeId());
-		final BpmnDiagramEditorInput editorInput = new BpmnDiagramEditorInput(modelUri, diagramUri, domain, providerId);
+		final Bpmn2DiagramEditorInput editorInput = new Bpmn2DiagramEditorInput(modelUri, diagramUri, domain, providerId);
 		editorInput.setInitialDiagramType(diagramType);
 		editorInput.setTargetNamespace(targetNamespace);
 

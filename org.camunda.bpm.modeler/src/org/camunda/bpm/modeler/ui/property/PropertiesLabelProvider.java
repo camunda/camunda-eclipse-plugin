@@ -17,7 +17,7 @@ import org.camunda.bpm.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.Images;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
-import org.camunda.bpm.modeler.ui.diagram.BpmnFeatureProvider;
+import org.camunda.bpm.modeler.ui.diagram.Bpmn2FeatureProvider;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeature;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -39,7 +39,7 @@ public class PropertiesLabelProvider extends LabelProvider {
 		DiagramEditor editor = ModelUtil.getEditor(businessObject);
 
 		if (editor != null) {
-			BpmnFeatureProvider fp = (BpmnFeatureProvider) editor.getDiagramTypeProvider().getFeatureProvider();
+			Bpmn2FeatureProvider fp = (Bpmn2FeatureProvider) editor.getDiagramTypeProvider().getFeatureProvider();
 			PictogramElement pe = BusinessObjectUtil.getPictogramElementForSelection((ISelection) element);
 			IFeature cf = fp.getCreateFeatureForPictogramElement(pe);
 			if (cf instanceof AbstractBpmn2CreateFeature) {

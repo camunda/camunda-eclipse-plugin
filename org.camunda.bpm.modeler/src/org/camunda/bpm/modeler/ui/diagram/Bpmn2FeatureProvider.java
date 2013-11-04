@@ -136,7 +136,7 @@ import org.eclipse.graphiti.ui.features.DefaultFeatureProvider;
 /**
  * 
  */
-public class BpmnFeatureProvider extends DefaultFeatureProvider {
+public class Bpmn2FeatureProvider extends DefaultFeatureProvider {
 
 	private List<IFeatureContainer> featureContainers;
 	private List<IFeatureContainer> customFeatureContainers;
@@ -146,7 +146,7 @@ public class BpmnFeatureProvider extends DefaultFeatureProvider {
 
 	private HashMap<EClass, IFeature> classToCreateFeatureMap = new HashMap<EClass, IFeature>();
 
-	public BpmnFeatureProvider(IDiagramTypeProvider diagramTypeProvider) {
+	public Bpmn2FeatureProvider(IDiagramTypeProvider diagramTypeProvider) {
 		super(diagramTypeProvider);
 
 		Assert.isLegal(diagramTypeProvider instanceof Bpmn2DiagramTypeProvider, "Expected diagramTypeProvider to be an instance of Bpmn2DiagramTypeProvider");

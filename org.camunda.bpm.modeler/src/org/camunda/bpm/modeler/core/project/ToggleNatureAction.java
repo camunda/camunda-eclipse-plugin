@@ -77,7 +77,7 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 			String[] natures = description.getNatureIds();
 
 			for (int i = 0; i < natures.length; ++i) {
-				if (BpmnNature.NATURE_ID.equals(natures[i])) {
+				if (Bpmn2Nature.NATURE_ID.equals(natures[i])) {
 					// Remove the nature
 					String[] newNatures = new String[natures.length - 1];
 					System.arraycopy(natures, 0, newNatures, 0, i);
@@ -92,7 +92,7 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 			// Add the nature
 			String[] newNatures = new String[natures.length + 1];
 			System.arraycopy(natures, 0, newNatures, 0, natures.length);
-			newNatures[natures.length] = BpmnNature.NATURE_ID;
+			newNatures[natures.length] = Bpmn2Nature.NATURE_ID;
 			description.setNatureIds(newNatures);
 			project.setDescription(description, null);
 		} catch (CoreException e) {

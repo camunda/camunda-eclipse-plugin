@@ -48,7 +48,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchPart;
 
-public class DesignEditor extends BpmnEditor {
+public class DesignEditor extends Bpmn2Editor {
 	
 	protected ResourceSetListener resourceSetListener = null;
 	private BPMNDiagram bpmnDiagramDeleted = null;

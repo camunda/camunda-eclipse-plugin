@@ -34,14 +34,14 @@ import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.camunda.bpm.modeler.core.utils.ScrollUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
-import org.camunda.bpm.modeler.core.validation.BpmnProjectValidator;
+import org.camunda.bpm.modeler.core.validation.Bpmn2ProjectValidator;
 import org.camunda.bpm.modeler.core.validation.BpmnValidationStatusLoader;
 import org.camunda.bpm.modeler.runtime.engine.model.util.ModelResourceFactoryImpl;
 import org.camunda.bpm.modeler.ui.dialog.importer.ModelProblemsDialog;
 import org.camunda.bpm.modeler.ui.views.outline.BaseElementTreeEditPart;
-import org.camunda.bpm.modeler.ui.views.outline.BpmnEditorOutlinePage;
+import org.camunda.bpm.modeler.ui.views.outline.Bpmn2EditorOutlinePage;
 import org.camunda.bpm.modeler.ui.views.outline.FlowElementTreeEditPart;
-import org.camunda.bpm.modeler.ui.wizards.BpmnDiagramCreator;
+import org.camunda.bpm.modeler.ui.wizards.Bpmn2DiagramCreator;
 import org.camunda.bpm.modeler.ui.wizards.FileService;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNDiagram;
@@ -114,7 +114,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabDescriptorProvider;
  * 
  * @author nico.rehwaldt
  */
-public class BpmnEditor extends DiagramEditor implements IPropertyChangeListener, IGotoMarker {
+public class Bpmn2Editor extends DiagramEditor implements IPropertyChangeListener, IGotoMarker {
 
 	public static final String EDITOR_ID = "org.camunda.bpm.modeler.ui.bpmn2editor";
 	public static final String CONTRIBUTOR_ID = "org.camunda.bpm.modeler.ui.PropertyContributor";
@@ -129,23 +129,23 @@ public class BpmnEditor extends DiagramEditor implements IPropertyChangeListener
 
 	private IPartListener2 selectionListener;
 	private IResourceChangeListener markerChangeListener;
-	private static BpmnEditor activeEditor;
+	private static Bpmn2Editor activeEditor;
 	private static ITabDescriptorProvider tabDescriptorProvider;
 
-	private BpmnEditingDomainListener editingDomainListener;
+	private Bpmn2EditingDomainListener editingDomainListener;
 
 	private Bpmn2Preferences preferences;
 
 	protected DiagramEditorAdapter editorAdapter;
 
-	public BpmnEditor() {
+	public Bpmn2Editor() {
 	}
 
-	public static BpmnEditor getActiveEditor() {
+	public static Bpmn2Editor getActiveEditor() {
 		return activeEditor;
 	}
 
-	private void setActiveEditor(BpmnEditor editor) {
+	private void setActiveEditor(Bpmn2Editor editor) {
 		activeEditor = editor;
 		if (activeEditor != null) {
 			Bpmn2Preferences.setActiveProject(activeEditor.getProject());
@@ -163,8 +163,8 @@ public class BpmnEditor extends DiagramEditor implements IPropertyChangeListener
 	@Override
 	protected DiagramEditorInput convertToDiagramEditorInput(IEditorInput input) throws PartInitException {
 
-		if (input instanceof BpmnDiagramEditorInput) {
-			return (BpmnDiagramEditorInput) input;
+		if (input instanceof Bpmn2DiagramEditorInput) {
+			return (Bpmn2DiagramEditorInput) input;
 		} else {
 			return createNewDiagramEditorInput(input, Bpmn2DiagramType.COLLABORATION, null);
 		}
@@ -197,12 +197,12 @@ public class BpmnEditor extends DiagramEditor implements IPropertyChangeListener
 
 	@Override
 	protected DefaultUpdateBehavior createUpdateBehavior() {
-		return new BpmnEditorUpdateBehavior(this);
+		return new Bpmn2EditorUpdateBehavior(this);
 	}
 
 	@Override
 	protected DefaultPersistencyBehavior createPersistencyBehavior() {
-		return new BpmnPersistencyBehavior(this);
+		return new Bpmn2PersistencyBehavior(this);
 	}
 
 	public Bpmn2Preferences getPreferences() {
@@ -231,14 +231,14 @@ public class BpmnEditor extends DiagramEditor implements IPropertyChangeListener
 	/**
 	 * Beware, creates a new input and changes this editor
 	 */
-	private BpmnDiagramEditorInput createNewDiagramEditorInput(IEditorInput input, Bpmn2DiagramType diagramType,
+	private Bpmn2DiagramEditorInput createNewDiagramEditorInput(IEditorInput input, Bpmn2DiagramType diagramType,
 			String targetNamespace) {
 		try {
 			modelUri = FileService.getInputUri(input);
-			input = BpmnDiagramCreator.createDiagramInput(modelUri, diagramType, targetNamespace, this);
-			diagramUri = ((BpmnDiagramEditorInput) input).getUri();
+			input = Bpmn2DiagramCreator.createDiagramInput(modelUri, diagramType, targetNamespace, this);
+			diagramUri = ((Bpmn2DiagramEditorInput) input).getUri();
 
-			return (BpmnDiagramEditorInput) input;
+			return (Bpmn2DiagramEditorInput) input;
 		} catch (Exception e) {
 			Activator.logError(e);
 			throw new RuntimeException(e);
@@ -261,8 +261,8 @@ public class BpmnEditor extends DiagramEditor implements IPropertyChangeListener
 
 		BasicCommandStack basicCommandStack = (BasicCommandStack) getEditingDomain().getCommandStack();
 
-		if (input instanceof BpmnDiagramEditorInput) {
-			BpmnDiagramEditorInput bpmn2DiagramEditorInput = (BpmnDiagramEditorInput) input;
+		if (input instanceof Bpmn2DiagramEditorInput) {
+			Bpmn2DiagramEditorInput bpmn2DiagramEditorInput = (Bpmn2DiagramEditorInput) input;
 			ResourceSet resourceSet = getEditingDomain().getResourceSet();
 
 			resourceSet.getResourceFactoryRegistry().getContentTypeToFactoryMap()
@@ -382,7 +382,7 @@ public class BpmnEditor extends DiagramEditor implements IPropertyChangeListener
 			BpmnValidationStatusLoader vsl = new BpmnValidationStatusLoader(this);
 
 			try {
-				vsl.load(Arrays.asList(getModelFile().findMarkers(BpmnProjectValidator.BPMN2_MARKER_ID, true,
+				vsl.load(Arrays.asList(getModelFile().findMarkers(Bpmn2ProjectValidator.BPMN2_MARKER_ID, true,
 						IResource.DEPTH_ZERO)));
 			} catch (CoreException e) {
 				Activator.logStatus(e.getStatus());
@@ -417,7 +417,7 @@ public class BpmnEditor extends DiagramEditor implements IPropertyChangeListener
 	private void addMarkerChangeListener() {
 		if (getModelFile() != null) {
 			if (markerChangeListener == null) {
-				markerChangeListener = new BpmnMarkerChangeListener(this);
+				markerChangeListener = new Bpmn2MarkerChangeListener(this);
 				getModelFile().getWorkspace().addResourceChangeListener(markerChangeListener, IResourceChangeEvent.POST_BUILD);
 			}
 		}
@@ -435,13 +435,13 @@ public class BpmnEditor extends DiagramEditor implements IPropertyChangeListener
 		setPartName(URI.decode(name));
 	}
 
-	public BpmnEditingDomainListener getEditingDomainListener() {
+	public Bpmn2EditingDomainListener getEditingDomainListener() {
 		if (editingDomainListener == null) {
 			TransactionalEditingDomainImpl editingDomain = (TransactionalEditingDomainImpl) getEditingDomain();
 			if (editingDomain == null) {
 				return null;
 			}
-			editingDomainListener = new BpmnEditingDomainListener(this);
+			editingDomainListener = new Bpmn2EditingDomainListener(this);
 
 			Lifecycle domainLifeCycle = (Lifecycle) editingDomain.getAdapter(Lifecycle.class);
 			domainLifeCycle.addTransactionalEditingDomainListener(editingDomainListener);
@@ -478,7 +478,7 @@ public class BpmnEditor extends DiagramEditor implements IPropertyChangeListener
 		}
 		if (required == IContentOutlinePage.class) {
 			if (getDiagramTypeProvider() != null) {
-				BpmnEditorOutlinePage outlinePage = new BpmnEditorOutlinePage(this);
+				Bpmn2EditorOutlinePage outlinePage = new Bpmn2EditorOutlinePage(this);
 				return outlinePage;
 			}
 		}
@@ -492,7 +492,7 @@ public class BpmnEditor extends DiagramEditor implements IPropertyChangeListener
 		int instances = 0;
 		IEditorSite editorSite = getEditorSite();
 
-		BpmnDiagramEditorInput diagramEditorInput = (BpmnDiagramEditorInput) getEditorInput();
+		Bpmn2DiagramEditorInput diagramEditorInput = (Bpmn2DiagramEditorInput) getEditorInput();
 
 		// need to check != null to deal with errors
 		if (editorSite != null) {
@@ -535,7 +535,7 @@ public class BpmnEditor extends DiagramEditor implements IPropertyChangeListener
 		}
 	}
 
-	private void cleanupDiagramFile(BpmnDiagramEditorInput editorInput) {
+	private void cleanupDiagramFile(Bpmn2DiagramEditorInput editorInput) {
 
 		// not null check --> dealing with previous open diagram failures
 		if (editorInput == null) {
@@ -618,7 +618,7 @@ public class BpmnEditor extends DiagramEditor implements IPropertyChangeListener
 	public void doSave(IProgressMonitor monitor) {
 		super.doSave(monitor);
 
-		Resource resource = getResourceSet().getResource(((BpmnDiagramEditorInput) getEditorInput()).getModelUri(), false);
+		Resource resource = getResourceSet().getResource(((Bpmn2DiagramEditorInput) getEditorInput()).getModelUri(), false);
 		
 		// TODO uncomment to perform validation
 		// BPMN2ProjectValidator.validateOnSave(resource, monitor);
@@ -667,7 +667,7 @@ public class BpmnEditor extends DiagramEditor implements IPropertyChangeListener
 
 		// open new editor
 		try {
-			page.openEditor(new FileEditorInput(newFile), BpmnEditor.EDITOR_ID);
+			page.openEditor(new FileEditorInput(newFile), Bpmn2Editor.EDITOR_ID);
 		} catch (PartInitException e1) {
 			showErrorDialogWithLogging(e1);
 			return;
@@ -689,7 +689,7 @@ public class BpmnEditor extends DiagramEditor implements IPropertyChangeListener
 	public void closeEditor() {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				boolean closed = getSite().getPage().closeEditor(BpmnEditor.this, false);
+				boolean closed = getSite().getPage().closeEditor(Bpmn2Editor.this, false);
 				if (!closed) {
 					// If close editor fails, try again with explicit editorpart
 					// of the old file

@@ -10,7 +10,7 @@ import org.camunda.bpm.modeler.core.utils.Images;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.core.utils.transform.Transformer;
 import org.camunda.bpm.modeler.ui.ImageProvider;
-import org.camunda.bpm.modeler.ui.diagram.editor.BpmnEditor;
+import org.camunda.bpm.modeler.ui.diagram.editor.Bpmn2Editor;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.emf.ecore.EClass;
@@ -292,7 +292,7 @@ public abstract class AbstractMorphNodeFeature<T extends FlowNode> extends Abstr
 		}
 		
 		protected Image getImageForId(String imageId) {
-			return Images.getById(BpmnEditor.EDITOR_ID, imageId);
+			return Images.getById(Bpmn2Editor.EDITOR_ID, imageId);
 		}
 	}
 	

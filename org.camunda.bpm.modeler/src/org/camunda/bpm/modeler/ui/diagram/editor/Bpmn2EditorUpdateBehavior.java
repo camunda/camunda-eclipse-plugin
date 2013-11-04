@@ -37,7 +37,7 @@ import org.eclipse.graphiti.ui.internal.editor.GFWorkspaceCommandStackImpl;
  * @author Bob Brodt
  * 
  */
-public class BpmnEditorUpdateBehavior extends DefaultUpdateBehavior {
+public class Bpmn2EditorUpdateBehavior extends DefaultUpdateBehavior {
 
 	private TransactionalEditingDomain editingDomain;
 	private WorkspaceSynchronizer workspaceSynchronizer;
@@ -45,7 +45,7 @@ public class BpmnEditorUpdateBehavior extends DefaultUpdateBehavior {
 	/**
 	 * @param diagramEditor
 	 */
-	public BpmnEditorUpdateBehavior(DiagramEditor diagramEditor) {
+	public Bpmn2EditorUpdateBehavior(DiagramEditor diagramEditor) {
 		super(diagramEditor);
 	}
 
@@ -93,14 +93,14 @@ public class BpmnEditorUpdateBehavior extends DefaultUpdateBehavior {
 	
 	public class BPMN2EditorWorkspaceSynchronizerDelegate implements WorkspaceSynchronizer.Delegate {
 
-		private BpmnEditor bpmnEditor;
+		private Bpmn2Editor bpmnEditor;
 
 		/**
 		 * The DiagramEditorBehavior reacts on a setResourceChanged(true) if he gets
 		 * activated.
 		 */
 		public BPMN2EditorWorkspaceSynchronizerDelegate(DiagramEditor diagramEditor) {
-			this.bpmnEditor = (BpmnEditor)diagramEditor;
+			this.bpmnEditor = (Bpmn2Editor)diagramEditor;
 		}
 
 		public void dispose() { 

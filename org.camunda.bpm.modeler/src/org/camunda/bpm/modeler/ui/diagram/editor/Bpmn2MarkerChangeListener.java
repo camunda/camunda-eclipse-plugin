@@ -23,11 +23,11 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.part.IPage;
 import org.eclipse.ui.views.properties.PropertySheet;
 
-public class BpmnMarkerChangeListener implements IResourceChangeListener {
+public class Bpmn2MarkerChangeListener implements IResourceChangeListener {
 
-	BpmnEditor editor;
+	Bpmn2Editor editor;
 
-	public BpmnMarkerChangeListener(BpmnEditor editor) {
+	public Bpmn2MarkerChangeListener(Bpmn2Editor editor) {
 		this.editor = editor;
 	}
 

@@ -32,7 +32,7 @@ public class Bpmn2DiagramTypeProvider extends AbstractDiagramTypeProvider {
 
 	private void initFeatureProvider() {
 
-		BpmnFeatureProvider featureProvider = new BpmnFeatureProvider(this);
+		Bpmn2FeatureProvider featureProvider = new Bpmn2FeatureProvider(this);
 		
 		for (ICustomTaskProvider provider : Activator.getExtensions().getCustomTaskProviders()) {
 			IFeatureContainer featureContainer = provider.getFeatureContainer();

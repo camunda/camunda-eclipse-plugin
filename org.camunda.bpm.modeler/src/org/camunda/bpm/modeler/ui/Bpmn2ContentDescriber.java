@@ -31,14 +31,14 @@ import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.ITextContentDescriber;
 import org.xml.sax.InputSource;
 
-public class BpmnContentDescriber implements ITextContentDescriber {
+public class Bpmn2ContentDescriber implements ITextContentDescriber {
 
 	private static final String BPMN2_NAMESPACE = "http://www.omg.org/spec/BPMN/20100524/MODEL"; //$NON-NLS-1$
 	private static final String ROOT_ELEMENT = "definitions"; //$NON-NLS-1$
 
 	private RootElementParser parser;
 
-	public BpmnContentDescriber() {
+	public Bpmn2ContentDescriber() {
 	}
 
 	@Override

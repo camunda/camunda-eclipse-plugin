@@ -17,7 +17,7 @@ import org.camunda.bpm.modeler.core.ProxyURIConverterImplExtension;
 import org.camunda.bpm.modeler.core.model.Bpmn2ModelerResourceImpl;
 import org.camunda.bpm.modeler.core.model.Bpmn2ModelerResourceSetImpl;
 import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
-import org.camunda.bpm.modeler.core.project.BpmnNature;
+import org.camunda.bpm.modeler.core.project.Bpmn2Nature;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -58,7 +58,7 @@ import org.eclipse.wst.validation.ValidationState;
 import org.eclipse.wst.validation.Validator;
 import org.eclipse.wst.validation.ValidatorMessage;
 
-public class BpmnProjectValidator extends AbstractValidator {
+public class Bpmn2ProjectValidator extends AbstractValidator {
 
 	/** ID for BPMN2 specific problem markers. */
 	public static final String BPMN2_MARKER_ID = "org.camunda.bpm.modeler.problemMarker";
@@ -137,7 +137,7 @@ public class BpmnProjectValidator extends AbstractValidator {
 		
 		Validator[] validators = ValidationFramework.getDefault().getValidatorsFor(resource);
 		for (Validator v : validators) {
-			if (BpmnProjectValidator.class.getName().equals(v.getValidatorClassname())) {
+			if (Bpmn2ProjectValidator.class.getName().equals(v.getValidatorClassname())) {
 				return v.validate(resource, IResourceDelta.CHANGED, null, monitor);
 			}
 		}
@@ -150,7 +150,7 @@ public class BpmnProjectValidator extends AbstractValidator {
 		if (isBPMN2File(resource)) {
 			Validator[] validators = ValidationFramework.getDefault().getValidatorsFor(resource);
 			for (Validator v : validators) {
-				if (BpmnProjectValidator.class.getName().equals(v.getValidatorClassname())) {
+				if (Bpmn2ProjectValidator.class.getName().equals(v.getValidatorClassname())) {
 					v.validate(resource, delta.getKind(), null, monitor);
 					break;
 				}
@@ -188,7 +188,7 @@ public class BpmnProjectValidator extends AbstractValidator {
 
 		if (project != null) {
 			try {
-				IProjectNature nature = project.getNature(BpmnNature.NATURE_ID);
+				IProjectNature nature = project.getNature(Bpmn2Nature.NATURE_ID);
 				if (nature == null) {
 					Bpmn2Preferences preferences = Bpmn2Preferences.getInstance(project);
 					if (preferences.getCheckProjectNature()) {
@@ -210,7 +210,7 @@ public class BpmnProjectValidator extends AbstractValidator {
 							String[] natures = description.getNatureIds();
 							String[] newNatures = new String[natures.length + 1];
 							System.arraycopy(natures, 0, newNatures, 0, natures.length);
-							newNatures[natures.length] = BpmnNature.NATURE_ID;
+							newNatures[natures.length] = Bpmn2Nature.NATURE_ID;
 							description.setNatureIds(newNatures);
 							project.setDescription(description, null);
 							needValidation = true;

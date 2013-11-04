@@ -24,7 +24,7 @@ import org.camunda.bpm.modeler.core.utils.LabelUtil;
 import org.camunda.bpm.modeler.core.validation.ValidationStatusAdapter;
 import org.camunda.bpm.modeler.ui.FeatureMap;
 import org.camunda.bpm.modeler.ui.ImageProvider;
-import org.camunda.bpm.modeler.ui.diagram.editor.BpmnEditor;
+import org.camunda.bpm.modeler.ui.diagram.editor.Bpmn2Editor;
 import org.camunda.bpm.modeler.ui.features.choreography.ChoreographySelectionBehavior;
 import org.camunda.bpm.modeler.ui.features.choreography.ChoreographyUtil;
 import org.eclipse.bpmn2.Activity;
@@ -84,14 +84,14 @@ public class Bpmn2ToolBehaviour extends DefaultToolBehaviorProvider implements I
 	}
 
 	@Override
-	protected BpmnFeatureProvider getFeatureProvider() {
-		return (BpmnFeatureProvider) super.getFeatureProvider();
+	protected Bpmn2FeatureProvider getFeatureProvider() {
+		return (Bpmn2FeatureProvider) super.getFeatureProvider();
 	}
 	
 	@Override
 	public IPaletteCompartmentEntry[] getPalette() {
 
-		BpmnEditor editor = (BpmnEditor) getDiagramTypeProvider().getDiagramEditor();
+		Bpmn2Editor editor = (Bpmn2Editor) getDiagramTypeProvider().getDiagramEditor();
 		Diagram diagram = getDiagramTypeProvider().getDiagram();
 		Object object = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(diagram);
 
@@ -398,7 +398,7 @@ public class Bpmn2ToolBehaviour extends DefaultToolBehaviorProvider implements I
 
 	@Override
 	public void postExecute(IExecutionInfo executionInfo) {
-		BpmnEditor editor = (BpmnEditor) getDiagramTypeProvider().getDiagramEditor();
+		Bpmn2Editor editor = (Bpmn2Editor) getDiagramTypeProvider().getDiagramEditor();
 		for (IFeatureAndContext fc : executionInfo.getExecutionList()) {
 			IContext context = fc.getContext();
 			IFeature feature = fc.getFeature();

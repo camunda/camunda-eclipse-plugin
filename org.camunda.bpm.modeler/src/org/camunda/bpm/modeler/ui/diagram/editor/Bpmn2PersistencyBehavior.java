@@ -11,13 +11,13 @@ import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.ui.editor.DefaultPersistencyBehavior;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 
-public class BpmnPersistencyBehavior extends DefaultPersistencyBehavior {
+public class Bpmn2PersistencyBehavior extends DefaultPersistencyBehavior {
 
-	BpmnEditor editor;
+	Bpmn2Editor editor;
 
-	public BpmnPersistencyBehavior(DiagramEditor diagramEditor) {
+	public Bpmn2PersistencyBehavior(DiagramEditor diagramEditor) {
 		super(diagramEditor);
-		editor = (BpmnEditor) diagramEditor;
+		editor = (Bpmn2Editor) diagramEditor;
 	}
 
 	@Override
