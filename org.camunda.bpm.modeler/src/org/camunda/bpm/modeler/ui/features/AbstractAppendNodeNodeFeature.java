@@ -23,27 +23,28 @@ import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
 import org.camunda.bpm.modeler.core.runtime.ModelEnablementDescriptor;
 import org.camunda.bpm.modeler.core.runtime.TargetRuntime;
-import org.camunda.bpm.modeler.core.utils.AnchorUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
-import org.camunda.bpm.modeler.core.utils.Tuple;
+import org.camunda.bpm.modeler.runtime.engine.model.BoundaryEvent;
 import org.camunda.bpm.modeler.ui.diagram.BPMN2FeatureProvider;
+import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.CompensateEventDefinition;
+import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.Lane;
-import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.ILocation;
+import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICustomContext;
-import org.eclipse.graphiti.features.context.impl.AddConnectionContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.AreaContext;
 import org.eclipse.graphiti.features.context.impl.CreateConnectionContext;
@@ -54,7 +55,6 @@ import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
@@ -141,7 +141,7 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 					if (newType!=null) {
 						// if user made a selection, then create the new shape...
 						ContainerShape newShape = createNewShape(mh, oldShape, newType);
-						// ...and connect this shape to the new one with a SequenceFlow
+						// ...and connect this shape to the new one
 						createNewConnection(mh, oldShape, newShape);
 						changesDone = true;
 					}
@@ -218,6 +218,17 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 			newObject = (FlowElement) mh.create(newType);
 		}
 		
+		EObject bo = (EObject) getBusinessObjectForPictogramElement(oldShape);
+		
+		// Hook: If the source element is an boundary compensation event
+		// and the new object an Activity, then set the flag "isForCompensation"
+		// to true!
+		if (isCompensationBoundaryEvent(bo) && newObject instanceof Activity) {
+			Activity newActivity = (Activity) newObject;
+			
+			newActivity.setIsForCompensation(true);
+		}
+		
 		ContainerShape containerShape = oldShape.getContainer();
 		if (containerShape!=getDiagram()) {
 			// we are adding a new shape to a control (e.g a SubProcess)
@@ -291,23 +302,30 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 		Anchor sourceAnchor = LayoutUtil.getCenterAnchor(oldShape);
 		Anchor targetAnchor = LayoutUtil.getCenterAnchor(newShape);
 
-		// TODO: Use create features to create connection
-		CreateConnectionContext createConnectionContext = new CreateConnectionContext();
-		createConnectionContext.setSourcePictogramElement(oldShape);
-		createConnectionContext.setTargetPictogramElement(newShape);
-		createConnectionContext.setSourceAnchor(sourceAnchor);
-		createConnectionContext.setTargetAnchor(targetAnchor);
+		CreateConnectionContext context = new CreateConnectionContext();
 		
-		FlowNode oldObject = BusinessObjectUtil.getFirstElementOfType(oldShape, FlowNode.class);
-		FlowNode newObject = BusinessObjectUtil.getFirstElementOfType(newShape, FlowNode.class);
+		context.setSourceAnchor(sourceAnchor);
+		context.setSourcePictogramElement(oldShape);
 		
-		AddConnectionContext acc = new AddConnectionContext(sourceAnchor, targetAnchor);
-		SequenceFlow flow = mh.createSequenceFlow(oldObject, newObject);
-		acc.setNewObject(flow);
+		context.setTargetAnchor(targetAnchor);
+		context.setTargetPictogramElement(newShape);
 		
-		Connection connection = (Connection)getFeatureProvider().addIfPossible(acc);
+		// Assuming that the array of create connection features has the following order:
+		// (1) SequenceFlowFeatureContainer
+		// (2) MessageFlowFeatureContainer
+		// (3) AssociationFeatureContainer
+		// (4) ConversationLinkFeatureContainer
+		// (5) DataAssociationFeatureContainer
+		// The first one who can create a connection between the elements wins!
+		ICreateConnectionFeature[] createConnectionFeatures = getFeatureProvider().getCreateConnectionFeatures();
+		for (ICreateConnectionFeature createFeature : createConnectionFeatures) {
+			if (createFeature.canCreate(context)) {
+				Connection connection = createFeature.create(context);
+				return connection;
+			}
+		}
 		
-		return connection;
+		return null;
 	}
 	
 	/**
@@ -318,5 +336,35 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 	@Override
 	public boolean hasDoneChanges() {
 		return changesDone;
+	}
+	
+	protected final boolean isCompensationBoundaryEvent(ICustomContext context) {
+		PictogramElement[] pictogramElements = context.getPictogramElements();
+		
+		if (pictogramElements == null || pictogramElements.length != 1) {
+			return false;
+		}
+		
+		PictogramElement pictogramElement = pictogramElements[0];
+		
+		EObject bo = (EObject) getBusinessObjectForPictogramElement(pictogramElement);
+		
+		return isCompensationBoundaryEvent(bo);
+	}
+	
+	private boolean isCompensationBoundaryEvent(EObject bo) {
+		if (!(bo instanceof BoundaryEvent)) {
+			return false;
+		}
+		
+		BoundaryEvent boundaryEvent = (BoundaryEvent) bo;
+		
+		List<EventDefinition> eventDefinitions = boundaryEvent.getEventDefinitions();
+		
+		if (!eventDefinitions.isEmpty() && eventDefinitions.size() == 1) {
+			return eventDefinitions.get(0) instanceof CompensateEventDefinition;
+		}
+		
+		return false;
 	}
 }
