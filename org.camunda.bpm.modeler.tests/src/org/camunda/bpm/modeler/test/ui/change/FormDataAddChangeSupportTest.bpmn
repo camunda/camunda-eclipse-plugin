@@ -5,21 +5,6 @@
       <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
     </bpmn2:startEvent>
     <bpmn2:userTask id="UserTask_1" camunda:candidateGroups="dummy" name="User Task">
-      <bpmn2:extensionElements>
-        <camunda:formData>
-	        <camunda:formField id="enumField" name="Enum Field" type="enum" defaultValue="a">
-	          <camunda:properties>
-	            <camunda:property id="test" value="test"/>
-	          </camunda:properties>
-	          <camunda:validation>
-	            <camunda:constraint name="test" config="test"/>
-	          </camunda:validation>
-	          <camunda:value id="a" name="A"/>
-	          <camunda:value id="b" name="B"/>
-	          <camunda:value id="c" name="C"/>
-	        </camunda:formField>
-        </camunda:formData>
-      </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
     </bpmn2:userTask>

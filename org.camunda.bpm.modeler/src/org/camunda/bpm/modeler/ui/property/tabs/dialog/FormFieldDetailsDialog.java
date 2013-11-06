@@ -36,6 +36,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
@@ -70,9 +71,12 @@ public class FormFieldDetailsDialog extends Dialog {
 		ModelPackage.eINSTANCE.getValueType_Name() };
 	
 	private static final EStructuralFeature FORM_FIELD_VALUE = ModelPackage.eINSTANCE.getFormFieldType_Value();
+	private static final EStructuralFeature FORM_FIELD_TYPE = ModelPackage.eINSTANCE.getFormFieldType_Type();
+	private static final EStructuralFeature FORM_FIELD_ID = ModelPackage.eINSTANCE.getFormFieldType_Id();
 	
 	private FormFieldType formFieldType;
 	private GFPropertySection section;
+	private Button okButton;
 	
 	private Composite valueMappingTableComposite = null;
 	private Composite placeHolderComposite = null;
@@ -110,7 +114,6 @@ public class FormFieldDetailsDialog extends Dialog {
 		for (int i=0; i<SUPPORTED_TYPES.length; i++) {
 			dropDown.add(SUPPORTED_TYPES[i]);
 		}
-		//new ModelStringComboBinding(formFieldType, ModelPackage.eINSTANCE.getFormFieldType_Type(), dropDown).establish();
 		
 		ValidatingStringComboBinding comboBinding = new ValidatingStringComboBinding(formFieldType, ModelPackage.eINSTANCE.getFormFieldType_Type(), dropDown);
 		comboBinding.addErrorCode(100);
@@ -118,30 +121,38 @@ public class FormFieldDetailsDialog extends Dialog {
 
 		comboBinding.setMandatory(true);
 		comboBinding.establish();
-		
+
 		dropDown.addListener(Events.MODEL_CHANGED, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
 				rebuildValueMappingTable(parent);
+				okButton.setEnabled(checkOkButtonActivation());
 			}
 		});
-		
+
+		idText.addListener(Events.MODEL_CHANGED, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				okButton.setEnabled(checkOkButtonActivation());
+			}
+		});
+
 		// create place holder composite for value mapping table which is empty
         placeHolderComposite = PropertyUtil.createGridLayoutedComposite(section, parent);
         // create mapping table for form field value
 		rebuildValueMappingTable(parent);
-		
+
 		// create mapping table for form field validation
 		createMappingTable(section, parent, ModelPackage.eINSTANCE.getFormFieldType_Validation(), ConstraintType.class, "Validation", ModelPackage.eINSTANCE.getConstraintType(), 
 			ModelPackage.eINSTANCE.getValidationType_Constraint(), CONSTRAINT_FEATURES, VALIDATION_TABLE_HEADERS);
-		
+
 		// create mapping table for form field properties
 		createMappingTable(section, parent, ModelPackage.eINSTANCE.getFormFieldType_Properties(), PropertyType.class, "Properties", ModelPackage.eINSTANCE.getPropertyType(), 
 	    		ModelPackage.eINSTANCE.getPropertiesType_Property(), PROPERTY_FEATURES, PROPERTIES_TABLE_HEADERS);
-		
+
 	    return parent;
 	}
-	  
+
 	private void rebuildValueMappingTable(Composite parent) {
 		
 		if (valueMappingTableComposite != null && !valueMappingTableComposite.isDisposed()) {
@@ -156,6 +167,19 @@ public class FormFieldDetailsDialog extends Dialog {
 		} 
 		
 		relayout(parent);
+	}
+
+	/**
+	 * dialog OK button is only activated when mandatory fields are set
+	 *
+	 * @return
+	 */
+	private boolean checkOkButtonActivation() {
+		if (formFieldType.eGet(FORM_FIELD_ID) != null && formFieldType.eGet(FORM_FIELD_TYPE) != null) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	  
 	protected <T extends EObject> void createMappingTable(final GFPropertySection section, final Composite parent, final EStructuralFeature containerFeature, 
@@ -315,8 +339,11 @@ public class FormFieldDetailsDialog extends Dialog {
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		// create OK
-		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
-		
+		okButton = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+
+		// disable button when mandatory fields are not set
+		okButton.setEnabled(checkOkButtonActivation());
+
 		// compute shell size at the end of the dialog creation
 		computeSize();
 	}
