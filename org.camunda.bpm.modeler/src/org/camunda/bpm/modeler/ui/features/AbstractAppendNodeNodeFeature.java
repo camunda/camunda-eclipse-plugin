@@ -27,7 +27,6 @@ import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.runtime.engine.model.BoundaryEvent;
-import org.camunda.bpm.modeler.ui.diagram.BPMN2FeatureProvider;
 import org.camunda.bpm.modeler.ui.diagram.Bpmn2FeatureProvider;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BaseElement;
