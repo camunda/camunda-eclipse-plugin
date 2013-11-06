@@ -406,6 +406,7 @@ Export-Package: org.camunda.bpm.modeler.core;
  org.camunda.bpm.modeler.ui.property.tabs,
  org.camunda.bpm.modeler.ui.property.tabs.builder
 Import-Package: 
+ org.camunda.bpm.modeler.ui.diagram,
  org.eclipse.graphiti.ui.features,
  org.eclipse.jface.preference,
  org.eclipse.jface.util,

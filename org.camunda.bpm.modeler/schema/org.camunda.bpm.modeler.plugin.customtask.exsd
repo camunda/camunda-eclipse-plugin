@@ -69,7 +69,7 @@ Custom tasks can be added from the palette and provide additional property panel
          <meta.section type="since"/>
       </appinfo>
       <documentation>
-         2.2.0
+         2.3.0
       </documentation>
    </annotation>
 

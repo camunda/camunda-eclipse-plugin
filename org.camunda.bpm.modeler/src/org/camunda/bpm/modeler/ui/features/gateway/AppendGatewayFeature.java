@@ -19,6 +19,8 @@ import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.context.IContext;
+import org.eclipse.graphiti.features.context.ICustomContext;
 
 /**
  * @author Bob Brodt
@@ -26,6 +28,23 @@ import org.eclipse.graphiti.features.IFeatureProvider;
  */
 public class AppendGatewayFeature extends AbstractAppendNodeNodeFeature<Gateway> {
 
+	@Override
+	public boolean isAvailable(IContext context) {
+		if (!(context instanceof ICustomContext)) {
+			return super.isAvailable(context);
+		}
+		
+		ICustomContext customContext = (ICustomContext) context;
+		
+		boolean isCompensationBoundaryEvent = isCompensationBoundaryEvent(customContext);
+		
+		if (isCompensationBoundaryEvent) {
+			return false;
+		}
+		
+		return super.isAvailable(context); 
+	}
+	
 	/**
 	 * @param fp
 	 */

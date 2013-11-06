@@ -46,6 +46,10 @@ public class UpdateBoundaryEventFeature extends AbstractUpdateEventFeature {
 		}
 		
 		String cancelProperty = Graphiti.getPeService().getPropertyValue(context.getPictogramElement(), BOUNDARY_EVENT_CANCEL);
+		if (cancelProperty == null) {
+			return Reason.createTrueReason();
+		}
+		
 		BoundaryEvent event = (BoundaryEvent) getBusinessObjectForPictogramElement(context.getPictogramElement());
 		boolean changed = Boolean.parseBoolean(cancelProperty) != event.isCancelActivity();
 		

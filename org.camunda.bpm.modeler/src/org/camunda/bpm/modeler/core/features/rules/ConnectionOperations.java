@@ -11,9 +11,9 @@ import org.camunda.bpm.modeler.core.features.rules.RuleOperations.FromToModelOpe
 import org.camunda.bpm.modeler.core.features.rules.RuleOperations.Side;
 import org.camunda.bpm.modeler.core.utils.AnchorUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
-import org.camunda.bpm.modeler.runtime.engine.model.BoundaryEvent;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.Collaboration;
