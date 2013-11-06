@@ -12,9 +12,10 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.data;
 
-import org.camunda.bpm.modeler.core.features.DefaultMoveBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2MoveShapeFeature;
 import org.camunda.bpm.modeler.core.features.DirectEditNamedElementFeature;
 import org.camunda.bpm.modeler.core.features.UpdateBaseElementNameFeature;
+import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.features.container.BaseElementFeatureContainer;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
@@ -62,7 +63,7 @@ public abstract class AbstractDataFeatureContainer extends BaseElementFeatureCon
 
 	@Override
 	public IMoveShapeFeature getMoveFeature(IFeatureProvider fp) {
-		return new DefaultMoveBPMNShapeFeature(fp) {
+		return new DefaultBpmn2MoveShapeFeature(fp) {
 
 			@Override
 			public boolean canMoveShape(IMoveShapeContext context) {

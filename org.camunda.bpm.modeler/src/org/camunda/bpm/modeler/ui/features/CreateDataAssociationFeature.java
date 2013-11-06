@@ -3,7 +3,6 @@ package org.camunda.bpm.modeler.ui.features;
 import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations;
-import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.ConnectionType;
 import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.CreateConnectionOperation;
 import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.StartFormCreateConnectionOperation;
 import org.camunda.bpm.modeler.core.utils.AnchorUtil;
@@ -21,20 +20,22 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public class CreateDataAssociationFeature extends AbstractCreateFlowFeature<DataAssociation, BaseElement, BaseElement> {
 
+	private static final EClass DATA_ASSOCIATION = Bpmn2Package.eINSTANCE.getDataAssociation();
+
 	public CreateDataAssociationFeature(IFeatureProvider fp) {
 		super(fp, "Data Association", "Associate item aware elements like data objects with activities and events");
 	}
 
 	@Override
 	public boolean canStartConnection(ICreateConnectionContext context) {
-		context.putProperty(ConnectionOperations.CONNECTION_TYPE, ConnectionType.DATA_ASSOCIATION);
+		context.putProperty(ConnectionOperations.CONNECTION_TYPE, DATA_ASSOCIATION);
 		StartFormCreateConnectionOperation operation = ConnectionOperations.getStartFromConnectionCreateOperation(context);
 		return operation.canExecute(context);
 	}
 	
 	@Override
 	public boolean canCreate(ICreateConnectionContext context) {
-		context.putProperty(ConnectionOperations.CONNECTION_TYPE, ConnectionType.DATA_ASSOCIATION);
+		context.putProperty(ConnectionOperations.CONNECTION_TYPE, DATA_ASSOCIATION);
 		CreateConnectionOperation operation = ConnectionOperations.getConnectionCreateOperation(context);
 		return operation.canExecute(context);
 	}
@@ -103,7 +104,6 @@ public class CreateDataAssociationFeature extends AbstractCreateFlowFeature<Data
 
 	@Override
 	public EClass getBusinessObjectClass() {
-		return Bpmn2Package.eINSTANCE.getDataAssociation();
+		return DATA_ASSOCIATION;
 	}
-
 }

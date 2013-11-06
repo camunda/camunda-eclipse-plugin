@@ -42,15 +42,18 @@ public abstract class AbstractUpdateEventDefinitionFeature extends AbstractUpdat
 		List<EventDefinition> eventDefinitions = ModelUtil.getEventDefinitions(event);
 		int size = eventDefinitions.size();
 
+		Shape definitionShape;
+		
+		Object[] businessObjects = eventDefinitions.toArray();
+		
 		GraphicsUtil.deleteEventShape(container);
-		if (size==1) {
-			Shape addedShape = getDecorationAlgorithm(event).draw(container);
-			link(addedShape, eventDefinitions.get(0));
-		}
-		else if (size > 1) {
-			Shape multipleShape = Graphiti.getPeService().createShape(container, false);
-			drawForEvent(event, multipleShape);
-			link(multipleShape, eventDefinitions.toArray(new EventDefinition[size]));
+		if (size > 1) {
+			definitionShape = Graphiti.getPeService().createShape(container, false);
+			drawForEvent(event, definitionShape);
+			link(definitionShape, businessObjects);
+		} else {
+			definitionShape = getDecorationAlgorithm(event).draw(container);
+			link(definitionShape, businessObjects);
 		}
 	}
 

@@ -20,7 +20,6 @@ import org.camunda.bpm.modeler.core.features.flow.AbstractAddFlowFeature;
 import org.camunda.bpm.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.camunda.bpm.modeler.core.features.flow.AbstractReconnectFlowFeature;
 import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations;
-import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.ConnectionType;
 import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.CreateConnectionOperation;
 import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.ReconnectConnectionOperation;
 import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.StartFormCreateConnectionOperation;
@@ -30,11 +29,8 @@ import org.camunda.bpm.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.EndEvent;
-import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.InteractionNode;
 import org.eclipse.bpmn2.MessageFlow;
-import org.eclipse.bpmn2.Participant;
-import org.eclipse.bpmn2.Process;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IAddFeature;
@@ -57,6 +53,8 @@ import org.eclipse.graphiti.services.IPeService;
 import org.eclipse.graphiti.util.IColorConstant;
 
 public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureContainer {
+
+	private static final EClass MESSAGE_FLOW = Bpmn2Package.eINSTANCE.getMessageFlow();
 
 	@Override
 	public boolean canApplyTo(Object o) {
@@ -123,8 +121,8 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 		}
 
 		@Override
-		protected Class<? extends BaseElement> getBusinessObjectClass() {
-			return MessageFlow.class;
+		protected EClass getBusinessObjectClass() {
+			return MESSAGE_FLOW;
 		}
 		
 		@Override
@@ -134,21 +132,21 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 	}
 
 	public static class CreateMessageFlowFeature extends AbstractCreateFlowFeature<MessageFlow, InteractionNode, InteractionNode> {
-
+		
 		public CreateMessageFlowFeature(IFeatureProvider fp) {
 			super(fp, "Message Flow", "Represents message between two participants");
 		}
 
 		@Override
 		public boolean canStartConnection(ICreateConnectionContext context) {
-			context.putProperty(ConnectionOperations.CONNECTION_TYPE, ConnectionType.MESSAGE_FLOW);
+			context.putProperty(ConnectionOperations.CONNECTION_TYPE, MESSAGE_FLOW);
 			StartFormCreateConnectionOperation operation = ConnectionOperations.getStartFromConnectionCreateOperation(context);
 			return operation.canExecute(context);
 		}
 
 		@Override
 		public boolean canCreate(ICreateConnectionContext context) {
-			context.putProperty(ConnectionOperations.CONNECTION_TYPE, ConnectionType.MESSAGE_FLOW);
+			context.putProperty(ConnectionOperations.CONNECTION_TYPE, MESSAGE_FLOW);
 			CreateConnectionOperation operation = ConnectionOperations.getConnectionCreateOperation(context);
 			return operation.canExecute(context);
 		}
@@ -194,12 +192,9 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 			return InteractionNode.class;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.camunda.bpm.modeler.features.AbstractBpmn2CreateConnectionFeature#getBusinessObjectClass()
-		 */
 		@Override
 		public EClass getBusinessObjectClass() {
-			return Bpmn2Package.eINSTANCE.getMessageFlow();
+			return MESSAGE_FLOW;
 		}
 	}
 	
@@ -211,7 +206,7 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 
 		@Override
 		public boolean canReconnect(IReconnectionContext context) {
-			context.putProperty(ConnectionOperations.CONNECTION_TYPE, ConnectionType.MESSAGE_FLOW);
+			context.putProperty(ConnectionOperations.CONNECTION_TYPE, MESSAGE_FLOW);
 			ReconnectConnectionOperation operation = ConnectionOperations.getConnectionReconnectOperation(context);
 			return operation.canExecute(context);
 		}

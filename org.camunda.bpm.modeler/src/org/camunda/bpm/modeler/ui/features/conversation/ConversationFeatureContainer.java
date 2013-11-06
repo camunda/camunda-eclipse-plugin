@@ -12,7 +12,7 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.conversation;
 
-import org.camunda.bpm.modeler.core.features.DefaultMoveBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2MoveShapeFeature;
 import org.camunda.bpm.modeler.core.features.container.BaseElementFeatureContainer;
 import org.camunda.bpm.modeler.core.features.conversation.AddConversationFeature;
 import org.camunda.bpm.modeler.ui.features.AbstractDefaultDeleteFeature;
@@ -45,7 +45,7 @@ public class ConversationFeatureContainer extends BaseElementFeatureContainer {
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return new AddConversationFeature(fp);
 	}
-
+	
 	@Override
 	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {
 		return null;
@@ -63,7 +63,7 @@ public class ConversationFeatureContainer extends BaseElementFeatureContainer {
 
 	@Override
 	public IMoveShapeFeature getMoveFeature(IFeatureProvider fp) {
-		return new DefaultMoveBPMNShapeFeature(fp);
+		return new DefaultBpmn2MoveShapeFeature(fp);
 	}
 
 	@Override

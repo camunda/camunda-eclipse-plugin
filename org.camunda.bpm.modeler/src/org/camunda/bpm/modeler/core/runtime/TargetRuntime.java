@@ -14,13 +14,11 @@ package org.camunda.bpm.modeler.core.runtime;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.camunda.bpm.modeler.core.AbstractPropertyChangeListenerProvider;
 import org.camunda.bpm.modeler.core.Activator;
 import org.camunda.bpm.modeler.core.IBpmn2RuntimeExtension;
-import org.camunda.bpm.modeler.core.features.activity.task.ICustomTaskFeature;
 import org.camunda.bpm.modeler.core.preferences.ShapeStyle;
 import org.camunda.bpm.modeler.core.property.TabDescriptor;
 import org.camunda.bpm.modeler.core.runtime.ModelExtensionDescriptor.Property;
@@ -58,7 +56,6 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 	private IBpmn2RuntimeExtension runtimeExtension;
 	protected ModelDescriptor modelDescriptor;
 	protected ArrayList<TabDescriptor> tabDescriptors;
-	protected ArrayList<CustomTaskDescriptor> customTasks;
 	protected ArrayList<ModelExtensionDescriptor> modelExtensions;
 	protected ArrayList<ModelEnablementDescriptor> modelEnablements;
 	protected ModelEnablementDescriptor defaultModelEnablements;
@@ -213,18 +210,6 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 								continue;
 							}
 						}
-						else if (e.getName().equals("customTask")) {
-							String id = e.getAttribute("id");
-							String name = e.getAttribute("name");
-							CustomTaskDescriptor ct = new CustomTaskDescriptor(id,name);
-							ct.type = e.getAttribute("type");
-							ct.description = e.getAttribute("description");
-							ct.featureContainer = (ICustomTaskFeature) e.createExecutableExtension("featureContainer");
-							ct.featureContainer.setCustomTaskDescriptor(ct);
-							ct.featureContainer.setId(id);
-							getModelExtensionProperties(ct,e);
-							currentRuntime.addCustomTask(ct);
-						}
 						else if (e.getName().equals("featureContainer")) {
 							String id = e.getAttribute("id");
 							FeatureContainerDescriptor fc = new FeatureContainerDescriptor(currentRuntime);
@@ -297,31 +282,6 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 								me.setEnabled(med.getType(), p.name, true);
 							}
 						}
-						for (CustomTaskDescriptor ct : rt.getCustomTasks()) {
-							// the tool palette checks for enablement of this custom task ID
-							me.setEnabled(ct.getId(), true);
-							for (Property p : ct.getProperties()) {
-								me.setEnabled(ct.getType(), p.name, true);
-							}
-						}
-					
-					// DEBUG:
-//						System.out.println("Runtime: '"+rt.getName()+
-//								"'\nEnablement type: '"+me.getType()+
-//								"'\nNumber of enabled model elements: "+me.getAllEnabled().size());
-//						List<String> classes = new ArrayList<String>(me.getAllEnabled().size());
-//						classes.addAll(me.getAllEnabled());
-//						Collections.sort(classes);
-//						for (String c : classes) {
-//							System.out.println(c);
-//							List<String> features = new ArrayList<String>(me.getAllEnabled(c).size());
-//							features.addAll(me.getAllEnabled(c));
-//							Collections.sort(features);
-//							for (String f : features) {
-//								System.out.println("  "+f);
-//							}
-//						}
-//						System.out.println("");
 					}
 				}
 				
@@ -401,29 +361,6 @@ public class TargetRuntime extends AbstractPropertyChangeListenerProvider {
 	
 	public String getDescription() {
 		return description;
-	}
-	
-	public ArrayList<CustomTaskDescriptor> getCustomTasks()
-	{
-		if (customTasks==null) {
-			customTasks = new ArrayList<CustomTaskDescriptor>();
-		}
-		return customTasks;
-	}
-	
-	public boolean customTaskExists ( String id ) {
-		Iterator<CustomTaskDescriptor> ctIter = customTasks.iterator();
-		while (ctIter.hasNext()) {
-			CustomTaskDescriptor ctd = ctIter.next();
-			if (ctd.getId().equalsIgnoreCase(id)) 
-				return true;
-		}
-		return false;
-	}
-	
-	public void addCustomTask(CustomTaskDescriptor ct) {
-		ct.setRuntime(this);
-		getCustomTasks().add(ct);
 	}
 	
 	public ArrayList<ModelExtensionDescriptor> getModelExtensions()

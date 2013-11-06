@@ -12,9 +12,9 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.artifact;
 
-import org.camunda.bpm.modeler.core.features.AbstractAddBpmnShapeFeature;
-import org.camunda.bpm.modeler.core.features.DefaultMoveBPMNShapeFeature;
-import org.camunda.bpm.modeler.core.features.DefaultResizeBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.features.AbstractBpmn2AddShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2MoveShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2ResizeShapeFeature;
 import org.camunda.bpm.modeler.core.features.artifact.AbstractCreateArtifactFeature;
 import org.camunda.bpm.modeler.core.features.container.BaseElementFeatureContainer;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
@@ -58,7 +58,7 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return new AddGroupFeature(fp);
 	}
-
+	
 	@Override
 	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {
 		return null;
@@ -76,15 +76,15 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 
 	@Override
 	public IMoveShapeFeature getMoveFeature(IFeatureProvider fp) {
-		return new DefaultMoveBPMNShapeFeature(fp);
+		return new DefaultBpmn2MoveShapeFeature(fp);
 	}
 
 	@Override
 	public IResizeShapeFeature getResizeFeature(IFeatureProvider fp) {
-		return new DefaultResizeBPMNShapeFeature(fp);
+		return new DefaultBpmn2ResizeShapeFeature(fp);
 	}
 
-	private final class AddGroupFeature extends AbstractAddBpmnShapeFeature<Group> {
+	private final class AddGroupFeature extends AbstractBpmn2AddShapeFeature<Group> {
 		private AddGroupFeature(IFeatureProvider fp) {
 			super(fp);
 		}
@@ -147,9 +147,6 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 			return ImageProvider.IMG_16_GROUP;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.camunda.bpm.modeler.features.AbstractBpmn2CreateFeature#getBusinessObjectClass()
-		 */
 		@Override
 		public EClass getBusinessObjectClass() {
 			return Bpmn2Package.eINSTANCE.getGroup();

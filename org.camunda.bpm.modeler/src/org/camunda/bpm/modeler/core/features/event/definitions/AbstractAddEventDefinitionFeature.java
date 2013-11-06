@@ -15,8 +15,8 @@ package org.camunda.bpm.modeler.core.features.event.definitions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.camunda.bpm.modeler.core.features.IBpmn2AddFeature;
 import org.camunda.bpm.modeler.core.features.PropertyNames;
+import org.camunda.bpm.modeler.core.features.api.IBpmn2AddFeature;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
@@ -62,6 +62,8 @@ public abstract class AbstractAddEventDefinitionFeature<T extends EventDefinitio
 		Event event = (Event) getBusinessObjectForPictogramElement(container);
 
 		draw(event, getBusinessObject(context), container);
+		
+		updatePictogramElement(container);
 		return null;
 	}
 	
@@ -70,15 +72,19 @@ public abstract class AbstractAddEventDefinitionFeature<T extends EventDefinitio
 		List<EventDefinition> eventDefinitions = ModelUtil.getEventDefinitions(event);
 		int size = eventDefinitions.size();
 
+		Shape definitionShape;
+		
+		Object[] businessObjects = eventDefinitions.toArray();
+		
 		GraphicsUtil.deleteEventShape(container);
 		if (size > 1) {
-			Shape multipleShape = Graphiti.getPeService().createShape(container, false);
-			drawForEvent(event, multipleShape);
-			link(multipleShape, eventDefinitions.toArray(new EventDefinition[size]));
+			definitionShape = Graphiti.getPeService().createShape(container, false);
+			drawForEvent(event, definitionShape);
 		} else {
-			Shape addedShape = getDecorationAlgorithm(event).draw(container);
-			link(addedShape, eventDef);
+			definitionShape = getDecorationAlgorithm(event).draw(container);
 		}
+		
+		link(definitionShape, businessObjects);
 	}
 
 	public abstract DecorationAlgorithm getDecorationAlgorithm(Event event);

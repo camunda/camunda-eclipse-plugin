@@ -15,6 +15,7 @@ package org.camunda.bpm.modeler.core.features;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReason;
 import org.eclipse.graphiti.features.IUpdateFeature;
@@ -43,7 +44,7 @@ public class MultiUpdateFeature extends AbstractUpdateFeature {
 	@Override
 	public IReason updateNeeded(IUpdateContext context) {
 		for (IUpdateFeature p : features) {
-			if (p.updateNeeded(context).toBoolean()) {
+			if (p.canUpdate(context) && p.updateNeeded(context).toBoolean()) {
 				return Reason.createTrueReason();
 			}
 		}
@@ -55,17 +56,30 @@ public class MultiUpdateFeature extends AbstractUpdateFeature {
 		boolean updated = false;
 
 		for (IUpdateFeature p : features) {
-			if (p.updateNeeded(context).toBoolean() && p.update(context)) {
+			if (p.canUpdate(context) && p.updateNeeded(context).toBoolean() && p.update(context)) {
 				updated = true;
 			}
 		}
 
 		return updated;
 	}
+	
+	public MultiUpdateFeature addUpdateFeature(IUpdateFeature feature) {
+		Assert.isNotNull(feature);
 
-	public void addUpdateFeature(IUpdateFeature feature) {
-		if (feature != null) {
+		if (feature instanceof MultiUpdateFeature) {
+			addAll(((MultiUpdateFeature) feature).features);
+		} else {
 			features.add(feature);
 		}
+
+		return this;
+	}
+
+	public MultiUpdateFeature addAll(List<IUpdateFeature> newFeatures) {
+		for (IUpdateFeature feature: newFeatures) {
+			addUpdateFeature(feature);
+		}
+		return this;
 	}
 }

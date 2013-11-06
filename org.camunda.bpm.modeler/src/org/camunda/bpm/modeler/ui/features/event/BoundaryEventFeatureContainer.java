@@ -12,9 +12,12 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.event;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
+import org.camunda.bpm.modeler.core.features.MultiUpdateFeature;
+import org.camunda.bpm.modeler.core.features.UpdateDecorationFeature;
+import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
+import org.camunda.bpm.modeler.core.features.event.EventDecorateFeature;
+import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
+import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.camunda.bpm.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.graphiti.features.IAddFeature;
@@ -29,6 +32,7 @@ import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.features.impl.DefaultResizeShapeFeature;
+import org.eclipse.graphiti.mm.algorithms.Ellipse;
 
 public class BoundaryEventFeatureContainer extends AbstractEventFeatureContainer {
 
@@ -44,15 +48,36 @@ public class BoundaryEventFeatureContainer extends AbstractEventFeatureContainer
 	public ICreateFeature getCreateFeature(IFeatureProvider fp) {
 		return new CreateBoundaryEventFeature(fp);
 	}
-
+	
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddBoundaryEventFeature(fp);
+		return new AddBoundaryEventFeature(fp) {
+//			
+//			@Override
+//			protected void decorate(Ellipse decorateContainer) {
+//				Ellipse circle = GraphicsUtil.createIntermediateEventCircle(decorateContainer);
+//				circle.setStyle(StyleUtil.getStyleForClass(getDiagram()));
+//			}
+		};
 	}
 
 	@Override
+	public IDecorateFeature getDecorateFeature(IFeatureProvider fp) {
+		return new EventDecorateFeature(fp) {
+			
+			@Override
+			protected void decorate(Ellipse decorateContainer) {
+				Ellipse circle = GraphicsUtil.createIntermediateEventCircle(decorateContainer);
+				circle.setStyle(StyleUtil.getStyleForClass(getDiagram()));
+			}
+		};
+	}
+	
+	@Override
 	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {
-		return new UpdateBoundaryEventFeature(fp);
+		return new MultiUpdateFeature(fp)
+			.addUpdateFeature(new UpdateBoundaryEventFeature(fp))
+			.addUpdateFeature(super.getUpdateFeature(fp));
 	}
 
 	@Override

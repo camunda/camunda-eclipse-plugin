@@ -205,7 +205,7 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 				new ServiceTaskPropertiesBuilder(parent, section, messageEventDefinition).create();
 				new ActivityPropertiesBuilder(parent, section, messageEventDefinition).create();
 			}
-		}		
+		}
 	}
 	
 	// default fields (ID / Name/ Documentation) ///////////////////////////////////

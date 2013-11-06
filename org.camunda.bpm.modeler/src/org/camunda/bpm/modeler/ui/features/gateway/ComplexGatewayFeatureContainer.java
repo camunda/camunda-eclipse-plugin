@@ -12,18 +12,19 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.gateway;
 
+import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.features.gateway.AbstractCreateGatewayFeature;
 import org.camunda.bpm.modeler.core.features.gateway.AddGatewayFeature;
+import org.camunda.bpm.modeler.core.features.gateway.GatewayDecorateFeature;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.ComplexGateway;
-import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
-import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.algorithms.Polygon;
 
 public class ComplexGatewayFeatureContainer extends AbstractGatewayFeatureContainer {
 
@@ -38,13 +39,18 @@ public class ComplexGatewayFeatureContainer extends AbstractGatewayFeatureContai
 	}
 
 	@Override
-	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddGatewayFeature<ComplexGateway>(fp) {
+	public IDecorateFeature getDecorateFeature(IFeatureProvider fp) {
+		return new GatewayDecorateFeature(fp) {
 			@Override
-			protected void decorate(ContainerShape container) {
-				GraphicsUtil.createGatewayAsterisk(container);
+			protected void decorate(Polygon decorateContainer) {
+				GraphicsUtil.createGatewayAsterisk(decorateContainer);
 			}
 		};
+	}
+	
+	@Override
+	public IAddFeature getAddFeature(IFeatureProvider fp) {
+		return new AddGatewayFeature<ComplexGateway>(fp);
 	}
 
 	public class CreateComplexGatewayFeature extends AbstractCreateGatewayFeature<ComplexGateway> {

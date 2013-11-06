@@ -3,7 +3,7 @@ package org.camunda.bpm.modeler.ui.features.label;
 import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
 
 import org.camunda.bpm.modeler.core.ModelHandler;
-import org.camunda.bpm.modeler.core.features.AbstractAddBpmnShapeFeature;
+import org.camunda.bpm.modeler.core.features.AbstractBpmn2AddShapeFeature;
 import org.camunda.bpm.modeler.core.features.UpdateBaseElementNameFeature;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
@@ -31,7 +31,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public abstract class AbstractAddLabelFeature extends AbstractAddBpmnShapeFeature<BaseElement> {
+public abstract class AbstractAddLabelFeature extends AbstractBpmn2AddShapeFeature<BaseElement> {
 	
 	public AbstractAddLabelFeature(IFeatureProvider fp) {
 		super(fp);

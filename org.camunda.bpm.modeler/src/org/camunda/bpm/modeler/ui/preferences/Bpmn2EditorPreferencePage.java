@@ -23,6 +23,7 @@ import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
 import org.camunda.bpm.modeler.core.preferences.ShapeStyle;
 import org.camunda.bpm.modeler.ui.FeatureMap;
 import org.camunda.bpm.modeler.ui.Messages;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.mm.algorithms.styles.Font;
 import org.eclipse.graphiti.util.IColorConstant;
 import org.eclipse.jface.preference.ColorSelector;
@@ -61,7 +62,7 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 
 	Bpmn2Preferences preferences;
 	ListViewer elementsListViewer;
-	List<Class> allElements;
+	List<EClass> allElements;
 	Composite styleEditors;
 	Composite container;
 	LinkedHashMap<Class, ShapeStyle> shapeStyles;
@@ -87,20 +88,19 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 
 		preferences = Bpmn2Preferences.getInstance();
 
-		allElements = new ArrayList<Class>();
+		allElements = new ArrayList<EClass>();
 		allElements.addAll(FeatureMap.CONNECTORS);
 		allElements.addAll(FeatureMap.EVENTS);
 		allElements.addAll(FeatureMap.GATEWAYS);
 		allElements.addAll(FeatureMap.TASKS);
 		allElements.addAll(FeatureMap.DATA);
 		allElements.addAll(FeatureMap.OTHER);
-		Collections.sort(allElements, new Comparator<Class>() {
 
+		Collections.sort(allElements, new Comparator<EClass>() {
 			@Override
-			public int compare(Class arg0, Class arg1) {
-				return arg0.getSimpleName().compareTo(arg1.getSimpleName());
+			public int compare(EClass arg0, EClass arg1) {
+				return arg0.getName().compareTo(arg1.getName());
 			}
-			
 		});
 	}
 
@@ -179,15 +179,15 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 	private void loadStyleEditors() {
 		if (shapeStyles==null) {
 			shapeStyles = new LinkedHashMap<Class, ShapeStyle>();
-			for (Class c : allElements) {
+			for (EClass c : allElements) {
 				ShapeStyle ss = preferences.getShapeStyle(c);
-				shapeStyles.put(c, ss);
+				shapeStyles.put(c.getInstanceClass(), ss);
 			if (Activator.getDefault().isDebugging()) {
 				IColorConstant foreground = ss.getShapeForeground();
 				IColorConstant background = ss.getShapeBackground();
 				IColorConstant textColor = ss.getTextColor();
 				Font font = ss.getTextFont();
-				System.out.println("\t\t<style object=\""+c.getSimpleName()+"\""+
+				System.out.println("\t\t<style object=\""+c.getName()+"\""+
 						" foreground=\""+ShapeStyle.colorToString(foreground)+"\""+
 						" background=\""+ShapeStyle.colorToString(background)+"\""+
 						" textColor=\""+ShapeStyle.colorToString(textColor)+"\""+

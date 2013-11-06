@@ -16,7 +16,7 @@ import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
 
 import java.util.List;
 
-import org.camunda.bpm.modeler.core.features.DefaultResizeBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2ResizeShapeFeature;
 import org.camunda.bpm.modeler.core.features.lane.ResizeLaneSetFeature;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.layout.util.CollaborationResizeSupport;

@@ -12,6 +12,7 @@ import junit.framework.AssertionFailedError;
 import org.camunda.bpm.modeler.runtime.engine.model.util.ModelResourceFactoryImpl;
 import org.camunda.bpm.modeler.test.Activator;
 import org.camunda.bpm.modeler.test.core.utils.ExceptionCapturingCommand;
+import org.camunda.bpm.modeler.ui.diagram.Bpmn2DiagramTypeProvider;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.impl.DocumentRootImpl;
@@ -69,9 +70,8 @@ public class TestHelper {
 		Resource resource = modelResources.getResourceSet().createResource(uri);
 		resource.getContents().add(diagram);
 		
-		IDiagramTypeProvider typeProvider = GraphitiUi.getExtensionManager().createDiagramTypeProvider(
-				diagram,
-				"org.camunda.bpm.modeler.ui.diagram.MainBPMNDiagramType");
+		IDiagramTypeProvider typeProvider = 
+				GraphitiUi.getExtensionManager().createDiagramTypeProvider(diagram, Bpmn2DiagramTypeProvider.ID);
 
 		Bpmn2Resource modelResource = modelResources.getResource();
 		

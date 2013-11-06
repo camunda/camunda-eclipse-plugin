@@ -14,7 +14,7 @@ package org.camunda.bpm.modeler.core.features.artifact;
 
 import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
 
-import org.camunda.bpm.modeler.core.features.AbstractAddBpmnShapeFeature;
+import org.camunda.bpm.modeler.core.features.AbstractBpmn2AddShapeFeature;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.TextAnnotation;
@@ -32,7 +32,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class AddTextAnnotationFeature extends AbstractAddBpmnShapeFeature<TextAnnotation> {
+public class AddTextAnnotationFeature extends AbstractBpmn2AddShapeFeature<TextAnnotation> {
 
 	public AddTextAnnotationFeature(IFeatureProvider fp) {
 		super(fp);

@@ -15,7 +15,7 @@ package org.camunda.bpm.modeler.ui.features.choreography;
 import java.util.List;
 
 import org.camunda.bpm.modeler.core.Activator;
-import org.camunda.bpm.modeler.core.features.DefaultResizeBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2ResizeShapeFeature;
 import org.camunda.bpm.modeler.core.features.choreography.ChoreographyProperties;
 import org.camunda.bpm.modeler.core.utils.Tuple;
 import org.eclipse.bpmn2.di.BPMNShape;
@@ -23,7 +23,7 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 
-public class ResizeChoreographyFeature extends DefaultResizeBPMNShapeFeature {
+public class ResizeChoreographyFeature extends DefaultBpmn2ResizeShapeFeature {
 
 	public ResizeChoreographyFeature(IFeatureProvider fp) {
 		super(fp);

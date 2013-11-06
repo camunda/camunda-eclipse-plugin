@@ -14,6 +14,7 @@ package org.camunda.bpm.modeler.ui.features.activity.task;
 
 import org.camunda.bpm.modeler.core.features.activity.task.AbstractCreateTaskFeature;
 import org.camunda.bpm.modeler.core.features.activity.task.AddTaskFeature;
+import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.Bpmn2Package;
@@ -22,10 +23,6 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
-import org.eclipse.graphiti.mm.algorithms.Image;
-import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
-import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.services.IGaService;
 
 public class BusinessRuleTaskFeatureContainer extends AbstractTaskFeatureContainer {
 
@@ -35,6 +32,16 @@ public class BusinessRuleTaskFeatureContainer extends AbstractTaskFeatureContain
 	}
 
 	@Override
+	public IDecorateFeature getDecorateFeature(IFeatureProvider fp) {
+		return new AbstractTaskDecorateFeature(fp) {
+			@Override
+			protected String getIconId() {
+				return ImageProvider.IMG_16_BUSINESS_RULE_TASK;
+			}
+		};
+	}
+	
+	@Override
 	public ICreateFeature getCreateFeature(IFeatureProvider fp) {
 		return new CreateBusinessRuleTaskFeature(fp);
 	}
@@ -43,16 +50,8 @@ public class BusinessRuleTaskFeatureContainer extends AbstractTaskFeatureContain
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return new AddTaskFeature<BusinessRuleTask>(fp) {
 			@Override
-			protected void decorate(RoundedRectangle rect) {
-				IGaService service = Graphiti.getGaService();
-				Image img = service.createImage(rect, ImageProvider.IMG_16_BUSINESS_RULE_TASK);
-				service.setLocationAndSize(img, 2, 2, 16, 16);
-			}
-
-			@Override
 			public int getDefaultWidth() {
 				return GraphicsUtil.getActivitySize(getDiagram()).getWidth();
-//				return GraphicsUtil.TASK_DEFAULT_WIDTH + 50;
 			}
 		};
 	}

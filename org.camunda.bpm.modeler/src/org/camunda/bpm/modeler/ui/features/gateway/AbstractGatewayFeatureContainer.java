@@ -14,8 +14,11 @@ package org.camunda.bpm.modeler.ui.features.gateway;
 
 import org.camunda.bpm.modeler.core.features.DirectEditNamedElementFeature;
 import org.camunda.bpm.modeler.core.features.MoveFlowNodeFeature;
+import org.camunda.bpm.modeler.core.features.MultiUpdateFeature;
 import org.camunda.bpm.modeler.core.features.PropertyNames;
 import org.camunda.bpm.modeler.core.features.UpdateBaseElementNameFeature;
+import org.camunda.bpm.modeler.core.features.UpdateDecorationFeature;
+import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.features.container.BaseElementFeatureContainer;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.ui.features.AbstractDefaultDeleteFeature;
@@ -54,7 +57,12 @@ public abstract class AbstractGatewayFeatureContainer extends BaseElementFeature
 
 	@Override
 	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {
-		return new UpdateAbstractGatewayFeature(fp);
+		MultiUpdateFeature updateFeature = new MultiUpdateFeature(fp);
+		
+		updateFeature.addUpdateFeature(new UpdateDecorationFeature(fp));
+		updateFeature.addUpdateFeature(new UpdateAbstractGatewayFeature(fp));
+		
+		return updateFeature;
 	}
 
 	@Override
@@ -111,7 +119,6 @@ public abstract class AbstractGatewayFeatureContainer extends BaseElementFeature
 
 		public UpdateAbstractGatewayFeature(IFeatureProvider fp) {
 			super(fp);
-			// TODO Auto-generated constructor stub
 		}
 
 		@Override

@@ -14,7 +14,7 @@ package org.camunda.bpm.modeler.core.features.conversation;
 
 import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
 
-import org.camunda.bpm.modeler.core.features.AbstractAddBpmnShapeFeature;
+import org.camunda.bpm.modeler.core.features.AbstractBpmn2AddShapeFeature;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.Conversation;
 import org.eclipse.graphiti.datatypes.IRectangle;
@@ -27,7 +27,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class AddConversationFeature extends AbstractAddBpmnShapeFeature<Conversation> {
+public class AddConversationFeature extends AbstractBpmn2AddShapeFeature<Conversation> {
 
 	public AddConversationFeature(IFeatureProvider fp) {
 		super(fp);

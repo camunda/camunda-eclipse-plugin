@@ -28,7 +28,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.camunda.bpm.modeler.core.model.Bpmn2ModelerResourceSetImpl;
-import org.camunda.bpm.modeler.ui.editor.BPMN2Editor;
+import org.camunda.bpm.modeler.ui.diagram.editor.Bpmn2Editor;
+import org.camunda.bpm.modeler.ui.diagram.editor.Bpmn2DiagramEditorInput;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -54,7 +55,7 @@ import org.eclipse.ui.part.FileEditorInput;
 
 public class FileService {
 
-	public static TransactionalEditingDomain createEmfFileForDiagram(URI diagramResourceUri, final Diagram diagram, BPMN2Editor diagramEditor) {
+	public static TransactionalEditingDomain createEmfFileForDiagram(URI diagramResourceUri, final Diagram diagram, Bpmn2Editor diagramEditor) {
 
 		ResourceSet resourceSet = null;
 		TransactionalEditingDomain editingDomain = null;

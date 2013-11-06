@@ -20,7 +20,6 @@ import org.camunda.bpm.modeler.core.features.flow.AbstractAddFlowFeature;
 import org.camunda.bpm.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.camunda.bpm.modeler.core.features.flow.AbstractReconnectFlowFeature;
 import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations;
-import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.ConnectionType;
 import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.CreateConnectionOperation;
 import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.ReconnectConnectionOperation;
 import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.StartFormCreateConnectionOperation;
@@ -60,8 +59,10 @@ import org.eclipse.graphiti.services.Graphiti;
 
 public class AssociationFeatureContainer extends BaseElementConnectionFeatureContainer {
 
-	protected CreateConnectionContext createContext;
+	private static final EClass ASSOCIATION = Bpmn2Package.eINSTANCE.getAssociation();
 	
+	protected CreateConnectionContext createContext;
+
 	@Override
 	public boolean canApplyTo(Object o) {
 		return super.canApplyTo(o) && o instanceof Association;
@@ -133,8 +134,8 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 			}
 			
 			@Override
-			protected Class<? extends BaseElement> getBusinessObjectClass() {
-				return Association.class;
+			protected EClass getBusinessObjectClass() {
+				return ASSOCIATION;
 			}
 		};
 	}
@@ -186,7 +187,7 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 				return false;
 			}
 			
-			context.putProperty(ConnectionOperations.CONNECTION_TYPE, ConnectionType.ASSOCIATION);
+			context.putProperty(ConnectionOperations.CONNECTION_TYPE, ASSOCIATION);
 			StartFormCreateConnectionOperation operation = ConnectionOperations.getStartFromConnectionCreateOperation(context);
 			return operation.canExecute(context);
 		}
@@ -197,7 +198,7 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 				return false;
 			}
 			
-			context.putProperty(ConnectionOperations.CONNECTION_TYPE, ConnectionType.ASSOCIATION);
+			context.putProperty(ConnectionOperations.CONNECTION_TYPE, ASSOCIATION);
 			CreateConnectionOperation operation = ConnectionOperations.getConnectionCreateOperation(context);
 			return operation.canExecute(context);
 		}
@@ -277,7 +278,7 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 		 */
 		@Override
 		public EClass getBusinessObjectClass() {
-			return Bpmn2Package.eINSTANCE.getAssociation();
+			return ASSOCIATION;
 		}
 
 		@Override
@@ -302,7 +303,7 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 
 		@Override
 		public boolean canReconnect(IReconnectionContext context) {
-			context.putProperty(ConnectionOperations.CONNECTION_TYPE, ConnectionType.ASSOCIATION);
+			context.putProperty(ConnectionOperations.CONNECTION_TYPE, ASSOCIATION);
 			ReconnectConnectionOperation operation = ConnectionOperations.getConnectionReconnectOperation(context);
 			return operation.canExecute(context);
 		}

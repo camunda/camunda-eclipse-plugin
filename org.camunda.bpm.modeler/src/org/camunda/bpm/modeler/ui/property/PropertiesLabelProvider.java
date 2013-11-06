@@ -14,18 +14,14 @@
 package org.camunda.bpm.modeler.ui.property;
 
 import org.camunda.bpm.modeler.core.features.AbstractBpmn2CreateFeature;
-import org.camunda.bpm.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
+import org.camunda.bpm.modeler.core.utils.Images;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
-import org.camunda.bpm.modeler.ui.diagram.BPMN2FeatureProvider;
-import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.Process;
-import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.camunda.bpm.modeler.ui.diagram.Bpmn2FeatureProvider;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeature;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
-import org.eclipse.graphiti.ui.services.GraphitiUi;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -38,45 +34,35 @@ public class PropertiesLabelProvider extends LabelProvider {
 
 	@Override
 	public Image getImage(Object element) {
-		EObject be = BusinessObjectUtil
-				.getBusinessObjectForSelection((ISelection) element);
-		DiagramEditor editor = ModelUtil.getEditor(be);
+		
+		EObject businessObject = BusinessObjectUtil.getBusinessObjectForSelection((ISelection) element);
+		DiagramEditor editor = ModelUtil.getEditor(businessObject);
 
 		if (editor != null) {
-			BPMN2FeatureProvider fp = (BPMN2FeatureProvider) editor.getDiagramTypeProvider().getFeatureProvider();
+			Bpmn2FeatureProvider fp = (Bpmn2FeatureProvider) editor.getDiagramTypeProvider().getFeatureProvider();
 			PictogramElement pe = BusinessObjectUtil.getPictogramElementForSelection((ISelection) element);
 			IFeature cf = fp.getCreateFeatureForPictogramElement(pe);
 			if (cf instanceof AbstractBpmn2CreateFeature) {
-				return GraphitiUi.getImageService().getImageForId(
-						((AbstractBpmn2CreateFeature)cf).getCreateImageId());
-			}
-			if (cf instanceof AbstractCreateFlowFeature) {
-				return GraphitiUi.getImageService().getImageForId(
-						((AbstractCreateFlowFeature)cf).getCreateImageId());
+				return Images.getById(((AbstractBpmn2CreateFeature<?>) cf).getCreateImageId());
 			}
 		}
+		
 		return super.getImage(element);
 	}
 
 	@Override
 	public String getText(Object element) {
-		EObject be = BusinessObjectUtil
-				.getBusinessObjectForSelection((ISelection) element);
+		EObject be = BusinessObjectUtil.getBusinessObjectForSelection((ISelection) element);
+		
 		if (be != null) {
-			if (be instanceof BPMNDiagram) {
-				BaseElement bpmnElement = ((BPMNDiagram) be).getPlane()
-						.getBpmnElement();
-				if (bpmnElement instanceof Process) {
-					be = bpmnElement;
-				}
-			}
 			return ModelUtil.getDisplayName(be);
 		}
-		PictogramElement pe = BusinessObjectUtil
-				.getPictogramElementForSelection((ISelection) element);
-		if (pe != null && pe.getGraphicsAlgorithm() != null) {
-			return ModelUtil.getLabel(pe.getGraphicsAlgorithm());
+		
+		PictogramElement pictogramElement = BusinessObjectUtil.getPictogramElementForSelection((ISelection) element);
+		if (pictogramElement != null && pictogramElement.getGraphicsAlgorithm() != null) {
+			return ModelUtil.getLabel(pictogramElement.getGraphicsAlgorithm());
 		}
+		
 		return super.getText(element);
 	}
 }

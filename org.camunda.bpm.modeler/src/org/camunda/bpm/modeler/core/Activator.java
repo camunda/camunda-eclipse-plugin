@@ -17,12 +17,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
+import org.camunda.bpm.modeler.plugin.core.ExtensionRegistry;
+import org.camunda.bpm.modeler.plugin.core.Extensions;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
@@ -31,68 +32,85 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
- * The activator class controls the plug-in life cycle
+ * The {@link Plugin} activator that controls the
+ * modeler plugin life cycle.
+ * 
+ * @author nico.rehwaldt
  */
 public class Activator extends AbstractUIPlugin {
 
-	// The plug-in ID
-	public static final String PLUGIN_ID = "org.camunda.bpm.modeler"; //$NON-NLS-1$
+	// plugin id
+	public static final String PLUGIN_ID = "org.camunda.bpm.modeler"; 
 
-	// The shared instance
-	private static Activator plugin;
-	
-	
-	// Adapter Factory registration
-	static {
-		// BPMN2 metamodel adapter factories
-		// AdapterRegistry.BPMN2_ADAPTER_FACTORIES.addAdapterFactory(AdapterRegistry.INSTANCE.registerFactory(Bpmn2PackageImpl.eINSTANCE, someAdapterFactory));
-	}
+	// shared instance
+	private static Activator INSTANCE;
 
-	/**
-	 * The constructor
-	 */
+	// plugin extensions
+	private ExtensionRegistry extensions;
+
+	
 	public Activator() {
+		this.extensions = new ExtensionRegistry();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
-	 */
+	
+	//// live cycle support
+	
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		plugin = this;
-		IPreferenceStore store  = getPreferenceStore();
-		if(PlatformUI.isWorkbenchRunning()) {
-			Bpmn2Preferences.getInstance().load();
-		}
+		
+		INSTANCE = this;
+		
+		initPreferences();
+		loadExtensions();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-	 */
 	public void stop(BundleContext context) throws Exception {
-		plugin = null;
+		INSTANCE = null;
 		super.stop(context);
 	}
 
-	/**
-	 * Returns the shared instance
-	 * 
-	 * @return the shared instance
-	 */
-	public static Activator getDefault() {
-		return plugin;
+
+	//// internal loading
+	
+	private void loadExtensions() {
+		this.extensions.load();
 	}
 
+	private void initPreferences() {
+		getPreferenceStore();
+		
+		if (PlatformUI.isWorkbenchRunning()) {
+			Bpmn2Preferences.getInstance().load();
+		}
+	}
+	
+	
+	//// static providers
+	
+	public static Extensions getExtensions() {
+		return INSTANCE.extensions;
+	}
+	
+	public static Activator getDefault() {
+		return INSTANCE;
+	}
+	
+	
+	//// logging helpers
+	
 	public static void logStatus(IStatus status) {
-		Platform.getLog(plugin.getBundle()).log(status);
+		Platform.getLog(INSTANCE.getBundle()).log(status);
 	}
 	
 	public static void logError(Exception e) {
 		logStatus(new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage(), e));
+	}
+
+	public static void showErrorWithLogging(Exception e){
+		Status s = createStatus(e);
+		logStatus(s);
+		ErrorDialog.openError(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "An error occured", null, s);
 	}
 	
 	/**
@@ -143,49 +161,11 @@ public class Activator extends AbstractUIPlugin {
 		return getImageRegistry().get(id);
 	}
 	
-    public ImageDescriptor getImageDescriptor(String id) {
+	public ImageDescriptor getImageDescriptor(String id) {
 		return getImageRegistry().getDescriptor(id);
-    }
-    
+	}
+
 	private static Status createStatus(Exception e) {
 		return new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage(), e);
 	}
-
-	public static void showErrorWithLogging(Exception e){
-		Status s = createStatus(e);
-		logStatus(s);
-		ErrorDialog.openError(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "An error occured", null, s);
-	}
-
-	/**
-	 * Return the dialog settings for a given object. The object may be a string
-	 * or any other java object. In that case, the object's class name will be used
-	 * to retrieve that section name.
-	 * 
-	 * @param object 
-	 * @return the dialog settings for that object
-	 * 
-	 */
-	public IDialogSettings getDialogSettingsFor ( Object object ) 
-	{
-	    String name = object.getClass().getName();
-	    if (object instanceof String) {
-	        name = (String) object;
-	    }
-	    
-	    IDialogSettings main = getDialogSettings();	    
-	    IDialogSettings settings = main.getSection( name );
-	    if (settings == null) {
-	        settings = main.addNewSection(name);
-	    }
-	    return settings;
-	}
-
-	/**
-	 * @return
-	 */
-	public String getID() {
-		return getBundle().getSymbolicName();
-	}
-
 }

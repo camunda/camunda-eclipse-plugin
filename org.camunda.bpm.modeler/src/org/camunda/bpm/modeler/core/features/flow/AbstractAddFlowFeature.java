@@ -18,24 +18,21 @@ import java.util.List;
 
 import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.di.DIUtils;
-import org.camunda.bpm.modeler.core.features.AbstractAddBpmnElementFeature;
+import org.camunda.bpm.modeler.core.features.AbstractBpmn2AddElementFeature;
 import org.camunda.bpm.modeler.core.features.PropertyNames;
-import org.camunda.bpm.modeler.core.layout.ConnectionService;
 import org.camunda.bpm.modeler.core.layout.util.Layouter;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
-import org.camunda.bpm.modeler.core.utils.ConnectionLabelUtil;
 import org.camunda.bpm.modeler.core.utils.ContextUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNEdge;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddConnectionContext;
 import org.eclipse.graphiti.features.context.IAddContext;
-import org.eclipse.graphiti.features.context.ILayoutContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
-import org.eclipse.graphiti.features.context.impl.LayoutContext;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Connection;
@@ -46,7 +43,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public abstract class AbstractAddFlowFeature<T extends BaseElement> extends AbstractAddBpmnElementFeature<T, FreeFormConnection> {
+public abstract class AbstractAddFlowFeature<T extends BaseElement> extends AbstractBpmn2AddElementFeature<T, FreeFormConnection> {
 	
 	public AbstractAddFlowFeature(IFeatureProvider fp) {
 		super(fp);
@@ -55,17 +52,13 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement> extends Abst
 	@Override
 	public boolean canAdd(IAddContext context) {
 		return context instanceof IAddConnectionContext
-				&& getBusinessObjectClass().isAssignableFrom(getBusinessObject(context).getClass());
+				&& getBusinessObjectClass().getInstanceClass().isAssignableFrom(getBusinessObject(context).getClass());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.graphiti.func.IAdd#add(org.eclipse.graphiti.features.context.IAddContext)
-	 */
 	@Override
 	public PictogramElement add(IAddContext ctx) {
 		
 		IPeService peService = Graphiti.getPeService();
-		IGaService gaService = Graphiti.getGaService();
 
 		T flow = getBusinessObject(ctx);
 		IAddConnectionContext addContext = (IAddConnectionContext) ctx;
@@ -112,7 +105,7 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement> extends Abst
 		Layouter.layoutAfterCreate(connection, getFeatureProvider());
 	}
 
-	protected abstract Class<? extends BaseElement> getBusinessObjectClass();
+	protected abstract EClass getBusinessObjectClass();
 
 	protected Polyline createConnectionLine(Connection connection) {
 		BaseElement be = BusinessObjectUtil.getFirstBaseElement(connection);

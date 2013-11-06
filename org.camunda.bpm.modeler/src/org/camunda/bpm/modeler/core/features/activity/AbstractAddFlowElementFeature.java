@@ -1,17 +1,19 @@
 package org.camunda.bpm.modeler.core.features.activity;
 
-import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.location;
 import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.point;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.camunda.bpm.modeler.core.features.AbstractAddBpmnShapeFeature;
+import org.camunda.bpm.modeler.core.features.AbstractBpmn2AddShapeFeature;
+import org.camunda.bpm.modeler.core.features.DecorateContext;
 import org.camunda.bpm.modeler.core.features.PropertyNames;
+import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.ContextUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
+import org.camunda.bpm.modeler.ui.diagram.Bpmn2FeatureProvider;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.FlowElement;
@@ -41,7 +43,7 @@ import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
  *
  * @param <T>
  */
-public abstract class AbstractAddFlowElementFeature<T extends FlowElement> extends AbstractAddBpmnShapeFeature<T> {
+public abstract class AbstractAddFlowElementFeature<T extends FlowElement> extends AbstractBpmn2AddShapeFeature<T> {
 
 	public AbstractAddFlowElementFeature(IFeatureProvider fp) {
 		super(fp);
@@ -53,10 +55,10 @@ public abstract class AbstractAddFlowElementFeature<T extends FlowElement> exten
 		boolean intoLane = FeatureSupport.isTargetLane(context) && FeatureSupport.isTargetLaneOnTop(context);
 		boolean intoParticipant = FeatureSupport.isTargetParticipant(context);
 		boolean intoSubProcess = FeatureSupport.isTargetSubProcess(context);
-		
+
 		return intoDiagram || intoLane || intoParticipant || intoSubProcess;
 	}
-	
+
 	@Override
 	protected void postAddHook(IAddContext context, ContainerShape newShape) {
 		super.postAddHook(context, newShape);
@@ -64,6 +66,20 @@ public abstract class AbstractAddFlowElementFeature<T extends FlowElement> exten
 		// split connection in case we have a drop on connection
 		if (context.getTargetConnection() != null) {
 			splitConnection(context, newShape);
+		}
+	}
+
+	@Override
+	protected void decorate(IAddContext context, ContainerShape newShape) {
+		super.decorate(context, newShape);
+		
+		Bpmn2FeatureProvider featureProvider = (Bpmn2FeatureProvider) getFeatureProvider();
+		
+		DecorateContext decorateContext = new DecorateContext(newShape);
+		IDecorateFeature decorateFeature = featureProvider.getDecorateFeature(decorateContext);
+		
+		if (decorateFeature != null && decorateFeature.canExecute(decorateContext)) {
+			decorateFeature.execute(decorateContext);
 		}
 	}
 	
@@ -200,12 +216,12 @@ public abstract class AbstractAddFlowElementFeature<T extends FlowElement> exten
 	private void createConnectionAfterSplit(CreateConnectionContext context, EClass connectionType) {
 		for (ICreateConnectionFeature createConnectionFeature : getFeatureProvider().getCreateConnectionFeatures()) {
 			if (createConnectionFeature instanceof AbstractCreateFlowFeature) {
-		        AbstractCreateFlowFeature<?, ?, ?> createFlowFeature = (AbstractCreateFlowFeature<?, ?, ?>) createConnectionFeature;
-		        if (createFlowFeature.getBusinessObjectClass().equals(connectionType)) {
+				AbstractCreateFlowFeature<?, ?, ?> createFlowFeature = (AbstractCreateFlowFeature<?, ?, ?>) createConnectionFeature;
+				if (createFlowFeature.getBusinessObjectClass().equals(connectionType)) {
 					if (createConnectionFeature.canExecute(context)) {
 						createConnectionFeature.execute(context);
 					}
-		        }
+				}
 			}
 		}
 	}

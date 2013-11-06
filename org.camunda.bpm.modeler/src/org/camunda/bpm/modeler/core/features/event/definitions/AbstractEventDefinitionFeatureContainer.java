@@ -12,7 +12,9 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.core.features.event.definitions;
 
+import org.camunda.bpm.modeler.core.features.api.container.IFeatureContainer;
 import org.camunda.bpm.modeler.core.features.container.BaseElementFeatureContainer;
+import org.camunda.bpm.modeler.core.features.event.AbstractUpdateEventFeature;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.EndEvent;
@@ -37,9 +39,20 @@ import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.impl.Reason;
 import org.eclipse.graphiti.mm.algorithms.styles.Color;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.util.IColorConstant;
 
+/**
+ * A {@link IFeatureContainer} that provides event definition features.
+ * 
+ * Event definitions are stored as child shapes of events.
+ * They are linked to the corresponding {@link EventDefinition} elements they represent.
+ * 
+ * Updates of event definitions are triggered by {@link AbstractUpdateEventFeature}.
+ * 
+ * @author nico.rehwaldt
+ */
 public abstract class AbstractEventDefinitionFeatureContainer extends BaseElementFeatureContainer {
 
 	@Override
@@ -47,15 +60,13 @@ public abstract class AbstractEventDefinitionFeatureContainer extends BaseElemen
 		if (context instanceof IAddContext) {
 			return ((IAddContext) context).getNewObject();
 		} else if (context instanceof IPictogramElementContext) {
-			EventDefinition ed = BusinessObjectUtil.getFirstElementOfType(
-					(((IPictogramElementContext) context).getPictogramElement()), EventDefinition.class);
-			if (ed!=null) {
-				return ed;
-			}
+			PictogramElement pictogramElement = ((IPictogramElementContext) context).getPictogramElement();
+			
+			return BusinessObjectUtil.getFirstElementOfType(pictogramElement, EventDefinition.class);
 		}
 		return null;
 	}
-
+	
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return new AddEventDefinitionFeature(fp);
@@ -160,20 +171,23 @@ public abstract class AbstractEventDefinitionFeatureContainer extends BaseElemen
 			return true;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.graphiti.func.IUpdate#canUpdate(org.eclipse.graphiti.features.context.IUpdateContext)
-		 */
 		@Override
 		public boolean canUpdate(IUpdateContext context) {
-			return true;
+			
+			// this method intentionally returns null.
+			// the reason is, that this feature should never be executed during the
+			// normal update cycle but only as part of
+			// AbstractUpdateEventFeature#doUpdate()
+			return false;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.graphiti.func.IUpdate#updateNeeded(org.eclipse.graphiti.features.context.IUpdateContext)
-		 */
 		@Override
 		public IReason updateNeeded(IUpdateContext context) {
-			return new Reason(false);
+			// this method intentionally returns null.
+			// the reason is, that this feature should never be executed during the
+			// normal update cycle but only as part of
+			// AbstractUpdateEventFeature#doUpdate()
+			return Reason.createFalseReason();
 		}
 	}
 

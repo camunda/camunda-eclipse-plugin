@@ -19,9 +19,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.camunda.bpm.modeler.core.Activator;
 import org.camunda.bpm.modeler.core.property.AbstractTabSection;
 import org.camunda.bpm.modeler.core.property.SectionDescriptor;
 import org.camunda.bpm.modeler.core.property.TabDescriptor;
+import org.camunda.bpm.modeler.plugin.ICustomTaskProvider;
 import org.camunda.bpm.modeler.ui.property.tabs.DefinitionsTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.DocumentTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.EventTabSection;
@@ -94,18 +96,23 @@ public class PropertiesTabDescriptorProvider implements ITabDescriptorProvider {
 //			    businessObject instanceof StartEvent) {
 //				tabs.add(createFormTabDescriptor());
 //			}
+			
+			addCustomTabs(businessObject, tabs);
 		}
 		
 		return tabs.toArray(new ITabDescriptor[]{});
 	}
-	
-	private ITabDescriptor createTabDescriptor(String id, String name, AbstractTabSection tabSection) {
 
-		TabDescriptor tabDescriptor = new TabDescriptor(id, name, name);
-		ISectionDescriptor sectionDescriptor = new SectionDescriptor(id + ".section", tabSection);
-		tabDescriptor.setSectionDescriptors(Arrays.asList(new ISectionDescriptor[] { sectionDescriptor }));
+	private void addCustomTabs(EObject businessObject, List<ITabDescriptor> tabs) {
 		
-		return tabDescriptor;
+		for (ICustomTaskProvider provider: Activator.getExtensions().getCustomTaskProviders()) {
+			if (provider.appliesTo(businessObject)) {
+				ITabDescriptor tabDescriptor = provider.getTabDescriptor();
+				if (tabDescriptor != null) {
+					tabs.add(tabDescriptor);
+				}
+			}
+		}
 	}
 
 	private ITabDescriptor createMultiInstanceTabDescriptor() {
@@ -134,5 +141,23 @@ public class PropertiesTabDescriptorProvider implements ITabDescriptorProvider {
 
 	private ITabDescriptor createFormTabDescriptor() {
 		return createTabDescriptor("formFieldsTab", "Form Fields", new FormFieldsTabSection());
+	}
+	
+	/**
+	 * Create a new tab descriptor with the given id, label and holding 
+	 * the specified tab section.
+	 * 
+	 * @param id
+	 * @param name
+	 * @param tabSection
+	 * @return
+	 */
+	public static ITabDescriptor createTabDescriptor(String id, String name, AbstractTabSection tabSection) {
+
+		TabDescriptor tabDescriptor = new TabDescriptor(id, name, name);
+		ISectionDescriptor sectionDescriptor = new SectionDescriptor(id + ".section", tabSection);
+		tabDescriptor.setSectionDescriptors(Arrays.asList(new ISectionDescriptor[] { sectionDescriptor }));
+		
+		return tabDescriptor;
 	}
 }

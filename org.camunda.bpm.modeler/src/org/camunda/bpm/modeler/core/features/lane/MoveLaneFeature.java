@@ -12,13 +12,13 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.core.features.lane;
 
-import org.camunda.bpm.modeler.core.features.DefaultMoveBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2MoveShapeFeature;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
 
-public class MoveLaneFeature extends DefaultMoveBPMNShapeFeature {
+public class MoveLaneFeature extends DefaultBpmn2MoveShapeFeature {
 
 	private MoveLaneFeature moveStrategy;
 

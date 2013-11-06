@@ -63,7 +63,6 @@ public class Bpmn2HomePreferencePage
 				getFieldEditorParent());
 
 		targetRuntimes.setPreferenceStore(getPreferenceStore());
-//		targetRuntimes.setSelectedValue(getPreferenceStore().getString(Bpmn2Preferences.PREF_TARGET_RUNTIME));
 		
 		addField(targetRuntimes);
 

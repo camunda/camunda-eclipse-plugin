@@ -12,7 +12,7 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.artifact;
 
-import org.camunda.bpm.modeler.core.features.DefaultResizeBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2ResizeShapeFeature;
 import org.camunda.bpm.modeler.core.features.artifact.AddTextAnnotationFeature;
 import org.camunda.bpm.modeler.core.features.artifact.DirectEditTextAnnotationFeature;
 import org.camunda.bpm.modeler.core.features.artifact.LayoutTextAnnotationFeature;
@@ -47,7 +47,7 @@ public class TextAnnotationFeatureContainer extends BaseElementFeatureContainer 
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return new AddTextAnnotationFeature(fp);
 	}
-
+	
 	@Override
 	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {
 		return new UpdateTextAnnotationFeature(fp);
@@ -70,7 +70,7 @@ public class TextAnnotationFeatureContainer extends BaseElementFeatureContainer 
 
 	@Override
 	public IResizeShapeFeature getResizeFeature(IFeatureProvider fp) {
-		return new DefaultResizeBPMNShapeFeature(fp);
+		return new DefaultBpmn2ResizeShapeFeature(fp);
 	}
 
 	@Override

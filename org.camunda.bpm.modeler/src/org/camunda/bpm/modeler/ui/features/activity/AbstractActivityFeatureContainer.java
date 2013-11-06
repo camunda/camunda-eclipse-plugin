@@ -13,23 +13,21 @@
 package org.camunda.bpm.modeler.ui.features.activity;
 
 import org.camunda.bpm.modeler.core.features.MultiUpdateFeature;
+import org.camunda.bpm.modeler.core.features.UpdateDecorationFeature;
+import org.camunda.bpm.modeler.core.features.activity.ActivityDecorateFeature;
 import org.camunda.bpm.modeler.core.features.activity.MoveActivityFeature;
 import org.camunda.bpm.modeler.core.features.activity.UpdateActivityCompensateMarkerFeature;
 import org.camunda.bpm.modeler.core.features.activity.UpdateActivityLoopAndMultiInstanceMarkerFeature;
+import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.features.container.BaseElementFeatureContainer;
 import org.camunda.bpm.modeler.core.features.event.AbstractBoundaryEventOperation;
-import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
-import org.camunda.bpm.modeler.core.utils.LabelUtil;
 import org.camunda.bpm.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.camunda.bpm.modeler.ui.features.event.AppendEventFeature;
-import org.camunda.bpm.modeler.ui.features.event.BoundaryAttachment;
 import org.camunda.bpm.modeler.ui.features.gateway.AppendGatewayFeature;
-import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IDeleteFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
-import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IDeleteContext;
 import org.eclipse.graphiti.features.context.impl.DeleteContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
@@ -44,11 +42,10 @@ public abstract class AbstractActivityFeatureContainer extends BaseElementFeatur
 		UpdateActivityCompensateMarkerFeature compensateMarkerUpdateFeature = new UpdateActivityCompensateMarkerFeature(fp);
 		UpdateActivityLoopAndMultiInstanceMarkerFeature loopAndMultiInstanceUpdateFeature = new UpdateActivityLoopAndMultiInstanceMarkerFeature(fp);
 		
-		MultiUpdateFeature updateFeature = new MultiUpdateFeature(fp);
-		updateFeature.addUpdateFeature(compensateMarkerUpdateFeature);
-		updateFeature.addUpdateFeature(loopAndMultiInstanceUpdateFeature);
-		
-		return updateFeature;
+		return new MultiUpdateFeature(fp)
+			.addUpdateFeature(compensateMarkerUpdateFeature)
+			.addUpdateFeature(loopAndMultiInstanceUpdateFeature)
+			.addUpdateFeature(new UpdateDecorationFeature(fp));
 	}
 
 	@Override
@@ -57,10 +54,15 @@ public abstract class AbstractActivityFeatureContainer extends BaseElementFeatur
 	}
 
 	@Override
+	public IDecorateFeature getDecorateFeature(IFeatureProvider fp) {
+		return new ActivityDecorateFeature(fp);
+	}
+	
+	@Override
 	public IMoveShapeFeature getMoveFeature(IFeatureProvider fp) {
 		return new MoveActivityFeature(fp);
 	}
-
+	
 	@Override
 	public IDeleteFeature getDeleteFeature(IFeatureProvider fp) {
 		return new AbstractDefaultDeleteFeature(fp) {

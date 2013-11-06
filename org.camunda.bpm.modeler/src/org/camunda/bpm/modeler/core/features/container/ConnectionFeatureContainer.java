@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.core.features.container;
 
+import org.camunda.bpm.modeler.core.features.api.container.IFeatureContainer;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
@@ -24,7 +25,7 @@ import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 
-public abstract class ConnectionFeatureContainer implements FeatureContainer {
+public abstract class ConnectionFeatureContainer implements IFeatureContainer {
 
 	public abstract ICreateConnectionFeature getCreateConnectionFeature(IFeatureProvider fp);
 

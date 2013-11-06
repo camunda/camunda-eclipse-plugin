@@ -27,7 +27,7 @@ import java.util.Map;
 
 import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.di.DIUtils;
-import org.camunda.bpm.modeler.core.features.DefaultMoveBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2MoveShapeFeature;
 import org.camunda.bpm.modeler.core.features.PropertyNames;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.BendpointContainment;
@@ -167,8 +167,9 @@ public class FeatureSupport {
 		List<PictogramElement> list = new ArrayList<PictogramElement>();
 		for (PictogramElement pe : container.getChildren()) {
 			String value = Graphiti.getPeService().getPropertyValue(pe, ACTIVITY_DECORATOR);
-			if (value!=null && "true".equals(value))
+			if (Boolean.parseBoolean(value)) {
 				continue;
+			}
 			list.add(pe);
 		}
 		return list;
@@ -178,8 +179,9 @@ public class FeatureSupport {
 		List<PictogramElement> list = new ArrayList<PictogramElement>();
 		for (PictogramElement pe : container.getChildren()) {
 			String value = Graphiti.getPeService().getPropertyValue(pe, ACTIVITY_DECORATOR);
-			if (value!=null && "true".equals(value))
+			if (Boolean.parseBoolean(value)) {
 				list.add(pe);
+			}
 		}
 		return list;
 	}
@@ -778,9 +780,9 @@ public class FeatureSupport {
 		moveContext.setSourceContainer(shape.getContainer());
 		moveContext.setTargetContainer(shape.getContainer());
 		
-		ContextUtil.set(moveContext, DefaultMoveBPMNShapeFeature.SKIP_REPAIR_CONNECTIONS_AFTER_MOVE);
-		ContextUtil.set(moveContext, DefaultMoveBPMNShapeFeature.SKIP_MOVE_BENDPOINTS);
-		ContextUtil.set(moveContext, DefaultMoveBPMNShapeFeature.AUTOMATIC_MOVE);
+		ContextUtil.set(moveContext, DefaultBpmn2MoveShapeFeature.SKIP_REPAIR_CONNECTIONS_AFTER_MOVE);
+		ContextUtil.set(moveContext, DefaultBpmn2MoveShapeFeature.SKIP_MOVE_BENDPOINTS);
+		ContextUtil.set(moveContext, DefaultBpmn2MoveShapeFeature.AUTOMATIC_MOVE);
 		
 		IMoveShapeFeature moveShapeFeature = featureProvider.getMoveShapeFeature(moveContext);
 		

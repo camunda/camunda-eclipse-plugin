@@ -35,14 +35,20 @@ public class UpdateBoundaryEventFeature extends AbstractUpdateEventFeature {
 	}
 
 	@Override
+	public boolean canUpdate(IUpdateContext context) {
+		return super.canUpdate(context) && getBusinessObjectForPictogramElement(context.getPictogramElement()) instanceof BoundaryEvent;
+	}
+	
+	@Override
 	public IReason updateNeeded(IUpdateContext context) {
-		if (super.updateNeeded(context).toBoolean())
+		if (super.updateNeeded(context).toBoolean()) {
 			return Reason.createTrueReason();
+		}
 		
-		String cancelProperty = Graphiti.getPeService().getPropertyValue(context.getPictogramElement(),
-		        BOUNDARY_EVENT_CANCEL);
+		String cancelProperty = Graphiti.getPeService().getPropertyValue(context.getPictogramElement(), BOUNDARY_EVENT_CANCEL);
 		BoundaryEvent event = (BoundaryEvent) getBusinessObjectForPictogramElement(context.getPictogramElement());
 		boolean changed = Boolean.parseBoolean(cancelProperty) != event.isCancelActivity();
+		
 		IReason reason = changed ? Reason.createTrueReason("Boundary description changed") : Reason.createFalseReason();
 		return reason;
 	}
@@ -69,15 +75,5 @@ public class UpdateBoundaryEventFeature extends AbstractUpdateEventFeature {
 		innerEllipse.setLineStyle(lineStyle);
 
 		return true;
-	}
-
-	@Override
-	public boolean canUpdate(IUpdateContext context) {
-		return getBusinessObjectForPictogramElement(context.getPictogramElement()) instanceof BoundaryEvent;
-	}
-
-	@Override
-	protected String getPropertyKey() {
-		return BOUNDARY_EVENT_MARKER;
 	}
 }

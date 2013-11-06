@@ -127,25 +127,6 @@ public class Messages extends NLS {
 	public static String UI_CallConversation_long_description;
 	public static String UI_SubConversation_long_description;
 	public static String UI_TextAnnotation_long_description;
-	
-	
-	
-	public static String WSILPreferencePage_WSIL_1;
-	public static String WSILPreferencePage_WSIL_2;
-	public static String WSILPreferencePage_WSIL_Description;
-	public static String WSILPreferencePage_WSIL_Add;
-	public static String WSILPreferencePage_WSIL_EnterLocation;
-	public static String WSILPreferencePage_WSIL_EnterDescription;
-	public static String WSILPreferencePage_WSIL_Remove;
-	public static String WSILPreferencePage_WSIL_MoveUp;
-	public static String WSILPreferencePage_WSIL_MoveDown;
-	public static String WSILPreferencePage_WSIL_OpenInBrowser;
-	public static String WSILPreferencePage_WSIL_NameLimit;
-	public static String WSILPreferencePage_WSIL_DocumentNotLoaded;
-	public static String WSILPreferencePage_WSIL_Abstract;
-	public static String WSILPreferencePage_WSIL_Location;
-	public static String WSILPreferencePage_WSIL_Namespace;
-	public static String WSILPreferencePage_WSIL_Index;
 
 	private Messages() {
 		// Do not instantiate

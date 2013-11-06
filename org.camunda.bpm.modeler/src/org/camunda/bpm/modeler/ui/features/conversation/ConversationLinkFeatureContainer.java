@@ -52,12 +52,12 @@ public class ConversationLinkFeatureContainer extends BaseElementConnectionFeatu
 			}
 
 			@Override
-			protected Class<? extends BaseElement> getBusinessObjectClass() {
-				return ConversationLink.class;
+			protected EClass getBusinessObjectClass() {
+				return Bpmn2Package.eINSTANCE.getConversationLink();
 			}
 		};
 	}
-
+	
 	@Override
 	public ICreateConnectionFeature getCreateConnectionFeature(IFeatureProvider fp) {
 		return new CreateConversationLinkFeature(fp);

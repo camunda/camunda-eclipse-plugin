@@ -55,7 +55,7 @@ public class StartEventFeatureContainer extends AbstractEventFeatureContainer {
 	public ICreateFeature getCreateFeature(IFeatureProvider fp) {
 		return new CreateStartEventFeature(fp);
 	}
-
+	
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return new AddEventFeature<StartEvent>(fp) {
@@ -65,15 +65,10 @@ public class StartEventFeatureContainer extends AbstractEventFeatureContainer {
 				super.setProperties(context, newShape);
 				
 				IPeService peService = Graphiti.getPeService();
-
-				StartEvent event = getBusinessObject(context);
 				
 				// set to default so that property change is picked up in update
 				// and event is decorated accordingly
 				peService.setPropertyValue(newShape, INTERRUPTING, "true");
-				peService.setPropertyValue(newShape, 
-						UpdateStartEventFeature.START_EVENT_MARKER,
-						AbstractUpdateEventFeature.getEventDefinitionsValue(event));
 			}
 		};
 	}
@@ -85,11 +80,10 @@ public class StartEventFeatureContainer extends AbstractEventFeatureContainer {
 	
 	@Override
 	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {
-		MultiUpdateFeature updateFeature = new MultiUpdateFeature(fp);
-		updateFeature.addUpdateFeature(super.getUpdateFeature(fp));
-		updateFeature.addUpdateFeature(new UpdateSubProcessEventFeature(fp));
-		updateFeature.addUpdateFeature(new UpdateStartEventFeature(fp));
-		return updateFeature;
+		return new MultiUpdateFeature(fp)
+			.addUpdateFeature(super.getUpdateFeature(fp))
+			.addUpdateFeature(new UpdateSubProcessEventFeature(fp))
+			.addUpdateFeature(new UpdateStartEventFeature(fp));
 	}
 	
 	@Override
@@ -125,21 +119,8 @@ public class StartEventFeatureContainer extends AbstractEventFeatureContainer {
 
 	protected static class UpdateStartEventFeature extends AbstractUpdateEventFeature {
 
-		public static String START_EVENT_MARKER = "marker.start.event";
-
-		/**
-		 * @param fp
-		 */
 		public UpdateStartEventFeature(IFeatureProvider fp) {
 			super(fp);
-		}
-
-		/* (non-Javadoc)
-		 * @see org.camunda.bpm.modeler.features.activity.AbstractUpdateMarkerFeature#getPropertyKey()
-		 */
-		@Override
-		protected String getPropertyKey() {
-			return START_EVENT_MARKER;
 		}
 	}
 

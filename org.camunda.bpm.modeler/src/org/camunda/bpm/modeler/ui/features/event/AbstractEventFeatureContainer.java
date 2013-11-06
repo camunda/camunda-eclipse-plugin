@@ -14,15 +14,23 @@ package org.camunda.bpm.modeler.ui.features.event;
 
 import org.camunda.bpm.modeler.core.features.DirectEditNamedElementFeature;
 import org.camunda.bpm.modeler.core.features.MoveFlowNodeFeature;
+import org.camunda.bpm.modeler.core.features.MultiUpdateFeature;
 import org.camunda.bpm.modeler.core.features.PropertyNames;
 import org.camunda.bpm.modeler.core.features.UpdateBaseElementNameFeature;
+import org.camunda.bpm.modeler.core.features.UpdateDecorationFeature;
+import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.features.container.BaseElementFeatureContainer;
+import org.camunda.bpm.modeler.core.features.event.AbstractUpdateEventFeature;
+import org.camunda.bpm.modeler.core.features.event.AddEventFeature;
+import org.camunda.bpm.modeler.core.features.event.EventDecorateFeature;
 import org.camunda.bpm.modeler.core.utils.ContextUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.camunda.bpm.modeler.ui.features.LayoutBaseElementTextFeature;
 import org.camunda.bpm.modeler.ui.features.activity.AppendActivityFeature;
 import org.camunda.bpm.modeler.ui.features.gateway.AppendGatewayFeature;
+import org.eclipse.bpmn2.IntermediateThrowEvent;
+import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
 import org.eclipse.graphiti.features.IDirectEditingFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -45,12 +53,20 @@ public abstract class AbstractEventFeatureContainer extends BaseElementFeatureCo
 		
 		return null;
 	}
-
+	
 	@Override
 	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {
-		return new UpdateBaseElementNameFeature(fp);
+		return new MultiUpdateFeature(fp)
+			.addUpdateFeature(new UpdateBaseElementNameFeature(fp))
+			.addUpdateFeature(new AbstractUpdateEventFeature(fp) {})
+			.addUpdateFeature(new UpdateDecorationFeature(fp));
 	}
 
+	@Override
+	public IDecorateFeature getDecorateFeature(IFeatureProvider fp) {
+		return new EventDecorateFeature(fp);
+	}
+	
 	@Override
 	public IDirectEditingFeature getDirectEditingFeature(IFeatureProvider fp) {
 		return new DirectEditNamedElementFeature(fp);
@@ -72,6 +88,11 @@ public abstract class AbstractEventFeatureContainer extends BaseElementFeatureCo
 		return new MoveFlowNodeFeature(fp);
 	}
 
+	@Override
+	public IAddFeature getAddFeature(IFeatureProvider fp) {
+		return new AddEventFeature<IntermediateThrowEvent>(fp);
+	}
+	
 	@Override
 	public IResizeShapeFeature getResizeFeature(IFeatureProvider fp) {
 		return new DefaultResizeShapeFeature(fp) {

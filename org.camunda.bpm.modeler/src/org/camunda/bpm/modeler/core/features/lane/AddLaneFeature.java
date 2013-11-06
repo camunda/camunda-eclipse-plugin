@@ -17,8 +17,8 @@ import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.point;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.camunda.bpm.modeler.core.features.AbstractAddBpmnShapeFeature;
-import org.camunda.bpm.modeler.core.features.DefaultMoveBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.features.AbstractBpmn2AddShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2MoveShapeFeature;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
@@ -51,7 +51,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
+public class AddLaneFeature extends AbstractBpmn2AddShapeFeature<Lane> {
 	
 	public static final int DEFAULT_LANE_WIDTH = 600;
 	public static final int DEFAULT_LANE_HEIGHT = 100;
@@ -229,9 +229,9 @@ public class AddLaneFeature extends AbstractAddBpmnShapeFeature<Lane> {
 				moveContext.setX(cBounds.getX() + boundsDiff.getX());
 				moveContext.setY(cBounds.getY() + boundsDiff.getY());
 
-				moveContext.putProperty(DefaultMoveBPMNShapeFeature.SKIP_REPAIR_CONNECTIONS_AFTER_MOVE, false);
-				moveContext.putProperty(DefaultMoveBPMNShapeFeature.SKIP_MOVE_BENDPOINTS, true);
-				moveContext.putProperty(DefaultMoveBPMNShapeFeature.SKIP_MOVE_LABEL, true);
+				moveContext.putProperty(DefaultBpmn2MoveShapeFeature.SKIP_REPAIR_CONNECTIONS_AFTER_MOVE, false);
+				moveContext.putProperty(DefaultBpmn2MoveShapeFeature.SKIP_MOVE_BENDPOINTS, true);
+				moveContext.putProperty(DefaultBpmn2MoveShapeFeature.SKIP_MOVE_LABEL, true);
 				
 				IMoveShapeFeature moveShapeFeature = getFeatureProvider().getMoveShapeFeature(moveContext);
 				

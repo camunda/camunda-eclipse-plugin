@@ -15,7 +15,7 @@ package org.camunda.bpm.modeler.core.features.artifact;
 import java.util.Iterator;
 
 import org.camunda.bpm.modeler.core.di.DIUtils;
-import org.camunda.bpm.modeler.core.features.LayoutBpmnShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2LayoutShapeFeature;
 import org.eclipse.bpmn2.TextAnnotation;
 import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -30,7 +30,7 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 
-public class LayoutTextAnnotationFeature extends LayoutBpmnShapeFeature {
+public class LayoutTextAnnotationFeature extends DefaultBpmn2LayoutShapeFeature {
 
 	public LayoutTextAnnotationFeature(IFeatureProvider fp) {
 		super(fp);

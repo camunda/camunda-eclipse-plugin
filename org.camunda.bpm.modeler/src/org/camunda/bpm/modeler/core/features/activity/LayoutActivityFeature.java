@@ -14,7 +14,7 @@ package org.camunda.bpm.modeler.core.features.activity;
 
 import static org.camunda.bpm.modeler.core.features.activity.AbstractAddActivityFeature.ACTIVITY_RECT;
 
-import org.camunda.bpm.modeler.core.features.LayoutBpmnShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2LayoutShapeFeature;
 import org.camunda.bpm.modeler.core.features.event.AbstractBoundaryEventOperation;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
@@ -29,7 +29,7 @@ import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 
-public class LayoutActivityFeature extends LayoutBpmnShapeFeature {
+public class LayoutActivityFeature extends DefaultBpmn2LayoutShapeFeature {
 
 	public LayoutActivityFeature(IFeatureProvider fp) {
 		super(fp);

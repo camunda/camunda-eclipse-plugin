@@ -3,7 +3,8 @@ package org.camunda.bpm.modeler.ui.features.label;
 import org.camunda.bpm.modeler.core.features.DirectEditNamedElementFeature;
 import org.camunda.bpm.modeler.core.features.PropertyNames;
 import org.camunda.bpm.modeler.core.features.UpdateBaseElementNameFeature;
-import org.camunda.bpm.modeler.core.features.container.FeatureContainer;
+import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
+import org.camunda.bpm.modeler.core.features.api.container.IFeatureContainer;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.ContextUtil;
 import org.camunda.bpm.modeler.core.utils.LabelUtil;
@@ -33,7 +34,7 @@ import org.eclipse.graphiti.features.context.IPictogramElementContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
-public class LabelFeatureContainer implements FeatureContainer {
+public class LabelFeatureContainer implements IFeatureContainer {
 
 	@Override
 	public Object getApplyObject(IContext context) {
@@ -71,6 +72,11 @@ public class LabelFeatureContainer implements FeatureContainer {
 
 	@Override
 	public ICreateFeature getCreateFeature(IFeatureProvider fp) {
+		return null;
+	}
+
+	@Override
+	public IDecorateFeature getDecorateFeature(IFeatureProvider fp) {
 		return null;
 	}
 

@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.features.AbstractCreateFlowElementFeature;
-import org.camunda.bpm.modeler.core.features.DefaultMoveBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2MoveShapeFeature;
 import org.camunda.bpm.modeler.core.features.UpdateBaseElementNameFeature;
 import org.camunda.bpm.modeler.core.features.data.AddDataFeature;
 import org.camunda.bpm.modeler.core.utils.ContextUtil;
@@ -76,7 +76,7 @@ public class DataObjectReferenceFeatureContainer extends AbstractDataFeatureCont
 		return new UpdateBaseElementNameFeature(fp);
 	}
 	
-	public static class MoveDataObjectReferenceFeature extends DefaultMoveBPMNShapeFeature {
+	public static class MoveDataObjectReferenceFeature extends DefaultBpmn2MoveShapeFeature {
 
 		public MoveDataObjectReferenceFeature(IFeatureProvider fp) {
 			super(fp);

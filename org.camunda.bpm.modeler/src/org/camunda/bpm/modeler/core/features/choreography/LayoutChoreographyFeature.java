@@ -14,7 +14,7 @@ package org.camunda.bpm.modeler.core.features.choreography;
 
 import static org.camunda.bpm.modeler.core.features.choreography.ChoreographyProperties.TEXT_H;
 
-import org.camunda.bpm.modeler.core.features.LayoutBpmnShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2LayoutShapeFeature;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.ChoreographyActivity;
@@ -28,7 +28,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class LayoutChoreographyFeature extends LayoutBpmnShapeFeature {
+public class LayoutChoreographyFeature extends DefaultBpmn2LayoutShapeFeature {
 
 	protected IPeService peService = Graphiti.getPeService();
 	protected IGaService gaService = Graphiti.getGaService();

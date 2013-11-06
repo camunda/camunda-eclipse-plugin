@@ -13,14 +13,15 @@
 package org.camunda.bpm.modeler.ui.features.gateway;
 
 import org.camunda.bpm.modeler.core.features.MultiUpdateFeature;
+import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.features.gateway.AbstractCreateGatewayFeature;
 import org.camunda.bpm.modeler.core.features.gateway.AddGatewayFeature;
+import org.camunda.bpm.modeler.core.features.gateway.GatewayDecorateFeature;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.EventBasedGateway;
 import org.eclipse.bpmn2.EventBasedGatewayType;
-import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -30,7 +31,6 @@ import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
 import org.eclipse.graphiti.mm.algorithms.Polygon;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IPeService;
 
@@ -50,16 +50,22 @@ public class EventBasedGatewayFeatureContainer extends AbstractGatewayFeatureCon
 	}
 
 	@Override
+	public IDecorateFeature getDecorateFeature(IFeatureProvider fp) {
+		return new GatewayDecorateFeature(fp) {
+			@Override
+			protected void decorate(Polygon decorateContainer) {
+				
+				Ellipse outer = GraphicsUtil.createGatewayOuterCircle(decorateContainer);
+				Ellipse inner = GraphicsUtil.createGatewayInnerCircle(outer);
+				
+				decorateContainer.setFilled(false);
+			}
+		};
+	}
+	
+	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return new AddGatewayFeature<EventBasedGateway>(fp) {
-			
-			@Override
-			protected void decorate(ContainerShape container) {
-				Ellipse outer = GraphicsUtil.createGatewayOuterCircle(container);
-				Ellipse inner = GraphicsUtil.createGatewayInnerCircle(outer);
-				Polygon pentagon = GraphicsUtil.createGatewayPentagon(container);
-				pentagon.setFilled(false);
-			}
 
 			@Override
 			protected void setProperties(IAddContext context, ContainerShape newShape) {

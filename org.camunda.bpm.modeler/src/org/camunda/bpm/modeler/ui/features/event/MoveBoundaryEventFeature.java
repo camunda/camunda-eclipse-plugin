@@ -14,7 +14,7 @@ package org.camunda.bpm.modeler.ui.features.event;
 
 import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.location;
 
-import org.camunda.bpm.modeler.core.features.DefaultMoveBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2MoveShapeFeature;
 import org.camunda.bpm.modeler.core.features.activity.MoveActivityFeature;
 import org.camunda.bpm.modeler.core.features.rules.ModelOperations;
 import org.camunda.bpm.modeler.core.features.rules.ModelOperations.ModelMoveOperation;
@@ -34,7 +34,7 @@ import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
-public class MoveBoundaryEventFeature extends DefaultMoveBPMNShapeFeature {
+public class MoveBoundaryEventFeature extends DefaultBpmn2MoveShapeFeature {
 
 	public static final String MOVE_WITH_ACTIVITY = AUTOMATIC_MOVE;
 	

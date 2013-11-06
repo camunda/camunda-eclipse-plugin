@@ -170,7 +170,6 @@ public class ModelHandler {
 
 					// create StartEvent
 					StartEvent startEvent = create(StartEvent.class);
-//					startEvent.setName("Start Event");
 					process.getFlowElements().add(startEvent);
 					
 					// create SequenceFlow
@@ -179,7 +178,6 @@ public class ModelHandler {
 					
 					// create EndEvent
 					EndEvent endEvent = create(EndEvent.class);
-//					endEvent.setName("End Event");
 					process.getFlowElements().add(endEvent);
 					
 					// hook 'em up
@@ -360,17 +358,9 @@ public class ModelHandler {
 					
 					Participant initiatingParticipant = create(Participant.class);
 					initiatingParticipant.setName(name+" Initiating Participant");
-
-//					Process initiatingProcess = createProcess();
-//					initiatingProcess.setName(name+" Initiating Process");
-//					initiatingParticipant.setProcessRef(initiatingProcess);
 					
 					Participant nonInitiatingParticipant = create(Participant.class);
 					nonInitiatingParticipant.setName(name+" Non-initiating Participant");
-
-//					Process nonInitiatingProcess = createProcess();
-//					nonInitiatingProcess.setName(name+" Non-initiating Process");
-//					nonInitiatingParticipant.setProcessRef(nonInitiatingProcess);
 					
 					choreography.getParticipants().add(initiatingParticipant);
 					choreography.getParticipants().add(nonInitiatingParticipant);

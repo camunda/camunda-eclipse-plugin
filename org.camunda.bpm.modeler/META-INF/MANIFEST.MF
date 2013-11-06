@@ -97,6 +97,8 @@ Export-Package: org.camunda.bpm.modeler.core;
    org.camunda.bpm.modeler.features.activity,
    org.eclipse.graphiti.mm.pictograms,
    org.camunda.bpm.modeler.runtime",
+ org.camunda.bpm.modeler.core.features.api,
+ org.camunda.bpm.modeler.core.features.api.container,
  org.camunda.bpm.modeler.core.features.artifact;
   uses:="org.eclipse.graphiti.features.context,
    org.eclipse.graphiti.features,
@@ -112,6 +114,7 @@ Export-Package: org.camunda.bpm.modeler.core;
    org.eclipse.graphiti.mm.pictograms,
    org.eclipse.graphiti.services,
    org.eclipse.graphiti.mm.algorithms",
+ org.camunda.bpm.modeler.core.features.container,
  org.camunda.bpm.modeler.core.features.conversation;
   uses:="org.eclipse.graphiti.features.context,
    org.eclipse.graphiti.features,
@@ -221,6 +224,7 @@ Export-Package: org.camunda.bpm.modeler.core;
    org.eclipse.jface.util,
    org.eclipse.swt.widgets,
    org.camunda.bpm.modeler.runtime",
+ org.camunda.bpm.modeler.core.property,
  org.camunda.bpm.modeler.core.runtime;
   uses:="org.eclipse.emf.ecore.resource,
    org.camunda.bpm.modeler.features.activity.task,
@@ -270,6 +274,8 @@ Export-Package: org.camunda.bpm.modeler.core;
    org.eclipse.core.resources,
    org.camunda.bpm.modeler.preferences,
    org.eclipse.emf.validation.service",
+ org.camunda.bpm.modeler.plugin,
+ org.camunda.bpm.modeler.plugin.core,
  org.camunda.bpm.modeler.runtime.engine;
   uses:="org.eclipse.graphiti.ui.editor,
    org.eclipse.ui,
@@ -333,6 +339,7 @@ Export-Package: org.camunda.bpm.modeler.core;
    org.eclipse.graphiti.features.custom,
    org.eclipse.draw2d,
    org.eclipse.gef",
+ org.camunda.bpm.modeler.ui,
  org.camunda.bpm.modeler.ui.change;uses:="org.eclipse.emf.ecore,org.eclipse.emf.common.command,org.eclipse.emf.transaction",
  org.camunda.bpm.modeler.ui.change.filter;uses:="org.eclipse.emf.ecore,org.eclipse.emf.transaction,org.eclipse.emf.common.notify",
  org.camunda.bpm.modeler.ui.diagram,
@@ -348,6 +355,7 @@ Export-Package: org.camunda.bpm.modeler.core;
    org.camunda.bpm.modeler",
  org.camunda.bpm.modeler.ui.features.activity,
  org.camunda.bpm.modeler.ui.features.activity.subprocess,
+ org.camunda.bpm.modeler.ui.features.activity.task,
  org.camunda.bpm.modeler.ui.features.artifact,
  org.camunda.bpm.modeler.ui.features.data,
  org.camunda.bpm.modeler.ui.features.event;
@@ -393,7 +401,10 @@ Export-Package: org.camunda.bpm.modeler.core;
    org.eclipse.graphiti.features.context,
    org.eclipse.graphiti.features,
    org.camunda.bpm.modeler.features,
-   org.camunda.bpm.modeler.ui.features"
+   org.camunda.bpm.modeler.ui.features",
+ org.camunda.bpm.modeler.ui.property,
+ org.camunda.bpm.modeler.ui.property.tabs,
+ org.camunda.bpm.modeler.ui.property.tabs.builder
 Import-Package: 
  org.eclipse.graphiti.ui.features,
  org.eclipse.jface.preference,

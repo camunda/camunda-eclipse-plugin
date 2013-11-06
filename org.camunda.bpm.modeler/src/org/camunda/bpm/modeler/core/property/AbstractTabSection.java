@@ -1,6 +1,6 @@
 package org.camunda.bpm.modeler.core.property;
 
-import org.camunda.bpm.modeler.ui.editor.BPMN2Editor;
+import org.camunda.bpm.modeler.ui.diagram.editor.Bpmn2Editor;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
@@ -9,8 +9,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
@@ -66,7 +64,7 @@ public abstract class AbstractTabSection extends GFPropertySection implements IT
 		// handle case that business object or the pictogram element have been deleted
 		// when multiple objects are selected
 		if (object == null) {
-			pictogramElement = BPMN2Editor.getActiveEditor().getDiagramTypeProvider().getDiagram();
+			pictogramElement = Bpmn2Editor.getActiveEditor().getDiagramTypeProvider().getDiagram();
 			
 			object = Graphiti.getLinkService()
 					.getBusinessObjectForLinkedPictogramElement(pictogramElement);

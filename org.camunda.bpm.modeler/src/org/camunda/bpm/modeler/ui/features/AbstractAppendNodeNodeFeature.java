@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.camunda.bpm.modeler.core.ModelHandler;
-import org.camunda.bpm.modeler.core.features.AbstractAddBpmnShapeFeature;
+import org.camunda.bpm.modeler.core.features.AbstractBpmn2AddShapeFeature;
 import org.camunda.bpm.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
@@ -28,6 +28,7 @@ import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.runtime.engine.model.BoundaryEvent;
 import org.camunda.bpm.modeler.ui.diagram.BPMN2FeatureProvider;
+import org.camunda.bpm.modeler.ui.diagram.Bpmn2FeatureProvider;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
@@ -204,8 +205,8 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 		int width = ga.getWidth();
 		int height = ga.getHeight();
 		
-		BPMN2FeatureProvider fp = (BPMN2FeatureProvider) getFeatureProvider();
-		AbstractCreateFeature createFeature = (AbstractCreateFeature) fp.getCreateFeatureForBusinessObject(newType.getInstanceClass());
+		Bpmn2FeatureProvider fp = (Bpmn2FeatureProvider) getFeatureProvider();
+		AbstractCreateFeature createFeature = (AbstractCreateFeature) fp.getCreateFeatureForBusinessObject(newType);
 		
 		CreateContext createContext = new CreateContext();
 		createContext.putProperty(AbstractCreateFlowElementFeature.SKIP_ADD_GRAPHICS, true);
@@ -244,7 +245,7 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 			((Lane)oldObject).getFlowNodeRefs().add((FlowNode)newObject);
 		}
 		AddContext ac = new AddContext(new AreaContext(), newObject);
-		AbstractAddBpmnShapeFeature af = (AbstractAddBpmnShapeFeature)getFeatureProvider().getAddFeature(ac);
+		AbstractBpmn2AddShapeFeature af = (AbstractBpmn2AddShapeFeature)getFeatureProvider().getAddFeature(ac);
 		int w = af.getDefaultWidth();
 		int h = af.getDefaultHeight();
 		if (horz) {

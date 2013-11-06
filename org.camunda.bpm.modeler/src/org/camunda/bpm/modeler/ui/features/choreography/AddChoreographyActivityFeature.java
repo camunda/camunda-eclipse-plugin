@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.di.DIUtils;
-import org.camunda.bpm.modeler.core.features.AbstractAddBpmnShapeFeature;
+import org.camunda.bpm.modeler.core.features.AbstractBpmn2AddShapeFeature;
 import org.camunda.bpm.modeler.core.features.choreography.ChoreographyProperties;
 import org.camunda.bpm.modeler.core.utils.AnchorUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
@@ -48,7 +48,7 @@ import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
 public class AddChoreographyActivityFeature<T extends ChoreographyActivity>
-	extends AbstractAddBpmnShapeFeature<T> {
+	extends AbstractBpmn2AddShapeFeature<T> {
 
 	protected final IGaService gaService = Graphiti.getGaService();
 	protected final IPeService peService = Graphiti.getPeService();

@@ -60,9 +60,4 @@ public abstract class AbstractCreateFlowElementFeature<T extends FlowElement> ex
 	public String getCreateImageId() {
 	    return getStencilImageId();
 	}
-	
-	@Override
-	public String getCreateLargeImageId() {
-	    return getCreateImageId(); // FIXME
-	}
 }

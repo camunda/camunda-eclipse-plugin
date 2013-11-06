@@ -27,44 +27,49 @@ import org.eclipse.graphiti.services.IPeService;
 public abstract class AbstractUpdateMarkerFeature<T extends FlowElement> extends AbstractUpdateFeature {
 
 	public AbstractUpdateMarkerFeature(IFeatureProvider fp) {
-	    super(fp);
-    }
+		super(fp);
+	}
 
 	@Override
-    public boolean canUpdate(IUpdateContext context) {
+	public boolean canUpdate(IUpdateContext context) {
 		Object bo = getBusinessObjectForPictogramElement(context.getPictogramElement());
 		return bo != null && bo instanceof Activity && context.getPictogramElement() instanceof ContainerShape;
-    }
+	}
 
 	@Override
-    public IReason updateNeeded(IUpdateContext context) {
+	public IReason updateNeeded(IUpdateContext context) {
 		IPeService peService = Graphiti.getPeService();
 		PictogramElement element = context.getPictogramElement();
 		String property = peService.getPropertyValue(element, getPropertyKey());
-		if(property == null) {
+		if (property == null) {
 			return Reason.createFalseReason();
 		}
 		T activity = (T) getBusinessObjectForPictogramElement(context.getPictogramElement());
 		boolean changed = isPropertyChanged(activity, property);
 		return changed ? Reason.createTrueReason() : Reason.createFalseReason();
-    }
+	}
 
 	@Override
-    public boolean update(IUpdateContext context) {
+	public boolean update(IUpdateContext context) {
 		IPeService peService = Graphiti.getPeService();
+		
+		if (!(context.getPictogramElement() instanceof ContainerShape)) {
+			System.out.println("ABOUT TO FAIL");
+		}
+		
 		ContainerShape container = (ContainerShape) context.getPictogramElement();
 		T element = (T) getBusinessObjectForPictogramElement(context.getPictogramElement());
 
 		doUpdate(element, container);
 		peService.setPropertyValue(container, getPropertyKey(), convertPropertyToString(element));
 		return true;
-    }
-	
+	}
+
 	protected abstract String getPropertyKey();
-	
+
 	protected abstract boolean isPropertyChanged(T element, String propertyValue);
 
 	protected abstract void doUpdate(T element, ContainerShape markerContainer);
-	
+
 	protected abstract String convertPropertyToString(T element);
 }

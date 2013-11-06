@@ -15,10 +15,12 @@ package org.camunda.bpm.modeler.core.features;
 
 import java.util.List;
 
+import org.camunda.bpm.modeler.core.features.api.IBpmn2CreateFeature;
 import org.camunda.bpm.modeler.core.runtime.ModelEnablementDescriptor;
 import org.camunda.bpm.modeler.core.runtime.TargetRuntime;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
+import org.camunda.bpm.modeler.ui.diagram.Bpmn2FeatureProvider;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -77,7 +79,7 @@ public abstract class AbstractBpmn2CreateFeature<T extends BaseElement>
 		return "Create " + ModelUtil.toDisplayName(getBusinessObjectClass().getName());
 	}
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked" })
 	public T createBusinessObject(ICreateContext context) {
 		Shape shape = context.getTargetContainer();
 		
@@ -86,16 +88,12 @@ public abstract class AbstractBpmn2CreateFeature<T extends BaseElement>
 		
 		EClass eCls = getBusinessObjectClass();
 		
-		T newObject = (T) eCls.getEPackage().getEFactoryInstance().create(eCls);
+		EClass actualECls = ((Bpmn2FeatureProvider) getFeatureProvider()).getActualEClass(eCls);
+		
+		T newObject = (T) actualECls.getEPackage().getEFactoryInstance().create(actualECls);
 		
 		// assign id to new object
 		ModelUtil.setID(newObject, resource);
-		
-		// assign default name
-//		EStructuralFeature feature = newObject.eClass().getEStructuralFeature("name");
-//		if (feature != null) {
-//			newObject.eSet(feature, ModelUtil.toDisplayName(eCls.getName()));
-//		}
 		
 		putBusinessObject(context, newObject);
 		

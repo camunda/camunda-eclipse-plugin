@@ -15,6 +15,7 @@ package org.camunda.bpm.modeler.core.utils;
 import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
 import org.camunda.bpm.modeler.core.preferences.ShapeStyle;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.StyleContainer;
@@ -89,98 +90,115 @@ public class StyleUtil {
 		Graphiti.getPeService().setPropertyValue(ga, FILL_STYLE, fillStyle.toString());
 	}
 	
-	public static void applyStyle(GraphicsAlgorithm ga, BaseElement be) {
-		if (be!=null) {
-			IGaService gaService = Graphiti.getGaService();
-			IPeService peService = Graphiti.getPeService();
+	public static void applyStyle(GraphicsAlgorithm ga, String styleId, ShapeStyle shapeStyle, boolean isConnection) {
 
-			Diagram diagram = findDiagram(ga);
-			Bpmn2Preferences pref = Bpmn2Preferences.getInstance(be);
-			ShapeStyle ss = pref.getShapeStyle(be);
-			IColorConstant foreground = ga instanceof AbstractText ? ss.getTextColor() : ss.getShapeForeground();
-			IColorConstant background = ss.getShapeBackground();
+		IGaService gaService = Graphiti.getGaService();
+		IPeService peService = Graphiti.getPeService();
 
-			if (peService.getPropertyValue(ga, Bpmn2Preferences.PREF_SHAPE_STYLE)==null) {
-				peService.setPropertyValue(ga, Bpmn2Preferences.PREF_SHAPE_STYLE, Boolean.toString(true));
+		Diagram diagram = findDiagram(ga);
+		
+		IColorConstant foreground = ga instanceof AbstractText ? shapeStyle.getTextColor() : shapeStyle.getShapeForeground();
+		IColorConstant background = shapeStyle.getShapeBackground();
+
+		if (peService.getPropertyValue(ga, Bpmn2Preferences.PREF_SHAPE_STYLE) == null) {
+			peService.setPropertyValue(ga, Bpmn2Preferences.PREF_SHAPE_STYLE, Boolean.toString(true));
+		}
+
+		if (isConnection) {
+			if (ga instanceof AbstractText) {
+				Font f = shapeStyle.getTextFont();
+				((AbstractText)ga).setFont(gaService.manageFont(diagram, f.getName(), f.getSize(), f.isItalic(), f.isBold()));
 			}
-
-			if (BusinessObjectUtil.isConnection(be.eClass().getInstanceClass())) {
-				if (ga instanceof AbstractText) {
-					Font f = ss.getTextFont();
-					((AbstractText)ga).setFont(gaService.manageFont(diagram, f.getName(), f.getSize(), f.isItalic(), f.isBold()));
-				}
-				if (ga.getForeground()==null)
-					ga.setForeground(gaService.manageColor(diagram, foreground));
-				// by default the fill color for connection decorators is the
-				// connection line foreground color
-				if (ga.getBackground()==null)
-					ga.setBackground(gaService.manageColor(diagram, foreground));
+			if (ga.getForeground()==null)
+				ga.setForeground(gaService.manageColor(diagram, foreground));
+			// by default the fill color for connection decorators is the
+			// connection line foreground color
+			if (ga.getBackground()==null)
+				ga.setBackground(gaService.manageColor(diagram, foreground));
+		} else {
+			// Style only used for drawing gradients
+			Style s = findStyle(diagram, styleId);
+			if (s == null) {
+				s = gaService.createStyle(diagram, styleId);
+			}
+			
+			if (ga instanceof AbstractText) {
+				Font f = shapeStyle.getTextFont();
+				((AbstractText)ga).setFont(gaService.manageFont(diagram, f.getName(), f.getSize(), f.isItalic(), f.isBold()));
+				ga.setForeground(gaService.manageColor(diagram, foreground));
+				// Text does not have a fill style (yet)
+				return;
 			}
 			else {
-				String id = Bpmn2Preferences.getShapeStyleId(be);
-				
-				// Style only used for drawing gradients
-				Style s = findStyle(diagram, id);
-				if(s == null) {
-					s = gaService.createStyle(diagram, id);
-				}
-				
-				if (ga instanceof AbstractText) {
-					Font f = ss.getTextFont();
-					((AbstractText)ga).setFont(gaService.manageFont(diagram, f.getName(), f.getSize(), f.isItalic(), f.isBold()));
-					ga.setForeground(gaService.manageColor(diagram, foreground));
-					// Text does not have a fill style (yet)
-					return;
-				}
-				else {
-					s.setForeground(gaService.manageColor(diagram, foreground));
-					ga.setForeground(gaService.manageColor(diagram, foreground));
-				}
-				
-				String fillStyle = peService.getPropertyValue(ga, FILL_STYLE);
-				if (fillStyle==null || fillStyle.equals(FillStyle.FILL_STYLE_DEFAULT.name())) {
-					// fill with gradient
-					ga.setFilled(true);
-					s.setFilled(true);
-					AdaptedGradientColoredAreas gradient = getStyleAdaptions(be);
-					gaService.setRenderingStyle(s, gradient);
-					ga.setStyle(s);
-				}
-				else if (fillStyle.equals(FillStyle.FILL_STYLE_FOREGROUND.name())) {
-					ga.setFilled(true);
-					ga.setBackground(gaService.manageColor(diagram, foreground));
-				}
-				else if (fillStyle.equals(FillStyle.FILL_STYLE_BACKGROUND.name())) {
-					ga.setFilled(true);
-					ga.setBackground(gaService.manageColor(diagram, background));
-				}
-				else if (fillStyle.equals(FillStyle.FILL_STYLE_INVERT.name())) {
-					ga.setFilled(true);
-					ga.setForeground(gaService.manageColor(diagram, background));
-					ga.setBackground(gaService.manageColor(diagram, foreground));
-				}
-				else {
-					ga.setFilled(false);
-					ga.setBackground(gaService.manageColor(diagram, background));
-				}
+				s.setForeground(gaService.manageColor(diagram, foreground));
+				ga.setForeground(gaService.manageColor(diagram, foreground));
+			}
+			
+			String fillStyle = peService.getPropertyValue(ga, FILL_STYLE);
+			if (fillStyle==null || fillStyle.equals(FillStyle.FILL_STYLE_DEFAULT.name())) {
+				// fill with gradient
+				ga.setFilled(true);
+				s.setFilled(true);
+				AdaptedGradientColoredAreas gradient = getStyleAdaptions(styleId, shapeStyle);
+				gaService.setRenderingStyle(s, gradient);
+				ga.setStyle(s);
+			} else if (fillStyle.equals(FillStyle.FILL_STYLE_FOREGROUND.name())) {
+				ga.setFilled(true);
+				ga.setBackground(gaService.manageColor(diagram, foreground));
+			} else if (fillStyle.equals(FillStyle.FILL_STYLE_BACKGROUND.name())) {
+				ga.setFilled(true);
+				ga.setBackground(gaService.manageColor(diagram, background));
+			} else if (fillStyle.equals(FillStyle.FILL_STYLE_INVERT.name())) {
+				ga.setFilled(true);
+				ga.setForeground(gaService.manageColor(diagram, background));
+				ga.setBackground(gaService.manageColor(diagram, foreground));
+			} else {
+				ga.setFilled(false);
+				ga.setBackground(gaService.manageColor(diagram, background));
 			}
 		}
 	}
+	
+	public static void applyStyle(GraphicsAlgorithm ga, BaseElement be) {
+	
+		Assert.isNotNull(ga);
+		Assert.isNotNull(be);
+		
+		Bpmn2Preferences pref = Bpmn2Preferences.getInstance(be);
+		String styleId = Bpmn2Preferences.getShapeStyleId(be);
+		boolean isConnection = BusinessObjectUtil.isConnection(be.eClass().getInstanceClass());
+		
+		ShapeStyle shapeStyle = pref.getShapeStyle(be);
+		
+		applyStyle(ga, styleId, shapeStyle, isConnection);
+	}
 
 	public static AdaptedGradientColoredAreas getStyleAdaptions(BaseElement be) {
-		final AdaptedGradientColoredAreas agca = StylesFactory.eINSTANCE.createAdaptedGradientColoredAreas();
 
-		String id = Bpmn2Preferences.getShapeStyleId(be);
-		agca.setDefinedStyleId(id); //STYLE_ID);
+		Bpmn2Preferences pref = Bpmn2Preferences.getInstance(be);
+		
+		ShapeStyle shapeStyle = pref.getShapeStyle(be);
+		String styleId = Bpmn2Preferences.getShapeStyleId(be);
+
+		return getStyleAdaptions(styleId, shapeStyle);
+	}
+
+	public static AdaptedGradientColoredAreas getStyleAdaptions(String styleId, ShapeStyle shapeStyle) {
+		final AdaptedGradientColoredAreas agca = StylesFactory.eINSTANCE.createAdaptedGradientColoredAreas();
+		
+		agca.setDefinedStyleId(styleId);
 		agca.setGradientType(IGradientType.VERTICAL);
+		
 		agca.getAdaptedGradientColoredAreas().add(IPredefinedRenderingStyle.STYLE_ADAPTATION_DEFAULT,
-				getPreferenceDefaultAreas(be));
+				getPreferenceDefaultAreas(shapeStyle));
 		agca.getAdaptedGradientColoredAreas().add(IPredefinedRenderingStyle.STYLE_ADAPTATION_PRIMARY_SELECTED,
-				getPreferencePrimarySelectedAreas(be));
+				getPreferencePrimarySelectedAreas(shapeStyle));
 		agca.getAdaptedGradientColoredAreas().add(IPredefinedRenderingStyle.STYLE_ADAPTATION_SECONDARY_SELECTED,
-				getPreferenceSecondarySelectedAreas(be));
+				getPreferenceSecondarySelectedAreas(shapeStyle));
+		
 		return agca;
 	}
+	
 	
 	public static IColorConstant shiftColor(IColorConstant c, int amount) {
 		int r = c.getRed() + amount;
@@ -196,30 +214,26 @@ public class StyleUtil {
 		return new ColorConstant(r, g, b);
 	}
 	
-	private static GradientColoredAreas getPreferenceDefaultAreas(BaseElement be) {
+	private static GradientColoredAreas getPreferenceDefaultAreas(ShapeStyle shapeStyle) {
 		final GradientColoredAreas gradientColoredAreas = StylesFactory.eINSTANCE.createGradientColoredAreas();
 		gradientColoredAreas.setStyleAdaption(IPredefinedRenderingStyle.STYLE_ADAPTATION_DEFAULT);
 		final EList<GradientColoredArea> gcas = gradientColoredAreas.getGradientColor();
 
-		Bpmn2Preferences pref = Bpmn2Preferences.getInstance(be);
-		ShapeStyle ss = pref.getShapeStyle(be);
-		IColorConstant c1 = shiftColor(ss.getShapeBackground(), -8);
-		IColorConstant c2 = shiftColor(ss.getShapeBackground(), 64);
+		IColorConstant c1 = shiftColor(shapeStyle.getShapeBackground(), -8);
+		IColorConstant c2 = shiftColor(shapeStyle.getShapeBackground(), 64);
 
 		addGradientColoredArea(gcas,
 				c1, 0, LocationType.LOCATION_TYPE_ABSOLUTE_START,
 				c2, 0, LocationType.LOCATION_TYPE_ABSOLUTE_END);
 		return gradientColoredAreas;
 	}
-	private static GradientColoredAreas getPreferencePrimarySelectedAreas(BaseElement be) {
+	private static GradientColoredAreas getPreferencePrimarySelectedAreas(ShapeStyle shapeStyle) {
 		final GradientColoredAreas gradientColoredAreas = StylesFactory.eINSTANCE.createGradientColoredAreas();
 		gradientColoredAreas.setStyleAdaption(IPredefinedRenderingStyle.STYLE_ADAPTATION_PRIMARY_SELECTED);
 		final EList<GradientColoredArea> gcas = gradientColoredAreas.getGradientColor();
 
-		Bpmn2Preferences pref = Bpmn2Preferences.getInstance(be);
-		ShapeStyle ss = pref.getShapeStyle(be);
-		IColorConstant c1 = shiftColor(ss.getShapePrimarySelectedColor(), -64);
-		IColorConstant c2 = shiftColor(ss.getShapePrimarySelectedColor(), 64);
+		IColorConstant c1 = shiftColor(shapeStyle.getShapePrimarySelectedColor(), -64);
+		IColorConstant c2 = shiftColor(shapeStyle.getShapePrimarySelectedColor(), 64);
 
 		addGradientColoredArea(gcas,
 				c1, 0, LocationType.LOCATION_TYPE_ABSOLUTE_START,
@@ -227,15 +241,13 @@ public class StyleUtil {
 		return gradientColoredAreas;
 	}
 
-	private static GradientColoredAreas getPreferenceSecondarySelectedAreas(BaseElement be) {
+	private static GradientColoredAreas getPreferenceSecondarySelectedAreas(ShapeStyle shapeStyle) {
 		final GradientColoredAreas gradientColoredAreas = StylesFactory.eINSTANCE.createGradientColoredAreas();
 		gradientColoredAreas.setStyleAdaption(IPredefinedRenderingStyle.STYLE_ADAPTATION_SECONDARY_SELECTED);
 		final EList<GradientColoredArea> gcas = gradientColoredAreas.getGradientColor();
 
-		Bpmn2Preferences pref = Bpmn2Preferences.getInstance(be);
-		ShapeStyle ss = pref.getShapeStyle(be);
-		IColorConstant c1 = shiftColor(ss.getShapeSecondarySelectedColor(), -64);
-		IColorConstant c2 = shiftColor(ss.getShapeSecondarySelectedColor(), 64);
+		IColorConstant c1 = shiftColor(shapeStyle.getShapeSecondarySelectedColor(), -64);
+		IColorConstant c2 = shiftColor(shapeStyle.getShapeSecondarySelectedColor(), 64);
 
 		addGradientColoredArea(gcas,
 				c1, 0, LocationType.LOCATION_TYPE_ABSOLUTE_START,

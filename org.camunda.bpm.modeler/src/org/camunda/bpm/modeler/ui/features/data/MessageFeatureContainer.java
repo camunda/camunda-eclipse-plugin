@@ -12,8 +12,8 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.data;
 
-import org.camunda.bpm.modeler.core.features.AbstractAddBpmnShapeFeature;
-import org.camunda.bpm.modeler.core.features.DefaultMoveBPMNShapeFeature;
+import org.camunda.bpm.modeler.core.features.AbstractBpmn2AddShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2MoveShapeFeature;
 import org.camunda.bpm.modeler.core.features.MultiUpdateFeature;
 import org.camunda.bpm.modeler.core.features.UpdateBaseElementNameFeature;
 import org.camunda.bpm.modeler.core.features.container.BaseElementFeatureContainer;
@@ -63,7 +63,7 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AbstractAddBpmnShapeFeature<Message>(fp) {
+		return new AbstractBpmn2AddShapeFeature<Message>(fp) {
 
 			@Override
 			public boolean canAdd(IAddContext context) {
@@ -140,7 +140,7 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 
 	@Override
 	public IMoveShapeFeature getMoveFeature(IFeatureProvider fp) {
-		return new DefaultMoveBPMNShapeFeature(fp);
+		return new DefaultBpmn2MoveShapeFeature(fp);
 	}
 
 	@Override

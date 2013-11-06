@@ -2,7 +2,7 @@ package org.camunda.bpm.modeler.core.features.flow;
 
 import static org.camunda.bpm.modeler.core.utils.ContextUtil.is;
 
-import org.camunda.bpm.modeler.core.features.AbstractLayoutBpmnElementFeature;
+import org.camunda.bpm.modeler.core.features.AbstractBpmn2LayoutElementFeature;
 import org.camunda.bpm.modeler.core.features.PropertyNames;
 import org.camunda.bpm.modeler.core.layout.nnew.DefaultLayoutStrategy;
 import org.camunda.bpm.modeler.core.layout.nnew.LayoutContext;
@@ -19,7 +19,7 @@ import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
  * 
  * @author nico.rehwaldt
  */
-public class LayoutConnectionFeature extends AbstractLayoutBpmnElementFeature<FreeFormConnection> implements ILayoutFeature {
+public class LayoutConnectionFeature extends AbstractBpmn2LayoutElementFeature<FreeFormConnection> implements ILayoutFeature {
 
 	public LayoutConnectionFeature(IFeatureProvider fp) {
 		super(fp);

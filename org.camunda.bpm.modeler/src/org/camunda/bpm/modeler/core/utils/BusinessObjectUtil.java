@@ -14,7 +14,7 @@ package org.camunda.bpm.modeler.core.utils;
 
 import java.util.List;
 
-import org.camunda.bpm.modeler.ui.editor.BPMN2Editor;
+import org.camunda.bpm.modeler.ui.diagram.editor.Bpmn2Editor;
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Conversation;
@@ -72,45 +72,45 @@ public class BusinessObjectUtil {
 	}
 
 	public static <T extends EObject> T getFirstElementOfType(PictogramElement elem, Class<T> clazz) {
-		return getFirstElementOfType(elem,clazz,false);
+		return getFirstElementOfType(elem, clazz, false);
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T extends EObject> T getFirstElementOfType(PictogramElement elem, Class<T> clazz, boolean searchParents) {
 		// first check if its a diagram with pictogram links
-		if ( (elem instanceof Diagram) && elem.getLink() == null) {
-			
+		PictogramLink link = elem.getLink();
+		
+		if (elem instanceof Diagram && link == null) {
 			Diagram diagram = (Diagram) elem;
-			for (PictogramLink link : diagram.getPictogramLinks()) {
-				T foundInLink = findInLink(link, clazz);
+			for (PictogramLink diagramLink : diagram.getPictogramLinks()) {
+				T foundInLink = findInLink(diagramLink, clazz);
 				if (foundInLink != null) {
 					return foundInLink;
 				}
 			}
-		}
-		else if (elem.getLink() == null) {
+		} else {
+			T result = null;
+			
 			if (searchParents) {
-				while (elem!=null && elem.getLink()==null && elem.eContainer() instanceof PictogramElement)
-					elem = (PictogramElement)elem.eContainer();
+				while (elem != null) {
+					result = link != null ? findInLink(link, clazz) : null;
+					if (result != null) {
+						return result;
+					}
+					
+					if (elem.eContainer() instanceof PictogramElement) { 
+						elem = (PictogramElement) elem.eContainer();
+						link = elem.getLink();
+					}
+				}
+			} else {
+				return link != null ? findInLink(link, clazz) : null;
 			}
-			if (elem==null || elem.getLink() == null)
-				return null;
-		}else {
-			T foundInLink = findInLink(elem.getLink(), clazz);
-			if (foundInLink != null) {
-				return foundInLink;
-			}
-		}
-		// if this is a connection point, look at business objects of the connection
-		if (AnchorUtil.isConnectionPoint(elem)) {
-			elem = AnchorUtil.getConnectionPointOwner((Shape)elem);
 		}
 		
 		return null;
 	}
 
-	private static <T extends EObject> T findInLink(PictogramLink pictogramLink,
-			Class<T> clazz) {
+	private static <T extends EObject> T findInLink(PictogramLink pictogramLink, Class<T> clazz) {
 		EList<EObject> businessObjs = pictogramLink.getBusinessObjects();
 		for (EObject eObject : businessObjs) {
 			if (clazz.isInstance(eObject)) {
@@ -173,7 +173,7 @@ public class BusinessObjectUtil {
 	 * @return
 	 */
 	public static PictogramElement getLinkingPictogramElement(EObject businessObject) {
-		Diagram diagram = BPMN2Editor.getActiveEditor().getDiagramTypeProvider().getDiagram();
+		Diagram diagram = Bpmn2Editor.getActiveEditor().getDiagramTypeProvider().getDiagram();
 		return getLinkingPictogramElement(businessObject, diagram);
 	}
 	

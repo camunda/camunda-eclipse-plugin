@@ -16,7 +16,7 @@ package org.camunda.bpm.modeler.core.runtime;
 import java.lang.reflect.Constructor;
 
 import org.camunda.bpm.modeler.core.Activator;
-import org.camunda.bpm.modeler.core.features.container.FeatureContainer;
+import org.camunda.bpm.modeler.core.features.api.container.IFeatureContainer;
 
 /**
  * @author Bob Brodt
@@ -44,13 +44,13 @@ public class FeatureContainerDescriptor extends BaseRuntimeDescriptor {
 		return null;
 	}
 	
-	public FeatureContainer getFeatureContainer() {
+	public IFeatureContainer getFeatureContainer() {
 		try {
 			ClassLoader cl = this.getRuntime().getRuntimeExtension().getClass().getClassLoader();
 			Constructor ctor = null;
 			Class adapterClass = Class.forName(containerClassName, true, cl);
 			ctor = adapterClass.getConstructor();
-			return (FeatureContainer)ctor.newInstance();
+			return (IFeatureContainer)ctor.newInstance();
 		} catch (Exception e) {
 			Activator.logError(e);
 		}

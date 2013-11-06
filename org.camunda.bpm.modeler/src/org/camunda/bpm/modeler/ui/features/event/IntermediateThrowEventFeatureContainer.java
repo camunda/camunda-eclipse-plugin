@@ -12,27 +12,22 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.event;
 
-import org.camunda.bpm.modeler.core.features.MultiUpdateFeature;
+import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.features.event.AbstractCreateEventFeature;
-import org.camunda.bpm.modeler.core.features.event.AbstractUpdateEventFeature;
 import org.camunda.bpm.modeler.core.features.event.AddEventFeature;
-import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
+import org.camunda.bpm.modeler.core.features.event.EventDecorateFeature;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.camunda.bpm.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.IntermediateThrowEvent;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
-import org.eclipse.graphiti.features.IUpdateFeature;
-import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
-import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.services.IPeService;
 
 public class IntermediateThrowEventFeatureContainer extends AbstractEventFeatureContainer {
 
@@ -45,33 +40,15 @@ public class IntermediateThrowEventFeatureContainer extends AbstractEventFeature
 	public ICreateFeature getCreateFeature(IFeatureProvider fp) {
 		return new CreateIntermediateThrowEventFeature(fp);
 	}
-
+	
 	@Override
-	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {
-		MultiUpdateFeature multiUpdate = new MultiUpdateFeature(fp);
-		multiUpdate.addUpdateFeature(super.getUpdateFeature(fp));
-		multiUpdate.addUpdateFeature(new UpdateIntermediateThrowEventFeature(fp));
-		return multiUpdate;
-	}
-
-	@Override
-	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddEventFeature<IntermediateThrowEvent>(fp) {
+	public IDecorateFeature getDecorateFeature(IFeatureProvider fp) {
+		return new EventDecorateFeature(fp) {
+			
 			@Override
-			protected void decorate(Ellipse e) {
-				Ellipse circle = GraphicsUtil.createIntermediateEventCircle(e);
+			protected void decorate(Ellipse decorateContainer) {
+				Ellipse circle = GraphicsUtil.createIntermediateEventCircle(decorateContainer);
 				circle.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
-			}
-
-			@Override
-			protected void setProperties(IAddContext context, ContainerShape newShape) {
-				super.setProperties(context, newShape);
-				
-				IntermediateThrowEvent throwEvent = getBusinessObject(context);
-				IPeService peService = Graphiti.getPeService();
-				peService.setPropertyValue(newShape,
-						UpdateIntermediateThrowEventFeature.INTERMEDIATE_THROW_EVENT_MARKER,
-						AbstractUpdateEventFeature.getEventDefinitionsValue(throwEvent));
 			}
 		};
 	}
@@ -98,32 +75,10 @@ public class IntermediateThrowEventFeatureContainer extends AbstractEventFeature
 			return ImageProvider.IMG_16_INTERMEDIATE_THROW_EVENT;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.camunda.bpm.modeler.features.AbstractCreateFlowElementFeature#getFlowElementClass()
-		 */
 		@Override
 		public EClass getBusinessObjectClass() {
 			return Bpmn2Package.eINSTANCE.getIntermediateThrowEvent();
 		}
 	}
-	
-	public static class UpdateIntermediateThrowEventFeature extends AbstractUpdateEventFeature {
 
-		public static String INTERMEDIATE_THROW_EVENT_MARKER = "marker.intermediate.throw.event";
-
-		/**
-		 * @param fp
-		 */
-		public UpdateIntermediateThrowEventFeature(IFeatureProvider fp) {
-			super(fp);
-		}
-
-		/* (non-Javadoc)
-		 * @see org.camunda.bpm.modeler.features.activity.AbstractUpdateMarkerFeature#getPropertyKey()
-		 */
-		@Override
-		protected String getPropertyKey() {
-			return INTERMEDIATE_THROW_EVENT_MARKER;
-		}
-	}
 }
