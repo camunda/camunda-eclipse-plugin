@@ -335,9 +335,8 @@ public class Bpmn2ToolBehaviour extends DefaultToolBehaviorProvider implements I
 		ICustomFeature[] cf = fp.getCustomFeatures(cc);
 		for (int i = 0; i < cf.length; i++) {
 			ICustomFeature iCustomFeature = cf[i];
-			if (iCustomFeature != null && iCustomFeature.canExecute(cc)) {
-				ContextButtonEntry button = new ContextButtonEntry(
-						iCustomFeature, cc);
+			if (iCustomFeature != null && iCustomFeature.isAvailable(cc) && iCustomFeature.canExecute(cc)) {
+				ContextButtonEntry button = new ContextButtonEntry(iCustomFeature, cc);
 				button.setText(iCustomFeature.getName()); //$NON-NLS-1$
 				button.setIconId(iCustomFeature.getImageId());
 				button.setDescription(iCustomFeature.getDescription());
