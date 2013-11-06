@@ -41,6 +41,7 @@ import org.camunda.bpm.modeler.runtime.engine.model.fox.FailedJobRetryTimeCycleT
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getPriority <em>Priority</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getResultVariableName <em>Result Variable Name</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getFailedJobRetryTimeCycle <em>Failed Job Retry Time Cycle</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getFormData <em>Form Data</em>}</li>
  * </ul>
  * </p>
  *
@@ -758,5 +759,32 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @generated
 	 */
   void setFailedJobRetryTimeCycle(FailedJobRetryTimeCycleType value);
+
+		/**
+	 * Returns the value of the '<em><b>Form Data</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Form Data</em>' containment reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Form Data</em>' containment reference.
+	 * @see #setFormData(FormDataType)
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ModelPackage#getDocumentRoot_FormData()
+	 * @model containment="true"
+	 *        extendedMetaData="kind='element' name='formData' namespace='##targetNamespace'"
+	 * @generated
+	 */
+	FormDataType getFormData();
+
+		/**
+	 * Sets the value of the '{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getFormData <em>Form Data</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Form Data</em>' containment reference.
+	 * @see #getFormData()
+	 * @generated
+	 */
+	void setFormData(FormDataType value);
 
 } // DocumentRoot

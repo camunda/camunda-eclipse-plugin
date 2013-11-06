@@ -95,16 +95,18 @@ public class ExtensionUtil {
 	 */
 	public static <T> List<T> getExtensions(EObject object, Class<T> cls) {
 		List<T> results = new ArrayList<T>();
-		
+
 		EStructuralFeature extensionValuesFeature = object.eClass().getEStructuralFeature("extensionValues");
-		EList<ExtensionAttributeValue> list = (EList<ExtensionAttributeValue>) object.eGet(extensionValuesFeature);
-		
-		for (ExtensionAttributeValue value : list) {
-			FeatureMap featureMap = value.getValue();
-			for (Entry e : featureMap) {
-				Object valueObject = e.getValue();
-				if (cls.isInstance(valueObject)) {
-					results.add((T) valueObject);
+		if (extensionValuesFeature != null) {
+			EList<ExtensionAttributeValue> list = (EList<ExtensionAttributeValue>) object.eGet(extensionValuesFeature);
+
+			for (ExtensionAttributeValue value : list) {
+				FeatureMap featureMap = value.getValue();
+				for (Entry e : featureMap) {
+					Object valueObject = e.getValue();
+					if (cls.isInstance(valueObject)) {
+						results.add((T) valueObject);
+					}
 				}
 			}
 		}

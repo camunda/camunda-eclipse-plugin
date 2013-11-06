@@ -5,7 +5,6 @@ import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
 import static org.camunda.bpm.modeler.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.camunda.bpm.modeler.test.util.assertions.Bpmn2ModelAssertions.elementOfType;
 import static org.camunda.bpm.modeler.test.util.operations.AddStartEventOperation.addStartEvent;
-import static org.camunda.bpm.modeler.test.util.operations.AddSubProcessOperation.addSubProcess;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,6 @@ import org.camunda.bpm.modeler.test.feature.AbstractFeatureTest;
 import org.camunda.bpm.modeler.test.util.DiagramResource;
 import org.camunda.bpm.modeler.test.util.Util;
 import org.eclipse.bpmn2.StartEvent;
-import org.eclipse.bpmn2.Task;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;

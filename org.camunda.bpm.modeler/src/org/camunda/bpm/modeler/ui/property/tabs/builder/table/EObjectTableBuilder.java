@@ -82,12 +82,12 @@ public class EObjectTableBuilder<T extends EObject> {
 		this.elementFactory = elementFactory;
 		return this;
 	}
+
 	public EObjectTableBuilder<T> columnFeatures(EStructuralFeature ... columnFeatures) {
 		this.columnFeatures = columnFeatures;
 		
 		return this;
 	}
-
 
 	public EObjectTableBuilder<T> columnLabels(String ... columnLabels) {
 		this.columnLabels = columnLabels;
@@ -169,8 +169,8 @@ public class EObjectTableBuilder<T extends EObject> {
 		
 		return tableViewer;
 	}
-	
-	private void establishModelViewBinding(EObject model, final TableViewer tableViewer) {
+
+	protected void establishModelViewBinding(EObject model, final TableViewer tableViewer) {
 		
 		Table table = tableViewer.getTable();
 		
@@ -314,7 +314,20 @@ public class EObjectTableBuilder<T extends EObject> {
 		
 		public void rowAdded(T element);
 	}
-	
+
+	/**
+	 * Edit row handler
+	 *
+	 * @author nico.rehwaldt
+	 *
+	 * @param <T>
+	 */
+	public static interface EditRowHandler<T> {
+
+		public void rowEdit(T element);
+		public boolean canEdit(T element);
+	}
+
 	public static interface ContentProvider<T> {
 		
 		/**

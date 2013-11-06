@@ -31,6 +31,15 @@ public interface ModelFactory extends EFactory {
   DocumentRoot createDocumentRoot();
 
   /**
+	 * Returns a new object of class '<em>Start Event</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Start Event</em>'.
+	 * @generated
+	 */
+	StartEvent createStartEvent();
+
+		/**
 	 * Returns a new object of class '<em>Execution Listener Type</em>'.
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -112,6 +121,78 @@ public interface ModelFactory extends EFactory {
   ValueType createValueType();
 
   /**
+	 * Returns a new object of class '<em>Form Data Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Form Data Type</em>'.
+	 * @generated
+	 */
+	FormDataType createFormDataType();
+
+		/**
+	 * Returns a new object of class '<em>Form Field Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Form Field Type</em>'.
+	 * @generated
+	 */
+	FormFieldType createFormFieldType();
+
+		/**
+	 * Returns a new object of class '<em>Properties Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Properties Type</em>'.
+	 * @generated
+	 */
+	PropertiesType createPropertiesType();
+
+		/**
+	 * Returns a new object of class '<em>Property Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Property Type</em>'.
+	 * @generated
+	 */
+	PropertyType createPropertyType();
+
+		/**
+	 * Returns a new object of class '<em>Validation Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Validation Type</em>'.
+	 * @generated
+	 */
+	ValidationType createValidationType();
+
+		/**
+	 * Returns a new object of class '<em>Constraint Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Constraint Type</em>'.
+	 * @generated
+	 */
+	ConstraintType createConstraintType();
+
+		/**
+	 * Returns a new object of class '<em>User Task</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>User Task</em>'.
+	 * @generated
+	 */
+	UserTask createUserTask();
+
+		/**
+	 * Returns a new object of class '<em>Form Data Container</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Form Data Container</em>'.
+	 * @generated
+	 */
+	FormDataContainer createFormDataContainer();
+
+		/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

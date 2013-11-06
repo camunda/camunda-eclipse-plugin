@@ -61,6 +61,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
   public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
 			case ModelPackage.DOCUMENT_ROOT: return createDocumentRoot();
+			case ModelPackage.START_EVENT: return createStartEvent();
 			case ModelPackage.EXECUTION_LISTENER_TYPE: return createExecutionListenerType();
 			case ModelPackage.FIELD_TYPE: return createFieldType();
 			case ModelPackage.FORM_PROPERTY_TYPE: return createFormPropertyType();
@@ -70,6 +71,14 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
 			case ModelPackage.CALL_ACTIVITY: return createCallActivity();
 			case ModelPackage.BOUNDARY_EVENT: return createBoundaryEvent();
 			case ModelPackage.VALUE_TYPE: return createValueType();
+			case ModelPackage.FORM_DATA_TYPE: return createFormDataType();
+			case ModelPackage.FORM_FIELD_TYPE: return createFormFieldType();
+			case ModelPackage.PROPERTIES_TYPE: return createPropertiesType();
+			case ModelPackage.PROPERTY_TYPE: return createPropertyType();
+			case ModelPackage.VALIDATION_TYPE: return createValidationType();
+			case ModelPackage.CONSTRAINT_TYPE: return createConstraintType();
+			case ModelPackage.USER_TASK: return createUserTask();
+			case ModelPackage.FORM_DATA_CONTAINER: return createFormDataContainer();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -156,6 +165,16 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
 	}
 
   /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public StartEvent createStartEvent() {
+		StartEventImpl startEvent = new StartEventImpl();
+		return startEvent;
+	}
+
+		/**
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
@@ -246,6 +265,86 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
 	}
 
   /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public FormDataType createFormDataType() {
+		FormDataTypeImpl formDataType = new FormDataTypeImpl();
+		return formDataType;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public FormFieldType createFormFieldType() {
+		FormFieldTypeImpl formFieldType = new FormFieldTypeImpl();
+		return formFieldType;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public PropertiesType createPropertiesType() {
+		PropertiesTypeImpl propertiesType = new PropertiesTypeImpl();
+		return propertiesType;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public PropertyType createPropertyType() {
+		PropertyTypeImpl propertyType = new PropertyTypeImpl();
+		return propertyType;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ValidationType createValidationType() {
+		ValidationTypeImpl validationType = new ValidationTypeImpl();
+		return validationType;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ConstraintType createConstraintType() {
+		ConstraintTypeImpl constraintType = new ConstraintTypeImpl();
+		return constraintType;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public UserTask createUserTask() {
+		UserTaskImpl userTask = new UserTaskImpl();
+		return userTask;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public FormDataContainer createFormDataContainer() {
+		FormDataContainerImpl formDataContainer = new FormDataContainerImpl();
+		return formDataContainer;
+	}
+
+		/**
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated

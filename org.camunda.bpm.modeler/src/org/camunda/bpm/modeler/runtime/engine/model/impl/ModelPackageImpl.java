@@ -4,35 +4,36 @@ package org.camunda.bpm.modeler.runtime.engine.model.impl;
 
 import org.camunda.bpm.modeler.runtime.engine.model.BoundaryEvent;
 import org.camunda.bpm.modeler.runtime.engine.model.CallActivity;
+import org.camunda.bpm.modeler.runtime.engine.model.ConstraintType;
 import org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot;
 import org.camunda.bpm.modeler.runtime.engine.model.EventType;
 import org.camunda.bpm.modeler.runtime.engine.model.EventType1;
 import org.camunda.bpm.modeler.runtime.engine.model.ExecutionListenerType;
 import org.camunda.bpm.modeler.runtime.engine.model.FieldType;
+import org.camunda.bpm.modeler.runtime.engine.model.FormDataContainer;
+import org.camunda.bpm.modeler.runtime.engine.model.FormDataType;
+import org.camunda.bpm.modeler.runtime.engine.model.FormFieldType;
 import org.camunda.bpm.modeler.runtime.engine.model.FormPropertyType;
 import org.camunda.bpm.modeler.runtime.engine.model.HistoryType;
 import org.camunda.bpm.modeler.runtime.engine.model.InType;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelFactory;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.runtime.engine.model.OutType;
+import org.camunda.bpm.modeler.runtime.engine.model.PropertiesType;
+import org.camunda.bpm.modeler.runtime.engine.model.PropertyType;
+import org.camunda.bpm.modeler.runtime.engine.model.StartEvent;
 import org.camunda.bpm.modeler.runtime.engine.model.TaskListenerType;
 import org.camunda.bpm.modeler.runtime.engine.model.TypeType;
+import org.camunda.bpm.modeler.runtime.engine.model.UserTask;
+import org.camunda.bpm.modeler.runtime.engine.model.ValidationType;
 import org.camunda.bpm.modeler.runtime.engine.model.ValueType;
-
 import org.camunda.bpm.modeler.runtime.engine.model.fox.FoxPackage;
-
 import org.camunda.bpm.modeler.runtime.engine.model.fox.impl.FoxPackageImpl;
-
 import org.camunda.bpm.modeler.runtime.engine.model.util.ModelValidator;
-
 import org.eclipse.bpmn2.Bpmn2Package;
-
 import org.eclipse.bpmn2.di.BpmnDiPackage;
-
 import org.eclipse.dd.dc.DcPackage;
-
 import org.eclipse.dd.di.DiPackage;
-
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
@@ -40,9 +41,7 @@ import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EValidator;
-
 import org.eclipse.emf.ecore.impl.EPackageImpl;
-
 import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 
 /**
@@ -60,6 +59,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
   private EClass documentRootEClass = null;
 
   /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass startEventEClass = null;
+
+		/**
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
@@ -123,6 +129,62 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
   private EClass valueTypeEClass = null;
 
   /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass formDataTypeEClass = null;
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass formFieldTypeEClass = null;
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass propertiesTypeEClass = null;
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass propertyTypeEClass = null;
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass validationTypeEClass = null;
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass constraintTypeEClass = null;
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass userTaskEClass = null;
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass formDataContainerEClass = null;
+
+		/**
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
@@ -516,6 +578,24 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	}
 
   /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getDocumentRoot_FormData() {
+		return (EReference)documentRootEClass.getEStructuralFeatures().get(25);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getStartEvent() {
+		return startEventEClass;
+	}
+
+		/**
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
@@ -985,6 +1065,204 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
   /**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getFormDataType() {
+		return formDataTypeEClass;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getFormDataType_FormField() {
+		return (EReference)formDataTypeEClass.getEStructuralFeatures().get(0);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getFormFieldType() {
+		return formFieldTypeEClass;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getFormFieldType_Id() {
+		return (EAttribute)formFieldTypeEClass.getEStructuralFeatures().get(0);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getFormFieldType_Label() {
+		return (EAttribute)formFieldTypeEClass.getEStructuralFeatures().get(1);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getFormFieldType_Type() {
+		return (EAttribute)formFieldTypeEClass.getEStructuralFeatures().get(2);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getFormFieldType_DefaultValue() {
+		return (EAttribute)formFieldTypeEClass.getEStructuralFeatures().get(3);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getFormFieldType_Properties() {
+		return (EReference)formFieldTypeEClass.getEStructuralFeatures().get(4);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getFormFieldType_Validation() {
+		return (EReference)formFieldTypeEClass.getEStructuralFeatures().get(5);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getFormFieldType_Value() {
+		return (EReference)formFieldTypeEClass.getEStructuralFeatures().get(6);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getPropertiesType() {
+		return propertiesTypeEClass;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getPropertiesType_Property() {
+		return (EReference)propertiesTypeEClass.getEStructuralFeatures().get(0);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getPropertyType() {
+		return propertyTypeEClass;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getPropertyType_Id() {
+		return (EAttribute)propertyTypeEClass.getEStructuralFeatures().get(0);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getPropertyType_Value() {
+		return (EAttribute)propertyTypeEClass.getEStructuralFeatures().get(1);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getValidationType() {
+		return validationTypeEClass;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getValidationType_Constraint() {
+		return (EReference)validationTypeEClass.getEStructuralFeatures().get(0);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getConstraintType() {
+		return constraintTypeEClass;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getConstraintType_Name() {
+		return (EAttribute)constraintTypeEClass.getEStructuralFeatures().get(0);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getConstraintType_Config() {
+		return (EAttribute)constraintTypeEClass.getEStructuralFeatures().get(1);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getUserTask() {
+		return userTaskEClass;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getFormDataContainer() {
+		return formDataContainerEClass;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1136,6 +1414,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		createEAttribute(documentRootEClass, DOCUMENT_ROOT__PRIORITY);
 		createEAttribute(documentRootEClass, DOCUMENT_ROOT__RESULT_VARIABLE_NAME);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__FAILED_JOB_RETRY_TIME_CYCLE);
+		createEReference(documentRootEClass, DOCUMENT_ROOT__FORM_DATA);
+
+		startEventEClass = createEClass(START_EVENT);
 
 		executionListenerTypeEClass = createEClass(EXECUTION_LISTENER_TYPE);
 		createEAttribute(executionListenerTypeEClass, EXECUTION_LISTENER_TYPE__GROUP);
@@ -1198,6 +1479,36 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		createEAttribute(valueTypeEClass, VALUE_TYPE__ID);
 		createEAttribute(valueTypeEClass, VALUE_TYPE__NAME);
 
+		formDataTypeEClass = createEClass(FORM_DATA_TYPE);
+		createEReference(formDataTypeEClass, FORM_DATA_TYPE__FORM_FIELD);
+
+		formFieldTypeEClass = createEClass(FORM_FIELD_TYPE);
+		createEAttribute(formFieldTypeEClass, FORM_FIELD_TYPE__ID);
+		createEAttribute(formFieldTypeEClass, FORM_FIELD_TYPE__LABEL);
+		createEAttribute(formFieldTypeEClass, FORM_FIELD_TYPE__TYPE);
+		createEAttribute(formFieldTypeEClass, FORM_FIELD_TYPE__DEFAULT_VALUE);
+		createEReference(formFieldTypeEClass, FORM_FIELD_TYPE__PROPERTIES);
+		createEReference(formFieldTypeEClass, FORM_FIELD_TYPE__VALIDATION);
+		createEReference(formFieldTypeEClass, FORM_FIELD_TYPE__VALUE);
+
+		propertiesTypeEClass = createEClass(PROPERTIES_TYPE);
+		createEReference(propertiesTypeEClass, PROPERTIES_TYPE__PROPERTY);
+
+		propertyTypeEClass = createEClass(PROPERTY_TYPE);
+		createEAttribute(propertyTypeEClass, PROPERTY_TYPE__ID);
+		createEAttribute(propertyTypeEClass, PROPERTY_TYPE__VALUE);
+
+		validationTypeEClass = createEClass(VALIDATION_TYPE);
+		createEReference(validationTypeEClass, VALIDATION_TYPE__CONSTRAINT);
+
+		constraintTypeEClass = createEClass(CONSTRAINT_TYPE);
+		createEAttribute(constraintTypeEClass, CONSTRAINT_TYPE__NAME);
+		createEAttribute(constraintTypeEClass, CONSTRAINT_TYPE__CONFIG);
+
+		userTaskEClass = createEClass(USER_TASK);
+
+		formDataContainerEClass = createEClass(FORM_DATA_CONTAINER);
+
 		// Create enums
 		eventTypeEEnum = createEEnum(EVENT_TYPE);
 		eventType1EEnum = createEEnum(EVENT_TYPE1);
@@ -1251,8 +1562,12 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
 		// Add supertypes to classes
 		documentRootEClass.getESuperTypes().add(theBpmn2Package.getDocumentRoot());
+		startEventEClass.getESuperTypes().add(theBpmn2Package.getStartEvent());
+		startEventEClass.getESuperTypes().add(this.getFormDataContainer());
 		callActivityEClass.getESuperTypes().add(theBpmn2Package.getCallActivity());
 		boundaryEventEClass.getESuperTypes().add(theBpmn2Package.getBoundaryEvent());
+		userTaskEClass.getESuperTypes().add(theBpmn2Package.getUserTask());
+		userTaskEClass.getESuperTypes().add(this.getFormDataContainer());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(documentRootEClass, DocumentRoot.class, "DocumentRoot", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1281,6 +1596,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		initEAttribute(getDocumentRoot_Priority(), ecorePackage.getEString(), "priority", "", 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getDocumentRoot_ResultVariableName(), ecorePackage.getEString(), "resultVariableName", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_FailedJobRetryTimeCycle(), theFoxPackage.getFailedJobRetryTimeCycleType(), null, "failedJobRetryTimeCycle", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+		initEReference(getDocumentRoot_FormData(), this.getFormDataType(), null, "formData", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(startEventEClass, StartEvent.class, "StartEvent", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(executionListenerTypeEClass, ExecutionListenerType.class, "ExecutionListenerType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getExecutionListenerType_Group(), ecorePackage.getEFeatureMapEntry(), "group", null, 0, -1, ExecutionListenerType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1342,6 +1660,36 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		initEClass(valueTypeEClass, ValueType.class, "ValueType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getValueType_Id(), theXMLTypePackage.getString(), "id", null, 0, 1, ValueType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getValueType_Name(), theXMLTypePackage.getString(), "name", null, 0, 1, ValueType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(formDataTypeEClass, FormDataType.class, "FormDataType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getFormDataType_FormField(), this.getFormFieldType(), null, "formField", null, 0, -1, FormDataType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(formFieldTypeEClass, FormFieldType.class, "FormFieldType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getFormFieldType_Id(), ecorePackage.getEString(), "id", null, 0, 1, FormFieldType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getFormFieldType_Label(), ecorePackage.getEString(), "label", null, 0, 1, FormFieldType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getFormFieldType_Type(), ecorePackage.getEString(), "type", null, 0, 1, FormFieldType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getFormFieldType_DefaultValue(), ecorePackage.getEString(), "defaultValue", null, 0, 1, FormFieldType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getFormFieldType_Properties(), this.getPropertiesType(), null, "properties", null, 0, 1, FormFieldType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getFormFieldType_Validation(), this.getValidationType(), null, "validation", null, 0, 1, FormFieldType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getFormFieldType_Value(), this.getValueType(), null, "value", null, 0, -1, FormFieldType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(propertiesTypeEClass, PropertiesType.class, "PropertiesType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getPropertiesType_Property(), this.getPropertyType(), null, "property", null, 0, -1, PropertiesType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(propertyTypeEClass, PropertyType.class, "PropertyType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getPropertyType_Id(), ecorePackage.getEString(), "id", null, 0, 1, PropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getPropertyType_Value(), ecorePackage.getEString(), "value", null, 0, 1, PropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(validationTypeEClass, ValidationType.class, "ValidationType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getValidationType_Constraint(), this.getConstraintType(), null, "constraint", null, 0, -1, ValidationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(constraintTypeEClass, ConstraintType.class, "ConstraintType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getConstraintType_Name(), ecorePackage.getEString(), "name", null, 0, 1, ConstraintType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getConstraintType_Config(), ecorePackage.getEString(), "config", null, 0, 1, ConstraintType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(userTaskEClass, UserTask.class, "UserTask", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(formDataContainerEClass, FormDataContainer.class, "FormDataContainer", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		// Initialize enums and add enum literals
 		initEEnum(eventTypeEEnum, EventType.class, "EventType");
@@ -1595,6 +1943,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "element",
 			 "name", "failedJobRetryTimeCycle",
 			 "namespace", "http://www.camunda.com/fox"
+		   });		
+		addAnnotation
+		  (getDocumentRoot_FormData(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "formData",
+			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
 		  (classTypeEDataType, 
@@ -2027,6 +2383,152 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "name"
+		   });		
+		addAnnotation
+		  (formDataTypeEClass, 
+		   source, 
+		   new String[] {
+			 "name", "formData_._type",
+			 "kind", "elementOnly"
+		   });		
+		addAnnotation
+		  (getFormDataType_FormField(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "formField",
+			 "namespace", "##targetNamespace"
+		   });		
+		addAnnotation
+		  (formFieldTypeEClass, 
+		   source, 
+		   new String[] {
+			 "name", "formField_._type",
+			 "kind", "elementOnly"
+		   });		
+		addAnnotation
+		  (getFormFieldType_Id(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "id"
+		   });		
+		addAnnotation
+		  (getFormFieldType_Label(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "label", "label"
+		   });		
+		addAnnotation
+		  (getFormFieldType_Type(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "type"
+		   });		
+		addAnnotation
+		  (getFormFieldType_DefaultValue(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "defaultValue"
+		   });		
+		addAnnotation
+		  (getFormFieldType_Properties(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "properties",
+			 "namespace", "##targetNamespace"
+		   });		
+		addAnnotation
+		  (getFormFieldType_Validation(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "validation",
+			 "namespace", "##targetNamespace"
+		   });		
+		addAnnotation
+		  (getFormFieldType_Value(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "value",
+			 "namespace", "##targetNamespace"
+		   });		
+		addAnnotation
+		  (propertiesTypeEClass, 
+		   source, 
+		   new String[] {
+			 "name", "properties_._type",
+			 "kind", "elementOnly"
+		   });		
+		addAnnotation
+		  (getPropertiesType_Property(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "property",
+			 "namespace", "##targetNamespace"
+		   });		
+		addAnnotation
+		  (propertyTypeEClass, 
+		   source, 
+		   new String[] {
+			 "name", "property_._type",
+			 "kind", "empty"
+		   });		
+		addAnnotation
+		  (getPropertyType_Id(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "id"
+		   });		
+		addAnnotation
+		  (getPropertyType_Value(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "value"
+		   });		
+		addAnnotation
+		  (validationTypeEClass, 
+		   source, 
+		   new String[] {
+			 "name", "validation_._type",
+			 "kind", "elementOnly"
+		   });		
+		addAnnotation
+		  (getValidationType_Constraint(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "constraint",
+			 "namespace", "##targetNamespace"
+		   });		
+		addAnnotation
+		  (constraintTypeEClass, 
+		   source, 
+		   new String[] {
+			 "name", "constraint_._type",
+			 "kind", "empty"
+		   });		
+		addAnnotation
+		  (getConstraintType_Name(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "name"
+		   });		
+		addAnnotation
+		  (getConstraintType_Config(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "config"
 		   });
 	}
 

@@ -2,7 +2,6 @@ package org.camunda.bpm.modeler.ui.property.tabs.builder;
 
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.ui.property.tabs.binding.ModelAttributeButtonBinding;
-import org.camunda.bpm.modeler.ui.property.tabs.binding.change.EObjectChangeSupport.ModelChangedEvent;
 import org.camunda.bpm.modeler.ui.property.tabs.util.Events;
 import org.camunda.bpm.modeler.ui.property.tabs.util.HelpText;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
@@ -149,7 +148,13 @@ public class MultiInstancePropertiesBuilder extends AbstractPropertiesBuilder<Ac
 	
 	private void rebuildSelection() {
 		EObject loopCharacteristics = (EObject) bo.eGet(LOOP_CHARACTERISTICS_FEATURE);
-		
+
+		if (loopCharacteristics == null) {
+			standardLoopCheckbox.setSelection(false);
+			multiInstanceCheckbox.setSelection(false);
+			return;
+		}
+
 		if (loopCharacteristics != null && loopCharacteristics instanceof MultiInstanceLoopCharacteristics) {
 			standardLoopCheckbox.setSelection(false);
 			return;

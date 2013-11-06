@@ -7,13 +7,13 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 /**
- * Filter which detects changes on nested resources (in a containment list).
+ * Filter which detects changes on an elements is-many attribute.
  * 
  * @author nico.rehwaldt
  */
-public class NestedFeatureChangeFilter extends AbstractFeatureChangeFilter {
+public class IsManyAttributeAnyChildChangeFilter extends AbstractFeatureChangeFilter {
 
-	public NestedFeatureChangeFilter(EObject object, EStructuralFeature feature) {
+	public IsManyAttributeAnyChildChangeFilter(EObject object, EStructuralFeature feature) {
 		super(object, feature);
 
 		if (!feature.isMany()) {

@@ -1,5 +1,6 @@
 package org.camunda.bpm.modeler.ui.change.filter;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -16,6 +17,10 @@ public abstract class AbstractFeatureChangeFilter extends NotificationFilter.Cus
 	protected EStructuralFeature feature;
 
 	public AbstractFeatureChangeFilter(EObject object, EStructuralFeature feature) {
+
+		Assert.isNotNull(object);
+		Assert.isNotNull(feature);
+
 		this.object = object;
 		this.feature = feature;
 	}
