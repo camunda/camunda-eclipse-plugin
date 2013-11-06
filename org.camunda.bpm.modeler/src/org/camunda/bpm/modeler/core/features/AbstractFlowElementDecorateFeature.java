@@ -44,7 +44,7 @@ public abstract class AbstractFlowElementDecorateFeature<T extends GraphicsAlgor
 			
 			T decorateContainer = getDecorateContainer(shape);
 			
-			clearDecorations(decorateContainer);
+			clearDecorations(shape, decorateContainer);
 			
 			decorate(shape, decorateContainer);
 		} else {
@@ -52,7 +52,11 @@ public abstract class AbstractFlowElementDecorateFeature<T extends GraphicsAlgor
 		}
 	}
 
-	private void clearDecorations(T decorateContainer) {
+	protected void clearDecorations(ContainerShape shape, T decorateContainer) {
+		clearDecorations(decorateContainer);
+	}
+
+	protected void clearDecorations(T decorateContainer) {
 		decorateContainer.setLineWidth(1);
 		decorateContainer.getGraphicsAlgorithmChildren().clear();
 	}

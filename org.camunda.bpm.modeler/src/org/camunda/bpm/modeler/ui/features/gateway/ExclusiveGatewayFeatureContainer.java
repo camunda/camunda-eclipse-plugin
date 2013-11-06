@@ -22,6 +22,7 @@ import org.camunda.bpm.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.ExclusiveGateway;
 import org.eclipse.bpmn2.di.BPMNShape;
+import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -57,7 +58,9 @@ public class ExclusiveGatewayFeatureContainer extends AbstractGatewayFeatureCont
 				
 				// TODO: handle showExclusiveGatewayMarker property change event in BPMN2Editor
 				// and override the default gateway UpdateFeature to show/hide the "X" marker.
-				if (bpmnShape.isIsMarkerVisible()) {
+				
+				// make sure we hide the X only if isMarkerVisible="false" is set
+				if (!bpmnShape.eIsSet(BpmnDiPackage.eINSTANCE.getBPMNShape_IsMarkerVisible()) || bpmnShape.isIsMarkerVisible()) {
 					GraphicsUtil.createGatewayDiagonalCross(decorateContainer);
 				}
 			}
