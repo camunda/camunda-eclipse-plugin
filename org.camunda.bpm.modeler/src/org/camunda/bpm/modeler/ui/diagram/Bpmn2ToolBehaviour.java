@@ -20,6 +20,7 @@ import org.camunda.bpm.modeler.core.features.activity.ActivitySelectionBehavior;
 import org.camunda.bpm.modeler.core.features.api.IBpmn2AddFeature;
 import org.camunda.bpm.modeler.core.features.api.IBpmn2CreateFeature;
 import org.camunda.bpm.modeler.core.features.event.EventSelectionBehavior;
+import org.camunda.bpm.modeler.core.features.gateway.GatewaySelectionBehavior;
 import org.camunda.bpm.modeler.core.utils.LabelUtil;
 import org.camunda.bpm.modeler.core.validation.ValidationStatusAdapter;
 import org.camunda.bpm.modeler.ui.FeatureMap;
@@ -271,9 +272,12 @@ public class Bpmn2ToolBehaviour extends DefaultToolBehaviorProvider implements I
 			return ActivitySelectionBehavior.getClickArea(pe);
 		} else if (EventSelectionBehavior.canApplyTo(pe)) {
 			return EventSelectionBehavior.getClickArea(pe);
+		} else if (GatewaySelectionBehavior.canApplyTo(pe)) {
+			return GatewaySelectionBehavior.getClickArea(pe);
 		} else if (ChoreographySelectionBehavior.canApplyTo(pe)) {
 			return ChoreographySelectionBehavior.getClickArea(pe);
 		}
+		
 		return super.getClickArea(pe);
 	}
 
@@ -285,6 +289,8 @@ public class Bpmn2ToolBehaviour extends DefaultToolBehaviorProvider implements I
 			return EventSelectionBehavior.getSelectionBorder(pe);
 		} else if (ChoreographySelectionBehavior.canApplyTo(pe)) {
 			return ChoreographySelectionBehavior.getSelectionBorder(pe);
+		} if (GatewaySelectionBehavior.canApplyTo(pe)) {
+			return GatewaySelectionBehavior.getSelectionBorder(pe);
 		} else if (pe instanceof ContainerShape) {
 			if (((ContainerShape) pe).getChildren().size() > 0) {
 				GraphicsAlgorithm ga = ((ContainerShape) pe).getChildren()

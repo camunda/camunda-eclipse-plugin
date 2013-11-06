@@ -12,23 +12,32 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.gateway;
 
+import org.camunda.bpm.modeler.core.features.AbstractBpmn2UpdateFeature;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.eclipse.bpmn2.EventBasedGateway;
 import org.eclipse.bpmn2.EventBasedGatewayType;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IReason;
 import org.eclipse.graphiti.features.context.IUpdateContext;
-import org.eclipse.graphiti.features.impl.AbstractUpdateFeature;
 import org.eclipse.graphiti.features.impl.Reason;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
+import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Polygon;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
-import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.services.IPeService;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 
-public class UpdateEventBasedGatewayFeature extends AbstractUpdateFeature {
+/**
+ * An update feature that takes care of updating an event based gateway based 
+ * on its instantiate and type properties.
+ * 
+ * @author nico.rehwaldt
+ */
+public class UpdateEventBasedGatewayFeature extends AbstractBpmn2UpdateFeature {
 
+	static final String INSTANTIATE_PROPERTY = "eventBased.instantiate";
+	static final String GATEWAY_TYPE_PROPERTY = "eventBased.type";
+	
 	public UpdateEventBasedGatewayFeature(IFeatureProvider fp) {
 		super(fp);
 	}
@@ -41,43 +50,52 @@ public class UpdateEventBasedGatewayFeature extends AbstractUpdateFeature {
 
 	@Override
 	public IReason updateNeeded(IUpdateContext context) {
-		IPeService service = Graphiti.getPeService();
 
-		boolean instantiate = Boolean.parseBoolean(service.getPropertyValue(context.getPictogramElement(),
-		        EventBasedGatewayFeatureContainer.INSTANTIATE_PROPERTY));
-		EventBasedGatewayType gatewayType = EventBasedGatewayType.getByName(service.getPropertyValue(
-		        context.getPictogramElement(), EventBasedGatewayFeatureContainer.EVENT_GATEWAY_TYPE_PROPERTY));
+		PictogramElement pictogramElement = context.getPictogramElement();
+		
+		Boolean instantiateProperty = getBooleanProperty(pictogramElement, INSTANTIATE_PROPERTY);
+		String gatewayTypeProperty = getProperty(pictogramElement, GATEWAY_TYPE_PROPERTY);
 
-		EventBasedGateway gateway = (EventBasedGateway) getBusinessObjectForPictogramElement(context
-		        .getPictogramElement());
+		if (instantiateProperty == null || gatewayTypeProperty == null) {
+			return Reason.createTrueReason();
+		}
 
-		boolean changed = instantiate != gateway.isInstantiate() || gatewayType != gateway.getEventGatewayType();
-		return changed ? Reason.createTrueReason() : Reason.createFalseReason();
+		EventBasedGatewayType gatewayType = EventBasedGatewayType.getByName(gatewayTypeProperty);
+
+		EventBasedGateway gateway = (EventBasedGateway) getBusinessObjectForPictogramElement(pictogramElement);
+
+		if (gateway.isInstantiate() != instantiateProperty) {
+			return Reason.createTrueReason();
+		}
+		
+		if (gatewayType != gateway.getEventGatewayType()) {
+			return Reason.createTrueReason();
+		}
+
+		return Reason.createFalseReason();
 	}
 
 	@Override
 	public boolean update(IUpdateContext context) {
-		IPeService service = Graphiti.getPeService();
+		Shape pictogramElement = (Shape) context.getPictogramElement();
+		
+		EventBasedGateway gateway = (EventBasedGateway) getBusinessObjectForPictogramElement(pictogramElement);
 
-		EventBasedGateway gateway = (EventBasedGateway) getBusinessObjectForPictogramElement(context
-		        .getPictogramElement());
-
-		clearGateway(context.getPictogramElement());
+		clearGateway(pictogramElement);
 
 		if (gateway.isInstantiate()) {
 			if (gateway.getEventGatewayType() == EventBasedGatewayType.PARALLEL) {
-				drawParallelMultipleEventBased((ContainerShape) context.getPictogramElement());
+				drawParallelMultipleEventBased((ContainerShape) pictogramElement);
 			} else {
-				drawExclusiveEventBased((ContainerShape) context.getPictogramElement());
+				drawExclusiveEventBased((Shape) pictogramElement);
 			}
 		} else {
-			drawEventBased((ContainerShape) context.getPictogramElement());
+			drawEventBased((Shape) pictogramElement);
 		}
 
-		service.setPropertyValue(context.getPictogramElement(), EventBasedGatewayFeatureContainer.INSTANTIATE_PROPERTY,
-		        Boolean.toString(gateway.isInstantiate()));
-		service.setPropertyValue(context.getPictogramElement(),
-		        EventBasedGatewayFeatureContainer.EVENT_GATEWAY_TYPE_PROPERTY, gateway.getEventGatewayType().getName());
+		setProperty(pictogramElement, INSTANTIATE_PROPERTY, gateway.isInstantiate());
+		setProperty(pictogramElement, GATEWAY_TYPE_PROPERTY, gateway.getEventGatewayType().getName());
+
 		return true;
 	}
 
@@ -86,22 +104,29 @@ public class UpdateEventBasedGatewayFeature extends AbstractUpdateFeature {
 	}
 
 	// TODO: Move to decorate feature
-	
-	private void drawEventBased(ContainerShape container) {
-		Ellipse outer = GraphicsUtil.createGatewayOuterCircle(container.getGraphicsAlgorithm());
+
+	private void drawEventBased(Shape container) {
+		GraphicsAlgorithm graphicsAlgorithm = container.getGraphicsAlgorithm();
+
+		Ellipse outer = GraphicsUtil.createGatewayOuterCircle(graphicsAlgorithm);
 		Ellipse inner = GraphicsUtil.createGatewayInnerCircle(outer);
-		Polygon pentagon = GraphicsUtil.createGatewayPentagon(container);
+
+		Polygon pentagon = GraphicsUtil.createGatewayPentagon(graphicsAlgorithm);
 		pentagon.setFilled(false);
 	}
 
-	private void drawExclusiveEventBased(ContainerShape container) {
-		Ellipse ellipse = GraphicsUtil.createGatewayOuterCircle(container.getGraphicsAlgorithm());
-		Polygon pentagon = GraphicsUtil.createGatewayPentagon(container);
+	private void drawExclusiveEventBased(Shape container) {
+		GraphicsAlgorithm graphicsAlgorithm = container.getGraphicsAlgorithm();
+
+		Ellipse ellipse = GraphicsUtil.createGatewayOuterCircle(graphicsAlgorithm);
+		Polygon pentagon = GraphicsUtil.createGatewayPentagon(graphicsAlgorithm);
 		pentagon.setFilled(false);
 	}
 
-	private void drawParallelMultipleEventBased(ContainerShape container) {
-		Ellipse ellipse = GraphicsUtil.createGatewayOuterCircle(container.getGraphicsAlgorithm());
-		Polygon cross = GraphicsUtil.createEventGatewayParallelCross(container);
+	private void drawParallelMultipleEventBased(Shape container) {
+		GraphicsAlgorithm graphicsAlgorithm = container.getGraphicsAlgorithm();
+
+		Ellipse ellipse = GraphicsUtil.createGatewayOuterCircle(graphicsAlgorithm);
+		Polygon cross = GraphicsUtil.createEventGatewayParallelCross(graphicsAlgorithm);
 	}
 }

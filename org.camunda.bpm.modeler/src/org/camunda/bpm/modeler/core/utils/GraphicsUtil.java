@@ -349,23 +349,22 @@ public class GraphicsUtil {
 		return gaService.createPolygon(container, gateWayPoints);
 	}
 
-	public static Polygon createGatewayPentagon(ContainerShape container) {
-		Shape pentagonShape = peService.createShape(container, false);
+	public static Polygon createGatewayPentagon(GraphicsAlgorithm graphicsAlgorithm) {
 		
-		final int gatewayHeight = getShapeHeight(container);
-		final int gatewayWidth = getShapeWidth(container);
+		final int gatewayHeight = graphicsAlgorithm.getHeight();
+		final int gatewayWidth = graphicsAlgorithm.getWidth();
 		
 		final float heightRatio = calculateRatio(gatewayHeight, Float.valueOf(GATEWAY_RADIUS * 2));
 		final float widthRatio = calculateRatio(gatewayWidth, Float.valueOf(GATEWAY_RADIUS * 2));
 		
-		Polygon pentagon = gaService.createPolygon(pentagonShape,
+		Polygon pentagon = gaService.createPolygon(graphicsAlgorithm,
 				new int[] { gatewayWidth / 2, generateRatioPointValue(18, heightRatio),
 							gatewayWidth / 2 + generateRatioPointValue(8, widthRatio), gatewayHeight / 2 - generateRatioPointValue(2, heightRatio),
 							gatewayWidth / 2 + generateRatioPointValue(5, widthRatio), gatewayHeight / 2 + generateRatioPointValue(7, heightRatio),
 							gatewayWidth / 2 - generateRatioPointValue(5, widthRatio), gatewayHeight / 2 + generateRatioPointValue(7, heightRatio),
 							gatewayWidth / 2 - generateRatioPointValue(8, widthRatio), gatewayHeight / 2 - generateRatioPointValue(2, heightRatio) });
 							
-		peService.setPropertyValue(pentagonShape, DELETABLE_PROPERTY, "true");
+		peService.setPropertyValue(pentagon, DELETABLE_PROPERTY, "true");
 		return pentagon;
 	}
 
@@ -464,11 +463,9 @@ public class GraphicsUtil {
 		return diagonalCross;
 	}
 
-	public static Polygon createEventGatewayParallelCross(ContainerShape container) {
-		Shape crossShape = peService.createShape(container, false);
-		
-		final int gatewayHeight = getShapeHeight(container);
-		final int gatewayWidth = getShapeWidth(container);
+	public static Polygon createEventGatewayParallelCross(GraphicsAlgorithm graphicsAlgorithm) {
+		final int gatewayHeight = graphicsAlgorithm.getHeight();
+		final int gatewayWidth = graphicsAlgorithm.getWidth();
 		
 		final float heightRatio = calculateRatio(gatewayHeight, Float.valueOf(GATEWAY_RADIUS * 2));
 		final float widthRatio = calculateRatio(gatewayWidth, Float.valueOf(GATEWAY_RADIUS * 2));
@@ -495,16 +492,15 @@ public class GraphicsUtil {
 		points.add(gaService.createPoint(n2x, n4y));
 		points.add(gaService.createPoint(n2x, n3y));
 		points.add(gaService.createPoint(n1x, n3y));
-		Polygon cross = gaService.createPolygon(crossShape, points);
+		
+		Polygon cross = gaService.createPolygon(graphicsAlgorithm, points);
 		cross.setFilled(false);
 		cross.setLineWidth(1);
-		peService.setPropertyValue(crossShape, DELETABLE_PROPERTY, "true");
+		peService.setPropertyValue(cross, DELETABLE_PROPERTY, "true");
 		return cross;
 	}
 
 	public static Asterisk createGatewayAsterisk(GraphicsAlgorithm graphicsAlgorithm) {
-		IPeService service = Graphiti.getPeService();
-
 		final int gatewayHeight = graphicsAlgorithm.getWidth();
 		final int gatewayWidth = graphicsAlgorithm.getHeight();
 		
@@ -515,25 +511,25 @@ public class GraphicsUtil {
 				new int[] { generateRatioPointValue(24, widthRatio), generateRatioPointValue(7, heightRatio),
 							generateRatioPointValue(24, widthRatio), generateRatioPointValue(43, heightRatio) });
 		vertical.setLineWidth(3);
-		peService.setPropertyValue(graphicsAlgorithm, DELETABLE_PROPERTY, "true");
+		peService.setPropertyValue(vertical, DELETABLE_PROPERTY, "true");
 
 		Polyline horizontal = gaService.createPolyline(graphicsAlgorithm,
 				new int[] { generateRatioPointValue(7, widthRatio), generateRatioPointValue(24, heightRatio),
 							generateRatioPointValue(43, widthRatio), generateRatioPointValue(24, heightRatio) });
 		horizontal.setLineWidth(3);
-		peService.setPropertyValue(graphicsAlgorithm, DELETABLE_PROPERTY, "true");
+		peService.setPropertyValue(horizontal, DELETABLE_PROPERTY, "true");
 
 		Polyline diagonalDesc = gaService.createPolyline(graphicsAlgorithm,
 				new int[] { generateRatioPointValue(14, widthRatio), generateRatioPointValue(14, heightRatio),
 							generateRatioPointValue(37, widthRatio), generateRatioPointValue(37, heightRatio) });
 		diagonalDesc.setLineWidth(3);
-		peService.setPropertyValue(graphicsAlgorithm, DELETABLE_PROPERTY, "true");
+		peService.setPropertyValue(diagonalDesc, DELETABLE_PROPERTY, "true");
 
 		Polyline diagonalAsc = gaService.createPolyline(graphicsAlgorithm,
 				new int[] { generateRatioPointValue(37, widthRatio), generateRatioPointValue(14, heightRatio),
 							generateRatioPointValue(14, widthRatio), generateRatioPointValue(37, heightRatio) });
 		diagonalAsc.setLineWidth(3);
-		peService.setPropertyValue(graphicsAlgorithm, DELETABLE_PROPERTY, "true");
+		peService.setPropertyValue(diagonalAsc, DELETABLE_PROPERTY, "true");
 
 		Asterisk a = new Asterisk();
 		a.horizontal = horizontal;
