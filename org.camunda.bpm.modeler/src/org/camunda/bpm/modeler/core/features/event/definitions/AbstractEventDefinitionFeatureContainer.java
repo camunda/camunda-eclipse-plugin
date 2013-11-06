@@ -173,12 +173,21 @@ public abstract class AbstractEventDefinitionFeatureContainer extends BaseElemen
 
 		@Override
 		public boolean canUpdate(IUpdateContext context) {
-			return true;
+			
+			// this method intentionally returns null.
+			// the reason is, that this feature should never be executed during the
+			// normal update cycle but only as part of
+			// AbstractUpdateEventFeature#doUpdate()
+			return false;
 		}
 
 		@Override
 		public IReason updateNeeded(IUpdateContext context) {
-			return Reason.createTrueReason();
+			// this method intentionally returns null.
+			// the reason is, that this feature should never be executed during the
+			// normal update cycle but only as part of
+			// AbstractUpdateEventFeature#doUpdate()
+			return Reason.createFalseReason();
 		}
 	}
 

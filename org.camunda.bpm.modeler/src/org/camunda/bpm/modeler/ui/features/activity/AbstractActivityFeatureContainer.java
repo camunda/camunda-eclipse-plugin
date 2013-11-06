@@ -42,12 +42,10 @@ public abstract class AbstractActivityFeatureContainer extends BaseElementFeatur
 		UpdateActivityCompensateMarkerFeature compensateMarkerUpdateFeature = new UpdateActivityCompensateMarkerFeature(fp);
 		UpdateActivityLoopAndMultiInstanceMarkerFeature loopAndMultiInstanceUpdateFeature = new UpdateActivityLoopAndMultiInstanceMarkerFeature(fp);
 		
-		MultiUpdateFeature updateFeature = new MultiUpdateFeature(fp);
-		updateFeature.addUpdateFeature(compensateMarkerUpdateFeature);
-		updateFeature.addUpdateFeature(loopAndMultiInstanceUpdateFeature);
-		updateFeature.addUpdateFeature(new UpdateDecorationFeature(fp));
-		
-		return updateFeature;
+		return new MultiUpdateFeature(fp)
+			.addUpdateFeature(compensateMarkerUpdateFeature)
+			.addUpdateFeature(loopAndMultiInstanceUpdateFeature)
+			.addUpdateFeature(new UpdateDecorationFeature(fp));
 	}
 
 	@Override

@@ -4,7 +4,6 @@ import org.camunda.bpm.modeler.core.features.container.BaseElementConnectionFeat
 import org.camunda.bpm.modeler.core.features.flow.AbstractAddFlowFeature;
 import org.camunda.bpm.modeler.core.features.flow.AbstractReconnectFlowFeature;
 import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations;
-import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.ConnectionType;
 import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.ReconnectConnectionOperation;
 import org.camunda.bpm.modeler.core.utils.AnchorUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
@@ -12,6 +11,7 @@ import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.camunda.bpm.modeler.ui.features.CreateDataAssociationFeature;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.DataAssociation;
 import org.eclipse.bpmn2.DataInputAssociation;
@@ -20,6 +20,7 @@ import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.dd.di.DiagramElement;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
@@ -38,139 +39,142 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-
 public class DataAssociationFeatureContainer extends BaseElementConnectionFeatureContainer {
 
-  @Override
-  public boolean canApplyTo(Object o) {
-    return super.canApplyTo(o) && o instanceof DataAssociation;
-  }
-  
-  public class AddDataAssocationFeature extends AbstractAddFlowFeature<DataAssociation> {
+	private static final EClass DATA_ASSOCIATION = Bpmn2Package.eINSTANCE.getDataAssociation();
 
-    public AddDataAssocationFeature(IFeatureProvider fp) {
-      super(fp);
-    }
+	@Override
+	public boolean canApplyTo(Object o) {
+		return super.canApplyTo(o) && o instanceof DataAssociation;
+	}
 
-    @Override
-    protected Polyline createConnectionLine(Connection connection) {
-      IPeService peService = Graphiti.getPeService();
-      IGaService gaService = Graphiti.getGaService();
-      BaseElement be = BusinessObjectUtil.getFirstBaseElement(connection);
+	public class AddDataAssocationFeature extends AbstractAddFlowFeature<DataAssociation> {
 
-      Polyline connectionLine = super.createConnectionLine(connection);
-      connectionLine.setLineStyle(LineStyle.DOT);
+		public AddDataAssocationFeature(IFeatureProvider fp) {
+			super(fp);
+		}
 
-      ConnectionDecorator endDecorator = peService.createConnectionDecorator(connection, false, 1.0, true);
+		@Override
+		protected Polyline createConnectionLine(Connection connection) {
+			IPeService peService = Graphiti.getPeService();
+			IGaService gaService = Graphiti.getGaService();
+			BaseElement be = BusinessObjectUtil.getFirstBaseElement(connection);
 
-      int w = 5;
-      int l = 10;
+			Polyline connectionLine = super.createConnectionLine(connection);
+			connectionLine.setLineStyle(LineStyle.DOT);
 
-      Polyline arrowhead = gaService.createPolyline(endDecorator, new int[] { -l, w, 0, 0, -l, -w });
-      StyleUtil.applyStyle(arrowhead, be);
-      
-      return connectionLine;
-    }
-    
-    @Override
-    protected Class< ? extends BaseElement> getBusinessObjectClass() {
-      return DataAssociation.class;
-    }
-    
-  }
-  
-  public static class ReconnectDataAssociationFeature extends AbstractReconnectFlowFeature {
-    
-    public ReconnectDataAssociationFeature(IFeatureProvider fp) {
-      super(fp);
-    }
+			ConnectionDecorator endDecorator = peService.createConnectionDecorator(connection, false, 1.0, true);
 
-    @Override
-    public boolean canReconnect(IReconnectionContext context) {
-		context.putProperty(ConnectionOperations.CONNECTION_TYPE, ConnectionType.DATA_ASSOCIATION);
-		ReconnectConnectionOperation operation = ConnectionOperations.getConnectionReconnectOperation(context);
-		return operation.canExecute(context);
-    }
+			int w = 5;
+			int l = 10;
 
-    @Override
-    protected Class<? extends EObject> getTargetClass() {
-      return BaseElement.class;
-    }
+			Polyline arrowhead = gaService.createPolyline(endDecorator, new int[] { -l, w, 0, 0, -l, -w });
+			StyleUtil.applyStyle(arrowhead, be);
 
-    @Override
-    protected Class<? extends EObject> getSourceClass() {
-      return BaseElement.class;
-    }
+			return connectionLine;
+		}
 
-    @Override
-    public void postReconnect(IReconnectionContext context) {
-      Anchor oldAnchor = context.getOldAnchor();
-      AnchorContainer oldAnchorContainer = oldAnchor.getParent();
-      AnchorUtil.deleteConnectionPointIfPossible(getFeatureProvider(), (Shape) oldAnchorContainer);
-      
-      BPMNEdge edge = BusinessObjectUtil.getFirstElementOfType(context.getConnection(), BPMNEdge.class);
-      DiagramElement de = BusinessObjectUtil.getFirstElementOfType(context.getTargetPictogramElement(), DiagramElement.class);
-      if (context.getReconnectType().equals(ReconnectionContext.RECONNECT_TARGET)) {
-        edge.setTargetElement(de);
-      }
-      else {
-        edge.setSourceElement(de);
-      }
-      
-      DataAssociation dataAssociation = BusinessObjectUtil.getFirstElementOfType(context.getConnection(), DataAssociation.class);
-      BaseElement targetElement = BusinessObjectUtil.getFirstElementOfType(context.getTargetPictogramElement(), BaseElement.class);
-      if (dataAssociation instanceof DataInputAssociation) {
-        if (context.getReconnectType().equals(ReconnectionContext.RECONNECT_SOURCE)) {
-          if (targetElement instanceof ItemAwareElement) {
-            dataAssociation.getSourceRef().clear();
-            dataAssociation.getSourceRef().add((ItemAwareElement) targetElement);
-          }
-          return;
-        }
-        if (context.getReconnectType().equals(ReconnectionContext.RECONNECT_TARGET)) {
-          if (targetElement instanceof Activity) {
-            Activity activity = (Activity) targetElement;
-            activity.getDataInputAssociations().add((DataInputAssociation) dataAssociation);
-          } else if (targetElement instanceof ThrowEvent) {
-            ThrowEvent throwEvent = (ThrowEvent) targetElement;
-            throwEvent.getDataInputAssociation().add((DataInputAssociation) dataAssociation);
-          }
-          return;
-        }
-      }
-      if (dataAssociation instanceof DataOutputAssociation) {
-        if (context.getReconnectType().equals(ReconnectionContext.RECONNECT_SOURCE)) {
-          if (targetElement instanceof Activity) {
-            Activity activity = (Activity) targetElement;
-            activity.getDataOutputAssociations().add((DataOutputAssociation) dataAssociation);
-          } else if (targetElement instanceof CatchEvent) {
-            CatchEvent throwEvent = (CatchEvent) targetElement;
-            throwEvent.getDataOutputAssociation().add((DataOutputAssociation) dataAssociation);
-          }
-          return;
-        }
-        if (context.getReconnectType().equals(ReconnectionContext.RECONNECT_TARGET)) {
-          if (targetElement instanceof ItemAwareElement) {
-            dataAssociation.setTargetRef((ItemAwareElement) targetElement);
-          }
-        }
-      }
-    }
-  } 
+		@Override
+		protected EClass getBusinessObjectClass() {
+			return DATA_ASSOCIATION;
+		}
 
-  @Override
-  public IAddFeature getAddFeature(IFeatureProvider fp) {
-    return new AddDataAssocationFeature(fp);
-  }
+	}
 
-  @Override
-  public ICreateConnectionFeature getCreateConnectionFeature(IFeatureProvider fp) {
-    return new CreateDataAssociationFeature(fp);
-  }
-  
-  @Override
-  public IReconnectionFeature getReconnectionFeature(IFeatureProvider fp) {
-    return new ReconnectDataAssociationFeature(fp);
-  }
+	public static class ReconnectDataAssociationFeature extends AbstractReconnectFlowFeature {
+
+		public ReconnectDataAssociationFeature(IFeatureProvider fp) {
+			super(fp);
+		}
+
+		@Override
+		public boolean canReconnect(IReconnectionContext context) {
+			context.putProperty(ConnectionOperations.CONNECTION_TYPE, DATA_ASSOCIATION);
+			ReconnectConnectionOperation operation = ConnectionOperations.getConnectionReconnectOperation(context);
+			return operation.canExecute(context);
+		}
+
+		@Override
+		protected Class<? extends EObject> getTargetClass() {
+			return BaseElement.class;
+		}
+
+		@Override
+		protected Class<? extends EObject> getSourceClass() {
+			return BaseElement.class;
+		}
+
+		@Override
+		public void postReconnect(IReconnectionContext context) {
+			Anchor oldAnchor = context.getOldAnchor();
+			AnchorContainer oldAnchorContainer = oldAnchor.getParent();
+			AnchorUtil.deleteConnectionPointIfPossible(getFeatureProvider(), (Shape) oldAnchorContainer);
+
+			BPMNEdge edge = BusinessObjectUtil.getFirstElementOfType(context.getConnection(), BPMNEdge.class);
+			DiagramElement de = BusinessObjectUtil.getFirstElementOfType(context.getTargetPictogramElement(),
+					DiagramElement.class);
+			if (context.getReconnectType().equals(ReconnectionContext.RECONNECT_TARGET)) {
+				edge.setTargetElement(de);
+			} else {
+				edge.setSourceElement(de);
+			}
+
+			DataAssociation dataAssociation = BusinessObjectUtil.getFirstElementOfType(context.getConnection(),
+					DataAssociation.class);
+			BaseElement targetElement = BusinessObjectUtil.getFirstElementOfType(context.getTargetPictogramElement(),
+					BaseElement.class);
+			if (dataAssociation instanceof DataInputAssociation) {
+				if (context.getReconnectType().equals(ReconnectionContext.RECONNECT_SOURCE)) {
+					if (targetElement instanceof ItemAwareElement) {
+						dataAssociation.getSourceRef().clear();
+						dataAssociation.getSourceRef().add((ItemAwareElement) targetElement);
+					}
+					return;
+				}
+				if (context.getReconnectType().equals(ReconnectionContext.RECONNECT_TARGET)) {
+					if (targetElement instanceof Activity) {
+						Activity activity = (Activity) targetElement;
+						activity.getDataInputAssociations().add((DataInputAssociation) dataAssociation);
+					} else if (targetElement instanceof ThrowEvent) {
+						ThrowEvent throwEvent = (ThrowEvent) targetElement;
+						throwEvent.getDataInputAssociation().add((DataInputAssociation) dataAssociation);
+					}
+					return;
+				}
+			}
+			if (dataAssociation instanceof DataOutputAssociation) {
+				if (context.getReconnectType().equals(ReconnectionContext.RECONNECT_SOURCE)) {
+					if (targetElement instanceof Activity) {
+						Activity activity = (Activity) targetElement;
+						activity.getDataOutputAssociations().add((DataOutputAssociation) dataAssociation);
+					} else if (targetElement instanceof CatchEvent) {
+						CatchEvent throwEvent = (CatchEvent) targetElement;
+						throwEvent.getDataOutputAssociation().add((DataOutputAssociation) dataAssociation);
+					}
+					return;
+				}
+				if (context.getReconnectType().equals(ReconnectionContext.RECONNECT_TARGET)) {
+					if (targetElement instanceof ItemAwareElement) {
+						dataAssociation.setTargetRef((ItemAwareElement) targetElement);
+					}
+				}
+			}
+		}
+	}
+
+	@Override
+	public IAddFeature getAddFeature(IFeatureProvider fp) {
+		return new AddDataAssocationFeature(fp);
+	}
+
+	@Override
+	public ICreateConnectionFeature getCreateConnectionFeature(IFeatureProvider fp) {
+		return new CreateDataAssociationFeature(fp);
+	}
+
+	@Override
+	public IReconnectionFeature getReconnectionFeature(IFeatureProvider fp) {
+		return new ReconnectDataAssociationFeature(fp);
+	}
 
 }

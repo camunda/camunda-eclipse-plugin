@@ -29,9 +29,10 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class AddGatewayFeature<T extends Gateway>
-	extends AbstractAddFlowElementFeature<T> {
+public class AddGatewayFeature<T extends Gateway> extends AbstractAddFlowElementFeature<T> {
 
+	public static final String DECORATE_SHAPE = "DECORATE_SHAPE";
+	
 	public AddGatewayFeature(IFeatureProvider fp) {
 		super(fp);
 	}
@@ -54,18 +55,12 @@ public class AddGatewayFeature<T extends Gateway>
 		gaService.setLocationAndSize(gatewayRect, x, y, width, height);
 
 		Shape gatewayShape = peService.createShape(newShape, false);
+		peService.setPropertyValue(gatewayShape, DECORATE_SHAPE, "true");
+		
 		Polygon gateway = GraphicsUtil.createGateway(gatewayShape, width, height);
-		StyleUtil.applyStyle(gateway, addedGateway);
 		gaService.setLocationAndSize(gateway, 0, 0, width, height);
 		
 		return newShape;
-	}
-
-	@Override
-	protected void postAddHook(IAddContext context, ContainerShape newShape) {
-		super.postAddHook(context, newShape);
-
-		decorate(newShape);
 	}
 
 	@Override
@@ -99,7 +94,7 @@ public class AddGatewayFeature<T extends Gateway>
 		return BoxingStrategy.POSITION;
 	}
 	
-	protected void decorate(ContainerShape newShape) {
+	protected final void decorate(ContainerShape newShape) {
 		
 	}
 

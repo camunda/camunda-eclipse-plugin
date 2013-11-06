@@ -310,10 +310,8 @@ public abstract class AbstractBpmn2AddShapeFeature<T extends BaseElement> extend
 			int x = addContext.getX();
 			int y = addContext.getY();
 			
-			if (context.getProperty(AbstractMorphNodeFeature.MORPH_ELEMENT) == null || context.getProperty(AbstractMorphNodeFeature.MORPH_ELEMENT) == Boolean.FALSE) {
-				x = x - width / 2;
-				y = y - height / 2;
-			}
+			x = x - width / 2;
+			y = y - height / 2;
 		
 			addContext.setLocation(x, y);
 		}

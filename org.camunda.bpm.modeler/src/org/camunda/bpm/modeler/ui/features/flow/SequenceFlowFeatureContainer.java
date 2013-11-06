@@ -27,7 +27,6 @@ import org.camunda.bpm.modeler.core.features.flow.AbstractAddFlowFeature;
 import org.camunda.bpm.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.camunda.bpm.modeler.core.features.flow.AbstractReconnectFlowFeature;
 import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations;
-import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.ConnectionType;
 import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.CreateConnectionOperation;
 import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.ReconnectConnectionOperation;
 import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.StartFormCreateConnectionOperation;
@@ -78,6 +77,8 @@ import org.eclipse.graphiti.services.IPeService;
 import org.eclipse.graphiti.util.IColorConstant;
 
 public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureContainer {
+
+	private static final EClass SEQUENCE_FLOW = Bpmn2Package.eINSTANCE.getSequenceFlow();
 
 	private static final String IS_DEFAULT_FLOW_PROPERTY = "is.default.flow";
 	private static final String IS_CONDITIONAL_FLOW_PROPERTY = "is.conditional.flow";
@@ -132,14 +133,14 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 		
 		@Override
 		public boolean canStartConnection(ICreateConnectionContext context) {
-			context.putProperty(ConnectionOperations.CONNECTION_TYPE, ConnectionType.SEQUENCE_FLOW);
+			context.putProperty(ConnectionOperations.CONNECTION_TYPE, SEQUENCE_FLOW);
 			StartFormCreateConnectionOperation operation = ConnectionOperations.getStartFromConnectionCreateOperation(context);
 			return operation.canExecute(context);
 		}
 
 		@Override
 		public boolean canCreate(ICreateConnectionContext context) {
-			context.putProperty(ConnectionOperations.CONNECTION_TYPE, ConnectionType.SEQUENCE_FLOW);
+			context.putProperty(ConnectionOperations.CONNECTION_TYPE, SEQUENCE_FLOW);
 			CreateConnectionOperation connection = ConnectionOperations.getConnectionCreateOperation(context);
 			return connection.canExecute(context);			
 		}
@@ -159,12 +160,9 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 			return FlowNode.class;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.camunda.bpm.modeler.features.AbstractBpmn2CreateConnectionFeature#getBusinessObjectClass()
-		 */
 		@Override
 		public EClass getBusinessObjectClass() {
-			return Bpmn2Package.eINSTANCE.getSequenceFlow();
+			return SEQUENCE_FLOW;
 		}
 
 		@Override
@@ -349,7 +347,7 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 
 		@Override
 		public boolean canReconnect(IReconnectionContext context) {
-			context.putProperty(ConnectionOperations.CONNECTION_TYPE, ConnectionType.SEQUENCE_FLOW);
+			context.putProperty(ConnectionOperations.CONNECTION_TYPE, SEQUENCE_FLOW);
 			ReconnectConnectionOperation operation = ConnectionOperations.getConnectionReconnectOperation(context);
 			return operation.canExecute(context);
 		}
@@ -471,8 +469,8 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 		}
 
 		@Override
-		protected Class<? extends BaseElement> getBusinessObjectClass() {
-			return SequenceFlow.class;
+		protected EClass getBusinessObjectClass() {
+			return SEQUENCE_FLOW;
 		}
 
 		@Override

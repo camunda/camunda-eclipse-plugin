@@ -9,7 +9,6 @@ import org.camunda.bpm.modeler.ui.diagram.Bpmn2FeatureProvider;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IPictogramElementContext;
-import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 

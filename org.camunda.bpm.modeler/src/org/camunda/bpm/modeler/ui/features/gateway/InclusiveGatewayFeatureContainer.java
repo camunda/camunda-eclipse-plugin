@@ -12,18 +12,24 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.gateway;
 
+import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.features.gateway.AbstractCreateGatewayFeature;
 import org.camunda.bpm.modeler.core.features.gateway.AddGatewayFeature;
+import org.camunda.bpm.modeler.core.features.gateway.GatewayDecorateFeature;
+import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.InclusiveGateway;
+import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
+import org.eclipse.graphiti.mm.algorithms.Polygon;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public class InclusiveGatewayFeatureContainer extends AbstractGatewayFeatureContainer {
 
@@ -33,16 +39,19 @@ public class InclusiveGatewayFeatureContainer extends AbstractGatewayFeatureCont
 	}
 
 	@Override
-	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		
-		return new AddGatewayFeature<InclusiveGateway>(fp) {
-			
+	public IDecorateFeature getDecorateFeature(IFeatureProvider fp) {
+		return new GatewayDecorateFeature(fp) {
 			@Override
-			protected void decorate(ContainerShape container) {
-				Ellipse ellipse = GraphicsUtil.createGatewayOuterCircle(container);
+			protected void decorate(Polygon decorateContainer) {
+				Ellipse ellipse = GraphicsUtil.createGatewayOuterCircle(decorateContainer);
 				ellipse.setLineWidth(3);
 			}
 		};
+	}
+	
+	@Override
+	public IAddFeature getAddFeature(IFeatureProvider fp) {
+		return new AddGatewayFeature<InclusiveGateway>(fp);
 	}
 
 	@Override

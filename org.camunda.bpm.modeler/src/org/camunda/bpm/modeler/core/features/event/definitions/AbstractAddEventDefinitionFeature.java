@@ -62,6 +62,8 @@ public abstract class AbstractAddEventDefinitionFeature<T extends EventDefinitio
 		Event event = (Event) getBusinessObjectForPictogramElement(container);
 
 		draw(event, getBusinessObject(context), container);
+		
+		updatePictogramElement(container);
 		return null;
 	}
 	
@@ -72,18 +74,17 @@ public abstract class AbstractAddEventDefinitionFeature<T extends EventDefinitio
 
 		Shape definitionShape;
 		
-		List<Object> businessObjects = new ArrayList<Object>(eventDefinitions);
-		businessObjects.add(0, event);
+		Object[] businessObjects = eventDefinitions.toArray();
 		
 		GraphicsUtil.deleteEventShape(container);
 		if (size > 1) {
 			definitionShape = Graphiti.getPeService().createShape(container, false);
-			link(definitionShape, businessObjects.toArray());
 			drawForEvent(event, definitionShape);
 		} else {
 			definitionShape = getDecorationAlgorithm(event).draw(container);
-			link(definitionShape, businessObjects.toArray());
 		}
+		
+		link(definitionShape, businessObjects);
 	}
 
 	public abstract DecorationAlgorithm getDecorationAlgorithm(Event event);

@@ -18,6 +18,7 @@ import org.camunda.bpm.modeler.core.features.activity.AbstractAddFlowElementFeat
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.BoxingStrategy;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.graphiti.datatypes.IRectangle;
@@ -32,20 +33,19 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
-public class AddEventFeature<T extends Event>
-	extends AbstractAddFlowElementFeature<T> {
+public class AddEventFeature<T extends Event> extends AbstractAddFlowElementFeature<T> {
 
-	public static final String EVENT_ELEMENT = "event.graphics.element";
-	public static final String EVENT_CIRCLE = "event.graphics.element.circle";
-
+	public static final String DECORATE_SHAPE = "DECORATE_SHAPE";
+	
 	public AddEventFeature(IFeatureProvider fp) {
 		super(fp);
 	}
 
 	@Override
 	protected ContainerShape createPictogramElement(IAddContext context, IRectangle bounds) {
-		T e = getBusinessObject(context);
-
+		
+		BaseElement baseElement = getBusinessObject(context);
+		
 		IGaService gaService = Graphiti.getGaService();
 		IPeService peService = Graphiti.getPeService();
 
@@ -61,11 +61,10 @@ public class AddEventFeature<T extends Event>
 		gaService.setLocationAndSize(invisibleRect, x, y, width, height);
 
 		Shape ellipseShape = peService.createShape(newShape, false);
-		peService.setPropertyValue(ellipseShape, EVENT_ELEMENT, EVENT_CIRCLE);
-		peService.setPropertyValue(newShape, GraphicsUtil.EVENT_MARKER_CONTAINER, Boolean.toString(true));
+		peService.setPropertyValue(ellipseShape, DECORATE_SHAPE, Boolean.toString(true));
+
 		Ellipse ellipse = createEventShape(ellipseShape, width, height);
-		StyleUtil.applyStyle(ellipse, e);
-		decorate(ellipse);
+		StyleUtil.applyStyle(ellipse, baseElement);
 		
 		return newShape;
 	}
@@ -129,11 +128,13 @@ public class AddEventFeature<T extends Event>
 		peService.setPropertyValue(newShape,
 				AbstractUpdateEventFeature.EVENT_DEFINITIONS_MARKER,
 				AbstractUpdateEventFeature.getEventDefinitionsValue(event));
+		
+		peService.setPropertyValue(newShape, GraphicsUtil.EVENT_MARKER_CONTAINER, Boolean.toString(true));
 	}
 
-	protected void decorate(Ellipse ellipse) {
-		
-	}
+//	protected void decorate(Ellipse ellipse) {
+//		
+//	}
 
 	@Override
 	public int getDefaultHeight() {

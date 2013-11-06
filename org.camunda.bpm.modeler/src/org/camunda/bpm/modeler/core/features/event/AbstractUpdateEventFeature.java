@@ -33,17 +33,11 @@ import org.eclipse.graphiti.services.Graphiti;
 
 /**
  * @author Bob Brodt
- *
+ * @author nico.rehwaldt
  */
-
 public abstract class AbstractUpdateEventFeature extends AbstractUpdateMarkerFeature<Event> {
-	
+
 	public static final String EVENT_DEFINITIONS_MARKER = "EVENT_DEFINITIONS_MARKER";
-	
-	@Override
-	public boolean canUpdate(IUpdateContext context) {
-		return true;
-	}
 	
 	/**
 	 * @param fp
@@ -51,7 +45,13 @@ public abstract class AbstractUpdateEventFeature extends AbstractUpdateMarkerFea
 	public AbstractUpdateEventFeature(IFeatureProvider fp) {
 		super(fp);
 	}
-
+	
+	@Override
+	public boolean canUpdate(IUpdateContext context) {
+		PictogramElement pictogramElement = context.getPictogramElement();
+		return getBusinessObjectForPictogramElement(pictogramElement) instanceof Event;
+	}
+	
 	@Override
     public IReason updateNeeded(IUpdateContext context) {
 		if (super.updateNeeded(context).toBoolean()) {
@@ -61,9 +61,6 @@ public abstract class AbstractUpdateEventFeature extends AbstractUpdateMarkerFea
 		return Reason.createFalseReason();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.camunda.bpm.modeler.features.activity.AbstractUpdateMarkerFeature#isPropertyChanged(org.eclipse.bpmn2.FlowElement, java.lang.String)
-	 */
 	@Override
 	protected boolean isPropertyChanged(Event element, String propertyValue) {
 		return !getEventDefinitionsValue(element).equals(propertyValue);
@@ -90,7 +87,7 @@ public abstract class AbstractUpdateEventFeature extends AbstractUpdateMarkerFea
 				// ...or create a temporary Shape that we can link
 				// with the event definition business object... 
 				eventDefinitionShape = Graphiti.getPeService().createShape(container, true);
-				link(eventDefinitionShape,eventDefinition);
+				link(eventDefinitionShape, eventDefinition);
 			}
 			
 			// ...so we can create an UpdateContext...
@@ -103,8 +100,6 @@ public abstract class AbstractUpdateEventFeature extends AbstractUpdateMarkerFea
 				upateFeature.update(context);
 			}
 		}
-		
-		
 	}
 
 	@Override
@@ -113,7 +108,7 @@ public abstract class AbstractUpdateEventFeature extends AbstractUpdateMarkerFea
 	}
 	
 	public static String getEventDefinitionsValue(Event element) {
-		String result = "";
+		String result = element.getClass().getSimpleName() + "#";
 		List<EventDefinition> eventDefinitions = ModelUtil.getEventDefinitions(element);
 		for (EventDefinition ed : eventDefinitions) {
 			if (!result.isEmpty())

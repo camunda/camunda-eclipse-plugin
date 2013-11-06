@@ -15,25 +15,21 @@ package org.camunda.bpm.modeler.ui.features.event;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.camunda.bpm.modeler.core.features.MultiUpdateFeature;
+import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.features.event.AbstractCreateEventFeature;
-import org.camunda.bpm.modeler.core.features.event.AbstractUpdateEventFeature;
 import org.camunda.bpm.modeler.core.features.event.AddEventFeature;
+import org.camunda.bpm.modeler.core.features.event.EventDecorateFeature;
 import org.camunda.bpm.modeler.ui.ImageProvider;
 import org.camunda.bpm.modeler.ui.features.AbstractAppendNodeNodeFeature;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.EndEvent;
+import org.eclipse.bpmn2.Event;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
-import org.eclipse.graphiti.features.IUpdateFeature;
-import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
-import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.services.IPeService;
 
 public class EndEventFeatureContainer extends AbstractEventFeatureContainer {
 
@@ -49,21 +45,23 @@ public class EndEventFeatureContainer extends AbstractEventFeatureContainer {
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddEventFeature<EndEvent>(fp) {
-			
-			@Override
-			protected void decorate(Ellipse e) {
-				e.setLineWidth(3);
-			}
+		return new AddEventFeature<Event>(fp) {
+//			@Override
+//			protected void decorate(Ellipse decorateContainer) {
+//				decorateContainer.setLineWidth(3);
+//			}
 		};
 	}
-
+	
 	@Override
-	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {
-		MultiUpdateFeature updateFeature = new MultiUpdateFeature(fp);
-		updateFeature.addUpdateFeature(super.getUpdateFeature(fp));
-		updateFeature.addUpdateFeature(new UpdateEndEventFeature(fp));
-		return updateFeature;
+	public IDecorateFeature getDecorateFeature(IFeatureProvider fp) {
+		return new EventDecorateFeature(fp) {
+			
+			@Override
+			protected void decorate(Ellipse decorateContainer) {
+				decorateContainer.setLineWidth(3);
+			}
+		};
 	}
 	
 	public static class CreateEndEventFeature extends AbstractCreateEventFeature<EndEvent> {
@@ -83,12 +81,6 @@ public class EndEventFeatureContainer extends AbstractEventFeatureContainer {
 		}
 	}
 
-	protected static class UpdateEndEventFeature extends AbstractUpdateEventFeature {
-
-		public UpdateEndEventFeature(IFeatureProvider fp) {
-			super(fp);
-		}
-	}
 
 	@Override
 	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {

@@ -15,14 +15,12 @@ package org.camunda.bpm.modeler.ui.features.event;
 import static org.camunda.bpm.modeler.ui.features.event.BoundaryEventFeatureContainer.BOUNDARY_EVENT_CANCEL;
 
 import org.camunda.bpm.modeler.core.di.DIUtils;
-import org.camunda.bpm.modeler.core.features.event.AbstractUpdateEventFeature;
 import org.camunda.bpm.modeler.core.features.event.AddEventFeature;
 import org.camunda.bpm.modeler.core.layout.util.BoundaryEventUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.BoxingStrategy;
 import org.camunda.bpm.modeler.core.utils.ContextUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
-import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.graphiti.datatypes.ILocation;
@@ -30,7 +28,6 @@ import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
-import org.eclipse.graphiti.mm.algorithms.Ellipse;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IPeService;
@@ -49,8 +46,7 @@ public class AddBoundaryEventFeature extends AddEventFeature<BoundaryEvent> {
 			return false;
 		}
 
-		Object prop = context.getProperty(DIUtils.IMPORT);
-		if (prop != null && (Boolean) prop) {
+		if (isImport(context)) {
 			return true;
 		}
 
@@ -83,12 +79,6 @@ public class AddBoundaryEventFeature extends AddEventFeature<BoundaryEvent> {
 		super.adjustLocation(context, width, height);
 	}
 
-	@Override
-	protected void decorate(Ellipse e) {
-		Ellipse circle = GraphicsUtil.createIntermediateEventCircle(e);
-		circle.setStyle(StyleUtil.getStyleForClass(getDiagram()));
-	}
-
 	protected ContainerShape getTargetContainer(IAddContext context) {
 		boolean isImport = ContextUtil.is(context, DIUtils.IMPORT);
 		
@@ -116,12 +106,7 @@ public class AddBoundaryEventFeature extends AddEventFeature<BoundaryEvent> {
 		IPeService peService = Graphiti.getPeService();
 		
 		BoundaryEvent event = getBusinessObject(context);
-
 		peService.setPropertyValue(newShape, BOUNDARY_EVENT_CANCEL, Boolean.toString(event.isCancelActivity()));
-		peService.setPropertyValue(newShape, GraphicsUtil.EVENT_MARKER_CONTAINER, Boolean.toString(true));
-		peService.setPropertyValue(newShape,
-				UpdateBoundaryEventFeature.BOUNDARY_EVENT_MARKER,
-				AbstractUpdateEventFeature.getEventDefinitionsValue(event));
 	}
 	
 	@Override

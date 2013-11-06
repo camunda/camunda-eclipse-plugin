@@ -12,20 +12,17 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.event;
 
-import org.camunda.bpm.modeler.core.features.MultiUpdateFeature;
+import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.features.event.AbstractCreateEventFeature;
-import org.camunda.bpm.modeler.core.features.event.AbstractUpdateEventFeature;
-import org.camunda.bpm.modeler.core.features.event.AddEventFeature;
+import org.camunda.bpm.modeler.core.features.event.EventDecorateFeature;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.camunda.bpm.modeler.ui.ImageProvider;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.IntermediateCatchEvent;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
-import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
 
@@ -40,21 +37,14 @@ public class IntermediateCatchEventFeatureContainer extends AbstractEventFeature
 	public ICreateFeature getCreateFeature(IFeatureProvider fp) {
 		return new CreateIntermediateCatchEventFeature(fp);
 	}
-
-	@Override
-	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {
-		MultiUpdateFeature multiUpdate = new MultiUpdateFeature(fp);
-		multiUpdate.addUpdateFeature(super.getUpdateFeature(fp));
-		multiUpdate.addUpdateFeature(new UpdateIntermediateCatchEventFeature(fp));
-		return multiUpdate;
-	}
 	
 	@Override
-	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddEventFeature<IntermediateCatchEvent>(fp) {
+	public IDecorateFeature getDecorateFeature(IFeatureProvider fp) {
+		return new EventDecorateFeature(fp) {
+			
 			@Override
-			protected void decorate(Ellipse e) {
-				Ellipse circle = GraphicsUtil.createIntermediateEventCircle(e);
+			protected void decorate(Ellipse ellipse) {
+				Ellipse circle = GraphicsUtil.createIntermediateEventCircle(ellipse);
 				circle.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 			}
 		};
@@ -82,19 +72,9 @@ public class IntermediateCatchEventFeatureContainer extends AbstractEventFeature
 			return ImageProvider.IMG_16_INTERMEDIATE_CATCH_EVENT;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.camunda.bpm.modeler.features.AbstractCreateFlowElementFeature#getFlowElementClass()
-		 */
 		@Override
 		public EClass getBusinessObjectClass() {
 			return Bpmn2Package.eINSTANCE.getIntermediateCatchEvent();
-		}
-	}
-	
-	public static class UpdateIntermediateCatchEventFeature extends AbstractUpdateEventFeature {
-
-		public UpdateIntermediateCatchEventFeature(IFeatureProvider fp) {
-			super(fp);
 		}
 	}
 }

@@ -562,12 +562,22 @@ public class Bpmn2FeatureProvider extends DefaultFeatureProvider {
 		return (Bpmn2DiagramTypeProvider) super.getDiagramTypeProvider();
 	}
 
-	private EClass getActualEClass(EClass cls) {
+	/**
+	 * Returns the actual {@link EClass} used to instantiate the given type.
+	 * 
+	 * This method should be queried for the real type of an eclass whenever it is
+	 * about to be instantiated. That makes sure that the correct (sub-)type is used
+	 * if any is defined.
+	 * 
+	 * @param cls
+	 * @return
+	 */
+	public EClass getActualEClass(EClass cls) {
 		if (cls.getEPackage().equals(Bpmn2Package.eINSTANCE)) {
 			EClassifier modelClassifier = ModelPackage.eINSTANCE.getEClassifier(cls.getName());
 			if (modelClassifier instanceof EClass) {
 				EClass modelCls = (EClass) modelClassifier;
-				if (cls.isSuperTypeOf(modelCls)) {
+				if (!modelCls.isAbstract() && cls.isSuperTypeOf(modelCls)) {
 					return modelCls;
 				}
 			}

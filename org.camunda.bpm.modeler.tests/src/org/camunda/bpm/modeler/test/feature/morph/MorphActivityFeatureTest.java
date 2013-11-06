@@ -291,7 +291,7 @@ public class MorphActivityFeatureTest extends AbstractFeatureTest {
 		EClass serviceTaskClass = Bpmn2Package.eINSTANCE.getServiceTask();
 		EClass sendTaskClass = Bpmn2Package.eINSTANCE.getSendTask();
 		EClass receiveTaskClass = Bpmn2Package.eINSTANCE.getReceiveTask();
-		EClass callActivityClass = Bpmn2Package.eINSTANCE.getCallActivity();
+		EClass callActivityClass = ModelPackage.eINSTANCE.getCallActivity();
 		
 		List<EClass> result = new ArrayList<EClass>();
 		

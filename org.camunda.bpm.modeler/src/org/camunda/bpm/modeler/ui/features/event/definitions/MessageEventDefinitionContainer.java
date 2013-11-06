@@ -45,7 +45,7 @@ public class MessageEventDefinitionContainer extends AbstractEventDefinitionFeat
 
 	@Override
 	protected Shape drawForStart(DecorationAlgorithm algorithm, ContainerShape shape) {
-		return drawEnvleope(algorithm, shape);
+		return drawEnvelope(algorithm, shape);
 	}
 
 	@Override
@@ -60,15 +60,15 @@ public class MessageEventDefinitionContainer extends AbstractEventDefinitionFeat
 
 	@Override
 	protected Shape drawForCatch(DecorationAlgorithm algorithm, ContainerShape shape) {
-		return drawEnvleope(algorithm, shape);
+		return drawEnvelope(algorithm, shape);
 	}
 
 	@Override
 	protected Shape drawForBoundary(DecorationAlgorithm algorithm, ContainerShape shape) {
-		return drawEnvleope(algorithm, shape);
+		return drawEnvelope(algorithm, shape);
 	}
 
-	private Shape drawEnvleope(DecorationAlgorithm algorithm, ContainerShape shape) {
+	private Shape drawEnvelope(DecorationAlgorithm algorithm, ContainerShape shape) {
 		BaseElement be = BusinessObjectUtil.getFirstElementOfType(shape, BaseElement.class, true);
 		Shape envelopeShape = Graphiti.getPeService().createShape(shape, false);
 		Envelope env = GraphicsUtil.createEventEnvelope(envelopeShape);

@@ -14,6 +14,7 @@ import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.runtime.engine.model.BoundaryEvent;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.Collaboration;
 import org.eclipse.bpmn2.CompensateEventDefinition;
@@ -33,6 +34,7 @@ import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.ThrowEvent;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICreateConnectionContext;
@@ -77,12 +79,10 @@ public class ConnectionOperations {
 		RECONNECT_CONNECTION.add(new ReconnectConnectionToItemAwareElementAlgorithm());
 	}
 	
-	public enum ConnectionType {
-		ASSOCIATION,
-		DATA_ASSOCIATION,
-		SEQUENCE_FLOW,
-		MESSAGE_FLOW
-	}
+	private static final EClass SEQUENCE_FLOW = Bpmn2Package.eINSTANCE.getSequenceFlow();
+	private static final EClass MESSAGE_FLOW = Bpmn2Package.eINSTANCE.getMessageFlow();
+	private static final EClass DATA_ASSOCIATION = Bpmn2Package.eINSTANCE.getDataAssociation();
+	private static final EClass ASSOCIATION = Bpmn2Package.eINSTANCE.getAssociation();
 	
 	public static StartFormCreateConnectionOperation getStartFromConnectionCreateOperation(ICreateConnectionContext context) {
 		ConnectAlgorithm<ICreateConnectionContext> from = null;
@@ -165,7 +165,7 @@ public class ConnectionOperations {
 
 		public abstract Side getType();
 		
-		public abstract ConnectionType getSupportedConnectionType();
+		public abstract EClass getSupportedConnectionType();
 		
 		protected abstract Object getSourceBusinessObject(T context);
 		
@@ -187,7 +187,7 @@ public class ConnectionOperations {
 		public boolean appliesTo(T context) {
 			Object connectionType = context.getProperty(CONNECTION_TYPE);
 			
-			return getSupportedConnectionType().equals(connectionType);
+			return getSupportedConnectionType().isSuperTypeOf((EClass) connectionType);
 		}
 		
 	}
@@ -239,8 +239,8 @@ public class ConnectionOperations {
 		}
 		
 		@Override
-		public ConnectionType getSupportedConnectionType() {
-			return ConnectionType.SEQUENCE_FLOW;
+		public EClass getSupportedConnectionType() {
+			return SEQUENCE_FLOW;
 		}
 		
 	}
@@ -312,8 +312,8 @@ public class ConnectionOperations {
 		}
 		
 		@Override
-		public ConnectionType getSupportedConnectionType() {
-			return ConnectionType.SEQUENCE_FLOW;
+		public EClass getSupportedConnectionType() {
+			return SEQUENCE_FLOW;
 		}
 		
 		private boolean isInSameContainer(FlowNode source, FlowNode target) {
@@ -380,8 +380,8 @@ public class ConnectionOperations {
 		}
 		
 		@Override
-		public ConnectionType getSupportedConnectionType() {
-			return ConnectionType.MESSAGE_FLOW;
+		public EClass getSupportedConnectionType() {
+			return MESSAGE_FLOW;
 		}
 		
 	}
@@ -415,8 +415,6 @@ public class ConnectionOperations {
 	
 	static abstract class ConnectToInteractionNodeAlgorithm<T extends IContext> extends ConnectToAlgorithm<T> {
 		
-		protected static final ConnectionType connection = ConnectionType.MESSAGE_FLOW;
-		
 		@Override
 		public boolean appliesTo(T context) {
 			Object bo = getTargetBusinessObject(context);
@@ -446,8 +444,8 @@ public class ConnectionOperations {
 		}
 		
 		@Override
-		public ConnectionType getSupportedConnectionType() {
-			return ConnectionType.MESSAGE_FLOW;
+		public EClass getSupportedConnectionType() {
+			return MESSAGE_FLOW;
 		}
 		
 	}
@@ -495,8 +493,8 @@ public class ConnectionOperations {
 		}
 		
 		@Override
-		public ConnectionType getSupportedConnectionType() {
-			return ConnectionType.ASSOCIATION;
+		public EClass getSupportedConnectionType() {
+			return ASSOCIATION;
 		}
 		
 	}
@@ -549,8 +547,8 @@ public class ConnectionOperations {
 		}
 		
 		@Override
-		public ConnectionType getSupportedConnectionType() {
-			return ConnectionType.ASSOCIATION;
+		public EClass getSupportedConnectionType() {
+			return ASSOCIATION;
 		}
 		
 	}
@@ -598,8 +596,8 @@ public class ConnectionOperations {
 		}
 		
 		@Override
-		public ConnectionType getSupportedConnectionType() {
-			return ConnectionType.DATA_ASSOCIATION;
+		public EClass getSupportedConnectionType() {
+			return DATA_ASSOCIATION;
 		}
 		
 	}
@@ -645,8 +643,8 @@ public class ConnectionOperations {
 		}
 		
 		@Override
-		public ConnectionType getSupportedConnectionType() {
-			return ConnectionType.DATA_ASSOCIATION;
+		public EClass getSupportedConnectionType() {
+			return DATA_ASSOCIATION;
 		}
 		
 	}
@@ -693,8 +691,8 @@ public class ConnectionOperations {
 		}
 		
 		@Override
-		public ConnectionType getSupportedConnectionType() {
-			return ConnectionType.DATA_ASSOCIATION;
+		public EClass getSupportedConnectionType() {
+			return DATA_ASSOCIATION;
 		}
 		
 	}
@@ -741,8 +739,8 @@ public class ConnectionOperations {
 		}
 		
 		@Override
-		public ConnectionType getSupportedConnectionType() {
-			return ConnectionType.DATA_ASSOCIATION;
+		public EClass getSupportedConnectionType() {
+			return DATA_ASSOCIATION;
 		}
 		
 	}

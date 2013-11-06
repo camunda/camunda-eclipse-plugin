@@ -72,6 +72,8 @@ public class CallActivityFeatureContainer extends AbstractExpandableActivityFeat
 			
 			@Override
 			protected void decorate(RoundedRectangle decorateContainer) {
+				super.decorate(decorateContainer);
+				
 				decorateContainer.setLineWidth(4);
 			}
 		};
@@ -150,7 +152,7 @@ public class CallActivityFeatureContainer extends AbstractExpandableActivityFeat
 
 		@Override
 		public EClass getBusinessObjectClass() {
-			return ModelPackage.eINSTANCE.getCallActivity();
+			return Bpmn2Package.eINSTANCE.getCallActivity();
 		}
 
 	}

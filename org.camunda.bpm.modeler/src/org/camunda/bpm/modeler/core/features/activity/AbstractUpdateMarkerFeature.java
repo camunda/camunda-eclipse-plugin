@@ -52,6 +52,11 @@ public abstract class AbstractUpdateMarkerFeature<T extends FlowElement> extends
 	@Override
 	public boolean update(IUpdateContext context) {
 		IPeService peService = Graphiti.getPeService();
+		
+		if (!(context.getPictogramElement() instanceof ContainerShape)) {
+			System.out.println("ABOUT TO FAIL");
+		}
+		
 		ContainerShape container = (ContainerShape) context.getPictogramElement();
 		T element = (T) getBusinessObjectForPictogramElement(context.getPictogramElement());
 

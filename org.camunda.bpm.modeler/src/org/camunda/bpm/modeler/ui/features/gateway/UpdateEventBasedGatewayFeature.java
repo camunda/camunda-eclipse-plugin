@@ -85,21 +85,23 @@ public class UpdateEventBasedGatewayFeature extends AbstractUpdateFeature {
 		GraphicsUtil.clearGateway(element);
 	}
 
+	// TODO: Move to decorate feature
+	
 	private void drawEventBased(ContainerShape container) {
-		Ellipse outer = GraphicsUtil.createGatewayOuterCircle(container);
+		Ellipse outer = GraphicsUtil.createGatewayOuterCircle(container.getGraphicsAlgorithm());
 		Ellipse inner = GraphicsUtil.createGatewayInnerCircle(outer);
 		Polygon pentagon = GraphicsUtil.createGatewayPentagon(container);
 		pentagon.setFilled(false);
 	}
 
 	private void drawExclusiveEventBased(ContainerShape container) {
-		Ellipse ellipse = GraphicsUtil.createGatewayOuterCircle(container);
+		Ellipse ellipse = GraphicsUtil.createGatewayOuterCircle(container.getGraphicsAlgorithm());
 		Polygon pentagon = GraphicsUtil.createGatewayPentagon(container);
 		pentagon.setFilled(false);
 	}
 
 	private void drawParallelMultipleEventBased(ContainerShape container) {
-		Ellipse ellipse = GraphicsUtil.createGatewayOuterCircle(container);
+		Ellipse ellipse = GraphicsUtil.createGatewayOuterCircle(container.getGraphicsAlgorithm());
 		Polygon cross = GraphicsUtil.createEventGatewayParallelCross(container);
 	}
 }

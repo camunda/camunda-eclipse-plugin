@@ -32,7 +32,6 @@ import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.TextAnnotation;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
@@ -343,9 +342,6 @@ public class GraphicsUtil {
 		return pictogramElements;
 	}
 
-//	private static final int[] GATEWAY = { 0, GATEWAY_RADIUS, GATEWAY_RADIUS, 0, 2 * GATEWAY_RADIUS, GATEWAY_RADIUS,
-//	        GATEWAY_RADIUS, 2 * GATEWAY_RADIUS };
-
 	public static Polygon createGateway(Shape container, final int width, final int height) {
 		final int widthRadius = width / 2;
 		final int heightRadius = height / 2;
@@ -362,13 +358,6 @@ public class GraphicsUtil {
 		final float heightRatio = calculateRatio(gatewayHeight, Float.valueOf(GATEWAY_RADIUS * 2));
 		final float widthRatio = calculateRatio(gatewayWidth, Float.valueOf(GATEWAY_RADIUS * 2));
 		
-		
-//		Polygon pentagon = gaService.createPolygon(pentagonShape,
-//				new int[] { GATEWAY_RADIUS, 18,
-//						GATEWAY_RADIUS + 8, GATEWAY_RADIUS - 2,
-//						GATEWAY_RADIUS + 5, GATEWAY_RADIUS + 7,
-//						GATEWAY_RADIUS - 5, GATEWAY_RADIUS + 7,
-//						GATEWAY_RADIUS - 8, GATEWAY_RADIUS - 2 });
 		Polygon pentagon = gaService.createPolygon(pentagonShape,
 				new int[] { gatewayWidth / 2, generateRatioPointValue(18, heightRatio),
 							gatewayWidth / 2 + generateRatioPointValue(8, widthRatio), gatewayHeight / 2 - generateRatioPointValue(2, heightRatio),
@@ -393,7 +382,6 @@ public class GraphicsUtil {
 		Float width = gatewayHeight * new Float(0.8);
 		Float height = gatewayWidth * new Float(0.8);
 		
-//		gaService.setLocationAndSize(ellipse, 14, 14, 23, 23);
 		Ellipse ellipse = gaService.createEllipse(outer);
 		gaService.setLocationAndSize(ellipse,
 				 Math.round(x), Math.round(y),
@@ -404,16 +392,14 @@ public class GraphicsUtil {
 		return ellipse;
 	}
 
-	public static Ellipse createGatewayOuterCircle(ContainerShape container) {
-		Shape ellipseShape = peService.createShape(container, false);
-		Ellipse ellipse = gaService.createEllipse(ellipseShape);
+	public static Ellipse createGatewayOuterCircle(GraphicsAlgorithm graphicsAlgorithm) {
+		Ellipse ellipse = gaService.createEllipse(graphicsAlgorithm);
 		
-		final int gatewayHeight = getShapeHeight(container);
-		final int gatewayWidth = getShapeWidth(container);
+		final int gatewayHeight = graphicsAlgorithm.getHeight();
+		final int gatewayWidth = graphicsAlgorithm.getWidth();
 		
 		final float heightRatio = calculateRatio(gatewayHeight, Float.valueOf(GATEWAY_RADIUS * 2));
 		final float widthRatio = calculateRatio(gatewayWidth, Float.valueOf(GATEWAY_RADIUS * 2));
-//		gaService.setLocationAndSize(ellipse, 12, 12, 27, 27);
 		gaService.setLocationAndSize(ellipse,
 				generateRatioPointValue(12, widthRatio),
 				generateRatioPointValue(12, heightRatio),
@@ -421,35 +407,29 @@ public class GraphicsUtil {
 				generateRatioPointValue(27, heightRatio));
 		ellipse.setFilled(false);
 		ellipse.setLineWidth(1);
-		peService.setPropertyValue(ellipseShape, DELETABLE_PROPERTY, "true");
+		peService.setPropertyValue(ellipse, DELETABLE_PROPERTY, "true");
 		return ellipse;
 	}
 
-	public static Cross createGatewayCross(ContainerShape container) {
-		Shape verticalShape = peService.createShape(container, false);
+	public static Cross createGatewayCross(GraphicsAlgorithm graphicsAlgorithm) {
 		
-		final int gatewayHeight = getShapeHeight(container);
-		final int gatewayWidth = getShapeWidth(container);
+		final int gatewayHeight = graphicsAlgorithm.getHeight();
+		final int gatewayWidth = graphicsAlgorithm.getWidth();
 		
 		final float heightRatio = calculateRatio(gatewayHeight, Float.valueOf(GATEWAY_RADIUS * 2));
 		final float widthRatio = calculateRatio(gatewayWidth, Float.valueOf(GATEWAY_RADIUS * 2));
 		
-//		Polyline verticalLine = gaService.createPolyline(verticalShape, new int[] { 24, 7, 24, 43 });
-		Polyline verticalLine = gaService.createPolyline(verticalShape,
+		Polyline verticalLine = gaService.createPolyline(graphicsAlgorithm,
 				new int[] { generateRatioPointValue(24, widthRatio), generateRatioPointValue(7, heightRatio),
 							generateRatioPointValue(24, widthRatio), generateRatioPointValue(43, heightRatio) });
 		verticalLine.setLineWidth(3);
-		peService.setPropertyValue(verticalShape, DELETABLE_PROPERTY, "false");
-
-		Shape horizontalShape = peService.createShape(container, false);
+		peService.setPropertyValue(verticalLine, DELETABLE_PROPERTY, "false");
 		
-//		Polyline horizontalLine = gaService.createPolyline(horizontalShape, new int[] { 7, 24, 43, 24 });
-		
-		Polyline horizontalLine = gaService.createPolyline(horizontalShape,
+		Polyline horizontalLine = gaService.createPolyline(graphicsAlgorithm,
 				new int[] { generateRatioPointValue(7, widthRatio), generateRatioPointValue(24, heightRatio),
 							generateRatioPointValue(43, widthRatio), generateRatioPointValue(24, heightRatio) });
 		horizontalLine.setLineWidth(3);
-		peService.setPropertyValue(horizontalShape, DELETABLE_PROPERTY, "false");
+		peService.setPropertyValue(horizontalLine, DELETABLE_PROPERTY, "false");
 
 		Cross cross = new Cross();
 		cross.vertical = verticalLine;
@@ -457,31 +437,26 @@ public class GraphicsUtil {
 		return cross;
 	}
 
-	public static DiagonalCross createGatewayDiagonalCross(ContainerShape container) {
+	public static DiagonalCross createGatewayDiagonalCross(GraphicsAlgorithm graphicsAlgorithm) {
 		IPeService service = Graphiti.getPeService();
 
-		final int gatewayHeight = getShapeHeight(container);
-		final int gatewayWidth = getShapeWidth(container);
+		final int gatewayHeight = graphicsAlgorithm.getHeight();
+		final int gatewayWidth = graphicsAlgorithm.getWidth();
 		
 		final float heightRatio = calculateRatio(gatewayHeight, Float.valueOf(GATEWAY_RADIUS * 2));
 		final float widthRatio = calculateRatio(gatewayWidth, Float.valueOf(GATEWAY_RADIUS * 2));
 
-		Shape diagonalDescShape = service.createShape(container, false);
-//		Polyline diagonalDesc = gaService.createPolyline(diagonalDescShape, new int[] { 13, 14, 37, 37 });
-		Polyline diagonalDesc = gaService.createPolyline(diagonalDescShape,
+		Polyline diagonalDesc = gaService.createPolyline(graphicsAlgorithm,
 				new int[] { generateRatioPointValue(14, widthRatio), generateRatioPointValue(14, heightRatio),
 							generateRatioPointValue(37, widthRatio), generateRatioPointValue(37, heightRatio) });
 		diagonalDesc.setLineWidth(3);
-		peService.setPropertyValue(diagonalDescShape, DELETABLE_PROPERTY, "true");
+		peService.setPropertyValue(diagonalDesc, DELETABLE_PROPERTY, "true");
 
-		Shape diagonalAscShape = service.createShape(container, false);
-		
-//		Polyline diagonalAsc = gaService.createPolyline(diagonalAscShape, new int[] { 37, 14, 13, 37 });
-		Polyline diagonalAsc = gaService.createPolyline(diagonalAscShape,
+		Polyline diagonalAsc = gaService.createPolyline(graphicsAlgorithm,
 				new int[] { generateRatioPointValue(37, widthRatio), generateRatioPointValue(14, heightRatio),
 							generateRatioPointValue(14, widthRatio), generateRatioPointValue(37, heightRatio) });
 		diagonalAsc.setLineWidth(3);
-		peService.setPropertyValue(diagonalAscShape, DELETABLE_PROPERTY, "true");
+		peService.setPropertyValue(diagonalAsc, DELETABLE_PROPERTY, "true");
 
 		DiagonalCross diagonalCross = new DiagonalCross();
 		diagonalCross.diagonalDesc = diagonalDesc;
@@ -527,46 +502,38 @@ public class GraphicsUtil {
 		return cross;
 	}
 
-	public static Asterisk createGatewayAsterisk(ContainerShape container) {
+	public static Asterisk createGatewayAsterisk(GraphicsAlgorithm graphicsAlgorithm) {
 		IPeService service = Graphiti.getPeService();
 
-		final int gatewayHeight = getShapeHeight(container);
-		final int gatewayWidth = getShapeWidth(container);
+		final int gatewayHeight = graphicsAlgorithm.getWidth();
+		final int gatewayWidth = graphicsAlgorithm.getHeight();
 		
 		final float heightRatio = calculateRatio(gatewayHeight, Float.valueOf(GATEWAY_RADIUS * 2));
 		final float widthRatio = calculateRatio(gatewayWidth, Float.valueOf(GATEWAY_RADIUS * 2));
 
-		Shape verticalShape = service.createShape(container, false);
-//		Polyline vertical = gaService.createPolyline(verticalShape, new int[] { 23, 8, 23, 42 });
-		Polyline vertical = gaService.createPolyline(verticalShape,
+		Polyline vertical = gaService.createPolyline(graphicsAlgorithm,
 				new int[] { generateRatioPointValue(24, widthRatio), generateRatioPointValue(7, heightRatio),
 							generateRatioPointValue(24, widthRatio), generateRatioPointValue(43, heightRatio) });
 		vertical.setLineWidth(3);
-		peService.setPropertyValue(verticalShape, DELETABLE_PROPERTY, "true");
+		peService.setPropertyValue(graphicsAlgorithm, DELETABLE_PROPERTY, "true");
 
-		Shape horizontalShape = service.createShape(container, false);
-//		Polyline horizontal = gaService.createPolyline(horizontalShape, new int[] { 8, 24, 42, 24 });
-		Polyline horizontal = gaService.createPolyline(horizontalShape,
+		Polyline horizontal = gaService.createPolyline(graphicsAlgorithm,
 				new int[] { generateRatioPointValue(7, widthRatio), generateRatioPointValue(24, heightRatio),
 							generateRatioPointValue(43, widthRatio), generateRatioPointValue(24, heightRatio) });
 		horizontal.setLineWidth(3);
-		peService.setPropertyValue(horizontalShape, DELETABLE_PROPERTY, "true");
+		peService.setPropertyValue(graphicsAlgorithm, DELETABLE_PROPERTY, "true");
 
-		Shape diagonalDescShape = service.createShape(container, false);
-//		Polyline diagonalDesc = gaService.createPolyline(diagonalDescShape, new int[] { 13, 14, 37, 37 });
-		Polyline diagonalDesc = gaService.createPolyline(diagonalDescShape,
+		Polyline diagonalDesc = gaService.createPolyline(graphicsAlgorithm,
 				new int[] { generateRatioPointValue(14, widthRatio), generateRatioPointValue(14, heightRatio),
 							generateRatioPointValue(37, widthRatio), generateRatioPointValue(37, heightRatio) });
 		diagonalDesc.setLineWidth(3);
-		peService.setPropertyValue(diagonalDescShape, DELETABLE_PROPERTY, "true");
+		peService.setPropertyValue(graphicsAlgorithm, DELETABLE_PROPERTY, "true");
 
-		Shape diagonalAscShape = service.createShape(container, false);
-//		Polyline diagonalAsc = gaService.createPolyline(diagonalAscShape, new int[] { 37, 14, 13, 37 });
-		Polyline diagonalAsc = gaService.createPolyline(diagonalAscShape,
+		Polyline diagonalAsc = gaService.createPolyline(graphicsAlgorithm,
 				new int[] { generateRatioPointValue(37, widthRatio), generateRatioPointValue(14, heightRatio),
 							generateRatioPointValue(14, widthRatio), generateRatioPointValue(37, heightRatio) });
 		diagonalAsc.setLineWidth(3);
-		peService.setPropertyValue(diagonalAscShape, DELETABLE_PROPERTY, "true");
+		peService.setPropertyValue(graphicsAlgorithm, DELETABLE_PROPERTY, "true");
 
 		Asterisk a = new Asterisk();
 		a.horizontal = horizontal;
@@ -857,6 +824,7 @@ public class GraphicsUtil {
 		Rectangle rect = gaService.createRectangle(gaContainer);
 		gaService.setLocationAndSize(rect, x, y, w, h);
 		rect.setFilled(false);
+		rect.setLineWidth(1);
 
 		Polyline line = gaService.createPolyline(rect, new int[] { 0, 0, w / 2, h / 2, w, 0 });
 

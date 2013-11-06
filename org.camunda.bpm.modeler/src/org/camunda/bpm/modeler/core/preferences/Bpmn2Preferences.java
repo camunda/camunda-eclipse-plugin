@@ -389,7 +389,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			isHorizontal = getBPMNDIAttributeDefault(PREF_IS_HORIZONTAL, BPMNDIAttributeDefault.USE_DI_VALUE);
 			isExpanded = getBPMNDIAttributeDefault(PREF_IS_EXPANDED, BPMNDIAttributeDefault.USE_DI_VALUE);
 			isMessageVisible = getBPMNDIAttributeDefault(PREF_IS_MESSAGE_VISIBLE, BPMNDIAttributeDefault.USE_DI_VALUE);
-			isMarkerVisible = getBPMNDIAttributeDefault(PREF_IS_MARKER_VISIBLE, BPMNDIAttributeDefault.USE_DI_VALUE);
+			isMarkerVisible = getBPMNDIAttributeDefault(PREF_IS_MARKER_VISIBLE, BPMNDIAttributeDefault.DEFAULT_TRUE);
 			connectionTimeout = this.getString(PREF_CONNECTION_TIMEOUT, "60000");
 			
 			popupConfigDialog = getInt(PREF_POPUP_CONFIG_DIALOG, 0); // tri-state checkbox

@@ -1,10 +1,8 @@
 package org.camunda.bpm.modeler.core.features;
 
-import org.camunda.bpm.modeler.core.features.activity.AbstractAddActivityFeature;
 import org.camunda.bpm.modeler.core.features.api.IDecorateContext;
 import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
-import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -28,7 +26,7 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
  * @see #getDecorateContainer(ContainerShape)
  * @see #decorate(IDecorateContext)
  */
-public class AbstractFlowElementDecorateFeature<T extends GraphicsAlgorithm> extends DefaultBpmn2DecorateFeature {
+public abstract class AbstractFlowElementDecorateFeature<T extends GraphicsAlgorithm> extends DefaultBpmn2DecorateFeature {
 
 	public AbstractFlowElementDecorateFeature(IFeatureProvider fp) {
 		super(fp);
@@ -87,11 +85,13 @@ public class AbstractFlowElementDecorateFeature<T extends GraphicsAlgorithm> ext
 	protected T getDecorateContainer(ContainerShape shape) {
 		
 		// get decorate rectangle for activity
-		Shape decorateShape = FeatureSupport.getShape(shape, AbstractAddActivityFeature.ACTIVITY_RECT, "true");
+		Shape decorateShape = getDecorateShape(shape);
 		
 		@SuppressWarnings("unchecked")
 		T decorateContainer = (T) decorateShape.getGraphicsAlgorithm();
 		
 		return decorateContainer;
 	}
+
+	protected abstract Shape getDecorateShape(ContainerShape shape);
 }

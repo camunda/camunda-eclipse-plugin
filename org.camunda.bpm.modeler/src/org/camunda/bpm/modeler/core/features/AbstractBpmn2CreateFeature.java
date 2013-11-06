@@ -20,6 +20,7 @@ import org.camunda.bpm.modeler.core.runtime.ModelEnablementDescriptor;
 import org.camunda.bpm.modeler.core.runtime.TargetRuntime;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
+import org.camunda.bpm.modeler.ui.diagram.Bpmn2FeatureProvider;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -87,7 +88,9 @@ public abstract class AbstractBpmn2CreateFeature<T extends BaseElement>
 		
 		EClass eCls = getBusinessObjectClass();
 		
-		T newObject = (T) eCls.getEPackage().getEFactoryInstance().create(eCls);
+		EClass actualECls = ((Bpmn2FeatureProvider) getFeatureProvider()).getActualEClass(eCls);
+		
+		T newObject = (T) actualECls.getEPackage().getEFactoryInstance().create(actualECls);
 		
 		// assign id to new object
 		ModelUtil.setID(newObject, resource);

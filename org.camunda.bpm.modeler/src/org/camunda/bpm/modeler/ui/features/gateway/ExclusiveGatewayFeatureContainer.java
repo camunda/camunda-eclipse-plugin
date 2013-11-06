@@ -12,8 +12,10 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.gateway;
 
+import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.features.gateway.AbstractCreateGatewayFeature;
 import org.camunda.bpm.modeler.core.features.gateway.AddGatewayFeature;
+import org.camunda.bpm.modeler.core.features.gateway.GatewayDecorateFeature;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.ui.ImageProvider;
@@ -24,7 +26,8 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
-import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.algorithms.Polygon;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public class ExclusiveGatewayFeatureContainer extends AbstractGatewayFeatureContainer {
 
@@ -35,7 +38,7 @@ public class ExclusiveGatewayFeatureContainer extends AbstractGatewayFeatureCont
 
 	@Override
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new AddGatewayFeatureExtension(fp);
+		return new AddGatewayFeature<ExclusiveGateway>(fp);
 	}
 
 	@Override
@@ -43,23 +46,22 @@ public class ExclusiveGatewayFeatureContainer extends AbstractGatewayFeatureCont
 		return new CreateExclusiveGatewayFeature(fp);
 	}
 
-	public static class AddGatewayFeatureExtension extends AddGatewayFeature<ExclusiveGateway> {
-		
-		private AddGatewayFeatureExtension(IFeatureProvider fp) {
-			super(fp);
-		}
-
-		@Override
-		protected void decorate(ContainerShape container) {
-			
-			BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(container, BPMNShape.class);
-			
-			// TODO: handle showExclusiveGatewayMarker property change event in BPMN2Editor
-			// and override the default gateway UpdateFeature to show/hide the "X" marker.
-			if (bpmnShape.isIsMarkerVisible()) {
-				GraphicsUtil.createGatewayDiagonalCross(container);
+	@Override
+	public IDecorateFeature getDecorateFeature(IFeatureProvider fp) {
+		return new GatewayDecorateFeature(fp) {
+			@Override
+			protected void decorate(Shape shape, Polygon decorateContainer) {
+				super.decorate(shape, decorateContainer);
+				
+				BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(shape, BPMNShape.class);
+				
+				// TODO: handle showExclusiveGatewayMarker property change event in BPMN2Editor
+				// and override the default gateway UpdateFeature to show/hide the "X" marker.
+				if (bpmnShape.isIsMarkerVisible()) {
+					GraphicsUtil.createGatewayDiagonalCross(decorateContainer);
+				}
 			}
-		}
+		};
 	}
 
 	public static class CreateExclusiveGatewayFeature extends AbstractCreateGatewayFeature<ExclusiveGateway> {

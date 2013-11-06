@@ -5,17 +5,16 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.camunda.bpm.modeler.core.ModelHandler;
-import org.camunda.bpm.modeler.core.features.event.AbstractUpdateEventFeature;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.transform.Transformer;
 import org.camunda.bpm.modeler.ui.ImageProvider;
 import org.camunda.bpm.modeler.ui.features.AbstractMorphNodeFeature;
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.DataAssociation;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
-import org.eclipse.bpmn2.MessageEventDefinition;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.emf.ecore.EClass;
@@ -28,7 +27,6 @@ import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.context.impl.UpdateContext;
 import org.eclipse.graphiti.mm.pictograms.Connection;
-import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -167,7 +165,7 @@ public abstract class AbstractMorphEventFeature extends AbstractMorphNodeFeature
 	}
 	
 	@Override
-	protected Shape createNewShape(MorphOption option, Shape oldShape, Event newObject) {
+	protected Shape updateShape(MorphOption option, Shape oldShape, Event newObject) {
 		// In case of events we do not have to create a new shape for the event,
 		// we only have to trigger the update feature so that the shape of the
 		// event including his children will be updated.
@@ -178,56 +176,27 @@ public abstract class AbstractMorphEventFeature extends AbstractMorphNodeFeature
 
 		return oldShape;
 	}
-	
-	@Override
-	protected void cleanUp(PictogramElement pictogramElement) {
-		// We do not have to do any cleanups, the event shape
-		// will be updated.
-		return;
-	}
-	
-	@Override
-	protected void handleMessageFlow(EObject bo, Connection messageFlow, List<Connection> connections, boolean incoming) {
-		if (incoming && !Bpmn2Package.eINSTANCE.getCatchEvent().isInstance(bo)) {
-			deletePictogramElement(messageFlow);
-			return;
-		}
-		
-		if (!incoming && !Bpmn2Package.eINSTANCE.getThrowEvent().isInstance(bo)) {
-			deletePictogramElement(messageFlow);
-			return;			
-		}
-		
-		Event event = (Event) bo;
-		List<EventDefinition> eventDefinitions = getEventDefinitions(event);
-
-		MessageEventDefinition message = getEventDefinition(MessageEventDefinition.class, eventDefinitions);
-		
-		if (message == null) {
-			deletePictogramElement(messageFlow);
-			return;
-		}
-		
-		super.handleMessageFlow(bo, messageFlow, connections, incoming);
-	}
 
 	@Override
-	protected void handleDataAssociation(EObject bo, Connection dataAssociation, List<Connection> connections, boolean incoming) {
-		if (incoming && !Bpmn2Package.eINSTANCE.getThrowEvent().isInstance(bo)) {
-			deleteDataAssociation(dataAssociation);
-			return;
-		}
-
-		if (!incoming && !Bpmn2Package.eINSTANCE.getCatchEvent().isInstance(bo)) {
-			deleteDataAssociation(dataAssociation);
-			return;
-		}
+	protected void deleteConnection(Connection connection) {
+		BaseElement businessObject = BusinessObjectUtil.getFirstElementOfType(connection, BaseElement.class);
 		
-		super.handleDataAssociation(bo, dataAssociation, connections, incoming);
+		if (businessObject instanceof DataAssociation) {
+			deleteDataAssociation((DataAssociation) businessObject, connection);
+		} else {
+			super.deleteConnection(connection);
+		}
 	}
 	
-	private void deleteDataAssociation(Connection connection) {
-		DataAssociation dataAssociation = BusinessObjectUtil.getFirstElementOfType(connection, DataAssociation.class);
+	/**
+	 * Perform a special treatment of data associations because they may already be
+	 * detached from their parent during a morph operation 
+	 * (they are contained in {@link Activity}, {@link CatchEvent} and {@link ThrowEvent} respectively).
+	 * 
+	 * @param dataAssociation
+	 * @param connection
+	 */
+	private void deleteDataAssociation(DataAssociation dataAssociation, Connection connection) {
 		
 		EObject container = dataAssociation.eContainer();
 		EObject parentContainer = container.eContainer();
@@ -250,7 +219,7 @@ public abstract class AbstractMorphEventFeature extends AbstractMorphNodeFeature
 		
 		removePictogramElement(connection);
 	}
-	
+
 	protected final <T extends EventDefinition> T getEventDefinition(Class<T> cls, List<EventDefinition> eventDefinitions) {
 		for (EventDefinition eventDefinition : eventDefinitions) {
 			if (cls.isInstance(eventDefinition)) {

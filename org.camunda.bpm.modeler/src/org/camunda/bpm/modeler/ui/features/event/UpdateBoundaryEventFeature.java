@@ -35,6 +35,11 @@ public class UpdateBoundaryEventFeature extends AbstractUpdateEventFeature {
 	}
 
 	@Override
+	public boolean canUpdate(IUpdateContext context) {
+		return super.canUpdate(context) && getBusinessObjectForPictogramElement(context.getPictogramElement()) instanceof BoundaryEvent;
+	}
+	
+	@Override
 	public IReason updateNeeded(IUpdateContext context) {
 		if (super.updateNeeded(context).toBoolean()) {
 			return Reason.createTrueReason();
@@ -70,10 +75,5 @@ public class UpdateBoundaryEventFeature extends AbstractUpdateEventFeature {
 		innerEllipse.setLineStyle(lineStyle);
 
 		return true;
-	}
-
-	@Override
-	public boolean canUpdate(IUpdateContext context) {
-		return getBusinessObjectForPictogramElement(context.getPictogramElement()) instanceof BoundaryEvent;
 	}
 }
