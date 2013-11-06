@@ -14,24 +14,18 @@ package org.camunda.bpm.modeler.ui.wizards;
 
 import java.io.IOException;
 
-import org.camunda.bpm.modeler.core.Activator;
-import org.camunda.bpm.modeler.core.utils.ErrorUtils;
 import org.camunda.bpm.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
+import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.ui.editor.BPMN2Editor;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.bpmn2.util.Bpmn2ResourceFactoryImpl;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.graphiti.ui.services.GraphitiUi;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 
 public class BPMN2DiagramCreator {
 	
@@ -48,7 +42,11 @@ public class BPMN2DiagramCreator {
 	}
 	
 	public static Definitions createDefinitions(URI uri) {
-		return new Bpmn2ResourceFactoryImpl().createAndInitResource(uri);
+		// set targetNamespace because it is a mandatory field
+		// the process engine can not deploy the process model without targetNamespace 
+		Definitions definitions = new Bpmn2ResourceFactoryImpl().createAndInitResource(uri);
+		definitions.setTargetNamespace(ModelPackage.eNS_URI);
+		return definitions;
 	}
 	
 	public static Bpmn2DiagramEditorInput createDiagramInput(URI uri, Bpmn2DiagramType diagramType, String targetNamespace) throws CoreException {

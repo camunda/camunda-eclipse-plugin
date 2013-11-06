@@ -20,7 +20,6 @@ package org.camunda.bpm.modeler.runtime.engine.model.util;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.camunda.bpm.modeler.core.Activator;
@@ -55,11 +54,9 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.XMLSave;
 import org.eclipse.emf.ecore.xmi.impl.XMLLoadImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMLString;
-import org.eclipse.emf.ecore.xml.type.AnyType;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
-import org.omg.CORBA.Any;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
@@ -110,8 +107,6 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
     	
 		return new Bpmn2ModelerXMLSave(createXMLHelper()) {
 			
-			private boolean needTargetNamespace = true;
-			
 			@Override
 			protected void saveTypeAttribute(EClass eClass) {
 				if (!eClass.getEPackage().getNsPrefix().equals("activiti") &&
@@ -161,21 +156,12 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 		        doc = new XMLString(Integer.MAX_VALUE, publicId, systemId, null) {
 		        	@Override
 		        	public void addAttribute(String name, String value) {
-		        		if ("targetNamespace".equals(name))
-		        			needTargetNamespace = false;
-		        		else if (XSI_SCHEMA_LOCATION.equals(name)) {
+		        		if (XSI_SCHEMA_LOCATION.equals(name)) {
 		        			value = "http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd";
 		        		}
 		        		super.addAttribute(name, value);
 		        	}
 		        };
-			}
-			  
-			@Override
-			protected void addNamespaceDeclarations() {
-				if (needTargetNamespace)
-					doc.addAttribute("targetNamespace", ModelPackage.eNS_URI);
-				super.addNamespaceDeclarations();
 			}
 		};
 	}
