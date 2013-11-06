@@ -285,7 +285,7 @@ public class MorphActivityFeatureTest extends AbstractFeatureTest {
 	private List<EClass> getExpectedList(EClass cls) {
 		EClass taskClass = Bpmn2Package.eINSTANCE.getTask();
 		EClass manualTaskClass = Bpmn2Package.eINSTANCE.getManualTask();
-		EClass userTaskClass = Bpmn2Package.eINSTANCE.getUserTask();
+		EClass userTaskClass = ModelPackage.eINSTANCE.getUserTask();
 		EClass scriptTaskClass = Bpmn2Package.eINSTANCE.getScriptTask();
 		EClass businessRuleTaskClass = Bpmn2Package.eINSTANCE.getBusinessRuleTask();
 		EClass serviceTaskClass = Bpmn2Package.eINSTANCE.getServiceTask();
