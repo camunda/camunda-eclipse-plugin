@@ -54,15 +54,15 @@ public class ExclusiveGatewayFeatureContainer extends AbstractGatewayFeatureCont
 			protected void decorate(Shape shape, Polygon decorateContainer) {
 				super.decorate(shape, decorateContainer);
 				
-				BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(shape, BPMNShape.class);
-				
 				// TODO: handle showExclusiveGatewayMarker property change event in BPMN2Editor
 				// and override the default gateway UpdateFeature to show/hide the "X" marker.
 				
-				// make sure we hide the X only if isMarkerVisible="false" is set
-				if (!bpmnShape.eIsSet(BpmnDiPackage.eINSTANCE.getBPMNShape_IsMarkerVisible()) || bpmnShape.isIsMarkerVisible()) {
-					GraphicsUtil.createGatewayDiagonalCross(decorateContainer);
-				}
+				// Currently it is not possible to find out, whether the feature
+				// "isMarkerVisible" is set or not (if "isMarkerVisible" is set to "false"
+				// in the xml, the current behavior of "eIsSet()" returns false, so that
+				// the marker "X" would always be displayed). Instead of testing, whether
+				// feature is set or not, we always draw the marker "X".
+				GraphicsUtil.createGatewayDiagonalCross(decorateContainer);
 			}
 		};
 	}

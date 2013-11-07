@@ -3,8 +3,6 @@ package org.camunda.bpm.modeler.core.features.gateway;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.eclipse.bpmn2.BoundaryEvent;
-import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
