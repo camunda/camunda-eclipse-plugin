@@ -307,10 +307,7 @@ public class TransformerTest {
 			.isNotNull()
 			.isInstanceOf(DataObject.class);
 		
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		resource.save(outputStream, null);
-		
-		String resultXML = outputStream.toString("UTF-8");
+		String resultXML = TestHelper.saveToString(resource);
 		
 		assertThat(resultXML)
 			.contains("<bpmn2:dataObject id=\"DataObjectReference_1\" name=\"Data Object Reference 1\"/>");
@@ -377,10 +374,7 @@ public class TransformerTest {
 			.isNotNull()
 			.isInstanceOf(DataObjectReference.class);
 		
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		resource.save(outputStream, null);
-		
-		String resultXML = outputStream.toString("UTF-8");
+		String resultXML = TestHelper.saveToString(resource);
 		
 		assertThat(resultXML)
 			.contains("<bpmn2:dataObjectReference id=\"DataObject_4\" name=\"Data Object 4\"/>");

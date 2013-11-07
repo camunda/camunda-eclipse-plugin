@@ -1,5 +1,6 @@
 package org.camunda.bpm.modeler.test.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -144,6 +145,19 @@ public class TestHelper {
 	}
 	
 	/**
+	 * Saves a {@link Resource} to a string
+	 * 
+	 * @param resource
+	 * @return
+	 * @throws IOException
+	 */
+	public static String saveToString(Resource resource) throws IOException {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		resource.save(outputStream, null);
+		return outputStream.toString("UTF-8");
+	}
+	
+	/**
 	 * Executes a model operation encapsulated in the given {@link Runnable} in the transactional 
 	 * scope of the given {@link TransactionalEditingDomain}. 
 	 * 
@@ -237,4 +251,6 @@ public class TestHelper {
 			return typeProvider;
 		}
 	}
+
+
 }
