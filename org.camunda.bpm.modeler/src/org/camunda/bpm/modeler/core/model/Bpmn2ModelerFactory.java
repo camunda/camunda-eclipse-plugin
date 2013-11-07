@@ -27,7 +27,7 @@ import org.eclipse.emf.ecore.EObject;
  * Runtime plugin extension.
  * 
  * @author Bob Brodt
- * 
+ * @author nico.rehwaldt
  */
 public class Bpmn2ModelerFactory extends Bpmn2FactoryImpl {
 
@@ -37,12 +37,20 @@ public class Bpmn2ModelerFactory extends Bpmn2FactoryImpl {
 
 	@Override
 	public EObject create(EClass eClass) {
+		EObject newObject = super.create(eClass);
+		
+		// exclude document root
+		// because it is not a super class of Bpmn2 -> DocumentRoot
+		if (eClass.getName().equals(Bpmn2Package.eINSTANCE.getDocumentRoot().getName())) {
+			return newObject;
+		}
+		
 		EClass actualCls = ModelUtil.getActualEClass(eClass);
 		if (!eClass.equals(actualCls)) {
 			return actualCls.getEPackage().getEFactoryInstance().create(actualCls);
-			
 		}
-		return super.create(eClass);
+
+		return newObject;
 	}
 	
 	

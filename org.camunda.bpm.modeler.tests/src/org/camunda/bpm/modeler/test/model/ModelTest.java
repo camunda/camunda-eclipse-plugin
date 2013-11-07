@@ -5,10 +5,16 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 import java.io.IOException;
 
+import org.camunda.bpm.modeler.core.model.Bpmn2ModelerFactory;
+import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.runtime.engine.model.CallActivity;
 import org.camunda.bpm.modeler.test.importer.AbstractImportBpmnModelTest;
 import org.camunda.bpm.modeler.test.util.TestHelper;
 import org.camunda.bpm.modeler.test.util.TestHelper.ModelResources;
+import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.DocumentRoot;
+import org.eclipse.bpmn2.Process;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.Test;
@@ -71,22 +77,46 @@ public class ModelTest extends AbstractImportBpmnModelTest {
 		});
 
 		// then
+		String resultXML = TestHelper.saveToString(resource);
+		
+		assertThat(resultXML)
+			.contains("camunda:calledElementBinding=\"deployment\"");
+	}
+	
+	@Test
+	public void shouldCreateElementOnEmptyModel() throws Exception {
+		
+		// given
+		ModelResources resources = TestHelper.createModel("org/camunda/bpm/modeler/test/model/ModelTest.emptyDiagram.bpmn");
+		final Resource resource = resources.getResource();
+		
+		// assume
+		DocumentRoot documentRoot = (DocumentRoot) resource.getContents().get(0);
+		final Definitions definitions = documentRoot.getDefinitions();
+		
+		// when
 		transactionalExecute(resources, new Runnable() {
-			
 			@Override
 			public void run() {
-				String resultXML;
-				try {
-					resultXML = TestHelper.saveToString(resource);
-					
-					assertThat(resultXML)
-						.contains("camunda:calledElementBinding=\"deployment\"");
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
 				
+				Bpmn2ModelerFactory eobjectFactory = Bpmn2ModelerFactory.getInstance();
+				
+				org.eclipse.bpmn2.Process process = (Process) eobjectFactory.create(Bpmn2Package.eINSTANCE.getProcess());
+				process.setId("Process_1");
+				
+				CallActivity callActivity = (CallActivity) eobjectFactory.create(Bpmn2Package.eINSTANCE.getCallActivity());
+				callActivity.setId("CallActivity_1");
+				
+				process.getFlowElements().add(callActivity);
+				definitions.getRootElements().add(process);
 			}
 		});
 		
+		// then
+		String resultXML = TestHelper.saveToString(resource);
+
+		assertThat(resultXML)
+			.contains("callActivity id=\"CallActivity_1\"")
+			.contains("process id=\"Process_1\"");
 	}
 }
