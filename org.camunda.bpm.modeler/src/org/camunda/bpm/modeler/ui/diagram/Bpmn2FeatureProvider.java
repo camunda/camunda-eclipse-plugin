@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.camunda.bpm.modeler.core.di.DIUtils;
 import org.camunda.bpm.modeler.core.features.AbstractBpmn2CreateFeature;
-import org.camunda.bpm.modeler.core.features.DefaultBpmn2DecorateFeature;
 import org.camunda.bpm.modeler.core.features.DefaultBpmn2DeleteShapeFeature;
 import org.camunda.bpm.modeler.core.features.DefaultBpmn2RemoveShapeFeature;
 import org.camunda.bpm.modeler.core.features.api.IDecorateContext;
@@ -31,7 +30,7 @@ import org.camunda.bpm.modeler.core.features.bendpoint.RemoveBendpointFeature;
 import org.camunda.bpm.modeler.core.features.container.ConnectionFeatureContainer;
 import org.camunda.bpm.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
-import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
+import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.ui.features.activity.subprocess.AdHocSubProcessFeatureContainer;
 import org.camunda.bpm.modeler.ui.features.activity.subprocess.CallActivityFeatureContainer;
 import org.camunda.bpm.modeler.ui.features.activity.subprocess.SubProcessFeatureContainer;
@@ -86,11 +85,9 @@ import org.camunda.bpm.modeler.ui.features.label.LabelFeatureContainer;
 import org.camunda.bpm.modeler.ui.features.lane.LaneFeatureContainer;
 import org.camunda.bpm.modeler.ui.features.participant.ParticipantFeatureContainer;
 import org.camunda.bpm.modeler.ui.features.validation.ValidateDiagramFeature;
-import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IAddBendpointFeature;
 import org.eclipse.graphiti.features.IAddFeature;
@@ -240,7 +237,7 @@ public class Bpmn2FeatureProvider extends DefaultFeatureProvider {
 				AbstractBpmn2CreateFeature acf = (AbstractBpmn2CreateFeature)cf;
 
 				EClass cls = acf.getBusinessObjectClass();
-				cls = getActualEClass(cls);
+				cls = ModelUtil.getActualEClass(cls);
 				
 				classToCreateFeatureMap.put(cls, cf);
 			}
@@ -251,7 +248,7 @@ public class Bpmn2FeatureProvider extends DefaultFeatureProvider {
 				AbstractCreateFlowFeature acf = (AbstractCreateFlowFeature)cf;
 
 				EClass cls = acf.getBusinessObjectClass();
-				cls = getActualEClass(cls);
+				cls = ModelUtil.getActualEClass(cls);
 
 				classToCreateFeatureMap.put(cls, cf);
 			}
@@ -562,33 +559,9 @@ public class Bpmn2FeatureProvider extends DefaultFeatureProvider {
 		return (Bpmn2DiagramTypeProvider) super.getDiagramTypeProvider();
 	}
 
-	/**
-	 * Returns the actual {@link EClass} used to instantiate the given type.
-	 * 
-	 * This method should be queried for the real type of an eclass whenever it is
-	 * about to be instantiated. That makes sure that the correct (sub-)type is used
-	 * if any is defined.
-	 * 
-	 * @param cls
-	 * @return
-	 */
-	public EClass getActualEClass(EClass cls) {
-		if (cls.getEPackage().equals(Bpmn2Package.eINSTANCE)) {
-			EClassifier modelClassifier = ModelPackage.eINSTANCE.getEClassifier(cls.getName());
-			if (modelClassifier instanceof EClass) {
-				EClass modelCls = (EClass) modelClassifier;
-				if (!modelCls.isAbstract() && cls.isSuperTypeOf(modelCls)) {
-					return modelCls;
-				}
-			}
-		}
-		
-		return cls;
-	}
-	
 	public IFeature getCreateFeatureForBusinessObject(EClass cls) {
 
-		cls = getActualEClass(cls);
+		cls = ModelUtil.getActualEClass(cls);
 
 		if (classToCreateFeatureMap.containsKey(cls)) {
 			return classToCreateFeatureMap.get(cls);

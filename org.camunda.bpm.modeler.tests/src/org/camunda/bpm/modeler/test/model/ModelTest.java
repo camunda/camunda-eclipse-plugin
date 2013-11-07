@@ -3,6 +3,8 @@ package org.camunda.bpm.modeler.test.model;
 import static org.camunda.bpm.modeler.test.util.TestHelper.transactionalExecute;
 import static org.fest.assertions.api.Assertions.assertThat;
 
+import java.io.IOException;
+
 import org.camunda.bpm.modeler.runtime.engine.model.CallActivity;
 import org.camunda.bpm.modeler.test.importer.AbstractImportBpmnModelTest;
 import org.camunda.bpm.modeler.test.util.TestHelper;
@@ -49,7 +51,7 @@ public class ModelTest extends AbstractImportBpmnModelTest {
 	public void shouldExportCallActivityExtensionModel() throws Exception {
 		// given
 		ModelResources resources = TestHelper.createModel("org/camunda/bpm/modeler/test/model/ModelTest.callActivity.bpmn");
-		Resource resource = resources.getResource();
+		final Resource resource = resources.getResource();
 		
 		// assume
 		final EObject element = resource.getEObject("CallActivity_1");
@@ -69,9 +71,22 @@ public class ModelTest extends AbstractImportBpmnModelTest {
 		});
 
 		// then
-		String resultXML = TestHelper.saveToString(resource);
+		transactionalExecute(resources, new Runnable() {
+			
+			@Override
+			public void run() {
+				String resultXML;
+				try {
+					resultXML = TestHelper.saveToString(resource);
+					
+					assertThat(resultXML)
+						.contains("camunda:calledElementBinding=\"deployment\"");
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+				
+			}
+		});
 		
-		assertThat(resultXML)
-			.contains("camunda:calledElementBinding=\"deployment\"");
 	}
 }

@@ -132,7 +132,7 @@ public abstract class AbstractMorphNodeFeature<T extends FlowNode> extends Abstr
 			if (classifier instanceof EClass) {
 				EClass type = (EClass) classifier;
 
-				EClass actualType = ((Bpmn2FeatureProvider) getFeatureProvider()).getActualEClass(type);
+				EClass actualType = ModelUtil.getActualEClass(type);
 				
 				if (actualType.isAbstract() || bo.eClass().equals(actualType) || excludeTypes.contains(type) || excludeTypes.contains(actualType)) {
 					continue;

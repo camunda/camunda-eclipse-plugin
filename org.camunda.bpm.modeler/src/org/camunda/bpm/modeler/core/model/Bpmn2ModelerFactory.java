@@ -13,6 +13,7 @@
 
 package org.camunda.bpm.modeler.core.model;
 
+import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.impl.Bpmn2FactoryImpl;
@@ -34,10 +35,22 @@ public class Bpmn2ModelerFactory extends Bpmn2FactoryImpl {
 		return (Bpmn2ModelerFactory) Bpmn2ModelerFactory.eINSTANCE;
 	}
 
+	@Override
+	public EObject create(EClass eClass) {
+		EClass actualCls = ModelUtil.getActualEClass(eClass);
+		if (!eClass.equals(actualCls)) {
+			return actualCls.getEPackage().getEFactoryInstance().create(actualCls);
+			
+		}
+		return super.create(eClass);
+	}
+	
+	
 	@SuppressWarnings("unchecked")
 	public static <T extends EObject> T create(Class<T> clazz) {
 		EObject newObject = null;
 		EClassifier eClassifier = Bpmn2Package.eINSTANCE.getEClassifier(clazz.getSimpleName());
+		
 		if (eClassifier instanceof EClass) {
 			newObject = Bpmn2ModelerFactory.eINSTANCE.create((EClass) eClassifier);
 		}

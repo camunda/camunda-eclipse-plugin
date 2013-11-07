@@ -88,7 +88,7 @@ public abstract class AbstractBpmn2CreateFeature<T extends BaseElement>
 		
 		EClass eCls = getBusinessObjectClass();
 		
-		EClass actualECls = ((Bpmn2FeatureProvider) getFeatureProvider()).getActualEClass(eCls);
+		EClass actualECls = ModelUtil.getActualEClass(eCls);
 		
 		T newObject = (T) actualECls.getEPackage().getEFactoryInstance().create(actualECls);
 		

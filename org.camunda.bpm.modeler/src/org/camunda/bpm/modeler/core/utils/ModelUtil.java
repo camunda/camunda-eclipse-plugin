@@ -18,7 +18,9 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
+import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Choreography;
 import org.eclipse.bpmn2.Collaboration;
 import org.eclipse.bpmn2.Definitions;
@@ -36,6 +38,7 @@ import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
@@ -789,5 +792,29 @@ public class ModelUtil {
 	public static String beautifyName(String displayName) {
 		// strip \n from display names
 		return displayName.replaceAll("\n", " ").replaceAll("[\\s]+", " ");
+	}
+	
+	/**
+	 * Returns the actual {@link EClass} used to instantiate the given type.
+	 * 
+	 * This method should be queried for the real type of an eclass whenever it is
+	 * about to be instantiated. That makes sure that the correct (sub-)type is used
+	 * if any is defined.
+	 * 
+	 * @param cls
+	 * @return
+	 */
+	public static EClass getActualEClass(EClass cls) {
+		if (cls.getEPackage().equals(Bpmn2Package.eINSTANCE)) {
+			EClassifier modelClassifier = ModelPackage.eINSTANCE.getEClassifier(cls.getName());
+			if (modelClassifier instanceof EClass) {
+				EClass modelCls = (EClass) modelClassifier;
+				if (!modelCls.isAbstract() && cls.isSuperTypeOf(modelCls)) {
+					return modelCls;
+				}
+			}
+		}
+		
+		return cls;
 	}
 }

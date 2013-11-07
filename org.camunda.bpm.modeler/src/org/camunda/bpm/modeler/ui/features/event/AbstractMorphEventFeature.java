@@ -97,6 +97,12 @@ public abstract class AbstractMorphEventFeature extends AbstractMorphNodeFeature
 			}
 		}
 		
+		if (newType.equals(Bpmn2Package.eINSTANCE.getStartEvent())) {
+			if (Bpmn2Package.eINSTANCE.getStartEvent().isSuperTypeOf(event.eClass())) {
+				return event;
+			}			
+		}
+		
 		return super.morph(event, option);
 	}
 	
