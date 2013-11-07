@@ -17,6 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
+import org.camunda.bpm.modeler.core.runtime.TargetRuntime;
 import org.camunda.bpm.modeler.plugin.core.ExtensionRegistry;
 import org.camunda.bpm.modeler.plugin.core.Extensions;
 import org.eclipse.core.runtime.IStatus;
@@ -82,6 +83,9 @@ public class Activator extends AbstractUIPlugin {
 		
 		if (PlatformUI.isWorkbenchRunning()) {
 			Bpmn2Preferences.getInstance().load();
+		} else {
+			// load current target runtime during tests
+			TargetRuntime.getDefaultRuntime();
 		}
 	}
 	
