@@ -39,7 +39,7 @@ public interface CallActivity extends org.eclipse.bpmn2.CallActivity {
 	 * @return the value of the '<em>Called Element</em>' attribute.
 	 * @see #setCalledElement(String)
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.ModelPackage#getCallActivity_CalledElement()
-	 * @model extendedMetaData="kind='attribute' name='calledElement'"
+	 * @model extendedMetaData="kind='attribute' name='calledElement' namespace='##targetNamespace'"
 	 * @generated
 	 */
   String getCalledElement();
@@ -67,7 +67,7 @@ public interface CallActivity extends org.eclipse.bpmn2.CallActivity {
 	 * @see #setCalledElementBinding(String)
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.ModelPackage#getCallActivity_CalledElementBinding()
 	 * @model default="latest"
-	 *        extendedMetaData="kind='attribute' name='calledElementBinding'"
+	 *        extendedMetaData="kind='attribute' name='calledElementBinding' namespace='##targetNamespace'"
 	 * @generated
 	 */
   String getCalledElementBinding();
@@ -94,7 +94,7 @@ public interface CallActivity extends org.eclipse.bpmn2.CallActivity {
 	 * @see #setCalledElementVersion(Integer)
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.ModelPackage#getCallActivity_CalledElementVersion()
 	 * @model dataType="org.eclipse.emf.ecore.xml.type.IntObject"
-	 *        extendedMetaData="kind='attribute' name='calledElementVersion'"
+	 *        extendedMetaData="kind='attribute' name='calledElementVersion' namespace='##targetNamespace'"
 	 * @generated
 	 */
   Integer getCalledElementVersion();

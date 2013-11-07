@@ -2347,21 +2347,24 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
-			 "name", "calledElement"
+			 "name", "calledElement",
+			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
 		  (getCallActivity_CalledElementBinding(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
-			 "name", "calledElementBinding"
+			 "name", "calledElementBinding",
+			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
 		  (getCallActivity_CalledElementVersion(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
-			 "name", "calledElementVersion"
+			 "name", "calledElementVersion",
+			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
 		  (valueTypeEClass, 
