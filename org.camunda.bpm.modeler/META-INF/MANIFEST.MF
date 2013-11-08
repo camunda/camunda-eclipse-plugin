@@ -13,19 +13,11 @@ Require-Bundle: org.eclipse.emf.transaction,
  org.eclipse.graphiti.ui;bundle-version="0.10.0",
  org.eclipse.gef,
  org.eclipse.xsd,
- org.eclipse.wst.wsdl;bundle-version="[1.1.200,2.0.0)",
- org.eclipse.wst.xml.core;bundle-version="[1.1.300,2.0.0)",
- org.eclipse.xsd;bundle-version="[2.4.0,3.0.0)",
- org.eclipse.wst.sse.ui;bundle-version="[1.1.0,2.0.0)",
- org.eclipse.wst.sse.core;bundle-version="[1.1.300,2.0.0)",
- javax.wsdl;bundle-version="[1.5.0,1.6.0)";visibility:=reexport,
- org.eclipse.wst.xsd.ui;bundle-version="[1.2.101,2.0.0)",
- org.eclipse.wst.xml.ui;bundle-version="[1.0.400,2.0.0)",
  org.eclipse.ui.ide,
  org.eclipse.core.commands,
- org.eclipse.jdt,
- org.eclipse.jdt.core,
- org.eclipse.jdt.launching,
+ org.eclipse.jdt;resolution:=optional,
+ org.eclipse.jdt.core;resolution:=optional,
+ org.eclipse.jdt.launching;resolution:=optional,
  org.eclipse.ui.views.properties.tabbed,
  org.eclipse.jface.databinding,
  org.eclipse.core.databinding,
@@ -34,301 +26,532 @@ Require-Bundle: org.eclipse.emf.transaction,
  org.eclipse.ui,
  org.eclipse.jface.text,
  org.eclipse.emf.workspace,
- org.eclipse.jdt.ui,
+ org.eclipse.jdt.ui;resolution:=optional,
  org.eclipse.ui.navigator,
  org.eclipse.bpmn2,
- org.eclipse.bpmn2.edit
+ org.eclipse.bpmn2.edit,
+ org.eclipse.wst.validation,
+ org.apache.xerces,
+ org.eclipse.wst.sse.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Export-Package: org.camunda.bpm.modeler.core; uses:="org.eclipse.emf.e
- core.resource,  org.camunda.bpm.modeler.plugin.core,  org.eclipse.ui.
- views.properties.tabbed,  org.eclipse.bpmn2.di,  org.eclipse.core.run
- time,  org.eclipse.jface.resource,  org.eclipse.emf.common.util,  org
- .eclipse.dd.di,  org.eclipse.ui.plugin,  org.eclipse.emf.ecore.resour
- ce.impl,  org.eclipse.emf.ecore,  org.eclipse.graphiti.ui.editor,  or
- g.eclipse.bpmn2,  org.eclipse.bpmn2.util,  org.camunda.bpm.modeler.co
- re.utils,  org.camunda.bpm.modeler.core.preferences,  org.eclipse.gra
- phiti.mm.pictograms,  org.osgi.framework",org.camunda.bpm.modeler.cor
- e.di; uses:="org.eclipse.emf.ecore.resource,  org.eclipse.bpmn2.di,  
- org.eclipse.bpmn2,  org.eclipse.graphiti.platform,  org.eclipse.dd.di
- ,  org.eclipse.graphiti.datatypes,  org.eclipse.graphiti.mm.pictogram
- s",org.camunda.bpm.modeler.core.features; uses:="org.eclipse.bpmn2.di
- ,  org.camunda.bpm.modeler.core.layout.util,  org.eclipse.emf.common.
- util,  org.eclipse.graphiti.ui.features,  org.eclipse.graphiti,  org.
- eclipse.graphiti.internal.features.context.impl.base,  org.eclipse.gr
- aphiti.features,  org.eclipse.graphiti.features.context,  org.eclipse
- .bpmn2,  org.eclipse.graphiti.mm,  org.eclipse.graphiti.features.impl
- ,  org.eclipse.graphiti.datatypes,  org.eclipse.graphiti.mm.pictogram
- s,  org.camunda.bpm.modeler.core.features.api",org.camunda.bpm.modele
- r.core.features.activity; uses:="org.eclipse.bpmn2,  org.eclipse.grap
- hiti.features.context,  org.eclipse.graphiti.features,  org.eclipse.g
- raphiti.features.impl,  org.camunda.bpm.modeler.core.layout.util,  or
- g.eclipse.graphiti.datatypes,  org.camunda.bpm.modeler.core.features,
-   org.eclipse.graphiti.mm.pictograms,  org.camunda.bpm.modeler.core.f
- eatures.api,  org.eclipse.graphiti.mm.algorithms",org.camunda.bpm.mod
- eler.core.features.activity.task; uses:="org.eclipse.graphiti.feature
- s.context,  org.eclipse.graphiti.features,  org.camunda.bpm.modeler.c
- ore.features.activity,  org.eclipse.graphiti.datatypes,  org.eclipse.
- graphiti.mm.pictograms,  org.camunda.bpm.modeler.core.features",org.c
- amunda.bpm.modeler.core.features.api; uses:="org.eclipse.graphiti.fea
- tures,  org.eclipse.graphiti.features.context,  org.eclipse.emf.ecore
- ,  org.eclipse.graphiti",org.camunda.bpm.modeler.core.features.api.co
- ntainer;uses:="org.eclipse.graphiti.features,org.eclipse.graphiti.fea
- tures.context,org.camunda.bpm.modeler.core.features.api",org.camunda.
- bpm.modeler.core.features.artifact; uses:="org.eclipse.graphiti.featu
- res.context,  org.eclipse.graphiti.features,  org.eclipse.graphiti.fe
- atures.impl,  org.eclipse.graphiti.datatypes,  org.eclipse.graphiti.m
- m.pictograms,  org.camunda.bpm.modeler.core.features",org.camunda.bpm
- .modeler.core.features.bendpoint; uses:="org.eclipse.graphiti.feature
- s.context,  org.eclipse.graphiti.features,  org.eclipse.graphiti.feat
- ures.impl,  org.eclipse.graphiti.mm.pictograms",org.camunda.bpm.model
- er.core.features.choreography; uses:="org.eclipse.graphiti.features.c
- ontext,  org.eclipse.graphiti.features,  org.eclipse.graphiti.feature
- s.impl,  org.camunda.bpm.modeler.core.features,  org.eclipse.graphiti
- .mm.pictograms,  org.eclipse.graphiti.services,  org.eclipse.graphiti
- .mm.algorithms",org.camunda.bpm.modeler.core.features.container; uses
- :="org.camunda.bpm.modeler.core.features.api.container,  org.eclipse.
- graphiti.features,  org.eclipse.graphiti.features.context,  org.camun
- da.bpm.modeler.core.features.api",org.camunda.bpm.modeler.core.featur
- es.conversation; uses:="org.eclipse.graphiti.features.context,  org.e
- clipse.graphiti.features,  org.eclipse.graphiti.datatypes,  org.camun
- da.bpm.modeler.core.features,  org.eclipse.graphiti.mm.pictograms",or
- g.camunda.bpm.modeler.core.features.data; uses:="org.eclipse.graphiti
- .features.context,  org.eclipse.graphiti.features,  org.eclipse.graph
- iti.datatypes,  org.eclipse.graphiti.mm.pictograms,  org.camunda.bpm.
- modeler.core.features,  org.eclipse.graphiti.mm.algorithms",org.camun
- da.bpm.modeler.core.features.event; uses:="org.eclipse.bpmn2,  org.ec
- lipse.graphiti.features.context,  org.eclipse.graphiti.features,  org
- .camunda.bpm.modeler.core.layout.util,  org.camunda.bpm.modeler.core.
- features.activity,  org.eclipse.graphiti.datatypes,  org.camunda.bpm.
- modeler.core.features,  org.eclipse.graphiti.mm.pictograms,  org.ecli
- pse.graphiti.mm.algorithms",org.camunda.bpm.modeler.core.features.eve
- nt.definitions; uses:="org.eclipse.graphiti.features.context,  org.ec
- lipse.bpmn2,  org.eclipse.graphiti.features,  org.camunda.bpm.modeler
- .core.features.container,  org.eclipse.graphiti.features.impl,  org.e
- clipse.graphiti.mm.algorithms.styles,  org.eclipse.graphiti,  org.cam
- unda.bpm.modeler.core.features,  org.eclipse.graphiti.mm.pictograms, 
-  org.eclipse.graphiti.util,  org.camunda.bpm.modeler.core.features.ap
- i",org.camunda.bpm.modeler.core.features.flow; uses:="org.eclipse.emf
- .ecore,  org.eclipse.graphiti.features.context,  org.eclipse.graphiti
- .features,  org.eclipse.graphiti.mm.pictograms,  org.camunda.bpm.mode
- ler.core.features,  org.eclipse.graphiti.mm.algorithms",org.camunda.b
- pm.modeler.core.features.gateway; uses:="org.eclipse.graphiti.feature
- s.context,  org.eclipse.graphiti.features,  org.eclipse.graphiti.feat
- ures.impl,  org.camunda.bpm.modeler.core.layout.util,  org.camunda.bp
- m.modeler.core.features.activity,  org.eclipse.graphiti.datatypes,  o
- rg.eclipse.graphiti.mm.pictograms,  org.camunda.bpm.modeler.core.feat
- ures,  org.eclipse.graphiti.mm.algorithms,  org.camunda.bpm.modeler.c
- ore.features.api",org.camunda.bpm.modeler.core.features.lane; uses:="
- org.eclipse.bpmn2,  org.eclipse.graphiti.features.context,  org.eclip
- se.graphiti.features,  org.eclipse.graphiti.features.impl,  org.eclip
- se.graphiti.datatypes,  org.eclipse.graphiti.mm.pictograms,  org.camu
- nda.bpm.modeler.core.features,  org.camunda.bpm.modeler.core.features
- .participant",org.camunda.bpm.modeler.core.features.participant; uses
- :="org.eclipse.graphiti.features.context,  org.eclipse.graphiti.featu
- res,  org.eclipse.graphiti.features.impl,  org.eclipse.graphiti.datat
- ypes,  org.camunda.bpm.modeler.core.features.lane,  org.eclipse.graph
- iti.mm.pictograms,  org.camunda.bpm.modeler.core.features",org.camund
- a.bpm.modeler.core.importer; uses:="org.eclipse.emf.ecore.resource,  
- org.eclipse.bpmn2.di,  org.eclipse.graphiti.platform,  org.eclipse.gr
- aphiti.dt,  org.eclipse.dd.di,  org.camunda.bpm.modeler.core.importer
- .handlers,  org.eclipse.emf.ecore,  org.eclipse.bpmn2,  org.eclipse.g
- raphiti.features,  org.eclipse.bpmn2.util,  org.eclipse.graphiti.data
- types,  org.camunda.bpm.modeler.core.preferences,  org.eclipse.graphi
- ti.mm.pictograms,  org.eclipse.emf.transaction",org.camunda.bpm.model
- er.core.layout.util; uses:="org.eclipse.graphiti.mm.algorithms.styles
- ,  org.camunda.bpm.modeler.core.layout,  org.eclipse.dd.dc,  org.ecli
- pse.bpmn2,  org.camunda.bpm.modeler.ui.features.event,  org.eclipse.g
- raphiti.features,  org.camunda.bpm.modeler.core.utils,  org.eclipse.g
- raphiti.mm,  org.eclipse.graphiti.datatypes,  org.eclipse.draw2d.geom
- etry,  org.eclipse.graphiti.mm.pictograms,  org.eclipse.graphiti.mm.a
- lgorithms",org.camunda.bpm.modeler.core.model; uses:="org.eclipse.emf
- .ecore.resource,  org.eclipse.emf.ecore.xmi.impl,  org.eclipse.bpmn2.
- di,  org.eclipse.bpmn2.impl,  org.eclipse.emf.ecore.xmi,  org.eclipse
- .emf.common.util,  org.eclipse.emf.ecore.resource.impl,  org.eclipse.
- emf.ecore.util,  org.eclipse.emf.ecore,  org.eclipse.bpmn2,  org.ecli
- pse.bpmn2.util,  org.eclipse.core.resources,  org.camunda.bpm.modeler
- .core.preferences",org.camunda.bpm.modeler.core.preferences; uses:="o
- rg.eclipse.emf.ecore.resource,  org.eclipse.bpmn2.di,  org.camunda.bp
- m.modeler.core.runtime,  org.eclipse.emf.common.util,  org.osgi.servi
- ce.prefs,  org.eclipse.graphiti.mm.algorithms.styles,  org.eclipse.gr
- aphiti.util,  org.eclipse.core.runtime.preferences,  org.eclipse.emf.
- ecore,  org.eclipse.jface.preference,  org.camunda.bpm.modeler.core, 
-  org.eclipse.core.resources,  org.eclipse.swt.graphics,  org.eclipse.
- jface.util,  org.eclipse.swt.widgets",org.camunda.bpm.modeler.core.pr
- operty; uses:="org.eclipse.ui.views.properties.tabbed,  org.eclipse.e
- mf.ecore,  org.eclipse.ui,  org.eclipse.graphiti.ui.platform,  org.ec
- lipse.jface.viewers,  org.eclipse.swt.graphics,  org.eclipse.swt.widg
- ets",org.camunda.bpm.modeler.core.runtime; uses:="org.eclipse.emf.eco
- re.resource,  org.camunda.bpm.modeler.core.features.api.container,  o
- rg.eclipse.emf.ecore,  org.camunda.bpm.modeler.core.utils,  org.camun
- da.bpm.modeler.core,  org.camunda.bpm.modeler.core.preferences,  org.
- camunda.bpm.modeler.core.property,  org.eclipse.emf.ecore.resource.im
- pl",org.camunda.bpm.modeler.core.utils; uses:="org.eclipse.bpmn2.di, 
-  org.eclipse.core.runtime,  org.camunda.bpm.modeler.core.layout.util,
-   org.eclipse.graphiti.util,  org.eclipse.emf.common.notify,  org.ecl
- ipse.graphiti.services,  org.eclipse.emf.ecore,  org.eclipse.graphiti
- .features,  org.eclipse.bpmn2,  org.eclipse.graphiti.features.context
- ,  org.eclipse.graphiti.datatypes,  org.eclipse.graphiti.mm.pictogram
- s,  org.eclipse.jface.viewers,  org.eclipse.emf.transaction,  org.ecl
- ipse.emf.ecore.impl,  org.eclipse.gef,  org.eclipse.emf.ecore.resourc
- e,  org.eclipse.graphiti.mm.algorithms.styles,  org.camunda.bpm.model
- er.core.features.api.container,  org.eclipse.graphiti.ui.editor,  org
- .eclipse.graphiti.mm,  org.camunda.bpm.modeler.core,  org.camunda.bpm
- .modeler.core.preferences,  org.eclipse.graphiti.mm.algorithms",org.c
- amunda.bpm.modeler.core.utils.transform;uses:="org.eclipse.emf.ecore.
- util,org.eclipse.emf.ecore",org.camunda.bpm.modeler.core.validation; 
- uses:="org.eclipse.emf.ecore.resource,  org.eclipse.graphiti.ui.edito
- r,  org.eclipse.core.runtime,  org.eclipse.wst.validation,  org.eclip
- se.emf.common.notify.impl,  org.eclipse.emf.validation.model,  org.ec
- lipse.emf.validation,  org.eclipse.core.resources,  org.eclipse.emf.v
- alidation.service,  org.eclipse.emf.common.notify",org.camunda.bpm.mo
- deler.emf.util,org.camunda.bpm.modeler.plugin; uses:="org.eclipse.ui.
- views.properties.tabbed,  org.camunda.bpm.modeler.core.features.api.c
- ontainer,  org.eclipse.emf.ecore,  org.camunda.bpm.modeler.plugin.pal
- ette",org.camunda.bpm.modeler.plugin.core,org.camunda.bpm.modeler.plu
- gin.palette;uses:="org.eclipse.graphiti.palette,org.camunda.bpm.model
- er.ui.diagram.palette",org.camunda.bpm.modeler.plugin.palette.impl;us
- es:="org.eclipse.graphiti.palette.impl,org.camunda.bpm.modeler.plugin
- .palette",org.camunda.bpm.modeler.runtime.engine;uses:="org.camunda.b
- pm.modeler.core",org.camunda.bpm.modeler.runtime.engine.model; uses:=
- "org.eclipse.emf.ecore.util,  org.eclipse.bpmn2,  org.eclipse.emf.eco
- re,  org.eclipse.emf.common.util,  org.camunda.bpm.modeler.runtime.en
- gine.model.fox",org.camunda.bpm.modeler.runtime.engine.model.fox;uses
- :="org.eclipse.emf.ecore.util,org.eclipse.emf.ecore",org.camunda.bpm.
- modeler.runtime.engine.model.fox.impl; uses:="org.eclipse.emf.ecore.u
- til,  org.eclipse.emf.ecore,  org.camunda.bpm.modeler.runtime.engine.
- model.fox,  org.eclipse.emf.common.notify,  org.eclipse.emf.ecore.imp
- l",org.camunda.bpm.modeler.runtime.engine.model.fox.util; uses:="org.
- eclipse.emf.ecore.xmi.impl,  org.eclipse.emf.ecore.resource,  org.ecl
- ipse.emf.common.util,  org.eclipse.emf.ecore.resource.impl,  org.ecli
- pse.emf.common.notify,  org.eclipse.emf.ecore.xmi.util,  org.eclipse.
- emf.ecore.util,  org.eclipse.emf.ecore,  org.eclipse.emf.common.notif
- y.impl,  org.camunda.bpm.modeler.runtime.engine.model.fox",org.camund
- a.bpm.modeler.runtime.engine.model.impl; uses:="org.eclipse.emf.ecore
- .util,  org.eclipse.emf.ecore,  org.eclipse.bpmn2.impl,  org.eclipse.
- emf.common.util,  org.camunda.bpm.modeler.runtime.engine.model.fox,  
- org.camunda.bpm.modeler.runtime.engine.model,  org.eclipse.emf.common
- .notify,  org.eclipse.emf.ecore.impl",org.camunda.bpm.modeler.runtime
- .engine.model.util; uses:="org.eclipse.emf.ecore.resource,  org.eclip
- se.emf.ecore.xmi,  org.eclipse.emf.common.util,  org.eclipse.emf.ecor
- e.xml.type.util,  org.camunda.bpm.modeler.runtime.engine.model,  org.
- eclipse.emf.ecore.xmi.util,  org.eclipse.emf.common.notify,  org.ecli
- pse.emf.ecore.util,  org.eclipse.bpmn2,  org.camunda.bpm.modeler.core
- .model,  org.eclipse.emf.ecore,  org.eclipse.emf.common.notify.impl",
- org.camunda.bpm.modeler.runtime.engine.util; uses:="org.eclipse.graph
- iti.features.context,  org.eclipse.graphiti.features,  org.eclipse.em
- f.ecore,  org.eclipse.core.resources,  org.eclipse.swt.graphics,  org
- .eclipse.graphiti.features.custom,  org.eclipse.draw2d,  org.eclipse.
- gef",org.camunda.bpm.modeler.ui; uses:="org.eclipse.osgi.util,  org.e
- clipse.jface.resource,  org.eclipse.core.resources,  org.eclipse.grap
- hiti.ui.platform,  org.eclipse.swt.graphics,  org.eclipse.core.runtim
- e.content",org.camunda.bpm.modeler.ui.change;uses:="org.eclipse.emf.e
- core,org.eclipse.emf.common.command,org.eclipse.emf.transaction",org.
- camunda.bpm.modeler.ui.change.filter;uses:="org.eclipse.emf.ecore,org
- .eclipse.emf.transaction,org.eclipse.emf.common.notify",org.camunda.b
- pm.modeler.ui.diagram; uses:="org.eclipse.graphiti.ui.features,  org.
- eclipse.graphiti.dt,  org.eclipse.graphiti,  org.eclipse.graphiti.fea
- tures.custom,  org.camunda.bpm.modeler.core.features.api.container,  
- org.eclipse.emf.ecore,  org.eclipse.graphiti.features,  org.eclipse.g
- raphiti.features.context,  org.eclipse.graphiti.mm.pictograms,  org.e
- clipse.graphiti.tb,  org.camunda.bpm.modeler.core.features.api,  org.
- eclipse.graphiti.mm.algorithms",org.camunda.bpm.modeler.ui.diagram.pa
- lette,org.camunda.bpm.modeler.ui.features; uses:="org.eclipse.emf.com
- mon.util,  org.camunda.bpm.modeler.ui.diagram,  org.camunda.bpm.model
- er.core.features,  org.eclipse.graphiti.features.custom,  org.camunda
- .bpm.modeler.core.features.flow,  org.eclipse.graphiti.features,  org
- .eclipse.graphiti.features.context,  org.eclipse.bpmn2,  org.eclipse.
- emf.ecore,  org.camunda.bpm.modeler.core,  org.eclipse.swt.graphics, 
-  org.eclipse.jface.viewers,  org.eclipse.graphiti.mm.pictograms",org.
- camunda.bpm.modeler.ui.features.activity; uses:="org.eclipse.bpmn2,  
- org.eclipse.emf.ecore,  org.eclipse.graphiti.features.context,  org.e
- clipse.graphiti.features,  org.camunda.bpm.modeler.core.features.cont
- ainer,  org.camunda.bpm.modeler.ui.features,  org.eclipse.jface.viewe
- rs,  org.eclipse.graphiti.mm.pictograms,  org.camunda.bpm.modeler.cor
- e.features,  org.camunda.bpm.modeler.core.features.api",org.camunda.b
- pm.modeler.ui.features.activity.subprocess; uses:="org.camunda.bpm.mo
- deler.core.features,  org.eclipse.graphiti.features.custom,  org.camu
- nda.bpm.modeler.ui.features.choreography,  org.eclipse.graphiti.featu
- res,  org.eclipse.graphiti.features.context,  org.eclipse.emf.ecore, 
-  org.eclipse.graphiti.features.impl,  org.eclipse.graphiti.datatypes,
-   org.camunda.bpm.modeler.core.features.activity,  org.eclipse.graphi
- ti.mm.pictograms,  org.camunda.bpm.modeler.ui.features.activity,  org
- .camunda.bpm.modeler.core.features.api",org.camunda.bpm.modeler.ui.fe
- atures.activity.task; uses:="org.eclipse.emf.ecore,  org.eclipse.grap
- hiti.features,  org.camunda.bpm.modeler.core.features.activity,  org.
- eclipse.graphiti.datatypes,  org.eclipse.graphiti.mm.pictograms,  org
- .camunda.bpm.modeler.core.features,  org.camunda.bpm.modeler.ui.featu
- res.activity,  org.eclipse.graphiti.mm.algorithms,  org.camunda.bpm.m
- odeler.core.features.activity.task,  org.camunda.bpm.modeler.core.fea
- tures.api",org.camunda.bpm.modeler.ui.features.artifact; uses:="org.c
- amunda.bpm.modeler.core.features.artifact,  org.eclipse.emf.ecore,  o
- rg.eclipse.graphiti.features.context,  org.eclipse.graphiti.features,
-   org.camunda.bpm.modeler.core.features.container",org.camunda.bpm.mo
- deler.ui.features.data; uses:="org.eclipse.bpmn2,  org.eclipse.graphi
- ti.features.context,  org.eclipse.emf.ecore,  org.eclipse.graphiti.fe
- atures,  org.camunda.bpm.modeler.core.features.container,  org.camund
- a.bpm.modeler.core.features.data,  org.eclipse.graphiti.datatypes,  o
- rg.eclipse.graphiti.mm.pictograms,  org.camunda.bpm.modeler.core.feat
- ures,  org.eclipse.graphiti.mm.algorithms",org.camunda.bpm.modeler.ui
- .features.event; uses:="org.camunda.bpm.modeler.core.layout.util,  or
- g.camunda.bpm.modeler.core.features.event,  org.camunda.bpm.modeler.c
- ore.features,  org.eclipse.graphiti.features,  org.eclipse.emf.ecore,
-   org.eclipse.graphiti.features.context,  org.eclipse.bpmn2,  org.cam
- unda.bpm.modeler.core.features.container,  org.camunda.bpm.modeler.ui
- .features,  org.eclipse.graphiti.features.impl,  org.eclipse.graphiti
- .datatypes,  org.eclipse.swt.graphics,  org.eclipse.jface.viewers,  o
- rg.eclipse.graphiti.mm.pictograms,  org.camunda.bpm.modeler.core.feat
- ures.api",org.camunda.bpm.modeler.ui.features.flow; uses:="org.eclips
- e.emf.ecore,  org.eclipse.bpmn2,  org.eclipse.graphiti.features.conte
- xt,  org.eclipse.graphiti.features.context.impl,  org.eclipse.graphit
- i.features,  org.camunda.bpm.modeler.core.features.container,  org.ec
- lipse.graphiti.features.impl,  org.eclipse.graphiti.mm.pictograms,  o
- rg.camunda.bpm.modeler.core.features.flow,  org.eclipse.graphiti.mm.a
- lgorithms",org.camunda.bpm.modeler.ui.features.gateway; uses:="org.ca
- munda.bpm.modeler.core.features,  org.eclipse.graphiti.features,  org
- .eclipse.emf.ecore,  org.eclipse.graphiti.features.context,  org.ecli
- pse.bpmn2,  org.camunda.bpm.modeler.ui.features,  org.camunda.bpm.mod
- eler.core.features.container,  org.camunda.bpm.modeler.core.features.
- gateway,  org.eclipse.jface.viewers,  org.eclipse.graphiti.mm.pictogr
- ams,  org.camunda.bpm.modeler.core.features.api",org.camunda.bpm.mode
- ler.ui.features.label; uses:="org.eclipse.bpmn2.di,  org.camunda.bpm.
- modeler.ui.features.context,  org.eclipse.graphiti.mm.algorithms.styl
- es,  org.camunda.bpm.modeler.core.features,  org.eclipse.graphiti.fea
- tures.custom,  org.camunda.bpm.modeler.core.features.api.container,  
- org.eclipse.graphiti.features,  org.eclipse.graphiti.features.context
- ,  org.eclipse.bpmn2,  org.eclipse.graphiti.features.impl,  org.eclip
- se.graphiti.datatypes,  org.eclipse.graphiti.mm.pictograms,  org.camu
- nda.bpm.modeler.core.features.api",org.camunda.bpm.modeler.ui.feature
- s.lane; uses:="org.eclipse.bpmn2,  org.eclipse.emf.ecore,  org.eclips
- e.graphiti.features.context,  org.eclipse.graphiti.features,  org.cam
- unda.bpm.modeler.ui.features,  org.camunda.bpm.modeler.core.features.
- container,  org.camunda.bpm.modeler.core.features",org.camunda.bpm.mo
- deler.ui.features.participant; uses:="org.eclipse.bpmn2.di,  org.ecli
- pse.emf.ecore,  org.eclipse.graphiti.features.context,  org.eclipse.g
- raphiti.features,  org.camunda.bpm.modeler.core.features.container,  
- org.camunda.bpm.modeler.ui.features,  org.camunda.bpm.modeler.core.fe
- atures",org.camunda.bpm.modeler.ui.property; uses:="org.eclipse.ui.vi
- ews.properties.tabbed,  org.eclipse.ui,  org.eclipse.swt.graphics,  o
- rg.eclipse.jface.viewers",org.camunda.bpm.modeler.ui.property.tabs; u
- ses:="org.eclipse.bpmn2,  org.eclipse.emf.ecore,  org.eclipse.graphit
- i.ui.platform,  org.camunda.bpm.modeler.core.property,  org.eclipse.s
- wt.widgets",org.camunda.bpm.modeler.ui.property.tabs.builder; uses:="
- org.eclipse.emf.ecore,  org.eclipse.bpmn2,  org.camunda.bpm.modeler.u
- i.property.tabs.tables,  org.eclipse.jface.viewers,  org.eclipse.grap
- hiti.ui.platform,  org.eclipse.emf.transaction,  org.eclipse.swt.widg
- ets",org.camunda.bpm.modeler.ui.property.tabs.builder.table,org.camun
- da.bpm.modeler.ui.property.tabs.dialog,org.camunda.bpm.modeler.ui.pro
- perty.tabs.radio,org.camunda.bpm.modeler.ui.property.tabs.tables,org.
- camunda.bpm.modeler.ui.property.tabs.util
-Import-Package: 
- org.camunda.bpm.modeler.ui.diagram,
- org.eclipse.graphiti.ui.features,
- org.eclipse.jface.preference,
- org.eclipse.jface.util,
- org.eclipse.jface.viewers,
- org.eclipse.swt.graphics,
- org.eclipse.ui,
- org.eclipse.ui.plugin,
- org.eclipse.ui.views.properties.tabbed,
- org.eclipse.wst.validation
+Export-Package: org.camunda.bpm.modeler.core;
+  uses:="org.eclipse.emf.ecore.resource,
+   org.camunda.bpm.modeler.plugin.core,
+   org.eclipse.ui.views.properties.tabbed,
+   org.eclipse.bpmn2.di,
+   org.eclipse.core.runtime,
+   org.eclipse.jface.resource,
+   org.eclipse.emf.common.util,
+   org.eclipse.dd.di,
+   org.eclipse.ui.plugin,
+   org.eclipse.emf.ecore.resource.impl,
+   org.eclipse.emf.ecore,
+   org.eclipse.graphiti.ui.editor,
+   org.eclipse.bpmn2,
+   org.eclipse.bpmn2.util,
+   org.camunda.bpm.modeler.core.utils,
+   org.camunda.bpm.modeler.core.preferences,
+   org.eclipse.graphiti.mm.pictograms,
+   org.osgi.framework",
+ org.camunda.bpm.modeler.core.di;
+  uses:="org.eclipse.emf.ecore.resource,
+   org.eclipse.bpmn2.di,
+   org.eclipse.bpmn2,
+   org.eclipse.graphiti.platform,
+   org.eclipse.dd.di,
+   org.eclipse.graphiti.datatypes,
+   org.eclipse.graphiti.mm.pictograms",
+ org.camunda.bpm.modeler.core.features;
+  uses:="org.eclipse.bpmn2.di,
+   org.camunda.bpm.modeler.core.layout.util,
+   org.eclipse.emf.common.util,
+   org.eclipse.graphiti.ui.features,
+   org.eclipse.graphiti,
+   org.eclipse.graphiti.internal.features.context.impl.base,
+   org.eclipse.graphiti.features,
+   org.eclipse.graphiti.features.context,
+   org.eclipse.bpmn2,
+   org.eclipse.graphiti.mm,
+   org.eclipse.graphiti.features.impl,
+   org.eclipse.graphiti.datatypes,
+   org.eclipse.graphiti.mm.pictograms,
+   org.camunda.bpm.modeler.core.features.api",
+ org.camunda.bpm.modeler.core.features.activity;
+  uses:="org.eclipse.bpmn2,
+   org.eclipse.graphiti.features.context,
+   org.eclipse.graphiti.features,
+   org.eclipse.graphiti.features.impl,
+   org.camunda.bpm.modeler.core.layout.util,
+   org.eclipse.graphiti.datatypes,
+   org.camunda.bpm.modeler.core.features,
+   org.eclipse.graphiti.mm.pictograms,
+   org.camunda.bpm.modeler.core.features.api,
+   org.eclipse.graphiti.mm.algorithms",
+ org.camunda.bpm.modeler.core.features.activity.task;
+  uses:="org.eclipse.graphiti.features.context,
+   org.eclipse.graphiti.features,
+   org.camunda.bpm.modeler.core.features.activity,
+   org.eclipse.graphiti.datatypes,
+   org.eclipse.graphiti.mm.pictograms,
+   org.camunda.bpm.modeler.core.features",
+ org.camunda.bpm.modeler.core.features.api;
+  uses:="org.eclipse.graphiti.features,
+   org.eclipse.graphiti.features.context,
+   org.eclipse.emf.ecore,
+   org.eclipse.graphiti",
+ org.camunda.bpm.modeler.core.features.api.container;uses:="org.eclipse.graphiti.features,org.eclipse.graphiti.features.context,org.camunda.bpm.modeler.core.features.api",
+ org.camunda.bpm.modeler.core.features.artifact;
+  uses:="org.eclipse.graphiti.features.context,
+   org.eclipse.graphiti.features,
+   org.eclipse.graphiti.features.impl,
+   org.eclipse.graphiti.datatypes,
+   org.eclipse.graphiti.mm.pictograms,
+   org.camunda.bpm.modeler.core.features",
+ org.camunda.bpm.modeler.core.features.bendpoint;
+  uses:="org.eclipse.graphiti.features.context,
+   org.eclipse.graphiti.features,
+   org.eclipse.graphiti.features.impl,
+   org.eclipse.graphiti.mm.pictograms",
+ org.camunda.bpm.modeler.core.features.choreography;
+  uses:="org.eclipse.graphiti.features.context,
+   org.eclipse.graphiti.features,
+   org.eclipse.graphiti.features.impl,
+   org.camunda.bpm.modeler.core.features,
+   org.eclipse.graphiti.mm.pictograms,
+   org.eclipse.graphiti.services,
+   org.eclipse.graphiti.mm.algorithms",
+ org.camunda.bpm.modeler.core.features.container;
+  uses:="org.camunda.bpm.modeler.core.features.api.container,
+   org.eclipse.graphiti.features,
+   org.eclipse.graphiti.features.context,
+   org.camunda.bpm.modeler.core.features.api",
+ org.camunda.bpm.modeler.core.features.conversation;
+  uses:="org.eclipse.graphiti.features.context,
+   org.eclipse.graphiti.features,
+   org.eclipse.graphiti.datatypes,
+   org.camunda.bpm.modeler.core.features,
+   org.eclipse.graphiti.mm.pictograms",
+ org.camunda.bpm.modeler.core.features.data;
+  uses:="org.eclipse.graphiti.features.context,
+   org.eclipse.graphiti.features,
+   org.eclipse.graphiti.datatypes,
+   org.eclipse.graphiti.mm.pictograms,
+   org.camunda.bpm.modeler.core.features,
+   org.eclipse.graphiti.mm.algorithms",
+ org.camunda.bpm.modeler.core.features.event;
+  uses:="org.eclipse.bpmn2,
+   org.eclipse.graphiti.features.context,
+   org.eclipse.graphiti.features,
+   org.camunda.bpm.modeler.core.layout.util,
+   org.camunda.bpm.modeler.core.features.activity,
+   org.eclipse.graphiti.datatypes,
+   org.camunda.bpm.modeler.core.features,
+   org.eclipse.graphiti.mm.pictograms,
+   org.eclipse.graphiti.mm.algorithms",
+ org.camunda.bpm.modeler.core.features.event.definitions;
+  uses:="org.eclipse.graphiti.features.context,
+   org.eclipse.bpmn2,
+   org.eclipse.graphiti.features,
+   org.camunda.bpm.modeler.core.features.container,
+   org.eclipse.graphiti.features.impl,
+   org.eclipse.graphiti.mm.algorithms.styles,
+   org.eclipse.graphiti,
+   org.camunda.bpm.modeler.core.features,
+   org.eclipse.graphiti.mm.pictograms,
+   org.eclipse.graphiti.util,
+   org.camunda.bpm.modeler.core.features.api",
+ org.camunda.bpm.modeler.core.features.flow;
+  uses:="org.eclipse.emf.ecore,
+   org.eclipse.graphiti.features.context,
+   org.eclipse.graphiti.features,
+   org.eclipse.graphiti.mm.pictograms,
+   org.camunda.bpm.modeler.core.features,
+   org.eclipse.graphiti.mm.algorithms",
+ org.camunda.bpm.modeler.core.features.gateway;
+  uses:="org.eclipse.graphiti.features.context,
+   org.eclipse.graphiti.features,
+   org.eclipse.graphiti.features.impl,
+   org.camunda.bpm.modeler.core.layout.util,
+   org.camunda.bpm.modeler.core.features.activity,
+   org.eclipse.graphiti.datatypes,
+   org.eclipse.graphiti.mm.pictograms,
+   org.camunda.bpm.modeler.core.features,
+   org.eclipse.graphiti.mm.algorithms,
+   org.camunda.bpm.modeler.core.features.api",
+ org.camunda.bpm.modeler.core.features.lane;
+  uses:="org.eclipse.bpmn2,
+   org.eclipse.graphiti.features.context,
+   org.eclipse.graphiti.features,
+   org.eclipse.graphiti.features.impl,
+   org.eclipse.graphiti.datatypes,
+   org.eclipse.graphiti.mm.pictograms,
+   org.camunda.bpm.modeler.core.features,
+   org.camunda.bpm.modeler.core.features.participant",
+ org.camunda.bpm.modeler.core.features.participant;
+  uses:="org.eclipse.graphiti.features.context,
+   org.eclipse.graphiti.features,
+   org.eclipse.graphiti.features.impl,
+   org.eclipse.graphiti.datatypes,
+   org.camunda.bpm.modeler.core.features.lane,
+   org.eclipse.graphiti.mm.pictograms,
+   org.camunda.bpm.modeler.core.features",
+ org.camunda.bpm.modeler.core.importer;
+  uses:="org.eclipse.emf.ecore.resource,
+   org.eclipse.bpmn2.di,
+   org.eclipse.graphiti.platform,
+   org.eclipse.graphiti.dt,
+   org.eclipse.dd.di,
+   org.camunda.bpm.modeler.core.importer.handlers,
+   org.eclipse.emf.ecore,
+   org.eclipse.bpmn2,
+   org.eclipse.graphiti.features,
+   org.eclipse.bpmn2.util,
+   org.eclipse.graphiti.datatypes,
+   org.camunda.bpm.modeler.core.preferences,
+   org.eclipse.graphiti.mm.pictograms,
+   org.eclipse.emf.transaction",
+ org.camunda.bpm.modeler.core.layout.util;
+  uses:="org.eclipse.graphiti.mm.algorithms.styles,
+   org.camunda.bpm.modeler.core.layout,
+   org.eclipse.dd.dc,
+   org.eclipse.bpmn2,
+   org.camunda.bpm.modeler.ui.features.event,
+   org.eclipse.graphiti.features,
+   org.camunda.bpm.modeler.core.utils,
+   org.eclipse.graphiti.mm,
+   org.eclipse.graphiti.datatypes,
+   org.eclipse.draw2d.geometry,
+   org.eclipse.graphiti.mm.pictograms,
+   org.eclipse.graphiti.mm.algorithms",
+ org.camunda.bpm.modeler.core.model;
+  uses:="org.eclipse.emf.ecore.resource,
+   org.eclipse.emf.ecore.xmi.impl,
+   org.eclipse.bpmn2.di,
+   org.eclipse.bpmn2.impl,
+   org.eclipse.emf.ecore.xmi,
+   org.eclipse.emf.common.util,
+   org.eclipse.emf.ecore.resource.impl,
+   org.eclipse.emf.ecore.util,
+   org.eclipse.emf.ecore,
+   org.eclipse.bpmn2,
+   org.eclipse.bpmn2.util,
+   org.eclipse.core.resources,
+   org.camunda.bpm.modeler.core.preferences",
+ org.camunda.bpm.modeler.core.preferences;
+  uses:="org.eclipse.emf.ecore.resource,
+   org.eclipse.bpmn2.di,
+   org.camunda.bpm.modeler.core.runtime,
+   org.eclipse.emf.common.util,
+   org.osgi.service.prefs,
+   org.eclipse.graphiti.mm.algorithms.styles,
+   org.eclipse.graphiti.util,
+   org.eclipse.core.runtime.preferences,
+   org.eclipse.emf.ecore,
+   org.eclipse.jface.preference,
+   org.camunda.bpm.modeler.core,
+   org.eclipse.core.resources,
+   org.eclipse.swt.graphics,
+   org.eclipse.jface.util,
+   org.eclipse.swt.widgets",
+ org.camunda.bpm.modeler.core.property;
+  uses:="org.eclipse.ui.views.properties.tabbed,
+   org.eclipse.emf.ecore,
+   org.eclipse.ui,
+   org.eclipse.graphiti.ui.platform,
+   org.eclipse.jface.viewers,
+   org.eclipse.swt.graphics,
+   org.eclipse.swt.widgets",
+ org.camunda.bpm.modeler.core.runtime;
+  uses:="org.eclipse.emf.ecore.resource,
+   org.camunda.bpm.modeler.core.features.api.container,
+   org.eclipse.emf.ecore,
+   org.camunda.bpm.modeler.core.utils,
+   org.camunda.bpm.modeler.core,
+   org.camunda.bpm.modeler.core.preferences,
+   org.camunda.bpm.modeler.core.property,
+   org.eclipse.emf.ecore.resource.impl",
+ org.camunda.bpm.modeler.core.utils;
+  uses:="org.eclipse.bpmn2.di,
+   org.eclipse.core.runtime,
+   org.camunda.bpm.modeler.core.layout.util,
+   org.eclipse.graphiti.util,
+   org.eclipse.emf.common.notify,
+   org.eclipse.graphiti.services,
+   org.eclipse.emf.ecore,
+   org.eclipse.graphiti.features,
+   org.eclipse.bpmn2,
+   org.eclipse.graphiti.features.context,
+   org.eclipse.graphiti.datatypes,
+   org.eclipse.graphiti.mm.pictograms,
+   org.eclipse.jface.viewers,
+   org.eclipse.emf.transaction,
+   org.eclipse.emf.ecore.impl,
+   org.eclipse.gef,
+   org.eclipse.emf.ecore.resource,
+   org.eclipse.graphiti.mm.algorithms.styles,
+   org.camunda.bpm.modeler.core.features.api.container,
+   org.eclipse.graphiti.ui.editor,
+   org.eclipse.graphiti.mm,
+   org.camunda.bpm.modeler.core,
+   org.camunda.bpm.modeler.core.preferences,
+   org.eclipse.graphiti.mm.algorithms",
+ org.camunda.bpm.modeler.core.utils.transform;uses:="org.eclipse.emf.ecore.util,org.eclipse.emf.ecore",
+ org.camunda.bpm.modeler.core.validation;
+  uses:="org.eclipse.emf.ecore.resource,
+   org.eclipse.graphiti.ui.editor,
+   org.eclipse.core.runtime,
+   org.eclipse.wst.validation,
+   org.eclipse.emf.common.notify.impl,
+   org.eclipse.emf.validation.model,
+   org.eclipse.emf.validation,
+   org.eclipse.core.resources,
+   org.eclipse.emf.validation.service,
+   org.eclipse.emf.common.notify",
+ org.camunda.bpm.modeler.emf.util,
+ org.camunda.bpm.modeler.plugin;
+  uses:="org.eclipse.ui.views.properties.tabbed,
+   org.camunda.bpm.modeler.core.features.api.container,
+   org.eclipse.emf.ecore,
+   org.camunda.bpm.modeler.plugin.palette",
+ org.camunda.bpm.modeler.plugin.core,
+ org.camunda.bpm.modeler.plugin.palette;uses:="org.eclipse.graphiti.palette,org.camunda.bpm.modeler.ui.diagram.palette",
+ org.camunda.bpm.modeler.plugin.palette.impl;uses:="org.eclipse.graphiti.palette.impl,org.camunda.bpm.modeler.plugin.palette",
+ org.camunda.bpm.modeler.runtime.engine;uses:="org.camunda.bpm.modeler.core",
+ org.camunda.bpm.modeler.runtime.engine.model;
+  uses:="org.eclipse.emf.ecore.util,
+   org.eclipse.bpmn2,
+   org.eclipse.emf.ecore,
+   org.eclipse.emf.common.util,
+   org.camunda.bpm.modeler.runtime.engine.model.fox",
+ org.camunda.bpm.modeler.runtime.engine.model.fox;uses:="org.eclipse.emf.ecore.util,org.eclipse.emf.ecore",
+ org.camunda.bpm.modeler.runtime.engine.model.fox.impl;
+  uses:="org.eclipse.emf.ecore.util,
+   org.eclipse.emf.ecore,
+   org.camunda.bpm.modeler.runtime.engine.model.fox,
+   org.eclipse.emf.common.notify,
+   org.eclipse.emf.ecore.impl",
+ org.camunda.bpm.modeler.runtime.engine.model.fox.util;
+  uses:="org.eclipse.emf.ecore.xmi.impl,
+   org.eclipse.emf.ecore.resource,
+   org.eclipse.emf.common.util,
+   org.eclipse.emf.ecore.resource.impl,
+   org.eclipse.emf.common.notify,
+   org.eclipse.emf.ecore.xmi.util,
+   org.eclipse.emf.ecore.util,
+   org.eclipse.emf.ecore,
+   org.eclipse.emf.common.notify.impl,
+   org.camunda.bpm.modeler.runtime.engine.model.fox",
+ org.camunda.bpm.modeler.runtime.engine.model.impl;
+  uses:="org.eclipse.emf.ecore.util,
+   org.eclipse.emf.ecore,
+   org.eclipse.bpmn2.impl,
+   org.eclipse.emf.common.util,
+   org.camunda.bpm.modeler.runtime.engine.model.fox,
+   org.camunda.bpm.modeler.runtime.engine.model,
+   org.eclipse.emf.common.notify,
+   org.eclipse.emf.ecore.impl",
+ org.camunda.bpm.modeler.runtime.engine.model.util;
+  uses:="org.eclipse.emf.ecore.resource,
+   org.eclipse.emf.ecore.xmi,
+   org.eclipse.emf.common.util,
+   org.eclipse.emf.ecore.xml.type.util,
+   org.camunda.bpm.modeler.runtime.engine.model,
+   org.eclipse.emf.ecore.xmi.util,
+   org.eclipse.emf.common.notify,
+   org.eclipse.emf.ecore.util,
+   org.eclipse.bpmn2,
+   org.camunda.bpm.modeler.core.model,
+   org.eclipse.emf.ecore,
+   org.eclipse.emf.common.notify.impl",
+ org.camunda.bpm.modeler.runtime.engine.util;
+  uses:="org.eclipse.graphiti.features.context,
+   org.eclipse.graphiti.features,
+   org.eclipse.emf.ecore,
+   org.eclipse.core.resources,
+   org.eclipse.swt.graphics,
+   org.eclipse.graphiti.features.custom,
+   org.eclipse.draw2d,
+   org.eclipse.gef",
+ org.camunda.bpm.modeler.ui;
+  uses:="org.eclipse.osgi.util,
+   org.eclipse.jface.resource,
+   org.eclipse.core.resources,
+   org.eclipse.graphiti.ui.platform,
+   org.eclipse.swt.graphics,
+   org.eclipse.core.runtime.content",
+ org.camunda.bpm.modeler.ui.change;uses:="org.eclipse.emf.ecore,org.eclipse.emf.common.command,org.eclipse.emf.transaction",
+ org.camunda.bpm.modeler.ui.change.filter;uses:="org.eclipse.emf.ecore,org.eclipse.emf.transaction,org.eclipse.emf.common.notify",
+ org.camunda.bpm.modeler.ui.diagram;
+  uses:="org.eclipse.graphiti.ui.features,
+   org.eclipse.graphiti.dt,
+   org.eclipse.graphiti,
+   org.eclipse.graphiti.features.custom,
+   org.camunda.bpm.modeler.core.features.api.container,
+   org.eclipse.emf.ecore,
+   org.eclipse.graphiti.features,
+   org.eclipse.graphiti.features.context,
+   org.eclipse.graphiti.mm.pictograms,
+   org.eclipse.graphiti.tb,
+   org.camunda.bpm.modeler.core.features.api,
+   org.eclipse.graphiti.mm.algorithms",
+ org.camunda.bpm.modeler.ui.diagram.palette,
+ org.camunda.bpm.modeler.ui.features;
+  uses:="org.eclipse.emf.common.util,
+   org.camunda.bpm.modeler.ui.diagram,
+   org.camunda.bpm.modeler.core.features,
+   org.eclipse.graphiti.features.custom,
+   org.camunda.bpm.modeler.core.features.flow,
+   org.eclipse.graphiti.features,
+   org.eclipse.graphiti.features.context,
+   org.eclipse.bpmn2,
+   org.eclipse.emf.ecore,
+   org.camunda.bpm.modeler.core,
+   org.eclipse.swt.graphics,
+   org.eclipse.jface.viewers,
+   org.eclipse.graphiti.mm.pictograms",
+ org.camunda.bpm.modeler.ui.features.activity;
+  uses:="org.eclipse.bpmn2,
+   org.eclipse.emf.ecore,
+   org.eclipse.graphiti.features.context,
+   org.eclipse.graphiti.features,
+   org.camunda.bpm.modeler.core.features.container,
+   org.camunda.bpm.modeler.ui.features,
+   org.eclipse.jface.viewers,
+   org.eclipse.graphiti.mm.pictograms,
+   org.camunda.bpm.modeler.core.features,
+   org.camunda.bpm.modeler.core.features.api",
+ org.camunda.bpm.modeler.ui.features.activity.subprocess;
+  uses:="org.camunda.bpm.modeler.core.features,
+   org.eclipse.graphiti.features.custom,
+   org.camunda.bpm.modeler.ui.features.choreography,
+   org.eclipse.graphiti.features,
+   org.eclipse.graphiti.features.context,
+   org.eclipse.emf.ecore,
+   org.eclipse.graphiti.features.impl,
+   org.eclipse.graphiti.datatypes,
+   org.camunda.bpm.modeler.core.features.activity,
+   org.eclipse.graphiti.mm.pictograms,
+   org.camunda.bpm.modeler.ui.features.activity,
+   org.camunda.bpm.modeler.core.features.api",
+ org.camunda.bpm.modeler.ui.features.activity.task;
+  uses:="org.eclipse.emf.ecore,
+   org.eclipse.graphiti.features,
+   org.camunda.bpm.modeler.core.features.activity,
+   org.eclipse.graphiti.datatypes,
+   org.eclipse.graphiti.mm.pictograms,
+   org.camunda.bpm.modeler.core.features,
+   org.camunda.bpm.modeler.ui.features.activity,
+   org.eclipse.graphiti.mm.algorithms,
+   org.camunda.bpm.modeler.core.features.activity.task,
+   org.camunda.bpm.modeler.core.features.api",
+ org.camunda.bpm.modeler.ui.features.artifact;
+  uses:="org.camunda.bpm.modeler.core.features.artifact,
+   org.eclipse.emf.ecore,
+   org.eclipse.graphiti.features.context,
+   org.eclipse.graphiti.features,
+   org.camunda.bpm.modeler.core.features.container",
+ org.camunda.bpm.modeler.ui.features.data;
+  uses:="org.eclipse.bpmn2,
+   org.eclipse.graphiti.features.context,
+   org.eclipse.emf.ecore,
+   org.eclipse.graphiti.features,
+   org.camunda.bpm.modeler.core.features.container,
+   org.camunda.bpm.modeler.core.features.data,
+   org.eclipse.graphiti.datatypes,
+   org.eclipse.graphiti.mm.pictograms,
+   org.camunda.bpm.modeler.core.features,
+   org.eclipse.graphiti.mm.algorithms",
+ org.camunda.bpm.modeler.ui.features.event;
+  uses:="org.camunda.bpm.modeler.core.layout.util,
+   org.camunda.bpm.modeler.core.features.event,
+   org.camunda.bpm.modeler.core.features,
+   org.eclipse.graphiti.features,
+   org.eclipse.emf.ecore,
+   org.eclipse.graphiti.features.context,
+   org.eclipse.bpmn2,
+   org.camunda.bpm.modeler.core.features.container,
+   org.camunda.bpm.modeler.ui.features,
+   org.eclipse.graphiti.features.impl,
+   org.eclipse.graphiti.datatypes,
+   org.eclipse.swt.graphics,
+   org.eclipse.jface.viewers,
+   org.eclipse.graphiti.mm.pictograms,
+   org.camunda.bpm.modeler.core.features.api",
+ org.camunda.bpm.modeler.ui.features.flow;
+  uses:="org.eclipse.emf.ecore,
+   org.eclipse.bpmn2,
+   org.eclipse.graphiti.features.context,
+   org.eclipse.graphiti.features.context.impl,
+   org.eclipse.graphiti.features,
+   org.camunda.bpm.modeler.core.features.container,
+   org.eclipse.graphiti.features.impl,
+   org.eclipse.graphiti.mm.pictograms,
+   org.camunda.bpm.modeler.core.features.flow,
+   org.eclipse.graphiti.mm.algorithms",
+ org.camunda.bpm.modeler.ui.features.gateway;
+  uses:="org.camunda.bpm.modeler.core.features,
+   org.eclipse.graphiti.features,
+   org.eclipse.emf.ecore,
+   org.eclipse.graphiti.features.context,
+   org.eclipse.bpmn2,
+   org.camunda.bpm.modeler.ui.features,
+   org.camunda.bpm.modeler.core.features.container,
+   org.camunda.bpm.modeler.core.features.gateway,
+   org.eclipse.jface.viewers,
+   org.eclipse.graphiti.mm.pictograms,
+   org.camunda.bpm.modeler.core.features.api",
+ org.camunda.bpm.modeler.ui.features.label;
+  uses:="org.eclipse.bpmn2.di,
+   org.camunda.bpm.modeler.ui.features.context,
+   org.eclipse.graphiti.mm.algorithms.styles,
+   org.camunda.bpm.modeler.core.features,
+   org.eclipse.graphiti.features.custom,
+   org.camunda.bpm.modeler.core.features.api.container,
+   org.eclipse.graphiti.features,
+   org.eclipse.graphiti.features.context,
+   org.eclipse.bpmn2,
+   org.eclipse.graphiti.features.impl,
+   org.eclipse.graphiti.datatypes,
+   org.eclipse.graphiti.mm.pictograms,
+   org.camunda.bpm.modeler.core.features.api",
+ org.camunda.bpm.modeler.ui.features.lane;
+  uses:="org.eclipse.bpmn2,
+   org.eclipse.emf.ecore,
+   org.eclipse.graphiti.features.context,
+   org.eclipse.graphiti.features,
+   org.camunda.bpm.modeler.ui.features,
+   org.camunda.bpm.modeler.core.features.container,
+   org.camunda.bpm.modeler.core.features",
+ org.camunda.bpm.modeler.ui.features.participant;
+  uses:="org.eclipse.bpmn2.di,
+   org.eclipse.emf.ecore,
+   org.eclipse.graphiti.features.context,
+   org.eclipse.graphiti.features,
+   org.camunda.bpm.modeler.core.features.container,
+   org.camunda.bpm.modeler.ui.features,
+   org.camunda.bpm.modeler.core.features",
+ org.camunda.bpm.modeler.ui.property;
+  uses:="org.eclipse.ui.views.properties.tabbed,
+   org.eclipse.ui,
+   org.eclipse.swt.graphics,
+   org.eclipse.jface.viewers",
+ org.camunda.bpm.modeler.ui.property.tabs;
+  uses:="org.eclipse.bpmn2,
+   org.eclipse.emf.ecore,
+   org.eclipse.graphiti.ui.platform,
+   org.camunda.bpm.modeler.core.property,
+   org.eclipse.swt.widgets",
+ org.camunda.bpm.modeler.ui.property.tabs.builder;
+  uses:="org.eclipse.emf.ecore,
+   org.eclipse.bpmn2,
+   org.camunda.bpm.modeler.ui.property.tabs.tables,
+   org.eclipse.jface.viewers,
+   org.eclipse.graphiti.ui.platform,
+   org.eclipse.emf.transaction,
+   org.eclipse.swt.widgets",
+ org.camunda.bpm.modeler.ui.property.tabs.builder.table,
+ org.camunda.bpm.modeler.ui.property.tabs.dialog,
+ org.camunda.bpm.modeler.ui.property.tabs.radio,
+ org.camunda.bpm.modeler.ui.property.tabs.tables,
+ org.camunda.bpm.modeler.ui.property.tabs.util
