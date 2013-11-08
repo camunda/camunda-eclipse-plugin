@@ -21,23 +21,10 @@
 	</licenses>
 
 	<properties>
-		<tycho-version>0.13.0</tycho-version>
+		<tycho-version>0.16.0</tycho-version>
 	</properties>
 
 	<profiles>
-		<profile>
-			<id>platform-helios</id>
-			<activation>
-				<property>
-					<name>platform-version-name</name>
-					<value>helios</value>
-				</property>
-			</activation>
-			<properties>
-				<eclipse-site>http://download.eclipse.org/releases/helios</eclipse-site>
-				<platform-version>[3.6,3.7)</platform-version>
-			</properties>
-		</profile>
 		<profile>
 			<id>platform-indigo</id>
 			<activation>
@@ -82,20 +69,8 @@
 		</repository>
 
 		<repository>
-			<id>eclipse-bpel</id>
-			<url>http://download.eclipse.org/bpel/site</url>
-			<layout>p2</layout>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-
-		<repository>
 			<id>eclipse-graphiti</id>
-			<url>http://archive.eclipse.org/graphiti/updates/0.9.0/</url>
+			<url>http://download.eclipse.org/graphiti/updates/0.9.2/</url>
 			<layout>p2</layout>
 			<snapshots>
 				<enabled>true</enabled>
@@ -130,15 +105,6 @@
 		</repository>
 
 	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<!-- need maven-findbugs-2.3.2-SNAPSHOT, see http://jira.codehaus.org/browse/MFINDBUGS-122
-				remove this when this version is released -->
-			<id>codehaus.snapshots</id>
-			<url>http://snapshots.repository.codehaus.org/</url>
-		</pluginRepository>
-	</pluginRepositories>
 
 	<build>
 		<plugins>
@@ -189,7 +155,7 @@
 					<artifactId>maven-resources-plugin</artifactId>
 					<version>2.4.1</version>
 					<configuration>
-						<encoding>ISO-8859-1</encoding>
+						<encoding>UTF-8</encoding>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -200,7 +166,7 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>findbugs-maven-plugin</artifactId>
-					<version>2.3.2-SNAPSHOT</version>
+					<version>2.3.2</version>
 					<configuration>
 						<findbugsXmlOutput>true</findbugsXmlOutput>
 						<failOnError>false</failOnError>
@@ -218,9 +184,9 @@
 					<artifactId>maven-pmd-plugin</artifactId>
 					<version>2.5</version>
 					<configuration>
-						<sourceEncoding>utf-8</sourceEncoding>
+						<sourceEncoding>UTF-8</sourceEncoding>
 						<minimumTokens>100</minimumTokens>
-						<targetJdk>1.5</targetJdk>
+						<targetJdk>1.6</targetJdk>
 						<format>xml</format>
 						<failOnViolation>false</failOnViolation>
 					</configuration>
