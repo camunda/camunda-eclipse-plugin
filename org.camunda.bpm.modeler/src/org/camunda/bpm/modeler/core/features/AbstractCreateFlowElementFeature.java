@@ -16,6 +16,7 @@ package org.camunda.bpm.modeler.core.features;
 import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.features.rules.ModelOperations;
 import org.camunda.bpm.modeler.core.features.rules.ModelOperations.ModelCreateOperation;
+import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.ContextUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.FlowElement;
@@ -45,7 +46,7 @@ public abstract class AbstractCreateFlowElementFeature<T extends FlowElement> ex
 					(Lane) getBusinessObjectForPictogramElement(context.getTargetContainer()));
 		}
 		
-		handler.addFlowElement(getBusinessObjectForPictogramElement(context.getTargetContainer()), element);
+		handler.addFlowElement(BusinessObjectUtil.getFirstBaseElement(context.getTargetContainer()), element);
 		
 		if (ContextUtil.isNot(context, SKIP_ADD_GRAPHICS)) {
 			addGraphicalRepresentation(context, element);

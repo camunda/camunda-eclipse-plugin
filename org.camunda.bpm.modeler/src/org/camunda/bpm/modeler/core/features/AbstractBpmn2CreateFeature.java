@@ -83,7 +83,7 @@ public abstract class AbstractBpmn2CreateFeature<T extends BaseElement>
 	public T createBusinessObject(ICreateContext context) {
 		Shape shape = context.getTargetContainer();
 		
-		EObject container = BusinessObjectUtil.getBusinessObjectForPictogramElement(shape);
+		BaseElement container = BusinessObjectUtil.getFirstBaseElement(shape);
 		Resource resource = container.eResource();
 		
 		EClass eCls = getBusinessObjectClass();

@@ -167,7 +167,8 @@ public abstract class AbstractAppendNodeNodeFeature<T extends FlowNode> extends 
 				if (superTypes.contains(newType) &&
 						enablements.isEnabled((EClass)ec)) {
 					if (ec!=Bpmn2Package.eINSTANCE.getBoundaryEvent() &&
-							ec!=Bpmn2Package.eINSTANCE.getStartEvent()) {
+							ec!=Bpmn2Package.eINSTANCE.getStartEvent() && 
+							ec!=Bpmn2Package.eINSTANCE.getImplicitThrowEvent()) {
 						subtypes.add((EClass)ec);
 					}
 				}

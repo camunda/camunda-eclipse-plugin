@@ -2,7 +2,7 @@
 <feature
       id="org.camunda.bpm.modeler.feature"
       label="camunda modeler"
-      version="2.2.0.qualifier"
+      version="2.3.0.qualifier"
       provider-name="camunda.org">
 
    <copyright>
