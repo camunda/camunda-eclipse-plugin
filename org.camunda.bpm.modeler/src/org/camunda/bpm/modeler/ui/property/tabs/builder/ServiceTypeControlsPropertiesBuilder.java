@@ -87,7 +87,10 @@ public class ServiceTypeControlsPropertiesBuilder extends AbstractPropertiesBuil
 		}
 
 		final Text classText = featureToInputMap.get(CLASS_FEATURE);
-		addBrowseClassButton(classText);
+		
+		if (ClassChooserDialog.isJdtAvailable()) {
+			addBrowseClassButton(classText);
+		}
 	}
 
 	private void addBrowseClassButton(final Text classText) {

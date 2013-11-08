@@ -154,4 +154,18 @@ public class ClassChooserDialog {
 			javaProject.setRawClasspath(newEntries.toArray(new IClasspathEntry[0]), null);
 		}
 	}
+	
+	/**
+	 * Returns true if the JDT is avaliable to the plugin
+	 * @return
+	 */
+	public static boolean isJdtAvailable() {
+		try {
+			Activator.getDefault().getBundle().loadClass("org.eclipse.jdt.ui.JavaUI");
+			return true;
+			
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
+	}
 }
