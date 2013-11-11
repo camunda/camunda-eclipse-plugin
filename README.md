@@ -4,7 +4,7 @@ Camunda Modeler
 The camunda modeler is a BPMN 2.0 modeling plugin for Eclipse which focuses on seamless modeling of process and collaboration diagrams.
 It is part of the [camunda BPM](http://camunda.org) software stack.
 
-![Screenshot](https://raw.github.com/camunda/camunda-modeler/develop/documentation/images/shot.png)
+![Screenshot](https://raw.github.com/camunda/camunda-modeler/master/documentation/images/shot.png)
 
 Features
 --------
