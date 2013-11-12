@@ -82,41 +82,4 @@ public class ModelTest extends AbstractImportBpmnModelTest {
 		assertThat(resultXML)
 			.contains("camunda:calledElementBinding=\"deployment\"");
 	}
-	
-	@Test
-	public void shouldCreateElementOnEmptyModel() throws Exception {
-		
-		// given
-		ModelResources resources = TestHelper.createModel("org/camunda/bpm/modeler/test/model/ModelTest.emptyDiagram.bpmn");
-		final Resource resource = resources.getResource();
-		
-		// assume
-		DocumentRoot documentRoot = (DocumentRoot) resource.getContents().get(0);
-		final Definitions definitions = documentRoot.getDefinitions();
-		
-		// when
-		transactionalExecute(resources, new Runnable() {
-			@Override
-			public void run() {
-				
-				Bpmn2ModelerFactory eobjectFactory = Bpmn2ModelerFactory.getInstance();
-				
-				org.eclipse.bpmn2.Process process = (Process) eobjectFactory.create(Bpmn2Package.eINSTANCE.getProcess());
-				process.setId("Process_1");
-				
-				CallActivity callActivity = (CallActivity) eobjectFactory.create(Bpmn2Package.eINSTANCE.getCallActivity());
-				callActivity.setId("CallActivity_1");
-				
-				process.getFlowElements().add(callActivity);
-				definitions.getRootElements().add(process);
-			}
-		});
-		
-		// then
-		String resultXML = TestHelper.saveToString(resource);
-
-		assertThat(resultXML)
-			.contains("callActivity id=\"CallActivity_1\"")
-			.contains("process id=\"Process_1\"");
-	}
 }
