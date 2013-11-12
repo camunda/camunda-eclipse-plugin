@@ -174,7 +174,13 @@ public class TestHelper {
 		editingDomain.getCommandStack().execute(command);
 
 		if (command.failedWithException()) {
-			throw new TransactionalExecutionException(command.getCapturedException());
+			
+			RuntimeException capturedException = command.getCapturedException();
+			if (capturedException instanceof TransactionalExecutionException) {
+				throw capturedException;
+			} else {
+				throw new TransactionalExecutionException(capturedException);
+			}
 		}
 	}
 
