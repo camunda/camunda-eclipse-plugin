@@ -13,14 +13,23 @@
 package org.camunda.bpm.modeler.ui;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.camunda.bpm.modeler.ui.diagram.Bpmn2ToolBehaviour;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.emf.ecore.EClass;
 
+/**
+ * The holder of all available modeler features.
+ * 
+ * Used in {@link Bpmn2ToolBehaviour} to render the palette.
+ * 
+ * @author nico.rehwaldt
+ */
 public class FeatureMap {
-	
+
 	public static final List<EClass> CONNECTORS;
 	public static final List<EClass> EVENT_DEFINITIONS;
 	public static final List<EClass> EVENTS;
@@ -28,79 +37,80 @@ public class FeatureMap {
 	public static final List<EClass> TASKS;
 	public static final List<EClass> DATA;
 	public static final List<EClass> OTHER;
+
+	public static final List<EClass> ALL_BASE_ELEMENTS;
 	
 	static {
+		CONNECTORS = Arrays.asList(
+				Bpmn2Package.eINSTANCE.getSequenceFlow(), 
+				Bpmn2Package.eINSTANCE.getMessageFlow(),
+				Bpmn2Package.eINSTANCE.getAssociation(), 
+				Bpmn2Package.eINSTANCE.getDataAssociation());
+
+		EVENT_DEFINITIONS = Arrays.asList(
+				Bpmn2Package.eINSTANCE.getConditionalEventDefinition(),
+				Bpmn2Package.eINSTANCE.getTimerEventDefinition(),
+				Bpmn2Package.eINSTANCE.getSignalEventDefinition(),
+				Bpmn2Package.eINSTANCE.getMessageEventDefinition(),
+				Bpmn2Package.eINSTANCE.getEscalationEventDefinition(),
+				Bpmn2Package.eINSTANCE.getCompensateEventDefinition(),
+				Bpmn2Package.eINSTANCE.getLinkEventDefinition(),
+				Bpmn2Package.eINSTANCE.getErrorEventDefinition(),
+				Bpmn2Package.eINSTANCE.getCancelEventDefinition(),
+				Bpmn2Package.eINSTANCE.getTerminateEventDefinition());
+
+		EVENTS = Arrays.asList(
+				Bpmn2Package.eINSTANCE.getStartEvent(),
+				Bpmn2Package.eINSTANCE.getEndEvent(),
+				Bpmn2Package.eINSTANCE.getIntermediateThrowEvent(),
+				Bpmn2Package.eINSTANCE.getIntermediateCatchEvent(),
+				Bpmn2Package.eINSTANCE.getBoundaryEvent());
+
+		GATEWAYS = Arrays.asList(
+				Bpmn2Package.eINSTANCE.getInclusiveGateway(),
+				Bpmn2Package.eINSTANCE.getExclusiveGateway(),
+				Bpmn2Package.eINSTANCE.getParallelGateway(),
+				Bpmn2Package.eINSTANCE.getEventBasedGateway(),
+				Bpmn2Package.eINSTANCE.getComplexGateway());
+
+		TASKS = Arrays.asList(
+				Bpmn2Package.eINSTANCE.getTask(),
+				Bpmn2Package.eINSTANCE.getManualTask(),
+				Bpmn2Package.eINSTANCE.getUserTask(),
+				Bpmn2Package.eINSTANCE.getScriptTask(),
+				Bpmn2Package.eINSTANCE.getBusinessRuleTask(),
+				Bpmn2Package.eINSTANCE.getServiceTask(),
+				Bpmn2Package.eINSTANCE.getSendTask(),
+				Bpmn2Package.eINSTANCE.getReceiveTask(),
+				Bpmn2Package.eINSTANCE.getChoreographyTask());
+
+		DATA = Arrays.asList(
+				Bpmn2Package.eINSTANCE.getDataObjectReference(),
+				Bpmn2Package.eINSTANCE.getDataStoreReference(),
+				Bpmn2Package.eINSTANCE.getDataInput(),
+				Bpmn2Package.eINSTANCE.getDataOutput());
+
+		OTHER = Arrays.asList(
+				Bpmn2Package.eINSTANCE.getLane(),
+				Bpmn2Package.eINSTANCE.getParticipant(),
+				Bpmn2Package.eINSTANCE.getTextAnnotation(),
+				Bpmn2Package.eINSTANCE.getSubProcess(),
+				Bpmn2Package.eINSTANCE.getTransaction(),
+				Bpmn2Package.eINSTANCE.getGroup(),
+				Bpmn2Package.eINSTANCE.getAdHocSubProcess(),
+				Bpmn2Package.eINSTANCE.getCallActivity(),
+				Bpmn2Package.eINSTANCE.getMessage(),
+				Bpmn2Package.eINSTANCE.getConversation(),
+				Bpmn2Package.eINSTANCE.getSubChoreography(),
+				Bpmn2Package.eINSTANCE.getCallChoreography());
 		
-		ArrayList<EClass> features = new ArrayList<EClass>();
-		features.add(Bpmn2Package.eINSTANCE.getSequenceFlow());
-		features.add(Bpmn2Package.eINSTANCE.getMessageFlow());
-		features.add(Bpmn2Package.eINSTANCE.getAssociation());
-		features.add(Bpmn2Package.eINSTANCE.getDataAssociation());
-		CONNECTORS = Collections.unmodifiableList(features);
-
-		features = new ArrayList<EClass>();
-		features.add(Bpmn2Package.eINSTANCE.getConditionalEventDefinition());
-		features.add(Bpmn2Package.eINSTANCE.getTimerEventDefinition());
-		features.add(Bpmn2Package.eINSTANCE.getSignalEventDefinition());
-		features.add(Bpmn2Package.eINSTANCE.getMessageEventDefinition());
-		features.add(Bpmn2Package.eINSTANCE.getEscalationEventDefinition());
-		features.add(Bpmn2Package.eINSTANCE.getCompensateEventDefinition());
-		features.add(Bpmn2Package.eINSTANCE.getLinkEventDefinition());
-		features.add(Bpmn2Package.eINSTANCE.getErrorEventDefinition());
-		features.add(Bpmn2Package.eINSTANCE.getCancelEventDefinition());
-		features.add(Bpmn2Package.eINSTANCE.getTerminateEventDefinition());
-		EVENT_DEFINITIONS = Collections.unmodifiableList(features);
-
-		features = new ArrayList<EClass>();
-		features.add(Bpmn2Package.eINSTANCE.getStartEvent());
-		features.add(Bpmn2Package.eINSTANCE.getEndEvent());
-		features.add(Bpmn2Package.eINSTANCE.getIntermediateThrowEvent());
-		features.add(Bpmn2Package.eINSTANCE.getIntermediateCatchEvent());
-		features.add(Bpmn2Package.eINSTANCE.getBoundaryEvent());
-		EVENTS = Collections.unmodifiableList(features);
-
-		features = new ArrayList<EClass>();
-		features.add(Bpmn2Package.eINSTANCE.getInclusiveGateway());
-		features.add(Bpmn2Package.eINSTANCE.getExclusiveGateway());
-		features.add(Bpmn2Package.eINSTANCE.getParallelGateway());
-		features.add(Bpmn2Package.eINSTANCE.getEventBasedGateway());
-		features.add(Bpmn2Package.eINSTANCE.getComplexGateway());
-
-		GATEWAYS = Collections.unmodifiableList(features);
-
-		features = new ArrayList<EClass>();
-		features.add(Bpmn2Package.eINSTANCE.getTask());
-		features.add(Bpmn2Package.eINSTANCE.getManualTask());
-		features.add(Bpmn2Package.eINSTANCE.getUserTask());
-		features.add(Bpmn2Package.eINSTANCE.getScriptTask());
-		features.add(Bpmn2Package.eINSTANCE.getBusinessRuleTask());
-		features.add(Bpmn2Package.eINSTANCE.getServiceTask());
-		features.add(Bpmn2Package.eINSTANCE.getSendTask());
-		features.add(Bpmn2Package.eINSTANCE.getReceiveTask());
-		features.add(Bpmn2Package.eINSTANCE.getChoreographyTask());
-		TASKS = Collections.unmodifiableList(features);
-
-		features = new ArrayList<EClass>();
-		features.add(Bpmn2Package.eINSTANCE.getDataObjectReference());
-		features.add(Bpmn2Package.eINSTANCE.getDataStoreReference());
-		features.add(Bpmn2Package.eINSTANCE.getDataInput());
-		features.add(Bpmn2Package.eINSTANCE.getDataOutput());
-		DATA = Collections.unmodifiableList(features);
-
-		features = new ArrayList<EClass>();
-		features.add(Bpmn2Package.eINSTANCE.getLane());
-		features.add(Bpmn2Package.eINSTANCE.getParticipant());
-		features.add(Bpmn2Package.eINSTANCE.getTextAnnotation());
-		features.add(Bpmn2Package.eINSTANCE.getSubProcess());
-		features.add(Bpmn2Package.eINSTANCE.getTransaction());
-		features.add(Bpmn2Package.eINSTANCE.getGroup());
-		features.add(Bpmn2Package.eINSTANCE.getAdHocSubProcess());
-		features.add(Bpmn2Package.eINSTANCE.getCallActivity());
-		features.add(Bpmn2Package.eINSTANCE.getMessage());
-		features.add(Bpmn2Package.eINSTANCE.getConversation());
-		features.add(Bpmn2Package.eINSTANCE.getSubChoreography());
-		features.add(Bpmn2Package.eINSTANCE.getCallChoreography());
-		OTHER = Collections.unmodifiableList(features);
-
+		ALL_BASE_ELEMENTS = Collections.unmodifiableList(new ArrayList<EClass>() {{
+			addAll(CONNECTORS);
+			addAll(EVENTS);
+			addAll(GATEWAYS);
+			addAll(TASKS);
+			addAll(DATA);
+			addAll(OTHER);
+		}});
 	}
 }
