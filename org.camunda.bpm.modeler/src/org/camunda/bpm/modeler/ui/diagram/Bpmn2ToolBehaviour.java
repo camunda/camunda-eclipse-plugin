@@ -23,22 +23,20 @@ import org.camunda.bpm.modeler.core.features.event.EventSelectionBehavior;
 import org.camunda.bpm.modeler.core.features.gateway.GatewaySelectionBehavior;
 import org.camunda.bpm.modeler.core.utils.LabelUtil;
 import org.camunda.bpm.modeler.core.validation.ValidationStatusAdapter;
-import org.camunda.bpm.modeler.ui.FeatureMap;
 import org.camunda.bpm.modeler.ui.Images;
 import org.camunda.bpm.modeler.ui.diagram.editor.Bpmn2Editor;
+import org.camunda.bpm.modeler.ui.diagram.palette.PaletteBuilder;
 import org.camunda.bpm.modeler.ui.features.choreography.ChoreographySelectionBehavior;
 import org.camunda.bpm.modeler.ui.features.choreography.ChoreographyUtil;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.graphiti.IExecutionInfo;
 import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.features.FeatureCheckerAdapter;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
-import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IDirectEditingInfo;
 import org.eclipse.graphiti.features.IFeature;
 import org.eclipse.graphiti.features.IFeatureAndContext;
@@ -66,9 +64,6 @@ import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.palette.IPaletteCompartmentEntry;
-import org.eclipse.graphiti.palette.impl.ConnectionCreationToolEntry;
-import org.eclipse.graphiti.palette.impl.ObjectCreationToolEntry;
-import org.eclipse.graphiti.palette.impl.PaletteCompartmentEntry;
 import org.eclipse.graphiti.platform.IPlatformImageConstants;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.tb.ContextButtonEntry;
@@ -76,160 +71,31 @@ import org.eclipse.graphiti.tb.DefaultToolBehaviorProvider;
 import org.eclipse.graphiti.tb.IContextButtonPadData;
 import org.eclipse.graphiti.tb.IDecorator;
 import org.eclipse.graphiti.tb.IImageDecorator;
+import org.eclipse.graphiti.tb.IToolBehaviorProvider;
 import org.eclipse.graphiti.tb.ImageDecorator;
 
+/**
+ * The {@link IToolBehaviorProvider} for the BPMN 2.0 modeler.
+ * 
+ * @author nico.rehwaldt
+ */
 public class Bpmn2ToolBehaviour extends DefaultToolBehaviorProvider implements IFeatureCheckerHolder {
 
 	public Bpmn2ToolBehaviour(Bpmn2DiagramTypeProvider diagramTypeProvider) {
 		super(diagramTypeProvider);
 	}
-
-	@Override
-	protected Bpmn2FeatureProvider getFeatureProvider() {
-		return (Bpmn2FeatureProvider) super.getFeatureProvider();
-	}
 	
 	@Override
 	public IPaletteCompartmentEntry[] getPalette() {
-
 		Diagram diagram = getDiagramTypeProvider().getDiagram();
 		Object object = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(diagram);
-
-		List<IPaletteCompartmentEntry> palette = new ArrayList<IPaletteCompartmentEntry>();
-
 		if (object != null) {
-			// add compartments from super class
-			createConnectors(palette);
-			createTasksCompartments(palette);
-			createGatewaysCompartments(palette);
-			createEventsCompartments(palette);
-			createEventDefinitionsCompartments(palette);
-			createDataCompartments(palette);
-			createOtherCompartments(palette);
+			return new PaletteBuilder(getFeatureProvider()).build();
 		}
-
-		return palette.toArray(new IPaletteCompartmentEntry[palette.size()]);
-	}
-
-	private void createEventsCompartments(List<IPaletteCompartmentEntry> palette) {
-		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry(
-				"Events", null);
-
-		createEntriesForBusinessObjectClasses(FeatureMap.EVENTS, compartmentEntry);
-
-		if (compartmentEntry.getToolEntries().size() > 0) {
-			palette.add(compartmentEntry);
-		}
-	}
-
-	private void createOtherCompartments(List<IPaletteCompartmentEntry> palette) {
-		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry(
-				"Other", null);
-		compartmentEntry.setInitiallyOpen(false);
-
-		createEntriesForBusinessObjectClasses(FeatureMap.OTHER, compartmentEntry);
-
-		if (compartmentEntry.getToolEntries().size() > 0) {
-			palette.add(compartmentEntry);
-		}
-	}
-
-	private void createDataCompartments(List<IPaletteCompartmentEntry> palette) {
-		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry(
-				"Data Items", null);
-		compartmentEntry.setInitiallyOpen(false);
-
-		createEntriesForBusinessObjectClasses(FeatureMap.DATA, compartmentEntry);
-
-		if (compartmentEntry.getToolEntries().size() > 0) {
-			palette.add(compartmentEntry);
-		}
-	}
-
-	private void createEventDefinitionsCompartments(
-			List<IPaletteCompartmentEntry> palette) {
-		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry(
-				"Event Definitions", null);
-		compartmentEntry.setInitiallyOpen(false);
-
-		createEntriesForBusinessObjectClasses(FeatureMap.EVENT_DEFINITIONS, compartmentEntry);
-
-		if (compartmentEntry.getToolEntries().size() > 0) {
-			palette.add(compartmentEntry);
-		}
-	}
-
-	private void createGatewaysCompartments(
-			List<IPaletteCompartmentEntry> palette) {
-		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry(
-				"Gateways", null);
-
-		createEntriesForBusinessObjectClasses(FeatureMap.GATEWAYS, compartmentEntry);
-
-		if (compartmentEntry.getToolEntries().size() > 0) {
-			palette.add(compartmentEntry);
-		}
-	}
-
-	private void createTasksCompartments(List<IPaletteCompartmentEntry> palette) {
-		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry("Tasks", null);
-
-		createEntriesForBusinessObjectClasses(FeatureMap.TASKS, compartmentEntry);
-
-		createCustomEntries(getFeatureProvider().getCustomCreateFeatures(), compartmentEntry);
 		
-		if (compartmentEntry.getToolEntries().size() > 0) {
-			palette.add(compartmentEntry);
-		}
-	}
-
-	private void createConnectors(List<IPaletteCompartmentEntry> palette) {
-		PaletteCompartmentEntry compartmentEntry = new PaletteCompartmentEntry(
-				"Connectors", null);
-
-		createEntriesForBusinessObjectClasses(FeatureMap.CONNECTORS, compartmentEntry);
-
-		if (compartmentEntry.getToolEntries().size() > 0) {
-			palette.add(compartmentEntry);
-		}
-	}
-
-	private void createCustomEntries(List<IFeature> features, PaletteCompartmentEntry compartmentEntry) {
-		for (IFeature feature : features) {
-			createEntry(feature, compartmentEntry);
-		}
+		return new IPaletteCompartmentEntry[0];
 	}
 	
-	private void createEntriesForBusinessObjectClasses(List<EClass> classes, PaletteCompartmentEntry compartmentEntry) {
-		
-		for (EClass eClass: classes) {
-			IFeature feature = getFeatureProvider().getCreateFeatureForBusinessObject(eClass);
-			createEntry(feature, compartmentEntry);
-		}
-	}
-
-	private void createEntry(IFeature feature, PaletteCompartmentEntry compartmentEntry) {
-		if (feature instanceof ICreateFeature) {
-			ICreateFeature cf = (ICreateFeature) feature;
-			
-			ObjectCreationToolEntry objectCreationToolEntry = new ObjectCreationToolEntry(
-					cf.getCreateName(), cf.getCreateDescription(),
-					cf.getCreateImageId(), cf.getCreateLargeImageId(), cf);
-			
-			compartmentEntry.addToolEntry(objectCreationToolEntry);
-			
-		} else if (feature instanceof ICreateConnectionFeature) {
-			ICreateConnectionFeature cf = (ICreateConnectionFeature) feature;
-			
-			ConnectionCreationToolEntry connectionCreationToolEntry = new ConnectionCreationToolEntry(
-					cf.getCreateName(), cf.getCreateDescription(),
-					cf.getCreateImageId(), cf.getCreateLargeImageId());
-			
-			connectionCreationToolEntry.addCreateConnectionFeature(cf);
-			compartmentEntry.addToolEntry(connectionCreationToolEntry);
-		}
-	}
-
 	@Override
 	public IFeatureChecker getFeatureChecker() {
 		return new FeatureCheckerAdapter(false) {
@@ -243,6 +109,11 @@ public class Bpmn2ToolBehaviour extends DefaultToolBehaviorProvider implements I
 				return super.allowCreate();
 			}
 		};
+	}
+
+	@Override
+	protected Bpmn2FeatureProvider getFeatureProvider() {
+		return (Bpmn2FeatureProvider) super.getFeatureProvider();
 	}
 	
 	@Override
