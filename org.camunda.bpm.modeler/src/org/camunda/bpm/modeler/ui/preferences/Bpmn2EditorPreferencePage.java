@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.camunda.bpm.modeler.ui.preferences;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -56,7 +55,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.osgi.service.prefs.BackingStoreException;
 
-
 @SuppressWarnings("nls")
 public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
@@ -80,21 +78,18 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 		setDescription(Messages.Bpmn2PreferencePage_EditorPage_Description);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	@Override
 	public void init(IWorkbench workbench) {
 
 		preferences = Bpmn2Preferences.getInstance();
 
-		allElements = new ArrayList<EClass>();
-		allElements.addAll(FeatureMap.CONNECTORS);
-		allElements.addAll(FeatureMap.EVENTS);
-		allElements.addAll(FeatureMap.GATEWAYS);
-		allElements.addAll(FeatureMap.TASKS);
-		allElements.addAll(FeatureMap.DATA);
-		allElements.addAll(FeatureMap.OTHER);
+		allElements = new ArrayList<EClass>(FeatureMap.ALL_BASE_ELEMENTS);
 
 		Collections.sort(allElements, new Comparator<EClass>() {
 			@Override
@@ -107,36 +102,36 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 	@Override
 	protected Control createContents(Composite parent) {
 		container = new Composite(parent, SWT.NONE);
-        container.setLayoutData(new GridData(SWT.FILL,SWT.TOP,true,false,1,1));
-        container.setLayout(new GridLayout(2, false));
-        container.setFont(parent.getFont());
-        
-        elementsListViewer = new ListViewer(container, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-        elementsListViewer.getControl().setFont(parent.getFont());
-        GridData data = new GridData(SWT.FILL,SWT.TOP,true,false,1,1);
-		data.heightHint = 200;
-        elementsListViewer.getControl().setLayoutData(data);
-        
-        elementsListViewer.setContentProvider(new BEListContentProvider());
-        elementsListViewer.setLabelProvider(new BEListLabelProvider());
-        elementsListViewer.addSelectionChangedListener(new BEListSelectionChangedListener());
-        
-        styleEditors = new Composite(container, SWT.NONE);
-        styleEditors.setLayoutData(new GridData(SWT.FILL,SWT.TOP,true,false,1,1));
-        GridLayout layout = new GridLayout(1,false);
-        layout.verticalSpacing = 0;
-        styleEditors.setLayout(layout);
-        styleEditors.setFont(parent.getFont());
-        styleEditors.setVisible(false);
+		container.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
+		container.setLayout(new GridLayout(2, false));
+		container.setFont(parent.getFont());
 
-		shapeBackground = new ColorControl("&Fill Color:",styleEditors);
-		shapeBackground.addSelectionListener( new SelectionAdapter() {
+		elementsListViewer = new ListViewer(container, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+		elementsListViewer.getControl().setFont(parent.getFont());
+		GridData data = new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1);
+		data.heightHint = 200;
+		elementsListViewer.getControl().setLayoutData(data);
+
+		elementsListViewer.setContentProvider(new BEListContentProvider());
+		elementsListViewer.setLabelProvider(new BEListLabelProvider());
+		elementsListViewer.addSelectionChangedListener(new BEListSelectionChangedListener());
+
+		styleEditors = new Composite(container, SWT.NONE);
+		styleEditors.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
+		GridLayout layout = new GridLayout(1, false);
+		layout.verticalSpacing = 0;
+		styleEditors.setLayout(layout);
+		styleEditors.setFont(parent.getFont());
+		styleEditors.setVisible(false);
+
+		shapeBackground = new ColorControl("&Fill Color:", styleEditors);
+		shapeBackground.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				ShapeStyle ss = shapeStyles.get(currentSelection);
 				IColorConstant c = shapeBackground.getSelectedColor();
-				if (!ShapeStyle.compare(ss.getShapeBackground(),c)) {
+				if (!ShapeStyle.compare(ss.getShapeBackground(), c)) {
 					// update secondary colors
 					ss.setDefaultColors(c);
 					shapePrimarySelectedColor.setSelectedColor(ss.getShapePrimarySelectedColor());
@@ -145,26 +140,26 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 					textColor.setSelectedColor(ss.getTextColor());
 				}
 			}
-    	});
-		shapeForeground = new ColorControl("&Foreground Color:",styleEditors);
-		shapePrimarySelectedColor = new ColorControl("&Selected Color:",styleEditors);
-		shapeSecondarySelectedColor = new ColorControl("&Multi-Selected Color:",styleEditors);
-		textColor = new ColorControl("&Label Color:",styleEditors);
-		textFont = new FontControl("Label &Font:",styleEditors);
+		});
+		shapeForeground = new ColorControl("&Foreground Color:", styleEditors);
+		shapePrimarySelectedColor = new ColorControl("&Selected Color:", styleEditors);
+		shapeSecondarySelectedColor = new ColorControl("&Multi-Selected Color:", styleEditors);
+		textColor = new ColorControl("&Label Color:", styleEditors);
+		textFont = new FontControl("Label &Font:", styleEditors);
 		defaultSize = new Button(styleEditors, SWT.CHECK);
 		defaultSize.setText("Override shape size with default values");
 		GridData gd = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
 		gd.horizontalIndent = 5;
 		gd.verticalIndent = 10;
 		defaultSize.setLayoutData(gd);
-		
+
 		loadStyleEditors();
 
-        return container;
+		return container;
 	}
 
 	private void saveStyleEditors() {
-		if (currentSelection!=null) {
+		if (currentSelection != null) {
 			ShapeStyle ss = shapeStyles.get(currentSelection);
 			ss.setShapeBackground(shapeBackground.getSelectedColor());
 			ss.setShapePrimarySelectedColor(shapePrimarySelectedColor.getSelectedColor());
@@ -175,34 +170,32 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 			ss.setTextColor(textColor.getSelectedColor());
 		}
 	}
-	
+
 	private void loadStyleEditors() {
-		if (shapeStyles==null) {
+		if (shapeStyles == null) {
 			shapeStyles = new LinkedHashMap<Class, ShapeStyle>();
 			for (EClass c : allElements) {
 				ShapeStyle ss = preferences.getShapeStyle(c);
 				shapeStyles.put(c.getInstanceClass(), ss);
-			if (Activator.getDefault().isDebugging()) {
-				IColorConstant foreground = ss.getShapeForeground();
-				IColorConstant background = ss.getShapeBackground();
-				IColorConstant textColor = ss.getTextColor();
-				Font font = ss.getTextFont();
-				System.out.println("\t\t<style object=\""+c.getName()+"\""+
-						" foreground=\""+ShapeStyle.colorToString(foreground)+"\""+
-						" background=\""+ShapeStyle.colorToString(background)+"\""+
-						" textColor=\""+ShapeStyle.colorToString(textColor)+"\""+
-						" font=\""+ShapeStyle.fontToString(font)+"\"/>");
+				if (Activator.getDefault().isDebugging()) {
+					IColorConstant foreground = ss.getShapeForeground();
+					IColorConstant background = ss.getShapeBackground();
+					IColorConstant textColor = ss.getTextColor();
+					Font font = ss.getTextFont();
+					System.out.println("\t\t<style object=\"" + c.getName() + "\"" + " foreground=\"" + ShapeStyle.colorToString(foreground) + "\""
+							+ " background=\"" + ShapeStyle.colorToString(background) + "\"" + " textColor=\"" + ShapeStyle.colorToString(textColor)
+							+ "\"" + " font=\"" + ShapeStyle.fontToString(font) + "\"/>");
 				}
 			}
-	        elementsListViewer.setInput(shapeStyles);
-	        currentSelection = null;
-	        elementsListViewer.setSelection(null);
+			elementsListViewer.setInput(shapeStyles);
+			currentSelection = null;
+			elementsListViewer.setSelection(null);
 			styleEditors.setVisible(false);
 		}
 
-		IStructuredSelection sel = (IStructuredSelection)elementsListViewer.getSelection();
-		if (sel!=null && sel.getFirstElement()!=null) {
-			Class c = (Class)sel.getFirstElement();
+		IStructuredSelection sel = (IStructuredSelection) elementsListViewer.getSelection();
+		if (sel != null && sel.getFirstElement() != null) {
+			Class c = (Class) sel.getFirstElement();
 			ShapeStyle ss = shapeStyles.get(c);
 
 			shapeBackground.setSelectedColor(ss.getShapeBackground());
@@ -218,17 +211,17 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 				visible = false;
 			}
 			shapeBackground.setVisible(visible);
-			((GridData)shapeBackground.getLayoutData()).exclude = !visible;
+			((GridData) shapeBackground.getLayoutData()).exclude = !visible;
 			shapePrimarySelectedColor.setVisible(visible);
-			((GridData)shapePrimarySelectedColor.getLayoutData()).exclude = !visible;
+			((GridData) shapePrimarySelectedColor.getLayoutData()).exclude = !visible;
 			shapeSecondarySelectedColor.setVisible(visible);
-			((GridData)shapeSecondarySelectedColor.getLayoutData()).exclude = !visible;
+			((GridData) shapeSecondarySelectedColor.getLayoutData()).exclude = !visible;
 			defaultSize.setVisible(visible);
-			((GridData)defaultSize.getLayoutData()).exclude = !visible;
+			((GridData) defaultSize.getLayoutData()).exclude = !visible;
 			container.layout();
 		}
 	}
-	
+
 	@Override
 	protected void performDefaults() {
 		super.performDefaults();
@@ -237,8 +230,7 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 			shapeStyles = null;
 			loadStyleEditors();
 			preferences.save();
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 		}
 	}
 
@@ -259,35 +251,46 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 	public class BEListContentProvider implements IStructuredContentProvider {
 
 		List<Class> list;
-		/* (non-Javadoc)
+
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
 		 */
 		@Override
 		public void dispose() {
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface
+		 * .viewers.Viewer, java.lang.Object, java.lang.Object)
 		 */
 		@Override
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			if (newInput!=null) {
+			if (newInput != null) {
 				list = new ArrayList<Class>();
-				list.addAll( ((LinkedHashMap<Class, ShapeStyle>)newInput).keySet() );
+				list.addAll(((LinkedHashMap<Class, ShapeStyle>) newInput).keySet());
 			}
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java
+		 * .lang.Object)
 		 */
 		@Override
 		public Object[] getElements(Object inputElement) {
-			if (list!=null) {
+			if (list != null) {
 				return list.toArray();
 			}
 			return null;
 		}
-		
+
 	}
 
 	public class BEListLabelProvider extends LabelProvider {
@@ -295,62 +298,65 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 		@Override
 		public String getText(Object element) {
 			if (element instanceof Class)
-				return ((Class)element).getSimpleName();
+				return ((Class) element).getSimpleName();
 			return "";
 		}
 	}
-	
+
 	public class BEListSelectionChangedListener implements ISelectionChangedListener {
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(
+		 * org.eclipse.jface.viewers.SelectionChangedEvent)
 		 */
 		@Override
 		public void selectionChanged(SelectionChangedEvent event) {
-			IStructuredSelection sel = (IStructuredSelection)elementsListViewer.getSelection();
-			if (currentSelection!=null) {
+			IStructuredSelection sel = (IStructuredSelection) elementsListViewer.getSelection();
+			if (currentSelection != null) {
 				saveStyleEditors();
 			}
-			
-			if (sel!=null && sel.getFirstElement()!=null) {
+
+			if (sel != null && sel.getFirstElement() != null) {
 				styleEditors.setVisible(true);
-				currentSelection = (Class)sel.getFirstElement();
-			}
-			else
+				currentSelection = (Class) sel.getFirstElement();
+			} else
 				styleEditors.setVisible(false);
 
 			loadStyleEditors();
 		}
-		
+
 	}
 
 	public class ColorControl extends Composite {
 		private ColorSelector colorSelector;
-	    private Label selectorLabel;
-	    private List<SelectionListener> listeners;
-	    
-	    public ColorControl(String labelText, Composite parent) {
-	    	super(parent, SWT.NONE);
-	    	this.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
-	    	this.setLayout(new GridLayout(2, false));
+		private Label selectorLabel;
+		private List<SelectionListener> listeners;
 
-	    	selectorLabel = new Label(this, SWT.LEFT);
-	    	selectorLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-	    	selectorLabel.setFont(parent.getFont());
-	    	selectorLabel.addDisposeListener(new DisposeListener() {
-                public void widgetDisposed(DisposeEvent event) {
-                	selectorLabel = null;
-                }
-            });
-	    	selectorLabel.setText(labelText);
-	    	
-	    	colorSelector = new ColorSelector(this);
-	    	colorSelector.getButton().setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1));
-	    	colorSelector.getButton().addSelectionListener( new SelectionListener() {
+		public ColorControl(String labelText, Composite parent) {
+			super(parent, SWT.NONE);
+			this.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
+			this.setLayout(new GridLayout(2, false));
+
+			selectorLabel = new Label(this, SWT.LEFT);
+			selectorLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+			selectorLabel.setFont(parent.getFont());
+			selectorLabel.addDisposeListener(new DisposeListener() {
+				public void widgetDisposed(DisposeEvent event) {
+					selectorLabel = null;
+				}
+			});
+			selectorLabel.setText(labelText);
+
+			colorSelector = new ColorSelector(this);
+			colorSelector.getButton().setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1));
+			colorSelector.getButton().addSelectionListener(new SelectionListener() {
 
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					if (listeners!=null) {
+					if (listeners != null) {
 						for (SelectionListener listener : listeners)
 							listener.widgetSelected(e);
 					}
@@ -359,23 +365,23 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 				@Override
 				public void widgetDefaultSelected(SelectionEvent e) {
 				}
-	    		
-	    	});
-	    }
-	    
-	    public void addSelectionListener(SelectionListener listener) {
-	    	if (listeners==null)
-	    		listeners = new ArrayList<SelectionListener>();
-	    	listeners.add(listener);
-	    }
-	    
-	    public void removeSelectionListener(SelectionListener listener) {
-	    	if (listeners==null)
-	    		return;
-	    	listeners.remove(listener);
-	    	if (listeners.size()==0)
-	    		listeners = null;
-	    }
+
+			});
+		}
+
+		public void addSelectionListener(SelectionListener listener) {
+			if (listeners == null)
+				listeners = new ArrayList<SelectionListener>();
+			listeners.add(listener);
+		}
+
+		public void removeSelectionListener(SelectionListener listener) {
+			if (listeners == null)
+				return;
+			listeners.remove(listener);
+			if (listeners.size() == 0)
+				listeners = null;
+		}
 
 		/**
 		 * @return
@@ -383,121 +389,120 @@ public class Bpmn2EditorPreferencePage extends PreferencePage implements IWorkbe
 		public IColorConstant getSelectedColor() {
 			return ShapeStyle.RGBToColor(colorSelector.getColorValue());
 		}
-		
+
 		public void setSelectedColor(IColorConstant c) {
 			RGB rgb = ShapeStyle.colorToRGB(c);
 			colorSelector.setColorValue(rgb);
 		}
 	}
-	
+
 	public class FontControl extends Composite {
 
-	    /**
-	     * The change font button, or <code>null</code> if none
-	     * (before creation and after disposal).
-	     */
-	    private Button changeFontButton = null;
+		/**
+		 * The change font button, or <code>null</code> if none (before creation and
+		 * after disposal).
+		 */
+		private Button changeFontButton = null;
 
-	    /**
-	     * Font data for the chosen font button, or <code>null</code> if none.
-	     */
-	    private FontData[] selectedFont;
+		/**
+		 * Font data for the chosen font button, or <code>null</code> if none.
+		 */
+		private FontData[] selectedFont;
 
-	    /**
-	     * The label that displays the selected font, or <code>null</code> if none.
-	     */
-	    private Label previewLabel;
-	    private Label selectorLabel;
+		/**
+		 * The label that displays the selected font, or <code>null</code> if none.
+		 */
+		private Label previewLabel;
+		private Label selectorLabel;
 
-	    public FontControl(String labelText, Composite parent) {
-	    	super(parent, SWT.NONE);
-	    	this.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
-	    	this.setLayout(new GridLayout(3, false));
+		public FontControl(String labelText, Composite parent) {
+			super(parent, SWT.NONE);
+			this.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
+			this.setLayout(new GridLayout(3, false));
 
-	    	selectorLabel = new Label(this, SWT.LEFT);
-	    	selectorLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-	    	selectorLabel.setFont(parent.getFont());
-	    	selectorLabel.addDisposeListener(new DisposeListener() {
-                public void widgetDisposed(DisposeEvent event) {
-                	selectorLabel = null;
-                }
-            });
-	    	selectorLabel.setText(labelText);
+			selectorLabel = new Label(this, SWT.LEFT);
+			selectorLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+			selectorLabel.setFont(parent.getFont());
+			selectorLabel.addDisposeListener(new DisposeListener() {
+				public void widgetDisposed(DisposeEvent event) {
+					selectorLabel = null;
+				}
+			});
+			selectorLabel.setText(labelText);
 
-	    	previewLabel = new Label(this, SWT.LEFT);
-	    	previewLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-            previewLabel.setFont(parent.getFont());
-            previewLabel.addDisposeListener(new DisposeListener() {
-                public void widgetDisposed(DisposeEvent event) {
-                    previewLabel = null;
-                }
-            });
-	    	
-            changeFontButton = new Button(this, SWT.PUSH);
-            changeFontButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+			previewLabel = new Label(this, SWT.LEFT);
+			previewLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+			previewLabel.setFont(parent.getFont());
+			previewLabel.addDisposeListener(new DisposeListener() {
+				public void widgetDisposed(DisposeEvent event) {
+					previewLabel = null;
+				}
+			});
+
+			changeFontButton = new Button(this, SWT.PUSH);
+			changeFontButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 			changeFontButton.setText("Change");
-            changeFontButton.addSelectionListener(new SelectionAdapter() {
-                public void widgetSelected(SelectionEvent event) {
-                    FontDialog fontDialog = new FontDialog(changeFontButton
-                            .getShell());
-                    if (selectedFont != null) {
+			changeFontButton.addSelectionListener(new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent event) {
+					FontDialog fontDialog = new FontDialog(changeFontButton.getShell());
+					if (selectedFont != null) {
 						fontDialog.setFontList(selectedFont);
 					}
-                    FontData font = fontDialog.open();
-                    if (font != null) {
-                        FontData[] oldFont = selectedFont;
-                        if (oldFont == null) {
+					FontData font = fontDialog.open();
+					if (font != null) {
+						FontData[] oldFont = selectedFont;
+						if (oldFont == null) {
 							oldFont = JFaceResources.getDefaultFont().getFontData();
 						}
-                        setSelectedFont(font);
-//                        fireValueChanged(VALUE, oldFont[0], font);
-                    }
+						setSelectedFont(font);
+						// fireValueChanged(VALUE, oldFont[0], font);
+					}
 
-                }
-            });
-            changeFontButton.addDisposeListener(new DisposeListener() {
-                public void widgetDisposed(DisposeEvent event) {
-                    changeFontButton = null;
-                }
-            });
-            changeFontButton.setFont(parent.getFont());
+				}
+			});
+			changeFontButton.addDisposeListener(new DisposeListener() {
+				public void widgetDisposed(DisposeEvent event) {
+					changeFontButton = null;
+				}
+			});
+			changeFontButton.setFont(parent.getFont());
 
-	    }
+		}
 
-	    public Font getSelectedFont() {
-	    	if (selectedFont!=null && selectedFont.length>0)
-	    		return ShapeStyle.fontDataToFont(selectedFont[0]);
-	    	return null;
-	    }
+		public Font getSelectedFont() {
+			if (selectedFont != null && selectedFont.length > 0)
+				return ShapeStyle.fontDataToFont(selectedFont[0]);
+			return null;
+		}
 
-	    public void setSelectedFont(Font f) {
-	    	setSelectedFont(ShapeStyle.fontToFontData(f));
-	    }
-	    
-	    public void setSelectedFont(FontData fd) {
+		public void setSelectedFont(Font f) {
+			setSelectedFont(ShapeStyle.fontToFontData(f));
+		}
 
-	        FontData[] bestFont = JFaceResources.getFontRegistry().filterData(
-	        		new FontData[]{fd}, previewLabel.getDisplay());
+		public void setSelectedFont(FontData fd) {
 
-	        //if we have nothing valid do as best we can
-	        if (bestFont == null) {
+			FontData[] bestFont = JFaceResources.getFontRegistry().filterData(new FontData[] { fd }, previewLabel.getDisplay());
+
+			// if we have nothing valid do as best we can
+			if (bestFont == null) {
 				bestFont = getDefaultFontData();
 			}
 
-	        //Now cache this value in the receiver
-	        this.selectedFont = bestFont;
+			// Now cache this value in the receiver
+			this.selectedFont = bestFont;
 
-	        if (previewLabel != null) {
-	            previewLabel.setText(StringConverter.asString(selectedFont[0]));
-	        }
-	    }
+			if (previewLabel != null) {
+				previewLabel.setText(StringConverter.asString(selectedFont[0]));
+			}
+		}
 
-	    /**
-	     * Get the system default font data.
-	     * @return FontData[]
-	     */
-	    private FontData[] getDefaultFontData() {
-	        return previewLabel.getDisplay().getSystemFont().getFontData();
-	    }
+		/**
+		 * Get the system default font data.
+		 * 
+		 * @return FontData[]
+		 */
+		private FontData[] getDefaultFontData() {
+			return previewLabel.getDisplay().getSystemFont().getFontData();
+		}
 	}
 }
