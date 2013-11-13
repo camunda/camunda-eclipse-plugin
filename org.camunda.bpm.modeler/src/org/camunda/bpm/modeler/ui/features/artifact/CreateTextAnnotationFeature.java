@@ -14,7 +14,7 @@ package org.camunda.bpm.modeler.ui.features.artifact;
 
 import org.camunda.bpm.modeler.core.features.artifact.AbstractCreateArtifactFeature;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.TextAnnotation;
 import org.eclipse.emf.ecore.EClass;
@@ -39,7 +39,7 @@ public class CreateTextAnnotationFeature extends AbstractCreateArtifactFeature<T
 
 	@Override
 	protected String getStencilImageId() {
-		return ImageProvider.IMG_16_TEXT_ANNOTATION;
+		return Images.IMG_16_TEXT_ANNOTATION;
 	}
 
 	/* (non-Javadoc)

@@ -2,7 +2,7 @@ package org.camunda.bpm.modeler.plugin;
 
 import org.camunda.bpm.modeler.core.features.api.container.IFeatureContainer;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.ui.views.properties.tabbed.ITabDescriptor;
+import org.eclipse.ui.views.properties.tabbed.ISection;
 
 /**
  * Implementations of this interface provide custom tasks to the
@@ -17,6 +17,12 @@ public interface ICustomTaskProvider {
 	 * @return
 	 */
 	public String getId();
+	
+	/**
+	 * Returns the name of the custom task
+	 * @return
+	 */
+	public String getTaskName();
 	
 	/**
 	 * <p>Returns true if the given provider applies to the 
@@ -38,5 +44,12 @@ public interface ICustomTaskProvider {
 	 */
 	public IFeatureContainer getFeatureContainer();
 	
-	public ITabDescriptor getTabDescriptor();
+	/**
+	 * Returns a custom tab section for the task or <code>null</code> if no custom tab section should be created.
+	 * 
+	 * A custom tab section may contain specific properties for the task type.
+	 * 
+	 * @return
+	 */
+	public ISection getTabSection();
 }

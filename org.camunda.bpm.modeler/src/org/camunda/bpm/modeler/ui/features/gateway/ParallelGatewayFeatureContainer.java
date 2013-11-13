@@ -17,7 +17,7 @@ import org.camunda.bpm.modeler.core.features.gateway.AbstractCreateGatewayFeatur
 import org.camunda.bpm.modeler.core.features.gateway.AddGatewayFeature;
 import org.camunda.bpm.modeler.core.features.gateway.GatewayDecorateFeature;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.ParallelGateway;
 import org.eclipse.bpmn2.di.BPMNShape;
@@ -64,7 +64,7 @@ public class ParallelGatewayFeatureContainer extends AbstractGatewayFeatureConta
 
 		@Override
 		protected String getStencilImageId() {
-			return ImageProvider.IMG_16_PARALLEL_GATEWAY;
+			return Images.IMG_16_PARALLEL_GATEWAY;
 		}
 
 		/* (non-Javadoc)

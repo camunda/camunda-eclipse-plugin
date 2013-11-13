@@ -17,7 +17,7 @@ import org.camunda.bpm.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.camunda.bpm.modeler.core.layout.util.BoundaryEventUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.Bpmn2Package;
@@ -82,7 +82,7 @@ public class CreateBoundaryEventFeature extends AbstractBpmn2CreateFeature<Bound
 
 	@Override
 	public String getCreateImageId() {
-		return ImageProvider.IMG_16_BOUNDARY_EVENT;
+		return Images.IMG_16_BOUNDARY_EVENT;
 	}
 
 	@Override

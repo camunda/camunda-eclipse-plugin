@@ -16,7 +16,7 @@ package org.camunda.bpm.modeler.ui.features;
 import org.camunda.bpm.modeler.core.di.DIUtils;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.camunda.bpm.modeler.ui.features.choreography.ChoreographyUtil;
 import org.eclipse.bpmn2.ChoreographyTask;
 import org.eclipse.bpmn2.Lane;
@@ -57,7 +57,7 @@ public abstract class AbstractRotateContainerFeature extends AbstractCustomFeatu
 
 	@Override
 	public String getImageId() {
-		return ImageProvider.IMG_16_ROTATE;
+		return Images.IMG_16_ROTATE;
 	}
 
 	@Override

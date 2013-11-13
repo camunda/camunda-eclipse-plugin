@@ -17,7 +17,7 @@ import org.camunda.bpm.modeler.core.features.activity.AbstractCreateExpandableFl
 import org.camunda.bpm.modeler.core.features.activity.ActivityDecorateFeature;
 import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Transaction;
 import org.eclipse.emf.ecore.EClass;
@@ -114,7 +114,7 @@ public class TransactionFeatureContainer extends AbstractExpandableActivityFeatu
 
 		@Override
 		protected String getStencilImageId() {
-			return ImageProvider.IMG_16_TRANSACTION;
+			return Images.IMG_16_TRANSACTION;
 		}
 
 		/* (non-Javadoc)

@@ -14,7 +14,7 @@ package org.camunda.bpm.modeler.ui.features.activity.subprocess;
 
 import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -49,7 +49,7 @@ public class CollapseFlowNodeFeature extends AbstractCustomFeature {
 
 	@Override
 	public String getImageId() {
-		return ImageProvider.IMG_16_COLLAPSE;
+		return Images.IMG_16_COLLAPSE;
 	}
 
 	@Override

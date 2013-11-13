@@ -18,7 +18,7 @@ import java.util.List;
 import org.camunda.bpm.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.camunda.bpm.modeler.core.features.MultiUpdateFeature;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.camunda.bpm.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
@@ -140,7 +140,7 @@ public class ChoreographyTaskFeatureContainer extends AbstractChoreographyFeatur
 
 		@Override
 		public String getStencilImageId() {
-			return ImageProvider.IMG_16_CHOREOGRAPHY_TASK;
+			return Images.IMG_16_CHOREOGRAPHY_TASK;
 		}
 
 		/* (non-Javadoc)

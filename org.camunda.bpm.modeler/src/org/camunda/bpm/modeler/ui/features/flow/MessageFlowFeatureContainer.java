@@ -25,7 +25,7 @@ import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.Reconnec
 import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.StartFormCreateConnectionOperation;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.EndEvent;
@@ -167,7 +167,7 @@ public class MessageFlowFeatureContainer extends BaseElementConnectionFeatureCon
 
 		@Override
 		protected String getStencilImageId() {
-			return ImageProvider.IMG_16_MESSAGE_FLOW;
+			return Images.IMG_16_MESSAGE_FLOW;
 		}
 
 		@Override

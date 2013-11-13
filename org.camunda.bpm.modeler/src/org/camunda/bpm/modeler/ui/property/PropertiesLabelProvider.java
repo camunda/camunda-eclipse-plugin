@@ -15,8 +15,8 @@ package org.camunda.bpm.modeler.ui.property;
 
 import org.camunda.bpm.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
-import org.camunda.bpm.modeler.core.utils.Images;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
+import org.camunda.bpm.modeler.ui.Images;
 import org.camunda.bpm.modeler.ui.diagram.Bpmn2FeatureProvider;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeature;
@@ -46,7 +46,6 @@ public class PropertiesLabelProvider extends LabelProvider {
 				return Images.getById(((AbstractBpmn2CreateFeature<?>) cf).getCreateImageId());
 			}
 		}
-		
 		return super.getImage(element);
 	}
 

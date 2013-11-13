@@ -15,8 +15,8 @@ package org.camunda.bpm.modeler.ui.views.outline;
  *
  *******************************************************************************/
 
-import org.camunda.bpm.modeler.core.Activator;
-import org.camunda.bpm.modeler.core.IConstants;
+import org.camunda.bpm.modeler.ui.ImageConstants;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.Viewport;
@@ -274,7 +274,7 @@ public class Bpmn2EditorOutlinePage extends ContentOutlinePage implements IPrope
 			}
 		};
 		
-		showBusinessModelOutlineAction.setImageDescriptor(Activator.getDefault().getImageDescriptor(IConstants.ICON_BUSINESS_MODEL));
+		showBusinessModelOutlineAction.setImageDescriptor(Images.getDescriptorById(ImageConstants.ICON_BUSINESS_MODEL));
 		showBusinessModelOutlineAction.setToolTipText("Business Model");
 		tbm.add(showBusinessModelOutlineAction);
 
@@ -288,7 +288,7 @@ public class Bpmn2EditorOutlinePage extends ContentOutlinePage implements IPrope
 				showPage(ID_INTERCHANGE_MODEL_OUTLINE);
 			}
 		};
-		showInterchangeModelOutlineAction.setImageDescriptor(Activator.getDefault().getImageDescriptor(IConstants.ICON_INTERCHANGE_MODEL));
+		showInterchangeModelOutlineAction.setImageDescriptor(Images.getDescriptorById(ImageConstants.ICON_INTERCHANGE_MODEL));
 		showInterchangeModelOutlineAction.setToolTipText("Diagram Interchange Model");
 		tbm.add(showInterchangeModelOutlineAction);
 		
@@ -300,7 +300,7 @@ public class Bpmn2EditorOutlinePage extends ContentOutlinePage implements IPrope
 				showPage(ID_THUMBNAIL);
 			}
 		};
-		showOverviewAction.setImageDescriptor(Activator.getDefault().getImageDescriptor(IConstants.ICON_THUMBNAIL));
+		showOverviewAction.setImageDescriptor(Images.getDescriptorById(ImageConstants.ICON_THUMBNAIL));
 		showOverviewAction.setToolTipText("Thumbnail");
 		
 		tbm.add(showOverviewAction);

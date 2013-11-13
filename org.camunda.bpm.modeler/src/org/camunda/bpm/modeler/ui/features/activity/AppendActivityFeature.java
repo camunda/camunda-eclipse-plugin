@@ -13,7 +13,7 @@
 
 package org.camunda.bpm.modeler.ui.features.activity;
 
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.camunda.bpm.modeler.ui.features.AbstractAppendNodeNodeFeature;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Bpmn2Package;
@@ -45,7 +45,7 @@ public class AppendActivityFeature extends AbstractAppendNodeNodeFeature<Activit
 
 	@Override
 	public String getImageId() {
-		return ImageProvider.IMG_16_TASK;
+		return Images.IMG_16_TASK;
 	}
 
 	/* (non-Javadoc)

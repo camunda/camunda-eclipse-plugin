@@ -1,4 +1,4 @@
-package org.camunda.bpm.modeler.plugin.core;
+package org.camunda.bpm.modeler.plugin.core.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.camunda.bpm.modeler.core.Activator;
 import org.camunda.bpm.modeler.plugin.ICustomTaskProvider;
+import org.camunda.bpm.modeler.plugin.core.Extensions;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IStatus;
@@ -18,7 +19,7 @@ import org.eclipse.core.runtime.Status;
  * 
  * @author nico.rehwaldt
  */
-public class ExtensionRegistry implements Extensions {
+public class ExtensionImpl implements Extensions {
 
 	private static final String CUSTOM_TASK_EXTENSION_ID = "org.camunda.bpm.modeler.plugin.customtask";
 	
@@ -33,7 +34,6 @@ public class ExtensionRegistry implements Extensions {
 	}
 	
 	public void load() {
-
 		loadCustomTaskProviders();
 	}
 

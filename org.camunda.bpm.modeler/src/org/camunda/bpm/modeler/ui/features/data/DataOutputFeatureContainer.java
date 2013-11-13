@@ -16,7 +16,7 @@ import org.camunda.bpm.modeler.core.features.data.AbstractCreateDataInputOutputF
 import org.camunda.bpm.modeler.core.features.data.AddDataFeature;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.emf.ecore.EClass;
@@ -68,7 +68,7 @@ public class DataOutputFeatureContainer extends AbstractDataFeatureContainer {
 
 		@Override
 		public String getStencilImageId() {
-			return ImageProvider.IMG_16_DATA_OUTPUT;
+			return Images.IMG_16_DATA_OUTPUT;
 		}
 
 		/* (non-Javadoc)

@@ -17,7 +17,7 @@ import org.camunda.bpm.modeler.core.features.container.BaseElementConnectionFeat
 import org.camunda.bpm.modeler.core.features.flow.AbstractAddFlowFeature;
 import org.camunda.bpm.modeler.core.features.flow.AbstractCreateFlowFeature;
 import org.camunda.bpm.modeler.core.features.flow.AbstractReconnectFlowFeature;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Conversation;
@@ -76,7 +76,7 @@ public class ConversationLinkFeatureContainer extends BaseElementConnectionFeatu
 
 		@Override
 		protected String getStencilImageId() {
-			return ImageProvider.IMG_16_CONVERSATION_LINK;
+			return Images.IMG_16_CONVERSATION_LINK;
 		}
 
 		@Override

@@ -20,7 +20,7 @@ import org.camunda.bpm.modeler.core.features.activity.AbstractCreateExpandableFl
 import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.features.choreography.LayoutChoreographyFeature;
 import org.camunda.bpm.modeler.core.utils.Tuple;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.SubChoreography;
 import org.eclipse.emf.ecore.EClass;
@@ -80,7 +80,7 @@ public class SubChoreographyFeatureContainer extends AbstractChoreographyFeature
 
 		@Override
 		public String getStencilImageId() {
-			return ImageProvider.IMG_16_CHOREOGRAPHY_TASK;
+			return Images.IMG_16_CHOREOGRAPHY_TASK;
 		}
 
 		/* (non-Javadoc)

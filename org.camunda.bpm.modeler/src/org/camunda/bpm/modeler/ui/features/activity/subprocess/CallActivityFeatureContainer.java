@@ -19,7 +19,7 @@ import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.camunda.bpm.modeler.ui.features.activity.ResizeActivityFeature;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallActivity;
@@ -147,7 +147,7 @@ public class CallActivityFeatureContainer extends AbstractExpandableActivityFeat
 
 		@Override
 		public String getStencilImageId() {
-			return ImageProvider.IMG_16_CALL_ACTIVITY;
+			return Images.IMG_16_CALL_ACTIVITY;
 		}
 
 		@Override
@@ -239,13 +239,13 @@ public class CallActivityFeatureContainer extends AbstractExpandableActivityFeat
 
 	private String getImageId(GlobalTask task) {
 		if (task instanceof GlobalBusinessRuleTask) {
-			return ImageProvider.IMG_16_BUSINESS_RULE_TASK;
+			return Images.IMG_16_BUSINESS_RULE_TASK;
 		} else if (task instanceof GlobalManualTask) {
-			return ImageProvider.IMG_16_MANUAL_TASK;
+			return Images.IMG_16_MANUAL_TASK;
 		} else if (task instanceof GlobalScriptTask) {
-			return ImageProvider.IMG_16_SCRIPT_TASK;
+			return Images.IMG_16_SCRIPT_TASK;
 		} else if (task instanceof GlobalUserTask) {
-			return ImageProvider.IMG_16_USER_TASK;
+			return Images.IMG_16_USER_TASK;
 		} else {
 			return null;
 		}

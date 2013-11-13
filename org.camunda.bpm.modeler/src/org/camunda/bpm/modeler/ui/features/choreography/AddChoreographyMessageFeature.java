@@ -20,7 +20,7 @@ import java.util.List;
 import org.camunda.bpm.modeler.core.Activator;
 import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.Choreography;
 import org.eclipse.bpmn2.ChoreographyTask;
 import org.eclipse.bpmn2.Message;
@@ -93,7 +93,7 @@ public class AddChoreographyMessageFeature extends AbstractCustomFeature {
 
 	@Override
 	public String getImageId() {
-		return ImageProvider.IMG_16_ADD_MESSAGE;
+		return Images.IMG_16_ADD_MESSAGE;
 	}
 
 	@Override
