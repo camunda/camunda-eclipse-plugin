@@ -19,7 +19,7 @@ import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil.FillStyle;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Event;
@@ -114,7 +114,7 @@ public class LinkEventDefinitionContainer extends AbstractEventDefinitionFeature
 
 		@Override
 		protected String getStencilImageId() {
-			return ImageProvider.IMG_16_LINK;
+			return Images.IMG_16_LINK;
 		}
 
 		/* (non-Javadoc)

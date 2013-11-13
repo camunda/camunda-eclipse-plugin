@@ -13,7 +13,7 @@
 
 package org.camunda.bpm.modeler.ui.features.gateway;
 
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.camunda.bpm.modeler.ui.features.AbstractAppendNodeNodeFeature;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Gateway;
@@ -64,7 +64,7 @@ public class AppendGatewayFeature extends AbstractAppendNodeNodeFeature<Gateway>
 
 	@Override
 	public String getImageId() {
-		return ImageProvider.IMG_16_EXCLUSIVE_GATEWAY;
+		return Images.IMG_16_EXCLUSIVE_GATEWAY;
 	}
 
 	/* (non-Javadoc)

@@ -19,7 +19,7 @@ import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil.FillStyle;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.Bpmn2Package;
@@ -136,7 +136,7 @@ public class ErrorEventDefinitionContainer extends AbstractEventDefinitionFeatur
 
 		@Override
 		protected String getStencilImageId() {
-			return ImageProvider.IMG_16_ERROR;
+			return Images.IMG_16_ERROR;
 		}
 
 		/* (non-Javadoc)

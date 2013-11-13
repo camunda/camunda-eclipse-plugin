@@ -23,7 +23,7 @@ import org.camunda.bpm.modeler.core.features.data.AddDataFeature;
 import org.camunda.bpm.modeler.core.utils.ContextUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.DataObject;
@@ -154,7 +154,7 @@ public class DataObjectReferenceFeatureContainer extends AbstractDataFeatureCont
 
 		@Override
 		public String getStencilImageId() {
-			return ImageProvider.IMG_16_DATA_OBJECT;
+			return Images.IMG_16_DATA_OBJECT;
 		}
 
 		/* (non-Javadoc)

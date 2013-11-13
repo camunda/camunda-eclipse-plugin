@@ -21,7 +21,7 @@ import org.camunda.bpm.modeler.core.features.data.AbstractCreateRootElementFeatu
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil.Envelope;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.camunda.bpm.modeler.ui.features.LayoutBaseElementTextFeature;
 import org.camunda.bpm.modeler.ui.features.choreography.UpdateChoreographyMessageFlowFeature;
 import org.eclipse.bpmn2.Bpmn2Package;
@@ -161,7 +161,7 @@ public class MessageFeatureContainer extends BaseElementFeatureContainer {
 
 		@Override
 		public String getStencilImageId() {
-			return ImageProvider.IMG_16_MESSAGE;
+			return Images.IMG_16_MESSAGE;
 		}
 
 		/* (non-Javadoc)

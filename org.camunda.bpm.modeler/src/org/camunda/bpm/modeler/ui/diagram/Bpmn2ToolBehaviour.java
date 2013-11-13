@@ -24,7 +24,7 @@ import org.camunda.bpm.modeler.core.features.gateway.GatewaySelectionBehavior;
 import org.camunda.bpm.modeler.core.utils.LabelUtil;
 import org.camunda.bpm.modeler.core.validation.ValidationStatusAdapter;
 import org.camunda.bpm.modeler.ui.FeatureMap;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.camunda.bpm.modeler.ui.diagram.editor.Bpmn2Editor;
 import org.camunda.bpm.modeler.ui.features.choreography.ChoreographySelectionBehavior;
 import org.camunda.bpm.modeler.ui.features.choreography.ChoreographyUtil;
@@ -371,7 +371,7 @@ public class Bpmn2ToolBehaviour extends DefaultToolBehaviorProvider implements I
 		button.setText("Create Connection"); //$NON-NLS-1$
 		String description = null;
 		ArrayList<String> names = new ArrayList<String>();
-		button.setIconId(ImageProvider.IMG_16_SEQUENCE_FLOW);
+		button.setIconId(Images.IMG_16_SEQUENCE_FLOW);
 		for (ICreateConnectionFeature feature : features) {
 			if (feature.isAvailable(ccc) && feature.canStartConnection(ccc)) {
 				button.addDragAndDropFeature(feature);

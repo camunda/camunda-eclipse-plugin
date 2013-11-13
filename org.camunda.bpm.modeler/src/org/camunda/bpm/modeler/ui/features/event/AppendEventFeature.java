@@ -13,7 +13,7 @@
 
 package org.camunda.bpm.modeler.ui.features.event;
 
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.camunda.bpm.modeler.ui.features.AbstractAppendNodeNodeFeature;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Event;
@@ -64,7 +64,7 @@ public class AppendEventFeature extends AbstractAppendNodeNodeFeature<Event> {
 
 	@Override
 	public String getImageId() {
-		return ImageProvider.IMG_16_END_EVENT;
+		return Images.IMG_16_END_EVENT;
 	}
 
 	/* (non-Javadoc)

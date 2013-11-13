@@ -3,8 +3,8 @@ package org.camunda.bpm.modeler.ui.views.outline;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.camunda.bpm.modeler.core.Activator;
-import org.camunda.bpm.modeler.core.IConstants;
+import org.camunda.bpm.modeler.ui.ImageConstants;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.Choreography;
 import org.eclipse.bpmn2.Collaboration;
 import org.eclipse.bpmn2.Process;
@@ -38,8 +38,8 @@ public class Bpmn2DiagramTreeEditPart extends AbstractGraphicsTreeEditPart {
 		BPMNDiagram d = getBPMNDiagram();
 		Object m = d.getPlane().getBpmnElement();
 		if (m instanceof Process || m instanceof Choreography || m instanceof Collaboration)
-			return Activator.getDefault().getImage(IConstants.ICON_BPMNDIAGRAM);
-		return Activator.getDefault().getImage(IConstants.ICON_BPMNSUBDIAGRAM);
+			return Images.getById(ImageConstants.ICON_BPMNDIAGRAM);
+		return Images.getById(ImageConstants.ICON_BPMNSUBDIAGRAM);
 	}
 	
 	@Override

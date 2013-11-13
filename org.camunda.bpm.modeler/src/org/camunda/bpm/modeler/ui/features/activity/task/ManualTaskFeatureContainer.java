@@ -15,7 +15,7 @@ package org.camunda.bpm.modeler.ui.features.activity.task;
 import org.camunda.bpm.modeler.core.features.activity.task.AbstractCreateTaskFeature;
 import org.camunda.bpm.modeler.core.features.activity.task.AddTaskFeature;
 import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.ManualTask;
 import org.eclipse.emf.ecore.EClass;
@@ -40,7 +40,7 @@ public class ManualTaskFeatureContainer extends AbstractTaskFeatureContainer {
 		return new AbstractTaskDecorateFeature(fp) {
 			@Override
 			protected String getIconId() {
-				return ImageProvider.IMG_16_MANUAL_TASK;
+				return Images.IMG_16_MANUAL_TASK;
 			}
 		};
 	}
@@ -59,7 +59,7 @@ public class ManualTaskFeatureContainer extends AbstractTaskFeatureContainer {
 
 		@Override
 		protected String getStencilImageId() {
-			return ImageProvider.IMG_16_MANUAL_TASK;
+			return Images.IMG_16_MANUAL_TASK;
 		}
 
 		/* (non-Javadoc)

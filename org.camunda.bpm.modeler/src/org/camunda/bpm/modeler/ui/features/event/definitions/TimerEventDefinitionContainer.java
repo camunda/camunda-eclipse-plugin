@@ -17,7 +17,7 @@ import org.camunda.bpm.modeler.core.features.event.definitions.CreateEventDefini
 import org.camunda.bpm.modeler.core.features.event.definitions.DecorationAlgorithm;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Event;
@@ -72,7 +72,7 @@ public class TimerEventDefinitionContainer extends AbstractEventDefinitionFeatur
 	private Shape draw(ContainerShape shape) {
 		BaseElement be = BusinessObjectUtil.getFirstElementOfType(shape, BaseElement.class, true);
 		Shape timerShape = Graphiti.getPeService().createShape(shape, false);
-		Image image = GraphicsUtil.createEventImage(timerShape, ImageProvider.IMG_20_TIMER);
+		Image image = GraphicsUtil.createEventImage(timerShape, Images.IMG_20_TIMER);
 
 		// TODO: can't change foreground color of an Image?
 //		Diagram diagram = StyleUtil.findDiagram(image);
@@ -105,7 +105,7 @@ public class TimerEventDefinitionContainer extends AbstractEventDefinitionFeatur
 
 		@Override
 		protected String getStencilImageId() {
-			return ImageProvider.IMG_16_TIMER;
+			return Images.IMG_16_TIMER;
 		}
 
 		/* (non-Javadoc)

@@ -15,7 +15,7 @@ package org.camunda.bpm.modeler.ui.features.activity.subprocess;
 import org.camunda.bpm.modeler.core.features.MultiUpdateFeature;
 import org.camunda.bpm.modeler.core.features.activity.AbstractCreateExpandableFlowNodeFeature;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.AdHocSubProcess;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.emf.ecore.EClass;
@@ -66,7 +66,7 @@ public class AdHocSubProcessFeatureContainer extends AbstractExpandableActivityF
 
 		@Override
 		protected String getStencilImageId() {
-			return ImageProvider.IMG_16_AD_HOC_SUB_PROCESS;
+			return Images.IMG_16_AD_HOC_SUB_PROCESS;
 		}
 
 		/* (non-Javadoc)

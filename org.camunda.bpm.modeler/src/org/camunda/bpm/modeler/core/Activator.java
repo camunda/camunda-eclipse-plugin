@@ -12,18 +12,15 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.core;
 
-import java.lang.reflect.Field;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
 import org.camunda.bpm.modeler.core.runtime.TargetRuntime;
-import org.camunda.bpm.modeler.plugin.core.ExtensionRegistry;
 import org.camunda.bpm.modeler.plugin.core.Extensions;
+import org.camunda.bpm.modeler.plugin.core.impl.ExtensionImpl;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.graphiti.ui.internal.GraphitiUIPlugin;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
@@ -47,11 +44,11 @@ public class Activator extends AbstractUIPlugin {
 	private static Activator INSTANCE;
 
 	// plugin extensions
-	private ExtensionRegistry extensions;
+	private ExtensionImpl extensions;
 
 	
 	public Activator() {
-		this.extensions = new ExtensionRegistry();
+		this.extensions = new ExtensionImpl();
 	}
 
 	
@@ -100,7 +97,11 @@ public class Activator extends AbstractUIPlugin {
 		return INSTANCE;
 	}
 	
-	
+	@Override
+	public ImageRegistry getImageRegistry() {
+		return GraphitiUIPlugin.getDefault().getImageRegistry();
+	}
+
 	//// logging helpers
 	
 	public static void logStatus(IStatus status) {
@@ -115,58 +116,6 @@ public class Activator extends AbstractUIPlugin {
 		Status s = createStatus(e);
 		logStatus(s);
 		ErrorDialog.openError(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "An error occured", null, s);
-	}
-	
-	/**
-	 * Initializes the table of images used in this plugin.
-	 */
-	@Override
-	protected ImageRegistry createImageRegistry() {
-		ImageRegistry registry = super.createImageRegistry();
-		URL baseURL = getBundle().getEntry("/"); //$NON-NLS-1$
-
-		// A little reflection magic ... so that we don't
-		// have to add the createImageDescriptor every time
-		// we add it to the IConstants ..
-		Field fields[] = IConstants.class.getFields();	
-		for(int i=0; i < fields.length; i++) {
-			Field f = fields[i];
-			if (f.getType() != String.class) { 
-				continue;
-			}
-			String name = f.getName();
-			if (name.startsWith("ICON_") || name.startsWith("CURSOR_") || name.startsWith("IMAGE_")) {   //$NON-NLS-1$ //$NON-NLS-2$
-				try {
-					String value = (String) f.get(null);
-					createImageDescriptor(registry, value, baseURL);
-				} catch (Exception e) {
-					logError(e);
-				}
-			}			
-		}
-		return registry;
-	}
-
-	/**
-	 * Creates an image descriptor and places it in the image registry.
-	 */
-	private void createImageDescriptor(ImageRegistry registry, String id, URL baseURL) {
-		URL url = null;
-		try {
-			url = new URL(baseURL, IConstants.ICON_PATH + id);
-		} catch (MalformedURLException e) {
-			logError(e);
-		}
-		ImageDescriptor desc = ImageDescriptor.createFromURL(url);
-		registry.put(id, desc);
-	}
-
-	public Image getImage(String id) {
-		return getImageRegistry().get(id);
-	}
-	
-	public ImageDescriptor getImageDescriptor(String id) {
-		return getImageRegistry().getDescriptor(id);
 	}
 
 	private static Status createStatus(Exception e) {

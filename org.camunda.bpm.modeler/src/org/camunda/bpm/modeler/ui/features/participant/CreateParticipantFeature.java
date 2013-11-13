@@ -27,7 +27,7 @@ import org.camunda.bpm.modeler.core.utils.ContextUtil;
 import org.camunda.bpm.modeler.core.utils.LabelUtil;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.core.utils.ScrollUtil;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.camunda.bpm.modeler.ui.features.event.MoveBoundaryEventFeature;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Factory;
@@ -243,7 +243,7 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 	
 	@Override
 	public String getCreateImageId() {
-	    return ImageProvider.IMG_16_PARTICIPANT;
+	    return Images.IMG_16_PARTICIPANT;
 	}
 	
 	@Override

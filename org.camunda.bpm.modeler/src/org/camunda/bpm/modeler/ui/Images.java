@@ -12,6 +12,12 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.camunda.bpm.modeler.core.Activator;
+import org.camunda.bpm.modeler.ui.diagram.Bpmn2DiagramTypeProvider;
 import org.eclipse.bpmn2.AdHocSubProcess;
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BoundaryEvent;
@@ -59,15 +65,21 @@ import org.eclipse.bpmn2.TimerEventDefinition;
 import org.eclipse.bpmn2.Transaction;
 import org.eclipse.bpmn2.UserTask;
 import org.eclipse.graphiti.ui.platform.AbstractImageProvider;
+import org.eclipse.graphiti.ui.services.GraphitiUi;
+import org.eclipse.graphiti.ui.services.IImageService;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Image;
 
-public class ImageProvider extends AbstractImageProvider {
+public class Images extends AbstractImageProvider {
 
+	private static final String ICON_PATH = "icons/";
+	
 	private static final String dot16 = ".16";
 	private static final String dot20 = ".20";
-	private static final String ICONS_16 = "icons/16/";
-	private static final String ICONS_20 = "icons/20/";
+	private static final String ICONS_16 = ICON_PATH + "16/";
+	private static final String ICONS_20 = ICON_PATH + "20/";
 
-	public static final String PREFIX = ImageProvider.class.getPackage().getName() + ".";
+	public static final String PREFIX = Images.class.getPackage().getName() + ".";
 
 	public static final String IMG_16_START_EVENT = PREFIX + StartEvent.class.getSimpleName().toLowerCase() + dot16;
 	public static final String IMG_16_END_EVENT = PREFIX + EndEvent.class.getSimpleName().toLowerCase() + dot16;
@@ -243,6 +255,87 @@ public class ImageProvider extends AbstractImageProvider {
 		addImageFilePath(IMG_16_BLACKBOX, ICONS_16 + "blackbox.png");
 		addImageFilePath(IMG_16_PUSHDOWN, ICONS_16 + "pushdown.png");
 		addImageFilePath(IMG_16_PULLUP, ICONS_16 + "pullup.png");
+		
+		// add images defined in constants
+		
+		for (Map.Entry<String, String> entry: getAll(ImageConstants.class).entrySet()) {
+			addImageFilePath(entry.getKey(), entry.getValue());
+		}
 	}
 
+	///// static helpers //////
+	
+	/**
+	 * Returns an image by id
+	 * 
+	 * @param imageId
+	 * 
+	 * @return
+	 */
+	public static Image getById(String imageId) {
+		return getById(Bpmn2DiagramTypeProvider.ID, imageId);
+	}
+	
+	/**
+	 * Return an image by id in the scope of the given editor
+	 * 
+	 * @param editorId
+	 * @param imageId
+	 * 
+	 * @return
+	 */
+	public static Image getById(String editorId, String imageId) {
+		IImageService imageService = GraphitiUi.getImageService();
+		return imageService.getImageForId(editorId, imageId);
+	}
+
+	/**
+	 * Returns the image descriptor for the image with the given id.
+	 * 
+	 * @param imageId
+	 * @return
+	 */
+	public static ImageDescriptor getDescriptorById(String imageId) {
+		return getDescriptorById(Bpmn2DiagramTypeProvider.ID, imageId);
+	}
+	
+	/**
+	 * Returns the image descriptor for the image with the given id.
+	 * 
+	 * @param editorId
+	 * @param imageId
+	 * @return
+	 */
+	public static ImageDescriptor getDescriptorById(String editorId, String imageId) {
+		IImageService imageService = GraphitiUi.getImageService();
+		return imageService.getImageDescriptorForId(editorId, imageId);
+	}
+
+	//// private utilities //////
+	
+	private static Map<String, String> getAll(Class<?> cls) {
+		Map<String, String> imageMap = new HashMap<String, String>();
+		
+		Field fields[] = cls.getFields();	
+		for (Field field: fields) {
+			if (field.getType() != String.class) {
+				continue;
+			}
+
+			String name = field.getName();
+			if (name.startsWith("ICON_") || 
+					name.startsWith("CURSOR_") || 
+					name.startsWith("IMAGE_")) {
+				
+				try {
+					String value = (String) field.get(null);
+					imageMap.put(value, ICON_PATH + value);
+				} catch (Exception e) {
+					Activator.logError(e);
+				}
+			}			
+		}
+		
+		return imageMap;
+	}
 }

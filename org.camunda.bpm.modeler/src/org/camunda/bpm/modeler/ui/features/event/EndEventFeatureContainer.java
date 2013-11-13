@@ -19,7 +19,7 @@ import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.features.event.AbstractCreateEventFeature;
 import org.camunda.bpm.modeler.core.features.event.AddEventFeature;
 import org.camunda.bpm.modeler.core.features.event.EventDecorateFeature;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.camunda.bpm.modeler.ui.features.AbstractAppendNodeNodeFeature;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.EndEvent;
@@ -72,7 +72,7 @@ public class EndEventFeatureContainer extends AbstractEventFeatureContainer {
 
 		@Override
 		public String getStencilImageId() {
-			return ImageProvider.IMG_16_END_EVENT;
+			return Images.IMG_16_END_EVENT;
 		}
 
 		@Override

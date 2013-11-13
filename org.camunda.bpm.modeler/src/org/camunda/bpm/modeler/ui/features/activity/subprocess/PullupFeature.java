@@ -18,7 +18,7 @@ import java.util.List;
 import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.di.DIUtils;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.di.BPMNDiagram;
@@ -59,7 +59,7 @@ public class PullupFeature extends AbstractCustomFeature {
 
 	@Override
 	public String getImageId() {
-		return ImageProvider.IMG_16_PULLUP;
+		return Images.IMG_16_PULLUP;
 	}
 
 	@Override

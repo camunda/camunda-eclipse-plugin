@@ -15,7 +15,7 @@ package org.camunda.bpm.modeler.ui.features.choreography;
 import org.camunda.bpm.modeler.core.features.AbstractCreateFlowElementFeature;
 import org.camunda.bpm.modeler.core.features.MultiUpdateFeature;
 import org.camunda.bpm.modeler.core.features.choreography.UpdateChoreographyNameFeature;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallChoreography;
 import org.eclipse.emf.ecore.EClass;
@@ -65,7 +65,7 @@ public class CallChoreographyFeatureContainer extends AbstractChoreographyFeatur
 
 		@Override
 		public String getStencilImageId() {
-			return ImageProvider.IMG_16_CHOREOGRAPHY_TASK;
+			return Images.IMG_16_CHOREOGRAPHY_TASK;
 		}
 		
 		public EClass getBusinessObjectClass() {

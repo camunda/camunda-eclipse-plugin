@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.di.DIUtils;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.di.BPMNDiagram;
@@ -54,7 +54,7 @@ public class BlackboxFeature extends AbstractCustomFeature {
 
 	@Override
 	public String getImageId() {
-		return ImageProvider.IMG_16_BLACKBOX;
+		return Images.IMG_16_BLACKBOX;
 	}
 
 	@Override
