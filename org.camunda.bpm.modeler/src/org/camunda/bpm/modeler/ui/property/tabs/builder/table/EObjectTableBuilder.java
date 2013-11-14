@@ -52,7 +52,12 @@ public class EObjectTableBuilder<T extends EObject> {
 	protected EObject model;
 	
 	protected Class<T> genericTypeCls;
-	
+
+	/**
+	 * Whether to attach a small edit note to the table
+	 */
+	private boolean attachTableEditNote = true;
+
 	public EObjectTableBuilder(GFPropertySection section, Composite parent, Class<T> genericTypeCls) {
 		this.section = section;
 		this.parent = parent;
@@ -246,6 +251,12 @@ public class EObjectTableBuilder<T extends EObject> {
 		
 	}
 
+	public EObjectTableBuilder<T> attachTableEditNote(boolean attachTableEditNote) {
+
+		this.attachTableEditNote = attachTableEditNote;
+		return this;
+	}
+
 	public EObjectTableBuilder<T> changeFilter(NotificationFilter changeFilter) {
 		this.changeFilter = changeFilter;
 		
@@ -265,7 +276,9 @@ public class EObjectTableBuilder<T extends EObject> {
 		
 		tableComposite.setLayoutData(tableCompositeFormData);
 
-		PropertyUtil.attachNote(tableComposite, HelpText.TABLE_HELP);
+		if (attachTableEditNote) {
+			PropertyUtil.attachNote(tableComposite, HelpText.TABLE_HELP);
+		}
 		
 		return tableComposite;
 	}

@@ -37,6 +37,8 @@ import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.SequenceFlow;
+import org.eclipse.bpmn2.StartEvent;
+import org.eclipse.bpmn2.UserTask;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.jface.viewers.ISelection;
@@ -92,11 +94,10 @@ public class PropertiesTabDescriptorProvider implements ITabDescriptorProvider {
 				}
 			}
 
-			// TODO: uncomment when camunda engine release exists to support this feature
-//			if (businessObject instanceof UserTask ||
-//			    businessObject instanceof StartEvent) {
-//				tabs.add(createFormTabDescriptor());
-//			}
+			if (businessObject instanceof UserTask ||
+			    businessObject instanceof StartEvent) {
+				tabs.add(createFormTabDescriptor());
+			}
 			
 			addCustomTabs(businessObject, tabs);
 		}
