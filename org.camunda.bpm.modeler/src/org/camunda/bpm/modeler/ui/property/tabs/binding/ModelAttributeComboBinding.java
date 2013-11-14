@@ -21,8 +21,12 @@ import org.eclipse.swt.widgets.Listener;
  */
 public abstract class ModelAttributeComboBinding<V> extends ModelViewBinding<CCombo, V>{
 
+	protected EStructuralFeature feature;
+	
 	public ModelAttributeComboBinding(EObject model, EStructuralFeature feature, CCombo control) {
-		super(model, feature, control);
+		super(model, control);
+		
+		this.feature = feature;
 	}
 
 	@Override

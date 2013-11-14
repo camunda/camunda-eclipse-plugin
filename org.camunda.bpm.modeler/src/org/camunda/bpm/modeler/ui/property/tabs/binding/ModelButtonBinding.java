@@ -1,9 +1,7 @@
 package org.camunda.bpm.modeler.ui.property.tabs.binding;
 
-import org.camunda.bpm.modeler.ui.property.tabs.binding.change.EAttributeChangeSupport;
 import org.camunda.bpm.modeler.ui.property.tabs.util.Events;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Event;
@@ -16,8 +14,8 @@ import org.eclipse.swt.widgets.Listener;
  */
 public abstract class ModelButtonBinding<V> extends ModelViewBinding<Button, V> {
 
-	public ModelButtonBinding(EObject model, EStructuralFeature feature, Button control) {
-		super(model, feature, control);
+	public ModelButtonBinding(EObject model, Button control) {
+		super(model, control);
 	}
 	
 	@Override
@@ -38,11 +36,9 @@ public abstract class ModelButtonBinding<V> extends ModelViewBinding<Button, V> 
 			}
 		});
 	}
-
-	protected void ensureChangeSupportAdded() {
-		EAttributeChangeSupport.ensureAdded(model, feature, control);
-	}
 	
+	protected abstract void ensureChangeSupportAdded();
+
 	@Override
 	protected void establishViewModelBinding() {
 		

@@ -1,6 +1,7 @@
 package org.camunda.bpm.modeler.ui.property.tabs.binding;
 
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
+import org.camunda.bpm.modeler.ui.property.tabs.binding.change.EAttributeChangeSupport;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
@@ -8,8 +9,17 @@ import org.eclipse.swt.widgets.Text;
 
 public abstract class ModelAttributeTextBinding<V> extends ModelTextBinding<V> {
 	
+	protected EStructuralFeature feature;
+	
 	public ModelAttributeTextBinding(EObject model, EStructuralFeature feature, Text control) {
-		super(model, feature, control);
+		super(model, control);
+		
+		this.feature = feature;
+	}
+	
+	@Override
+	protected void ensureChangeSupportAdded() {
+		EAttributeChangeSupport.ensureAdded(model, feature, control);
 	}
 	
 	/**
