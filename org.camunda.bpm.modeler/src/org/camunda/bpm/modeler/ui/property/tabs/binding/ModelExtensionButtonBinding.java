@@ -5,6 +5,7 @@ import static org.camunda.bpm.modeler.core.utils.ExtensionUtil.getExtension;
 import static org.camunda.bpm.modeler.core.utils.ExtensionUtil.removeExtensionByValue;
 
 import org.camunda.bpm.modeler.runtime.engine.model.ModelFactory;
+import org.camunda.bpm.modeler.ui.property.tabs.binding.change.EAttributeChangeSupport;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -37,11 +38,15 @@ public class ModelExtensionButtonBinding extends ModelButtonBinding<Boolean> {
 	private EStructuralFeature featureParent;
 	private String featureValue;
 
+	protected EStructuralFeature feature;
+	
 	public ModelExtensionButtonBinding(EObject model, EClass typeECls,
 			EStructuralFeature featureParent, EStructuralFeature feature,
 			Button control, String featureValue) {
-		super(model, feature, control);
+		super(model, control);
 
+		this.feature = feature;
+		
 		this.typeECls = typeECls;
 		this.featureParent = featureParent;
 		this.featureValue = featureValue;
@@ -66,20 +71,23 @@ public class ModelExtensionButtonBinding extends ModelButtonBinding<Boolean> {
 	public void setModelValue(final Boolean selected) {
 
 		TransactionalEditingDomain editingDomain = TransactionUtil.getEditingDomain(model);
-		editingDomain.getCommandStack().execute(
-				new RecordingCommand(editingDomain) {
-
-					@Override
-					protected void doExecute() {
-						Object extension = getExtension(model, featureParent, feature.getName());
-						if (extension == null) {
-							final EObject eObject = ModelFactory.eINSTANCE.create(typeECls);
-							eObject.eSet(feature, selected ? featureValue : "");
-							addExtension(model, featureParent, eObject);
-						} else {
-							removeExtensionByValue(model, featureParent, feature, extension);
-						}
-					}
-				});
+		editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+			@Override
+			protected void doExecute() {
+				Object extension = getExtension(model, featureParent, feature.getName());
+				if (extension == null) {
+					final EObject eObject = ModelFactory.eINSTANCE.create(typeECls);
+					eObject.eSet(feature, selected ? featureValue : "");
+					addExtension(model, featureParent, eObject);
+				} else {
+					removeExtensionByValue(model, featureParent, feature, extension);
+				}
+			}
+		});
+	}
+	
+	@Override
+	protected void ensureChangeSupportAdded() {
+		EAttributeChangeSupport.ensureAdded(model, feature, control);
 	}
 }

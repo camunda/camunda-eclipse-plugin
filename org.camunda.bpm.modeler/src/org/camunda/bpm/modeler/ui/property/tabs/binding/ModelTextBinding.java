@@ -1,12 +1,9 @@
 package org.camunda.bpm.modeler.ui.property.tabs.binding;
 
-import org.camunda.bpm.modeler.ui.property.tabs.binding.change.EAttributeChangeSupport;
 import org.camunda.bpm.modeler.ui.property.tabs.util.Events;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
@@ -22,8 +19,8 @@ public abstract class ModelTextBinding<V> extends ModelViewBinding<Text, V> {
 	protected boolean viewUpdate = false;
 	private boolean focusOnNonNull = false;
 
-	public ModelTextBinding(EObject model, EStructuralFeature feature, Text control) {
-		super(model, feature, control);
+	public ModelTextBinding(EObject model, Text control) {
+		super(model, control);
 	}
 
 	@Override
@@ -113,10 +110,11 @@ public abstract class ModelTextBinding<V> extends ModelViewBinding<Text, V> {
 			}
 		});
 	}
-
-	protected void ensureChangeSupportAdded() {
-		EAttributeChangeSupport.ensureAdded(model, feature, control);
-	}
+	
+	/**
+	 * Ensure that change support is added for the given binding
+	 */
+	protected abstract void ensureChangeSupportAdded();
 	
 	@Override
 	protected void establishViewModelBinding() {

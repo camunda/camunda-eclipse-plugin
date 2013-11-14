@@ -49,7 +49,7 @@ public class RetryEnabledPropertiesBuilder extends AbstractPropertiesBuilder<Bas
 		
 		// observing the checkbox and updating the model
 		
-		new RetryCycleStringTextBinding(bo, RETRY_CYCLE_FEATURE, retryText).establish();
+		new RetryCycleStringTextBinding(bo, retryText).establish();
 		
 		return retryText;
 	}
@@ -61,8 +61,8 @@ public class RetryEnabledPropertiesBuilder extends AbstractPropertiesBuilder<Bas
 	 */
 	private class RetryCycleStringTextBinding extends ModelTextBinding<String> {
 
-		public RetryCycleStringTextBinding(EObject model, EStructuralFeature feature, Text control) {
-			super(model, feature, control);
+		public RetryCycleStringTextBinding(EObject model, Text control) {
+			super(model, control);
 		}
 
 		@Override
@@ -95,8 +95,8 @@ public class RetryEnabledPropertiesBuilder extends AbstractPropertiesBuilder<Bas
 		
 		@Override
 		protected void ensureChangeSupportAdded() {
-			EAttributeChangeSupport changeSupport = new EAttributeChangeSupport(model, feature, control);
-			changeSupport.setFilter(new ExtensionChangeFilter(model, feature).or(new FeatureChangeFilter(model, feature)));
+			EAttributeChangeSupport changeSupport = new EAttributeChangeSupport(model, RETRY_CYCLE_FEATURE, control);
+			changeSupport.setFilter(new ExtensionChangeFilter(model, RETRY_CYCLE_FEATURE).or(new FeatureChangeFilter(model, RETRY_CYCLE_FEATURE)));
 			
 			EAttributeChangeSupport.ensureAdded(changeSupport, control);
 		}

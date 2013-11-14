@@ -42,9 +42,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 /**
  * Using form data here for layouting.
  * 
- * To get to know how it works, refer to {@link http
- * ://www.eclipse.org/articles/article
- * .php?file=Article-Understanding-Layouts/index.html}.
+ * To get to know how it works, refer to {@link http://www.eclipse.org/articles/article.php?file=Article-Understanding-Layouts/index.html}.
  * 
  * @author nico.rehwaldt
  */
@@ -118,7 +116,6 @@ public class PropertyUtil {
 		return checkbox;
 	}
 
-	// public static
 	public static Button createCheckbox(GFPropertySection section, Composite parent, String label,
 			final EStructuralFeature feature, final EObject bo) {
 		Button checkbox = createUnboundCheckbox(section, parent, label);

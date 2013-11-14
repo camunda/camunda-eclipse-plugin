@@ -1,5 +1,6 @@
 package org.camunda.bpm.modeler.ui.property.tabs.binding;
 
+import org.camunda.bpm.modeler.ui.property.tabs.binding.change.EAttributeChangeSupport;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -9,11 +10,13 @@ import org.eclipse.swt.widgets.Button;
 
 public abstract class ModelRadioBinding extends ModelButtonBinding<Boolean> {
 
-	private EStructuralFeature[] radioFeatures;
+	protected EStructuralFeature feature;
+	protected EStructuralFeature[] radioFeatures;
 
 	public ModelRadioBinding(EObject model, EStructuralFeature feature, EStructuralFeature[] typeFeatures, Button control) {
-		super(model, feature, control);
+		super(model, control);
 		
+		this.feature = feature;
 		this.radioFeatures = typeFeatures;
 	}
 
@@ -42,6 +45,11 @@ public abstract class ModelRadioBinding extends ModelButtonBinding<Boolean> {
 	@Override
 	protected void updateViewState(Boolean modelValue) {
 		control.setSelection(modelValue);
+	}
+	
+	@Override
+	protected void ensureChangeSupportAdded() {
+		EAttributeChangeSupport.ensureAdded(model, feature, control);
 	}
 	
 	// model radio binding ////////////////////////////////

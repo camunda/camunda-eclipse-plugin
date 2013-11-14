@@ -2,6 +2,7 @@ package org.camunda.bpm.modeler.ui.property.tabs.builder;
 
 import org.camunda.bpm.modeler.core.utils.DocumentationUtil;
 import org.camunda.bpm.modeler.ui.property.tabs.binding.ModelTextBinding;
+import org.camunda.bpm.modeler.ui.property.tabs.binding.change.EAttributeChangeSupport;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Factory;
@@ -43,11 +44,10 @@ public class DocumentationPropertiesBuilder extends AbstractPropertiesBuilder<Ba
 
 	@Override
 	public void create() {
-		createAutoResizingMultiText(section, parent, DOCUMENTATION_FEATURE, bo);
+		createAutoResizingMultiText(section, parent, bo);
 	}
 
-	private Text createAutoResizingMultiText(GFPropertySection section, final Composite parent,
-			EStructuralFeature feature, BaseElement bo) {
+	private Text createAutoResizingMultiText(GFPropertySection section, final Composite parent, BaseElement bo) {
 		
 		Composite composite = PropertyUtil.createStandardComposite(section, parent);
 		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
@@ -79,7 +79,7 @@ public class DocumentationPropertiesBuilder extends AbstractPropertiesBuilder<Ba
 			}
 		});
 
-		DocumentationStringTextBinding documentationTextBinding = new DocumentationStringTextBinding(bo, feature, multiText);
+		DocumentationStringTextBinding documentationTextBinding = new DocumentationStringTextBinding(bo, multiText);
 		documentationTextBinding.establish();
 		
 		return multiText;
@@ -107,8 +107,8 @@ public class DocumentationPropertiesBuilder extends AbstractPropertiesBuilder<Ba
 	 */
 	private class DocumentationStringTextBinding extends ModelTextBinding<String> {
 
-		public DocumentationStringTextBinding(EObject model, EStructuralFeature feature, Text control) {
-			super(model, feature, control);
+		public DocumentationStringTextBinding(EObject model, Text control) {
+			super(model, control);
 		}
 
 		@Override
@@ -137,6 +137,11 @@ public class DocumentationPropertiesBuilder extends AbstractPropertiesBuilder<Ba
 		@Override
 		public void setModelValue(String value) {
 			transactionalUpdateDocumenation(value);
+		}
+		
+		@Override
+		protected void ensureChangeSupportAdded() {
+			EAttributeChangeSupport.ensureAdded(model, DOCUMENTATION_FEATURE, control);
 		}
 	}
 
@@ -184,7 +189,6 @@ public class DocumentationPropertiesBuilder extends AbstractPropertiesBuilder<Ba
 		@Override
 		protected void doExecute() {
 
-			
 			if (newValue == null || newValue.trim().isEmpty()) {
 				removeDocumentation();
 			} else {
