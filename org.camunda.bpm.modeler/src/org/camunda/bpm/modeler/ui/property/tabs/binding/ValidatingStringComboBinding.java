@@ -87,7 +87,12 @@ public class ValidatingStringComboBinding extends ModelAttributeComboBinding<Str
 
 	@Override
 	public String getModelValue() {
-		return (String) model.eGet(feature);
+		String value = (String) model.eGet(feature);
+		if (mandatory && (value == null || isEmptyValue(value))) {
+			showError("This value is mandatory. Empty value will not be saved.");
+			return null;
+		}
+		return value;
 	}
 
 	@Override

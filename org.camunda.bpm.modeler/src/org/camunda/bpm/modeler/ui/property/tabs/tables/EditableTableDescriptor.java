@@ -236,7 +236,10 @@ public class EditableTableDescriptor<T> extends TableDescriptor<T> {
 	public static abstract class ElementFactory<T> {
 		
 		/**
-		 * Create a new instance of the object
+		 * Create a new instance of the object.
+		 *
+		 * Return <code> null to denote that the element was not created.
+		 *
 		 * @return
 		 */
 		public abstract T create();
@@ -270,7 +273,9 @@ public class EditableTableDescriptor<T> extends TableDescriptor<T> {
 		public T performAdd() {
 			T element = factory.create();
 			
-			viewer.getTable().notifyListeners(Events.ROW_ADDED, new RowAdded<T>(element));
+			if (element != null) {
+				viewer.getTable().notifyListeners(Events.ROW_ADDED, new RowAdded<T>(element));
+			}
 			
 			return element;
 		}
@@ -291,13 +296,15 @@ public class EditableTableDescriptor<T> extends TableDescriptor<T> {
 		public T performAdd() {
 			final T element = super.performAdd();
 			
-			Display.getCurrent().asyncExec(new Runnable() {
-				
-				@Override
-				public void run() {
-					viewer.editElement(element, 0);
-				}
-			});
+			if (element != null) {
+				Display.getCurrent().asyncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						viewer.editElement(element, 0);
+					}
+				});
+			}
 			
 			return element;
 		}

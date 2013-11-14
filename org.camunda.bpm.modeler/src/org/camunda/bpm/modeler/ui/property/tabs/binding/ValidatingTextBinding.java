@@ -75,15 +75,9 @@ public abstract class ValidatingTextBinding<V> extends
 			showError("This value is mandatory. Empty value will not be saved.");
 			return;
 		}
+
 		// wrap the underlying command stuff, so we know exactly what we gonna undo
-		domain.getCommandStack().execute(new RecordingCommand(domain) {
-			
-			@Override
-			protected void doExecute() {
-				ModelUtil.setValue(domain, model, feature, value);
-			}
-			
-		});
+		ModelUtil.setValue(domain, model, feature, value);
 		
 		ModelValidationService modelValidationService = ModelValidationService
 				.getInstance();

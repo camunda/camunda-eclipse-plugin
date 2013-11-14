@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.camunda.bpm.modeler.core.utils.ExtensionUtil;
+import org.camunda.bpm.modeler.emf.util.CommandUtil;
 import org.camunda.bpm.modeler.runtime.engine.model.FormDataType;
 import org.camunda.bpm.modeler.runtime.engine.model.FormFieldType;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelFactory;
@@ -19,6 +20,7 @@ import org.camunda.bpm.modeler.ui.property.tabs.tables.EditableTableDescriptor.E
 import org.camunda.bpm.modeler.ui.property.tabs.util.HelpText;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -27,6 +29,7 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -53,7 +56,7 @@ public class FormFieldsPropertiesBuilder extends AbstractPropertiesBuilder<BaseE
 	
 	@Override
 	public void create() {
-		PropertyUtil.createNoteWithLink(section, parent, HelpText.SUPPORTED_VERSION_NOTE);
+		//PropertyUtil.createNoteWithLink(section, parent, HelpText.SUPPORTED_VERSION_NOTE);
 		EClass formFieldCls = ModelPackage.eINSTANCE.getFormFieldType();
 		createMappingTable(section, parent, FormFieldType.class, "Form Fields", formFieldCls, FORM_DATA_FEATURE, FORM_FIELDS_FEATURES, TABLE_HEADERS);
 	}
@@ -71,11 +74,17 @@ public class FormFieldsPropertiesBuilder extends AbstractPropertiesBuilder<BaseE
 			@Override
 			public T create() {
 				FormFieldType newFormField = transactionalCreateType();
-				
-				// create dialog with ok and cancel button and warning icon
-				FormFieldDetailsDialog formFieldsDialog = new FormFieldDetailsDialog(section, composite.getShell(), newFormField);
-				// open dialog and await user selection
-				formFieldsDialog.open();
+
+				TransactionalEditingDomain editingDomain = TransactionUtil.getEditingDomain(bo);
+
+				Command createCommand = editingDomain.getCommandStack().getMostRecentCommand();
+
+				int returnCode = openDetailsDialog(composite, newFormField);
+				if (returnCode == Window.CANCEL) {
+					// execute undo command when creation of new form field was cancelled
+					CommandUtil.undo(editingDomain, createCommand);
+					return null;
+				}
 
 				return (T) newFormField;
 			}
@@ -86,7 +95,7 @@ public class FormFieldsPropertiesBuilder extends AbstractPropertiesBuilder<BaseE
 			@Override
 			public List<T> getContents() {
 				List<T> contents = new ArrayList<T>();
-				
+
 				List<FormDataType> formDataList = ExtensionUtil.getExtensions(bo, FormDataType.class);
 				// formData exists only once in the extension value
 				if(formDataList != null && !formDataList.isEmpty()) {
@@ -108,10 +117,7 @@ public class FormFieldsPropertiesBuilder extends AbstractPropertiesBuilder<BaseE
 
 			@Override
 			public void rowEdit(T element) {
-				// create dialog with ok and cancel button and warning icon
-				FormFieldDetailsDialog formFieldsDialog = new FormFieldDetailsDialog(section, composite.getShell(), (FormFieldType) element);
-				// open dialog and await user selection
-				formFieldsDialog.open();
+				openDetailsDialog(composite, (FormFieldType) element);
 			}
 
 			@Override
@@ -129,6 +135,7 @@ public class FormFieldsPropertiesBuilder extends AbstractPropertiesBuilder<BaseE
 			.columnFeatures(columnFeatures)
 			.columnLabels(columnLabels)
 			.deleteRowHandler(deleteHandler)
+			.attachTableEditNote(false)
 			.model(bo)
 			.changeFilter(new AnyNestedChangeFilter(bo, feature));
 		
@@ -136,6 +143,7 @@ public class FormFieldsPropertiesBuilder extends AbstractPropertiesBuilder<BaseE
 			
 		// table composite ////////////
 		final Composite tableComposite = viewer.getTable().getParent();
+		PropertyUtil.attachNote(tableComposite, HelpText.TABLE_HELP + " " + HelpText.SUPPORTED_VERSION_NOTE);
 
 		// create label
 		PropertyUtil.createLabel(section, composite, label, tableComposite);
@@ -195,4 +203,10 @@ public class FormFieldsPropertiesBuilder extends AbstractPropertiesBuilder<BaseE
 		return newFormField;
 	}
 
+	private int openDetailsDialog(Composite composite, FormFieldType formField) {
+		// create dialog with ok and cancel button and warning icon
+		FormFieldDetailsDialog formFieldsDialog = new FormFieldDetailsDialog(section, composite.getShell(), formField);
+		// open dialog and await user selection
+		return formFieldsDialog.open();
+	}
 }
