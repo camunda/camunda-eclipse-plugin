@@ -16,7 +16,7 @@ import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.layout.util.ConversionUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.camunda.bpm.modeler.ui.features.choreography.ShowDiagramPageFeature;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.di.BPMNShape;
@@ -57,7 +57,7 @@ public class ExpandFlowNodeFeature extends ShowDiagramPageFeature {
 
 	@Override
 	public String getImageId() {
-		return ImageProvider.IMG_16_EXPAND;
+		return Images.IMG_16_EXPAND;
 	}
 
 	@Override

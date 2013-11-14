@@ -21,7 +21,7 @@ import org.camunda.bpm.modeler.core.di.DIUtils;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.LabelUtil;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.FlowElement;
@@ -72,7 +72,7 @@ public class PushdownFeature extends AbstractCustomFeature {
 
 	@Override
 	public String getImageId() {
-		return ImageProvider.IMG_16_PUSHDOWN;
+		return Images.IMG_16_PUSHDOWN;
 	}
 
 	@Override

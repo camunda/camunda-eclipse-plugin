@@ -35,7 +35,7 @@ import org.camunda.bpm.modeler.core.layout.util.Layouter;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.camunda.bpm.modeler.core.utils.Tuple;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
@@ -147,7 +147,7 @@ public class SequenceFlowFeatureContainer extends BaseElementConnectionFeatureCo
 		
 		@Override
 		protected String getStencilImageId() {
-			return ImageProvider.IMG_16_SEQUENCE_FLOW;
+			return Images.IMG_16_SEQUENCE_FLOW;
 		}
 
 		@Override

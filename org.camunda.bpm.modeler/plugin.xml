@@ -2,7 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
 	<extension-point id="org.camunda.bpm.modeler.runtime" name="BPMN2 Modeler Runtime Specialization" schema="schema/org.camunda.bpm.modeler.runtime.exsd"/>
- <extension-point id="org.camunda.bpm.modeler.plugin.customtask" name="CustomTask" schema="schema/org.camunda.bpm.modeler.plugin.customtask.exsd"/>
+	<extension-point id="org.camunda.bpm.modeler.plugin.customtask" name="CustomTask" schema="schema/customTask.exsd"/>
 
 	<extension point="org.eclipse.emf.ecore.generated_package">
 		<package
@@ -106,7 +106,7 @@
 	<extension point="org.eclipse.graphiti.ui.diagramTypeProviders">
 		<diagramTypeProvider
 			class="org.camunda.bpm.modeler.ui.diagram.Bpmn2DiagramTypeProvider"
-			description="This is the editor for the BPMN2 diagram"
+			description="A graphical Editor for BPMN 2.0 diagrams"
 			id="org.camunda.bpm.modeler.ui.diagram.Bpmn2DiagramTypeProvider" name="BPMN2 Editor">
 			<diagramType
 				id="org.camunda.bpm.modeler.ui.diagram.Bpmn2DiagramTypeProvider">
@@ -117,7 +117,7 @@
 	</extension>
 
 	<extension point="org.eclipse.graphiti.ui.imageProviders">
-		<imageProvider class="org.camunda.bpm.modeler.ui.ImageProvider" id="org.camunda.bpm.modeler.ui.ImageProvider">
+		<imageProvider class="org.camunda.bpm.modeler.ui.Images" id="org.camunda.bpm.modeler.ui.ImageProvider">
 		</imageProvider>
 	</extension>
 

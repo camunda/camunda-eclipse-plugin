@@ -17,7 +17,7 @@ import org.camunda.bpm.modeler.core.features.gateway.AbstractCreateGatewayFeatur
 import org.camunda.bpm.modeler.core.features.gateway.AddGatewayFeature;
 import org.camunda.bpm.modeler.core.features.gateway.GatewayDecorateFeature;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.ComplexGateway;
 import org.eclipse.emf.ecore.EClass;
@@ -61,7 +61,7 @@ public class ComplexGatewayFeatureContainer extends AbstractGatewayFeatureContai
 
 		@Override
 		protected String getStencilImageId() {
-			return ImageProvider.IMG_16_COMPLEX_GATEWAY;
+			return Images.IMG_16_COMPLEX_GATEWAY;
 		}
 
 		/* (non-Javadoc)

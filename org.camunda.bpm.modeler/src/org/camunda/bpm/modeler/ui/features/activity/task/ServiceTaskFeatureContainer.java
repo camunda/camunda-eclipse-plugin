@@ -14,7 +14,7 @@ package org.camunda.bpm.modeler.ui.features.activity.task;
 
 import org.camunda.bpm.modeler.core.features.activity.task.AbstractCreateTaskFeature;
 import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.emf.ecore.EClass;
@@ -22,6 +22,8 @@ import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 
 public class ServiceTaskFeatureContainer extends AbstractTaskFeatureContainer {
+
+	private static final String TASK_ICON = Images.IMG_16_SERVICE_TASK;
 
 	@Override
 	public boolean canApplyTo(Object o) {
@@ -38,7 +40,7 @@ public class ServiceTaskFeatureContainer extends AbstractTaskFeatureContainer {
 		return new AbstractTaskDecorateFeature(fp) {
 			@Override
 			public String getIconId() {
-				return ImageProvider.IMG_16_SERVICE_TASK;
+				return TASK_ICON;
 			}
 		};
 	}
@@ -51,7 +53,7 @@ public class ServiceTaskFeatureContainer extends AbstractTaskFeatureContainer {
 
 		@Override
 		protected String getStencilImageId() {
-			return ImageProvider.IMG_16_SERVICE_TASK;
+			return TASK_ICON;
 		}
 
 		@Override

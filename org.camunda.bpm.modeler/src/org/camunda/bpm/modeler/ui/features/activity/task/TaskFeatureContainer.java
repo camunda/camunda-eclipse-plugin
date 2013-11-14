@@ -13,7 +13,7 @@
 package org.camunda.bpm.modeler.ui.features.activity.task;
 
 import org.camunda.bpm.modeler.core.features.activity.task.AbstractCreateTaskFeature;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.impl.TaskImpl;
@@ -41,7 +41,7 @@ public class TaskFeatureContainer extends AbstractTaskFeatureContainer {
 
 		@Override
 		protected String getStencilImageId() {
-			return ImageProvider.IMG_16_TASK;
+			return Images.IMG_16_TASK;
 		}
 
 		/* (non-Javadoc)

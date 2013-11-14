@@ -7,7 +7,7 @@ import java.util.List;
 import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.transform.Transformer;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.camunda.bpm.modeler.ui.features.AbstractMorphNodeFeature;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
@@ -290,93 +290,93 @@ public abstract class AbstractMorphEventFeature extends AbstractMorphNodeFeature
 			// EventDefinitions
 			if (eventDefinitionCls != null) {
 				if (eventDefinitionCls.equals(Bpmn2Package.eINSTANCE.getConditionalEventDefinition())) {
-					return getImageForId(ImageProvider.IMG_16_CONDITION);
+					return getImageForId(Images.IMG_16_CONDITION);
 				}
 				
 				if (eventDefinitionCls.equals(Bpmn2Package.eINSTANCE.getTimerEventDefinition())) {
-					return getImageForId(ImageProvider.IMG_16_TIMER);
+					return getImageForId(Images.IMG_16_TIMER);
 				}
 				
 				if (eventDefinitionCls.equals(Bpmn2Package.eINSTANCE.getTerminateEventDefinition())) {
-					return getImageForId(ImageProvider.IMG_16_TERMINATE);
+					return getImageForId(Images.IMG_16_TERMINATE);
 				}				
 				
 				if (eventDefinitionCls.equals(Bpmn2Package.eINSTANCE.getSignalEventDefinition())) {
 					if (isCatchEvent(cls)) {
-						return getImageForId(ImageProvider.IMG_16_SIGNAL);
+						return getImageForId(Images.IMG_16_SIGNAL);
 					} else {
-						return getImageForId(ImageProvider.IMG_16_SIGNAL_THROW);
+						return getImageForId(Images.IMG_16_SIGNAL_THROW);
 					}
 				}
 				
 				if (eventDefinitionCls.equals(Bpmn2Package.eINSTANCE.getMessageEventDefinition())) {
 					if (isCatchEvent(cls)) {
-						return getImageForId(ImageProvider.IMG_16_MESSAGE);
+						return getImageForId(Images.IMG_16_MESSAGE);
 					} else {
-						return getImageForId(ImageProvider.IMG_16_MESSAGE_THROW);
+						return getImageForId(Images.IMG_16_MESSAGE_THROW);
 					}
 				}
 				
 				if (eventDefinitionCls.equals(Bpmn2Package.eINSTANCE.getEscalationEventDefinition())) {
 					if (isCatchEvent(cls)) {
-						return getImageForId(ImageProvider.IMG_16_ESCAlATION);
+						return getImageForId(Images.IMG_16_ESCAlATION);
 					} else {
-						return getImageForId(ImageProvider.IMG_16_ESCAlATION_THROW);
+						return getImageForId(Images.IMG_16_ESCAlATION_THROW);
 					}
 				}
 				
 				if (eventDefinitionCls.equals(Bpmn2Package.eINSTANCE.getCompensateEventDefinition())) {
 					if (isCatchEvent(cls)) {
-						return getImageForId(ImageProvider.IMG_16_COMPENSATE);
+						return getImageForId(Images.IMG_16_COMPENSATE);
 					} else {
-						return getImageForId(ImageProvider.IMG_16_COMPENSATE_THROW);
+						return getImageForId(Images.IMG_16_COMPENSATE_THROW);
 					}
 				}
 				
 				if (eventDefinitionCls.equals(Bpmn2Package.eINSTANCE.getLinkEventDefinition())) {
 					if (isCatchEvent(cls)) {
-						return getImageForId(ImageProvider.IMG_16_LINK);
+						return getImageForId(Images.IMG_16_LINK);
 					} else {
-						return getImageForId(ImageProvider.IMG_16_LINK_THROW);
+						return getImageForId(Images.IMG_16_LINK_THROW);
 					}
 				}
 				
 				if (eventDefinitionCls.equals(Bpmn2Package.eINSTANCE.getErrorEventDefinition())) {
 					if (isCatchEvent(cls)) {
-						return getImageForId(ImageProvider.IMG_16_ERROR);
+						return getImageForId(Images.IMG_16_ERROR);
 					} else {
-						return getImageForId(ImageProvider.IMG_16_ERROR_THROW);
+						return getImageForId(Images.IMG_16_ERROR_THROW);
 					}
 				}
 				
 				if (eventDefinitionCls.equals(Bpmn2Package.eINSTANCE.getCancelEventDefinition())) {
 					if (isCatchEvent(cls)) {
-						return getImageForId(ImageProvider.IMG_16_CANCEL);
+						return getImageForId(Images.IMG_16_CANCEL);
 					} else {
-						return getImageForId(ImageProvider.IMG_16_CANCEL_THROW);
+						return getImageForId(Images.IMG_16_CANCEL_THROW);
 					}
 				}
 			}
 			
 			// Events
 			if (cls.equals(Bpmn2Package.eINSTANCE.getStartEvent())) {
-				return getImageForId(ImageProvider.IMG_16_START_EVENT);
+				return getImageForId(Images.IMG_16_START_EVENT);
 			}
 			
 			if (cls.equals(Bpmn2Package.eINSTANCE.getBoundaryEvent())) {
-				return getImageForId(ImageProvider.IMG_16_BOUNDARY_EVENT);
+				return getImageForId(Images.IMG_16_BOUNDARY_EVENT);
 			}			
 			
 			if (cls.equals(Bpmn2Package.eINSTANCE.getIntermediateCatchEvent())) {
-				return getImageForId(ImageProvider.IMG_16_INTERMEDIATE_CATCH_EVENT);
+				return getImageForId(Images.IMG_16_INTERMEDIATE_CATCH_EVENT);
 			}
 
 			if (cls.equals(Bpmn2Package.eINSTANCE.getIntermediateThrowEvent())) {
-				return getImageForId(ImageProvider.IMG_16_INTERMEDIATE_THROW_EVENT);
+				return getImageForId(Images.IMG_16_INTERMEDIATE_THROW_EVENT);
 			}
 
 			if (cls.equals(Bpmn2Package.eINSTANCE.getEndEvent())) {
-				return getImageForId(ImageProvider.IMG_16_END_EVENT);
+				return getImageForId(Images.IMG_16_END_EVENT);
 			}
 			
 			return null;

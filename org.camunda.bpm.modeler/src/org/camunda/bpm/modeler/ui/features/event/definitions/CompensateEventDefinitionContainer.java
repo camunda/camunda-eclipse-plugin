@@ -20,7 +20,7 @@ import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil.Compensation;
 import org.camunda.bpm.modeler.core.utils.StyleUtil.FillStyle;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.Bpmn2Package;
@@ -151,7 +151,7 @@ public class CompensateEventDefinitionContainer extends AbstractEventDefinitionF
 
 		@Override
 		protected String getStencilImageId() {
-			return ImageProvider.IMG_16_COMPENSATE;
+			return Images.IMG_16_COMPENSATE;
 		}
 
 		/* (non-Javadoc)

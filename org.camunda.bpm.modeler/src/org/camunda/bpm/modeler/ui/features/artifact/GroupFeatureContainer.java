@@ -18,7 +18,7 @@ import org.camunda.bpm.modeler.core.features.DefaultBpmn2ResizeShapeFeature;
 import org.camunda.bpm.modeler.core.features.artifact.AbstractCreateArtifactFeature;
 import org.camunda.bpm.modeler.core.features.container.BaseElementFeatureContainer;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.camunda.bpm.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Group;
@@ -144,7 +144,7 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 
 		@Override
 		public String getStencilImageId() {
-			return ImageProvider.IMG_16_GROUP;
+			return Images.IMG_16_GROUP;
 		}
 
 		@Override

@@ -1,7 +1,12 @@
-package org.camunda.bpm.modeler.core;
+package org.camunda.bpm.modeler.ui;
 
-public interface IConstants {
-	public final String ICON_PATH = "icons/";
+
+/**
+ * Images provided by the modeler.
+ * 
+ * @author nico.rehwaldt
+ */
+public interface ImageConstants {
 
 	public final String ICON_ADD_20 = "20/add.png"; //$NON-NLS-1$
 	public final String ICON_CLOSE_20 = "20/close.png"; //$NON-NLS-1$

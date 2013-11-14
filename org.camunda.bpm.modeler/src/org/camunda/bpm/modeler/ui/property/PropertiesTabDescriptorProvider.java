@@ -43,6 +43,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.views.properties.tabbed.ISection;
 import org.eclipse.ui.views.properties.tabbed.ISectionDescriptor;
 import org.eclipse.ui.views.properties.tabbed.ITabDescriptor;
 import org.eclipse.ui.views.properties.tabbed.ITabDescriptorProvider;
@@ -108,8 +109,10 @@ public class PropertiesTabDescriptorProvider implements ITabDescriptorProvider {
 		
 		for (ICustomTaskProvider provider: Activator.getExtensions().getCustomTaskProviders()) {
 			if (provider.appliesTo(businessObject)) {
-				ITabDescriptor tabDescriptor = provider.getTabDescriptor();
-				if (tabDescriptor != null) {
+				ISection section = provider.getTabSection();
+				if (section != null) {
+
+					ITabDescriptor tabDescriptor = createTabDescriptor(provider.getId(), provider.getTaskName(), section);
 					tabs.add(tabDescriptor);
 				}
 			}
@@ -150,13 +153,13 @@ public class PropertiesTabDescriptorProvider implements ITabDescriptorProvider {
 	 * 
 	 * @param id
 	 * @param name
-	 * @param tabSection
+	 * @param section
 	 * @return
 	 */
-	public static ITabDescriptor createTabDescriptor(String id, String name, AbstractTabSection tabSection) {
+	public static ITabDescriptor createTabDescriptor(String id, String name, ISection section) {
 
 		TabDescriptor tabDescriptor = new TabDescriptor(id, name, name);
-		ISectionDescriptor sectionDescriptor = new SectionDescriptor(id + ".section", tabSection);
+		ISectionDescriptor sectionDescriptor = new SectionDescriptor(id + ".section", section);
 		tabDescriptor.setSectionDescriptors(Arrays.asList(new ISectionDescriptor[] { sectionDescriptor }));
 		
 		return tabDescriptor;

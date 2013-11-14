@@ -1,7 +1,7 @@
 package org.camunda.bpm.modeler.ui.features.choreography;
 
 import org.camunda.bpm.modeler.core.di.DIUtils;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.di.BPMNDiagram;
@@ -73,7 +73,7 @@ public class ShowDiagramPageFeature extends AbstractCustomFeature {
 
 	@Override
 	public String getImageId() {
-		return ImageProvider.IMG_16_EXPAND;
+		return Images.IMG_16_EXPAND;
 	}
 
 	@Override

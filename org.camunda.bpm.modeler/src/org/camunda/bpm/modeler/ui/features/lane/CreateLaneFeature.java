@@ -16,7 +16,7 @@ import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.features.AbstractBpmn2CreateFeature;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.emf.ecore.EClass;
@@ -51,7 +51,7 @@ public class CreateLaneFeature extends AbstractBpmn2CreateFeature<Lane> {
 
 	@Override
 	public String getCreateImageId() {
-		return ImageProvider.IMG_16_LANE;
+		return Images.IMG_16_LANE;
 	}
 
 	@Override

@@ -25,7 +25,7 @@ import org.camunda.bpm.modeler.core.utils.ContextUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.camunda.bpm.modeler.ui.features.LayoutBaseElementTextFeature;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.DataStore;
@@ -139,7 +139,7 @@ public class DataStoreReferenceFeatureContainer extends AbstractDataFeatureConta
 
 		@Override
 		public String getStencilImageId() {
-			return ImageProvider.IMG_16_DATA_STORE;
+			return Images.IMG_16_DATA_STORE;
 		}
 
 		/*

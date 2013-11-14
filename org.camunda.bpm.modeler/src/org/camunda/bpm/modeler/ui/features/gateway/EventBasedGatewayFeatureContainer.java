@@ -18,7 +18,7 @@ import org.camunda.bpm.modeler.core.features.gateway.AbstractCreateGatewayFeatur
 import org.camunda.bpm.modeler.core.features.gateway.AddGatewayFeature;
 import org.camunda.bpm.modeler.core.features.gateway.GatewayDecorateFeature;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.EventBasedGateway;
 import org.eclipse.emf.ecore.EClass;
@@ -76,7 +76,7 @@ public class EventBasedGatewayFeatureContainer extends AbstractGatewayFeatureCon
 
 		@Override
 		protected String getStencilImageId() {
-			return ImageProvider.IMG_16_EVENT_BASED_GATEWAY;
+			return Images.IMG_16_EVENT_BASED_GATEWAY;
 		}
 
 		/* (non-Javadoc)

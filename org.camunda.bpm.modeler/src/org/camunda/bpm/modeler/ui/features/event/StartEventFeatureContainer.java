@@ -17,7 +17,7 @@ import org.camunda.bpm.modeler.core.features.MultiUpdateFeature;
 import org.camunda.bpm.modeler.core.features.event.AbstractCreateEventFeature;
 import org.camunda.bpm.modeler.core.features.event.AbstractUpdateEventFeature;
 import org.camunda.bpm.modeler.core.features.event.AddEventFeature;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.SubProcess;
@@ -105,7 +105,7 @@ public class StartEventFeatureContainer extends AbstractEventFeatureContainer {
 
 		@Override
 		public String getStencilImageId() {
-			return ImageProvider.IMG_16_START_EVENT;
+			return Images.IMG_16_START_EVENT;
 		}
 
 		/* (non-Javadoc)

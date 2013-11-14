@@ -18,7 +18,7 @@ import org.camunda.bpm.modeler.core.features.event.AddEventFeature;
 import org.camunda.bpm.modeler.core.features.event.EventDecorateFeature;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.IntermediateThrowEvent;
@@ -72,7 +72,7 @@ public class IntermediateThrowEventFeatureContainer extends AbstractEventFeature
 
 		@Override
 		public String getStencilImageId() {
-			return ImageProvider.IMG_16_INTERMEDIATE_THROW_EVENT;
+			return Images.IMG_16_INTERMEDIATE_THROW_EVENT;
 		}
 
 		@Override

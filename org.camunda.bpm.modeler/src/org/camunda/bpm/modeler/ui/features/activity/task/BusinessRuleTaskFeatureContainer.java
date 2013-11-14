@@ -16,7 +16,7 @@ import org.camunda.bpm.modeler.core.features.activity.task.AbstractCreateTaskFea
 import org.camunda.bpm.modeler.core.features.activity.task.AddTaskFeature;
 import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.BusinessRuleTask;
 import org.eclipse.emf.ecore.EClass;
@@ -36,7 +36,7 @@ public class BusinessRuleTaskFeatureContainer extends AbstractTaskFeatureContain
 		return new AbstractTaskDecorateFeature(fp) {
 			@Override
 			protected String getIconId() {
-				return ImageProvider.IMG_16_BUSINESS_RULE_TASK;
+				return Images.IMG_16_BUSINESS_RULE_TASK;
 			}
 		};
 	}
@@ -64,7 +64,7 @@ public class BusinessRuleTaskFeatureContainer extends AbstractTaskFeatureContain
 
 		@Override
 		protected String getStencilImageId() {
-			return ImageProvider.IMG_16_BUSINESS_RULE_TASK;
+			return Images.IMG_16_BUSINESS_RULE_TASK;
 		}
 
 		/* (non-Javadoc)

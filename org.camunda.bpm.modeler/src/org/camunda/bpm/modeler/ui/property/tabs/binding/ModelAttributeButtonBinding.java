@@ -1,6 +1,7 @@
 package org.camunda.bpm.modeler.ui.property.tabs.binding;
 
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
+import org.camunda.bpm.modeler.ui.property.tabs.binding.change.EAttributeChangeSupport;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
@@ -15,8 +16,12 @@ import org.eclipse.swt.widgets.Button;
  */
 public abstract class ModelAttributeButtonBinding<V> extends ModelButtonBinding<V> {
 
+	protected EStructuralFeature feature;
+	
 	public ModelAttributeButtonBinding(EObject model, EStructuralFeature feature, Button control) {
-		super(model, feature, control);
+		super(model, control);
+		
+		this.feature = feature;
 	}
 
 	/**
@@ -37,5 +42,9 @@ public abstract class ModelAttributeButtonBinding<V> extends ModelButtonBinding<
 	public void setModelValue(V value)  {
 		TransactionalEditingDomain domain = getTransactionalEditingDomain();
 		ModelUtil.setValue(domain, model, feature, value);
+	}
+
+	protected void ensureChangeSupportAdded() {
+		EAttributeChangeSupport.ensureAdded(model, feature, control);
 	}
 }

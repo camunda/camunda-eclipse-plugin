@@ -7,7 +7,7 @@ import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.CreateCo
 import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.StartFormCreateConnectionOperation;
 import org.camunda.bpm.modeler.core.utils.AnchorUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.DataAssociation;
@@ -42,7 +42,7 @@ public class CreateDataAssociationFeature extends AbstractCreateFlowFeature<Data
 
 	@Override
 	protected String getStencilImageId() {
-		return ImageProvider.IMG_16_ASSOCIATION;
+		return Images.IMG_16_ASSOCIATION;
 	}
 
 	@Override

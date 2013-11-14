@@ -2,10 +2,10 @@ package org.camunda.bpm.modeler.ui.views.outline;
 
 import java.lang.reflect.Field;
 
-import org.camunda.bpm.modeler.core.Activator;
-import org.camunda.bpm.modeler.core.IConstants;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
+import org.camunda.bpm.modeler.ui.ImageConstants;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.gef.editparts.AbstractTreeEditPart;
@@ -59,9 +59,9 @@ public class AbstractGraphicsTreeEditPart extends AbstractTreeEditPart {
 		String field = "ICON_" + o.eClass().getName().toUpperCase();
 		Field f;
 		try {
-			f = IConstants.class.getField(field);
+			f = ImageConstants.class.getField(field);
 			if (f!=null)
-				return Activator.getDefault().getImage((String)f.get(null));
+				return Images.getById((String)f.get(null));
 		} catch (Exception e) {
 		}
 		return null;

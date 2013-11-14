@@ -26,7 +26,7 @@ import org.camunda.bpm.modeler.core.features.rules.ConnectionOperations.StartFor
 import org.camunda.bpm.modeler.core.utils.AnchorUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.runtime.engine.model.BoundaryEvent;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.Artifact;
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
@@ -232,7 +232,7 @@ public class AssociationFeatureContainer extends BaseElementConnectionFeatureCon
 
 		@Override
 		protected String getStencilImageId() {
-			return ImageProvider.IMG_16_ASSOCIATION;
+			return Images.IMG_16_ASSOCIATION;
 		}
 
 		@Override

@@ -16,7 +16,7 @@ import org.camunda.bpm.modeler.core.features.event.definitions.AbstractEventDefi
 import org.camunda.bpm.modeler.core.features.event.definitions.CreateEventDefinition;
 import org.camunda.bpm.modeler.core.features.event.definitions.DecorationAlgorithm;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
-import org.camunda.bpm.modeler.ui.ImageProvider;
+import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.ConditionalEventDefinition;
 import org.eclipse.bpmn2.Event;
@@ -68,7 +68,7 @@ public class ConditionalEventDefinitionContainer extends AbstractEventDefinition
 
 	private Shape draw(ContainerShape shape) {
 		Shape conditionShape = Graphiti.getPeService().createShape(shape, false);
-		GraphicsUtil.createEventImage(conditionShape, ImageProvider.IMG_20_CONDITION);
+		GraphicsUtil.createEventImage(conditionShape, Images.IMG_20_CONDITION);
 		return conditionShape;
 	}
 
@@ -94,7 +94,7 @@ public class ConditionalEventDefinitionContainer extends AbstractEventDefinition
 
 		@Override
 		protected String getStencilImageId() {
-			return ImageProvider.IMG_16_CONDITION;
+			return Images.IMG_16_CONDITION;
 		}
 
 		/* (non-Javadoc)
