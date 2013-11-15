@@ -2347,8 +2347,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
-			 "name", "calledElement",
-			 "namespace", "##targetNamespace"
+			 "name", "calledElement"
 		   });		
 		addAnnotation
 		  (getCallActivity_CalledElementBinding(), 
