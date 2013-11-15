@@ -24,7 +24,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.handlers.IHandlerActivation;
 import org.eclipse.ui.handlers.IHandlerService;
-import org.eclipse.ui.internal.handlers.LegacyHandlerService;
 
 /**
  * Dialog which handle undo and redo command for the current command stack size
@@ -48,7 +47,7 @@ public class ModelerDialog extends Dialog {
 
 	private TransactionalEditingDomain editingDomain;
 
-	private LegacyHandlerService handlerService;
+	private IHandlerService handlerService;
 	private List<IHandlerActivation> actionActivationList = new ArrayList<IHandlerActivation>();
 
 	private Stack<Command> undoStack;
@@ -62,7 +61,7 @@ public class ModelerDialog extends Dialog {
 		registerUndoListener();
 
 		// create handler to handle undo / redo commands in this dialog
-		handlerService = (LegacyHandlerService) PlatformUI.getWorkbench().getService(IHandlerService.class);
+		handlerService = (IHandlerService) PlatformUI.getWorkbench().getService(IHandlerService.class);
 		// create undo action to activate handler for this action
 		UndoAction undoAction = new UndoAction(editingDomain);
 		undoAction.setActionDefinitionId(ActionFactory.UNDO.getCommandId());
