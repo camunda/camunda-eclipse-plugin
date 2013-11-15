@@ -820,7 +820,7 @@ public class ConnectionOperations {
 		}
 		
 		for (Participant particpant : collaboration.getParticipants()) {
-			if (particpant.getProcessRef().equals(process)) {
+			if (process.equals(particpant.getProcessRef())) {
 				return particpant;
 			}
 		}
