@@ -39,7 +39,7 @@ public interface CallActivity extends org.eclipse.bpmn2.CallActivity {
 	 * @return the value of the '<em>Called Element</em>' attribute.
 	 * @see #setCalledElement(String)
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.ModelPackage#getCallActivity_CalledElement()
-	 * @model extendedMetaData="kind='attribute' name='calledElement' namespace='##targetNamespace'"
+	 * @model extendedMetaData="kind='attribute' name='calledElement'"
 	 * @generated
 	 */
   String getCalledElement();
