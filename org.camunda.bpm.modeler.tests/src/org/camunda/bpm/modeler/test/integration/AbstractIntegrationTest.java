@@ -3,8 +3,6 @@ package org.camunda.bpm.modeler.test.integration;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.Collections;
-import java.util.Map;
 
 import org.camunda.bpm.modeler.core.importer.ModelImport;
 import org.camunda.bpm.modeler.test.util.TestHelper;
@@ -14,7 +12,6 @@ import org.camunda.bpm.modeler.test.util.TransactionalExecutionException;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.ui.internal.services.GraphitiUiInternal;
@@ -120,7 +117,7 @@ public class AbstractIntegrationTest {
 
 		@SuppressWarnings("restriction")
 		public String save() throws Exception {
-			GraphitiUiInternal.getEmfService().save(model.getEditingDomain(), Collections.<Resource, Map<?, ?>> emptyMap());
+			GraphitiUiInternal.getEmfService().save(model.getEditingDomain());
 
 			String fileName = "target/" + fileUri;
 			
