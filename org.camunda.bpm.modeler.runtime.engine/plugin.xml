@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            uri="http://activiti.org/bpmn"
+            class="org.camunda.bpm.modeler.runtime.engine.model.ModelPackage"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <parser
+            type="model"
+            class="org.camunda.bpm.modeler.runtime.engine.model.util.ModelResourceFactoryImpl"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            uri="http://www.camunda.com/fox"
+            class="org.camunda.bpm.modeler.runtime.engine.model.fox.FoxPackage"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <parser
+            type="fox"
+            class="org.camunda.bpm.modeler.runtime.engine.model.fox.util.FoxResourceFactoryImpl"/>
+   </extension>
+
+</plugin>
