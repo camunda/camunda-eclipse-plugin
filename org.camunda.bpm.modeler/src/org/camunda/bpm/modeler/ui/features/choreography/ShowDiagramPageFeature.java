@@ -11,6 +11,7 @@ import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
+//NOT USED YET
 public class ShowDiagramPageFeature extends AbstractCustomFeature {
 
 	public ShowDiagramPageFeature(IFeatureProvider fp) {

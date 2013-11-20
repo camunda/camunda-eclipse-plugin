@@ -12,12 +12,10 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.activity.subprocess;
 
-import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.layout.util.ConversionUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.ui.Images;
-import org.camunda.bpm.modeler.ui.features.choreography.ShowDiagramPageFeature;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.graphiti.datatypes.IRectangle;
@@ -28,12 +26,12 @@ import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.context.impl.ResizeShapeContext;
 import org.eclipse.graphiti.features.context.impl.UpdateContext;
+import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
-// NOT USED YET
-public class ExpandFlowNodeFeature extends ShowDiagramPageFeature {
+public class ExpandFlowNodeFeature extends AbstractCustomFeature {
 
 	private final static String NAME = "Expand";
 	private final static String DESCRIPTION = "Expand the Activity and show contents";
@@ -67,16 +65,6 @@ public class ExpandFlowNodeFeature extends ShowDiagramPageFeature {
 
 	@Override
 	public boolean canExecute(ICustomContext context) {
-		
-		if (super.canExecute(context)) {
-			name = super.getName();
-			description = super.getDescription();
-			return true;
-		} else {
-			name = NAME;
-			description = DESCRIPTION;
-		}
-		
 		PictogramElement[] pictogramElements = context.getPictogramElements();
 		if (pictogramElements == null || pictogramElements.length != 1) {
 			return false;
@@ -97,11 +85,6 @@ public class ExpandFlowNodeFeature extends ShowDiagramPageFeature {
 
 	@Override
 	public void execute(ICustomContext context) {
-		
-		if (super.canExecute(context)) {
-			super.execute(context);
-			return;
-		}
 		
 		PictogramElement pictogramElement = context.getPictogramElements()[0];
 		FlowNode flowNode = BusinessObjectUtil.getFirstElementOfType(pictogramElement, FlowNode.class);

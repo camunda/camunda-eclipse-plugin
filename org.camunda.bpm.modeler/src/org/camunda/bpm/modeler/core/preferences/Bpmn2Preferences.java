@@ -257,7 +257,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		globalPreferences.setDefault(PREF_SHOW_ADVANCED_PROPERTIES, false);
 		globalPreferences.setDefault(PREF_SHOW_DESCRIPTIONS, true);
 		globalPreferences.setDefault(PREF_IS_HORIZONTAL, BPMNDIAttributeDefault.DEFAULT_TRUE.name());
-		globalPreferences.setDefault(PREF_IS_EXPANDED, BPMNDIAttributeDefault.ALWAYS_TRUE.name());
+		globalPreferences.setDefault(PREF_IS_EXPANDED, BPMNDIAttributeDefault.USE_DI_VALUE.name());
 		globalPreferences.setDefault(PREF_IS_MESSAGE_VISIBLE, BPMNDIAttributeDefault.ALWAYS_TRUE.name());
 		globalPreferences.setDefault(PREF_IS_MARKER_VISIBLE, BPMNDIAttributeDefault.DEFAULT_TRUE.name());
 
@@ -651,7 +651,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 
 	public boolean isExpandedDefault() {
 		load();
-		return isExpanded==BPMNDIAttributeDefault.ALWAYS_TRUE ||
+		return isExpanded==BPMNDIAttributeDefault.USE_DI_VALUE ||
 				isExpanded==BPMNDIAttributeDefault.DEFAULT_TRUE;
 	}
 
@@ -928,7 +928,9 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 					break;
 				case ALWAYS_FALSE:
 				case USE_DI_VALUE:
-					value = false;
+					// get value from the bpmn shape
+					// delete hard coded 'value = false'
+					value = bpmnShape.isIsExpanded();
 				}
 				bpmnShape.setIsExpanded(value);
 			}

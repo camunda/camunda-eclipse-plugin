@@ -17,10 +17,12 @@ import static org.camunda.bpm.modeler.ui.features.activity.subprocess.SubProcess
 
 import org.camunda.bpm.modeler.core.features.activity.AbstractAddActivityFeature;
 import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
+import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences.BPMNDIAttributeDefault;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNShape;
@@ -104,6 +106,24 @@ public class AddExpandableActivityFeature<T extends Activity>
 		}
 	}
 	
+	@Override
+	protected BPMNShape createDi(Shape shape, BaseElement baseElement, IAddContext context) {
+		Bpmn2Preferences preferences = Bpmn2Preferences.getInstance();
+		// check whether it is an import or a creation of an BPMN element
+		boolean isImport = isImport(context);
+		if (!isImport) {
+			// manipulate BPMN2 global preferences for a subprocess creation
+			// because we want always create an expanded subprocess
+			// Note: preferences.setIsExpanded throws an exception during the test case execution
+			// because the project preferences are null
+			preferences.getGlobalPreferences().setValue(Bpmn2Preferences.PREF_IS_EXPANDED, BPMNDIAttributeDefault.DEFAULT_TRUE.name());
+		}
+		BPMNShape bpmnShape = createDIShape(shape, baseElement, findDIShape(baseElement), isImport);
+		// change back to the default BPMN2 preferences
+		preferences.getGlobalPreferences().setValue(Bpmn2Preferences.PREF_IS_EXPANDED, BPMNDIAttributeDefault.USE_DI_VALUE.name());
+		return bpmnShape;
+	}
+
 	@Override
 	public int getDefaultWidth() {
 		if (Bpmn2Preferences.getInstance().isExpandedDefault())
