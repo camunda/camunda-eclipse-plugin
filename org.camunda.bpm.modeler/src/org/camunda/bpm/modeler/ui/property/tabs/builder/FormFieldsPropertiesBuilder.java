@@ -10,6 +10,7 @@ import org.camunda.bpm.modeler.runtime.engine.model.FormFieldType;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelFactory;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.ui.change.filter.AnyNestedChangeFilter;
+import org.camunda.bpm.modeler.ui.change.filter.ExtensionChangeFilter;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.AbstractDeleteRowHandler;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.ContentProvider;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.DeleteRowHandler;
@@ -42,6 +43,7 @@ public class FormFieldsPropertiesBuilder extends AbstractPropertiesBuilder<BaseE
 
 	public FormFieldsPropertiesBuilder(Composite parent, GFPropertySection section, BaseElement bo) {
 		super(parent, section, bo);
+
 	}
 	
 	private static final EStructuralFeature FORM_DATA_FEATURE = ModelPackage.eINSTANCE.getDocumentRoot_FormData();
@@ -56,7 +58,6 @@ public class FormFieldsPropertiesBuilder extends AbstractPropertiesBuilder<BaseE
 	
 	@Override
 	public void create() {
-		//PropertyUtil.createNoteWithLink(section, parent, HelpText.SUPPORTED_VERSION_NOTE);
 		EClass formFieldCls = ModelPackage.eINSTANCE.getFormFieldType();
 		createMappingTable(section, parent, FormFieldType.class, "Form Fields", formFieldCls, FORM_DATA_FEATURE, FORM_FIELDS_FEATURES, TABLE_HEADERS);
 	}
@@ -137,12 +138,11 @@ public class FormFieldsPropertiesBuilder extends AbstractPropertiesBuilder<BaseE
 			.deleteRowHandler(deleteHandler)
 			.attachTableEditNote(false)
 			.model(bo)
-			.changeFilter(new AnyNestedChangeFilter(bo, feature));
+			.changeFilter(new ExtensionChangeFilter(bo, feature).or(new AnyNestedChangeFilter(bo, feature)));
 		
 		viewer = builder.build();
-			
-		// table composite ////////////
-		final Composite tableComposite = viewer.getTable().getParent();
+
+		Composite tableComposite = viewer.getTable().getParent();
 		PropertyUtil.attachNote(tableComposite, HelpText.TABLE_HELP + " " + HelpText.SUPPORTED_VERSION_NOTE);
 
 		// create label
@@ -167,6 +167,9 @@ public class FormFieldsPropertiesBuilder extends AbstractPropertiesBuilder<BaseE
 					// update model
 					if (formData.getFormField().isEmpty()) {
 						ExtensionUtil.removeExtensionByFeature(bo, FORM_DATA_FEATURE);
+						// remove empty extension element
+						EStructuralFeature extensionValuesFeature = bo.eClass().getEStructuralFeature("extensionValues");
+						bo.eUnset(extensionValuesFeature);
 					} else {
 						ExtensionUtil.updateExtension(bo, FORM_DATA_FEATURE, formData);
 					}

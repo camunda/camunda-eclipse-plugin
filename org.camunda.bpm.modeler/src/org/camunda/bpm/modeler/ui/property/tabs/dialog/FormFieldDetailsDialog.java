@@ -19,7 +19,6 @@ import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilde
 import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.DeleteRowHandler;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EditableEObjectTableBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.tables.EditableTableDescriptor.ElementFactory;
-import org.camunda.bpm.modeler.ui.property.tabs.util.Events;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
@@ -33,13 +32,13 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -77,6 +76,9 @@ public class FormFieldDetailsDialog extends ModelerDialog {
 	private GFPropertySection section;
 	private Button okButton;
 
+	private Text idText;
+	private CCombo dropDown;
+
 	private Composite valueMappingTableComposite = null;
 	private Composite placeHolderComposite = null;
 
@@ -100,7 +102,7 @@ public class FormFieldDetailsDialog extends ModelerDialog {
 	// create dialog area with controls
 	@Override
 	protected Control createDialogArea(final Composite parent) {
-		Text idText = PropertyUtil.createUnboundText(section, parent, "Id");
+		idText = PropertyUtil.createUnboundText(section, parent, "Id");
 		IdValidatingStringTextBinding idTextbinding = new IdValidatingStringTextBinding(formFieldType, FORM_FIELD_ID, idText);
 		idTextbinding.addErrorCode(100);
 		idTextbinding.addErrorCode(101);
@@ -112,7 +114,7 @@ public class FormFieldDetailsDialog extends ModelerDialog {
 		PropertyUtil.createText(section, parent, "Default Value", ModelPackage.eINSTANCE.getFormFieldType_DefaultValue(), formFieldType);
 
 		// create editable drop down
-		final CCombo dropDown = PropertyUtil.createDropDown(section, parent, "Type", SWT.BORDER);
+		dropDown = PropertyUtil.createDropDown(section, parent, "Type", SWT.BORDER);
 		for (int i=0; i<SUPPORTED_TYPES.length; i++) {
 			dropDown.add(SUPPORTED_TYPES[i]);
 		}
@@ -124,17 +126,17 @@ public class FormFieldDetailsDialog extends ModelerDialog {
 		comboBinding.setMandatory(mandatory);
 		comboBinding.establish();
 
-		dropDown.addListener(Events.MODEL_CHANGED, new Listener() {
+		dropDown.addModifyListener(new ModifyListener() {
 			@Override
-			public void handleEvent(Event event) {
+			public void modifyText(ModifyEvent e) {
 				rebuildValueMappingTable(parent);
 				okButton.setEnabled(checkOkButtonActivation());
 			}
 		});
 
-		idText.addListener(Events.MODEL_CHANGED, new Listener() {
+		idText.addModifyListener(new ModifyListener() {
 			@Override
-			public void handleEvent(Event event) {
+			public void modifyText(ModifyEvent e) {
 				okButton.setEnabled(checkOkButtonActivation());
 			}
 		});
@@ -177,7 +179,9 @@ public class FormFieldDetailsDialog extends ModelerDialog {
 	 * @return
 	 */
 	private boolean checkOkButtonActivation() {
-		if (formFieldType.eGet(FORM_FIELD_ID) != null && formFieldType.eGet(FORM_FIELD_TYPE) != null) {
+		if (formFieldType.eGet(FORM_FIELD_ID) != null && formFieldType.eGet(FORM_FIELD_TYPE) != null
+		    && idText.getText() != null && !idText.getText().isEmpty()
+		    && dropDown.getText() != null && !dropDown.getText().isEmpty()) {
 			return true;
 		} else {
 			return false;
