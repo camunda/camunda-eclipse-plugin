@@ -460,6 +460,31 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 
 	@Test
 	@DiagramResource("org/camunda/bpm/modeler/test/ui/change/FormFieldChangeSupportTest.bpmn")
+	public void testFormDataElementRemove() {
+		final UserTask userTask = findBusinessObjectById(diagram, "UserTask_1", UserTask.class);
+
+		List<FormDataType> formDataTypeList = ExtensionUtil.getExtensions(userTask, FormDataType.class);
+		assertThat(formDataTypeList).isNotNull();
+
+		ExtensionChangeFilter filter = new ExtensionChangeFilter(userTask, FORM_DATA_FEATURE);
+		CustomResourceSetListener listener = new CustomResourceSetListener(userTask, filter);
+		listener.register();
+
+		transactionalExecute(new RecordingCommand(editingDomain) {
+
+			@Override
+			protected void doExecute() {
+				ExtensionUtil.removeExtensionByFeature(userTask, FORM_DATA_FEATURE);
+			}
+		});
+
+		assertThat(listener.getCapturedEvents()).hasSize(1);
+	}
+
+	// feature change filter
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/ui/change/FormFieldChangeSupportTest.bpmn")
 	public void testFormFieldValueElementAdd() {
 		final UserTask userTask = findBusinessObjectById(diagram, "UserTask_1", UserTask.class);
 

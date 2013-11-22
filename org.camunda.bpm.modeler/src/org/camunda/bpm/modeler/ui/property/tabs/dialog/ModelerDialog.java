@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Stack;
 
 import org.camunda.bpm.modeler.emf.util.CommandUtil;
-import org.eclipse.core.commands.operations.IOperationHistory;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.CommandStack;
 import org.eclipse.emf.common.command.CommandStackListener;
@@ -92,8 +91,6 @@ public class ModelerDialog extends Dialog {
 
 				Command lastCommand = transactionalCommandStack.getMostRecentCommand();
 				Command undoCommand = transactionalCommandStack.getUndoCommand();
-
-				transactionalCommandStack.getOperationHistory().canUndo(IOperationHistory.GLOBAL_UNDO_CONTEXT);
 
 				boolean isUndo = !lastCommand.equals(undoCommand);
 				if (!isUndo) {
