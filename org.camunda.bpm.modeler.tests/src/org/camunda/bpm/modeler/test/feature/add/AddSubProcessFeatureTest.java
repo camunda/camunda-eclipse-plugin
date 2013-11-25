@@ -4,8 +4,10 @@ import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.point;
 import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rectangle;
 import static org.camunda.bpm.modeler.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.camunda.bpm.modeler.test.util.assertions.Bpmn2ModelAssertions.elementOfType;
+import static org.camunda.bpm.modeler.test.util.operations.AddCallActivityOperation.addCallActivity;
 import static org.camunda.bpm.modeler.test.util.operations.AddSubProcessOperation.addSubProcess;
 import static org.camunda.bpm.modeler.test.util.operations.AddTaskOperation.addTask;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,7 @@ import org.camunda.bpm.modeler.test.feature.AbstractFeatureTest;
 import org.camunda.bpm.modeler.test.util.DiagramResource;
 import org.camunda.bpm.modeler.test.util.Util;
 import org.eclipse.bpmn2.Task;
+import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -402,5 +405,26 @@ public class AddSubProcessFeatureTest extends AbstractFeatureTest {
 			.height()
 				.isLessThan(150);			
 		
+	}
+	
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/feature/add/AddFeatureTestBase.testAddToDiagram.bpmn")
+	public void testShapeExpanded() throws Exception {
+
+		// given
+		Point addPosition = point(10, 10);
+
+		// when
+		addSubProcess(getDiagramTypeProvider())
+			.atLocation(addPosition)
+			.toContainer(getDiagram())
+			.execute();
+
+		// then
+		BPMNShape subProcessDiShape = (BPMNShape) Util.findBpmnShapeByBusinessObjectId(diagram, "SubProcess_1");
+
+		assertThat(subProcessDiShape.isIsExpanded()).isTrue();
+
 	}
 }
