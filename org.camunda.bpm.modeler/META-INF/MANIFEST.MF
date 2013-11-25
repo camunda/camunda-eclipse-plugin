@@ -313,6 +313,7 @@ Export-Package: org.camunda.bpm.modeler.core;
    org.eclipse.core.resources,
    org.eclipse.emf.validation.service,
    org.eclipse.emf.common.notify",
+ org.camunda.bpm.modeler.emf.util,
  org.camunda.bpm.modeler.plugin;
   uses:="org.eclipse.ui.views.properties.tabbed,
    org.camunda.bpm.modeler.core.features.api.container,

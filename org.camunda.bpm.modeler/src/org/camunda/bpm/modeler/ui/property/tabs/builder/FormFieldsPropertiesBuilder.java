@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.camunda.bpm.modeler.core.utils.ExtensionUtil;
-import org.camunda.bpm.modeler.emf.util.CommandUtil;
 import org.camunda.bpm.modeler.runtime.engine.model.FormDataType;
 import org.camunda.bpm.modeler.runtime.engine.model.FormFieldType;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelFactory;
@@ -17,11 +16,11 @@ import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilde
 import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.EditRowHandler;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EditableEObjectTableBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.dialog.FormFieldDetailsDialog;
+import org.camunda.bpm.modeler.ui.property.tabs.tables.CreateViaDialogElementFactory;
 import org.camunda.bpm.modeler.ui.property.tabs.tables.EditableTableDescriptor.ElementFactory;
 import org.camunda.bpm.modeler.ui.property.tabs.util.HelpText;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -30,8 +29,8 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * Builder for form fields
@@ -43,7 +42,6 @@ public class FormFieldsPropertiesBuilder extends AbstractPropertiesBuilder<BaseE
 
 	public FormFieldsPropertiesBuilder(Composite parent, GFPropertySection section, BaseElement bo) {
 		super(parent, section, bo);
-
 	}
 	
 	private static final EStructuralFeature FORM_DATA_FEATURE = ModelPackage.eINSTANCE.getDocumentRoot_FormData();
@@ -59,75 +57,66 @@ public class FormFieldsPropertiesBuilder extends AbstractPropertiesBuilder<BaseE
 	@Override
 	public void create() {
 		EClass formFieldCls = ModelPackage.eINSTANCE.getFormFieldType();
-		createMappingTable(section, parent, FormFieldType.class, "Form Fields", formFieldCls, FORM_DATA_FEATURE, FORM_FIELDS_FEATURES, TABLE_HEADERS);
+		createMappingTable(section, parent, "Form Fields", formFieldCls, FORM_DATA_FEATURE, FORM_FIELDS_FEATURES, TABLE_HEADERS);
 	}
 
-	protected <T extends EObject> void createMappingTable(
-			final GFPropertySection section, final Composite parent, 
-			final Class<T> typeCls, String label, final EClass typeECls, 
+	protected void createMappingTable(
+			final GFPropertySection section, final Composite parent, String label, final EClass typeECls, 
 			final EStructuralFeature feature, EStructuralFeature[] columnFeatures, String[] columnLabels) {
 
 		// composite for mappings table
 		final Composite composite = PropertyUtil.createStandardComposite(section, parent);
 		
-		final ElementFactory<T> elementFactory = new ElementFactory<T>() {
-			
+		final ElementFactory<FormFieldType> elementFactory = new CreateViaDialogElementFactory<FormFieldType>(TransactionUtil.getEditingDomain(bo)) {
+
 			@Override
-			public T create() {
-				FormFieldType newFormField = transactionalCreateType();
+			protected FormFieldType createType() {
+				return createFormFieldType();
+			}
 
-				TransactionalEditingDomain editingDomain = TransactionUtil.getEditingDomain(bo);
-
-				Command createCommand = editingDomain.getCommandStack().getMostRecentCommand();
-
-				int returnCode = openDetailsDialog(composite, newFormField);
-				if (returnCode == Window.CANCEL) {
-					// execute undo command when creation of new form field was cancelled
-					CommandUtil.undo(editingDomain, createCommand);
-					return null;
-				}
-
-				return (T) newFormField;
+			@Override
+			protected int editInDialog(FormFieldType element) {
+				return openEditDialog(element);
 			}
 		};
 		
-		ContentProvider<T> contentProvider = new ContentProvider<T>() {
+		ContentProvider<FormFieldType> contentProvider = new ContentProvider<FormFieldType>() {
 
 			@Override
-			public List<T> getContents() {
-				List<T> contents = new ArrayList<T>();
+			public List<FormFieldType> getContents() {
+				List<FormFieldType> contents = new ArrayList<FormFieldType>();
 
 				List<FormDataType> formDataList = ExtensionUtil.getExtensions(bo, FormDataType.class);
 				// formData exists only once in the extension value
 				if(formDataList != null && !formDataList.isEmpty()) {
 					FormDataType formData = formDataList.get(0);
-					contents.addAll((List<T>) formData.getFormField());
+					contents.addAll((List<FormFieldType>) formData.getFormField());
 				}
 				return contents;
 			}
 		};
 		
-		DeleteRowHandler<T> deleteHandler = new AbstractDeleteRowHandler<T>() {
+		DeleteRowHandler<FormFieldType> deleteHandler = new AbstractDeleteRowHandler<FormFieldType>() {
 			@Override
-			public void rowDeleted(T element) {
+			public void rowDeleted(FormFieldType element) {
 				transactionalRemoveMapping(element);
 			}
 		};
 		
-		EditRowHandler<T> editRowHandler = new EditRowHandler<T>() {
+		EditRowHandler<FormFieldType> editRowHandler = new EditRowHandler<FormFieldType>() {
 
 			@Override
-			public void rowEdit(T element) {
-				openDetailsDialog(composite, (FormFieldType) element);
+			public void rowEdit(FormFieldType element) {
+				openEditDialog((FormFieldType) element);
 			}
 
 			@Override
-			public boolean canEdit(T element) {
+			public boolean canEdit(FormFieldType element) {
 				return true;
 			}
 		};
 		
-		EditableEObjectTableBuilder<T> builder = new EditableEObjectTableBuilder<T>(section, composite, typeCls);
+		EditableEObjectTableBuilder<FormFieldType> builder = new EditableEObjectTableBuilder<FormFieldType>(section, composite, FormFieldType.class);
 		
 		builder
 			.doubleClickEditRowHandler(editRowHandler)
@@ -178,13 +167,13 @@ public class FormFieldsPropertiesBuilder extends AbstractPropertiesBuilder<BaseE
 		});
 	}
 	
-	private FormFieldType transactionalCreateType() {
-
+	private FormFieldType createFormFieldType() {
+		
 		final FormFieldType newFormField = ModelFactory.eINSTANCE.createFormFieldType();
-
+		
 		TransactionalEditingDomain editingDomain = TransactionUtil.getEditingDomain(bo);
 		editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
-
+		 
 			@Override
 			protected void doExecute() {
 
@@ -206,9 +195,9 @@ public class FormFieldsPropertiesBuilder extends AbstractPropertiesBuilder<BaseE
 		return newFormField;
 	}
 
-	private int openDetailsDialog(Composite composite, FormFieldType formField) {
+	private int openEditDialog(FormFieldType formField) {
 		// create dialog with ok and cancel button and warning icon
-		FormFieldDetailsDialog formFieldsDialog = new FormFieldDetailsDialog(section, composite.getShell(), formField);
+		FormFieldDetailsDialog formFieldsDialog = new FormFieldDetailsDialog(section, Display.getDefault().getActiveShell(), formField);
 		// open dialog and await user selection
 		return formFieldsDialog.open();
 	}

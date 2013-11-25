@@ -141,6 +141,14 @@ public class ModelerDialog extends Dialog {
 		commandStack.addCommandStackListener(commandStackListener);
 	}
 
+	@Override
+	protected void okPressed() {
+		removeUndoListener();
+		
+		CommandUtil.squash(editingDomain, undoStack);
+		super.okPressed();
+	}
+	
 	protected void removeUndoListener() {
 		CommandStack commandStack = editingDomain.getCommandStack();
 		commandStack.removeCommandStackListener(commandStackListener);

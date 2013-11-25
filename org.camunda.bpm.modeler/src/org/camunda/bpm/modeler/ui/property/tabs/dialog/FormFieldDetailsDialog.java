@@ -142,8 +142,8 @@ public class FormFieldDetailsDialog extends ModelerDialog {
 		});
 
 		// create place holder composite for value mapping table which is empty
-        placeHolderComposite = PropertyUtil.createGridLayoutedComposite(section, parent);
-        // create mapping table for form field value
+		placeHolderComposite = PropertyUtil.createGridLayoutedComposite(section, parent);
+		// create mapping table for form field value
 		rebuildValueMappingTable(parent);
 
 		// create mapping table for form field validation
