@@ -18,11 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
-import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.LabelUtil;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
-import org.camunda.bpm.modeler.core.utils.ScrollUtil;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.DocumentRoot;
@@ -292,8 +290,6 @@ public class DIUtils {
 		
 		bpmnShape.setBounds(diBounds);
 		bpmnShape.setBpmnElement(elem);
-		
-		Bpmn2Preferences.getInstance(bpmnDiagram.eResource()).applyBPMNDIDefaults(bpmnShape, null);
 
 		ModelUtil.setID(bpmnShape);
 		

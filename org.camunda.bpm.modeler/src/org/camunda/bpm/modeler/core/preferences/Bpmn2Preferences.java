@@ -257,7 +257,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 		globalPreferences.setDefault(PREF_SHOW_ADVANCED_PROPERTIES, false);
 		globalPreferences.setDefault(PREF_SHOW_DESCRIPTIONS, true);
 		globalPreferences.setDefault(PREF_IS_HORIZONTAL, BPMNDIAttributeDefault.DEFAULT_TRUE.name());
-		globalPreferences.setDefault(PREF_IS_EXPANDED, BPMNDIAttributeDefault.USE_DI_VALUE.name());
+		globalPreferences.setDefault(PREF_IS_EXPANDED, BPMNDIAttributeDefault.ALWAYS_TRUE.name());
 		globalPreferences.setDefault(PREF_IS_MESSAGE_VISIBLE, BPMNDIAttributeDefault.ALWAYS_TRUE.name());
 		globalPreferences.setDefault(PREF_IS_MARKER_VISIBLE, BPMNDIAttributeDefault.DEFAULT_TRUE.name());
 
@@ -387,7 +387,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 			showIdAttribute = getBoolean(PREF_SHOW_ID_ATTRIBUTE, false);
 			checkProjectNature = getBoolean(PREF_CHECK_PROJECT_NATURE, true);
 			isHorizontal = getBPMNDIAttributeDefault(PREF_IS_HORIZONTAL, BPMNDIAttributeDefault.USE_DI_VALUE);
-			isExpanded = getBPMNDIAttributeDefault(PREF_IS_EXPANDED, BPMNDIAttributeDefault.USE_DI_VALUE);
+			isExpanded = getBPMNDIAttributeDefault(PREF_IS_EXPANDED, BPMNDIAttributeDefault.DEFAULT_TRUE);
 			isMessageVisible = getBPMNDIAttributeDefault(PREF_IS_MESSAGE_VISIBLE, BPMNDIAttributeDefault.USE_DI_VALUE);
 			isMarkerVisible = getBPMNDIAttributeDefault(PREF_IS_MARKER_VISIBLE, BPMNDIAttributeDefault.DEFAULT_TRUE);
 			connectionTimeout = this.getString(PREF_CONNECTION_TIMEOUT, "60000");
@@ -651,8 +651,8 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 
 	public boolean isExpandedDefault() {
 		load();
-		return isExpanded==BPMNDIAttributeDefault.USE_DI_VALUE ||
-				isExpanded==BPMNDIAttributeDefault.DEFAULT_TRUE;
+		return isExpanded == BPMNDIAttributeDefault.DEFAULT_TRUE ||
+				isExpanded == BPMNDIAttributeDefault.ALWAYS_TRUE;
 	}
 
 	public BPMNDIAttributeDefault getIsExpanded() {

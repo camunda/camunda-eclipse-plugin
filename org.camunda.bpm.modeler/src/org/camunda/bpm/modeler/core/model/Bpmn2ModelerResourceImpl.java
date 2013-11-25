@@ -205,7 +205,6 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 						String value = attribs.getValue(i);
 						map.put(key, value);
 					}
-					Bpmn2Preferences.getInstance(this.resourceURI).applyBPMNDIDefaults(bpmnShape, map);
 				}
 			}
 			else if (obj instanceof ItemDefinition) {

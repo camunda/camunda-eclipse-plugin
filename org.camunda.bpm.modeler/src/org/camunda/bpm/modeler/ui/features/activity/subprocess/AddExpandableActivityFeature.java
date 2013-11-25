@@ -105,24 +105,6 @@ public class AddExpandableActivityFeature<T extends Activity>
 			Graphiti.getPeService().setPropertyValue(pe, ACTIVITY_DECORATOR, "true");
 		}
 	}
-	
-	@Override
-	protected BPMNShape createDi(Shape shape, BaseElement baseElement, IAddContext context) {
-		Bpmn2Preferences preferences = Bpmn2Preferences.getInstance();
-		// check whether it is an import or a creation of an BPMN element
-		boolean isImport = isImport(context);
-		if (!isImport) {
-			// manipulate BPMN2 global preferences for a subprocess creation
-			// because we want always create an expanded subprocess
-			// Note: preferences.setIsExpanded throws an exception during the test case execution
-			// because the project preferences are null
-			preferences.getGlobalPreferences().setValue(Bpmn2Preferences.PREF_IS_EXPANDED, BPMNDIAttributeDefault.DEFAULT_TRUE.name());
-		}
-		BPMNShape bpmnShape = createDIShape(shape, baseElement, findDIShape(baseElement), isImport);
-		// change back to the default BPMN2 preferences
-		preferences.getGlobalPreferences().setValue(Bpmn2Preferences.PREF_IS_EXPANDED, BPMNDIAttributeDefault.USE_DI_VALUE.name());
-		return bpmnShape;
-	}
 
 	@Override
 	public int getDefaultWidth() {
