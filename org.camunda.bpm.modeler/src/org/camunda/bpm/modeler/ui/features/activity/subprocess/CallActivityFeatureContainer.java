@@ -117,11 +117,6 @@ public class CallActivityFeatureContainer extends AbstractExpandableActivityFeat
 		multiUpdate.addUpdateFeature(new UpdateCallActivityFeature(fp));
 		return multiUpdate;
 	}
-	
-	@Override
-	public IResizeShapeFeature getResizeFeature(IFeatureProvider fp) {
-		return new ResizeActivityFeature(fp);
-	}
 
 	public static class LayoutCallActivityFeature extends LayoutExpandableActivityFeature {
 		private LayoutCallActivityFeature(IFeatureProvider fp) {
