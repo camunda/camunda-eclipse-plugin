@@ -26,4 +26,5 @@ test.bpmn.diagram
 /lib/specs_2.8.1-1.6.6.jar
 /org.camunda.bpm.modeler.tests/*.diagram
 /org.camunda.bpm.modeler.tests/*.png
+/org.camunda.bpm.modeler.tests/lib/*.jar
 /org.camunda.bpm.modeler.tests/src/org/camunda/bpm/modeler/test/nonexport/

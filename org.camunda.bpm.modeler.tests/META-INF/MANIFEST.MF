@@ -16,6 +16,5 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
- lib/fest-assert-core-2.0M8.jar,
- lib/fest-util-1.2.3.jar,
- lib/camunda-engine-7.0.0-Final.jar
+ lib/fest-util.jar,
+ lib/fest-assert-core.jar
