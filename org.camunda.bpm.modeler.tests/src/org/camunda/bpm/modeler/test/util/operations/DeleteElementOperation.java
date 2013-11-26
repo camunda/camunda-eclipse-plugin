@@ -7,11 +7,11 @@ import org.eclipse.graphiti.features.context.IDeleteContext;
 import org.eclipse.graphiti.features.context.impl.DeleteContext;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
-public class DeleteParticipantOperation extends Operation<IDeleteContext, IDeleteFeature> {
+public class DeleteElementOperation extends Operation<IDeleteContext, IDeleteFeature> {
 
 	private PictogramElement pictogramElement;
 
-	public DeleteParticipantOperation(PictogramElement pictogramElement, IDiagramTypeProvider diagramTypeProvider) {
+	public DeleteElementOperation(PictogramElement pictogramElement, IDiagramTypeProvider diagramTypeProvider) {
 		super(diagramTypeProvider);
 		
 		this.pictogramElement = pictogramElement;
@@ -30,7 +30,7 @@ public class DeleteParticipantOperation extends Operation<IDeleteContext, IDelet
 		return featureProvider.getDeleteFeature(context);
 	}
 	
-	public static DeleteParticipantOperation deleteParticipant (PictogramElement pictogramElement, IDiagramTypeProvider diagramTypeProvider) {
-		return new DeleteParticipantOperation(pictogramElement, diagramTypeProvider);
+	public static DeleteElementOperation deleteElement(PictogramElement pictogramElement, IDiagramTypeProvider diagramTypeProvider) {
+		return new DeleteElementOperation(pictogramElement, diagramTypeProvider);
 	}
 }

@@ -1,6 +1,6 @@
 package org.camunda.bpm.modeler.test.feature.delete;
 
-import static org.camunda.bpm.modeler.test.util.operations.DeleteParticipantOperation.deleteParticipant;
+import static org.camunda.bpm.modeler.test.util.operations.DeleteElementOperation.deleteElement;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class DeleteParticipantFeatureTest extends AbstractFeatureTest {
 	@DiagramResource
 	public void testDeleteSingleParticipant() {
 		Shape participantShape = Util.findShapeByBusinessObjectId(getDiagram(), "_Participant_2");
-		deleteParticipant(participantShape, diagramTypeProvider).execute();
+		deleteElement(participantShape, diagramTypeProvider).execute();
 		assertThat(ModelUtil.getAllRootElements(getDefinitions(), Collaboration.class)).hasSize(0);
 		
 		List<Process> processes = ModelUtil.getAllRootElements(getDefinitions(), org.eclipse.bpmn2.Process.class);
@@ -50,7 +50,7 @@ public class DeleteParticipantFeatureTest extends AbstractFeatureTest {
 		List<Process> beforeProcesses = ModelUtil.getAllRootElements(getDefinitions(), org.eclipse.bpmn2.Process.class);
 		assertThat(beforeProcesses).hasSize(2);
 		
-		deleteParticipant(participantShape, diagramTypeProvider).execute();
+		deleteElement(participantShape, diagramTypeProvider).execute();
 		
 		assertThat(ModelUtil.getAllRootElements(getDefinitions(), Collaboration.class)).hasSize(1);
 		
