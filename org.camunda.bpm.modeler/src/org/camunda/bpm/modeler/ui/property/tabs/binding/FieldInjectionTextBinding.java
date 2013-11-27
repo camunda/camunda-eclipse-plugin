@@ -26,8 +26,8 @@ public class FieldInjectionTextBinding extends ModelTextBinding<String> {
 	 * @author nico.rehwaldt
 	 */
 	public static enum Binding {
-		INLINE_STRING(ModelPackage.eINSTANCE.getFieldType_String()),
-		STRING(ModelPackage.eINSTANCE.getFieldType_StringValue()),
+		INLINE_STRING(ModelPackage.eINSTANCE.getFieldType_StringValue()),
+		STRING(ModelPackage.eINSTANCE.getFieldType_String()),
 		EXPRESSION(ModelPackage.eINSTANCE.getFieldType_Expression()),
 		INLINE_EXPRESSION(ModelPackage.eINSTANCE.getFieldType_Expression1());
 		
