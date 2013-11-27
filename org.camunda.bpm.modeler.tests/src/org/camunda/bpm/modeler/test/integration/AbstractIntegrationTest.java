@@ -13,6 +13,7 @@ import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
+import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.ui.internal.services.GraphitiUiInternal;
 import org.junit.Rule;
@@ -176,6 +177,10 @@ public class AbstractIntegrationTest {
 		
 		protected Diagram getDiagram() {
 			return editorAndModel.getDiagram();
+		}
+
+		protected IFeatureProvider getFeatureProvider() {
+			return getDiagramTypeProvider().getFeatureProvider();
 		}
 	}
 }
