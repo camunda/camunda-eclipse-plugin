@@ -12,16 +12,10 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.activity.subprocess;
 
-import org.camunda.bpm.modeler.core.ModelHandler;
 import org.camunda.bpm.modeler.core.features.activity.LayoutActivityFeature;
-import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
-import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
-import org.eclipse.bpmn2.Activity;
-import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
-import org.eclipse.graphiti.features.context.ILayoutContext;
 import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
@@ -39,24 +33,10 @@ public class LayoutExpandableActivityFeature extends LayoutActivityFeature {
 		Text text = (Text) labelShape.getGraphicsAlgorithm();
 
 		int padding = 5;
-		
+
 		int width = bounds.getWidth() - padding;
 		int height = Math.min(GraphicsUtil.getLabelHeight(text), bounds.getHeight() - padding);
-		
+
 		Graphiti.getGaService().setLocationAndSize(text, padding, padding, width, height);
-	}
-	
-	@Override
-	public boolean layout(ILayoutContext context) {
-		
-		ContainerShape containerShape = (ContainerShape) context.getPictogramElement();
-		Activity activity = BusinessObjectUtil.getFirstElementOfType(containerShape, Activity.class);
-		
-		BPMNShape shape = (BPMNShape) ModelHandler.findDIElement(getDiagram(), activity);
-		
-		boolean expanded = shape.isIsExpanded();
-		FeatureSupport.setContainerChildrenVisible(containerShape, expanded);
-		
-		return super.layout(context);
 	}
 }

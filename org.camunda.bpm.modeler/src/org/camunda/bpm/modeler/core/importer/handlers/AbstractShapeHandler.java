@@ -16,6 +16,7 @@ import org.camunda.bpm.modeler.core.importer.ModelImport;
 import org.camunda.bpm.modeler.core.layout.util.ConversionUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.ContextUtil;
+import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.core.runtime.IStatus;
@@ -93,21 +94,27 @@ public abstract class AbstractShapeHandler<T extends BaseElement> extends Abstra
 	}
 
 	protected ContainerShape getActualContainingContainer(BPMNShape shape, ContainerShape container) {
-		
-		while (!isPositionallyContained(shape, container)) {
-			if (container instanceof Diagram) {
-				break;
+
+		if (isExpanded(container)) {
+			while (!isPositionallyContained(shape, container)) {
+				if (container instanceof Diagram) {
+					break;
+				}
+
+				container = container.getContainer();
 			}
-			
-			container = container.getContainer();
 		}
-		
+
 		return container;
+	}
+
+	protected boolean isExpanded(ContainerShape container) {
+		return FeatureSupport.isExpanded(container);
 	}
 
 	private boolean isPositionallyContained(BPMNShape shape, ContainerShape container) {
 		ILocation containerLocation = Graphiti.getPeLayoutService().getLocationRelativeToDiagram(container);
-		
+
 		GraphicsAlgorithm graphics = container.getGraphicsAlgorithm();
 
 		int containerHeight = graphics.getHeight();

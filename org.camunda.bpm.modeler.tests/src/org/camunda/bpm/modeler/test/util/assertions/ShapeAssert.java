@@ -2,9 +2,13 @@ package org.camunda.bpm.modeler.test.util.assertions;
 
 import static java.lang.String.format;
 
+import java.util.List;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.Shape;
+import org.fest.assertions.api.AbstractIterableAssert;
 import org.fest.assertions.api.Assertions;
+import org.fest.assertions.api.ListAssert;
 import org.fest.assertions.core.Condition;
 
 public class ShapeAssert extends AbstractShapeAssert<ShapeAssert, Shape> {
@@ -54,5 +58,11 @@ public class ShapeAssert extends AbstractShapeAssert<ShapeAssert, Shape> {
 	@Override
 	public ShapeAssert hasContainerShapeChildCount(int count) {
 		return failNoContainerShape();
+	}
+
+	@Override
+	public AbstractIterableAssert<ListAssert<Shape>, List<Shape>, Shape> bpmnChildren() {
+		failNoContainerShape();
+		return null;
 	}
 }

@@ -60,16 +60,14 @@ public abstract class AbstractExpandableActivityFeatureContainer extends Abstrac
 	@Override
 	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
 		ICustomFeature[] superFeatures = super.getCustomFeatures(fp);
-		ICustomFeature[] thisFeatures = new ICustomFeature[4 + superFeatures.length];
+		ICustomFeature[] thisFeatures = new ICustomFeature[2 + superFeatures.length];
 		thisFeatures[0] = new ExpandFlowNodeFeature(fp);
 		thisFeatures[1] = new CollapseFlowNodeFeature(fp);
-		thisFeatures[2] = new PushdownFeature(fp);
-		thisFeatures[3] = new PullupFeature(fp);
 		for (int i=0; i<superFeatures.length; ++i)
-			thisFeatures[4+i] = superFeatures[i];
+			thisFeatures[2+i] = superFeatures[i];
 		return thisFeatures;
 	}
-	
+
 	public static boolean isExpandableElement(Object be) {
 		return be instanceof FlowElementsContainer
 				|| be instanceof CallChoreography;

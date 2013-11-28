@@ -10,13 +10,18 @@
 
 package org.camunda.bpm.modeler.test.util.assertions;
 
+import java.util.List;
+
+import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.camunda.bpm.modeler.core.utils.ScrollUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramLink;
 import org.eclipse.graphiti.mm.pictograms.Shape;
+import org.fest.assertions.api.AbstractIterableAssert;
 import org.fest.assertions.api.Assertions;
+import org.fest.assertions.api.ListAssert;
 import org.fest.assertions.core.Condition;
 
 /**
@@ -100,7 +105,13 @@ public class ContainerShapeAssert extends AbstractShapeAssert<ContainerShapeAsse
 		Assertions.assertThat(actualCount)
 			.as(String.format("Expected <%s> container shape children, got <%s>.", expected, actualCount))
 			.isEqualTo(expected);
-		
+
 		return myself;
+	}
+
+	@Override
+	public AbstractIterableAssert<ListAssert<Shape>, List<Shape>, Shape> bpmnChildren() {
+		List<Shape> childShapes = FeatureSupport.getBpmnChildShapes(actual);
+		return Assertions.assertThat(childShapes);
 	}
 }

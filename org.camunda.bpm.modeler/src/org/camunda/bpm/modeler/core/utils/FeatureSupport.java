@@ -39,12 +39,12 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.ChoreographyTask;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.FlowElement;
+import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.TextAnnotation;
 import org.eclipse.bpmn2.di.BPMNShape;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.ILocation;
@@ -185,15 +185,26 @@ public class FeatureSupport {
 		}
 		return list;
 	}
-	
+
 	public static void setContainerChildrenVisible(ContainerShape container, boolean visible) {
-		for (PictogramElement pe : getContainerChildren(container)) {
-			pe.setVisible(visible);
-			if (pe instanceof AnchorContainer) {
-				AnchorContainer ac = (AnchorContainer)pe;
-				for (Anchor a : ac.getAnchors()) {
+		for (Shape shape : getBpmnChildShapes(container)) {
+			shape.setVisible(visible);
+
+			Shape labelShape = LabelUtil.getLabelShape(shape, LayoutUtil.getDiagram(container));
+			if (labelShape != null) {
+				labelShape.setVisible(visible);
+			}
+
+			if (shape instanceof AnchorContainer) {
+				for (Anchor a : shape.getAnchors()) {
 					for (Connection c : a.getOutgoingConnections()) {
 						c.setVisible(visible);
+
+						labelShape = LabelUtil.getLabelShape(c, c.getParent());
+						if (labelShape != null) {
+							labelShape.setVisible(visible);
+						}
+
 						for (ConnectionDecorator decorator : c.getConnectionDecorators()) {
 							decorator.setVisible(visible);
 						}
@@ -899,5 +910,37 @@ public class FeatureSupport {
 		 * @param lane
 		 */
 		public void execute(Shape lane);
+	}
+
+	public static List<Shape> getBpmnChildShapes(ContainerShape containerShape) {
+		return getChildrenByBusinessObjectType(containerShape, BPMNShape.class);
+	}
+
+	/**
+	 * Returns true if the given container is expanded (in the BPMN 2.0 sense)
+	 *
+	 * @param container
+	 * @return
+	 */
+	public static boolean isExpanded(ContainerShape container) {
+		FlowElementsContainer flowElementsContainer = BusinessObjectUtil.getFirstElementOfType(container, FlowElementsContainer.class);
+		if (flowElementsContainer == null) {
+			return true;
+		}
+
+		BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(container, BPMNShape.class);
+		return bpmnShape == null || bpmnShape.isIsExpanded();
+	}
+
+	/**
+	 * All {@link Shape}s representing bpmn shapes must be linked to a {@link BPMNShape} di element.
+	 * 
+	 * Return true if the given pictogram element represents a bpmn shape.
+	 * 
+	 * @param pictogramElement
+	 * @return
+	 */
+	public static boolean isBpmnShape(PictogramElement pictogramElement) {
+		return BusinessObjectUtil.getFirstElementOfType(pictogramElement, BPMNShape.class) != null;
 	}
 }

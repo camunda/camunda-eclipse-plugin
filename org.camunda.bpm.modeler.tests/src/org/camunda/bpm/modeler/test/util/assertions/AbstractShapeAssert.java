@@ -20,8 +20,10 @@ import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramLink;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.fest.assertions.api.AbstractAssert;
+import org.fest.assertions.api.AbstractIterableAssert;
 import org.fest.assertions.api.Assertions;
 import org.fest.assertions.api.Fail;
+import org.fest.assertions.api.ListAssert;
 import org.fest.assertions.core.Condition;
 
 public abstract class AbstractShapeAssert<S extends AbstractShapeAssert<S, A>, A extends Shape> extends AbstractAssert<S, A> {
@@ -187,7 +189,9 @@ public abstract class AbstractShapeAssert<S extends AbstractShapeAssert<S, A>, A
 	public PointAssert midPoint() {
 		IRectangle absoluteRectangle = LayoutUtil.getAbsoluteBounds(actual);
 		ILocation midPoint = LayoutUtil.getRectangleCenter(absoluteRectangle);
-		
+
 		return new PointAssert(point(midPoint));
 	}
+
+	public abstract AbstractIterableAssert<ListAssert<Shape>, List<Shape>, Shape> bpmnChildren();
 }

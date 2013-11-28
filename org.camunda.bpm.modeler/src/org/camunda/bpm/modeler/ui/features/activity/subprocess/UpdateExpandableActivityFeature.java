@@ -12,9 +12,6 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.activity.subprocess;
 
-import static org.camunda.bpm.modeler.ui.features.activity.subprocess.SubProcessFeatureContainer.IS_EXPANDED;
-import static org.camunda.bpm.modeler.ui.features.activity.subprocess.SubProcessFeatureContainer.TRIGGERED_BY_EVENT;
-
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
@@ -34,34 +31,43 @@ import org.eclipse.graphiti.services.Graphiti;
 
 public class UpdateExpandableActivityFeature extends AbstractUpdateFeature {
 
+	public static final String TRIGGERED_BY_EVENT = "triggered-by-event";
+	public static final String IS_EXPANDED = "is-expanded";
+
 	public UpdateExpandableActivityFeature(IFeatureProvider fp) {
 		super(fp);
 	}
 
 	@Override
 	public boolean canUpdate(IUpdateContext context) {
-		Object bo = getBusinessObjectForPictogramElement(context.getPictogramElement());
+		PictogramElement pictogramElement = context.getPictogramElement();
+
+		if (!FeatureSupport.isBpmnShape(pictogramElement)) {
+			return false;
+		}
+		
+		Object bo = getBusinessObjectForPictogramElement(pictogramElement);
 		return AbstractExpandableActivityFeatureContainer.isExpandableElement(bo);
 	}
 
 	@Override
 	public IReason updateNeeded(IUpdateContext context) {
 		PictogramElement pe = context.getPictogramElement();
-		
+
 		Property triggerProperty = Graphiti.getPeService().getProperty(pe, TRIGGERED_BY_EVENT);
 		Property expandedProperty = Graphiti.getPeService().getProperty(pe, IS_EXPANDED);
-		
+
 		SubProcess process = (SubProcess) getBusinessObjectForPictogramElement(pe);
-		
+
 		BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(pe, BPMNShape.class);
-		if (expandedProperty != null && Boolean.parseBoolean(expandedProperty.getValue()) != bpmnShape.isIsExpanded()) {
+		if (expandedProperty == null || Boolean.parseBoolean(expandedProperty.getValue()) != bpmnShape.isIsExpanded()) {
 			return Reason.createTrueReason("Expanded property changed");
 		}
 
-		if (triggerProperty != null && Boolean.parseBoolean(triggerProperty.getValue()) != process.isTriggeredByEvent()) {
+		if (triggerProperty == null || Boolean.parseBoolean(triggerProperty.getValue()) != process.isTriggeredByEvent()) {
 			return Reason.createTrueReason("Trigger property changed");
 		}
-			
+
 		return Reason.createFalseReason();
 	}
 
@@ -70,12 +76,12 @@ public class UpdateExpandableActivityFeature extends AbstractUpdateFeature {
 		PictogramElement pe = context.getPictogramElement();
 		SubProcess process = (SubProcess) getBusinessObjectForPictogramElement(pe);
 		ContainerShape container = (ContainerShape) pe;
-		
+
 		boolean isExpanded = false;
-		
+
 		BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(pe, BPMNShape.class);
 		isExpanded = bpmnShape.isIsExpanded();
-		
+
 		Graphiti.getPeService().setPropertyValue(pe, TRIGGERED_BY_EVENT, Boolean.toString(process.isTriggeredByEvent()));
 		Graphiti.getPeService().setPropertyValue(pe, IS_EXPANDED, Boolean.toString(isExpanded));
 
