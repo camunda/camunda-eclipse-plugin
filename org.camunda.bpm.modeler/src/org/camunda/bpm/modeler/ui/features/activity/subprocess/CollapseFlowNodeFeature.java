@@ -13,13 +13,16 @@
 package org.camunda.bpm.modeler.ui.features.activity.subprocess;
 
 import org.camunda.bpm.modeler.core.ModelHandler;
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
+import org.camunda.bpm.modeler.core.utils.SelectionUtil;
 import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.di.BPMNShape;
+import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
@@ -95,24 +98,47 @@ public class CollapseFlowNodeFeature extends AbstractCustomFeature {
 					bpmnShape.setIsExpanded(false);
 
 					GraphicsAlgorithm ga = containerShape.getGraphicsAlgorithm();
-					ResizeShapeContext resizeContext = new ResizeShapeContext(containerShape);
-					IResizeShapeFeature resizeFeature = getFeatureProvider().getResizeShapeFeature(resizeContext);
+					
 					int oldWidth = ga.getWidth();
 					int oldHeight = ga.getHeight();
 					int newWidth = GraphicsUtil.getActivitySize(getDiagram()).getWidth();
 					int newHeight = GraphicsUtil.getActivitySize(getDiagram()).getHeight();
-					resizeContext.setX(ga.getX() + oldWidth/2 - newWidth/2);
-					resizeContext.setY(ga.getY() + oldHeight/2 - newHeight/2);
+
+					int midX = ga.getX() + oldWidth / 2;
+					int midY = ga.getY() + oldHeight / 2;
+					
+					// adjust mid x and y to middle of child elements BBox
+					// if child elements are present
+					if (!FeatureSupport.getBpmnChildShapes(containerShape).isEmpty()) {
+						IRectangle bounds = LayoutUtil.getChildrenBBox(containerShape, null, 0, 0);
+						if (bounds != null) {
+
+							int bboxMidX = bounds.getX() + bounds.getWidth() / 2;
+							int bboxMidY = bounds.getY() + bounds.getHeight() / 2;
+							
+							midX = ga.getX() + bboxMidX;
+							midY = ga.getY() + bboxMidY;
+						}
+					}
+					
+					ResizeShapeContext resizeContext = new ResizeShapeContext(containerShape);
+					IResizeShapeFeature resizeFeature = getFeatureProvider().getResizeShapeFeature(resizeContext);
+					
+					resizeContext.setX(midX - newWidth/2);
+					resizeContext.setY(midY - newHeight/2);
 					resizeContext.setWidth(newWidth);
 					resizeContext.setHeight(newHeight);
 					resizeFeature.resizeShape(resizeContext);
 					
 					UpdateContext updateContext = new UpdateContext(containerShape);
 					IUpdateFeature updateFeature = getFeatureProvider().getUpdateFeature(updateContext);
-					if (updateFeature.updateNeeded(updateContext).toBoolean())
+					if (updateFeature.updateNeeded(updateContext).toBoolean()) {
 						updateFeature.update(updateContext);
-					
-					getDiagramBehavior().getDiagramContainer().selectPictogramElements(new PictogramElement[] {});
+					}
+
+					// refresh selection of pictogram element
+					// so that the resizable status is updated
+					SelectionUtil.refreshSelection(pe0, getDiagramBehavior());
 				}
 			}
 		}
