@@ -17,6 +17,7 @@ import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
+import org.camunda.bpm.modeler.core.utils.SelectionUtil;
 import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.FlowNode;
@@ -130,6 +131,10 @@ public class ExpandFlowNodeFeature extends AbstractCustomFeature {
 			if (updateFeature.updateNeeded(updateContext).toBoolean()) {
 				updateFeature.update(updateContext);
 			}
+
+			// refresh selection of pictogram element
+			// so that the resizable status is updated
+			SelectionUtil.refreshSelection(pictogramElement, getDiagramEditor());
 		}
 	}
 }

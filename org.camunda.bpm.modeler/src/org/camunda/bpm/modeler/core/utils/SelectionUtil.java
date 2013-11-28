@@ -3,6 +3,7 @@ package org.camunda.bpm.modeler.core.utils;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.gef.editparts.AbstractEditPart;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.platform.IDiagramEditor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
@@ -59,5 +60,15 @@ public class SelectionUtil {
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Toggle selection of a bpmn element
+	 * @param pictogramElement
+	 * @param diagramEditor
+	 */
+	public static void refreshSelection(PictogramElement pictogramElement, IDiagramEditor diagramEditor) {
+		diagramEditor.selectPictogramElements(new PictogramElement[] { });
+		diagramEditor.selectPictogramElements(new PictogramElement[] { pictogramElement });
 	}
 }
