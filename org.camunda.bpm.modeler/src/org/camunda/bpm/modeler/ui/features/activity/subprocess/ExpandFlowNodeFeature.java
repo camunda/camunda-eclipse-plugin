@@ -15,7 +15,10 @@ package org.camunda.bpm.modeler.ui.features.activity.subprocess;
 import org.camunda.bpm.modeler.core.layout.util.ConversionUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
+import org.camunda.bpm.modeler.core.utils.FeatureSupport;
+import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.ui.Images;
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.graphiti.datatypes.IRectangle;
@@ -33,12 +36,14 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
 public class ExpandFlowNodeFeature extends AbstractCustomFeature {
 
+	private final static int EXPAND_PADDING = 20;
+
 	private final static String NAME = "Expand";
 	private final static String DESCRIPTION = "Expand the Activity and show contents";
-	
+
 	private String name = NAME;
 	private String description = DESCRIPTION;
-	
+
 	public ExpandFlowNodeFeature(IFeatureProvider fp) {
 	    super(fp);
     }
@@ -65,22 +70,20 @@ public class ExpandFlowNodeFeature extends AbstractCustomFeature {
 
 	@Override
 	public boolean canExecute(ICustomContext context) {
-		PictogramElement[] pictogramElements = context.getPictogramElements();
-		if (pictogramElements == null || pictogramElements.length != 1) {
+
+		PictogramElement[] elements = context.getPictogramElements();
+		if (elements.length != 1) {
 			return false;
 		}
-		
-		PictogramElement element = pictogramElements[0];
-		
-		Object businessObject = getBusinessObjectForPictogramElement(element);
-		if (AbstractExpandableActivityFeatureContainer.isExpandableElement(businessObject)) {
-			BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(element, BPMNShape.class);
-			if (!bpmnShape.isIsExpanded()) {
-				return true;
-			}
+
+		PictogramElement pictogramElement = elements[0];
+		BaseElement baseElement = BusinessObjectUtil.getFirstBaseElement(pictogramElement);
+
+		if (AbstractExpandableActivityFeatureContainer.isExpandableElement(baseElement)) {
+			return !FeatureSupport.isExpanded((ContainerShape) pictogramElement);
+		} else {
+			return false;
 		}
-		
-		return false;
 	}
 
 	@Override
@@ -92,32 +95,29 @@ public class ExpandFlowNodeFeature extends AbstractCustomFeature {
 		if (pictogramElement instanceof ContainerShape && flowNode != null) {
 			ContainerShape containerShape = (ContainerShape) pictogramElement;
 
+			// move to front
+			GraphicsUtil.sendToFront(containerShape);
+			
 			BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(pictogramElement, BPMNShape.class);
-			
-			// redundant check, but who cares
-			if (bpmnShape.isIsExpanded()) {
-				return;
-			}
-			
-			// SubProcess is collapsed - resize to minimum size such that all children are visible
-			// NOTE: children tasks will be set visible in LayoutExpandableActivityFeature
-
 			bpmnShape.setIsExpanded(true);
+
+			// SubProcess is collapsed - resize to minimum size such that all children are visible
+			// NOTE: children tasks will be set visible in UpdateExpandableActivityFeature
 
 			GraphicsAlgorithm ga = containerShape.getGraphicsAlgorithm();
 			ResizeShapeContext resizeContext = new ResizeShapeContext(containerShape);
 			IResizeShapeFeature resizeFeature = getFeatureProvider().getResizeShapeFeature(resizeContext);
 			int oldWidth = ga.getWidth();
 			int oldHeight = ga.getHeight();
-			
-			IRectangle bounds = LayoutUtil.getChildrenBBox(containerShape, null, ResizeExpandableActivityFeature.PADDING, ResizeExpandableActivityFeature.PADDING);
+
+			IRectangle bounds = LayoutUtil.getChildrenBBox(containerShape, null, EXPAND_PADDING, EXPAND_PADDING);
 			if (bounds == null) {
 				bounds = ConversionUtil.rectangle(0, 0, 300, 200);
 			}
-			
-			int newWidth = bounds.getWidth();
-			int newHeight = bounds.getHeight();
-			
+
+			int newWidth = bounds.getWidth() + Math.abs(Math.min(0, bounds.getX()));
+			int newHeight = bounds.getHeight() + Math.abs(Math.min(0, bounds.getY()));
+
 			resizeContext.setX(ga.getX() + oldWidth / 2 - newWidth / 2);
 			resizeContext.setY(ga.getY() + oldHeight / 2 - newHeight / 2);
 			resizeContext.setWidth(newWidth);

@@ -35,12 +35,13 @@ import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
+import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
+import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
 
 public abstract class AbstractAddFlowFeature<T extends BaseElement> extends AbstractBpmn2AddElementFeature<T, FreeFormConnection> {
@@ -101,6 +102,22 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement> extends Abst
 		return connection;
 	}
 
+	@Override
+	protected void postAddHook(IAddContext context, FreeFormConnection newPictogramElement) {
+		super.postAddHook(context, newPictogramElement);
+
+		Anchor endAnchor = newPictogramElement.getEnd();
+		Anchor startAnchor = newPictogramElement.getStart();
+		
+		boolean isVisible = endAnchor.getParent().isVisible() && startAnchor.getParent().isVisible();
+		if (!isVisible) {
+			newPictogramElement.setVisible(false);
+			for (ConnectionDecorator connectionDecorator : newPictogramElement.getConnectionDecorators()) {
+				connectionDecorator.setVisible(false);
+			};
+		}
+	}
+	
 	protected void layoutAfterCreate(FreeFormConnection connection, IAddConnectionContext addContext) {
 		Layouter.layoutAfterCreate(connection, getFeatureProvider());
 	}
@@ -131,7 +148,10 @@ public abstract class AbstractAddFlowFeature<T extends BaseElement> extends Abst
 			if (addLabelContext != null) {
 				IAddFeature addFeature = getFeatureProvider().getAddFeature(addLabelContext);
 				if (addFeature.canAdd(addLabelContext)) {
-					addFeature.add(addLabelContext);
+					PictogramElement label = addFeature.add(addLabelContext);
+					if (label != null) {
+						label.setVisible(connection.isVisible());
+					}
 				}
 			}
 		}

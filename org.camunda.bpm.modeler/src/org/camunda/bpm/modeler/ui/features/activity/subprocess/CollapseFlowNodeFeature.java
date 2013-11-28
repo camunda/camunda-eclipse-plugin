@@ -13,8 +13,11 @@
 package org.camunda.bpm.modeler.ui.features.activity.subprocess;
 
 import org.camunda.bpm.modeler.core.ModelHandler;
+import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
+import org.camunda.bpm.modeler.core.utils.FeatureSupport;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.ui.Images;
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -59,21 +62,19 @@ public class CollapseFlowNodeFeature extends AbstractCustomFeature {
 
 	@Override
 	public boolean canExecute(ICustomContext context) {
-		boolean ret = false;
-		PictogramElement[] pes = context.getPictogramElements();
-		if (pes != null && pes.length == 1) {
-			Object bo = getBusinessObjectForPictogramElement(pes[0]);
-			if (AbstractExpandableActivityFeatureContainer.isExpandableElement(bo)) {
-				try {
-					BPMNShape bpmnShape = (BPMNShape) ModelHandler.findDIElement(getDiagram(), (FlowNode)bo);
-					if (bpmnShape.isIsExpanded())
-						ret = true;
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
+		PictogramElement[] elements = context.getPictogramElements();
+		if (elements.length != 1) {
+			return false;
 		}
-		return ret;
+
+		PictogramElement pictogramElement = elements[0];
+		BaseElement baseElement = BusinessObjectUtil.getFirstBaseElement(pictogramElement);
+
+		if (AbstractExpandableActivityFeatureContainer.isExpandableElement(baseElement)) {
+			return FeatureSupport.isExpanded((ContainerShape) pictogramElement);
+		} else {
+			return false;
+		}
 	}
 
 	@Override
@@ -87,10 +88,10 @@ public class CollapseFlowNodeFeature extends AbstractCustomFeature {
 				FlowNode flowNode = (FlowNode) bo;
 				BPMNShape bpmnShape = (BPMNShape) ModelHandler.findDIElement(getDiagram(), flowNode);
 				if (bpmnShape.isIsExpanded()) {
-					
+
 					// SubProcess is collapsed - resize to standard modelObject size
-					// NOTE: children tasks will be set not-visible in LayoutExpandableActivityFeature
-					
+					// NOTE: children tasks will be set not-visible in UpdateExpandableActivityFeature
+
 					bpmnShape.setIsExpanded(false);
 
 					GraphicsAlgorithm ga = containerShape.getGraphicsAlgorithm();

@@ -51,7 +51,17 @@ public abstract class AbstractAddFlowElementFeature<T extends FlowElement> exten
 
 	@Override
 	public boolean canAdd(IAddContext context) {
-		boolean intoDiagram = context.getTargetContainer().equals(getDiagram());
+
+		if (isImport(context)) {
+			return true;
+		}
+
+		ContainerShape targetContainer = context.getTargetContainer();
+		if (!FeatureSupport.isExpanded(targetContainer)) {
+			return false;
+		}
+
+		boolean intoDiagram = targetContainer.equals(getDiagram());
 		boolean intoLane = FeatureSupport.isTargetLane(context) && FeatureSupport.isTargetLaneOnTop(context);
 		boolean intoParticipant = FeatureSupport.isTargetParticipant(context);
 		boolean intoSubProcess = FeatureSupport.isTargetSubProcess(context);
@@ -82,10 +92,10 @@ public abstract class AbstractAddFlowElementFeature<T extends FlowElement> exten
 			decorateFeature.execute(decorateContext);
 		}
 	}
-	
+
 	protected void adjustLocationForDropOnConnection(IAddContext context) {
 		Connection connection = context.getTargetConnection();
-		
+
 		if (context instanceof AddContext) {
 
 			AddContext addContext = (AddContext) context;
@@ -111,8 +121,19 @@ public abstract class AbstractAddFlowElementFeature<T extends FlowElement> exten
 		// no adjustment done right now
 	}
 
-	protected void splitConnection(IAddContext context, ContainerShape newShape) {
+	@Override
+	protected void postAddHook(IAddContext context, ContainerShape newShape, IRectangle elementBounds) {
 		
+		super.postAddHook(context, newShape, elementBounds);
+		
+		ContainerShape targetContainer = context.getTargetContainer();
+		if (!FeatureSupport.isExpanded(targetContainer)) {
+			newShape.setVisible(false);
+		}
+	}
+	
+	protected void splitConnection(IAddContext context, ContainerShape newShape) {
+
 		if (isImport(context)) {
 			return;
 		}

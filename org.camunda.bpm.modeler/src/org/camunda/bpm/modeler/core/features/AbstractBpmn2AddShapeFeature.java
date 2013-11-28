@@ -28,6 +28,7 @@ import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.graphiti.datatypes.IRectangle;
+import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.ITargetContext;
@@ -268,7 +269,13 @@ public abstract class AbstractBpmn2AddShapeFeature<T extends BaseElement> extend
 		if (isCreateExternalLabel()) {
 			IAddContext addLabelContext = getAddLabelContext(context, newShape, newShapeBounds);
 			if (addLabelContext != null) {
-				getFeatureProvider().getAddFeature(addLabelContext).add(addLabelContext);
+				IAddFeature addFeature = getFeatureProvider().getAddFeature(addLabelContext);
+				if (addFeature.canAdd(addLabelContext)) {
+					PictogramElement label = addFeature.add(addLabelContext);
+					if (label != null) {
+						label.setVisible(newShape.isVisible());
+					}
+				}
 			}
 		}
 	}

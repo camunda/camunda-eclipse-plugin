@@ -12,20 +12,12 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.activity.subprocess;
 
-import static org.camunda.bpm.modeler.ui.features.activity.subprocess.SubProcessFeatureContainer.IS_EXPANDED;
-import static org.camunda.bpm.modeler.ui.features.activity.subprocess.SubProcessFeatureContainer.TRIGGERED_BY_EVENT;
-
 import org.camunda.bpm.modeler.core.features.activity.AbstractAddActivityFeature;
 import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
-import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences.BPMNDIAttributeDefault;
-import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
+import org.camunda.bpm.modeler.core.utils.LabelUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.Activity;
-import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.CallActivity;
-import org.eclipse.bpmn2.SubProcess;
-import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
@@ -53,11 +45,8 @@ public class AddExpandableActivityFeature<T extends Activity>
 		IGaService gaService = Graphiti.getGaService();
 
 		T activity = getBusinessObject(context);
-		
+
 		int width = newShapeBounds.getWidth();
-				
-		// set to default value so that update pics up the actual drawing
-		peService.setPropertyValue(newShape, TRIGGERED_BY_EVENT, "false");
 
 		Shape textShape = peService.createShape(newShape, false);
 		Text text = gaService.createDefaultText(getDiagram(), textShape, activity.getName());
@@ -71,33 +60,6 @@ public class AddExpandableActivityFeature<T extends Activity>
 	@Override
 	protected void postAddHook(IAddContext context, ContainerShape newShape) {
 		super.postAddHook(context, newShape);
-
-		T activity = getBusinessObject(context);
-
-		boolean isExpanded = true;
-
-		if (activity instanceof SubProcess) {
-			BPMNShape bpmnShape = (BPMNShape) BusinessObjectUtil.getFirstElementOfType(newShape, BPMNShape.class);
-			if (bpmnShape != null) {
-				isExpanded = bpmnShape.isIsExpanded();
-			}
-		}
-
-		if (activity instanceof CallActivity) {
-			BPMNShape bpmnShape = (BPMNShape) BusinessObjectUtil.getFirstElementOfType(newShape, BPMNShape.class);
-			if (bpmnShape != null) {
-				isExpanded = bpmnShape.isIsExpanded();
-			}
-		}
-
-		IPeService peService = Graphiti.getPeService();
-		peService.setPropertyValue(newShape, IS_EXPANDED, Boolean.toString(isExpanded));
-
-		if (isExpanded) {
-			GraphicsUtil.hideActivityMarker(newShape, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
-		} else {
-			GraphicsUtil.showActivityMarker(newShape, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
-		}
 
 		// set a property on the decorators so we can distinguish them from the
 		// real children (i.e. tasks, etc.)
