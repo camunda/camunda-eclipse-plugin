@@ -108,6 +108,7 @@ To avoid any problems install the plugins in the following order:
 *   Checkout the `master` branch
 *   Make sure you have the `m2eclipse` plugin installed in your Eclipse
 *   Import sources into Eclipse via `Import -> Existing maven projects`
+*   Execute `mvn clean install` on the root project to retrieve maven dependencies of the projects
 *   Apply the camunda bpm [formatter templates](https://github.com/camunda/camunda-bpm-platform/tree/master/settings/eclipse)
 *   If you have already installed the [required project plugins](#install-project-plugins) no error should occur.
 *   [Examine the sources](#project-structure)
