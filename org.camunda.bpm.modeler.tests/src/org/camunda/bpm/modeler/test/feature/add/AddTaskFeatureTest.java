@@ -252,7 +252,7 @@ public class AddTaskFeatureTest extends AbstractFeatureTest {
 		IRectangle box = LayoutUtil.box(
 				rectangle(addPosition.getX() - 100 / 2, 
 						  addPosition.getY() - 80 / 2, 100, 80), 
-						  participantBounds, 10, BoxingStrategy.POSITION_AND_SIZE);
+						  participantBounds, 10, BoxingStrategy.POSITION);
 		
 		Point expectedPosition = point(
 				participantBounds.getX() + 40, 
@@ -278,7 +278,7 @@ public class AddTaskFeatureTest extends AbstractFeatureTest {
 		assertThat(taskShape)
 			.bounds()
 			.height()
-				.isLessThan(80);			
+				.isEqualTo(80);
 		
 	}
 	
@@ -392,7 +392,7 @@ public class AddTaskFeatureTest extends AbstractFeatureTest {
 		IRectangle box = LayoutUtil.box(
 				rectangle(addPosition.getX() - 100 / 2, 
 						  addPosition.getY() - 80 / 2, 100, 80), 
-						  laneBounds, 10, BoxingStrategy.POSITION_AND_SIZE);
+						  laneBounds, 10, BoxingStrategy.POSITION);
 		
 		Point expectedPosition = point(
 				laneBounds.getX() + 25, 
@@ -418,7 +418,7 @@ public class AddTaskFeatureTest extends AbstractFeatureTest {
 		assertThat(taskShape)
 			.bounds()
 			.height()
-				.isLessThan(80);			
+				.isEqualTo(80);
 		
 	}
 	
@@ -442,7 +442,7 @@ public class AddTaskFeatureTest extends AbstractFeatureTest {
 		IRectangle box = LayoutUtil.box(
 				rectangle(addPosition.getX() - 100 / 2, 
 						  addPosition.getY() - 80 / 2, 100, 80), 
-						  subProcessBounds, 10, BoxingStrategy.POSITION_AND_SIZE);
+						  subProcessBounds, 10, BoxingStrategy.POSITION);
 		
 		Point expectedPosition = point(
 				subProcessBounds.getX() + box.getX(), 
@@ -463,7 +463,7 @@ public class AddTaskFeatureTest extends AbstractFeatureTest {
 		assertThat(taskShape)
 			.bounds()
 			.width()
-				.isLessThan(100);		
+				.isEqualTo(100);
 	
 		assertThat(taskShape)
 			.bounds()
@@ -473,7 +473,7 @@ public class AddTaskFeatureTest extends AbstractFeatureTest {
 		assertThat(taskShape)
 			.bounds()
 			.height()
-				.isLessThan(80);			
+				.isEqualTo(80);
 		
 	}
 	
