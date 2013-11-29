@@ -18,9 +18,7 @@ import org.camunda.bpm.modeler.core.features.activity.ActivityDecorateFeature;
 import org.camunda.bpm.modeler.core.features.api.IDecorateFeature;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
-import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.ui.Images;
-import org.camunda.bpm.modeler.ui.features.activity.ResizeActivityFeature;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.CallableElement;
@@ -30,13 +28,13 @@ import org.eclipse.bpmn2.GlobalScriptTask;
 import org.eclipse.bpmn2.GlobalTask;
 import org.eclipse.bpmn2.GlobalUserTask;
 import org.eclipse.bpmn2.Process;
+import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.ILayoutFeature;
 import org.eclipse.graphiti.features.IReason;
-import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.impl.AbstractUpdateFeature;
@@ -55,6 +53,7 @@ public class CallActivityFeatureContainer extends AbstractExpandableActivityFeat
 	private static final int MARKER_OFFSET = 4;
 	private static final String CALL_ACTIVITY_REF_PROPERTY = "call.activity.ref";
 	private static final String GLOBAL_TASK_SHAPE_PROPERTY = "global.task.shape";
+	private static final String IS_EXPANDED = "is-expanded";
 
 	@Override
 	public boolean canApplyTo(Object o) {
@@ -83,6 +82,27 @@ public class CallActivityFeatureContainer extends AbstractExpandableActivityFeat
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return new AddExpandableActivityFeature<CallActivity>(fp) {
 			
+			@Override
+			protected void postAddHook(IAddContext context, ContainerShape newShape) {
+			    super.postAddHook(context, newShape);
+
+			    boolean isExpanded = false;
+
+				BPMNShape bpmnShape = (BPMNShape) BusinessObjectUtil.getFirstElementOfType(newShape, BPMNShape.class);
+				if (bpmnShape != null) {
+					isExpanded = bpmnShape.isIsExpanded();
+				}
+
+			    IPeService peService = Graphiti.getPeService();
+			    peService.setPropertyValue(newShape, IS_EXPANDED, Boolean.toString(isExpanded));
+
+			    if (isExpanded) {
+			      GraphicsUtil.hideActivityMarker(newShape, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
+			    } else {
+			      GraphicsUtil.showActivityMarker(newShape, GraphicsUtil.ACTIVITY_MARKER_EXPAND);
+			    }
+			}
+
 			@Override
 			protected void setProperties(IAddContext context, ContainerShape newShape) {
 				super.setProperties(context, newShape);
