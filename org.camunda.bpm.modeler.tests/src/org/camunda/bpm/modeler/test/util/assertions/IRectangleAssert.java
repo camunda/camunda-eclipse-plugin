@@ -29,7 +29,7 @@ public class IRectangleAssert extends AbstractAssert<IRectangleAssert, IRectangl
 		public IRectangleAssert contains(int x, int y) {
 			return contains(point(x, y));
 		}
-
+		
 		public IRectangleAssert contains(Point point) {
 			if (!LayoutUtil.isContained(actual, location(point))) {
 				Fail.fail(failMessage(EXPECT_CONTAINMENT, point, actual));
