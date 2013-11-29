@@ -2,7 +2,7 @@ package org.camunda.bpm.modeler.test.importer.subprocess;
 
 import static org.camunda.bpm.modeler.test.util.assertions.Bpmn2ModelAssertions.assertThat;
 import static org.fest.assertions.api.Assertions.assertThat;
-
+import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.rect;
 import java.util.List;
 
 import org.camunda.bpm.modeler.core.importer.ModelImport;
@@ -33,7 +33,7 @@ public class ImportSubProcessTest extends AbstractImportBpmnModelTest {
 	
 	@Test
 	@DiagramResource
-	public void testImportSubProcessToCheckExistingChildren() {
+	public void testSubProcessToCheckExistingChildren() {
 		ModelImport importer = createModelImport();
 		importer.execute();
 
@@ -49,10 +49,23 @@ public class ImportSubProcessTest extends AbstractImportBpmnModelTest {
 				.isNotEmpty()
 				.hasSize(4);
 	}
+
+	@Test
+	@DiagramResource
+	public void testCollapsedCustomSize() {
+		ModelImport importer = createModelImport();
+		importer.execute();
+
+		ContainerShape containerShape = (ContainerShape) Util.findShapeByBusinessObjectId(diagram, "SubProcess_1");
+		
+		assertThat(containerShape)
+			.bounds()
+				.isEqualTo(rect(72, 84, 108, 88));
+	}
 	
 	@Test
 	@DiagramResource
-	public void testImportExpandedSubProcessWithVisibleChildren() {
+	public void testExpandedSubProcessWithVisibleChildren() {
 		ModelImport importer = createModelImport();
 		importer.execute();
 		
@@ -73,7 +86,7 @@ public class ImportSubProcessTest extends AbstractImportBpmnModelTest {
 	
 	@Test
 	@DiagramResource
-	public void testImportCollapsedSubProcessWithNonVisibleChildren() {
+	public void testCollapsedSubProcessWithNonVisibleChildren() {
 		ModelImport importer = createModelImport();
 		importer.execute();
 		
