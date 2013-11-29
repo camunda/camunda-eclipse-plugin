@@ -25,11 +25,9 @@ import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
-import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.context.impl.ResizeShapeContext;
-import org.eclipse.graphiti.features.context.impl.UpdateContext;
 import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -124,13 +122,8 @@ public class ExpandFlowNodeFeature extends AbstractCustomFeature {
 			resizeContext.setWidth(newWidth);
 			resizeContext.setHeight(newHeight);
 			resizeFeature.resizeShape(resizeContext);
-			
-			UpdateContext updateContext = new UpdateContext(containerShape);
-			
-			IUpdateFeature updateFeature = getFeatureProvider().getUpdateFeature(updateContext);
-			if (updateFeature.updateNeeded(updateContext).toBoolean()) {
-				updateFeature.update(updateContext);
-			}
+
+			updatePictogramElement(containerShape);
 
 			// refresh selection of pictogram element
 			// so that the resizable status is updated

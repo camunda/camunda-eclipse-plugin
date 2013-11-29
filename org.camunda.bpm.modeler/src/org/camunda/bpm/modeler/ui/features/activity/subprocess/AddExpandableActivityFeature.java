@@ -15,7 +15,6 @@ package org.camunda.bpm.modeler.ui.features.activity.subprocess;
 import org.camunda.bpm.modeler.core.features.activity.AbstractAddActivityFeature;
 import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
-import org.camunda.bpm.modeler.core.utils.LabelUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.graphiti.datatypes.IRectangle;
