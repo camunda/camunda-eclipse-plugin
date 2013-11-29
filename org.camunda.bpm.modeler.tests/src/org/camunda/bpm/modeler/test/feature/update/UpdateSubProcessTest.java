@@ -32,7 +32,7 @@ public class UpdateSubProcessTest extends AbstractFeatureTest {
 
 	@Test
 	@DiagramResource
-	public void testChangeSubprocessToCollapsed() {
+	public void testChangeSubProcessToCollapsed() {
 		// given
 		BPMNShape oldBpmnShape = Util.findBpmnShapeByBusinessObjectId(diagram, "SubProcess_3");
 		
@@ -65,7 +65,7 @@ public class UpdateSubProcessTest extends AbstractFeatureTest {
 	
 	@Test
 	@DiagramResource
-	public void testChangeSubprocessToExpanded() {
+	public void testChangeSubProcessToExpanded() {
 		// given
 		BPMNShape oldBpmnShape = Util.findBpmnShapeByBusinessObjectId(diagram, "SubProcess_3");
 		
