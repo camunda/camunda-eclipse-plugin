@@ -27,6 +27,7 @@ import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public class AddBoundaryEventFeature extends AddEventFeature<BoundaryEvent> {
 
@@ -57,6 +58,12 @@ public class AddBoundaryEventFeature extends AddEventFeature<BoundaryEvent> {
 		updatePictogramElement(newShape);
 	}
 	
+	@Override
+	protected boolean isVisible(IAddContext context, ContainerShape newShape) {
+		Shape attachedToShape = BoundaryEventUtil.getAttachedToShape(newShape, getDiagram());
+		return attachedToShape.isVisible();
+	}
+
 	@Override
 	protected void adjustLocation(IAddContext context, int width, int height) {
 		

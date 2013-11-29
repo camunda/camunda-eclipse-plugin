@@ -13,6 +13,7 @@
 package org.camunda.bpm.modeler.core.features.activity.task;
 
 import org.camunda.bpm.modeler.core.features.activity.AbstractAddActivityFeature;
+import org.camunda.bpm.modeler.core.layout.util.LayoutUtil.BoxingStrategy;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
@@ -38,6 +39,11 @@ public class AddTaskFeature<T extends Task> extends AbstractAddActivityFeature<T
 	@Override
 	public boolean canAdd(IAddContext context) {
 		return super.canAdd(context) || BusinessObjectUtil.containsElementOfType(context.getTargetContainer(), FlowElementsContainer.class);
+	}
+
+	@Override
+	protected BoxingStrategy getBoxingStrategy(IAddContext context) {
+		return BoxingStrategy.POSITION;
 	}
 
 	@Override

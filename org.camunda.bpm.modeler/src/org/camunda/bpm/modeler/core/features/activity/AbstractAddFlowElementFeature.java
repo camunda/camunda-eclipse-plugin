@@ -57,9 +57,6 @@ public abstract class AbstractAddFlowElementFeature<T extends FlowElement> exten
 		}
 
 		ContainerShape targetContainer = context.getTargetContainer();
-		if (!FeatureSupport.isExpanded(targetContainer)) {
-			return false;
-		}
 
 		boolean intoDiagram = targetContainer.equals(getDiagram());
 		boolean intoLane = FeatureSupport.isTargetLane(context) && FeatureSupport.isTargetLaneOnTop(context);
@@ -126,12 +123,14 @@ public abstract class AbstractAddFlowElementFeature<T extends FlowElement> exten
 		
 		super.postAddHook(context, newShape, elementBounds);
 		
-		ContainerShape targetContainer = context.getTargetContainer();
-		if (!FeatureSupport.isExpanded(targetContainer)) {
-			newShape.setVisible(false);
-		}
+		newShape.setVisible(isVisible(context, newShape));
 	}
 	
+	protected boolean isVisible(IAddContext context, ContainerShape newShape) {
+		ContainerShape targetContainer = context.getTargetContainer();
+		return FeatureSupport.isExpanded(targetContainer);
+	}
+
 	protected void splitConnection(IAddContext context, ContainerShape newShape) {
 
 		if (isImport(context)) {

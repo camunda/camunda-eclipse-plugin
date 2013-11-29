@@ -129,12 +129,8 @@ public class CollapseFlowNodeFeature extends AbstractCustomFeature {
 					resizeContext.setWidth(newWidth);
 					resizeContext.setHeight(newHeight);
 					resizeFeature.resizeShape(resizeContext);
-					
-					UpdateContext updateContext = new UpdateContext(containerShape);
-					IUpdateFeature updateFeature = getFeatureProvider().getUpdateFeature(updateContext);
-					if (updateFeature.updateNeeded(updateContext).toBoolean()) {
-						updateFeature.update(updateContext);
-					}
+
+					updatePictogramElement(containerShape);
 
 					// refresh selection of pictogram element
 					// so that the resizable status is updated
