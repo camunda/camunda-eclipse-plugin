@@ -20,8 +20,7 @@ public enum Category {
 	GATEWAYS("Gateways", true),
 	TASKS("Tasks", true),
 	DATA("Data Items", false),
-	OTHER("Other", false),
-	CUSTOM(null, false);
+	OTHER("Other", false);
 	
 	//// static helpers /////
 	

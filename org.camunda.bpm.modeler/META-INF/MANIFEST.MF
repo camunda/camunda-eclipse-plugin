@@ -400,6 +400,7 @@ Export-Package: org.camunda.bpm.modeler.core;
    org.eclipse.graphiti.tb,
    org.camunda.bpm.modeler.core.features.api,
    org.eclipse.graphiti.mm.algorithms",
+ org.camunda.bpm.modeler.ui.diagram.palette,
  org.camunda.bpm.modeler.ui.features;
   uses:="org.eclipse.emf.common.util,
    org.camunda.bpm.modeler.ui.diagram,
