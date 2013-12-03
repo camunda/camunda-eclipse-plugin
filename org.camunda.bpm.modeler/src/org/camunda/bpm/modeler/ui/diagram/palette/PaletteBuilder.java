@@ -66,6 +66,10 @@ public class PaletteBuilder {
 			IPaletteIntegration paletteIntegration = provider.getPaletteIntegration();
 			IFeatureContainer featureContainer = provider.getFeatureContainer();
 			
+			if (featureContainer == null) {
+				continue;
+			}
+			
 			ICreateFeature createFeature = featureContainer.getCreateFeature(featureProvider);
 			
 			if (paletteIntegration == null || createFeature == null) {
