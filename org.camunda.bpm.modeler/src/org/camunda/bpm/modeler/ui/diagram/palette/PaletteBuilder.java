@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.camunda.bpm.modeler.core.Activator;
+import org.camunda.bpm.modeler.core.features.api.container.IFeatureContainer;
 import org.camunda.bpm.modeler.plugin.ICustomTaskProvider;
 import org.camunda.bpm.modeler.plugin.palette.IPaletteIntegration;
 import org.camunda.bpm.modeler.plugin.palette.impl.PaletteCompartments;
@@ -63,7 +64,9 @@ public class PaletteBuilder {
 		
 		for (ICustomTaskProvider provider : providers) {
 			IPaletteIntegration paletteIntegration = provider.getPaletteIntegration();
-			ICreateFeature createFeature = provider.getFeatureContainer().getCreateFeature(featureProvider);
+			IFeatureContainer featureContainer = provider.getFeatureContainer();
+			
+			ICreateFeature createFeature = featureContainer.getCreateFeature(featureProvider);
 			
 			if (paletteIntegration == null || createFeature == null) {
 				continue;
