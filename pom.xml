@@ -21,21 +21,22 @@
 	</licenses>
 
 	<properties>
-		<tycho-version>0.13.0</tycho-version>
+		<tycho-version>0.17.0</tycho-version>
 	</properties>
 
 	<profiles>
 		<profile>
-			<id>platform-helios</id>
+			<id>platform-kepler</id>
 			<activation>
 				<property>
 					<name>platform-version-name</name>
-					<value>helios</value>
+					<value>kepler</value>
 				</property>
 			</activation>
 			<properties>
-				<eclipse-site>http://download.eclipse.org/releases/helios</eclipse-site>
-				<platform-version>[3.6,3.7)</platform-version>
+				<eclipse-site>http://download.eclipse.org/releases/kepler</eclipse-site>
+				<platform-version>[4.3)</platform-version>
+                <platform-version-name>kepler</platform-version-name>
 			</properties>
 		</profile>
 		<profile>
@@ -50,9 +51,9 @@
 			<properties>
 				<eclipse-site>http://download.eclipse.org/releases/indigo</eclipse-site>
 				<platform-version>[3.7,3.8)</platform-version>
+                <platform-version-name>indigo</platform-version-name>
 			</properties>
 		</profile>
-
 	</profiles>
 
 	<modules>
@@ -60,7 +61,7 @@
 		<module>org.camunda.bpm.modeler.tests</module>
 		<module>org.camunda.bpm.modeler.feature</module>
 		<module>org.camunda.bpm.modeler.updatesite.feature</module>
-	</modules>
+    </modules>
 
 	<repositories>
 		<repository>
@@ -71,7 +72,7 @@
 
 		<repository>
 			<id>eclipse-bpmn2</id>
-			<url>http://download.eclipse.org/modeling/mdt/bpmn2/updates/milestones/S20130423/</url>
+			<url>http://download.eclipse.org/modeling/mdt/bpmn2/updates/milestones/S20130822/</url>
 			<layout>p2</layout>
 			<snapshots>
 				<enabled>true</enabled>
@@ -131,15 +132,6 @@
 
 	</repositories>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<!-- need maven-findbugs-2.3.2-SNAPSHOT, see http://jira.codehaus.org/browse/MFINDBUGS-122
-				remove this when this version is released -->
-			<id>codehaus.snapshots</id>
-			<url>http://snapshots.repository.codehaus.org/</url>
-		</pluginRepository>
-	</pluginRepositories>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -169,20 +161,9 @@
 					</configuration>
 				</plugin>
 				<plugin>
-					<!-- TODO remove workaround when https://issues.sonatype.org/browse/TYCHO-473
-						is fixed -->
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>maven-osgi-source-plugin</artifactId>
 					<version>${tycho-version}</version>
-					<executions>
-						<execution>
-							<id>attach-source</id>
-							<phase>process-classes</phase>
-							<goals>
-								<goal>plugin-source</goal>
-							</goals>
-						</execution>
-					</executions>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -200,7 +181,7 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>findbugs-maven-plugin</artifactId>
-					<version>2.3.2-SNAPSHOT</version>
+					<version>2.3.2</version>
 					<configuration>
 						<findbugsXmlOutput>true</findbugsXmlOutput>
 						<failOnError>false</failOnError>
@@ -216,7 +197,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-pmd-plugin</artifactId>
-					<version>2.5</version>
+					<version>3.0.1</version>
 					<configuration>
 						<sourceEncoding>utf-8</sourceEncoding>
 						<minimumTokens>100</minimumTokens>
