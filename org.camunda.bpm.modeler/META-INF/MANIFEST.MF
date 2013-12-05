@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: camunda modeler
 Bundle-SymbolicName: org.camunda.bpm.modeler;singleton:=true
-Bundle-Version: 2.3.0
+Bundle-Version: 2.4.0.qualifier
 Bundle-Activator: org.camunda.bpm.modeler.core.Activator
 Bundle-Vendor: camunda.org
 Require-Bundle: org.eclipse.emf.transaction,
