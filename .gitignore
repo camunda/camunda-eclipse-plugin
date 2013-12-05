@@ -1,3 +1,4 @@
+/org.camunda.bpm.modeler/META-INF/p2.inf
 target/
 local/
 .git/
