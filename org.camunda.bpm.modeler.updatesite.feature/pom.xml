@@ -62,7 +62,7 @@
 				<executions>
 					<execution>
 						<id>install</id>
-						<phase>install</phase>
+						<phase>verify</phase>
 						<configuration>
 							<quiet>true</quiet>
 							<tasks>
