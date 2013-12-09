@@ -16,6 +16,7 @@ import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CompensateEventDefinition;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowElementsContainer;
+import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
@@ -138,16 +139,19 @@ public class CompensateEventDefinitionPropertiesBuilder extends AbstractProperti
 			if (value == null || value.isEmpty()) {
 				setTransactionalActivityRefValue(null);
 			} else {
-				FlowElementsContainer parentContainer = ModelUtil.getFlowElementsContainer((BaseElement) model);
-				List<FlowElement> flowElements = parentContainer.getFlowElements();
-				if (flowElements != null && !flowElements.isEmpty()) {
-					for (EObject eObject : flowElements) {
-						FlowElement flowElement = (FlowElement) eObject;
-						if (flowElement.getId().equals(value) && flowElement instanceof Activity) {
+				FlowElementsContainer container = ModelUtil.getFlowElementsContainer((BaseElement) model);
+				FlowElement flowElement = findActiviti(container, value);
+				if (flowElement != null) {
+					setTransactionalActivityRefValue((Activity) flowElement);
+					// hide previous error when right element found
+					hideError();
+				} else {
+					if (container instanceof SubProcess && ((SubProcess) container).isTriggeredByEvent()) {
+						flowElement = findActiviti((FlowElementsContainer) container.eContainer(), value);
+						if (flowElement != null) {
 							setTransactionalActivityRefValue((Activity) flowElement);
 							// hide previous error when right element found
 							hideError();
-							break;
 						} else {
 							showError("No valid activity id for this process.");
 						}
@@ -159,6 +163,19 @@ public class CompensateEventDefinitionPropertiesBuilder extends AbstractProperti
 		private void setTransactionalActivityRefValue(final Activity activity) {
 			TransactionalEditingDomain domain = getTransactionalEditingDomain();
 			ModelUtil.setValue(domain, model, feature, activity);
+		}
+
+		private FlowElement findActiviti(FlowElementsContainer container , String value) {
+			List<FlowElement> flowElements = container.getFlowElements();
+			if (flowElements != null && !flowElements.isEmpty()) {
+				for (EObject eObject : flowElements) {
+					FlowElement flowElement = (FlowElement) eObject;
+					if (flowElement.getId().equals(value) && flowElement instanceof Activity) {
+						return flowElement;
+					}
+				}
+			}
+			return null;
 		}
 
 		@Override
