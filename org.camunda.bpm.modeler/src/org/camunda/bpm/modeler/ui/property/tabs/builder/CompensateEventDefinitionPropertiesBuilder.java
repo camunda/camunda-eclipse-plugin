@@ -140,14 +140,14 @@ public class CompensateEventDefinitionPropertiesBuilder extends AbstractProperti
 				setTransactionalActivityRefValue(null);
 			} else {
 				FlowElementsContainer container = ModelUtil.getFlowElementsContainer((BaseElement) model);
-				FlowElement flowElement = findActiviti(container, value);
+				FlowElement flowElement = findActivity(container, value);
 				if (flowElement != null) {
 					setTransactionalActivityRefValue((Activity) flowElement);
 					// hide previous error when right element found
 					hideError();
 				} else {
 					if (container instanceof SubProcess && ((SubProcess) container).isTriggeredByEvent()) {
-						flowElement = findActiviti((FlowElementsContainer) container.eContainer(), value);
+						flowElement = findActivity((FlowElementsContainer) container.eContainer(), value);
 						if (flowElement != null) {
 							setTransactionalActivityRefValue((Activity) flowElement);
 							// hide previous error when right element found
@@ -165,7 +165,7 @@ public class CompensateEventDefinitionPropertiesBuilder extends AbstractProperti
 			ModelUtil.setValue(domain, model, feature, activity);
 		}
 
-		private FlowElement findActiviti(FlowElementsContainer container , String value) {
+		private FlowElement findActivity(FlowElementsContainer container , String value) {
 			List<FlowElement> flowElements = container.getFlowElements();
 			if (flowElements != null && !flowElements.isEmpty()) {
 				for (EObject eObject : flowElements) {
