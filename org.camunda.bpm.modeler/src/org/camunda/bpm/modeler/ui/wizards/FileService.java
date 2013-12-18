@@ -51,6 +51,7 @@ import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IStorageEditorInput;
+import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 
 public class FileService {
@@ -222,25 +223,32 @@ public class FileService {
 			URI uri = ((Bpmn2DiagramEditorInput) input).getModelUri();
 			return uri.trimFragment();
 		} else if (input instanceof FileEditorInput) {
-			IPath path =  ((FileEditorInput) input).getFile().getFullPath();
+			IPath path = ((FileEditorInput) input).getFile().getFullPath();
 			return URI.createPlatformResourceURI(path.toString(), true);
 		} else if (input instanceof IStorageEditorInput) {
 			IStorageEditorInput sei = (IStorageEditorInput) input;
 
 			try {
 				IPath path = sei.getStorage().getFullPath();
-				if (path!=null)
+				if (path!=null) {
 					return URI.createPlatformResourceURI(path.toString(), true);
-
+				}
+				
 				// the input is not a local file. Create a temp file and copy its contents
 				String name = sei.getStorage().getName();
-				InputStream istream = sei.getStorage().getContents();
+				InputStream istream;
+				
+				istream = sei.getStorage().getContents();
+	
 				File file = createTempFile(name, istream);
 				return URI.createFileURI(file.getPath());
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			catch (Exception e) {
-			}
-		}else if (input instanceof DiagramEditorInput) {
+		} else if (input instanceof FileStoreEditorInput) {
+			return URI.createURI(((FileStoreEditorInput) input).getURI().toString());
+		} else if (input instanceof DiagramEditorInput) {
 			return ((DiagramEditorInput) input).getUri();
 		}
 		return null;
