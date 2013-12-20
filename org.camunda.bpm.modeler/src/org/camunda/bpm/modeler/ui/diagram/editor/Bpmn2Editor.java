@@ -13,6 +13,7 @@
 package org.camunda.bpm.modeler.ui.diagram.editor;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,14 +54,17 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.emf.common.command.BasicCommandStack;
+import org.eclipse.core.runtime.URIUtil;
+import org.eclipse.emf.common.CommonPlugin;
+import org.eclipse.emf.common.command.CommandStack;
 import org.eclipse.emf.common.util.BasicDiagnostic;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
@@ -119,21 +123,21 @@ public class Bpmn2Editor extends DiagramEditor implements IPropertyChangeListene
 	public static final String EDITOR_ID = "org.camunda.bpm.modeler.ui.bpmn2editor";
 	public static final String CONTRIBUTOR_ID = "org.camunda.bpm.modeler.ui.PropertyContributor";
 
+	private static Bpmn2Editor activeEditor;
+	private static ITabDescriptorProvider tabDescriptorProvider;
+	
 	private ModelHandler modelHandler;
-	private URI modelUri;
-	private URI diagramUri;
 	private boolean editable = true;
 
 	protected BPMNDiagram bpmnDiagram;
+	
 	protected Bpmn2ResourceImpl bpmnResource;
+	private Resource diagramResource;
 
 	private IPartListener2 selectionListener;
 	private IResourceChangeListener markerChangeListener;
-	private static Bpmn2Editor activeEditor;
-	private static ITabDescriptorProvider tabDescriptorProvider;
 
 	private Bpmn2EditingDomainListener editingDomainListener;
-
 	private Bpmn2Preferences preferences;
 
 	protected DiagramEditorAdapter editorAdapter;
@@ -166,7 +170,7 @@ public class Bpmn2Editor extends DiagramEditor implements IPropertyChangeListene
 		if (input instanceof Bpmn2DiagramEditorInput) {
 			return (Bpmn2DiagramEditorInput) input;
 		} else {
-			return createNewDiagramEditorInput(input, Bpmn2DiagramType.COLLABORATION, null);
+			return createNewDiagramEditorInput(input, Bpmn2DiagramType.COLLABORATION);
 		}
 	}
 
@@ -231,74 +235,106 @@ public class Bpmn2Editor extends DiagramEditor implements IPropertyChangeListene
 	/**
 	 * Beware, creates a new input and changes this editor
 	 */
-	private Bpmn2DiagramEditorInput createNewDiagramEditorInput(IEditorInput input, Bpmn2DiagramType diagramType,
-			String targetNamespace) {
-		try {
-			modelUri = FileService.getInputUri(input);
-			input = Bpmn2DiagramCreator.createDiagramInput(modelUri, diagramType, targetNamespace, this);
-			diagramUri = ((Bpmn2DiagramEditorInput) input).getUri();
-
-			return (Bpmn2DiagramEditorInput) input;
-		} catch (Exception e) {
-			Activator.logError(e);
-			throw new RuntimeException(e);
-		}
-	}
-
-	private void saveModelFile() {
-		modelHandler.save();
-		((BasicCommandStack) getEditingDomain().getCommandStack()).saveIsDone();
-		updateDirtyState();
+	private Bpmn2DiagramEditorInput createNewDiagramEditorInput(IEditorInput input, Bpmn2DiagramType diagramType) {
+		URI modelUri = FileService.getInputUri(input);
+		
+		return Bpmn2DiagramCreator.createDiagramInput(modelUri, diagramType, getEditingDomain());
 	}
 
 	@Override
 	protected void setInput(IEditorInput input) {
-		super.setInput(input);
 
-		// Hook a transaction exception handler so we can get diagnostics about EMF
-		// validation errors.
+		TransactionalEditingDomain editingDomain = getEditingDomain();
+		CommandStack commandStack = editingDomain.getCommandStack();
+		
+		ResourceSet resourceSet = editingDomain.getResourceSet();
+
+		// get (and init) editing domain listener
+		// this allows us to hook into the transaction exception handler to get 
+		// diagnostics about EMF validation errors
 		getEditingDomainListener();
 
-		BasicCommandStack basicCommandStack = (BasicCommandStack) getEditingDomain().getCommandStack();
+		
+		// configure resource set
+		
+		resourceSet.setURIConverter(new ProxyURIConverterImplExtension());
+		resourceSet.eAdapters().add(editorAdapter = new DiagramEditorAdapter(this));
 
+		resourceSet.getResourceFactoryRegistry().getContentTypeToFactoryMap()
+			.put(Bpmn2ModelerResourceImpl.BPMN2_CONTENT_TYPE_ID, new ModelResourceFactoryImpl());
+		
+		
+		// resolve diagram input
+		
+		Bpmn2DiagramEditorInput diagramEditorInput = null;
+		
 		if (input instanceof Bpmn2DiagramEditorInput) {
-			Bpmn2DiagramEditorInput bpmn2DiagramEditorInput = (Bpmn2DiagramEditorInput) input;
-			ResourceSet resourceSet = getEditingDomain().getResourceSet();
+			diagramEditorInput = (Bpmn2DiagramEditorInput) input;
+		} else {
+			diagramEditorInput = createNewDiagramEditorInput(input, Bpmn2DiagramType.COLLABORATION);
+		}
+		
+		URI modelUri = diagramEditorInput.getModelUri();
+		URI diagramUri = diagramEditorInput.getDiagramUri();
 
-			resourceSet.getResourceFactoryRegistry().getContentTypeToFactoryMap()
-					.put(Bpmn2ModelerResourceImpl.BPMN2_CONTENT_TYPE_ID, new ModelResourceFactoryImpl());
 
-			/**
-			 * we assume that the input will have the model uri
-			 */
-			bpmnResource = (Bpmn2ResourceImpl) resourceSet.createResource(bpmn2DiagramEditorInput.getModelUri(),
-					Bpmn2ModelerResourceImpl.BPMN2_CONTENT_TYPE_ID);
+		// create graphiti diagram file
+		
+		Diagram diagram = Graphiti.getPeCreateService().createDiagram("BPMN2", Bpmn2DiagramCreator.getModelName(modelUri), true);
+		diagram.setGridUnit(0);
 
-			resourceSet.setURIConverter(new ProxyURIConverterImplExtension());
-			resourceSet.eAdapters().add(editorAdapter = new DiagramEditorAdapter(this));
+		diagramResource = FileService.createDiagramResource(diagramUri, diagram, editingDomain);
+		
+		
+		// open and load BPMN 2.0 file
+		
+		bpmnResource = (Bpmn2ResourceImpl) resourceSet.createResource(modelUri, Bpmn2ModelerResourceImpl.BPMN2_CONTENT_TYPE_ID);
 
-			setActiveEditor(this);
-
-			try {
-				if (getModelFile() == null || getModelFile().exists()) {
-					bpmnResource.load(null);
-				} else {
-					saveModelFile();
-				}
-			} catch (IOException e) {
-				Status status = new Status(IStatus.WARNING, Activator.PLUGIN_ID, e.getMessage(), e);
-				Activator.logStatus(status);
+		boolean exists = true;
+		
+		try {
+			bpmnResource.load(null);
+		} catch (FileNotFoundException e) {
+			exists = false;
+		} catch (IOException e) {
+			String message = e.getMessage();
+			
+			if (message.matches("Resource '[^']+' does not exist.")) {
+				exists = false;
+			} else {
+				// ok, handled in import error dialog
 			}
-			basicCommandStack.execute(new RecordingCommand(getEditingDomain()) {
+		}
+		
+		// set input
+		super.setInput(diagramEditorInput);
 
+		setActiveEditor(this);
+
+		if (!exists) {
+			// this is the usual case when files are moved around in the file
+			// system and Eclipse cannot find the files any more when being opened again
+			Display.getDefault().asyncExec(new Runnable() {
+				
 				@Override
-				protected void doExecute() {
-					importDiagram(bpmnResource);
+				public void run() {
+					closeEditor();
 				}
 			});
+			
+			return;
 		}
-		basicCommandStack.saveIsDone();
-		basicCommandStack.flush();
+		
+		commandStack.execute(new RecordingCommand(getEditingDomain()) {
+
+			@Override
+			protected void doExecute() {
+				importDiagram(bpmnResource);
+			}
+		});
+
+		commandStack.flush();
+
 		loadMarkers();
 	}
 
@@ -554,25 +590,37 @@ public class Bpmn2Editor extends DiagramEditor implements IPropertyChangeListene
 	}
 
 	public IPath getModelPath() {
-		if (getModelFile() != null)
-			return getModelFile().getFullPath();
+		IResource modelFile = getModelFile();
+		
+		if (modelFile != null) {
+			return modelFile.getFullPath();
+		}
+
 		return null;
 	}
 
 	public IProject getProject() {
-		if (getModelFile() != null)
-			return getModelFile().getProject();
-		return null;
+		IResource modelFile = getModelFile();
+		
+		if (modelFile != null) {
+			return modelFile.getProject();
+		} else {
+			return null;
+		}
 	}
 
 	public IFile getModelFile() {
-		if (modelUri != null) {
-			String uriString = modelUri.trimFragment().toPlatformString(true);
-			if (uriString != null) {
-				IPath fullPath = new Path(uriString);
-				return ResourcesPlugin.getWorkspace().getRoot().getFile(fullPath);
-			}
+		String platformString = bpmnResource.getURI().toPlatformString(true);
+		
+		if (platformString == null) {
+			return null;
 		}
+		
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		if (workspace != null) {
+			return (IFile) workspace.getRoot().findMember(platformString);
+		}
+		
 		return null;
 	}
 
@@ -618,72 +666,36 @@ public class Bpmn2Editor extends DiagramEditor implements IPropertyChangeListene
 	public void doSave(IProgressMonitor monitor) {
 		super.doSave(monitor);
 
-		Resource resource = getResourceSet().getResource(((Bpmn2DiagramEditorInput) getEditorInput()).getModelUri(), false);
-		
-		// TODO uncomment to perform validation
-		// BPMN2ProjectValidator.validateOnSave(resource, monitor);
+//		Resource resource = getDiagramBehavior().getEditingDomain().getResourceSet().getResource( ((Bpmn2DiagramEditorInput) getEditorInput()).getModelUri(), false);
+//		BPMN2ProjectValidator.validateOnSave(resource, monitor);
 	}
 
 	@Override
 	public boolean isSaveAsAllowed() {
-		// FIXME allow save as later, its buggy right now
-		return false;
+		return getModelFile() != null;
 	}
 
 	@Override
 	public void doSaveAs() {
 		IFile oldFile = getModelFile();
+		
 		SaveAsDialog saveAsDialog = new SaveAsDialog(getSite().getShell());
 		saveAsDialog.setOriginalFile(oldFile);
 		saveAsDialog.create();
+		
 		if (saveAsDialog.open() == SaveAsDialog.CANCEL) {
 			return;
 		}
+		
 		IPath newFilePath = saveAsDialog.getResult();
 		if (newFilePath == null) {
 			return;
 		}
-
-		IFile newFile = ResourcesPlugin.getWorkspace().getRoot().getFile(newFilePath);
-		IWorkbenchPage page = getSite().getPage();
-
-		try {
-			// Save the current(old) file
-			doSave(null);
-			// if new file exists, close its editor (if open) and delete the existing
-			// file
-			if (newFile.exists()) {
-				IEditorPart editorPart = ResourceUtil.findEditor(page, newFile);
-				if (editorPart != null)
-					page.closeEditor(editorPart, false);
-				newFile.delete(true, null);
-			}
-			// make a copy
-			oldFile.copy(newFilePath, true, null);
-		} catch (CoreException e) {
-			showErrorDialogWithLogging(e);
-			return;
-		}
-
-		// open new editor
-		try {
-			page.openEditor(new FileEditorInput(newFile), Bpmn2Editor.EDITOR_ID);
-		} catch (PartInitException e1) {
-			showErrorDialogWithLogging(e1);
-			return;
-		}
-
-		// and close the old editor
-		IEditorPart editorPart = ResourceUtil.findEditor(page, oldFile);
-		if (editorPart != null)
-			page.closeEditor(editorPart, false);
-
-		try {
-			newFile.refreshLocal(IResource.DEPTH_ZERO, null);
-		} catch (CoreException e) {
-			showErrorDialogWithLogging(e);
-			return;
-		}
+		
+		URI newURI = URI.createPlatformResourceURI(newFilePath.toString(), true);
+		handleResourceMoved(bpmnResource, newURI);
+		
+		doSave(null);
 	}
 
 	public void closeEditor() {
@@ -754,25 +766,41 @@ public class Bpmn2Editor extends DiagramEditor implements IPropertyChangeListene
 		return true;
 	}
 
-	public boolean handleResourceMoved(Resource resource, URI newURI) {
+	public boolean handleResourceMoved(Resource resource, final URI newURI) {
 		URI oldURI = resource.getURI();
+		
 		resource.setURI(newURI);
 
-		if (modelUri.equals(oldURI)) {
-			modelUri = newURI;
-
+		if (resource.equals(bpmnResource)) {
+			
 			if (preferences != null) {
 				preferences.getGlobalPreferences().removePropertyChangeListener(this);
 				preferences.dispose();
 				preferences = null;
 			}
-		} else if (diagramUri.equals(oldURI)) {
-			diagramUri = newURI;
+			
+			getEditorInput().updateModelUri(newURI);
+		} else {
+			getEditorInput().updateUri(newURI);
 		}
-
+		
+		Display.getDefault().asyncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				refreshTitle();
+				refreshTitleToolTip();
+			}
+		});
+		
 		return true;
 	}
 
+	@Override
+	public Bpmn2DiagramEditorInput getEditorInput() {
+		return (Bpmn2DiagramEditorInput) super.getEditorInput();
+	}
+	
 	// //////////////////////////////////////////////////////////////////////////////
 	// Other handlers
 	// //////////////////////////////////////////////////////////////////////////////

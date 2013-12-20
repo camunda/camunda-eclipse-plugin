@@ -195,7 +195,7 @@ public class Bpmn2MultiPageEditor2 extends MultiPageEditorPart implements IGotoM
 						if (sourceViewer!=null)
 							--pageIndex;
 						Bpmn2DiagramEditorInput input = (Bpmn2DiagramEditorInput)designEditor.getEditorInput();
-						input.setBpmnDiagram(bpmnDiagram);
+						
 						addPage(pageIndex, designEditor, input);
 						CTabItem oldItem = tabFolder.getItem(pageIndex-1);
 						CTabItem newItem = tabFolder.getItem(pageIndex);

@@ -353,14 +353,16 @@ public class DIUtils {
 		String typeId = dtp.getDiagram().getDiagramTypeId();
 		
 		String name = bpmnDiagram.getName();
-		if(name == null) {
+		if (name == null) {
 			name = bpmnDiagram.getId();
 		}
 		
 		final Diagram newDiagram = Graphiti.getCreateService().createDiagram(typeId, name, true);
 		final IFeatureProvider featureProvider = dtp.getFeatureProvider();
 		final Resource resource = dtp.getDiagram().eResource();
+
 		TransactionalEditingDomain domain = editor.getEditingDomain();
+		
 		domain.getCommandStack().execute(new RecordingCommand(domain) {
 			protected void doExecute() {
 				resource.getContents().add(newDiagram);
@@ -368,6 +370,7 @@ public class DIUtils {
 				featureProvider.link(newDiagram, bpmnDiagram);
 			}
 		});
+
 		return newDiagram;
 	}
 	

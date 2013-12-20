@@ -12,47 +12,24 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.diagram.editor;
 
-import org.camunda.bpm.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.camunda.bpm.modeler.ui.wizards.FileService;
-import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IMemento;
 
 public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
 
-	private Bpmn2DiagramType initialDiagramType = Bpmn2DiagramType.NONE;
-
-	private String targetNamespace;
-	private BPMNDiagram bpmnDiagram;
 	private URI modelUri;
 	
-	public Bpmn2DiagramEditorInput(URI modelUri, URI diagramUri, TransactionalEditingDomain domain, String providerId) {
+	public Bpmn2DiagramEditorInput(URI modelUri, URI diagramUri, String providerId) {
 		super(diagramUri, providerId);
 	
 		this.modelUri = modelUri;
-	}
-	
-	public Bpmn2DiagramType getInitialDiagramType() {
-		return initialDiagramType;
-	}
-
-	public void setInitialDiagramType(Bpmn2DiagramType initialDiagramType) {
-		this.initialDiagramType = initialDiagramType;
-	}
-
-	public String getTargetNamespace() {
-		return targetNamespace;
-	}
-
-	public void setTargetNamespace(String targetNamespace) {
-		this.targetNamespace = targetNamespace;
 	}
 
 	public URI getModelUri() {
@@ -63,24 +40,22 @@ public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
 	 * We are using the original URI field to store the graphiti diagram uri
 	 * @return
 	 */
-	public URI  getDiagramUri() {
+	public URI getDiagramUri() {
 		return getUri();
 	}
 	
+	@Override
 	public String getToolTipText() {
 		return modelUri.isPlatformResource() ? modelUri.toPlatformString(true) : modelUri.toFileString();
 	}
 	
+	@Override
 	public String getName() {
 		return URI.decode(modelUri.trimFileExtension().lastSegment());
 	}
 	
-	public void updateUri(URI diagramFileUri) {
-		if (diagramFileUri.isPlatformResource()) {
-			modelUri = diagramFileUri;
-		}
-		else
-			super.updateUri(diagramFileUri);
+	public void updateModelUri(URI modelUri) {
+		this.modelUri = modelUri;
 	}
 
 	@Override
@@ -104,9 +79,6 @@ public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
 		
 		String modelRef = toAbsoluteRef(modelUri);
 		String otherRef = toAbsoluteRef(otherUri);
-		
-//		System.out.println("Compare <" + modelRef + ">\n" + 
-//				               "   with <" + otherRef + ">\n");
 		
 		// handle the error case that any of the uris could
 		// not be transformed into absolute refs
@@ -134,14 +106,6 @@ public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
 		}
 		
 		return null;
-	}
-	
-	public BPMNDiagram getBpmnDiagram() {
-		return bpmnDiagram;
-	}
-
-	public void setBpmnDiagram(BPMNDiagram bpmnDiagram) {
-		this.bpmnDiagram = bpmnDiagram;
 	}
 	
 	@Override

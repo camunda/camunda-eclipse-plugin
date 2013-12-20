@@ -32,10 +32,10 @@ import org.eclipse.graphiti.ui.internal.editor.GFWorkspaceCommandStackImpl;
  * This overrides the DefaultUpdateBehavior provider class from Graphiti. This
  * is necessary because we want to provide our own ResourceSet implementation
  * instead of being forced to deal with the default ResourceSetImpl. See
- * createResourceSetAndEditingDomain() for details.
+ * {@link createResourceSetAndEditingDomain()} for details.
  * 
  * @author Bob Brodt
- * 
+ * @author nico.rehwaldt
  */
 public class Bpmn2EditorUpdateBehavior extends DefaultUpdateBehavior {
 
@@ -54,27 +54,26 @@ public class Bpmn2EditorUpdateBehavior extends DefaultUpdateBehavior {
 			createEditingDomain();
 		return editingDomain;
 	}
-
+	
 	@Override
 	public void createEditingDomain() {
-		if (editingDomain == null) {
-			editingDomain = createResourceSetAndEditingDomain();
-			initializeEditingDomain(editingDomain);
-		}
+		TransactionalEditingDomain editingDomain = createResourceSetAndEditingDomain();
+		initializeEditingDomain(editingDomain);
 	}
-
+	
+	@SuppressWarnings("restriction")
 	public TransactionalEditingDomain createResourceSetAndEditingDomain() {
 		// Argh!! This is the ONLY line of code that actually differs
 		// (significantly) from
 		// the Graphiti EMF Service. Here we want to substitute our own
 		// Bpmn2ModelerResourceSetImpl instead of using a ResourceSetImpl.
 		final ResourceSet resourceSet = new Bpmn2ModelerResourceSetImpl();
-		final IWorkspaceCommandStack workspaceCommandStack = new GFWorkspaceCommandStackImpl(
-				new DefaultOperationHistory());
+		final IWorkspaceCommandStack workspaceCommandStack = new GFWorkspaceCommandStackImpl(new DefaultOperationHistory());
 
 		final TransactionalEditingDomainImpl editingDomain = new TransactionalEditingDomainImpl(
 				new ComposedAdapterFactory(ComposedAdapterFactory.Descriptor.Registry.INSTANCE),
 				workspaceCommandStack, resourceSet);
+		
 		WorkspaceEditingDomainFactory.INSTANCE.mapResourceSet(editingDomain);
 		return editingDomain;
 	}
@@ -82,7 +81,7 @@ public class Bpmn2EditorUpdateBehavior extends DefaultUpdateBehavior {
 	protected void initializeEditingDomain(TransactionalEditingDomain domain) {
 		// we want first crack at these notifications!
 		workspaceSynchronizer = new WorkspaceSynchronizer(getEditingDomain(),
-				new BPMN2EditorWorkspaceSynchronizerDelegate(diagramEditor));
+				new Bpmn2EditorWorkspaceSynchronizerDelegate(diagramEditor));
 		super.initializeEditingDomain(domain);
 	}
 	
@@ -91,7 +90,7 @@ public class Bpmn2EditorUpdateBehavior extends DefaultUpdateBehavior {
 		workspaceSynchronizer.dispose();
 	}
 	
-	public class BPMN2EditorWorkspaceSynchronizerDelegate implements WorkspaceSynchronizer.Delegate {
+	private static class Bpmn2EditorWorkspaceSynchronizerDelegate implements WorkspaceSynchronizer.Delegate {
 
 		private Bpmn2Editor bpmnEditor;
 
@@ -99,7 +98,7 @@ public class Bpmn2EditorUpdateBehavior extends DefaultUpdateBehavior {
 		 * The DiagramEditorBehavior reacts on a setResourceChanged(true) if he gets
 		 * activated.
 		 */
-		public BPMN2EditorWorkspaceSynchronizerDelegate(DiagramEditor diagramEditor) {
+		public Bpmn2EditorWorkspaceSynchronizerDelegate(DiagramEditor diagramEditor) {
 			this.bpmnEditor = (Bpmn2Editor)diagramEditor;
 		}
 
@@ -118,5 +117,5 @@ public class Bpmn2EditorUpdateBehavior extends DefaultUpdateBehavior {
 		public boolean handleResourceMoved(Resource resource, URI newURI) {
 			return bpmnEditor.handleResourceMoved(resource, newURI);
 		}
-
-	}}
+	}
+}

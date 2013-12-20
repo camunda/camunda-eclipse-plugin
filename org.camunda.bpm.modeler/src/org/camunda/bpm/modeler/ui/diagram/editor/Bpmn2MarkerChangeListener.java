@@ -9,6 +9,7 @@ import java.util.Set;
 import org.camunda.bpm.modeler.core.Bpmn2TabbedPropertySheetPage;
 import org.camunda.bpm.modeler.core.validation.BpmnValidationStatusLoader;
 import org.camunda.bpm.modeler.core.validation.ValidationStatusAdapter;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -33,7 +34,13 @@ public class Bpmn2MarkerChangeListener implements IResourceChangeListener {
 
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
-		final IResourceDelta modelFileDelta = event.getDelta().findMember(editor.getModelFile().getFullPath());
+		IFile modelFile = editor.getModelFile();
+		
+		if (modelFile == null) {
+			return;
+		}
+		
+		final IResourceDelta modelFileDelta = event.getDelta().findMember(modelFile.getFullPath());
 		if (modelFileDelta == null) {
 			return;
 		}
