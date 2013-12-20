@@ -12,20 +12,24 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.wizards;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.camunda.bpm.modeler.core.Activator;
 import org.camunda.bpm.modeler.core.utils.ErrorUtils;
-import org.camunda.bpm.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
-import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.ui.diagram.editor.Bpmn2Editor;
+import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -75,27 +79,38 @@ public class Bpmn2DiagramWizard extends Wizard implements INewWizard {
 		final String fileName = page2.getFileName();
 		final IResource container = page2.getDiagramContainer();
 
-		IRunnableWithProgress op = new IRunnableWithProgress() {
+		IRunnableWithProgress runnable = new IRunnableWithProgress() {
 			@Override
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
 					IPath path = container.getFullPath().append(fileName);
-					URI uri = URI.createPlatformResourceURI(path.toString(), true);
+					URI diagramUri = URI.createPlatformResourceURI(path.toString(), true);
 					
 					// create the diagram
-					Bpmn2DiagramCreator.createBpmn2Resource(uri);
-					Bpmn2DiagramCreator.createDiagramInput(uri, Bpmn2DiagramType.COLLABORATION, ModelPackage.eNS_URI);
+					final Bpmn2Resource bpmn2Resource = Bpmn2DiagramCreator.createBpmn2Resource(diagramUri);
+
+					ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
+						@Override
+						public void run(IProgressMonitor monitor) throws CoreException {
+							try {
+								bpmn2Resource.save(null);
+							} catch (IOException e) {
+								throw new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Failed to save file", e));
+							}
+						}
+					}, monitor);
 					
 					// and locate + open it as a file editor input
 					// to prevent opening it twice upon double click in workspace
 					IWorkspace workspace = container.getWorkspace();
+					IWorkspaceRoot root = workspace.getRoot();
 					
-					IPath absPath = workspace.getRoot().findMember(path).getLocation();
-					IFile diagramFile = workspace.getRoot().getFileForLocation(absPath);
+					IFile diagramFile = root.getFile(path);
 					
 					openEditor(new FileEditorInput(diagramFile));
 				} catch (CoreException e) {
-					throw new InvocationTargetException(e);
+					Activator.logError(e);
+					MessageDialog.openError(getShell(), "Failed to create diagram", e.getMessage());
 				} finally {
 					monitor.done();
 				}
@@ -103,7 +118,7 @@ public class Bpmn2DiagramWizard extends Wizard implements INewWizard {
 		};
 		
 		try {
-			getContainer().run(true, false, op);
+			getContainer().run(true, false, runnable);
 		} catch (InterruptedException e) {
 			return false;
 		} catch (InvocationTargetException e) {
@@ -111,6 +126,7 @@ public class Bpmn2DiagramWizard extends Wizard implements INewWizard {
 			MessageDialog.openError(getShell(), "Error", realException.getMessage());
 			return false;
 		}
+		
 		return true;
 	}
 

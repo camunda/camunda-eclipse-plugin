@@ -20,15 +20,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.camunda.bpm.modeler.core.model.Bpmn2ModelerResourceSetImpl;
-import org.camunda.bpm.modeler.ui.diagram.editor.Bpmn2Editor;
 import org.camunda.bpm.modeler.ui.diagram.editor.Bpmn2DiagramEditorInput;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -46,7 +43,6 @@ import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.Transaction;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
-import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.ui.IEditorInput;
@@ -54,28 +50,29 @@ import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 
+/**
+ * A utility class that provides file related services to the modeler.
+ * 
+ * @author nico.rehwaldt
+ */
 public class FileService {
 
-	public static TransactionalEditingDomain createEmfFileForDiagram(URI diagramResourceUri, final Diagram diagram, Bpmn2Editor diagramEditor) {
+	/**
+	 * Create a diagram resource with a given {@link Diagram}
+	 * in the context of a {@link TransactionalEditingDomain}.
+	 * 
+	 * @param uri
+	 * @param diagram
+	 * @param editingDomain
+	 * 
+	 * @return
+	 */
+	public static Resource createDiagramResource(final URI uri, final Diagram diagram, final TransactionalEditingDomain editingDomain) {
 
-		ResourceSet resourceSet = null;
-		TransactionalEditingDomain editingDomain = null;
-		if (diagramEditor == null) {
-			// Create a resource set and EditingDomain
-			resourceSet = new Bpmn2ModelerResourceSetImpl();
-			editingDomain = TransactionUtil.getEditingDomain(resourceSet);
-			if (editingDomain == null) {
-				// Not yet existing, create one
-				editingDomain = TransactionalEditingDomain.Factory.INSTANCE.createEditingDomain(resourceSet);
-			}
-		}
-		else {
-			editingDomain = diagramEditor.getEditingDomain();
-			resourceSet = diagramEditor.getDiagramBehavior().getEditingDomain().getResourceSet();
-		}
+		final ResourceSet resourceSet = editingDomain.getResourceSet();
 		
-		// Create a resource for this file.
-		final Resource resource = resourceSet.createResource(diagramResourceUri);
+		final Resource resource  = resourceSet.createResource(uri);
+		
 		CommandStack commandStack = editingDomain.getCommandStack();
 		commandStack.execute(new RecordingCommand(editingDomain) {
 
@@ -83,12 +80,16 @@ public class FileService {
 			protected void doExecute() {
 				resource.setTrackingModification(true);
 				resource.getContents().add(diagram);
-
 			}
 		});
-
-		save(editingDomain, Collections.<Resource, Map<?, ?>> emptyMap());
-		return editingDomain;
+		
+		try {
+			resource.save(null);
+		} catch (IOException e) {
+			throw new IllegalStateException("Failed to create diagram resource", e);
+		}
+		
+		return resource;
 	}
 
 	private static void save(TransactionalEditingDomain editingDomain, Map<Resource, Map<?, ?>> options) {
