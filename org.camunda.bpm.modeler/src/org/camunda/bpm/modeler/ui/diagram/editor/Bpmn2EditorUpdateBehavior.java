@@ -15,15 +15,12 @@ package org.camunda.bpm.modeler.ui.diagram.editor;
 
 import org.camunda.bpm.modeler.core.model.Bpmn2ModelerResourceSetImpl;
 import org.eclipse.core.commands.operations.DefaultOperationHistory;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.impl.TransactionalEditingDomainImpl;
 import org.eclipse.emf.workspace.IWorkspaceCommandStack;
 import org.eclipse.emf.workspace.WorkspaceEditingDomainFactory;
-import org.eclipse.emf.workspace.util.WorkspaceSynchronizer;
 import org.eclipse.emf.workspace.util.WorkspaceSynchronizer.Delegate;
 import org.eclipse.graphiti.ui.editor.DefaultUpdateBehavior;
 import org.eclipse.graphiti.ui.editor.DiagramBehavior;
@@ -38,8 +35,11 @@ import org.eclipse.graphiti.ui.internal.editor.GFWorkspaceCommandStackImpl;
  * @author Bob Brodt
  * @author nico.rehwaldt
  */
+@SuppressWarnings("restriction")
 public class Bpmn2EditorUpdateBehavior extends DefaultUpdateBehavior {
 
+	protected Delegate workspaceSynchronizerDelegate;
+	
 	public Bpmn2EditorUpdateBehavior(DiagramBehavior diagramBehavior) {
 		super(diagramBehavior);
 	}
@@ -51,11 +51,20 @@ public class Bpmn2EditorUpdateBehavior extends DefaultUpdateBehavior {
 	}
 
 	@Override
+	protected Delegate createWorkspaceSynchronizerDelegate() {
+		workspaceSynchronizerDelegate = super.createWorkspaceSynchronizerDelegate();
+		return workspaceSynchronizerDelegate;
+	}
+	
+	public Delegate getWorkspaceSynchronizerDelegate() {
+		return workspaceSynchronizerDelegate;
+	}
+	
+	@Override
 	public TransactionalEditingDomain getEditingDomain() {
 		return super.getEditingDomain();
 	}
 	
-	@SuppressWarnings("restriction")
 	public TransactionalEditingDomain createResourceSetAndEditingDomain() {
 		// Argh!! This is the ONLY line of code that actually differs
 		// (significantly) from
@@ -70,39 +79,5 @@ public class Bpmn2EditorUpdateBehavior extends DefaultUpdateBehavior {
 		
 		WorkspaceEditingDomainFactory.INSTANCE.mapResourceSet(editingDomain);
 		return editingDomain;
-	}
-	
-	@Override
-	protected Delegate createWorkspaceSynchronizerDelegate() {
-		return new Bpmn2EditorWorkspaceSynchronizerDelegate(diagramBehavior);
-	}
-	
-	private static class Bpmn2EditorWorkspaceSynchronizerDelegate implements WorkspaceSynchronizer.Delegate {
-
-		private Bpmn2Editor bpmnEditor;
-
-		/**
-		 * The DiagramEditorBehavior reacts on a setResourceChanged(true) if he gets
-		 * activated.
-		 */
-		public Bpmn2EditorWorkspaceSynchronizerDelegate(DiagramBehavior diagramBehavior) {
-			this.bpmnEditor = (Bpmn2Editor)diagramBehavior.getDiagramContainer();
-		}
-
-		public void dispose() { 
-			bpmnEditor = null;
-		}
-
-		public boolean handleResourceChanged(Resource resource) {
-			return bpmnEditor.handleResourceChanged(resource);
-		}
-
-		public boolean handleResourceDeleted(Resource resource) {
-			return bpmnEditor.handleResourceDeleted(resource);
-		}
-
-		public boolean handleResourceMoved(Resource resource, URI newURI) {
-			return bpmnEditor.handleResourceMoved(resource, newURI);
-		}
 	}
 }

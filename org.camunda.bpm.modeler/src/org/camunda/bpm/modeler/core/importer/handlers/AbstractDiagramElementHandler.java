@@ -69,7 +69,7 @@ public abstract class AbstractDiagramElementHandler<T extends BaseElement> {
 	 * @return
 	 */
 	private EObject resolveProxy(EObject node) {
-		Resource resource = modelImport.getResource();
+		Resource resource = modelImport.getBpmnResource();
 		ResourceSet resourceSet = resource.getResourceSet();
 		
 		if (resourceSet != null) {

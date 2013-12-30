@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.bpmn2.util.Bpmn2Resource;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.platform.IDiagramContainer;
@@ -26,21 +27,26 @@ import org.eclipse.graphiti.platform.IDiagramContainer;
 public class ModelImportCommand extends RecordingCommand {
 
 	protected IDiagramContainer diagramContainer;
-	protected Bpmn2Resource resource;
+	
+	protected Bpmn2Resource bpmnResource;
+	private Resource diagramResource;
 	
 	private ImportException recordedException;
 	private ModelImport modelImport;
 
-	public ModelImportCommand(TransactionalEditingDomain domain, IDiagramContainer diagramContainer, Bpmn2Resource resource) {
+	public ModelImportCommand(TransactionalEditingDomain domain, IDiagramContainer diagramContainer, Bpmn2Resource bpmnResource, Resource diagramResource) {
 		super(domain);
+		
 		this.diagramContainer = diagramContainer;
-		this.resource = resource;
+		
+		this.bpmnResource = bpmnResource;
+		this.diagramResource = diagramResource;
 	}
 
 	@Override
 	protected void doExecute() {
 		try {
-			modelImport = new ModelImport(diagramContainer.getDiagramTypeProvider(), resource);
+			modelImport = new ModelImport(diagramContainer, bpmnResource, diagramResource);
 			modelImport.execute();
 		} catch (ImportException e) {
 			recordedException = e;

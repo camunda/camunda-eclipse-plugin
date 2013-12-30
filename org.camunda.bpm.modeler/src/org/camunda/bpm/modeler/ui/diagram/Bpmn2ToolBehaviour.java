@@ -16,11 +16,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.camunda.bpm.modeler.core.di.DIUtils;
 import org.camunda.bpm.modeler.core.features.activity.ActivitySelectionBehavior;
 import org.camunda.bpm.modeler.core.features.api.IBpmn2AddFeature;
 import org.camunda.bpm.modeler.core.features.api.IBpmn2CreateFeature;
 import org.camunda.bpm.modeler.core.features.event.EventSelectionBehavior;
 import org.camunda.bpm.modeler.core.features.gateway.GatewaySelectionBehavior;
+import org.camunda.bpm.modeler.core.utils.ContextUtil;
 import org.camunda.bpm.modeler.core.utils.LabelUtil;
 import org.camunda.bpm.modeler.core.validation.ValidationStatusAdapter;
 import org.camunda.bpm.modeler.ui.Images;
@@ -51,6 +53,7 @@ import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.CreateConnectionContext;
 import org.eclipse.graphiti.features.context.impl.CreateContext;
 import org.eclipse.graphiti.features.context.impl.CustomContext;
+import org.eclipse.graphiti.features.context.impl.MoveShapeContext;
 import org.eclipse.graphiti.features.context.impl.UpdateContext;
 import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
@@ -279,16 +282,21 @@ public class Bpmn2ToolBehaviour extends DefaultToolBehaviorProvider implements I
 			IFeature feature = fc.getFeature();
 			if (context instanceof AddContext) {
 				if (feature instanceof IBpmn2AddFeature) {
-					((IBpmn2AddFeature) feature).postExecute(executionInfo);
+					((IBpmn2AddFeature<?>) feature).postExecute(executionInfo);
 				}
 			} else if (context instanceof CreateContext) {
 				if (feature instanceof IBpmn2CreateFeature) {
-					((IBpmn2CreateFeature) feature).postExecute(executionInfo);
+					((IBpmn2CreateFeature<?, ?>) feature).postExecute(executionInfo);
 				}
-			} else if (context instanceof UpdateContext) {
-				editor.setPictogramElementForSelection(((UpdateContext) context).getPictogramElement());
-				getDiagramTypeProvider().getDiagramBehavior().refresh();
 			}
+//			else if (context instanceof UpdateContext) {
+//				editor.setPictogramElementForSelection(((UpdateContext) context).getPictogramElement());
+//				getDiagramTypeProvider().getDiagramBehavior().refresh();
+//			}
+//			else if (context instanceof MoveShapeContext) {
+//				editor.setPictogramElementForSelection(((MoveShapeContext) context).getPictogramElement());
+//				getDiagramTypeProvider().getDiagramBehavior().refresh();
+//			}
 		}
 	}
 

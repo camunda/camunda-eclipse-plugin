@@ -22,7 +22,6 @@ import org.camunda.bpm.modeler.core.importer.handlers.AssociationShapeHandler;
 import org.camunda.bpm.modeler.core.importer.handlers.DataInputAssociationShapeHandler;
 import org.camunda.bpm.modeler.core.importer.handlers.DataInputShapeHandler;
 import org.camunda.bpm.modeler.core.importer.handlers.DataObjectReferenceShapeHandler;
-import org.camunda.bpm.modeler.core.importer.handlers.DataObjectShapeHandler;
 import org.camunda.bpm.modeler.core.importer.handlers.DataOutputAssociationShapeHandler;
 import org.camunda.bpm.modeler.core.importer.handlers.DataOutputShapeHandler;
 import org.camunda.bpm.modeler.core.importer.handlers.DatastoreReferenceShapeHandler;
@@ -38,7 +37,6 @@ import org.camunda.bpm.modeler.core.importer.handlers.TaskShapeHandler;
 import org.camunda.bpm.modeler.core.importer.util.ErrorLogger;
 import org.camunda.bpm.modeler.core.importer.util.ModelHelper;
 import org.camunda.bpm.modeler.core.layout.util.ConversionUtil;
-import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.core.utils.ScrollUtil;
 import org.camunda.bpm.modeler.core.utils.transform.Transformer;
@@ -82,11 +80,13 @@ import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
 import org.eclipse.emf.ecore.xmi.XMIException;
 import org.eclipse.graphiti.datatypes.IRectangle;
@@ -96,7 +96,6 @@ import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
-import org.eclipse.graphiti.platform.IDiagramBehavior;
 import org.eclipse.graphiti.platform.IDiagramContainer;
 import org.xml.sax.SAXException;
 
@@ -106,11 +105,11 @@ import org.xml.sax.SAXException;
  * @author Daniel Meyer
  */
 public class ModelImport {
+	
+	protected IDiagramContainer diagramContainer;
 
-	protected IFeatureProvider featureProvider;
-	protected Bpmn2Resource resource;
-	protected IDiagramTypeProvider diagramTypeProvider;
-	protected Bpmn2Preferences preferences;
+	protected Bpmn2Resource bpmnResource;
+	protected Resource diagramResource;	
 	
 	// map collecting all DiagramElements (BPMN DI) indexed by the IDs of the ProcessElements they reference. 
 	protected Map<String, DiagramElement> diagramElementMap = new HashMap<String, DiagramElement>();
@@ -142,28 +141,27 @@ public class ModelImport {
 	// flag to decide if the import should add a scroll shape
 	protected boolean withScrollShape = true;
 	
-	public ModelImport(IDiagramTypeProvider diagramTypeProvider, Bpmn2Resource resource, boolean withScrollShape) {
-		this(diagramTypeProvider, resource);
+	public ModelImport(IDiagramContainer diagramContainer, Bpmn2Resource bpmnResource, Resource diagramResource, boolean withScrollShape) {
+		this(diagramContainer, bpmnResource, diagramResource);
 		this.withScrollShape = withScrollShape;
 	}
 	
-	public ModelImport(IDiagramTypeProvider diagramTypeProvider, Bpmn2Resource resource) {
+	public ModelImport(IDiagramContainer diagramContainer, Bpmn2Resource bpmnResource, Resource diagramResource) {
 		
-		this.diagramTypeProvider = diagramTypeProvider;
-		this.resource = resource;
+		this.diagramContainer = diagramContainer;
 		
-		featureProvider = diagramTypeProvider.getFeatureProvider();
-		preferences = Bpmn2Preferences.getInstance(resource);
+		this.bpmnResource = bpmnResource;
+		this.diagramResource = diagramResource;
 
 		// log xml loading errors
-		logResourceErrors(resource);
+		logResourceErrors(bpmnResource);
 	}
 	
 	public void execute() {
 		long time = System.currentTimeMillis();
 		
 		try {
-			EList<EObject> contents = resource.getContents();
+			EList<EObject> contents = bpmnResource.getContents();
 			
 			if (contents.isEmpty()) {
 				throw new ResourceImportException("No document root in resource bundle");
@@ -211,7 +209,7 @@ public class ModelImport {
 				// are there unhandeled root elements?
 			}
 		}
-	 
+		
 		// next we process the DI diagrams and associate them with the process elements
 		List<BPMNDiagram> diagrams = definitions.getDiagrams();
 		for (BPMNDiagram bpmnDiagram : diagrams) {
@@ -240,7 +238,7 @@ public class ModelImport {
 		// at this point we have either a collaboration or 
 		// at minimum one process to work with
 		
-		ensureDiagramLinked(bpmnDiagram, collaboration, processes);
+		ensureBPMNDiagramLinked(bpmnDiagram, collaboration, processes);
 		
 		// and create the graphiti diagram
 		this.rootDiagram = createEditorRootDiagram(bpmnDiagram, collaboration, processes, definitions);
@@ -265,7 +263,7 @@ public class ModelImport {
 		performLayout();
 		
 		if (withScrollShape) {
-			addScrollShape();			
+			addScrollShape();
 		}
 	}
 	
@@ -286,7 +284,7 @@ public class ModelImport {
 	 * @param collaboration
 	 * @param processes
 	 */
-	protected void ensureDiagramLinked(BPMNDiagram bpmnDiagram, Collaboration collaboration, List<Process> processes) {
+	protected void ensureBPMNDiagramLinked(BPMNDiagram bpmnDiagram, Collaboration collaboration, List<Process> processes) {
 		BPMNPlane bpmnPlane = bpmnDiagram.getPlane();
 		
 		BaseElement bpmnElement = bpmnPlane.getBpmnElement();
@@ -306,7 +304,7 @@ public class ModelImport {
 	protected BPMNDiagram getOrCreateDiagram(List<BPMNDiagram> diagrams) {
 
 		if (diagrams.isEmpty()) {
-			BPMNDiagram newDiagram = ModelHelper.create(resource, BPMNDiagram.class);
+			BPMNDiagram newDiagram = ModelHelper.create(bpmnResource, BPMNDiagram.class);
 			diagrams.add(newDiagram);
 		}
 
@@ -314,7 +312,7 @@ public class ModelImport {
 		BPMNPlane bpmnPlane = bpmnDiagram.getPlane();
 		
 		if (bpmnPlane == null || bpmnPlane.eIsProxy()) {
-			bpmnPlane = ModelHelper.create(resource, BPMNPlane.class);
+			bpmnPlane = ModelHelper.create(bpmnResource, BPMNPlane.class);
 			bpmnDiagram.setPlane(bpmnPlane);
 		}
 		
@@ -324,7 +322,7 @@ public class ModelImport {
 	protected Process createDefaultDiagramContent(Definitions definitions, BPMNDiagram bpmnDiagram) {
 
 		// create process
-		Process process = ModelHelper.create(resource, Process.class);
+		Process process = ModelHelper.create(bpmnResource, Process.class);
 		definitions.getRootElements().add(process);
 		
 		// associate process with bpmn plane
@@ -334,19 +332,54 @@ public class ModelImport {
 	}
 
 	protected Diagram createEditorRootDiagram(BPMNDiagram bpmnDiagram, Collaboration collaboration, List<Process> processes, Definitions definitions) {
-		IDiagramBehavior diagramBehavior = diagramTypeProvider.getDiagramBehavior();
-		IDiagramContainer diagramContainer = diagramBehavior.getDiagramContainer();
 		
-		Diagram diagram = DIUtils.getOrCreateDiagram(diagramContainer, bpmnDiagram);
-		diagram.setGridUnit(0);
-		
-		diagramTypeProvider.init(diagram, diagramBehavior);
+		// retrieve diagram from resource
+		Diagram diagram = getDiagram(diagramResource);
 
-		// link collaboration or only process to diagram
+		// remove old scroll util (if present)
+		ScrollUtil.removeScrollShape(diagram);
+		
+		// clear it
+		DIUtils.clearDiagram(diagram);
+		
+		// set active
+		diagram.setActive(true);
+		
+		// get correct business object based on process or collaboration diagram
 		BaseElement businessObject = collaboration != null ? collaboration : processes.get(0);
 		
-		featureProvider.link(diagram, new Object[] { businessObject, bpmnDiagram, definitions });
+		// link it with correct business object
+		getFeatureProvider().link(diagram, new Object[] { businessObject, bpmnDiagram, definitions });
+		
+		return diagram;
+	}
 
+	/**
+	 * Parse diagram form a diagram resource.
+	 * 
+	 * @param diagramResource
+	 * @return
+	 */
+	private Diagram getDiagram(Resource diagramResource) {
+
+		// assume diagram is already part of diagram resource
+		// this must be done, because we do not want to create any diagrams
+		// on the fly, nor do we want to speculate on the diagram type
+		
+		EList<EObject> contents = diagramResource.getContents();
+		
+		Diagram diagram = null;
+		
+		for (EObject o : contents) {
+			if (o instanceof Diagram) {
+				Assert.isTrue(diagram == null, "Resource contains only one diagram");
+				
+				diagram = (Diagram) o;
+			}
+		}
+		
+		Assert.isNotNull(diagram, "Resource contains a diagram");
+		
 		return diagram;
 	}
 
@@ -502,6 +535,7 @@ public class ModelImport {
 		}
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected void handleLane(Lane lane, FlowElementsContainer scope, ContainerShape container) {
 		AbstractShapeHandler<Lane> shapeHandler = new LaneShapeHandler(this);
 		
@@ -519,7 +553,7 @@ public class ModelImport {
 			handleLaneSet(childLaneSet, scope, thisContainer);
 		} else {
 			List<FlowNode> referencedNodes = lane.getFlowNodeRefs();
-			handleFlowElements(thisContainer, (List)referencedNodes);
+			handleFlowElements(thisContainer, (List) referencedNodes);
 		}
 	}
 
@@ -687,6 +721,7 @@ public class ModelImport {
 		handleDiagramElement(flowElement, container, new DataObjectReferenceShapeHandler(this));
 	}
 
+	@SuppressWarnings("unchecked")
 	private void handleDataObject(DataObject dataObject, ContainerShape container) {
 
 		// import only data objects for which actual DI data exists 
@@ -812,9 +847,9 @@ public class ModelImport {
 		BaseElement bpmnElement = plane.getBpmnElement();
 		if (bpmnElement == null || bpmnElement.eIsProxy()) {
 			// if we have a plane with missing bpmnElement, we can make the following assumption
-			if(collaboration == null && processes.size() == 1) {
+			if (collaboration == null && processes.size() == 1) {
 				bpmnElement = processes.get(0);
-			}else {
+			} else {
 				throw new UnmappedElementException("BPMNPlane references unexisting bpmnElement", plane);	
 			}
 		}
@@ -822,8 +857,7 @@ public class ModelImport {
 		List<DiagramElement> planeElement = plane.getPlaneElement();
 		for (DiagramElement diagramElement : planeElement) {
 			handleDIDiagramElement(diagramElement);
-		}
-				
+		}		
 	}
 
 	protected void handleDIDiagramElement(DiagramElement diagramElement) {
@@ -835,7 +869,6 @@ public class ModelImport {
 			nonModelElements.add(diagramElement);
 		}
 	}
-
 
 	protected void handleDIEdge(BPMNEdge diagramElement) {
 		BaseElement bpmnElement = diagramElement.getBpmnElement();
@@ -918,9 +951,29 @@ public class ModelImport {
 	// Getters //////////////////////////////////////////////////
 	
 	public IFeatureProvider getFeatureProvider() {
-		return featureProvider;
+		return getDiagramTypeProvider().getFeatureProvider();
 	}
 	
+	public IDiagramTypeProvider getDiagramTypeProvider() {
+		return diagramContainer.getDiagramTypeProvider();
+	}
+
+	public Bpmn2Resource getBpmnResource() {
+		return bpmnResource;
+	}
+	
+	public Map<String, DiagramElement> getDiagramElementMap() {
+		return diagramElementMap;
+	}
+
+	public List<DiagramElement> getNonModelElements() {
+		return nonModelElements;
+	}
+
+	public List<ImportException> getImportWarnings() {
+		return warnings;
+	}
+
 	/**
 	 * 
 	 * @param bpmnElement
@@ -934,30 +987,6 @@ public class ModelImport {
 			return null;
 		}
 		return element;
-	}
-	
-	public IDiagramTypeProvider getDiagramTypeProvider() {
-		return diagramTypeProvider;
-	}
-
-	public Bpmn2Resource getResource() {
-		return resource;
-	}
-	
-	public Map<String, DiagramElement> getDiagramElementMap() {
-		return diagramElementMap;
-	}
-
-	public List<DiagramElement> getNonModelElements() {
-		return nonModelElements;
-	}
-	
-	public Bpmn2Preferences getPreferences() {
-		return preferences;
-	}
-
-	public List<ImportException> getImportWarnings() {
-		return warnings;
 	}
 	
 	public PictogramElement getPictogramElementOrNull(BaseElement node) {

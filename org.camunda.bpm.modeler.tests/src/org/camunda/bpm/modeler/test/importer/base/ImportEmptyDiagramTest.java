@@ -9,21 +9,20 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.test.importer.base;
 
+import static org.camunda.bpm.modeler.test.util.assertions.Bpmn2ModelAssertions.assertThat;
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.fest.assertions.api.Assertions.fail;
+
 import org.camunda.bpm.modeler.core.importer.InvalidContentException;
 import org.camunda.bpm.modeler.core.importer.ModelImport;
+import org.camunda.bpm.modeler.core.importer.ResourceImportException;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.camunda.bpm.modeler.test.importer.AbstractImportBpmnModelTest;
 import org.camunda.bpm.modeler.test.util.DiagramResource;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.di.BPMNDiagram;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.graphiti.mm.pictograms.Shape;
-import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.fail;
 
 /**
  * 
@@ -37,19 +36,24 @@ public class ImportEmptyDiagramTest extends AbstractImportBpmnModelTest {
 		try {
 			ModelImport importer = createModelImport();
 			importer.execute();
+			
 			fail("Expected an exception: No participants in collaboration");
 		} catch (InvalidContentException e) {
 		}
 		
 	}
 	
-	// This test is supposed to fail as the underlaying ecore cannot be loaded
 	@Test
-	@Ignore
 	@DiagramResource
 	public void testImportNoDefinitions() {
-		ModelImport importer = createModelImport();
-		importer.execute();
+		try {
+			ModelImport importer = createModelImport();
+			importer.execute();
+		
+			fail("Expected exception: No definitions");
+		} catch (ResourceImportException e) {
+			;
+		}
 	}
 
 	@Test
@@ -58,8 +62,8 @@ public class ImportEmptyDiagramTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = createModelImport();
 		importer.execute();
 		
-		EList<Shape> children = diagram.getChildren();
-		assertThat(children).isEmpty();
+		// no actual shapes imported
+		assertThat(getDiagram()).hasContainerShapeChildCount(0);
 		
 		// should create a new process and diagram on the fly
 		BaseElement element = BusinessObjectUtil.getFirstBaseElement(diagram);

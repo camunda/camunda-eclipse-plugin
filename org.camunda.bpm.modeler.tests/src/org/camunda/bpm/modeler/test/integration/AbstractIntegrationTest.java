@@ -12,9 +12,11 @@ import org.camunda.bpm.modeler.test.util.TransactionalExecutionException;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.platform.IDiagramContainer;
 import org.eclipse.graphiti.ui.internal.services.GraphitiUiInternal;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
@@ -110,7 +112,7 @@ public class AbstractIntegrationTest {
 			execute(new Runnable() {
 				@Override
 				public void run() {
-					ModelImport modelImport = new ModelImport(getDiagramTypeProvider(), getResource());
+					ModelImport modelImport = new ModelImport(getDiagramContainer(), getBpmnResource(), getDiagramResource());
 					modelImport.execute();
 				}
 			});
@@ -138,7 +140,7 @@ public class AbstractIntegrationTest {
 
 		public void close() {
 			if (editor != null) {
-				editor.getTypeProvider().dispose();
+				editor.getDiagramContainer().close();
 			}
 			
 			editor = null;
@@ -149,11 +151,19 @@ public class AbstractIntegrationTest {
 			return editor.getDiagram();
 		}
 
+		protected IDiagramContainer getDiagramContainer() {
+			return editor.getDiagramContainer();
+		}
+		
+		protected Resource getDiagramResource() {
+			return editor.getDiagramResource();
+		}
+		
 		public IDiagramTypeProvider getDiagramTypeProvider() {
-			return editor.getTypeProvider();
+			return getDiagramContainer().getDiagramTypeProvider();
 		}
 
-		public Bpmn2Resource getResource() {
+		public Bpmn2Resource getBpmnResource() {
 			return model.getResource();
 		}
 	}
@@ -172,7 +182,7 @@ public class AbstractIntegrationTest {
 		}
 		
 		protected Bpmn2Resource getResource() {
-			return editorAndModel.getResource();
+			return editorAndModel.getBpmnResource();
 		}
 		
 		protected Diagram getDiagram() {

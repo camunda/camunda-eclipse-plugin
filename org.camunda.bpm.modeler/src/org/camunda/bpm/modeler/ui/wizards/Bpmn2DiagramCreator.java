@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.wizards;
 
+import org.camunda.bpm.modeler.core.files.FileService;
 import org.camunda.bpm.modeler.core.utils.ModelUtil.Bpmn2DiagramType;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.ui.diagram.editor.Bpmn2DiagramEditorInput;
@@ -54,6 +55,6 @@ public class Bpmn2DiagramCreator {
 	}
 
 	public static String getModelName(URI uri) {
-		return uri.trimFragment().trimFileExtension().lastSegment();
+		return URI.decode(uri.trimFragment().trimFileExtension().lastSegment());
 	}
 }

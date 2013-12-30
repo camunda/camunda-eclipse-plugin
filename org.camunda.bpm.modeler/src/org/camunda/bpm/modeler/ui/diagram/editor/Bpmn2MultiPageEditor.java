@@ -1,99 +1,88 @@
 package org.camunda.bpm.modeler.ui.diagram.editor;
 
 import org.camunda.bpm.modeler.core.Activator;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.eclipse.ui.part.MultiPageEditorSite;
+import org.eclipse.wst.sse.ui.StructuredTextEditor;
 
+/**
+ * A multi page editor for BPMN 2.0 files showing the diagram file
+ * and the (editable) xml source.
+ * 
+ * @author nico.rehwaldt
+ */
 public class Bpmn2MultiPageEditor extends MultiPageEditorPart {
+
+	private Bpmn2Editor bpmnEditor;
+	private StructuredTextEditor xmlEditor;
 	
-	Bpmn2Editor bpmn2Editor;
-	private CTabFolder tabFolder;
-	private IEditorInput theEditorInput;
-	
-	public Bpmn2Editor getBpmn2Editor() {
-		if (bpmn2Editor == null) {
-			bpmn2Editor = new Bpmn2Editor();
+	@Override
+	protected IEditorSite createSite(IEditorPart editor) {
+		IEditorSite site = null;
+		if (editor == xmlEditor) {
+			site = new MultiPageEditorSite(this, editor) {
+				public String getId() {
+					// sets this id so nested editor is considered xml source page
+					return "org.eclipse.core.runtime.xml.source";
+				}
+			};
+		}	else {
+			site = super.createSite(editor);
 		}
-		return bpmn2Editor;
-	}
-	
-	@Override
-	public Object getAdapter(Class required) {
-//		return getBpmn2Editor().getAdapter(required);
-		return super.getAdapter(required);
-	}
-	
-	public Bpmn2MultiPageEditor() {
-	}
-	
-	@Override
-	protected void setInput(IEditorInput input) {
-		// TODO Auto-generated method stub
-		super.setInput(input);
-	}
-	
-	@Override
-	public void init(IEditorSite site, IEditorInput input)
-			throws PartInitException {
-		super.init(site, input);
-		this.theEditorInput = input;
-	}
-	
-	@Override
-	protected Composite createPageContainer(Composite parent) {
-		parent.setLayout(new GridLayout());
-
-		tabFolder = new CTabFolder(parent, SWT.BOTTOM);
-		tabFolder.setBorderVisible(true);
-		tabFolder.setBackgroundMode(SWT.INHERIT_DEFAULT);
-		tabFolder.setSimple(false);  // rounded tabs
-		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		
-		//Creates the first tab
-		CTabItem headerTabItem = new CTabItem(tabFolder, SWT.CLOSE);
-		headerTabItem.setText("Header");
-		//Adds a composite to the tab
-		Composite composite = new Composite(tabFolder, SWT.NONE);
-		headerTabItem.setControl(composite);
-
-		//Creates the second tab
-		CTabItem detailTabItem = new CTabItem(tabFolder, SWT.CLOSE);
-		detailTabItem.setText("Detail");
-		
-		return tabFolder;
+		return site;
 	}
 	
 	@Override
 	protected void createPages() {
+
+		IConfigurationElement configurationElement = getConfigurationElement();
+		
+		bpmnEditor = new Bpmn2Editor();
+		bpmnEditor.setInitializationData(configurationElement, null, null);
+		
+		xmlEditor = new StructuredTextEditor();
+		xmlEditor.setInitializationData(configurationElement, null, null);
+		
+		IEditorInput input = getEditorInput();
+		
 		try {
-			addPage(getBpmn2Editor(), theEditorInput);
+			addPage(bpmnEditor, input);
 		} catch (PartInitException e) {
 			Activator.logError(e);
 		}
+		
+		setPageText(0, "Design");
+		
+		try {
+			addPage(xmlEditor, input);
+		} catch (PartInitException e) {
+			Activator.logError(e);
+		}
+		
+		setPageText(1, "Source");
+
+		setPartName(bpmnEditor.getTitle());
+		setTitleToolTip(bpmnEditor.getTitleToolTip());
 	}
 	
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		
+		getActiveEditor().doSave(monitor);
 	}
 
 	@Override
 	public void doSaveAs() {
-		
+		getActiveEditor().doSaveAs();
 	}
 
 	@Override
 	public boolean isSaveAsAllowed() {
-		return false;
+		return getActiveEditor().isSaveAsAllowed();
 	}
-
 }

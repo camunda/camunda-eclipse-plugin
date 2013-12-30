@@ -9,12 +9,13 @@ import java.util.Set;
 import org.camunda.bpm.modeler.core.Bpmn2TabbedPropertySheetPage;
 import org.camunda.bpm.modeler.core.validation.BpmnValidationStatusLoader;
 import org.camunda.bpm.modeler.core.validation.ValidationStatusAdapter;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EValidator;
@@ -34,16 +35,14 @@ public class Bpmn2MarkerChangeListener implements IResourceChangeListener {
 
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
-		IFile modelFile = editor.getModelFile();
+
+		IPath diagramPath = getModelPath();
 		
-		if (modelFile == null) {
-			return;
-		}
-		
-		final IResourceDelta modelFileDelta = event.getDelta().findMember(modelFile.getFullPath());
+		final IResourceDelta modelFileDelta = event.getDelta().findMember(diagramPath);
 		if (modelFileDelta == null) {
 			return;
 		}
+		
 		final IMarkerDelta[] markerDeltas = modelFileDelta.getMarkerDeltas();
 		if (markerDeltas == null || markerDeltas.length == 0) {
 			return;
@@ -108,6 +107,14 @@ public class Bpmn2MarkerChangeListener implements IResourceChangeListener {
 				}
 			}
 		});
+	}
+
+	private IPath getModelPath() {
+		Bpmn2DiagramEditorInput editorInput = editor.getEditorInput();
+		URI modelUri = editorInput.getModelUri();
+		
+		String modelPath = modelUri.toPlatformString(true);
+		return new Path(modelPath);
 	}
 
 }

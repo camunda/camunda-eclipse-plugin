@@ -4,10 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.xmi.XMLResource;
-import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.ui.editor.DefaultPersistencyBehavior;
 import org.eclipse.graphiti.ui.editor.DiagramBehavior;
 
@@ -15,13 +13,6 @@ public class Bpmn2PersistencyBehavior extends DefaultPersistencyBehavior {
 
 	public Bpmn2PersistencyBehavior(DiagramBehavior diagramBehavior) {
 		super(diagramBehavior);
-	}
-
-	@Override
-	public Diagram loadDiagram(URI modelUri) {
-		Diagram diagram = super.loadDiagram(modelUri);
-
-		return diagram;
 	}
 
 	@Override
@@ -41,5 +32,4 @@ public class Bpmn2PersistencyBehavior extends DefaultPersistencyBehavior {
 		}
 		return saveOptions;
 	}
-
 }
