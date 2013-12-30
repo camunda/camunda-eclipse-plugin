@@ -27,7 +27,7 @@ public abstract class AbstractImportBpmnModelTest extends AbstractEditorTest {
 	 * @return
 	 */
 	protected ModelImport createModelImport() {
-		return new ModelImport(diagramTypeProvider, bpmnResource);
+		return new ModelImport(getDiagramEditor(), getBpmnResource(), getDiagramResource());
 	}
 	
 	/**

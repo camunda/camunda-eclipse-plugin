@@ -12,10 +12,16 @@ import org.camunda.bpm.modeler.test.util.TransactionalExecutionException;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.platform.IDiagramEditor;
 import org.eclipse.graphiti.ui.internal.services.GraphitiUiInternal;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
@@ -110,7 +116,7 @@ public class AbstractIntegrationTest {
 			execute(new Runnable() {
 				@Override
 				public void run() {
-					ModelImport modelImport = new ModelImport(getDiagramTypeProvider(), getResource());
+					ModelImport modelImport = new ModelImport(getDiagramEditor(), getBpmnResource(), getDiagramResource());
 					modelImport.execute();
 				}
 			});
@@ -138,7 +144,14 @@ public class AbstractIntegrationTest {
 
 		public void close() {
 			if (editor != null) {
-				editor.getTypeProvider().dispose();
+				final IDiagramEditor diagramEditor = getDiagramEditor();
+				
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+						page.closeEditor((IEditorPart) diagramEditor, false);
+					}
+				});
 			}
 			
 			editor = null;
@@ -149,11 +162,19 @@ public class AbstractIntegrationTest {
 			return editor.getDiagram();
 		}
 
+		protected IDiagramEditor getDiagramEditor() {
+			return editor.getDiagramEditor();
+		}
+		
+		protected Resource getDiagramResource() {
+			return editor.getDiagramResource();
+		}
+		
 		public IDiagramTypeProvider getDiagramTypeProvider() {
-			return editor.getTypeProvider();
+			return getDiagramEditor().getDiagramTypeProvider();
 		}
 
-		public Bpmn2Resource getResource() {
+		public Bpmn2Resource getBpmnResource() {
 			return model.getResource();
 		}
 	}
@@ -172,7 +193,7 @@ public class AbstractIntegrationTest {
 		}
 		
 		protected Bpmn2Resource getResource() {
-			return editorAndModel.getResource();
+			return editorAndModel.getBpmnResource();
 		}
 		
 		protected Diagram getDiagram() {

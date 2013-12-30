@@ -32,7 +32,9 @@ Require-Bundle: org.eclipse.emf.transaction,
  org.eclipse.bpmn2.edit,
  org.eclipse.wst.validation,
  org.apache.xerces,
- org.eclipse.wst.sse.ui
+ org.eclipse.wst.xml.ui,
+ org.eclipse.wst.sse.ui,
+ org.eclipse.wst.xml.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.camunda.bpm.modeler.core;
@@ -196,6 +198,7 @@ Export-Package: org.camunda.bpm.modeler.core;
    org.camunda.bpm.modeler.core.features.lane,
    org.eclipse.graphiti.mm.pictograms,
    org.camunda.bpm.modeler.core.features",
+ org.camunda.bpm.modeler.core.files,
  org.camunda.bpm.modeler.core.importer;
   uses:="org.eclipse.emf.ecore.resource,
    org.eclipse.bpmn2.di,

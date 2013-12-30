@@ -11,8 +11,8 @@ import org.camunda.bpm.modeler.test.util.TestHelper.EditorResources;
 import org.camunda.bpm.modeler.test.util.TestHelper.ModelResources;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.emf.transaction.RecordingCommand;
-import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.platform.IDiagramEditor;
 
 public abstract class AbstractTestCommand extends RecordingCommand {
 	
@@ -67,7 +67,7 @@ public abstract class AbstractTestCommand extends RecordingCommand {
 			
 			saveTestResource(bpmn2Resource, "before", testFileDir);
 			
-			execute(editorResources.getTypeProvider(), editorResources.getDiagram());
+			execute(editorResources.getDiagramEditor(), editorResources.getDiagram());
 			
 			testCase.setTestResources(TestHelper.createModel(saveTestResource(bpmn2Resource, "after", testFileDir)));
 		} catch (RuntimeException e) {
@@ -107,11 +107,11 @@ public abstract class AbstractTestCommand extends RecordingCommand {
 
 	/**
 	 * Execute 
-	 * @param diagramTypeProvider
+	 * @param diagramEditor
 	 * @param diagram
 	 * @throws Throwable
 	 */
-	public abstract void execute(IDiagramTypeProvider diagramTypeProvider, Diagram diagram) throws Throwable;
+	public abstract void execute(IDiagramEditor diagramEditor, Diagram diagram) throws Throwable;
 
 	/**
 	 * Returns the exception recorded during command execution

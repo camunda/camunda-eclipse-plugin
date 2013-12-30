@@ -12,7 +12,7 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.diagram.editor;
 
-import org.camunda.bpm.modeler.ui.wizards.FileService;
+import org.camunda.bpm.modeler.core.files.FileService;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -28,7 +28,7 @@ public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
 	
 	public Bpmn2DiagramEditorInput(URI modelUri, URI diagramUri, String providerId) {
 		super(diagramUri, providerId);
-	
+		
 		this.modelUri = modelUri;
 	}
 
@@ -52,6 +52,15 @@ public final class Bpmn2DiagramEditorInput extends DiagramEditorInput {
 	@Override
 	public String getName() {
 		return URI.decode(modelUri.trimFileExtension().lastSegment());
+	}
+	
+	public void updateDiagramUri(URI diagramUri) {
+		super.updateUri(diagramUri);
+	}
+	
+	@Override
+	public void updateUri(URI uri) {
+		updateModelUri(uri);
 	}
 	
 	public void updateModelUri(URI modelUri) {

@@ -51,7 +51,6 @@ import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.CreateConnectionContext;
 import org.eclipse.graphiti.features.context.impl.CreateContext;
 import org.eclipse.graphiti.features.context.impl.CustomContext;
-import org.eclipse.graphiti.features.context.impl.UpdateContext;
 import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
@@ -279,17 +278,21 @@ public class Bpmn2ToolBehaviour extends DefaultToolBehaviorProvider implements I
 			IFeature feature = fc.getFeature();
 			if (context instanceof AddContext) {
 				if (feature instanceof IBpmn2AddFeature) {
-					((IBpmn2AddFeature) feature).postExecute(executionInfo);
+					((IBpmn2AddFeature<?>) feature).postExecute(executionInfo);
 				}
 			} else if (context instanceof CreateContext) {
 				if (feature instanceof IBpmn2CreateFeature) {
-					((IBpmn2CreateFeature) feature).postExecute(executionInfo);
+					((IBpmn2CreateFeature<?, ?>) feature).postExecute(executionInfo);
 				}
-			} else if (context instanceof UpdateContext) {
-				editor.setPictogramElementForSelection(((UpdateContext) context)
-						.getPictogramElement());
-				editor.refresh();
 			}
+//			else if (context instanceof UpdateContext) {
+//				editor.setPictogramElementForSelection(((UpdateContext) context).getPictogramElement());
+//				getDiagramTypeProvider().getDiagramBehavior().refresh();
+//			}
+//			else if (context instanceof MoveShapeContext) {
+//				editor.setPictogramElementForSelection(((MoveShapeContext) context).getPictogramElement());
+//				getDiagramTypeProvider().getDiagramBehavior().refresh();
+//			}
 		}
 	}
 

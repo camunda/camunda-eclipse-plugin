@@ -56,29 +56,6 @@ public class BpmnValidationStatusLoader {
 			// status adapter
 			IStatus status = convertMarker(marker, markedObject);
 
-			// also add an adapter to each affected EObject in the result locus
-			// TODO: do we need this? it causes duplicate messages to be created for
-			// each marker
-			// better to have the constraint handler create additional error messages
-			// as needed.
-			// if (status instanceof ConstraintStatus) {
-			// ConstraintStatus cs = (ConstraintStatus) status;
-			// for (EObject result : cs.getResultLocus()) {
-			// // CAUTION: the result locus WILL contain references to object
-			// // features (EStructuralFeatures) that identify the feature in
-			// // error for the Property Sheets. We don't want to add a validation
-			// // status adapter to these EObjects.
-			// EPackage pkg = result.eClass().getEPackage();
-			// if (pkg != EcorePackage.eINSTANCE) {
-			// ValidationStatusAdapter sa = (ValidationStatusAdapter)
-			// EcoreUtil.getRegisteredAdapter(
-			// result, ValidationStatusAdapter.class);
-			// sa.addValidationStatus(status);
-			// touched.add(result);
-			// }
-			// }
-			// }
-
 			statusAdapter.addValidationStatus(status);
 			touched.add(markedObject);
 		}
@@ -127,5 +104,4 @@ public class BpmnValidationStatusLoader {
 		return new ConstraintStatus(imc, target, message, locus == null ? null : new LinkedHashSet<EObject>(
 				(List<? extends EObject>) locus));
 	}
-
 }

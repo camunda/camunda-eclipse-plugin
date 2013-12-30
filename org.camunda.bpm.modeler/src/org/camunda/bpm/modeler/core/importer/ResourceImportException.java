@@ -35,6 +35,6 @@ public class ResourceImportException extends ImportException {
 
 	@Override
 	public String getMessage() {
-		return super.getMessage() + " : " + diagnostic.toString();
+		return super.getMessage() + (diagnostic != null ? " : " + diagnostic.toString() : "");
 	}
 }

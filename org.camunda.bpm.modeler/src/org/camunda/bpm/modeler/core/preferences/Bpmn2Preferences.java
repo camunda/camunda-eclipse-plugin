@@ -192,7 +192,7 @@ public class Bpmn2Preferences implements IPreferenceChangeListener, IPropertyCha
 	/**
 	 * Return the Preferences for the project containing the EMF Resource
 	 * 
-	 * @param resource
+	 * @param bpmnResource
 	 * @return project preferences
 	 */
 	public static Bpmn2Preferences getInstance(EObject object) {

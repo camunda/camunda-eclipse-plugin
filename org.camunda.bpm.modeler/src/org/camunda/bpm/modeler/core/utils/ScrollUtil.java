@@ -2,7 +2,6 @@ package org.camunda.bpm.modeler.core.utils;
 
 import org.camunda.bpm.modeler.core.layout.util.ConversionUtil;
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
@@ -95,24 +94,24 @@ public class ScrollUtil {
 	/**
 	 * Create a scroll shape on the diagram
 	 * 
-	 * @param rootDiagram the diagram to create the scrollshape in 
+	 * @param diagram the diagram to create the scrollshape in 
 	 * @param bounds the bounds to consider for the scrollshape padding, may be null, the bounds are calculated in this case
 	 * @param boundsOffset flag to decide if we should offset the scrollshape by the bounds position
 	 * @param minX the minimal x position of the scrollshape
 	 * @param minY the minimal y position of the scrollshape
 	 * @return the scroll shape
 	 */
-	public static Shape addScrollShape(Diagram rootDiagram, IRectangle bounds, boolean boundsOffset, int minX, int minY) {
-		ScrollShapeHolder holder = getHolder(rootDiagram);
+	public static Shape addScrollShape(Diagram diagram, IRectangle bounds, boolean boundsOffset, int minX, int minY) {
+		ScrollShapeHolder holder = getHolder(diagram);
 		
 		if (bounds == null) {
-			bounds = LayoutUtil.getChildrenBBox(rootDiagram);
+			bounds = LayoutUtil.getChildrenBBox(diagram);
 			if (bounds == null) {
 				bounds = ConversionUtil.rectangle(0, 0, 0, 0);
 			}
 		}
 		
-		Shape scrollShape = createScrollShape(rootDiagram, holder);
+		Shape scrollShape = createScrollShape(diagram, holder);
 		
 		int xoffset = 0;
 		int yoffset = 0;
@@ -128,13 +127,17 @@ public class ScrollUtil {
 		return scrollShape;
 	}
 
-	private static ScrollShapeHolder getHolder(Diagram rootDiagram) {
-		ScrollShapeHolder holder = BusinessObjectUtil.getFirstElementOfType(LayoutUtil.getDiagram(rootDiagram), ScrollShapeHolder.class);
+	private static ScrollShapeHolder getHolder(Diagram diagram) {
+		return getHolder(diagram, true);
+	}
+	
+	private static ScrollShapeHolder getHolder(Diagram diagram, boolean create) {
+		ScrollShapeHolder holder = BusinessObjectUtil.getFirstElementOfType(LayoutUtil.getDiagram(diagram), ScrollShapeHolder.class);
 		
-		if (holder == null) {
+		if (holder == null && create) {
 			holder = new ScrollUtil.ScrollShapeHolder();
-			rootDiagram.getLink().getBusinessObjects().add(holder);
-			rootDiagram.eResource().getContents().add(holder);
+			diagram.getLink().getBusinessObjects().add(holder);
+			diagram.eResource().getContents().add(holder);
 		}
 		
 		return holder;
@@ -147,7 +150,7 @@ public class ScrollUtil {
 		}
 		return holder.getScrollShape();
 	}
-
+	
 	private static void updateScrollRect(IRectangle bounds, int xpos, int ypos, Shape scrollShape, int xoffset, int yoffset) {
 		Rectangle scrollRect = (Rectangle) scrollShape.getGraphicsAlgorithm();
 		
@@ -178,5 +181,18 @@ public class ScrollUtil {
 	 */
 	public static boolean isScrollShape(PictogramElement e) {
 		return Graphiti.getPeService().getPropertyValue(e, SCROLL_SHAPE_MARKER) != null;
+	}
+
+	/**
+	 * Remove scroll shape holder from diagram
+	 * @param diagram
+	 */
+	public static void removeScrollShape(Diagram diagram) {
+		
+		ScrollShapeHolder holder = getHolder(diagram, false);
+		if (holder != null) {
+			diagram.getLink().getBusinessObjects().remove(holder);
+			diagram.eResource().getContents().remove(holder);
+		}
 	}
 }
