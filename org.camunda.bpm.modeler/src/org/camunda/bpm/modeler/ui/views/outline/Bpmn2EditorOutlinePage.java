@@ -15,6 +15,8 @@ package org.camunda.bpm.modeler.ui.views.outline;
  *
  *******************************************************************************/
 
+import java.util.Map;
+
 import org.camunda.bpm.modeler.ui.ImageConstants;
 import org.camunda.bpm.modeler.ui.Images;
 import org.eclipse.draw2d.LightweightSystem;
@@ -32,19 +34,24 @@ import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.parts.ContentOutlinePage;
 import org.eclipse.gef.ui.parts.SelectionSynchronizer;
-import org.eclipse.gef.ui.parts.TreeViewer;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.internal.fixed.FixedScrollableThumbnail;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.IPageSite;
@@ -87,7 +94,6 @@ public class Bpmn2EditorOutlinePage extends ContentOutlinePage implements IPrope
 
 	// Actions (buttons) to switch between outline and overview
 	private IAction showBusinessModelOutlineAction;
-	private IAction showInterchangeModelOutlineAction;
 	
 	private IAction showOverviewAction;
 
@@ -96,11 +102,9 @@ public class Bpmn2EditorOutlinePage extends ContentOutlinePage implements IPrope
 
 	// The outline-controls and the thumbnail-control of the pagebook
 	private Tree businessModelOutline;
-	private Tree interchangeModelOutline;
 
 	// and their corresponding editpart factories
 	private EditPartFactory businessModelEditPartFactory;
-	private EditPartFactory interchangeModelEditPartFactory;
 
 	private Canvas overview;
 
@@ -115,7 +119,7 @@ public class Bpmn2EditorOutlinePage extends ContentOutlinePage implements IPrope
 	 * @since 0.9
 	 */
 	public Bpmn2EditorOutlinePage(DiagramEditor diagramEditor) {
-		super(new TreeViewer());
+		super(new DiagramTreeViewer());
 		graphicalViewer = diagramEditor.getGraphicalViewer();
 		actionRegistry = (ActionRegistry) diagramEditor.getAdapter(ActionRegistry.class);
 		editDomain = diagramEditor.getEditDomain();
@@ -162,8 +166,7 @@ public class Bpmn2EditorOutlinePage extends ContentOutlinePage implements IPrope
 	@Override
 	public void createControl(Composite parent) {
 		pageBook = new PageBook(parent, SWT.NONE);
-		businessModelOutline = (Tree)getViewer().createControl(pageBook);
-		interchangeModelOutline = (Tree)getViewer().createControl(pageBook);
+		businessModelOutline = (Tree) getViewer().createControl(pageBook);
 		overview = new Canvas(pageBook, SWT.NONE);
 		createOutlineViewer();
 
@@ -205,7 +208,12 @@ public class Bpmn2EditorOutlinePage extends ContentOutlinePage implements IPrope
 	 * importantly, there is a property change event editor-dirty.
 	 */
 	public void propertyChanged(Object source, int propId) {
-		refresh();
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				refresh();
+			}
+		});
 	}
 
 	/**
@@ -222,30 +230,16 @@ public class Bpmn2EditorOutlinePage extends ContentOutlinePage implements IPrope
 				businessModelEditPartFactory = new Bpmn2DiagramTreeEditPartFactory(ID_BUSINESS_MODEL_OUTLINE);
 			getViewer().setEditPartFactory(businessModelEditPartFactory);
 			getViewer().setControl(businessModelOutline);
-			Diagram diagram = diagramEditor.getDiagramTypeProvider().getDiagram();
+			Diagram diagram = getDiagram();
 			getViewer().setContents(diagram);
 			
 			showBusinessModelOutlineAction.setChecked(true);
-			showInterchangeModelOutlineAction.setChecked(false);
 			showOverviewAction.setChecked(false);
 			pageBook.showPage(businessModelOutline);
-		} else if (id == ID_INTERCHANGE_MODEL_OUTLINE) {
-			if (interchangeModelEditPartFactory==null)
-				interchangeModelEditPartFactory = new Bpmn2DiagramTreeEditPartFactory(ID_INTERCHANGE_MODEL_OUTLINE);
-			getViewer().setEditPartFactory(interchangeModelEditPartFactory);
-			getViewer().setControl(interchangeModelOutline);
-			Diagram diagram = diagramEditor.getDiagramTypeProvider().getDiagram();
-			getViewer().setContents(diagram);
-			
-			showBusinessModelOutlineAction.setChecked(false);
-			showInterchangeModelOutlineAction.setChecked(true);
-			showOverviewAction.setChecked(false);
-			pageBook.showPage(interchangeModelOutline);
 		} else if (id == ID_THUMBNAIL) {
 			if (thumbnail == null)
 				createThumbnailViewer();
 			showBusinessModelOutlineAction.setChecked(false);
-			showInterchangeModelOutlineAction.setChecked(false);
 			showOverviewAction.setChecked(true);
 			pageBook.showPage(overview);
 		}
@@ -278,21 +272,6 @@ public class Bpmn2EditorOutlinePage extends ContentOutlinePage implements IPrope
 		showBusinessModelOutlineAction.setToolTipText("Business Model");
 		tbm.add(showBusinessModelOutlineAction);
 
-		showInterchangeModelOutlineAction = new Action() {
-
-			@Override
-			public void run() {
-				Diagram diagram = diagramEditor.getDiagramTypeProvider().getDiagram();
-				getViewer().setContents(diagram);
-				getViewer().setControl(interchangeModelOutline);
-				showPage(ID_INTERCHANGE_MODEL_OUTLINE);
-			}
-		};
-		showInterchangeModelOutlineAction.setImageDescriptor(Images.getDescriptorById(ImageConstants.ICON_INTERCHANGE_MODEL));
-		showInterchangeModelOutlineAction.setToolTipText("Diagram Interchange Model");
-		tbm.add(showInterchangeModelOutlineAction);
-		
-		
 		showOverviewAction = new Action() {
 
 			@Override
@@ -345,8 +324,36 @@ public class Bpmn2EditorOutlinePage extends ContentOutlinePage implements IPrope
 	void refresh() {
 		final EditPartViewer viewer = getViewer();
 		final EditPart contents = viewer.getContents();
+
 		if (contents != null) {
-			contents.refresh();
+			Diagram diagram = getDiagram();
+			
+			if (!contents.getModel().equals(diagram)) {
+				contents.setModel(diagram);
+			} else {
+				try {
+					if (viewer instanceof DiagramTreeViewer) {
+						((DiagramTreeViewer) viewer).setDispatching(true);
+					}
+					
+					contents.refresh();
+					
+					// restore old selection (if possible)
+					// that may have been removed during refresh
+
+					ISelection newSelection = graphicalViewer.getSelection();
+					selectionSynchronizer.selectionChanged(new SelectionChangedEvent(graphicalViewer, newSelection));
+					
+				} finally {
+					if (viewer instanceof DiagramTreeViewer) {
+						((DiagramTreeViewer) viewer).setDispatching(false);
+					}
+				}
+			}
 		}
+	}
+
+	private Diagram getDiagram() {
+		return diagramEditor.getDiagramTypeProvider().getDiagram();
 	}
 }
