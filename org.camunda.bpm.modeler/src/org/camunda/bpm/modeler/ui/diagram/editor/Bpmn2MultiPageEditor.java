@@ -16,6 +16,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.MultiPageEditorSite;
@@ -59,11 +60,7 @@ public class Bpmn2MultiPageEditor extends MultiPageEditorPart {
 	protected void setInput(IEditorInput input) {
 		// convert input to a file input
 		// to unify handling
-		if (!(input instanceof FileEditorInput)) {
-			input = convertToFileInput(input);
-		}
-
-		super.setInput(input);
+		super.setInput(convertToFileInput(input));
 	}
 
 	@Override
@@ -146,10 +143,15 @@ public class Bpmn2MultiPageEditor extends MultiPageEditorPart {
 	 * @return
 	 */
 	protected IEditorInput convertToFileInput(IEditorInput input) {
+		
+		if (input instanceof Bpmn2FileEditorInput) {
+			return input;
+		}
+		
 		try {
 			URI workspaceUri = FileService.resolveAsWorkspaceResource(FileService.getInputUri(input));
 			IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(workspaceUri.toPlatformString(true)));
-			return new FileEditorInput(file);
+			return new Bpmn2FileEditorInput(file);
 		} catch (CoreException e) {
 			throw new IllegalStateException("Failed to resolve input", e);
 		}
@@ -169,5 +171,45 @@ public class Bpmn2MultiPageEditor extends MultiPageEditorPart {
 	public boolean isSaveAsAllowed() {
 		IEditorPart activeEditor = getActiveEditor();
 		return activeEditor != null && activeEditor.isSaveAsAllowed();
+	}
+
+	
+	/////////// HELPERS //////////////////////////////
+
+	/**
+	 * A {@link FileEditorInput} that compares based on the underlying file uri.
+	 * 
+	 * @author nico.rehwaldt
+	 *
+	 */
+	public static class Bpmn2FileEditorInput extends FileEditorInput {
+		public Bpmn2FileEditorInput(IFile file) {
+			super(file);
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (super.equals(obj)) {
+				return true;
+			}
+			
+			if (obj instanceof IEditorInput) {
+
+				IEditorInput other = (IEditorInput) obj;
+				
+				URI thisUri = FileService.getInputUri(this);
+				URI otherUri = null;
+				
+				try {
+					otherUri = FileService.resolveInWorkspace(other);
+				} catch (CoreException e) {
+					Activator.logError(e);
+				}
+				
+				return thisUri.equals(otherUri);
+			}
+			
+			return false;
+		}
 	}
 }
