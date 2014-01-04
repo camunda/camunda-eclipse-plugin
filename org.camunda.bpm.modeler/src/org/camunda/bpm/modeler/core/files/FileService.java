@@ -45,7 +45,6 @@ import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
-import org.eclipse.jdt.internal.corext.refactoring.participants.ResourceModifications.CreateDescription;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.ide.FileStoreEditorInput;
@@ -97,7 +96,21 @@ public class FileService {
 		
 		return resource;
 	}
-	
+
+	/**
+	 * Resolve an {@link IEditorInput} as a workspace local {@link URI}. 
+	 * 
+	 * This may involve linking the file to the workspace. 
+	 * 
+	 * @param input
+	 * @return
+	 * @throws CoreException
+	 */
+	public static URI resolveInWorkspace(IEditorInput input) throws CoreException {
+		URI uri = getInputUri(input);
+		return resolveAsWorkspaceResource(uri);
+	}
+
 	public static URI resolveAsWorkspaceResource(URI uri) throws CoreException {
 		
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
