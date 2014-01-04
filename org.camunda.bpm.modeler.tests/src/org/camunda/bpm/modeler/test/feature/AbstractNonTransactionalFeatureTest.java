@@ -28,7 +28,7 @@ public class AbstractNonTransactionalFeatureTest extends AbstractEditorTest {
 
 	protected void importModel() {
 		if (bpmnResource != null) {
-			modelImport = new ModelImport(diagramTypeProvider, bpmnResource);
+			modelImport = new ModelImport(getDiagramContainer(), bpmnResource, getDiagramResource());
 			modelImport.execute();
 		}
 	}

@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.SWTGraphics;
@@ -165,7 +164,12 @@ public class DiagramExport extends AbstractCustomFeature {
 		
 		String pictureFileName = stripBpmnFileSuffix(resourceName);
 		
-		return createDirectoryResource(diagramResource, "").getFile(new Path(pictureFileName + ".png"));
+		IContainer directory = createDirectoryResource(diagramResource, "");
+		if (directory != null) {
+			return directory.getFile(new Path(pictureFileName + ".png"));
+		} else {
+			return null;
+		}
 	}
 
 	private String decodeUri(String uri) {
@@ -189,36 +193,34 @@ public class DiagramExport extends AbstractCustomFeature {
 	 * Creates or returns a folder in the root directory of the current project
 	 * (as given by the resource)
 	 * 
-	 * @param diagramResource
+	 * @param modelResource
 	 *            used only to determine the current project.
 	 * @param folderName
 	 *            name of the (top level) folder in the project.
 	 *            
 	 * @return the folder, which is created if it did not exist.
 	 */
-	private IContainer createDirectoryResource(Resource diagramResource, String folderName) {
+	private IContainer createDirectoryResource(Resource modelResource, String folderName) {
+		URI modelUri = modelResource.getURI();
 		
-	  // this is the "real" resource,
-	  // TODO check for correct type
-	  Resource modelResource = diagramResource.getResourceSet().getResources().get(1);
-	  URI resolvedFile = CommonPlugin.resolve(modelResource.getURI());
-	  IContainer fileParent = null;
+		IContainer parent = null;
 	  
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceRoot root = workspace.getRoot();
-		IProject project = root.getProject(modelResource.getURI().segment(1));
-
-		try {
-			IFile file = root.findFilesForLocationURI(URIUtil.fromString(resolvedFile.toString()))[0];
-			fileParent = file.getParent();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		
+		IProject project = root.getProject(modelUri.segment(1));
 
 		// at this point, no resources have been created
 		if (!project.exists()) {
 			return null;
 		}
+		
+		IResource resource = root.findMember(modelUri.toPlatformString(true));
+		if (resource == null) {
+			return null;
+		}
+		
+		parent = resource.getParent();
 		
 		if (!project.isOpen()) {
 			try {
@@ -228,7 +230,7 @@ public class DiagramExport extends AbstractCustomFeature {
 			}
 		}
 
-		return fileParent;
+		return parent;
 	}
 
 	/*

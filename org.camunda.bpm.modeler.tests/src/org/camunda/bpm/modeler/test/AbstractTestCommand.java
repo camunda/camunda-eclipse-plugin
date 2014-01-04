@@ -13,6 +13,7 @@ import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.platform.IDiagramContainer;
 
 public abstract class AbstractTestCommand extends RecordingCommand {
 	
@@ -67,7 +68,7 @@ public abstract class AbstractTestCommand extends RecordingCommand {
 			
 			saveTestResource(bpmn2Resource, "before", testFileDir);
 			
-			execute(editorResources.getTypeProvider(), editorResources.getDiagram());
+			execute(editorResources.getDiagramContainer(), editorResources.getDiagram());
 			
 			testCase.setTestResources(TestHelper.createModel(saveTestResource(bpmn2Resource, "after", testFileDir)));
 		} catch (RuntimeException e) {
@@ -111,7 +112,7 @@ public abstract class AbstractTestCommand extends RecordingCommand {
 	 * @param diagram
 	 * @throws Throwable
 	 */
-	public abstract void execute(IDiagramTypeProvider diagramTypeProvider, Diagram diagram) throws Throwable;
+	public abstract void execute(IDiagramContainer diagramContainer, Diagram diagram) throws Throwable;
 
 	/**
 	 * Returns the exception recorded during command execution

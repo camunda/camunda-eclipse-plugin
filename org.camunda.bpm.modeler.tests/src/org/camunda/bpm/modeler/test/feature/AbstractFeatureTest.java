@@ -12,7 +12,7 @@ public class AbstractFeatureTest extends AbstractEditorTest {
 	public void importModel() {
 		
 		if (isEditorLoaded()) {
-			modelImport = new ModelImport(getDiagramTypeProvider(), getResource());
+			modelImport = new ModelImport(getDiagramContainer(), getBpmnResource(), getDiagramResource());
 			modelImport.execute();
 		}
 	}

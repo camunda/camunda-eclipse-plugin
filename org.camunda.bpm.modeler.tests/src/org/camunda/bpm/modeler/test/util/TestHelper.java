@@ -26,6 +26,7 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.platform.IDiagramContainer;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.ui.services.GraphitiUi;
 import org.junit.Ignore;
@@ -68,8 +69,8 @@ public class TestHelper {
 		String fileName = bpmnDiagramUrl.replaceAll("/", ".").replaceAll(".bpmn", "");
 		URI uri = URI.createFileURI(File.createTempFile(fileName, "diagram", tempDirectory).getAbsolutePath());
 		
-		Resource resource = modelResources.getResourceSet().createResource(uri);
-		resource.getContents().add(diagram);
+		Resource diagramResource = modelResources.getResourceSet().createResource(uri);
+		diagramResource.getContents().add(diagram);
 		
 		IDiagramTypeProvider typeProvider = 
 				GraphitiUi.getExtensionManager().createDiagramTypeProvider(diagram, Bpmn2DiagramTypeProvider.ID);
@@ -93,7 +94,9 @@ public class TestHelper {
 			}
 		}
 		
-		return new EditorResources(diagram, typeProvider, resource);
+		IDiagramContainer diagramContainer = typeProvider.getDiagramBehavior().getDiagramContainer();
+		
+		return new EditorResources(diagram, diagramContainer, diagramResource);
 	}
 	
 	private static TransactionalEditingDomain createEditingDomain(Bpmn2Resource resource) {
@@ -236,12 +239,12 @@ public class TestHelper {
 	public static final class EditorResources {
 
 		private final Diagram diagram;
-		private final IDiagramTypeProvider typeProvider;
+		private final IDiagramContainer diagramContainer;
 		private final Resource resource;
 		
-		public EditorResources(Diagram diagram, IDiagramTypeProvider typeProvider, Resource resource) {
+		public EditorResources(Diagram diagram, IDiagramContainer diagramContainer, Resource resource) {
 			this.diagram = diagram;
-			this.typeProvider = typeProvider;
+			this.diagramContainer = diagramContainer;
 			this.resource = resource;
 		}
 		
@@ -249,14 +252,12 @@ public class TestHelper {
 			return diagram;
 		}
 		
-		public Resource getResource() {
+		public Resource getDiagramResource() {
 			return resource;
 		}
 		
-		public IDiagramTypeProvider getTypeProvider() {
-			return typeProvider;
+		public IDiagramContainer getDiagramContainer() {
+			return diagramContainer;
 		}
 	}
-
-
 }

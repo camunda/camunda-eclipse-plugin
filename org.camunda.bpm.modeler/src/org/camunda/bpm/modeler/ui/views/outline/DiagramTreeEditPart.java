@@ -21,6 +21,11 @@ public class DiagramTreeEditPart extends AbstractGraphicsTreeEditPart {
 		this.id = id;
 	}
 
+	@Override
+	public void activate() {
+		super.activate();
+	}
+
 	public Diagram getDiagram() {
 		return (Diagram) getBpmnModel();
 	}
@@ -54,6 +59,9 @@ public class DiagramTreeEditPart extends AbstractGraphicsTreeEditPart {
 			else if (id == Bpmn2EditorOutlinePage.ID_INTERCHANGE_MODEL_OUTLINE)
 				retList.addAll(definitions.getDiagrams());
 			
+			if (diagram == null || diagram.eResource() == null) {
+				System.out.println("NULL!");
+			}
 			// build a list of all Graphiti Diagrams - these will be needed by other
 			// TreeEditParts to map the business objects to PictogramElements
 			ResourceSet resourceSet = diagram.eResource().getResourceSet();

@@ -4,13 +4,12 @@ import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
 import org.camunda.bpm.modeler.test.AbstractEditorTest;
 import org.camunda.bpm.modeler.test.AbstractTestCommand;
 import org.camunda.bpm.modeler.test.util.TestHelper.ModelResources;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
-import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.platform.IDiagramContainer;
 import org.junit.rules.MethodRule;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
@@ -103,7 +102,7 @@ public class DiagramResourceRule implements MethodRule {
 				AbstractTestCommand command = new AbstractTestCommand(testCase, testMethod.getName(), modelResources, tempDir) {
 					
 					@Override
-					public void execute(IDiagramTypeProvider diagramTypeProvider, Diagram diagram) throws Throwable {
+					public void execute(IDiagramContainer diagramContainer, Diagram diagram) throws Throwable {
 						if (transactional) {
 							baseStatement.evaluate();
 						}

@@ -26,10 +26,18 @@ public class Bpmn2DiagramTypeProvider extends AbstractDiagramTypeProvider {
 
 	public Bpmn2DiagramTypeProvider() {
 		super();
-		
+
 		initFeatureProvider();
 	}
+	
+	@Override
+	public boolean isAutoUpdateAtStartup() {
 
+		// used to trigger automatic update upon startup
+		// that we employ to perform a model import
+		return true;
+	}
+	
 	private void initFeatureProvider() {
 
 		Bpmn2FeatureProvider featureProvider = new Bpmn2FeatureProvider(this);

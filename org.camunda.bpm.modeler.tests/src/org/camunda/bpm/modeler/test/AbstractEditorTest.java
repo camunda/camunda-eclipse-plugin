@@ -7,9 +7,11 @@ import org.camunda.bpm.modeler.test.util.TestHelper.ModelResources;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.impl.DocumentRootImpl;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.platform.IDiagramContainer;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
@@ -43,7 +45,7 @@ public abstract class AbstractEditorTest {
 	public void importTestResult() {
 		if (importAfterTest && testResources != null){
 			setModelResources(testResources);
-			new ModelImport(getDiagramTypeProvider(), getResource()).execute();
+			new ModelImport(getDiagramContainer(), getBpmnResource(), getDiagramResource()).execute();
 		}
 	}
 
@@ -73,7 +75,7 @@ public abstract class AbstractEditorTest {
 		
 		if (editorResources != null) {
 			this.diagram = editorResources.getDiagram();
-			this.diagramTypeProvider = editorResources.getTypeProvider();
+			this.diagramTypeProvider = editorResources.getDiagramContainer().getDiagramTypeProvider();
 		} else {
 			this.diagram = null;
 			this.diagramTypeProvider = null;
@@ -84,6 +86,10 @@ public abstract class AbstractEditorTest {
 		return diagram;
 	}
 
+	protected IDiagramContainer getDiagramContainer() {
+		return editorResources.getDiagramContainer();
+	}
+	
 	protected IDiagramTypeProvider getDiagramTypeProvider() {
 		return diagramTypeProvider;
 	}
@@ -92,12 +98,16 @@ public abstract class AbstractEditorTest {
 		return editingDomain;
 	}
 
-	public Bpmn2Resource getResource() {
+	public Bpmn2Resource getBpmnResource() {
 		return bpmnResource;
+	}
+
+	public Resource getDiagramResource() {
+		return editorResources.getDiagramResource();
 	}
 	
 	public Definitions getDefinitions() {
-		return ((DocumentRootImpl) getResource().getContents().get(0)).getDefinitions();
+		return ((DocumentRootImpl) getBpmnResource().getContents().get(0)).getDefinitions();
 	}
 
 	public TemporaryFolder getTempFolder() {

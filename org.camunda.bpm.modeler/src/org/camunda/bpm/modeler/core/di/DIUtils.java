@@ -15,7 +15,9 @@ package org.camunda.bpm.modeler.core.di;
 import static org.camunda.bpm.modeler.core.layout.util.ConversionUtil.diPoint;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
@@ -60,6 +62,7 @@ import org.eclipse.graphiti.mm.pictograms.PictogramLink;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.platform.IDiagramContainer;
 import org.eclipse.graphiti.services.Graphiti;
+import org.eclipse.graphiti.services.IPeService;
 
 public class DIUtils {
 
@@ -341,25 +344,20 @@ public class DIUtils {
 	 * @return
 	 */
 	public static Diagram getOrCreateDiagram(final IDiagramContainer container, final BPMNDiagram bpmnDiagram) {
-		// do we need to create a new Diagram or is this already in the model?
-		Diagram diagram = findDiagram(container, bpmnDiagram);
-		if (diagram!=null) {
-			// already exists
-			return diagram;
-		}
-
+		
 		// create a new one
 		IDiagramTypeProvider dtp = container.getDiagramTypeProvider();
 		String typeId = dtp.getDiagram().getDiagramTypeId();
 		
 		String name = bpmnDiagram.getName();
-		if(name == null) {
+		if (name == null) {
 			name = bpmnDiagram.getId();
 		}
 		
 		final Diagram newDiagram = Graphiti.getCreateService().createDiagram(typeId, name, true);
 		final IFeatureProvider featureProvider = dtp.getFeatureProvider();
 		final Resource resource = dtp.getDiagram().eResource();
+		
 		TransactionalEditingDomain domain = container.getDiagramBehavior().getEditingDomain();
 		domain.getCommandStack().execute(new RecordingCommand(domain) {
 			protected void doExecute() {
@@ -368,6 +366,7 @@ public class DIUtils {
 				featureProvider.link(newDiagram, bpmnDiagram);
 			}
 		});
+
 		return newDiagram;
 	}
 	
@@ -380,7 +379,7 @@ public class DIUtils {
 	 */
 	public static Diagram findDiagram(final IDiagramContainer container, final BPMNDiagram bpmnDiagram) {
 		ResourceSet resourceSet = container.getDiagramBehavior().getEditingDomain().getResourceSet();
-		if (resourceSet!=null) {
+		if (resourceSet != null) {
 			return findDiagram(resourceSet, bpmnDiagram);
 		}
 		return null;
@@ -404,35 +403,42 @@ public class DIUtils {
 	
 	public static void deleteDiagram(final IDiagramContainer container, final BPMNDiagram bpmnDiagram) {
 		Diagram diagram = DIUtils.findDiagram(container, bpmnDiagram);
-		if (diagram!=null) {
-			List<EObject> list = new ArrayList<EObject>();
-			TreeIterator<EObject> iter = diagram.eAllContents();
-			while (iter.hasNext()) {
-				EObject o = iter.next();
-				if (o instanceof PictogramLink) {
-					((PictogramLink)o).getBusinessObjects().clear();
-					if (!list.contains(o))
-						list.add(o);
-				}
-				else if (o instanceof Color) {
-					if (!list.contains(o))
-						list.add(o);
-				}
-				else if (o instanceof Font) {
-					if (!list.contains(o))
-						list.add(o);
-				}
-				else if (o instanceof Style) {
-					if (!list.contains(o))
-						list.add(o);
-				}
-			}
-			for (EObject o : list)
-				EcoreUtil.delete(o);
-			
-			EcoreUtil.delete(diagram);
+		if (diagram != null) {
+			clearDiagram(diagram);
 			EcoreUtil.delete(bpmnDiagram);
-		}	
+		}
+	}
+	
+	/**
+	 * Deletes a diagram and all associated resources excluding model
+	 * elements from the containing resource. 
+	 * 
+	 * @param diagram
+	 */
+	public static void deleteDiagram(Diagram diagram) {
+		Set<EObject> removeCandidates = new HashSet<EObject>();
+		TreeIterator<EObject> allElements = diagram.eAllContents();
+		
+		while (allElements.hasNext()) {
+			EObject object = allElements.next();
+			
+			if (object instanceof PictogramLink) {
+				((PictogramLink) object).getBusinessObjects().clear();
+				removeCandidates.add(object);
+			} else if (object instanceof Color) {
+				removeCandidates.add(object);
+			} else if (object instanceof Font) {
+				removeCandidates.add(object);
+			}	else if (object instanceof Style) {
+				removeCandidates.add(object);
+			}
+		}
+
+		for (EObject object : removeCandidates) {
+			EcoreUtil.delete(object);
+		}
+		
+		EcoreUtil.delete(diagram);
 	}
 	
 	public static BPMNDiagram findBPMNDiagram(final IDiagramContainer container, final BaseElement baseElement, boolean deep) {
@@ -487,8 +493,22 @@ public class DIUtils {
 		
 		// this has to happen last because the IResourceChangeListener in the DesignEditor
 		// looks for add/remove to Definitions.diagrams
-        definitions.getDiagrams().add(bpmnDiagram);
+		definitions.getDiagrams().add(bpmnDiagram);
 
 		return bpmnDiagram;
+	}
+
+	public static void clearDiagram(Diagram diagram) {
+		IPeService peService = Graphiti.getPeService();
+		
+		List<Connection> connections = new ArrayList<Connection>(diagram.getConnections());
+		for (Connection c: connections) {
+			peService.deletePictogramElement(c);
+		}
+		
+		List<Shape> shapes = new ArrayList<Shape>(diagram.getChildren());
+		for (Shape s: shapes) {
+			peService.deletePictogramElement(s);
+		}
 	}
 }

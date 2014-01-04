@@ -3,25 +3,40 @@ package org.camunda.bpm.modeler.ui.diagram.editor;
 import java.util.ArrayList;
 
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
-import org.eclipse.graphiti.ui.editor.DefaultPersistencyBehavior;
-import org.eclipse.graphiti.ui.editor.DefaultUpdateBehavior;
+import org.eclipse.graphiti.ui.editor.DefaultPaletteBehavior;
 import org.eclipse.graphiti.ui.editor.DiagramBehavior;
-import org.eclipse.graphiti.ui.editor.IDiagramContainerUI;
 
 public class Bpmn2DiagramBehavior extends DiagramBehavior {
 
-	public Bpmn2DiagramBehavior(IDiagramContainerUI diagramContainer) {
+	public Bpmn2DiagramBehavior(Bpmn2Editor diagramContainer) {
 		super(diagramContainer);
 	}
 	
 	@Override
-	public DefaultUpdateBehavior createUpdateBehavior() {
+	public Bpmn2EditorUpdateBehavior createUpdateBehavior() {
 		return new Bpmn2EditorUpdateBehavior(this);
 	}
 	
 	@Override
-	protected DefaultPersistencyBehavior createPersistencyBehavior() {
+	protected Bpmn2PersistencyBehavior createPersistencyBehavior() {
 		return new Bpmn2PersistencyBehavior(this);
+	}
+	
+	@Override
+	protected Bpmn2RefreshBehavior createRefreshBehavior() {
+		return new Bpmn2RefreshBehavior(this);
+	}
+
+	@Override
+	public DefaultPaletteBehavior getPaletteBehavior() {
+		// override for better visibility
+		return super.getPaletteBehavior();
+	}
+	
+	@Override
+	public Bpmn2Editor getDiagramContainer() {
+		// override for better type support
+		return (Bpmn2Editor) super.getDiagramContainer();
 	}
 	
 	@Override
@@ -37,5 +52,4 @@ public class Bpmn2DiagramBehavior extends DiagramBehavior {
 		}
 		return visibleList.toArray(new PictogramElement[visibleList.size()]);
 	}
-
 }
