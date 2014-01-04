@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.ui.editor.DefaultPaletteBehavior;
 import org.eclipse.graphiti.ui.editor.DiagramBehavior;
-import org.eclipse.graphiti.ui.editor.IDiagramContainerUI;
 
 public class Bpmn2DiagramBehavior extends DiagramBehavior {
 
