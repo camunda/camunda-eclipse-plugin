@@ -14,7 +14,9 @@
 package org.camunda.bpm.modeler.ui.diagram.editor;
 
 import org.camunda.bpm.modeler.core.model.Bpmn2ModelerResourceSetImpl;
+import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.core.commands.operations.DefaultOperationHistory;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
@@ -38,6 +40,7 @@ import org.eclipse.graphiti.ui.internal.editor.GFWorkspaceCommandStackImpl;
 @SuppressWarnings("restriction")
 public class Bpmn2EditorUpdateBehavior extends DefaultUpdateBehavior {
 
+	// need to save the delegate to expose it
 	protected Delegate workspaceSynchronizerDelegate;
 	
 	public Bpmn2EditorUpdateBehavior(DiagramEditor diagramEditor) {
@@ -45,18 +48,53 @@ public class Bpmn2EditorUpdateBehavior extends DefaultUpdateBehavior {
 	}
 	
 	@Override
+	public void handleActivate() {
+		
+		// update the change flag in case external file
+		// changes occured
+		if (!isResourceChanged() && externalFileChange()) {
+			setResourceChanged(true);
+		}
+		
+		super.handleActivate();
+	}
+
+	/**
+	 * Return true if an external file changes happened
+	 * to the model file, either from external programs
+	 * or a source editor
+	 * 
+	 * @return
+	 */
+	private boolean externalFileChange() {
+		Bpmn2Editor editor = getEditor();
+		
+		Bpmn2Resource modelResource = editor.getModelResource();
+		IFile modelFile = editor.getModelFile();
+		
+		long fileTimeStamp = modelFile.getLocalTimeStamp();
+		long modelTimeStamp = modelResource.getTimeStamp();
+		
+		return fileTimeStamp > modelTimeStamp;
+	}
+
+	protected Bpmn2Editor getEditor() {
+		return (Bpmn2Editor) diagramEditor;
+	}
+
+	@Override
 	public void createEditingDomain() {
 		TransactionalEditingDomain editingDomain = createResourceSetAndEditingDomain();
 		initializeEditingDomain(editingDomain);
 	}
 	
+	/**
+	 * Return the workspace synchronizer
+	 * 
+	 * @return
+	 */
 	public Delegate getWorkspaceSynchronizerDelegate() {
 		return workspaceSynchronizerDelegate;
-	}
-	
-	@Override
-	public TransactionalEditingDomain getEditingDomain() {
-		return super.getEditingDomain();
 	}
 	
 	public TransactionalEditingDomain createResourceSetAndEditingDomain() {
