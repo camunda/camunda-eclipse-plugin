@@ -7,14 +7,15 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.jface.dialogs.IPageChangedListener;
-import org.eclipse.jface.dialogs.PageChangedEvent;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.MultiPageEditorSite;
@@ -95,6 +96,29 @@ public class Bpmn2MultiPageEditor extends MultiPageEditorPart {
 		setPageText(1, "Source");
 		
 		setPartName(bpmnEditor.getTitle());
+	}
+	
+	@Override
+	protected void pageChange(int newPageIndex) {
+		
+		int index = Math.abs(newPageIndex - 1);
+		
+		String editorName = getPageText(index);
+		IEditorPart editor = getEditor(index);
+		
+		if (editor != null && editor.isSaveOnCloseNeeded()) {
+			
+			boolean save = MessageDialog.openQuestion(
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+					"Unsaved changes in " + editorName + " view", 
+					"You have unsaved changes in the " + editorName + " view that may lead to editing conflicts. Would you like to save these changes before you continue?");
+			
+			if (save) {
+				editor.doSave(new NullProgressMonitor());
+			}
+		}
+
+		super.pageChange(newPageIndex);
 	}
 	
 	@Override
