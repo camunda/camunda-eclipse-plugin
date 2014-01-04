@@ -66,7 +66,7 @@
 	<extension point="org.eclipse.ui.editors">
 
 		<editor
-			class="org.camunda.bpm.modeler.ui.diagram.editor.Bpmn2Editor"
+			class="org.camunda.bpm.modeler.ui.diagram.editor.Bpmn2MultiPageEditor"
 			contributorClass="org.eclipse.graphiti.ui.editor.DiagramEditorActionBarContributor"
 			default="true" extensions="bpmn,bpmn2" icon="icons/bpmn2_editor_16.png"
 			id="org.camunda.bpm.modeler.ui.bpmn2editor" name="Bpmn2 Diagram Editor">
