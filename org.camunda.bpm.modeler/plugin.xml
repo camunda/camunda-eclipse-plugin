@@ -38,6 +38,9 @@
 			id="org.camunda.bpm.modeler.ui.diagram"
 			name="BPMN 2.0 Diagram"
 			preferredPerspectives="org.eclipse.jdt.ui.JavaPerspective">
+			<description>
+				Creates a new BPMN 2.0 diagram in the workspace
+			</description>
 		</wizard>
 	</extension>
 	
