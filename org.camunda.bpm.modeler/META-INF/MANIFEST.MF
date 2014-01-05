@@ -557,4 +557,5 @@ Export-Package: org.camunda.bpm.modeler.core;
  org.camunda.bpm.modeler.ui.property.tabs.dialog,
  org.camunda.bpm.modeler.ui.property.tabs.radio,
  org.camunda.bpm.modeler.ui.property.tabs.tables,
- org.camunda.bpm.modeler.ui.property.tabs.util
+ org.camunda.bpm.modeler.ui.property.tabs.util,
+ org.camunda.bpm.modeler.ui.wizards
