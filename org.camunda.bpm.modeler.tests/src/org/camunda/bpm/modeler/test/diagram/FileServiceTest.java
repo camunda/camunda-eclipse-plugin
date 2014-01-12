@@ -48,7 +48,7 @@ public class FileServiceTest {
 	
 	@Test
 	public void shouldHandleExternalFile_NonExisting() throws Exception {
-		URI fileUri = URI.createURI("file:/C:/some-non-existing-file.txt");
+		URI fileUri = URI.createURI("file:/some-non-existing-file.txt");
 		
 		try {
 			FileService.resolveAsWorkspaceResource(fileUri);
