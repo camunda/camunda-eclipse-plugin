@@ -163,7 +163,11 @@ public class FileService {
 		
 		List<String> parts = new ArrayList<String>();
 		
-		parts.add(fileUri.device());
+		String device = fileUri.device();
+		
+		if (device != null) {
+			parts.add(device);
+		}
 		
 		for (String segment: fileUri.segments()) {
 			parts.add(segment);
