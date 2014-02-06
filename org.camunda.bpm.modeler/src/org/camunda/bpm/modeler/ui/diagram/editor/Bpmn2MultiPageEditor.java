@@ -128,6 +128,30 @@ public class Bpmn2MultiPageEditor extends MultiPageEditorPart {
 	}
 	
 	@Override
+	public Object getAdapter(Class adapter) {
+		
+		// workaround for CAM-1827
+		
+		// we make sure we can always get the GEF adapters, 
+		// even if we show the xml editor instead of diagram editor
+		Object instance = super.getAdapter(adapter);
+		
+		if (instance == null) {
+			int pages = getPageCount();
+			
+			for (int i = 0; i < pages; i++) {
+				instance = getEditor(i).getAdapter(adapter);
+				
+				if (instance != null) {
+					break;
+				}
+			}
+		}
+		
+		return instance;
+	}
+	
+	@Override
 	public String getPartName() {
 		if (bpmnEditor != null) {
 			return bpmnEditor.getPartName();
