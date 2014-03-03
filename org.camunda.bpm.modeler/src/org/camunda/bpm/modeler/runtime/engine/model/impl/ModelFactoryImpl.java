@@ -31,7 +31,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
 	 */
   public static ModelFactory init() {
 		try {
-			ModelFactory theModelFactory = (ModelFactory)EPackage.Registry.INSTANCE.getEFactory("http://activiti.org/bpmn"); 
+			ModelFactory theModelFactory = (ModelFactory)EPackage.Registry.INSTANCE.getEFactory(ModelPackage.eNS_URI);
 			if (theModelFactory != null) {
 				return theModelFactory;
 			}

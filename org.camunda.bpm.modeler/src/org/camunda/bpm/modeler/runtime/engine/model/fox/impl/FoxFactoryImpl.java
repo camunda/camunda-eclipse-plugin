@@ -27,7 +27,7 @@ public class FoxFactoryImpl extends EFactoryImpl implements FoxFactory {
 	 */
   public static FoxFactory init() {
 		try {
-			FoxFactory theFoxFactory = (FoxFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.camunda.com/fox"); 
+			FoxFactory theFoxFactory = (FoxFactory)EPackage.Registry.INSTANCE.getEFactory(FoxPackage.eNS_URI);
 			if (theFoxFactory != null) {
 				return theFoxFactory;
 			}

@@ -1549,13 +1549,22 @@ public interface ModelPackage extends EPackage {
 	int DOCUMENT_ROOT__FORM_DATA = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 25;
 
 		/**
+	 * The feature id for the '<em><b>Follow Up Date</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__FOLLOW_UP_DATE = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 26;
+
+		/**
 	 * The number of structural features of the '<em>Document Root</em>' class.
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-  int DOCUMENT_ROOT_FEATURE_COUNT = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 26;
+  int DOCUMENT_ROOT_FEATURE_COUNT = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 27;
 
   /**
 	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.StartEventImpl <em>Start Event</em>}' class.
@@ -3684,6 +3693,17 @@ public interface ModelPackage extends EPackage {
 	EReference getDocumentRoot_FormData();
 
 		/**
+	 * Returns the meta object for the attribute '{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getFollowUpDate <em>Follow Up Date</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Follow Up Date</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getFollowUpDate()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EAttribute getDocumentRoot_FollowUpDate();
+
+		/**
 	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.StartEvent <em>Start Event</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4853,6 +4873,14 @@ public interface ModelPackage extends EPackage {
 		 * @generated
 		 */
 		EReference DOCUMENT_ROOT__FORM_DATA = eINSTANCE.getDocumentRoot_FormData();
+
+				/**
+		 * The meta object literal for the '<em><b>Follow Up Date</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DOCUMENT_ROOT__FOLLOW_UP_DATE = eINSTANCE.getDocumentRoot_FollowUpDate();
 
 				/**
 		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.StartEventImpl <em>Start Event</em>}' class.

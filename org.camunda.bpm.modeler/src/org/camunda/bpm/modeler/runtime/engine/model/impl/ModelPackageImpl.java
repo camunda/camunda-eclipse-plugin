@@ -591,6 +591,15 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getDocumentRoot_FollowUpDate() {
+		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(26);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getStartEvent() {
 		return startEventEClass;
 	}
@@ -1415,6 +1424,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		createEAttribute(documentRootEClass, DOCUMENT_ROOT__RESULT_VARIABLE_NAME);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__FAILED_JOB_RETRY_TIME_CYCLE);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__FORM_DATA);
+		createEAttribute(documentRootEClass, DOCUMENT_ROOT__FOLLOW_UP_DATE);
 
 		startEventEClass = createEClass(START_EVENT);
 
@@ -1597,6 +1607,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		initEAttribute(getDocumentRoot_ResultVariableName(), ecorePackage.getEString(), "resultVariableName", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_FailedJobRetryTimeCycle(), theFoxPackage.getFailedJobRetryTimeCycleType(), null, "failedJobRetryTimeCycle", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_FormData(), this.getFormDataType(), null, "formData", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDocumentRoot_FollowUpDate(), this.getTExpression(), "followUpDate", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(startEventEClass, StartEvent.class, "StartEvent", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -1950,6 +1961,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		   new String[] {
 			 "kind", "element",
 			 "name", "formData",
+			 "namespace", "##targetNamespace"
+		   });			
+		addAnnotation
+		  (getDocumentRoot_FollowUpDate(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "followUpDate",
 			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation

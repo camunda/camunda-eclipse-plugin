@@ -59,6 +59,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.DocumentRootImpl#getResultVariableName <em>Result Variable Name</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.DocumentRootImpl#getFailedJobRetryTimeCycle <em>Failed Job Retry Time Cycle</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.DocumentRootImpl#getFormData <em>Form Data</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.DocumentRootImpl#getFollowUpDate <em>Follow Up Date</em>}</li>
  * </ul>
  * </p>
  *
@@ -452,6 +453,26 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 	 * @ordered
 	 */
 	protected FormDataType formData;
+
+		/**
+	 * The default value of the '{@link #getFollowUpDate() <em>Follow Up Date</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getFollowUpDate()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String FOLLOW_UP_DATE_EDEFAULT = null;
+
+		/**
+	 * The cached value of the '{@link #getFollowUpDate() <em>Follow Up Date</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getFollowUpDate()
+	 * @generated
+	 * @ordered
+	 */
+	protected String followUpDate = FOLLOW_UP_DATE_EDEFAULT;
 
 		/**
 	 * <!-- begin-user-doc -->
@@ -1134,6 +1155,27 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 
 		/**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String getFollowUpDate() {
+		return followUpDate;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setFollowUpDate(String newFollowUpDate) {
+		String oldFollowUpDate = followUpDate;
+		followUpDate = newFollowUpDate;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__FOLLOW_UP_DATE, oldFollowUpDate, followUpDate));
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1220,6 +1262,8 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 				return getFailedJobRetryTimeCycle();
 			case ModelPackage.DOCUMENT_ROOT__FORM_DATA:
 				return getFormData();
+			case ModelPackage.DOCUMENT_ROOT__FOLLOW_UP_DATE:
+				return getFollowUpDate();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -1309,6 +1353,9 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 				return;
 			case ModelPackage.DOCUMENT_ROOT__FORM_DATA:
 				setFormData((FormDataType)newValue);
+				return;
+			case ModelPackage.DOCUMENT_ROOT__FOLLOW_UP_DATE:
+				setFollowUpDate((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -1400,6 +1447,9 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 			case ModelPackage.DOCUMENT_ROOT__FORM_DATA:
 				setFormData((FormDataType)null);
 				return;
+			case ModelPackage.DOCUMENT_ROOT__FOLLOW_UP_DATE:
+				setFollowUpDate(FOLLOW_UP_DATE_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -1464,6 +1514,8 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 				return getFailedJobRetryTimeCycle() != null;
 			case ModelPackage.DOCUMENT_ROOT__FORM_DATA:
 				return formData != null;
+			case ModelPackage.DOCUMENT_ROOT__FOLLOW_UP_DATE:
+				return FOLLOW_UP_DATE_EDEFAULT == null ? followUpDate != null : !FOLLOW_UP_DATE_EDEFAULT.equals(followUpDate);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -1514,6 +1566,8 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 		result.append(priority);
 		result.append(", resultVariableName: ");
 		result.append(resultVariableName);
+		result.append(", followUpDate: ");
+		result.append(followUpDate);
 		result.append(')');
 		return result.toString();
 	}

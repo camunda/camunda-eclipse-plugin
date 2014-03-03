@@ -42,6 +42,7 @@ import org.camunda.bpm.modeler.runtime.engine.model.fox.FailedJobRetryTimeCycleT
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getResultVariableName <em>Result Variable Name</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getFailedJobRetryTimeCycle <em>Failed Job Retry Time Cycle</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getFormData <em>Form Data</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getFollowUpDate <em>Follow Up Date</em>}</li>
  * </ul>
  * </p>
  *
@@ -786,5 +787,31 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @generated
 	 */
 	void setFormData(FormDataType value);
+
+		/**
+	 * Returns the value of the '<em><b>Follow Up Date</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * User Task attribute to set the task follow up date. The expression should resolve to a value of type java.util.Date.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Follow Up Date</em>' attribute.
+	 * @see #setFollowUpDate(String)
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ModelPackage#getDocumentRoot_FollowUpDate()
+	 * @model dataType="org.camunda.bpm.modeler.runtime.engine.model.TExpression"
+	 *        extendedMetaData="kind='attribute' name='followUpDate' namespace='##targetNamespace'"
+	 * @generated
+	 */
+	String getFollowUpDate();
+
+		/**
+	 * Sets the value of the '{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getFollowUpDate <em>Follow Up Date</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Follow Up Date</em>' attribute.
+	 * @see #getFollowUpDate()
+	 * @generated
+	 */
+	void setFollowUpDate(String value);
 
 } // DocumentRoot

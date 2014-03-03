@@ -1,6 +1,7 @@
 package org.camunda.bpm.modeler.ui.property.tabs.builder;
 
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
+import org.camunda.bpm.modeler.ui.property.tabs.util.HelpText;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.bpmn2.UserTask;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
@@ -23,7 +24,10 @@ public class UserTaskPropertiesBuilder extends AbstractPropertiesBuilder<UserTas
 		
 		Text dueDateField = PropertyUtil.createText(section, parent, "Due Date", ModelPackage.eINSTANCE.getDocumentRoot_DueDate(), bo);
 		PropertyUtil.createToolTipFor(dueDateField, "The due date as an EL expression (e.g. ${someDate}) or a ISO date (e.g. 2012-03-01T15:30:23)");
-		
+
+		Text followUpDateField = PropertyUtil.createText(section, parent, "Follow Up Date", ModelPackage.eINSTANCE.getDocumentRoot_FollowUpDate(), bo);
+		PropertyUtil.attachNoteWithLink(section, followUpDateField, HelpText.FOLLOW_UP_DATE);
+
 		PropertyUtil.createText(section, parent, "Priority", ModelPackage.eINSTANCE.getDocumentRoot_Priority(), bo);
 	}
 }
