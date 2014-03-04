@@ -12,6 +12,7 @@ import org.camunda.bpm.modeler.ui.property.tabs.builder.NamePropertyBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.ParticipantPropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.ProcessIdPropertyBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.ProcessPropertiesBuilder;
+import org.camunda.bpm.modeler.ui.property.tabs.builder.ReceiveTaskPropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.RetryEnabledPropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.ScriptTaskPropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.SequenceFlowPropertiesBuilder;
@@ -41,6 +42,7 @@ import org.eclipse.bpmn2.ManualTask;
 import org.eclipse.bpmn2.MessageEventDefinition;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
+import org.eclipse.bpmn2.ReceiveTask;
 import org.eclipse.bpmn2.ScriptTask;
 import org.eclipse.bpmn2.SendTask;
 import org.eclipse.bpmn2.SequenceFlow;
@@ -147,7 +149,7 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 	}
 	
 	private void createActivityComposite(Activity activity) {
-		if (!(activity instanceof ManualTask) && !(activity instanceof AdHocSubProcess)) {
+		if (!(activity instanceof ManualTask) && !(activity instanceof ReceiveTask) && !(activity instanceof AdHocSubProcess)) {
 			new ActivityPropertiesBuilder(parent, section, activity).create();
 		}
 		
@@ -159,7 +161,9 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 			new SubProcessPropertiesBuilder(parent, section, (SubProcess) activity).create();
 		}
 
-		createIsForCompensationFlag(activity);
+		if (!(activity instanceof ReceiveTask)) {
+			createIsForCompensationFlag(activity);
+		}
 	}
 
 	private boolean isTimerEvent(CatchEvent e) {
@@ -183,6 +187,12 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 		
 		if (task instanceof ServiceTask || task instanceof BusinessRuleTask || task instanceof SendTask) {
 			new ServiceTaskPropertiesBuilder(parent, section, task).create();
+		} else
+
+		if (task instanceof ReceiveTask) {
+			new ReceiveTaskPropertiesBuilder(parent, section, (ReceiveTask) task).create();
+			new ActivityPropertiesBuilder(parent, section, task).create();
+			createIsForCompensationFlag(task);
 		}
 	}
 	
