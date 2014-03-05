@@ -34,6 +34,7 @@ public class DefinitionReferencePropertyBuilder<T extends RootElement> extends A
 
 	private final EStructuralFeature refFeature;
 	private final EStructuralFeature nameFeature;
+	private final EStructuralFeature codeFeature;
 	
 	private final String label;
 
@@ -43,12 +44,13 @@ public class DefinitionReferencePropertyBuilder<T extends RootElement> extends A
 
 	public DefinitionReferencePropertyBuilder(
 			Composite parent, GFPropertySection section, EventDefinition bo, 
-			String label, EStructuralFeature refFeature, EStructuralFeature nameFeature, Class<T> definitionCls) {
+			String label, EStructuralFeature refFeature, EStructuralFeature nameFeature, EStructuralFeature codeFeature, Class<T> definitionCls) {
 		
 		super(parent, section, bo);
 		
 		this.refFeature = refFeature;
 		this.nameFeature = nameFeature;
+		this.codeFeature = codeFeature;
 		
 		this.definitionCls = definitionCls;
 		
@@ -162,6 +164,10 @@ public class DefinitionReferencePropertyBuilder<T extends RootElement> extends A
 	}
 	
 	private String getDefinitionLabel(T d) {
-		return d.eGet(nameFeature) + " (" + d.getId() + ")";
+		if (codeFeature != null) {
+			return d.eGet(nameFeature) + " (" + d.getId() + ", " + d.eGet(codeFeature) + ")";
+ 		} else {
+ 			return d.eGet(nameFeature) + " (" + d.getId() + ")";
+ 		}
 	}
 }

@@ -19,7 +19,7 @@ public class MessageDefinitionPropertyBuilder extends DefinitionReferencePropert
 	private static final EStructuralFeature MESSAGE_NAME_FEATURE = Bpmn2Package.eINSTANCE.getMessage_Name();
 
 	public MessageDefinitionPropertyBuilder(Composite parent, GFPropertySection section, MessageEventDefinition bo) {
-		super(parent, section, bo, "Message", MESSAGE_REF_FEATURE, MESSAGE_NAME_FEATURE, Message.class);
+		super(parent, section, bo, "Message", MESSAGE_REF_FEATURE, MESSAGE_NAME_FEATURE, null, Message.class);
 	}
 	
 	@Override
