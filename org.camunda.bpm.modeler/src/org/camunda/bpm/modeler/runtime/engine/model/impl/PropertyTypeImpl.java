@@ -21,6 +21,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <ul>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.PropertyTypeImpl#getId <em>Id</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.PropertyTypeImpl#getValue <em>Value</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.PropertyTypeImpl#getName <em>Name</em>}</li>
  * </ul>
  * </p>
  *
@@ -66,6 +67,26 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 	 * @ordered
 	 */
 	protected String value = VALUE_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getName()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String NAME_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getName()
+	 * @generated
+	 * @ordered
+	 */
+	protected String name = NAME_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -133,6 +154,27 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setName(String newName) {
+		String oldName = name;
+		name = newName;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.PROPERTY_TYPE__NAME, oldName, name));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -140,6 +182,8 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 				return getId();
 			case ModelPackage.PROPERTY_TYPE__VALUE:
 				return getValue();
+			case ModelPackage.PROPERTY_TYPE__NAME:
+				return getName();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -157,6 +201,9 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 				return;
 			case ModelPackage.PROPERTY_TYPE__VALUE:
 				setValue((String)newValue);
+				return;
+			case ModelPackage.PROPERTY_TYPE__NAME:
+				setName((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -176,6 +223,9 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 			case ModelPackage.PROPERTY_TYPE__VALUE:
 				setValue(VALUE_EDEFAULT);
 				return;
+			case ModelPackage.PROPERTY_TYPE__NAME:
+				setName(NAME_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -192,6 +242,8 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 				return ID_EDEFAULT == null ? id != null : !ID_EDEFAULT.equals(id);
 			case ModelPackage.PROPERTY_TYPE__VALUE:
 				return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
+			case ModelPackage.PROPERTY_TYPE__NAME:
+				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -210,6 +262,8 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 		result.append(id);
 		result.append(", value: ");
 		result.append(value);
+		result.append(", name: ");
+		result.append(name);
 		result.append(')');
 		return result.toString();
 	}

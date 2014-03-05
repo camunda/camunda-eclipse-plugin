@@ -11,6 +11,7 @@ import org.camunda.bpm.modeler.runtime.engine.model.HistoryType;
 import org.camunda.bpm.modeler.runtime.engine.model.InType;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.runtime.engine.model.OutType;
+import org.camunda.bpm.modeler.runtime.engine.model.PropertiesType;
 import org.camunda.bpm.modeler.runtime.engine.model.TaskListenerType;
 import org.camunda.bpm.modeler.runtime.engine.model.TypeType;
 
@@ -60,6 +61,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.DocumentRootImpl#getFailedJobRetryTimeCycle <em>Failed Job Retry Time Cycle</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.DocumentRootImpl#getFormData <em>Form Data</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.DocumentRootImpl#getFollowUpDate <em>Follow Up Date</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.DocumentRootImpl#getProperties <em>Properties</em>}</li>
  * </ul>
  * </p>
  *
@@ -473,6 +475,16 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 	 * @ordered
 	 */
 	protected String followUpDate = FOLLOW_UP_DATE_EDEFAULT;
+
+		/**
+	 * The cached value of the '{@link #getProperties() <em>Properties</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getProperties()
+	 * @generated
+	 * @ordered
+	 */
+	protected PropertiesType properties;
 
 		/**
 	 * <!-- begin-user-doc -->
@@ -1176,6 +1188,49 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 
 		/**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public PropertiesType getProperties() {
+		return properties;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetProperties(PropertiesType newProperties, NotificationChain msgs) {
+		PropertiesType oldProperties = properties;
+		properties = newProperties;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__PROPERTIES, oldProperties, newProperties);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setProperties(PropertiesType newProperties) {
+		if (newProperties != properties) {
+			NotificationChain msgs = null;
+			if (properties != null)
+				msgs = ((InternalEObject)properties).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.DOCUMENT_ROOT__PROPERTIES, null, msgs);
+			if (newProperties != null)
+				msgs = ((InternalEObject)newProperties).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.DOCUMENT_ROOT__PROPERTIES, null, msgs);
+			msgs = basicSetProperties(newProperties, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__PROPERTIES, newProperties, newProperties));
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1198,6 +1253,8 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 				return basicSetFailedJobRetryTimeCycle(null, msgs);
 			case ModelPackage.DOCUMENT_ROOT__FORM_DATA:
 				return basicSetFormData(null, msgs);
+			case ModelPackage.DOCUMENT_ROOT__PROPERTIES:
+				return basicSetProperties(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -1264,6 +1321,8 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 				return getFormData();
 			case ModelPackage.DOCUMENT_ROOT__FOLLOW_UP_DATE:
 				return getFollowUpDate();
+			case ModelPackage.DOCUMENT_ROOT__PROPERTIES:
+				return getProperties();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -1356,6 +1415,9 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 				return;
 			case ModelPackage.DOCUMENT_ROOT__FOLLOW_UP_DATE:
 				setFollowUpDate((String)newValue);
+				return;
+			case ModelPackage.DOCUMENT_ROOT__PROPERTIES:
+				setProperties((PropertiesType)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -1450,6 +1512,9 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 			case ModelPackage.DOCUMENT_ROOT__FOLLOW_UP_DATE:
 				setFollowUpDate(FOLLOW_UP_DATE_EDEFAULT);
 				return;
+			case ModelPackage.DOCUMENT_ROOT__PROPERTIES:
+				setProperties((PropertiesType)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -1516,6 +1581,8 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 				return formData != null;
 			case ModelPackage.DOCUMENT_ROOT__FOLLOW_UP_DATE:
 				return FOLLOW_UP_DATE_EDEFAULT == null ? followUpDate != null : !FOLLOW_UP_DATE_EDEFAULT.equals(followUpDate);
+			case ModelPackage.DOCUMENT_ROOT__PROPERTIES:
+				return properties != null;
 		}
 		return super.eIsSet(featureID);
 	}
