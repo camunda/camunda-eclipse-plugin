@@ -35,7 +35,7 @@ public class SignalDefinitionPropertyBuilder extends DefinitionReferenceProperty
 	private static final EStructuralFeature ASYNC_FEATURE = ModelPackage.eINSTANCE.getDocumentRoot_Async();
 
 	public SignalDefinitionPropertyBuilder(Composite parent, GFPropertySection section, SignalEventDefinition bo) {
-		super(parent, section, bo, "Signal", SIGNAL_REF_FEATURE, SIGNAL_NAME_FEATURE, Signal.class);
+		super(parent, section, bo, "Signal", SIGNAL_REF_FEATURE, SIGNAL_NAME_FEATURE, null, Signal.class);
 	}
 
 	@Override

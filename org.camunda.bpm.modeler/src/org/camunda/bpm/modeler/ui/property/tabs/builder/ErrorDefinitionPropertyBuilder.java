@@ -17,9 +17,10 @@ public class ErrorDefinitionPropertyBuilder extends DefinitionReferencePropertyB
 
 	private static final EStructuralFeature ERROR_REF_FEATURE = Bpmn2Package.eINSTANCE.getErrorEventDefinition_ErrorRef();
 	private static final EStructuralFeature ERROR_NAME_FEATURE = Bpmn2Package.eINSTANCE.getError_Name();
+	private static final EStructuralFeature ERROR_CODE_FEATURE = Bpmn2Package.eINSTANCE.getError_ErrorCode();
 
 	public ErrorDefinitionPropertyBuilder(Composite parent, GFPropertySection section, ErrorEventDefinition bo) {
-		super(parent, section, bo, "Error", ERROR_REF_FEATURE, ERROR_NAME_FEATURE, Error.class);
+		super(parent, section, bo, "Error", ERROR_REF_FEATURE, ERROR_NAME_FEATURE, ERROR_CODE_FEATURE, Error.class);
 	}
 	
 	@Override
