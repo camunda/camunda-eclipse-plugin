@@ -149,19 +149,19 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 	}
 	
 	private void createActivityComposite(Activity activity) {
-		if (!(activity instanceof ManualTask) && !(activity instanceof ReceiveTask) && !(activity instanceof AdHocSubProcess)) {
+		if (!(activity instanceof Task) && !(activity instanceof AdHocSubProcess)) {
 			new ActivityPropertiesBuilder(parent, section, activity).create();
 		}
-		
+
 		if (activity instanceof CallActivity) {
 			new CallActivityPropertiesBuilder(parent, section, (CallActivity) activity).create();
 		}
-		
+
 		if (activity instanceof SubProcess) {
 			new SubProcessPropertiesBuilder(parent, section, (SubProcess) activity).create();
 		}
 
-		if (!(activity instanceof ReceiveTask)) {
+		if (!(activity instanceof Task)) {
 			createIsForCompensationFlag(activity);
 		}
 	}
@@ -191,9 +191,20 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 
 		if (task instanceof ReceiveTask) {
 			new ReceiveTaskPropertiesBuilder(parent, section, (ReceiveTask) task).create();
-			new ActivityPropertiesBuilder(parent, section, task).create();
-			createIsForCompensationFlag(task);
 		}
+
+		if (task instanceof ServiceTask ||
+		    task instanceof BusinessRuleTask ||
+		    task instanceof SendTask ||
+		    task instanceof UserTask ||
+		    task instanceof ScriptTask ||
+		    task instanceof ReceiveTask) {
+
+			// not allowed for undefined task and manual task
+			new ActivityPropertiesBuilder(parent, section, task).create();
+		}
+
+		createIsForCompensationFlag(task);
 	}
 	
 	private void createEventComposite(Event event) {
