@@ -600,6 +600,15 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getDocumentRoot_Properties() {
+		return (EReference)documentRootEClass.getEStructuralFeatures().get(27);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getStartEvent() {
 		return startEventEClass;
 	}
@@ -1212,6 +1221,15 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getPropertyType_Name() {
+		return (EAttribute)propertyTypeEClass.getEStructuralFeatures().get(2);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getValidationType() {
 		return validationTypeEClass;
 	}
@@ -1425,6 +1443,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		createEReference(documentRootEClass, DOCUMENT_ROOT__FAILED_JOB_RETRY_TIME_CYCLE);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__FORM_DATA);
 		createEAttribute(documentRootEClass, DOCUMENT_ROOT__FOLLOW_UP_DATE);
+		createEReference(documentRootEClass, DOCUMENT_ROOT__PROPERTIES);
 
 		startEventEClass = createEClass(START_EVENT);
 
@@ -1507,6 +1526,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		propertyTypeEClass = createEClass(PROPERTY_TYPE);
 		createEAttribute(propertyTypeEClass, PROPERTY_TYPE__ID);
 		createEAttribute(propertyTypeEClass, PROPERTY_TYPE__VALUE);
+		createEAttribute(propertyTypeEClass, PROPERTY_TYPE__NAME);
 
 		validationTypeEClass = createEClass(VALIDATION_TYPE);
 		createEReference(validationTypeEClass, VALIDATION_TYPE__CONSTRAINT);
@@ -1608,6 +1628,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		initEReference(getDocumentRoot_FailedJobRetryTimeCycle(), theFoxPackage.getFailedJobRetryTimeCycleType(), null, "failedJobRetryTimeCycle", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_FormData(), this.getFormDataType(), null, "formData", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getDocumentRoot_FollowUpDate(), this.getTExpression(), "followUpDate", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getDocumentRoot_Properties(), this.getPropertiesType(), null, "properties", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(startEventEClass, StartEvent.class, "StartEvent", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -1690,6 +1711,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		initEClass(propertyTypeEClass, PropertyType.class, "PropertyType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getPropertyType_Id(), ecorePackage.getEString(), "id", null, 0, 1, PropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getPropertyType_Value(), ecorePackage.getEString(), "value", null, 0, 1, PropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getPropertyType_Name(), ecorePackage.getEString(), "name", null, 0, 1, PropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(validationTypeEClass, ValidationType.class, "ValidationType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getValidationType_Constraint(), this.getConstraintType(), null, "constraint", null, 0, -1, ValidationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1969,6 +1991,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "followUpDate",
+			 "namespace", "##targetNamespace"
+		   });		
+		addAnnotation
+		  (getDocumentRoot_Properties(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "properties",
 			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
@@ -2514,6 +2544,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "value"
+		   });		
+		addAnnotation
+		  (getPropertyType_Name(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "name"
 		   });		
 		addAnnotation
 		  (validationTypeEClass, 

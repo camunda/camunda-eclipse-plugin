@@ -14,6 +14,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.PropertyType#getId <em>Id</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.PropertyType#getValue <em>Value</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.PropertyType#getName <em>Name</em>}</li>
  * </ul>
  * </p>
  *
@@ -73,5 +74,31 @@ public interface PropertyType extends EObject {
 	 * @generated
 	 */
 	void setValue(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Name</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Name</em>' attribute.
+	 * @see #setName(String)
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ModelPackage#getPropertyType_Name()
+	 * @model extendedMetaData="kind='attribute' name='name'"
+	 * @generated
+	 */
+	String getName();
+
+	/**
+	 * Sets the value of the '{@link org.camunda.bpm.modeler.runtime.engine.model.PropertyType#getName <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Name</em>' attribute.
+	 * @see #getName()
+	 * @generated
+	 */
+	void setName(String value);
 
 } // PropertyType

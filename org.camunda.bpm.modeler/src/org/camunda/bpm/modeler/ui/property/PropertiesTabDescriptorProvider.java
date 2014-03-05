@@ -20,13 +20,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.camunda.bpm.modeler.core.Activator;
-import org.camunda.bpm.modeler.core.property.AbstractTabSection;
 import org.camunda.bpm.modeler.core.property.SectionDescriptor;
 import org.camunda.bpm.modeler.core.property.TabDescriptor;
 import org.camunda.bpm.modeler.plugin.ICustomTaskProvider;
 import org.camunda.bpm.modeler.ui.property.tabs.DefinitionsTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.DocumentTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.EventTabSection;
+import org.camunda.bpm.modeler.ui.property.tabs.ExtensionsTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.FormFieldsTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.GeneralTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.ListenerTabSection;
@@ -59,7 +59,7 @@ public class PropertiesTabDescriptorProvider implements ITabDescriptorProvider {
 		
 		if (businessObject != null) {
 			tabs.add(createGeneralTabDescriptor());
-			
+
 			if (businessObject instanceof Event) {
 				tabs.add(createEventTabDescriptor());
 			}
@@ -99,6 +99,7 @@ public class PropertiesTabDescriptorProvider implements ITabDescriptorProvider {
 				tabs.add(createFormTabDescriptor());
 			}
 			
+			tabs.add(createExtensionsTabDescriptor());
 			addCustomTabs(businessObject, tabs);
 		}
 		
@@ -146,7 +147,11 @@ public class PropertiesTabDescriptorProvider implements ITabDescriptorProvider {
 	private ITabDescriptor createFormTabDescriptor() {
 		return createTabDescriptor("formFieldsTab", "Form Fields", new FormFieldsTabSection());
 	}
-	
+
+	private ITabDescriptor createExtensionsTabDescriptor() {
+		return createTabDescriptor("extensionsTab", "Extensions", new ExtensionsTabSection());
+	}
+
 	/**
 	 * Create a new tab descriptor with the given id, label and holding 
 	 * the specified tab section.

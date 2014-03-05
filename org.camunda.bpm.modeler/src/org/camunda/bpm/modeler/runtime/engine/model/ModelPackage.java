@@ -1558,13 +1558,22 @@ public interface ModelPackage extends EPackage {
 	int DOCUMENT_ROOT__FOLLOW_UP_DATE = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 26;
 
 		/**
+	 * The feature id for the '<em><b>Properties</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__PROPERTIES = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 27;
+
+		/**
 	 * The number of structural features of the '<em>Document Root</em>' class.
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-  int DOCUMENT_ROOT_FEATURE_COUNT = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 27;
+  int DOCUMENT_ROOT_FEATURE_COUNT = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 28;
 
   /**
 	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.StartEventImpl <em>Start Event</em>}' class.
@@ -2931,13 +2940,22 @@ public interface ModelPackage extends EPackage {
 	int PROPERTY_TYPE__VALUE = 1;
 
 		/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PROPERTY_TYPE__NAME = 2;
+
+		/**
 	 * The number of structural features of the '<em>Property Type</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PROPERTY_TYPE_FEATURE_COUNT = 2;
+	int PROPERTY_TYPE_FEATURE_COUNT = 3;
 
 		/**
 	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.ValidationTypeImpl <em>Validation Type</em>}' class.
@@ -3704,6 +3722,17 @@ public interface ModelPackage extends EPackage {
 	EAttribute getDocumentRoot_FollowUpDate();
 
 		/**
+	 * Returns the meta object for the containment reference '{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getProperties <em>Properties</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Properties</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getProperties()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EReference getDocumentRoot_Properties();
+
+		/**
 	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.StartEvent <em>Start Event</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4438,6 +4467,17 @@ public interface ModelPackage extends EPackage {
 	EAttribute getPropertyType_Value();
 
 		/**
+	 * Returns the meta object for the attribute '{@link org.camunda.bpm.modeler.runtime.engine.model.PropertyType#getName <em>Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Name</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.PropertyType#getName()
+	 * @see #getPropertyType()
+	 * @generated
+	 */
+	EAttribute getPropertyType_Name();
+
+		/**
 	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.ValidationType <em>Validation Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4881,6 +4921,14 @@ public interface ModelPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute DOCUMENT_ROOT__FOLLOW_UP_DATE = eINSTANCE.getDocumentRoot_FollowUpDate();
+
+				/**
+		 * The meta object literal for the '<em><b>Properties</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference DOCUMENT_ROOT__PROPERTIES = eINSTANCE.getDocumentRoot_Properties();
 
 				/**
 		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.StartEventImpl <em>Start Event</em>}' class.
@@ -5453,6 +5501,14 @@ public interface ModelPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute PROPERTY_TYPE__VALUE = eINSTANCE.getPropertyType_Value();
+
+				/**
+		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute PROPERTY_TYPE__NAME = eINSTANCE.getPropertyType_Name();
 
 				/**
 		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.ValidationTypeImpl <em>Validation Type</em>}' class.

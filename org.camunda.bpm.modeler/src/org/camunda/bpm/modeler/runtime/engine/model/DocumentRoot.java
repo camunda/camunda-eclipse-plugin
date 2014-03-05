@@ -43,6 +43,7 @@ import org.camunda.bpm.modeler.runtime.engine.model.fox.FailedJobRetryTimeCycleT
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getFailedJobRetryTimeCycle <em>Failed Job Retry Time Cycle</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getFormData <em>Form Data</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getFollowUpDate <em>Follow Up Date</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getProperties <em>Properties</em>}</li>
  * </ul>
  * </p>
  *
@@ -813,5 +814,32 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @generated
 	 */
 	void setFollowUpDate(String value);
+
+		/**
+	 * Returns the value of the '<em><b>Properties</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Properties</em>' containment reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Properties</em>' containment reference.
+	 * @see #setProperties(PropertiesType)
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ModelPackage#getDocumentRoot_Properties()
+	 * @model containment="true"
+	 *        extendedMetaData="kind='element' name='properties' namespace='##targetNamespace'"
+	 * @generated
+	 */
+	PropertiesType getProperties();
+
+		/**
+	 * Sets the value of the '{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getProperties <em>Properties</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Properties</em>' containment reference.
+	 * @see #getProperties()
+	 * @generated
+	 */
+	void setProperties(PropertiesType value);
 
 } // DocumentRoot
