@@ -108,6 +108,10 @@ public class FileService {
 	 */
 	public static URI resolveInWorkspace(IEditorInput input) throws CoreException {
 		URI uri = getInputUri(input);
+		if (uri == null) {
+			return null;
+		}
+
 		return resolveAsWorkspaceResource(uri);
 	}
 
