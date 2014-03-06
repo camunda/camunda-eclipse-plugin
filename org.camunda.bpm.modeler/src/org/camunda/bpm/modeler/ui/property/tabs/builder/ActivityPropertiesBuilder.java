@@ -32,6 +32,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 public class ActivityPropertiesBuilder extends RetryEnabledPropertiesBuilder {
 
 	private static final EStructuralFeature ASYNC_FEATURE = ModelPackage.eINSTANCE.getDocumentRoot_Async();
+	private static final EStructuralFeature EXCLUSIVE_FEATURE = ModelPackage.eINSTANCE.getDocumentRoot_Exclusive();
 	
 	public ActivityPropertiesBuilder(Composite parent, GFPropertySection section, BaseElement bo) {
 		super(parent, section, bo);
@@ -41,46 +42,53 @@ public class ActivityPropertiesBuilder extends RetryEnabledPropertiesBuilder {
 	public void create() {
 		
 		boolean async = (Boolean) bo.eGet(ASYNC_FEATURE);
+		boolean exclusive = (Boolean) bo.eGet(EXCLUSIVE_FEATURE);
 
 		// <async-link> <!-- Async link and help text -->
 		
-		final Button checkbox = createAsyncCheckbox();
-		
+		final Button checkbox = createCheckbox("Asynchronous", HelpText.ASYNC_FLAG);
+
 		// </async-link>
-		
+
+		// exclusive jobs flag, default value 'true'
+		Button exclusiveCheckbox = createCheckbox("Exclusive", HelpText.EXCLUSIVE_FLAG);
+		new BooleanButtonBinding(bo, EXCLUSIVE_FEATURE, exclusiveCheckbox).establish();
+		exclusiveCheckbox.setSelection(exclusive);
+
 		final Text retryText = createRetryCycleText();
-		
+
 		new AsyncFlagButtonBinding(bo, ASYNC_FEATURE, checkbox).establish();
-		
+
 		// initial setup of GUI elements
 		retryText.setEnabled(async);
 
 		checkbox.addListener(SWT.Selection, new Listener() {
-			
+
 			@Override
 			public void handleEvent(Event event) {
 				boolean selected = checkbox.getSelection();
 				retryText.setEnabled(selected);
 			}
 		});
+
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	private Button createAsyncCheckbox() {
+	private Button createCheckbox(String label, String helpText) {
 		
 		Composite composite = PropertyUtil.createStandardComposite(section, parent);
 		
-		Composite asyncComposite = PropertyUtil.createStandardComposite(section, composite);
-		asyncComposite.setLayoutData(PropertyUtil.getStandardLayout());
+		Composite checkBoxComposite = PropertyUtil.createStandardComposite(section, composite);
+		checkBoxComposite.setLayoutData(PropertyUtil.getStandardLayout());
 
 		// add label
-		PropertyUtil.createLabel(section, composite, "Asynchronous", asyncComposite);
+		PropertyUtil.createLabel(section, composite, label, checkBoxComposite);
 		
 		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
-		final Button checkbox = factory.createButton(asyncComposite, "", SWT.CHECK);
+		final Button checkbox = factory.createButton(checkBoxComposite, "", SWT.CHECK);
 		
 		FormData checkboxFormData = new FormData();
 		checkboxFormData.top = new FormAttachment(0);
@@ -88,8 +96,8 @@ public class ActivityPropertiesBuilder extends RetryEnabledPropertiesBuilder {
 		
 		checkbox.setLayoutData(checkboxFormData);
 		
-		Link link = new Link(asyncComposite, SWT.NO_BACKGROUND | SWT.NO_FOCUS);
-		link.setText(HelpText.ASYNC_FLAG);
+		Link link = new Link(checkBoxComposite, SWT.NO_BACKGROUND | SWT.NO_FOCUS);
+		link.setText(helpText);
 		
 		factory.adapt(link, false, false);
 		

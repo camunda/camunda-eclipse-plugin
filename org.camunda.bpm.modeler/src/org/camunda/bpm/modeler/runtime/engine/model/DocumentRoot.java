@@ -44,6 +44,7 @@ import org.camunda.bpm.modeler.runtime.engine.model.fox.FailedJobRetryTimeCycleT
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getFormData <em>Form Data</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getFollowUpDate <em>Follow Up Date</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getProperties <em>Properties</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#isExclusive <em>Exclusive</em>}</li>
  * </ul>
  * </p>
  *
@@ -841,5 +842,33 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @generated
 	 */
 	void setProperties(PropertiesType value);
+
+		/**
+	 * Returns the value of the '<em><b>Exclusive</b></em>' attribute.
+	 * The default value is <code>"true"</code>.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Exclusive</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Exclusive</em>' attribute.
+	 * @see #setExclusive(boolean)
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ModelPackage#getDocumentRoot_Exclusive()
+	 * @model default="true" dataType="org.eclipse.emf.ecore.xml.type.Boolean"
+	 *        extendedMetaData="kind='attribute' name='exclusive' namespace='##targetNamespace'"
+	 * @generated
+	 */
+	boolean isExclusive();
+
+		/**
+	 * Sets the value of the '{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#isExclusive <em>Exclusive</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Exclusive</em>' attribute.
+	 * @see #isExclusive()
+	 * @generated
+	 */
+	void setExclusive(boolean value);
 
 } // DocumentRoot

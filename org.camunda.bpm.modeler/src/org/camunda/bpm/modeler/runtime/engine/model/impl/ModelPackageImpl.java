@@ -609,6 +609,15 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getDocumentRoot_Exclusive() {
+		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(28);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getStartEvent() {
 		return startEventEClass;
 	}
@@ -1444,6 +1453,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		createEReference(documentRootEClass, DOCUMENT_ROOT__FORM_DATA);
 		createEAttribute(documentRootEClass, DOCUMENT_ROOT__FOLLOW_UP_DATE);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__PROPERTIES);
+		createEAttribute(documentRootEClass, DOCUMENT_ROOT__EXCLUSIVE);
 
 		startEventEClass = createEClass(START_EVENT);
 
@@ -1629,6 +1639,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		initEReference(getDocumentRoot_FormData(), this.getFormDataType(), null, "formData", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getDocumentRoot_FollowUpDate(), this.getTExpression(), "followUpDate", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_Properties(), this.getPropertiesType(), null, "properties", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDocumentRoot_Exclusive(), theXMLTypePackage.getBoolean(), "exclusive", "true", 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(startEventEClass, StartEvent.class, "StartEvent", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -1999,6 +2010,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		   new String[] {
 			 "kind", "element",
 			 "name", "properties",
+			 "namespace", "##targetNamespace"
+		   });		
+		addAnnotation
+		  (getDocumentRoot_Exclusive(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "exclusive",
 			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
