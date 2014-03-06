@@ -1567,13 +1567,22 @@ public interface ModelPackage extends EPackage {
 	int DOCUMENT_ROOT__PROPERTIES = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 27;
 
 		/**
+	 * The feature id for the '<em><b>Exclusive</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__EXCLUSIVE = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 28;
+
+		/**
 	 * The number of structural features of the '<em>Document Root</em>' class.
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-  int DOCUMENT_ROOT_FEATURE_COUNT = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 28;
+  int DOCUMENT_ROOT_FEATURE_COUNT = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 29;
 
   /**
 	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.StartEventImpl <em>Start Event</em>}' class.
@@ -3733,6 +3742,17 @@ public interface ModelPackage extends EPackage {
 	EReference getDocumentRoot_Properties();
 
 		/**
+	 * Returns the meta object for the attribute '{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#isExclusive <em>Exclusive</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Exclusive</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#isExclusive()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EAttribute getDocumentRoot_Exclusive();
+
+		/**
 	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.StartEvent <em>Start Event</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4929,6 +4949,14 @@ public interface ModelPackage extends EPackage {
 		 * @generated
 		 */
 		EReference DOCUMENT_ROOT__PROPERTIES = eINSTANCE.getDocumentRoot_Properties();
+
+				/**
+		 * The meta object literal for the '<em><b>Exclusive</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DOCUMENT_ROOT__EXCLUSIVE = eINSTANCE.getDocumentRoot_Exclusive();
 
 				/**
 		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.StartEventImpl <em>Start Event</em>}' class.

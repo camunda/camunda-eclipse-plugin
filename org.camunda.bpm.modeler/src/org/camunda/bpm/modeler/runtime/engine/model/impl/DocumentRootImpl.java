@@ -62,6 +62,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.DocumentRootImpl#getFormData <em>Form Data</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.DocumentRootImpl#getFollowUpDate <em>Follow Up Date</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.DocumentRootImpl#getProperties <em>Properties</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.DocumentRootImpl#isExclusive <em>Exclusive</em>}</li>
  * </ul>
  * </p>
  *
@@ -485,6 +486,26 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 	 * @ordered
 	 */
 	protected PropertiesType properties;
+
+		/**
+	 * The default value of the '{@link #isExclusive() <em>Exclusive</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isExclusive()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean EXCLUSIVE_EDEFAULT = true;
+
+		/**
+	 * The cached value of the '{@link #isExclusive() <em>Exclusive</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isExclusive()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean exclusive = EXCLUSIVE_EDEFAULT;
 
 		/**
 	 * <!-- begin-user-doc -->
@@ -1231,6 +1252,27 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 
 		/**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean isExclusive() {
+		return exclusive;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setExclusive(boolean newExclusive) {
+		boolean oldExclusive = exclusive;
+		exclusive = newExclusive;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__EXCLUSIVE, oldExclusive, exclusive));
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1323,6 +1365,8 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 				return getFollowUpDate();
 			case ModelPackage.DOCUMENT_ROOT__PROPERTIES:
 				return getProperties();
+			case ModelPackage.DOCUMENT_ROOT__EXCLUSIVE:
+				return isExclusive();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -1418,6 +1462,9 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 				return;
 			case ModelPackage.DOCUMENT_ROOT__PROPERTIES:
 				setProperties((PropertiesType)newValue);
+				return;
+			case ModelPackage.DOCUMENT_ROOT__EXCLUSIVE:
+				setExclusive((Boolean)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -1515,6 +1562,9 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 			case ModelPackage.DOCUMENT_ROOT__PROPERTIES:
 				setProperties((PropertiesType)null);
 				return;
+			case ModelPackage.DOCUMENT_ROOT__EXCLUSIVE:
+				setExclusive(EXCLUSIVE_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -1583,6 +1633,8 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 				return FOLLOW_UP_DATE_EDEFAULT == null ? followUpDate != null : !FOLLOW_UP_DATE_EDEFAULT.equals(followUpDate);
 			case ModelPackage.DOCUMENT_ROOT__PROPERTIES:
 				return properties != null;
+			case ModelPackage.DOCUMENT_ROOT__EXCLUSIVE:
+				return exclusive != EXCLUSIVE_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -1635,6 +1687,8 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 		result.append(resultVariableName);
 		result.append(", followUpDate: ");
 		result.append(followUpDate);
+		result.append(", exclusive: ");
+		result.append(exclusive);
 		result.append(')');
 		return result.toString();
 	}
