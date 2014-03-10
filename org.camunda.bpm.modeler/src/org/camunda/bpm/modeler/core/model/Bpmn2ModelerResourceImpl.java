@@ -142,27 +142,6 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 		};
 	}
 
-	@Override
-	protected void prepareSave() {
-		EObject cur;
-		Definitions thisDefinitions = ImportHelper.getDefinitions(this);
-		for (Iterator<EObject> iter = getAllContents(); iter.hasNext();) {
-			cur = iter.next();
-
-			setDefaultId(cur);
-
-			for (EObject referenced : cur.eCrossReferences()) {
-				setDefaultId(referenced);
-				if (thisDefinitions != null) {
-					Resource refResource = referenced.eResource();
-					if (refResource != null && refResource != this) {
-						createImportIfNecessary(thisDefinitions, refResource);
-					}
-				}
-			}
-		}
-	}
-
 	/**
 	 * Set the ID attribute of cur to a generated ID, if it is not already set.
 	 * 
