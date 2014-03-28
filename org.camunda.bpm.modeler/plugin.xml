@@ -150,7 +150,7 @@
 					id="org.camunda.bpm.modeler.validation.BaseElement.id"
 					statusCode="100" isEnabledByDefault="true">
 					<description>ID needs to be unique.</description>
-					<message>ID needs to be unqiue. Displayed value will not be saved.</message>
+					<message>ID needs to be unique. Displayed value will not be saved.</message>
 					<target class="BaseElement" />
 					<![CDATA[
 					self.id->notEmpty() implies bpmn2::BaseElement.allInstances()->select(s | s.id = self.id)->size() <= 1
