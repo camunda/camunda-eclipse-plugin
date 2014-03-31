@@ -3,7 +3,6 @@ package org.camunda.bpm.modeler.ui.property.tabs.builder;
 import java.util.List;
 
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
-import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.ui.change.filter.FeatureChangeFilter;
 import org.camunda.bpm.modeler.ui.change.filter.IsManyAttributeAnyChildChangeFilter;
 import org.camunda.bpm.modeler.ui.property.tabs.binding.BaseElementIdComboBinding;
@@ -55,8 +54,6 @@ public class ReceiveTaskPropertiesBuilder<T extends BaseElement> extends Abstrac
 	 */
 	@Override
 	public void create() {
-
-		PropertyUtil.createText(section, parent, "Initiator", ModelPackage.eINSTANCE.getDocumentRoot_Initiator(), bo);
 
 		createDropDown();
 
