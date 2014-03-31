@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Composite;
  * 
  * @author kristin.polenz
  */
-public class ExtensionsPropertiesBuilder<T extends BaseElement> extends AbstractPropertiesBuilder<BaseElement> {
+public class ExtensionsPropertiesBuilder extends AbstractPropertiesBuilder<BaseElement> {
 
 	private static final String[] PROPERTIES_TABLE_HEADERS = { "name", "value"};
 
