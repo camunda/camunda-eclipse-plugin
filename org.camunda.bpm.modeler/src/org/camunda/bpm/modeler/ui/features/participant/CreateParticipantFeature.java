@@ -108,7 +108,7 @@ public class CreateParticipantFeature extends AbstractBpmn2CreateFeature<Partici
 			newParticipant = createParticipant(process, newCollaboration);
 			
 			// link diagram to collaboration and plane
-			link(diagram, new Object[] { newCollaboration, bpmnDiagram });
+			link(diagram, new Object[] { newCollaboration, bpmnDiagram, definitions });
 			
 			// create graphiti representation
 			createGraphitiRepresentation(context, newParticipant);
