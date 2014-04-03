@@ -51,7 +51,7 @@ public class ActivityPropertiesBuilder extends RetryEnabledPropertiesBuilder {
 		// </async-link>
 
 		// exclusive jobs flag, default value 'true'
-		Button exclusiveCheckbox = createCheckbox("Exclusive", HelpText.EXCLUSIVE_FLAG);
+		final Button exclusiveCheckbox = createCheckbox("Exclusive", HelpText.EXCLUSIVE_FLAG);
 		new BooleanButtonBinding(bo, EXCLUSIVE_FEATURE, exclusiveCheckbox).establish();
 		exclusiveCheckbox.setSelection(exclusive);
 
@@ -61,6 +61,7 @@ public class ActivityPropertiesBuilder extends RetryEnabledPropertiesBuilder {
 
 		// initial setup of GUI elements
 		retryText.setEnabled(async);
+		exclusiveCheckbox.setEnabled(async);
 
 		checkbox.addListener(SWT.Selection, new Listener() {
 
@@ -68,6 +69,7 @@ public class ActivityPropertiesBuilder extends RetryEnabledPropertiesBuilder {
 			public void handleEvent(Event event) {
 				boolean selected = checkbox.getSelection();
 				retryText.setEnabled(selected);
+				exclusiveCheckbox.setEnabled(selected);
 			}
 		});
 
@@ -163,6 +165,7 @@ public class ActivityPropertiesBuilder extends RetryEnabledPropertiesBuilder {
 			if (!async) {
 				bo.eUnset(ASYNC_FEATURE);
 				removeRetryCycle();
+				bo.eUnset(EXCLUSIVE_FEATURE);
 			} else {
 				bo.eSet(ASYNC_FEATURE, async);
 			}
