@@ -23,8 +23,8 @@ public class UserTaskPropertiesBuilder extends AbstractPropertiesBuilder<UserTas
 		PropertyUtil.createText(section, parent, "Form Key", ModelPackage.eINSTANCE.getDocumentRoot_FormKey(), bo);
 		
 		Text dueDateField = PropertyUtil.createText(section, parent, "Due Date", ModelPackage.eINSTANCE.getDocumentRoot_DueDate(), bo);
-		PropertyUtil.createToolTipFor(dueDateField, "The due date as an EL expression (e.g. ${someDate}) or a ISO date (e.g. 2012-03-01T15:30:23)");
-
+		PropertyUtil.attachNoteWithLink(section, dueDateField, HelpText.DUE_DATE);
+		
 		Text followUpDateField = PropertyUtil.createText(section, parent, "Follow Up Date", ModelPackage.eINSTANCE.getDocumentRoot_FollowUpDate(), bo);
 		PropertyUtil.attachNoteWithLink(section, followUpDateField, HelpText.FOLLOW_UP_DATE);
 

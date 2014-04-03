@@ -360,11 +360,13 @@ public class PropertyUtil {
 
 		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
 
-		Link link = new Link(parent, SWT.NO_BACKGROUND | SWT.NO_FOCUS);
+		Link link = new Link(parent, SWT.MULTI | SWT.WRAP | SWT.NO_BACKGROUND | SWT.NO_FOCUS);
 		link.setText(note);
-
+		
 		factory.adapt(link, false, false);
-
+		
+		makeDescription(link);
+		
 		link.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
