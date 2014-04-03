@@ -35,6 +35,8 @@ public class HelpText {
 	private static final String SIGNAL_THROW_EVENT_USER_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#events-signal-events-signal-intermediate-throwing-event";
 
 	private static final String FOLLOW_UP_DATE_USER_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#tasks-user-task-follow-up-date";
+	
+	private static final String DUE_DATE_USER_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#tasks-user-task-due-date";
 
 	private static final String EXCLUSIVE_LINK_TO_USER_GUIDE = "http://docs.camunda.org/latest/guides/user-guide/#process-engine-the-job-executor-exclusive-jobs";
 
@@ -65,7 +67,8 @@ public class HelpText {
 	public static final String SIGNAL_THROW_EVENT_ASYNC_FLAG = String.format("Asynchronous notification of event listener. For more information, refer to our <a href=\"%s\">user guide</a>.", SIGNAL_THROW_EVENT_USER_GUIDE);
 
 	public static final String FOLLOW_UP_DATE = String.format("The follow up date as an EL expression (e.g. ${someDate}) or an ISO date (e.g. 2012-03-01T15:30:23). See for more information <a href=\"%s\">user guide</a>.", FOLLOW_UP_DATE_USER_GUIDE);
+	
+	public static final String DUE_DATE = String.format("The due date as an EL expression (e.g. ${someDate}) or an ISO date (e.g. 2012-03-01T15:30:23). See for more information <a href=\"%s\">user guide</a>.", DUE_DATE_USER_GUIDE);
 
 	public static final String EXCLUSIVE_FLAG = String.format("More information on exclusive jobs can be found in the <a href=\"%s\">user guide</a>.", EXCLUSIVE_LINK_TO_USER_GUIDE);
-
 }
