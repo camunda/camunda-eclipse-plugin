@@ -103,7 +103,7 @@ public class DeleteParticipantFeature extends DefaultBpmn2DeleteShapeFeature {
 					newPlane.setBpmnElement(newProcess);
 					newDiagram.setPlane(newPlane);
 					
-					link(getDiagram(), new Object[] { newProcess, newDiagram }); // we need to relink, the old diagram is gone
+					link(getDiagram(), new Object[] { newProcess, newDiagram, definitions }); // we need to relink, the old diagram is gone
 				} else {
 					throw new IllegalStateException(
 							"Unable to handle multiple collaborations diagrams.s");
