@@ -236,4 +236,8 @@ public class Bpmn2MultiPageEditor extends MultiPageEditorPart {
 			return false;
 		}
 	}
+	
+	public Bpmn2Editor getBpmnEditor () {
+		return bpmnEditor;
+	}
 }
