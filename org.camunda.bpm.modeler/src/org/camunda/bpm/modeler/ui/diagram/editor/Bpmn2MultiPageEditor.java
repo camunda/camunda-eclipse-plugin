@@ -236,4 +236,20 @@ public class Bpmn2MultiPageEditor extends MultiPageEditorPart {
 			return false;
 		}
 	}
+	
+	/**
+	 * Returns the contained {@link Bpmn2Editor} instance
+	 * @return
+	 */
+	public Bpmn2Editor getBpmnEditor() {
+		return bpmnEditor;
+	}
+	
+	/**
+	 * Returns the contained xml editor instance
+	 * @return
+	 */
+	public StructuredTextEditor getXmlEditor() {
+		return xmlEditor;
+	}
 }
