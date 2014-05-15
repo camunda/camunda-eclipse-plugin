@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.camunda.bpm.modeler.core.utils.ExtensionUtil;
 import org.camunda.bpm.modeler.runtime.engine.model.ConstraintType;
+import org.camunda.bpm.modeler.runtime.engine.model.FieldType;
 import org.camunda.bpm.modeler.runtime.engine.model.FormDataType;
 import org.camunda.bpm.modeler.runtime.engine.model.FormFieldType;
 import org.camunda.bpm.modeler.runtime.engine.model.InType;
@@ -75,6 +76,8 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 	static final EStructuralFeature FORM_FIELD_VALIDATION_FEATURE = ModelPackage.eINSTANCE.getFormFieldType_Validation();
 	static final EStructuralFeature FORM_FIELD_PROPERTIES_FEATURE = ModelPackage.eINSTANCE.getFormFieldType_Properties();
 	static final EStructuralFeature FORM_FIELD_VALUE_FEATURE = ModelPackage.eINSTANCE.getFormFieldType_Value();
+
+	static final EStructuralFeature FIELD_TYPE_FEATURE = modelPackage.getDocumentRoot_Field();
 	
 	// default change support tests ///////////////////////////////////////////
 	
@@ -1016,7 +1019,160 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 		});
 
 		assertThat(listener.getCapturedEvents()).hasSize(1);
+	}
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/ui/change/FieldInjectionAddElement.bpmn")
+	public void testFieldExtensionStringElementAdd() {
+		final ServiceTask serviceTask = findBusinessObjectById(diagram, "ServiceTask_1", ServiceTask.class);
+
+		List<FieldType> fieldTypeList = ExtensionUtil.getExtensions(serviceTask, FieldType.class);
+		assertThat(fieldTypeList).isEmpty();
+
+		final FieldType fieldType = modelFactory.createFieldType();
+		fieldType.setName("myFieldElement");
+		fieldType.setString("myFieldStringValue");
+
+		ExtensionChangeFilter filter = new ExtensionChangeFilter(serviceTask, FIELD_TYPE_FEATURE);
+		CustomResourceSetListener listener = new CustomResourceSetListener(serviceTask, filter);
+		listener.register();
+
+		transactionalExecute(new RecordingCommand(editingDomain) {
+
+			@Override
+			protected void doExecute() {
+				ExtensionUtil.addExtension(serviceTask, FIELD_TYPE_FEATURE, fieldType);
+			}
+		});
+
+		assertThat(listener.getCapturedEvents()).hasSize(1);
+
+		fieldTypeList = ExtensionUtil.getExtensions(serviceTask, FieldType.class);
+		assertThat(fieldTypeList).hasSize(1);
+	}
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/ui/change/FieldInjectionAddElement.bpmn")
+	public void testFieldExtensionExpressionElementAdd() {
+		final ServiceTask serviceTask = findBusinessObjectById(diagram, "ServiceTask_1", ServiceTask.class);
+
+		List<FieldType> fieldTypeList = ExtensionUtil.getExtensions(serviceTask, FieldType.class);
+		assertThat(fieldTypeList).isEmpty();
+
+		final FieldType fieldType = modelFactory.createFieldType();
+		fieldType.setName("myFieldElement");
+		fieldType.setExpression("myFieldExpressionValue");
+
+		ExtensionChangeFilter filter = new ExtensionChangeFilter(serviceTask, FIELD_TYPE_FEATURE);
+		CustomResourceSetListener listener = new CustomResourceSetListener(serviceTask, filter);
+		listener.register();
+
+		transactionalExecute(new RecordingCommand(editingDomain) {
+
+			@Override
+			protected void doExecute() {
+				ExtensionUtil.addExtension(serviceTask, FIELD_TYPE_FEATURE, fieldType);
+			}
+		});
+
+		assertThat(listener.getCapturedEvents()).hasSize(1);
+
+		fieldTypeList = ExtensionUtil.getExtensions(serviceTask, FieldType.class);
+		assertThat(fieldTypeList).hasSize(1);
+	}
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/ui/change/FieldInjectionAddElementToExtension.bpmn")
+	public void testAddFieldStringElementToExistingFieldsWithAttributes() {
+		final ServiceTask serviceTask = findBusinessObjectById(diagram, "ServiceTask_1", ServiceTask.class);
+
+		List<FieldType> fieldTypeList = ExtensionUtil.getExtensions(serviceTask, FieldType.class);
+		assertThat(fieldTypeList).hasSize(2);
+
+		final FieldType fieldType = modelFactory.createFieldType();
+		fieldType.setName("myFieldElement");
+		fieldType.setString("myFieldStringValue");
+
+		ExtensionChangeFilter filter = new ExtensionChangeFilter(serviceTask, FIELD_TYPE_FEATURE);
+		CustomResourceSetListener listener = new CustomResourceSetListener(serviceTask, filter);
+		listener.register();
+
+		transactionalExecute(new RecordingCommand(editingDomain) {
+
+			@Override
+			protected void doExecute() {
+				ExtensionUtil.addExtension(serviceTask, FIELD_TYPE_FEATURE, fieldType);
+			}
+		});
+
+		assertThat(listener.getCapturedEvents()).hasSize(1);
+
+		fieldTypeList = ExtensionUtil.getExtensions(serviceTask, FieldType.class);
+		assertThat(fieldTypeList).hasSize(3);
+	}
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/ui/change/FieldInjectionAddElementToExtension.bpmn")
+	public void testAddFieldStringExpressionElementToExistingFieldsWithAttributes() {
+		final ServiceTask serviceTask = findBusinessObjectById(diagram, "ServiceTask_1", ServiceTask.class);
+
+		List<FieldType> fieldTypeList = ExtensionUtil.getExtensions(serviceTask, FieldType.class);
+		assertThat(fieldTypeList).hasSize(2);
+
+		final FieldType fieldType = modelFactory.createFieldType();
+		fieldType.setName("myFieldElement");
+		// expression and string value is set
+		// but the engine parser parse first the string value
+		fieldType.setString("myFieldStringValue");
+		fieldType.setExpression("myFieldExpressionValue");
+
+		ExtensionChangeFilter filter = new ExtensionChangeFilter(serviceTask, FIELD_TYPE_FEATURE);
+		CustomResourceSetListener listener = new CustomResourceSetListener(serviceTask, filter);
+		listener.register();
+
+		transactionalExecute(new RecordingCommand(editingDomain) {
+
+			@Override
+			protected void doExecute() {
+				ExtensionUtil.addExtension(serviceTask, FIELD_TYPE_FEATURE, fieldType);
+			}
+		});
+
+		assertThat(listener.getCapturedEvents()).hasSize(1);
+
+		fieldTypeList = ExtensionUtil.getExtensions(serviceTask, FieldType.class);
+		assertThat(fieldTypeList).hasSize(3);
 	}	
+
+	@Test
+	@DiagramResource("org/camunda/bpm/modeler/test/ui/change/FieldInjectionAddElementToExtension.bpmn")
+	public void testAddFieldElementOnlyWithNameToExistingFieldsWithAttributes() {
+		final ServiceTask serviceTask = findBusinessObjectById(diagram, "ServiceTask_1", ServiceTask.class);
+
+		List<FieldType> fieldTypeList = ExtensionUtil.getExtensions(serviceTask, FieldType.class);
+		assertThat(fieldTypeList).hasSize(2);
+
+		final FieldType fieldType = modelFactory.createFieldType();
+		fieldType.setName("myFieldElement");
+
+		ExtensionChangeFilter filter = new ExtensionChangeFilter(serviceTask, FIELD_TYPE_FEATURE);
+		CustomResourceSetListener listener = new CustomResourceSetListener(serviceTask, filter);
+		listener.register();
+
+		transactionalExecute(new RecordingCommand(editingDomain) {
+
+			@Override
+			protected void doExecute() {
+				ExtensionUtil.addExtension(serviceTask, FIELD_TYPE_FEATURE, fieldType);
+			}
+		});
+
+		assertThat(listener.getCapturedEvents()).hasSize(1);
+
+		fieldTypeList = ExtensionUtil.getExtensions(serviceTask, FieldType.class);
+		assertThat(fieldTypeList).hasSize(3);
+	}
+
 
 	// utility classes ////////////////////////////////////////////////////
 	
