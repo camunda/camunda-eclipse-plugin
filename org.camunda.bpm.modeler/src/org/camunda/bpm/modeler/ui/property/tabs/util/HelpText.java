@@ -40,6 +40,8 @@ public class HelpText {
 
 	private static final String EXCLUSIVE_LINK_TO_USER_GUIDE = "http://docs.camunda.org/latest/guides/user-guide/#process-engine-the-job-executor-exclusive-jobs";
 
+	private static final String FIELD_INJECTIONS_USER_GUIDE = "http://docs.camunda.org/latest/guides/user-guide/#process-engine-delegation-code-field-injection";
+
 	public static final String ASYNC_FLAG = String.format(
 			"More information on asynchronous continuation can be found in the <a href=\"%s\">user guide</a>.", ASYNC_LINK_TO_USER_GUIDE);
 
@@ -71,4 +73,6 @@ public class HelpText {
 	public static final String DUE_DATE = String.format("The due date as an EL expression (e.g. ${someDate}) or an ISO date (e.g. 2012-03-01T15:30:23). See for more information <a href=\"%s\">user guide</a>.", DUE_DATE_USER_GUIDE);
 
 	public static final String EXCLUSIVE_FLAG = String.format("More information on exclusive jobs can be found in the <a href=\"%s\">user guide</a>.", EXCLUSIVE_LINK_TO_USER_GUIDE);
+
+	public static final String FIELD_INJECTIONS = String.format("Support only field injections with child-elements. For more information see <a href=\"%s\">user guide</a>.", FIELD_INJECTIONS_USER_GUIDE);
 }
