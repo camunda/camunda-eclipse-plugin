@@ -9,6 +9,7 @@ import org.camunda.bpm.modeler.ui.property.tabs.builder.IdPropertyBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.IsForCompensationPropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.LanePropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.NamePropertyBuilder;
+import org.camunda.bpm.modeler.ui.property.tabs.builder.ParallelGatewayPropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.ParticipantPropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.ProcessIdPropertyBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.ProcessPropertiesBuilder;
@@ -40,6 +41,7 @@ import org.eclipse.bpmn2.IntermediateThrowEvent;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.ManualTask;
 import org.eclipse.bpmn2.MessageEventDefinition;
+import org.eclipse.bpmn2.ParallelGateway;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.ReceiveTask;
@@ -134,6 +136,11 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 		if (gateway instanceof InclusiveGateway) {
 			new DecisionGatewayPropertiesBuilder(parent, section, gateway).create();
 		}
+
+		if (gateway instanceof ParallelGateway) {
+			new ParallelGatewayPropertiesBuilder(parent, section, gateway).create();
+		}
+
 	}
 
 	private void createSequenceFlowComposite(SequenceFlow sequenceFlow) {
