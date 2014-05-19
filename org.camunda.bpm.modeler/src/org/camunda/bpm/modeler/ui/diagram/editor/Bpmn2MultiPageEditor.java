@@ -1,6 +1,7 @@
 package org.camunda.bpm.modeler.ui.diagram.editor;
 
 import org.camunda.bpm.modeler.core.Activator;
+import org.camunda.bpm.modeler.core.Bpmn2TabbedPropertySheetPage;
 import org.camunda.bpm.modeler.core.files.FileService;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -16,10 +17,11 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.MultiPageEditorSite;
+import org.eclipse.ui.views.properties.IPropertySheetPage;
+import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
 
 /**
@@ -35,7 +37,7 @@ import org.eclipse.wst.sse.ui.StructuredTextEditor;
  * 
  * @author nico.rehwaldt
  */
-public class Bpmn2MultiPageEditor extends MultiPageEditorPart {
+public class Bpmn2MultiPageEditor extends MultiPageEditorPart implements ITabbedPropertySheetPageContributor {
 
 	private Bpmn2Editor bpmnEditor;
 	private StructuredTextEditor xmlEditor;
@@ -135,7 +137,16 @@ public class Bpmn2MultiPageEditor extends MultiPageEditorPart {
 			return super.getPartName();
 		}
 	}
-	
+
+	@Override
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class required) {
+		if (required == IPropertySheetPage.class) {
+			return new Bpmn2TabbedPropertySheetPage(this);
+		}
+
+		return super.getAdapter(required);
+	}
+
 	/**
 	 * Converts an editor input to a file input
 	 * 
@@ -227,5 +238,10 @@ public class Bpmn2MultiPageEditor extends MultiPageEditorPart {
 	 */
 	public StructuredTextEditor getXmlEditor() {
 		return xmlEditor;
+	}
+
+	@Override
+	public String getContributorId() {
+		return getBpmnEditor().getContributorId();
 	}
 }
