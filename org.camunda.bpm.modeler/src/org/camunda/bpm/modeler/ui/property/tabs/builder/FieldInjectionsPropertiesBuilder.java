@@ -101,7 +101,7 @@ public class FieldInjectionsPropertiesBuilder extends AbstractPropertiesBuilder<
 						 *  e.g.
 						 *  <camunda:field name="attribute" string="myString" /> 
 						 */
-						if (fieldType.getStringValue() == null && fieldType.getExpression1() == null) {
+						if (fieldType.getString() != null || fieldType.getExpression() != null) {
 							contents.add(fieldType);
 						}
 					}
