@@ -15,7 +15,6 @@ import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilde
 import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.ContentProvider;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.DeleteRowHandler;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EditableEObjectTableBuilder;
-import org.camunda.bpm.modeler.ui.property.tabs.tables.EObjectAttributeTableColumnDescriptor.EditingSupportProvider;
 import org.camunda.bpm.modeler.ui.property.tabs.tables.EditableTableDescriptor.ElementFactory;
 import org.camunda.bpm.modeler.ui.property.tabs.util.HelpText;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
@@ -86,7 +85,7 @@ public class FieldInjectionsPropertiesBuilder extends AbstractPropertiesBuilder<
 			@Override
 			public List<T> getContents() {
 				List<FieldType> contents = new ArrayList<FieldType>();
-				
+
 				List<T> extensions = ExtensionUtil.getExtensions(bo, typeCls);
 				if (extensions != null && !extensions.isEmpty()) {
 					for (EObject eObject : extensions) {
@@ -101,7 +100,11 @@ public class FieldInjectionsPropertiesBuilder extends AbstractPropertiesBuilder<
 						 *  e.g.
 						 *  <camunda:field name="attribute" string="myString" /> 
 						 */
-						if (fieldType.getString() != null || fieldType.getExpression() != null) {
+						if (fieldType.getString() != null || fieldType.getExpression() != null
+							||
+							fieldType.getString() == null && fieldType.getStringValue() == null
+							&& fieldType.getExpression() == null && fieldType.getExpression1() == null) {
+
 							contents.add(fieldType);
 						}
 					}
@@ -117,14 +120,11 @@ public class FieldInjectionsPropertiesBuilder extends AbstractPropertiesBuilder<
 			}
 		};
 		
-		EditingSupportProvider editingSupportProvider = new DefaultEditingSupportProvider();
-		
 		EditableEObjectTableBuilder<T> builder = new EditableEObjectTableBuilder<T>(section, composite, typeCls);
 		
 		builder
 			.elementFactory(elementFactory)
 			.contentProvider(contentProvider)
-			.editingSupportProvider(editingSupportProvider)
 			.columnFeatures(columnFeatures)
 			.columnLabels(columnLabels)
 			.deleteRowHandler(deleteHandler)
