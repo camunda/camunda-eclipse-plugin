@@ -9,6 +9,7 @@ import org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot;
 import org.camunda.bpm.modeler.runtime.engine.model.EventType;
 import org.camunda.bpm.modeler.runtime.engine.model.EventType1;
 import org.camunda.bpm.modeler.runtime.engine.model.ExecutionListenerType;
+import org.camunda.bpm.modeler.runtime.engine.model.Expression;
 import org.camunda.bpm.modeler.runtime.engine.model.FieldType;
 import org.camunda.bpm.modeler.runtime.engine.model.FormDataContainer;
 import org.camunda.bpm.modeler.runtime.engine.model.FormDataType;
@@ -183,6 +184,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * @generated
 	 */
 	private EClass formDataContainerEClass = null;
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass expressionEClass = null;
 
 		/**
 	 * <!-- begin-user-doc -->
@@ -1299,6 +1307,33 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
 		/**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getExpression() {
+		return expressionEClass;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getExpression_Body() {
+		return (EAttribute)expressionEClass.getEStructuralFeatures().get(0);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getExpression_Mixed() {
+		return (EAttribute)expressionEClass.getEStructuralFeatures().get(1);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1549,6 +1584,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
 		formDataContainerEClass = createEClass(FORM_DATA_CONTAINER);
 
+		expressionEClass = createEClass(EXPRESSION);
+		createEAttribute(expressionEClass, EXPRESSION__BODY);
+		createEAttribute(expressionEClass, EXPRESSION__MIXED);
+
 		// Create enums
 		eventTypeEEnum = createEEnum(EVENT_TYPE);
 		eventType1EEnum = createEEnum(EVENT_TYPE1);
@@ -1608,6 +1647,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		boundaryEventEClass.getESuperTypes().add(theBpmn2Package.getBoundaryEvent());
 		userTaskEClass.getESuperTypes().add(theBpmn2Package.getUserTask());
 		userTaskEClass.getESuperTypes().add(this.getFormDataContainer());
+		expressionEClass.getESuperTypes().add(theBpmn2Package.getExpression());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(documentRootEClass, DocumentRoot.class, "DocumentRoot", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1734,6 +1774,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		initEClass(userTaskEClass, UserTask.class, "UserTask", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(formDataContainerEClass, FormDataContainer.class, "FormDataContainer", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(expressionEClass, Expression.class, "Expression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getExpression_Body(), ecorePackage.getEString(), "body", null, 1, 1, Expression.class, !IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, IS_DERIVED, !IS_ORDERED);
+		initEAttribute(getExpression_Mixed(), ecorePackage.getEFeatureMapEntry(), "mixed", null, 0, -1, Expression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(eventTypeEEnum, EventType.class, "EventType");
@@ -2606,6 +2650,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "config"
+		   });		
+		addAnnotation
+		  (expressionEClass, 
+		   source, 
+		   new String[] {
+			 "name", "tExpression",
+			 "kind", "mixed"
+		   });		
+		addAnnotation
+		  (getExpression_Mixed(), 
+		   source, 
+		   new String[] {
+			 "kind", "elementWildcard",
+			 "name", ":mixed"
 		   });
 	}
 

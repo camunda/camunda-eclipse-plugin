@@ -79,6 +79,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
 			case ModelPackage.CONSTRAINT_TYPE: return createConstraintType();
 			case ModelPackage.USER_TASK: return createUserTask();
 			case ModelPackage.FORM_DATA_CONTAINER: return createFormDataContainer();
+			case ModelPackage.EXPRESSION: return createExpression();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -342,6 +343,16 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
 	public FormDataContainer createFormDataContainer() {
 		FormDataContainerImpl formDataContainer = new FormDataContainerImpl();
 		return formDataContainer;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Expression createExpression() {
+		ExpressionImpl expression = new ExpressionImpl();
+		return expression;
 	}
 
 		/**

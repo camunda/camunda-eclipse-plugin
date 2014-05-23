@@ -153,6 +153,10 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
 				return createFormDataContainerAdapter();
 			}
 			@Override
+			public Adapter caseExpression(Expression object) {
+				return createExpressionAdapter();
+			}
+			@Override
 			public Adapter caseBpmn2_DocumentRoot(org.eclipse.bpmn2.DocumentRoot object) {
 				return createBpmn2_DocumentRootAdapter();
 			}
@@ -203,6 +207,10 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseBpmn2_UserTask(org.eclipse.bpmn2.UserTask object) {
 				return createBpmn2_UserTaskAdapter();
+			}
+			@Override
+			public Adapter caseBpmn2_Expression(org.eclipse.bpmn2.Expression object) {
+				return createBpmn2_ExpressionAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -491,6 +499,20 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
 	}
 
 		/**
+	 * Creates a new adapter for an object of class '{@link org.camunda.bpm.modeler.runtime.engine.model.Expression <em>Expression</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.Expression
+	 * @generated
+	 */
+	public Adapter createExpressionAdapter() {
+		return null;
+	}
+
+		/**
 	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.DocumentRoot <em>Document Root</em>}'.
 	 * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -669,6 +691,20 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createBpmn2_UserTaskAdapter() {
+		return null;
+	}
+
+		/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.bpmn2.Expression <em>Expression</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.bpmn2.Expression
+	 * @generated
+	 */
+	public Adapter createBpmn2_ExpressionAdapter() {
 		return null;
 	}
 
