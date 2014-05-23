@@ -3313,6 +3313,88 @@ public interface ModelPackage extends EPackage {
 	int FORM_DATA_CONTAINER_FEATURE_COUNT = 0;
 
 		/**
+	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.ExpressionImpl <em>Expression</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ExpressionImpl
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getExpression()
+	 * @generated
+	 */
+	int EXPRESSION = 19;
+
+		/**
+	 * The feature id for the '<em><b>Extension Values</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXPRESSION__EXTENSION_VALUES = Bpmn2Package.EXPRESSION__EXTENSION_VALUES;
+
+		/**
+	 * The feature id for the '<em><b>Documentation</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXPRESSION__DOCUMENTATION = Bpmn2Package.EXPRESSION__DOCUMENTATION;
+
+		/**
+	 * The feature id for the '<em><b>Extension Definitions</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXPRESSION__EXTENSION_DEFINITIONS = Bpmn2Package.EXPRESSION__EXTENSION_DEFINITIONS;
+
+		/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXPRESSION__ID = Bpmn2Package.EXPRESSION__ID;
+
+		/**
+	 * The feature id for the '<em><b>Any Attribute</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXPRESSION__ANY_ATTRIBUTE = Bpmn2Package.EXPRESSION__ANY_ATTRIBUTE;
+
+		/**
+	 * The feature id for the '<em><b>Body</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXPRESSION__BODY = Bpmn2Package.EXPRESSION_FEATURE_COUNT + 0;
+
+		/**
+	 * The feature id for the '<em><b>Mixed</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXPRESSION__MIXED = Bpmn2Package.EXPRESSION_FEATURE_COUNT + 1;
+
+		/**
+	 * The number of structural features of the '<em>Expression</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXPRESSION_FEATURE_COUNT = Bpmn2Package.EXPRESSION_FEATURE_COUNT + 2;
+
+		/**
 	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.EventType <em>Event Type</em>}' enum.
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3320,7 +3402,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getEventType()
 	 * @generated
 	 */
-  int EVENT_TYPE = 19;
+  int EVENT_TYPE = 20;
 
   /**
 	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.EventType1 <em>Event Type1</em>}' enum.
@@ -3330,7 +3412,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getEventType1()
 	 * @generated
 	 */
-  int EVENT_TYPE1 = 20;
+  int EVENT_TYPE1 = 21;
 
   /**
 	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.HistoryType <em>History Type</em>}' enum.
@@ -3340,7 +3422,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getHistoryType()
 	 * @generated
 	 */
-  int HISTORY_TYPE = 21;
+  int HISTORY_TYPE = 22;
 
   /**
 	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.TypeType <em>Type Type</em>}' enum.
@@ -3350,7 +3432,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getTypeType()
 	 * @generated
 	 */
-  int TYPE_TYPE = 22;
+  int TYPE_TYPE = 23;
 
   /**
 	 * The meta object id for the '<em>Class Type</em>' data type.
@@ -3360,7 +3442,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getClassType()
 	 * @generated
 	 */
-  int CLASS_TYPE = 23;
+  int CLASS_TYPE = 24;
 
   /**
 	 * The meta object id for the '<em>Event Type Object</em>' data type.
@@ -3370,7 +3452,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getEventTypeObject()
 	 * @generated
 	 */
-  int EVENT_TYPE_OBJECT = 24;
+  int EVENT_TYPE_OBJECT = 25;
 
   /**
 	 * The meta object id for the '<em>Event Type Object1</em>' data type.
@@ -3380,7 +3462,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getEventTypeObject1()
 	 * @generated
 	 */
-  int EVENT_TYPE_OBJECT1 = 25;
+  int EVENT_TYPE_OBJECT1 = 26;
 
   /**
 	 * The meta object id for the '<em>Form Handler Class Type</em>' data type.
@@ -3390,7 +3472,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getFormHandlerClassType()
 	 * @generated
 	 */
-  int FORM_HANDLER_CLASS_TYPE = 26;
+  int FORM_HANDLER_CLASS_TYPE = 27;
 
   /**
 	 * The meta object id for the '<em>History Type Object</em>' data type.
@@ -3400,7 +3482,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getHistoryTypeObject()
 	 * @generated
 	 */
-  int HISTORY_TYPE_OBJECT = 27;
+  int HISTORY_TYPE_OBJECT = 28;
 
   /**
 	 * The meta object id for the '<em>TExpression</em>' data type.
@@ -3410,7 +3492,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getTExpression()
 	 * @generated
 	 */
-  int TEXPRESSION = 28;
+  int TEXPRESSION = 29;
 
   /**
 	 * The meta object id for the '<em>Type Type Object</em>' data type.
@@ -3420,7 +3502,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getTypeTypeObject()
 	 * @generated
 	 */
-  int TYPE_TYPE_OBJECT = 29;
+  int TYPE_TYPE_OBJECT = 30;
 
 
   /**
@@ -4571,6 +4653,38 @@ public interface ModelPackage extends EPackage {
 	EClass getFormDataContainer();
 
 		/**
+	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.Expression <em>Expression</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Expression</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.Expression
+	 * @generated
+	 */
+	EClass getExpression();
+
+		/**
+	 * Returns the meta object for the attribute '{@link org.camunda.bpm.modeler.runtime.engine.model.Expression#getBody <em>Body</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Body</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.Expression#getBody()
+	 * @see #getExpression()
+	 * @generated
+	 */
+	EAttribute getExpression_Body();
+
+		/**
+	 * Returns the meta object for the attribute list '{@link org.camunda.bpm.modeler.runtime.engine.model.Expression#getMixed <em>Mixed</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Mixed</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.Expression#getMixed()
+	 * @see #getExpression()
+	 * @generated
+	 */
+	EAttribute getExpression_Mixed();
+
+		/**
 	 * Returns the meta object for enum '{@link org.camunda.bpm.modeler.runtime.engine.model.EventType <em>Event Type</em>}'.
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -5601,6 +5715,32 @@ public interface ModelPackage extends EPackage {
 		 * @generated
 		 */
 		EClass FORM_DATA_CONTAINER = eINSTANCE.getFormDataContainer();
+
+				/**
+		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.ExpressionImpl <em>Expression</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ExpressionImpl
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getExpression()
+		 * @generated
+		 */
+		EClass EXPRESSION = eINSTANCE.getExpression();
+
+				/**
+		 * The meta object literal for the '<em><b>Body</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute EXPRESSION__BODY = eINSTANCE.getExpression_Body();
+
+				/**
+		 * The meta object literal for the '<em><b>Mixed</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute EXPRESSION__MIXED = eINSTANCE.getExpression_Mixed();
 
 				/**
 		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.EventType <em>Event Type</em>}' enum.

@@ -135,6 +135,8 @@ public class ModelValidator extends EObjectValidator {
 				return validateUserTask((UserTask)value, diagnostics, context);
 			case ModelPackage.FORM_DATA_CONTAINER:
 				return validateFormDataContainer((FormDataContainer)value, diagnostics, context);
+			case ModelPackage.EXPRESSION:
+				return validateExpression((Expression)value, diagnostics, context);
 			case ModelPackage.EVENT_TYPE:
 				return validateEventType((EventType)value, diagnostics, context);
 			case ModelPackage.EVENT_TYPE1:
@@ -331,6 +333,15 @@ public class ModelValidator extends EObjectValidator {
 	 */
 	public boolean validateFormDataContainer(FormDataContainer formDataContainer, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return validate_EveryDefaultConstraint(formDataContainer, diagnostics, context);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validateExpression(Expression expression, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(expression, diagnostics, context);
 	}
 
 		/**
