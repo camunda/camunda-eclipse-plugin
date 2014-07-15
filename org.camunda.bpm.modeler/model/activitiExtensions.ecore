@@ -914,6 +914,22 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="UserTask" eSuperTypes="../../org.eclipse.bpmn2/model/BPMN20.ecore#//UserTask #//FormDataContainer"/>
   <eClassifiers xsi:type="ecore:EClass" name="FormDataContainer"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Expression" eSuperTypes="../../org.eclipse.bpmn2/model/BPMN20.ecore#//Expression">
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="name" value="tExpression"/>
+      <details key="kind" value="mixed"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="body" ordered="false" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" volatile="true"
+        derived="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mixed" unique="false" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFeatureMapEntry">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="elementWildcard"/>
+        <details key="name" value=":mixed"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
   <eSubpackages name="fox" nsURI="http://www.camunda.com/fox" nsPrefix="fox">
     <eClassifiers xsi:type="ecore:EClass" name="FailedJobRetryTimeCycleType">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">

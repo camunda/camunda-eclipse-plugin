@@ -29,12 +29,12 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
  * @author nico.rehwaldt
  *
  */
-public class ActivityPropertiesBuilder extends RetryEnabledPropertiesBuilder {
+public class ParallelGatewayPropertiesBuilder extends RetryEnabledPropertiesBuilder {
 
 	private static final EStructuralFeature ASYNC_FEATURE = ModelPackage.eINSTANCE.getDocumentRoot_Async();
 	private static final EStructuralFeature EXCLUSIVE_FEATURE = ModelPackage.eINSTANCE.getDocumentRoot_Exclusive();
 	
-	public ActivityPropertiesBuilder(Composite parent, GFPropertySection section, BaseElement bo) {
+	public ParallelGatewayPropertiesBuilder(Composite parent, GFPropertySection section, BaseElement bo) {
 		super(parent, section, bo);
 	}
 

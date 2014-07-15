@@ -22,21 +22,30 @@ import java.util.List;
 import org.camunda.bpm.modeler.core.Activator;
 import org.camunda.bpm.modeler.core.property.SectionDescriptor;
 import org.camunda.bpm.modeler.core.property.TabDescriptor;
+import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.plugin.ICustomTaskProvider;
 import org.camunda.bpm.modeler.ui.property.tabs.DefinitionsTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.DocumentTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.EventTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.ExtensionsTabSection;
+import org.camunda.bpm.modeler.ui.property.tabs.FieldInjectionsTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.FormFieldsTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.GeneralTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.ListenerTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.MultiInstanceTabSection;
 import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.BusinessRuleTask;
+import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.Event;
+import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.Gateway;
+import org.eclipse.bpmn2.IntermediateThrowEvent;
+import org.eclipse.bpmn2.MessageEventDefinition;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
+import org.eclipse.bpmn2.SendTask;
 import org.eclipse.bpmn2.SequenceFlow;
+import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.UserTask;
 import org.eclipse.emf.ecore.EObject;
@@ -98,11 +107,26 @@ public class PropertiesTabDescriptorProvider implements ITabDescriptorProvider {
 			    businessObject instanceof StartEvent) {
 				tabs.add(createFormTabDescriptor());
 			}
-			
+
+			// add field injection tab
+			if (businessObject instanceof ServiceTask ||
+			    businessObject instanceof BusinessRuleTask ||
+			    businessObject instanceof SendTask) {
+				tabs.add(createFieldInjectionsTabDescriptor());
+			}
+
+			if (businessObject instanceof IntermediateThrowEvent ||
+			    businessObject instanceof EndEvent) {
+				EventDefinition eventDefinition = ModelUtil.getEventDefinition((Event)businessObject, MessageEventDefinition.class);
+				if (eventDefinition != null) {
+					tabs.add(createFieldInjectionsTabDescriptor());
+				}
+			}
+
 			tabs.add(createExtensionsTabDescriptor());
 			addCustomTabs(businessObject, tabs);
 		}
-		
+
 		return tabs.toArray(new ITabDescriptor[]{});
 	}
 
@@ -150,6 +174,10 @@ public class PropertiesTabDescriptorProvider implements ITabDescriptorProvider {
 
 	private ITabDescriptor createExtensionsTabDescriptor() {
 		return createTabDescriptor("extensionsTab", "Extensions", new ExtensionsTabSection());
+	}
+
+	private ITabDescriptor createFieldInjectionsTabDescriptor() {
+		return createTabDescriptor("fieldInjectionsTab", "Field Injections", new FieldInjectionsTabSection());
 	}
 
 	/**

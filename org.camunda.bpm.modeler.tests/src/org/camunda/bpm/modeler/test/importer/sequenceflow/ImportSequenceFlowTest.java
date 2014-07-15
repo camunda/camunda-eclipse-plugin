@@ -10,12 +10,12 @@ import org.camunda.bpm.modeler.test.importer.AbstractImportBpmnModelTest;
 import org.camunda.bpm.modeler.test.util.DiagramResource;
 import org.camunda.bpm.modeler.test.util.Util;
 import org.eclipse.bpmn2.ExclusiveGateway;
+import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.ChopboxAnchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
-import org.eclipse.graphiti.mm.pictograms.FixPointAnchor;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.junit.Test;
@@ -90,4 +90,22 @@ public class ImportSequenceFlowTest extends AbstractImportBpmnModelTest {
 		Anchor endShapeCenterAnchor = LayoutUtil.getCenterAnchor(endShape);
 		assertThat(endShapeCenterAnchor).isSameAs(connection.getEnd());
 	}
+
+	@Test
+	@DiagramResource
+	public void testImportChangeConditionalFlow() throws Exception {
+
+		ModelImport importer = createModelImport();
+		importer.execute();
+
+		Connection connection = Util.findConnectionByBusinessObjectId(diagram, "SequenceFlow_3");
+		assertThat(connection).isNotNull();
+
+		SequenceFlow sequenceFlow = BusinessObjectUtil.getFirstElementOfType(connection, SequenceFlow.class);
+		assertThat(sequenceFlow.getConditionExpression()).isNotNull();
+
+		assertThat(sequenceFlow.getConditionExpression()).isInstanceOf(FormalExpression.class);
+		assertThat(((FormalExpression)sequenceFlow.getConditionExpression()).getBody()).isEqualTo("test");
+	}
+
 }

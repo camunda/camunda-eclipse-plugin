@@ -13,7 +13,11 @@ package org.camunda.bpm.modeler.core.importer.handlers;
 import org.camunda.bpm.modeler.core.importer.ImportException;
 import org.camunda.bpm.modeler.core.importer.InvalidContentException;
 import org.camunda.bpm.modeler.core.importer.ModelImport;
+import org.camunda.bpm.modeler.runtime.engine.model.Expression;
+import org.eclipse.bpmn2.Bpmn2Factory;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.FlowNode;
+import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.graphiti.mm.pictograms.Connection;
@@ -33,7 +37,19 @@ public class SequenceFlowHandler extends AbstractEdgeHandler<SequenceFlow> {
 
 	@Override
 	protected PictogramElement handleEdge(SequenceFlow bpmnElement, BPMNEdge edge, ContainerShape container) {
-		
+
+		// replace conditionExpression field which is from type Expression through conditionExpression as FormalExpression when 
+		// no xsi:type="tFormelExpression" is set
+		if (bpmnElement.getConditionExpression() != null) {
+			if (!(bpmnElement.getConditionExpression() instanceof FormalExpression)) {
+				String conditionExpressionValue = ((Expression)bpmnElement.getConditionExpression()).getBody();
+				bpmnElement.eUnset(Bpmn2Package.eINSTANCE.getSequenceFlow_ConditionExpression());
+				FormalExpression formalExpression = Bpmn2Factory.eINSTANCE.createFormalExpression();
+				formalExpression.setBody(conditionExpressionValue);
+				bpmnElement.eSet(Bpmn2Package.eINSTANCE.getSequenceFlow_ConditionExpression(), formalExpression);
+			}
+		}
+
 		FlowNode source = bpmnElement.getSourceRef();
 		if (source == null) {
 			InvalidContentException exception = new InvalidContentException("Could not resolve source", bpmnElement);
