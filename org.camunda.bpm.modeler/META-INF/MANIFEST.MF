@@ -318,4 +318,5 @@ Export-Package: org.camunda.bpm.modeler.core; uses:="org.eclipse.emf.e
  operty.tabs.builder.table,org.camunda.bpm.modeler.ui.property.tabs.di
  alog,org.camunda.bpm.modeler.ui.property.tabs.radio,org.camunda.bpm.m
  odeler.ui.property.tabs.tables,org.camunda.bpm.modeler.ui.property.ta
- bs.util,org.camunda.bpm.modeler.ui.wizards
+ bs.util,org.camunda.bpm.modeler.ui.wizards, org.camunda.bpm.modeler.u
+ i.diagram.editor
