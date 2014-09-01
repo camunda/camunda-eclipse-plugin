@@ -310,7 +310,7 @@ Export-Package: org.camunda.bpm.modeler.core; uses:="org.eclipse.emf.e
  e.ui,  org.eclipse.swt.graphics,  org.eclipse.jface.viewers",org.camu
  nda.bpm.modeler.ui.property.tabs; uses:="org.eclipse.bpmn2,  org.ecli
  pse.emf.ecore,  org.eclipse.graphiti.ui.platform,  org.camunda.bpm.mo
- deler.core.property,  org.eclipse.swt.widgets",org.camunda.bpm.modele
+ deler.core.property,  org.eclipse.swt.widgets", org.camunda.bpm.modeler.ui.property.tabs.binding, org.camunda.bpm.modeler.ui.property.tabs.binding.change, org.camunda.bpm.modele
  r.ui.property.tabs.builder; uses:="org.eclipse.emf.ecore,  org.eclips
  e.bpmn2,  org.camunda.bpm.modeler.ui.property.tabs.tables,  org.eclip
  se.jface.viewers,  org.eclipse.graphiti.ui.platform,  org.eclipse.emf
