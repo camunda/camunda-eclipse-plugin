@@ -78,7 +78,7 @@
 
 		<repository>
 			<id>eclipse-graphiti</id>
-			<url>http://download.eclipse.org/graphiti/updates/0.9.2/</url>
+			<url>http://archive.eclipse.org/graphiti/updates/0.9.2/</url>
 			<layout>p2</layout>
 		</repository>
 
