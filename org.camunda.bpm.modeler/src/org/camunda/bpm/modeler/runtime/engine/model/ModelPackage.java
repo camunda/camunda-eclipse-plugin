@@ -1576,13 +1576,58 @@ public interface ModelPackage extends EPackage {
 	int DOCUMENT_ROOT__EXCLUSIVE = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 28;
 
 		/**
+	 * The feature id for the '<em><b>Connector</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__CONNECTOR = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 29;
+
+		/**
+	 * The feature id for the '<em><b>Input Output</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__INPUT_OUTPUT = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 30;
+
+		/**
+	 * The feature id for the '<em><b>Async After</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__ASYNC_AFTER = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 31;
+
+		/**
+	 * The feature id for the '<em><b>Async Before</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__ASYNC_BEFORE = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 32;
+
+		/**
+	 * The feature id for the '<em><b>Resource1</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__RESOURCE1 = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 33;
+
+		/**
 	 * The number of structural features of the '<em>Document Root</em>' class.
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-  int DOCUMENT_ROOT_FEATURE_COUNT = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 29;
+  int DOCUMENT_ROOT_FEATURE_COUNT = Bpmn2Package.DOCUMENT_ROOT_FEATURE_COUNT + 34;
 
   /**
 	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.StartEventImpl <em>Start Event</em>}' class.
@@ -1866,13 +1911,22 @@ public interface ModelPackage extends EPackage {
   int EXECUTION_LISTENER_TYPE__EXPRESSION = 5;
 
   /**
+	 * The feature id for the '<em><b>Script</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTION_LISTENER_TYPE__SCRIPT = 6;
+
+		/**
 	 * The number of structural features of the '<em>Execution Listener Type</em>' class.
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-  int EXECUTION_LISTENER_TYPE_FEATURE_COUNT = 6;
+  int EXECUTION_LISTENER_TYPE_FEATURE_COUNT = 7;
 
   /**
 	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.FieldTypeImpl <em>Field Type</em>}' class.
@@ -2249,13 +2303,22 @@ public interface ModelPackage extends EPackage {
   int TASK_LISTENER_TYPE__EXPRESSION = 5;
 
   /**
+	 * The feature id for the '<em><b>Script</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TASK_LISTENER_TYPE__SCRIPT = 6;
+
+		/**
 	 * The number of structural features of the '<em>Task Listener Type</em>' class.
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-  int TASK_LISTENER_TYPE_FEATURE_COUNT = 6;
+  int TASK_LISTENER_TYPE_FEATURE_COUNT = 7;
 
   /**
 	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.CallActivityImpl <em>Call Activity</em>}' class.
@@ -3395,6 +3458,373 @@ public interface ModelPackage extends EPackage {
 	int EXPRESSION_FEATURE_COUNT = Bpmn2Package.EXPRESSION_FEATURE_COUNT + 2;
 
 		/**
+	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.ConnectorTypeImpl <em>Connector Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ConnectorTypeImpl
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getConnectorType()
+	 * @generated
+	 */
+	int CONNECTOR_TYPE = 20;
+
+		/**
+	 * The feature id for the '<em><b>Connector Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONNECTOR_TYPE__CONNECTOR_ID = 0;
+
+		/**
+	 * The feature id for the '<em><b>Input Output</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONNECTOR_TYPE__INPUT_OUTPUT = 1;
+
+		/**
+	 * The number of structural features of the '<em>Connector Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONNECTOR_TYPE_FEATURE_COUNT = 2;
+
+		/**
+	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.InputOutputTypeImpl <em>Input Output Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.InputOutputTypeImpl
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getInputOutputType()
+	 * @generated
+	 */
+	int INPUT_OUTPUT_TYPE = 21;
+
+		/**
+	 * The feature id for the '<em><b>Input Parameters</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INPUT_OUTPUT_TYPE__INPUT_PARAMETERS = 0;
+
+		/**
+	 * The feature id for the '<em><b>Output Parameters</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INPUT_OUTPUT_TYPE__OUTPUT_PARAMETERS = 1;
+
+		/**
+	 * The number of structural features of the '<em>Input Output Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INPUT_OUTPUT_TYPE_FEATURE_COUNT = 2;
+
+		/**
+	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.ParameterTypeImpl <em>Parameter Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ParameterTypeImpl
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getParameterType()
+	 * @generated
+	 */
+	int PARAMETER_TYPE = 22;
+
+		/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PARAMETER_TYPE__NAME = 0;
+
+		/**
+	 * The feature id for the '<em><b>Mixed</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PARAMETER_TYPE__MIXED = 1;
+
+		/**
+	 * The feature id for the '<em><b>Script</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PARAMETER_TYPE__SCRIPT = 2;
+
+		/**
+	 * The feature id for the '<em><b>Map</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PARAMETER_TYPE__MAP = 3;
+
+		/**
+	 * The feature id for the '<em><b>List</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PARAMETER_TYPE__LIST = 4;
+
+		/**
+	 * The feature id for the '<em><b>Text</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PARAMETER_TYPE__TEXT = 5;
+
+		/**
+	 * The number of structural features of the '<em>Parameter Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PARAMETER_TYPE_FEATURE_COUNT = 6;
+
+		/**
+	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.ScriptTypeImpl <em>Script Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ScriptTypeImpl
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getScriptType()
+	 * @generated
+	 */
+	int SCRIPT_TYPE = 23;
+
+		/**
+	 * The feature id for the '<em><b>Script Format</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SCRIPT_TYPE__SCRIPT_FORMAT = 0;
+
+		/**
+	 * The feature id for the '<em><b>Resource</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SCRIPT_TYPE__RESOURCE = 1;
+
+		/**
+	 * The feature id for the '<em><b>Mixed</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SCRIPT_TYPE__MIXED = 2;
+
+		/**
+	 * The feature id for the '<em><b>Text</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SCRIPT_TYPE__TEXT = 3;
+
+		/**
+	 * The number of structural features of the '<em>Script Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SCRIPT_TYPE_FEATURE_COUNT = 4;
+
+		/**
+	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.MapTypeImpl <em>Map Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.MapTypeImpl
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getMapType()
+	 * @generated
+	 */
+	int MAP_TYPE = 24;
+
+		/**
+	 * The feature id for the '<em><b>Entries</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MAP_TYPE__ENTRIES = 0;
+
+		/**
+	 * The number of structural features of the '<em>Map Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MAP_TYPE_FEATURE_COUNT = 1;
+
+		/**
+	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.EntryTypeImpl <em>Entry Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.EntryTypeImpl
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getEntryType()
+	 * @generated
+	 */
+	int ENTRY_TYPE = 25;
+
+		/**
+	 * The feature id for the '<em><b>Key</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENTRY_TYPE__KEY = 0;
+
+		/**
+	 * The feature id for the '<em><b>Mixed</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENTRY_TYPE__MIXED = 1;
+
+		/**
+	 * The feature id for the '<em><b>Script</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENTRY_TYPE__SCRIPT = 2;
+
+		/**
+	 * The feature id for the '<em><b>Map</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENTRY_TYPE__MAP = 3;
+
+		/**
+	 * The feature id for the '<em><b>List</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENTRY_TYPE__LIST = 4;
+
+		/**
+	 * The feature id for the '<em><b>Text</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENTRY_TYPE__TEXT = 5;
+
+		/**
+	 * The number of structural features of the '<em>Entry Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENTRY_TYPE_FEATURE_COUNT = 6;
+
+		/**
+	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.ListTypeImpl <em>List Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ListTypeImpl
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getListType()
+	 * @generated
+	 */
+	int LIST_TYPE = 26;
+
+		/**
+	 * The feature id for the '<em><b>Group</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LIST_TYPE__GROUP = 0;
+
+		/**
+	 * The feature id for the '<em><b>Scripts</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LIST_TYPE__SCRIPTS = 1;
+
+		/**
+	 * The feature id for the '<em><b>Maps</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LIST_TYPE__MAPS = 2;
+
+		/**
+	 * The feature id for the '<em><b>Lists</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LIST_TYPE__LISTS = 3;
+
+		/**
+	 * The feature id for the '<em><b>Values</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LIST_TYPE__VALUES = 4;
+
+		/**
+	 * The number of structural features of the '<em>List Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LIST_TYPE_FEATURE_COUNT = 5;
+
+		/**
 	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.EventType <em>Event Type</em>}' enum.
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3402,7 +3832,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getEventType()
 	 * @generated
 	 */
-  int EVENT_TYPE = 20;
+  int EVENT_TYPE = 27;
 
   /**
 	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.EventType1 <em>Event Type1</em>}' enum.
@@ -3412,7 +3842,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getEventType1()
 	 * @generated
 	 */
-  int EVENT_TYPE1 = 21;
+  int EVENT_TYPE1 = 28;
 
   /**
 	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.HistoryType <em>History Type</em>}' enum.
@@ -3422,7 +3852,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getHistoryType()
 	 * @generated
 	 */
-  int HISTORY_TYPE = 22;
+  int HISTORY_TYPE = 29;
 
   /**
 	 * The meta object id for the '{@link org.camunda.bpm.modeler.runtime.engine.model.TypeType <em>Type Type</em>}' enum.
@@ -3432,7 +3862,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getTypeType()
 	 * @generated
 	 */
-  int TYPE_TYPE = 23;
+  int TYPE_TYPE = 30;
 
   /**
 	 * The meta object id for the '<em>Class Type</em>' data type.
@@ -3442,7 +3872,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getClassType()
 	 * @generated
 	 */
-  int CLASS_TYPE = 24;
+  int CLASS_TYPE = 31;
 
   /**
 	 * The meta object id for the '<em>Event Type Object</em>' data type.
@@ -3452,7 +3882,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getEventTypeObject()
 	 * @generated
 	 */
-  int EVENT_TYPE_OBJECT = 25;
+  int EVENT_TYPE_OBJECT = 32;
 
   /**
 	 * The meta object id for the '<em>Event Type Object1</em>' data type.
@@ -3462,7 +3892,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getEventTypeObject1()
 	 * @generated
 	 */
-  int EVENT_TYPE_OBJECT1 = 26;
+  int EVENT_TYPE_OBJECT1 = 33;
 
   /**
 	 * The meta object id for the '<em>Form Handler Class Type</em>' data type.
@@ -3472,7 +3902,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getFormHandlerClassType()
 	 * @generated
 	 */
-  int FORM_HANDLER_CLASS_TYPE = 27;
+  int FORM_HANDLER_CLASS_TYPE = 34;
 
   /**
 	 * The meta object id for the '<em>History Type Object</em>' data type.
@@ -3482,7 +3912,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getHistoryTypeObject()
 	 * @generated
 	 */
-  int HISTORY_TYPE_OBJECT = 28;
+  int HISTORY_TYPE_OBJECT = 35;
 
   /**
 	 * The meta object id for the '<em>TExpression</em>' data type.
@@ -3492,7 +3922,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getTExpression()
 	 * @generated
 	 */
-  int TEXPRESSION = 29;
+  int TEXPRESSION = 36;
 
   /**
 	 * The meta object id for the '<em>Type Type Object</em>' data type.
@@ -3502,7 +3932,7 @@ public interface ModelPackage extends EPackage {
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getTypeTypeObject()
 	 * @generated
 	 */
-  int TYPE_TYPE_OBJECT = 30;
+  int TYPE_TYPE_OBJECT = 37;
 
 
   /**
@@ -3835,6 +4265,61 @@ public interface ModelPackage extends EPackage {
 	EAttribute getDocumentRoot_Exclusive();
 
 		/**
+	 * Returns the meta object for the containment reference '{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getConnector <em>Connector</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Connector</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getConnector()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EReference getDocumentRoot_Connector();
+
+		/**
+	 * Returns the meta object for the containment reference '{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getInputOutput <em>Input Output</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Input Output</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getInputOutput()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EReference getDocumentRoot_InputOutput();
+
+		/**
+	 * Returns the meta object for the attribute '{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#isAsyncAfter <em>Async After</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Async After</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#isAsyncAfter()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EAttribute getDocumentRoot_AsyncAfter();
+
+		/**
+	 * Returns the meta object for the attribute '{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#isAsyncBefore <em>Async Before</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Async Before</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#isAsyncBefore()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EAttribute getDocumentRoot_AsyncBefore();
+
+		/**
+	 * Returns the meta object for the attribute '{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getResource1 <em>Resource1</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Resource1</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getResource1()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EAttribute getDocumentRoot_Resource1();
+
+		/**
 	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.StartEvent <em>Start Event</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3921,6 +4406,17 @@ public interface ModelPackage extends EPackage {
   EAttribute getExecutionListenerType_Expression();
 
   /**
+	 * Returns the meta object for the containment reference '{@link org.camunda.bpm.modeler.runtime.engine.model.ExecutionListenerType#getScript <em>Script</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Script</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ExecutionListenerType#getScript()
+	 * @see #getExecutionListenerType()
+	 * @generated
+	 */
+	EReference getExecutionListenerType_Script();
+
+		/**
 	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.FieldType <em>Field Type</em>}'.
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -4323,6 +4819,17 @@ public interface ModelPackage extends EPackage {
   EAttribute getTaskListenerType_Expression();
 
   /**
+	 * Returns the meta object for the containment reference '{@link org.camunda.bpm.modeler.runtime.engine.model.TaskListenerType#getScript <em>Script</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Script</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.TaskListenerType#getScript()
+	 * @see #getTaskListenerType()
+	 * @generated
+	 */
+	EReference getTaskListenerType_Script();
+
+		/**
 	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.CallActivity <em>Call Activity</em>}'.
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -4683,6 +5190,362 @@ public interface ModelPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getExpression_Mixed();
+
+		/**
+	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.ConnectorType <em>Connector Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Connector Type</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ConnectorType
+	 * @generated
+	 */
+	EClass getConnectorType();
+
+		/**
+	 * Returns the meta object for the attribute '{@link org.camunda.bpm.modeler.runtime.engine.model.ConnectorType#getConnectorId <em>Connector Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Connector Id</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ConnectorType#getConnectorId()
+	 * @see #getConnectorType()
+	 * @generated
+	 */
+	EAttribute getConnectorType_ConnectorId();
+
+		/**
+	 * Returns the meta object for the containment reference '{@link org.camunda.bpm.modeler.runtime.engine.model.ConnectorType#getInputOutput <em>Input Output</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Input Output</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ConnectorType#getInputOutput()
+	 * @see #getConnectorType()
+	 * @generated
+	 */
+	EReference getConnectorType_InputOutput();
+
+		/**
+	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.InputOutputType <em>Input Output Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Input Output Type</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.InputOutputType
+	 * @generated
+	 */
+	EClass getInputOutputType();
+
+		/**
+	 * Returns the meta object for the containment reference list '{@link org.camunda.bpm.modeler.runtime.engine.model.InputOutputType#getInputParameters <em>Input Parameters</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Input Parameters</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.InputOutputType#getInputParameters()
+	 * @see #getInputOutputType()
+	 * @generated
+	 */
+	EReference getInputOutputType_InputParameters();
+
+		/**
+	 * Returns the meta object for the containment reference list '{@link org.camunda.bpm.modeler.runtime.engine.model.InputOutputType#getOutputParameters <em>Output Parameters</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Output Parameters</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.InputOutputType#getOutputParameters()
+	 * @see #getInputOutputType()
+	 * @generated
+	 */
+	EReference getInputOutputType_OutputParameters();
+
+		/**
+	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.ParameterType <em>Parameter Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Parameter Type</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ParameterType
+	 * @generated
+	 */
+	EClass getParameterType();
+
+		/**
+	 * Returns the meta object for the attribute '{@link org.camunda.bpm.modeler.runtime.engine.model.ParameterType#getName <em>Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Name</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ParameterType#getName()
+	 * @see #getParameterType()
+	 * @generated
+	 */
+	EAttribute getParameterType_Name();
+
+		/**
+	 * Returns the meta object for the attribute list '{@link org.camunda.bpm.modeler.runtime.engine.model.ParameterType#getMixed <em>Mixed</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Mixed</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ParameterType#getMixed()
+	 * @see #getParameterType()
+	 * @generated
+	 */
+	EAttribute getParameterType_Mixed();
+
+		/**
+	 * Returns the meta object for the containment reference '{@link org.camunda.bpm.modeler.runtime.engine.model.ParameterType#getScript <em>Script</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Script</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ParameterType#getScript()
+	 * @see #getParameterType()
+	 * @generated
+	 */
+	EReference getParameterType_Script();
+
+		/**
+	 * Returns the meta object for the containment reference '{@link org.camunda.bpm.modeler.runtime.engine.model.ParameterType#getMap <em>Map</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Map</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ParameterType#getMap()
+	 * @see #getParameterType()
+	 * @generated
+	 */
+	EReference getParameterType_Map();
+
+		/**
+	 * Returns the meta object for the containment reference '{@link org.camunda.bpm.modeler.runtime.engine.model.ParameterType#getList <em>List</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>List</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ParameterType#getList()
+	 * @see #getParameterType()
+	 * @generated
+	 */
+	EReference getParameterType_List();
+
+		/**
+	 * Returns the meta object for the attribute '{@link org.camunda.bpm.modeler.runtime.engine.model.ParameterType#getText <em>Text</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Text</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ParameterType#getText()
+	 * @see #getParameterType()
+	 * @generated
+	 */
+	EAttribute getParameterType_Text();
+
+		/**
+	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.ScriptType <em>Script Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Script Type</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ScriptType
+	 * @generated
+	 */
+	EClass getScriptType();
+
+		/**
+	 * Returns the meta object for the attribute '{@link org.camunda.bpm.modeler.runtime.engine.model.ScriptType#getScriptFormat <em>Script Format</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Script Format</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ScriptType#getScriptFormat()
+	 * @see #getScriptType()
+	 * @generated
+	 */
+	EAttribute getScriptType_ScriptFormat();
+
+		/**
+	 * Returns the meta object for the attribute '{@link org.camunda.bpm.modeler.runtime.engine.model.ScriptType#getResource <em>Resource</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Resource</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ScriptType#getResource()
+	 * @see #getScriptType()
+	 * @generated
+	 */
+	EAttribute getScriptType_Resource();
+
+		/**
+	 * Returns the meta object for the attribute list '{@link org.camunda.bpm.modeler.runtime.engine.model.ScriptType#getMixed <em>Mixed</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Mixed</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ScriptType#getMixed()
+	 * @see #getScriptType()
+	 * @generated
+	 */
+	EAttribute getScriptType_Mixed();
+
+		/**
+	 * Returns the meta object for the attribute '{@link org.camunda.bpm.modeler.runtime.engine.model.ScriptType#getText <em>Text</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Text</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ScriptType#getText()
+	 * @see #getScriptType()
+	 * @generated
+	 */
+	EAttribute getScriptType_Text();
+
+		/**
+	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.MapType <em>Map Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Map Type</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.MapType
+	 * @generated
+	 */
+	EClass getMapType();
+
+		/**
+	 * Returns the meta object for the containment reference list '{@link org.camunda.bpm.modeler.runtime.engine.model.MapType#getEntries <em>Entries</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Entries</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.MapType#getEntries()
+	 * @see #getMapType()
+	 * @generated
+	 */
+	EReference getMapType_Entries();
+
+		/**
+	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.EntryType <em>Entry Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Entry Type</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.EntryType
+	 * @generated
+	 */
+	EClass getEntryType();
+
+		/**
+	 * Returns the meta object for the attribute '{@link org.camunda.bpm.modeler.runtime.engine.model.EntryType#getKey <em>Key</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Key</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.EntryType#getKey()
+	 * @see #getEntryType()
+	 * @generated
+	 */
+	EAttribute getEntryType_Key();
+
+		/**
+	 * Returns the meta object for the attribute list '{@link org.camunda.bpm.modeler.runtime.engine.model.EntryType#getMixed <em>Mixed</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Mixed</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.EntryType#getMixed()
+	 * @see #getEntryType()
+	 * @generated
+	 */
+	EAttribute getEntryType_Mixed();
+
+		/**
+	 * Returns the meta object for the containment reference '{@link org.camunda.bpm.modeler.runtime.engine.model.EntryType#getScript <em>Script</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Script</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.EntryType#getScript()
+	 * @see #getEntryType()
+	 * @generated
+	 */
+	EReference getEntryType_Script();
+
+		/**
+	 * Returns the meta object for the containment reference '{@link org.camunda.bpm.modeler.runtime.engine.model.EntryType#getMap <em>Map</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Map</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.EntryType#getMap()
+	 * @see #getEntryType()
+	 * @generated
+	 */
+	EReference getEntryType_Map();
+
+		/**
+	 * Returns the meta object for the containment reference '{@link org.camunda.bpm.modeler.runtime.engine.model.EntryType#getList <em>List</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>List</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.EntryType#getList()
+	 * @see #getEntryType()
+	 * @generated
+	 */
+	EReference getEntryType_List();
+
+		/**
+	 * Returns the meta object for the attribute '{@link org.camunda.bpm.modeler.runtime.engine.model.EntryType#getText <em>Text</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Text</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.EntryType#getText()
+	 * @see #getEntryType()
+	 * @generated
+	 */
+	EAttribute getEntryType_Text();
+
+		/**
+	 * Returns the meta object for class '{@link org.camunda.bpm.modeler.runtime.engine.model.ListType <em>List Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>List Type</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ListType
+	 * @generated
+	 */
+	EClass getListType();
+
+		/**
+	 * Returns the meta object for the attribute list '{@link org.camunda.bpm.modeler.runtime.engine.model.ListType#getGroup <em>Group</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Group</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ListType#getGroup()
+	 * @see #getListType()
+	 * @generated
+	 */
+	EAttribute getListType_Group();
+
+		/**
+	 * Returns the meta object for the containment reference list '{@link org.camunda.bpm.modeler.runtime.engine.model.ListType#getScripts <em>Scripts</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Scripts</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ListType#getScripts()
+	 * @see #getListType()
+	 * @generated
+	 */
+	EReference getListType_Scripts();
+
+		/**
+	 * Returns the meta object for the containment reference list '{@link org.camunda.bpm.modeler.runtime.engine.model.ListType#getMaps <em>Maps</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Maps</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ListType#getMaps()
+	 * @see #getListType()
+	 * @generated
+	 */
+	EReference getListType_Maps();
+
+		/**
+	 * Returns the meta object for the containment reference list '{@link org.camunda.bpm.modeler.runtime.engine.model.ListType#getLists <em>Lists</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Lists</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ListType#getLists()
+	 * @see #getListType()
+	 * @generated
+	 */
+	EReference getListType_Lists();
+
+		/**
+	 * Returns the meta object for the attribute list '{@link org.camunda.bpm.modeler.runtime.engine.model.ListType#getValues <em>Values</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Values</em>'.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ListType#getValues()
+	 * @see #getListType()
+	 * @generated
+	 */
+	EAttribute getListType_Values();
 
 		/**
 	 * Returns the meta object for enum '{@link org.camunda.bpm.modeler.runtime.engine.model.EventType <em>Event Type</em>}'.
@@ -5073,6 +5936,46 @@ public interface ModelPackage extends EPackage {
 		EAttribute DOCUMENT_ROOT__EXCLUSIVE = eINSTANCE.getDocumentRoot_Exclusive();
 
 				/**
+		 * The meta object literal for the '<em><b>Connector</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference DOCUMENT_ROOT__CONNECTOR = eINSTANCE.getDocumentRoot_Connector();
+
+				/**
+		 * The meta object literal for the '<em><b>Input Output</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference DOCUMENT_ROOT__INPUT_OUTPUT = eINSTANCE.getDocumentRoot_InputOutput();
+
+				/**
+		 * The meta object literal for the '<em><b>Async After</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DOCUMENT_ROOT__ASYNC_AFTER = eINSTANCE.getDocumentRoot_AsyncAfter();
+
+				/**
+		 * The meta object literal for the '<em><b>Async Before</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DOCUMENT_ROOT__ASYNC_BEFORE = eINSTANCE.getDocumentRoot_AsyncBefore();
+
+				/**
+		 * The meta object literal for the '<em><b>Resource1</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DOCUMENT_ROOT__RESOURCE1 = eINSTANCE.getDocumentRoot_Resource1();
+
+				/**
 		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.StartEventImpl <em>Start Event</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -5141,6 +6044,14 @@ public interface ModelPackage extends EPackage {
     EAttribute EXECUTION_LISTENER_TYPE__EXPRESSION = eINSTANCE.getExecutionListenerType_Expression();
 
     /**
+		 * The meta object literal for the '<em><b>Script</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference EXECUTION_LISTENER_TYPE__SCRIPT = eINSTANCE.getExecutionListenerType_Script();
+
+				/**
 		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.FieldTypeImpl <em>Field Type</em>}' class.
 		 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -5447,6 +6358,14 @@ public interface ModelPackage extends EPackage {
     EAttribute TASK_LISTENER_TYPE__EXPRESSION = eINSTANCE.getTaskListenerType_Expression();
 
     /**
+		 * The meta object literal for the '<em><b>Script</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference TASK_LISTENER_TYPE__SCRIPT = eINSTANCE.getTaskListenerType_Script();
+
+				/**
 		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.CallActivityImpl <em>Call Activity</em>}' class.
 		 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -5741,6 +6660,284 @@ public interface ModelPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute EXPRESSION__MIXED = eINSTANCE.getExpression_Mixed();
+
+				/**
+		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.ConnectorTypeImpl <em>Connector Type</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ConnectorTypeImpl
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getConnectorType()
+		 * @generated
+		 */
+		EClass CONNECTOR_TYPE = eINSTANCE.getConnectorType();
+
+				/**
+		 * The meta object literal for the '<em><b>Connector Id</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CONNECTOR_TYPE__CONNECTOR_ID = eINSTANCE.getConnectorType_ConnectorId();
+
+				/**
+		 * The meta object literal for the '<em><b>Input Output</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference CONNECTOR_TYPE__INPUT_OUTPUT = eINSTANCE.getConnectorType_InputOutput();
+
+				/**
+		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.InputOutputTypeImpl <em>Input Output Type</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.InputOutputTypeImpl
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getInputOutputType()
+		 * @generated
+		 */
+		EClass INPUT_OUTPUT_TYPE = eINSTANCE.getInputOutputType();
+
+				/**
+		 * The meta object literal for the '<em><b>Input Parameters</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference INPUT_OUTPUT_TYPE__INPUT_PARAMETERS = eINSTANCE.getInputOutputType_InputParameters();
+
+				/**
+		 * The meta object literal for the '<em><b>Output Parameters</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference INPUT_OUTPUT_TYPE__OUTPUT_PARAMETERS = eINSTANCE.getInputOutputType_OutputParameters();
+
+				/**
+		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.ParameterTypeImpl <em>Parameter Type</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ParameterTypeImpl
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getParameterType()
+		 * @generated
+		 */
+		EClass PARAMETER_TYPE = eINSTANCE.getParameterType();
+
+				/**
+		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute PARAMETER_TYPE__NAME = eINSTANCE.getParameterType_Name();
+
+				/**
+		 * The meta object literal for the '<em><b>Mixed</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute PARAMETER_TYPE__MIXED = eINSTANCE.getParameterType_Mixed();
+
+				/**
+		 * The meta object literal for the '<em><b>Script</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference PARAMETER_TYPE__SCRIPT = eINSTANCE.getParameterType_Script();
+
+				/**
+		 * The meta object literal for the '<em><b>Map</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference PARAMETER_TYPE__MAP = eINSTANCE.getParameterType_Map();
+
+				/**
+		 * The meta object literal for the '<em><b>List</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference PARAMETER_TYPE__LIST = eINSTANCE.getParameterType_List();
+
+				/**
+		 * The meta object literal for the '<em><b>Text</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute PARAMETER_TYPE__TEXT = eINSTANCE.getParameterType_Text();
+
+				/**
+		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.ScriptTypeImpl <em>Script Type</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ScriptTypeImpl
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getScriptType()
+		 * @generated
+		 */
+		EClass SCRIPT_TYPE = eINSTANCE.getScriptType();
+
+				/**
+		 * The meta object literal for the '<em><b>Script Format</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute SCRIPT_TYPE__SCRIPT_FORMAT = eINSTANCE.getScriptType_ScriptFormat();
+
+				/**
+		 * The meta object literal for the '<em><b>Resource</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute SCRIPT_TYPE__RESOURCE = eINSTANCE.getScriptType_Resource();
+
+				/**
+		 * The meta object literal for the '<em><b>Mixed</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute SCRIPT_TYPE__MIXED = eINSTANCE.getScriptType_Mixed();
+
+				/**
+		 * The meta object literal for the '<em><b>Text</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute SCRIPT_TYPE__TEXT = eINSTANCE.getScriptType_Text();
+
+				/**
+		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.MapTypeImpl <em>Map Type</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.MapTypeImpl
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getMapType()
+		 * @generated
+		 */
+		EClass MAP_TYPE = eINSTANCE.getMapType();
+
+				/**
+		 * The meta object literal for the '<em><b>Entries</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference MAP_TYPE__ENTRIES = eINSTANCE.getMapType_Entries();
+
+				/**
+		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.EntryTypeImpl <em>Entry Type</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.EntryTypeImpl
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getEntryType()
+		 * @generated
+		 */
+		EClass ENTRY_TYPE = eINSTANCE.getEntryType();
+
+				/**
+		 * The meta object literal for the '<em><b>Key</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute ENTRY_TYPE__KEY = eINSTANCE.getEntryType_Key();
+
+				/**
+		 * The meta object literal for the '<em><b>Mixed</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute ENTRY_TYPE__MIXED = eINSTANCE.getEntryType_Mixed();
+
+				/**
+		 * The meta object literal for the '<em><b>Script</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ENTRY_TYPE__SCRIPT = eINSTANCE.getEntryType_Script();
+
+				/**
+		 * The meta object literal for the '<em><b>Map</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ENTRY_TYPE__MAP = eINSTANCE.getEntryType_Map();
+
+				/**
+		 * The meta object literal for the '<em><b>List</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ENTRY_TYPE__LIST = eINSTANCE.getEntryType_List();
+
+				/**
+		 * The meta object literal for the '<em><b>Text</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute ENTRY_TYPE__TEXT = eINSTANCE.getEntryType_Text();
+
+				/**
+		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.impl.ListTypeImpl <em>List Type</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ListTypeImpl
+		 * @see org.camunda.bpm.modeler.runtime.engine.model.impl.ModelPackageImpl#getListType()
+		 * @generated
+		 */
+		EClass LIST_TYPE = eINSTANCE.getListType();
+
+				/**
+		 * The meta object literal for the '<em><b>Group</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute LIST_TYPE__GROUP = eINSTANCE.getListType_Group();
+
+				/**
+		 * The meta object literal for the '<em><b>Scripts</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference LIST_TYPE__SCRIPTS = eINSTANCE.getListType_Scripts();
+
+				/**
+		 * The meta object literal for the '<em><b>Maps</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference LIST_TYPE__MAPS = eINSTANCE.getListType_Maps();
+
+				/**
+		 * The meta object literal for the '<em><b>Lists</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference LIST_TYPE__LISTS = eINSTANCE.getListType_Lists();
+
+				/**
+		 * The meta object literal for the '<em><b>Values</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute LIST_TYPE__VALUES = eINSTANCE.getListType_Values();
 
 				/**
 		 * The meta object literal for the '{@link org.camunda.bpm.modeler.runtime.engine.model.EventType <em>Event Type</em>}' enum.

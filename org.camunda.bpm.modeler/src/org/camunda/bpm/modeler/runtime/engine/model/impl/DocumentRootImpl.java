@@ -2,6 +2,7 @@
  */
 package org.camunda.bpm.modeler.runtime.engine.model.impl;
 
+import org.camunda.bpm.modeler.runtime.engine.model.ConnectorType;
 import org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot;
 import org.camunda.bpm.modeler.runtime.engine.model.ExecutionListenerType;
 import org.camunda.bpm.modeler.runtime.engine.model.FieldType;
@@ -9,6 +10,7 @@ import org.camunda.bpm.modeler.runtime.engine.model.FormDataType;
 import org.camunda.bpm.modeler.runtime.engine.model.FormPropertyType;
 import org.camunda.bpm.modeler.runtime.engine.model.HistoryType;
 import org.camunda.bpm.modeler.runtime.engine.model.InType;
+import org.camunda.bpm.modeler.runtime.engine.model.InputOutputType;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.runtime.engine.model.OutType;
 import org.camunda.bpm.modeler.runtime.engine.model.PropertiesType;
@@ -63,6 +65,11 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.DocumentRootImpl#getFollowUpDate <em>Follow Up Date</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.DocumentRootImpl#getProperties <em>Properties</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.DocumentRootImpl#isExclusive <em>Exclusive</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.DocumentRootImpl#getConnector <em>Connector</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.DocumentRootImpl#getInputOutput <em>Input Output</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.DocumentRootImpl#isAsyncAfter <em>Async After</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.DocumentRootImpl#isAsyncBefore <em>Async Before</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.DocumentRootImpl#getResource1 <em>Resource1</em>}</li>
  * </ul>
  * </p>
  *
@@ -506,6 +513,66 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 	 * @ordered
 	 */
 	protected boolean exclusive = EXCLUSIVE_EDEFAULT;
+
+		/**
+	 * The default value of the '{@link #isAsyncAfter() <em>Async After</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isAsyncAfter()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean ASYNC_AFTER_EDEFAULT = false;
+
+		/**
+	 * The cached value of the '{@link #isAsyncAfter() <em>Async After</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isAsyncAfter()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean asyncAfter = ASYNC_AFTER_EDEFAULT;
+
+		/**
+	 * The default value of the '{@link #isAsyncBefore() <em>Async Before</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isAsyncBefore()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean ASYNC_BEFORE_EDEFAULT = false;
+
+		/**
+	 * The cached value of the '{@link #isAsyncBefore() <em>Async Before</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isAsyncBefore()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean asyncBefore = ASYNC_BEFORE_EDEFAULT;
+
+		/**
+	 * The default value of the '{@link #getResource1() <em>Resource1</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getResource1()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String RESOURCE1_EDEFAULT = null;
+
+		/**
+	 * The cached value of the '{@link #getResource1() <em>Resource1</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getResource1()
+	 * @generated
+	 * @ordered
+	 */
+	protected String resource1 = RESOURCE1_EDEFAULT;
 
 		/**
 	 * <!-- begin-user-doc -->
@@ -1273,6 +1340,123 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 
 		/**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ConnectorType getConnector() {
+		return (ConnectorType)getMixed().get(ModelPackage.Literals.DOCUMENT_ROOT__CONNECTOR, true);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetConnector(ConnectorType newConnector, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(ModelPackage.Literals.DOCUMENT_ROOT__CONNECTOR, newConnector, msgs);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setConnector(ConnectorType newConnector) {
+		((FeatureMap.Internal)getMixed()).set(ModelPackage.Literals.DOCUMENT_ROOT__CONNECTOR, newConnector);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public InputOutputType getInputOutput() {
+		return (InputOutputType)getMixed().get(ModelPackage.Literals.DOCUMENT_ROOT__INPUT_OUTPUT, true);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetInputOutput(InputOutputType newInputOutput, NotificationChain msgs) {
+		return ((FeatureMap.Internal)getMixed()).basicAdd(ModelPackage.Literals.DOCUMENT_ROOT__INPUT_OUTPUT, newInputOutput, msgs);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setInputOutput(InputOutputType newInputOutput) {
+		((FeatureMap.Internal)getMixed()).set(ModelPackage.Literals.DOCUMENT_ROOT__INPUT_OUTPUT, newInputOutput);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean isAsyncAfter() {
+		return asyncAfter;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setAsyncAfter(boolean newAsyncAfter) {
+		boolean oldAsyncAfter = asyncAfter;
+		asyncAfter = newAsyncAfter;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__ASYNC_AFTER, oldAsyncAfter, asyncAfter));
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean isAsyncBefore() {
+		return asyncBefore;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setAsyncBefore(boolean newAsyncBefore) {
+		boolean oldAsyncBefore = asyncBefore;
+		asyncBefore = newAsyncBefore;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__ASYNC_BEFORE, oldAsyncBefore, asyncBefore));
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String getResource1() {
+		return resource1;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setResource1(String newResource1) {
+		String oldResource1 = resource1;
+		resource1 = newResource1;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DOCUMENT_ROOT__RESOURCE1, oldResource1, resource1));
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1297,6 +1481,10 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 				return basicSetFormData(null, msgs);
 			case ModelPackage.DOCUMENT_ROOT__PROPERTIES:
 				return basicSetProperties(null, msgs);
+			case ModelPackage.DOCUMENT_ROOT__CONNECTOR:
+				return basicSetConnector(null, msgs);
+			case ModelPackage.DOCUMENT_ROOT__INPUT_OUTPUT:
+				return basicSetInputOutput(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -1367,6 +1555,16 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 				return getProperties();
 			case ModelPackage.DOCUMENT_ROOT__EXCLUSIVE:
 				return isExclusive();
+			case ModelPackage.DOCUMENT_ROOT__CONNECTOR:
+				return getConnector();
+			case ModelPackage.DOCUMENT_ROOT__INPUT_OUTPUT:
+				return getInputOutput();
+			case ModelPackage.DOCUMENT_ROOT__ASYNC_AFTER:
+				return isAsyncAfter();
+			case ModelPackage.DOCUMENT_ROOT__ASYNC_BEFORE:
+				return isAsyncBefore();
+			case ModelPackage.DOCUMENT_ROOT__RESOURCE1:
+				return getResource1();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -1465,6 +1663,21 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 				return;
 			case ModelPackage.DOCUMENT_ROOT__EXCLUSIVE:
 				setExclusive((Boolean)newValue);
+				return;
+			case ModelPackage.DOCUMENT_ROOT__CONNECTOR:
+				setConnector((ConnectorType)newValue);
+				return;
+			case ModelPackage.DOCUMENT_ROOT__INPUT_OUTPUT:
+				setInputOutput((InputOutputType)newValue);
+				return;
+			case ModelPackage.DOCUMENT_ROOT__ASYNC_AFTER:
+				setAsyncAfter((Boolean)newValue);
+				return;
+			case ModelPackage.DOCUMENT_ROOT__ASYNC_BEFORE:
+				setAsyncBefore((Boolean)newValue);
+				return;
+			case ModelPackage.DOCUMENT_ROOT__RESOURCE1:
+				setResource1((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -1565,6 +1778,21 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 			case ModelPackage.DOCUMENT_ROOT__EXCLUSIVE:
 				setExclusive(EXCLUSIVE_EDEFAULT);
 				return;
+			case ModelPackage.DOCUMENT_ROOT__CONNECTOR:
+				setConnector((ConnectorType)null);
+				return;
+			case ModelPackage.DOCUMENT_ROOT__INPUT_OUTPUT:
+				setInputOutput((InputOutputType)null);
+				return;
+			case ModelPackage.DOCUMENT_ROOT__ASYNC_AFTER:
+				setAsyncAfter(ASYNC_AFTER_EDEFAULT);
+				return;
+			case ModelPackage.DOCUMENT_ROOT__ASYNC_BEFORE:
+				setAsyncBefore(ASYNC_BEFORE_EDEFAULT);
+				return;
+			case ModelPackage.DOCUMENT_ROOT__RESOURCE1:
+				setResource1(RESOURCE1_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -1635,6 +1863,16 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 				return properties != null;
 			case ModelPackage.DOCUMENT_ROOT__EXCLUSIVE:
 				return exclusive != EXCLUSIVE_EDEFAULT;
+			case ModelPackage.DOCUMENT_ROOT__CONNECTOR:
+				return getConnector() != null;
+			case ModelPackage.DOCUMENT_ROOT__INPUT_OUTPUT:
+				return getInputOutput() != null;
+			case ModelPackage.DOCUMENT_ROOT__ASYNC_AFTER:
+				return asyncAfter != ASYNC_AFTER_EDEFAULT;
+			case ModelPackage.DOCUMENT_ROOT__ASYNC_BEFORE:
+				return asyncBefore != ASYNC_BEFORE_EDEFAULT;
+			case ModelPackage.DOCUMENT_ROOT__RESOURCE1:
+				return RESOURCE1_EDEFAULT == null ? resource1 != null : !RESOURCE1_EDEFAULT.equals(resource1);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -1689,6 +1927,12 @@ public class DocumentRootImpl extends org.eclipse.bpmn2.impl.DocumentRootImpl im
 		result.append(followUpDate);
 		result.append(", exclusive: ");
 		result.append(exclusive);
+		result.append(", asyncAfter: ");
+		result.append(asyncAfter);
+		result.append(", asyncBefore: ");
+		result.append(asyncBefore);
+		result.append(", resource1: ");
+		result.append(resource1);
 		result.append(')');
 		return result.toString();
 	}

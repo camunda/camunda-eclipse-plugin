@@ -157,6 +157,34 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
 				return createExpressionAdapter();
 			}
 			@Override
+			public Adapter caseConnectorType(ConnectorType object) {
+				return createConnectorTypeAdapter();
+			}
+			@Override
+			public Adapter caseInputOutputType(InputOutputType object) {
+				return createInputOutputTypeAdapter();
+			}
+			@Override
+			public Adapter caseParameterType(ParameterType object) {
+				return createParameterTypeAdapter();
+			}
+			@Override
+			public Adapter caseScriptType(ScriptType object) {
+				return createScriptTypeAdapter();
+			}
+			@Override
+			public Adapter caseMapType(MapType object) {
+				return createMapTypeAdapter();
+			}
+			@Override
+			public Adapter caseEntryType(EntryType object) {
+				return createEntryTypeAdapter();
+			}
+			@Override
+			public Adapter caseListType(ListType object) {
+				return createListTypeAdapter();
+			}
+			@Override
 			public Adapter caseBpmn2_DocumentRoot(org.eclipse.bpmn2.DocumentRoot object) {
 				return createBpmn2_DocumentRootAdapter();
 			}
@@ -509,6 +537,104 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createExpressionAdapter() {
+		return null;
+	}
+
+		/**
+	 * Creates a new adapter for an object of class '{@link org.camunda.bpm.modeler.runtime.engine.model.ConnectorType <em>Connector Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ConnectorType
+	 * @generated
+	 */
+	public Adapter createConnectorTypeAdapter() {
+		return null;
+	}
+
+		/**
+	 * Creates a new adapter for an object of class '{@link org.camunda.bpm.modeler.runtime.engine.model.InputOutputType <em>Input Output Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.InputOutputType
+	 * @generated
+	 */
+	public Adapter createInputOutputTypeAdapter() {
+		return null;
+	}
+
+		/**
+	 * Creates a new adapter for an object of class '{@link org.camunda.bpm.modeler.runtime.engine.model.ParameterType <em>Parameter Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ParameterType
+	 * @generated
+	 */
+	public Adapter createParameterTypeAdapter() {
+		return null;
+	}
+
+		/**
+	 * Creates a new adapter for an object of class '{@link org.camunda.bpm.modeler.runtime.engine.model.ScriptType <em>Script Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ScriptType
+	 * @generated
+	 */
+	public Adapter createScriptTypeAdapter() {
+		return null;
+	}
+
+		/**
+	 * Creates a new adapter for an object of class '{@link org.camunda.bpm.modeler.runtime.engine.model.MapType <em>Map Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.MapType
+	 * @generated
+	 */
+	public Adapter createMapTypeAdapter() {
+		return null;
+	}
+
+		/**
+	 * Creates a new adapter for an object of class '{@link org.camunda.bpm.modeler.runtime.engine.model.EntryType <em>Entry Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.EntryType
+	 * @generated
+	 */
+	public Adapter createEntryTypeAdapter() {
+		return null;
+	}
+
+		/**
+	 * Creates a new adapter for an object of class '{@link org.camunda.bpm.modeler.runtime.engine.model.ListType <em>List Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ListType
+	 * @generated
+	 */
+	public Adapter createListTypeAdapter() {
 		return null;
 	}
 

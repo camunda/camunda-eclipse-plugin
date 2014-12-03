@@ -45,6 +45,11 @@ import org.camunda.bpm.modeler.runtime.engine.model.fox.FailedJobRetryTimeCycleT
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getFollowUpDate <em>Follow Up Date</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getProperties <em>Properties</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#isExclusive <em>Exclusive</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getConnector <em>Connector</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getInputOutput <em>Input Output</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#isAsyncAfter <em>Async After</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#isAsyncBefore <em>Async Before</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getResource1 <em>Resource1</em>}</li>
  * </ul>
  * </p>
  *
@@ -870,5 +875,139 @@ public interface DocumentRoot extends org.eclipse.bpmn2.DocumentRoot {
 	 * @generated
 	 */
 	void setExclusive(boolean value);
+
+		/**
+	 * Returns the value of the '<em><b>Connector</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Connector</em>' containment reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Connector</em>' containment reference.
+	 * @see #setConnector(ConnectorType)
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ModelPackage#getDocumentRoot_Connector()
+	 * @model containment="true" transient="true" volatile="true" derived="true"
+	 *        extendedMetaData="kind='element' name='connector' namespace='##targetNamespace'"
+	 * @generated
+	 */
+	ConnectorType getConnector();
+
+		/**
+	 * Sets the value of the '{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getConnector <em>Connector</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Connector</em>' containment reference.
+	 * @see #getConnector()
+	 * @generated
+	 */
+	void setConnector(ConnectorType value);
+
+		/**
+	 * Returns the value of the '<em><b>Input Output</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Input Output</em>' containment reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Input Output</em>' containment reference.
+	 * @see #setInputOutput(InputOutputType)
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ModelPackage#getDocumentRoot_InputOutput()
+	 * @model containment="true" transient="true" volatile="true" derived="true"
+	 *        extendedMetaData="kind='element' name='inputOutput' namespace='##targetNamespace'"
+	 * @generated
+	 */
+	InputOutputType getInputOutput();
+
+		/**
+	 * Sets the value of the '{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getInputOutput <em>Input Output</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Input Output</em>' containment reference.
+	 * @see #getInputOutput()
+	 * @generated
+	 */
+	void setInputOutput(InputOutputType value);
+
+		/**
+	 * Returns the value of the '<em><b>Async After</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Async After</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Async After</em>' attribute.
+	 * @see #setAsyncAfter(boolean)
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ModelPackage#getDocumentRoot_AsyncAfter()
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.Boolean"
+	 *        extendedMetaData="kind='attribute' name='asyncAfter' namespace='##targetNamespace'"
+	 * @generated
+	 */
+	boolean isAsyncAfter();
+
+		/**
+	 * Sets the value of the '{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#isAsyncAfter <em>Async After</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Async After</em>' attribute.
+	 * @see #isAsyncAfter()
+	 * @generated
+	 */
+	void setAsyncAfter(boolean value);
+
+		/**
+	 * Returns the value of the '<em><b>Async Before</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Async Before</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Async Before</em>' attribute.
+	 * @see #setAsyncBefore(boolean)
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ModelPackage#getDocumentRoot_AsyncBefore()
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.Boolean"
+	 *        extendedMetaData="kind='attribute' name='asyncBefore' namespace='##targetNamespace'"
+	 * @generated
+	 */
+	boolean isAsyncBefore();
+
+		/**
+	 * Sets the value of the '{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#isAsyncBefore <em>Async Before</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Async Before</em>' attribute.
+	 * @see #isAsyncBefore()
+	 * @generated
+	 */
+	void setAsyncBefore(boolean value);
+
+		/**
+	 * Returns the value of the '<em><b>Resource1</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Resource1</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Resource1</em>' attribute.
+	 * @see #setResource1(String)
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ModelPackage#getDocumentRoot_Resource1()
+	 * @model extendedMetaData="kind='attribute' name='resource' namespace='##targetNamespace'"
+	 * @generated
+	 */
+	String getResource1();
+
+		/**
+	 * Sets the value of the '{@link org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot#getResource1 <em>Resource1</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Resource1</em>' attribute.
+	 * @see #getResource1()
+	 * @generated
+	 */
+	void setResource1(String value);
 
 } // DocumentRoot

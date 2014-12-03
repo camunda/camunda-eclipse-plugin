@@ -3,6 +3,8 @@ package org.camunda.bpm.modeler.test.integration;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.camunda.bpm.modeler.core.importer.ModelImport;
 import org.camunda.bpm.modeler.test.util.TestHelper;
@@ -12,7 +14,9 @@ import org.camunda.bpm.modeler.test.util.TransactionalExecutionException;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -124,7 +128,23 @@ public class AbstractIntegrationTest {
 
 		@SuppressWarnings("restriction")
 		public String save() throws Exception {
-			GraphitiUiInternal.getEmfService().save(model.getEditingDomain());
+			// NOTE: copied from Bpmn2PersistencyBehavior#createSaveOptions();
+			
+			// Save only resources that have actually changed.
+			final Map<Object, Object> saveOption = new HashMap<Object, Object>();
+
+			saveOption.put(Resource.OPTION_SAVE_ONLY_IF_CHANGED, Resource.OPTION_SAVE_ONLY_IF_CHANGED_MEMORY_BUFFER);
+
+			// Use CDATA to escape characters like '<' etc.
+			saveOption.put(XMLResource.OPTION_ESCAPE_USING_CDATA, Boolean.TRUE);
+
+			EList<Resource> resources = getDiagramEditor().getEditingDomain().getResourceSet().getResources();
+			final Map<Resource, Map<?, ?>> saveOptions = new HashMap<Resource, Map<?, ?>>();
+			for (Resource resource : resources) {
+				saveOptions.put(resource, saveOption);
+			}
+			
+			GraphitiUiInternal.getEmfService().save(model.getEditingDomain(), saveOptions);
 
 			String fileName = "target/" + fileUri;
 			

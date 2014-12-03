@@ -24,6 +24,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.ExecutionListenerType#getDelegateExpression <em>Delegate Expression</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.ExecutionListenerType#getEvent <em>Event</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.ExecutionListenerType#getExpression <em>Expression</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.ExecutionListenerType#getScript <em>Script</em>}</li>
  * </ul>
  * </p>
  *
@@ -198,5 +199,32 @@ public interface ExecutionListenerType extends EObject {
 	 * @generated
 	 */
 	void setExpression(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Script</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Script</em>' containment reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Script</em>' containment reference.
+	 * @see #setScript(ScriptType)
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ModelPackage#getExecutionListenerType_Script()
+	 * @model containment="true"
+	 *        extendedMetaData="kind='element' name='script' namespace='##targetNamespace'"
+	 * @generated
+	 */
+	ScriptType getScript();
+
+	/**
+	 * Sets the value of the '{@link org.camunda.bpm.modeler.runtime.engine.model.ExecutionListenerType#getScript <em>Script</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Script</em>' containment reference.
+	 * @see #getScript()
+	 * @generated
+	 */
+	void setScript(ScriptType value);
 
 } // ExecutionListenerType
