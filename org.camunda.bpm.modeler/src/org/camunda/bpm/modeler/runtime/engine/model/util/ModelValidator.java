@@ -137,6 +137,20 @@ public class ModelValidator extends EObjectValidator {
 				return validateFormDataContainer((FormDataContainer)value, diagnostics, context);
 			case ModelPackage.EXPRESSION:
 				return validateExpression((Expression)value, diagnostics, context);
+			case ModelPackage.CONNECTOR_TYPE:
+				return validateConnectorType((ConnectorType)value, diagnostics, context);
+			case ModelPackage.INPUT_OUTPUT_TYPE:
+				return validateInputOutputType((InputOutputType)value, diagnostics, context);
+			case ModelPackage.PARAMETER_TYPE:
+				return validateParameterType((ParameterType)value, diagnostics, context);
+			case ModelPackage.SCRIPT_TYPE:
+				return validateScriptType((ScriptType)value, diagnostics, context);
+			case ModelPackage.MAP_TYPE:
+				return validateMapType((MapType)value, diagnostics, context);
+			case ModelPackage.ENTRY_TYPE:
+				return validateEntryType((EntryType)value, diagnostics, context);
+			case ModelPackage.LIST_TYPE:
+				return validateListType((ListType)value, diagnostics, context);
 			case ModelPackage.EVENT_TYPE:
 				return validateEventType((EventType)value, diagnostics, context);
 			case ModelPackage.EVENT_TYPE1:
@@ -342,6 +356,69 @@ public class ModelValidator extends EObjectValidator {
 	 */
 	public boolean validateExpression(Expression expression, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return validate_EveryDefaultConstraint(expression, diagnostics, context);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validateConnectorType(ConnectorType connectorType, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(connectorType, diagnostics, context);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validateInputOutputType(InputOutputType inputOutputType, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(inputOutputType, diagnostics, context);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validateParameterType(ParameterType parameterType, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(parameterType, diagnostics, context);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validateScriptType(ScriptType scriptType, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(scriptType, diagnostics, context);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validateMapType(MapType mapType, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(mapType, diagnostics, context);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validateEntryType(EntryType entryType, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(entryType, diagnostics, context);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean validateListType(ListType listType, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(listType, diagnostics, context);
 	}
 
 		/**

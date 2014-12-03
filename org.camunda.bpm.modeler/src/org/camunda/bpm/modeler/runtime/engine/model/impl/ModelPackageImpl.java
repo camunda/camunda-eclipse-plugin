@@ -4,8 +4,10 @@ package org.camunda.bpm.modeler.runtime.engine.model.impl;
 
 import org.camunda.bpm.modeler.runtime.engine.model.BoundaryEvent;
 import org.camunda.bpm.modeler.runtime.engine.model.CallActivity;
+import org.camunda.bpm.modeler.runtime.engine.model.ConnectorType;
 import org.camunda.bpm.modeler.runtime.engine.model.ConstraintType;
 import org.camunda.bpm.modeler.runtime.engine.model.DocumentRoot;
+import org.camunda.bpm.modeler.runtime.engine.model.EntryType;
 import org.camunda.bpm.modeler.runtime.engine.model.EventType;
 import org.camunda.bpm.modeler.runtime.engine.model.EventType1;
 import org.camunda.bpm.modeler.runtime.engine.model.ExecutionListenerType;
@@ -17,11 +19,16 @@ import org.camunda.bpm.modeler.runtime.engine.model.FormFieldType;
 import org.camunda.bpm.modeler.runtime.engine.model.FormPropertyType;
 import org.camunda.bpm.modeler.runtime.engine.model.HistoryType;
 import org.camunda.bpm.modeler.runtime.engine.model.InType;
+import org.camunda.bpm.modeler.runtime.engine.model.InputOutputType;
+import org.camunda.bpm.modeler.runtime.engine.model.ListType;
+import org.camunda.bpm.modeler.runtime.engine.model.MapType;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelFactory;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.runtime.engine.model.OutType;
+import org.camunda.bpm.modeler.runtime.engine.model.ParameterType;
 import org.camunda.bpm.modeler.runtime.engine.model.PropertiesType;
 import org.camunda.bpm.modeler.runtime.engine.model.PropertyType;
+import org.camunda.bpm.modeler.runtime.engine.model.ScriptType;
 import org.camunda.bpm.modeler.runtime.engine.model.StartEvent;
 import org.camunda.bpm.modeler.runtime.engine.model.TaskListenerType;
 import org.camunda.bpm.modeler.runtime.engine.model.TypeType;
@@ -191,6 +198,55 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * @generated
 	 */
 	private EClass expressionEClass = null;
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass connectorTypeEClass = null;
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass inputOutputTypeEClass = null;
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass parameterTypeEClass = null;
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass scriptTypeEClass = null;
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass mapTypeEClass = null;
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass entryTypeEClass = null;
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass listTypeEClass = null;
 
 		/**
 	 * <!-- begin-user-doc -->
@@ -626,6 +682,51 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getDocumentRoot_Connector() {
+		return (EReference)documentRootEClass.getEStructuralFeatures().get(29);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getDocumentRoot_InputOutput() {
+		return (EReference)documentRootEClass.getEStructuralFeatures().get(30);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getDocumentRoot_AsyncAfter() {
+		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(31);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getDocumentRoot_AsyncBefore() {
+		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(32);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getDocumentRoot_Resource1() {
+		return (EAttribute)documentRootEClass.getEStructuralFeatures().get(33);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getStartEvent() {
 		return startEventEClass;
 	}
@@ -694,6 +795,15 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	}
 
   /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getExecutionListenerType_Script() {
+		return (EReference)executionListenerTypeEClass.getEStructuralFeatures().get(6);
+	}
+
+		/**
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
@@ -1028,6 +1138,15 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
   /**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getTaskListenerType_Script() {
+		return (EReference)taskListenerTypeEClass.getEStructuralFeatures().get(6);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1334,6 +1453,303 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
 		/**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getConnectorType() {
+		return connectorTypeEClass;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getConnectorType_ConnectorId() {
+		return (EAttribute)connectorTypeEClass.getEStructuralFeatures().get(0);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getConnectorType_InputOutput() {
+		return (EReference)connectorTypeEClass.getEStructuralFeatures().get(1);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getInputOutputType() {
+		return inputOutputTypeEClass;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getInputOutputType_InputParameters() {
+		return (EReference)inputOutputTypeEClass.getEStructuralFeatures().get(0);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getInputOutputType_OutputParameters() {
+		return (EReference)inputOutputTypeEClass.getEStructuralFeatures().get(1);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getParameterType() {
+		return parameterTypeEClass;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getParameterType_Name() {
+		return (EAttribute)parameterTypeEClass.getEStructuralFeatures().get(0);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getParameterType_Mixed() {
+		return (EAttribute)parameterTypeEClass.getEStructuralFeatures().get(1);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getParameterType_Script() {
+		return (EReference)parameterTypeEClass.getEStructuralFeatures().get(2);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getParameterType_Map() {
+		return (EReference)parameterTypeEClass.getEStructuralFeatures().get(3);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getParameterType_List() {
+		return (EReference)parameterTypeEClass.getEStructuralFeatures().get(4);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getParameterType_Text() {
+		return (EAttribute)parameterTypeEClass.getEStructuralFeatures().get(5);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getScriptType() {
+		return scriptTypeEClass;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getScriptType_ScriptFormat() {
+		return (EAttribute)scriptTypeEClass.getEStructuralFeatures().get(0);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getScriptType_Resource() {
+		return (EAttribute)scriptTypeEClass.getEStructuralFeatures().get(1);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getScriptType_Mixed() {
+		return (EAttribute)scriptTypeEClass.getEStructuralFeatures().get(2);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getScriptType_Text() {
+		return (EAttribute)scriptTypeEClass.getEStructuralFeatures().get(3);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getMapType() {
+		return mapTypeEClass;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getMapType_Entries() {
+		return (EReference)mapTypeEClass.getEStructuralFeatures().get(0);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEntryType() {
+		return entryTypeEClass;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getEntryType_Key() {
+		return (EAttribute)entryTypeEClass.getEStructuralFeatures().get(0);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getEntryType_Mixed() {
+		return (EAttribute)entryTypeEClass.getEStructuralFeatures().get(1);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getEntryType_Script() {
+		return (EReference)entryTypeEClass.getEStructuralFeatures().get(2);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getEntryType_Map() {
+		return (EReference)entryTypeEClass.getEStructuralFeatures().get(3);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getEntryType_List() {
+		return (EReference)entryTypeEClass.getEStructuralFeatures().get(4);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getEntryType_Text() {
+		return (EAttribute)entryTypeEClass.getEStructuralFeatures().get(5);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getListType() {
+		return listTypeEClass;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getListType_Group() {
+		return (EAttribute)listTypeEClass.getEStructuralFeatures().get(0);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getListType_Scripts() {
+		return (EReference)listTypeEClass.getEStructuralFeatures().get(1);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getListType_Maps() {
+		return (EReference)listTypeEClass.getEStructuralFeatures().get(2);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getListType_Lists() {
+		return (EReference)listTypeEClass.getEStructuralFeatures().get(3);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getListType_Values() {
+		return (EAttribute)listTypeEClass.getEStructuralFeatures().get(4);
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1489,6 +1905,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		createEAttribute(documentRootEClass, DOCUMENT_ROOT__FOLLOW_UP_DATE);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__PROPERTIES);
 		createEAttribute(documentRootEClass, DOCUMENT_ROOT__EXCLUSIVE);
+		createEReference(documentRootEClass, DOCUMENT_ROOT__CONNECTOR);
+		createEReference(documentRootEClass, DOCUMENT_ROOT__INPUT_OUTPUT);
+		createEAttribute(documentRootEClass, DOCUMENT_ROOT__ASYNC_AFTER);
+		createEAttribute(documentRootEClass, DOCUMENT_ROOT__ASYNC_BEFORE);
+		createEAttribute(documentRootEClass, DOCUMENT_ROOT__RESOURCE1);
 
 		startEventEClass = createEClass(START_EVENT);
 
@@ -1499,6 +1920,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		createEAttribute(executionListenerTypeEClass, EXECUTION_LISTENER_TYPE__DELEGATE_EXPRESSION);
 		createEAttribute(executionListenerTypeEClass, EXECUTION_LISTENER_TYPE__EVENT);
 		createEAttribute(executionListenerTypeEClass, EXECUTION_LISTENER_TYPE__EXPRESSION);
+		createEReference(executionListenerTypeEClass, EXECUTION_LISTENER_TYPE__SCRIPT);
 
 		fieldTypeEClass = createEClass(FIELD_TYPE);
 		createEAttribute(fieldTypeEClass, FIELD_TYPE__STRING);
@@ -1541,6 +1963,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		createEAttribute(taskListenerTypeEClass, TASK_LISTENER_TYPE__DELEGATE_EXPRESSION);
 		createEAttribute(taskListenerTypeEClass, TASK_LISTENER_TYPE__EVENT);
 		createEAttribute(taskListenerTypeEClass, TASK_LISTENER_TYPE__EXPRESSION);
+		createEReference(taskListenerTypeEClass, TASK_LISTENER_TYPE__SCRIPT);
 
 		callActivityEClass = createEClass(CALL_ACTIVITY);
 		createEAttribute(callActivityEClass, CALL_ACTIVITY__CALLED_ELEMENT);
@@ -1587,6 +2010,46 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		expressionEClass = createEClass(EXPRESSION);
 		createEAttribute(expressionEClass, EXPRESSION__BODY);
 		createEAttribute(expressionEClass, EXPRESSION__MIXED);
+
+		connectorTypeEClass = createEClass(CONNECTOR_TYPE);
+		createEAttribute(connectorTypeEClass, CONNECTOR_TYPE__CONNECTOR_ID);
+		createEReference(connectorTypeEClass, CONNECTOR_TYPE__INPUT_OUTPUT);
+
+		inputOutputTypeEClass = createEClass(INPUT_OUTPUT_TYPE);
+		createEReference(inputOutputTypeEClass, INPUT_OUTPUT_TYPE__INPUT_PARAMETERS);
+		createEReference(inputOutputTypeEClass, INPUT_OUTPUT_TYPE__OUTPUT_PARAMETERS);
+
+		parameterTypeEClass = createEClass(PARAMETER_TYPE);
+		createEAttribute(parameterTypeEClass, PARAMETER_TYPE__NAME);
+		createEAttribute(parameterTypeEClass, PARAMETER_TYPE__MIXED);
+		createEReference(parameterTypeEClass, PARAMETER_TYPE__SCRIPT);
+		createEReference(parameterTypeEClass, PARAMETER_TYPE__MAP);
+		createEReference(parameterTypeEClass, PARAMETER_TYPE__LIST);
+		createEAttribute(parameterTypeEClass, PARAMETER_TYPE__TEXT);
+
+		scriptTypeEClass = createEClass(SCRIPT_TYPE);
+		createEAttribute(scriptTypeEClass, SCRIPT_TYPE__SCRIPT_FORMAT);
+		createEAttribute(scriptTypeEClass, SCRIPT_TYPE__RESOURCE);
+		createEAttribute(scriptTypeEClass, SCRIPT_TYPE__MIXED);
+		createEAttribute(scriptTypeEClass, SCRIPT_TYPE__TEXT);
+
+		mapTypeEClass = createEClass(MAP_TYPE);
+		createEReference(mapTypeEClass, MAP_TYPE__ENTRIES);
+
+		entryTypeEClass = createEClass(ENTRY_TYPE);
+		createEAttribute(entryTypeEClass, ENTRY_TYPE__KEY);
+		createEAttribute(entryTypeEClass, ENTRY_TYPE__MIXED);
+		createEReference(entryTypeEClass, ENTRY_TYPE__SCRIPT);
+		createEReference(entryTypeEClass, ENTRY_TYPE__MAP);
+		createEReference(entryTypeEClass, ENTRY_TYPE__LIST);
+		createEAttribute(entryTypeEClass, ENTRY_TYPE__TEXT);
+
+		listTypeEClass = createEClass(LIST_TYPE);
+		createEAttribute(listTypeEClass, LIST_TYPE__GROUP);
+		createEReference(listTypeEClass, LIST_TYPE__SCRIPTS);
+		createEReference(listTypeEClass, LIST_TYPE__MAPS);
+		createEReference(listTypeEClass, LIST_TYPE__LISTS);
+		createEAttribute(listTypeEClass, LIST_TYPE__VALUES);
 
 		// Create enums
 		eventTypeEEnum = createEEnum(EVENT_TYPE);
@@ -1680,6 +2143,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		initEAttribute(getDocumentRoot_FollowUpDate(), this.getTExpression(), "followUpDate", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_Properties(), this.getPropertiesType(), null, "properties", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getDocumentRoot_Exclusive(), theXMLTypePackage.getBoolean(), "exclusive", "true", 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getDocumentRoot_Connector(), this.getConnectorType(), null, "connector", null, 0, 1, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+		initEReference(getDocumentRoot_InputOutput(), this.getInputOutputType(), null, "inputOutput", null, 0, 1, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDocumentRoot_AsyncAfter(), theXMLTypePackage.getBoolean(), "asyncAfter", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDocumentRoot_AsyncBefore(), theXMLTypePackage.getBoolean(), "asyncBefore", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDocumentRoot_Resource1(), ecorePackage.getEString(), "resource1", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(startEventEClass, StartEvent.class, "StartEvent", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -1690,6 +2158,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		initEAttribute(getExecutionListenerType_DelegateExpression(), this.getTExpression(), "delegateExpression", null, 0, 1, ExecutionListenerType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getExecutionListenerType_Event(), this.getEventType1(), "event", null, 0, 1, ExecutionListenerType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getExecutionListenerType_Expression(), this.getTExpression(), "expression", null, 0, 1, ExecutionListenerType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getExecutionListenerType_Script(), this.getScriptType(), null, "script", null, 0, 1, ExecutionListenerType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(fieldTypeEClass, FieldType.class, "FieldType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getFieldType_String(), theXMLTypePackage.getString(), "string", null, 0, 1, FieldType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1732,6 +2201,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		initEAttribute(getTaskListenerType_DelegateExpression(), this.getTExpression(), "delegateExpression", null, 0, 1, TaskListenerType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getTaskListenerType_Event(), this.getEventType(), "event", null, 1, 1, TaskListenerType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getTaskListenerType_Expression(), this.getTExpression(), "expression", null, 0, 1, TaskListenerType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getTaskListenerType_Script(), this.getScriptType(), null, "script", null, 0, 1, TaskListenerType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(callActivityEClass, CallActivity.class, "CallActivity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getCallActivity_CalledElement(), ecorePackage.getEString(), "calledElement", null, 0, 1, CallActivity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1779,6 +2249,46 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		initEAttribute(getExpression_Body(), ecorePackage.getEString(), "body", null, 1, 1, Expression.class, !IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getExpression_Mixed(), ecorePackage.getEFeatureMapEntry(), "mixed", null, 0, -1, Expression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+		initEClass(connectorTypeEClass, ConnectorType.class, "ConnectorType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getConnectorType_ConnectorId(), ecorePackage.getEString(), "connectorId", null, 0, 1, ConnectorType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getConnectorType_InputOutput(), this.getInputOutputType(), null, "inputOutput", null, 0, 1, ConnectorType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(inputOutputTypeEClass, InputOutputType.class, "InputOutputType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getInputOutputType_InputParameters(), this.getParameterType(), null, "inputParameters", null, 0, -1, InputOutputType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getInputOutputType_OutputParameters(), this.getParameterType(), null, "outputParameters", null, 0, -1, InputOutputType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(parameterTypeEClass, ParameterType.class, "ParameterType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getParameterType_Name(), ecorePackage.getEString(), "name", null, 0, 1, ParameterType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getParameterType_Mixed(), ecorePackage.getEFeatureMapEntry(), "mixed", null, 0, -1, ParameterType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getParameterType_Script(), this.getScriptType(), null, "script", null, 0, 1, ParameterType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+		initEReference(getParameterType_Map(), this.getMapType(), null, "map", null, 0, 1, ParameterType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+		initEReference(getParameterType_List(), this.getListType(), null, "list", null, 0, 1, ParameterType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+		initEAttribute(getParameterType_Text(), ecorePackage.getEString(), "text", null, 0, 1, ParameterType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, IS_DERIVED, !IS_ORDERED);
+
+		initEClass(scriptTypeEClass, ScriptType.class, "ScriptType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getScriptType_ScriptFormat(), ecorePackage.getEString(), "scriptFormat", null, 1, 1, ScriptType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEAttribute(getScriptType_Resource(), ecorePackage.getEString(), "resource", null, 0, 1, ScriptType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getScriptType_Mixed(), ecorePackage.getEFeatureMapEntry(), "mixed", null, 0, -1, ScriptType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getScriptType_Text(), ecorePackage.getEString(), "text", null, 0, 1, ScriptType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, IS_DERIVED, !IS_ORDERED);
+
+		initEClass(mapTypeEClass, MapType.class, "MapType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getMapType_Entries(), this.getEntryType(), null, "entries", null, 0, -1, MapType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+
+		initEClass(entryTypeEClass, EntryType.class, "EntryType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getEntryType_Key(), ecorePackage.getEString(), "key", null, 1, 1, EntryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEAttribute(getEntryType_Mixed(), ecorePackage.getEFeatureMapEntry(), "mixed", null, 0, -1, EntryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getEntryType_Script(), this.getScriptType(), null, "script", null, 0, 1, EntryType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+		initEReference(getEntryType_Map(), this.getMapType(), null, "map", null, 0, 1, EntryType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+		initEReference(getEntryType_List(), this.getListType(), null, "list", null, 0, 1, EntryType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+		initEAttribute(getEntryType_Text(), ecorePackage.getEString(), "text", null, 0, 1, EntryType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, IS_DERIVED, !IS_ORDERED);
+
+		initEClass(listTypeEClass, ListType.class, "ListType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getListType_Group(), ecorePackage.getEFeatureMapEntry(), "group", null, 0, -1, ListType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getListType_Scripts(), this.getScriptType(), null, "scripts", null, 0, -1, ListType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+		initEReference(getListType_Maps(), this.getMapType(), null, "maps", null, 0, -1, ListType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+		initEReference(getListType_Lists(), this.getListType(), null, "lists", null, 0, -1, ListType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+		initEAttribute(getListType_Values(), ecorePackage.getEString(), "values", null, 0, -1, ListType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+
 		// Initialize enums and add enum literals
 		initEEnum(eventTypeEEnum, EventType.class, "EventType");
 		addEEnumLiteral(eventTypeEEnum, EventType.CREATE);
@@ -1823,7 +2333,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * @generated
 	 */
   protected void createExtendedMetaDataAnnotations() {
-		String source = "http:///org/eclipse/emf/ecore/util/ExtendedMetaData";			
+		String source = "http:///org/eclipse/emf/ecore/util/ExtendedMetaData";	
 		addAnnotation
 		  (documentRootEClass, 
 		   source, 
@@ -1831,7 +2341,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "name", "",
 			 "kind", "mixed",
 			 "namespace", "##targetNamespace"
-		   });			
+		   });	
 		addAnnotation
 		  (getDocumentRoot_ExecutionListener(), 
 		   source, 
@@ -1839,7 +2349,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "element",
 			 "name", "executionListener",
 			 "namespace", "##targetNamespace"
-		   });			
+		   });	
 		addAnnotation
 		  (getDocumentRoot_Field(), 
 		   source, 
@@ -1847,7 +2357,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "element",
 			 "name", "field",
 			 "namespace", "##targetNamespace"
-		   });			
+		   });	
 		addAnnotation
 		  (getDocumentRoot_FormProperty(), 
 		   source, 
@@ -1855,7 +2365,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "element",
 			 "name", "formProperty",
 			 "namespace", "##targetNamespace"
-		   });			
+		   });	
 		addAnnotation
 		  (getDocumentRoot_In(), 
 		   source, 
@@ -1863,7 +2373,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "element",
 			 "name", "in",
 			 "namespace", "##targetNamespace"
-		   });			
+		   });	
 		addAnnotation
 		  (getDocumentRoot_Out(), 
 		   source, 
@@ -1871,7 +2381,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "element",
 			 "name", "out",
 			 "namespace", "##targetNamespace"
-		   });			
+		   });	
 		addAnnotation
 		  (getDocumentRoot_TaskListener(), 
 		   source, 
@@ -1879,7 +2389,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "element",
 			 "name", "taskListener",
 			 "namespace", "##targetNamespace"
-		   });			
+		   });	
 		addAnnotation
 		  (getDocumentRoot_Assignee(), 
 		   source, 
@@ -1887,7 +2397,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "attribute",
 			 "name", "assignee",
 			 "namespace", "##targetNamespace"
-		   });			
+		   });	
 		addAnnotation
 		  (getDocumentRoot_CandidateGroups(), 
 		   source, 
@@ -1895,7 +2405,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "attribute",
 			 "name", "candidateGroups",
 			 "namespace", "##targetNamespace"
-		   });			
+		   });	
 		addAnnotation
 		  (getDocumentRoot_CandidateUsers(), 
 		   source, 
@@ -1903,7 +2413,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "attribute",
 			 "name", "candidateUsers",
 			 "namespace", "##targetNamespace"
-		   });			
+		   });	
 		addAnnotation
 		  (getDocumentRoot_Class(), 
 		   source, 
@@ -1911,7 +2421,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "attribute",
 			 "name", "class",
 			 "namespace", "##targetNamespace"
-		   });			
+		   });	
 		addAnnotation
 		  (getDocumentRoot_Collection(), 
 		   source, 
@@ -1919,7 +2429,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "attribute",
 			 "name", "collection",
 			 "namespace", "##targetNamespace"
-		   });			
+		   });	
 		addAnnotation
 		  (getDocumentRoot_DelegateExpression(), 
 		   source, 
@@ -1927,7 +2437,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "attribute",
 			 "name", "delegateExpression",
 			 "namespace", "##targetNamespace"
-		   });			
+		   });	
 		addAnnotation
 		  (getDocumentRoot_DueDate(), 
 		   source, 
@@ -1935,7 +2445,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "attribute",
 			 "name", "dueDate",
 			 "namespace", "##targetNamespace"
-		   });			
+		   });	
 		addAnnotation
 		  (getDocumentRoot_ElementVariable(), 
 		   source, 
@@ -1943,7 +2453,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "attribute",
 			 "name", "elementVariable",
 			 "namespace", "##targetNamespace"
-		   });			
+		   });	
 		addAnnotation
 		  (getDocumentRoot_FormHandlerClass(), 
 		   source, 
@@ -1951,7 +2461,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "attribute",
 			 "name", "formHandlerClass",
 			 "namespace", "##targetNamespace"
-		   });			
+		   });	
 		addAnnotation
 		  (getDocumentRoot_FormKey(), 
 		   source, 
@@ -1959,7 +2469,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "attribute",
 			 "name", "formKey",
 			 "namespace", "##targetNamespace"
-		   });			
+		   });	
 		addAnnotation
 		  (getDocumentRoot_History(), 
 		   source, 
@@ -1967,7 +2477,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "attribute",
 			 "name", "history",
 			 "namespace", "##targetNamespace"
-		   });			
+		   });	
 		addAnnotation
 		  (getDocumentRoot_Initiator(), 
 		   source, 
@@ -1975,7 +2485,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "attribute",
 			 "name", "initiator",
 			 "namespace", "##targetNamespace"
-		   });			
+		   });	
 		addAnnotation
 		  (getDocumentRoot_ResultVariable(), 
 		   source, 
@@ -1983,7 +2493,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "attribute",
 			 "name", "resultVariable",
 			 "namespace", "##targetNamespace"
-		   });			
+		   });	
 		addAnnotation
 		  (getDocumentRoot_Type(), 
 		   source, 
@@ -1991,7 +2501,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "attribute",
 			 "name", "type",
 			 "namespace", "##targetNamespace"
-		   });		
+		   });	
 		addAnnotation
 		  (getDocumentRoot_Async(), 
 		   source, 
@@ -1999,7 +2509,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "attribute",
 			 "name", "async",
 			 "namespace", "##targetNamespace"
-		   });		
+		   });	
 		addAnnotation
 		  (getDocumentRoot_ActExpression(), 
 		   source, 
@@ -2007,7 +2517,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "attribute",
 			 "name", "expression",
 			 "namespace", "##targetNamespace"
-		   });			
+		   });	
 		addAnnotation
 		  (getDocumentRoot_Priority(), 
 		   source, 
@@ -2015,7 +2525,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "attribute",
 			 "name", "priority",
 			 "namespace", "##targetNamespace"
-		   });			
+		   });	
 		addAnnotation
 		  (getDocumentRoot_ResultVariableName(), 
 		   source, 
@@ -2023,7 +2533,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "attribute",
 			 "name", "resultVariableName",
 			 "namespace", "##targetNamespace"
-		   });		
+		   });	
 		addAnnotation
 		  (getDocumentRoot_FailedJobRetryTimeCycle(), 
 		   source, 
@@ -2031,7 +2541,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "element",
 			 "name", "failedJobRetryTimeCycle",
 			 "namespace", "http://www.camunda.com/fox"
-		   });		
+		   });	
 		addAnnotation
 		  (getDocumentRoot_FormData(), 
 		   source, 
@@ -2039,7 +2549,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "element",
 			 "name", "formData",
 			 "namespace", "##targetNamespace"
-		   });			
+		   });	
 		addAnnotation
 		  (getDocumentRoot_FollowUpDate(), 
 		   source, 
@@ -2047,7 +2557,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "attribute",
 			 "name", "followUpDate",
 			 "namespace", "##targetNamespace"
-		   });		
+		   });	
 		addAnnotation
 		  (getDocumentRoot_Properties(), 
 		   source, 
@@ -2055,7 +2565,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "element",
 			 "name", "properties",
 			 "namespace", "##targetNamespace"
-		   });		
+		   });	
 		addAnnotation
 		  (getDocumentRoot_Exclusive(), 
 		   source, 
@@ -2063,7 +2573,47 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "attribute",
 			 "name", "exclusive",
 			 "namespace", "##targetNamespace"
-		   });		
+		   });	
+		addAnnotation
+		  (getDocumentRoot_Connector(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "connector",
+			 "namespace", "##targetNamespace"
+		   });	
+		addAnnotation
+		  (getDocumentRoot_InputOutput(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "inputOutput",
+			 "namespace", "##targetNamespace"
+		   });	
+		addAnnotation
+		  (getDocumentRoot_AsyncAfter(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "asyncAfter",
+			 "namespace", "##targetNamespace"
+		   });	
+		addAnnotation
+		  (getDocumentRoot_AsyncBefore(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "asyncBefore",
+			 "namespace", "##targetNamespace"
+		   });	
+		addAnnotation
+		  (getDocumentRoot_Resource1(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "resource",
+			 "namespace", "##targetNamespace"
+		   });	
 		addAnnotation
 		  (classTypeEDataType, 
 		   source, 
@@ -2071,47 +2621,47 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "name", "class_._type",
 			 "baseType", "http://www.eclipse.org/emf/2003/XMLType#string",
 			 "pattern", "([a-z]{2,3}(\\.[a-zA-Z][a-zA-Z_$0-9]*)*)\\.([A-Z][a-zA-Z_$0-9]*)"
-		   });		
+		   });	
 		addAnnotation
 		  (eventTypeEEnum, 
 		   source, 
 		   new String[] {
 			 "name", "event_._1_._type"
-		   });		
+		   });	
 		addAnnotation
 		  (eventType1EEnum, 
 		   source, 
 		   new String[] {
 			 "name", "event_._type"
-		   });		
+		   });	
 		addAnnotation
 		  (eventTypeObjectEDataType, 
 		   source, 
 		   new String[] {
 			 "name", "event_._1_._type:Object",
 			 "baseType", "event_._1_._type"
-		   });		
+		   });	
 		addAnnotation
 		  (eventTypeObject1EDataType, 
 		   source, 
 		   new String[] {
 			 "name", "event_._type:Object",
 			 "baseType", "event_._type"
-		   });		
+		   });	
 		addAnnotation
 		  (executionListenerTypeEClass, 
 		   source, 
 		   new String[] {
 			 "name", "executionListener_._type",
 			 "kind", "elementOnly"
-		   });		
+		   });	
 		addAnnotation
 		  (getExecutionListenerType_Group(), 
 		   source, 
 		   new String[] {
 			 "kind", "group",
 			 "name", "group:0"
-		   });			
+		   });	
 		addAnnotation
 		  (getExecutionListenerType_Field(), 
 		   source, 
@@ -2120,42 +2670,50 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "name", "field",
 			 "namespace", "##targetNamespace",
 			 "group", "#group:0"
-		   });			
+		   });	
 		addAnnotation
 		  (getExecutionListenerType_Class(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "class"
-		   });			
+		   });	
 		addAnnotation
 		  (getExecutionListenerType_DelegateExpression(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "delegateExpression"
-		   });			
+		   });	
 		addAnnotation
 		  (getExecutionListenerType_Event(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "event"
-		   });			
+		   });	
 		addAnnotation
 		  (getExecutionListenerType_Expression(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "expression"
-		   });		
+		   });	
+		addAnnotation
+		  (getExecutionListenerType_Script(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "script",
+			 "namespace", "##targetNamespace"
+		   });	
 		addAnnotation
 		  (fieldTypeEClass, 
 		   source, 
 		   new String[] {
 			 "name", "field_._type",
 			 "kind", "elementOnly"
-		   });		
+		   });	
 		addAnnotation
 		  (getFieldType_String(), 
 		   source, 
@@ -2163,7 +2721,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "element",
 			 "name", "string",
 			 "namespace", "##targetNamespace"
-		   });		
+		   });	
 		addAnnotation
 		  (getFieldType_Expression(), 
 		   source, 
@@ -2171,28 +2729,28 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "element",
 			 "name", "expression",
 			 "namespace", "##targetNamespace"
-		   });		
+		   });	
 		addAnnotation
 		  (getFieldType_Expression1(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "expression"
-		   });		
+		   });	
 		addAnnotation
 		  (getFieldType_Name(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "name"
-		   });		
+		   });	
 		addAnnotation
 		  (getFieldType_StringValue(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "stringValue"
-		   });		
+		   });	
 		addAnnotation
 		  (formHandlerClassTypeEDataType, 
 		   source, 
@@ -2200,14 +2758,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "name", "formHandlerClass_._type",
 			 "baseType", "http://www.eclipse.org/emf/2003/XMLType#string",
 			 "pattern", "([a-z]{2,3}(\\.[a-zA-Z][a-zA-Z_$0-9]*)*)\\.([A-Z][a-zA-Z_$0-9]*)"
-		   });		
+		   });	
 		addAnnotation
 		  (formPropertyTypeEClass, 
 		   source, 
 		   new String[] {
 			 "name", "formProperty_._type",
 			 "kind", "empty"
-		   });			
+		   });	
 		addAnnotation
 		  (getFormPropertyType_Value(), 
 		   source, 
@@ -2215,181 +2773,181 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "element",
 			 "name", "value",
 			 "namespace", "##targetNamespace"
-		   });			
+		   });	
 		addAnnotation
 		  (getFormPropertyType_DatePattern(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "datePattern"
-		   });			
+		   });	
 		addAnnotation
 		  (getFormPropertyType_Expression(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "expression"
-		   });			
+		   });	
 		addAnnotation
 		  (getFormPropertyType_Id(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "id"
-		   });			
+		   });	
 		addAnnotation
 		  (getFormPropertyType_Name(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "name"
-		   });			
+		   });	
 		addAnnotation
 		  (getFormPropertyType_Readable(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "readable"
-		   });			
+		   });	
 		addAnnotation
 		  (getFormPropertyType_Required(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "required"
-		   });			
+		   });	
 		addAnnotation
 		  (getFormPropertyType_Type(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "type"
-		   });			
+		   });	
 		addAnnotation
 		  (getFormPropertyType_Value1(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "value"
-		   });			
+		   });	
 		addAnnotation
 		  (getFormPropertyType_Variable(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "variable"
-		   });			
+		   });	
 		addAnnotation
 		  (getFormPropertyType_Writable(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "writable"
-		   });		
+		   });	
 		addAnnotation
 		  (historyTypeEEnum, 
 		   source, 
 		   new String[] {
 			 "name", "history_._type"
-		   });		
+		   });	
 		addAnnotation
 		  (historyTypeObjectEDataType, 
 		   source, 
 		   new String[] {
 			 "name", "history_._type:Object",
 			 "baseType", "history_._type"
-		   });		
+		   });	
 		addAnnotation
 		  (inTypeEClass, 
 		   source, 
 		   new String[] {
 			 "name", "in_._type",
 			 "kind", "empty"
-		   });		
+		   });	
 		addAnnotation
 		  (getInType_Source(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "source"
-		   });		
+		   });	
 		addAnnotation
 		  (getInType_SourceExpression(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "sourceExpression"
-		   });		
+		   });	
 		addAnnotation
 		  (getInType_Target(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "target"
-		   });		
+		   });	
 		addAnnotation
 		  (getInType_Variables(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "variables"
-		   });		
+		   });	
 		addAnnotation
 		  (getInType_BusinessKey(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "businessKey"
-		   });		
+		   });	
 		addAnnotation
 		  (outTypeEClass, 
 		   source, 
 		   new String[] {
 			 "name", "out_._type",
 			 "kind", "empty"
-		   });		
+		   });	
 		addAnnotation
 		  (getOutType_Source(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "source"
-		   });		
+		   });	
 		addAnnotation
 		  (getOutType_SourceExpression(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "sourceExpression"
-		   });		
+		   });	
 		addAnnotation
 		  (getOutType_Target(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "target"
-		   });		
+		   });	
 		addAnnotation
 		  (getOutType_Variables(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "variables"
-		   });		
+		   });	
 		addAnnotation
 		  (taskListenerTypeEClass, 
 		   source, 
 		   new String[] {
 			 "name", "taskListener_._type",
 			 "kind", "elementOnly"
-		   });		
+		   });	
 		addAnnotation
 		  (getTaskListenerType_Group(), 
 		   source, 
 		   new String[] {
 			 "kind", "group",
 			 "name", "group:0"
-		   });			
+		   });	
 		addAnnotation
 		  (getTaskListenerType_Field(), 
 		   source, 
@@ -2398,69 +2956,77 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "name", "field",
 			 "namespace", "##targetNamespace",
 			 "group", "#group:0"
-		   });			
+		   });	
 		addAnnotation
 		  (getTaskListenerType_Class(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "class"
-		   });			
+		   });	
 		addAnnotation
 		  (getTaskListenerType_DelegateExpression(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "delegateExpression"
-		   });			
+		   });	
 		addAnnotation
 		  (getTaskListenerType_Event(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "event"
-		   });			
+		   });	
 		addAnnotation
 		  (getTaskListenerType_Expression(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "expression"
-		   });			
+		   });	
+		addAnnotation
+		  (getTaskListenerType_Script(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "script",
+			 "namespace", "##targetNamespace"
+		   });	
 		addAnnotation
 		  (tExpressionEDataType, 
 		   source, 
 		   new String[] {
 			 "name", "tExpression",
 			 "baseType", "http://www.eclipse.org/emf/2003/XMLType#string"
-		   });		
+		   });	
 		addAnnotation
 		  (typeTypeEEnum, 
 		   source, 
 		   new String[] {
 			 "name", "type_._type"
-		   });		
+		   });	
 		addAnnotation
 		  (typeTypeObjectEDataType, 
 		   source, 
 		   new String[] {
 			 "name", "type_._type:Object",
 			 "baseType", "type_._type"
-		   });		
+		   });	
 		addAnnotation
 		  (callActivityEClass, 
 		   source, 
 		   new String[] {
 			 "name", "tCallActivity",
 			 "kind", "elementOnly"
-		   });		
+		   });	
 		addAnnotation
 		  (getCallActivity_CalledElement(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "calledElement"
-		   });		
+		   });	
 		addAnnotation
 		  (getCallActivity_CalledElementBinding(), 
 		   source, 
@@ -2468,7 +3034,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "attribute",
 			 "name", "calledElementBinding",
 			 "namespace", "##targetNamespace"
-		   });		
+		   });	
 		addAnnotation
 		  (getCallActivity_CalledElementVersion(), 
 		   source, 
@@ -2476,35 +3042,35 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "attribute",
 			 "name", "calledElementVersion",
 			 "namespace", "##targetNamespace"
-		   });		
+		   });	
 		addAnnotation
 		  (valueTypeEClass, 
 		   source, 
 		   new String[] {
 			 "name", "value_._type",
 			 "kind", "empty"
-		   });				
+		   });	
 		addAnnotation
 		  (getValueType_Id(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "id"
-		   });			
+		   });	
 		addAnnotation
 		  (getValueType_Name(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "name"
-		   });		
+		   });	
 		addAnnotation
 		  (formDataTypeEClass, 
 		   source, 
 		   new String[] {
 			 "name", "formData_._type",
 			 "kind", "elementOnly"
-		   });		
+		   });	
 		addAnnotation
 		  (getFormDataType_FormField(), 
 		   source, 
@@ -2512,42 +3078,42 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "element",
 			 "name", "formField",
 			 "namespace", "##targetNamespace"
-		   });		
+		   });	
 		addAnnotation
 		  (formFieldTypeEClass, 
 		   source, 
 		   new String[] {
 			 "name", "formField_._type",
 			 "kind", "elementOnly"
-		   });		
+		   });	
 		addAnnotation
 		  (getFormFieldType_Id(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "id"
-		   });		
+		   });	
 		addAnnotation
 		  (getFormFieldType_Label(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "label", "label"
-		   });		
+		   });	
 		addAnnotation
 		  (getFormFieldType_Type(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "type"
-		   });		
+		   });	
 		addAnnotation
 		  (getFormFieldType_DefaultValue(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "defaultValue"
-		   });		
+		   });	
 		addAnnotation
 		  (getFormFieldType_Properties(), 
 		   source, 
@@ -2555,7 +3121,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "element",
 			 "name", "properties",
 			 "namespace", "##targetNamespace"
-		   });		
+		   });	
 		addAnnotation
 		  (getFormFieldType_Validation(), 
 		   source, 
@@ -2563,7 +3129,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "element",
 			 "name", "validation",
 			 "namespace", "##targetNamespace"
-		   });		
+		   });	
 		addAnnotation
 		  (getFormFieldType_Value(), 
 		   source, 
@@ -2571,14 +3137,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "element",
 			 "name", "value",
 			 "namespace", "##targetNamespace"
-		   });		
+		   });	
 		addAnnotation
 		  (propertiesTypeEClass, 
 		   source, 
 		   new String[] {
 			 "name", "properties_._type",
 			 "kind", "elementOnly"
-		   });		
+		   });	
 		addAnnotation
 		  (getPropertiesType_Property(), 
 		   source, 
@@ -2586,42 +3152,42 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "element",
 			 "name", "property",
 			 "namespace", "##targetNamespace"
-		   });		
+		   });	
 		addAnnotation
 		  (propertyTypeEClass, 
 		   source, 
 		   new String[] {
 			 "name", "property_._type",
 			 "kind", "empty"
-		   });		
+		   });	
 		addAnnotation
 		  (getPropertyType_Id(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "id"
-		   });		
+		   });	
 		addAnnotation
 		  (getPropertyType_Value(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "value"
-		   });		
+		   });	
 		addAnnotation
 		  (getPropertyType_Name(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "name"
-		   });		
+		   });	
 		addAnnotation
 		  (validationTypeEClass, 
 		   source, 
 		   new String[] {
 			 "name", "validation_._type",
 			 "kind", "elementOnly"
-		   });		
+		   });	
 		addAnnotation
 		  (getValidationType_Constraint(), 
 		   source, 
@@ -2629,41 +3195,270 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "kind", "element",
 			 "name", "constraint",
 			 "namespace", "##targetNamespace"
-		   });		
+		   });	
 		addAnnotation
 		  (constraintTypeEClass, 
 		   source, 
 		   new String[] {
 			 "name", "constraint_._type",
 			 "kind", "empty"
-		   });		
+		   });	
 		addAnnotation
 		  (getConstraintType_Name(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "name"
-		   });		
+		   });	
 		addAnnotation
 		  (getConstraintType_Config(), 
 		   source, 
 		   new String[] {
 			 "kind", "attribute",
 			 "name", "config"
-		   });		
+		   });	
 		addAnnotation
 		  (expressionEClass, 
 		   source, 
 		   new String[] {
 			 "name", "tExpression",
 			 "kind", "mixed"
-		   });		
+		   });	
 		addAnnotation
 		  (getExpression_Mixed(), 
 		   source, 
 		   new String[] {
 			 "kind", "elementWildcard",
 			 "name", ":mixed"
+		   });	
+		addAnnotation
+		  (connectorTypeEClass, 
+		   source, 
+		   new String[] {
+			 "name", "connector_._type",
+			 "kind", "elementOnly"
+		   });	
+		addAnnotation
+		  (getConnectorType_ConnectorId(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "connectorId",
+			 "namespace", "##targetNamespace"
+		   });	
+		addAnnotation
+		  (getConnectorType_InputOutput(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "inputOutput",
+			 "namespace", "##targetNamespace"
+		   });	
+		addAnnotation
+		  (inputOutputTypeEClass, 
+		   source, 
+		   new String[] {
+			 "name", "inputOutput_._type",
+			 "kind", "elementOnly"
+		   });	
+		addAnnotation
+		  (getInputOutputType_InputParameters(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "inputParameter",
+			 "namespace", "##targetNamespace"
+		   });	
+		addAnnotation
+		  (getInputOutputType_OutputParameters(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "outputParameter",
+			 "namespace", "##targetNamespace"
+		   });	
+		addAnnotation
+		  (parameterTypeEClass, 
+		   source, 
+		   new String[] {
+			 "name", "parameter_._type",
+			 "kind", "mixed"
+		   });	
+		addAnnotation
+		  (getParameterType_Name(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "name"
+		   });	
+		addAnnotation
+		  (getParameterType_Mixed(), 
+		   source, 
+		   new String[] {
+			 "kind", "elementWildcard",
+			 "name", ":mixed"
+		   });	
+		addAnnotation
+		  (getParameterType_Script(), 
+		   source, 
+		   new String[] {
+			 "name", "script",
+			 "kind", "element",
+			 "namespace", "##targetNamespace"
+		   });	
+		addAnnotation
+		  (getParameterType_Map(), 
+		   source, 
+		   new String[] {
+			 "name", "map",
+			 "kind", "element",
+			 "namespace", "##targetNamespace"
+		   });	
+		addAnnotation
+		  (getParameterType_List(), 
+		   source, 
+		   new String[] {
+			 "name", "list",
+			 "kind", "element",
+			 "namespace", "##targetNamespace"
+		   });	
+		addAnnotation
+		  (scriptTypeEClass, 
+		   source, 
+		   new String[] {
+			 "name", "script_._type",
+			 "kind", "mixed"
+		   });	
+		addAnnotation
+		  (getScriptType_ScriptFormat(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "scriptFormat"
+		   });	
+		addAnnotation
+		  (getScriptType_Resource(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "resource"
+		   });	
+		addAnnotation
+		  (getScriptType_Mixed(), 
+		   source, 
+		   new String[] {
+			 "kind", "elementWildcard",
+			 "name", ":mixed"
+		   });	
+		addAnnotation
+		  (mapTypeEClass, 
+		   source, 
+		   new String[] {
+			 "name", "map_._type",
+			 "kind", "elementOnly"
+		   });	
+		addAnnotation
+		  (getMapType_Entries(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "entry",
+			 "namespace", "##targetNamespace"
+		   });	
+		addAnnotation
+		  (entryTypeEClass, 
+		   source, 
+		   new String[] {
+			 "name", "entry_._type",
+			 "kind", "mixed"
+		   });	
+		addAnnotation
+		  (getEntryType_Key(), 
+		   source, 
+		   new String[] {
+			 "kind", "attribute",
+			 "name", "key"
+		   });	
+		addAnnotation
+		  (getEntryType_Mixed(), 
+		   source, 
+		   new String[] {
+			 "kind", "elementWildcard",
+			 "name", ":mixed"
+		   });	
+		addAnnotation
+		  (getEntryType_Script(), 
+		   source, 
+		   new String[] {
+			 "name", "script",
+			 "kind", "element",
+			 "namespace", "##targetNamespace"
+		   });	
+		addAnnotation
+		  (getEntryType_Map(), 
+		   source, 
+		   new String[] {
+			 "name", "map",
+			 "kind", "element",
+			 "namespace", "##targetNamespace"
+		   });	
+		addAnnotation
+		  (getEntryType_List(), 
+		   source, 
+		   new String[] {
+			 "name", "list",
+			 "kind", "element",
+			 "namespace", "##targetNamespace"
+		   });	
+		addAnnotation
+		  (listTypeEClass, 
+		   source, 
+		   new String[] {
+			 "name", "list_._type",
+			 "kind", "elementOnly"
+		   });	
+		addAnnotation
+		  (getListType_Group(), 
+		   source, 
+		   new String[] {
+			 "kind", "group",
+			 "name", "value:group"
+		   });	
+		addAnnotation
+		  (getListType_Scripts(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "script",
+			 "namespace", "##targetNamespace",
+			 "group", "#value:group"
+		   });	
+		addAnnotation
+		  (getListType_Maps(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "map",
+			 "namespace", "##targetNamespace",
+			 "group", "#value:group"
+		   });	
+		addAnnotation
+		  (getListType_Lists(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "list",
+			 "namespace", "##targetNamespace",
+			 "group", "#value:group"
+		   });	
+		addAnnotation
+		  (getListType_Values(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "value",
+			 "namespace", "##targetNamespace",
+			 "group", "#value:group"
 		   });
 	}
 

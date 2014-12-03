@@ -80,6 +80,13 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
 			case ModelPackage.USER_TASK: return createUserTask();
 			case ModelPackage.FORM_DATA_CONTAINER: return createFormDataContainer();
 			case ModelPackage.EXPRESSION: return createExpression();
+			case ModelPackage.CONNECTOR_TYPE: return createConnectorType();
+			case ModelPackage.INPUT_OUTPUT_TYPE: return createInputOutputType();
+			case ModelPackage.PARAMETER_TYPE: return createParameterType();
+			case ModelPackage.SCRIPT_TYPE: return createScriptType();
+			case ModelPackage.MAP_TYPE: return createMapType();
+			case ModelPackage.ENTRY_TYPE: return createEntryType();
+			case ModelPackage.LIST_TYPE: return createListType();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -353,6 +360,76 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
 	public Expression createExpression() {
 		ExpressionImpl expression = new ExpressionImpl();
 		return expression;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ConnectorType createConnectorType() {
+		ConnectorTypeImpl connectorType = new ConnectorTypeImpl();
+		return connectorType;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public InputOutputType createInputOutputType() {
+		InputOutputTypeImpl inputOutputType = new InputOutputTypeImpl();
+		return inputOutputType;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ParameterType createParameterType() {
+		ParameterTypeImpl parameterType = new ParameterTypeImpl();
+		return parameterType;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ScriptType createScriptType() {
+		ScriptTypeImpl scriptType = new ScriptTypeImpl();
+		return scriptType;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public MapType createMapType() {
+		MapTypeImpl mapType = new MapTypeImpl();
+		return mapType;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EntryType createEntryType() {
+		EntryTypeImpl entryType = new EntryTypeImpl();
+		return entryType;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ListType createListType() {
+		ListTypeImpl listType = new ListTypeImpl();
+		return listType;
 	}
 
 		/**

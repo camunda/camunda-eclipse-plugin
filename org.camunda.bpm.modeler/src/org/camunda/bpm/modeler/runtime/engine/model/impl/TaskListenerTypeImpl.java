@@ -7,6 +7,7 @@ import java.util.Collection;
 import org.camunda.bpm.modeler.runtime.engine.model.EventType;
 import org.camunda.bpm.modeler.runtime.engine.model.FieldType;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
+import org.camunda.bpm.modeler.runtime.engine.model.ScriptType;
 import org.camunda.bpm.modeler.runtime.engine.model.TaskListenerType;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -37,6 +38,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.TaskListenerTypeImpl#getDelegateExpression <em>Delegate Expression</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.TaskListenerTypeImpl#getEvent <em>Event</em>}</li>
  *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.TaskListenerTypeImpl#getExpression <em>Expression</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.TaskListenerTypeImpl#getScript <em>Script</em>}</li>
  * </ul>
  * </p>
  *
@@ -143,6 +145,16 @@ public class TaskListenerTypeImpl extends EObjectImpl implements TaskListenerTyp
   protected String expression = EXPRESSION_EDEFAULT;
 
   /**
+	 * The cached value of the '{@link #getScript() <em>Script</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getScript()
+	 * @generated
+	 * @ordered
+	 */
+	protected ScriptType script;
+
+		/**
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
@@ -293,6 +305,49 @@ public class TaskListenerTypeImpl extends EObjectImpl implements TaskListenerTyp
 
   /**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ScriptType getScript() {
+		return script;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetScript(ScriptType newScript, NotificationChain msgs) {
+		ScriptType oldScript = script;
+		script = newScript;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.TASK_LISTENER_TYPE__SCRIPT, oldScript, newScript);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setScript(ScriptType newScript) {
+		if (newScript != script) {
+			NotificationChain msgs = null;
+			if (script != null)
+				msgs = ((InternalEObject)script).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.TASK_LISTENER_TYPE__SCRIPT, null, msgs);
+			if (newScript != null)
+				msgs = ((InternalEObject)newScript).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.TASK_LISTENER_TYPE__SCRIPT, null, msgs);
+			msgs = basicSetScript(newScript, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TASK_LISTENER_TYPE__SCRIPT, newScript, newScript));
+	}
+
+		/**
+	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -303,6 +358,8 @@ public class TaskListenerTypeImpl extends EObjectImpl implements TaskListenerTyp
 				return ((InternalEList<?>)getGroup()).basicRemove(otherEnd, msgs);
 			case ModelPackage.TASK_LISTENER_TYPE__FIELD:
 				return ((InternalEList<?>)getField()).basicRemove(otherEnd, msgs);
+			case ModelPackage.TASK_LISTENER_TYPE__SCRIPT:
+				return basicSetScript(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -328,6 +385,8 @@ public class TaskListenerTypeImpl extends EObjectImpl implements TaskListenerTyp
 				return getEvent();
 			case ModelPackage.TASK_LISTENER_TYPE__EXPRESSION:
 				return getExpression();
+			case ModelPackage.TASK_LISTENER_TYPE__SCRIPT:
+				return getScript();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -360,6 +419,9 @@ public class TaskListenerTypeImpl extends EObjectImpl implements TaskListenerTyp
 			case ModelPackage.TASK_LISTENER_TYPE__EXPRESSION:
 				setExpression((String)newValue);
 				return;
+			case ModelPackage.TASK_LISTENER_TYPE__SCRIPT:
+				setScript((ScriptType)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -390,6 +452,9 @@ public class TaskListenerTypeImpl extends EObjectImpl implements TaskListenerTyp
 			case ModelPackage.TASK_LISTENER_TYPE__EXPRESSION:
 				setExpression(EXPRESSION_EDEFAULT);
 				return;
+			case ModelPackage.TASK_LISTENER_TYPE__SCRIPT:
+				setScript((ScriptType)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -414,6 +479,8 @@ public class TaskListenerTypeImpl extends EObjectImpl implements TaskListenerTyp
 				return isSetEvent();
 			case ModelPackage.TASK_LISTENER_TYPE__EXPRESSION:
 				return EXPRESSION_EDEFAULT == null ? expression != null : !EXPRESSION_EDEFAULT.equals(expression);
+			case ModelPackage.TASK_LISTENER_TYPE__SCRIPT:
+				return script != null;
 		}
 		return super.eIsSet(featureID);
 	}

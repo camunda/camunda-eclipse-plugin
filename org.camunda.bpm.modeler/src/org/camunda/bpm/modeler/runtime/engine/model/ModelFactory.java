@@ -202,6 +202,69 @@ public interface ModelFactory extends EFactory {
 	Expression createExpression();
 
 		/**
+	 * Returns a new object of class '<em>Connector Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Connector Type</em>'.
+	 * @generated
+	 */
+	ConnectorType createConnectorType();
+
+		/**
+	 * Returns a new object of class '<em>Input Output Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Input Output Type</em>'.
+	 * @generated
+	 */
+	InputOutputType createInputOutputType();
+
+		/**
+	 * Returns a new object of class '<em>Parameter Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Parameter Type</em>'.
+	 * @generated
+	 */
+	ParameterType createParameterType();
+
+		/**
+	 * Returns a new object of class '<em>Script Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Script Type</em>'.
+	 * @generated
+	 */
+	ScriptType createScriptType();
+
+		/**
+	 * Returns a new object of class '<em>Map Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Map Type</em>'.
+	 * @generated
+	 */
+	MapType createMapType();
+
+		/**
+	 * Returns a new object of class '<em>Entry Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Entry Type</em>'.
+	 * @generated
+	 */
+	EntryType createEntryType();
+
+		/**
+	 * Returns a new object of class '<em>List Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>List Type</em>'.
+	 * @generated
+	 */
+	ListType createListType();
+
+		/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
