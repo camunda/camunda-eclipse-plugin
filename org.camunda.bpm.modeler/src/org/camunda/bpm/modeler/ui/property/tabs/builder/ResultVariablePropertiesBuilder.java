@@ -13,7 +13,7 @@ import org.eclipse.swt.widgets.Composite;
  * variable.</p>
  * 
  */
-public class ServiceTaskPropertiesBuilder extends AbstractPropertiesBuilder<BaseElement> {
+public class ResultVariablePropertiesBuilder extends AbstractPropertiesBuilder<BaseElement> {
 
 	/**
 	 * Creates a new factory from the given arguments
@@ -22,7 +22,7 @@ public class ServiceTaskPropertiesBuilder extends AbstractPropertiesBuilder<Base
 	 * @param section
 	 * @param bo
 	 */
-	public ServiceTaskPropertiesBuilder(Composite parent, GFPropertySection section, BaseElement bo) {
+	public ResultVariablePropertiesBuilder(Composite parent, GFPropertySection section, BaseElement bo) {
 		super(parent, section, bo);
 	}
 
