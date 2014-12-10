@@ -21,6 +21,7 @@ import org.camunda.bpm.modeler.ui.property.tabs.tables.EditableTableDescriptor.E
 import org.camunda.bpm.modeler.ui.property.tabs.util.HelpText;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -158,7 +159,10 @@ public class FormFieldsPropertiesBuilder extends AbstractPropertiesBuilder<BaseE
 						ExtensionUtil.removeExtensionByFeature(bo, FORM_DATA_FEATURE);
 						// remove empty extension element
 						EStructuralFeature extensionValuesFeature = bo.eClass().getEStructuralFeature("extensionValues");
-						bo.eUnset(extensionValuesFeature);
+						ExtensionAttributeValue values = ExtensionUtil.getExtensionAttributeValue(bo);
+						if (values != null && (values.getValue() == null || values.getValue().isEmpty())) {
+							bo.eUnset(extensionValuesFeature);
+						}
 					} else {
 						ExtensionUtil.updateExtension(bo, FORM_DATA_FEATURE, formData);
 					}

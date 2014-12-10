@@ -17,6 +17,7 @@ import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EditableEObjectTab
 import org.camunda.bpm.modeler.ui.property.tabs.tables.EditableTableDescriptor.ElementFactory;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -135,7 +136,10 @@ public class ExtensionsPropertiesBuilder extends AbstractPropertiesBuilder<BaseE
 							ExtensionUtil.removeExtensionByFeature(bo, feature);
 							// remove empty extension element
 							EStructuralFeature extensionValuesFeature = bo.eClass().getEStructuralFeature("extensionValues");
-							bo.eUnset(extensionValuesFeature);
+							ExtensionAttributeValue values = ExtensionUtil.getExtensionAttributeValue(bo);
+							if (values != null && (values.getValue() == null || values.getValue().isEmpty())) {
+								bo.eUnset(extensionValuesFeature);
+							}
 						} else {
 							ExtensionUtil.updateExtension(bo, feature, propertiesType);
 						}
