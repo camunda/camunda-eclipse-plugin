@@ -17,7 +17,7 @@ import org.camunda.bpm.modeler.ui.property.tabs.builder.ReceiveTaskPropertiesBui
 import org.camunda.bpm.modeler.ui.property.tabs.builder.RetryEnabledPropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.ScriptTaskPropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.SequenceFlowPropertiesBuilder;
-import org.camunda.bpm.modeler.ui.property.tabs.builder.ServiceTaskPropertiesBuilder;
+import org.camunda.bpm.modeler.ui.property.tabs.builder.ResultVariablePropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.ServiceTypeControlsPropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.StartEventPropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.SubProcessPropertiesBuilder;
@@ -39,7 +39,6 @@ import org.eclipse.bpmn2.InclusiveGateway;
 import org.eclipse.bpmn2.IntermediateCatchEvent;
 import org.eclipse.bpmn2.IntermediateThrowEvent;
 import org.eclipse.bpmn2.Lane;
-import org.eclipse.bpmn2.ManualTask;
 import org.eclipse.bpmn2.MessageEventDefinition;
 import org.eclipse.bpmn2.ParallelGateway;
 import org.eclipse.bpmn2.Participant;
@@ -190,10 +189,11 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 		
 		if (task instanceof ScriptTask) {
 			new ScriptTaskPropertiesBuilder(parent, section, (ScriptTask) task).create();
+			new ResultVariablePropertiesBuilder(parent, section, task).create();
 		} else
 		
 		if (task instanceof ServiceTask || task instanceof BusinessRuleTask || task instanceof SendTask) {
-			new ServiceTaskPropertiesBuilder(parent, section, task).create();
+			new ResultVariablePropertiesBuilder(parent, section, task).create();
 		} else
 
 		if (task instanceof ReceiveTask) {
@@ -230,7 +230,7 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 			EventDefinition messageEventDefinition = ModelUtil.getEventDefinition(event, MessageEventDefinition.class);
 			if (messageEventDefinition != null) {
 				new ServiceTypeControlsPropertiesBuilder(parent, section, messageEventDefinition).create();
-				new ServiceTaskPropertiesBuilder(parent, section, messageEventDefinition).create();
+				new ResultVariablePropertiesBuilder(parent, section, messageEventDefinition).create();
 				new ActivityPropertiesBuilder(parent, section, messageEventDefinition).create();
 			}
 		}
