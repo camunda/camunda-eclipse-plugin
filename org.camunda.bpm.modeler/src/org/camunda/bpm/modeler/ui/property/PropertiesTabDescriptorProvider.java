@@ -24,6 +24,7 @@ import org.camunda.bpm.modeler.core.property.SectionDescriptor;
 import org.camunda.bpm.modeler.core.property.TabDescriptor;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
 import org.camunda.bpm.modeler.plugin.ICustomTaskProvider;
+import org.camunda.bpm.modeler.ui.property.tabs.ConnectorTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.DefinitionsTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.DocumentTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.EventTabSection;
@@ -52,8 +53,10 @@ import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.Task;
+import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.Transaction;
 import org.eclipse.bpmn2.UserTask;
+import org.eclipse.bpmn2.util.Bpmn2AdapterFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.jface.viewers.ISelection;
@@ -138,6 +141,14 @@ public class PropertiesTabDescriptorProvider implements ITabDescriptorProvider {
 				tabs.add(createInputOutputTabDescriptor());
 			}
 
+			if (businessObject instanceof ServiceTask
+					|| businessObject instanceof BusinessRuleTask
+					|| businessObject instanceof SendTask
+					|| (businessObject instanceof IntermediateThrowEvent && ModelUtil.getEventDefinition((Event)businessObject, MessageEventDefinition.class) != null)
+					|| (businessObject instanceof EndEvent && ModelUtil.getEventDefinition((Event)businessObject, MessageEventDefinition.class) != null)) {
+				tabs.add(createConnectorTabDescriptor());
+			}
+			
 			addCustomTabs(businessObject, tabs);
 		}
 
@@ -196,6 +207,10 @@ public class PropertiesTabDescriptorProvider implements ITabDescriptorProvider {
 
 	private ITabDescriptor createInputOutputTabDescriptor() {
 		return createTabDescriptor("inputOutputTab", "Input/Output", new InputOutputTabSection());
+	}
+	
+	private ITabDescriptor createConnectorTabDescriptor() {
+		return createTabDescriptor("connectorTab", "Connector", new ConnectorTabSection());
 	}
 	
 	/**
