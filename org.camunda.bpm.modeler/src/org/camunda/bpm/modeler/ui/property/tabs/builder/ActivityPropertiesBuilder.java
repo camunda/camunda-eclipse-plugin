@@ -31,7 +31,13 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
  */
 public class ActivityPropertiesBuilder extends RetryEnabledPropertiesBuilder {
 
+	protected static final String ASYNC_BEFORE_LABEL = "Asynchronous Before";
+	protected static final String ASYNC_AFTER_LABEL = "Asynchronous After";
+	protected static final String EXCLUSIVE_LABEL = "Exclusive";
+	
 	private static final EStructuralFeature ASYNC_FEATURE = ModelPackage.eINSTANCE.getDocumentRoot_Async();
+	private static final EStructuralFeature ASYNC_BEFORE_FEATURE = ModelPackage.eINSTANCE.getDocumentRoot_AsyncBefore();
+	private static final EStructuralFeature ASYNC_AFTER_FEATURE = ModelPackage.eINSTANCE.getDocumentRoot_AsyncAfter();
 	private static final EStructuralFeature EXCLUSIVE_FEATURE = ModelPackage.eINSTANCE.getDocumentRoot_Exclusive();
 	
 	public ActivityPropertiesBuilder(Composite parent, GFPropertySection section, BaseElement bo) {
@@ -41,38 +47,39 @@ public class ActivityPropertiesBuilder extends RetryEnabledPropertiesBuilder {
 	@Override
 	public void create() {
 		
-		boolean async = (Boolean) bo.eGet(ASYNC_FEATURE);
+		EStructuralFeature asyncBeforeFeature = ASYNC_FEATURE;
+		if (bo.eIsSet(ASYNC_BEFORE_FEATURE) && !bo.eIsSet(ASYNC_FEATURE)) {
+			asyncBeforeFeature = ASYNC_BEFORE_FEATURE;
+		}
+		
+		boolean asyncBefore = (Boolean) bo.eGet(asyncBeforeFeature);
+		boolean asyncAfter = (Boolean) bo.eGet(ASYNC_AFTER_FEATURE);
 		boolean exclusive = (Boolean) bo.eGet(EXCLUSIVE_FEATURE);
 
 		// <async-link> <!-- Async link and help text -->
 		
-		final Button checkbox = createCheckbox("Asynchronous", HelpText.ASYNC_FLAG);
-
+		final Button asyncBeforeCheckbox = createCheckbox(ASYNC_BEFORE_LABEL, HelpText.ASYNC_FLAG);
+		new AsyncFlagButtonBinding(bo, asyncBeforeFeature, asyncBeforeCheckbox).establish();
+		
+		final Button asyncAfterCheckbox = createCheckbox(ASYNC_AFTER_LABEL, HelpText.ASYNC_FLAG, HelpText.SUPPORTED_VERSION_NOTE_7_2);
+		new AsyncFlagButtonBinding(bo, ASYNC_AFTER_FEATURE, asyncAfterCheckbox).establish();
+		
 		// </async-link>
 
 		// exclusive jobs flag, default value 'true'
-		final Button exclusiveCheckbox = createCheckbox("Exclusive", HelpText.EXCLUSIVE_FLAG);
+		final Button exclusiveCheckbox = createCheckbox(EXCLUSIVE_LABEL, HelpText.EXCLUSIVE_FLAG);
 		new BooleanButtonBinding(bo, EXCLUSIVE_FEATURE, exclusiveCheckbox).establish();
 		exclusiveCheckbox.setSelection(exclusive);
 
 		final Text retryText = createRetryCycleText();
 
-		new AsyncFlagButtonBinding(bo, ASYNC_FEATURE, checkbox).establish();
-
 		// initial setup of GUI elements
-		retryText.setEnabled(async);
-		exclusiveCheckbox.setEnabled(async);
+		boolean enable = asyncBefore || asyncAfter;
+		exclusiveCheckbox.setEnabled(enable);
+		retryText.setEnabled(enable);
 
-		checkbox.addListener(SWT.Selection, new Listener() {
-
-			@Override
-			public void handleEvent(Event event) {
-				boolean selected = checkbox.getSelection();
-				retryText.setEnabled(selected);
-				exclusiveCheckbox.setEnabled(selected);
-			}
-		});
-
+		asyncBeforeCheckbox.addListener(SWT.Selection, new AsyncCheckboxListener(asyncBeforeCheckbox, asyncAfterCheckbox, exclusiveCheckbox, retryText));
+		asyncAfterCheckbox.addListener(SWT.Selection, new AsyncCheckboxListener(asyncBeforeCheckbox, asyncAfterCheckbox, exclusiveCheckbox, retryText));
 	}
 	
 	/**
@@ -80,11 +87,19 @@ public class ActivityPropertiesBuilder extends RetryEnabledPropertiesBuilder {
 	 * @return
 	 */
 	private Button createCheckbox(String label, String helpText) {
+		return createCheckbox(label, helpText, null);
+	}
+		
+	private Button createCheckbox(String label, String helpText, String note) {
 		
 		Composite composite = PropertyUtil.createStandardComposite(section, parent);
 		
 		Composite checkBoxComposite = PropertyUtil.createStandardComposite(section, composite);
 		checkBoxComposite.setLayoutData(PropertyUtil.getStandardLayout());
+		
+		if (note != null && !note.isEmpty()) {
+			PropertyUtil.attachNote(checkBoxComposite, note);
+		}
 
 		// add label
 		PropertyUtil.createLabel(section, composite, label, checkBoxComposite);
@@ -127,20 +142,20 @@ public class ActivityPropertiesBuilder extends RetryEnabledPropertiesBuilder {
 		
 		@Override
 		public Boolean getModelValue() {
-			return (Boolean) bo.eGet(ASYNC_FEATURE);
+			return (Boolean) bo.eGet(feature);
 		}
 
 		@Override
 		public void setModelValue(Boolean value) {
-			transactionalToggleAsync(value);
+			transactionalToggleAsync(feature, value);
 		}
 	}
 	
 	// invocation of transactional behavior ///////////////
 	
-	private void transactionalToggleAsync(boolean async) {
+	private void transactionalToggleAsync(EStructuralFeature feature, boolean async) {
 		TransactionalEditingDomain domain = getTransactionalEditingDomain();
-		domain.getCommandStack().execute(new ToggleAsyncCommand(domain, async));
+		domain.getCommandStack().execute(new ToggleAsyncCommand(domain, feature, async));
 	}
 
 	/**
@@ -153,21 +168,64 @@ public class ActivityPropertiesBuilder extends RetryEnabledPropertiesBuilder {
 	private class ToggleAsyncCommand extends RecordingCommand {
 		
 		private boolean async;
+		private EStructuralFeature feature;
 
-		public ToggleAsyncCommand(TransactionalEditingDomain domain, boolean async) {
+		public ToggleAsyncCommand(TransactionalEditingDomain domain, EStructuralFeature feature, boolean async) {
 			super(domain);
 			
+			this.feature = feature;
 			this.async = async;
 		}
 
 		@Override
 		protected void doExecute() {
 			if (!async) {
-				bo.eUnset(ASYNC_FEATURE);
-				removeRetryCycle();
-				bo.eUnset(EXCLUSIVE_FEATURE);
+				
+				if (ASYNC_FEATURE.equals(feature) || ASYNC_BEFORE_FEATURE.equals(feature)) {
+					bo.eUnset(ASYNC_FEATURE);
+					bo.eUnset(ASYNC_BEFORE_FEATURE);
+				} else {
+					bo.eUnset(feature);
+				}
+				
+				if (!bo.eIsSet(ASYNC_FEATURE) && !bo.eIsSet(ASYNC_BEFORE_FEATURE) && !bo.eIsSet(ASYNC_AFTER_FEATURE)) {
+					removeRetryCycle();
+					bo.eUnset(EXCLUSIVE_FEATURE);
+				}
+				
 			} else {
-				bo.eSet(ASYNC_FEATURE, async);
+				bo.eSet(feature, async);
+			}
+		}
+	}
+	
+	private class AsyncCheckboxListener implements Listener {
+
+		protected Button asyncBeforeCheckbox;
+		protected Button asyncAfterCheckbox;
+		protected Button exclusiveCheckbox;
+		protected Text retryText;
+		
+		public AsyncCheckboxListener(Button asyncBeforeCheckbox, Button asyncAfterCheckbox, Button exclusiveCheckbox, Text retryText) {
+			this.asyncBeforeCheckbox = asyncBeforeCheckbox;
+			this.asyncAfterCheckbox = asyncAfterCheckbox;
+			this.exclusiveCheckbox = exclusiveCheckbox;
+			this.retryText = retryText;
+		}
+		
+		@Override
+		public void handleEvent(Event event) {
+			boolean beforeSelected = asyncBeforeCheckbox.getSelection();
+			boolean afterSelected = asyncAfterCheckbox.getSelection();
+			
+			boolean enable = beforeSelected || afterSelected;
+			
+			if (exclusiveCheckbox != null) {
+				exclusiveCheckbox.setEnabled(enable);
+			}
+
+			if (retryText != null) {
+				retryText.setEnabled(enable);
 			}
 		}
 	}
