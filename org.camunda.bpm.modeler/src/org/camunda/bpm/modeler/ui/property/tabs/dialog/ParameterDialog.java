@@ -12,6 +12,7 @@ import org.camunda.bpm.modeler.runtime.engine.model.ModelFactory;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.runtime.engine.model.ParameterType;
 import org.camunda.bpm.modeler.runtime.engine.model.ScriptType;
+import org.camunda.bpm.modeler.ui.property.tabs.binding.StringTextBinding;
 import org.camunda.bpm.modeler.ui.property.tabs.binding.ValidatingStringComboBinding;
 import org.camunda.bpm.modeler.ui.property.tabs.binding.ValidatingStringTextBinding;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.CamundaScriptPropertiesBuilder;
@@ -831,6 +832,44 @@ public class ParameterDialog extends ModelerDialog {
 		new CamundaScriptPropertiesBuilder(parent, section, bo, parameter, PARAMETER_SCRIPT_FEATURE).create();
 	}
 	
+	protected void createTextContent(GFPropertySection section, Composite parent, final ParameterType parameter) {
+		Composite composite = PropertyUtil.createStandardComposite(section, parent);
+
+		Text text = PropertyUtil.createSimpleMultiText(section, composite, EMPTY_STRING);
+		setHeight(text);
+		
+		StringTextBinding binding = new StringTextBinding(parameter, PARAMETER_TEXT_FEATURE, text) {
+			
+			@Override
+			public String getModelValue() {
+				return parameter.getText();
+			}
+			
+			@Override
+			public void setModelValue(final String value) {
+				TransactionalEditingDomain editingDomain = TransactionUtil.getEditingDomain(model);
+				editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+					
+					@Override
+					protected void doExecute() {
+						if (value != null && !value.isEmpty()) {
+							parameter.setText(value);
+						} else {
+							FeatureMap mixed = parameter.getMixed();
+							if (mixed != null && !mixed.isEmpty()) {
+								mixed.clear();
+							}
+						}
+					}
+				});
+			}
+		};
+
+		binding.establish();
+		
+		PropertyUtil.createLabel(section, composite, PARAMETER_TEXT_CONTENT_LABEL, text);
+	}
+	
 	protected void refreshContent(Composite parent) {
 		if (contentComposite != null && !contentComposite.isDisposed()) {
 			contentComposite.dispose();
@@ -848,8 +887,7 @@ public class ParameterDialog extends ModelerDialog {
 			createScript(section, contentComposite, parameter);
 			
 		} else {
-			Text multiText = PropertyUtil.createMultiText(section, contentComposite, PARAMETER_TEXT_CONTENT_LABEL, PARAMETER_TEXT_FEATURE, parameter);
-			setHeight(multiText);
+			createTextContent(section, contentComposite, parameter);
 		}
 
 		placeHolderComposite.layout();

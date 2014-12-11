@@ -294,7 +294,7 @@ public class PropertyUtil {
 		return text;
 	}
 
-	protected static Text createSimpleMultiText(GFPropertySection section, Composite parent, String value) {
+	public static Text createSimpleMultiText(GFPropertySection section, Composite parent, String value) {
 		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
 		final Text text = factory.createText(parent, value, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.H_SCROLL); //$NON-NLS-1$
 
