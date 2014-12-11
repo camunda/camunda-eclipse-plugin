@@ -8,9 +8,14 @@ package org.camunda.bpm.modeler.ui.property.tabs.util;
  */
 public class HelpText {
 
-	public static final String SUPPORTED_VERSION_NOTE = "This feature is supported for camunda BPM engine version 7.1 and higher.";
+	public static final String SUPPORTED_VERSION_NOTE = "This feature is supported for camunda BPM engine version %s and higher.";
+	public static final String SUPPORTED_VERSION_NOTE_7_1 = String.format(SUPPORTED_VERSION_NOTE, "7.1");
+	public static final String SUPPORTED_VERSION_NOTE_7_2 = String.format(SUPPORTED_VERSION_NOTE, "7.2");
+	
+	public static final String MANDATORY_VALUE = "This value is mandatory. Empty value will not be saved.";
 
 	public static final String TABLE_HELP = "Add or remove table entry by right-click.";
+	public static final String TABLE_ELEM_NOT_EDITABLE = "It is not possible to edit a nested Map, List or Script value.";
 	
 	public static final String TIME_DATE = "Date in ISO 8601 format (e.g. \"2011-03-11T12:13:14\")";
 	public static final String TIME_DURATION = "Duration in ISO 8601 format (e.g. \"P4DT12H30M5S\" as a duration of \"four days, 12 hours, 30 minutes, and five seconds\")";

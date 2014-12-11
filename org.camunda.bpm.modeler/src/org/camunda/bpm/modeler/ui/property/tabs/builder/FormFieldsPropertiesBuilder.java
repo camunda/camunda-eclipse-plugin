@@ -133,7 +133,7 @@ public class FormFieldsPropertiesBuilder extends AbstractPropertiesBuilder<BaseE
 		viewer = builder.build();
 
 		Composite tableComposite = viewer.getTable().getParent();
-		PropertyUtil.attachNote(tableComposite, HelpText.TABLE_HELP + " " + HelpText.SUPPORTED_VERSION_NOTE);
+		PropertyUtil.attachNote(tableComposite, HelpText.TABLE_HELP + " " + HelpText.SUPPORTED_VERSION_NOTE_7_1);
 
 		// create label
 		PropertyUtil.createLabel(section, composite, label, tableComposite);

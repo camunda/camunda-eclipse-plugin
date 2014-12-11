@@ -68,7 +68,7 @@ public class AnyNestedChangeFilter extends AbstractFeatureChangeFilter {
 		return false;
 	}
 
-	private EObject getValue(EObject object, EStructuralFeature feature) {
+	protected EObject getValue(EObject object, EStructuralFeature feature) {
 		
 		if (object.eClass().getEAllStructuralFeatures().contains(feature)) {
 			return (EObject) object.eGet(feature);

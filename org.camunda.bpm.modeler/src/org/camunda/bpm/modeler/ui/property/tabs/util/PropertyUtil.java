@@ -238,6 +238,40 @@ public class PropertyUtil {
 		return text;
 	}
 	
+	public static Text createUnboundRadioMultiText(GFPropertySection section, Composite parent, String label,
+			EStructuralFeature feature, RadioGroup<EStructuralFeature> radioGroup) {
+
+		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
+
+		Composite composite = createStandardComposite(section, parent);
+
+		Composite radioComposite = createStandardComposite(section, composite);
+
+		setStandardLayout(radioComposite);
+
+		final Text text = factory.createText(radioComposite, "", SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.H_SCROLL);
+		final Button radioButton = factory.createButton(radioComposite, "", SWT.NO_FOCUS | SWT.RADIO);
+		
+		FormData textFormData = new FormData();
+		textFormData.left = new FormAttachment(0, 15);
+		textFormData.right = new FormAttachment(100, 0);
+		textFormData.height = 106;
+
+		FormData radioButtonData = new FormData();
+		radioButtonData.right = new FormAttachment(text, 0);
+		radioButtonData.top = new FormAttachment(text, 2, SWT.TOP);
+
+		text.setLayoutData(textFormData);
+		radioButton.setLayoutData(radioButtonData);
+		
+		// register with radio group
+		radioGroup.add(radioButton, feature);
+
+		createLabel(section, composite, label, radioComposite);
+
+		return text;
+	}
+	
 	public static Text createRadioText(GFPropertySection section, Composite parent, String label,
 			final EStructuralFeature feature, RadioGroup<EStructuralFeature> radioGroup, final EObject bo) {
 

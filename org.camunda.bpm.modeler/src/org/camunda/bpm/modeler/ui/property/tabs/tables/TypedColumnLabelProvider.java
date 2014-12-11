@@ -12,8 +12,9 @@ import org.eclipse.jface.viewers.ColumnLabelProvider;
  */
 public abstract class TypedColumnLabelProvider<T extends EObject> extends ColumnLabelProvider {
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public final String getText(Object element) {
+	public String getText(Object element) {
 		return getText((T) element);
 	}
 

@@ -31,9 +31,12 @@ import org.camunda.bpm.modeler.ui.property.tabs.ExtensionsTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.FieldInjectionsTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.FormFieldsTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.GeneralTabSection;
+import org.camunda.bpm.modeler.ui.property.tabs.InputOutputTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.ListenerTabSection;
 import org.camunda.bpm.modeler.ui.property.tabs.MultiInstanceTabSection;
 import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.BoundaryEvent;
+import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.BusinessRuleTask;
 import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.Event;
@@ -47,6 +50,9 @@ import org.eclipse.bpmn2.SendTask;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.bpmn2.StartEvent;
+import org.eclipse.bpmn2.SubProcess;
+import org.eclipse.bpmn2.Task;
+import org.eclipse.bpmn2.Transaction;
 import org.eclipse.bpmn2.UserTask;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -124,6 +130,14 @@ public class PropertiesTabDescriptorProvider implements ITabDescriptorProvider {
 			}
 
 			tabs.add(createExtensionsTabDescriptor());
+			
+			if (businessObject instanceof Task
+					|| (businessObject instanceof Event && !(businessObject instanceof StartEvent) && !(businessObject instanceof BoundaryEvent)) 
+					|| businessObject instanceof Transaction
+					|| (businessObject instanceof SubProcess && businessObject.eGet(Bpmn2Package.eINSTANCE.getSubProcess_TriggeredByEvent()).equals(Boolean.FALSE))) {
+				tabs.add(createInputOutputTabDescriptor());
+			}
+
 			addCustomTabs(businessObject, tabs);
 		}
 
@@ -180,6 +194,10 @@ public class PropertiesTabDescriptorProvider implements ITabDescriptorProvider {
 		return createTabDescriptor("fieldInjectionsTab", "Field Injections", new FieldInjectionsTabSection());
 	}
 
+	private ITabDescriptor createInputOutputTabDescriptor() {
+		return createTabDescriptor("inputOutputTab", "Input/Output", new InputOutputTabSection());
+	}
+	
 	/**
 	 * Create a new tab descriptor with the given id, label and holding 
 	 * the specified tab section.
