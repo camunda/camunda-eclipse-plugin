@@ -287,6 +287,21 @@ public class PropertyUtil {
 		return text;
 	}
 
+	public static Text createRadioMultiText(GFPropertySection section, Composite parent, String label,
+			final EStructuralFeature feature, RadioGroup<EStructuralFeature> radioGroup, final EObject bo) {
+
+		Text text = createUnboundRadioMultiText(section, parent, label, feature, radioGroup);
+
+		ModelTextBinding<?> binding = getBinding(text, bo, feature);
+
+		if (binding != null) {
+			binding.setDisableOnNull(true);
+			binding.establish();
+		}
+
+		return text;
+	}
+	
 	public static Text createSimpleText(GFPropertySection section, Composite parent, String value) {
 		TabbedPropertySheetWidgetFactory factory = section.getWidgetFactory();
 		final Text text = factory.createText(parent, value); //$NON-NLS-1$
