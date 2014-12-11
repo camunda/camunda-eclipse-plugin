@@ -8,6 +8,7 @@ import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -104,21 +105,29 @@ public class EObjectAttributeEditingSupport<T extends EObject> extends EditingSu
 		T element = (T) cell.getElement();
 		Object oldValue = getEValue(element);
 		
-		super.saveCellEditorValue(cellEditor, cell);
+		callSuperCellEditorValue(cellEditor, cell);
 		
 		Object newValue = getEValue(element);
 		
 		viewer.getTable().notifyListeners(Events.CELL_VALUE_CHANGED, new Events.CellValueChanged<T>(cell, element, newValue, oldValue));
 	}
 	
+	protected void callSuperCellEditorValue(CellEditor cellEditor, ViewerCell cell) {
+		super.saveCellEditorValue(cellEditor, cell);
+	}
+	
 	@Override
-	protected final void setValue(Object element, Object value) {
+	protected void setValue(Object element, Object value) {
 		setValue((T) element, value);
 	}
 
 	@Override
-	protected final Object getValue(Object element) {
+	protected Object getValue(Object element) {
 		return getValue((T) element);
 	}
-
+	
+	public TableViewer getTableViewer() {
+		return viewer;
+	}
+	
 }

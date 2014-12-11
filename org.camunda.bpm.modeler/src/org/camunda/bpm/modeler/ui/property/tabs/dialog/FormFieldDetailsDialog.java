@@ -19,6 +19,7 @@ import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilde
 import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EObjectTableBuilder.DeleteRowHandler;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.table.EditableEObjectTableBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.tables.EditableTableDescriptor.ElementFactory;
+import org.camunda.bpm.modeler.ui.property.tabs.util.HelpText;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
@@ -335,7 +336,7 @@ public class FormFieldDetailsDialog extends ModelerDialog {
 		public String getModelValue() {
 			String value = (String) super.getModelValue();
 			if (mandatory && (value == null || isEmptyValue(value))) {
-				showError("This value is mandatory. Empty value will not be saved.");
+				showError(HelpText.MANDATORY_VALUE);
 				return null;
 			}
 			return value;

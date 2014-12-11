@@ -18,6 +18,7 @@
  */
 package org.camunda.bpm.modeler.runtime.engine.model.util;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,7 @@ import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.emf.ecore.util.FeatureMap;
+import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.emf.ecore.xmi.XMLHelper;
 import org.eclipse.emf.ecore.xmi.XMLLoad;
 import org.eclipse.emf.ecore.xmi.XMLResource;
@@ -117,6 +119,7 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 		}
 
 		return new Bpmn2ModelerXMLSave(createXMLHelper()) {
+					
 			@Override
 			protected void saveTypeAttribute(EClass eClass) {
 				if (!eClass.getEPackage().getNsPrefix().equals("activiti")
@@ -128,6 +131,20 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 
 					super.saveTypeAttribute(eClass);
 				}
+			}
+			
+			protected List<FeatureMap.Entry> getValues(List<? extends FeatureMap.Entry> values, List<EStructuralFeature> features) {
+				List<FeatureMap.Entry> entries = new ArrayList<Entry>();
+				
+				for (Entry value : values) {
+					EStructuralFeature feature = value.getEStructuralFeature();
+					
+					if (features.contains(feature)) {
+						entries.add(value);
+					}
+				}
+				
+				return entries;
 			}
 
 			@Override
@@ -141,6 +158,44 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 				
 				@SuppressWarnings("unchecked")
 				List<? extends FeatureMap.Entry> values = (List<? extends FeatureMap.Entry>) helper.getValue(o, f);
+				
+				// DO NOT REMOVE THIS!
+				
+				// the following lines prevents that a line-break will not be escaped
+				// in case of a ParameterType or EntryType:
+				//
+				// <camunda:inputParameter name="xyz">
+				//   <camunda:script ... />
+				// </camunda:inputParameter>
+				//
+				// will not be saved as following:
+				//
+				// <camunda:inputParameter name="xyz"><![CDATA[
+				//   ]]><camunda:script ... /><![CDATA[
+				// ]]></camunda:inputParameter>
+				
+				if (o instanceof ParameterType || o instanceof EntryType) {
+					
+					List<EStructuralFeature> features = new ArrayList<EStructuralFeature>();
+					if (o instanceof ParameterType) {
+						features.add(ModelPackage.eINSTANCE.getParameterType_List());
+						features.add(ModelPackage.eINSTANCE.getParameterType_Map());
+						features.add(ModelPackage.eINSTANCE.getParameterType_Script());
+						
+					} else if (o instanceof EntryType) {
+						features.add(ModelPackage.eINSTANCE.getEntryType_List());
+						features.add(ModelPackage.eINSTANCE.getEntryType_Map());
+						features.add(ModelPackage.eINSTANCE.getEntryType_Script());						
+					}
+					
+					List<FeatureMap.Entry> entries = getValues(values, features);
+					
+					if (!entries.isEmpty()) {
+						doc.setMixed(false);
+						values = entries;
+					}
+				}
+				
 				int size = values.size();
 				for (int i = 0; i < size; i++) {
 					FeatureMap.Entry entry = values.get(i);
@@ -174,57 +229,19 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 							}
 						}
 					} else {
-						if (entryFeature == XMLTypePackage.Literals.XML_TYPE_DOCUMENT_ROOT__TEXT) {
-							String svalue = value.toString();
-							if (escape != null) {
-								
-								// DO NOT REMOVE THIS!
-								
-								// the following lines prevents that a line-break will not be escaped
-								// in case of a ParameterType, EntryType:
-								//
-								// <camunda:inputParameter name="xyz">
-								//   <camunda:script ... />
-								// </camunda:inputParameter>
-								//
-								// will not be saved as following:
-								//
-								// <camunda:inputParameter name="xyz"><![CDATA[
-								//   ]]><camunda:script ... /><![CDATA[
-								// ]]></camunda:inputParameter>
-								
-								if (o instanceof ParameterType
-										&& f.getName().equals(ModelPackage.eINSTANCE.getParameterType_Mixed().getName())) {
-									
-									if (!o.eIsSet(ModelPackage.eINSTANCE.getParameterType_Script())
-											&& !o.eIsSet(ModelPackage.eINSTANCE.getParameterType_Map())
-											&& !o.eIsSet(ModelPackage.eINSTANCE.getParameterType_List())) {
-										
-										svalue = escape.convertText(svalue);
-									}
-									
-								} else if (o instanceof EntryType
-										&& f.getName().equals(ModelPackage.eINSTANCE.getEntryType_Mixed().getName())) {
-									
-									if (!o.eIsSet(ModelPackage.eINSTANCE.getEntryType_Script())
-											&& !o.eIsSet(ModelPackage.eINSTANCE.getEntryType_Map())
-											&& !o.eIsSet(ModelPackage.eINSTANCE.getEntryType_List())) {
-											
-										svalue = escape.convertText(svalue);
-									}								
-								}
-								else {
-									svalue = escape.convertText(svalue);
-								}
-								
-							}
-							if (!toDOM) {
-								doc.addText(svalue);
-							} else {
-								Node text = document.createTextNode(svalue);
-								currentNode.appendChild(text);
-								handler.recordValues(text, o, f, entry);
-							}
+						
+				        if (entryFeature == XMLTypePackage.Literals.XML_TYPE_DOCUMENT_ROOT__TEXT) {
+				          String svalue = value.toString();
+				          if (escape != null) {
+				            svalue =  escape.convertText(svalue);
+				          }        
+				          if (!toDOM) {    
+				            doc.addText(svalue);
+				          } else {
+				            Node text = document.createTextNode(svalue);
+				            currentNode.appendChild(text);
+				            handler.recordValues(text, o, f, entry);
+				          }
 						} else if (entryFeature == XMLTypePackage.Literals.XML_TYPE_DOCUMENT_ROOT__CDATA) {
 							String stringValue = value.toString();
 							if (escape != null) {

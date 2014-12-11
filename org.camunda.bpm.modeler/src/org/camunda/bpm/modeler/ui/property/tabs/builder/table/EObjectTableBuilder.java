@@ -40,6 +40,7 @@ public class EObjectTableBuilder<T extends EObject> {
 	private AddedRowHandler<T> addHandler;
 	
 	private DeleteRowHandler<T> deleteRowHandler;
+	private Listener deleteRowListener;
 	private SelectedRowHandler<T> selectHandler;
 
 	protected EStructuralFeature[] columnFeatures;
@@ -52,6 +53,8 @@ public class EObjectTableBuilder<T extends EObject> {
 	protected EObject model;
 	
 	protected Class<T> genericTypeCls;
+	
+	protected String note;
 
 	/**
 	 * Whether to attach a small edit note to the table
@@ -67,6 +70,12 @@ public class EObjectTableBuilder<T extends EObject> {
 	
 	public EObjectTableBuilder<T> deleteRowHandler(DeleteRowHandler<T> deleteRowHandler) {
 		this.deleteRowHandler = deleteRowHandler;
+		
+		return this;
+	}
+	
+	public EObjectTableBuilder<T> deleteRowListener(Listener listener) {
+		this.deleteRowListener = listener;
 		
 		return this;
 	}
@@ -108,6 +117,12 @@ public class EObjectTableBuilder<T extends EObject> {
 
 	public EObjectTableBuilder<T> editingSupportProvider(EditingSupportProvider editingSupportProvider) {
 		this.editingSupportProvider = editingSupportProvider;
+		
+		return this;
+	}
+	
+	public EObjectTableBuilder<T> note(String note) {
+		this.note = note;
 		
 		return this;
 	}
@@ -183,43 +198,29 @@ public class EObjectTableBuilder<T extends EObject> {
 		changeSupport.setFilter(changeFilter);
 		changeSupport.register();
 
-		table.addListener(Events.DELETE_ROW, new Listener() {
-			@Override
-			public void handleEvent(Event e) {
-				Events.DeleteRow<T> event = (DeleteRow<T>) e;
+		if (deleteRowListener == null) {
+			deleteRowListener = new Listener() {
 
-				T removedElement = event.getRemovedElement();
+				@Override
+				public void handleEvent(Event e) {
+					if (deleteRowHandler != null) {
+						Events.RowDeleted<T> event = (RowDeleted<T>) e;
+						T removedElement = event.getRemovedElement();
 
-				if (deleteRowHandler != null) {
-					boolean canDelete = deleteRowHandler.canDelete(removedElement);
-					if (!canDelete) {
-						event.setRejected();
+						deleteRowHandler.rowDeleted(removedElement);
 					}
 				}
-			}
-		});
-
-		table.addListener(Events.ROW_DELETED, new Listener() {
-
-			@Override
-			public void handleEvent(Event e) {
-				Events.RowDeleted<T> event = (RowDeleted<T>) e;
-				
-				T removedElement = event.getRemovedElement();
-
-				if (deleteRowHandler != null) {
-					deleteRowHandler.rowDeleted(removedElement);
-				}
-			}
-		});
+			};
+		}
+		table.addListener(Events.ROW_DELETED, deleteRowListener);
 		
 		tableViewer.addPostSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-				T element = (T) selection.getFirstElement();
-				
 				if (selectHandler != null) {
+					IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+					T element = (T) selection.getFirstElement();
+				
 					selectHandler.rowSelected(element);
 				}
 			}
@@ -277,7 +278,11 @@ public class EObjectTableBuilder<T extends EObject> {
 		tableComposite.setLayoutData(tableCompositeFormData);
 
 		if (attachTableEditNote) {
-			PropertyUtil.attachNote(tableComposite, HelpText.TABLE_HELP);
+			if (note != null && !note.isEmpty()) {
+				PropertyUtil.attachNote(tableComposite, note);
+			} else {
+				PropertyUtil.attachNote(tableComposite, HelpText.TABLE_HELP);
+			}
 		}
 		
 		return tableComposite;

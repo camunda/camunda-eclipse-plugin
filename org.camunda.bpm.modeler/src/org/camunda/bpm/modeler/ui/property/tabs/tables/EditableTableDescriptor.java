@@ -286,7 +286,7 @@ public class EditableTableDescriptor<T> extends TableDescriptor<T> {
 	 * 
 	 * @author nico.rehwaldt
 	 */
-	private static class AddAndEditStrategy<T> extends DefaultAddStrategy<T> {
+	public static class AddAndEditStrategy<T> extends DefaultAddStrategy<T> {
 		
 		public AddAndEditStrategy(TableViewer viewer, ElementFactory<T> factory) {
 			super(viewer, factory);
